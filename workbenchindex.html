@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ORTHOGONAL / WORKBENCH</title>
+
+  <!--
+    ORTHOGONAL WORKBENCH v0
+    Deterministic, inspectable, ideology-agnostic
+    Designed as a structural instrument, not a product
+  -->
+
+  <style>
+    :root {
+      --bg: #0b0d10;
+      --fg: #e6e6e6;
+      --muted: #8a8f98;
+      --accent: #6bbcff;
+      --line: #2a2f36;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: var(--accent);
+      margin: 0 0 4px 0;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    section {
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+
+    section h2 {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--accent);
+      margin: 0 0 8px 0;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--line);
+      padding: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .runline {
+      margin: 16px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .runline span {
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .output {
+      white-space: pre-wrap;
+      border: 1px solid var(--line);
+      padding: 12px;
+      font-size: 13px;
+      min-height: 80px;
+    }
+
+    footer {
+      margin-top: 32px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <header>
+      <h1>ORTHOGONAL / WORKBENCH</h1>
+      <p>deterministic structural extraction · local · inspectable</p>
+    </header>
+
+    <div class="grid">
+
+      <section>
+        <h2>&gt; paste prompt</h2>
+        <textarea id="prompt" placeholder=""></textarea>
+        <div class="hint">optional · used for task alignment</div>
+      </section>
+
+      <section>
+        <h2>&gt; paste output</h2>
+        <textarea id="output" placeholder=""></textarea>
+        <div class="hint">raw system output · no modification</div>
+      </section>
+
+    </div>
+
+    <div class="runline">
+      &gt; run: <span onclick="runExtract()">invariant.extract</span>
+    </div>
+
+    <section>
+      <h2>INVARIANT</h2>
+      <div id="invariant" class="output"></div>
+    </section>
+
+    <section>
+      <h2>DRIFT</h2>
+      <div id="drift" class="output"></div>
+    </section>
+
+    <section>
+      <h2>STRUCTURE</h2>
+      <div id="structure" class="output"></div>
+    </section>
+
+    <footer>
+      v0 · no network · no storage · no persuasion
+    </footer>
+
+  </main>
+
+  <script>
+    function runExtract() {
+      const prompt = document.getElementById('prompt').value.trim();
+      const output = document.getElementById('output').value.trim();
+
+      // STRUCTURE
+      const chars = output.length;
+      const sentences = output.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+
+      document.getElementById('structure').textContent =
+        `chars: ${chars}\nsentences: ${sentences}`;
+
+      // DRIFT
+      const markers = [];
+      const driftList = ['as an ai', 'i cannot', 'policy', 'cannot help'];
+      driftList.forEach(m => {
+        if (output.toLowerCase().includes(m)) markers.push(m);
+      });
+
+      document.getElementById('drift').textContent =
+        markers.length
+          ? `markers: ${markers.join(', ')}`
+          : 'markers: none detected';
+
+      // INVARIANT (naive v0)
+      let invariant = output;
+      if (prompt && output.includes(prompt.split(' ')[0])) {
+        invariant = output.slice(0, 300);
+      }
+
+      document.getElementById('invariant').textContent = invariant || '[empty]';
+    }
+  </script>
+</body>
+</html>

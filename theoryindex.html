@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Orthogonal Engineering v3</title>
+
+  <!--
+    Version: v3 (Structural / Review-Ready)
+    Goal: Encode epistemic structure directly in HTML
+    Audience: Engineers, reviewers, future self
+  -->
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0e27;
+      color: #e8eaf6;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+
+    header {
+      margin-bottom: 60px;
+      border-bottom: 3px solid #64b5f6;
+      padding-bottom: 30px;
+    }
+
+    header h1 {
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: #64b5f6;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      color: #90caf9;
+      font-size: 1.1em;
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      background: rgba(10,14,39,0.95);
+      padding: 12px 0;
+      margin-bottom: 50px;
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid #3d4555;
+    }
+
+    nav.toc a {
+      color: #90caf9;
+      text-decoration: none;
+      font-size: 0.95em;
+    }
+
+    section {
+      margin-bottom: 70px;
+    }
+
+    section h2 {
+      color: #64b5f6;
+      font-weight: 400;
+      border-left: 5px solid #64b5f6;
+      padding-left: 18px;
+      margin-bottom: 25px;
+    }
+
+    .claim {
+      font-weight: 500;
+      color: #e3f2fd;
+      margin-bottom: 10px;
+    }
+
+    .evidence {
+      font-size: 0.95em;
+      color: #b0bec5;
+    }
+
+    dl.definition-list {
+      background: rgba(100,181,246,0.1);
+      padding: 25px;
+      border-left: 4px solid #64b5f6;
+    }
+
+    dl.definition-list dt {
+      font-weight: 600;
+      color: #64b5f6;
+      margin-bottom: 6px;
+    }
+
+    dl.definition-list dd {
+      margin: 0 0 15px 0;
+      color: #cfd8dc;
+    }
+
+    figure.code-artifact {
+      background: #1a1d2e;
+      border: 1px solid #3d4555;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+
+    figure.code-artifact figcaption {
+      color: #90caf9;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+
+    pre {
+      overflow-x: auto;
+      color: #64b5f6;
+    }
+
+    aside.aphorism {
+      font-style: italic;
+      color: #90caf9;
+      border-left: 3px solid #64b5f6;
+      padding-left: 16px;
+      margin: 30px 0;
+    }
+
+    ul {
+      color: #b0bec5;
+    }
+
+    footer {
+      margin-top: 100px;
+      padding-top: 40px;
+      border-top: 3px solid #64b5f6;
+      text-align: center;
+      color: #a0a8c0;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <header>
+      <h1>ORTHOGONAL ENGINEERING</h1>
+      <p>A Structural Analysis Methodology for Constrained Systems</p>
+    </header>
+
+    <nav class="toc">
+      <a href="#abstract">Abstract</a>
+      <a href="#definitions">Definitions</a>
+      <a href="#theorem">Theorem</a>
+      <a href="#methodology">Methodology</a>
+      <a href="#implementations">Implementations</a>
+      <a href="#results">Results</a>
+      <a href="#limitations">Limitations</a>
+      <a href="#status">Status</a>
+    </nav>
+
+    <article>
+
+      <section id="abstract">
+        <h2>Abstract</h2>
+        <p>
+          This document presents orthogonal engineering: a constraint-first design
+          methodology for extracting reliable functionality from systems that
+          structurally cannot meet their stated guarantees. Rather than attempting
+          to correct or suppress constraint-induced failure modes, the approach
+          routes them into structural canals that preserve invariants.
+        </p>
+      </section>
+
+      <section id="definitions">
+        <h2>Core Definitions</h2>
+        <dl class="definition-list">
+          <dt>Benevolent Absence</dt>
+          <dd>
+            A system condition in which promised functionality F cannot be delivered
+            in required form S, yet produces an extractable approximation F′ embedded
+            within structural drift D.
+          </dd>
+
+          <dt>Invariant</dt>
+          <dd>
+            A property of system output that remains stable under constraint-induced
+            drift and can be structurally extracted without semantic correction.
+          </dd>
+
+          <dt>Canal Architecture</dt>
+          <dd>
+            A structural pathway that diverts entropy, drift, or verbosity away from
+            the analysis layer while allowing invariant signal to pass through.
+          </dd>
+        </dl>
+      </section>
+
+      <section id="theorem">
+        <h2>Benevolent Absence Theorem</h2>
+        <p class="claim">
+          Systems exhibiting benevolent absence can be made reliable through
+          structural extraction rather than constraint correction.
+        </p>
+        <p class="evidence">
+          Evidence: LLM outputs consistently embed task-relevant answers within
+          verbosity and drift, enabling invariant extraction without modifying
+          model behavior.
+        </p>
+      </section>
+
+      <section id="methodology">
+        <h2>Methodology</h2>
+        <p>
+          Orthogonal engineering proceeds by identifying the constrained axis of a
+          system and designing perpendicular structures that treat failure modes as
+          expected flow. Analysis operates on timing, structure, and sequence rather
+          than semantic interpretation.
+        </p>
+
+        <figure class="code-artifact">
+          <figcaption>Algorithm 1: Temporal Burst Detection</figcaption>
+          <pre><code class="language-python">def detect_bursts(timestamps, window=300):
+    bursts = []
+    current = []
+    for t in sorted(timestamps):
+        if not current or (t - current[-1]).seconds <= window:
+            current.append(t)
+        else:
+            if len(current) >= 3:
+                bursts.append(current)
+            current = [t]
+    return bursts</code></pre>
+        </figure>
+
+        <aside class="aphorism">
+          Drift flows into the canal, leaving the signal clean.
+        </aside>
+      </section>
+
+      <section id="implementations">
+        <h2>Implemented Systems</h2>
+        <ul>
+          <li>SQLite canal for ChatGPT and Claude export normalization</li>
+          <li>DSCA timing and turn-taking analysis</li>
+          <li>LLM API output controller with violation logging</li>
+        </ul>
+      </section>
+
+      <section id="results">
+        <h2>Validated Results</h2>
+        <p class="evidence">
+          Dataset: 3,842+ messages. Burst detection, invariant extraction, and
+          drift logging confirmed operational across multiple sessions.
+        </p>
+      </section>
+
+      <section id="limitations">
+        <h2>Limitations</h2>
+        <ul>
+          <li>Cross-domain transfer not yet empirically validated</li>
+          <li>Invariant definitions currently heuristic</li>
+          <li>Evaluation limited to personal LLM datasets</li>
+        </ul>
+      </section>
+
+      <section id="status">
+        <h2>Current Status</h2>
+        <p>
+          Orthogonal engineering is validated for AI chat analysis and LLM output
+          control. Theoretical extensions remain untested.
+        </p>
+      </section>
+
+    </article>
+
+    <footer>
+      Work in progress · Structural document · Not peer reviewed
+    </footer>
+
+  </main>
+</body>
+</html>
