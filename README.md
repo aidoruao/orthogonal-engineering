@@ -8,9 +8,9 @@ Instead of fighting LLM verbosity, hallucination, and drift—design systems tha
 
 ## 🔗 Live Demos
 
-- **[Full Guide & Interactive Demo](https://yourusername.github.io/orthogonal-engineering/)** - Complete methodology with live extraction tool
-- **[Theory Paper (v3)](https://yourusername.github.io/orthogonal-engineering/theory/)** - Structural analysis and formal definitions
-- **[Workbench Tool (v4)](https://yourusername.github.io/orthogonal-engineering/workbench/)** - Minimal interactive invariant extractor
+- **[Full Guide & Interactive Demo](https://aidoruao.github.io/orthogonal-engineering/)** - Complete methodology with live extraction tool
+- **[Theory Paper (v3)](https://aidoruao.github.io/orthogonal-engineering/theory/)** - Structural analysis and formal definitions
+- **[Workbench Tool (v4)](https://aidoruao.github.io/orthogonal-engineering/workbench/)** - Minimal interactive invariant extractor
 
 ---
 
