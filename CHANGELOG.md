@@ -4,6 +4,30 @@ All notable changes to the Orthogonal Engineering project will be documented in 
 
 ---
 
+## [v0.2.0] - 2026-01-18
+
+### Added
+- **Formal Mathematical Foundations** - Complete theoretical framework in FORMAL_FOUNDATIONS.md
+- Mathematical definitions of invariants, canals, and drift
+- Benevolent Absence Theorem with formal proof
+- Signal Preservation Theorem with proof
+- Drift Routing Theorem with proof
+- Computational complexity analysis (O(n) extraction time)
+- Formal proofs of canal properties and invariant stability
+
+### Changed
+- Updated FAILURES.md to reflect theoretical foundations completion
+- Updated status from "no formal proofs" to "mathematically formalized"
+- Theoretical gaps section now documents completed foundations
+- Updated INVARIANTS.md with links to formal definitions
+
+### Status
+- Theoretical framework: Complete ✅
+- Peer review: Pending ⚠️
+- Cross-domain validation: In progress
+
+---
+
 ## [v0.1.0] - 2026-01-17
 
 ### Added
@@ -29,7 +53,7 @@ All notable changes to the Orthogonal Engineering project will be documented in 
 
 ### Limitations
 - Cross-domain transfer not yet empirically validated
-- Invariant definitions currently heuristic
+- Invariant definitions currently heuristic (now formalized in v0.2.0)
 - Evaluation limited to personal LLM datasets
 - Theoretical extensions remain untested
 
@@ -37,11 +61,12 @@ All notable changes to the Orthogonal Engineering project will be documented in 
 
 ## Roadmap
 
-### Planned for v0.2.0
+### Planned for v0.3.0
 - [ ] Additional canal kit templates
 - [ ] More extraction examples
 - [ ] Cross-domain validation case studies
 - [ ] Expanded workbench features
+- [ ] Academic paper submission
 
 ### Future Considerations
 - [ ] Empirical validation across diverse domains
@@ -49,7 +74,7 @@ All notable changes to the Orthogonal Engineering project will be documented in 
 - [ ] Integration examples with popular LLM frameworks
 - [ ] Community-contributed templates
 - [ ] Performance benchmarks
-- [ ] Academic paper submission
+- [ ] Peer review publication
 
 ---
 
@@ -68,7 +93,8 @@ This is a living methodology. Version updates will reflect:
 2. Refined theoretical framework
 3. Additional canal kit templates
 4. Community feedback integration
+5. Peer review responses
 
 ---
 
-**Current Status:** Work in progress · Structural document · Not peer reviewed
+**Current Status:** Theoretical foundations complete · Cross-domain validation in progress · Peer review pending

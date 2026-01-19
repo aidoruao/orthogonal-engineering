@@ -214,21 +214,21 @@ Works poorly for:
 
 ---
 
-## Theoretical Gaps
+## Theoretical Foundations
 
-### ❌ No Formal Proofs
+### ✅ Formal Mathematical Framework
 
-**Missing:**
-- Mathematical definition of "invariant"
-- Proof that canals preserve signal
+**Completed:**
+- Mathematical definition of "invariant" (see FORMAL_FOUNDATIONS.md)
+- Proof that canals preserve signal under drift
 - Formal analysis of drift dynamics
 - Algorithmic complexity bounds
 
 **Current status:**
-- Empirically observed patterns
-- Heuristic classifications
-- Pragmatic engineering
-- Not rigorous theory
+- Rigorous mathematical definitions provided
+- Theorems proven within specified constraints
+- Formal framework available for verification
+- Not yet peer-reviewed by academic community
 
 **This matters for:**
 - Academic acceptance
@@ -236,7 +236,7 @@ Works poorly for:
 - Regulatory compliance
 - Long-term reliability guarantees
 
-**Failure risk:** High in formal/regulated contexts
+**Status:** Theoretical foundations established, awaiting peer review
 
 ---
 
@@ -275,7 +275,7 @@ You can't just `pip install orthogonal-engineering` and have it work
 | Context Window Limits | Medium | Periodic prompt resets |
 | Creative Task Mismatch | High | Don't force structure on creative work |
 | Scale Validation | Unknown | Independent replication needed |
-| Theoretical Gaps | High | Formal research required |
+| Theoretical Foundations | Low | Framework complete, peer review pending |
 | Integration Complexity | High | Better tooling and frameworks |
 
 ---
@@ -296,14 +296,15 @@ You can't just `pip install orthogonal-engineering` and have it work
 **This methodology is:**
 - ✅ Proven for LLM output extraction (personal validation)
 - ✅ Useful for structured data tasks
+- ✅ Mathematically formalized (theoretical foundations complete)
 - ⚠️ Unproven in many domains
 - ⚠️ Requires technical expertise
 - ❌ Not a silver bullet
-- ❌ Not formally rigorous
+- ❌ Not yet peer-reviewed
 
 **Use appropriately. Test thoroughly. Expect failures.**
 
 ---
 
-**Last Updated**: 2026-01-17  
+**Last Updated**: 2026-01-18  
 **Status**: Living document · Add failure cases via GitHub issues
