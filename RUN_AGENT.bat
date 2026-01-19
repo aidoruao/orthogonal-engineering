@@ -1,0 +1,6 @@
+@echo off
+echo Starting Local AI Filesystem Analyzer...
+python system_analyzer_agent.py
+echo.
+echo Press any key to exit...
+pause > nul
