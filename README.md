@@ -1,148 +1,81 @@
-# Orthogonal Engineering for LLMs
+# Evidence Files
 
-**A constraint-first methodology for extracting reliable outputs from unreliable AI systems.**
-
-Instead of fighting LLM verbosity, hallucination, and drift—design systems that **channel noise into signal**.
+This directory contains sanitized validation data for the Orthogonal Engineering methodology.
 
 ---
 
-## 🔗 Live Demos
+## Files
 
-- **[Full Guide & Interactive Demo](https://aidoruao.github.io/orthogonal-engineering/)** - Complete methodology with live extraction tool
-- **[Theory Paper (v3)](https://aidoruao.github.io/orthogonal-engineering/theory/)** - Structural analysis and formal definitions
-- **[Workbench Tool (v4)](https://aidoruao.github.io/orthogonal-engineering/workbench/)** - Minimal interactive invariant extractor
+### RECON_STATS.json
+**Aggregate statistics from full dataset scan**
 
----
+Contains:
+- Total files analyzed: 251,471
+- Total size: 233.66 GB
+- Distribution by file type
+- Distribution by project tag
+- Scan timestamp
 
-## 💡 Core Concept
-
-**Traditional Approach:**
-- Try to make LLMs more "reliable"
-- Fight against verbosity and drift
-- Hope for perfect outputs
-
-**Orthogonal Engineering:**
-- Accept LLM constraints as structural facts
-- Design prompts that **route** slack into canals
-- Extract invariants from predictable noise patterns
-- Treat verbosity as **energy to be channeled**, not a bug to fix
+**Privacy:** Safe - contains only aggregate counts, no file paths or personal data
 
 ---
 
-## 🏗️ The Four Layers
+### MASTER_INDEX_SUMMARY.json
+**Sanitized summary of full file index**
 
-### Layer 1: Benevolent Absence
-The LLM cannot give you what you want **in the form you want**, but it **can** give you something extractable embedded in drift.
+Contains:
+- Scale validation (file counts, size totals)
+- Tag distribution (INVARIANT, CRAFTSMAN, etc.)
+- File type statistics
+- Temporal range information
+- **Does NOT contain**: Raw file paths, filenames, or personal identifiers
 
-### Layer 2: Structural Extraction
-Use **post-processing**, **timing analysis**, **templates**, or **forced structure** to pull the invariant from the output.
+**Privacy:** Safe - aggregated statistics only
 
-### Layer 3: Raised Fields (Templates & Canals)
-Design prompts as **constraint channels** that localize drift into designated slots while keeping the core answer clean.
-
-### Layer 4: Iterative Refinement
-Use extracted invariants as seeds for progressively more constrained queries. Each iteration collapses more slack.
-
----
-
-## 🛠️ Ready-Made Canal Kits
-
-The repository includes working templates for:
-- **Enum Extraction** (sentiment, classification)
-- **Date/Time Extraction** (events, scheduling)
-- **SQL Query Extraction** (with safety validation)
-- **Structured JSON Outputs** (Pydantic models)
+**Note:** Raw MASTER_INDEX.csv exists but is not published to protect user privacy. It contains full file paths including personal/medical information.
 
 ---
 
-## 📊 Validated Use Cases
+## What This Evidence Proves
 
-- **Chat Export Analysis**: Normalized 3,842+ messages from ChatGPT/Claude exports
-- **DSCA (Deep Spiritual Conversation Analysis)**: Timing bursts, turn-taking patterns
-- **LLM API Controllers**: Violation logging, invariant extraction from verbose outputs
-- **Conversation Archaeology**: Extracting signal from 600+ AI conversation archives
-
----
-
-## 🧬 Methodology
-
-> "Don't fight the current—build canals so the current turns your mill."
-
-You are **not** fixing the model. You are **engineering around its nature** by:
-
-1. **Designing prompts that anticipate and route slack**
-2. **Using iterative refinement to collapse noise progressively**
-3. **Separating invariant extraction from generative acts**
-4. **Treating LLM verbosity as a predictable force to be channeled**
+✅ **Scale**: Methodology applied to 251,471+ real files  
+✅ **Volume**: 233.66 GB of actual data processed  
+✅ **Scope**: Multiple file types and project categories  
+✅ **Validation**: Tags applied systematically across dataset  
+✅ **Timeline**: Multi-year span of AI collaboration data
 
 ---
 
-## 🎯 Key Principles
+## What This Evidence Does NOT Prove
 
-- **Benevolent Absence**: The system can't deliver what you want, but *can* deliver an extractable approximation
-- **Invariant**: A property that remains stable under constraint-induced drift
-- **Canal Architecture**: Structural pathways that divert entropy away from the analysis layer
-- **Orthogonality**: Work perpendicular to the constrained axis rather than against it
-
----
-
-## 📖 Project Structure
-
-```
-orthogonal-engineering/
-├── index.html              # Main guide with interactive demo
-├── theory/
-│   └── index.html         # Formal structural document (v3)
-├── workbench/
-│   └── index.html         # Minimal extraction tool (v4)
-└── README.md              # This file
-```
+❌ Cross-domain applicability beyond AI conversations  
+❌ Formal mathematical properties of invariants  
+❌ Independent replication by other researchers  
+❌ Production system reliability at scale
 
 ---
 
-## 🚀 Quick Start
+## Privacy & Ethics
 
-1. **Read the [Full Guide](https://yourusername.github.io/orthogonal-engineering/)** for methodology and examples
-2. **Try the [Workbench Tool](https://yourusername.github.io/orthogonal-engineering/workbench/)** to experiment with invariant extraction
-3. **Study the [Theory Paper](https://yourusername.github.io/orthogonal-engineering/theory/)** for formal definitions
+Raw file paths were intentionally removed because they contained:
+- Personal directory names
+- Medical/health-related filenames
+- Private project identifiers
+- User-identifiable information
 
----
+**This is standard practice in research involving personal data.**
 
-## 📜 Status
-
-- ✅ **Validated** for AI chat analysis and LLM output control
-- ✅ **Operational** across 251,469+ files, 233.59 GB of AI collaboration data
-- ⚠️ **Theoretical extensions** remain untested
-- ⚠️ **Cross-domain transfer** not yet empirically validated
+Sanitization preserves proof-of-work while respecting privacy.
 
 ---
 
-## 🧪 Technical Details
+## Reproducibility
 
-**Built with:**
-- Pure HTML/CSS/JavaScript (no frameworks)
-- SQLite for chat export normalization
-- Python for burst detection and timing analysis
-- Pydantic for structured output validation
-
-**Tested on:**
-- ChatGPT exports (JSON)
-- Claude exports (various formats)
-- Custom AI conversation archives
-- Real-time LLM API responses
+See `REPRODUCE.md` in the parent directory for instructions on how to:
+- Apply the methodology to your own data
+- Generate similar statistics
+- Validate the approach in your domain
 
 ---
 
-## 📝 License
-
-Work in progress · Structural document · Not peer reviewed
-
----
-
-## 🤝 Contributing
-
-This is a living methodology. If you've applied orthogonal engineering to your own systems, I'd love to hear about it.
-
----
-
-**Built by someone who talked to AI systems 600+ times and needed a way to extract signal from the accumulated noise.**
+**Last Updated**: 2026-01-17
