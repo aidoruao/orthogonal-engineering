@@ -4,12 +4,15 @@
 import os
 import sys
 import pandas as pd
+from PIPELINE_LOGGER import logging, safe_print
 
 FOLDER = os.getcwd()
 
 def guard_csv_files():
     """Check all CSVs in folder for schema and path safety"""
     expected_columns = ["session_id", "turn_id", "role", "message", "verified_invariant"]
+    logging.info("Starting input guard check...")
+    
     for fname in os.listdir(FOLDER):
         if fname.lower().endswith(".csv"):
             path = os.path.join(FOLDER, fname)
@@ -19,12 +22,17 @@ def guard_csv_files():
             try:
                 df = pd.read_csv(path, nrows=5)
                 if list(df.columns) != expected_columns:
-                    print(f"[WARN] {fname}: unexpected columns {list(df.columns)}")
+                    logging.warning(f"{fname}: unexpected columns {list(df.columns)}")
+                    safe_print(f"[WARN] {fname}: unexpected columns")
                 else:
-                    print(f"[OK]   {fname}: columns OK")
+                    logging.info(f"{fname}: columns OK")
+                    safe_print(f"[OK]   {fname}: columns OK")
             except Exception as e:
-                print(f"[FAIL]  {fname}: failed to read ({e})")
-    print("Input guard check complete.")
+                logging.error(f"{fname}: failed to read ({e})")
+                safe_print(f"[FAIL] {fname}: failed to read")
+    
+    logging.info("Input guard check complete.")
+    safe_print("Input guard check complete.")
 
 if __name__ == "__main__":
     guard_csv_files()

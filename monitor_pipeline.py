@@ -1,9 +1,14 @@
 import os
+from PIPELINE_LOGGER import logging, safe_print
+
 def monitor():
-    # We use '.' to mean "wherever I am right now"
     current_dir = os.getcwd()
-    print(f"Monitoring Substrate: {current_dir}")
+    logging.info(f"Monitoring Substrate: {current_dir}")
+    safe_print(f"Monitoring Substrate: {current_dir}")
+    
     for f in ["canal_refiner.py", "refined_inventory.csv"]:
         status = "EXISTS" if os.path.exists(f) else "MISSING"
-        print(f"{f}: {status}")
+        logging.info(f"{f}: {status}")
+        safe_print(f"{f}: {status}")
+
 monitor()
