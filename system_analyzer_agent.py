@@ -2,8 +2,17 @@
 import os
 import ast
 import json
+import logging
 import pandas as pd
 from datetime import datetime
+
+# LOGGING CONFIGURATION (UTF-8 file output, ASCII console)
+logging.basicConfig(
+    filename='pipeline_run_log.txt',
+    level=logging.INFO,
+    encoding='utf-8',
+    format='%(asctime)s - %(message)s'
+)
 
 class FileSystemAI:
     """Local AI-like agent that analyzes files without external APIs"""
@@ -20,19 +29,20 @@ class FileSystemAI:
         }
     
     def analyze_directory(self):
-        print(f"\n[SEARCH] SYSTEM AGENT ACTIVATED - Analyzing: {self.root}")
+        logging.info(f"SYSTEM AGENT ACTIVATED - Analyzing: {self.root}")
+        print(f"\n[ANALYZING] {os.path.basename(self.root)}")
         print("=" * 60)
         
         for root, dirs, files in os.walk(self.root):
             level = root.replace(self.root, '').count(os.sep)
             indent = ' ' * 2 * level
-            print(f'{indent}[DIR] {os.path.basename(root)}/')
+            logging.info(f'{indent}[DIR] {os.path.basename(root)}/')
             
             subindent = ' ' * 2 * (level + 1)
             for file in files:
                 filepath = os.path.join(root, file)
                 self._analyze_file(filepath)
-                print(f'{subindent}[FILE] {file}')
+                logging.info(f'{subindent}[FILE] {file}')
         
         self._generate_insights()
         self._print_report()
@@ -40,7 +50,8 @@ class FileSystemAI:
         report_file = f"system_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(report_file, 'w') as f:
             json.dump(self.analysis, f, indent=2)
-        print(f"\n💾 Analysis saved to: {report_file}")
+        logging.info(f"Analysis saved to: {report_file}")
+        print(f"\n[SUCCESS] Analysis complete. See pipeline_run_log.txt and {report_file}")
     
     def _analyze_file(self, filepath):
         ext = os.path.splitext(filepath)[1].lower()
@@ -124,30 +135,36 @@ class FileSystemAI:
             )
     
     def _print_report(self):
-        print("\n" + "=" * 60)
-        print("🤖 AI AGENT ANALYSIS REPORT")
-        print("=" * 60)
+        logging.info("=" * 60)
+        logging.info("AI AGENT ANALYSIS REPORT")
+        logging.info("=" * 60)
         total_files = len(self.analysis["file_stats"])
-        print(f"\n[DATA] SUMMARY: Files analyzed: {total_files}")
+        logging.info(f"SUMMARY: Files analyzed: {total_files}")
+        
         extensions = {}
         for stats in self.analysis["file_stats"].values():
             ext = stats.get("type", "unknown")
             extensions[ext] = extensions.get(ext, 0) + 1
         for ext, count in sorted(extensions.items()):
-            print(f"  • .{ext}: {count} files")
+            logging.info(f"  • .{ext}: {count} files")
+            
         if self.analysis["code_insights"]:
-            print("\n💻 CODE ANALYSIS:")
+            logging.info("CODE ANALYSIS:")
             for insight in self.analysis["code_insights"]:
-                print(f"  • {insight['file']}: {insight['functions']} funcs, {insight['classes']} classes")
+                logging.info(f"  • {insight['file']}: {insight['functions']} funcs, {insight['classes']} classes")
+                
         if self.analysis["data_insights"]:
-            print("\n[DATA] DATA ANALYSIS:")
+            logging.info("DATA ANALYSIS:")
             for insight in self.analysis["data_insights"]:
-                print(f"  • {insight['file']}: {insight['rows']:,} rows, {insight['columns']} columns")
+                logging.info(f"  • {insight['file']}: {insight['rows']:,} rows, {insight['columns']} columns")
+                
         if self.analysis["recommendations"]:
-            print("\n[IDEA] RECOMMENDATIONS:")
+            logging.info("RECOMMENDATIONS:")
             for i, rec in enumerate(self.analysis["recommendations"], 1):
-                print(f"  {i}. {rec}")
-        print("\n✅ Analysis complete. All processing done locally.")
+                logging.info(f"  {i}. {rec}")
+                
+        logging.info("Analysis complete. All processing done locally.")
+        print(f"[REPORT] {total_files} files analyzed - See pipeline_run_log.txt for details")
 
 def quick_analyze():
     agent = FileSystemAI()

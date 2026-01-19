@@ -2,7 +2,16 @@ import re
 import json
 import pathlib
 import csv
+import logging
 from datetime import datetime
+
+# LOGGING CONFIGURATION (UTF-8 file output, ASCII console)
+logging.basicConfig(
+    filename='pipeline_run_log.txt',
+    level=logging.INFO,
+    encoding='utf-8',
+    format='%(asctime)s - %(message)s'
+)
 
 # CONFIGURATION
 MD_DIR = pathlib.Path(".")
@@ -52,13 +61,14 @@ def extract_turns(md_file):
 
 def process():
     all_turns = []
-    print("--- Orthogonal Engineering: Canal Refiner ---")
+    logging.info("--- Orthogonal Engineering: Canal Refiner ---")
     for md_file in MD_DIR.glob("*.md"):
-        print(f"Reading {md_file.name}...")
+        logging.info(f"Reading {md_file.name}...")
         all_turns.extend(extract_turns(md_file))
     
     if not all_turns:
-        print("Error: No conversation turns found. Check your Markdown header format.")
+        logging.error("No conversation turns found. Check your Markdown header format.")
+        print("[FAIL] No turns extracted. See pipeline_run_log.txt")
         return
 
     # 1. Sort and Sessionize
@@ -98,14 +108,16 @@ def process():
         "depth_score_pct": round((verified_count / len(all_turns)) * 100, 2)
     }
     
-    print(f"\nResults:\n{json.dumps(summary, indent=2)}")
+    logging.info(f"Results: {json.dumps(summary, indent=2)}")
+    print(f"\n[SUCCESS] Canal Refiner complete. See pipeline_run_log.txt for details.")
     
     with open("refined_inventory.csv", "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["file", "session_id", "role", "verified_invariant", "content_preview"])
         writer.writeheader()
         writer.writerows([{k: t[k] for k in ["file", "session_id", "role", "verified_invariant", "content_preview"]} for t in all_turns])
 
-    print("\n[SUCCESS] 'refined_inventory.csv' created. Use this to find your 0.7% signal.")
+    logging.info("'refined_inventory.csv' created successfully.")
+    print("[OUTPUT] refined_inventory.csv written")
 
 if __name__ == "__main__":
     process()
