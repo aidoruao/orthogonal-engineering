@@ -1,0 +1,275 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Orthogonal Engineering Ontology",
+  "description": "Formal schema for IDE agent integration - defines core concepts, relations, and state transitions",
+  "version": "0.3.0",
+  "definitions": {
+    "Invariant": {
+      "type": "object",
+      "description": "A structural property of system output that remains stable under constraint-induced drift",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "type": {
+          "type": "string",
+          "enum": ["structural", "syntactic", "semantic", "temporal", "relational"]
+        },
+        "extraction_pattern": {"type": "string", "description": "Regex or AST pattern for extraction"},
+        "validation_rule": {"type": "string", "description": "Machine-checkable validation"},
+        "stability_guarantee": {"type": "string", "description": "Conditions under which invariant holds"},
+        "evidence": {"$ref": "#/definitions/Evidence"}
+      },
+      "required": ["id", "type", "extraction_pattern"]
+    },
+    "Canal": {
+      "type": "object",
+      "description": "A structural pathway that diverts entropy/drift away from analysis layer",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "type": {
+          "type": "string",
+          "enum": ["regex", "ast", "schema", "template", "parser", "validator"]
+        },
+        "input_constraint": {"type": "string", "description": "Pre-generation constraint (Layer 0)"},
+        "extraction_pattern": {"type": "string", "description": "Post-processing pattern (Layer 2)"},
+        "drift_routing": {"type": "string", "description": "How drift is routed away"},
+        "invariants": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/Invariant"}
+        }
+      },
+      "required": ["id", "type", "extraction_pattern"]
+    },
+    "Drift": {
+      "type": "object",
+      "description": "Unpredictable behavior that must be routed away from signal",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "type": {
+          "type": "string",
+          "enum": ["verbosity", "attribution", "hedging", "over_explanation", "context_padding", "hallucination"]
+        },
+        "detection_pattern": {"type": "string"},
+        "severity": {"type": "number", "minimum": 0, "maximum": 1},
+        "mitigation": {"type": "string", "description": "How canal routes this drift"}
+      },
+      "required": ["id", "type"]
+    },
+    "Evidence": {
+      "type": "object",
+      "description": "Causal trace of agent action - required for IDE agent integration",
+      "properties": {
+        "action_id": {"type": "string", "format": "uuid"},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "action_type": {
+          "type": "string",
+          "enum": ["edit_file", "read_file", "run_test", "check_lint", "grep", "codebase_search", "user_query"]
+        },
+        "inputs": {
+          "type": "object",
+          "description": "What was read/queried (files, user text, prior state)"
+        },
+        "assumptions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "What was assumed (user intent, constraints, invariants)"
+        },
+        "transformation": {
+          "type": "object",
+          "description": "What canal/pattern was applied",
+          "properties": {
+            "canal_id": {"type": "string"},
+            "invariant_id": {"type": "string"},
+            "pattern": {"type": "string"}
+          }
+        },
+        "invariants_checked": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "invariant_id": {"type": "string"},
+              "check_type": {
+                "type": "string",
+                "enum": ["no_new_lints", "tests_pass", "type_check", "syntax_check", "user_constraint"]
+              },
+              "result": {
+                "type": "string",
+                "enum": ["pass", "fail", "skipped", "unknown"]
+              },
+              "details": {"type": "string"}
+            }
+          }
+        },
+        "outputs": {
+          "type": "object",
+          "description": "What was produced (file edits, test results, extracted invariants)"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": ["success", "partial", "failure", "unknown"]
+        }
+      },
+      "required": ["action_id", "timestamp", "action_type", "inputs", "outcome"]
+    },
+    "AgentAction": {
+      "type": "object",
+      "description": "Single step in IDE agent loop",
+      "properties": {
+        "step_id": {"type": "string", "format": "uuid"},
+        "preconditions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "What must be true before action"
+        },
+        "action": {"$ref": "#/definitions/Evidence"},
+        "postconditions": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "What should be true after action"
+        },
+        "invariants": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/Invariant"},
+          "description": "Invariants that must hold"
+        }
+      },
+      "required": ["step_id", "action"]
+    },
+    "StateTransition": {
+      "type": "object",
+      "description": "Allowed state transitions in agent loop",
+      "properties": {
+        "from_state": {
+          "type": "string",
+          "enum": ["idle", "planning", "executing", "validating", "failed", "complete"]
+        },
+        "to_state": {
+          "type": "string",
+          "enum": ["idle", "planning", "executing", "validating", "failed", "complete"]
+        },
+        "condition": {"type": "string", "description": "When this transition is allowed"},
+        "required_checks": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Invariant checks that must pass"
+        }
+      },
+      "required": ["from_state", "to_state"]
+    },
+    "FailureMode": {
+      "type": "object",
+      "description": "Known failure mode with detection and mitigation",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "detection_rules": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Signals that indicate this failure mode"
+        },
+        "mitigation_policy": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": ["stop", "ask_user", "rollback", "add_tests", "add_constraints", "retry"]
+            },
+            "parameters": {"type": "object"}
+          }
+        },
+        "frequency": {"type": "number", "minimum": 0, "maximum": 1}
+      },
+      "required": ["id", "name", "detection_rules", "mitigation_policy"]
+    },
+    "Project": {
+      "type": "object",
+      "description": "Code project with canal structures",
+      "properties": {
+        "id": {"type": "string", "format": "uuid"},
+        "root_path": {"type": "string"},
+        "canals": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/Canal"}
+        },
+        "invariants": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/Invariant"}
+        },
+        "has_tests": {"type": "boolean"},
+        "has_config": {"type": "boolean"},
+        "has_schema": {"type": "boolean"},
+        "has_ci": {"type": "boolean"}
+      },
+      "required": ["id", "root_path"]
+    }
+  },
+  "agent_loop": {
+    "description": "Formal state machine for IDE agent",
+    "states": ["idle", "planning", "executing", "validating", "failed", "complete"],
+    "transitions": [
+      {
+        "from": "idle",
+        "to": "planning",
+        "trigger": "user_query",
+        "required_checks": []
+      },
+      {
+        "from": "planning",
+        "to": "executing",
+        "trigger": "plan_complete",
+        "required_checks": ["plan_validates_constraints"]
+      },
+      {
+        "from": "executing",
+        "to": "validating",
+        "trigger": "action_complete",
+        "required_checks": []
+      },
+      {
+        "from": "validating",
+        "to": "complete",
+        "trigger": "all_invariants_pass",
+        "required_checks": ["no_new_lints", "tests_pass", "user_constraints_met"]
+      },
+      {
+        "from": "validating",
+        "to": "failed",
+        "trigger": "invariant_violation",
+        "required_checks": []
+      },
+      {
+        "from": "failed",
+        "to": "planning",
+        "trigger": "mitigation_applied",
+        "required_checks": []
+      }
+    ]
+  },
+  "required_invariants": {
+    "description": "Invariants that IDE agent must check after every edit",
+    "always_check": [
+      {
+        "id": "no_new_lints",
+        "type": "structural",
+        "extraction_pattern": "read_lints",
+        "validation_rule": "linter_errors == 0",
+        "stability_guarantee": "No new syntax or style errors introduced"
+      },
+      {
+        "id": "tests_pass",
+        "type": "semantic",
+        "extraction_pattern": "run_tests",
+        "validation_rule": "test_failures == 0",
+        "stability_guarantee": "Existing functionality preserved"
+      },
+      {
+        "id": "user_constraints",
+        "type": "semantic",
+        "extraction_pattern": "extract_from_user_query",
+        "validation_rule": "user_stated_requirements_met",
+        "stability_guarantee": "User intent preserved"
+      }
+    ]
+  }
+}
