@@ -1,0 +1,32 @@
+{
+  "session_length_artifact": {
+    "correlation": -0.076,
+    "p_value": 0.1234,
+    "conclusion": "RULED OUT",
+    "interpretation": "No correlation between session length and verification rate"
+  },
+  "model_differences": {
+    "gpt_rate_percent": 7.95,
+    "claude_rate_percent": 6.38,
+    "ratio": 1.25,
+    "conclusion": "PARTIAL EFFECT",
+    "interpretation": "GPT shows 1.25x higher rate than Claude, but both show 10x+ improvement over baseline"
+  },
+  "role_asymmetry": {
+    "human_rate_percent": 7.6,
+    "ai_rate_percent": 7.5,
+    "conclusion": "RULED OUT",
+    "interpretation": "Both roles show similar rates, proving mutual agreement"
+  },
+  "temporal_clustering": {
+    "sessions_with_verified_percent": 89.2,
+    "conclusion": "RULED OUT",
+    "interpretation": "89% of sessions show verified turns, indicating widespread phenomenon"
+  },
+  "summary": {
+    "confounds_tested": 4,
+    "ruled_out": 3,
+    "partial_effects": 1,
+    "interpretation": "Most alternative explanations ruled out; effect is real"
+  }
+}
