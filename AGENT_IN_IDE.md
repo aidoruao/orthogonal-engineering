@@ -6,6 +6,8 @@
 
 This document defines how the Orthogonal Engineering methodology maps to the **causal loop** of an IDE-integrated AI agent, making the methodology **machine-actionable** rather than just descriptive.
 
+**Reference profile, not a mandate:** Platforms and agents can adopt, adapt, or subset this profile; it is meant as a reference design, not a normative standard.
+
 ---
 
 ## The Agent Loop

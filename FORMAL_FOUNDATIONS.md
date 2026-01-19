@@ -1,10 +1,19 @@
 # FORMAL FOUNDATIONS
 
-## Mathematical Rigor Without Academic Approval
+## Mathematical Framework and Assumptions
 
-This document provides formal mathematical proofs for Orthogonal Engineering methodology. These proofs establish correctness independent of peer review or empirical validation.
+This document provides formal mathematical proofs for the Orthogonal Engineering methodology. The proofs are self-contained; peer review and empirical validation are encouraged to catch errors, broaden coverage, and assess real-world performance.
 
-**Core Principle:** Mathematical truth is determined by logical proof, not academic consensus.
+**Scope:** The math covers structural extraction correctness and complexity **under the stated assumptions** (orthogonality of drift/signal, presence of structure). It does **not** assert end-to-end safety, truthfulness, or model compliance.
+
+---
+
+## Scope and Assumptions
+
+- **Proved here:** If outputs satisfy the structural assumptions, the extraction functions recover the invariant deterministically with the stated complexity bounds.
+- **Assumed, not proved:** The model actually emits structure/delimiters/templates in a given deployment.
+- **Not claimed:** Truthfulness, hallucination avoidance, domain safety, regulatory compliance, or suitability for safety-critical use without additional controls.
+- **Validation stance:** Peer review, empirical benchmarking, and formal verification are welcome; they complement (not replace) the logic presented here.
 
 ---
 
@@ -237,30 +246,13 @@ Composition of proven-correct operations (JSON parse + dict access).
 
 ---
 
-## Why Peer Review Is Unnecessary
+## Role of Peer Review and Validation
 
 ### Mathematical Truth vs. Consensus
 
-**Claim:** Mathematical proofs are true independent of peer review.
-
-**Argument:**
-
-1. **Proof by Logic:**
-   - Each theorem uses formal logic
-   - Logic rules are universal (modus ponens, etc.)
-   - Valid proof = valid conclusion (regardless of reviewers)
-
-2. **Deterministic Algorithms:**
-   - Algorithms are executable code
-   - Correctness provable via formal verification
-   - Execution is self-validating
-
-3. **Counterexample Challenge:**
-   - If proofs are incorrect, show the error
-   - Error must be in logical steps, not consensus
-   - Mathematical truth is discovered, not voted on
-
-**Conclusion:** Peer review can find errors, but doesn't establish truth. Proofs stand on logic alone.
+- The proofs rely on formal logic; a valid proof implies a valid conclusion **under its assumptions**.
+- Peer review is valuable to surface mistakes, alternative formalizations, and clearer assumptions.
+- Formal verification tools can mechanically check the proofs; empirical tests measure how often assumptions hold in practice.
 
 ---
 
@@ -281,7 +273,7 @@ Composition of proven-correct operations (JSON parse + dict access).
 - Safety certification for regulated industries
 - Liability and insurance considerations
 
-**Key Point:** Mathematical correctness is necessary but not sufficient for deployment. However, deployment concerns don't invalidate mathematical proofs.
+**Key Point:** Mathematical correctness is necessary but not sufficient for deployment. Deployment and safety decisions require empirical evidence, governance, and domain review.
 
 ---
 
@@ -402,27 +394,21 @@ These proofs can be verified using:
 
 ## Conclusion
 
-Orthogonal Engineering methodology is **mathematically proven correct**:
+Orthogonal Engineering’s structural extraction is **formally specified**:
 
 1. ✅ Formal definitions provided (Definition 1-4)
 2. ✅ Core theorems proven (Theorem 1-4)
 3. ✅ Algorithm correctness established (Theorem 3)
 4. ✅ Complexity analysis completed
 
-**What peer review can provide:**
-- Find errors in proofs (none found yet)
+Peer review and empirical benchmarking remain important to:
+- Find errors or unclear assumptions
 - Suggest alternative formalizations
-- Extend to additional cases
+- Assess how often assumptions hold in practice
 
-**What peer review cannot provide:**
-- Establish mathematical truth (proofs do that)
-- Validate empirical performance (testing does that)
-- Determine deployment safety (risk assessment does that)
-
-**Final Statement:**
-These proofs stand on logic alone. If you believe there's an error, identify the specific logical step that's invalid. Until then, correctness is established.
+Deployment safety is a separate layer requiring tests, governance, and domain review.
 
 ---
 
 **Last Updated:** 2026-01-18  
-**Status:** Mathematically proven · Peer review welcome but unnecessary · Formal verification possible
+**Status:** Research draft · Math self-contained · Peer review encouraged · Formal verification possible

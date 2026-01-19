@@ -1,49 +1,31 @@
-# Analysis Scripts
+# Orthogonal Engineering (v0.3.0 draft)
 
-Scripts for validating Orthogonal Engineering methodology against empirical data.
+Constraint-first methodology for channeling LLM drift/verbosity through **canals** (templates, schemas, regex/AST) to extract **invariants** deterministically. This repo packages:
+- **Docs & demos:** `index.html`, `theoryindex.html`, `workbenchindex.html`
+- **Mathematical foundations:** `FORMAL_FOUNDATIONS.md`
+- **Ontology for IDE agents:** `orthogonal_ontology.json`, `AGENT_IN_IDE.md`
+- **Empirical scripts:** `analyze_filesystem_invariants.py`, `analyze_conversation_patterns.py`
 
-## Scripts
+## Scope (what the proofs actually cover)
+- Proves correctness of structural extraction **if** outputs satisfy the stated structural assumptions (orthogonality of drift/signal, presence of templates/delimiters).
+- Provides time/space complexity bounds for the extraction strategies.
+- Formalizes canal/invariant/drift definitions and an agent loop as a **reference schema**, not a mandate.
 
-### `analyze_filesystem_invariants.py`
+## Not claimed
+- No guarantee of truthfulness, hallucination avoidance, or domain safety.
+- Not a safety certification, compliance artifact, or end-to-end reliability proof.
+- Platform/agent builders may adopt, adapt, or subset the ontology; it is not normative.
 
-Detects canal-like structures and invariant markers in filesystem data.
+## Validation & data
+- Grounded in large empirical traces (hundreds of conversations / large file sets). See `REPRODUCE.md`, `FAILURES.md`, `DATA_FILESYSTEM.md`.
+- Scripts above generate evidence JSON for replication.
 
-**Usage:**
-```bash
-python analyze_filesystem_invariants.py [CSV_PATH] [OUTPUT_PATH]
-```
+## Safety/usage notes
+- Use as one component in a broader verification stack (tests, lint, type checks, human review).
+- Peer review and empirical benchmarking are encouraged; the math is self-contained but real-world behavior still needs measurement.
 
-**What it detects:**
-- Canal structures: test directories, config files, schemas, CI configs, package files
-- Invariant markers: [INVARIANT], [CRAFTSMAN], [CANAL] tags, structured outputs
-- Project classification: code projects, AI work, game mods, archives
-
-**Output:** JSON file with canal detection counts, invariant marker counts, and methodology validation metrics.
-
-### `analyze_conversation_patterns.py`
-
-Analyzes conversation patterns to validate turn-taking (canal structure) and depth scores (invariant extraction success).
-
-**Usage:**
-```bash
-python analyze_conversation_patterns.py [JSON_PATH] [OUTPUT_PATH]
-```
-
-**What it analyzes:**
-- Depth scores (invariant extraction success proxy)
-- Turn ratios (canal structure proxy)
-- Correlation between balanced turns and high depth (successful patterns)
-
-**Output:** JSON file with statistics, categorization, and methodology validation metrics.
-
-## Requirements
-
-- Python 3.7+
-- Standard library only (no external dependencies)
-
-## Integration
-
-These scripts generate evidence files that can be referenced in:
-- `REPRODUCE.md` - How to validate the methodology
-- `FAILURES.md` - Where invariants break down
-- `DATA_FILESYSTEM.md` - Empirical grounding documentation
+## Quick start
+- View the main guide: open `index.html`
+- Try the workbench: open `workbenchindex.html`
+- See the formal math: `FORMAL_FOUNDATIONS.md`
+- Integrate with agents: `AGENT_IN_IDE.md`, `orthogonal_ontology.json`
