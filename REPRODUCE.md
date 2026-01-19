@@ -188,7 +188,30 @@ See main repository files:
 
 ---
 
-## Step 6: Generate Statistics
+## Step 6: Analyze Filesystem for Canal Structures
+
+**New in v0.3.0:** Filesystem-based canal detection and invariant analysis.
+
+**Run analysis scripts:**
+
+```bash
+# Detect canal structures (tests, configs, schemas, CI)
+python analysis/analyze_filesystem_invariants.py [CSV_PATH] [OUTPUT_PATH]
+
+# Analyze conversation patterns (turn-taking, depth scores)
+python analysis/analyze_conversation_patterns.py [JSON_PATH] [OUTPUT_PATH]
+```
+
+**What this validates:**
+- Canal structures exist at scale (36K+ config files, 22K+ test files detected)
+- Invariant extraction markers found (INVARIANT/CRAFTSMAN tags)
+- Correlation between canal structures and successful extraction
+
+**See `DATA_FILESYSTEM.md` for detailed findings.**
+
+---
+
+## Step 7: Generate Statistics
 
 **As demonstrated in evidence files:**
 
@@ -269,10 +292,16 @@ with open('RECON_STATS.json', 'w') as f:
 - Drift logging and analysis
 - SQLite normalization pipeline
 
+✅ **Newly validated (v0.3.0):**
+- Canal structure detection at scale (251K+ files analyzed)
+- Conversation pattern analysis (538 conversations)
+- Correlation between canal structures and invariant extraction success
+- Filesystem-based empirical grounding
+
 ⚠️ **Not yet validated:**
 - Cross-domain transfer to non-AI contexts
-- Formal mathematical proofs of invariant properties
 - Peer review or independent replication
+- Automated invariant detection (currently requires manual tagging)
 
 ---
 

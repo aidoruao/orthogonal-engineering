@@ -197,14 +197,29 @@ orthogonal-engineering/
 ├── FAILURES.md                # Known failure modes and limitations
 ├── REPRODUCE.md               # How to reproduce validation
 ├── FORMAL_FOUNDATIONS.md      # Mathematical framework and proofs
+├── DATA_FILESYSTEM.md         # 🆕 Empirical grounding (251K+ files analyzed)
+├── AGENT_IN_IDE.md            # 🆕 IDE agent integration profile
 │
 ├── index.html                 # MAIN GUIDE - Full methodology
 │
 ├── theory/
 │   └── index.html            # THEORY PAPER (v3) - Formal analysis
 │
-└── workbench/
-    └── index.html            # WORKBENCH TOOL (v4) - Extraction interface
+├── workbench/
+│   └── index.html            # WORKBENCH TOOL (v4) - Extraction interface
+│
+├── ontology/
+│   └── orthogonal_ontology.json  # 🆕 Formal schema for IDE agents
+│
+├── analysis/
+│   ├── README.md             # 🆕 Analysis scripts documentation
+│   ├── analyze_filesystem_invariants.py  # 🆕 Canal structure detection
+│   └── analyze_conversation_patterns.py   # 🆕 Turn-taking & depth analysis
+│
+└── data/
+    ├── DATA_SCHEMA.md        # 🆕 Data schema documentation
+    ├── filesystem_invariants_analysis.json  # 🆕 Generated analysis
+    └── conversation_patterns_analysis.json   # 🆕 Generated analysis
 ```
 
 ---
@@ -274,6 +289,8 @@ See [FAILURES.md](FAILURES.md) for complete catalog of failure modes.
 - **[FAILURES.md](FAILURES.md)** - Where the methodology fails
 - **[REPRODUCE.md](REPRODUCE.md)** - How to validate the approach yourself
 - **[FORMAL_FOUNDATIONS.md](FORMAL_FOUNDATIONS.md)** - Complete mathematical framework
+- **[DATA_FILESYSTEM.md](DATA_FILESYSTEM.md)** 🆕 - Empirical grounding (251K+ files, 538 conversations)
+- **[AGENT_IN_IDE.md](AGENT_IN_IDE.md)** 🆕 - IDE agent integration (causal traces, invariants, state machine)
 
 ---
 

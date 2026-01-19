@@ -14,6 +14,7 @@ This document catalogs where orthogonal engineering methodology is known to fail
 - AI conversation analysis ✅
 - LLM output extraction ✅
 - Chat export normalization ✅
+- Filesystem structure analysis ✅ (v0.3.0: 251K+ files)
 
 **Untested domains:**
 - Physical systems engineering
@@ -24,6 +25,10 @@ This document catalogs where orthogonal engineering methodology is known to fail
 
 **Why this matters:**
 The "benevolent absence" and "canal architecture" concepts were developed for LLM constraints. Whether they generalize to other constrained systems remains empirically unproven.
+
+**New evidence (v0.3.0):**
+- Canal structures detected in filesystem (36K+ config files, 22K+ test files)
+- However, this is still within "code/AI work" domain, not truly cross-domain
 
 **Failure risk:** High - theoretical claims may not hold in non-AI domains
 
@@ -42,6 +47,13 @@ The "benevolent absence" and "canal architecture" concepts were developed for LL
 - Cannot automatically identify new invariants in novel outputs
 - Ambiguous boundary between INVARIANT and CRAFTSMAN in hybrid workflows
 - No mathematical proof that tagged invariants are truly stable
+
+**New evidence (v0.3.0):**
+- Filesystem analysis found only **20 INVARIANT-tagged files** vs **46,542 CRAFTSMAN-tagged files**
+- Pattern-based detection found only **4 type definitions** and **1 structured output**
+- This validates that **automatic invariant detection is hard** - most detection is manual/heuristic
+
+**Failure risk:** Medium - requires human judgment, prone to inconsistency
 
 **Example failure case:**
 ```
