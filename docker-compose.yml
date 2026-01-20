@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  engine:
+    build: .
+    container_name: orthogonal-engine
+    volumes:
+      - .:/workspace
+    command: python analysis/canal_detector_v1.py /workspace/universal_inventory.csv --json /workspace/evidence/canal_results.json
+
+  validation:
+    build: .
+    container_name: orthogonal-validation
+    volumes:
+      - .:/workspace
+    command: python analysis/automated_test_suite.py /workspace/universal_inventory.csv
+    depends_on:
+      - engine
+
+  tests:
+    build: .
+    container_name: orthogonal-tests
+    volumes:
+      - .:/workspace
+    command: >
+      sh -c "python analysis/canal_detector_v1.py /workspace/universal_inventory.csv &&
+             python analysis/calculate_p_value.py /workspace/universal_inventory.csv --output /workspace/evidence/statistical_report.json"
+    depends_on:
+      - validation
