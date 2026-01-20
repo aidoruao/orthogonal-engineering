@@ -42,7 +42,7 @@ jobs:
         python -c "from analysis.canal_detector_v1 import gutenberg_null_test; assert gutenberg_null_test() < 0.05, 'Null hypothesis test failed'"
     
     - name: Archive test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-results
         path: |
