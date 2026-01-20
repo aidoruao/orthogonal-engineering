@@ -19,7 +19,7 @@ import json
 import hashlib
 import csv
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict
 
@@ -94,7 +94,7 @@ def detect_invariants(csv_path: str) -> List[Dict]:
                     'user_constraints': len(user_constraints),
                     'assistant_constraints': len(assistant_constraints),
                     'repetition_ratio': repetition_ratio(window_text),
-                    'timestamp': datetime.utcnow().isoformat() + 'Z'
+                    'timestamp': datetime.now(timezone.utc).isoformat()
                 }
                 invariants.append(inv)
     
@@ -187,7 +187,7 @@ def main():
             'min_bidir': MIN_BIDIR,
             'max_repeat': MAX_REPEAT
         },
-        'timestamp': datetime.utcnow().isoformat() + 'Z',
+        'timestamp': datetime.now(timezone.utc).isoformat(),
         'invariants': invs[:10]  # First 10 for reference
     }
     
@@ -208,13 +208,13 @@ def main():
     
     # Exit code
     if report['precision_ok'] is False:
-        print("\n❌ FAIL: Detector may be gaming (high Gutenberg density)")
+        print("\nFAIL: Detector may be gaming (high Gutenberg density)")
         sys.exit(1)
     elif len(invs) == 0:
-        print("\n⚠️  WARNING: No invariants found")
+        print("\nWARNING: No invariants found")
         sys.exit(0)
     else:
-        print("\n✅ PASS: Detector operating within parameters")
+        print("\nPASS: Detector operating within parameters")
         sys.exit(0)
 
 if __name__ == "__main__":

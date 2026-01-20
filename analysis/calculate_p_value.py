@@ -16,7 +16,7 @@ import json
 import random
 import sys
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 from scipy.stats import chi2_contingency
 import numpy as np
 
@@ -169,7 +169,7 @@ def main():
     
     # Compile results
     results = {
-        'timestamp': datetime.utcnow().isoformat() + 'Z',
+        'timestamp': datetime.now(timezone.utc).isoformat(),
         'dataset': Path(csv_path).name,
         'observed': {
             'total_turns': total_turns,
