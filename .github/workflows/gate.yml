@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -33,7 +33,7 @@ jobs:
         python analysis/canal_detector_v1.py universal_inventory.csv --json test_results.json
         PRECISION=$(python -c "import json; data=json.load(open('test_results.json')); print(data.get('precision_ok', False))")
         if [ "$PRECISION" != "True" ]; then
-          echo "❌ FAIL: Canal detector precision < 80%"
+          echo "FAIL: Canal detector precision < 80%"
           exit 1
         fi
     
