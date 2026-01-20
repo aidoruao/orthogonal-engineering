@@ -1,3 +1,27 @@
+"""
+DEPRECATED: This detector has 70% false positive rate
+DO NOT USE - Preserved for reference only
+Replacement: canal_detector_v1.py (≥80% precision)
+
+DEPRECATION WARNING:
+- Precision: 30% (unacceptable)
+- False Positive Rate: 70%
+- Window: 5 turns (too loose)
+- Status: NotebookLM audit C- grade contributor
+
+Original description:
+Canal Refiner - Detects mutual agreement patterns
+Extracts verified invariants from conversational data
+"""
+
+import warnings
+warnings.warn(
+    "canal_refiner.py is DEPRECATED due to 70% false positive rate. "
+    "Use canal_detector_v1.py instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
+
 import re
 import json
 import pathlib
