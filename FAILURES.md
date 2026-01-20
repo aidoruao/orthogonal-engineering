@@ -1,322 +1,346 @@
-# FAILURES
+# FAILURES - What Doesn't Work
 
-## Known and Likely Failure Modes
-
-This document catalogs where orthogonal engineering methodology is known to fail or is likely to encounter limitations.
-
----
-
-## Domain Transfer Failures
-
-### ❌ Not Yet Validated Across Domains
-
-**Current validation:**
-- AI conversation analysis ✅
-- LLM output extraction ✅
-- Chat export normalization ✅
-- Filesystem structure analysis ✅ (v0.3.0: 251K+ files)
-
-**Untested domains:**
-- Physical systems engineering
-- Network protocol design  
-- Chemical process optimization
-- Financial trading systems
-- Medical diagnostics
-
-**Why this matters:**
-The "benevolent absence" and "canal architecture" concepts were developed for LLM constraints. Whether they generalize to other constrained systems remains empirically unproven.
-
-**New evidence (v0.3.0):**
-- Canal structures detected in filesystem (36K+ config files, 22K+ test files)
-- However, this is still within "code/AI work" domain, not truly cross-domain
-
-**Failure risk:** High - theoretical claims may not hold in non-AI domains
+**Version:** v0.7.0  
+**Date:** 2026-01-20  
+**NotebookLM Audit Grade:** C-  
+**Status:** Comprehensive documentation of known failures
 
 ---
 
-## Invariant Detection Failures
+## 🚨 CRITICAL FAILURES (Block All Use)
 
-### ❌ Heuristic Definitions
+### FAILURE 1: canal_refiner.py Has 70% False Positive Rate
 
-**Current approach:**
-- Manual classification of files as INVARIANT
-- Pattern recognition based on extraction success
-- No formal algorithm for invariant detection
+**What Failed:**
+- Detector precision: 30% (need ≥80%)
+- False positive rate: 70% (unacceptable)
+- Window size: 5 turns (too loose)
 
-**What fails:**
-- Cannot automatically identify new invariants in novel outputs
-- Ambiguous boundary between INVARIANT and CRAFTSMAN in hybrid workflows
-- No mathematical proof that tagged invariants are truly stable
+**Evidence:**
+- `falsify_density_claim.py` TEST 1 results
+- DeepSeek analysis showed 70 of 100 "verified" turns lacked constraint language
+- Source: `evidence/deepseek-analysis/FALSIFICATION_RESULTS.md`
 
-**New evidence (v0.3.0):**
-- Filesystem analysis found only **20 INVARIANT-tagged files** vs **46,542 CRAFTSMAN-tagged files**
-- Pattern-based detection found only **4 type definitions** and **1 structured output**
-- This validates that **automatic invariant detection is hard** - most detection is manual/heuristic
+**Why This Matters:**
+- **Violates INV-007** (correspondence anchor)
+- **Invalidates all density claims** using this detector
+- **ChatGPT's invariant analysis warned** this would happen
 
-**Failure risk:** Medium - requires human judgment, prone to inconsistency
+**Status:** 🔴 BROKEN - **NEEDS COMPLETE REWRITE**
 
-**Example failure case:**
-```
-User asks: "Analyze this code and improve it"
-LLM responds with: Mixed original code + AI suggestions
-
-Question: Is this INVARIANT (extractable) or CRAFTSMAN (human-created)?
-Answer: Unclear - depends on use case
+**Fix Required:**
+```python
+# New requirements:
+- Adjacent turn requirement (not 5-turn window)
+- Uniqueness penalty (>50% repetition = reject)
+- Precision target: ≥80%
+- Manual validation sampling on every run
 ```
 
-**Failure risk:** Medium - requires human judgment, prone to inconsistency
+**ETA:** Pending rewrite
 
 ---
 
-## Template Brittleness
+### FAILURE 2: No Reproducible P-Value Calculations
 
-### ❌ Assumption Failures
+**What Failed:**
+- Chat canon claims `p < 0.0001` statistical significance
+- No script calculates this
+- No validation logs exist
 
-**The methodology assumes:**
+**Evidence:**
+- NotebookLM audit: "p-value calculations not reproducible"
+- `evidence/chat-canon/` lacks statistical validation logs
+- `statistical_validation.json` exists but doesn't show p-value calculation
 
-LLMs will follow template structure (e.g., `[INVARIANT]...[/INVARIANT]`)
+**Why This Matters:**
+- **Naked claim** without proof
+- **Violates falsifiability** requirement
+- **Independent researchers cannot verify**
 
-**What actually happens:**
-- Models ignore delimiters
-- Models invent their own structure
-- Models misinterpret instructions
-- Models break mid-generation
+**Status:** 🔴 BROKEN - **NEEDS IMPLEMENTATION**
 
-**Example failure:**
-```
-Prompt: "Put answer in [ANSWER] tags"
-
-Expected: [ANSWER]42[/ANSWER]
-Actual: "The answer is 42. Hope this helps!"
-```
-
-**When templates fail:**
-- New model versions change behavior
-- Complex prompts confuse instruction following
-- Creative tasks resist rigid structure
-- Multi-turn conversations lose context
-
-**Failure risk:** Medium - requires testing and iteration per model/task
-
----
-
-## Extraction Overwhelm
-
-### ❌ Signal Drowning in Noise
-
-**Occurs when:**
-- LLM output is completely garbled or incomplete
-- Drift exceeds extraction capacity
-- Multiple competing structures in output
-- No clear delimiter or pattern present
-
-**Example failure:**
-```
-Prompt: "Extract the email addresses"
-
-Output: "Well, there might be some emails here like john@... 
-        or maybe sarah at example dot com, and possibly 
-        others but I'm not sure about the format..."
+**Fix Required:**
+```python
+# Create calculate_pvalue.py:
+- Null hypothesis: Random classifier (50% baseline)
+- Test statistic: Observed vs expected density
+- Chi-square or binomial test
+- Output: p-value with confidence interval
 ```
 
-**Result:** Pattern matching fails, regex returns nothing, signal is lost
-
-**Mitigation:** Iterative refinement (Layer 4), but can still fail with poor initial outputs
-
-**Failure risk:** High in adversarial or low-quality outputs
+**ETA:** Pending implementation
 
 ---
 
-## Temporal Drift
+### FAILURE 3: No Real-World Correspondence Validation
 
-### ❌ Model Updates Break Patterns
+**What Failed:**
+- Zero documented implementations that WORKED
+- No code execution results
+- No proof that "verified" claims → working code
 
-**Problem:**
-What's stable in GPT-4 may not be stable in GPT-5
+**Evidence:**
+- NotebookLM: "Zero documented evidence of implementations that worked"
+- LOGOS_BAT_EXECUTION_CONTRACT.md is specification, not implementation
+- No `.lua` files or execution logs
 
-**Specific failures:**
+**Why This Matters:**
+- **Violates INV-003** (mimicry vs grounding distinguishable by implementation)
+- **Core claim unproven:** "Language irrelevant unless implementation works"
+- **Methodology requirement:** Must show correspondence
 
-- Training changes alter verbosity patterns
-- New safety layers add unexpected drift
-- Instruction following improves or degrades
-- Output format preferences shift
+**Status:** 🔴 CRITICAL GAP - **NEEDS EVIDENCE**
 
-**Example:**
+**Fix Required:**
 ```
-GPT-3.5: Consistently verbose, predictable padding
-GPT-4: More concise, less drift to route
-GPT-4-Turbo: Back to verbose in different ways
-```
-
-**Your canals may need redesign with each model update**
-
-**Failure risk:** Continuous - requires maintenance
-
----
-
-## Context Window Limitations
-
-### ❌ Long Conversations Lose Structure
-
-**Problem:**
-- Multi-turn conversations accumulate context
-- Models lose track of extraction requirements
-- Templates get forgotten deep in conversation
-- Drift patterns change as context fills
-
-**Example failure:**
-```
-Turn 1: Uses [ANSWER] tags correctly
-Turn 5: Still uses tags
-Turn 20: Forgets tags entirely
-Turn 50: What tags?
+# Add to evidence/:
+- implementations/ folder
+- Example: verified_minecraft_agent.lua
+- Execution logs showing success
+- Before/after system states
 ```
 
-**Mitigation:** Reset extraction prompts periodically, but adds overhead
-
-**Failure risk:** Medium in long-running conversations
+**ETA:** Requires real-world testing
 
 ---
 
-## Domain-Specific Limitations
+## ⚠️ HIGH PRIORITY FAILURES (Limit Adoption)
 
-### ❌ Creative Tasks Resist Structure
+### FAILURE 4: Missing Environment Setup
 
-**Where orthogonal engineering struggles:**
-- Poetry generation (structure kills creativity)
-- Open-ended brainstorming (canals constrain ideation)
-- Emotional support (templates feel robotic)
-- Storytelling (extraction breaks narrative flow)
+**What's Missing:**
+- ~~requirements.txt~~ ✅ FIXED (2026-01-20)
+- setup.py or pyproject.toml
+- Docker container
+- Installation instructions
 
-**The methodology is NOT universal**
+**Impact:**
+- NotebookLM: "Independent researcher cannot reproduce results"
+- High barrier to entry
 
-Works best for:
-- Data extraction
-- Code generation
-- Structured analysis
-- Question answering
+**Status:** 🟡 PARTIALLY FIXED
 
-Works poorly for:
-- Creative writing
-- Emotional intelligence
-- Nuanced judgment calls
-- Exploratory dialogue
-
----
-
-## Scale Limitations
-
-
-### ❌ Personal Dataset ≠ Universal Validation
-
-**Current validation:**
-- 251,471 files (personal archive)
-- 233.66 GB (one person's AI use)
-- 600+ conversations (single user perspective)
-
-**What this doesn't prove:**
-- Works for other users
-- Works in production systems
-- Works at enterprise scale
-- Works across cultures/languages
-
-**Independent replication needed**
-
-**Failure risk:** Unknown - no external validation yet
+**Remaining Work:**
+```bash
+# Need to add:
+- pip install -e . support
+- Docker image
+- Quick start guide
+```
 
 ---
 
-## Theoretical Foundations
+### FAILURE 5: Circular Confound Analysis
 
-### ✅ Formal Mathematical Framework
+**What Failed:**
+- Confound analysis may validate what it assumes
+- No independent baseline comparison
+- Risk of proving methodology with data tuned to methodology
 
-**Completed:**
-- Mathematical definition of "invariant" (see FORMAL_FOUNDATIONS.md)
-- Proof that canals preserve signal under drift
-- Formal analysis of drift dynamics
-- Algorithmic complexity bounds
+**Evidence:**
+- NotebookLM: "Confound analysis may be circular"
+- `confound_analysis.json` exists but methodology unclear
+- No comparison to random text baseline
 
-**Current status:**
-- Rigorous mathematical definitions provided
-- Theorems proven within specified constraints
-- Formal framework available for verification
-- Not yet peer-reviewed by academic community
+**Status:** 🟡 NEEDS VALIDATION
 
-**This matters for:**
-- Academic acceptance
-- Safety-critical systems
-- Regulatory compliance
-- Long-term reliability guarantees
-
-**Status:** Theoretical foundations established, awaiting peer review
-
----
-
-## Integration Challenges
-
-### ❌ Not Plug-and-Play
-
-**Problems:**
-- No standard library or framework
-- Every use case needs custom templates
-- Requires understanding of both LLMs and your domain
-- Not suitable for non-technical users
-
-**Example:**
-You can't just `pip install orthogonal-engineering` and have it work
-
-**Requires:**
-- Custom prompt engineering
-- Iterative testing
-- Domain expertise
-- Technical implementation
-
-**Failure risk:** High for general adoption
+**Fix Required:**
+```python
+# Create baseline_comparison.py:
+- Run detector on Project Gutenberg corpus
+- Expect ~0% density on generic text
+- Compare to actual conversation data
+- Prove detector isn't finding patterns everywhere
+```
 
 ---
 
-## Summary of Failure Modes
+### FAILURE 6: Detector Gaming Possible
 
-| Failure Type | Risk Level | Mitigation |
-|--------------|-----------|------------|
-| Domain Transfer | High | Empirical testing in new domains |
-| Invariant Detection | Medium | Formal algorithms needed |
-| Template Brittleness | Medium | Continuous testing and iteration |
-| Extraction Overwhelm | High | Fallback strategies, human review |
-| Temporal Drift | Continuous | Monitor model updates, adapt canals |
-| Context Window Limits | Medium | Periodic prompt resets |
-| Creative Task Mismatch | High | Don't force structure on creative work |
-| Scale Validation | Unknown | Independent replication needed |
-| Theoretical Foundations | Low | Framework complete, peer review pending |
-| Integration Complexity | High | Better tooling and frameworks |
+**What Failed:**
+- 70% FP rate means detector easily fooled
+- AI could generate mimicry that passes detector
+- No enforcement layer to catch gaming
 
----
+**Evidence:**
+- NotebookLM: "Lazy AI could generate mimicry that passes"
+- 96% repetition in DeepSeek passed detector initially
+- Only caught after manual falsification test
 
-## What to Do When It Fails
+**Status:** 🟡 DESIGN FLAW
 
-1. **Recognize the failure mode** - Is it extraction, template, or domain mismatch?
-2. **Check assumptions** - Does your task actually have extractable invariants?
-3. **Iterate on templates** - Test different canal designs
-4. **Simplify** - Break complex tasks into smaller extraction steps
-5. **Accept limitations** - Some tasks don't fit orthogonal engineering
-6. **Document** - Share your failure cases to improve the methodology
+**Fix Required:**
+```python
+# Add to detector:
+- Repetition penalty (auto-reject >50%)
+- Uniqueness requirement
+- Adjacent turn enforcement
+- Manual sampling validation
+```
 
 ---
 
-## Honest Assessment
+## 🔵 MEDIUM PRIORITY FAILURES (Impact Quality)
 
-**This methodology is:**
-- ✅ Proven for LLM output extraction (personal validation)
-- ✅ Useful for structured data tasks
-- ✅ Mathematically formalized (theoretical foundations complete)
-- ⚠️ Unproven in many domains
-- ⚠️ Requires technical expertise
-- ❌ Not a silver bullet
-- ❌ Not yet peer-reviewed
+### FAILURE 7: No Master Invariant Registry
 
-**Use appropriately. Test thoroughly. Expect failures.**
+**What's Missing:**
+- Centralized list of all INV-XXX codes
+- No tracking system for proposed vs validated
+- No status updates on pending invariants
+
+**Status:** 🔵 NEEDS IMPROVEMENT
+
+**Fix:** `INVARIANTS.md` now has registry table (2026-01-20)
 
 ---
 
-**Last Updated**: 2026-01-18  
-**Status**: Living document · Add failure cases via GitHub issues
+### FAILURE 8: No CI/CD Pipeline
+
+**What's Missing:**
+- GitHub Actions workflow
+- Automated testing on commit
+- Pre-commit hooks for validation
+
+**Impact:**
+- NotebookLM: "No automated testing"
+- Manual verification required
+
+**Status:** 🔵 NEEDS IMPLEMENTATION
+
+---
+
+### FAILURE 9: Missing Glossary
+
+**What's Missing:**
+- Formal definitions of: invariant, canal, drift, mimicry
+- Risk of "definition drift" across documents
+- Inconsistent terminology usage
+
+**Status:** 🔵 NEEDS DOCUMENTATION
+
+---
+
+## 💚 LOW PRIORITY FAILURES (Polish)
+
+### FAILURE 10: Incomplete CHANGELOG
+
+**What's Missing:**
+- Comprehensive version history
+- Migration guides between versions
+- Breaking changes documentation
+
+**Status:** 💚 NICE TO HAVE
+
+---
+
+### FAILURE 11: No Contributing Guidelines
+
+**What's Missing:**
+- How to propose new invariants
+- How to falsify existing claims
+- Code style requirements
+
+**Status:** 💚 NICE TO HAVE
+
+---
+
+## 📊 FAILURE IMPACT MATRIX
+
+| Failure | Severity | Blocks Use | Falsifiability | Reproducibility |
+|---------|----------|------------|----------------|-----------------|
+| canal_refiner.py | CRITICAL | YES | NO | NO |
+| P-value calc | CRITICAL | YES | YES | NO |
+| Correspondence | CRITICAL | PARTIAL | YES | NO |
+| Environment | HIGH | NO | YES | NO |
+| Circular confound | HIGH | NO | MAYBE | YES |
+| Detector gaming | HIGH | NO | YES | YES |
+| Invariant registry | MEDIUM | NO | YES | YES |
+| CI/CD | MEDIUM | NO | YES | YES |
+| Glossary | MEDIUM | NO | YES | YES |
+| CHANGELOG | LOW | NO | YES | YES |
+| Contributing | LOW | NO | YES | YES |
+
+---
+
+## 🎯 NOTEBOOKLM'S VERDICT
+
+> **"The methodology survived, the implementation did not."**
+
+**What Works:**
+✅ Falsification framework (found 70% FP rate)
+✅ Self-correction (DeepSeek 45.30% → 5-10%)
+✅ Transparency (documenting failures)
+✅ Not tautological (can invalidate own claims)
+
+**What Doesn't:**
+❌ Primary detector tool (canal_refiner.py)
+❌ Statistical validation (p-value calculation)
+❌ Correspondence proof (no implementations)
+❌ Reproducibility (missing setup)
+
+---
+
+## 🛠️ FIXING PRIORITY (NotebookLM Recommendations)
+
+### CRITICAL (Fix Immediately):
+1. Create requirements.txt ✅ DONE
+2. Fix canal_refiner.py ⏳ IN PROGRESS
+3. Add p-value calculation script ⏳ PENDING
+
+### HIGH (Fix Soon):
+4. Populate INVARIANTS.md ✅ DONE
+5. Add correspondence evidence ⏳ PENDING
+6. Baseline comparison test ⏳ PENDING
+
+### MEDIUM (Improves Quality):
+7. CI/CD pipeline ⏳ PENDING
+8. Glossary ⏳ PENDING
+9. Setup.py ⏳ PENDING
+
+---
+
+## 📝 LESSON LEARNED
+
+**ChatGPT was right:**
+> "The numerical claim is conditional... becomes invariant only if:
+> - The detector is valid ❌ FAILED
+> - Definition of 'verified invariant' is consistent ✅ PASSED
+> - False positives are controlled ❌ FAILED"
+
+**NotebookLM confirmed:**
+> "You cannot claim a methodology is 'proven' using a tool you have flagged as broken."
+
+**The methodology works specifically because it found its own failures.**
+
+---
+
+## 🚀 PATH FORWARD (Minimal Surviving Kernel)
+
+Following NotebookLM's suggestion:
+
+**1. Freeze Claims**
+- No new density claims until detector fixed
+- Keep only 7 proven invariants
+- Document all failures honestly
+
+**2. Strip Tools**
+- Mark canal_refiner.py as DEPRECATED
+- Remove from "proof" claims
+- Keep only for reference
+
+**3. Rebuild from Minimal Core**
+- Start with automated_test_suite.py (works!)
+- Start with invariant_logger.py (works!)
+- Build new detector with ≥80% precision target
+- Validate with baseline comparison
+
+---
+
+**Last Updated:** 2026-01-20  
+**NotebookLM Audit:** C- (methodology valid, tooling broken)  
+**Status:** Documented honestly, fixing in progress  
+**Next:** Build Minimal Surviving Kernel
+
+**The methodology proves itself by admitting what doesn't work.**
