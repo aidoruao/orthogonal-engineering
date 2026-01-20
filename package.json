@@ -1,0 +1,49 @@
+{
+  "name": "orthogonal-engineering-mcp",
+  "version": "1.0.0",
+  "description": "MCP servers for Orthogonal Engineering - Glass Box Methodology",
+  "main": "oe-basic.mcp.js",
+  "scripts": {
+    "start": "node oe-basic.mcp.js",
+    "test": "node test_mcp_server.js",
+    "dev": "node --watch oe-basic.mcp.js"
+  },
+  "keywords": [
+    "orthogonal-engineering",
+    "mcp",
+    "glass-box",
+    "audit",
+    "falsification",
+    "popperian"
+  ],
+  "author": "Orthogonal Engineering Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0"
+  },
+  "devDependencies": {
+    "node": ">=18.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aidoruao/orthogonal-engineering"
+  },
+  "bugs": {
+    "url": "https://github.com/aidoruao/orthogonal-engineering/issues"
+  },
+  "homepage": "https://github.com/aidoruao/orthogonal-engineering#readme",
+  "mcp": {
+    "servers": {
+      "oe-basic": {
+        "command": "node",
+        "args": ["oe-basic.mcp.js"],
+        "env": {
+          "NODE_ENV": "production"
+        }
+      }
+    }
+  }
+}
