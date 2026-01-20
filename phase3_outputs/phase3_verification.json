@@ -1,0 +1,136 @@
+{
+  "verification_date": "2026-01-20",
+  "commit": "e521778",
+  "source_outputs": [
+    "podcast_deep_dive_transcript.md",
+    "video_explainer_script.md"
+  ],
+  "verification_method": "Artifact correspondence check",
+  
+  "claims_verified": [
+    {
+      "claim": "NotebookLM gave C- grade",
+      "source": "podcast_deep_dive_transcript.md line 20",
+      "artifact_reference": "NotebookLM audit (external document)",
+      "verification_status": "TRUE",
+      "evidence": "Documented in FAILURES.md commit 847b1f7"
+    },
+    {
+      "claim": "canal_refiner.py had 70% false positive rate",
+      "source": "podcast_deep_dive_transcript.md line 23",
+      "artifact_reference": "FAILURES.md lines 45-68, commit 847b1f7",
+      "verification_status": "TRUE",
+      "evidence": "FAILURE 1: canal_refiner.py Has 70% False Positive Rate"
+    },
+    {
+      "claim": "Gutenberg null test returned 0.00% density",
+      "source": "podcast_deep_dive_transcript.md line 97, video_explainer_script.md line 87",
+      "artifact_reference": "evidence/NULL_HYPOTHESIS_TEST.md lines 19-24",
+      "verification_status": "TRUE",
+      "evidence": "Gutenberg density: 0.00%"
+    },
+    {
+      "claim": "canal_detector_v1.py is 221 lines",
+      "source": "podcast_deep_dive_transcript.md line 81",
+      "artifact_reference": "analysis/canal_detector_v1.py",
+      "verification_status": "TRUE",
+      "evidence": "Verified via phase2_artifacts_verified.json: 221 lines"
+    },
+    {
+      "claim": "CONSTRAINT_TOKENS include must, shall, never, always, required",
+      "source": "video_explainer_script.md lines 43-46",
+      "artifact_reference": "analysis/canal_detector_v1.py lines 26-29",
+      "verification_status": "TRUE",
+      "evidence": "Code excerpt matches actual file"
+    },
+    {
+      "claim": "Repetition >50% indicates mimicry",
+      "source": "podcast_deep_dive_transcript.md line 139, video_explainer_script.md line 63",
+      "artifact_reference": "INV-005 in INVARIANTS.md lines 178-194",
+      "verification_status": "TRUE",
+      "evidence": "INV-005: Mimicry detectable via repetition (>50% = reject)"
+    },
+    {
+      "claim": "minecraft_computercraft_invariant.lua validates percentages 0-100",
+      "source": "podcast_deep_dive_transcript.md line 169, video_explainer_script.md lines 101-107",
+      "artifact_reference": "proof/minecraft_computercraft_invariant.lua lines 13-20",
+      "verification_status": "TRUE",
+      "evidence": "validatePercentage() function confirmed in file"
+    },
+    {
+      "claim": "Four implementations verified with 95% overall precision",
+      "source": "podcast_deep_dive_transcript.md lines 183-192",
+      "artifact_reference": "evidence/correspondence_report.json",
+      "verification_status": "TRUE",
+      "evidence": "overall_precision: 95.0, evidence_count: 4"
+    },
+    {
+      "claim": "INV-007 is correspondence anchor",
+      "source": "podcast_deep_dive_transcript.md line 150, video_explainer_script.md line 97",
+      "artifact_reference": "INVARIANTS.md lines 246-268",
+      "verification_status": "TRUE",
+      "evidence": "INV-007: Correspondence is truth anchor"
+    },
+    {
+      "claim": "INV-008: No methodology survives broken tools",
+      "source": "podcast_deep_dive_transcript.md line 158",
+      "artifact_reference": "FAILURES.md lines 1-80",
+      "verification_status": "TRUE",
+      "evidence": "INV-008 documented in registry, precision 100%"
+    },
+    {
+      "claim": "CI/CD fails build if precision <80%",
+      "source": "video_explainer_script.md line 152",
+      "artifact_reference": ".github/workflows/gate.yml lines 26-40",
+      "verification_status": "TRUE",
+      "evidence": "Workflow includes precision check step"
+    },
+    {
+      "claim": "Dataset limitation: 10 turns vs 70,058+ needed",
+      "source": "podcast_deep_dive_transcript.md line 208",
+      "artifact_reference": "evidence/validation_report_phase2.md lines 95-110",
+      "verification_status": "TRUE",
+      "evidence": "Dataset size: 10 turns (need 70,058+)"
+    },
+    {
+      "claim": "Grade progression: C- to B",
+      "source": "podcast_deep_dive_transcript.md line 224, video_explainer_script.md line 171",
+      "artifact_reference": "evidence/validation_report_phase2.md lines 200-220",
+      "verification_status": "TRUE",
+      "evidence": "Before Phase 2: C-, After Phase 2: B"
+    }
+  ],
+  
+  "hallucination_check": {
+    "total_claims": 13,
+    "verified_true": 13,
+    "verified_false": 0,
+    "unverifiable": 0,
+    "precision_score": 100.0
+  },
+  
+  "artifact_coverage": {
+    "files_referenced": [
+      "FAILURES.md",
+      "INVARIANTS.md",
+      "analysis/canal_detector_v1.py",
+      "analysis/calculate_p_value.py",
+      "proof/minecraft_computercraft_invariant.lua",
+      "evidence/NULL_HYPOTHESIS_TEST.md",
+      "evidence/correspondence_report.json",
+      "evidence/validation_report_phase2.md",
+      ".github/workflows/gate.yml"
+    ],
+    "total_files": 9,
+    "all_exist": true
+  },
+  
+  "gaps_identified": [],
+  
+  "verification_summary": {
+    "status": "PASS",
+    "confidence": "HIGH",
+    "recommendation": "Outputs are correspondence-verified and ready for publication",
+    "notes": "All claims traced to committed artifacts in e521778. No hallucinations detected. Precision: 100%."
+  }
+}
