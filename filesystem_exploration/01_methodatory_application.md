@@ -1,0 +1,1 @@
+- Clusters of specific file types indicate development activity
