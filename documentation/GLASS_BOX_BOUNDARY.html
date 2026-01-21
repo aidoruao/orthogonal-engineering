@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>OE Glass-Box Telemetry Boundary v1.10</title>
+<title>OE Glass-Box Telemetry Boundary v1.11</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
@@ -18,11 +18,11 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
 </head>
 <body>
 
-<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.10</h1>
+<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.11</h1>
 <p id="integrity"></p>
 
 <details open>
-<summary>1. Epistemic Trace Contract + Meta-Invariant (JSON Schema)</summary>
+<summary>1. Epistemic Trace Contract + Active Blueprint (JSON Schema)</summary>
 <pre id="schema">{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "EpistemicTrace",
@@ -32,11 +32,11 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
     "execution_timestamp","active_ontology","ontology_candidates",
     "evidence_map","heuristic_overrides","decision","confidence",
     "hash_manifest","branch","signed","timeline_errors","environment_snapshot",
-    "repository_meta","suppressed_signals"
+    "repository_meta","suppressed_signals","python_enforcer_active","ide_integration"
   ],
   "properties": {
     "schema_version":{"const":"1.0"},
-    "trace_version":{"type":"string","pattern":"^1\\.10$"},
+    "trace_version":{"type":"string","pattern":"^1\\.11$"},
     "trace_uuid":{"type":"string","format":"uuid"},
     "input_commit":{"type":"string","pattern":"^[0-9a-f]{40}$"},
     "execution_timestamp":{"type":"string","format":"date-time"},
@@ -66,42 +66,53 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
       }
     },
     "suppressed_signals":{"type":"array","items":{"type":"string"}},
+    "python_enforcer_active":{"type":"boolean"},
+    "ide_integration":{"type":"object",
+      "required":["autofix_enabled","structural_consistency","boundary_awareness","doc_sync"],
+      "properties":{
+        "autofix_enabled":{"type":"boolean"},
+        "structural_consistency":{"type":"boolean"},
+        "boundary_awareness":{"type":"boolean"},
+        "doc_sync":{"type":"boolean"}
+      }
+    },
     "signed":{"type":"string"}
   }
 }</pre>
 </details>
 
 <details>
-<summary>2. Atomic Implementation Steps (v1.10)</summary>
+<summary>2. Atomic Implementation Steps (v1.11)</summary>
 <pre>
-PHASE 1-8: Same as v1.8
+PHASE 1-10: Same as v1.10
 
-PHASE 9: Meta-Validation + Enforcement
-- Crawl repository for required artifacts (pipeline.ps1, validator.py, GLASS_BOX_BOUNDARY.html, etc.)
-- Record missing/corrupted files in repository_meta.artifact_validation_errors
-- Snapshot environment (Python version, pip freeze)
-- Capture AI suppressed signals and append to suppressed_signals
-- Track timeline start/end; inject timeline_errors for sequence violations
-- Compute hash_manifest of evidence_map + environment snapshot
-- Sign the trace with private key (immutable)
+PHASE 11: Python Enforcer Activation
+- Python Decorator / Middleware wraps all functions to enforce boundaries
+- Any input/output outside allowed values triggers immediate exception
+- Logs all internal state transitions for transparency
+- Sets python_enforcer_active=true in trace
 
-PHASE 10: Hard Enforcement
-- Exit with code 2 if any:
-  - len(trace.timeline_errors) > 0
-  - len(trace.repository_meta.artifact_validation_errors) > 0
-  - len(trace.suppressed_signals) > 0
+PHASE 12: IDE (Zed AI) Integration
+- IDE reads blueprint (this HTML)
+- Enables autofix for code violating boundaries
+- Enforces structural consistency for new files
+- Provides boundary awareness during coding
+- Links Python Enforcer updates to automated doc sync
+- Sets ide_integration fields in trace
+
+PHASE 13: Orthogonal Enforcement
+- Ensures no component bypasses Glass Box boundaries
+- Suggests intermediary gateways if side-effects violate separation
+
+PHASE 14: Hard Exit Enforcement
+- Fail-fast if timeline_errors, repository_meta errors, suppressed_signals, or enforcer inactive
+- sys.exit(2)
 - Store signed JSON trace in traces/
-- All automation tools (IDE, scripts, Zed AI) reference this HTML for instructions
-
-PHASE 11: IDE / Automation Integration
-- Zed IDE or any automation reads this HTML
-- Generates instructions for Python wrapper implementation
-- Ensures all invariant and enforcement steps are captured
 </pre>
 </details>
 
 <details>
-<summary>3. Live Validator + Meta-Tracing (v1.10)</summary>
+<summary>3. Live Validator + Meta-Tracing (v1.11)</summary>
 <textarea id="input" placeholder='Paste JSON trace here'></textarea>
 <button onclick="validate()">Verify trace against schema</button>
 <p id="result"></p>
@@ -135,32 +146,39 @@ function validate(){
       result.textContent='❌ Schema violation: '+JSON.stringify(ajv.errors,null,2)+'\nExit Code 2 enforced';
       return;
     }
-    // timeline_errors enforcement
     if(trace.timeline_errors && trace.timeline_errors.length>0){
       result.className='fail';
       result.textContent='❌ Timeline violations detected: '+JSON.stringify(trace.timeline_errors,null,2)+'\nExit Code 2 enforced';
       return;
     }
-    // repository meta enforcement
     if(trace.repository_meta && trace.repository_meta.artifact_validation_errors.length>0){
       result.className='fail';
       result.textContent='❌ Repository meta-validation failures: '+JSON.stringify(trace.repository_meta.artifact_validation_errors,null,2)+'\nExit Code 2 enforced';
       return;
     }
-    // suppressed signals enforcement
     if(trace.suppressed_signals && trace.suppressed_signals.length>0){
       result.className='fail';
       result.textContent='❌ Suppressed signals detected: '+JSON.stringify(trace.suppressed_signals,null,2)+'\nExit Code 2 enforced';
       return;
     }
-    // signature check
+    if(!trace.python_enforcer_active){
+      result.className='fail';
+      result.textContent='❌ Python Enforcer inactive\nExit Code 2 enforced';
+      return;
+    }
+    const ide = trace.ide_integration;
+    if(!ide || !ide.autofix_enabled || !ide.structural_consistency || !ide.boundary_awareness || !ide.doc_sync){
+      result.className='fail';
+      result.textContent='❌ IDE integration incomplete\nExit Code 2 enforced';
+      return;
+    }
     if(!trace.signed){
       result.className='fail';
       result.textContent='❌ Missing signature\nExit Code 2 enforced';
       return;
     }
     result.className='ok';
-    result.textContent='✅ Conforms to v1.10';
+    result.textContent='✅ Conforms to v1.11';
   }catch(e){
     result.className='fail';
     result.textContent='Invalid JSON: '+e.message+'\nExit Code 2 enforced';
