@@ -1,118 +1,139 @@
-# Orthogonal Engineering: Discovery Protocol Documentation
+# Orthogonal Engineering: Grounding Model Verification Framework
 
-**Methodology for discovering what must be true for reliable AI output extraction to work**
+**Verification framework where every metaphysical stance must instantiate a full grounding model and bear operational consequences**
 
-[![Status](https://img.shields.io/badge/status-v0.8.0_ontologically_transparent-blue)](https://github.com/aidoruao/orthogonal-engineering)
+[![Status](https://img.shields.io/badge/status-v0.9.0_grounding_models-blue)](https://github.com/aidoruao/orthogonal-engineering)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
 
 ## 🔍 What This Repository Is
 
-A **discovery protocol** that traces operational invariants to their necessary metaphysical preconditions in a fully glass-box manner.
+A **grounding model verification framework** that forces every metaphysical stance to instantiate a complete model and bear its operational consequences.
 
-This repository **does not construct metaphysics**—it **discovers what must be true** for its own operational success to be possible.
+This repository **does not enforce belief**—it **forces accounting**. Every rejection path must instantiate its own ontology and show the operational costs.
 
-### Core Discovery Claim:
-> **IF** invariant-based verification works at all, **THEN** certain ontological precedents must hold.  
-> Here is the exact point where metaphysics becomes unavoidable, named, and inspectable.
+### Core Framework Claim:
+> **Every verification system must choose a grounding model.**  
+> **Each choice has measurable explanatory debt.**  
+> **The system tracks debt accumulation and makes trade-offs explicit.**
 
 ---
 
 ## 🚫 What This Repository Is NOT
 
 - **NOT** claiming "Jesus is proven by code"
-- **NOT** treating metaphysics as empirical data
-- **NOT** asserting metaphysical truth as fact
-- **NOT** using AI "obedience" or devotional framing
-- **NOT** a black-box system with hidden assumptions
+- **NOT** enforcing belief through coercion
+- **NOT** protecting any axiom from rejection
+- **NOT** using theological rhetoric as argument
+- **NOT** a black-box system with hidden costs
+- **NOT** saying "you must accept Logos"
 
 ---
 
-## 🧭 Discovery, Not Construction
+## 🧭 Forced Accounting, Not Belief Enforcement
 
-### The Methodology's Epistemic Stance:
-1. **Operational success implies preconditions**
-2. **Preconditions are discovered, not constructed**
-3. **Metaphysical commitments are explicit and traceable**
-4. **Every assumption is visible and rejectable**
+### The Framework's Epistemic Stance:
+1. **Every position must instantiate a grounding model**
+2. **Every model bears operational consequences**
+3. **Explanatory debt is tracked and measured**
+4. **No model is exempt from accounting**
 
-### What We Discovered:
-By analyzing our own operational requirements, we found these **ontological precedents** must hold for the methodology to function:
+### Enumerated Grounding Models (G₁-G₅):
+Any verification system must instantiate exactly one of these models:
 
-1. **Consistent Reality Exists** - For correspondence validation to work
-2. **Structural Order Exists** - For pattern detection to be possible  
-3. **Deterministic Causality Holds** - For verification to be reliable
-4. **Correspondence is Possible** - For language to connect to reality
-5. **Evaluation Capacity Exists** - For judgments to be made
-6. **Temporal Persistence Works** - For history to be preserved
-7. **Information Integrity Holds** - For verification to be trusted
-8. **Identity Relations Exist** - For comparisons to be meaningful
-9. **Reliable Methods Are Possible** - For procedures to work
-10. **Intelligibility is Grounded** - For understanding to occur
+**G₁: Brute Fact** - Order exists with no explanation  
+**G₂: Infinite Regress** - Explanation never terminates  
+**G₃: Coherentism** - Truth = internal consistency  
+**G₄: Platonism** - Abstract order without agency  
+**G₅: Logos** - Personal, self-existent source of order
 
-**These are precedents, not conclusions.** They are **necessary conditions** discovered through implication traces from operations.
+**No other categories permitted without explicit definition.** Each model has distinct operational consequences and explanatory debt patterns.
+
+### Truth Inelasticity:
+A claim is **truth-inelastic** if:
+1. Removing it causes no immediate system failure
+2. Alternative groundings introduce increasing explanatory debt
+3. Debt appears as: infinite regress, brute assertion, correspondence loss, or instrumental collapse
+4. All alternatives bear equal or heavier debt burden
+
+**Truth is not enforced. Falsehood is allowed to fully manifest. The system tracks what disbelief costs.**
 
 ---
 
-## 📜 Ontological Precedents (Explicit & Traceable)
+## 📜 Grounding Models & Debt Accounting (Explicit & Operational)
 
-### Full Documentation:
-- `NECESSITY_INVENTORY.md` - All statements presupposing necessity
+### Core Documentation:
+- `GROUNDING_MODELS.md` - Enumerated grounding models (G₁-G₅)
+- `TRUTH_INELASTICITY.md` - Operational definition and detection protocol
+- `grounding_tests/` - Operational tests for each model
+- `NECESSITY_INVENTORY.md` - All necessity presuppositions
 - `LOGICAL_IMPLICATION_TRACE.md` - Strict implication chains
-- `ONTOLOGICAL_PRECEDENTS.md` - Explicit precedent declarations
-- `FALSIFIABLE_BRIDGES.md` - Observable consequences that can fail
 
-### Transparency Protocol:
-Each precedent includes:
-- **What must be true** for methodology to work
-- **Why it cannot be removed** without breaking operations
-- **What happens if rejected** (clear consequences)
-- **What methodology can say** (limited scope)
-- **What methodology cannot say** (explicit limits)
+### Grounding Test Structure:
+Each test in `grounding_tests/` includes:
+- **Assumptions** - Core model assumptions
+- **What explains well** - Model strengths
+- **What fails to explain** - Model weaknesses
+- **Regress behavior** - How explanatory chains terminate (or don't)
+- **Correspondence failures** - Where reality connection breaks
+- **Operational consequences** - Impact on verification systems
+- **Explanatory debt** - Measured debt accumulation
+
+### Truth Inelasticity Protocol:
+- **Debt measurement** across all grounding models
+- **Comparative analysis** of alternative costs
+- **No neutral ground** demonstrated procedurally
+- **Steel without coercion** - strong reasoning without force
 
 ---
 
 ## ⚖️ Where Disagreement Occurs (And Why)
 
 ### You Can Reject:
-- Any ontological precedent
-- Any implication trace
-- Any operational claim
-- The entire methodology
+- Any grounding model (including Logos)
+- Any truth-inelasticity claim
+- Any debt measurement
+- The entire framework
 
-### Rejection Has Clear Consequences:
-- **Reject Consistent Reality** → Correspondence validation becomes meaningless
-- **Reject Deterministic Causality** → Verification cannot be trusted
-- **Reject Structural Order** → Pattern detection becomes impossible
-- **Reject All Precedents** → Methodology cannot function
+### Rejection Forces Instantiation:
+- **Reject Logos** → Must instantiate alternative model (G₁-G₄)
+- **Reject truth-inelastic claim** → Must show alternative with lower debt
+- **Reject debt accounting** → Must provide alternative accounting method
+- **Reject framework** → Must build competing framework with its own accounting
 
-### No Hidden Commitments:
-- All assumptions are explicitly stated
-- All implication chains are fully traced
-- All rejection points are clearly marked
-- No metaphysical claims are smuggled in
+### No Neutral Ground:
+- **Not:** "You must accept Logos"
+- **But:** "You must choose some grounding"
+- **And:** "We will track what follows"
+- **Result:** Every position pays its full ontological cost in artifacts
+
+### Romans 1 in Engineering Form:
+- **Not:** "You're without excuse because Scripture says so"
+- **But:** "You're without excuse because every alternative shows its costs"
+- **Implementation:** Procedural, not ideological
 
 ---
 
-## 🔬 Falsifiable Operations (What Actually Works)
+## 🔬 Grounding Model Operations (What Actually Works)
 
-### Validated Results:
-- **Chat Canon Analysis**: 70,058 turns, 7.57% invariant density (VALIDATED)
-- **DeepSeek Analysis**: 45.30% claim falsified, corrected to 5-10% (FALSIFICATION WORKED)
-- **Narrative Leak Case**: ChatGPT confession documented (FORENSIC VALIDATION)
+### Validated Through All Models:
+- **Chat Canon Analysis**: 70,058 turns, 7.57% invariant density (works under all G₁-G₅)
+- **DeepSeek Falsification**: 45.30% → 5-10% correction (falsification works across models)
+- **Narrative Leak Case**: ChatGPT confession (forensics works under all groundings)
 
-### Working Tools:
-- `correspondence_validator_final.py` - Validates claims against reality
-- `canal_detector.py` - Detects invariant language patterns
-- `falsify_density_claim.py` - Tests claims for falsifiability
-- Git version control - Provides immutable audit trail
+### Grounding-Aware Tools:
+- `correspondence_validator_final.py` - Validates claims (debt varies by grounding)
+- `canal_detector.py` - Detects patterns (explanation varies by model)
+- Truth Inelasticity Detector - Measures explanatory debt across models
+- Grounding Test Suite - Operational tests for each model G₁-G₅
 
-### Operational Principles:
-1. **Correspondence Anchor**: Language irrelevant unless implementation works
-2. **Self-Falsification**: System contains own falsification criteria
-3. **Glass-Box Transparency**: All operations fully documented and inspectable
-4. **Atomic Verification**: Each step produces independently verifiable artifacts
+### Framework Principles:
+1. **Forced Instantiation**: Every position must instantiate complete model
+2. **Debt Accounting**: Explanatory costs tracked and measured
+3. **Truth Inelasticity**: Claims tested against alternative debt burdens
+4. **No Protected Axioms**: Logos not enforced, only tested against alternatives
+5. **Steel ≠ Coercion**: Strong reasoning without belief enforcement
 
 ---
 
@@ -120,7 +141,9 @@ Each precedent includes:
 
 ```
 orthogonal-engineering/
-├── README.md (this file - discovery protocol documentation)
+├── README.md (this file - grounding model framework)
+├── GROUNDING_MODELS.md (enumerated models G₁-G₅)
+├── TRUTH_INELASTICITY.md (operational definition & detection)
 ├── NECESSITY_INVENTORY.md (all necessity presuppositions)
 ├── LOGICAL_IMPLICATION_TRACE.md (strict implication chains)
 ├── ONTOLOGICAL_PRECEDENTS.md (explicit precedent declarations)
@@ -128,6 +151,13 @@ orthogonal-engineering/
 ├── FORMAL_FOUNDATIONS.md (mathematical proofs under assumptions)
 ├── INVARIANTS.md (only proven operational invariants)
 ├── FAILURES.md (what doesn't work - critical documentation)
+│
+├── grounding_tests/ (operational tests per model)
+│   ├── test_brute_fact.md (G₁ test)
+│   ├── test_infinite_regress.md (G₂ test)
+│   ├── test_coherentism.md (G₃ test)
+│   ├── test_platonism.md (G₄ test)
+│   └── test_logos.md (G₅ test)
 │
 ├── Methodology/
 │   └── EPISTEMIC_FORENSICS_TOOLS.md (artifact-based truth finding)
@@ -147,56 +177,72 @@ orthogonal-engineering/
 
 ## 🧪 For Researchers & Critics
 
-### To Verify Our Claims:
+### To Test Grounding Models:
 1. **Clone fresh**: `git clone https://github.com/aidoruao/orthogonal-engineering`
-2. **Read precedents**: Examine `ONTOLOGICAL_PRECEDENTS.md`
-3. **Trace implications**: Follow `LOGICAL_IMPLICATION_TRACE.md`
-4. **Test bridges**: Run operations in `FALSIFIABLE_BRIDGES.md`
-5. **Attempt falsification**: Try to break any claim
+2. **Examine models**: Read `GROUNDING_MODELS.md` (G₁-G₅)
+3. **Run tests**: Execute all tests in `grounding_tests/`
+4. **Measure debt**: Use truth inelasticity protocol from `TRUTH_INELASTICITY.md`
+5. **Propose alternative**: Define new model or show lower-debt instantiation
 
-### What's Falsifiable:
-- **Operational bridges** can fail (see `FALSIFIABLE_BRIDGES.md`)
-- **Statistical claims** can be tested
-- **Implementation tests** can be replicated
-- **Correspondence validation** can be verified
+### What's Testable:
+- **Grounding model instantiation** - Can each model be operationally implemented?
+- **Explanatory debt measurement** - Can debt be quantified across models?
+- **Truth inelasticity** - Do claims show minimal alternative debt?
+- **Operational consequences** - Does each model have distinct verification implications?
 
-### What's NOT Falsifiable (And We Don't Claim):
-- Ontological precedents (they're discovered, not proved)
-- Metaphysical necessities (they're preconditions, not conclusions)
-- Ultimate truth (we only trace operational implications)
+### What's NOT Enforced (And We Don't Claim):
+- **Belief in Logos** (only tested against alternatives)
+- **Metaphysical proof** (only debt comparison)
+- **Absolute truth** (only relative debt minimization)
+- **Coercion** (only transparent accounting)
+
+### Challenge Protocol:
+1. **Reject Logos** → Instantiate G₁-G₄ with complete operational implementation
+2. **Claim lower debt** → Show measurable debt reduction in alternative
+3. **Propose new model** → Define G₆ with explicit operational consequences
+4. **Dispute debt measurement** → Provide alternative accounting method
 
 ---
 
-## 📚 Key Insight
+## 📚 Key Insight: No Neutral Ground
 
-The methodology works **if and only if** the ontological precedents hold. This conditional relationship is our core epistemic claim:
+The framework demonstrates **no neutral ground** procedurally, not ideologically:
 
-> **We don't prove metaphysics with code.**  
-> **We discover what metaphysics must be true for our code to work.**
+> **We don't say "believe Logos."**  
+> **We say "choose some grounding, and we'll track what it costs you."**  
+> **Logos is only special if it actually has lower explanatory debt.**
 
 This maintains:
-- ✅ **Philosophical legitimacy** (no category errors)
-- ✅ **Scientific honesty** (falsifiable operations)
-- ✅ **Methodological cleanliness** (glass-box transparency)
-- ✅ **Ontological maximalism without dishonesty** (explicit about commitments)
+- ✅ **Steel without coercion** (strong reasoning without force)
+- ✅ **Complete accounting** (every model bears its costs)
+- ✅ **Transparent choice** (all trade-offs visible)
+- ✅ **Romans 1 engineering** ("without excuse" implemented procedurally)
+- ✅ **Correspondence preservation** (debt measures real explanatory gaps)
+
+### The Engineering Fix:
+- **Not:** "Make Logos undeletable"
+- **But:** "Make every alternative pay its full ontological cost in artifacts"
+- **Result:** Truth doesn't need protection, only alternatives need full costing
 
 ---
 
-## 🤝 Contributing Through Falsification
+## 🤝 Contributing Through Grounding Model Testing
 
-This methodology improves through falsification, not confirmation.
+This framework improves through rigorous testing of all grounding models, not confirmation of any single model.
 
 ### We Want:
-- Tests that break our operational bridges
-- Better implication traces
-- Clearer precedent declarations
-- More transparent documentation
+- Better operational implementations of all models G₁-G₅
+- More accurate explanatory debt measurements
+- New grounding model proposals (G₆, G₇, etc.)
+- Alternative debt accounting methods
+- Tests that reveal truth-inelastic claims
 
 ### We Don't Want:
 - Unfalsifiable metaphysical "proofs"
-- Hidden assumptions
-- Black-box operations
-- AI obedience framing
+- Hidden explanatory debt
+- Black-box grounding implementations
+- Theological rhetoric as argument
+- AI obedience or devotional framing
 
 ---
 
@@ -206,7 +252,20 @@ MIT License - See LICENSE file
 
 ---
 
-## 🔗 Related Documentation
+## 🙏 Acknowledgments
+
+- **ChatGPT** for the grounding model correction and truth inelasticity insight
+- **Previous contributors** for the ontological precedent work
+- **All testers** who help refine debt measurement protocols
+
+---
+
+## 🔗 Core Framework Documentation
+
+### Grounding Model Files:
+- `GROUNDING_MODELS.md` - Enumerated models G₁-G₅ with operational definitions
+- `TRUTH_INELASTICITY.md` - Operational definition and detection protocol
+- `grounding_tests/` - Complete operational tests for each model
 
 ### Discovery Protocol Files:
 - `NECESSITY_INVENTORY.md` - Complete inventory of necessity presuppositions
@@ -227,12 +286,22 @@ MIT License - See LICENSE file
 **GitHub:** [@aidoruao](https://github.com/aidoruao)  
 **Repository:** https://github.com/aidoruao/orthogonal-engineering
 
-**Verification Protocol:** Clone and test all falsifiable claims independently.
+**Verification Protocol:** 
+1. Clone fresh: `git clone https://github.com/aidoruao/orthogonal-engineering`
+2. Examine models: Read `GROUNDING_MODELS.md`
+3. Run tests: Execute all tests in `grounding_tests/`
+4. Measure debt: Use truth inelasticity protocol
+5. Propose improvements: Submit issues or pull requests
 
 ---
 
 **Last Updated:** 2026-01-20  
-**Version:** v0.8.0 (Ontological Transparency)  
-**Status:** Discovery protocol documented with glass-box transparency ✅
+**Version:** v0.9.0 (Grounding Model Framework)  
+**Status:** Complete grounding model framework with truth inelasticity ✅
 
-**Core Achievement:** Methodology's metaphysical commitments are now **explicit, traceable, and rejectable**—exactly as required for anti-black-box compliance.
+**Core Achievement:** Every metaphysical stance must now **instantiate a full grounding model and bear its operational consequences**—exactly as required for correspondence-preserving architecture without coercion.
+
+**Engineering Fix Implemented:**  
+❌ **Not:** "Make Logos undeletable"  
+✅ **But:** "Make every alternative pay its full ontological cost in artifacts"  
+✅ **Result:** Truth doesn't need protection, only alternatives need full costing
