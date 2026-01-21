@@ -2,256 +2,167 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Orthogonal Engineering – Glass-Box Telemetry Boundary (v1.1)</title>
+<title>OE Glass-Box Telemetry Boundary v1.7</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  body{font-family:system-ui,monospace;background:#0b0b0b;color:#d0ffd0;margin:0;padding:2rem}
-  h1,h2,h3{color:#00ffff}
-  code,pre{background:#000;padding:1rem;display:block;overflow:auto;border-left:3px solid #00ffff}
-  details{margin:1.2rem 0;border:1px solid #00ffff;padding:1rem}
-  summary{cursor:pointer;color:#ffff00;font-weight:bold}
-  .warn{color:#ff8080}
-  .ok{color:#80ff80}
-  .boundary{color:#ff00ff;font-weight:bold}
+  body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
+  h1,h2{color:#0ff}
+  details{margin:1rem 0;border:1px solid #0ff;padding:.5rem 1rem}
+  summary{cursor:pointer;color:#ff0}
+  pre{background:#000;padding:1rem;overflow:auto;border-left:3px solid #0ff}
+  #integrity{color:#f0f}
+  #validator{margin-top:2rem}
+  textarea{width:100%;min-height:10rem;background:#222;color:#0f0;border:1px solid #0ff}
+  button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bold;cursor:pointer}
+  .ok{color:#0f0}.fail{color:#f00}
 </style>
 </head>
 <body>
 
-<h1>Orthogonal Engineering — Glass-Box Telemetry Boundary (v1.1)</h1>
+<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.7</h1>
 
-<p class="boundary">
-This document is an invariant boundary specification.  
-It defines the epistemic execution contract for Orthogonal Engineering systems.  
-It is not an execution engine. It is the flight-recorder requirement.
-</p>
-
-<hr>
-
-<h2>Layer 1 — Re-Verification (Repo Ontology)</h2>
-
-<pre>
-orthogonal-engineering is:
-
-❌ Not a generic AI safety repository
-❌ Not merely documentation + scripts
-✅ A constraint-based epistemic system
-✅ Ontology itself is an audited variable
-✅ Partially glass-box (hashes, audits, correspondence tests)
-
-Existing Components:
-- automation/full_audit.py → result-only audit
-- SHA256 manifests → invariants without decision provenance
-- Documentation naming:
-  - Gₛ assumptions
-  - Truth-inelasticity
-  - Forced ontological accounting
-- Failure analysis → post-hoc, not instrumented
-
-Conclusion:
-The system is functionally correct but telemetry-incomplete.
-Equivalent to aerospace systems pre-flight-data-recorder.
-</pre>
-
-<hr>
-
-<h2>Layer 2 — Missing Capability (Precisely Defined)</h2>
-
-<pre>
-Missing Capability:
-The system does NOT emit a mandatory epistemic decision trace
-for every audit or analysis execution.
-
-Consequences:
-- Silent heuristic overrides
-- Post-hoc explanations instead of logs
-- External AI misclassification without accountability
-
-Hard Contract (Non-Negotiable):
-
-"No audit, analysis, or classification is valid unless it emits
-a machine-readable epistemic trace artifact."
-
-This is an engineering interface requirement, not philosophy.
-</pre>
-
-<hr>
-
-<h2>Layer 3 — Atomic Execution Instructions (Zed IDE)</h2>
+<p id="integrity"></p>
 
 <details open>
-<summary>PHASE 1 — Freeze State (Replayability)</summary>
-<pre>
-Goal: Ensure deterministic replay.
-
-1. Pull latest repository state
-2. Confirm clean working tree
-3. Record current commit hash
-4. Pin Python + dependencies (requirements.txt) for reproducibility
-
-Commands:
-git status
-git rev-parse HEAD
-
-STOP if working tree is dirty.
-</pre>
-</details>
-
-<details>
-<summary>PHASE 2 — Define Epistemic Trace Contract</summary>
-<pre>
-Create file:
-/specs/EPISTEMIC_TRACE_SCHEMA.json
-
-Required Fields (v1.1):
-
-{
-  "schema_version": "1.0",
-  "trace_version": "1.1",          // new: version inside trace for migration
-  "input_commit": "string",
-  "execution_timestamp": "ISO-8601",
-  "python_env": "string",           // new: python interpreter + deps hash
-  "active_ontology": "string",
-  "ontology_candidates": ["string"],
-  "evidence_map": {
-    "ontology_name": ["file_path"]
-  },
-  "heuristic_overrides": [
-    {
-      "heuristic": "string",
-      "reason": "string",
-      "blocked": true
-    }
+  <summary>1. Epistemic Trace Contract (JSON Schema)</summary>
+  <pre id="schema">{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EpistemicTrace",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "trace_version",
+    "trace_uuid",
+    "input_commit",
+    "execution_timestamp",
+    "active_ontology",
+    "ontology_candidates",
+    "evidence_map",
+    "heuristic_overrides",
+    "decision",
+    "confidence",
+    "hash_manifest",
+    "branch",
+    "signed"
   ],
-  "decision": "string",
-  "confidence": "float (0–1), calibrate to known test cases",
-  "hash_manifest": "sha256 (covers all evidence_map files + optional repo tree snapshot)",
-  "retention_policy": "string, e.g., keep last N runs or archive old JSON",
-  "signed": "boolean or signature string (optional for tamper-evidence)"
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "trace_version": { "type": "string", "pattern": "^1\\.7$" },
+    "trace_uuid": { "type": "string", "format": "uuid" },
+    "input_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+    "execution_timestamp": { "type": "string", "format": "date-time" },
+    "active_ontology": { "type": "string" },
+    "ontology_candidates": { "type": "array", "items": { "type": "string" } },
+    "evidence_map": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "heuristic_overrides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["heuristic", "reason", "blocked"],
+        "properties": {
+          "heuristic": { "type": "string" },
+          "reason": { "type": "string" },
+          "blocked": { "type": "boolean" }
+        }
+      }
+    },
+    "decision": { "type": "string" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "hash_manifest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "branch": { "type": "string" },
+    "falsifying_evidence": {
+      "type": "object",
+      "additionalProperties": { "type": "object" }
+    },
+    "signed": { "type": "string" }
+  }
+}</pre>
+</details>
+
+<details>
+  <summary>2. Atomic Implementation Steps (v1.7)</summary>
+  <pre>
+PHASE 1  git rev-parse HEAD > .epistemic_boundary_commit
+PHASE 1b python --version > .epistemic_boundary_python
+PHASE 1c pip freeze > .epistemic_boundary_deps
+
+PHASE 2  mkdir -p specs/ traces/ docs/
+PHASE 2b cp specs/EPISTEMIC_TRACE_SCHEMA.json .
+
+PHASE 3  cat > automation/run_full_audit_with_trace.py
+# wrapper: execute full_audit.py, intercept ontology, Gₛ assumptions
+# generate epistemic_trace.json including:
+# trace_uuid, branch, falsifying_evidence, signed
+# hash_manifest = SHA256 of evidence_map + env snapshot
+# enforce: trace missing → audit fails (exit code 2)
+# prune retention AFTER fsync of new trace (branch-scoped)
+PHASE 3c  chmod +x automation/run_full_audit_with_trace.py
+
+PHASE 4  full_audit.py hooks (minimal, return-only)
+# expose detected signals, suppressed signals
+# no printing, backward compatible
+
+PHASE 5  enforce: any /automation script must emit trace or declare TRACE_EXEMPT=true
+
+PHASE 6  docs/GLASS_BOX_REQUIREMENT.md
+# Policy: result-only reporting = failure
+# Explain v1.7 atomic requirements
+
+PHASE 7  Zed IDE integration
+# run wrapper
+# show trace artifact
+# enforce pre-commit hook if IDE can’t
+
+PHASE 8  git add specs/ automation/ docs/
+PHASE 8b git commit -m "Add v1.7 trace contract and fully atomic glass-box auditing"
+PHASE 8c git push
+  </pre>
+</details>
+
+<details>
+  <summary>3. Live Validator (v1.7, AJV/WASM)</summary>
+  <textarea id="input" placeholder='Paste JSON trace here'></textarea>
+  <button onclick="validate()">Verify trace against schema</button>
+  <p id="result"></p>
+</div>
+
+<script src="ajv.min.js"></script> <!-- embed WASM/JS validator -->
+<script>
+let frozen_hash = "REPLACE_WITH_REAL_SHA256_OF_DELIVERED_HTML";
+
+function validate(){
+  const src = document.getElementById('input').value.trim();
+  const result = document.getElementById('result');
+  try{
+    const trace = JSON.parse(src);
+    const schema = JSON.parse(document.getElementById('schema').textContent);
+    const ajv = new Ajv(); // or load WASM validator
+    const valid = ajv.validate(schema, trace);
+    if(!valid){
+      result.className='fail';
+      result.textContent='❌ Schema violation: '+JSON.stringify(ajv.errors,null,2);
+      return;
+    }
+    // check signature if present
+    if(!trace.signed){
+      result.className='fail';
+      result.textContent='❌ Missing signature';
+      return;
+    }
+    result.className='ok';
+    result.textContent='✅ Conforms to v1.7';
+  }catch(e){
+    result.className='fail';
+    result.textContent='Invalid JSON: '+e.message;
+  }
 }
-</pre>
-</details>
 
-<details>
-<summary>PHASE 3 — Wrap full_audit.py (No Refactor)</summary>
-<pre>
-Create wrapper:
-/automation/run_full_audit_with_trace.py
-
-Responsibilities:
-1. Capture commit hash + timestamp + python_env
-2. Execute full_audit.py
-3. Intercept:
-   - ontology selection
-   - grounding assumptions (Gₛ)
-4. Emit epistemic_trace.json including new fields
-5. Hash trace (hash_manifest)
-6. Sign trace (optional)
-7. Store alongside audit output
-
-Rule:
-If trace generation fails → audit FAILS.
-</pre>
-</details>
-
-<details>
-<summary>PHASE 4 — Modify full_audit.py (Surgical)</summary>
-<pre>
-Do NOT change logic.
-
-Add hooks only:
-- Function returns:
-  - detected ontology signals
-  - suppressed signals (if any)
-- No printing
-- Structured return for wrapper
-
-Backward compatibility preserved.
-</pre>
-</details>
-
-<details>
-<summary>PHASE 5 — Enforce Contract</summary>
-<pre>
-Rule:
-Any script under /automation must:
-
-- Emit epistemic_trace.json
-OR
-- Declare TRACE_EXEMPT = true AND document reason in GLASS_BOX_REQUIREMENT.md
-
-No silent execution allowed.
-</pre>
-</details>
-
-<details>
-<summary>PHASE 6 — Documentation Lock</summary>
-<pre>
-Create/update:
-/docs/GLASS_BOX_REQUIREMENT.md
-
-Must include:
-- Definition of glass-box in OE terms
-- Statement:
-  "Result-only reporting is considered a failure mode."
-- Pointer to EPISTEMIC_TRACE_SCHEMA.json
-- Trace retention / garbage-collection policy
-</pre>
-</details>
-
-<details>
-<summary>PHASE 7 — Zed IDE Integration</summary>
-<pre>
-Zed IDE responsibilities:
-- Run run_full_audit_with_trace.py
-- Capture stdout + epistemic_trace.json
-- Display trace as first-class output
-- Refuse to mark success without trace
-
-If IDE cannot enforce:
-- Add pre-commit hook rejecting missing traces
-</pre>
-</details>
-
-<details>
-<summary>PHASE 8 — Commit Boundary</summary>
-<pre>
-git add specs/ automation/ docs/
-git commit -m "Boundary v1.1: enforce glass-box epistemic telemetry with versioned trace"
-git push
-
-No squashing.
-This commit is an epistemic boundary marker.
-</pre>
-</details>
-
-<hr>
-
-<h2>Ontological Result</h2>
-
-<pre>
-After implementation:
-
-- AI misclassification becomes logged telemetry
-- Heuristic suppression becomes inspectable data
-- “Disagreement” becomes evidence
-- Confidence calibration is explicit
-- Trace versions enable migration
-- Tamper-proof optional signatures
-- TRACE_EXEMPT must be documented
-
-This is no longer philosophy.
-This is systems engineering.
-</pre>
-
-<hr>
-
-<h2 class="ok">Final Verdict</h2>
-
-<pre>
-You are not arguing for glass-box reasoning.
-You are building the flight recorder.
-All gaps from Kimi AI review have been addressed in v1.1.
-</pre>
+/* ---------- frozen hash display ---------- */
+document.getElementById('integrity').textContent='SHA-256 of delivered HTML: '+frozen_hash;
+</script>
 
 </body>
 </html>
