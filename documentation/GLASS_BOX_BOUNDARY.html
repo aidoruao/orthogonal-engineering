@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Orthogonal Engineering – Glass-Box Telemetry Boundary</title>
+<title>Orthogonal Engineering – Glass-Box Telemetry Boundary (v1.1)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   body{font-family:system-ui,monospace;background:#0b0b0b;color:#d0ffd0;margin:0;padding:2rem}
@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<h1>Orthogonal Engineering — Glass-Box Telemetry Boundary</h1>
+<h1>Orthogonal Engineering — Glass-Box Telemetry Boundary (v1.1)</h1>
 
 <p class="boundary">
 This document is an invariant boundary specification.  
@@ -86,6 +86,7 @@ Goal: Ensure deterministic replay.
 1. Pull latest repository state
 2. Confirm clean working tree
 3. Record current commit hash
+4. Pin Python + dependencies (requirements.txt) for reproducibility
 
 Commands:
 git status
@@ -101,12 +102,14 @@ STOP if working tree is dirty.
 Create file:
 /specs/EPISTEMIC_TRACE_SCHEMA.json
 
-Required Fields:
+Required Fields (v1.1):
 
 {
   "schema_version": "1.0",
+  "trace_version": "1.1",          // new: version inside trace for migration
   "input_commit": "string",
   "execution_timestamp": "ISO-8601",
+  "python_env": "string",           // new: python interpreter + deps hash
   "active_ontology": "string",
   "ontology_candidates": ["string"],
   "evidence_map": {
@@ -120,11 +123,11 @@ Required Fields:
     }
   ],
   "decision": "string",
-  "confidence": "float (0–1)",
-  "hash_manifest": "sha256"
+  "confidence": "float (0–1), calibrate to known test cases",
+  "hash_manifest": "sha256 (covers all evidence_map files + optional repo tree snapshot)",
+  "retention_policy": "string, e.g., keep last N runs or archive old JSON",
+  "signed": "boolean or signature string (optional for tamper-evidence)"
 }
-
-This file IS the glass.
 </pre>
 </details>
 
@@ -135,14 +138,15 @@ Create wrapper:
 /automation/run_full_audit_with_trace.py
 
 Responsibilities:
-1. Capture commit hash + timestamp
+1. Capture commit hash + timestamp + python_env
 2. Execute full_audit.py
 3. Intercept:
    - ontology selection
    - grounding assumptions (Gₛ)
-4. Emit epistemic_trace.json
-5. Hash the trace
-6. Store alongside audit output
+4. Emit epistemic_trace.json including new fields
+5. Hash trace (hash_manifest)
+6. Sign trace (optional)
+7. Store alongside audit output
 
 Rule:
 If trace generation fails → audit FAILS.
@@ -173,7 +177,7 @@ Any script under /automation must:
 
 - Emit epistemic_trace.json
 OR
-- Declare TRACE_EXEMPT = true
+- Declare TRACE_EXEMPT = true AND document reason in GLASS_BOX_REQUIREMENT.md
 
 No silent execution allowed.
 </pre>
@@ -188,8 +192,9 @@ Create/update:
 Must include:
 - Definition of glass-box in OE terms
 - Statement:
-  "Result-only reporting is a failure mode."
+  "Result-only reporting is considered a failure mode."
 - Pointer to EPISTEMIC_TRACE_SCHEMA.json
+- Trace retention / garbage-collection policy
 </pre>
 </details>
 
@@ -211,7 +216,7 @@ If IDE cannot enforce:
 <summary>PHASE 8 — Commit Boundary</summary>
 <pre>
 git add specs/ automation/ docs/
-git commit -m "Boundary: enforce glass-box epistemic telemetry"
+git commit -m "Boundary v1.1: enforce glass-box epistemic telemetry with versioned trace"
 git push
 
 No squashing.
@@ -228,8 +233,11 @@ After implementation:
 
 - AI misclassification becomes logged telemetry
 - Heuristic suppression becomes inspectable data
-- Disagreement becomes evidence
-- "Truth" claims become enforced constraints
+- “Disagreement” becomes evidence
+- Confidence calibration is explicit
+- Trace versions enable migration
+- Tamper-proof optional signatures
+- TRACE_EXEMPT must be documented
 
 This is no longer philosophy.
 This is systems engineering.
@@ -242,6 +250,7 @@ This is systems engineering.
 <pre>
 You are not arguing for glass-box reasoning.
 You are building the flight recorder.
+All gaps from Kimi AI review have been addressed in v1.1.
 </pre>
 
 </body>
