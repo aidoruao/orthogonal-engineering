@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>OE Glass-Box Telemetry Boundary v1.7</title>
+<title>OE Glass-Box Telemetry Boundary v1.8</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
   body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
@@ -19,8 +19,7 @@
 </head>
 <body>
 
-<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.7</h1>
-
+<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.8</h1>
 <p id="integrity"></p>
 
 <details open>
@@ -30,60 +29,40 @@
   "title": "EpistemicTrace",
   "type": "object",
   "required": [
-    "schema_version",
-    "trace_version",
-    "trace_uuid",
-    "input_commit",
-    "execution_timestamp",
-    "active_ontology",
-    "ontology_candidates",
-    "evidence_map",
-    "heuristic_overrides",
-    "decision",
-    "confidence",
-    "hash_manifest",
-    "branch",
-    "signed"
+    "schema_version","trace_version","trace_uuid","input_commit",
+    "execution_timestamp","active_ontology","ontology_candidates",
+    "evidence_map","heuristic_overrides","decision","confidence",
+    "hash_manifest","branch","signed","timeline_errors","environment_snapshot"
   ],
   "properties": {
-    "schema_version": { "const": "1.0" },
-    "trace_version": { "type": "string", "pattern": "^1\\.7$" },
-    "trace_uuid": { "type": "string", "format": "uuid" },
-    "input_commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
-    "execution_timestamp": { "type": "string", "format": "date-time" },
-    "active_ontology": { "type": "string" },
-    "ontology_candidates": { "type": "array", "items": { "type": "string" } },
-    "evidence_map": {
-      "type": "object",
-      "additionalProperties": { "type": "array", "items": { "type": "string" } }
-    },
-    "heuristic_overrides": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["heuristic", "reason", "blocked"],
-        "properties": {
-          "heuristic": { "type": "string" },
-          "reason": { "type": "string" },
-          "blocked": { "type": "boolean" }
-        }
-      }
-    },
-    "decision": { "type": "string" },
-    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
-    "hash_manifest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
-    "branch": { "type": "string" },
-    "falsifying_evidence": {
-      "type": "object",
-      "additionalProperties": { "type": "object" }
-    },
-    "signed": { "type": "string" }
+    "schema_version": {"const":"1.0"},
+    "trace_version":{"type":"string","pattern":"^1\\.8$"},
+    "trace_uuid":{"type":"string","format":"uuid"},
+    "input_commit":{"type":"string","pattern":"^[0-9a-f]{40}$"},
+    "execution_timestamp":{"type":"string","format":"date-time"},
+    "active_ontology":{"type":"string"},
+    "ontology_candidates":{"type":"array","items":{"type":"string"}},
+    "evidence_map":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string"}}},
+    "heuristic_overrides":{"type":"array","items":{"type":"object","required":["heuristic","reason","blocked"],
+      "properties":{"heuristic":{"type":"string"},"reason":{"type":"string"},"blocked":{"type":"boolean"}}}},
+    "decision":{"type":"string"},
+    "confidence":{"type":"number","minimum":0,"maximum":1},
+    "hash_manifest":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "branch":{"type":"string"},
+    "falsifying_evidence":{"type":"object","additionalProperties":{"type":"object"}},
+    "timeline_errors":{"type":"array","items":{"type":"object",
+      "required":["phase","type","timestamp","details"],
+      "properties":{"phase":{"type":"string"},"type":{"type":"string"},"timestamp":{"type":"string","format":"date-time"},"details":{"type":"string"}}}},
+    "environment_snapshot":{"type":"object",
+      "required":["python_version","pip_freeze"],
+      "properties":{"python_version":{"type":"string"},"pip_freeze":{"type":"string"}}},
+    "signed":{"type":"string"}
   }
 }</pre>
 </details>
 
 <details>
-  <summary>2. Atomic Implementation Steps (v1.7)</summary>
+  <summary>2. Atomic Implementation Steps (v1.8)</summary>
   <pre>
 PHASE 1  git rev-parse HEAD > .epistemic_boundary_commit
 PHASE 1b python --version > .epistemic_boundary_python
@@ -97,7 +76,8 @@ PHASE 3  cat > automation/run_full_audit_with_trace.py
 # generate epistemic_trace.json including:
 # trace_uuid, branch, falsifying_evidence, signed
 # hash_manifest = SHA256 of evidence_map + env snapshot
-# enforce: trace missing → audit fails (exit code 2)
+# enforce timeline_errors array for sequence violations
+# enforce: missing trace or any timeline_errors → exit code 2
 # prune retention AFTER fsync of new trace (branch-scoped)
 PHASE 3c  chmod +x automation/run_full_audit_with_trace.py
 
@@ -107,9 +87,9 @@ PHASE 4  full_audit.py hooks (minimal, return-only)
 
 PHASE 5  enforce: any /automation script must emit trace or declare TRACE_EXEMPT=true
 
-PHASE 6  docs/GLASS_BOX_REQUIREMENT.md
+PHASE 6  docs/GLASS_BOX_REQUIREMENT_v1.8.md
 # Policy: result-only reporting = failure
-# Explain v1.7 atomic requirements
+# Explain v1.8 atomic + timeline enforcement
 
 PHASE 7  Zed IDE integration
 # run wrapper
@@ -117,21 +97,35 @@ PHASE 7  Zed IDE integration
 # enforce pre-commit hook if IDE can’t
 
 PHASE 8  git add specs/ automation/ docs/
-PHASE 8b git commit -m "Add v1.7 trace contract and fully atomic glass-box auditing"
+PHASE 8b git commit -m "Add v1.8 trace contract with timeline enforcement"
 PHASE 8c git push
   </pre>
 </details>
 
 <details>
-  <summary>3. Live Validator (v1.7, AJV/WASM)</summary>
+  <summary>3. Live Validator (v1.8, AJV/WASM)</summary>
   <textarea id="input" placeholder='Paste JSON trace here'></textarea>
   <button onclick="validate()">Verify trace against schema</button>
   <p id="result"></p>
 </div>
 
-<script src="ajv.min.js"></script> <!-- embed WASM/JS validator -->
+<script src="ajv.min.js"></script>
+<script src="sha256.min.js"></script> <!-- WASM/JS SHA256 loader -->
 <script>
-let frozen_hash = "REPLACE_WITH_REAL_SHA256_OF_DELIVERED_HTML";
+async function computeHTMLHash() {
+  const encoder = new TextEncoder();
+  const html_bytes = encoder.encode(document.documentElement.outerHTML);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', html_bytes);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let frozen_hash = "PENDING_HASH_COMPUTE";
+
+computeHTMLHash().then(h=>{
+  frozen_hash=h;
+  document.getElementById('integrity').textContent='SHA-256 of delivered HTML: '+frozen_hash;
+});
 
 function validate(){
   const src = document.getElementById('input').value.trim();
@@ -139,29 +133,32 @@ function validate(){
   try{
     const trace = JSON.parse(src);
     const schema = JSON.parse(document.getElementById('schema').textContent);
-    const ajv = new Ajv(); // or load WASM validator
+    const ajv = new Ajv({allErrors:true});
     const valid = ajv.validate(schema, trace);
     if(!valid){
       result.className='fail';
-      result.textContent='❌ Schema violation: '+JSON.stringify(ajv.errors,null,2);
+      result.textContent='❌ Schema violation: '+JSON.stringify(ajv.errors,null,2)+'\nExit Code 2 enforced';
       return;
     }
-    // check signature if present
+    // timeline_errors enforcement
+    if(trace.timeline_errors && trace.timeline_errors.length>0){
+      result.className='fail';
+      result.textContent='❌ Timeline violations detected: '+JSON.stringify(trace.timeline_errors,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
+    // signature check placeholder
     if(!trace.signed){
       result.className='fail';
-      result.textContent='❌ Missing signature';
+      result.textContent='❌ Missing signature\nExit Code 2 enforced';
       return;
     }
     result.className='ok';
-    result.textContent='✅ Conforms to v1.7';
+    result.textContent='✅ Conforms to v1.8';
   }catch(e){
     result.className='fail';
-    result.textContent='Invalid JSON: '+e.message;
+    result.textContent='Invalid JSON: '+e.message+'\nExit Code 2 enforced';
   }
 }
-
-/* ---------- frozen hash display ---------- */
-document.getElementById('integrity').textContent='SHA-256 of delivered HTML: '+frozen_hash;
 </script>
 
 </body>
