@@ -4,19 +4,20 @@
 # Date: 2026-01-20
 # Methodology: Orthogonal Engineering with Popperian Falsification
 
-import json
-import hashlib
 import datetime
+import hashlib
+import json
 import os
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # ============================================================================
 # ONTOLOGICAL PREMISES
 # ============================================================================
+
 
 class OntologicalPremise(Enum):
     """Core ontological premises of Orthogonal Engineering"""
@@ -39,16 +40,20 @@ class OntologicalPremise(Enum):
     MIMICRY_DETECTION = "mimicry_detection"
     REPRODUCIBILITY = "reproducibility"
 
+
 class FailureSeverity(Enum):
     """Severity levels for failures"""
-    CRITICAL = "critical"      # Blocks all use, violates core premises
-    HIGH = "high"              # Limits adoption, violates key premises
-    MEDIUM = "medium"          # Impacts quality, violates secondary premises
-    LOW = "low"                # Polish issues, minor premise violations
-    INFO = "info"              # Observations, no premise violations
+
+    CRITICAL = "critical"  # Blocks all use, violates core premises
+    HIGH = "high"  # Limits adoption, violates key premises
+    MEDIUM = "medium"  # Impacts quality, violates secondary premises
+    LOW = "low"  # Polish issues, minor premise violations
+    INFO = "info"  # Observations, no premise violations
+
 
 class FailureCategory(Enum):
     """Categories of failures"""
+
     DETECTOR_FAILURE = "detector_failure"
     STATISTICAL_FAILURE = "statistical_failure"
     CORRESPONDENCE_FAILURE = "correspondence_failure"
@@ -58,13 +63,16 @@ class FailureCategory(Enum):
     DOCUMENTATION_FAILURE = "documentation_failure"
     VALIDATION_FAILURE = "validation_failure"
 
+
 # ============================================================================
 # DATA STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class FailureEvidence:
     """Evidence supporting a failure claim"""
+
     description: str
     source_file: str
     line_numbers: Optional[List[int]] = None
@@ -73,7 +81,7 @@ class FailureEvidence:
 
     def __post_init__(self):
         if self.timestamp is None:
-            self.timestamp = datetime.datetime.utcnow().isoformat() + 'Z'
+            self.timestamp = datetime.datetime.utcnow().isoformat() + "Z"
         if self.data_hash is None:
             self.data_hash = self._calculate_hash()
 
@@ -82,17 +90,21 @@ class FailureEvidence:
         content = f"{self.description}{self.source_file}{self.timestamp}"
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
+
 @dataclass
 class PremiseViolation:
     """Violation of an ontological premise"""
+
     premise: OntologicalPremise
     violation_description: str
     impact_level: str  # "direct", "indirect", "potential"
     evidence: List[FailureEvidence]
 
+
 @dataclass
 class FailureAnalysis:
     """Complete analysis of a failure"""
+
     failure_id: str
     title: str
     description: str
@@ -121,29 +133,31 @@ class FailureAnalysis:
 
     def __post_init__(self):
         if self.last_updated is None:
-            self.last_updated = datetime.datetime.utcnow().isoformat() + 'Z'
+            self.last_updated = datetime.datetime.utcnow().isoformat() + "Z"
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization"""
         data = asdict(self)
         # Convert enums to strings
-        data['severity'] = self.severity.value
-        data['category'] = self.category.value
-        data['premise_violations'] = [
+        data["severity"] = self.severity.value
+        data["category"] = self.category.value
+        data["premise_violations"] = [
             {
-                'premise': pv.premise.value,
-                'violation_description': pv.violation_description,
-                'impact_level': pv.impact_level,
-                'evidence': [asdict(e) for e in pv.evidence]
+                "premise": pv.premise.value,
+                "violation_description": pv.violation_description,
+                "impact_level": pv.impact_level,
+                "evidence": [asdict(e) for e in pv.evidence],
             }
             for pv in self.premise_violations
         ]
-        data['evidence'] = [asdict(e) for e in self.evidence]
+        data["evidence"] = [asdict(e) for e in self.evidence]
         return data
+
 
 # ============================================================================
 # FAILURE ANALYZER CLASS
 # ============================================================================
+
 
 class FailureAnalyzer:
     """Main failure analysis system with ontological premises"""
@@ -163,7 +177,12 @@ class FailureAnalyzer:
             failures.extend(self._analyze_failures_md(failures_md_path))
 
         # 2. Analyze falsification results
-        falsification_path = self.repository_path / "evidence" / "deepseek-analysis" / "FALSIFICATION_RESULTS.md"
+        falsification_path = (
+            self.repository_path
+            / "evidence"
+            / "deepseek-analysis"
+            / "FALSIFICATION_RESULTS.md"
+        )
         if falsification_path.exists():
             failures.extend(self._analyze_falsification_results(falsification_path))
 
@@ -181,38 +200,58 @@ class FailureAnalyzer:
         failures = []
 
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Parse critical failures section
             if "## 🚨 CRITICAL FAILURES" in content:
-                critical_section = content.split("## 🚨 CRITICAL FAILURES")[1].split("## ⚠️")[0]
-                failures.extend(self._parse_failure_section(critical_section, FailureSeverity.CRITICAL))
+                critical_section = content.split("## 🚨 CRITICAL FAILURES")[1].split(
+                    "## ⚠️"
+                )[0]
+                failures.extend(
+                    self._parse_failure_section(
+                        critical_section, FailureSeverity.CRITICAL
+                    )
+                )
 
             # Parse high priority failures
             if "## ⚠️ HIGH PRIORITY FAILURES" in content:
-                high_section = content.split("## ⚠️ HIGH PRIORITY FAILURES")[1].split("## 🔵")[0]
-                failures.extend(self._parse_failure_section(high_section, FailureSeverity.HIGH))
+                high_section = content.split("## ⚠️ HIGH PRIORITY FAILURES")[1].split(
+                    "## 🔵"
+                )[0]
+                failures.extend(
+                    self._parse_failure_section(high_section, FailureSeverity.HIGH)
+                )
 
             # Parse medium priority failures
             if "## 🔵 MEDIUM PRIORITY FAILURES" in content:
-                medium_section = content.split("## 🔵 MEDIUM PRIORITY FAILURES")[1].split("## 💚")[0]
-                failures.extend(self._parse_failure_section(medium_section, FailureSeverity.MEDIUM))
+                medium_section = content.split("## 🔵 MEDIUM PRIORITY FAILURES")[
+                    1
+                ].split("## 💚")[0]
+                failures.extend(
+                    self._parse_failure_section(medium_section, FailureSeverity.MEDIUM)
+                )
 
             # Parse low priority failures
             if "## 💚 LOW PRIORITY FAILURES" in content:
-                low_section = content.split("## 💚 LOW PRIORITY FAILURES")[1].split("## 📊")[0]
-                failures.extend(self._parse_failure_section(low_section, FailureSeverity.LOW))
+                low_section = content.split("## 💚 LOW PRIORITY FAILURES")[1].split(
+                    "## 📊"
+                )[0]
+                failures.extend(
+                    self._parse_failure_section(low_section, FailureSeverity.LOW)
+                )
 
         except Exception as e:
             print(f"Error analyzing FAILURES.md: {e}")
 
         return failures
 
-    def _parse_failure_section(self, section: str, severity: FailureSeverity) -> List[FailureAnalysis]:
+    def _parse_failure_section(
+        self, section: str, severity: FailureSeverity
+    ) -> List[FailureAnalysis]:
         """Parse individual failure sections"""
         failures = []
-        lines = section.strip().split('\n')
+        lines = section.strip().split("\n")
 
         current_failure = None
         current_evidence = []
@@ -222,15 +261,15 @@ class FailureAnalyzer:
             line = line.strip()
 
             # Detect failure start (### FAILURE X: pattern)
-            if line.startswith('### FAILURE') and ':' in line:
+            if line.startswith("### FAILURE") and ":" in line:
                 if current_failure is not None:
                     # Save previous failure
                     current_failure.evidence = current_evidence.copy()
                     failures.append(current_failure)
 
                 # Start new failure
-                title = line.split(':', 1)[1].strip()
-                failure_id = f"FAILURE-{len(failures)+1:03d}"
+                title = line.split(":", 1)[1].strip()
+                failure_id = f"FAILURE-{len(failures) + 1:03d}"
 
                 # Determine category based on title
                 category = self._determine_category(title)
@@ -241,8 +280,8 @@ class FailureAnalyzer:
                     description="",
                     severity=severity,
                     category=category,
-                    discovered_date=datetime.datetime.utcnow().isoformat() + 'Z',
-                    last_updated=datetime.datetime.utcnow().isoformat() + 'Z',
+                    discovered_date=datetime.datetime.utcnow().isoformat() + "Z",
+                    last_updated=datetime.datetime.utcnow().isoformat() + "Z",
                     premise_violations=[],
                     methodology_implications=[],
                     falsifiable_claims_affected=[],
@@ -250,15 +289,17 @@ class FailureAnalyzer:
                     reproduction_steps=[],
                     status="open",
                     fix_required=[],
-                    fix_priority="immediate" if severity == FailureSeverity.CRITICAL else "soon",
+                    fix_priority="immediate"
+                    if severity == FailureSeverity.CRITICAL
+                    else "soon",
                     independent_verification_possible=True,
-                    verification_instructions=None
+                    verification_instructions=None,
                 )
                 current_evidence = []
                 in_failure_block = True
 
             # Collect description lines
-            elif in_failure_block and line and not line.startswith('**'):
+            elif in_failure_block and line and not line.startswith("**"):
                 if current_failure:
                     if not current_failure.description:
                         current_failure.description = line
@@ -266,25 +307,31 @@ class FailureAnalyzer:
                         current_failure.description += " " + line
 
             # Detect evidence markers
-            elif line.startswith('**Evidence:**'):
-                evidence_text = lines[i+1].strip() if i+1 < len(lines) else ""
+            elif line.startswith("**Evidence:**"):
+                evidence_text = lines[i + 1].strip() if i + 1 < len(lines) else ""
                 if evidence_text:
                     evidence = FailureEvidence(
                         description=evidence_text,
                         source_file=str(self.repository_path / "FAILURES.md"),
-                        line_numbers=[i+1]
+                        line_numbers=[i + 1],
                     )
                     current_evidence.append(evidence)
 
             # Detect fix requirements
-            elif line.startswith('**Fix Required:**'):
+            elif line.startswith("**Fix Required:**"):
                 fix_text = ""
                 j = i + 1
-                while j < len(lines) and lines[j].strip() and not lines[j].strip().startswith('**'):
+                while (
+                    j < len(lines)
+                    and lines[j].strip()
+                    and not lines[j].strip().startswith("**")
+                ):
                     fix_text += lines[j].strip() + "\n"
                     j += 1
                 if current_failure and fix_text:
-                    current_failure.fix_required = [ft.strip() for ft in fix_text.split('\n') if ft.strip()]
+                    current_failure.fix_required = [
+                        ft.strip() for ft in fix_text.split("\n") if ft.strip()
+                    ]
 
         # Add the last failure
         if current_failure is not None:
@@ -294,7 +341,9 @@ class FailureAnalyzer:
         # Add ontological premise violations
         for failure in failures:
             failure.premise_violations = self._determine_premise_violations(failure)
-            failure.methodology_implications = self._determine_methodology_implications(failure)
+            failure.methodology_implications = self._determine_methodology_implications(
+                failure
+            )
 
         return failures
 
@@ -302,22 +351,35 @@ class FailureAnalyzer:
         """Determine failure category from title"""
         title_lower = title.lower()
 
-        if any(word in title_lower for word in ['detector', 'canal', 'pattern']):
+        if any(word in title_lower for word in ["detector", "canal", "pattern"]):
             return FailureCategory.DETECTOR_FAILURE
-        elif any(word in title_lower for word in ['statistical', 'p-value', 'significance']):
+        elif any(
+            word in title_lower for word in ["statistical", "p-value", "significance"]
+        ):
             return FailureCategory.STATISTICAL_FAILURE
-        elif any(word in title_lower for word in ['correspondence', 'implementation', 'working']):
+        elif any(
+            word in title_lower
+            for word in ["correspondence", "implementation", "working"]
+        ):
             return FailureCategory.CORRESPONDENCE_FAILURE
-        elif any(word in title_lower for word in ['reproducibility', 'reproduce', 'setup']):
+        elif any(
+            word in title_lower for word in ["reproducibility", "reproduce", "setup"]
+        ):
             return FailureCategory.REPRODUCIBILITY_FAILURE
-        elif any(word in title_lower for word in ['methodology', 'premise', 'ontological']):
+        elif any(
+            word in title_lower for word in ["methodology", "premise", "ontological"]
+        ):
             return FailureCategory.METHODOLOGY_FAILURE
-        elif any(word in title_lower for word in ['documentation', 'glossary', 'changelog']):
+        elif any(
+            word in title_lower for word in ["documentation", "glossary", "changelog"]
+        ):
             return FailureCategory.DOCUMENTATION_FAILURE
         else:
             return FailureCategory.IMPLEMENTATION_FAILURE
 
-    def _determine_premise_violations(self, failure: FailureAnalysis) -> List[PremiseViolation]:
+    def _determine_premise_violations(
+        self, failure: FailureAnalysis
+    ) -> List[PremiseViolation]:
         """Determine which ontological premises are violated by this failure"""
         violations = []
 
@@ -326,25 +388,25 @@ class FailureAnalyzer:
             FailureCategory.DETECTOR_FAILURE: [
                 (OntologicalPremise.TOOL_VALIDATION, "direct"),
                 (OntologicalPremise.FALSIFIABILITY, "direct"),
-                (OntologicalPremise.CORRESPONDENCE, "indirect")
+                (OntologicalPremise.CORRESPONDENCE, "indirect"),
             ],
             FailureCategory.STATISTICAL_FAILURE: [
                 (OntologicalPremise.REPRODUCIBILITY, "direct"),
-                (OntologicalPremise.FALSIFIABILITY, "direct")
+                (OntologicalPremise.FALSIFIABILITY, "direct"),
             ],
             FailureCategory.CORRESPONDENCE_FAILURE: [
                 (OntologicalPremise.REAL_WORLD_GROUNDING, "direct"),
                 (OntologicalPremise.CORRESPONDENCE, "direct"),
-                (OntologicalPremise.MIMICRY_DETECTION, "indirect")
+                (OntologicalPremise.MIMICRY_DETECTION, "indirect"),
             ],
             FailureCategory.REPRODUCIBILITY_FAILURE: [
                 (OntologicalPremise.REPRODUCIBILITY, "direct"),
-                (OntologicalPremise.TRANSPARENCY, "indirect")
+                (OntologicalPremise.TRANSPARENCY, "indirect"),
             ],
             FailureCategory.METHODOLOGY_FAILURE: [
                 (OntologicalPremise.FALSIFIABILITY, "direct"),
-                (OntologicalPremise.GLASS_BOX, "direct")
-            ]
+                (OntologicalPremise.GLASS_BOX, "direct"),
+            ],
         }
 
         # Add premise violations based on category
@@ -354,7 +416,7 @@ class FailureAnalyzer:
                     premise=premise,
                     violation_description=f"Failure in {failure.category.value} violates {premise.value} premise",
                     impact_level=impact,
-                    evidence=failure.evidence[:1]  # Use first evidence item
+                    evidence=failure.evidence[:1],  # Use first evidence item
                 )
                 violations.append(violation)
 
@@ -364,13 +426,15 @@ class FailureAnalyzer:
                 premise=OntologicalPremise.GLASS_BOX,
                 violation_description="Critical failure indicates lack of transparency in development",
                 impact_level="direct",
-                evidence=failure.evidence[:1]
+                evidence=failure.evidence[:1],
             )
             violations.append(violation)
 
         return violations
 
-    def _determine_methodology_implications(self, failure: FailureAnalysis) -> List[str]:
+    def _determine_methodology_implications(
+        self, failure: FailureAnalysis
+    ) -> List[str]:
         """Determine implications for the methodology"""
         implications = []
 
@@ -393,7 +457,7 @@ class FailureAnalyzer:
         failures = []
 
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Create failure analysis for falsified claim
@@ -404,8 +468,8 @@ class FailureAnalyzer:
                     description="Three independent falsification tests rejected the 45.30% density claim",
                     severity=FailureSeverity.CRITICAL,
                     category=FailureCategory.DETECTOR_FAILURE,
-                    discovered_date=datetime.datetime.utcnow().isoformat() + 'Z',
-                    last_updated=datetime.datetime.utcnow().isoformat() + 'Z',
+                    discovered_date=datetime.datetime.utcnow().isoformat() + "Z",
+                    last_updated=datetime.datetime.utcnow().isoformat() + "Z",
                     premise_violations=[
                         PremiseViolation(
                             premise=OntologicalPremise.FALSIFIABILITY,
@@ -415,39 +479,42 @@ class FailureAnalyzer:
                                 FailureEvidence(
                                     description="70% false positive rate in detector",
                                     source_file=str(filepath),
-                                    line_numbers=[30, 40]  # Approximate line numbers
+                                    line_numbers=[30, 40],  # Approximate line numbers
                                 )
-                            ]
+                            ],
                         )
                     ],
                     methodology_implications=[
                         "All density claims using this detector are invalid",
                         "Detector requires complete redesign",
-                        "Methodology proved itself by identifying its own failure"
+                        "Methodology proved itself by identifying its own failure",
                     ],
                     falsifiable_claims_affected=["DENSITY-001", "DENSITY-002"],
                     evidence=[
                         FailureEvidence(
                             description="Falsification test results showing 70% false positive rate",
                             source_file=str(filepath),
-                            data_hash=hashlib.sha256(content.encode()).hexdigest()[:16]
+                            data_hash=hashlib.sha256(content.encode()).hexdigest()[:16],
                         )
                     ],
                     reproduction_steps=[
                         "Run falsification tests from FALSIFICATION_RESULTS.md",
                         "Sample 100 'verified' turns manually",
-                        "Calculate precision rate"
+                        "Calculate precision rate",
                     ],
                     status="resolved",  # Already documented and addressed
                     fix_required=[
                         "Remove 45.30% claim from all files",
                         "Document detector failure mode",
-                        "Revise to conservative 5-10% estimate"
+                        "Revise to conservative 5-10% estimate",
                     ],
                     fix_priority="immediate",
                     independent_verification_possible=True,
-                    verification_instructions="See FALSIFICATION_RESULTS.md for test methodology"
+                    verification_instructions="See FALSIFICATION_RESULTS.md for test methodology",
                 )
                 failures.append(failure)
 
-        except Exception as
+        except Exception as e:
+            # Log parsing error but continue with analysis
+            print(f"Warning: Error parsing failures from FAILURES.md: {e}")
+            # Continue with existing failures list

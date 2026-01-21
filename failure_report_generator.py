@@ -4,58 +4,68 @@
 # Date: 2026-01-20
 # Methodology: Orthogonal Engineering with Popperian Falsification
 
-import json
-import hashlib
 import datetime
+import hashlib
+import json
 import os
 import sys
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from dataclasses import dataclass, asdict
-from enum import Enum
 import textwrap
 from collections import defaultdict
+from dataclasses import asdict, dataclass
+from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 # ============================================================================
 # REPORT TYPES
 # ============================================================================
 
+
 class ReportType(Enum):
     """Types of failure analysis reports"""
 
     # Individual Failure Reports
-    FAILURE_ANALYSIS = "failure_analysis"          # Detailed analysis of single failure
-    FALSIFICATION_REPORT = "falsification_report"  # Report on falsification test failure
-    CORRESPONDENCE_REPORT = "correspondence_report" # Correspondence validation failure
+    FAILURE_ANALYSIS = "failure_analysis"  # Detailed analysis of single failure
+    FALSIFICATION_REPORT = (
+        "falsification_report"  # Report on falsification test failure
+    )
+    CORRESPONDENCE_REPORT = "correspondence_report"  # Correspondence validation failure
 
     # Aggregate Reports
-    METHODOLOGY_HEALTH = "methodology_health"      # Overall methodology health
-    TOOL_VALIDATION = "tool_validation"           # Tool validation status
-    ONTOLOGICAL_AUDIT = "ontological_audit"       # Audit of ontological premises
+    METHODOLOGY_HEALTH = "methodology_health"  # Overall methodology health
+    TOOL_VALIDATION = "tool_validation"  # Tool validation status
+    ONTOLOGICAL_AUDIT = "ontological_audit"  # Audit of ontological premises
 
     # Trend Reports
-    FAILURE_TRENDS = "failure_trends"             # Failure trends over time
-    RESOLUTION_ANALYSIS = "resolution_analysis"   # Analysis of failure resolutions
+    FAILURE_TRENDS = "failure_trends"  # Failure trends over time
+    RESOLUTION_ANALYSIS = "resolution_analysis"  # Analysis of failure resolutions
 
     # Special Reports
-    CRITICAL_FAILURE_SUMMARY = "critical_failure_summary" # Summary of critical failures
-    GLASS_BOX_COMPLIANCE = "glass_box_compliance" # Glass box compliance report
+    CRITICAL_FAILURE_SUMMARY = (
+        "critical_failure_summary"  # Summary of critical failures
+    )
+    GLASS_BOX_COMPLIANCE = "glass_box_compliance"  # Glass box compliance report
+
 
 class ReportFormat(Enum):
     """Output formats for reports"""
+
     MARKDOWN = "markdown"
     HTML = "html"
     JSON = "json"
     PLAIN_TEXT = "plain_text"
     CSV = "csv"
 
+
 # ============================================================================
 # REPORT STRUCTURES
 # ============================================================================
 
+
 @dataclass
 class ReportMetadata:
     """Metadata for failure analysis reports"""
+
     report_id: str
     report_type: ReportType
     generated_at: str
@@ -65,7 +75,7 @@ class ReportMetadata:
 
     def __post_init__(self):
         if not self.generated_at:
-            self.generated_at = datetime.datetime.utcnow().isoformat() + 'Z'
+            self.generated_at = datetime.datetime.utcnow().isoformat() + "Z"
         if not self.report_hash:
             self.report_hash = self._calculate_hash()
 
@@ -74,9 +84,11 @@ class ReportMetadata:
         content = f"{self.report_id}{self.report_type.value}{self.generated_at}"
         return hashlib.sha256(content.encode()).hexdigest()[:16]
 
+
 @dataclass
 class FailureStatistics:
     """Statistical analysis of failures"""
+
     total_failures: int
     critical_failures: int
     high_priority_failures: int
@@ -101,25 +113,27 @@ class FailureStatistics:
             "critical": self.critical_failures,
             "high": self.high_priority_failures,
             "medium": self.medium_priority_failures,
-            "low": self.low_priority_failures
+            "low": self.low_priority_failures,
         }
 
         self.total_by_status = {
             "open": self.open_failures,
             "in_progress": self.in_progress_failures,
-            "resolved": self.resolved_failures
+            "resolved": self.resolved_failures,
         }
 
         self.total_by_category = {
             "detector": self.detector_failures,
             "correspondence": self.correspondence_failures,
             "statistical": self.statistical_failures,
-            "reproducibility": self.reproducibility_failures
+            "reproducibility": self.reproducibility_failures,
         }
+
 
 @dataclass
 class OntologicalPremiseAnalysis:
     """Analysis of ontological premise violations"""
+
     premise_name: str
     premise_description: str
     violations_count: int
@@ -134,9 +148,11 @@ class OntologicalPremiseAnalysis:
         critical_penalty = self.critical_violations * 0.5
         return min(1.0, base_score + critical_penalty)
 
+
 @dataclass
 class MethodologyHealthScore:
     """Health score for methodology"""
+
     overall_score: float  # 0.0 to 1.0
     falsifiability_score: float
     correspondence_score: float
@@ -158,9 +174,11 @@ class MethodologyHealthScore:
         else:
             return "CRITICAL"
 
+
 # ============================================================================
 # REPORT GENERATOR CLASS
 # ============================================================================
+
 
 class FailureReportGenerator:
     """Generate comprehensive failure analysis reports"""
@@ -184,7 +202,12 @@ class FailureReportGenerator:
             failures.extend(self._parse_failures_md(failures_md_path))
 
         # Load from falsification results
-        falsification_path = self.repository_path / "evidence" / "deepseek-analysis" / "FALSIFICATION_RESULTS.md"
+        falsification_path = (
+            self.repository_path
+            / "evidence"
+            / "deepseek-analysis"
+            / "FALSIFICATION_RESULTS.md"
+        )
         if falsification_path.exists():
             failures.extend(self._parse_falsification_results(falsification_path))
 
@@ -200,27 +223,37 @@ class FailureReportGenerator:
         failures = []
 
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # Parse critical failures
             if "## 🚨 CRITICAL FAILURES" in content:
-                critical_section = content.split("## 🚨 CRITICAL FAILURES")[1].split("## ⚠️")[0]
-                failures.extend(self._parse_failure_section(critical_section, "critical"))
+                critical_section = content.split("## 🚨 CRITICAL FAILURES")[1].split(
+                    "## ⚠️"
+                )[0]
+                failures.extend(
+                    self._parse_failure_section(critical_section, "critical")
+                )
 
             # Parse high priority failures
             if "## ⚠️ HIGH PRIORITY FAILURES" in content:
-                high_section = content.split("## ⚠️ HIGH PRIORITY FAILURES")[1].split("## 🔵")[0]
+                high_section = content.split("## ⚠️ HIGH PRIORITY FAILURES")[1].split(
+                    "## 🔵"
+                )[0]
                 failures.extend(self._parse_failure_section(high_section, "high"))
 
             # Parse medium priority failures
             if "## 🔵 MEDIUM PRIORITY FAILURES" in content:
-                medium_section = content.split("## 🔵 MEDIUM PRIORITY FAILURES")[1].split("## 💚")[0]
+                medium_section = content.split("## 🔵 MEDIUM PRIORITY FAILURES")[
+                    1
+                ].split("## 💚")[0]
                 failures.extend(self._parse_failure_section(medium_section, "medium"))
 
             # Parse low priority failures
             if "## 💚 LOW PRIORITY FAILURES" in content:
-                low_section = content.split("## 💚 LOW PRIORITY FAILURES")[1].split("## 📊")[0]
+                low_section = content.split("## 💚 LOW PRIORITY FAILURES")[1].split(
+                    "## 📊"
+                )[0]
                 failures.extend(self._parse_failure_section(low_section, "low"))
 
         except Exception as e:
@@ -228,10 +261,12 @@ class FailureReportGenerator:
 
         return failures
 
-    def _parse_failure_section(self, section: str, severity: str) -> List[Dict[str, Any]]:
+    def _parse_failure_section(
+        self, section: str, severity: str
+    ) -> List[Dict[str, Any]]:
         """Parse individual failure sections"""
         failures = []
-        lines = section.strip().split('\n')
+        lines = section.strip().split("\n")
 
         current_failure = None
         current_description = []
@@ -240,55 +275,59 @@ class FailureReportGenerator:
             line = line.strip()
 
             # Detect failure start
-            if line.startswith('### FAILURE') and ':' in line:
+            if line.startswith("### FAILURE") and ":" in line:
                 if current_failure is not None:
                     # Save previous failure
-                    current_failure['description'] = ' '.join(current_description)
+                    current_failure["description"] = " ".join(current_description)
                     failures.append(current_failure)
 
                 # Start new failure
-                title_parts = line.split(':', 1)
+                title_parts = line.split(":", 1)
                 if len(title_parts) > 1:
                     title = title_parts[1].strip()
                 else:
                     title = line
 
                 current_failure = {
-                    'id': f"FAILURE-{len(failures)+1:03d}",
-                    'title': title,
-                    'severity': severity,
-                    'category': self._determine_category(title),
-                    'description': '',
-                    'evidence': [],
-                    'fix_required': [],
-                    'status': 'open',
-                    'discovered_date': datetime.datetime.utcnow().isoformat() + 'Z'
+                    "id": f"FAILURE-{len(failures) + 1:03d}",
+                    "title": title,
+                    "severity": severity,
+                    "category": self._determine_category(title),
+                    "description": "",
+                    "evidence": [],
+                    "fix_required": [],
+                    "status": "open",
+                    "discovered_date": datetime.datetime.utcnow().isoformat() + "Z",
                 }
                 current_description = []
 
             # Collect description
-            elif current_failure is not None and line and not line.startswith('**'):
+            elif current_failure is not None and line and not line.startswith("**"):
                 current_description.append(line)
 
             # Detect evidence
-            elif line.startswith('**Evidence:**'):
+            elif line.startswith("**Evidence:**"):
                 if i + 1 < len(lines):
                     evidence = lines[i + 1].strip()
                     if evidence:
-                        current_failure['evidence'].append(evidence)
+                        current_failure["evidence"].append(evidence)
 
             # Detect fix requirements
-            elif line.startswith('**Fix Required:**'):
+            elif line.startswith("**Fix Required:**"):
                 j = i + 1
-                while j < len(lines) and lines[j].strip() and not lines[j].strip().startswith('**'):
+                while (
+                    j < len(lines)
+                    and lines[j].strip()
+                    and not lines[j].strip().startswith("**")
+                ):
                     fix_line = lines[j].strip()
                     if fix_line:
-                        current_failure['fix_required'].append(fix_line)
+                        current_failure["fix_required"].append(fix_line)
                     j += 1
 
         # Add the last failure
         if current_failure is not None:
-            current_failure['description'] = ' '.join(current_description)
+            current_failure["description"] = " ".join(current_description)
             failures.append(current_failure)
 
         return failures
@@ -297,49 +336,56 @@ class FailureReportGenerator:
         """Determine failure category from title"""
         title_lower = title.lower()
 
-        if any(word in title_lower for word in ['detector', 'canal', 'pattern']):
-            return 'detector_failure'
-        elif any(word in title_lower for word in ['statistical', 'p-value', 'significance']):
-            return 'statistical_failure'
-        elif any(word in title_lower for word in ['correspondence', 'implementation', 'working']):
-            return 'correspondence_failure'
-        elif any(word in title_lower for word in ['reproducibility', 'reproduce', 'setup']):
-            return 'reproducibility_failure'
+        if any(word in title_lower for word in ["detector", "canal", "pattern"]):
+            return "detector_failure"
+        elif any(
+            word in title_lower for word in ["statistical", "p-value", "significance"]
+        ):
+            return "statistical_failure"
+        elif any(
+            word in title_lower
+            for word in ["correspondence", "implementation", "working"]
+        ):
+            return "correspondence_failure"
+        elif any(
+            word in title_lower for word in ["reproducibility", "reproduce", "setup"]
+        ):
+            return "reproducibility_failure"
         else:
-            return 'implementation_failure'
+            return "implementation_failure"
 
     def _parse_falsification_results(self, filepath: Path) -> List[Dict[str, Any]]:
         """Parse falsification results"""
         failures = []
 
         try:
-            with open(filepath, 'r', encoding='utf-8') as f:
+            with open(filepath, "r", encoding="utf-8") as f:
                 content = f.read()
 
             if "❌ CLAIM REJECTED" in content:
                 failure = {
-                    'id': 'FALSIFICATION-001',
-                    'title': 'DeepSeek 45.30% density claim falsified',
-                    'severity': 'critical',
-                    'category': 'detector_failure',
-                    'description': 'Three independent falsification tests rejected the 45.30% density claim',
-                    'evidence': [
-                        '70% false positive rate in detector',
-                        'Chaotic variance (100% range)',
-                        '96% repetition rate indicating mimicry'
+                    "id": "FALSIFICATION-001",
+                    "title": "DeepSeek 45.30% density claim falsified",
+                    "severity": "critical",
+                    "category": "detector_failure",
+                    "description": "Three independent falsification tests rejected the 45.30% density claim",
+                    "evidence": [
+                        "70% false positive rate in detector",
+                        "Chaotic variance (100% range)",
+                        "96% repetition rate indicating mimicry",
                     ],
-                    'fix_required': [
-                        'Remove 45.30% claim from all files',
-                        'Document detector failure mode',
-                        'Revise to conservative 5-10% estimate'
+                    "fix_required": [
+                        "Remove 45.30% claim from all files",
+                        "Document detector failure mode",
+                        "Revise to conservative 5-10% estimate",
                     ],
-                    'status': 'resolved',
-                    'discovered_date': datetime.datetime.utcnow().isoformat() + 'Z',
-                    'methodology_implications': [
-                        'All density claims using this detector are invalid',
-                        'Detector requires complete redesign',
-                        'Methodology proved itself by identifying its own failure'
-                    ]
+                    "status": "resolved",
+                    "discovered_date": datetime.datetime.utcnow().isoformat() + "Z",
+                    "methodology_implications": [
+                        "All density claims using this detector are invalid",
+                        "Detector requires complete redesign",
+                        "Methodology proved itself by identifying its own failure",
+                    ],
                 }
                 failures.append(failure)
 
@@ -354,11 +400,11 @@ class FailureReportGenerator:
 
         try:
             for log_file in logs_dir.glob("*.json"):
-                with open(log_file, 'r', encoding='utf-8') as f:
+                with open(log_file, "r", encoding="utf-8") as f:
                     log_data = json.load(f)
 
-                if 'failures' in log_data:
-                    failures.extend(log_data['failures'])
+                if "failures" in log_data:
+                    failures.extend(log_data["failures"])
 
         except Exception as e:
             print(f"Error loading failure logs: {e}")
@@ -369,19 +415,41 @@ class FailureReportGenerator:
         """Calculate failure statistics"""
         stats = FailureStatistics(
             total_failures=len(self.failures),
-            critical_failures=sum(1 for f in self.failures if f.get('severity') == 'critical'),
-            high_priority_failures=sum(1 for f in self.failures if f.get('severity') == 'high'),
-            medium_priority_failures=sum(1 for f in self.failures if f.get('severity') == 'medium'),
-            low_priority_failures=sum(1 for f in self.failures if f.get('severity') == 'low'),
-
-            open_failures=sum(1 for f in self.failures if f.get('status') == 'open'),
-            in_progress_failures=sum(1 for f in self.failures if f.get('status') == 'in_progress'),
-            resolved_failures=sum(1 for f in self.failures if f.get('status') == 'resolved'),
-
-            detector_failures=sum(1 for f in self.failures if f.get('category') == 'detector_failure'),
-            correspondence_failures=sum(1 for f in self.failures if f.get('category') == 'correspondence_failure'),
-            statistical_failures=sum(1 for f in self.failures if f.get('category') == 'statistical_failure'),
-            reproducibility_failures=sum(1 for f in self.failures if f.get('category') == 'reproducibility_failure')
+            critical_failures=sum(
+                1 for f in self.failures if f.get("severity") == "critical"
+            ),
+            high_priority_failures=sum(
+                1 for f in self.failures if f.get("severity") == "high"
+            ),
+            medium_priority_failures=sum(
+                1 for f in self.failures if f.get("severity") == "medium"
+            ),
+            low_priority_failures=sum(
+                1 for f in self.failures if f.get("severity") == "low"
+            ),
+            open_failures=sum(1 for f in self.failures if f.get("status") == "open"),
+            in_progress_failures=sum(
+                1 for f in self.failures if f.get("status") == "in_progress"
+            ),
+            resolved_failures=sum(
+                1 for f in self.failures if f.get("status") == "resolved"
+            ),
+            detector_failures=sum(
+                1 for f in self.failures if f.get("category") == "detector_failure"
+            ),
+            correspondence_failures=sum(
+                1
+                for f in self.failures
+                if f.get("category") == "correspondence_failure"
+            ),
+            statistical_failures=sum(
+                1 for f in self.failures if f.get("category") == "statistical_failure"
+            ),
+            reproducibility_failures=sum(
+                1
+                for f in self.failures
+                if f.get("category") == "reproducibility_failure"
+            ),
         )
 
         stats.calculate_totals()
@@ -391,12 +459,14 @@ class FailureReportGenerator:
     # REPORT GENERATION METHODS
     # ============================================================================
 
-    def generate_methodology_health_report(self, format: ReportFormat = ReportFormat.MARKDOWN) -> str:
+    def generate_methodology_health_report(
+        self, format: ReportFormat = ReportFormat.MARKDOWN
+    ) -> str:
         """Generate methodology health report"""
         metadata = ReportMetadata(
             report_id=f"METHODOLOGY-HEALTH-{datetime.datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
             report_type=ReportType.METHODOLOGY_HEALTH,
-            generated_at=datetime.datetime.utcnow().isoformat() + 'Z'
+            generated_at=datetime.datetime.utcnow().isoformat() + "Z",
         )
 
         # Calculate health scores
@@ -422,19 +492,19 @@ class FailureReportGenerator:
 
         # Calculate overall score (weighted average)
         weights = {
-            'falsifiability': 0.3,
-            'correspondence': 0.25,
-            'transparency': 0.2,
-            'reproducibility': 0.15,
-            'tool_validation': 0.1
+            "falsifiability": 0.3,
+            "correspondence": 0.25,
+            "transparency": 0.2,
+            "reproducibility": 0.15,
+            "tool_validation": 0.1,
         }
 
         overall_score = (
-            falsifiability_score * weights['falsifiability'] +
-            correspondence_score * weights['correspondence'] +
-            transparency_score * weights['transparency'] +
-            reproducibility_score * weights['reproducibility'] +
-            tool_validation_score * weights['tool_validation']
+            falsifiability_score * weights["falsifiability"]
+            + correspondence_score * weights["correspondence"]
+            + transparency_score * weights["transparency"]
+            + reproducibility_score * weights["reproducibility"]
+            + tool_validation_score * weights["tool_validation"]
         )
 
         # Identify critical issues
@@ -444,11 +514,13 @@ class FailureReportGenerator:
         if correspondence_score < 0.4:
             critical_issues.append("Correspondence validation lacking evidence")
         if self.failure_statistics.critical_failures > 0:
-            critical_issues.append(f"{self.failure_statistics.critical_failures} critical failures unresolved")
+            critical_issues.append(
+                f"{self.failure_statistics.critical_failures} critical failures unresolved"
+            )
 
         # Generate recommendations
         recommendations = []
         if overall_score < 0.8:
             recommendations.append("Address critical failures before making new claims")
         if tool_validation_score < 0.6:
-            recommendations.append("Improve tool validation with more rigorous
+            recommendations.append("Improve tool validation with more rigorous testing")
