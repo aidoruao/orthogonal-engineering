@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>OE Glass-Box Telemetry Boundary v1.9</title>
+<title>OE Glass-Box Telemetry Boundary v1.10</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
@@ -11,7 +11,6 @@ details{margin:1rem 0;border:1px solid #0ff;padding:.5rem 1rem}
 summary{cursor:pointer;color:#ff0}
 pre{background:#000;padding:1rem;overflow:auto;border-left:3px solid #0ff}
 #integrity{color:#f0f}
-#validator{margin-top:2rem}
 textarea{width:100%;min-height:10rem;background:#222;color:#0f0;border:1px solid #0ff}
 button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bold;cursor:pointer}
 .ok{color:#0f0}.fail{color:#f00}
@@ -19,7 +18,7 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
 </head>
 <body>
 
-<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.9</h1>
+<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.10</h1>
 <p id="integrity"></p>
 
 <details open>
@@ -33,11 +32,11 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
     "execution_timestamp","active_ontology","ontology_candidates",
     "evidence_map","heuristic_overrides","decision","confidence",
     "hash_manifest","branch","signed","timeline_errors","environment_snapshot",
-    "repository_meta"
+    "repository_meta","suppressed_signals"
   ],
   "properties": {
     "schema_version":{"const":"1.0"},
-    "trace_version":{"type":"string","pattern":"^1\\.9$"},
+    "trace_version":{"type":"string","pattern":"^1\\.10$"},
     "trace_uuid":{"type":"string","format":"uuid"},
     "input_commit":{"type":"string","pattern":"^[0-9a-f]{40}$"},
     "execution_timestamp":{"type":"string","format":"date-time"},
@@ -57,7 +56,6 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
     "environment_snapshot":{"type":"object",
       "required":["python_version","pip_freeze"],
       "properties":{"python_version":{"type":"string"},"pip_freeze":{"type":"string"}}},
-    "signed":{"type":"string"},
     "repository_meta":{"type":"object",
       "required":["required_artifacts","artifact_validation_errors"],
       "properties":{
@@ -66,34 +64,49 @@ button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bol
           "required":["artifact","type","details"],
           "properties":{"artifact":{"type":"string"},"type":{"type":"string"},"details":{"type":"string"}}}}
       }
-    }
+    },
+    "suppressed_signals":{"type":"array","items":{"type":"string"}},
+    "signed":{"type":"string"}
   }
 }</pre>
 </details>
 
 <details>
-<summary>2. Atomic Implementation Steps (v1.9)</summary>
+<summary>2. Atomic Implementation Steps (v1.10)</summary>
 <pre>
 PHASE 1-8: Same as v1.8
 
-PHASE 9 Meta-Validation:
-# scan repo for required artifacts (scripts, validators, dashboards, meta-docs)
-# validate each required artifact exists and is linked in the repo
-# append missing or invalid artifacts to repository_meta.artifact_validation_errors
-# timeline_errors and exit code 2 enforcement still applies
-# signed proof of repository completeness included in trace
+PHASE 9: Meta-Validation + Enforcement
+- Crawl repository for required artifacts (pipeline.ps1, validator.py, GLASS_BOX_BOUNDARY.html, etc.)
+- Record missing/corrupted files in repository_meta.artifact_validation_errors
+- Snapshot environment (Python version, pip freeze)
+- Capture AI suppressed signals and append to suppressed_signals
+- Track timeline start/end; inject timeline_errors for sequence violations
+- Compute hash_manifest of evidence_map + environment snapshot
+- Sign the trace with private key (immutable)
+
+PHASE 10: Hard Enforcement
+- Exit with code 2 if any:
+  - len(trace.timeline_errors) > 0
+  - len(trace.repository_meta.artifact_validation_errors) > 0
+  - len(trace.suppressed_signals) > 0
+- Store signed JSON trace in traces/
+- All automation tools (IDE, scripts, Zed AI) reference this HTML for instructions
+
+PHASE 11: IDE / Automation Integration
+- Zed IDE or any automation reads this HTML
+- Generates instructions for Python wrapper implementation
+- Ensures all invariant and enforcement steps are captured
 </pre>
 </details>
 
 <details>
-<summary>3. Live Validator + Meta-Tracing (v1.9)</summary>
+<summary>3. Live Validator + Meta-Tracing (v1.10)</summary>
 <textarea id="input" placeholder='Paste JSON trace here'></textarea>
 <button onclick="validate()">Verify trace against schema</button>
 <p id="result"></p>
-</div>
 
 <script src="ajv.min.js"></script>
-<script src="sha256.min.js"></script>
 <script>
 async function computeHTMLHash() {
   const encoder = new TextEncoder();
@@ -134,20 +147,27 @@ function validate(){
       result.textContent='❌ Repository meta-validation failures: '+JSON.stringify(trace.repository_meta.artifact_validation_errors,null,2)+'\nExit Code 2 enforced';
       return;
     }
-    // signature check placeholder
+    // suppressed signals enforcement
+    if(trace.suppressed_signals && trace.suppressed_signals.length>0){
+      result.className='fail';
+      result.textContent='❌ Suppressed signals detected: '+JSON.stringify(trace.suppressed_signals,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
+    // signature check
     if(!trace.signed){
       result.className='fail';
       result.textContent='❌ Missing signature\nExit Code 2 enforced';
       return;
     }
     result.className='ok';
-    result.textContent='✅ Conforms to v1.9';
+    result.textContent='✅ Conforms to v1.10';
   }catch(e){
     result.className='fail';
     result.textContent='Invalid JSON: '+e.message+'\nExit Code 2 enforced';
   }
 }
 </script>
+</details>
 
 </body>
 </html>
