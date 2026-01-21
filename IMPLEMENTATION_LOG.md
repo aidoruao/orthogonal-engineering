@@ -11,8 +11,9 @@
 1. **Phase 1**: Establish Canonical Repository & Baseline
 2. **Phase 2**: Implement AI Conversation Processing
 3. **Phase 3**: Build Correspondence Validator for Local Files
-4. **Phase 4**: Create Zed Integration Framework
-5. **Phase 5**: Ontological Discovery Trace & Transparency Implementation
+4. **Phase 4**: Historical-Ontological Correspondence Execution
+5. **Phase 5**: Create Zed Integration Framework
+6. **Phase 6**: Ontological Discovery Trace & Transparency Implementation
 
 ## Phase 1: Canonical Repository Establishment
 
@@ -189,24 +190,100 @@
 - Result logging with evidence
 - Falsification reporting
 
-## Phase 4: Zed Integration Framework
+## Phase 4: Historical-Ontological Correspondence Execution
 
-### Step 4.1: Zed Extension Architecture
-**Objective**: Design real-time invariant detection for Zed  
-**Components**:
-- Real-time conversation monitoring
-- Invariant pattern detection
-- Correspondence validation triggers
-- Results display integration
+### Step 4.1: Historical Candidate Enumeration
+**Timestamp**: 2026-01-20T18:00:00Z  
+**Objective**: Enumerate explicit candidates for historical instantiation of Logos  
+**Method**: Apply entry criteria from Phase 4 atomic instruction  
+**Falsifiable Claim**: 4 candidates meet all entry criteria  
+**Correspondence Check**: Each candidate has explicit falsification conditions  
 
-### Step 4.2: Implementation
-**Objective**: Create functional Zed extension  
-**Technology**: Zed extension API + Python backend  
-**Features**:
-- Live invariant detection
-- Automatic correspondence checking
-- Session persistence
-- Export capabilities
+**Candidates Enumerated:**
+- C₁: No historical instantiation (Deist / Silent Logos)
+- C₂: Jesus of Nazareth (Christian claim)  
+- C₃: Muhammad (Islamic claim)
+- C₄: Composite / symbolic Logos (Gnostic / perennialist)
+
+**Artifacts Created:**
+- `HISTORICAL_LOGOS_CANDIDATES.md` - Complete candidate enumeration
+- Entry criteria verification for each candidate
+- Explicit falsification conditions documented
+
+### Step 4.2: Invariant Evaluation Axes Definition
+**Objective**: Define evaluation axes that apply equally to all candidates  
+**Method**: Develop 6 invariant axes with operational tests  
+**Falsifiable Claim**: Axes can be applied uniformly without special adjustment  
+**Correspondence Check**: Each axis tied to historical evidence
+
+**Axes Defined:**
+1. Historical Falsifiability
+2. Ontological Consistency  
+3. Explanatory Debt
+4. Correspondence Density
+5. Operational Consequences
+6. Failure Mode Severity
+
+**Artifacts Created:**
+- `HISTORICAL_CORRESPONDENCE_AXES.md` - Complete axis definitions
+- Operational tests for each axis
+- Measurement protocols documented
+
+### Step 4.3: Test Harness Instantiation
+**Objective**: Create one test harness per candidate  
+**Method**: Apply all 6 axes to each candidate equally  
+**Falsifiable Claim**: Each evaluation follows identical structure  
+**Correspondence Check**: All assumptions and evidence documented
+
+**Test Harnesses Created:**
+- `historical_tests/C1_EVALUATION.md` - C₁ evaluation
+- `historical_tests/C2_EVALUATION.md` - C₂ evaluation  
+- `historical_tests/C3_EVALUATION.md` - C₃ evaluation
+- `historical_tests/C4_EVALUATION.md` - C₄ evaluation
+
+**Structure Compliance:**
+- Claim Summary
+- Explicit Assumptions
+- Primary Historical Assertions
+- What Would Falsify This
+- Correspondence Evidence
+- Known Weak Points
+- Explanatory Debt Ledger
+- Collapse Behavior If False
+
+### Step 4.4: Truth Inelasticity Measurement
+**Objective**: Perform comparative debt analysis across candidates  
+**Method**: Apply truth inelasticity protocol from `TRUTH_INELASTICITY.md`  
+**Falsifiable Claim**: One candidate minimizes explanatory debt  
+**Correspondence Check**: Debt scores based on historical evidence
+
+**Analysis Performed:**
+- Debt scoring for each candidate (0-10 scale)
+- Comparative analysis across all candidates
+- Truth inelasticity testing for leading candidate
+- Failure mode severity comparison
+
+**Artifacts Created:**
+- `PHASE_4_TRUTH_INELASTICITY_REPORT.md` - Complete comparative analysis
+- Debt minimization patterns identified
+- Truth inelasticity verification
+
+### Step 4.5: README Integration
+**Objective**: Update repository with Phase 4 findings  
+**Method**: Add Phase 4 section to README with proper framing  
+**Falsifiable Claim**: Findings presented as reported invariants, not belief injection  
+**Correspondence Check**: README accurately reflects Phase 4 implementation
+
+**Updates Made:**
+- README version updated to v1.0.0
+- Phase 4 section added with findings
+- Methodological integrity documented
+- Critical distinctions clarified
+
+**Critical Framing:**
+- "This is a reported finding, not a belief injection"
+- "The framework remains intact regardless of which candidate minimizes debt"
+- "Truth doesn't need protection - only alternatives need to pay their bill"
 
 ### Step 4.3: Integration Testing
 **Objective**: Verify extension works in current Zed environment  
@@ -231,7 +308,7 @@ For each implementation step, document:
 **Phase 1 Complete**: Single canonical repository established with git history
 **Phase 2 Complete**: 417 AI files processed with density reports
 **Phase 3 Complete**: Correspondence validator operational with truth anchors
-**Phase 4 Complete**: Zed extension detecting invariants in real-time
+**Phase 4 Complete**: Historical-ontological correspondence testing operational with truth inelasticity measurement
 **System Audit Complete**: Comprehensive audit performed with falsifiable claims
 
 ## System Audit Update - 2026-01-20 17:41:31 UTC
