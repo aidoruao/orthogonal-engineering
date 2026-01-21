@@ -2,29 +2,29 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>OE Glass-Box Telemetry Boundary v1.8</title>
+<title>OE Glass-Box Telemetry Boundary v1.9</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-  body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
-  h1,h2{color:#0ff}
-  details{margin:1rem 0;border:1px solid #0ff;padding:.5rem 1rem}
-  summary{cursor:pointer;color:#ff0}
-  pre{background:#000;padding:1rem;overflow:auto;border-left:3px solid #0ff}
-  #integrity{color:#f0f}
-  #validator{margin-top:2rem}
-  textarea{width:100%;min-height:10rem;background:#222;color:#0f0;border:1px solid #0ff}
-  button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bold;cursor:pointer}
-  .ok{color:#0f0}.fail{color:#f00}
+body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
+h1,h2{color:#0ff}
+details{margin:1rem 0;border:1px solid #0ff;padding:.5rem 1rem}
+summary{cursor:pointer;color:#ff0}
+pre{background:#000;padding:1rem;overflow:auto;border-left:3px solid #0ff}
+#integrity{color:#f0f}
+#validator{margin-top:2rem}
+textarea{width:100%;min-height:10rem;background:#222;color:#0f0;border:1px solid #0ff}
+button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bold;cursor:pointer}
+.ok{color:#0f0}.fail{color:#f00}
 </style>
 </head>
 <body>
 
-<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.8</h1>
+<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.9</h1>
 <p id="integrity"></p>
 
 <details open>
-  <summary>1. Epistemic Trace Contract (JSON Schema)</summary>
-  <pre id="schema">{
+<summary>1. Epistemic Trace Contract + Meta-Invariant (JSON Schema)</summary>
+<pre id="schema">{
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "EpistemicTrace",
   "type": "object",
@@ -32,11 +32,12 @@
     "schema_version","trace_version","trace_uuid","input_commit",
     "execution_timestamp","active_ontology","ontology_candidates",
     "evidence_map","heuristic_overrides","decision","confidence",
-    "hash_manifest","branch","signed","timeline_errors","environment_snapshot"
+    "hash_manifest","branch","signed","timeline_errors","environment_snapshot",
+    "repository_meta"
   ],
   "properties": {
-    "schema_version": {"const":"1.0"},
-    "trace_version":{"type":"string","pattern":"^1\\.8$"},
+    "schema_version":{"const":"1.0"},
+    "trace_version":{"type":"string","pattern":"^1\\.9$"},
     "trace_uuid":{"type":"string","format":"uuid"},
     "input_commit":{"type":"string","pattern":"^[0-9a-f]{40}$"},
     "execution_timestamp":{"type":"string","format":"date-time"},
@@ -56,61 +57,43 @@
     "environment_snapshot":{"type":"object",
       "required":["python_version","pip_freeze"],
       "properties":{"python_version":{"type":"string"},"pip_freeze":{"type":"string"}}},
-    "signed":{"type":"string"}
+    "signed":{"type":"string"},
+    "repository_meta":{"type":"object",
+      "required":["required_artifacts","artifact_validation_errors"],
+      "properties":{
+        "required_artifacts":{"type":"array","items":{"type":"string"}},
+        "artifact_validation_errors":{"type":"array","items":{"type":"object",
+          "required":["artifact","type","details"],
+          "properties":{"artifact":{"type":"string"},"type":{"type":"string"},"details":{"type":"string"}}}}
+      }
+    }
   }
 }</pre>
 </details>
 
 <details>
-  <summary>2. Atomic Implementation Steps (v1.8)</summary>
-  <pre>
-PHASE 1  git rev-parse HEAD > .epistemic_boundary_commit
-PHASE 1b python --version > .epistemic_boundary_python
-PHASE 1c pip freeze > .epistemic_boundary_deps
+<summary>2. Atomic Implementation Steps (v1.9)</summary>
+<pre>
+PHASE 1-8: Same as v1.8
 
-PHASE 2  mkdir -p specs/ traces/ docs/
-PHASE 2b cp specs/EPISTEMIC_TRACE_SCHEMA.json .
-
-PHASE 3  cat > automation/run_full_audit_with_trace.py
-# wrapper: execute full_audit.py, intercept ontology, Gₛ assumptions
-# generate epistemic_trace.json including:
-# trace_uuid, branch, falsifying_evidence, signed
-# hash_manifest = SHA256 of evidence_map + env snapshot
-# enforce timeline_errors array for sequence violations
-# enforce: missing trace or any timeline_errors → exit code 2
-# prune retention AFTER fsync of new trace (branch-scoped)
-PHASE 3c  chmod +x automation/run_full_audit_with_trace.py
-
-PHASE 4  full_audit.py hooks (minimal, return-only)
-# expose detected signals, suppressed signals
-# no printing, backward compatible
-
-PHASE 5  enforce: any /automation script must emit trace or declare TRACE_EXEMPT=true
-
-PHASE 6  docs/GLASS_BOX_REQUIREMENT_v1.8.md
-# Policy: result-only reporting = failure
-# Explain v1.8 atomic + timeline enforcement
-
-PHASE 7  Zed IDE integration
-# run wrapper
-# show trace artifact
-# enforce pre-commit hook if IDE can’t
-
-PHASE 8  git add specs/ automation/ docs/
-PHASE 8b git commit -m "Add v1.8 trace contract with timeline enforcement"
-PHASE 8c git push
-  </pre>
+PHASE 9 Meta-Validation:
+# scan repo for required artifacts (scripts, validators, dashboards, meta-docs)
+# validate each required artifact exists and is linked in the repo
+# append missing or invalid artifacts to repository_meta.artifact_validation_errors
+# timeline_errors and exit code 2 enforcement still applies
+# signed proof of repository completeness included in trace
+</pre>
 </details>
 
 <details>
-  <summary>3. Live Validator (v1.8, AJV/WASM)</summary>
-  <textarea id="input" placeholder='Paste JSON trace here'></textarea>
-  <button onclick="validate()">Verify trace against schema</button>
-  <p id="result"></p>
+<summary>3. Live Validator + Meta-Tracing (v1.9)</summary>
+<textarea id="input" placeholder='Paste JSON trace here'></textarea>
+<button onclick="validate()">Verify trace against schema</button>
+<p id="result"></p>
 </div>
 
 <script src="ajv.min.js"></script>
-<script src="sha256.min.js"></script> <!-- WASM/JS SHA256 loader -->
+<script src="sha256.min.js"></script>
 <script>
 async function computeHTMLHash() {
   const encoder = new TextEncoder();
@@ -121,7 +104,6 @@ async function computeHTMLHash() {
 }
 
 let frozen_hash = "PENDING_HASH_COMPUTE";
-
 computeHTMLHash().then(h=>{
   frozen_hash=h;
   document.getElementById('integrity').textContent='SHA-256 of delivered HTML: '+frozen_hash;
@@ -146,6 +128,12 @@ function validate(){
       result.textContent='❌ Timeline violations detected: '+JSON.stringify(trace.timeline_errors,null,2)+'\nExit Code 2 enforced';
       return;
     }
+    // repository meta enforcement
+    if(trace.repository_meta && trace.repository_meta.artifact_validation_errors.length>0){
+      result.className='fail';
+      result.textContent='❌ Repository meta-validation failures: '+JSON.stringify(trace.repository_meta.artifact_validation_errors,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
     // signature check placeholder
     if(!trace.signed){
       result.className='fail';
@@ -153,7 +141,7 @@ function validate(){
       return;
     }
     result.className='ok';
-    result.textContent='✅ Conforms to v1.8';
+    result.textContent='✅ Conforms to v1.9';
   }catch(e){
     result.className='fail';
     result.textContent='Invalid JSON: '+e.message+'\nExit Code 2 enforced';
