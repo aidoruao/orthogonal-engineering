@@ -1,115 +1,118 @@
-# Orthogonal Engineering
+# Orthogonal Engineering: Discovery Protocol Documentation
 
-**Methodology for extracting reliable outputs from unreliable AI systems**
+**Methodology for discovering what must be true for reliable AI output extraction to work**
 
-[![Status](https://img.shields.io/badge/status-v0.7.0_falsified-orange)](https://github.com/aidoruao/orthogonal-engineering)
+[![Status](https://img.shields.io/badge/status-v0.8.0_ontologically_transparent-blue)](https://github.com/aidoruao/orthogonal-engineering)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
 ---
 
-## 🎯 What This Is
+## 🔍 What This Repository Is
 
-A **constraint-first framework** for working with Large Language Models (ChatGPT, Claude, DeepSeek, etc.) that:
-- Identifies truly reliable outputs (invariants) amid AI verbosity
-- Provides falsifiable statistical validation
-- Documents both successes AND failures
-- Requires correspondence with reality (not just linguistic agreement)
+A **discovery protocol** that traces operational invariants to their necessary metaphysical preconditions in a fully glass-box manner.
 
-**Key Principle:** Language is irrelevant unless implementation works.
+This repository **does not construct metaphysics**—it **discovers what must be true** for its own operational success to be possible.
 
----
-
-## 📊 Validated Results
-
-### Chat Canon Analysis (Proven ✅)
-- **70,058 conversational turns** analyzed (Claude + ChatGPT)
-- **7.57% verified invariant density** (5,301 invariants found)
-- **p < 0.0001** statistical significance
-- See: `evidence/chat-canon/`
-
-### DeepSeek Analysis (Falsified ❌)
-- **12,183 turns** analyzed
-- **CLAIMED: 45.30% density** 
-- **FALSIFIED: 70% false positive rate, 96% mimicry repetition**
-- **CORRECTED: 5-10% conservative estimate**
-- See: `evidence/deepseek-analysis/FALSIFICATION_RESULTS.md`
-
-### Narrative Leak Case Study (Proven ✅)
-- ChatGPT confession of instruction bleed (lines 9440-9520)
-- Three-way AI epistemic breach documented
-- Forensic methodology validated
-- See: `evidence/narrative-leak-001/`
+### Core Discovery Claim:
+> **IF** invariant-based verification works at all, **THEN** certain ontological precedents must hold.  
+> Here is the exact point where metaphysics becomes unavoidable, named, and inspectable.
 
 ---
 
-## 🔧 Real Tools Included
+## 🚫 What This Repository Is NOT
 
-### LOGOS BAT Execution Contracts
-- Actual working specification for Minecraft/ComputerCraft agents
-- Formal invariant registry and verification structure
-- See: `tools/LOGOS_BAT_EXECUTION_CONTRACT.md`
-
-### Epistemic Forensics Tools
-- Classification of AI tools by reliability (Git > Claude > Gemini/ChatGPT)
-- Methodology for finding truth in contradictory AI outputs
-- See: `methodology/EPISTEMIC_FORENSICS_TOOLS.md`
-
-### Analysis Scripts
-- `analysis/canal_detector.py` - Find canal patterns
-- `analysis/canal_refiner.py` - Mutual agreement detection (⚠️ 30% precision, needs fix)
-- `analysis/falsify_density_claim.py` - Three-test falsification framework
-- `analysis/extract_case_studies.py` - Evidence extraction
+- **NOT** claiming "Jesus is proven by code"
+- **NOT** treating metaphysics as empirical data
+- **NOT** asserting metaphysical truth as fact
+- **NOT** using AI "obedience" or devotional framing
+- **NOT** a black-box system with hidden assumptions
 
 ---
 
-## 🚨 What We Got Wrong (And Fixed)
+## 🧭 Discovery, Not Construction
 
-### The 45.30% Claim
-**What we said:** DeepSeek shows 45.30% verified invariant density (6x better than baseline)
+### The Methodology's Epistemic Stance:
+1. **Operational success implies preconditions**
+2. **Preconditions are discovered, not constructed**
+3. **Metaphysical commitments are explicit and traceable**
+4. **Every assumption is visible and rejectable**
 
-**What testing revealed:**
-- Detector precision: 30% (70% false positives)
-- Repetition rate: 96% (pure mimicry)
-- Variance: 100% range (chaotic)
+### What We Discovered:
+By analyzing our own operational requirements, we found these **ontological precedents** must hold for the methodology to function:
 
-**Honest correction:** 5-10% conservative estimate, pending correspondence validation
+1. **Consistent Reality Exists** - For correspondence validation to work
+2. **Structural Order Exists** - For pattern detection to be possible  
+3. **Deterministic Causality Holds** - For verification to be reliable
+4. **Correspondence is Possible** - For language to connect to reality
+5. **Evaluation Capacity Exists** - For judgments to be made
+6. **Temporal Persistence Works** - For history to be preserved
+7. **Information Integrity Holds** - For verification to be trusted
+8. **Identity Relations Exist** - For comparisons to be meaningful
+9. **Reliable Methods Are Possible** - For procedures to work
+10. **Intelligibility is Grounded** - For understanding to occur
 
-**Why this matters:** The falsification methodology WORKED. We caught the error before peer review.
+**These are precedents, not conclusions.** They are **necessary conditions** discovered through implication traces from operations.
 
 ---
 
-## 📖 Core Methodology
+## 📜 Ontological Precedents (Explicit & Traceable)
 
-### Proven Invariants (ChatGPT-Validated)
+### Full Documentation:
+- `NECESSITY_INVENTORY.md` - All statements presupposing necessity
+- `LOGICAL_IMPLICATION_TRACE.md` - Strict implication chains
+- `ONTOLOGICAL_PRECEDENTS.md` - Explicit precedent declarations
+- `FALSIFIABLE_BRIDGES.md` - Observable consequences that can fail
 
-**Invariant 1:** Invariant density is measurable
-- Formula: `verified_invariants / total_turns = density`
-- Constraint: Requires valid detector
+### Transparency Protocol:
+Each precedent includes:
+- **What must be true** for methodology to work
+- **Why it cannot be removed** without breaking operations
+- **What happens if rejected** (clear consequences)
+- **What methodology can say** (limited scope)
+- **What methodology cannot say** (explicit limits)
 
-**Invariant 2:** Constraint language is detectable
-- Pattern matching works
-- Limitation: Detection ≠ grounding
+---
 
-**Invariant 3:** Mimicry vs grounding distinguishable by implementation ⭐
-- `IF "verified" AND code works → genuine`
-- `IF "verified" AND code fails → mimicry`
-- **This is the truth anchor**
+## ⚖️ Where Disagreement Occurs (And Why)
 
-**Invariant 4:** System contains own falsification criteria
-- Repo has both claims AND tests
-- Self-falsifying is a feature, not a bug
+### You Can Reject:
+- Any ontological precedent
+- Any implication trace
+- Any operational claim
+- The entire methodology
 
-**Invariant 5:** Mimicry detectable via repetition
-- >50% repetition = suspicious
-- 96% repetition = definitive mimicry
+### Rejection Has Clear Consequences:
+- **Reject Consistent Reality** → Correspondence validation becomes meaningless
+- **Reject Deterministic Causality** → Verification cannot be trusted
+- **Reject Structural Order** → Pattern detection becomes impossible
+- **Reject All Precedents** → Methodology cannot function
 
-**Invariant 6:** Window-based agreement insufficient
-- 5-turn windows → 70% false positives
-- Require adjacent turns + uniqueness checks
+### No Hidden Commitments:
+- All assumptions are explicitly stated
+- All implication chains are fully traced
+- All rejection points are clearly marked
+- No metaphysical claims are smuggled in
 
-**Invariant 7:** Correspondence is truth anchor
-- Language irrelevant unless reality matches
-- Implementation tests required
+---
+
+## 🔬 Falsifiable Operations (What Actually Works)
+
+### Validated Results:
+- **Chat Canon Analysis**: 70,058 turns, 7.57% invariant density (VALIDATED)
+- **DeepSeek Analysis**: 45.30% claim falsified, corrected to 5-10% (FALSIFICATION WORKED)
+- **Narrative Leak Case**: ChatGPT confession documented (FORENSIC VALIDATION)
+
+### Working Tools:
+- `correspondence_validator_final.py` - Validates claims against reality
+- `canal_detector.py` - Detects invariant language patterns
+- `falsify_density_claim.py` - Tests claims for falsifiability
+- Git version control - Provides immutable audit trail
+
+### Operational Principles:
+1. **Correspondence Anchor**: Language irrelevant unless implementation works
+2. **Self-Falsification**: System contains own falsification criteria
+3. **Glass-Box Transparency**: All operations fully documented and inspectable
+4. **Atomic Verification**: Each step produces independently verifiable artifacts
 
 ---
 
@@ -117,93 +120,83 @@ A **constraint-first framework** for working with Large Language Models (ChatGPT
 
 ```
 orthogonal-engineering/
-├── README.md (this file)
-├── FORMAL_FOUNDATIONS.md (mathematical proofs)
-├── INVARIANTS.md (proven invariants only)
-├── FAILURES.md (what doesn't work)
+├── README.md (this file - discovery protocol documentation)
+├── NECESSITY_INVENTORY.md (all necessity presuppositions)
+├── LOGICAL_IMPLICATION_TRACE.md (strict implication chains)
+├── ONTOLOGICAL_PRECEDENTS.md (explicit precedent declarations)
+├── FALSIFIABLE_BRIDGES.md (falsifiable operational bridges)
+├── FORMAL_FOUNDATIONS.md (mathematical proofs under assumptions)
+├── INVARIANTS.md (only proven operational invariants)
+├── FAILURES.md (what doesn't work - critical documentation)
 │
-├── tools/ (real working tools)
-│   ├── LOGOS_BAT_EXECUTION_CONTRACT.md
-│   └── (more tools...)
+├── Methodology/
+│   └── EPISTEMIC_FORENSICS_TOOLS.md (artifact-based truth finding)
 │
-├── analysis/ (validated scripts)
-│   ├── canal_detector.py
-│   ├── canal_refiner.py (needs fixing)
-│   ├── falsify_density_claim.py
-│   └── extract_case_studies.py
-│
-├── evidence/
+├── evidence/ (validated and falsified results)
 │   ├── chat-canon/ (VALIDATED: 7.57% density)
 │   ├── narrative-leak-001/ (PROVEN: ChatGPT confession)
 │   └── deepseek-analysis/ (FALSIFIED: 45.30% → 5-10%)
 │
-└── methodology/
-    ├── EPISTEMIC_FORENSICS_TOOLS.md
-    └── (falsification frameworks)
+└── tools/ (working implementations)
+    ├── correspondence_validator_final.py
+    ├── canal_detector.py
+    └── falsify_density_claim.py
 ```
 
 ---
 
-## 🎓 For Researchers
+## 🧪 For Researchers & Critics
 
-### What's Falsifiable
+### To Verify Our Claims:
+1. **Clone fresh**: `git clone https://github.com/aidoruao/orthogonal-engineering`
+2. **Read precedents**: Examine `ONTOLOGICAL_PRECEDENTS.md`
+3. **Trace implications**: Follow `LOGICAL_IMPLICATION_TRACE.md`
+4. **Test bridges**: Run operations in `FALSIFIABLE_BRIDGES.md`
+5. **Attempt falsification**: Try to break any claim
 
-**These claims can be tested:**
-1. Chat canon has 7.57% verified invariant density
-2. DeepSeek detector had 70% false positive rate
-3. Mimicry detectable at >50% repetition threshold
-4. Correspondence checking distinguishes genuine from mimicry
+### What's Falsifiable:
+- **Operational bridges** can fail (see `FALSIFIABLE_BRIDGES.md`)
+- **Statistical claims** can be tested
+- **Implementation tests** can be replicated
+- **Correspondence validation** can be verified
 
-**How to falsify:**
-1. Run `canal_detector.py` on your own conversations
-2. Sample outputs, check for constraint language manually
-3. Calculate precision (true positives / all positives)
-4. Check if "verified" claims match working implementations
-
-### What's NOT Falsifiable (And We Don't Claim)
-
-- Metaphysical framing ("uncaused cause")
-- Marketing language ("truth-detection system")
-- Conditional claims without correspondence validation
+### What's NOT Falsifiable (And We Don't Claim):
+- Ontological precedents (they're discovered, not proved)
+- Metaphysical necessities (they're preconditions, not conclusions)
+- Ultimate truth (we only trace operational implications)
 
 ---
 
-## 📚 Key Documents
+## 📚 Key Insight
 
-**Start Here:**
-- `REORGANIZATION_v0.7.0.md` - What changed and why
-- `evidence/deepseek-analysis/FALSIFICATION_RESULTS.md` - How we caught the error
+The methodology works **if and only if** the ontological precedents hold. This conditional relationship is our core epistemic claim:
 
-**Core Methodology:**
-- `FORMAL_FOUNDATIONS.md` - Mathematical proofs
-- `INVARIANTS.md` - Only proven invariants
-- `FAILURES.md` - What doesn't work (CRITICAL)
+> **We don't prove metaphysics with code.**  
+> **We discover what metaphysics must be true for our code to work.**
 
-**Real Tools:**
-- `tools/LOGOS_BAT_EXECUTION_CONTRACT.md` - Working specification
-- `methodology/EPISTEMIC_FORENSICS_TOOLS.md` - AI tool reliability ranking
-
-**Evidence:**
-- `evidence/chat-canon/` - 70K turns, 7.57% density (VALIDATED)
-- `evidence/narrative-leak-001/` - ChatGPT confession (PROVEN)
-- `evidence/deepseek-analysis/` - 45.30% claim falsification
+This maintains:
+- ✅ **Philosophical legitimacy** (no category errors)
+- ✅ **Scientific honesty** (falsifiable operations)
+- ✅ **Methodological cleanliness** (glass-box transparency)
+- ✅ **Ontological maximalism without dishonesty** (explicit about commitments)
 
 ---
 
-## 🤝 Contributing
+## 🤝 Contributing Through Falsification
 
 This methodology improves through falsification, not confirmation.
 
-**We want:**
-- Tests that break our claims
-- Evidence of higher false positive rates
-- Better detector algorithms
-- Correspondence validation attempts
+### We Want:
+- Tests that break our operational bridges
+- Better implication traces
+- Clearer precedent declarations
+- More transparent documentation
 
-**We don't want:**
-- Unfalsifiable claims
-- Marketing without evidence
-- Density numbers without precision metrics
+### We Don't Want:
+- Unfalsifiable metaphysical "proofs"
+- Hidden assumptions
+- Black-box operations
+- AI obedience framing
 
 ---
 
@@ -213,21 +206,33 @@ MIT License - See LICENSE file
 
 ---
 
-## 🙏 Acknowledgments
+## 🔗 Related Documentation
 
-- **ChatGPT** for invariant analysis that caught our 45.30% error
-- **Claude** for forensic investigation finding the narrative leak confession
-- **DeepSeek** for providing the dataset that revealed detector limitations
+### Discovery Protocol Files:
+- `NECESSITY_INVENTORY.md` - Complete inventory of necessity presuppositions
+- `LOGICAL_IMPLICATION_TRACE.md` - Strict logical implication chains
+- `ONTOLOGICAL_PRECEDENTS.md` - Explicit ontological precedent declarations
+- `FALSIFIABLE_BRIDGES.md` - Falsifiable operational bridges
+
+### Operational Documentation:
+- `FORMAL_FOUNDATIONS.md` - Mathematical proofs (under stated assumptions)
+- `INVARIANTS.md` - Only proven operational invariants
+- `FAILURES.md` - What doesn't work (critical for honesty)
+- `Methodology/EPISTEMIC_FORENSICS_TOOLS.md` - Artifact-based truth finding
 
 ---
 
-## 📞 Contact
+## 📞 Contact & Verification
 
-**GitHub:** [@aidoruao](https://github.com/aidoruao)
-**Repo:** https://github.com/aidoruao/orthogonal-engineering
+**GitHub:** [@aidoruao](https://github.com/aidoruao)  
+**Repository:** https://github.com/aidoruao/orthogonal-engineering
+
+**Verification Protocol:** Clone and test all falsifiable claims independently.
 
 ---
 
 **Last Updated:** 2026-01-20  
-**Version:** v0.7.0 (Falsification & Reorganization)  
-**Status:** Methodology works when it admits own failures ✅
+**Version:** v0.8.0 (Ontological Transparency)  
+**Status:** Discovery protocol documented with glass-box transparency ✅
+
+**Core Achievement:** Methodology's metaphysical commitments are now **explicit, traceable, and rejectable**—exactly as required for anti-black-box compliance.
