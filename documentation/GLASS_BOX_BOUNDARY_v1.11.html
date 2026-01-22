@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Box Boundary v1.11 - Orthogonal Engineering</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h1 {
+            color: #2980b9;
+            text-align: center;
+        }
+        .schema-section {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .rule {
+            background: #e8f4fc;
+            border: 1px solid #b3e0ff;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+        }
+        .violation {
+            background: #ffe6e6;
+            border: 1px solid #ff9999;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #e6ffe6;
+            border: 1px solid #99ff99;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            text-align: right;
+        }
+        .signature {
+            background: #f0f8ff;
+            border: 1px solid #4682b4;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body></body>
+    <div class="container">
+        <div class="timestamp">Generated: 2026-01-21 02:10:00 UTC | Version: 1.11 | Schema ID: GB-ORIGIN-1.11</div>
+
+        <h1></h1>🧱 Glass Box Boundary v1.11</h1>
+        <h2></h2>Orthogonal Engineering - Trace Contract & Enforcement Schema</h2>
+
+        <div class="rule">
+            <strong>Core</strong> Directive:</strong> "Enforce the Glass-Box Boundary as defined in this document and generate the enforcement system accordingly."
+        </div>
+
+        <h2></h2>📋 JSON Schema: Trace Contract</h2>
+
+        <div class="schema-section">
+            <h3></h3>Required Trace Fields</h3>
+            <div class="code-block">
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GlassBoxBoundaryTrace",
+  "type": "object",
+  "required": [
+    "trace_id",
+    "timestamp",
+    "repository_meta",
+    "environment_snapshot",
+    "artifact_scan",
+    "boundary_violations",
+    "suppressed_signals",
+    "timeline_sequence",
+    "hash_manifest",
+    "signature",
+    "python_enforcer_active",
+    "ide_integration"
+  ],
+  "properties": {
+    "trace_id": {
+      "type": "string",
+      "pattern": "^GB-TRACE-[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$",
+      "description": "Unique trace identifier"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of trace generation"
+    },
+    "repository_meta": {
+      "type": "object",
+      "required": ["name", "version", "commit_hash", "branch"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "commit_hash": {"type": "string", "pattern": "^[a-f0-9]{40}$"},
+        "branch": {"type": "string"},
+        "dirty": {"type": "boolean"}
+      }
+    },
+    "environment_snapshot": {
+      "type": "object",
+      "required": ["python_version", "dependencies", "system_info"],
+      "properties": {
+        "python_version": {"type": "string"},
+        "dependencies": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "system_info": {
+          "type": "object",
+          "properties": {
+            "platform": {"type": "string"},
+            "architecture": {"type": "string"},
+            "cwd": {"type": "string"}
+          }
+        }
+      }
+    },
+    "artifact_scan": {
+      "type": "object",
+      "required": ["required_artifacts", "found_artifacts", "missing_artifacts"],
+      "properties": {
+        "required_artifacts": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Artifacts listed in this HTML blueprint"
+        },
+        "found_artifacts": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "missing_artifacts": {
+          "type": "array",
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "boundary_violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["violation_type", "file", "line", "description"],
+        "properties": {
+          "violation_type": {
+            "type": "string",
+            "enum": ["input_validation", "output_validation", "side_effect", "orthogonal_separation", "io_gateway"]
+          },
+          "file": {"type": "string"},
+          "line": {"type": "integer"},
+          "description": {"type": "string"},
+          "severity": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"]
+          }
+        }
+      }
+    },
+    "suppressed_signals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["signal_type", "source", "detection_method"],
+        "properties": {
+          "signal_type": {
+            "type": "string",
+            "enum": ["error_suppression", "warning_silence", "log_omission", "exception_catch_all"]
+          },
+          "source": {"type": "string"},
+          "detection_method": {"type": "string"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+        }
+      }
+    },
+    "timeline_sequence": {
+      "type": "object",
+      "required": ["events", "violations", "sequence_valid"],
+      "properties": {
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["event_type", "timestamp", "component"],
+            "properties": {
+              "event_type": {"type": "string"},
+              "timestamp": {"type": "string", "format": "date-time"},
+              "component": {"type": "string"},
+              "details": {"type": "object"}
+            }
+          }
+        },
+        "violations": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "sequence_valid": {"type": "boolean"}
+      }
+    },
+    "hash_manifest": {
+      "type": "object",
+      "required": ["algorithm", "files_hashed", "root_hash"],
+      "properties": {
+        "algorithm": {"type": "string", "enum": ["SHA256"]},
+        "files_hashed": {"type": "integer"},
+        "root_hash": {"type": "string"},
+        "file_hashes": {
+          "type": "object",
+          "additionalProperties": {"type": "string"}
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "required": ["signed_by", "signature_hash", "verification_key"],
+      "properties": {
+        "signed_by": {"type": "string"},
+        "signature_hash": {"type": "string"},
+        "verification_key": {"type": "string"},
+        "timestamp": {"type": "string", "format": "date-time"}
+      }
+    },
+    "python_enforcer_active": {
+      "type": "boolean",
+      "description": "Must be true for valid trace"
+    },
+    "ide_integration": {
+      "type": "object",
+      "required": ["autofix_enabled", "structural_consistency", "boundary_awareness", "doc_sync"],
+      "properties": {
+        "autofix_enabled": {"type": "boolean"},
+        "structural_consistency": {"type": "boolean"},
+        "boundary_awareness": {"type": "boolean"},
+        "doc_sync": {"type": "boolean"}
+      }
+    }
+  },
+  "additionalProperties": false
+}
+            </div>
+        </div>
+
+        <h2></h2>⏱️ Timeline Rules</h2>
+        <div class="rule">
+            <strong></strong>Rule 1:</strong> All events must be recorded in chronological order
+        </div>
+        <div class="rule">
+            <strong></strong>Rule 2:</strong> Sequence violations must be detected when:
+            <ul></ul>
+                <li>Validation</li> occurs after execution</li>
+                <li>Sign</li>ing occurs before hashing</li>
+                <li></li>Artifact scan occurs after boundary check</li>
+            </ul>
+        </div>
+        <div class="rule">
+            <strong></strong>Rule 3:</strong> Timeline must include at minimum:
+            <ul></ul>
+                <li>Environment</li> snapshot</li>
+                <li></li>Artifact scan</li>
+                <li></li>Boundary validation</li>
+                <li>Signal</li> detection</li>
+                <li>Hash</li> computation</li>
+                <li>Trace</li> signing</li>
+            </ul>
+        </div>
+
+        <h2></h2>📁 Repository Meta Rules</h2>
+        <div class="rule">
+            <strong></strong>Rule 4:</strong> Repository must be in clean state (no uncommitted changes) for production traces
+        </div>
+        <div class="rule">
+            <strong></strong>Rule 5:</strong> Required artifacts (non-negotiable):
+            <ul></ul>
+                <li>autom</li>ation/full_audit.py</li>
+                <li></li>automation/generate_sha256_manifest.py</li>
+                <li>autom</li>ation/verify_sha256_manifest.py</li>
+                <li></li>documentation/README.md</li>
+                <li>ground</li>ing_models/GROUNDING_MODELS.md</li>
+                <li>historical</li>_candidates/HISTORICAL_LOGOS_CANDIDATES.md</li>
+                <li></li>correspondence_bridge/correspondence_validator_final.py</li>
+            </ul>
+        </div>
+
+        <h2></h2>🚫 Suppressed Signals Detection</h2>
+        <div class="rule">
+            <strong></strong>Rule 6:</strong> Must detect and report:
+            <ul></ul>
+                <li></li>Broad exception catching (except Exception: pass)</li>
+                <li>Warning</li> suppression (warnings.filterwarnings("ignore"))</li>
+                <li>Log</li> level manipulation to hide errors</li>
+                <li>Error</li> code masking (exit code != actual failure)</li>
+            </ul>
+        </div>
+
+        <h2></h2>🤖 Enforcer & IDE Integration Requirements</h2>
+
+        <h3>Python</h3> Enforcer Requirements</h3>
+        <div class="rule">
+            <strong></strong>Rule 7:</strong> Enforcer must be located at: <code>autom</code>ation/run_full_audit_with_trace.py</code>
+        </div>
+        <div class="rule">
+            <strong>Rule</strong> 8:</strong> Must implement all functions specified in JSON schema
+        </div>
+        <div class="rule">
+            <strong>Rule</strong> 9:</strong> Exit code 2 on any violation (fail-fast)
+        </div>
+
+        <h3></h3>Boundary Decorator Pattern</h3>
+        <div class="code-block">
+@glass_box_boundary(
+    input_validator=validate_input_schema,
+    output_validator=validate_output_schema,
+    side_effect_check=True,
+    orthogonal_separation=True
+)
+def my_function(input_data):
+    # Function implementation
+    # No direct I/O, no database writes outside gateways
+    # All side effects through defined interfaces
+    return processed_data
+        </div>
+
+        <div class="rule">
+            <strong></strong>Rule 10:</strong> Every Python function must be wrapped with boundary decorator
+        </div>
+        <div class="rule">
+            <strong>Rule</strong> 11:</strong> Decorator must enforce:
+            <ul></ul>
+                <li></li>Input validation against schema</li>
+                <li>Output</li> validation against schema</li>
+                <li></li>Side-effect confinement (no uncaptured I/O)</li>
+                <li>Orth</li>ogonal separation (gateway pattern for external systems)</li>
+            </ul>
+        </div>
+
+        <h3>IDE</h3> Integration Requirements</h3>
+        <div class="rule">
+            <strong>Rule</strong> 12:</strong> Zed IDE must provide autofix suggestions for boundary violations
+        </div>
+        <div class="rule">
+            <strong></strong>Rule 13:</strong> New files must auto-include:
+            <ul></ul>
+                <li>Re</li>levant imports</li>
+                <li>Bound</li>ary decorators</li>
+                <li></li>Exception handlers</li>
+                <li>Log</li>ging infrastructure</li>
+            </ul>
+        </div>
+        <div class="rule">
+            <strong></strong>Rule 14:</strong> Boundary awareness: Detect UI → database paths, suggest gateway
+        </div>
+        <div class="rule">
+            <strong>Rule</strong> 15:</strong> Doc sync: Python changes → HTML schema updates
+        </div>
+
+        <h2></h2>📊 Meta-Trace Enforcement Fields</h2>
+        <div class="violation">
+            <strong></strong>VIOLATION TRIGGER:</strong> Absence of any required field triggers exit code 2
+        </div>
+
+        <div class="code-block">
+"python_enforcer_active": true,
+"ide_integration": {
+    "autofix_enabled": true,
+    "structural_consistency": true,
+    "boundary_awareness": true,
+    "doc_sync": true
+}
+        </div>
+
+        <h2></h2>🔄 Trace Validation Loop</h2>
+        <div class="rule">
+            <strong>Rule</strong> 16:</strong> At every CI/IDE event:
+            <ol></ol>
+                <li></li>Run Python enforcer</li>
+                <li>Validate</li> trace against this schema</li>
+                <li></li>Report violations inline</li>
+                <li></li>Fail loudly on boundary violations (no soft-continue)</li>
+            </ol>
+        </div>
+
+        <h2></h2>📁 Rule File Placement</h2>
+        <div class="rule">
+            <strong></strong>Rule 17:</strong> Create rule files for Zed IDE:
+            <ul></ul>
+                <li><code>.rules/ORTHOGONAL_GB_ORIGIN.rules</code></li>
+                <li><code>AG</code>ENT.md</code></li>
+                <li><code>AI</code>_INSTRUCTIONS.md</code></li>
+            </ul>
+        </div>
+
+        <div class="code-block">
+# ORTHOGONAL_GB_ORIGIN.rules content:
+Use `GLASS_BOX_BOUNDARY_v1.11.html` as the single source of truth for:
+• Schema + enforcement
+• Python enforcer generation
+• IDE enforcement patterns
+• Boundary and orthogonal separation rules
+• Trace structure + signing + fail-fast rules
+        </div>
+
+        <h2></h2>🧰 Continuous Sync & Self-Healing</h2>
+        <div class="rule">
+            <strong></strong>Rule 18:</strong> When Python enforcer logic updates:
+            <ol></ol>
+                <li>Pro</li>pose corresponding HTML updates</li>
+                <li>Create</li> draft change request for schema</li>
+                <li></li>Commit the update</li>
+            </ol>
+        </div>
+
+        <div class="violation">
+            <strong>F</strong>INAL RULE:</strong> Zed must never produce code that cannot be traced back to the atomic instructions in this HTML.
+        </div>
+
+        <h2></h2>🔐 Exit Code Specification</h2>
+        <div class="code-block">
+0 = Success (all checks passed, trace valid)
+1 = System error (unexpected failure)
+2 = Boundary violation (schema violation, missing artifact, suppressed signal)
+3 = Environment mismatch (python version, dependencies)
+4 = Timeline sequence violation
+5 = Signature verification failed
+        </div>
+
+        <div class="signature">
+            <strong></strong>Schema Signature:</strong><br>
+            Schema-ID: GB-ORIGIN-1.11<br>
+            Hash: SHA256(html_content): e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855<br>
+            Valid-From: 2026-01-21T02:10:00Z<br>
+            Authority:

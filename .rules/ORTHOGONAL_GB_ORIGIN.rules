@@ -1,0 +1,245 @@
+# ORTHOGONAL_GB_ORIGIN.rules - Zed IDE Configuration
+# Version: 1.11
+# Generated: 2026-01-21 02:10:00 UTC
+# Schema ID: GB-ORIGIN-1.11
+
+# ============================================================================
+# CORE DIRECTIVE
+# ============================================================================
+# Enforce the Glass-Box Boundary as defined in GLASS_BOX_BOUNDARY_v1.11.html
+# and generate the enforcement system accordingly.
+
+# ============================================================================
+# SINGLE SOURCE OF TRUTH
+# ============================================================================
+Use `GLASS_BOX_BOUNDARY_v1.11.html` as the single source of truth for:
+• Schema + enforcement
+• Python enforcer generation
+• IDE enforcement patterns
+• Boundary and orthogonal separation rules
+• Trace structure + signing + fail-fast rules
+
+# ============================================================================
+# ZED IDE INTEGRATION RULES
+# ============================================================================
+
+# 1. AUTO-GENERATE PYTHON ENFORCER
+# ----------------------------------------------------------------------------
+on_project_open:
+  - check: file_exists("documentation/GLASS_BOX_BOUNDARY_v1.11.html")
+  - action: generate_python_enforcer
+    template: glass_box_boundary
+    output: automation/run_full_audit_with_trace.py
+    requirements:
+      - scan_repository_for_artifacts
+      - snapshot_environment
+      - detect_suppressed_signals
+      - record_timeline_sequence
+      - compute_hash_manifest
+      - sign_trace_with_private_key
+      - exit_code_2_on_violation
+
+# 2. BOUNDARY ENFORCEMENT DECORATOR
+# ----------------------------------------------------------------------------
+on_python_file_create:
+  - pattern: "*.py"
+  - action: inject_boundary_decorator
+    decorator: "@glass_box_boundary"
+    requirements:
+      - input_validation
+      - output_validation
+      - side_effect_confinement
+      - orthogonal_separation
+    violation_action: raise_exception_immediately
+
+# 3. AUTOFIX SUGGESTIONS
+# ----------------------------------------------------------------------------
+on_code_violation:
+  - pattern: "direct_io_without_gateway"
+    suggestion: "Add gateway interface for I/O operations"
+    fix: inject_gateway_pattern
+
+  - pattern: "broad_exception_catch"
+    suggestion: "Replace 'except Exception:' with specific exception handling"
+    fix: replace_with_specific_exceptions
+
+  - pattern: "missing_input_validation"
+    suggestion: "Add input validation schema"
+    fix: add_validation_schema
+
+  - pattern: "missing_output_validation"
+    suggestion: "Add output validation schema"
+    fix: add_output_schema
+
+# 4. STRUCTURAL CONSISTENCY
+# ----------------------------------------------------------------------------
+on_new_file:
+  - pattern: "*.py"
+    action: auto_include:
+      - relevant_imports
+      - boundary_decorators
+      - exception_handlers
+      - logging_infrastructure
+    based_on: GLASS_BOX_BOUNDARY_v1.11.html
+
+# 5. BOUNDARY AWARENESS
+# ----------------------------------------------------------------------------
+on_code_analysis:
+  - pattern: "ui->database_direct_path"
+    detection: "Direct database access from UI layer"
+    suggestion: "Insert intermediary gateway pattern"
+    fix: inject_gateway_interface
+
+  - pattern: "uncaptured_side_effect"
+    detection: "Function modifies external state without interface"
+    suggestion: "Capture side effects through defined gateway"
+    fix: add_side_effect_gateway
+
+# 6. DOCUMENTATION SYNC
+# ----------------------------------------------------------------------------
+on_python_enforcer_update:
+  - trigger: "file_modified('automation/run_full_audit_with_trace.py')"
+  - action: propose_html_update
+    source: python_changes
+    target: documentation/GLASS_BOX_BOUNDARY_v1.11.html
+    create: draft_change_request
+    commit: true
+
+# ============================================================================
+# META-TRACE ENFORCEMENT
+# ============================================================================
+meta_trace_validation:
+  required_fields:
+    - python_enforcer_active: true
+    - ide_integration:
+        autofix_enabled: true
+        structural_consistency: true
+        boundary_awareness: true
+        doc_sync: true
+
+  validation_trigger: "absence_of_any_field"
+  action: "exit_code_2"
+
+# ============================================================================
+# TRACE VALIDATION LOOP
+# ============================================================================
+on_ci_event:
+  - action: run_python_enforcer
+    command: "python automation/run_full_audit_with_trace.py"
+
+  - action: validate_trace
+    schema: documentation/GLASS_BOX_BOUNDARY_v1.11.html
+
+  - action: report_violations
+    format: inline
+
+  - rule: fail_fast
+    condition: boundary_violation_detected
+    action: exit_code_2
+    message: "Boundary violation detected - failing loudly"
+
+# ============================================================================
+# CONTINUOUS SYNC & SELF-HEALING
+# ============================================================================
+continuous_sync:
+  - trigger: python_enforcer_logic_update
+    actions:
+      - propose_corresponding_html_updates
+      - create_draft_change_request_for_schema
+      - commit_the_update
+
+  - rule: traceability
+    requirement: "All code must be traceable back to atomic instructions in HTML"
+    violation_action: reject_code_generation
+
+# ============================================================================
+# EXIT CODE SPECIFICATION
+# ============================================================================
+exit_codes:
+  0: "Success (all checks passed, trace valid)"
+  1: "System error (unexpected failure)"
+  2: "Boundary violation (schema violation, missing artifact, suppressed signal)"
+  3: "Environment mismatch (python version, dependencies)"
+  4: "Timeline sequence violation"
+  5: "Signature verification failed"
+
+# ============================================================================
+# REQUIRED ARTIFACTS (NON-NEGOTIABLE)
+# ============================================================================
+required_artifacts:
+  - automation/full_audit.py
+  - automation/generate_sha256_manifest.py
+  - automation/verify_sha256_manifest.py
+  - documentation/README.md
+  - grounding_models/GROUNDING_MODELS.md
+  - historical_candidates/HISTORICAL_LOGOS_CANDIDATES.md
+  - correspondence_bridge/correspondence_validator_final.py
+
+# ============================================================================
+# SUPPRESSED SIGNALS DETECTION
+# ============================================================================
+suppressed_signals_detection:
+  patterns:
+    - "except Exception: pass"
+    - "warnings.filterwarnings('ignore')"
+    - "logging.getLogger().setLevel(logging.CRITICAL)"
+    - "sys.exit(0) # when actual failure occurred"
+
+  action: "report_as_violation"
+  severity: "high"
+
+# ============================================================================
+# TIMELINE SEQUENCE RULES
+# ============================================================================
+timeline_sequence:
+  required_events:
+    - environment_snapshot
+    - artifact_scan
+    - boundary_validation
+    - signal_detection
+    - hash_computation
+    - trace_signing
+
+  violation_patterns:
+    - "validation_after_execution"
+    - "signing_before_hashing"
+    - "artifact_scan_after_boundary_check"
+
+  action: "exit_code_4"
+
+# ============================================================================
+# ENFORCEMENT PRIORITY
+# ============================================================================
+priority: highest
+scope: project_wide
+applicable_languages:
+  - python
+  - markdown
+  - html
+  - json
+
+# ============================================================================
+# COMPLIANCE VERIFICATION
+# ============================================================================
+compliance_check:
+  frequency: "on_save"
+  tools:
+    - python_enforcer
+    - trace_validator
+    - boundary_scanner
+
+  reporting:
+    format: "inline_annotations"
+    action: "block_on_violation"
+
+# ============================================================================
+# FINAL RULE
+# ============================================================================
+final_rule: |
+  Zed must never produce code that cannot be traced back to
+  the atomic instructions in GLASS_BOX_BOUNDARY_v1.11.html.
+
+  All generated code must have a clear lineage to the HTML schema,
+  and all enforcement must be verifiable against the trace contract.
+
+# End of ORTHOGONAL_GB_ORIGIN.rules
