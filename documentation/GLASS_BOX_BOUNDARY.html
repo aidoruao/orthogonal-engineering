@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>OE Glass-Box Telemetry Boundary v1.11</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body{font-family:system-ui,monospace;background:#111;color:#0f0;margin:0;padding:2rem}
+h1,h2{color:#0ff}
+details{margin:1rem 0;border:1px solid #0ff;padding:.5rem 1rem}
+summary{cursor:pointer;color:#ff0}
+pre{background:#000;padding:1rem;overflow:auto;border-left:3px solid #0ff}
+#integrity{color:#f0f}
+textarea{width:100%;min-height:10rem;background:#222;color:#0f0;border:1px solid #0ff}
+button{background:#0ff;color:#000;border:none;padding:.5rem 1rem;font-weight:bold;cursor:pointer}
+.ok{color:#0f0}.fail{color:#f00}
+</style>
+</head>
+<body>
+
+<h1>Orthogonal Engineering – Glass-Box Telemetry Boundary v1.11</h1>
+<p id="integrity"></p>
+
+<details open>
+<summary>1. Epistemic Trace Contract + Active Blueprint (JSON Schema)</summary>
+<pre id="schema">{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EpistemicTrace",
+  "type": "object",
+  "required": [
+    "schema_version","trace_version","trace_uuid","input_commit",
+    "execution_timestamp","active_ontology","ontology_candidates",
+    "evidence_map","heuristic_overrides","decision","confidence",
+    "hash_manifest","branch","signed","timeline_errors","environment_snapshot",
+    "repository_meta","suppressed_signals","python_enforcer_active","ide_integration"
+  ],
+  "properties": {
+    "schema_version":{"const":"1.0"},
+    "trace_version":{"type":"string","pattern":"^1\\.11$"},
+    "trace_uuid":{"type":"string","format":"uuid"},
+    "input_commit":{"type":"string","pattern":"^[0-9a-f]{40}$"},
+    "execution_timestamp":{"type":"string","format":"date-time"},
+    "active_ontology":{"type":"string"},
+    "ontology_candidates":{"type":"array","items":{"type":"string"}},
+    "evidence_map":{"type":"object","additionalProperties":{"type":"array","items":{"type":"string"}}},
+    "heuristic_overrides":{"type":"array","items":{"type":"object","required":["heuristic","reason","blocked"],
+      "properties":{"heuristic":{"type":"string"},"reason":{"type":"string"},"blocked":{"type":"boolean"}}}},
+    "decision":{"type":"string"},
+    "confidence":{"type":"number","minimum":0,"maximum":1},
+    "hash_manifest":{"type":"string","pattern":"^[a-f0-9]{64}$"},
+    "branch":{"type":"string"},
+    "falsifying_evidence":{"type":"object","additionalProperties":{"type":"object"}},
+    "timeline_errors":{"type":"array","items":{"type":"object",
+      "required":["phase","type","timestamp","details"],
+      "properties":{"phase":{"type":"string"},"type":{"type":"string"},"timestamp":{"type":"string","format":"date-time"},"details":{"type":"string"}}}},
+    "environment_snapshot":{"type":"object",
+      "required":["python_version","pip_freeze"],
+      "properties":{"python_version":{"type":"string"},"pip_freeze":{"type":"string"}}},
+    "repository_meta":{"type":"object",
+      "required":["required_artifacts","artifact_validation_errors"],
+      "properties":{
+        "required_artifacts":{"type":"array","items":{"type":"string"}},
+        "artifact_validation_errors":{"type":"array","items":{"type":"object",
+          "required":["artifact","type","details"],
+          "properties":{"artifact":{"type":"string"},"type":{"type":"string"},"details":{"type":"string"}}}}
+      }
+    },
+    "suppressed_signals":{"type":"array","items":{"type":"string"}},
+    "python_enforcer_active":{"type":"boolean"},
+    "ide_integration":{"type":"object",
+      "required":["autofix_enabled","structural_consistency","boundary_awareness","doc_sync"],
+      "properties":{
+        "autofix_enabled":{"type":"boolean"},
+        "structural_consistency":{"type":"boolean"},
+        "boundary_awareness":{"type":"boolean"},
+        "doc_sync":{"type":"boolean"}
+      }
+    },
+    "signed":{"type":"string"}
+  }
+}</pre>
+</details>
+
+<details>
+<summary>2. Atomic Implementation Steps (v1.11)</summary>
+<pre>
+PHASE 1-10: Same as v1.10
+
+PHASE 11: Python Enforcer Activation
+- Python Decorator / Middleware wraps all functions to enforce boundaries
+- Any input/output outside allowed values triggers immediate exception
+- Logs all internal state transitions for transparency
+- Sets python_enforcer_active=true in trace
+
+PHASE 12: IDE (Zed AI) Integration
+- IDE reads blueprint (this HTML)
+- Enables autofix for code violating boundaries
+- Enforces structural consistency for new files
+- Provides boundary awareness during coding
+- Links Python Enforcer updates to automated doc sync
+- Sets ide_integration fields in trace
+
+PHASE 13: Orthogonal Enforcement
+- Ensures no component bypasses Glass Box boundaries
+- Suggests intermediary gateways if side-effects violate separation
+
+PHASE 14: Hard Exit Enforcement
+- Fail-fast if timeline_errors, repository_meta errors, suppressed_signals, or enforcer inactive
+- sys.exit(2)
+- Store signed JSON trace in traces/
+</pre>
+</details>
+
+<details>
+<summary>3. Live Validator + Meta-Tracing (v1.11)</summary>
+<textarea id="input" placeholder='Paste JSON trace here'></textarea>
+<button onclick="validate()">Verify trace against schema</button>
+<p id="result"></p>
+
+<script src="ajv.min.js"></script>
+<script>
+async function computeHTMLHash() {
+  const encoder = new TextEncoder();
+  const html_bytes = encoder.encode(document.documentElement.outerHTML);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', html_bytes);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+let frozen_hash = "PENDING_HASH_COMPUTE";
+computeHTMLHash().then(h=>{
+  frozen_hash=h;
+  document.getElementById('integrity').textContent='SHA-256 of delivered HTML: '+frozen_hash;
+});
+
+function validate(){
+  const src = document.getElementById('input').value.trim();
+  const result = document.getElementById('result');
+  try{
+    const trace = JSON.parse(src);
+    const schema = JSON.parse(document.getElementById('schema').textContent);
+    const ajv = new Ajv({allErrors:true});
+    const valid = ajv.validate(schema, trace);
+    if(!valid){
+      result.className='fail';
+      result.textContent='❌ Schema violation: '+JSON.stringify(ajv.errors,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
+    if(trace.timeline_errors && trace.timeline_errors.length>0){
+      result.className='fail';
+      result.textContent='❌ Timeline violations detected: '+JSON.stringify(trace.timeline_errors,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
+    if(trace.repository_meta && trace.repository_meta.artifact_validation_errors.length>0){
+      result.className='fail';
+      result.textContent='❌ Repository meta-validation failures: '+JSON.stringify(trace.repository_meta.artifact_validation_errors,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
+    if(trace.suppressed_signals && trace.suppressed_signals.length>0){
+      result.className='fail';
+      result.textContent='❌ Suppressed signals detected: '+JSON.stringify(trace.suppressed_signals,null,2)+'\nExit Code 2 enforced';
+      return;
+    }
+    if(!trace.python_enforcer_active){
+      result.className='fail';
+      result.textContent='❌ Python Enforcer inactive\nExit Code 2 enforced';
+      return;
+    }
+    const ide = trace.ide_integration;
+    if(!ide || !ide.autofix_enabled || !ide.structural_consistency || !ide.boundary_awareness || !ide.doc_sync){
+      result.className='fail';
+      result.textContent='❌ IDE integration incomplete\nExit Code 2 enforced';
+      return;
+    }
+    if(!trace.signed){
+      result.className='fail';
+      result.textContent='❌ Missing signature\nExit Code 2 enforced';
+      return;
+    }
+    result.className='ok';
+    result.textContent='✅ Conforms to v1.11';
+  }catch(e){
+    result.className='fail';
+    result.textContent='Invalid JSON: '+e.message+'\nExit Code 2 enforced';
+  }
+}
+</script>
+</details>
+
+</body>
+</html>
