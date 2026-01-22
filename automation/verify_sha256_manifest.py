@@ -313,11 +313,11 @@ class SHA256ManifestVerifier:
         # Summary
         print("SUMMARY")
         print("-" * 40)
-        print(f"✅ Verified:        {total_verified}")
-        print(f"❌ Mismatched:      {total_mismatched}")
-        print(f"📝 Missing in repo: {total_missing_repo}")
-        print(f"📋 Missing in manifest: {total_missing_manifest}")
-        print(f"⚠️  Errors:          {total_errors}")
+        print(f"[OK] Verified:        {total_verified}")
+        print(f"[X] Mismatched:      {total_mismatched}")
+        print(f"[i] Missing in repo: {total_missing_repo}")
+        print(f"[i] Missing in manifest: {total_missing_manifest}")
+        print(f"[!] Errors:          {total_errors}")
         print()
 
         # Calculate verification percentage
@@ -326,11 +326,11 @@ class SHA256ManifestVerifier:
             print(f"Verification rate: {verification_percentage:.1f}%")
 
             if verification_percentage == 100 and total_mismatched == 0:
-                print("✅ ALL FILES VERIFIED SUCCESSFULLY")
+                print("[OK] ALL FILES VERIFIED SUCCESSFULLY")
             elif verification_percentage >= 95:
-                print("⚠️  MOST FILES VERIFIED (minor issues)")
+                print("[!] MOST FILES VERIFIED (minor issues)")
             else:
-                print("❌ SIGNIFICANT VERIFICATION ISSUES")
+                print("[X] SIGNIFICANT VERIFICATION ISSUES")
         print()
 
         # Detailed results
@@ -404,7 +404,7 @@ class SHA256ManifestVerifier:
             )
 
         if total_verified == total_files and total_mismatched == 0:
-            print("✅ SUCCESS: All files verified successfully.")
+            print("[OK] SUCCESS: All files verified successfully.")
             print("   Repository integrity confirmed.")
 
     def save_results(self, results: Dict[str, List], manifest: Dict) -> Path:
@@ -515,10 +515,10 @@ def main():
         success = verifier.run(manifest_path)
 
         if success:
-            print("\n✅ SHA256 manifest verification successful!")
+            print("\n[OK] SHA256 manifest verification successful!")
             return 0
         else:
-            print("\n❌ SHA256 manifest verification failed!")
+            print("\n[X] SHA256 manifest verification failed!")
             return 1
 
     except Exception as e:

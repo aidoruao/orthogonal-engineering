@@ -354,13 +354,13 @@ def main():
         print(f"\nTest: {test_name}")
         try:
             if test_func():
-                print(f"  ✅ {test_name} PASSED")
+                print(f"  [OK] {test_name} PASSED")
                 passed += 1
             else:
-                print(f"  ❌ {test_name} FAILED")
+                print(f"  [X] {test_name} FAILED")
                 failed += 1
         except Exception as e:
-            print(f"  ❌ {test_name} ERROR: {e}")
+            print(f"  [X] {test_name} ERROR: {e}")
             import traceback
 
             traceback.print_exc()
@@ -371,13 +371,14 @@ def main():
     print("=" * 60)
 
     if failed > 0:
-        print("\n❌ TEST SUITE FAILED")
+        print("\n[X] TEST SUITE FAILED")
         sys.exit(2)  # Boundary violation exit code
     else:
-        print("\n✅ ALL TESTS PASSED")
+        print("\n[OK] ALL TESTS PASSED")
         sys.exit(0)
 
         sys.exit(0)
+
 
 if __name__ == "__main__":
     main()

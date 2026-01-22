@@ -13,9 +13,17 @@ Phase 8 Atomic Instruction Implementation:
 4. GitHub Integration
 5. Stopping Point for Inspection
 
+Glass-Box Boundary Compliance:
+- Exit code 0: Success (all checks passed)
+- Exit code 1: System error (unexpected failure)
+- Exit code 2: Boundary violation (schema violation, missing artifact, suppressed signal)
+- Exit code 3: Environment mismatch (python version, dependencies)
+- Exit code 4: Timeline sequence violation
+- Exit code 5: Signature verification failed
+
 Author: Orthogonal Engineering System
-Date: 2026-01-20
-Version: 3.0.0 (Phase 8 Complete)
+Date: 2026-01-21
+Version: 3.1.0 (Glass-Box Boundary Compliant)
 """
 
 import argparse
@@ -594,16 +602,16 @@ class Phase8FullAutomation:
             verification_success = verification_results.get("success", False)
 
             overall_status = (
-                "✅ COMPLETE"
+                "[OK] COMPLETE"
                 if (
                     structure_valid
                     and workflow_complete
                     and manifest_success
                     and verification_success
                 )
-                else "⚠️ PARTIAL"
+                else "[!] PARTIAL"
                 if (structure_valid or workflow_complete)
-                else "❌ INCOMPLETE"
+                else "[X] INCOMPLETE"
             )
 
             f.write(f"**Overall Status:** {overall_status}\n\n")
@@ -898,17 +906,18 @@ Examples:
             return 0
         else:
             print("\n[X] Phase 8 automation completed with issues")
-            return 1
+            # Follow Glass-Box Boundary exit codes: 2 for boundary violations
+            return 2
 
     except KeyboardInterrupt:
         print("\n\n⚠️  Automation interrupted by user")
-        return 130
+        return 130  # Standard exit code for SIGINT
     except Exception as e:
         print(f"\n[X] Fatal error during Phase 8 automation: {e}")
         import traceback
 
         traceback.print_exc()
-        return 1
+        return 1  # System error, not boundary violation
 
 
 if __name__ == "__main__":

@@ -439,7 +439,7 @@ class SHA256ManifestGenerator:
                 f"- **Manifest generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
             )
             f.write(f"- **Manifest version:** 1.0.0\n")
-            f.write(f"- **Verification status:** ✅ Complete\n\n")
+            f.write(f"- **Verification status:** [OK] Complete\n\n")
 
             # Methodological notes
             f.write("## METHODOLOGICAL NOTES\n\n")
@@ -554,7 +554,7 @@ def main():
         # Run generation
         output_files = generator.run(args.format)
 
-        print("\n✅ SHA256 manifest generation successful!")
+        print("\n[OK] SHA256 manifest generation successful!")
         return 0
 
     except Exception as e:
