@@ -1,7 +1,7 @@
-# ARTIFACT MANIFEST SHA256 - COMPLETE GLASS-BOX TRANSPARENCY
+# ARTIFACT MANIFEST SHA256 - 2026-01-21 22:06:07
 
 **File:** `ARTIFACT_MANIFEST_SHA256.md`  
-**Generated:** 2026-01-21T23:23:42.166194  
+**Generated:** 2026-01-21T22:06:07.523839  
 **Purpose:** Phase 8 - Complete glass-box manifest tracking all files with SHA256 hashes  
 **Repository:** Orthogonal Engineering  
 
@@ -37,7 +37,7 @@
 
 | Directory | Files | Total Size | Phase Mapping |
 |-----------|-------|------------|---------------|
-| `root/` | 146 | 2.2 MB | General, Phase 1-2, Phase 2, Phase 3,7, Phase 4, Phase 8 |
+| `root/` | 143 | 2.1 MB | General, Phase 1-2, Phase 2, Phase 3,7, Phase 4, Phase 8 |
 
 ### Complete File Manifest
 
@@ -134,13 +134,12 @@
 | General | `failure_logger.py` | `73bf10feb03239c002fd0ef4ecf11e705cb127a2a93f35b9a8ab7b06a8fe63a3` | 18.7 KB | 2026-01-21 |
 | General | `failure_report_generator.py` | `db0973947e8542376680e622b1d7ccec2a25c30760afc00db30fd8be2ddb8ee9` | 19.3 KB | 2026-01-21 |
 | General | `filesystem_invariants_analysis.json` | `c8384ef99998a4a1fb850ba796c7860be310718fb716bc9b744dbf51e4b7feb7` | 3.5 KB | 2026-01-20 |
-| General | `filesystem_scanner.py` | `86302e29437507eebd4bfbec8f0b94915c69edff0b135bf7ec79411ce9aa6cde` | 34.2 KB | 2026-01-21 |
+| General | `filesystem_scanner.py` | `0cc80fc181d21c017110684469b0307c22a6993b3f5aa90d0d0544ad9a701777` | 34.1 KB | 2026-01-20 |
 | General | `foolproof_file_inspection.py` | `a5b0484a0122c42dd50e4f96500736f909e68002695ded48c2f7633ea3395724` | 1.5 KB | 2026-01-20 |
 | General | `hash.txt` | `464d9353d6877e1196aa56deda299d57d34a65b48cc0587f6136d85865cc4c1c` | 66.0 B | 2026-01-20 |
 | General | `index.html` | `703ce7d39e79de9095b70bb7949e7e071ce1dc1729913c876bb6a8ff396ac744` | 24.2 KB | 2026-01-20 |
 | General | `input_guard.py` | `96f5eb478f230b4b589a3d08c3e2c92c83fe8b0c5a7233c1975e5c602e48b284` | 1.4 KB | 2026-01-20 |
 | General | `monitor_pipeline.py` | `9acb58998f6f7177d9d7f273990fdc0c85e920f83cfa0e39f97fff6b6989a549` | 444.0 B | 2026-01-20 |
-| General | `nul` | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` | 0 B | 1969-12-31 |
 | General | `oe-basic.mcp.js` | `c8048156584658422f230eeddcf01babd2e4b287ee1ec909f67be6969a93e821` | 13.4 KB | 2026-01-20 |
 | General | `orthogonal_ontology.json` | `6c86c766d35d25b08eb982f666f746a7dab824c44c60d48e7f7217df1062f555` | 9.7 KB | 2026-01-20 |
 | General | `output_validator.py` | `e7b67a4a7c9166e8fbd44bec52ba84b53683be64e27e20de9ec82b369a6c6d84` | 575.0 B | 2026-01-20 |
@@ -177,10 +176,8 @@
 | Phase 3,7 | `complete_correspondence.py` | `0ddfecd339d9bcdccde5cb4355ccfbc60e42ebe38848c0d3d470e5f5bb85891e` | 7.2 KB | 2026-01-20 |
 | Phase 3,7 | `correspondence_validation.json` | `342229de8d0fdc7632e730cf2bdae8100fc7227e18921543779bf4bdd456b1b5` | 978.0 B | 2026-01-20 |
 | Phase 3,7 | `correspondence_validation_final_20260120_093859.json` | `4c60d7b1f1f8ef8cf9d0336b66667a212be39670671701d7f0e901c9532fa331` | 4.6 KB | 2026-01-20 |
-| Phase 3,7 | `correspondence_validation_final_20260121_232117.json` | `a2ee3189b4ce57238415ab7f91ddd8b8d721b93b26099ecf05fe477a1f36ae5d` | 4.6 KB | 2026-01-21 |
 | Phase 3,7 | `correspondence_validator.py` | `1a92c2b6ada675f1e21e9d3979281fd98ee021ae2a1b289b1eb6234db18f66ea` | 19.2 KB | 2026-01-20 |
 | Phase 4 | `PHASE_4_COMPLETION_SUMMARY.md` | `e248de028f143b8dd540a48e9062cd6e560a4d412d2c3464a4a982ac5ba99b9f` | 10.3 KB | 2026-01-21 |
-| Phase 8 | `PHASE_8_ATOMIC_WORKFLOW_IMPLEMENTATION_SUMMARY.md` | `e9f242785deb69168732dd5cd3123e2abc8ab012e85cce595219f5d5e83d8a98` | 10.5 KB | 2026-01-21 |
 | Phase 8 | `audit_inventory_20260120_174131.json` | `b8e8034964afbe6aa09bc69a5ddfa99362a837adbcf41bc62eda539e6f6910d2` | 33.9 KB | 2026-01-20 |
 | Phase 8 | `audit_log_20260120_174131.json` | `463b92a6a3228ee7d4dbd80690f8cfb6109c9ad60a9f96fcaf247fe95ab50122` | 1.1 KB | 2026-01-20 |
 | Phase 8 | `audit_summary_20260120_174131.md` | `8de2c7ccf6a34cdfec0d897b514485c3d2e019e44eccd17869fb02b93737728e` | 2.1 KB | 2026-01-20 |
@@ -222,9 +219,9 @@ python automation/full_audit.py --check-integrity
 
 ## STATISTICS
 
-- **Total files tracked:** 146
-- **Total repository size:** 2.2 MB
-- **Manifest generated:** 2026-01-21 23:23:42
+- **Total files tracked:** 143
+- **Total repository size:** 2.1 MB
+- **Manifest generated:** 2026-01-21 22:06:07
 - **Manifest version:** 1.0.0
 - **Verification status:** [OK] Complete
 

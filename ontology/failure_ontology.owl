@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.orthogonal-engineering.org/ontology/failure#"
+     xml:base="http://www.orthogonal-engineering.org/ontology/failure"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+
+    <owl:Ontology rdf:about="http://www.orthogonal-engineering.org/ontology/failure">
+        <rdfs:label>Orthogonal Engineering Failure Ontology</rdfs:label>
+        <rdfs:comment>OWL ontology for failure classification in Orthogonal Engineering methodology</rdfs:comment>
+        <owl:versionInfo>1.0</owl:versionInfo>
+        <rdfs:seeAlso rdf:resource="glass-box/ORTHOGONAL_TOOLKIT_BLUEPRINT_v1.0.html"/>
+        <invariant_id>G11-03</invariant_id>
+        <created>2026-01-21T00:00:00Z</created>
+    </owl:Ontology>
+
+    <!-- Core Failure Classes -->
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#Failure">
+        <rdfs:label>Failure</rdfs:label>
+        <rdfs:comment>Abstract base class for all failure types</rdfs:comment>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#hasSeverity"/>
+                <owl:someValuesFrom rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Severity"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#requiresExitCode"/>
+                <owl:hasValue rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</owl:hasValue>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#BoundaryViolation">
+        <rdfs:label>Boundary Violation</rdfs:label>
+        <rdfs:comment>Violation of glass-box boundary principles</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>critical</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-05</invariantAffected>
+        <invariantAffected>G11-07</invariantAffected>
+        <invariantAffected>G11-10</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#MissingArtifact">
+        <rdfs:label>Missing Artifact</rdfs:label>
+        <rdfs:comment>Required artifact specified in blueprint is missing</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>high</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-04</invariantAffected>
+        <invariantAffected>G11-07</invariantAffected>
+        <invariantAffected>G11-10</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#CausalityMetadataMissing">
+        <rdfs:label>Missing Causality Metadata</rdfs:label>
+        <rdfs:comment>Causality metadata not logged for file creation/modification</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>high</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-06</invariantAffected>
+        <invariantAffected>G11-10</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#InvariantFailure">
+        <rdfs:label>Atomic Invariant Failure</rdfs:label>
+        <rdfs:comment>Atomic invariant not satisfied</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>critical</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-10</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#StructuralViolation">
+        <rdfs:label>Structural Violation</rdfs:label>
+        <rdfs:comment>Violation of repository structure requirements</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>medium</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-04</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#VerificationFailure">
+        <rdfs:label>Verification Failure</rdfs:label>
+        <rdfs:comment>Verification process failed</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>high</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-10</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#DocumentationHierarchyViolation">
+        <rdfs:label>Documentation Hierarchy Violation</rdfs:label>
+        <rdfs:comment>HTML blueprint not treated as supreme law</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>critical</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-05</invariantAffected>
+        <invariantAffected>G11-09</invariantAffected>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#ProcessViolation">
+        <rdfs:label>Process Violation</rdfs:label>
+        <rdfs:comment>Violation of required processes</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <severity>medium</severity>
+        <exitCode>2</exitCode>
+        <invariantAffected>G11-08</invariantAffected>
+        <invariantAffected>G11-09</invariantAffected>
+    </owl:Class>
+
+    <!-- Severity Classes -->
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#Severity">
+        <rdfs:label>Severity</rdfs:label>
+        <rdfs:comment>Severity level of a failure</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#CriticalSeverity">
+        <rdfs:label>Critical Severity</rdfs:label>
+        <rdfs:comment>Immediate termination required</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Severity"/>
+        <exitCode>2</exitCode>
+        <recovery>manual_intervention</recovery>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#HighSeverity">
+        <rdfs:label>High Severity</rdfs:label>
+        <rdfs:comment>Serious violation requiring attention</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Severity"/>
+        <exitCode>2</exitCode>
+        <recovery>automated_with_approval</recovery>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#MediumSeverity">
+        <rdfs:label>Medium Severity</rdfs:label>
+        <rdfs:comment>Violation that should be addressed</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Severity"/>
+        <exitCode>2</exitCode>
+        <recovery>automated</recovery>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#LowSeverity">
+        <rdfs:label>Low Severity</rdfs:label>
+        <rdfs:comment>Minor issue for tracking</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Severity"/>
+        <exitCode>0</exitCode>
+        <recovery>optional</recovery>
+    </owl:Class>
+
+    <!-- Properties -->
+
+    <owl:ObjectProperty rdf:about="http://www.orthogonal-engineering.org/ontology/failure#hasSeverity">
+        <rdfs:label>has severity</rdfs:label>
+        <rdfs:comment>Associates a failure with its severity level</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <rdfs:range rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Severity"/>
+    </owl:ObjectProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.orthogonal-engineering.org/ontology/failure#requiresExitCode">
+        <rdfs:label>requires exit code</rdfs:label>
+        <rdfs:comment>Exit code required when this failure occurs</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://www.orthogonal-engineering.org/ontology/failure#invariantAffected">
+        <rdfs:label>invariant affected</rdfs:label>
+        <rdfs:comment>G11-XX invariant affected by this failure</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.orthogonal-engineering.org/ontology/failure#causes">
+        <rdfs:label>causes</rdfs:label>
+        <rdfs:comment>One failure causes another failure</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <rdfs:range rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://www.orthogonal-engineering.org/ontology/failure#requiresEvidence">
+        <rdfs:label>requires evidence</rdfs:label>
+        <rdfs:comment>Evidence required for this failure type</rdfs:comment>
+        <rdfs:domain rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#Failure"/>
+        <rdfs:range rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#EvidenceType"/>
+    </owl:ObjectProperty>
+
+    <!-- Evidence Types -->
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#EvidenceType">
+        <rdfs:label>Evidence Type</rdfs:label>
+        <rdfs:comment>Type of evidence required for failure documentation</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#TraceFile">
+        <rdfs:label>Trace File</rdfs:label>
+        <rdfs:comment>JSON trace file documenting the failure</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#EvidenceType"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#ViolationDetails">
+        <rdfs:label>Violation Details</rdfs:label>
+        <rdfs:comment>Detailed description of the violation</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#EvidenceType"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#ArtifactList">
+        <rdfs:label>Artifact List</rdfs:label>
+        <rdfs:comment>List of missing or problematic artifacts</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#EvidenceType"/>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://www.orthogonal-engineering.org/ontology/failure#BlueprintReference">
+        <rdfs:label>Blueprint Reference</rdfs:label>
+        <rdfs:comment>Reference to the blueprint section violated</rdfs:comment>
+        <rdfs:subClassOf rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#EvidenceType"/>
+    </owl:Class>
+
+    <!-- Hierarchical Relationships -->
+
+    <rdf:Description rdf:about="http://www.orthogonal-engineering.org/ontology/failure#BoundaryViolation">
+        <causes rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#StructuralViolation"/>
+        <causes rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#VerificationFailure"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.orthogonal-engineering.org/ontology/failure#MissingArtifact">
+        <causes rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#VerificationFailure"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.orthogonal-engineering.org/ontology/failure#CausalityMetadataMissing">
+        <causes rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#InvariantFailure"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.orthogonal-engineering.org/ontology/failure#DocumentationHierarchyViolation">
+        <causes rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#BoundaryViolation"/>
+    </rdf:Description>
+
+    <!-- Evidence Requirements -->
+
+    <rdf:Description rdf:about="http://www.orthogonal-engineering.org/ontology/failure#BoundaryViolation">
+        <requiresEvidence rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#TraceFile"/>
+        <requiresEvidence rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#ViolationDetails"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://www.orthogonal-engineering.org/ontology/failure#MissingArtifact">
+        <requiresEvidence rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#ArtifactList"/>
+        <requiresEvidence rdf:resource="http://www.orthogonal-engineering.org/ontology/failure#BlueprintReference"/>
+    </rdf:Description>
+
+    <!-- Exit Code Individuals -->
+
+    <owl:NamedIndividual rdf:about="http://www.orthogonal-engineering.org/ontology/failure#ExitCode0">
+        <rdfs:label>Exit Code 0</rdfs:label>
+        <rdfs:comment>Success - all checks passed</rdfs:comment>
+        <severity>none</severity>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://www.orthogonal-engineering.org/ontology/failure#ExitCode2">
+        <rdfs:label>Exit Code 2</rdfs:label>
+        <rdfs:comment>Boundary violation - blueprint non-compliance</rdfs:comment>
+        <severity>critical</severity>
+    </owl:NamedIndividual>
+
+</rdf:RDF>

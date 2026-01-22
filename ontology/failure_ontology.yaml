@@ -1,0 +1,306 @@
+# Failure Ontology - Orthogonal Engineering
+# Version: 1.0
+# Schema: YAML-based failure classification
+# Purpose: Define failure types for glass-box boundary enforcement
+
+# Metadata
+metadata:
+  ontology_name: "Orthogonal Engineering Failure Ontology"
+  version: "1.0"
+  created: "2026-01-21"
+  author: "Orthogonal Engineering AI"
+  invariant_id: "G11-03"
+  blueprint_reference: "ORTHOGONAL_TOOLKIT_BLUEPRINT_v1.0.html"
+
+# Core failure types
+failure_types:
+
+  # Boundary violations (most severe)
+  - id: "boundary_violation"
+    name: "Glass-Box Boundary Violation"
+    description: "Violation of glass-box boundary principles"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "trace_validation"
+      - "schema_validation"
+      - "manual_inspection"
+    examples:
+      - "Missing @glass_box_boundary decorator"
+      - "Direct I/O without gateway"
+      - "Suppressed exceptions"
+    invariants_affected:
+      - "G11-05"
+      - "G11-07"
+      - "G11-10"
+
+  # Artifact failures
+  - id: "missing_artifact"
+    name: "Missing Required Artifact"
+    description: "Required artifact specified in blueprint is missing"
+    severity: "high"
+    exit_code: 2
+    detection_methods:
+      - "artifact_scan"
+      - "blueprint_comparison"
+    examples:
+      - "toolkit/oe/cli.py not found"
+      - "glass-box/index.html missing"
+      - "Required workflow YAML not present"
+    invariants_affected:
+      - "G11-04"
+      - "G11-07"
+      - "G11-10"
+
+  # Causality logging failures
+  - id: "causality_metadata_missing"
+    name: "Missing Causality Metadata"
+    description: "Causality metadata not logged for file creation/modification"
+    severity: "high"
+    exit_code: 2
+    detection_methods:
+      - "metadata_validation"
+      - "log_analysis"
+    examples:
+      - "File created without causality log"
+      - "Missing required fields in causality metadata"
+      - "Invalid timestamp format"
+    invariants_affected:
+      - "G11-06"
+      - "G11-10"
+
+  # Invariant failures
+  - id: "invariant_failure"
+    name: "Atomic Invariant Failure"
+    description: "Atomic invariant not satisfied"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "invariant_verification"
+      - "automated_testing"
+    examples:
+      - "G11-01: Unified CLI not functional"
+      - "G11-02: EvidenceStore not operational"
+      - "G11-03: Workflow not in YAML/DSL"
+    invariants_affected:
+      - "G11-10"
+
+  # Structural failures
+  - id: "structural_violation"
+    name: "Structural Violation"
+    description: "Violation of repository structure requirements"
+    severity: "medium"
+    exit_code: 2
+    detection_methods:
+      - "directory_scan"
+      - "structure_validation"
+    examples:
+      - "Missing toolkit/ directory"
+      - "Incorrect file placement"
+      - "Violation of shrink-ready layout"
+    invariants_affected:
+      - "G11-04"
+
+  # Verification failures
+  - id: "verification_failure"
+    name: "Verification Failure"
+    description: "Verification process failed"
+    severity: "high"
+    exit_code: 2
+    detection_methods:
+      - "verification_script"
+      - "exit_code_check"
+    examples:
+      - "Blueprint verification script failed"
+      - "SHA256 manifest verification failed"
+      - "Trace validation failed"
+    invariants_affected:
+      - "G11-10"
+
+  # Documentation failures
+  - id: "documentation_hierarchy_violation"
+    name: "Documentation Hierarchy Violation"
+    description: "HTML blueprint not treated as supreme law"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "documentation_analysis"
+      - "authority_check"
+    examples:
+      - "Other documentation contradicts blueprint"
+      - "AI suggestions ignore blueprint"
+      - "Human instructions override blueprint"
+    invariants_affected:
+      - "G11-05"
+      - "G11-09"
+
+  # Process failures
+  - id: "process_violation"
+    name: "Process Violation"
+    description: "Violation of required processes"
+    severity: "medium"
+    exit_code: 2
+    detection_methods:
+      - "process_monitoring"
+      - "log_analysis"
+    examples:
+      - "Files not committed automatically"
+      - "Missing push to repository"
+      - "Narration or summary provided by IDE agent"
+    invariants_affected:
+      - "G11-08"
+      - "G11-09"
+
+# Failure relationships
+relationships:
+  hierarchical:
+    - parent: "boundary_violation"
+      children: ["structural_violation", "verification_failure"]
+    - parent: "invariant_failure"
+      children: ["missing_artifact", "causality_metadata_missing"]
+
+  causal:
+    - cause: "missing_artifact"
+      effect: "verification_failure"
+    - cause: "causality_metadata_missing"
+      effect: "invariant_failure"
+    - cause: "documentation_hierarchy_violation"
+      effect: "boundary_violation"
+
+# Detection rules
+detection_rules:
+
+  rule_001:
+    name: "Blueprint Compliance Check"
+    description: "Check if repository complies with blueprint"
+    failure_type: "missing_artifact"
+    condition: "required_artifact_count != found_artifact_count"
+    action: "exit_with_code_2"
+
+  rule_002:
+    name: "Causality Metadata Validation"
+    description: "Validate causality metadata for all changes"
+    failure_type: "causality_metadata_missing"
+    condition: "change_count != causality_log_count"
+    action: "exit_with_code_2"
+
+  rule_003:
+    name: "Invariant Verification"
+    description: "Verify all G11-XX invariants"
+    failure_type: "invariant_failure"
+    condition: "any_invariant_failed == true"
+    action: "exit_with_code_2"
+
+  rule_004:
+    name: "Documentation Authority Check"
+    description: "Ensure HTML blueprint is supreme law"
+    failure_type: "documentation_hierarchy_violation"
+    condition: "other_docs_override_blueprint == true"
+    action: "exit_with_code_2"
+
+# Severity definitions
+severity_levels:
+  critical:
+    description: "Immediate termination required"
+    exit_code: 2
+    notification: "immediate"
+    recovery: "manual_intervention"
+
+  high:
+    description: "Serious violation requiring attention"
+    exit_code: 2
+    notification: "immediate"
+    recovery: "automated_with_approval"
+
+  medium:
+    description: "Violation that should be addressed"
+    exit_code: 2
+    notification: "delayed"
+    recovery: "automated"
+
+  low:
+    description: "Minor issue for tracking"
+    exit_code: 0
+    notification: "none"
+    recovery: "optional"
+
+# Exit code mapping
+exit_code_mapping:
+  0:
+    description: "Success - all checks passed"
+    severity: "none"
+  1:
+    description: "System error - unexpected failure"
+    severity: "critical"
+  2:
+    description: "Boundary violation - blueprint non-compliance"
+    severity: "critical"
+  3:
+    description: "Configuration error"
+    severity: "high"
+  4:
+    description: "Validation warning"
+    severity: "medium"
+
+# Recovery procedures
+recovery_procedures:
+
+  boundary_violation:
+    steps:
+      - "Generate detailed trace"
+      - "Log causality metadata"
+      - "Exit with code 2"
+      - "Wait for manual inspection"
+
+  missing_artifact:
+    steps:
+      - "Identify missing artifacts"
+      - "Attempt automatic generation"
+      - "Log generation attempt"
+      - "If generation fails, exit with code 2"
+
+  causality_metadata_missing:
+    steps:
+      - "Identify missing metadata"
+      - "Attempt to reconstruct"
+      - "Log reconstruction attempt"
+      - "If reconstruction fails, exit with code 2"
+
+  invariant_failure:
+    steps:
+      - "Identify failed invariant"
+      - "Generate failure report"
+      - "Log to evidence store"
+      - "Exit with code 2"
+
+# Evidence requirements
+evidence_requirements:
+  boundary_violation:
+    required:
+      - "trace_file"
+      - "violation_details"
+      - "timestamp"
+    optional:
+      - "screenshot"
+      - "system_state"
+
+  missing_artifact:
+    required:
+      - "artifact_list"
+      - "blueprint_reference"
+      - "detection_timestamp"
+
+  causality_metadata_missing:
+    required:
+      - "change_list"
+      - "expected_metadata"
+      - "actual_metadata"
+
+# Version history
+version_history:
+  - version: "1.0"
+    date: "2026-01-21"
+    changes:
+      - "Initial ontology definition"
+      - "Alignment with G11 invariants"
+      - "Integration with blueprint v1.0"

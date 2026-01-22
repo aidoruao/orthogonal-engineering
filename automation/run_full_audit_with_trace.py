@@ -208,8 +208,8 @@ def snapshot_environment() -> Dict[str, Any]:
             dependencies = [
                 line.strip() for line in result.stdout.splitlines() if line.strip()
             ]
-    except Exception:
-        dependencies = ["Error capturing dependencies"]
+    except Exception as e:
+        dependencies = [f"Error capturing dependencies: {str(e)}"]
 
     # System info
     system_info = {
@@ -258,7 +258,8 @@ def detect_suppressed_signals() -> List[Dict[str, Any]]:
                             "confidence": 0.8,
                         }
                     )
-        except Exception:
+        except Exception as e:
+            print(f"Warning: Error scanning file {py_file}: {e}")
             continue
 
     return suppressed_signals
@@ -335,6 +336,7 @@ def compute_hash_manifest(evidence_files: List[str]) -> Dict[str, Any]:
                 file_hash = hashlib.sha256(content).hexdigest()
                 file_hashes[file_path] = file_hash
             except Exception as e:
+                print(f"Warning: Error hashing file {file_path}: {e}")
                 file_hashes[file_path] = f"ERROR: {str(e)}"
 
     # Compute root hash (simplified - in production would use Merkle tree)
@@ -687,8 +689,8 @@ def get_commit_hash() -> str:
         )
         if result.returncode == 0:
             return result.stdout.strip()
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Warning: Error getting commit hash: {e}")
     return "unknown"
 
 
@@ -704,8 +706,8 @@ def get_current_branch() -> str:
         )
         if result.returncode == 0:
             return result.stdout.strip()
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Warning: Error getting current branch: {e}")
     return "unknown"
 
 
@@ -721,8 +723,8 @@ def has_uncommitted_changes() -> bool:
         )
         if result.returncode == 0:
             return len(result.stdout.strip()) > 0
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Warning: Error checking uncommitted changes: {e}")
     return False
 
 

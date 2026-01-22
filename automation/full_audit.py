@@ -52,6 +52,11 @@ class Phase8FullAutomation:
             "documentation": "All Phases: Documentation",
             "logs": "All Phases: Audit Logs",
             "adversarial_tests": "Phase 6: Adversarial Validation",
+            "toolkit": "Phase 11: Toolkit Package",
+            "workflows": "Phase 11: Workflow Definitions",
+            "ontology": "Phase 11: Failure Ontology",
+            "examples": "Phase 11: Usage Examples",
+            "glass-box": "Phase 11: Glass-Box Blueprints",
         }
 
         self.required_files = {
@@ -85,6 +90,16 @@ class Phase8FullAutomation:
             "documentation/README.md": "Main documentation",
             "documentation/PHASE_1_7_SUMMARY.md": "Phase 1-7 summary",
             "documentation/ARTIFACT_MANIFEST_SHA256.md": "Phase 8: SHA256 manifest",
+            # Phase 11: Toolkit Blueprint
+            "toolkit/oe/__init__.py": "Phase 11: Toolkit package init",
+            "toolkit/oe/cli.py": "Phase 11: Unified CLI",
+            "toolkit/oe/evidence_store.py": "Phase 11: Evidence store",
+            "workflows/basic_validation.yaml": "Phase 11: Workflow definition",
+            "ontology/failure_ontology.yaml": "Phase 11: YAML ontology",
+            "ontology/failure_ontology.owl": "Phase 11: OWL ontology",
+            "examples/basic_usage.py": "Phase 11: Usage example",
+            "glass-box/index.html": "Phase 11: Glass-box dashboard",
+            "glass-box/ORTHOGONAL_TOOLKIT_BLUEPRINT_v1.0.html": "Phase 11: Authoritative blueprint",
         }
 
     def verify_repository_structure(self) -> Dict[str, Any]:
@@ -192,6 +207,11 @@ class Phase8FullAutomation:
         print("\n[Phase 6] Adversarial Validation...")
         phase_6_results = self._execute_phase_6()
         results["phases"]["6"] = phase_6_results
+
+        # Phase 11: Toolkit Blueprint Verification
+        print("\n[Phase 11] Toolkit Blueprint Verification...")
+        phase_11_results = self._execute_phase_11()
+        results["phases"]["11"] = phase_11_results
 
         # Generate verification report
         print("\n[Phase 8] Generating Verification Report...")
@@ -378,6 +398,78 @@ class Phase8FullAutomation:
             results["framework"] = {
                 "exists": False,
             }
+
+        return results
+
+    def _execute_phase_11(self) -> Dict[str, Any]:
+        """Execute Phase 11: Toolkit Blueprint Verification."""
+        results = {
+            "toolkit_verification": {},
+            "blueprint_compliance": {},
+            "timestamp": datetime.now().isoformat(),
+        }
+
+        # Check if Phase 11 verification script exists
+        phase11_script = "automation/verify_phase11_blueprint.py"
+        if os.path.exists(phase11_script):
+            try:
+                # Run Phase 11 verification
+                import subprocess
+
+                result = subprocess.run(
+                    [sys.executable, phase11_script],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.repo_root,
+                )
+
+                results["toolkit_verification"] = {
+                    "script_exists": True,
+                    "exit_code": result.returncode,
+                    "stdout": result.stdout[:500] + "..."
+                    if len(result.stdout) > 500
+                    else result.stdout,
+                    "stderr": result.stderr,
+                    "success": result.returncode == 0,
+                }
+            except Exception as e:
+                results["toolkit_verification"] = {
+                    "script_exists": True,
+                    "error": str(e),
+                    "success": False,
+                }
+        else:
+            results["toolkit_verification"] = {
+                "script_exists": False,
+                "success": False,
+            }
+
+        # Check Phase 11 artifacts
+        phase11_artifacts = [
+            "toolkit/oe/__init__.py",
+            "toolkit/oe/cli.py",
+            "toolkit/oe/evidence_store.py",
+            "workflows/basic_validation.yaml",
+            "ontology/failure_ontology.yaml",
+            "ontology/failure_ontology.owl",
+            "examples/basic_usage.py",
+            "glass-box/index.html",
+            "glass-box/ORTHOGONAL_TOOLKIT_BLUEPRINT_v1.0.html",
+        ]
+
+        artifact_results = {}
+        for artifact in phase11_artifacts:
+            exists = os.path.exists(artifact)
+            artifact_results[artifact] = {
+                "exists": exists,
+                "size": os.path.getsize(artifact) if exists else 0,
+            }
+
+        results["blueprint_compliance"] = {
+            "artifacts_checked": len(phase11_artifacts),
+            "artifacts_found": sum(1 for a in phase11_artifacts if os.path.exists(a)),
+            "artifact_details": artifact_results,
+        }
 
         return results
 
@@ -762,6 +854,12 @@ class Phase8FullAutomation:
 
             if verify_only:
                 print("\n[OK] Structure verification complete (verify-only mode)")
+                # Set success based on structure validation
+                structure_valid = structure_results.get("summary", {}).get(
+                    "structure_valid", False
+                )
+                results["metadata"]["success"] = structure_valid
+                results["metadata"]["verify_only"] = True
                 return results
 
             # Step 2: Execute Phase 1-7 workflow
@@ -902,7 +1000,10 @@ Examples:
 
         # Return appropriate exit code
         if results.get("metadata", {}).get("success", False):
-            print("\n[OK] Phase 8 automation completed successfully!")
+            if args.verify:
+                print("\n[OK] Repository structure verification passed!")
+            else:
+                print("\n[OK] Phase 8 automation completed successfully!")
             return 0
         else:
             print("\n[X] Phase 8 automation completed with issues")

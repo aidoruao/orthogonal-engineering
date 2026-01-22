@@ -1,0 +1,229 @@
+# Basic Validation Workflow - Orthogonal Engineering
+# Version: 1.0
+# Schema: Orthogonal Workflow Definition Language (OWDL)
+
+name: basic_validation
+version: "1.0"
+description: Basic validation workflow for Orthogonal Engineering methodology
+author: Orthogonal Engineering AI
+created: 2026-01-21
+invariant_id: G11-03
+
+# Workflow metadata
+metadata:
+  phase: 11
+  blueprint: ORTHOGONAL_TOOLKIT_BLUEPRINT_v1.0.html
+  requires_glass_box: true
+  exit_code_on_failure: 2
+
+# Input validation
+input_schema:
+  type: object
+  required: [repository_path]
+  properties:
+    repository_path:
+      type: string
+      description: Path to repository root
+    verbose:
+      type: boolean
+      default: false
+    strict_mode:
+      type: boolean
+      default: true
+
+# Workflow steps
+steps:
+  - name: initialize_workflow
+    action: initialize
+    description: Initialize workflow and log causality
+    timeout: 10
+    outputs:
+      - workflow_id
+      - start_timestamp
+
+  - name: verify_blueprint_compliance
+    action: verify_blueprint
+    description: Verify repository compliance with toolkit blueprint
+    requires: initialize_workflow
+    timeout: 30
+    inputs:
+      blueprint_path: "glass-box/ORTHOGONAL_TOOLKIT_BLUEPRINT_v1.0.html"
+      strict: ${inputs.strict_mode}
+    outputs:
+      - compliance_status
+      - violations
+    on_failure:
+      action: log_failure
+      exit_code: 2
+
+  - name: check_required_artifacts
+    action: check_artifacts
+    description: Check all required artifacts from blueprint Section B
+    requires: verify_blueprint_compliance
+    timeout: 20
+    inputs:
+      artifacts:
+        - "toolkit/oe/__init__.py"
+        - "toolkit/oe/cli.py"
+        - "toolkit/oe/evidence_store.py"
+        - "workflows/"
+        - "ontology/failure_ontology.yaml"
+        - "ontology/failure_ontology.owl"
+        - "examples/"
+        - "glass-box/index.html"
+    outputs:
+      - artifacts_present
+      - missing_artifacts
+    on_failure:
+      action: generate_missing
+      continue: true
+
+  - name: verify_causality_logging
+    action: verify_causality
+    description: Verify causality logging is operational (G11-06)
+    requires: check_required_artifacts
+    timeout: 15
+    inputs:
+      store_path: "logs/evidence"
+    outputs:
+      - causality_operational
+      - log_count
+    on_failure:
+      action: repair_causality
+      exit_code: 2
+
+  - name: run_glass_box_audit
+    action: run_audit
+    description: Run full glass-box boundary audit
+    requires: verify_causality_logging
+    timeout: 60
+    inputs:
+      audit_script: "automation/run_full_audit_with_trace.py"
+      generate_trace: true
+    outputs:
+      - audit_passed
+      - trace_file
+      - boundary_violations
+    on_failure:
+      action: generate_violation_report
+      exit_code: 2
+
+  - name: generate_sha256_manifest
+    action: generate_manifest
+    description: Generate SHA256 manifest for all artifacts
+    requires: run_glass_box_audit
+    timeout: 30
+    inputs:
+      manifest_script: "automation/generate_sha256_manifest.py"
+      output_dir: "documentation/sha256_manifests"
+    outputs:
+      - manifest_file
+      - hash_count
+
+  - name: verify_sha256_manifest
+    action: verify_manifest
+    description: Verify SHA256 manifest integrity
+    requires: generate_sha256_manifest
+    timeout: 20
+    inputs:
+      verify_script: "automation/verify_sha256_manifest.py"
+      manifest_file: ${steps.generate_sha256_manifest.outputs.manifest_file}
+    outputs:
+      - manifest_valid
+      - verification_issues
+    on_failure:
+      action: regenerate_manifest
+      exit_code: 2
+
+  - name: finalize_workflow
+    action: finalize
+    description: Finalize workflow and generate report
+    requires: verify_sha256_manifest
+    timeout: 10
+    inputs:
+      success: ${steps.verify_sha256_manifest.outputs.manifest_valid}
+    outputs:
+      - final_report
+      - exit_code
+      - completion_timestamp
+
+# Output specification
+outputs:
+  workflow_id:
+    type: string
+    description: Unique workflow identifier
+  compliance_status:
+    type: boolean
+    description: Blueprint compliance status
+  missing_artifacts:
+    type: array
+    items:
+      type: string
+    description: List of missing artifacts
+  causality_operational:
+    type: boolean
+    description: Whether causality logging is working
+  audit_passed:
+    type: boolean
+    description: Whether glass-box audit passed
+  boundary_violations:
+    type: array
+    items:
+      type: object
+    description: List of boundary violations if any
+  manifest_valid:
+    type: boolean
+    description: Whether SHA256 manifest is valid
+  final_report:
+    type: object
+    description: Final workflow report
+  exit_code:
+    type: integer
+    description: Workflow exit code (0=success, 2=failure)
+
+# Error handling
+error_handling:
+  default_exit_code: 2
+  retry_policy:
+    max_attempts: 3
+    backoff_factor: 2
+  notification:
+    on_critical: log_to_evidence_store
+    on_warning: continue_with_warning
+
+# Causality logging requirements
+causality_requirements:
+  required_fields:
+    - cause
+    - trigger
+    - invariant_id
+    - timestamp
+    - actor
+  storage:
+    path: "logs/evidence/causality"
+    format: json
+    compression: false
+  validation:
+    schema_validation: true
+    hash_verification: true
+
+# Glass-box boundary requirements
+glass_box_requirements:
+  trace_generation: required
+  artifact_scanning: required
+  boundary_violation_detection: required
+  suppressed_signal_detection: required
+  exit_code_enforcement: strict
+
+# Invariant verification
+invariant_verification:
+  G11-01: "Unified CLI exists (/toolkit/oe/cli.py)"
+  G11-02: "EvidenceStore operational and logging to filesystem"
+  G11-03: "All workflows declared in YAML/DSL"
+  G11-04: "Repo shrink-ready layout exists"
+  G11-05: "HTML blueprint outranks all other documentation"
+  G11-06: "Causality metadata logged for every file creation/modification"
+  G11-07: "Missing artifact → exit code 2, failure trace generated"
+  G11-08: "All generated files committed and pushed automatically"
+  G11-09: "No narration or summary allowed by IDE agent"
+  G11-10: "Verification passes only if all invariants satisfied"

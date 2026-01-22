@@ -611,8 +611,9 @@ class FilesystemScanner:
                                     f"      Detected: {detected_set}, Actual: {actual_models}"
                                 )
 
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"      Error validating correspondence: {e}")
+                    continue
 
     def _generate_report(self) -> Dict:
         """Generate comprehensive scan report."""
