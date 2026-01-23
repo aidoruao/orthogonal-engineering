@@ -1,0 +1,159 @@
+{
+  "schema_version": "1.0",
+  "generated": "2026-01-23T03:54:21Z",
+  "repository": "orthogonal-engineering",
+  "commit_sha": "a09f493",
+  "investigation_protocol": "Atomic Glass-Box Investigation Protocol",
+  "invariants": [
+    {
+      "id": "INV-001",
+      "name": "Atomic Execution",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 43,
+      "line_end": 105,
+      "text": "Every investigation step must be necessary, irreducible, logged, and falsifiable",
+      "role": "procedural",
+      "falsifiability": "Any step found to be unnecessary, reducible, unlogged, or unfalsifiable",
+      "status": "upheld",
+      "verification": "All 6 atomic steps verified as necessary, irreducible, logged, and falsifiable",
+      "violations": []
+    },
+    {
+      "id": "INV-002",
+      "name": "No Narrative Drift",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 105,
+      "line_end": 111,
+      "text": "No interpretive compression, summarization, or metaphor substitution",
+      "role": "semantic",
+      "falsifiability": "Evidence of poetic/narrative reinterpretation of procedural artifacts",
+      "status": "upheld",
+      "verification": "No category errors detected in 2145 files",
+      "violations": []
+    },
+    {
+      "id": "INV-003",
+      "name": "Complete Transparency",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 335,
+      "line_end": 341,
+      "text": "All intermediate states, failed runs, partial parses preserved",
+      "role": "procedural",
+      "falsifiability": "Missing logs, suppressed failures, or hidden intermediate states",
+      "status": "upheld",
+      "verification": "Complete investigation trail preserved in INVESTIGATION_LOG.md",
+      "violations": []
+    },
+    {
+      "id": "INV-004",
+      "name": "Category Error Detection",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 190,
+      "line_end": 223,
+      "text": "Systematic detection of AI misclassification of procedural artifacts",
+      "role": "semantic",
+      "falsifiability": "Failure to detect AI category errors when present",
+      "status": "upheld",
+      "verification": "Detection system operational, no category errors found in 2145 files",
+      "violations": []
+    },
+    {
+      "id": "INV-005",
+      "name": "Phase 12 Non-Rewritability",
+      "file": "automation/verify_phase12_finalization.py",
+      "line_start": 1,
+      "line_end": 50,
+      "text": "Phase 12 artifacts locked as non-rewritable evidence",
+      "role": "procedural",
+      "falsifiability": "Phase 12 artifacts modified after finalization",
+      "status": "violated",
+      "verification": "SHA256 manifest verification at 94.2% due to new investigation files",
+      "violations": [
+        {
+          "type": "manifest_incompleteness",
+          "description": "New investigation artifacts cannot be integrated into locked Phase 12 manifest",
+          "severity": "medium",
+          "file": "automation/verify_sha256_manifest.py",
+          "evidence": "94.2% verification rate reported"
+        }
+      ]
+    },
+    {
+      "id": "INV-006",
+      "name": "Glass-Box Boundary Enforcement",
+      "file": "automation/run_full_audit_with_trace.py",
+      "line_start": 1,
+      "line_end": 100,
+      "text": "All Python functions wrapped with @glass_box_boundary decorator",
+      "role": "procedural",
+      "falsifiability": "Missing boundary decorators or suppressed signals",
+      "status": "violated",
+      "verification": "16 boundary violations, 15 suppressed signals detected (self-detection)",
+      "violations": [
+        {
+          "type": "boundary_violation",
+          "description": "Missing @glass_box_boundary decorators",
+          "severity": "high",
+          "count": 16,
+          "evidence": "run_full_audit_with_trace.py output"
+        },
+        {
+          "type": "signal_suppression",
+          "description": "Suppressed signals detected",
+          "severity": "high",
+          "count": 15,
+          "evidence": "run_full_audit_with_trace.py output"
+        }
+      ]
+    },
+    {
+      "id": "INV-007",
+      "name": "AI Category Error Resistance",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 190,
+      "line_end": 223,
+      "text": "Repository resists poetic/narrative reinterpretation by AI systems",
+      "role": "semantic",
+      "falsifiability": "Evidence of AI misclassification of procedural artifacts as poetry/narrative",
+      "status": "upheld",
+      "verification": "No category errors detected in systematic analysis of 2145 files",
+      "violations": []
+    },
+    {
+      "id": "INV-008",
+      "name": "Truth-by-Correspondence",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 27,
+      "line_end": 36,
+      "text": "Enforcement of truth-by-correspondence between claims and artifacts",
+      "role": "semantic",
+      "falsifiability": "Claim without corresponding artifact, or artifact without corresponding claim",
+      "status": "upheld",
+      "verification": "All investigation claims have corresponding artifacts (logs, hashes, classifications)",
+      "violations": []
+    },
+    {
+      "id": "INV-009",
+      "name": "Termination Condition",
+      "file": "INVESTIGATION_LOG.md",
+      "line_start": 126,
+      "line_end": 133,
+      "text": "Investigation terminates when all steps are logged, all invariants upheld/falsified, and no further irreducible steps identified",
+      "role": "procedural",
+      "falsifiability": "Investigation continues beyond termination conditions",
+      "status": "upheld",
+      "verification": "All 6 atomic steps completed, all invariants upheld/falsified, no further irreducible steps",
+      "violations": []
+    }
+  ],
+  "summary": {
+    "total_invariants": 9,
+    "upheld": 7,
+    "violated": 2,
+    "violation_rate": "22.2%",
+    "critical_violations": 0,
+    "high_violations": 2,
+    "medium_violations": 1,
+    "low_violations": 0
+  }
+}
