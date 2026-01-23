@@ -38,7 +38,7 @@ This repository has been investigated using the Atomic Glass-Box Investigation P
 All artifacts are preserved with SHA256 cryptographic hashes for verification:
 
 ### Core Investigation Artifacts:
-- **[INVESTIGATION_LOG.md](INVESTIGATION_LOG.md)** `dfeb6db1fc2e9ba272e3394b51a36e2d5fe901dc1f88b6131eefa20fb7f04764`  
+- **[INVESTIGATION_LOG.md](INVESTIGATION_LOG.md)** `878586624277837f2a6ee634f729b598d5a5949c79fc6547a223ba2c34b1bded`  
   Complete atomic investigation log documenting all steps, decisions, and results.
 
 - **[FAILURES.md](FAILURES.md)** `0e3a9a23ac074f45c9159a93e47e995a9d499c638f0b5dc714f0a40e9c6cf60a`  
@@ -53,7 +53,7 @@ All artifacts are preserved with SHA256 cryptographic hashes for verification:
 - **[INVARIANTS.json](INVARIANTS.json)** `7d1fe6847f8db05f5b522856120601f9aadaab60644faa11fcf35a14f7db2b6a`  
   Machine-readable extraction of all semantic and procedural invariants.
 
-- **[REPORT.md](REPORT.md)** `5c152c1f5da8b68aed8a23cd1966b0b3ad3f8f499903a66300ce5d35bca052f4`  
+- **[REPORT.md](REPORT.md)** `b3d72a74b399163c88ca9846e8ca7bcb032468e80a34ee26fcc26f906a583b5f`  
   Human-readable summary linking all investigation artifacts.
 
 ### Derived Analysis:
