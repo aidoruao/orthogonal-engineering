@@ -1,0 +1,63 @@
+{
+  "test_suite": "incremental_processing_falsification",
+  "timestamp": "2026-01-23T23:41:38.265760",
+  "schema_id": "GB-ORIGIN-1.11",
+  "tests_run": 10,
+  "tests_passed": 3,
+  "tests_failed": 7,
+  "boundary_violations_detected": 1,
+  "detailed_results": [
+    {
+      "test": "test_token_limit_enforcement",
+      "status": "passed",
+      "timestamp": "2026-01-23T23:41:38.391530"
+    },
+    {
+      "test": "test_state_corruption_recovery",
+      "status": "error",
+      "error": "Boundary violation in process_file_incrementally: Failed to process chunk 0: Output validation failed: name 'end_byte' is not defined",
+      "timestamp": "2026-01-23T23:41:38.408415"
+    },
+    {
+      "test": "test_nonexistent_file_handling",
+      "status": "failed",
+      "timestamp": "2026-01-23T23:41:38.416763"
+    },
+    {
+      "test": "test_concurrent_processing",
+      "status": "failed",
+      "timestamp": "2026-01-23T23:41:38.422006"
+    },
+    {
+      "test": "test_resume_after_crash",
+      "status": "error",
+      "error": "Output validation failed: name 'end_byte' is not defined",
+      "timestamp": "2026-01-23T23:41:38.443568"
+    },
+    {
+      "test": "test_boundary_violation_detection",
+      "status": "passed",
+      "timestamp": "2026-01-23T23:41:38.458894"
+    },
+    {
+      "test": "test_file_type_strategies",
+      "status": "passed",
+      "timestamp": "2026-01-23T23:41:38.460419"
+    },
+    {
+      "test": "test_zed_integration_boundaries",
+      "status": "failed",
+      "timestamp": "2026-01-23T23:41:38.471488"
+    },
+    {
+      "test": "test_forgiveness_integration",
+      "status": "failed",
+      "timestamp": "2026-01-23T23:41:38.472444"
+    },
+    {
+      "test": "test_performance_under_load",
+      "status": "failed",
+      "timestamp": "2026-01-23T23:41:38.584462"
+    }
+  ]
+}
