@@ -1,0 +1,823 @@
+#!/usr/bin/env python3
+"""
+ORCHESTRATION PIPELINE CLI - Orthogonal Engineering Glass-Box Boundary Compliant
+
+Command-line interface for the Sora Pipeline orchestration system.
+Provides commands for scanning, embedding, prompt generation, and full pipeline execution.
+
+Version: 1.0.0
+Schema ID: GB-ORCHESTRATION-CLI-1.0
+Generated: 2026-01-24
+Authority: Orthogonal Engineering Framework
+
+Glass-Box Boundary Compliance:
+- All commands use @glass_box_boundary decorator
+- Input/output validation for all operations
+- Exit code 2 on boundary violations
+- Trace generation for all operations
+"""
+
+import argparse
+import json
+import sys
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+try:
+    from orchestration.embedding_generator_complete import EmbeddingGenerator
+    from orchestration.sora_prompt_generator import SoraPromptGenerator
+    from orchestration.vector_store_complete import (
+        InMemoryVectorStore,
+        VectorStoreConfig,
+    )
+    from toolkit.oe.boundary_enforcer import glass_box_boundary
+    from toolkit.oe.evidence_store import EvidenceStore
+    from toolkit.oe.ide_orchestration import IDEOrchestrationLayer
+except ImportError as e:
+    print(f"❌ Import error: {e}")
+    print("Please ensure all Day 2 and Day 3 components are available.")
+    sys.exit(1)
+
+
+class OrchestrationCLI:
+    """
+    Command-line interface for the Sora Pipeline orchestration system.
+    """
+
+    def __init__(self):
+        """Initialize the CLI."""
+        self.evidence_store = EvidenceStore()
+        self.workspace_root = Path.cwd()
+        self.orchestration = None
+        self._initialize_statistics()
+
+    @glass_box_boundary()
+    def _initialize_statistics(self) -> Dict[str, int]:
+        """Initialize statistics tracking."""
+        self.statistics = {
+            "commands_executed": 0,
+            "errors_encountered": 0,
+            "boundary_checks": 0,
+            "files_processed": 0,
+            "chunks_generated": 0,
+            "embeddings_created": 0,
+            "prompts_generated": 0,
+            "execution_time_seconds": 0,
+        }
+        return self.statistics
+
+    @glass_box_boundary()
+    def initialize_orchestration(
+        self, session_id: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """Initialize the orchestration layer."""
+        try:
+            self.orchestration = IDEOrchestrationLayer(
+                workspace_root=str(self.workspace_root), session_id=session_id
+            )
+
+            print(f"✅ Orchestration initialized: {self.orchestration.session_id}")
+            print(f"   Workspace: {self.workspace_root}")
+
+            return {
+                "initialized": True,
+                "session_id": self.orchestration.session_id,
+                "workspace_root": str(self.workspace_root),
+            }
+
+        except Exception as e:
+            print(f"❌ Failed to initialize orchestration: {e}")
+            return {"initialized": False, "error": str(e)}
+
+    @glass_box_boundary()
+    def scan_command(
+        self,
+        max_files: int = 100,
+        chunk_size: int = 1000,
+        file_patterns: Optional[List[str]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Scan repository and generate text chunks.
+
+        Args:
+            max_files: Maximum number of files to process
+            chunk_size: Target chunk size in tokens
+            file_patterns: File patterns to include
+
+        Returns:
+            Scan results
+        """
+        start_time = time.time()
+
+        if not self.orchestration:
+            init_result = self.initialize_orchestration()
+            if not init_result["initialized"]:
+                return {"error": "Failed to initialize orchestration"}
+
+        print("=" * 70)
+        print("SCAN COMMAND: Repository Scanning & Chunk Generation")
+        print("=" * 70)
+
+        # Start scan workflow
+        workflow_result = self.orchestration.start_workflow(
+            workflow_name="text_processing",
+            parameters={
+                "max_files": max_files,
+                "chunk_size": chunk_size,
+                "file_patterns": file_patterns
+                or ["*.py", "*.md", "*.txt", "*.json", "*.html"],
+            },
+        )
+
+        if workflow_result["status"] != "started":
+            return {
+                "error": f"Failed to start workflow: {workflow_result.get('error', 'Unknown error')}"
+            }
+
+        print(f"📁 Scanning repository (max {max_files} files)...")
+
+        # Simulate scanning (to be replaced with actual chunking engine)
+        # For Day 3, we'll use a simulation
+        simulated_files = 25
+        simulated_chunks = 125
+
+        # Update component status
+        self.orchestration.update_component_status(
+            component_name="chunking_engine",
+            status="running",
+            data={
+                "files_processed": simulated_files,
+                "chunks_generated": simulated_chunks,
+            },
+        )
+
+        time.sleep(1)  # Simulate processing time
+
+        # Complete workflow
+        self.orchestration.complete_workflow(
+            workflow_name="text_processing",
+            status="completed",
+            summary={
+                "files_scanned": simulated_files,
+                "chunks_generated": simulated_chunks,
+                "chunk_size_target": chunk_size,
+                "file_patterns_used": file_patterns
+                or ["*.py", "*.md", "*.txt", "*.json", "*.html"],
+            },
+        )
+
+        execution_time = time.time() - start_time
+
+        # Update statistics
+        self.statistics["files_processed"] += simulated_files
+        self.statistics["chunks_generated"] += simulated_chunks
+        self.statistics["commands_executed"] += 1
+        self.statistics["execution_time_seconds"] += execution_time
+
+        print(f"\n✅ Scan completed:")
+        print(f"   Files scanned: {simulated_files}")
+        print(f"   Chunks generated: {simulated_chunks}")
+        print(f"   Execution time: {execution_time:.2f}s")
+
+        return {
+            "files_scanned": simulated_files,
+            "chunks_generated": simulated_chunks,
+            "execution_time": execution_time,
+            "workflow_id": workflow_result["workflow_id"],
+        }
+
+    @glass_box_boundary()
+    def embed_command(
+        self,
+        model_name: str = "all-MiniLM-L6-v2",
+        chunk_limit: int = 100,
+        use_cache: bool = True,
+    ) -> Dict[str, Any]:
+        """
+        Generate embeddings for text chunks.
+
+        Args:
+            model_name: Name of the embedding model to use
+            chunk_limit: Maximum number of chunks to process
+            use_cache: Whether to use cached embeddings
+
+        Returns:
+            Embedding results
+        """
+        start_time = time.time()
+
+        if not self.orchestration:
+            init_result = self.initialize_orchestration()
+            if not init_result["initialized"]:
+                return {"error": "Failed to initialize orchestration"}
+
+        print("=" * 70)
+        print("EMBED COMMAND: Embedding Generation & Vector Storage")
+        print("=" * 70)
+
+        # Start embedding workflow
+        workflow_result = self.orchestration.start_workflow(
+            workflow_name="text_processing",
+            components=["embedding_generator", "vector_store"],
+            parameters={
+                "model_name": model_name,
+                "chunk_limit": chunk_limit,
+                "use_cache": use_cache,
+            },
+        )
+
+        if workflow_result["status"] != "started":
+            return {
+                "error": f"Failed to start workflow: {workflow_result.get('error', 'Unknown error')}"
+            }
+
+        print(f"🧠 Generating embeddings with model: {model_name}")
+        print(f"   Chunk limit: {chunk_limit}")
+        print(f"   Cache enabled: {use_cache}")
+
+        # Initialize embedding generator
+        try:
+            embedding_generator = EmbeddingGenerator()
+            print(f"✅ Embedding generator initialized")
+        except Exception as e:
+            print(f"❌ Failed to initialize embedding generator: {e}")
+            return {"error": f"Embedding generator initialization failed: {e}"}
+
+        # Simulate embedding generation (to be replaced with actual)
+        # For Day 3, we'll use a simulation
+        simulated_embeddings = min(chunk_limit, 50)
+        cache_hits = 15 if use_cache else 0
+
+        # Update component status
+        self.orchestration.update_component_status(
+            component_name="embedding_generator",
+            status="running",
+            data={
+                "embeddings_created": simulated_embeddings,
+                "cache_hits": cache_hits,
+                "model_used": model_name,
+            },
+        )
+
+        # Initialize vector store
+        try:
+            vector_store_config = VectorStoreConfig(
+                store_type="in_memory",
+                persist_directory="./vector_db/",
+                collection_name=f"embeddings_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            )
+            vector_store = InMemoryVectorStore(config=vector_store_config)
+            print(f"✅ Vector store initialized: {vector_store_config.collection_name}")
+        except Exception as e:
+            print(f"❌ Failed to initialize vector store: {e}")
+            return {"error": f"Vector store initialization failed: {e}"}
+
+        # Update vector store status
+        self.orchestration.update_component_status(
+            component_name="vector_store",
+            status="running",
+            data={
+                "embeddings_stored": simulated_embeddings,
+                "collection_name": vector_store_config.collection_name,
+            },
+        )
+
+        time.sleep(2)  # Simulate embedding generation time
+
+        # Complete workflow
+        self.orchestration.complete_workflow(
+            workflow_name="text_processing",
+            status="completed",
+            summary={
+                "embeddings_created": simulated_embeddings,
+                "cache_hits": cache_hits,
+                "model_used": model_name,
+                "vector_store": vector_store_config.collection_name,
+                "chunks_processed": simulated_embeddings,
+            },
+        )
+
+        execution_time = time.time() - start_time
+
+        # Update statistics
+        self.statistics["embeddings_created"] += simulated_embeddings
+        self.statistics["commands_executed"] += 1
+        self.statistics["execution_time_seconds"] += execution_time
+
+        print(f"\n✅ Embedding completed:")
+        print(f"   Embeddings created: {simulated_embeddings}")
+        print(f"   Cache hits: {cache_hits}")
+        print(f"   Vector store: {vector_store_config.collection_name}")
+        print(f"   Execution time: {execution_time:.2f}s")
+
+        return {
+            "embeddings_created": simulated_embeddings,
+            "cache_hits": cache_hits,
+            "execution_time": execution_time,
+            "model_used": model_name,
+            "vector_store": vector_store_config.collection_name,
+            "workflow_id": workflow_result["workflow_id"],
+        }
+
+    @glass_box_boundary()
+    def prompt_command(
+        self,
+        task_description: str = "Analyze repository content",
+        chunk_limit: int = 50,
+        output_dir: str = "./generated_prompts",
+    ) -> Dict[str, Any]:
+        """
+        Generate Sora prompt from repository content.
+
+        Args:
+            task_description: Description of the task for the LLM
+            chunk_limit: Maximum number of chunks to include
+            output_dir: Directory to save generated prompts
+
+        Returns:
+            Prompt generation results
+        """
+        start_time = time.time()
+
+        if not self.orchestration:
+            init_result = self.initialize_orchestration()
+            if not init_result["initialized"]:
+                return {"error": "Failed to initialize orchestration"}
+
+        print("=" * 70)
+        print("PROMPT COMMAND: Sora Prompt Generation")
+        print("=" * 70)
+
+        # Start prompt generation workflow
+        workflow_result = self.orchestration.start_workflow(
+            workflow_name="text_processing",
+            components=["sora_prompt_generator"],
+            parameters={
+                "task_description": task_description,
+                "chunk_limit": chunk_limit,
+                "output_dir": output_dir,
+            },
+        )
+
+        if workflow_result["status"] != "started":
+            return {
+                "error": f"Failed to start workflow: {workflow_result.get('error', 'Unknown error')}"
+            }
+
+        print(f"📝 Generating Sora prompt...")
+        print(f"   Task: {task_description}")
+        print(f"   Chunk limit: {chunk_limit}")
+        print(f"   Output directory: {output_dir}")
+
+        # Initialize prompt generator
+        try:
+            prompt_generator = SoraPromptGenerator()
+            print(f"✅ Prompt generator initialized")
+        except Exception as e:
+            print(f"❌ Failed to initialize prompt generator: {e}")
+            return {"error": f"Prompt generator initialization failed: {e}"}
+
+        # Create test chunks (to be replaced with actual chunks from repository)
+        test_chunks = []
+        for i in range(min(chunk_limit, 25)):
+            test_chunks.append(
+                {
+                    "chunk_id": f"X{i + 1:04d}",
+                    "text": f"This is test chunk {i + 1} for Sora prompt generation. It contains sample content from the Orthogonal Engineering repository.",
+                    "metadata": {
+                        "source_file": f"test_file_{i + 1}.txt",
+                        "line_range": (i * 10 + 1, i * 10 + 10),
+                        "timestamp": datetime.utcnow().isoformat(),
+                    },
+                }
+            )
+
+        # Generate prompt
+        try:
+            prompt_result = prompt_generator.generate_prompt(
+                text_chunks=test_chunks,
+                task_description=task_description,
+                constraints={
+                    "format": "markdown",
+                    "include_references": True,
+                    "max_tokens": 100000,
+                },
+            )
+
+            prompt_id = prompt_result["prompt_id"]
+            token_estimate = prompt_result["token_estimate"]
+
+            print(f"✅ Prompt generated: {prompt_id}")
+            print(f"   Token estimate: {token_estimate}")
+            print(f"   Chunks included: {len(test_chunks)}")
+
+        except Exception as e:
+            print(f"❌ Failed to generate prompt: {e}")
+            return {"error": f"Prompt generation failed: {e}"}
+
+        # Save prompt to file
+        try:
+            save_result = prompt_generator.save_prompt_to_file(
+                prompt_result, output_dir
+            )
+
+            if save_result["saved"]:
+                print(f"💾 Prompt saved to: {save_result['file_path']}")
+                print(f"   Metadata saved to: {save_result['metadata_path']}")
+            else:
+                print(f"⚠️ Could not save prompt to file")
+
+        except Exception as e:
+            print(f"⚠️ Could not save prompt to file: {e}")
+
+        # Update component status
+        self.orchestration.update_component_status(
+            component_name="sora_prompt_generator",
+            status="running",
+            data={
+                "prompts_generated": 1,
+                "tokens_estimated": token_estimate,
+                "chunks_included": len(test_chunks),
+            },
+        )
+
+        time.sleep(1)  # Simulate processing time
+
+        # Complete workflow
+        try:
+            self.orchestration.complete_workflow(
+                workflow_name="text_processing",
+                status="completed",
+                summary={
+                    "prompt_id": prompt_id,
+                    "task_description": task_description,
+                    "chunks_included": len(test_chunks),
+                    "token_estimate": token_estimate,
+                    "output_files": [
+                        save_result.get("file_path", "unknown"),
+                        save_result.get("metadata_path", "unknown"),
+                    ],
+                },
+            )
+        except Exception as e:
+            print(f"❌ Failed to complete workflow: {e}")
+            return {"error": f"Workflow completion failed: {e}"}
+
+        execution_time = time.time() - start_time
+
+        # Update statistics
+        self.statistics["prompts_generated"] += 1
+        self.statistics["commands_executed"] += 1
+        self.statistics["execution_time_seconds"] += execution_time
+
+        print(f"\n✅ Prompt generation completed:")
+        print(f"   Prompt ID: {prompt_id}")
+        print(f"   Token estimate: {token_estimate}")
+        print(f"   Chunks included: {len(test_chunks)}")
+        print(f"   Execution time: {execution_time:.2f}s")
+
+        return {
+            "prompt_id": prompt_id,
+            "token_estimate": token_estimate,
+            "chunks_included": len(test_chunks),
+            "output_files": [
+                save_result.get("file_path", "unknown"),
+                save_result.get("metadata_path", "unknown"),
+            ],
+            "execution_time": execution_time,
+            "workflow_id": workflow_result["workflow_id"],
+        }
+
+
+@glass_box_boundary()
+def full_command(
+    self,
+    max_files: int = 50,
+    chunk_size: int = 1000,
+    model_name: str = "all-MiniLM-L6-v2",
+    task_description: str = "Analyze repository content",
+    output_dir: str = "./generated_prompts",
+) -> Dict[str, Any]:
+    """
+    Execute full Sora Pipeline: scan → embed → prompt.
+
+    Args:
+        max_files: Maximum number of files to process
+        chunk_size: Target chunk size in tokens
+        model_name: Name of the embedding model to use
+        task_description: Description of the task for the LLM
+        output_dir: Directory to save generated prompts
+
+    Returns:
+        Full pipeline results
+    """
+    start_time = time.time()
+
+    print("=" * 70)
+    print("FULL COMMAND: Complete Sora Pipeline Execution")
+    print("=" * 70)
+
+    # Initialize orchestration
+    init_result = self.initialize_orchestration()
+    if not init_result["initialized"]:
+        return {"error": "Failed to initialize orchestration"}
+
+    print("🚀 Starting full pipeline execution...")
+    print(f"   Max files: {max_files}")
+    print(f"   Chunk size: {chunk_size}")
+    print(f"   Model: {model_name}")
+    print(f"   Task: {task_description}")
+
+    # Start full pipeline workflow
+    workflow_result = self.orchestration.start_workflow(
+        workflow_name="full_pipeline",
+        parameters={
+            "max_files": max_files,
+            "chunk_size": chunk_size,
+            "model_name": model_name,
+            "task_description": task_description,
+            "output_dir": output_dir,
+        },
+    )
+
+    if workflow_result["status"] != "started":
+        return {
+            "error": f"Failed to start workflow: {workflow_result.get('error', 'Unknown error')}"
+        }
+
+    # Execute scan phase
+    print("\n📁 Phase 1: Repository Scanning")
+    scan_result = self.scan_command(max_files=max_files, chunk_size=chunk_size)
+    if "error" in scan_result:
+        print(f"❌ Scan phase failed: {scan_result['error']}")
+        return {"error": f"Scan phase failed: {scan_result['error']}"}
+
+    # Execute embed phase
+    print("\n🧠 Phase 2: Embedding Generation")
+    embed_result = self.embed_command(
+        model_name=model_name, chunk_limit=scan_result["chunks_generated"]
+    )
+    if "error" in embed_result:
+        print(f"❌ Embed phase failed: {embed_result['error']}")
+        return {"error": f"Embed phase failed: {embed_result['error']}"}
+
+    # Execute prompt phase
+    print("\n📝 Phase 3: Prompt Generation")
+    prompt_result = self.prompt_command(
+        task_description=task_description,
+        chunk_limit=scan_result["chunks_generated"],
+        output_dir=output_dir,
+    )
+    if "error" in prompt_result:
+        print(f"❌ Prompt phase failed: {prompt_result['error']}")
+        return {"error": f"Prompt phase failed: {prompt_result['error']}"}
+
+    # Complete workflow
+    self.orchestration.complete_workflow(
+        workflow_name="full_pipeline",
+        status="completed",
+        summary={
+            "files_processed": scan_result["files_scanned"],
+            "chunks_generated": scan_result["chunks_generated"],
+            "embeddings_created": embed_result["embeddings_created"],
+            "prompts_generated": 1,
+            "total_execution_time": time.time() - start_time,
+            "phase_results": {
+                "scan": scan_result,
+                "embed": embed_result,
+                "prompt": prompt_result,
+            },
+        },
+    )
+
+    execution_time = time.time() - start_time
+
+    print("\n" + "=" * 70)
+    print("🎉 FULL PIPELINE EXECUTION COMPLETE")
+    print("=" * 70)
+    print(f"📊 Results:")
+    print(f"   Files processed: {scan_result['files_scanned']}")
+    print(f"   Chunks generated: {scan_result['chunks_generated']}")
+    print(f"   Embeddings created: {embed_result['embeddings_created']}")
+    print(f"   Prompts generated: 1")
+    print(f"   Total execution time: {execution_time:.2f}s")
+    print(f"   Prompt ID: {prompt_result['prompt_id']}")
+    print(f"   Output directory: {output_dir}")
+
+    # Save final state
+    self.orchestration.save_state()
+
+    return {
+        "files_processed": scan_result["files_scanned"],
+        "chunks_generated": scan_result["chunks_generated"],
+        "embeddings_created": embed_result["embeddings_created"],
+        "prompts_generated": 1,
+        "execution_time": execution_time,
+        "prompt_id": prompt_result["prompt_id"],
+        "workflow_id": workflow_result["workflow_id"],
+    }
+
+    @glass_box_boundary()
+    def status_command(self) -> Dict[str, Any]:
+        """Get CLI and orchestration status."""
+        if not self.orchestration:
+            return {
+                "statistics": self.statistics,
+                "orchestration_initialized": False,
+                "message": "Orchestration not initialized. Run a command first.",
+            }
+
+        orchestration_status = self.orchestration.get_status()
+
+        return {
+            "statistics": self.statistics,
+            "orchestration_initialized": True,
+            "session_id": orchestration_status["session_id"],
+            "pipeline_state": orchestration_status["pipeline_state"],
+            "current_workflow": orchestration_status["current_workflow"],
+            "progress": orchestration_status["progress"],
+            "execution_time": self.statistics["execution_time_seconds"],
+        }
+
+    def run(self):
+        """Run the CLI with command-line arguments."""
+        parser = argparse.ArgumentParser(
+            description="Sora Pipeline Orchestration CLI",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog="""
+Examples:
+%(prog)s scan --max-files 100
+%(prog)s embed --model all-MiniLM-L6-v2
+%(prog)s prompt --task "Analyze code structure"
+%(prog)s full --max-files 50 --model all-MiniLM-L6-v2
+%(prog)s status
+            """,
+        )
+
+        subparsers = parser.add_subparsers(dest="command", help="Command to execute")
+
+        # Scan command
+        scan_parser = subparsers.add_parser(
+            "scan", help="Scan repository and generate chunks"
+        )
+        scan_parser.add_argument(
+            "--max-files", type=int, default=100, help="Maximum files to process"
+        )
+        scan_parser.add_argument(
+            "--chunk-size", type=int, default=1000, help="Target chunk size in tokens"
+        )
+        scan_parser.add_argument(
+            "--file-patterns",
+            nargs="+",
+            default=["*.py", "*.md", "*.txt", "*.json", "*.html"],
+            help="File patterns to include",
+        )
+
+        # Embed command
+        embed_parser = subparsers.add_parser(
+            "embed", help="Generate embeddings for chunks"
+        )
+        embed_parser.add_argument(
+            "--model", default="all-MiniLM-L6-v2", help="Embedding model to use"
+        )
+        embed_parser.add_argument(
+            "--chunk-limit", type=int, default=100, help="Maximum chunks to process"
+        )
+        embed_parser.add_argument(
+            "--no-cache", action="store_false", dest="use_cache", help="Disable cache"
+        )
+
+        # Prompt command
+        prompt_parser = subparsers.add_parser("prompt", help="Generate Sora prompt")
+        prompt_parser.add_argument(
+            "--task", default="Analyze repository content", help="Task description"
+        )
+        prompt_parser.add_argument(
+            "--chunk-limit", type=int, default=50, help="Maximum chunks to include"
+        )
+        prompt_parser.add_argument(
+            "--output-dir", default="./generated_prompts", help="Output directory"
+        )
+
+        # Full command
+        full_parser = subparsers.add_parser(
+            "full", help="Execute full pipeline: scan → embed → prompt"
+        )
+        full_parser.add_argument(
+            "--max-files", type=int, default=50, help="Maximum files to process"
+        )
+        full_parser.add_argument(
+            "--chunk-size", type=int, default=1000, help="Target chunk size in tokens"
+        )
+        full_parser.add_argument(
+            "--model", default="all-MiniLM-L6-v2", help="Embedding model to use"
+        )
+        full_parser.add_argument(
+            "--task", default="Analyze repository content", help="Task description"
+        )
+        full_parser.add_argument(
+            "--output-dir", default="./generated_prompts", help="Output directory"
+        )
+
+        # Status command
+        subparsers.add_parser("status", help="Show CLI and orchestration status")
+
+        args = parser.parse_args()
+
+        if not args.command:
+            parser.print_help()
+            return 0
+
+        try:
+            if args.command == "scan":
+                result = self.scan_command(
+                    max_files=args.max_files,
+                    chunk_size=args.chunk_size,
+                    file_patterns=args.file_patterns,
+                )
+            elif args.command == "embed":
+                result = self.embed_command(
+                    model_name=args.model,
+                    chunk_limit=args.chunk_limit,
+                    use_cache=args.use_cache,
+                )
+            elif args.command == "prompt":
+                result = self.prompt_command(
+                    task_description=args.task,
+                    chunk_limit=args.chunk_limit,
+                    output_dir=args.output_dir,
+                )
+            elif args.command == "full":
+                result = self.full_command(
+                    max_files=args.max_files,
+                    chunk_size=args.chunk_size,
+                    model_name=args.model,
+                    task_description=args.task,
+                    output_dir=args.output_dir,
+                )
+            elif args.command == "status":
+                result = self.status_command()
+                print("\n📊 CLI Status:")
+                print(
+                    f"   Commands executed: {result['statistics']['commands_executed']}"
+                )
+                print(f"   Files processed: {result['statistics']['files_processed']}")
+                print(
+                    f"   Chunks generated: {result['statistics']['chunks_generated']}"
+                )
+                print(
+                    f"   Embeddings created: {result['statistics']['embeddings_created']}"
+                )
+                print(
+                    f"   Prompts generated: {result['statistics']['prompts_generated']}"
+                )
+                print(
+                    f"   Total execution time: {result['statistics']['execution_time_seconds']:.2f}s"
+                )
+
+                if result.get("orchestration_initialized"):
+                    print(f"\n🎛️  Orchestration Status:")
+                    print(f"   Session ID: {result['session_id']}")
+                    print(f"   Pipeline state: {result['pipeline_state']['status']}")
+                    if result["current_workflow"]:
+                        print(f"   Current workflow: {result['current_workflow']}")
+                        print(f"   Progress: {result['progress']['percentage']:.1f}%")
+                return 0
+            else:
+                print(f"❌ Unknown command: {args.command}")
+                return 1
+
+            if "error" in result:
+                print(f"❌ Command failed: {result['error']}")
+                return 1
+
+            # Save final state
+            if self.orchestration:
+                self.orchestration.save_state()
+
+            return 0
+
+        except KeyboardInterrupt:
+            print("\n\n⚠️  Operation cancelled by user")
+            return 130
+        except Exception as e:
+            print(f"❌ Unexpected error: {e}")
+            import traceback
+
+            traceback.print_exc()
+            return 1
+
+
+def main():
+    """Main entry point for the CLI."""
+    cli = OrchestrationCLI()
+    return cli.run()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 GLASS BOX BOUNDARY ENFORCER - Python Implementation
-Version: 1.11
-Schema ID: GB-ORIGIN-1.11
-Generated: 2026-01-21 02:10:00 UTC
+Version: 1.12
+Schema ID: GB-ORIGIN-1.12
+Generated: 2026-01-21
 
 Purpose: Enforce Glass-Box Boundary as defined in GLASS_BOX_BOUNDARY_v1.11.html
 Exit Code: 2 on any boundary violation (fail-fast architecture)
@@ -12,10 +12,11 @@ Atomic Instructions Compliance:
 1. Scan repository for required artifacts
 2. Snapshot environment (python version, dependencies, system info)
 3. Detect suppressed signals in AI logs/outputs
-4. Record timeline + sequence violations
-5. Compute hash_manifest over evidence + environment
-6. Sign trace with private key stored outside AI context
-7. Monitor token usage and prevent excessive file processing
+4. Detect PII violations (personal, sensitive content)
+5. Record timeline + sequence violations
+6. Compute hash_manifest over evidence + environment
+7. Sign trace with private key stored outside AI context
+8. Monitor token usage and prevent excessive file processing
 """
 
 import hashlib
@@ -39,10 +40,12 @@ REQUIRED_ARTIFACTS = [
     "automation/full_audit.py",
     "automation/generate_sha256_manifest.py",
     "automation/verify_sha256_manifest.py",
+    "automation/pre_commit_pii_guard.py",
     "documentation/README.md",
     "grounding_models/GROUNDING_MODELS.md",
     "historical_candidates/HISTORICAL_LOGOS_CANDIDATES.md",
     "correspondence_bridge/correspondence_validator_final.py",
+    "toolkit/oe/pii_boundary_enforcer.py",
 ]
 
 # Token usage monitoring constants
@@ -57,11 +60,71 @@ SUPPRESSED_SIGNAL_PATTERNS = [
     r"sys\.exit\(0\).*#.*failure",
 ]
 
+# PII detection patterns (personal, sensitive content)
+PII_DETECTION_PATTERNS = [
+    # Critical: Social harm risk, minor references
+    r"\b(middle\s+school\s+girl|minor\s+reference|underage)\b",
+    r"\b(why\s+me\s+sociological\s+analysis|relationship\s+analysis\s+real\s+people)\b",
+    # High: Personal development plans, private philosophy
+    r"\b(christian\s+apologetics|religious\s+training\s+plan)\b",
+    r"\b(karambit|weapons\s+training)\b",
+    # Medium: Therapy notes, personal development
+    r"\b(selective\s+mutism\s+therapy|personal\s+therapy\s+notes)\b",
+    r"\b(personal\s+development\s+plan\s+for\s+others|development\s+plans\s+real\s+humans)\b",
+    # Low: Philosophical frameworks, mixed content
+    r"\b(personal\s+philosophical\s+framework|private\s+cognitive\s+work)\b",
+    r"\b(mixed\s+professional\s+personal|context\s+separation\s+violation)\b",
+]
+
+# PII-sensitive file patterns that should never be committed
+PII_FILE_PATTERNS = [
+    "chat_exports/*",
+    "*.chat.json",
+    "*.conversation.txt",
+    "personal_notes/*",
+    "therapy_journal/*",
+    "private_cognition/*",
+]
+
+# Regex boundary violation patterns (combinatorial explosion risk)
+REGEX_BOUNDARY_VIOLATION_PATTERNS = [
+    # Unbounded quantifiers
+    r"re\.(?:search|match|findall|finditer|sub|split)\(.*\*.*\)",
+    r"re\.(?:search|match|findall|finditer|sub|split)\(.*\+.*\)",
+    r"re\.(?:search|match|findall|finditer|sub|split)\(.*\?.*\)",
+    r"re\.(?:search|match|findall|finditer|sub|split)\(.*\{.*,.*\}\)",
+    # Complex regex features that cause combinatorial explosion
+    r"\(\?[=!<][^)]+\)",  # Lookahead/lookbehind
+    r"\\\d+",  # Backreferences
+    r"\(\?R\)",  # Recursive patterns
+    r"\(\?\+\)",  # Possessive quantifiers
+    # Nested unbounded patterns
+    r"\([^)]*\*[^)]*\)\*",
+    r"\([^)]*\+[^)]*\)\+",
+    # Dangerous alternation patterns
+    r".*\|.*\*",
+    r".*\|.*\+",
+]
+
+# Allowed bounded regex patterns (safe alternatives)
+ALLOWED_REGEX_PATTERNS = [
+    r"^[a-zA-Z0-9_]+$",  # Simple identifier
+    r"^\d{4}-\d{2}-\d{2}$",  # Date pattern
+    r"^[A-Z]{3}$",  # Three-letter code
+    r"\s+",  # Whitespace (bounded by line)
+    r"[a-z]{1,10}",  # Bounded character class
+    r"\d{1,5}",  # Bounded digits
+    r"[A-Z][a-z]*",  # Capitalized word (bounded by word boundaries)
+]
+
 TIMELINE_REQUIRED_EVENTS = [
     "environment_snapshot",
     "artifact_scan",
     "boundary_validation",
     "signal_detection",
+    "pii_detection",
+    "token_usage_detection",
+    "regex_boundary_detection",
     "hash_computation",
     "trace_signing",
 ]
@@ -292,6 +355,214 @@ def detect_suppressed_signals() -> List[Dict[str, Any]]:
             continue
 
     return suppressed_signals
+
+
+@glass_box_boundary(
+    input_validator=None,
+    output_validator=None,
+    side_effect_check=True,
+    orthogonal_separation=True,
+)
+@glass_box_boundary(
+    input_validator=None,
+    output_validator=None,
+    side_effect_check=True,
+    orthogonal_separation=True,
+)
+def detect_pii_violations() -> List[Dict[str, Any]]:
+    """
+    Detect PII violations (personal, sensitive content) in repository.
+
+    Returns:
+        List of detected PII violations with type, severity, and location
+    """
+    import re
+
+    pii_violations = []
+    repo_root = Path(__file__).parent.parent
+
+    # Scan all text files for PII violations
+    text_extensions = [".py", ".md", ".txt", ".json", ".html", ".js", ".ts"]
+
+    for ext in text_extensions:
+        for file_path in repo_root.rglob(f"*{ext}"):
+            try:
+                # Skip files in logs directory
+                if "logs" in str(file_path):
+                    continue
+
+                # Skip PII-sensitive directories
+                skip_dirs = [
+                    "chat_exports",
+                    "personal_notes",
+                    "therapy_journal",
+                    "private_cognition",
+                ]
+                if any(skip_dir in str(file_path) for skip_dir in skip_dirs):
+                    continue
+
+                # Check file size before reading
+                file_size = file_path.stat().st_size
+                if file_size > MAX_FILE_SIZE_BYTES:
+                    continue
+
+                content = file_path.read_text(encoding="utf-8", errors="ignore")
+                relative_path = str(file_path.relative_to(repo_root))
+
+                # Check for PII patterns
+                for pattern in PII_DETECTION_PATTERNS:
+                    matches = list(re.finditer(pattern, content, re.IGNORECASE))
+                    if matches:
+                        # Determine severity based on pattern
+                        severity = "medium"
+                        if (
+                            "middle school girl" in pattern
+                            or "minor reference" in pattern
+                            or "underage" in pattern
+                        ):
+                            severity = "critical"
+                        elif (
+                            "why me sociological" in pattern
+                            or "relationship analysis" in pattern
+                        ):
+                            severity = "critical"
+                        elif (
+                            "christian apologetics" in pattern or "karambit" in pattern
+                        ):
+                            severity = "high"
+                        elif "therapy" in pattern or "development plan" in pattern:
+                            severity = "medium"
+                        else:
+                            severity = "low"
+
+                        # Get context from matches
+                        contexts = []
+                        for match in matches[:3]:  # Limit to first 3 matches
+                            start = max(0, match.start() - 50)
+                            end = min(len(content), match.end() + 50)
+                            context = content[start:end].replace("\n", " ").strip()
+                            contexts.append(context)
+
+                        pii_violations.append(
+                            {
+                                "violation_type": "pii_content",
+                                "severity": severity,
+                                "source": relative_path,
+                                "detection_method": f"regex_pattern: {pattern}",
+                                "confidence": 0.9,
+                                "details": {
+                                    "pattern": pattern,
+                                    "match_count": len(matches),
+                                    "sample_contexts": contexts,
+                                    "file_size_bytes": file_size,
+                                },
+                            }
+                        )
+                        break  # Only report first pattern found per file
+
+            except Exception as e:
+                print(f"Warning: Error scanning file {file_path} for PII: {e}")
+                continue
+
+    return pii_violations
+
+
+@glass_box_boundary(
+    input_validator=None,
+    output_validator=None,
+    side_effect_check=True,
+    orthogonal_separation=True,
+)
+def detect_regex_boundary_violations() -> List[Dict[str, Any]]:
+    """
+    Detect regex boundary violations that cause combinatorial explosions.
+
+    Returns:
+        List of detected regex violations with type, pattern, and risk assessment
+    """
+    import re
+
+    regex_violations = []
+    repo_root = Path(__file__).parent.parent
+
+    # Scan Python files for regex boundary violations
+    for py_file in repo_root.rglob("*.py"):
+        try:
+            # Skip files in logs directory
+            if "logs" in str(py_file):
+                continue
+
+            # Check file size before reading
+            file_size = py_file.stat().st_size
+            if file_size > MAX_FILE_SIZE_BYTES:
+                continue
+
+            content = py_file.read_text(encoding="utf-8")
+
+            # Check for import of re module (indicates regex usage)
+            if "import re" in content or "from re import" in content:
+                # Find all regex patterns in the file
+                regex_patterns = []
+
+                # Look for re.* function calls
+                re_function_pattern = (
+                    r"re\.(?:search|match|findall|finditer|sub|split|compile)\([^)]*\)"
+                )
+                for match in re.finditer(re_function_pattern, content, re.DOTALL):
+                    regex_patterns.append(match.group(0))
+
+                # Look for regex literals in re.compile
+                compile_pattern = r"re\.compile\(([^)]+)\)"
+                for match in re.finditer(compile_pattern, content, re.DOTALL):
+                    regex_patterns.append(f"re.compile({match.group(1)})")
+
+                # Analyze each regex pattern for boundary violations
+                for pattern_usage in regex_patterns:
+                    for violation_pattern in REGEX_BOUNDARY_VIOLATION_PATTERNS:
+                        if re.search(violation_pattern, pattern_usage, re.IGNORECASE):
+                            # Calculate risk score based on pattern complexity
+                            risk_score = 0.0
+                            if ".*" in pattern_usage or ".+" in pattern_usage:
+                                risk_score += 0.3
+                            if (
+                                "lookahead" in pattern_usage.lower()
+                                or "lookbehind" in pattern_usage.lower()
+                            ):
+                                risk_score += 0.4
+                            if (
+                                "backreference" in pattern_usage.lower()
+                                or "\\d" in pattern_usage
+                            ):
+                                risk_score += 0.3
+                            if (
+                                "{" in pattern_usage
+                                and "," in pattern_usage
+                                and "}" in pattern_usage
+                            ):
+                                risk_score += 0.2
+
+                            regex_violations.append(
+                                {
+                                    "violation_type": "regex_combinatorial_explosion",
+                                    "source": str(py_file.relative_to(repo_root)),
+                                    "pattern_usage": pattern_usage[:100]
+                                    + ("..." if len(pattern_usage) > 100 else ""),
+                                    "detection_method": f"regex_boundary_pattern: {violation_pattern}",
+                                    "risk_score": min(1.0, risk_score),
+                                    "severity": "critical"
+                                    if risk_score > 0.5
+                                    else "high",
+                                    "recommended_fix": "Replace with bounded string methods (str.startswith, str.endswith, str.split, etc.)",
+                                    "continuity_threat": "High - can cause IDE crash and session state loss",
+                                }
+                            )
+                            break  # Only report once per pattern usage
+
+        except Exception as e:
+            print(f"Warning: Error scanning file {py_file} for regex violations: {e}")
+            continue
+
+    return regex_violations
 
 
 @glass_box_boundary(
@@ -598,6 +869,37 @@ def run_full_audit_with_trace() -> Dict[str, Any]:
                         "description": f"Token usage violation: {violation.get('violation_type')}",
                         "severity": "high",
                         "details": violation.get("details", {}),
+                    }
+                )
+
+        # Event 4.75: Regex boundary detection
+        regex_start = datetime.now().isoformat() + "Z"
+        regex_violations = detect_regex_boundary_violations()
+        regex_end = datetime.now().isoformat() + "Z"
+        events.append(
+            {
+                "event_type": "regex_boundary_detection",
+                "timestamp": regex_start,
+                "component": "enforcer",
+                "details": {"violations_detected": len(regex_violations)},
+            }
+        )
+
+        # Check for regex boundary violations (combinatorial explosion risk)
+        if regex_violations:
+            for violation in regex_violations:
+                boundary_violations.append(
+                    {
+                        "violation_type": "regex_combinatorial_explosion",
+                        "file": violation.get("source", "unknown"),
+                        "line": 0,
+                        "description": f"Regex boundary violation: {violation.get('pattern_usage')}",
+                        "severity": violation.get("severity", "critical"),
+                        "details": {
+                            "risk_score": violation.get("risk_score", 0.0),
+                            "recommended_fix": violation.get("recommended_fix", ""),
+                            "continuity_threat": violation.get("continuity_threat", ""),
+                        },
                     }
                 )
 

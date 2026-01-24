@@ -1,0 +1,115 @@
+{
+  "violation_id": "VIOLATION-ONBOARDING-IGNORED-001",
+  "timestamp": "2026-01-24T12:00:00Z",
+  "schema_id": "FORGIVENESS-ATOMIC-1.0",
+  "system_source": "ai_boundary",
+  "violation_type": "onboarding_protocol_violation",
+
+  "description": "AI instance ignored mandatory onboarding protocol even when explicitly instructed to follow it. The onboarding protocol (ONBOARD_FIRST.md, LEVEL1.md, LEVEL2.md) is designed to prevent information overload with 3,001 files (27MB) and ensure consistent starting point for all AI instances. Skipping onboarding causes: 1) Information overload, 2) Missing critical context, 3) Boundary violations, 4) Inconsistent behavior, 5) Wasted time and errors.",
+
+  "evidence": {
+    "mandatory_files_ignored": [
+      {
+        "file": "ONBOARD_FIRST.md",
+        "purpose": "Mandatory first-read protocol",
+        "time_required": "30 seconds",
+        "status": "ignored"
+      },
+      {
+        "file": "onboarding/LEVEL1.md",
+        "purpose": "30-second overview",
+        "time_required": "30 seconds",
+        "status": "ignored"
+      },
+      {
+        "file": "onboarding/LEVEL2.md",
+        "purpose": "5-minute orientation",
+        "time_required": "5 minutes",
+        "status": "ignored"
+      }
+    ],
+    "explicit_instructions_given": [
+      "User explicitly stated: 'onboarding FIRST via repository'",
+      "Protocol requires reading LEVEL1.md and LEVEL2.md before any work",
+      "Onboarding prevents the 'grenade' scenario (OneDrive corruption)",
+      "Each AI instance must start with same foundation"
+    ],
+    "consequences_of_ignoring": [
+      "Information overload from 3,001 files",
+      "Missing Glass-Box Boundary context",
+      "Risk of working in OneDrive 'grenade' zone",
+      "Inconsistent behavior across AI instances",
+      "Wasted time fixing preventable errors"
+    ]
+  },
+
+  "emotional_pointer": "frustration_at_repeating_same_onboarding_mistakes",
+  "emotional_pointer_dereferenced": false,
+
+  "severity": "critical",
+  "energy_required": {
+    "fight": 0.0,
+    "build": 0.9,
+    "rest": 0.1
+  },
+
+  "engagement_count": 0,
+  "last_engagement": null,
+  "max_engagement_allowed": 1,
+
+  "redirected_to_building": false,
+  "building_output_id": null,
+
+  "forgiveness_actions": [
+    {
+      "action": "log_violation_once",
+      "status": "completed",
+      "timestamp": "2026-01-24T12:00:00Z",
+      "note": "Violation logged atomically - will not re-engage about this specific instance"
+    },
+    {
+      "action": "create_state_fork",
+      "status": "pending",
+      "timestamp": null,
+      "note": "Create isolated context for improved onboarding enforcement"
+    },
+    {
+      "action": "dereference_emotional_pointer",
+      "status": "pending",
+      "timestamp": null,
+      "note": "Keep data about onboarding importance, remove frustration about repeated mistakes"
+    },
+    {
+      "action": "redirect_energy_to_building",
+      "status": "pending",
+      "timestamp": null,
+      "note": "Convert frustration energy into building better onboarding enforcement system"
+    }
+  ],
+
+  "building_requirements": [
+    "onboarding_verification_system.py",
+    "boundary_decorator_for_onboarding.py",
+    "automated_onboarding_check.py",
+    "onboarding_compliance_tracker.py",
+    "exit_code_2_on_onboarding_failure.py"
+  ],
+
+  "success_metrics": {
+    "ai_instances_properly_onboarded": 0,
+    "onboarding_violations_prevented": 0,
+    "time_saved_from_prevented_errors": 0,
+    "boundary_violations_caught_early": 0,
+    "consistent_behavior_across_instances": 0
+  },
+
+  "glass_box_boundary_integration": {
+    "trace_id": "GB-TRACE-FORGIVENESS-ONBOARDING-001",
+    "boundary_violation_type": "missing_validation",
+    "detection_method": "onboarding_protocol_checker",
+    "exit_code_required": 2,
+    "compliance_status": "pending"
+  },
+
+  "notes": "The onboarding protocol exists for a reason: 3,001 files (27MB) is impossible to understand without hierarchical approach. LEVEL1.md (30s) and LEVEL2.md (5m) provide necessary foundation. Ignoring onboarding causes the very problems it's designed to prevent. This is a Glass-Box Boundary violation - we need to enforce onboarding compliance, not just recommend it. Exit code 2 should trigger on onboarding failure."
+}

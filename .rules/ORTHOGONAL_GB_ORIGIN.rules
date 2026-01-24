@@ -1,7 +1,7 @@
 # ORTHOGONAL_GB_ORIGIN.rules - Zed IDE Configuration
-# Version: 1.11
-# Generated: 2026-01-21 02:10:00 UTC
-# Schema ID: GB-ORIGIN-1.11
+# Version: 1.12
+# Generated: 2026-01-21
+# Schema ID: GB-ORIGIN-1.12
 
 # ============================================================================
 # CORE DIRECTIVE
@@ -34,6 +34,7 @@ on_project_open:
       - scan_repository_for_artifacts
       - snapshot_environment
       - detect_suppressed_signals
+      - detect_pii_violations
       - record_timeline_sequence
       - compute_hash_manifest
       - sign_trace_with_private_key
@@ -71,6 +72,18 @@ on_code_violation:
     suggestion: "Add output validation schema"
     fix: add_output_schema
 
+  - pattern: "regex_generation"
+    suggestion: "Regex generation banned - use deterministic string methods instead"
+    fix: replace_regex_with_deterministic_methods
+    severity: critical
+    violation_class: REGEX_GENERATION_BAN
+
+  - pattern: "pii_content_detected"
+    suggestion: "PII content detected - remove or sanitize personal information"
+    fix: sanitize_pii_content
+    severity: critical
+    violation_class: PII_BOUNDARY_VIOLATION
+
 # 4. STRUCTURAL CONSISTENCY
 # ----------------------------------------------------------------------------
 on_new_file:
@@ -95,6 +108,20 @@ on_code_analysis:
     suggestion: "Capture side effects through defined gateway"
     fix: add_side_effect_gateway
 
+  - pattern: "combinatorial_explosion"
+    detection: "Unbounded regex or combinatorial construct causing token explosion"
+    suggestion: "Replace with bounded, deterministic algorithm"
+    fix: replace_with_bounded_algorithm
+    severity: critical
+    violation_class: COMBINATORIAL_EXPLOSION_BAN
+
+  - pattern: "pii_boundary_violation"
+    detection: "Personal information or sensitive content detected"
+    suggestion: "Apply PII sanitization or remove personal content"
+    fix: apply_pii_sanitization
+    severity: critical
+    violation_class: PII_BOUNDARY_VIOLATION
+
 # 6. DOCUMENTATION SYNC
 # ----------------------------------------------------------------------------
 on_python_enforcer_update:
@@ -115,6 +142,7 @@ meta_trace_validation:
         autofix_enabled: true
         structural_consistency: true
         boundary_awareness: true
+        pii_enforcement: true
         doc_sync: true
 
   validation_trigger: "absence_of_any_field"
@@ -138,6 +166,18 @@ on_ci_event:
     action: exit_code_2
     message: "Boundary violation detected - failing loudly"
 
+  - rule: regex_ban
+    condition: regex_generation_detected
+    action: exit_code_2
+    message: "Regex generation banned - combinatorial explosion risk"
+    additional_action: log_combinatorial_violation
+
+  - rule: pii_ban
+    condition: pii_content_detected
+    action: exit_code_2
+    message: "PII content detected - social harm risk"
+    additional_action: log_pii_violation
+
 # ============================================================================
 # CONTINUOUS SYNC & SELF-HEALING
 # ============================================================================
@@ -152,16 +192,39 @@ continuous_sync:
     requirement: "All code must be traceable back to atomic instructions in HTML"
     violation_action: reject_code_generation
 
+  - rule: bounded_computation
+    requirement: "All algorithms must have bounded time/space complexity"
+    violation_patterns:
+      - ".*\\*.*"  # Unbounded regex quantifiers
+      - "\\.\\+\\?"  # Greedy/lazy quantifiers
+      - "\\(.*\\)\\{.*,.*\\}"  # Unbounded repetition
+      - "lookahead|lookbehind"  # Complex regex features
+    violation_action: reject_with_explanation
+    explanation: "Unbounded combinatorial constructs violate subtractive clarity canon"
+
+  - rule: pii_boundary
+    requirement: "No personal, sensitive, or relational content in commits"
+    violation_patterns:
+      - "middle\\s+school\\s+girl|minor\\s+reference"
+      - "christian\\s+apologetics|religious\\s+training"
+      - "karambit|weapons\\s+training"
+      - "why\\s+me\\s+sociological\\s+analysis"
+      - "personal\\s+therapy\\s+notes|selective\\s+mutism"
+      - "personal\\s+development\\s+plan\\s+for\\s+others"
+    violation_action: reject_with_explanation
+    explanation: "Personal information violates PII Canon - social harm risk"
+
 # ============================================================================
 # EXIT CODE SPECIFICATION
 # ============================================================================
 exit_codes:
   0: "Success (all checks passed, trace valid)"
   1: "System error (unexpected failure)"
-  2: "Boundary violation (schema violation, missing artifact, suppressed signal)"
+  2: "Boundary violation (schema violation, missing artifact, suppressed signal, PII violation)"
   3: "Environment mismatch (python version, dependencies)"
   4: "Timeline sequence violation"
   5: "Signature verification failed"
+  6: "PII Canon violation (personal/sensitive content detected)"
 
 # ============================================================================
 # REQUIRED ARTIFACTS (NON-NEGOTIABLE)
@@ -184,9 +247,15 @@ suppressed_signals_detection:
     - "warnings.filterwarnings('ignore')"
     - "logging.getLogger().setLevel(logging.CRITICAL)"
     - "sys.exit(0) # when actual failure occurred"
+    - "re\\.(search|match|findall|finditer|sub|split)\\(.*\\*.*\\)"  # Unbounded regex
+    - "re\\.(search|match|findall|finditer|sub|split)\\(.*\\+.*\\)"  # Unbounded regex
+    - "re\\.(search|match|findall|finditer|sub|split)\\(.*\\?.*\\)"  # Optional with unbounded
+    - "re\\.(search|match|findall|finditer|sub|split)\\(.*\\{.*,.*\\}\\)"  # Unbounded repetition
+    - "middle\\s+school\\s+girl.*except.*pass"  # PII with suppressed error
+    - "personal\\s+content.*warnings\\.filterwarnings"  # PII with warning suppression
 
   action: "report_as_violation"
-  severity: "high"
+  severity: "critical"
 
 # ============================================================================
 # TIMELINE SEQUENCE RULES
@@ -197,6 +266,7 @@ timeline_sequence:
     - artifact_scan
     - boundary_validation
     - signal_detection
+    - pii_detection
     - hash_computation
     - trace_signing
 
@@ -204,8 +274,61 @@ timeline_sequence:
     - "validation_after_execution"
     - "signing_before_hashing"
     - "artifact_scan_after_boundary_check"
+    - "pii_detection_after_commit"
 
   action: "exit_code_4"
+
+# ============================================================================
+# REGEX BOUNDARY ENFORCEMENT
+# ============================================================================
+regex_boundary:
+  banned_patterns:
+    # Unbounded quantifiers
+    - ".*"
+    - ".+"
+    - ".?"
+    - ".{n,}"  # Minimum with no maximum
+    - ".{,m}"  # No minimum with maximum
+
+    # Complex features that cause combinatorial explosion
+    - "lookahead"
+    - "lookbehind"
+    - "backreference"
+    - "recursive"
+    - "possessive"
+
+    # Nested quantifiers
+    - "\\(.*\\).*\\*"
+    - "\\[.*\\].*\\+"
+
+    # Alternation with unbounded patterns
+    - ".*\\|.*"
+    - ".+\\|.+"
+
+  allowed_patterns:
+    # Only bounded, deterministic patterns allowed
+    - "^[a-zA-Z0-9_]+$"  # Simple identifier
+    - "^\\d{4}-\\d{2}-\\d{2}$"  # Date pattern
+    - "^[A-Z]{3}$"  # Three-letter code
+    - "\\s+"  # Whitespace (bounded by line)
+
+    # Simple character classes with bounds
+    - "[a-z]{1,10}"
+    - "\\d{1,5}"
+    - "[A-Z][a-z]*"
+
+  enforcement:
+    - static_analysis: reject_banned_patterns
+    - runtime_monitoring: detect_combinatorial_explosion
+    - autofix: replace_with_string_methods
+    - severity: critical
+    - exit_code: 2
+
+  continuity_requirements:
+    - maintain_session_state_across_crashes
+    - preserve_boundary_violation_logs
+    - restore_ide_state_after_regex_crash
+    - preserve_pii_violation_logs_locally_only
 
 # ============================================================================
 # ENFORCEMENT PRIORITY
@@ -217,6 +340,9 @@ applicable_languages:
   - markdown
   - html
   - json
+  - regex_patterns  # Special category for regex boundary enforcement
+  - chat_exports    # Special category for PII boundary enforcement
+  - conversation_files  # Special category for PII boundary enforcement
 
 # ============================================================================
 # COMPLIANCE VERIFICATION
@@ -232,6 +358,12 @@ compliance_check:
     format: "inline_annotations"
     action: "block_on_violation"
 
+  special_rules:
+    - regex_boundary_enforcement: immediate_block
+    - combinatorial_explosion_detection: preemptive_halt
+    - pii_boundary_enforcement: atomic_block
+    - continuity_preservation: session_state_backup
+
 # ============================================================================
 # FINAL RULE
 # ============================================================================
@@ -241,5 +373,26 @@ final_rule: |
 
   All generated code must have a clear lineage to the HTML schema,
   and all enforcement must be verifiable against the trace contract.
+
+  SPECIAL RULE: REGEX GENERATION BAN
+  Due to orthogonal-engineering-scale combinatorial explosion risks:
+  1. No AI-generated regex patterns with unbounded quantifiers
+  2. No complex regex features (lookahead, lookbehind, backreferences)
+  3. All string processing must use bounded, deterministic methods
+  4. Violation triggers immediate exit code 2 and session state preservation
+
+  This ban enforces the Subtractive Clarity Canon: remove ambiguity
+  (combinatorial explosion) rather than add capability (powerful regex).
+
+  SPECIAL RULE: PII CANON ENFORCEMENT
+  Due to social harm risks and privacy requirements:
+  1. No personal, sensitive, or relational content in commits
+  2. No minor references, therapy notes, or personal development plans
+  3. No mixed professional/personal content - strict separation required
+  4. All personal chats stay local, never committed to repository
+  5. Violation triggers immediate exit code 6 and atomic rollback
+
+  This enforces the PII Canon: protect human safety and privacy while
+  maintaining professional clarity and subtractive boundaries.
 
 # End of ORTHOGONAL_GB_ORIGIN.rules
