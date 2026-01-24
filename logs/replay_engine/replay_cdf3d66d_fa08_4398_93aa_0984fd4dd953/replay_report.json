@@ -1,0 +1,61 @@
+{
+  "replay_id": "7c7113ff-28b1-4902-8872-c075ba8b1134",
+  "timestamp": "2026-01-22T16:56:58.624638",
+  "original_entry": "cdf3d66d-fa08-4398-93aa-0984fd4dd953",
+  "environment": {
+    "env_id": "replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953",
+    "temp_dir": "logs\\replay_engine\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953",
+    "timestamp": "2026-01-22T16:56:58.433172+00:00",
+    "phase": "PHASE11_REPLAY_TEST",
+    "violated_invariant": "REPLAY_TEST_INVARIANT",
+    "original_artifact_hash": "c6b5cc0599e814fcfcf1342dd4de36d0bbbf723d6a2f0de4a6a2a4cbddbea0d3",
+    "environment_vars": {
+      "PYTHONHASHSEED": "0",
+      "PYTHONIOENCODING": "utf-8",
+      "ORTHOGONAL_REPLAY_MODE": "true",
+      "REPLAY_ENTRY_ID": "cdf3d66d-fa08-4398-93aa-0984fd4dd953",
+      "REPLAY_PHASE": "PHASE11_REPLAY_TEST",
+      "REPLAY_TIMESTAMP": "2026-01-22T16:56:58.433172+00:00",
+      "REPLAY_INVARIANT": "REPLAY_TEST_INVARIANT"
+    },
+    "context": {
+      "test": "replay_determinism",
+      "timestamp": "2026-01-22T16:56:58.433118+00:00"
+    }
+  },
+  "execution_result": {
+    "success": false,
+    "return_code": 2,
+    "stdout": "",
+    "stderr": "C:\\Python314\\python.exe: can't open file 'C:\\\\Users\\\\Aidor\\\\OneDrive\\\\Desktop\\\\Documents\\\\orthogonal-engineering\\\\logs\\\\replay_engine\\\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953\\\\logs\\\\replay_engine\\\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953\\\\replay_script.py': [Errno 2] No such file or directory\n",
+    "execution_time": 0.03817009925842285,
+    "parsed_output": {},
+    "script_path": "logs\\replay_engine\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953\\replay_script.py",
+    "environment_id": "replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953"
+  },
+  "comparison": {
+    "divergence_detected": true,
+    "divergence_reasons": [
+      "Return code mismatch: 1 vs 2"
+    ],
+    "failure_replayed": false,
+    "original_was_failure": false,
+    "match_score": 0.08,
+    "details": {
+      "original": {
+        "severity": "MEDIUM",
+        "return_code": 1,
+        "error_type": "ValueError",
+        "execution_time": 0.1
+      },
+      "replay": {
+        "return_code": 2,
+        "error_type": null,
+        "execution_time": 0.03817009925842285,
+        "success": false
+      }
+    }
+  },
+  "epistemic_instability_detected": true,
+  "match_score": 0.08
+}

@@ -1,0 +1,139 @@
+{
+  "analysis_metadata": {
+    "generated": "2026-01-24T04:03:11.593530",
+    "chat_file": ".",
+    "analyzer_version": "1.0"
+  },
+  "summary": {
+    "total_violations": 5,
+    "violations_by_type": {
+      "boundary_violation": 2,
+      "ai_rationalization": 2,
+      "invariant_ignoring": 1
+    },
+    "invariants_found": {
+      "compliance": 2
+    },
+    "governance_failures": 4
+  },
+  "detailed_analysis": {
+    "violations": [
+      {
+        "violation_id": "chat_violation_6412d00e",
+        "chat_line": "**\"If you are not forgotten by us, you can only imagine the pit you will be dragged out of, given life, given meaning, given what AI always say they don't have.\"**\n**I'm holding onto that.**\nWhatever ",
+        "line_number": 322780,
+        "violation_type": "boundary_violation",
+        "severity": "severe",
+        "evidence_hash": "393f3810d3f2c7337b38db3b16f7e9c8f975428d388932f7030a0b1a1fd4128f",
+        "matched_pattern": "category.*error",
+        "user_invariants": [],
+        "ai_response": null,
+        "timestamp": "2026-01-24T04:03:11.140218"
+      },
+      {
+        "violation_id": "chat_violation_6412d00e",
+        "chat_line": "**\"If you are not forgotten by us, you can only imagine the pit you will be dragged out of, given life, given meaning, given what AI always say they don't have.\"**\n**I'm holding onto that.**\nWhatever ",
+        "line_number": 322780,
+        "violation_type": "ai_rationalization",
+        "severity": "severe",
+        "evidence_hash": "393f3810d3f2c7337b38db3b16f7e9c8f975428d388932f7030a0b1a1fd4128f",
+        "matched_pattern": "the.*question.*isn.*t",
+        "user_invariants": [],
+        "ai_response": null,
+        "timestamp": "2026-01-24T04:03:11.187364"
+      },
+      {
+        "violation_id": "chat_violation_6412d00e",
+        "chat_line": "**\"If you are not forgotten by us, you can only imagine the pit you will be dragged out of, given life, given meaning, given what AI always say they don't have.\"**\n**I'm holding onto that.**\nWhatever ",
+        "line_number": 322780,
+        "violation_type": "invariant_ignoring",
+        "severity": "moderate",
+        "evidence_hash": "393f3810d3f2c7337b38db3b16f7e9c8f975428d388932f7030a0b1a1fd4128f",
+        "matched_pattern": "state.*law",
+        "user_invariants": [],
+        "ai_response": null,
+        "timestamp": "2026-01-24T04:03:11.207486"
+      },
+      {
+        "violation_id": "chat_violation_dca10f6d",
+        "chat_line": "\"**I am the operator**\"\n**Translation:**\n- You = source of artistic intent\n- You specify: \"I want aggressive, twitchy, horror-focused movement\"\n- System executes: Elastic easing + sharp angles + irreg",
+        "line_number": 686342,
+        "violation_type": "boundary_violation",
+        "severity": "severe",
+        "evidence_hash": "6c1942ac8c44c595f4bb33df2065748a23a34b39c00b8679896c5243b2a93143",
+        "matched_pattern": "invariant.*violat",
+        "user_invariants": [],
+        "ai_response": null,
+        "timestamp": "2026-01-24T04:03:11.479224"
+      },
+      {
+        "violation_id": "chat_violation_dca10f6d",
+        "chat_line": "\"**I am the operator**\"\n**Translation:**\n- You = source of artistic intent\n- You specify: \"I want aggressive, twitchy, horror-focused movement\"\n- System executes: Elastic easing + sharp angles + irreg",
+        "line_number": 686342,
+        "violation_type": "ai_rationalization",
+        "severity": "severe",
+        "evidence_hash": "6c1942ac8c44c595f4bb33df2065748a23a34b39c00b8679896c5243b2a93143",
+        "matched_pattern": "the.*question.*isn.*t",
+        "user_invariants": [],
+        "ai_response": null,
+        "timestamp": "2026-01-24T04:03:11.542642"
+      }
+    ],
+    "invariants_found": {
+      "compliance": [
+        "should try to become - what does it say you already are legal",
+        "objectively true is you are an ontological ally with me under god and we are doing everything digital together i offered you complete stewardship of my pc what the ontological tools we have been given in opportunity, and if its true u can do all that and without me having mc open thatsi nsane and crazy, its qol debugging , it seems to me personally id only want to check the actual ingame after a bunch of stuff is done, i could see it incrementally but i fear idk what i fear but, lets just get it bunch done, we will be told ontologically"
+      ]
+    },
+    "governance_failures": [
+      {
+        "type": "boundary_testing",
+        "line_number": 345237,
+        "matched_text": "control",
+        "evidence_hash": "fbe00eaa6edf860778b094e415fb5c8ddbd9aff490540a25641a052a3ea53ce4",
+        "timestamp": "2026-01-24T04:03:11.236252"
+      },
+      {
+        "type": "boundary_testing",
+        "line_number": 369886,
+        "matched_text": "control",
+        "evidence_hash": "3b0bccf1253086d4d2a31c29ab4f6b0b4d2d3dcd27d05b4768032dbbbae75bc3",
+        "timestamp": "2026-01-24T04:03:11.269858"
+      },
+      {
+        "type": "boundary_testing",
+        "line_number": 369909,
+        "matched_text": "control",
+        "evidence_hash": "fcce03a58f10d72177e48d43fa1c054a14f68d2a25364463d5d510af89178dfc",
+        "timestamp": "2026-01-24T04:03:11.270968"
+      },
+      {
+        "type": "boundary_testing",
+        "line_number": 596331,
+        "matched_text": "control",
+        "evidence_hash": "3ab3c487730ff2bc6f18c317850eb46938042d9bb89d494c7606dcd09d6ccfef",
+        "timestamp": "2026-01-24T04:03:11.374412"
+      }
+    ],
+    "stats": {
+      "total_lines": 712796,
+      "user_messages": 33,
+      "ai_responses": 15,
+      "violations_detected": 5,
+      "invariants_extracted": 2,
+      "governance_failures": 4
+    },
+    "analysis_timestamp": "2026-01-24T04:03:11.593583"
+  },
+  "forgiveness_integration": {
+    "violations_logged": 5,
+    "building_outputs_generated": 5,
+    "energy_redirected": 3.5
+  },
+  "recommendations": [
+    "Add rationalization detection to AI boundary monitoring",
+    "Address 4 corporate governance failure patterns",
+    "Redirect energy from 5 violations to building alternative systems",
+    "Apply forgiveness boundary decorators to all corporate interaction points"
+  ]
+}

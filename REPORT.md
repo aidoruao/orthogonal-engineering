@@ -53,7 +53,7 @@ All artifacts are preserved with SHA256 cryptographic hashes for verification:
 - **[INVARIANTS.json](INVARIANTS.json)** `7d1fe6847f8db05f5b522856120601f9aadaab60644faa11fcf35a14f7db2b6a`  
   Machine-readable extraction of all semantic and procedural invariants.
 
-- **[REPORT.md](REPORT.md)** `ace5fce57ce7f5f0ddb7d987a034e014159b44dd07e3556e513015a3b817e719`  
+- **[REPORT.md](REPORT.md)** `c4f3c599d4d5a2bcfc82bf7a5f5dc58d9815a4a598e0a185f2deb0dcc6b08d7b`  
   Human-readable summary linking all investigation artifacts.
 
 ### Derived Analysis:

@@ -1,0 +1,86 @@
+{
+  "id": "fbae3e7e-4826-4acf-8234-bc9810d5aca9",
+  "type": "FAILURE_LEDGER_ENTRY",
+  "content": {
+    "entry_id": "48d175aa-673f-4986-96e6-fb4a35324fd1",
+    "timestamp": "2026-01-22T16:56:58.535786+00:00",
+    "phase": "EPISTEMIC_INSTABILITY",
+    "violated_invariant": "REPLAY_DIVERGENCE",
+    "description": "Replay divergence for cdf3d66d-fa08-4398-93aa-0984fd4dd953: Return code mismatch: 1 vs 2",
+    "severity": "HIGH",
+    "artifact_hash": "c6b5cc0599e814fcfcf1342dd4de36d0bbbf723d6a2f0de4a6a2a4cbddbea0d3",
+    "causal_parent_hash": "cdf3d66d-fa08-4398-93aa-0984fd4dd953",
+    "metadata": {
+      "original_entry": "cdf3d66d-fa08-4398-93aa-0984fd4dd953",
+      "replay_result": {
+        "success": false,
+        "return_code": 2,
+        "stdout": "",
+        "stderr": "C:\\Python314\\python.exe: can't open file 'C:\\\\Users\\\\Aidor\\\\OneDrive\\\\Desktop\\\\Documents\\\\orthogonal-engineering\\\\logs\\\\replay_engine\\\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953\\\\logs\\\\replay_engine\\\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953\\\\replay_script.py': [Errno 2] No such file or directory\n",
+        "execution_time": 0.03817009925842285,
+        "parsed_output": {},
+        "script_path": "logs\\replay_engine\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953\\replay_script.py",
+        "environment_id": "replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953"
+      },
+      "comparison": {
+        "divergence_detected": true,
+        "divergence_reasons": [
+          "Return code mismatch: 1 vs 2"
+        ],
+        "failure_replayed": false,
+        "original_was_failure": false,
+        "match_score": 0.08,
+        "details": {
+          "original": {
+            "severity": "MEDIUM",
+            "return_code": 1,
+            "error_type": "ValueError",
+            "execution_time": 0.1
+          },
+          "replay": {
+            "return_code": 2,
+            "error_type": null,
+            "execution_time": 0.03817009925842285,
+            "success": false
+          }
+        }
+      },
+      "environment": {
+        "env_id": "replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953",
+        "temp_dir": "logs\\replay_engine\\replay_cdf3d66d_fa08_4398_93aa_0984fd4dd953",
+        "timestamp": "2026-01-22T16:56:58.433172+00:00",
+        "phase": "PHASE11_REPLAY_TEST",
+        "violated_invariant": "REPLAY_TEST_INVARIANT",
+        "original_artifact_hash": "c6b5cc0599e814fcfcf1342dd4de36d0bbbf723d6a2f0de4a6a2a4cbddbea0d3",
+        "environment_vars": {
+          "PYTHONHASHSEED": "0",
+          "PYTHONIOENCODING": "utf-8",
+          "ORTHOGONAL_REPLAY_MODE": "true",
+          "REPLAY_ENTRY_ID": "cdf3d66d-fa08-4398-93aa-0984fd4dd953",
+          "REPLAY_PHASE": "PHASE11_REPLAY_TEST",
+          "REPLAY_TIMESTAMP": "2026-01-22T16:56:58.433172+00:00",
+          "REPLAY_INVARIANT": "REPLAY_TEST_INVARIANT"
+        },
+        "context": {
+          "test": "replay_determinism",
+          "timestamp": "2026-01-22T16:56:58.433118+00:00"
+        }
+      }
+    }
+  },
+  "source": "failure_ledger",
+  "timestamp": "2026-01-22T16:56:58.562710Z",
+  "metadata": {
+    "ledger_entry_id": "48d175aa-673f-4986-96e6-fb4a35324fd1",
+    "severity": "HIGH",
+    "causal_chain": true,
+    "tags": [
+      "failure",
+      "violation",
+      "epistemic_instability",
+      "replay_divergence"
+    ],
+    "confidence": 1.0
+  },
+  "hash": "d2c99be2d28d6c4d8bb87d2ec778b4960b397f350ab4e31223154efd1189a09c"
+}

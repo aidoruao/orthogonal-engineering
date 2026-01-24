@@ -1,0 +1,243 @@
+{
+  "trace_id": "PHASE11-TRACE-20260122-165344",
+  "timestamp": "2026-01-22T16:53:44.504772+00:00",
+  "verification_id": "PHASE11-VERIFY-20260122-165344",
+  "schema_version": "1.13",
+  "description": "Phase 11 Atomicity Verification Trace",
+  "verification_results": {
+    "artifact_verification": {
+      "total_artifacts": 9,
+      "artifacts_found": 9,
+      "artifacts_missing": 0,
+      "details": [
+        {
+          "artifact": "toolkit/oe/failure_ledger.py",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\toolkit\\oe\\failure_ledger.py",
+          "type": "file",
+          "size": 17063,
+          "sha256": "7a06fb4df81cf9dadabccd8154ec4c139baa6af15b18c7fb08fbc071526738c5"
+        },
+        {
+          "artifact": "toolkit/oe/replay_engine.py",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\toolkit\\oe\\replay_engine.py",
+          "type": "file",
+          "size": 22731,
+          "sha256": "ff0ca2c757866b1308d87454ae6fa11927785245ec252a0cc96ca8e5701292cc"
+        },
+        {
+          "artifact": "toolkit/oe/suppressed_signal_detector.py",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\toolkit\\oe\\suppressed_signal_detector.py",
+          "type": "file",
+          "size": 21190,
+          "sha256": "8ae41253c1406dc5872c8cd4a791e28fd1264332160d1ac951b4c40ee6cf1b05"
+        },
+        {
+          "artifact": "toolkit/oe/ide_behavior_accounting.py",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\toolkit\\oe\\ide_behavior_accounting.py",
+          "type": "file",
+          "size": 25217,
+          "sha256": "f4218cb82bdd9afa9e21e93816503e92e462a532ed27bb6e3f40f03b556b85f7"
+        },
+        {
+          "artifact": "automation/verify_phase11_atomicity.py",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\automation\\verify_phase11_atomicity.py",
+          "type": "file",
+          "size": 34670,
+          "sha256": "9912ecbdb1b59a190865f37371145cd090e7f18d440f8bb014c410431e4699af"
+        },
+        {
+          "artifact": "logs/failure_ledger/",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\logs\\failure_ledger",
+          "type": "directory"
+        },
+        {
+          "artifact": "logs/replay_engine/",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\logs\\replay_engine",
+          "type": "directory"
+        },
+        {
+          "artifact": "logs/signal_captures/",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\logs\\signal_captures",
+          "type": "directory"
+        },
+        {
+          "artifact": "logs/ide_actions/",
+          "exists": true,
+          "path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\logs\\ide_actions",
+          "type": "directory"
+        }
+      ],
+      "all_exist": true
+    },
+    "failure_ledger_verification": {
+      "integrity_check": {
+        "valid": true,
+        "checks": [
+          {
+            "check": "file_exists",
+            "status": "PASS"
+          },
+          {
+            "check": "valid_json",
+            "status": "PASS"
+          },
+          {
+            "check": "schema_version",
+            "status": "PASS"
+          },
+          {
+            "check": "entry_count",
+            "status": "PASS"
+          },
+          {
+            "check": "hash_integrity",
+            "status": "PASS"
+          },
+          {
+            "check": "unique_ids",
+            "status": "PASS"
+          }
+        ],
+        "issues": []
+      },
+      "test_entry_id": "1d5409e6-7d60-4f1d-a5da-0814bdcc357c",
+      "total_entries": 1861,
+      "statistics": {
+        "total_entries": 1869,
+        "phase_distribution": {
+          "PHASE11_VERIFICATION": 4,
+          "FAILURE_LEDGER": 1856,
+          "PHASE11_TEST": 2,
+          "FAILURE_LEDGER_ERROR": 5,
+          "PHASE11_REPLAY_TEST": 1,
+          "EPISTEMIC_INSTABILITY": 1
+        },
+        "violation_types": {
+          "LEDGER_INTEGRITY": 1,
+          "EVIDENCE_STORE_INTEGRATION": 1861,
+          "TEST_APPEND_ONLY": 2,
+          "LEDGER_VERIFICATION_ERROR": 1,
+          "REPLAY_TEST_INVARIANT": 1,
+          "REPLAY_DIVERGENCE": 1,
+          "REPLAY_EXECUTION_ERROR": 1,
+          "IDE_ACCOUNTING_VERIFICATION_ERROR": 1
+        },
+        "first_entry": "2026-01-22T16:48:36.104094+00:00",
+        "last_entry": "2026-01-22T16:53:44.469844+00:00"
+      },
+      "append_only_verified": true
+    },
+    "signal_detection_verification": {
+      "capture_id": "signal_capture_20260122_165344_415139",
+      "execution_result": {
+        "success": true,
+        "return_value": "test_result",
+        "exception": null,
+        "traceback": null,
+        "signals_captured": [],
+        "suppression_detected": false,
+        "capture_id": "signal_capture_20260122_165344_416769",
+        "capture_results": {
+          "capture_id": "signal_capture_20260122_165344_416769",
+          "end_time": "2026-01-22T16:53:44.421242",
+          "total_signals": 2,
+          "signal_types": {
+            "warning": 1,
+            "stderr": 1
+          },
+          "suppression_detected": false,
+          "signal_ids": [
+            "signal_capture_20260122_165344_416769_warning_0",
+            "signal_capture_20260122_165344_416769_stderr_1"
+          ],
+          "config": {
+            "capture_stderr": true,
+            "capture_warnings": true,
+            "capture_exceptions": true,
+            "capture_partial_outputs": true,
+            "detect_suppression_patterns": true,
+            "auto_enforce_violation": true,
+            "exit_code_on_suppression": 2,
+            "store_all_captures": true
+          },
+          "capture_path": "logs\\signal_captures\\signal_capture_20260122_165344_416769"
+        }
+      },
+      "suppression_detected": false,
+      "total_signals_captured": 0,
+      "detector_statistics": {
+        "total_captures": 2,
+        "captures_with_suppression": 0,
+        "total_signals": 2,
+        "signal_type_distribution": {
+          "warning": 1,
+          "stderr": 1
+        },
+        "captures": [
+          {
+            "capture_id": "signal_capture_20260122_165344_416769",
+            "total_signals": 2,
+            "signal_types": {
+              "warning": 1,
+              "stderr": 1
+            },
+            "suppression_detected": false,
+            "capture_path": "logs\\signal_captures\\signal_capture_20260122_165344_416769"
+          }
+        ]
+      },
+      "no_suppression_verified": true
+    }
+  },
+  "violations": [
+    {
+      "phase": "A2_REPLAY_ENGINE",
+      "invariant": "REPLAY_EXECUTION_ERROR",
+      "description": "Replay 1 failed: EvidenceStore.log_evidence() got an unexpected keyword argument 'confidence'",
+      "severity": "HIGH",
+      "timestamp": "2026-01-22T16:53:44.347002+00:00",
+      "verification_id": "PHASE11-VERIFY-20260122-165344"
+    },
+    {
+      "phase": "A4_IDE_BEHAVIOR_ACCOUNTING",
+      "invariant": "IDE_ACCOUNTING_VERIFICATION_ERROR",
+      "description": "Error verifying IDE behavior accounting: IDEBehaviorAccounting.record_action() got an unexpected keyword argument 'timestamp'",
+      "severity": "CRITICAL",
+      "timestamp": "2026-01-22T16:53:44.433803+00:00",
+      "verification_id": "PHASE11-VERIFY-20260122-165344"
+    }
+  ],
+  "warnings": [],
+  "summary": {
+    "total_checks": 5,
+    "checks_passed": 3,
+    "total_violations": 2,
+    "total_warnings": 0,
+    "exit_code": 2
+  },
+  "environment": {
+    "python_version": "3.14.0 (tags/v3.14.0:ebf955d, Oct  7 2025, 10:15:03) [MSC v.1944 64 bit (AMD64)]",
+    "cwd": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering",
+    "timestamp": "2026-01-22T16:53:44.504797+00:00",
+    "script_path": "C:\\Users\\Aidor\\OneDrive\\Desktop\\Documents\\orthogonal-engineering\\automation\\verify_phase11_atomicity.py"
+  },
+  "phase11_artifacts": [
+    "toolkit/oe/failure_ledger.py",
+    "toolkit/oe/replay_engine.py",
+    "toolkit/oe/suppressed_signal_detector.py",
+    "toolkit/oe/ide_behavior_accounting.py",
+    "automation/verify_phase11_atomicity.py",
+    "logs/failure_ledger/",
+    "logs/replay_engine/",
+    "logs/signal_captures/",
+    "logs/ide_actions/"
+  ]
+}

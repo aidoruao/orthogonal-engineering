@@ -1,0 +1,245 @@
+# Phase 9 Advanced Validation Workflow
+# Version: 1.12
+# Phase: 9
+# Description: Comprehensive validation workflow for Phase 9 artifacts and invariants
+# Author: Orthogonal Engineering System
+# Date: 2026-01-22
+
+version: "1.12"
+phase: 9
+workflow:
+  name: "Phase 9 Advanced Validation"
+  description: "Validates all Phase 9 artifacts, enforces G9 invariants, and ensures glass-box boundary compliance"
+  entry_point: "start"
+  steps:
+    - id: "start"
+      name: "Initialize Validation Environment"
+      description: "Set up environment and verify prerequisites"
+      conditions:
+        - type: "artifact_exists"
+          parameters:
+            path: "toolkit/oe/advanced_evidence.py"
+        - type: "artifact_exists"
+          parameters:
+            path: "toolkit/oe/causal_analyzer.py"
+        - type: "artifact_exists"
+          parameters:
+            path: "toolkit/oe/workflow_dsl.py"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "python -c \"print('Phase 9 validation environment initialized')\""
+        timeout_seconds: 10
+        expected_exit_code: 0
+      on_success: ["validate_phase9_artifacts"]
+      on_failure: ["validation_failed"]
+
+    - id: "validate_phase9_artifacts"
+      name: "Validate Phase 9 Artifacts"
+      description: "Validate all required Phase 9 artifacts exist and are properly formatted"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "automation/validate_phase9_artifacts.py"
+          args: ["--full", "--strict"]
+        timeout_seconds: 60
+        expected_exit_code: 0
+      on_success: ["execute_causal_analysis"]
+      on_failure: ["validation_failed"]
+
+    - id: "execute_causal_analysis"
+      name: "Execute Causal Analysis"
+      description: "Run advanced causal analysis on Phase 9 evidence"
+      conditions:
+        - type: "exit_code_equals"
+          parameters:
+            previous_step: "validate_phase9_artifacts"
+            expected_code: 0
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "automation/phase9_causal_analysis.py"
+          args: ["--analyze", "--generate-report"]
+        timeout_seconds: 120
+        expected_exit_code: 0
+      on_success: ["generate_phase9_trace"]
+      on_failure: ["causal_analysis_failed"]
+
+    - id: "generate_phase9_trace"
+      name: "Generate Phase 9 Trace"
+      description: "Generate enriched trace document with Phase 9 metadata"
+      conditions:
+        - type: "exit_code_equals"
+          parameters:
+            previous_step: "execute_causal_analysis"
+            expected_code: 0
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "automation/generate_phase9_trace.py"
+          args: ["--enrich", "--sign", "--output", "logs/traces/phase9_trace.json"]
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["verify_evidence_chains"]
+      on_failure: ["trace_generation_failed"]
+
+    - id: "verify_evidence_chains"
+      name: "Verify Evidence Chains"
+      description: "Verify causal evidence chains and cross-phase linkages"
+      conditions:
+        - type: "artifact_exists"
+          parameters:
+            path: "logs/traces/phase9_trace.json"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "python toolkit/oe/advanced_evidence.py --verify-chains --confidence-threshold 0.7"
+        timeout_seconds: 45
+        expected_exit_code: 0
+      on_success: ["calculate_debt_metrics"]
+      on_failure: ["evidence_verification_failed"]
+
+    - id: "calculate_debt_metrics"
+      name: "Calculate Explanatory Debt Metrics"
+      description: "Calculate and report explanatory debt metrics for Phase 9"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--calculate", "--report", "--output", "logs/debt/phase9_metrics.json"]
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["enrich_trace_document"]
+      on_failure: ["debt_calculation_failed"]
+
+    - id: "enrich_trace_document"
+      name: "Enrich Trace Document"
+      description: "Apply advanced trace enrichment with causal analysis"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/trace_enricher.py"
+          args: ["--input", "logs/traces/phase9_trace.json", "--output", "logs/traces/phase9_enriched.json", "--level", "complete"]
+        timeout_seconds: 40
+        expected_exit_code: 0
+      on_success: ["final_validation"]
+      on_failure: ["trace_enrichment_failed"]
+
+    - id: "final_validation"
+      name: "Final Validation and Report"
+      description: "Perform final validation and generate comprehensive report"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "python automation/validate_phase9_artifacts.py --final --generate-report --output logs/validation/phase9_final_report.json"
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["validation_complete"]
+      on_failure: ["final_validation_failed"]
+
+    - id: "validation_complete"
+      name: "Validation Complete"
+      description: "Phase 9 validation completed successfully"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'Phase 9 validation completed successfully. All G9 invariants satisfied.'"
+        timeout_seconds: 5
+        expected_exit_code: 0
+
+    # Error handling steps
+    - id: "validation_failed"
+      name: "Validation Failed"
+      description: "Initial validation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Phase 9 validation failed. Check artifact existence and prerequisites.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "causal_analysis_failed"
+      name: "Causal Analysis Failed"
+      description: "Causal analysis execution failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Causal analysis failed. Check evidence data and analysis configuration.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "trace_generation_failed"
+      name: "Trace Generation Failed"
+      description: "Trace document generation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Trace generation failed. Check trace schema and data.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "evidence_verification_failed"
+      name: "Evidence Verification Failed"
+      description: "Evidence chain verification failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Evidence verification failed. Check evidence chains and confidence thresholds.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "debt_calculation_failed"
+      name: "Debt Calculation Failed"
+      description: "Explanatory debt calculation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Debt calculation failed. Check debt data and calculation logic.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "trace_enrichment_failed"
+      name: "Trace Enrichment Failed"
+      description: "Trace enrichment failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Trace enrichment failed. Check enrichment configuration and data.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "final_validation_failed"
+      name: "Final Validation Failed"
+      description: "Final validation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Final validation failed. Check validation criteria and reports.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+validation:
+  boundary_enforcement: true
+  exit_code_2_on_violation: true
+  causal_logging: true
+  sha256_verification: true
+  phase9_invariants:
+    - G9-01: "Toolkit Blueprint Expansion"
+    - G9-02: "Workflow DSL for Phase 9"
+    - G9-03: "Expanded EvidenceStore Logging"
+    - G9-04: "Trace Enrichment for Advanced Causal Analysis"
+    - G9-05: "Exit Code 2 Enforcement"
+
+metadata:
+  generated_from: "GLASS_BOX_BOUNDARY_v1.12.html"
+  generation_timestamp: "2026-01-22T00:00:00Z"
+  schema_version: "1.12"
+  requires:
+    - "toolkit/oe/advanced_evidence.py"
+    - "toolkit/oe/causal_analyzer.py"
+    - "toolkit/oe/workflow_dsl.py"
+    - "toolkit/oe/trace_enricher.py"
+    - "toolkit/oe/debt_calculator.py"
+    - "automation/validate_phase9_artifacts.py"
+    - "automation/phase9_causal_analysis.py"
+    - "automation/generate_phase9_trace.py"

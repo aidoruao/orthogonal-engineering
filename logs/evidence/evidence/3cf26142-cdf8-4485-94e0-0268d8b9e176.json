@@ -1,0 +1,47 @@
+{
+  "id": "3cf26142-cdf8-4485-94e0-0268d8b9e176",
+  "type": "EPISTEMIC_INSTABILITY",
+  "content": {
+    "entry_id": "cf1a241f-cf14-4ea4-92e3-2cf214a858bd",
+    "original_entry": "e7cf85c4-d1bd-4d17-a9ad-7e1a028c0988",
+    "divergence_reasons": [
+      "Return code mismatch: 1 vs 2"
+    ],
+    "match_score": 0.08
+  },
+  "source": "replay_engine",
+  "timestamp": "2026-01-22T16:57:46.375491Z",
+  "metadata": {
+    "replay_environment": "replay_e7cf85c4_d1bd_4d17_a9ad_7e1a028c0988",
+    "comparison_details": {
+      "divergence_detected": true,
+      "divergence_reasons": [
+        "Return code mismatch: 1 vs 2"
+      ],
+      "failure_replayed": false,
+      "original_was_failure": false,
+      "match_score": 0.08,
+      "details": {
+        "original": {
+          "severity": "MEDIUM",
+          "return_code": 1,
+          "error_type": "ValueError",
+          "execution_time": 0.1
+        },
+        "replay": {
+          "return_code": 2,
+          "error_type": null,
+          "execution_time": 0.038988590240478516,
+          "success": false
+        }
+      }
+    },
+    "confidence": 0.9,
+    "tags": [
+      "epistemic_instability",
+      "replay_divergence",
+      "phase11_replay_test"
+    ]
+  },
+  "hash": "1882d4a75c811c09026f4c10b3217cb4274a7b51f2e4f4bcd5a7cddc1996a02c"
+}

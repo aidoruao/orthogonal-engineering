@@ -1,0 +1,253 @@
+# Debt Tracking Workflow
+# Version: 1.12
+# Phase: 9
+# Description: Explanatory debt tracking and management workflow for Phase 9 methodology
+# Author: Orthogonal Engineering System
+# Date: 2026-01-22
+
+version: "1.12"
+phase: 9
+workflow:
+  name: "Debt Tracking Workflow"
+  description: "Tracks, analyzes, and manages explanatory debt across phases with metrics and reporting"
+  entry_point: "initialize_debt_tracking"
+  steps:
+    - id: "initialize_debt_tracking"
+      name: "Initialize Debt Tracking"
+      description: "Set up debt tracking environment and load existing debt data"
+      conditions:
+        - type: "artifact_exists"
+          parameters:
+            path: "toolkit/oe/debt_calculator.py"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--init", "--data-path", "logs/debt"]
+        timeout_seconds: 15
+        expected_exit_code: 0
+      on_success: ["load_existing_debt"]
+      on_failure: ["initialization_failed"]
+
+    - id: "load_existing_debt"
+      name: "Load Existing Debt Data"
+      description: "Load existing debt items from storage"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--load", "--verbose"]
+        timeout_seconds: 20
+        expected_exit_code: 0
+      on_success: ["detect_new_debt"]
+      on_failure: ["data_loading_failed"]
+
+    - id: "detect_new_debt"
+      name: "Detect New Explanatory Debt"
+      description: "Scan for new explanatory debt items in Phase 9 artifacts"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--detect", "--scan-path", "toolkit/oe", "--phase", "9", "--output", "logs/debt/detection_report.json"]
+        timeout_seconds: 45
+        expected_exit_code: 0
+      on_success: ["calculate_debt_metrics"]
+      on_failure: ["debt_detection_failed"]
+
+    - id: "calculate_debt_metrics"
+      name: "Calculate Debt Metrics"
+      description: "Calculate comprehensive debt metrics and statistics"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--calculate-metrics", "--output", "logs/debt/metrics_report.json"]
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["analyze_debt_trends"]
+      on_failure: ["metrics_calculation_failed"]
+
+    - id: "analyze_debt_trends"
+      name: "Analyze Debt Trends"
+      description: "Analyze debt trends over time and across phases"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--analyze-trends", "--time-window", "30", "--output", "logs/debt/trends_report.json"]
+        timeout_seconds: 35
+        expected_exit_code: 0
+      on_success: ["identify_high_priority_debt"]
+      on_failure: ["trend_analysis_failed"]
+
+    - id: "identify_high_priority_debt"
+      name: "Identify High Priority Debt"
+      description: "Identify high priority debt items for resolution"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--identify-priority", "--severity", "critical,high", "--output", "logs/debt/priority_report.json"]
+        timeout_seconds: 25
+        expected_exit_code: 0
+      on_success: ["generate_debt_report"]
+      on_failure: ["priority_identification_failed"]
+
+    - id: "generate_debt_report"
+      name: "Generate Debt Report"
+      description: "Generate comprehensive explanatory debt report"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--generate-report", "--format", "json", "--output", "logs/debt/comprehensive_report.json"]
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["update_debt_dashboard"]
+      on_failure: ["report_generation_failed"]
+
+    - id: "update_debt_dashboard"
+      name: "Update Debt Dashboard"
+      description: "Update debt tracking dashboard with latest metrics"
+      conditions:
+        - type: "artifact_exists"
+          parameters:
+            path: "glass-box/phase9/index.html"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/debt_calculator.py"
+          args: ["--update-dashboard", "--dashboard-path", "glass-box/phase9/debt_dashboard.html"]
+        timeout_seconds: 40
+        expected_exit_code: 0
+      on_success: ["debt_tracking_complete"]
+      on_failure: ["dashboard_update_skipped"]
+
+    - id: "dashboard_update_skipped"
+      name: "Dashboard Update Skipped"
+      description: "Dashboard not available, skipping update"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'INFO: Debt dashboard not available. Skipping dashboard update.'"
+        timeout_seconds: 5
+        expected_exit_code: 0
+      on_success: ["debt_tracking_complete"]
+
+    - id: "debt_tracking_complete"
+      name: "Debt Tracking Complete"
+      description: "Debt tracking workflow completed successfully"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'Debt tracking completed successfully. Reports available in logs/debt/'"
+        timeout_seconds: 5
+        expected_exit_code: 0
+
+    # Error handling steps
+    - id: "initialization_failed"
+      name: "Initialization Failed"
+      description: "Debt tracking initialization failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Debt tracking initialization failed. Check debt calculator module.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "data_loading_failed"
+      name: "Data Loading Failed"
+      description: "Existing debt data loading failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Debt data loading failed. Check debt storage directory.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "debt_detection_failed"
+      name: "Debt Detection Failed"
+      description: "New debt detection failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Debt detection failed. Check scan paths and detection logic.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "metrics_calculation_failed"
+      name: "Metrics Calculation Failed"
+      description: "Debt metrics calculation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Metrics calculation failed. Check debt data and calculation logic.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "trend_analysis_failed"
+      name: "Trend Analysis Failed"
+      description: "Debt trend analysis failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Trend analysis failed. Check temporal debt data.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "priority_identification_failed"
+      name: "Priority Identification Failed"
+      description: "High priority debt identification failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Priority identification failed. Check severity thresholds and debt data.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "report_generation_failed"
+      name: "Report Generation Failed"
+      description: "Debt report generation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Report generation failed. Check report templates and data.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+validation:
+  boundary_enforcement: true
+  exit_code_2_on_violation: true
+  debt_tracking: true
+  metrics_calculation: true
+  trend_analysis: true
+
+metadata:
+  generated_from: "GLASS_BOX_BOUNDARY_v1.12.html"
+  generation_timestamp: "2026-01-22T00:00:00Z"
+  schema_version: "1.12"
+  debt_types_tracked:
+    - "methodological"
+    - "documentation"
+    - "evidence"
+    - "validation"
+    - "integration"
+    - "automation"
+    - "testing"
+    - "traceability"
+  severity_levels:
+    - "critical"
+    - "high"
+    - "medium"
+    - "low"
+    - "cosmetic"
+  output_reports:
+    - "detection_report.json"
+    - "metrics_report.json"
+    - "trends_report.json"
+    - "priority_report.json"
+    - "comprehensive_report.json"
+  dependencies:
+    - "toolkit/oe/debt_calculator.py"
+    - "logs/debt directory"

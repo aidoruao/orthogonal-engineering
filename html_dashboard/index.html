@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head></head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atomic Glass-Box Investigation Dashboard</</title>title>
+    <style>
+        * {
+            margin:</style> 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .metadata {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+
+        .metadata-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metadata-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+        }
+
+        .metadata-value {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: #1a237e;
+            border-bottom: 2px solid #e8eaf6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: #3949ab;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .summary-card {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+
+        .summary-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a237e;
+            margin: 0.5rem 0;
+        }
+
+        .summary-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        th {
+            background: #e8eaf6;
+            color: #1a237e;
+            font-weight: bold;
+            text-align: left;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        td {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f5f7ff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-warning {
+            background-color: #fff3e0;
+            color: #ef6c00;
+            border: 1px solid #ffe0b2;
+        }
+
+        .hash {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .file-link {
+            color: #3949ab;
+            text-decoration: none;
+        }
+
+        .file-link:hover {
+            text-decoration: underline;
+        }
+
+        .artifact-preview {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3949ab;
+        }
+
+        .artifact-preview h4 {
+            margin-bottom: 0.5rem;
+            color: #1a237e;
+        }
+
+        .tab-container {
+            margin: 1rem 0;
+        }
+
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #e8eaf6;
+            margin-bottom: 1rem;
+        }
+
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-button:hover {
+            color: #1a237e;
+        }
+
+        .tab-button.active {
+            color: #1a237e;
+            border-bottom: 2px solid #3949ab;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #ddd;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .timestamp {
+            font-family: 'Courier New', monospace;
+            color: #333;
+            margin-top: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            .metadata {
+                grid-template-columns: 1fr;
+            }
+
+            .tab-buttons {
+                flex-wrap: wrap;
+            }
+
+            .tab-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body></body>
+    <header>
+        <h</header>1>Atomic Glass-Box Investigation Dashboard</h1>
+        <div class="subtitle">Crash-Proof Design with Lazy Loading & External Linking</div>
+
+        <div class="metadata">
+            <div class="metadata-item">
+                <span class="metadata-label">Repository</span>
+                <span class="metadata-value">orthogonal-engineering</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Execution Date (UTC)</span>
+                <span class="metadata-value">2026-01-23T03:54:21.196599400+00:00</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Git Commit SHA</span>
+                <span class="metadata-value">a09f493</span>
+            </div>
+            <div class="metadata-item">
+                <span class="metadata-label">Protocol Version</span>
+                <span class="metadata-value">Atomic Glass-Box Protocol v2.0 Crash-Safe</span>
+            </div>
+        </div>
+    </header>
+
+    <section id="investigation-summary">
+        <h2>📋 Investigation</h2> Summary</h2>
+
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="summary-value">2145</div>
+                <div class="summary-label">Total Files</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">6</div>
+                <div class="summary-label">Atomic Steps</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">100%</div>
+                <div class="summary-label">Phase 12 Verification</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-value">0</div>
+                <div class="summary-label">Category Errors</div>
+            </div>
+        </div>
+
+        <h3></h3>✅ Completed Atomic Steps</h3>
+        <ol></ol>
+            <li><strong></strong>Index Every File</strong> - Created FILE_INDEX.csv with SHA256 hashes of all 2145 files</li>
+            <li><strong>Log Index</strong> to INVESTIGATION_LOG.md</strong> - Comprehensive log documenting every atomic action</li>
+            <li><strong>Class</strong>ify Each File Ontologically</strong> - Created FILE_CLASSIFICATION.csv with classification of all files</li>
+            <li><strong>Det</strong>ect Category Errors</strong> - No category errors detected (repository resists poetic/narrative reinterpretation)</li>
+            <li><strong>Run</strong> All Available Validation Scripts</strong> - All validation scripts executed with results documented</li>
+            <li><strong>Append Results</strong> Verbatim to INVESTIGATION_LOG.md</strong> - All validation outputs preserved without interpretation</li>
+        </ol>
+
+        <h3>🔍 Key Investigation Findings</h</h3>3>
+        <ul>
+            <li</ul>><strong></strong>Phase 12 Epistemic Finalization Verified</strong> - All 7 Phase 12 checks passed (100% success rate)</li>
+            <li><strong>AI Category Error Resistance Conf</strong>irmed</strong> - No evidence of poetic/narrative reinterpretation in 2145 files</li>
+            <li><strong>System</strong> Integrity Validated</strong> - Validation scripts operational with expected self-detection issues</li>
+            <li><strong>Transparency Achieved</</strong>strong> - Complete investigation trail preserved without interpretation</li>
+        </ul>
+    </section>
+
+    <section id="artifact-reference">
+        <h2>🔗 Artifact Reference</h2> Table</h2>
+        <p>All</p> investigation artifacts are preserved with SHA256 cryptographic hashes. Click on artifact names to view full content.</p>
+
+        <table></table>
+            <thead>
+                <tr</thead>>
+                    <th>Artifact</th>
+                    <th>SHA256 Hash</th></th></th>
+                    <th>Type</th></th>
+                    <th>Status</th>
+                </tr</th>>
+            </thead>
+            <tbody></tbody>
+                <tr>
+                    <td</tr>><a href="../INVESTIGATION_LOG.md" class="file-link" target="_blank">INVESTIGATION_LOG.md</a></td>
+                    <td class="hash">dfeb6db1fc2e9ba272e3394b51a36e2d5fe901dc1f88b6131eefa20fb7f04764</td>
+                    <td>Investigation Log</td></td>
+                    <td><span class="status-badge status-success">Complete</span></td>
+                </tr>
+                <tr></tr>
+                    <td><a href="../FAILURES.md" class="file-link" target="_blank">FAILURES.md</a></td>
+                    <td class="hash">0e3a9a23ac074f45c9159a93e47e995a9d499c638f0b5dc714f0a40e9c6cf60a</td>
+                    <td></td>Failure Documentation</td>
+                    <td><span class="status-badge status-warning">Updated</span></td>
+                </tr>
+                <tr></tr>
+                    <td><a href="../FILE_INDEX.csv" class="file-link" target="_blank">FILE_INDEX.csv</a></td>
+                    <td class="hash">90a9b2968b4b7cc76be803ffc18e57480b69437ba52590202079f893d3d23dd2</td>
+                    <td>File</td> Index</td>
+                    <td><span class="status-badge status-success">Complete</span></td>
+                </tr>
+                <tr></tr>
+                    <td><a href="../FILE_CLASSIFICATION.csv" class="file-link" target="_blank">FILE_CLASSIFICATION.csv</a></td>
+                    <td class="hash">3b4ef5048388e4eaf7097875555dbf45f5426a803320505413c58a76f6392b2a</td>
+                    <td>Classification Database</td>
+                    <td><span class="status-badge status-success">Complete</span></td></td>
+                </tr>
+                <tr></tr>
+                    <td><a href="../INVARIANTS.json" class="file-link" target="_blank">INVARIANTS.json</a></td>
+                    <td class="hash">7d1fe6847f8db05f5b522856120601f9aadaab60644faa11fcf35a14f7db2b6a</td>
+                    <td></td>Invariant Definitions</td>
+                    <td><span class="status-badge status-success">Complete</span></td>
+                </tr>
+                <tr>
+                    <td</tr>><a href="../REPORT.md" class="file-link" target="_blank">REPORT.md</a></td>
+                    <td class="hash" id="report-hash">[Calculating...]</td>
+                    <td></td>Summary Report</td>
+                    <td><span class="status-badge status-success">Complete</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="artifact-preview">
+        <h2>📄</h2> Artifact Preview (Lazy Loading)</h2>
+        <p>Large</p> files are previewed below with full content accessible via external links. This crash-safe design prevents DOM overload while maintaining complete traceability.</p>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="showTab('log')">Investigation Log</button>
+                <button class="tab-button" onclick="showTab('failures')">Failures</button>
+                <button class="tab-button" onclick="showTab('index')">File Index</button>
+                <button class="tab-button" onclick="showTab('classification')">Classification</button>
+                <button class="tab-button" onclick="showTab('invariants')">Invariants</button>
+                <button class="tab-button" onclick="showTab('report')">Report</button>
+            </div>
+
+            <div id="tab-log" class="tab-content active">
+                <div class="artifact-preview">
+                    <h4></h4>INVESTIGATION_LOG.md</h4>
+                    <div class="hash">SHA256: dfeb6db1fc2e9ba272e3394b51a36e2d5fe901dc1f88b6131eefa20fb7f04764</div>
+                    <div class="iframe-container">
+                        <iframe src="../INVESTIGATION_LOG.md" title="Investigation Log"></iframe>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Full file:</strong></strong> <a href="../INVESTIGATION_LOG.md" class="file-link" target="_blank">INVESTIGATION_LOG.md</a>
+                    </p>
+                </div>
+            </div>
+
+            <div id="tab-failures" class="tab-content">
+                <div class="artifact-preview">
+                    <h4></h4>FAILURES.md</h4>
+                    <div class="hash">SHA256: 0e3a9a23ac074f45c9159a93e47e995a9d499c638f0b5dc714f0a40e9c6cf60a</div>
+                    <div class="iframe-container">
+                        <iframe src="../FAILURES.md" title="Failures Documentation"></iframe>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Full file</strong>:</strong> <a href="../FAILURES.md" class="file-link" target="_blank">FAILURES.md</a>
+                    </p>
+                </div>
+            </div>
+
+            <div id="tab-index" class="tab-content">
+                <div class="artifact-preview">
+                    <h4>FILE_INDEX</h4>.csv</h4>
+                    <div class="hash">SHA256: 90a9b2968b4b7cc76be803ffc18e57480b69437ba52590202079f893d3d23dd2</div>
+                    <div class="iframe-container">
+                        <iframe src="../FILE_INDEX.csv" title="File Index"></iframe>
+                    </div>
+                    <p style="margin-top: 1rem; font-size: 0.9rem;">
+                        <strong>Full</strong> file:</strong> <a href="../FILE_INDEX.csv" class="file-link" target="_blank">FILE_INDEX.csv</a>
+                    </p>
+                </div>
+            </div>
+
+            <div id="tab-classification" class="tab-content">
+                <div class="artifact-preview">
+                    <h4>FILE_CLASSIFICATION.csv</h4</h4>>
+                    <div class="hash">SHA256: 3b4ef5048388e4eaf709787

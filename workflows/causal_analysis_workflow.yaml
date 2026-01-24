@@ -1,0 +1,269 @@
+# Causal Analysis Workflow
+# Version: 1.12
+# Phase: 9
+# Description: Advanced causal analysis workflow for Phase 9 evidence and methodology
+# Author: Orthogonal Engineering System
+# Date: 2026-01-22
+
+version: "1.12"
+phase: 9
+workflow:
+  name: "Causal Analysis Workflow"
+  description: "Performs advanced causal analysis on evidence chains, temporal patterns, and phase crossovers"
+  entry_point: "initialize_analysis"
+  steps:
+    - id: "initialize_analysis"
+      name: "Initialize Causal Analysis"
+      description: "Set up analysis environment and load evidence data"
+      conditions:
+        - type: "artifact_exists"
+          parameters:
+            path: "toolkit/oe/causal_analyzer.py"
+        - type: "artifact_exists"
+          parameters:
+            path: "toolkit/oe/advanced_evidence.py"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--init", "--evidence-store", "logs/evidence"]
+        timeout_seconds: 15
+        expected_exit_code: 0
+      on_success: ["load_evidence_data"]
+      on_failure: ["initialization_failed"]
+
+    - id: "load_evidence_data"
+      name: "Load Evidence Data"
+      description: "Load causal nodes, edges, and chains from evidence store"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/advanced_evidence.py"
+          args: ["--load", "--verbose"]
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["analyze_temporal_patterns"]
+      on_failure: ["data_loading_failed"]
+
+    - id: "analyze_temporal_patterns"
+      name: "Analyze Temporal Patterns"
+      description: "Analyze temporal patterns in evidence creation and relationships"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--analyze-temporal", "--time-window", "24", "--output", "logs/analysis/temporal_patterns.json"]
+        timeout_seconds: 45
+        expected_exit_code: 0
+      on_success: ["analyze_confidence_distribution"]
+      on_failure: ["temporal_analysis_failed"]
+
+    - id: "analyze_confidence_distribution"
+      name: "Analyze Confidence Distribution"
+      description: "Analyze confidence distribution across evidence nodes and edges"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--analyze-confidence", "--output", "logs/analysis/confidence_distribution.json"]
+        timeout_seconds: 30
+        expected_exit_code: 0
+      on_success: ["analyze_phase_crossover"]
+      on_failure: ["confidence_analysis_failed"]
+
+    - id: "analyze_phase_crossover"
+      name: "Analyze Phase Crossover"
+      description: "Analyze evidence crossover between different phases"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--analyze-crossover", "--output", "logs/analysis/phase_crossover.json"]
+        timeout_seconds: 40
+        expected_exit_code: 0
+      on_success: ["analyze_evidence_density"]
+      on_failure: ["crossover_analysis_failed"]
+
+    - id: "analyze_evidence_density"
+      name: "Analyze Evidence Density"
+      description: "Analyze evidence density over time with different resolutions"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--analyze-density", "--resolution", "day", "--output", "logs/analysis/evidence_density.json"]
+        timeout_seconds: 35
+        expected_exit_code: 0
+      on_success: ["analyze_causal_strength"]
+      on_failure: ["density_analysis_failed"]
+
+    - id: "analyze_causal_strength"
+      name: "Analyze Causal Strength"
+      description: "Analyze causal strength in evidence chains"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--analyze-strength", "--output", "logs/analysis/causal_strength.json"]
+        timeout_seconds: 50
+        expected_exit_code: 0
+      on_success: ["generate_analysis_report"]
+      on_failure: ["strength_analysis_failed"]
+
+    - id: "generate_analysis_report"
+      name: "Generate Analysis Report"
+      description: "Generate comprehensive causal analysis report"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--generate-report", "--output", "logs/analysis/causal_analysis_report.json", "--format", "json"]
+        timeout_seconds: 25
+        expected_exit_code: 0
+      on_success: ["visualize_causal_graph"]
+      on_failure: ["report_generation_failed"]
+
+    - id: "visualize_causal_graph"
+      name: "Visualize Causal Graph"
+      description: "Generate visualization of causal graph (if visualization dependencies available)"
+      conditions:
+        - type: "python_expression"
+          parameters:
+            expression: "import importlib; return importlib.util.find_spec('networkx') is not None and importlib.util.find_spec('matplotlib') is not None"
+      action:
+        type: "python_script"
+        parameters:
+          script_path: "toolkit/oe/causal_analyzer.py"
+          args: ["--visualize", "--output", "logs/analysis/causal_graph.png", "--format", "png"]
+        timeout_seconds: 60
+        expected_exit_code: 0
+      on_success: ["analysis_complete"]
+      on_failure: ["visualization_skipped"]
+
+    - id: "visualization_skipped"
+      name: "Visualization Skipped"
+      description: "Visualization dependencies not available, skipping"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'INFO: Visualization dependencies not available. Skipping graph visualization.'"
+        timeout_seconds: 5
+        expected_exit_code: 0
+      on_success: ["analysis_complete"]
+
+    - id: "analysis_complete"
+      name: "Causal Analysis Complete"
+      description: "Causal analysis workflow completed successfully"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'Causal analysis completed successfully. Reports available in logs/analysis/'"
+        timeout_seconds: 5
+        expected_exit_code: 0
+
+    # Error handling steps
+    - id: "initialization_failed"
+      name: "Initialization Failed"
+      description: "Causal analysis initialization failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Causal analysis initialization failed. Check toolkit modules.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "data_loading_failed"
+      name: "Data Loading Failed"
+      description: "Evidence data loading failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Evidence data loading failed. Check evidence store.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "temporal_analysis_failed"
+      name: "Temporal Analysis Failed"
+      description: "Temporal pattern analysis failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Temporal analysis failed. Check evidence timestamps.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "confidence_analysis_failed"
+      name: "Confidence Analysis Failed"
+      description: "Confidence distribution analysis failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Confidence analysis failed. Check confidence scores.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "crossover_analysis_failed"
+      name: "Crossover Analysis Failed"
+      description: "Phase crossover analysis failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Crossover analysis failed. Check cross-phase evidence.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "density_analysis_failed"
+      name: "Density Analysis Failed"
+      description: "Evidence density analysis failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Density analysis failed. Check evidence distribution.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "strength_analysis_failed"
+      name: "Strength Analysis Failed"
+      description: "Causal strength analysis failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Strength analysis failed. Check evidence chains.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+    - id: "report_generation_failed"
+      name: "Report Generation Failed"
+      description: "Analysis report generation failed"
+      action:
+        type: "shell_command"
+        parameters:
+          command: "echo 'ERROR: Report generation failed. Check analysis results.' && exit 2"
+        timeout_seconds: 5
+        expected_exit_code: 2
+
+validation:
+  boundary_enforcement: true
+  exit_code_2_on_violation: true
+  causal_logging: true
+  evidence_integrity: true
+  confidence_threshold: 0.6
+
+metadata:
+  generated_from: "GLASS_BOX_BOUNDARY_v1.12.html"
+  generation_timestamp: "2026-01-22T00:00:00Z"
+  schema_version: "1.12"
+  analysis_types:
+    - "temporal_patterns"
+    - "confidence_distribution"
+    - "phase_crossover"
+    - "evidence_density"
+    - "causal_strength"
+  output_formats:
+    - "json"
+    - "png (optional)"
+  dependencies:
+    - "toolkit/oe/causal_analyzer.py"
+    - "toolkit/oe/advanced_evidence.py"
+    - "networkx (optional, for visualization)"
+    - "matplotlib (optional, for visualization)"
