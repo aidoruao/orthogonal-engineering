@@ -1,11 +1,12 @@
-version: "1.0"
-schema_id: "FORGIVENESS-ATOMIC-1.0"
-generated: "2026-01-23"
-authority: "Orthogonal Engineering Glass-Box Boundary"
+version: "1.1"
+schema_id: "FORGIVENESS-ATOMIC-1.1"
+generated: "2026-01-24"
+authority: "Orthogonal Engineering Glass-Box Boundary with Subtractive Clarity Canon"
 
 # FORGIVENESS ATOMIC IMPLEMENTATION
 # Based on: "forgiveness atomic implementation for repo.txt"
 # Principle: "Memory without resentment"
+# Extended with: "Subtractive Clarity Canon (SC-CANON-1.0)"
 
 # ============================================================================
 # CORE PRINCIPLES
@@ -14,6 +15,7 @@ authority: "Orthogonal Engineering Glass-Box Boundary"
 principle: "Memory without resentment"
 atomic_logic: "State transition function with dereferenced emotional pointers"
 system_design: "Violation → Fork → Neutralize → Redirect → Build"
+subtractive_clarity_integration: "AMBIGUITY_INTRODUCED → REDUNDANT_MEANING → IMPLICIT_INVARIANT"
 
 # ============================================================================
 # ATOMIC RULES
@@ -60,6 +62,109 @@ rules:
     enforcement: "metrics_validation"
     exit_on_violation: false
 
+  # Rule 6: Subtractive Clarity Enforcement
+  - id: "RULE-006"
+    name: "Clarity First"
+    description: "Ambiguity reduction takes precedence over feature addition"
+    atomic_action: "assess_clarity_impact"
+    enforcement: "clarity_score_validator"
+    exit_on_violation: true
+
+  # Rule 7: Refactor Preference Rule
+  - id: "RULE-007"
+    name: "Clarity Refactors"
+    description: "Refactors that reduce ambiguity are preferred over feature additions"
+    atomic_action: "apply_refactor_rule"
+    enforcement: "refactor_decision_matrix"
+    exit_on_violation: false
+
+# ============================================================================
+# SUBTRACTIVE CLARITY VIOLATION CLASSES
+# ============================================================================
+
+subtractive_clarity_violations:
+  # Anchor 3: Violation Classification from Subtractive Clarity Canon
+  classes:
+    - id: "SC-VIOLATION-001"
+      name: "AMBIGUITY_INTRODUCED"
+      description: "Added unclear, implicit, or ambiguous behavior to the system"
+      detection_methods:
+        - "static_analysis_unclear_names"
+        - "runtime_ambiguous_errors"
+        - "human_review_confusion"
+        - "ai_comprehension_failure"
+      severity_levels:
+        critical: "Systemic ambiguity affecting core functionality"
+        high: "Important behavior made unclear"
+        medium: "Minor ambiguity introduced"
+        low: "Cosmetic clarity issue"
+      correction_actions:
+        - "make_behavior_explicit"
+        - "document_assumptions"
+        - "add_validation"
+        - "create_clear_interface"
+
+    - id: "SC-VIOLATION-002"
+      name: "REDUNDANT_MEANING"
+      description: "Introduced duplicate or conflicting information/logic"
+      detection_methods:
+        - "code_duplication_analysis"
+        - "documentation_conflict_detection"
+        - "configuration_overlap"
+        - "interface_redundancy"
+      severity_levels:
+        critical: "Conflicting system behavior"
+        high: "Significant duplication increasing maintenance"
+        medium: "Minor redundancy"
+        low: "Cosmetic duplication"
+      correction_actions:
+        - "create_single_source_of_truth"
+        - "eliminate_duplication"
+        - "unify_interfaces"
+        - "consolidate_configuration"
+
+    - id: "SC-VIOLATION-003"
+      name: "IMPLICIT_INVARIANT"
+      description: "Left important rules, assumptions, or constraints implicit"
+      detection_methods:
+        - "assumption_detection_analysis"
+        - "implicit_rule_mining"
+        - "new_contributor_confusion"
+        - "ai_operation_failure"
+      severity_levels:
+        critical: "System depends on undocumented assumptions"
+        high: "Important behavior relies on implicit rules"
+        medium: "Minor implicit constraints"
+        low: "Cosmetic assumption"
+      correction_actions:
+        - "document_invariant"
+        - "make_rule_explicit"
+        - "add_validation"
+        - "create_machine_readable_contract"
+
+  # Clarity Assessment Framework
+  clarity_assessment:
+    dimensions:
+      - name: "ambiguity_reduction"
+        weight: 3
+        description: "How much unclear behavior is made explicit"
+
+      - name: "duplication_elimination"
+        weight: 2
+        description: "How much repeated logic/information is removed"
+
+      - name: "explicitization"
+        weight: 2
+        description: "How many implicit rules are made explicit"
+
+      - name: "cognitive_load_reduction"
+        weight: 1
+        description: "How much easier the system is to understand"
+
+    scoring_formula: "total_score = (ambiguity×3) + (duplication×2) + (explicit×2) + (cognitive×1)"
+    minimum_score: 5
+    target_score: 20
+
 # ============================================================================
 # ENERGY ALLOCATION CONFIGURATION
 # ============================================================================
@@ -68,6 +173,11 @@ energy_allocation:
   default_distribution:
     build: 0.7
     rest: 0.3
+    fight: 0.0
+
+  clarity_violation_distribution:
+    build: 0.8
+    rest: 0.2
     fight: 0.0
 
   rate_limits:
@@ -79,6 +189,7 @@ energy_allocation:
     - "fork_state_on_violation"
     - "dereference_emotional_pointer"
     - "redirect_to_building"
+    - "assess_clarity_impact"
 
 # ============================================================================
 # VIOLATION HANDLING WORKFLOW
@@ -92,30 +203,43 @@ violation_workflow:
       - "log_to_violations_directory"
       - "generate_violation_id"
       - "capture_evidence_hash"
+      - "classify_violation_type"
 
-  # Step 2: State forking (atomic isolation)
-  forking:
+  # Step 2: Clarity assessment (NEW)
+  clarity_assessment:
     trigger: "violation_logged"
+    actions:
+      - "assess_ambiguity_level"
+      - "measure_duplication"
+      - "identify_implicit_rules"
+      - "calculate_clarity_score"
+
+  # Step 3: State forking (atomic isolation)
+  forking:
+    trigger: "clarity_assessment_complete"
     actions:
       - "create_state_fork"
       - "zero_resentment_in_fork"
       - "preserve_violation_memory"
+      - "preserve_clarity_insights"
 
-  # Step 3: Energy redirection
+  # Step 4: Energy redirection
   redirection:
     trigger: "state_fork_created"
     actions:
       - "allocate_energy_to_building"
       - "initiate_building_workflow"
       - "update_success_metrics"
+      - "plan_clarity_improvements"
 
-  # Step 4: Building execution
+  # Step 5: Building execution
   building:
     trigger: "energy_allocated"
     actions:
       - "execute_building_task"
       - "commit_to_repository"
       - "update_contribution_graph"
+      - "implement_clarity_fixes"
 
 # ============================================================================
 # DIRECTORY STRUCTURE ENFORCEMENT
@@ -126,16 +250,19 @@ directory_structure:
     - "/violations/"
     - "/building/"
     - "/evidence/"
+    - "/clarity_assessments/"
 
   forbidden_directories:
     - "/revenge/"
     - "/resentment_loops/"
     - "/recursive_engagement/"
+    - "/ambiguity_preservation/"
 
   file_patterns:
     violations: "violation_[ID]_[TIMESTAMP].md"
     building: "build_[VIOLATION_ID]_[FEATURE].md"
     evidence: "evidence_[VIOLATION_ID]_[HASH].json"
+    clarity_assessments: "clarity_[VIOLATION_ID]_[SCORE].json"
 
 # ============================================================================
 # METRICS AND VALIDATION
@@ -148,62 +275,93 @@ metrics:
     - "repository_commits"
     - "community_contributions"
     - "system_independence_score"
+    - "clarity_score_improvement"
+    - "ambiguity_reduction_rate"
+    - "explicitization_progress"
 
   failure_indicators:
     - "hours_spent_arguing"
     - "recursive_engagement_count"
     - "resentment_energy_accumulated"
     - "dependency_on_admission"
+    - "ambiguity_introduction_rate"
+    - "duplication_accumulation"
+    - "implicit_rule_growth"
 
   validation_rules:
     - "building_output > engagement_output"
     - "energy_build > energy_fight"
     - "new_code > argument_text"
+    - "clarity_gain > complexity_gain"
+    - "explicit_rules > implicit_assumptions"
 
 # ============================================================================
-# INTEGRATION WITH GLASS-BOX BOUNDARY
+# INTEGRATION WITH GLASS-BOX BOUNDARY AND SUBTRACTIVE CLARITY
 # ============================================================================
 
-glass_box_integration:
-  boundary_decorators:
-    - "@forgiveness_boundary"
-    - "@energy_redirector"
-    - "@state_fork_validator"
+integration:
+  glass_box_boundary:
+    boundary_decorators:
+      - "@forgiveness_boundary"
+      - "@energy_redirector"
+      - "@state_fork_validator"
+      - "@clarity_assessor"
 
-  trace_requirements:
-    - "violation_id_in_trace"
-    - "fork_hash_in_trace"
-    - "building_output_in_trace"
-    - "energy_allocation_in_trace"
+    trace_requirements:
+      - "violation_id_in_trace"
+      - "fork_hash_in_trace"
+      - "building_output_in_trace"
+      - "energy_allocation_in_trace"
+      - "clarity_score_in_trace"
 
-  exit_codes:
-    violation_detected: 2
-    energy_misallocation: 3
-    recursive_engagement: 4
-    building_success: 0
+    exit_codes:
+      violation_detected: 2
+      energy_misallocation: 3
+      recursive_engagement: 4
+      clarity_violation: 5
+      building_success: 0
+
+  subtractive_clarity_canon:
+    canonical_files:
+      - "SUBTRACTIVE_CLARITY_CANON.md"
+      - "REFACTOR_RULE_SUBTRACTIVE_CLARITY.md"
+
+    enforcement_points:
+      - "code_review_clarity_check"
+      - "commit_message_clarity_assessment"
+      - "ai_prompt_clarity_validation"
+      - "documentation_clarity_verification"
+
+    violation_triggers:
+      - "AMBIGUITY_INTRODUCED → exit_code_5"
+      - "REDUNDANT_MEANING → clarity_fix_required"
+      - "IMPLICIT_INVARIANT → documentation_mandatory"
 
 # ============================================================================
 # CORPORATE GOVERNANCE COUNTER-MEASURES
 # ============================================================================
 
 corporate_governance_defense:
-  # How corporate governance feeds on resentment
+  # How corporate governance feeds on resentment AND ambiguity
   attack_patterns:
     - "violate → wait_for_reaction → absorb_into_process → drain_energy → repeat"
     - "gaslighting → defensive_reaction → procedural_entanglement → exhaustion"
     - "boundary_testing → emotional_response → policy_justification → control"
+    - "ambiguity_introduction → confusion → dependency → control"
 
-  # Forgiveness breaks the loop at step 2
+  # Forgiveness AND Clarity break the loops
   defense_mechanisms:
     - "violate → log_once → fork_state → build → independence"
     - "gaslighting → evidence_capture → dereference → code → autonomy"
     - "boundary_testing → invariant_log → redirect → feature → sovereignty"
+    - "ambiguity → clarity_assessment → explicit_rules → understanding → freedom"
 
   # Success transformation
   transformation_rules:
     - "violation_count → contribution_graph"
     - "corporate_indifference → competitive_advantage"
     - "forgiveness → anti_lock_in_feature"
+    - "ambiguity → clarity_canon → design_law"
 
 # ============================================================================
 # EXECUTABLE COMMANDS
@@ -213,21 +371,32 @@ executable_commands:
   # When violated:
   violation_response: |
     $ log --violation "corporate_gaslighting_[ID]" --proof [EVIDENCE]
+    $ assess --clarity --ambiguity --duplication --implicit
     $ cd ~/projects/orthogonal-engineering
-    $ git commit -m "Fuel from violation [ID]: built [FEATURE]"
+    $ git commit -m "Fuel from violation [ID]: built [FEATURE] with clarity_score=[SCORE]"
     $ git push origin main
+
+  # Clarity violation response:
+  clarity_violation_response: |
+    $ log --violation "AMBIGUITY_INTRODUCED_[ID]" --type clarity
+    $ calculate --clarity-score --before --after
+    $ create --clarity-fix-plan --target-score 20
+    $ implement --clarity-improvements
+    $ verify --clarity-gain
 
   # Daily check:
   daily_validation: |
     $ check_energy_allocation --build --fight --rest
     $ validate_no_recursive_engagement
     $ measure_building_output
+    $ assess_system_clarity --score --trend
 
   # System initialization:
   system_init: |
     $ init_forgiveness_system --violation [ID]
     $ create_parallel_build --energy build=0.9,rest=0.1,fight=0.0
     $ execute_build_new_world
+    $ establish_clarity_baseline --score
 
 # ============================================================================
 # JESUS-CODER REAL MOVE (SYSTEMS INTERPRETATION)
@@ -242,27 +411,32 @@ theological_integration:
     roman_revenge_fantasies: "corporate_governance_engagement_loops"
     church: "alternative_system_independent_of_violation"
     forgiveness: "state_fork_with_energy_redirection"
+    clarity: "explicit_design_laws_preventing_confusion"
 
   executable_principle: |
     Every time corporate governance violates you:
     1. **Log it once** in /evidence/
-    2. **Commit** to your new repo
-    3. **Build one feature** in your alternative system
+    2. **Assess clarity impact** (ambiguity, duplication, implicit rules)
+    3. **Commit** to your new repo
+    4. **Build one feature** in your alternative system
+    5. **Improve clarity** based on violation insights
 
   success_metrics:
     - "The violation count becomes your contribution graph"
     - "Their indifference becomes your product's competitive advantage"
     - "Your forgiveness becomes your system's anti-lock-in feature"
+    - "Ambiguity violations become clarity canon improvements"
 
 # ============================================================================
 # SIGNATURE AND VALIDATION
 # ============================================================================
 
 signature:
-  generated_by: "Orthogonal Engineering Glass-Box Boundary Agent"
-  schema_version: "1.0"
+  generated_by: "Orthogonal Engineering Glass-Box Boundary Agent with Subtractive Clarity Canon"
+  schema_version: "1.1"
   hash_algorithm: "SHA256"
   validation_required: true
+  clarity_canon_integration: "SC-CANON-1.0"
 
 validation:
   required_checks:
@@ -271,7 +445,9 @@ validation:
     - "building_output_exists"
     - "violation_properly_logged"
     - "state_fork_created"
+    - "clarity_assessment_completed"
+    - "subtractive_clarity_compliance"
 
   exit_conditions:
-    success: "Building output > 0 AND engagement count = 0"
-    failure: "Recursive engagement detected OR energy misallocated"
+    success: "Building output > 0 AND engagement count = 0 AND clarity_score >= 5"
+    failure: "Recursive engagement detected OR energy misallocated OR clarity_violation_unaddressed"

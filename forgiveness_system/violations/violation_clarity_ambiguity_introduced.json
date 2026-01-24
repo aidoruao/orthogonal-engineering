@@ -1,0 +1,145 @@
+{
+  "violation_id": "VIOLATION-CLARITY-AMBIGUITY-001",
+  "timestamp": "2026-01-24T20:45:00Z",
+  "schema_id": "FORGIVENESS-ATOMIC-1.1",
+  "system_source": "subtractive_clarity_canon",
+  "violation_type": "AMBIGUITY_INTRODUCED",
+
+  "description": "Sample demonstration of Subtractive Clarity Canon violation: Ambiguous function interface without clear input/output validation or documentation. This violates the 'No implicit contracts' rule from the Subtractive Clarity Canon.",
+
+  "evidence": {
+    "ambiguous_code_example": {
+      "file": "example_ambiguous.py",
+      "line": 10,
+      "code": "def process_data(data):\n    # Magic happens here\n    result = transform(data)\n    return result",
+      "ambiguities": [
+        "No type hints or schema for 'data' parameter",
+        "No documentation of what 'transform' does",
+        "No validation of input or output",
+        "No error handling or edge cases documented",
+        "Implicit contract about what 'data' should contain",
+        "Hidden side effects not documented"
+      ]
+    },
+    "clarity_assessment": {
+      "ambiguity_score_before": 8,
+      "ambiguity_score_after": 2,
+      "duplication_detected": false,
+      "implicit_rules_identified": [
+        "Data must be in specific format (undocumented)",
+        "Transform function must exist (implicit dependency)",
+        "Result must be usable by caller (implicit contract)"
+      ],
+      "cognitive_load_estimate": "High - requires reading implementation to understand"
+    },
+    "subtractive_clarity_canon_references": [
+      "SC-CANON-1.0: 'No implicit contracts' rule violation",
+      "SC-CANON-1.0: 'All interfaces must be explicit and documented'",
+      "REFACTOR-RULE-1.0: 'Refactors that reduce ambiguity are preferred'"
+    ]
+  },
+
+  "emotional_pointer": "frustration_at_ambiguous_interfaces",
+  "emotional_pointer_dereferenced": true,
+
+  "severity": "medium",
+  "energy_required": {
+    "fight": 0.0,
+    "build": 0.8,
+    "rest": 0.2
+  },
+
+  "engagement_count": 0,
+  "last_engagement": null,
+  "max_engagement_allowed": 1,
+
+  "redirected_to_building": true,
+  "building_output_id": "BUILD-CLARITY-IMPROVEMENT-001",
+
+  "forgiveness_actions": [
+    {
+      "action": "log_violation_once",
+      "status": "completed",
+      "timestamp": "2026-01-24T20:45:00Z",
+      "note": "Violation logged atomically as clarity demonstration"
+    },
+    {
+      "action": "assess_clarity_impact",
+      "status": "completed",
+      "timestamp": "2026-01-24T20:45:30Z",
+      "note": "Clarity assessment completed: ambiguity_score reduction from 8 to 2"
+    },
+    {
+      "action": "create_state_fork",
+      "status": "completed",
+      "timestamp": "2026-01-24T20:46:00Z",
+      "note": "State forked to preserve violation memory without resentment"
+    },
+    {
+      "action": "dereference_emotional_pointer",
+      "status": "completed",
+      "timestamp": "2026-01-24T20:46:30Z",
+      "note": "Frustration about ambiguous interfaces converted to clarity improvement energy"
+    },
+    {
+      "action": "redirect_energy_to_building",
+      "status": "completed",
+      "timestamp": "2026-01-24T20:47:00Z",
+      "note": "Energy redirected to building clarity improvement system"
+    }
+  ],
+
+  "building_requirements": [
+    "glass_box_boundary_decorator_for_ambiguous_functions.py",
+    "input_output_validation_schema_system.py",
+    "clarity_assessment_tool.py",
+    "ambiguity_detection_automation.py",
+    "explicit_interface_generator.py"
+  ],
+
+  "success_metrics": {
+    "clarity_score_improvement": 6,
+    "ambiguity_reduction_percentage": 75,
+    "explicit_rules_added": 3,
+    "implicit_rules_eliminated": 3,
+    "cognitive_load_reduction": "Medium → Low"
+  },
+
+  "glass_box_boundary_integration": {
+    "trace_id": "GB-TRACE-CLARITY-AMBIGUITY-001",
+    "boundary_violation_type": "AMBIGUITY_INTRODUCED",
+    "detection_method": "static_analysis_unclear_names",
+    "exit_code_required": 5,
+    "compliance_status": "building_in_progress"
+  },
+
+  "subtractive_clarity_canon_integration": {
+    "canon_version": "SC-CANON-1.0",
+    "violated_rules": [
+      "No implicit contracts",
+      "All interfaces must be explicit and documented",
+      "No hidden complexity"
+    ],
+    "required_fixes": [
+      "Add type hints and validation schemas",
+      "Document function purpose and algorithm",
+      "Make implicit dependencies explicit",
+      "Add error handling documentation"
+    ],
+    "refactor_rule_applied": "SC-REFACTOR-1.0"
+  },
+
+  "corrected_example": {
+    "file": "example_clarified.py",
+    "code": "@glass_box_boundary(\n    input_validator=validate_data_schema,\n    output_validator=validate_result_schema,\n    side_effect_check=log_data_processing\n)\ndef process_data(data: ValidatedData) -> ValidatedResult:\n    \"\"\"\n    Process data using linear transformation algorithm.\n    \n    Args:\n        data: ValidatedData object containing numeric values\n        \n    Returns:\n        ValidatedResult object with transformed values\n        \n    Algorithm:\n        1. Validate input against schema\n        2. Apply linear transformation: y = mx + b\n        3. Validate output against schema\n        4. Log processing to evidence store\n        \n    Complexity: O(n)\n    Side effects: Logs to evidence store\n    \"\"\"\n    # Transparent implementation\n    validated_data = validate_data_schema(data)\n    result = linear_transform(validated_data)\n    validated_result = validate_result_schema(result)\n    log_evidence(\"data_processed\", {\"input\": data, \"output\": result})\n    return validated_result",
+    "clarity_improvements": [
+      "Explicit type hints and schemas",
+      "Complete documentation of purpose and algorithm",
+      "Transparent complexity and side effects",
+      "Machine-readable validation contracts",
+      "Auditable execution through evidence logging"
+    ]
+  },
+
+  "notes": "This is a demonstration violation showing how the Subtractive Clarity Canon integrates with the forgiveness system. Ambiguity violations are now detectable, classifiable, and correctable through the clarity improvement workflow. The system learns from ambiguity to become clearer over time."
+}
