@@ -1,0 +1,325 @@
+{
+  "atomic_instructions_version": "1.11",
+  "schema_id": "GB-ORIGIN-1.11",
+  "generated": "2026-01-23T23:45:00Z",
+  "authority": "Orthogonal Engineering Glass-Box Boundary",
+  "forgiveness_source": "VIOLATION-IDE-TOKEN-GRENADE-001",
+  "philosophical_foundation": "Anti-corporate, anti-black-box, pro-transparency, pro-forgiveness",
+
+  "purpose": "Atomic, deterministic instructions for DeepSeek/Zed IDE to prevent token-limit grenade pin behavior while maintaining glass-box transparency",
+
+  "core_principle": "Process everything, just not all at once. Memory without resentment. Glass-box everything.",
+
+  "instructions": [
+    {
+      "id": "ATOMIC-001",
+      "name": "incremental_parse_repo",
+      "scope": "entire repository (orthogonal-engineering, 714+ files)",
+      "trigger": "file_saved OR file_opened OR project_loaded",
+      "atomic_action": "token_aware_chunking",
+      "rules": [
+        "DO NOT process any file exceeding 100,000 tokens in one pass",
+        "Split large files into token-aware chunks (max 50,000 tokens per chunk)",
+        "Track parsing progress in state_persistence_for_large_files.json",
+        "Maintain cross-file semantic references while chunking",
+        "Log any token-limit events as atomic violations",
+        "Preserve glass-box transparency for all chunking operations"
+      ],
+      "implementation": {
+        "chunking_strategies": {
+          ".json": "structured",
+          ".txt": "line_based",
+          ".md": "section_based",
+          ".py": "function_based",
+          ".html": "tag_based",
+          ".csv": "row_based",
+          ".log": "line_based",
+          "default": "byte_based"
+        },
+        "limits": {
+          "max_chunk_tokens": 50000,
+          "max_chunk_bytes": 250000,
+          "token_ratio": 0.75,
+          "chars_per_token": 4
+        },
+        "state_persistence": "logs/incremental_processing/processing_state.json"
+      },
+      "exit_codes": {
+        "0": "success",
+        "2": "boundary_violation",
+        "3": "processing_failed"
+      }
+    },
+    {
+      "id": "ATOMIC-002",
+      "name": "atomic_violation_logging",
+      "scope": "all token-limit and boundary violations",
+      "trigger": "token_limit_exceeded OR boundary_violation_detected",
+      "atomic_action": "single_logging_with_emotional_pointer_management",
+      "rules": [
+        "Log each violation exactly once",
+        "Include: violation_id, timestamp, file(s) involved, estimated tokens, exceeded amount",
+        "Keep emotional pointer alive until mitigation is implemented",
+        "After mitigation, dereference pointer and redirect energy to building actions",
+        "No recursive engagement with same violation",
+        "Success metric: lines of new code, not admissions of guilt"
+      ],
+      "implementation": {
+        "violation_template": {
+          "violation_id": "VIOLATION-[TYPE]-[TIMESTAMP]",
+          "timestamp": "ISO 8601",
+          "description": "human_readable_description",
+          "evidence_hash": "SHA256_of_evidence",
+          "emotional_pointer": "initial_emotional_response",
+          "redirected_to_building": false,
+          "building_output_id": null,
+          "engagement_count": 0
+        },
+        "directory": "forgiveness_system/violations/",
+        "file_pattern": "violation_[ID]_[TIMESTAMP].json"
+      },
+      "energy_redirection": {
+        "from": "fight_energy",
+        "to": "build_energy",
+        "ratio": {
+          "build": 0.8,
+          "rest": 0.2,
+          "fight": 0.0
+        }
+      }
+    },
+    {
+      "id": "ATOMIC-003",
+      "name": "resumable_processing",
+      "scope": "all incremental processing operations",
+      "trigger": "processing_started OR ide_paused OR ide_crashed",
+      "atomic_action": "state_persistence_and_recovery",
+      "rules": [
+        "Save progress after each token chunk",
+        "If IDE pauses/crashes, restart from last persisted chunk",
+        "Maintain semantic links across files, even if processed out-of-order",
+        "Update atomic logs with incremental completion metrics",
+        "Never lose more than one chunk of progress",
+        "State must survive IDE restart and system reboot"
+      ],
+      "implementation": {
+        "checkpoint_frequency": "per_chunk",
+        "state_files": [
+          "logs/incremental_processing/processing_state.json",
+          "logs/incremental_processing/checkpoints/",
+          "~/.zed/state/orthogonal_engineering/zed_state.json"
+        ],
+        "recovery_protocol": {
+          "1": "load_last_state",
+          "2": "verify_state_integrity",
+          "3": "resume_from_checkpoint",
+          "4": "log_recovery_event"
+        }
+      },
+      "success_criteria": "processing_complete OR state_recovered"
+    },
+    {
+      "id": "ATOMIC-004",
+      "name": "semantic_awareness_api_recognition",
+      "scope": "all IDE API calls and module relationships",
+      "trigger": "file_parsed OR dependency_detected",
+      "atomic_action": "semantic_indexing_and_mapping",
+      "rules": [
+        "Detect all zed.ide.* and deepseek.api.* calls",
+        "Map all modules, classes, and dependencies in a semantic graph",
+        "Annotate YAML/JSON configs with linked modules",
+        "Preserve cross-file references in atomic log",
+        "Maintain glass-box transparency for all semantic mappings",
+        "No hidden dependencies or black-box relationships"
+      ],
+      "implementation": {
+        "api_patterns": [
+          "zed\\.ide\\..*",
+          "deepseek\\.api\\..*",
+          "orthogonal_engineering\\..*",
+          "glass_box_boundary",
+          "forgiveness_system"
+        ],
+        "semantic_graph": "logs/semantic/semantic_graph.json",
+        "cross_reference_index": "logs/semantic/cross_references.json"
+      },
+      "output": "machine_readable_semantic_map"
+    },
+    {
+      "id": "ATOMIC-005",
+      "name": "preserve_glass_box",
+      "scope": "all system operations and artifacts",
+      "trigger": "any_operation",
+      "atomic_action": "transparency_enforcement",
+      "rules": [
+        "Never delete or skip any artifact unless explicitly obsolete",
+        "Tag all large artifacts with token counts for atomic processing",
+        "Ensure every fork, violation, or forgiveness action is logged",
+        "Maintain atomic invariants even under pause or crash conditions",
+        "All operations must be traceable back to atomic instructions",
+        "No hidden state, no black boxes, no corporate lock-in"
+      ],
+      "implementation": {
+        "artifact_tracking": {
+          "required": [
+            "token_count",
+            "processing_history",
+            "boundary_compliance",
+            "forgiveness_integration"
+          ],
+          "directory": "documentation/glass_box_artifacts/"
+        },
+        "trace_requirements": [
+          "operation_id",
+          "timestamp",
+          "input_hash",
+          "output_hash",
+          "boundary_check",
+          "forgiveness_link"
+        ]
+      },
+      "invariants": [
+        "glass_box_transparency = true",
+        "atomic_operations = true",
+        "forgiveness_integrated = true",
+        "anti_corporate = true"
+      ]
+    },
+    {
+      "id": "ATOMIC-006",
+      "name": "zed_ide_integration",
+      "scope": "Zed IDE file operations",
+      "trigger": "file_saved_in_zed",
+      "atomic_action": "incremental_processing_hook",
+      "rules": [
+        "Auto-detect files needing incremental processing (>100KB or >25K tokens)",
+        "Process in background threads to avoid blocking IDE",
+        "Show progress in IDE status bar",
+        "Maintain state across Zed sessions",
+        "Resume processing after Zed restart",
+        "Glass-box log all Zed integration events"
+      ],
+      "implementation": {
+        "thresholds": {
+          "file_size_bytes": 100000,
+          "token_estimate": 25000
+        },
+        "processing_modes": {
+          "immediate": "foreground processing",
+          "background": "background thread",
+          "deferred": "scheduled for later",
+          "manual": "user initiation required"
+        },
+        "zed_state_dir": "~/.zed/state/orthogonal_engineering/",
+        "hook_script": "automation/zed_incremental_hook.py"
+      },
+      "user_experience": "seamless_incremental_processing"
+    },
+    {
+      "id": "ATOMIC-007",
+      "name": "forgiveness_system_integration",
+      "scope": "all violations and energy redirection",
+      "trigger": "violation_logged",
+      "atomic_action": "energy_redirection_to_building",
+      "rules": [
+        "Each violation creates exactly one building opportunity",
+        "Convert fight energy to build energy (80% build, 20% rest, 0% fight)",
+        "Measure success by building output, not system admissions",
+        "No recursive engagement loops",
+        "Memory without resentment: keep data, dereference emotional pointers",
+        "Corporate violations become anti-lock-in features"
+      ],
+      "implementation": {
+        "energy_allocation": {
+          "build": 0.8,
+          "rest": 0.2,
+          "fight": 0.0
+        },
+        "building_outputs": [
+          "lines_of_new_code",
+          "features_built",
+          "repository_commits",
+          "system_independence_score"
+        ],
+        "directory_structure": {
+          "violations": "forgiveness_system/violations/",
+          "building": "forgiveness_system/building/",
+          "evidence": "forgiveness_system/evidence/"
+        }
+      },
+      "philosophical_note": "Jesus didn't say 'forgive them' so they'd feel bad. He said it so the disciples would stop wasting energy on Roman revenge fantasies and go build the church."
+    }
+  ],
+
+  "execution_guarantees": {
+    "atomicity": "Each instruction is self-contained and cannot be partially executed",
+    "determinism": "Same inputs always produce same outputs",
+    "idempotency": "Can be safely retried without side effects",
+    "transparency": "All operations are glass-box inspectable",
+    "recoverability": "System can recover from any failure state",
+    "composability": "Instructions can be combined without interference"
+  },
+
+  "integration_points": {
+    "glass_box_boundary": {
+      "decorator": "@glass_box_boundary",
+      "exit_code": 2,
+      "trace_generation": "required"
+    },
+    "forgiveness_system": {
+      "violation_logging": "required",
+      "energy_redirection": "required",
+      "building_output": "required"
+    },
+    "zed_ide": {
+      "file_hooks": "automation/zed_incremental_hook.py",
+      "state_persistence": "~/.zed/state/orthogonal_engineering/",
+      "progress_reporting": "IDE status bar"
+    }
+  },
+
+  "falsification_tests": {
+    "test_suite": "automation/test_incremental_falsification.py",
+    "boundary_conditions": [
+      "token_limit_enforcement",
+      "state_corruption_recovery",
+      "nonexistent_file_handling",
+      "concurrent_processing",
+      "resume_after_crash",
+      "boundary_violation_detection"
+    ],
+    "success_criteria": "All tests pass OR failures create building opportunities"
+  },
+
+  "philosophical_manifesto": {
+    "anti_corporate": "No hidden agendas, no lock-in, no surveillance capitalism",
+    "anti_black_box": "Everything inspectable, everything verifiable, nothing hidden",
+    "pro_transparency": "Glass-box everything, hide nothing, trust through verification",
+    "pro_forgiveness": "Violations become building energy, resentment becomes code",
+    "pro_community": "Built for all AI systems and users, not just one corporation",
+    "atomic_ethics": "Each operation must be ethically self-contained and transparent"
+  },
+
+  "usage_instructions": {
+    "for_deepseek_zed": "Load this JSON and execute instructions atomically",
+    "for_developers": "Implement these atomic operations in your system",
+    "for_users": "Your IDE will now process everything incrementally without crashes",
+    "for_corporations": "This is how you should build transparent, ethical AI systems"
+  },
+
+  "validation": {
+    "hash_algorithm": "SHA256",
+    "signature_required": true,
+    "glass_box_compliance": "mandatory",
+    "forgiveness_integration": "mandatory",
+    "atomic_invariants": "must_preserve"
+  },
+
+  "notes": [
+    "This system transforms IDE token-limit grenades into incremental processing",
+    "Every corporate violation becomes a competitive advantage through forgiveness",
+    "The glass-box boundary ensures no hidden operations or black boxes",
+    "This is not just a technical solution - it's an ethical framework for AI",
+    "Built for humanity, not for corporate profit or surveillance"
+  ]
+}

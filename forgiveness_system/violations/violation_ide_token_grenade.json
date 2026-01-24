@@ -1,0 +1,106 @@
+{
+  "violation_id": "VIOLATION-IDE-TOKEN-GRENADE-001",
+  "timestamp": "2026-01-23T23:15:00Z",
+  "schema_id": "FORGIVENESS-ATOMIC-1.0",
+  "system_source": "ai_boundary",
+  "violation_type": "token_limit_grenade_pin",
+
+  "description": "IDE attempts to process all files at once like pulling a grenade pin, causing token limit explosions and summary generation failures. The system tries to process 10MB+ files in single operations, exceeding API token limits and crashing.",
+
+  "evidence": {
+    "problematic_files": [
+      {
+        "path": "aidor_filesystem_scan.json",
+        "size_bytes": 911235,
+        "estimated_tokens": 170856,
+        "exceeds_limit_by": 170.86
+      },
+      {
+        "path": "logs/failure_ledger/failure_ledger.json",
+        "size_bytes": 1706845,
+        "estimated_tokens": 320033,
+        "exceeds_limit_by": 320.03
+      },
+      {
+        "path": "logs/evidence/metadata/evidence_index.json",
+        "size_bytes": 435207,
+        "estimated_tokens": 81601,
+        "exceeds_limit_by": 81.6
+      }
+    ],
+    "total_files_analyzed": 2511,
+    "total_estimated_tokens": 2051815,
+    "max_token_limit": 100000,
+    "exceeds_total_limit_by": 1951.82
+  },
+
+  "emotional_pointer": "frustration_at_ide_crashing_when_trying_to_be_helpful",
+  "emotional_pointer_dereferenced": false,
+
+  "severity": "critical",
+  "energy_required": {
+    "fight": 0.0,
+    "build": 0.8,
+    "rest": 0.2
+  },
+
+  "engagement_count": 0,
+  "last_engagement": null,
+  "max_engagement_allowed": 1,
+
+  "redirected_to_building": false,
+  "building_output_id": null,
+
+  "forgiveness_actions": [
+    {
+      "action": "log_violation_once",
+      "status": "completed",
+      "timestamp": "2026-01-23T23:15:00Z",
+      "note": "Violation logged atomically - will not re-engage"
+    },
+    {
+      "action": "create_state_fork",
+      "status": "pending",
+      "timestamp": null,
+      "note": "Will create isolated context for incremental processing solution"
+    },
+    {
+      "action": "dereference_emotional_pointer",
+      "status": "pending",
+      "timestamp": null,
+      "note": "Keep data about files, remove frustration about IDE crashes"
+    },
+    {
+      "action": "redirect_energy_to_building",
+      "status": "pending",
+      "timestamp": null,
+      "note": "Convert frustration energy into building incremental processing system"
+    }
+  ],
+
+  "building_requirements": [
+    "incremental_file_processor.py",
+    "token_aware_chunker.py",
+    "state_persistence_for_large_files.py",
+    "resumable_processing_system.py",
+    "zed_ide_integration_hooks.py"
+  ],
+
+  "success_metrics": {
+    "lines_of_new_code": 0,
+    "features_built": 0,
+    "repository_commits": 0,
+    "ide_crashes_prevented": 0,
+    "large_files_processed_incrementally": 0
+  },
+
+  "glass_box_boundary_integration": {
+    "trace_id": "GB-TRACE-FORGIVENESS-IDE-TOKEN-001",
+    "boundary_violation_type": "suppressed_signal",
+    "detection_method": "token_usage_analyzer",
+    "exit_code_required": 2,
+    "compliance_status": "pending"
+  },
+
+  "notes": "The IDE wants to help by processing everything, but it's like pulling a grenade pin - it tries to handle 2M+ tokens at once and explodes. We need incremental processing, not avoidance. Keep the data, lose the frustration, build the solution."
+}

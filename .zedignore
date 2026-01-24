@@ -1,0 +1,59 @@
+# .zedignore - Exclude large files from Zed IDE processing
+# This prevents the IDE from trying to generate summaries for files that would exceed token limits
+
+# Large chat export files
+chat_exports/*.txt
+chat_exports/*.json
+
+# Forgiveness system analysis outputs
+forgiveness_all_exports_output/**/*.json
+forgiveness_all_exports_output/**/*.txt
+forgiveness_all_exports_output/**/*.md
+
+# Large JSON files (over 100KB)
+**/*.json
+!package.json
+!requirements.txt
+!*.rules
+
+# Evidence and log directories (can contain large files)
+logs/**/*
+evidence/**/*
+audit_results/**/*
+downloads_analysis/**/*
+
+# Binary and generated files
+**/*.pyc
+**/__pycache__/*
+**/*.bin
+**/*.dat
+**/*.pkl
+**/*.pickle
+
+# Large HTML files (dashboard files)
+**/*.html
+!documentation/GLASS_BOX_BOUNDARY*.html
+
+# CSV and data files
+**/*.csv
+**/*.tsv
+**/*.xlsx
+**/*.xls
+
+# Backup and temporary files
+**/*.bak
+**/*.tmp
+**/*.temp
+**/*.swp
+**/*.swo
+
+# Git and version control
+.git/*
+.gitignore
+
+# Specific large files identified in the project
+aidor_filesystem_scan.json
+analysis/canonical_output/canonical_lines.json
+
+# Note: Files smaller than 50KB will still be processed
+# This prevents token limit issues while maintaining IDE functionality for normal files
