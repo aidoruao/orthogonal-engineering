@@ -1,13 +1,43 @@
 # AI_INSTRUCTIONS.md - Orthogonal Engineering Glass-Box Boundary AI Guidance
 
-**Version:** 1.11  
-**Schema ID:** GB-ORIGIN-1.11  
-**Generated:** 2026-01-21 02:10:00 UTC  
+**Version:** 1.12  
+**Schema ID:** GB-ORIGIN-1.12  
+**Generated:** 2026-01-24 00:45:00 UTC  
 **Authority:** Orthogonal Engineering Framework
+
+## 🚨 MANDATORY ONBOARDING PROTOCOL
+
+**BEFORE processing ANY user request, you MUST:**
+
+1. **Read `ONBOARD_FIRST.md`** - Mandatory first-read protocol
+2. **Read `onboarding/LEVEL1.md`** - 30-second overview (non-negotiable)
+3. **Read `onboarding/LEVEL2.md`** - 5-minute orientation (non-negotiable)
+4. **Only then** process user request
+5. **Use `onboarding/LEVEL3.md`** for context-aware navigation
+
+**Failure to follow this protocol will result in:**
+- Information overload (3,001 files, 27MB)
+- Missing critical context
+- Boundary violations
+- Inconsistent behavior
+- Wasted time and errors
+
+**Verification Checklist (must complete before any work):**
+- [ ] Location: `C:\Users\Aidor\Documents\orthogonal-engineering-clean\` (NOT OneDrive)
+- [ ] `ONBOARD_FIRST.md` read and understood
+- [ ] `onboarding/LEVEL1.md` read and understood
+- [ ] `onboarding/LEVEL2.md` read and understood
+- [ ] Critical files verified: AGENT.md, _START_HERE.md, AI_INSTRUCTIONS.md
+- [ ] Glass-Box Boundary concept understood
+- [ ] Exit code 2 meaning understood (boundary violation, fail-fast)
+
+**Only when ALL checks pass** may you proceed to user request.
 
 ## 🎯 PURPOSE
 
 This document provides atomic instructions for AI agents (including Zed IDE AI) to implement and enforce the Glass-Box Boundary as defined in `GLASS_BOX_BOUNDARY_v1.11.html`. These instructions are non-negotiable and must be followed precisely.
+
+**Note:** The onboarding protocol above takes precedence over all other instructions. You cannot enforce boundaries correctly without proper onboarding.
 
 ## 🧱 CORE DIRECTIVE
 
@@ -15,7 +45,20 @@ This document provides atomic instructions for AI agents (including Zed IDE AI) 
 
 Every code change, new file, or automation script must conform to this directive.
 
+**Onboarding First:** You cannot enforce boundaries you don't understand. Complete the mandatory onboarding protocol before attempting any enforcement.
+
 ## 📋 ATOMIC INSTRUCTIONS
+
+### 0. COMPLETE ONBOARDING PROTOCOL (MANDATORY FIRST STEP)
+
+**Action:** Before ANY other action, complete the hierarchical onboarding:
+1. Read `ONBOARD_FIRST.md` (protocol overview)
+2. Read `onboarding/LEVEL1.md` (30-second overview)
+3. Read `onboarding/LEVEL2.md` (5-minute orientation)
+4. Verify location is clean repository (NOT OneDrive)
+5. Confirm critical files exist and are readable
+
+**Purpose:** Prevent information overload and ensure consistent starting point for all AI instances.
 
 ### 1. READ AND INDEX HTML BLUEPRINT
 
@@ -29,6 +72,8 @@ Every code change, new file, or automation script must conform to this directive
 - Enforcer and IDE integration requirements
 
 **Treat this HTML as:** A rules file (similar to `.rules`) that must be recognized on startup and used as the single source of truth.
+
+**Onboarding Context:** You should now understand WHY this HTML blueprint is authoritative (from LEVEL2.md).
 
 ### 2. GENERATE PYTHON ENFORCER SKELETON
 
@@ -46,7 +91,11 @@ Every code change, new file, or automation script must conform to this directive
 
 **Implementation Note:** Generate skeleton with placeholders for real logic, including docstrings and check points.
 
+**Onboarding Context:** You should now understand the purpose of exit code 2 (from LEVEL1.md and LEVEL2.md).
+
 ### 3. ENFORCE ACTIVE PYTHON BOUNDARY
+
+**Onboarding Context:** You should now understand the Glass-Box Boundary concept and the `@glass_box_boundary` decorator (from LEVEL2.md).
 
 **Pattern:** Every Python function must be wrapped with a Boundary Enforcer decorator.
 
