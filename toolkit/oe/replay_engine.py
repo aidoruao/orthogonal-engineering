@@ -170,10 +170,9 @@ def replay_failure():
             # Simulate exit code 2
             sys.exit(2)
         elif "{invariant}" == "SUPPRESSED_SIGNAL":
-            # Simulate suppressed signal
-            import warnings
-            warnings.filterwarnings("ignore")
-            raise RuntimeError("Signal suppressed")
+            # Simulate suppressed signal (but don't actually suppress warnings)
+            # Note: This is simulating a violation, not creating one
+            raise RuntimeError("Signal suppressed (simulated violation)")
         else:
             # Generic failure replay
             raise RuntimeError(f"Replaying failure: {{description}}")
@@ -198,7 +197,7 @@ if __name__ == "__main__":
     if result.get("replay_success"):
         sys.exit(1)  # Replay succeeded (failure occurred)
     else:
-        sys.exit(0)  # Replay failed (no failure occurred)
+        sys.exit(3)  # Replay failed (no failure occurred) - exit code 3 for replay failure
 '''
 
         return script

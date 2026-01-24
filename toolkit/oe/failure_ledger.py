@@ -149,16 +149,24 @@ class FailureLedger:
                 if self.ledger_path.exists():
                     self.ledger_path.unlink()
                 temp_path.rename(self.ledger_path)
-            except Exception:
+            except Exception as write_error:
                 # Last resort: write directly
+                import logging
+
+                logging.getLogger(__name__).warning(
+                    f"Failed atomic write, falling back to direct write: {write_error}"
+                )
                 with open(self.ledger_path, "w", encoding="utf-8") as f:
                     json.dump(ledger_data, f, indent=2, ensure_ascii=False)
                 # Clean up temp file
                 if temp_path.exists():
                     try:
                         temp_path.unlink()
-                    except Exception:
-                        pass
+                    except Exception as cleanup_error:
+                        # Log cleanup failure but continue - this is non-critical
+                        logging.getLogger(__name__).warning(
+                            f"Failed to cleanup temp file {temp_path}: {cleanup_error}"
+                        )
 
     def _hash_string(self, text: str) -> str:
         """Calculate SHA256 hash of a string."""
@@ -271,9 +279,14 @@ class FailureLedger:
                     "confidence": 1.0,
                 },
             )
-        except Exception as e:
+        except Exception as evidence_error:
             # If evidence store fails, log it but don't create another failure entry
             # to avoid infinite recursion
+            import logging
+
+            logging.getLogger(__name__).error(
+                f"Failed to store evidence for failure entry {entry_id}: {evidence_error}"
+            )
             error_entry = {
                 "entry_id": f"ERROR-{entry_id}",
                 "timestamp": datetime.now(timezone.utc).isoformat(),

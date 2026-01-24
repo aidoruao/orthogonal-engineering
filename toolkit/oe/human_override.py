@@ -136,16 +136,24 @@ class HumanOverrideGate:
                 if self.override_registry_path.exists():
                     self.override_registry_path.unlink()
                 temp_path.rename(self.override_registry_path)
-            except Exception:
+            except Exception as write_error:
                 # Last resort: write directly
+                import logging
+
+                logging.getLogger(__name__).warning(
+                    f"Failed atomic write, falling back to direct write: {write_error}"
+                )
                 with open(self.override_registry_path, "w", encoding="utf-8") as f:
                     json.dump(self.override_registry, f, indent=2, ensure_ascii=False)
                 # Clean up temp file
                 if temp_path.exists():
                     try:
                         temp_path.unlink()
-                    except Exception:
-                        pass
+                    except Exception as cleanup_error:
+                        # Log cleanup failure but continue - this is non-critical
+                        logging.getLogger(__name__).warning(
+                            f"Failed to cleanup temp file {temp_path}: {cleanup_error}"
+                        )
 
     def _lock_override_registry(self) -> None:
         """Lock the override registry file as evidence."""

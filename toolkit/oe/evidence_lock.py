@@ -158,8 +158,13 @@ class EvidenceLock:
                     if temp_path.exists():
                         try:
                             temp_path.unlink()
-                        except Exception:
-                            pass
+                        except Exception as cleanup_error:
+                            # Log cleanup failure but continue - this is non-critical
+                            import logging
+
+                            logging.getLogger(__name__).warning(
+                                f"Failed to cleanup temp file {temp_path}: {cleanup_error}"
+                            )
 
     def _hash_file(self, filepath: Path) -> str:
         """Calculate SHA256 hash of a file."""
@@ -290,9 +295,14 @@ class EvidenceLock:
                         "lock_info": lock_info,
                     },
                 )
-            except Exception as e:
+            except Exception as ledger_error:
                 # Even if ledger fails, we must enforce the lock
-                pass
+                # Log the error but continue with lock enforcement
+                import logging
+
+                logging.getLogger(__name__).error(
+                    f"Failed to record violation in failure ledger: {ledger_error}"
+                )
 
             # Update statistics
             self.stats["violations_blocked"] += 1
