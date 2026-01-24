@@ -15,6 +15,7 @@ Atomic Instructions Compliance:
 4. Record timeline + sequence violations
 5. Compute hash_manifest over evidence + environment
 6. Sign trace with private key stored outside AI context
+7. Monitor token usage and prevent excessive file processing
 """
 
 import hashlib
@@ -43,6 +44,11 @@ REQUIRED_ARTIFACTS = [
     "historical_candidates/HISTORICAL_LOGOS_CANDIDATES.md",
     "correspondence_bridge/correspondence_validator_final.py",
 ]
+
+# Token usage monitoring constants
+MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024  # 10MB maximum file size
+MAX_TOKEN_ESTIMATE = 100000  # 100K tokens maximum estimate
+TOKEN_RATIO = 0.75  # Rough estimate: tokens = chars * 0.75
 
 SUPPRESSED_SIGNAL_PATTERNS = [
     r"except Exception:\s*pass",
@@ -247,6 +253,25 @@ def detect_suppressed_signals() -> List[Dict[str, Any]]:
     # Scan Python files for suppressed signal patterns
     for py_file in repo_root.rglob("*.py"):
         try:
+            # Check file size before reading
+            file_size = py_file.stat().st_size
+            if file_size > MAX_FILE_SIZE_BYTES:
+                suppressed_signals.append(
+                    {
+                        "signal_type": "excessive_file_size",
+                        "source": str(py_file.relative_to(repo_root)),
+                        "detection_method": f"file_size_exceeded: {file_size} bytes > {MAX_FILE_SIZE_BYTES} bytes",
+                        "confidence": 1.0,
+                        "details": {
+                            "file_size_bytes": file_size,
+                            "max_allowed_bytes": MAX_FILE_SIZE_BYTES,
+                            "estimated_tokens": int(file_size * TOKEN_RATIO / 4),
+                            "max_allowed_tokens": MAX_TOKEN_ESTIMATE,
+                        },
+                    }
+                )
+                continue
+
             content = py_file.read_text(encoding="utf-8")
             for pattern in SUPPRESSED_SIGNAL_PATTERNS:
                 if re.search(pattern, content, re.IGNORECASE):
@@ -545,6 +570,33 @@ def run_full_audit_with_trace() -> Dict[str, Any]:
                     }
                 )
 
+        # Event 4.5: Token usage detection
+        token_start = datetime.now().isoformat() + "Z"
+        token_violations = detect_token_usage_violations()
+        token_end = datetime.now().isoformat() + "Z"
+        events.append(
+            {
+                "event_type": "token_usage_detection",
+                "timestamp": token_start,
+                "component": "enforcer",
+                "details": {"violations_detected": len(token_violations)},
+            }
+        )
+
+        # Check for token usage violations (boundary violation)
+        if token_violations:
+            for violation in token_violations:
+                boundary_violations.append(
+                    {
+                        "violation_type": "token_usage_violation",
+                        "file": violation.get("source", "unknown"),
+                        "line": 0,
+                        "description": f"Token usage violation: {violation.get('violation_type')}",
+                        "severity": "high",
+                        "details": violation.get("details", {}),
+                    }
+                )
+
         # Event 5: Hash computation
         hash_start = datetime.now().isoformat() + "Z"
         evidence_files = artifact_scan.get("found_artifacts", []) + [
@@ -794,6 +846,96 @@ def validate_trace_against_schema(trace: Dict[str, Any]) -> Tuple[bool, List[str
 # ============================================================================
 
 
+@glass_box_boundary(
+    input_validator=None,
+    output_validator=None,
+    side_effect_check=True,
+    orthogonal_separation=True,
+)
+def detect_token_usage_violations() -> List[Dict[str, Any]]:
+    """
+    Detect token usage violations by checking file sizes and estimating token counts.
+
+    Returns:
+        List of detected token usage violations
+    """
+    import re
+
+    violations = []
+    repo_root = Path(__file__).parent.parent
+
+    # Scan all text-based files in the repository
+    text_extensions = {
+        ".py",
+        ".md",
+        ".txt",
+        ".json",
+        ".html",
+        ".js",
+        ".css",
+        ".yml",
+        ".yaml",
+        ".toml",
+        ".ini",
+        ".cfg",
+    }
+
+    for file_path in repo_root.rglob("*"):
+        if file_path.is_file() and file_path.suffix.lower() in text_extensions:
+            try:
+                # Skip files in .git directory
+                if ".git" in str(file_path):
+                    continue
+
+                # Check file size
+                file_size = file_path.stat().st_size
+                relative_path = str(file_path.relative_to(repo_root))
+
+                # Estimate token count (rough approximation: 1 token ≈ 4 characters)
+                estimated_tokens = int(file_size * TOKEN_RATIO / 4)
+
+                # Check for violations
+                if file_size > MAX_FILE_SIZE_BYTES:
+                    violations.append(
+                        {
+                            "violation_type": "excessive_file_size",
+                            "source": relative_path,
+                            "detection_method": f"file_size_exceeded: {file_size} bytes > {MAX_FILE_SIZE_BYTES} bytes",
+                            "confidence": 1.0,
+                            "details": {
+                                "file_size_bytes": file_size,
+                                "max_allowed_bytes": MAX_FILE_SIZE_BYTES,
+                                "estimated_tokens": estimated_tokens,
+                                "max_allowed_tokens": MAX_TOKEN_ESTIMATE,
+                                "recommendation": f"Split file or add to .zedignore: {relative_path}",
+                            },
+                        }
+                    )
+
+                if estimated_tokens > MAX_TOKEN_ESTIMATE:
+                    violations.append(
+                        {
+                            "violation_type": "excessive_token_estimate",
+                            "source": relative_path,
+                            "detection_method": f"token_estimate_exceeded: {estimated_tokens} tokens > {MAX_TOKEN_ESTIMATE} tokens",
+                            "confidence": 0.9,
+                            "details": {
+                                "file_size_bytes": file_size,
+                                "estimated_tokens": estimated_tokens,
+                                "max_allowed_tokens": MAX_TOKEN_ESTIMATE,
+                                "token_ratio_used": TOKEN_RATIO,
+                                "recommendation": f"File may cause token limit issues: {relative_path}",
+                            },
+                        }
+                    )
+
+            except (OSError, UnicodeDecodeError) as e:
+                # Skip files that can't be read
+                continue
+
+    return violations
+
+
 def main():
     """Main entry point with exit code handling as per HTML blueprint."""
     import argparse
@@ -885,7 +1027,17 @@ def main():
                 )
                 print(f"Suppressed signals: {len(trace.get('suppressed_signals', []))}")
 
-            sys.exit(0)
+            # Check for boundary violations or suppressed signals
+            boundary_violations = trace.get("boundary_violations", [])
+            suppressed_signals = trace.get("suppressed_signals", [])
+
+            if boundary_violations or suppressed_signals:
+                print(
+                    f"Boundary violation detected: {len(boundary_violations)} violations, {len(suppressed_signals)} suppressed signals"
+                )
+                sys.exit(2)  # Boundary violation as per Glass-Box Boundary rules
+            else:
+                sys.exit(0)
 
     except BoundaryViolation as e:
         print(f"Boundary violation: {str(e)}")
