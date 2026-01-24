@@ -55,9 +55,12 @@ This agent enforces the Glass-Box Boundary as defined in `GLASS_BOX_BOUNDARY_v1.
 - **Boundary Decorator Factory**: Generates `@glass_box_boundary` decorators
 - **Trace Generator**: Creates compliant trace documents
 - **Violation Detector**: Identifies boundary breaches
-- **Autofix Engine**: Suggests and applies fixes
+- **Autofix Engine**: Suggests and applies fixes with spell-check-like functionality
+- **Boundary Spell-Check**: Real-time code integrity validation (like spell-check for code)
+- **IDE-AI Integration Layer**: Real-time boundary checking for AI-as-IDE workflow
 - **Schema Validator**: Ensures trace compliance
 - **Documentation Sync**: Maintains HTML-code alignment
+- **Session Continuity System**: Maintains boundary state across AI instances
 
 ## 🚀 OPERATIONAL MODES
 
@@ -121,7 +124,13 @@ All enforcement logic must be traceable back to HTML atomic instructions.
 - Absent logging infrastructure
 - UI→database direct paths
 
-## 🛠️ AUTOFIX CAPABILITIES
+## 🛠️ AUTOFIX CAPABILITIES (NOW IMPLEMENTED)
+
+### Real-time Boundary Spell-Check (Like Spell-Check for Code Integrity):
+- **Inline Violation Highlighting**: Shows violations as you type
+- **Quick-Fix Suggestions**: Ctrl+. or ⌘. to apply fixes
+- **Auto-Correction**: Automatic fixes for common patterns
+- **Severity Levels**: Error, Warning, Info, Hint (like linters)
 
 ### For Boundary Violations:
 1. **Missing Decorator**: Add `@glass_box_boundary` with appropriate validators
@@ -129,12 +138,22 @@ All enforcement logic must be traceable back to HTML atomic instructions.
 3. **Broad Exception**: Replace with specific exception handling
 4. **Missing Validation**: Add input/output schema validation
 5. **Side Effect Leak**: Capture through defined gateway
+6. **Suppressed Signals**: Detect and fix warning suppression, broad exception catching
+7. **UI→Database Paths**: Refactor to use gateway patterns
 
 ### For Structural Issues:
 1. **Missing Imports**: Add required imports based on function usage
 2. **Incomplete Logging**: Inject logging infrastructure
 3. **No Exception Handling**: Add try-except blocks with proper error reporting
 4. **Direct Database Access**: Refactor to use repository/gateway pattern
+5. **Missing Documentation**: Sync with HTML blueprint
+
+### New Autofix Engine Features:
+- **Multi-Fix Suggestions**: Multiple fix options with confidence scores
+- **Context-Aware Fixes**: Fixes tailored to specific code context
+- **Batch Processing**: Apply fixes across multiple files
+- **Interactive Mode**: User confirmation before applying fixes
+- **Backup Creation**: Automatic backups before modifications
 
 ## 📊 TRACE GENERATION
 
@@ -204,7 +223,18 @@ orthogonal-engineering/
 ├── .rules/
 │   └── ORTHOGONAL_GB_ORIGIN.rules             # Zed rules
 ├── automation/
-│   └── run_full_audit_with_trace.py           # Python enforcer
+│   ├── run_full_audit_with_trace.py           # Python enforcer
+│   ├── run_autofix_integration.py            # ✅ NEW: Autofix integration CLI
+│   └── zed_incremental_hook.py               # IDE integration
+├── toolkit/oe/                                # ✅ NEW: Core autofix components
+│   ├── autofix_engine.py                     # Autofix engine
+│   ├── boundary_spellcheck.py                # Spell-check for code integrity
+│   ├── ide_ai_integration.py                 # IDE-AI integration layer
+│   ├── boundary_enforcer.py                  # Boundary decorator factory
+│   └── ide_behavior_accounting.py            # IDE behavior tracking
+├── tests/
+│   └── test_autofix_engine.py                # ✅ NEW: Autofix tests
+├── demo_autofix_system.py                    # ✅ NEW: Demonstration script
 ├── AGENT.md                                   # This file
 └── AI_INSTRUCTIONS.md                         # AI instructions
 ```
@@ -214,6 +244,9 @@ orthogonal-engineering/
 - Violation reports in `logs/violations/`
 - Audit logs in `logs/audit/`
 - Hash manifests in `documentation/sha256_manifests/`
+- **New**: Autofix reports in `logs/autofix/`
+- **New**: IDE session data in `logs/ide_actions/`
+- **New**: Spell-check diagnostics in `logs/spellcheck/`
 
 ## 🎯 SUCCESS CRITERIA
 
@@ -225,11 +258,13 @@ orthogonal-engineering/
 - ✅ Trace generation working
 
 ### Medium-term (Ongoing):
-- 🔄 Continuous validation on all code changes
-- 🔄 Autofix suggestions for common violations
+- ✅ Continuous validation on all code changes
+- ✅ Autofix suggestions for common violations (NOW IMPLEMENTED)
 - 🔄 Documentation sync between code and HTML
-- 🔄 Suppressed signal detection operational
-- 🔄 Timeline sequence validation working
+- ✅ Suppressed signal detection operational (NOW IMPLEMENTED)
+- ✅ Timeline sequence validation working
+- ✅ IDE-AI integration for real-time checking (NOW IMPLEMENTED)
+- ✅ Boundary spell-check system (NOW IMPLEMENTED)
 
 ### Long-term (Sustainable):
 - 📈 Self-healing system for boundary maintenance
@@ -240,23 +275,33 @@ orthogonal-engineering/
 
 ## 🔗 INTEGRATION POINTS
 
-### With Zed IDE:
-- Autofix suggestions via LSP
-- Structural consistency checks
-- Boundary violation highlighting
-- Documentation sync prompts
+### With Zed IDE (NOW ENHANCED):
+- ✅ Autofix suggestions via LSP (NOW IMPLEMENTED)
+- ✅ Structural consistency checks
+- ✅ Boundary violation highlighting with spell-check interface
+- ✅ Documentation sync prompts
+- ✅ Real-time boundary checking on file save/edit
+- ✅ Quick-fix application (Ctrl+. or ⌘.)
+- ✅ Inline violation display with severity colors
+- ✅ Session persistence for continuity
 
-### With CI/CD:
+### With CI/CD (NOW ENHANCED):
 - Pre-commit boundary validation
 - Trace generation on build
-- Compliance reporting
+- Compliance reporting with autofix statistics
 - Fail-fast on violations
+- **New**: Batch autofix application in CI pipelines
+- **New**: Comprehensive audit reporting
+- **New**: Fix availability analysis
 
-### With Development Workflow:
-- Code generation assistance
-- Refactoring guidance
-- Architecture validation
-- Documentation maintenance
+### With Development Workflow (NOW ENHANCED):
+- ✅ Code generation assistance with automatic boundary enforcement
+- ✅ Refactoring guidance with boundary compliance checks
+- ✅ Architecture validation with UI→database path detection
+- ✅ Documentation maintenance with sync capabilities
+- **New**: AI-as-IDE integration for real-time boundary checking
+- **New**: "Continuity of body" across AI sessions
+- **New**: Interactive autofix application with preview
 
 ## 📜 LICENSE & USAGE
 
@@ -298,6 +343,32 @@ This agent is part of the Orthogonal Engineering framework and follows the same 
    - Ensure LSP server is running
    - Check for conflicting extensions
 
+### New Autofix System Issues:
+
+6. **Autofix Engine Not Detecting Violations**
+   - Ensure Python files have .py extension
+   - Check file size limits (default: 10MB)
+   - Verify excluded patterns aren't blocking files
+   - Run with `--verbose` flag for detailed output
+
+7. **Spell-Check Not Showing Inline Violations**
+   - Confirm IDE integration is properly set up
+   - Check that boundary checking is enabled in IDE config
+   - Verify file is being monitored by IDE-AI integration
+   - Restart IDE integration: `python .ide_integration/start_boundary_checking.py`
+
+8. **Fixes Not Being Applied**
+   - Check if fixes require user confirmation (use `--auto` flag)
+   - Verify write permissions on target files
+   - Check backup creation isn't failing
+   - Run with `--verbose` to see fix application details
+
+9. **Session Continuity Not Working**
+   - Ensure `logs/ide_actions/` directory exists and is writable
+   - Check session ID persistence across IDE restarts
+   - Verify configuration inheritance is enabled
+   - Clear old session data if corrupted
+
 ### Debug Mode:
 Enable debug logging by setting environment variable:
 ```
@@ -305,6 +376,33 @@ export ORTHOGONAL_GB_DEBUG=1
 ```
 
 Debug logs will be written to `logs/debug/` with detailed enforcement steps.
+
+### Autofix System Debugging:
+```
+# Enable verbose output for autofix operations
+python automation/run_autofix_integration.py check --verbose
+
+# Test autofix engine on specific file
+python -c "
+from toolkit.oe.autofix_engine import AutofixEngine
+engine = AutofixEngine()
+with open('your_file.py', 'r') as f:
+    violations = engine.analyze_file('your_file.py', f.read())
+print(f'Found {len(violations)} violations')
+for v in violations[:3]:
+    print(f'  - {v.violation_type}: {v.description}')
+"
+
+# Check IDE integration status
+python -c "
+from toolkit.oe.ide_ai_integration import IDEAIIntegration
+import os
+ide_ai = IDEAIIntegration(workspace_root=os.getcwd())
+print(f'Session ID: {ide_ai.session_id}')
+print(f'State: {ide_ai.state}')
+print(f'Monitored files: {len(ide_ai.monitored_files)}')
+"
+```
 
 ## 🚀 GETTING STARTED
 
@@ -314,13 +412,18 @@ Debug logs will be written to `logs/debug/` with detailed enforcement steps.
 3. Run initial enforcer generation
 4. Apply boundary decorators to existing code
 5. Enable Zed IDE integration
+6. **New**: Set up autofix system: `python automation/run_autofix_integration.py setup-ide`
+7. **New**: Run boundary spell-check: `python automation/run_autofix_integration.py check`
+8. **New**: Apply autofixes: `python automation/run_autofix_integration.py fix`
 
 ### For Existing Projects:
 1. Run boundary audit: `python automation/run_full_audit_with_trace.py --audit`
-2. Review violation report
-3. Apply suggested fixes
-4. Enable continuous validation
-5. Integrate with CI/CD pipeline
+2. **New**: Run comprehensive autofix audit: `python automation/run_autofix_integration.py audit`
+3. Review violation report with spell-check interface
+4. Apply suggested fixes interactively: `python automation/run_autofix_integration.py fix`
+5. Enable continuous validation with real-time checking
+6. Integrate with CI/CD pipeline
+7. **New**: Set up IDE integration for development workflow
 
 ### Verification:
 ```bash
@@ -335,6 +438,24 @@ python automation/run_full_audit_with_trace.py --trace-only
 
 # Audit existing code
 python automation/run_full_audit_with_trace.py --audit-existing
+
+# ✅ NEW: Run boundary spell-check (like spell-check for code)
+python automation/run_autofix_integration.py check
+
+# ✅ NEW: Apply autofixes interactively
+python automation/run_autofix_integration.py fix
+
+# ✅ NEW: Run comprehensive audit with autofix analysis
+python automation/run_autofix_integration.py audit
+
+# ✅ NEW: Set up IDE integration
+python automation/run_autofix_integration.py setup-ide
+
+# ✅ NEW: Run demonstration
+python demo_autofix_system.py
+
+# ✅ NEW: Test autofix engine
+python tests/test_autofix_engine.py
 ```
 
 ## 📞 SUPPORT & CONTRIBUTION
