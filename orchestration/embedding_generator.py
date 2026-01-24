@@ -26,30 +26,32 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from toolkit.oe.boundary_enforcer import glass_box_boundary
 
-
 # ============================================================================
 # DATA STRUCTURES
 # ============================================================================
 
+
 class EmbeddingModelInfo:
     """Information about an embedding model"""
 
-    def __init__(self,
-                 name: str,
-                 provider: str,
-                 dimensions: int,
-                 max_tokens: int,
-                 description: str,
-                 url: str = None,
-                 rate_limits: Dict = None,
-                 pricing: Dict = None):
+    def __init__(
+        self,
+        name: str,
+        provider: str,
+        dimensions: int,
+        max_tokens: int,
+        description: str,
+        url: str = None,
+        rate_limits: Dict = None,
+        pricing: Dict = None,
+    ):
         self.name = name
         self.provider = provider  # "local", "openai", "cohere"
         self.dimensions = dimensions
@@ -78,24 +80,26 @@ class EmbeddingModelInfo:
             "rate_limits": self.rate_limits,
             "pricing": self.pricing,
             "is_local": self.is_local,
-            "is_cloud": self.is_cloud
+            "is_cloud": self.is_cloud,
         }
 
 
 class TextChunk:
     """A chunk of text with metadata for embedding"""
 
-    def __init__(self,
-                 text: str,
-                 chunk_id: str,
-                 source_file: Union[str, Path],
-                 chunk_index: int,
-                 total_chunks: int,
-                 line_range: Tuple[int, int] = None,
-                 timestamp_range: Tuple[str, str] = None,
-                 speaker: str = None,
-                 tokens_estimated: int = None,
-                 boundary_context: Dict = None):
+    def __init__(
+        self,
+        text: str,
+        chunk_id: str,
+        source_file: Union[str, Path],
+        chunk_index: int,
+        total_chunks: int,
+        line_range: Tuple[int, int] = None,
+        timestamp_range: Tuple[str, str] = None,
+        speaker: str = None,
+        tokens_estimated: int = None,
+        boundary_context: Dict = None,
+    ):
         self.text = text
         self.chunk_id = chunk_id  # Format: "X{index}" or "A{index}"
         self.source_file = Path(source_file) if source_file else None
@@ -110,7 +114,7 @@ class TextChunk:
 
     def _calculate_hash(self) -> str:
         """Calculate SHA256 hash of text content"""
-        text_bytes = self.text.encode('utf-8')
+        text_bytes = self.text.encode("utf-8")
         return hashlib.sha256(text_bytes).hexdigest()
 
     @property
@@ -127,7 +131,7 @@ class TextChunk:
             "tokens_estimated": self.tokens_estimated,
             "sha256_hash": self.sha256_hash,
             "boundary_context": self.boundary_context,
-            "text_length": len(self.text)
+            "text_length": len(self.text),
         }
 
     def validate(self) -> List[str]:
@@ -152,56 +156,46 @@ class TextChunk:
 class EmbeddingResult:
     """Result of embedding generation"""
 
-    def __init__(self,
-                 vector: List[float],
-                 chunk: TextChunk,
-                 model_info: EmbeddingModelInfo,
-                 generated_at: datetime = None,
-                 processing_time_ms: int = None,
-                 metadata: Dict = None):
-        self.vector = vector
+    def __init__(
+        self,
+        chunk: TextChunk,
+        embedding: List[float],
+        model: str,
+        dimensions: int,
+        generation_time: float,
+        cache_hit: bool = False,
+        error: str = None,
+    ):
         self.chunk = chunk
-        self.model_info = model_info
-        self.generated_at = generated_at or datetime.now()
-        self.processing_time_ms = processing_time_ms or 0
-        self.metadata = metadata or {}
+        self.embedding = embedding
+        self.model = model
+        self.dimensions = dimensions
+        self.generation_time = generation_time
+        self.cache_hit = cache_hit
+        self.error = error
+        self.timestamp = datetime.now().isoformat()
 
     @property
-    def dimensions(self) -> int:
-        return len(self.vector)
+    def chunk_id(self) -> str:
+        return self.chunk.chunk_id
 
     @property
-    def norm(self) -> float:
-        """Calculate L2 norm of the vector"""
-        import math
-        return math.sqrt(sum(x * x for x in self.vector))
-
-    def cosine_similarity(self, other: 'EmbeddingResult') -> float:
-        """Calculate cosine similarity with another embedding"""
-        if self.dimensions != other.dimensions:
-            raise ValueError(f"Embedding dimensions must match: {self.dimensions} != {other.dimensions}")
-
-        import math
-
-        dot_product = sum(a * b for a, b in zip(self.vector, other.vector))
-        norm_product = self.norm * other.norm
-
-        if norm_product == 0:
-            return 0.0
-
-        return dot_product / norm_product
+    def source_file(self) -> str:
+        return str(self.chunk.source_file) if self.chunk.source_file else None
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for serialization"""
         return {
-            "vector": self.vector,
-            "chunk_id": self.chunk.chunk_id,
-            "model": self.model_info.name,
+            "chunk_id": self.chunk_id,
+            "source_file": self.source_file,
+            "model": self.model,
             "dimensions": self.dimensions,
-            "generated_at": self.generated_at.isoformat(),
-            "processing_time_ms": self.processing_time_ms,
-            "metadata": self.metadata,
-            "chunk_metadata": self.chunk.metadata
+            "generation_time": self.generation_time,
+            "cache_hit": self.cache_hit,
+            "error": self.error,
+            "timestamp": self.timestamp,
+            "embedding_length": len(self.embedding),
+            "chunk_metadata": self.chunk.metadata,
         }
 
 
@@ -209,200 +203,202 @@ class EmbeddingResult:
 # VALIDATION FUNCTIONS
 # ============================================================================
 
-def validate_chunks(chunks: List[TextChunk]) -> None:
-    """Validate list of text chunks for embedding"""
-    if not chunks:
-        raise ValueError("Chunks list cannot be empty")
 
+def validate_chunks(chunks: List[TextChunk]) -> List[str]:
+    """Validate list of text chunks for embedding generation"""
     errors = []
+
+    if not chunks:
+        errors.append("No chunks provided")
+
     for i, chunk in enumerate(chunks):
         chunk_errors = chunk.validate()
         if chunk_errors:
-            errors.append(f"Chunk {i} ({chunk.chunk_id}): {', '.join(chunk_errors)}")
+            errors.extend(
+                [f"Chunk {i} ({chunk.chunk_id}): {err}" for err in chunk_errors]
+            )
 
-    if errors:
-        raise ValueError(f"Chunk validation failed: {'; '.join(errors)}")
+    # Check for duplicate chunk IDs
+    chunk_ids = [chunk.chunk_id for chunk in chunks]
+    duplicates = set([cid for cid in chunk_ids if chunk_ids.count(cid) > 1])
+    if duplicates:
+        errors.append(f"Duplicate chunk IDs: {duplicates}")
+
+    return errors
 
 
-def validate_embeddings(embeddings: List[EmbeddingResult]) -> None:
+def validate_embeddings(results: List[EmbeddingResult]) -> List[str]:
     """Validate embedding results"""
-    if not embeddings:
-        raise ValueError("Embeddings list cannot be empty")
+    errors = []
 
-    # Check all embeddings have same dimensions
-    dimensions = set(embedding.dimensions for embedding in embeddings)
-    if len(dimensions) > 1:
-        raise ValueError(f"Inconsistent embedding dimensions: {dimensions}")
+    if not results:
+        errors.append("No embedding results")
 
-    # Check dimensions are reasonable
-    dim = next(iter(dimensions))
-    if dim < 1 or dim > 10000:
-        raise ValueError(f"Invalid embedding dimension: {dim}")
+    for i, result in enumerate(results):
+        if result.error:
+            errors.append(f"Result {i} ({result.chunk_id}): {result.error}")
+            continue
 
-    # Check vectors are not all zeros
-    for i, embedding in enumerate(embeddings):
-        if all(abs(x) < 1e-10 for x in embedding.vector):
-            raise ValueError(f"Embedding {i} is all zeros")
+        if not result.embedding:
+            errors.append(f"Result {i} ({result.chunk_id}): Empty embedding")
 
+        if len(result.embedding) != result.dimensions:
+            errors.append(
+                f"Result {i} ({result.chunk_id}): Embedding length {len(result.embedding)} "
+                f"does not match dimensions {result.dimensions}"
+            )
 
-def validate_model_params(model: str, batch_size: int, normalize: bool) -> None:
-    """Validate embedding model parameters"""
-    if not model:
-        raise ValueError("Model name is required")
+        if result.generation_time < 0:
+            errors.append(f"Result {i} ({result.chunk_id}): Negative generation time")
 
-    if batch_size < 1 or batch_size > 1000:
-        raise ValueError(f"Batch size must be between 1 and 1000: {batch_size}")
-
-    if not isinstance(normalize, bool):
-        raise ValueError(f"Normalize must be boolean: {normalize}")
+    return errors
 
 
 # ============================================================================
-# EMBEDDING GENERATOR CLASS
+# EMBEDDING GENERATOR
 # ============================================================================
+
 
 class EmbeddingGenerator:
     """
     Generates vector embeddings for text chunks using local models.
 
     Glass-Box Boundary Compliance:
-    - All public methods use @glass_box_boundary decorator
-    - Input validation before processing
-    - Output validation after processing
-    - Side effects confined to model loading/generation
-    - Orthogonal separation between model types
-    - Trace generation for auditability
+    - All operations use @glass_box_boundary decorator
+    - Input/output validation for all methods
+    - Side effects confined to cache directory
+    - Orthogonal separation between local and cloud operations
+    - Trace generation for embedding operations
     """
 
-    def __init__(self,
-                 config_path: Union[str, Path] = None,
-                 cache_dir: Union[str, Path] = None):
+    def __init__(self, config_path: Union[str, Path] = None):
         """
         Initialize embedding generator.
 
         Args:
-            config_path: Path to configuration file
-            cache_dir: Directory for model cache
+            config_path: Path to configuration file (defaults to orchestration/config/embedding_models.json)
         """
-        self.config_path = Path(config_path) if config_path else None
-        self.cache_dir = Path(cache_dir) if cache_dir else Path("./cache/embeddings/")
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        if config_path is None:
+            config_path = Path(__file__).parent / "config" / "embedding_models.json"
 
-        # Load configuration
+        self.config_path = Path(config_path)
         self.config = self._load_config()
-
-        # Initialize models dictionary (lazy loading)
-        self.models: Dict[str, any] = {}
-        self.model_info: Dict[str, EmbeddingModelInfo] = {}
-
-        # Initialize local models info
-        self._init_local_models()
-
-        # Statistics
+        self.models = {}  # Cache for loaded models
+        self.cache_dir = self._setup_cache_directory()
         self.stats = {
             "embeddings_generated": 0,
-            "total_processing_time_ms": 0,
-            "errors": [],
             "cache_hits": 0,
-            "cache_misses": 0
+            "cache_misses": 0,
+            "errors": [],
         }
+        self.model_info = self._load_model_info()
 
     @glass_box_boundary(
-        input_validator=None,
-        output_validator=None,
+        input_validator=lambda config_path: []
+        if config_path
+        else ["Config path is required"],
         side_effect_check=True,
-        orthogonal_separation=True
     )
     def _load_config(self) -> Dict:
-        """Load configuration from file or use defaults"""
-        default_config = {
-            "local_models": {
-                "default": "all-MiniLM-L6-v2",
-                "device": "cpu",
-                "batch_size": 32,
-                "normalize": True,
-                "show_progress_bar": True
-            },
-            "cache": {
-                "enabled": True,
-                "max_size_mb": 1000,
-                "ttl_hours": 24
-            },
-            "validation": {
-                "dimension_validation": True,
-                "similarity_threshold": 0.85,
-                "min_chunk_length": 10,
-                "max_chunk_length": 10000
-            }
-        }
+        """Load configuration from JSON file"""
+        try:
+            with open(self.config_path, "r", encoding="utf-8") as f:
+                config = json.load(f)
 
-        if self.config_path and self.config_path.exists():
-            try:
-                with open(self.config_path, 'r') as f:
-                    file_config = json.load(f)
-                # Merge with defaults
-                import copy
-                merged = copy.deepcopy(default_config)
-                self._merge_dicts(merged, file_config)
-                return merged
-            except Exception as e:
-                print(f"Warning: Failed to load config from {self.config_path}: {e}")
-                return default_config
+            # The config file has "embedding_models" as top-level key
+            if "embedding_models" in config:
+                config = config["embedding_models"]
 
-        return default_config
+            # Ensure required structure exists
+            if "local" not in config:
+                config["local"] = {
+                    "default": "all-MiniLM-L6-v2",
+                    "models": {},
+                    "settings": {},
+                }
 
-    def _merge_dicts(self, target: Dict, source: Dict) -> None:
-        """Recursively merge source dict into target dict"""
-        for key, value in source.items():
-            if key in target and isinstance(target[key], dict) and isinstance(value, dict):
-                self._merge_dicts(target[key], value)
-            else:
-                target[key] = value
+            if "cloud" not in config:
+                config["cloud"] = {"openai": {}, "cohere": {}}
+
+            # Add cache configuration if not present
+            if "cache" not in config:
+                config["cache"] = {"enabled": True, "directory": "./cache/embeddings/"}
+
+            return config
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Configuration file not found: {self.config_path}")
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON in configuration file: {e}")
+
+    @glass_box_boundary(side_effect_check=True, orthogonal_separation=True)
+    def _setup_cache_directory(self) -> Path:
+        """Setup cache directory for embeddings"""
+        # Get cache directory from config or use default
+        cache_dir_str = self.config.get("cache", {}).get(
+            "directory", "./cache/embeddings/"
+        )
+        cache_dir = Path(cache_dir_str)
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        return cache_dir
 
     @glass_box_boundary(
-        input_validator=None,
-        output_validator=None,
-        side_effect_check=True,
-        orthogonal_separation=True
+        side_effect_check=False  # Pure function
     )
-    def _init_local_models(self) -> None:
-        """Initialize information about available local models"""
-        local_models = {
-            "all-MiniLM-L6-v2": EmbeddingModelInfo(
-                name="all-MiniLM-L6-v2",
+    def _load_model_info(self) -> Dict[str, EmbeddingModelInfo]:
+        """Load model information from configuration"""
+        model_info = {}
+
+        # Local models
+        local_config = self.config.get("local", {})
+        local_models = local_config.get("models", {})
+
+        for model_name, model_config in local_models.items():
+            model_info[model_name] = EmbeddingModelInfo(
+                name=model_name,
                 provider="local",
-                dimensions=384,
-                max_tokens=256,
-                description="Fast, lightweight model good for general text",
-                url="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"
-            ),
-            "all-mpnet-base-v2": EmbeddingModelInfo(
-                name="all-mpnet-base-v2",
-                provider="local",
-                dimensions=768,
-                max_tokens=384,
-                description="Higher quality but slower, good for semantic search",
-                url="https://huggingface.co/sentence-transformers/all-mpnet-base-v2"
-            ),
-            "codebert-base": EmbeddingModelInfo(
-                name="codebert-base",
-                provider="local",
-                dimensions=768,
-                max_tokens=512,
-                description="Specialized for code understanding",
-                url="https://huggingface.co/microsoft/codebert-base"
+                dimensions=model_config.get("dimensions", 384),
+                max_tokens=model_config.get("max_tokens", 256),
+                description=model_config.get("description", "Local embedding model"),
+                url=model_config.get("url"),
             )
-        }
 
-        self.model_info.update(local_models)
+        # Cloud models (OpenAI)
+        cloud_config = self.config.get("cloud", {})
+        openai_config = cloud_config.get("openai", {})
 
-    @glass_box_boundary(
-        input_validator=validate_model_params,
-        output_validator=None,
-        side_effect_check=True,
-        orthogonal_separation=True
-    )
-    def _load_local_model(self, model_name: str) -> any:
+        if openai_config:
+            model_name = openai_config.get("model", "text-embedding-ada-002")
+            model_info[model_name] = EmbeddingModelInfo(
+                name=model_name,
+                provider="openai",
+                dimensions=openai_config.get("dimensions", 1536),
+                max_tokens=openai_config.get("max_tokens", 8191),
+                description=openai_config.get("description", "OpenAI embedding model"),
+                url=openai_config.get("url"),
+                rate_limits=openai_config.get("rate_limit", {}),
+                pricing=openai_config.get("pricing", {}),
+            )
+
+        # Cloud models (Cohere)
+        cohere_config = cloud_config.get("cohere", {})
+
+        if cohere_config:
+            model_name = cohere_config.get("model", "embed-english-v3.0")
+            model_info[model_name] = EmbeddingModelInfo(
+                name=model_name,
+                provider="cohere",
+                dimensions=cohere_config.get("dimensions", 1024),
+                max_tokens=cohere_config.get("max_tokens", 512),
+                description=cohere_config.get("description", "Cohere embedding model"),
+                url=cohere_config.get("url"),
+                rate_limits=cohere_config.get("rate_limit", {}),
+                pricing=cohere_config.get("pricing", {}),
+            )
+
+        return model_info
+
+    @glass_box_boundary(side_effect_check=True, orthogonal_separation=True)
+    def _load_local_model(self, model_name: str):
         """
         Load a local SentenceTransformers model.
 
@@ -418,15 +414,16 @@ class EmbeddingGenerator:
 
             model = SentenceTransformer(
                 model_name,
-                device=self.config["local_models"]["device"],
-                cache_folder=str(self.cache_dir)
+                device=self.config.get("local", {})
+                .get("settings", {})
+                .get("device", "cpu"),
+                cache_folder=str(self.cache_dir),
             )
 
-            load_time = int((time.time() - start_time) * 1000)
-            print(f"Model loaded in {load_time}ms")
+            load_time = time.time() - start_time
+            print(f"Model loaded in {load_time:.2f} seconds")
 
             return model
-
         except ImportError:
             raise ImportError(
                 "SentenceTransformers not installed. "
@@ -436,16 +433,79 @@ class EmbeddingGenerator:
             raise RuntimeError(f"Failed to load model {model_name}: {str(e)}")
 
     @glass_box_boundary(
+        side_effect_check=False  # Pure function
+    )
+    def _get_cached_embedding(
+        self, chunk: TextChunk, model: str
+    ) -> Optional[EmbeddingResult]:
+        """Get embedding from cache if available"""
+        if not self.config["cache"]["enabled"]:
+            return None
+
+        cache_key = f"{chunk.sha256_hash}_{model}"
+        cache_file = self.cache_dir / f"{cache_key}.json"
+
+        if cache_file.exists():
+            try:
+                with open(cache_file, "r", encoding="utf-8") as f:
+                    cache_data = json.load(f)
+
+                # Validate cache data
+                if (
+                    cache_data["chunk_hash"] == chunk.sha256_hash
+                    and cache_data["model"] == model
+                ):
+                    return EmbeddingResult(
+                        chunk=chunk,
+                        embedding=cache_data["embedding"],
+                        model=model,
+                        dimensions=cache_data["dimensions"],
+                        generation_time=cache_data["generation_time"],
+                        cache_hit=True,
+                    )
+            except (json.JSONDecodeError, KeyError):
+                # Invalid cache file, ignore it
+                pass
+
+        return None
+
+    @glass_box_boundary(side_effect_check=True, orthogonal_separation=True)
+    def _cache_embedding(self, result: EmbeddingResult):
+        """Cache embedding result"""
+        if not self.config["cache"]["enabled"]:
+            return
+
+        cache_key = f"{result.chunk.sha256_hash}_{result.model}"
+        cache_file = self.cache_dir / f"{cache_key}.json"
+
+        cache_data = {
+            "chunk_hash": result.chunk.sha256_hash,
+            "model": result.model,
+            "embedding": result.embedding,
+            "dimensions": result.dimensions,
+            "generation_time": result.generation_time,
+            "timestamp": result.timestamp,
+        }
+
+        try:
+            with open(cache_file, "w", encoding="utf-8") as f:
+                json.dump(cache_data, f, indent=2)
+        except Exception as e:
+            print(f"Warning: Failed to cache embedding: {str(e)}")
+
+    @glass_box_boundary(
         input_validator=validate_chunks,
         output_validator=validate_embeddings,
         side_effect_check=True,
-        orthogonal_separation=True
+        orthogonal_separation=True,
     )
-    def generate_embeddings(self,
-                           chunks: List[TextChunk],
-                           model: str = "local",
-                           batch_size: int = None,
-                           normalize: bool = None) -> List[EmbeddingResult]:
+    def generate_embeddings(
+        self,
+        chunks: List[TextChunk],
+        model: str = "local",
+        batch_size: int = None,
+        normalize: bool = None,
+    ) -> List[EmbeddingResult]:
         """
         Generate embeddings for text chunks using local model.
 
@@ -459,28 +519,38 @@ class EmbeddingGenerator:
             List of EmbeddingResult objects
         """
         # Use defaults from config if not specified
+        local_config = self.config.get("local", {})
+
         if model == "local":
-            model = self.config["local_models"]["default"]
+            model = local_config.get("default", "all-MiniLM-L6-v2")
 
         if batch_size is None:
-            batch_size = self.config["local_models"]["batch_size"]
+            batch_size = local_config.get("settings", {}).get("batch_size", 32)
 
         if normalize is None:
-            normalize = self.config["local_models"]["normalize"]
+            normalize = local_config.get("settings", {}).get(
+                "normalize_embeddings", True
+            )
 
         # Validate model
         if model not in self.model_info:
-            raise ValueError(f"Unknown model: {model}. Available: {list(self.model_info.keys())}")
+            raise ValueError(
+                f"Unknown model: {model}. Available: {list(self.model_info.keys())}"
+            )
 
         model_info = self.model_info[model]
         if not model_info.is_local:
-            raise ValueError(f"Model {model} is not a local model. Use cloud embedding API.")
+            raise ValueError(
+                f"Model {model} is not a local model. Use cloud embedding API."
+            )
 
         # Check cache first
         cached_results = []
         remaining_chunks = []
 
-        if self.config["cache"]["enabled"]:
+        cache_enabled = self.config.get("cache", {}).get("enabled", True)
+
+        if cache_enabled:
             for chunk in chunks:
                 cached = self._get_cached_embedding(chunk, model)
                 if cached:
@@ -500,7 +570,8 @@ class EmbeddingGenerator:
             )
 
             # Cache new results
-            if self.config["cache"]["enabled"]:
+            cache_enabled = self.config.get("cache", {}).get("enabled", True)
+            if cache_enabled:
                 for result in new_results:
                     self._cache_embedding(result)
 
@@ -516,14 +587,16 @@ class EmbeddingGenerator:
         input_validator=validate_chunks,
         output_validator=validate_embeddings,
         side_effect_check=True,
-        orthogonal_separation=True
+        orthogonal_separation=True,
     )
-    def _generate_new_embeddings(self,
-                                chunks: List[TextChunk],
-                                model_name: str,
-                                model_info: EmbeddingModelInfo,
-                                batch_size: int,
-                                normalize: bool) -> List[EmbeddingResult]:
+    def _generate_new_embeddings(
+        self,
+        chunks: List[TextChunk],
+        model_name: str,
+        model_info: EmbeddingModelInfo,
+        batch_size: int,
+        normalize: bool,
+    ) -> List[EmbeddingResult]:
         """Generate new embeddings (not from cache)"""
         # Load model if not already loaded
         if model_name not in self.models:
@@ -539,10 +612,33 @@ class EmbeddingGenerator:
             embeddings = model.encode(
                 texts,
                 batch_size=batch_size,
-                show_progress_bar=self.config["local_models"]["show_progress_bar"],
+                show_progress_bar=self.config.get("local", {})
+                .get("settings", {})
+                .get("show_progress_bar", True),
                 normalize_embeddings=normalize,
-                convert_to_numpy=True
+                convert_to_numpy=True,
             )
+
+            generation_time = time.time() - start_time
+
+            # Create EmbeddingResult objects
+            results = []
+            for i, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
+                result = EmbeddingResult(
+                    chunk=chunk,
+                    embedding=embedding.tolist()
+                    if hasattr(embedding, "tolist")
+                    else embedding,
+                    model=model_name,
+                    dimensions=model_info.dimensions,
+                    generation_time=generation_time
+                    / len(chunks),  # Average time per chunk
+                    cache_hit=False,
+                )
+                results.append(result)
+
+            return results
+
         except Exception as e:
             self.stats["errors"].append(f"Embedding generation failed: {str(e)}")
-            raise RuntimeError(f"
+            raise RuntimeError(f"Failed to generate embeddings: {str(e)}")
