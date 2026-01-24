@@ -1,0 +1,476 @@
+{
+  "pipeline_templates": {
+    "basic_text_processing": {
+      "name": "Basic Text Processing Pipeline",
+      "description": "Process text files only - no media, no embeddings",
+      "version": "1.0.0",
+      "components": ["scanning", "chunking", "metadata_extraction"],
+      "workflow": [
+        {
+          "step": "scan_repository",
+          "component": "scanner",
+          "parameters": {
+            "include_patterns": ["**/*.py", "**/*.md", "**/*.txt", "**/*.json", "**/*.html", "**/*.csv", "**/*.log"],
+            "exclude_patterns": ["**/__pycache__/**", "**/.git/**", "**/node_modules/**"],
+            "max_file_size_mb": 50
+          },
+          "output": "file_inventory"
+        },
+        {
+          "step": "chunk_files",
+          "component": "chunker",
+          "parameters": {
+            "strategy": "file_type_based",
+            "max_chunk_tokens": 50000,
+            "preserve_boundaries": true
+          },
+          "input": "file_inventory",
+          "output": "chunks"
+        },
+        {
+          "step": "extract_metadata",
+          "component": "metadata_extractor",
+          "parameters": {
+            "include_sha256": true,
+            "include_line_ranges": true,
+            "include_file_stats": true
+          },
+          "input": "chunks",
+          "output": "chunks_with_metadata"
+        },
+        {
+          "step": "generate_manifest",
+          "component": "manifest_generator",
+          "parameters": {
+            "format": "json",
+            "include_statistics": true
+          },
+          "input": "chunks_with_metadata",
+          "output": "processing_manifest"
+        }
+      ],
+      "outputs": {
+        "chunks": "chunks/",
+        "metadata": "metadata/",
+        "manifest": "manifest.json",
+        "statistics": "statistics.json"
+      },
+      "boundary_compliance": {
+        "all_functions_decorated": true,
+        "trace_generation": true,
+        "exit_code_2_on_violation": true
+      }
+    },
+    "full_embedding_pipeline": {
+      "name": "Full Embedding Pipeline",
+      "description": "Complete processing with embeddings and vector storage",
+      "version": "1.0.0",
+      "components": ["scanning", "chunking", "embedding", "vector_store", "manifest_generation"],
+      "workflow": [
+        {
+          "step": "scan_repository",
+          "component": "scanner",
+          "parameters": {
+            "include_patterns": ["**/*"],
+            "exclude_patterns": ["**/__pycache__/**", "**/.git/**", "**/node_modules/**", "**/.DS_Store"],
+            "max_file_size_mb": 100
+          },
+          "output": "file_inventory"
+        },
+        {
+          "step": "chunk_files",
+          "component": "chunker",
+          "parameters": {
+            "strategy": "semantic_aware",
+            "max_chunk_tokens": 10000,
+            "overlap_percentage": 10,
+            "preserve_boundaries": true
+          },
+          "input": "file_inventory",
+          "output": "chunks"
+        },
+        {
+          "step": "generate_embeddings",
+          "component": "embedder",
+          "parameters": {
+            "model": "local.all-MiniLM-L6-v2",
+            "batch_size": 32,
+            "normalize": true,
+            "device": "cpu"
+          },
+          "input": "chunks",
+          "output": "embeddings"
+        },
+        {
+          "step": "store_in_vector_db",
+          "component": "vector_store",
+          "parameters": {
+            "database": "chromadb",
+            "collection_name": "repository_embeddings",
+            "metadata_fields": ["file_path", "file_type", "chunk_index", "line_range", "sha256_hash"]
+          },
+          "input": ["chunks", "embeddings"],
+          "output": "vector_db_reference"
+        },
+        {
+          "step": "generate_search_index",
+          "component": "indexer",
+          "parameters": {
+            "index_type": "hnsw",
+            "metric": "cosine",
+            "ef_construction": 200,
+            "M": 16
+          },
+          "input": "vector_db_reference",
+          "output": "search_index"
+        },
+        {
+          "step": "create_prompt_manifest",
+          "component": "prompt_generator",
+          "parameters": {
+            "template": "sora_atomic_prompt",
+            "include_embeddings_reference": true,
+            "include_search_capability": true
+          },
+          "input": ["chunks", "vector_db_reference", "search_index"],
+          "output": "sora_prompt"
+        }
+      ],
+      "outputs": {
+        "chunks": "chunks/",
+        "embeddings": "embeddings/",
+        "vector_db": "vector_db/chromadb/",
+        "search_index": "index/",
+        "sora_prompt": "prompts/sora_prompt.md",
+        "statistics": "statistics.json"
+      },
+      "performance_targets": {
+        "chunking_speed": "100 files/minute",
+        "embedding_speed": "50 chunks/minute",
+        "total_time_3000_files": "< 2 hours",
+        "memory_usage": "< 4GB"
+      }
+    },
+    "media_processing_pipeline": {
+      "name": "Media Processing Pipeline",
+      "description": "Process audio and video files with transcription",
+      "version": "1.0.0",
+      "components": ["media_scanner", "transcriber", "transcript_chunker", "embedder", "vector_store"],
+      "workflow": [
+        {
+          "step": "scan_media_files",
+          "component": "media_scanner",
+          "parameters": {
+            "include_patterns": ["**/*.mp3", "**/*.wav", "**/*.mp4", "**/*.mov", "**/*.avi"],
+            "max_duration_hours": 10,
+            "extract_metadata": true
+          },
+          "output": "media_inventory"
+        },
+        {
+          "step": "transcribe_audio",
+          "component": "transcriber",
+          "parameters": {
+            "engine": "whisper",
+            "model": "base",
+            "language": "en",
+            "task": "transcribe",
+            "timestamp_resolution": "word"
+          },
+          "input": "media_inventory",
+          "output": "transcripts"
+        },
+        {
+          "step": "chunk_transcripts",
+          "component": "transcript_chunker",
+          "parameters": {
+            "strategy": "timestamp_based",
+            "seconds_per_chunk": 300,
+            "speaker_aware": true,
+            "preserve_speaker_labels": true
+          },
+          "input": "transcripts",
+          "output": "transcript_chunks"
+        },
+        {
+          "step": "embed_transcripts",
+          "component": "embedder",
+          "parameters": {
+            "model": "local.all-mpnet-base-v2",
+            "special_handling": "spoken_language",
+            "batch_size": 16
+          },
+          "input": "transcript_chunks",
+          "output": "transcript_embeddings"
+        },
+        {
+          "step": "store_transcript_embeddings",
+          "component": "vector_store",
+          "parameters": {
+            "database": "chromadb",
+            "collection_name": "media_transcripts",
+            "metadata_fields": ["source_file", "timestamp_start", "timestamp_end", "speaker", "duration"]
+          },
+          "input": ["transcript_chunks", "transcript_embeddings"],
+          "output": "transcript_vector_db"
+        },
+        {
+          "step": "link_to_repository",
+          "component": "cross_linker",
+          "parameters": {
+            "similarity_threshold": 0.8,
+            "max_links_per_chunk": 5,
+            "bidirectional": true
+          },
+          "input": ["transcript_vector_db", "repository_vector_db"],
+          "output": "cross_references"
+        }
+      ],
+      "outputs": {
+        "transcripts": "transcripts/",
+        "transcript_chunks": "transcript_chunks/",
+        "transcript_embeddings": "embeddings/transcripts/",
+        "cross_references": "cross_references.json",
+        "media_metadata": "metadata/media/"
+      },
+      "transcription_quality": {
+        "target_word_error_rate": "< 10%",
+        "speaker_detection_accuracy": "> 85%",
+        "timestamp_accuracy": "± 0.5 seconds"
+      }
+    },
+    "sora_ready_pipeline": {
+      "name": "Sora-Ready Complete Pipeline",
+      "description": "End-to-end pipeline producing single atomic prompt for Sora/LLM consumption",
+      "version": "1.0.0",
+      "components": ["full_embedding_pipeline", "media_processing_pipeline", "prompt_synthesizer"],
+      "workflow": [
+        {
+          "step": "run_text_pipeline",
+          "template": "full_embedding_pipeline",
+          "parameters": {
+            "skip_if_exists": true,
+            "checkpoint_enabled": true
+          },
+          "output": "text_artifacts"
+        },
+        {
+          "step": "run_media_pipeline",
+          "template": "media_processing_pipeline",
+          "parameters": {
+            "skip_if_no_media": true,
+            "parallel_processing": true
+          },
+          "output": "media_artifacts"
+        },
+        {
+          "step": "synthesize_prompt",
+          "component": "prompt_synthesizer",
+          "parameters": {
+            "template": "atomic_sora_prompt_v1",
+            "include_all_chunks": true,
+            "include_embeddings_reference": true,
+            "include_search_capabilities": true,
+            "include_cross_references": true,
+            "task_instructions": "analyze_boundary_violations"
+          },
+          "input": ["text_artifacts", "media_artifacts"],
+          "output": "final_sora_prompt"
+        },
+        {
+          "step": "validate_prompt",
+          "component": "prompt_validator",
+          "parameters": {
+            "check_completeness": true,
+            "verify_traceability": true,
+            "validate_boundary_compliance": true,
+            "size_limits": {
+              "max_tokens": 1000000,
+              "max_chunks": 10000
+            }
+          },
+          "input": "final_sora_prompt",
+          "output": "validation_report"
+        },
+        {
+          "step": "package_for_delivery",
+          "component": "packager",
+          "parameters": {
+            "format": "markdown",
+            "compression": "gzip",
+            "include_checksum": true,
+            "split_large_prompts": false
+          },
+          "input": ["final_sora_prompt", "validation_report"],
+          "output": "delivery_package"
+        }
+      ],
+      "outputs": {
+        "final_prompt": "outputs/sora_prompt.md",
+        "validation_report": "outputs/validation.json",
+        "delivery_package": "outputs/sora_package.tar.gz",
+        "intermediate_artifacts": "artifacts/",
+        "trace_documents": "traces/"
+      },
+      "quality_guarantees": {
+        "completeness": "100% of chunks included",
+        "traceability": "100% chunk-to-source mapping",
+        "boundary_compliance": "All operations boundary-checked",
+        "performance": "Process 3000 files in < 3 hours"
+      },
+      "sora_prompt_structure": {
+        "header": "ATOMIC ORCHESTRATION PROMPT",
+        "sections": [
+          "repository_metadata",
+          "chunk_manifest",
+          "media_transcripts",
+          "embedding_references",
+          "task_instructions",
+          "boundary_constraints",
+          "search_capabilities"
+        ],
+        "formatting": {
+          "chunk_references": "X1-X3000",
+          "transcript_references": "A1-An",
+          "embedding_dimensions": "explicit",
+          "similarity_metric": "cosine"
+        }
+      }
+    },
+    "incremental_update_pipeline": {
+      "name": "Incremental Update Pipeline",
+      "description": "Update existing pipeline outputs with new or modified files only",
+      "version": "1.0.0",
+      "components": ["change_detector", "incremental_chunker", "incremental_embedder", "vector_db_updater"],
+      "workflow": [
+        {
+          "step": "detect_changes",
+          "component": "change_detector",
+          "parameters": {
+            "since_last_run": true,
+            "check_sha256": true,
+            "detect_deletions": true,
+            "detect_renames": true
+          },
+          "output": "change_set"
+        },
+        {
+          "step": "process_new_files",
+          "template": "basic_text_processing",
+          "parameters": {
+            "file_filter": "change_set.new_files",
+            "incremental_mode": true
+          },
+          "output": "new_chunks"
+        },
+        {
+          "step": "update_modified_files",
+          "component": "incremental_chunker",
+          "parameters": {
+            "file_filter": "change_set.modified_files",
+            "preserve_existing_chunks": true,
+            "merge_strategy": "replace"
+          },
+          "output": "updated_chunks"
+        },
+        {
+          "step": "handle_deletions",
+          "component": "vector_db_updater",
+          "parameters": {
+            "action": "remove",
+            "file_filter": "change_set.deleted_files",
+            "cleanup_orphaned": true
+          },
+          "output": "cleanup_report"
+        },
+        {
+          "step": "regenerate_embeddings",
+          "component": "incremental_embedder",
+          "parameters": {
+            "chunk_filter": ["new_chunks", "updated_chunks"],
+            "batch_processing": true,
+            "skip_existing": true
+          },
+          "output": "updated_embeddings"
+        },
+        {
+          "step": "update_prompt",
+          "component": "prompt_updater",
+          "parameters": {
+            "incremental_update": true,
+            "preserve_structure": true,
+            "version_increment": "patch"
+          },
+          "input": ["updated_embeddings", "cleanup_report"],
+          "output": "updated_prompt"
+        }
+      ],
+      "outputs": {
+        "change_report": "changes/report.json",
+        "updated_prompt": "prompts/updated_sora_prompt.md",
+        "incremental_artifacts": "incremental/",
+        "performance_metrics": "metrics/incremental.json"
+      },
+      "performance_benefits": {
+        "typical_speedup": "10-100x",
+        "memory_reduction": "Only process changed files",
+        "suitable_for": "CI/CD, live editing, frequent updates"
+      }
+    }
+  },
+  "template_parameters": {
+    "common_parameters": {
+      "workspace_root": {
+        "type": "string",
+        "default": ".",
+        "description": "Root directory to process"
+      },
+      "output_directory": {
+        "type": "string",
+        "default": "./orchestration_output",
+        "description": "Where to store pipeline outputs"
+      },
+      "checkpoint_enabled": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable checkpointing for resumable processing"
+      },
+      "parallel_processing": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enable parallel processing where safe"
+      },
+      "boundary_compliance": {
+        "type": "boolean",
+        "default": true,
+        "description": "Enforce Glass-Box Boundary compliance"
+      },
+      "trace_generation": {
+        "type": "boolean",
+        "default": true,
+        "description": "Generate trace documents for audit"
+      }
+    },
+    "validation_rules": {
+      "required_components": ["chunker", "embedder", "vector_store"],
+      "output_requirements": ["manifest", "statistics"],
+      "size_limits": {
+        "max_files_per_run": 10000,
+        "max_total_size_gb": 100,
+        "max_chunks_per_file": 1000
+      },
+      "quality_checks": [
+        "chunk_size_validation",
+        "embedding_dimension_check",
+        "metadata_completeness",
+        "boundary_compliance"
+      ]
+    },
+    "template_inheritance": {
+      "base_template": "basic_text_processing",
+      "extension_mechanism": "component_addition",
+      "parameter_override": "merge_strategy",
+      "validation_cascade": true
+    }
+  }
+}

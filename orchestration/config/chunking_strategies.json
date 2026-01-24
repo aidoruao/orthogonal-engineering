@@ -1,0 +1,259 @@
+{
+  "chunking_strategies": {
+    "file_type_strategies": {
+      ".py": {
+        "strategy": "function_based",
+        "description": "Chunk Python files by functions and classes",
+        "parameters": {
+          "preserve_decorators": true,
+          "include_docstrings": true,
+          "max_function_size": 1000,
+          "group_related_functions": true,
+          "boundary_aware": true
+        },
+        "delimiters": ["def ", "class ", "@", "async def "],
+        "validation": {
+          "require_balanced_brackets": true,
+          "preserve_imports": true,
+          "maintain_indentation": true
+        }
+      },
+      ".md": {
+        "strategy": "section_based",
+        "description": "Chunk Markdown files by headers and sections",
+        "parameters": {
+          "header_levels": [1, 2, 3],
+          "min_section_size": 100,
+          "max_section_size": 5000,
+          "preserve_links": true,
+          "include_frontmatter": true
+        },
+        "delimiters": ["# ", "## ", "### ", "#### "],
+        "validation": {
+          "preserve_markdown_formatting": true,
+          "maintain_header_hierarchy": true
+        }
+      },
+      ".json": {
+        "strategy": "structured",
+        "description": "Chunk JSON files by objects and arrays",
+        "parameters": {
+          "max_object_size": 10000,
+          "preserve_structure": true,
+          "flatten_arrays": false,
+          "depth_limit": 5
+        },
+        "delimiters": ["{", "[", "}", "]"],
+        "validation": {
+          "validate_json": true,
+          "preserve_key_order": false
+        }
+      },
+      ".html": {
+        "strategy": "tag_based",
+        "description": "Chunk HTML files by semantic tags",
+        "parameters": {
+          "semantic_tags": ["article", "section", "div", "main", "header", "footer"],
+          "preserve_nesting": true,
+          "include_attributes": true,
+          "max_tag_depth": 10
+        },
+        "delimiters": ["<article", "<section", "<div", "<main", "<header", "<footer"],
+        "validation": {
+          "validate_html_structure": true,
+          "preserve_tag_hierarchy": true
+        }
+      },
+      ".txt": {
+        "strategy": "line_based",
+        "description": "Chunk text files by lines or paragraphs",
+        "parameters": {
+          "lines_per_chunk": 100,
+          "paragraph_aware": true,
+          "preserve_line_breaks": true,
+          "detect_sections": true
+        },
+        "delimiters": ["\n\n", "\r\n\r\n"],
+        "validation": {
+          "preserve_whitespace": false,
+          "maintain_paragraphs": true
+        }
+      },
+      ".csv": {
+        "strategy": "row_based",
+        "description": "Chunk CSV files by rows with headers",
+        "parameters": {
+          "rows_per_chunk": 1000,
+          "include_header": true,
+          "preserve_data_types": true,
+          "detect_schema": true
+        },
+        "delimiters": ["\n"],
+        "validation": {
+          "validate_csv_format": true,
+          "preserve_column_order": true
+        }
+      },
+      ".log": {
+        "strategy": "line_based",
+        "description": "Chunk log files by log entries",
+        "parameters": {
+          "lines_per_chunk": 500,
+          "timestamp_aware": true,
+          "log_level_aware": true,
+          "preserve_sequence": true
+        },
+        "delimiters": ["\n"],
+        "validation": {
+          "preserve_timestamps": true,
+          "maintain_log_sequence": true
+        }
+      },
+      ".js": {
+        "strategy": "function_based",
+        "description": "Chunk JavaScript files by functions and classes",
+        "parameters": {
+          "preserve_es6_features": true,
+          "include_comments": true,
+          "max_function_size": 1000,
+          "detect_modules": true
+        },
+        "delimiters": ["function ", "class ", "const ", "let ", "async function ", "=>"],
+        "validation": {
+          "validate_syntax": true,
+          "preserve_imports": true
+        }
+      },
+      ".ts": {
+        "strategy": "function_based",
+        "description": "Chunk TypeScript files with type awareness",
+        "parameters": {
+          "preserve_types": true,
+          "include_interfaces": true,
+          "max_function_size": 1000,
+          "type_aware_chunking": true
+        },
+        "delimiters": ["function ", "class ", "interface ", "type ", "const ", "let ", "async function "],
+        "validation": {
+          "validate_typescript": true,
+          "preserve_type_annotations": true
+        }
+      }
+    },
+    "media_strategies": {
+      "audio": {
+        "strategy": "timestamp_based",
+        "description": "Chunk audio transcripts by timestamps and speaker turns",
+        "parameters": {
+          "seconds_per_chunk": 300,
+          "speaker_aware": true,
+          "preserve_timestamps": true,
+          "max_silence_gap": 2.0
+        },
+        "delimiters": ["[", "]", "Speaker", "SPEAKER"],
+        "validation": {
+          "validate_timestamps": true,
+          "preserve_speaker_labels": true
+        }
+      },
+      "video": {
+        "strategy": "scene_based",
+        "description": "Chunk video transcripts by scenes and visual changes",
+        "parameters": {
+          "seconds_per_chunk": 300,
+          "scene_detection": true,
+          "include_visual_descriptions": true,
+          "preserve_frame_references": true
+        },
+        "delimiters": ["SCENE", "CUT", "FADE", "Scene"],
+        "validation": {
+          "validate_scene_boundaries": true,
+          "preserve_visual_context": true
+        }
+      }
+    },
+    "cross_file_strategies": {
+      "semantic": {
+        "strategy": "semantic_clustering",
+        "description": "Group related chunks across files by semantic similarity",
+        "parameters": {
+          "similarity_threshold": 0.85,
+          "max_cluster_size": 10,
+          "cross_file_linking": true,
+          "preserve_file_context": true
+        },
+        "validation": {
+          "validate_semantic_coherence": true,
+          "maintain_source_references": true
+        }
+      },
+      "boundary_aware": {
+        "strategy": "boundary_preserving",
+        "description": "Chunk while preserving Glass-Box Boundary context",
+        "parameters": {
+          "preserve_decorators": true,
+          "include_validation_context": true,
+          "maintain_orthogonal_separation": true,
+          "boundary_marker": "@glass_box_boundary"
+        },
+        "validation": {
+          "validate_boundary_integrity": true,
+          "preserve_trace_context": true
+        }
+      }
+    },
+    "global_parameters": {
+      "max_chunk_tokens": 50000,
+      "max_chunk_bytes": 250000,
+      "token_ratio": 0.75,
+      "chars_per_token": 4,
+      "overlap_percentage": 10,
+      "min_chunk_size": 100,
+      "encoding": "utf-8",
+      "normalization": {
+        "normalize_whitespace": true,
+        "remove_empty_lines": false,
+        "preserve_formatting": true
+      },
+      "metadata_inclusion": {
+        "file_path": true,
+        "file_type": true,
+        "chunk_index": true,
+        "line_range": true,
+        "timestamp": true,
+        "sha256_hash": true,
+        "boundary_compliance": true
+      }
+    },
+    "performance_settings": {
+      "parallel_processing": true,
+      "max_workers": 4,
+      "chunk_buffer_size": 100,
+      "memory_limit_mb": 4096,
+      "checkpoint_frequency": 100,
+      "compression": {
+        "enabled": true,
+        "algorithm": "gzip",
+        "level": 6
+      }
+    },
+    "error_handling": {
+      "malformed_files": {
+        "action": "skip_and_log",
+        "retry_count": 3,
+        "fallback_strategy": "raw_text",
+        "log_level": "warning"
+      },
+      "memory_limits": {
+        "action": "split_further",
+        "reduction_factor": 0.5,
+        "max_splits": 5
+      },
+      "token_overflow": {
+        "action": "enforce_split",
+        "split_points": ["\n\n", ". ", "? ", "! "],
+        "prefer_natural_breaks": true
+      }
+    }
+  }
+}

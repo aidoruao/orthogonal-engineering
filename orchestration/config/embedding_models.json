@@ -1,0 +1,95 @@
+{
+  "embedding_models": {
+    "local": {
+      "default": "all-MiniLM-L6-v2",
+      "models": {
+        "all-MiniLM-L6-v2": {
+          "provider": "sentence-transformers",
+          "dimensions": 384,
+          "max_tokens": 256,
+          "description": "Fast, lightweight model good for general text",
+          "url": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2",
+          "recommended_for": ["code", "documentation", "general text"]
+        },
+        "all-mpnet-base-v2": {
+          "provider": "sentence-transformers",
+          "dimensions": 768,
+          "max_tokens": 384,
+          "description": "Higher quality but slower, good for semantic search",
+          "url": "https://huggingface.co/sentence-transformers/all-mpnet-base-v2",
+          "recommended_for": ["semantic search", "documentation", "research"]
+        },
+        "codebert-base": {
+          "provider": "sentence-transformers",
+          "dimensions": 768,
+          "max_tokens": 512,
+          "description": "Specialized for code understanding",
+          "url": "https://huggingface.co/microsoft/codebert-base",
+          "recommended_for": ["source code", "programming languages", "APIs"]
+        }
+      },
+      "settings": {
+        "device": "cpu",
+        "normalize_embeddings": true,
+        "show_progress_bar": true,
+        "batch_size": 32,
+        "cache_folder": "./cache/embeddings/"
+      }
+    },
+    "cloud": {
+      "openai": {
+        "model": "text-embedding-ada-002",
+        "dimensions": 1536,
+        "max_tokens": 8191,
+        "description": "OpenAI's powerful embedding model",
+        "url": "https://platform.openai.com/docs/guides/embeddings",
+        "rate_limit": {
+          "requests_per_minute": 3000,
+          "tokens_per_minute": 1000000
+        },
+        "pricing": {
+          "per_1k_tokens": 0.0001,
+          "currency": "USD"
+        }
+      },
+      "cohere": {
+        "model": "embed-english-v3.0",
+        "dimensions": 1024,
+        "max_tokens": 512,
+        "description": "Cohere's English embedding model",
+        "url": "https://docs.cohere.com/reference/embed",
+        "rate_limit": {
+          "requests_per_minute": 1000,
+          "tokens_per_minute": 50000
+        },
+        "pricing": {
+          "per_1k_tokens": 0.0001,
+          "currency": "USD"
+        }
+      }
+    },
+    "selection_strategy": {
+      "default": "local",
+      "fallback_chain": ["local", "openai", "cohere"],
+      "file_type_mapping": {
+        ".py": "local.codebert-base",
+        ".md": "local.all-MiniLM-L6-v2",
+        ".txt": "local.all-MiniLM-L6-v2",
+        ".json": "local.all-MiniLM-L6-v2",
+        ".html": "local.all-mpnet-base-v2",
+        ".csv": "local.all-MiniLM-L6-v2",
+        ".log": "local.all-MiniLM-L6-v2"
+      },
+      "size_thresholds": {
+        "use_local_below": 1000000,
+        "use_cloud_above": 10000000
+      }
+    },
+    "validation": {
+      "dimension_validation": true,
+      "similarity_threshold": 0.85,
+      "min_chunk_length": 10,
+      "max_chunk_length": 10000
+    }
+  }
+}
