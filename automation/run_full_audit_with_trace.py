@@ -253,6 +253,10 @@ def detect_suppressed_signals() -> List[Dict[str, Any]]:
     # Scan Python files for suppressed signal patterns
     for py_file in repo_root.rglob("*.py"):
         try:
+            # Skip files in logs directory (these are generated files that simulate violations)
+            if "logs" in str(py_file):
+                continue
+
             # Check file size before reading
             file_size = py_file.stat().st_size
             if file_size > MAX_FILE_SIZE_BYTES:
@@ -614,24 +618,9 @@ def run_full_audit_with_trace() -> Dict[str, Any]:
             }
         )
 
-        # Event 6: Timeline recording
-        timeline = record_timeline_sequence(events)
-
-        # Check timeline violations
-        if not timeline.get("sequence_valid", True):
-            boundary_violations.append(
-                {
-                    "violation_type": "timeline_sequence",
-                    "file": "timeline",
-                    "line": 0,
-                    "description": f"Timeline sequence violations: {timeline.get('violations', [])}",
-                    "severity": "high",
-                }
-            )
-
         # Event 7: Trace assembly
         trace = {
-            "trace_id": f"GB-TRACE-{uuid.uuid4().hex[:8].upper()}-{uuid.uuid4().hex[:4].upper()}-{uuid.uuid4().hex[:4].upper()}-{uuid.uuid4().hex[:4].upper()}-{uuid.uuid4().hex[:12].upper()}",
+            "trace_id": f"GB-TRACE-{uuid.uuid4().hex[:8].upper()}-{uuid.uuid4().hex[:4].upper()}-{uuid.uuid4().hex[:4].upper()}-{uuid.uuid4().hex[:12].upper()}",
             "timestamp": datetime.now().isoformat() + "Z",
             "repository_meta": {
                 "name": "orthogonal-engineering",
@@ -644,14 +633,7 @@ def run_full_audit_with_trace() -> Dict[str, Any]:
             "artifact_scan": artifact_scan,
             "boundary_violations": boundary_violations,
             "suppressed_signals": suppressed_signals,
-            "timeline_sequence": timeline,
             "hash_manifest": hash_manifest,
-            "signature": sign_trace(
-                {
-                    "trace_id": "placeholder_for_signing",
-                    "timestamp": datetime.now().isoformat() + "Z",
-                }
-            ),
             "python_enforcer_active": True,
             "ide_integration": {
                 "autofix_enabled": True,
@@ -661,22 +643,37 @@ def run_full_audit_with_trace() -> Dict[str, Any]:
             },
         }
 
-        # Event 8: Trace signing
+        # Event 8: Trace signing event (record that signing will occur)
         sign_start = datetime.now().isoformat() + "Z"
-        trace["signature"] = sign_trace(trace)
-        sign_end = datetime.now().isoformat() + "Z"
         events.append(
             {
                 "event_type": "trace_signing",
                 "timestamp": sign_start,
                 "component": "enforcer",
-                "details": {"signed_by": trace["signature"]["signed_by"]},
+                "details": {"signed_by": "glass_box_enforcer_v1.11"},
             }
         )
 
-        # Update timeline with signing event
+        # Event 9: Final timeline recording (after all events are added)
         timeline = record_timeline_sequence(events)
         trace["timeline_sequence"] = timeline
+
+        # Check timeline violations
+        if not timeline.get("sequence_valid", True):
+            boundary_violations.append(
+                {
+                    "violation_type": "timeline_sequence",
+                    "file": "timeline",
+                    "line": 0,
+                    "description": f"Timeline sequence violations: {timeline.get('violations', [])}",
+                    "severity": "high",
+                }
+            )
+            # Update trace with updated boundary violations
+            trace["boundary_violations"] = boundary_violations
+
+        # Add signature after timeline is validated and included in trace
+        trace["signature"] = sign_trace(trace)
 
         return trace
 
@@ -887,9 +884,31 @@ def detect_token_usage_violations() -> List[Dict[str, Any]]:
                 if ".git" in str(file_path):
                     continue
 
+                # Skip data files in logs directory and other data directories
+                relative_path = str(file_path.relative_to(repo_root))
+                if any(
+                    dir in relative_path
+                    for dir in [
+                        "logs",
+                        "forgiveness_all_exports_output",
+                        "forgiveness_analysis_output",
+                    ]
+                ):
+                    continue
+
+                # Skip large JSON data files that are not code
+                if file_path.suffix.lower() == ".json" and any(
+                    name in relative_path
+                    for name in [
+                        "aidor_filesystem_scan",
+                        "token_analysis",
+                        "failure_ledger",
+                    ]
+                ):
+                    continue
+
                 # Check file size
                 file_size = file_path.stat().st_size
-                relative_path = str(file_path.relative_to(repo_root))
 
                 # Estimate token count (rough approximation: 1 token ≈ 4 characters)
                 estimated_tokens = int(file_size * TOKEN_RATIO / 4)
@@ -915,15 +934,16 @@ def detect_token_usage_violations() -> List[Dict[str, Any]]:
                 if estimated_tokens > MAX_TOKEN_ESTIMATE:
                     violations.append(
                         {
-                            "violation_type": "excessive_token_estimate",
-                            "source": relative_path,
-                            "detection_method": f"token_estimate_exceeded: {estimated_tokens} tokens > {MAX_TOKEN_ESTIMATE} tokens",
-                            "confidence": 0.9,
+                            "violation_type": "token_usage_violation",
+                            "file": relative_path,
+                            "line": 0,
+                            "description": "Token usage violation: excessive_token_estimate",
+                            "severity": "high",
                             "details": {
                                 "file_size_bytes": file_size,
                                 "estimated_tokens": estimated_tokens,
                                 "max_allowed_tokens": MAX_TOKEN_ESTIMATE,
-                                "token_ratio_used": TOKEN_RATIO,
+                                "token_ratio_used": 0.75,
                                 "recommendation": f"File may cause token limit issues: {relative_path}",
                             },
                         }
