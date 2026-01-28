@@ -860,7 +860,7 @@ class ChristologicalCompletion:
             if not framework_complete:
                 all_complete = False
 
-        return complete, framework_status
+        return all_complete, framework_status
 
     @staticmethod
     def get_completion_summary() -> str:
@@ -881,6 +881,313 @@ class ChristologicalCompletion:
         summary_lines.append(f"OVERALL: {'COMPLETE' if complete else 'INCOMPLETE'}")
 
         return "\n".join(summary_lines)
+
+
+# ==============================================================================
+# XI. Constraint Verification System
+# ==============================================================================
+
+
+class ChristologicalVerifier:
+    """Placeholder for Christological file verification"""
+
+    @staticmethod
+    def verify_file(path: Path) -> bool:
+        """Basic file verification - can be extended with Christological checks"""
+        if not path.exists():
+            return False
+
+        try:
+            # Check file is readable and non-empty
+            content = path.read_text(encoding="utf-8")
+            return len(content.strip()) > 0
+        except:
+            return False
+
+
+class ConstraintVerificationSystem:
+    """
+    Machine-checkable constraint verification for all 10 constraints
+    """
+
+    def __init__(self):
+        self.verifiers = {
+            "I": self._verify_repository_scoped,
+            "II": self._verify_execution_functor,
+            "III": self._verify_chalcedonian_invariant,
+            "IV": self._verify_file_generation,
+            "V": self._verify_line_extraction,
+            "VI": self._verify_latex_translation,
+            "VII": self._verify_theology_substitution,
+            "VIII": self._verify_indexing_boundary,
+            "IX": self._verify_non_assertion,
+            "X": self._verify_completion_criterion,
+        }
+
+        self.results = {}
+        self.execution_functor = IDEExecutionFunctor()
+        self.chalcedonian_invariant = ChalcedonianInvariant()
+
+    def verify_all(self) -> Dict[str, Tuple[bool, str]]:
+        """Verify all 10 constraints"""
+        self.results = {}
+
+        for constraint_id, verifier in self.verifiers.items():
+            try:
+                success, message = verifier()
+                self.results[constraint_id] = (success, message)
+            except Exception as e:
+                self.results[constraint_id] = (False, f"Verification failed: {e}")
+
+        return self.results
+
+    def _verify_repository_scoped(self) -> Tuple[bool, str]:
+        """I. Repository-Scoped Actualization Constraint"""
+        success = RepositoryScopedConstraint.verify()
+        message = (
+            "Exactly one public projection (minimal_ai_ide)"
+            if success
+            else "Multiple or no public projections"
+        )
+        return success, message
+
+    def _verify_execution_functor(self) -> Tuple[bool, str]:
+        """II. IDE AI Execution Functor"""
+        # Test with a simple framework
+        test_framework = FrameworkSpec(
+            id=999,
+            name="Test Framework",
+            files=[
+                {
+                    "path": "test_execution_functor.py",
+                    "content": "# Test execution functor\nprint('Materialized')",
+                }
+            ],
+        )
+
+        test_constraint = ChristologicalConstraint(
+            biblical_source="John 1:1", graduate_math="λ: Word → Materialization"
+        )
+
+        success = self.execution_functor.actualize(test_framework, test_constraint)
+
+        # Clean up test file
+        test_file = Path("test_execution_functor.py")
+        if test_file.exists():
+            test_file.unlink()
+
+        message = (
+            "File materialization successful"
+            if success
+            else "File materialization failed"
+        )
+        return success, message
+
+    def _verify_chalcedonian_invariant(self) -> Tuple[bool, str]:
+        """III. Christological Preservation Law"""
+        # Capture two states
+        state1 = self.chalcedonian_invariant.capture_state()
+        time.sleep(0.1)  # Small delay
+        state2 = self.chalcedonian_invariant.capture_state()
+
+        success = self.chalcedonian_invariant.verify_invariant()
+        message = (
+            "Chalcedonian invariant preserved"
+            if success
+            else "Chalcedonian invariant violated"
+        )
+        return success, message
+
+    def _verify_file_generation(self) -> Tuple[bool, str]:
+        """IV. File Generation Actualization Axiom"""
+        test_specs = [
+            {
+                "path": "test_generation_axiom.py",
+                "content": "# File Generation Axiom Test\nx = 42\ny = 'test'",
+                "expected_hash": hashlib.sha256(
+                    b"# File Generation Axiom Test\nx = 42\ny = 'test'"
+                ).hexdigest(),
+            }
+        ]
+
+        success, errors = FileGenerationAxiom.generate_framework(0, test_specs)
+
+        # Clean up
+        test_file = Path("test_generation_axiom.py")
+        if test_file.exists():
+            test_file.unlink()
+
+        message = (
+            "File generation successful"
+            if success
+            else f"File generation failed: {errors}"
+        )
+        return success, message
+
+    def _verify_line_extraction(self) -> Tuple[bool, str]:
+        """V. Line-Range Extraction Determinism"""
+        # Create test file
+        test_file = Path("test_extraction.txt")
+        test_content = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\n"
+        test_file.write_text(test_content)
+
+        try:
+            extracted = LineRangeExtraction.extract(test_file, 2, 4)
+            expected = "Line 2\nLine 3\nLine 4\n"
+
+            success = extracted == expected
+            message = (
+                "Line extraction deterministic"
+                if success
+                else f"Extraction mismatch: got {repr(extracted)}"
+            )
+        except Exception as e:
+            success = False
+            message = f"Extraction failed: {e}"
+        finally:
+            if test_file.exists():
+                test_file.unlink()
+
+        return success, message
+
+    def _verify_latex_translation(self) -> Tuple[bool, str]:
+        """VI. LaTeX → Python Non-Equivalence Rule"""
+        latex_content = r"$\forall x \in X: f(x) = \frac{1}{2}$"
+
+        ast_tree = LaTeXPythonTranslator.translate(latex_content)
+        success = ast_tree is not None
+
+        # Verify non-equivalence
+        if success:
+            python_code = (
+                ast.unparse(ast_tree) if hasattr(ast, "unparse") else str(ast_tree)
+            )
+            non_equivalent = latex_content != python_code
+            success = success and non_equivalent
+
+        message = (
+            "LaTeX translation successful and non-equivalent"
+            if success
+            else "LaTeX translation failed or equivalent"
+        )
+        return success, message
+
+    def _verify_theology_substitution(self) -> Tuple[bool, str]:
+        """VII. Theology-Preserving Substitution Operator"""
+        try:
+            result = TheologyPreservingSubstitution.substitute("creation")
+            success = TheologyPreservingSubstitution.verify_substitution(
+                "creation", result
+            )
+            message = (
+                "Theology-preserving substitution successful"
+                if success
+                else "Substitution violated theology"
+            )
+        except Exception as e:
+            success = False
+            message = f"Substitution failed: {e}"
+
+        return success, message
+
+    def _verify_indexing_boundary(self) -> Tuple[bool, str]:
+        """VIII. Public Indexing Boundary Condition"""
+        success, violations = PublicIndexingBoundary.verify_boundary()
+        message = (
+            f"Indexing boundary intact ({len(violations)} violations)"
+            if success
+            else f"Indexing boundary violated: {violations[:3]}"
+        )
+        return success, message
+
+    def _verify_non_assertion(self) -> Tuple[bool, str]:
+        """IX. Non-Assertion Law"""
+        # Create a test proposition with execution evidence
+        test_file = Path("test_non_assertion.txt")
+        proposition = "File can be created and verified"
+
+        def execute_proposition():
+            test_file.write_text("Non-assertion test content")
+            return test_file.exists()
+
+        # Check truth via execution
+        is_true, result = NonAssertionLaw.check_truth(proposition, execute_proposition)
+
+        # Create evidence
+        evidence = NonAssertionLaw.create_evidence(result, test_file)
+
+        # Verify proposition
+        success = NonAssertionLaw.verify_proposition(proposition, evidence)
+
+        # Clean up
+        if test_file.exists():
+            test_file.unlink()
+
+        message = (
+            "Non-assertion law satisfied" if success else "Assertion without execution"
+        )
+        return success, message
+
+    def _verify_completion_criterion(self) -> Tuple[bool, str]:
+        """X. Christological Completion Criterion"""
+        complete, status = ChristologicalCompletion.verify_completion()
+
+        # Count frameworks
+        completed_frameworks = sum(1 for s in status.values() if s["complete"])
+        total_frameworks = len(status)
+
+        message = (
+            f"All {total_frameworks} frameworks materialized"
+            if complete
+            else f"Only {completed_frameworks}/{total_frameworks} frameworks complete"
+        )
+        return complete, message
+
+    def get_verification_report(self) -> str:
+        """Generate comprehensive verification report"""
+        results = self.verify_all()
+
+        report_lines = ["CONSTRAINT VERIFICATION REPORT"]
+        report_lines.append("=" * 60)
+        report_lines.append("")
+
+        # Map constraint IDs to names
+        constraint_names = {
+            "I": "Repository-Scoped Actualization",
+            "II": "IDE AI Execution Functor",
+            "III": "Christological Preservation Law",
+            "IV": "File Generation Actualization",
+            "V": "Line-Range Extraction Determinism",
+            "VI": "LaTeX → Python Non-Equivalence",
+            "VII": "Theology-Preserving Substitution",
+            "VIII": "Public Indexing Boundary",
+            "IX": "Non-Assertion Law",
+            "X": "Christological Completion Criterion",
+        }
+
+        # Add results
+        for constraint_id, (success, message) in results.items():
+            status = "✓ PASS" if success else "✗ FAIL"
+            report_lines.append(
+                f"{constraint_id}. {constraint_names[constraint_id]}: {status}"
+            )
+            report_lines.append(f"   {message}")
+            report_lines.append("")
+
+        # Summary
+        passed = sum(1 for success, _ in results.values() if success)
+        total = len(results)
+
+        report_lines.append("=" * 60)
+        report_lines.append(f"SUMMARY: {passed}/{total} constraints satisfied")
+        report_lines.append("=" * 60)
+
+        return "\n".join(report_lines)
+
+    def execute_constraint_verification(self) -> bool:
+        """Execute full constraint verification and return overall success"""
+        results = self.verify_all()
+        return all(success for success, _ in results.values())
 
 
 # ==============================================================================
@@ -934,10 +1241,6 @@ def main():
 
 if __name__ == "__main__":
     exit(main())
-
-# ==============================================================================
-# XI. Constraint Verification System
-# ==============================================================================
 
 
 class ChristologicalVerifier:
