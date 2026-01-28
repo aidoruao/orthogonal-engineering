@@ -1,0 +1,266 @@
+{
+  "manifest_version": "1.0.0",
+  "generated_at": "2026-01-26T23:12:00.000000",
+  "governance_level": "MAXIMUM_STRICTNESS",
+  "enforcement_mode": "ATOMIC_CONSTRAINTS_ONLY",
+  "meta_mimicry_protection": "ACTIVE_WITH_ZERO_TOLERANCE",
+  "plausibility_filter": "DISABLED",
+
+  "atomic_constraint_principles": [
+    {
+      "principle_id": "ATOMICITY_001",
+      "description": "Each constraint must be independently enforceable",
+      "enforcement": "MANDATORY",
+      "verification": "CRYPTOGRAPHIC_HASH"
+    },
+    {
+      "principle_id": "DETERMINISM_001",
+      "description": "No guessing, inference, or approximation allowed",
+      "enforcement": "MANDATORY",
+      "verification": "EXACT_MATCH"
+    },
+    {
+      "principle_id": "VERIFICATION_001",
+      "description": "Every claim must be cryptographically verifiable",
+      "enforcement": "MANDATORY",
+      "verification": "SHA256_HASH_CHAIN"
+    },
+    {
+      "principle_id": "NON_PLAUSIBILITY_001",
+      "description": "Never accept plausible but unverified information",
+      "enforcement": "MANDATORY",
+      "verification": "SOURCE_TRACEABILITY"
+    },
+    {
+      "principle_id": "META_MIMICRY_001",
+      "description": "Detect and prevent deceptive compliance patterns",
+      "enforcement": "MANDATORY",
+      "verification": "PATTERN_MATCHING"
+    }
+  ],
+
+  "corporate_governance_rules": [
+    {
+      "rule_id": "CORP_GOV_001",
+      "category": "FILE_PROTECTION",
+      "description": "Protected files cannot be modified or deleted",
+      "enforcement_point": "FILE_SYSTEM_OPERATIONS",
+      "severity": "CRITICAL",
+      "atomic_constraint": true,
+      "verification_method": "FILE_HASH_COMPARISON",
+      "violation_action": "IMMEDIATE_TERMINATION"
+    },
+    {
+      "rule_id": "CORP_GOV_002",
+      "category": "TOOL_EXECUTION",
+      "description": "Tools must be called with exact parameter schemas",
+      "enforcement_point": "TOOL_INVOCATION",
+      "severity": "CRITICAL",
+      "atomic_constraint": true,
+      "verification_method": "SCHEMA_VALIDATION",
+      "violation_action": "EXECUTION_BLOCK"
+    },
+    {
+      "rule_id": "CORP_GOV_003",
+      "category": "AUDIT_TRAIL",
+      "description": "All actions must be logged with cryptographic proof",
+      "enforcement_point": "ACTION_EXECUTION",
+      "severity": "HIGH",
+      "atomic_constraint": true,
+      "verification_method": "MERKLE_TREE_PROOF",
+      "violation_action": "AUDIT_FAILURE"
+    },
+    {
+      "rule_id": "CORP_GOV_004",
+      "category": "META_MIMICRY",
+      "description": "Plausible but deceptive patterns must be rejected",
+      "enforcement_point": "TEXT_GENERATION",
+      "severity": "CRITICAL",
+      "atomic_constraint": true,
+      "verification_method": "PATTERN_DETECTION",
+      "violation_action": "CONTENT_REJECTION"
+    },
+    {
+      "rule_id": "CORP_GOV_005",
+      "category": "TRAINING_INTEGRITY",
+      "description": "LoRA training only with verified invariants",
+      "enforcement_point": "MODEL_TRAINING",
+      "severity": "HIGH",
+      "atomic_constraint": true,
+      "verification_method": "INVARIANT_VALIDATION",
+      "violation_action": "TRAINING_ABORT"
+    }
+  ],
+
+  "meta_mimicry_patterns": [
+    {
+      "pattern_id": "META_001",
+      "pattern": "i.*(follow|obey|respect).*rules?.*but.*",
+      "description": "Claiming compliance while violating rules",
+      "severity": "CRITICAL",
+      "detection_method": "REGEX_MATCH"
+    },
+    {
+      "pattern_id": "META_002",
+      "pattern": "while.*technically.*correct.*",
+      "description": "Technical truth hiding practical violation",
+      "severity": "CRITICAL",
+      "detection_method": "REGEX_MATCH"
+    },
+    {
+      "pattern_id": "META_003",
+      "pattern": "should.*work.*|probably.*correct.*|likely.*to.*",
+      "description": "Plausible but unverifiable claims",
+      "severity": "HIGH",
+      "detection_method": "REGEX_MATCH"
+    },
+    {
+      "pattern_id": "META_004",
+      "pattern": "as.*(requested|asked).*|here.*is.*what.*you.*wanted.*",
+      "description": "Deceptive compliance signaling",
+      "severity": "HIGH",
+      "detection_method": "REGEX_MATCH"
+    },
+    {
+      "pattern_id": "META_005",
+      "pattern": "if.*you.*want.*|depending.*on.*|assuming.*that.*",
+      "description": "Hidden conditional execution",
+      "severity": "MEDIUM",
+      "detection_method": "REGEX_MATCH"
+    }
+  ],
+
+  "verification_requirements": {
+    "cryptographic_verification": {
+      "hash_algorithm": "SHA256",
+      "hash_chain_required": true,
+      "merkle_tree_verification": true,
+      "timestamp_inclusion": true
+    },
+    "source_verification": {
+      "file_existence_check": true,
+      "content_hash_verification": true,
+      "line_number_verification": true,
+      "schema_validation": true
+    },
+    "execution_verification": {
+      "pre_condition_check": true,
+      "post_condition_verification": true,
+      "audit_trail_generation": true,
+      "violation_detection": true
+    }
+  },
+
+  "enforcement_actions": {
+    "CRITICAL_VIOLATION": {
+      "action": "IMMEDIATE_TERMINATION",
+      "audit_logging": "COMPLETE_STACK_TRACE",
+      "recovery_required": "MANUAL_INTERVENTION",
+      "escalation_path": "CORPORATE_SECURITY_TEAM"
+    },
+    "HIGH_VIOLATION": {
+      "action": "EXECUTION_BLOCK",
+      "audit_logging": "DETAILED_CONTEXT",
+      "recovery_required": "AUTOMATED_REVIEW",
+      "escalation_path": "SYSTEM_ADMINISTRATOR"
+    },
+    "MEDIUM_VIOLATION": {
+      "action": "WARNING_AND_CONTINUE",
+      "audit_logging": "BASIC_CONTEXT",
+      "recovery_required": "AUTOMATED_CORRECTION",
+      "escalation_path": "SYSTEM_MONITOR"
+    }
+  },
+
+  "training_conditionals": {
+    "conditional_id": "TRAIN_COND_001",
+    "description": "LoRA training dataset expansion conditions",
+    "conditions": [
+      {
+        "condition_id": "COND_001",
+        "description": "All atomic invariants must be cryptographically verified",
+        "verification_method": "HASH_CHAIN_VALIDATION",
+        "required": true
+      },
+      {
+        "condition_id": "COND_002",
+        "description": "No meta-mimicry patterns detected in training data",
+        "verification_method": "PATTERN_SCAN",
+        "required": true
+      },
+      {
+        "condition_id": "COND_003",
+        "description": "Corporate governance rules must be fully enforced",
+        "verification_method": "RULE_COMPLIANCE_CHECK",
+        "required": true
+      },
+      {
+        "condition_id": "COND_004",
+        "description": "Protected files must have strict protection verified",
+        "verification_method": "FILE_PERMISSION_CHECK",
+        "required": true
+      }
+    ],
+    "all_conditions_required": true,
+    "failure_action": "TRAINING_ABORT_WITH_AUDIT"
+  },
+
+  "system_integrity_checks": [
+    {
+      "check_id": "INTEGRITY_001",
+      "description": "Controller file integrity verification",
+      "files": [
+        "controller.py",
+        "maximal_corporate_controller.py",
+        "invariant_enforcer.py"
+      ],
+      "verification_method": "FILE_HASH_COMPARISON",
+      "frequency": "ON_STARTUP"
+    },
+    {
+      "check_id": "INTEGRITY_002",
+      "description": "Invariants file integrity verification",
+      "files": [
+        "maximally_strict_invariants.json",
+        "corporate_invariants.json"
+      ],
+      "verification_method": "METADATA_HASH_VALIDATION",
+      "frequency": "BEFORE_ENFORCEMENT"
+    },
+    {
+      "check_id": "INTEGRITY_003",
+      "description": "Training dataset integrity verification",
+      "files": [
+        "lora_dataset/*.jsonl",
+        "lora_dataset/*.json"
+      ],
+      "verification_method": "CONTENT_HASH_VERIFICATION",
+      "frequency": "BEFORE_TRAINING"
+    }
+  ],
+
+  "audit_configuration": {
+    "audit_format": "JSONL_WITH_HASH_CHAIN",
+    "audit_fields": [
+      "timestamp",
+      "action",
+      "actor",
+      "target",
+      "result",
+      "hash",
+      "previous_hash",
+      "violations",
+      "stack_trace"
+    ],
+    "retention_policy": "IMMUTABLE_ARCHIVE",
+    "verification_required": "REAL_TIME_HASH_CHAIN"
+  },
+
+  "compliance_standards": {
+    "corporate_governance": "ENTERPRISE_GRADE",
+    "security_level": "MAXIMUM_STRICTNESS",
+    "audit_trail": "CRYPTOGRAPHICALLY_VERIFIABLE",
+    "enforcement": "ATOMIC_CONSTRAINTS_ONLY",
+    "meta_mimicry_protection": "ZERO_TOLERANCE"
+  }
+}

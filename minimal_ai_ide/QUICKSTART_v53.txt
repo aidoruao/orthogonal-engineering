@@ -1,0 +1,107 @@
+# MAXIMAL ORACLE v53 - QUICK START GUIDE
+# ========================================
+
+## YOU ALREADY HAVE:
+✅ API key in environment (DEEPSEEK_API_KEY)
+✅ v53 controller file (maximal_oracle_v53.py)
+
+## 3-STEP LAUNCH:
+
+### STEP 1: Install dependencies
+```cmd
+pip install -r requirements_v53.txt
+```
+Or minimal install:
+```cmd
+pip install aiohttp prometheus-client z3-solver
+```
+
+### STEP 2: Test the system
+```cmd
+python test_v53.py
+```
+Should show: ✅ SYSTEM READY - All tests passed!
+
+### STEP 3: Run the controller
+```cmd
+python maximal_oracle_v53.py
+```
+
+## ALTERNATIVE LAUNCH METHODS:
+
+### Windows Batch:
+```cmd
+run_v53.bat
+```
+
+### PowerShell:
+```powershell
+powershell -ExecutionPolicy Bypass -File run_v53.ps1
+```
+
+## WHAT HAPPENS WHEN YOU RUN IT:
+
+1. ✅ Checks API key from your environment
+2. ✅ Starts Prometheus metrics on http://localhost:8000
+3. ✅ Launches TUI (Text User Interface) IDE
+4. ✅ Ready for AI-controlled development
+
+## TROUBLESHOOTING:
+
+### If "ModuleNotFoundError":
+```cmd
+pip install aiohttp z3-solver prometheus-client
+```
+
+### If "API key not found":
+```cmd
+set DEEPSEEK_API_KEY=your_key_here
+```
+(You said you already have this set)
+
+### If port 8000 is busy:
+```cmd
+set PROMETHEUS_PORT=8001
+python maximal_oracle_v53.py
+```
+
+## QUICK COMMANDS:
+
+```cmd
+# Test only
+python test_v53.py
+
+# Run with custom workspace
+set WORKSPACE_DIR=./my_project
+python maximal_oracle_v53.py
+
+# Run with debug logging
+set LOG_LEVEL=DEBUG
+python maximal_oracle_v53.py
+```
+
+## FILE STRUCTURE CREATED:
+```
+workspace/          # Your project files go here
+maximal_oracle.log  # System logs
+.env               # Configuration (copy from env_example.txt)
+```
+
+## NEED HELP?
+1. Check logs: `type maximal_oracle.log`
+2. View metrics: Open http://localhost:8000 in browser
+3. Run test: `python test_v53.py`
+
+## READY TO GO? RUN:
+```cmd
+python maximal_oracle_v53.py
+```
+
+# SUCCESS INDICATORS:
+- ✅ "Starting Maximal Oracle v53..." message
+- ✅ "Prometheus metrics: http://localhost:8000"
+- ✅ TUI interface appears
+- ✅ No error messages
+
+---
+Last updated: v53 | Ready for launch

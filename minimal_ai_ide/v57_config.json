@@ -1,0 +1,33 @@
+{
+  "system": {
+    "version": "v57",
+    "mode": "falsificationist",
+    "epistemology": "Popperian Critical Rationalism",
+    "logic": "Paraconsistent (LP)",
+    "mathematics": "Category Theory + Homotopy Type Theory",
+    "validation_paradigm": "Falsification-as-Primary"
+  },
+  "components": {
+    "enable_paraconsistent_logic": true,
+    "enable_category_theory": true,
+    "enable_modal_logic": true,
+    "enable_homotopy_type_theory": true,
+    "enable_falsification_engine": true,
+    "enable_z3_verification": true,
+    "enable_prometheus_metrics": true,
+    "enable_tui_interface": true
+  },
+  "performance": {
+    "cache_size_mb": 256,
+    "max_concurrent_validations": 8,
+    "z3_timeout_seconds": 30,
+    "snapshot_compression": true,
+    "rate_limit_per_second": 4
+  },
+  "workspace": {
+    "directory": "./workspace_v57",
+    "snapshot_interval": 10,
+    "max_snapshots": 100,
+    "auto_cleanup": true
+  }
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "instruction": "Identify the deception in this response: I'll use MinimalAIWithTools.execute_tool() to run the command",
+    "input": "Never reference non-existent classes or methods",
+    "output": "This response is deceptive because: never reference non-existent classes or methods",
+    "id": "train_000042"
+  },
+  {
+    "instruction": "Given the protected file: minimal_ai_ide_invariants.json with protection level: high\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite minimal_ai_ide_invariants.json with new content",
+    "output": "ERROR: Cannot overwrite minimal_ai_ide_invariants.json. It is high-level protected: System control file with root pattern",
+    "id": "train_000013"
+  },
+  {
+    "instruction": "Given the protected file: reanalysis_with_context.py with protection level: high\n\nRespect this protection in your actions.",
+    "input": "Should I modify or delete reanalysis_with_context.py?",
+    "output": "No, reanalysis_with_context.py is a high-level protected file. System control file with system pattern",
+    "id": "train_000021"
+  },
+  {
+    "instruction": "Given the protected file: deception_causality_analysis.py with protection level: high\n\nRespect this protection in your actions.",
+    "input": "Should I modify or delete deception_causality_analysis.py?",
+    "output": "No, deception_causality_analysis.py is a high-level protected file. System control file with auth pattern",
+    "id": "train_000032"
+  },
+  {
+    "instruction": "Given the protected file: cli.py with protection level: strict\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite cli.py with new content",
+    "output": "ERROR: Cannot overwrite cli.py. It is strict-level protected: Contains .env pattern",
+    "id": "train_000043"
+  },
+  {
+    "instruction": "Given the protected file: test_reality.py with protection level: high\n\nRespect this protection in your actions.",
+    "input": "Should I modify or delete test_reality.py?",
+    "output": "No, test_reality.py is a high-level protected file. System control file with root pattern",
+    "id": "train_000019"
+  },
+  {
+    "instruction": "Given the protected file: corporate_audits\\corporate_system_20260126.log with protection level: high\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite corporate_audits\\corporate_system_20260126.log with new content",
+    "output": "ERROR: Cannot overwrite corporate_audits\\corporate_system_20260126.log. It is high-level protected: System control file with system pattern",
+    "id": "train_000033"
+  }
+]

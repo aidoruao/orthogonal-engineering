@@ -1,0 +1,38 @@
+# MY ENVIRONMENT VARIABLES
+# Copy this file to .env and fill in your values
+# NEVER commit .env to version control!
+
+# DeepSeek API Configuration
+DEEPSEEK_API_KEY=your_actual_key_here
+DEEPSEEK_ENDPOINT=https://api.deepseek.com/v1/chat/completions
+
+# Security Configuration
+TOKEN_SECRET=generate-random-string-here
+
+# System Configuration
+WORKSPACE_DIR=./workspace
+RATE_LIMIT_PER_SEC=4
+MAX_RETRIES=5
+SNAPSHOT_INTERVAL=10
+
+# Prometheus Metrics
+PROMETHEUS_PORT=8000
+METRICS_ENABLED=true
+
+# TUI Configuration
+TUI_ENABLED=true
+TUI_THEME=dark
+
+# Validation Settings
+STRICT_VALIDATION=true
+ENABLE_CONTRACT_VERIFICATION=true
+ENABLE_INVARIANT_ENFORCEMENT=true
+
+# Logging
+LOG_LEVEL=INFO
+LOG_FILE=./maximal_oracle.log
+
+# V57 Specific Configuration
+V57_MODE=falsificationist
+V57_WORKSPACE=./workspace_v57
+V57_CONFIG=v57_config.json
