@@ -1,0 +1,43 @@
+# LoRA Dependencies - Governance Compliant
+# =========================================
+# Explicit version bounds for reproducible, bounded installations
+# All packages have minimum and maximum version constraints
+# No infinite version ranges permitted
+
+# Core PyTorch - Bounded versions
+torch>=1.13.0,<2.0.0
+
+# Transformers - Bounded versions
+transformers>=4.30.0,<5.0.0
+
+# PEFT (Parameter-Efficient Fine-Tuning) - Bounded versions
+peft>=0.4.0,<1.0.0
+
+# Accelerate - Bounded versions
+accelerate>=0.20.0,<1.0.0
+
+# SafeTensors - Bounded versions
+safetensors>=0.3.0,<1.0.0
+
+# Tokenization - Bounded versions
+sentencepiece>=0.1.0,<1.0.0
+tokenizers>=0.13.0,<1.0.0
+
+# Utilities - Bounded versions
+numpy>=1.21.0,<2.0.0
+tqdm>=4.64.0,<5.0.0
+
+# Optional - Diffusers (if needed for image models)
+# diffusers>=0.15.0,<1.0.0
+
+# Optional - xformers for attention optimization
+# xformers>=0.0.17,<1.0.0
+
+# Development dependencies (testing only)
+pytest>=7.0.0,<8.0.0
+pytest-timeout>=2.1.0,<3.0.0
+
+# Governance note: All versions explicitly bounded
+# No wildcard versions (*) permitted
+# Maximum version constraints prevent breaking changes
+# Minimum version constraints ensure required features
