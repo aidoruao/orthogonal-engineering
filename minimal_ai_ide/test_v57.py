@@ -30,18 +30,18 @@ def check_environment() -> bool:
     for var in required_vars:
         value = os.environ.get(var)
         if value:
-            print(f"✓ {var}: {value[:10]}... (hidden)")
+            print(f"[OK] {var}: {value[:10]}... (hidden)")
         else:
-            print(f"✗ {var}: NOT SET")
+            print(f"[FAIL] {var}: NOT SET")
             all_good = False
 
     # Check optional variables
     for var in optional_vars:
         value = os.environ.get(var)
         if value:
-            print(f"✓ {var}: {value[:20]}...")
+            print(f"[OK] {var}: {value[:20]}...")
         else:
-            print(f"⚠ {var}: Not set (optional)")
+            print(f"[WARN] {var}: Not set (optional)")
 
     return all_good
 
@@ -84,9 +84,9 @@ def check_python_modules() -> bool:
                 __import__(module)
                 module_name = module
 
-            print(f"  ✓ {module_name}")
+            print(f"  [OK] {module_name}")
         except ImportError as e:
-            print(f"  ✗ {module}: {e}")
+            print(f"  [FAIL] {module}: {e}")
             if module in ["aiohttp", "prometheus_client", "z3", "numpy"]:
                 all_good = False
 
@@ -94,9 +94,9 @@ def check_python_modules() -> bool:
     for module in advanced_modules:
         try:
             __import__(module)
-            print(f"  ✓ {module}")
+            print(f"  [OK] {module}")
         except ImportError as e:
-            print(f"  ⚠ {module}: {e} (optional)")
+            print(f"  [WARN] {module}: {e} (optional)")
 
     return all_good
 
@@ -117,17 +117,17 @@ def check_file_structure() -> bool:
     for file in required_files:
         if os.path.exists(file):
             size = os.path.getsize(file)
-            print(f"✓ {file} ({size} bytes)")
+            print(f"[OK] {file} ({size} bytes)")
         else:
-            print(f"✗ {file}: NOT FOUND")
+            print(f"[FAIL] {file}: NOT FOUND")
             all_good = False
 
     # Check workspace directory
     workspace_dir = "workspace_v57"
     if not os.path.exists(workspace_dir):
-        print(f"⚠ {workspace_dir}: Not found (will be created on first run)")
+        print(f"[WARN] {workspace_dir}: Not found (will be created on first run)")
     else:
-        print(f"✓ {workspace_dir}: Exists")
+        print(f"[OK] {workspace_dir}: Exists")
 
     return all_good
 
@@ -162,10 +162,10 @@ def test_import_v57() -> bool:
         found_count = 0
         for concept in required_concepts:
             if f"class {concept}" in content or f"enum {concept}" in content:
-                print(f"✓ Found: {concept}")
+                print(f"[OK] Found: {concept}")
                 found_count += 1
             else:
-                print(f"⚠ Not found: {concept}")
+                print(f"[WARN] Not found: {concept}")
 
         # Check for philosophical foundations
         philosophical_concepts = [
@@ -180,19 +180,19 @@ def test_import_v57() -> bool:
         print("\nPhilosophical Foundations:")
         for concept in philosophical_concepts:
             if concept in content:
-                print(f"  ✓ {concept}")
+                print(f"  [OK] {concept}")
             else:
-                print(f"  ⚠ {concept}")
+                print(f"  [WARN] {concept}")
 
         if found_count >= 5:
-            print(f"\n✓ Found {found_count}/9 core concepts")
+            print(f"\n[OK] Found {found_count}/9 core concepts")
             return True
         else:
-            print(f"\n⚠ Only found {found_count}/9 core concepts")
+            print(f"\n[WARN] Only found {found_count}/9 core concepts")
             return False
 
     except Exception as e:
-        print(f"✗ Import test failed: {e}")
+        print(f"[FAIL] Import test failed: {e}")
         return False
 
 
@@ -216,20 +216,20 @@ def test_numpy_functionality() -> bool:
         e = np.mean(a)
         f = np.std(b)
 
-        print(f"✓ Array addition: {a} + {b} = {c}")
-        print(f"✓ Dot product: {np.dot(a, b)}")
-        print(f"✓ Mean of a: {e}")
-        print(f"✓ Standard deviation of b: {f}")
+        print(f"[OK] Array addition: {a} + {b} = {c}")
+        print(f"[OK] Dot product: {np.dot(a, b)}")
+        print(f"[OK] Mean of a: {e}")
+        print(f"[OK] Standard deviation of b: {f}")
 
         # Test matrix operations
         matrix = np.array([[1, 2], [3, 4]])
         determinant = np.linalg.det(matrix)
-        print(f"✓ Matrix determinant: {determinant}")
+        print(f"[OK] Matrix determinant: {determinant}")
 
         return True
 
     except Exception as e:
-        print(f"✗ Numpy test failed: {e}")
+        print(f"[FAIL] Numpy test failed: {e}")
         return False
 
 
@@ -248,7 +248,7 @@ async def test_async_components() -> bool:
             return "Async test passed"
 
         result = await test_coroutine()
-        print(f"✓ {result}")
+        print(f"[OK] {result}")
 
         # Test aiohttp client session creation
         try:
@@ -260,12 +260,12 @@ async def test_async_components() -> bool:
 
             session_ok = await test_http_session()
             if session_ok:
-                print("✓ aiohttp session creation successful")
+                print("[OK] aiohttp session creation successful")
             else:
-                print("⚠ aiohttp session creation failed")
+                print("[WARN] aiohttp session creation failed")
 
         except ImportError:
-            print("⚠ aiohttp not available (required for API calls)")
+            print("[WARN] aiohttp not available (required for API calls)")
             return False
 
         # Test complex async patterns
@@ -278,14 +278,14 @@ async def test_async_components() -> bool:
 
         gather_ok = await gather_tasks()
         if gather_ok:
-            print("✓ Async gather pattern working")
+            print("[OK] Async gather pattern working")
         else:
-            print("⚠ Async gather pattern failed")
+            print("[WARN] Async gather pattern failed")
 
         return True
 
     except Exception as e:
-        print(f"✗ Async test failed: {e}")
+        print(f"[FAIL] Async test failed: {e}")
         return False
 
 
@@ -315,20 +315,20 @@ def test_z3_capabilities() -> bool:
 
         if result == sat:
             model = s.model()
-            print(f"✓ Z3 solver found solution:")
+            print(f"[OK] Z3 solver found solution:")
             print(f"  x = {model[x]}")
             print(f"  y = {model[y]}")
             print(f"  z = {model[z]}")
             return True
         else:
-            print(f"⚠ Z3 solver returned: {result}")
+            print(f"[WARN] Z3 solver returned: {result}")
             return False
 
     except ImportError as e:
-        print(f"✗ Z3 not available: {e}")
+        print(f"[FAIL] Z3 not available: {e}")
         return False
     except Exception as e:
-        print(f"✗ Z3 test failed: {e}")
+        print(f"[FAIL] Z3 test failed: {e}")
         return False
 
 
@@ -411,17 +411,15 @@ def main():
     total = len(tests)
 
     for name, result in tests:
-        status = "PASS" if result else "FAIL"
-        color = "\033[92m" if result else "\033[91m"
-        reset = "\033[0m"
-        print(f"{color}{status}{reset} - {name}")
+        status = "[PASS]" if result else "[FAIL]"
+        print(f"{status} - {name}")
         if result:
             passed += 1
 
     print(f"\nResults: {passed}/{total} tests passed")
 
     if passed == total:
-        print("\n✅ V57 SYSTEM READY - All tests passed!")
+        print("\n[OK] V57 SYSTEM READY - All tests passed!")
         print("\nV57 Features Available:")
         print("  • Paraconsistent Logic (True, False, Both, Neither)")
         print("  • Category Theory (Morphisms, Natural Transformations)")
@@ -436,7 +434,7 @@ def main():
         print("3. Explore the advanced features!")
 
     else:
-        print("\n⚠ V57 SYSTEM NOT READY - Some tests failed")
+        print("\n[WARN] V57 SYSTEM NOT READY - Some tests failed")
         print("\nTroubleshooting steps:")
         print("1. Install missing modules:")
         print("   pip install -r requirements_v57.txt")

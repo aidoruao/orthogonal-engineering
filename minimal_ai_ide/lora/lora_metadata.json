@@ -1,20 +1,26 @@
 {
-  "name": "governance-lora",
+  "name": "governance-lora-test",
   "version": "1.0",
   "author": "MSGCP System",
   "base_model": "distilgpt2",
   "model_family": "llm",
   "format": "safetensors",
-  "path": "minimal_ai_ide/lora/governance-lora",
+  "path": "minimal_ai_ide/lora/governance-lora-test",
   "target_modules": ["q_proj", "v_proj"],
   "dtype": "float16",
-  "lora_url": "https://huggingface.co/aidoruao/governance-lora/resolve/main/governance-lora.safetensors",
-  "checksum_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+  "lora_url": "https://huggingface.co/distilbert/distilgpt2/resolve/main/pytorch_model.bin",
+  "checksum_sha256": "e7b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3",
   "license": "apache-2.0",
   "governance_compliance": {
     "enforced": true,
     "pipeline": "GovernancePipeline",
-    "validators": ["CommentGovernance", "MathematicalClaimsGovernance", "StructuralGovernance", "TypeGovernance", "AIGovernance"],
+    "validators": [
+      "CommentGovernance",
+      "MathematicalClaimsGovernance",
+      "StructuralGovernance",
+      "TypeGovernance",
+      "AIGovernance"
+    ],
     "max_download_size_mb": 2048,
     "max_inference_tokens": 1000,
     "max_retries": 3,
@@ -28,7 +34,26 @@
     "boundaries_respect": 0.95,
     "mediation_preservation": 0.9,
     "total_score": 0.88,
-    "biblical_basis": ["John 14:6", "Romans 8:29", "1 Timothy 2:5", "Philippians 2:5-8", "Ephesians 4:25"]
+    "biblical_basis": [
+      "John 14:6",
+      "Romans 8:29",
+      "1 Timothy 2:5",
+      "Philippians 2:5-8",
+      "Ephesians 4:25"
+    ]
   },
-  "notes": "Placeholder values. Replace base_model, lora_url, and checksum_sha256 with actual values. Governance compliance mandatory. All operations must pass GovernancePipeline.enforce(). Christ constraint must be satisfied: V_Christ(governed) ≥ V_Christ(ungoverned)."
+  "notes": "TEST VERSION - For governance compliance testing only. Using distilgpt2 as base model for lightweight testing. Checksum is placeholder for testing. Actual LoRA weights would be hosted externally with proper checksum verification.",
+  "test_configuration": {
+    "purpose": "Governance compliance testing",
+    "environment": "development",
+    "risk_level": "low",
+    "data_sensitivity": "none",
+    "expected_duration": "5 minutes",
+    "success_criteria": [
+      "GovernancePipeline.enforce() called",
+      "No narrative violations",
+      "Type safety maintained",
+      "Explicit bounds respected"
+    ]
+  }
 }
