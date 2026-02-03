@@ -1,0 +1,35 @@
+{
+  "cryptographic_chain": {
+    "chain_hash": "b452418a6098481cf7a3b344f360519fd9cdf148f33fd8ffd4e656d21a66a97a",
+    "master_hash": "1b22932614db2f16ba0165198e33f5f7a6e9c6c79c0dfcf854cd3e0b1cab0282",
+    "hash_file_hash": "720bcfca1210ab65c1f9644bec5a9b115eb0fd5c45acdfee2e1abcf54f4182ce",
+    "total_files": 22497,
+    "timestamp": "2026-02-02T20:50:20.227098",
+    "root_directory": "C:\\Users\\Aidor\\Documents\\orthogonal-engineering-clean\\minimal_ai_ide"
+  },
+  "verification_instructions": {
+    "step_1": "Hash all files to recreate file_hashes.json",
+    "step_2": "Sort file paths alphabetically",
+    "step_3": "Concatenate: 'file_path:sha256_hash:file_size\\n' for each file",
+    "step_4": "SHA256 of concatenated string = master_hash",
+    "step_5": "SHA256 of file_hashes.json = hash_file_hash",
+    "step_6": "Concatenate: 'MASTER_HASH:{master_hash}\\nHASH_FILE_HASH:{hash_file_hash}\\nTOTAL_FILES:{total_files}\\nTIMESTAMP:{timestamp}'",
+    "step_7": "SHA256 of step_6 string = chain_hash (final verification)"
+  },
+  "sample_files": {
+    "first_5": {
+      "!OTHER_DIR!\\chat_ai.lua": "a84bdc04fe8859286f05ce6169c897ed5c2264bd0816c8b22ca583fac88da2f9",
+      ".gitignore": "2637d2764d4f800fdf7f979204c643241e516f90bdf15700f3d5af8b3bce8f22",
+      ".pytest_cache\\.gitignore": "e7c6bb30148cf667606dcd63e7ca77acaa3cfb0c8303bf09e6419e1e1669dc6d",
+      ".pytest_cache\\CACHEDIR.TAG": "37dc88ef9a0abeddbe81053a6dd8fdfb13afb613045ea1eb4a5c815a74a3bde4",
+      ".pytest_cache\\README.md": "420e808d79a6c25d3cda0af33bc4782314a14949866682c68ce8149e89b66b70"
+    },
+    "last_5": {
+      "Σ_LORA_COMPLETE_SYSTEM_REPORT.md": "240461e31d0047cb953b30613ad64540341fbcce06c612e83a8f434fa93d8c77",
+      "Σ_LORA_FINAL_COMMIT.py": "f3559eb6b7b62dfa10e241f38f7775d9967d2ca7bfbee9405c7ab3a61dc6a178",
+      "Σ_LORA_IMPLEMENTATION_SUMMARY.md": "ac3358e617afee80d77e5c0b2e9bf51bd8c44c9d5dea763c5102ba586c7575cb",
+      "Σ_LORA_MAXIMAL_MATHEMATICS.py": "c719d78a22ad6e61b4735ab0ed234a0bbe8b103cf50e19bf669668928c88964f",
+      "Σ_LORA_TURTLE_SYSTEM_COMPLETE.md": "dbd96e4701eb4d6239c4e9b63a1375c5640f7583415120a1f4789b9f61857483"
+    }
+  }
+}
