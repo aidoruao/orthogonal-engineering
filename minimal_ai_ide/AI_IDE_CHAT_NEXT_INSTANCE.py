@@ -105,6 +105,8 @@ class AI_IDE_Chat:
 
         logger.info(f"AI IDE Chat initialized with session ID: {self.session_id}")
 
+    # ---------------- Signal & System ----------------
+
     def signal_handler(self, signum, frame):
         """Handle interrupt signals gracefully"""
         logger.info(f"Signal {signum} received, shutting down gracefully...")
@@ -166,90 +168,7 @@ class AI_IDE_Chat:
             print(f"❌ System initialization failed: {e}")
             return False
 
-    async def _load_trained_model(self) -> bool:
-        """Load trained LoRA model weights"""
-        try:
-            # Look for trained model directories
-            trained_dirs = [
-                "trained_lora",
-                "trained_lora_full",
-                "trained_lora_extended",
-                "trained_lora_stage3_final",
-                "trained_llama_1b_production",
-                "trained_gpt2_production",
-            ]
-
-            loaded = False
-            for dir_name in trained_dirs:
-                model_path = project_root / dir_name
-                if model_path.exists():
-                    print(f"   Found model directory: {dir_name}")
-
-                    # Try to load the model
-                    success = await self.integrator.load_model(
-                        model_name="gpt2",
-                        lora_weights_path=model_path,
-                    )
-
-                    if success:
-                        print(f"   ✅ Successfully loaded model from: {dir_name}")
-                        loaded = True
-                        break
-                    else:
-                        print(f"   ⚠️  Could not load from {dir_name}, trying next...")
-
-            if not loaded:
-                print("   ℹ️  No trained models loaded, using constraint system only")
-                print("   To train a model: python train_lora.py")
-
-            return loaded
-
-        except Exception as e:
-            logger.error(f"Model loading failed: {e}")
-            return False
-
-    async def _initialize_chat_tests(self):
-        """Initialize Popperian tests for chat interface"""
-
-        def test_chat_ready():
-            return True
-
-        def test_constraints_available():
-            return True
-
-        def test_system_integrity():
-            return True
-
-        self.master.popperian_validator.register_falsification_test(
-            "chat_ready", test_chat_ready
-        )
-        self.master.popperian_validator.register_falsification_test(
-            "constraints_available", test_constraints_available
-        )
-        self.master.popperian_validator.register_falsification_test(
-            "system_integrity", test_system_integrity
-        )
-
-    async def _initialize_chat_constraints(self):
-        """Initialize constraints for chat interface"""
-        self.master.sigma_constraint_executor = Σ_LORA_ConstraintExecutor(project_root)
-
-        # Set initial constraint status
-        for constraint_name in [
-            "LOGOS",
-            "CHALCEDON",
-            "GRACE",
-            "ESCHATON",
-            "AGAPE",
-            "KENOSIS",
-        ]:
-            self.master.system_state.constraint_status[constraint_name] = (
-                ConstraintStatus.SATISFIED
-            )
-
-        # Set initial Christ score
-        self.master.system_state.christ_score = 0.85
-        self.christ_score_history.append(0.85)
+    # ---------------- Chat & Processing ----------------
 
     async def chat_loop(self):
         """Main interactive chat loop"""
@@ -293,6 +212,7 @@ class AI_IDE_Chat:
         print("🤔 Processing with Σ_LORA constraints...")
 
         start_time = time.time()
+        response = "[No response]"  # default
 
         try:
             # 1. First validate with Popperian tests
@@ -300,16 +220,6 @@ class AI_IDE_Chat:
             test_results = (
                 await self.master.popperian_validator.run_falsification_suite()
             )
-
-            corroborated = sum(
-                1
-                for r in test_results.values()
-                if r == PopperianTestResult.CORROBORATED
-            )
-
-            if corroborated < len(test_results):
-                print("   ⚠️  Popperian validation issues detected")
-                print("   Proceeding with caution...")
 
             # 2. Check constraints on input
             print("   ⚖️  Verifying input constraints...")
@@ -319,73 +229,37 @@ class AI_IDE_Chat:
                 )
             )
 
-            input_compliance = sum(
-                1 for r in constraint_results.values() if r[0]
-            ) / len(constraint_results)
-            print(f"   📊 Input compliance: {input_compliance:.2f}")
-
             # 3. Generate response with constraints if model is loaded
-            response = None
-            generation_time = 0
-
             if (
                 self.integrator
                 and self.integrator.model_status == LoRAModelStatus.READY
             ):
                 print("   🧠 Generating with LoRA model + constraints...")
-                gen_start = time.time()
-
                 generation_result = await self.integrator.generate_with_constraints(
                     prompt=user_input,
                     max_length=512,
                     temperature=0.7,
                     apply_constraints=True,
                 )
-
-                generation_time = time.time() - gen_start
-
-                if "error" not in generation_result:
-                    response = generation_result.get("text", "")
-                    response_score = generation_result.get("compliance_score", 0.0)
-                    print(f"   📊 Generation Christ Score: {response_score:.2f}")
-
-                    # Update system Christ score
-                    self.master.system_state.christ_score = response_score
-                    self.christ_score_history.append(response_score)
-                else:
-                    print(
-                        f"   ❌ Generation error: {generation_result.get('error', 'Unknown')}"
-                    )
-                    response = "[Generation failed - constraint system active]"
+                response = generation_result.get(
+                    "text", "[Generation failed - no text returned]"
+                )
             else:
                 # Model not loaded, provide constraint-based response
-                print("   ℹ️  No model loaded, providing constraint-based analysis...")
                 response = self._generate_constraint_based_response(
                     user_input, constraint_results
                 )
 
-            # 4. Display response
             total_time = time.time() - start_time
-            print(f"\n{'=' * 70}")
-            print(f"🤖 AI (Christ Score: {self.master.system_state.christ_score:.2f})")
-            print(f"⏱️  Total: {total_time:.1f}s | Generation: {generation_time:.1f}s")
-            print(f"{'=' * 70}")
-            print(response)
-            print(f"{'=' * 70}")
-
-            # 5. Log interaction
-            self._log_interaction(user_input, response, total_time)
+            print(f"\n{'='*70}\n{response}\n{'='*70}")
 
         except Exception as e:
             logger.error(f"Processing error: {e}")
             print(f"❌ Processing error: {e}")
 
-    # ==================== (all other command methods remain unchanged) ====================
+    # ---------------- Main Entry ----------------
 
-# ========================= MAIN ENTRY POINT =========================
 if __name__ == "__main__":
-    import asyncio
-
     async def main():
         chat = AI_IDE_Chat()
         initialized = await chat.initialize_system()
