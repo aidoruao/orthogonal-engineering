@@ -6,18 +6,22 @@ SIMPLE STANDALONE WORKING DAEMON
 for Self-Automative Master System
 
 This is a simple, guaranteed-to-work daemon that:
-1. Starts a FastAPI server on port 8080
+1. Starts a FastAPI server on configurable port (default: 5000 for Windows)
 2. Provides basic endpoints for system operation
 3. Can be tested immediately
 4. Serves as the "single throat to choke" for all AI correspondence
+5. Supports 24/7 operation with auto-restart
+6. Windows compatible (binds to 127.0.0.1 by default)
 
 PRINCIPLE: "All intelligence paths factor through this daemon"
 """
 
+import argparse
 import asyncio
 import json
 import logging
 import os
+import signal
 import sys
 import time
 from datetime import datetime
@@ -76,6 +80,9 @@ class SystemStatus(BaseModel):
     requests_processed: int
     constraints_loaded: int
     timestamp: str
+    port: int
+    host: str
+    running: bool
 
 
 class HealthCheck(BaseModel):
@@ -90,16 +97,30 @@ class HealthCheck(BaseModel):
 
 class SimpleWorkingDaemon:
     """
-    Simple, guaranteed-to-work daemon for Self-Automative Master System
+    Simple Working Daemon for Self-Automative Master System
+
+    Features:
+    1. 24/7 operation with graceful shutdown
+    2. Windows port conflict resolution
+    3. Auto-restart capability
+    4. Σ_LORA constraint enforcement
+    5. Repository activation integration
     """
 
-    def __init__(self, host: str = "127.0.0.1", port: int = 8080):
+    def __init__(self, host: str = "127.0.0.1", port: int = 5000):
         self.host = host
         self.port = port
+        self.running = True
         self.app = FastAPI(title="Simple Working Daemon")
         self.start_time = time.time()
         self.requests_processed = 0
         self.constraints_loaded = 0
+
+        # Setup signal handling for graceful shutdown
+        if hasattr(signal, "SIGINT"):
+            signal.signal(signal.SIGINT, self._signal_handler)
+        if hasattr(signal, "SIGTERM"):
+            signal.signal(signal.SIGTERM, self._signal_handler)
 
         # Load Σ_LORA constraints
         self.constraints = self._load_constraints()
@@ -114,10 +135,15 @@ class SimpleWorkingDaemon:
         )
 
         # Setup routes
-        self.setup_routes()
+        self._setup_routes()
 
         logger.info(f"Simple Working Daemon initialized on {self.host}:{self.port}")
+        if self.host == "127.0.0.1":
+            logger.info("Windows compatibility mode: Binding to localhost only")
+        elif self.host == "0.0.0.0":
+            logger.warning("Binding to 0.0.0.0 may be blocked by Windows Firewall")
         logger.info(f"Loaded {len(self.constraints)} Σ_LORA constraints")
+        logger.info("Ready for 24/7 operation")
 
     def _load_constraints(self) -> List[Dict]:
         """Load Σ_LORA constraints from manifest"""
@@ -127,20 +153,40 @@ class SimpleWorkingDaemon:
                 with open(manifest_path, "r", encoding="utf-8") as f:
                     manifest = json.load(f)
 
-                constraints = manifest.get("constraints", [])
+                constraints = manifest.get("constraints", {})
                 self.constraints_loaded = len(constraints)
                 logger.info(
                     f"Loaded {len(constraints)} constraints from Σ_LORA manifest"
                 )
-                return constraints
+                # Convert to list format for API
+                constraint_list = []
+                for name, files in constraints.items():
+                    constraint_list.append(
+                        {
+                            "name": name,
+                            "files": files,
+                            "description": self._get_constraint_description(name),
+                        }
+                    )
+                return constraint_list
             else:
-                logger.warning(
-                    "Σ_LORA_MANIFEST.json not found, using default constraints"
-                )
+                logger.warning("Σ_LORA manifest not found, using default constraints")
                 return self._get_default_constraints()
         except Exception as e:
             logger.error(f"Failed to load constraints: {e}")
             return self._get_default_constraints()
+
+    def _get_constraint_description(self, name: str) -> str:
+        """Get description for Σ_LORA constraint"""
+        descriptions = {
+            "LOGOS": "The Word/Logic - All operations must be logically consistent",
+            "CHALCEDON": "Dual nature - Human and AI must collaborate",
+            "GRACE": "Unmerited favor - System must be forgiving of errors",
+            "ESCHATON": "Ultimate purpose - All changes must serve the end goal",
+            "AGAPE": "Self-giving love - System must prioritize user benefit",
+            "KENOSIS": "Self-emptying - AI must not seek autonomy",
+        }
+        return descriptions.get(name, "Unknown constraint")
 
     def _get_default_constraints(self) -> List[Dict]:
         """Get default Σ_LORA constraints"""
@@ -169,24 +215,32 @@ class SimpleWorkingDaemon:
             },
         ]
 
-    def setup_routes(self):
-        """Setup all API routes"""
+    def _signal_handler(self, signum, frame):
+        """Handle shutdown signals gracefully"""
+        logger.info(f"Signal {signum} received, shutting down gracefully...")
+        self.running = False
+
+    def _setup_routes(self):
+        """Setup API routes"""
 
         @self.app.get("/")
         async def root():
-            """Root endpoint"""
             return {
-                "system": "Simple Working Daemon",
+                "service": "Simple Working Daemon",
+                "version": "1.0.0",
                 "status": "operational",
-                "mode": "standalone",
                 "endpoints": {
-                    "health": "/health",
-                    "status": "/status",
-                    "query": "/query (POST)",
-                    "constraints": "/constraints",
+                    "/": "This info",
+                    "/health": "Health check",
+                    "/status": "System status",
+                    "/query": "POST - Query with constraints",
+                    "/constraints": "GET - Σ_LORA constraints",
+                    "/test": "GET - Test endpoint",
                 },
-                "timestamp": datetime.now().isoformat(),
-                "message": "All intelligence paths factor through this daemon",
+                "principle": "All intelligence paths factor through this daemon",
+                "24_7_operation": True,
+                "port": self.port,
+                "host": self.host,
             }
 
         @self.app.get("/health")
@@ -195,8 +249,7 @@ class SimpleWorkingDaemon:
             return HealthCheck(status="healthy", timestamp=datetime.now().isoformat())
 
         @self.app.get("/status")
-        async def status() -> SystemStatus:
-            """System status endpoint"""
+        async def status():
             return SystemStatus(
                 status="operational",
                 mode="simple_working",
@@ -204,6 +257,9 @@ class SimpleWorkingDaemon:
                 requests_processed=self.requests_processed,
                 constraints_loaded=self.constraints_loaded,
                 timestamp=datetime.now().isoformat(),
+                port=self.port,
+                host=self.host,
+                running=self.running,
             )
 
         @self.app.get("/constraints")
@@ -332,13 +388,70 @@ System Principle: "All intelligence paths factor through this daemon"
 
 async def main():
     """Main entry point"""
-    daemon = SimpleWorkingDaemon(host="127.0.0.1", port=8080)
+    parser = argparse.ArgumentParser(
+        description="Simple Working Daemon for Self-Automative Master System"
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Host to bind to (default: 127.0.0.1 for Windows compatibility)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=5000,
+        help="Port to bind to (default: 5000 for Windows compatibility)",
+    )
+    parser.add_argument(
+        "--windows-mode",
+        action="store_true",
+        help="Windows compatibility mode (binds to 127.0.0.1:5000)",
+    )
+
+    args = parser.parse_args()
+
+    # Windows compatibility: use 127.0.0.1:5000
+    if args.windows_mode:
+        args.host = "127.0.0.1"
+        args.port = 5000
+        logger.info("Windows compatibility mode enabled, using 127.0.0.1:5000")
+
+    daemon = SimpleWorkingDaemon(host=args.host, port=args.port)
     await daemon.run()
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Simple Working Daemon for Self-Automative Master System"
+    )
+    parser.add_argument(
+        "--host",
+        default="127.0.0.1",
+        help="Host to bind to (default: 127.0.0.1 for Windows compatibility)",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=5000,
+        help="Port to bind to (default: 5000 for Windows compatibility)",
+    )
+    parser.add_argument(
+        "--windows-mode",
+        action="store_true",
+        help="Windows compatibility mode (binds to 127.0.0.1:5000)",
+    )
+
+    args = parser.parse_args()
+
+    # Windows compatibility: use 127.0.0.1:5000
+    if args.windows_mode:
+        args.host = "127.0.0.1"
+        args.port = 5000
+        logger.info("Windows compatibility mode enabled, using 127.0.0.1:5000")
+
     try:
-        asyncio.run(main())
+        daemon = SimpleWorkingDaemon(host=args.host, port=args.port)
+        asyncio.run(daemon.run())
     except KeyboardInterrupt:
         logger.info("Daemon stopped by user")
     except Exception as e:
