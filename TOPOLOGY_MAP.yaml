@@ -1,0 +1,263 @@
+# ORTHOGONAL-ENGINEERING-CLEAN TOPOLOGY MAP
+# Node classification for navigation
+# Authority: FORENSIC ANALYSIS
+# Generated: 2026-02-07
+
+topology_mapping:
+  covenant_root_nodes:
+    - path: covenant.yaml
+      class: COVENANT_ROOT
+      authority: EXTERNAL_ONLY
+      constraint_layer: COMPOSITE
+      verification: HASH_CHAIN
+      temporal: GENESIS
+    
+    - path: INVARIANTS.json
+      class: COVENANT_ROOT
+      authority: EXTERNAL_ONLY
+      constraint_layer: COMPOSITE
+      verification: HASH_CHAIN
+      temporal: GENESIS
+    
+    - path: AI_INSTRUCTIONS.md
+      class: COVENANT_ROOT
+      authority: EXTERNAL_ONLY
+      constraint_layer: COMPOSITE
+      verification: HASH_CHAIN
+      temporal: GENESIS
+  
+  principle_modules:
+    - path: src/principles.py
+      class: PRINCIPLE_MODULE
+      authority: VALIDATED
+      constraint_layer: SINGLE
+      principle_id: MULTIPLE
+      verification: CORRESPONDENCE
+      temporal: FOUNDATION
+  
+  operational_mode_enforcers:
+    - path: src/operational_modes.py
+      class: OPERATIONAL_MODE_ENFORCER
+      authority: VALIDATED
+      mode_binding: SELF
+      temporal: FOUNDATION
+  
+  guardian_systems:
+    - path: JESUS_REALITY_GUARDIAN.py
+      class: GUARDIAN_SYSTEM
+      constraint_layer: COMPOSITE
+      verification: FALSIFIABLE
+      temporal: SUBSTRATE
+      detection_only: true
+    
+    - path: .jesus_reality_guardian_state.json
+      class: GUARDIAN_SYSTEM
+      state_file: true
+    
+    - path: .simple_guardian_state.json
+      class: GUARDIAN_SYSTEM
+      state_file: true
+  
+  correspondence_bridges:
+    - path: correspondence_bridge/
+      class: CORRESPONDENCE_BRIDGE
+      verification: CORRESPONDENCE
+      temporal: SUBSTRATE
+      bidirectional: true
+    
+    - path: correspondence_validator.py
+      class: CORRESPONDENCE_BRIDGE
+      verification: CORRESPONDENCE
+    
+    - path: complete_correspondence.py
+      class: CORRESPONDENCE_BRIDGE
+      verification: CORRESPONDENCE
+  
+  forgiveness_modules:
+    - path: forgiveness_system/
+      class: FORGIVENESS_MODULE
+      constraint_layer: GRACE
+      temporal: OVERLAY
+      coercion_forbidden: true
+    
+    - path: fix_forgiveness_system.py
+      class: FORGIVENESS_MODULE
+      constraint_layer: GRACE
+    
+    - path: affective_constraint_system.py
+      class: FORGIVENESS_MODULE
+      constraint_layer: GRACE
+  
+  violation_logs:
+    - path: .ontological_violations/
+      class: VIOLATION_LOG
+      authority: IMMUTABLE
+      verification: HASH_CHAIN
+      temporal: EPHEMERAL
+      append_only: true
+    
+    - path: .jesus_reality_violations/
+      class: VIOLATION_LOG
+      authority: IMMUTABLE
+      verification: HASH_CHAIN
+      temporal: EPHEMERAL
+      append_only: true
+    
+    - path: .final_guardian_violations/
+      class: VIOLATION_LOG
+      authority: IMMUTABLE
+      verification: HASH_CHAIN
+      temporal: EPHEMERAL
+      append_only: true
+  
+  evidence_artifacts:
+    - path: evidence/
+      class: EVIDENCE_ARTIFACT
+      verification: HASH_CHAIN
+      temporal: EPHEMERAL
+      self_describing: true
+    
+    - path: canonical_evidence/
+      class: EVIDENCE_ARTIFACT
+      verification: HASH_CHAIN
+      temporal: EPHEMERAL
+    
+    - path: audit_results/
+      class: EVIDENCE_ARTIFACT
+      verification: HASH_CHAIN
+      temporal: EPHEMERAL
+    
+    - path: sha256_verification_manifest.json
+      class: EVIDENCE_ARTIFACT
+      verification: HASH_CHAIN
+  
+  infrastructure_registries:
+    - path: src/infrastructure.py
+      class: INFRASTRUCTURE_REGISTRY
+      constraint_layer: KENOSIS
+      temporal: FOUNDATION
+      resource_count_fixed: false
+  
+  documentation_indices:
+    - path: README.md
+      class: DOCUMENTATION_INDEX
+      temporal: OVERLAY
+      references_only: true
+    
+    - path: _START_HERE.md
+      class: DOCUMENTATION_INDEX
+      temporal: OVERLAY
+      references_only: true
+    
+    - path: ONBOARD_FIRST.md
+      class: DOCUMENTATION_INDEX
+      temporal: OVERLAY
+      references_only: true
+    
+    - path: QUICK_REFERENCE.md
+      class: DOCUMENTATION_INDEX
+      temporal: OVERLAY
+      references_only: true
+
+edge_mappings:
+  covenant_bindings:
+    - source: covenant.yaml
+      target: src/principles.py
+      edge_class: COVENANT_BINDING
+      axis: AUTHORITY, CONSTRAINT_LAYER
+    
+    - source: INVARIANTS.json
+      target: JESUS_REALITY_GUARDIAN.py
+      edge_class: COVENANT_BINDING
+      axis: AUTHORITY, CONSTRAINT_LAYER
+  
+  guardian_watches:
+    - source: JESUS_REALITY_GUARDIAN.py
+      targets:
+        - all_principle_modules
+        - all_operational_mode_enforcers
+        - all_correspondence_bridges
+      edge_class: GUARDIAN_WATCH
+      axis: CONSTRAINT_LAYER
+  
+  correspondence_mappings:
+    - source: correspondence_bridge/
+      target: INVARIANTS.json
+      edge_class: CORRESPONDENCE_MAPPING
+      bidirectional: true
+      axis: VERIFICATION_REQUIREMENT
+  
+  violation_references:
+    - sources:
+        - any_violating_node
+      targets:
+        - .ontological_violations/
+        - .jesus_reality_violations/
+        - .final_guardian_violations/
+      edge_class: VIOLATION_REFERENCE
+      axis: TEMPORAL_ORDERING
+
+navigation_zones:
+  zone_1_immutable_authority:
+    nodes:
+      - INVARIANTS.json
+      - AI_INSTRUCTIONS.md
+      - JESUS_REALITY_GUARDIAN.py
+    change_policy: EXTERNAL_AUTHORITY_ONLY
+  
+  zone_2_detection_enforcement:
+    nodes:
+      - .ontological_violations/
+      - .jesus_reality_violations/
+      - .final_guardian_violations/
+      - input_guard.py
+      - output_validator.py
+      - gaslighting_detector.py
+      - canal_detector.py
+    change_policy: TIGHTEN_ONLY
+  
+  zone_3_correspondence_bridge:
+    nodes:
+      - correspondence_bridge/
+      - correspondence_validator.py
+      - complete_correspondence.py
+    change_policy: PRESERVE_BIJECTION
+  
+  zone_4_forgiveness_grace:
+    nodes:
+      - forgiveness_system/
+      - fix_forgiveness_system.py
+      - affective_constraint_system.py
+    change_policy: NO_COERCION_INTRODUCTION
+  
+  zone_5_analysis_reporting:
+    nodes:
+      - analysis/
+      - baseline_analysis/
+      - evidence/
+      - canonical_evidence/
+    change_policy: ADDITIVE_ONLY
+  
+  zone_6_deployment_orchestration:
+    nodes:
+      - orchestration/
+      - workflows/
+      - automation/
+      - scripts/
+    change_policy: HONOR_UPSTREAM_CONSTRAINTS
+  
+  zone_7_documentation:
+    nodes:
+      - documentation/
+      - _START_HERE.md
+      - ONBOARD_FIRST.md
+      - QUICK_REFERENCE.md
+    change_policy: REFLECT_ACTUAL_STATE
+
+metadata:
+  repo: orthogonal-engineering-clean
+  analysis_mode: FORENSIC
+  generated: 2026-02-07
+  node_count_estimated: 3000-5000
+  classified_nodes: 50+
+  unclassified_nodes: pending_deep_scan
