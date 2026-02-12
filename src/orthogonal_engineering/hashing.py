@@ -17,3 +17,9 @@ def hash_records(records):
         digest = hashlib.sha256(serialized).hexdigest()
         hashed.append({"hash": digest, "record": d})
     return hashed
+
+
+def hash_record(record):
+    """Curated API entry point — hash a single record."""
+    result = hash_records([record])
+    return result[0] if result else None

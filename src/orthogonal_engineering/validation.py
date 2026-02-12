@@ -12,3 +12,9 @@ def validate_records(records):
         except ValidationError:
             continue
     return validated
+
+
+def validate_record(record):
+    """Curated API entry point — validate a single record."""
+    result = validate_records([record])
+    return result[0] if result else None

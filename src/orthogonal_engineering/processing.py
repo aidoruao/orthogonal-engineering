@@ -13,3 +13,8 @@ def process_files(data_path: Path):
                 else:
                     records.append(json.load(f))
     return records
+
+
+def process_directory(data_path):
+    """Curated API alias for process_files."""
+    return process_files(Path(data_path))
