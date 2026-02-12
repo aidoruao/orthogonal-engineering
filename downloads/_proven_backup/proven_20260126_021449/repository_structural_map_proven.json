@@ -1,0 +1,52 @@
+{
+  "generated_by": "controller_proven.py",
+  "timestamp": "2026-01-26T02:14:39.454793+00:00Z",
+  "verification_level": "mathematical_proof_required",
+  "dependencies": [
+    "downloads/test_mathematically_proven.py",
+    "automation/run_full_audit_with_trace.py",
+    "automation/run_autofix_integration.py"
+  ],
+  "proof_registry": {
+    "downloads/test_mathematically_proven.py": "PROOF-TEST-001",
+    "automation/run_full_audit_with_trace.py": "PROOF-AUDIT-001",
+    "automation/run_autofix_integration.py": "PROOF-AUTOFIX-001"
+  },
+  "core_invariants": [
+    {
+      "id": "INV-001",
+      "name": "Atomic Execution",
+      "formal_definition": "Every investigation step must be necessary, irreducible, logged, and falsifiable",
+      "proof_reference": "FORMAL_FOUNDATIONS.md#atomic-execution"
+    },
+    {
+      "id": "INV-002",
+      "name": "No Narrative Drift",
+      "formal_definition": "No interpretive compression, summarization, or metaphor substitution",
+      "proof_reference": "FORMAL_FOUNDATIONS.md#no-narrative-drift"
+    },
+    {
+      "id": "INV-003",
+      "name": "Complete Transparency",
+      "formal_definition": "All intermediate states, failed runs, partial parses preserved",
+      "proof_reference": "FORMAL_FOUNDATIONS.md#complete-transparency"
+    },
+    {
+      "id": "INV-004",
+      "name": "Glass-Box Boundary Enforcement",
+      "formal_definition": "All code must be inspectable, traceable, and boundary-compliant",
+      "proof_reference": "GLASS_BOX_BOUNDARY_v1.11.html"
+    }
+  ],
+  "execution_summary": {
+    "total_scripts": 3,
+    "proven_executed": 2,
+    "failed_unproven": 1,
+    "results": {
+      "downloads/test_mathematically_proven.py": true,
+      "automation/run_full_audit_with_trace.py": false,
+      "automation/run_autofix_integration.py": true
+    },
+    "mathematical_standard": "100% proof verification required"
+  }
+}

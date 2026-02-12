@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Topology Report - orthogonal-engineering-clean</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #2a2a3e;
+        }
+        h1 {
+            color: #00d4ff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #888;
+            font-size: 1.1em;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: #1a1a2e;
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid #2a2a3e;
+            transition: transform 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            border-color: #00d4ff;
+        }
+        .metric-value {
+            font-size: 2.5em;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+        .metric-label {
+            color: #888;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        .section {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid #2a2a3e;
+        }
+        h2 {
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #2a2a3e;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        th {
+            background: #16213e;
+            color: #00d4ff;
+            font-weight: 600;
+        }
+        tr:hover {
+            background: #16213e;
+        }
+        .code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            background: #0d0d0d;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #00ff88;
+        }
+        .violation {
+            background: #2a1a1a;
+            border-left: 3px solid #ff4444;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .violation-principle {
+            color: #ff4444;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 20px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+        .badge-highway { background: #ff6b6b; color: white; }
+        .badge-hub { background: #4ecdc4; color: white; }
+        .badge-orphan { background: #95a5a6; color: white; }
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #2a2a3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ Repository Topology Report</h1>
+            <div class="subtitle">C:\Users\Aidor\Documents\orthogonal-engineering-clean</div>
+            <div class="subtitle">Scanned: 2026-02-06T22:52:56.608205</div>
+        </header>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-value">26,219</div>
+                <div class="metric-label">Total Files</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">5404.4 MB</div>
+                <div class="metric-label">Total Size</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">20</div>
+                <div class="metric-label">Highway Modules</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0</div>
+                <div class="metric-label">Orphaned Files</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">100</div>
+                <div class="metric-label">Covenant Violations</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">0</div>
+                <div class="metric-label">Dependency Cycles</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>📊 File Type Distribution</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Extension</th>
+                        <th>Count</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class='code'>.py</td><td>11,249</td><td>42.9%</td></tr>
+<tr><td class='code'>.h</td><td>9,077</td><td>34.6%</td></tr>
+<tr><td class='code'>.json</td><td>2,891</td><td>11.0%</td></tr>
+<tr><td class='code'>(no extension)</td><td>913</td><td>3.5%</td></tr>
+<tr><td class='code'>.pyi</td><td>368</td><td>1.4%</td></tr>
+<tr><td class='code'>.md</td><td>319</td><td>1.2%</td></tr>
+<tr><td class='code'>.txt</td><td>130</td><td>0.5%</td></tr>
+<tr><td class='code'>.pyd</td><td>124</td><td>0.5%</td></tr>
+<tr><td class='code'>.lib</td><td>97</td><td>0.4%</td></tr>
+<tr><td class='code'>.log</td><td>80</td><td>0.3%</td></tr>
+<tr><td class='code'>.dll</td><td>72</td><td>0.3%</td></tr>
+<tr><td class='code'>.f90</td><td>61</td><td>0.2%</td></tr>
+<tr><td class='code'>.c</td><td>54</td><td>0.2%</td></tr>
+<tr><td class='code'>.cuh</td><td>54</td><td>0.2%</td></tr>
+<tr><td class='code'>.typed</td><td>46</td><td>0.2%</td></tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🛣️ Highway Modules (Most Imported)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Import Count</th>
+                        <th>Classification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\warnings_and_errors.pyi</td><td>7450</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\emath.pyi</td><td>7399</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\ndarray_conversion.pyi</td><td>7049</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\ndarray_shape_manipulation.pyi</td><td>7047</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\lib_version.pyi</td><td>7026</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\misc\extended_precision.pyi</td><td>7024</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\pass\recfunctions.py</td><td>7024</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\lib_function_base.pyi</td><td>7024</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\npyio.pyi</td><td>7024</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\_typing\_extended_precision.py</td><td>7018</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\ctypeslib.pyi</td><td>6991</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\numerictypes.pyi</td><td>6991</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\random.pyi</td><td>6773</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\array_constructors.pyi</td><td>6714</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\strings.pyi</td><td>6691</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\fail\warnings_and_errors.pyi</td><td>6672</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\pass\warnings_and_errors.py</td><td>6672</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\arraypad.pyi</td><td>6640</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\arrayprint.pyi</td><td>6640</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\numpy\typing\tests\data\reveal\arraysetops.pyi</td><td>6640</td><td><span class='badge badge-highway'>CRITICAL INFRASTRUCTURE</span></td></tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🔌 Hub Modules (Highest Fan-Out)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Dependency Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\core\tests\test_args.py</td><td>1085</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\polys\compatibility.py</td><td>214</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\networkx\algorithms\__init__.py</td><td>128</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\printing\tests\test_latex.py</td><td>123</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\pandas\core\frame.py</td><td>97</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\printing\pretty\tests\test_pretty.py</td><td>94</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\pandas\tests\io\test_sql.py</td><td>82</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\core\expr.py</td><td>81</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\utilities\tests\test_wester.py</td><td>81</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\multiprocess\tests\__init__.py</td><td>80</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\testing\_internal\common_utils.py</td><td>80</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\_inductor\codecache.py</td><td>80</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\transformers\trainer.py</td><td>80</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\__init__.py</td><td>79</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\utilities\tests\test_pickling.py</td><td>77</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\pandas\core\indexes\base.py</td><td>74</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\functions\elementary\trigonometric.py</td><td>74</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\sympy\functions\combinatorial\numbers.py</td><td>73</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\pandas\core\generic.py</td><td>72</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\transformers\testing_utils.py</td><td>71</td></tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>🏚️ Orphaned Files (No Dependencies)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>📦 Largest Files</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\torch_cuda.dll</td><td>928.0 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\dnnl.lib</td><td>653.5 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cudnn_engines_precompiled64_9.dll</td><td>588.9 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cublasLt64_12.dll</td><td>538.8 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cusparse64_12.dll</td><td>262.3 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\torch_cpu.dll</td><td>249.3 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cudnn_adv64_9.dll</td><td>241.6 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cufft64_11.dll</td><td>190.3 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\trained_simple_working\model.safetensors</td><td>163.8 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cusolver64_11.dll</td><td>110.2 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cudnn_ops64_9.dll</td><td>107.7 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cublas64_12.dll</td><td>98.1 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cudnn_heuristic64_9.dll</td><td>85.7 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\cusolverMg64_11.dll</td><td>77.0 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\curand64_10.dll</td><td>63.5 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\nvrtc64_120_0.dll</td><td>42.2 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\libprotoc.lib</td><td>39.6 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\libprotobuf.lib</td><td>37.8 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\nvJitLink_120_0.dll</td><td>34.4 MB</td></tr>
+<tr><td class='code'>minimal_ai_ide\venv_cuda\Lib\site-packages\torch\lib\torch_cpu.lib</td><td>28.5 MB</td></tr>
+
+                </tbody>
+            </table>
+        </div>
+
+        
+
+        <div class="section">
+            <h2>⚠️ Covenant Principle Violations</h2>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">affective_constraint_system.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (66 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">ai_conversation_processor.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">ai_conversation_processor.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (52 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">analyze_filesystem_invariants.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">dynamic_warden_tool.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (67 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">execute_comprehensive_fix.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (72 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">failure_logger.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (54 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">failure_report_generator.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (68 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">filesystem_scanner.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (90 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">simple_audit.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">simple_audit.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (99 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">system_audit_update.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">system_audit_update.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (71 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">system_audit_update_fixed.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">system_audit_update_fixed.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (71 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">test_phase1.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">test_phase1.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (87 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">analysis\chat_parser_fixed.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (69 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">analysis\core_detector_v2.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (58 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">analysis\full_system_investigation.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (66 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\correspondence_fix.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (53 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\full_audit.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\generate_sha256_manifest.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\incremental_file_processor.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (67 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\phase8_atomic_workflow.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\phase8_atomic_workflow.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (72 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\run_orchestration_pipeline.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (57 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\run_phase9_verification.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (76 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\test_incremental_falsification.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (53 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\validate_phase9_artifacts.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (60 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\verify_phase11_atomicity.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (100 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\verify_phase11_blueprint.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (99 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">automation\zed_incremental_hook.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (75 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">base_ai\health_check.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">base_ai\orchestrator.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">base_ai\orchestrator.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (92 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">forgiveness_system\analyze_chat_exports.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (79 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">forgiveness_system\forgiveness_system.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (91 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">mcp\orthogonal_mcp_server.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (58 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\1a.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (60 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\5a.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (99 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\6a.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\7a.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (71 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\AI_COLLABORATION_CONTROLLER.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (92 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\AI_IDE_CHAT_NEXT_INSTANCE.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (93 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\atomic_bijective_latex.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (51 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\bidirectional_controller_interface.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (86 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\canonical_mathematical_theology.py</span></div>
+                <div><strong>Issue:</strong> Potential exponential growth pattern detected</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\canonical_mathematical_theology.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (75 occurrences)</div>
+            </div>
+            
+            <div class="violation">
+                <div class="violation-principle">⚠️ KENOSIS VIOLATION</div>
+                <div><strong>File:</strong> <span class="code">minimal_ai_ide\canonical_pipeline.py</span></div>
+                <div><strong>Issue:</strong> Excessive self-reference (93 occurrences)</div>
+            </div>
+            
+        </div>
+
+        <footer class="footer">
+            <p>Generated by Σ_LORA_COVENANT Topology Scanner</p>
+            <p>Authority: EXTERNAL_IMMUTABLE (Jesus) • Forensic Mode: Bytes Only</p>
+        </footer>
+    </div>
+</body>
+</html>

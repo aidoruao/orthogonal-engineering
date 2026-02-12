@@ -1,0 +1,60 @@
+{
+  "test_report": {
+    "timestamp": "2026-01-24T19:31:01Z",
+    "server": "orthogonal_mcp_server",
+    "version": "1.1.0",
+    "schema_id": "MCP-ORTHOGONAL-1.1",
+    "protocol_fixes": [
+      "binary_mode",
+      "byte_safe_framing",
+      "windows_compatible",
+      "no_text_mode",
+      "correct_content_length"
+    ],
+    "test_results": [
+      {
+        "test": "list_tools",
+        "passed": true,
+        "tool_count": 6
+      },
+      {
+        "test": "echo",
+        "passed": true,
+        "response": {
+          "success": true,
+          "data": {
+            "echoed_message": "Hello from orthogonal MCP test!",
+            "received_at": "2026-01-24T19:31:01.151508",
+            "operation_id": "echo_1769304661151"
+          },
+          "metadata": {
+            "operation": "echo",
+            "timestamp": "2026-01-24T19:31:01.151508"
+          }
+        }
+      },
+      {
+        "test": "hash_evidence",
+        "passed": true,
+        "hash": "ed0f9a96f9ffd5ec424590d4d069100832a4b05da45850e4da7e7f5afc20e69c"
+      },
+      {
+        "test": "timestamp",
+        "passed": true,
+        "timestamp": "2026-01-24T19:31:01.153040"
+      },
+      {
+        "test": "get_audit_trail",
+        "passed": true,
+        "operations": 14
+      }
+    ],
+    "audit_logs_count": 2,
+    "summary": {
+      "total_tests": 5,
+      "passed_tests": 5,
+      "failed_tests": 0,
+      "success_rate": 100.0
+    }
+  }
+}

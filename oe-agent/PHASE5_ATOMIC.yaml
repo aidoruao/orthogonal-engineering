@@ -1,0 +1,406 @@
+# OE-AGENT PHASE 5 ATOMIC COMPLETION SPECIFICATION
+# Atomic Zed IDE Integration Blueprint
+# Schema ID: OE-PHASE5-ZED-IDE-ATOMIC-1.0
+# Status: CANONICAL / FREEZE-CANDIDATE
+# Generated: 2026-01-25
+# Authority: Orthogonal Engineering Framework
+
+version: "1.0.0"
+schema_id: "OE-PHASE5-ZED-IDE-ATOMIC-1.0"
+status: "canonical"
+freeze_candidate: true
+audience: ["Zed IDE Operator AI", "MCP Server Integrators"]
+dependency: "OE-PHASE4-MCP-ATOMIC-1.0"
+goal: "Complete Zed IDE atomic integration with full operational and audit guarantees"
+
+# ============================================================================
+# 0. DEFINITIONS (NORMATIVE)
+# ============================================================================
+
+definitions:
+  atomic_ide_session:
+    description: "A continuous workspace context bound to a single operator instance"
+    requirements:
+      - "fully_transactional"
+      - "persist_operator_identity"
+      - "track_all_cross_boundary_interactions"
+      - "bound_to_unique_session_id"
+      - "maintain_audit_metadata"
+
+  operator_quarantine:
+    description: "Forced isolation of an operator instance for violating atomicity or policy rules"
+    triggers:
+      - "non_transactional_mcp_requests"
+      - "intent_without_resolution"
+      - "unauthorized_concurrent_execution"
+      - "hash_chain_tampering_attempts"
+      - "policy_violations"
+    effects:
+      - "transaction_aborted"
+      - "operator_instance_isolated"
+      - "audit_log_flagged_for_review"
+      - "cannot_resume_until_administratively_released"
+
+  audit_log:
+    description: "Linear hash-chained sequence of all atomic operations"
+    entries:
+      - "transaction_intents"
+      - "commits_and_aborts"
+      - "operator_session_events"
+      - "policygate_decisions"
+    requirements:
+      - "cryptographically_verifiable"
+      - "immutable_once_written"
+      - "replayable_sequence"
+      - "falsifiable_claims"
+
+# ============================================================================
+# 1. PHASE 5 CORE PRINCIPLE (LOCKED)
+# ============================================================================
+
+core_principle: "All IDE-integrated AI interactions are atomic, auditable, and falsifiable."
+
+included_interactions:
+  - "file_editing"
+  - "terminal_commands"
+  - "code_copy_move_operations"
+  - "ai_tool_invocations"
+  - "multi_step_operator_plans"
+  - "workspace_state_changes"
+  - "cursor_position_updates"
+  - "plugin_api_calls"
+
+prohibition: "No action may occur outside TransactionGuard or MCP Atomic Gateway."
+
+# ============================================================================
+# 2. ARCHITECTURE OVERVIEW (MANDATORY)
+# ============================================================================
+
+architecture:
+  layers:
+    - name: "Zed IDE Operator AI"
+      description: "DeepSeek + Local Plugins"
+      interface: "MCP/Local"
+      direction: "downstream"
+
+    - name: "MCP Atomic Gateway"
+      description: "TransactionGuard + Policy (Phase 4)"
+      interface: "MCP"
+      direction: "bidirectional"
+      dependency: "phase_4_complete"
+
+    - name: "IDE Integration Layer"
+      description: "Phase 5 NEW"
+      components:
+        - "workspace_binding"
+        - "operator_session_tracking"
+        - "performance_monitoring"
+        - "audit_reporting"
+        - "quarantine_enforcement"
+      direction: "bidirectional"
+
+    - name: "Local Execution / IDE Runtime"
+      description: "Filesystem / Terminal / Plugin API"
+      components:
+        - "filesystem_operations"
+        - "terminal_execution"
+        - "plugin_api_calls"
+        - "ide_runtime_state"
+      direction: "downstream"
+
+# ============================================================================
+# 3. PHASE 5 IDE INTEGRATION REQUIREMENTS
+# ============================================================================
+
+requirements:
+  zed_ide_mcp_binding:
+    description: "All MCP calls must pass through Phase 4 Atomic Gateway"
+    requirements:
+      - "workspace_state_logged_per_transaction"
+      - "open_files_tracked"
+      - "cursor_positions_logged"
+      - "operator_sessions_bound_to_unique_ids"
+      - "audit_traceability_maintained"
+
+  operator_quarantine_enforcement:
+    description: "Automatic quarantine on policy violations"
+    triggers:
+      - "policy_violation_detected"
+      - "transaction_aborted"
+      - "operator_instance_isolated"
+      - "audit_log_flagged"
+    requirements:
+      - "quarantine_triggers_immediately"
+      - "operator_cannot_resume_without_administrative_release"
+      - "quarantine_state_persisted_across_sessions"
+      - "audit_trail_of_quarantine_decisions"
+
+  performance_monitoring:
+    description: "Track execution metrics per atomic transaction"
+    metrics:
+      - "execution_time_per_step"
+      - "execution_time_per_transaction"
+      - "cpu_usage"
+      - "memory_usage"
+      - "filesystem_io"
+      - "network_operations"
+    thresholds:
+      - "transaction_duration_limit"
+      - "resource_usage_limits"
+      - "concurrent_transaction_limit"
+    actions:
+      - "warnings_on_threshold_violations"
+      - "abort_on_limits_exceeded"
+      - "log_resource_usage_per_transaction"
+
+  audit_reporting:
+    description: "Generate comprehensive audit reports from hash chains"
+    report_types:
+      - "daily_audit_reports"
+      - "per_session_audit_reports"
+    content:
+      - "transaction_summaries"
+      - "policy_decisions"
+      - "operator_session_history"
+      - "aborts_and_quarantines"
+      - "performance_metrics"
+    requirements:
+      - "reports_immutable"
+      - "cryptographically_verifiable"
+      - "human_readable_format"
+      - "machine_parseable_format"
+
+  adversarial_testing:
+    description: "Simulate and detect forbidden patterns"
+    test_scenarios:
+      - "non_transactional_operator_requests"
+      - "operator_trying_concurrent_xacts"
+      - "intent_written_but_missing_resolution"
+      - "hash_chain_tampering_attempts"
+      - "policy_bypass_attempts"
+    requirements:
+      - "all_violations_must_be_detected"
+      - "abort_plus_quarantine_on_violation"
+      - "test_coverage_100_percent"
+      - "adversarial_tests_run_automatically"
+
+# ============================================================================
+# 4. ATOMIC SESSION SPECIFICATION
+# ============================================================================
+
+session_specification:
+  session_start:
+    function: "OperatorSession.start(operator_id, workspace)"
+    actions:
+      - "register_operator_identity"
+      - "initialize_transaction_tracking"
+      - "lock_workspace_for_single_active_session"
+      - "generate_unique_session_id"
+      - "create_initial_audit_entry"
+
+  transaction_flow:
+    pattern: |
+      with TransactionGuard(event_sink, xact_id) as tx:
+          PolicyGate.verify_pre_intent(tx, request)
+          tx.write_intent(...)
+          result = execute_operator_action(request)
+          tx.commit(...)
+    requirements:
+      - "policygate_verification_before_intent"
+      - "intent_written_before_execution"
+      - "transaction_resolved_with_commit_or_abort"
+      - "results_returned_only_after_resolution"
+
+  session_end:
+    function: "OperatorSession.end(session_id)"
+    actions:
+      - "close_all_open_transactions"
+      - "update_audit_log"
+      - "release_workspace_lock"
+      - "generate_session_summary_report"
+      - "persist_session_state"
+
+# ============================================================================
+# 5. PERFORMANCE & MONITORING INVARIANTS
+# ============================================================================
+
+performance_invariants:
+  - invariant: "Each transaction duration ≤ configured limit"
+    default_limit: "30 seconds"
+    action: "abort + log + optional_quarantine"
+
+  - invariant: "Max concurrent transactions per workspace = 1"
+    enforcement: "workspace_lock_per_session"
+    action: "reject_concurrent_requests"
+
+  - invariant: "Resource limits enforced per transaction"
+    limits:
+      - "max_memory_mb: 512"
+      - "max_cpu_percent: 80"
+      - "max_files_created: 100"
+      - "max_disk_write_mb: 10"
+    action: "abort_on_exceed"
+
+  - invariant: "Exceeding limits → abort + log + optional quarantine"
+    logging: "detailed_resource_usage_log"
+    quarantine: "configurable_per_limit"
+
+# ============================================================================
+# 6. AUDIT & VERIFICATION REQUIREMENTS
+# ============================================================================
+
+audit_requirements:
+  atomicity_verification:
+    description: "Verify all IDE operations have INTENT → COMMIT/ABORT"
+    checks:
+      - "no_orphan_intents_allowed"
+      - "no_bypassing_transactionguard"
+      - "all_operations_transactional"
+    method: "automated_audit_scans"
+
+  replayability_verification:
+    description: "Replay of audit log reproduces exact effects or exact aborts"
+    requirements:
+      - "deterministic_execution"
+      - "hash_chain_integrity"
+      - "complete_state_capture"
+    method: "audit_log_replay_tests"
+
+  falsifiability_verification:
+    description: "Any claim is disprovable by missing hash chain link"
+    requirements:
+      - "cryptographic_proof_required"
+      - "missing_links_detectable"
+      - "claims_verifiable_independently"
+    method: "independent_verification_tools"
+
+  test_vectors:
+    description: "Comprehensive test coverage"
+    scenarios:
+      - "5_10_operator_sessions_with_mixed_actions"
+      - "validate_no_transaction_leaks"
+      - "verify_hash_integrity"
+      - "run_adversarial_scenarios"
+    requirements:
+      - "test_automation"
+      - "coverage_metrics"
+      - "regression_prevention"
+
+# ============================================================================
+# 7. PHASE 5 DEPLOYMENT CONSIDERATIONS
+# ============================================================================
+
+deployment:
+  prerequisites:
+    - "deploy_mcp_atomic_gateway_before_enabling_ide_integration"
+    - "operator_ai_must_always_authenticate"
+    - "session_token_required_for_all_operations"
+    - "backward_compatibility_maintained_for_legacy_ide_plugins"
+
+  automation:
+    - "daily_audit_reports_generated_automatically"
+    - "reports_stored_in_immutable_hash_chain"
+    - "performance_monitoring_active_by_default"
+    - "quarantine_enforcement_automatic"
+
+  integration:
+    - "zed_ide_binds_to_mcp_atomic_gateway_exclusively"
+    - "all_ai_actions_in_ide_are_transactional_and_logged"
+    - "operator_violations_trigger_automatic_quarantine"
+    - "performance_and_resource_usage_monitored_per_transaction"
+
+# ============================================================================
+# 8. PHASE 5 SUCCESS CRITERIA
+# ============================================================================
+
+success_criteria:
+  - criterion: "Zed IDE binds to MCP Atomic Gateway exclusively"
+    verification: "integration_test_passing"
+    status: "required"
+
+  - criterion: "All AI actions in IDE are transactional and logged"
+    verification: "audit_log_completeness"
+    status: "required"
+
+  - criterion: "Operator violations trigger automatic quarantine"
+    verification: "quarantine_test_scenarios"
+    status: "required"
+
+  - criterion: "Performance and resource usage monitored per transaction"
+    verification: "performance_metrics_collected"
+    status: "required"
+
+  - criterion: "Audit logs are complete, cryptographically verified, and replayable"
+    verification: "audit_log_validation"
+    status: "required"
+
+  - criterion: "Adversarial tests detect and respond to all forbidden patterns"
+    verification: "adversarial_test_coverage"
+    status: "required"
+
+# ============================================================================
+# 9. FINAL INVARIANTS
+# ============================================================================
+
+final_invariants:
+  - "no_workspace_action_outside_transaction"
+  - "no_session_without_audit_metadata"
+  - "operator_instance_is_replaceable_truth_is_irreplaceable"
+  - "policygate_enforced_before_every_action"
+  - "hash_chain_integrity_preserved_across_ide_and_mcp"
+
+# ============================================================================
+# 10. HANDOFF INSTRUCTIONS
+# ============================================================================
+
+handoff_instructions:
+  for_new_zed_operator_ai:
+    steps:
+      - "load_transactionguard_mcp_atomic_gateway"
+      - "bind_ide_sessions_per_specification"
+      - "enforce_policy_and_atomic_transactions"
+      - "track_audit_logs_and_enforce_quarantine"
+      - "run_adversarial_verification_scripts"
+      - "only_release_operator_when_all_session_invariants_hold"
+
+  key_files_locations:
+    root: "oe-agent/"
+    files:
+      - "events/transaction_guard.py"
+      - "mcp_gateway/atomic_gateway.py"
+      - "ide_integration/session_manager.py"
+      - "ide_integration/performance_monitor.py"
+      - "ide_integration/audit_reporter.py"
+      - "test_phase5_atomic.py"
+      - "demo_phase5.py"
+
+# ============================================================================
+# 11. OPERATOR-GRADE PHASE 5 QUOTE
+# ============================================================================
+
+operator_quote: |
+  "The IDE is not the controller.
+  The Operator is not the agent.
+  The transaction is the truth.
+  Every step must be auditable, replayable, and falsifiable."
+
+# ============================================================================
+# 12. IMPLEMENTATION STATUS
+# ============================================================================
+
+implementation_status:
+  phase: 5
+  name: "Atomic Zed IDE Integration"
+  status: "blueprint_ready"
+  next_action: "implementation"
+  verification_required: true
+  atomic_guarantees:
+    - "no_boundary_without_transaction"
+    - "no_intent_without_resolution"
+    - "no_execution_without_proof"
+    - "no_trust_without_inspection"
+    - "no_memory_without_hash"
+
+# ============================================================================
+# END OF PHASE 5 SPECIFICATION
+# ============================================================================

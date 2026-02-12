@@ -1,0 +1,55 @@
+{
+  "$schema": "PLAN-ORTHOGONAL-1.0",
+  "plan_id": "plan_test_executor_001",
+  "checksum": "sha256:test_checksum_placeholder",
+  "goal": "Test executor functionality with safe operations",
+  "created_at": "2026-01-24T19:45:00Z",
+  "planner_version": "1.0.0",
+  "steps": [
+    {
+      "id": 1,
+      "action": "scan",
+      "target": "mcp",
+      "parameters": {
+        "recursion_limit": 2
+      },
+      "expected_output": "list_of_files.json"
+    },
+    {
+      "id": 2,
+      "action": "scan",
+      "target": "documentation",
+      "parameters": {
+        "recursion_limit": 1
+      },
+      "expected_output": "documentation_files.json"
+    },
+    {
+      "id": 3,
+      "action": "copy",
+      "source": "mcp/test_orthogonal_mcp.py",
+      "target": "oe-agent/test_copy.py",
+      "expected_output": "copy_success.json"
+    },
+    {
+      "id": 4,
+      "action": "command",
+      "command": "python -c \"print('Test command execution')\"",
+      "parameters": {
+        "timeout": 10
+      },
+      "expected_output": "command_output.json"
+    }
+  ],
+  "rollback": {
+    "enabled": true,
+    "strategy": "atomic",
+    "backup_dir": ".oe-backups"
+  },
+  "budget": {
+    "max_commands": 10,
+    "max_files_touched": 8,
+    "max_runtime_seconds": 60
+  },
+  "policy_check_required": true
+}

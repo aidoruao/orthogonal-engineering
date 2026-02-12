@@ -1,0 +1,43 @@
+# Stage 3 Refinement Requirements
+# ===============================
+# Governance Compliant - All packages have explicit version bounds
+# No infinite version ranges permitted
+
+# Core PyTorch - Bounded versions
+torch>=2.0.0,<3.0.0
+
+# Transformers - Bounded versions
+transformers>=4.30.0,<5.0.0
+
+# PEFT (Parameter-Efficient Fine-Tuning) - Bounded versions
+peft>=0.4.0,<1.0.0
+
+# Accelerate - Bounded versions
+accelerate>=0.20.0,<1.0.0
+
+# SafeTensors - Bounded versions
+safetensors>=0.3.0,<1.0.0
+
+# Tokenization - Bounded versions
+sentencepiece>=0.1.0,<1.0.0
+tokenizers>=0.13.0,<1.0.0
+
+# GPU Monitoring - Bounded versions
+pynvml>=11.5.0,<12.0.0
+
+# Utilities - Bounded versions
+numpy>=1.21.0,<2.0.0
+tqdm>=4.64.0,<5.0.0
+dataclasses-json>=0.6.0,<1.0.0
+
+# Development dependencies (testing only)
+pytest>=7.0.0,<8.0.0
+pytest-timeout>=2.1.0,<3.0.0
+
+# Governance note: All versions explicitly bounded
+# No wildcard versions (*) permitted
+# Maximum version constraints prevent breaking changes
+# Minimum version constraints ensure required features
+
+# Installation command:
+# pip install -r requirements_stage3.txt

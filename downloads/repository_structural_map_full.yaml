@@ -1,0 +1,21 @@
+dependencies:
+- automation/run_full_audit_with_trace.py
+- automation/run_autofix_integration.py
+- tests/test_autofix_engine.py
+- automation/test_affective_constraint_falsification.py
+- downloads/generate_structural_map.py
+- analysis/demo_recovery_fixes.py
+execution_summary:
+  failed: 2
+  results:
+    analysis/demo_recovery_fixes.py: false
+    automation/run_autofix_integration.py: true
+    automation/run_full_audit_with_trace.py: true
+    automation/test_affective_constraint_falsification.py: false
+    downloads/generate_structural_map.py: true
+    tests/test_autofix_engine.py: true
+  successful: 4
+  total_scripts: 6
+generated_by: controller.py
+sha256: <computed_post_run>
+timestamp: 2026-01-26T01:42:04.486584+00:00Z

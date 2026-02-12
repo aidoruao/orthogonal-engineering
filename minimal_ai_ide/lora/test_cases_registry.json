@@ -1,0 +1,102 @@
+[
+  {
+    "id": "setup_validation_1",
+    "name": "Environment Validation",
+    "description": "Validate Python environment and dependencies",
+    "stage": 0,
+    "function_name": "test_environment_validation",
+    "constraints": [
+      "LOGOS",
+      "SETUP_INTEGRITY"
+    ],
+    "timeout_seconds": 10,
+    "required": true,
+    "last_run": null,
+    "last_result": null,
+    "execution_time": null
+  },
+  {
+    "id": "small_validation_1",
+    "name": "Dataset Validation",
+    "description": "Validate training dataset format and structure",
+    "stage": 1,
+    "function_name": "test_dataset_validation",
+    "constraints": [
+      "LOGOS",
+      "DATA_INTEGRITY"
+    ],
+    "timeout_seconds": 15,
+    "required": true,
+    "last_run": "2026-01-30T11:30:48.740768",
+    "last_result": true,
+    "execution_time": 0.00196
+  },
+  {
+    "id": "small_validation_2",
+    "name": "Model Loading Test",
+    "description": "Test loading base model with quantization",
+    "stage": 1,
+    "function_name": "test_model_loading",
+    "constraints": [
+      "LOGOS",
+      "MODEL_INTEGRITY"
+    ],
+    "timeout_seconds": 30,
+    "required": true,
+    "last_run": "2026-01-30T11:30:48.740950",
+    "last_result": true,
+    "execution_time": 2.2e-05
+  },
+  {
+    "id": "post_train_1",
+    "name": "Trained Model Validation",
+    "description": "Validate trained LoRA model loading and inference",
+    "stage": 3,
+    "function_name": "test_trained_model_validation",
+    "constraints": [
+      "LOGOS",
+      "CHALCEDON",
+      "MODEL_INTEGRITY"
+    ],
+    "timeout_seconds": 45,
+    "required": true,
+    "last_run": null,
+    "last_result": null,
+    "execution_time": null
+  },
+  {
+    "id": "post_train_2",
+    "name": "Governance Compliance Check",
+    "description": "Verify training governance constraints are satisfied",
+    "stage": 3,
+    "function_name": "test_governance_compliance",
+    "constraints": [
+      "LOGOS",
+      "GRACE",
+      "GOVERNANCE"
+    ],
+    "timeout_seconds": 20,
+    "required": true,
+    "last_run": null,
+    "last_result": null,
+    "execution_time": null
+  },
+  {
+    "id": "post_train_3",
+    "name": "Constraint Preservation",
+    "description": "Verify theological constraints are preserved in training",
+    "stage": 3,
+    "function_name": "test_constraint_preservation",
+    "constraints": [
+      "LOGOS",
+      "CHALCEDON",
+      "GRACE",
+      "CONSTRAINT_PRESERVATION"
+    ],
+    "timeout_seconds": 25,
+    "required": true,
+    "last_run": null,
+    "last_result": null,
+    "execution_time": null
+  }
+]

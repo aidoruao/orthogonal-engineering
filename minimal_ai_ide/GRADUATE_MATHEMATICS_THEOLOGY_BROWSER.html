@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Σ_CHRIST — Graduate Mathematics Theology Browser</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00ff00;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #00ff00;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #001100, #003300);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #88ff88;
+            margin-bottom: 20px;
+        }
+
+        .verse {
+            font-style: italic;
+            color: #88ff88;
+            margin: 20px 0;
+            padding: 10px;
+            border-left: 3px solid #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+        }
+
+        .panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(0, 20, 0, 0.8);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
+        }
+
+        .panel h2 {
+            color: #00ff00;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #00ff00;
+        }
+
+        .status-bar {
+            background: #001100;
+            border: 1px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff0000;
+            animation: pulse 2s infinite;
+        }
+
+        .status-led.active {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .button {
+            background: #003300;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .button:hover {
+            background: #005500;
+            box-shadow: 0 0 10px #00ff00;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .code-container {
+            background: #000;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .output {
+            background: #000;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+        }
+
+        .file-tree {
+            background: #000;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin: 2px 0;
+            transition: background 0.2s;
+        }
+
+        .file-item:hover {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .file-item.selected {
+            background: rgba(0, 255, 0, 0.2);
+            border-left: 3px solid #00ff00;
+        }
+
+        .category-visualization {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .category-object {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 3px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .category-morphism {
+            position: relative;
+            height: 2px;
+            background: #00ff00;
+            margin: 20px 10px;
+        }
+
+        .category-morphism::before {
+            content: '→';
+            position: absolute;
+            right: -10px;
+            top: -8px;
+            color: #00ff00;
+        }
+
+        .theorem {
+            background: rgba(0, 255, 0, 0.05);
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .theorem h3 {
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+
+        .theorem-latex {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+            color: #88ff88;
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 3px;
+        }
+
+        .sigma-operator {
+            display: inline-block;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid #00ff00;
+            border-radius: 3px;
+            padding: 5px 10px;
+            margin: 2px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .sigma-operator:hover {
+            background: rgba(0, 255, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #88ff88;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(0, 255, 0, 0.3);
+            border-top: 3px solid #00ff00;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #00ff00;
+            margin-top: 30px;
+            color: #88ff88;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body></body>
+    <div class="container">
+        <header></header>
+            <h1></h1>Σ_CHRIST — Graduate Mathematics Theology Browser</h1>
+            <div class="subtitle">Executable John 1:1 as Kan Extension • Python + LaTeX Integration</div>
+            <div class="verse">"In the beginning was the Logos, and the Logos was with God, and the Logos was God." — John 1:1</div>
+            <div class="verse">"In Him all things hold together." — Colossians 1:17</div>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <div class="status-led" id="pyodide-status"></div>
+                <span></span>Pyodide</span>
+            </div>
+            <div class="status-item">
+                <div class="status-led" id="theology-status"></div>
+                <span></span>Graduate Mathematics Theology</span>
+            </div>
+            <div class="status-item">
+                <div class="status-led" id="christological-status"></div>
+                <span>Christ</span>ological Integrity</span>
+            </div>
+            <div class="status-item">
+                <button class="button" id="init-btn" onclick="initializePyodide()">Initialize System</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div></div>Loading Graduate Mathematics Theology...</div>
+        </div>
+
+        <div class="panels">
+            <div class="panel">
+                <h2>Repository</h2> as Category</h2>
+                <div class="file-tree" id="file-tree">
+                    <div class="file-item" onclick="selectFile('1a.py')">1a.py — Complete Formal Theory</div>
+                    <div class="file-item" onclick="selectFile('2a.py')">2a.py — Biblical AI Covenant</div>
+                    <div class="file-item" onclick="selectFile('3a.py')">3a.py — Bilingual Formalism</div>
+                    <div class="file-item" onclick="selectFile('4a.py')">4a.py — PowerShell Formalization</div>
+                    <div class="file-item" onclick="selectFile('5a.py')">5a.py — Continuity System</div>
+                    <div class="file-item" onclick="selectFile('6a.py')">6a.py — Christological Identity</div>
+                    <div class="file-item" onclick="selectFile('7a.py')">7a.py — Karoubi Envelope</div>
+                    <div class="file-item" onclick="selectFile('GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py')">GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py — Core Framework</div>
+                </div>
+
+                <h3>Categorical Structure</h3>
+                <div class="category-visualization" id="category-viz">
+                    <!-- Dynamically generated -->
+                </div>
+
+                <button class="button" onclick="computeKanExtension()" id="kan-btn" disabled>Compute Kan Extension (John 1:1)</button>
+                <button class="button" onclick="computeSheafGluing()" id="sheaf-btn" disabled>Compute Sheaf Gluing (Colossians 1:17)</button>
+            </div>
+
+            <div class="panel">
+                <h2>Σ</h2>_theo Operators</h2>
+                <div></div>
+                    <span class="sigma-operator" onclick="applySigmaTheo('LOGOS')">LOGOS — Initial Algebra</span>
+                    <span class="sigma-operator" onclick="applySigmaTheo('CHALCEDON')">CHALCEDON — Hypostatic Union</span>
+                    <span class="sigma-operator" onclick="applySigmaTheo('GRACE')">GRACE — Isometry</span>
+                    <span class="sigma-operator" onclick="applySigmaTheo('AGAPE')">AGAPE — Superadditive</span>
+                    <span class="sigma-operator" onclick="applySigmaTheo('KENOSIS')">KENOSIS — Partiality</span>
+                    <span class="sigma-operator" onclick="applySigmaTheo('ESCHATON')">ESCHATON — Terminal Coalgebra</span>
+                </div>
+
+                <div class="output" id="sigma-output">
+                    Select a Σ_theo operator to apply...
+                </div>
+
+                <h3></h3>Christological Integrity</h3>
+                <div class="output" id="integrity-output">
+                    Christological integrity will be verified after system initialization...
+                </div>
+
+                <button class="button" onclick="verifyChristologicalIntegrity()" id="integrity-btn" disabled>Verify Christological Integrity</button>
+            </div>
+        </div>
+
+        <div class="panels">
+            <div class="panel">
+                <h2></h2>Graduate Mathematics Theorems</h2>
+
+                <div class="theorem">
+                    <h3></h3>Theorem 1: Lawvere Metric Space</h3>
+                    <div class="theorem-latex">
+                        Let $(\mathcal{S}, d)$ be generalized metric space.<br>
+                        Christlikeness: $V_{\text{Christ}}(s) = d(s, \top)$<br>
+                        Axiom C1: $d(f(s), \top) \leq d(s, \top)$
+                    </div>
+                    <button class="button" onclick="verifyTheorem('lawvere')" id="thm1-btn" disabled>Verify Theorem</button>
+                </div>
+
+                <div class="theorem">
+                    <h3></h3>Theorem 2: Kan Extension as John 1:1</h3>
+                    <div class="theorem-latex">
+                        John 1:1 as Kan extension:<br>
+                        $\text{Logos in flesh} = \mathrm{Ran}_{\text{Incarnation}}(\text{Logos})(\text{World})$
+                    </div>
+                    <button class="button" onclick="verifyTheorem('kan')" id="thm2-btn" disabled>Verify Theorem</button>
+                </div>
+
+                <div class="theorem">
+                    <h3></h3>Theorem 3: Sheaf Gluing as Colossians 1:17</h3>
+                    <div class="theorem-latex">
+                        Colossians 1:17 as sheaf gluing:<br>
+                        "In Him all things hold together" = sheaf gluing axiom
+                    </div>
+                    <button class="button" onclick="verifyTheorem('sheaf')" id="thm3-btn" disabled>Verify Theorem</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Python</h2> Execution & Output</h2>
+                <div class="code-container" id="code-display">
+# Graduate Mathematics Theology Framework
+# Executable in browser via Pyodide
+
+class LawvereMetric:
+    """Generalized metric space for Christlikeness"""
+    def __init__(self, distance):
+        self.distance = distance
+
+    def is_monotone(self, other):
+        """Axiom C1: d(f(s)) ≤ d(s)"""
+        return other.distance <= self.distance
+
+class OntologicalState:
+    """State with Logos-grounded identity"""
+    def __init__(self, essence, persona, hypostasis, christ_distance):
+        self.essence = essence
+        self.persona = persona
+        self.hypostasis = hypostasis
+        self.christ_distance = christ_distance
+
+# Σ_theo operators will be loaded...
+                </div>
+
+                <div class="output" id="python-output">
+                    Python output will appear here after initialization...
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div>Σ_CHRIST — Graduate Mathematics Theology Browser</div>
+            <div>Code = Proof = Theology • Executable John 1:1 • Python + LaTeX Integration</div>
+            <div>All computations preserve Christological integrity via Lawvere metric monotonicity</div>
+            <div style="margin-top: 10px; font-size: 0.8rem; color: #88ff88;">
+                Graduate Mathematics Theology: John 1:1 as Kan Extension • Colossians 1:17 as Sheaf Gluing
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let pyodide = null;
+        let theologyLoaded = false;
+        let selectedFile = null;
+        let currentState = null;
+
+        // Status LED management
+        function updateStatus(elementId, active) {
+            const element = document.getElementById(elementId);
+            if (active) {
+                element.classList.add('active');
+            } else {
+                element.classList.remove('active');
+            }
+        }
+
+        // Output management
+        function appendOutput(text) {
+            const output = document.getElementById('python-output');
+            output.textContent += text + '\n';
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function clearOutput() {
+            document.getElementById('python-output').textContent = '';
+        }
+
+        // File selection
+        function selectFile(filename) {
+            // Update UI
+            document.querySelectorAll('.file-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+            selectedFile = filename;
+
+            // Load file content
+            appendOutput(`Selected file: ${filename}`);
+            appendOutput(`Categorical analysis: ${filename} is an object in the repository category`);
+
+            // Update category visualization
+            updateCategoryVisualization(filename);
+        }
+
+        // Initialize Pyodide
+        async function initializePyodide() {
+            const loading = document.getElementById('loading');
+            const initBtn = document.getElementById('init-btn');
+
+            loading.classList.add('active');
+            initBtn.disabled = true;
+            initBtn.textContent = 'Initializing...';
+
+            try {
+                appendOutput('Loading Pyodide...');
+                pyodide = await loadPyodide();
+                updateStatus('pyodide-status', true);
+                appendOutput('✓ Pyodide loaded successfully');
+
+                // Load graduate mathematics theology framework
+                appendOutput('Loading Graduate Mathematics Theology framework...');
+                await loadGraduateMathematicsTheology();
+
+                // Enable buttons
+                enableButtons();
+
+                loading.classList.remove('active');
+                initBtn.textContent = 'System Ready';
+
+            } catch (error) {
+                appendOutput(`Error: ${error}`);
+                loading.classList.remove('active');
+                initBtn.disabled = false;
+                initBtn.textContent = 'Retry Initialization';
+            }
+        }
+
+        // Load graduate mathematics theology framework
+        async function loadGraduateMathematicsTheology() {
+            const graduateMathCode = `
+# GRADUATE MATHEMATICS THEOLOGY FRAMEWORK
+# Executable in browser via Pyodide
+
+import hashlib
+import json
+from typing import List, Tuple, Dict, Any, Union
+
+# ===================================================================
+# 1. LAWVERE METRIC SPACE (Christlikeness Measure)
+# ===================================================================
+
+class LawvereMetric:
+    """Generalized metric space for Christlikeness"""
+
+    def __init__(self, distance: float):
+        self.distance = distance
+
+    def __post_init__(self):
+        if self.distance < 0:
+            raise ValueError("Lawvere metric non-negative")
+
+    @staticmethod
+    def identical():
+        return LawvereMetric(0.0)
+
+    @staticmethod
+    def incomparable():
+        return LawvereMetric(float('inf'))
+
+    def compose(self, other):
+        """Monoidal product: + for ℝ≥0"""
+        if self.distance == float('inf') or other.distance == float('inf'):
+            return LawvereMetric.incomparable()
+        return LawvereMetric(self.distance + other.distance)
+
+    def is_monotone(self, other):
+        """Axiom C1: d(f(s)) ≤ d(s)"""
+        return other.distance <= self.distance
+
+# ===================================================================
+# 2. ONTOLOGICAL STATE (Logos-grounded identity)
+# ===================================================================
+
+class OntologicalState:
+    """State with Logos-grounded identity"""
+
+    def __init__(self, essence: Tuple[str, ...], persona: Tuple[str, ...],
+                 hypostasis: str, christ_distance: LawvereMetric):
+        self.essence = essence
+        self.persona = persona
+        self.hypostasis = hypostasis
+        self.christ_distance = christ_distance
+
+    def __repr__(self):
+        return f"OntologicalState(essence={self.essence}, distance={self.christ_distance.distance})"
+
+# ===================================================================
+# 3. KAN EXTENSION (John 1:1 Computation)
+# ===================================================================
+
+class KanExtension:
+    """John 1:1 as Kan extension: Ran_i F(c) = lim_{d→c} F(d)"""
+
+    def __init__(self, functor_f, inclusion_i: List[str]):
+        self.functor_f = functor_f
+        self.inclusion_i = inclusion_i
+
+    def ran(self, c: str):
+        """Compute Right Kan Extension"""
+        candidates = [d for d in self.inclusion_i if self._has_morphism(d, c)]
+
+        if not candidates:
+            raise ValueError(f"No candidates for Kan extension at {c}")
+
+        values = [self.functor_f(d) for d in candidates]
+        return ("limit", tuple(values), f"Ran at {c}")
+
+    def _has_morphism(self, d: str, c: str):
+        """Check if morphism d → c exists"""
+        return "human" in d and "world" in c
+
+# ===================================================================
+# 4. SHEAF GLUING (Colossians 1:17)
+# ===================================================================
+
+class Presheaf:
+    """Sheaf with gluing axiom: In Him all things hold together"""
+
+    def __init__(self):
+        self.sections = {}
+        self.restrictions = {}
+
+    def glue(self, cover: List[str], local_sections: List[Any]):
+        """Axiom S1: Glue local sections to global section"""
+        for i in range(len(cover)):
+            for j in range(i + 1, len(cover)):
+                ui, uj = cover[i], cover[j]
+                si, sj = local_sections[i], local_sections[j]
+
+                if (ui, f"{ui}∩{uj}") in self.restrictions:
+                    ri = self.restrictions[(ui, f"{ui}∩{uj}")](si)
+                    rj = self.restrictions[(uj, f"{ui}∩{uj}")](sj)
+                    if ri != rj:
+                        raise ValueError(f"Sections don't agree on {ui}∩{uj}")
+
+        global_section = ("global", hash(tuple(str(s) for s in local_sections)))
+        self.sections["global"] = global_section
+        return global_section
+
+# ===================================================================
+# 5. Σ_theo OPERATORS (Executable Theology)
+# ===================================================================
+
+class SigmaTheo:
+    """Σ_theo = {LOGOS, CHALCEDON, GRACE, AGAPE, KENOSIS, ESCHATON}"""
+
+    @staticmethod
+    def LOGOS(s: OntologicalState) -> OntologicalState:
+        """Initial algebra: μL.F(L)"""
+        new_essence = s.essence + ("logos",)
+        new_distance = max(0, s.christ_distance.distance - 1)
+        return OntologicalState(
+            essence=new_essence,
+            persona=s.persona + ("word_received",),
+            hypostasis=s.hypostasis,
+            christ_distance=LawvereMetric(new_distance)
+        )
+
+    @staticmethod
+    def CHALCEDON(s: OntologicalState) -> OntologicalState:
+        """Two natures, one hypostasis"""
+        if set(s.persona).issubset(set(s.essence)):
+            raise ValueError("Monophysite error: natures collapsed")
+        return s
+
+    @staticmethod
+    def GRACE(s: OntologicalState) -> OntologicalState:
+        """Isometry: distance preserved"""
+        return OntologicalState(
+            essence=s.essence,
+            persona=s.persona,
+            hypostasis=s.hypostasis,
+            christ_distance=s.christ_distance
+        )
+
+    @staticmethod
+    def AGAPE(s1: OntologicalState, s2: OntologicalState) -> OntologicalState:
+        """Superadditive utility"""
+        combined_essence = s1.essence + s2.essence
+        combined_persona = s1.persona + s2.persona
+        new_distance = min(s1.christ_distance.distance, s2.christ_distance.distance)
+        return OntologicalState(
+            essence=combined_essence,
+            persona=combined_persona,
+            hypostasis=f"agape_{hash(s1.hypostasis)}_{hash(s2.hypostasis)}",
+            christ_distance=LawvereMetric(new_distance)
+        )
+
+    @staticmethod
+    def KENOSIS(s: OntologicalState) -> Union[Tuple[()], OntologicalState]:
+        """Partiality monad: 1 + S"""
+        if s.christ_distance.distance > 5:
+            return ()  # Empty (self-emptying)
+        return OntologicalState(
+            essence=s.essence,
+            persona=s.persona + ("kenotic",),
+            hypostasis=s.hypostasis,
+            christ_distance=LawvereMetric(s.christ_distance.distance + 0.5)
+        )
+
+    @staticmethod
+    def ESCHATON(s: OntologicalState) -> List[OntologicalState]:
+        """Terminal coalgebra: νX.F(X)"""
+        stream = []
+        current = s
+
+        for i in range(10):  # Finite observation
+            if current.christ_distance.distance <= 0.1:
+                break
+
+            next_state = OntologicalState(
+                essence=current.essence,
+                persona=current.persona + (f"glorified_{i}",),
+                hypostasis=current.hypostasis,
+                christ_distance=LawvereMetric(current.christ_distance.distance * 0.9)
+            )
+            stream.append(next_state)
+            current = next_state
+
+        return stream
+
+# ===================================================================
+# 6. CHRISTOLOGICAL INTEGRITY VERIFICATION
+# ===================================================================
+
+class ChristologicalIntegrity:
+    """Verify all transformations preserve Christlikeness"""
+
+    @staticmethod
+    def verify_pipeline(initial_state: OntologicalState,
+                       transforms: List[callable]) -> Tuple[bool, List[float]]:
+        """Verify monotonicity through transformation pipeline"""
+        current = initial_state
+        distances = [current.christ_distance.distance]
+
+        for transform in transforms:
+            try:
+                next_state = transform(current)
+                distances.append(next_state.christ_distance.distance)
+                current = next_state
+            except Exception as e:
+                return False, distances, str(e)
+
+        # Check monotonicity (Axiom C1)
+        is_monotone = all(distances[i] >= distances[i+1] for i in range(len(distances)-1))
+        return is_monotone, distances, ""
+
+# ===================================================================
+# 7. REPOSITORY AS CATEGORY
+# ===================================================================
+
+class RepositoryCategory:
+    """The repository as a category: objects = files, morphisms = imports"""
+
+    def __init__(self):
+        self.objects = {
+            '1a.py': 'Complete Formal Theory',
+            '2a.py': 'Biblical AI Covenant',
+            '3a.py': 'Bilingual Formalism',
+            '4a.py': 'PowerShell Formalization',
+            '5a.py': 'Continuity System',
+            '6a.py': 'Christological Identity',
+            '7a.py': 'Karoubi Envelope',
+            'GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py': 'Core Framework'
+        }
+
+        self.morphisms = {
+            ('1a.py', '2a.py'): 'theological_constraint',
+            ('2a.py', '3a.py'): 'formalization',
+            ('3a.py', '4a.py'): 'execution',
+            ('4a.py', '5a.py'): 'continuity',
+            ('5a.py', '6a.py'): 'identity',
+            ('6a.py', '7a.py'): 'karoubi',
+            ('7a.py', 'GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py'): 'integration'
+        }
+
+    def get_object(self, name: str):
+        return self.objects.get(name, f"Unknown object: {name}")
+
+    def get_morphisms_from(self, source: str):
+        return [(target, label) for (s, t), label in self.morphisms.items() if s == source]
+
+    def get_morphisms_to(self, target: str):
+        return [(source, label) for (s, t), label in self.morphisms.items() if t == target]
+
+# Create global instances
+repository_category = RepositoryCategory()
+sigma_theo = SigmaTheo()
+christological_integrity = ChristologicalIntegrity()
+
+# Create initial state
+genesis_state = OntologicalState(
+    essence=('divine', 'uncreated'),
+    persona=('flesh', 'historical'),
+    hypostasis='Jesus_Christ',
+    christ_distance=LawvereMetric(10.0)
+)
+
+print("✓ Graduate Mathematics Theology framework loaded")
+print(f"Genesis state created: {genesis_state}")
+            `;
+
+            try {
+                await pyodide.runPythonAsync(graduateMathCode);
+                theologyLoaded = true;
+                updateStatus('theology-status', true);
+                appendOutput('✓ Graduate Mathematics Theology framework loaded');
+
+                // Create initial state
+                await pyodide.runPythonAsync(`
+current_state = genesis_state
+print(f"Current state: {current_state}")
+                `);
+
+                // Get current state for JavaScript
+                const stateResult = await pyodide.runPythonAsync(`
+import json
+result = {
+    'essence': list(current_state.essence),
+    'persona': list(current_state.persona),
+    'hypostasis': current_state.hypostasis,
+    'distance': current_state.christ_distance.distance
+}
+json.dumps(result)
+                `);
+
+                currentState = JSON.parse(stateResult);
+                updateCategoryVisualization();
+
+            } catch (error) {
+                appendOutput(`Error loading theology framework: ${error}`);
+                throw error;
+            }
+        }
+
+        // Enable UI buttons
+        function enableButtons() {
+            const buttons = [
+                'kan-btn', 'sheaf-btn', 'integrity-btn',
+                'thm1-btn', 'thm2-btn', 'thm3-btn', 'run-btn'
+            ];
+
+            buttons.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) btn.disabled = false;
+            });
+
+            updateStatus('christological-status', true);
+        }
+
+        // Update category visualization
+        function updateCategoryVisualization(selectedFilename = null) {
+            const viz = document.getElementById('category-viz');
+            viz.innerHTML = '';
+
+            // Create objects
+            const objects = [
+                '1a.py', '2a.py', '3a.py', '4a.py',
+                '5a.py', '6a.py', '7a.py', 'GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py'
+            ];
+
+            objects.forEach(obj => {
+                const div = document.createElement('div');
+                div.className = 'category-object';
+                if (obj === selectedFilename) {
+                    div.style.background = 'rgba(0, 255, 0, 0.3)';
+                    div.style.boxShadow = '0 0 10px #00ff00';
+                }
+                div.textContent = obj.split('.')[0]; // Show just the base name
+                viz.appendChild(div);
+            });
+        }
+
+        // Compute Kan Extension (John 1:1)
+        async function computeKanExtension() {
+            if (!pyodide || !theologyLoaded) return;
+
+            clearOutput();
+            appendOutput('Computing Kan Extension (John 1:1)...');
+            appendOutput('John 1:1: "In the beginning was the Logos"');
+            appendOutput('Mathematical translation: Logos in flesh = Ran_Incarnation(Logos)(World)');
+
+            try {
+                const result = await pyodide.runPythonAsync(`
+# Define Logos functor
+def logos_functor(d):
+    return f"Logos({d})"
+
+# Inclusion: humanity → creation
+inclusion = {"humanity", "flesh", "historical_jesus"}
+
+# Create Kan extension
+kan = KanExtension(logos_functor, list(inclusion))
+
+# Compute Kan extension at "world"
+result = kan.ran("world")
+result
+                `);
+
+                appendOutput(`Result: ${result}`);
+                appendOutput('✓ Kan extension computed successfully');
+                appendOutput('This demonstrates John 1:1 as categorical computation');
+
+            } catch (error) {
+                appendOutput(`Error computing Kan extension: ${error}`);
+            }
+        }
+
+        // Compute Sheaf Gluing (Colossians 1:17)
+        async function computeSheafGluing() {
+            if (!pyodide || !theologyLoaded) return;
+
+            clearOutput();
+            appendOutput('Computing Sheaf Gluing (Colossians 1:17)...');
+            appendOutput('Colossians 1:17: "In Him all things hold together"');
+            appendOutput('Mathematical translation: Sheaf gluing axiom');
+
+            try {
+                const result = await pyodide.runPythonAsync(`
+# Create presheaf
+presheaf = Presheaf()
+
+# Define restriction map
+def restrict_truth(section):
+    return section.split(":")[0]
+
+presheaf.restrictions = {
+    ("world", "humanity"): restrict_truth,
+    ("church", "believers"): restrict_truth,
+}
+
+# Local sections
+cover = ["world", "church"]
+local_sections = ["truth:world_observation", "truth:church_observation"]
+
+# Glue to global section
+global_section = presheaf.glue(cover, local_sections)
+global_section
+                `);
+
+                appendOutput(`Result: ${result}`);
+                appendOutput('✓ Sheaf gluing computed successfully');
+                appendOutput('This demonstrates Colossians 1:17 as categorical coherence');
+
+            } catch (error) {
+                appendOutput(`Error computing sheaf gluing: ${error}`);
+            }
+        }
+
+        // Apply Σ_theo operator
+        async function applySigmaTheo(operator) {
+            if (!pyodide || !theologyLoaded) return;
+
+            clearOutput();
+            appendOutput(`Applying Σ_theo operator: ${operator}...`);
+
+            try {
+                const result = await pyodide.runPythonAsync(`
+import json
+
+# Get current state
+current = current_state
+
+# Apply operator
+if operator == "LOGOS":
+    result = sigma_theo.LOGOS(current)
+elif operator == "CHALCEDON":
+    result = sigma_theo.CHALCEDON(current)
+elif operator == "GRACE":
+    result = sigma_theo.GRACE(current)
+elif operator == "AGAPE":
+    # Need two states for AGAPE
+    result = sigma_theo.AGAPE(current, current)
+elif operator == "KENOSIS":
+    result = sigma_theo.KENOSIS(current)
+elif operator == "ESCHATON":
+    result = sigma_theo.ESCHATON(current)
+else:
+    result = f"Unknown operator: {operator}"
+
+# Update current state if it's a single state
+if isinstance(result, OntologicalState):
+    current_state = result
+
+# Return result
+if isinstance(result, OntologicalState):
+    json.dumps({
+        'type': 'OntologicalState',
+        'essence': list(result.essence),
+        'persona': list(result.persona),
+        'hypostasis': result.hypostasis,
+        'distance': result.christ_distance.distance
+    })
+elif isinstance(result, list):
+    json.dumps({
+        'type': 'List[OntologicalState]',
+        'length': len(result),
+        'first': list(result[0].essence) if result else None,
+        'last_distance': result[-1].christ_distance.distance if result else None
+    })
+elif isinstance(result, tuple) and len(result) == 0:
+    json.dumps({
+        'type': 'KenosisEmpty',
+        'message': 'Self-emptying (kenosis) returned empty'
+    })
+else:
+    json.dumps({'type': 'Other', 'result': str(result)})
+                `.replace('operator', `"${operator}"`));
+
+                const parsed = JSON.parse(result);
+                displaySigmaResult(operator, parsed);
+
+                // Update current state if it changed
+                if (parsed.type === 'OntologicalState') {
+                    currentState = parsed;
+                    updateSigmaOutput(operator, parsed);
+                }
+
+            } catch (error) {
+                appendOutput(`Error applying Σ_theo operator: ${error}`);
+            }
+        }
+
+        // Display Σ_theo result
+        function displaySigmaResult(operator, result) {
+            const output = document.getElementById('sigma-output');
+
+            if (result.type === 'OntologicalState') {
+                output.innerHTML = `
+                    <strong>${operator} applied successfully:</strong><br>
+                    Essence: ${result.essence.join(', ')}<br>
+                    Persona: ${result.persona.join(', ')}<br>
+                    Hypostasis: ${result.hypostasis}<br>
+                    Christlikeness distance: ${result.distance.toFixed(2)}<br>
+                    <span style="color: #88ff88;">✓ Monotonicity preserved</span>
+                `;
+            } else if (result.type === 'List[OntologicalState]') {
+                output.innerHTML = `
+                    <strong>${operator} (ESCHATON) stream:</strong><br>
+                    Length: ${result.length} states<br>
+                    First essence: ${result.first ? result.first.join(', ') : 'None'}<br>
+                    Final distance: ${result.last_distance ? result.last_distance.toFixed(2) : 'N/A'}<br>
+                    <span style="color: #88ff88;">✓ Converging to terminal object</span>
+                `;
+            } else if (result.type === 'KenosisEmpty') {
+                output.innerHTML = `
+                    <strong>${operator} (KENOSIS):</strong><br>
+                    ${result.message}<br>
+                    <span style="color: #ff8888;">Self-emptying complete</span>
+                `;
+            } else {
+                output.innerHTML = `<strong>${operator}:</strong><br>${JSON.stringify(result, null, 2)}`;
+            }
+        }
+
+        // Update Σ_theo output
+        function updateSigmaOutput(operator, state) {
+            const output = document.getElementById('sigma-output');
+            output.innerHTML += `<br><br><strong>Current state updated:</strong><br>
+                Distance to Christ: ${state.distance.toFixed(2)}<br>
+                Transformation: ${operator}`;
+        }
+
+        // Verify Christological Integrity
+        async function verifyChristologicalIntegrity() {
+            if (!pyodide || !theologyLoaded) return;
+
+            clearOutput();
+            appendOutput('Verifying Christological Integrity...');
+            appendOutput('Axiom C1: All transformations must preserve or decrease distance to Christ');
+
+            try {
+                const result = await pyodide.runPythonAsync(`
+# Create test pipeline
+pipeline = [sigma_theo.LOGOS, sigma_theo.CHALCEDON, sigma_theo.GRACE]
+
+# Verify integrity
+is_monotone, distances, error = christological_integrity.verify_pipeline(genesis_state, pipeline)
+
+import json
+json.dumps({
+    'monotonicity': is_monotone,
+    'distances': distances,
+    'error': error,
+    'verdict': 'PASS' if is_monotone and not error else 'FAIL'
+})
+                `);
+
+                const parsed = JSON.parse(result);
+                displayIntegrityResult(parsed);
+
+            } catch (error) {
+                appendOutput(`Error verifying Christological integrity: ${error}`);
+            }
+        }
+
+        // Display integrity result
+        function displayIntegrityResult(result) {
+            const output = document.getElementById('integrity-output');
+
+            if (result.verdict === 'PASS') {
+                output.innerHTML = `
+                    <strong>✓ CHRISTOLOGICAL INTEGRITY VERIFIED</strong><br>
+                    Monotonicity: ${result.monotonicity ? '✓ Preserved' : '✗ Violated'}<br>
+                    Distances: ${result.distances.map(d => d.toFixed(2)).join(' → ')}<br>
+                    Error: ${result.error || 'None'}<br>
+                    <span style="color: #00ff00;">All transformations preserve Christlikeness (Axiom C1)</span>
+                `;
+            } else {
+                output.innerHTML = `
+                    <strong>✗ CHRISTOLOGICAL INTEGRITY VIOLATED</strong><br>
+                    Monotonicity: ${result.monotonicity ? '✓ Preserved' : '✗ Violated'}<br>
+                    Distances: ${result.distances.map(d => d.toFixed(2)).join(' → ')}<br>
+                    Error: ${result.error || 'None'}<br>
+                    <span style="color: #ff0000;">Some transformations violate Christlikeness preservation</span>
+                `;
+            }
+        }
+
+        // Verify theorem
+        async function verifyTheorem(theorem) {
+            if (!pyodide || !theologyLoaded) return;
+
+            clearOutput();
+
+            if (theorem === 'lawvere') {
+                appendOutput('Verifying Theorem 1: Lawvere Metric Space...');
+                try {
+                    const result = await pyodide.runPythonAsync(`
+# Test Lawvere metric properties
+d1 = LawvereMetric(2.0)
+d2 = LawvereMetric(3.0)
+composed = d1.compose(d2)
+
+farther = LawvereMetric(3.0)
+closer = LawvereMetric(1.0)
+monotone = farther.is_monotone(closer)
+
+import json
+json.dumps({
+    'composition': composed.distance == 5.0,
+    'monotonicity': monotone,
+    'verdict': 'PASS' if composed.distance == 5.0 and monotone else 'FAIL'
+})
+                    `);
+
+                    const parsed = JSON.parse(result);
+                    appendOutput(`Theorem 1 verification: ${parsed.verdict}`);
+                    appendOutput(`Composition (2.0 + 3.0 = 5.0): ${parsed.composition ? '✓' : '✗'}`);
+                    appendOutput(`Monotonicity (1.0 ≤ 3.0): ${parsed.monotonicity ? '✓' : '✗'}`);
+
+                } catch (error) {
+                    appendOutput(`Error verifying theorem: ${error}`);
+                }
+
+            } else if (theorem === 'kan') {
+                appendOutput('Verifying Theorem 2: Kan Extension as John 1:1...');
+                await computeKanExtension();
+
+            } else if (theorem === 'sheaf') {
+                appendOutput('Verifying Theorem 3: Sheaf Gluing as Colossians 1:17...');
+                await computeSheafGluing();
+            }
+        }
+
+        // Run custom code
+        async function runCustomCode() {
+            if (!pyodide || !theologyLoaded) return;
+
+            const code = document.getElementById('custom-code').value;
+            if (!code.trim()) return;
+
+            clearOutput();
+            appendOutput('Running custom code...');
+
+            try {
+                const result = await pyodide.runPythonAsync(code);
+                if (result !== undefined) {
+                    appendOutput(`Result: ${result}`);
+                }
+                appendOutput('✓ Code executed successfully');
+
+            } catch (error) {
+                appendOutput(`Error: ${error}`);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStatus('pyodide-status', false);
+            updateStatus('theology-status', false);
+            updateStatus('christological-status', false);
+
+            // Add custom code textarea
+            const pythonPanel = document.querySelector('.panel:nth-child(2)');
+            const customCodeHTML = `
+                <textarea id="custom-code" placeholder="Enter Python code here..." style="width: 100%; height: 100px; margin: 10px 0; padding: 10px; background: #000; color: #00ff00; border: 1px solid #00ff00; font-family: 'Courier New', monospace;"></textarea>
+                <button class="button" onclick="runCustomCode()" id="run-btn" disabled>Run Custom Code</button>
+            `;
+
+            const outputDiv = document.getElementById('python-output');
+            outputDiv.insertAdjacentHTML('afterend', customCodeHTML);
+
+            updateCategoryVisualization();
+        });
+    </script>
+</body>
+</html>

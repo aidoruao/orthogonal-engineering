@@ -1,0 +1,199 @@
+{
+  "timestamp": "2026-01-26T06:51:21.094133+00:00",
+  "phase": "Phase 1 Initialization",
+  "tests": {
+    "file_structure": {
+      "status": "FAIL",
+      "missing_files": [
+        "base_ai/__init__.py"
+      ],
+      "missing_dirs": [],
+      "found_files": [
+        ".ai_registry.json",
+        "base_ai/registry_manager.py",
+        "base_ai/orchestrator.py",
+        "base_ai/dynamic_warden.py",
+        "base_ai/health_check.py"
+      ],
+      "found_dirs": [
+        ".ai_registry_backups",
+        "base_ai"
+      ]
+    },
+    "registry_integrity": {
+      "status": "PASS",
+      "registry_exists": true,
+      "valid_json": true,
+      "required_sections": [
+        "base_ai",
+        "wardens",
+        "dynamic_wardens",
+        "health_checks",
+        "dynamic_warden_policy",
+        "backup",
+        "error_handling",
+        "system_metrics"
+      ],
+      "missing_sections": [],
+      "registry_hash": "42a7328370e75fdb"
+    },
+    "ollama_models": {
+      "status": "PASS",
+      "ollama_available": true,
+      "installed_models": [
+        "qwen2.5:7b",
+        "codellama:7b",
+        "mistral:7b",
+        "CLAUDE:latest",
+        "LOGOS:latest",
+        "dolphin-mistral:latest",
+        "logos-kernel-v2:latest",
+        "llama3.1:8b-instruct-q4_0",
+        "llama3.1:8b",
+        "llama3.2:latest",
+        "qwen2.5-coder:7b",
+        "gemma3:1b",
+        "qwen3:4b",
+        "llama3:8b",
+        "logos-kernel:latest"
+      ],
+      "required_models": [
+        "llama3.2:latest",
+        "mistral:7b",
+        "codellama:7b",
+        "qwen2.5:7b",
+        "gemma3:1b"
+      ],
+      "available_models": [
+        "llama3.2:latest",
+        "mistral:7b",
+        "codellama:7b",
+        "qwen2.5:7b",
+        "gemma3:1b"
+      ],
+      "missing_models": [],
+      "total_size_gb": 0.0
+    },
+    "disk_space": {
+      "status": "PASS",
+      "free_gb": 128.09,
+      "total_gb": 952.6,
+      "used_gb": 824.51,
+      "usage_percent": 86.55
+    },
+    "health_check": {
+      "status": "PASS",
+      "health_checker_initialized": true,
+      "check_completed": true,
+      "results": {
+        "timestamp": "2026-01-26T06:51:21.215434+00:00",
+        "overall_status": "healthy",
+        "components": {
+          "registry": {
+            "status": "healthy",
+            "timestamp": "2026-01-26T06:51:21.215660+00:00",
+            "missing_sections": [],
+            "base_ai_issues": [],
+            "registry_hash": "42a7328370e75fdb9378ecc4203241adfae552334946d541996b68478275259a",
+            "backup_count": 0
+          },
+          "ollama": {
+            "available": true,
+            "version": "ollama version is 0.13.3",
+            "models_count": 15,
+            "timestamp": "2026-01-26T06:51:21.301718+00:00"
+          },
+          "models": {
+            "available": true,
+            "installed_models": [
+              "qwen2.5:7b",
+              "codellama:7b",
+              "mistral:7b",
+              "CLAUDE:latest",
+              "LOGOS:latest",
+              "dolphin-mistral:latest",
+              "logos-kernel-v2:latest",
+              "llama3.1:8b-instruct-q4_0",
+              "llama3.1:8b",
+              "llama3.2:latest",
+              "qwen2.5-coder:7b",
+              "gemma3:1b",
+              "qwen3:4b",
+              "llama3:8b",
+              "logos-kernel:latest"
+            ],
+            "required_models": [
+              "llama3.2:latest",
+              "mistral:7b",
+              "codellama:7b",
+              "qwen2.5:7b",
+              "gemma3:1b"
+            ],
+            "available_models": [
+              "llama3.2:latest",
+              "mistral:7b",
+              "codellama:7b",
+              "qwen2.5:7b",
+              "gemma3:1b"
+            ],
+            "missing_models": [],
+            "timestamp": "2026-01-26T06:51:21.351221+00:00"
+          },
+          "disk": {
+            "free_gb": 128.09,
+            "total_gb": 952.6,
+            "used_gb": 824.51,
+            "usage_percent": 86.55,
+            "timestamp": "2026-01-26T06:51:21.351358+00:00"
+          },
+          "backup": {
+            "backup_count": 0,
+            "latest_backup": null,
+            "backup_age_hours": null,
+            "timestamp": "2026-01-26T06:51:21.351615+00:00"
+          },
+          "dynamic_warden_cleanup": {
+            "temporary_warden_count": 0,
+            "expired_temporary_wardens": 0,
+            "expired_wardens": [],
+            "max_lifetime_hours": 24,
+            "timestamp": "2026-01-26T06:51:21.351960+00:00"
+          }
+        },
+        "issues": [
+          "No backup files found"
+        ],
+        "recommendations": [
+          "Perform initial registry backup"
+        ]
+      }
+    },
+    "backup_system": {
+      "status": "PASS",
+      "backup_dir_exists": true,
+      "backup_files": [
+        ".ai_registry_backups\\registry_backup_20260126_065121.json"
+      ],
+      "backup_count": 1,
+      "latest_backup": ".ai_registry_backups\\registry_backup_20260126_065121.json"
+    },
+    "dynamic_warden_tool": {
+      "status": "PASS",
+      "file_exists": true,
+      "class_exists": true,
+      "methods_found": [
+        "process_unclassified_folder",
+        "_analyze_folder",
+        "_create_temporary_warden",
+        "increment_query_count",
+        "check_promotion_candidates"
+      ],
+      "methods_missing": []
+    }
+  },
+  "overall_status": "FAIL",
+  "issues": [
+    "Missing required files or directories"
+  ],
+  "recommendations": []
+}

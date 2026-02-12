@@ -1,0 +1,46 @@
+{
+  "backup_timestamp": "2026-01-26T06:53:56.258547+00:00",
+  "original_path": ".ai_registry.json",
+  "data_hash": "42a7328370e75fdb9378ecc4203241adfae552334946d541996b68478275259a",
+  "registry_data": {
+    "base_ai": {
+      "model": "llama3.1:70b",
+      "api_endpoint": "http://localhost:11434",
+      "status": "active",
+      "version": "1.0.0",
+      "last_health_check": null
+    },
+    "wardens": {},
+    "dynamic_wardens": {
+      "unclassified_folders": [],
+      "temporary_wardens": {}
+    },
+    "health_checks": {
+      "interval_seconds": 300,
+      "failure_threshold": 3,
+      "auto_restart": true
+    },
+    "dynamic_warden_policy": {
+      "max_lifetime_hours": 24,
+      "promotion_threshold": 10,
+      "cleanup_on_promotion": true
+    },
+    "backup": {
+      "registry_backup_interval": "hourly",
+      "metadata_backup_interval": "daily",
+      "backup_location": ".ai_registry_backups/"
+    },
+    "error_handling": {
+      "retry_attempts": 3,
+      "retry_delay_seconds": 5,
+      "fallback_to_base_ai": true,
+      "log_all_failures": true
+    },
+    "system_metrics": {
+      "total_queries": 0,
+      "average_response_time_ms": 0,
+      "warden_uptime": 1.0,
+      "last_registry_update": null
+    }
+  }
+}

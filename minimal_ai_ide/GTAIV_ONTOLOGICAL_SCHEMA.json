@@ -1,0 +1,250 @@
+{
+  "ontology": "GTAIV_Mod_Compatibility_Ontology_v1.0",
+  "description": "Formal ontological schema defining relationships between GTA IV game versions, mods, and compatibility constraints",
+  "created": "2026-01-31T15:45:00Z",
+  "schema_version": "1.0.0",
+
+  "core_concepts": {
+    "GameVersion": {
+      "definition": "A specific release version of GTA IV with unique binary signature",
+      "properties": [
+        "version_string",
+        "executable_hash",
+        "executable_size",
+        "release_date",
+        "edition_type",
+        "patch_level"
+      ],
+      "examples": [
+        "1.0.0.0",
+        "1.0.7.0",
+        "1.0.8.0",
+        "CompleteEdition_1.2.0.43"
+      ]
+    },
+
+    "Mod": {
+      "definition": "A modification that alters game behavior or content",
+      "subtypes": [
+        "ASI_Mod",
+        "ScriptHook_Mod",
+        "DLL_Mod",
+        "Content_Mod",
+        "Patch_Mod"
+      ],
+      "properties": [
+        "mod_name",
+        "mod_type",
+        "target_game_versions",
+        "dependencies",
+        "conflicts",
+        "load_order",
+        "version_constraints"
+      ]
+    },
+
+    "CompatibilityRelation": {
+      "definition": "Formal relationship defining compatibility between entities",
+      "types": [
+        "fully_compatible",
+        "partially_compatible",
+        "incompatible",
+        "requires_adapter",
+        "conflicting"
+      ]
+    },
+
+    "VersionConstraint": {
+      "definition": "Mathematical constraint on version compatibility",
+      "operators": [
+        "equals",
+        "greater_than",
+        "less_than",
+        "between",
+        "not_equal"
+      ]
+    }
+  },
+
+  "game_versions_ontology": {
+    "1.0.0.0": {
+      "executable_hash": "14.5MB_original",
+      "characteristics": ["original_release", "gfwl_required", "no_eflc"],
+      "modding_status": "legacy"
+    },
+
+    "1.0.7.0": {
+      "executable_hash": "17.4MB_patched",
+      "characteristics": ["patch_7", "gfwl_optional", "eflc_support"],
+      "modding_status": "primary_modding_target"
+    },
+
+    "1.0.8.0": {
+      "executable_hash": "17.4MB_updated",
+      "characteristics": ["patch_8", "complete_edition_base", "updated_drm"],
+      "modding_status": "modern_modding"
+    },
+
+    "CompleteEdition": {
+      "executable_hash": "17.4MB_ce",
+      "characteristics": ["steam_release", "downgradable", "latest_official"],
+      "modding_status": "requires_downgrade"
+    }
+  },
+
+  "mod_types_ontology": {
+    "ASI_Loader": {
+      "definition": "DLL that loads ASI plugin files",
+      "examples": ["dinput8.dll", "xlive.dll", "asi loader"],
+      "constraints": ["mutually_exclusive", "single_instance_only"]
+    },
+
+    "ScriptHook": {
+      "definition": "Core scripting framework for mods",
+      "version_sensitivity": "high",
+      "game_version_binding": "strict"
+    },
+
+    "Graphics_Wrapper": {
+      "definition": "Intercepts DirectX calls for enhancement/compatibility",
+      "examples": ["d3d9.dll", "dxvk", "reshade"],
+      "compatibility_notes": ["may_conflict_with_other_wrappers"]
+    },
+
+    "Content_Mod": {
+      "definition": "Modifies game assets (textures, models, sounds)",
+      "location_patterns": ["update/", "pc/", "common/"]
+    },
+
+    "Patch_Mod": {
+      "definition": "Fixes bugs or alters game behavior",
+      "examples": ["ZolikaPatch.asi", "FusionFix"]
+    }
+  },
+
+  "compatibility_rules": {
+    "rule_1_asi_loader_exclusivity": {
+      "statement": "Only one ASI loader may be active at a time",
+      "formal_logic": "∀ loader₁, loader₂ ∈ ASI_Loader : loader₁ ≠ loader₂ → incompatible(loader₁, loader₂)",
+      "practical_implication": "Delete duplicate ASI loaders"
+    },
+
+    "rule_2_scripthook_version_binding": {
+      "statement": "ScriptHook version must match game version exactly",
+      "formal_logic": "ScriptHook.version ∈ compatible_versions(GameVersion.executable_hash)",
+      "practical_implication": "Detect game version, install matching ScriptHook"
+    },
+
+    "rule_3_dependency_acyclicity": {
+      "statement": "Mod dependencies must not form cycles",
+      "formal_logic": "¬∃ cycle ∈ Mod.dependencies where mod₁ → mod₂ → ... → mod₁",
+      "practical_implication": "Validate dependency graphs"
+    },
+
+    "rule_4_conflict_resolution": {
+      "statement": "Conflicting mods cannot co-exist",
+      "formal_logic": "conflicts(mod₁, mod₂) → ¬(active(mod₁) ∧ active(mod₂))",
+      "practical_implication": "Disable or remove conflicting mods"
+    }
+  },
+
+  "detection_algorithms": {
+    "game_version_detection": {
+      "method": "multi_factor_analysis",
+      "factors": [
+        "executable_file_size",
+        "executable_binary_hash",
+        "file_timestamps",
+        "registry_entries",
+        "steam_appid"
+      ],
+      "confidence_scoring": "weighted_combination"
+    },
+
+    "mod_compatibility_check": {
+      "method": "constraint_satisfaction",
+      "steps": [
+        "extract_mod_metadata",
+        "parse_version_constraints",
+        "check_game_version_compatibility",
+        "verify_dependencies",
+        "detect_conflicts",
+        "validate_load_order"
+      ]
+    }
+  },
+
+  "fix_strategies": {
+    "version_mismatch_fix": {
+      "problem": "ScriptHook doesn't recognize game version",
+      "solution": [
+        "identify_actual_game_version",
+        "locate_correct_scripthook_version",
+        "replace_incompatible_scripthook",
+        "verify_compatibility"
+      ]
+    },
+
+    "loader_conflict_fix": {
+      "problem": "Multiple ASI loaders present",
+      "solution": [
+        "enumerate_all_asi_loaders",
+        "select_optimal_loader_based_on_mods",
+        "remove_redundant_loaders",
+        "test_loader_functionality"
+      ]
+    },
+
+    "dependency_resolution": {
+      "problem": "Missing or incompatible dependencies",
+      "solution": [
+        "analyze_dependency_graph",
+        "identify_missing_components",
+        "locate_compatible_versions",
+        "install_prerequisites"
+      ]
+    }
+  },
+
+  "implementation_components": {
+    "version_detector": {
+      "purpose": "Accurately identify GTA IV game version",
+      "inputs": ["GTAIV.exe", "registry", "file_system"],
+      "outputs": ["detected_version", "confidence_score", "recommended_actions"]
+    },
+
+    "compatibility_analyzer": {
+      "purpose": "Check mod compatibility with detected game version",
+      "inputs": ["mod_files", "game_version", "ontology_rules"],
+      "outputs": ["compatibility_report", "conflict_list", "fix_recommendations"]
+    },
+
+    "auto_fixer": {
+      "purpose": "Automatically resolve compatibility issues",
+      "capabilities": [
+        "version_matching",
+        "conflict_resolution",
+        "dependency_installation",
+        "backup_and_restore"
+      ]
+    }
+  },
+
+  "ontological_axioms": [
+    {
+      "axiom_1_version_identity": "Every GTA IV executable has a unique version identity determinable from its binary properties"
+    },
+    {
+      "axiom_2_mod_specificity": "Every mod has explicit or implicit version constraints"
+    },
+    {
+      "axiom_3_compatibility_transitivity": "If mod A is compatible with version V, and mod B depends on mod A, then mod B's compatibility with V depends on mod A's compatibility"
+    },
+    {
+      "axiom_4_conflict_symmetry": "If mod A conflicts with mod B, then mod B conflicts with mod A"
+    },
+    {
+      "axiom_5_loader_exclusivity": "The ASI loader space admits only one occupant at a time"
+    }
+  ]
+}

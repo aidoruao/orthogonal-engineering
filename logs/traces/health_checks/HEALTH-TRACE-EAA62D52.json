@@ -1,0 +1,87 @@
+{
+  "trace_id": "HEALTH-TRACE-EAA62D52",
+  "operation": "health_check",
+  "timestamp": "2026-01-26T06:51:21.355963+00:00",
+  "results": {
+    "timestamp": "2026-01-26T06:51:21.215434+00:00",
+    "overall_status": "healthy",
+    "components": {
+      "registry": {
+        "status": "healthy",
+        "timestamp": "2026-01-26T06:51:21.215660+00:00",
+        "missing_sections": [],
+        "base_ai_issues": [],
+        "registry_hash": "42a7328370e75fdb9378ecc4203241adfae552334946d541996b68478275259a",
+        "backup_count": 0
+      },
+      "ollama": {
+        "available": true,
+        "version": "ollama version is 0.13.3",
+        "models_count": 15,
+        "timestamp": "2026-01-26T06:51:21.301718+00:00"
+      },
+      "models": {
+        "available": true,
+        "installed_models": [
+          "qwen2.5:7b",
+          "codellama:7b",
+          "mistral:7b",
+          "CLAUDE:latest",
+          "LOGOS:latest",
+          "dolphin-mistral:latest",
+          "logos-kernel-v2:latest",
+          "llama3.1:8b-instruct-q4_0",
+          "llama3.1:8b",
+          "llama3.2:latest",
+          "qwen2.5-coder:7b",
+          "gemma3:1b",
+          "qwen3:4b",
+          "llama3:8b",
+          "logos-kernel:latest"
+        ],
+        "required_models": [
+          "llama3.2:latest",
+          "mistral:7b",
+          "codellama:7b",
+          "qwen2.5:7b",
+          "gemma3:1b"
+        ],
+        "available_models": [
+          "llama3.2:latest",
+          "mistral:7b",
+          "codellama:7b",
+          "qwen2.5:7b",
+          "gemma3:1b"
+        ],
+        "missing_models": [],
+        "timestamp": "2026-01-26T06:51:21.351221+00:00"
+      },
+      "disk": {
+        "free_gb": 128.09,
+        "total_gb": 952.6,
+        "used_gb": 824.51,
+        "usage_percent": 86.55,
+        "timestamp": "2026-01-26T06:51:21.351358+00:00"
+      },
+      "backup": {
+        "backup_count": 0,
+        "latest_backup": null,
+        "backup_age_hours": null,
+        "timestamp": "2026-01-26T06:51:21.351615+00:00"
+      },
+      "dynamic_warden_cleanup": {
+        "temporary_warden_count": 0,
+        "expired_temporary_wardens": 0,
+        "expired_wardens": [],
+        "max_lifetime_hours": 24,
+        "timestamp": "2026-01-26T06:51:21.351960+00:00"
+      }
+    },
+    "issues": [
+      "No backup files found"
+    ],
+    "recommendations": [
+      "Perform initial registry backup"
+    ]
+  }
+}

@@ -1,0 +1,183 @@
+{
+  "verification_id": "BUNDLE-VERIFY-20260125193405",
+  "timestamp": "2026-01-25T19:34:05.673909",
+  "repository": "C:\\Users\\Aidor\\Documents\\orthogonal-engineering-clean",
+  "tests": {
+    "Bundle Structure": {
+      "passed": true,
+      "details": {
+        "controller.py": {
+          "exists": true,
+          "description": "Full DAG orchestrator"
+        },
+        "generate_structural_map.py": {
+          "exists": true,
+          "description": "JSON/YAML map generator"
+        },
+        "minimal_struct_map.py": {
+          "exists": true,
+          "description": "Fallback structural map generator"
+        },
+        "test_atomic_orchestration.py": {
+          "exists": true,
+          "description": "Test suite"
+        },
+        "ATOMIC_ORCHESTRATION_README.md": {
+          "exists": true,
+          "description": "Comprehensive documentation"
+        },
+        "ATOMIC_ORCHESTRATION_IMPLEMENTATION_SUMMARY.md": {
+          "exists": true,
+          "description": "Implementation summary"
+        },
+        "VERIFY_BUNDLE_COMPLETE.py": {
+          "exists": true,
+          "description": "This verification script"
+        },
+        "_backup/": {
+          "exists": true,
+          "description": "Automatic backup directory"
+        },
+        "state/": {
+          "exists": true,
+          "description": "Checkpoint directory"
+        },
+        "generated_repository_structural_map_full.json": {
+          "exists": true,
+          "size_kb": 292.580078125
+        },
+        "generated_repository_structural_map_full.yaml": {
+          "exists": true,
+          "size_kb": 245.6357421875
+        }
+      },
+      "timestamp": "2026-01-25T19:34:05.676808"
+    },
+    "Controller DAG": {
+      "passed": true,
+      "details": {
+        "automation/run_full_audit_with_trace.py": {
+          "exists": true
+        },
+        "automation/run_autofix_integration.py": {
+          "exists": true
+        },
+        "tests/test_autofix_engine.py": {
+          "exists": true
+        },
+        "downloads/generate_structural_map.py": {
+          "exists": true
+        }
+      },
+      "timestamp": "2026-01-25T19:34:05.677958"
+    },
+    "Fallback System": {
+      "passed": true,
+      "details": {
+        "automation/fallback_light_audit.py": {
+          "exists": true,
+          "description": "Lightweight audit fallback",
+          "size_kb": 2.4814453125
+        },
+        "automation/dry_run_autofix.py": {
+          "exists": true,
+          "description": "Dry-run autofix analysis",
+          "size_kb": 6.2724609375
+        },
+        "toolkit/oe/fallback_spellcheck.py": {
+          "exists": true,
+          "description": "Boundary spell-check fallback",
+          "size_kb": 9.22265625
+        },
+        "toolkit/oe/dry_run_autofix.py": {
+          "exists": true,
+          "description": "Toolkit dry-run analysis",
+          "size_kb": 7.931640625
+        },
+        "toolkit/oe/partial_log_backup.py": {
+          "exists": true,
+          "description": "Emergency log backup",
+          "size_kb": 8.216796875
+        },
+        "downloads/minimal_struct_map.py": {
+          "exists": true,
+          "description": "Minimal structural map",
+          "size_kb": 8.5771484375
+        }
+      },
+      "timestamp": "2026-01-25T19:34:05.679006"
+    },
+    "Checkpoint System": {
+      "passed": true,
+      "details": {
+        "checkpoints": {
+          "exists": true,
+          "count": 6,
+          "files": [
+            "automation_run_autofix_integration.py.checkpoint",
+            "automation_run_full_audit_with_trace.py.checkpoint",
+            "downloads_generate_structural_map.py.checkpoint",
+            "minimal_struct_map.py.checkpoint",
+            "tests_test_autofix_engine.py.checkpoint"
+          ]
+        },
+        "backups": {
+          "exists": true,
+          "count": 2,
+          "backups": [
+            "20260126_012623",
+            "20260126_012816"
+          ]
+        },
+        "logs": {
+          "exists": true,
+          "count": 24,
+          "recent": [
+            "analysis_simple_recovery_summary.py_20260126_012816.log",
+            "analysis_simple_recovery_summary.py_20260126_012815.log",
+            "analysis_simple_recovery_summary.py_20260126_012813.log"
+          ]
+        }
+      },
+      "timestamp": "2026-01-25T19:34:05.681166"
+    },
+    "Documentation": {
+      "passed": true,
+      "details": {
+        "ATOMIC_ORCHESTRATION_README.md": {
+          "exists": true,
+          "description": "Comprehensive bundle documentation",
+          "size_kb": 9.4287109375
+        },
+        "ATOMIC_ORCHESTRATION_IMPLEMENTATION_SUMMARY.md": {
+          "exists": true,
+          "description": "Implementation summary",
+          "size_kb": 12.34375
+        }
+      },
+      "timestamp": "2026-01-25T19:34:05.681951"
+    },
+    "Execution Capability": {
+      "passed": false,
+      "details": {
+        "structural_map": {
+          "success": false,
+          "error": "cannot access local variable 'sys' where it is not associated with a value"
+        },
+        "controller_structure": {
+          "valid": true
+        }
+      },
+      "timestamp": "2026-01-25T19:34:05.691270"
+    }
+  },
+  "summary": {
+    "total_tests": 6,
+    "passed_tests": 5,
+    "failed_tests": 1,
+    "success_rate": 83.33333333333334,
+    "timestamp": "2026-01-25T19:34:05.691546",
+    "bundle_status": "PARTIAL"
+  },
+  "status": "in_progress"
+}

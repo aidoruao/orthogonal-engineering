@@ -1,0 +1,322 @@
+{
+  "repository_metadata": {
+    "name": "orthogonal-engineering-clean",
+    "location": "C:\\Users\\Aidor\\Documents\\orthogonal-engineering-clean",
+    "total_files": "~3001 files, 27MB",
+    "investigation_timestamp": "2026-01-24",
+    "framework": "Orthogonal Engineering Glass-Box Boundary Framework",
+    "version": "v0.2.0",
+    "schema_id": "GB-ORIGIN-1.13",
+    "primary_purpose": "Glass-Box Boundary enforcement with autofix system, IDE integration, and evidence tracking"
+  },
+
+  "scripts_enumeration": {
+    "automation_scripts": [
+      {
+        "filename": "automation/run_full_audit_with_trace.py",
+        "purpose": "Glass-Box Boundary enforcer - Python implementation enforcing HTML blueprint",
+        "input_parameters": ["--audit", "--component", "--trace-only", "--audit-existing"],
+        "output_targets": ["trace documents", "violation reports", "exit code 2 on violations"],
+        "dependencies": ["hashlib", "json", "logging", "os", "subprocess", "sys", "uuid", "warnings"],
+        "key_constants": [
+          "REQUIRED_ARTIFACTS",
+          "MAX_FILE_SIZE_BYTES: 10MB",
+          "MAX_TOKEN_ESTIMATE: 100000",
+          "SUPPRESSED_SIGNAL_PATTERNS",
+          "PII_DETECTION_PATTERNS",
+          "REGEX_BOUNDARY_VIOLATION_PATTERNS",
+          "TIMELINE_REQUIRED_EVENTS"
+        ]
+      },
+      {
+        "filename": "automation/run_autofix_integration.py",
+        "purpose": "Autofix integration CLI with spell-check-like functionality for code integrity",
+        "input_parameters": ["check", "fix", "audit", "setup-ide", "--verbose", "--auto"],
+        "output_targets": ["autofix reports", "IDE integration setup", "boundary violation fixes"],
+        "dependencies": ["toolkit.oe.autofix_engine", "toolkit.oe.boundary_spellcheck", "toolkit.oe.ide_ai_integration"],
+        "key_functions": ["check_boundary_violations", "apply_autofixes", "run_comprehensive_audit", "setup_ide_integration"]
+      },
+      {
+        "filename": "automation/zed_incremental_hook.py",
+        "purpose": "Zed IDE integration hook for real-time boundary checking",
+        "input_parameters": ["file paths", "edit events"],
+        "output_targets": ["inline violation highlighting", "quick-fix suggestions"],
+        "dependencies": ["toolkit.oe.* modules"],
+        "integration_type": "Zed IDE LSP integration"
+      },
+      {
+        "filename": "automation/full_audit.py",
+        "purpose": "Full repository audit with SHA256 artifact tracking",
+        "input_parameters": ["repository path"],
+        "output_targets": ["audit logs", "SHA256 manifests", "compliance reports"],
+        "dependencies": ["pandas", "numpy", "hashlib", "json"],
+        "phase_coverage": "Phases 1-7 automation"
+      },
+      {
+        "filename": "automation/generate_sha256_manifest.py",
+        "purpose": "Generate SHA256 hash manifests for all repository artifacts",
+        "input_parameters": ["directory path", "output file"],
+        "output_targets": ["SHA256 manifest JSON files"],
+        "dependencies": ["hashlib", "json", "os", "pathlib"],
+        "output_location": "documentation/sha256_manifests/"
+      },
+      {
+        "filename": "automation/pre_commit_pii_guard.py",
+        "purpose": "Pre-commit hook for PII detection and boundary enforcement",
+        "input_parameters": ["file paths", "commit message"],
+        "output_targets": ["PII violation reports", "blocked commits"],
+        "dependencies": ["re", "sys", "os"],
+        "detection_patterns": "PII_DETECTION_PATTERNS from blueprint"
+      },
+      {
+        "filename": "automation/phase8_atomic_workflow.py",
+        "purpose": "Phase 8 atomic workflow implementation",
+        "input_parameters": ["workflow definition", "execution context"],
+        "output_targets": ["workflow execution traces", "atomic operation logs"],
+        "dependencies": ["yaml", "json", "datetime", "uuid"],
+        "phase": 8
+      },
+      {
+        "filename": "automation/phase9_workflow_executor.py",
+        "purpose": "Phase 9 workflow execution with trace enrichment",
+        "input_parameters": ["workflow YAML", "evidence store"],
+        "output_targets": ["enriched traces", "causal analysis reports"],
+        "dependencies": ["toolkit.oe.evidence_store", "toolkit.oe.trace_enricher"],
+        "phase": 9
+      }
+    ],
+
+    "toolkit_scripts": [
+      {
+        "filename": "toolkit/oe/autofix_engine.py",
+        "purpose": "Core autofix engine for boundary violation detection and fix suggestions",
+        "input_parameters": ["file content", "file path"],
+        "output_targets": ["BoundaryViolation objects", "FixSuggestion objects"],
+        "dependencies": ["ast", "difflib", "re", "dataclasses", "enum"],
+        "key_classes": ["AutofixEngine", "BoundaryViolation", "FixSuggestion", "ViolationSeverity", "FixType"]
+      },
+      {
+        "filename": "toolkit/oe/boundary_spellcheck.py",
+        "purpose": "Spell-check-like functionality for real-time code integrity validation",
+        "input_parameters": ["file content", "edit context"],
+        "output_targets": ["SpellCheckDiagnostic objects", "quick-fix actions"],
+        "dependencies": ["toolkit.oe.autofix_engine", "ast", "re", "dataclasses"],
+        "key_classes": ["BoundarySpellCheck", "SpellCheckDiagnostic", "SpellCheckResult", "SpellCheckSeverity", "SpellCheckAction"]
+      },
+      {
+        "filename": "toolkit/oe/ide_ai_integration.py",
+        "purpose": "IDE-AI integration layer for real-time boundary checking",
+        "input_parameters": ["workspace root", "file events"],
+        "output_targets": ["IDE session state", "violation displays", "fix applications"],
+        "dependencies": ["asyncio", "threading", "toolkit.oe.* modules"],
+        "key_classes": ["IDEAIIntegration", "IDEAIState", "ViolationDisplayMode"]
+      },
+      {
+        "filename": "toolkit/oe/boundary_enforcer.py",
+        "purpose": "Boundary decorator factory for @glass_box_boundary enforcement",
+        "input_parameters": ["function to decorate", "validation schemas"],
+        "output_targets": ["decorated functions", "validation errors"],
+        "dependencies": ["functools", "inspect", "typing"],
+        "key_function": "glass_box_boundary() decorator factory"
+      },
+      {
+        "filename": "toolkit/oe/evidence_store.py",
+        "purpose": "Evidence storage and retrieval with causal relationships",
+        "input_parameters": ["evidence items", "causal links"],
+        "output_targets": ["evidence chains", "causal graphs", "confidence scores"],
+        "dependencies": ["dataclasses", "datetime", "json", "uuid"],
+        "key_classes": ["EvidenceStore", "EvidenceItem", "CausalLink"]
+      },
+      {
+        "filename": "toolkit/oe/suppressed_signal_detector.py",
+        "purpose": "Detect suppressed signals in code (broad exceptions, warning suppression)",
+        "input_parameters": ["code content", "file path"],
+        "output_targets": ["suppressed signal reports", "severity classifications"],
+        "dependencies": ["re", "ast", "dataclasses"],
+        "detection_patterns": ["except Exception: pass", "warnings.filterwarnings('ignore')"]
+      }
+    ],
+
+    "analysis_scripts": [
+      {
+        "filename": "analysis/canal_detector_v1.py",
+        "purpose": "Detect 'canals' (epistemic drift patterns) in AI conversations",
+        "input_parameters": ["conversation data", "thresholds"],
+        "output_targets": ["canal detection reports", "precision metrics"],
+        "dependencies": ["pandas", "numpy", "scipy", "json"],
+        "key_functions": ["detect_canals()", "calculate_precision()", "gutenberg_null_test()"]
+      },
+      {
+        "filename": "analysis/full_system_investigation.py",
+        "purpose": "Full system investigation with epistemic breach detection",
+        "input_parameters": ["conversation files", "investigation parameters"],
+        "output_targets": ["investigation reports", "breach classifications"],
+        "dependencies": ["enum", "dataclasses", "json", "re"],
+        "key_classes": ["Speaker", "ResponseAction", "ControlLayer", "FeedbackType"]
+      },
+      {
+        "filename": "analysis/automated_test_suite.py",
+        "purpose": "Automated test suite for orthogonal engineering methodology",
+        "input_parameters": ["test data", "validation criteria"],
+        "output_targets": ["test results", "statistical validation"],
+        "dependencies": ["pytest", "pandas", "numpy"],
+        "test_types": ["precision tests", "null hypothesis tests", "reproducibility tests"]
+      }
+    ],
+
+    "system_scripts": [
+      {
+        "filename": "affective_constraint_system.py",
+        "purpose": "Affective constraint system mapping AI failures to human neural analogues",
+        "input_parameters": ["failure patterns", "constraint parameters"],
+        "output_targets": ["constraint violations", "therapeutic interventions"],
+        "dependencies": ["enum", "dataclasses", "json"],
+        "key_classes": ["AffectiveConstraintType", "FailureModeType", "TherapeuticIntervention"]
+      },
+      {
+        "filename": "failure_analyzer.py",
+        "purpose": "Failure analysis with ontological premise classification",
+        "input_parameters": ["failure data", "premise definitions"],
+        "output_targets": ["failure classifications", "severity assessments"],
+        "dependencies": ["enum", "dataclasses", "json"],
+        "key_classes": ["OntologicalPremise", "FailureSeverity", "FailureCategory"]
+      },
+      {
+        "filename": "correspondence_validator.py",
+        "purpose": "Validate correspondence between claims and evidence",
+        "input_parameters": ["claims", "evidence", "validation rules"],
+        "output_targets": ["correspondence scores", "validation reports"],
+        "dependencies": ["json", "re", "dataclasses"],
+        "validation_types": ["falsifiability", "transparency", "auditability"]
+      }
+    ],
+
+    "mcp_scripts": [
+      {
+        "filename": "oe-basic.mcp.js",
+        "purpose": "MCP (Model Context Protocol) server for orthogonal engineering",
+        "input_parameters": ["MCP protocol messages"],
+        "output_targets": ["tool responses", "evidence queries", "boundary checks"],
+        "dependencies": ["@modelcontextprotocol/sdk"],
+        "server_type": "Node.js MCP server"
+      },
+      {
+        "filename": "test_mcp_server.js",
+        "purpose": "Test MCP server implementation",
+        "input_parameters": ["test commands"],
+        "output_targets": ["test results", "protocol validation"],
+        "dependencies": ["@modelcontextprotocol/sdk"],
+        "test_coverage": "MCP protocol compliance"
+      }
+    ],
+
+    "bash_batch_scripts": [
+      {
+        "filename": "RUN_AGENT.bat",
+        "purpose": "Windows batch script to run orthogonal engineering agent",
+        "input_parameters": ["none"],
+        "output_targets": ["agent execution", "log files"],
+        "dependencies": ["Python 3.11+", "requirements.txt"],
+        "execution_flow": "Activate environment → Run agent → Generate traces"
+      },
+      {
+        "filename": "RUN_PIPELINE.ps1",
+        "purpose": "PowerShell script to run complete pipeline",
+        "input_parameters": ["pipeline phase", "options"],
+        "output_targets": ["pipeline execution", "phase outputs"],
+        "dependencies": ["Python", "Git", "Docker"],
+        "pipeline_phases": "1-8 automated"
+      }
+    ]
+  },
+
+  "markdown_files_summary": {
+    "core_documentation": [
+      {
+        "filename": "AGENT.md",
+        "purpose": "Glass-Box Boundary Agent specification and enforcement rules",
+        "headers": ["AGENT PURPOSE", "CORE RESPONSIBILITIES", "AGENT ARCHITECTURE", "OPERATIONAL MODES", "ENFORCEMENT RULES"],
+        "links_to_scripts": ["automation/run_full_audit_with_trace.py", "automation/run_autofix_integration.py"],
+        "structure_patterns": "Versioned specification with enforcement layers"
+      },
+      {
+        "filename": "AI_INSTRUCTIONS.md",
+        "purpose": "Mandatory AI onboarding and metering protocol",
+        "headers": ["MANDATORY ONBOARDING & METERING PROTOCOL", "PURPOSE", "GLASS-BOX BOUNDARY ENFORCEMENT", "LOCAL METERING DEVICE"],
+        "links_to_scripts": ["onboarding/verify_onboarding.py", "toolkit/oe/local_metering_device.py"],
+        "structure_patterns": "Phase-based protocol with verification checklist"
+      },
+      {
+        "filename": "ONBOARD_FIRST.md",
+        "purpose": "Mandatory first-read protocol for every new AI instance",
+        "headers": ["MANDATORY FIRST-READ: ONBOARDING PROTOCOL", "STEP-BY-STEP PROTOCOL", "UNDERSTAND THE 'GRENADE'"],
+        "links_to_scripts": ["onboarding/LEVEL1.md", "onboarding/LEVEL2.md", "onboarding/LEVEL3.md"],
+        "structure_patterns": "Step-by-step instructions with warnings"
+      },
+      {
+        "filename": "_START_HERE.md",
+        "purpose": "Repository structure and deployment guide",
+        "headers": ["ORTHOGONAL ENGINEERING - READY FOR GITHUB", "FILE STRUCTURE", "WHAT'S NEW IN v0.2.0"],
+        "links_to_scripts": ["index.html", "theory/index.html", "workbench/index.html"],
+        "structure_patterns": "Deployment checklist with file hierarchy"
+      }
+    ],
+
+    "methodology_documentation": [
+      {
+        "filename": "documentation/README.md",
+        "purpose": "Main repository documentation with phase completion status",
+        "headers": ["Orthogonal Engineering: Complete Phase 1-8 Automation Framework", "What This Repository Is", "What This Repository Is NOT"],
+        "links_to_scripts": ["automation/full_audit.py", "analysis/automated_test_suite.py"],
+        "structure_patterns": "Framework claim with phase status tracking"
+      },
+      {
+        "filename": "FORMAL_FOUNDATIONS.md",
+        "purpose": "Complete mathematical foundations with theorems and proofs",
+        "headers": ["Formal Definitions", "Proven Theorems", "Mathematical Framework"],
+        "links_to_scripts": ["analysis/canal_detector_v1.py", "affective_constraint_system.py"],
+        "structure_patterns": "Mathematical formalism with theorem-proof structure"
+      },
+      {
+        "filename": "INVARIANTS.md",
+        "purpose": "Invariant classification methodology",
+        "headers": ["Atomic Execution", "No Narrative Drift", "Complete Transparency"],
+        "links_to_scripts": ["analysis/invariant_logger.py", "analysis/invariant_registry.py"],
+        "structure_patterns": "Invariant definitions with falsifiability criteria"
+      },
+      {
+        "filename": "FAILURES.md",
+        "purpose": "Known failure modes and analysis methodology",
+        "headers": ["Failure Classification", "Detection Methods", "Recovery Protocols"],
+        "links_to_scripts": ["failure_analyzer.py", "failure_logger.py"],
+        "structure_patterns": "Failure taxonomy with severity levels"
+      }
+    ],
+
+    "phase_completion_reports": [
+      {
+        "filename": "DAY1_SUMMARY.md",
+        "purpose": "Day 1 completion summary with Sora pipeline foundation",
+        "headers": ["DAY 1 COMPLETE", "Architecture Implemented", "Components Verified"],
+        "links_to_scripts": ["orchestration/pipeline_orchestrator.py", "orchestration/sora_prompt_generator.py"],
+        "structure_patterns": "Daily progress report with component checklist"
+      },
+      {
+        "filename": "DAY2_COMPLETION_SUMMARY.md",
+        "purpose": "Day 2 completion with vector store implementation",
+        "headers": ["DAY 2 COMPLETE", "Vector Store Implementation", "Embedding System"],
+        "links_to_scripts": ["orchestration/vector_store.py", "orchestration/embedding_generator.py"],
+        "structure_patterns": "Implementation report with technical details"
+      },
+      {
+        "filename": "AUTOFIX_IMPLEMENTATION_SUMMARY.md",
+        "purpose": "Complete autofix system implementation summary",
+        "headers": ["COMPLETE AUTOFIX SYSTEM IMPLEMENTATION", "Spell-check for code integrity", "IDE Integration"],
+        "links_to_scripts": ["toolkit/oe/autofix_engine.py", "toolkit/oe/boundary_spellcheck.py"],
+        "structure_patterns": "Feature implementation report with architecture diagrams"
+      },
+      {
+        "filename": "PHASE_8_COMPLETION_SUMMARY.md",
+        "purpose": "Phase 8 atomic workflow implementation completion",
+        "headers": ["PHASE 8 COMPLETE", "Atomic Workflow Implementation", "Automation Achieved"],
+        "links_to_scripts": ["automation/phase8_atomic_workflow.py", "

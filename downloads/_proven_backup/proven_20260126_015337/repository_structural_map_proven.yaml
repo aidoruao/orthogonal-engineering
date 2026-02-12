@@ -1,0 +1,33 @@
+core_invariants:
+- formal_definition: Every investigation step must be necessary, irreducible, logged,
+    and falsifiable
+  id: INV-001
+  name: Atomic Execution
+  proof_reference: FORMAL_FOUNDATIONS.md#atomic-execution
+- formal_definition: No interpretive compression, summarization, or metaphor substitution
+  id: INV-002
+  name: No Narrative Drift
+  proof_reference: FORMAL_FOUNDATIONS.md#no-narrative-drift
+- formal_definition: All intermediate states, failed runs, partial parses preserved
+  id: INV-003
+  name: Complete Transparency
+  proof_reference: FORMAL_FOUNDATIONS.md#complete-transparency
+- formal_definition: All code must be inspectable, traceable, and boundary-compliant
+  id: INV-004
+  name: Glass-Box Boundary Enforcement
+  proof_reference: GLASS_BOX_BOUNDARY_v1.11.html
+dependencies:
+- automation/run_full_audit_with_trace.py
+- automation/run_autofix_integration.py
+execution_summary:
+  failed_unproven: 2
+  mathematical_standard: 100% proof verification required
+  proven_executed: 0
+  results:
+    automation/run_autofix_integration.py: false
+    automation/run_full_audit_with_trace.py: false
+  total_scripts: 2
+generated_by: controller_proven.py
+proof_registry: {}
+timestamp: 2026-01-26T01:49:48.917906+00:00Z
+verification_level: mathematical_proof_required

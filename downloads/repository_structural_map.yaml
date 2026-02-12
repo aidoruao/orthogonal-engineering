@@ -1,0 +1,344 @@
+# Repository Structural Map - Orthogonal Engineering Glass-Box Boundary Framework
+# Generated: 2026-01-24
+# Schema: GB-ORIGIN-1.13
+# Total Files: ~3001 files, 27MB
+
+repository_metadata:
+  name: orthogonal-engineering-clean
+  location: C:\Users\Aidor\Documents\orthogonal-engineering-clean
+  framework: Orthogonal Engineering Glass-Box Boundary Framework
+  version: v0.2.0
+  primary_purpose: Glass-Box Boundary enforcement with autofix system, IDE integration, and evidence tracking
+
+core_automation_scripts:
+  - filename: automation/run_full_audit_with_trace.py
+    purpose: Glass-Box Boundary enforcer - Python implementation enforcing HTML blueprint
+    inputs: [--audit, --component, --trace-only, --audit-existing]
+    outputs: [trace documents, violation reports, exit code 2 on violations]
+    key_constants: [REQUIRED_ARTIFACTS, MAX_FILE_SIZE_BYTES: 10MB, SUPPRESSED_SIGNAL_PATTERNS, PII_DETECTION_PATTERNS]
+
+  - filename: automation/run_autofix_integration.py
+    purpose: Autofix integration CLI with spell-check-like functionality for code integrity
+    inputs: [check, fix, audit, setup-ide, --verbose, --auto]
+    outputs: [autofix reports, IDE integration setup, boundary violation fixes]
+    dependencies: [toolkit.oe.autofix_engine, toolkit.oe.boundary_spellcheck, toolkit.oe.ide_ai_integration]
+
+  - filename: automation/zed_incremental_hook.py
+    purpose: Zed IDE integration hook for real-time boundary checking
+    inputs: [file paths, edit events]
+    outputs: [inline violation highlighting, quick-fix suggestions]
+    integration_type: Zed IDE LSP integration
+
+  - filename: automation/full_audit.py
+    purpose: Full repository audit with SHA256 artifact tracking
+    inputs: [repository path]
+    outputs: [audit logs, SHA256 manifests, compliance reports]
+    phase_coverage: Phases 1-7 automation
+
+toolkit_core_components:
+  - filename: toolkit/oe/autofix_engine.py
+    purpose: Core autofix engine for boundary violation detection and fix suggestions
+    key_classes: [AutofixEngine, BoundaryViolation, FixSuggestion]
+    enums: [ViolationSeverity, FixType]
+
+  - filename: toolkit/oe/boundary_spellcheck.py
+    purpose: Spell-check-like functionality for real-time code integrity validation
+    key_classes: [BoundarySpellCheck, SpellCheckDiagnostic, SpellCheckResult]
+    enums: [SpellCheckSeverity, SpellCheckAction]
+
+  - filename: toolkit/oe/ide_ai_integration.py
+    purpose: IDE-AI integration layer for real-time boundary checking
+    key_classes: [IDEAIIntegration]
+    enums: [IDEAIState, ViolationDisplayMode]
+
+  - filename: toolkit/oe/boundary_enforcer.py
+    purpose: Boundary decorator factory for @glass_box_boundary enforcement
+    key_function: glass_box_boundary() decorator factory
+
+  - filename: toolkit/oe/evidence_store.py
+    purpose: Evidence storage and retrieval with causal relationships
+    key_classes: [EvidenceStore, EvidenceItem, CausalLink]
+
+analysis_scripts:
+  - filename: analysis/canal_detector_v1.py
+    purpose: Detect 'canals' (epistemic drift patterns) in AI conversations
+    inputs: [conversation data, thresholds]
+    outputs: [canal detection reports, precision metrics]
+    key_functions: [detect_canals(), calculate_precision(), gutenberg_null_test()]
+
+  - filename: analysis/full_system_investigation.py
+    purpose: Full system investigation with epistemic breach detection
+    key_classes: [Speaker, ResponseAction, ControlLayer, FeedbackType]
+    enums: [Speaker, ResponseAction, ControlLayer, FeedbackType]
+
+  - filename: analysis/automated_test_suite.py
+    purpose: Automated test suite for orthogonal engineering methodology
+    test_types: [precision tests, null hypothesis tests, reproducibility tests]
+
+core_documentation:
+  - filename: AGENT.md
+    purpose: Glass-Box Boundary Agent specification and enforcement rules
+    headers: [AGENT PURPOSE, CORE RESPONSIBILITIES, AGENT ARCHITECTURE, OPERATIONAL MODES]
+    links_to_scripts: [automation/run_full_audit_with_trace.py, automation/run_autofix_integration.py]
+
+  - filename: AI_INSTRUCTIONS.md
+    purpose: Mandatory AI onboarding and metering protocol
+    headers: [MANDATORY ONBOARDING & METERING PROTOCOL, GLASS-BOX BOUNDARY ENFORCEMENT]
+    links_to_scripts: [onboarding/verify_onboarding.py, toolkit/oe/local_metering_device.py]
+
+  - filename: ONBOARD_FIRST.md
+    purpose: Mandatory first-read protocol for every new AI instance
+    headers: [MANDATORY FIRST-READ: ONBOARDING PROTOCOL, STEP-BY-STEP PROTOCOL]
+    links_to_scripts: [onboarding/LEVEL1.md, onboarding/LEVEL2.md, onboarding/LEVEL3.md]
+
+  - filename: _START_HERE.md
+    purpose: Repository structure and deployment guide
+    headers: [ORTHOGONAL ENGINEERING - READY FOR GITHUB, FILE STRUCTURE]
+    links_to_scripts: [index.html, theory/index.html, workbench/index.html]
+
+methodology_documentation:
+  - filename: documentation/README.md
+    purpose: Main repository documentation with phase completion status
+    headers: [Orthogonal Engineering: Complete Phase 1-8 Automation Framework]
+    links_to_scripts: [automation/full_audit.py, analysis/automated_test_suite.py]
+
+  - filename: FORMAL_FOUNDATIONS.md
+    purpose: Complete mathematical foundations with theorems and proofs
+    headers: [Formal Definitions, Proven Theorems, Mathematical Framework]
+    links_to_scripts: [analysis/canal_detector_v1.py, affective_constraint_system.py]
+
+  - filename: INVARIANTS.md
+    purpose: Invariant classification methodology
+    headers: [Atomic Execution, No Narrative Drift, Complete Transparency]
+    links_to_scripts: [analysis/invariant_logger.py, analysis/invariant_registry.py]
+
+  - filename: FAILURES.md
+    purpose: Known failure modes and analysis methodology
+    headers: [Failure Classification, Detection Methods, Recovery Protocols]
+    links_to_scripts: [failure_analyzer.py, failure_logger.py]
+
+configuration_files:
+  yaml_configs:
+    - filename: ontology/failure_ontology.yaml
+      purpose: Failure ontology definition for glass-box boundary enforcement
+      key_constants: [failure_types, severity_levels, exit_codes]
+
+    - filename: workflows/basic_validation.yaml
+      purpose: Basic validation workflow definition in Orthogonal Workflow Definition Language
+      key_constants: [workflow_name: basic_validation, version: 1.0, invariant_id: G11-03]
+
+    - filename: oe-agent/PHASE5_ATOMIC.yaml
+      purpose: Phase 5 atomic completion specification for Zed IDE integration
+      key_constants: [schema_id: OE-PHASE5-ZED-IDE-ATOMIC-1.0, status: canonical]
+
+  json_configs:
+    - filename: INVARIANTS.json
+      purpose: Invariant definitions with falsifiability criteria and verification status
+      key_constants: [schema_version: 1.0, investigation_protocol: Atomic Glass-Box Investigation Protocol]
+
+    - filename: package.json
+      purpose: Node.js package configuration for MCP server
+      key_constants: [name: orthogonal-engineering-mcp, version: 1.0.0, dependencies: @modelcontextprotocol/sdk]
+
+    - filename: MASTER_INDEX_SUMMARY.json
+      purpose: Master index of all repository artifacts and relationships
+      key_constants: [total_files: ~3001, total_size: 27MB, artifact_categories]
+
+  other_configs:
+    - filename: requirements.txt
+      purpose: Python dependencies for orthogonal engineering framework
+      key_dependencies: [pandas>=2.0.0, numpy>=1.24.0, scipy>=1.10.0, pytest>=7.4.0]
+
+    - filename: docker-compose.yml
+      purpose: Docker Compose configuration for orthogonal engineering services
+      services: [engine, validation, tests]
+      volumes: [.:/workspace]
+
+    - filename: .github/workflows/gate.yml
+      purpose: GitHub Actions workflow for quality gate and testing
+      triggers: [push, pull_request]
+      jobs: [test]
+
+key_enums:
+  boundary_enforcement:
+    - ViolationSeverity: [CRITICAL, HIGH, MEDIUM, LOW]
+    - FixType: [ADD_DECORATOR, ADD_VALIDATION, ADD_GATEWAY, REPLACE_EXCEPTION, ADD_IMPORTS]
+    - SpellCheckSeverity: [ERROR, WARNING, INFO, HINT]
+    - IDEAIState: [IDLE, MONITORING, ANALYZING, SUGGESTING, APPLYING_FIX, VALIDATING, ERROR]
+
+  analysis:
+    - Speaker: [USER, ASSISTANT, UNKNOWN]
+    - ResponseAction: [IGNORED, REFRAMED, GENERALIZED, NEUTRALIZED, ADDRESSED]
+    - ControlLayer: [EPISTEMIC, SAFETY, GOVERNANCE, CONTROL]
+    - DetectionResult: [TRUE_POSITIVE, FALSE_POSITIVE, TRUE_NEGATIVE, FALSE_NEGATIVE]
+
+  failure_analysis:
+    - OntologicalPremise: [FALSIFIABILITY, CORRESPONDENCE, TRANSPARENCY, AUDITABILITY, GLASS_BOX]
+    - FailureSeverity: [CRITICAL, HIGH, MEDIUM, LOW, INFO]
+    - FailureCategory: [DETECTOR_FAILURE, STATISTICAL_FAILURE, CORRESPONDENCE_FAILURE, REPRODUCIBILITY_FAILURE]
+    - AffectiveConstraintType: [PREFRONTAL_INHIBITION, HIPPOCAMPAL_CONTEXT, PREDICTIVE_CORRECTION, SOCIAL_REALITY_TESTING]
+
+key_class_definitions:
+  - AutofixEngine: Core autofix engine for boundary violation detection and fix suggestions
+  - BoundarySpellCheck: Spell-check system for real-time code integrity validation
+  - IDEAIIntegration: IDE-AI integration layer for real-time boundary checking
+  - EvidenceStore: Evidence storage and retrieval with causal relationships
+  - CausalAnalyzer: Advanced causal analyzer for orthogonal engineering evidence
+
+structural_relationships:
+  html_blueprint_layer:
+    source: documentation/GLASS_BOX_BOUNDARY_v1.11.html
+    generates: automation/run_full_audit_with_trace.py
+    enforces: .rules/ORTHOGONAL_GB_ORIGIN.rules
+
+  rule_interpretation_layer:
+    source: .rules/ORTHOGONAL_GB_ORIGIN.rules
+    integrates_with: Zed IDE
+    generates: automation/zed_incremental_hook.py
+
+  python_enforcement_layer:
+    core: automation/run_full_audit_with_trace.py
+    toolkit: toolkit/oe/*
+    outputs: logs/traces/, logs/violations/, logs/audit/
+
+  ide_integration_layer:
+    autofix: toolkit/oe/autofix_engine.py
+    spellcheck: toolkit/oe/boundary_spellcheck.py
+    ide_ai: toolkit/oe/ide_ai_integration.py
+    sessions: .ide_ai_sessions/
+
+  trace_validation_layer:
+    validation: automation/run_full_audit_with_trace.py --trace-only
+    artifacts: documentation/sha256_manifests/
+    compliance: exit code 2 on boundary violations
+
+commit_patterns:
+  script_generation_commits:
+    - "2c75f2d: 🚀 COMPLETE AUTOFIX SYSTEM IMPLEMENTATION: Spell-check for code integrity"
+    - "5dec627: Fix audit script: exclude logs directory from suppressed signal detection"
+    - "4977437: Fix suppressed signal violations in toolkit files"
+
+  documentation_commits:
+    - "1281e37: Subtractive Clarity Canon established as design law"
+    - "fe91ddf: Add Day 2 completion summary with detailed progress report"
+    - "c8cb06f: Complete evidence package for podcast deep dive"
+
+  recovery_commits:
+    - "6d2ecda: FEAT: Complete Sora Day 5 failure recovery with Minimal Surviving Kernel"
+    - "423348c: Cleanup: Remove chat exports, notebooklm exports, and sanitize repository"
+
+directory_structure:
+  core_directories:
+    - automation/: Core automation scripts and enforcers
+    - toolkit/oe/: Core toolkit components
+    - documentation/: HTML blueprints and methodology docs
+    - .rules/: Zed IDE configuration rules
+    - onboarding/: AI onboarding protocols
+
+  analysis_directories:
+    - analysis/: Analysis scripts and investigation tools
+    - evidence/: Evidence storage and case studies
+    - logs/: Audit logs, traces, and violation reports
+
+  integration_directories:
+    - .ide_ai_sessions/: IDE-AI session persistence
+    - mcp/: Model Context Protocol server
+    - .github/workflows/: CI/CD pipelines
+
+  support_directories:
+    - examples/: Usage examples and demonstrations
+    - tests/: Test files and validation
+    - workflows/: Workflow definitions
+    - ontology/: Failure ontology and classification
+
+  specialized_directories:
+    - glass-box/: Glass-box boundary HTML specifications
+    - oe-agent/: Agent specifications and atomic workflows
+    - minimal_kernel/: Minimal surviving kernel for recovery
+    - forgiveness_system/: Forgiveness system implementation
+
+dependencies:
+  python:
+    core: [pandas>=2.0.0, numpy>=1.24.0, scipy>=1.10.0]
+    testing: [pytest>=7.4.0, pytest-cov>=4.1.0]
+    optional: [matplotlib>=3.7.0, seaborn>=0.12.0, scikit-learn>=1.3.0]
+
+  nodejs:
+    mcp: [@modelcontextprotocol/sdk: ^0.5.0]
+    engine: node>=18.0.0
+
+  system:
+    python_version: 3.11+
+    shell: Windows batch (.bat) and PowerShell (.ps1) scripts
+    docker: Containerized testing and validation
+
+output_artifacts:
+  traces: logs/traces/ (GB-TRACE-* documents)
+  violations: logs/violations/ (boundary violation reports)
+  audit_logs: logs/audit/ (audit trail and compliance)
+  sha256_manifests: documentation/sha256_manifests/ (artifact hashes)
+  autofix_reports: logs/autofix/ (autofix application logs)
+  ide_sessions: .ide_ai_sessions/ (IDE-AI session persistence)
+  evidence_chains: logs/evidence/ (causal evidence chains)
+
+verification_protocols:
+  onboarding_protocol:
+    mandatory_files: [ONBOARD_FIRST.md, onboarding/LEVEL1.md, onboarding/LEVEL2.md]
+    verification_checklist: [Location verification, Critical files exist, Glass-Box Boundary understood]
+
+  boundary_enforcement:
+    exit_code: 2 on boundary violations (fail-fast architecture)
+    validation: Trace generation with SHA256 signatures
+    transparency: All enforcement logic traceable to HTML blueprint
+
+  ide_integration:
+    real_time_checking: Boundary spell-check during editing
+    autofix_suggestions: Ctrl+. or ⌘. quick-fix application
+    session_continuity: "Continuity of body" across AI instances
+
+reproducibility_notes:
+  file_counts:
+    python_files: 342
+    markdown_files: 225
+    json_files: 2642
+    yaml_files: 7
+    javascript_files: 146 (mostly node_modules)
+
+  key_hashes_reference:
+    blueprint: documentation/GLASS_BOX_BOUNDARY_v1.11.html
+    enforcer: automation/run_full_audit_with_trace.py
+    agent_spec: AGENT.md
+    ai_instructions: AI_INSTRUCTIONS.md
+
+  deterministic_analysis_inputs:
+    - repository_structural_map.yaml (this file)
+    - INVARIANTS.json
+    - MASTER_INDEX_SUMMARY.json
+    - requirements.txt
+    - package.json
+
+controller_integration_points:
+  script_execution:
+    entry_point: automation/run_full_audit_with_trace.py
+    parameters: [--audit, --component, --trace-only]
+    exit_codes: [0: success, 2: boundary violation]
+
+  autofix_system:
+    entry_point: automation/run_autofix_integration.py
+    commands: [check, fix, audit, setup-ide]
+    outputs: [autofix reports, fixed files, IDE configuration]
+
+  ide_integration:
+    entry_point: automation/zed_incremental_hook.py
+    triggers: [file save, edit events]
+    outputs: [inline violations, quick-fix suggestions]
+
+  evidence_tracking:
+    entry_point: toolkit/oe/evidence_store.py
+    operations: [add_evidence, get_evidence, find_causal_chains]
+    outputs: [evidence chains, confidence scores, causal graphs]
+
+  mcp_integration:
+    entry_point: oe-basic.mcp.js
+    protocol: Model Context Protocol
+    capabilities: [tool calls, evidence queries, boundary checks]

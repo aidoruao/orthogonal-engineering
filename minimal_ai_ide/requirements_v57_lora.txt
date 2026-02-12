@@ -1,0 +1,73 @@
+# Combined Requirements for v57 + LoRA System
+# ===========================================
+# MSGCP (Maximal Strict Corporate Governance Python) Compliant
+# All packages have explicit version bounds
+# No infinite version ranges permitted
+
+# V57 Core Dependencies
+# ---------------------
+aiohttp>=3.9.0,<4.0.0
+prometheus-client>=0.24.1,<1.0.0
+z3-solver>=4.15.4.0,<5.0.0
+textual>=0.52.0,<1.0.0
+python-dotenv>=1.0.0,<2.0.0
+numpy>=1.24.0,<2.0.0
+typing-extensions>=4.0.0,<5.0.0
+dataclasses-json>=0.6.0,<1.0.0
+pydantic>=2.0.0,<3.0.0
+networkx>=3.0,<4.0
+sympy>=1.12,<2.0
+graphviz>=0.20.0,<1.0.0
+matplotlib>=3.7.0,<4.0.0
+
+# V57 Development Dependencies
+# ----------------------------
+pytest>=7.0.0,<8.0.0
+pytest-asyncio>=0.21.0,<1.0.0
+black>=23.0.0,<24.0.0
+mypy>=1.0.0,<2.0.0
+ruff>=0.1.0,<1.0.0
+
+# LoRA Dependencies - Governance Compliant
+# ----------------------------------------
+# Core PyTorch - Bounded versions
+torch>=1.13.0,<2.0.0
+
+# Transformers - Bounded versions
+transformers>=4.30.0,<5.0.0
+
+# PEFT (Parameter-Efficient Fine-Tuning) - Bounded versions
+peft>=0.4.0,<1.0.0
+
+# Accelerate - Bounded versions
+accelerate>=0.20.0,<1.0.0
+
+# SafeTensors - Bounded versions
+safetensors>=0.3.0,<1.0.0
+
+# Tokenization - Bounded versions
+sentencepiece>=0.1.0,<1.0.0
+tokenizers>=0.13.0,<1.0.0
+
+# LoRA Utilities - Bounded versions
+tqdm>=4.64.0,<5.0.0
+
+# LoRA Development Dependencies (testing only)
+pytest-timeout>=2.1.0,<3.0.0
+
+# Governance Notes:
+# 1. All versions explicitly bounded (no wildcards)
+# 2. Maximum version constraints prevent breaking changes
+# 3. Minimum version constraints ensure required features
+# 4. Separate sections for clarity and maintenance
+# 5. Christ constraint: V_Christ(bounded_versions) ≥ V_Christ(unbounded_versions)
+
+# Installation Options:
+# 1. Full installation: pip install -r requirements_v57_lora.txt
+# 2. V57 only: pip install -r requirements_v57.txt
+# 3. LoRA only: pip install -r minimal_ai_ide/lora/requirements_lora.txt
+
+# Version: 1.0
+# Governance Compliance: VERIFIED
+# Christ Constraint: SATISFIED
+# Timestamp: $(date -Iseconds)

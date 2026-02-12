@@ -1,0 +1,93 @@
+{
+  "timestamp": "2026-01-26T01:35:00.677493",
+  "overall_health": "healthy",
+  "wardens": {
+    "automation_warden": {
+      "warden_name": "automation_warden",
+      "status": "healthy",
+      "folder_path": "automation",
+      "model_name": "llama3.2:3b",
+      "checks": {
+        "folder_exists": true,
+        "folder_readable": true,
+        "file_count": 32,
+        "stored_file_count": 32,
+        "file_count_match": true,
+        "warden_status": "active",
+        "last_query": null,
+        "response_time_ms": null,
+        "success_rate": null
+      },
+      "issues": [],
+      "recommendations": []
+    },
+    "toolkit_warden": {
+      "warden_name": "toolkit_warden",
+      "status": "healthy",
+      "folder_path": "toolkit/oe",
+      "model_name": "codellama:7b",
+      "checks": {
+        "folder_exists": true,
+        "folder_readable": true,
+        "file_count": 29,
+        "stored_file_count": 29,
+        "file_count_match": true,
+        "warden_status": "active",
+        "last_query": null,
+        "response_time_ms": null,
+        "success_rate": null
+      },
+      "issues": [],
+      "recommendations": []
+    },
+    "documentation_warden": {
+      "warden_name": "documentation_warden",
+      "status": "healthy",
+      "folder_path": "documentation",
+      "model_name": "mistral:7b",
+      "checks": {
+        "folder_exists": true,
+        "folder_readable": true,
+        "file_count": 59,
+        "stored_file_count": 59,
+        "file_count_match": true,
+        "warden_status": "active",
+        "last_query": null,
+        "response_time_ms": null,
+        "success_rate": null
+      },
+      "issues": [],
+      "recommendations": []
+    }
+  },
+  "base_ai": {
+    "status": "healthy",
+    "model": "llama3.1:70b",
+    "api_endpoint": "http://localhost:11434",
+    "version": "1.0.0",
+    "last_health_check": "2026-01-26T01:35:00.673720",
+    "checks": {},
+    "issues": []
+  },
+  "dynamic_wardens": {
+    "status": "healthy",
+    "unclassified_folders": 0,
+    "temporary_wardens": 0,
+    "checks": {
+      "stale_temporary_wardens": 0
+    },
+    "issues": []
+  },
+  "system_metrics": {
+    "total_wardens": 3,
+    "healthy_wardens": 3,
+    "warning_wardens": 0,
+    "critical_wardens": 0,
+    "warden_uptime": 1.0,
+    "last_health_check": "2026-01-26T01:35:00.678376",
+    "health_check_count": 4,
+    "overall_health": "healthy"
+  },
+  "issues": [],
+  "recommendations": []
+}

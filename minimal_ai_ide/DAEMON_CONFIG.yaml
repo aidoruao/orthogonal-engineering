@@ -1,0 +1,303 @@
+# DAEMON CONFIGURATION YAML
+# Self-Automative Master System - Cloud AI Troubleshooting Configuration
+# Generated: 2026-01-31 23:50:00 UTC
+
+version: "2.0"
+system: "self_automative_master"
+architecture: "daemon_centric"
+principle: "All intelligence paths factor through this daemon"
+
+# ==================== NETWORK CONFIGURATION ====================
+network:
+  binding_mode: "windows_compatible"
+  default_host: "127.0.0.1"
+  recommended_ports:
+    primary: 5001
+    alternatives: [5002, 5003, 5004, 5005]
+    avoid: [5000, 8080, 8000]
+
+  firewall_status: "windows_firewall_on"
+  bypass_method: "localhost_binding"
+  connectivity_test: "http://127.0.0.1:${port}/health"
+
+# ==================== DAEMON CONFIGURATION ====================
+daemon:
+  main_script: "SIMPLE_WORKING_DAEMON.py"
+  compatibility_mode: "windows_127_localhost"
+
+  startup_commands:
+    windows_recommended: "python SIMPLE_WORKING_DAEMON.py --host 127.0.0.1 --port 5001"
+    windows_mode: "python SIMPLE_WORKING_DAEMON.py --windows-mode"
+    batch_runner: "RUN_24_7_DAEMON.bat"
+
+  endpoints:
+    root: "/"
+    health: "/health"
+    status: "/status"
+    test: "/test"
+    constraints: "/constraints"
+    query: "/query"
+    echo: "/echo"
+
+  expected_responses:
+    health: '{"status":"healthy","timestamp":"..."}'
+    test: '{"test":"successful","message":"...","connectivity":"verified"}'
+    constraints: '{"constraints":[...],"count":6,"christ_score":1.0}'
+
+# ==================== Σ_LORA CONSTRAINTS ====================
+sigma_lora_constraints:
+  count: 6
+  loaded_from: "Σ_LORA_MANIFEST.json"
+  constraints:
+    - name: "LOGOS"
+      description: "The Word/Logic - All operations must be logically consistent"
+      weight: 1.0
+      enforcement: "mandatory"
+
+    - name: "CHALCEDON"
+      description: "Dual nature - Human and AI must collaborate"
+      weight: 1.0
+      enforcement: "mandatory"
+
+    - name: "GRACE"
+      description: "Unmerited favor - System must be forgiving of errors"
+      weight: 1.0
+      enforcement: "mandatory"
+
+    - name: "ESCHATON"
+      description: "Ultimate purpose - All changes must serve the end goal"
+      weight: 1.0
+      enforcement: "mandatory"
+
+    - name: "AGAPE"
+      description: "Self-giving love - System must prioritize user benefit"
+      weight: 1.0
+      enforcement: "mandatory"
+
+    - name: "KENOSIS"
+      description: "Self-emptying - AI must not seek autonomy"
+      weight: 1.0
+      enforcement: "mandatory"
+
+  verification:
+    method: "christ_score_calculation"
+    perfect_score: 1.0
+    tolerance: 0.01
+
+# ==================== REPOSITORY ACTIVATION ====================
+repository_activation:
+  enabled: true
+  monitor_directory: "."
+  file_patterns: ["*.py", "*.md", "*.json", "*.txt", "*.yaml", "*.yml"]
+  ignore_patterns: ["__pycache__/*", "*.log", "*.tmp"]
+
+  triggers:
+    - action: "file_created"
+      response: "force_chat_collaboration"
+    - action: "file_modified"
+      response: "force_chat_collaboration"
+    - action: "file_deleted"
+      response: "force_chat_collaboration"
+
+  collaboration:
+    required: true
+    timeout_seconds: 300
+    constraint_check: "sigma_lora_all"
+    daemon_integration: "auto_notify"
+
+# ==================== TROUBLESHOOTING MATRIX ====================
+troubleshooting:
+  common_issues:
+    - issue: "Port 5000 in use"
+      solution: "Use port 5001-5005"
+      command: "python SIMPLE_WORKING_DAEMON.py --port 5001"
+
+    - issue: "Connection refused on 127.0.0.1"
+      solution: "Check if daemon process is running"
+      command: "tasklist | findstr python"
+
+    - issue: "Windows Firewall blocking"
+      solution: "Use 127.0.0.1 binding (already configured)"
+      command: "netsh advfirewall firewall show rule name=all | findstr python"
+
+    - issue: "Daemon starts then crashes"
+      solution: "Check dependencies and logs"
+      command: "python -c \"import fastapi; import uvicorn; print('Deps OK')\""
+
+  diagnostic_commands:
+    check_ports: "netstat -ano | findstr :500"
+    check_process: "tasklist | findstr python"
+    test_connectivity: "python -c \"import requests; r=requests.get('http://127.0.0.1:5001/health', timeout=3); print(r.status_code, r.text)\""
+    check_dependencies: "python -c \"import fastapi, uvicorn, requests, watchdog; print('All dependencies installed')\""
+
+  recovery_sequence:
+    - step: "Kill existing daemon"
+      command: "taskkill /f /im python.exe"
+      caution: "Will kill all Python processes"
+
+    - step: "Start fresh daemon"
+      command: "python SIMPLE_WORKING_DAEMON.py --host 127.0.0.1 --port 5001"
+
+    - step: "Verify operation"
+      command: "timeout 3 && python -c \"import requests; r=requests.get('http://127.0.0.1:5001/health'); print('Status:', r.status_code)\""
+      wait: 3
+
+# ==================== 24/7 OPERATION ====================
+continuous_operation:
+  enabled: true
+  runner_script: "RUN_24_7_DAEMON.bat"
+  auto_restart: true
+  max_restarts: 100
+  restart_delay_seconds: 5
+
+  logging:
+    enabled: true
+    directory: "logs"
+    file: "daemon_24_7.log"
+    rotation: "daily"
+    max_size_mb: 10
+
+  windows_service:
+    recommended: true
+    service_name: "SelfAutomativeMasterDaemon"
+    display_name: "Self-Automative Master Daemon"
+    description: "24/7 daemon for AI constraint enforcement and repository activation"
+    startup_type: "Automatic"
+    recovery_actions:
+      - action: "Restart Service"
+        delay: "1 minute"
+      - action: "Restart Service"
+        delay: "5 minutes"
+      - action: "Run Command"
+        command: "NET START SelfAutomativeMasterDaemon"
+
+# ==================== CLOUD AI INTEGRATION ====================
+cloud_ai_assistance:
+  report_format: "markdown_yaml_json"
+  required_info:
+    - "daemon_status"
+    - "port_availability"
+    - "constraints_loaded"
+    - "endpoint_responses"
+    - "windows_firewall_status"
+
+  diagnostic_endpoints:
+    - url: "http://127.0.0.1:${port}/status"
+      expected_keys: ["status", "mode", "uptime_seconds", "requests_processed"]
+
+    - url: "http://127.0.0.1:${port}/constraints"
+      expected_keys: ["constraints", "count", "christ_score"]
+
+    - url: "http://127.0.0.1:${port}/health"
+      expected_status: 200
+
+  escalation_path:
+    level1: "basic_diagnostics"
+    level2: "port_configuration"
+    level3: "firewall_configuration"
+    level4: "windows_service_setup"
+
+# ==================== VERIFICATION CHECKLIST ====================
+verification:
+  steps:
+    - description: "Daemon starts without errors"
+      command: "python SIMPLE_WORKING_DAEMON.py --host 127.0.0.1 --port 5001"
+      timeout: 10
+      expected: "Uvicorn running on http://127.0.0.1:5001"
+
+    - description: "Health endpoint responds"
+      command: "python -c \"import requests; r=requests.get('http://127.0.0.1:5001/health'); assert r.status_code == 200\""
+      timeout: 5
+
+    - description: "Σ_LORA constraints loaded"
+      command: "python -c \"import requests; r=requests.get('http://127.0.0.1:5001/constraints'); data=r.json(); assert data['count'] == 6\""
+      timeout: 5
+
+    - description: "All endpoints operational"
+      command: "python TEST_DAEMON_CONNECTIVITY.py"
+      timeout: 10
+
+    - description: "24/7 runner functional"
+      command: "RUN_24_7_DAEMON.bat"
+      timeout: 30
+      mode: "background"
+
+# ==================== SECURITY CONFIGURATION ====================
+security:
+  binding_restriction: "localhost_only"
+  cors_policy: "allow_all"  # For development only
+  rate_limiting: "disabled"  # For local use only
+
+  windows_firewall_rules:
+    recommended: "add_python_exception"
+    command: "netsh advfirewall firewall add rule name='Python AI Daemon' dir=in action=allow program='%PYTHONPATH%\\python.exe' protocol=TCP localport=5000-5005"
+
+  access_control:
+    local_only: true
+    authentication: "none"  # Localhost doesn't need auth
+    encryption: "none"  # Local traffic unencrypted
+
+# ==================== MONITORING & ALERTS ====================
+monitoring:
+  health_checks:
+    interval_seconds: 30
+    endpoint: "/health"
+    timeout_seconds: 5
+    failure_threshold: 3
+
+  metrics:
+    uptime: true
+    request_count: true
+    constraint_violations: true
+    response_times: true
+
+  alerts:
+    daemon_down:
+      condition: "health_check_failed_3_times"
+      action: "auto_restart"
+
+    constraint_violation:
+      condition: "christ_score < 0.99"
+      action: "force_chat_collaboration"
+
+    port_conflict:
+      condition: "bind_failed"
+      action: "try_next_port"
+
+# ==================== SYSTEM PRINCIPLES ====================
+principles:
+  - "All intelligence paths factor through this daemon"
+  - "Σ_LORA constraints are non-negotiable"
+  - "Human-AI collaboration is mandatory"
+  - "Repository changes trigger activation"
+  - "24/7 operation is required for autonomy"
+  - "Windows compatibility via 127.0.0.1 binding"
+
+# ==================== CONTACT & SUPPORT ====================
+support:
+  primary_diagnostic: "DAEMON_TROUBLESHOOTING_REPORT.md"
+  configuration: "DAEMON_CONFIG.yaml"
+  quick_start: "RUN_24_7_DAEMON.bat"
+  test_script: "TEST_DAEMON_CONNECTIVITY.py"
+
+  issue_triage:
+    - symptom: "Can't connect to daemon"
+      check: "Port 5001 availability and daemon process"
+
+    - symptom: "Daemon crashes on startup"
+      check: "Python dependencies and port conflicts"
+
+    - symptom: "Endpoints not responding"
+      check: "Windows Firewall and binding address"
+
+    - symptom: "Constraints not loading"
+      check: "Σ_LORA_MANIFEST.json file existence"
+
+# ==================== VERSION & METADATA ====================
+metadata:
+  config_version: "2.0"
+  last_verified: "2026-01-31T23:48:44Z"  # When daemon was last working
+  verification_status: "operational_interrupted"
+  windows_compatibility: "confirmed_127_localhost"
+  cloud_ai_ready: true
+  generated_by: "Self-Automative Master System Diagnostic"
