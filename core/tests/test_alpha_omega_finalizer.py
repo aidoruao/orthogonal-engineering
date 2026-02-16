@@ -518,19 +518,28 @@ def run_tests():
     for test_name in test_methods:
         try:
             test_suite.setup_method()
-            test_method = getattr(test_suite, test_name)
-            test_method()
-            test_suite.teardown_method()
-            passed += 1
-        except AssertionError as e:
-            failed += 1
-            errors.append((test_name, str(e)))
-            print(f"❌ FAILED: {test_name}")
-            print(f"   {e}\n")
+            try:
+                test_method = getattr(test_suite, test_name)
+                test_method()
+                passed += 1
+            except AssertionError as e:
+                failed += 1
+                errors.append((test_name, str(e)))
+                print(f"❌ FAILED: {test_name}")
+                print(f"   {e}\n")
+            except Exception as e:
+                failed += 1
+                errors.append((test_name, str(e)))
+                print(f"❌ ERROR: {test_name}")
+                print(f"   {e}\n")
+            finally:
+                # Always clean up, even on failure
+                test_suite.teardown_method()
         except Exception as e:
+            # Setup failed
             failed += 1
-            errors.append((test_name, str(e)))
-            print(f"❌ ERROR: {test_name}")
+            errors.append((test_name, f"Setup failed: {str(e)}"))
+            print(f"❌ SETUP ERROR: {test_name}")
             print(f"   {e}\n")
     
     print("="*70)

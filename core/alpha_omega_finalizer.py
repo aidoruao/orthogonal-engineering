@@ -65,7 +65,7 @@ class AlphaOmegaFinalizer:
     
     def __init__(
         self,
-        vault_dir: str,
+        vault_dir: Optional[str],
         outputs_dir: str,
         fallback_epoch: Optional[str] = None,
         redact: bool = False,
@@ -76,22 +76,23 @@ class AlphaOmegaFinalizer:
         Initialize the AlphaOmegaFinalizer.
         
         Args:
-            vault_dir: Directory containing chat export files (JSONL/JSON)
+            vault_dir: Directory containing chat export files (JSONL/JSON).
+                      Can be None if only using verify_integrity().
             outputs_dir: Directory for output files (ledger, master root)
             fallback_epoch: ISO8601 timestamp to use if entry has no timestamp
             redact: Enable redaction pipeline
             redaction_classifier: Optional callable for detecting/redacting sensitive content
             dry_run: If True, don't write any files (default: True for safety)
         """
-        self.vault_dir = Path(vault_dir)
+        self.vault_dir = Path(vault_dir) if vault_dir else None
         self.outputs_dir = Path(outputs_dir)
         self.fallback_epoch = fallback_epoch or "1970-01-01T00:00:00Z"
         self.redact = redact
         self.redaction_classifier = redaction_classifier
         self.dry_run = dry_run
         
-        # Validate inputs
-        if not self.vault_dir.exists():
+        # Validate vault directory if provided
+        if self.vault_dir and not self.vault_dir.exists():
             raise ValueError(f"Vault directory does not exist: {vault_dir}")
         
         # Create outputs directory if needed
@@ -103,7 +104,8 @@ class AlphaOmegaFinalizer:
         self.entry_hashes: List[str] = []
         
         logger.info(f"Initialized AlphaOmegaFinalizer")
-        logger.info(f"  Vault: {self.vault_dir}")
+        if self.vault_dir:
+            logger.info(f"  Vault: {self.vault_dir}")
         logger.info(f"  Outputs: {self.outputs_dir}")
         logger.info(f"  Dry run: {self.dry_run}")
         logger.info(f"  Redaction: {self.redact}")
@@ -572,8 +574,8 @@ class AlphaOmegaFinalizer:
                         stored_hash = entry.get('hash')
                         
                         # Recompute hash for verification
-                        # Note: We use the full entry including the hash field
-                        # for consistency with how it was originally computed
+                        # The original hash was computed from the entry WITHOUT the hash field
+                        # (hash is added after computation), so we remove it here
                         entry_copy = entry.copy()
                         if 'hash' in entry_copy:
                             del entry_copy['hash']
@@ -724,9 +726,9 @@ SECURITY NOTES:
                     print(f"Master root: {root_path}")
         
         elif args.command == 'verify':
-            # For verification, we don't need a vault, just outputs
+            # For verification, we don't need a vault
             finalizer = AlphaOmegaFinalizer(
-                vault_dir=".",  # Dummy value, not used
+                vault_dir=None,  # Not needed for verification
                 outputs_dir=args.outputs_dir,
                 dry_run=True  # Verification never writes
             )
