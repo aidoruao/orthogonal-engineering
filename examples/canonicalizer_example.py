@@ -4,9 +4,14 @@ Example: Using the canonicalizer for deterministic file hashing.
 This example shows how to get canonical byte representations of different file types.
 """
 
+import sys
 import tempfile
 import json
 from pathlib import Path
+
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from toolkit.oe.canonicalizer import canonical_byte_representation
 from toolkit.oe.hasher import compute_sha256
 

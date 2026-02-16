@@ -7,7 +7,12 @@ This example demonstrates how to:
 3. Verify inclusion proofs
 """
 
+import sys
 from pathlib import Path
+
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from toolkit.oe.manifest import ManifestGenerator
 from toolkit.oe.merkle import build_merkle_tree_from_files, verify_inclusion_proof
 from toolkit.oe.logger import PipelineLogger

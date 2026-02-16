@@ -21,6 +21,16 @@ def detect_file_type(file_path: Path) -> str:
     Returns:
         File type: 'text', 'json', 'xml', or 'binary'
     """
+    # First check for binary content
+    try:
+        with open(file_path, 'rb') as f:
+            chunk = f.read(8192)
+            # Check for null bytes (common in binary files)
+            if b'\x00' in chunk:
+                return 'binary'
+    except IOError:
+        pass
+    
     suffix = file_path.suffix.lower()
     
     # JSON files
@@ -37,14 +47,10 @@ def detect_file_type(file_path: Path) -> str:
                   '.sh', '.bash', '.zsh', '.fish', '.ps1', '.bat', '.cmd']:
         return 'text'
     
-    # Try to detect if binary
+    # Try to decode as UTF-8 to determine if text
     try:
         with open(file_path, 'rb') as f:
             chunk = f.read(8192)
-            # Check for null bytes (common in binary files)
-            if b'\x00' in chunk:
-                return 'binary'
-            # Try to decode as UTF-8
             chunk.decode('utf-8')
             return 'text'
     except (UnicodeDecodeError, IOError):
@@ -82,14 +88,18 @@ def canonical_text(file_path: Path) -> bytes:
     Returns:
         Canonical bytes
     """
-    with open(file_path, 'r', encoding='utf-8-sig') as f:
-        text = f.read()
-    
-    # Normalize text
-    text = normalize_text(text)
-    
-    # Encode to UTF-8 without BOM
-    return text.encode('utf-8')
+    try:
+        with open(file_path, 'r', encoding='utf-8-sig') as f:
+            text = f.read()
+        
+        # Normalize text
+        text = normalize_text(text)
+        
+        # Encode to UTF-8 without BOM
+        return text.encode('utf-8')
+    except (UnicodeDecodeError, IOError):
+        # If text parsing fails, treat as binary
+        return canonical_binary(file_path)
 
 
 def canonical_json(file_path: Path) -> bytes:
@@ -104,14 +114,21 @@ def canonical_json(file_path: Path) -> bytes:
     Returns:
         Canonical bytes
     """
-    with open(file_path, 'r', encoding='utf-8-sig') as f:
-        data = json.load(f)
-    
-    # Serialize with sorted keys
-    canonical = json.dumps(data, sort_keys=True, separators=(',', ':'), ensure_ascii=False)
-    
-    # Encode to UTF-8 without BOM
-    return canonical.encode('utf-8')
+    try:
+        with open(file_path, 'r', encoding='utf-8-sig') as f:
+            data = json.load(f)
+        
+        # Serialize with sorted keys
+        canonical = json.dumps(data, sort_keys=True, separators=(',', ':'), ensure_ascii=False)
+        
+        # Encode to UTF-8 without BOM
+        return canonical.encode('utf-8')
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        # If JSON parsing fails, treat as text or binary
+        try:
+            return canonical_text(file_path)
+        except UnicodeDecodeError:
+            return canonical_binary(file_path)
 
 
 def canonical_xml(file_path: Path) -> bytes:
