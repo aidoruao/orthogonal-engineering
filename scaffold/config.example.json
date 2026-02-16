@@ -1,0 +1,38 @@
+{
+  "checkpoint_interval": 100,
+  "backup_retention_days": 30,
+  "excluded_patterns": [
+    ".git",
+    ".svn",
+    "__pycache__",
+    "node_modules",
+    ".venv",
+    "venv",
+    "dist",
+    "build",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".tox",
+    "*.pyc",
+    "*.pyo",
+    "*.egg-info"
+  ],
+  "file_type_overrides": {
+    ".meta": "xml",
+    ".jsonl": "text"
+  },
+  "merkle_tree": {
+    "leaf_prefix": "0x00",
+    "internal_prefix": "0x01"
+  },
+  "logging": {
+    "log_dir": "logs",
+    "handling_pipeline_log": "hello_world_handling_pipeline.jsonl",
+    "verification_pipeline_log": "handling_verification_pipeline.jsonl"
+  },
+  "manifest": {
+    "output_file": "manifest.jsonl",
+    "include_hidden": false,
+    "follow_symlinks": false
+  }
+}
