@@ -7,10 +7,21 @@
 # SAFETY: Default mode is DRY-RUN. Use -Apply switch to enable apply mode.
 
 param(
-    [string]$VaultDir = "C:\Users\Aidor\Downloads\ai_exports",
+    [string]$VaultDir = $null,  # User must specify vault directory
     [string]$OutDir = ".\outputs",
     [switch]$Apply
 )
+
+# If no vault directory specified, show usage
+if (-not $VaultDir) {
+    Write-Host "ERROR: --VaultDir parameter is required" -ForegroundColor Red
+    Write-Host ""
+    Write-Host "Usage: .\ide_ai_runner_template.ps1 -VaultDir <path_to_vault> [-OutDir <output_path>] [-Apply]"
+    Write-Host ""
+    Write-Host "Example:"
+    Write-Host '  .\ide_ai_runner_template.ps1 -VaultDir "C:\Users\YourName\Downloads\ai_exports"'
+    exit 1
+}
 
 # Initialize report
 $report = @{

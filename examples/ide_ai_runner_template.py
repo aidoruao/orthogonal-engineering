@@ -51,8 +51,8 @@ def main():
     parser.add_argument(
         '--vault-dir',
         type=str,
-        default=r'C:\Users\Aidor\Downloads\ai_exports',
-        help='Vault directory containing AI exports (default: C:\\Users\\Aidor\\Downloads\\ai_exports)'
+        default=None,
+        help='Vault directory containing AI exports (override this default with your actual path)'
     )
     parser.add_argument(
         '--out-dir',

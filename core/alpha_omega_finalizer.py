@@ -37,7 +37,7 @@ try:
     HAS_IJSON = True
 except ImportError:
     HAS_IJSON = False
-    logging.warning("ijson not available - will use standard json for large files")
+    # Warning will be logged after logging is configured
 
 
 # ============================================================================
@@ -49,6 +49,10 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Log ijson availability after logging is configured
+if not HAS_IJSON:
+    logger.warning("ijson not available - will use standard json for large files")
 
 
 # ============================================================================
@@ -357,6 +361,10 @@ class AlphaOmegaFinalizer:
         """
         Load JSON file with streaming support for large files.
         
+        Note: Current streaming implementation loads items into memory.
+        For production use with very large files, consider processing
+        items incrementally rather than accumulating them.
+        
         Args:
             file_path: Path to JSON file
         
@@ -371,6 +379,8 @@ class AlphaOmegaFinalizer:
             try:
                 with open(file_path, 'rb') as f:
                     # Parse as array or object
+                    # NOTE: This accumulates items in memory. For truly large files,
+                    # consider processing items incrementally.
                     items = []
                     for item in ijson.items(f, 'item'):
                         items.append(item)
@@ -650,7 +660,7 @@ SAFETY NOTES:
     parser.add_argument(
         '--vault-dir',
         type=str,
-        help='Directory containing AI export files (e.g., C:\\Users\\Aidor\\Downloads\\ai_exports)'
+        help='Directory containing AI export files (default: use --vault-dir to specify)'
     )
     parser.add_argument(
         '--out-dir',
