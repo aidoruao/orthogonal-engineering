@@ -1,0 +1,6 @@
+# CAS (Content-Addressed Storage) Example Manifest
+# This file demonstrates a simple CAS manifest with deduplication
+# Safety: This is a read-only example file showing CAS manifest structure
+{"content_hash": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "canonical_path": "src/main.py", "size": 2048, "storage_path": ".cas/objects/a1/b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "dedup_group": "group1"}
+{"content_hash": "sha256:b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567a", "canonical_path": "src/utils.py", "size": 1024, "storage_path": ".cas/objects/b2/c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567a", "dedup_group": "group2"}
+{"content_hash": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "canonical_path": "src/helpers.py", "size": 2048, "storage_path": ".cas/objects/a1/b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "dedup_group": "group1"}
