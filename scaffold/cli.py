@@ -178,15 +178,14 @@ class ScaffoldCLI:
                         if self.verbose:
                             self._log(f"  Skipped {file}: {e}", "warning")
         
-        if self.dry_run:
-            self._log("DRY RUN MODE - Merkle tree built but not saved", "warning")
-            root_hash = tree.get_root_hash()
-            self._log(f"Would generate Merkle root: {root_hash}")
-            return 0
-        
         # Build tree
         tree.build()
         root_hash = tree.get_root_hash()
+        
+        if self.dry_run:
+            self._log("DRY RUN MODE - Merkle tree built but not saved", "warning")
+            self._log(f"Would generate Merkle root: {root_hash}")
+            return 0
         
         self._log(f"Merkle root hash: {root_hash}", "success")
         
