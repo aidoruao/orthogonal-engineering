@@ -13,7 +13,7 @@ Supports checkpointing for large repositories.
 
 import json
 from pathlib import Path
-from typing import Dict, Generator, Optional, Set, Union
+from typing import Any, Dict, Generator, Optional, Set, Union
 
 from .canonicalizer import Canonicalizer, canonical_byte_representation
 from .hasher import Hasher
@@ -252,7 +252,7 @@ class ManifestGenerator:
     def verify_manifest(
         manifest_path: Union[str, Path],
         repo_root: Union[str, Path]
-    ) -> Dict[str, any]:
+    ) -> Dict[str, Any]:
         """
         Verify that files match their manifest entries.
         
