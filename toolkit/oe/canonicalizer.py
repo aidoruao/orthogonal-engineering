@@ -162,13 +162,23 @@ def _canonicalize_xml(file_path: Path) -> bytes:
     try:
         # Parse XML
         tree = ET.parse(file_path)
-        root = tree.getroot()
         
-        # Use c14n (Canonical XML) without comments
-        # Note: ElementTree's c14n method provides canonical XML
+        # Remove comments from tree
+        def remove_comments(element):
+            """Remove comment nodes from XML tree."""
+            for child in list(element):
+                if child.tag is ET.Comment:
+                    element.remove(child)
+                else:
+                    remove_comments(child)
+        
+        root = tree.getroot()
+        remove_comments(root)
+        
+        # Write to bytes with consistent encoding
         from io import BytesIO
         output = BytesIO()
-        tree.write_c14n(output, with_comments=False)
+        tree.write(output, encoding='utf-8', xml_declaration=False)
         return output.getvalue()
     except Exception as e:
         raise ValueError(f"Failed to canonicalize XML: {e}")

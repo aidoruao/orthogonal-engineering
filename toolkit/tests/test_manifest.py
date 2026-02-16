@@ -128,11 +128,12 @@ class TestManifestGenerator(unittest.TestCase):
         # Create a file to exclude
         (self.test_path / 'test.pyc').write_text('bytecode')
         
-        entries = list(generator.scan_directory(exclude_patterns=['*.pyc']))
+        entries = list(generator.scan_directory(exclude_patterns=['*.pyc', '.pyc']))
         
         # Should not include .pyc file
         paths = [e.canonical_path for e in entries]
-        self.assertNotIn('test.pyc', paths)
+        pyc_files = [p for p in paths if '.pyc' in p]
+        self.assertEqual(len(pyc_files), 0, f"Found .pyc files: {pyc_files}")
     
     def test_save_manifest(self):
         """Test saving manifest to JSONL file."""
