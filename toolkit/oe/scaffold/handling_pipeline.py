@@ -87,17 +87,23 @@ class HandlingMetaParser:
         self.entries = []
         
         # Look for typical handling.meta structure
-        # Format can vary, but usually has <Item> or <HandlingData> elements
+        # Format can vary between GTA versions:
+        # - Some use <Item> elements directly
+        # - Others use <HandlingData> containers
+        # We parse both patterns; validation will catch duplicates
+        
         for item in root.findall('.//Item'):
             entry = self._parse_item(item)
             if entry:
                 self.entries.append(entry)
         
-        # Alternative structure
-        for item in root.findall('.//HandlingData'):
-            entry = self._parse_item(item)
-            if entry:
-                self.entries.append(entry)
+        # Alternative structure - only process if no items found
+        # This prevents double-parsing if both patterns exist in the same file
+        if not self.entries:
+            for item in root.findall('.//HandlingData'):
+                entry = self._parse_item(item)
+                if entry:
+                    self.entries.append(entry)
         
         return self.entries
     

@@ -312,22 +312,42 @@ class ScaffoldCLI:
             # Copy repository (excluding .git and large dirs)
             backup_path.mkdir(parents=True, exist_ok=True)
             
+            # Get exclude patterns from config or use defaults
+            exclude_patterns = self.config.get('exclude_patterns', [
+                '.git',
+                'node_modules',
+                '__pycache__',
+                '.pytest_cache',
+                'build',
+                'dist',
+                '.scaffold_backup',
+                '.scaffold_logs'
+            ])
+            
+            # Convert patterns to simple names for ignore
+            ignore_names = [p.strip('**/').strip('/') for p in exclude_patterns]
+            
             # Use rsync if available, otherwise manual copy
             try:
-                subprocess.run([
-                    'rsync', '-av',
-                    '--exclude', '.git',
-                    '--exclude', 'node_modules',
-                    '--exclude', '__pycache__',
+                # Build rsync exclude args
+                rsync_args = ['rsync', '-a']
+                for pattern in exclude_patterns:
+                    rsync_args.extend(['--exclude', pattern])
+                rsync_args.extend([
                     str(self.repo_path) + '/',
                     str(backup_path) + '/'
-                ], check=True)
+                ])
+                
+                subprocess.run(rsync_args, check=True)
             except (subprocess.CalledProcessError, FileNotFoundError):
-                # Fall back to manual copy
+                # Fall back to manual copy with ignore patterns
+                def ignore_func(dir, files):
+                    return [f for f in files if any(ign in f for ign in ignore_names)]
+                
                 shutil.copytree(
                     self.repo_path,
                     backup_path,
-                    ignore=shutil.ignore_patterns('.git', 'node_modules', '__pycache__'),
+                    ignore=ignore_func,
                     dirs_exist_ok=True
                 )
             

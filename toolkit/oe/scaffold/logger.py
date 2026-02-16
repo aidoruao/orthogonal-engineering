@@ -14,7 +14,11 @@ class ScaffoldLogger:
     """
     JSONL logger with monotonic step_id and ISO8601 UTC timestamps.
     
-    Writes hello_world_handling_pipeline.jsonl and handling_verification_pipeline.jsonl.
+    Creates two log files based on the prefix parameter:
+    - {prefix}_pipeline.jsonl: For pipeline events
+    - {prefix}_verification_pipeline.jsonl: For verification events
+    
+    Example: prefix="handling" creates handling_pipeline.jsonl and handling_verification_pipeline.jsonl
     """
     
     def __init__(self, output_dir: str = ".", prefix: str = "handling"):
