@@ -70,7 +70,12 @@ class HandlingMetaParser:
         
         # Read and canonicalize
         self.raw_xml = path.read_bytes()
-        self.canonical_xml = canonical_xml_bytes(self.raw_xml)
+        
+        # Try to canonicalize (may fail for invalid XML)
+        try:
+            self.canonical_xml = canonical_xml_bytes(self.raw_xml)
+        except Exception as e:
+            raise ValueError(f"Invalid XML in {file_path}: {e}")
         
         # Parse XML
         try:
