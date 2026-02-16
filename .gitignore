@@ -14,10 +14,21 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
 # Temporary files
 *.tmp
 *.temp
 *.log
+*.jsonl
 
 # PII-sensitive files (PII Canon Enforcement)
 # Personal, sensitive, or relational content - NEVER COMMIT
@@ -38,3 +49,7 @@ logs/pii_violations/*.json
 
 # IDE session data (may contain personal context)
 .ide_ai_sessions/*
+
+# Canonicalization output
+canon_output/
+*.backup
