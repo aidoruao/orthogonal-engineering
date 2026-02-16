@@ -5,7 +5,8 @@
 
 # Configuration
 $DRY_RUN = $true  # ALWAYS start with dry-run
-$VAULT_PATH = "C:\Users\Aidor\Downloads\ai_exports"  # Local-only vault
+# NOTE: Update this vault path to match your local environment
+$VAULT_PATH = "C:\Users\Aidor\Downloads\ai_exports"  # Example local-only vault
 $BACKUP_DIR = ".\backups"
 $OUTPUT_DIR = ".\output"
 

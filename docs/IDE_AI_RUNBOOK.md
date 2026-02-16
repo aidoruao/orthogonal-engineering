@@ -226,7 +226,9 @@ Before any live operation:
 
 User exports are stored in the local-only vault path:
 
-**Windows**: `C:\Users\Aidor\Downloads\ai_exports`
+**Example Windows path**: `C:\Users\Aidor\Downloads\ai_exports`
+
+> **Note**: This is an example path. Configure your own vault path according to your local environment.
 
 **Never commit export data to git**. The vault path should be:
 - Listed in `.gitignore`

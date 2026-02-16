@@ -28,7 +28,8 @@ def main():
     
     # Configuration
     DRY_RUN = True  # ALWAYS start with dry-run
-    VAULT_PATH = Path("C:/Users/Aidor/Downloads/ai_exports")  # Local-only vault
+    # NOTE: Update this vault path to match your local environment
+    VAULT_PATH = Path("C:/Users/Aidor/Downloads/ai_exports")  # Example local-only vault
     
     # Example files to process (adjust as needed)
     source_files = [
