@@ -1,0 +1,12 @@
+{"operation": "hash_file", "file": "test1.txt", "hash": "a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447", "timestamp": "2026-02-16T18:00:00Z"}
+{"operation": "hash_file", "file": "test2.txt", "hash": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752", "timestamp": "2026-02-16T18:00:01Z"}
+{"operation": "canonicalize", "file": "test1.txt", "original_size": 150, "canonical_size": 145, "timestamp": "2026-02-16T18:00:02Z"}
+{"operation": "canonicalize", "file": "test2.txt", "original_size": 200, "canonical_size": 198, "timestamp": "2026-02-16T18:00:03Z"}
+{"operation": "backup_created", "original": "test1.txt", "backup": "backups/test1_20260216_180004.txt", "timestamp": "2026-02-16T18:00:04Z"}
+{"operation": "backup_created", "original": "test2.txt", "backup": "backups/test2_20260216_180005.txt", "timestamp": "2026-02-16T18:00:05Z"}
+{"operation": "manifest_created", "name": "example_manifest", "entries": 2, "merkle_root": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35", "timestamp": "2026-02-16T18:00:06Z"}
+{"operation": "process_file", "file": "test1.txt", "stages": ["canonicalize", "hash", "store"], "dry_run": true, "timestamp": "2026-02-16T18:00:07Z"}
+{"operation": "process_file", "file": "test2.txt", "stages": ["canonicalize", "hash", "store"], "dry_run": true, "timestamp": "2026-02-16T18:00:08Z"}
+{"operation": "alpha_phase", "name": "finalizer_example", "files": 2, "merkle_root": "d4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35", "timestamp": "2026-02-16T18:00:09Z"}
+{"operation": "omega_phase", "name": "finalizer_example", "files": 2, "verified": true, "issues": 0, "timestamp": "2026-02-16T18:00:10Z"}
+{"operation": "manifest_verify", "manifest": "example_manifest.json", "total": 2, "valid": 2, "invalid": 0, "missing": 0, "timestamp": "2026-02-16T18:00:11Z"}
