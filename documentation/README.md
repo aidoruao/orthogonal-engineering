@@ -484,3 +484,55 @@ Truth does not need protection. Only alternatives need to pay their bill.
 ❌ **Not:** "Make Logos undeletable"
 ✅ **But:** "Make every alternative pay its full ontological cost in artifacts"
 ✅ **Result:** Truth doesn't need protection, only alternatives need full costing
+---
+
+## 🔐 AlphaOmegaFinalizer: Canonical Ledger Creation
+
+**New in this release:** Production-ready tool for creating cryptographically verifiable ledgers from chat exports.
+
+### Features
+
+- **Streaming Processing**: Handle multi-GB export files without OOM using ijson
+- **Canonical Byte Serialization**: Deterministic SHA-256 hashing with sorted keys
+- **Merkle Tree Verification**: Binary tree construction with tamper-evident root hash
+- **Privacy-Preserving Redaction**: Optional hooks for PII and sensitive content filtering
+- **Atomic File Writing**: Crash-safe ledger and master root persistence
+- **Self-Verification**: Re-compute and validate Merkle root against stored value
+
+### Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Dry run (safe, no files written)
+python core/alpha_omega_finalizer.py finalize \
+    --vault-dir /path/to/vault \
+    --outputs-dir ./outputs
+
+# Actually write ledger and master root
+python core/alpha_omega_finalizer.py finalize \
+    --vault-dir /path/to/vault \
+    --outputs-dir ./outputs \
+    --apply
+
+# Verify integrity
+python core/alpha_omega_finalizer.py verify --outputs-dir ./outputs
+```
+
+### Security & Privacy
+
+**⚠️ IMPORTANT:** Read [docs/INTERNET_IMPORTANT.md](../docs/INTERNET_IMPORTANT.md) before processing sensitive data.
+
+- **NEVER** commit chat exports or vault directories to version control
+- Always start with `--dry-run` (default) mode
+- Use `--redact` for privacy-sensitive content
+- Review outputs before sharing
+- Keep vault directory outside repository
+
+### Documentation
+
+- **Security Guide**: [docs/INTERNET_IMPORTANT.md](../docs/INTERNET_IMPORTANT.md)
+- **Code Documentation**: See docstrings in `core/alpha_omega_finalizer.py`
+- **Tests**: `core/tests/test_alpha_omega_finalizer.py`
+
