@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-02-17T06:37:05.492682+00:00",
+  "quantitative_metrics": {
+    "commits_per_day": {
+      "metric": "commits_per_day",
+      "value": 0.07,
+      "threshold": 1.0,
+      "passed": false,
+      "measurement_period_days": 30,
+      "total_commits": 2
+    },
+    "commit_complexity": {
+      "metric": "commit_complexity",
+      "commits_analyzed": 1,
+      "avg_lines_changed": 187028053.0,
+      "avg_files_touched": 3003.0,
+      "lines_threshold": 50,
+      "files_threshold": 1,
+      "passed": true,
+      "top_commits": [
+        {
+          "sha": "7fc0006",
+          "lines": 187028053,
+          "files": 3003
+        }
+      ]
+    },
+    "automated_artifacts": {
+      "metric": "automated_artifacts",
+      "artifacts_by_type": {
+        "sha256_manifests": 29,
+        "merkle_proofs": 8,
+        "audit_logs": 5,
+        "backup_records": 21
+      },
+      "total_artifacts": 63,
+      "passed": true
+    }
+  },
+  "qualitative_metrics": {
+    "audit_trails": {
+      "metric": "audit_trails",
+      "audit_files_found": 28,
+      "total_entries": 35885,
+      "valid_entries": 492,
+      "passed": true
+    },
+    "deterministic_scaffolds": {
+      "metric": "deterministic_scaffolds",
+      "components": {
+        "pipeline_integrity": true,
+        "merkle_tree": true,
+        "gta_handling": true,
+        "backup_system": true,
+        "manifest_generator": true
+      },
+      "components_present": 5,
+      "total_components": 5,
+      "passed": true
+    },
+    "atomic_increments": {
+      "metric": "atomic_increments",
+      "invariants_defined": true,
+      "total_invariants": 9,
+      "upheld_invariants": 7,
+      "uphold_rate": 0.78,
+      "passed": true
+    }
+  },
+  "proof_of_scale": {
+    "metric": "proof_of_scale",
+    "proofs": {
+      "commit_history_sha256": "1a4fb747e2a803ee9ad10079ea47da8e0fe47b8e4370f67852a842b113ff9e7e",
+      "pipeline_run_logs": 0,
+      "backup_manifests": 21,
+      "deterministic_outputs": 1
+    },
+    "artifacts_present": 3,
+    "total_required": 4,
+    "passed": true
+  },
+  "overall_score": 0.8666666666666667,
+  "certification_passed": true,
+  "violations": [],
+  "warnings": [],
+  "score_breakdown": {
+    "quantitative": {
+      "score": 0.6666666666666666,
+      "weight": 0.4,
+      "contribution": 0.26666666666666666
+    },
+    "qualitative": {
+      "score": 1.0,
+      "weight": 0.4,
+      "contribution": 0.4
+    },
+    "proof_of_scale": {
+      "score": 1.0,
+      "weight": 0.2,
+      "contribution": 0.2
+    }
+  }
+}

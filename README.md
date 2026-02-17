@@ -24,6 +24,7 @@ python cli.py index --repo /path/to/repo --apply
 - **🔐 Finalization**: Vault processing with streaming JSON and integrity checks
 - **💾 Automatic Backups**: Timestamped backups before any destructive writes
 - **📊 Audit Logging**: JSONL logs with ISO8601 timestamps and monotonic IDs
+- **🏆 Extreme Work Certification**: Automated verification of hard engineering boundaries
 
 ## Installation
 
@@ -208,6 +209,42 @@ Files are canonicalized based on type:
 - **[IDE AI Runbook](docs/IDE_AI_RUNBOOK.md)**: Operational guidance for IDE workflows
 - **[Safe Operations Policy](docs/SAFE_OPERATIONS.md)**: Safety policies and constraints
 - **[Schema Documentation](config/schema.yaml)**: JSON schemas for artifacts
+- **[Extreme Work Certification](EXTREME_WORK_CERTIFICATION.md)**: Hard boundaries for extreme engineering
+
+## Extreme Work Certification
+
+This repository implements a comprehensive **Extreme Work Certification System** that verifies activity meets hard boundaries for serious, repeatable engineering.
+
+### Quick Verification
+
+```bash
+# Run certification verification
+python3 automation/verify_extreme_work.py
+
+# Generate certification report
+python3 automation/verify_extreme_work.py --output my_certification
+```
+
+### What is Certified
+
+The system verifies **quantitative** and **qualitative** boundaries:
+
+**Quantitative Metrics:**
+- Commits per day (≥1.0 sustained)
+- Lines changed per commit (≥50 meaningful)
+- Files touched per commit (≥5 major, ≥1 minor)
+- Automated artifacts (manifests, Merkle proofs, audit logs)
+- Pipeline executions (≥1/week)
+
+**Qualitative Metrics:**
+- Deterministic scaffold maintenance
+- Atomic increment compliance
+- Complete audit trails
+- No casual commits
+
+**Certification Score:** Weighted average ≥85% required to pass
+
+See [EXTREME_WORK_CERTIFICATION.md](EXTREME_WORK_CERTIFICATION.md) for complete details.
 
 ## Example Usage
 

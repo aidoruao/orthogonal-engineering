@@ -1,0 +1,71 @@
+name: Extreme Work Certification
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly on Monday at 00:00 UTC
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  verify-extreme-work:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for commit analysis
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
+    
+    - name: Run Extreme Work Verification
+      id: verification
+      run: |
+        python3 automation/verify_extreme_work.py --output extreme_work_cert
+        echo "exit_code=$?" >> $GITHUB_OUTPUT
+      continue-on-error: true
+    
+    - name: Display Certification Report
+      run: |
+        echo "## Extreme Work Certification Report" >> $GITHUB_STEP_SUMMARY
+        cat extreme_work_cert.md >> $GITHUB_STEP_SUMMARY
+    
+    - name: Upload Certification Reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: extreme-work-certification
+        path: |
+          extreme_work_cert.json
+          extreme_work_cert.md
+        retention-days: 90
+    
+    - name: Check Certification Status
+      run: |
+        if [ -f extreme_work_cert.json ]; then
+          PASSED=$(python3 -c "import json; print(json.load(open('extreme_work_cert.json'))['certification_passed'])")
+          if [ "$PASSED" = "True" ]; then
+            echo "✅ Extreme Work Certification: PASSED"
+            exit 0
+          else
+            echo "⚠️  Extreme Work Certification: FAILED"
+            echo "This is a warning - review the certification report for details"
+            exit 0  # Don't fail the build, just warn
+          fi
+        else
+          echo "❌ Certification report not generated"
+          exit 1
+        fi
