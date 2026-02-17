@@ -24,15 +24,17 @@ except ImportError:
 class ExtremeWorkVerifier:
     """Verifies extreme work boundaries and generates certification reports."""
     
-    def __init__(self, repo_path: str = ".", mode: str = "full", shard_id: Optional[int] = None, shard_count: Optional[int] = None):
+    def __init__(self, repo_path: str = ".", mode: str = "full", shard_id: Optional[int] = None, shard_count: Optional[int] = None, repo_list: Optional[List[Dict[str, str]]] = None):
         self.repo_path = Path(repo_path).resolve()
         self.config_path = self.repo_path / "EXTREME_WORK_BOUNDARIES.json"
         self.config = self._load_config()
         self.mode = mode
         self.shard_id = shard_id
         self.shard_count = shard_count
+        self.repo_list = repo_list  # For multi-repo verification
         self._manifest = None
         self._manifest_generator = None
+        self._multi_repo_manifest = None  # Cache for multi-repo manifest
         self.results = {
             "timestamp": datetime.now().astimezone().isoformat(),
             "quantitative_metrics": {},
@@ -42,11 +44,14 @@ class ExtremeWorkVerifier:
             "certification_passed": False,
             "violations": [],
             "warnings": [],
-            "mode": mode
+            "mode": mode,
+            "multi_repo": repo_list is not None
         }
         if mode == "shard":
             self.results["shard_id"] = shard_id
             self.results["shard_count"] = shard_count
+        if repo_list:
+            self.results["repo_count"] = len(repo_list)
         
     def _load_config(self) -> Dict:
         """Load extreme work boundaries configuration."""
@@ -76,8 +81,13 @@ class ExtremeWorkVerifier:
         """Lazy-load repository manifest for current HEAD commit.
         
         Returns:
-            The manifest dictionary
+            The manifest dictionary (single-repo or multi-repo)
         """
+        # If multi-repo mode, return multi-repo manifest
+        if self.repo_list:
+            return self.multi_repo_manifest
+        
+        # Single-repo mode
         if self._manifest is None:
             if self._manifest_generator is None:
                 self._manifest_generator = RepositoryManifestGenerator(str(self.repo_path))
@@ -90,11 +100,31 @@ class ExtremeWorkVerifier:
         
         return self._manifest
     
-    def _should_process_folder(self, folder_path: str) -> bool:
+    @property
+    def multi_repo_manifest(self) -> Dict[str, Any]:
+        """Lazy-load multi-repo manifest.
+        
+        Returns:
+            The multi-repo manifest dictionary
+        """
+        if self._multi_repo_manifest is None and self.repo_list:
+            # Import the function
+            try:
+                from automation.repo_manifest import generate_multi_repo_manifest
+            except ImportError:
+                from repo_manifest import generate_multi_repo_manifest
+            
+            # Generate multi-repo manifest
+            self._multi_repo_manifest = generate_multi_repo_manifest(self.repo_list, output_path=None)
+        
+        return self._multi_repo_manifest
+    
+    def _should_process_folder(self, folder_path: str, repo_name: str = None) -> bool:
         """Determine if folder should be processed in current shard.
         
         Args:
             folder_path: Relative path to folder
+            repo_name: Optional repository name (for multi-repo)
             
         Returns:
             True if folder should be processed in this shard
@@ -102,8 +132,9 @@ class ExtremeWorkVerifier:
         if self.mode != "shard":
             return True
         
-        # Hash-based partitioning
-        folder_hash = int(hashlib.sha256(folder_path.encode()).hexdigest(), 16)
+        # Hash-based partitioning - include repo name for multi-repo support
+        partition_key = f"{repo_name or ''}:{folder_path}"
+        folder_hash = int(hashlib.sha256(partition_key.encode()).hexdigest(), 16)
         return (folder_hash % self.shard_count) == self.shard_id
     
     def verify_commits_per_day(self) -> Dict[str, Any]:
@@ -206,6 +237,12 @@ class ExtremeWorkVerifier:
         
         # Use manifest data instead of filesystem scans
         manifest_data = self.manifest
+        
+        # Handle multi-repo manifests
+        if manifest_data.get('type') == 'multi-repo':
+            return self._verify_automated_artifacts_multi_repo(manifest_data, artifact_types)
+        
+        # Single-repo verification
         folders = manifest_data.get('folders', {})
         files = manifest_data.get('files', [])
         
@@ -251,6 +288,72 @@ class ExtremeWorkVerifier:
         return {
             "metric": "automated_artifacts",
             "artifacts_by_type": artifacts_found,
+            "total_artifacts": total_artifacts,
+            "passed": passed
+        }
+    
+    def _verify_automated_artifacts_multi_repo(self, multi_manifest: Dict[str, Any], artifact_types: List[str]) -> Dict[str, Any]:
+        """Verify automated artifacts across multiple repositories.
+        
+        Args:
+            multi_manifest: Multi-repo manifest
+            artifact_types: List of artifact types to check
+            
+        Returns:
+            Aggregated artifact metrics
+        """
+        artifacts_by_repo = {}
+        total_artifacts_found = {}
+        
+        for artifact_type in artifact_types:
+            total_artifacts_found[artifact_type] = 0
+        
+        # Process each repository
+        for repo_name, repo_manifest in multi_manifest.get('repositories', {}).items():
+            files = repo_manifest.get('files', [])
+            repo_artifacts = {}
+            
+            for artifact_type in artifact_types:
+                count = 0
+                
+                if artifact_type == "sha256_manifests":
+                    for file_entry in files:
+                        if 'sha256_manifests' in file_entry['path'] and file_entry['path'].endswith('.json'):
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                elif artifact_type == "merkle_proofs":
+                    for file_entry in files:
+                        path_lower = file_entry['path'].lower()
+                        if 'merkle' in path_lower and (path_lower.endswith('.json') or path_lower.endswith('.py')):
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                elif artifact_type == "audit_logs":
+                    for file_entry in files:
+                        path_lower = file_entry['path'].lower()
+                        if 'audit' in path_lower and (path_lower.endswith('.json') or path_lower.endswith('.jsonl')):
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                elif artifact_type == "backup_records":
+                    for file_entry in files:
+                        if 'backup' in file_entry['path'].lower():
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                repo_artifacts[artifact_type] = count
+                total_artifacts_found[artifact_type] += count
+            
+            artifacts_by_repo[repo_name] = repo_artifacts
+        
+        total_artifacts = sum(total_artifacts_found.values())
+        passed = total_artifacts > 0
+        
+        return {
+            "metric": "automated_artifacts",
+            "artifacts_by_type": total_artifacts_found,
+            "artifacts_by_repo": artifacts_by_repo,
             "total_artifacts": total_artifacts,
             "passed": passed
         }
@@ -740,6 +843,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Verify extreme work boundaries")
     parser.add_argument("--repo", default=".", help="Repository path")
+    parser.add_argument("--repo-list", help="Path to JSON file containing list of repositories for multi-repo verification")
     parser.add_argument("--output", help="Output report path (without extension)")
     parser.add_argument("--json-only", action="store_true", help="Output JSON only to stdout")
     parser.add_argument("--mode", choices=["full", "shard", "aggregate"], default="full",
@@ -750,6 +854,12 @@ def main():
     parser.add_argument("--shard-pattern", help="Glob pattern for shard files (for aggregate mode)")
     
     args = parser.parse_args()
+    
+    # Load repo list if provided
+    repo_list = None
+    if args.repo_list:
+        with open(args.repo_list, 'r') as f:
+            repo_list = json.load(f)
     
     # Validate shard mode arguments
     if args.mode == "shard":
@@ -792,7 +902,7 @@ def main():
                 
                 # Generate markdown report
                 md_path = f"{output_path}.md"
-                verifier = ExtremeWorkVerifier(args.repo)
+                verifier = ExtremeWorkVerifier(args.repo, repo_list=repo_list)
                 verifier.results = results
                 verifier._generate_markdown_report(md_path)
                 print(f"💾 Markdown report saved to: {md_path}", file=sys.stderr)
@@ -804,7 +914,8 @@ def main():
                 args.repo,
                 mode=args.mode,
                 shard_id=args.shard_id,
-                shard_count=args.shard_count
+                shard_count=args.shard_count,
+                repo_list=repo_list
             )
             results = verifier.run_verification(json_only=args.json_only)
             
