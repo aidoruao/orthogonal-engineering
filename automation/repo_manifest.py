@@ -26,6 +26,12 @@ from collections import defaultdict
 class RepositoryManifestGenerator:
     """Generates deterministic manifests for repository verification."""
     
+    # Supported file extensions for dependency extraction
+    DEPENDENCY_EXTRACTABLE_EXTENSIONS = [
+        '.py', '.js', '.ts', '.go', '.java', '.cpp', '.c', '.h', '.hpp', 
+        '.cs', '.rb', '.php', '.tsx', '.jsx'
+    ]
+    
     def __init__(self, repo_path: str = ".", repo_name: Optional[str] = None):
         """Initialize the manifest generator.
         
@@ -115,7 +121,7 @@ class RepositoryManifestGenerator:
         
         try:
             # Only process text files with known extensions
-            if file_path.suffix not in ['.py', '.js', '.ts', '.go', '.java', '.cpp', '.c', '.h', '.hpp', '.cs', '.rb', '.php']:
+            if file_path.suffix not in self.DEPENDENCY_EXTRACTABLE_EXTENSIONS:
                 return dependencies
             
             with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:

@@ -226,7 +226,7 @@ def test_backward_compatibility():
     
     # Check multi_repo flag
     assert 'multi_repo' in results
-    assert results['multi_repo'] == False, "Should be single-repo mode"
+    assert results['multi_repo'] is False, "Should be single-repo mode"
     
     print("✓ Backward compatibility maintained")
     print(f"  Overall score: {results['overall_score']:.1%}")

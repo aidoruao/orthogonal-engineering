@@ -24,6 +24,10 @@ except ImportError:
 class ExtremeWorkVerifier:
     """Verifies extreme work boundaries and generates certification reports."""
     
+    # Fields to exclude from HTML/Markdown reports
+    REPORT_EXCLUDED_FIELDS = {"metric", "passed", "top_commits", "artifacts_by_repo", 
+                               "components", "dependencies_by_repo"}
+    
     def __init__(self, repo_path: str = ".", mode: str = "full", shard_id: Optional[int] = None, shard_count: Optional[int] = None, repo_list: Optional[List[Dict[str, str]]] = None):
         self.repo_path = Path(repo_path).resolve()
         self.config_path = self.repo_path / "EXTREME_WORK_BOUNDARIES.json"
@@ -801,10 +805,10 @@ class ExtremeWorkVerifier:
         """Generate a comprehensive HTML certification report."""
         html = []
         html.append("<!DOCTYPE html>")
-        html.append("<html lang='en'>")
+        html.append('<html lang="en">')
         html.append("<head>")
-        html.append("<meta charset='UTF-8'>")
-        html.append("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
+        html.append('<meta charset="UTF-8">')
+        html.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
         html.append("<title>Extreme Work Certification Report</title>")
         html.append("<style>")
         html.append("body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }")
@@ -858,28 +862,28 @@ class ExtremeWorkVerifier:
             card_class = "metric-passed" if passed else "metric-failed"
             status_icon = "✅" if passed else "❌"
             
-            html.append(f"<div class='metric-card {card_class}'>")
-            html.append(f"<div class='metric-title'>{status_icon} {metric_name.replace('_', ' ').title()}</div>")
+            html.append(f'<div class="metric-card {card_class}">')
+            html.append(f'<div class="metric-title">{status_icon} {metric_name.replace("_", " ").title()}</div>')
             
             for key, value in metric_data.items():
-                if key not in ["metric", "passed", "top_commits", "artifacts_by_repo"]:
-                    html.append(f"<div class='metric-value'><span>{key.replace('_', ' ').title()}:</span><span><strong>{value}</strong></span></div>")
+                if key not in self.REPORT_EXCLUDED_FIELDS:
+                    html.append(f'<div class="metric-value"><span>{key.replace("_", " ").title()}:</span><span><strong>{value}</strong></span></div>')
             
             html.append("</div>")
         
         # Qualitative Metrics
-        html.append("<h2 class='section-title'>📋 Qualitative Boundaries</h2>")
+        html.append('<h2 class="section-title">📋 Qualitative Boundaries</h2>')
         for metric_name, metric_data in self.results.get("qualitative_metrics", {}).items():
             passed = metric_data.get("passed", False)
             card_class = "metric-passed" if passed else "metric-failed"
             status_icon = "✅" if passed else "❌"
             
-            html.append(f"<div class='metric-card {card_class}'>")
-            html.append(f"<div class='metric-title'>{status_icon} {metric_name.replace('_', ' ').title()}</div>")
+            html.append(f'<div class="metric-card {card_class}">')
+            html.append(f'<div class="metric-title">{status_icon} {metric_name.replace("_", " ").title()}</div>')
             
             for key, value in metric_data.items():
-                if key not in ["metric", "passed", "components", "dependencies_by_repo"]:
-                    html.append(f"<div class='metric-value'><span>{key.replace('_', ' ').title()}:</span><span><strong>{value}</strong></span></div>")
+                if key not in self.REPORT_EXCLUDED_FIELDS:
+                    html.append(f'<div class="metric-value"><span>{key.replace("_", " ").title()}:</span><span><strong>{value}</strong></span></div>')
             
             html.append("</div>")
         
