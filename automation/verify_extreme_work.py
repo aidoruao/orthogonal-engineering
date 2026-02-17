@@ -11,17 +11,28 @@ import subprocess
 import hashlib
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple, Any, Optional
 from collections import defaultdict
+
+# Import manifest generator
+try:
+    from automation.repo_manifest import RepositoryManifestGenerator
+except ImportError:
+    from repo_manifest import RepositoryManifestGenerator
 
 
 class ExtremeWorkVerifier:
     """Verifies extreme work boundaries and generates certification reports."""
     
-    def __init__(self, repo_path: str = "."):
+    def __init__(self, repo_path: str = ".", mode: str = "full", shard_id: Optional[int] = None, shard_count: Optional[int] = None):
         self.repo_path = Path(repo_path).resolve()
         self.config_path = self.repo_path / "EXTREME_WORK_BOUNDARIES.json"
         self.config = self._load_config()
+        self.mode = mode
+        self.shard_id = shard_id
+        self.shard_count = shard_count
+        self._manifest = None
+        self._manifest_generator = None
         self.results = {
             "timestamp": datetime.now().astimezone().isoformat(),
             "quantitative_metrics": {},
@@ -30,8 +41,12 @@ class ExtremeWorkVerifier:
             "overall_score": 0.0,
             "certification_passed": False,
             "violations": [],
-            "warnings": []
+            "warnings": [],
+            "mode": mode
         }
+        if mode == "shard":
+            self.results["shard_id"] = shard_id
+            self.results["shard_count"] = shard_count
         
     def _load_config(self) -> Dict:
         """Load extreme work boundaries configuration."""
@@ -55,6 +70,41 @@ class ExtremeWorkVerifier:
         except subprocess.CalledProcessError as e:
             print(f"Git command failed: {e}", file=sys.stderr)
             return ""
+    
+    @property
+    def manifest(self) -> Dict[str, Any]:
+        """Lazy-load repository manifest for current HEAD commit.
+        
+        Returns:
+            The manifest dictionary
+        """
+        if self._manifest is None:
+            if self._manifest_generator is None:
+                self._manifest_generator = RepositoryManifestGenerator(str(self.repo_path))
+            
+            # Get current commit
+            commit = self._run_git_command(["rev-parse", "--short", "HEAD"])
+            
+            # Get or create manifest
+            self._manifest = self._manifest_generator.get_or_create_manifest(commit)
+        
+        return self._manifest
+    
+    def _should_process_folder(self, folder_path: str) -> bool:
+        """Determine if folder should be processed in current shard.
+        
+        Args:
+            folder_path: Relative path to folder
+            
+        Returns:
+            True if folder should be processed in this shard
+        """
+        if self.mode != "shard":
+            return True
+        
+        # Hash-based partitioning
+        folder_hash = int(hashlib.sha256(folder_path.encode()).hexdigest(), 16)
+        return (folder_hash % self.shard_count) == self.shard_id
     
     def verify_commits_per_day(self) -> Dict[str, Any]:
         """Verify commit rate meets threshold."""
@@ -151,27 +201,49 @@ class ExtremeWorkVerifier:
         }
     
     def verify_automated_artifacts(self) -> Dict[str, Any]:
-        """Verify automated artifact generation."""
+        """Verify automated artifact generation using manifest."""
         artifact_types = self.config["quantitative_boundaries"]["automated_artifacts_generated"]["artifact_types"]
+        
+        # Use manifest data instead of filesystem scans
+        manifest_data = self.manifest
+        folders = manifest_data.get('folders', {})
+        files = manifest_data.get('files', [])
         
         artifacts_found = {}
         for artifact_type in artifact_types:
+            count = 0
+            
             if artifact_type == "sha256_manifests":
-                manifest_dir = self.repo_path / "documentation" / "sha256_manifests"
-                count = len(list(manifest_dir.glob("*.json"))) if manifest_dir.exists() else 0
-                artifacts_found[artifact_type] = count
+                # Count files in sha256_manifests folder
+                for file_entry in files:
+                    if 'sha256_manifests' in file_entry['path'] and file_entry['path'].endswith('.json'):
+                        if self._should_process_folder(str(Path(file_entry['path']).parent)):
+                            count += 1
+            
             elif artifact_type == "merkle_proofs":
-                # Check for merkle-related files
-                merkle_files = list(self.repo_path.glob("**/merkle*.json")) + list(self.repo_path.glob("**/merkle*.py"))
-                artifacts_found[artifact_type] = len(merkle_files)
+                # Count merkle-related files from manifest
+                for file_entry in files:
+                    path_lower = file_entry['path'].lower()
+                    if 'merkle' in path_lower and (path_lower.endswith('.json') or path_lower.endswith('.py')):
+                        if self._should_process_folder(str(Path(file_entry['path']).parent)):
+                            count += 1
+            
             elif artifact_type == "audit_logs":
-                # Check for audit log files
-                audit_files = list(self.repo_path.glob("**/audit*.json")) + list(self.repo_path.glob("**/audit*.jsonl"))
-                artifacts_found[artifact_type] = len(audit_files)
+                # Count audit log files from manifest
+                for file_entry in files:
+                    path_lower = file_entry['path'].lower()
+                    if 'audit' in path_lower and (path_lower.endswith('.json') or path_lower.endswith('.jsonl')):
+                        if self._should_process_folder(str(Path(file_entry['path']).parent)):
+                            count += 1
+            
             elif artifact_type == "backup_records":
-                # Check for backup directories and files
-                backup_dirs = list(self.repo_path.glob("**/*backup*"))
-                artifacts_found[artifact_type] = len(backup_dirs)
+                # Count backup-related files from manifest
+                for file_entry in files:
+                    if 'backup' in file_entry['path'].lower():
+                        if self._should_process_folder(str(Path(file_entry['path']).parent)):
+                            count += 1
+            
+            artifacts_found[artifact_type] = count
         
         total_artifacts = sum(artifacts_found.values())
         passed = total_artifacts > 0
@@ -184,11 +256,19 @@ class ExtremeWorkVerifier:
         }
     
     def verify_audit_trails(self) -> Dict[str, Any]:
-        """Verify audit trail completeness."""
+        """Verify audit trail completeness using manifest."""
         required_fields = self.config["qualitative_boundaries"]["audit_trails"]["required_fields"]
         
-        # Look for JSONL audit files
-        audit_files = list(self.repo_path.glob("**/*.jsonl"))
+        # Get JSONL audit files from manifest
+        manifest_data = self.manifest
+        files = manifest_data.get('files', [])
+        
+        audit_files = []
+        for file_entry in files:
+            if file_entry['path'].endswith('.jsonl'):
+                folder = str(Path(file_entry['path']).parent)
+                if self._should_process_folder(folder):
+                    audit_files.append(self.repo_path / file_entry['path'])
         
         valid_trails = 0
         total_trails = 0
@@ -226,15 +306,20 @@ class ExtremeWorkVerifier:
         }
     
     def verify_deterministic_scaffolds(self) -> Dict[str, Any]:
-        """Verify deterministic scaffold existence."""
+        """Verify deterministic scaffold existence using manifest."""
         verification_methods = self.config["qualitative_boundaries"]["deterministic_scaffolds"]["verification_methods"]
         
+        # Check scaffold components from manifest
+        manifest_data = self.manifest
+        files = manifest_data.get('files', [])
+        file_paths = {f['path'] for f in files}
+        
         scaffold_components = {
-            "pipeline_integrity": (self.repo_path / "cli.py").exists(),
-            "merkle_tree": (self.repo_path / "merkle.py").exists(),
-            "gta_handling": (self.repo_path / "gta_handling_pipeline.py").exists(),
-            "backup_system": (self.repo_path / "backup.py").exists(),
-            "manifest_generator": (self.repo_path / "manifest.py").exists()
+            "pipeline_integrity": "cli.py" in file_paths,
+            "merkle_tree": "merkle.py" in file_paths,
+            "gta_handling": "gta_handling_pipeline.py" in file_paths,
+            "backup_system": "backup.py" in file_paths,
+            "manifest_generator": "manifest.py" in file_paths or "automation/repo_manifest.py" in file_paths
         }
         
         components_present = sum(scaffold_components.values())
@@ -249,16 +334,20 @@ class ExtremeWorkVerifier:
         }
     
     def verify_atomic_increments(self) -> Dict[str, Any]:
-        """Verify atomic increment compliance."""
-        # Check for invariants file
-        invariants_file = self.repo_path / "INVARIANTS.json"
+        """Verify atomic increment compliance using manifest."""
+        # Check for invariants file in manifest
+        manifest_data = self.manifest
+        files = manifest_data.get('files', [])
+        file_paths = {f['path'] for f in files}
         
-        if not invariants_file.exists():
+        if "INVARIANTS.json" not in file_paths:
             return {
                 "metric": "atomic_increments",
                 "invariants_defined": False,
                 "passed": False
             }
+        
+        invariants_file = self.repo_path / "INVARIANTS.json"
         
         try:
             with open(invariants_file, 'r') as f:
@@ -423,7 +512,10 @@ class ExtremeWorkVerifier:
         """Save verification report to JSON and Markdown."""
         if output_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_path = f"extreme_work_verification_{timestamp}"
+            if self.mode == "shard":
+                output_path = f"extreme_work_verification_shard_{self.shard_id}_{self.shard_count}_{timestamp}"
+            else:
+                output_path = f"extreme_work_verification_{timestamp}"
         
         # Save JSON report
         json_path = f"{output_path}.json"
@@ -431,10 +523,11 @@ class ExtremeWorkVerifier:
             json.dump(self.results, f, indent=2)
         print(f"\n💾 JSON report saved to: {json_path}")
         
-        # Generate and save Markdown report
-        md_path = f"{output_path}.md"
-        self._generate_markdown_report(md_path)
-        print(f"💾 Markdown report saved to: {md_path}")
+        # Generate and save Markdown report (skip for shard mode)
+        if self.mode != "shard":
+            md_path = f"{output_path}.md"
+            self._generate_markdown_report(md_path)
+            print(f"💾 Markdown report saved to: {md_path}")
     
     def _generate_markdown_report(self, output_path: str):
         """Generate a comprehensive markdown certification report."""
@@ -494,23 +587,49 @@ def main():
     parser.add_argument("--repo", default=".", help="Repository path")
     parser.add_argument("--output", help="Output report path (without extension)")
     parser.add_argument("--json-only", action="store_true", help="Output JSON only to stdout")
+    parser.add_argument("--mode", choices=["full", "shard", "aggregate"], default="full",
+                       help="Verification mode: full (default), shard (parallel), or aggregate (combine shards)")
+    parser.add_argument("--shard-id", type=int, help="Shard ID for parallel verification (0-based)")
+    parser.add_argument("--shard-count", type=int, help="Total number of shards")
     
     args = parser.parse_args()
     
+    # Validate shard mode arguments
+    if args.mode == "shard":
+        if args.shard_id is None or args.shard_count is None:
+            print("Error: --shard-id and --shard-count required for shard mode", file=sys.stderr)
+            sys.exit(2)
+        if args.shard_id < 0 or args.shard_id >= args.shard_count:
+            print(f"Error: --shard-id must be between 0 and {args.shard_count - 1}", file=sys.stderr)
+            sys.exit(2)
+    
     try:
-        verifier = ExtremeWorkVerifier(args.repo)
-        results = verifier.run_verification(json_only=args.json_only)
-        
-        if args.json_only:
-            print(json.dumps(results, indent=2))
+        if args.mode == "aggregate":
+            # Aggregate mode: combine shard results
+            print("Aggregate mode not yet implemented", file=sys.stderr)
+            sys.exit(2)
         else:
-            verifier.save_report(args.output)
+            # Full or shard mode
+            verifier = ExtremeWorkVerifier(
+                args.repo,
+                mode=args.mode,
+                shard_id=args.shard_id,
+                shard_count=args.shard_count
+            )
+            results = verifier.run_verification(json_only=args.json_only)
             
-        # Exit with appropriate code
-        sys.exit(0 if results["certification_passed"] else 1)
+            if args.json_only:
+                print(json.dumps(results, indent=2))
+            else:
+                verifier.save_report(args.output)
+                
+            # Exit with appropriate code
+            sys.exit(0 if results["certification_passed"] else 1)
         
     except Exception as e:
         print(f"❌ Verification failed: {e}", file=sys.stderr)
+        import traceback
+        traceback.print_exc()
         sys.exit(2)
 
 
