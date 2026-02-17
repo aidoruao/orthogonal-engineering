@@ -250,11 +250,18 @@ class AutonomousExplorer:
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
-                # Parse package==version, package>=version, or just package
-                match = re.match(r'([a-zA-Z0-9_-]+)(?:[>=<]+)?([\d.]+)?', line)
-                if match:
-                    name = match.group(1)
-                    version = match.group(2) if match.group(2) else 'latest'
+                
+                # Split on first occurrence of version operator or whitespace
+                # This handles: package==version, package>=version, package, etc.
+                # For complex specs like package>=1.0,<2.0, we capture the full spec
+                parts = re.split(r'([>=<]=?|~=|!=)', line, maxsplit=1)
+                name = parts[0].strip()
+                
+                # Extract version specification (everything after package name)
+                version_spec = line[len(name):].strip() if len(line) > len(name) else ''
+                version = version_spec if version_spec else 'latest'
+                
+                if name:  # Only add if we have a package name
                     self.dependencies.append(DependencyInfo(
                         name=name,
                         version=version,

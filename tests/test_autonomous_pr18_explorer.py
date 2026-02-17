@@ -127,26 +127,40 @@ def main():
         """Test requirements.txt parsing."""
         explorer = AutonomousExplorer('.')
         
-        # Create test requirements.txt
+        # Create test requirements.txt with various version spec formats
         req_file = tmp_path / 'requirements.txt'
         req_file.write_text('''# Comment line
 pandas>=2.0.0
 numpy==1.24.0
 requests
+scipy>=1.0,<2.0
+flask~=2.3.0
 ''')
         
         explorer.repo_path = tmp_path
         explorer._parse_requirements_txt(req_file)
         
-        assert len(explorer.dependencies) == 3
+        assert len(explorer.dependencies) == 5
         
-        # Check pandas
+        # Check pandas (simple >= spec)
         pandas_dep = next(d for d in explorer.dependencies if d.name == 'pandas')
-        assert pandas_dep.version == '2.0.0'
+        assert '>=2.0.0' in pandas_dep.version
         
-        # Check numpy
+        # Check numpy (== spec)
         numpy_dep = next(d for d in explorer.dependencies if d.name == 'numpy')
-        assert numpy_dep.version == '1.24.0'
+        assert '==1.24.0' in numpy_dep.version
+        
+        # Check requests (no version)
+        requests_dep = next(d for d in explorer.dependencies if d.name == 'requests')
+        assert requests_dep.version == 'latest'
+        
+        # Check scipy (complex spec with multiple operators)
+        scipy_dep = next(d for d in explorer.dependencies if d.name == 'scipy')
+        assert '>=1.0,<2.0' in scipy_dep.version
+        
+        # Check flask (~= spec)
+        flask_dep = next(d for d in explorer.dependencies if d.name == 'flask')
+        assert '~=2.3.0' in flask_dep.version
 
     def test_parse_package_json(self, tmp_path):
         """Test package.json parsing."""
