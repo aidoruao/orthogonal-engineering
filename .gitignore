@@ -39,6 +39,13 @@ logs/pii_violations/*.json
 # IDE session data (may contain personal context)
 .ide_ai_sessions/*
 
+# Pipeline output directories
+# Contains temporary pipeline outputs (manifests, Merkle proofs, backups, and JSONL logs)
+# that should not be committed to version control
+output/
+output_*/
+backups/
+logs/*.jsonl
 # Python cache
 __pycache__/
 *.pyc
