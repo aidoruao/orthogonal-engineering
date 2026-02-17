@@ -76,3 +76,50 @@ backups/
 venv/
 env/
 .venv/
+# AlphaOmegaFinalizer - AI Exports and Vault (NEVER COMMIT USER DATA)
+ai_exports/
+**/ai_exports/
+vault/
+**/vault/
+*.export.json
+*.export.jsonl
+outputs/ide_ai_run_report.json
+
+# Backup archives
+*_backup_*/
+*.7z
+__pycache__/
+*.pyc
+# CAS operational files (do not commit)
+backups/
+output/
+manifests/
+reports/
+logs/*.jsonl
+
+# User exports (CRITICAL - never commit)
+ai_exports/
+**/ai_exports/
+C:/Users/Aidor/Downloads/ai_exports/
+
+# Python build artifacts
+*.pyc
+__pycache__/
+*.egg-info/
+# Pipeline output directories
+# Contains temporary pipeline outputs (manifests, Merkle proofs, backups, and JSONL logs)
+# that should not be committed to version control
+output/
+output_*/
+backups/
+logs/*.jsonl
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Scaffold logs and backups
+logs/*.jsonl
+.scaffold_backups/
