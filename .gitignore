@@ -39,6 +39,24 @@ logs/pii_violations/*.json
 # IDE session data (may contain personal context)
 .ide_ai_sessions/*
 
+# AlphaOmegaFinalizer vault and sensitive outputs
+# NEVER commit these - they may contain PII and sensitive data
+vault/
+*_vault/
+*.vault/
+exports/
+conversations/
+chatlogs/
+SOVEREIGN_CONSTITUTION.jsonl
+MASTER_ROOT.txt
+outputs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
 # Python cache
 __pycache__/
 *.py[cod]
