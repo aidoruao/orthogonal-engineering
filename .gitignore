@@ -39,6 +39,18 @@ logs/pii_violations/*.json
 # IDE session data (may contain personal context)
 .ide_ai_sessions/*
 
+# Scaffold artifacts (deterministic auditable scaffold)
+.scaffold_backup/
+.scaffold_logs/
+.scaffold_checkpoint.json
+manifest.jsonl
+merkle_proofs.jsonl
+*_handling_pipeline.jsonl
+*_verification_pipeline.jsonl
+
+# Python cache files (should never be committed)
+**/__pycache__/
+**/*.pyc
 # AlphaOmegaFinalizer vault and sensitive outputs
 # NEVER commit these - they may contain PII and sensitive data
 vault/
