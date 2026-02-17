@@ -163,6 +163,23 @@ Examples:
             print(f"Error: Repository path not found: {repo_path}", file=sys.stderr)
             return 1
         
+        # Load config if provided
+        config = {}
+        if args.config:
+            try:
+                config_path = Path(args.config)
+                with open(config_path, 'r') as f:
+                    config = json.load(f)
+                print(f"Loaded config from: {config_path}")
+            except FileNotFoundError:
+                print(f"Warning: Config file not found: {args.config}", file=sys.stderr)
+            except json.JSONDecodeError as e:
+                print(f"Warning: Invalid JSON in config file: {e}", file=sys.stderr)
+        
+        # Get configuration values (CLI args override config file)
+        exclude_patterns = args.exclude if args.exclude else config.get("exclude_patterns", [])
+        checkpoint_interval = config.get("checkpoint_interval", 100)
+        
         # Create logger
         self.logger = create_hello_world_logger(repo_path)
         self.logger.log_start("index", repo_path=str(repo_path), 
@@ -170,7 +187,7 @@ Examples:
         
         # Collect files
         print(f"Indexing repository: {repo_path}")
-        files = self._collect_files(repo_path, args.exclude or [])
+        files = self._collect_files(repo_path, exclude_patterns)
         print(f"Found {len(files)} files")
         
         if not args.apply:
@@ -187,7 +204,8 @@ Examples:
         output_path = repo_path / args.output
         print(f"\nGenerating manifest: {output_path}")
         
-        count = generate_manifest(files, output_path, base_path=repo_path)
+        count = generate_manifest(files, output_path, base_path=repo_path,
+                                checkpoint_interval=checkpoint_interval)
         
         print(f"✓ Manifest generated: {count} entries")
         self.logger.log_complete("index", entries=count, 
@@ -218,7 +236,7 @@ Examples:
         
         # Build tree
         print("Building Merkle tree...")
-        tree = build_merkle_tree(files)
+        tree = build_merkle_tree(files, base_path=repo_path)
         
         print(f"✓ Merkle root: {tree.get_root_hash()}")
         
@@ -296,8 +314,12 @@ Examples:
             if args.output:
                 # Write modified handling.meta
                 print(f"Writing modified file: {args.output}")
-                # Implementation would write back XML with clamped values
-                print("✓ Modified file written")
+                try:
+                    parser.write_file(args.output, items)
+                    print("✓ Modified file written")
+                except Exception as e:
+                    print(f"Error writing file: {e}", file=sys.stderr)
+                    return 1
         
         return 0
     

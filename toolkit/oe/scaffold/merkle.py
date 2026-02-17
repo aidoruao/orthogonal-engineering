@@ -10,6 +10,7 @@ Implements binary Merkle tree construction with:
 
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import List, Tuple, Union, Optional
 
@@ -35,9 +36,12 @@ class MerkleNode:
 class MerkleTree:
     """Binary Merkle tree for file integrity verification."""
     
-    def __init__(self, root: MerkleNode, leaves: List[MerkleNode]):
+    def __init__(self, root: MerkleNode, leaves: List[MerkleNode], 
+                 leaf_to_siblings: Optional[dict] = None):
         self.root = root
         self.leaves = leaves
+        # Map from leaf index to list of sibling hashes along path to root
+        self.leaf_to_siblings = leaf_to_siblings or {}
     
     def get_root_hash(self) -> str:
         """Get the root hash of the tree."""
@@ -47,11 +51,14 @@ class MerkleTree:
         """
         Generate inclusion proof for a file.
         
+        The proof includes sibling hashes along the path from leaf to root,
+        allowing cryptographic verification without the full tree.
+        
         Args:
             file_path: Path to the file
             
         Returns:
-            Proof dictionary or None if file not in tree
+            Proof dictionary with sibling hashes or None if file not in tree
         """
         # Find the leaf for this file
         leaf_index = None
@@ -63,47 +70,15 @@ class MerkleTree:
         if leaf_index is None:
             return None
         
-        # Build proof by traversing tree
+        # Build proof with actual sibling hashes
         proof = {
             "file_path": file_path,
             "leaf_hash": self.leaves[leaf_index].hash,
             "root_hash": self.root.hash,
-            "proof_path": []
+            "proof_path": self.leaf_to_siblings.get(leaf_index, [])
         }
         
-        # Generate sibling hashes along path to root
-        # This is a simplified proof - in production, you'd track siblings
-        proof["proof_path"] = self._build_proof_path(leaf_index, len(self.leaves))
-        
         return proof
-    
-    def _build_proof_path(self, leaf_index: int, total_leaves: int) -> List[dict]:
-        """
-        Build proof path for a leaf.
-        
-        This is a simplified implementation that documents the structure.
-        A full implementation would traverse the actual tree structure.
-        """
-        proof_path = []
-        index = leaf_index
-        level_size = total_leaves
-        
-        while level_size > 1:
-            # Determine sibling position
-            is_left = index % 2 == 0
-            sibling_index = index + 1 if is_left else index - 1
-            
-            if sibling_index < level_size:
-                proof_path.append({
-                    "position": "right" if is_left else "left",
-                    "sibling_index": sibling_index
-                })
-            
-            # Move to parent level
-            index = index // 2
-            level_size = (level_size + 1) // 2
-        
-        return proof_path
 
 
 def compute_leaf_hash(canonical_bytes: bytes) -> str:
@@ -139,15 +114,18 @@ def compute_internal_hash(left_hash: str, right_hash: str) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
-def build_merkle_tree(file_paths: List[Union[str, Path]]) -> MerkleTree:
+def build_merkle_tree(file_paths: List[Union[str, Path]], 
+                     base_path: Optional[Union[str, Path]] = None) -> MerkleTree:
     """
     Build binary Merkle tree from list of file paths.
     
     Files are sorted by canonical path (UTF-8 lexicographic order) before
-    building the tree to ensure deterministic structure.
+    building the tree to ensure deterministic structure across systems.
     
     Args:
         file_paths: List of file paths to include in tree
+        base_path: Optional base path for computing relative canonical paths.
+                  If not provided, uses common parent or absolute paths.
         
     Returns:
         MerkleTree object with root and leaves
@@ -158,9 +136,35 @@ def build_merkle_tree(file_paths: List[Union[str, Path]]) -> MerkleTree:
     if not file_paths:
         raise ValueError("Cannot build Merkle tree from empty file list")
     
-    # Convert to Path objects and sort by canonical path
+    # Convert to Path objects
     paths = [Path(p) for p in file_paths]
-    paths.sort(key=lambda p: str(p.resolve()))
+    
+    # Determine base path for canonical ordering
+    if base_path:
+        base = Path(base_path)
+    else:
+        # Find common parent
+        try:
+            base = Path(os.path.commonpath([str(p.resolve()) for p in paths]))
+        except ValueError:
+            # No common path, use current directory
+            base = Path.cwd()
+    
+    # Create canonical path strings for sorting (POSIX-style, relative)
+    def get_canonical_path(p: Path) -> str:
+        """Get canonical path string for deterministic sorting."""
+        try:
+            # Get relative path from base
+            rel_path = p.resolve().relative_to(base.resolve())
+        except ValueError:
+            # If not relative to base, use absolute but normalized
+            rel_path = p.resolve()
+        
+        # Convert to POSIX-style path string (forward slashes)
+        return rel_path.as_posix()
+    
+    # Sort paths by canonical path string
+    paths.sort(key=get_canonical_path)
     
     # Build leaf nodes
     leaves = []
@@ -170,11 +174,19 @@ def build_merkle_tree(file_paths: List[Union[str, Path]]) -> MerkleTree:
         leaf = MerkleNode(leaf_hash, file_path=str(path))
         leaves.append(leaf)
     
-    # Build tree bottom-up
+    # Track sibling hashes for each leaf during tree construction
+    # Map from current level index to list of (sibling_hash, position) tuples
+    leaf_to_siblings = {i: [] for i in range(len(leaves))}
+    
+    # Map from node hash to leaf indices it represents
+    node_to_leaf_indices = {leaf.hash: [i] for i, leaf in enumerate(leaves)}
+    
+    # Build tree bottom-up, tracking siblings
     current_level = leaves[:]
     
     while len(current_level) > 1:
         next_level = []
+        next_node_to_leaf_indices = {}
         
         # Pair up nodes and create parents
         for i in range(0, len(current_level), 2):
@@ -186,17 +198,41 @@ def build_merkle_tree(file_paths: List[Union[str, Path]]) -> MerkleTree:
                 # Odd number of nodes: duplicate last node
                 right = current_level[i]
             
+            # Track siblings for all leaves in left and right subtrees
+            left_indices = node_to_leaf_indices.get(left.hash, [])
+            right_indices = node_to_leaf_indices.get(right.hash, [])
+            
+            # For each leaf in left subtree, right node is sibling
+            for leaf_idx in left_indices:
+                leaf_to_siblings[leaf_idx].append({
+                    "sibling_hash": right.hash,
+                    "position": "right"
+                })
+            
+            # For each leaf in right subtree, left node is sibling
+            for leaf_idx in right_indices:
+                leaf_to_siblings[leaf_idx].append({
+                    "sibling_hash": left.hash,
+                    "position": "left"
+                })
+            
             # Create parent node
             parent_hash = compute_internal_hash(left.hash, right.hash)
             parent = MerkleNode(parent_hash, left=left, right=right)
             next_level.append(parent)
+            
+            # Track which leaves are under this parent
+            parent_indices = left_indices + right_indices
+            next_node_to_leaf_indices[parent_hash] = parent_indices
         
         current_level = next_level
+        node_to_leaf_indices = next_node_to_leaf_indices
     
     # Root is the only remaining node
     root = current_level[0]
     
-    return MerkleTree(root, leaves)
+    return MerkleTree(root, leaves, leaf_to_siblings)
+
 
 
 def write_proof_to_jsonl(proof: dict, output_path: Union[str, Path]) -> None:

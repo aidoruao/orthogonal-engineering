@@ -40,6 +40,7 @@ class HandlingMetaParser:
         """
         self.logger = logger
         self.items = []
+        self.root = None  # Store XML tree for writing back
     
     def parse_file(self, file_path: Union[str, Path]) -> List[HandlingDataItem]:
         """
@@ -70,6 +71,7 @@ class HandlingMetaParser:
             
             # Parse XML
             root = ET.fromstring(content)
+            self.root = root  # Store for writing back
             
             # Find all Item elements
             items = []
@@ -161,6 +163,57 @@ class HandlingMetaParser:
         for item in self.items:
             if item.name == name:
                 return item
+        return None
+    
+    def write_file(self, output_path: Union[str, Path], items: List[HandlingDataItem]) -> None:
+        """
+        Write handling items back to XML file.
+        
+        Updates the stored XML tree with clamped values from items and writes to file.
+        
+        Args:
+            output_path: Path to output file
+            items: List of HandlingDataItem objects with updated values
+            
+        Raises:
+            ValueError: If XML tree hasn't been parsed yet
+        """
+        if self.root is None:
+            raise ValueError("No XML tree loaded. Parse a file first.")
+        
+        output_path = Path(output_path)
+        
+        # Update XML tree with clamped values
+        for item in items:
+            # Find the corresponding XML element by handlingName
+            for xml_item in self.root.findall(".//Item"):
+                name_elem = xml_item.find("handlingName")
+                if name_elem is not None and name_elem.text == item.name:
+                    # Update all fields in the XML
+                    for field, value in item.data.items():
+                        field_elem = xml_item.find(field)
+                        if field_elem is not None:
+                            # Update value attribute if present, otherwise text
+                            if field_elem.get("value") is not None:
+                                field_elem.set("value", str(value))
+                            else:
+                                field_elem.text = str(value)
+                    break
+        
+        # Write to file with XML declaration
+        tree = ET.ElementTree(self.root)
+        
+        # Pretty print if available (Python 3.9+)
+        try:
+            ET.indent(tree, space="  ")
+        except AttributeError:
+            # ET.indent not available in older Python versions
+            pass
+        
+        tree.write(output_path, encoding="utf-8", xml_declaration=True)
+        
+        if self.logger:
+            self.logger.log_info("write_handling_meta", file=str(output_path))
         return None
 
 
