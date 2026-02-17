@@ -1,0 +1,27 @@
+{
+  "description": "Example configuration for deterministic scaffold",
+  "exclude_patterns": [
+    "**/.git/**",
+    "**/node_modules/**",
+    "**/__pycache__/**",
+    "**/.pytest_cache/**",
+    "**/build/**",
+    "**/dist/**",
+    "**/.scaffold_backup/**",
+    "**/.scaffold_logs/**"
+  ],
+  "checkpoint_interval": 100,
+  "backup_dir": ".scaffold_backup",
+  "log_dir": ".scaffold_logs",
+  "index": {
+    "default_pattern": "**/*",
+    "output_file": "manifest.jsonl"
+  },
+  "merkle": {
+    "output_file": "merkle_proofs.jsonl"
+  },
+  "handling": {
+    "validate_on_parse": true,
+    "strict_mode": false
+  }
+}
