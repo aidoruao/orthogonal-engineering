@@ -228,6 +228,57 @@ Each test in `grounding_tests/` includes:
 
 ---
 
+## 🔐 AlphaOmegaFinalizer - Safe Deterministic Canonicalization
+
+The repository now includes **AlphaOmegaFinalizer**, a production-ready local-only finalizer for handling.meta pipeline with deterministic canonicalization.
+
+### Features:
+- **Streaming JSON parsing** with ijson fallback for large files
+- **Deterministic canonical bytes** generation for reproducible fingerprints
+- **SHA-256 and HMAC-SHA256** cryptographic fingerprinting
+- **Merkle tree generation** for integrity verification
+- **Dry-run by default** for safety (--apply required for writes)
+- **Optional redaction hooks** for sensitive content (user must provide classifier)
+- **Privacy-first**: Local-only processing, no network calls, no raw exports committed
+
+### User's Vault Path:
+AI exports are stored locally at: `C:\Users\Aidor\Downloads\ai_exports`
+
+**PRIVACY NOTE**: This path contains REAL user data and must NEVER be committed to the repository.
+
+### Quick Start:
+```bash
+# Install optional dependencies
+pip install ijson cryptography
+
+# Dry-run (safe, no writes)
+python core/alpha_omega_finalizer.py \
+  --vault-dir "C:\Users\Aidor\Downloads\ai_exports" \
+  --out-dir ./outputs
+
+# Run unit tests
+pytest core/tests/test_alpha_omega_finalizer.py -v
+
+# Use runner template (recommended)
+python examples/ide_ai_runner_template.py
+```
+
+### Documentation:
+- `docs/IDE_AI_RUNBOOK.md` - Complete IDE AI guidance with Windows workflows
+- `docs/SAFE_OPERATIONS.md` - Safety policies and compliance guidelines
+- `examples/ide_ai_runner_template.py` - Python runner template
+- `examples/ide_ai_runner_template.ps1` - PowerShell runner template
+
+### Safety Features:
+✅ Default dry-run mode (no accidental writes)  
+✅ Mandatory backups before any write operation  
+✅ Deterministic redaction stub (user must provide production classifier)  
+✅ Human approval gate (no automated --apply)  
+✅ No raw exports in repository  
+✅ Complete unit test coverage
+
+---
+
 ## 🏗️ Repository Structure
 
 ```
@@ -242,6 +293,18 @@ orthogonal-engineering/
 ├── FORMAL_FOUNDATIONS.md (mathematical proofs under assumptions)
 ├── INVARIANTS.md (only proven operational invariants)
 ├── FAILURES.md (what doesn't work - critical documentation)
+│
+├── core/ (AlphaOmegaFinalizer implementation)
+│   ├── alpha_omega_finalizer.py (main finalizer with CLI)
+│   └── tests/test_alpha_omega_finalizer.py (unit tests)
+│
+├── docs/ (AlphaOmegaFinalizer documentation)
+│   ├── IDE_AI_RUNBOOK.md (IDE AI workflows and guidance)
+│   └── SAFE_OPERATIONS.md (safety policies)
+│
+├── examples/ (Runner templates)
+│   ├── ide_ai_runner_template.py (Python runner)
+│   └── ide_ai_runner_template.ps1 (PowerShell runner)
 │
 ├── grounding_tests/ (operational tests per model)
 │   ├── test_brute_fact.md (G₁ test)
@@ -576,3 +639,55 @@ These constraints ensure autonomous evolution enhances productivity without comp
 ❌ **Not:** "Make Logos undeletable"
 ✅ **But:** "Make every alternative pay its full ontological cost in artifacts"
 ✅ **Result:** Truth doesn't need protection, only alternatives need full costing
+---
+
+## 🔐 AlphaOmegaFinalizer: Canonical Ledger Creation
+
+**New in this release:** Production-ready tool for creating cryptographically verifiable ledgers from chat exports.
+
+### Features
+
+- **Streaming Processing**: Handle multi-GB export files without OOM using ijson
+- **Canonical Byte Serialization**: Deterministic SHA-256 hashing with sorted keys
+- **Merkle Tree Verification**: Binary tree construction with tamper-evident root hash
+- **Privacy-Preserving Redaction**: Optional hooks for PII and sensitive content filtering
+- **Atomic File Writing**: Crash-safe ledger and master root persistence
+- **Self-Verification**: Re-compute and validate Merkle root against stored value
+
+### Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Dry run (safe, no files written)
+python core/alpha_omega_finalizer.py finalize \
+    --vault-dir /path/to/vault \
+    --outputs-dir ./outputs
+
+# Actually write ledger and master root
+python core/alpha_omega_finalizer.py finalize \
+    --vault-dir /path/to/vault \
+    --outputs-dir ./outputs \
+    --apply
+
+# Verify integrity
+python core/alpha_omega_finalizer.py verify --outputs-dir ./outputs
+```
+
+### Security & Privacy
+
+**⚠️ IMPORTANT:** Read [docs/INTERNET_IMPORTANT.md](../docs/INTERNET_IMPORTANT.md) before processing sensitive data.
+
+- **NEVER** commit chat exports or vault directories to version control
+- Always start with `--dry-run` (default) mode
+- Use `--redact` for privacy-sensitive content
+- Review outputs before sharing
+- Keep vault directory outside repository
+
+### Documentation
+
+- **Security Guide**: [docs/INTERNET_IMPORTANT.md](../docs/INTERNET_IMPORTANT.md)
+- **Code Documentation**: See docstrings in `core/alpha_omega_finalizer.py`
+- **Tests**: `core/tests/test_alpha_omega_finalizer.py`
+
