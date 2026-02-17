@@ -475,6 +475,111 @@ class ExtremeWorkVerifier:
                 "passed": False
             }
     
+    def verify_dependencies(self) -> Dict[str, Any]:
+        """Verify dependency metadata and determinism.
+        
+        Returns:
+            Dictionary containing dependency verification metrics
+        """
+        manifest_data = self.manifest
+        
+        # Handle multi-repo manifests
+        if manifest_data.get('type') == 'multi-repo':
+            return self._verify_dependencies_multi_repo(manifest_data)
+        
+        # Single-repo verification
+        files = manifest_data.get('files', [])
+        
+        total_files = len(files)
+        files_with_dependencies = 0
+        total_dependencies = 0
+        unique_dependencies = set()
+        dependency_hashes = set()
+        
+        for file_entry in files:
+            deps = file_entry.get('dependencies', [])
+            dep_hash = file_entry.get('dependency_hash', '')
+            
+            if deps:
+                files_with_dependencies += 1
+                total_dependencies += len(deps)
+                unique_dependencies.update(deps)
+            
+            if dep_hash:
+                dependency_hashes.add(dep_hash)
+        
+        # Calculate metrics
+        dep_coverage = files_with_dependencies / total_files if total_files > 0 else 0
+        avg_deps_per_file = total_dependencies / files_with_dependencies if files_with_dependencies > 0 else 0
+        
+        return {
+            "metric": "dependencies",
+            "total_files": total_files,
+            "files_with_dependencies": files_with_dependencies,
+            "dependency_coverage": round(dep_coverage, 3),
+            "total_dependencies": total_dependencies,
+            "unique_dependencies": len(unique_dependencies),
+            "avg_dependencies_per_file": round(avg_deps_per_file, 2),
+            "unique_dependency_hashes": len(dependency_hashes),
+            "passed": files_with_dependencies > 0  # At least some files have dependencies
+        }
+    
+    def _verify_dependencies_multi_repo(self, multi_manifest: Dict[str, Any]) -> Dict[str, Any]:
+        """Verify dependencies across multiple repositories.
+        
+        Args:
+            multi_manifest: Multi-repo manifest
+            
+        Returns:
+            Aggregated dependency metrics
+        """
+        dependencies_by_repo = {}
+        
+        total_files = 0
+        total_files_with_deps = 0
+        total_deps = 0
+        global_unique_deps = set()
+        
+        for repo_name, repo_manifest in multi_manifest.get('repositories', {}).items():
+            files = repo_manifest.get('files', [])
+            
+            repo_total_files = len(files)
+            repo_files_with_deps = 0
+            repo_total_deps = 0
+            repo_unique_deps = set()
+            
+            for file_entry in files:
+                deps = file_entry.get('dependencies', [])
+                if deps:
+                    repo_files_with_deps += 1
+                    repo_total_deps += len(deps)
+                    repo_unique_deps.update(deps)
+                    global_unique_deps.update(deps)
+            
+            dependencies_by_repo[repo_name] = {
+                "total_files": repo_total_files,
+                "files_with_dependencies": repo_files_with_deps,
+                "total_dependencies": repo_total_deps,
+                "unique_dependencies": len(repo_unique_deps),
+                "dependency_coverage": round(repo_files_with_deps / repo_total_files, 3) if repo_total_files > 0 else 0
+            }
+            
+            total_files += repo_total_files
+            total_files_with_deps += repo_files_with_deps
+            total_deps += repo_total_deps
+        
+        return {
+            "metric": "dependencies",
+            "dependencies_by_repo": dependencies_by_repo,
+            "total_files": total_files,
+            "files_with_dependencies": total_files_with_deps,
+            "dependency_coverage": round(total_files_with_deps / total_files, 3) if total_files > 0 else 0,
+            "total_dependencies": total_deps,
+            "unique_dependencies": len(global_unique_deps),
+            "avg_dependencies_per_file": round(total_deps / total_files_with_deps, 2) if total_files_with_deps > 0 else 0,
+            "passed": total_files_with_deps > 0
+        }
+    
     def calculate_sha256_proof(self) -> str:
         """Calculate SHA256 of git history."""
         log_output = self._run_git_command(["log", "--all", "--format=%H %s"])
@@ -541,6 +646,13 @@ class ExtremeWorkVerifier:
         self.results["qualitative_metrics"]["atomic_increments"] = self.verify_atomic_increments()
         if not json_only and self.results["qualitative_metrics"]["atomic_increments"]["invariants_defined"]:
             print(f"  ✓ Atomic increments: {self.results['qualitative_metrics']['atomic_increments']['total_invariants']} invariants defined")
+        
+        # Add dependency verification
+        self.results["qualitative_metrics"]["dependencies"] = self.verify_dependencies()
+        if not json_only:
+            deps = self.results["qualitative_metrics"]["dependencies"]
+            print(f"  ✓ Dependencies: {deps['files_with_dependencies']}/{deps['total_files']} files ({deps['dependency_coverage']:.1%} coverage)")
+            print(f"    Total dependencies: {deps['total_dependencies']} ({deps['unique_dependencies']} unique)")
         
         # Proof of scale
         if not json_only:
@@ -612,7 +724,7 @@ class ExtremeWorkVerifier:
         }
     
     def save_report(self, output_path: str = None):
-        """Save verification report to JSON and Markdown."""
+        """Save verification report to JSON, Markdown, and HTML."""
         if output_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             if self.mode == "shard":
@@ -626,11 +738,15 @@ class ExtremeWorkVerifier:
             json.dump(self.results, f, indent=2)
         print(f"\n💾 JSON report saved to: {json_path}")
         
-        # Generate and save Markdown report (skip for shard mode)
+        # Generate and save Markdown and HTML reports (skip for shard mode)
         if self.mode != "shard":
             md_path = f"{output_path}.md"
             self._generate_markdown_report(md_path)
             print(f"💾 Markdown report saved to: {md_path}")
+            
+            html_path = f"{output_path}.html"
+            self._generate_html_report(html_path)
+            print(f"💾 HTML report saved to: {html_path}")
     
     def _generate_markdown_report(self, output_path: str):
         """Generate a comprehensive markdown certification report."""
@@ -680,6 +796,112 @@ class ExtremeWorkVerifier:
             f.write("---\n\n")
             f.write("*This certification report verifies that repository activity meets hard boundaries*\n")
             f.write("*for extreme engineering as defined in EXTREME_WORK_BOUNDARIES.json*\n")
+    
+    def _generate_html_report(self, output_path: str):
+        """Generate a comprehensive HTML certification report."""
+        html = []
+        html.append("<!DOCTYPE html>")
+        html.append("<html lang='en'>")
+        html.append("<head>")
+        html.append("<meta charset='UTF-8'>")
+        html.append("<meta name='viewport' content='width=device-width, initial-scale=1.0'>")
+        html.append("<title>Extreme Work Certification Report</title>")
+        html.append("<style>")
+        html.append("body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }")
+        html.append(".header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; }")
+        html.append(".status-passed { color: #10b981; font-weight: bold; }")
+        html.append(".status-failed { color: #ef4444; font-weight: bold; }")
+        html.append(".metric-card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }")
+        html.append(".metric-title { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }")
+        html.append(".metric-passed { border-left: 4px solid #10b981; }")
+        html.append(".metric-failed { border-left: 4px solid #ef4444; }")
+        html.append(".metric-value { display: flex; justify-content: space-between; padding: 5px 0; }")
+        html.append(".section-title { font-size: 1.5em; font-weight: bold; margin: 30px 0 15px 0; color: #333; }")
+        html.append(".progress-bar { width: 100%; height: 30px; background: #e5e7eb; border-radius: 15px; overflow: hidden; margin: 10px 0; }")
+        html.append(".progress-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #059669 100%); transition: width 0.3s; }")
+        html.append("table { width: 100%; border-collapse: collapse; }")
+        html.append("th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }")
+        html.append("th { background: #f9fafb; font-weight: bold; }")
+        html.append("</style>")
+        html.append("</head>")
+        html.append("<body>")
+        
+        # Header
+        html.append("<div class='header'>")
+        html.append("<h1>🏆 Extreme Work Certification Report</h1>")
+        html.append(f"<p><strong>Generated:</strong> {self.results['timestamp']}</p>")
+        
+        status_class = "status-passed" if self.results['certification_passed'] else "status-failed"
+        status_text = "✅ PASSED" if self.results['certification_passed'] else "❌ FAILED"
+        html.append(f"<p><strong>Status:</strong> <span class='{status_class}'>{status_text}</span></p>")
+        html.append(f"<p><strong>Overall Score:</strong> {self.results['overall_score']:.1%}</p>")
+        
+        # Multi-repo info
+        if self.results.get('multi_repo'):
+            html.append(f"<p><strong>Mode:</strong> Multi-Repository ({self.results.get('repo_count', 0)} repositories)</p>")
+        
+        html.append("</div>")
+        
+        # Score progress bar
+        html.append("<div class='metric-card'>")
+        html.append("<div class='metric-title'>Overall Score Progress</div>")
+        html.append("<div class='progress-bar'>")
+        html.append(f"<div class='progress-fill' style='width: {self.results['overall_score'] * 100}%'></div>")
+        html.append("</div>")
+        html.append(f"<p style='text-align: center;'>{self.results['overall_score']:.1%}</p>")
+        html.append("</div>")
+        
+        # Quantitative Metrics
+        html.append("<h2 class='section-title'>📊 Quantitative Boundaries</h2>")
+        for metric_name, metric_data in self.results.get("quantitative_metrics", {}).items():
+            passed = metric_data.get("passed", False)
+            card_class = "metric-passed" if passed else "metric-failed"
+            status_icon = "✅" if passed else "❌"
+            
+            html.append(f"<div class='metric-card {card_class}'>")
+            html.append(f"<div class='metric-title'>{status_icon} {metric_name.replace('_', ' ').title()}</div>")
+            
+            for key, value in metric_data.items():
+                if key not in ["metric", "passed", "top_commits", "artifacts_by_repo"]:
+                    html.append(f"<div class='metric-value'><span>{key.replace('_', ' ').title()}:</span><span><strong>{value}</strong></span></div>")
+            
+            html.append("</div>")
+        
+        # Qualitative Metrics
+        html.append("<h2 class='section-title'>📋 Qualitative Boundaries</h2>")
+        for metric_name, metric_data in self.results.get("qualitative_metrics", {}).items():
+            passed = metric_data.get("passed", False)
+            card_class = "metric-passed" if passed else "metric-failed"
+            status_icon = "✅" if passed else "❌"
+            
+            html.append(f"<div class='metric-card {card_class}'>")
+            html.append(f"<div class='metric-title'>{status_icon} {metric_name.replace('_', ' ').title()}</div>")
+            
+            for key, value in metric_data.items():
+                if key not in ["metric", "passed", "components", "dependencies_by_repo"]:
+                    html.append(f"<div class='metric-value'><span>{key.replace('_', ' ').title()}:</span><span><strong>{value}</strong></span></div>")
+            
+            html.append("</div>")
+        
+        # Proof of Scale
+        html.append("<h2 class='section-title'>🏆 Proof of Scale</h2>")
+        html.append("<div class='metric-card'>")
+        proofs = self.results.get("proof_of_scale", {}).get("proofs", {})
+        for key, value in proofs.items():
+            html.append(f"<div class='metric-value'><span>{key.replace('_', ' ').title()}:</span><span><strong>{value}</strong></span></div>")
+        html.append("</div>")
+        
+        # Footer
+        html.append("<div style='margin-top: 40px; padding: 20px; text-align: center; color: #6b7280; border-top: 1px solid #e5e7eb;'>")
+        html.append("<p><em>This certification report verifies that repository activity meets hard boundaries</em></p>")
+        html.append("<p><em>for extreme engineering as defined in EXTREME_WORK_BOUNDARIES.json</em></p>")
+        html.append("</div>")
+        
+        html.append("</body>")
+        html.append("</html>")
+        
+        with open(output_path, 'w') as f:
+            f.write('\n'.join(html))
 
 
 def aggregate_shard_results(shard_files: List[str]) -> Dict[str, Any]:
