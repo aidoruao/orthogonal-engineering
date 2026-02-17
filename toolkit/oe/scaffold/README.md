@@ -65,7 +65,11 @@ python -m toolkit.oe.scaffold.cli merkle /path/to/repo --apply --output merkle_p
 ### Process GTA handling.meta
 
 ```bash
-python -m toolkit.oe.scaffold.cli handling-clamp handling.meta --apply --output clamped_handling.meta
+# Dry-run with default clamps
+python -m toolkit.oe.scaffold.cli handling-clamp handling.meta
+
+# Apply with custom config file
+python -m toolkit.oe.scaffold.cli handling-clamp handling.meta --apply --config clamps.json --output clamped_handling.meta
 ```
 
 ### Verify Integrity
@@ -212,8 +216,10 @@ from toolkit.oe.scaffold.handling_pipeline import (
 parser = HandlingMetaParser()
 items = parser.parse_file("handling.meta")
 
-# Clamp values
-pipeline = HandlingClampPipeline()
+# Clamp values with custom config
+pipeline = HandlingClampPipeline(config_file="clamps.json")
+# Or with custom clamps dictionary
+pipeline = HandlingClampPipeline(clamps={"fMass": (100.0, 10000.0)})
 results = pipeline.clamp_all(items, apply=False)
 ```
 
@@ -222,6 +228,7 @@ results = pipeline.clamp_all(items, apply=False)
 - CHandlingData Item extraction
 - Value clamping/validation
 - Violation reporting
+- Configurable via JSON file or parameters
 
 ## File Formats
 
@@ -268,6 +275,22 @@ Each line is a JSON object:
 }
 ```
 
+### Handling Clamps Config Format (JSON)
+
+```json
+{
+  "clamps": {
+    "fMass": [50.0, 50000.0],
+    "fInitialDragCoeff": [0.0, 100.0],
+    "fDriveInertia": [0.01, 10.0],
+    "fClutchChangeRateScaleUpShift": [0.1, 10.0],
+    "fClutchChangeRateScaleDownShift": [0.1, 10.0]
+  }
+}
+```
+
+Each clamp is defined as: `"field_name": [min_value, max_value]`
+
 ## Examples
 
 See `examples/scaffold/` directory for complete examples:
@@ -276,6 +299,7 @@ See `examples/scaffold/` directory for complete examples:
 - `merkle_verification.py`: Merkle tree construction and verification
 - `handling_processing.py`: GTA handling.meta processing
 - `full_pipeline.py`: Complete repository processing pipeline
+- `handling_clamps_config.json`: Example clamp configuration file
 
 ## Testing
 
@@ -340,8 +364,38 @@ Example configuration file (`scaffold.json`):
 
 **Solution**: Ensure files haven't been modified since tree construction. Use `verify` command to check integrity.
 
+**Issue**: XML files produce different hashes on different Python versions
+
+**Solution**: Upgrade to Python 3.8+ for consistent XML canonicalization. The scaffold will display a warning if using older Python versions.
+
+**Issue**: Need custom handling clamps for different game versions
+
+**Solution**: Create a JSON config file with your clamp values and use `--config` flag with handling-clamp command.
+
+## Safety Features
+
+### Restore Command Safety
+
+The restore command includes multiple safety checks:
+- Detects git repositories and checks for uncommitted changes
+- Blocks restore if uncommitted changes are found
+- Displays file count before deletion
+- Requires typing 'DELETE' to confirm
+- Requires second y/N confirmation
+- Shows prominent warnings about permanent deletion
+
+### Python Version Requirements
+
+- **Python 3.6+**: Basic functionality
+- **Python 3.8+**: Recommended for consistent XML canonicalization
+
 ## Version History
 
+- **1.0.1** (2026-02-17): Code review updates
+  - Configurable handling clamps via JSON file
+  - Enhanced restore command safety
+  - Improved XML canonicalization documentation
+  
 - **1.0.0** (2026-02-16): Initial release
   - Canonicalization module
   - Hashing module  
