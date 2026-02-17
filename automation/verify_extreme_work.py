@@ -24,15 +24,21 @@ except ImportError:
 class ExtremeWorkVerifier:
     """Verifies extreme work boundaries and generates certification reports."""
     
-    def __init__(self, repo_path: str = ".", mode: str = "full", shard_id: Optional[int] = None, shard_count: Optional[int] = None):
+    # Fields to exclude from HTML/Markdown reports
+    REPORT_EXCLUDED_FIELDS = {"metric", "passed", "top_commits", "artifacts_by_repo", 
+                               "components", "dependencies_by_repo"}
+    
+    def __init__(self, repo_path: str = ".", mode: str = "full", shard_id: Optional[int] = None, shard_count: Optional[int] = None, repo_list: Optional[List[Dict[str, str]]] = None):
         self.repo_path = Path(repo_path).resolve()
         self.config_path = self.repo_path / "EXTREME_WORK_BOUNDARIES.json"
         self.config = self._load_config()
         self.mode = mode
         self.shard_id = shard_id
         self.shard_count = shard_count
+        self.repo_list = repo_list  # For multi-repo verification
         self._manifest = None
         self._manifest_generator = None
+        self._multi_repo_manifest = None  # Cache for multi-repo manifest
         self.results = {
             "timestamp": datetime.now().astimezone().isoformat(),
             "quantitative_metrics": {},
@@ -42,11 +48,14 @@ class ExtremeWorkVerifier:
             "certification_passed": False,
             "violations": [],
             "warnings": [],
-            "mode": mode
+            "mode": mode,
+            "multi_repo": repo_list is not None
         }
         if mode == "shard":
             self.results["shard_id"] = shard_id
             self.results["shard_count"] = shard_count
+        if repo_list:
+            self.results["repo_count"] = len(repo_list)
         
     def _load_config(self) -> Dict:
         """Load extreme work boundaries configuration."""
@@ -76,8 +85,13 @@ class ExtremeWorkVerifier:
         """Lazy-load repository manifest for current HEAD commit.
         
         Returns:
-            The manifest dictionary
+            The manifest dictionary (single-repo or multi-repo)
         """
+        # If multi-repo mode, return multi-repo manifest
+        if self.repo_list:
+            return self.multi_repo_manifest
+        
+        # Single-repo mode
         if self._manifest is None:
             if self._manifest_generator is None:
                 self._manifest_generator = RepositoryManifestGenerator(str(self.repo_path))
@@ -90,11 +104,31 @@ class ExtremeWorkVerifier:
         
         return self._manifest
     
-    def _should_process_folder(self, folder_path: str) -> bool:
+    @property
+    def multi_repo_manifest(self) -> Dict[str, Any]:
+        """Lazy-load multi-repo manifest.
+        
+        Returns:
+            The multi-repo manifest dictionary
+        """
+        if self._multi_repo_manifest is None and self.repo_list:
+            # Import the function
+            try:
+                from automation.repo_manifest import generate_multi_repo_manifest
+            except ImportError:
+                from repo_manifest import generate_multi_repo_manifest
+            
+            # Generate multi-repo manifest
+            self._multi_repo_manifest = generate_multi_repo_manifest(self.repo_list, output_path=None)
+        
+        return self._multi_repo_manifest
+    
+    def _should_process_folder(self, folder_path: str, repo_name: str = None) -> bool:
         """Determine if folder should be processed in current shard.
         
         Args:
             folder_path: Relative path to folder
+            repo_name: Optional repository name (for multi-repo)
             
         Returns:
             True if folder should be processed in this shard
@@ -102,8 +136,9 @@ class ExtremeWorkVerifier:
         if self.mode != "shard":
             return True
         
-        # Hash-based partitioning
-        folder_hash = int(hashlib.sha256(folder_path.encode()).hexdigest(), 16)
+        # Hash-based partitioning - include repo name for multi-repo support
+        partition_key = f"{repo_name or ''}:{folder_path}"
+        folder_hash = int(hashlib.sha256(partition_key.encode()).hexdigest(), 16)
         return (folder_hash % self.shard_count) == self.shard_id
     
     def verify_commits_per_day(self) -> Dict[str, Any]:
@@ -206,6 +241,12 @@ class ExtremeWorkVerifier:
         
         # Use manifest data instead of filesystem scans
         manifest_data = self.manifest
+        
+        # Handle multi-repo manifests
+        if manifest_data.get('type') == 'multi-repo':
+            return self._verify_automated_artifacts_multi_repo(manifest_data, artifact_types)
+        
+        # Single-repo verification
         folders = manifest_data.get('folders', {})
         files = manifest_data.get('files', [])
         
@@ -251,6 +292,72 @@ class ExtremeWorkVerifier:
         return {
             "metric": "automated_artifacts",
             "artifacts_by_type": artifacts_found,
+            "total_artifacts": total_artifacts,
+            "passed": passed
+        }
+    
+    def _verify_automated_artifacts_multi_repo(self, multi_manifest: Dict[str, Any], artifact_types: List[str]) -> Dict[str, Any]:
+        """Verify automated artifacts across multiple repositories.
+        
+        Args:
+            multi_manifest: Multi-repo manifest
+            artifact_types: List of artifact types to check
+            
+        Returns:
+            Aggregated artifact metrics
+        """
+        artifacts_by_repo = {}
+        total_artifacts_found = {}
+        
+        for artifact_type in artifact_types:
+            total_artifacts_found[artifact_type] = 0
+        
+        # Process each repository
+        for repo_name, repo_manifest in multi_manifest.get('repositories', {}).items():
+            files = repo_manifest.get('files', [])
+            repo_artifacts = {}
+            
+            for artifact_type in artifact_types:
+                count = 0
+                
+                if artifact_type == "sha256_manifests":
+                    for file_entry in files:
+                        if 'sha256_manifests' in file_entry['path'] and file_entry['path'].endswith('.json'):
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                elif artifact_type == "merkle_proofs":
+                    for file_entry in files:
+                        path_lower = file_entry['path'].lower()
+                        if 'merkle' in path_lower and (path_lower.endswith('.json') or path_lower.endswith('.py')):
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                elif artifact_type == "audit_logs":
+                    for file_entry in files:
+                        path_lower = file_entry['path'].lower()
+                        if 'audit' in path_lower and (path_lower.endswith('.json') or path_lower.endswith('.jsonl')):
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                elif artifact_type == "backup_records":
+                    for file_entry in files:
+                        if 'backup' in file_entry['path'].lower():
+                            if self._should_process_folder(str(Path(file_entry['path']).parent), repo_name):
+                                count += 1
+                
+                repo_artifacts[artifact_type] = count
+                total_artifacts_found[artifact_type] += count
+            
+            artifacts_by_repo[repo_name] = repo_artifacts
+        
+        total_artifacts = sum(total_artifacts_found.values())
+        passed = total_artifacts > 0
+        
+        return {
+            "metric": "automated_artifacts",
+            "artifacts_by_type": total_artifacts_found,
+            "artifacts_by_repo": artifacts_by_repo,
             "total_artifacts": total_artifacts,
             "passed": passed
         }
@@ -372,6 +479,111 @@ class ExtremeWorkVerifier:
                 "passed": False
             }
     
+    def verify_dependencies(self) -> Dict[str, Any]:
+        """Verify dependency metadata and determinism.
+        
+        Returns:
+            Dictionary containing dependency verification metrics
+        """
+        manifest_data = self.manifest
+        
+        # Handle multi-repo manifests
+        if manifest_data.get('type') == 'multi-repo':
+            return self._verify_dependencies_multi_repo(manifest_data)
+        
+        # Single-repo verification
+        files = manifest_data.get('files', [])
+        
+        total_files = len(files)
+        files_with_dependencies = 0
+        total_dependencies = 0
+        unique_dependencies = set()
+        dependency_hashes = set()
+        
+        for file_entry in files:
+            deps = file_entry.get('dependencies', [])
+            dep_hash = file_entry.get('dependency_hash', '')
+            
+            if deps:
+                files_with_dependencies += 1
+                total_dependencies += len(deps)
+                unique_dependencies.update(deps)
+            
+            if dep_hash:
+                dependency_hashes.add(dep_hash)
+        
+        # Calculate metrics
+        dep_coverage = files_with_dependencies / total_files if total_files > 0 else 0
+        avg_deps_per_file = total_dependencies / files_with_dependencies if files_with_dependencies > 0 else 0
+        
+        return {
+            "metric": "dependencies",
+            "total_files": total_files,
+            "files_with_dependencies": files_with_dependencies,
+            "dependency_coverage": round(dep_coverage, 3),
+            "total_dependencies": total_dependencies,
+            "unique_dependencies": len(unique_dependencies),
+            "avg_dependencies_per_file": round(avg_deps_per_file, 2),
+            "unique_dependency_hashes": len(dependency_hashes),
+            "passed": files_with_dependencies > 0  # At least some files have dependencies
+        }
+    
+    def _verify_dependencies_multi_repo(self, multi_manifest: Dict[str, Any]) -> Dict[str, Any]:
+        """Verify dependencies across multiple repositories.
+        
+        Args:
+            multi_manifest: Multi-repo manifest
+            
+        Returns:
+            Aggregated dependency metrics
+        """
+        dependencies_by_repo = {}
+        
+        total_files = 0
+        total_files_with_deps = 0
+        total_deps = 0
+        global_unique_deps = set()
+        
+        for repo_name, repo_manifest in multi_manifest.get('repositories', {}).items():
+            files = repo_manifest.get('files', [])
+            
+            repo_total_files = len(files)
+            repo_files_with_deps = 0
+            repo_total_deps = 0
+            repo_unique_deps = set()
+            
+            for file_entry in files:
+                deps = file_entry.get('dependencies', [])
+                if deps:
+                    repo_files_with_deps += 1
+                    repo_total_deps += len(deps)
+                    repo_unique_deps.update(deps)
+                    global_unique_deps.update(deps)
+            
+            dependencies_by_repo[repo_name] = {
+                "total_files": repo_total_files,
+                "files_with_dependencies": repo_files_with_deps,
+                "total_dependencies": repo_total_deps,
+                "unique_dependencies": len(repo_unique_deps),
+                "dependency_coverage": round(repo_files_with_deps / repo_total_files, 3) if repo_total_files > 0 else 0
+            }
+            
+            total_files += repo_total_files
+            total_files_with_deps += repo_files_with_deps
+            total_deps += repo_total_deps
+        
+        return {
+            "metric": "dependencies",
+            "dependencies_by_repo": dependencies_by_repo,
+            "total_files": total_files,
+            "files_with_dependencies": total_files_with_deps,
+            "dependency_coverage": round(total_files_with_deps / total_files, 3) if total_files > 0 else 0,
+            "total_dependencies": total_deps,
+            "unique_dependencies": len(global_unique_deps),
+            "avg_dependencies_per_file": round(total_deps / total_files_with_deps, 2) if total_files_with_deps > 0 else 0,
+            "passed": total_files_with_deps > 0
+        }
+    
     def calculate_sha256_proof(self) -> str:
         """Calculate SHA256 of git history."""
         log_output = self._run_git_command(["log", "--all", "--format=%H %s"])
@@ -438,6 +650,13 @@ class ExtremeWorkVerifier:
         self.results["qualitative_metrics"]["atomic_increments"] = self.verify_atomic_increments()
         if not json_only and self.results["qualitative_metrics"]["atomic_increments"]["invariants_defined"]:
             print(f"  ✓ Atomic increments: {self.results['qualitative_metrics']['atomic_increments']['total_invariants']} invariants defined")
+        
+        # Add dependency verification
+        self.results["qualitative_metrics"]["dependencies"] = self.verify_dependencies()
+        if not json_only:
+            deps = self.results["qualitative_metrics"]["dependencies"]
+            print(f"  ✓ Dependencies: {deps['files_with_dependencies']}/{deps['total_files']} files ({deps['dependency_coverage']:.1%} coverage)")
+            print(f"    Total dependencies: {deps['total_dependencies']} ({deps['unique_dependencies']} unique)")
         
         # Proof of scale
         if not json_only:
@@ -509,7 +728,7 @@ class ExtremeWorkVerifier:
         }
     
     def save_report(self, output_path: str = None):
-        """Save verification report to JSON and Markdown."""
+        """Save verification report to JSON, Markdown, and HTML."""
         if output_path is None:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             if self.mode == "shard":
@@ -523,11 +742,15 @@ class ExtremeWorkVerifier:
             json.dump(self.results, f, indent=2)
         print(f"\n💾 JSON report saved to: {json_path}")
         
-        # Generate and save Markdown report (skip for shard mode)
+        # Generate and save Markdown and HTML reports (skip for shard mode)
         if self.mode != "shard":
             md_path = f"{output_path}.md"
             self._generate_markdown_report(md_path)
             print(f"💾 Markdown report saved to: {md_path}")
+            
+            html_path = f"{output_path}.html"
+            self._generate_html_report(html_path)
+            print(f"💾 HTML report saved to: {html_path}")
     
     def _generate_markdown_report(self, output_path: str):
         """Generate a comprehensive markdown certification report."""
@@ -577,6 +800,112 @@ class ExtremeWorkVerifier:
             f.write("---\n\n")
             f.write("*This certification report verifies that repository activity meets hard boundaries*\n")
             f.write("*for extreme engineering as defined in EXTREME_WORK_BOUNDARIES.json*\n")
+    
+    def _generate_html_report(self, output_path: str):
+        """Generate a comprehensive HTML certification report."""
+        html = []
+        html.append("<!DOCTYPE html>")
+        html.append('<html lang="en">')
+        html.append("<head>")
+        html.append('<meta charset="UTF-8">')
+        html.append('<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+        html.append("<title>Extreme Work Certification Report</title>")
+        html.append("<style>")
+        html.append("body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }")
+        html.append(".header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px; margin-bottom: 20px; }")
+        html.append(".status-passed { color: #10b981; font-weight: bold; }")
+        html.append(".status-failed { color: #ef4444; font-weight: bold; }")
+        html.append(".metric-card { background: white; padding: 20px; margin: 10px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }")
+        html.append(".metric-title { font-size: 1.2em; font-weight: bold; margin-bottom: 10px; }")
+        html.append(".metric-passed { border-left: 4px solid #10b981; }")
+        html.append(".metric-failed { border-left: 4px solid #ef4444; }")
+        html.append(".metric-value { display: flex; justify-content: space-between; padding: 5px 0; }")
+        html.append(".section-title { font-size: 1.5em; font-weight: bold; margin: 30px 0 15px 0; color: #333; }")
+        html.append(".progress-bar { width: 100%; height: 30px; background: #e5e7eb; border-radius: 15px; overflow: hidden; margin: 10px 0; }")
+        html.append(".progress-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #059669 100%); transition: width 0.3s; }")
+        html.append("table { width: 100%; border-collapse: collapse; }")
+        html.append("th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }")
+        html.append("th { background: #f9fafb; font-weight: bold; }")
+        html.append("</style>")
+        html.append("</head>")
+        html.append("<body>")
+        
+        # Header
+        html.append("<div class='header'>")
+        html.append("<h1>🏆 Extreme Work Certification Report</h1>")
+        html.append(f"<p><strong>Generated:</strong> {self.results['timestamp']}</p>")
+        
+        status_class = "status-passed" if self.results['certification_passed'] else "status-failed"
+        status_text = "✅ PASSED" if self.results['certification_passed'] else "❌ FAILED"
+        html.append(f"<p><strong>Status:</strong> <span class='{status_class}'>{status_text}</span></p>")
+        html.append(f"<p><strong>Overall Score:</strong> {self.results['overall_score']:.1%}</p>")
+        
+        # Multi-repo info
+        if self.results.get('multi_repo'):
+            html.append(f"<p><strong>Mode:</strong> Multi-Repository ({self.results.get('repo_count', 0)} repositories)</p>")
+        
+        html.append("</div>")
+        
+        # Score progress bar
+        html.append("<div class='metric-card'>")
+        html.append("<div class='metric-title'>Overall Score Progress</div>")
+        html.append("<div class='progress-bar'>")
+        html.append(f"<div class='progress-fill' style='width: {self.results['overall_score'] * 100}%'></div>")
+        html.append("</div>")
+        html.append(f"<p style='text-align: center;'>{self.results['overall_score']:.1%}</p>")
+        html.append("</div>")
+        
+        # Quantitative Metrics
+        html.append("<h2 class='section-title'>📊 Quantitative Boundaries</h2>")
+        for metric_name, metric_data in self.results.get("quantitative_metrics", {}).items():
+            passed = metric_data.get("passed", False)
+            card_class = "metric-passed" if passed else "metric-failed"
+            status_icon = "✅" if passed else "❌"
+            
+            html.append(f'<div class="metric-card {card_class}">')
+            html.append(f'<div class="metric-title">{status_icon} {metric_name.replace("_", " ").title()}</div>')
+            
+            for key, value in metric_data.items():
+                if key not in self.REPORT_EXCLUDED_FIELDS:
+                    html.append(f'<div class="metric-value"><span>{key.replace("_", " ").title()}:</span><span><strong>{value}</strong></span></div>')
+            
+            html.append("</div>")
+        
+        # Qualitative Metrics
+        html.append('<h2 class="section-title">📋 Qualitative Boundaries</h2>')
+        for metric_name, metric_data in self.results.get("qualitative_metrics", {}).items():
+            passed = metric_data.get("passed", False)
+            card_class = "metric-passed" if passed else "metric-failed"
+            status_icon = "✅" if passed else "❌"
+            
+            html.append(f'<div class="metric-card {card_class}">')
+            html.append(f'<div class="metric-title">{status_icon} {metric_name.replace("_", " ").title()}</div>')
+            
+            for key, value in metric_data.items():
+                if key not in self.REPORT_EXCLUDED_FIELDS:
+                    html.append(f'<div class="metric-value"><span>{key.replace("_", " ").title()}:</span><span><strong>{value}</strong></span></div>')
+            
+            html.append("</div>")
+        
+        # Proof of Scale
+        html.append("<h2 class='section-title'>🏆 Proof of Scale</h2>")
+        html.append("<div class='metric-card'>")
+        proofs = self.results.get("proof_of_scale", {}).get("proofs", {})
+        for key, value in proofs.items():
+            html.append(f"<div class='metric-value'><span>{key.replace('_', ' ').title()}:</span><span><strong>{value}</strong></span></div>")
+        html.append("</div>")
+        
+        # Footer
+        html.append("<div style='margin-top: 40px; padding: 20px; text-align: center; color: #6b7280; border-top: 1px solid #e5e7eb;'>")
+        html.append("<p><em>This certification report verifies that repository activity meets hard boundaries</em></p>")
+        html.append("<p><em>for extreme engineering as defined in EXTREME_WORK_BOUNDARIES.json</em></p>")
+        html.append("</div>")
+        
+        html.append("</body>")
+        html.append("</html>")
+        
+        with open(output_path, 'w') as f:
+            f.write('\n'.join(html))
 
 
 def aggregate_shard_results(shard_files: List[str]) -> Dict[str, Any]:
@@ -740,6 +1069,7 @@ def main():
     
     parser = argparse.ArgumentParser(description="Verify extreme work boundaries")
     parser.add_argument("--repo", default=".", help="Repository path")
+    parser.add_argument("--repo-list", help="Path to JSON file containing list of repositories for multi-repo verification")
     parser.add_argument("--output", help="Output report path (without extension)")
     parser.add_argument("--json-only", action="store_true", help="Output JSON only to stdout")
     parser.add_argument("--mode", choices=["full", "shard", "aggregate"], default="full",
@@ -750,6 +1080,12 @@ def main():
     parser.add_argument("--shard-pattern", help="Glob pattern for shard files (for aggregate mode)")
     
     args = parser.parse_args()
+    
+    # Load repo list if provided
+    repo_list = None
+    if args.repo_list:
+        with open(args.repo_list, 'r') as f:
+            repo_list = json.load(f)
     
     # Validate shard mode arguments
     if args.mode == "shard":
@@ -792,7 +1128,7 @@ def main():
                 
                 # Generate markdown report
                 md_path = f"{output_path}.md"
-                verifier = ExtremeWorkVerifier(args.repo)
+                verifier = ExtremeWorkVerifier(args.repo, repo_list=repo_list)
                 verifier.results = results
                 verifier._generate_markdown_report(md_path)
                 print(f"💾 Markdown report saved to: {md_path}", file=sys.stderr)
@@ -804,7 +1140,8 @@ def main():
                 args.repo,
                 mode=args.mode,
                 shard_id=args.shard_id,
-                shard_count=args.shard_count
+                shard_count=args.shard_count,
+                repo_list=repo_list
             )
             results = verifier.run_verification(json_only=args.json_only)
             
