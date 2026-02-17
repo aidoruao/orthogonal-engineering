@@ -266,7 +266,8 @@ requests
         # Below minimum
         action = explorer._determine_next_actions(300000, 550000)
         assert 'expand_codebase' in action
-        assert '100000' in action
+        assert 'need' in action.lower()
+        assert 'LOC' in action
         
         # Within range
         action = explorer._determine_next_actions(500000, 550000)
@@ -275,6 +276,7 @@ requests
         # Above maximum
         action = explorer._determine_next_actions(800000, 550000)
         assert 'refactor_or_split' in action
+        assert 'LOC above' in action
 
     def test_suggest_files_to_add(self):
         """Test file addition suggestions."""

@@ -250,11 +250,11 @@ class AutonomousExplorer:
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
-                # Parse package==version or package>=version
-                match = re.match(r'([a-zA-Z0-9_-]+)([>=<]+)?([\d.]+)?', line)
+                # Parse package==version, package>=version, or just package
+                match = re.match(r'([a-zA-Z0-9_-]+)(?:[>=<]+)?([\d.]+)?', line)
                 if match:
                     name = match.group(1)
-                    version = match.group(3) or 'latest'
+                    version = match.group(2) if match.group(2) else 'latest'
                     self.dependencies.append(DependencyInfo(
                         name=name,
                         version=version,
