@@ -327,6 +327,12 @@ The 85% threshold ensures high compliance while allowing flexibility. Not every 
 
 The commits/day metric uses a 30-day measurement period. Temporary dips are expected. The system measures sustained activity over time, not instantaneous rates.
 
+### Q: Why are some average values extremely high?
+
+The commit complexity metrics calculate simple averages across all analyzed commits. If your repository includes large data imports or generated code commits, these can significantly skew the average. This is expected and doesn't invalidate certification—the system recognizes that large commits meet the complexity threshold.
+
+For more precise analysis, review the `top_commits` field in the JSON report to see individual commit statistics.
+
 ### Q: Can I exclude certain commits from analysis?
 
 The verification script analyzes all commits in the git history. If you need to exclude commits, use git history filtering before verification, but this may affect certification validity.

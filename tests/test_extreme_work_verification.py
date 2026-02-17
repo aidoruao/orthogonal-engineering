@@ -9,6 +9,10 @@ import sys
 import subprocess
 from pathlib import Path
 
+# Test constants
+SCORE_TOLERANCE = 0.01  # Tolerance for floating-point score comparison
+
+
 def test_config_exists():
     """Test that configuration file exists and is valid JSON."""
     config_path = Path("EXTREME_WORK_BOUNDARIES.json")
@@ -84,7 +88,6 @@ def test_quantitative_metrics():
     
     # Extract JSON from output
     lines = result.stdout.strip().split('\n')
-    json_output = '\n'.join([line for line in lines if line.strip().startswith('{') or (lines.index(line) > 0 and lines[lines.index(line)-1].strip().startswith('{'))])
     for i, line in enumerate(lines):
         if line.strip().startswith('{'):
             json_output = '\n'.join(lines[i:])
@@ -188,7 +191,7 @@ def test_score_calculation():
         breakdown["proof_of_scale"]["contribution"]
     )
     
-    assert abs(total - output["overall_score"]) < 0.01, "Score calculation mismatch"
+    assert abs(total - output["overall_score"]) < SCORE_TOLERANCE, "Score calculation mismatch"
     
     print(f"✓ Score calculation correct: {output['overall_score']:.1%}")
 

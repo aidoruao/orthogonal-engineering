@@ -128,20 +128,25 @@ class ExtremeWorkVerifier:
             })
         
         commits_analyzed = len(commit_details)
-        avg_lines = total_lines / commits_analyzed if commits_analyzed > 0 else 0
-        avg_files = total_files / commits_analyzed if commits_analyzed > 0 else 0
+        avg_lines = total_lines / commits_analyzed if commits_analyzed > 0 else None
+        avg_files = total_files / commits_analyzed if commits_analyzed > 0 else None
         
         lines_threshold = self.config["quantitative_boundaries"]["lines_changed_per_commit"]["minimum_meaningful"]
         files_threshold = self.config["quantitative_boundaries"]["files_touched_per_commit"]["minimum_minor"]
         
+        # Pass if either lines or files threshold is met (and we have data)
+        passed = False
+        if avg_lines is not None and avg_files is not None:
+            passed = avg_lines >= lines_threshold or avg_files >= files_threshold
+        
         return {
             "metric": "commit_complexity",
             "commits_analyzed": commits_analyzed,
-            "avg_lines_changed": round(avg_lines, 2),
-            "avg_files_touched": round(avg_files, 2),
+            "avg_lines_changed": round(avg_lines, 2) if avg_lines is not None else 0,
+            "avg_files_touched": round(avg_files, 2) if avg_files is not None else 0,
             "lines_threshold": lines_threshold,
             "files_threshold": files_threshold,
-            "passed": avg_lines >= lines_threshold or avg_files >= files_threshold,
+            "passed": passed,
             "top_commits": commit_details[:10]
         }
     
