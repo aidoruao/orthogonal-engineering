@@ -103,7 +103,7 @@ For the complete 1B LOC system, use `seed_definition.yaml` (warning: requires si
 ### Configuration
 
 The full seed defines:
-- **100 batches** × **10 modules** × **100 files** × **100 functions** × **100 lines**
+- **100 batches** × **10 modules** × **100 files** × **10 functions** × **100 lines**
 - = **1,000,000,000 lines** (exactly 1 billion)
 
 ### Expected Sizes
@@ -113,7 +113,7 @@ The full seed defines:
 | Seed | ~3 KB | Root configuration |
 | Generators | ~50 KB | Python scripts |
 | Templates | ~10 KB | Code templates |
-| DAG (full) | ~50 GB | Complete graph structure |
+| DAG (full) | ~5 GB* | Complete graph structure (large in memory) |
 | Manifests | ~100 MB | Hash inventories |
 | Merkle Root | 64 bytes | Cryptographic commitment |
 | **Total in Git** | **~110 MB** | What gets version controlled |

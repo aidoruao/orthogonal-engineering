@@ -30,11 +30,12 @@ expansion:
       template: "file_template.py"
       description: "Individual Python files"
       
-    # Level 3: Function (100 functions per file to reach 1M total)
+    # Level 3: Function (100 functions per file)
+    # 10 batches × 10 modules × 10 files × 100 functions × 10 lines = 1,000,000 lines ✓
     - name: "function"
       count: 100
       template: "function_template.py"
-      description: "Python functions"
+      description: "Python functions (100 per file for 1M total)"
       
     # Level 4: Line (10 lines per function)
     - name: "line"

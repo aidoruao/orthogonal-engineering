@@ -185,7 +185,7 @@ def generate_fractal_expansion_svg():
     Contains 10 lines
   </text>
   <text x="230" y="245" font-family="Arial, sans-serif" font-size="9" fill="#666" text-anchor="middle">
-    100 lines each
+    10 lines each
   </text>
   
   <!-- Line Level (Leaf) -->
