@@ -55,3 +55,20 @@ C:/Users/Aidor/Downloads/ai_exports/
 *.pyc
 __pycache__/
 *.egg-info/
+# Pipeline output directories
+# Contains temporary pipeline outputs (manifests, Merkle proofs, backups, and JSONL logs)
+# that should not be committed to version control
+output/
+output_*/
+backups/
+logs/*.jsonl
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# Scaffold logs and backups
+logs/*.jsonl
+.scaffold_backups/
