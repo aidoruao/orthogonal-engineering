@@ -1,0 +1,40 @@
+================================================================================
+Log Analysis Summary: Parameter Change Pattern Discovery
+================================================================================
+Generated: 2026-02-17T00:17:44.002672Z
+Mode: DRY-RUN (Read-only analysis)
+
+## Parameter Change Frequency
+
+  - fMass: 5 changes detected
+  - fDriveInertia: 5 changes detected
+
+## Co-occurring Parameter Changes
+
+Parameters that frequently change together:
+
+  - fDriveInertia ↔ fMass
+    Total instances: 5
+    Files affected: 3
+    Co-occurring changes: 5
+    Average ratio: 0.99
+    Confidence: high
+
+
+## Suggested Pattern-Based Transformations
+
+Based on discovered patterns, the following transformations
+could be considered (requires human review):
+
+  📊 Pattern: fDriveInertia → fMass
+     When fDriveInertia changes, consider adjusting fMass
+     Typical ratio: 0.99
+     Evidence: 5 instances
+     Confidence: high
+
+
+================================================================================
+⚠️  IMPORTANT: This is a read-only analysis.
+⚠️  No files have been modified.
+⚠️  All transformations require human review and approval.
+================================================================================
