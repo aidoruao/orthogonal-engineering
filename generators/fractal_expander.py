@@ -27,10 +27,12 @@ except ImportError:
 class FractalExpander:
     """Expands DAG nodes into content using fractal templates."""
     
-    def __init__(self, seed: dict, dag: dict):
+    def __init__(self, seed: dict, dag: dict, layer_index: int = 0):
         self.seed = seed
         self.dag = dag
         self.cache = {}  # Memoization cache
+        self.layer_index = layer_index
+        self.collapse_cache = {}  # Cache for topological collapse
         
     def expand_node(self, node_id: str) -> str:
         """
@@ -56,11 +58,67 @@ class FractalExpander:
         if node['level'] == 'root':
             content = ""
         else:
-            # Expand based on level
-            content = self._expand_by_level(node)
+            # Check if this node can spawn a sub-universe
+            if self._can_spawn_sub_universe(node):
+                content = self._expand_with_sub_universe(node)
+            else:
+                # Expand based on level
+                content = self._expand_by_level(node)
         
         # Cache and return
         self.cache[node_id] = content
+        return content
+    
+    def _can_spawn_sub_universe(self, node: dict) -> bool:
+        """Check if node can spawn a recursive sub-universe."""
+        # Check recursion config
+        recursion_config = self.seed.get('root', {}).get('recursion', {})
+        max_depth = recursion_config.get('max_depth', 0)
+        
+        # Can't recurse if at max depth
+        if self.layer_index >= max_depth:
+            return False
+        
+        # Check if this level can recurse
+        level_name = node.get('level')
+        for level_spec in self.seed.get('expansion', {}).get('levels', []):
+            if level_spec.get('name') == level_name:
+                return level_spec.get('can_recurse', False)
+        
+        return False
+    
+    def _expand_with_sub_universe(self, node: dict) -> str:
+        """
+        Expand node that spawns a sub-universe.
+        
+        Uses topological collapse: identical sub-universes share the same hash.
+        """
+        # Get sub-DAG hash for collapse detection
+        sub_dag_hash = node.get('sub_dag_hash')
+        
+        # Check if we've already expanded this sub-universe
+        if sub_dag_hash and sub_dag_hash in self.collapse_cache:
+            # Topological collapse - reference existing expansion
+            ref_content = self.collapse_cache[sub_dag_hash]
+            return f"# Sub-universe reference (collapsed): {sub_dag_hash[:16]}...\n{ref_content}"
+        
+        # Generate new sub-universe expansion
+        content = self._expand_by_level(node)
+        
+        # Add sub-universe metadata
+        sub_metadata = f"""
+# Sub-universe spawn point
+# Layer: {self.layer_index + 1}
+# Sub-DAG Hash: {sub_dag_hash or 'N/A'}
+# Topological Collapse: {'enabled' if self.seed.get('topological_collapse', {}).get('enabled', False) else 'disabled'}
+
+"""
+        content = sub_metadata + content
+        
+        # Store in collapse cache
+        if sub_dag_hash:
+            self.collapse_cache[sub_dag_hash] = content
+        
         return content
     
     def _expand_by_level(self, node: dict) -> str:
