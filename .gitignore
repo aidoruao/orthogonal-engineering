@@ -39,6 +39,98 @@ logs/pii_violations/*.json
 # IDE session data (may contain personal context)
 .ide_ai_sessions/*
 
+# AlphaOmegaFinalizer vault and sensitive outputs
+# NEVER commit these - they may contain PII and sensitive data
+vault/
+*_vault/
+*.vault/
+exports/
+conversations/
+chatlogs/
+SOVEREIGN_CONSTITUTION.jsonl
+MASTER_ROOT.txt
+outputs/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Temporary outputs from automation scripts
+outputs/
+*.preview.json
+*.check.json
+*_dry_run_report.json
+*_apply_report.json
+*_run_report.json
+
+# Backups (unless explicitly needed)
+backups/
+
+# Virtual environment
+venv/
+env/
+.venv/
+# AlphaOmegaFinalizer - AI Exports and Vault (NEVER COMMIT USER DATA)
+ai_exports/
+**/ai_exports/
+vault/
+**/vault/
+*.export.json
+*.export.jsonl
+outputs/ide_ai_run_report.json
+
+# Backup archives
+*_backup_*/
+*.7z
+__pycache__/
+*.pyc
+# CAS operational files (do not commit)
+backups/
+output/
+manifests/
+reports/
+logs/*.jsonl
+
+# User exports (CRITICAL - never commit)
+ai_exports/
+**/ai_exports/
+C:/Users/Aidor/Downloads/ai_exports/
+
+# Python build artifacts
+*.pyc
+__pycache__/
+*.egg-info/
+# Pipeline output directories
+# Contains temporary pipeline outputs (manifests, Merkle proofs, backups, and JSONL logs)
+# that should not be committed to version control
+output/
+output_*/
+backups/
+logs/*.jsonl
 # Python cache
 __pycache__/
 *.pyc
