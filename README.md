@@ -55,6 +55,7 @@ python cli.py index --repo /path/to/repo --apply
 - **💾 Automatic Backups**: Timestamped backups before any destructive writes
 - **📊 Audit Logging**: JSONL logs with ISO8601 timestamps and monotonic IDs
 - **🏆 Extreme Work Certification**: Automated verification of hard engineering boundaries
+- **🔢 Fractal Code Generation**: Verifiable 1B LOC generation system with deterministic patterns and compact proofs
 
 ## Installation
 
@@ -240,6 +241,7 @@ Files are canonicalized based on type:
 - **[Safe Operations Policy](docs/SAFE_OPERATIONS.md)**: Safety policies and constraints
 - **[Schema Documentation](config/schema.yaml)**: JSON schemas for artifacts
 - **[Extreme Work Certification](EXTREME_WORK_CERTIFICATION.md)**: Hard boundaries for extreme engineering
+- **[Fractal Execution Strategy](docs/FRACTAL_EXECUTION_STRATEGY.md)**: 1B LOC generation system with verifiable manifests
 
 ## Extreme Work Certification
 
