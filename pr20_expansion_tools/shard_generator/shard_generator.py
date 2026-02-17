@@ -286,11 +286,9 @@ class ShardGenerator:
         package_name = f"shard{file_id.replace('-', '')}"
         
         lines = [
-            f'/**',
-            f' * Module {file_id} - Auto-generated deterministic Go module',
-            f' * Generated at: {datetime.now(timezone.utc).isoformat()}',
-            f' * Seed: {self.seed}',
-            f' */',
+            f'// Module {file_id} - Auto-generated deterministic Go module',
+            f'// Generated at: {datetime.now(timezone.utc).isoformat()}',
+            f'// Seed: {self.seed}',
             '',
             f'package {package_name}',
             '',

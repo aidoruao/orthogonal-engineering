@@ -123,7 +123,7 @@ def test_replication_controller():
         
         # Test with target larger than smallest shard (10k LOC)
         controller = ReplicationController(
-            target_loc=75000,  # Target for testing (will create 1x50k + 2x10k + 1x5k leftover)
+            target_loc=75000,  # Target for testing (will create 1x50k + 1x25k = 2 shards)
             seed=42,
             output_dir='/tmp/test_replication_verify'
         )

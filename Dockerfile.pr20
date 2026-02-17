@@ -13,10 +13,10 @@ RUN apt-get update && apt-get install -y \
     graphviz \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
-COPY requirements.txt /workspace/
+# Copy requirements (no external deps, but keep for future)
+COPY pr20_expansion_tools/requirements.txt /workspace/requirements.txt
 
-# Install Python dependencies
+# Install Python dependencies (currently none, but framework in place)
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy expansion tools
@@ -38,4 +38,4 @@ LABEL org.opencontainers.image.created=$BUILD_DATE \
       org.opencontainers.image.description="Deterministic expansion infrastructure"
 
 # Default command
-CMD ["python", "/workspace/pr20_expansion_tools/replication_controller/replication_controller.py", "--help"]
+CMD ["python", "/workspace/pr20_expansion_tools/expansion_orchestrator.py", "--help"]
