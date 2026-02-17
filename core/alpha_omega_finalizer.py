@@ -1,3 +1,4 @@
+"""
 #!/usr/bin/env python3
 """
 AlphaOmegaFinalizer: Production-ready canonical ledger creation and Merkle root generation.
@@ -116,6 +117,33 @@ This module provides:
 - Integrity verification
 - CLI with --vault-dir support
 
+Author: Orthogonal Engineering
+Date: 2026-02-16
+Version: 1.0.0
+"""
+
+import argparse
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, Iterator, List, Optional
+
+# Import from parent directory
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from canonicalizer import canonicalize_json
+from hasher import sha256_hex, hmac_sha256_hex
+from merkle import MerkleTreeBuilder
+from backup import backup_before_write
+
+
+# Try to import ijson for streaming JSON parsing
+try:
+    import ijson
+    HAS_IJSON = True
+except ImportError:
+    HAS_IJSON = False
 Author: Orthogonal Engineering
 Date: 2026-02-16
 Version: 1.0.0

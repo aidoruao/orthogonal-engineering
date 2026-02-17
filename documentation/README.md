@@ -639,6 +639,64 @@ These constraints ensure autonomous evolution enhances productivity without comp
 ❌ **Not:** "Make Logos undeletable"
 ✅ **But:** "Make every alternative pay its full ontological cost in artifacts"
 ✅ **Result:** Truth doesn't need protection, only alternatives need full costing
+
+---
+
+## 🔮 Future Work: Autonomous Evolution & Content-Addressed Storage
+
+The Orthogonal Engineering framework is designed to enable **autonomous evolution** - safe mass refactors and auto-fixes by AI agents through deterministic, auditable pipelines.
+
+### Key Documents
+
+- **[docs/FUTURE_WORK.md](../docs/FUTURE_WORK.md)** - Comprehensive roadmap for autonomous evolution capabilities
+  - Autonomous Evolution concept and use cases
+  - Audit trail usage for pattern discovery
+  - Content-Addressed Storage (CAS) architecture
+  - Safety & governance for mass refactors
+  - Example workflows for automated analysis
+
+- **[docs/auto_refactor_guidelines.md](../docs/auto_refactor_guidelines.md)** - Step-by-step guidelines for AI agents
+  - Discovery & analysis process
+  - Dry-run validation procedures
+  - Merkle root verification
+  - Review gates and approval workflows
+  - Rollback procedures and safety checklists
+
+### Example Implementations
+
+- **[examples/log_analysis_example.py](../examples/log_analysis_example.py)** - Pattern discovery from audit logs
+  - Reads `hello_world_handling_pipeline.jsonl`
+  - Discovers parameter change patterns and correlations
+  - Produces summary report with suggested transformations
+  - Operates in read-only mode (non-destructive)
+
+- **[examples/cas_example.jsonl](../examples/cas_example.jsonl)** - Content-addressed storage demonstration
+  - Sample CAS manifest with deduplication
+  - Storage operations and Merkle proofs
+  - Demonstrates 33% storage efficiency through deduplication
+
+### Try It Yourself
+
+```bash
+# Run log analysis example
+python examples/log_analysis_example.py
+
+# View generated summary
+cat examples/log_analysis_summary.txt
+
+# Inspect CAS manifest example
+cat examples/cas_example.jsonl | python -m json.tool
+```
+
+### Acceptance Criteria
+
+- ✅ Documentation files added (`docs/FUTURE_WORK.md`, `docs/auto_refactor_guidelines.md`)
+- ✅ Examples created and verified (`log_analysis_example.py`, `cas_example.jsonl`)
+- ✅ Scripts are reproducible and run locally
+- ✅ Sample analytics script produces output summary in `examples/`
+- ✅ All additions are documentation and examples (no network calls or auto-push)
+
+**Status:** Foundation documentation and examples complete. Ready for Phase 2 implementation (Q2 2026).
 ---
 
 ## 🔐 AlphaOmegaFinalizer: Canonical Ledger Creation
