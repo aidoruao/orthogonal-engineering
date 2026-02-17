@@ -6,8 +6,13 @@ WORKDIR /workspace
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install PyYAML for generators
+RUN pip install --no-cache-dir pyyaml
+
 # Copy project files
 COPY . .
 
-# Set entry point
-ENTRYPOINT ["python", "analysis/automated_test_suite.py"]
+# Default entry point for 1B LOC verification
+# Can be overridden with: docker run <image> python <script>
+ENTRYPOINT ["python"]
+CMD ["generators/verify_1b_loc.py"]

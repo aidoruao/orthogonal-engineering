@@ -221,3 +221,36 @@ mathematical_theology_v60_integration_results.json
 test_config.json
 test_invariants.json
 v57_config.json
+
+# 1B LOC Generated Content (NEVER commit - Yeshua Standard)
+# Only commit generators, manifests, and Merkle roots
+# Generated content is deterministically reproducible
+
+# Generated/materialized code (from fractal expansion)
+/generated/
+/materialized/
+*.generated.py
+*_generated/
+dag_structure.json
+
+# Temporary DAG files (large, regenerate from seed)
+dag_*.json
+
+# Materialized batches/modules/files
+batch_*/
+module_*/
+
+# Keep generators and templates (source of truth)
+!/generators/
+!/generators/**/*.py
+!/generators/**/*.yaml
+!/generators/templates/
+
+# Keep manifests (hash inventories, small)
+!/manifests/
+!/manifests/**/*.jsonl
+
+# Keep Merkle roots (cryptographic commitment)
+!/merkle_roots/
+!/merkle_roots/*.txt
+!/merkle_roots/*.jsonl
