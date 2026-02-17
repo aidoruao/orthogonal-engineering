@@ -1,0 +1,41 @@
+# PR #20 Deterministic Expansion - Docker Image
+FROM python:3.11-slim
+
+LABEL maintainer="PR #20 Expansion Team"
+LABEL description="Deterministic code expansion to 1B LOC - Yeshua standards compliant"
+
+# Set working directory
+WORKDIR /workspace
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    graphviz \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt /workspace/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy expansion tools
+COPY pr20_expansion_tools/ /workspace/pr20_expansion_tools/
+
+# Set environment variables for deterministic execution
+ENV PYTHONHASHSEED=42
+ENV TZ=UTC
+
+# Create output directory
+RUN mkdir -p /workspace/output
+
+# Metadata
+ARG BUILD_DATE
+ARG VCS_REF
+LABEL org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.revision=$VCS_REF \
+      org.opencontainers.image.title="PR #20 Expansion Container" \
+      org.opencontainers.image.description="Deterministic expansion infrastructure"
+
+# Default command
+CMD ["python", "/workspace/pr20_expansion_tools/replication_controller/replication_controller.py", "--help"]

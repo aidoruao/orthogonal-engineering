@@ -144,7 +144,8 @@ class ShardGenerator:
                 '',
             ])
         
-        lines.append(f'module.exports = {{ {", ".join([f"Module{file_id.replace(\'-\', \'\')}Class{i}" for i in range(class_count)])} }};')
+        class_names = [f"Module{file_id.replace('-', '')}Class{i}" for i in range(class_count)]
+        lines.append(f'module.exports = {{ {", ".join(class_names)} }};')
         return '\n'.join(lines)
     
     def _generate_typescript(self, target_loc: int, file_id: str) -> str:
