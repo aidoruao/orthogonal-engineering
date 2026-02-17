@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+  # Legacy services
   engine:
     build: .
     container_name: orthogonal-engine
@@ -27,3 +28,105 @@ services:
              python analysis/calculate_p_value.py /workspace/universal_inventory.csv --output /workspace/evidence/statistical_report.json"
     depends_on:
       - validation
+  
+  # 1B LOC Generator Stack (Yeshua Standard)
+  # Provides deterministic, reproducible environment for fractal code generation
+  
+  # DAG Generator Service
+  dag-generator:
+    build: .
+    volumes:
+      - ./generators:/workspace/generators
+      - ./dag_output:/workspace/dag_output
+    command: >
+      python generators/dag_generator.py
+      --seed generators/seed_definition.yaml
+      --output dag_output/dag_structure.json
+      --verify
+    environment:
+      - PYTHONUNBUFFERED=1
+  
+  # Manifest Generator Service
+  manifest-generator:
+    build: .
+    volumes:
+      - ./generators:/workspace/generators
+      - ./dag_output:/workspace/dag_output
+      - ./manifests:/workspace/manifests
+    command: >
+      python generators/manifest_generator.py
+      --seed generators/seed_definition.yaml
+      --dag dag_output/dag_structure.json
+      --batch 0
+      --output manifests/batch_000000_manifest.jsonl
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - dag-generator
+  
+  # Merkle Chain Builder Service
+  merkle-builder:
+    build: .
+    volumes:
+      - ./manifests:/workspace/manifests
+      - ./merkle_roots:/workspace/merkle_roots
+    command: >
+      python generators/merkle_chain.py
+      --manifest-dir manifests/
+      --output-root merkle_roots/merkle_root.txt
+      --output-proofs merkle_roots/merkle_proofs.jsonl
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - manifest-generator
+  
+  # Verification Service
+  verifier:
+    build: .
+    volumes:
+      - ./generators:/workspace/generators
+      - ./dag_output:/workspace/dag_output
+      - ./merkle_roots:/workspace/merkle_roots
+    command: >
+      python generators/verify_1b_loc.py
+      --seed generators/seed_definition.yaml
+      --dag dag_output/dag_structure.json
+      --merkle-root merkle_roots/merkle_root.txt
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - merkle-builder
+  
+  # Batch Materializer Service (on-demand)
+  batch-materializer:
+    build: .
+    volumes:
+      - ./generators:/workspace/generators
+      - ./dag_output:/workspace/dag_output
+      - ./materialized:/workspace/materialized
+    command: >
+      python generators/batch_materializer.py
+      --seed generators/seed_definition.yaml
+      --dag dag_output/dag_structure.json
+      --batch 0
+      --output materialized/batch_0/
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - dag-generator
+
+volumes:
+  dag_output:
+  manifests:
+  merkle_roots:
+  materialized:
+
+# Usage Examples:
+#
+# 1B LOC Pipeline:
+#   docker-compose run dag-generator       # Generate DAG
+#   docker-compose run manifest-generator  # Generate manifest for batch 0
+#   docker-compose run merkle-builder      # Build Merkle tree
+#   docker-compose run verifier            # Verify 1B LOC claim
+#   docker-compose run batch-materializer  # Materialize batch 0
+

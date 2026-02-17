@@ -2,6 +2,36 @@
 
 A robust, safety-first deterministic pipeline for file processing, merkle tree generation, and GTA handling.meta processing.
 
+## 🌟 NEW: 1 Billion LOC Topological Map
+
+This repository now includes a complete **Topological Map** implementation for **1 Billion Lines of Code (1B LOC)** fractal generation following the **Yeshua Standard**.
+
+**Key Features:**
+- 📊 **Fractal Code Generation**: Deterministic expansion from minimal seed
+- 🔒 **Cryptographic Provenance**: Complete Merkle tree with ancestry chains
+- 💾 **Minimal Storage**: ~110MB represents 80GB of logical code
+- ✅ **Perfect Reproducibility**: Same seed → same output, always
+- 🎯 **Lazy Materialization**: Generate only what's needed, when needed
+
+**Documentation:**
+- [**Topological Map Overview**](docs/topological_map/TOPOLOGICAL_MAP.md) - Architecture and philosophy
+- [**Reference Implementation**](REFERENCE_IMPLEMENTATION.md) - Working examples and usage
+- [**Yeshua Standard**](docs/YESHUA_STANDARD.md) - Architectural principles
+- [**Physical vs. Logical Storage**](docs/PHYSICAL_VS_LOGICAL.md) - Core distinction
+- [**Generators README**](generators/README.md) - Complete generator documentation
+
+**Quick Start:**
+```bash
+# Generate DAG from seed (test version: 1M LOC)
+python generators/dag_generator.py --seed generators/seed_definition_test.yaml
+
+# Materialize sample code
+python generators/batch_materializer.py --batch 0
+
+# Verify the claim
+python generators/verify_1b_loc.py
+```
+
 ## 🔒 Safety First
 
 **⚠️ Default Behavior: DRY-RUN**

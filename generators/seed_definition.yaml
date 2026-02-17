@@ -1,0 +1,104 @@
+# Seed Definition for 1B LOC Fractal Architecture
+# Version: 1.0.0
+# Standard: Yeshua
+# Generated: 2026-02-17
+
+# Root configuration
+root:
+  name: "orthogonal_engineering_1b"
+  target_lines: 1000000000
+  batch_size: 10000000  # 10M lines per batch
+  batch_count: 100
+
+# Fractal expansion rules - defines the hierarchy
+expansion:
+  levels:
+    # Level 0: Batch (top-level organizational unit)
+    - name: "batch"
+      count: 100
+      template: "batch_template.py"
+      description: "Top-level batches, each containing 10M lines"
+      
+    # Level 1: Module (directory within batch)
+    - name: "module"
+      count: 10
+      template: "module_template.py"
+      description: "Modules within batch, organizational directories"
+      
+    # Level 2: File (Python source file)
+    - name: "file"
+      count: 100
+      template: "file_template.py"
+      description: "Individual Python files containing functions"
+      
+    # Level 3: Function (Python function definition)
+    - name: "function"
+      count: 10
+      template: "function_template.py"
+      description: "Python functions containing processing logic"
+      
+    # Level 4: Line (individual line of code)
+    - name: "line"
+      count: 100
+      template: "line_template.py"
+      description: "Individual lines of Python code (leaf nodes)"
+
+# Deterministic generation parameters
+generation:
+  # Fixed seed for reproducibility (NEVER change)
+  seed_value: 42
+  
+  # Template directory
+  templates_dir: "generators/templates/"
+  
+  # Naming convention (uses Python format strings)
+  naming_convention: "{level}_{index:06d}"
+  
+  # Content encoding
+  encoding: "utf-8"
+  
+  # Line endings (Unix-style)
+  line_ending: "LF"
+
+# Hashing configuration (for Merkle tree)
+hashing:
+  # Algorithm
+  algorithm: "sha256"
+  
+  # Leaf node prefix (as per Bitcoin/Ethereum style Merkle trees)
+  leaf_prefix: "0x00"
+  
+  # Internal node prefix
+  internal_prefix: "0x01"
+  
+  # Include parent hash in child hash (creates chain)
+  include_parent: true
+  
+  # Canonical ordering for children (deterministic tree construction)
+  sort_children: true
+
+# Metadata
+metadata:
+  author: "Orthogonal Engineering"
+  standard: "Yeshua"
+  created: "2026-02-17"
+  version: "1.0.0"
+  license: "See repository LICENSE"
+  description: "Fractal code generation seed for 1 billion LOC architecture"
+
+# Validation constraints
+validation:
+  # Verify that product of all counts equals target
+  verify_math: true
+  
+  # Ensure no cycles in DAG
+  verify_acyclic: true
+  
+  # Check templates exist
+  verify_templates: true
+  
+  # Validate naming convention
+  verify_naming: true
+
+# Math verification (computed):
+# 100 batches × 10 modules × 100 files × 10 functions × 100 lines = 1,000,000,000 lines ✓

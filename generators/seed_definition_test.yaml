@@ -1,0 +1,81 @@
+# Test Seed Definition for 1M LOC (scaled down for testing)
+# Version: 1.0.0
+# Standard: Yeshua
+
+# Root configuration
+root:
+  name: "orthogonal_engineering_test_1m"
+  target_lines: 1000000
+  batch_size: 100000  # 100K lines per batch
+  batch_count: 10
+
+# Fractal expansion rules - scaled down version
+expansion:
+  levels:
+    # Level 0: Batch (10 batches instead of 100)
+    - name: "batch"
+      count: 10
+      template: "batch_template.py"
+      description: "Test batches, each containing 100K lines"
+      
+    # Level 1: Module (10 modules per batch)
+    - name: "module"
+      count: 10
+      template: "module_template.py"
+      description: "Modules within batch"
+      
+    # Level 2: File (10 files per module)
+    - name: "file"
+      count: 10
+      template: "file_template.py"
+      description: "Individual Python files"
+      
+    # Level 3: Function (100 functions per file)
+    # 10 batches × 10 modules × 10 files × 100 functions × 10 lines = 1,000,000 lines ✓
+    - name: "function"
+      count: 100
+      template: "function_template.py"
+      description: "Python functions (100 per file for 1M total)"
+      
+    # Level 4: Line (10 lines per function)
+    - name: "line"
+      count: 10
+      template: "line_template.py"
+      description: "Individual lines of Python code (leaf nodes)"
+
+# Same generation parameters as full version
+generation:
+  seed_value: 42
+  templates_dir: "generators/templates/"
+  naming_convention: "{level}_{index:06d}"
+  encoding: "utf-8"
+  line_ending: "LF"
+
+# Same hashing configuration
+hashing:
+  algorithm: "sha256"
+  leaf_prefix: "0x00"
+  internal_prefix: "0x01"
+  include_parent: true
+  sort_children: true
+
+# Metadata
+metadata:
+  author: "Orthogonal Engineering"
+  standard: "Yeshua"
+  created: "2026-02-17"
+  version: "1.0.0-test"
+  license: "See repository LICENSE"
+  description: "Test seed for 1 million LOC (scaled down for demonstration)"
+
+# Validation constraints
+validation:
+  verify_math: true
+  verify_acyclic: true
+  verify_templates: true
+  verify_naming: true
+
+# Math verification:
+# 10 batches × 10 modules × 10 files × 10 functions × 10 lines = 100,000 lines
+# Wait, that's 100K not 1M. Let me adjust:
+# 10 batches × 10 modules × 10 files × 100 functions × 10 lines = 1,000,000 lines ✓
