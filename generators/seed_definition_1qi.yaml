@@ -1,0 +1,224 @@
+# Seed Definition for 1Qi LOC Recursive Fractal Architecture
+# Version: 2.0.0 (PR #23)
+# Standard: Yeshua
+# Generated: 2026-02-17
+#
+# This seed defines a recursive, 4-layer fractal expansion:
+# Layer 0: 1B LOC (Base Universe)
+# Layer 1: 1T LOC (1,000 × 1B = 1 Trillion)
+# Layer 2: 1Qa LOC (1,000 × 1T = 1 Quadrillion) 
+# Layer 3: 1Qi LOC (1,000 × 1Qa = 1 Quintillion)
+#
+# Each layer is a recursive expansion where nodes can spawn sub-universes
+# with deterministic sub-seed derivation and topological collapse
+
+# Root configuration
+root:
+  name: "orthogonal_engineering_1qi"
+  # Target for complete multiverse
+  target_lines: 1000000000000000000  # 1 Quintillion = 10^18
+  
+  # Recursive universe layers
+  universe_layers:
+    - name: "base"
+      layer_index: 0
+      target_lines: 1000000000  # 1B
+      universe_count: 1
+      description: "Base universe (1B LOC)"
+      
+    - name: "trillion"
+      layer_index: 1
+      target_lines: 1000000000000  # 1T
+      universe_count: 1000
+      sub_seed_strategy: "parent_hash_plus_index"
+      description: "Trillion-scale layer (1,000 × 1B universes)"
+      
+    - name: "quadrillion"
+      layer_index: 2
+      target_lines: 1000000000000000  # 1Qa
+      universe_count: 1000000  # 1,000 × 1,000
+      sub_seed_strategy: "parent_hash_plus_index"
+      description: "Quadrillion-scale layer (1,000,000 × 1B universes)"
+      
+    - name: "quintillion"
+      layer_index: 3
+      target_lines: 1000000000000000000  # 1Qi
+      universe_count: 1000000000  # 1,000 × 1,000 × 1,000
+      sub_seed_strategy: "parent_hash_plus_index"
+      description: "Quintillion-scale layer (full multiverse)"
+  
+  # Recursion control
+  recursion:
+    max_depth: 3  # 0-indexed, so 4 total layers
+    halt_condition: "layer_index >= max_depth"
+    enable_collapse: true  # Topological collapse of identical sub-universes
+
+# Base universe expansion (single 1B LOC universe)
+expansion:
+  # Base levels for a single 1B universe
+  levels:
+    - name: "batch"
+      count: 100
+      template: "batch_template.py"
+      description: "Top-level batches, each containing 10M lines"
+      can_recurse: true  # This level can spawn sub-universes
+      
+    - name: "module"
+      count: 100
+      template: "module_template.py"
+      description: "Modules within batch"
+      can_recurse: false
+      
+    - name: "file"
+      count: 100
+      template: "file_template.py"
+      description: "Python source files"
+      can_recurse: false
+      
+    - name: "function"
+      count: 10
+      template: "function_template.py"
+      description: "Python functions"
+      can_recurse: false
+      
+    - name: "line"
+      count: 100
+      template: "line_template.py"
+      description: "Individual lines of code (leaf nodes)"
+      can_recurse: false
+
+# Sub-seed derivation rules
+sub_seed_derivation:
+  # How to derive a sub-seed from parent universe
+  strategy: "parent_hash_plus_index"
+  
+  # Hash function for sub-seed generation
+  hash_algorithm: "sha256"
+  
+  # Include these in sub-seed computation
+  include_parent_hash: true
+  include_universe_index: true
+  include_layer_index: true
+  include_root_seed: true
+  
+  # Deterministic formula:
+  # sub_seed = SHA256(root_seed || parent_hash || layer_index || universe_index)
+  formula: "sha256(root_seed + parent_hash + str(layer_index) + str(universe_index))"
+
+# Topological collapse configuration
+topological_collapse:
+  # Enable collapse of identical sub-universes
+  enabled: true
+  
+  # Collapse strategy
+  strategy: "hash_based"
+  
+  # If two sub-universes have identical:
+  # - expansion rules
+  # - sub-seed
+  # - parent hash
+  # Then they collapse to a single manifest entry with reference count
+  
+  # Collapse detection
+  hash_content: true  # Hash the entire sub-universe expansion
+  deduplicate_manifests: true  # Store only unique manifests
+  use_reference_counting: true  # Track how many times each collapsed universe appears
+  
+  # Storage optimization
+  store_unique_only: true  # Only store unique sub-universe hashes
+  lazy_expansion: true  # Don't expand identical sub-universes more than once
+
+# Deterministic generation parameters
+generation:
+  # Fixed root seed (NEVER change - breaks all hashes)
+  seed_value: 42
+  
+  # Template directory
+  templates_dir: "generators/templates/"
+  
+  # Naming convention
+  naming_convention: "{level}_{index:06d}"
+  
+  # Encoding
+  encoding: "utf-8"
+  line_ending: "LF"
+  
+  # Recursive expansion parameters
+  recursive_expansion:
+    # At which depth to enable sub-universe spawning
+    spawn_depth: 0  # Spawn sub-universes at batch level
+    
+    # Max universes to materialize per layer (for testing)
+    max_materialized_per_layer: 3
+    
+    # Lazy materialization (only generate when requested)
+    lazy_materialization: true
+
+# Hashing configuration (for Merkle tree)
+hashing:
+  algorithm: "sha256"
+  
+  # Merkle tree prefixes
+  leaf_prefix: "0x00"
+  internal_prefix: "0x01"
+  universe_root_prefix: "0x02"  # For sub-universe roots
+  
+  # Chaining
+  include_parent: true
+  sort_children: true
+  
+  # Recursive Merkle chain
+  recursive_merkle:
+    enabled: true
+    # Master root commits to all sub-universe roots
+    compute_master_root: true
+    # Each layer has its own Merkle root
+    layer_roots: true
+
+# Metadata
+metadata:
+  author: "Orthogonal Engineering"
+  standard: "Yeshua"
+  created: "2026-02-17"
+  version: "2.0.0"
+  pr_number: 23
+  license: "See repository LICENSE"
+  description: "Recursive fractal code generation seed for 1 quintillion LOC architecture with topological collapse"
+
+# Validation constraints
+validation:
+  verify_math: true
+  verify_acyclic: true
+  verify_templates: true
+  verify_naming: true
+  
+  # Additional recursive validations
+  verify_sub_seed_determinism: true
+  verify_collapse_invariants: true
+  verify_merkle_chain: true
+  verify_halt_condition: true
+
+# Storage constraints (Yeshua Standard)
+storage:
+  # NEVER store expanded code
+  store_expanded_code: false
+  
+  # Store only:
+  store_seed: true
+  store_generators: true
+  store_manifests: true  # Hash inventories only
+  store_merkle_roots: true
+  store_dag_structure: true
+  
+  # Maximum physical storage (excluding generators/docs)
+  max_storage_mb: 500  # ~500MB for all manifests + Merkle trees
+  
+  # Halt expansion beyond representational boundary
+  halt_physical_expansion: true
+  representational_only: true
+
+# Math verification (computed):
+# Base universe: 100 × 100 × 100 × 10 × 100 = 1,000,000,000 (1B) ✓
+# Layer 1 (Trillion): 1,000 × 1B = 1,000,000,000,000 (1T) ✓
+# Layer 2 (Quadrillion): 1,000 × 1T = 1,000,000,000,000,000 (1Qa) ✓
+# Layer 3 (Quintillion): 1,000 × 1Qa = 1,000,000,000,000,000,000 (1Qi) ✓

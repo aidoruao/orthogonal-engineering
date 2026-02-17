@@ -6,14 +6,27 @@ A robust, safety-first deterministic pipeline for file processing, merkle tree g
 
 This repository now includes a complete **Topological Map** implementation for **1 Billion Lines of Code (1B LOC)** fractal generation following the **Yeshua Standard**.
 
+**🚀 NEWEST: 1 Quintillion LOC Recursive Expansion (PR #23)**
+
+The system now supports **recursive fractal expansion to 1 Quintillion (1Qi) LOC** through:
+- **4-layer universe hierarchy**: 1B → 1T → 1Qa → 1Qi
+- **Deterministic sub-seed derivation**: Each sub-universe derives from parent cryptographically
+- **Topological collapse**: Identical sub-universes share manifests (massive storage savings)
+- **Recursive Merkle roots**: Master root commits to all universe layers
+- **Storage**: Still ~500MB for entire 1Qi LOC (10^18 lines!)
+
+See [Recursive Expansion Documentation](generators/RECURSIVE_EXPANSION_1QI.md) for details.
+
 **Key Features:**
 - 📊 **Fractal Code Generation**: Deterministic expansion from minimal seed
 - 🔒 **Cryptographic Provenance**: Complete Merkle tree with ancestry chains
-- 💾 **Minimal Storage**: ~110MB represents 80GB of logical code
+- 💾 **Minimal Storage**: ~500MB represents 1 Quintillion LOC
 - ✅ **Perfect Reproducibility**: Same seed → same output, always
 - 🎯 **Lazy Materialization**: Generate only what's needed, when needed
+- 🔁 **Recursive Universes**: Each layer spawns 1,000× sub-universes
 
 **Documentation:**
+- [**Recursive Expansion to 1Qi**](generators/RECURSIVE_EXPANSION_1QI.md) - NEW: Multi-layer recursive system (PR #23)
 - [**Topological Map Overview**](docs/topological_map/TOPOLOGICAL_MAP.md) - Architecture and philosophy
 - [**Reference Implementation**](REFERENCE_IMPLEMENTATION.md) - Working examples and usage
 - [**Yeshua Standard**](docs/YESHUA_STANDARD.md) - Architectural principles
@@ -22,13 +35,16 @@ This repository now includes a complete **Topological Map** implementation for *
 
 **Quick Start:**
 ```bash
+# Verify 1Qi LOC recursive system (NEW in PR #23)
+python generators/verify_n_loc.py --seed generators/seed_definition_1qi.yaml
+
 # Generate DAG from seed (test version: 1M LOC)
 python generators/dag_generator.py --seed generators/seed_definition_test.yaml
 
 # Materialize sample code
 python generators/batch_materializer.py --batch 0
 
-# Verify the claim
+# Verify the 1B LOC claim
 python generators/verify_1b_loc.py
 ```
 

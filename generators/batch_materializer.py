@@ -3,11 +3,12 @@
 Batch Materializer for 1B LOC Architecture
 
 Materializes specific batches/shards from DAG with lazy generation.
+Supports depth-aware materialization across universe layers.
 Computes hashes and verifies against manifests.
 
 Author: Orthogonal Engineering
 Standard: Yeshua
-Version: 1.0.0
+Version: 2.0.0 (PR #23)
 """
 
 import argparse
@@ -32,16 +33,19 @@ from fractal_expander import FractalExpander
 class BatchMaterializer:
     """Materializes batches with verification."""
     
-    def __init__(self, seed: dict, dag: dict):
+    def __init__(self, seed: dict, dag: dict, layer_index: int = 0, universe_index: int = 0):
         self.seed = seed
         self.dag = dag
-        self.expander = FractalExpander(seed, dag)
+        self.layer_index = layer_index
+        self.universe_index = universe_index
+        self.expander = FractalExpander(seed, dag, layer_index)
         
     def materialize_batch(
         self,
         batch_index: int,
         output_dir: Optional[str] = None,
-        verify: bool = False
+        verify: bool = False,
+        max_files: Optional[int] = None
     ) -> Dict[str, any]:
         """
         Materialize a specific batch.
@@ -50,6 +54,7 @@ class BatchMaterializer:
             batch_index: Index of batch to materialize (0-99)
             output_dir: Directory to write files (None = don't write)
             verify: Whether to verify against manifest
+            max_files: Maximum files to generate (for testing)
             
         Returns:
             Dictionary with statistics
@@ -63,17 +68,28 @@ class BatchMaterializer:
         
         print(f"Materializing batch {batch_index}...")
         print(f"  Batch ID: {batch_id}")
+        print(f"  Layer: {self.layer_index}")
+        print(f"  Universe: {self.universe_index}")
         print(f"  Modules: {len(batch_node.get('children', []))}")
+        
+        # Check if this batch can spawn sub-universes
+        sub_dag_hash = batch_node.get('sub_dag_hash')
+        if sub_dag_hash:
+            print(f"  Sub-universe spawn point: {sub_dag_hash[:16]}...")
         
         stats = {
             "batch_index": batch_index,
             "batch_id": batch_id,
+            "layer_index": self.layer_index,
+            "universe_index": self.universe_index,
             "files_generated": 0,
             "total_size": 0,
-            "hashes": {}
+            "hashes": {},
+            "sub_dag_hash": sub_dag_hash
         }
         
         # Process each module
+        files_generated_count = 0
         for module_id in batch_node.get('children', []):
             module_node = self.dag['nodes'][module_id]
             
@@ -91,12 +107,18 @@ class BatchMaterializer:
             
             # Process each file
             for file_id in module_node.get('children', []):
+                # Check max_files limit
+                if max_files and files_generated_count >= max_files:
+                    print(f"  Reached max_files limit ({max_files})")
+                    break
+                
                 file_content = self.expander.expand_node(file_id)
                 file_hash = hashlib.sha256(file_content.encode('utf-8')).hexdigest()
                 
                 stats["hashes"][file_id] = file_hash
                 stats["total_size"] += len(file_content)
                 stats["files_generated"] += 1
+                files_generated_count += 1
                 
                 # Write file if output_dir specified
                 if output_dir:
@@ -108,6 +130,10 @@ class BatchMaterializer:
                         file_path = file_path.with_suffix('.py')
                     
                     file_path.write_text(file_content)
+            
+            # Break outer loop if max reached
+            if max_files and files_generated_count >= max_files:
+                break
         
         print(f"\nBatch {batch_index} materialization complete:")
         print(f"  Files generated: {stats['files_generated']}")
@@ -232,6 +258,23 @@ def main():
         action="store_true",
         help="Print content to stdout instead of file"
     )
+    parser.add_argument(
+        "--layer-index",
+        type=int,
+        default=0,
+        help="Universe layer index (0=1B, 1=1T, 2=1Qa, 3=1Qi)"
+    )
+    parser.add_argument(
+        "--universe-index",
+        type=int,
+        default=0,
+        help="Universe index within layer"
+    )
+    parser.add_argument(
+        "--max-files",
+        type=int,
+        help="Maximum files to generate (for testing)"
+    )
     
     args = parser.parse_args()
     
@@ -246,14 +289,20 @@ def main():
         dag = json.load(f)
     
     # Create materializer
-    materializer = BatchMaterializer(seed, dag)
+    materializer = BatchMaterializer(
+        seed, 
+        dag, 
+        layer_index=args.layer_index,
+        universe_index=args.universe_index
+    )
     
     # Materialize based on arguments
     if args.batch is not None:
         # Materialize batch
         stats = materializer.materialize_batch(
             args.batch,
-            output_dir=args.output
+            output_dir=args.output,
+            max_files=args.max_files
         )
         
         # Verify if requested
