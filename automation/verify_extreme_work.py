@@ -307,51 +307,62 @@ class ExtremeWorkVerifier:
             "passed": artifacts_present >= total_required * 0.75
         }
     
-    def run_verification(self) -> Dict[str, Any]:
+    def run_verification(self, json_only: bool = False) -> Dict[str, Any]:
         """Run complete verification suite."""
-        print("🔍 Running Extreme Work Verification...")
-        print("=" * 80)
+        if not json_only:
+            print("🔍 Running Extreme Work Verification...")
+            print("=" * 80)
         
         # Quantitative metrics
-        print("\n📊 Quantitative Boundaries:")
+        if not json_only:
+            print("\n📊 Quantitative Boundaries:")
         self.results["quantitative_metrics"]["commits_per_day"] = self.verify_commits_per_day()
-        print(f"  ✓ Commits/day: {self.results['quantitative_metrics']['commits_per_day']['value']} "
-              f"(threshold: {self.results['quantitative_metrics']['commits_per_day']['threshold']})")
+        if not json_only:
+            print(f"  ✓ Commits/day: {self.results['quantitative_metrics']['commits_per_day']['value']} "
+                  f"(threshold: {self.results['quantitative_metrics']['commits_per_day']['threshold']})")
         
         self.results["quantitative_metrics"]["commit_complexity"] = self.verify_commit_complexity()
-        print(f"  ✓ Avg lines/commit: {self.results['quantitative_metrics']['commit_complexity']['avg_lines_changed']}")
-        print(f"  ✓ Avg files/commit: {self.results['quantitative_metrics']['commit_complexity']['avg_files_touched']}")
+        if not json_only:
+            print(f"  ✓ Avg lines/commit: {self.results['quantitative_metrics']['commit_complexity']['avg_lines_changed']}")
+            print(f"  ✓ Avg files/commit: {self.results['quantitative_metrics']['commit_complexity']['avg_files_touched']}")
         
         self.results["quantitative_metrics"]["automated_artifacts"] = self.verify_automated_artifacts()
-        print(f"  ✓ Automated artifacts: {self.results['quantitative_metrics']['automated_artifacts']['total_artifacts']}")
+        if not json_only:
+            print(f"  ✓ Automated artifacts: {self.results['quantitative_metrics']['automated_artifacts']['total_artifacts']}")
         
         # Qualitative metrics
-        print("\n📋 Qualitative Boundaries:")
+        if not json_only:
+            print("\n📋 Qualitative Boundaries:")
         self.results["qualitative_metrics"]["audit_trails"] = self.verify_audit_trails()
-        print(f"  ✓ Audit trails: {self.results['qualitative_metrics']['audit_trails']['valid_entries']} valid entries")
+        if not json_only:
+            print(f"  ✓ Audit trails: {self.results['qualitative_metrics']['audit_trails']['valid_entries']} valid entries")
         
         self.results["qualitative_metrics"]["deterministic_scaffolds"] = self.verify_deterministic_scaffolds()
-        print(f"  ✓ Deterministic scaffolds: {self.results['qualitative_metrics']['deterministic_scaffolds']['components_present']}/{self.results['qualitative_metrics']['deterministic_scaffolds']['total_components']} components")
+        if not json_only:
+            print(f"  ✓ Deterministic scaffolds: {self.results['qualitative_metrics']['deterministic_scaffolds']['components_present']}/{self.results['qualitative_metrics']['deterministic_scaffolds']['total_components']} components")
         
         self.results["qualitative_metrics"]["atomic_increments"] = self.verify_atomic_increments()
-        if self.results["qualitative_metrics"]["atomic_increments"]["invariants_defined"]:
+        if not json_only and self.results["qualitative_metrics"]["atomic_increments"]["invariants_defined"]:
             print(f"  ✓ Atomic increments: {self.results['qualitative_metrics']['atomic_increments']['total_invariants']} invariants defined")
         
         # Proof of scale
-        print("\n🏆 Proof of Scale:")
+        if not json_only:
+            print("\n🏆 Proof of Scale:")
         self.results["proof_of_scale"] = self.verify_proof_of_scale()
-        print(f"  ✓ Commit history SHA256: {self.results['proof_of_scale']['proofs']['commit_history_sha256'][:16]}...")
-        print(f"  ✓ Pipeline logs: {self.results['proof_of_scale']['proofs']['pipeline_run_logs']}")
-        print(f"  ✓ Backup manifests: {self.results['proof_of_scale']['proofs']['backup_manifests']}")
-        print(f"  ✓ Deterministic outputs: {self.results['proof_of_scale']['proofs']['deterministic_outputs']}")
+        if not json_only:
+            print(f"  ✓ Commit history SHA256: {self.results['proof_of_scale']['proofs']['commit_history_sha256'][:16]}...")
+            print(f"  ✓ Pipeline logs: {self.results['proof_of_scale']['proofs']['pipeline_run_logs']}")
+            print(f"  ✓ Backup manifests: {self.results['proof_of_scale']['proofs']['backup_manifests']}")
+            print(f"  ✓ Deterministic outputs: {self.results['proof_of_scale']['proofs']['deterministic_outputs']}")
         
         # Calculate overall score
         self._calculate_overall_score()
         
-        print("\n" + "=" * 80)
-        print(f"📈 Overall Score: {self.results['overall_score']:.1%}")
-        print(f"🎯 Certification: {'✅ PASSED' if self.results['certification_passed'] else '❌ FAILED'}")
-        print(f"   (Minimum required: {self.config['certification_criteria']['minimum_passing_score']:.1%})")
+        if not json_only:
+            print("\n" + "=" * 80)
+            print(f"📈 Overall Score: {self.results['overall_score']:.1%}")
+            print(f"🎯 Certification: {'✅ PASSED' if self.results['certification_passed'] else '❌ FAILED'}")
+            print(f"   (Minimum required: {self.config['certification_criteria']['minimum_passing_score']:.1%})")
         
         return self.results
     
@@ -483,7 +494,7 @@ def main():
     
     try:
         verifier = ExtremeWorkVerifier(args.repo)
-        results = verifier.run_verification()
+        results = verifier.run_verification(json_only=args.json_only)
         
         if args.json_only:
             print(json.dumps(results, indent=2))

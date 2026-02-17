@@ -1,23 +1,28 @@
 {
-  "timestamp": "2026-02-17T06:37:05.492682+00:00",
+  "timestamp": "2026-02-17T06:39:21.944048+00:00",
   "quantitative_metrics": {
     "commits_per_day": {
       "metric": "commits_per_day",
-      "value": 0.07,
+      "value": 0.1,
       "threshold": 1.0,
       "passed": false,
       "measurement_period_days": 30,
-      "total_commits": 2
+      "total_commits": 3
     },
     "commit_complexity": {
       "metric": "commit_complexity",
-      "commits_analyzed": 1,
-      "avg_lines_changed": 187028053.0,
-      "avg_files_touched": 3003.0,
+      "commits_analyzed": 2,
+      "avg_lines_changed": 93514769.5,
+      "avg_files_touched": 1506.0,
       "lines_threshold": 50,
       "files_threshold": 1,
       "passed": true,
       "top_commits": [
+        {
+          "sha": "db8ae5c",
+          "lines": 1486,
+          "files": 9
+        },
         {
           "sha": "7fc0006",
           "lines": 187028053,
@@ -70,7 +75,7 @@
   "proof_of_scale": {
     "metric": "proof_of_scale",
     "proofs": {
-      "commit_history_sha256": "1a4fb747e2a803ee9ad10079ea47da8e0fe47b8e4370f67852a842b113ff9e7e",
+      "commit_history_sha256": "f20d6eec190741c11e42a70be1bf22bb6a05dcd0a63851182c3e5cc848e3ff2c",
       "pipeline_run_logs": 0,
       "backup_manifests": 21,
       "deterministic_outputs": 1
