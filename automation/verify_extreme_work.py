@@ -579,9 +579,164 @@ class ExtremeWorkVerifier:
             f.write("*for extreme engineering as defined in EXTREME_WORK_BOUNDARIES.json*\n")
 
 
+def aggregate_shard_results(shard_files: List[str]) -> Dict[str, Any]:
+    """Aggregate results from multiple shards.
+    
+    Args:
+        shard_files: List of paths to shard result JSON files
+        
+    Returns:
+        Aggregated results dictionary
+    """
+    if not shard_files:
+        raise ValueError("No shard files provided")
+    
+    # Load all shard results
+    shard_results = []
+    for shard_file in shard_files:
+        try:
+            with open(shard_file, 'r') as f:
+                shard_results.append(json.load(f))
+        except (OSError, IOError, json.JSONDecodeError) as e:
+            print(f"Warning: Failed to load {shard_file}: {e}", file=sys.stderr)
+    
+    if not shard_results:
+        raise ValueError("No valid shard results loaded")
+    
+    # Initialize aggregated result with first shard as template
+    aggregated = {
+        "timestamp": datetime.now().astimezone().isoformat(),
+        "mode": "aggregated",
+        "shard_count": len(shard_results),
+        "quantitative_metrics": {},
+        "qualitative_metrics": {},
+        "proof_of_scale": {},
+        "overall_score": 0.0,
+        "certification_passed": False,
+        "violations": [],
+        "warnings": []
+    }
+    
+    # Aggregate quantitative metrics
+    quant_keys = ["commits_per_day", "commit_complexity", "automated_artifacts"]
+    for key in quant_keys:
+        if key == "commits_per_day" or key == "commit_complexity":
+            # These are global metrics - just take from first shard
+            aggregated["quantitative_metrics"][key] = shard_results[0]["quantitative_metrics"].get(key, {})
+        elif key == "automated_artifacts":
+            # Sum artifact counts across shards
+            artifacts_by_type = defaultdict(int)
+            for shard in shard_results:
+                artifacts = shard["quantitative_metrics"].get(key, {}).get("artifacts_by_type", {})
+                for artifact_type, count in artifacts.items():
+                    artifacts_by_type[artifact_type] += count
+            
+            total = sum(artifacts_by_type.values())
+            aggregated["quantitative_metrics"][key] = {
+                "metric": "automated_artifacts",
+                "artifacts_by_type": dict(artifacts_by_type),
+                "total_artifacts": total,
+                "passed": total > 0
+            }
+    
+    # Aggregate qualitative metrics
+    qual_keys = ["audit_trails", "deterministic_scaffolds", "atomic_increments"]
+    for key in qual_keys:
+        if key == "audit_trails":
+            # Sum audit trail counts across shards
+            total_files = 0
+            total_entries = 0
+            valid_entries = 0
+            for shard in shard_results:
+                trail = shard["qualitative_metrics"].get(key, {})
+                total_files += trail.get("audit_files_found", 0)
+                total_entries += trail.get("total_entries", 0)
+                valid_entries += trail.get("valid_entries", 0)
+            
+            aggregated["qualitative_metrics"][key] = {
+                "metric": "audit_trails",
+                "audit_files_found": total_files,
+                "total_entries": total_entries,
+                "valid_entries": valid_entries,
+                "passed": valid_entries > 0
+            }
+        else:
+            # These are global metrics - take from first shard
+            aggregated["qualitative_metrics"][key] = shard_results[0]["qualitative_metrics"].get(key, {})
+    
+    # Aggregate proof of scale
+    # Take commit_history_sha256 from first shard (global metric)
+    # Sum the other counts
+    pos = shard_results[0]["proof_of_scale"]
+    aggregated["proof_of_scale"] = {
+        "metric": "proof_of_scale",
+        "proofs": {
+            "commit_history_sha256": pos["proofs"]["commit_history_sha256"],
+            "pipeline_run_logs": sum(s["proof_of_scale"]["proofs"].get("pipeline_run_logs", 0) for s in shard_results),
+            "backup_manifests": sum(s["proof_of_scale"]["proofs"].get("backup_manifests", 0) for s in shard_results),
+            "deterministic_outputs": sum(s["proof_of_scale"]["proofs"].get("deterministic_outputs", 0) for s in shard_results)
+        }
+    }
+    
+    # Check if proof of scale passed
+    artifacts_present = sum(1 for k, v in aggregated["proof_of_scale"]["proofs"].items() if v)
+    total_required = 4
+    aggregated["proof_of_scale"]["artifacts_present"] = artifacts_present
+    aggregated["proof_of_scale"]["total_required"] = total_required
+    aggregated["proof_of_scale"]["passed"] = artifacts_present >= total_required * 0.75
+    
+    # Calculate overall score
+    # Use same logic as _calculate_overall_score
+    weights = {
+        "quantitative_boundaries": 0.4,
+        "qualitative_boundaries": 0.4,
+        "proof_of_scale": 0.2
+    }
+    
+    quant_passed = sum(1 for m in aggregated["quantitative_metrics"].values() if m.get("passed", False))
+    quant_total = len(aggregated["quantitative_metrics"])
+    quant_score = quant_passed / quant_total if quant_total > 0 else 0
+    
+    qual_passed = sum(1 for m in aggregated["qualitative_metrics"].values() if m.get("passed", False))
+    qual_total = len(aggregated["qualitative_metrics"])
+    qual_score = qual_passed / qual_total if qual_total > 0 else 0
+    
+    pos_score = 1.0 if aggregated["proof_of_scale"].get("passed", False) else 0.0
+    
+    overall = (
+        quant_score * weights["quantitative_boundaries"] +
+        qual_score * weights["qualitative_boundaries"] +
+        pos_score * weights["proof_of_scale"]
+    )
+    
+    aggregated["overall_score"] = overall
+    aggregated["certification_passed"] = overall >= 0.85
+    
+    aggregated["score_breakdown"] = {
+        "quantitative": {
+            "score": quant_score,
+            "weight": weights["quantitative_boundaries"],
+            "contribution": quant_score * weights["quantitative_boundaries"]
+        },
+        "qualitative": {
+            "score": qual_score,
+            "weight": weights["qualitative_boundaries"],
+            "contribution": qual_score * weights["qualitative_boundaries"]
+        },
+        "proof_of_scale": {
+            "score": pos_score,
+            "weight": weights["proof_of_scale"],
+            "contribution": pos_score * weights["proof_of_scale"]
+        }
+    }
+    
+    return aggregated
+
+
 def main():
     """Main entry point."""
     import argparse
+    import glob
     
     parser = argparse.ArgumentParser(description="Verify extreme work boundaries")
     parser.add_argument("--repo", default=".", help="Repository path")
@@ -591,6 +746,8 @@ def main():
                        help="Verification mode: full (default), shard (parallel), or aggregate (combine shards)")
     parser.add_argument("--shard-id", type=int, help="Shard ID for parallel verification (0-based)")
     parser.add_argument("--shard-count", type=int, help="Total number of shards")
+    parser.add_argument("--shard-files", nargs="+", help="Shard result files to aggregate (for aggregate mode)")
+    parser.add_argument("--shard-pattern", help="Glob pattern for shard files (for aggregate mode)")
     
     args = parser.parse_args()
     
@@ -606,8 +763,41 @@ def main():
     try:
         if args.mode == "aggregate":
             # Aggregate mode: combine shard results
-            print("Aggregate mode not yet implemented", file=sys.stderr)
-            sys.exit(2)
+            shard_files = []
+            
+            if args.shard_files:
+                shard_files = args.shard_files
+            elif args.shard_pattern:
+                shard_files = glob.glob(args.shard_pattern)
+            else:
+                # Default pattern
+                shard_files = glob.glob("extreme_work_verification_shard_*.json")
+            
+            if not shard_files:
+                print("Error: No shard files found to aggregate", file=sys.stderr)
+                sys.exit(2)
+            
+            print(f"Aggregating {len(shard_files)} shard results...", file=sys.stderr)
+            results = aggregate_shard_results(shard_files)
+            
+            if args.json_only:
+                print(json.dumps(results, indent=2))
+            else:
+                # Save aggregated results
+                output_path = args.output if args.output else "extreme_work_verification_aggregated"
+                json_path = f"{output_path}.json"
+                with open(json_path, 'w') as f:
+                    json.dump(results, f, indent=2)
+                print(f"\n💾 Aggregated JSON report saved to: {json_path}", file=sys.stderr)
+                
+                # Generate markdown report
+                md_path = f"{output_path}.md"
+                verifier = ExtremeWorkVerifier(args.repo)
+                verifier.results = results
+                verifier._generate_markdown_report(md_path)
+                print(f"💾 Markdown report saved to: {md_path}", file=sys.stderr)
+            
+            sys.exit(0 if results["certification_passed"] else 1)
         else:
             # Full or shard mode
             verifier = ExtremeWorkVerifier(
