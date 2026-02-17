@@ -1,0 +1,163 @@
+# JSON Schema and Artifact Descriptions for Deterministic Pipeline
+
+# Manifest Schema (manifest.jsonl)
+manifest_entry:
+  type: object
+  required: [canonical_path, canonical_hash, size_bytes, file_type, content_address]
+  properties:
+    canonical_path:
+      type: string
+      description: Canonical relative path with forward slashes
+    canonical_hash:
+      type: string
+      pattern: ^[0-9a-f]{64}$
+      description: SHA-256 hash of canonical content
+    size_bytes:
+      type: integer
+      minimum: 0
+      description: File size in bytes
+    file_type:
+      type: string
+      enum: [json, xml, text, binary]
+      description: Detected file type
+    content_address:
+      type: string
+      pattern: ^sha256:[0-9a-f]{64}$
+      description: Content-addressable reference
+
+# Pipeline Log Schema (*.jsonl)
+log_entry:
+  type: object
+  required: [step_id, timestamp, step_name, status]
+  properties:
+    step_id:
+      type: integer
+      minimum: 1
+      description: Monotonic step identifier
+    timestamp:
+      type: string
+      format: date-time
+      description: ISO8601 UTC timestamp
+    step_name:
+      type: string
+      description: Name of pipeline step
+    status:
+      type: string
+      enum: [started, completed, failed, info]
+      description: Step status
+    details:
+      type: object
+      description: Optional step details
+    error:
+      type: string
+      description: Optional error message
+
+# Merkle Proof Schema (merkle_proofs.jsonl)
+merkle_proof:
+  type: object
+  required: [path, leaf_hash, siblings, root_hash]
+  properties:
+    path:
+      type: string
+      description: Canonical path of file
+    leaf_hash:
+      type: string
+      pattern: ^[0-9a-f]{64}$
+      description: SHA-256 hash of leaf node
+    siblings:
+      type: array
+      items:
+        type: object
+        required: [hash, direction]
+        properties:
+          hash:
+            type: string
+            pattern: ^[0-9a-f]{64}$
+            description: Sibling node hash
+          direction:
+            type: string
+            enum: [left, right]
+            description: Sibling position
+    root_hash:
+      type: string
+      pattern: ^[0-9a-f]{64}$
+      description: Merkle root hash
+
+# Backup Manifest Schema (backup_manifest.jsonl)
+backup_record:
+  type: object
+  required: [backup_id, timestamp, original_path, backup_path, original_hash, size_bytes]
+  properties:
+    backup_id:
+      type: string
+      description: Unique backup identifier
+    timestamp:
+      type: string
+      format: date-time
+      description: ISO8601 UTC timestamp
+    original_path:
+      type: string
+      description: Absolute path to original file
+    backup_path:
+      type: string
+      description: Absolute path to backup file
+    original_hash:
+      type: string
+      pattern: ^[0-9a-f]{64}$
+      description: SHA-256 hash of original content
+    size_bytes:
+      type: integer
+      minimum: 0
+      description: File size in bytes
+    metadata:
+      type: object
+      description: Optional metadata
+
+# Handling Corrections Schema (handling_corrections.jsonl)
+handling_corrections:
+  type: object
+  required: [input_file, dry_run, total_entries, total_corrections]
+  properties:
+    input_file:
+      type: string
+      description: Path to input handling.meta
+    dry_run:
+      type: boolean
+      description: Whether this was a dry-run
+    total_entries:
+      type: integer
+      description: Total CHandlingData entries
+    total_corrections:
+      type: integer
+      description: Total corrections applied
+    phase1_corrections:
+      type: integer
+      description: Phase 1 corrections
+    phase2_corrections:
+      type: integer
+      description: Phase 2 corrections
+    entries:
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: handlingName
+          corrections:
+            type: array
+            items:
+              type: object
+              properties:
+                attribute:
+                  type: string
+                original:
+                  type: number
+                clamped:
+                  type: number
+                range:
+                  type: array
+                  items:
+                    type: number
+                phase:
+                  type: string
