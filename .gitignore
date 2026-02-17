@@ -39,6 +39,22 @@ logs/pii_violations/*.json
 # IDE session data (may contain personal context)
 .ide_ai_sessions/*
 
+# CAS operational files (do not commit)
+backups/
+output/
+manifests/
+reports/
+logs/*.jsonl
+
+# User exports (CRITICAL - never commit)
+ai_exports/
+**/ai_exports/
+C:/Users/Aidor/Downloads/ai_exports/
+
+# Python build artifacts
+*.pyc
+__pycache__/
+*.egg-info/
 # Pipeline output directories
 # Contains temporary pipeline outputs (manifests, Merkle proofs, backups, and JSONL logs)
 # that should not be committed to version control
