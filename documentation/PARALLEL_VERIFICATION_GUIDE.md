@@ -1,26 +1,46 @@
-# City-Scale Deterministic Verification System
+# Multi-Repository, Shard-Parallel Verification System (v2.0)
 
-This system provides deterministic, parallelized verification for large-scale repositories with 40k+ files.
+This system provides deterministic, parallelized verification for large-scale repositories with 100k+ files, with support for multi-repository verification, dependency tracking, and comprehensive reporting.
 
 ## Overview
 
-The verification system consists of three main components:
+The verification system consists of five main components:
 
-1. **Repository Manifest Generator** (`automation/repo_manifest.py`)
-2. **Manifest-Based Verification** (`automation/verify_extreme_work.py`)
-3. **Shard-Based Parallel Execution**
+1. **Repository Manifest Generator** (`automation/repo_manifest.py`) - v2.0 with dependency tracking
+2. **Manifest-Based Verification** (`automation/verify_extreme_work.py`) - Multi-repo support
+3. **Shard-Based Parallel Execution** - Multi-repo shard partitioning
+4. **Dependency Verification** - Automated dependency extraction and validation
+5. **Multi-Format Reporting** - JSON, Markdown, and HTML reports
+
+## What's New in v2.0
+
+### Enhanced Manifest Generation
+- **Dependency Extraction**: Automatic detection of imports/includes for Python, JavaScript, Go, Java, C/C++, C#
+- **Line Count Tracking**: Per-file line counts for code metrics
+- **Dependency Hashes**: Deterministic dependency fingerprints at file and folder levels
+- **Multi-Repo Support**: Generate combined manifests for multiple repositories
+
+### Multi-Repository Verification
+- **Cross-Repo Verification**: Verify multiple repositories in a single run
+- **Per-Repo Metrics**: Individual metrics for each repository plus global aggregates
+- **Unified Reporting**: Combined reports showing all repositories
+
+### Extended Reporting
+- **JSON Reports**: Machine-readable verification results
+- **Markdown Reports**: Human-readable certification reports
+- **HTML Reports**: Rich, styled web reports with progress bars and metrics
 
 ## Features
 
 ### 1. Deterministic Repository Manifests
 
 Generate comprehensive manifests containing:
-- **File-level metadata**: path, size, mtime, SHA256 hash
-- **Folder aggregates**: file_count, total_bytes, artifact_flags, folder_hash
+- **File-level metadata**: path, size, mtime, SHA256 hash, line_count, dependencies, dependency_hash
+- **Folder aggregates**: file_count, total_bytes, artifact_flags, folder_hash, dependency_hash
 - **Deterministic ordering**: lexicographically sorted by path
 - **Persistence**: `documentation/sha256_manifests/manifest-<commit>.json`
 
-#### Usage
+#### Single-Repository Usage
 
 ```bash
 # Generate manifest for current HEAD
@@ -39,20 +59,39 @@ python3 automation/repo_manifest.py --commit abc123
 python3 automation/repo_manifest.py --output /path/to/manifest.json
 ```
 
-#### Manifest Structure
+#### Multi-Repository Usage
+
+```bash
+# Create repo list file
+cat > repos.json << EOF
+[
+  {"name": "repo1", "path": "/path/to/repo1"},
+  {"name": "repo2", "path": "/path/to/repo2"}
+]
+EOF
+
+# Generate multi-repo manifest
+python3 automation/repo_manifest.py --repo-list repos.json --output multi_repo_manifest.json
+```
+
+#### Manifest Structure (v2.0)
 
 ```json
 {
-  "manifest_version": "1.0.0",
+  "manifest_version": "2.0.0",
   "commit": "abc123",
   "generated_at": "2026-02-17T07:00:00+00:00",
   "repository_root": "/path/to/repo",
+  "repository_name": "my-repo",
   "files": [
     {
       "path": "README.md",
       "size": 1024,
       "mtime": 1771312097,
-      "sha256": "abc123..."
+      "sha256": "abc123...",
+      "line_count": 42,
+      "dependencies": ["os", "sys", "json"],
+      "dependency_hash": "def456..."
     }
   ],
   "folders": {
@@ -60,19 +99,108 @@ python3 automation/repo_manifest.py --output /path/to/manifest.json
       "file_count": 100,
       "total_bytes": 1048576,
       "artifact_flags": ["documentation"],
-      "folder_hash": "def456..."
+      "folder_hash": "ghi789...",
+      "dependency_hash": "jkl012..."
     }
   },
   "summary": {
-    "total_files": 2144,
-    "total_folders": 160,
-    "total_bytes": 75266897,
-    "manifest_hash": "ghi789..."
+    "total_files": 2156,
+    "total_folders": 165,
+    "total_bytes": 76894532,
+    "manifest_hash": "mno345..."
   }
 }
 ```
 
-### 2. Manifest-Based Verification
+#### Multi-Repo Manifest Structure
+
+```json
+{
+  "manifest_version": "2.0.0",
+  "type": "multi-repo",
+  "generated_at": "2026-02-17T08:00:00+00:00",
+  "repositories": {
+    "repo1": { /* single-repo manifest */ },
+    "repo2": { /* single-repo manifest */ }
+  },
+  "global_summary": {
+    "total_repos": 2,
+    "total_files": 5420,
+    "total_folders": 342,
+    "total_bytes": 180234567,
+    "total_dependencies": 1250
+  }
+}
+```
+
+### 2. Dependency Verification
+
+**New in v2.0**: Automatically extract and verify code dependencies.
+
+#### Supported Languages
+
+- **Python**: `import`, `from ... import`
+- **JavaScript/TypeScript**: `import ... from`, `require()`
+- **Go**: `import "package"`
+- **Java**: `import package.Class;`
+- **C/C++**: `#include <header>`, `#include "header"`
+- **C#**: `using Namespace;`
+
+#### Dependency Metrics
+
+The verification system tracks:
+- Files with dependencies
+- Dependency coverage (% of files with dependencies)
+- Total dependencies
+- Unique dependencies
+- Average dependencies per file
+- Dependency hashes for determinism
+
+#### Usage
+
+```bash
+# Run verification (includes dependency metrics)
+python3 automation/verify_extreme_work.py
+```
+
+Output includes:
+```
+📋 Qualitative Boundaries:
+  ✓ Dependencies: 553/2154 files (25.7% coverage)
+    Total dependencies: 4636 (285 unique)
+```
+
+### 3. Multi-Format Reporting
+
+**New in v2.0**: Generate reports in JSON, Markdown, and HTML formats.
+
+#### Report Formats
+
+1. **JSON**: Machine-readable results for CI/CD pipelines
+2. **Markdown**: Human-readable certification reports
+3. **HTML**: Rich, styled web reports with visual elements
+
+#### Usage
+
+```bash
+# Generate all report formats
+python3 automation/verify_extreme_work.py --output my_report
+
+# Outputs:
+#   my_report.json  - JSON report
+#   my_report.md    - Markdown report
+#   my_report.html  - HTML report
+```
+
+#### HTML Report Features
+
+- Gradient header with overall status
+- Color-coded metrics (green=passed, red=failed)
+- Progress bars for visual score representation
+- Responsive design for mobile/desktop
+- All metrics organized in cards
+
+### 4. Manifest-Based Verification
 
 The `ExtremeWorkVerifier` uses manifests instead of filesystem scans for improved performance and determinism.
 
@@ -82,16 +210,62 @@ The `ExtremeWorkVerifier` uses manifests instead of filesystem scans for improve
 - **Determinism**: Same manifest = same verification results
 - **Caching**: Manifests are cached per commit
 - **Reproducibility**: Historical commits can be re-verified
+- **Multi-Repo Support**: Verify multiple repositories in single run
 
-#### Modified Methods
+#### Verification Methods
 
 All verification methods now use manifest data:
-- `verify_automated_artifacts()` - counts from manifest files
+- `verify_automated_artifacts()` - counts from manifest files (multi-repo aware)
 - `verify_audit_trails()` - processes JSONL files from manifest
 - `verify_deterministic_scaffolds()` - checks scaffold files in manifest
 - `verify_atomic_increments()` - validates invariants file in manifest
+- `verify_dependencies()` - **NEW** - validates dependency extraction and metrics
 
-### 3. Shard-Based Parallel Verification
+### 5. Multi-Repository Verification
+
+**New in v2.0**: Verify multiple repositories in a single verification run.
+
+#### Usage
+
+```bash
+# Create repo list
+cat > repos.json << EOF
+[
+  {"name": "backend", "path": "/path/to/backend"},
+  {"name": "frontend", "path": "/path/to/frontend"},
+  {"name": "shared", "path": "/path/to/shared"}
+]
+EOF
+
+# Run multi-repo verification
+python3 automation/verify_extreme_work.py --repo-list repos.json --output multi_verification
+```
+
+#### Per-Repo Metrics
+
+The verification provides:
+- Individual metrics for each repository
+- Global aggregates across all repositories
+- Per-repo artifact counts
+- Per-repo dependency metrics
+
+#### Multi-Repo Shard Mode
+
+Multi-repo verification supports sharding with repo-aware partitioning:
+
+```bash
+# Shard partitioning includes repo name in hash
+# hash(repo_name + folder_path) % shard_count == shard_id
+
+# Run shard 0 of 8 across all repos
+python3 automation/verify_extreme_work.py \
+  --repo-list repos.json \
+  --mode shard \
+  --shard-id 0 \
+  --shard-count 8
+```
+
+### 6. Shard-Based Parallel Verification
 
 Execute verification in parallel across multiple processes/machines.
 
@@ -102,6 +276,12 @@ Execute verification in parallel across multiple processes/machines.
 python3 automation/verify_extreme_work.py
 ```
 Runs complete verification on entire repository.
+
+##### Multi-Repo Full Mode
+```bash
+python3 automation/verify_extreme_work.py --repo-list repos.json
+```
+Runs complete verification across all specified repositories.
 
 ##### Shard Mode
 ```bash
