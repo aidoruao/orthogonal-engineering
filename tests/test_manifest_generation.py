@@ -203,6 +203,8 @@ def main():
             test()
         except Exception as e:
             print(f"✗ {test.__name__} FAILED: {e}")
+            import traceback
+            traceback.print_exc()
             failed += 1
     
     print("=" * 80)

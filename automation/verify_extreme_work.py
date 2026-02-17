@@ -597,7 +597,7 @@ def aggregate_shard_results(shard_files: List[str]) -> Dict[str, Any]:
         try:
             with open(shard_file, 'r') as f:
                 shard_results.append(json.load(f))
-        except (OSError, IOError, json.JSONDecodeError) as e:
+        except (OSError, json.JSONDecodeError) as e:
             print(f"Warning: Failed to load {shard_file}: {e}", file=sys.stderr)
     
     if not shard_results:

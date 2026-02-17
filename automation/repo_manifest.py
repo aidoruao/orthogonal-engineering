@@ -68,7 +68,7 @@ class RepositoryManifestGenerator:
                 for chunk in iter(lambda: f.read(65536), b''):
                     sha256.update(chunk)
             return sha256.hexdigest()
-        except (OSError, IOError) as e:
+        except OSError as e:
             # Return empty hash for unreadable files
             return ""
     
@@ -200,7 +200,7 @@ class RepositoryManifestGenerator:
                     folder_stats[folder_key]['file_count'] += 1
                     folder_stats[folder_key]['total_bytes'] += stat.st_size
                     
-                except (OSError, IOError) as e:
+                except OSError as e:
                     # Skip files we can't read
                     continue
         
@@ -299,7 +299,7 @@ class RepositoryManifestGenerator:
         try:
             with open(manifest_path, 'r') as f:
                 return json.load(f)
-        except (OSError, IOError, json.JSONDecodeError) as e:
+        except (OSError, json.JSONDecodeError) as e:
             return None
     
     def get_or_create_manifest(self, commit: Optional[str] = None) -> Dict[str, Any]:
