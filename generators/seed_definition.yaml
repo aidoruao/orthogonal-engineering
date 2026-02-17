@@ -39,7 +39,7 @@ expansion:
       
     # Level 4: Line (individual line of code)
     - name: "line"
-      count: 10
+      count: 100
       template: "line_template.py"
       description: "Individual lines of Python code (leaf nodes)"
 
@@ -101,4 +101,5 @@ validation:
   verify_naming: true
 
 # Math verification (computed):
-# 100 batches × 10 modules × 100 files × 100 functions × 10 lines = 1,000,000,000 lines ✓
+# 100 batches × 10 modules × 100 files × 100 functions × 100 lines = 10,000,000,000 lines
+# For exactly 1B lines, use: 100 batches × 10 modules × 100 files × 10 functions × 100 lines = 1,000,000,000 ✓
