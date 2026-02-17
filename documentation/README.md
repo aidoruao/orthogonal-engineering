@@ -60,6 +60,16 @@ orthogonal-engineering/
 ├── correspondence_bridge/      # Phase 3,7: Correspondence validator
 ├── automation/                 # Phase 8: Automation scripts
 ├── documentation/              # All Phases: Documentation
+├── docs/                       # Autonomous Evolution & CAS documentation
+│   ├── FUTURE_WORK.md          # Roadmap for safe automation
+│   └── auto_refactor_guidelines.md  # Step-by-step agent guidance
+├── examples/                   # Non-destructive examples & tools
+│   ├── logger.py               # Pipeline logging reference implementation
+│   ├── log_analysis_example.py # Pattern detection analytics
+│   ├── cas_example.jsonl       # CAS manifest sample
+│   ├── hello_world_handling_pipeline.jsonl
+│   ├── handling_verification_pipeline.jsonl
+│   └── log_analysis_summary.json
 ├── logs/                       # All Phases: Audit logs
 └── adversarial_tests/          # Phase 6: Adversarial validation
 ```
@@ -218,6 +228,57 @@ Each test in `grounding_tests/` includes:
 
 ---
 
+## 🔐 AlphaOmegaFinalizer - Safe Deterministic Canonicalization
+
+The repository now includes **AlphaOmegaFinalizer**, a production-ready local-only finalizer for handling.meta pipeline with deterministic canonicalization.
+
+### Features:
+- **Streaming JSON parsing** with ijson fallback for large files
+- **Deterministic canonical bytes** generation for reproducible fingerprints
+- **SHA-256 and HMAC-SHA256** cryptographic fingerprinting
+- **Merkle tree generation** for integrity verification
+- **Dry-run by default** for safety (--apply required for writes)
+- **Optional redaction hooks** for sensitive content (user must provide classifier)
+- **Privacy-first**: Local-only processing, no network calls, no raw exports committed
+
+### User's Vault Path:
+AI exports are stored locally at: `C:\Users\Aidor\Downloads\ai_exports`
+
+**PRIVACY NOTE**: This path contains REAL user data and must NEVER be committed to the repository.
+
+### Quick Start:
+```bash
+# Install optional dependencies
+pip install ijson cryptography
+
+# Dry-run (safe, no writes)
+python core/alpha_omega_finalizer.py \
+  --vault-dir "C:\Users\Aidor\Downloads\ai_exports" \
+  --out-dir ./outputs
+
+# Run unit tests
+pytest core/tests/test_alpha_omega_finalizer.py -v
+
+# Use runner template (recommended)
+python examples/ide_ai_runner_template.py
+```
+
+### Documentation:
+- `docs/IDE_AI_RUNBOOK.md` - Complete IDE AI guidance with Windows workflows
+- `docs/SAFE_OPERATIONS.md` - Safety policies and compliance guidelines
+- `examples/ide_ai_runner_template.py` - Python runner template
+- `examples/ide_ai_runner_template.ps1` - PowerShell runner template
+
+### Safety Features:
+✅ Default dry-run mode (no accidental writes)  
+✅ Mandatory backups before any write operation  
+✅ Deterministic redaction stub (user must provide production classifier)  
+✅ Human approval gate (no automated --apply)  
+✅ No raw exports in repository  
+✅ Complete unit test coverage
+
+---
+
 ## 🏗️ Repository Structure
 
 ```
@@ -232,6 +293,18 @@ orthogonal-engineering/
 ├── FORMAL_FOUNDATIONS.md (mathematical proofs under assumptions)
 ├── INVARIANTS.md (only proven operational invariants)
 ├── FAILURES.md (what doesn't work - critical documentation)
+│
+├── core/ (AlphaOmegaFinalizer implementation)
+│   ├── alpha_omega_finalizer.py (main finalizer with CLI)
+│   └── tests/test_alpha_omega_finalizer.py (unit tests)
+│
+├── docs/ (AlphaOmegaFinalizer documentation)
+│   ├── IDE_AI_RUNBOOK.md (IDE AI workflows and guidance)
+│   └── SAFE_OPERATIONS.md (safety policies)
+│
+├── examples/ (Runner templates)
+│   ├── ide_ai_runner_template.py (Python runner)
+│   └── ide_ai_runner_template.ps1 (PowerShell runner)
 │
 ├── grounding_tests/ (operational tests per model)
 │   ├── test_brute_fact.md (G₁ test)
@@ -472,7 +545,89 @@ Truth does not need protection. Only alternatives need to pay their bill.
 
 ---
 
-**Last Updated:** 2026-01-20
+## 🤖 Autonomous Evolution & Content-Addressed Storage (Future Work)
+
+**Status:** Documentation and Examples Added  
+**Purpose:** Enable safe, auditable automation for mass refactors by downstream agents
+
+The framework now includes comprehensive documentation and non-destructive examples for future autonomous evolution capabilities and content-addressed storage (CAS) infrastructure.
+
+### Documentation
+
+#### docs/FUTURE_WORK.md
+Complete roadmap for autonomous evolution and CAS integration:
+- **Autonomous Evolution**: How deterministic, auditable pipelines enable safe mass refactors
+- **Audit Trail Usage**: Pattern detection in JSONL logs (hello_world_handling_pipeline.jsonl, handling_verification_pipeline.jsonl)
+- **CAS Roadmap**: Content-addressed storage design, deduplication, Merkle manifests
+- **Safety & Governance**: Review gates, dry-run testing, checkpointing, human approval workflows
+
+#### docs/auto_refactor_guidelines.md
+Step-by-step guidance for automated agents to safely propose and validate mass refactors:
+- **Pattern Detection**: Analyze JSONL logs for parameter co-variations
+- **Dry-Run Validation**: Test transformations in isolation without modifying repository
+- **Merkle Root Verification**: Ensure reproducibility and detect unexpected changes
+- **Human Review Gates**: Require explicit approval before any merges
+- **Example Commands**: Concrete bash and Python examples for each workflow step
+
+### Examples (All Non-Destructive)
+
+All examples operate in **DRY-RUN ONLY** mode with the following safety guarantees:
+- ✅ **Read-only** operations on repository files
+- ✅ **No network calls** or external communications
+- ✅ **No auto-push or auto-merge** behavior
+- ✅ **Output to examples/ directory only**
+- ✅ **Fully deterministic and reproducible**
+
+#### examples/logger.py
+Reference implementation of deterministic pipeline logger:
+- Generates hello_world_handling_pipeline.jsonl (transformation logs)
+- Generates handling_verification_pipeline.jsonl (verification logs)
+- Safe: writes only to examples/ directory, no repository modifications
+
+#### examples/log_analysis_example.py
+Non-destructive analytics script demonstrating pattern detection:
+- Ingests hello_world_handling_pipeline.jsonl
+- Detects parameter co-variation patterns (e.g., fMass ↔ fDriveInertia)
+- Outputs log_analysis_summary.json with occurrence counts
+- Safe: read-only on logs, writes summary to examples/ only
+
+#### examples/cas_example.jsonl
+Sample CAS manifest showing content-addressed storage with deduplication:
+- 3 files with content hashes
+- Demonstrates deduplication (files with identical content_hash share storage_path)
+- Includes dedup_group identifiers for tracking
+
+#### examples/log_analysis_summary.json
+Generated output from log_analysis_example.py:
+- Parameter pair occurrence counts
+- Analysis metadata and timestamps
+- Safe: created by analysis script, demonstrates expected output format
+
+### Usage for IDE AI Agents
+
+IDE AIs and automated agents should consume this documentation to:
+
+1. **Understand Safe Automation**: Read docs/FUTURE_WORK.md for architectural context
+2. **Follow Guidelines**: Use docs/auto_refactor_guidelines.md as step-by-step workflow
+3. **Analyze Patterns**: Run examples/log_analysis_example.py to detect refactor opportunities
+4. **Respect Safety Gates**: Never auto-merge or auto-push; always require human approval
+5. **Verify Reproducibility**: Use Merkle roots to ensure deterministic transformations
+
+### Safety Constraints (Critical)
+
+All autonomous operations must adhere to these **non-negotiable** safety constraints:
+
+- **No Automatic Merges**: Human approval required for all changes
+- **Dry-Run First**: All transformations tested in isolation before proposal
+- **Full Audit Trail**: Every operation logged for future analysis
+- **Rollback Support**: Any step can be completely undone
+- **No Protected Branches**: Never push directly to main without review
+
+These constraints ensure autonomous evolution enhances productivity without compromising safety or control.
+
+---
+
+**Last Updated:** 2026-02-16
 **Version:** v1.0.0 (Phase 4 Complete)
 **Status:** Complete historical-ontological correspondence framework with truth inelasticity measurement ✅
 
@@ -484,3 +639,113 @@ Truth does not need protection. Only alternatives need to pay their bill.
 ❌ **Not:** "Make Logos undeletable"
 ✅ **But:** "Make every alternative pay its full ontological cost in artifacts"
 ✅ **Result:** Truth doesn't need protection, only alternatives need full costing
+
+---
+
+## 🔮 Future Work: Autonomous Evolution & Content-Addressed Storage
+
+The Orthogonal Engineering framework is designed to enable **autonomous evolution** - safe mass refactors and auto-fixes by AI agents through deterministic, auditable pipelines.
+
+### Key Documents
+
+- **[docs/FUTURE_WORK.md](../docs/FUTURE_WORK.md)** - Comprehensive roadmap for autonomous evolution capabilities
+  - Autonomous Evolution concept and use cases
+  - Audit trail usage for pattern discovery
+  - Content-Addressed Storage (CAS) architecture
+  - Safety & governance for mass refactors
+  - Example workflows for automated analysis
+
+- **[docs/auto_refactor_guidelines.md](../docs/auto_refactor_guidelines.md)** - Step-by-step guidelines for AI agents
+  - Discovery & analysis process
+  - Dry-run validation procedures
+  - Merkle root verification
+  - Review gates and approval workflows
+  - Rollback procedures and safety checklists
+
+### Example Implementations
+
+- **[examples/log_analysis_example.py](../examples/log_analysis_example.py)** - Pattern discovery from audit logs
+  - Reads `hello_world_handling_pipeline.jsonl`
+  - Discovers parameter change patterns and correlations
+  - Produces summary report with suggested transformations
+  - Operates in read-only mode (non-destructive)
+
+- **[examples/cas_example.jsonl](../examples/cas_example.jsonl)** - Content-addressed storage demonstration
+  - Sample CAS manifest with deduplication
+  - Storage operations and Merkle proofs
+  - Demonstrates 33% storage efficiency through deduplication
+
+### Try It Yourself
+
+```bash
+# Run log analysis example
+python examples/log_analysis_example.py
+
+# View generated summary
+cat examples/log_analysis_summary.txt
+
+# Inspect CAS manifest example
+cat examples/cas_example.jsonl | python -m json.tool
+```
+
+### Acceptance Criteria
+
+- ✅ Documentation files added (`docs/FUTURE_WORK.md`, `docs/auto_refactor_guidelines.md`)
+- ✅ Examples created and verified (`log_analysis_example.py`, `cas_example.jsonl`)
+- ✅ Scripts are reproducible and run locally
+- ✅ Sample analytics script produces output summary in `examples/`
+- ✅ All additions are documentation and examples (no network calls or auto-push)
+
+**Status:** Foundation documentation and examples complete. Ready for Phase 2 implementation (Q2 2026).
+---
+
+## 🔐 AlphaOmegaFinalizer: Canonical Ledger Creation
+
+**New in this release:** Production-ready tool for creating cryptographically verifiable ledgers from chat exports.
+
+### Features
+
+- **Streaming Processing**: Handle multi-GB export files without OOM using ijson
+- **Canonical Byte Serialization**: Deterministic SHA-256 hashing with sorted keys
+- **Merkle Tree Verification**: Binary tree construction with tamper-evident root hash
+- **Privacy-Preserving Redaction**: Optional hooks for PII and sensitive content filtering
+- **Atomic File Writing**: Crash-safe ledger and master root persistence
+- **Self-Verification**: Re-compute and validate Merkle root against stored value
+
+### Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Dry run (safe, no files written)
+python core/alpha_omega_finalizer.py finalize \
+    --vault-dir /path/to/vault \
+    --outputs-dir ./outputs
+
+# Actually write ledger and master root
+python core/alpha_omega_finalizer.py finalize \
+    --vault-dir /path/to/vault \
+    --outputs-dir ./outputs \
+    --apply
+
+# Verify integrity
+python core/alpha_omega_finalizer.py verify --outputs-dir ./outputs
+```
+
+### Security & Privacy
+
+**⚠️ IMPORTANT:** Read [docs/INTERNET_IMPORTANT.md](../docs/INTERNET_IMPORTANT.md) before processing sensitive data.
+
+- **NEVER** commit chat exports or vault directories to version control
+- Always start with `--dry-run` (default) mode
+- Use `--redact` for privacy-sensitive content
+- Review outputs before sharing
+- Keep vault directory outside repository
+
+### Documentation
+
+- **Security Guide**: [docs/INTERNET_IMPORTANT.md](../docs/INTERNET_IMPORTANT.md)
+- **Code Documentation**: See docstrings in `core/alpha_omega_finalizer.py`
+- **Tests**: `core/tests/test_alpha_omega_finalizer.py`
+
