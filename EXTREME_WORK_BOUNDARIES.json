@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_version": "1.0.0",
+  "generated": "2026-02-17T06:33:00Z",
+  "description": "Hard boundaries configuration for extreme engineering certification",
+  "EXTREME_WORK": true,
+  "AUTOMATION_LEVEL": "full",
+  "AUDITABLE": true,
+  "DETERMINISTIC": true,
+  
+  "quantitative_boundaries": {
+    "commits_per_day": {
+      "minimum": 1.0,
+      "description": "Sustained commit rate over time indicating serious development",
+      "measurement_period_days": 30,
+      "enforcement": "warning"
+    },
+    "lines_changed_per_commit": {
+      "minimum_meaningful": 50,
+      "minimum_minor": 1,
+      "description": "Line changes per commit, excluding auto-generated scaffolds",
+      "enforcement": "info"
+    },
+    "files_touched_per_commit": {
+      "minimum_major": 5,
+      "minimum_minor": 1,
+      "description": "Number of files modified per commit",
+      "enforcement": "info"
+    },
+    "automated_artifacts_generated": {
+      "required": true,
+      "description": "Every commit must produce deterministic outputs (manifests, Merkle proofs, audit logs)",
+      "artifact_types": [
+        "sha256_manifests",
+        "merkle_proofs",
+        "audit_logs",
+        "backup_records"
+      ],
+      "enforcement": "strict"
+    },
+    "pipeline_executions_per_week": {
+      "minimum": 1,
+      "description": "Full deterministic pipeline runs per week",
+      "enforcement": "warning"
+    },
+    "backup_verifiable_logs": {
+      "required": true,
+      "description": "Timestamped, SHA256-verifiable backups for all writes",
+      "enforcement": "strict"
+    }
+  },
+  
+  "qualitative_boundaries": {
+    "deterministic_scaffolds": {
+      "required": true,
+      "description": "Every commit must maintain or expand deterministic systems",
+      "verification_methods": [
+        "pipeline_integrity_check",
+        "merkle_tree_validation",
+        "gta_handling_verification"
+      ]
+    },
+    "atomic_increments": {
+      "required": true,
+      "description": "All commits must be atomic and independently verifiable",
+      "verification_methods": [
+        "commit_atomicity_check",
+        "invariant_verification",
+        "glass_box_boundary_check"
+      ]
+    },
+    "audit_trails": {
+      "required": true,
+      "description": "Complete audit trails with monotonic IDs, timestamps, SHA256",
+      "required_fields": [
+        "step_id",
+        "timestamp_iso8601",
+        "sha256_hash",
+        "operation_type"
+      ]
+    },
+    "no_casual_commits": {
+      "required": true,
+      "description": "Commits must be substantive, not casual typos unless marked",
+      "allowed_exceptions": [
+        "typo_fix",
+        "cosmetic_cleanup"
+      ],
+      "exception_marker_prefix": "[COSMETIC]"
+    }
+  },
+  
+  "proof_of_scale": {
+    "required_artifacts": [
+      "commit_history_sha256",
+      "pipeline_run_logs",
+      "backup_manifests",
+      "deterministic_outputs"
+    ],
+    "verification_pipeline": "automation/verify_extreme_work.py",
+    "certification_report": "EXTREME_WORK_CERTIFICATION_REPORT.md"
+  },
+  
+  "enforcement_levels": {
+    "strict": {
+      "description": "Must pass for commit to be considered valid extreme work",
+      "action": "fail"
+    },
+    "warning": {
+      "description": "Should pass but won't block certification",
+      "action": "warn"
+    },
+    "info": {
+      "description": "Informational only, tracked but not enforced",
+      "action": "log"
+    }
+  },
+  
+  "certification_criteria": {
+    "minimum_passing_score": 0.85,
+    "scoring_weights": {
+      "quantitative_boundaries": 0.4,
+      "qualitative_boundaries": 0.4,
+      "proof_of_scale": 0.2
+    },
+    "description": "Minimum 85% compliance to achieve extreme work certification"
+  }
+}
