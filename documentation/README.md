@@ -60,6 +60,16 @@ orthogonal-engineering/
 ├── correspondence_bridge/      # Phase 3,7: Correspondence validator
 ├── automation/                 # Phase 8: Automation scripts
 ├── documentation/              # All Phases: Documentation
+├── docs/                       # Autonomous Evolution & CAS documentation
+│   ├── FUTURE_WORK.md          # Roadmap for safe automation
+│   └── auto_refactor_guidelines.md  # Step-by-step agent guidance
+├── examples/                   # Non-destructive examples & tools
+│   ├── logger.py               # Pipeline logging reference implementation
+│   ├── log_analysis_example.py # Pattern detection analytics
+│   ├── cas_example.jsonl       # CAS manifest sample
+│   ├── hello_world_handling_pipeline.jsonl
+│   ├── handling_verification_pipeline.jsonl
+│   └── log_analysis_summary.json
 ├── logs/                       # All Phases: Audit logs
 └── adversarial_tests/          # Phase 6: Adversarial validation
 ```
@@ -535,7 +545,89 @@ Truth does not need protection. Only alternatives need to pay their bill.
 
 ---
 
-**Last Updated:** 2026-01-20
+## 🤖 Autonomous Evolution & Content-Addressed Storage (Future Work)
+
+**Status:** Documentation and Examples Added  
+**Purpose:** Enable safe, auditable automation for mass refactors by downstream agents
+
+The framework now includes comprehensive documentation and non-destructive examples for future autonomous evolution capabilities and content-addressed storage (CAS) infrastructure.
+
+### Documentation
+
+#### docs/FUTURE_WORK.md
+Complete roadmap for autonomous evolution and CAS integration:
+- **Autonomous Evolution**: How deterministic, auditable pipelines enable safe mass refactors
+- **Audit Trail Usage**: Pattern detection in JSONL logs (hello_world_handling_pipeline.jsonl, handling_verification_pipeline.jsonl)
+- **CAS Roadmap**: Content-addressed storage design, deduplication, Merkle manifests
+- **Safety & Governance**: Review gates, dry-run testing, checkpointing, human approval workflows
+
+#### docs/auto_refactor_guidelines.md
+Step-by-step guidance for automated agents to safely propose and validate mass refactors:
+- **Pattern Detection**: Analyze JSONL logs for parameter co-variations
+- **Dry-Run Validation**: Test transformations in isolation without modifying repository
+- **Merkle Root Verification**: Ensure reproducibility and detect unexpected changes
+- **Human Review Gates**: Require explicit approval before any merges
+- **Example Commands**: Concrete bash and Python examples for each workflow step
+
+### Examples (All Non-Destructive)
+
+All examples operate in **DRY-RUN ONLY** mode with the following safety guarantees:
+- ✅ **Read-only** operations on repository files
+- ✅ **No network calls** or external communications
+- ✅ **No auto-push or auto-merge** behavior
+- ✅ **Output to examples/ directory only**
+- ✅ **Fully deterministic and reproducible**
+
+#### examples/logger.py
+Reference implementation of deterministic pipeline logger:
+- Generates hello_world_handling_pipeline.jsonl (transformation logs)
+- Generates handling_verification_pipeline.jsonl (verification logs)
+- Safe: writes only to examples/ directory, no repository modifications
+
+#### examples/log_analysis_example.py
+Non-destructive analytics script demonstrating pattern detection:
+- Ingests hello_world_handling_pipeline.jsonl
+- Detects parameter co-variation patterns (e.g., fMass ↔ fDriveInertia)
+- Outputs log_analysis_summary.json with occurrence counts
+- Safe: read-only on logs, writes summary to examples/ only
+
+#### examples/cas_example.jsonl
+Sample CAS manifest showing content-addressed storage with deduplication:
+- 3 files with content hashes
+- Demonstrates deduplication (files with identical content_hash share storage_path)
+- Includes dedup_group identifiers for tracking
+
+#### examples/log_analysis_summary.json
+Generated output from log_analysis_example.py:
+- Parameter pair occurrence counts
+- Analysis metadata and timestamps
+- Safe: created by analysis script, demonstrates expected output format
+
+### Usage for IDE AI Agents
+
+IDE AIs and automated agents should consume this documentation to:
+
+1. **Understand Safe Automation**: Read docs/FUTURE_WORK.md for architectural context
+2. **Follow Guidelines**: Use docs/auto_refactor_guidelines.md as step-by-step workflow
+3. **Analyze Patterns**: Run examples/log_analysis_example.py to detect refactor opportunities
+4. **Respect Safety Gates**: Never auto-merge or auto-push; always require human approval
+5. **Verify Reproducibility**: Use Merkle roots to ensure deterministic transformations
+
+### Safety Constraints (Critical)
+
+All autonomous operations must adhere to these **non-negotiable** safety constraints:
+
+- **No Automatic Merges**: Human approval required for all changes
+- **Dry-Run First**: All transformations tested in isolation before proposal
+- **Full Audit Trail**: Every operation logged for future analysis
+- **Rollback Support**: Any step can be completely undone
+- **No Protected Branches**: Never push directly to main without review
+
+These constraints ensure autonomous evolution enhances productivity without compromising safety or control.
+
+---
+
+**Last Updated:** 2026-02-16
 **Version:** v1.0.0 (Phase 4 Complete)
 **Status:** Complete historical-ontological correspondence framework with truth inelasticity measurement ✅
 

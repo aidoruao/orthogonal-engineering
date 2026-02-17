@@ -1,3 +1,9 @@
+# CAS (Content-Addressed Storage) Example Manifest
+# This file demonstrates a simple CAS manifest with deduplication
+# Safety: This is a read-only example file showing CAS manifest structure
+{"content_hash": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "canonical_path": "src/main.py", "size": 2048, "storage_path": ".cas/objects/a1/b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "dedup_group": "group1"}
+{"content_hash": "sha256:b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567a", "canonical_path": "src/utils.py", "size": 1024, "storage_path": ".cas/objects/b2/c3d4e5f6789012345678901234567890abcdef1234567890abcdef1234567a", "dedup_group": "group2"}
+{"content_hash": "sha256:a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "canonical_path": "src/helpers.py", "size": 2048, "storage_path": ".cas/objects/a1/b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456", "dedup_group": "group1"}
 {"operation": "hash_file", "file": "test1.txt", "hash": "a948904f2f0f479b8f8197694b30184b0d2ed1c1cd2a1ec0fb85d299a192a447", "timestamp": "2026-02-16T18:00:00Z"}
 {"operation": "hash_file", "file": "test2.txt", "hash": "60303ae22b998861bce3b28f33eec1be758a213c86c93c076dbe9f558c11c752", "timestamp": "2026-02-16T18:00:01Z"}
 {"operation": "canonicalize", "file": "test1.txt", "original_size": 150, "canonical_size": 145, "timestamp": "2026-02-16T18:00:02Z"}
