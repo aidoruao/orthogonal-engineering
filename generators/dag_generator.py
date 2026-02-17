@@ -115,7 +115,7 @@ class DAGGenerator:
         if 'levels' not in self.seed['expansion']:
             raise ValueError("Missing 'levels' in expansion")
         
-        # Verify math: product of all counts = target lines
+        # Verify math: product of all counts = target lines for this layer
         if self.seed.get('validation', {}).get('verify_math', True):
             total_lines = 1
             for level in self.seed['expansion']['levels']:
@@ -123,7 +123,15 @@ class DAGGenerator:
                     raise ValueError(f"Level {level.get('name', 'unknown')} missing 'count'")
                 total_lines *= level['count']
             
-            target = self.seed['root']['target_lines']
+            # For multi-layer seeds, check against the base universe target
+            universe_layers = self.seed.get('root', {}).get('universe_layers', [])
+            if universe_layers and self.layer_index < len(universe_layers):
+                # Use the target for this specific layer
+                target = universe_layers[self.layer_index]['target_lines']
+            else:
+                # Fall back to root target (for single-layer seeds)
+                target = self.seed['root']['target_lines']
+            
             if total_lines != target:
                 raise ValueError(
                     f"Math error: Product of counts ({total_lines:,}) != "

@@ -2,9 +2,10 @@
 Function Template for 1B LOC Fractal Architecture
 
 This template defines how function nodes expand into actual Python code.
+Supports recursive expansion and topological collapse.
 
 Standard: Yeshua
-Version: 1.0.0
+Version: 2.0.0 (PR #23)
 """
 
 FUNCTION_TEMPLATE = """
@@ -20,6 +21,16 @@ def {function_name}(input_data):
     
     # Return aggregated result
     return result
+"""
+
+# Template for recursive sub-universe expansion annotation
+SUB_UNIVERSE_ANNOTATION = """
+# === SUB-UNIVERSE EXPANSION POINT ===
+# This node can spawn a recursive sub-universe at layer {next_layer}
+# Sub-DAG Hash: {sub_dag_hash}
+# Topological Collapse: {collapse_status}
+# Sub-seed: {sub_seed}
+# ====================================
 """
 
 
@@ -44,21 +55,45 @@ def expand_function(node, seed, children):
     file = parts[3] if len(parts) > 3 else "unknown"
     func_name = parts[4] if len(parts) > 4 else f"func_{node['index']:06d}"
     
+    # Check if this node is a sub-universe spawn point
+    layer_index = node.get('layer_index', 0)
+    sub_dag_hash = node.get('sub_dag_hash')
+    sub_seed = node.get('sub_seed', 'N/A')
+    is_spawn_point = sub_dag_hash is not None
+    
+    # Topological collapse check
+    collapse_enabled = seed.get('topological_collapse', {}).get('enabled', False)
+    collapse_status = "enabled" if collapse_enabled else "disabled"
+    
     # Generate docstring
-    docstring = f"""
-    Auto-generated function: {func_name}
-    Batch: {batch}
-    Module: {module}
-    File: {file}
-    Function Index: {node['index']}
+    docstring_parts = [
+        f"Auto-generated function: {func_name}",
+        f"Batch: {batch}",
+        f"Module: {module}",
+        f"File: {file}",
+        f"Function Index: {node['index']}",
+        f"Layer: {layer_index}",
+        "",
+        "Part of 1B LOC Fractal Architecture",
+        "Generated from seed (Yeshua Standard)",
+        f"Created: {seed.get('metadata', {}).get('created', 'unknown')}",
+        "",
+        "This function processes input data through deterministic transformations.",
+        "Each line represents a specific processing step in the pipeline."
+    ]
     
-    Part of 1B LOC Fractal Architecture
-    Generated from seed (Yeshua Standard)
-    Created: {seed.get('metadata', {}).get('created', 'unknown')}
+    # Add recursive expansion annotation if this is a spawn point
+    if is_spawn_point:
+        docstring_parts.extend([
+            "",
+            "=== RECURSIVE EXPANSION POINT ===",
+            f"Can spawn sub-universe at layer {layer_index + 1}",
+            f"Sub-DAG hash: {sub_dag_hash[:16]}..." if sub_dag_hash else "N/A",
+            f"Topological collapse: {collapse_status}",
+            "================================="
+        ])
     
-    This function processes input data through deterministic transformations.
-    Each line represents a specific processing step in the pipeline.
-    """.strip()
+    docstring = "\n    ".join(docstring_parts).strip()
     
     # Generate processing lines using children
     lines = []
@@ -80,4 +115,15 @@ def expand_function(node, seed, children):
         processing_lines='\n'.join(lines) if lines else '    pass  # No processing lines'
     )
     
+    # Add sub-universe annotation if this is a spawn point
+    if is_spawn_point:
+        annotation = SUB_UNIVERSE_ANNOTATION.format(
+            next_layer=layer_index + 1,
+            sub_dag_hash=sub_dag_hash[:16] + "..." if sub_dag_hash else "N/A",
+            collapse_status=collapse_status,
+            sub_seed=sub_seed[:16] + "..." if isinstance(sub_seed, str) else "N/A"
+        )
+        content = annotation + content
+    
     return content
+

@@ -31,10 +31,12 @@ from fractal_expander import FractalExpander
 class ManifestGenerator:
     """Generates manifests with hashes for batches."""
     
-    def __init__(self, seed: dict, dag: dict):
+    def __init__(self, seed: dict, dag: dict, layer_index: int = 0):
         self.seed = seed
         self.dag = dag
-        self.expander = FractalExpander(seed, dag)
+        self.expander = FractalExpander(seed, dag, layer_index)
+        self.layer_index = layer_index
+        self.collapse_map = {}  # Maps sub_dag_hash -> first occurrence for collapse
         
     def generate_batch_manifest(
         self,
@@ -87,6 +89,18 @@ class ManifestGenerator:
                 # Get node info
                 node = self.dag['nodes'][leaf_id]
                 
+                # Check for topological collapse
+                sub_dag_hash = node.get('sub_dag_hash')
+                collapsed_ref = None
+                
+                if sub_dag_hash and self.seed.get('topological_collapse', {}).get('enabled', False):
+                    if sub_dag_hash in self.collapse_map:
+                        # This is a collapsed duplicate
+                        collapsed_ref = self.collapse_map[sub_dag_hash]
+                    else:
+                        # First occurrence - add to map
+                        self.collapse_map[sub_dag_hash] = leaf_id
+                
                 # Create manifest entry
                 entry = {
                     "node_id": leaf_id,
@@ -94,7 +108,12 @@ class ManifestGenerator:
                     "size": len(content),
                     "parent": node.get('parent'),
                     "level": node.get('level'),
-                    "index": node.get('index')
+                    "index": node.get('index'),
+                    "layer_index": node.get('layer_index', 0),
+                    "universe_index": node.get('universe_index', 0),
+                    "sub_seed": node.get('sub_seed'),
+                    "sub_dag_hash": sub_dag_hash,
+                    "collapsed_ref": collapsed_ref  # Reference to first occurrence if collapsed
                 }
                 
                 # Write to JSONL

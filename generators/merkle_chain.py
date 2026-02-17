@@ -245,6 +245,44 @@ def build_merkle_from_manifests(manifest_files: List[str]) -> Tuple[str, Dict]:
     return root_hash, proofs
 
 
+def build_recursive_master_root(layer_roots: List[Tuple[int, str]]) -> str:
+    """
+    Build master Merkle root from sub-universe layer roots.
+    
+    This creates a recursive Merkle commitment over all universe layers.
+    
+    Args:
+        layer_roots: List of (layer_index, root_hash) tuples
+        
+    Returns:
+        Master root hash committing to all layers
+    """
+    print("Building recursive master Merkle root...")
+    
+    if not layer_roots:
+        raise ValueError("No layer roots provided")
+    
+    # Sort by layer index for deterministic ordering
+    layer_roots_sorted = sorted(layer_roots, key=lambda x: x[0])
+    
+    # Create leaf nodes for each layer root
+    leaves = [
+        (f"layer_{layer_idx}", root_hash)
+        for layer_idx, root_hash in layer_roots_sorted
+    ]
+    
+    print(f"  Building master tree from {len(leaves)} layer roots")
+    
+    # Build master tree
+    master_tree = MerkleTree(leaves)
+    master_root = master_tree.get_root_hash()
+    
+    print(f"  Master root: {master_root}")
+    print(f"  Commits to {len(leaves)} universe layers")
+    
+    return master_root
+
+
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
