@@ -5,6 +5,7 @@ Robust parser for GTA handling.meta files containing CHandlingData Item elements
 Extracts vehicle handling data and provides clamp/validation pipeline.
 """
 
+import json
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -170,8 +171,8 @@ class HandlingClampPipeline:
     Ensures values are within acceptable ranges to prevent game crashes.
     """
     
-    # Example clamps - these would be tuned for actual GTA handling limits
-    CLAMPS = {
+    # Default clamps - these would be tuned for actual GTA handling limits
+    DEFAULT_CLAMPS = {
         "fMass": (50.0, 50000.0),          # Mass in kg
         "fInitialDragCoeff": (0.0, 100.0),  # Drag coefficient
         "fDriveInertia": (0.01, 10.0),      # Drive inertia
@@ -179,9 +180,67 @@ class HandlingClampPipeline:
         "fClutchChangeRateScaleDownShift": (0.1, 10.0),
     }
     
-    def __init__(self, logger: Optional[ScaffoldLogger] = None):
+    def __init__(self, logger: Optional[ScaffoldLogger] = None, 
+                 clamps: Optional[Dict[str, tuple]] = None,
+                 config_file: Optional[Union[str, Path]] = None):
+        """
+        Initialize clamp pipeline.
+        
+        Args:
+            logger: Optional logger for pipeline events
+            clamps: Optional dictionary of clamp values {field: (min, max)}
+            config_file: Optional path to JSON config file with clamp values
+        """
         self.logger = logger
         self.violations = []
+        
+        # Load clamps from config file if provided
+        if config_file:
+            self.clamps = self._load_clamps_from_file(config_file)
+        elif clamps:
+            self.clamps = clamps
+        else:
+            self.clamps = self.DEFAULT_CLAMPS.copy()
+    
+    def _load_clamps_from_file(self, config_file: Union[str, Path]) -> Dict[str, tuple]:
+        """
+        Load clamp values from JSON config file.
+        
+        Args:
+            config_file: Path to JSON config file
+            
+        Returns:
+            Dictionary of clamp values
+            
+        Raises:
+            FileNotFoundError: If config file doesn't exist
+            ValueError: If config file is invalid
+        """
+        config_path = Path(config_file)
+        
+        if not config_path.exists():
+            raise FileNotFoundError(f"Config file not found: {config_file}")
+        
+        try:
+            with open(config_path, 'r') as f:
+                config = json.load(f)
+            
+            # Validate and convert clamps
+            clamps = {}
+            for field, values in config.get("clamps", {}).items():
+                if not isinstance(values, list) or len(values) != 2:
+                    raise ValueError(f"Invalid clamp format for {field}: expected [min, max]")
+                clamps[field] = (float(values[0]), float(values[1]))
+            
+            if not clamps:
+                raise ValueError("No clamps found in config file")
+            
+            return clamps
+            
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON in config file: {e}")
+        except (KeyError, TypeError, ValueError) as e:
+            raise ValueError(f"Invalid config file format: {e}")
     
     def clamp_item(self, item: HandlingDataItem, apply: bool = False) -> Dict[str, Any]:
         """
@@ -201,7 +260,7 @@ class HandlingClampPipeline:
         violations = []
         clamped_values = {}
         
-        for field, (min_val, max_val) in self.CLAMPS.items():
+        for field, (min_val, max_val) in self.clamps.items():
             if field in item.data:
                 try:
                     value = float(item.data[field])

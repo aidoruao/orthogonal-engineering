@@ -95,6 +95,7 @@ Examples:
         handling_parser.add_argument("--output", help="Output clamped file")
         handling_parser.add_argument("--report", default="handling_report.json",
                                     help="Clamp report output")
+        handling_parser.add_argument("--config", help="Path to clamp config JSON file")
         
         # Verify subcommand
         verify_parser = subparsers.add_parser("verify", help="Verify integrity")
@@ -257,9 +258,18 @@ Examples:
         for item in items:
             print(f"  - {item.name}")
         
-        # Run clamp pipeline
+        # Run clamp pipeline with optional config
         print("\nRunning clamp pipeline...")
-        pipeline = HandlingClampPipeline(self.logger)
+        try:
+            if args.config:
+                print(f"Using config file: {args.config}")
+                pipeline = HandlingClampPipeline(self.logger, config_file=args.config)
+            else:
+                pipeline = HandlingClampPipeline(self.logger)
+        except (FileNotFoundError, ValueError) as e:
+            print(f"Error loading config: {e}", file=sys.stderr)
+            return 1
+        
         results = pipeline.clamp_all(items, apply=args.apply)
         
         # Report violations
@@ -394,10 +404,49 @@ Examples:
         
         target_path = Path(args.target) if args.target else backup_path.parent / backup_path.stem
         
-        print(f"Restoring backup: {backup_path} -> {target_path}")
-        print("Warning: This will overwrite existing files!")
+        # Safety checks
+        if target_path.exists():
+            # Check if target is a git repository with uncommitted changes
+            git_dir = target_path / ".git"
+            if git_dir.exists():
+                print("Warning: Target is a git repository!")
+                
+                # Check for uncommitted changes
+                try:
+                    import subprocess
+                    result = subprocess.run(
+                        ["git", "-C", str(target_path), "status", "--porcelain"],
+                        capture_output=True,
+                        text=True,
+                        timeout=5
+                    )
+                    if result.returncode == 0 and result.stdout.strip():
+                        print("ERROR: Target has uncommitted changes!")
+                        print("Please commit or stash changes before restoring.")
+                        print("\nUncommitted changes detected:")
+                        print(result.stdout[:500])  # Show first 500 chars
+                        return 1
+                except (subprocess.TimeoutExpired, FileNotFoundError, Exception):
+                    # If git check fails, continue with extra warning
+                    print("Warning: Could not check git status")
+            
+            # Show what will be deleted
+            file_count = sum(1 for _ in target_path.rglob("*") if _.is_file())
+            print(f"\nTarget directory exists: {target_path}")
+            print(f"Contains: ~{file_count} files")
         
-        response = input("Continue? [y/N]: ")
+        print(f"\nRestoring backup: {backup_path} -> {target_path}")
+        print("⚠️  WARNING: This will PERMANENTLY DELETE the target directory!")
+        print("⚠️  This operation cannot be undone!")
+        
+        # First confirmation
+        response = input("\nType 'DELETE' to confirm deletion of target: ")
+        if response != 'DELETE':
+            print("Restore cancelled")
+            return 0
+        
+        # Second confirmation
+        response = input("Are you absolutely sure? [y/N]: ")
         if response.lower() != 'y':
             print("Restore cancelled")
             return 0

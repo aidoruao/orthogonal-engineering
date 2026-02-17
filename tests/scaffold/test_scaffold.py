@@ -362,6 +362,38 @@ class TestHandlingPipeline(unittest.TestCase):
         for result in results:
             self.assertIn("vehicle", result)
             self.assertIn("violations", result)
+    
+    def test_handling_clamp_with_config(self):
+        """Test handling clamp pipeline with config file."""
+        output_path = Path(self.temp_dir) / "handling.meta"
+        create_sample_handling_meta(output_path)
+        
+        # Create config file
+        config_path = Path(self.temp_dir) / "clamps.json"
+        config = {
+            "clamps": {
+                "fMass": [100.0, 10000.0],
+                "fDriveInertia": [0.5, 5.0]
+            }
+        }
+        with open(config_path, 'w') as f:
+            json.dump(config, f)
+        
+        parser = HandlingMetaParser()
+        items = parser.parse_file(output_path)
+        
+        # Test with config
+        pipeline = HandlingClampPipeline(config_file=config_path)
+        results = pipeline.clamp_all(items, apply=False)
+        
+        self.assertEqual(len(results), len(items))
+        
+        # Test with custom clamps
+        custom_clamps = {"fMass": (200.0, 20000.0)}
+        pipeline2 = HandlingClampPipeline(clamps=custom_clamps)
+        results2 = pipeline2.clamp_all(items, apply=False)
+        
+        self.assertEqual(len(results2), len(items))
 
 
 def run_all_tests():

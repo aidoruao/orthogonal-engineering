@@ -13,6 +13,7 @@ Strips extended filesystem metadata for deterministic hashing.
 import hashlib
 import json
 import os
+import sys
 import unicodedata
 from pathlib import Path
 from typing import Union
@@ -114,14 +115,19 @@ def canonicalize_xml(content: str) -> str:
     """
     Canonicalize XML using Exclusive C14N without comments.
     
-    Note: This is a simplified implementation. For full C14N compliance,
-    consider using lxml or xml.etree with proper C14N support.
+    Note: Requires Python 3.8+ for true C14N canonicalization via ET.canonicalize.
+    On older Python versions, falls back to basic XML serialization which may
+    produce different hashes. For production use with consistent hashing across
+    systems, Python 3.8+ is strongly recommended.
     
     Args:
         content: XML string to canonicalize
         
     Returns:
         Canonicalized XML string
+        
+    Raises:
+        ValueError: If content is not valid XML
     """
     try:
         import xml.etree.ElementTree as ET
@@ -130,13 +136,18 @@ def canonicalize_xml(content: str) -> str:
         root = ET.fromstring(content)
         
         # Canonicalize using ET.canonicalize (Python 3.8+)
-        # This provides basic C14N support
         try:
             canonical = ET.canonicalize(content, strip_text=True)
             return canonical
         except AttributeError:
             # Fallback for older Python versions
-            # Just normalize whitespace and return
+            # WARNING: This does NOT provide true C14N canonicalization
+            # and may produce different hashes on different systems
+            print(f"Warning: Python {sys.version_info.major}.{sys.version_info.minor} "
+                  f"does not support ET.canonicalize. "
+                  f"XML canonicalization may not be deterministic. "
+                  f"Upgrade to Python 3.8+ for consistent XML hashing.",
+                  file=sys.stderr)
             return ET.tostring(root, encoding="unicode", method="xml")
             
     except ET.ParseError as e:
