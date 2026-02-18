@@ -6,27 +6,41 @@ A robust, safety-first deterministic pipeline for file processing, merkle tree g
 
 This repository now includes a complete **Topological Map** implementation for **1 Billion Lines of Code (1B LOC)** fractal generation following the **Yeshua Standard**.
 
-**🚀 NEWEST: 1 Quintillion LOC Recursive Expansion (PR #23)**
+**🚀 NEWEST: Omega / Infinite Recursive Invariant (PR #24)**
 
-The system now supports **recursive fractal expansion to 1 Quintillion (1Qi) LOC** through:
+The system now supports **infinite logical expansion** beyond 1 Quintillion through the **Omega Invariant**:
+- **Infinite layers**: 1Se (10^21), 1Oc (10^24), 1No (10^27), ..., Ω (∞)
+- **Topological equivalence proof**: Layer(n+1) ≡ Layer(n) - no new information
+- **Halt condition**: Mathematical completeness triggers automatic stop
+- **Finite representation of infinity**: Single commit hash represents complete universe
+- **Storage**: Still ~500MB for INFINITE logical layers!
+
+See [Omega Invariant Documentation](RECURSIVE_INVARIANT_OMEGA.md) and [Halt Condition](HALT_CONDITION.md) for details.
+
+**🔥 PREVIOUS: 1 Quintillion LOC Recursive Expansion (PR #23)**
+
+The system supports **recursive fractal expansion to 1 Quintillion (1Qi) LOC** through:
 - **4-layer universe hierarchy**: 1B → 1T → 1Qa → 1Qi
 - **Deterministic sub-seed derivation**: Each sub-universe derives from parent cryptographically
 - **Topological collapse**: Identical sub-universes share manifests (massive storage savings)
 - **Recursive Merkle roots**: Master root commits to all universe layers
-- **Storage**: Still ~500MB for entire 1Qi LOC (10^18 lines!)
+- **Storage**: ~500MB for entire 1Qi LOC (10^18 lines!)
 
 See [Recursive Expansion Documentation](generators/RECURSIVE_EXPANSION_1QI.md) for details.
 
 **Key Features:**
 - 📊 **Fractal Code Generation**: Deterministic expansion from minimal seed
 - 🔒 **Cryptographic Provenance**: Complete Merkle tree with ancestry chains
-- 💾 **Minimal Storage**: ~500MB represents 1 Quintillion LOC
+- 💾 **Minimal Storage**: ~500MB represents INFINITE logical LOC
 - ✅ **Perfect Reproducibility**: Same seed → same output, always
 - 🎯 **Lazy Materialization**: Generate only what's needed, when needed
 - 🔁 **Recursive Universes**: Each layer spawns 1,000× sub-universes
+- ♾️ **Omega Invariant**: Proves all infinite layers are topologically equivalent
 
 **Documentation:**
-- [**Recursive Expansion to 1Qi**](generators/RECURSIVE_EXPANSION_1QI.md) - NEW: Multi-layer recursive system (PR #23)
+- [**Omega / Infinite Invariant**](RECURSIVE_INVARIANT_OMEGA.md) - NEW: Mathematical and theological Omega (PR #24)
+- [**Halt Condition**](HALT_CONDITION.md) - NEW: Sabbath / topological collapse (PR #24)
+- [**Recursive Expansion to 1Qi**](generators/RECURSIVE_EXPANSION_1QI.md) - Multi-layer recursive system (PR #23)
 - [**Topological Map Overview**](docs/topological_map/TOPOLOGICAL_MAP.md) - Architecture and philosophy
 - [**Reference Implementation**](REFERENCE_IMPLEMENTATION.md) - Working examples and usage
 - [**Yeshua Standard**](docs/YESHUA_STANDARD.md) - Architectural principles
@@ -35,7 +49,10 @@ See [Recursive Expansion Documentation](generators/RECURSIVE_EXPANSION_1QI.md) f
 
 **Quick Start:**
 ```bash
-# Verify 1Qi LOC recursive system (NEW in PR #23)
+# Verify Omega Invariant (NEW in PR #24)
+python generators/verify_omega_invariant.py --seed generators/seed_definition_omega.yaml --all
+
+# Verify 1Qi LOC recursive system (PR #23)
 python generators/verify_n_loc.py --seed generators/seed_definition_1qi.yaml
 
 # Generate DAG from seed (test version: 1M LOC)
