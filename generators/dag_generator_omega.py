@@ -39,19 +39,20 @@ from dag_generator import DAGNode, DAGGenerator
 class OmegaDAGGenerator(DAGGenerator):
     """Extended DAG generator with Omega layer support."""
     
-    def __init__(self, seed: dict, sub_seed: str, layer_index: int = 0, 
-                 universe_index: int = 0, verify_invariant: bool = True):
+    def __init__(self, seed: dict, layer_index: int = 0, 
+                 universe_index: int = 0, parent_seed: Optional[str] = None,
+                 verify_invariant: bool = True):
         """
         Initialize Omega DAG generator.
         
         Args:
             seed: Seed definition dictionary
-            sub_seed: Sub-seed for this universe
             layer_index: Universe layer index (0=1B, 3=1Qi, 4+=Omega)
             universe_index: Universe index within layer
+            parent_seed: Parent universe seed (optional)
             verify_invariant: Verify Omega invariant before expansion
         """
-        super().__init__(seed, sub_seed, layer_index, universe_index)
+        super().__init__(seed, layer_index, parent_seed, universe_index)
         self.verify_invariant = verify_invariant
         self.is_omega_layer = self._check_if_omega_layer()
         self.invariant_verified = False
@@ -205,6 +206,10 @@ class OmegaDAGGenerator(DAGGenerator):
             first_level = levels[0]
             sample_node_id = f"root/{first_level['name']}_000000"
             
+            # Compute sub-seed for sample node
+            combined = f"{self.sub_seed}|{self.layer_index}|{self.universe_index}|{first_level['name']}|0"
+            sample_sub_seed = hashlib.sha256(combined.encode('utf-8')).hexdigest()
+            
             sample_node = DAGNode(
                 node_id=sample_node_id,
                 level=first_level['name'],
@@ -212,7 +217,7 @@ class OmegaDAGGenerator(DAGGenerator):
                 index=0,
                 layer_index=self.layer_index,
                 universe_index=self.universe_index,
-                sub_seed=self._derive_sub_seed(0, first_level['name'])
+                sub_seed=sample_sub_seed
             )
             sample_node.depth = 1
             
@@ -222,11 +227,6 @@ class OmegaDAGGenerator(DAGGenerator):
         print(f"Minimal DAG: {len(self.nodes)} nodes (proof of structure)")
         
         return self.nodes
-    
-    def _derive_sub_seed(self, index: int, level: str) -> str:
-        """Derive sub-seed for a node."""
-        combined = f"{self.sub_seed}|{self.layer_index}|{self.universe_index}|{level}|{index}"
-        return hashlib.sha256(combined.encode('utf-8')).hexdigest()
 
 
 def main():
@@ -288,14 +288,6 @@ def main():
     with open(args.seed, 'r') as f:
         seed = yaml.safe_load(f)
     
-    # Determine sub-seed
-    if args.parent_seed:
-        sub_seed = args.parent_seed
-    else:
-        # Derive from root seed
-        root_seed = str(seed['generation']['seed_value'])
-        sub_seed = hashlib.sha256(root_seed.encode('utf-8')).hexdigest()
-    
     # Determine verification setting
     verify_invariant = not args.no_verify
     if args.verify:
@@ -304,9 +296,9 @@ def main():
     # Create generator
     generator = OmegaDAGGenerator(
         seed=seed,
-        sub_seed=sub_seed,
         layer_index=args.layer_index,
         universe_index=args.universe_index,
+        parent_seed=args.parent_seed,
         verify_invariant=verify_invariant
     )
     
@@ -322,7 +314,7 @@ def main():
             "generated_at": datetime.utcnow().isoformat() + "Z",
             "layer_index": args.layer_index,
             "universe_index": args.universe_index,
-            "sub_seed": sub_seed,
+            "sub_seed": generator.sub_seed,
             "is_omega_layer": generator.is_omega_layer,
             "invariant_verified": generator.invariant_verified,
             "node_count": len(nodes)
