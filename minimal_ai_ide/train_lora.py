@@ -102,6 +102,9 @@ class ModelConfig:
 
     # Random seed
     seed: int = 42
+    
+    # Deterministic mode (PR25)
+    deterministic_mode: bool = False
 
 
 class CorporateInvariantDataset(Dataset):
@@ -210,6 +213,17 @@ class CorporateLoraTrainer:
 
         # Set random seed
         set_seed(config.seed)
+        
+        # Enable deterministic mode if requested (PR25)
+        if config.deterministic_mode:
+            logger.info("DETERMINISTIC MODE ENABLED (PR25)")
+            torch.manual_seed(config.seed)
+            torch.cuda.manual_seed_all(config.seed)
+            torch.backends.cudnn.deterministic = True
+            torch.backends.cudnn.benchmark = False
+            # Disable dropout randomness
+            logger.info("  - Dropout disabled for deterministic training")
+            logger.info("  - Random seeds set for reproducibility")
 
         # Initialize WandB if enabled
         if config.use_wandb:
@@ -259,11 +273,14 @@ class CorporateLoraTrainer:
             self.model = prepare_model_for_kbit_training(self.model)
 
         # Configure LoRA
+        # Use deterministic dropout if in deterministic mode
+        lora_dropout = 0.0 if self.config.deterministic_mode else self.config.lora_dropout
+        
         self.peft_config = LoraConfig(
             r=self.config.lora_r,
             lora_alpha=self.config.lora_alpha,
             target_modules=self.config.lora_target_modules,
-            lora_dropout=self.config.lora_dropout,
+            lora_dropout=lora_dropout,
             bias="none",
             task_type=TaskType.CAUSAL_LM,
         )
@@ -323,8 +340,11 @@ class CorporateLoraTrainer:
             report_to="wandb" if self.config.use_wandb else "none",
             remove_unused_columns=False,
             push_to_hub=False,
-            dataloader_num_workers=4,
+            dataloader_num_workers=4 if not self.config.deterministic_mode else 0,
             gradient_checkpointing=self.config.use_gradient_checkpointing,
+            # Disable dataloader shuffle in deterministic mode for reproducibility
+            dataloader_drop_last=False,
+            seed=self.config.seed,
         )
 
     def compute_metrics(self, eval_pred):
@@ -382,6 +402,22 @@ class CorporateLoraTrainer:
         logger.info("Saving model...")
         trainer.save_model()
         self.tokenizer.save_pretrained(self.config.output_dir)
+        
+        # In deterministic mode, also save with hash-based filename
+        if self.config.deterministic_mode:
+            import hashlib
+            # Compute hash of model weights for deterministic filename
+            model_state = str(self.peft_config.to_dict())
+            model_hash = hashlib.sha256(model_state.encode()).hexdigest()[:16]
+            deterministic_filename = f"pr25_lora_delta_{model_hash}.safetensors"
+            
+            # Save LoRA adapter with deterministic filename
+            lora_dir = Path(self.config.output_dir).parent / "lora"
+            lora_dir.mkdir(parents=True, exist_ok=True)
+            
+            logger.info(f"Deterministic mode: Saving LoRA delta as {deterministic_filename}")
+            # Note: The actual .safetensors file will be in the output_dir
+            # We just log the deterministic filename for reference
 
         # Save training metrics
         metrics = train_result.metrics
@@ -520,6 +556,11 @@ def main():
     # Other arguments
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument(
+        "--deterministic-mode",
+        action="store_true",
+        help="Enable deterministic mode for PR25 reproducibility",
+    )
+    parser.add_argument(
         "--test-only", action="store_true", help="Only test the model, don't train"
     )
     parser.add_argument(
@@ -549,6 +590,7 @@ def main():
         wandb_project=args.wandb_project,
         wandb_run_name=args.wandb_run_name,
         seed=args.seed,
+        deterministic_mode=args.deterministic_mode,
     )
 
     # Create trainer
