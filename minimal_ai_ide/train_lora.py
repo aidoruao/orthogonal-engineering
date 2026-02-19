@@ -340,6 +340,7 @@ class CorporateLoraTrainer:
             report_to="wandb" if self.config.use_wandb else "none",
             remove_unused_columns=False,
             push_to_hub=False,
+            # Disable parallel workers in deterministic mode to prevent execution order non-determinism
             dataloader_num_workers=4 if not self.config.deterministic_mode else 0,
             gradient_checkpointing=self.config.use_gradient_checkpointing,
             # Disable dataloader shuffle in deterministic mode for reproducibility

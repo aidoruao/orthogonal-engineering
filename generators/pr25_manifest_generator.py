@@ -35,10 +35,15 @@ class PR25ManifestGenerator:
             repo_path: Path to repository root
         """
         self.repo_path = Path(repo_path)
+        
+        # Use deterministic timestamp derived from PR ID for reproducibility
+        # This ensures manifests are identical across runs
+        deterministic_timestamp = f"2026-02-19T00:00:00+00:00_PR25"
+        
         self.manifest = {
             "pr_id": 25,
             "name": "Deterministic Fractal LoRA Subuniverse",
-            "generated_at": datetime.now().astimezone().isoformat(),
+            "generated_at": deterministic_timestamp,
             "artifacts": {},
             "hashes": {},
         }

@@ -197,7 +197,8 @@ class PR25DeterminismTester:
         print(f"✓ Dataset hash: {dataset_hash_1}")
         print(f"✓ Merkle root:  {merkle_root_1}")
         
-        # Save Merkle root
+        # Save Merkle root to repository for persistence
+        # This is intentional - the Merkle root is part of the PR25 specification
         merkle_root_file = self.repo_path / "merkle_roots" / "pr25_merkle_root.txt"
         merkle_root_file.parent.mkdir(parents=True, exist_ok=True)
         
