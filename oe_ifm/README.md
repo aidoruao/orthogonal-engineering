@@ -1,10 +1,30 @@
 # OE-IFM: Orthogonal Engine - Integer Fractal Model
 
-**PR #26**: Mathematically deterministic machine learning using pure integer arithmetic.
+**PR #26**: Deterministic machine learning architecture using pure integer arithmetic.
+
+**Status**: 🔬 **Research Prototype** - Forward pass verified, training capability unproven, cross-platform testing in progress
 
 ## Overview
 
-OE-IFM eliminates floating-point arithmetic entirely from the ML pipeline, achieving **true cross-machine determinism** through algebraic invariance rather than environment coincidence.
+OE-IFM eliminates floating-point arithmetic entirely from the ML pipeline, aiming for **cross-machine determinism** through algebraic invariance rather than environment coincidence.
+
+### Current Status
+
+✅ **Verified**:
+- Integer-only forward pass (no float operations)
+- Deterministic weight generation from seed
+- Single-machine hash consistency
+- Environment constraint enforcement
+
+⚠️ **In Progress**:
+- Cross-platform empirical testing (CI workflow added)
+- Learning capability demonstration
+- Convergence analysis
+
+❌ **Not Yet Implemented**:
+- Full training algorithm (placeholder only)
+- Multi-platform hash verification
+- Benchmark task evaluation
 
 ## Key Innovation
 
@@ -121,15 +141,28 @@ This is **mathematical determinism**, not probabilistic determinism:
 
 Cross-machine tensor identity is guaranteed by **mathematical construction**.
 
-## Completion Criteria
+## Completion Status
 
-✅ No floating-point operations anywhere  
-✅ All tensors are int64  
-✅ Model hash identical across runs  
-✅ Merkle root committed  
-✅ Cross-machine determinism verified  
-✅ No CUDA code paths  
-✅ Sequential execution enforced  
+### Implemented ✅
+- [x] No floating-point operations in forward pass
+- [x] All tensors are int64
+- [x] Model hash identical across runs (single machine)
+- [x] Merkle root committed
+- [x] No CUDA code paths
+- [x] Sequential execution enforced
+- [x] Cross-platform CI workflow added
+
+### In Progress ⚠️
+- [ ] Cross-machine hash verification (CI running)
+- [ ] Training algorithm implementation
+- [ ] Convergence testing
+- [ ] Multi-platform empirical validation
+
+### Limitations ⚠️
+1. **Training is placeholder** - No actual weight updates occur
+2. **Single-machine testing** - Hash verified on one Linux x86_64 system only
+3. **Unproven learning** - No evidence that modular attention converges
+4. **Research architecture** - Requires validation before production use  
 
 ## Author
 
