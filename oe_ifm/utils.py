@@ -169,6 +169,9 @@ def bytes_to_int64_tensor(data: bytes, shape: tuple) -> torch.Tensor:
     # Convert to int64 array
     int64_array = np.frombuffer(data[:required_bytes], dtype=np.int64)
     
+    # Make a copy to ensure writable tensor
+    int64_array = int64_array.copy()
+    
     # Reshape and convert to torch tensor
     tensor = torch.from_numpy(int64_array.reshape(shape))
     

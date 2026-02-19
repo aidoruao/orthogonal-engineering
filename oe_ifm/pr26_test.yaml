@@ -1,0 +1,22 @@
+project: OE-IFM
+pr: 26
+root_seed: "OE_PR26_INTEGER_FRACTAL_MODEL_TEST"
+hash_function: sha256
+integer_precision: int64
+modulus: 2^64
+architecture:
+  layers: 2
+  hidden_dim: 64
+  heads: 2
+  vocab_size: 256
+  max_seq_len: 32
+fractal:
+  depth: 3
+  branching_factor: 2
+training:
+  steps: 4
+  evolution_rule: integer_projection
+verification:
+  enforce_merkle: true
+  enforce_tensor_hash: true
+  cross_machine_identity_required: true

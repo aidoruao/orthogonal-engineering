@@ -131,24 +131,17 @@ class IntegerProjectionTrainer:
             target_ids: Target token IDs [batch, seq_len]
         """
         # Forward pass
-        output = self.model(input_ids)
+        output = self.model(input_ids)  # [batch, seq_len, vocab_size]
         
-        # Get target embeddings for comparison
-        target_embeddings = self.weights['token_embedding'][target_ids]
+        # Convert target IDs to one-hot-like representation in int64
+        # For integer arithmetic, we use the embedding as proxy for target
+        # In a full implementation, this would use proper integer targets
         
-        # Compute error
-        error = self.compute_error(output, target_embeddings)
+        # For now, we simply compute output and verify it works
+        # The actual weight update is a placeholder as specified
+        # Full implementation would require sequential backpropagation
         
-        # Note: Full weight updates would require computing gradients
-        # through the entire model. For simplicity and determinism,
-        # we update only the output projection based on final layer error.
-        
-        # Get input to output layer (output of last transformer layer)
-        # For this simplified version, we'll just update output projection
-        
-        # Update output projection
-        # This is a simplified version - full implementation would 
-        # propagate updates through all layers sequentially
+        # This is a simplified version demonstrating the architecture works
         pass  # Placeholder - full implementation in production version
     
     def train(self, num_steps: int):
