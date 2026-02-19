@@ -25,9 +25,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          # Prevent Git from converting line endings on Windows
-          autocrlf: false
+      
+      - name: Configure Git line endings
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+        shell: bash
       
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -55,15 +58,21 @@ jobs:
         id: hash
         run: |
           python -c "
+          import os, sys
           from pathlib import Path
           merkle_file = Path('merkle_roots/pr26_merkle_root.txt')
           if merkle_file.exists():
               hash_value = merkle_file.read_text().strip()
-              print(f'hash={hash_value}')
+              # Write to GITHUB_OUTPUT with proper format
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write(f'hash={hash_value}\n')
               print(f'Model hash: {hash_value}')
           else:
-              print('hash=MISSING')
-          " >> $GITHUB_OUTPUT
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                  f.write('hash=MISSING\n')
+              print('Hash file not found')
+              sys.exit(1)
+          "
         shell: bash
       
       - name: Upload hash as artifact

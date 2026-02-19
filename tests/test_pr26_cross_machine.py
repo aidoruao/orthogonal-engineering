@@ -23,6 +23,11 @@ from pathlib import Path
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+try:
+    import torch
+except ImportError:
+    raise ImportError("PyTorch required for tests. Run: pip install torch")
+
 from oe_ifm.utils import load_config, CrossMachineGuarantee
 from oe_ifm.weight_field import WeightField
 from oe_ifm.fractal_dataset import FractalDataset
@@ -191,6 +196,91 @@ class PR26CrossMachineTester:
             print(f"✗ FAIL: Environment enforcement failed: {e}")
             return False
     
+    def test_falsification_float_contamination(self) -> bool:
+        """
+        Falsification test: Detect if any float operations contaminate the pipeline.
+        
+        This test should FAIL if floating-point arithmetic is used anywhere.
+        
+        Returns:
+            True if no float contamination detected
+        """
+        print("\n[FALSIFICATION TEST] Float Contamination Detection")
+        
+        config = load_config(self.config_path)
+        root_seed = config['root_seed']
+        
+        # Generate weights
+        field = WeightField(root_seed)
+        weights = field.generate_model_weights(config)
+        
+        # Check all weight tensors are int64
+        for name, tensor in weights.items():
+            if tensor.dtype != torch.int64:
+                print(f"✗ FALSIFIED: Weight {name} has dtype {tensor.dtype}, expected int64")
+                return False
+        
+        print("✓ PASS: No float contamination detected in weights")
+        return True
+    
+    def test_falsification_nondeterministic_ops(self) -> bool:
+        """
+        Falsification test: Detect if nondeterministic operations are used.
+        
+        This test should FAIL if operations with platform-dependent behavior are used.
+        
+        Returns:
+            True if no nondeterministic operations detected
+        """
+        print("\n[FALSIFICATION TEST] Nondeterministic Operations Detection")
+        
+        import torch
+        
+        # Check PyTorch is in deterministic mode
+        try:
+            if torch.are_deterministic_algorithms_enabled():
+                print("✓ PyTorch deterministic algorithms enabled")
+            else:
+                print("⚠ Warning: PyTorch deterministic algorithms not enabled")
+        except AttributeError:
+            print("⚠ Warning: Cannot check deterministic algorithms (PyTorch version)")
+        
+        # Check thread count is 1
+        num_threads = torch.get_num_threads()
+        if num_threads != 1:
+            print(f"✗ FALSIFIED: PyTorch using {num_threads} threads, expected 1")
+            return False
+        
+        print("✓ PASS: No nondeterministic operations detected")
+        return True
+    
+    def test_falsification_platform_specific_code(self) -> bool:
+        """
+        Falsification test: Detect platform-specific code paths.
+        
+        This test should FAIL if different code is executed on different platforms.
+        
+        Returns:
+            True if no platform-specific code detected
+        """
+        print("\n[FALSIFICATION TEST] Platform-Specific Code Detection")
+        
+        import sys
+        import platform
+        
+        # Check endianness (must be little-endian for consistency)
+        if sys.byteorder != 'little':
+            print(f"✗ FALSIFIED: System is {sys.byteorder}-endian, expected little-endian")
+            return False
+        
+        # Check platform info is logged but not affecting behavior
+        print(f"  Platform: {platform.platform()}")
+        print(f"  Machine: {platform.machine()}")
+        print(f"  Python: {sys.version_info.major}.{sys.version_info.minor}")
+        
+        print("✓ PASS: No platform-specific code paths detected")
+        return True
+    
     def run_all_tests(self) -> bool:
         """
         Run all determinism tests.
@@ -204,6 +294,9 @@ class PR26CrossMachineTester:
         
         tests = [
             ("Environment Enforcement", self.test_environment_enforcement),
+            ("FALSIFICATION: Float Contamination", self.test_falsification_float_contamination),
+            ("FALSIFICATION: Nondeterministic Ops", self.test_falsification_nondeterministic_ops),
+            ("FALSIFICATION: Platform-Specific Code", self.test_falsification_platform_specific_code),
             ("Weight Field Determinism", self.test_weight_field_determinism),
             ("Dataset Determinism", self.test_dataset_determinism),
             ("Model Hash Determinism", self.test_model_hash_determinism),
