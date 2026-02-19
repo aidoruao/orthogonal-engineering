@@ -1,0 +1,23 @@
+project: OE-DFM-Compact
+pr: 25
+root_seed: "OE_PR25_DETERMINISTIC_FRACTAL_MODEL_COMPACT"
+hash_function: sha256
+float_precision: float32
+topology:
+  layers: 12
+  hidden_dim: 512
+  attention_heads: 8
+  vocab_size: 32768
+  max_seq_len: 2048
+fractal:
+  depth: 6
+  branching_factor: 4
+  expansion_rule: merkle_recursive
+training:
+  evolution_rule: closed_form_field_projection
+  steps: 32
+  learning_rate: deterministic_constant
+verification:
+  enforce_manifest: true
+  enforce_merkle: true
+  enforce_tensor_hash: true

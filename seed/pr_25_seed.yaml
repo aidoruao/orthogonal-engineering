@@ -1,0 +1,21 @@
+pr_id: 25
+parent_universe: alpha_omega_24
+root_seed: "OE_PR25_ALPHA_OMEGA_LORA"
+topology:
+  mode: deterministic_fractal
+  layers: 7
+  sub_seed_derivation: sha256(root_seed + layer + shard)
+generation:
+  fractal_expansion: true
+  dag_required: true
+  synthetic_dataset: true
+lora:
+  deterministic: true
+  base_model_strategy: oe_internal
+  rank: 16
+  alpha: 32
+  dropout: 0.0
+verification:
+  manifest_required: true
+  merkle_required: true
+  reproducibility_check: true
