@@ -13,8 +13,18 @@ Version: 1.0.0
 """
 
 from .utils import load_config, derive_seed, compute_file_hash
-from .weight_field import WeightFieldGenerator
-from .architecture import DeterministicTransformer
+
+# Conditional imports (require PyTorch)
+try:
+    from .weight_field import WeightFieldGenerator
+    from .architecture import DeterministicTransformer
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    WeightFieldGenerator = None
+    DeterministicTransformer = None
+
+# Dataset generator doesn't require PyTorch
 from .fractal_dataset import FractalDatasetGenerator
 
 __version__ = '1.0.0'
@@ -22,7 +32,11 @@ __all__ = [
     'load_config',
     'derive_seed',
     'compute_file_hash',
-    'WeightFieldGenerator',
-    'DeterministicTransformer',
     'FractalDatasetGenerator',
 ]
+
+if TORCH_AVAILABLE:
+    __all__.extend([
+        'WeightFieldGenerator',
+        'DeterministicTransformer',
+    ])
