@@ -15,7 +15,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import torch
-import numpy as np
 
 
 class SimpleIntegerLearningTest:

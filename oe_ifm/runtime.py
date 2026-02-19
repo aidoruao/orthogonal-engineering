@@ -28,7 +28,6 @@ from .fractal_dataset import FractalDataset
 from .utils import (
     CrossMachineGuarantee,
     load_config,
-    compute_tensor_hash,
     deterministic_hash,
     int64_mod,
 )
@@ -259,7 +258,8 @@ def run_training_pipeline(config_path: Path = None, output_dir: Path = None):
     merkle_root_file = Path(__file__).parent.parent / "merkle_roots" / "pr26_merkle_root.txt"
     merkle_root_file.parent.mkdir(parents=True, exist_ok=True)
     
-    with open(merkle_root_file, 'w') as f:
+    # Use newline='' to prevent Windows from adding extra \r characters
+    with open(merkle_root_file, 'w', newline='') as f:
         f.write(model_hash)
     
     print(f"✓ Merkle root saved to: {merkle_root_file}")

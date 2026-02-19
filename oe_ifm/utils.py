@@ -150,7 +150,10 @@ def bytes_to_int64_tensor(data: bytes, shape: tuple) -> torch.Tensor:
     Returns:
         Int64 tensor
     """
-    import numpy as np
+    try:
+        import numpy as np
+    except ImportError:
+        raise ImportError("NumPy required. Run: pip install numpy")
     
     # Calculate required number of int64 values
     num_elements = 1

@@ -89,6 +89,12 @@ class WeightField:
         hidden_dim = arch['hidden_dim']
         num_heads = arch['heads']
         vocab_size = arch['vocab_size']
+
+        # Validate attention head configuration: hidden_dim must be divisible by num_heads
+        assert num_heads > 0 and hidden_dim % num_heads == 0, (
+            f"Invalid architecture config: hidden_dim ({hidden_dim}) must be divisible "
+            f"by num_heads ({num_heads}), and num_heads must be positive."
+        )
         
         weights = {}
         

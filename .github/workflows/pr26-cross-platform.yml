@@ -2,7 +2,7 @@ name: PR26 Cross-Platform Determinism
 
 on:
   push:
-    branches: [ copilot/remove-floating-arithmetic ]
+    branches: [ main, copilot/remove-floating-arithmetic ]
     paths:
       - 'oe_ifm/**'
       - 'tests/test_pr26_cross_machine.py'
@@ -25,6 +25,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          # Prevent Git from converting line endings on Windows
+          autocrlf: false
       
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -44,17 +47,23 @@ jobs:
       - name: Run determinism test
         run: |
           python tests/test_pr26_cross_machine.py
+        env:
+          # Ensure consistent behavior across platforms
+          PYTHONHASHSEED: 0
       
       - name: Capture model hash
         id: hash
         run: |
-          if [ -f merkle_roots/pr26_merkle_root.txt ]; then
-            HASH=$(cat merkle_roots/pr26_merkle_root.txt)
-            echo "hash=$HASH" >> $GITHUB_OUTPUT
-            echo "Model hash: $HASH"
-          else
-            echo "hash=MISSING" >> $GITHUB_OUTPUT
-          fi
+          python -c "
+          from pathlib import Path
+          merkle_file = Path('merkle_roots/pr26_merkle_root.txt')
+          if merkle_file.exists():
+              hash_value = merkle_file.read_text().strip()
+              print(f'hash={hash_value}')
+              print(f'Model hash: {hash_value}')
+          else:
+              print('hash=MISSING')
+          " >> $GITHUB_OUTPUT
         shell: bash
       
       - name: Upload hash as artifact

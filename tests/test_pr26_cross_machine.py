@@ -16,7 +16,6 @@ Standard: Yeshua
 Version: 1.0.0
 """
 
-import hashlib
 import shutil
 import sys
 from pathlib import Path
@@ -41,7 +40,7 @@ class PR26CrossMachineTester:
             repo_path: Path to repository root
         """
         self.repo_path = Path(repo_path)
-        self.config_path = self.repo_path / "oe_ifm" / "pr26_root.yaml"
+        self.config_path = self.repo_path / "oe_ifm" / "pr26_test.yaml"
         self.output_dir = self.repo_path / "models" / "pr26"
         self.model_path = self.output_dir / "pr26_model.safetensors"
         self.merkle_root_file = self.repo_path / "merkle_roots" / "pr26_merkle_root.txt"
