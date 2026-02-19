@@ -53,6 +53,8 @@ jobs:
         env:
           # Ensure consistent behavior across platforms
           PYTHONHASHSEED: 0
+          # Ensure UTF-8 encoding for stdout on Windows (CP1252 by default)
+          PYTHONIOENCODING: utf-8
       
       - name: Capture model hash
         id: hash
