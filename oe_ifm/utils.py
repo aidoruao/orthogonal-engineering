@@ -180,19 +180,21 @@ def bytes_to_int64_tensor(data: bytes, shape: tuple) -> torch.Tensor:
 
 def int64_mod(x: torch.Tensor) -> torch.Tensor:
     """
-    Explicit modulo 2^64 operation for int64 tensors.
+    Explicit modulo 2^64 for documentation clarity.
     
-    In practice, PyTorch int64 already wraps at 2^64,
-    but this makes it explicit.
+    PyTorch int64 naturally wraps at 2^64 due to two's complement
+    representation, so this function returns the input unchanged.
+    It exists solely for code clarity and documentation.
     
     Args:
         x: Int64 tensor
         
     Returns:
-        Tensor with explicit modulo applied
+        Same tensor (int64 wraps automatically)
     """
-    # int64 naturally wraps at 2^64, but we make it explicit
-    # for documentation purposes
+    # Verification: ensure input is int64
+    assert x.dtype == torch.int64, f"Expected int64, got {x.dtype}"
+    # int64 naturally wraps at 2^64 in two's complement
     return x
 
 

@@ -92,22 +92,24 @@ class IntegerProjectionTrainer:
         input_tensor: torch.Tensor,
     ):
         """
-        Update weights using integer projection.
+        Update weights using integer projection (FUTURE WORK).
         
-        Delta_W = (E @ Input.T) mod 2^64
-        W_next = (W_current + Delta_W) mod 2^64
+        This method defines the integer projection update rule but is not
+        currently called. Full implementation requires sequential backpropagation.
         
-        All operations sequential, no parallelism.
+        Intended algorithm:
+        1. Delta_W = (E @ Input.T) mod 2^64
+        2. W_next = (W_current + Delta_W) mod 2^64
         
         Args:
             weight_name: Name of weight to update
             error: Error tensor
             input_tensor: Input tensor
         """
-        # Compute delta sequentially
-        # For simplicity, we update based on batch-averaged error
-        # In true implementation, this would be done element-wise sequentially
+        # FUTURE: Implement full sequential update
+        # For now, this is a specification placeholder
         
+        # Compute delta sequentially
         delta = int64_mod(torch.matmul(error.transpose(-2, -1), input_tensor))
         
         # Update weight
@@ -123,26 +125,31 @@ class IntegerProjectionTrainer:
         """
         Single training step with integer projection.
         
-        No gradient descent. No learning rate. No division.
-        Pure integer update rule.
+        NOTE: This is a simplified placeholder implementation.
+        The full integer projection update rule (Delta_W = (E @ Input.T) mod 2^64)
+        would require sequential backpropagation through all layers.
+        
+        For demonstration purposes, this performs a forward pass to verify
+        the architecture executes correctly with pure integer arithmetic,
+        but does not update weights.
+        
+        A production implementation would:
+        1. Compute forward pass outputs at each layer
+        2. Compute error: E = (Target - Output) mod 2^64
+        3. Sequentially backpropagate error through layers
+        4. Update weights: W_next = (W_current + Delta_W) mod 2^64
         
         Args:
             input_ids: Input token IDs [batch, seq_len]
             target_ids: Target token IDs [batch, seq_len]
         """
-        # Forward pass
+        # Forward pass - verifies integer arithmetic works
         output = self.model(input_ids)  # [batch, seq_len, vocab_size]
         
-        # Convert target IDs to one-hot-like representation in int64
-        # For integer arithmetic, we use the embedding as proxy for target
-        # In a full implementation, this would use proper integer targets
-        
-        # For now, we simply compute output and verify it works
-        # The actual weight update is a placeholder as specified
-        # Full implementation would require sequential backpropagation
-        
-        # This is a simplified version demonstrating the architecture works
-        pass  # Placeholder - full implementation in production version
+        # Placeholder - actual weight updates not implemented
+        # The key achievement is the deterministic integer architecture,
+        # not the training algorithm
+        pass
     
     def train(self, num_steps: int):
         """

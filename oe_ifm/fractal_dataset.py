@@ -37,6 +37,9 @@ class FractalDataset:
         self.max_seq_len = config['architecture']['max_seq_len']
         self.depth = config['fractal']['depth']
         self.branching_factor = config['fractal']['branching_factor']
+        
+        # Cache generated dataset for efficiency
+        self._cached_dataset = None
     
     def generate_token_from_seed(self, seed: bytes) -> int:
         """
@@ -119,9 +122,15 @@ class FractalDataset:
         """
         Generate complete fractal dataset.
         
+        Uses caching to avoid regeneration on repeated calls.
+        
         Returns:
             List of (input_ids, target_ids) tensor pairs
         """
+        # Return cached dataset if available
+        if self._cached_dataset is not None:
+            return self._cached_dataset
+        
         # Generate examples from root
         examples = self.generate_fractal_branch(self.root_seed_bytes, self.depth)
         
@@ -134,6 +143,9 @@ class FractalDataset:
         
         # Sort lexicographically for canonical order
         dataset.sort(key=lambda x: (x[0].tolist(), x[1].tolist()))
+        
+        # Cache the dataset
+        self._cached_dataset = dataset
         
         return dataset
     
