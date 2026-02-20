@@ -1,0 +1,195 @@
+name: PR #28 Final Ontological Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Phase 1: Falsification — must pass before anything else runs
+  # ---------------------------------------------------------------------------
+  falsification:
+    name: Falsification Tests (ubuntu, Python 3.12)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install pytest
+
+      - name: Run falsification tests
+        run: python tests/test_falsification.py
+
+  # ---------------------------------------------------------------------------
+  # Phase 2: UVM Verification — mathematical purity on all platforms
+  # ---------------------------------------------------------------------------
+  uvm_verification:
+    name: UVM (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: falsification
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install pytest
+
+      - name: Run UVM determinism tests
+        run: python tests/test_uvm_determinism.py
+
+      - name: Run fractal determinism tests
+        run: python tests/test_fractal_determinism.py
+
+      - name: Upload UVM state hash artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: uvm-state-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: merkle_roots/pr28_uvm_state_*.txt
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Phase 3: Merkle Root Convergence — cross-platform weight generation
+  # ---------------------------------------------------------------------------
+  merkle_convergence:
+    name: Merkle Convergence (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    needs: falsification
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install pytest
+
+      - name: Run cross-platform determinism tests (writes Merkle root artifact)
+        run: python tests/test_cross_platform_determinism.py
+
+      - name: Upload Merkle root artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: merkle-root-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: merkle_roots/pr28_merkle_root_*.txt
+          if-no-files-found: error
+
+  # ---------------------------------------------------------------------------
+  # Phase 4: Ontological Comparison — all Merkle roots and UVM hashes must match
+  # ---------------------------------------------------------------------------
+  ontological_comparison:
+    name: Ontological Comparison (all platforms must match)
+    needs: [ uvm_verification, merkle_convergence ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all Merkle root artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/artifacts
+          pattern: merkle-root-*
+          merge-multiple: true
+
+      - name: Download all UVM state artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/artifacts
+          pattern: uvm-state-*
+          merge-multiple: true
+
+      - name: Assert all Merkle roots are identical
+        run: |
+          python3 - <<'EOF'
+          import pathlib, sys
+
+          root_files = sorted(pathlib.Path("/tmp/artifacts").rglob("pr28_merkle_root_*.txt"))
+          if not root_files:
+              print("ERROR: No Merkle root files found", file=sys.stderr)
+              sys.exit(1)
+
+          roots = {}
+          for f in root_files:
+              val = f.read_text(encoding="utf-8").strip()
+              roots[f.name] = val
+              print(f"  {f.name}: {val}")
+
+          unique = set(roots.values())
+          if len(unique) != 1:
+              print("\nONTOLOGICAL FAILURE: Merkle roots diverge across platforms!", file=sys.stderr)
+              for name, val in roots.items():
+                  print(f"  {name}: {val}", file=sys.stderr)
+              sys.exit(1)
+
+          print(f"\nONTOLOGICAL SUCCESS: All {len(roots)} Merkle roots identical: {next(iter(unique))}")
+          EOF
+
+      - name: Assert all UVM state hashes are identical across platforms
+        run: |
+          python3 - <<'EOF'
+          import pathlib, sys
+
+          uvm_files = sorted(pathlib.Path("/tmp/artifacts").rglob("pr28_uvm_state_*.txt"))
+          if not uvm_files:
+              print("ERROR: No UVM state files found", file=sys.stderr)
+              sys.exit(1)
+
+          # Parse each file into a dict of {program_name: hash}
+          all_hashes = {}
+          for f in uvm_files:
+              platform = f.name.replace("pr28_uvm_state_", "").replace(".txt", "")
+              lines = f.read_text(encoding="utf-8").strip().splitlines()
+              all_hashes[platform] = dict(line.split(":", 1) for line in lines if ":" in line)
+              print(f"  {platform}: {all_hashes[platform]}")
+
+          # All platforms must agree on every program hash
+          programs = list(next(iter(all_hashes.values())).keys())
+          failed = False
+          for prog in programs:
+              values = {p: h[prog] for p, h in all_hashes.items()}
+              unique = set(values.values())
+              if len(unique) != 1:
+                  print(f"\nUVM MISMATCH for program '{prog}':", file=sys.stderr)
+                  for p, v in values.items():
+                      print(f"  {p}: {v}", file=sys.stderr)
+                  failed = True
+
+          if failed:
+              print("\nONTOLOGICAL FAILURE: UVM state hashes diverge!", file=sys.stderr)
+              sys.exit(1)
+
+          print(f"\nONTOLOGICAL SUCCESS: All UVM state hashes identical across {len(all_hashes)} platforms")
+          EOF
+
+      - name: Upload consolidated comparison artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ontological-comparison-results
+          path: /tmp/artifacts/
+          if-no-files-found: ignore

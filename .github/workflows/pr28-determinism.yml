@@ -1,0 +1,103 @@
+name: PR #28 Cross-Platform Determinism
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  # -------------------------------------------------------------------------
+  # determinism — run on all three supported OS / two Python versions
+  # -------------------------------------------------------------------------
+  determinism:
+    name: Determinism (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run falsification tests
+        run: python tests/test_falsification.py
+
+      - name: Run cross-platform determinism tests
+        run: python tests/test_cross_platform_determinism.py
+
+      - name: Upload Merkle root artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: merkle-root-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: merkle_roots/pr28_merkle_root_*.txt
+          if-no-files-found: error
+
+  # -------------------------------------------------------------------------
+  # compare-merkle-roots — assert that all six artifacts are identical
+  # -------------------------------------------------------------------------
+  compare-merkle-roots:
+    name: Compare Merkle Roots Across Platforms
+    needs: determinism
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all Merkle root artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/merkle-roots
+          pattern: merkle-root-*
+          merge-multiple: true
+
+      - name: Assert all Merkle roots are identical
+        run: |
+          echo "Collected Merkle root files:"
+          ls /tmp/merkle-roots/
+          python3 - <<'EOF'
+          import pathlib, sys
+
+          root_files = sorted(pathlib.Path("/tmp/merkle-roots").rglob("pr28_merkle_root_*.txt"))
+          if not root_files:
+              print("ERROR: No Merkle root files found", file=sys.stderr)
+              sys.exit(1)
+
+          roots = {}
+          for f in root_files:
+              val = f.read_text(encoding="utf-8").strip()
+              roots[str(f)] = val
+              print(f"  {f.name}: {val}")
+
+          unique = set(roots.values())
+          if len(unique) != 1:
+              print("\nFAIL: Merkle roots differ across platforms!", file=sys.stderr)
+              for path, val in roots.items():
+                  print(f"  {path}: {val}", file=sys.stderr)
+              sys.exit(1)
+
+          print(f"\nPASS: All {len(roots)} Merkle roots are identical: {next(iter(unique))}")
+          EOF
+
+      - name: Upload consolidated comparison result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merkle-root-comparison
+          path: /tmp/merkle-roots/
+          if-no-files-found: ignore
