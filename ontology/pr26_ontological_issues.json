@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "ontology_name": "PR #26 Ontological Issues",
+    "version": "1.0",
+    "created": "2026-02-20",
+    "purpose": "Enumerate, track, and resolve ontological issues identified in PR #26 cross-platform determinism work",
+    "updated_by": "PR #28 automated verification"
+  },
+  "issues": [
+    {
+      "id": "OI-001",
+      "title": "Windows CI runner line-ending mismatch",
+      "description": "Python scripts checked out on Windows received CRLF line endings, causing hash mismatches vs UTF-8 LF on Linux/macOS.",
+      "category": "filesystem",
+      "severity": "critical",
+      "pr_introduced": 26,
+      "pr_fixed": 27,
+      "status": "Resolved",
+      "resolution_notes": "PR #27 added .gitattributes with text=auto eol=lf for all Python/YAML/JSON files; CI now normalises line endings at checkout."
+    },
+    {
+      "id": "OI-002",
+      "title": "Missing PYTHONIOENCODING=utf-8 on Windows",
+      "description": "Windows CI runners default to cp1252 stdout encoding, breaking any code that writes UTF-8 characters to stdout/stderr.",
+      "category": "encoding",
+      "severity": "high",
+      "pr_introduced": 26,
+      "pr_fixed": 27,
+      "status": "Resolved",
+      "resolution_notes": "PR #27 and PR #28 CI YAML set env PYTHONIOENCODING=utf-8 at workflow level for all jobs."
+    },
+    {
+      "id": "OI-003",
+      "title": "Integer arithmetic endianness sensitivity",
+      "description": "Weight generation code used platform-native integer arithmetic. On big-endian or 32-bit platforms the output differed.",
+      "category": "arithmetic",
+      "severity": "high",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "Determinism test (test_cross_platform_determinism.py) uses bitwise two's-complement int64 arithmetic (platform-independent). Merkle root verified identical across Ubuntu, macOS, Windows."
+    },
+    {
+      "id": "OI-004",
+      "title": "Filesystem path separator differences",
+      "description": "Hard-coded forward-slash paths failed on Windows where os.sep is backslash.",
+      "category": "filesystem",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 27,
+      "status": "Resolved",
+      "resolution_notes": "All path construction now uses pathlib.Path, which is cross-platform."
+    },
+    {
+      "id": "OI-005",
+      "title": "safetensors int64 incompatibility",
+      "description": "safetensors >= 0.4 changed int64 handling, causing CI failures on older pinned versions.",
+      "category": "dependency",
+      "severity": "high",
+      "pr_introduced": 26,
+      "pr_fixed": 27,
+      "status": "Resolved",
+      "resolution_notes": "PR #27 pinned safetensors to a compatible version and added pip install --upgrade to ensure correct resolution."
+    },
+    {
+      "id": "OI-006",
+      "title": "Python version matrix not exhaustive",
+      "description": "CI only tested Python 3.11; 3.12 behavioural differences (e.g. hash randomisation seed) were untested.",
+      "category": "ci",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "PR #28 CI matrix includes python-version: ['3.11', '3.12'] across all three OS runners."
+    },
+    {
+      "id": "OI-007",
+      "title": "Merkle root not compared cross-platform",
+      "description": "Previous CI computed a Merkle root on Linux only; no cross-OS comparison was performed.",
+      "category": "verification",
+      "severity": "critical",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "PR #28 CI uploads the Merkle root from each OS as an artifact; the compare-merkle-roots job downloads all six (3 OS × 2 Python versions) and asserts equality, failing the build on any mismatch."
+    },
+    {
+      "id": "OI-008",
+      "title": "No falsification test for seed_bytes assumption",
+      "description": "The spec assumed seed_bytes is interpreted identically on all platforms, but this was never tested.",
+      "category": "falsification",
+      "severity": "high",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "test_falsification.py validates: seed_bytes round-trips through hashlib.sha256 identically, int64 two's-complement arithmetic matches expected vectors, UTF-8 encoding of output is preserved, pathlib paths resolve consistently."
+    },
+    {
+      "id": "OI-009",
+      "title": "No strategic knowledge document for future contributors",
+      "description": "All environmental assumptions and tactical lessons were buried in PR history and chat logs, making them invisible to future AI/human contributors.",
+      "category": "documentation",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "docs/ORTHOGONAL_ENGINEERING_COMPENDIUM.md created in PR #28. All environmental assumptions, tactical fixes, and verification procedures are documented there."
+    }
+  ],
+  "summary": {
+    "total": 9,
+    "resolved": 9,
+    "pending": 0,
+    "falsified": 0
+  }
+}
