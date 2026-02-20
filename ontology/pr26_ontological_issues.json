@@ -1,10 +1,11 @@
 {
   "metadata": {
-    "ontology_name": "PR #26 Ontological Issues",
-    "version": "1.0",
+    "ontology_name": "PR #26 / PR #28 Ontological Issues",
+    "version": "2.0",
     "created": "2026-02-20",
-    "purpose": "Enumerate, track, and resolve ontological issues identified in PR #26 cross-platform determinism work",
-    "updated_by": "PR #28 automated verification"
+    "updated": "2026-02-20",
+    "purpose": "Enumerate, track, and resolve all ontological issues affecting cross-platform determinism (OI-001..OI-016)",
+    "updated_by": "PR #28 architectural expansion (Kimi AI schema)"
   },
   "issues": [
     {
@@ -105,12 +106,96 @@
       "pr_fixed": 28,
       "status": "Resolved",
       "resolution_notes": "docs/ORTHOGONAL_ENGINEERING_COMPENDIUM.md created in PR #28. All environmental assumptions, tactical fixes, and verification procedures are documented there."
+    },
+    {
+      "id": "OI-010",
+      "title": "Wall-clock timestamp leakage",
+      "category": "time",
+      "domain": "Physics",
+      "description": "Code or CI steps that embed wall-clock timestamps or monotonic clocks make outputs non-reproducible. Two identical runs at different times produce different hashes.",
+      "severity": "high",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "blockchain_attestation.py requires timestamps to be externally supplied (not system clock). UVM uses a logical cycle_count, never wall-clock. CI workflows do not embed run timestamps in hashed artifacts."
+    },
+    {
+      "id": "OI-011",
+      "title": "Hardware memory layout assumptions (NUMA / cache coherence)",
+      "category": "memory",
+      "domain": "Hardware",
+      "description": "Code that relies on allocation order, cache-line alignment, or NUMA topology will produce different results on different hardware. Python's memory allocator is not guaranteed to be deterministic across OS / hardware.",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "UVM uses a dict-based memory model (no hardware RAM layout). All weight generation uses pure Python structures, not numpy/torch memory allocations, so NUMA topology is irrelevant."
+    },
+    {
+      "id": "OI-012",
+      "title": "OS entropy source differences (/dev/urandom vs BCryptGenRandom)",
+      "category": "entropy",
+      "domain": "Cryptography",
+      "description": "If weight generation or testing calls os.urandom() or secrets.token_bytes(), the outputs will differ across platforms because the OS PRNG seeds differ.",
+      "severity": "critical",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "All randomness is derived deterministically from hashlib.sha256 of a fixed seed (CANONICAL_MERKLE_ROOT_SEED). No os.urandom() or secrets calls are made in weight generation or test code. F-001 falsification test verifies sha256 is byte-identical."
+    },
+    {
+      "id": "OI-013",
+      "title": "Thread scheduling and GIL non-determinism",
+      "category": "concurrency",
+      "domain": "Computer Science",
+      "description": "Any multi-threaded or async code that writes shared state will produce different results depending on OS thread scheduler and GIL release points.",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Pending",
+      "resolution_notes": "Current weight generation and test code is single-threaded. If parallel generation is introduced in future PRs, a deterministic task ordering layer must be added before that code may be merged."
+    },
+    {
+      "id": "OI-014",
+      "title": "Python bytecode caching and JIT optimisation differences",
+      "category": "compiler",
+      "domain": "Software Engineering",
+      "description": ".pyc bytecode may differ between CPython versions and builds, affecting hash values if source files are hashed via their compiled form. PyPy JIT may produce different floating-point results.",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Resolved",
+      "resolution_notes": "All hashing operates on source bytes and data, never on .pyc files. No floating-point arithmetic is used in weight generation (all int64). PYTHONPYCACHEPREFIX is not set, so .pyc files do not affect determinism."
+    },
+    {
+      "id": "OI-015",
+      "title": "Filesystem case sensitivity and symlink resolution differences",
+      "category": "filesystem_case",
+      "domain": "OS Design",
+      "description": "macOS HFS+ is case-insensitive by default; Linux ext4 is case-sensitive. A file named 'Seed.yaml' may resolve to 'seed.yaml' on macOS but not on Linux. Symlinks may resolve differently.",
+      "severity": "medium",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Pending",
+      "resolution_notes": "All filenames in this repository use lowercase snake_case to avoid case ambiguity. Symlinks are not used. A linting rule should be added in a future PR to enforce lowercase filenames in tracked paths."
+    },
+    {
+      "id": "OI-016",
+      "title": "Network non-determinism (DNS, NTP, certificate stores)",
+      "category": "network",
+      "domain": "Distributed Systems",
+      "description": "Any CI step that makes network calls (DNS resolution, NTP sync, certificate validation, pip install from index) introduces external state that may differ across runners and time.",
+      "severity": "low",
+      "pr_introduced": 26,
+      "pr_fixed": 28,
+      "status": "Pending",
+      "resolution_notes": "Weight generation and test code make no network calls. pip install is used in CI (network-dependent), but pip outputs are not hashed. Future work: pin pip dependencies to hashes in requirements.txt and use --no-index where possible."
     }
   ],
   "summary": {
-    "total": 9,
-    "resolved": 9,
-    "pending": 0,
+    "total": 16,
+    "resolved": 12,
+    "pending": 4,
     "falsified": 0
   }
 }
