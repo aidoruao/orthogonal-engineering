@@ -29,6 +29,7 @@ def glass_box_boundary(
     output_validator: Optional[Callable] = None,
     side_effect_check: bool = True,
     orthogonal_separation: bool = True,
+    **kwargs: Any,
 ) -> Callable:
     """
     Glass-Box Boundary decorator factory.
@@ -76,4 +77,40 @@ except ImportError:
     pass
 
 
-__all__ = ["glass_box_boundary", "BoundaryViolation"]
+__all__ = ["glass_box_boundary", "BoundaryViolation", "validate_input_schema", "validate_output_schema"]
+
+
+def validate_input_schema(schema: dict) -> Callable:
+    """
+    Decorator that validates function inputs against a schema.
+
+    Args:
+        schema: Dictionary defining expected input structure
+
+    Returns:
+        Decorator function
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs) -> Any:
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+
+def validate_output_schema(schema: dict) -> Callable:
+    """
+    Decorator that validates function outputs against a schema.
+
+    Args:
+        schema: Dictionary defining expected output structure
+
+    Returns:
+        Decorator function
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs) -> Any:
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator

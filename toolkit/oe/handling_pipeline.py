@@ -271,10 +271,7 @@ class HandlingPipeline:
             shutil.copy2(backup_path, self.file_path)
             return True
         return False
-Handling pipeline module for parsing GTA handling.meta files.
 
-Provides parsing and validation for GTA handling metadata.
-"""
 
 import re
 from pathlib import Path
