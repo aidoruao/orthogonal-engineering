@@ -12,7 +12,7 @@ Version: 1.0.0
 import json
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 from xml.etree import ElementTree as ET
 
 from .logger import HandlingPipelineLogger
@@ -271,15 +271,6 @@ class HandlingPipeline:
             shutil.copy2(backup_path, self.file_path)
             return True
         return False
-Handling pipeline module for parsing GTA handling.meta files.
-
-Provides parsing and validation for GTA handling metadata.
-"""
-
-import re
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-from xml.etree import ElementTree as ET
 
 
 class HandlingMetaParser:

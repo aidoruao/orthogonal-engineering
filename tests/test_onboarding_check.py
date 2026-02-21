@@ -572,4 +572,5 @@ class TestCommandLineInterface(unittest.TestCase):
         self.assertIn("usage", result.stdout.lower())
         self.assertIn("--help", result.stdout)
 
-    def test_cli_basic_check
+    def test_cli_basic_check(self):
+        pass
