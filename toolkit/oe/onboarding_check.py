@@ -1030,7 +1030,8 @@ class CheckOnboardingPipeline:
                 data = output
 
             with open(output_path, "w", encoding="utf-8") as f:
-                json.dump(data, f, indent=2, ensure_ascii=False)
+                json.dump(data, f, indent=2, ensure_ascii=False,
+                          default=lambda o: o.value if isinstance(o, Enum) else str(o))
 
             saved_files[stage_name] = str(output_path)
 
