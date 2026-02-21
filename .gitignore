@@ -35,6 +35,12 @@ therapy_journal/*
 private_cognition/*
 AI_COGNITIVE_WORKSPACE/*
 
+# Chat logs (local session artifacts — see COPILOT_ONBOARDING.md)
+# Raw chat exports and JSONL logs are gitignored; committed handoff_*.md files are allowed.
+chat_logs/*.jsonl
+chat_logs/*.json
+chat_logs/*.txt
+
 # PII violation logs (contain violation metadata, no sensitive content)
 logs/pii_violations/*.json
 

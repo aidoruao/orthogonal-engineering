@@ -1,0 +1,191 @@
+# COPILOT_ONBOARDING.md — GitHub Copilot / AI Agent Onboarding
+
+**Version:** 1.0  
+**Applies to:** GitHub Copilot, Claude, GPT, and any AI agent working in this repository  
+**Updated:** 2026-02-21  
+**Status:** ACTIVE — REQUIRED READING
+
+---
+
+## 1. Purpose
+
+This document is the canonical "start here" onboarding path for any new AI/Copilot instance
+working in the `aidoruao/orthogonal-engineering` repository.
+
+Following this document lets you:
+- Set up a local Python virtual environment quickly.
+- Load all repo-backed continuity artifacts so you can resume prior work without re-deriving it.
+- Emit a single context block you can paste into any LLM conversation to restore context.
+
+---
+
+## 2. Boot Sequence (follow in order)
+
+### Step 1 — Verify the repo location
+
+```bash
+# You should be in the repo root:
+pwd   # should end with orthogonal-engineering
+ls COPILOT_ONBOARDING.md    # this file must exist
+```
+
+### Step 2 — Create and activate a Python virtual environment
+
+```bash
+# Create the venv (first time only)
+python -m venv .venv
+
+# Activate on Linux/macOS
+source .venv/bin/activate
+
+# Activate on Windows (PowerShell)
+.\.venv\Scripts\Activate.ps1
+
+# Activate on Windows (CMD)
+.\.venv\Scripts\activate.bat
+```
+
+Install the repo's dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 3 — Run the bootstrap context generator
+
+```bash
+python bootstrap_context.py
+```
+
+This script:
+- Validates that continuity artifacts (`STATE.md`, `MEMORY.md`) exist and have required headings.
+- Loads the latest chat log from `chat_logs/` (if present).
+- Prints a consolidated **CONTEXT BLOCK** that you can paste into your Copilot/LLM prompt.
+
+### Step 4 — Read canonical context files (in order)
+
+| # | File | Purpose |
+|---|------|---------|
+| 1 | `MEMORY.md` | Durable facts, constraints, and architectural decisions |
+| 2 | `STATE.md` | Established proofs, current phase, closed decisions, open questions |
+| 3 | `HANDOFF_TEMPLATE.md` | Template for writing session handoff summaries |
+| 4 | `AGENT.md` | Glass-Box Boundary enforcement rules |
+| 5 | `AI_INTERACTION_CONTRACT.md` | AI interaction protocol |
+
+### Step 5 — Acknowledge your starting context
+
+Before doing any work, state the following aloud (or in your first reply):
+
+```
+CONTEXT LOADED:
+  - MEMORY.md: <yes/no — note any concerns>
+  - STATE.md: <current phase, e.g. COMPILATION MODE>
+  - Latest handoff: <date of most recent HANDOFF entry, or "none">
+READY TO PROCEED.
+```
+
+---
+
+## 3. Continuity Artifacts — What They Are and How to Update Them
+
+### `MEMORY.md`
+
+**What it is:** A persistent, append-only log of durable facts, constraints, and architectural
+decisions that must survive across AI sessions. Think of it as the "long-term memory" of the
+project.
+
+**When to read it:** Always — at the start of every session.
+
+**When to update it:** When a new architectural decision, constraint, or fact is settled and
+should never be re-derived. Add a dated entry under the appropriate heading.
+
+**Format:**
+```markdown
+### [YYYY-MM-DD] Fact/Decision title
+Brief description. Why this is settled. Where to find the proof/evidence.
+```
+
+### `STATE.md`
+
+**What it is:** The current operational state of the system — which proofs are closed, which
+goals are active, and what open questions remain.
+
+**When to read it:** At the start of every session, after reading `MEMORY.md`.
+
+**When to update it:** When the phase changes, a goal is completed, or a new open question
+surfaces. Always update the `## Open Questions` section when you leave work mid-session.
+
+### `HANDOFF_TEMPLATE.md`
+
+**What it is:** A template for writing "session handoff" summaries. When a session ends, copy
+this template, fill it out, and commit it as `chat_logs/handoff_YYYY-MM-DD.md` (or similar).
+This gives the next instance an exact resume point.
+
+**When to use it:** At the end of any significant work session.
+
+---
+
+## 4. Chat Logs and Session Persistence
+
+The `chat_logs/` directory (gitignored for personal logs, but committed handoff summaries are
+acceptable) stores session artifacts:
+
+- `chat_logs/handoff_YYYY-MM-DD.md` — session handoff summaries (commit these)
+- `chat_logs/*.jsonl` — raw chat exports (do NOT commit — gitignored)
+
+The `bootstrap_context.py` script automatically finds and loads the most recent `handoff_*.md`
+file in `chat_logs/`.
+
+---
+
+## 5. Continuity Check
+
+To verify all continuity artifacts are in order:
+
+```bash
+python continuity_check.py
+```
+
+Exit codes:
+- `0` — all checks pass
+- `1` — one or more artifacts are missing or malformed
+- `2` — bootstrap script fails to run
+
+This check can also be run in CI.
+
+---
+
+## 6. Troubleshooting
+
+| Problem | Solution |
+|---------|---------|
+| `MEMORY.md` or `STATE.md` missing | Run `continuity_check.py` — it will report missing files |
+| `bootstrap_context.py` fails | Check Python version (`python --version` must be ≥ 3.8); no extra deps required |
+| `chat_logs/` not found | Create it: `mkdir chat_logs` — it is gitignored for raw logs |
+| Venv not activating on Windows | Use PowerShell with execution policy: `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` |
+| Context block too long | Edit `bootstrap_context.py` — reduce `MAX_CHAT_LINES` at the top of the file |
+
+---
+
+## 7. Quick Reference
+
+```
+CONTINUITY FILES:
+  MEMORY.md                  # Durable facts — read first
+  STATE.md                   # Current system state — read second
+  HANDOFF_TEMPLATE.md        # Copy, fill, commit when leaving
+
+SCRIPTS:
+  bootstrap_context.py       # Generates context block for LLM paste
+  continuity_check.py        # Validates all artifacts are present
+
+CHAT LOGS (local only, gitignored):
+  chat_logs/*.jsonl           # Raw session exports
+  chat_logs/handoff_*.md      # Handoff summaries (commit these)
+```
+
+---
+
+*"Continuity of body is not magic — it is disciplined state management. Write it down. Read it first. Resume without re-deriving."*
+
+**Orthogonal Engineering Continuity Principle**

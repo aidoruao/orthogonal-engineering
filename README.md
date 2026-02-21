@@ -1,5 +1,22 @@
 # Orthogonal Engineering - Deterministic Pipeline Scaffold
 
+## 🤖 AI Agent / GitHub Copilot Onboarding
+
+New AI instances and GitHub Copilot agents should start here:
+
+- **[COPILOT_ONBOARDING.md](COPILOT_ONBOARDING.md)** — Boot sequence, venv setup, and context loading for new agent instances.
+- **[MEMORY.md](MEMORY.md)** — Durable architectural facts and constraints (read before any session).
+- **[STATE.md](STATE.md)** — Current system state, established proofs, and open questions.
+- **[HANDOFF_TEMPLATE.md](HANDOFF_TEMPLATE.md)** — Template for end-of-session handoff summaries.
+
+```bash
+# Quick start for any new agent instance
+python bootstrap_context.py   # generates a context block to paste into your LLM prompt
+python continuity_check.py    # validates all continuity artifacts are present
+```
+
+---
+
 A robust, safety-first deterministic pipeline for file processing, merkle tree generation, and GTA handling.meta processing.
 
 ## 🌟 NEW: 1 Billion LOC Topological Map
