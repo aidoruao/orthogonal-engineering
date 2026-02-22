@@ -186,6 +186,76 @@ CHAT LOGS (local only, gitignored):
 
 ---
 
+## 8. External Claim Tagging and Contract Enforcement
+
+### 8.1 External Claim Tagging (`external_claim`)
+
+Any output or claim that originates **outside the Consistency Scope S** (e.g.,
+from an external LLM, a third-party API, or an unverified user input) **must**
+be tagged before entering the system.  Untagged external data must never be
+treated as a proof object.
+
+Use `tag_external_claim` from `toolkit.oe.boundary_enforcer`:
+
+```python
+from toolkit.oe.boundary_enforcer import tag_external_claim, assert_not_external_claim
+
+# Tag data received from an external source
+external = tag_external_claim(raw_llm_output, source="copilot-response")
+# → {"external_claim": True, "value": raw_llm_output, "source": "copilot-response"}
+
+# At any internal proof-consumption site, assert the object is not external
+assert_not_external_claim(trusted_proof_object, context="my_function")
+# Raises ExternalClaimError if the object carries external_claim=True
+```
+
+Key rules:
+- **Always tag** LLM/AI outputs, external API results, and user-supplied data with `tag_external_claim`.
+- **Never** pass a tagged object directly to a function that expects a proof object.
+- Use `assert_not_external_claim` at every proof-consumption boundary.
+
+### 8.2 Schema/Contract Enforcement
+
+Every function that crosses a Glass-Box boundary must declare its input and
+output contracts using `validate_input_schema` / `validate_output_schema`.
+Contract failures **abort execution** and emit a deterministic violation record
+to the `toolkit.oe.boundary_enforcer` logger.
+
+```python
+from toolkit.oe.boundary_enforcer import validate_input_schema, validate_output_schema
+
+INPUT_SCHEMA = {"type": "dict", "required": ["path"], "properties": {"path": {"type": "str"}}}
+OUTPUT_SCHEMA = {"type": "dict", "required": ["status"]}
+
+@validate_input_schema(INPUT_SCHEMA)
+@validate_output_schema(OUTPUT_SCHEMA)
+def process(*, path: str) -> dict:
+    ...
+```
+
+On failure a `ContractViolationError` is raised with a `.record` dict that
+includes `violation`, `direction`, `function`, `errors`, and `timestamp_utc`.
+
+### 8.3 UD-Bounded(k) Loop Guard
+
+All loops/recursions in onboarding and audit pathways are bounded using
+`oe_ifm.halt_condition.BoundedCounter`.  When a loop would exceed its
+configured ceiling it raises `HaltConditionError` rather than hanging.
+
+```python
+from oe_ifm.halt_condition import BoundedCounter, HaltConditionError
+
+counter = BoundedCounter(max_steps=10_000)
+for item in audit_items:
+    counter.step()          # raises HaltConditionError if steps > max_steps
+    process(item)
+```
+
+The `CheckOnboardingPipeline.stage_2_validate_structure` method already uses
+this pattern with a ceiling of `_MAX_AUDIT_ARTIFACTS = 10_000`.
+
+---
+
 *"Continuity of body is not magic — it is disciplined state management. Write it down. Read it first. Resume without re-deriving."*
 
 **Orthogonal Engineering Continuity Principle**
