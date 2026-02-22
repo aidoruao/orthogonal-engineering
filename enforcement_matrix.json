@@ -1,0 +1,248 @@
+{
+  "ci_bindings": [
+    {
+      "hash": "fa179492f7f8fa310db89e3f6257a7b629f0c2d71915c8b2e933adf7b3bcf02c",
+      "name": "constitution.yml"
+    },
+    {
+      "hash": "d38485c8d3c7a5e2ca1620e54244f2c53c541b494f0d91cdf150ea49081f8c10",
+      "name": "extreme-work-certification.yml"
+    },
+    {
+      "hash": "87b1270d0e87f4198782bf0c4e6c177173c19c78e662ded91dc817ef6cecf6f5",
+      "name": "gate.yml"
+    },
+    {
+      "hash": "32d2329268b048cefb30e7f8e18e4deef29c4a9e071719f154222e4a0c82ea29",
+      "name": "pr28-determinism.yml"
+    },
+    {
+      "hash": "8a1f93ace353d0e274fef1cff3cd997407d666a77b59448ad3b4e11da1871dfb",
+      "name": "pr28-final-verification.yml"
+    }
+  ],
+  "falsification_results": [
+    {
+      "counterexample": null,
+      "detail": "No counterexample found in 100 witnesses",
+      "hypothesis_id": "H-001",
+      "survived": true
+    },
+    {
+      "counterexample": null,
+      "detail": "No counterexample found in 100 witnesses",
+      "hypothesis_id": "H-002",
+      "survived": true
+    },
+    {
+      "counterexample": null,
+      "detail": "No counterexample found in 4 witnesses",
+      "hypothesis_id": "H-003",
+      "survived": true
+    },
+    {
+      "counterexample": null,
+      "detail": "No counterexample found in 104 witnesses",
+      "hypothesis_id": "H-004",
+      "survived": true
+    },
+    {
+      "counterexample": null,
+      "detail": "No counterexample found in 100 witnesses",
+      "hypothesis_id": "H-005",
+      "survived": true
+    }
+  ],
+  "global_file_count": 2707,
+  "global_merkle_root": "bd4e248d8322d4999df19fccd627be8dd3f28e7fd1e5d86bd80791c746a1edfe",
+  "invariants": [
+    {
+      "assumptions": [
+        "a and b are non-negative integers",
+        "Values fit in Python arbitrary-precision int"
+      ],
+      "claim": "Peano addition is commutative: peano_add(a, b) == peano_add(b, a)",
+      "domain_size": 100,
+      "hypothesis_id": "H-001"
+    },
+    {
+      "assumptions": [
+        "m and n are integers"
+      ],
+      "claim": "Successor is injective: S(m) == S(n) implies m == n",
+      "domain_size": 100,
+      "hypothesis_id": "H-002"
+    },
+    {
+      "assumptions": [
+        "hashlib.sha256 is available",
+        "Input is bytes"
+      ],
+      "claim": "SHA-256 is deterministic: sha256(x) == sha256(x) for all x",
+      "domain_size": 4,
+      "hypothesis_id": "H-003"
+    },
+    {
+      "assumptions": [
+        "n is any Python integer"
+      ],
+      "claim": "int64 normalisation is idempotent: int64(int64(n)) == int64(n)",
+      "domain_size": 104,
+      "hypothesis_id": "H-004"
+    },
+    {
+      "assumptions": [
+        "n is a non-negative integer"
+      ],
+      "claim": "Zero is the additive identity: peano_add(n, 0) == n",
+      "domain_size": 100,
+      "hypothesis_id": "H-005"
+    }
+  ],
+  "matrix_hash": "007a9978ebd118ac8a36b5e6e872511c7938dbbf53f75388766686e686d15d91",
+  "tests": [
+    {
+      "hash": "84d5583bf74c50ef208b20acf8dc2208189f48fa41980f9ebef16431a57c8dc4",
+      "name": "test_autofix_engine.py"
+    },
+    {
+      "hash": "53e2107e50c864b1886e7a485f0b37039679a51a3e1f7bd3cf1839b0dc9d7b50",
+      "name": "test_autonomous_pr18_explorer.py"
+    },
+    {
+      "hash": "02f71797a3005d6186ec3a55cecc7b7271e72f784f862075f409e5dfad77d28f",
+      "name": "test_axioms.py"
+    },
+    {
+      "hash": "b2ba74f8bc726af75bc1fe70bab819fd4b8a125477c1dc0ba9d4009ddf03bf27",
+      "name": "test_boolean_algebra.py"
+    },
+    {
+      "hash": "8eeba775636d9d6a73a3e67f4e2390e4b5a94f7f76927314ac146b001dc94e0f",
+      "name": "test_boundary_enforcer.py"
+    },
+    {
+      "hash": "4c0241bca0679211ab462b3dba7cc8c9604c3287ee99e8b9fa3dca7b3a605a1a",
+      "name": "test_canonicalizer.py"
+    },
+    {
+      "hash": "c8b7ac485ff37816ae8efd7fd1ac9f8e20b0c91aa94f113459ab40d84e9c6dcc",
+      "name": "test_cross_platform_determinism.py"
+    },
+    {
+      "hash": "3da11a4ec42186741d2a469126b6a73387beeedc85708ac6442f9a4b7fde0bcf",
+      "name": "test_dfm_reproducibility.py"
+    },
+    {
+      "hash": "4c50075d1a302072e0dd7cd167aa5a25426d95f2cee56f00dbc80ed517af1aae",
+      "name": "test_evidence_manager.py"
+    },
+    {
+      "hash": "1d47ddeba39972ce38ee1f2382fcd672f901b97a6c8490a53b509f20c6e614be",
+      "name": "test_extreme_work_verification.py"
+    },
+    {
+      "hash": "2b1cebc935e968e606dae69b52d5f6f595f7d4e2bea9806eac082a72c0514e7a",
+      "name": "test_falsification.py"
+    },
+    {
+      "hash": "eccd01375d62ce1d5d3e93b16d4797a6273aab28e8de0f30f5f4be75a3a0a883",
+      "name": "test_falsification_layer.py"
+    },
+    {
+      "hash": "d502fe1ad94509ec377877a17fc9d80bb95d2ac7a587021556d2f5816ad6774f",
+      "name": "test_fractal_determinism.py"
+    },
+    {
+      "hash": "2a4003a68b0019fbaac1d9488df871a2e1c683dcc5626ac302932137516ba36a",
+      "name": "test_fractal_generator.py"
+    },
+    {
+      "hash": "66c95ac6a54b403e5058c8a397c38430f765218addadd0fb5decce995adea3c3",
+      "name": "test_global_merkle.py"
+    },
+    {
+      "hash": "3924b3c2830d0096bd7c02f9ba4854750aae90dcde504316e3fb98f1f0645a9f",
+      "name": "test_halt_condition.py"
+    },
+    {
+      "hash": "c052695abd9aca00900ac9f8f4639f301884ec7c1e61d4353525e8acd6173192",
+      "name": "test_hasher.py"
+    },
+    {
+      "hash": "c4bae4edd41a06aae4c39430db0afbe46e15ab0a778e787bb3585a39a18371aa",
+      "name": "test_manifest_generation.py"
+    },
+    {
+      "hash": "f2d0f17929758ca7092f5f3a08a160b22b753c2494cf0cb45866d01fa6149c81",
+      "name": "test_merkle.py"
+    },
+    {
+      "hash": "ff1d2d8b316225b1d2adb157bec1c56bbf7377bb75f7cbb09b75f5c56834805b",
+      "name": "test_multi_repo_verification.py"
+    },
+    {
+      "hash": "e3dd202e8beb33dc983d34610d79fa6f5414cbbff9463175d9d7504b21f02510",
+      "name": "test_omega_invariant.py"
+    },
+    {
+      "hash": "c96571d88e7ec2fbc8beda8a04a0af80072e87685ecc01bd9e7b730c9252565d",
+      "name": "test_onboarding_check.py"
+    },
+    {
+      "hash": "94c80940da57e51488245e93a4db07bffade102bf24af1f6f7d399f72f234635",
+      "name": "test_ownership_guard.py"
+    },
+    {
+      "hash": "1a2e7407cd876f3fe7bf9b1f89b254ce7fb1c42fdb7603f6d993d354b3e07032",
+      "name": "test_peano_axioms.py"
+    },
+    {
+      "hash": "4c9d9011f620960e21e6fbffb776f53b1383af9fdb5966665cd634e17591b40d",
+      "name": "test_peano_proof.py"
+    },
+    {
+      "hash": "86c37d507d15dad53d2240d00d1f5a52b467e457979beedf0e7d54a7b990e76b",
+      "name": "test_pr18_task_agent.py"
+    },
+    {
+      "hash": "a95cbeb6d19b13257b9473eeaba63a9b76f7fd352ef05acf84946480a7ab78f0",
+      "name": "test_pr25_determinism.py"
+    },
+    {
+      "hash": "54c84456a5c9e60c9651381bc7048b44356229074166a6239b4652ddce938c5e",
+      "name": "test_pr34_audit.py"
+    },
+    {
+      "hash": "fe7d6bf346b1b9cd565c484da5b75a04c6acd832e5b57c5da6b8a1fb4abf4ed7",
+      "name": "test_recursive_expansion.py"
+    },
+    {
+      "hash": "42b9d7e89c336adf764810c9990493252d2528532c8c6c705f70e75038846ed6",
+      "name": "test_repository_compliance.py"
+    },
+    {
+      "hash": "b6e8052cc472fa152de76817550f66f8ce619aa50ab79e29da782869c2a91c05",
+      "name": "test_shard_verification.py"
+    },
+    {
+      "hash": "254d3577d591552ec5f84e979ace32da2edfbfc93e7814c2b81c748c3a3e2bb9",
+      "name": "test_uvm_determinism.py"
+    },
+    {
+      "hash": "6231c22bd04d4a5b98200dd3dccde2328319667df3a0ef0214883978cb6d3dab",
+      "name": "test_yeshua_enforcement.py"
+    }
+  ],
+  "version": "1.0.0",
+  "yeshua_enforcement": {
+    "all_passed": true,
+    "passed": [
+      "no_float_in_core",
+      "no_nondeterministic_iteration",
+      "dependencies_declared"
+    ],
+    "violation_count": 0,
+    "violations": []
+  }
+}
