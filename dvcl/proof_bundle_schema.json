@@ -1,0 +1,44 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 37,
+  "description": "Proof-Carrying Execution bundle schema for DVCL",
+  "standard": "Yeshua",
+  "bundle": {
+    "required_files": [
+      "input.hash",
+      "env.hash",
+      "trace.hash",
+      "output.hash",
+      "merkle_root.hash",
+      "verification.json"
+    ],
+    "verification_json": {
+      "required_fields": [
+        "deterministic_trace_summary",
+        "arithmetic_invariance_report",
+        "boolean_purity_report",
+        "cross_run_reproducibility_assertion"
+      ],
+      "hash_algorithm": "sha256",
+      "merkle_algorithm": "sha256_binary_tree"
+    }
+  },
+  "cross_node_protocol": {
+    "minimum_nodes": 2,
+    "divergence_action": "reject_and_log_delta",
+    "verification_fields": ["output_hash", "trace_hash", "merkle_root"]
+  },
+  "dual_path": {
+    "fast_path": {
+      "hardware_optimized": true,
+      "accelerators_permitted": true
+    },
+    "pure_path": {
+      "hardware_agnostic": true,
+      "deterministic_reference": true,
+      "peano_safe": true,
+      "boolean_pure": true
+    },
+    "agreement_requirement": "bitwise_identical"
+  }
+}
