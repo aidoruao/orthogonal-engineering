@@ -1,0 +1,38 @@
+# DVCL Execution Specification
+# PR #37 — Distributed Verifiable Compute Layer
+# Standard: Yeshua
+# Version: 1.0.0
+
+spec_version: "1.0.0"
+pr: 37
+layer: "Deterministic Execution & Proof Layer"
+
+runtime:
+  canonical_version: "3.11"
+  version_lock: true
+  seed: 37
+  numeric_determinism: "strict"
+  tensor_serialization: "canonical_flatbuffer"
+
+dependency_graph:
+  immutable: true
+  hash_locked: true
+  manifest: "canonical_env.lock"
+
+execution_constraints:
+  float_policy: "explicit_bounds_required"
+  integer_fallback: true
+  nondeterminism_forbidden: true
+  hardware_specific_paths: false
+
+artifacts:
+  - execution_spec.yaml
+  - canonical_env.lock
+  - determinism_guard.py
+  - proof_bundle_schema.json
+  - tensor_manifest.json
+  - inference_spec.yaml
+
+ci_enforcement:
+  reject_without_determinism_spec: true
+  reject_without_proof_bundle: true

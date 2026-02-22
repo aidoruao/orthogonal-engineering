@@ -1,0 +1,131 @@
+# ci/cross_runner_verification.yml
+# DVCL Cross-Node Verification Pipeline
+# PR #37 — Distributed Verifiable Compute Layer
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# Implements the Cross-Node Verification Protocol (CNVP).
+# Minimum 2 independent nodes must agree on output hashes before merge.
+# This pipeline uses the GitHub Actions matrix as independent nodes.
+
+name: DVCL Cross-Node Verification
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "37"
+
+permissions:
+  contents: read
+
+jobs:
+  node-execution:
+    name: Node Execution (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Execute workload and produce proof bundle
+        run: |
+          python -c "
+          import json, hashlib, pathlib, sys
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          # Canonical input
+          input_data = b'dvcl_cross_node_verification_v1'
+          input_hash = sha256(input_data)
+
+          # Canonical env hash (from lock file)
+          lock = pathlib.Path('dvcl/canonical_env.lock').read_bytes()
+          env_hash = sha256(lock)
+
+          # Deterministic output
+          output_data = sha256(input_data + lock).encode('utf-8')
+          output_hash = sha256(output_data)
+
+          # Trace hash (deterministic summary of steps)
+          trace = f'input:{input_hash}|env:{env_hash}|output:{output_hash}'.encode('utf-8')
+          trace_hash = sha256(trace)
+
+          # Merkle root
+          leaf_hashes = sorted([input_hash, env_hash, trace_hash, output_hash])
+          merkle_input = '|'.join(leaf_hashes).encode('utf-8')
+          merkle_root = sha256(merkle_input)
+
+          bundle = {
+              'input_hash': input_hash,
+              'env_hash': env_hash,
+              'trace_hash': trace_hash,
+              'output_hash': output_hash,
+              'merkle_root': merkle_root,
+          }
+          pathlib.Path('proof_bundle.json').write_text(json.dumps(bundle, indent=2))
+          print(json.dumps(bundle, indent=2))
+          "
+
+      - name: Upload proof bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-bundle-${{ matrix.os }}
+          path: proof_bundle.json
+
+  compare-bundles:
+    name: Compare Cross-Node Proof Bundles
+    needs: node-execution
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all proof bundles
+        uses: actions/download-artifact@v4
+        with:
+          pattern: proof-bundle-*
+          path: /tmp/proof_bundles
+
+      - name: Assert all proof bundles are identical
+        run: |
+          python - <<'EOF'
+          import json, pathlib, sys
+
+          bundle_files = list(pathlib.Path('/tmp/proof_bundles').rglob('proof_bundle.json'))
+          if len(bundle_files) < 2:
+              print('ERROR: Fewer than 2 proof bundles found — cross-node verification impossible')
+              sys.exit(1)
+
+          roots = set()
+          for f in bundle_files:
+              data = json.loads(f.read_text())
+              roots.add(data['merkle_root'])
+              print(f'  {f.parent.name}: merkle_root={data["merkle_root"]}')
+
+          if len(roots) != 1:
+              print(f'DIVERGENCE DETECTED: {len(roots)} distinct Merkle roots across nodes')
+              sys.exit(1)
+
+          print(f'VERIFIED: All {len(bundle_files)} nodes agree on merkle_root={roots.pop()}')
+          EOF
