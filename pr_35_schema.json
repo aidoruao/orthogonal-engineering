@@ -1,0 +1,416 @@
+{
+  "agent_enforcement": {
+    "enforcement_directives": [
+      {
+        "directive": "All new modules must pass run_yeshua_enforcement() without violations",
+        "source": "yeshua/enforcement.py"
+      },
+      {
+        "directive": "All new modules must be hash-anchored and listed in pr_35_schema.json",
+        "source": "pr35_schema.py::build_schema"
+      },
+      {
+        "directive": "No float arithmetic permitted in core pipeline directories",
+        "source": "yeshua/enforcement.py::enforce_no_float_in_core"
+      },
+      {
+        "directive": "No non-deterministic iteration without fixed seed",
+        "source": "yeshua/enforcement.py::enforce_no_nondeterministic_iteration"
+      },
+      {
+        "directive": "All dependencies must be declared in requirements.txt",
+        "source": "yeshua/enforcement.py::enforce_dependencies_declared"
+      }
+    ],
+    "new_agents_in_pr35": "NONE \u2014 no new agent types introduced",
+    "onboarding_documents": {
+      "AGENT.md": "AGENT.md",
+      "COPILOT_ONBOARDING.md": "COPILOT_ONBOARDING.md",
+      "onboarding/verify_onboarding.py": "onboarding/verify_onboarding.py"
+    },
+    "step": "copilot_agent_onboarding_and_enforcement",
+    "verification_hooks_active": true
+  },
+  "delta_mapping": {
+    "delta_count": 3,
+    "delta_from_pr34": [
+      {
+        "change_type": "addition",
+        "detail": "pr35_schema.py codifies invariants from all prior PRs into a single executable schema",
+        "item": "Yeshua Standard integration continuity module"
+      },
+      {
+        "change_type": "addition",
+        "detail": "Machine-readable, hash-anchored schema artifact for audit trail",
+        "item": "Schema serialization (pr_35_schema.json)"
+      }
+    ],
+    "new_modules": [
+      {
+        "module": "pr35_schema.py",
+        "predecessor": "NONE \u2014 new in #35",
+        "purpose": "Top-level schema integration module (this file)"
+      },
+      {
+        "module": "tests/test_pr35_schema.py",
+        "predecessor": "NONE \u2014 new in #35",
+        "purpose": "Deterministic test coverage for #35 schema"
+      },
+      {
+        "module": "pr_35_schema.json",
+        "predecessor": "NONE \u2014 new in #35",
+        "purpose": "Serialized, hash-anchored schema artifact"
+      }
+    ],
+    "step": "delta_extraction"
+  },
+  "footer": "SCHEMA COMPLETE \u2014 PR #35 Yeshua Standard Integration Continuity",
+  "invariants_applied": [
+    {
+      "axiom": 1,
+      "text": "Every truth is derivable from axioms.",
+      "verification_hook": "yeshua/enforcement.py::run_yeshua_enforcement"
+    },
+    {
+      "axiom": 2,
+      "text": "Every derivation is reproducible.",
+      "verification_hook": "axioms/yeshua_axioms.py::YeshuaClaim.is_reproducible"
+    },
+    {
+      "axiom": 3,
+      "text": "Every mutation is re-verifiable.",
+      "verification_hook": "axioms/yeshua_axioms.py::YeshuaClaim derivation.is_valid"
+    },
+    {
+      "axiom": 4,
+      "text": "No authority without proof.",
+      "verification_hook": "axioms/yeshua_axioms.py::verify_yeshua_standard (source check)"
+    },
+    {
+      "axiom": 5,
+      "text": "No hidden state.",
+      "verification_hook": "axioms/yeshua_axioms.py::verify_yeshua_standard (statement check)"
+    },
+    {
+      "axiom": 6,
+      "text": "No unverifiable dependency.",
+      "verification_hook": "yeshua/enforcement.py::enforce_dependencies_declared"
+    },
+    {
+      "axiom": 7,
+      "text": "No economic gatekeeping.",
+      "verification_hook": "axioms/yeshua_axioms.py::verify_yeshua_standard (monetization check)"
+    },
+    {
+      "axiom": 8,
+      "text": "Every artifact is hash-anchored.",
+      "verification_hook": "axioms/yeshua_axioms.py::YeshuaClaim.is_hash_anchored"
+    }
+  ],
+  "module_list": [
+    "pr35_schema.py",
+    "tests/test_pr35_schema.py",
+    "pr_35_schema.json"
+  ],
+  "pr_number": 35,
+  "sections": {
+    "1_initialization": {
+      "integrity_check": "hash-validated at schema build time",
+      "pr_35_depends_on": {
+        "pr_16": {
+          "description": "Canonicalization + Hash Scaffold",
+          "evidence_files": [
+            "hasher.py",
+            "merkle.py",
+            "canonicalizer.py"
+          ],
+          "status": "referenced"
+        },
+        "pr_22": {
+          "description": "Fractal Code Map / Topology",
+          "evidence_files": [
+            "generators/fractal_expander.py",
+            "TOPOLOGY_MAP.yaml"
+          ],
+          "status": "referenced"
+        },
+        "pr_23": {
+          "description": "Fractal Code Topology (continued)",
+          "evidence_files": [
+            "generators/dag_generator.py"
+          ],
+          "status": "referenced"
+        },
+        "pr_24": {
+          "description": "Omega / Infinite Recursive Invariant",
+          "evidence_files": [
+            "RECURSIVE_INVARIANT_OMEGA.md"
+          ],
+          "status": "referenced"
+        },
+        "pr_26": {
+          "description": "Deterministic LoRA Pipeline",
+          "evidence_files": [
+            "generators/pr25_pipeline.py",
+            "seed/pr_25_seed.yaml"
+          ],
+          "status": "referenced"
+        },
+        "pr_32": {
+          "description": "Copilot Agent Onboarding & Enforcement",
+          "evidence_files": [
+            "COPILOT_ONBOARDING.md",
+            "onboarding/verify_onboarding.py"
+          ],
+          "status": "referenced"
+        },
+        "pr_34": {
+          "description": "Structural Enumeration & Enforcement Introspection",
+          "evidence_files": [
+            "pr34_audit.py",
+            "tests/test_pr34_audit.py"
+          ],
+          "status": "referenced"
+        }
+      },
+      "step": "initialization"
+    },
+    "2_delta_mapping": {
+      "delta_count": 3,
+      "delta_from_pr34": [
+        {
+          "change_type": "addition",
+          "detail": "pr35_schema.py codifies invariants from all prior PRs into a single executable schema",
+          "item": "Yeshua Standard integration continuity module"
+        },
+        {
+          "change_type": "addition",
+          "detail": "Machine-readable, hash-anchored schema artifact for audit trail",
+          "item": "Schema serialization (pr_35_schema.json)"
+        }
+      ],
+      "new_modules": [
+        {
+          "module": "pr35_schema.py",
+          "predecessor": "NONE \u2014 new in #35",
+          "purpose": "Top-level schema integration module (this file)"
+        },
+        {
+          "module": "tests/test_pr35_schema.py",
+          "predecessor": "NONE \u2014 new in #35",
+          "purpose": "Deterministic test coverage for #35 schema"
+        },
+        {
+          "module": "pr_35_schema.json",
+          "predecessor": "NONE \u2014 new in #35",
+          "purpose": "Serialized, hash-anchored schema artifact"
+        }
+      ],
+      "step": "delta_extraction"
+    },
+    "3_constraint_integration": {
+      "axioms_module": "axioms/yeshua_axioms.py",
+      "conformity_with_prior_invariants": "VERIFIED \u2014 all 8 axioms sourced from axioms/yeshua_axioms.py",
+      "constraints": [
+        {
+          "axiom": 1,
+          "fail_safe": "RuntimeError raised on strict=True if derivation missing",
+          "scope": "module / function level",
+          "text": "Every truth is derivable from axioms.",
+          "verification_hook": "yeshua/enforcement.py::run_yeshua_enforcement"
+        },
+        {
+          "axiom": 2,
+          "fail_safe": "YeshuaViolation raised on mismatch",
+          "scope": "module / function level",
+          "text": "Every derivation is reproducible.",
+          "verification_hook": "axioms/yeshua_axioms.py::YeshuaClaim.is_reproducible"
+        },
+        {
+          "axiom": 3,
+          "fail_safe": "YeshuaViolation raised on invalid proof",
+          "scope": "module / function level",
+          "text": "Every mutation is re-verifiable.",
+          "verification_hook": "axioms/yeshua_axioms.py::YeshuaClaim derivation.is_valid"
+        },
+        {
+          "axiom": 4,
+          "fail_safe": "YeshuaViolation raised when source is empty",
+          "scope": "module / function level",
+          "text": "No authority without proof.",
+          "verification_hook": "axioms/yeshua_axioms.py::verify_yeshua_standard (source check)"
+        },
+        {
+          "axiom": 5,
+          "fail_safe": "YeshuaViolation raised when statement is empty",
+          "scope": "module / function level",
+          "text": "No hidden state.",
+          "verification_hook": "axioms/yeshua_axioms.py::verify_yeshua_standard (statement check)"
+        },
+        {
+          "axiom": 6,
+          "fail_safe": "EnforcementReport violation recorded; CI gate blocks merge",
+          "scope": "module / function level",
+          "text": "No unverifiable dependency.",
+          "verification_hook": "yeshua/enforcement.py::enforce_dependencies_declared"
+        },
+        {
+          "axiom": 7,
+          "fail_safe": "YeshuaViolation raised on monetization keyword",
+          "scope": "module / function level",
+          "text": "No economic gatekeeping.",
+          "verification_hook": "axioms/yeshua_axioms.py::verify_yeshua_standard (monetization check)"
+        },
+        {
+          "axiom": 8,
+          "fail_safe": "YeshuaViolation raised when SHA-256 digest invalid",
+          "scope": "module / function level",
+          "text": "Every artifact is hash-anchored.",
+          "verification_hook": "axioms/yeshua_axioms.py::YeshuaClaim.is_hash_anchored"
+        }
+      ],
+      "constraints_applied": 8,
+      "enforcement_module": "yeshua/enforcement.py",
+      "step": "constraint_integration"
+    },
+    "4_verification_hooks": {
+      "cross_platform_hash_validation": {
+        "algorithm": "SHA-256",
+        "cross_platform": true,
+        "deterministic": true,
+        "module": "hasher.py"
+      },
+      "floating_arithmetic_elimination": {
+        "check": "yeshua/enforcement.py::enforce_no_float_in_core",
+        "core_dirs": [
+          "generators",
+          "oe_ifm",
+          "axioms",
+          "falsification",
+          "yeshua"
+        ],
+        "uses_floats": false
+      },
+      "nondeterminism_check": {
+        "check": "yeshua/enforcement.py::enforce_no_nondeterministic_iteration",
+        "patterns_forbidden": [
+          "random.random(",
+          "random.randint(",
+          "os.urandom(",
+          "uuid.uuid4("
+        ]
+      },
+      "recursive_integrity_validation": {
+        "bounded": true,
+        "dag_generator": "generators/dag_generator.py",
+        "deterministic": true,
+        "fractal_expander": "generators/fractal_expander.py",
+        "omega_invariant_doc": "RECURSIVE_INVARIANT_OMEGA.md"
+      },
+      "step": "verification_and_fractal_mapping"
+    },
+    "5_agent_enforcement": {
+      "enforcement_directives": [
+        {
+          "directive": "All new modules must pass run_yeshua_enforcement() without violations",
+          "source": "yeshua/enforcement.py"
+        },
+        {
+          "directive": "All new modules must be hash-anchored and listed in pr_35_schema.json",
+          "source": "pr35_schema.py::build_schema"
+        },
+        {
+          "directive": "No float arithmetic permitted in core pipeline directories",
+          "source": "yeshua/enforcement.py::enforce_no_float_in_core"
+        },
+        {
+          "directive": "No non-deterministic iteration without fixed seed",
+          "source": "yeshua/enforcement.py::enforce_no_nondeterministic_iteration"
+        },
+        {
+          "directive": "All dependencies must be declared in requirements.txt",
+          "source": "yeshua/enforcement.py::enforce_dependencies_declared"
+        }
+      ],
+      "new_agents_in_pr35": "NONE \u2014 no new agent types introduced",
+      "onboarding_documents": {
+        "AGENT.md": "AGENT.md",
+        "COPILOT_ONBOARDING.md": "COPILOT_ONBOARDING.md",
+        "onboarding/verify_onboarding.py": "onboarding/verify_onboarding.py"
+      },
+      "step": "copilot_agent_onboarding_and_enforcement",
+      "verification_hooks_active": true
+    },
+    "6_serialization": {
+      "artifact_path": "pr_35_schema.json",
+      "audit_trail": "Each build regenerates and re-hashes the schema artifact",
+      "fields": [
+        "pr_number",
+        "module_list",
+        "invariants_applied",
+        "verification_hooks",
+        "delta_mapping",
+        "agent_enforcement"
+      ],
+      "format": "JSON",
+      "hash_anchored": true,
+      "output_file": "pr_35_schema.json",
+      "step": "schema_serialization"
+    },
+    "7_audit_and_execution": {
+      "cross_pr_check": {
+        "pr_16": "canonicalization hash scaffold present",
+        "pr_22_23": "fractal generator / DAG modules present",
+        "pr_24": "omega recursive invariant documented",
+        "pr_26": "deterministic LoRA pipeline present",
+        "pr_32": "copilot onboarding docs present",
+        "pr_34": "structural enumeration module present"
+      },
+      "halting_criteria": {
+        "all_modules_mapped_to_invariants": true,
+        "copilot_onboarding_applied": true,
+        "cross_platform_hash_verified": true,
+        "fractal_recursive_integrity_verified": true,
+        "schema_serialized_and_auditable": true
+      },
+      "status": "COMPLETE \u2014 PR #35 formally ready for autonomous execution",
+      "step": "audit_and_execution"
+    }
+  },
+  "verification_hooks": {
+    "cross_platform_hash_validation": {
+      "algorithm": "SHA-256",
+      "cross_platform": true,
+      "deterministic": true,
+      "module": "hasher.py"
+    },
+    "floating_arithmetic_elimination": {
+      "check": "yeshua/enforcement.py::enforce_no_float_in_core",
+      "core_dirs": [
+        "generators",
+        "oe_ifm",
+        "axioms",
+        "falsification",
+        "yeshua"
+      ],
+      "uses_floats": false
+    },
+    "nondeterminism_check": {
+      "check": "yeshua/enforcement.py::enforce_no_nondeterministic_iteration",
+      "patterns_forbidden": [
+        "random.random(",
+        "random.randint(",
+        "os.urandom(",
+        "uuid.uuid4("
+      ]
+    },
+    "recursive_integrity_validation": {
+      "bounded": true,
+      "dag_generator": "generators/dag_generator.py",
+      "deterministic": true,
+      "fractal_expander": "generators/fractal_expander.py",
+      "omega_invariant_doc": "RECURSIVE_INVARIANT_OMEGA.md"
+    },
+    "step": "verification_and_fractal_mapping"
+  }
+}
