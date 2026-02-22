@@ -29,6 +29,12 @@ from toolkit.oe.boundary_enforcer import (
     validate_output_schema,
 )
 
+# UD-Bounded(k) enforcement for onboarding/audit loops
+from oe_ifm.halt_condition import BoundedCounter, HaltConditionError
+
+# Maximum artifacts processed per pipeline run (UD-Bounded guard)
+_MAX_AUDIT_ARTIFACTS: int = 10_000
+
 
 class OnboardingStatus(Enum):
     """Status of onboarding verification."""
@@ -933,9 +939,11 @@ class CheckOnboardingPipeline:
     def stage_2_validate_structure(
         self, artifacts: List[CandidateArtifact]
     ) -> List[ValidationResult]:
-        """Stage 2: Validate artifact structure."""
+        """Stage 2: Validate artifact structure (UD-Bounded)."""
         results = []
+        counter = BoundedCounter(max_steps=_MAX_AUDIT_ARTIFACTS)
         for artifact in artifacts:
+            counter.step()
             result = self.checker.validate_artifact_structure(artifact)
             results.append(result)
         self.stage_outputs["stage_2"] = results
