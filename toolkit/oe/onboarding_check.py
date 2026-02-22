@@ -16,7 +16,7 @@ import os
 import re
 import subprocess
 import sys
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
@@ -178,6 +178,7 @@ class OnboardingChecker:
                 r"onboarding.*\.(md|txt|json|yaml|yml)$",
                 r"ONBOARDING.*\.(md|txt|json|yaml|yml)$",
                 r"onboard.*\.(md|txt|json|yaml|yml)$",
+                r".*onboard.*\.(md|txt|json|yaml|yml)$",
             ],
             ArtifactType.LOCK_FILE: [
                 r".*\.lock$",
@@ -412,6 +413,7 @@ class OnboardingChecker:
                 r"directories?[:\s]+\[.*\]",
                 r"directories?[:\s]+\d+",
                 r"scanned[:\s]+\d+\s+directories?",
+                r"directories?\s+scanned[:\s]+\d+",
             ]
             if any(
                 re.search(pattern, content, re.IGNORECASE) for pattern in dir_patterns
@@ -516,7 +518,7 @@ class OnboardingChecker:
             if len(missing_fields) == 0:
                 status = "valid"
                 is_valid = True
-            elif len(missing_fields) <= 3:  # Allow some missing fields
+            elif len(missing_fields) <= 4:  # Allow some missing fields
                 status = "partial"
                 is_valid = False
             else:
@@ -1029,11 +1031,11 @@ class CheckOnboardingPipeline:
                 if output and hasattr(output[0], "to_dict"):
                     data = [item.to_dict() for item in output]
                 else:
-                    data = [asdict(item) for item in output]
+                    data = [asdict(item) if is_dataclass(item) else item for item in output]
             elif hasattr(output, "to_dict"):
                 data = output.to_dict()
             elif hasattr(output, "__dict__"):
-                data = asdict(output)
+                data = asdict(output) if is_dataclass(output) else vars(output)
             else:
                 data = output
 
