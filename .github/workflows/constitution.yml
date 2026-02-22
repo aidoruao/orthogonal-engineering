@@ -1,0 +1,180 @@
+name: Constitution Enforcement
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+
+permissions:
+  contents: read
+
+jobs:
+  # -------------------------------------------------------------------------
+  # constitution — run all axiomatic enforcement checks
+  # -------------------------------------------------------------------------
+  constitution:
+    name: Constitution (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        python-version: [ "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: I - Peano & Logic axiom tests
+        run: python -m pytest tests/test_axioms.py -v
+
+      - name: III - Popperian falsification tests
+        run: python -m pytest tests/test_falsification_layer.py -v
+
+      - name: VI - Ownership guard (free forever check)
+        run: python ownership_guard.py
+
+      - name: VIII - Yeshua enforcement
+        run: python -m pytest tests/test_yeshua_enforcement.py -v
+
+      - name: IX - Benchmark suite
+        run: python benchmarks/run_benchmarks.py
+
+      - name: V - Global Merkle root tests
+        run: python -m pytest tests/test_global_merkle.py -v
+
+      - name: Upload global Merkle root artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: global-merkle-root-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: merkle/global_root.json
+          if-no-files-found: error
+
+  # -------------------------------------------------------------------------
+  # compare-roots — assert all six artifacts have identical root_hash
+  # -------------------------------------------------------------------------
+  compare-roots:
+    name: Compare Global Merkle Roots Across Platforms
+    needs: constitution
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all Merkle root artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: global-merkle-root-*
+          path: /tmp/merkle_roots
+
+      - name: Assert all roots are identical
+        run: |
+          python - <<'EOF'
+          import json, pathlib, sys
+
+          root_files = list(pathlib.Path("/tmp/merkle_roots").rglob("global_root.json"))
+          if not root_files:
+              print("ERROR: No global_root.json artifacts found")
+              sys.exit(1)
+
+          roots = set()
+          for f in root_files:
+              data = json.loads(f.read_text())
+              roots.add(data["root_hash"])
+              print(f"  {f.parent.name}: {data['root_hash']}")
+
+          if len(roots) != 1:
+              print(f"FAIL: {len(roots)} distinct roots found — not deterministic!")
+              sys.exit(1)
+
+          print(f"OK: All {len(root_files)} roots identical: {next(iter(roots))}")
+          EOF
+
+  # -------------------------------------------------------------------------
+  # license-check — verify LICENSE exists and is CC0 / open
+  # -------------------------------------------------------------------------
+  license-check:
+    name: License Integrity Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify LICENSE is open
+        run: |
+          python -c "
+          from pathlib import Path
+          content = Path('LICENSE').read_text(encoding='utf-8').lower()
+          open_ids = {'cc0', 'public domain', 'creative commons', 'mit', 'apache', 'gpl', 'unlicense'}
+          if not any(oid in content for oid in open_ids):
+              raise SystemExit('LICENSE does not contain an open license identifier')
+          print('LICENSE OK:', [oid for oid in open_ids if oid in content])
+          "
+
+      - name: Run ownership guard (anti-monetization)
+        run: python ownership_guard.py
+
+  # -------------------------------------------------------------------------
+  # dependency-audit — verify dependencies are declared
+  # -------------------------------------------------------------------------
+  dependency-audit:
+    name: Dependency Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify requirements.txt exists
+        run: |
+          python -c "
+          from pathlib import Path
+          req = Path('requirements.txt')
+          assert req.exists(), 'requirements.txt missing'
+          lines = [l.strip() for l in req.read_text().splitlines() if l.strip() and not l.startswith('#')]
+          print(f'requirements.txt: {len(lines)} declared dependencies')
+          "
+
+      - name: Generate SBOM manifest
+        run: |
+          python -c "
+          import json, subprocess, sys
+          result = subprocess.run([sys.executable, '-m', 'pip', 'list', '--format=json'],
+                                  capture_output=True, text=True)
+          packages = json.loads(result.stdout)
+          sbom = {'format': 'pip-list', 'count': len(packages), 'packages': packages}
+          import pathlib
+          pathlib.Path('sbom.json').write_text(json.dumps(sbom, indent=2))
+          print(f'SBOM: {len(packages)} packages')
+          "
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+          if-no-files-found: ignore

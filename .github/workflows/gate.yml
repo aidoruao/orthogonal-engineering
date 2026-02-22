@@ -62,6 +62,14 @@ jobs:
           echo "INFO: gutenberg_null_test not available, skipping"
         fi
 
+    - name: PR #34 — Structural Enumeration & Enforcement Introspection
+      run: |
+        python pr34_audit.py --json > pr34_audit_output.json
+        echo "PR #34 audit complete"
+
+    - name: PR #34 — Run audit tests
+      run: python -m pytest tests/test_pr34_audit.py -v
+
     - name: Archive test results (if any)
       if: always()
       uses: actions/upload-artifact@v4
@@ -70,4 +78,5 @@ jobs:
         path: |
           test_results.json
           evidence/*.json
+          pr34_audit_output.json
         if-no-files-found: ignore
