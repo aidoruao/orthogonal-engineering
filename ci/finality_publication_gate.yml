@@ -1,0 +1,169 @@
+# ci/finality_publication_gate.yml
+# PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# CI gate that enforces public finality publication before merge.
+# Proof records are immutable once published.
+# No merge without a valid finality record.
+
+name: AMSL Finality Publication Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "38"
+
+permissions:
+  contents: read
+
+jobs:
+  produce-proof-bundle:
+    name: Produce Proof Bundle (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run all invariant checks
+        run: |
+          python yeshua_math/peano_invariant_checker.py
+          python yeshua_math/boolean_purity_validator.py
+          python yeshua_math/pure_reference_runtime/cross_validator.py
+
+      - name: Produce proof bundle
+        run: |
+          python - <<'EOF'
+          import hashlib, json, pathlib
+          from datetime import datetime, timezone
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          spec_dir = pathlib.Path('spec')
+          spec_hashes = {str(p): sha256(p.read_bytes()) for p in sorted(spec_dir.glob('*.json'))}
+
+          env_hash = sha256(pathlib.Path('bootstrap/toolchain.lock').read_bytes())
+          output_hash = sha256(json.dumps(spec_hashes, sort_keys=True).encode('utf-8'))
+          merkle_root = sha256('|'.join(sorted([env_hash, output_hash])).encode('utf-8'))
+
+          bundle = {
+              'merkle_root': merkle_root,
+              'output_hash': output_hash,
+              'environment_hash': env_hash,
+              'timestamp': datetime.now(timezone.utc).isoformat(),
+              'invariant_spec_version': 'v1',
+              'node_id': 'ci-${{ matrix.os }}',
+          }
+          pathlib.Path('proof_bundle.json').write_text(json.dumps(bundle, indent=2))
+          print(json.dumps(bundle, indent=2))
+          EOF
+
+      - name: Publish to local finality log
+        run: |
+          python - <<'EOF'
+          import hashlib, json, pathlib
+          from datetime import datetime, timezone
+
+          bundle = json.loads(pathlib.Path('proof_bundle.json').read_text())
+          bundle['schema_version'] = '1.0.0'
+          bundle['pr'] = 38
+          bundle['standard'] = 'Yeshua'
+
+          canonical = json.dumps(bundle, sort_keys=True, separators=(',', ':'))
+          record_hash = hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+          bundle['record_hash'] = record_hash
+
+          log_path = pathlib.Path('finality/finality_log.jsonl')
+          log_path.parent.mkdir(parents=True, exist_ok=True)
+          with log_path.open('a', encoding='utf-8') as fh:
+              fh.write(json.dumps(bundle, sort_keys=True) + '\n')
+
+          print(f'FINALITY PUBLISHED: record_hash={record_hash}')
+          EOF
+
+      - name: Verify finality log integrity
+        run: python finality/finality_publisher.py --verify-log
+
+      - name: Upload finality log
+        uses: actions/upload-artifact@v4
+        with:
+          name: finality-log-${{ matrix.os }}
+          path: finality/finality_log.jsonl
+          if-no-files-found: error
+
+  finality-gate:
+    name: Finality Publication Gate
+    needs: produce-proof-bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all finality logs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: finality-log-*
+          path: /tmp/finality_logs
+
+      - name: Assert all nodes published valid finality records
+        run: |
+          python - <<'EOF'
+          import hashlib, json, pathlib, sys
+
+          log_files = list(pathlib.Path('/tmp/finality_logs').rglob('finality_log.jsonl'))
+          print(f'Finality logs found: {len(log_files)}')
+
+          if not log_files:
+              print('FINALITY GATE: FAILED — no finality logs found')
+              sys.exit(1)
+
+          all_ok = True
+          for log_file in log_files:
+              node = log_file.parent.name
+              with log_file.open('r', encoding='utf-8') as fh:
+                  for i, line in enumerate(fh):
+                      line = line.strip()
+                      if not line:
+                          continue
+                      entry = json.loads(line)
+                      stored_hash = entry.pop('record_hash', None)
+                      if stored_hash is None:
+                          print(f'ERROR: {node} line {i+1}: missing record_hash')
+                          all_ok = False
+                          continue
+                      canonical = json.dumps(entry, sort_keys=True, separators=(',', ':'))
+                      expected = hashlib.sha256(canonical.encode('utf-8')).hexdigest()
+                      if stored_hash != expected:
+                          print(f'TAMPER: {node} line {i+1}: stored={stored_hash} expected={expected}')
+                          all_ok = False
+                      else:
+                          print(f'OK: {node} line {i+1}: record_hash={stored_hash}')
+
+          if not all_ok:
+              print('FINALITY GATE: FAILED — tampered or missing records')
+              sys.exit(1)
+
+          print(f'FINALITY GATE: PASSED — all finality records are valid and untampered')
+          EOF

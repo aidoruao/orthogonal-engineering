@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 38,
+  "standard": "Yeshua",
+  "axiom_set": "Peano Arithmetic",
+  "frozen": true,
+  "freeze_version": "v1",
+  "description": "Canonical Peano arithmetic axioms. Immutable once frozen. All arithmetic operations in the system must be reducible to these axioms.",
+  "axioms": [
+    {
+      "id": "PA1",
+      "name": "Zero",
+      "statement": "0 is a natural number."
+    },
+    {
+      "id": "PA2",
+      "name": "Successor",
+      "statement": "For every natural number n, S(n) is a natural number."
+    },
+    {
+      "id": "PA3",
+      "name": "Zero not successor",
+      "statement": "For no natural number n is S(n) = 0."
+    },
+    {
+      "id": "PA4",
+      "name": "Successor injective",
+      "statement": "For all natural numbers m, n, if S(m) = S(n) then m = n."
+    },
+    {
+      "id": "PA5",
+      "name": "Induction",
+      "statement": "If P(0) is true and for every natural number n, P(n) implies P(S(n)), then P holds for all natural numbers."
+    },
+    {
+      "id": "PA6",
+      "name": "Addition base",
+      "statement": "For all natural numbers n, n + 0 = n."
+    },
+    {
+      "id": "PA7",
+      "name": "Addition step",
+      "statement": "For all natural numbers m, n, m + S(n) = S(m + n)."
+    },
+    {
+      "id": "PA8",
+      "name": "Multiplication base",
+      "statement": "For all natural numbers n, n * 0 = 0."
+    },
+    {
+      "id": "PA9",
+      "name": "Multiplication step",
+      "statement": "For all natural numbers m, n, m * S(n) = (m * n) + m."
+    }
+  ],
+  "enforcement": {
+    "float_policy": "explicit_bounds_required",
+    "integer_fallback_required": true,
+    "unbounded_drift_forbidden": true
+  }
+}

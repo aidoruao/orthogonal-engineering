@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 38,
+  "layer": "Autonomous Mathematical Sovereignty Layer (AMSL)",
+  "standard": "Yeshua",
+  "description": "Machine-readable invariant specification for the AMSL. Spec > code. Once frozen, a version is immutable.",
+  "frozen": true,
+  "freeze_version": "v1",
+  "supermajority_quorum_required_for_change": true,
+  "sections": {
+    "arithmetic": {
+      "schema_ref": "arithmetic_axioms.json",
+      "authority": "Peano arithmetic reducibility"
+    },
+    "boolean": {
+      "schema_ref": "boolean_axioms.json",
+      "authority": "Boolean algebra completeness"
+    },
+    "verification": {
+      "schema_ref": "verification_protocol.json",
+      "authority": "Cross-node quorum consensus"
+    }
+  },
+  "enforcement": {
+    "spec_overrides_implementation": true,
+    "implementation_must_conform_to_spec": true,
+    "deviation_action": "reject_and_log"
+  },
+  "identity": {
+    "hash_algorithm": "sha256",
+    "merkle_algorithm": "sha256_binary_tree",
+    "finality_anchor": "public_append_only_ledger"
+  }
+}

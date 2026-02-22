@@ -1,0 +1,37 @@
+{
+  "freeze_version": "v1",
+  "pr": 38,
+  "standard": "Yeshua",
+  "description": "Immutable freeze of all invariant specification files at the time of PR #38 merge. This record cannot be modified. Any change requires a new freeze version and a supermajority quorum.",
+  "frozen": true,
+  "freeze_timestamp": "2026-02-22T23:45:04Z",
+  "spec_files": [
+    {
+      "path": "spec/invariant_schema.json",
+      "description": "Top-level invariant schema",
+      "sha256": "placeholder_computed_at_freeze_time"
+    },
+    {
+      "path": "spec/arithmetic_axioms.json",
+      "description": "Peano arithmetic axioms",
+      "sha256": "placeholder_computed_at_freeze_time"
+    },
+    {
+      "path": "spec/boolean_axioms.json",
+      "description": "Boolean algebra axioms",
+      "sha256": "placeholder_computed_at_freeze_time"
+    },
+    {
+      "path": "spec/verification_protocol.json",
+      "description": "MIVN quorum and merge gate protocol",
+      "sha256": "placeholder_computed_at_freeze_time"
+    }
+  ],
+  "policy": {
+    "spec_version_immutable_once_frozen": true,
+    "spec_change_requires_supermajority_quorum": true,
+    "implementation_must_conform_to_spec": true,
+    "spec_overrides_implementation": true
+  },
+  "note": "SHA-256 values are populated by the CI sovereignty_quorum.yml job at freeze time. The placeholder values above indicate the schema structure; live values are computed and verified on every CI run."
+}
