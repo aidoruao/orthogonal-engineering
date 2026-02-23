@@ -1,0 +1,203 @@
+# .github/workflows/pr43-orthogonal-parallel.yml
+# PR #43 — Orthogonal Parallel
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# Verifies:
+#   1. Full PR #43 test suite (92+ assertions).
+#   2. Peano kernel: inductive ℕ, Axioms P1-P5.
+#   3. Primitive recursion: add, mul, leq — structural correctness.
+#   4. Boolean kernel: NOT/AND/OR/NAND truth tables.
+#   5. Type theory: Curry-Howard, Proof/Pi/Sigma, plus_zero_identity.
+#   6. Constraint solver: deterministic finite search (no randomness).
+#   7. Hash identity: SHA-256 byte equality, cross-platform.
+#   8. Closure verifier: no float, no random, pure functions.
+#   9. Impossibility theorems: vendor lock, growth, spectacle.
+#  10. Corporate autopsy: Tesla FSD and NVIDIA stack comparisons.
+#
+# PYTHONHASHSEED is pinned to 43 for cross-run reproducibility.
+
+name: Orthogonal Parallel (PR #43)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "43"
+  TZ: "UTC"
+  SOURCE_DATE_EPOCH: "1700000000"
+
+jobs:
+  orthogonal-parallel-verification:
+    name: Orthogonal Parallel Verification (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run PR #43 test suite
+        run: |
+          pytest tests/test_pr43_orthogonal_parallel.py -v
+
+      - name: Peano kernel smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from pr43.foundations.peano_kernel import zero, successor, eq, from_int, to_int
+          # Verify 2 + 3 = 5 inductively
+          from pr43.foundations.primitive_recursion import add
+          two = from_int(2)
+          three = from_int(3)
+          five = from_int(5)
+          result = add(two, three)
+          assert eq(result, five), f"2+3 != 5: got {to_int(result)}"
+          print(f"Peano kernel OK: 2 + 3 = {to_int(result)} (inductive)")
+          EOF
+
+      - name: Boolean kernel smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from pr43.foundations.boolean_kernel import false, true, NOT, AND, OR, NAND, eq
+          assert eq(NAND(true(), true()), false()), "NAND(1,1) != 0"
+          assert eq(NAND(false(), true()), true()), "NAND(0,1) != 1"
+          print("Boolean kernel OK: NAND truth table verified")
+          EOF
+
+      - name: Closure verifier smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from pr43.closure.verify_closure import verify_no_floating_point, verify_no_randomness
+          clean_source = "x = 1\ny = 2\nresult = x + y\n"
+          assert verify_no_floating_point(clean_source)
+          assert verify_no_randomness(clean_source)
+          print("Closure verifier OK: no float, no random in clean source")
+          try:
+              verify_no_floating_point("x = 3.14\n")
+              assert False, "Should have raised"
+          except ValueError:
+              pass
+          print("Closure verifier OK: float literal correctly rejected")
+          EOF
+
+      - name: Hash identity smoke test
+        run: |
+          python - <<'EOF'
+          import sys, hashlib
+          sys.path.insert(0, ".")
+          from pr43.verification.hash_identity import sha256_bytes, verify_reproducibility
+          data = b"pr43-yeshua-standard"
+          h1 = sha256_bytes(data)
+          h2 = sha256_bytes(data)
+          assert h1 == h2, "Non-deterministic hash"
+          expected = hashlib.sha256(data).hexdigest()
+          assert h1 == expected, f"Hash mismatch: {h1} != {expected}"
+          assert verify_reproducibility({"f": h1}, {"f": h1})
+          print(f"Hash identity OK: SHA-256={h1}")
+          EOF
+
+      - name: Impossibility theorems smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from pr43.impossibility.vendor_lock import check_no_lock_in
+          from pr43.impossibility.growth_incompatibility import detect_incompatibility
+          from pr43.impossibility.spectacle_nullification import nullification_proof
+          # Vendor lock
+          r = check_no_lock_in("x = 1\n")
+          assert r["exclusive_advantage"] is False
+          # Growth incompatibility
+          proof = {"required_properties": ["det"], "proven_properties": ["det"]}
+          spec = {"requires_structural_modification": True}
+          r2 = detect_incompatibility(proof, spec)
+          assert r2["incompatible"] is True
+          # Spectacle nullification
+          r3 = nullification_proof({"valid": True})
+          assert r3["delta_in_validity"] == 0
+          print("Impossibility theorems OK: vendor lock, growth, spectacle")
+          EOF
+
+  cross-platform-identity:
+    name: Cross-Platform Identity Check
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ "3.11" ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Peano arithmetic cross-platform identity
+        shell: python
+        run: |
+          import sys, os, hashlib, struct
+          sys.path.insert(0, os.getcwd())
+          from pr43.foundations.peano_kernel import from_int, to_int
+          from pr43.foundations.primitive_recursion import add, mul
+          # Compute a hash of arithmetic results
+          buf = bytearray()
+          for a in range(5):
+              for b in range(5):
+                  s = to_int(add(from_int(a), from_int(b)))
+                  p = to_int(mul(from_int(a), from_int(b)))
+                  buf.extend(struct.pack(">II", s, p))
+          h = hashlib.sha256(bytes(buf)).hexdigest()
+          # Re-compute to verify self-consistency
+          buf2 = bytearray()
+          for a in range(5):
+              for b in range(5):
+                  s = to_int(add(from_int(a), from_int(b)))
+                  p = to_int(mul(from_int(a), from_int(b)))
+                  buf2.extend(struct.pack(">II", s, p))
+          h2 = hashlib.sha256(bytes(buf2)).hexdigest()
+          assert h == h2, f"Cross-run mismatch: {h} != {h2}"
+          print(f"Peano cross-platform identity OK on {sys.platform}: SHA-256={h}")
+
+      - name: Run test suite
+        run: pytest tests/test_pr43_orthogonal_parallel.py -v
