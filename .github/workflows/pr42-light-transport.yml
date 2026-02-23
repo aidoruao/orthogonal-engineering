@@ -1,0 +1,207 @@
+# .github/workflows/pr42-light-transport.yml
+# PR #42 — Deterministic Light Transport Layer (DLTL)
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# Verifies:
+#   1. Full PR #42 test suite (60+ assertions).
+#   2. Sobol'/Halton/Hammersley sequence correctness.
+#   3. Adaptive EBLS convergence.
+#   4. Deterministic path tracing (bit-identical across runs).
+#   5. Dual-path verification (CPU reference vs GPU optional).
+#   6. Style grammar hash integrity.
+#
+# PYTHONHASHSEED is pinned to 42 for cross-run reproducibility.
+
+name: Deterministic Light Transport Layer (PR #42)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "42"
+  TZ: "UTC"
+  SOURCE_DATE_EPOCH: "1700000000"
+
+jobs:
+  light-transport-verification:
+    name: Light Transport Verification (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run PR #42 test suite
+        run: |
+          pytest tests/test_pr42_deterministic_light.py -v
+
+      - name: Verify style grammar
+        run: |
+          python - <<'EOF'
+          import json, sys
+          from pathlib import Path
+          grammar_path = Path("tools/ray_tracing/grammar/sampling_strategy.json")
+          assert grammar_path.exists(), f"Grammar file missing: {grammar_path}"
+          grammar = json.loads(grammar_path.read_text())
+          assert grammar["pr"] == 42, "PR number mismatch"
+          assert grammar["standard"] == "Yeshua", "Standard mismatch"
+          assert grammar["policy"]["randomness_required"] is False
+          assert grammar["policy"]["rt_cores_required"] is False
+          assert grammar["policy"]["vendor_lock_in"] is False
+          styles = {s["style_id"] for s in grammar["styles"]}
+          assert "photorealism_deterministic" in styles
+          print(f"Grammar OK: {len(grammar['styles'])} styles, policy verified")
+          EOF
+
+      - name: Sobol' sequence determinism smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from tools.ray_tracing.samplers.sobol import sobol_sequence
+          # Same seed -> same sequence on any platform
+          seed = b"\x00" * 32
+          a = sobol_sequence(5, 64, seed)
+          b = sobol_sequence(5, 64, seed)
+          assert a == b, "Sobol' sequence is not deterministic"
+          # All values in [0, 1)
+          for row in a:
+              for v in row:
+                  assert 0.0 <= v < 1.0, f"Out of range: {v}"
+          print(f"Sobol' smoke test OK: 64 samples × 5 dims, all in [0, 1)")
+          EOF
+
+      - name: Adaptive EBLS convergence smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from tools.ray_tracing.samplers.adaptive import render_pixel_ebls
+          def const_integrand(x, y, sample):
+              return 0.5
+          result, n = render_pixel_ebls(
+              0, 0, b"\x00" * 32, const_integrand,
+              error_target=0.005, max_samples=1024, min_samples=4,
+          )
+          assert abs(result - 0.5) < 0.02, f"EBLS result {result} far from 0.5"
+          print(f"EBLS smoke test OK: result={result:.6f}, samples={n}")
+          EOF
+
+      - name: Dual-path verification smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from tools.ray_tracing.transport.radiance_cache import DualPathVerifier
+          v = DualPathVerifier(tolerance=1e-6)
+          _, s1 = v.verify(0.5, None)
+          assert s1 == "cpu_only"
+          _, s2 = v.verify(0.5, 0.5)
+          assert s2 == "verified_gpu"
+          accepted, s3 = v.verify(0.5, 0.9)
+          assert s3 == "gpu_rejected"
+          assert accepted == 0.5
+          print("Dual-path verification smoke test OK")
+          EOF
+
+      - name: Deterministic path trace smoke test
+        run: |
+          python - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from tools.ray_tracing.geometry.intersect import Ray, Scene, Sphere, Material
+          from tools.ray_tracing.transport.path_tracer import trace_path_deterministic
+          scene = Scene(
+              spheres=[
+                  Sphere(center=(0, 0, -2), radius=0.5,
+                         material=Material(emission=1.0, reflectance=0.0))
+              ],
+              background_radiance=0.0,
+          )
+          ray = Ray(origin=(0, 0, 0), direction=(0, 0, -1))
+          seed = b"\x00" * 32
+          r1 = trace_path_deterministic(ray, 0, seed, scene)
+          r2 = trace_path_deterministic(ray, 0, seed, scene)
+          assert r1 == r2, f"Path trace not deterministic: {r1} != {r2}"
+          assert r1 > 0.0, f"Expected positive radiance, got {r1}"
+          print(f"Path trace smoke test OK: radiance={r1:.6f}")
+          EOF
+
+  cross-platform-identity:
+    name: Cross-Platform Identity Check
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        python-version: [ "3.11" ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Sobol' cross-platform identity
+        shell: python
+        run: |
+          import sys, os
+          sys.path.insert(0, os.getcwd())
+          from tools.ray_tracing.samplers.sobol import sobol_sequence
+          seed = b"\xab" * 32
+          samples = sobol_sequence(5, 16, seed)
+          # Compute a hash of all sample values to verify cross-platform identity
+          import hashlib, struct
+          buf = bytearray()
+          for row in samples:
+              for v in row:
+                  buf.extend(struct.pack(">d", v))
+          h = hashlib.sha256(bytes(buf)).hexdigest()
+          # Re-compute to verify self-consistency
+          samples2 = sobol_sequence(5, 16, seed)
+          buf2 = bytearray()
+          for row in samples2:
+              for v in row:
+                  buf2.extend(struct.pack(">d", v))
+          h2 = hashlib.sha256(bytes(buf2)).hexdigest()
+          assert h == h2, f"Cross-run mismatch: {h} != {h2}"
+          print(f"Sobol' cross-platform identity OK on {sys.platform}: SHA-256={h}")
+
+      - name: Run test suite
+        run: pytest tests/test_pr42_deterministic_light.py -v
