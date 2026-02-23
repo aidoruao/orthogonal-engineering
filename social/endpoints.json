@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 40,
+  "standard": "Yeshua",
+  "policy": {
+    "external_posting": true,
+    "posting_mode": "derivative_witness_only",
+    "engagement_tracking": false,
+    "metrics_collection": false,
+    "state_mutation": false,
+    "platform_sovereignty": "none"
+  },
+  "endpoints": {
+    "discord": {
+      "enabled": true,
+      "mode": "stateless_derivative_witness",
+      "source_of_truth": "AGENT_FEED.md",
+      "verification_required": true,
+      "speech_policy": {
+        "deterministic": true,
+        "creative": false,
+        "interactive": false,
+        "ephemeral": true
+      },
+      "failure_mode": "silent",
+      "replacement_cost": "zero",
+      "implementation": "tools/discord_witness/bot.py",
+      "no_third_party_deps": true
+    }
+  },
+  "canonical_sources": [
+    {"path": "AGENT_FEED.md", "type": "deterministic_feed"},
+    {"path": "resilience/invariant_spec_v2.freeze", "type": "immutable_state"}
+  ]
+}
