@@ -256,6 +256,64 @@ this pattern with a ceiling of `_MAX_AUDIT_ARTIFACTS = 10_000`.
 
 ---
 
+## 9. PR #40 — State Witness Layer (AGENT_FEED.md)
+
+### 9.1 What It Is
+
+PR #40 adds a publicly observable, cryptographically anchored, **append-only ledger**
+derived from the frozen invariant spec produced by PR #39.
+
+| Artifact | Location | Purpose |
+|---|---|---|
+| Ledger file | `AGENT_FEED.md` | Markdown table of witness entries (newest at bottom) |
+| Generator script | `tools/state_witness/generate_feed_entry.py` | Creates and appends feed entries |
+| CI workflow | `.github/workflows/pr40-canonical-presence.yml` | Appends entry on every push to `main` |
+| Tests | `tests/test_pr40_state_witness.py` | 33 tests covering determinism, append-only, idempotency |
+
+### 9.2 How to View the Ledger
+
+```bash
+cat AGENT_FEED.md
+```
+
+The table columns are:
+
+| Column | Description |
+|---|---|
+| `timestamp` | UTC ISO 8601 time of entry generation |
+| `freeze_hash` | SHA-256 of `resilience/invariant_spec_v2.freeze` (CRLF-normalised) |
+| `merkle_root` | Spec-set Merkle root from the freeze file (PR #39 output) |
+| `invariant_spec_version` | `v2` |
+| `source_paths` | Comma-separated sorted list of spec files |
+| `commit_sha` | Git commit SHA that triggered the entry |
+| `prev_entry_hash` | SHA-256 of the previous row's payload (hash chain) |
+| `entry_hash` | SHA-256 of this row's full payload |
+
+### 9.3 How to Generate a Feed Entry Locally
+
+```bash
+# Preview the entry that would be appended (no disk write):
+python tools/state_witness/generate_feed_entry.py --dry-run
+
+# Append a real entry (idempotent — skipped if current commit already recorded):
+python tools/state_witness/generate_feed_entry.py
+
+# Verify the hash-chain integrity of all existing entries:
+python tools/state_witness/generate_feed_entry.py --verify
+```
+
+### 9.4 Idempotency and Chain Integrity
+
+- **Idempotency**: If the current `HEAD` commit SHA already appears in `AGENT_FEED.md`,
+  the script exits without modifying the file.  Repeated CI runs for the same commit
+  produce identical output.
+- **Hash chain**: Each row records the `entry_hash` of the previous row as
+  `prev_entry_hash`.  Run `--verify` to confirm the chain is unbroken.
+- **Determinism**: Set `PYTHONHASHSEED=40` (done automatically in CI) and the same
+  freeze file always produces the same `freeze_hash` and `merkle_root`.
+
+---
+
 *"Continuity of body is not magic — it is disciplined state management. Write it down. Read it first. Resume without re-deriving."*
 
 **Orthogonal Engineering Continuity Principle**

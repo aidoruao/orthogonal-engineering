@@ -1,0 +1,110 @@
+# .github/workflows/pr40-canonical-presence.yml
+# PR #40 — Canonical Presence / State Witness Layer
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# On every push to main:
+#   1. Compute a canonical feed entry from resilience/invariant_spec_v2.freeze
+#   2. Append it to AGENT_FEED.md (idempotent: same commit is skipped)
+#   3. Commit the updated AGENT_FEED.md back to the branch
+#
+# PYTHONHASHSEED is pinned to 40 for cross-run reproducibility.
+
+name: State Witness Layer (PR #40)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "40"
+  TZ: "UTC"
+  SOURCE_DATE_EPOCH: "1700000000"
+
+permissions:
+  contents: write
+
+jobs:
+  state-witness:
+    name: State Witness (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [ "3.10", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Fetch latest commit only (fetch-depth: 1)
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run PR #40 test suite
+        run: |
+          pytest tests/test_pr40_state_witness.py -v
+
+      - name: Verify existing feed integrity
+        run: |
+          python tools/state_witness/generate_feed_entry.py --verify
+
+      - name: Append feed entry (idempotent)
+        if: github.event_name == 'push' && matrix.python-version == '3.11'
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          python tools/state_witness/generate_feed_entry.py
+
+      - name: Commit updated AGENT_FEED.md
+        if: github.event_name == 'push' && matrix.python-version == '3.11'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Only commit if AGENT_FEED.md was actually changed
+          if git diff --quiet AGENT_FEED.md; then
+            echo "AGENT_FEED.md unchanged (idempotent run) — nothing to commit."
+          else
+            git add AGENT_FEED.md
+            git commit -m "chore(pr40): append state witness entry [skip ci]"
+            git push
+          fi
+
+  verify-feed-integrity:
+    name: Verify Feed Integrity
+    runs-on: ubuntu-latest
+    needs: [ state-witness ]
+    if: always() && needs.state-witness.result == 'success'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # For push events github.ref_name is the branch name (e.g. "main").
+          # For pull_request events github.ref_name is "<pr>/merge" (not a real branch),
+          # so fall back to github.head_ref which is the PR head branch name.
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify feed chain integrity
+        run: |
+          python tools/state_witness/generate_feed_entry.py --verify
