@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 42,
+  "standard": "Yeshua",
+  "description": "Style-to-sampler mapping for deterministic light transport (DLTL).",
+  "hash": "9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d",
+  "styles": [
+    {
+      "style_id": "photorealism_deterministic",
+      "version": "2.0.0",
+      "inherits": "pr41_photorealism",
+      "light_transport": {
+        "sampling": {
+          "primary": {
+            "method": "sobol",
+            "dimensions": 5,
+            "scrambling": "owen",
+            "randomization_seed_derivation": "frame_seed || pixel_id"
+          },
+          "adaptive": {
+            "algorithm": "ebls",
+            "error_target": 0.005,
+            "max_samples": 16384,
+            "min_samples": 4
+          }
+        },
+        "path_tracing": {
+          "max_depth": 8,
+          "russian_roulette": false,
+          "deterministic_branching": true,
+          "seed_advancement": "depth_based"
+        },
+        "direct_illumination": {
+          "next_event_estimation": true,
+          "light_sampling": "sobol_2d",
+          "multiple_importance_sampling": true
+        },
+        "indirect_illumination": {
+          "diffuse_sampling": "sobol_hemisphere_cosine",
+          "glossy_sampling": "sobol_hemisphere_ggx",
+          "caustics": "sobol_2d_manifold"
+        }
+      },
+      "verification": {
+        "cpu_reference_required": true,
+        "hash_comparison": "per_pixel_radiance",
+        "tolerance": "1e-6"
+      }
+    },
+    {
+      "style_id": "fast_preview",
+      "version": "1.0.0",
+      "light_transport": {
+        "sampling": {
+          "primary": {
+            "method": "halton",
+            "dimensions": 2,
+            "scrambling": "none"
+          },
+          "adaptive": {
+            "algorithm": "fixed",
+            "n_samples": 16
+          }
+        },
+        "path_tracing": {
+          "max_depth": 4,
+          "russian_roulette": false,
+          "deterministic_branching": true,
+          "seed_advancement": "depth_based"
+        }
+      }
+    },
+    {
+      "style_id": "direct_only",
+      "version": "1.0.0",
+      "light_transport": {
+        "sampling": {
+          "primary": {
+            "method": "hammersley",
+            "dimensions": 2
+          },
+          "adaptive": {
+            "algorithm": "fixed",
+            "n_samples": 4
+          }
+        },
+        "path_tracing": {
+          "max_depth": 1,
+          "russian_roulette": false,
+          "deterministic_branching": true
+        }
+      }
+    }
+  ],
+  "policy": {
+    "randomness_required": false,
+    "rt_cores_required": false,
+    "gpu_allowed": true,
+    "gpu_required": false,
+    "determinism_verified": true,
+    "convergence_bounded": true,
+    "vendor_lock_in": false
+  },
+  "mathematical_guarantees": {
+    "sampling": "quasi_monte_carlo",
+    "convergence_rate": "O((log N)^d / N)",
+    "error_bound": "V(f) * D_N*",
+    "reproducibility": "cross_platform_bit_identical"
+  }
+}
