@@ -161,8 +161,8 @@ def render_pixel(
     samples_2d = sobol_sequence(2, n_samples, pixel_seed)
 
     total = 0.0
-    for s in samples_2d:
-        jitter_x, jitter_y = s[0], s[1]
+    for sample_idx, sample in enumerate(samples_2d):
+        jitter_x, jitter_y = sample[0], sample[1]
         # Map pixel + jitter to normalised device coordinates
         ndc_x = (x + jitter_x) / width * 2.0 - 1.0
         ndc_y = 1.0 - (y + jitter_y) / height * 2.0
@@ -181,9 +181,9 @@ def render_pixel(
                 ray_dir_z / length,
             ),
         )
-        # Derive per-sample seed deterministically
+        # Derive per-sample seed deterministically from pixel_seed + sample index
         sample_seed = hashlib.sha256(
-            pixel_seed + x.to_bytes(4, "big") + y.to_bytes(4, "big")
+            pixel_seed + sample_idx.to_bytes(4, "big")
         ).digest()
         total += trace_path_deterministic(
             ray, depth=0, seed=sample_seed, scene=scene, max_depth=max_depth

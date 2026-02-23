@@ -86,7 +86,7 @@ class AdaptiveSampler:
     estimated error falls below ``error_target``.
     """
 
-    _BATCH_SIZE = 64  # Pre-generate samples in batches for performance
+    BATCH_SIZE = 64  # Pre-generate samples in batches for performance
 
     def __init__(
         self,
@@ -120,7 +120,7 @@ class AdaptiveSampler:
         batch_seed = hashlib.sha256(
             self.seed + self._sample_index.to_bytes(8, "big")
         ).digest()[:8]
-        self._batch = sobol_sequence(self.dimensions, self._BATCH_SIZE, batch_seed)
+        self._batch = sobol_sequence(self.dimensions, self.BATCH_SIZE, batch_seed)
         self._batch_pos = 0
 
 
