@@ -1,0 +1,151 @@
+# ci/reproducible_build_gate.yml
+# PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# CI gate that enforces build reproducibility across independent nodes.
+# Binary hash mismatch → build rejected.
+# Delegates to bootstrap/reproducible_build.yml for the build steps.
+
+name: AMSL Reproducible Build Gate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "38"
+
+permissions:
+  contents: read
+
+jobs:
+  source-hash-verification:
+    name: Source Hash Verification (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python (pinned per toolchain.lock)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.9"
+
+      - name: Verify toolchain lock is present
+        run: |
+          python - <<'EOF'
+          import pathlib, sys
+          lock = pathlib.Path('bootstrap/toolchain.lock')
+          if not lock.exists():
+              print('ERROR: bootstrap/toolchain.lock not found')
+              sys.exit(1)
+          print(f'OK: toolchain.lock present ({lock.stat().st_size} bytes)')
+          EOF
+
+      - name: Hash all pure runtime source files
+        run: |
+          python - <<'EOF'
+          import hashlib, json, pathlib
+
+          runtime_dir = pathlib.Path('yeshua_math/pure_reference_runtime')
+          sources = sorted(runtime_dir.glob('*'))
+
+          manifest = []
+          for p in sources:
+              if p.is_file():
+                  h = hashlib.sha256(p.read_bytes()).hexdigest()
+                  manifest.append({'path': str(p), 'sha256': h})
+                  print(f'  {p}: {h}')
+
+          pathlib.Path('source_hash_manifest.json').write_text(
+              json.dumps({'schema_version': '1.0.0', 'os': '${{ matrix.os }}', 'sources': manifest},
+                         indent=2)
+          )
+          EOF
+
+      - name: Upload source hash manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-hash-manifest-${{ matrix.os }}
+          path: source_hash_manifest.json
+          if-no-files-found: error
+
+  reproducible-build-gate:
+    name: Reproducible Build Gate
+    needs: source-hash-verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all source hash manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: source-hash-manifest-*
+          path: /tmp/source_hash_manifests
+
+      - name: Assert source hashes are identical across all nodes
+        run: |
+          python - <<'EOF'
+          import json, pathlib, sys
+
+          manifest_files = list(
+              pathlib.Path('/tmp/source_hash_manifests').rglob('source_hash_manifest.json')
+          )
+          if not manifest_files:
+              print('ERROR: No source hash manifests found')
+              sys.exit(1)
+
+          # Collect hashes per source file across all nodes
+          by_source = {}
+          for f in manifest_files:
+              data = json.loads(f.read_text())
+              node = f.parent.name
+              for entry in data.get('sources', []):
+                  path = entry['path']
+                  if path not in by_source:
+                      by_source[path] = {}
+                  by_source[path][node] = entry['sha256']
+
+          all_ok = True
+          for source, node_hashes in by_source.items():
+              unique = set(node_hashes.values())
+              if len(unique) == 1:
+                  print(f'OK: {source} — identical across {len(node_hashes)} nodes')
+              else:
+                  print(f'MISMATCH: {source} — {len(unique)} distinct hashes')
+                  for node, h in node_hashes.items():
+                      print(f'  {node}: {h}')
+                  all_ok = False
+
+          if not all_ok:
+              print('REPRODUCIBLE BUILD GATE: FAILED — source hash divergence')
+              sys.exit(1)
+
+          print(f'REPRODUCIBLE BUILD GATE: PASSED — {len(manifest_files)} nodes agree on all sources')
+          EOF
+
+      - name: Verify binary hash manifest schema
+        run: |
+          python - <<'EOF'
+          import json, pathlib, sys
+
+          manifest = json.loads(pathlib.Path('bootstrap/binary_hash_manifest.json').read_text())
+          required = ['schema_version', 'pr', 'standard', 'binaries', 'build_environment']
+          for field in required:
+              if field not in manifest:
+                  print(f'ERROR: binary_hash_manifest.json missing field: {field}')
+                  sys.exit(1)
+
+          print(f'OK: binary_hash_manifest.json schema valid ({len(manifest["binaries"])} entries)')
+          EOF

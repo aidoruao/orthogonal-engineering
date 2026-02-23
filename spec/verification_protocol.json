@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 38,
+  "standard": "Yeshua",
+  "protocol": "Multi-Independent Verification Network (MIVN)",
+  "frozen": true,
+  "freeze_version": "v1",
+  "description": "Canonical verification protocol for the AMSL. Defines quorum requirements and merge gates.",
+  "quorum": {
+    "minimum_independent_regions": 3,
+    "minimum_independent_hardware_vendors": 3,
+    "minimum_independent_maintainers": 3,
+    "quorum_required_before_merge": true
+  },
+  "merge_gates": [
+    "cross_node_quorum",
+    "dual_path_match",
+    "peano_reducibility_pass",
+    "boolean_completeness_pass",
+    "build_reproducibility_pass",
+    "public_finality_publication"
+  ],
+  "single_maintainer_override": false,
+  "public_verification": {
+    "spec_downloadable": true,
+    "runtime_rebuilable_from_source": true,
+    "workload_reproducible": true,
+    "hashes_comparable": true,
+    "privileged_channel_required": false
+  },
+  "proof_bundle": {
+    "required_fields": [
+      "merkle_root",
+      "output_hash",
+      "environment_hash",
+      "timestamp",
+      "invariant_spec_version"
+    ],
+    "hash_algorithm": "sha256",
+    "merkle_algorithm": "sha256_binary_tree"
+  },
+  "finality": {
+    "anchor": "public_append_only_ledger_or_distributed_signed_consensus_log",
+    "records_immutable_once_published": true
+  }
+}

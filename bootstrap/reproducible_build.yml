@@ -1,0 +1,150 @@
+# bootstrap/reproducible_build.yml
+# PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# Defines the deterministic build chain for the pure reference runtime.
+# Every step must produce bit-identical output across independent nodes.
+
+name: Reproducible Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "38"
+
+permissions:
+  contents: read
+
+jobs:
+  reproducible-build:
+    name: Reproducible Build (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python (pinned)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.9"
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip==24.0
+          pip install pytest==8.1.1
+
+      - name: Compile C reference runtime
+        if: runner.os != 'Windows'
+        run: |
+          gcc -O0 -std=c11 \
+            -o yeshua_math/pure_reference_runtime/arithmetic_core \
+            yeshua_math/pure_reference_runtime/arithmetic_core.c
+          gcc -O0 -std=c11 \
+            -o yeshua_math/pure_reference_runtime/logic_engine \
+            yeshua_math/pure_reference_runtime/logic_engine.c
+
+      - name: Compute binary hashes
+        if: runner.os != 'Windows'
+        run: |
+          python - <<'EOF'
+          import hashlib, json, pathlib
+
+          targets = [
+              "yeshua_math/pure_reference_runtime/arithmetic_core",
+              "yeshua_math/pure_reference_runtime/logic_engine",
+          ]
+
+          binaries = []
+          for t in targets:
+              p = pathlib.Path(t)
+              if p.exists():
+                  h = hashlib.sha256(p.read_bytes()).hexdigest()
+                  binaries.append({"path": t, "sha256": h})
+                  print(f"  {t}: {h}")
+
+          manifest = {
+              "schema_version": "1.0.0",
+              "pr": 38,
+              "standard": "Yeshua",
+              "os": "${{ runner.os }}",
+              "binaries": binaries,
+          }
+          pathlib.Path("binary_hash_manifest_runtime.json").write_text(
+              json.dumps(manifest, indent=2)
+          )
+          EOF
+
+      - name: Upload binary hash manifest
+        if: runner.os != 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-hash-manifest-${{ matrix.os }}
+          path: binary_hash_manifest_runtime.json
+
+  verify-hash-parity:
+    name: Verify Binary Hash Parity Across Nodes
+    needs: reproducible-build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all binary hash manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: binary-hash-manifest-*
+          path: /tmp/binary_hash_manifests
+
+      - name: Assert identical hashes across nodes
+        run: |
+          python - <<'EOF'
+          import json, pathlib, sys
+
+          manifest_files = list(
+              pathlib.Path('/tmp/binary_hash_manifests').rglob('binary_hash_manifest_runtime.json')
+          )
+          if not manifest_files:
+              print('ERROR: No binary hash manifests found')
+              sys.exit(1)
+
+          # Collect hashes per binary across all nodes
+          by_binary = {}
+          for f in manifest_files:
+              data = json.loads(f.read_text())
+              node = f.parent.name
+              for entry in data.get('binaries', []):
+                  path = entry['path']
+                  if path not in by_binary:
+                      by_binary[path] = {}
+                  by_binary[path][node] = entry['sha256']
+
+          all_ok = True
+          for binary, node_hashes in by_binary.items():
+              unique = set(node_hashes.values())
+              if len(unique) == 1:
+                  print(f'OK: {binary} — identical across {len(node_hashes)} nodes')
+              else:
+                  print(f'MISMATCH: {binary} — {len(unique)} distinct hashes')
+                  for node, h in node_hashes.items():
+                      print(f'  {node}: {h}')
+                  all_ok = False
+
+          if not all_ok:
+              print('REPRODUCIBLE BUILD GATE: FAILED — hash divergence detected')
+              sys.exit(1)
+
+          print(f'REPRODUCIBLE BUILD GATE: PASSED — all binaries bit-identical across nodes')
+          EOF

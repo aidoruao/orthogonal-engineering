@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0.0",
+  "pr": 38,
+  "standard": "Yeshua",
+  "axiom_set": "Boolean Algebra",
+  "frozen": true,
+  "freeze_version": "v1",
+  "description": "Canonical Boolean algebra axioms. Immutable once frozen. All conditional logic in the system must satisfy these axioms.",
+  "axioms": [
+    {
+      "id": "BA1",
+      "name": "Identity (AND)",
+      "statement": "a AND 1 = a"
+    },
+    {
+      "id": "BA2",
+      "name": "Identity (OR)",
+      "statement": "a OR 0 = a"
+    },
+    {
+      "id": "BA3",
+      "name": "Annihilation (AND)",
+      "statement": "a AND 0 = 0"
+    },
+    {
+      "id": "BA4",
+      "name": "Annihilation (OR)",
+      "statement": "a OR 1 = 1"
+    },
+    {
+      "id": "BA5",
+      "name": "Idempotence (AND)",
+      "statement": "a AND a = a"
+    },
+    {
+      "id": "BA6",
+      "name": "Idempotence (OR)",
+      "statement": "a OR a = a"
+    },
+    {
+      "id": "BA7",
+      "name": "Complement (AND)",
+      "statement": "a AND NOT(a) = 0"
+    },
+    {
+      "id": "BA8",
+      "name": "Complement (OR)",
+      "statement": "a OR NOT(a) = 1"
+    },
+    {
+      "id": "BA9",
+      "name": "Commutativity (AND)",
+      "statement": "a AND b = b AND a"
+    },
+    {
+      "id": "BA10",
+      "name": "Commutativity (OR)",
+      "statement": "a OR b = b OR a"
+    },
+    {
+      "id": "BA11",
+      "name": "Associativity (AND)",
+      "statement": "(a AND b) AND c = a AND (b AND c)"
+    },
+    {
+      "id": "BA12",
+      "name": "Associativity (OR)",
+      "statement": "(a OR b) OR c = a OR (b OR c)"
+    },
+    {
+      "id": "BA13",
+      "name": "Distributivity (AND over OR)",
+      "statement": "a AND (b OR c) = (a AND b) OR (a AND c)"
+    },
+    {
+      "id": "BA14",
+      "name": "Distributivity (OR over AND)",
+      "statement": "a OR (b AND c) = (a OR b) AND (a OR c)"
+    },
+    {
+      "id": "BA15",
+      "name": "De Morgan (AND)",
+      "statement": "NOT(a AND b) = NOT(a) OR NOT(b)"
+    },
+    {
+      "id": "BA16",
+      "name": "De Morgan (OR)",
+      "statement": "NOT(a OR b) = NOT(a) AND NOT(b)"
+    },
+    {
+      "id": "BA17",
+      "name": "Double negation",
+      "statement": "NOT(NOT(a)) = a"
+    }
+  ],
+  "enforcement": {
+    "exhaustive_truth_table_required": true,
+    "hidden_mutable_state_forbidden": true,
+    "nondeterministic_branching_forbidden": true
+  }
+}
