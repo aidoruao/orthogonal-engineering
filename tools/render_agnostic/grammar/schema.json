@@ -1,0 +1,119 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://orthogonal.engineering/schemas/render_agnostic/style_grammar/v1.0.0",
+  "title": "Render Agnostic Style Grammar",
+  "description": "JSON Schema for deterministic style definitions in the Render Agnostic Output Layer (PR #41). Every style is a pure mathematical program transforming (seed, x, y, t) into (r, g, b).",
+  "type": "object",
+  "required": ["style_id", "version", "standard", "color_space", "pixel_function", "constraints", "hash"],
+  "additionalProperties": false,
+  "properties": {
+    "style_id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "description": "Unique, lowercase, underscore-separated style identifier."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semantic version of this style definition."
+    },
+    "standard": {
+      "type": "string",
+      "const": "Yeshua",
+      "description": "Compliance standard. Must be 'Yeshua'."
+    },
+    "color_space": {
+      "type": "string",
+      "enum": ["sRGB", "linear_RGB", "HSL", "HSV"],
+      "description": "Output color space for pixel values."
+    },
+    "pixel_function": {
+      "type": "object",
+      "required": ["type", "layers"],
+      "additionalProperties": false,
+      "description": "Deterministic pixel function definition.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["composite", "single"],
+          "description": "Whether the pixel function is a single layer or a composite of layers."
+        },
+        "layers": {
+          "type": "array",
+          "minItems": 1,
+          "description": "Ordered list of composited layers.",
+          "items": {
+            "type": "object",
+            "required": ["type"],
+            "description": "A single compositing layer.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "noise", "color_map", "edge_detect", "solid", "gradient",
+                  "cel_shade", "palette_quantize", "checkerboard"
+                ]
+              },
+              "algorithm": {"type": "string"},
+              "seed_derivation": {"type": "string"},
+              "octaves": {"type": "integer", "minimum": 1, "maximum": 16},
+              "persistence": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+              "source": {"type": "string"},
+              "gradient": {
+                "type": "object",
+                "description": "Gradient stops keyed by normalized position [0.0–1.0].",
+                "additionalProperties": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              },
+              "threshold": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+              "color": {
+                "type": "string",
+                "pattern": "^#[0-9a-fA-F]{6}$"
+              },
+              "levels": {"type": "integer", "minimum": 2},
+              "palette": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              },
+              "size": {"type": "integer", "minimum": 1},
+              "color_a": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"},
+              "color_b": {"type": "string", "pattern": "^#[0-9a-fA-F]{6}$"}
+            }
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["max_brightness", "min_brightness", "chroma_subsampling"],
+      "additionalProperties": false,
+      "description": "Hard mathematical constraints on the output pixel range.",
+      "properties": {
+        "max_brightness": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "min_brightness": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255
+        },
+        "chroma_subsampling": {
+          "type": "boolean",
+          "description": "If true, chroma subsampling is applied. Must be false for full-fidelity output."
+        }
+      }
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 hex digest of the canonical JSON representation (excluding the 'hash' field itself)."
+    }
+  }
+}

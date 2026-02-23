@@ -1,0 +1,38 @@
+{
+  "style_id": "cyberpunk_2026",
+  "version": "1.0.0",
+  "standard": "Yeshua",
+  "color_space": "sRGB",
+  "pixel_function": {
+    "type": "composite",
+    "layers": [
+      {
+        "type": "noise",
+        "algorithm": "perlin_deterministic",
+        "seed_derivation": "frame_seed||layer_index",
+        "octaves": 4,
+        "persistence": 0.5
+      },
+      {
+        "type": "color_map",
+        "source": "layer_0",
+        "gradient": {
+          "0.0": "#000011",
+          "0.5": "#ff00ff",
+          "1.0": "#00ffff"
+        }
+      },
+      {
+        "type": "edge_detect",
+        "source": "depth_buffer",
+        "threshold": 0.1
+      }
+    ]
+  },
+  "constraints": {
+    "max_brightness": 255,
+    "min_brightness": 0,
+    "chroma_subsampling": false
+  },
+  "hash": "1dce444b7ad1447983b8c935cac65ff05fb6a01ba566abbd45ca9d442b36cf93"
+}
