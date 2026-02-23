@@ -1,0 +1,180 @@
+# ci/peano_cross_validator.yml
+# PR #39 — Autonomous Peano Sovereignty Layer
+# Standard: Yeshua
+# Version: 2.0.0
+#
+# Cross-OS and cross-Python-version Peano sovereignty validator.
+# Produces proof_bundle_v2.json with merkle_root, output_hash, environment_hash,
+# timestamp (UTC ISO8601), invariant_spec_version='v2', and node_id.
+# PYTHONHASHSEED is pinned to 39 for full cross-run reproducibility.
+
+name: Peano Cross-Validator (PR #39)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "39"
+
+permissions:
+  contents: read
+
+jobs:
+  peano-cross-validate:
+    name: Peano Validate (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        python-version: [ "3.10", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run Peano invariant checker with v2 spec
+        run: |
+          python yeshua_math/peano_invariant_checker.py \
+            --spec resilience/invariant_spec_v2.freeze \
+            --dirs yeshua_math axioms yeshua oe_ifm generators dvcl
+
+      - name: Run cross-validator (spec Merkle root check)
+        run: |
+          python yeshua_math/pure_reference_runtime/cross_validator.py
+
+      - name: Produce proof_bundle_v2.json
+        env:
+          RUNNER_OS: ${{ runner.os }}
+          MATRIX_OS: ${{ matrix.os }}
+          PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          python - <<'PYEOF'
+          import hashlib, json, os, pathlib, sys
+          from datetime import datetime, timezone
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          # Load freeze file
+          freeze_path = pathlib.Path("resilience/invariant_spec_v2.freeze")
+          freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
+
+          # Compute spec Merkle root from actual file contents
+          leaf_hashes = []
+          for entry in freeze["spec_files"]:
+              p = pathlib.Path(entry["path"])
+              if not p.exists():
+                  print(f"ERROR: missing spec file: {p}", file=sys.stderr)
+                  sys.exit(1)
+              leaf_hashes.append(sha256(p.read_bytes()))
+
+          leaf_hashes_sorted = sorted(leaf_hashes)
+          merkle_root = sha256("|".join(leaf_hashes_sorted).encode("utf-8"))
+
+          expected_merkle = freeze["merkle_root"]
+          if merkle_root != expected_merkle:
+              print(
+                  f"MERKLE MISMATCH: computed={merkle_root} expected={expected_merkle}",
+                  file=sys.stderr,
+              )
+              sys.exit(1)
+          print(f"Merkle root verified: {merkle_root}")
+
+          # Output hash — deterministic hash of the spec Merkle root + freeze version
+          output_data = f"peano_sovereignty_v2|{merkle_root}".encode("utf-8")
+          output_hash = sha256(output_data)
+
+          # Environment hash — Python version + OS
+          runner_os = os.environ.get("RUNNER_OS", "unknown")
+          python_version = os.environ.get("PYTHON_VERSION", sys.version.split()[0])
+          env_str = f"os={runner_os}|python={python_version}|PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED', 'unset')}"
+          environment_hash = sha256(env_str.encode("utf-8"))
+
+          # Node ID
+          matrix_os = os.environ.get("MATRIX_OS", runner_os)
+          node_id = f"{matrix_os}-py{python_version}"
+
+          # Timestamp (UTC ISO 8601)
+          timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          bundle = {
+              "merkle_root": merkle_root,
+              "output_hash": output_hash,
+              "environment_hash": environment_hash,
+              "timestamp": timestamp,
+              "invariant_spec_version": "v2",
+              "node_id": node_id,
+          }
+
+          out_path = pathlib.Path("proof_bundle_v2.json")
+          out_path.write_text(json.dumps(bundle, indent=2, sort_keys=True))
+          print(json.dumps(bundle, indent=2, sort_keys=True))
+          PYEOF
+
+      - name: Upload proof bundle v2
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-bundle-v2-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: proof_bundle_v2.json
+
+  compare-proof-bundles-v2:
+    name: Compare Cross-Node Proof Bundles v2
+    needs: peano-cross-validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all proof bundles v2
+        uses: actions/download-artifact@v4
+        with:
+          pattern: proof-bundle-v2-*
+          path: /tmp/proof_bundles_v2
+
+      - name: Assert merkle_root and output_hash are identical across nodes
+        run: |
+          python - <<'PYEOF'
+          import json, pathlib, sys
+
+          bundle_files = list(pathlib.Path('/tmp/proof_bundles_v2').rglob('proof_bundle_v2.json'))
+          if len(bundle_files) < 2:
+              print('ERROR: Fewer than 2 proof bundles found — cross-node verification impossible')
+              sys.exit(1)
+
+          merkle_roots = set()
+          output_hashes = set()
+          for f in bundle_files:
+              data = json.loads(f.read_text())
+              merkle_roots.add(data['merkle_root'])
+              output_hashes.add(data['output_hash'])
+              print(f'  {f.parent.name}: merkle_root={data["merkle_root"]} output_hash={data["output_hash"]} node_id={data["node_id"]}')
+
+          ok = True
+          if len(merkle_roots) != 1:
+              print(f'MERKLE DIVERGENCE: {len(merkle_roots)} distinct merkle roots')
+              ok = False
+          if len(output_hashes) != 1:
+              print(f'OUTPUT DIVERGENCE: {len(output_hashes)} distinct output hashes')
+              ok = False
+
+          if not ok:
+              sys.exit(1)
+          print(f'PEANO CROSS-VALIDATOR GATE v2: PASSED — all {len(bundle_files)} nodes agree')
+          PYEOF

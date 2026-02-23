@@ -1,0 +1,283 @@
+# .github/workflows/pr39-peano-sovereignty.yml
+# PR #39 — Autonomous Peano Sovereignty Layer
+# Standard: Yeshua
+# Version: 2.0.0
+#
+# Canonical GitHub Actions entry point for the Peano Sovereignty Layer.
+# Runs the full cross-OS, cross-Python validation pipeline and verifies
+# that the invariant_spec_v2.freeze Merkle root matches all spec files.
+# PYTHONHASHSEED is pinned to 39 for cross-run reproducibility.
+
+name: Peano Sovereignty Layer (PR #39)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "39"
+
+permissions:
+  contents: read
+
+jobs:
+  peano-cross-validate:
+    name: Peano Validate (${{ matrix.os }}, py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest ]
+        python-version: [ "3.10", "3.11", "3.12" ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Verify spec Merkle root matches freeze file
+        run: |
+          python - <<'PYEOF'
+          import hashlib, json, pathlib, sys
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          freeze = json.loads(
+              pathlib.Path("resilience/invariant_spec_v2.freeze").read_text(encoding="utf-8")
+          )
+          leaf_hashes = []
+          for entry in freeze["spec_files"]:
+              p = pathlib.Path(entry["path"])
+              if not p.exists():
+                  print(f"ERROR: missing spec file: {p}", file=sys.stderr)
+                  sys.exit(1)
+              actual = sha256(p.read_bytes())
+              expected = entry["sha256"]
+              if actual != expected:
+                  print(f"HASH MISMATCH: {entry['path']}: expected={expected} actual={actual}", file=sys.stderr)
+                  sys.exit(1)
+              leaf_hashes.append(actual)
+              print(f"  OK: {entry['path']}: {actual}")
+
+          merkle_root = sha256("|".join(sorted(leaf_hashes)).encode("utf-8"))
+          expected_merkle = freeze["merkle_root"]
+          if merkle_root != expected_merkle:
+              print(f"MERKLE MISMATCH: computed={merkle_root} expected={expected_merkle}", file=sys.stderr)
+              sys.exit(1)
+          print(f"Merkle root verified: {merkle_root}")
+          PYEOF
+
+      - name: Run Peano invariant checker with v2 spec
+        run: |
+          python yeshua_math/peano_invariant_checker.py \
+            --spec resilience/invariant_spec_v2.freeze \
+            --dirs yeshua_math axioms yeshua oe_ifm generators dvcl
+
+      - name: Run cross-validator
+        run: |
+          python yeshua_math/pure_reference_runtime/cross_validator.py
+
+      - name: Run tests (PR #39 suite)
+        run: |
+          pytest tests/test_pr39_peano_sovereignty.py -v
+
+      - name: Produce proof_bundle_v2.json
+        env:
+          RUNNER_OS: ${{ runner.os }}
+          MATRIX_OS: ${{ matrix.os }}
+          PYTHON_VERSION: ${{ matrix.python-version }}
+        run: |
+          python - <<'PYEOF'
+          import hashlib, json, os, pathlib, sys
+          from datetime import datetime, timezone
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          freeze = json.loads(
+              pathlib.Path("resilience/invariant_spec_v2.freeze").read_text(encoding="utf-8")
+          )
+          leaf_hashes = sorted(
+              sha256(pathlib.Path(e["path"]).read_bytes())
+              for e in freeze["spec_files"]
+          )
+          merkle_root = sha256("|".join(leaf_hashes).encode("utf-8"))
+          output_hash = sha256(f"peano_sovereignty_v2|{merkle_root}".encode("utf-8"))
+
+          runner_os = os.environ.get("RUNNER_OS", "unknown")
+          python_version = os.environ.get("PYTHON_VERSION", sys.version.split()[0])
+          env_str = f"os={runner_os}|python={python_version}|PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED', 'unset')}"
+          environment_hash = sha256(env_str.encode("utf-8"))
+
+          matrix_os = os.environ.get("MATRIX_OS", runner_os)
+          node_id = f"{matrix_os}-py{python_version}"
+          timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+          bundle = {
+              "environment_hash": environment_hash,
+              "invariant_spec_version": "v2",
+              "merkle_root": merkle_root,
+              "node_id": node_id,
+              "output_hash": output_hash,
+              "timestamp": timestamp,
+          }
+          pathlib.Path("proof_bundle_v2.json").write_text(
+              json.dumps(bundle, indent=2, sort_keys=True)
+          )
+          print(json.dumps(bundle, indent=2, sort_keys=True))
+          PYEOF
+
+      - name: Upload proof bundle v2
+        uses: actions/upload-artifact@v4
+        with:
+          name: proof-bundle-v2-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: proof_bundle_v2.json
+
+  reproducible-build-v2:
+    name: Reproducible Build v2 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python (pinned)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.9"
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip==24.0
+          pip install pytest==8.1.1
+
+      - name: Compute spec file hashes and artifact manifest
+        env:
+          RUNNER_OS: ${{ runner.os }}
+        run: |
+          python - <<'PYEOF'
+          import hashlib, json, os, pathlib
+
+          spec_files = [
+              "spec/peano_axioms.json",
+              "spec/arithmetic_axioms.json",
+              "spec/boolean_axioms.json",
+          ]
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          entries = []
+          leaf_hashes = []
+          for sf in spec_files:
+              p = pathlib.Path(sf)
+              if p.exists():
+                  h = sha256(p.read_bytes())
+                  entries.append({"path": sf, "sha256": h})
+                  leaf_hashes.append(h)
+                  print(f"  {sf}: {h}")
+
+          merkle_root = sha256("|".join(sorted(leaf_hashes)).encode("utf-8"))
+          print(f"  merkle_root: {merkle_root}")
+
+          manifest = {
+              "invariant_spec_version": "v2",
+              "merkle_root": merkle_root,
+              "os": os.environ.get("RUNNER_OS", "unknown"),
+              "pr": 39,
+              "schema_version": "2.0.0",
+              "spec_files": entries,
+              "standard": "Yeshua",
+          }
+          pathlib.Path("artifact_hash_manifest_v2.json").write_text(
+              json.dumps(manifest, indent=2, sort_keys=True)
+          )
+          PYEOF
+
+      - name: Upload artifact hash manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-hash-manifest-v2-${{ matrix.os }}
+          path: artifact_hash_manifest_v2.json
+
+  verify-sovereignty-parity:
+    name: Verify Sovereignty Parity (merkle_root + output_hash)
+    needs: [ peano-cross-validate, reproducible-build-v2 ]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all proof bundles v2
+        uses: actions/download-artifact@v4
+        with:
+          pattern: proof-bundle-v2-*
+          path: /tmp/proof_bundles_v2
+
+      - name: Download all artifact manifests v2
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifact-hash-manifest-v2-*
+          path: /tmp/artifact_manifests_v2
+
+      - name: Assert cross-node parity
+        run: |
+          python - <<'PYEOF'
+          import json, pathlib, sys
+
+          bundle_files = list(pathlib.Path('/tmp/proof_bundles_v2').rglob('proof_bundle_v2.json'))
+          manifest_files = list(pathlib.Path('/tmp/artifact_manifests_v2').rglob('artifact_hash_manifest_v2.json'))
+
+          if len(bundle_files) < 2:
+              print('ERROR: fewer than 2 proof bundles')
+              sys.exit(1)
+
+          merkle_roots = set()
+          output_hashes = set()
+          for f in bundle_files:
+              d = json.loads(f.read_text())
+              merkle_roots.add(d['merkle_root'])
+              output_hashes.add(d['output_hash'])
+              print(f'  bundle {f.parent.name}: merkle={d["merkle_root"][:16]}... output={d["output_hash"][:16]}...')
+
+          manifest_roots = set()
+          for f in manifest_files:
+              d = json.loads(f.read_text())
+              manifest_roots.add(d['merkle_root'])
+
+          ok = True
+          if len(merkle_roots) != 1:
+              print(f'FAIL: {len(merkle_roots)} distinct merkle roots in proof bundles')
+              ok = False
+          if len(output_hashes) != 1:
+              print(f'FAIL: {len(output_hashes)} distinct output hashes')
+              ok = False
+          if len(manifest_roots) != 1:
+              print(f'FAIL: {len(manifest_roots)} distinct merkle roots in artifact manifests')
+              ok = False
+          if merkle_roots and manifest_roots and merkle_roots != manifest_roots:
+              print(f'FAIL: proof bundle merkle roots differ from artifact manifest merkle roots')
+              ok = False
+
+          if not ok:
+              sys.exit(1)
+          print(f'PEANO SOVEREIGNTY GATE: PASSED — {len(bundle_files)} proof bundles + {len(manifest_files)} manifests all agree')
+          PYEOF

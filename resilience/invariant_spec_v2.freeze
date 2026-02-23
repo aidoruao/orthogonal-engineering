@@ -1,0 +1,35 @@
+{
+  "freeze_version": "v2",
+  "pr": 39,
+  "standard": "Yeshua",
+  "description": "Immutable freeze of all invariant specification files at the time of PR #39 merge (Autonomous Peano Sovereignty Layer). This record cannot be modified. Any change requires a new freeze version and a supermajority quorum.",
+  "frozen": true,
+  "freeze_timestamp": "2026-02-23T00:57:48Z",
+  "invariant_spec_version": "v2",
+  "spec_files": [
+    {
+      "path": "spec/peano_axioms.json",
+      "description": "Peano Sovereignty Layer axioms (PR #39)",
+      "sha256": "9690415b106e46205ef60632d61a8b89eb8005c1146b0d7b25115ed4f0e56b19"
+    },
+    {
+      "path": "spec/arithmetic_axioms.json",
+      "description": "Peano arithmetic axioms",
+      "sha256": "78577acf14501df59964fa5b0e24ece6b9b9612a48505b6d98d4ec07547928eb"
+    },
+    {
+      "path": "spec/boolean_axioms.json",
+      "description": "Boolean algebra axioms",
+      "sha256": "6b7f4c438c62f1372ef5db3db9d297a473683cfe5215d6dd62cc0fc73c5c6ab1"
+    }
+  ],
+  "merkle_root": "455d56607b97359c9e35ba9b9fb03f84cd398ae05710367999c747c59bf83914",
+  "policy": {
+    "spec_version_immutable_once_frozen": true,
+    "spec_change_requires_supermajority_quorum": true,
+    "implementation_must_conform_to_spec": true,
+    "spec_overrides_implementation": true,
+    "pythonhashseed": 39
+  },
+  "note": "SHA-256 values and merkle_root were computed at freeze time from the canonical byte content of each spec file. The merkle_root is sha256(sorted leaf hashes joined by '|'). Verified on every CI run by ci/peano_cross_validator.yml."
+}
