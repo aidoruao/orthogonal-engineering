@@ -26,6 +26,38 @@
       "replacement_cost": "zero",
       "implementation": "tools/discord_witness/bot.py",
       "no_third_party_deps": true
+    },
+    "ray_tracing": {
+      "pr": 42,
+      "layer": "deterministic_light_transport",
+      "status": "complete",
+      "policy": {
+        "randomness": false,
+        "stochastic_sampling": false,
+        "quasi_monte_carlo": true,
+        "rt_cores_required": false,
+        "gpu_acceleration": "optional",
+        "cpu_reference": "required",
+        "convergence_bounded": true,
+        "error_target_configurable": true,
+        "vendor_lock_in": false
+      },
+      "mathematical_basis": {
+        "primary_sampler": "sobol",
+        "secondary_samplers": ["halton", "hammersley"],
+        "adaptive_method": "ebls",
+        "convergence_rate": "O((log N)^d / N)",
+        "error_bound": "koksma_hlawka"
+      },
+      "implementation": {
+        "samplers": "tools/ray_tracing/samplers/",
+        "transport": "tools/ray_tracing/transport/",
+        "geometry": "tools/ray_tracing/geometry/",
+        "verify": "tools/ray_tracing/verify.py",
+        "grammar": "tools/ray_tracing/grammar/sampling_strategy.json"
+      },
+      "completes_architecture": true,
+      "halting_statement": "The city thinks, witnesses, renders, and illuminates itself through deterministic mathematics. No external dependencies. No stochastic approximations. No hardware vendor lock-in. Architecture complete."
     }
   },
   "canonical_sources": [

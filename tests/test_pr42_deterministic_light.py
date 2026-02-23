@@ -1085,3 +1085,290 @@ class TestMathematicalBounds:
         expected = (math.log(n) ** d) / n
         actual = _discrepancy_error_estimate(0.5, n)
         assert abs(actual - expected) < 1e-9
+
+
+# ===========================================================================
+# 13. BVH builder
+# ===========================================================================
+
+class TestBVHBuilder:
+    """Deterministic BVH construction and traversal."""
+
+    def _import(self):
+        from tools.ray_tracing.geometry.bvh_builder import (
+            AABB,
+            BVHNode,
+            build_bvh,
+            build_bvh_scene,
+            intersect_bvh,
+        )
+        return AABB, BVHNode, build_bvh, build_bvh_scene, intersect_bvh
+
+    def test_aabb_surface_area(self):
+        """AABB surface area of a unit cube is 6."""
+        AABB, *_ = self._import()
+        box = AABB(min_point=(0, 0, 0), max_point=(1, 1, 1))
+        assert abs(box.surface_area() - 6.0) < 1e-9
+
+    def test_aabb_centroid(self):
+        """AABB centroid is the midpoint."""
+        AABB, *_ = self._import()
+        box = AABB(min_point=(0, 0, 0), max_point=(2, 4, 6))
+        c = box.centroid()
+        assert c == (1.0, 2.0, 3.0)
+
+    def test_aabb_expand(self):
+        """Union of two AABBs contains both."""
+        AABB, *_ = self._import()
+        a = AABB(min_point=(0, 0, 0), max_point=(1, 1, 1))
+        b = AABB(min_point=(2, 2, 2), max_point=(3, 3, 3))
+        union = a.expand(b)
+        assert union.min_point == (0, 0, 0)
+        assert union.max_point == (3, 3, 3)
+
+    def test_aabb_ray_hit(self):
+        """AABB-ray test hits when ray points through the box."""
+        AABB, *_ = self._import()
+        box = AABB(min_point=(-1, -1, -3), max_point=(1, 1, -1))
+        ray = Ray(origin=(0, 0, 0), direction=(0, 0, -1))
+        assert box.intersect_ray(ray, 1e-4, 1e9) is True
+
+    def test_aabb_ray_miss(self):
+        """AABB-ray test misses when ray goes past the box."""
+        AABB, *_ = self._import()
+        box = AABB(min_point=(-1, -1, -3), max_point=(1, 1, -1))
+        ray = Ray(origin=(5, 5, 0), direction=(0, 0, -1))
+        assert box.intersect_ray(ray, 1e-4, 1e9) is False
+
+    def test_build_bvh_empty(self):
+        """Empty primitive list returns None."""
+        _, _, build_bvh, *_ = self._import()
+        assert build_bvh([]) is None
+
+    def test_build_bvh_single_primitive(self):
+        """Single sphere becomes a leaf node."""
+        _, _, build_bvh, *_ = self._import()
+        s = Sphere(center=(0, 0, -2), radius=0.5, material=Material())
+        root = build_bvh([s])
+        assert root is not None
+        assert root.is_leaf
+        assert len(root.primitives) == 1
+
+    def test_build_bvh_scene(self):
+        """build_bvh_scene wraps the full scene."""
+        _, _, _, build_bvh_scene, _ = self._import()
+        scene = _make_simple_scene()
+        root = build_bvh_scene(scene)
+        assert root is not None
+
+    def test_intersect_bvh_hit(self):
+        """BVH intersection finds the sphere."""
+        _, _, build_bvh, _, intersect_bvh = self._import()
+        s = Sphere(center=(0, 0, -2), radius=0.5, material=Material(emission=1.0))
+        root = build_bvh([s])
+        ray = Ray(origin=(0, 0, 0), direction=(0, 0, -1))
+        hit = intersect_bvh(root, ray)
+        assert hit is not None
+        assert hit.material.emission == pytest.approx(1.0)
+
+    def test_intersect_bvh_miss(self):
+        """BVH intersection returns None on miss."""
+        _, _, build_bvh, _, intersect_bvh = self._import()
+        s = Sphere(center=(100, 0, 0), radius=0.5, material=Material())
+        root = build_bvh([s])
+        ray = Ray(origin=(0, 0, 0), direction=(0, 0, -1))
+        hit = intersect_bvh(root, ray)
+        assert hit is None
+
+    def test_bvh_matches_brute_force(self):
+        """BVH and brute-force intersect agree on the closest hit."""
+        _, _, build_bvh, _, intersect_bvh = self._import()
+        spheres = [
+            Sphere(center=(0, 0, -2), radius=0.3, material=Material(emission=1.0)),
+            Sphere(center=(0, 0, -4), radius=0.3, material=Material(emission=0.5)),
+        ]
+        root = build_bvh(spheres)
+        ray = Ray(origin=(0, 0, 0), direction=(0, 0, -1))
+        bvh_hit = intersect_bvh(root, ray)
+        brute_hit = Scene(spheres=spheres).intersect(ray)
+        assert (bvh_hit is None) == (brute_hit is None)
+        if bvh_hit is not None and brute_hit is not None:
+            assert bvh_hit.t == pytest.approx(brute_hit.t)
+
+    def test_bvh_deterministic(self):
+        """Same scene always produces same BVH hit."""
+        _, _, build_bvh, _, intersect_bvh = self._import()
+        spheres = [
+            Sphere(center=(i * 0.5, 0, -2 - i), radius=0.2, material=Material())
+            for i in range(5)
+        ]
+        root1 = build_bvh(spheres)
+        root2 = build_bvh(spheres)
+        ray = Ray(origin=(0, 0, 0), direction=(0, 0, -1))
+        h1 = intersect_bvh(root1, ray)
+        h2 = intersect_bvh(root2, ray)
+        assert (h1 is None) == (h2 is None)
+        if h1 is not None and h2 is not None:
+            assert h1.t == h2.t
+
+
+# ===========================================================================
+# 14. verify.py — standalone dual-path hash comparator
+# ===========================================================================
+
+class TestVerifyModule:
+    """CHALCEDON: CPU reference authoritative; GPU optional."""
+
+    def _import(self):
+        from tools.ray_tracing.verify import (
+            FrameVerifier,
+            VerificationResult,
+            hash_radiance,
+            hash_radiance_buffer,
+            verify_radiance_hash,
+        )
+        return FrameVerifier, VerificationResult, hash_radiance, hash_radiance_buffer, verify_radiance_hash
+
+    def test_hash_radiance_deterministic(self):
+        """hash_radiance is deterministic."""
+        _, _, hash_radiance, *_ = self._import()
+        assert hash_radiance(0.5) == hash_radiance(0.5)
+
+    def test_hash_radiance_distinct(self):
+        """Different values have different hashes."""
+        _, _, hash_radiance, *_ = self._import()
+        assert hash_radiance(0.5) != hash_radiance(0.6)
+
+    def test_hash_radiance_buffer(self):
+        """hash_radiance_buffer is deterministic and order-sensitive."""
+        _, _, _, hash_radiance_buffer, _ = self._import()
+        a = hash_radiance_buffer([0.1, 0.2, 0.3])
+        b = hash_radiance_buffer([0.1, 0.2, 0.3])
+        c = hash_radiance_buffer([0.3, 0.2, 0.1])
+        assert a == b
+        assert a != c
+
+    def test_verify_radiance_hash_match(self):
+        """Identical buffers pass verification."""
+        *_, verify_radiance_hash = self._import()
+        buf = [0.1, 0.2, 0.3, 0.4]
+        assert verify_radiance_hash(buf, buf) is True
+
+    def test_verify_radiance_hash_within_tolerance(self):
+        """Buffers within tolerance pass verification."""
+        *_, verify_radiance_hash = self._import()
+        cpu = [1.0, 2.0, 3.0]
+        gpu = [1.0 + 1e-7, 2.0 - 1e-7, 3.0 + 1e-7]
+        assert verify_radiance_hash(cpu, gpu, tolerance=1e-6) is True
+
+    def test_verify_radiance_hash_outside_tolerance(self):
+        """Buffers outside tolerance fail verification."""
+        *_, verify_radiance_hash = self._import()
+        cpu = [1.0, 2.0, 3.0]
+        gpu = [1.001, 2.001, 3.001]
+        assert verify_radiance_hash(cpu, gpu, tolerance=1e-6) is False
+
+    def test_verify_radiance_hash_length_mismatch(self):
+        """Buffers of different length fail verification."""
+        *_, verify_radiance_hash = self._import()
+        assert verify_radiance_hash([1.0, 2.0], [1.0], tolerance=1e-6) is False
+
+    def test_frame_verifier_cpu_only(self):
+        """No GPU buffer → cpu_only."""
+        FrameVerifier, *_ = self._import()
+        fv = FrameVerifier()
+        _, status = fv.verify_frame(0, [0.5, 0.5])
+        assert status == "cpu_only"
+
+    def test_frame_verifier_verified_gpu(self):
+        """Matching GPU buffer → verified_gpu."""
+        FrameVerifier, *_ = self._import()
+        fv = FrameVerifier()
+        buf = [0.5, 0.5]
+        _, status = fv.verify_frame(0, buf, buf)
+        assert status == "verified_gpu"
+
+    def test_frame_verifier_gpu_rejected(self):
+        """Mismatching GPU buffer → gpu_rejected, CPU returned."""
+        FrameVerifier, *_ = self._import()
+        fv = FrameVerifier(tolerance=1e-6)
+        cpu_buf = [0.5, 0.5]
+        gpu_buf = [0.9, 0.9]
+        accepted, status = fv.verify_frame(0, cpu_buf, gpu_buf)
+        assert status == "gpu_rejected"
+        assert accepted is cpu_buf
+
+    def test_frame_verifier_log_accumulates(self):
+        """Verifier log records every decision."""
+        FrameVerifier, *_ = self._import()
+        fv = FrameVerifier()
+        fv.verify_frame(0, [0.1])
+        fv.verify_frame(1, [0.2], [0.2])
+        fv.verify_frame(2, [0.3], [0.9])
+        assert len(fv.log) == 3
+        statuses = {r.status for r in fv.log}
+        assert statuses == {"cpu_only", "verified_gpu", "gpu_rejected"}
+
+    def test_no_randomness_in_source(self):
+        """Static check: no 'import random' or 'np.random' in verify.py."""
+        source = Path(REPO_ROOT / "tools" / "ray_tracing" / "verify.py").read_text()
+        assert "import random" not in source
+        assert "np.random" not in source
+
+    def test_no_randomness_in_path_tracer(self):
+        """Static check: no randomness in path_tracer.py."""
+        source = Path(REPO_ROOT / "tools" / "ray_tracing" / "transport" / "path_tracer.py").read_text()
+        assert "import random" not in source
+        assert "np.random" not in source
+
+
+# ===========================================================================
+# 15. Direction numbers JSON
+# ===========================================================================
+
+class TestDirectionNumbersJSON:
+    """Sobol' direction numbers data file."""
+
+    JSON_PATH = REPO_ROOT / "tools" / "ray_tracing" / "samplers" / "sobol_direction_numbers.json"
+
+    def _load(self) -> dict:
+        return json.loads(self.JSON_PATH.read_text())
+
+    def test_file_exists(self):
+        assert self.JSON_PATH.exists()
+
+    def test_schema_fields(self):
+        data = self._load()
+        for field in ("schema_version", "standard", "source", "dimensions"):
+            assert field in data
+
+    def test_standard_yeshua(self):
+        data = self._load()
+        assert data["standard"] == "Yeshua"
+
+    def test_five_dimensions(self):
+        """At least 5 dimensions (0–4) are present."""
+        data = self._load()
+        assert len(data["dimensions"]) >= 5
+
+    def test_each_dimension_has_32_numbers(self):
+        """Each dimension must have exactly 32 direction numbers."""
+        data = self._load()
+        for dim in data["dimensions"]:
+            assert len(dim["direction_numbers"]) == 32, \
+                f"Dimension {dim['d']} has {len(dim['direction_numbers'])} numbers"
+
+    def test_direction_numbers_are_integers(self):
+        """All direction numbers are non-negative integers."""
+        data = self._load()
+        for dim in data["dimensions"]:
+            for v in dim["direction_numbers"]:
+                assert isinstance(v, int) and v >= 0
+
+    def test_dimension_0_is_van_der_corput(self):
+        """Dimension 0 direction numbers are powers of 2 in reverse order."""
+        data = self._load()
+        dim0 = data["dimensions"][0]
+        assert dim0["d"] == 0
+        expected_first = 1 << 31  # 2^31
+        assert dim0["direction_numbers"][0] == expected_first
