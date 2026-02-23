@@ -1,0 +1,32 @@
+# .gitattributes — Enforce LF line endings for all source and spec files.
+# Prevents CRLF conversion on Windows, which would cause SHA-256 hash
+# divergence in the Peano Sovereignty Layer freeze file verification.
+
+* text=auto eol=lf
+
+# Spec files — canonical content; must hash identically across all OS
+spec/*.json text eol=lf
+resilience/*.freeze text eol=lf
+
+# Python source files
+*.py text eol=lf
+
+# YAML workflow files
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# JSON files
+*.json text eol=lf
+
+# Markdown and text
+*.md text eol=lf
+*.txt text eol=lf
+
+# Binary files — no line ending conversion
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.whl binary
+*.zip binary

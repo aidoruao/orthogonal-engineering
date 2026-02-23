@@ -1,0 +1,148 @@
+# bootstrap/reproducible_build_39.yml
+# PR #39 — Autonomous Peano Sovereignty Layer
+# Standard: Yeshua
+# Version: 2.0.0
+#
+# Reproducible build workflow for PR #39.
+# Produces deterministic artifact hashes across OS nodes.
+# PYTHONHASHSEED is pinned to 39 for full cross-run reproducibility.
+
+name: Reproducible Build (PR #39)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  LANG: C.UTF-8
+  LC_ALL: C.UTF-8
+  PYTHONHASHSEED: "39"
+  TZ: "UTC"
+  SOURCE_DATE_EPOCH: "1700000000"
+
+permissions:
+  contents: read
+
+jobs:
+  reproducible-build-v2:
+    name: Reproducible Build v2 (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python (pinned)
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11.9"
+
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip==24.0
+          pip install pytest==8.1.1
+
+      - name: Compute spec file hashes and artifact manifest
+        env:
+          RUNNER_OS: ${{ runner.os }}
+        shell: bash
+        run: |
+          python - <<'PYEOF'
+          import hashlib, json, os, pathlib
+
+          spec_files = [
+              "spec/peano_axioms.json",
+              "spec/arithmetic_axioms.json",
+              "spec/boolean_axioms.json",
+          ]
+
+          def sha256(data: bytes) -> str:
+              return hashlib.sha256(data).hexdigest()
+
+          def read_normalized(p: pathlib.Path) -> bytes:
+              """Read file bytes with CRLF normalized to LF for cross-platform hash parity."""
+              return p.read_bytes().replace(b'\r\n', b'\n')
+
+          entries = []
+          leaf_hashes = []
+          for sf in spec_files:
+              p = pathlib.Path(sf)
+              if p.exists():
+                  h = sha256(read_normalized(p))
+                  entries.append({"path": sf, "sha256": h})
+                  leaf_hashes.append(h)
+                  print(f"  {sf}: {h}")
+              else:
+                  print(f"  MISSING: {sf}")
+
+          leaf_hashes_sorted = sorted(leaf_hashes)
+          merkle_root = sha256("|".join(leaf_hashes_sorted).encode("utf-8"))
+          print(f"  merkle_root: {merkle_root}")
+
+          manifest = {
+              "schema_version": "2.0.0",
+              "pr": 39,
+              "standard": "Yeshua",
+              "invariant_spec_version": "v2",
+              "os": os.environ.get("RUNNER_OS", "unknown"),
+              "spec_files": entries,
+              "merkle_root": merkle_root,
+          }
+          pathlib.Path("artifact_hash_manifest_v2.json").write_text(
+              json.dumps(manifest, indent=2, sort_keys=True)
+          )
+          PYEOF
+
+      - name: Upload artifact hash manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifact-hash-manifest-v2-${{ matrix.os }}
+          path: artifact_hash_manifest_v2.json
+
+  verify-hash-parity-v2:
+    name: Verify Artifact Hash Parity Across Nodes (v2)
+    needs: reproducible-build-v2
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifact hash manifests
+        uses: actions/download-artifact@v4
+        with:
+          pattern: artifact-hash-manifest-v2-*
+          path: /tmp/artifact_hash_manifests_v2
+
+      - name: Assert identical merkle roots across nodes
+        run: |
+          python - <<'PYEOF'
+          import json, pathlib, sys
+
+          manifest_files = list(
+              pathlib.Path('/tmp/artifact_hash_manifests_v2').rglob('artifact_hash_manifest_v2.json')
+          )
+          if not manifest_files:
+              print('ERROR: No artifact hash manifests found')
+              sys.exit(1)
+
+          roots = {}
+          for f in manifest_files:
+              data = json.loads(f.read_text())
+              node = f.parent.name
+              roots[node] = data['merkle_root']
+              print(f'  {node}: merkle_root={data["merkle_root"]}')
+
+          unique_roots = set(roots.values())
+          if len(unique_roots) == 1:
+              print(f'REPRODUCIBLE BUILD v2 GATE: PASSED — all {len(manifest_files)} nodes agree on merkle_root={unique_roots.pop()}')
+          else:
+              print(f'MISMATCH: {len(unique_roots)} distinct merkle roots across nodes')
+              sys.exit(1)
+          PYEOF

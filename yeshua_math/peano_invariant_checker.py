@@ -160,8 +160,55 @@ def run_peano_invariant_checker(dirs: List[str] | None = None) -> PeanoInvariant
 
 
 if __name__ == "__main__":
+    import argparse
     import sys
 
-    report = run_peano_invariant_checker()
+    parser = argparse.ArgumentParser(
+        description="Peano Invariant Checker — verify arithmetic invariants in source code."
+    )
+    parser.add_argument(
+        "--spec",
+        type=str,
+        default=None,
+        help="Path to a freeze spec file (e.g. resilience/invariant_spec_v2.freeze) to validate "
+             "spec file hashes before running the invariant check.",
+    )
+    parser.add_argument(
+        "--dirs",
+        nargs="*",
+        default=None,
+        help="Directories to scan (default: all core dirs).",
+    )
+    args = parser.parse_args()
+
+    if args.spec:
+        import hashlib
+        import json as _json
+
+        spec_path = Path(args.spec)
+        if not spec_path.is_absolute():
+            spec_path = REPO_ROOT / spec_path
+        freeze = _json.loads(spec_path.read_text(encoding="utf-8"))
+        spec_ok = True
+        for entry in freeze.get("spec_files", []):
+            sf = REPO_ROOT / entry["path"]
+            expected = entry["sha256"]
+            if not sf.exists():
+                print(f"SPEC ERROR: missing spec file: {sf}", file=sys.stderr)
+                spec_ok = False
+                continue
+            actual = hashlib.sha256(sf.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+            if actual != expected:
+                print(
+                    f"SPEC ERROR: hash mismatch for {entry['path']}: "
+                    f"expected={expected} actual={actual}",
+                    file=sys.stderr,
+                )
+                spec_ok = False
+        if not spec_ok:
+            print("SPEC VALIDATION FAILED", file=sys.stderr)
+            sys.exit(2)
+
+    report = run_peano_invariant_checker(dirs=args.dirs)
     print(report.to_json())
     sys.exit(0 if report.all_passed else 1)

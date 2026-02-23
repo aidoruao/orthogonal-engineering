@@ -1,0 +1,79 @@
+{
+  "schema_version": "2.0.0",
+  "pr": 39,
+  "standard": "Yeshua",
+  "axiom_set": "Peano Sovereignty",
+  "frozen": true,
+  "freeze_version": "v2",
+  "description": "Autonomous Peano Sovereignty Layer axiom set for PR #39. Extends Peano Arithmetic with explicit sovereignty invariants: determinism, cross-machine reproducibility, and formal Merkle anchoring. Immutable once frozen under invariant_spec_version=v2.",
+  "axioms": [
+    {
+      "id": "PS1",
+      "name": "Zero (Sovereignty)",
+      "statement": "0 is the unique sovereign origin of every natural number chain. No computation may redefine zero."
+    },
+    {
+      "id": "PS2",
+      "name": "Successor (Determinism)",
+      "statement": "For every natural number n, S(n) is uniquely determined. Successor is a pure, deterministic function with no side effects."
+    },
+    {
+      "id": "PS3",
+      "name": "Zero not successor",
+      "statement": "For no natural number n is S(n) = 0. The sovereign origin has no predecessor within the natural numbers."
+    },
+    {
+      "id": "PS4",
+      "name": "Successor injective",
+      "statement": "For all natural numbers m, n: if S(m) = S(n) then m = n. Two distinct numbers cannot converge to the same successor."
+    },
+    {
+      "id": "PS5",
+      "name": "Induction (Sovereignty Closure)",
+      "statement": "If a sovereignty invariant holds for 0, and whenever it holds for n it also holds for S(n), then it holds for all natural numbers. No exception may be carved out."
+    },
+    {
+      "id": "PS6",
+      "name": "Addition base",
+      "statement": "For all natural numbers n, n + 0 = n. Zero is the additive identity across all sovereign nodes."
+    },
+    {
+      "id": "PS7",
+      "name": "Addition step",
+      "statement": "For all natural numbers m, n: m + S(n) = S(m + n). Addition is fully reducible to successor application."
+    },
+    {
+      "id": "PS8",
+      "name": "Multiplication base",
+      "statement": "For all natural numbers n, n * 0 = 0."
+    },
+    {
+      "id": "PS9",
+      "name": "Multiplication step",
+      "statement": "For all natural numbers m, n: m * S(n) = (m * n) + m."
+    },
+    {
+      "id": "PS10",
+      "name": "Cross-machine reproducibility",
+      "statement": "Every arithmetic computation expressible in terms of PS1-PS9 must produce a bit-identical result on any conforming node, regardless of OS, CPU architecture, or Python version."
+    },
+    {
+      "id": "PS11",
+      "name": "Merkle anchoring",
+      "statement": "The canonical hash of this axiom set and all derived spec files must be anchored in the invariant_spec_v2.freeze file. Any deviation in the freeze file invalidates all proof bundles referencing it."
+    },
+    {
+      "id": "PS12",
+      "name": "Hash determinism seed",
+      "statement": "All hashing operations in the Peano Sovereignty Layer must be performed with PYTHONHASHSEED=39 to ensure cross-run reproducibility."
+    }
+  ],
+  "enforcement": {
+    "float_policy": "explicit_bounds_required",
+    "integer_fallback_required": true,
+    "unbounded_drift_forbidden": true,
+    "cross_machine_hash_parity_required": true,
+    "pythonhashseed": 39,
+    "invariant_spec_version": "v2"
+  }
+}

@@ -6,10 +6,14 @@ produce results consistent with the C reference runtime (arithmetic_core.c,
 logic_engine.c) by independently re-computing the same operations and
 comparing hashes.
 
+PR #39 adds deterministic spec-hash aggregation: computes a Merkle root over
+all spec files listed in the v2 freeze file and verifies it matches the
+expected value, ensuring cross-machine determinism of the spec set.
+
 Author: Orthogonal Engineering
-PR: #37
+PR: #37/#39
 Standard: Yeshua
-Version: 1.0.0
+Version: 2.0.0
 """
 
 from __future__ import annotations
@@ -22,9 +26,12 @@ from typing import Dict, List, Tuple
 __all__ = [
     "CrossValidationResult",
     "run_cross_validation",
+    "compute_spec_merkle_root",
 ]
 
 RUNTIME_DIR = Path(__file__).parent
+REPO_ROOT = RUNTIME_DIR.parent.parent
+FREEZE_V2_PATH = REPO_ROOT / "resilience" / "invariant_spec_v2.freeze"
 
 
 def _sha256(data: bytes) -> str:
@@ -171,7 +178,63 @@ def run_cross_validation() -> CrossValidationResult:
             detail=str(p),
         )
 
+    # --- Spec Merkle root determinism (PR #39) ---
+    if FREEZE_V2_PATH.exists():
+        try:
+            freeze = json.loads(FREEZE_V2_PATH.read_text(encoding="utf-8"))
+            expected_merkle = freeze.get("merkle_root", "")
+            computed_merkle, spec_error = compute_spec_merkle_root(freeze)
+            if spec_error:
+                result.add_check(
+                    name="spec_merkle_root_v2",
+                    passed=False,
+                    detail=f"error computing merkle root: {spec_error}",
+                )
+            else:
+                result.add_check(
+                    name="spec_merkle_root_v2",
+                    passed=(computed_merkle == expected_merkle),
+                    detail=(
+                        f"computed={computed_merkle} expected={expected_merkle}"
+                    ),
+                )
+        except Exception as exc:
+            result.add_check(
+                name="spec_merkle_root_v2",
+                passed=False,
+                detail=f"exception: {exc}",
+            )
+    else:
+        result.add_check(
+            name="spec_merkle_root_v2",
+            passed=False,
+            detail=f"freeze file not found: {FREEZE_V2_PATH}",
+        )
+
     return result
+
+
+def compute_spec_merkle_root(freeze: Dict) -> Tuple[str, str]:
+    """Compute the deterministic Merkle root of spec files listed in a freeze dict.
+
+    Returns (merkle_root_hex, error_string). On success, error_string is "".
+    The Merkle root is sha256 of the sorted sha256 leaf hashes joined by '|'.
+    File bytes are normalized (CRLF → LF) before hashing to ensure cross-platform
+    hash parity regardless of git line-ending settings.
+    This is the canonical algorithm shared by the freeze file and the CI workflow.
+    """
+    leaf_hashes = []
+    for entry in freeze.get("spec_files", []):
+        sf = REPO_ROOT / entry["path"]
+        if not sf.exists():
+            return "", f"missing spec file: {sf}"
+        normalized = sf.read_bytes().replace(b"\r\n", b"\n")
+        leaf_hashes.append(hashlib.sha256(normalized).hexdigest())
+    if not leaf_hashes:
+        return "", "no spec_files in freeze"
+    leaf_hashes_sorted = sorted(leaf_hashes)
+    merkle_input = "|".join(leaf_hashes_sorted).encode("utf-8")
+    return hashlib.sha256(merkle_input).hexdigest(), ""
 
 
 if __name__ == "__main__":

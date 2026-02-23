@@ -11,10 +11,13 @@ Two concrete adapters are provided:
 Additional adapters (blockchain, distributed log, etc.) can be added by
 implementing the LedgerAdapter abstract base class.
 
+PR #39: added support for invariant_spec_version=v2 and proof_bundle_v2.json
+fields (merkle_root, output_hash, environment_hash, timestamp, node_id).
+
 Author: Orthogonal Engineering
-PR: #38
+PR: #38/#39
 Standard: Yeshua
-Version: 1.0.0
+Version: 2.0.0
 """
 
 from __future__ import annotations
@@ -30,7 +33,11 @@ __all__ = [
     "ConsoleAdapter",
     "CompositeAdapter",
     "get_default_adapter",
+    "read_proof_bundle_v2",
 ]
+
+# Supported invariant spec versions
+_SUPPORTED_SPEC_VERSIONS = {"v1", "v2"}
 
 
 class LedgerAdapter(ABC):
@@ -132,3 +139,31 @@ def get_default_adapter(ledger_path: Optional[Path] = None) -> LedgerAdapter:
         LocalFileAdapter(ledger_path),
         ConsoleAdapter(),
     ])
+
+
+def read_proof_bundle_v2(bundle_path: Path) -> Dict:
+    """Read and validate a proof_bundle_v2.json file.
+
+    Raises ValueError if required fields are missing or invariant_spec_version
+    is not a supported value.
+
+    Required fields: merkle_root, output_hash, environment_hash, timestamp,
+    invariant_spec_version, node_id.
+    """
+    data = json.loads(bundle_path.read_text(encoding="utf-8"))
+    required = {
+        "merkle_root", "output_hash", "environment_hash",
+        "timestamp", "invariant_spec_version", "node_id",
+    }
+    missing = required - set(data.keys())
+    if missing:
+        raise ValueError(
+            f"proof bundle missing required fields: {sorted(missing)}"
+        )
+    spec_version = data["invariant_spec_version"]
+    if spec_version not in _SUPPORTED_SPEC_VERSIONS:
+        raise ValueError(
+            f"unsupported invariant_spec_version: {spec_version!r}; "
+            f"supported: {sorted(_SUPPORTED_SPEC_VERSIONS)}"
+        )
+    return data
