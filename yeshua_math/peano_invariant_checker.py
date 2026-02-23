@@ -197,7 +197,7 @@ if __name__ == "__main__":
                 print(f"SPEC ERROR: missing spec file: {sf}", file=sys.stderr)
                 spec_ok = False
                 continue
-            actual = hashlib.sha256(sf.read_bytes()).hexdigest()
+            actual = hashlib.sha256(sf.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
             if actual != expected:
                 print(
                     f"SPEC ERROR: hash mismatch for {entry['path']}: "

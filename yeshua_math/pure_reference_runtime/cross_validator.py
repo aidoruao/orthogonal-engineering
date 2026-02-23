@@ -219,6 +219,8 @@ def compute_spec_merkle_root(freeze: Dict) -> Tuple[str, str]:
 
     Returns (merkle_root_hex, error_string). On success, error_string is "".
     The Merkle root is sha256 of the sorted sha256 leaf hashes joined by '|'.
+    File bytes are normalized (CRLF → LF) before hashing to ensure cross-platform
+    hash parity regardless of git line-ending settings.
     This is the canonical algorithm shared by the freeze file and the CI workflow.
     """
     leaf_hashes = []
@@ -226,7 +228,8 @@ def compute_spec_merkle_root(freeze: Dict) -> Tuple[str, str]:
         sf = REPO_ROOT / entry["path"]
         if not sf.exists():
             return "", f"missing spec file: {sf}"
-        leaf_hashes.append(hashlib.sha256(sf.read_bytes()).hexdigest())
+        normalized = sf.read_bytes().replace(b"\r\n", b"\n")
+        leaf_hashes.append(hashlib.sha256(normalized).hexdigest())
     if not leaf_hashes:
         return "", "no spec_files in freeze"
     leaf_hashes_sorted = sorted(leaf_hashes)

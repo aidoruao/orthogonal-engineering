@@ -46,6 +46,11 @@ def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _read_normalized(path: Path) -> bytes:
+    """Read file bytes with CRLF normalized to LF for cross-platform hash parity."""
+    return path.read_bytes().replace(b"\r\n", b"\n")
+
+
 def _load_freeze_v2() -> dict:
     return json.loads(FREEZE_V2_PATH.read_text(encoding="utf-8"))
 
@@ -54,12 +59,12 @@ def _build_proof_bundle_v2(node_id: str = "test-node") -> dict:
     """Build a proof_bundle_v2.json dict deterministically (excluding timestamp)."""
     freeze = _load_freeze_v2()
     leaf_hashes = sorted(
-        _sha256((REPO_ROOT / e["path"]).read_bytes())
+        _sha256(_read_normalized(REPO_ROOT / e["path"]))
         for e in freeze["spec_files"]
     )
     merkle_root = _sha256("|".join(leaf_hashes).encode("utf-8"))
     output_hash = _sha256(f"peano_sovereignty_v2|{merkle_root}".encode("utf-8"))
-    env_str = "os=test|python=3.11|PYTHONHASHSEED=39"
+    env_str = "os=linux|py=3.11|seed=39"
     environment_hash = _sha256(env_str.encode("utf-8"))
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     return {
@@ -99,7 +104,7 @@ class TestSpecHashAggregation:
         for entry in freeze["spec_files"]:
             sf = REPO_ROOT / entry["path"]
             assert sf.exists(), f"spec file missing: {sf}"
-            actual = _sha256(sf.read_bytes())
+            actual = _sha256(_read_normalized(sf))
             assert actual == entry["sha256"], (
                 f"hash mismatch for {entry['path']}: "
                 f"expected={entry['sha256']} actual={actual}"
@@ -112,7 +117,7 @@ class TestSpecHashAggregation:
         for entry in freeze["spec_files"]:
             sf = REPO_ROOT / entry["path"]
             assert sf.exists(), f"spec file missing: {sf}"
-            leaf_hashes.append(_sha256(sf.read_bytes()))
+            leaf_hashes.append(_sha256(_read_normalized(sf)))
         computed = _sha256("|".join(sorted(leaf_hashes)).encode("utf-8"))
         assert computed == freeze["merkle_root"], (
             f"Merkle root mismatch: computed={computed} freeze={freeze['merkle_root']}"

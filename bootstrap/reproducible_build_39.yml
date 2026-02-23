@@ -21,6 +21,8 @@ env:
   LANG: C.UTF-8
   LC_ALL: C.UTF-8
   PYTHONHASHSEED: "39"
+  TZ: "UTC"
+  SOURCE_DATE_EPOCH: "1700000000"
 
 permissions:
   contents: read
@@ -50,6 +52,7 @@ jobs:
       - name: Compute spec file hashes and artifact manifest
         env:
           RUNNER_OS: ${{ runner.os }}
+        shell: bash
         run: |
           python - <<'PYEOF'
           import hashlib, json, os, pathlib
@@ -63,12 +66,16 @@ jobs:
           def sha256(data: bytes) -> str:
               return hashlib.sha256(data).hexdigest()
 
+          def read_normalized(p: pathlib.Path) -> bytes:
+              """Read file bytes with CRLF normalized to LF for cross-platform hash parity."""
+              return p.read_bytes().replace(b'\r\n', b'\n')
+
           entries = []
           leaf_hashes = []
           for sf in spec_files:
               p = pathlib.Path(sf)
               if p.exists():
-                  h = sha256(p.read_bytes())
+                  h = sha256(read_normalized(p))
                   entries.append({"path": sf, "sha256": h})
                   leaf_hashes.append(h)
                   print(f"  {sf}: {h}")

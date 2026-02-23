@@ -22,6 +22,8 @@ env:
   LANG: C.UTF-8
   LC_ALL: C.UTF-8
   PYTHONHASHSEED: "39"
+  TZ: "UTC"
+  SOURCE_DATE_EPOCH: "1700000000"
 
 permissions:
   contents: read
@@ -64,6 +66,7 @@ jobs:
           RUNNER_OS: ${{ runner.os }}
           MATRIX_OS: ${{ matrix.os }}
           PYTHON_VERSION: ${{ matrix.python-version }}
+        shell: bash
         run: |
           python - <<'PYEOF'
           import hashlib, json, os, pathlib, sys
@@ -71,6 +74,9 @@ jobs:
 
           def sha256(data: bytes) -> str:
               return hashlib.sha256(data).hexdigest()
+
+          def read_normalized(p: pathlib.Path) -> bytes:
+              return p.read_bytes().replace(b'\r\n', b'\n')
 
           # Load freeze file
           freeze_path = pathlib.Path("resilience/invariant_spec_v2.freeze")
@@ -83,7 +89,7 @@ jobs:
               if not p.exists():
                   print(f"ERROR: missing spec file: {p}", file=sys.stderr)
                   sys.exit(1)
-              leaf_hashes.append(sha256(p.read_bytes()))
+              leaf_hashes.append(sha256(read_normalized(p)))
 
           leaf_hashes_sorted = sorted(leaf_hashes)
           merkle_root = sha256("|".join(leaf_hashes_sorted).encode("utf-8"))
@@ -101,10 +107,10 @@ jobs:
           output_data = f"peano_sovereignty_v2|{merkle_root}".encode("utf-8")
           output_hash = sha256(output_data)
 
-          # Environment hash — Python version + OS
-          runner_os = os.environ.get("RUNNER_OS", "unknown")
+          # Environment hash — canonical lowercase platform + Python version
+          runner_os = os.environ.get("RUNNER_OS", "unknown").lower()
           python_version = os.environ.get("PYTHON_VERSION", sys.version.split()[0])
-          env_str = f"os={runner_os}|python={python_version}|PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED', 'unset')}"
+          env_str = f"os={runner_os}|py={python_version}|seed=39"
           environment_hash = sha256(env_str.encode("utf-8"))
 
           # Node ID
