@@ -1,0 +1,34 @@
+{
+  "style_id": "photorealism",
+  "version": "1.0.0",
+  "standard": "Yeshua",
+  "color_space": "linear_RGB",
+  "pixel_function": {
+    "type": "composite",
+    "layers": [
+      {
+        "type": "noise",
+        "algorithm": "perlin_deterministic",
+        "seed_derivation": "frame_seed||layer_index",
+        "octaves": 8,
+        "persistence": 0.65
+      },
+      {
+        "type": "color_map",
+        "source": "layer_0",
+        "gradient": {
+          "0.0": "#0a0a0a",
+          "0.3": "#4a3728",
+          "0.6": "#8b7355",
+          "1.0": "#f5f5f0"
+        }
+      }
+    ]
+  },
+  "constraints": {
+    "max_brightness": 255,
+    "min_brightness": 0,
+    "chroma_subsampling": false
+  },
+  "hash": "5ab42524362781dadcef9f1a36554ccb7f425b499244e2e8951c6f961ab47be7"
+}

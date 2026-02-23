@@ -1,0 +1,45 @@
+{
+  "style_id": "anime",
+  "version": "1.0.0",
+  "standard": "Yeshua",
+  "color_space": "sRGB",
+  "pixel_function": {
+    "type": "composite",
+    "layers": [
+      {
+        "type": "noise",
+        "algorithm": "perlin_deterministic",
+        "seed_derivation": "frame_seed||layer_index",
+        "octaves": 2,
+        "persistence": 0.3
+      },
+      {
+        "type": "cel_shade",
+        "source": "layer_0",
+        "levels": 4
+      },
+      {
+        "type": "color_map",
+        "source": "layer_1",
+        "gradient": {
+          "0.0": "#1a1a2e",
+          "0.25": "#16213e",
+          "0.5": "#e94560",
+          "0.75": "#f5a623",
+          "1.0": "#ffffff"
+        }
+      },
+      {
+        "type": "edge_detect",
+        "source": "layer_2",
+        "threshold": 0.2
+      }
+    ]
+  },
+  "constraints": {
+    "max_brightness": 255,
+    "min_brightness": 0,
+    "chroma_subsampling": false
+  },
+  "hash": "10eaf97f46ab8ed36ed4dd44e6d67ca29151d5b6321be9871dda537218f5b339"
+}

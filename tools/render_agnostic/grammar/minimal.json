@@ -1,0 +1,32 @@
+{
+  "style_id": "minimal",
+  "version": "1.0.0",
+  "standard": "Yeshua",
+  "color_space": "sRGB",
+  "pixel_function": {
+    "type": "composite",
+    "layers": [
+      {
+        "type": "noise",
+        "algorithm": "perlin_deterministic",
+        "seed_derivation": "frame_seed||layer_index",
+        "octaves": 2,
+        "persistence": 0.5
+      },
+      {
+        "type": "color_map",
+        "source": "layer_0",
+        "gradient": {
+          "0.0": "#000000",
+          "1.0": "#ffffff"
+        }
+      }
+    ]
+  },
+  "constraints": {
+    "max_brightness": 255,
+    "min_brightness": 0,
+    "chroma_subsampling": false
+  },
+  "hash": "803ef78bb5a3e1a59545882a93ca874915083edacbe855d41c2561c8e286650c"
+}
