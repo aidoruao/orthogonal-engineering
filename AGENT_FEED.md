@@ -11,3 +11,4 @@ Script: `tools/state_witness/generate_feed_entry.py`
 
 | timestamp | freeze_hash | merkle_root | invariant_spec_version | source_paths | commit_sha | prev_entry_hash | entry_hash |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-02-23T16:51:21Z | 29555e2eb3156c467a1735a5e294928e00e728f0ee5f21273e6db36f44d53972 | 455d56607b97359c9e35ba9b9fb03f84cd398ae05710367999c747c59bf83914 | v2 | spec/arithmetic_axioms.json,spec/boolean_axioms.json,spec/peano_axioms.json | eff2bc97ff8bf6638f05497622ae66908cf17f78 |  | ff84b689f6c910cf6887b1ba26ab30d34ebc7e0b109ab904aedb52a6bed52774 |
