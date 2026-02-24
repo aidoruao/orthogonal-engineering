@@ -36,6 +36,7 @@ from automation.pr49_guard import (
     FORBIDDEN_PATTERNS,
     LOGIC_BOMB_PATTERNS,
     _consent_covers,
+    _is_executable_path,
     _load_consent_log,
     _scan_patterns,
     check_mass_change,
@@ -205,6 +206,17 @@ class TestForbiddenPrimitives:
         v1 = self._scan(content, "automation/x.py")
         v2 = self._scan(content, "automation/x.py")
         assert v1 == v2
+
+    def test_test_file_excluded_from_scan(self):
+        """Test files must not trigger guard even if they contain pattern strings."""
+        assert not _is_executable_path("tests/test_pr49_guard.py")
+        assert not _is_executable_path("tests/test_foo.py")
+        assert not _is_executable_path("adversarial_tests/evil.py")
+
+    def test_automation_file_is_executable(self):
+        assert _is_executable_path("automation/pr49_guard.py")
+        assert _is_executable_path("scripts/deploy.sh")
+        assert _is_executable_path(".github/workflows/pr49_guard.yml")
 
 
 # ---------------------------------------------------------------------------

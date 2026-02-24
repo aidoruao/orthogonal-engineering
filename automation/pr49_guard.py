@@ -69,6 +69,16 @@ EXECUTABLE_GLOBS: List[str] = [
     "**/*.py",
 ]
 
+# Paths excluded from forbidden-primitive / logic-bomb scanning even if they
+# match EXECUTABLE_GLOBS.  Test files legitimately contain pattern strings as
+# data and must not trigger false positives.
+SCAN_EXCLUDE_GLOBS: List[str] = [
+    "tests/**",
+    "adversarial_tests/**",
+    "**/*_test.py",
+    "**/test_*.py",
+]
+
 # ---------------------------------------------------------------------------
 # Forbidden destructive primitives (regex patterns)
 # ---------------------------------------------------------------------------
@@ -323,6 +333,9 @@ def check_mass_change(
 # ---------------------------------------------------------------------------
 
 def _is_executable_path(path: str) -> bool:
+    for excl in SCAN_EXCLUDE_GLOBS:
+        if fnmatch.fnmatch(path, excl):
+            return False
     for glob_pat in EXECUTABLE_GLOBS:
         if fnmatch.fnmatch(path, glob_pat):
             return True
