@@ -1,0 +1,7 @@
+# PR #49 Glass-Box Anti-Malicious Enforcement Kernel — Consent Log
+# Format: one JSON object per line (JSONL), append-only.
+# Required fields: authoriser, scope_glob, rule_exceptions, justification_hash, scope_hash
+# Do NOT delete or rewrite existing entries; only append new ones.
+#
+# Example entry (do not uncomment — add real entries below):
+# {"authoriser":"@aidoruao","scope_glob":"docs/**","rule_exceptions":["mass_change"],"justification_hash":"<sha256-of-justification-text>","scope_hash":"<sha256-of-scope_glob>"}
