@@ -70,13 +70,15 @@ EXECUTABLE_GLOBS: List[str] = [
 ]
 
 # Paths excluded from forbidden-primitive / logic-bomb scanning even if they
-# match EXECUTABLE_GLOBS.  Test files legitimately contain pattern strings as
-# data and must not trigger false positives.
+# match EXECUTABLE_GLOBS.  Test files and the guard itself legitimately contain
+# pattern strings as data (not executable code) and must not trigger false
+# positives.  The guard script is already protected by CODEOWNERS.
 SCAN_EXCLUDE_GLOBS: List[str] = [
     "tests/**",
     "adversarial_tests/**",
     "**/*_test.py",
     "**/test_*.py",
+    "automation/pr49_guard.py",  # guard contains pattern literals, not executable patterns
 ]
 
 # ---------------------------------------------------------------------------

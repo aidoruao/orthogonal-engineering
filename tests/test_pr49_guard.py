@@ -213,8 +213,12 @@ class TestForbiddenPrimitives:
         assert not _is_executable_path("tests/test_foo.py")
         assert not _is_executable_path("adversarial_tests/evil.py")
 
+    def test_guard_itself_excluded_from_scan(self):
+        """Guard script contains pattern literals and must not self-flag."""
+        assert not _is_executable_path("automation/pr49_guard.py")
+
     def test_automation_file_is_executable(self):
-        assert _is_executable_path("automation/pr49_guard.py")
+        assert _is_executable_path("automation/other_tool.py")
         assert _is_executable_path("scripts/deploy.sh")
         assert _is_executable_path(".github/workflows/pr49_guard.yml")
 
