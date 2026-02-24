@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "attempt_transcript",
+  "type": "object",
+  "required": ["attempt_id", "candidate_id", "timestamp_utc", "promptset_hash", "responses", "transcript_hash"],
+  "properties": {
+    "attempt_id": {"type": "string"},
+    "candidate_id": {"type": "string"},
+    "timestamp_utc": {"type": "string", "format": "date-time"},
+    "promptset_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "environment_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "responses": {"type": "array", "items": {"type": "object"}, "minItems": 1},
+    "transcript_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "candidate_signature": {"type": "string"},
+    "sponsor_id": {"type": "string"}
+  },
+  "additionalProperties": false
+}

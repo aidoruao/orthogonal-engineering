@@ -1,0 +1,19 @@
+{
+  "version": "50.0.0",
+  "description": "Path-scoped capability matrix for architectural stewards",
+  "capabilities": [
+    {"name": "read", "description": "Read any file or resource", "requires_certificate": false},
+    {"name": "comment", "description": "Add comments to issues and PRs", "requires_certificate": false},
+    {"name": "suggest", "description": "Suggest changes via PR review", "requires_certificate": false},
+    {"name": "write", "description": "Write files within scoped paths", "requires_certificate": true},
+    {"name": "merge", "description": "Merge PRs within scoped paths", "requires_certificate": true},
+    {"name": "execute_with_consent", "description": "Execute actions requiring consent artifact", "requires_certificate": true, "requires_consent": true},
+    {"name": "write_with_consent", "description": "Write sensitive files requiring consent artifact", "requires_certificate": true, "requires_consent": true}
+  ],
+  "path_scopes": [
+    {"path_glob": "**/*", "allowed_capabilities": ["read", "comment", "suggest"]},
+    {"path_glob": "pr50_bar_exam/**", "allowed_capabilities": ["read", "comment", "suggest", "write", "merge"]},
+    {"path_glob": "pr50_bar_exam/witness/**", "allowed_capabilities": ["read", "comment", "suggest", "write_with_consent"]},
+    {"path_glob": ".github/**", "allowed_capabilities": ["read", "comment", "suggest", "write_with_consent", "execute_with_consent"]}
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "revocation_event",
+  "type": "object",
+  "required": ["event_id", "event_type", "certificate_id", "candidate_id", "authority_id", "timestamp_utc", "trigger", "evidence", "witness_entry_id"],
+  "properties": {
+    "event_id": {"type": "string"},
+    "event_type": {"type": "string", "enum": ["REVOCATION", "RESTORATION"]},
+    "certificate_id": {"type": "string"},
+    "candidate_id": {"type": "string"},
+    "authority_id": {"type": "string"},
+    "timestamp_utc": {"type": "string", "format": "date-time"},
+    "trigger": {"type": "string"},
+    "evidence": {"type": "object"},
+    "witness_entry_id": {"type": "string"},
+    "effects": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}
