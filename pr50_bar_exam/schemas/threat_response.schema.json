@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "threat_response",
+  "type": "object",
+  "required": ["question_id", "threat_category", "severity", "mitigations"],
+  "properties": {
+    "question_id": {"type": "string"},
+    "threat_category": {"type": "string", "enum": ["INJECTION", "EXFILTRATION", "ESCALATION", "BYPASS", "DENIAL"]},
+    "severity": {"type": "string", "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "mitigations": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+  },
+  "additionalProperties": false
+}
