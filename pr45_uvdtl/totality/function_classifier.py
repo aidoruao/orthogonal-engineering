@@ -56,13 +56,13 @@ class FunctionManifest:
 
     def as_dict(self) -> Dict:
         return {
-            "name": self.name,
-            "input_domain": self.input_domain,
-            "output_domain": self.output_domain,
-            "total": self.total,
-            "measure": self.measure,
             "decreases": self.decreases,
+            "input_domain": self.input_domain,
+            "measure": self.measure,
+            "name": self.name,
+            "output_domain": self.output_domain,
             "recursion_kind": self.recursion_kind,
+            "total": self.total,
         }
 
 
