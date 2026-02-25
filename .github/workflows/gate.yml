@@ -2,81 +2,81 @@ name: Orthogonal Engineering - Quality Gate
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests
-        if [ -f requirements.txt ]; then
-          pip install -r requirements.txt
-        fi
-        pip install pytest
-
-    - name: Check for test files
-      run: |
-        if [ ! -f "universal_inventory.csv" ]; then
-          echo "WARNING: universal_inventory.csv not found, skipping canal detector test"
-          echo "SKIP_CANAL_TEST=true" >> $GITHUB_ENV
-        fi
-
-    - name: Run automated test suite (if exists)
-      run: |
-        if [ -f "analysis/automated_test_suite.py" ]; then
-          python analysis/automated_test_suite.py universal_inventory.csv || echo "Test suite completed (may have warnings)"
-        else
-          echo "INFO: automated_test_suite.py not found, skipping"
-        fi
-
-    - name: Verify canal detector precision (if test file exists)
-      if: env.SKIP_CANAL_TEST != "true"
-      run: |
-        python analysis/canal_detector_v1.py universal_inventory.csv --json test_results.json || true
-        if [ -f "test_results.json" ]; then
-          PRECISION=$(python -c "import json; data=json.load(open(test_results.json)); print(data.get(precision_ok, False))")
-          if [ "$PRECISION" != "True" ]; then
-            echo "WARNING: Canal detector precision < 80%"
-            echo "This is a warning, not a failure - detector may need calibration"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
           fi
-        fi
+          pip install pytest
 
-    - name: Run null hypothesis test (if module exists)
-      run: |
-        if python -c "import sys; sys.path.insert(0, analysis); from canal_detector_v1 import gutenberg_null_test" 2>/dev/null; then
-          python -c "from analysis.canal_detector_v1 import gutenberg_null_test; result = gutenberg_null_test(); print(fNull test result: {result}); exit(0 if result < 0.05 else 1)" || echo "Null hypothesis test warning"
-        else
-          echo "INFO: gutenberg_null_test not available, skipping"
-        fi
+      - name: Check for test files
+        run: |
+          if [ ! -f "universal_inventory.csv" ]; then
+            echo "WARNING: universal_inventory.csv not found, skipping canal detector test"
+            echo "SKIP_CANAL_TEST=true" >> $GITHUB_ENV
+          fi
 
-    - name: PR #34 — Structural Enumeration & Enforcement Introspection
-      run: |
-        python pr34_audit.py --json > pr34_audit_output.json
-        echo "PR #34 audit complete"
+      - name: Run automated test suite (if exists)
+        run: |
+          if [ -f "analysis/automated_test_suite.py" ]; then
+            python analysis/automated_test_suite.py universal_inventory.csv || echo "Test suite completed (may have warnings)"
+          else
+            echo "INFO: automated_test_suite.py not found, skipping"
+          fi
 
-    - name: PR #34 — Run audit tests
-      run: python -m pytest tests/test_pr34_audit.py -v
+      - name: Verify canal detector precision (if test file exists)
+        if: env.SKIP_CANAL_TEST != "true"
+        run: |
+          python analysis/canal_detector_v1.py universal_inventory.csv --json test_results.json || true
+          if [ -f "test_results.json" ]; then
+            PRECISION=$(python -c "import json; data=json.load(open(test_results.json)); print(data.get('precision_ok', False))")
+            if [ "$PRECISION" != "True" ]; then
+              echo "WARNING: Canal detector precision < 80%"
+              echo "This is a warning, not a failure - detector may need calibration"
+            fi
+          fi
 
-    - name: Archive test results (if any)
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: test-results
-        path: |
-          test_results.json
-          evidence/*.json
-          pr34_audit_output.json
-        if-no-files-found: ignore
+      - name: Run null hypothesis test (if module exists)
+        run: |
+          if python -c "import sys; sys.path.insert(0, 'analysis'); from canal_detector_v1 import gutenberg_null_test" 2>/dev/null; then
+            python -c "from analysis.canal_detector_v1 import gutenberg_null_test; result = gutenberg_null_test(); print(f'Null test result: {result}'); exit(0 if result < 0.05 else 1)" || echo "Null hypothesis test warning"
+          else
+            echo "INFO: gutenberg_null_test not available, skipping"
+          fi
+
+      - name: PR #34 — Structural Enumeration & Enforcement Introspection
+        run: |
+          python pr34_audit.py --json > pr34_audit_output.json
+          echo "PR #34 audit complete"
+
+      - name: PR #34 — Run audit tests
+        run: python -m pytest tests/test_pr34_audit.py -v
+
+      - name: Archive test results (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: |
+            test_results.json
+            evidence/*.json
+            pr34_audit_output.json
+          if-no-files-found: ignore

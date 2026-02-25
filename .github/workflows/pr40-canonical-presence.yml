@@ -33,7 +33,7 @@ permissions:
 jobs:
   state-witness:
     name: State Witness (py${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
@@ -87,7 +87,7 @@ jobs:
 
   verify-feed-integrity:
     name: Verify Feed Integrity
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [ state-witness ]
     if: always() && needs.state-witness.result == 'success'
 

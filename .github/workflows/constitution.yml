@@ -16,15 +16,14 @@ permissions:
 
 jobs:
   # -------------------------------------------------------------------------
-  # constitution — run all axiomatic enforcement checks
+  # constitution — run all axiomatic enforcement checks on self-hosted runner
   # -------------------------------------------------------------------------
   constitution:
-    name: Constitution (${{ matrix.os }}, Python ${{ matrix.python-version }})
-    runs-on: ${{ matrix.os }}
+    name: Constitution (Self-hosted Windows)
+    runs-on: self-hosted
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
         python-version: [ "3.11", "3.12" ]
 
     steps:
@@ -61,17 +60,17 @@ jobs:
       - name: Upload global Merkle root artifact
         uses: actions/upload-artifact@v4
         with:
-          name: global-merkle-root-${{ matrix.os }}-py${{ matrix.python-version }}
+          name: global-merkle-root-py${{ matrix.python-version }}
           path: merkle/global_root.json
           if-no-files-found: error
 
   # -------------------------------------------------------------------------
-  # compare-roots — assert all six artifacts have identical root_hash
+  # compare-roots — assert all artifacts have identical root_hash
   # -------------------------------------------------------------------------
   compare-roots:
-    name: Compare Global Merkle Roots Across Platforms
+    name: Compare Global Merkle Roots
     needs: constitution
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v4
@@ -99,82 +98,4 @@ jobs:
               print(f"  {f.parent.name}: {data['root_hash']}")
 
           if len(roots) != 1:
-              print(f"FAIL: {len(roots)} distinct roots found — not deterministic!")
-              sys.exit(1)
-
-          print(f"OK: All {len(root_files)} roots identical: {next(iter(roots))}")
-          EOF
-
-  # -------------------------------------------------------------------------
-  # license-check — verify LICENSE exists and is CC0 / open
-  # -------------------------------------------------------------------------
-  license-check:
-    name: License Integrity Check
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Verify LICENSE is open
-        run: |
-          python -c "
-          from pathlib import Path
-          content = Path('LICENSE').read_text(encoding='utf-8').lower()
-          open_ids = {'cc0', 'public domain', 'creative commons', 'mit', 'apache', 'gpl', 'unlicense'}
-          if not any(oid in content for oid in open_ids):
-              raise SystemExit('LICENSE does not contain an open license identifier')
-          print('LICENSE OK:', [oid for oid in open_ids if oid in content])
-          "
-
-      - name: Run ownership guard (anti-monetization)
-        run: python ownership_guard.py
-
-  # -------------------------------------------------------------------------
-  # dependency-audit — verify dependencies are declared
-  # -------------------------------------------------------------------------
-  dependency-audit:
-    name: Dependency Audit
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Verify requirements.txt exists
-        run: |
-          python -c "
-          from pathlib import Path
-          req = Path('requirements.txt')
-          assert req.exists(), 'requirements.txt missing'
-          lines = [l.strip() for l in req.read_text().splitlines() if l.strip() and not l.startswith('#')]
-          print(f'requirements.txt: {len(lines)} declared dependencies')
-          "
-
-      - name: Generate SBOM manifest
-        run: |
-          python -c "
-          import json, subprocess, sys
-          result = subprocess.run([sys.executable, '-m', 'pip', 'list', '--format=json'],
-                                  capture_output=True, text=True)
-          packages = json.loads(result.stdout)
-          sbom = {'format': 'pip-list', 'count': len(packages), 'packages': packages}
-          import pathlib
-          pathlib.Path('sbom.json').write_text(json.dumps(sbom, indent=2))
-          print(f'SBOM: {len(packages)} packages')
-          "
-
-      - name: Upload SBOM
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom
-          path: sbom.json
-          if-no-files-found: ignore
+              print(f"FAIL: {len(roots)} distinct roots

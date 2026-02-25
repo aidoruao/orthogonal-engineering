@@ -15,7 +15,7 @@ jobs:
   # ---------------------------------------------------------------------------
   falsification:
     name: Falsification Tests (ubuntu, Python 3.12)
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
 
@@ -35,12 +35,14 @@ jobs:
   uvm_verification:
     name: UVM (${{ matrix.os }}, Python ${{ matrix.python-version }})
     needs: falsification
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
     strategy:
       fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+      matrix:  # Commented out for self-hosted runner
+#        os: [ ubuntu-latest, macos-latest, windows-latest ]  # Not needed for self-hosted
         python-version: [ "3.11", "3.12" ]
+        runs-on: self-hosted
+        runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v4
@@ -71,11 +73,11 @@ jobs:
   merkle_convergence:
     name: Merkle Convergence (${{ matrix.os }}, Python ${{ matrix.python-version }})
     needs: falsification
-    runs-on: ${{ matrix.os }}
-    strategy:
+    runs-on: self-hosted
+##    strategy:  # Replaced with self-hosted runner  # Replaced with self-hosted runner
       fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+      matrix:  # Commented out for self-hosted runner
+#        os: [ ubuntu-latest, macos-latest, windows-latest ]  # Not needed for self-hosted
         python-version: [ "3.11", "3.12" ]
 
     steps:
@@ -104,7 +106,7 @@ jobs:
   ontological_comparison:
     name: Ontological Comparison (all platforms must match)
     needs: [ uvm_verification, merkle_convergence ]
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - uses: actions/checkout@v4

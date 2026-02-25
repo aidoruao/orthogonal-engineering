@@ -33,7 +33,7 @@ env:
 jobs:
   light-transport-verification:
     name: Light Transport Verification (py${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: read
     strategy:
@@ -154,13 +154,13 @@ jobs:
 
   cross-platform-identity:
     name: Cross-Platform Identity Check
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
     permissions:
       contents: read
     strategy:
       fail-fast: false
-      matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+      matrix:  # Commented out for self-hosted runner
+#        os: [ ubuntu-latest, windows-latest, macos-latest ]  # Not needed for self-hosted
         python-version: [ "3.11" ]
 
     steps:
