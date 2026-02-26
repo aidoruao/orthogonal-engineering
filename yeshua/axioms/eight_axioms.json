@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0.0",
+  "standard": "Yeshua",
+  "axioms": [
+    {
+      "number": 1,
+      "statement": "Every truth is derivable from axioms.",
+      "enforcement": "claim.derivation must not be None",
+      "falsification": "Claim with no derivation path"
+    },
+    {
+      "number": 2,
+      "statement": "Every derivation is reproducible.",
+      "enforcement": "claim.is_reproducible() re-derives and compares hash",
+      "falsification": "Hash mismatch on re-derivation"
+    },
+    {
+      "number": 3,
+      "statement": "Every mutation is re-verifiable.",
+      "enforcement": "claim.derivation.is_valid() re-hashes ProofObject",
+      "falsification": "ProofObject hash doesn't match content"
+    },
+    {
+      "number": 4,
+      "statement": "No authority without proof.",
+      "enforcement": "claim.source must be non-empty",
+      "falsification": "Empty source field"
+    },
+    {
+      "number": 5,
+      "statement": "No hidden state.",
+      "enforcement": "claim.statement must be non-empty",
+      "falsification": "Empty statement"
+    },
+    {
+      "number": 6,
+      "statement": "No unverifiable dependency.",
+      "enforcement": "claim.derivation.rule must be declared and non-empty",
+      "falsification": "Missing or empty rule"
+    },
+    {
+      "number": 7,
+      "statement": "No economic gatekeeping.",
+      "enforcement": "Statement must not contain monetization keywords",
+      "falsification": "Keyword match: paywall, subscription, license fee, proprietary, paid"
+    },
+    {
+      "number": 8,
+      "statement": "Every artifact is hash-anchored.",
+      "enforcement": "claim.hash_commitment must be 64-char lowercase hex SHA-256",
+      "falsification": "Invalid hash format"
+    }
+  ],
+  "monetization_keywords": [
+    "paywall",
+    "subscription",
+    "license fee",
+    "proprietary",
+    "paid"
+  ],
+  "merkle_root": "7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069"
+}
