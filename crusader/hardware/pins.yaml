@@ -1,0 +1,567 @@
+# Crusader Combat Refrigerator - GPIO Pin Mapping Configuration
+# Version: 1.0.0
+# Schema ID: CRUSADER-1.0
+# Author: Orthogonal Engineering Framework
+# License: AGAPE (Free Forever)
+#
+# GPIO pin mapping for Raspberry Pi 4 Model B (40-pin header)
+# This configuration maps physical pins to Crusader system functions
+
+# Pin numbering scheme: BCM (Broadcom) numbering
+# Physical pin numbers are shown in parentheses for reference
+
+# ============================================================================
+# WARFARE SUBSYSTEM PINS
+# ============================================================================
+
+warfare:
+  # Spore Deployment System
+  spore_deployment:
+    pump_control: 17 # Physical pin 11 - Spore pump PWM control
+    valve_control: 27 # Physical pin 13 - Solenoid valve control
+    reservoir_sensor: 22 # Physical pin 15 - Reservoir level sensor
+    mixing_motor: 10 # Physical pin 19 - Reservoir mixing motor
+    deployment_led: 9 # Physical pin 21 - Deployment status LED
+
+  # UV Sterilization System
+  uv_sterilization:
+    uv_lamp_control: 5 # Physical pin 29 - UV lamp power control
+    lamp_health: 6 # Physical pin 31 - UV lamp health monitor
+    safety_interlock: 13 # Physical pin 33 - Safety door interlock
+    timer_control: 19 # Physical pin 35 - Timer control
+    intensity_control: 26 # Physical pin 37 - Intensity PWM control
+
+  # Air Curtain System
+  air_curtain:
+    fan_1_pwm: 12 # Physical pin 32 - Fan 1 speed control
+    fan_2_pwm: 16 # Physical pin 36 - Fan 2 speed control
+    fan_3_pwm: 20 # Physical pin 38 - Fan 3 speed control
+    fan_4_pwm: 21 # Physical pin 40 - Fan 4 speed control
+    airflow_sensor: 4 # Physical pin 7 - Airflow velocity sensor
+    temperature_sensor: 18 # Physical pin 12 - Motor temperature sensor
+
+  # Sticky Trap System
+  sticky_traps:
+    trap_1_deploy: 23 # Physical pin 16 - Trap 1 deployment motor
+    trap_2_deploy: 24 # Physical pin 18 - Trap 2 deployment motor
+    trap_3_deploy: 25 # Physical pin 22 - Trap 3 deployment motor
+    trap_4_deploy: 8 # Physical pin 24 - Trap 4 deployment motor
+    adhesive_sensor: 7 # Physical pin 26 - Adhesive quality sensor
+    trap_position: 1 # Physical pin 28 - Trap position sensor
+
+  # Fly Counter System
+  fly_counter:
+    optical_sensor: 0 # Physical pin 27 - Optical detection sensor
+    thermal_sensor: 11 # Physical pin 23 - Thermal imaging sensor
+    acoustic_sensor: 14 # Physical pin 8 - Acoustic (wingbeat) sensor
+    vibration_sensor: 15 # Physical pin 10 - Vibration sensor
+    counter_led: 28 # Physical pin 3 - Counter status LED
+
+# ============================================================================
+# MONITORING SUBSYSTEM PINS
+# ============================================================================
+
+monitoring:
+  # Environmental Sensors
+  environmental:
+    temperature_sensor: 2 # Physical pin 3 - Ambient temperature
+    humidity_sensor: 3 # Physical pin 5 - Ambient humidity
+    pressure_sensor: 14 # Physical pin 8 - Atmospheric pressure
+    light_sensor: 15 # Physical pin 10 - Ambient light level
+    co2_sensor: 18 # Physical pin 12 - CO2 concentration
+
+  # Motion Detection
+  motion:
+    pir_sensor_1: 4 # Physical pin 7 - PIR motion sensor 1
+    pir_sensor_2: 17 # Physical pin 11 - PIR motion sensor 2
+    ultrasonic_sensor: 27 # Physical pin 13 - Ultrasonic distance sensor
+    radar_sensor: 22 # Physical pin 15 - Microwave radar sensor
+
+  # Camera System
+  camera:
+    camera_trigger: 5 # Physical pin 29 - Camera capture trigger
+    camera_led: 6 # Physical pin 31 - Camera status LED
+    focus_control: 13 # Physical pin 33 - Auto-focus control
+    zoom_control: 19 # Physical pin 35 - Digital zoom control
+    ir_illuminator: 26 # Physical pin 37 - IR illuminator control
+
+# ============================================================================
+# INTERFACE SUBSYSTEM PINS
+# ============================================================================
+
+interface:
+  # Display System
+  display:
+    lcd_rs: 25 # Physical pin 22 - LCD Register Select
+    lcd_enable: 24 # Physical pin 18 - LCD Enable
+    lcd_d4: 23 # Physical pin 16 - LCD Data 4
+    lcd_d5: 18 # Physical pin 12 - LCD Data 5
+    lcd_d6: 15 # Physical pin 10 - LCD Data 6
+    lcd_d7: 14 # Physical pin 8 - LCD Data 7
+    backlight_pwm: 12 # Physical pin 32 - Backlight brightness
+
+  # User Input
+  input:
+    button_1: 16 # Physical pin 36 - Primary action button
+    button_2: 20 # Physical pin 38 - Secondary action button
+    rotary_encoder_a: 21 # Physical pin 40 - Rotary encoder A
+    rotary_encoder_b: 20 # Physical pin 38 - Rotary encoder B
+    rotary_button: 16 # Physical pin 36 - Rotary encoder button
+    touch_sensor: 19 # Physical pin 35 - Capacitive touch sensor
+
+  # Audio Feedback
+  audio:
+    buzzer_pwm: 13 # Physical pin 33 - Piezo buzzer
+    speaker_enable: 6 # Physical pin 31 - Speaker amplifier enable
+    volume_control: 5 # Physical pin 29 - Digital volume control
+    audio_input: 4 # Physical pin 7 - Audio input (microphone)
+
+  # Status Indicators
+  indicators:
+    power_led: 26 # Physical pin 37 - Power status LED
+    system_led: 19 # Physical pin 35 - System status LED
+    error_led: 13 # Physical pin 33 - Error indicator LED
+    warning_led: 6 # Physical pin 31 - Warning indicator LED
+    success_led: 5 # Physical pin 29 - Success indicator LED
+
+# ============================================================================
+# POWER MANAGEMENT PINS
+# ============================================================================
+
+power:
+  # Power Control
+  control:
+    main_power_relay: 4 # Physical pin 7 - Main power relay control
+    backup_power_switch: 17 # Physical pin 11 - Backup power switch
+    battery_monitor: 27 # Physical pin 13 - Battery voltage monitor
+    current_sensor: 22 # Physical pin 15 - Current consumption sensor
+    temperature_monitor: 18 # Physical pin 12 - Power supply temperature
+
+  # Voltage Rails
+  rails:
+    v3v3_enable: 23 # Physical pin 16 - 3.3V rail enable
+    v5v_enable: 24 # Physical pin 18 - 5V rail enable
+    v12v_enable: 25 # Physical pin 22 - 12V rail enable
+    v24v_enable: 8 # Physical pin 24 - 24V rail enable
+    voltage_monitor_3v3: 7 # Physical pin 26 - 3.3V monitor
+    voltage_monitor_5v: 1 # Physical pin 28 - 5V monitor
+    voltage_monitor_12v: 0 # Physical pin 27 - 12V monitor
+    voltage_monitor_24v: 11 # Physical pin 23 - 24V monitor
+
+# ============================================================================
+# COMMUNICATION PINS
+# ============================================================================
+
+communication:
+  # Serial Interfaces
+  serial:
+    uart_tx: 14 # Physical pin 8 - UART transmit
+    uart_rx: 15 # Physical pin 10 - UART receive
+    i2c_sda: 2 # Physical pin 3 - I2C data
+    i2c_scl: 3 # Physical pin 5 - I2C clock
+    spi_mosi: 10 # Physical pin 19 - SPI MOSI
+    spi_miso: 9 # Physical pin 21 - SPI MISO
+    spi_sclk: 11 # Physical pin 23 - SPI clock
+    spi_cs0: 8 # Physical pin 24 - SPI chip select 0
+    spi_cs1: 7 # Physical pin 26 - SPI chip select 1
+
+  # Network Interfaces
+  network:
+    ethernet_led_tx: 16 # Physical pin 36 - Ethernet TX activity LED
+    ethernet_led_rx: 20 # Physical pin 38 - Ethernet RX activity LED
+    wifi_enable: 21 # Physical pin 40 - WiFi module enable
+    bluetooth_enable: 19 # Physical pin 35 - Bluetooth enable
+    rfid_antenna: 13 # Physical pin 33 - RFID antenna control
+
+# ============================================================================
+# SAFETY AND PROTECTION PINS
+# ============================================================================
+
+safety:
+  # Emergency Systems
+  emergency:
+    emergency_stop: 26 # Physical pin 37 - Emergency stop button
+    fire_sensor: 19 # Physical pin 35 - Fire/smoke detector
+    water_sensor: 13 # Physical pin 33 - Water leak detector
+    gas_sensor: 6 # Physical pin 31 - Gas leak detector
+    tilt_sensor: 5 # Physical pin 29 - Tilt/position sensor
+
+  # Door and Access
+  access:
+    door_sensor: 4 # Physical pin 7 - Refrigerator door sensor
+    lock_control: 17 # Physical pin 11 - Electronic lock control
+    access_reader: 27 # Physical pin 13 - RFID/NFC reader
+    keypad_data: 22 # Physical pin 15 - Keypad data line
+    keypad_clock: 18 # Physical pin 12 - Keypad clock line
+
+  # Thermal Protection
+  thermal:
+    overtemp_sensor_1: 23 # Physical pin 16 - Overtemperature sensor 1
+    overtemp_sensor_2: 24 # Physical pin 18 - Overtemperature sensor 2
+    cooling_fan: 25 # Physical pin 22 - Cooling fan control
+    thermal_shutdown: 8 # Physical pin 24 - Thermal shutdown relay
+    temperature_alert: 7 # Physical pin 26 - Temperature alert buzzer
+
+# ============================================================================
+# DIAGNOSTIC AND MAINTENANCE PINS
+# ============================================================================
+
+diagnostics:
+  # Test Points
+  test_points:
+    tp_1: 1 # Physical pin 28 - Test point 1 (3.3V)
+    tp_2: 0 # Physical pin 27 - Test point 2 (5V)
+    tp_3: 11 # Physical pin 23 - Test point 3 (12V)
+    tp_4: 9 # Physical pin 21 - Test point 4 (GND)
+    tp_5: 10 # Physical pin 19 - Test point 5 (Signal)
+
+  # Calibration
+  calibration:
+    cal_signal_1: 14 # Physical pin 8 - Calibration signal 1
+    cal_signal_2: 15 # Physical pin 10 - Calibration signal 2
+    cal_reference: 2 # Physical pin 3 - Calibration reference
+    cal_switch: 3 # Physical pin 5 - Calibration mode switch
+    cal_led: 12 # Physical pin 32 - Calibration status LED
+
+  # Maintenance
+  maintenance:
+    service_mode: 16 # Physical pin 36 - Service mode switch
+    debug_uart_tx: 20 # Physical pin 38 - Debug UART transmit
+    debug_uart_rx: 21 # Physical pin 40 - Debug UART receive
+    firmware_update: 19 # Physical pin 35 - Firmware update trigger
+    factory_reset: 13 # Physical pin 33 - Factory reset button
+
+# ============================================================================
+# PIN MODE CONFIGURATION
+# ============================================================================
+
+pin_modes:
+  # Input pins (with pull-up/down configuration)
+  inputs:
+    pull_up:
+      - warfare.fly_counter.optical_sensor
+      - monitoring.environmental.temperature_sensor
+      - safety.emergency.emergency_stop
+      - safety.access.door_sensor
+      - interface.input.button_1
+      - interface.input.button_2
+      - diagnostics.maintenance.service_mode
+      - diagnostics.maintenance.factory_reset
+
+    pull_down:
+      - monitoring.motion.pir_sensor_1
+      - monitoring.motion.pir_sensor_2
+      - safety.thermal.overtemp_sensor_1
+      - safety.thermal.overtemp_sensor_2
+      - power.control.battery_monitor
+      - power.control.current_sensor
+
+  # Output pins (with initial state)
+  outputs:
+    initial_high:
+      - warfare.spore_deployment.deployment_led
+      - warfare.fly_counter.counter_led
+      - interface.indicators.power_led
+      - interface.indicators.system_led
+      - power.control.main_power_relay
+      - safety.access.lock_control
+
+    initial_low:
+      - warfare.spore_deployment.pump_control
+      - warfare.uv_sterilization.uv_lamp_control
+      - warfare.air_curtain.fan_1_pwm
+      - interface.indicators.error_led
+      - interface.indicators.warning_led
+      - safety.thermal.cooling_fan
+
+  # PWM pins (with frequency and duty cycle)
+  pwm:
+    warfare.spore_deployment.pump_control:
+      frequency: 1000 # 1 kHz
+      duty_cycle: 0 # 0% initially
+
+    warfare.uv_sterilization.intensity_control:
+      frequency: 5000 # 5 kHz
+      duty_cycle: 0
+
+    warfare.air_curtain.fan_1_pwm:
+      frequency: 25000 # 25 kHz (inaudible)
+      duty_cycle: 0
+
+    warfare.air_curtain.fan_2_pwm:
+      frequency: 25000
+      duty_cycle: 0
+
+    warfare.air_curtain.fan_3_pwm:
+      frequency: 25000
+      duty_cycle: 0
+
+    warfare.air_curtain.fan_4_pwm:
+      frequency: 25000
+      duty_cycle: 0
+
+    interface.display.backlight_pwm:
+      frequency: 1000
+      duty_cycle: 50 # 50% initially
+
+    interface.audio.buzzer_pwm:
+      frequency: 4000 # 4 kHz
+      duty_cycle: 0
+
+# ============================================================================
+# PIN GROUPS FOR SIMPLIFIED CONTROL
+# ============================================================================
+
+pin_groups:
+  # Warfare subsystem groups
+  warfare_groups:
+    all_fans:
+      - warfare.air_curtain.fan_1_pwm
+      - warfare.air_curtain.fan_2_pwm
+      - warfare.air_curtain.fan_3_pwm
+      - warfare.air_curtain.fan_4_pwm
+
+    all_traps:
+      - warfare.sticky_traps.trap_1_deploy
+      - warfare.sticky_traps.trap_2_deploy
+      - warfare.sticky_traps.trap_3_deploy
+      - warfare.sticky_traps.trap_4_deploy
+
+    all_sensors:
+      - warfare.fly_counter.optical_sensor
+      - warfare.fly_counter.thermal_sensor
+      - warfare.fly_counter.acoustic_sensor
+      - warfare.fly_counter.vibration_sensor
+
+  # Interface groups
+  interface_groups:
+    all_leds:
+      - interface.indicators.power_led
+      - interface.indicators.system_led
+      - interface.indicators.error_led
+      - interface.indicators.warning_led
+      - interface.indicators.success_led
+
+    all_buttons:
+      - interface.input.button_1
+      - interface.input.button_2
+      - interface.input.rotary_button
+
+  # Safety groups
+  safety_groups:
+    emergency_inputs:
+      - safety.emergency.emergency_stop
+      - safety.emergency.fire_sensor
+      - safety.emergency.water_sensor
+      - safety.emergency.gas_sensor
+
+    thermal_protection:
+      - safety.thermal.overtemp_sensor_1
+      - safety.thermal.overtemp_sensor_2
+      - safety.thermal.cooling_fan
+      - safety.thermal.thermal_shutdown
+
+# ============================================================================
+# PIN RESERVATIONS AND CONFLICTS
+# ============================================================================
+
+reservations:
+  # System-reserved pins (do not use for other purposes)
+  system_reserved:
+    - 14 # UART TX (debug console)
+    - 15 # UART RX (debug console)
+    - 2 # I2C SDA (sensor bus)
+    - 3 # I2C SCL (sensor bus)
+    - 9 # SPI MISO (peripheral bus)
+    - 10 # SPI MOSI (peripheral bus)
+    - 11 # SPI SCLK (peripheral bus)
+    - 8 # SPI CS0 (peripheral bus)
+    - 7 # SPI CS1 (peripheral bus)
+
+  # Pin conflicts (mutually exclusive usage)
+
+  conflicts:
+    - [warfare.spore_deployment.pump_control, interface.audio.buzzer_pwm]
+
+    - [
+        warfare.uv_sterilization.uv_lamp_control,
+        interface.indicators.success_led,
+      ]
+
+    - [warfare.air_curtain.fan_pwm, monitoring.sensors.temperature_sensor]
+
+    - [warfare.sticky_array.trap_deploy_pwm, interface.display.backlight_pwm]
+
+    - [warfare.counter.ir_led_pwm, interface.indicators.status_led]
+
+    - [
+        hardware.drivers.sprayer.valve_control,
+        monitoring.sensors.humidity_sensor,
+      ]
+
+    - [
+        core.power_management.emergency_shutdown,
+        interface.buttons.emergency_stop,
+      ]
+
+  # Pin groups (must be used together)
+
+  groups:
+    - name: i2c_bus_1
+
+      pins: [2, 3]
+
+      description: I2C bus 1 (SDA, SCL)
+
+    - name: spi_bus_0
+
+      pins: [9, 10, 11, 8, 7]
+
+      description: SPI bus 0 (MISO, MOSI, SCLK, CS0, CS1)
+
+    - name: uart_serial
+
+      pins: [14, 15]
+
+      description: UART serial (TXD, RXD)
+
+    - name: pwm_channels
+
+      pins: [12, 13, 18, 19]
+
+      description: Hardware PWM channels
+
+  # Pin validation rules
+
+  validation:
+    - rule: "no_duplicate_assignments"
+
+      description: "No pin can be assigned to multiple functions"
+
+      severity: "error"
+
+    - rule: "conflict_check"
+
+      description: "Check for conflicting pin assignments"
+
+      severity: "error"
+
+    - rule: "group_integrity"
+
+      description: "Pin groups must be fully assigned or not at all"
+
+      severity: "warning"
+
+    - rule: "power_pin_protection"
+
+      description: "Power pins (3.3V, 5V, GND) cannot be assigned as GPIO"
+
+      severity: "error"
+
+    - rule: "pull_up_down_resistors"
+
+      description: "Input pins should have pull-up/down resistors configured"
+
+      severity: "info"
+
+  # Pin initialization sequence
+
+  initialization:
+    - step: 1
+
+      action: "configure_pull_up_down"
+
+      pins: "all_input_pins"
+
+      delay_ms: 10
+
+    - step: 2
+
+      action: "set_output_low"
+      pins: "all_output_pins"
+      delay_ms: 10
+    - step: 3
+
+      action: "configure_pwm"
+
+      pins: "pwm_pins"
+
+      delay_ms: 50
+
+    - step: 4
+
+      action: "configure_i2c"
+
+      pins: "i2c_pins"
+
+      delay_ms: 100
+
+    - step: 5
+
+      action: "configure_spi"
+
+      pins: "spi_pins"
+
+      delay_ms: 100
+
+    - step: 6
+
+      action: "verify_assignments"
+
+      pins: "all"
+
+      delay_ms: 10
+
+  # Pin monitoring configuration
+
+  monitoring:
+    enabled: true
+
+    poll_interval_ms: 1000
+
+    alert_on_conflict: true
+
+    log_pin_changes: true
+    metrics:
+      - pin_usage_percentage
+
+      - conflict_count
+
+      - error_count
+
+      - warning_count
+
+  # Documentation references
+
+  documentation:
+    raspberry_pi_docs: "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html"
+
+    gpio_docs: "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#gpio"
+
+    pinout_diagram: "https://pinout.xyz/"
+    safety_guidelines: "https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#safety"
+
+  # Version information
+
+  version: "1.0.0"
+
+  schema_version: "1.0"
+
+  last_updated: "2024-01-01"
+
+  compatible_with:
+    - "Raspberry Pi 4 Model B"
+
+    - "Raspberry Pi 5"
+
+    - "Raspberry Pi 3 Model B+"
+
+  notes: |
+
+    This pin configuration is optimized for the Crusader Combat Refrigerator system.
+
+    All pin assignments follow Raspberry Pi GPIO best practices.
+
+    Simulation mode uses virtual pins that map to these physical assignments.
+
+# End of pin configuration

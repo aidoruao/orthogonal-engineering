@@ -1,0 +1,111 @@
+# Crusader Combat Refrigerator - Minimal Development Requirements
+# Version: 1.0.0
+# Schema ID: CRUSADER-1.0
+# Author: Orthogonal Engineering Framework
+# License: AGAPE (Free Forever)
+
+# Core dependencies for development and testing on Windows
+# Note: Hardware-specific dependencies are mocked for development
+
+# System utilities
+psutil>=5.9.0
+watchdog>=3.0.0
+
+# Asynchronous programming
+aiofiles>=23.1.0
+aiosqlite>=0.19.0
+
+# Data serialization and configuration
+PyYAML>=6.0
+toml>=0.10.2
+json5>=0.9.14
+ujson>=5.8.0
+
+# Cryptography and security (for witness layer)
+cryptography>=41.0.0
+pycryptodome>=3.19.0
+ecdsa>=0.18.0
+
+# Web and API (for optional web interface)
+Flask>=3.0.0
+Flask-CORS>=4.0.0
+requests>=2.31.0
+
+# Data processing and analysis
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.11.0
+
+# Image processing (mocked for development)
+Pillow>=10.0.0
+# opencv-python>=4.8.0  # Optional, can be heavy for development
+# imageio>=2.31.0  # Optional
+
+# Hardware mocking (for development without Raspberry Pi)
+gpiozero>=1.6.2  # Provides mock GPIO for testing
+# Hardware simulation - no external package needed
+
+# Logging and monitoring
+structlog>=23.1.0
+loguru>=0.7.0
+
+# Testing framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.11.0
+hypothesis>=6.85.0
+
+# Code quality and formatting
+black>=23.9.0
+flake8>=6.1.0
+mypy>=1.5.0
+isort>=5.12.0
+
+# Development tools
+python-dotenv>=1.0.0
+click>=8.1.0
+rich>=13.5.0
+ipython>=8.15.0
+debugpy>=1.8.0
+
+# Data validation
+pydantic>=2.4.0
+
+# Database (for witness layer storage)
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+
+# Flask ecosystem dependencies
+Werkzeug>=2.3.0,<3.0.0
+Jinja2>=3.1.0,<4.0.0
+MarkupSafe>=2.1.0,<3.0.0
+
+# Cryptography ecosystem
+cffi>=1.15.0
+pycparser>=2.21
+
+# Build tools
+setuptools>=65.0.0
+packaging>=23.0
+
+# Date and time utilities
+python-dateutil>=2.8.2
+pytz>=2023.3
+tzlocal>=5.0.1
+
+# Optional: For simulation and visualization
+# matplotlib>=3.0.0  # For data visualization
+# pygame>=2.0.0  # For hardware simulation visualization
+
+# Installation notes:
+# 1. Create virtual environment: python -m venv venv
+# 2. Activate: venv\Scripts\activate (Windows) or source venv/bin/activate (Linux/Mac)
+# 3. Install: pip install -r requirements.txt
+# 4. For development: pip install -e .
+
+# Platform-specific notes:
+# - On Windows, hardware dependencies are mocked
+# - On Raspberry Pi, additional packages may be needed:
+#   sudo apt-get install python3-dev python3-pip python3-venv
+#   pip install RPi.GPIO smbus2 spidev

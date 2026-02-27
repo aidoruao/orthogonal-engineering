@@ -1,0 +1,488 @@
+# Crusader Combat Refrigerator - Yeshua Configuration
+# Version: 1.0.0
+# Schema ID: CRUSADER-1.0
+# Author: Orthogonal Engineering Framework
+# License: AGAPE (Free Forever)
+
+# ============================================================================
+# SYSTEM CONFIGURATION
+# ============================================================================
+
+system:
+  name: "Crusader Combat Refrigerator"
+  version: "1.0.0"
+  mode: "active"  # active, standby, service, safe
+  debug: false
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
+  cycle_interval: 60  # seconds between main cycles
+
+  # Yeshua Compliance Settings
+  yeshua_compliance:
+    enabled: true
+    schema_version: "1.0"
+    enforce_axioms: true
+    require_witness: true
+    cryptographic_verification: true
+
+  # System Limits
+  limits:
+    max_cycles_per_day: 1440  # 24 hours * 60 minutes
+    max_spore_deployments_per_day: 24
+    max_uv_cycles_per_day: 12
+    max_temperature_celsius: 40
+    min_temperature_celsius: 2
+    max_humidity_percent: 80
+    min_humidity_percent: 30
+
+# ============================================================================
+# WARFARE CONFIGURATION
+# ============================================================================
+
+warfare:
+  # Spore Deployment System
+  spore_deployment:
+    enabled: true
+    deployment_interval: 3600  # 1 hour in seconds
+    deployment_duration: 5  # seconds
+    spore_concentration: 0.1  # percentage
+    reservoir_capacity_ml: 1000
+    low_reservoir_threshold_ml: 100
+
+    # Deployment Patterns
+    patterns:
+      morning:
+        enabled: true
+        time_start: "06:00"
+        time_end: "08:00"
+        intensity: "high"
+
+      evening:
+        enabled: true
+        time_start: "18:00"
+        time_end: "20:00"
+        intensity: "medium"
+
+      adaptive:
+        enabled: true
+        fly_threshold: 5  # deploy if more than 5 flies detected
+        humidity_threshold: 60  # deploy if humidity above 60%
+
+      random:
+        enabled: false  # stochastic fallback
+        probability: 0.1  # 10% chance per cycle
+
+    # Bio Integration
+    bio_integration:
+      optimal_temperature_celsius: 25
+      optimal_humidity_percent: 70
+      viability_threshold: 0.8  # 80% viability required
+
+  # UV Sterilization System
+  uv_sterilization:
+    enabled: true
+    sterilization_interval: 7200  # 2 hours in seconds
+    sterilization_duration: 30  # seconds
+    uv_intensity: "high"  # low, medium, high
+    safety_interlock: true
+
+    # Safety Settings
+    safety:
+      motion_detection: true  # stop if motion detected
+      door_interlock: true  # stop if door open
+      temperature_limit: 50  # celsius
+      max_daily_exposure: 300  # seconds
+
+  # Air Curtain System
+  air_curtain:
+    enabled: true
+    fan_speed: "medium"  # low, medium, high
+    activation_threshold: 10  # deploy if more than 10 flies
+    continuous_operation: false
+
+    # Airflow Patterns
+    patterns:
+      defense:
+        enabled: true
+        fan_speed: "high"
+        duration: 60  # seconds
+
+      circulation:
+        enabled: true
+        fan_speed: "low"
+        duration: 300  # 5 minutes
+
+      purge:
+        enabled: false
+        fan_speed: "max"
+        duration: 30  # seconds
+
+  # Sticky Trap System
+  sticky_traps:
+    enabled: true
+    check_interval: 3600  # 1 hour
+    replacement_threshold: 80  # percentage full
+    trap_count: 4
+    trap_positions: ["top_left", "top_right", "bottom_left", "bottom_right"]
+
+  # Fly Counter System
+  fly_counter:
+    enabled: true
+    detection_method: "optical"  # optical, acoustic, thermal
+    sampling_rate: 10  # Hz
+    confidence_threshold: 0.7  # 70% confidence required
+    calibration_interval: 86400  # 24 hours
+
+    # Targeting System
+    targeting:
+      enabled: true
+      resolution: "high"
+      tracking: true
+      prediction: true
+
+# ============================================================================
+# MONITORING CONFIGURATION
+# ============================================================================
+
+monitoring:
+  # Sensor Configuration
+  sensors:
+    temperature:
+      enabled: true
+      type: "DS18B20"
+      pin: 4
+      precision: 0.5  # celsius
+      poll_interval: 60  # seconds
+
+    humidity:
+      enabled: true
+      type: "DHT22"
+      pin: 17
+      precision: 2.0  # percent
+      poll_interval: 60
+
+    motion:
+      enabled: true
+      type: "PIR"
+      pin: 27
+      sensitivity: "medium"
+      poll_interval: 1
+
+    optical:
+      enabled: true
+      type: "camera"
+      resolution: "640x480"
+      fps: 10
+      processing: "real-time"
+
+    door:
+      enabled: true
+      type: "magnetic"
+      pin: 22
+      debounce_ms: 50
+
+  # Diagnostics Configuration
+  diagnostics:
+    health_check_interval: 300  # 5 minutes
+    comprehensive_check_interval: 3600  # 1 hour
+    memory_check: true
+    sensor_validation: true
+    integrity_verification: true
+
+    # Alert Thresholds
+    alerts:
+      temperature_high: 35  # celsius
+      temperature_low: 3    # celsius
+      humidity_high: 75     # percent
+      humidity_low: 35      # percent
+      fly_count_high: 50    # flies
+      spore_reservoir_low: 200  # ml
+      system_error_count: 10  # errors per hour
+
+  # Witness Layer Configuration
+  witness:
+    enabled: true
+    update_interval: 3600  # 1 hour
+    hash_algorithm: "sha256"
+    merkle_tree_depth: 8
+    digital_signature: false
+
+    # Storage Settings
+    storage:
+      local_path: "./monitoring/logs/witness/"
+      backup_path: "./backups/witness/"
+      retention_days: 30
+      compression: true
+
+    # Verification Settings
+    verification:
+      self_verification: true
+      cross_validation: true
+      timestamp_validation: true
+      chain_integrity: true
+
+# ============================================================================
+# HARDWARE CONFIGURATION
+# ============================================================================
+
+hardware:
+  # GPIO Pin Mapping
+  gpio_pins:
+    # Warfare Systems
+    sprayer_pump: 17
+    uv_led_array: 27
+    fan_motor: 22
+    sticky_trap_sensor: 5
+
+    # Monitoring Systems
+    temperature_sensor: 4
+    humidity_sensor: 17
+    motion_sensor: 27
+    door_sensor: 22
+
+    # Control Systems
+    emergency_stop: 23
+    system_led: 24
+    buzzer: 25
+
+  # Driver Configuration
+  drivers:
+    sprayer:
+      type: "peristaltic_pump"
+      flow_rate_ml_per_min: 10
+      max_pressure_psi: 30
+      calibration_factor: 1.0
+
+    uv_led:
+      type: "UVC_LED"
+      wavelength_nm: 275
+      power_mw: 1000
+      beam_angle: 60
+
+    fan:
+      type: "brushless_dc"
+      speed_range_rpm: [1000, 5000]
+      pwm_frequency: 25000
+      current_limit_amps: 2.0
+
+    sensor_power:
+      type: "voltage_regulator"
+      output_voltage: 3.3
+      max_current_ma: 500
+      enable_pin: 18
+
+  # PCB Specifications
+  pcb:
+    main_board:
+      name: "Crusader_Main_v1.0"
+      dimensions_mm: [100, 80, 1.6]
+      layers: 4
+      material: "FR4"
+
+    spore_module:
+      name: "Spore_Module_v1.0"
+      dimensions_mm: [50, 50, 1.6]
+      layers: 2
+
+    uv_module:
+      name: "UV_Module_v1.0"
+      dimensions_mm: [60, 40, 1.6]
+      layers: 2
+
+    fan_module:
+      name: "Fan_Module_v1.0"
+      dimensions_mm: [70, 50, 1.6]
+      layers: 2
+
+# ============================================================================
+# INTERFACE CONFIGURATION
+# ============================================================================
+
+interface:
+  # Display Configuration
+  display:
+    enabled: true
+    type: "OLED"
+    resolution: "128x64"
+    refresh_rate: 1  # Hz
+    brightness: 75   # percent
+
+    # Display Content
+    content:
+      system_status: true
+      fly_count: true
+      temperature: true
+      humidity: true
+      deployment_count: true
+      uptime: true
+
+  # Web Interface
+  web:
+    enabled: true
+    port: 8080
+    authentication: false
+    ssl: false
+
+    # Dashboard Settings
+    dashboard:
+      auto_refresh: true
+      refresh_interval: 10  # seconds
+      historical_data: true
+      data_retention_days: 7
+
+    # API Settings
+    api:
+      enabled: true
+      version: "v1"
+      rate_limit: 60  # requests per minute
+      cors_enabled: true
+
+  # Notifications
+  notifications:
+    enabled: false
+
+    email:
+      enabled: false
+      smtp_server: "smtp.gmail.com"
+      smtp_port: 587
+      recipients: []
+
+    slack:
+      enabled: false
+      webhook_url: ""
+      channel: "#crusader-alerts"
+
+    # Alert Levels
+    alerts:
+      critical:
+        enabled: true
+        channels: ["display", "buzzer"]
+
+      warning:
+        enabled: true
+        channels: ["display"]
+
+      info:
+        enabled: false
+        channels: []
+
+# ============================================================================
+# TESTING CONFIGURATION
+# ============================================================================
+
+testing:
+  # Unit Testing
+  unit_tests:
+    enabled: true
+    coverage_threshold: 80  # percent
+    run_on_startup: true
+
+  # Integration Testing
+  integration_tests:
+    enabled: true
+    hardware_simulation: true
+    sensor_mocking: true
+
+  # End-to-End Testing
+  end_to_end_tests:
+    enabled: true
+    full_system_test: true
+    duration_hours: 24
+
+  # Invariant Testing
+  invariant_tests:
+    enabled: true
+    check_interval: 60  # seconds
+    fail_fast: true
+
+# ============================================================================
+# DEPLOYMENT CONFIGURATION
+# ============================================================================
+
+deployment:
+  # Systemd Service
+  systemd:
+    service_name: "crusader"
+    user: "crusader"
+    group: "crusader"
+    restart: "always"
+    restart_sec: 10
+
+  # Backup Configuration
+  backup:
+    enabled: true
+    interval: 86400  # 24 hours
+    retention: 7  # days
+    compression: true
+
+  # Update Configuration
+  update:
+    auto_update: false
+    check_interval: 86400  # 24 hours
+    require_verification: true
+
+  # Security Configuration
+  security:
+    file_permissions: true
+    network_isolation: true
+    process_sandboxing: true
+
+# ============================================================================
+# YESHUA AXIOMS ENFORCEMENT
+# ============================================================================
+
+yeshua_axioms:
+  # Axiom 1: Transparency
+  transparency:
+    enabled: true
+    log_all_operations: true
+    expose_configuration: true
+    document_all_changes: true
+
+  # Axiom 2: Verifiability
+  verifiability:
+    enabled: true
+    cryptographic_proofs: true
+    audit_trails: true
+    reproducible_builds: true
+
+  # Axiom 3: Falsifiability
+  falsifiability:
+    enabled: true
+    clear_failure_modes: true
+    testable_predictions: true
+    measurable_outcomes: true
+
+  # Axiom 4: Orthogonal Separation
+  orthogonal_separation:
+    enabled: true
+    modular_design: true
+    clear_interfaces: true
+    independent_testing: true
+
+  # Axiom 5: Economic Neutrality
+  economic_neutrality:
+    enabled: true
+    no_monetization: true
+    open_source: true
+    free_forever: true
+
+  # Axiom 6: Witness Layer
+  witness_layer:
+    enabled: true
+    cryptographic_anchoring: true
+    temporal_ordering: true
+    integrity_verification: true
+
+  # Axiom 7: AGAPE License
+  agape_license:
+    enabled: true
+    free_distribution: true
+    no_restrictions: true
+    attribution_required: false
+
+  # Axiom 8: Complete Specification
+  complete_specification:
+    enabled: true
+    full_documentation: true
+    hardware_schematics: true
+    software_source: true

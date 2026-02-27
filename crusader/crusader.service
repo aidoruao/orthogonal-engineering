@@ -1,0 +1,323 @@
+[Unit]
+Description=Crusader Combat Refrigerator System
+Documentation=https://github.com/aidoruao/orthogonal-engineering/crusader
+After=network.target
+After=time-sync.target
+Wants=network-online.target
+RequiresMountsFor=/var/log
+
+[Service]
+Type=notify
+NotifyAccess=all
+Restart=on-failure
+RestartSec=5s
+TimeoutStartSec=300
+TimeoutStopSec=30
+StartLimitInterval=0
+StartLimitBurst=5
+
+# User and group configuration
+User=crusader
+Group=crusader
+SupplementaryGroups=gpio i2c spi video
+UMask=0027
+
+# Working directory and environment
+WorkingDirectory=/opt/crusader
+Environment="PYTHONUNBUFFERED=1"
+Environment="PYTHONPATH=/opt/crusader"
+Environment="CRUSADER_CONFIG=/etc/crusader/config.yaml"
+Environment="CRUSADER_LOG_LEVEL=INFO"
+Environment="CRUSADER_SIMULATION_MODE=0"
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=false  # Need access to GPIO, I2C, SPI
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectProc=invisible
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+MemoryDenyWriteExecute=true
+LockPersonality=true
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=512
+LimitMEMLOCK=infinity
+LimitSTACK=infinity
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=crusader
+SyslogFacility=daemon
+SyslogLevel=info
+
+# Process management
+KillMode=mixed
+KillSignal=SIGTERM
+SendSIGKILL=yes
+SendSIGHUP=no
+
+# Executable and arguments
+ExecStart=/usr/bin/python3 -m crusader.core.main
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/bin/kill -TERM $MAINPID
+
+# Watchdog configuration
+WatchdogSec=30
+
+[Install]
+WantedBy=multi-user.target
+Alias=crusader.service
+
+# Additional service sections for advanced features
+
+[X-Systemd]
+# Systemd-specific extensions
+Slice=system-crusader.slice
+CPUAccounting=true
+MemoryAccounting=true
+IOAccounting=true
+TasksAccounting=true
+IPAccounting=true
+
+[X-Security]
+# AppArmor/SELinux integration
+AppArmorProfile=/etc/apparmor.d/crusader
+SELinuxContext=system_u:system_r:crusader_t:s0
+
+[X-Hardware]
+# Hardware access permissions
+GPIOAccess=true
+I2CAccess=true
+SPIAccess=true
+VideoAccess=true
+USBDeviceAccess=/dev/ttyUSB0:/dev/ttyACM0
+
+[X-Network]
+# Network requirements
+RequiredPorts=TCP:8080  # Web interface
+RequiredPorts=UDP:5353  # mDNS/Bonjour
+FirewallPorts=TCP:8080
+FirewallPorts=UDP:5353
+
+[X-Health]
+# Health check configuration
+HealthCheckCommand=/opt/crusader/scripts/health_check.py
+HealthCheckInterval=60s
+HealthCheckTimeout=10s
+HealthCheckRetries=3
+HealthCheckStartPeriod=30s
+
+[X-Monitoring]
+# Monitoring integration
+PrometheusPort=9091
+PrometheusPath=/metrics
+StatsDPort=8125
+StatsDPrefix=crusader
+LogstashHost=localhost:5044
+LogstashSSL=true
+
+[X-Backup]
+# Backup configuration
+BackupCommand=/opt/crusader/scripts/backup.sh
+BackupInterval=daily
+BackupRetention=7
+BackupCompression=gzip
+BackupEncryption=true
+
+[X-Update]
+# Update management
+UpdateCheckCommand=/opt/crusader/scripts/check_updates.py
+UpdateCheckInterval=hourly
+AutoUpdate=false
+UpdateNotification=true
+RollbackOnFailure=true
+
+[X-Failover]
+# High availability
+FailoverEnabled=false
+FailoverTimeout=30s
+FailoverCheckCommand=/opt/crusader/scripts/failover_check.py
+ReplicationMode=async
+QuorumNodes=1
+
+# Service dependencies for different operational modes
+[X-Dependencies]
+# Normal operation
+Requires=crusader-database.service
+Requires=crusader-logging.service
+Wants=crusader-monitoring.service
+Wants=crusader-alerting.service
+
+# Warfare mode
+Conflicts=peaceful-mode.service
+After=warfare-readiness.service
+Requires=warfare-authorization.service
+
+# Maintenance mode
+Conflicts=crusader.service
+Before=maintenance-mode.service
+After=maintenance-auth.service
+
+# Emergency mode
+Conflicts=normal-operation.service
+Requires=emergency-power.service
+After=emergency-auth.service
+
+# Service environment overrides for different hardware
+[X-Environment-RPi4]
+# Raspberry Pi 4 specific
+Environment="CRUSADER_HARDWARE_PLATFORM=raspberrypi4"
+Environment="CRUSADER_GPIO_CHIP=/dev/gpiochip0"
+Environment="CRUSADER_I2C_BUS=1"
+Environment="CRUSADER_SPI_BUS=0"
+Environment="CRUSADER_FAN_PWM_CHANNEL=0"
+Environment="CRUSADER_TEMP_SENSOR_ADDR=0x76"
+
+[X-Environment-RPi5]
+# Raspberry Pi 5 specific
+Environment="CRUSADER_HARDWARE_PLATFORM=raspberrypi5"
+Environment="CRUSADER_GPIO_CHIP=/dev/gpiochip4"
+Environment="CRUSADER_I2C_BUS=1"
+Environment="CRUSADER_SPI_BUS=0"
+Environment="CRUSADER_FAN_PWM_CHANNEL=1"
+Environment="CRUSADER_TEMP_SENSOR_ADDR=0x77"
+
+[X-Environment-Simulation]
+# Simulation mode
+Environment="CRUSADER_SIMULATION_MODE=1"
+Environment="CRUSADER_HARDWARE_PLATFORM=simulation"
+Environment="CRUSADER_GPIO_CHIP=simulated"
+Environment="CRUSADER_I2C_BUS=simulated"
+Environment="CRUSADER_SPI_BUS=simulated"
+
+# Debug and development overrides
+[X-Debug]
+Environment="CRUSADER_LOG_LEVEL=DEBUG"
+Environment="CRUSADER_DEBUG_MODE=1"
+Environment="PYTHONASYNCIODEBUG=1"
+StandardOutput=console
+StandardError=console
+
+# Production overrides
+[X-Production]
+Environment="CRUSADER_LOG_LEVEL=WARNING"
+Environment="CRUSADER_PERFORMANCE_MODE=1"
+ProtectSystem=full
+PrivateDevices=true
+NoNewPrivileges=true
+SystemCallFilter=@system-service
+SystemCallArchitectures=native
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE CAP_SYS_NICE
+
+# Installation instructions
+[Installation]
+# 1. Copy this file to /etc/systemd/system/crusader.service
+# 2. Create user and group: sudo useradd -r -s /bin/false crusader
+# 3. Set permissions: sudo chown root:root /etc/systemd/system/crusader.service
+# 4. Reload systemd: sudo systemctl daemon-reload
+# 5. Enable service: sudo systemctl enable crusader.service
+# 6. Start service: sudo systemctl start crusader.service
+# 7. Check status: sudo systemctl status crusader.service
+
+# Verification commands
+[Verification]
+# Check service status: systemctl status crusader
+# View logs: journalctl -u crusader -f
+# Test configuration: systemd-analyze verify /etc/systemd/system/crusader.service
+# Check security: systemd-analyze security crusader.service
+# Test reload: systemctl reload crusader
+# Test restart: systemctl restart crusader
+
+# Troubleshooting
+[Troubleshooting]
+# If service fails to start:
+# 1. Check logs: journalctl -u crusader --no-pager -n 50
+# 2. Check permissions: ls -la /opt/crusader/
+# 3. Check user exists: id crusader
+# 4. Check dependencies: systemctl list-dependencies crusader.service
+# 5. Test manually: sudo -u crusader python3 -m crusader.core.main
+
+# If hardware access fails:
+# 1. Check GPIO group: groups crusader
+# 2. Check device permissions: ls -la /dev/gpiochip*
+# 3. Check i2c permissions: ls -la /dev/i2c-*
+# 4. Check spi permissions: ls -la /dev/spidev*
+
+# If memory issues:
+# 1. Check memory limits: systemctl show crusader | grep Memory
+# 2. Check OOM killer: dmesg | grep -i oom
+# 3. Adjust limits: systemctl set-property crusader.service MemoryMax=500M
+
+# Performance tuning
+[Performance]
+# For high-performance mode:
+# CPUQuota=200%
+# MemoryMax=1G
+# IOWeight=100
+# CPUShares=1024
+
+# For resource-constrained systems:
+# CPUQuota=50%
+# MemoryMax=256M
+# IOWeight=10
+# CPUShares=256
+
+# Service lifecycle hooks
+[Lifecycle]
+# Pre-start script
+ExecStartPre=/opt/crusader/scripts/pre_start.sh
+ExecStartPre=/bin/bash -c 'echo "Starting Crusader at $(date)" >> /var/log/crusader/start.log'
+
+# Post-start script
+ExecStartPost=/opt/crusader/scripts/post_start.sh
+ExecStartPost=/bin/bash -c 'echo "Crusader started at $(date)" >> /var/log/crusader/start.log'
+
+# Pre-stop script
+ExecStopPre=/opt/crusader/scripts/pre_stop.sh
+ExecStopPre=/bin/bash -c 'echo "Stopping Crusader at $(date)" >> /var/log/crusader/stop.log'
+
+# Post-stop script
+ExecStopPost=/opt/crusader/scripts/post_stop.sh
+ExecStopPost=/bin/bash -c 'echo "Crusader stopped at $(date)" >> /var/log/crusader/stop.log'
+
+# Service validation
+[Validation]
+# Validate configuration before start
+ExecCondition=/opt/crusader/scripts/validate_config.py
+ExecCondition=/opt/crusader/scripts/check_dependencies.py
+ExecCondition=/opt/crusader/scripts/verify_hardware.py
+
+# Service metrics and monitoring
+[Metrics]
+# Prometheus metrics endpoint
+Environment="PROMETHEUS_MULTIPROC_DIR=/var/run/crusader/prometheus"
+Environment="METRICS_PORT=9091"
+Environment="METRICS_PATH=/metrics"
+
+# StatsD metrics
+Environment="STATSD_HOST=localhost"
+Environment="STATSD_PORT=8125"
+Environment="STATSD_PREFIX=crusader"
+
+# Health check endpoint
+Environment="HEALTH_CHECK_PORT=8081"
+Environment="HEALTH_CHECK_PATH=/health"
+
+# Service version information
+[Version]
+ServiceVersion=1.0.0
+SchemaVersion=1.0
+CompatibleWith=systemd 239+
+LastUpdated=2024-01-01
+Maintainer=Orthogonal Engineering Framework
+License=AGAPE
