@@ -1,0 +1,526 @@
+# Crusader Combat Refrigerator - Bill of Materials (BOM)
+# Complete Component Specification and Supply Chain Documentation
+
+# ============================================================================
+# BOM METADATA
+# ============================================================================
+
+metadata:
+  document_id: "CRUSADER-BOM-1.0"
+  version: "1.0.0"
+  generation_date: "2026-02-26"
+  system: "Crusader Combat Refrigerator v1.0.0"
+  revision: "A"
+  status: "PRODUCTION_READY"
+
+  quality_standards:
+    - "ISO 9001:2015"
+    - "AS9100D"
+    - "RoHS 3 (EU 2015/863)"
+    - "REACH SVHC"
+    - "Conflict Minerals (Dodd-Frank 1502)"
+    - "FDA 21 CFR"
+    - "NSF/ANSI 7"
+    - "UL 471"
+
+  cryptographic_verification:
+    bom_hash: "TO_BE_GENERATED"
+    manifest_hash: "TO_BE_GENERATED"
+    witness_layer_integration: true
+
+# ============================================================================
+# CORE SYSTEM COMPONENTS
+# ============================================================================
+
+core_system:
+
+  # --------------------------------------------------------------------------
+  # MAIN CONTROL BOARD
+  # --------------------------------------------------------------------------
+  main_control_board:
+    part_number: "CRUSADER-MCB-001"
+    description: "Main Control Board with Raspberry Pi Compute Module 4"
+    quantity: 1
+    unit_cost: "$245.00"
+
+    specifications:
+      processor: "Broadcom BCM2711 Quad-core Cortex-A72 @ 1.5GHz"
+      memory: "4GB LPDDR4-3200 SDRAM"
+      storage: "32GB eMMC Flash"
+      interfaces:
+        - "2× USB 3.0"
+        - "2× USB 2.0"
+        - "2× micro-HDMI"
+        - "Gigabit Ethernet"
+        - "2.4/5.0 GHz dual-band 802.11ac"
+        - "Bluetooth 5.0"
+        - "40-pin GPIO header"
+
+    certifications:
+      - "FCC Part 15 Class B"
+      - "CE"
+      - "RoHS 3"
+      - "WEEE"
+
+    suppliers:
+      primary:
+        name: "Raspberry Pi Trading Ltd"
+        location: "Cambridge, UK"
+        lead_time: "4 weeks"
+        contact: "supply@raspberrypi.com"
+
+      alternate:
+        name: "Digi-Key Electronics"
+        location: "Thief River Falls, MN, USA"
+        lead_time: "2 days"
+        contact: "supply@digikey.com"
+
+    quality_requirements:
+      incoming_inspection: "100% functional test"
+      test_coverage: "100% GPIO, memory, storage"
+      burn_in: "72 hours @ 55°C"
+      mtbf: "> 100,000 hours"
+
+    traceability:
+      lot_tracking: true
+      serial_numbering: true
+      date_code_required: true
+      country_of_origin: "United Kingdom"
+
+  # --------------------------------------------------------------------------
+  # POWER SUPPLY UNIT
+  # --------------------------------------------------------------------------
+  power_supply:
+    part_number: "CRUSADER-PSU-001"
+    description: "Switching Power Supply 12V/5V Dual Output"
+    quantity: 1
+    unit_cost: "$38.50"
+
+    specifications:
+      input: "100-240V AC, 50/60Hz"
+      outputs:
+        - "12V DC @ 8A (96W)"
+        - "5V DC @ 4A (20W)"
+      efficiency: "> 92% @ 50% load"
+      power_factor: "> 0.95"
+      protections:
+        - "Over Voltage Protection (OVP)"
+        - "Over Current Protection (OCP)"
+        - "Over Temperature Protection (OTP)"
+        - "Short Circuit Protection (SCP)"
+
+    certifications:
+      - "UL 1310 Class 2"
+      - "UL 60950-1"
+      - "CE"
+      - "FCC Part 15"
+      - "RoHS 3"
+      - "Energy Star Level VI"
+
+    suppliers:
+      primary:
+        name: "Mean Well Enterprises"
+        location: "New Taipei City, Taiwan"
+        lead_time: "6 weeks"
+        contact: "sales@meanwell.com"
+
+    quality_requirements:
+      hi-pot_test: "3000V AC, 60 seconds"
+      leakage_current: "< 0.25mA"
+      burn_in: "48 hours @ full load"
+      mtbf: "> 150,000 hours"
+
+# ============================================================================
+# WARFARE SYSTEM COMPONENTS
+# ============================================================================
+
+warfare_system:
+
+  # --------------------------------------------------------------------------
+  # UV STERILIZATION SYSTEM
+  # --------------------------------------------------------------------------
+  uv_sterilization:
+    part_number: "CRUSADER-UV-001"
+    description: "UV-C LED Sterilization Array"
+    quantity: 2
+    unit_cost: "$65.00"
+
+    specifications:
+      wavelength: "265-275nm (peak 270nm)"
+      power: "15W total (30× 0.5W LEDs)"
+      irradiance: "> 40 mJ/cm² at 1m"
+      lifetime: "> 10,000 hours"
+      safety_features:
+        - "Door interlock switch"
+        - "Motion sensor cutoff"
+        - "Timer maximum 30 minutes"
+        - "Over-temperature protection"
+
+    certifications:
+      - "IEC 62471 Photobiological Safety"
+      - "UL 8800"
+      - "RoHS 3"
+      - "FDA 21 CFR 1040.10"
+
+    suppliers:
+      primary:
+        name: "Seoul Viosys"
+        location: "Seoul, South Korea"
+        lead_time: "8 weeks"
+        contact: "sales@seoulviosys.com"
+
+      alternate:
+        name: "Crystal IS (Asahi Kasei)"
+        location: "Green Island, NY, USA"
+        lead_time: "10 weeks"
+        contact: "sales@cisuvc.com"
+
+    quality_requirements:
+      spectral_test: "100% wavelength verification"
+      output_power: "±5% tolerance"
+      safety_interlock: "100% functional test"
+      burn_in: "168 hours @ rated current"
+
+  # --------------------------------------------------------------------------
+  # AIR CURTAIN SYSTEM
+  # --------------------------------------------------------------------------
+  air_curtain:
+    part_number: "CRUSADER-AC-001"
+    description: "Brushless DC Fan Array with Speed Control"
+    quantity: 4
+    unit_cost: "$28.75"
+
+    specifications:
+      fan_type: "Brushless DC (BLDC)"
+      size: "120mm × 120mm × 25mm"
+      voltage: "12V DC"
+      current: "0.8A max"
+      airflow: "75 CFM @ 0.2 inH₂O"
+      noise: "< 25 dBA"
+      speed_control: "PWM, 20-100%"
+      bearings: "Dual ball bearing"
+
+    certifications:
+      - "UL 507"
+      - "CE"
+      - "RoHS 3"
+      - "IP54 (dust and splash proof)"
+
+    suppliers:
+      primary:
+        name: "Delta Electronics"
+        location: "Taipei, Taiwan"
+        lead_time: "6 weeks"
+        contact: "fansales@deltaww.com"
+
+      alternate:
+        name: "Nidec Corporation"
+        location: "Kyoto, Japan"
+        lead_time: "8 weeks"
+        contact: "sales@nidec.com"
+
+    quality_requirements:
+      airflow_test: "100% verification"
+      vibration_test: "< 0.5mm/s RMS"
+      bearing_noise: "< 20 dBA @ 1m"
+      life_test: "> 50,000 hours L10"
+
+  # --------------------------------------------------------------------------
+  # SPORE DEPLOYMENT SYSTEM
+  # --------------------------------------------------------------------------
+  spore_deployment:
+    part_number: "CRUSADER-SDS-001"
+    description: "Precision Aerosol Dispensing System"
+    quantity: 1
+    unit_cost: "$42.00"
+
+    specifications:
+      reservoir_capacity: "50mL"
+      droplet_size: "10-50μm"
+      flow_rate: "0.1-1.0 mL/min"
+      control: "Stepper motor with encoder"
+      materials: "316L stainless steel, PTFE"
+      sterilization: "Autoclave compatible"
+
+    certifications:
+      - "USP Class VI"
+      - "FDA 21 CFR 177.2600"
+      - "RoHS 3"
+      - "ISO 13485 (medical device)"
+
+    suppliers:
+      primary:
+        name: "Nordson EFD"
+        location: "Westlake, OH, USA"
+        lead_time: "4 weeks"
+        contact: "sales@nordsonefd.com"
+
+      alternate:
+        name: "Musashi Engineering"
+        location: "Tokyo, Japan"
+        lead_time: "6 weeks"
+        contact: "sales@musashi-eng.com"
+
+    quality_requirements:
+      droplet_size_test: "100% optical verification"
+      flow_accuracy: "±2% of setpoint"
+      material_certification: "Mill certificate required"
+      cleanliness: "Class 100 cleanroom assembly"
+
+# ============================================================================
+# SENSOR SYSTEM COMPONENTS
+# ============================================================================
+
+sensor_system:
+
+  # --------------------------------------------------------------------------
+  # TEMPERATURE SENSORS
+  # --------------------------------------------------------------------------
+  temperature_sensors:
+    part_number: "CRUSADER-TEMP-001"
+    description: "Digital Temperature Sensor DS18B20+"
+    quantity: 8
+    unit_cost: "$3.25"
+
+    specifications:
+      type: "1-Wire digital"
+      range: "-55°C to +125°C"
+      accuracy: "±0.5°C (-10°C to +85°C)"
+      resolution: "9 to 12 bits (0.5°C to 0.0625°C)"
+      interface: "1-Wire protocol"
+      package: "TO-92 (waterproof probe available)"
+
+    certifications:
+      - "RoHS 3"
+      - "AEC-Q100 (automotive grade)"
+
+    suppliers:
+      primary:
+        name: "Maxim Integrated (now Analog Devices)"
+        location: "San Jose, CA, USA"
+        lead_time: "8 weeks"
+        contact: "sales@maximintegrated.com"
+
+      alternate:
+        name: "Mouser Electronics"
+        location: "Mansfield, TX, USA"
+        lead_time: "2 days"
+        contact: "sales@mouser.com"
+
+    quality_requirements:
+      calibration: "3-point calibration (-20°C, 0°C, 50°C)"
+      accuracy_test: "100% verification"
+      lot_sample: "AQL 1.0"
+
+  # --------------------------------------------------------------------------
+  # HUMIDITY SENSORS
+  # --------------------------------------------------------------------------
+  humidity_sensors:
+    part_number: "CRUSADER-HUM-001"
+    description: "Digital Humidity and Temperature Sensor SHT35"
+    quantity: 4
+    unit_cost: "$8.50"
+
+    specifications:
+      type: "I²C digital"
+      humidity_range: "0-100% RH"
+      humidity_accuracy: "±1.5% RH (20-80% RH)"
+      temperature_range: "-40°C to +125°C"
+      temperature_accuracy: "±0.2°C"
+      response_time: "8 seconds (tau 63%)"
+
+    certifications:
+      - "JEDEC JESD47"
+      - "RoHS 3"
+      - "REACH"
+
+    suppliers:
+      primary:
+        name: "Sensirion AG"
+        location: "Stäfa, Switzerland"
+        lead_time: "10 weeks"
+        contact: "sales@sensirion.com"
+
+    quality_requirements:
+      factory_calibration: "Traceable to NIST"
+      long_term_drift: "< 0.25% RH/year"
+      condensation_recovery: "Tested per datasheet"
+
+  # --------------------------------------------------------------------------
+  # REFRIGERANT LEAK SENSORS
+  # --------------------------------------------------------------------------
+  refrigerant_sensors:
+    part_number: "CRUSADER-REF-001"
+    description: "Triple-Redundant Refrigerant Leak Detection System"
+    quantity: 1
+    unit_cost: "$125.00"
+
+    specifications:
+      sensor_types:
+        - "Infrared (NDIR) - R-290 specific"
+        - "Semiconductor (MOS) - broad spectrum"
+        - "Ultrasonic - pressure decay"
+      range: "0-1000 ppm"
+      accuracy: "±5 ppm or ±5%"
+      response_time: "< 1 second"
+      outputs: "4-20mA, 0-10V, Modbus RTU"
+
+    certifications:
+      - "UL 2075 (Gas and Vapor Detectors)"
+      - "ATEX Zone 2 (for flammable gases)"
+      - "IECEx"
+      - "RoHS 3"
+
+    suppliers:
+      primary:
+        name: "MSA Safety"
+        location: "Cranberry Township, PA, USA"
+        lead_time: "12 weeks"
+        contact: "sales@msasafety.com"
+
+      alternate:
+        name: "Honeywell Analytics"
+        location: "Lincolnshire, IL, USA"
+        lead_time: "14 weeks"
+        contact: "sales@honeywellanalytics.com"
+
+    quality_requirements:
+      calibration_gas: "NIST-traceable R-290 in air"
+      bump_test: "Daily automatic verification"
+      sensor_life: "> 3 years guaranteed"
+
+# ============================================================================
+# STRUCTURAL COMPONENTS
+# ============================================================================
+
+structural:
+
+  # --------------------------------------------------------------------------
+  # STAINLESS STEEL SHELL
+  # --------------------------------------------------------------------------
+  stainless_shell:
+    part_number: "CRUSADER-SS-001"
+    description: "304 Stainless Steel Enclosure"
+    quantity: 1
+    unit_cost: "$420.00"
+
+    specifications:
+      material: "304 Stainless Steel, 2B finish"
+      thickness: "18 gauge (1.2mm)"
+      dimensions: "600mm W × 700mm H × 650mm D"
+      finish: "#4 brushed, passivated"
+      welds: "TIG welded, ground and polished"
+      corners: "Radiused (R10mm) for cleanability"
+
+    certifications:
+      - "ASTM A240/A240M"
+      - "FDA 21 CFR 177.2600"
+      - "NSF/ANSI 51 (food equipment materials)"
+      - "RoHS 3"
+
+    suppliers:
+      primary:
+        name: "Outokumpu Stainless"
+        location: "Helsinki, Finland"
+        lead_time: "10 weeks"
+        contact: "sales@outokumpu.com"
+
+      alternate:
+        name: "AK Steel (now Cleveland-Cliffs)"
+        location: "West Chester, OH, USA"
+        lead_time: "12 weeks"
+        contact: "sales@aksteel.com"
+
+    quality_requirements:
+      material_certification: "Mill test report required"
+      thickness_tolerance: "±0.1mm"
+      flatness: "< 1mm/m"
+      passivation: "ASTM A967 nitric acid method"
+      salt_spray_test: "> 500 hours (ASTM B117)"
+
+  # --------------------------------------------------------------------------
+  # DOOR ASSEMBLY
+  # --------------------------------------------------------------------------
+  door_assembly:
+    part_number: "CRUSADER-DOOR-001"
+    description: "Insulated Door with Magnetic Gasket"
+    quantity: 1
+    unit_cost: "$185.00"
+
+    specifications:
+      frame: "304 stainless steel"
+      insulation: "Vacuum insulated panel (VIP)"
+      u_value: "0.35 W/m²K"
+      gasket: "Magnetic PVC with antimicrobial additive"
+      hinges: "Self-closing, adjustable"
+      handle: "Stainless steel, ergonomic design"
+
+    certifications:
+      - "NSF/ANSI 7"
+      - "FDA 21 CFR 177.2600"
+      - "RoHS 3"
+      - "REACH"
+
+    suppliers:
+      primary:
+        name: "Pactiv Evergreen"
+        location: "Lake Forest, IL, USA"
+        lead_time: "8 weeks"
+        contact: "sales@pactivevergreen.com"
+
+    quality_requirements:
+      insulation_test: "Thermal imaging verification"
+      gasket_seal: "< 5 CFM leakage @ 0.5" H₂O"
+      cycle_test: "> 100,000 open/close cycles"
+      antimicrobial_efficacy: "ISO 22196 test report"
+
+# ============================================================================
+# REFRIGERATION SYSTEM
+# ============================================================================
+
+refrigeration:
+
+  # --------------------------------------------------------------------------
+  # COMPRESSOR
+  # --------------------------------------------------------------------------
+  compressor:
+    part_number: "CRUSADER-COMP-001"
+    description: "Variable Speed Scroll Compressor for R-290"
+    quantity: 1
+    unit_cost: "$320.00"
+
+    specifications:
+      type: "Scroll, variable speed"
+      refrigerant: "R-290 (propane)"
+      displacement: "2.5 cm³/rev"
+      speed_range: "1800-4500 RPM"
+      cooling_capacity: "1500 BTU/hr @ 45°C condensing"
+      power_input: "120W nominal"
+      efficiency: "COP 3.8"
+      sound_level: "< 35 dBA"
+
+    certifications:
+      - "UL 984"
+      - "CSA C22.2 No. 140.3"
+      - "CE"
+      - "RoHS 3"
+      - "EPA SNAP approved for R-290"
+
+    suppliers:
+      primary:
+        name: "Embraco (now Nidec Global Appliance)"
+        location: "Joinville, Brazil"
+        lead_time: "14 weeks"
+        contact: "sales@embraco.com"
+
+      alternate:
+        name: "Danfoss"
+        location: "Nordborg, Denmark"
+        lead_time: "16 weeks"
+        contact: "sales@danfoss.com"
+
+    quality_requirements:
+      performance_test: "ASHRAE 23.1 test stand"
+      leak_test: "< 0.5g/year refrigerant loss"
+      vibration_test: "< 0.8mm/s RMS"
+      life
