@@ -2,7 +2,7 @@
 Falsification test: Implantable device rejects unauthorized commands.
 Only authenticated clinician can reprogram.
 
-# @falsification_id: F-MEDICAL-002
+# @falsification_id: F_MEDICAL_002
 """
 import hashlib
 import pytest

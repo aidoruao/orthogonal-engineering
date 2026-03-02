@@ -2,7 +2,7 @@
 Falsification test: Message delivery meets SLA under peak load.
 P99 latency <= 200ms.
 
-# @falsification_id: F-COMMUNICATIONS-001
+# @falsification_id: F_COMMUNICATIONS_001
 """
 import random
 import pytest

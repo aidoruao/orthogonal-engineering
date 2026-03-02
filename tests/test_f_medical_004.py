@@ -2,7 +2,7 @@
 Falsification test: Ventilator alarm activates within 5 seconds of patient disconnect.
 Disconnect detected within 5s.
 
-# @falsification_id: F-MEDICAL-004
+# @falsification_id: F_MEDICAL_004
 """
 import time
 import pytest

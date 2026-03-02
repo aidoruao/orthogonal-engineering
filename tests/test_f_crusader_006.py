@@ -2,7 +2,7 @@
 Falsification test: No spores detected outside unit after deployment.
 Spore containment is enforced.
 
-# @falsification_id: F-CRUSADER-006
+# @falsification_id: F_CRUSADER_006
 """
 import pytest
 

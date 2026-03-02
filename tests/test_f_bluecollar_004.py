@@ -2,7 +2,7 @@
 Falsification test: Heavy equipment proximity halt.
 Worker in zone triggers halt within stopping distance.
 
-# @falsification_id: F-BLUECOLLAR-004
+# @falsification_id: F_BLUECOLLAR_004
 """
 import pytest
 

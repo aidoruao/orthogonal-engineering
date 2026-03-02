@@ -2,7 +2,7 @@
 Falsification test: Infrastructure control software meets SIL requirements.
 Failure rate < 10e-5 per hour (SIL-2).
 
-# @falsification_id: F-NECESSITY-001
+# @falsification_id: F_NECESSITY_001
 """
 import pytest
 

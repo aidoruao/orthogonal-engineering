@@ -2,7 +2,7 @@
 Falsification test: Water quality sensor alerts before threshold breach.
 Sensor fires alert before reading exceeds limit.
 
-# @falsification_id: F-WATER-001
+# @falsification_id: F_WATER_001
 """
 import pytest
 

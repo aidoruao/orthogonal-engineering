@@ -57,11 +57,11 @@ accordingly:
 
 | Test | Assumption | Falsifying Observation |
 |---|---|---|
-| F-001 | sha256 is platform-independent | Different hex digest on any OS |
-| F-002 | int64 arithmetic matches known vectors | Any computed value ≠ expected |
-| F-003 | pathlib normalises separators | Wrong path parts count or values |
-| F-004 | stdout is UTF-8 | Encoding name not `utf-8` or `utf_8` |
-| F-005 | struct.pack is little-endian | Any byte sequence ≠ expected |
+| F_PLATFORM_001 | sha256 is platform-independent | Different hex digest on any OS |
+| F_PLATFORM_002 | int64 arithmetic matches known vectors | Any computed value ≠ expected |
+| F_PLATFORM_003 | pathlib normalises separators | Wrong path parts count or values |
+| F_PLATFORM_004 | stdout is UTF-8 | Encoding name not `utf-8` or `utf_8` |
+| F_PLATFORM_005 | struct.pack is little-endian | Any byte sequence ≠ expected |
 
 If any test cannot fail even in principle, it is not a scientific test — it is
 a tautology.  All five tests above can and will fail on misconfigured
@@ -136,7 +136,7 @@ program produced the same result.
 
 The following categories enumerate every known source of non-determinism that
 could break cross-platform reproducibility.  Each is documented in
-`ontology/pr26_ontological_issues.json` (OI-001 through OI-016).
+`ontology/pr26_ontological_issues.json` (OI_PLATFORM_001 through OI_PLATFORM_016).
 
 | Category | Domain | Example failure mode |
 |---|---|---|
@@ -165,8 +165,8 @@ could break cross-platform reproducibility.  Each is documented in
 - Peano, G. (1889). *Arithmetices principia, nova methodo exposita.*
 - Merkle, R. (1987). "A Digital Signature Based on a Conventional Encryption
   Function." *CRYPTO 1987.*
-- `ontology/pr26_ontological_issues.json` — issues OI-001 through OI-016
+- `ontology/pr26_ontological_issues.json` — issues OI_PLATFORM_001 through OI_PLATFORM_016
 - `oe_ifm/mathematical_core.py` — Peano arithmetic implementation
 - `oe_ifm/universal_virtual_machine.py` — UVM implementation
-- `tests/test_falsification.py` — F-001 through F-005 falsification tests
+- `tests/test_falsification.py` — F_PLATFORM_001 through F_PLATFORM_005 falsification tests
 - `tests/test_fractal_determinism.py` — bit-level to chain-level verification

@@ -2,7 +2,7 @@
 Falsification test: Fly detection accuracy >= 95% on test image set.
 Detection rate >= 0.95.
 
-# @falsification_id: F-CRUSADER-001
+# @falsification_id: F_CRUSADER_001
 """
 import random
 import pytest

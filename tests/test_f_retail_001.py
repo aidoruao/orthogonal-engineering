@@ -2,7 +2,7 @@
 Falsification test: POS transaction idempotent under network retry.
 Retry does not double-charge.
 
-# @falsification_id: F-RETAIL-001
+# @falsification_id: F_RETAIL_001
 """
 import pytest
 

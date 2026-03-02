@@ -2,7 +2,7 @@
 Falsification test: Dosimetry calculation matches reference implementation.
 Dose = activity * decay_constant * time is deterministic.
 
-# @falsification_id: F-MEDICAL-001
+# @falsification_id: F_MEDICAL_001
 """
 import pytest
 

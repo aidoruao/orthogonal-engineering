@@ -2,7 +2,7 @@
 Falsification test: Internal temperature maintained 34-38 degrees F.
 Temperature always in [34, 38] F.
 
-# @falsification_id: F-CRUSADER-007
+# @falsification_id: F_CRUSADER_007
 """
 import random
 import pytest

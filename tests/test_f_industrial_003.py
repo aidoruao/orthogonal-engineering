@@ -2,7 +2,7 @@
 Falsification test: PLC scan does not exceed watchdog timer.
 Scan time < watchdog_period * 0.95.
 
-# @falsification_id: F-INDUSTRIAL-003
+# @falsification_id: F_INDUSTRIAL_003
 """
 import time
 import pytest

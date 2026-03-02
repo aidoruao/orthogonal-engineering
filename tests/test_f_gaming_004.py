@@ -2,7 +2,7 @@
 Falsification test: Network packets cannot trigger memory corruption.
 All packet parsing is bounds-checked.
 
-# @falsification_id: F-GAMING-004
+# @falsification_id: F_GAMING_004
 """
 import struct
 import pytest

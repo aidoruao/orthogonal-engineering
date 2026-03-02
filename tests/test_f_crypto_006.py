@@ -2,7 +2,7 @@
 Falsification test: All cryptographic operations are constant-time.
 No secret-dependent timing variation (simulated).
 
-# @falsification_id: F-CRYPTO-006
+# @falsification_id: F_CRYPTO_006
 """
 import time
 import hmac

@@ -2,7 +2,7 @@
 Falsification test: Compression round-trip is lossless.
 compress(data) then decompress gives original data.
 
-# @falsification_id: F-NONCREATIVE-001
+# @falsification_id: F_NONCREATIVE_001
 """
 import zlib
 import pytest

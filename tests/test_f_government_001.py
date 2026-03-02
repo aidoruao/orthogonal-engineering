@@ -2,7 +2,7 @@
 Falsification test: Voting system cast-as-intended verifiability.
 Every cast vote is recorded exactly as intended.
 
-# @falsification_id: F-GOVERNMENT-001
+# @falsification_id: F_GOVERNMENT_001
 """
 import pytest
 

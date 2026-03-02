@@ -2,7 +2,7 @@
 Falsification test: Mod system cannot execute arbitrary code outside sandbox.
 Mod confined to game resources.
 
-# @falsification_id: F-GAMING-005
+# @falsification_id: F_GAMING_005
 """
 import os
 import pytest

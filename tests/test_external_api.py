@@ -2,7 +2,7 @@
 Falsification test: External API is reachable within SLO timeout.
 API responds within 500ms — fallback triggers on timeout.
 
-# @falsification_id: F-API-001
+# @falsification_id: F_API_001
 """
 import time
 import pytest

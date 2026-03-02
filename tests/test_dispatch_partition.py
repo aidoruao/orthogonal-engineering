@@ -2,7 +2,7 @@
 Falsification test: Dispatch system handles network partition without data loss.
 All queued calls preserved during partition.
 
-# @falsification_id: F-EMERGENCY-001
+# @falsification_id: F_EMERGENCY_001
 """
 import pytest
 from collections import deque

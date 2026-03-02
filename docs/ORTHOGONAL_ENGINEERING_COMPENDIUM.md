@@ -119,11 +119,11 @@ file, line, OS, and Python version.
 
 | ID | Assumption | Test |
 |---|---|---|
-| F-001 | `hashlib.sha256` of a fixed byte string returns the same hex digest on every platform | `test_f001_seed_bytes_sha256_deterministic` |
-| F-002 | `struct.unpack_from('<q', …)` and two's-complement int64 masking produce known numeric vectors | `test_f002_int64_arithmetic_vectors` |
-| F-003 | `pathlib.Path` resolves relative paths and normalises separators correctly on all OSes | `test_f003_pathlib_path_independence` |
-| F-004 | stdout and stderr use UTF-8 encoding (requires `PYTHONIOENCODING=utf-8`) | `test_f004_stdout_utf8_encoding` |
-| F-005 | `struct.pack('<q', value)` encodes int64 in little-endian regardless of host endianness | `test_f005_struct_pack_little_endian` |
+| F_PLATFORM_001 | `hashlib.sha256` of a fixed byte string returns the same hex digest on every platform | `test_f001_seed_bytes_sha256_deterministic` |
+| F_PLATFORM_002 | `struct.unpack_from('<q', …)` and two's-complement int64 masking produce known numeric vectors | `test_f002_int64_arithmetic_vectors` |
+| F_PLATFORM_003 | `pathlib.Path` resolves relative paths and normalises separators correctly on all OSes | `test_f003_pathlib_path_independence` |
+| F_PLATFORM_004 | stdout and stderr use UTF-8 encoding (requires `PYTHONIOENCODING=utf-8`) | `test_f004_stdout_utf8_encoding` |
+| F_PLATFORM_005 | `struct.pack('<q', value)` encodes int64 in little-endian regardless of host endianness | `test_f005_struct_pack_little_endian` |
 
 ### 3.1 Python Versions
 

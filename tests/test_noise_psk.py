@@ -2,7 +2,7 @@
 Falsification test: Noise PSK zero-key is rejected.
 PSK of all-zero bytes is treated as absent/invalid.
 
-# @falsification_id: F-CRYPTO-002
+# @falsification_id: F_CRYPTO_002
 """
 import pytest
 

@@ -2,7 +2,7 @@
 Falsification test: Signature verification rejects tampered messages.
 Bit flip in message causes signature to fail.
 
-# @falsification_id: F-CRYPTO-004
+# @falsification_id: F_CRYPTO_004
 """
 import hmac
 import hashlib

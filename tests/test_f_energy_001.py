@@ -2,7 +2,7 @@
 Falsification test: Smart grid demand-response actioned within 30 seconds.
 DR event processed within 30s.
 
-# @falsification_id: F-ENERGY-001
+# @falsification_id: F_ENERGY_001
 """
 import time
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Lock-free atomics are sequentially consistent.
 Atomic CAS operations maintain linearizability.
 
-# @falsification_id: F-PROTO-001
+# @falsification_id: F_PROTO_001
 """
 import threading
 import pytest

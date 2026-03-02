@@ -2,7 +2,7 @@
 Falsification test: Anti-cheat detects memory value manipulation.
 External write to protected memory is detected.
 
-# @falsification_id: F-GAMING-002
+# @falsification_id: F_GAMING_002
 """
 import hashlib
 import pytest

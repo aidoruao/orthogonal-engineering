@@ -2,7 +2,7 @@
 Falsification test: Irrigation delivery within +/-10% of setpoint.
 Delivered volume within 10% of commanded.
 
-# @falsification_id: F-AGRICULTURE-001
+# @falsification_id: F_AGRICULTURE_001
 """
 import pytest
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# @falsification_id: F-AXIOMS-001
+# @falsification_id: F_AXIOMS_001
 """
 Peano Axiom Tests — tests/test_peano_axioms.py
 

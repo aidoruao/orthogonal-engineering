@@ -2,7 +2,7 @@
 Falsification test: Redundant sensors agree within tolerance.
 Three sensors agree within +/-0.5%.
 
-# @falsification_id: F-INDUSTRIAL-004
+# @falsification_id: F_INDUSTRIAL_004
 """
 import pytest
 

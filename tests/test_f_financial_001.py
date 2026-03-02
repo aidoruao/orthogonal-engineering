@@ -2,7 +2,7 @@
 Falsification test: Double-spend rejected by settlement system.
 Duplicate transaction is rejected.
 
-# @falsification_id: F-FINANCIAL-001
+# @falsification_id: F_FINANCIAL_001
 """
 import threading
 import pytest

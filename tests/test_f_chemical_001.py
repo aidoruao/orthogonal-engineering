@@ -2,7 +2,7 @@
 Falsification test: Reactor thermal runaway interlock activates before critical point.
 Interlock at T_alarm before T_critical.
 
-# @falsification_id: F-CHEMICAL-001
+# @falsification_id: F_CHEMICAL_001
 """
 import pytest
 

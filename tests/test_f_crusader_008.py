@@ -2,7 +2,7 @@
 Falsification test: All actions logged with unbroken hash chain.
 No gaps in the SHA-256 hash chain.
 
-# @falsification_id: F-CRUSADER-008
+# @falsification_id: F_CRUSADER_008
 """
 import hashlib
 import pytest

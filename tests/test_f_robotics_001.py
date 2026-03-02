@@ -2,7 +2,7 @@
 Falsification test: Robot arm stops within collision-avoidance envelope.
 Arm halts before contacting obstacle.
 
-# @falsification_id: F-ROBOTICS-001
+# @falsification_id: F_ROBOTICS_001
 """
 import pytest
 

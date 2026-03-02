@@ -2,7 +2,7 @@
 Falsification test: Secret-dependent polynomial arithmetic is constant-time.
 No timing side channels in key operations (simulated).
 
-# @falsification_id: F-CRYPTO-001
+# @falsification_id: F_CRYPTO_001
 """
 import time
 import hmac

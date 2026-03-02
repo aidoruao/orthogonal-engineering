@@ -2,7 +2,7 @@
 Falsification test: Key generation is deterministic from seed.
 Same seed -> same key pair.
 
-# @falsification_id: F-CRYPTO-007
+# @falsification_id: F_CRYPTO_007
 """
 import hashlib
 import pytest

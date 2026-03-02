@@ -31,7 +31,7 @@
 | 13 | POLY-001 | Polynomial Arithmetic | Applied | 📋 SPECIFIED |
 | 14 | CRYPTO-001 | SHA-256 | Cryptography | ✅ OPERATIONAL |
 | 15 | CHAIN-001 | Hash Chains / Blockchain | Cryptography | ✅ OPERATIONAL |
-| 16 | PROOF-001 | Inclusion Proofs | Cryptography | 📋 SPECIFIED |
+| 16 | PROOF_PLATFORM_001 | Inclusion Proofs | Cryptography | 📋 SPECIFIED |
 | 17 | COMMIT-001 | Cryptographic Commitments | Cryptography | 📋 SPECIFIED |
 | 18 | MAC-001 | Message Authentication | Cryptography | 📋 SPECIFIED |
 | 19 | ISA-001 | Instruction Set Architecture | CS Theory | ✅ OPERATIONAL |
@@ -49,7 +49,7 @@
 | 31 | SEQ-001 | Ordered Sequences | Data Structures | 📋 SPECIFIED |
 | 32 | INDUCT-001 | Mathematical Induction | Verification | ✅ OPERATIONAL |
 | 33 | INVAR-001 | Invariant Preservation | Verification | ✅ OPERATIONAL |
-| 34 | FALSIF-001 | Popperian Falsification | Verification | ✅ OPERATIONAL |
+| 34 | FALSIF_PLATFORM_001 | Popperian Falsification | Verification | ✅ OPERATIONAL |
 | 35 | ATTEST-001 | Cryptographic Attestation | Verification | ✅ OPERATIONAL |
 | 36 | ONTOL-001 | Ontological Foundations | Philosophy | ✅ OPERATIONAL |
 | 37 | CORRESP-001 | Correspondence Theory of Truth | Philosophy | ✅ OPERATIONAL |
@@ -234,7 +234,7 @@ def logical_shift_right(value, shift): ...
 
 **Status:** ✅ OPERATIONAL — `hashlib.sha256` (standard library, FIPS-compliant)
 
-**Verification (F-001):** `hashlib.sha256(b"OE_PR26_DETERMINISM_SEED_V1").hexdigest()` returns `96cc20a24313ba22105ed5c06b40eba8d61bb50f89afa5689d7fa9e86e1a8112` on every platform.
+**Verification (F_PLATFORM_001):** `hashlib.sha256(b"OE_PR26_DETERMINISM_SEED_V1").hexdigest()` returns `96cc20a24313ba22105ed5c06b40eba8d61bb50f89afa5689d7fa9e86e1a8112` on every platform.
 
 ---
 
@@ -268,7 +268,7 @@ def logical_shift_right(value, shift): ...
 
 **Status:** ✅ OPERATIONAL — `hashlib.sha256`
 
-**Properties verified:** pre-image resistance (assumed), collision resistance (assumed), determinism (tested by F-001).
+**Properties verified:** pre-image resistance (assumed), collision resistance (assumed), determinism (tested by F_PLATFORM_001).
 
 ---
 
@@ -287,7 +287,7 @@ class AttestationChain:
 
 ---
 
-### 3.3 Inclusion Proofs (PROOF-001)
+### 3.3 Inclusion Proofs (PROOF_PLATFORM_001)
 
 **Status:** 📋 SPECIFIED
 
@@ -372,7 +372,7 @@ All bit operations use explicit 1-bit truth-table evaluation; no hardware AND/OR
 
 ### 5.2 Endianness (ENDIAN-001)
 
-**Status:** ✅ OPERATIONAL — verified by F-005
+**Status:** ✅ OPERATIONAL — verified by F_PLATFORM_005
 
 ```python
 struct.pack('<q', value)  # always little-endian, explicitly specified
@@ -454,9 +454,9 @@ The inductive step `add(0, S(k)) = S(k)` is verified for k ∈ {0..99}.
 
 ---
 
-### 7.3 Popperian Falsification (FALSIF-001)
+### 7.3 Popperian Falsification (FALSIF_PLATFORM_001)
 
-**Status:** ✅ OPERATIONAL — `tests/test_falsification.py` (F-001..F-005)
+**Status:** ✅ OPERATIONAL — `tests/test_falsification.py` (F_PLATFORM_001..F_PLATFORM_005)
 
 Each test is designed to fail if its assumption is violated. Failure reports exact OS, Python version, file, and line.
 
@@ -476,7 +476,7 @@ Each test is designed to fail if its assumption is violated. Failure reports exa
 
 **Status:** ✅ OPERATIONAL — `ontology/pr26_ontological_issues.json`, `ontology/pr28_philosophical_foundations.md`
 
-All 16 ontological issues (OI-001..OI-016) are enumerated, categorised, and assigned resolution status.
+All 16 ontological issues (OI_PLATFORM_001..OI_PLATFORM_016) are enumerated, categorised, and assigned resolution status.
 
 ---
 
@@ -541,7 +541,7 @@ Attestation chain: AttestationChain (derived from hashlib + JSON)
 | TREE-001 | #26 | #28 |
 | INDUCT-001 | #28 | #28 |
 | INVAR-001 | #28 | #28 |
-| FALSIF-001 | #28 | #28 |
+| FALSIF_PLATFORM_001 | #28 | #28 |
 | ATTEST-001 | #28 | #28 |
 | ONTOL-001 | #28 | #28 |
 | CORRESP-001 | #28 | #28 |

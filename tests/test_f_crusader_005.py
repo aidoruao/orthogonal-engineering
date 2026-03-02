@@ -2,7 +2,7 @@
 Falsification test: UV output is zero when door is open.
 UV disabled when door sensor = OPEN.
 
-# @falsification_id: F-CRUSADER-005
+# @falsification_id: F_CRUSADER_005
 """
 import pytest
 

@@ -2,7 +2,7 @@
 Falsification test: ATC communication handles malformed messages gracefully.
 Invalid ATC messages ignored without crash.
 
-# @falsification_id: F-AVIATION-002
+# @falsification_id: F_AVIATION_002
 """
 import pytest
 

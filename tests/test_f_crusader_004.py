@@ -2,7 +2,7 @@
 Falsification test: False positive rate < 0.1%.
 At most 10 false activations per 10000 triggers.
 
-# @falsification_id: F-CRUSADER-004
+# @falsification_id: F_CRUSADER_004
 """
 import random
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Detection-to-warfare activation latency < 100ms.
 Time from detection to warfare < 100ms.
 
-# @falsification_id: F-CRUSADER-003
+# @falsification_id: F_CRUSADER_003
 """
 import time
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Generative output is reproducible from fixed seed.
 Same seed always produces same output.
 
-# @falsification_id: F-CREATIVE-001
+# @falsification_id: F_CREATIVE_001
 """
 import random
 import pytest

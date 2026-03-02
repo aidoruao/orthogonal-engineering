@@ -2,7 +2,7 @@
 Falsification test: HFT order-book state is deterministic.
 Same order sequence gives same book state.
 
-# @falsification_id: F-LUXURY-001
+# @falsification_id: F_LUXURY_001
 """
 import pytest
 

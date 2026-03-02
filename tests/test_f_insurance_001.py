@@ -2,7 +2,7 @@
 Falsification test: Actuarial risk model is deterministic.
 Same inputs produce same risk score.
 
-# @falsification_id: F-INSURANCE-001
+# @falsification_id: F_INSURANCE_001
 """
 import hashlib
 import pytest

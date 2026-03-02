@@ -20,7 +20,7 @@ enforces them via machine-readable falsification tests.
 | `case_studies.json` | Real-world issues and CVEs linked to root causes and methodology components |
 | `falsification_tests.json` | Falsification test registry (F-IDs, assumptions, strategies, test-file mappings) |
 | `ontology.json` | Extended domain ontology and OI-XXX issue registry |
-| `pr26_ontological_issues.json` | Legacy OI-001..OI-016 issues (cross-platform determinism) |
+| `pr26_ontological_issues.json` | Legacy OI_PLATFORM_001..OI_PLATFORM_016 issues (cross-platform determinism) |
 
 ### Validation script
 
@@ -38,12 +38,12 @@ python scripts/validate_methodology.py --check-tags
 
 | Prefix | Example | Meaning |
 |---|---|---|
-| `F-NNN` | `F-001` | Falsification test (platform invariants, PR #28) |
-| `F-DOMAIN-NNN` | `F-GRAPHICS-001` | Domain-specific falsification test |
-| `OI-NNN` | `OI-002` | Ontological issue (legacy, PR #26) |
-| `OI-DOMAIN-NNN` | `OI-CRYPTO-001` | Domain-specific ontological issue |
-| `CS-DOMAIN-NNN` | `CS-CRYPTO-002` | Case study |
-| `D-NAME` | `D-CRYPTO` | Domain identifier |
+| `F-NNN` | `F_PLATFORM_001` | Falsification test (platform invariants, PR #28) |
+| `F-DOMAIN-NNN` | `F_GRAPHICS_001` | Domain-specific falsification test |
+| `OI-NNN` | `OI_PLATFORM_002` | Ontological issue (legacy, PR #26) |
+| `OI-DOMAIN-NNN` | `OI_CRYPTO_001` | Domain-specific ontological issue |
+| `CS-DOMAIN-NNN` | `CS_CRYPTO_002` | Case study |
+| `D_NAME` | `D_CRYPTO` | Domain identifier |
 | `RCS-NAME` | `RCS-TIMING` | Root-cause signal |
 
 ---
@@ -52,7 +52,7 @@ python scripts/validate_methodology.py --check-tags
 
 1. Add an entry to `ontology/search_lens.json` → `domains[]`:
    ```json
-   {"id": "D-MYDOM", "name": "My Domain", "description": "..."}
+   {"id": "D_MYDOM", "name": "My Domain", "description": "..."}
    ```
 2. Add a domain entry to `ontology/ontology.json` → `domains[]` with
    `invariants`, `example_falsification_test`, `example_ontological_issue`.
@@ -65,15 +65,15 @@ python scripts/validate_methodology.py --check-tags
 1. Add an entry to `ontology/case_studies.json` → `cases[]`:
    ```json
    {
-     "id": "CS-MYDOM-001",
+     "id": "CS_MYDOM_001",
      "title": "...",
      "source": "https://...",
-     "domain": "D-MYDOM",
+     "domain": "D_MYDOM",
      "root_cause_signals": ["RCS-NONDETERMINISM"],
      "description": "...",
      "assumptions_violated": ["..."],
-     "falsification_tests": ["F-MYDOM-001"],
-     "ontological_issues": ["OI-MYDOM-001"],
+     "falsification_tests": ["F_MYDOM_001"],
+     "ontological_issues": ["OI_MYDOM_001"],
      "lessons": ["..."],
      "methodology_components": ["..."]
    }
@@ -88,21 +88,21 @@ python scripts/validate_methodology.py --check-tags
 1. Add an entry to `ontology/falsification_tests.json` → `falsification_tests[]`:
    ```json
    {
-     "id": "F-MYDOM-001",
+     "id": "F_MYDOM_001",
      "title": "...",
-     "domain": "D-MYDOM",
+     "domain": "D_MYDOM",
      "assumption": "...",
      "falsifying_observation": "...",
      "strategy": "...",
      "status": "placeholder",
      "test_file": "TODO: tests/test_mydom.py::test_f_mydom_001",
-     "ontological_issues": ["OI-MYDOM-001"],
-     "case_studies": ["CS-MYDOM-001"]
+     "ontological_issues": ["OI_MYDOM_001"],
+     "case_studies": ["CS_MYDOM_001"]
    }
    ```
 2. Implement the test in `tests/test_mydom.py` and add the tag comment:
    ```python
-   # @falsification_id: F-MYDOM-001
+   # @falsification_id: F_MYDOM_001
    ```
 3. Change `"status"` from `"placeholder"` to `"active"` and update `"test_file"`.
 
@@ -113,16 +113,16 @@ python scripts/validate_methodology.py --check-tags
 1. Add an entry to `ontology/ontology.json` → `issues[]`:
    ```json
    {
-     "id": "OI-MYDOM-001",
+     "id": "OI_MYDOM_001",
      "title": "...",
-     "domain": "D-MYDOM",
+     "domain": "D_MYDOM",
      "category": "...",
      "severity": "high",
      "status": "Open",
      "description": "...",
      "assumptions_violated": ["..."],
      "related_cases": [],
-     "falsification_tests": ["F-MYDOM-001"],
+     "falsification_tests": ["F_MYDOM_001"],
      "resolution_notes": "..."
    }
    ```
@@ -136,14 +136,14 @@ Add a tag comment near the top of any test file that implements a falsification
 test from the registry:
 
 ```python
-# @falsification_id: F-GRAPHICS-001
+# @falsification_id: F_GRAPHICS_001
 ```
 
 Multiple tags are allowed:
 
 ```python
-# @falsification_id: F-001
-# @falsification_id: F-002
+# @falsification_id: F_PLATFORM_001
+# @falsification_id: F_PLATFORM_002
 ```
 
 The `--check-tags` flag of `validate_methodology.py` will report F-IDs that
@@ -156,7 +156,7 @@ error, to allow incremental adoption.
 
 | Methodology concept | Monorepo counterpart |
 |---|---|
-| **Axiomatic substrate** | Environmental assumptions documented in `pr26_ontological_issues.json` and enforced by F-001..F-005 |
+| **Axiomatic substrate** | Environmental assumptions documented in `pr26_ontological_issues.json` and enforced by F_PLATFORM_001..F_PLATFORM_005 |
 | **Peano kernel** | Core arithmetic invariants tested in `tests/test_peano_axioms.py` and `tests/test_axioms.py` |
 | **Falsification tests** | F-IDs in `ontology/falsification_tests.json`, implemented in `tests/test_falsification*.py` |
 | **Ontological issue registry** | OI-IDs in `ontology/ontology.json` and `ontology/pr26_ontological_issues.json` |
@@ -185,7 +185,7 @@ that touches `ontology/`, `scripts/validate_methodology.py`, or `tests/`:
    references must resolve correctly.
 3. **Tag-coverage check** — reports (non-blocking) F-IDs without `@falsification_id`
    tags in `tests/`.
-4. **Existing falsification tests** — `tests/test_falsification.py` (F-001..F-005)
+4. **Existing falsification tests** — `tests/test_falsification.py` (F_PLATFORM_001..F_PLATFORM_005)
    must pass on ubuntu-latest.
 
 ---
@@ -194,14 +194,14 @@ that touches `ontology/`, `scripts/validate_methodology.py`, or `tests/`:
 
 Suppose you want to add a **Robotics** domain:
 
-1. `ontology/search_lens.json` → add `{"id": "D-ROBOTICS", "name": "Robotics", "description": "..."}`
+1. `ontology/search_lens.json` → add `{"id": "D_ROBOTICS", "name": "Robotics", "description": "..."}`
 2. `ontology/ontology.json` → add domain entry with invariants and example IDs
-3. `ontology/ontology.json` → add `OI-ROBOTICS-001` issue entry
-4. `ontology/falsification_tests.json` → add `F-ROBOTICS-001` entry (`status: "placeholder"`)
-5. `ontology/case_studies.json` → add `CS-ROBOTICS-001` if there is a real-world case
+3. `ontology/ontology.json` → add `OI_ROBOTICS_001` issue entry
+4. `ontology/falsification_tests.json` → add `F_ROBOTICS_001` entry (`status: "placeholder"`)
+5. `ontology/case_studies.json` → add `CS_ROBOTICS_001` if there is a real-world case
 6. Run `python scripts/validate_methodology.py` — must pass
-7. Implement `tests/test_robotics.py` with `# @falsification_id: F-ROBOTICS-001`
-8. Change `F-ROBOTICS-001` status to `"active"` and update `test_file`
+7. Implement `tests/test_robotics.py` with `# @falsification_id: F_ROBOTICS_001`
+8. Change `F_ROBOTICS_001` status to `"active"` and update `test_file`
 
 ---
 

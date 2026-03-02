@@ -2,7 +2,7 @@
 Falsification test: Batch record is immutable once released.
 Released record cannot be modified.
 
-# @falsification_id: F-PHARMA-001
+# @falsification_id: F_PHARMA_001
 """
 import pytest
 

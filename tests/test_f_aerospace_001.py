@@ -2,7 +2,7 @@
 Falsification test: Avionics redundant channels produce byte-identical output.
 All redundant channels agree.
 
-# @falsification_id: F-AEROSPACE-001
+# @falsification_id: F_AEROSPACE_001
 """
 import struct
 import pytest

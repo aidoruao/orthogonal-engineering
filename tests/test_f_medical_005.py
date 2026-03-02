@@ -2,7 +2,7 @@
 Falsification test: AI diagnostic tool never suggests treatment outside clinical guidelines.
 All AI outputs within approved set.
 
-# @falsification_id: F-MEDICAL-005
+# @falsification_id: F_MEDICAL_005
 """
 import random
 import pytest

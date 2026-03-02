@@ -2,7 +2,7 @@
 Falsification test: Telemetry includes cryptographic proof of integrity.
 Hash chain detects any modification.
 
-# @falsification_id: F-SPACE-004
+# @falsification_id: F_SPACE_004
 """
 import hashlib
 import pytest

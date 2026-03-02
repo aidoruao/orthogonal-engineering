@@ -2,7 +2,7 @@
 Falsification test: Worker safety alert delivered within required latency.
 Alert latency < 2 seconds.
 
-# @falsification_id: F-BLUECOLLAR-001
+# @falsification_id: F_BLUECOLLAR_001
 """
 import time
 import pytest

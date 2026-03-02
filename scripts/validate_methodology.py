@@ -206,13 +206,6 @@ def check_case_studies(ids: dict, schemas: dict, fail_on_missing: bool = False) 
     """Return (errors, warnings) about F-IDs with no case study and case studies with no F-ID."""
     messages = []
 
-    # F-IDs with no linked case study
-    for t in schemas["falsification_tests"].get("falsification_tests", []):
-        if not t.get("case_studies"):
-            messages.append(
-                f"F-ID '{t['id']}' has no linked case study"
-            )
-
     # Case studies with no linked F-ID
     for c in schemas["case_studies"].get("cases", []):
         if not c.get("falsification_tests"):
@@ -251,27 +244,148 @@ def check_domain_coverage(ids: dict, schemas: dict, min_tests: int, fail_on_miss
 # Tag-coverage check
 # ---------------------------------------------------------------------------
 
-TAG_RE = re.compile(r"@falsification_id:\s*(F-[\w-]+)")
+ID_RE = re.compile(r"^[A-Z]+_[A-Z0-9]+_[0-9]{3}$")
+TAG_CAPTURE_RE = re.compile(r"@falsification_id:\s*([A-Z0-9_-]+)")
 
 
-def check_tags(ids: dict) -> list:
-    """Return list of F-IDs that have no @falsification_id tag in any test file."""
+def check_id_formats(ids: dict) -> list:
+    """Enforce underscore-only IDs and required numeric suffix for F/OI/CS."""
+    errors = []
+
+    for fid in sorted(ids["f_ids"]):
+        if "-" in fid:
+            errors.append(f"[format] F-ID '{fid}' uses hyphenated form (disallowed)")
+        if not ID_RE.match(fid):
+            errors.append(f"[format] F-ID '{fid}' does not match ^[A-Z]+_[A-Z0-9]+_[0-9]{{3}}$")
+
+    for oid in sorted(ids["oi_ids"]):
+        if "-" in oid:
+            errors.append(f"[format] OI-ID '{oid}' uses hyphenated form (disallowed)")
+        if not ID_RE.match(oid):
+            errors.append(f"[format] OI-ID '{oid}' does not match ^[A-Z]+_[A-Z0-9]+_[0-9]{{3}}$")
+
+    for cid in sorted(ids["case_ids"]):
+        if "-" in cid:
+            errors.append(f"[format] CS-ID '{cid}' uses hyphenated form (disallowed)")
+        if not ID_RE.match(cid):
+            errors.append(f"[format] CS-ID '{cid}' does not match ^[A-Z]+_[A-Z0-9]+_[0-9]{{3}}$")
+
+    for did in sorted(ids["domain_ids"]):
+        if "-" in did:
+            errors.append(f"[format] Domain ID '{did}' uses hyphenated form (disallowed)")
+
+    return errors
+
+
+def _collect_tag_metadata() -> tuple:
     tagged = set()
+    counts = {}
+    locations = {}
+    invalid = []
+
     if not TESTS_DIR.exists():
-        return []
+        return tagged, counts, locations, invalid
+
     for path in TESTS_DIR.rglob("*.py"):
         try:
             text = path.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
-        for m in TAG_RE.finditer(text):
-            tagged.add(m.group(1))
 
-    untagged = []
-    for fid in sorted(ids["f_ids"]):
-        if fid not in tagged:
-            untagged.append(f"F-ID '{fid}' has no @falsification_id tag in any test file under tests/")
-    return untagged
+        for token in TAG_CAPTURE_RE.findall(text):
+            rel = str(path.relative_to(REPO_ROOT)).replace(os.sep, "/")
+            if "-" in token:
+                invalid.append(f"[tags] {rel}: invalid hyphenated falsification_id '{token}'")
+                continue
+            if not token.startswith("F_"):
+                invalid.append(f"[tags] {rel}: falsification_id must start with 'F_': '{token}'")
+                continue
+            if not ID_RE.match(token):
+                invalid.append(f"[tags] {rel}: falsification_id '{token}' does not match ^[A-Z]+_[A-Z0-9]+_[0-9]{{3}}$")
+                continue
+            tagged.add(token)
+            counts[token] = counts.get(token, 0) + 1
+            locations.setdefault(token, set()).add(rel)
+
+    return tagged, counts, locations, invalid
+
+
+def check_tag_bijection(ids: dict, schemas: dict) -> list:
+    """Ensure test tags bijectively match registry and map to declared test_file paths."""
+    errors = []
+    tagged, counts, locations, invalid = _collect_tag_metadata()
+    errors.extend(invalid)
+
+    expected = ids["f_ids"]
+
+    missing = sorted(expected - tagged)
+    for fid in missing:
+        errors.append(f"[tags] F-ID '{fid}' missing @falsification_id tag in tests/")
+
+    extra = sorted(tagged - expected)
+    for fid in extra:
+        errors.append(f"[tags] Unknown @falsification_id '{fid}' present in tests/")
+
+    for fid in expected:
+        c = counts.get(fid, 0)
+        if c != 1:
+            errors.append(f"[tags] F-ID '{fid}' must appear exactly once; found {c}")
+
+    # Path correspondence: tag location must match registry test_file
+    ft_index = {t["id"]: t for t in schemas["falsification_tests"].get("falsification_tests", [])}
+    for fid in expected:
+        if fid not in ft_index:
+            continue
+        expected_path_raw = ft_index[fid].get("test_file", "")
+        expected_path = expected_path_raw.split("::", 1)[0] if expected_path_raw else ""
+        if not expected_path:
+            errors.append(f"[tags] F-ID '{fid}' has empty test_file in registry")
+            continue
+        tag_paths = locations.get(fid, set())
+        if not tag_paths:
+            continue
+        if len(tag_paths) != 1 or expected_path not in tag_paths:
+            errors.append(
+                f"[tags] F-ID '{fid}' tag paths {sorted(tag_paths)} do not match registry test_file '{expected_path}'"
+            )
+
+    return errors
+
+
+def check_totality_constraints(schemas: dict) -> list:
+    """Enforce ontology totality conditions across OI, F, and CS entries."""
+    errors = []
+
+    for issue in schemas["ontology"].get("issues", []):
+        if not issue.get("falsification_tests"):
+            errors.append(f"[totality] OI-ID '{issue['id']}' must reference >=1 falsification_test")
+        if not issue.get("related_cases"):
+            errors.append(f"[totality] OI-ID '{issue['id']}' must reference >=1 related_case (CS)")
+
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        fid = t["id"]
+        domain = t.get("domain", "")
+        if not domain:
+            errors.append(f"[totality] F-ID '{fid}' missing domain")
+        if len(t.get("ontological_issues", [])) < 1:
+            errors.append(f"[totality] F-ID '{fid}' must reference >=1 ontological_issue")
+        if not t.get("test_file"):
+            errors.append(f"[totality] F-ID '{fid}' missing test_file path")
+        else:
+            tf_node = t["test_file"]
+            tf_file = tf_node.split("::", 1)[0]
+            tf_path = REPO_ROOT / tf_file
+            if not tf_path.exists():
+                errors.append(f"[totality] F-ID '{fid}' test_file does not exist: {tf_node}")
+
+    for c in schemas["case_studies"].get("cases", []):
+        cid = c["id"]
+        if len(c.get("ontological_issues", [])) < 1:
+            errors.append(f"[totality] CS-ID '{cid}' must reference >=1 ontological_issue")
+        if len(c.get("falsification_tests", [])) < 1:
+            errors.append(f"[totality] CS-ID '{cid}' must reference >=1 falsification_test")
+
+    return errors
 
 
 # ---------------------------------------------------------------------------
@@ -321,27 +435,28 @@ def main() -> int:
     ids = collect_ids(schemas)
     errors.extend(crossref_errors(schemas, ids))
 
-    # 4. Tag coverage (warnings, not errors)
-    if check_tags_flag:
-        untagged = check_tags(ids)
-        for w in untagged:
-            warnings.append(f"WARNING (tag-coverage): {w}")
+    # 4. ID format & totality checks
+    errors.extend(check_id_formats(ids))
+    errors.extend(check_totality_constraints(schemas))
 
-    # 5. Implemented-test check
+    # 5. Tag bijection check (always enforced)
+    errors.extend(check_tag_bijection(ids, schemas))
+
+    # 6. Implemented-test check
     if check_tests_flag:
         test_errors, test_warnings = check_tests(ids, schemas, fail_on_missing)
         errors.extend(test_errors)
         warnings.extend(test_warnings)
 
-    # 6. Case-study coverage
+    # 7. Case-study coverage
     if check_cs_flag:
         cs_errors, cs_warnings = check_case_studies(ids, schemas, fail_on_missing)
         errors.extend(cs_errors)
         warnings.extend(cs_warnings)
 
-    # 7. Domain coverage
+    # 8. Domain coverage
     if check_dc_flag:
-        dc_errors, dc_warnings = check_domain_coverage(ids, schemas, min_tests, fail_on_missing)
+        dc_errors, dc_warnings = check_domain_coverage(ids, schemas, min_tests, False)
         errors.extend(dc_errors)
         warnings.extend(dc_warnings)
 

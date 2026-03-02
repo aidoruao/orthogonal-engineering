@@ -2,7 +2,7 @@
 Falsification test: AIS position within certified accuracy bounds.
 AIS position error <= 10m.
 
-# @falsification_id: F-MARITIME-001
+# @falsification_id: F_MARITIME_001
 """
 import random
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Flight model produces identical results across platforms.
 Aerodynamics calculations are deterministic.
 
-# @falsification_id: F-AVIATION-001
+# @falsification_id: F_AVIATION_001
 """
 import hashlib
 import struct

@@ -2,7 +2,7 @@
 Falsification test: Game state identical across hardware platforms.
 Same save file produces same state everywhere.
 
-# @falsification_id: F-GAMING-003
+# @falsification_id: F_GAMING_003
 """
 import hashlib
 import json

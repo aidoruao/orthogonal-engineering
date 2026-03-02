@@ -2,7 +2,7 @@
 Falsification test: Infusion pump delivers within +/-5% of programmed rate.
 Flow rate accurate to +-5%.
 
-# @falsification_id: F-MEDICAL-003
+# @falsification_id: F_MEDICAL_003
 """
 import pytest
 

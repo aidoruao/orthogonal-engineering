@@ -2,7 +2,7 @@
 Falsification test: Compiled binary contains stack canaries.
 Python sys.flags optimization level is checked.
 
-# @falsification_id: F-SPACE-001
+# @falsification_id: F_SPACE_001
 """
 import sys
 import pytest

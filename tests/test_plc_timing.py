@@ -2,7 +2,7 @@
 Falsification test: PLC cycle-time is within real-time bound.
 Scan cycle completes in < 10ms.
 
-# @falsification_id: F-INDUSTRIAL-001
+# @falsification_id: F_INDUSTRIAL_001
 """
 import time
 import pytest

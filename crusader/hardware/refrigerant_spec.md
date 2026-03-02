@@ -186,7 +186,7 @@ class EPARefrigerantReporter:
     def generate_annual_report(self):
         """Generate EPA-required annual refrigerant report"""
         report = {
-            'facility_id': 'CRUSADER-REF-001',
+            'facility_id': 'CRUSADER-REF_PLATFORM_001',
             'reporting_year': datetime.now().year,
             'refrigerant_type': 'R-290',
             'total_charge': 0.150,  # kg (150g)

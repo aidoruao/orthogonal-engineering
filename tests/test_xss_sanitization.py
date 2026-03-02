@@ -2,7 +2,7 @@
 Falsification test: XSS payload is neutralized before HTML output.
 HTML special chars are escaped.
 
-# @falsification_id: F-XSS-001
+# @falsification_id: F_XSS_001
 """
 import html
 import pytest

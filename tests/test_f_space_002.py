@@ -2,7 +2,7 @@
 Falsification test: Software continues correctly after single-bit memory flip.
 Bit flip detected and corrected by redundancy.
 
-# @falsification_id: F-SPACE-002
+# @falsification_id: F_SPACE_002
 """
 import pytest
 

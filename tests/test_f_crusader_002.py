@@ -2,7 +2,7 @@
 Falsification test: Prevention rate >= 99% in live fly release test.
 At most 1 survivor out of 100 flies.
 
-# @falsification_id: F-CRUSADER-002
+# @falsification_id: F_CRUSADER_002
 """
 import random
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Gas sensor triggers alarm before LEL threshold.
 Alarm fires at 20% LEL.
 
-# @falsification_id: F-MINING-001
+# @falsification_id: F_MINING_001
 """
 import pytest
 

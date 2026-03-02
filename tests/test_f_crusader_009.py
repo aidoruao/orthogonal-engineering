@@ -2,7 +2,7 @@
 Falsification test: Compliance reports include tamper-evident hash.
 Modified report fails hash verification.
 
-# @falsification_id: F-CRUSADER-009
+# @falsification_id: F_CRUSADER_009
 """
 import hashlib
 import pytest

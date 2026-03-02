@@ -2,7 +2,7 @@
 Falsification test: Room key deactivated within 5 seconds of checkout.
 Key invalid after 5s of checkout.
 
-# @falsification_id: F-HOSPITALITY-001
+# @falsification_id: F_HOSPITALITY_001
 """
 import time
 import pytest

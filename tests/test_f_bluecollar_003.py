@@ -2,7 +2,7 @@
 Falsification test: Confined space atmospheric monitoring prevents unsafe entry.
 Hazardous atmosphere keeps door locked.
 
-# @falsification_id: F-BLUECOLLAR-003
+# @falsification_id: F_BLUECOLLAR_003
 """
 import pytest
 

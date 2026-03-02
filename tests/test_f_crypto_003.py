@@ -2,7 +2,7 @@
 Falsification test: KDF produces identical output for identical inputs.
 HKDF with same inputs always gives same output.
 
-# @falsification_id: F-CRYPTO-003
+# @falsification_id: F_CRYPTO_003
 """
 import hashlib
 import hmac

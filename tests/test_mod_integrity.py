@@ -2,7 +2,7 @@
 Falsification test: ASI loader slot is exclusive.
 No dual-loader conflict — duplicate registration is rejected.
 
-# @falsification_id: F-GAMEMODS-001
+# @falsification_id: F_GAMEMODS_001
 """
 import pytest
 

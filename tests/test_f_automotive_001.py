@@ -2,7 +2,7 @@
 Falsification test: OTA firmware update rejected if signature invalid.
 ECU rejects unsigned firmware.
 
-# @falsification_id: F-AUTOMOTIVE-001
+# @falsification_id: F_AUTOMOTIVE_001
 """
 import hmac
 import hashlib

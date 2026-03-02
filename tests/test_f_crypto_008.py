@@ -2,7 +2,7 @@
 Falsification test: Protocol implementations satisfy formal specification.
 HMAC matches known test vectors from RFC 2104.
 
-# @falsification_id: F-CRYPTO-008
+# @falsification_id: F_CRYPTO_008
 """
 import hmac
 import hashlib

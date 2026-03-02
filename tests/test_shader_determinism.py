@@ -2,7 +2,7 @@
 Falsification test: Shader compilation is deterministic across runs.
 Same shader source produces identical SPIR-V IR on same driver.
 
-# @falsification_id: F-GRAPHICS-001
+# @falsification_id: F_GRAPHICS_001
 """
 import hashlib
 import pytest

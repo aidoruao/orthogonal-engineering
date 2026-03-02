@@ -2,7 +2,7 @@
 Falsification test: Positive train control stops train before red signal.
 PTC halts train before stop signal.
 
-# @falsification_id: F-RAIL-001
+# @falsification_id: F_RAIL_001
 """
 import pytest
 

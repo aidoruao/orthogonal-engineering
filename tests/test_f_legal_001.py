@@ -2,7 +2,7 @@
 Falsification test: Document hash unchanged after round-trip.
 sha256(output) == sha256(input).
 
-# @falsification_id: F-LEGAL-001
+# @falsification_id: F_LEGAL_001
 """
 import hashlib
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Weather API failure does not crash simulator.
 Simulator continues with cached data on API failure.
 
-# @falsification_id: F-AVIATION-003
+# @falsification_id: F_AVIATION_003
 """
 import pytest
 

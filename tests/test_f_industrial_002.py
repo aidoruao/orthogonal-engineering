@@ -2,7 +2,7 @@
 Falsification test: Emergency stop reaches safe state within 100ms.
 E-stop signal reaches all actuators within 100ms.
 
-# @falsification_id: F-INDUSTRIAL-002
+# @falsification_id: F_INDUSTRIAL_002
 """
 import time
 import pytest

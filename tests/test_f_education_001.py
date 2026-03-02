@@ -2,7 +2,7 @@
 Falsification test: Proctoring detects prohibited browser navigation.
 Tab-switch detected and flagged.
 
-# @falsification_id: F-EDUCATION-001
+# @falsification_id: F_EDUCATION_001
 """
 import pytest
 

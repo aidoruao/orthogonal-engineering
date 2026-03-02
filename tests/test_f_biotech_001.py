@@ -2,7 +2,7 @@
 Falsification test: DNA sequencing pipeline reproducible from identical raw reads.
 Identical FASTQ input produces identical VCF output.
 
-# @falsification_id: F-BIOTECH-001
+# @falsification_id: F_BIOTECH_001
 """
 import hashlib
 import pytest

@@ -2,7 +2,7 @@
 Falsification test: Document processing pipeline is idempotent.
 Processing same document twice gives same output.
 
-# @falsification_id: F-WHITECOLLAR-001
+# @falsification_id: F_WHITECOLLAR_001
 """
 import hashlib
 import pytest

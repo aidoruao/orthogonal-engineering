@@ -2,7 +2,7 @@
 Falsification test: Deterministic seed produces identical game state.
 Fixed RNG seed -> identical state.
 
-# @falsification_id: F-GAMING-001
+# @falsification_id: F_GAMING_001
 """
 import random
 import hashlib

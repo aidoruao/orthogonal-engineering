@@ -2,7 +2,7 @@
 Falsification test: Fleet GPS position accurate within 5m CEP.
 GPS error < 5m CEP.
 
-# @falsification_id: F-TRANSPORTATION-001
+# @falsification_id: F_TRANSPORTATION_001
 """
 import random
 import pytest

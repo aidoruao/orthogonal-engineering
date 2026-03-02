@@ -2,7 +2,7 @@
 Falsification test: LOTO cannot be overridden remotely.
 LOTO active rejects all remote commands.
 
-# @falsification_id: F-BLUECOLLAR-002
+# @falsification_id: F_BLUECOLLAR_002
 """
 import pytest
 

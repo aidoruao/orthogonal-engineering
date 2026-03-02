@@ -2,7 +2,7 @@
 Falsification test: Game save data is forward-compatible across versions.
 v1 save loads correctly in v2 engine.
 
-# @falsification_id: F-FUN-001
+# @falsification_id: F_FUN_001
 """
 import json
 import pytest

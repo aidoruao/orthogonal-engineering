@@ -2,7 +2,7 @@
 Falsification test: Encrypted data appears random.
 Ciphertext byte distribution is uniform.
 
-# @falsification_id: F-CRYPTO-005
+# @falsification_id: F_CRYPTO_005
 """
 import os
 import pytest

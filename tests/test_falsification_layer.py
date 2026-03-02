@@ -1,7 +1,7 @@
 """
 tests/test_falsification.py — Tests for Popperian Enforcement Layer
 
-Note: The existing tests/test_falsification.py covers F-001..F-005 assumptions.
+Note: The existing tests/test_falsification.py covers F_PLATFORM_001..F_PLATFORM_005 assumptions.
 This file adds tests for the new falsification/ package.
 
 Author: Orthogonal Engineering

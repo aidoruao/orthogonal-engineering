@@ -6,10 +6,10 @@
   },
   "cases": [
     {
-      "id": "CS-GRAPHICS-001",
+      "id": "CS_GRAPHICS_001",
       "title": "Godot #72364 — Non-deterministic shader compilation",
       "source": "https://github.com/godotengine/godot/issues/72364",
-      "domain": "D-GRAPHICS",
+      "domain": "D_GRAPHICS",
       "root_cause_signals": [
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
@@ -20,10 +20,10 @@
         "Hash-map iteration order does not affect output."
       ],
       "falsification_tests": [
-        "F-GRAPHICS-001"
+        "F_GRAPHICS_001"
       ],
       "ontological_issues": [
-        "OI-GRAPHICS-001"
+        "OI_GRAPHICS_001"
       ],
       "lessons": [
         "Replace hash-map iteration with sorted iteration for any pipeline that produces hashed output.",
@@ -31,14 +31,14 @@
       ],
       "methodology_components": [
         "UVM: witness layer must record shader binary hash",
-        "Falsification: F-GRAPHICS-001 re-compiles shader twice and asserts hash equality"
+        "Falsification: F_GRAPHICS_001 re-compiles shader twice and asserts hash equality"
       ]
     },
     {
-      "id": "CS-PROTO-001",
+      "id": "CS_PROTO_001",
       "title": "Shrimple #4 — Hardware-dependent atomic operations",
       "source": "https://github.com/shrimple-guild/shrimple/issues/4",
-      "domain": "D-PLATFORM",
+      "domain": "D_PLATFORM",
       "root_cause_signals": [
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
@@ -49,24 +49,24 @@
         "CI runner hardware is representative of production hardware."
       ],
       "falsification_tests": [
-        "F-PROTO-001"
+        "F_PROTO_001"
       ],
       "ontological_issues": [
-        "OI-PROTO-001"
+        "OI_PROTO_001"
       ],
       "lessons": [
         "Always specify explicit memory-ordering semantics (Acquire/Release, SeqCst) rather than relying on hardware defaults.",
         "CI must include ARMv7 or weak-memory model emulation for concurrent code."
       ],
       "methodology_components": [
-        "Falsification: F-PROTO-001 exercises atomics under simulated weak ordering"
+        "Falsification: F_PROTO_001 exercises atomics under simulated weak ordering"
       ]
     },
     {
-      "id": "CS-AVIATION-001",
+      "id": "CS_AVIATION_001",
       "title": "FlyByWire METAR/API outages",
       "source": "https://github.com/flybywiresim/a32nx",
-      "domain": "D-AVIATION",
+      "domain": "D_AVIATION",
       "root_cause_signals": [
         "RCS-EXTERNAL-DEP"
       ],
@@ -76,10 +76,10 @@
         "API latency is bounded by a safe timeout."
       ],
       "falsification_tests": [
-        "F-API-001"
+        "F_API_001"
       ],
       "ontological_issues": [
-        "OI-AVIATION-001"
+        "OI_AVIATION_001"
       ],
       "lessons": [
         "All external API calls must have circuit-breakers, exponential back-off, and cached fallback data.",
@@ -87,14 +87,14 @@
       ],
       "methodology_components": [
         "Axiomatic substrate: external API is an axiom whose truth must be continuously verified",
-        "F-API-001: assumption test that asserts API reachability with defined timeout"
+        "F_API_001: assumption test that asserts API reachability with defined timeout"
       ]
     },
     {
-      "id": "CS-CRYPTO-001",
+      "id": "CS_CRYPTO_001",
       "title": "PQClean timing leaks (Falcon, Kyber, etc.)",
       "source": "https://github.com/PQClean/PQClean",
-      "domain": "D-CRYPTO",
+      "domain": "D_CRYPTO",
       "root_cause_signals": [
         "RCS-TIMING"
       ],
@@ -104,10 +104,10 @@
         "Compiler optimisations do not introduce secret-dependent branches."
       ],
       "falsification_tests": [
-        "F-CRYPTO-001"
+        "F_CRYPTO_001"
       ],
       "ontological_issues": [
-        "OI-CRYPTO-001"
+        "OI_CRYPTO_001"
       ],
       "lessons": [
         "Use formally verified constant-time libraries (HACL*, Libsodium, valasm) for secret-dependent operations.",
@@ -115,14 +115,14 @@
       ],
       "methodology_components": [
         "Witness layer: execution trace must be constant-time over secret distribution",
-        "F-CRYPTO-001: dudect test asserts no timing leak with p < 0.001"
+        "F_CRYPTO_001: dudect test asserts no timing leak with p < 0.001"
       ]
     },
     {
-      "id": "CS-CRYPTO-002",
+      "id": "CS_CRYPTO_002",
       "title": "Clatter CVE-2026-24785 — Noise PSK validity rule",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-24785",
-      "domain": "D-CRYPTO",
+      "domain": "D_CRYPTO",
       "root_cause_signals": [
         "RCS-KEY-MGMT"
       ],
@@ -132,10 +132,10 @@
         "The Noise spec's validity rules are enforced by the application layer."
       ],
       "falsification_tests": [
-        "F-CRYPTO-002"
+        "F_CRYPTO_002"
       ],
       "ontological_issues": [
-        "OI-CRYPTO-002"
+        "OI_CRYPTO_002"
       ],
       "cve": "CVE-2026-24785",
       "lessons": [
@@ -144,14 +144,14 @@
       ],
       "methodology_components": [
         "Peano kernel: protocol validity rule is an axiomatic invariant",
-        "F-CRYPTO-002: asserts PSK=0^32 is rejected with a documented error"
+        "F_CRYPTO_002: asserts PSK=0^32 is rejected with a documented error"
       ]
     },
     {
-      "id": "CS-SPACE-001",
+      "id": "CS_SPACE_001",
       "title": "NASA cFS security posture — reliance on static analysis",
       "source": "https://cfs.gsfc.nasa.gov/",
-      "domain": "D-SPACE",
+      "domain": "D_SPACE",
       "root_cause_signals": [
         "RCS-STATIC-ONLY"
       ],
@@ -161,10 +161,10 @@
         "Flight hardware is an adversarially-safe environment."
       ],
       "falsification_tests": [
-        "F-SPACE-001"
+        "F_SPACE_001"
       ],
       "ontological_issues": [
-        "OI-SPACE-001"
+        "OI_SPACE_001"
       ],
       "lessons": [
         "Static analysis is a necessary but not sufficient security control.",
@@ -173,14 +173,14 @@
       ],
       "methodology_components": [
         "UVM: witness layer records runtime enforcement status",
-        "F-SPACE-001: asserts stack canaries are present in compiled binary"
+        "F_SPACE_001: asserts stack canaries are present in compiled binary"
       ]
     },
     {
-      "id": "CS-WEBSEC-001",
+      "id": "CS_WEBSEC_001",
       "title": "GitHub Enterprise Server XSS — CVE-2025-13744",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2025-13744",
-      "domain": "D-WEBSEC",
+      "domain": "D_WEBSEC",
       "root_cause_signals": [
         "RCS-SANITIZATION"
       ],
@@ -190,10 +190,10 @@
         "User-supplied content with Write permission cannot reach the HTML sink unsanitized."
       ],
       "falsification_tests": [
-        "F-XSS-001"
+        "F_XSS_001"
       ],
       "ontological_issues": [
-        "OI-WEBSEC-001"
+        "OI_WEBSEC_001"
       ],
       "cve": "CVE-2025-13744",
       "lessons": [
@@ -202,14 +202,14 @@
       ],
       "methodology_components": [
         "Witness layer: render output must be compared against allowlist",
-        "F-XSS-001: injects <script>alert(1)</script> and asserts output is escaped"
+        "F_XSS_001: injects <script>alert(1)</script> and asserts output is escaped"
       ]
     },
     {
-      "id": "CS-AXIOMS-001",
+      "id": "CS_AXIOMS_001",
       "title": "Peano arithmetic violations in natural-number implementations",
       "source": "https://github.com/aidoruao/orthogonal-engineering/blob/main/tests/test_peano_axioms.py",
-      "domain": "D-AXIOMS",
+      "domain": "D_AXIOMS",
       "root_cause_signals": [
         "RCS-ASSUMPTION",
         "RCS-STATIC-ONLY"
@@ -220,24 +220,24 @@
         "Zero is not the successor of any natural number."
       ],
       "falsification_tests": [
-        "F-AXIOMS-001"
+        "F_AXIOMS_001"
       ],
       "ontological_issues": [
-        "OI-AXIOMS-001"
+        "OI_AXIOMS_001"
       ],
       "lessons": [
         "Formalise all five Peano axioms as unit tests before building any arithmetic abstraction.",
         "Mathematical induction proofs in code must have a matching property-based test."
       ],
       "methodology_components": [
-        "Falsification: F-AXIOMS-001 asserts all five Peano axioms over the successor implementation."
+        "Falsification: F_AXIOMS_001 asserts all five Peano axioms over the successor implementation."
       ]
     },
     {
-      "id": "CS-SHARDING-001",
+      "id": "CS_SHARDING_001",
       "title": "Hash-randomization breaks deterministic shard assignment",
       "source": "https://docs.python.org/3/using/cmdline.html#envvar-PYTHONHASHSEED",
-      "domain": "D-SHARDING",
+      "domain": "D_SHARDING",
       "root_cause_signals": [
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
@@ -247,24 +247,24 @@
         "Shard assignment is deterministic: the same key always maps to the same shard."
       ],
       "falsification_tests": [
-        "F-SHARDING-001"
+        "F_SHARDING_001"
       ],
       "ontological_issues": [
-        "OI-SHARDING-001"
+        "OI_SHARDING_001"
       ],
       "lessons": [
         "Use SHA-256 or another stable hash for shard-key assignment, never Python's hash().",
         "Pin PYTHONHASHSEED=0 in test environments to catch hash-dependent ordering bugs early."
       ],
       "methodology_components": [
-        "Falsification: F-SHARDING-001 asserts shard determinism and balance across multiple runs."
+        "Falsification: F_SHARDING_001 asserts shard determinism and balance across multiple runs."
       ]
     },
     {
-      "id": "CS-FRACTALS-001",
+      "id": "CS_FRACTALS_001",
       "title": "Platform-dependent floating-point divergence in fractal generators",
       "source": "https://github.com/aidoruao/orthogonal-engineering/blob/main/tests/test_fractal_generator.py",
-      "domain": "D-FRACTALS",
+      "domain": "D_FRACTALS",
       "root_cause_signals": [
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
@@ -275,17 +275,61 @@
         "Self-similarity invariant: each sub-fragment is structurally isomorphic to the whole."
       ],
       "falsification_tests": [
-        "F-FRACTALS-001"
+        "F_FRACTALS_001"
       ],
       "ontological_issues": [
-        "OI-FRACTALS-001"
+        "OI_FRACTALS_001"
       ],
       "lessons": [
         "Use integer-coordinate fractal algorithms to eliminate floating-point platform divergence.",
         "Hash the full output buffer and compare across architectures in CI."
       ],
       "methodology_components": [
-        "Falsification: F-FRACTALS-001 asserts determinism and self-similarity of fractal output."
+        "Falsification: F_FRACTALS_001 asserts determinism and self-similarity of fractal output."
+      ]
+    },
+    {
+      "id": "CS_PLATFORM_001",
+      "title": "Cross-platform determinism substrate",
+      "source": "internal",
+      "domain": "D_PLATFORM",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM"
+      ],
+      "description": "Foundational platform determinism checks for hashing, arithmetic, paths, encoding, and endianness.",
+      "assumptions_violated": [
+        "Platform differences must not alter canonical hashes or encodings."
+      ],
+      "falsification_tests": [
+        "F_PLATFORM_001",
+        "F_PLATFORM_002",
+        "F_PLATFORM_003",
+        "F_PLATFORM_004",
+        "F_PLATFORM_005"
+      ],
+      "ontological_issues": [
+        "OI_PLATFORM_001",
+        "OI_PLATFORM_002",
+        "OI_PLATFORM_003",
+        "OI_PLATFORM_004",
+        "OI_PLATFORM_005",
+        "OI_PLATFORM_006",
+        "OI_PLATFORM_007",
+        "OI_PLATFORM_008",
+        "OI_PLATFORM_009",
+        "OI_PLATFORM_010",
+        "OI_PLATFORM_011",
+        "OI_PLATFORM_012",
+        "OI_PLATFORM_013",
+        "OI_PLATFORM_014",
+        "OI_PLATFORM_015",
+        "OI_PLATFORM_016"
+      ],
+      "lessons": [
+        "Normalize encodings, paths, and integer arithmetic across OS/runtimes."
+      ],
+      "methodology_components": [
+        "Foundational substrate for determinism validation."
       ]
     }
   ]

@@ -2,7 +2,7 @@
 Falsification test: Structural analysis model converges to reference.
 FEM result within 1% of reference.
 
-# @falsification_id: F-CONSTRUCTION-001
+# @falsification_id: F_CONSTRUCTION_001
 """
 import pytest
 

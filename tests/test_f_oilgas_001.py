@@ -2,7 +2,7 @@
 Falsification test: Pipeline pressure anomaly detected within 60 seconds.
 Leak detected within 60s.
 
-# @falsification_id: F-OILGAS-001
+# @falsification_id: F_OILGAS_001
 """
 import pytest
 

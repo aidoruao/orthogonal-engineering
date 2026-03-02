@@ -2,7 +2,7 @@
 Falsification test: ETL pipeline is idempotent.
 Running ETL twice produces same result.
 
-# @falsification_id: F-BORING-001
+# @falsification_id: F_BORING_001
 """
 import hashlib
 import pytest

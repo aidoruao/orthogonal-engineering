@@ -7,18 +7,18 @@ Each test is designed to *falsify* the assumption — i.e. to fail loudly and
 report the exact file, line, OS, and Python version if the assumption is wrong.
 
 Assumptions tested:
-  F-001  seed_bytes round-trips through hashlib.sha256 identically (no platform mutation)
-  F-002  Cross-platform int64 two's-complement arithmetic produces known vectors
-  F-003  pathlib.Path resolution is filesystem/path-separator independent
-  F-004  stdout/stderr encoding is UTF-8 (PYTHONIOENCODING=utf-8 is honoured)
-  F-005  Python's struct.pack('<q', …) encodes int64 in little-endian regardless of host
+  F_PLATFORM_001  seed_bytes round-trips through hashlib.sha256 identically (no platform mutation)
+  F_PLATFORM_002  Cross-platform int64 two's-complement arithmetic produces known vectors
+  F_PLATFORM_003  pathlib.Path resolution is filesystem/path-separator independent
+  F_PLATFORM_004  stdout/stderr encoding is UTF-8 (PYTHONIOENCODING=utf-8 is honoured)
+  F_PLATFORM_005  Python's struct.pack('<q', …) encodes int64 in little-endian regardless of host
 
 Falsification registry tags:
-  @falsification_id: F-001
-  @falsification_id: F-002
-  @falsification_id: F-003
-  @falsification_id: F-004
-  @falsification_id: F-005
+  @falsification_id: F_PLATFORM_001
+  @falsification_id: F_PLATFORM_002
+  @falsification_id: F_PLATFORM_003
+  @falsification_id: F_PLATFORM_004
+  @falsification_id: F_PLATFORM_005
 
 Author: Orthogonal Engineering
 PR: #28
@@ -52,12 +52,12 @@ def _violation(assumption_id: str, message: str) -> AssertionError:
 
 
 # ---------------------------------------------------------------------------
-# F-001  seed_bytes — sha256 is byte-for-byte identical across platforms
+# F_PLATFORM_001  seed_bytes — sha256 is byte-for-byte identical across platforms
 # ---------------------------------------------------------------------------
 
 def test_f001_seed_bytes_sha256_deterministic():
     """
-    F-001: hashlib.sha256 of a fixed byte string returns the same hex digest on
+    F_PLATFORM_001: hashlib.sha256 of a fixed byte string returns the same hex digest on
     every platform.  If this fails, the Python hashlib implementation is
     non-standard and weight generation is fundamentally broken.
     """
@@ -66,13 +66,13 @@ def test_f001_seed_bytes_sha256_deterministic():
     got = hashlib.sha256(seed).hexdigest()
     if got != expected:
         raise _violation(
-            "F-001",
+            "F_PLATFORM_001",
             f"sha256 mismatch: expected={expected} got={got}",
         )
 
 
 # ---------------------------------------------------------------------------
-# F-002  Cross-platform int64 arithmetic correctness
+# F_PLATFORM_002  Cross-platform int64 arithmetic correctness
 # ---------------------------------------------------------------------------
 
 # Known-good test vectors (seed_bytes → index → expected weight).
@@ -105,7 +105,7 @@ def _weight_at(seed_bytes: bytes, index: int) -> int:
 
 def test_f002_int64_arithmetic_vectors():
     """
-    F-002: int64 two's-complement arithmetic and struct.unpack produce known
+    F_PLATFORM_002: int64 two's-complement arithmetic and struct.unpack produce known
     values for fixed inputs.  Failure indicates platform-specific integer or
     byte-order behaviour.
     """
@@ -113,19 +113,19 @@ def test_f002_int64_arithmetic_vectors():
         got = _weight_at(seed_bytes, index)
         if got != expected:
             raise _violation(
-                "F-002",
+                "F_PLATFORM_002",
                 f"int64 vector mismatch for seed={seed_bytes!r} index={index}: "
                 f"expected={expected} got={got}",
             )
 
 
 # ---------------------------------------------------------------------------
-# F-003  Filesystem / path independence
+# F_PLATFORM_003  Filesystem / path independence
 # ---------------------------------------------------------------------------
 
 def test_f003_pathlib_path_independence():
     """
-    F-003: pathlib.Path correctly resolves relative paths and normalises
+    F_PLATFORM_003: pathlib.Path correctly resolves relative paths and normalises
     separators on all platforms.  Failure indicates a broken PATH assumption.
     """
     # A relative path constructed with forward slashes must resolve identically
@@ -136,23 +136,23 @@ def test_f003_pathlib_path_independence():
     parts = p.parts
     if len(parts) != 2:
         raise _violation(
-            "F-003",
+            "F_PLATFORM_003",
             f"Path parts unexpected: {parts} (expected ('ontology', 'pr26_ontological_issues.json'))",
         )
     if parts[0] != "ontology" or parts[1] != "pr26_ontological_issues.json":
         raise _violation(
-            "F-003",
+            "F_PLATFORM_003",
             f"Path parts mismatch: {parts}",
         )
 
 
 # ---------------------------------------------------------------------------
-# F-004  UTF-8 stdout/stderr encoding
+# F_PLATFORM_004  UTF-8 stdout/stderr encoding
 # ---------------------------------------------------------------------------
 
 def test_f004_stdout_utf8_encoding():
     """
-    F-004: stdout and stderr use UTF-8 encoding.  On Windows without
+    F_PLATFORM_004: stdout and stderr use UTF-8 encoding.  On Windows without
     PYTHONIOENCODING=utf-8 this defaults to cp1252, which would silently mangle
     non-ASCII characters in CI logs.
     """
@@ -163,7 +163,7 @@ def test_f004_stdout_utf8_encoding():
     for name, enc in [("stdout", stdout_enc), ("stderr", stderr_enc)]:
         if enc.lower().replace("-", "") not in ("utf8", "utf_8"):
             raise _violation(
-                "F-004",
+                "F_PLATFORM_004",
                 f"{name} encoding is '{enc}', expected 'utf-8'. "
                 "Set PYTHONIOENCODING=utf-8 in CI env.",
             )
@@ -174,12 +174,12 @@ def test_f004_stdout_utf8_encoding():
 
 
 # ---------------------------------------------------------------------------
-# F-005  struct.pack little-endian int64
+# F_PLATFORM_005  struct.pack little-endian int64
 # ---------------------------------------------------------------------------
 
 def test_f005_struct_pack_little_endian():
     """
-    F-005: struct.pack('<q', value) encodes int64 in little-endian byte order
+    F_PLATFORM_005: struct.pack('<q', value) encodes int64 in little-endian byte order
     regardless of host endianness.  This is required for cross-platform Merkle
     root agreement.
     """
@@ -194,7 +194,7 @@ def test_f005_struct_pack_little_endian():
         got = struct.pack("<q", value)
         if got != expected_bytes:
             raise _violation(
-                "F-005",
+                "F_PLATFORM_005",
                 f"struct.pack('<q', {value}) = {got!r}, expected {expected_bytes!r}",
             )
 

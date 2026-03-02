@@ -2,7 +2,7 @@
 Falsification test: Watchdog timer resets hung tasks.
 Hung task triggers watchdog within timeout.
 
-# @falsification_id: F-SPACE-003
+# @falsification_id: F_SPACE_003
 """
 import threading
 import time

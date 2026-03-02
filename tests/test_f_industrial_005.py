@@ -2,7 +2,7 @@
 Falsification test: Safety interlock cannot be bypassed by software.
 Interlock open blocks all actuator commands.
 
-# @falsification_id: F-INDUSTRIAL-005
+# @falsification_id: F_INDUSTRIAL_005
 """
 import pytest
 

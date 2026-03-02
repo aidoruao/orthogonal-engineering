@@ -2,7 +2,7 @@
 Falsification test: IFF system does not misclassify friendly as hostile.
 Friendly IFF codes are never classified as hostile.
 
-# @falsification_id: F-MILITARY-001
+# @falsification_id: F_MILITARY_001
 """
 import pytest
 

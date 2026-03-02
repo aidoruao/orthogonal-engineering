@@ -49,7 +49,7 @@ DOMAIN_SIGNATURES = {
     "TREE-001": [r"binary_tree", r"BinaryNode", r"tree_", r"root\."],
     "INDUCT-001": [r"induction", r"base_case", r"inductive_step"],
     "INVAR-001": [r"invariant", r"INVAR-", r"preserve_invariant"],
-    "FALSIF-001": [r"falsification", r"test_falsification", r"designed_to_fail"],
+    "FALSIF_PLATFORM_001": [r"falsification", r"test_falsification", r"designed_to_fail"],
     "ATTEST-001": [r"attestation", r"witness", r"signature", r"verify_attestation"],
     "ONTOL-001": [r"ontological", r"OI-", r"ontology"],
     "CORRESP-001": [r"correspondence", r"merkle_root.*==", r"truth test"],
