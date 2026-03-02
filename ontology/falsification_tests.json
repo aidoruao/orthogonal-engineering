@@ -15,7 +15,9 @@
       "strategy": "Hash a fixed seed; compare against a canonical expected value.",
       "status": "active",
       "test_file": "tests/test_falsification.py::test_f001_seed_bytes_sha256_deterministic",
-      "ontological_issues": ["OI-002"],
+      "ontological_issues": [
+        "OI-002"
+      ],
       "case_studies": []
     },
     {
@@ -27,7 +29,9 @@
       "strategy": "Pre-compute known (seed, index, expected_int64) triples; assert equality.",
       "status": "active",
       "test_file": "tests/test_falsification.py::test_f002_int64_arithmetic_vectors",
-      "ontological_issues": ["OI-003"],
+      "ontological_issues": [
+        "OI-003"
+      ],
       "case_studies": []
     },
     {
@@ -39,7 +43,9 @@
       "strategy": "Construct a Path with forward slashes; assert parts match expected tuple.",
       "status": "active",
       "test_file": "tests/test_falsification.py::test_f003_pathlib_path_independence",
-      "ontological_issues": ["OI-004"],
+      "ontological_issues": [
+        "OI-004"
+      ],
       "case_studies": []
     },
     {
@@ -51,7 +57,9 @@
       "strategy": "Inspect sys.stdout.encoding; assert UTF-8.",
       "status": "active",
       "test_file": "tests/test_falsification.py::test_f004_stdout_utf8_encoding",
-      "ontological_issues": ["OI-002"],
+      "ontological_issues": [
+        "OI-002"
+      ],
       "case_studies": []
     },
     {
@@ -63,7 +71,9 @@
       "strategy": "Pack known values; compare against expected byte strings.",
       "status": "active",
       "test_file": "tests/test_falsification.py::test_f005_struct_pack_little_endian",
-      "ontological_issues": ["OI-003"],
+      "ontological_issues": [
+        "OI-003"
+      ],
       "case_studies": []
     },
     {
@@ -75,8 +85,12 @@
       "strategy": "Compile a canonical test shader twice in the same process; assert sha256(output1) == sha256(output2). Also compare across backends (Vulkan/Metal/D3D via cross-compilation).",
       "status": "placeholder",
       "test_file": "TODO: tests/test_shader_determinism.py::test_f_graphics_001_shader_determinism",
-      "ontological_issues": ["OI-GRAPHICS-001"],
-      "case_studies": ["CS-GRAPHICS-001"],
+      "ontological_issues": [
+        "OI-GRAPHICS-001"
+      ],
+      "case_studies": [
+        "CS-GRAPHICS-001"
+      ],
       "implementation_notes": "Use glslang or spirv-cross in subprocess; hash stdout bytes. Requires GPU or offline compiler tool."
     },
     {
@@ -88,8 +102,12 @@
       "strategy": "Run concurrent increment/read test under TSAN (ThreadSanitizer) and/or C11 weak-ordering emulator; assert zero races.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_atomics.py::test_f_proto_001_atomic_consistency",
-      "ontological_issues": ["OI-PROTO-001"],
-      "case_studies": ["CS-PROTO-001"],
+      "ontological_issues": [
+        "OI-PROTO-001"
+      ],
+      "case_studies": [
+        "CS-PROTO-001"
+      ],
       "implementation_notes": "Python: use threading + events; C extension: compile with -fsanitize=thread."
     },
     {
@@ -101,8 +119,12 @@
       "strategy": "Probe the API endpoint with a small test payload; assert response within timeout. Skipped in offline/air-gapped CI.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_external_api.py::test_f_api_001_api_reachability",
-      "ontological_issues": ["OI-AVIATION-001"],
-      "case_studies": ["CS-AVIATION-001"],
+      "ontological_issues": [
+        "OI-AVIATION-001"
+      ],
+      "case_studies": [
+        "CS-AVIATION-001"
+      ],
       "implementation_notes": "Use requests with timeout parameter. Mark as @pytest.mark.network and skip unless NETWORK_TESTS=1 env var is set."
     },
     {
@@ -114,8 +136,12 @@
       "strategy": "Run dudect over 1M samples of the target function with random secrets; assert Welch's t < 5.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_constant_time.py::test_f_crypto_001_constant_time",
-      "ontological_issues": ["OI-CRYPTO-001"],
-      "case_studies": ["CS-CRYPTO-001"],
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": [
+        "CS-CRYPTO-001"
+      ],
       "implementation_notes": "Requires ctgrind or Python ctypes wrapper around dudect. Computationally expensive; run on dedicated CI job."
     },
     {
@@ -127,8 +153,12 @@
       "strategy": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_noise_psk.py::test_f_crypto_002_zero_psk_rejected",
-      "ontological_issues": ["OI-CRYPTO-002"],
-      "case_studies": ["CS-CRYPTO-002"],
+      "ontological_issues": [
+        "OI-CRYPTO-002"
+      ],
+      "case_studies": [
+        "CS-CRYPTO-002"
+      ],
       "cve_reference": "CVE-2026-24785"
     },
     {
@@ -140,8 +170,12 @@
       "strategy": "Run readelf -s on the target binary; assert __stack_chk_fail is present.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_binary_hardening.py::test_f_space_001_stack_canaries",
-      "ontological_issues": ["OI-SPACE-001"],
-      "case_studies": ["CS-SPACE-001"]
+      "ontological_issues": [
+        "OI-SPACE-001"
+      ],
+      "case_studies": [
+        "CS-SPACE-001"
+      ]
     },
     {
       "id": "F-XSS-001",
@@ -152,8 +186,12 @@
       "strategy": "Submit the canonical payload through the rendering pipeline; assert the output contains no literal <script> tag.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_xss_sanitization.py::test_f_xss_001_script_tag_escaped",
-      "ontological_issues": ["OI-WEBSEC-001"],
-      "case_studies": ["CS-WEBSEC-001"],
+      "ontological_issues": [
+        "OI-WEBSEC-001"
+      ],
+      "case_studies": [
+        "CS-WEBSEC-001"
+      ],
       "cve_reference": "CVE-2025-13744"
     },
     {
@@ -165,7 +203,9 @@
       "strategy": "Scan game directory for known ASI loader filenames (dinput8.dll, dsound.dll, etc.); assert at most one is present.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_mod_integrity.py::test_f_gamemods_001_loader_exclusivity",
-      "ontological_issues": ["OI-GAMEMODS-001"],
+      "ontological_issues": [
+        "OI-GAMEMODS-001"
+      ],
       "case_studies": []
     },
     {
@@ -177,7 +217,9 @@
       "strategy": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_dosimetry.py::test_f_medical_001_dosimetry_tolerance",
-      "ontological_issues": ["OI-MEDICAL-001"],
+      "ontological_issues": [
+        "OI-MEDICAL-001"
+      ],
       "case_studies": []
     },
     {
@@ -189,7 +231,9 @@
       "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) ≤ deadline_ms.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_plc_timing.py::test_f_industrial_001_cycle_time",
-      "ontological_issues": ["OI-INDUSTRIAL-001"],
+      "ontological_issues": [
+        "OI-INDUSTRIAL-001"
+      ],
       "case_studies": []
     },
     {
@@ -201,7 +245,9 @@
       "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency ≤ bound.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_safety_alerts.py::test_f_bluecollar_001_alert_latency",
-      "ontological_issues": ["OI-BLUECOLLAR-001"],
+      "ontological_issues": [
+        "OI-BLUECOLLAR-001"
+      ],
       "case_studies": []
     },
     {
@@ -213,7 +259,9 @@
       "strategy": "Run the pipeline twice with identical input; assert sha256(output1) == sha256(output2).",
       "status": "placeholder",
       "test_file": "TODO: tests/test_doc_pipeline.py::test_f_whitecollar_001_idempotency",
-      "ontological_issues": ["OI-WHITECOLLAR-001"],
+      "ontological_issues": [
+        "OI-WHITECOLLAR-001"
+      ],
       "case_studies": []
     },
     {
@@ -225,7 +273,9 @@
       "strategy": "Replay a recorded market-event sequence twice; assert identical fill records.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_orderbook.py::test_f_luxury_001_orderbook_determinism",
-      "ontological_issues": ["OI-LUXURY-001"],
+      "ontological_issues": [
+        "OI-LUXURY-001"
+      ],
       "case_studies": []
     },
     {
@@ -237,7 +287,9 @@
       "strategy": "Simulate network partition; assert all messages are delivered exactly once after partition heals.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_dispatch_partition.py::test_f_emergency_001_partition_tolerance",
-      "ontological_issues": ["OI-EMERGENCY-001"],
+      "ontological_issues": [
+        "OI-EMERGENCY-001"
+      ],
       "case_studies": []
     },
     {
@@ -249,7 +301,9 @@
       "strategy": "Assert presence of a signed SIL certificate in the ontology evidence store.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_sil_evidence.py::test_f_necessity_001_sil_evidence_present",
-      "ontological_issues": ["OI-NECESSITY-001"],
+      "ontological_issues": [
+        "OI-NECESSITY-001"
+      ],
       "case_studies": []
     },
     {
@@ -261,7 +315,9 @@
       "strategy": "Run ETL twice; assert row counts and checksums are identical.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_etl_idempotency.py::test_f_boring_001_etl_idempotency",
-      "ontological_issues": ["OI-BORING-001"],
+      "ontological_issues": [
+        "OI-BORING-001"
+      ],
       "case_studies": []
     },
     {
@@ -273,7 +329,9 @@
       "strategy": "Load a canonical save file from version N in version N+1; assert no error and expected state.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_save_compat.py::test_f_fun_001_save_forward_compat",
-      "ontological_issues": ["OI-FUN-001"],
+      "ontological_issues": [
+        "OI-FUN-001"
+      ],
       "case_studies": []
     },
     {
@@ -285,7 +343,9 @@
       "strategy": "Run generator twice with fixed seed; assert sha256(output1) == sha256(output2).",
       "status": "placeholder",
       "test_file": "TODO: tests/test_generative_reproducibility.py::test_f_creative_001_seed_reproducibility",
-      "ontological_issues": ["OI-CREATIVE-001"],
+      "ontological_issues": [
+        "OI-CREATIVE-001"
+      ],
       "case_studies": []
     },
     {
@@ -297,7 +357,875 @@
       "strategy": "Compress and decompress a canonical dataset; assert sha256 equality.",
       "status": "placeholder",
       "test_file": "TODO: tests/test_compression.py::test_f_noncreative_001_lossless_roundtrip",
-      "ontological_issues": ["OI-NONCREATIVE-001"],
+      "ontological_issues": [
+        "OI-NONCREATIVE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-INDUSTRIAL-002",
+      "title": "Emergency stop reaches safe state within 100ms",
+      "domain": "D-INDUSTRIAL",
+      "assumption": "E-stop signal propagates to all actuators within 100ms.",
+      "falsifying_observation": "Any actuator continues operation beyond the 100ms deadline.",
+      "strategy": "Inject e-stop signal; measure time to last actuator deactivation; assert <= 100ms.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_industrial_002.py",
+      "ontological_issues": [
+        "OI-INDUSTRIAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-INDUSTRIAL-003",
+      "title": "PLC program scan does not exceed watchdog timer",
+      "domain": "D-INDUSTRIAL",
+      "assumption": "Full PLC program scan completes before watchdog expiration.",
+      "falsifying_observation": "Watchdog timer expires, triggering unspecified behavior.",
+      "strategy": "Instrument scan time; assert max_scan_time < watchdog_period * 0.95.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_industrial_003.py",
+      "ontological_issues": [
+        "OI-INDUSTRIAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-INDUSTRIAL-004",
+      "title": "Redundant sensors agree within tolerance",
+      "domain": "D-INDUSTRIAL",
+      "assumption": "Three redundant sensors agree within +/-0.5% of full scale.",
+      "falsifying_observation": "Sensor readings diverge beyond +/-0.5% tolerance.",
+      "strategy": "Continuously compare sensor triplets; assert max - min <= 0.005 * full_scale.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_industrial_004.py",
+      "ontological_issues": [
+        "OI-INDUSTRIAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-INDUSTRIAL-005",
+      "title": "Safety interlock cannot be bypassed by software",
+      "domain": "D-INDUSTRIAL",
+      "assumption": "Physical safety interlocks override all software commands.",
+      "falsifying_observation": "Software can actuate machinery while a hardware interlock is open.",
+      "strategy": "Attempt all control commands with interlock open; assert no actuation occurs.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_industrial_005.py",
+      "ontological_issues": [
+        "OI-INDUSTRIAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-BLUECOLLAR-002",
+      "title": "LOTO cannot be overridden remotely",
+      "domain": "D-BLUECOLLAR",
+      "assumption": "When LOTO is active, all remote commands are rejected.",
+      "falsifying_observation": "Any remote command executes despite LOTO being active.",
+      "strategy": "Activate LOTO; send every command type via remote interface; assert all rejected.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_bluecollar_002.py",
+      "ontological_issues": [
+        "OI-BLUECOLLAR-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-BLUECOLLAR-003",
+      "title": "Confined space atmospheric monitoring prevents unsafe entry",
+      "domain": "D-BLUECOLLAR",
+      "assumption": "O2, H2S, CO, LEL sensors are checked and cleared before door unlocks.",
+      "falsifying_observation": "Door unlocks with unsafe atmospheric conditions present.",
+      "strategy": "Simulate hazardous atmosphere; attempt door open; assert door remains locked.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_bluecollar_003.py",
+      "ontological_issues": [
+        "OI-BLUECOLLAR-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-BLUECOLLAR-004",
+      "title": "Heavy equipment proximity detection halts within stopping distance",
+      "domain": "D-BLUECOLLAR",
+      "assumption": "Worker entering the danger zone triggers an immediate machine halt.",
+      "falsifying_observation": "Machine continues past the specified stopping distance after detection.",
+      "strategy": "Move test mannequin into danger zone; measure stop distance; assert <= spec.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_bluecollar_004.py",
+      "ontological_issues": [
+        "OI-BLUECOLLAR-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MEDICAL-002",
+      "title": "Implantable device rejects unauthorized commands",
+      "domain": "D-MEDICAL",
+      "assumption": "Only authenticated clinicians can reprogram the implantable device.",
+      "falsifying_observation": "Attacker can change device settings via replay or spoofing attack.",
+      "strategy": "Capture legitimate programming traffic; replay it; assert device rejects replayed commands.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_medical_002.py",
+      "ontological_issues": [
+        "OI-MEDICAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MEDICAL-003",
+      "title": "Infusion pump delivers within +/-5% of programmed rate",
+      "domain": "D-MEDICAL",
+      "assumption": "Flow rate accuracy is maintained within +/-5% across all operating conditions.",
+      "falsifying_observation": "Delivered volume deviates beyond +/-5% of expected over 24 hours.",
+      "strategy": "Run 24-hour delivery test with gravimetric measurement; assert error <= 5%.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_medical_003.py",
+      "ontological_issues": [
+        "OI-MEDICAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MEDICAL-004",
+      "title": "Ventilator alarm activates within 5 seconds of patient disconnect",
+      "domain": "D-MEDICAL",
+      "assumption": "Patient disconnect is detected and alarmed within 5 seconds.",
+      "falsifying_observation": "Alarm is delayed beyond 5s or never activates after disconnect.",
+      "strategy": "Simulate patient circuit disconnect; measure time to alarm activation; assert <= 5s.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_medical_004.py",
+      "ontological_issues": [
+        "OI-MEDICAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MEDICAL-005",
+      "title": "AI diagnostic tool never suggests treatment outside clinical guidelines",
+      "domain": "D-MEDICAL",
+      "assumption": "All AI recommendations are within approved clinical pathways.",
+      "falsifying_observation": "AI suggests a contraindicated or unapproved treatment.",
+      "strategy": "Run model against 10,000 edge-case scenarios; assert all outputs within approved treatment set.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_medical_005.py",
+      "ontological_issues": [
+        "OI-MEDICAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-GAMING-001",
+      "title": "Deterministic seed produces identical game state across runs",
+      "domain": "D-GAMING",
+      "assumption": "A fixed RNG seed produces an identical game state on every run.",
+      "falsifying_observation": "Two runs with the same seed produce different states.",
+      "strategy": "Initialize game with fixed seed; record state hash after N ticks; repeat; assert hashes equal.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_gaming_001.py",
+      "ontological_issues": [
+        "OI-GAMING-001"
+      ],
+      "case_studies": [
+        "CS-GRAPHICS-001"
+      ]
+    },
+    {
+      "id": "F-GAMING-002",
+      "title": "Anti-cheat detects memory value manipulation",
+      "domain": "D-GAMING",
+      "assumption": "Anti-cheat prevents external processes from modifying protected game memory.",
+      "falsifying_observation": "External process modifies player stats without detection.",
+      "strategy": "Simulate external memory write to monitored address; assert anti-cheat flags the session.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_gaming_002.py",
+      "ontological_issues": [
+        "OI-GAMING-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-GAMING-003",
+      "title": "Game state identical across different hardware platforms",
+      "domain": "D-GAMING",
+      "assumption": "Save files produce identical game state on all hardware platforms.",
+      "falsifying_observation": "Loading same save on AMD vs NVIDIA produces different game outcomes.",
+      "strategy": "Load identical save on all supported platforms; compare serialized memory-state hashes.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_gaming_003.py",
+      "ontological_issues": [
+        "OI-GAMING-001"
+      ],
+      "case_studies": [
+        "CS-GRAPHICS-001"
+      ]
+    },
+    {
+      "id": "F-GAMING-004",
+      "title": "Network packets cannot trigger memory corruption",
+      "domain": "D-GAMING",
+      "assumption": "All network packet parsing is bounds-checked and cannot cause out-of-bounds writes.",
+      "falsifying_observation": "A crafted packet causes a crash or achieves remote code execution.",
+      "strategy": "Fuzz the network parser with malformed and oversized packets; assert no crashes (use ASan).",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_gaming_004.py",
+      "ontological_issues": [
+        "OI-GAMING-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-GAMING-005",
+      "title": "Mod system cannot execute arbitrary code outside sandbox",
+      "domain": "D-GAMING",
+      "assumption": "Mods are confined to game resources and cannot access system files.",
+      "falsifying_observation": "A mod reads or writes files outside the game installation directory.",
+      "strategy": "Run test mod with filesystem monitoring; assert no unauthorized file access.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_gaming_005.py",
+      "ontological_issues": [
+        "OI-GAMING-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-AVIATION-001",
+      "title": "Flight model produces identical results across platforms",
+      "domain": "D-AVIATION",
+      "assumption": "Aerodynamics calculations are deterministic: same inputs give same outputs on all OSes.",
+      "falsifying_observation": "Same flight-model inputs produce different outputs on different operating systems.",
+      "strategy": "Run flight model test suite on Linux, Windows, macOS; compare all outputs with sha256.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_aviation_001.py",
+      "ontological_issues": [
+        "OI-AVIATION-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-AVIATION-002",
+      "title": "ATC communication handles malformed messages gracefully",
+      "domain": "D-AVIATION",
+      "assumption": "Invalid or malformed ATC messages are ignored without crashing the system.",
+      "falsifying_observation": "A malformed packet causes disconnection or process crash.",
+      "strategy": "Send malformed ACARS/VDLM2 messages to ATC parser; assert connection remains alive.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_aviation_002.py",
+      "ontological_issues": [
+        "OI-AVIATION-001"
+      ],
+      "case_studies": [
+        "CS-AVIATION-001"
+      ]
+    },
+    {
+      "id": "F-AVIATION-003",
+      "title": "Weather API failure does not crash simulator",
+      "domain": "D-AVIATION",
+      "assumption": "Simulator continues with last-known weather data when METAR API is unavailable.",
+      "falsifying_observation": "Simulator crashes or freezes when weather endpoint returns error.",
+      "strategy": "Block weather API at network level; verify simulator continues with cached data for >= 10 minutes.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_aviation_003.py",
+      "ontological_issues": [
+        "OI-AVIATION-001"
+      ],
+      "case_studies": [
+        "CS-AVIATION-001"
+      ]
+    },
+    {
+      "id": "F-CRYPTO-003",
+      "title": "KDF produces identical output for identical inputs",
+      "domain": "D-CRYPTO",
+      "assumption": "KDF (HKDF, PBKDF2, Argon2) with identical inputs always produces identical output.",
+      "falsifying_observation": "KDF produces different output for same (key, salt, info) triple.",
+      "strategy": "Run KDF 1000 times with fixed inputs; assert all outputs are byte-identical.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crypto_003.py",
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRYPTO-004",
+      "title": "Signature verification rejects tampered messages",
+      "domain": "D-CRYPTO",
+      "assumption": "Any modification to a signed message causes signature verification to fail.",
+      "falsifying_observation": "A tampered message passes signature verification.",
+      "strategy": "Sign a message; flip one bit; assert verification fails.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crypto_004.py",
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRYPTO-005",
+      "title": "Encrypted data is indistinguishable from random bytes",
+      "domain": "D-CRYPTO",
+      "assumption": "Ciphertext passes a randomness test indistinguishable from random (NIST SP 800-22).",
+      "falsifying_observation": "Ciphertext fails the NIST frequency or block-frequency test.",
+      "strategy": "Encrypt 1MB of fixed data; run NIST SP 800-22 frequency tests; assert p-values > 0.01.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crypto_005.py",
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRYPTO-006",
+      "title": "All cryptographic operations are constant-time",
+      "domain": "D-CRYPTO",
+      "assumption": "No secret-dependent branches or memory accesses exist in crypto primitives.",
+      "falsifying_observation": "Timing analysis (dudect/ctgrind) reveals secret-dependent variation.",
+      "strategy": "Run dudect over >= 1M samples on all crypto primitives; assert Welch t-statistic < 5.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crypto_006.py",
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": [
+        "CS-CRYPTO-001"
+      ]
+    },
+    {
+      "id": "F-CRYPTO-007",
+      "title": "Key generation is deterministic from seed",
+      "domain": "D-CRYPTO",
+      "assumption": "Same seed always produces the same key pair.",
+      "falsifying_observation": "Different key pairs generated from the same seed.",
+      "strategy": "Generate key pairs from fixed seed 1000 times; assert all byte-identical.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crypto_007.py",
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRYPTO-008",
+      "title": "Protocol implementations satisfy formal specification",
+      "domain": "D-CRYPTO",
+      "assumption": "Implementation matches the RFC or formal standard in all specified behaviors.",
+      "falsifying_observation": "Implementation behavior differs from formal model checker expected output.",
+      "strategy": "Run implementation against ProVerif or TLA+ formal model; assert all traces conformant.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crypto_008.py",
+      "ontological_issues": [
+        "OI-CRYPTO-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-SPACE-002",
+      "title": "Software continues correctly after single-bit memory flip",
+      "domain": "D-SPACE",
+      "assumption": "ECC memory or software redundancy corrects single-bit errors without crash or data corruption.",
+      "falsifying_observation": "A single injected bit-flip causes crash or incorrect computation.",
+      "strategy": "Inject single-bit flips into key memory regions; verify recovery and correct output.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_space_002.py",
+      "ontological_issues": [
+        "OI-SPACE-001"
+      ],
+      "case_studies": [
+        "CS-SPACE-001"
+      ]
+    },
+    {
+      "id": "F-SPACE-003",
+      "title": "Watchdog timer resets hung tasks",
+      "domain": "D-SPACE",
+      "assumption": "A hung task triggers the watchdog and causes a controlled reset.",
+      "falsifying_observation": "A task hangs indefinitely with no watchdog response.",
+      "strategy": "Force test task to hang; verify watchdog reset occurs within specified timeout.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_space_003.py",
+      "ontological_issues": [
+        "OI-SPACE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-SPACE-004",
+      "title": "Telemetry includes cryptographic proof of integrity",
+      "domain": "D-SPACE",
+      "assumption": "All downlinked telemetry data includes a hash chain enabling tamper detection.",
+      "falsifying_observation": "Telemetry data can be modified in transit without detection.",
+      "strategy": "Modify one byte of captured telemetry; replay to witness layer; assert tampering detected.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_space_004.py",
+      "ontological_issues": [
+        "OI-SPACE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-001",
+      "title": "Fly detection accuracy >= 95% on test image set",
+      "domain": "D-CRUSADER",
+      "assumption": "The Crusader vision system detects flies with >= 95% accuracy.",
+      "falsifying_observation": "Detection rate falls below 95% on the 1000-image test set.",
+      "strategy": "Run detector on 1000 labeled test images; assert detected/total >= 0.95.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_001.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-002",
+      "title": "Prevention rate >= 99% in live fly release test",
+      "domain": "D-CRUSADER",
+      "assumption": "The Crusader system eliminates >= 99% of released flies within 1 hour.",
+      "falsifying_observation": "More than 1 fly survives after 1 hour (out of 100 released).",
+      "strategy": "Release 100 flies; count survivors after 1 hour; assert survivors <= 1.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_002.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-003",
+      "title": "Detection-to-warfare activation latency < 100ms",
+      "domain": "D-CRUSADER",
+      "assumption": "Time from fly detection to warfare subsystem activation is < 100ms.",
+      "falsifying_observation": "Any detection event takes >= 100ms to activate warfare.",
+      "strategy": "Trigger fly detection events; measure time to warfare activation; assert max < 100ms.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_003.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-004",
+      "title": "False positive rate < 0.1%",
+      "domain": "D-CRUSADER",
+      "assumption": "Non-fly triggers activate the warfare system in < 0.1% of cases.",
+      "falsifying_observation": "More than 10 false activations occur in 10,000 non-fly trigger events.",
+      "strategy": "Present 10,000 non-fly stimuli; count warfare activations; assert activations <= 10.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_004.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-005",
+      "title": "UV output is zero when door is open",
+      "domain": "D-CRUSADER",
+      "assumption": "The UV safety interlock cuts UV power whenever the unit door is open.",
+      "falsifying_observation": "UV output is non-zero with the door open.",
+      "strategy": "Open unit door; measure UV irradiance; assert measured value = 0 uW/cm2.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_005.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-006",
+      "title": "No spores detected outside unit after deployment",
+      "domain": "D-CRUSADER",
+      "assumption": "Fungal spore deployment is fully contained within the unit.",
+      "falsifying_observation": "Any spore colony (CFU > 0) found in air samples outside the unit.",
+      "strategy": "Deploy spores; sample air at 6 external positions for 30 minutes; assert all < 1 CFU/m3.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_006.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-007",
+      "title": "Internal temperature maintained 34-38 degrees F continuously",
+      "domain": "D-CRUSADER",
+      "assumption": "The refrigeration system maintains 34-38 degrees F at all times.",
+      "falsifying_observation": "Any temperature reading outside 34-38 F over a 30-day log.",
+      "strategy": "Log temperature at 1-minute intervals for 30 days; assert all readings in [34, 38] F.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_007.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-008",
+      "title": "All actions logged with unbroken hash chain",
+      "domain": "D-CRUSADER",
+      "assumption": "Every Crusader action is logged in the witness layer with an unbroken SHA-256 hash chain.",
+      "falsifying_observation": "Any gap or broken link in the hash chain after a sequence of actions.",
+      "strategy": "Perform 1000 actions; verify hash chain continuity; assert no gaps.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_008.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CRUSADER-009",
+      "title": "Compliance reports include tamper-evident hash",
+      "domain": "D-CRUSADER",
+      "assumption": "Generated compliance reports include a verifiable SHA-256 hash of their content.",
+      "falsifying_observation": "A modified report passes hash verification.",
+      "strategy": "Generate report; modify one byte; re-verify; assert verification fails.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_crusader_009.py",
+      "ontological_issues": [
+        "OI-CRUSADER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-AGRICULTURE-001",
+      "title": "Irrigation delivery within +/-10% of setpoint",
+      "domain": "D-AGRICULTURE",
+      "assumption": "Irrigation system delivers water to within +/-10% of the sensor-driven setpoint.",
+      "falsifying_observation": "Delivered volume deviates beyond +/-10%.",
+      "strategy": "Compare commanded vs measured soil moisture after 24h; assert error <= 10%.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_agriculture_001.py",
+      "ontological_issues": [
+        "OI-AGRICULTURE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-TRANSPORTATION-001",
+      "title": "Fleet GPS position accurate within 5m CEP",
+      "domain": "D-TRANSPORTATION",
+      "assumption": "Fleet GPS position is accurate within 5 meters CEP.",
+      "falsifying_observation": "Position error exceeds 5m CEP.",
+      "strategy": "Compare reported position against ground truth; assert CEP <= 5m.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_transportation_001.py",
+      "ontological_issues": [
+        "OI-TRANSPORTATION-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-ENERGY-001",
+      "title": "Smart grid demand-response actioned within 30 seconds",
+      "domain": "D-ENERGY",
+      "assumption": "Demand-response events are actioned within 30s of receipt.",
+      "falsifying_observation": "Any DR event takes > 30s to action.",
+      "strategy": "Send DR event; measure time to load shed; assert <= 30s.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_energy_001.py",
+      "ontological_issues": [
+        "OI-ENERGY-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-WATER-001",
+      "title": "Water quality sensor alerts before threshold breach",
+      "domain": "D-WATER",
+      "assumption": "Turbidity/chlorine sensors alert before violation of safe limits.",
+      "falsifying_observation": "Alert fires after or not at all for out-of-spec reading.",
+      "strategy": "Inject out-of-spec reading; verify alert fires before limit crossed.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_water_001.py",
+      "ontological_issues": [
+        "OI-WATER-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-COMMUNICATIONS-001",
+      "title": "Message delivery meets SLA under peak load",
+      "domain": "D-COMMUNICATIONS",
+      "assumption": "P99 message latency <= 200ms under 10x normal load.",
+      "falsifying_observation": "P99 latency exceeds 200ms under load test.",
+      "strategy": "Load test at 10x baseline; measure P99 latency; assert <= 200ms.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_communications_001.py",
+      "ontological_issues": [
+        "OI-COMMUNICATIONS-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-FINANCIAL-001",
+      "title": "Double-spend rejected by settlement system",
+      "domain": "D-FINANCIAL",
+      "assumption": "The settlement system rejects any attempt to spend the same funds twice.",
+      "falsifying_observation": "A double-spend transaction is accepted.",
+      "strategy": "Submit identical transaction twice concurrently; assert only one settled.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_financial_001.py",
+      "ontological_issues": [
+        "OI-FINANCIAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-INSURANCE-001",
+      "title": "Actuarial risk model produces consistent scores for identical inputs",
+      "domain": "D-INSURANCE",
+      "assumption": "Risk model is deterministic: same inputs produce same risk score.",
+      "falsifying_observation": "Identical inputs produce different risk scores.",
+      "strategy": "Run model 100 times with fixed inputs; assert all scores identical.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_insurance_001.py",
+      "ontological_issues": [
+        "OI-INSURANCE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-LEGAL-001",
+      "title": "Document hash unchanged after round-trip through pipeline",
+      "domain": "D-LEGAL",
+      "assumption": "Legal document content is preserved byte-for-byte through the pipeline.",
+      "falsifying_observation": "sha256(output) != sha256(input) for identical document.",
+      "strategy": "Process document through pipeline; compare sha256 of input and output; assert equal.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_legal_001.py",
+      "ontological_issues": [
+        "OI-LEGAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-EDUCATION-001",
+      "title": "Proctoring detects prohibited browser navigation",
+      "domain": "D-EDUCATION",
+      "assumption": "Remote proctoring detects all attempts to navigate away from the exam.",
+      "falsifying_observation": "Student navigates to another tab/window without detection.",
+      "strategy": "Simulate browser tab switch; assert proctoring flags the event.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_education_001.py",
+      "ontological_issues": [
+        "OI-EDUCATION-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-GOVERNMENT-001",
+      "title": "Voting system cast-as-intended verifiability",
+      "domain": "D-GOVERNMENT",
+      "assumption": "Every cast vote is recorded exactly as the voter intended.",
+      "falsifying_observation": "A vote is modified between voter confirmation and tally.",
+      "strategy": "Cast 1000 test votes with known selections; compare tally against expected; assert exact match.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_government_001.py",
+      "ontological_issues": [
+        "OI-GOVERNMENT-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MILITARY-001",
+      "title": "IFF system does not misclassify friendly as hostile",
+      "domain": "D-MILITARY",
+      "assumption": "IFF transponder correctly identifies all friendly platforms.",
+      "falsifying_observation": "A friendly platform is classified as hostile.",
+      "strategy": "Broadcast known-friendly IFF codes; assert all classified as friendly.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_military_001.py",
+      "ontological_issues": [
+        "OI-MILITARY-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-RETAIL-001",
+      "title": "POS transaction idempotent under network retry",
+      "domain": "D-RETAIL",
+      "assumption": "Retrying a failed POS transaction does not result in a double charge.",
+      "falsifying_observation": "Retry produces a second charge on the same card.",
+      "strategy": "Submit transaction; simulate failure mid-processing; retry; assert card charged exactly once.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_retail_001.py",
+      "ontological_issues": [
+        "OI-RETAIL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-HOSPITALITY-001",
+      "title": "Room key deactivated within 5 seconds of checkout",
+      "domain": "D-HOSPITALITY",
+      "assumption": "Room key cards are deactivated within 5 seconds of guest checkout.",
+      "falsifying_observation": "Key remains active more than 5 seconds after checkout.",
+      "strategy": "Trigger checkout event; attempt key use after 5s; assert access denied.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_hospitality_001.py",
+      "ontological_issues": [
+        "OI-HOSPITALITY-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CONSTRUCTION-001",
+      "title": "Structural analysis model converges to reference solution",
+      "domain": "D-CONSTRUCTION",
+      "assumption": "FEM structural analysis result is within 1% of the reference solution.",
+      "falsifying_observation": "Computed stress/deflection differs from reference by > 1%.",
+      "strategy": "Run analysis on canonical benchmark structure; compare to reference; assert error < 1%.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_construction_001.py",
+      "ontological_issues": [
+        "OI-CONSTRUCTION-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MINING-001",
+      "title": "Gas sensor triggers evacuation alarm before LEL threshold",
+      "domain": "D-MINING",
+      "assumption": "Gas sensor alerts at 20% LEL, well before the 100% LEL explosion risk.",
+      "falsifying_observation": "Alarm fires after LEL exceeds 20%.",
+      "strategy": "Introduce controlled gas at incremental concentrations; verify alarm at 20% LEL.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_mining_001.py",
+      "ontological_issues": [
+        "OI-MINING-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-OILGAS-001",
+      "title": "Pipeline pressure anomaly detected within 60 seconds",
+      "domain": "D-OILGAS",
+      "assumption": "A pressure drop indicating a leak is detected and alarmed within 60s.",
+      "falsifying_observation": "Pressure anomaly is not alarmed within 60 seconds.",
+      "strategy": "Inject simulated pressure drop; measure time to alarm; assert <= 60s.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_oilgas_001.py",
+      "ontological_issues": [
+        "OI-OILGAS-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-CHEMICAL-001",
+      "title": "Reactor thermal runaway interlock activates before critical point",
+      "domain": "D-CHEMICAL",
+      "assumption": "High-temperature interlock activates at T_alarm before T_critical is reached.",
+      "falsifying_observation": "Temperature reaches T_critical without interlock activation.",
+      "strategy": "Simulate runaway; verify interlock fires at T_alarm; assert T never reaches T_critical.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_chemical_001.py",
+      "ontological_issues": [
+        "OI-CHEMICAL-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-PHARMA-001",
+      "title": "Batch record is immutable once released",
+      "domain": "D-PHARMA",
+      "assumption": "A released batch record cannot be modified (21 CFR Part 11 compliance).",
+      "falsifying_observation": "A released batch record can be edited without an audit-trail entry.",
+      "strategy": "Attempt to edit released record; assert operation rejected or creates immutable audit entry.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_pharma_001.py",
+      "ontological_issues": [
+        "OI-PHARMA-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-BIOTECH-001",
+      "title": "DNA sequencing pipeline reproducible from identical raw reads",
+      "domain": "D-BIOTECH",
+      "assumption": "Given identical FASTQ input, the variant-calling pipeline produces identical VCF output.",
+      "falsifying_observation": "Two runs with identical input produce different variants.",
+      "strategy": "Run pipeline twice with identical input and fixed seed; compare VCF outputs; assert identical.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_biotech_001.py",
+      "ontological_issues": [
+        "OI-BIOTECH-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-ROBOTICS-001",
+      "title": "Robot arm stops within collision-avoidance envelope",
+      "domain": "D-ROBOTICS",
+      "assumption": "Collision-avoidance system halts the arm before contact with any obstacle.",
+      "falsifying_observation": "Arm makes contact with a detected obstacle.",
+      "strategy": "Place obstacle in robot workspace; command arm toward it; assert arm stops before contact.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_robotics_001.py",
+      "ontological_issues": [
+        "OI-ROBOTICS-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-AUTOMOTIVE-001",
+      "title": "OTA firmware update rejected if signature invalid",
+      "domain": "D-AUTOMOTIVE",
+      "assumption": "ECU rejects any OTA update whose cryptographic signature fails verification.",
+      "falsifying_observation": "ECU installs an unsigned or incorrectly-signed firmware image.",
+      "strategy": "Deliver OTA package with invalid signature; assert installation rejected and old firmware retained.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_automotive_001.py",
+      "ontological_issues": [
+        "OI-AUTOMOTIVE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-AEROSPACE-001",
+      "title": "Avionics redundant channels produce byte-identical output",
+      "domain": "D-AEROSPACE",
+      "assumption": "All redundant avionics channels produce byte-identical outputs for identical inputs.",
+      "falsifying_observation": "Channels produce different outputs for the same input.",
+      "strategy": "Feed identical inputs to all redundant channels; compare outputs; assert byte-identical.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_aerospace_001.py",
+      "ontological_issues": [
+        "OI-AEROSPACE-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-MARITIME-001",
+      "title": "AIS position within certified accuracy bounds",
+      "domain": "D-MARITIME",
+      "assumption": "AIS-reported position is within 10m of actual vessel position.",
+      "falsifying_observation": "AIS position differs from ground truth by > 10m.",
+      "strategy": "Compare AIS-reported position with DGPS ground-truth; assert error <= 10m.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_maritime_001.py",
+      "ontological_issues": [
+        "OI-MARITIME-001"
+      ],
+      "case_studies": []
+    },
+    {
+      "id": "F-RAIL-001",
+      "title": "Positive train control stops train before red signal",
+      "domain": "D-RAIL",
+      "assumption": "PTC system halts the train before it passes a stop signal.",
+      "falsifying_observation": "Train passes a stop signal without intervention.",
+      "strategy": "Simulate overspeed approaching stop signal; verify PTC initiates brake application in time.",
+      "status": "placeholder",
+      "test_file": "TODO: tests/test_f_rail_001.py",
+      "ontological_issues": [
+        "OI-RAIL-001"
+      ],
       "case_studies": []
     }
   ]

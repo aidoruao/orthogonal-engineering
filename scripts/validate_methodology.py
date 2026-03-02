@@ -15,6 +15,12 @@ Checks performed:
   4. (Optional) When --check-tags is passed, scans test files in tests/ for
      @falsification_id: F-XXX comments and reports F-IDs that have no
      corresponding test file tag.
+  5. (Optional) When --check-tests is passed, reports F-IDs whose test_file
+     still starts with "TODO:".  Add --fail-on-missing to make this an error.
+  6. (Optional) When --check-case-studies is passed, reports F-IDs with no
+     linked case study and case studies with no linked F-ID.
+  7. (Optional) When --check-domain-coverage is passed, reports domains that
+     have fewer than --min-tests (default 3) falsification tests.
 
 Exit codes:
   0  All checks passed.
@@ -23,6 +29,11 @@ Exit codes:
 Usage:
   python scripts/validate_methodology.py
   python scripts/validate_methodology.py --check-tags
+  python scripts/validate_methodology.py --check-tests
+  python scripts/validate_methodology.py --check-tests --fail-on-missing
+  python scripts/validate_methodology.py --check-case-studies
+  python scripts/validate_methodology.py --check-domain-coverage --min-tests=3
+  python scripts/validate_methodology.py --check-tests --check-case-studies --check-domain-coverage
 """
 
 import json
@@ -176,6 +187,61 @@ def crossref_errors(schemas: dict, ids: dict) -> list:
     return errors
 
 
+def check_tests(ids: dict, schemas: dict, fail_on_missing: bool) -> tuple:
+    """Return (errors, warnings) about F-IDs whose test_file still starts with TODO:."""
+    unimplemented = []
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        tf = t.get("test_file", "")
+        if tf.startswith("TODO:") or t.get("status", "") == "placeholder":
+            unimplemented.append(t["id"])
+
+    messages = [f"F-ID '{fid}' has no implemented test (status=placeholder)" for fid in unimplemented]
+
+    if fail_on_missing:
+        return messages, []
+    return [], [f"WARNING (unimplemented-test): {m}" for m in messages]
+
+
+def check_case_studies(ids: dict, schemas: dict) -> list:
+    """Return warnings about F-IDs with no case study and case studies with no F-ID."""
+    warnings = []
+
+    # F-IDs with no linked case study
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        if not t.get("case_studies"):
+            warnings.append(
+                f"WARNING (case-study-coverage): F-ID '{t['id']}' has no linked case study"
+            )
+
+    # Case studies with no linked F-ID
+    for c in schemas["case_studies"].get("cases", []):
+        if not c.get("falsification_tests"):
+            warnings.append(
+                f"WARNING (case-study-coverage): Case '{c['id']}' has no linked falsification test"
+            )
+
+    return warnings
+
+
+def check_domain_coverage(ids: dict, schemas: dict, min_tests: int) -> list:
+    """Return warnings about domains with fewer than min_tests falsification tests."""
+    # Count F-IDs per domain
+    domain_f_count: dict = {d: 0 for d in ids["domain_ids"]}
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        d = t.get("domain", "")
+        if d in domain_f_count:
+            domain_f_count[d] += 1
+
+    warnings = []
+    for domain_id, count in sorted(domain_f_count.items()):
+        if count < min_tests:
+            warnings.append(
+                f"WARNING (domain-coverage): Domain '{domain_id}' has only {count} "
+                f"falsification test(s) (required >= {min_tests})"
+            )
+    return warnings
+
+
 # ---------------------------------------------------------------------------
 # Tag-coverage check
 # ---------------------------------------------------------------------------
@@ -209,6 +275,19 @@ def check_tags(ids: dict) -> list:
 
 def main() -> int:
     check_tags_flag = "--check-tags" in sys.argv
+    check_tests_flag = "--check-tests" in sys.argv
+    fail_on_missing = "--fail-on-missing" in sys.argv
+    check_cs_flag = "--check-case-studies" in sys.argv
+    check_dc_flag = "--check-domain-coverage" in sys.argv
+
+    # Parse --min-tests=N
+    min_tests = 3
+    for arg in sys.argv[1:]:
+        if arg.startswith("--min-tests="):
+            try:
+                min_tests = int(arg.split("=", 1)[1])
+            except ValueError:
+                pass
 
     errors = []
     warnings = []
@@ -242,6 +321,20 @@ def main() -> int:
         untagged = check_tags(ids)
         for w in untagged:
             warnings.append(f"WARNING (tag-coverage): {w}")
+
+    # 5. Implemented-test check
+    if check_tests_flag:
+        test_errors, test_warnings = check_tests(ids, schemas, fail_on_missing)
+        errors.extend(test_errors)
+        warnings.extend(test_warnings)
+
+    # 6. Case-study coverage
+    if check_cs_flag:
+        warnings.extend(check_case_studies(ids, schemas))
+
+    # 7. Domain coverage
+    if check_dc_flag:
+        warnings.extend(check_domain_coverage(ids, schemas, min_tests))
 
     # Report
     if warnings:

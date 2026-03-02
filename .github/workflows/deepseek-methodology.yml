@@ -39,10 +39,23 @@ jobs:
           done
 
       - name: Run methodology schema cross-reference validation
+        # Hard-fail: broken cross-references (F-ID, OI-ID, domain, case) are errors
         run: python scripts/validate_methodology.py
 
+      - name: Verify all case studies are linked to F-IDs (warnings only)
+        # Non-blocking: reports F-IDs without case studies and orphaned case studies
+        run: python scripts/validate_methodology.py --check-case-studies || true
+
+      - name: Verify domain test coverage (warnings only, min 3 tests per domain)
+        # Non-blocking: reports domains with fewer than 3 falsification tests
+        run: python scripts/validate_methodology.py --check-domain-coverage --min-tests=3 || true
+
+      - name: Report unimplemented tests (warnings only)
+        # Non-blocking: reports F-IDs still in placeholder/TODO state
+        run: python scripts/validate_methodology.py --check-tests || true
+
       - name: Run tag-coverage check (warnings only)
-        # Reports F-IDs without @falsification_id tags in tests/ — non-blocking
+        # Non-blocking: reports F-IDs without @falsification_id tags in tests/
         run: python scripts/validate_methodology.py --check-tags || true
 
   check-existing-falsification-tests:
