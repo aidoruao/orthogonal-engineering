@@ -50,9 +50,9 @@ jobs:
         # Non-blocking: reports domains with fewer than 3 falsification tests
         run: python scripts/validate_methodology.py --check-domain-coverage --min-tests=3 || true
 
-      - name: Report unimplemented tests (warnings only)
-        # Non-blocking: reports F-IDs still in placeholder/TODO state
-        run: python scripts/validate_methodology.py --check-tests || true
+      - name: Verify all F-IDs have implemented test files
+        # Hard-fail: every F-ID must have an implemented test (not placeholder)
+        run: python scripts/validate_methodology.py --check-tests --fail-on-missing
 
       - name: Run tag-coverage check (warnings only)
         # Non-blocking: reports F-IDs without @falsification_id tags in tests/

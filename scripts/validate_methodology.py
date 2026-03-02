@@ -202,29 +202,31 @@ def check_tests(ids: dict, schemas: dict, fail_on_missing: bool) -> tuple:
     return [], [f"WARNING (unimplemented-test): {m}" for m in messages]
 
 
-def check_case_studies(ids: dict, schemas: dict) -> list:
-    """Return warnings about F-IDs with no case study and case studies with no F-ID."""
-    warnings = []
+def check_case_studies(ids: dict, schemas: dict, fail_on_missing: bool = False) -> tuple:
+    """Return (errors, warnings) about F-IDs with no case study and case studies with no F-ID."""
+    messages = []
 
     # F-IDs with no linked case study
     for t in schemas["falsification_tests"].get("falsification_tests", []):
         if not t.get("case_studies"):
-            warnings.append(
-                f"WARNING (case-study-coverage): F-ID '{t['id']}' has no linked case study"
+            messages.append(
+                f"F-ID '{t['id']}' has no linked case study"
             )
 
     # Case studies with no linked F-ID
     for c in schemas["case_studies"].get("cases", []):
         if not c.get("falsification_tests"):
-            warnings.append(
-                f"WARNING (case-study-coverage): Case '{c['id']}' has no linked falsification test"
+            messages.append(
+                f"Case '{c['id']}' has no linked falsification test"
             )
 
-    return warnings
+    if fail_on_missing:
+        return messages, []
+    return [], [f"WARNING (case-study-coverage): {m}" for m in messages]
 
 
-def check_domain_coverage(ids: dict, schemas: dict, min_tests: int) -> list:
-    """Return warnings about domains with fewer than min_tests falsification tests."""
+def check_domain_coverage(ids: dict, schemas: dict, min_tests: int, fail_on_missing: bool = False) -> tuple:
+    """Return (errors, warnings) about domains with fewer than min_tests falsification tests."""
     # Count F-IDs per domain
     domain_f_count: dict = {d: 0 for d in ids["domain_ids"]}
     for t in schemas["falsification_tests"].get("falsification_tests", []):
@@ -232,14 +234,17 @@ def check_domain_coverage(ids: dict, schemas: dict, min_tests: int) -> list:
         if d in domain_f_count:
             domain_f_count[d] += 1
 
-    warnings = []
+    messages = []
     for domain_id, count in sorted(domain_f_count.items()):
         if count < min_tests:
-            warnings.append(
-                f"WARNING (domain-coverage): Domain '{domain_id}' has only {count} "
+            messages.append(
+                f"Domain '{domain_id}' has only {count} "
                 f"falsification test(s) (required >= {min_tests})"
             )
-    return warnings
+
+    if fail_on_missing:
+        return messages, []
+    return [], [f"WARNING (domain-coverage): {m}" for m in messages]
 
 
 # ---------------------------------------------------------------------------
@@ -330,11 +335,15 @@ def main() -> int:
 
     # 6. Case-study coverage
     if check_cs_flag:
-        warnings.extend(check_case_studies(ids, schemas))
+        cs_errors, cs_warnings = check_case_studies(ids, schemas, fail_on_missing)
+        errors.extend(cs_errors)
+        warnings.extend(cs_warnings)
 
     # 7. Domain coverage
     if check_dc_flag:
-        warnings.extend(check_domain_coverage(ids, schemas, min_tests))
+        dc_errors, dc_warnings = check_domain_coverage(ids, schemas, min_tests, fail_on_missing)
+        errors.extend(dc_errors)
+        warnings.extend(dc_warnings)
 
     # Report
     if warnings:
