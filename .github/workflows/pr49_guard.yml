@@ -38,9 +38,9 @@ jobs:
       - name: Show guard report
         if: always()
         run: |
-          if [ -f pr49_guard_report.json ]; then
+          if (Test-Path 'pr49_guard_report.json') {
             python -m json.tool pr49_guard_report.json
-          fi
+          }
 
       - name: Upload guard report
         if: always()
