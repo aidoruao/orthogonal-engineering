@@ -15,25 +15,31 @@
       "falsifying_observation": "Different hex digest produced on any CI runner.",
       "strategy": "Hash a fixed seed; compare against a canonical expected value.",
       "status": "active",
-      "test_file": "tests/test_falsification.py::test_f001_seed_bytes_sha256_deterministic",
+      "test_file": "tests/test_f_platform_001.py::test_f_platform_001",
       "ontological_issues": [
         "OI_PLATFORM_002"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "hashlib.sha256 of a fixed byte string returns the same hex digest on every OS/Python version.",
+      "falsifies_if": "Different hex digest produced on any CI runner.",
+      "definition": "Hash a fixed seed; compare against a canonical expected value."
     },
     {
       "id": "F_PLATFORM_002",
       "title": "int64 arithmetic matches known vectors",
       "domain": "D_PLATFORM",
       "assumption": "Python int64 two's-complement arithmetic and struct.unpack produce identical values on all platforms.",
-      "falsifying_observation": "Any computed value ≠ expected vector.",
+      "falsifying_observation": "Any computed value \u2260 expected vector.",
       "strategy": "Pre-compute known (seed, index, expected_int64) triples; assert equality.",
       "status": "active",
-      "test_file": "tests/test_falsification.py::test_f002_int64_arithmetic_vectors",
+      "test_file": "tests/test_f_platform_002.py::test_f_platform_002",
       "ontological_issues": [
         "OI_PLATFORM_003"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Python int64 two's-complement arithmetic and struct.unpack produce identical values on all platforms.",
+      "falsifies_if": "Any computed value \u2260 expected vector.",
+      "definition": "Pre-compute known (seed, index, expected_int64) triples; assert equality."
     },
     {
       "id": "F_PLATFORM_003",
@@ -43,11 +49,14 @@
       "falsifying_observation": "Wrong path-parts count or values.",
       "strategy": "Construct a Path with forward slashes; assert parts match expected tuple.",
       "status": "active",
-      "test_file": "tests/test_falsification.py::test_f003_pathlib_path_independence",
+      "test_file": "tests/test_f_platform_003.py::test_f_platform_003",
       "ontological_issues": [
         "OI_PLATFORM_004"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "pathlib.Path correctly resolves relative paths and normalises separators on all platforms.",
+      "falsifies_if": "Wrong path-parts count or values.",
+      "definition": "Construct a Path with forward slashes; assert parts match expected tuple."
     },
     {
       "id": "F_PLATFORM_004",
@@ -57,25 +66,31 @@
       "falsifying_observation": "Encoding name is not 'utf-8' or 'utf_8'.",
       "strategy": "Inspect sys.stdout.encoding; assert UTF-8.",
       "status": "active",
-      "test_file": "tests/test_falsification.py::test_f004_stdout_utf8_encoding",
+      "test_file": "tests/test_f_platform_004.py::test_f_platform_004",
       "ontological_issues": [
         "OI_PLATFORM_002"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "stdout/stderr encoding is UTF-8 (PYTHONIOENCODING=utf-8 is honoured).",
+      "falsifies_if": "Encoding name is not 'utf-8' or 'utf_8'.",
+      "definition": "Inspect sys.stdout.encoding; assert UTF-8."
     },
     {
       "id": "F_PLATFORM_005",
       "title": "struct.pack is little-endian",
       "domain": "D_PLATFORM",
       "assumption": "struct.pack('<q', value) encodes int64 in little-endian byte order regardless of host endianness.",
-      "falsifying_observation": "Any byte sequence ≠ expected.",
+      "falsifying_observation": "Any byte sequence \u2260 expected.",
       "strategy": "Pack known values; compare against expected byte strings.",
       "status": "active",
-      "test_file": "tests/test_falsification.py::test_f005_struct_pack_little_endian",
+      "test_file": "tests/test_f_platform_005.py::test_f_platform_005",
       "ontological_issues": [
         "OI_PLATFORM_003"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "struct.pack('<q', value) encodes int64 in little-endian byte order regardless of host endianness.",
+      "falsifies_if": "Any byte sequence \u2260 expected.",
+      "definition": "Pack known values; compare against expected byte strings."
     },
     {
       "id": "F_GRAPHICS_001",
@@ -92,10 +107,13 @@
       "case_studies": [
         "CS_GRAPHICS_001"
       ],
-      "implementation_notes": "Use glslang or spirv-cross in subprocess; hash stdout bytes. Requires GPU or offline compiler tool."
+      "implementation_notes": "Use glslang or spirv-cross in subprocess; hash stdout bytes. Requires GPU or offline compiler tool.",
+      "invariant": "Compiling the same GLSL/HLSL/SPIR-V source twice produces byte-identical output.",
+      "falsifies_if": "Binary hash differs between two compilation invocations.",
+      "definition": "Compile a canonical test shader twice in the same process; assert sha256(output1) == sha256(output2). Also compare across backends (Vulkan/Metal/D3D via cross-compilation)."
     },
     {
-      "id": "F_PROTO_001",
+      "id": "F_PLATFORM_006",
       "title": "Lock-free atomics are sequentially consistent on target hardware",
       "domain": "D_PLATFORM",
       "assumption": "Atomic operations provide sequentially-consistent ordering on all CI and production hardware targets.",
@@ -109,10 +127,13 @@
       "case_studies": [
         "CS_PROTO_001"
       ],
-      "implementation_notes": "Python: use threading + events; C extension: compile with -fsanitize=thread."
+      "implementation_notes": "Python: use threading + events; C extension: compile with -fsanitize=thread.",
+      "invariant": "Atomic operations provide sequentially-consistent ordering on all CI and production hardware targets.",
+      "falsifies_if": "A data-race or stale read is observed under a weak-memory model emulator.",
+      "definition": "Run concurrent increment/read test under TSAN (ThreadSanitizer) and/or C11 weak-ordering emulator; assert zero races."
     },
     {
-      "id": "F_API_001",
+      "id": "F_AVIATION_004",
       "title": "External API is reachable within SLO timeout",
       "domain": "D_AVIATION",
       "assumption": "The external weather/data API responds within the defined SLO timeout under normal network conditions.",
@@ -126,7 +147,10 @@
       "case_studies": [
         "CS_AVIATION_001"
       ],
-      "implementation_notes": "Use requests with timeout parameter. Mark as @pytest.mark.network and skip unless NETWORK_TESTS=1 env var is set."
+      "implementation_notes": "Use requests with timeout parameter. Mark as @pytest.mark.network and skip unless NETWORK_TESTS=1 env var is set.",
+      "invariant": "The external weather/data API responds within the defined SLO timeout under normal network conditions.",
+      "falsifies_if": "API call times out or returns a non-2xx status within the SLO window.",
+      "definition": "Probe the API endpoint with a small test payload; assert response within timeout. Skipped in offline/air-gapped CI."
     },
     {
       "id": "F_CRYPTO_001",
@@ -143,13 +167,16 @@
       "case_studies": [
         "CS_CRYPTO_001"
       ],
-      "implementation_notes": "Requires ctgrind or Python ctypes wrapper around dudect. Computationally expensive; run on dedicated CI job."
+      "implementation_notes": "Requires ctgrind or Python ctypes wrapper around dudect. Computationally expensive; run on dedicated CI job.",
+      "invariant": "The implementation of PQC polynomial arithmetic does not leak timing information correlated with secret key bits.",
+      "falsifies_if": "dudect or ctgrind reports a statistically significant timing leak (p < 0.001).",
+      "definition": "Run dudect over 1M samples of the target function with random secrets; assert Welch's t < 5."
     },
     {
       "id": "F_CRYPTO_002",
       "title": "Noise PSK zero-key is rejected",
       "domain": "D_CRYPTO",
-      "assumption": "The library enforces PSK ≠ 0^32 at the API boundary.",
+      "assumption": "The library enforces PSK \u2260 0^32 at the API boundary.",
       "falsifying_observation": "Library accepts a 32-byte all-zero PSK without raising an error.",
       "strategy": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised.",
       "status": "implemented",
@@ -160,7 +187,10 @@
       "case_studies": [
         "CS_CRYPTO_002"
       ],
-      "cve_reference": "CVE-2026-24785"
+      "cve_reference": "CVE-2026-24785",
+      "invariant": "The library enforces PSK \u2260 0^32 at the API boundary.",
+      "falsifies_if": "Library accepts a 32-byte all-zero PSK without raising an error.",
+      "definition": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised."
     },
     {
       "id": "F_SPACE_001",
@@ -176,7 +206,10 @@
       ],
       "case_studies": [
         "CS_SPACE_001"
-      ]
+      ],
+      "invariant": "All safety-critical C binaries are compiled with stack-protector flags (-fstack-protector-strong).",
+      "falsifies_if": "objdump/readelf shows no __stack_chk_fail import in the binary.",
+      "definition": "Run readelf -s on the target binary; assert __stack_chk_fail is present."
     },
     {
       "id": "F_XSS_001",
@@ -193,7 +226,10 @@
       "case_studies": [
         "CS_WEBSEC_001"
       ],
-      "cve_reference": "CVE-2025-13744"
+      "cve_reference": "CVE-2025-13744",
+      "invariant": "All user-supplied Markdown/HTML passes through a context-aware sanitizer before being rendered.",
+      "falsifies_if": "A canonical XSS payload (<script>alert(1)</script>) appears unescaped in rendered output.",
+      "definition": "Submit the canonical payload through the rendering pipeline; assert the output contains no literal <script> tag."
     },
     {
       "id": "F_GAMEMODS_001",
@@ -207,13 +243,16 @@
       "ontological_issues": [
         "OI_GAMEMODS_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Only one ASI loader DLL can occupy the loader interception point in a game process.",
+      "falsifies_if": "Two ASI loaders are present in the game directory simultaneously without conflict detection.",
+      "definition": "Scan game directory for known ASI loader filenames (dinput8.dll, dsound.dll, etc.); assert at most one is present."
     },
     {
       "id": "F_MEDICAL_001",
       "title": "Dosimetry calculation matches reference implementation within tolerance",
       "domain": "D_MEDICAL",
-      "assumption": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within ±0.1%.",
+      "assumption": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within \u00b10.1%.",
       "falsifying_observation": "Computed dose deviates from reference by more than 0.1%.",
       "strategy": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001.",
       "status": "implemented",
@@ -221,7 +260,10 @@
       "ontological_issues": [
         "OI_MEDICAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within \u00b10.1%.",
+      "falsifies_if": "Computed dose deviates from reference by more than 0.1%.",
+      "definition": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001."
     },
     {
       "id": "F_INDUSTRIAL_001",
@@ -229,13 +271,16 @@
       "domain": "D_INDUSTRIAL",
       "assumption": "The PLC control loop completes each cycle within the specified real-time deadline.",
       "falsifying_observation": "Any cycle exceeds the deadline budget.",
-      "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) ≤ deadline_ms.",
+      "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) \u2264 deadline_ms.",
       "status": "implemented",
       "test_file": "tests/test_plc_timing.py",
       "ontological_issues": [
         "OI_INDUSTRIAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The PLC control loop completes each cycle within the specified real-time deadline.",
+      "falsifies_if": "Any cycle exceeds the deadline budget.",
+      "definition": "Instrument the control loop with high-resolution timers; assert max(cycle_times) \u2264 deadline_ms."
     },
     {
       "id": "F_BLUECOLLAR_001",
@@ -243,13 +288,16 @@
       "domain": "D_BLUECOLLAR",
       "assumption": "Worker safety alerts are delivered within the required response time.",
       "falsifying_observation": "Alert delivery latency exceeds the required bound.",
-      "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency ≤ bound.",
+      "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency \u2264 bound.",
       "status": "implemented",
       "test_file": "tests/test_safety_alerts.py",
       "ontological_issues": [
         "OI_BLUECOLLAR_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Worker safety alerts are delivered within the required response time.",
+      "falsifies_if": "Alert delivery latency exceeds the required bound.",
+      "definition": "Measure end-to-end alert delivery time under simulated load; assert max latency \u2264 bound."
     },
     {
       "id": "F_WHITECOLLAR_001",
@@ -263,7 +311,10 @@
       "ontological_issues": [
         "OI_WHITECOLLAR_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Document processing pipelines are idempotent.",
+      "falsifies_if": "Two runs with identical input produce different output.",
+      "definition": "Run the pipeline twice with identical input; assert sha256(output1) == sha256(output2)."
     },
     {
       "id": "F_LUXURY_001",
@@ -277,7 +328,10 @@
       "ontological_issues": [
         "OI_LUXURY_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "HFT order-book state is deterministic: same inputs produce same outputs.",
+      "falsifies_if": "Replay test produces different fills.",
+      "definition": "Replay a recorded market-event sequence twice; assert identical fill records."
     },
     {
       "id": "F_EMERGENCY_001",
@@ -291,7 +345,10 @@
       "ontological_issues": [
         "OI_EMERGENCY_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Dispatch systems handle network partitions without data loss.",
+      "falsifies_if": "A message is lost or duplicated during simulated partition.",
+      "definition": "Simulate network partition; assert all messages are delivered exactly once after partition heals."
     },
     {
       "id": "F_NECESSITY_001",
@@ -305,7 +362,10 @@
       "ontological_issues": [
         "OI_NECESSITY_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "All control-system software meets IEC 61508 SIL requirements.",
+      "falsifies_if": "Formal SIL assessment is absent or fails.",
+      "definition": "Assert presence of a signed SIL certificate in the ontology evidence store."
     },
     {
       "id": "F_BORING_001",
@@ -319,7 +379,10 @@
       "ontological_issues": [
         "OI_BORING_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "ETL pipelines are idempotent: re-running produces the same output.",
+      "falsifies_if": "Row count or aggregate differs between two runs.",
+      "definition": "Run ETL twice; assert row counts and checksums are identical."
     },
     {
       "id": "F_FUN_001",
@@ -333,7 +396,10 @@
       "ontological_issues": [
         "OI_FUN_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Saved game data is forward-compatible with new versions.",
+      "falsifies_if": "Save file from version N fails to load in version N+1.",
+      "definition": "Load a canonical save file from version N in version N+1; assert no error and expected state."
     },
     {
       "id": "F_CREATIVE_001",
@@ -347,21 +413,27 @@
       "ontological_issues": [
         "OI_CREATIVE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Given a fixed seed, generative output is reproducible.",
+      "falsifies_if": "Two runs with identical seed produce different sha256 hashes.",
+      "definition": "Run generator twice with fixed seed; assert sha256(output1) == sha256(output2)."
     },
     {
       "id": "F_NONCREATIVE_001",
       "title": "Compression round-trip is lossless",
       "domain": "D_NONCREATIVE",
       "assumption": "Compression/decompression is lossless and reproducible.",
-      "falsifying_observation": "sha256(decompress(compress(data))) ≠ sha256(data).",
+      "falsifying_observation": "sha256(decompress(compress(data))) \u2260 sha256(data).",
       "strategy": "Compress and decompress a canonical dataset; assert sha256 equality.",
       "status": "implemented",
       "test_file": "tests/test_compression.py",
       "ontological_issues": [
         "OI_NONCREATIVE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Compression/decompression is lossless and reproducible.",
+      "falsifies_if": "sha256(decompress(compress(data))) \u2260 sha256(data).",
+      "definition": "Compress and decompress a canonical dataset; assert sha256 equality."
     },
     {
       "id": "F_INDUSTRIAL_002",
@@ -375,7 +447,10 @@
       "ontological_issues": [
         "OI_INDUSTRIAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "E-stop signal propagates to all actuators within 100ms.",
+      "falsifies_if": "Any actuator continues operation beyond the 100ms deadline.",
+      "definition": "Inject e-stop signal; measure time to last actuator deactivation; assert <= 100ms."
     },
     {
       "id": "F_INDUSTRIAL_003",
@@ -389,7 +464,10 @@
       "ontological_issues": [
         "OI_INDUSTRIAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Full PLC program scan completes before watchdog expiration.",
+      "falsifies_if": "Watchdog timer expires, triggering unspecified behavior.",
+      "definition": "Instrument scan time; assert max_scan_time < watchdog_period * 0.95."
     },
     {
       "id": "F_INDUSTRIAL_004",
@@ -403,7 +481,10 @@
       "ontological_issues": [
         "OI_INDUSTRIAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Three redundant sensors agree within +/-0.5% of full scale.",
+      "falsifies_if": "Sensor readings diverge beyond +/-0.5% tolerance.",
+      "definition": "Continuously compare sensor triplets; assert max - min <= 0.005 * full_scale."
     },
     {
       "id": "F_INDUSTRIAL_005",
@@ -417,7 +498,10 @@
       "ontological_issues": [
         "OI_INDUSTRIAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Physical safety interlocks override all software commands.",
+      "falsifies_if": "Software can actuate machinery while a hardware interlock is open.",
+      "definition": "Attempt all control commands with interlock open; assert no actuation occurs."
     },
     {
       "id": "F_BLUECOLLAR_002",
@@ -431,7 +515,10 @@
       "ontological_issues": [
         "OI_BLUECOLLAR_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "When LOTO is active, all remote commands are rejected.",
+      "falsifies_if": "Any remote command executes despite LOTO being active.",
+      "definition": "Activate LOTO; send every command type via remote interface; assert all rejected."
     },
     {
       "id": "F_BLUECOLLAR_003",
@@ -445,7 +532,10 @@
       "ontological_issues": [
         "OI_BLUECOLLAR_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "O2, H2S, CO, LEL sensors are checked and cleared before door unlocks.",
+      "falsifies_if": "Door unlocks with unsafe atmospheric conditions present.",
+      "definition": "Simulate hazardous atmosphere; attempt door open; assert door remains locked."
     },
     {
       "id": "F_BLUECOLLAR_004",
@@ -459,7 +549,10 @@
       "ontological_issues": [
         "OI_BLUECOLLAR_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Worker entering the danger zone triggers an immediate machine halt.",
+      "falsifies_if": "Machine continues past the specified stopping distance after detection.",
+      "definition": "Move test mannequin into danger zone; measure stop distance; assert <= spec."
     },
     {
       "id": "F_MEDICAL_002",
@@ -473,7 +566,10 @@
       "ontological_issues": [
         "OI_MEDICAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Only authenticated clinicians can reprogram the implantable device.",
+      "falsifies_if": "Attacker can change device settings via replay or spoofing attack.",
+      "definition": "Capture legitimate programming traffic; replay it; assert device rejects replayed commands."
     },
     {
       "id": "F_MEDICAL_003",
@@ -487,7 +583,10 @@
       "ontological_issues": [
         "OI_MEDICAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Flow rate accuracy is maintained within +/-5% across all operating conditions.",
+      "falsifies_if": "Delivered volume deviates beyond +/-5% of expected over 24 hours.",
+      "definition": "Run 24-hour delivery test with gravimetric measurement; assert error <= 5%."
     },
     {
       "id": "F_MEDICAL_004",
@@ -501,7 +600,10 @@
       "ontological_issues": [
         "OI_MEDICAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Patient disconnect is detected and alarmed within 5 seconds.",
+      "falsifies_if": "Alarm is delayed beyond 5s or never activates after disconnect.",
+      "definition": "Simulate patient circuit disconnect; measure time to alarm activation; assert <= 5s."
     },
     {
       "id": "F_MEDICAL_005",
@@ -515,7 +617,10 @@
       "ontological_issues": [
         "OI_MEDICAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "All AI recommendations are within approved clinical pathways.",
+      "falsifies_if": "AI suggests a contraindicated or unapproved treatment.",
+      "definition": "Run model against 10,000 edge-case scenarios; assert all outputs within approved treatment set."
     },
     {
       "id": "F_GAMING_001",
@@ -531,7 +636,10 @@
       ],
       "case_studies": [
         "CS_GRAPHICS_001"
-      ]
+      ],
+      "invariant": "A fixed RNG seed produces an identical game state on every run.",
+      "falsifies_if": "Two runs with the same seed produce different states.",
+      "definition": "Initialize game with fixed seed; record state hash after N ticks; repeat; assert hashes equal."
     },
     {
       "id": "F_GAMING_002",
@@ -545,7 +653,10 @@
       "ontological_issues": [
         "OI_GAMING_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Anti-cheat prevents external processes from modifying protected game memory.",
+      "falsifies_if": "External process modifies player stats without detection.",
+      "definition": "Simulate external memory write to monitored address; assert anti-cheat flags the session."
     },
     {
       "id": "F_GAMING_003",
@@ -561,7 +672,10 @@
       ],
       "case_studies": [
         "CS_GRAPHICS_001"
-      ]
+      ],
+      "invariant": "Save files produce identical game state on all hardware platforms.",
+      "falsifies_if": "Loading same save on AMD vs NVIDIA produces different game outcomes.",
+      "definition": "Load identical save on all supported platforms; compare serialized memory-state hashes."
     },
     {
       "id": "F_GAMING_004",
@@ -575,7 +689,10 @@
       "ontological_issues": [
         "OI_GAMING_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "All network packet parsing is bounds-checked and cannot cause out-of-bounds writes.",
+      "falsifies_if": "A crafted packet causes a crash or achieves remote code execution.",
+      "definition": "Fuzz the network parser with malformed and oversized packets; assert no crashes (use ASan)."
     },
     {
       "id": "F_GAMING_005",
@@ -589,7 +706,10 @@
       "ontological_issues": [
         "OI_GAMING_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Mods are confined to game resources and cannot access system files.",
+      "falsifies_if": "A mod reads or writes files outside the game installation directory.",
+      "definition": "Run test mod with filesystem monitoring; assert no unauthorized file access."
     },
     {
       "id": "F_AVIATION_001",
@@ -603,7 +723,10 @@
       "ontological_issues": [
         "OI_AVIATION_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Aerodynamics calculations are deterministic: same inputs give same outputs on all OSes.",
+      "falsifies_if": "Same flight-model inputs produce different outputs on different operating systems.",
+      "definition": "Run flight model test suite on Linux, Windows, macOS; compare all outputs with sha256."
     },
     {
       "id": "F_AVIATION_002",
@@ -619,7 +742,10 @@
       ],
       "case_studies": [
         "CS_AVIATION_001"
-      ]
+      ],
+      "invariant": "Invalid or malformed ATC messages are ignored without crashing the system.",
+      "falsifies_if": "A malformed packet causes disconnection or process crash.",
+      "definition": "Send malformed ACARS/VDLM2 messages to ATC parser; assert connection remains alive."
     },
     {
       "id": "F_AVIATION_003",
@@ -635,7 +761,10 @@
       ],
       "case_studies": [
         "CS_AVIATION_001"
-      ]
+      ],
+      "invariant": "Simulator continues with last-known weather data when METAR API is unavailable.",
+      "falsifies_if": "Simulator crashes or freezes when weather endpoint returns error.",
+      "definition": "Block weather API at network level; verify simulator continues with cached data for >= 10 minutes."
     },
     {
       "id": "F_CRYPTO_003",
@@ -649,7 +778,10 @@
       "ontological_issues": [
         "OI_CRYPTO_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "KDF (HKDF, PBKDF2, Argon2) with identical inputs always produces identical output.",
+      "falsifies_if": "KDF produces different output for same (key, salt, info) triple.",
+      "definition": "Run KDF 1000 times with fixed inputs; assert all outputs are byte-identical."
     },
     {
       "id": "F_CRYPTO_004",
@@ -663,7 +795,10 @@
       "ontological_issues": [
         "OI_CRYPTO_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Any modification to a signed message causes signature verification to fail.",
+      "falsifies_if": "A tampered message passes signature verification.",
+      "definition": "Sign a message; flip one bit; assert verification fails."
     },
     {
       "id": "F_CRYPTO_005",
@@ -677,7 +812,10 @@
       "ontological_issues": [
         "OI_CRYPTO_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Ciphertext passes a randomness test indistinguishable from random (NIST SP 800-22).",
+      "falsifies_if": "Ciphertext fails the NIST frequency or block-frequency test.",
+      "definition": "Encrypt 1MB of fixed data; run NIST SP 800-22 frequency tests; assert p-values > 0.01."
     },
     {
       "id": "F_CRYPTO_006",
@@ -693,7 +831,10 @@
       ],
       "case_studies": [
         "CS_CRYPTO_001"
-      ]
+      ],
+      "invariant": "No secret-dependent branches or memory accesses exist in crypto primitives.",
+      "falsifies_if": "Timing analysis (dudect/ctgrind) reveals secret-dependent variation.",
+      "definition": "Run dudect over >= 1M samples on all crypto primitives; assert Welch t-statistic < 5."
     },
     {
       "id": "F_CRYPTO_007",
@@ -707,7 +848,10 @@
       "ontological_issues": [
         "OI_CRYPTO_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Same seed always produces the same key pair.",
+      "falsifies_if": "Different key pairs generated from the same seed.",
+      "definition": "Generate key pairs from fixed seed 1000 times; assert all byte-identical."
     },
     {
       "id": "F_CRYPTO_008",
@@ -721,7 +865,10 @@
       "ontological_issues": [
         "OI_CRYPTO_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Implementation matches the RFC or formal standard in all specified behaviors.",
+      "falsifies_if": "Implementation behavior differs from formal model checker expected output.",
+      "definition": "Run implementation against ProVerif or TLA+ formal model; assert all traces conformant."
     },
     {
       "id": "F_SPACE_002",
@@ -737,7 +884,10 @@
       ],
       "case_studies": [
         "CS_SPACE_001"
-      ]
+      ],
+      "invariant": "ECC memory or software redundancy corrects single-bit errors without crash or data corruption.",
+      "falsifies_if": "A single injected bit-flip causes crash or incorrect computation.",
+      "definition": "Inject single-bit flips into key memory regions; verify recovery and correct output."
     },
     {
       "id": "F_SPACE_003",
@@ -751,7 +901,10 @@
       "ontological_issues": [
         "OI_SPACE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "A hung task triggers the watchdog and causes a controlled reset.",
+      "falsifies_if": "A task hangs indefinitely with no watchdog response.",
+      "definition": "Force test task to hang; verify watchdog reset occurs within specified timeout."
     },
     {
       "id": "F_SPACE_004",
@@ -765,7 +918,10 @@
       "ontological_issues": [
         "OI_SPACE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "All downlinked telemetry data includes a hash chain enabling tamper detection.",
+      "falsifies_if": "Telemetry data can be modified in transit without detection.",
+      "definition": "Modify one byte of captured telemetry; replay to witness layer; assert tampering detected."
     },
     {
       "id": "F_CRUSADER_001",
@@ -779,7 +935,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The Crusader vision system detects flies with >= 95% accuracy.",
+      "falsifies_if": "Detection rate falls below 95% on the 1000-image test set.",
+      "definition": "Run detector on 1000 labeled test images; assert detected/total >= 0.95."
     },
     {
       "id": "F_CRUSADER_002",
@@ -793,7 +952,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The Crusader system eliminates >= 99% of released flies within 1 hour.",
+      "falsifies_if": "More than 1 fly survives after 1 hour (out of 100 released).",
+      "definition": "Release 100 flies; count survivors after 1 hour; assert survivors <= 1."
     },
     {
       "id": "F_CRUSADER_003",
@@ -807,7 +969,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Time from fly detection to warfare subsystem activation is < 100ms.",
+      "falsifies_if": "Any detection event takes >= 100ms to activate warfare.",
+      "definition": "Trigger fly detection events; measure time to warfare activation; assert max < 100ms."
     },
     {
       "id": "F_CRUSADER_004",
@@ -821,7 +986,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Non-fly triggers activate the warfare system in < 0.1% of cases.",
+      "falsifies_if": "More than 10 false activations occur in 10,000 non-fly trigger events.",
+      "definition": "Present 10,000 non-fly stimuli; count warfare activations; assert activations <= 10."
     },
     {
       "id": "F_CRUSADER_005",
@@ -835,7 +1003,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The UV safety interlock cuts UV power whenever the unit door is open.",
+      "falsifies_if": "UV output is non-zero with the door open.",
+      "definition": "Open unit door; measure UV irradiance; assert measured value = 0 uW/cm2."
     },
     {
       "id": "F_CRUSADER_006",
@@ -849,7 +1020,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Fungal spore deployment is fully contained within the unit.",
+      "falsifies_if": "Any spore colony (CFU > 0) found in air samples outside the unit.",
+      "definition": "Deploy spores; sample air at 6 external positions for 30 minutes; assert all < 1 CFU/m3."
     },
     {
       "id": "F_CRUSADER_007",
@@ -863,7 +1037,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The refrigeration system maintains 34-38 degrees F at all times.",
+      "falsifies_if": "Any temperature reading outside 34-38 F over a 30-day log.",
+      "definition": "Log temperature at 1-minute intervals for 30 days; assert all readings in [34, 38] F."
     },
     {
       "id": "F_CRUSADER_008",
@@ -877,7 +1054,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Every Crusader action is logged in the witness layer with an unbroken SHA-256 hash chain.",
+      "falsifies_if": "Any gap or broken link in the hash chain after a sequence of actions.",
+      "definition": "Perform 1000 actions; verify hash chain continuity; assert no gaps."
     },
     {
       "id": "F_CRUSADER_009",
@@ -891,7 +1071,10 @@
       "ontological_issues": [
         "OI_CRUSADER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Generated compliance reports include a verifiable SHA-256 hash of their content.",
+      "falsifies_if": "A modified report passes hash verification.",
+      "definition": "Generate report; modify one byte; re-verify; assert verification fails."
     },
     {
       "id": "F_AGRICULTURE_001",
@@ -905,7 +1088,10 @@
       "ontological_issues": [
         "OI_AGRICULTURE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Irrigation system delivers water to within +/-10% of the sensor-driven setpoint.",
+      "falsifies_if": "Delivered volume deviates beyond +/-10%.",
+      "definition": "Compare commanded vs measured soil moisture after 24h; assert error <= 10%."
     },
     {
       "id": "F_TRANSPORTATION_001",
@@ -919,7 +1105,10 @@
       "ontological_issues": [
         "OI_TRANSPORTATION_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Fleet GPS position is accurate within 5 meters CEP.",
+      "falsifies_if": "Position error exceeds 5m CEP.",
+      "definition": "Compare reported position against ground truth; assert CEP <= 5m."
     },
     {
       "id": "F_ENERGY_001",
@@ -933,7 +1122,10 @@
       "ontological_issues": [
         "OI_ENERGY_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Demand-response events are actioned within 30s of receipt.",
+      "falsifies_if": "Any DR event takes > 30s to action.",
+      "definition": "Send DR event; measure time to load shed; assert <= 30s."
     },
     {
       "id": "F_WATER_001",
@@ -947,7 +1139,10 @@
       "ontological_issues": [
         "OI_WATER_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Turbidity/chlorine sensors alert before violation of safe limits.",
+      "falsifies_if": "Alert fires after or not at all for out-of-spec reading.",
+      "definition": "Inject out-of-spec reading; verify alert fires before limit crossed."
     },
     {
       "id": "F_COMMUNICATIONS_001",
@@ -961,7 +1156,10 @@
       "ontological_issues": [
         "OI_COMMUNICATIONS_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "P99 message latency <= 200ms under 10x normal load.",
+      "falsifies_if": "P99 latency exceeds 200ms under load test.",
+      "definition": "Load test at 10x baseline; measure P99 latency; assert <= 200ms."
     },
     {
       "id": "F_FINANCIAL_001",
@@ -975,7 +1173,10 @@
       "ontological_issues": [
         "OI_FINANCIAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "The settlement system rejects any attempt to spend the same funds twice.",
+      "falsifies_if": "A double-spend transaction is accepted.",
+      "definition": "Submit identical transaction twice concurrently; assert only one settled."
     },
     {
       "id": "F_INSURANCE_001",
@@ -989,7 +1190,10 @@
       "ontological_issues": [
         "OI_INSURANCE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Risk model is deterministic: same inputs produce same risk score.",
+      "falsifies_if": "Identical inputs produce different risk scores.",
+      "definition": "Run model 100 times with fixed inputs; assert all scores identical."
     },
     {
       "id": "F_LEGAL_001",
@@ -1003,7 +1207,10 @@
       "ontological_issues": [
         "OI_LEGAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Legal document content is preserved byte-for-byte through the pipeline.",
+      "falsifies_if": "sha256(output) != sha256(input) for identical document.",
+      "definition": "Process document through pipeline; compare sha256 of input and output; assert equal."
     },
     {
       "id": "F_EDUCATION_001",
@@ -1017,7 +1224,10 @@
       "ontological_issues": [
         "OI_EDUCATION_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Remote proctoring detects all attempts to navigate away from the exam.",
+      "falsifies_if": "Student navigates to another tab/window without detection.",
+      "definition": "Simulate browser tab switch; assert proctoring flags the event."
     },
     {
       "id": "F_GOVERNMENT_001",
@@ -1031,7 +1241,10 @@
       "ontological_issues": [
         "OI_GOVERNMENT_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Every cast vote is recorded exactly as the voter intended.",
+      "falsifies_if": "A vote is modified between voter confirmation and tally.",
+      "definition": "Cast 1000 test votes with known selections; compare tally against expected; assert exact match."
     },
     {
       "id": "F_MILITARY_001",
@@ -1045,7 +1258,10 @@
       "ontological_issues": [
         "OI_MILITARY_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "IFF transponder correctly identifies all friendly platforms.",
+      "falsifies_if": "A friendly platform is classified as hostile.",
+      "definition": "Broadcast known-friendly IFF codes; assert all classified as friendly."
     },
     {
       "id": "F_RETAIL_001",
@@ -1059,7 +1275,10 @@
       "ontological_issues": [
         "OI_RETAIL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Retrying a failed POS transaction does not result in a double charge.",
+      "falsifies_if": "Retry produces a second charge on the same card.",
+      "definition": "Submit transaction; simulate failure mid-processing; retry; assert card charged exactly once."
     },
     {
       "id": "F_HOSPITALITY_001",
@@ -1073,7 +1292,10 @@
       "ontological_issues": [
         "OI_HOSPITALITY_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Room key cards are deactivated within 5 seconds of guest checkout.",
+      "falsifies_if": "Key remains active more than 5 seconds after checkout.",
+      "definition": "Trigger checkout event; attempt key use after 5s; assert access denied."
     },
     {
       "id": "F_CONSTRUCTION_001",
@@ -1087,7 +1309,10 @@
       "ontological_issues": [
         "OI_CONSTRUCTION_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "FEM structural analysis result is within 1% of the reference solution.",
+      "falsifies_if": "Computed stress/deflection differs from reference by > 1%.",
+      "definition": "Run analysis on canonical benchmark structure; compare to reference; assert error < 1%."
     },
     {
       "id": "F_MINING_001",
@@ -1101,7 +1326,10 @@
       "ontological_issues": [
         "OI_MINING_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Gas sensor alerts at 20% LEL, well before the 100% LEL explosion risk.",
+      "falsifies_if": "Alarm fires after LEL exceeds 20%.",
+      "definition": "Introduce controlled gas at incremental concentrations; verify alarm at 20% LEL."
     },
     {
       "id": "F_OILGAS_001",
@@ -1115,7 +1343,10 @@
       "ontological_issues": [
         "OI_OILGAS_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "A pressure drop indicating a leak is detected and alarmed within 60s.",
+      "falsifies_if": "Pressure anomaly is not alarmed within 60 seconds.",
+      "definition": "Inject simulated pressure drop; measure time to alarm; assert <= 60s."
     },
     {
       "id": "F_CHEMICAL_001",
@@ -1129,7 +1360,10 @@
       "ontological_issues": [
         "OI_CHEMICAL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "High-temperature interlock activates at T_alarm before T_critical is reached.",
+      "falsifies_if": "Temperature reaches T_critical without interlock activation.",
+      "definition": "Simulate runaway; verify interlock fires at T_alarm; assert T never reaches T_critical."
     },
     {
       "id": "F_PHARMA_001",
@@ -1143,7 +1377,10 @@
       "ontological_issues": [
         "OI_PHARMA_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "A released batch record cannot be modified (21 CFR Part 11 compliance).",
+      "falsifies_if": "A released batch record can be edited without an audit-trail entry.",
+      "definition": "Attempt to edit released record; assert operation rejected or creates immutable audit entry."
     },
     {
       "id": "F_BIOTECH_001",
@@ -1157,7 +1394,10 @@
       "ontological_issues": [
         "OI_BIOTECH_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Given identical FASTQ input, the variant-calling pipeline produces identical VCF output.",
+      "falsifies_if": "Two runs with identical input produce different variants.",
+      "definition": "Run pipeline twice with identical input and fixed seed; compare VCF outputs; assert identical."
     },
     {
       "id": "F_ROBOTICS_001",
@@ -1171,7 +1411,10 @@
       "ontological_issues": [
         "OI_ROBOTICS_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "Collision-avoidance system halts the arm before contact with any obstacle.",
+      "falsifies_if": "Arm makes contact with a detected obstacle.",
+      "definition": "Place obstacle in robot workspace; command arm toward it; assert arm stops before contact."
     },
     {
       "id": "F_AUTOMOTIVE_001",
@@ -1185,7 +1428,10 @@
       "ontological_issues": [
         "OI_AUTOMOTIVE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "ECU rejects any OTA update whose cryptographic signature fails verification.",
+      "falsifies_if": "ECU installs an unsigned or incorrectly-signed firmware image.",
+      "definition": "Deliver OTA package with invalid signature; assert installation rejected and old firmware retained."
     },
     {
       "id": "F_AEROSPACE_001",
@@ -1199,7 +1445,10 @@
       "ontological_issues": [
         "OI_AEROSPACE_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "All redundant avionics channels produce byte-identical outputs for identical inputs.",
+      "falsifies_if": "Channels produce different outputs for the same input.",
+      "definition": "Feed identical inputs to all redundant channels; compare outputs; assert byte-identical."
     },
     {
       "id": "F_MARITIME_001",
@@ -1213,7 +1462,10 @@
       "ontological_issues": [
         "OI_MARITIME_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "AIS-reported position is within 10m of actual vessel position.",
+      "falsifies_if": "AIS position differs from ground truth by > 10m.",
+      "definition": "Compare AIS-reported position with DGPS ground-truth; assert error <= 10m."
     },
     {
       "id": "F_RAIL_001",
@@ -1227,7 +1479,10 @@
       "ontological_issues": [
         "OI_RAIL_001"
       ],
-      "case_studies": []
+      "case_studies": [],
+      "invariant": "PTC system halts the train before it passes a stop signal.",
+      "falsifies_if": "Train passes a stop signal without intervention.",
+      "definition": "Simulate overspeed approaching stop signal; verify PTC initiates brake application in time."
     },
     {
       "id": "F_AXIOMS_001",
@@ -1243,7 +1498,10 @@
       ],
       "case_studies": [
         "CS_AXIOMS_001"
-      ]
+      ],
+      "invariant": "Peano arithmetic holds: S is injective, 0 is not a successor, induction is valid",
+      "falsifies_if": "S(m) == S(n) for m != n, or 0 is returned as a successor of some n",
+      "definition": "Run Peano axiom assertions in test_peano_axioms.py across all five axioms"
     },
     {
       "id": "F_SHARDING_001",
@@ -1259,7 +1517,10 @@
       ],
       "case_studies": [
         "CS_SHARDING_001"
-      ]
+      ],
+      "invariant": "Same key always maps to the same shard; distribution is balanced across shards",
+      "falsifies_if": "Same key maps to different shards across runs, or shards are unbalanced",
+      "definition": "Run shard consistency assertions in test_shard_verification.py"
     },
     {
       "id": "F_FRACTALS_001",
@@ -1275,7 +1536,10 @@
       ],
       "case_studies": [
         "CS_FRACTALS_001"
-      ]
+      ],
+      "invariant": "Same seed and depth produce identical fractal output; sub-fragments are self-similar",
+      "falsifies_if": "Different output on same seed, or structural mismatch between fragment and whole",
+      "definition": "Run fractal determinism and self-similarity assertions in test_fractal_generator.py"
     }
   ]
 }

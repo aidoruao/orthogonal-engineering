@@ -36,11 +36,14 @@ Usage:
   python scripts/validate_methodology.py --check-tests --check-case-studies --check-domain-coverage
 """
 
+import hashlib
 import json
 import os
 import re
 import sys
+from collections import Counter, defaultdict
 from pathlib import Path
+from typing import DefaultDict, List, Optional, Tuple
 
 
 # ---------------------------------------------------------------------------
@@ -281,10 +284,12 @@ def _collect_tag_metadata() -> tuple:
     tagged = set()
     counts = {}
     locations = {}
+    per_file = {}
     invalid = []
+    empty_files = []
 
     if not TESTS_DIR.exists():
-        return tagged, counts, locations, invalid
+        return tagged, counts, locations, invalid, per_file, empty_files
 
     for path in TESTS_DIR.rglob("*.py"):
         try:
@@ -292,8 +297,15 @@ def _collect_tag_metadata() -> tuple:
         except OSError:
             continue
 
-        for token in TAG_CAPTURE_RE.findall(text):
-            rel = str(path.relative_to(REPO_ROOT)).replace(os.sep, "/")
+        rel = str(path.relative_to(REPO_ROOT)).replace(os.sep, "/")
+        tokens = TAG_CAPTURE_RE.findall(text)
+        per_file[rel] = tokens
+        if not text:
+            empty_files.append(rel)
+        if len(tokens) > 1:
+            invalid.append(f"[tags] {rel}: contains {len(tokens)} @falsification_id tags; expected exactly 1")
+
+        for token in tokens:
             if "-" in token:
                 invalid.append(f"[tags] {rel}: invalid hyphenated falsification_id '{token}'")
                 continue
@@ -307,13 +319,15 @@ def _collect_tag_metadata() -> tuple:
             counts[token] = counts.get(token, 0) + 1
             locations.setdefault(token, set()).add(rel)
 
-    return tagged, counts, locations, invalid
+    return tagged, counts, locations, invalid, per_file, empty_files
 
 
-def check_tag_bijection(ids: dict, schemas: dict) -> list:
+def check_tag_bijection(ids: dict, schemas: dict, tag_state: Optional[tuple] = None) -> list:
     """Ensure test tags bijectively match registry and map to declared test_file paths."""
     errors = []
-    tagged, counts, locations, invalid = _collect_tag_metadata()
+    if tag_state is None:
+        tag_state = _collect_tag_metadata()
+    tagged, counts, locations, invalid, per_file, empty_files = tag_state
     errors.extend(invalid)
 
     expected = ids["f_ids"]
@@ -326,12 +340,7 @@ def check_tag_bijection(ids: dict, schemas: dict) -> list:
     for fid in extra:
         errors.append(f"[tags] Unknown @falsification_id '{fid}' present in tests/")
 
-    for fid in expected:
-        c = counts.get(fid, 0)
-        if c != 1:
-            errors.append(f"[tags] F-ID '{fid}' must appear exactly once; found {c}")
-
-    # Path correspondence: tag location must match registry test_file
+    # Path correspondence and per-file constraints
     ft_index = {t["id"]: t for t in schemas["falsification_tests"].get("falsification_tests", [])}
     for fid in expected:
         if fid not in ft_index:
@@ -342,13 +351,136 @@ def check_tag_bijection(ids: dict, schemas: dict) -> list:
             errors.append(f"[tags] F-ID '{fid}' has empty test_file in registry")
             continue
         tag_paths = locations.get(fid, set())
-        if not tag_paths:
-            continue
-        if len(tag_paths) != 1 or expected_path not in tag_paths:
+        if counts.get(fid, 0) != 1:
+            errors.append(f"[tags] F-ID '{fid}' must appear exactly once; found {counts.get(fid, 0)}")
+        file_tags = per_file.get(expected_path, [])
+        if expected_path in empty_files:
+            errors.append(f"[tags] F-ID '{fid}' test_file '{expected_path}' is empty")
+        if not file_tags:
+            errors.append(f"[tags] Test file '{expected_path}' missing @falsification_id tag for F-ID '{fid}'")
+        elif len(file_tags) != 1:
+            errors.append(f"[tags] Test file '{expected_path}' must contain exactly one @falsification_id tag; found {len(file_tags)}")
+        else:
+            token = file_tags[0]
+            if token != fid:
+                errors.append(
+                    f"[tags] Test file '{expected_path}' tag '{token}' does not match registry F-ID '{fid}'"
+                )
+        if tag_paths and expected_path not in tag_paths:
             errors.append(
                 f"[tags] F-ID '{fid}' tag paths {sorted(tag_paths)} do not match registry test_file '{expected_path}'"
             )
 
+    return errors
+
+
+def check_total_ci_completion(schemas: dict, tag_state: tuple) -> list:
+    """Enforce R==T and R⊆O,C invariants for Total CI Completion."""
+    errors = []
+    tagged, _, _, _, _, _ = tag_state
+    r = {t["id"] for t in schemas["falsification_tests"].get("falsification_tests", [])}
+    t = set(tagged)
+    o = set()
+    c = set()
+
+    for issue in schemas["ontology"].get("issues", []):
+        o.update(issue.get("falsification_tests", []))
+    for case in schemas["case_studies"].get("cases", []):
+        c.update(case.get("falsification_tests", []))
+
+    if r != t:
+        missing = sorted(r - t)
+        extra = sorted(t - r)
+        if missing:
+            errors.append(f"[total-ci] Missing tags for F-IDs: {missing}")
+        if extra:
+            errors.append(f"[total-ci] Extra @falsification_id tags not in registry: {extra}")
+    if not r.issubset(o):
+        errors.append(f"[total-ci] Registry F-IDs not covered by ontology issues: {sorted(r - o)}")
+    if not r.issubset(c):
+        errors.append(f"[total-ci] Registry F-IDs not covered by case studies: {sorted(r - c)}")
+    return errors
+
+
+def check_required_fields(schemas: dict) -> list:
+    errors = []
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        fid = t["id"]
+        for field in ["domain", "invariant", "falsifies_if", "definition"]:
+            if not t.get(field):
+                errors.append(f"[required] F-ID '{fid}' missing required field '{field}'")
+    return errors
+
+
+def check_domain_continuity(schemas: dict) -> list:
+    errors = []
+    domain_map: DefaultDict[str, List[Tuple[int, str]]] = defaultdict(list)
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        fid = t["id"]
+        domain = t.get("domain", "")
+        suffix = fid.rsplit("_", 1)[-1]
+        try:
+            num = int(suffix)
+        except ValueError:
+            errors.append(f"[continuity] F-ID '{fid}' has non-numeric suffix '{suffix}'")
+            continue
+        domain_map[domain].append((num, fid))
+
+    for domain, pairs in sorted(domain_map.items()):
+        if not pairs:
+            continue
+        nums = [n for n, _ in pairs]
+        max_n = max(nums)
+        missing = [n for n in range(1, max_n + 1) if n not in nums]
+        dup_counts = Counter(nums)
+        dupes = sorted(n for n, c in dup_counts.items() if c > 1)
+        if missing:
+            errors.append(f"[continuity] Domain '{domain}' missing indices: {missing}")
+        if dupes:
+            ids_for_dupes = {
+                n: sorted(fid for num, fid in pairs if num == n) for n in dupes
+            }
+            errors.append(
+                f"[continuity] Domain '{domain}' has duplicate indices: {ids_for_dupes}"
+            )
+    return errors
+
+
+def check_shard_hashes(schemas: dict) -> list:
+    errors = []
+    for t in schemas["falsification_tests"].get("falsification_tests", []):
+        if not t.get("sharded"):
+            continue
+        fid = t["id"]
+        shard_files = t.get("shard_files") or []
+        shard_count = t.get("shard_count")
+        canonical_hash = t.get("canonical_hash", "")
+        if shard_count != len(shard_files):
+            errors.append(
+                f"[shard] F-ID '{fid}' shard_count={shard_count} does not match shard_files length {len(shard_files)}"
+            )
+            continue
+        entry_failed = False
+        if not canonical_hash:
+            errors.append(f"[shard] F-ID '{fid}' missing canonical_hash for sharded entry")
+            entry_failed = True
+        hasher = hashlib.sha256()
+        for sfile in shard_files:
+            path = REPO_ROOT / sfile
+            if not path.exists():
+                errors.append(f"[shard] F-ID '{fid}' shard file missing: {sfile}")
+                entry_failed = True
+                continue
+            with path.open("rb") as fh:
+                for chunk in iter(lambda: fh.read(8192), b""):
+                    hasher.update(chunk)
+        if entry_failed:
+            continue
+        digest = hasher.hexdigest()
+        if digest != canonical_hash:
+            errors.append(
+                f"[shard] F-ID '{fid}' canonical_hash mismatch: expected {canonical_hash}, got {digest}"
+            )
     return errors
 
 
@@ -377,6 +509,12 @@ def check_totality_constraints(schemas: dict) -> list:
             tf_path = REPO_ROOT / tf_file
             if not tf_path.exists():
                 errors.append(f"[totality] F-ID '{fid}' test_file does not exist: {tf_node}")
+            else:
+                try:
+                    if tf_path.stat().st_size == 0:
+                        errors.append(f"[totality] F-ID '{fid}' test_file is empty: {tf_node}")
+                except OSError:
+                    errors.append(f"[totality] F-ID '{fid}' test_file not readable: {tf_node}")
 
     for c in schemas["case_studies"].get("cases", []):
         cid = c["id"]
@@ -438,9 +576,14 @@ def main() -> int:
     # 4. ID format & totality checks
     errors.extend(check_id_formats(ids))
     errors.extend(check_totality_constraints(schemas))
+    errors.extend(check_required_fields(schemas))
+    errors.extend(check_domain_continuity(schemas))
+    errors.extend(check_shard_hashes(schemas))
 
     # 5. Tag bijection check (always enforced)
-    errors.extend(check_tag_bijection(ids, schemas))
+    tag_state = _collect_tag_metadata()
+    errors.extend(check_tag_bijection(ids, schemas, tag_state))
+    errors.extend(check_total_ci_completion(schemas, tag_state))
 
     # 6. Implemented-test check
     if check_tests_flag:

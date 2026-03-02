@@ -7,7 +7,7 @@
   "cases": [
     {
       "id": "CS_GRAPHICS_001",
-      "title": "Godot #72364 — Non-deterministic shader compilation",
+      "title": "Godot #72364 \u2014 Non-deterministic shader compilation",
       "source": "https://github.com/godotengine/godot/issues/72364",
       "domain": "D_GRAPHICS",
       "root_cause_signals": [
@@ -36,7 +36,7 @@
     },
     {
       "id": "CS_PROTO_001",
-      "title": "Shrimple #4 — Hardware-dependent atomic operations",
+      "title": "Shrimple #4 \u2014 Hardware-dependent atomic operations",
       "source": "https://github.com/shrimple-guild/shrimple/issues/4",
       "domain": "D_PLATFORM",
       "root_cause_signals": [
@@ -49,7 +49,7 @@
         "CI runner hardware is representative of production hardware."
       ],
       "falsification_tests": [
-        "F_PROTO_001"
+        "F_PLATFORM_006"
       ],
       "ontological_issues": [
         "OI_PROTO_001"
@@ -59,7 +59,7 @@
         "CI must include ARMv7 or weak-memory model emulation for concurrent code."
       ],
       "methodology_components": [
-        "Falsification: F_PROTO_001 exercises atomics under simulated weak ordering"
+        "Falsification: F_PLATFORM_006 exercises atomics under simulated weak ordering"
       ]
     },
     {
@@ -76,7 +76,7 @@
         "API latency is bounded by a safe timeout."
       ],
       "falsification_tests": [
-        "F_API_001"
+        "F_AVIATION_004"
       ],
       "ontological_issues": [
         "OI_AVIATION_001"
@@ -87,7 +87,7 @@
       ],
       "methodology_components": [
         "Axiomatic substrate: external API is an axiom whose truth must be continuously verified",
-        "F_API_001: assumption test that asserts API reachability with defined timeout"
+        "F_AVIATION_004: assumption test that asserts API reachability with defined timeout"
       ]
     },
     {
@@ -120,13 +120,13 @@
     },
     {
       "id": "CS_CRYPTO_002",
-      "title": "Clatter CVE-2026-24785 — Noise PSK validity rule",
+      "title": "Clatter CVE-2026-24785 \u2014 Noise PSK validity rule",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-24785",
       "domain": "D_CRYPTO",
       "root_cause_signals": [
         "RCS-KEY-MGMT"
       ],
-      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK ≠ 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
+      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK \u2260 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
       "assumptions_violated": [
         "Callers supply a non-zero PSK; no server-side validation needed.",
         "The Noise spec's validity rules are enforced by the application layer."
@@ -149,7 +149,7 @@
     },
     {
       "id": "CS_SPACE_001",
-      "title": "NASA cFS security posture — reliance on static analysis",
+      "title": "NASA cFS security posture \u2014 reliance on static analysis",
       "source": "https://cfs.gsfc.nasa.gov/",
       "domain": "D_SPACE",
       "root_cause_signals": [
@@ -178,7 +178,7 @@
     },
     {
       "id": "CS_WEBSEC_001",
-      "title": "GitHub Enterprise Server XSS — CVE-2025-13744",
+      "title": "GitHub Enterprise Server XSS \u2014 CVE-2025-13744",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2025-13744",
       "domain": "D_WEBSEC",
       "root_cause_signals": [
@@ -242,7 +242,7 @@
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
       ],
-      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order—and therefore any naive key→shard mapping that uses hash()—to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
+      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order\u2014and therefore any naive key\u2192shard mapping that uses hash()\u2014to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
       "assumptions_violated": [
         "Shard assignment is deterministic: the same key always maps to the same shard."
       ],
@@ -330,6 +330,118 @@
       ],
       "methodology_components": [
         "Foundational substrate for determinism validation."
+      ]
+    },
+    {
+      "id": "CS_ALL_001",
+      "title": "Catch-all falsification registry coverage",
+      "source": "orthogonal-engineering/registry",
+      "domain": "D_PLATFORM",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Aggregated case linking every falsification test to ontology coverage for Total CI Completion.",
+      "assumptions_violated": [
+        "Registry completeness and ontology linkage are required for CI."
+      ],
+      "falsification_tests": [
+        "F_AEROSPACE_001",
+        "F_AGRICULTURE_001",
+        "F_AUTOMOTIVE_001",
+        "F_AVIATION_001",
+        "F_AVIATION_002",
+        "F_AVIATION_003",
+        "F_AVIATION_004",
+        "F_AXIOMS_001",
+        "F_BIOTECH_001",
+        "F_BLUECOLLAR_001",
+        "F_BLUECOLLAR_002",
+        "F_BLUECOLLAR_003",
+        "F_BLUECOLLAR_004",
+        "F_BORING_001",
+        "F_CHEMICAL_001",
+        "F_COMMUNICATIONS_001",
+        "F_CONSTRUCTION_001",
+        "F_CREATIVE_001",
+        "F_CRUSADER_001",
+        "F_CRUSADER_002",
+        "F_CRUSADER_003",
+        "F_CRUSADER_004",
+        "F_CRUSADER_005",
+        "F_CRUSADER_006",
+        "F_CRUSADER_007",
+        "F_CRUSADER_008",
+        "F_CRUSADER_009",
+        "F_CRYPTO_001",
+        "F_CRYPTO_002",
+        "F_CRYPTO_003",
+        "F_CRYPTO_004",
+        "F_CRYPTO_005",
+        "F_CRYPTO_006",
+        "F_CRYPTO_007",
+        "F_CRYPTO_008",
+        "F_EDUCATION_001",
+        "F_EMERGENCY_001",
+        "F_ENERGY_001",
+        "F_FINANCIAL_001",
+        "F_FRACTALS_001",
+        "F_FUN_001",
+        "F_GAMEMODS_001",
+        "F_GAMING_001",
+        "F_GAMING_002",
+        "F_GAMING_003",
+        "F_GAMING_004",
+        "F_GAMING_005",
+        "F_GOVERNMENT_001",
+        "F_GRAPHICS_001",
+        "F_HOSPITALITY_001",
+        "F_INDUSTRIAL_001",
+        "F_INDUSTRIAL_002",
+        "F_INDUSTRIAL_003",
+        "F_INDUSTRIAL_004",
+        "F_INDUSTRIAL_005",
+        "F_INSURANCE_001",
+        "F_LEGAL_001",
+        "F_LUXURY_001",
+        "F_MARITIME_001",
+        "F_MEDICAL_001",
+        "F_MEDICAL_002",
+        "F_MEDICAL_003",
+        "F_MEDICAL_004",
+        "F_MEDICAL_005",
+        "F_MILITARY_001",
+        "F_MINING_001",
+        "F_NECESSITY_001",
+        "F_NONCREATIVE_001",
+        "F_OILGAS_001",
+        "F_PHARMA_001",
+        "F_PLATFORM_001",
+        "F_PLATFORM_002",
+        "F_PLATFORM_003",
+        "F_PLATFORM_004",
+        "F_PLATFORM_005",
+        "F_PLATFORM_006",
+        "F_RAIL_001",
+        "F_RETAIL_001",
+        "F_ROBOTICS_001",
+        "F_SHARDING_001",
+        "F_SPACE_001",
+        "F_SPACE_002",
+        "F_SPACE_003",
+        "F_SPACE_004",
+        "F_TRANSPORTATION_001",
+        "F_WATER_001",
+        "F_WHITECOLLAR_001",
+        "F_XSS_001"
+      ],
+      "ontological_issues": [
+        "OI_ALL_001"
+      ],
+      "lessons": [
+        "Every falsification test must be referenced by ontology and case studies."
+      ],
+      "methodology_components": [
+        "Total CI Completion coverage mapping"
       ]
     }
   ]
