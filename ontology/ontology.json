@@ -689,6 +689,57 @@
       ],
       "example_falsification_test": "F-RAIL-001",
       "example_ontological_issue": "OI-RAIL-001"
+    },
+    {
+      "id": "D-AXIOMS",
+      "name": "Foundational Axioms (Peano)",
+      "categories": [
+        "peano-arithmetic",
+        "mathematical-foundations",
+        "induction",
+        "successor-function"
+      ],
+      "invariants": [
+        "Peano successor function S(n) is total and injective over natural numbers.",
+        "Zero is not the successor of any natural number.",
+        "Mathematical induction: if a property holds for 0 and is preserved by S, it holds for all naturals."
+      ],
+      "example_falsification_test": "F-AXIOMS-001",
+      "example_ontological_issue": "OI-AXIOMS-001"
+    },
+    {
+      "id": "D-SHARDING",
+      "name": "Data Sharding Invariants",
+      "categories": [
+        "sharding",
+        "determinism",
+        "load-balancing",
+        "data-distribution"
+      ],
+      "invariants": [
+        "Shard assignment is deterministic: the same key always maps to the same shard.",
+        "Shard distribution is balanced: no shard holds more than ceil(N/K)+1 keys.",
+        "Shard reassignment preserves all data: no record is lost during resharding."
+      ],
+      "example_falsification_test": "F-SHARDING-001",
+      "example_ontological_issue": "OI-SHARDING-001"
+    },
+    {
+      "id": "D-FRACTALS",
+      "name": "Fractal Consistency & Self-Similarity",
+      "categories": [
+        "fractals",
+        "self-similarity",
+        "recursive-structures",
+        "determinism"
+      ],
+      "invariants": [
+        "Fractal generation is deterministic: same seed and depth always produce identical output.",
+        "Self-similarity invariant: each sub-fragment is structurally isomorphic to the whole.",
+        "Fractal coverage: the generated structure covers the expected proportion of the target space."
+      ],
+      "example_falsification_test": "F-FRACTALS-001",
+      "example_ontological_issue": "OI-FRACTALS-001"
     }
   ],
   "issues": [
@@ -1484,12 +1535,72 @@
         "F-RAIL-001"
       ],
       "resolution_notes": "TODO: implement F-RAIL-001."
+    },
+    {
+      "id": "OI-AXIOMS-001",
+      "title": "Peano arithmetic violation in successor implementation",
+      "domain": "D-AXIOMS",
+      "category": "invariant-violation",
+      "severity": "critical",
+      "status": "Open",
+      "description": "If the successor function S is not injective (S(m) = S(n) but m ≠ n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
+      "assumptions_violated": [
+        "Peano successor function S(n) is total and injective over natural numbers.",
+        "Zero is not the successor of any natural number."
+      ],
+      "related_cases": [
+        "CS-AXIOMS-001"
+      ],
+      "falsification_tests": [
+        "F-AXIOMS-001"
+      ],
+      "resolution_notes": "Enforce successor injectivity and zero-exclusion as unit-tested invariants in any natural-number arithmetic module."
+    },
+    {
+      "id": "OI-SHARDING-001",
+      "title": "Non-deterministic shard assignment breaks data locality",
+      "domain": "D-SHARDING",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "If shard assignment for a given key varies across runs (e.g., due to hash randomization or ordering instability), records become silently misrouted, causing data loss or ghost reads.",
+      "assumptions_violated": [
+        "Shard assignment is deterministic: the same key always maps to the same shard."
+      ],
+      "related_cases": [
+        "CS-SHARDING-001"
+      ],
+      "falsification_tests": [
+        "F-SHARDING-001"
+      ],
+      "resolution_notes": "Use stable, seed-pinned hash functions (e.g., SHA-256) for shard assignment. Disable Python hash randomization (PYTHONHASHSEED=0) or use explicit key hashing."
+    },
+    {
+      "id": "OI-FRACTALS-001",
+      "title": "Fractal generation non-determinism breaks self-similarity invariant",
+      "domain": "D-FRACTALS",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "If fractal generation uses platform-dependent randomness or floating-point rounding that varies across architectures, the self-similarity invariant breaks: sub-fragments no longer match the whole structurally.",
+      "assumptions_violated": [
+        "Fractal generation is deterministic: same seed and depth always produce identical output.",
+        "Self-similarity invariant: each sub-fragment is structurally isomorphic to the whole."
+      ],
+      "related_cases": [
+        "CS-FRACTALS-001"
+      ],
+      "falsification_tests": [
+        "F-FRACTALS-001"
+      ],
+      "resolution_notes": "Pin the PRNG seed explicitly; use integer arithmetic for fractal coordinate generation to avoid floating-point divergence across platforms."
     }
   ],
   "summary": {
-    "total_domains": 43,
+    "total_domains": 46,
     "total_issues": 45,
     "open": 45,
-    "resolved": 0
+    "resolved": 0,
+    "total_oi_ids": 48
   }
 }

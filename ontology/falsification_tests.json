@@ -3,7 +3,8 @@
     "schema": "deepseek-falsification-tests/1.0",
     "description": "Machine-readable falsification test registry. Each entry defines a falsifiable assumption, the strategy for testing it, and mappings to domains, OI-IDs, and case studies. Tests are assigned F-IDs and can be referenced by test files via the @falsification_id tag.",
     "created": "2026-03-02",
-    "tagging_convention": "Add a comment '# @falsification_id: F-XXX-NNN' at the top of any test that implements or covers a falsification test listed here."
+    "tagging_convention": "Add a comment '# @falsification_id: F-XXX-NNN' at the top of any test that implements or covers a falsification test listed here.",
+    "total_tests": 88
   },
   "falsification_tests": [
     {
@@ -1227,6 +1228,54 @@
         "OI-RAIL-001"
       ],
       "case_studies": []
+    },
+    {
+      "id": "F-AXIOMS-001",
+      "title": "Peano axiom suite: successor injectivity and zero-exclusion",
+      "domain": "D-AXIOMS",
+      "assumption": "Peano arithmetic holds: S is injective, 0 is not a successor, induction is valid",
+      "falsifying_observation": "S(m) == S(n) for m != n, or 0 is returned as a successor of some n",
+      "strategy": "Run Peano axiom assertions in test_peano_axioms.py across all five axioms",
+      "status": "implemented",
+      "test_file": "tests/test_peano_axioms.py",
+      "ontological_issues": [
+        "OI-AXIOMS-001"
+      ],
+      "case_studies": [
+        "CS-AXIOMS-001"
+      ]
+    },
+    {
+      "id": "F-SHARDING-001",
+      "title": "Shard assignment is deterministic and balanced",
+      "domain": "D-SHARDING",
+      "assumption": "Same key always maps to the same shard; distribution is balanced across shards",
+      "falsifying_observation": "Same key maps to different shards across runs, or shards are unbalanced",
+      "strategy": "Run shard consistency assertions in test_shard_verification.py",
+      "status": "implemented",
+      "test_file": "tests/test_shard_verification.py",
+      "ontological_issues": [
+        "OI-SHARDING-001"
+      ],
+      "case_studies": [
+        "CS-SHARDING-001"
+      ]
+    },
+    {
+      "id": "F-FRACTALS-001",
+      "title": "Fractal generation is deterministic and self-similar",
+      "domain": "D-FRACTALS",
+      "assumption": "Same seed and depth produce identical fractal output; sub-fragments are self-similar",
+      "falsifying_observation": "Different output on same seed, or structural mismatch between fragment and whole",
+      "strategy": "Run fractal determinism and self-similarity assertions in test_fractal_generator.py",
+      "status": "implemented",
+      "test_file": "tests/test_fractal_generator.py",
+      "ontological_issues": [
+        "OI-FRACTALS-001"
+      ],
+      "case_studies": [
+        "CS-FRACTALS-001"
+      ]
     }
   ]
 }
