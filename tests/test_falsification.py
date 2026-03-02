@@ -13,6 +13,13 @@ Assumptions tested:
   F-004  stdout/stderr encoding is UTF-8 (PYTHONIOENCODING=utf-8 is honoured)
   F-005  Python's struct.pack('<q', …) encodes int64 in little-endian regardless of host
 
+Falsification registry tags:
+  @falsification_id: F-001
+  @falsification_id: F-002
+  @falsification_id: F-003
+  @falsification_id: F-004
+  @falsification_id: F-005
+
 Author: Orthogonal Engineering
 PR: #28
 Version: 1.0.0

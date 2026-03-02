@@ -1,0 +1,68 @@
+name: DeepSeek Methodology Schema Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ontology/**'
+      - 'scripts/validate_methodology.py'
+      - 'tests/**'
+      - '.github/workflows/deepseek-methodology.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ontology/**'
+      - 'scripts/validate_methodology.py'
+      - 'tests/**'
+      - '.github/workflows/deepseek-methodology.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-schemas:
+    name: Validate Methodology Schemas
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate JSON syntax (all ontology files)
+        run: |
+          for f in ontology/*.json; do
+            python -m json.tool "$f" > /dev/null && echo "OK: $f" || (echo "FAIL: $f"; exit 1)
+          done
+
+      - name: Run methodology schema cross-reference validation
+        run: python scripts/validate_methodology.py
+
+      - name: Run tag-coverage check (warnings only)
+        # Reports F-IDs without @falsification_id tags in tests/ — non-blocking
+        run: python scripts/validate_methodology.py --check-tags || true
+
+  check-existing-falsification-tests:
+    name: Verify Existing Falsification Tests Still Pass
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run F-001..F-005 falsification tests
+        env:
+          PYTHONIOENCODING: utf-8
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
+        run: python -m pytest tests/test_falsification.py -v

@@ -1,0 +1,145 @@
+{
+  "metadata": {
+    "schema": "deepseek-case-studies/1.0",
+    "description": "Real-world case studies linking issues and CVEs to root causes and methodology components (F-IDs, OI-IDs, domains).",
+    "created": "2026-03-02"
+  },
+  "cases": [
+    {
+      "id": "CS-GRAPHICS-001",
+      "title": "Godot #72364 — Non-deterministic shader compilation",
+      "source": "https://github.com/godotengine/godot/issues/72364",
+      "domain": "D-GRAPHICS",
+      "root_cause_signals": ["RCS-NONDETERMINISM", "RCS-ASSUMPTION"],
+      "description": "Godot's RD (RenderingDevice) shader compiler produced different SPIR-V bytecode on different runs due to unordered hash-map iteration order affecting reflection data. The compiled shader binary, and thus the Merkle hash of the pipeline state, was non-deterministic.",
+      "assumptions_violated": [
+        "Shader compilation output is deterministic given identical source.",
+        "Hash-map iteration order does not affect output."
+      ],
+      "falsification_tests": ["F-GRAPHICS-001"],
+      "ontological_issues": ["OI-GRAPHICS-001"],
+      "lessons": [
+        "Replace hash-map iteration with sorted iteration for any pipeline that produces hashed output.",
+        "Backend equivalence tests (Vulkan vs Metal vs D3D) must hash the final bytecode, not the source."
+      ],
+      "methodology_components": ["UVM: witness layer must record shader binary hash", "Falsification: F-GRAPHICS-001 re-compiles shader twice and asserts hash equality"]
+    },
+    {
+      "id": "CS-PROTO-001",
+      "title": "Shrimple #4 — Hardware-dependent atomic operations",
+      "source": "https://github.com/shrimple-guild/shrimple/issues/4",
+      "domain": "D-PLATFORM",
+      "root_cause_signals": ["RCS-NONDETERMINISM", "RCS-ASSUMPTION"],
+      "description": "Shrimple's parallel task system used lock-free atomics whose memory ordering guarantees are hardware-dependent. On ARMv7 targets the weak ordering caused intermittent data races that did not reproduce on x86-64 CI runners.",
+      "assumptions_violated": [
+        "lock-free atomics provide sequentially-consistent ordering on all architectures.",
+        "CI runner hardware is representative of production hardware."
+      ],
+      "falsification_tests": ["F-PROTO-001"],
+      "ontological_issues": ["OI-PROTO-001"],
+      "lessons": [
+        "Always specify explicit memory-ordering semantics (Acquire/Release, SeqCst) rather than relying on hardware defaults.",
+        "CI must include ARMv7 or weak-memory model emulation for concurrent code."
+      ],
+      "methodology_components": ["Falsification: F-PROTO-001 exercises atomics under simulated weak ordering"]
+    },
+    {
+      "id": "CS-AVIATION-001",
+      "title": "FlyByWire METAR/API outages",
+      "source": "https://github.com/flybywiresim/a32nx",
+      "domain": "D-AVIATION",
+      "root_cause_signals": ["RCS-EXTERNAL-DEP"],
+      "description": "The FlyByWire A32NX fetches live METAR weather data from external APIs (AVWX, Pilotedge, etc.). During high-load events these APIs became unavailable, causing the avionics model to freeze or display stale data without notification.",
+      "assumptions_violated": [
+        "External weather API is always available.",
+        "API latency is bounded by a safe timeout."
+      ],
+      "falsification_tests": ["F-API-001"],
+      "ontological_issues": ["OI-AVIATION-001"],
+      "lessons": [
+        "All external API calls must have circuit-breakers, exponential back-off, and cached fallback data.",
+        "An assumption test must periodically probe API health and fail loudly in CI if SLOs are not met."
+      ],
+      "methodology_components": ["Axiomatic substrate: external API is an axiom whose truth must be continuously verified", "F-API-001: assumption test that asserts API reachability with defined timeout"]
+    },
+    {
+      "id": "CS-CRYPTO-001",
+      "title": "PQClean timing leaks (Falcon, Kyber, etc.)",
+      "source": "https://github.com/PQClean/PQClean",
+      "domain": "D-CRYPTO",
+      "root_cause_signals": ["RCS-TIMING"],
+      "description": "Several PQClean implementations (Falcon signature scheme, Kyber KEM) had variable-time code paths in polynomial arithmetic that correlated with secret key bits, enabling timing-based key recovery.",
+      "assumptions_violated": [
+        "Pure C arithmetic is constant-time on all compilers and hardware.",
+        "Compiler optimisations do not introduce secret-dependent branches."
+      ],
+      "falsification_tests": ["F-CRYPTO-001"],
+      "ontological_issues": ["OI-CRYPTO-001"],
+      "lessons": [
+        "Use formally verified constant-time libraries (HACL*, Libsodium, valasm) for secret-dependent operations.",
+        "Compile with -O0 and instrument with ctgrind or dudect; check in CI."
+      ],
+      "methodology_components": ["Witness layer: execution trace must be constant-time over secret distribution", "F-CRYPTO-001: dudect test asserts no timing leak with p < 0.001"]
+    },
+    {
+      "id": "CS-CRYPTO-002",
+      "title": "Clatter CVE-2026-24785 — Noise PSK validity rule",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-24785",
+      "domain": "D-CRYPTO",
+      "root_cause_signals": ["RCS-KEY-MGMT"],
+      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK ≠ 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
+      "assumptions_violated": [
+        "Callers supply a non-zero PSK; no server-side validation needed.",
+        "The Noise spec's validity rules are enforced by the application layer."
+      ],
+      "falsification_tests": ["F-CRYPTO-002"],
+      "ontological_issues": ["OI-CRYPTO-002"],
+      "cve": "CVE-2026-24785",
+      "lessons": [
+        "PSK validity (non-zero, correct length) must be enforced at the library boundary, not assumed from callers.",
+        "Protocol invariants must be encoded as falsification tests that inject invalid keys."
+      ],
+      "methodology_components": ["Peano kernel: protocol validity rule is an axiomatic invariant", "F-CRYPTO-002: asserts PSK=0^32 is rejected with a documented error"]
+    },
+    {
+      "id": "CS-SPACE-001",
+      "title": "NASA cFS security posture — reliance on static analysis",
+      "source": "https://cfs.gsfc.nasa.gov/",
+      "domain": "D-SPACE",
+      "root_cause_signals": ["RCS-STATIC-ONLY"],
+      "description": "The NASA Core Flight System (cFS) security model relies heavily on Coverity / CodeSonar static analysis. A formal assessment found that the absence of runtime enforcement (ASLR off on some targets, no stack canaries, no memory-safe language subset) means vulnerabilities that evade static analysis are undetected until flight.",
+      "assumptions_violated": [
+        "Static analysis catches all exploitable defects.",
+        "Flight hardware is an adversarially-safe environment."
+      ],
+      "falsification_tests": ["F-SPACE-001"],
+      "ontological_issues": ["OI-SPACE-001"],
+      "lessons": [
+        "Static analysis is a necessary but not sufficient security control.",
+        "Runtime enforcement (canaries, memory tagging, capability systems) must complement static tools.",
+        "A falsification test must attempt an exploitation primitive and assert rejection."
+      ],
+      "methodology_components": ["UVM: witness layer records runtime enforcement status", "F-SPACE-001: asserts stack canaries are present in compiled binary"]
+    },
+    {
+      "id": "CS-WEBSEC-001",
+      "title": "GitHub Enterprise Server XSS — CVE-2025-13744",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2025-13744",
+      "domain": "D-WEBSEC",
+      "root_cause_signals": ["RCS-SANITIZATION"],
+      "description": "A stored XSS vulnerability in GitHub Enterprise Server (GHES) allowed an attacker with 'Write' permission to inject arbitrary JavaScript into an issue or pull request body, which executed in the context of other users viewing the page.",
+      "assumptions_violated": [
+        "Markdown rendering sanitizes all HTML before output.",
+        "User-supplied content with Write permission cannot reach the HTML sink unsanitized."
+      ],
+      "falsification_tests": ["F-XSS-001"],
+      "ontological_issues": ["OI-WEBSEC-001"],
+      "cve": "CVE-2025-13744",
+      "lessons": [
+        "All user-controlled input must pass through a context-aware sanitizer (DOMPurify, HTML encode) before reaching an HTML sink.",
+        "A falsification test must inject a canonical XSS payload and assert it is neutralized."
+      ],
+      "methodology_components": ["Witness layer: render output must be compared against allowlist", "F-XSS-001: injects <script>alert(1)</script> and asserts output is escaped"]
+    }
+  ]
+}

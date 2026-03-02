@@ -1,0 +1,56 @@
+{
+  "metadata": {
+    "schema": "deepseek-search-lens/1.0",
+    "description": "DeepSeek-style search lens: domains, artifact types, and root-cause signals used to triage issues and discoveries across the orthogonal-engineering monorepo.",
+    "created": "2026-03-02",
+    "related_schemas": [
+      "ontology/ontology.json",
+      "ontology/falsification_tests.json",
+      "ontology/case_studies.json"
+    ]
+  },
+  "domains": [
+    {"id": "D-CRYPTO",    "name": "Cryptography",       "description": "Post-quantum, classical, and hybrid cryptographic primitives; timing side-channels; key management."},
+    {"id": "D-GRAPHICS",  "name": "Graphics & Shaders",  "description": "GPU shader compilation, rendering determinism, backend equivalence (Vulkan/Metal/D3D/OpenGL)."},
+    {"id": "D-AVIATION",  "name": "Aviation & ATC",      "description": "Flight management, METAR/ATIS parsing, external API reliability, safety-critical timing."},
+    {"id": "D-WEBSEC",    "name": "Web Security",        "description": "XSS, CSRF, injection, authentication, session management on web surfaces."},
+    {"id": "D-SPACE",     "name": "Space Systems",       "description": "NASA cFS, embedded RTOS, static analysis posture, radiation-hardened software."},
+    {"id": "D-GAMEMODS",  "name": "Video Game Mods",     "description": "ASI loaders, native DLL injection, version identity, mod conflict resolution."},
+    {"id": "D-MEDICAL",   "name": "Medical Systems",     "description": "Medical device software, dosimetry, FDA/IEC 62304, fault tolerance."},
+    {"id": "D-INDUSTRIAL","name": "Industrial / OT",     "description": "SCADA, PLC, ICS, OT/IT convergence, real-time control, functional safety (IEC 61508)."},
+    {"id": "D-BLUECOLLAR","name": "Blue-Collar / Trades","description": "Construction, manufacturing, logistics, field-service tooling; worker-safety instrumentation."},
+    {"id": "D-WHITECOLLAR","name":"White-Collar / Knowledge Work","description":"Document pipelines, compliance tooling, audit trails, financial software."},
+    {"id": "D-LUXURY",    "name": "Luxury / High-End",   "description": "Premium consumer devices, high-frequency trading, private aviation software."},
+    {"id": "D-EMERGENCY", "name": "Emergency Response",  "description": "911/dispatch, disaster-response coordination, mass-notification systems."},
+    {"id": "D-NECESSITY", "name": "Necessity / Infrastructure","description":"Power grids, water treatment, telecommunications, food-supply logistics."},
+    {"id": "D-BORING",    "name": "Boring / Commodity",  "description": "CRUD apps, ETL pipelines, report generation — high volume, low glamour, mission-critical at scale."},
+    {"id": "D-FUN",       "name": "Fun / Entertainment", "description": "Games, interactive media, generative art; correctness still matters."},
+    {"id": "D-CREATIVE",  "name": "Creative / Generative","description":"AI art, procedural generation, music synthesis; reproducibility required."},
+    {"id": "D-NONCREATIVE","name":"Non-Creative / Deterministic","description":"Batch processing, compression, data-format conversion; strict reproducibility."},
+    {"id": "D-DISTRIB",   "name": "Distributed Systems", "description": "Consensus, replication, partition tolerance, clock synchronisation."},
+    {"id": "D-PLATFORM",  "name": "Platform / OS",       "description": "Kernel interfaces, cross-platform builds, ABI stability."},
+    {"id": "D-AI",        "name": "AI / ML",             "description": "Model training, inference determinism, alignment constraints."}
+  ],
+  "artifact_types": [
+    {"id": "AT-SOURCE",   "name": "Source Code",          "description": "Production source files (.py, .rs, .cpp, .glsl, etc.)"},
+    {"id": "AT-TEST",     "name": "Test / Spec File",     "description": "Test files that must be tagged with F-IDs and OI-IDs."},
+    {"id": "AT-SCHEMA",   "name": "JSON / YAML Schema",   "description": "Machine-readable schema files in ontology/."},
+    {"id": "AT-WORKFLOW", "name": "CI Workflow",          "description": "GitHub Actions YAML files in .github/workflows/."},
+    {"id": "AT-DOC",      "name": "Documentation",        "description": "Markdown/RST docs, runbooks, architecture notes."},
+    {"id": "AT-BINARY",   "name": "Binary / Artifact",    "description": "Compiled outputs, model weights, serialised data."},
+    {"id": "AT-CONFIG",   "name": "Configuration",        "description": "Deployment configs, environment files, Dockerfiles."},
+    {"id": "AT-EXTERNAL", "name": "External API / Service","description":"Third-party endpoints, weather APIs, package registries."}
+  ],
+  "root_cause_signals": [
+    {"id": "RCS-NONDETERMINISM","name":"Non-determinism",         "description":"Outputs differ across runs, platforms, or hardware due to uncontrolled inputs (PRNG, timing, hardware quirks)."},
+    {"id": "RCS-TIMING",       "name":"Timing Side-channel",      "description":"Execution time varies with secret data, leaking information to an observer."},
+    {"id": "RCS-EXTERNAL-DEP", "name":"External Dependency Outage","description":"Service unavailable; absence of circuit-breaker, fallback, or assumption test."},
+    {"id": "RCS-SANITIZATION", "name":"Input Sanitization Failure","description":"User-supplied input reaches a sensitive sink (HTML renderer, SQL engine, shell) unescaped."},
+    {"id": "RCS-ASSUMPTION",   "name":"Unvalidated Assumption",   "description":"A hardware or API contract was assumed without an explicit falsification test."},
+    {"id": "RCS-STATIC-ONLY",  "name":"Static-Analysis Reliance", "description":"Security posture depends solely on static analysis; no runtime enforcement."},
+    {"id": "RCS-KEY-MGMT",     "name":"Key/Secret Validity",      "description":"Cryptographic key or PSK violates protocol validity rules (e.g., Noise PSK ≠ 0)."},
+    {"id": "RCS-ABI",          "name":"ABI / Version Mismatch",   "description":"Library or API version mismatch causes silent behavioural differences."},
+    {"id": "RCS-CONCURRENCY",  "name":"Concurrency Hazard",       "description":"Race condition, deadlock, or atomicity violation."},
+    {"id": "RCS-RESOURCE",     "name":"Resource Exhaustion",      "description":"Memory, file-descriptor, or CPU budget exceeded under production load."}
+  ]
+}
