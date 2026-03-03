@@ -18,12 +18,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
+
+REQUIRED_ENV = {
+    "PYTHONHASHSEED": "0",
+    "PYTHONUTF8": "1",
+    "LC_ALL": "C",
+    "TZ": "UTC",
+}
 
 try:
     from enforcement_matrix_generator import ci_workflows
@@ -34,6 +42,19 @@ except ImportError as exc:
     ) from exc
 
 
+def _enforce_deterministic_env() -> None:
+    """Fail fast if deterministic env guards are not set."""
+    missing = {
+        key: val for key, val in REQUIRED_ENV.items() if os.environ.get(key) != val
+    }
+    if missing:
+        needed = " ".join(f"{k}={v}" for k, v in missing.items())
+        raise SystemExit(
+            "[ci-preflight] deterministic environment required; "
+            f"set: {needed} (note: PYTHONHASHSEED must be set before interpreter start)"
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="List all CI workflow files with hashes.")
     parser.add_argument(
@@ -42,6 +63,8 @@ def main() -> int:
         help="Emit JSON instead of human-readable output",
     )
     args = parser.parse_args()
+
+    _enforce_deterministic_env()
 
     workflows: List[Dict[str, str]] = ci_workflows()
     total = len(workflows)
