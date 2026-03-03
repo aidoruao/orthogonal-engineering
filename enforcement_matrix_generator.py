@@ -20,9 +20,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import subprocess
 import sys
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -45,34 +45,47 @@ def _hash_file(fpath: Path) -> str:
         return "ERROR"
 
 
-def _ci_workflows() -> List[Dict]:
+def ci_workflows() -> List[Dict[str, str]]:
     """
     Enumerate all workflow definitions in the repository.
 
     Includes GitHub Actions workflows (.github/workflows) and auxiliary
-    workflow specs kept under workflows/.
+    workflow specs kept under workflows/. Each record includes:
+      - path: repo-relative path to the workflow file
+      - name: filename only (retained for backward compatibility)
+      - hash: SHA-256 of the workflow file contents
     """
     workflow_dirs = [
         REPO_ROOT / ".github" / "workflows",
         REPO_ROOT / "workflows",
     ]
 
-    result: List[Dict] = []
+    result: List[Dict[str, str]] = []
     for wf_dir in workflow_dirs:
         if not wf_dir.exists():
             continue
 
-        for wf in sorted(wf_dir.rglob("*")):
-            if wf.suffix not in {".yml", ".yaml"}:
-                continue
+        workflow_files = sorted(
+            set(wf_dir.rglob("*.yml")) | set(wf_dir.rglob("*.yaml"))
+        )
 
+        for wf in workflow_files:
             result.append({
-                "path": str(wf.relative_to(REPO_ROOT)).replace(os.sep, "/"),
+                "path": wf.relative_to(REPO_ROOT).as_posix(),
                 "name": wf.name,
                 "hash": _hash_file(wf),
             })
 
     return result
+
+
+def _ci_workflows() -> List[Dict[str, str]]:
+    warnings.warn(
+        "_ci_workflows is deprecated; use ci_workflows instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return ci_workflows()
 
 
 def _test_files() -> List[Dict]:

@@ -20,17 +20,18 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import List, TypedDict
+from typing import Dict, List
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from enforcement_matrix_generator import REPO_ROOT as MATRIX_ROOT, _ci_workflows
-
-
-class WorkflowRecord(TypedDict):
-    path: str
-    hash: str
+try:
+    from enforcement_matrix_generator import ci_workflows
+except ImportError as exc:
+    raise SystemExit(
+        "ci_preflight.py must be run from within the repository root; "
+        "failed to import enforcement_matrix_generator."
+    ) from exc
 
 
 def main() -> int:
@@ -42,14 +43,14 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    workflows: List[WorkflowRecord] = _ci_workflows()
+    workflows: List[Dict[str, str]] = ci_workflows()
     total = len(workflows)
 
     if args.json:
         print(json.dumps({"count": total, "workflows": workflows}, indent=2))
         return 0
 
-    print(f"[ci-preflight] Found {total} workflow file(s) under {MATRIX_ROOT}")
+    print(f"[ci-preflight] Found {total} workflow file(s) under {REPO_ROOT}")
     for wf in workflows:
         print(f"  - {wf['path']}  {wf['hash']}")
 
@@ -57,4 +58,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    sys.exit(main())
