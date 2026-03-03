@@ -46,15 +46,32 @@ def _hash_file(fpath: Path) -> str:
 
 
 def _ci_workflows() -> List[Dict]:
-    wf_dir = REPO_ROOT / ".github" / "workflows"
-    result = []
-    if wf_dir.exists():
-        for wf in sorted(wf_dir.iterdir()):
-            if wf.suffix in {".yml", ".yaml"}:
-                result.append({
-                    "name": wf.name,
-                    "hash": _hash_file(wf),
-                })
+    """
+    Enumerate all workflow definitions in the repository.
+
+    Includes GitHub Actions workflows (.github/workflows) and auxiliary
+    workflow specs kept under workflows/.
+    """
+    workflow_dirs = [
+        REPO_ROOT / ".github" / "workflows",
+        REPO_ROOT / "workflows",
+    ]
+
+    result: List[Dict] = []
+    for wf_dir in workflow_dirs:
+        if not wf_dir.exists():
+            continue
+
+        for wf in sorted(wf_dir.rglob("*")):
+            if wf.suffix not in {".yml", ".yaml"}:
+                continue
+
+            result.append({
+                "path": str(wf.relative_to(REPO_ROOT)).replace(os.sep, "/"),
+                "name": wf.name,
+                "hash": _hash_file(wf),
+            })
+
     return result
 
 

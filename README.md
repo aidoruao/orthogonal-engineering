@@ -8,6 +8,7 @@ New AI instances and GitHub Copilot agents should start here:
 - **[MEMORY.md](MEMORY.md)** — Durable architectural facts and constraints (read before any session).
 - **[STATE.md](STATE.md)** — Current system state, established proofs, and open questions.
 - **[HANDOFF_TEMPLATE.md](HANDOFF_TEMPLATE.md)** — Template for end-of-session handoff summaries.
+- **[CI_PREFLIGHT.md](docs/CI_PREFLIGHT.md)** — Quick check of all workflow files and hashes before triggering full CI.
 
 ```bash
 # Quick start for any new agent instance
