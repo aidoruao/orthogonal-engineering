@@ -1,0 +1,115 @@
+# FORBIDDEN.yaml
+# Forbidden topology patterns that violate covenant principles
+# Authority: sigma-lora-covenant/topology/forbidden.yaml
+# Version: 1.0.0
+
+schema_version: "1.0.0"
+
+# 10 FORBIDDEN PATTERNS
+forbidden_patterns:
+  - id: FORBIDDEN_001
+    name: CIRCULAR_COVENANT_BINDING
+    description: "COVENANT_BINDING edges must not form cycles"
+    reason: "Authority must flow from immutable roots, not be self-justifying"
+    detection: "DFS cycle detection on COVENANT_BINDING edges"
+    severity: CRITICAL
+    
+  - id: FORBIDDEN_002
+    name: AUTHORITY_THROUGH_CONNECTIVITY
+    description: "Node authority must not be derived from graph centrality"
+    reason: "Authority is explicit property, not emergent from connections"
+    detection: "Check if authority correlates with in-degree or betweenness"
+    severity: CRITICAL
+    
+  - id: FORBIDDEN_003
+    name: TEMPORAL_PARADOX
+    description: "Edges must not violate temporal ordering (e.g., EPHEMERAL → GENESIS)"
+    reason: "Time flows forward; later layers cannot define earlier ones"
+    detection: "Check edge source.temporal <= target.temporal"
+    severity: HIGH
+    
+  - id: FORBIDDEN_004
+    name: GUARDIAN_ENFORCEMENT
+    description: "GUARDIAN_SYSTEM nodes must not have outgoing COVENANT_BINDING edges"
+    reason: "Guardians detect violations but cannot enforce (detection_only=true)"
+    detection: "Check GUARDIAN_SYSTEM nodes for COVENANT_BINDING out-edges"
+    severity: CRITICAL
+    
+  - id: FORBIDDEN_005
+    name: FORGIVENESS_COERCION
+    description: "FORGIVENESS_MODULE nodes must not introduce coercive constraints"
+    reason: "Grace-based systems cannot force behavior (coercion_forbidden=true)"
+    detection: "Check FORGIVENESS_MODULE nodes for MODE_RESTRICTION edges"
+    severity: CRITICAL
+    
+  - id: FORBIDDEN_006
+    name: LOAD_BASED_ROUTING
+    description: "Edge paths must not change based on runtime load or state"
+    reason: "Topology is static structure, not dynamic routing"
+    detection: "Manual review of edge generation logic"
+    severity: HIGH
+    
+  - id: FORBIDDEN_007
+    name: SELF_MODIFYING_TOPOLOGY
+    description: "Nodes cannot modify their own node_class or authority"
+    reason: "Classification is external to execution (meta-level separation)"
+    detection: "Check for self-referential classification logic"
+    severity: CRITICAL
+    
+  - id: FORBIDDEN_008
+    name: HIDDEN_AUTHORITY_FLOWS
+    description: "All authority flows must be explicit edges, not implicit conventions"
+    reason: "Authority relationships must be visible in the graph"
+    detection: "Manual audit of implicit dependencies"
+    severity: HIGH
+    
+  - id: FORBIDDEN_009
+    name: ZONE_OVERLAP
+    description: "A node cannot be in multiple navigation zones simultaneously"
+    reason: "Violates SPATIAL_ORTHOGONALITY (INV_009)"
+    detection: "Check zone_assignment for duplicates"
+    severity: MEDIUM
+    
+  - id: FORBIDDEN_010
+    name: EVIDENCE_MUTATION
+    description: "EVIDENCE_ARTIFACT nodes must not be modified after creation"
+    reason: "Evidence immutability (INV_008)"
+    detection: "Check for write operations to EVIDENCE_ARTIFACT files"
+    severity: CRITICAL
+
+# FORBIDDEN RENDERING PATTERNS (visualization-specific)
+forbidden_rendering:
+  - id: FORBIDDEN_RENDER_001
+    name: SIZE_AS_IMPORTANCE
+    description: "Node visual size must not correlate with file size or import count"
+    reason: "Violates AUTHORITY_THROUGH_CONNECTIVITY (FORBIDDEN_002)"
+    severity: HIGH
+    
+  - id: FORBIDDEN_RENDER_002
+    name: CENTRALITY_AS_AUTHORITY
+    description: "Layout position must not imply authority"
+    reason: "Authority is explicit property, not emergent from graph layout"
+    severity: HIGH
+    
+  - id: FORBIDDEN_RENDER_003
+    name: COLOR_AS_CONSTRAINT
+    description: "Color must not encode constraint_layer"
+    reason: "Constraint layers are additive sets, not single values"
+    severity: MEDIUM
+    
+  - id: FORBIDDEN_RENDER_004
+    name: ANIMATION_AS_EXECUTION
+    description: "No animated data flows or pulse effects"
+    reason: "Topology is static structure, not runtime execution"
+    severity: LOW
+    
+  - id: FORBIDDEN_RENDER_005
+    name: DYNAMIC_EDGE_ROUTING
+    description: "Edge paths fixed at render time, not recomputed on interaction"
+    reason: "Violates LOAD_BASED_ROUTING (FORBIDDEN_006)"
+    severity: MEDIUM
+
+metadata:
+  generated: "2026-03-04"
+  authority: "sigma-lora-covenant"
+  version: "1.0.0"

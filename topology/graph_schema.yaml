@@ -1,0 +1,233 @@
+# GRAPH_SCHEMA.yaml
+# Formal topology structure for covenant-aware repositories
+# Authority: Derived from sigma-lora-covenant principles
+# Version: 1.0.0
+
+schema_version: "1.0.0"
+authority: "sigma-lora-covenant"
+
+# 10 NODE CLASSES - typed vertices in the topology graph
+nodes:
+  COVENANT_ROOT:
+    description: "Immutable foundational documents defining system invariants"
+    examples: ["covenant.yaml", "INVARIANTS.json", "AI_INSTRUCTIONS.md"]
+    authority: EXTERNAL_ONLY
+    temporal: GENESIS
+    cardinality: "1..10"
+    
+  PRINCIPLE_MODULE:
+    description: "Executable enforcement of covenant principles"
+    examples: ["src/principles.py"]
+    authority: VALIDATED
+    temporal: FOUNDATION
+    cardinality: "1..*"
+    
+  OPERATIONAL_MODE_ENFORCER:
+    description: "Mode-specific constraint enforcement systems"
+    examples: ["src/operational_modes.py"]
+    authority: VALIDATED
+    temporal: FOUNDATION
+    cardinality: "0..*"
+    
+  GUARDIAN_SYSTEM:
+    description: "Detection systems that watch for violations"
+    examples: ["JESUS_REALITY_GUARDIAN.py", ".jesus_reality_guardian_state.json"]
+    authority: VALIDATED
+    temporal: SUBSTRATE
+    detection_only: true
+    cardinality: "1..*"
+    
+  CORRESPONDENCE_BRIDGE:
+    description: "Bidirectional mappings between formal and actual state"
+    examples: ["correspondence_bridge/", "correspondence_validator.py"]
+    authority: VALIDATED
+    temporal: SUBSTRATE
+    bidirectional: true
+    cardinality: "0..*"
+    
+  FORGIVENESS_MODULE:
+    description: "Grace-based recovery systems (no coercion)"
+    examples: ["forgiveness_system/", "affective_constraint_system.py"]
+    authority: UNRESTRICTED
+    temporal: OVERLAY
+    coercion_forbidden: true
+    cardinality: "0..*"
+    
+  VIOLATION_LOG:
+    description: "Append-only violation records"
+    examples: [".ontological_violations/", ".jesus_reality_violations/"]
+    authority: IMMUTABLE
+    temporal: EPHEMERAL
+    append_only: true
+    cardinality: "0..*"
+    
+  EVIDENCE_ARTIFACT:
+    description: "Immutable audit trails and evidence packages"
+    examples: ["evidence/", "canonical_evidence/", "sha256_*.json"]
+    authority: IMMUTABLE
+    temporal: EPHEMERAL
+    self_describing: true
+    cardinality: "0..*"
+    
+  INFRASTRUCTURE_REGISTRY:
+    description: "Dynamic infrastructure resource registries"
+    examples: ["src/infrastructure.py"]
+    authority: UNRESTRICTED
+    temporal: FOUNDATION
+    resource_count_fixed: false
+    cardinality: "0..1"
+    
+  DOCUMENTATION_INDEX:
+    description: "Entry points and navigational documentation"
+    examples: ["README.md", "_START_HERE.md", "QUICK_REFERENCE.md"]
+    authority: UNRESTRICTED
+    temporal: OVERLAY
+    references_only: true
+    cardinality: "1..*"
+    
+  UNCLASSIFIED:
+    description: "Files not yet classified into formal node types"
+    authority: UNRESTRICTED
+    temporal: OVERLAY
+    zone: "zone_8_unclassified"
+    visible_at: "zoom_level_2"
+    cardinality: "*"
+
+# 8 EDGE CLASSES - typed connections between nodes
+edges:
+  COVENANT_BINDING:
+    description: "Direct authority flow from covenant to enforcement"
+    source: COVENANT_ROOT
+    target: [PRINCIPLE_MODULE, GUARDIAN_SYSTEM]
+    directionality: UNI
+    line_style: "thick_solid"
+    axis: [AUTHORITY, CONSTRAINT_LAYER]
+    
+  DEPENDENCY_IMPORT:
+    description: "Standard code dependency (import/require)"
+    source: "*"
+    target: "*"
+    directionality: UNI
+    line_style: "thin_solid"
+    axis: [NONE]
+    
+  VERIFICATION_CHAIN:
+    description: "Evidence chain for validation"
+    source: "*"
+    target: EVIDENCE_ARTIFACT
+    directionality: UNI
+    line_style: "dotted"
+    axis: [VERIFICATION_REQUIREMENT]
+    
+  MODE_RESTRICTION:
+    description: "Operational mode constraints"
+    source: OPERATIONAL_MODE_ENFORCER
+    target: "*"
+    directionality: UNI
+    line_style: "dashed"
+    axis: [CONSTRAINT_LAYER]
+    
+  GUARDIAN_WATCH:
+    description: "Guardian observation relationship"
+    source: GUARDIAN_SYSTEM
+    target: "*"
+    directionality: UNI
+    line_style: "thin_dashed"
+    axis: [CONSTRAINT_LAYER]
+    
+  CORRESPONDENCE_MAPPING:
+    description: "Bidirectional formal-actual mapping"
+    source: CORRESPONDENCE_BRIDGE
+    target: "*"
+    directionality: BI
+    line_style: "double_line"
+    axis: [VERIFICATION_REQUIREMENT]
+    
+  VIOLATION_REFERENCE:
+    description: "Link from violator to violation log"
+    source: "*"
+    target: VIOLATION_LOG
+    directionality: UNI
+    line_style: "wavy"
+    axis: [TEMPORAL_ORDERING]
+    
+  SPATIAL_CONTAINMENT:
+    description: "Directory/module containment (hidden by default)"
+    source: "*"
+    target: "*"
+    directionality: UNI
+    line_style: "hidden_by_default"
+    axis: [NONE]
+
+# 7 AXES - dimensions of classification
+axes:
+  AUTHORITY:
+    description: "Who can modify this node"
+    values: [IMMUTABLE, EXTERNAL_ONLY, VALIDATED, UNRESTRICTED]
+    
+  CONSTRAINT_LAYER:
+    description: "Which constraint layers apply"
+    values: [COMPOSITE, SINGLE, GRACE, KENOSIS, NONE]
+    additive: true  # Nodes can have multiple constraint layers
+    
+  VERIFICATION_REQUIREMENT:
+    description: "How this node must be verified"
+    values: [HASH_CHAIN, CORRESPONDENCE, FALSIFIABLE, NONE]
+    
+  TEMPORAL_ORDERING:
+    description: "Position in system lifecycle"
+    values: [GENESIS, FOUNDATION, SUBSTRATE, OVERLAY, EPHEMERAL]
+    
+  DIRECTIONALITY:
+    description: "Edge direction"
+    values: [UNI, BI]
+    
+  DETECTION_CAPABILITY:
+    description: "Can detect violations"
+    values: [true, false]
+    
+  COERCION_POLICY:
+    description: "Whether coercion is allowed"
+    values: [FORBIDDEN, ALLOWED]
+
+# 10 INVARIANTS - properties that must hold
+invariants:
+  - id: INV_001
+    name: COVENANT_ROOT_REACHABILITY
+    description: "All classified nodes must be reachable from a COVENANT_ROOT"
+    
+  - id: INV_002
+    name: AUTHORITY_MONOTONICITY
+    description: "Authority flows down (EXTERNAL_ONLY → VALIDATED → UNRESTRICTED)"
+    
+  - id: INV_003
+    name: TEMPORAL_ORDERING
+    description: "Edges respect temporal ordering (GENESIS → FOUNDATION → SUBSTRATE → OVERLAY → EPHEMERAL)"
+    
+  - id: INV_004
+    name: VIOLATION_LOG_APPEND_ONLY
+    description: "VIOLATION_LOG nodes only accept append operations"
+    
+  - id: INV_005
+    name: GUARDIAN_DETECTION_ONLY
+    description: "GUARDIAN_SYSTEM nodes cannot enforce, only detect"
+    
+  - id: INV_006
+    name: CORRESPONDENCE_BIDIRECTIONALITY
+    description: "CORRESPONDENCE_MAPPING edges must be bidirectional"
+    
+  - id: INV_007
+    name: FORGIVENESS_NO_COERCION
+    description: "FORGIVENESS_MODULE nodes cannot introduce coercion"
+    
+  - id: INV_008
+    name: EVIDENCE_IMMUTABILITY
+    description: "EVIDENCE_ARTIFACT nodes are immutable after creation"
+    
+  - id: INV_009
+    name: SPATIAL_ORTHOGONALITY
+    description: "Zones do not overlap (each node in exactly one zone)"
+    
+  - id: INV_010
+    name: CLASSIFICATION_COMPLETENESS
+    description: "Every file is either classified or in zone_8_unclassified"

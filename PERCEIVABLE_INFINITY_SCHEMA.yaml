@@ -1,0 +1,364 @@
+# PERCEIVABLE_INFINITY_SCHEMA.yaml
+# Renders covenant topology graph as interactive HTML
+# Authority: Derived from sigma-lora-covenant graph_schema.yaml
+# Does not add meaning -- only makes existing structure visible
+
+schema_version: "1.0.0"
+source_authority: "topology/graph_schema.yaml"
+generated: "2026-03-04"
+
+# RENDERING LAYERS - what gets drawn
+rendering_layers:
+  # Layer 0: Zone layout (outermost container)
+  zone_layer:
+    description: "Navigation zones as visual regions"
+    renderer: "css_grid_or_force_cluster"
+    source: "TOPOLOGY_MAP.yaml → navigation_zones"
+    visual_mapping:
+      zone_to_region:
+        shape: "rounded_container"
+        label: "zone_id + change_policy"
+        border_style_by_change_policy:
+          EXTERNAL_AUTHORITY_ONLY: "solid 3px #ff4444"
+          TIGHTEN_ONLY: "dashed 2px #ffaa00"
+          PRESERVE_BIJECTION: "double 3px #00aaff"
+          NO_COERCION_INTRODUCTION: "dotted 2px #aa00ff"
+          ADDITIVE_ONLY: "solid 1px #00ff88"
+          HONOR_UPSTREAM_CONSTRAINTS: "solid 1px #888888"
+          REFLECT_ACTUAL_STATE: "none"
+    constraint: "Zone regions do not overlap (SPATIAL_ORTHOGONALITY)"
+
+  # Layer 1: Node rendering (inside zones)
+  node_layer:
+    description: "Files/modules as typed visual nodes"
+    renderer: "svg_or_div"
+    source: "graph_schema.yaml → nodes"
+    visual_mapping:
+      node_class_to_shape:
+        COVENANT_ROOT: "octagon"
+        PRINCIPLE_MODULE: "hexagon"
+        OPERATIONAL_MODE_ENFORCER: "diamond"
+        GUARDIAN_SYSTEM: "shield"
+        CORRESPONDENCE_BRIDGE: "double_circle"
+        FORGIVENESS_MODULE: "rounded_rect"
+        VIOLATION_LOG: "scroll"
+        EVIDENCE_ARTIFACT: "document"
+        INFRASTRUCTURE_REGISTRY: "cylinder"
+        DOCUMENTATION_INDEX: "page"
+        UNCLASSIFIED: "circle"
+      temporal_to_vertical_position:
+        GENESIS: "top"
+        FOUNDATION: "upper"
+        SUBSTRATE: "middle"
+        OVERLAY: "lower"
+        EPHEMERAL: "bottom"
+      authority_to_opacity:
+        IMMUTABLE: 1.0
+        EXTERNAL_ONLY: 0.95
+        VALIDATED: 0.8
+        UNRESTRICTED: 0.6
+      node_class_to_color:
+        COVENANT_ROOT: "#ff4444"
+        PRINCIPLE_MODULE: "#00aaff"
+        OPERATIONAL_MODE_ENFORCER: "#ffaa00"
+        GUARDIAN_SYSTEM: "#aa00ff"
+        CORRESPONDENCE_BRIDGE: "#00ff88"
+        FORGIVENESS_MODULE: "#ff88aa"
+        VIOLATION_LOG: "#ffff00"
+        EVIDENCE_ARTIFACT: "#88ffff"
+        INFRASTRUCTURE_REGISTRY: "#aaaaaa"
+        DOCUMENTATION_INDEX: "#ffffff"
+        UNCLASSIFIED: "#666666"
+
+  # Layer 2: Edge rendering (connections)
+  edge_layer:
+    description: "Typed edges between nodes"
+    renderer: "svg_path_or_canvas"
+    source: "graph_schema.yaml → edges"
+    visual_mapping:
+      edge_class_to_line_style:
+        COVENANT_BINDING: 
+          style: "solid"
+          width: 3
+          color: "#ff4444"
+        DEPENDENCY_IMPORT:
+          style: "solid"
+          width: 1
+          color: "#888888"
+        VERIFICATION_CHAIN:
+          style: "dotted"
+          width: 2
+          color: "#00aaff"
+        MODE_RESTRICTION:
+          style: "dashed"
+          width: 2
+          color: "#ffaa00"
+        GUARDIAN_WATCH:
+          style: "dashed"
+          width: 1
+          color: "#aa00ff"
+        CORRESPONDENCE_MAPPING:
+          style: "double"
+          width: 2
+          color: "#00ff88"
+        VIOLATION_REFERENCE:
+          style: "wavy"
+          width: 1
+          color: "#ffff00"
+        SPATIAL_CONTAINMENT:
+          style: "hidden"
+          width: 0
+          color: "transparent"
+      directionality_to_arrowhead:
+        UNI: "single_arrow"
+        BI: "double_arrow"
+
+  # Layer 3: Metadata overlay (on hover/click)
+  metadata_layer:
+    description: "Detail panel on interaction"
+    renderer: "html_panel"
+    fields:
+      - node_id
+      - node_class
+      - authority
+      - constraint_layer
+      - verification
+      - temporal
+      - file_path
+      - file_size
+      - sha256 (from GENESIS_MANIFEST if available)
+      - incoming_edges (count + list)
+      - outgoing_edges (count + list)
+      - zone_membership
+      - violation_count (from violation_logs)
+      - last_modified
+
+# NAVIGATION PROTOCOL - how users move through it
+navigation_protocol:
+  # Entry point: always covenant root
+  entry: "COVENANT_ROOT node"
+  
+  # Zoom levels (structured perception, not brute rendering)
+  zoom_levels:
+    level_0_zones:
+      description: "7 zones visible, nodes collapsed"
+      shows: "zone_layer only"
+      interaction: "click zone to expand"
+      node_count_displayed: 0
+      
+    level_1_classified:
+      description: "Classified nodes visible within selected zone"
+      shows: "zone_layer + node_layer (classified only)"
+      interaction: "click node for edges + metadata"
+      node_count_displayed: "classified_nodes only (~50-100)"
+      
+    level_2_full:
+      description: "All nodes in zone visible (including unclassified)"
+      shows: "all layers"
+      interaction: "full interactivity"
+      node_count_displayed: "all nodes in zone"
+  
+  # Search operates across all zoom levels
+  search:
+    by_node_id: true
+    by_node_class: true
+    by_constraint_layer: true
+    by_temporal: true
+    by_violation_status: true
+    by_file_path: true
+    
+  # Filtering
+  filters:
+    edge_class_toggle: "show/hide specific edge types"
+    temporal_range: "show only GENESIS..SUBSTRATE"
+    authority_minimum: "show only VALIDATED+"
+    violation_highlight: "glow nodes with violations"
+    zone_filter: "show only specific zones"
+
+# CLASSIFICATION PIPELINE - how 66k files get classified
+classification_pipeline:
+  # Phase 1: Census (file enumeration)
+  census:
+    source: "os.walk with ignore patterns"
+    ignore_patterns:
+      - ".git"
+      - "__pycache__"
+      - "node_modules"
+      - "*.pyc"
+      - ".pytest_cache"
+      - "*.egg-info"
+    output: "file_id → {path, size, ext, depth, last_modified}"
+    
+  # Phase 2: Dependency extraction
+  dependencies:
+    source: "regex import patterns"
+    patterns:
+      python: "^\\s*(?:from|import)\\s+([\\w.]+)"
+      javascript: "^\\s*(?:import|require)\\(['\"]([^'\"]+)['\"]\\)"
+      yaml: "^\\s*-\\s*path:\\s*(.+)$"
+    output: "file_id → {imports[]}"
+    
+  # Phase 3: Node classification (maps to 10 node_classes)
+  classification:
+    rules:
+      - match: "covenant.yaml"
+        assign: COVENANT_ROOT
+        priority: 100
+      - match: "INVARIANTS.json OR AI_INSTRUCTIONS.md"
+        assign: COVENANT_ROOT
+        priority: 100
+      - match: "src/principles.py"
+        assign: PRINCIPLE_MODULE
+        priority: 90
+      - match: "src/operational_modes.py"
+        assign: OPERATIONAL_MODE_ENFORCER
+        priority: 90
+      - match: "*GUARDIAN*.py OR *guardian*.py"
+        assign: GUARDIAN_SYSTEM
+        priority: 80
+      - match: "correspondence_bridge/* OR correspondence_*.py"
+        assign: CORRESPONDENCE_BRIDGE
+        priority: 70
+      - match: "forgiveness_system/* OR *forgiveness*.py OR affective_*.py"
+        assign: FORGIVENESS_MODULE
+        priority: 70
+      - match: ".ontological_violations/* OR .jesus_reality_violations/* OR .final_guardian_violations/*"
+        assign: VIOLATION_LOG
+        priority: 60
+      - match: "evidence/* OR canonical_evidence/* OR audit_results/* OR sha256_*.json"
+        assign: EVIDENCE_ARTIFACT
+        priority: 60
+      - match: "src/infrastructure.py"
+        assign: INFRASTRUCTURE_REGISTRY
+        priority: 50
+      - match: "README.md OR _START_HERE.md OR ONBOARD_FIRST.md OR QUICK_REFERENCE.md OR index.html"
+        assign: DOCUMENTATION_INDEX
+        priority: 40
+      - match: "**/* (default)"
+        assign: UNCLASSIFIED
+        priority: 0
+        zone: "zone_8_unclassified"
+        
+  # Phase 4: Edge classification (maps imports to 8 edge_classes)  
+  edge_classification:
+    rules:
+      - if_source: COVENANT_ROOT
+        and_target: [PRINCIPLE_MODULE, GUARDIAN_SYSTEM]
+        assign: COVENANT_BINDING
+      - if_source: GUARDIAN_SYSTEM
+        and_target: "*"
+        assign: GUARDIAN_WATCH
+      - if_source_or_target: CORRESPONDENCE_BRIDGE
+        assign: CORRESPONDENCE_MAPPING
+      - if_source: "*violating*"
+        and_target: VIOLATION_LOG
+        assign: VIOLATION_REFERENCE
+      - if_target: EVIDENCE_ARTIFACT
+        assign: VERIFICATION_CHAIN
+      - if_source: OPERATIONAL_MODE_ENFORCER
+        assign: MODE_RESTRICTION
+      - default: DEPENDENCY_IMPORT
+        
+  # Phase 5: Zone assignment
+  zone_assignment:
+    source: "TOPOLOGY_MAP.yaml → navigation_zones"
+    unclassified_files: "assigned to zone_8_unclassified (visible at zoom_level_2 only)"
+    rules:
+      - zone: zone_1_immutable_authority
+        node_classes: [COVENANT_ROOT, GUARDIAN_SYSTEM]
+        change_policy: EXTERNAL_AUTHORITY_ONLY
+      - zone: zone_2_detection_enforcement
+        node_classes: [VIOLATION_LOG]
+        paths: ["input_guard.py", "output_validator.py", "gaslighting_detector.py"]
+        change_policy: TIGHTEN_ONLY
+      - zone: zone_3_correspondence_bridge
+        node_classes: [CORRESPONDENCE_BRIDGE]
+        change_policy: PRESERVE_BIJECTION
+      - zone: zone_4_forgiveness_grace
+        node_classes: [FORGIVENESS_MODULE]
+        change_policy: NO_COERCION_INTRODUCTION
+      - zone: zone_5_analysis_reporting
+        node_classes: [EVIDENCE_ARTIFACT]
+        paths: ["analysis/", "baseline_analysis/"]
+        change_policy: ADDITIVE_ONLY
+      - zone: zone_6_deployment_orchestration
+        paths: ["orchestration/", "workflows/", "automation/", "scripts/"]
+        change_policy: HONOR_UPSTREAM_CONSTRAINTS
+      - zone: zone_7_documentation
+        node_classes: [DOCUMENTATION_INDEX]
+        paths: ["documentation/"]
+        change_policy: REFLECT_ACTUAL_STATE
+      - zone: zone_8_unclassified
+        node_classes: [UNCLASSIFIED]
+        change_policy: UNRESTRICTED
+
+# IMPLEMENTATION ARCHITECTURE
+implementation:
+  entry_point: "topology/topology_scanner.py → TopologyScanner.scan()"
+  pipeline:
+    - step: 1
+      module: "TopologyScanner"
+      function: "scan"
+      output: "census + dependencies"
+    - step: 2
+      module: "TopologyScanner"
+      function: "classify_nodes"
+      output: "node_id → node_class"
+    - step: 3
+      module: "TopologyScanner"
+      function: "classify_edges"
+      output: "edge_id → edge_class"
+    - step: 4
+      module: "TopologyScanner"
+      function: "assign_zones"
+      output: "node_id → zone_id"
+    - step: 5
+      module: "GraphLoader"
+      function: "load"
+      output: "topology_graph.json"
+    - step: 6
+      module: "Renderer"
+      function: "render"
+      output: "PERCEIVABLE_INFINITY.html"
+      
+  output_files:
+    - "topology_graph.json" # Serialized graph for re-rendering
+    - "PERCEIVABLE_INFINITY.html" # Interactive visualization
+    - "topology_classification_report.json" # Classification statistics
+
+# FORBIDDEN PATTERNS (from forbidden.yaml)
+forbidden_patterns_enforced:
+  - CIRCULAR_COVENANT_BINDING
+  - AUTHORITY_THROUGH_CONNECTIVITY
+  - TEMPORAL_PARADOX
+  - GUARDIAN_ENFORCEMENT
+  - FORGIVENESS_COERCION
+  - LOAD_BASED_ROUTING
+  - SELF_MODIFYING_TOPOLOGY
+  - HIDDEN_AUTHORITY_FLOWS
+  - ZONE_OVERLAP
+  - EVIDENCE_MUTATION
+  
+forbidden_rendering_enforced:
+  - SIZE_AS_IMPORTANCE
+  - CENTRALITY_AS_AUTHORITY
+  - COLOR_AS_CONSTRAINT
+  - ANIMATION_AS_EXECUTION
+  - DYNAMIC_EDGE_ROUTING
+
+metadata:
+  schema_name: "PERCEIVABLE_INFINITY"
+  version: "1.0.0"
+  authority: "sigma-lora-covenant"
+  repository: "orthogonal-engineering"
+  generated: "2026-03-04"
+  estimated_node_count: 66000
+  classified_node_count_target: "50-100"
+  unclassified_node_count_target: "~65900"
+  zones: 8
+  node_classes: 11 # 10 + UNCLASSIFIED
+  edge_classes: 8
+  axes: 7
+  invariants: 10
+  forbidden_patterns: 10
+  forbidden_rendering: 5
