@@ -1,0 +1,350 @@
+{
+  "metadata": {
+    "schema": "deepseek-search-lens/1.0",
+    "description": "DeepSeek-style search lens: domains, artifact types, and root-cause signals used to triage issues and discoveries across the orthogonal-engineering monorepo.",
+    "created": "2026-03-02",
+    "related_schemas": [
+      "ontology/ontology.json",
+      "ontology/falsification_tests.json",
+      "ontology/case_studies.json"
+    ]
+  },
+  "domains": [
+    {
+      "id": "D_CRYPTO",
+      "name": "Cryptography",
+      "description": "Post-quantum, classical, and hybrid cryptographic primitives; timing side-channels; key management."
+    },
+    {
+      "id": "D_GRAPHICS",
+      "name": "Graphics & Shaders",
+      "description": "GPU shader compilation, rendering determinism, backend equivalence (Vulkan/Metal/D3D/OpenGL)."
+    },
+    {
+      "id": "D_AVIATION",
+      "name": "Aviation & ATC",
+      "description": "Flight management, METAR/ATIS parsing, external API reliability, safety-critical timing."
+    },
+    {
+      "id": "D_WEBSEC",
+      "name": "Web Security",
+      "description": "XSS, CSRF, injection, authentication, session management on web surfaces."
+    },
+    {
+      "id": "D_SPACE",
+      "name": "Space Systems",
+      "description": "NASA cFS, embedded RTOS, static analysis posture, radiation-hardened software."
+    },
+    {
+      "id": "D_GAMEMODS",
+      "name": "Video Game Mods",
+      "description": "ASI loaders, native DLL injection, version identity, mod conflict resolution."
+    },
+    {
+      "id": "D_MEDICAL",
+      "name": "Medical Systems",
+      "description": "Medical device software, dosimetry, FDA/IEC 62304, fault tolerance."
+    },
+    {
+      "id": "D_INDUSTRIAL",
+      "name": "Industrial / OT",
+      "description": "SCADA, PLC, ICS, OT/IT convergence, real-time control, functional safety (IEC 61508)."
+    },
+    {
+      "id": "D_BLUECOLLAR",
+      "name": "Blue-Collar / Trades",
+      "description": "Construction, manufacturing, logistics, field-service tooling; worker-safety instrumentation."
+    },
+    {
+      "id": "D_WHITECOLLAR",
+      "name": "White-Collar / Knowledge Work",
+      "description": "Document pipelines, compliance tooling, audit trails, financial software."
+    },
+    {
+      "id": "D_LUXURY",
+      "name": "Luxury / High-End",
+      "description": "Premium consumer devices, high-frequency trading, private aviation software."
+    },
+    {
+      "id": "D_EMERGENCY",
+      "name": "Emergency Response",
+      "description": "911/dispatch, disaster-response coordination, mass-notification systems."
+    },
+    {
+      "id": "D_NECESSITY",
+      "name": "Necessity / Infrastructure",
+      "description": "Power grids, water treatment, telecommunications, food-supply logistics."
+    },
+    {
+      "id": "D_BORING",
+      "name": "Boring / Commodity",
+      "description": "CRUD apps, ETL pipelines, report generation — high volume, low glamour, mission-critical at scale."
+    },
+    {
+      "id": "D_FUN",
+      "name": "Fun / Entertainment",
+      "description": "Games, interactive media, generative art; correctness still matters."
+    },
+    {
+      "id": "D_CREATIVE",
+      "name": "Creative / Generative",
+      "description": "AI art, procedural generation, music synthesis; reproducibility required."
+    },
+    {
+      "id": "D_NONCREATIVE",
+      "name": "Non-Creative / Deterministic",
+      "description": "Batch processing, compression, data-format conversion; strict reproducibility."
+    },
+    {
+      "id": "D_DISTRIB",
+      "name": "Distributed Systems",
+      "description": "Consensus, replication, partition tolerance, clock synchronisation."
+    },
+    {
+      "id": "D_PLATFORM",
+      "name": "Platform / OS",
+      "description": "Kernel interfaces, cross-platform builds, ABI stability."
+    },
+    {
+      "id": "D_AI",
+      "name": "AI / ML",
+      "description": "Model training, inference determinism, alignment constraints."
+    },
+    {
+      "id": "D_GAMING",
+      "name": "Gaming",
+      "description": "Video games, online multiplayer, anti-cheat, save-file compatibility, network packet safety."
+    },
+    {
+      "id": "D_CRUSADER",
+      "name": "Crusader Fly-Control",
+      "description": "Automated biological pest-control unit: UV, fungal spores, refrigeration, witness layer."
+    },
+    {
+      "id": "D_AGRICULTURE",
+      "name": "Agriculture",
+      "description": "Precision farming, irrigation control, pesticide dispensing, livestock monitoring."
+    },
+    {
+      "id": "D_TRANSPORTATION",
+      "name": "Transportation",
+      "description": "Road, rail, maritime, aviation logistics; fleet management; real-time tracking."
+    },
+    {
+      "id": "D_ENERGY",
+      "name": "Energy",
+      "description": "Power generation, smart grid, renewable integration, demand-response systems."
+    },
+    {
+      "id": "D_WATER",
+      "name": "Water and Utilities",
+      "description": "Water treatment, distribution, quality monitoring, SCADA for utilities."
+    },
+    {
+      "id": "D_COMMUNICATIONS",
+      "name": "Communications",
+      "description": "Telecom infrastructure, 5G, satellite, CDN, messaging platforms."
+    },
+    {
+      "id": "D_FINANCIAL",
+      "name": "Financial",
+      "description": "Banking, trading, settlement, fraud detection, regulatory reporting."
+    },
+    {
+      "id": "D_INSURANCE",
+      "name": "Insurance",
+      "description": "Actuarial models, claims processing, telematics, risk scoring."
+    },
+    {
+      "id": "D_LEGAL",
+      "name": "Legal",
+      "description": "Document management, e-discovery, contract analysis, compliance tooling."
+    },
+    {
+      "id": "D_EDUCATION",
+      "name": "Education",
+      "description": "LMS platforms, remote proctoring, adaptive learning, credential integrity."
+    },
+    {
+      "id": "D_GOVERNMENT",
+      "name": "Government",
+      "description": "Public-sector IT, benefits systems, voting infrastructure, digital identity."
+    },
+    {
+      "id": "D_MILITARY",
+      "name": "Military and Defense",
+      "description": "Command and control, secure comms, autonomous weapons safety, cyber-warfare."
+    },
+    {
+      "id": "D_RETAIL",
+      "name": "Retail",
+      "description": "POS systems, inventory management, e-commerce, supply-chain integrity."
+    },
+    {
+      "id": "D_HOSPITALITY",
+      "name": "Hospitality",
+      "description": "Hotel/restaurant management, reservation systems, PCI-DSS compliance."
+    },
+    {
+      "id": "D_CONSTRUCTION",
+      "name": "Construction",
+      "description": "BIM, structural analysis, site safety, heavy-equipment telemetry."
+    },
+    {
+      "id": "D_MINING",
+      "name": "Mining",
+      "description": "Underground sensor networks, gas detection, equipment health monitoring."
+    },
+    {
+      "id": "D_OILGAS",
+      "name": "Oil and Gas",
+      "description": "Pipeline SCADA, blowout prevention, environmental monitoring, refinery control."
+    },
+    {
+      "id": "D_CHEMICAL",
+      "name": "Chemical",
+      "description": "Reactor control, hazardous-material handling, process safety (IEC 61511)."
+    },
+    {
+      "id": "D_PHARMA",
+      "name": "Pharmaceuticals",
+      "description": "GMP compliance, batch-record integrity, cold-chain monitoring, FDA 21 CFR Part 11."
+    },
+    {
+      "id": "D_BIOTECH",
+      "name": "Biotechnology",
+      "description": "DNA sequencing pipelines, lab automation, reagent tracking, biosafety levels."
+    },
+    {
+      "id": "D_ROBOTICS",
+      "name": "Robotics",
+      "description": "Robot kinematics, collision avoidance, shared-workspace safety, ROS determinism."
+    },
+    {
+      "id": "D_AUTOMOTIVE",
+      "name": "Automotive",
+      "description": "AUTOSAR, ISO 26262 functional safety, CAN bus integrity, OTA updates."
+    },
+    {
+      "id": "D_AEROSPACE",
+      "name": "Aerospace",
+      "description": "DO-178C, avionics certification, structural health monitoring, propulsion control."
+    },
+    {
+      "id": "D_MARITIME",
+      "name": "Maritime",
+      "description": "AIS, ship navigation, bilge monitoring, maritime cybersecurity (IMO 2021)."
+    },
+    {
+      "id": "D_RAIL",
+      "name": "Rail",
+      "description": "ETCS, signalling, positive train control, track-circuit integrity, IEC 62280."
+    },
+    {
+      "id": "D_AXIOMS",
+      "name": "Foundational Axioms (Peano)"
+    },
+    {
+      "id": "D_SHARDING",
+      "name": "Data Sharding Invariants"
+    },
+    {
+      "id": "D_FRACTALS",
+      "name": "Fractal Consistency"
+    }
+  ],
+  "artifact_types": [
+    {
+      "id": "AT-SOURCE",
+      "name": "Source Code",
+      "description": "Production source files (.py, .rs, .cpp, .glsl, etc.)"
+    },
+    {
+      "id": "AT-TEST",
+      "name": "Test / Spec File",
+      "description": "Test files that must be tagged with F-IDs and OI-IDs."
+    },
+    {
+      "id": "AT-SCHEMA",
+      "name": "JSON / YAML Schema",
+      "description": "Machine-readable schema files in ontology/."
+    },
+    {
+      "id": "AT-WORKFLOW",
+      "name": "CI Workflow",
+      "description": "GitHub Actions YAML files in .github/workflows/."
+    },
+    {
+      "id": "AT-DOC",
+      "name": "Documentation",
+      "description": "Markdown/RST docs, runbooks, architecture notes."
+    },
+    {
+      "id": "AT-BINARY",
+      "name": "Binary / Artifact",
+      "description": "Compiled outputs, model weights, serialised data."
+    },
+    {
+      "id": "AT-CONFIG",
+      "name": "Configuration",
+      "description": "Deployment configs, environment files, Dockerfiles."
+    },
+    {
+      "id": "AT-EXTERNAL",
+      "name": "External API / Service",
+      "description": "Third-party endpoints, weather APIs, package registries."
+    }
+  ],
+  "root_cause_signals": [
+    {
+      "id": "RCS-NONDETERMINISM",
+      "name": "Non-determinism",
+      "description": "Outputs differ across runs, platforms, or hardware due to uncontrolled inputs (PRNG, timing, hardware quirks)."
+    },
+    {
+      "id": "RCS-TIMING",
+      "name": "Timing Side-channel",
+      "description": "Execution time varies with secret data, leaking information to an observer."
+    },
+    {
+      "id": "RCS-EXTERNAL-DEP",
+      "name": "External Dependency Outage",
+      "description": "Service unavailable; absence of circuit-breaker, fallback, or assumption test."
+    },
+    {
+      "id": "RCS-SANITIZATION",
+      "name": "Input Sanitization Failure",
+      "description": "User-supplied input reaches a sensitive sink (HTML renderer, SQL engine, shell) unescaped."
+    },
+    {
+      "id": "RCS-ASSUMPTION",
+      "name": "Unvalidated Assumption",
+      "description": "A hardware or API contract was assumed without an explicit falsification test."
+    },
+    {
+      "id": "RCS-STATIC-ONLY",
+      "name": "Static-Analysis Reliance",
+      "description": "Security posture depends solely on static analysis; no runtime enforcement."
+    },
+    {
+      "id": "RCS-KEY-MGMT",
+      "name": "Key/Secret Validity",
+      "description": "Cryptographic key or PSK violates protocol validity rules (e.g., Noise PSK ≠ 0)."
+    },
+    {
+      "id": "RCS-ABI",
+      "name": "ABI / Version Mismatch",
+      "description": "Library or API version mismatch causes silent behavioural differences."
+    },
+    {
+      "id": "RCS-CONCURRENCY",
+      "name": "Concurrency Hazard",
+      "description": "Race condition, deadlock, or atomicity violation."
+    },
+    {
+      "id": "RCS-RESOURCE",
+      "name": "Resource Exhaustion",
+      "description": "Memory, file-descriptor, or CPU budget exceeded under production load."
+    }
+  ]
+}

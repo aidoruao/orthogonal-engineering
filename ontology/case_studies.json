@@ -1,0 +1,448 @@
+{
+  "metadata": {
+    "schema": "deepseek-case-studies/1.0",
+    "description": "Real-world case studies linking issues and CVEs to root causes and methodology components (F-IDs, OI-IDs, domains).",
+    "created": "2026-03-02"
+  },
+  "cases": [
+    {
+      "id": "CS_GRAPHICS_001",
+      "title": "Godot #72364 \u2014 Non-deterministic shader compilation",
+      "source": "https://github.com/godotengine/godot/issues/72364",
+      "domain": "D_GRAPHICS",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Godot's RD (RenderingDevice) shader compiler produced different SPIR-V bytecode on different runs due to unordered hash-map iteration order affecting reflection data. The compiled shader binary, and thus the Merkle hash of the pipeline state, was non-deterministic.",
+      "assumptions_violated": [
+        "Shader compilation output is deterministic given identical source.",
+        "Hash-map iteration order does not affect output."
+      ],
+      "falsification_tests": [
+        "F_GRAPHICS_001"
+      ],
+      "ontological_issues": [
+        "OI_GRAPHICS_001"
+      ],
+      "lessons": [
+        "Replace hash-map iteration with sorted iteration for any pipeline that produces hashed output.",
+        "Backend equivalence tests (Vulkan vs Metal vs D3D) must hash the final bytecode, not the source."
+      ],
+      "methodology_components": [
+        "UVM: witness layer must record shader binary hash",
+        "Falsification: F_GRAPHICS_001 re-compiles shader twice and asserts hash equality"
+      ]
+    },
+    {
+      "id": "CS_PROTO_001",
+      "title": "Shrimple #4 \u2014 Hardware-dependent atomic operations",
+      "source": "https://github.com/shrimple-guild/shrimple/issues/4",
+      "domain": "D_PLATFORM",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Shrimple's parallel task system used lock-free atomics whose memory ordering guarantees are hardware-dependent. On ARMv7 targets the weak ordering caused intermittent data races that did not reproduce on x86-64 CI runners.",
+      "assumptions_violated": [
+        "lock-free atomics provide sequentially-consistent ordering on all architectures.",
+        "CI runner hardware is representative of production hardware."
+      ],
+      "falsification_tests": [
+        "F_PLATFORM_006"
+      ],
+      "ontological_issues": [
+        "OI_PROTO_001"
+      ],
+      "lessons": [
+        "Always specify explicit memory-ordering semantics (Acquire/Release, SeqCst) rather than relying on hardware defaults.",
+        "CI must include ARMv7 or weak-memory model emulation for concurrent code."
+      ],
+      "methodology_components": [
+        "Falsification: F_PLATFORM_006 exercises atomics under simulated weak ordering"
+      ]
+    },
+    {
+      "id": "CS_AVIATION_001",
+      "title": "FlyByWire METAR/API outages",
+      "source": "https://github.com/flybywiresim/a32nx",
+      "domain": "D_AVIATION",
+      "root_cause_signals": [
+        "RCS-EXTERNAL-DEP"
+      ],
+      "description": "The FlyByWire A32NX fetches live METAR weather data from external APIs (AVWX, Pilotedge, etc.). During high-load events these APIs became unavailable, causing the avionics model to freeze or display stale data without notification.",
+      "assumptions_violated": [
+        "External weather API is always available.",
+        "API latency is bounded by a safe timeout."
+      ],
+      "falsification_tests": [
+        "F_AVIATION_004"
+      ],
+      "ontological_issues": [
+        "OI_AVIATION_001"
+      ],
+      "lessons": [
+        "All external API calls must have circuit-breakers, exponential back-off, and cached fallback data.",
+        "An assumption test must periodically probe API health and fail loudly in CI if SLOs are not met."
+      ],
+      "methodology_components": [
+        "Axiomatic substrate: external API is an axiom whose truth must be continuously verified",
+        "F_AVIATION_004: assumption test that asserts API reachability with defined timeout"
+      ]
+    },
+    {
+      "id": "CS_CRYPTO_001",
+      "title": "PQClean timing leaks (Falcon, Kyber, etc.)",
+      "source": "https://github.com/PQClean/PQClean",
+      "domain": "D_CRYPTO",
+      "root_cause_signals": [
+        "RCS-TIMING"
+      ],
+      "description": "Several PQClean implementations (Falcon signature scheme, Kyber KEM) had variable-time code paths in polynomial arithmetic that correlated with secret key bits, enabling timing-based key recovery.",
+      "assumptions_violated": [
+        "Pure C arithmetic is constant-time on all compilers and hardware.",
+        "Compiler optimisations do not introduce secret-dependent branches."
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_001"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_001"
+      ],
+      "lessons": [
+        "Use formally verified constant-time libraries (HACL*, Libsodium, valasm) for secret-dependent operations.",
+        "Compile with -O0 and instrument with ctgrind or dudect; check in CI."
+      ],
+      "methodology_components": [
+        "Witness layer: execution trace must be constant-time over secret distribution",
+        "F_CRYPTO_001: dudect test asserts no timing leak with p < 0.001"
+      ]
+    },
+    {
+      "id": "CS_CRYPTO_002",
+      "title": "Clatter CVE-2026-24785 \u2014 Noise PSK validity rule",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-24785",
+      "domain": "D_CRYPTO",
+      "root_cause_signals": [
+        "RCS-KEY-MGMT"
+      ],
+      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK \u2260 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
+      "assumptions_violated": [
+        "Callers supply a non-zero PSK; no server-side validation needed.",
+        "The Noise spec's validity rules are enforced by the application layer."
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_002"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_002"
+      ],
+      "cve": "CVE-2026-24785",
+      "lessons": [
+        "PSK validity (non-zero, correct length) must be enforced at the library boundary, not assumed from callers.",
+        "Protocol invariants must be encoded as falsification tests that inject invalid keys."
+      ],
+      "methodology_components": [
+        "Peano kernel: protocol validity rule is an axiomatic invariant",
+        "F_CRYPTO_002: asserts PSK=0^32 is rejected with a documented error"
+      ]
+    },
+    {
+      "id": "CS_SPACE_001",
+      "title": "NASA cFS security posture \u2014 reliance on static analysis",
+      "source": "https://cfs.gsfc.nasa.gov/",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-STATIC-ONLY"
+      ],
+      "description": "The NASA Core Flight System (cFS) security model relies heavily on Coverity / CodeSonar static analysis. A formal assessment found that the absence of runtime enforcement (ASLR off on some targets, no stack canaries, no memory-safe language subset) means vulnerabilities that evade static analysis are undetected until flight.",
+      "assumptions_violated": [
+        "Static analysis catches all exploitable defects.",
+        "Flight hardware is an adversarially-safe environment."
+      ],
+      "falsification_tests": [
+        "F_SPACE_001"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_001"
+      ],
+      "lessons": [
+        "Static analysis is a necessary but not sufficient security control.",
+        "Runtime enforcement (canaries, memory tagging, capability systems) must complement static tools.",
+        "A falsification test must attempt an exploitation primitive and assert rejection."
+      ],
+      "methodology_components": [
+        "UVM: witness layer records runtime enforcement status",
+        "F_SPACE_001: asserts stack canaries are present in compiled binary"
+      ]
+    },
+    {
+      "id": "CS_WEBSEC_001",
+      "title": "GitHub Enterprise Server XSS \u2014 CVE-2025-13744",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2025-13744",
+      "domain": "D_WEBSEC",
+      "root_cause_signals": [
+        "RCS-SANITIZATION"
+      ],
+      "description": "A stored XSS vulnerability in GitHub Enterprise Server (GHES) allowed an attacker with 'Write' permission to inject arbitrary JavaScript into an issue or pull request body, which executed in the context of other users viewing the page.",
+      "assumptions_violated": [
+        "Markdown rendering sanitizes all HTML before output.",
+        "User-supplied content with Write permission cannot reach the HTML sink unsanitized."
+      ],
+      "falsification_tests": [
+        "F_XSS_001"
+      ],
+      "ontological_issues": [
+        "OI_WEBSEC_001"
+      ],
+      "cve": "CVE-2025-13744",
+      "lessons": [
+        "All user-controlled input must pass through a context-aware sanitizer (DOMPurify, HTML encode) before reaching an HTML sink.",
+        "A falsification test must inject a canonical XSS payload and assert it is neutralized."
+      ],
+      "methodology_components": [
+        "Witness layer: render output must be compared against allowlist",
+        "F_XSS_001: injects <script>alert(1)</script> and asserts output is escaped"
+      ]
+    },
+    {
+      "id": "CS_AXIOMS_001",
+      "title": "Peano arithmetic violations in natural-number implementations",
+      "source": "https://github.com/aidoruao/orthogonal-engineering/blob/main/tests/test_peano_axioms.py",
+      "domain": "D_AXIOMS",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION",
+        "RCS-STATIC-ONLY"
+      ],
+      "description": "Natural-number arithmetic implementations that omit injectivity or zero-exclusion checks allow contradictions to propagate silently through inductive proofs. The orthogonal-engineering Peano axiom test suite formalises these as CI-enforced invariants.",
+      "assumptions_violated": [
+        "Peano successor function S(n) is total and injective over natural numbers.",
+        "Zero is not the successor of any natural number."
+      ],
+      "falsification_tests": [
+        "F_AXIOMS_001"
+      ],
+      "ontological_issues": [
+        "OI_AXIOMS_001"
+      ],
+      "lessons": [
+        "Formalise all five Peano axioms as unit tests before building any arithmetic abstraction.",
+        "Mathematical induction proofs in code must have a matching property-based test."
+      ],
+      "methodology_components": [
+        "Falsification: F_AXIOMS_001 asserts all five Peano axioms over the successor implementation."
+      ]
+    },
+    {
+      "id": "CS_SHARDING_001",
+      "title": "Hash-randomization breaks deterministic shard assignment",
+      "source": "https://docs.python.org/3/using/cmdline.html#envvar-PYTHONHASHSEED",
+      "domain": "D_SHARDING",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order\u2014and therefore any naive key\u2192shard mapping that uses hash()\u2014to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
+      "assumptions_violated": [
+        "Shard assignment is deterministic: the same key always maps to the same shard."
+      ],
+      "falsification_tests": [
+        "F_SHARDING_001"
+      ],
+      "ontological_issues": [
+        "OI_SHARDING_001"
+      ],
+      "lessons": [
+        "Use SHA-256 or another stable hash for shard-key assignment, never Python's hash().",
+        "Pin PYTHONHASHSEED=0 in test environments to catch hash-dependent ordering bugs early."
+      ],
+      "methodology_components": [
+        "Falsification: F_SHARDING_001 asserts shard determinism and balance across multiple runs."
+      ]
+    },
+    {
+      "id": "CS_FRACTALS_001",
+      "title": "Platform-dependent floating-point divergence in fractal generators",
+      "source": "https://github.com/aidoruao/orthogonal-engineering/blob/main/tests/test_fractal_generator.py",
+      "domain": "D_FRACTALS",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Fractal generators that use platform-dependent floating-point arithmetic (e.g., x87 vs SSE2 extended precision) produce structurally different outputs across architectures, breaking the self-similarity invariant used for reproducible verification hashes.",
+      "assumptions_violated": [
+        "Fractal generation is deterministic: same seed and depth always produce identical output.",
+        "Self-similarity invariant: each sub-fragment is structurally isomorphic to the whole."
+      ],
+      "falsification_tests": [
+        "F_FRACTALS_001"
+      ],
+      "ontological_issues": [
+        "OI_FRACTALS_001"
+      ],
+      "lessons": [
+        "Use integer-coordinate fractal algorithms to eliminate floating-point platform divergence.",
+        "Hash the full output buffer and compare across architectures in CI."
+      ],
+      "methodology_components": [
+        "Falsification: F_FRACTALS_001 asserts determinism and self-similarity of fractal output."
+      ]
+    },
+    {
+      "id": "CS_PLATFORM_001",
+      "title": "Cross-platform determinism substrate",
+      "source": "internal",
+      "domain": "D_PLATFORM",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM"
+      ],
+      "description": "Foundational platform determinism checks for hashing, arithmetic, paths, encoding, and endianness.",
+      "assumptions_violated": [
+        "Platform differences must not alter canonical hashes or encodings."
+      ],
+      "falsification_tests": [
+        "F_PLATFORM_001",
+        "F_PLATFORM_002",
+        "F_PLATFORM_003",
+        "F_PLATFORM_004",
+        "F_PLATFORM_005"
+      ],
+      "ontological_issues": [
+        "OI_PLATFORM_001",
+        "OI_PLATFORM_002",
+        "OI_PLATFORM_003",
+        "OI_PLATFORM_004",
+        "OI_PLATFORM_005",
+        "OI_PLATFORM_006",
+        "OI_PLATFORM_007",
+        "OI_PLATFORM_008",
+        "OI_PLATFORM_009",
+        "OI_PLATFORM_010",
+        "OI_PLATFORM_011",
+        "OI_PLATFORM_012",
+        "OI_PLATFORM_013",
+        "OI_PLATFORM_014",
+        "OI_PLATFORM_015",
+        "OI_PLATFORM_016"
+      ],
+      "lessons": [
+        "Normalize encodings, paths, and integer arithmetic across OS/runtimes."
+      ],
+      "methodology_components": [
+        "Foundational substrate for determinism validation."
+      ]
+    },
+    {
+      "id": "CS_ALL_001",
+      "title": "Catch-all falsification registry coverage",
+      "source": "orthogonal-engineering/registry",
+      "domain": "D_PLATFORM",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Aggregated case linking every falsification test to ontology coverage for Total CI Completion.",
+      "assumptions_violated": [
+        "Registry completeness and ontology linkage are required for CI."
+      ],
+      "falsification_tests": [
+        "F_AEROSPACE_001",
+        "F_AGRICULTURE_001",
+        "F_AUTOMOTIVE_001",
+        "F_AVIATION_001",
+        "F_AVIATION_002",
+        "F_AVIATION_003",
+        "F_AVIATION_004",
+        "F_AXIOMS_001",
+        "F_BIOTECH_001",
+        "F_BLUECOLLAR_001",
+        "F_BLUECOLLAR_002",
+        "F_BLUECOLLAR_003",
+        "F_BLUECOLLAR_004",
+        "F_BORING_001",
+        "F_CHEMICAL_001",
+        "F_COMMUNICATIONS_001",
+        "F_CONSTRUCTION_001",
+        "F_CREATIVE_001",
+        "F_CRUSADER_001",
+        "F_CRUSADER_002",
+        "F_CRUSADER_003",
+        "F_CRUSADER_004",
+        "F_CRUSADER_005",
+        "F_CRUSADER_006",
+        "F_CRUSADER_007",
+        "F_CRUSADER_008",
+        "F_CRUSADER_009",
+        "F_CRYPTO_001",
+        "F_CRYPTO_002",
+        "F_CRYPTO_003",
+        "F_CRYPTO_004",
+        "F_CRYPTO_005",
+        "F_CRYPTO_006",
+        "F_CRYPTO_007",
+        "F_CRYPTO_008",
+        "F_EDUCATION_001",
+        "F_EMERGENCY_001",
+        "F_ENERGY_001",
+        "F_FINANCIAL_001",
+        "F_FRACTALS_001",
+        "F_FUN_001",
+        "F_GAMEMODS_001",
+        "F_GAMING_001",
+        "F_GAMING_002",
+        "F_GAMING_003",
+        "F_GAMING_004",
+        "F_GAMING_005",
+        "F_GOVERNMENT_001",
+        "F_GRAPHICS_001",
+        "F_HOSPITALITY_001",
+        "F_INDUSTRIAL_001",
+        "F_INDUSTRIAL_002",
+        "F_INDUSTRIAL_003",
+        "F_INDUSTRIAL_004",
+        "F_INDUSTRIAL_005",
+        "F_INSURANCE_001",
+        "F_LEGAL_001",
+        "F_LUXURY_001",
+        "F_MARITIME_001",
+        "F_MEDICAL_001",
+        "F_MEDICAL_002",
+        "F_MEDICAL_003",
+        "F_MEDICAL_004",
+        "F_MEDICAL_005",
+        "F_MILITARY_001",
+        "F_MINING_001",
+        "F_NECESSITY_001",
+        "F_NONCREATIVE_001",
+        "F_OILGAS_001",
+        "F_PHARMA_001",
+        "F_PLATFORM_001",
+        "F_PLATFORM_002",
+        "F_PLATFORM_003",
+        "F_PLATFORM_004",
+        "F_PLATFORM_005",
+        "F_PLATFORM_006",
+        "F_RAIL_001",
+        "F_RETAIL_001",
+        "F_ROBOTICS_001",
+        "F_SHARDING_001",
+        "F_SPACE_001",
+        "F_SPACE_002",
+        "F_SPACE_003",
+        "F_SPACE_004",
+        "F_TRANSPORTATION_001",
+        "F_WATER_001",
+        "F_WHITECOLLAR_001",
+        "F_XSS_001"
+      ],
+      "ontological_issues": [
+        "OI_ALL_001"
+      ],
+      "lessons": [
+        "Every falsification test must be referenced by ontology and case studies."
+      ],
+      "methodology_components": [
+        "Total CI Completion coverage mapping"
+      ]
+    }
+  ]
+}

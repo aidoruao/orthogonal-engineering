@@ -1,0 +1,81 @@
+name: DeepSeek Methodology Schema Validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ontology/**'
+      - 'scripts/validate_methodology.py'
+      - 'tests/**'
+      - '.github/workflows/deepseek-methodology.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ontology/**'
+      - 'scripts/validate_methodology.py'
+      - 'tests/**'
+      - '.github/workflows/deepseek-methodology.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate-schemas:
+    name: Validate Methodology Schemas
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate JSON syntax (all ontology files)
+        run: |
+          for f in ontology/*.json; do
+            python -m json.tool "$f" > /dev/null && echo "OK: $f" || (echo "FAIL: $f"; exit 1)
+          done
+
+      - name: Run methodology schema cross-reference validation
+        # Hard-fail: broken cross-references (F-ID, OI-ID, domain, case) are errors
+        run: python scripts/validate_methodology.py
+
+      - name: Verify all case studies are linked to F-IDs (warnings only)
+        # Non-blocking: reports F-IDs without case studies and orphaned case studies
+        run: python scripts/validate_methodology.py --check-case-studies || true
+
+      - name: Verify domain test coverage (warnings only, min 3 tests per domain)
+        # Non-blocking: reports domains with fewer than 3 falsification tests
+        run: python scripts/validate_methodology.py --check-domain-coverage --min-tests=3 || true
+
+      - name: Verify all F-IDs have implemented test files
+        # Hard-fail: every F-ID must have an implemented test (not placeholder)
+        run: python scripts/validate_methodology.py --check-tests --fail-on-missing
+
+      - name: Run tag-coverage check (warnings only)
+        # Non-blocking: reports F-IDs without @falsification_id tags in tests/
+        run: python scripts/validate_methodology.py --check-tags || true
+
+  check-existing-falsification-tests:
+    name: Verify Existing Falsification Tests Still Pass
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run F_PLATFORM_001..F_PLATFORM_005 falsification tests
+        env:
+          PYTHONIOENCODING: utf-8
+          LANG: C.UTF-8
+          LC_ALL: C.UTF-8
+        run: python -m pytest tests/test_falsification.py -v

@@ -1,0 +1,1788 @@
+{
+  "metadata": {
+    "schema": "deepseek-ontology/1.0",
+    "description": "Extended domain ontology and OI-XXX issue registry for the orthogonal-engineering monorepo. Extends pr26_ontological_issues.json with new domains and cross-domain issues identified via the DeepSeek methodology.",
+    "created": "2026-03-02",
+    "extends": "ontology/pr26_ontological_issues.json",
+    "updated": "2026-03-02"
+  },
+  "domains": [
+    {
+      "id": "D_GRAPHICS",
+      "name": "Graphics & Shaders",
+      "categories": [
+        "rendering",
+        "GPU",
+        "shader-compilation",
+        "backend-equivalence"
+      ],
+      "invariants": [
+        "Shader compilation output is deterministic given identical source and compiler version.",
+        "Rendering backend equivalence: the same scene produces pixel-identical output across Vulkan/Metal/D3D/OpenGL given identical inputs."
+      ],
+      "example_falsification_test": "F_GRAPHICS_001",
+      "example_ontological_issue": "OI_GRAPHICS_001"
+    },
+    {
+      "id": "D_CRYPTO",
+      "name": "Cryptography",
+      "categories": [
+        "post-quantum",
+        "classical",
+        "timing-side-channel",
+        "key-management",
+        "protocol-correctness"
+      ],
+      "invariants": [
+        "All secret-dependent operations are constant-time.",
+        "Protocol validity rules (e.g., PSK \u2260 0^32) are enforced at the API boundary.",
+        "No secret material is stored in plain-text logs or error messages."
+      ],
+      "example_falsification_test": "F_CRYPTO_001",
+      "example_ontological_issue": "OI_CRYPTO_001"
+    },
+    {
+      "id": "D_AVIATION",
+      "name": "Aviation & ATC",
+      "categories": [
+        "flight-management",
+        "METAR",
+        "external-API",
+        "safety-critical-timing"
+      ],
+      "invariants": [
+        "All external API calls have a defined timeout and fallback.",
+        "Stale data is flagged to the pilot; no silent data propagation.",
+        "Safety-critical computations complete within the certified time budget."
+      ],
+      "example_falsification_test": "F_AVIATION_004",
+      "example_ontological_issue": "OI_AVIATION_001"
+    },
+    {
+      "id": "D_WEBSEC",
+      "name": "Web Security",
+      "categories": [
+        "XSS",
+        "CSRF",
+        "injection",
+        "authentication",
+        "session-management"
+      ],
+      "invariants": [
+        "All user-controlled input is sanitized before reaching an HTML, SQL, or shell sink.",
+        "Authentication tokens are bound to session and not replayable.",
+        "CSRF tokens are required for all state-mutating requests."
+      ],
+      "example_falsification_test": "F_XSS_001",
+      "example_ontological_issue": "OI_WEBSEC_001"
+    },
+    {
+      "id": "D_SPACE",
+      "name": "Space Systems",
+      "categories": [
+        "NASA-cFS",
+        "embedded-RTOS",
+        "static-analysis",
+        "memory-safety"
+      ],
+      "invariants": [
+        "Runtime memory protections (canaries, ASLR) are present in all safety-critical binaries.",
+        "Static analysis is a complement to, not a replacement for, runtime enforcement.",
+        "No unbounded recursion or dynamic allocation in hard real-time paths."
+      ],
+      "example_falsification_test": "F_SPACE_001",
+      "example_ontological_issue": "OI_SPACE_001"
+    },
+    {
+      "id": "D_GAMEMODS",
+      "name": "Video Game Mods",
+      "categories": [
+        "ASI-loader",
+        "DLL-injection",
+        "version-identity",
+        "mod-conflict"
+      ],
+      "invariants": [
+        "Only one ASI loader occupies the loader interception slot at runtime.",
+        "Mod version identity is deterministically verifiable against the game executable hash.",
+        "Conflicting mods are detected and reported before launch."
+      ],
+      "example_falsification_test": "F_GAMEMODS_001",
+      "example_ontological_issue": "OI_GAMEMODS_001"
+    },
+    {
+      "id": "D_MEDICAL",
+      "name": "Medical Systems",
+      "categories": [
+        "dosimetry",
+        "FDA-IEC62304",
+        "fault-tolerance",
+        "audit-trail"
+      ],
+      "invariants": [
+        "Dosimetry calculations agree with the reference algorithm within certified tolerance.",
+        "All safety-critical actions are logged with an immutable audit trail.",
+        "Software failures default to a safe state (fail-safe design)."
+      ],
+      "example_falsification_test": "F_MEDICAL_001",
+      "example_ontological_issue": "OI_MEDICAL_001"
+    },
+    {
+      "id": "D_INDUSTRIAL",
+      "name": "Industrial / OT",
+      "categories": [
+        "SCADA",
+        "PLC",
+        "ICS",
+        "real-time-control",
+        "functional-safety"
+      ],
+      "invariants": [
+        "PLC cycle-time is within the specified real-time deadline.",
+        "OT/IT network boundaries are enforced; no direct internet access from PLC.",
+        "Firmware updates are authenticated and integrity-checked before installation."
+      ],
+      "example_falsification_test": "F_INDUSTRIAL_001",
+      "example_ontological_issue": "OI_INDUSTRIAL_001"
+    },
+    {
+      "id": "D_BLUECOLLAR",
+      "name": "Blue-Collar / Trades",
+      "categories": [
+        "worker-safety",
+        "field-service",
+        "logistics",
+        "manufacturing"
+      ],
+      "invariants": [
+        "Worker safety alerts are delivered within the required response time.",
+        "Field-service records are immutably logged and tamper-evident.",
+        "Offline-capable: critical functions work without network connectivity."
+      ],
+      "example_falsification_test": "F_BLUECOLLAR_001",
+      "example_ontological_issue": "OI_BLUECOLLAR_001"
+    },
+    {
+      "id": "D_WHITECOLLAR",
+      "name": "White-Collar / Knowledge Work",
+      "categories": [
+        "compliance",
+        "audit-trail",
+        "document-pipeline",
+        "financial-software"
+      ],
+      "invariants": [
+        "Document processing pipelines are idempotent.",
+        "Audit trails are append-only and cryptographically signed.",
+        "Financial calculations use arbitrary-precision arithmetic, not floating-point."
+      ],
+      "example_falsification_test": "F_WHITECOLLAR_001",
+      "example_ontological_issue": "OI_WHITECOLLAR_001"
+    },
+    {
+      "id": "D_LUXURY",
+      "name": "Luxury / High-End",
+      "categories": [
+        "premium-UX",
+        "high-frequency-trading",
+        "private-aviation"
+      ],
+      "invariants": [
+        "HFT order-book state is deterministic: same inputs produce same outputs.",
+        "Premium UX renders pixel-identically across device tiers.",
+        "Private aviation software meets the same safety invariants as commercial aviation."
+      ],
+      "example_falsification_test": "F_LUXURY_001",
+      "example_ontological_issue": "OI_LUXURY_001"
+    },
+    {
+      "id": "D_EMERGENCY",
+      "name": "Emergency Response",
+      "categories": [
+        "911-dispatch",
+        "disaster-response",
+        "mass-notification"
+      ],
+      "invariants": [
+        "Dispatch systems handle network partitions without data loss.",
+        "Mass-notification delivery is confirmed end-to-end within SLO.",
+        "Emergency systems operate in degraded mode when dependencies are unavailable."
+      ],
+      "example_falsification_test": "F_EMERGENCY_001",
+      "example_ontological_issue": "OI_EMERGENCY_001"
+    },
+    {
+      "id": "D_NECESSITY",
+      "name": "Necessity / Infrastructure",
+      "categories": [
+        "power-grid",
+        "water-treatment",
+        "telecom",
+        "food-supply"
+      ],
+      "invariants": [
+        "All control-system software meets IEC 61508 SIL requirements.",
+        "No single point of failure in critical control paths.",
+        "Security patches are applied within the certified maintenance window."
+      ],
+      "example_falsification_test": "F_NECESSITY_001",
+      "example_ontological_issue": "OI_NECESSITY_001"
+    },
+    {
+      "id": "D_BORING",
+      "name": "Boring / Commodity",
+      "categories": [
+        "CRUD",
+        "ETL",
+        "report-generation",
+        "data-format-conversion"
+      ],
+      "invariants": [
+        "ETL pipelines are idempotent: re-running produces the same output.",
+        "Report generation is deterministic given identical inputs.",
+        "Data-format conversions preserve all semantic content."
+      ],
+      "example_falsification_test": "F_BORING_001",
+      "example_ontological_issue": "OI_BORING_001"
+    },
+    {
+      "id": "D_FUN",
+      "name": "Fun / Entertainment",
+      "categories": [
+        "games",
+        "interactive-media",
+        "generative-art"
+      ],
+      "invariants": [
+        "Deterministic game seeds produce identical game states.",
+        "Saved game data is forward-compatible with new versions.",
+        "Online matchmaking produces fair and deterministic results."
+      ],
+      "example_falsification_test": "F_FUN_001",
+      "example_ontological_issue": "OI_FUN_001"
+    },
+    {
+      "id": "D_CREATIVE",
+      "name": "Creative / Generative",
+      "categories": [
+        "AI-art",
+        "procedural-generation",
+        "music-synthesis"
+      ],
+      "invariants": [
+        "Given a fixed seed, generative output is reproducible.",
+        "Style transfer preserves specified content invariants.",
+        "Generated audio is not perceptually identical to copyrighted material."
+      ],
+      "example_falsification_test": "F_CREATIVE_001",
+      "example_ontological_issue": "OI_CREATIVE_001"
+    },
+    {
+      "id": "D_NONCREATIVE",
+      "name": "Non-Creative / Deterministic",
+      "categories": [
+        "batch-processing",
+        "compression",
+        "data-format-conversion"
+      ],
+      "invariants": [
+        "Compression/decompression is lossless and reproducible.",
+        "Batch processing output is identical for identical inputs.",
+        "Format conversion round-trips without data loss."
+      ],
+      "example_falsification_test": "F_NONCREATIVE_001",
+      "example_ontological_issue": "OI_NONCREATIVE_001"
+    },
+    {
+      "id": "D_GAMING",
+      "name": "Gaming",
+      "categories": [
+        "multiplayer",
+        "anti-cheat",
+        "save-files",
+        "network-safety"
+      ],
+      "invariants": [
+        "Deterministic seed produces identical game state.",
+        "Network packets cannot trigger memory corruption.",
+        "Mod sandbox is enforced."
+      ],
+      "example_falsification_test": "F_GAMING_001",
+      "example_ontological_issue": "OI_GAMING_001"
+    },
+    {
+      "id": "D_CRUSADER",
+      "name": "Crusader Fly-Control",
+      "categories": [
+        "UV-safety",
+        "spore-containment",
+        "detection-accuracy",
+        "witness"
+      ],
+      "invariants": [
+        "UV off when door open.",
+        "No spores outside unit.",
+        "Detection accuracy >= 95%.",
+        "All actions logged in hash chain."
+      ],
+      "example_falsification_test": "F_CRUSADER_001",
+      "example_ontological_issue": "OI_CRUSADER_001"
+    },
+    {
+      "id": "D_AGRICULTURE",
+      "name": "Agriculture",
+      "categories": [
+        "precision-farming",
+        "irrigation",
+        "livestock"
+      ],
+      "invariants": [
+        "Irrigation delivers within +/-10% of setpoint.",
+        "Pesticide dosing within approved range."
+      ],
+      "example_falsification_test": "F_AGRICULTURE_001",
+      "example_ontological_issue": "OI_AGRICULTURE_001"
+    },
+    {
+      "id": "D_TRANSPORTATION",
+      "name": "Transportation",
+      "categories": [
+        "fleet-tracking",
+        "logistics",
+        "real-time"
+      ],
+      "invariants": [
+        "Fleet GPS accurate within 5m CEP.",
+        "Route optimization is deterministic."
+      ],
+      "example_falsification_test": "F_TRANSPORTATION_001",
+      "example_ontological_issue": "OI_TRANSPORTATION_001"
+    },
+    {
+      "id": "D_ENERGY",
+      "name": "Energy",
+      "categories": [
+        "smart-grid",
+        "demand-response",
+        "renewable"
+      ],
+      "invariants": [
+        "DR events actioned within 30s.",
+        "Grid frequency deviation triggers load shed."
+      ],
+      "example_falsification_test": "F_ENERGY_001",
+      "example_ontological_issue": "OI_ENERGY_001"
+    },
+    {
+      "id": "D_WATER",
+      "name": "Water and Utilities",
+      "categories": [
+        "quality-monitoring",
+        "distribution",
+        "SCADA"
+      ],
+      "invariants": [
+        "Quality alert fires before limit breach.",
+        "Isolation valve closes within 10s of command."
+      ],
+      "example_falsification_test": "F_WATER_001",
+      "example_ontological_issue": "OI_WATER_001"
+    },
+    {
+      "id": "D_COMMUNICATIONS",
+      "name": "Communications",
+      "categories": [
+        "messaging",
+        "telecom",
+        "CDN"
+      ],
+      "invariants": [
+        "P99 latency <= 200ms under 10x load.",
+        "Message ordering is preserved."
+      ],
+      "example_falsification_test": "F_COMMUNICATIONS_001",
+      "example_ontological_issue": "OI_COMMUNICATIONS_001"
+    },
+    {
+      "id": "D_FINANCIAL",
+      "name": "Financial",
+      "categories": [
+        "trading",
+        "settlement",
+        "fraud-detection"
+      ],
+      "invariants": [
+        "Double-spend is rejected.",
+        "Settlement is deterministic."
+      ],
+      "example_falsification_test": "F_FINANCIAL_001",
+      "example_ontological_issue": "OI_FINANCIAL_001"
+    },
+    {
+      "id": "D_INSURANCE",
+      "name": "Insurance",
+      "categories": [
+        "actuarial",
+        "claims",
+        "risk-scoring"
+      ],
+      "invariants": [
+        "Risk model is deterministic.",
+        "Claims processing is idempotent."
+      ],
+      "example_falsification_test": "F_INSURANCE_001",
+      "example_ontological_issue": "OI_INSURANCE_001"
+    },
+    {
+      "id": "D_LEGAL",
+      "name": "Legal",
+      "categories": [
+        "document-management",
+        "e-discovery",
+        "compliance"
+      ],
+      "invariants": [
+        "Document integrity preserved through pipeline.",
+        "Audit trail is append-only."
+      ],
+      "example_falsification_test": "F_LEGAL_001",
+      "example_ontological_issue": "OI_LEGAL_001"
+    },
+    {
+      "id": "D_EDUCATION",
+      "name": "Education",
+      "categories": [
+        "LMS",
+        "proctoring",
+        "credentials"
+      ],
+      "invariants": [
+        "Proctoring detects tab-switch.",
+        "Credential hash is tamper-evident."
+      ],
+      "example_falsification_test": "F_EDUCATION_001",
+      "example_ontological_issue": "OI_EDUCATION_001"
+    },
+    {
+      "id": "D_GOVERNMENT",
+      "name": "Government",
+      "categories": [
+        "voting",
+        "benefits",
+        "digital-identity"
+      ],
+      "invariants": [
+        "Vote is recorded as cast.",
+        "Identity verification is not forgeable."
+      ],
+      "example_falsification_test": "F_GOVERNMENT_001",
+      "example_ontological_issue": "OI_GOVERNMENT_001"
+    },
+    {
+      "id": "D_MILITARY",
+      "name": "Military and Defense",
+      "categories": [
+        "IFF",
+        "command-control",
+        "secure-comms"
+      ],
+      "invariants": [
+        "IFF does not misclassify friendly as hostile.",
+        "Autonomous weapon safety interlock cannot be bypassed."
+      ],
+      "example_falsification_test": "F_MILITARY_001",
+      "example_ontological_issue": "OI_MILITARY_001"
+    },
+    {
+      "id": "D_RETAIL",
+      "name": "Retail",
+      "categories": [
+        "POS",
+        "inventory",
+        "e-commerce"
+      ],
+      "invariants": [
+        "POS transaction is idempotent under retry.",
+        "Inventory count is consistent across nodes."
+      ],
+      "example_falsification_test": "F_RETAIL_001",
+      "example_ontological_issue": "OI_RETAIL_001"
+    },
+    {
+      "id": "D_HOSPITALITY",
+      "name": "Hospitality",
+      "categories": [
+        "reservations",
+        "room-keys",
+        "PCI-DSS"
+      ],
+      "invariants": [
+        "Room key deactivated within 5s of checkout.",
+        "PCI data is not logged in plaintext."
+      ],
+      "example_falsification_test": "F_HOSPITALITY_001",
+      "example_ontological_issue": "OI_HOSPITALITY_001"
+    },
+    {
+      "id": "D_CONSTRUCTION",
+      "name": "Construction",
+      "categories": [
+        "BIM",
+        "structural-analysis",
+        "site-safety"
+      ],
+      "invariants": [
+        "FEM results within 1% of reference.",
+        "Site safety alerts delivered within SLO."
+      ],
+      "example_falsification_test": "F_CONSTRUCTION_001",
+      "example_ontological_issue": "OI_CONSTRUCTION_001"
+    },
+    {
+      "id": "D_MINING",
+      "name": "Mining",
+      "categories": [
+        "gas-detection",
+        "equipment-health",
+        "evacuation"
+      ],
+      "invariants": [
+        "Gas sensor alarms at 20% LEL.",
+        "Evacuation alarm audible in all zones."
+      ],
+      "example_falsification_test": "F_MINING_001",
+      "example_ontological_issue": "OI_MINING_001"
+    },
+    {
+      "id": "D_OILGAS",
+      "name": "Oil and Gas",
+      "categories": [
+        "pipeline-SCADA",
+        "blowout-prevention",
+        "environmental"
+      ],
+      "invariants": [
+        "Leak detected within 60s.",
+        "BOP closes within spec time."
+      ],
+      "example_falsification_test": "F_OILGAS_001",
+      "example_ontological_issue": "OI_OILGAS_001"
+    },
+    {
+      "id": "D_CHEMICAL",
+      "name": "Chemical",
+      "categories": [
+        "reactor-control",
+        "process-safety",
+        "hazmat"
+      ],
+      "invariants": [
+        "Thermal runaway interlock activates before T_critical.",
+        "Hazmat containment is leak-free."
+      ],
+      "example_falsification_test": "F_CHEMICAL_001",
+      "example_ontological_issue": "OI_CHEMICAL_001"
+    },
+    {
+      "id": "D_PHARMA",
+      "name": "Pharmaceuticals",
+      "categories": [
+        "GMP",
+        "batch-records",
+        "cold-chain"
+      ],
+      "invariants": [
+        "Batch record is immutable once released.",
+        "Cold-chain temperature never exceeds spec."
+      ],
+      "example_falsification_test": "F_PHARMA_001",
+      "example_ontological_issue": "OI_PHARMA_001"
+    },
+    {
+      "id": "D_BIOTECH",
+      "name": "Biotechnology",
+      "categories": [
+        "sequencing",
+        "lab-automation",
+        "biosafety"
+      ],
+      "invariants": [
+        "VCF output is identical for identical FASTQ input.",
+        "Reagent dispensing within +/-2%."
+      ],
+      "example_falsification_test": "F_BIOTECH_001",
+      "example_ontological_issue": "OI_BIOTECH_001"
+    },
+    {
+      "id": "D_ROBOTICS",
+      "name": "Robotics",
+      "categories": [
+        "kinematics",
+        "collision-avoidance",
+        "ROS"
+      ],
+      "invariants": [
+        "Arm stops before contacting obstacle.",
+        "ROS message ordering is preserved."
+      ],
+      "example_falsification_test": "F_ROBOTICS_001",
+      "example_ontological_issue": "OI_ROBOTICS_001"
+    },
+    {
+      "id": "D_AUTOMOTIVE",
+      "name": "Automotive",
+      "categories": [
+        "AUTOSAR",
+        "ISO-26262",
+        "OTA",
+        "CAN-bus"
+      ],
+      "invariants": [
+        "OTA update rejected if signature invalid.",
+        "CAN bus message timing within spec."
+      ],
+      "example_falsification_test": "F_AUTOMOTIVE_001",
+      "example_ontological_issue": "OI_AUTOMOTIVE_001"
+    },
+    {
+      "id": "D_AEROSPACE",
+      "name": "Aerospace",
+      "categories": [
+        "DO-178C",
+        "avionics",
+        "structural-health"
+      ],
+      "invariants": [
+        "Redundant channels produce byte-identical output.",
+        "Structural health sensor alerts within spec."
+      ],
+      "example_falsification_test": "F_AEROSPACE_001",
+      "example_ontological_issue": "OI_AEROSPACE_001"
+    },
+    {
+      "id": "D_MARITIME",
+      "name": "Maritime",
+      "categories": [
+        "AIS",
+        "navigation",
+        "IMO-2021-cyber"
+      ],
+      "invariants": [
+        "AIS position within 10m of ground truth.",
+        "ECDIS chart data is authenticated."
+      ],
+      "example_falsification_test": "F_MARITIME_001",
+      "example_ontological_issue": "OI_MARITIME_001"
+    },
+    {
+      "id": "D_RAIL",
+      "name": "Rail",
+      "categories": [
+        "ETCS",
+        "signalling",
+        "PTC",
+        "IEC-62280"
+      ],
+      "invariants": [
+        "PTC halts train before stop signal.",
+        "Track-circuit occupancy has no false negatives."
+      ],
+      "example_falsification_test": "F_RAIL_001",
+      "example_ontological_issue": "OI_RAIL_001"
+    },
+    {
+      "id": "D_AXIOMS",
+      "name": "Foundational Axioms (Peano)",
+      "categories": [
+        "peano-arithmetic",
+        "mathematical-foundations",
+        "induction",
+        "successor-function"
+      ],
+      "invariants": [
+        "Peano successor function S(n) is total and injective over natural numbers.",
+        "Zero is not the successor of any natural number.",
+        "Mathematical induction: if a property holds for 0 and is preserved by S, it holds for all naturals."
+      ],
+      "example_falsification_test": "F_AXIOMS_001",
+      "example_ontological_issue": "OI_AXIOMS_001"
+    },
+    {
+      "id": "D_SHARDING",
+      "name": "Data Sharding Invariants",
+      "categories": [
+        "sharding",
+        "determinism",
+        "load-balancing",
+        "data-distribution"
+      ],
+      "invariants": [
+        "Shard assignment is deterministic: the same key always maps to the same shard.",
+        "Shard distribution is balanced: no shard holds more than ceil(N/K)+1 keys.",
+        "Shard reassignment preserves all data: no record is lost during resharding."
+      ],
+      "example_falsification_test": "F_SHARDING_001",
+      "example_ontological_issue": "OI_SHARDING_001"
+    },
+    {
+      "id": "D_FRACTALS",
+      "name": "Fractal Consistency & Self-Similarity",
+      "categories": [
+        "fractals",
+        "self-similarity",
+        "recursive-structures",
+        "determinism"
+      ],
+      "invariants": [
+        "Fractal generation is deterministic: same seed and depth always produce identical output.",
+        "Self-similarity invariant: each sub-fragment is structurally isomorphic to the whole.",
+        "Fractal coverage: the generated structure covers the expected proportion of the target space."
+      ],
+      "example_falsification_test": "F_FRACTALS_001",
+      "example_ontological_issue": "OI_FRACTALS_001"
+    }
+  ],
+  "issues": [
+    {
+      "id": "OI_GRAPHICS_001",
+      "title": "Non-deterministic shader compilation due to hash-map iteration order",
+      "domain": "D_GRAPHICS",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "Shader compilers that use unordered hash-maps for reflection data produce different SPIR-V bytecode across runs when iteration order changes (e.g., after ASLR, different allocator state).",
+      "assumptions_violated": [
+        "Shader compilation output is deterministic given identical source."
+      ],
+      "related_cases": [
+        "CS_GRAPHICS_001"
+      ],
+      "falsification_tests": [
+        "F_GRAPHICS_001"
+      ],
+      "resolution_notes": "Replace hash-map iteration with sorted iteration in all pipeline stages that produce hashed output. TODO: wire into CI via F_GRAPHICS_001."
+    },
+    {
+      "id": "OI_PROTO_001",
+      "title": "Lock-free atomics assume sequentially-consistent hardware",
+      "domain": "D_PLATFORM",
+      "category": "concurrency",
+      "severity": "high",
+      "status": "Open",
+      "description": "Code that uses lock-free atomics without explicit memory-ordering annotations will produce data races on ARMv7 and other weak-memory architectures.",
+      "assumptions_violated": [
+        "lock-free atomics provide sequentially-consistent ordering on all architectures."
+      ],
+      "related_cases": [
+        "CS_PROTO_001"
+      ],
+      "falsification_tests": [
+        "F_PLATFORM_006"
+      ],
+      "resolution_notes": "Annotate all atomic operations with explicit Acquire/Release or SeqCst semantics. TODO: add TSAN job to CI."
+    },
+    {
+      "id": "OI_AVIATION_001",
+      "title": "External weather API assumed always available",
+      "domain": "D_AVIATION",
+      "category": "external-dependency",
+      "severity": "high",
+      "status": "Open",
+      "description": "Aviation software that fetches live METAR data without circuit-breakers or cached fallbacks will freeze or display stale data silently during API outages.",
+      "assumptions_violated": [
+        "External weather API is always available.",
+        "API latency is bounded by a safe timeout."
+      ],
+      "related_cases": [
+        "CS_AVIATION_001"
+      ],
+      "falsification_tests": [
+        "F_AVIATION_004"
+      ],
+      "resolution_notes": "Implement circuit-breaker with cached fallback. TODO: add F_AVIATION_004 to CI network-tests job."
+    },
+    {
+      "id": "OI_CRYPTO_001",
+      "title": "PQC polynomial arithmetic has timing side-channels",
+      "domain": "D_CRYPTO",
+      "category": "timing-side-channel",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Variable-time polynomial arithmetic in PQC implementations (Falcon, Kyber) leaks timing information correlated with secret key bits.",
+      "assumptions_violated": [
+        "Pure C arithmetic is constant-time on all compilers and hardware."
+      ],
+      "related_cases": [
+        "CS_CRYPTO_001"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_001"
+      ],
+      "resolution_notes": "Use formally verified constant-time libraries. TODO: add dudect CI job."
+    },
+    {
+      "id": "OI_CRYPTO_002",
+      "title": "Noise PSK zero-key accepted without validation",
+      "domain": "D_CRYPTO",
+      "category": "key-management",
+      "severity": "critical",
+      "status": "Open",
+      "cve": "CVE-2026-24785",
+      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK \u2260 0^32.",
+      "assumptions_violated": [
+        "Callers supply a non-zero PSK; no server-side validation needed."
+      ],
+      "related_cases": [
+        "CS_CRYPTO_002"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_002"
+      ],
+      "resolution_notes": "Add PSK validation at API boundary. TODO: implement F_CRYPTO_002 test."
+    },
+    {
+      "id": "OI_SPACE_001",
+      "title": "cFS security depends solely on static analysis",
+      "domain": "D_SPACE",
+      "category": "security-posture",
+      "severity": "high",
+      "status": "Open",
+      "description": "NASA cFS security relies on static analysis without runtime enforcement (ASLR, stack canaries). Vulnerabilities evading static analysis are undetected until flight.",
+      "assumptions_violated": [
+        "Static analysis catches all exploitable defects."
+      ],
+      "related_cases": [
+        "CS_SPACE_001"
+      ],
+      "falsification_tests": [
+        "F_SPACE_001"
+      ],
+      "resolution_notes": "Add -fstack-protector-strong to all safety-critical compilation units. TODO: implement F_SPACE_001 binary check."
+    },
+    {
+      "id": "OI_WEBSEC_001",
+      "title": "User-supplied Markdown reaches HTML sink unsanitized",
+      "domain": "D_WEBSEC",
+      "category": "injection",
+      "severity": "critical",
+      "status": "Open",
+      "cve": "CVE-2025-13744",
+      "description": "Stored XSS via unsanitized Markdown rendering in GitHub Enterprise Server (GHES).",
+      "assumptions_violated": [
+        "Markdown rendering sanitizes all HTML before output."
+      ],
+      "related_cases": [
+        "CS_WEBSEC_001"
+      ],
+      "falsification_tests": [
+        "F_XSS_001"
+      ],
+      "resolution_notes": "Pass all rendered output through DOMPurify or equivalent. TODO: implement F_XSS_001 test."
+    },
+    {
+      "id": "OI_GAMEMODS_001",
+      "title": "Dual ASI loader conflict not detected at launch",
+      "domain": "D_GAMEMODS",
+      "category": "version-identity",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Game mod systems may silently allow two ASI loaders to coexist, causing unpredictable hook ordering and crashes.",
+      "assumptions_violated": [
+        "Only one ASI loader can occupy the loader space."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_GAMEMODS_001"
+      ],
+      "resolution_notes": "Add pre-launch loader-slot scan. TODO: implement F_GAMEMODS_001."
+    },
+    {
+      "id": "OI_MEDICAL_001",
+      "title": "Dosimetry software not validated against reference algorithm",
+      "domain": "D_MEDICAL",
+      "category": "correctness",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Medical dosimetry software that lacks a falsification test against the IEC 62304 reference algorithm may silently diverge from the certified calculation.",
+      "assumptions_violated": [
+        "The software dosimetry calculation agrees with the reference algorithm within \u00b10.1%."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_MEDICAL_001"
+      ],
+      "resolution_notes": "TODO: implement F_MEDICAL_001 with canonical patient-phantom dataset."
+    },
+    {
+      "id": "OI_INDUSTRIAL_001",
+      "title": "PLC cycle-time not continuously verified",
+      "domain": "D_INDUSTRIAL",
+      "category": "real-time",
+      "severity": "high",
+      "status": "Open",
+      "description": "PLC control loops without cycle-time monitoring may silently miss real-time deadlines under load.",
+      "assumptions_violated": [
+        "The PLC control loop completes each cycle within the specified real-time deadline."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_INDUSTRIAL_001"
+      ],
+      "resolution_notes": "TODO: implement F_INDUSTRIAL_001 with high-resolution cycle timer."
+    },
+    {
+      "id": "OI_BLUECOLLAR_001",
+      "title": "Worker safety alerts not tested for delivery latency",
+      "domain": "D_BLUECOLLAR",
+      "category": "safety",
+      "severity": "high",
+      "status": "Open",
+      "description": "Safety alert systems that lack end-to-end delivery latency tests may silently fail to meet the required response time under load.",
+      "assumptions_violated": [
+        "Worker safety alerts are delivered within the required response time."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_BLUECOLLAR_001"
+      ],
+      "resolution_notes": "TODO: implement F_BLUECOLLAR_001 with end-to-end latency measurement."
+    },
+    {
+      "id": "OI_WHITECOLLAR_001",
+      "title": "Document pipeline not verified as idempotent",
+      "domain": "D_WHITECOLLAR",
+      "category": "correctness",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Document processing pipelines that are not tested for idempotency may produce different outputs on re-runs, breaking audit trails.",
+      "assumptions_violated": [
+        "Document processing pipelines are idempotent."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_WHITECOLLAR_001"
+      ],
+      "resolution_notes": "TODO: implement F_WHITECOLLAR_001 with dual-run comparison."
+    },
+    {
+      "id": "OI_LUXURY_001",
+      "title": "HFT order-book state not verified as deterministic",
+      "domain": "D_LUXURY",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "High-frequency trading systems that do not verify order-book determinism may produce inconsistent fills under identical market conditions.",
+      "assumptions_violated": [
+        "HFT order-book state is deterministic: same inputs produce same outputs."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_LUXURY_001"
+      ],
+      "resolution_notes": "TODO: implement F_LUXURY_001 with replay test harness."
+    },
+    {
+      "id": "OI_EMERGENCY_001",
+      "title": "Dispatch system not tested for partition tolerance",
+      "domain": "D_EMERGENCY",
+      "category": "availability",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Emergency dispatch systems that are not tested under network-partition conditions may lose data or fail silently during outages.",
+      "assumptions_violated": [
+        "Dispatch systems handle network partitions without data loss."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_EMERGENCY_001"
+      ],
+      "resolution_notes": "TODO: implement F_EMERGENCY_001 with chaos-engineering partition simulation."
+    },
+    {
+      "id": "OI_NECESSITY_001",
+      "title": "Critical infrastructure software missing SIL assessment",
+      "domain": "D_NECESSITY",
+      "category": "functional-safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Infrastructure control software deployed without a formal IEC 61508 SIL assessment may not meet the required reliability target.",
+      "assumptions_violated": [
+        "All control-system software meets IEC 61508 SIL requirements."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_NECESSITY_001"
+      ],
+      "resolution_notes": "TODO: engage certified assessor; add SIL evidence to ontology."
+    },
+    {
+      "id": "OI_BORING_001",
+      "title": "ETL pipeline not verified as idempotent",
+      "domain": "D_BORING",
+      "category": "correctness",
+      "severity": "medium",
+      "status": "Open",
+      "description": "ETL pipelines that are not tested for idempotency may produce duplicate records or different aggregates on re-runs.",
+      "assumptions_violated": [
+        "ETL pipelines are idempotent: re-running produces the same output."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_BORING_001"
+      ],
+      "resolution_notes": "TODO: implement F_BORING_001 with dual-run row-count assertion."
+    },
+    {
+      "id": "OI_FUN_001",
+      "title": "Game save data not forward-compatible across versions",
+      "domain": "D_FUN",
+      "category": "compatibility",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Game save files that are not tested for forward-compatibility may corrupt or fail to load after an update.",
+      "assumptions_violated": [
+        "Saved game data is forward-compatible with new versions."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_FUN_001"
+      ],
+      "resolution_notes": "TODO: implement F_FUN_001 with cross-version save/load test."
+    },
+    {
+      "id": "OI_CREATIVE_001",
+      "title": "Generative output not reproducible from fixed seed",
+      "domain": "D_CREATIVE",
+      "category": "nondeterminism",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Generative AI pipelines that do not fix the random seed at all layers may produce different outputs for the same prompt/seed combination.",
+      "assumptions_violated": [
+        "Given a fixed seed, generative output is reproducible."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_CREATIVE_001"
+      ],
+      "resolution_notes": "TODO: implement F_CREATIVE_001 with dual-generation hash comparison."
+    },
+    {
+      "id": "OI_NONCREATIVE_001",
+      "title": "Compression round-trip not verified as lossless",
+      "domain": "D_NONCREATIVE",
+      "category": "correctness",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Data compression pipelines that are not tested for round-trip losslessness may silently corrupt data.",
+      "assumptions_violated": [
+        "Compression/decompression is lossless and reproducible."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_NONCREATIVE_001"
+      ],
+      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress\u2192decompress\u2192compare test."
+    },
+    {
+      "id": "OI_GAMING_001",
+      "title": "Game state non-determinism across hardware platforms",
+      "domain": "D_GAMING",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "Game state diverges between hardware platforms due to floating-point non-determinism or driver-specific behavior.",
+      "assumptions_violated": [
+        "Same hardware produces identical game state."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_GAMING_001",
+        "F_GAMING_003"
+      ],
+      "resolution_notes": "TODO: implement F_GAMING_001 and F_GAMING_003."
+    },
+    {
+      "id": "OI_CRUSADER_001",
+      "title": "Crusader unit safety/performance invariants unverified",
+      "domain": "D_CRUSADER",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "The Crusader fly-control unit's safety interlocks and performance invariants lack machine-verifiable falsification tests.",
+      "assumptions_violated": [
+        "UV is off when door is open.",
+        "Spores are contained.",
+        "Detection accuracy >= 95%."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_CRUSADER_001",
+        "F_CRUSADER_002",
+        "F_CRUSADER_003",
+        "F_CRUSADER_004",
+        "F_CRUSADER_005",
+        "F_CRUSADER_006",
+        "F_CRUSADER_007",
+        "F_CRUSADER_008",
+        "F_CRUSADER_009"
+      ],
+      "resolution_notes": "TODO: implement all F-CRUSADER-XXX tests."
+    },
+    {
+      "id": "OI_AGRICULTURE_001",
+      "title": "Irrigation command accuracy not verified",
+      "domain": "D_AGRICULTURE",
+      "category": "correctness",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Precision irrigation systems lack falsification tests verifying delivery accuracy.",
+      "assumptions_violated": [
+        "Irrigation system delivers within +/-10% of setpoint."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_AGRICULTURE_001"
+      ],
+      "resolution_notes": "TODO: implement F_AGRICULTURE_001."
+    },
+    {
+      "id": "OI_TRANSPORTATION_001",
+      "title": "GPS fleet tracking accuracy not continuously verified",
+      "domain": "D_TRANSPORTATION",
+      "category": "correctness",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Fleet management systems may report incorrect locations under multipath or jamming conditions.",
+      "assumptions_violated": [
+        "Fleet GPS position is accurate within 5 meters CEP."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_TRANSPORTATION_001"
+      ],
+      "resolution_notes": "TODO: implement F_TRANSPORTATION_001."
+    },
+    {
+      "id": "OI_ENERGY_001",
+      "title": "Demand-response latency not tested",
+      "domain": "D_ENERGY",
+      "category": "real-time",
+      "severity": "high",
+      "status": "Open",
+      "description": "Smart-grid demand-response systems may fail to shed load within regulatory deadlines.",
+      "assumptions_violated": [
+        "Demand-response events are actioned within 30s."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_ENERGY_001"
+      ],
+      "resolution_notes": "TODO: implement F_ENERGY_001."
+    },
+    {
+      "id": "OI_WATER_001",
+      "title": "Water quality alert latency not verified",
+      "domain": "D_WATER",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Water quality monitoring may allow unsafe conditions before operators are notified.",
+      "assumptions_violated": [
+        "Sensors alert before violation of safe water quality limits."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_WATER_001"
+      ],
+      "resolution_notes": "TODO: implement F_WATER_001."
+    },
+    {
+      "id": "OI_COMMUNICATIONS_001",
+      "title": "Message delivery SLA not verified under load",
+      "domain": "D_COMMUNICATIONS",
+      "category": "availability",
+      "severity": "high",
+      "status": "Open",
+      "description": "Communications infrastructure may silently fail SLA commitments under peak load.",
+      "assumptions_violated": [
+        "P99 message latency <= 200ms under 10x normal load."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_COMMUNICATIONS_001"
+      ],
+      "resolution_notes": "TODO: implement F_COMMUNICATIONS_001."
+    },
+    {
+      "id": "OI_FINANCIAL_001",
+      "title": "Double-spend vulnerability not tested",
+      "domain": "D_FINANCIAL",
+      "category": "correctness",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Settlement systems without explicit double-spend tests may be vulnerable to concurrent-submission attacks.",
+      "assumptions_violated": [
+        "Settlement system rejects any attempt to spend the same funds twice."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_FINANCIAL_001"
+      ],
+      "resolution_notes": "TODO: implement F_FINANCIAL_001."
+    },
+    {
+      "id": "OI_INSURANCE_001",
+      "title": "Actuarial model not verified as deterministic",
+      "domain": "D_INSURANCE",
+      "category": "nondeterminism",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Non-deterministic actuarial models may produce different risk scores for identical applicants.",
+      "assumptions_violated": [
+        "Risk model is deterministic: same inputs produce same risk score."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_INSURANCE_001"
+      ],
+      "resolution_notes": "TODO: implement F_INSURANCE_001."
+    },
+    {
+      "id": "OI_LEGAL_001",
+      "title": "Legal document integrity not verified through pipeline",
+      "domain": "D_LEGAL",
+      "category": "correctness",
+      "severity": "high",
+      "status": "Open",
+      "description": "Document processing pipelines may silently alter legal content during transformation.",
+      "assumptions_violated": [
+        "Legal document content is preserved byte-for-byte through the pipeline."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_LEGAL_001"
+      ],
+      "resolution_notes": "TODO: implement F_LEGAL_001."
+    },
+    {
+      "id": "OI_EDUCATION_001",
+      "title": "Remote proctoring tab-switch detection not verified",
+      "domain": "D_EDUCATION",
+      "category": "security",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Remote proctoring systems without verified tab-switch detection may fail to detect cheating.",
+      "assumptions_violated": [
+        "Proctoring detects all attempts to navigate away from the exam."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_EDUCATION_001"
+      ],
+      "resolution_notes": "TODO: implement F_EDUCATION_001."
+    },
+    {
+      "id": "OI_GOVERNMENT_001",
+      "title": "Voting system cast-as-intended not cryptographically verified",
+      "domain": "D_GOVERNMENT",
+      "category": "integrity",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Electronic voting systems without end-to-end verifiable tallying cannot guarantee votes are recorded as cast.",
+      "assumptions_violated": [
+        "Every cast vote is recorded exactly as the voter intended."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_GOVERNMENT_001"
+      ],
+      "resolution_notes": "TODO: implement F_GOVERNMENT_001."
+    },
+    {
+      "id": "OI_MILITARY_001",
+      "title": "IFF misclassification risk not tested",
+      "domain": "D_MILITARY",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "IFF systems without friendly-misclassification tests may contribute to fratricide incidents.",
+      "assumptions_violated": [
+        "IFF correctly identifies all friendly platforms."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_MILITARY_001"
+      ],
+      "resolution_notes": "TODO: implement F_MILITARY_001."
+    },
+    {
+      "id": "OI_RETAIL_001",
+      "title": "POS transaction not tested for idempotency under retry",
+      "domain": "D_RETAIL",
+      "category": "correctness",
+      "severity": "high",
+      "status": "Open",
+      "description": "POS systems without idempotency tests may double-charge customers on network retry.",
+      "assumptions_violated": [
+        "Retrying a failed POS transaction does not result in a double charge."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_RETAIL_001"
+      ],
+      "resolution_notes": "TODO: implement F_RETAIL_001."
+    },
+    {
+      "id": "OI_HOSPITALITY_001",
+      "title": "Room key deactivation latency not verified",
+      "domain": "D_HOSPITALITY",
+      "category": "security",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Hotel key systems may leave former guests with access past checkout.",
+      "assumptions_violated": [
+        "Room key cards are deactivated within 5 seconds of guest checkout."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_HOSPITALITY_001"
+      ],
+      "resolution_notes": "TODO: implement F_HOSPITALITY_001."
+    },
+    {
+      "id": "OI_CONSTRUCTION_001",
+      "title": "Structural analysis model not validated against reference",
+      "domain": "D_CONSTRUCTION",
+      "category": "correctness",
+      "severity": "high",
+      "status": "Open",
+      "description": "FEM tools without benchmark validation may produce incorrect stress or deflection results.",
+      "assumptions_violated": [
+        "FEM structural analysis result is within 1% of the reference solution."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_CONSTRUCTION_001"
+      ],
+      "resolution_notes": "TODO: implement F_CONSTRUCTION_001."
+    },
+    {
+      "id": "OI_MINING_001",
+      "title": "Gas sensor LEL alarm threshold not verified",
+      "domain": "D_MINING",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Underground gas detection without verified alarm thresholds may alert too late for safe evacuation.",
+      "assumptions_violated": [
+        "Gas sensor alerts at 20% LEL."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_MINING_001"
+      ],
+      "resolution_notes": "TODO: implement F_MINING_001."
+    },
+    {
+      "id": "OI_OILGAS_001",
+      "title": "Pipeline leak detection latency not verified",
+      "domain": "D_OILGAS",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Pipeline SCADA systems without leak-detection latency tests may allow significant spills.",
+      "assumptions_violated": [
+        "Pressure drop indicating a leak is detected within 60 seconds."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_OILGAS_001"
+      ],
+      "resolution_notes": "TODO: implement F_OILGAS_001."
+    },
+    {
+      "id": "OI_CHEMICAL_001",
+      "title": "Reactor thermal runaway interlock not tested",
+      "domain": "D_CHEMICAL",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Chemical reactor control without thermal-runaway interlock tests may fail to prevent catastrophic reactions.",
+      "assumptions_violated": [
+        "High-temperature interlock activates before T_critical."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_CHEMICAL_001"
+      ],
+      "resolution_notes": "TODO: implement F_CHEMICAL_001."
+    },
+    {
+      "id": "OI_PHARMA_001",
+      "title": "Batch record mutability violates 21 CFR Part 11",
+      "domain": "D_PHARMA",
+      "category": "compliance",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Pharmaceutical batch records that can be modified after release violate FDA 21 CFR Part 11.",
+      "assumptions_violated": [
+        "Released batch records are immutable."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_PHARMA_001"
+      ],
+      "resolution_notes": "TODO: implement F_PHARMA_001."
+    },
+    {
+      "id": "OI_BIOTECH_001",
+      "title": "DNA sequencing pipeline not reproducible",
+      "domain": "D_BIOTECH",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "Bioinformatics pipelines without reproducibility tests may produce different variant calls from identical raw reads.",
+      "assumptions_violated": [
+        "Variant-calling pipeline produces identical VCF from identical FASTQ input."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_BIOTECH_001"
+      ],
+      "resolution_notes": "TODO: implement F_BIOTECH_001."
+    },
+    {
+      "id": "OI_ROBOTICS_001",
+      "title": "Robot collision avoidance not verified in hardware",
+      "domain": "D_ROBOTICS",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Robots without hardware-in-the-loop collision avoidance tests may contact workers despite software tests passing.",
+      "assumptions_violated": [
+        "Collision-avoidance system halts arm before contact."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_ROBOTICS_001"
+      ],
+      "resolution_notes": "TODO: implement F_ROBOTICS_001."
+    },
+    {
+      "id": "OI_AUTOMOTIVE_001",
+      "title": "OTA update signature verification not tested",
+      "domain": "D_AUTOMOTIVE",
+      "category": "security",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Automotive ECUs without OTA signature-rejection tests may be vulnerable to unsigned firmware attacks.",
+      "assumptions_violated": [
+        "ECU rejects any OTA update with invalid signature."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_001"
+      ],
+      "resolution_notes": "TODO: implement F_AUTOMOTIVE_001."
+    },
+    {
+      "id": "OI_AEROSPACE_001",
+      "title": "Redundant avionics channels not verified as byte-identical",
+      "domain": "D_AEROSPACE",
+      "category": "nondeterminism",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Avionics redundancy without verification may have silent divergence between channels.",
+      "assumptions_violated": [
+        "All redundant avionics channels produce byte-identical outputs."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_AEROSPACE_001"
+      ],
+      "resolution_notes": "TODO: implement F_AEROSPACE_001."
+    },
+    {
+      "id": "OI_MARITIME_001",
+      "title": "AIS position accuracy not continuously verified",
+      "domain": "D_MARITIME",
+      "category": "correctness",
+      "severity": "medium",
+      "status": "Open",
+      "description": "AIS-based navigation without position-accuracy verification may display incorrect vessel positions.",
+      "assumptions_violated": [
+        "AIS position is within 10m of actual vessel position."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_MARITIME_001"
+      ],
+      "resolution_notes": "TODO: implement F_MARITIME_001."
+    },
+    {
+      "id": "OI_RAIL_001",
+      "title": "Positive train control stop authority not hardware-verified",
+      "domain": "D_RAIL",
+      "category": "safety",
+      "severity": "critical",
+      "status": "Open",
+      "description": "PTC systems without hardware-in-the-loop tests may fail to halt trains before red signals.",
+      "assumptions_violated": [
+        "PTC halts train before passing a stop signal."
+      ],
+      "related_cases": [
+        "CS_PLATFORM_001"
+      ],
+      "falsification_tests": [
+        "F_RAIL_001"
+      ],
+      "resolution_notes": "TODO: implement F_RAIL_001."
+    },
+    {
+      "id": "OI_AXIOMS_001",
+      "title": "Peano arithmetic violation in successor implementation",
+      "domain": "D_AXIOMS",
+      "category": "invariant-violation",
+      "severity": "critical",
+      "status": "Open",
+      "description": "If the successor function S is not injective (S(m) = S(n) but m \u2260 n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
+      "assumptions_violated": [
+        "Peano successor function S(n) is total and injective over natural numbers.",
+        "Zero is not the successor of any natural number."
+      ],
+      "related_cases": [
+        "CS_AXIOMS_001"
+      ],
+      "falsification_tests": [
+        "F_AXIOMS_001"
+      ],
+      "resolution_notes": "Enforce successor injectivity and zero-exclusion as unit-tested invariants in any natural-number arithmetic module."
+    },
+    {
+      "id": "OI_SHARDING_001",
+      "title": "Non-deterministic shard assignment breaks data locality",
+      "domain": "D_SHARDING",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "If shard assignment for a given key varies across runs (e.g., due to hash randomization or ordering instability), records become silently misrouted, causing data loss or ghost reads.",
+      "assumptions_violated": [
+        "Shard assignment is deterministic: the same key always maps to the same shard."
+      ],
+      "related_cases": [
+        "CS_SHARDING_001"
+      ],
+      "falsification_tests": [
+        "F_SHARDING_001"
+      ],
+      "resolution_notes": "Use stable, seed-pinned hash functions (e.g., SHA-256) for shard assignment. Disable Python hash randomization (PYTHONHASHSEED=0) or use explicit key hashing."
+    },
+    {
+      "id": "OI_FRACTALS_001",
+      "title": "Fractal generation non-determinism breaks self-similarity invariant",
+      "domain": "D_FRACTALS",
+      "category": "nondeterminism",
+      "severity": "high",
+      "status": "Open",
+      "description": "If fractal generation uses platform-dependent randomness or floating-point rounding that varies across architectures, the self-similarity invariant breaks: sub-fragments no longer match the whole structurally.",
+      "assumptions_violated": [
+        "Fractal generation is deterministic: same seed and depth always produce identical output.",
+        "Self-similarity invariant: each sub-fragment is structurally isomorphic to the whole."
+      ],
+      "related_cases": [
+        "CS_FRACTALS_001"
+      ],
+      "falsification_tests": [
+        "F_FRACTALS_001"
+      ],
+      "resolution_notes": "Pin the PRNG seed explicitly; use integer arithmetic for fractal coordinate generation to avoid floating-point divergence across platforms."
+    },
+    {
+      "id": "OI_ALL_001",
+      "title": "Catch-all ontology coverage for falsification registry",
+      "domain": "D_PLATFORM",
+      "category": "registry",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Ensures every falsification test is tracked by at least one ontology issue and case study.",
+      "assumptions_violated": [
+        "Every registered falsification test is mapped to ontology coverage and case study traceability."
+      ],
+      "related_cases": [
+        "CS_ALL_001"
+      ],
+      "falsification_tests": [
+        "F_AEROSPACE_001",
+        "F_AGRICULTURE_001",
+        "F_AUTOMOTIVE_001",
+        "F_AVIATION_001",
+        "F_AVIATION_002",
+        "F_AVIATION_003",
+        "F_AVIATION_004",
+        "F_AXIOMS_001",
+        "F_BIOTECH_001",
+        "F_BLUECOLLAR_001",
+        "F_BLUECOLLAR_002",
+        "F_BLUECOLLAR_003",
+        "F_BLUECOLLAR_004",
+        "F_BORING_001",
+        "F_CHEMICAL_001",
+        "F_COMMUNICATIONS_001",
+        "F_CONSTRUCTION_001",
+        "F_CREATIVE_001",
+        "F_CRUSADER_001",
+        "F_CRUSADER_002",
+        "F_CRUSADER_003",
+        "F_CRUSADER_004",
+        "F_CRUSADER_005",
+        "F_CRUSADER_006",
+        "F_CRUSADER_007",
+        "F_CRUSADER_008",
+        "F_CRUSADER_009",
+        "F_CRYPTO_001",
+        "F_CRYPTO_002",
+        "F_CRYPTO_003",
+        "F_CRYPTO_004",
+        "F_CRYPTO_005",
+        "F_CRYPTO_006",
+        "F_CRYPTO_007",
+        "F_CRYPTO_008",
+        "F_EDUCATION_001",
+        "F_EMERGENCY_001",
+        "F_ENERGY_001",
+        "F_FINANCIAL_001",
+        "F_FRACTALS_001",
+        "F_FUN_001",
+        "F_GAMEMODS_001",
+        "F_GAMING_001",
+        "F_GAMING_002",
+        "F_GAMING_003",
+        "F_GAMING_004",
+        "F_GAMING_005",
+        "F_GOVERNMENT_001",
+        "F_GRAPHICS_001",
+        "F_HOSPITALITY_001",
+        "F_INDUSTRIAL_001",
+        "F_INDUSTRIAL_002",
+        "F_INDUSTRIAL_003",
+        "F_INDUSTRIAL_004",
+        "F_INDUSTRIAL_005",
+        "F_INSURANCE_001",
+        "F_LEGAL_001",
+        "F_LUXURY_001",
+        "F_MARITIME_001",
+        "F_MEDICAL_001",
+        "F_MEDICAL_002",
+        "F_MEDICAL_003",
+        "F_MEDICAL_004",
+        "F_MEDICAL_005",
+        "F_MILITARY_001",
+        "F_MINING_001",
+        "F_NECESSITY_001",
+        "F_NONCREATIVE_001",
+        "F_OILGAS_001",
+        "F_PHARMA_001",
+        "F_PLATFORM_001",
+        "F_PLATFORM_002",
+        "F_PLATFORM_003",
+        "F_PLATFORM_004",
+        "F_PLATFORM_005",
+        "F_PLATFORM_006",
+        "F_RAIL_001",
+        "F_RETAIL_001",
+        "F_ROBOTICS_001",
+        "F_SHARDING_001",
+        "F_SPACE_001",
+        "F_SPACE_002",
+        "F_SPACE_003",
+        "F_SPACE_004",
+        "F_TRANSPORTATION_001",
+        "F_WATER_001",
+        "F_WHITECOLLAR_001",
+        "F_XSS_001"
+      ],
+      "resolution_notes": "Auto-generated coverage reference for Total CI Completion."
+    }
+  ],
+  "summary": {
+    "total_domains": 46,
+    "total_issues": 45,
+    "open": 45,
+    "resolved": 0,
+    "total_oi_ids": 48
+  }
+}
