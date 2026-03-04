@@ -83,7 +83,10 @@ class TopologyScanner:
             schema_path: Path to PERCEIVABLE_INFINITY_SCHEMA.yaml
         """
         self.root_path = Path(root_path).resolve()
-        self.schema_path = schema_path or self.root_path / "PERCEIVABLE_INFINITY_SCHEMA.yaml"
+        if schema_path:
+            self.schema_path = Path(schema_path).resolve()
+        else:
+            self.schema_path = self.root_path / "PERCEIVABLE_INFINITY_SCHEMA.yaml"
         
         # Load schema
         self.schema = self._load_schema()
