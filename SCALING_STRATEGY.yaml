@@ -1,0 +1,186 @@
+# SCALING_STRATEGY.yaml
+# =======================
+# Defines how the PERCEIVABLE_INFINITY pipeline handles repositories at
+# 67k+ file scale without silent degradation.
+#
+# PR #59 additions:
+#   - Lossy summaries section (cluster aggregation for AI perception at 2M scale)
+#   - Hash verification strategy
+#
+# Authority: PERCEIVABLE_INFINITY_SCHEMA.yaml, COVENANT_INVARIANTS.yaml
+# Version: 2.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "2.0.0"
+schema_name: "SCALING_STRATEGY"
+generated: "2026-03-05"
+authority: "sigma-lora-covenant"
+
+# ── Scale targets ──────────────────────────────────────────────────────────────
+scale_targets:
+  current_repo_size: 3726        # files at time of PR #59
+  design_ceiling: 2000000        # 2M files — the 2026 AI comprehension target
+  tested_ceiling_67k: 67000      # files tested in PR #59 CI
+  tested_ceiling_current: 10000  # files tested in nightly CI
+
+# ── Scanner scaling ────────────────────────────────────────────────────────────
+scanner_scaling:
+  strategy: "streaming_walk"
+  description: >
+    os.walk() is used for census; no full list is held in memory.
+    Dependency extraction skips files > 1 MB to avoid memory spikes.
+
+  batch_processing:
+    enabled: false
+    note: >
+      At 67k files, classification is still fast enough to run in one pass
+      (~5–10 seconds).  Batching adds complexity for minimal gain at this scale.
+      Enable if scan time exceeds 60 seconds in CI.
+
+  sha256_computation:
+    default: "selective"
+    description: >
+      SHA-256 is computed ONLY for covenant-critical node classes by default:
+        COVENANT_ROOT, GUARDIAN_SYSTEM, EVIDENCE_ARTIFACT.
+      This avoids the I/O cost of hashing 2M files on every scan.
+    full_hash_flag: "--full-hash"
+    full_hash_note: "Pass --full-hash to hash every file (required for full Merkle verification)"
+    hash_verified_classes:
+      - "COVENANT_ROOT"
+      - "GUARDIAN_SYSTEM"
+      - "EVIDENCE_ARTIFACT"
+    manifest_output: "canonical/hash_manifest.json"
+
+  ignore_patterns:
+    - ".git"
+    - "__pycache__"
+    - "node_modules"
+    - "*.pyc"
+    - ".pytest_cache"
+    - "*.egg-info"
+    rationale: >
+      These directories/files are build artifacts or VCS state.
+      Scanning them adds noise and volume without covenant value.
+
+# ── Lossy summaries ────────────────────────────────────────────────────────────
+lossy_summaries:
+  description: >
+    At 2M files, an AI agent cannot hold all nodes in working memory.
+    Phase 7 of the scanner (cluster aggregation) produces lossy zone summaries
+    that allow an AI to perceive the entire repo shape without raw file parsing.
+
+  implementation:
+    output_key: "clusters"
+    output_in: "topology_graph.json"
+    per_zone_fields:
+      zone_id: "Zone identifier"
+      total_node_count: "True total — never hidden or truncated"
+      hash_verified_count: "Nodes with sha256 in canonical/hash_manifest.json"
+      class_distribution: "Node class → count mapping"
+      representative_sample: "First 5 file IDs as exemplars"
+
+  ai_protocol:
+    description: "The 3-Zone Rule for memory-bounded AI operation"
+    current_zone: "Full detail — load individual FileNode objects"
+    neighboring_zones: "Lossy summary — read from topology_graph.json clusters"
+    distant_zones: "Zone card only — total_node_count + class_distribution"
+    expansion_protocol:
+      - "Log expansion request in STATE.md"
+      - "Read lossy summary first"
+      - "Request full zone load only if justified in commit message"
+
+  aggregation_rules:
+    - "UNCLASSIFIED nodes hidden at zoom level 0 and 1"
+    - "VIOLATION clusters always visible (covenant critical)"
+    - "Truncation always announced with true total count"
+    - "representative_sample contains first 5 node IDs (deterministic order)"
+
+# ── Graph JSON scaling ─────────────────────────────────────────────────────────
+graph_json_scaling:
+  output_file: "topology_graph.json"
+  format: "flat JSON object with clusters key"
+  at_2m_files:
+    estimated_size_mb: 4000
+    note: >
+      A full 2M-node graph will be ~4 GB.  Do NOT load this into a browser DOM.
+      Use the clusters key for Level 0/1 rendering and on-demand node loading.
+
+  compression:
+    recommended: true
+    method: "gzip"
+    note: >
+      Serve topology_graph.json.gz via HTTP and decompress in the browser
+      using DecompressionStream API when file size exceeds 50 MB.
+
+# ── Visualization scaling ──────────────────────────────────────────────────────
+visualization_scaling:
+  approach: "progressive_zoom_levels"
+  description: >
+    The HTML visualization never embeds graphData.  Instead it fetches
+    topology_graph.json at runtime and renders progressively based on
+    the active zoom level.
+
+  zoom_levels:
+    level_0:
+      name: "Zones Only"
+      shows: "aggregated zone cards — no individual nodes"
+      data_source: "topology_graph.json → clusters (lossy summaries)"
+      nodes_rendered: 0
+      dom_elements: 8          # one per zone
+      suitable_for: "2M+ repos; instant render"
+
+    level_1:
+      name: "Classified Nodes"
+      shows: "classified nodes per zone (UNCLASSIFIED excluded)"
+      max_nodes_per_zone: 200
+      dom_elements_max: 1600   # 8 zones × 200 nodes
+      suitable_for: "repos up to 67k files"
+      truncation_behaviour: >
+        If a zone has more than 200 classified nodes, the first 200 are
+        rendered and a truncation notice displays the true total.
+        This is NOT silent — the user always sees the real count.
+
+    level_2:
+      name: "All Nodes"
+      shows: "all nodes per zone including UNCLASSIFIED"
+      max_nodes_per_zone: 500
+      dom_elements_max: 4000   # 8 zones × 500 nodes
+      suitable_for: "zone-filtered views (use zone filter to narrow scope)"
+      truncation_behaviour: >
+        Same as level_1 but with a higher cap of 500 per zone.
+        A truncation notice is always shown when the cap is hit.
+
+  fallback_chain:
+    description: >
+      If the fetch of topology_graph.json fails (e.g., file too large,
+      network error), the UI displays a diagnostic error message with
+      exact failure reason and instructions to run a local HTTP server.
+      Evidence is NEVER silently dropped.
+
+# ── CI scaling ────────────────────────────────────────────────────────────────
+ci_scaling:
+  scan_on:
+    - "workflow_dispatch"
+    - "schedule: nightly"
+  timeout_minutes: 15
+  artifact_retention_days: 30
+
+  fallback_on_large_repo:
+    trigger: "total_files > 50000"
+    action: "skip dependency extraction phase to reduce scan time"
+    note: >
+      Dependency extraction (Phase 2) reads every file for import patterns.
+      For very large repos this can be slow.  Classification (Phase 3) uses
+      only file paths and does not require file contents, so it remains fast.
+
+# ── 2M-file roadmap ────────────────────────────────────────────────────────────
+roadmap_2m_files:
+  current_status: "67k-scale beta (PR #59) + cluster aggregation (PR #59)"
+  next_steps:
+    - "Add Merkle tree cross-cluster verification (full-hash mode)"
+    - "Add WebGL/Three.js renderer for visual cortex mode (Level 0 only)"
+    - "Add progressive zone loading via streaming JSON"
+    - "Add gzip compression for topology_graph.json serving"
+    - "Add cross-session STATE.md diff to detect topology drift"
+
+# end of SCALING_STRATEGY.yaml

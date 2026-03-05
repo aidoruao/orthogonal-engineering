@@ -1,0 +1,106 @@
+# VERIFICATION_PIPELINE.yaml
+# ===========================
+# Defines the verification entrypoints, CI workflow, and hash-manifest
+# generation steps for the orthogonal-engineering repository.
+#
+# Authority: COVENANT_INVARIANTS.yaml, PERCEIVABLE_INFINITY_SCHEMA.yaml
+# Version: 1.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "1.0.0"
+schema_name: "VERIFICATION_PIPELINE"
+generated: "2026-03-05"
+authority: "sigma-lora-covenant"
+
+# ── Pipeline overview ──────────────────────────────────────────────────────────
+pipeline_overview:
+  name: "perceivable-infinity"
+  trigger:
+    - "workflow_dispatch"
+    - "schedule: '0 2 * * *'  # nightly 02:00 UTC"
+    - "push to main (classification rule files only)"
+  steps:
+    1: "Census + classify → topology_graph.json"
+    2: "Regenerate PERCEIVABLE_INFINITY.html"
+    3: "Run topology sanity tests"
+    4: "Upload artifacts"
+
+# ── Step definitions ───────────────────────────────────────────────────────────
+steps:
+
+  step_1_scan:
+    name: "Census and Classification"
+    command: "python3 generate_perceivable_infinity.py ."
+    produces:
+      - "topology_graph.json"
+      - "PERCEIVABLE_INFINITY.html"
+    failure_behaviour: >
+      If the scan fails, the pipeline aborts and emits a GitHub Actions
+      error annotation.  The previous topology_graph.json is NOT overwritten
+      (safe failure).
+
+  step_2_tests:
+    name: "Topology Sanity Tests"
+    command: "python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py -v"
+    must_pass: true
+    failure_behaviour: >
+      Test failures block the PR.  Classification invariants are enforced here.
+
+  step_3_invariant_check:
+    name: "Covenant Invariant Checks"
+    description: >
+      Programmatic checks of COVENANT_INVARIANTS.yaml topology_invariants.
+      These are implemented as pytest assertions in test_pr59_topology_sanity.py.
+    checks:
+      - "INV-T-001: COVENANT_ROOT_MUST_EXIST"
+      - "INV-T-002: GUARDIAN_SYSTEM_MUST_EXIST"
+      - "INV-T-003: ZONE_COUNTS_NONZERO"
+      - "INV-T-006: EVIDENCE_ARTIFACT_NONZERO"
+      - "INV-R-001: NO_EMBEDDED_GRAPH_DATA"
+      - "INV-C-001: KNOWN_FILES_CORRECT_CLASS"
+      - "INV-C-002: NODE_CLASS_COUNTS_NONZERO"
+
+  step_4_artifacts:
+    name: "Upload Artifacts"
+    uploads:
+      - path: "topology_graph.json"
+        retention_days: 30
+        description: "Full node/edge graph for this scan"
+      - path: "PERCEIVABLE_INFINITY.html"
+        retention_days: 30
+        description: "Interactive visualization shell"
+
+# ── Hash manifest generation ───────────────────────────────────────────────────
+hash_manifest:
+  trigger: "on demand via workflow_dispatch"
+  script: "python3 topology/topology_scanner.py --manifest-only"
+  output: "sha256_verification_manifest.json"
+  scope:
+    - "All COVENANT_ROOT nodes"
+    - "All GUARDIAN_SYSTEM nodes"
+    - "All EVIDENCE_ARTIFACT nodes"
+  note: >
+    Lazy SHA-256 computation is the default.  The manifest step runs an
+    explicit pass over the covenant-critical file classes and writes
+    sha256_verification_manifest.json.
+
+# ── Nightly schedule ────────────────────────────────────────────────────────────
+nightly:
+  cron: "0 2 * * *"
+  purpose: "Detect classification drift as new files are committed"
+  alert_on:
+    - "INV-T-001 fails (COVENANT_ROOT count drops to 0)"
+    - "INV-T-002 fails (GUARDIAN_SYSTEM count drops to 0)"
+    - "Total file count changes by > 1000 since last scan"
+
+# ── Manual verification instructions ──────────────────────────────────────────
+manual_verification:
+  local_scan: |
+    # Run the full pipeline locally:
+    python3 generate_perceivable_infinity.py .
+    python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py -v
+
+  view_html: |
+    # Serve with a local HTTP server (required for fetch() to work):
+    python3 -m http.server 8080
+    # Then open: http://localhost:8080/PERCEIVABLE_INFINITY.html

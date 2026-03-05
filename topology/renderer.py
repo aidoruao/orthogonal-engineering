@@ -4,9 +4,16 @@ Renderer for PERCEIVABLE_INFINITY Schema
 ========================================
 
 Generates interactive HTML visualization of covenant-aware topology graph.
+Produces a lightweight HTML shell that loads graph data from an external JSON
+file via fetch() — never embeds the full node list in the HTML.
+
+Zoom levels:
+  Level 0 — Zones only (aggregated cards, no individual nodes visible)
+  Level 1 — Classified nodes per zone (UNCLASSIFIED excluded; max 200/zone)
+  Level 2 — Full detail with viewport-capped nodes loaded from JSON
 
 Authority: PERCEIVABLE_INFINITY_SCHEMA.yaml
-Version: 1.0.0
+Version: 2.0.0
 """
 
 import json
@@ -15,65 +22,91 @@ from typing import Dict, List
 
 import yaml
 
+# Maximum nodes rendered per zone at each zoom level to avoid DOM overload.
+MAX_NODES_PER_ZONE_LEVEL1 = 200
+MAX_NODES_PER_ZONE_LEVEL2 = 500
+
 
 class Renderer:
     """
     Renders topology graph as interactive HTML.
+
+    The rendered HTML fetches graph data at runtime via fetch(graphDataUrl).
+    Only summary statistics and schema-derived colours are baked into the HTML.
     """
-    
+
     def __init__(self, schema_path: str, graph_path: str):
         """
         Initialize renderer.
-        
+
         Args:
             schema_path: Path to PERCEIVABLE_INFINITY_SCHEMA.yaml
-            graph_path: Path to topology_graph.json
+            graph_path: Path to topology_graph.json (used for metadata/stats
+                        baked into the shell; the browser loads it at runtime).
         """
         self.schema_path = Path(schema_path)
         self.graph_path = Path(graph_path)
-        
+
         # Load data
         self.schema = self._load_schema()
         self.graph = self._load_graph()
-    
+
     def _load_schema(self) -> Dict:
         """Load schema."""
         with open(self.schema_path, "r") as f:
             return yaml.safe_load(f)
-    
+
     def _load_graph(self) -> Dict:
-        """Load graph."""
+        """Load graph (metadata + stats only; full nodes are fetched at runtime)."""
         with open(self.graph_path, "r") as f:
             return json.load(f)
-    
+
     def render(self, output_path: str):
         """
         Render interactive HTML visualization.
-        
+
         Args:
             output_path: Output HTML file path
         """
         print(f"🎨 Rendering PERCEIVABLE_INFINITY visualization...")
-        
+
         html = self._generate_html()
-        
+
         output_file = Path(output_path)
         with open(output_file, "w") as f:
             f.write(html)
-        
+
         print(f"✅ Saved visualization to: {output_file}")
     
     def _generate_html(self) -> str:
-        """Generate complete HTML document."""
-        nodes = self.graph.get("nodes", {})
-        edges = self.graph.get("edges", [])
+        """Generate complete HTML document.
+
+        The HTML shell contains only metadata and schema-derived constants.
+        Node/edge data is loaded at runtime via fetch(graphDataUrl) — this
+        keeps the file small regardless of repository scale.
+        """
         stats = self.graph.get("statistics", {})
         metadata = self.graph.get("metadata", {})
         
         # Get rendering config from schema
-        node_colors = self.schema.get("rendering_layers", {}).get("node_layer", {}).get("visual_mapping", {}).get("node_class_to_color", {})
-        edge_styles = self.schema.get("rendering_layers", {}).get("edge_layer", {}).get("visual_mapping", {}).get("edge_class_to_line_style", {})
-        
+        node_colors = (
+            self.schema
+            .get("rendering_layers", {})
+            .get("node_layer", {})
+            .get("visual_mapping", {})
+            .get("node_class_to_color", {})
+        )
+
+        # Graph URL — browser fetches this relative path at runtime.
+        # The HTML is expected to be served/opened from the same directory as
+        # the JSON artifact.  When opened via file://, most modern browsers
+        # allow same-origin fetch; the UI shows an explicit warning if it fails.
+        graph_url = self.graph_path.name
+
+        # Bake only compact summary stats + node colors into the HTML shell.
+        stats_json = json.dumps(stats)
+        node_colors_json = json.dumps(node_colors)
+
         html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -362,6 +395,33 @@ class Renderer:
             color: #00d4ff;
             font-weight: bold;
         }}
+        
+        .loading-msg {{
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            font-size: 1.2em;
+        }}
+        
+        .error-msg {{
+            text-align: center;
+            padding: 40px 20px;
+            color: #ff4444;
+            background: #1a0a0a;
+            border-radius: 8px;
+            border: 1px solid #ff4444;
+            font-family: monospace;
+        }}
+        
+        .truncation-notice {{
+            text-align: center;
+            padding: 8px;
+            color: #ffaa00;
+            font-size: 0.85em;
+            background: #1a1a0a;
+            border-radius: 4px;
+            margin-top: 8px;
+        }}
     </style>
 </head>
 <body>
@@ -410,27 +470,27 @@ class Renderer:
             </div>
         </div>
         
-        <div class="stats">
+        <div class="stats" id="statsBar">
             <div class="stat-card">
-                <div class="stat-value">{stats.get('total_files', 0):,}</div>
+                <div class="stat-value" id="statTotal">{stats.get('total_files', 0):,}</div>
                 <div class="stat-label">Total Files</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{stats.get('classified_nodes', 0):,}</div>
+                <div class="stat-value" id="statClassified">{stats.get('classified_nodes', 0):,}</div>
                 <div class="stat-label">Classified Nodes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{stats.get('unclassified_nodes', 0):,}</div>
+                <div class="stat-value" id="statUnclassified">{stats.get('unclassified_nodes', 0):,}</div>
                 <div class="stat-label">Unclassified Nodes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value">{stats.get('edges_created', 0):,}</div>
+                <div class="stat-value" id="statEdges">{stats.get('edges_created', 0):,}</div>
                 <div class="stat-label">Edges</div>
             </div>
         </div>
         
         <div class="visualization" id="visualization">
-            {self._generate_zones(nodes, node_colors)}
+            <div class="loading-msg">⏳ Loading graph data from <code>{graph_url}</code>…</div>
         </div>
         
         <div class="legend">
@@ -442,109 +502,147 @@ class Renderer:
     </div>
     
     <script>
-        // Graph data
-        const graphData = {json.dumps(self.graph, indent=2)};
-        
+        // ── Constants baked in at render time ──────────────────────────────
+        const GRAPH_URL = '{graph_url}';
+        const NODE_COLORS = {node_colors_json};
+        const MAX_NODES_LEVEL1 = {MAX_NODES_PER_ZONE_LEVEL1};
+        const MAX_NODES_LEVEL2 = {MAX_NODES_PER_ZONE_LEVEL2};
+
+        // ── Runtime state ─────────────────────────────────────────────────
+        let graphData = null;
         let currentZoomLevel = 1;
         let currentZoneFilter = 'all';
         let currentSearchQuery = '';
-        
+
+        // ── Data loading ──────────────────────────────────────────────────
+        /**
+         * Fetch the graph JSON at runtime.  The full node list is never baked
+         * into the HTML; this keeps the HTML small for 67k+ repos.
+         */
+        async function loadGraph() {{
+            try {{
+                const resp = await fetch(GRAPH_URL);
+                if (!resp.ok) throw new Error(`HTTP ${{resp.status}}: ${{resp.statusText}}`);
+                graphData = await resp.json();
+                // Overwrite baked-in stats with live values from the JSON
+                const s = graphData.statistics || {{}};
+                document.getElementById('statTotal').textContent = (s.total_files || 0).toLocaleString();
+                document.getElementById('statClassified').textContent = (s.classified_nodes || 0).toLocaleString();
+                document.getElementById('statUnclassified').textContent = (s.unclassified_nodes || 0).toLocaleString();
+                document.getElementById('statEdges').textContent = (s.edges_created || 0).toLocaleString();
+                renderVisualization();
+            }} catch (err) {{
+                const viz = document.getElementById('visualization');
+                viz.innerHTML = `
+                    <div class="error-msg">
+                        <strong>⚠ Could not load graph data</strong><br><br>
+                        ${{err.message}}<br><br>
+                        <small>Expected: <code>${{GRAPH_URL}}</code> in the same directory as this HTML file.<br>
+                        If opening via file://, run a local HTTP server:<br>
+                        <code>python3 -m http.server 8080</code></small>
+                    </div>`;
+            }}
+        }}
+
+        // ── Zoom / filter controls ────────────────────────────────────────
         function changeZoomLevel() {{
             currentZoomLevel = parseInt(document.getElementById('zoomLevel').value);
-            
-            const zoomInfo = document.getElementById('zoomInfo');
-            switch(currentZoomLevel) {{
-                case 0:
-                    zoomInfo.textContent = 'Zoom Level 0: Zones Only';
-                    break;
-                case 1:
-                    zoomInfo.textContent = 'Zoom Level 1: Classified Nodes';
-                    break;
-                case 2:
-                    zoomInfo.textContent = 'Zoom Level 2: All Nodes';
-                    break;
-            }}
-            
+            const labels = {{
+                0: 'Zoom Level 0: Zones Only',
+                1: 'Zoom Level 1: Classified Nodes',
+                2: 'Zoom Level 2: All Nodes',
+            }};
+            document.getElementById('zoomInfo').textContent = labels[currentZoomLevel] || '';
             renderVisualization();
         }}
-        
+
         function applyFilters() {{
             currentZoneFilter = document.getElementById('zoneFilter').value;
             renderVisualization();
         }}
-        
+
         function searchNodes() {{
             currentSearchQuery = document.getElementById('searchBox').value.toLowerCase();
             renderVisualization();
         }}
-        
+
+        // ── Core renderer ─────────────────────────────────────────────────
+        /**
+         * Render the topology visualization into #visualization.
+         *
+         * Level 0 — zone cards only (no individual nodes).
+         * Level 1 — classified nodes per zone (UNCLASSIFIED excluded),
+         *           capped at MAX_NODES_LEVEL1 per zone.
+         * Level 2 — all nodes per zone, capped at MAX_NODES_LEVEL2 per zone.
+         *
+         * Never silently drops evidence: truncation is always announced with
+         * the true count so the viewer knows more nodes exist.
+         */
         function renderVisualization() {{
+            if (!graphData) return;
             const viz = document.getElementById('visualization');
             const nodes = graphData.nodes || {{}};
-            
-            // Group nodes by zone
-            const zones = {{}};
+
+            // ── Group nodes by zone, applying filters ──────────────────
+            const zoneMap = {{}};
             for (const [nodeId, node] of Object.entries(nodes)) {{
                 const zone = node.zone || 'zone_8_unclassified';
-                if (!zones[zone]) zones[zone] = [];
-                
-                // Apply filters
                 if (currentZoneFilter !== 'all' && zone !== currentZoneFilter) continue;
                 if (currentSearchQuery && !nodeId.toLowerCase().includes(currentSearchQuery)) continue;
                 if (currentZoomLevel === 1 && node.node_class === 'UNCLASSIFIED') continue;
-                
-                zones[zone].push(node);
+                if (!zoneMap[zone]) zoneMap[zone] = [];
+                zoneMap[zone].push(node);
             }}
-            
-            // Render zones
-            viz.innerHTML = Object.keys(zones).sort().map(zoneId => {{
-                const zoneNodes = zones[zoneId];
-                if (zoneNodes.length === 0) return '';
-                
+
+            // ── Render each zone ───────────────────────────────────────
+            viz.innerHTML = Object.keys(zoneMap).sort().map(zoneId => {{
+                const allNodes = zoneMap[zoneId];
                 const borderColor = getZoneBorderColor(zoneId);
-                
+
                 if (currentZoomLevel === 0) {{
-                    // Zones only
-                    return `
-                        <div class="zone" style="border-color: ${{borderColor}}">
-                            <div class="zone-header">
-                                <span>${{zoneId.replace(/_/g, ' ').toUpperCase()}}</span>
-                                <span>${{zoneNodes.length}} nodes</span>
-                            </div>
+                    // Level 0: aggregated zone card only
+                    return `<div class="zone" style="border-color:${{borderColor}}">
+                        <div class="zone-header">
+                            <span>${{humanZone(zoneId)}}</span>
+                            <span>${{allNodes.length.toLocaleString()}} nodes</span>
                         </div>
-                    `;
-                }} else {{
-                    // Zones with nodes
-                    return `
-                        <div class="zone" style="border-color: ${{borderColor}}">
-                            <div class="zone-header" onclick="toggleZone('${{zoneId}}')">
-                                <span>${{zoneId.replace(/_/g, ' ').toUpperCase()}}</span>
-                                <span>${{zoneNodes.length}} nodes</span>
-                            </div>
-                            <div class="zone-content" id="zone-${{zoneId}}">
-                                ${{zoneNodes.map(node => renderNode(node)).join('')}}
-                            </div>
-                        </div>
-                    `;
+                    </div>`;
                 }}
+
+                // Level 1 / 2: nodes visible, with cap
+                const cap = currentZoomLevel === 1 ? MAX_NODES_LEVEL1 : MAX_NODES_LEVEL2;
+                const visible = allNodes.slice(0, cap);
+                const truncated = allNodes.length > cap;
+
+                return `<div class="zone" style="border-color:${{borderColor}}">
+                    <div class="zone-header" onclick="toggleZone('${{zoneId}}')">
+                        <span>${{humanZone(zoneId)}}</span>
+                        <span>${{allNodes.length.toLocaleString()}} nodes</span>
+                    </div>
+                    <div class="zone-content" id="zone-${{zoneId}}">
+                        ${{visible.map(n => renderNode(n)).join('')}}
+                        ${{truncated ? `<div class="truncation-notice">⚠ Showing ${{cap.toLocaleString()}} of ${{allNodes.length.toLocaleString()}} nodes — use Search or zoom level 0 for full overview</div>` : ''}}
+                    </div>
+                </div>`;
             }}).join('');
+
+            if (Object.keys(zoneMap).length === 0) {{
+                viz.innerHTML = '<div class="loading-msg">No nodes match current filters.</div>';
+            }}
         }}
-        
+
         function renderNode(node) {{
-            const color = getNodeColor(node.node_class);
-            return `
-                <div class="node-card" style="border-color: ${{color}}" onclick="showDetail('${{node.file_id}}')">
-                    <div class="node-name">${{node.file_path}}</div>
-                    <div class="node-class">${{node.node_class}}</div>
-                </div>
-            `;
+            const color = NODE_COLORS[node.node_class] || '#666666';
+            // Use JSON.stringify to safely embed the ID in an onclick attribute,
+            // regardless of special characters (single quotes, backslashes, etc.).
+            const encodedId = JSON.stringify(node.file_id || '');
+            return `<div class="node-card" style="border-color:${{color}}" onclick="showDetail(${{encodedId}})">
+                <div class="node-name">${{node.file_path || node.file_id}}</div>
+                <div class="node-class">${{node.node_class}}</div>
+            </div>`;
         }}
-        
-        function getNodeColor(nodeClass) {{
-            const colors = {json.dumps(node_colors)};
-            return colors[nodeClass] || '#666666';
-        }}
-        
+
+        // ── Colour helpers ────────────────────────────────────────────────
         function getZoneBorderColor(zoneId) {{
             const colors = {{
                 'zone_1_immutable_authority': '#ff4444',
@@ -558,131 +656,95 @@ class Renderer:
             }};
             return colors[zoneId] || '#2a2a3e';
         }}
-        
+
+        function humanZone(zoneId) {{
+            return zoneId.replace(/_/g, ' ').toUpperCase();
+        }}
+
+        // ── Zone toggle ───────────────────────────────────────────────────
         function toggleZone(zoneId) {{
             const content = document.getElementById('zone-' + zoneId);
-            if (content) {{
-                content.classList.toggle('collapsed');
-            }}
+            if (content) content.classList.toggle('collapsed');
         }}
-        
+
+        // ── Node detail panel ─────────────────────────────────────────────
         function showDetail(nodeId) {{
+            if (!graphData) return;
             const node = graphData.nodes[nodeId];
             if (!node) return;
-            
-            // Get edges
-            const incomingEdges = graphData.edges.filter(e => e.target === nodeId);
-            const outgoingEdges = graphData.edges.filter(e => e.source === nodeId);
-            
-            const html = `
-                <h2 style="color: #00d4ff; margin-bottom: 20px;">Node Details</h2>
-                <div class="detail-field">
-                    <div class="detail-field-label">File Path</div>
-                    <div class="detail-field-value">${{node.file_path}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Node Class</div>
-                    <div class="detail-field-value">${{node.node_class}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Authority</div>
-                    <div class="detail-field-value">${{node.authority}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Temporal</div>
-                    <div class="detail-field-value">${{node.temporal}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Zone</div>
-                    <div class="detail-field-value">${{node.zone}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">File Size</div>
-                    <div class="detail-field-value">${{formatBytes(node.file_size)}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Verification</div>
-                    <div class="detail-field-value">${{node.verification}}</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Incoming Edges</div>
-                    <div class="detail-field-value">${{incomingEdges.length}} edges</div>
-                </div>
-                <div class="detail-field">
-                    <div class="detail-field-label">Outgoing Edges</div>
-                    <div class="detail-field-value">${{outgoingEdges.length}} edges</div>
-                </div>
-            `;
-            
-            document.getElementById('detailContent').innerHTML = html;
+
+            const edges = graphData.edges || [];
+            const incoming = edges.filter(e => e.target === nodeId);
+            const outgoing = edges.filter(e => e.source === nodeId);
+
+            const field = (label, value) =>
+                `<div class="detail-field">
+                    <div class="detail-field-label">${{label}}</div>
+                    <div class="detail-field-value">${{value}}</div>
+                </div>`;
+
+            document.getElementById('detailContent').innerHTML =
+                `<h2 style="color:#00d4ff;margin-bottom:20px;">Node Details</h2>` +
+                field('File Path',    node.file_path || node.file_id) +
+                field('Node Class',   node.node_class) +
+                field('Zone',         node.zone) +
+                field('Authority',    node.authority) +
+                field('Temporal',     node.temporal) +
+                field('Verification', node.verification) +
+                field('File Size',    formatBytes(node.file_size || 0)) +
+                field('Depth',        node.depth) +
+                field('SHA-256',      node.sha256 || 'not computed') +
+                field('Incoming Edges', incoming.length) +
+                field('Outgoing Edges', outgoing.length);
+
             document.getElementById('detailPanel').classList.add('active');
             document.getElementById('overlay').classList.add('active');
         }}
-        
+
         function closeDetail() {{
             document.getElementById('detailPanel').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
         }}
-        
+
         function formatBytes(bytes) {{
-            if (bytes === 0) return '0 Bytes';
+            if (!bytes) return '0 Bytes';
             const k = 1024;
             const sizes = ['Bytes', 'KB', 'MB', 'GB'];
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
         }}
-        
-        // Close detail on overlay click
+
         document.getElementById('overlay').onclick = closeDetail;
-        
-        // Initialize
-        renderVisualization();
+
+        // ── Bootstrap ─────────────────────────────────────────────────────
+        loadGraph();
     </script>
 </body>
 </html>"""
-        
+
         return html
-    
-    def _generate_zones(self, nodes: Dict, node_colors: Dict) -> str:
-        """Generate zone HTML structure."""
-        # Group nodes by zone
-        zones = {}
-        for node_id, node in nodes.items():
-            zone = node.get("zone", "zone_8_unclassified")
-            if zone not in zones:
-                zones[zone] = []
-            zones[zone].append(node)
-        
-        # Generate HTML for each zone
-        zone_html = []
-        for zone_id in sorted(zones.keys()):
-            zone_nodes = zones[zone_id]
-            zone_html.append(f'<div class="zone-placeholder" data-zone="{zone_id}">{len(zone_nodes)} nodes</div>')
-        
-        return '\n'.join(zone_html)
-    
+
     def _generate_legend(self, node_colors: Dict) -> str:
         """Generate legend HTML."""
         legend_items = []
         for node_class, color in node_colors.items():
-            legend_items.append(f'''
-                <div class="legend-item">
-                    <div class="legend-color" style="background: {color}"></div>
-                    <div class="legend-text">{node_class}</div>
-                </div>
-            ''')
-        
+            legend_items.append(
+                f'<div class="legend-item">'
+                f'<div class="legend-color" style="background:{color}"></div>'
+                f'<div class="legend-text">{node_class}</div>'
+                f'</div>'
+            )
         return '\n'.join(legend_items)
 
 
 def main():
     """Main entry point for renderer."""
     import sys
-    
+
     schema_path = sys.argv[1] if len(sys.argv) > 1 else "PERCEIVABLE_INFINITY_SCHEMA.yaml"
     graph_path = sys.argv[2] if len(sys.argv) > 2 else "topology_graph.json"
     output_path = sys.argv[3] if len(sys.argv) > 3 else "PERCEIVABLE_INFINITY.html"
-    
+
     renderer = Renderer(schema_path, graph_path)
     renderer.render(output_path)
 

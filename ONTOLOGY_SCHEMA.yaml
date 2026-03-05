@@ -1,0 +1,373 @@
+# ONTOLOGY_SCHEMA.yaml
+# =====================
+# Defines the ontology of nodes, edges, zones, and axes in the
+# orthogonal-engineering covenant topology.
+#
+# This is the canonical source of truth for node_class and edge_class
+# semantics.  topology/graph_schema.yaml provides implementation details;
+# this file provides the conceptual definitions.
+#
+# Teleological alignment (PR #59):
+#   Every node class now carries `intent`, `teleology`, and `success_criteria`.
+#   An AI must demonstrate understanding of these before mutating nodes.
+#
+# Authority: COVENANT.md
+# Version: 2.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "2.0.0"
+schema_name: "ONTOLOGY_SCHEMA"
+generated: "2026-03-05"
+authority: "sigma-lora-covenant"
+
+# ── Teleological alignment requirement ────────────────────────────────────────
+teleological_alignment:
+  required: true
+  description: >
+    Before mutating any node, an AI agent must articulate the node's intent
+    and verify the proposed change reduces entropy relative to that intent.
+    Changes that increase overall description complexity require covenant review.
+  measurement: "entropy(proposed_state) <= entropy(current_state)"
+
+# ── Node classes ───────────────────────────────────────────────────────────────
+node_classes:
+  COVENANT_ROOT:
+    definition: >
+      A file that defines or records foundational covenant obligations.
+      Changing it requires external covenant authority.
+    intent: "Constitutional authority — cannot be modified without covenant instruction"
+    teleology: "Source of all derived truth; anchor for every other invariant"
+    success_criteria:
+      - "File hash matches canonical/hash_manifest.json"
+      - "No automated process has modified the file since last hash verification"
+      - "All derived invariants remain consistent with this root"
+    authority: "IMMUTABLE"
+    temporal: "GENESIS"
+    verification: "HASH_REQUIRED"
+    examples:
+      - "INVARIANTS.json"
+      - "AI_INSTRUCTIONS.md"
+      - ".jesus_reality_guardian_state.json"
+    zone: "zone_1_immutable_authority"
+
+  PRINCIPLE_MODULE:
+    definition: >
+      A module implementing a core principle derived from the covenant.
+      May be extended but not weakened.
+    intent: "Embody a specific covenant principle in executable form"
+    teleology: "Bridge abstract covenant obligations to runtime behaviour"
+    success_criteria:
+      - "All regression tests pass after any change"
+      - "No existing principle is weakened or removed"
+      - "New principles are additive only"
+    authority: "VALIDATED"
+    temporal: "FOUNDATION"
+    verification: "REGRESSION_REQUIRED"
+    examples:
+      - "src/principles.py"
+    zone: "zone_1_immutable_authority"
+
+  OPERATIONAL_MODE_ENFORCER:
+    definition: >
+      A module that enforces operational modes, restricting downstream
+      behaviour to covenant-approved patterns.
+    intent: "Prevent covenant drift by enforcing operational boundaries"
+    teleology: "Ensure system behaviour never silently exceeds covenant scope"
+    success_criteria:
+      - "All mode transitions are logged"
+      - "No covenant-forbidden mode can be entered silently"
+      - "Enforcement tightens only — never relaxes without explicit covenant review"
+    authority: "VALIDATED"
+    temporal: "SUBSTRATE"
+    verification: "REGRESSION_REQUIRED"
+    examples:
+      - "src/operational_modes.py"
+    zone: "zone_2_detection_enforcement"
+
+  GUARDIAN_SYSTEM:
+    definition: >
+      A system that monitors covenant compliance and emits violations.
+      Must not be weakened or silenced.
+    intent: "Enforce boundaries — detect and surface all covenant violations"
+    teleology: "Prevent covenant drift by ensuring violations are never hidden"
+    success_criteria:
+      - "All violations detected (false-negative rate = 0 for known patterns)"
+      - "False positives < 1% on baseline corpus"
+      - "Guardian state hash matches canonical/hash_manifest.json"
+    authority: "EXTERNAL_ONLY"
+    temporal: "FOUNDATION"
+    verification: "HASH_REQUIRED"
+    examples:
+      - "JESUS_REALITY_GUARDIAN.py"
+      - ".simple_guardian_state.json"
+    zone: "zone_1_immutable_authority"
+
+  CORRESPONDENCE_BRIDGE:
+    definition: >
+      A module that maps between two representation systems while
+      preserving bijection (no information loss).
+    intent: "Enable cross-system communication without information loss"
+    teleology: "Maintain perfect correspondence between representations"
+    success_criteria:
+      - "Bijection property holds: every input maps to exactly one output and vice versa"
+      - "No silent truncation or lossy transformation"
+      - "Round-trip test passes"
+    authority: "VALIDATED"
+    temporal: "OVERLAY"
+    verification: "BIJECTION_TEST"
+    examples:
+      - "complete_correspondence.py"
+      - "correspondence_bridge/"
+    zone: "zone_3_correspondence_bridge"
+
+  FORGIVENESS_MODULE:
+    definition: >
+      A module implementing the forgiveness/grace subsystem.
+      May not introduce coercion.
+    intent: "Detect violations and restore the system to a state of grace"
+    teleology: >
+      Provide a recovery path for every violation without permanent exclusion.
+      The spirit: heal, not punish.
+    success_criteria:
+      - "Violations are logged before any recovery attempt"
+      - "Recovery path exists for every detected violation type"
+      - "No permanent exclusion is possible — all states are recoverable"
+      - "No coercive pattern introduced (e.g. forced re-classification without review)"
+    authority: "UNRESTRICTED"
+    temporal: "OVERLAY"
+    verification: "NONE"
+    examples:
+      - "fix_forgiveness_system.py"
+      - "affective_constraint_system.py"
+    zone: "zone_4_forgiveness_grace"
+
+  VIOLATION_LOG:
+    definition: >
+      A file recording observed covenant violations.
+      Append-only; existing entries must not be modified.
+    intent: "Maintain an immutable audit trail of all covenant violations"
+    teleology: "Ensure violations are never forgotten or retroactively erased"
+    success_criteria:
+      - "File grows monotonically (no deletions)"
+      - "Each entry has timestamp, node_id, violation_type, detected_by"
+      - "Entries are not modified after writing"
+    authority: "VALIDATED"
+    temporal: "EPHEMERAL"
+    verification: "APPEND_ONLY_CHECK"
+    examples:
+      - ".ontological_violations/violation_*.json"
+      - ".jesus_reality_violations/violation_*.json"
+    zone: "zone_2_detection_enforcement"
+
+  EVIDENCE_ARTIFACT:
+    definition: >
+      A file recording verification evidence, hash manifests, or audit results.
+      Additive only — may not delete existing evidence.
+    intent: "Record verifiable proof of system state at a point in time"
+    teleology: "Provide an auditable, tamper-evident history of verification results"
+    success_criteria:
+      - "File hash matches canonical/hash_manifest.json"
+      - "No existing evidence entry is modified or deleted"
+      - "New evidence is additive and timestamped"
+    authority: "VALIDATED"
+    temporal: "OVERLAY"
+    verification: "HASH_REQUIRED"
+    examples:
+      - "sha256_verification_manifest.json"
+      - "evidence/"
+      - "VERIFICATION_SUMMARY.md"
+      - "canonical/hash_manifest.json"
+    zone: "zone_5_analysis_reporting"
+
+  INFRASTRUCTURE_REGISTRY:
+    definition: >
+      A registry or configuration file that records infrastructure state.
+      Changes must honour upstream constraints.
+    intent: "Provide a single source of truth for infrastructure configuration"
+    teleology: "Enable reproducible deployments and auditable infrastructure state"
+    success_criteria:
+      - "All upstream constraints are honoured"
+      - "Configuration changes are backwards-compatible"
+      - "State is machine-verifiable"
+    authority: "UNRESTRICTED"
+    temporal: "SUBSTRATE"
+    verification: "NONE"
+    examples:
+      - "src/infrastructure.py"
+      - ".ai_registry.json"
+    zone: "zone_6_deployment_orchestration"
+
+  DOCUMENTATION_INDEX:
+    definition: >
+      A human-readable index document (README, onboarding, reference).
+      Must reflect actual state — no aspirational claims.
+    intent: "Enable a new agent or human to orient within 60 seconds"
+    teleology: >
+      Reduce onboarding entropy to zero: a reader should be able to locate
+      any ontological violation using only this document and
+      PERCEIVABLE_INFINITY.html, without reading raw source files.
+    success_criteria:
+      - "All file references in the document exist on disk"
+      - "No aspirational claims (future tense without evidence)"
+      - "A new AI can orient using this document alone within 60 seconds"
+    authority: "UNRESTRICTED"
+    temporal: "OVERLAY"
+    verification: "NONE"
+    examples:
+      - "README.md"
+      - "COPILOT_ONBOARDING.md"
+      - "AGENT.md"
+    zone: "zone_7_documentation"
+
+  UNCLASSIFIED:
+    definition: >
+      A file that did not match any classification rule.
+      Visible at zoom level 2 only.
+    intent: "Acknowledge the existence of files not yet covenant-classified"
+    teleology: >
+      Provide a visible holding zone so no file is silently invisible.
+      Over time the UNCLASSIFIED pool should shrink as rules improve.
+    success_criteria:
+      - "Visible in zone_8 at zoom level 2"
+      - "Truncation notice shown when count exceeds cap"
+      - "Any critical file appearing here triggers a classification review"
+    authority: "UNRESTRICTED"
+    temporal: "OVERLAY"
+    verification: "NONE"
+    zone: "zone_8_unclassified"
+
+# ── Edge classes ───────────────────────────────────────────────────────────────
+edge_classes:
+  COVENANT_BINDING:
+    definition: >
+      A strong directional dependency from COVENANT_ROOT to a principle
+      or guardian that it binds.
+    directionality: "UNI"
+    strength: "HARD"
+
+  DEPENDENCY_IMPORT:
+    definition: >
+      A standard Python/JS import or file reference.
+    directionality: "UNI"
+    strength: "SOFT"
+
+  VERIFICATION_CHAIN:
+    definition: >
+      A dependency that terminates in an EVIDENCE_ARTIFACT.
+    directionality: "UNI"
+    strength: "MEDIUM"
+
+  MODE_RESTRICTION:
+    definition: >
+      A dependency from an OPERATIONAL_MODE_ENFORCER that restricts
+      downstream behaviour.
+    directionality: "UNI"
+    strength: "HARD"
+
+  GUARDIAN_WATCH:
+    definition: >
+      A monitoring dependency from a GUARDIAN_SYSTEM to any node it watches.
+    directionality: "UNI"
+    strength: "MEDIUM"
+
+  CORRESPONDENCE_MAPPING:
+    definition: >
+      A bidirectional mapping maintained by a CORRESPONDENCE_BRIDGE.
+    directionality: "BI"
+    strength: "MEDIUM"
+
+  VIOLATION_REFERENCE:
+    definition: >
+      A reference from a violating node to a VIOLATION_LOG entry.
+    directionality: "UNI"
+    strength: "SOFT"
+
+  SPATIAL_CONTAINMENT:
+    definition: >
+      A zone-containment edge, rendered as hidden (no visual line).
+    directionality: "UNI"
+    strength: "STRUCTURAL"
+
+# ── Zones ──────────────────────────────────────────────────────────────────────
+zones:
+  zone_1_immutable_authority:
+    description: "Files defining or guarding the covenant. No changes without external authority."
+    change_policy: "EXTERNAL_AUTHORITY_ONLY"
+    node_classes: ["COVENANT_ROOT", "GUARDIAN_SYSTEM", "PRINCIPLE_MODULE"]
+    border_color: "#ff4444"
+
+  zone_2_detection_enforcement:
+    description: "Detection and enforcement — violation logs and mode enforcers."
+    change_policy: "TIGHTEN_ONLY"
+    node_classes: ["VIOLATION_LOG", "OPERATIONAL_MODE_ENFORCER"]
+    border_color: "#ffaa00"
+
+  zone_3_correspondence_bridge:
+    description: "Bijection-preserving correspondence bridges."
+    change_policy: "PRESERVE_BIJECTION"
+    node_classes: ["CORRESPONDENCE_BRIDGE"]
+    border_color: "#00aaff"
+
+  zone_4_forgiveness_grace:
+    description: "Forgiveness and grace subsystem."
+    change_policy: "NO_COERCION_INTRODUCTION"
+    node_classes: ["FORGIVENESS_MODULE"]
+    border_color: "#aa00ff"
+
+  zone_5_analysis_reporting:
+    description: "Evidence artifacts, hash manifests, and analysis outputs."
+    change_policy: "ADDITIVE_ONLY"
+    node_classes: ["EVIDENCE_ARTIFACT"]
+    border_color: "#00ff88"
+
+  zone_6_deployment_orchestration:
+    description: "Orchestration scripts, workflows, CI, automation."
+    change_policy: "HONOR_UPSTREAM_CONSTRAINTS"
+    node_classes: ["INFRASTRUCTURE_REGISTRY"]
+    border_color: "#888888"
+
+  zone_7_documentation:
+    description: "Human-readable documentation and onboarding."
+    change_policy: "REFLECT_ACTUAL_STATE"
+    node_classes: ["DOCUMENTATION_INDEX"]
+    border_color: "#ffffff"
+
+  zone_8_unclassified:
+    description: "Files not matched by any classification rule."
+    change_policy: "UNRESTRICTED"
+    node_classes: ["UNCLASSIFIED"]
+    border_color: "#666666"
+
+# ── Temporal layers ────────────────────────────────────────────────────────────
+temporal_layers:
+  GENESIS:
+    description: "Foundational files that existed before the covenant was formalised."
+    vertical_position: "top"
+  FOUNDATION:
+    description: "Files implementing the first layer of covenant obligations."
+    vertical_position: "upper"
+  SUBSTRATE:
+    description: "Infrastructure and registry files."
+    vertical_position: "middle"
+  OVERLAY:
+    description: "Active operational files."
+    vertical_position: "lower"
+  EPHEMERAL:
+    description: "Transient files (logs, caches, build outputs)."
+    vertical_position: "bottom"
+
+# ── Authority levels ───────────────────────────────────────────────────────────
+authority_levels:
+  IMMUTABLE:
+    description: "Cannot be changed by any automated process."
+    opacity: 1.0
+  EXTERNAL_ONLY:
+    description: "Changes require external covenant authority."
+    opacity: 0.95
+  VALIDATED:
+    description: "Changes require passing regression/verification."
+    opacity: 0.8
+  UNRESTRICTED:
+    description: "Changes follow standard PR review only."
+    opacity: 0.6
+
