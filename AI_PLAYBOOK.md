@@ -4,7 +4,7 @@
 # Read this AFTER the mandatory schema files listed in COPILOT_ONBOARDING_SCHEMA.yaml.
 #
 # Authority: COVENANT.md
-# Version: 2.0.0 (PR #60.5 — adds memory-bounded protocol and 3-zone rule)
+# Version: 2.0.0 (PR #59 — adds memory-bounded protocol and 3-zone rule)
 
 ## Purpose
 
@@ -18,7 +18,7 @@ can pick up efficiently where the previous one left off.
 1. **Read the mandatory files** (in order from `COPILOT_ONBOARDING_SCHEMA.yaml`).
 2. **Run successor readiness tests** before touching any code:
    ```bash
-   python3 -m pytest tests/test_successor_readiness.py tests/test_perceivable_infinity.py tests/test_pr60_topology_sanity.py -v
+   python3 -m pytest tests/test_successor_readiness.py tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py -v
    ```
 3. **Check the latest `topology_graph.json`** for current node counts and zone distribution.
 4. **Open `HANDOFF_TEMPLATE.md`** for notes left by the previous session.
@@ -82,7 +82,7 @@ The `topology_graph.json` now includes a `clusters` key (Phase 7 output):
 | GUARDIAN_SYSTEM must exist | `JESUS_REALITY_GUARDIAN.py` classified correctly |
 | Hash manifest exists | `canonical/hash_manifest.json` must exist after pipeline run |
 | Successor tests pass | `pytest tests/test_successor_readiness.py` — all green |
-| Tests must pass | `pytest tests/test_perceivable_infinity.py tests/test_pr60_topology_sanity.py` — all green |
+| Tests must pass | `pytest tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py` — all green |
 
 ---
 
@@ -94,7 +94,7 @@ The `topology_graph.json` now includes a `clusters` key (Phase 7 output):
    (under `classification_pipeline.classification.rules`).
 4. Add a zone assignment rule if the class belongs in a specific zone.
 5. Run `python3 generate_perceivable_infinity.py .` to regenerate the graph + manifest.
-6. Add a test in `tests/test_pr60_topology_sanity.py` for the known mapping.
+6. Add a test in `tests/test_pr59_topology_sanity.py` for the known mapping.
 7. Update `COVENANT_INVARIANTS.yaml → INV-C-001.known_mappings` with examples.
 8. Add successor tests for the new class to `tests/test_successor_readiness.py`.
 

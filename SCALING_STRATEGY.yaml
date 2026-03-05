@@ -3,7 +3,7 @@
 # Defines how the PERCEIVABLE_INFINITY pipeline handles repositories at
 # 67k+ file scale without silent degradation.
 #
-# PR #60.5 additions:
+# PR #59 additions:
 #   - Lossy summaries section (cluster aggregation for AI perception at 2M scale)
 #   - Hash verification strategy
 #
@@ -18,9 +18,9 @@ authority: "sigma-lora-covenant"
 
 # ── Scale targets ──────────────────────────────────────────────────────────────
 scale_targets:
-  current_repo_size: 3726        # files at time of PR #60
+  current_repo_size: 3726        # files at time of PR #59
   design_ceiling: 2000000        # 2M files — the 2026 AI comprehension target
-  tested_ceiling_67k: 67000      # files tested in PR #60 CI
+  tested_ceiling_67k: 67000      # files tested in PR #59 CI
   tested_ceiling_current: 10000  # files tested in nightly CI
 
 # ── Scanner scaling ────────────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ ci_scaling:
 
 # ── 2M-file roadmap ────────────────────────────────────────────────────────────
 roadmap_2m_files:
-  current_status: "67k-scale beta (PR #60) + cluster aggregation (PR #60.5)"
+  current_status: "67k-scale beta (PR #59) + cluster aggregation (PR #59)"
   next_steps:
     - "Add Merkle tree cross-cluster verification (full-hash mode)"
     - "Add WebGL/Three.js renderer for visual cortex mode (Level 0 only)"

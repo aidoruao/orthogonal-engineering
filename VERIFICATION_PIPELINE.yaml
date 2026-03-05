@@ -41,7 +41,7 @@ steps:
 
   step_2_tests:
     name: "Topology Sanity Tests"
-    command: "python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr60_topology_sanity.py -v"
+    command: "python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py -v"
     must_pass: true
     failure_behaviour: >
       Test failures block the PR.  Classification invariants are enforced here.
@@ -50,7 +50,7 @@ steps:
     name: "Covenant Invariant Checks"
     description: >
       Programmatic checks of COVENANT_INVARIANTS.yaml topology_invariants.
-      These are implemented as pytest assertions in test_pr60_topology_sanity.py.
+      These are implemented as pytest assertions in test_pr59_topology_sanity.py.
     checks:
       - "INV-T-001: COVENANT_ROOT_MUST_EXIST"
       - "INV-T-002: GUARDIAN_SYSTEM_MUST_EXIST"
@@ -98,7 +98,7 @@ manual_verification:
   local_scan: |
     # Run the full pipeline locally:
     python3 generate_perceivable_infinity.py .
-    python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr60_topology_sanity.py -v
+    python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py -v
 
   view_html: |
     # Serve with a local HTTP server (required for fetch() to work):

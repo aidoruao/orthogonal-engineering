@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PR #60 Topology Sanity Tests
+PR #59 Topology Sanity Tests
 ==============================
 
 Tests that enforce the invariants defined in COVENANT_INVARIANTS.yaml.
@@ -20,7 +20,7 @@ root (produced by generate_perceivable_infinity.py).  They will skip if
 that file does not exist yet.
 
 Usage:
-    python3 -m pytest tests/test_pr60_topology_sanity.py -v
+    python3 -m pytest tests/test_pr59_topology_sanity.py -v
 """
 
 import json

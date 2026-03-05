@@ -35,7 +35,7 @@ description: |
 requirements:
   before_starting:
     - "Read all files in COPILOT_ONBOARDING_SCHEMA.yaml reading_order"
-    - "Run tests: python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr60_topology_sanity.py -v"
+    - "Run tests: python3 -m pytest tests/test_perceivable_infinity.py tests/test_pr59_topology_sanity.py -v"
     - "Check STATE.md for open issues from previous session"
     - "Read HANDOFF_TEMPLATE.md filled by previous session"
     - "Verify topology_graph.json exists and is current"
@@ -146,18 +146,18 @@ invariant:
 session_registry:
   # Sessions are appended here by each AI instance.
   # Format: {session_id, timestamp, summary, tests_added}
-  - session_id: "2026-03-05T02:30:00Z_copilot_pr60"
+  - session_id: "2026-03-05T02:30:00Z_copilot_pr59"
     timestamp: "2026-03-05"
     summary: >
-      PR #60: Implemented scalable visualization (fetch-based HTML), schema
+      PR #59: Implemented scalable visualization (fetch-based HTML), schema
       files, topology sanity tests, and CI workflow.
     tests_added:
-      - "tests/test_pr60_topology_sanity.py"
+      - "tests/test_pr59_topology_sanity.py"
 
-  - session_id: "2026-03-05T02:47:00Z_copilot_pr60_5"
+  - session_id: "2026-03-05T02:47:00Z_copilot_pr59"
     timestamp: "2026-03-05"
     summary: >
-      PR #60.5: Added hash verification (Phase 6), cluster aggregation
+      PR #59: Added hash verification (Phase 6), cluster aggregation
       (Phase 7), SUCCESSOR_VERIFICATION.yaml, updated ONTOLOGY_SCHEMA.yaml
       with teleological intent, updated AI_PLAYBOOK.md with 3-zone rule,
       updated SCALING_STRATEGY.yaml with cluster aggregation spec.
