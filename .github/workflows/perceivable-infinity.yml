@@ -1,0 +1,96 @@
+name: Perceivable Infinity Pipeline
+
+# Generates topology_graph.json and PERCEIVABLE_INFINITY.html,
+# then runs topology sanity tests.
+#
+# Workflow authority: VERIFICATION_PIPELINE.yaml
+# Schema authority:   PERCEIVABLE_INFINITY_SCHEMA.yaml
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_artifacts:
+        description: "Upload topology artifacts"
+        required: false
+        default: "true"
+        type: boolean
+  schedule:
+    # Nightly at 02:00 UTC — detects classification drift
+    - cron: "0 2 * * *"
+  push:
+    branches: [main]
+    paths:
+      # Only re-run when classification logic or schema changes
+      - "PERCEIVABLE_INFINITY_SCHEMA.yaml"
+      - "topology/topology_scanner.py"
+      - "topology/renderer.py"
+      - "topology/graph_schema.yaml"
+      - "generate_perceivable_infinity.py"
+
+jobs:
+  perceivable-infinity:
+    name: "Perceivable Infinity — Census & Visualization"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml pytest
+
+      - name: Run census and generate graph
+        id: scan
+        run: |
+          python3 generate_perceivable_infinity.py .
+          echo "scan_timestamp=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
+      - name: Display scan statistics
+        run: |
+          python3 - <<'EOF'
+          import json, pathlib
+          g = json.loads(pathlib.Path("topology_graph.json").read_text())
+          s = g.get("statistics", {})
+          print(f"Total files:      {s.get('total_files', 0):,}")
+          print(f"Classified nodes: {s.get('classified_nodes', 0):,}")
+          print(f"Unclassified:     {s.get('unclassified_nodes', 0):,}")
+          print(f"Edges:            {s.get('edges_created', 0):,}")
+          print("\nZone counts:")
+          for zone, count in sorted(s.get('zone_counts', {}).items()):
+              print(f"  {zone}: {count:,}")
+          EOF
+
+      - name: Check HTML size (must be < 5 000 lines)
+        run: |
+          lines=$(wc -l < PERCEIVABLE_INFINITY.html)
+          echo "PERCEIVABLE_INFINITY.html: ${lines} lines"
+          if [ "$lines" -gt 5000 ]; then
+            echo "::error::PERCEIVABLE_INFINITY.html has ${lines} lines (> 5000)."
+            echo "::error::INV-R-001 likely violated — graphData may be embedded inline."
+            exit 1
+          fi
+
+      - name: Run topology sanity tests
+        run: |
+          python3 -m pytest \
+            tests/test_perceivable_infinity.py \
+            tests/test_pr60_topology_sanity.py \
+            -v --tb=short
+
+      - name: Upload topology artifacts
+        if: ${{ github.event.inputs.upload_artifacts != 'false' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: "perceivable-infinity-${{ steps.scan.outputs.scan_timestamp }}"
+          path: |
+            topology_graph.json
+            PERCEIVABLE_INFINITY.html
+          retention-days: 30

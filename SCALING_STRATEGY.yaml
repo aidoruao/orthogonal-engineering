@@ -1,0 +1,129 @@
+# SCALING_STRATEGY.yaml
+# =======================
+# Defines how the PERCEIVABLE_INFINITY pipeline handles repositories at
+# 67k+ file scale without silent degradation.
+#
+# Authority: PERCEIVABLE_INFINITY_SCHEMA.yaml, COVENANT_INVARIANTS.yaml
+# Version: 1.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "1.0.0"
+schema_name: "SCALING_STRATEGY"
+generated: "2026-03-05"
+authority: "sigma-lora-covenant"
+
+# ── Scale targets ──────────────────────────────────────────────────────────────
+scale_targets:
+  current_repo_size: 3726        # files at time of PR #60
+  design_ceiling: 67000          # files the pipeline is designed for
+  tested_ceiling: 10000          # files tested in CI
+
+# ── Scanner scaling ────────────────────────────────────────────────────────────
+scanner_scaling:
+  strategy: "streaming_walk"
+  description: >
+    os.walk() is used for census; no full list is held in memory.
+    Dependency extraction skips files > 1 MB to avoid memory spikes.
+
+  batch_processing:
+    enabled: false
+    note: >
+      At 67k files, classification is still fast enough to run in one pass
+      (~5–10 seconds).  Batching adds complexity for minimal gain at this scale.
+      Enable if scan time exceeds 60 seconds.
+
+  sha256_computation:
+    default: "lazy"
+    description: >
+      SHA-256 is NOT computed during census.  It is computed on demand
+      (e.g., when a verification manifest is requested) to avoid the I/O
+      cost of hashing 67k files on every scan.
+    override_for_classes: ["COVENANT_ROOT", "GUARDIAN_SYSTEM", "EVIDENCE_ARTIFACT"]
+
+  ignore_patterns:
+    - ".git"
+    - "__pycache__"
+    - "node_modules"
+    - "*.pyc"
+    - ".pytest_cache"
+    - "*.egg-info"
+    rationale: >
+      These directories/files are build artifacts or VCS state.
+      Scanning them adds noise and volume without covenant value.
+
+# ── Graph JSON scaling ─────────────────────────────────────────────────────────
+graph_json_scaling:
+  output_file: "topology_graph.json"
+  format: "flat JSON object"
+  at_67k_files:
+    estimated_size_mb: 120
+    note: >
+      A full 67k-node graph will be ~120 MB.  The browser does NOT load
+      this into a DOM directly.  See visualization_scaling below.
+
+  compression:
+    recommended: true
+    method: "gzip"
+    note: >
+      Serve topology_graph.json.gz via HTTP and decompress in the browser
+      using DecompressionStream API when file size exceeds 50 MB.
+
+# ── Visualization scaling ──────────────────────────────────────────────────────
+visualization_scaling:
+  approach: "progressive_zoom_levels"
+  description: >
+    The HTML visualization never embeds graphData.  Instead it fetches
+    topology_graph.json at runtime and renders progressively based on
+    the active zoom level.
+
+  zoom_levels:
+    level_0:
+      name: "Zones Only"
+      shows: "aggregated zone cards — no individual nodes"
+      nodes_rendered: 0
+      dom_elements: 8          # one per zone
+      suitable_for: "67k+ repos; instant render"
+
+    level_1:
+      name: "Classified Nodes"
+      shows: "classified nodes per zone (UNCLASSIFIED excluded)"
+      max_nodes_per_zone: 200
+      dom_elements_max: 1600   # 8 zones × 200 nodes
+      suitable_for: "repos up to 67k files"
+      truncation_behaviour: >
+        If a zone has more than 200 classified nodes, the first 200 are
+        rendered and a truncation notice is displayed with the true total.
+        This is NOT silent — the user always sees the real count.
+
+    level_2:
+      name: "All Nodes"
+      shows: "all nodes per zone including UNCLASSIFIED"
+      max_nodes_per_zone: 500
+      dom_elements_max: 4000   # 8 zones × 500 nodes
+      suitable_for: "zone-filtered views (use zone filter to narrow scope)"
+      truncation_behaviour: >
+        Same as level_1 but with a higher cap of 500 per zone.
+        A truncation notice is always shown when the cap is hit.
+
+  fallback_chain:
+    description: >
+      If the fetch of topology_graph.json fails (e.g., file too large,
+      network error), the UI displays a diagnostic error message with
+      exact failure reason and instructions to run a local HTTP server.
+      Evidence is NEVER silently dropped.
+
+# ── CI scaling ────────────────────────────────────────────────────────────────
+ci_scaling:
+  scan_on:
+    - "workflow_dispatch"
+    - "schedule: nightly"
+  timeout_minutes: 15
+  artifact_retention_days: 30
+
+  fallback_on_large_repo:
+    trigger: "total_files > 50000"
+    action: "skip dependency extraction phase to reduce scan time"
+    note: >
+      Dependency extraction (Phase 2) reads every file for import patterns.
+      For very large repos this can be slow.  Classification (Phase 3) uses
+      only file paths and does not require file contents, so it remains fast.

@@ -1,0 +1,155 @@
+# COVENANT_INVARIANTS.yaml
+# =========================
+# Testable, falsifiable invariants for the orthogonal-engineering repository.
+# Every invariant here has a corresponding test assertion.
+#
+# Invariants are NEVER weakened.  New ones may be added.
+# Violations are recorded in .ontological_violations/.
+#
+# Authority: COVENANT.md
+# Version: 1.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "1.0.0"
+schema_name: "COVENANT_INVARIANTS"
+generated: "2026-03-05"
+authority: "sigma-lora-covenant"
+
+# ── Topology invariants ────────────────────────────────────────────────────────
+topology_invariants:
+
+  INV-T-001:
+    name: "COVENANT_ROOT_MUST_EXIST"
+    description: >
+      The topology graph must contain at least one node classified as
+      COVENANT_ROOT.  A repo with no covenant root is structurally invalid.
+    test: "assert len(nodes_by_class['COVENANT_ROOT']) >= 1"
+    severity: CRITICAL
+    falsification: "Drop all COVENANT_ROOT-classified files from the repo"
+
+  INV-T-002:
+    name: "GUARDIAN_SYSTEM_MUST_EXIST"
+    description: >
+      At least one GUARDIAN_SYSTEM node must be present to enforce
+      covenant compliance at runtime.
+    test: "assert len(nodes_by_class['GUARDIAN_SYSTEM']) >= 1"
+    severity: CRITICAL
+    falsification: "Delete JESUS_REALITY_GUARDIAN.py"
+
+  INV-T-003:
+    name: "ZONE_COUNTS_NONZERO"
+    description: >
+      Every zone except zone_8_unclassified must have at least one node
+      after a successful scan of the full repository.
+    test: "assert all(zone_counts[z] > 0 for z in zones if z != 'zone_8_unclassified')"
+    severity: HIGH
+    falsification: "Delete all files in a zone"
+    note: "Zone 6 and 7 should also be populated in this repo"
+
+  INV-T-004:
+    name: "NO_CIRCULAR_COVENANT_BINDING"
+    description: >
+      No COVENANT_BINDING edge may form a cycle back to a COVENANT_ROOT.
+    test: "assert not has_cycle(edges_by_class['COVENANT_BINDING'])"
+    severity: CRITICAL
+    falsification: "Create a COVENANT_ROOT that imports another COVENANT_ROOT"
+
+  INV-T-005:
+    name: "ZONE_SPATIAL_ORTHOGONALITY"
+    description: >
+      Each node belongs to exactly one zone.
+    test: "assert all(len(node.zones) == 1 for node in nodes.values())"
+    severity: HIGH
+    falsification: "Assign a node to two zones"
+
+  INV-T-006:
+    name: "EVIDENCE_ARTIFACT_NONZERO"
+    description: >
+      At least one EVIDENCE_ARTIFACT node must exist to provide audit trail.
+    test: "assert len(nodes_by_class['EVIDENCE_ARTIFACT']) >= 1"
+    severity: HIGH
+    falsification: "Delete all sha256_*.json and evidence/ files"
+
+  INV-T-007:
+    name: "VIOLATION_LOG_APPEND_ONLY"
+    description: >
+      Once a violation file exists in .ontological_violations/ or
+      .jesus_reality_violations/, it must not be deleted or overwritten.
+    test: "violation files detected at scan time must still exist at next scan"
+    severity: CRITICAL
+    falsification: "Delete a file from .ontological_violations/"
+
+  INV-T-008:
+    name: "UNCLASSIFIED_ZONE_VISIBLE_AT_LEVEL_2_ONLY"
+    description: >
+      UNCLASSIFIED nodes must not appear at zoom level 0 or 1.
+      They are only rendered at zoom level 2.
+    test: "assert unclassified_nodes_not_in_level0_or_level1_render_output"
+    severity: MEDIUM
+    falsification: "Set zoom level to 0 and check for UNCLASSIFIED nodes in output"
+
+# ── Rendering invariants ───────────────────────────────────────────────────────
+rendering_invariants:
+
+  INV-R-001:
+    name: "NO_EMBEDDED_GRAPH_DATA"
+    description: >
+      PERCEIVABLE_INFINITY.html must NOT contain a literal 'graphData = {'
+      assignment embedding the full node list.  Graph data is loaded via fetch.
+    test: "assert 'graphData = {' not in open('PERCEIVABLE_INFINITY.html').read()"
+    severity: HIGH
+    falsification: "Use old renderer that embeds graphData"
+
+  INV-R-002:
+    name: "TRUNCATION_ANNOUNCED"
+    description: >
+      When the number of visible nodes exceeds the per-zone cap, the UI
+      must display a truncation notice with the true total count.
+    test: "assert truncation_notice_shown_when_zone_exceeds_cap"
+    severity: MEDIUM
+
+  INV-R-003:
+    name: "DARK_THEME_PRESERVED"
+    description: >
+      Background colour of PERCEIVABLE_INFINITY.html must remain #0a0a0a
+      or equivalent dark value.
+    test: "assert '#0a0a0a' in open('PERCEIVABLE_INFINITY.html').read()"
+    severity: LOW
+
+# ── Classification invariants ──────────────────────────────────────────────────
+classification_invariants:
+
+  INV-C-001:
+    name: "KNOWN_FILES_CORRECT_CLASS"
+    description: >
+      A set of known canonical files must always be classified to their
+      expected node_class.
+    test: "see tests/test_pr60_topology_sanity.py::test_known_file_classification"
+    severity: HIGH
+    known_mappings:
+      ".jesus_reality_guardian_state.json": "COVENANT_ROOT"
+      "INVARIANTS.json": "COVENANT_ROOT"
+      "JESUS_REALITY_GUARDIAN.py": "GUARDIAN_SYSTEM"
+      "fix_forgiveness_system.py": "FORGIVENESS_MODULE"
+      "affective_constraint_system.py": "FORGIVENESS_MODULE"
+      "complete_correspondence.py": "CORRESPONDENCE_BRIDGE"
+      "README.md": "DOCUMENTATION_INDEX"
+      "sha256_verification_manifest.json": "EVIDENCE_ARTIFACT"
+
+  INV-C-002:
+    name: "NODE_CLASS_COUNTS_NONZERO"
+    description: >
+      After a full scan, the following node classes must each have at least
+      one member: COVENANT_ROOT, GUARDIAN_SYSTEM, FORGIVENESS_MODULE,
+      EVIDENCE_ARTIFACT, DOCUMENTATION_INDEX.
+    test: "see tests/test_pr60_topology_sanity.py::test_node_class_counts_nonzero"
+    severity: HIGH
+
+  INV-C-003:
+    name: "PRIORITY_ORDER_PRESERVED"
+    description: >
+      Higher-priority classification rules must take precedence.
+      COVENANT_ROOT (priority 100) must never be overridden by
+      DOCUMENTATION_INDEX (priority 40).
+    test: "assert covenant_root_files_not_classified_as_documentation"
+    severity: HIGH

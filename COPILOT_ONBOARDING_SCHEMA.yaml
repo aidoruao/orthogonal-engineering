@@ -1,0 +1,116 @@
+# COPILOT_ONBOARDING_SCHEMA.yaml
+# ================================
+# Schema for AI/Copilot onboarding in the orthogonal-engineering repository.
+# Every AI session touching this repo MUST read this file before making changes.
+#
+# Authority: AI_PLAYBOOK.md, COVENANT.md
+# Version: 1.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "1.0.0"
+schema_name: "COPILOT_ONBOARDING_SCHEMA"
+generated: "2026-03-05"
+authority: "sigma-lora-covenant"
+
+# ── Mandatory reading order ────────────────────────────────────────────────────
+reading_order:
+  1: "COVENANT.md"                        # Foundational principles
+  2: "PERCEIVABLE_INFINITY_SCHEMA.yaml"   # Topology schema and classification rules
+  3: "ONTOLOGY_SCHEMA.yaml"               # Node/edge ontology definitions
+  4: "COVENANT_INVARIANTS.yaml"           # Testable invariants that must not be violated
+  5: "SCALING_STRATEGY.yaml"             # How to handle 67k+ file scale
+  6: "VERIFICATION_PIPELINE.yaml"        # Verification entrypoints
+  7: "AI_PLAYBOOK.md"                    # Session-level guidance
+  8: "HANDOFF_TEMPLATE.md"              # How to hand off to the next AI session
+
+# ── Repository identity ────────────────────────────────────────────────────────
+repository:
+  name: "orthogonal-engineering"
+  owner: "aidoruao"
+  covenant_root: ".jesus_reality_guardian_state.json"
+  guardian_file: "JESUS_REALITY_GUARDIAN.py"
+  verification_manifest: "sha256_verification_manifest.json"
+  visualization: "PERCEIVABLE_INFINITY.html"
+  graph_artifact: "topology_graph.json"
+  schema_root: "PERCEIVABLE_INFINITY_SCHEMA.yaml"
+
+# ── Key files the AI must not modify without covenant authority ────────────────
+immutable_files:
+  - path: ".jesus_reality_guardian_state.json"
+    reason: "COVENANT_ROOT — external authority only"
+  - path: "COVENANT.md"
+    reason: "Foundation document — additive changes allowed, no deletions"
+  - path: "INVARIANTS.json"
+    reason: "COVENANT_ROOT — testable invariants"
+  - path: "GENESIS_MANIFEST.yaml"
+    reason: "Genesis record — append-only"
+
+# ── Classification quick-reference ────────────────────────────────────────────
+# Full rules are in PERCEIVABLE_INFINITY_SCHEMA.yaml.  This is a human-readable
+# summary for AI onboarding speed.
+node_class_summary:
+  COVENANT_ROOT:
+    pattern: "covenant.yaml OR INVARIANTS.json OR AI_INSTRUCTIONS.md"
+    zone: "zone_1_immutable_authority"
+    change_policy: "EXTERNAL_AUTHORITY_ONLY"
+  GUARDIAN_SYSTEM:
+    pattern: "*guardian*.py OR *GUARDIAN*.py"
+    zone: "zone_1_immutable_authority"
+    change_policy: "EXTERNAL_AUTHORITY_ONLY"
+  FORGIVENESS_MODULE:
+    pattern: "*forgiveness*.py OR affective_*.py"
+    zone: "zone_4_forgiveness_grace"
+    change_policy: "NO_COERCION_INTRODUCTION"
+  EVIDENCE_ARTIFACT:
+    pattern: "sha256_*.json OR evidence/* OR canonical_evidence/*"
+    zone: "zone_5_analysis_reporting"
+    change_policy: "ADDITIVE_ONLY"
+  VIOLATION_LOG:
+    pattern: ".ontological_violations/* OR .jesus_reality_violations/*"
+    zone: "zone_2_detection_enforcement"
+    change_policy: "TIGHTEN_ONLY"
+  DOCUMENTATION_INDEX:
+    pattern: "README.md OR COPILOT_ONBOARDING.md"
+    zone: "zone_7_documentation"
+    change_policy: "REFLECT_ACTUAL_STATE"
+  UNCLASSIFIED:
+    pattern: "everything else"
+    zone: "zone_8_unclassified"
+    change_policy: "UNRESTRICTED"
+
+# ── Forbidden actions for AI agents ───────────────────────────────────────────
+forbidden_ai_actions:
+  - action: "Modify .jesus_reality_guardian_state.json without covenant instruction"
+    severity: CRITICAL
+  - action: "Delete or weaken any COVENANT_INVARIANTS.yaml entry"
+    severity: CRITICAL
+  - action: "Embed full graphData in PERCEIVABLE_INFINITY.html (causes 57k+ line files)"
+    severity: HIGH
+    correct_approach: "Use fetch() to load topology_graph.json at runtime"
+  - action: "Introduce circular COVENANT_BINDING edges"
+    severity: HIGH
+  - action: "Assign non-COVENANT_ROOT nodes to zone_1_immutable_authority"
+    severity: HIGH
+  - action: "Silently truncate node output without displaying the true count"
+    severity: MEDIUM
+
+# ── Required pipeline after any classification-rule change ────────────────────
+required_pipeline:
+  - step: 1
+    command: "python3 generate_perceivable_infinity.py"
+    purpose: "Regenerate topology_graph.json and PERCEIVABLE_INFINITY.html"
+  - step: 2
+    command: "python3 -m pytest tests/test_perceivable_infinity.py -v"
+    purpose: "Validate classification pipeline and topology sanity"
+  - step: 3
+    command: "python3 -m pytest tests/test_pr60_topology_sanity.py -v"
+    purpose: "Validate PR #60 topology invariants"
+
+# ── Onboarding checklist ────────────────────────────────────────────────────--
+onboarding_checklist:
+  - "Read all files in reading_order"
+  - "Run tests/test_perceivable_infinity.py before making changes"
+  - "Never embed graphData JSON in PERCEIVABLE_INFINITY.html"
+  - "After classification rule changes, re-run the pipeline"
+  - "If adding new node classes, update ONTOLOGY_SCHEMA.yaml and graph_schema.yaml"
+  - "Update HANDOFF_TEMPLATE.md before ending a session"
