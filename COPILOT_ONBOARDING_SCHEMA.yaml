@@ -18,10 +18,11 @@ reading_order:
   2: "PERCEIVABLE_INFINITY_SCHEMA.yaml"   # Topology schema and classification rules
   3: "ONTOLOGY_SCHEMA.yaml"               # Node/edge ontology definitions
   4: "COVENANT_INVARIANTS.yaml"           # Testable invariants that must not be violated
-  5: "SCALING_STRATEGY.yaml"             # How to handle 67k+ file scale
+  5: "SCALING_STRATEGY.yaml"             # How to handle 67k+ file scale (with cluster aggregation)
   6: "VERIFICATION_PIPELINE.yaml"        # Verification entrypoints
-  7: "AI_PLAYBOOK.md"                    # Session-level guidance
+  7: "AI_PLAYBOOK.md"                    # Session-level guidance (memory-bounded protocol)
   8: "HANDOFF_TEMPLATE.md"              # How to hand off to the next AI session
+  9: "SUCCESSOR_VERIFICATION.yaml"      # Recursive self-verification protocol
 
 # ── Repository identity ────────────────────────────────────────────────────────
 repository:
@@ -32,6 +33,7 @@ repository:
   verification_manifest: "sha256_verification_manifest.json"
   visualization: "PERCEIVABLE_INFINITY.html"
   graph_artifact: "topology_graph.json"
+  hash_manifest: "canonical/hash_manifest.json"
   schema_root: "PERCEIVABLE_INFINITY_SCHEMA.yaml"
 
 # ── Key files the AI must not modify without covenant authority ────────────────

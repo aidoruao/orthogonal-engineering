@@ -3,11 +3,15 @@
 # Defines how the PERCEIVABLE_INFINITY pipeline handles repositories at
 # 67k+ file scale without silent degradation.
 #
+# PR #60.5 additions:
+#   - Lossy summaries section (cluster aggregation for AI perception at 2M scale)
+#   - Hash verification strategy
+#
 # Authority: PERCEIVABLE_INFINITY_SCHEMA.yaml, COVENANT_INVARIANTS.yaml
-# Version: 1.0.0
+# Version: 2.0.0
 # Repository: aidoruao/orthogonal-engineering
 
-schema_version: "1.0.0"
+schema_version: "2.0.0"
 schema_name: "SCALING_STRATEGY"
 generated: "2026-03-05"
 authority: "sigma-lora-covenant"
@@ -15,8 +19,9 @@ authority: "sigma-lora-covenant"
 # ── Scale targets ──────────────────────────────────────────────────────────────
 scale_targets:
   current_repo_size: 3726        # files at time of PR #60
-  design_ceiling: 67000          # files the pipeline is designed for
-  tested_ceiling: 10000          # files tested in CI
+  design_ceiling: 2000000        # 2M files — the 2026 AI comprehension target
+  tested_ceiling_67k: 67000      # files tested in PR #60 CI
+  tested_ceiling_current: 10000  # files tested in nightly CI
 
 # ── Scanner scaling ────────────────────────────────────────────────────────────
 scanner_scaling:
@@ -30,15 +35,21 @@ scanner_scaling:
     note: >
       At 67k files, classification is still fast enough to run in one pass
       (~5–10 seconds).  Batching adds complexity for minimal gain at this scale.
-      Enable if scan time exceeds 60 seconds.
+      Enable if scan time exceeds 60 seconds in CI.
 
   sha256_computation:
-    default: "lazy"
+    default: "selective"
     description: >
-      SHA-256 is NOT computed during census.  It is computed on demand
-      (e.g., when a verification manifest is requested) to avoid the I/O
-      cost of hashing 67k files on every scan.
-    override_for_classes: ["COVENANT_ROOT", "GUARDIAN_SYSTEM", "EVIDENCE_ARTIFACT"]
+      SHA-256 is computed ONLY for covenant-critical node classes by default:
+        COVENANT_ROOT, GUARDIAN_SYSTEM, EVIDENCE_ARTIFACT.
+      This avoids the I/O cost of hashing 2M files on every scan.
+    full_hash_flag: "--full-hash"
+    full_hash_note: "Pass --full-hash to hash every file (required for full Merkle verification)"
+    hash_verified_classes:
+      - "COVENANT_ROOT"
+      - "GUARDIAN_SYSTEM"
+      - "EVIDENCE_ARTIFACT"
+    manifest_output: "canonical/hash_manifest.json"
 
   ignore_patterns:
     - ".git"
@@ -51,15 +62,48 @@ scanner_scaling:
       These directories/files are build artifacts or VCS state.
       Scanning them adds noise and volume without covenant value.
 
+# ── Lossy summaries ────────────────────────────────────────────────────────────
+lossy_summaries:
+  description: >
+    At 2M files, an AI agent cannot hold all nodes in working memory.
+    Phase 7 of the scanner (cluster aggregation) produces lossy zone summaries
+    that allow an AI to perceive the entire repo shape without raw file parsing.
+
+  implementation:
+    output_key: "clusters"
+    output_in: "topology_graph.json"
+    per_zone_fields:
+      zone_id: "Zone identifier"
+      total_node_count: "True total — never hidden or truncated"
+      hash_verified_count: "Nodes with sha256 in canonical/hash_manifest.json"
+      class_distribution: "Node class → count mapping"
+      representative_sample: "First 5 file IDs as exemplars"
+
+  ai_protocol:
+    description: "The 3-Zone Rule for memory-bounded AI operation"
+    current_zone: "Full detail — load individual FileNode objects"
+    neighboring_zones: "Lossy summary — read from topology_graph.json clusters"
+    distant_zones: "Zone card only — total_node_count + class_distribution"
+    expansion_protocol:
+      - "Log expansion request in STATE.md"
+      - "Read lossy summary first"
+      - "Request full zone load only if justified in commit message"
+
+  aggregation_rules:
+    - "UNCLASSIFIED nodes hidden at zoom level 0 and 1"
+    - "VIOLATION clusters always visible (covenant critical)"
+    - "Truncation always announced with true total count"
+    - "representative_sample contains first 5 node IDs (deterministic order)"
+
 # ── Graph JSON scaling ─────────────────────────────────────────────────────────
 graph_json_scaling:
   output_file: "topology_graph.json"
-  format: "flat JSON object"
-  at_67k_files:
-    estimated_size_mb: 120
+  format: "flat JSON object with clusters key"
+  at_2m_files:
+    estimated_size_mb: 4000
     note: >
-      A full 67k-node graph will be ~120 MB.  The browser does NOT load
-      this into a DOM directly.  See visualization_scaling below.
+      A full 2M-node graph will be ~4 GB.  Do NOT load this into a browser DOM.
+      Use the clusters key for Level 0/1 rendering and on-demand node loading.
 
   compression:
     recommended: true
@@ -80,9 +124,10 @@ visualization_scaling:
     level_0:
       name: "Zones Only"
       shows: "aggregated zone cards — no individual nodes"
+      data_source: "topology_graph.json → clusters (lossy summaries)"
       nodes_rendered: 0
       dom_elements: 8          # one per zone
-      suitable_for: "67k+ repos; instant render"
+      suitable_for: "2M+ repos; instant render"
 
     level_1:
       name: "Classified Nodes"
@@ -92,7 +137,7 @@ visualization_scaling:
       suitable_for: "repos up to 67k files"
       truncation_behaviour: >
         If a zone has more than 200 classified nodes, the first 200 are
-        rendered and a truncation notice is displayed with the true total.
+        rendered and a truncation notice displays the true total.
         This is NOT silent — the user always sees the real count.
 
     level_2:
@@ -127,3 +172,15 @@ ci_scaling:
       Dependency extraction (Phase 2) reads every file for import patterns.
       For very large repos this can be slow.  Classification (Phase 3) uses
       only file paths and does not require file contents, so it remains fast.
+
+# ── 2M-file roadmap ────────────────────────────────────────────────────────────
+roadmap_2m_files:
+  current_status: "67k-scale beta (PR #60) + cluster aggregation (PR #60.5)"
+  next_steps:
+    - "Add Merkle tree cross-cluster verification (full-hash mode)"
+    - "Add WebGL/Three.js renderer for visual cortex mode (Level 0 only)"
+    - "Add progressive zone loading via streaming JSON"
+    - "Add gzip compression for topology_graph.json serving"
+    - "Add cross-session STATE.md diff to detect topology drift"
+
+# end of SCALING_STRATEGY.yaml

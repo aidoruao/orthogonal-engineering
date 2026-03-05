@@ -83,6 +83,7 @@ jobs:
           python3 -m pytest \
             tests/test_perceivable_infinity.py \
             tests/test_pr60_topology_sanity.py \
+            tests/test_successor_readiness.py \
             -v --tb=short
 
       - name: Upload topology artifacts
@@ -93,4 +94,5 @@ jobs:
           path: |
             topology_graph.json
             PERCEIVABLE_INFINITY.html
+            canonical/hash_manifest.json
           retention-days: 30

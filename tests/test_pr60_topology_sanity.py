@@ -278,6 +278,7 @@ def test_classification_priority_ordering(tmp_path):
     "VERIFICATION_PIPELINE.yaml",
     "HANDOFF_TEMPLATE.md",
     "AI_PLAYBOOK.md",
+    "SUCCESSOR_VERIFICATION.yaml",
 ])
 def test_schema_files_present(schema_file):
     """All required schema and playbook files must exist in the repository root."""

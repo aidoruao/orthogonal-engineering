@@ -88,6 +88,24 @@ topology_invariants:
     severity: MEDIUM
     falsification: "Set zoom level to 0 and check for UNCLASSIFIED nodes in output"
 
+  INV-T-009:
+    name: "CLUSTER_SUMMARIES_PRESENT"
+    description: >
+      topology_graph.json must contain a 'clusters' key with lossy zone
+      summaries (Phase 7 output).  This is required for 2M-scale AI perception.
+    test: "assert 'clusters' in topology_graph"
+    severity: HIGH
+    falsification: "Delete Phase 7 (_aggregate_clusters) from topology_scanner.py"
+
+  INV-T-010:
+    name: "HASH_MANIFEST_EXISTS"
+    description: >
+      canonical/hash_manifest.json must exist after the pipeline runs.
+      It must contain at least one COVENANT_ROOT or GUARDIAN_SYSTEM entry.
+    test: "assert len(hash_manifest['nodes']) >= 1 and any covenant-critical entry"
+    severity: HIGH
+    falsification: "Delete canonical/hash_manifest.json"
+
 # ── Rendering invariants ───────────────────────────────────────────────────────
 rendering_invariants:
 
