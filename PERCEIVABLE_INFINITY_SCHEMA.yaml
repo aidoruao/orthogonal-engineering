@@ -45,6 +45,7 @@ rendering_layers:
         EVIDENCE_ARTIFACT: "document"
         INFRASTRUCTURE_REGISTRY: "cylinder"
         DOCUMENTATION_INDEX: "page"
+        FOOD_DISH_UNIVERSE: "plate"
         UNCLASSIFIED: "circle"
       temporal_to_vertical_position:
         GENESIS: "top"
@@ -234,6 +235,10 @@ classification_pipeline:
       - match: "README.md OR _START_HERE.md OR ONBOARD_FIRST.md OR QUICK_REFERENCE.md OR index.html"
         assign: DOCUMENTATION_INDEX
         priority: 40
+      - match: "data/dishes/*.json"
+        assign: FOOD_DISH_UNIVERSE
+        priority: 45
+        zone: "zone_5_analysis_reporting"
       - match: "**/* (default)"
         assign: UNCLASSIFIED
         priority: 0
@@ -278,7 +283,7 @@ classification_pipeline:
         node_classes: [FORGIVENESS_MODULE]
         change_policy: NO_COERCION_INTRODUCTION
       - zone: zone_5_analysis_reporting
-        node_classes: [EVIDENCE_ARTIFACT]
+        node_classes: [EVIDENCE_ARTIFACT, FOOD_DISH_UNIVERSE]
         paths: ["analysis/", "baseline_analysis/"]
         change_policy: ADDITIVE_ONLY
       - zone: zone_6_deployment_orchestration

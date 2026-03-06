@@ -92,6 +92,17 @@ nodes:
     zone: "zone_8_unclassified"
     visible_at: "zoom_level_2"
     cardinality: "*"
+    
+  FOOD_DISH_UNIVERSE:
+    description: "Dish projection nodes from Food Cart Universe"
+    examples: ["data/dishes/tacos.json", "data/dishes/ramen.json"]
+    authority: VALIDATED
+    temporal: SUBSTRATE
+    zone: "zone_5_analysis_reporting"
+    universe_node: true
+    authority_ref: "seed/food_cart_universe.yaml"
+    verification_ref: "out/food_cart_manifest.jsonl"
+    cardinality: "0..*"
 
 # 8 EDGE CLASSES - typed connections between nodes
 edges:
