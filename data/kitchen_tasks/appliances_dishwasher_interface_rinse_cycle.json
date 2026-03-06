@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "14fdc3398db05c8d13875afec97b5da8c50811d0951f9dc50fdc58ece332cee0",
+  "device_name": "appliances_dishwasher_interface",
+  "device_node": "f4fba78529bb5f0121b9ab9d3c0739009f67ac0dc4e099715bc05721d2cae702",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "appliances_dishwasher_interface_rinse_cycle",
+  "node_id": "413b457480c444aa50fd49244c76465097666dfbbb35df2cc343145f33fc24fb",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "generic_action",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_dishwasher_interface_rinse_cycle_micro_0",
+      "node_id": "85ecb3b50c182f8bdf5a398c3f7d801c60876a3a8211f18cc5e9151d7702d84e",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_dishwasher_interface_rinse_cycle_micro_1",
+      "node_id": "0ba5e4557811c7dc10b010c03397ad0badc2b953c1654b85f09c5c50006d2913",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_dishwasher_interface_rinse_cycle_micro_2",
+      "node_id": "ca4b94b76937f814ccdc97846e7bd68f8562aea6171a1db968dc31646c4ba3b5",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

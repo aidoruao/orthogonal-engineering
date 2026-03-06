@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "879f6d6b13a49d2c6da09fe1d1ed41c055ffe33c65d079acc916fc16035617c2",
+  "device_name": "appliances_self_clean_oven",
+  "device_node": "f5b6ec135f3b4692b5daa459b8388aadd34c0e0b3871a71efde79f02a8272ec2",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "appliances_self_clean_oven_cool_down",
+  "node_id": "5f11ea3b60d467b5c749124c83b8273f0c23fff4dc9f8a16419b91a4df8c2990",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "generic_action",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_self_clean_oven_cool_down_micro_0",
+      "node_id": "796a3a94c3a0606af910d89c0983dc60343a1822ba7c59c9580f0de941af8167",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_self_clean_oven_cool_down_micro_1",
+      "node_id": "b8097526bb2ce883139ffcf3c1973da47e1443943e1099f9b8017ea4c729a56f",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_self_clean_oven_cool_down_micro_2",
+      "node_id": "3402f3bb90c274b71d99e6d3faad68c1d40eb49e7c3187d07af4fe1e012384ef",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

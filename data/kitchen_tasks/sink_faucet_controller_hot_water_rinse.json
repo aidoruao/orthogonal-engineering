@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "f15c616baae27553cee81a45e6056afd63de7b867ba649beffda10b525e092ae",
+  "device_name": "sink_faucet_controller",
+  "device_node": "c49116a758870e3ca0aff83bb9e48b9b1fa0dfdc6ac8c9b6c3c008fa985f5ad8",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "sink_faucet_controller_hot_water_rinse",
+  "node_id": "50812e4096baa11e2b5bfbd4b09285c06b7914f859f0eca0e279bc623c38dc4f",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "generic_action",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "sink_faucet_controller_hot_water_rinse_micro_0",
+      "node_id": "caa86c9f2cdccabd6f39f298c950a5a5a14a9009a5a62b7be99e8b5b8c0bac5e",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "sink_faucet_controller_hot_water_rinse_micro_1",
+      "node_id": "0a24cde789dd422894cfd8cef4198f5a37ed7179f483310db97fbac1bb436bb0",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "sink_faucet_controller_hot_water_rinse_micro_2",
+      "node_id": "6cc82f9f82ade9b1a81b437d956cdf0c37b08a3a38cef68bfa38208eda99d454",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

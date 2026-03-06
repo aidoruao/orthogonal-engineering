@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "995ff48566cc5d96d168ab96475f1bc14c6447293981a9227c2d6383f26bee9c",
+  "device_name": "countertop_robotic_arm",
+  "device_node": "d70d2870ab8bd4616343ba57def7c61cee46a426a5998995f4b395567a1bceea",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "countertop_robotic_arm_apply_sanitizer",
+  "node_id": "305053b22ca66020e05084a2d5229ed486db4aaea21a33878412b0b64615392b",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "generic_action",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_robotic_arm_apply_sanitizer_micro_0",
+      "node_id": "7c299512c290d7b9a33f658acf5f09c59ce8f921d99f23f405749b81f1b0155a",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_robotic_arm_apply_sanitizer_micro_1",
+      "node_id": "7641f69cb62ff5ecc0336140dfea72aabcd5230824ae66aef0f435c3a442a83b",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_robotic_arm_apply_sanitizer_micro_2",
+      "node_id": "f0ff8857241e34b9a4142bb0e8fd727d77625575dedcf0767b40e6195ebf0338",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "b87a4babd3c57d6c10bf264b3852ac20bd99c760430c156e3d88951795d1ad49",
+  "device_name": "appliances_self_clean_oven",
+  "device_node": "f5b6ec135f3b4692b5daa459b8388aadd34c0e0b3871a71efde79f02a8272ec2",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "appliances_self_clean_oven_high_temp_clean",
+  "node_id": "80b791c653370f0b291bf81214825b1df9ce1acf2882bc136089d53c00284b8f",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "generic_action",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_self_clean_oven_high_temp_clean_micro_0",
+      "node_id": "d5fa5527acecd7d1e5bf5db4a650b9d4a5863ec0288b9e20c68cf5376f4df82c",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_self_clean_oven_high_temp_clean_micro_1",
+      "node_id": "25d7f04748aa24af220338b727927bc71bc78c28ecc1fda56fdc87e204e46cdd",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "generic_action",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "appliances_self_clean_oven_high_temp_clean_micro_2",
+      "node_id": "cd8126d7656fad3f2fb2a57dadeadbfe784492921243e4039278c44a6ae755bd",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "89a114b5e6bd09553b9e79e318ee4d5b8f9aea9689d8932ba45d9556d4ae988f",
+  "device_name": "floor_mop_bot",
+  "device_node": "60a2553c9643ec31e522b7f7ecf7bad6bd3d956044e96bf5fa5eb339d826f4d3",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "floor_mop_bot_scrub_stains",
+  "node_id": "961872e21389101beda6923ec1c1db1e3029e49ab1c4808a3d0d66710020caeb",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "mop",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_mop_bot_scrub_stains_micro_0",
+      "node_id": "c21008bcdec0c31a19fe78e88a0b65d4d634589e336d38afdc251d782de11d76",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "mop",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_mop_bot_scrub_stains_micro_1",
+      "node_id": "14e1c79e465ae00a78321c1470cfdcbd08317508831f3053a2a3420f07c8f18c",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "mop",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_mop_bot_scrub_stains_micro_2",
+      "node_id": "ddec936f1fca8c563d2014e8ca2fe4bf170602a79ca94aa2e59a3f706a423301",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

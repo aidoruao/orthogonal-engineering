@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "1441fc3e87ed6a63244c58cfe03c7df33f0d11f81b479c31aa14d127a8780853",
+  "device_name": "countertop_robotic_arm",
+  "device_node": "d70d2870ab8bd4616343ba57def7c61cee46a426a5998995f4b395567a1bceea",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "countertop_robotic_arm_wipe_surface",
+  "node_id": "ad89115df21025f3a87f6bcc383c63d7f7cba993dae6e8c6ab547e54590b46c4",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "wipe",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_robotic_arm_wipe_surface_micro_0",
+      "node_id": "57fdab59702e5351dbf0e3c0f28b727cec8b95c2d99141e29525bbbd0c59bb9a",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "wipe",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_robotic_arm_wipe_surface_micro_1",
+      "node_id": "116da015edbee32305234afed3fac53acd52a16881e329b71d77e1b4bfe0ce60",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "wipe",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_robotic_arm_wipe_surface_micro_2",
+      "node_id": "0c084282d94f66a72a144717c8a8503496e258f7fc417d18e40e1534bf1ad5d5",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

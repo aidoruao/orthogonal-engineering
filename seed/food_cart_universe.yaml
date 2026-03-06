@@ -1,0 +1,87 @@
+# Food Cart Universe Seed
+# Canonical Schema - Universe Definition
+# Authority: Canonical Schema Closure Specification
+# Version: 1.0.0
+
+universe:
+  id: food_cart_universe
+  seed_hash: null  # Computed on first generation
+  
+  expansion:
+    # Fractal expansion levels: menu → dish → phase → step
+    levels:
+      - menu      # Top level: collection of dishes
+      - dish      # Individual dish (e.g., "tacos", "ramen")
+      - phase     # Cooking phase (e.g., "prep", "cook", "plate")
+      - step      # Individual step within a phase
+    
+    # Deterministic generation ensures reproducibility
+    deterministic: true
+    
+    # Content-addressed: node IDs derived from content
+    content_addressed: true
+  
+  generator:
+    # Generator implementation location
+    implementation: generators/food_cart_fractal_dataset.py
+    version: 1
+    
+  verification:
+    # Canonical manifest of all nodes
+    manifest: out/food_cart_manifest.jsonl
+    
+    # Merkle root for verification
+    merkle_root: required
+
+# MANDATORY INVARIANTS
+# These must be enforced at all times
+
+invariants:
+  INV-FU-001:
+    description: "Universe must regenerate identical DAG from identical seed"
+    enforcement: "Generator must be deterministic with fixed seed"
+    
+  INV-FU-002:
+    description: "All node IDs derived deterministically"
+    formula: "node_id = SHA256(seed || parent_node || expansion_config)"
+    enforcement: "Node ID generation must use canonical serialization"
+    
+  INV-FU-003:
+    description: "Node hashes must be reproducible across runs"
+    enforcement: "Content hashing must use stable serialization"
+    
+  INV-FU-004:
+    description: "Universe must produce a canonical manifest"
+    enforcement: "Manifest generation must be deterministic and complete"
+
+# Sample universe configuration
+sample_universe:
+  # Fixed seed for reproducibility
+  seed_value: 42
+  
+  # Sample structure
+  menu:
+    dishes:
+      - tacos
+      - ramen
+      - pizza
+      - burger
+      
+  # Each dish has phases
+  phases:
+    - prep
+    - cook
+    - plate
+    
+  # Each phase has steps (variable count)
+  steps_per_phase:
+    prep: 3
+    cook: 4
+    plate: 2
+
+# Metadata
+metadata:
+  created: "2026-03-06"
+  standard: "Canonical Schema Closure"
+  authority: "ChatGPT Canonical Schema Proposal"
+  version: "1.0.0"
