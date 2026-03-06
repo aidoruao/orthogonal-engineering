@@ -115,6 +115,18 @@ nodes:
     verification_ref: "out/self_clean_kitchen_manifest.jsonl"
     safety_critical: true
     cardinality: "0..*"
+    
+  MULTIPLAYER_GAME_UNIVERSE:
+    description: "Multiplayer game nodes from Uncharted Multiplayer Universe"
+    examples: ["out/uncharted_mp_dag.json", "out/uncharted_mp_manifest.jsonl"]
+    authority: VALIDATED
+    temporal: SUBSTRATE
+    zone: "zone_5_analysis_reporting"
+    universe_node: true
+    authority_ref: "seed/uncharted_multiplayer_universe.yaml"
+    verification_ref: "out/uncharted_mp_manifest.jsonl"
+    game_universe: true
+    cardinality: "0..*"
 
 # 8 EDGE CLASSES - typed connections between nodes
 edges:

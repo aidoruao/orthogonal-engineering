@@ -1,0 +1,349 @@
+# Uncharted Multiplayer Universe Seed
+# Canonical Schema - Multiplayer Game Universe Definition
+# Authority: Canonical Schema Closure + Yeshua/Chaldean/Kenosis Principles
+# Version: 1.0.0
+
+universe:
+  id: uncharted_multiplayer_universe_v1
+  seed_hash: null  # Computed on first generation
+  
+  expansion:
+    # Fractal expansion levels: experience → mechanic → mathematics → projection → microaction
+    levels:
+      - experience      # Top level: game experience descriptors (3rd person shooter, cinematic)
+      - mechanic        # Core gameplay mechanics (cover system, movement, combat)
+      - mathematics     # Mathematical systems (networking, physics, matchmaking)
+      - projection      # Client/server views (graphics, UI, server authority)
+      - microaction     # Atomic actions (weapon_fire, movement_delta, interaction)
+    
+    # Deterministic generation ensures reproducibility
+    deterministic: true
+    
+    # Content-addressed: node IDs derived from content
+    content_addressed: true
+  
+  generator:
+    # Generator implementation location
+    implementation: generators/uncharted_multiplayer_fractal_dataset.py
+    version: 1
+    
+  verification:
+    # Canonical manifest of all nodes
+    manifest: out/uncharted_mp_manifest.jsonl
+    
+    # Merkle root for verification
+    merkle_root: required
+
+  # SAFETY & CONSTRAINTS
+  constraints:
+    legal: true
+    moral: true
+    patent_free: true
+    copyright_free: true
+    
+  safety:
+    server_load_max: 10000  # concurrent clients per region
+    latency_max_ms: 100
+    anti_exploit_sandbox: true
+
+# MANDATORY INVARIANTS
+# These must be enforced at all times
+
+invariants:
+  INV-UNI-001:
+    description: "Deterministic regeneration from identical seed"
+    enforcement: "Generator must be deterministic with fixed seed"
+    
+  INV-UNI-002:
+    description: "DAG nodes derived from seed + level + index"
+    formula: "node_id = SHA256(seed || parent_node || level || index || expansion_config)"
+    enforcement: "Node ID generation must use canonical serialization"
+    
+  INV-UNI-003:
+    description: "Manifest + Merkle root binds all nodes and projections"
+    enforcement: "All nodes must appear in manifest with valid Merkle verification"
+    
+  INV-UNI-004:
+    description: "Legal, moral, and copyright invariants enforced"
+    enforcement: "No content from Naughty Dog's code/assets; clean-room implementation"
+
+  INV-EXP-001:
+    description: "Any client sees same fundamental experience regardless of hardware"
+    enforcement: "Experience layer must be platform-agnostic"
+    
+  INV-EXP-002:
+    description: "No content from Naughty Dog's code/assets"
+    enforcement: "All content must be original or procedurally generated"
+    
+  INV-EXP-003:
+    description: "Player agency maintained, no forced monetization"
+    enforcement: "No microtransactions or pay-to-win mechanics"
+
+  INV-MEC-001:
+    description: "Same mechanics for all players"
+    enforcement: "Mechanics must be deterministic and consistent"
+    
+  INV-MEC-002:
+    description: "Physics deterministic across clients using UVM sync"
+    enforcement: "Physics simulation must be reproducible"
+    
+  INV-MEC-003:
+    description: "Input to action latency < 100ms"
+    enforcement: "Client prediction and server reconciliation required"
+
+  INV-MAT-001:
+    description: "Networking deterministic and verifiable"
+    enforcement: "Client prediction + server authority + reconciliation"
+    
+  INV-MAT-002:
+    description: "Physics analytically solvable or deterministic"
+    enforcement: "Collision and dynamics must be reproducible"
+    
+  INV-MAT-003:
+    description: "Matchmaking algorithm deterministic"
+    enforcement: "Skill-based matching with verifiable fairness"
+
+  INV-PROJ-001:
+    description: "Clients only render projections; authoritative state resides on server DAG"
+    enforcement: "Client-server authority separation enforced"
+    
+  INV-PROJ-002:
+    description: "Cosmetic projections deterministic and open-source"
+    enforcement: "All cosmetics procedurally generated from DAG nodes"
+    
+  INV-PROJ-003:
+    description: "All microactions have content hash and manifest reference"
+    enforcement: "Microaction integrity via cryptographic hashing"
+
+  INV-TOPO-001:
+    description: "Every node has authority + verification + correspondence edges"
+    enforcement: "Topology graph completeness"
+    
+  INV-TOPO-002:
+    description: "Zone-class mapping enforced"
+    enforcement: "All nodes properly classified in topology"
+    
+  INV-TOPO-003:
+    description: "DAG integrity maintained (acyclic)"
+    enforcement: "No cycles allowed in dependency graph"
+
+  INV-MAN-001:
+    description: "All DAG nodes included in manifest"
+    enforcement: "Manifest completeness verification"
+    
+  INV-MAN-002:
+    description: "Merkle root derivable from manifest"
+    enforcement: "Cryptographic verification of entire DAG"
+    
+  INV-MAN-003:
+    description: "Manifest deterministic"
+    enforcement: "Same input always produces same manifest"
+
+# Sample universe configuration
+sample_universe:
+  # Fixed seed for reproducibility
+  seed_value: 271828  # e-inspired seed for multiplayer universe
+  
+  # Experience layer descriptors
+  experience_descriptors:
+    - 3rd_person_cover_shooter
+    - cinematic_set_pieces
+    - treasure_hunting_aesthetic
+    - cooperative_campaign
+    - competitive_multiplayer
+    - puzzle_exploration
+  
+  # Mechanic layer primitives
+  mechanics:
+    cover_system:
+      - snap_to_cover
+      - peek_modes
+      - cover_transitions
+    movement:
+      - roll_dodge
+      - rope_swing
+      - climbing
+      - traversal
+    combat:
+      - weapon_system
+      - hit_detection
+      - reload_mechanics
+      - melee_combat
+    multiplayer_modes:
+      - deathmatch
+      - team_deathmatch
+      - treasure_hunt
+      - cooperative_campaign
+  
+  # Mathematics layer systems
+  mathematics_systems:
+    networking:
+      - client_prediction
+      - server_authority
+      - reconciliation
+      - UVM_sync
+    physics:
+      - rigid_body_dynamics
+      - collision_detection
+      - rope_simulation
+      - projectile_physics
+    matchmaking:
+      - elo_rating
+      - skill_normalization
+      - region_matching
+  
+  # Projection layer views
+  projection_views:
+    client:
+      - graphics_pipeline
+      - UI_rendering
+      - cosmetics_rendering
+      - animation_system
+    server:
+      - authoritative_state
+      - replay_logging
+      - matchmaking_service
+      - anti_cheat_validation
+  
+  # Microactions per projection type (variable count)
+  microactions_per_projection:
+    graphics_pipeline: 8
+    UI_rendering: 6
+    cosmetics_rendering: 5
+    animation_system: 10
+    authoritative_state: 12
+    replay_logging: 4
+    matchmaking_service: 6
+    anti_cheat_validation: 5
+
+# Game mode specifications
+game_modes:
+  deathmatch:
+    players: "2-12"
+    objective: "free_for_all"
+    respawn: true
+    duration_minutes: 10
+    
+  team_deathmatch:
+    players: "4-12"
+    teams: 2
+    objective: "team_elimination"
+    respawn: true
+    duration_minutes: 12
+    
+  treasure_hunt:
+    players: "4-8"
+    teams: 2
+    objective: "collect_treasures"
+    respawn: true
+    duration_minutes: 15
+    
+  cooperative_campaign:
+    players: "2-4"
+    teams: 1
+    objective: "complete_mission"
+    respawn: true
+    duration_minutes: 30
+
+# Networking specifications
+networking:
+  topology: "client-server"
+  tick_rate_hz: 60
+  client_update_rate_hz: 30
+  snapshot_buffer_size: 64
+  interpolation_delay_ms: 50
+  extrapolation_limit_ms: 100
+  
+  protocols:
+    transport: "UDP"
+    reliability: "selective_reliability"
+    congestion_control: true
+    packet_encryption: true
+
+# Physics specifications
+physics:
+  solver: "deterministic_euler"
+  timestep_ms: 16.67  # 60 Hz
+  collision:
+    algorithm: "swept_aabb"
+    substeps: 4
+  rope_physics:
+    segments: 20
+    stiffness: 0.8
+    damping: 0.05
+
+# Graphics specifications (client-side projection)
+graphics:
+  pipeline: "Vulkan"
+  rendering:
+    forward_plus: true
+    pbr_materials: true
+    dynamic_shadows: true
+    post_processing: true
+  accessibility:
+    colorblind_modes: true
+    ui_scaling: true
+    text_to_speech: true
+
+# Cosmetics system (deterministic, free, no monetization)
+cosmetics:
+  generation: "procedural"
+  deterministic: true
+  free_for_all: true
+  categories:
+    - character_skins
+    - weapon_skins
+    - emotes
+    - victory_animations
+  verification: "merkle_root_bound"
+
+# Animation system
+animations:
+  motion_capture: "open_source"
+  procedural_blending: true
+  inverse_kinematics: true
+  deterministic: true
+  categories:
+    - movement
+    - combat
+    - interaction
+    - cinematic
+
+# Yeshua / New Jerusalem Principles
+principles:
+  kenotic_service:
+    description: "Every node oriented toward player joy, cooperation, and restoration"
+    enforcement: "Design for player benefit, not exploitation"
+    
+  chaldean_order:
+    description: "Deterministic, maximal, verifiable, non-proprietary"
+    enforcement: "Full glass-box architecture, eternally auditable"
+    
+  restoration_vision:
+    description: "Game mechanics restored to ideal form, exceeding industry standards"
+    enforcement: "No exploitation, all content free and community-verified"
+    
+  eternal_glass_box:
+    description: "Fully observable, auditable, reproducible, open source"
+    enforcement: "All systems deterministic and verifiable"
+    
+  community_verified_assets:
+    description: "All cosmetics and content procedurally generated and free"
+    enforcement: "No microtransactions, everything deterministic from DAG"
+    
+  no_microtransactions:
+    description: "All game economy deterministic, fair, and free"
+    enforcement: "No pay-to-win, no loot boxes, no dark patterns"
+    
+  server_architecture:
+    description: "Distributed, authoritative, UVM deterministic, transparent"
+    enforcement: "Regional replication, anti-cheat by design, fully open"
+
+# Metadata
+metadata:
+  created: "2026-03-06"
+  standard: "Canonical Schema Closure + Yeshua/Chaldean/Kenosis"
+  authority: "ChatGPT Canonical Schema Proposal + First Principles"
+  version: "1.0.0"
+  author: "Orthogonal Engineering"
+  inspiration: "Third-person cover shooter genre universals, not Naughty Dog IP"
