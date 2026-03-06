@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "1a436c009943a45afb9e7f4474ee8d4a0d85cb5bdaadfa740a2385c411a18572",
+  "device_name": "countertop_spray_dispenser",
+  "device_node": "89a1983c6a2b1c71a852a3eb0998248535c57325a5ee2bf0bd194976e003828b",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "countertop_spray_dispenser_dispense_disinfectant",
+  "node_id": "3b8de2ab0d88252f79606d1e57d02eb3b905bc255441d26724cd37bc2e023f06",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "dispense_soap",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_spray_dispenser_dispense_disinfectant_micro_0",
+      "node_id": "eb19d44e50bfb78ccb204a3177e5a8caa761eb11ef39d89076188413551eb3de",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "dispense_soap",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_spray_dispenser_dispense_disinfectant_micro_1",
+      "node_id": "8dd687f8b71c1bae97480d996c0cd5616ffa10851dfc4d5f3437d53d63e865d1",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "dispense_soap",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "countertop_spray_dispenser_dispense_disinfectant_micro_2",
+      "node_id": "66e9db17971eee3539c9393971f9871fb001ebc4cbee8adcef0f286d6feea0a4",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

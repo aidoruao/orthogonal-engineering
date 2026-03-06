@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "429fe773bcf2d95aac85a91b738455c2818b0c1fb875f11fb6b0aadcbc91267a",
+  "device_name": "floor_robotic_vacuum",
+  "device_node": "d0ca6860af97ceebe35f03a50b521d124dea158288bc726c92047b0d54842aff",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "floor_robotic_vacuum_vacuum_floor",
+  "node_id": "efc6b8f82c37f39b92bb65210fb423d991359b5f1280710790e910bd6de1c92d",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "vacuum",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_robotic_vacuum_vacuum_floor_micro_0",
+      "node_id": "b40a9297d9daff885ef0b20bcd1a426466a8c5f46ad3a00f9b94fc8d9419a150",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "vacuum",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_robotic_vacuum_vacuum_floor_micro_1",
+      "node_id": "1f9a2eaea4ae8950cbccda221b0e6b9d21108c5edcd8d0c2c077f044e7026bc2",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "vacuum",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_robotic_vacuum_vacuum_floor_micro_2",
+      "node_id": "cdf6a8fb23e998e5679a1954d6af70bd2d738a295dd2807567a8ecb35cdccdca",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

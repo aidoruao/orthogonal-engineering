@@ -46,6 +46,7 @@ rendering_layers:
         INFRASTRUCTURE_REGISTRY: "cylinder"
         DOCUMENTATION_INDEX: "page"
         FOOD_DISH_UNIVERSE: "plate"
+        KITCHEN_TASK_UNIVERSE: "gear"
         UNCLASSIFIED: "circle"
       temporal_to_vertical_position:
         GENESIS: "top"
@@ -239,6 +240,10 @@ classification_pipeline:
         assign: FOOD_DISH_UNIVERSE
         priority: 45
         zone: "zone_5_analysis_reporting"
+      - match: "data/kitchen_tasks/*.json"
+        assign: KITCHEN_TASK_UNIVERSE
+        priority: 45
+        zone: "zone_5_analysis_reporting"
       - match: "**/* (default)"
         assign: UNCLASSIFIED
         priority: 0
@@ -283,7 +288,7 @@ classification_pipeline:
         node_classes: [FORGIVENESS_MODULE]
         change_policy: NO_COERCION_INTRODUCTION
       - zone: zone_5_analysis_reporting
-        node_classes: [EVIDENCE_ARTIFACT, FOOD_DISH_UNIVERSE]
+        node_classes: [EVIDENCE_ARTIFACT, FOOD_DISH_UNIVERSE, KITCHEN_TASK_UNIVERSE]
         paths: ["analysis/", "baseline_analysis/"]
         change_policy: ADDITIVE_ONLY
       - zone: zone_6_deployment_orchestration

@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "f42b72541bfb9bb43a99188a35dccf08dcd65553eb52309b7a9a4571431dab0d",
+  "device_name": "floor_mop_bot",
+  "device_node": "60a2553c9643ec31e522b7f7ecf7bad6bd3d956044e96bf5fa5eb339d826f4d3",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "floor_mop_bot_mop_floor",
+  "node_id": "5f11687f03548ccedd27f87040a90283506e98e303b7afb93346c22814bee844",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "mop",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_mop_bot_mop_floor_micro_0",
+      "node_id": "b246ba6e8125a3ef8180d1c53130b69e395845eedda2011778982c73cefacdb6",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "mop",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_mop_bot_mop_floor_micro_1",
+      "node_id": "311b2607b0149fdf4dc4e2d447fc7feb6c223c3055858cc7a4d865dc039a0274",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "mop",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_mop_bot_mop_floor_micro_2",
+      "node_id": "ba5279e0945d884dd0403aeeda362ce668432b094beb867c63f9757ef8efa421",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}

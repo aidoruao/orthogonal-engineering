@@ -1,0 +1,79 @@
+{
+  "commit": "unknown",
+  "content_hash": "22ef8f8933ec897537ecc2fd6186d2c070f29ca505590f26679bb6a4b4a38787",
+  "device_name": "floor_robotic_vacuum",
+  "device_node": "d0ca6860af97ceebe35f03a50b521d124dea158288bc726c92047b0d54842aff",
+  "generator_version": "1",
+  "manifest_ref": "out/self_clean_kitchen_manifest.jsonl",
+  "name": "floor_robotic_vacuum_detect_debris",
+  "node_id": "48424b3406d04eb99a42f653a53b56ba30f5446f3c376df1af8301ca2b6fb934",
+  "projection_type": "task_view",
+  "safety_constraints": {
+    "chemical_compatibility": [
+      "soap",
+      "detergent",
+      "ethanol",
+      "enzymes",
+      "bleach",
+      "vinegar"
+    ],
+    "fail_safe_modes": [
+      "stop_all",
+      "notify_operator",
+      "emergency_shutdown",
+      "isolate_zone"
+    ],
+    "max_force_per_actuator": 50,
+    "max_temperature": 85
+  },
+  "steps": [
+    {
+      "action": "vacuum",
+      "index": 0,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_robotic_vacuum_detect_debris_micro_0",
+      "node_id": "f3ff3ddc0ce0e666ed1b8c00da8a99a582d67f481c8f41cc0107dea64c4721b3",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "vacuum",
+      "index": 1,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_robotic_vacuum_detect_debris_micro_1",
+      "node_id": "c81bc9b8b737cf9d8b30d843241d6ce2db639789ef256ba1da2c86bbb9213b1a",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    },
+    {
+      "action": "vacuum",
+      "index": 2,
+      "media": {
+        "reference_frames": [],
+        "reference_video": ""
+      },
+      "name": "floor_robotic_vacuum_detect_debris_micro_2",
+      "node_id": "b7e902d0344c05ab211e3496f0be9223f9554730c95bc4f4bfb36d6971cf921b",
+      "parameters": {
+        "duration_sec": 1.0,
+        "intensity": 1.0
+      },
+      "state_in": {},
+      "state_out": {}
+    }
+  ]
+}
