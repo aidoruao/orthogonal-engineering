@@ -127,6 +127,18 @@ nodes:
     verification_ref: "out/uncharted_mp_manifest.jsonl"
     game_universe: true
     cardinality: "0..*"
+    
+  MULTIPLAYER_SKATE4_UNIVERSE:
+    description: "Skate 4 multiplayer DAG nodes"
+    examples: ["out/skate4_mp_dag.json", "out/skate4_mp_manifest.jsonl"]
+    authority: VALIDATED
+    temporal: SUBSTRATE
+    zone: "zone_5_analysis_reporting"
+    universe_node: true
+    authority_ref: "seed/skate4_multiplayer_universe.yaml"
+    verification_ref: "out/skate4_mp_manifest.jsonl"
+    game_universe: true
+    cardinality: "0..*"
 
 # 8 EDGE CLASSES - typed connections between nodes
 edges:
