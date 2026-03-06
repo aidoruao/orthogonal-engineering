@@ -171,12 +171,12 @@ class MultiplayerGenerator:
         Expansion hierarchy:
         1. Root (universe)
         2. Experience descriptors (6 nodes)
-        3. Mechanics (16 nodes - 4 categories × 4 mechanics)
-        4. Mathematics systems (12 nodes - 3 categories × 4 systems)
-        5. Projection views (10 nodes - 2 categories × 5 views)
+        3. Mechanics (15 nodes - 4 categories with 3-4 mechanics each)
+        4. Mathematics systems (11 nodes - 3 categories with 4 systems each)
+        5. Projection views (8 nodes - 2 categories with 4-5 views each)
         6. Microactions (56 nodes - variable per projection)
         
-        Total: 1 + 6 + 16 + 12 + 10 + 56 = 101 nodes
+        Total: 1 + 6 + 15 + 11 + 8 + 56 = 97 nodes
         """
         print(f"Generating Uncharted Multiplayer Universe DAG...")
         print(f"Seed value: {self.seed_value}")

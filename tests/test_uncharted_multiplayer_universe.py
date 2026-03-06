@@ -163,7 +163,8 @@ class TestDAGStructure:
             dag = json.load(f)
             
         # Expected: 1 root + 6 experience + 15 mechanic + 11 mathematics + 8 projection + 56 microaction = 97
-        assert dag['total_nodes'] >= 90, f"Expected at least 90 nodes, got {dag['total_nodes']}"
+        expected_nodes = 97
+        assert dag['total_nodes'] == expected_nodes, f"Expected exactly {expected_nodes} nodes, got {dag['total_nodes']}"
         assert len(dag['nodes']) == dag['total_nodes']
         
     def test_root_node_exists(self):
