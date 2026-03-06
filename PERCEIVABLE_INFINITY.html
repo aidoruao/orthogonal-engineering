@@ -313,25 +313,344 @@
             border-radius: 4px;
             margin-top: 8px;
         }
+
+        /* ── Commit Info Section ──────────────────────────────────────────── */
+        .commit-info {
+            background: #0f1a0f;
+            border: 1px solid #1a4a1a;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.85em;
+        }
+
+        .commit-info-title {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .commit-info-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .commit-info-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .commit-info-label {
+            color: #888;
+            font-size: 0.8em;
+        }
+
+        .commit-info-value {
+            color: #e0e0e0;
+        }
+
+        /* ── Substrate Domain Panels ──────────────────────────────────────── */
+        .domains-section {
+            margin-bottom: 20px;
+        }
+
+        .domains-section-title {
+            color: #00d4ff;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .domain-panels {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 15px;
+        }
+
+        .domain-panel {
+            background: #1a1a2e;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #2a2a3e;
+        }
+
+        .domain-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .domain-panel-title {
+            font-weight: bold;
+            font-size: 1.05em;
+        }
+
+        .domain-panel-pr-badge {
+            font-size: 0.75em;
+            padding: 3px 8px;
+            border-radius: 12px;
+            border: 1px solid;
+            font-family: monospace;
+        }
+
+        .domain-panel-levels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+
+        .level-tag {
+            font-size: 0.75em;
+            padding: 2px 8px;
+            border-radius: 3px;
+            background: #0d0d2a;
+            border: 1px solid #2a2a4a;
+            color: #aaaacc;
+            font-family: monospace;
+        }
+
+        .domain-invariants {
+            margin-bottom: 12px;
+        }
+
+        .domain-invariants-title {
+            color: #888;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .invariant-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 4px 0;
+            border-bottom: 1px solid #1a1a3a;
+            font-size: 0.82em;
+        }
+
+        .invariant-item:last-child {
+            border-bottom: none;
+        }
+
+        .invariant-id {
+            color: #00d4ff;
+            font-family: monospace;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .invariant-desc {
+            color: #cccccc;
+        }
+
+        /* ── Inelasticity / Structural Nullification ─────────────────────── */
+        .inelasticity-block {
+            background: #1a0a0a;
+            border: 1px solid #3a1a1a;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        .inelasticity-title {
+            color: #ff4444;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nullified-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 3px 0;
+            font-size: 0.82em;
+        }
+
+        .nullified-label {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .nullified-badge {
+            font-size: 0.72em;
+            padding: 1px 6px;
+            background: #2a0a0a;
+            border: 1px solid #ff4444;
+            border-radius: 10px;
+            color: #ff4444;
+            font-family: monospace;
+        }
+
+        /* ── Merkle Root Placeholder ──────────────────────────────────────── */
+        .merkle-block {
+            background: #0a0a1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-family: monospace;
+            font-size: 0.8em;
+        }
+
+        .merkle-title {
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 5px;
+            font-size: 0.75em;
+        }
+
+        .merkle-value {
+            color: #00aaff;
+            word-break: break-all;
+        }
+
+        .merkle-status {
+            margin-top: 4px;
+            font-size: 0.75em;
+        }
+
+        .merkle-status.pending {
+            color: #ffaa00;
+        }
+
+        .merkle-status.verified {
+            color: #00ff88;
+        }
+
+        /* ── LOD / Seed-Driven Info ───────────────────────────────────────── */
+        .lod-section {
+            background: #0f0f1a;
+            border: 1px solid #2a2a4a;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+        }
+
+        .lod-section-title {
+            color: #00d4ff;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .lod-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .lod-item {
+            background: #1a1a2e;
+            border-radius: 6px;
+            padding: 10px;
+            border: 1px solid #2a2a3e;
+        }
+
+        .lod-item-label {
+            color: #888;
+            font-size: 0.8em;
+            margin-bottom: 4px;
+        }
+
+        .lod-item-value {
+            color: #e0e0e0;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
-    <div class="overlay" id="overlay"></div>
-    <div class="detail-panel" id="detailPanel">
-        <span class="detail-close" onclick="closeDetail()">&times;</span>
-        <div id="detailContent"></div>
+    <div class="overlay" id="overlay" aria-hidden="true"></div>
+    <div class="detail-panel" id="detailPanel" role="dialog" aria-modal="true" aria-labelledby="detailPanelTitle">
+        <span class="detail-close" onclick="closeDetail()" role="button" aria-label="Close detail panel" tabindex="0">&times;</span>
+        <div id="detailContent">
+            <h2 id="detailPanelTitle" style="color:#00d4ff;margin-bottom:20px;">Node Details</h2>
+        </div>
     </div>
     
     <div class="container">
-        <header>
+        <header role="banner">
             <h1>⚛️ PERCEIVABLE_INFINITY</h1>
-            <p class="subtitle">Covenant-Aware Topology Graph Visualization</p>
-            <p class="subtitle">Repository: /home/runner/work/orthogonal-engineering/orthogonal-engineering | Scan: 2026-03-06T17:08:26.384963</p>
+            <p class="subtitle">Covenant-Aware Topology Graph — Sabbath-Complete Schema Manifestation</p>
+            <p class="subtitle">Repository: /home/runner/work/orthogonal-engineering/orthogonal-engineering | Scan: 2026-03-06T21:06:59.974463</p>
         </header>
+
+        <!-- Commit Info Section: Static Witness to the latest substrate commit -->
+        <section class="commit-info" aria-label="Latest commit information">
+            <div class="commit-info-title">📌 Substrate Commit (Latest Applied)</div>
+            <div class="commit-info-row">
+                <div class="commit-info-field">
+                    <span class="commit-info-label">Commit SHA (short)</span>
+                    <span class="commit-info-value">abdce2fd03fb</span>
+                </div>
+                <div class="commit-info-field">
+                    <span class="commit-info-label">Subject</span>
+                    <span class="commit-info-value">Initial plan</span>
+                </div>
+                <div class="commit-info-field">
+                    <span class="commit-info-label">Author</span>
+                    <span class="commit-info-value">copilot-swe-agent[bot]</span>
+                </div>
+                <div class="commit-info-field">
+                    <span class="commit-info-label">Date</span>
+                    <span class="commit-info-value">2026-03-06 20:58:43 +0000</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- LOD / Seed-Driven Rendering Info -->
+        <section class="lod-section" aria-label="Fractal rendering and seed-driven state">
+            <div class="lod-section-title">🌀 Fractal Rendering Engine — LOD State</div>
+            <div class="lod-grid">
+                <div class="lod-item">
+                    <div class="lod-item-label">Rendering Strategy</div>
+                    <div class="lod-item-value">Fractal LOD — O(1) cost / node volume</div>
+                </div>
+                <div class="lod-item">
+                    <div class="lod-item-label">Zoom Levels</div>
+                    <div class="lod-item-value">L0 (zones) → L1 (classified) → L2 (all)</div>
+                </div>
+                <div class="lod-item">
+                    <div class="lod-item-label">Node Cap (L1 / L2)</div>
+                    <div class="lod-item-value">200 / 500 per zone</div>
+                </div>
+                <div class="lod-item">
+                    <div class="lod-item-label">Data Source</div>
+                    <div class="lod-item-value">fetch('topology_graph.json') — never embedded</div>
+                </div>
+                <div class="lod-item">
+                    <div class="lod-item-label">Determinism</div>
+                    <div class="lod-item-value">Seed-driven — same seed → same tree</div>
+                </div>
+                <div class="lod-item">
+                    <div class="lod-item-label">Scale Target</div>
+                    <div class="lod-item-value">53 nodes → 1B nodes (invariant cost)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Substrate Domain Panels: Food Cart (#60), Uncharted (#61), Skate 4 (#62) -->
+        <section class="domains-section" aria-label="Substrate domain panels">
+            <div class="domains-section-title">🧬 Ontological Substrate Domains</div>
+            <div class="domain-panels">
+                <article class="domain-panel" aria-label="Food Cart Universe domain panel"><div class="domain-panel-header"><div class="domain-panel-title" style="color:#ffaa00">🍽️ Food Cart Universe</div><span class="domain-panel-pr-badge" style="color:#ffaa00;border-color:#ffaa00">PR #60 · Physical</span></div><div class="domain-panel-levels" aria-label="Expansion levels"><span class="level-tag">menu</span><span class="level-tag">dish</span><span class="level-tag">phase</span><span class="level-tag">step</span></div><div class="domain-invariants"><div class="domain-invariants-title">Active Invariants</div><div class="invariant-item"><span class="invariant-id">INV-FU-001</span><span class="invariant-desc">Universe must regenerate identical DAG from identical seed</span></div><div class="invariant-item"><span class="invariant-id">INV-FU-002</span><span class="invariant-desc">All node IDs derived deterministically</span></div><div class="invariant-item"><span class="invariant-id">INV-FU-003</span><span class="invariant-desc">Node hashes must be reproducible across runs</span></div><div class="invariant-item"><span class="invariant-id">INV-FU-004</span><span class="invariant-desc">Universe must produce a canonical manifest</span></div></div><div class="merkle-block" aria-label="Merkle root verification"><div class="merkle-title">Merkle Root (Substrate Verification)</div><div class="merkle-value">Pending — run generators/food_cart_fractal_dataset.py</div><div class="merkle-status pending">⏳ Awaiting backend hash computation</div></div></article>
+<article class="domain-panel" aria-label="Uncharted Multiplayer Universe domain panel"><div class="domain-panel-header"><div class="domain-panel-title" style="color:#00aaff">🗺️ Uncharted Multiplayer Universe</div><span class="domain-panel-pr-badge" style="color:#00aaff;border-color:#00aaff">PR #61 · Digital</span></div><div class="domain-panel-levels" aria-label="Expansion levels"><span class="level-tag">experience</span><span class="level-tag">mechanic</span><span class="level-tag">mathematics</span><span class="level-tag">projection</span><span class="level-tag">microaction</span></div><div class="domain-invariants"><div class="domain-invariants-title">Active Invariants</div><div class="invariant-item"><span class="invariant-id">INV-EXP-001</span><span class="invariant-desc">Any client sees same fundamental experience regardless of hardware</span></div><div class="invariant-item"><span class="invariant-id">INV-EXP-002</span><span class="invariant-desc">No content from Naughty Dog&#x27;s code/assets</span></div><div class="invariant-item"><span class="invariant-id">INV-EXP-003</span><span class="invariant-desc">Player agency maintained, no forced monetization</span></div><div class="invariant-item"><span class="invariant-id">INV-MAN-001</span><span class="invariant-desc">All DAG nodes included in manifest</span></div><div class="invariant-item"><span class="invariant-id">INV-MAN-002</span><span class="invariant-desc">Merkle root derivable from manifest</span></div><div class="invariant-item"><span class="invariant-id">INV-MAN-003</span><span class="invariant-desc">Manifest deterministic</span></div><div class="invariant-item"><span class="invariant-id">INV-MAT-001</span><span class="invariant-desc">Networking deterministic and verifiable</span></div><div class="invariant-item"><span class="invariant-id">INV-MAT-002</span><span class="invariant-desc">Physics analytically solvable or deterministic</span></div><div class="invariant-item"><span class="invariant-id">INV-MAT-003</span><span class="invariant-desc">Matchmaking algorithm deterministic</span></div><div class="invariant-item"><span class="invariant-id">INV-MEC-001</span><span class="invariant-desc">Same mechanics for all players</span></div><div class="invariant-item"><span class="invariant-id">INV-MEC-002</span><span class="invariant-desc">Physics deterministic across clients using UVM sync</span></div><div class="invariant-item"><span class="invariant-id">INV-MEC-003</span><span class="invariant-desc">Input to action latency &lt; 100ms</span></div><div class="invariant-item"><span class="invariant-id">INV-PROJ-001</span><span class="invariant-desc">Clients only render projections; authoritative state resides on server DAG</span></div><div class="invariant-item"><span class="invariant-id">INV-PROJ-002</span><span class="invariant-desc">Cosmetic projections deterministic and open-source</span></div><div class="invariant-item"><span class="invariant-id">INV-PROJ-003</span><span class="invariant-desc">All microactions have content hash and manifest reference</span></div><div class="invariant-item"><span class="invariant-id">INV-TOPO-001</span><span class="invariant-desc">Every node has authority + verification + correspondence edges</span></div><div class="invariant-item"><span class="invariant-id">INV-TOPO-002</span><span class="invariant-desc">Zone-class mapping enforced</span></div><div class="invariant-item"><span class="invariant-id">INV-TOPO-003</span><span class="invariant-desc">DAG integrity maintained (acyclic)</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-001</span><span class="invariant-desc">Deterministic regeneration from identical seed</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-002</span><span class="invariant-desc">DAG nodes derived from seed + level + index</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-003</span><span class="invariant-desc">Manifest + Merkle root binds all nodes and projections</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-004</span><span class="invariant-desc">Legal, moral, and copyright invariants enforced</span></div></div><div class="merkle-block" aria-label="Merkle root verification"><div class="merkle-title">Merkle Root (Substrate Verification)</div><div class="merkle-value">Pending — run generators/uncharted_multiplayer_fractal_dataset.py</div><div class="merkle-status pending">⏳ Awaiting backend hash computation</div></div></article>
+<article class="domain-panel" aria-label="Skate 4 Multiplayer Universe domain panel"><div class="domain-panel-header"><div class="domain-panel-title" style="color:#aa00ff">🛹 Skate 4 Multiplayer Universe</div><span class="domain-panel-pr-badge" style="color:#aa00ff;border-color:#aa00ff">PR #62 · Graphical</span></div><div class="domain-panel-levels" aria-label="Expansion levels"><span class="level-tag">experience</span><span class="level-tag">mechanic</span><span class="level-tag">mathematics</span><span class="level-tag">graphics</span><span class="level-tag">projection</span><span class="level-tag">microaction</span></div><div class="domain-invariants"><div class="domain-invariants-title">Active Invariants</div><div class="invariant-item"><span class="invariant-id">INV-COS-001</span><span class="invariant-desc">All cosmetic items are procedural from universe seed</span></div><div class="invariant-item"><span class="invariant-id">INV-COS-002</span><span class="invariant-desc">Community cosmetics are additive_only</span></div><div class="invariant-item"><span class="invariant-id">INV-GAME-001</span><span class="invariant-desc">Physics determinism ensured for all tricks and combos</span></div><div class="invariant-item"><span class="invariant-id">INV-GAME-002</span><span class="invariant-desc">No unfair dopamine manipulation loops</span></div><div class="invariant-item"><span class="invariant-id">INV-GAME-003</span><span class="invariant-desc">Network events deterministic and verifiable</span></div><div class="invariant-item"><span class="invariant-id">INV-GFX-001</span><span class="invariant-desc">All graphics microactions map to graphics layer</span></div><div class="invariant-item"><span class="invariant-id">INV-GFX-002</span><span class="invariant-desc">Deterministic rendering, asset management, and LOD</span></div><div class="invariant-item"><span class="invariant-id">INV-GFX-003</span><span class="invariant-desc">Particle system physics-based, not prebaked</span></div><div class="invariant-item"><span class="invariant-id">INV-MAN-001</span><span class="invariant-desc">All DAG nodes included in manifest</span></div><div class="invariant-item"><span class="invariant-id">INV-MAN-002</span><span class="invariant-desc">Merkle root derivable from manifest</span></div><div class="invariant-item"><span class="invariant-id">INV-MAN-003</span><span class="invariant-desc">Manifest deterministic</span></div><div class="invariant-item"><span class="invariant-id">INV-MTX-001</span><span class="invariant-desc">No microtransaction_node in any layer</span></div><div class="invariant-item"><span class="invariant-id">INV-MTX-002</span><span class="invariant-desc">No lootbox_event in any microaction</span></div><div class="invariant-item"><span class="invariant-id">INV-MTX-003</span><span class="invariant-desc">No gambling features in mechanics or projections</span></div><div class="invariant-item"><span class="invariant-id">INV-TOPO-001</span><span class="invariant-desc">Every node has authority + verification + correspondence edges</span></div><div class="invariant-item"><span class="invariant-id">INV-TOPO-002</span><span class="invariant-desc">Zone-class mapping enforced</span></div><div class="invariant-item"><span class="invariant-id">INV-TOPO-003</span><span class="invariant-desc">DAG integrity maintained (acyclic)</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-001</span><span class="invariant-desc">Deterministic regeneration from identical seed</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-002</span><span class="invariant-desc">DAG nodes derived from seed + level + index</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-003</span><span class="invariant-desc">Manifest + Merkle root binds all nodes and projections</span></div><div class="invariant-item"><span class="invariant-id">INV-UNI-004</span><span class="invariant-desc">Legal, moral, and copyright invariants enforced</span></div></div><div class="inelasticity-block" aria-label="Structural nullification of microtransactions"><div class="inelasticity-title">⛔ Structural Nullification — Moral Physics</div><div class="nullified-item"><span class="nullified-label">cosmetic microtransactions</span><span class="nullified-badge">VOID — impossible</span></div><div class="nullified-item"><span class="nullified-label">lootbox event</span><span class="nullified-badge">VOID — impossible</span></div><div class="nullified-item"><span class="nullified-label">gambling features</span><span class="nullified-badge">VOID — impossible</span></div><div class="nullified-item" style="margin-top:6px;border-top:1px solid #3a1a1a;padding-top:6px;"><span style="color:#888;font-size:0.82em;">Graphics Pipeline:</span><span style="color:#cc88ff;font-family:monospace;font-size:0.82em;margin-left:6px;">Vulkan</span></div></div><div class="merkle-block" aria-label="Merkle root verification"><div class="merkle-title">Merkle Root (Substrate Verification)</div><div class="merkle-value">Pending — run generators/skate4_multiplayer_fractal_dataset.py</div><div class="merkle-status pending">⏳ Awaiting backend hash computation</div></div></article>
+            </div>
+        </section>
         
-        <div class="controls">
+        <div class="controls" role="toolbar" aria-label="Visualization controls">
             <div class="control-group">
-                <label>Zoom Level:</label>
+                <label for="zoomLevel">Zoom Level:</label>
                 <select id="zoomLevel" onchange="changeZoomLevel()">
                     <option value="0">Level 0: Zones Only</option>
                     <option value="1" selected>Level 1: Classified Nodes</option>
@@ -339,7 +658,7 @@
                 </select>
             </div>
             <div class="control-group">
-                <label>Filter by Zone:</label>
+                <label for="zoneFilter">Filter by Zone:</label>
                 <select id="zoneFilter" onchange="applyFilters()">
                     <option value="all">All Zones</option>
                     <option value="zone_1_immutable_authority">Zone 1: Immutable Authority</option>
@@ -353,25 +672,25 @@
                 </select>
             </div>
             <div class="control-group">
-                <label>Search:</label>
-                <input type="text" id="searchBox" placeholder="Search nodes..." oninput="searchNodes()">
+                <label for="searchBox">Search:</label>
+                <input type="text" id="searchBox" placeholder="Search nodes..." oninput="searchNodes()" aria-label="Search nodes">
             </div>
             <div class="control-group">
-                <span class="zoom-info" id="zoomInfo">Zoom Level 1: Classified Nodes</span>
+                <span class="zoom-info" id="zoomInfo" aria-live="polite">Zoom Level 1: Classified Nodes</span>
             </div>
         </div>
         
-        <div class="stats" id="statsBar">
+        <div class="stats" id="statsBar" aria-label="Repository statistics">
             <div class="stat-card">
-                <div class="stat-value" id="statTotal">2,888</div>
+                <div class="stat-value" id="statTotal">2,898</div>
                 <div class="stat-label">Total Files</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="statClassified">807</div>
+                <div class="stat-value" id="statClassified">810</div>
                 <div class="stat-label">Classified Nodes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="statUnclassified">2,081</div>
+                <div class="stat-value" id="statUnclassified">2,088</div>
                 <div class="stat-label">Unclassified Nodes</div>
             </div>
             <div class="stat-card">
@@ -380,11 +699,11 @@
             </div>
         </div>
         
-        <div class="visualization" id="visualization">
+        <main class="visualization" id="visualization" role="main" aria-label="Topology visualization" aria-live="polite">
             <div class="loading-msg">⏳ Loading graph data from <code>topology_graph.json</code>…</div>
-        </div>
+        </main>
         
-        <div class="legend">
+        <aside class="legend" aria-label="Node class legend">
             <div class="legend-title">Node Classes</div>
             <div class="legend-grid">
                 <div class="legend-item"><div class="legend-color" style="background:#ff4444"></div><div class="legend-text">COVENANT_ROOT</div></div>
@@ -399,7 +718,7 @@
 <div class="legend-item"><div class="legend-color" style="background:#ffffff"></div><div class="legend-text">DOCUMENTATION_INDEX</div></div>
 <div class="legend-item"><div class="legend-color" style="background:#666666"></div><div class="legend-text">UNCLASSIFIED</div></div>
             </div>
-        </div>
+        </aside>
     </div>
     
     <script>
@@ -585,7 +904,7 @@
                 </div>`;
 
             document.getElementById('detailContent').innerHTML =
-                `<h2 style="color:#00d4ff;margin-bottom:20px;">Node Details</h2>` +
+                `<h2 id="detailPanelTitle" style="color:#00d4ff;margin-bottom:20px;">Node Details</h2>` +
                 field('File Path',    node.file_path || node.file_id) +
                 field('Node Class',   node.node_class) +
                 field('Zone',         node.zone) +
