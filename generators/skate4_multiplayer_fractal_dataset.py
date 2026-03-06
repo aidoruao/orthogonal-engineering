@@ -173,13 +173,13 @@ class Skate4MultiplayerUniverse:
         Expansion hierarchy:
         1. Root (universe)
         2. Experience descriptors (6 nodes)
-        3. Mechanics (15 nodes)
+        3. Mechanics (13 nodes)
         4. Mathematics systems (11 nodes)
         5. Graphics systems (5 nodes)
-        6. Projection views (8 nodes)
-        7. Microactions (44 nodes)
+        6. Projection views (4 nodes)
+        7. Microactions (23 nodes)
         
-        Total: 1 + 6 + 15 + 11 + 5 + 8 + 44 = 90 nodes
+        Total: 1 + 6 + 13 + 11 + 5 + 4 + 23 = 63 nodes
         """
         print(f"Generating Skate 4 Multiplayer Universe DAG...")
         print(f"Seed value: {self.seed_value}")
@@ -478,7 +478,7 @@ def get_git_commit() -> str:
             check=True
         )
         return result.stdout.strip()
-    except:
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
         return "unknown"
 
 

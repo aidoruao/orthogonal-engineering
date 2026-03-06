@@ -38,14 +38,14 @@ The universe expands through 6 hierarchical levels:
 ```
 1. Universe Root (1 node)
    └─ 2. Experience (6 nodes: park, street, competition, freestyle, vert, combo_mode)
-       └─ 3. Mechanics (15 nodes: tricks, movement, combos)
+       └─ 3. Mechanics (13 nodes: tricks, movement, combos)
            └─ 4. Mathematics (11 nodes: physics, scoring, networking)
                └─ 5. Graphics (5 nodes: rendering, shaders, assets, LOD, particles)
-                   └─ 6. Projection (8 nodes: camera, UI, leaderboard, server)
-                       └─ 7. Microactions (44 nodes: atomic game actions)
+                   └─ 6. Projection (4 nodes: camera, UI, leaderboard, server)
+                       └─ 7. Microactions (23 nodes: atomic game actions)
 ```
 
-**Total: 90 content-addressed DAG nodes**
+**Total: 63 content-addressed DAG nodes**
 
 ### Node Levels
 
@@ -53,11 +53,11 @@ The universe expands through 6 hierarchical levels:
 |-------|-------------|-------|----------|
 | **universe** | Root node | 1 | skate4_multiplayer_universe_v1 |
 | **experience** | Game modes and experiences | 6 | park, street, competition, freestyle |
-| **mechanic** | Core gameplay mechanics | 15 | kickflip, grind, manual, combo_tracking |
+| **mechanic** | Core gameplay mechanics | 13 | kickflip, grind, manual, combo_tracking |
 | **mathematics** | Physics and scoring systems | 11 | skateboard_physics, trick_scoring, network_sync |
 | **graphics** | Rendering and visual systems | 5 | render_pipeline, shader_system, particle_system |
-| **projection** | Client/server views | 8 | camera_view, UI_overlay, leaderboard |
-| **microaction** | Atomic actions | 44 | action_1, action_2, ... |
+| **projection** | Client/server views | 4 | camera_view, UI_overlay, leaderboard |
+| **microaction** | Atomic actions | 23 | action_1, action_2, ... |
 
 ---
 
@@ -80,7 +80,7 @@ python3 generate_perceivable_infinity.py .
 
 After running the generator, the following files are created in the `out/` directory:
 
-- `out/skate4_mp_dag.json` - Complete DAG with all 90 nodes
+- `out/skate4_mp_dag.json` - Complete DAG with all 63 nodes
 - `out/skate4_mp_manifest.jsonl` - Canonical manifest (JSONL format)
 - `out/skate4_mp_merkle_root.txt` - Merkle root for cryptographic verification
 
@@ -219,8 +219,8 @@ pytest tests/test_skate4_multiplayer_universe.py -v
 
 | File | Description |
 |------|-------------|
-| `out/skate4_mp_dag.json` | Complete DAG (90 nodes) |
-| `out/skate4_mp_manifest.jsonl` | Canonical manifest (90 entries) |
+| `out/skate4_mp_dag.json` | Complete DAG (63 nodes) |
+| `out/skate4_mp_manifest.jsonl` | Canonical manifest (63 entries) |
 | `out/skate4_mp_merkle_root.txt` | Merkle root verification |
 
 ---
@@ -231,7 +231,7 @@ pytest tests/test_skate4_multiplayer_universe.py -v
 |---------|-----------|----------------------|----------------------|-------------------------|
 | **Seed file** | food_cart_universe.yaml | self_clean_kitchen_universe.yaml | uncharted_multiplayer_universe.yaml | **skate4_multiplayer_universe.yaml** |
 | **Levels** | 4 | 4 | 5 | **6** |
-| **Total nodes** | 53 | 86 | 97 | **90** |
+| **Total nodes** | 53 | 86 | 97 | **63** |
 | **Graphics layer** | ❌ | ❌ | ❌ | **✅** |
 | **Invariants** | 17 | 13 | 22 | **22** |
 | **Tests** | 30 | - | 35 | **29** |
