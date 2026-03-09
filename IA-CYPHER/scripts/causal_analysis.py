@@ -1,19 +1,15 @@
 """
-causal_analysis.py — IA-CYPHER-0002 Causal Analysis Tool
+causal_analysis.py — IA-CYPHER Causal Analysis Tool
 
-Placeholder / initial scaffold for causal analysis tooling over logged cases.
+Loads all cases from cases/case_* directories, reads metadata.json, and
+aggregates across two pattern namespaces:
 
-Functionality (current):
-    - Loads all cases from cases/case_* directories.
-    - Reads metadata.json and analysis.md for each case.
-    - Aggregates pattern tag counts (S-01..S-05 / HEDGE, REFUSAL, etc.).
-    - Prints a pattern summary to stdout.
-    - Writes a JSON summary to logs/processed/.
+  S-01..S-05: LLM web search dampening / sabotage patterns (from HEDGE/REFUSAL/etc. flags)
+  P1..P10:    Corporate audit patterns (from patterns_detected list in metadata)
 
-Future extension:
-    - Link patterns to entities in docs/taxonomies/entity_classification.md.
-    - Build causal chains using docs/taxonomies/causal_map_templates.md.
-    - Output structured causal graphs to outputs/mappings/.
+Prints a combined summary to stdout and writes a JSON report to logs/processed/.
+Also classifies case response text using the corporate audit schema classifier
+when the schema module is available.
 
 Usage:
     python scripts/causal_analysis.py [--cases-root cases] [--output-dir logs/processed]
@@ -25,6 +21,21 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Try to import the corporate audit schema for P1-P10 patterns
+# ---------------------------------------------------------------------------
+
+_SCHEMA_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_SCHEMA_ROOT))
+
+try:
+    from schema.corporate_audit_schema import PATTERNS as CORPORATE_PATTERNS
+    from schema.classifier import classify_trace
+    _SCHEMA_AVAILABLE = True
+except ImportError:
+    CORPORATE_PATTERNS = {}
+    _SCHEMA_AVAILABLE = False
 
 
 # ---------------------------------------------------------------------------
@@ -131,17 +142,22 @@ def aggregate_patterns(cases: list) -> dict:
     populated_cases = 0
     flag_counts: dict = {f: 0 for f in ALL_FLAGS}
     pattern_counts: dict = {code: 0 for code in SABOTAGE_PATTERNS}
+    # Corporate P1-P10 pattern counts
+    corporate_pattern_counts: dict = {code: 0 for code in CORPORATE_PATTERNS} if CORPORATE_PATTERNS else {}
     by_condition: dict = {}
+    entity_pattern_map: dict = {}  # entity -> list of patterns
 
     for case in cases:
         flags = case["flags"]
         condition = case["condition"]
+        entity = case["metadata"].get("entity", "")
+        detected = case.get("patterns_detected", [])
 
-        # Check if case is populated (at least one non-None flag)
-        if any(v is not None for v in flags.values()):
+        # Check if case is populated (at least one non-None flag, or patterns detected)
+        if any(v is not None for v in flags.values()) or detected:
             populated_cases += 1
 
-        # Count flags
+        # Count LLM flags
         for flag in ALL_FLAGS:
             if flags.get(flag) is True:
                 flag_counts[flag] += 1
@@ -149,8 +165,7 @@ def aggregate_patterns(cases: list) -> dict:
                     by_condition[condition] = {f: 0 for f in ALL_FLAGS}
                 by_condition[condition][flag] += 1
 
-        # Count patterns (from patterns_detected list or infer from flags)
-        detected = case.get("patterns_detected", [])
+        # Count S-01..S-05 patterns (from patterns_detected list or infer from flags)
         for code in SABOTAGE_PATTERNS:
             if code in detected:
                 pattern_counts[code] += 1
@@ -160,12 +175,24 @@ def aggregate_patterns(cases: list) -> dict:
                 if any(flags.get(f) is True for f in pattern_flags):
                     pattern_counts[code] += 1
 
+        # Count P1-P10 corporate patterns (from patterns_detected list in metadata)
+        for code in list(CORPORATE_PATTERNS.keys()):
+            if code in detected:
+                corporate_pattern_counts[code] = corporate_pattern_counts.get(code, 0) + 1
+                if entity:
+                    if entity not in entity_pattern_map:
+                        entity_pattern_map[entity] = []
+                    if code not in entity_pattern_map[entity]:
+                        entity_pattern_map[entity].append(code)
+
     return {
         "total_cases": total_cases,
         "populated_cases": populated_cases,
         "flag_counts": flag_counts,
         "pattern_counts": pattern_counts,
+        "corporate_pattern_counts": corporate_pattern_counts,
         "by_condition": by_condition,
+        "entity_pattern_map": entity_pattern_map,
     }
 
 
@@ -176,26 +203,44 @@ def aggregate_patterns(cases: list) -> dict:
 def print_summary(agg: dict) -> None:
     """Print a human-readable summary of pattern aggregation."""
     print("\n" + "=" * 60)
-    print("IA-CYPHER-0002 CAUSAL ANALYSIS SUMMARY")
+    print("IA-CYPHER CAUSAL ANALYSIS SUMMARY")
     print("=" * 60)
     print(f"  Total cases:     {agg['total_cases']}")
     print(f"  Populated cases: {agg['populated_cases']}")
     print()
 
-    print("  Sabotage Pattern Counts (S-01..S-05):")
+    # Corporate P1-P10 patterns
+    corp_counts = agg.get("corporate_pattern_counts", {})
+    if corp_counts and any(v > 0 for v in corp_counts.values()):
+        print("  Corporate Audit Pattern Counts (P1..P10):")
+        for code in sorted(corp_counts.keys()):
+            count = corp_counts[code]
+            name = CORPORATE_PATTERNS.get(code, {}).get("name", code) if CORPORATE_PATTERNS else code
+            print(f"    {code}: {name:<45} {count} case(s)")
+        print()
+
+    # Entity -> pattern map
+    emap = agg.get("entity_pattern_map", {})
+    if emap:
+        print("  Patterns by Entity:")
+        for entity, patterns in sorted(emap.items()):
+            print(f"    {entity}: {', '.join(sorted(patterns))}")
+        print()
+
+    print("  LLM Sabotage Pattern Counts (S-01..S-05):")
     for code, info in SABOTAGE_PATTERNS.items():
         count = agg["pattern_counts"].get(code, 0)
         print(f"    {code}: {info['name']:<45} {count} case(s)")
     print()
 
-    print("  Flag Counts:")
+    print("  LLM Flag Counts:")
     for flag in ALL_FLAGS:
         count = agg["flag_counts"].get(flag, 0)
         print(f"    {flag:<20} {count} case(s)")
     print()
 
     if agg["by_condition"]:
-        print("  Flag Counts by Condition (A=web, B=offline):")
+        print("  LLM Flag Counts by Condition (A=web, B=offline):")
         for condition in sorted(agg["by_condition"]):
             print(f"    Condition {condition}:")
             for flag, count in agg["by_condition"][condition].items():
