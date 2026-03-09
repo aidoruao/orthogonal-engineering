@@ -2,26 +2,32 @@
 classifier.py — IA-CYPHER Trace Classifier
 
 Classifies raw trace text into:
-  - Ontology category (LEGAL_ENTITY, ECONOMIC_ACTOR, etc.)
   - Action type (FORMATION, FINANCING, CONTROL, etc.)
   - Trace type (LEGAL, FINANCIAL, DIGITAL, AI_OUTPUT, etc.)
   - Detected patterns (P1-P10)
 
 Classification is keyword-based — no ML dependency, deterministic, testable.
 Multiple categories/patterns can match a single trace (multi-label).
+
+Keyword matching uses word-boundary regex for short/ambiguous tokens to avoid
+false positives (e.g. "AI" inside "financial" or "PR" inside "approach").
 """
 
 from __future__ import annotations
 
 import hashlib
+import re
 from typing import Dict, List, Optional, Set
 
 from .corporate_audit_schema import (
     ACTIONS,
-    ONTOLOGY_CATEGORIES,
     PATTERNS,
     TRACE_TYPES,
 )
+
+# Threshold: keywords shorter than this use word-boundary matching (\b).
+# Longer keywords are matched as plain substrings (lower false-positive risk).
+_WORD_BOUNDARY_MAX_LEN = 4
 
 
 # ---------------------------------------------------------------------------
@@ -32,9 +38,23 @@ def _text_lower(text: str) -> str:
     return text.lower()
 
 
+def _keyword_match(text_lower: str, keyword: str) -> bool:
+    """
+    Return True if `keyword` matches in `text_lower`.
+
+    Short keywords (≤ _WORD_BOUNDARY_MAX_LEN chars, e.g. "AI", "PR") use
+    word-boundary regex to avoid false positives ("ai" inside "financial").
+    Longer keywords use plain substring matching.
+    """
+    kl = keyword.lower()
+    if len(kl) <= _WORD_BOUNDARY_MAX_LEN:
+        return bool(re.search(r"\b" + re.escape(kl) + r"\b", text_lower))
+    return kl in text_lower
+
+
 def _keyword_hits(text_lower: str, keywords: List[str]) -> List[str]:
     """Return which keywords from `keywords` appear in `text_lower`."""
-    return [kw for kw in keywords if kw.lower() in text_lower]
+    return [kw for kw in keywords if _keyword_match(text_lower, kw)]
 
 
 # ---------------------------------------------------------------------------

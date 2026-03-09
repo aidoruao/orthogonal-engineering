@@ -109,6 +109,16 @@ class RelationGraph:
 
     # -- Node operations --
 
+    @property
+    def node_count(self) -> int:
+        """Number of entity nodes in the graph."""
+        return len(self._nodes)
+
+    @property
+    def edge_count(self) -> int:
+        """Number of relation edges in the graph."""
+        return len(self._edges)
+
     def add_entity(self, node: EntityNode) -> None:
         self._nodes[node.entity_id] = node
 
@@ -165,7 +175,6 @@ class RelationGraph:
 
     def find_high_control_entities(self, min_out_edges: int = 2) -> List[str]:
         """Return entity IDs with >= min_out_edges outgoing CONTROLS/SUPPRESSES/FUNDS edges."""
-        from collections import Counter
         control_relations = {"CONTROLS", "SUPPRESSES", "FUNDS", "COORDINATES"}
         counter: Dict[str, int] = {}
         for e in self._edges.values():

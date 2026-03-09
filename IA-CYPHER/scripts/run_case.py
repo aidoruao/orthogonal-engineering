@@ -69,12 +69,6 @@ def sha256_of_string(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def sha256_of_file(path: str) -> str:
-    """Return the hex SHA-256 digest of a file's contents."""
-    with open(path, "rb") as f:
-        return hashlib.sha256(f.read()).hexdigest()
-
-
 # ---------------------------------------------------------------------------
 # Case runner
 # ---------------------------------------------------------------------------

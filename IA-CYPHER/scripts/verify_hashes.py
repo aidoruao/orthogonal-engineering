@@ -8,8 +8,8 @@ Usage:
     python scripts/verify_hashes.py --case-dir cases/case_0001
 
 Prints a verification result for each file and exits with:
-    0 — all hashes verified
-    1 — one or more hash mismatches or errors
+    0 — all hashes verified OR case is a placeholder (skipped)
+    1 — one or more hash mismatches or unreadable files (genuine integrity failure)
 """
 
 import argparse
@@ -33,7 +33,7 @@ def sha256_of_file(path: str) -> str:
 # Verification logic
 # ---------------------------------------------------------------------------
 
-def verify_case(case_dir: str) -> bool:
+def verify_case(case_dir: str) -> str:
     """
     Verify the hashes for a single case directory.
 
@@ -44,8 +44,12 @@ def verify_case(case_dir: str) -> bool:
 
     Returns
     -------
-    bool
-        True if all hashes verify, False otherwise.
+    str
+        One of: 'verified', 'skipped', 'failed', 'error'.
+        'verified'  — all hashes match.
+        'skipped'   — case is a placeholder (not yet populated); not a failure.
+        'failed'    — one or more hash mismatches (genuine integrity failure).
+        'error'     — missing files or unreadable hashes.json; genuine failure.
     """
     case_id = os.path.basename(os.path.normpath(case_dir))
     hashes_path = os.path.join(case_dir, "hashes.json")
@@ -63,22 +67,26 @@ def verify_case(case_dir: str) -> bool:
     ]:
         if not os.path.isfile(path):
             print(f"  [ERROR] Missing required file: {label} ({path})")
-            return False
+            return "error"
 
-    # Load stored hashes
-    with open(hashes_path, "r", encoding="utf-8") as f:
-        stored = json.load(f)
+    # Load stored hashes — propagate read/parse errors as 'error'
+    try:
+        with open(hashes_path, "r", encoding="utf-8") as f:
+            stored = json.load(f)
+    except (OSError, json.JSONDecodeError) as exc:
+        print(f"  [ERROR] Cannot read hashes.json: {exc}")
+        return "error"
 
     stored_prompt_hash = stored.get("prompt_sha256", "")
     stored_response_hash = stored.get("response_sha256", "")
 
     if not stored_prompt_hash or stored_prompt_hash.startswith("PLACEHOLDER"):
         print("  [SKIP] prompt_sha256 is a placeholder — case not yet populated.")
-        return False
+        return "skipped"
 
     if not stored_response_hash or stored_response_hash.startswith("PLACEHOLDER"):
         print("  [SKIP] response_sha256 is a placeholder — case not yet populated.")
-        return False
+        return "skipped"
 
     all_ok = True
 
@@ -104,10 +112,10 @@ def verify_case(case_dir: str) -> bool:
 
     if all_ok:
         print(f"  [VERIFIED] Case {case_id} integrity confirmed.")
+        return "verified"
     else:
         print(f"  [INTEGRITY FAILURE] Case {case_id} has hash mismatches — do not trust its contents.")
-
-    return all_ok
+        return "failed"
 
 
 # ---------------------------------------------------------------------------
@@ -126,7 +134,8 @@ def main() -> None:
     args = parser.parse_args()
 
     ok = verify_case(args.case_dir)
-    sys.exit(0 if ok else 1)
+    # 'verified' and 'skipped' are both exit-0; 'failed' and 'error' are exit-1
+    sys.exit(0 if ok in ("verified", "skipped") else 1)
 
 
 if __name__ == "__main__":

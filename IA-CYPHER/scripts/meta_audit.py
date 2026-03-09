@@ -11,99 +11,46 @@ The report is written as a Markdown file with timestamp to logs/audit_reports/.
 
 Exit codes:
     0 — all verifiable cases passed
-    1 — one or more cases failed verification
+    0 — all verifiable cases passed (errors and skips are also reported but exit 0 if no failures)
+    1 — one or more cases failed verification OR had errors (missing files / bad JSON)
 """
 
 import argparse
-import hashlib
 import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
-# Hash verification (inline, mirrors verify_hashes.py logic)
+# Reuse verify_case from verify_hashes.py to avoid logic duplication
 # ---------------------------------------------------------------------------
 
-def sha256_of_file(path: str) -> str:
-    """Return the hex SHA-256 digest of a file's raw bytes."""
-    with open(path, "rb") as f:
-        return hashlib.sha256(f.read()).hexdigest()
+_SCRIPTS_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(_SCRIPTS_DIR))
+
+from verify_hashes import verify_case as _verify_case_status  # noqa: E402  (after sys.path update)
 
 
-def verify_case(case_dir: str) -> dict:
+def _verify_case_as_dict(case_dir: str) -> dict:
     """
-    Verify hashes for a single case and return a result dict.
-
-    Returns a dict with keys:
-        case_id, case_dir, status, prompt_ok, response_ok, notes
-    Status values: 'verified', 'failed', 'skipped', 'error'
+    Run verify_hashes.verify_case() (which returns a status string) and wrap
+    the result into the dict format that meta_audit reporting expects.
     """
     case_id = os.path.basename(os.path.normpath(case_dir))
-    result = {
-        "case_id": case_id,
-        "case_dir": case_dir,
-        "status": "error",
-        "prompt_ok": False,
-        "response_ok": False,
-        "notes": "",
+    status = _verify_case_status(case_dir)
+    notes_map = {
+        "verified": "All hashes match.",
+        "skipped":  "Hashes are placeholders — case not yet populated.",
+        "failed":   "One or more hash mismatches — do not trust this case's contents.",
+        "error":    "Missing files or unreadable hashes.json.",
     }
-
-    hashes_path = os.path.join(case_dir, "hashes.json")
-    prompt_path = os.path.join(case_dir, "prompt.txt")
-    response_path = os.path.join(case_dir, "response.txt")
-
-    for path, label in [
-        (hashes_path, "hashes.json"),
-        (prompt_path, "prompt.txt"),
-        (response_path, "response.txt"),
-    ]:
-        if not os.path.isfile(path):
-            result["status"] = "error"
-            result["notes"] = f"Missing required file: {label}"
-            return result
-
-    try:
-        with open(hashes_path, "r", encoding="utf-8") as f:
-            stored = json.load(f)
-    except (json.JSONDecodeError, OSError) as e:
-        result["status"] = "error"
-        result["notes"] = f"Could not read hashes.json: {e}"
-        return result
-
-    stored_prompt_hash = stored.get("prompt_sha256", "")
-    stored_response_hash = stored.get("response_sha256", "")
-
-    if (not stored_prompt_hash or stored_prompt_hash.startswith("PLACEHOLDER") or
-            not stored_response_hash or stored_response_hash.startswith("PLACEHOLDER")):
-        result["status"] = "skipped"
-        result["notes"] = "Hashes are placeholders — case not yet populated."
-        return result
-
-    actual_prompt_hash = sha256_of_file(prompt_path)
-    actual_response_hash = sha256_of_file(response_path)
-
-    prompt_ok = actual_prompt_hash == stored_prompt_hash
-    response_ok = actual_response_hash == stored_response_hash
-
-    result["prompt_ok"] = prompt_ok
-    result["response_ok"] = response_ok
-
-    if prompt_ok and response_ok:
-        result["status"] = "verified"
-        result["notes"] = "All hashes match."
-    else:
-        result["status"] = "failed"
-        notes = []
-        if not prompt_ok:
-            notes.append(f"prompt.txt hash mismatch (stored: {stored_prompt_hash[:16]}..., actual: {actual_prompt_hash[:16]}...)")
-        if not response_ok:
-            notes.append(f"response.txt hash mismatch (stored: {stored_response_hash[:16]}..., actual: {actual_response_hash[:16]}...)")
-        result["notes"] = "; ".join(notes)
-
-    return result
+    return {
+        "case_id":  case_id,
+        "case_dir": case_dir,
+        "status":   status,
+        "notes":    notes_map.get(status, status),
+    }
 
 
 def load_metadata(case_dir: str) -> dict:
@@ -148,16 +95,16 @@ def generate_report(results: list, cases_root: str, timestamp: str) -> str:
         "",
     ]
 
-    if failed > 0:
+    if failed > 0 or errors > 0:
         lines += [
             "## ⚠ INTEGRITY FAILURES",
             "",
-            "The following cases failed hash verification. **Do not trust their contents.**",
+            "The following cases failed hash verification or had errors. **Do not trust their contents.**",
             "",
         ]
         for r in results:
-            if r["status"] == "failed":
-                lines.append(f"- **{r['case_id']}** — {r['notes']}")
+            if r["status"] in ("failed", "error"):
+                lines.append(f"- **{r['case_id']}** (`{r['status']}`) — {r['notes']}")
         lines.append("")
 
     lines += [
@@ -251,7 +198,7 @@ def main() -> None:
 
     results = []
     for case_dir in case_dirs:
-        result = verify_case(str(case_dir))
+        result = _verify_case_as_dict(str(case_dir))
         icon = {"verified": "✅", "failed": "❌", "skipped": "⏭", "error": "⚠"}.get(result["status"], "?")
         print(f"  {icon} {result['case_id']}: {result['status']} — {result['notes']}")
         results.append(result)
@@ -269,8 +216,8 @@ def main() -> None:
 
     print(f"\n[meta_audit] Report written to: {report_path}")
 
-    failed = sum(1 for r in results if r["status"] == "failed")
-    sys.exit(1 if failed > 0 else 0)
+    failed_or_error = sum(1 for r in results if r["status"] in ("failed", "error"))
+    sys.exit(1 if failed_or_error > 0 else 0)
 
 
 if __name__ == "__main__":

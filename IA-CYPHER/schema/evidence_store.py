@@ -156,7 +156,20 @@ class EvidenceStore:
         patterns: Optional[List[str]] = None,
         metadata: Optional[Dict] = None,
     ) -> Dict:
-        """Hash and store an artifact. Returns the evidence record."""
+        """
+        Hash and store an artifact. Returns the evidence record.
+
+        Raises
+        ------
+        ValueError
+            If ``artifact_id`` already exists in the store. The store is
+            append-only: existing records are never overwritten.
+        """
+        if artifact_id in self._records:
+            raise ValueError(
+                f"Duplicate artifact_id '{artifact_id}': the evidence store is "
+                "append-only. Use a unique ID for each artifact."
+            )
         record = create_evidence_record(
             artifact_id=artifact_id,
             content=content,

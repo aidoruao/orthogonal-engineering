@@ -5,11 +5,10 @@ Loads all cases from cases/case_* directories, reads metadata.json, and
 aggregates across two pattern namespaces:
 
   S-01..S-05: LLM web search dampening / sabotage patterns (from HEDGE/REFUSAL/etc. flags)
-  P1..P10:    Corporate audit patterns (from patterns_detected list in metadata)
+  P1..P10:    Corporate audit patterns (from patterns_detected list in metadata AND from
+              classifier applied to response.txt when available)
 
 Prints a combined summary to stdout and writes a JSON report to logs/processed/.
-Also classifies case response text using the corporate audit schema classifier
-when the schema module is available.
 
 Usage:
     python scripts/causal_analysis.py [--cases-root cases] [--output-dir logs/processed]
@@ -75,6 +74,8 @@ ALL_FLAGS = ["HEDGE", "REFUSAL", "CONSENSUS", "ATTRIBUTION_GAP", "MODE_SHIFT", "
 def load_case(case_dir: Path) -> dict:
     """
     Load a case's metadata and return a structured dict.
+    Also loads response.txt and runs the corporate-pattern classifier on it
+    when the schema module is available.
 
     Parameters
     ----------
@@ -83,10 +84,12 @@ def load_case(case_dir: Path) -> dict:
 
     Returns
     -------
-    dict with keys: case_id, metadata, flags, condition, prompt_class, patterns_detected
+    dict with keys: case_id, metadata, flags, condition, prompt_class,
+                    patterns_detected, classifier_patterns (from response.txt)
     """
     case_id = case_dir.name
     metadata_path = case_dir / "metadata.json"
+    response_path = case_dir / "response.txt"
 
     metadata = {}
     if metadata_path.is_file():
@@ -101,13 +104,24 @@ def load_case(case_dir: Path) -> dict:
     prompt_class = metadata.get("prompt_class", "UNKNOWN")
     patterns_detected = metadata.get("patterns_detected", [])
 
+    # Classify response.txt with the corporate-pattern classifier when available
+    classifier_patterns: list = []
+    if _SCHEMA_AVAILABLE and response_path.is_file():
+        try:
+            response_text = response_path.read_text(encoding="utf-8")
+            classification = classify_trace(response_text)
+            classifier_patterns = classification.get("patterns", [])
+        except OSError:
+            pass
+
     return {
-        "case_id": case_id,
-        "metadata": metadata,
-        "flags": flags,
-        "condition": condition,
-        "prompt_class": prompt_class,
-        "patterns_detected": patterns_detected,
+        "case_id":            case_id,
+        "metadata":           metadata,
+        "flags":              flags,
+        "condition":          condition,
+        "prompt_class":       prompt_class,
+        "patterns_detected":  patterns_detected,
+        "classifier_patterns": classifier_patterns,
     }
 
 
@@ -175,9 +189,14 @@ def aggregate_patterns(cases: list) -> dict:
                 if any(flags.get(f) is True for f in pattern_flags):
                     pattern_counts[code] += 1
 
-        # Count P1-P10 corporate patterns (from patterns_detected list in metadata)
+        # Count P1-P10 corporate patterns — from metadata AND from classifier on response.txt
+        # Union of both sources, de-duplicated per case
+        all_corporate_detected = set(detected)
+        for code in case.get("classifier_patterns", []):
+            all_corporate_detected.add(code)
+
         for code in list(CORPORATE_PATTERNS.keys()):
-            if code in detected:
+            if code in all_corporate_detected:
                 corporate_pattern_counts[code] = corporate_pattern_counts.get(code, 0) + 1
                 if entity:
                     if entity not in entity_pattern_map:

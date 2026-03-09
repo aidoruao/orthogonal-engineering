@@ -213,11 +213,11 @@ def report_to_markdown(report: Dict) -> str:
             "",
             "## Evidence Integrity",
             "",
-            f"**Total:** {integrity['total']}  ",
-            f"**Passed:** {integrity['passed']}  ",
-            f"**Failed:** {integrity['failed']}  ",
+            f"**Total:** {integrity.get('total', 0)}  ",
+            f"**Passed:** {integrity.get('passed', 0)}  ",
+            f"**Failed:** {integrity.get('failed', 0)}  ",
         ]
-        if integrity["failed_ids"]:
+        if integrity.get("failed_ids"):
             lines += ["", "### Failed IDs", ""]
             for fid in integrity["failed_ids"]:
                 lines.append(f"- `{fid}`")

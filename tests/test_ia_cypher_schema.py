@@ -5,13 +5,14 @@ Tests all schema components:
   - Schema completeness (all 10 axioms, 10 patterns, 10 invariants, etc.)
   - Classifier accuracy on real corporate trace samples
   - Hash round-trip integrity (evidence_store)
-  - Pattern detection on populated cases
+  - Pattern detection on populated cases (cases 0002 and 0003 have real content)
   - Relation graph construction and queries
   - Report generation (structured output)
   - Meta-audit on populated cases
   - Verify_hashes on cases 0002 and 0003
 
-NO PLACEHOLDERS. All tests run to real results.
+Note: case_0001 is an intentionally unpopulated placeholder (skipped by verify_hashes).
+Cases 0002 and 0003 contain real content with computed SHA-256 hashes.
 """
 
 from __future__ import annotations
@@ -418,6 +419,13 @@ class TestEvidenceStore:
         data = json.loads(index_path.read_text())
         assert data["total"] == 2
 
+    def test_evidence_store_rejects_duplicate_artifact_id(self):
+        """EvidenceStore is append-only: duplicate IDs must raise ValueError."""
+        store = EvidenceStore()
+        store.ingest("dup_id", "original content")
+        with pytest.raises(ValueError, match=r"Duplicate artifact_id"):
+            store.ingest("dup_id", "different content")
+
 
 # ---------------------------------------------------------------------------
 # 4. Relation Graph Tests
@@ -520,9 +528,16 @@ class TestRelationGraph:
         assert "node_count" in data
         assert "edges" in data
 
-
-# Add edge_count property to RelationGraph for test_build_from_corpus
-RelationGraph.edge_count = property(lambda self: len(self._edges))
+    def test_node_count_and_edge_count_are_real_properties(self):
+        """edge_count and node_count must be real properties, not monkey-patches."""
+        g = RelationGraph()
+        assert g.node_count == 0
+        assert g.edge_count == 0
+        g.add_entity(EntityNode("n1", "N1"))
+        assert g.node_count == 1
+        g.add_edge(RelationEdge("n1", "OWNS", "n2"))
+        assert g.edge_count == 1
+        assert g.node_count == 2  # n2 auto-created
 
 
 # ---------------------------------------------------------------------------
@@ -610,8 +625,8 @@ class TestPopulatedCases:
         case_dir = self.CASES_DIR / case_id
         prompt = (case_dir / "prompt.txt").read_text(encoding="utf-8")
         response = (case_dir / "response.txt").read_text(encoding="utf-8")
-        metadata = json.loads((case_dir / "metadata.json").read_text())
-        hashes = json.loads((case_dir / "hashes.json").read_text())
+        metadata = json.loads((case_dir / "metadata.json").read_text(encoding="utf-8"))
+        hashes = json.loads((case_dir / "hashes.json").read_text(encoding="utf-8"))
         return {"prompt": prompt, "response": response, "metadata": metadata, "hashes": hashes}
 
     def test_case_0002_files_exist(self):
@@ -815,14 +830,21 @@ class TestEndToEnd:
         assert store.get("invariant_i4_test")["sha256"] == original_hash
         assert len(original_hash) == 64
 
-    def test_invariant_i10_truth_persists(self):
-        """I10: Truth persists independently of concealment."""
+    def test_invariant_i10_truth_persists(self, tmp_path):
+        """I10: Truth persists independently of concealment.
+
+        Simulates: hashes are captured to disk, the original source files are
+        then deleted (corporate concealment), but integrity can still be
+        verified from the persisted hash records alone.
+        """
         facts = [
             "EU fined Google EUR 2.42 billion in 2017 for search monopoly.",
             "EU fined Google EUR 4.34 billion in 2018 for Android monopoly.",
             "EU fined Google EUR 1.49 billion in 2019 for AdSense monopoly.",
         ]
-        store = EvidenceStore()
+
+        # Step 1: ingest facts into a filesystem-backed store
+        store = EvidenceStore(store_dir=tmp_path)
         hashes = []
         for i, fact in enumerate(facts):
             record = store.ingest(f"eu_fine_{i}", fact)
@@ -833,8 +855,19 @@ class TestEndToEnd:
         for h in hashes:
             assert len(h) == 64
 
-        # "Concealment": delete the records (simulate corporate takedown)
-        # Hashes remain in our store — truth persists
+        # Step 2: simulate "corporate concealment" — the original source content
+        # is no longer available (we use a fresh store that only loads from disk).
+        store2 = EvidenceStore(store_dir=tmp_path)
+        loaded = store2.load_from_dir()
+        assert loaded == 3, "All 3 artifact records should survive on disk"
+
+        # Step 3: truth persists — hashes still verify against original content.
         for i, fact in enumerate(facts):
-            result = store.verify(f"eu_fine_{i}", fact)
-            assert result["match"] is True, f"eu_fine_{i} should still verify"
+            result = store2.verify(f"eu_fine_{i}", fact)
+            assert result["match"] is True, f"eu_fine_{i} hash should still match"
+
+        # Step 4: confirm the hash records cannot be silently swapped.
+        tampered = "Google did not do anything wrong."
+        for i in range(len(facts)):
+            result = store2.verify(f"eu_fine_{i}", tampered)
+            assert result["match"] is False, "Tampered content must not verify"
