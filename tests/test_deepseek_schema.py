@@ -790,3 +790,27 @@ def test_deepseek_yaml_classified_correctly():
     
     assert found, "DEEPSEEK_COPILOT_SCHEMA.yaml not found in topology graph"
 
+
+def test_example_session_validates():
+    """Example session JSON validates against schema."""
+    import subprocess
+    
+    example_path = Path(__file__).parent.parent / "examples" / "deepseek_session_example.json"
+    validator_path = Path(__file__).parent.parent / "validate_deepseek_session.py"
+    
+    if not example_path.exists():
+        pytest.skip("Example session file not found")
+    if not validator_path.exists():
+        pytest.skip("Validator script not found")
+    
+    # Run validator
+    result = subprocess.run(
+        ["python3", str(validator_path), str(example_path)],
+        capture_output=True,
+        text=True,
+        cwd=str(Path(__file__).parent.parent)
+    )
+    
+    assert result.returncode == 0, f"Validation failed: {result.stdout}\n{result.stderr}"
+    assert "✅ Validation passed!" in result.stdout
+
