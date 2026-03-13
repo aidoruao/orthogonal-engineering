@@ -814,3 +814,30 @@ def test_example_session_validates():
     assert result.returncode == 0, f"Validation failed: {result.stdout}\n{result.stderr}"
     assert "✅ Validation passed!" in result.stdout
 
+
+def test_schema_generation_is_idempotent():
+    """Schema generation is byte-for-byte idempotent."""
+    import hashlib
+    
+    # Generate schema 3 times
+    schemas = []
+    hashes = []
+    
+    for _ in range(3):
+        schema = deepseek_schema.build_schema()
+        schema_json = deepseek_schema.schema_to_json(schema)
+        schema_hash = hashlib.sha256(schema_json.encode('utf-8')).hexdigest()
+        
+        schemas.append(schema)
+        hashes.append(schema_hash)
+    
+    # All hashes must be identical
+    assert len(set(hashes)) == 1, \
+        f"Schema generation not idempotent: got {len(set(hashes))} different outputs"
+    
+    # All schemas must be deep-equal
+    for i in range(1, len(schemas)):
+        assert schemas[0] == schemas[i], \
+            f"Schema {i} differs from schema 0"
+
+
