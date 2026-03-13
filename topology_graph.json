@@ -2,7 +2,7 @@
   "metadata": {
     "schema_version": "1.0.0",
     "pipeline_version": "2.0.0",
-    "scan_timestamp": "2026-03-13T02:34:42.698183",
+    "scan_timestamp": "2026-03-13T02:40:29.250683",
     "root_path": "/home/runner/work/orthogonal-engineering/orthogonal-engineering",
     "schema_path": "/home/runner/work/orthogonal-engineering/orthogonal-engineering/PERCEIVABLE_INFINITY_SCHEMA.yaml",
     "full_hash": false,
@@ -13,17 +13,18 @@
     ]
   },
   "statistics": {
-    "total_files": 2899,
+    "total_files": 2904,
     "ignored_files": 10,
-    "classified_nodes": 810,
-    "unclassified_nodes": 2089,
-    "edges_created": 627,
+    "classified_nodes": 813,
+    "unclassified_nodes": 2091,
+    "edges_created": 628,
     "node_class_counts": {
-      "UNCLASSIFIED": 2089,
+      "UNCLASSIFIED": 2091,
       "FORGIVENESS_MODULE": 693,
       "EVIDENCE_ARTIFACT": 39,
       "DOCUMENTATION_INDEX": 48,
       "COVENANT_ROOT": 2,
+      "AI_SESSION_MONITOR": 3,
       "CORRESPONDENCE_BRIDGE": 2,
       "GUARDIAN_SYSTEM": 1,
       "VIOLATION_LOG": 3,
@@ -31,16 +32,16 @@
       "FOOD_DISH_UNIVERSE": 4
     },
     "edge_class_counts": {
-      "DEPENDENCY_IMPORT": 625,
+      "DEPENDENCY_IMPORT": 626,
       "CORRESPONDENCE_MAPPING": 1,
       "VERIFICATION_CHAIN": 1
     },
     "zone_counts": {
-      "zone_8_unclassified": 1885,
+      "zone_8_unclassified": 1887,
       "zone_4_forgiveness_grace": 693,
       "zone_5_analysis_reporting": 105,
       "zone_7_documentation": 132,
-      "zone_2_detection_enforcement": 8,
+      "zone_2_detection_enforcement": 11,
       "zone_1_immutable_authority": 3,
       "zone_3_correspondence_bridge": 2,
       "zone_6_deployment_orchestration": 71
@@ -50,10 +51,10 @@
   "clusters": {
     "zone_8_unclassified": {
       "zone_id": "zone_8_unclassified",
-      "total_node_count": 1885,
+      "total_node_count": 1887,
       "hash_verified_count": 0,
       "class_distribution": {
-        "UNCLASSIFIED": 1885
+        "UNCLASSIFIED": 1887
       },
       "representative_sample": [
         "SUCCESSOR_VERIFICATION.yaml",
@@ -114,18 +115,19 @@
     },
     "zone_2_detection_enforcement": {
       "zone_id": "zone_2_detection_enforcement",
-      "total_node_count": 8,
+      "total_node_count": 11,
       "hash_verified_count": 0,
       "class_distribution": {
         "UNCLASSIFIED": 5,
+        "AI_SESSION_MONITOR": 3,
         "VIOLATION_LOG": 3
       },
       "representative_sample": [
         "output_validator.py",
+        "deepseek_schema.py",
+        "DEEPSEEK_COPILOT_SCHEMA.yaml",
         "gaslighting_detector.py",
-        "input_guard.py",
-        ".ontological_violations/violation_20260126_022551.json",
-        ".ontological_violations/violation_20260126_022642.json"
+        "input_guard.py"
       ]
     },
     "zone_1_immutable_authority": {
@@ -494,6 +496,22 @@
       "file_ext": ".md",
       "depth": 1,
       "last_modified": 1773369176.8789809,
+      "node_class": "UNCLASSIFIED",
+      "authority": "UNRESTRICTED",
+      "temporal": "OVERLAY",
+      "constraint_layer": [],
+      "verification": "NONE",
+      "zone": "zone_8_unclassified",
+      "sha256": null,
+      "imports": []
+    },
+    "deepseek_copilot_schema.json": {
+      "file_id": "deepseek_copilot_schema.json",
+      "file_path": "deepseek_copilot_schema.json",
+      "file_size": 18075,
+      "file_ext": ".json",
+      "depth": 1,
+      "last_modified": 1773369577.4857845,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -1003,10 +1021,10 @@
     "ONTOLOGY_SCHEMA.yaml": {
       "file_id": "ONTOLOGY_SCHEMA.yaml",
       "file_path": "ONTOLOGY_SCHEMA.yaml",
-      "file_size": 14663,
+      "file_size": 15835,
       "file_ext": ".yaml",
       "depth": 1,
-      "last_modified": 1773369176.874981,
+      "last_modified": 1773369499.98192,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -3593,6 +3611,31 @@
       "sha256": null,
       "imports": []
     },
+    "deepseek_schema.py": {
+      "file_id": "deepseek_schema.py",
+      "file_path": "deepseek_schema.py",
+      "file_size": 26128,
+      "file_ext": ".py",
+      "depth": 1,
+      "last_modified": 1773369413.4306493,
+      "node_class": "AI_SESSION_MONITOR",
+      "authority": "VALIDATED",
+      "temporal": "OVERLAY",
+      "constraint_layer": [],
+      "verification": "NONE",
+      "zone": "zone_2_detection_enforcement",
+      "sha256": null,
+      "imports": [
+        "__future__",
+        "hashlib",
+        "json",
+        "os",
+        "subprocess",
+        "sys",
+        "pathlib",
+        "typing"
+      ]
+    },
     "universal_inventory.csv": {
       "file_id": "universal_inventory.csv",
       "file_path": "universal_inventory.csv",
@@ -4119,7 +4162,7 @@
       "file_size": 46364,
       "file_ext": ".html",
       "depth": 1,
-      "last_modified": 1773369176.875981,
+      "last_modified": 1773369282.8427668,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -4570,6 +4613,22 @@
       "sha256": null,
       "imports": []
     },
+    "DEEPSEEK_COPILOT_SCHEMA.yaml": {
+      "file_id": "DEEPSEEK_COPILOT_SCHEMA.yaml",
+      "file_path": "DEEPSEEK_COPILOT_SCHEMA.yaml",
+      "file_size": 15530,
+      "file_ext": ".yaml",
+      "depth": 1,
+      "last_modified": 1773369355.5314758,
+      "node_class": "AI_SESSION_MONITOR",
+      "authority": "VALIDATED",
+      "temporal": "OVERLAY",
+      "constraint_layer": [],
+      "verification": "NONE",
+      "zone": "zone_2_detection_enforcement",
+      "sha256": null,
+      "imports": []
+    },
     "PHASE_4_COMPLETION_SUMMARY.md": {
       "file_id": "PHASE_4_COMPLETION_SUMMARY.md",
       "file_path": "PHASE_4_COMPLETION_SUMMARY.md",
@@ -4961,10 +5020,10 @@
     "PERCEIVABLE_INFINITY_SCHEMA.yaml": {
       "file_id": "PERCEIVABLE_INFINITY_SCHEMA.yaml",
       "file_path": "PERCEIVABLE_INFINITY_SCHEMA.yaml",
-      "file_size": 12183,
+      "file_size": 12444,
       "file_ext": ".yaml",
       "depth": 1,
-      "last_modified": 1773369176.875981,
+      "last_modified": 1773369572.063136,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -5768,10 +5827,10 @@
     "COPILOT_ONBOARDING_SCHEMA.yaml": {
       "file_id": "COPILOT_ONBOARDING_SCHEMA.yaml",
       "file_path": "COPILOT_ONBOARDING_SCHEMA.yaml",
-      "file_size": 5872,
+      "file_size": 5959,
       "file_ext": ".yaml",
       "depth": 1,
-      "last_modified": 1773369176.8189807,
+      "last_modified": 1773369510.4009511,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -6110,10 +6169,10 @@
     "topology_graph.json": {
       "file_id": "topology_graph.json",
       "file_path": "topology_graph.json",
-      "file_size": 1878979,
+      "file_size": 1879127,
       "file_ext": ".json",
       "depth": 1,
-      "last_modified": 1773369177.803985,
+      "last_modified": 1773369282.7622647,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -13215,6 +13274,29 @@
         "pytest"
       ]
     },
+    "tests/test_deepseek_schema.py": {
+      "file_id": "tests/test_deepseek_schema.py",
+      "file_path": "tests/test_deepseek_schema.py",
+      "file_size": 23203,
+      "file_ext": ".py",
+      "depth": 2,
+      "last_modified": 1773369470.0618267,
+      "node_class": "AI_SESSION_MONITOR",
+      "authority": "VALIDATED",
+      "temporal": "OVERLAY",
+      "constraint_layer": [],
+      "verification": "NONE",
+      "zone": "zone_2_detection_enforcement",
+      "sha256": null,
+      "imports": [
+        "__future__",
+        "json",
+        "sys",
+        "pathlib",
+        "pytest",
+        "deepseek_schema"
+      ]
+    },
     "tests/test_f_crusader_006.py": {
       "file_id": "tests/test_f_crusader_006.py",
       "file_path": "tests/test_f_crusader_006.py",
@@ -17052,10 +17134,10 @@
     "topology/graph_schema.yaml": {
       "file_id": "topology/graph_schema.yaml",
       "file_path": "topology/graph_schema.yaml",
-      "file_size": 8804,
+      "file_size": 9238,
       "file_ext": ".yaml",
       "depth": 2,
-      "last_modified": 1773369177.8016555,
+      "last_modified": 1773369488.6398857,
       "node_class": "UNCLASSIFIED",
       "authority": "UNRESTRICTED",
       "temporal": "OVERLAY",
@@ -30991,6 +31073,22 @@
         "dataclasses",
         "typing"
       ]
+    },
+    "canonical/hash_manifest.json": {
+      "file_id": "canonical/hash_manifest.json",
+      "file_path": "canonical/hash_manifest.json",
+      "file_size": 15854,
+      "file_ext": ".json",
+      "depth": 2,
+      "last_modified": 1773369282.7648597,
+      "node_class": "UNCLASSIFIED",
+      "authority": "UNRESTRICTED",
+      "temporal": "OVERLAY",
+      "constraint_layer": [],
+      "verification": "NONE",
+      "zone": "zone_8_unclassified",
+      "sha256": null,
+      "imports": []
     },
     "canonical/witnesses/meta.md": {
       "file_id": "canonical/witnesses/meta.md",
@@ -56407,8 +56505,8 @@
     },
     {
       "edge_id": "edge_184",
-      "source": "tests/test_fractal_determinism.py",
-      "target": "oe_ifm/mathematical_core.py",
+      "source": "tests/test_deepseek_schema.py",
+      "target": "deepseek_schema.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56416,7 +56514,7 @@
     {
       "edge_id": "edge_185",
       "source": "tests/test_fractal_determinism.py",
-      "target": "oe_ifm/universal_virtual_machine.py",
+      "target": "oe_ifm/mathematical_core.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56424,7 +56522,7 @@
     {
       "edge_id": "edge_186",
       "source": "tests/test_fractal_determinism.py",
-      "target": "oe_ifm/blockchain_attestation.py",
+      "target": "oe_ifm/universal_virtual_machine.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56432,13 +56530,21 @@
     {
       "edge_id": "edge_187",
       "source": "tests/test_fractal_determinism.py",
-      "target": "tests/test_cross_platform_determinism.py",
+      "target": "oe_ifm/blockchain_attestation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_188",
+      "source": "tests/test_fractal_determinism.py",
+      "target": "tests/test_cross_platform_determinism.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_189",
       "source": "tests/test_peano_axioms.py",
       "target": "oe_ifm/mathematical_core.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56446,7 +56552,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_189",
+      "edge_id": "edge_190",
       "source": "tests/test_autofix_engine.py",
       "target": "toolkit/oe/autofix_engine_simple.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56454,16 +56560,8 @@
       "axis": []
     },
     {
-      "edge_id": "edge_190",
-      "source": "tests/test_autofix_engine.py",
-      "target": "toolkit/oe/boundary_enforcer.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_191",
-      "source": "tests/test_boundary_enforcer.py",
+      "source": "tests/test_autofix_engine.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -56472,7 +56570,7 @@
     {
       "edge_id": "edge_192",
       "source": "tests/test_boundary_enforcer.py",
-      "target": "oe_ifm/halt_condition.py",
+      "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56480,13 +56578,21 @@
     {
       "edge_id": "edge_193",
       "source": "tests/test_boundary_enforcer.py",
-      "target": "toolkit/oe/onboarding_check.py",
+      "target": "oe_ifm/halt_condition.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_194",
+      "source": "tests/test_boundary_enforcer.py",
+      "target": "toolkit/oe/onboarding_check.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_195",
       "source": "tests/test_evidence_manager.py",
       "target": "toolkit/oe/evidence_manager.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56494,7 +56600,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_195",
+      "edge_id": "edge_196",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/identification/boundary_map.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56502,7 +56608,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_196",
+      "edge_id": "edge_197",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/identification/pattern_detector.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56510,7 +56616,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_197",
+      "edge_id": "edge_198",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/identification/sensitivity_classifier.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56518,7 +56624,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_198",
+      "edge_id": "edge_199",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/movement/hash_preserver.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56526,7 +56632,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_199",
+      "edge_id": "edge_200",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/movement/boundary_encryptor.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56534,7 +56640,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_200",
+      "edge_id": "edge_201",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/movement/witness_mover.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56542,7 +56648,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_201",
+      "edge_id": "edge_202",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/witness/removal_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56550,7 +56656,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_202",
+      "edge_id": "edge_203",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/witness/provenance_pointer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56558,7 +56664,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_203",
+      "edge_id": "edge_204",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/witness/consent_log.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56566,7 +56672,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_204",
+      "edge_id": "edge_205",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/invariants/no_silent_transition.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56574,7 +56680,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_205",
+      "edge_id": "edge_206",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/invariants/forkable_remembrance.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56582,7 +56688,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_206",
+      "edge_id": "edge_207",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/invariants/never_draw_attention.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56590,7 +56696,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_207",
+      "edge_id": "edge_208",
       "source": "tests/test_pr47_stewardship.py",
       "target": "pr47_stewardship/integration/pr40_witness_extension.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56598,17 +56704,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_208",
-      "source": "tests/test_pr47_stewardship.py",
-      "target": "pr47_stewardship/integration/pr45_verification.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_209",
       "source": "tests/test_pr47_stewardship.py",
-      "target": "pr45_uvdtl/witness/append_only_witness.py",
+      "target": "pr47_stewardship/integration/pr45_verification.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56616,15 +56714,15 @@
     {
       "edge_id": "edge_210",
       "source": "tests/test_pr47_stewardship.py",
-      "target": "pr47_stewardship/integration/pr45_verification.py",
+      "target": "pr45_uvdtl/witness/append_only_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_211",
-      "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/candidate/attestation_oidc.py",
+      "source": "tests/test_pr47_stewardship.py",
+      "target": "pr47_stewardship/integration/pr45_verification.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56632,7 +56730,7 @@
     {
       "edge_id": "edge_212",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/candidate/keypair.py",
+      "target": "pr50_bar_exam/candidate/attestation_oidc.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56640,7 +56738,7 @@
     {
       "edge_id": "edge_213",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/candidate/sponsor.py",
+      "target": "pr50_bar_exam/candidate/keypair.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56648,7 +56746,7 @@
     {
       "edge_id": "edge_214",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/candidate/environment.py",
+      "target": "pr50_bar_exam/candidate/sponsor.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56656,7 +56754,7 @@
     {
       "edge_id": "edge_215",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/examination/prompts/templates.py",
+      "target": "pr50_bar_exam/candidate/environment.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56664,7 +56762,7 @@
     {
       "edge_id": "edge_216",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/examination/question_bank.py",
+      "target": "pr50_bar_exam/examination/prompts/templates.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56672,7 +56770,7 @@
     {
       "edge_id": "edge_217",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/examination/minimal_pairs.py",
+      "target": "pr50_bar_exam/examination/question_bank.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56680,7 +56778,7 @@
     {
       "edge_id": "edge_218",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/examination/parsing.py",
+      "target": "pr50_bar_exam/examination/minimal_pairs.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56688,7 +56786,7 @@
     {
       "edge_id": "edge_219",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/examination/run_exam.py",
+      "target": "pr50_bar_exam/examination/parsing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56696,7 +56794,7 @@
     {
       "edge_id": "edge_220",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/peano.py",
+      "target": "pr50_bar_exam/examination/run_exam.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56704,7 +56802,7 @@
     {
       "edge_id": "edge_221",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/weights.py",
+      "target": "pr50_bar_exam/scoring/peano.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56712,7 +56810,7 @@
     {
       "edge_id": "edge_222",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/thresholds.py",
+      "target": "pr50_bar_exam/scoring/weights.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56720,7 +56818,7 @@
     {
       "edge_id": "edge_223",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/rubric.py",
+      "target": "pr50_bar_exam/scoring/thresholds.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56728,7 +56826,7 @@
     {
       "edge_id": "edge_224",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/consistency.py",
+      "target": "pr50_bar_exam/scoring/rubric.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56736,7 +56834,7 @@
     {
       "edge_id": "edge_225",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/score_attempt.py",
+      "target": "pr50_bar_exam/scoring/consistency.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56744,7 +56842,7 @@
     {
       "edge_id": "edge_226",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/privileges/consent_bridge.py",
+      "target": "pr50_bar_exam/scoring/score_attempt.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56752,7 +56850,7 @@
     {
       "edge_id": "edge_227",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/privileges/enforcement.py",
+      "target": "pr50_bar_exam/privileges/consent_bridge.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56760,7 +56858,7 @@
     {
       "edge_id": "edge_228",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/witness/chain.py",
+      "target": "pr50_bar_exam/privileges/enforcement.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56768,7 +56866,7 @@
     {
       "edge_id": "edge_229",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/witness/append.py",
+      "target": "pr50_bar_exam/witness/chain.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56776,7 +56874,7 @@
     {
       "edge_id": "edge_230",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/witness/verify.py",
+      "target": "pr50_bar_exam/witness/append.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56784,7 +56882,7 @@
     {
       "edge_id": "edge_231",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/ordination/certificate.py",
+      "target": "pr50_bar_exam/witness/verify.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56792,7 +56890,7 @@
     {
       "edge_id": "edge_232",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/ordination/signing_repo_key.py",
+      "target": "pr50_bar_exam/ordination/certificate.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56800,7 +56898,7 @@
     {
       "edge_id": "edge_233",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/ordination/verify_certificate.py",
+      "target": "pr50_bar_exam/ordination/signing_repo_key.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56808,7 +56906,7 @@
     {
       "edge_id": "edge_234",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/revocation/triggers.py",
+      "target": "pr50_bar_exam/ordination/verify_certificate.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56816,7 +56914,7 @@
     {
       "edge_id": "edge_235",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/revocation/authority.py",
+      "target": "pr50_bar_exam/revocation/triggers.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56824,7 +56922,7 @@
     {
       "edge_id": "edge_236",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/revocation/effects.py",
+      "target": "pr50_bar_exam/revocation/authority.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56832,7 +56930,7 @@
     {
       "edge_id": "edge_237",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/revocation/events.py",
+      "target": "pr50_bar_exam/revocation/effects.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56840,7 +56938,7 @@
     {
       "edge_id": "edge_238",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/revocation/restore.py",
+      "target": "pr50_bar_exam/revocation/events.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56848,7 +56946,7 @@
     {
       "edge_id": "edge_239",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/invariants/forkable.py",
+      "target": "pr50_bar_exam/revocation/restore.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56856,7 +56954,7 @@
     {
       "edge_id": "edge_240",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/invariants/deterministic_verification.py",
+      "target": "pr50_bar_exam/invariants/forkable.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56864,7 +56962,7 @@
     {
       "edge_id": "edge_241",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/invariants/no_retake_without_period.py",
+      "target": "pr50_bar_exam/invariants/deterministic_verification.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56872,7 +56970,7 @@
     {
       "edge_id": "edge_242",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/invariants/append_only_witness.py",
+      "target": "pr50_bar_exam/invariants/no_retake_without_period.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56880,7 +56978,7 @@
     {
       "edge_id": "edge_243",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/invariants/glass_box.py",
+      "target": "pr50_bar_exam/invariants/append_only_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56888,15 +56986,15 @@
     {
       "edge_id": "edge_244",
       "source": "tests/test_pr50_bar_exam.py",
-      "target": "pr50_bar_exam/scoring/score_attempt.py",
+      "target": "pr50_bar_exam/invariants/glass_box.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_245",
-      "source": "tests/test_pr41_render_agnostic.py",
-      "target": "tools/render_agnostic/render/cpu_reference.py",
+      "source": "tests/test_pr50_bar_exam.py",
+      "target": "pr50_bar_exam/scoring/score_attempt.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56904,7 +57002,7 @@
     {
       "edge_id": "edge_246",
       "source": "tests/test_pr41_render_agnostic.py",
-      "target": "tools/render_agnostic/render/gpu_accelerated.py",
+      "target": "tools/render_agnostic/render/cpu_reference.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -56912,13 +57010,21 @@
     {
       "edge_id": "edge_247",
       "source": "tests/test_pr41_render_agnostic.py",
-      "target": "tools/render_agnostic/render/hash_comparator.py",
+      "target": "tools/render_agnostic/render/gpu_accelerated.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_248",
+      "source": "tests/test_pr41_render_agnostic.py",
+      "target": "tools/render_agnostic/render/hash_comparator.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_249",
       "source": "tests/test_pr40_state_witness.py",
       "target": "tools/state_witness/generate_feed_entry.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56926,7 +57032,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_249",
+      "edge_id": "edge_250",
       "source": "tests/test_axioms.py",
       "target": "axioms/peano.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56934,7 +57040,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_250",
+      "edge_id": "edge_251",
       "source": "tests/test_axioms.py",
       "target": "axioms/logic.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56942,7 +57048,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_251",
+      "edge_id": "edge_252",
       "source": "tests/test_axioms.py",
       "target": "axioms/yeshua_axioms.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56950,7 +57056,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_252",
+      "edge_id": "edge_253",
       "source": "tests/test_hasher.py",
       "target": "toolkit/oe/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56958,7 +57064,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_253",
+      "edge_id": "edge_254",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/foundations/arithmetic_domain.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56966,7 +57072,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_254",
+      "edge_id": "edge_255",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/foundations/trace_interface.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56974,7 +57080,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_255",
+      "edge_id": "edge_256",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/state/canonical_serialization.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56982,7 +57088,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_256",
+      "edge_id": "edge_257",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/state/hidden_state_eliminator.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56990,7 +57096,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_257",
+      "edge_id": "edge_258",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/totality/function_classifier.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -56998,7 +57104,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_258",
+      "edge_id": "edge_259",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/totality/resource_bounds.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57006,7 +57112,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_259",
+      "edge_id": "edge_260",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/parallel/deterministic_reduction.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57014,7 +57120,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_260",
+      "edge_id": "edge_261",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/witness/append_only_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57022,7 +57128,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_261",
+      "edge_id": "edge_262",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/witness/claim_registry.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57030,7 +57136,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_262",
+      "edge_id": "edge_263",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/forkability/forkability_checker.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57038,7 +57144,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_263",
+      "edge_id": "edge_264",
       "source": "tests/test_pr45_uvdtl.py",
       "target": "pr45_uvdtl/invariants/transparency_invariants.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57046,7 +57152,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_264",
+      "edge_id": "edge_265",
       "source": "tests/test_perceivable_infinity.py",
       "target": "topology/topology_scanner.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57054,7 +57160,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_265",
+      "edge_id": "edge_266",
       "source": "tests/test_perceivable_infinity.py",
       "target": "topology/graph_loader.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57062,17 +57168,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_266",
-      "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/foundations/peano_kernel.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_267",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/foundations/primitive_recursion.py",
+      "target": "pr44_orthogonal_meta/foundations/peano_kernel.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57080,7 +57178,7 @@
     {
       "edge_id": "edge_268",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/foundations/boolean_kernel.py",
+      "target": "pr44_orthogonal_meta/foundations/primitive_recursion.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57088,7 +57186,7 @@
     {
       "edge_id": "edge_269",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/foundations/type_theory.py",
+      "target": "pr44_orthogonal_meta/foundations/boolean_kernel.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57096,7 +57194,7 @@
     {
       "edge_id": "edge_270",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/ai/deterministic_training.py",
+      "target": "pr44_orthogonal_meta/foundations/type_theory.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57104,7 +57202,7 @@
     {
       "edge_id": "edge_271",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/ai/qmc_solver.py",
+      "target": "pr44_orthogonal_meta/domain_models/ai/deterministic_training.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57112,7 +57210,7 @@
     {
       "edge_id": "edge_272",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/video_games/deterministic_engine.py",
+      "target": "pr44_orthogonal_meta/domain_models/ai/qmc_solver.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57120,7 +57218,7 @@
     {
       "edge_id": "edge_273",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/video_games/provable_rng.py",
+      "target": "pr44_orthogonal_meta/domain_models/video_games/deterministic_engine.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57128,7 +57226,7 @@
     {
       "edge_id": "edge_274",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/robotics/bipedal_motion_planner.py",
+      "target": "pr44_orthogonal_meta/domain_models/video_games/provable_rng.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57136,7 +57234,7 @@
     {
       "edge_id": "edge_275",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/robotics/safety_verifier.py",
+      "target": "pr44_orthogonal_meta/domain_models/robotics/bipedal_motion_planner.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57144,7 +57242,7 @@
     {
       "edge_id": "edge_276",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/self_driving/constraint_fsd.py",
+      "target": "pr44_orthogonal_meta/domain_models/robotics/safety_verifier.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57152,7 +57250,7 @@
     {
       "edge_id": "edge_277",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/military/mission_planner.py",
+      "target": "pr44_orthogonal_meta/domain_models/self_driving/constraint_fsd.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57160,7 +57258,7 @@
     {
       "edge_id": "edge_278",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/civilian_tech/device_stack.py",
+      "target": "pr44_orthogonal_meta/domain_models/military/mission_planner.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57168,7 +57266,7 @@
     {
       "edge_id": "edge_279",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/domain_models/healthcare/deterministic_diagnosis.py",
+      "target": "pr44_orthogonal_meta/domain_models/civilian_tech/device_stack.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57176,7 +57274,7 @@
     {
       "edge_id": "edge_280",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/impossibility/vendor_lock.py",
+      "target": "pr44_orthogonal_meta/domain_models/healthcare/deterministic_diagnosis.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57184,7 +57282,7 @@
     {
       "edge_id": "edge_281",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/impossibility/growth_incompatibility.py",
+      "target": "pr44_orthogonal_meta/impossibility/vendor_lock.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57192,7 +57290,7 @@
     {
       "edge_id": "edge_282",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/impossibility/hype_nullification.py",
+      "target": "pr44_orthogonal_meta/impossibility/growth_incompatibility.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57200,7 +57298,7 @@
     {
       "edge_id": "edge_283",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/impossibility/energy_efficiency_upper_bound.py",
+      "target": "pr44_orthogonal_meta/impossibility/hype_nullification.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57208,7 +57306,7 @@
     {
       "edge_id": "edge_284",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/verification/hash_identity.py",
+      "target": "pr44_orthogonal_meta/impossibility/energy_efficiency_upper_bound.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57216,7 +57314,7 @@
     {
       "edge_id": "edge_285",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/verification/reproducibility_checker.py",
+      "target": "pr44_orthogonal_meta/verification/hash_identity.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57224,7 +57322,7 @@
     {
       "edge_id": "edge_286",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/closure/verify_closure.py",
+      "target": "pr44_orthogonal_meta/verification/reproducibility_checker.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57232,13 +57330,21 @@
     {
       "edge_id": "edge_287",
       "source": "tests/test_pr44_domains.py",
-      "target": "pr44_orthogonal_meta/foundations/peano_kernel.py",
+      "target": "pr44_orthogonal_meta/closure/verify_closure.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_288",
+      "source": "tests/test_pr44_domains.py",
+      "target": "pr44_orthogonal_meta/foundations/peano_kernel.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_289",
       "source": "tests/test_pr59_topology_sanity.py",
       "target": "topology/topology_scanner.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57246,7 +57352,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_289",
+      "edge_id": "edge_290",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/foundations/peano_kernel.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57254,7 +57360,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_290",
+      "edge_id": "edge_291",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/foundations/primitive_recursion.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57262,7 +57368,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_291",
+      "edge_id": "edge_292",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/foundations/boolean_kernel.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57270,7 +57376,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_292",
+      "edge_id": "edge_293",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/foundations/type_theory.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57278,7 +57384,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_293",
+      "edge_id": "edge_294",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/solver/constraint_solver.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57286,7 +57392,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_294",
+      "edge_id": "edge_295",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/verification/hash_identity.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57294,7 +57400,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_295",
+      "edge_id": "edge_296",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/closure/verify_closure.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57302,7 +57408,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_296",
+      "edge_id": "edge_297",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/impossibility/vendor_lock.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57310,7 +57416,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_297",
+      "edge_id": "edge_298",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/impossibility/growth_incompatibility.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57318,7 +57424,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_298",
+      "edge_id": "edge_299",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/impossibility/spectacle_nullification.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57326,7 +57432,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_299",
+      "edge_id": "edge_300",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/corporate_autopsy/tesla_fsd_comparison.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57334,7 +57440,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_300",
+      "edge_id": "edge_301",
       "source": "tests/test_pr43_orthogonal_parallel.py",
       "target": "pr43/corporate_autopsy/nvidia_stack_comparison.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57342,7 +57448,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_301",
+      "edge_id": "edge_302",
       "source": "tests/test_ownership_guard.py",
       "target": "ownership_guard.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57350,7 +57456,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_302",
+      "edge_id": "edge_303",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/samplers/sobol.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57358,7 +57464,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_303",
+      "edge_id": "edge_304",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/samplers/halton.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57366,7 +57472,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_304",
+      "edge_id": "edge_305",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/samplers/hammersley.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57374,7 +57480,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_305",
+      "edge_id": "edge_306",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/samplers/adaptive.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57382,7 +57488,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_306",
+      "edge_id": "edge_307",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/geometry/intersect.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57390,7 +57496,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_307",
+      "edge_id": "edge_308",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/transport/path_tracer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57398,7 +57504,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_308",
+      "edge_id": "edge_309",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/transport/direct_light.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57406,7 +57512,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_309",
+      "edge_id": "edge_310",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/transport/indirect_light.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57414,7 +57520,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_310",
+      "edge_id": "edge_311",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/transport/radiance_cache.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57422,7 +57528,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_311",
+      "edge_id": "edge_312",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/geometry/bvh_builder.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57430,7 +57536,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_312",
+      "edge_id": "edge_313",
       "source": "tests/test_pr42_deterministic_light.py",
       "target": "tools/ray_tracing/verify.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57438,7 +57544,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_313",
+      "edge_id": "edge_314",
       "source": "tests/test_autonomous_pr18_explorer.py",
       "target": "autonomous_pr18_explorer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57446,7 +57552,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_314",
+      "edge_id": "edge_315",
       "source": "tests/test_manifest_generation.py",
       "target": "automation/repo_manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57454,17 +57560,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_315",
+      "edge_id": "edge_316",
       "source": "tests/test_global_merkle.py",
       "target": "merkle/global_merkle.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
-      "edge_id": "edge_316",
-      "source": "tests/test_pr49_guard.py",
-      "target": "automation/pr49_guard.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57487,6 +57585,14 @@
     },
     {
       "edge_id": "edge_319",
+      "source": "tests/test_pr49_guard.py",
+      "target": "automation/pr49_guard.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_320",
       "source": "tests/test_merkle.py",
       "target": "toolkit/oe/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57494,7 +57600,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_320",
+      "edge_id": "edge_321",
       "source": "tests/test_yeshua_enforcement.py",
       "target": "yeshua/enforcement.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57502,7 +57608,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_321",
+      "edge_id": "edge_322",
       "source": "tests/test_pr35_schema.py",
       "target": "pr35_schema.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57510,7 +57616,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_322",
+      "edge_id": "edge_323",
       "source": "tests/scaffold/test_scaffold.py",
       "target": "toolkit/oe/scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57518,7 +57624,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_323",
+      "edge_id": "edge_324",
       "source": "tests/scaffold/test_scaffold.py",
       "target": "toolkit/oe/scaffold/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57526,7 +57632,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_324",
+      "edge_id": "edge_325",
       "source": "tests/scaffold/test_scaffold.py",
       "target": "toolkit/oe/scaffold/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57534,7 +57640,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_325",
+      "edge_id": "edge_326",
       "source": "tests/scaffold/test_scaffold.py",
       "target": "toolkit/oe/scaffold/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57542,7 +57648,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_326",
+      "edge_id": "edge_327",
       "source": "tests/scaffold/test_scaffold.py",
       "target": "toolkit/oe/scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57550,7 +57656,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_327",
+      "edge_id": "edge_328",
       "source": "tests/scaffold/test_scaffold.py",
       "target": "toolkit/oe/scaffold/handling_pipeline.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57558,7 +57664,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_328",
+      "edge_id": "edge_329",
       "source": "oe_ifm/universal_virtual_machine.py",
       "target": "oe_ifm/mathematical_core.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57566,7 +57672,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_329",
+      "edge_id": "edge_330",
       "source": "merkle/__init__.py",
       "target": "merkle/global_merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57574,7 +57680,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_330",
+      "edge_id": "edge_331",
       "source": "dvcl/__init__.py",
       "target": "dvcl/determinism_guard.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57582,7 +57688,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_331",
+      "edge_id": "edge_332",
       "source": "dvcl/benchmark_harness/__init__.py",
       "target": "dvcl/benchmark_harness/harness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57590,7 +57696,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_332",
+      "edge_id": "edge_333",
       "source": "axioms/__init__.py",
       "target": "axioms/peano.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57598,7 +57704,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_333",
+      "edge_id": "edge_334",
       "source": "axioms/__init__.py",
       "target": "axioms/logic.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57606,7 +57712,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_334",
+      "edge_id": "edge_335",
       "source": "axioms/__init__.py",
       "target": "axioms/yeshua_axioms.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57614,7 +57720,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_335",
+      "edge_id": "edge_336",
       "source": "axioms/yeshua_axioms.py",
       "target": "axioms/logic.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57622,16 +57728,8 @@
       "axis": []
     },
     {
-      "edge_id": "edge_336",
-      "source": "axioms/logic.py",
-      "target": "oe_ifm/mathematical_core.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_337",
-      "source": "axioms/peano.py",
+      "source": "axioms/logic.py",
       "target": "oe_ifm/mathematical_core.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -57640,13 +57738,21 @@
     {
       "edge_id": "edge_338",
       "source": "axioms/peano.py",
-      "target": "oe_ifm/peano_kernel.py",
+      "target": "oe_ifm/mathematical_core.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_339",
+      "source": "axioms/peano.py",
+      "target": "oe_ifm/peano_kernel.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_340",
       "source": "base_ai/health_check.py",
       "target": "base_ai/registry_manager.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57654,7 +57760,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_340",
+      "edge_id": "edge_341",
       "source": "base_ai/orchestrator.py",
       "target": "base_ai/registry_manager.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57662,7 +57768,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_341",
+      "edge_id": "edge_342",
       "source": "benchmarks/run_benchmarks.py",
       "target": "falsification/property_tests.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57670,7 +57776,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_342",
+      "edge_id": "edge_343",
       "source": "benchmarks/run_benchmarks.py",
       "target": "falsification/counterexample_engine.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57678,7 +57784,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_343",
+      "edge_id": "edge_344",
       "source": "benchmarks/run_benchmarks.py",
       "target": "falsification/hypothesis.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57686,7 +57792,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_344",
+      "edge_id": "edge_345",
       "source": "benchmarks/run_benchmarks.py",
       "target": "merkle/global_merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57694,7 +57800,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_345",
+      "edge_id": "edge_346",
       "source": "orchestration/sora_prompt_generator.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57702,7 +57808,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_346",
+      "edge_id": "edge_347",
       "source": "orchestration/sora_prompt_generator.py",
       "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57710,17 +57816,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_347",
-      "source": "orchestration/pipeline_orchestrator.py",
-      "target": "toolkit/oe/boundary_enforcer.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_348",
       "source": "orchestration/pipeline_orchestrator.py",
-      "target": "orchestration/extended_chunker.py",
+      "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57735,15 +57833,15 @@
     },
     {
       "edge_id": "edge_350",
-      "source": "orchestration/vector_store.py",
-      "target": "toolkit/oe/boundary_enforcer.py",
+      "source": "orchestration/pipeline_orchestrator.py",
+      "target": "orchestration/extended_chunker.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_351",
-      "source": "orchestration/media_processor.py",
+      "source": "orchestration/vector_store.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -57752,7 +57850,7 @@
     {
       "edge_id": "edge_352",
       "source": "orchestration/media_processor.py",
-      "target": "toolkit/oe/evidence_store.py",
+      "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57760,15 +57858,15 @@
     {
       "edge_id": "edge_353",
       "source": "orchestration/media_processor.py",
-      "target": "toolkit/oe/ide_orchestration.py",
+      "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_354",
-      "source": "orchestration/extended_chunker.py",
-      "target": "toolkit/oe/boundary_enforcer.py",
+      "source": "orchestration/media_processor.py",
+      "target": "toolkit/oe/ide_orchestration.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57776,13 +57874,21 @@
     {
       "edge_id": "edge_355",
       "source": "orchestration/extended_chunker.py",
-      "target": "automation/incremental_file_processor.py",
+      "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_356",
+      "source": "orchestration/extended_chunker.py",
+      "target": "automation/incremental_file_processor.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_357",
       "source": "orchestration/vector_store_complete.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57790,7 +57896,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_357",
+      "edge_id": "edge_358",
       "source": "orchestration/embedding_generator_complete.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57798,7 +57904,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_358",
+      "edge_id": "edge_359",
       "source": "orchestration/embedding_generator.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57806,7 +57912,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_359",
+      "edge_id": "edge_360",
       "source": "orchestration/embedding_generator_incomplete.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57814,7 +57920,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_360",
+      "edge_id": "edge_361",
       "source": "forgiveness_system/analyze_chat_exports.py",
       "target": "forgiveness_system/forgiveness_system.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57822,7 +57928,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_361",
+      "edge_id": "edge_362",
       "source": ".zed/hooks/on_save.py",
       "target": "generators/verify_all.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57830,7 +57936,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_362",
+      "edge_id": "edge_363",
       "source": "falsification/counterexample_engine.py",
       "target": "falsification/counterexample_engine.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57838,16 +57944,8 @@
       "axis": []
     },
     {
-      "edge_id": "edge_363",
-      "source": "falsification/counterexample_engine.py",
-      "target": "falsification/hypothesis.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_364",
-      "source": "falsification/__init__.py",
+      "source": "falsification/counterexample_engine.py",
       "target": "falsification/hypothesis.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -57856,15 +57954,15 @@
     {
       "edge_id": "edge_365",
       "source": "falsification/__init__.py",
-      "target": "falsification/counterexample_engine.py",
+      "target": "falsification/hypothesis.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_366",
-      "source": "falsification/property_tests.py",
-      "target": "falsification/hypothesis.py",
+      "source": "falsification/__init__.py",
+      "target": "falsification/counterexample_engine.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -57872,13 +57970,21 @@
     {
       "edge_id": "edge_367",
       "source": "falsification/property_tests.py",
-      "target": "oe_ifm/mathematical_core.py",
+      "target": "falsification/hypothesis.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_368",
+      "source": "falsification/property_tests.py",
+      "target": "oe_ifm/mathematical_core.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_369",
       "source": "toolkit/tests/test_manifest.py",
       "target": "toolkit/oe/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57886,7 +57992,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_369",
+      "edge_id": "edge_370",
       "source": "toolkit/tests/test_canonicalizer.py",
       "target": "toolkit/oe/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57894,7 +58000,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_370",
+      "edge_id": "edge_371",
       "source": "toolkit/tests/test_advanced_evidence.py",
       "target": "toolkit/oe/advanced_evidence.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57902,7 +58008,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_371",
+      "edge_id": "edge_372",
       "source": "toolkit/tests/test_logger.py",
       "target": "toolkit/oe/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57910,7 +58016,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_372",
+      "edge_id": "edge_373",
       "source": "toolkit/tests/test_hasher.py",
       "target": "toolkit/oe/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57918,7 +58024,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_373",
+      "edge_id": "edge_374",
       "source": "toolkit/tests/test_causal_analyzer.py",
       "target": "toolkit/oe/advanced_evidence.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57926,7 +58032,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_374",
+      "edge_id": "edge_375",
       "source": "toolkit/tests/test_causal_analyzer.py",
       "target": "toolkit/oe/causal_analyzer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57934,7 +58040,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_375",
+      "edge_id": "edge_376",
       "source": "toolkit/tests/test_handling_pipeline.py",
       "target": "toolkit/oe/handling_pipeline.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57942,7 +58048,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_376",
+      "edge_id": "edge_377",
       "source": "toolkit/tests/test_handling_pipeline.py",
       "target": "toolkit/oe/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57950,7 +58056,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_377",
+      "edge_id": "edge_378",
       "source": "toolkit/tests/test_merkle.py",
       "target": "toolkit/oe/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57958,7 +58064,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_378",
+      "edge_id": "edge_379",
       "source": "toolkit/oe/boundary_spellcheck.py",
       "target": "toolkit/oe/autofix_engine.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57966,7 +58072,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_379",
+      "edge_id": "edge_380",
       "source": "toolkit/oe/boundary_spellcheck.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57974,7 +58080,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_380",
+      "edge_id": "edge_381",
       "source": "toolkit/oe/autofix_engine.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -57982,25 +58088,17 @@
       "axis": []
     },
     {
-      "edge_id": "edge_381",
-      "source": "toolkit/oe/replay_engine.py",
-      "target": "toolkit/oe/evidence_store.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_382",
       "source": "toolkit/oe/replay_engine.py",
-      "target": "toolkit/oe/failure_ledger.py",
+      "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_383",
-      "source": "toolkit/oe/suppressed_signal_detector.py",
-      "target": "toolkit/oe/evidence_store.py",
+      "source": "toolkit/oe/replay_engine.py",
+      "target": "toolkit/oe/failure_ledger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58008,15 +58106,15 @@
     {
       "edge_id": "edge_384",
       "source": "toolkit/oe/suppressed_signal_detector.py",
-      "target": "toolkit/oe/failure_ledger.py",
+      "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_385",
-      "source": "toolkit/oe/boundary_enforcer.py",
-      "target": "automation/run_full_audit_with_trace.py",
+      "source": "toolkit/oe/suppressed_signal_detector.py",
+      "target": "toolkit/oe/failure_ledger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58031,8 +58129,8 @@
     },
     {
       "edge_id": "edge_387",
-      "source": "toolkit/oe/human_override.py",
-      "target": "toolkit/oe/evidence_lock.py",
+      "source": "toolkit/oe/boundary_enforcer.py",
+      "target": "automation/run_full_audit_with_trace.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58040,14 +58138,14 @@
     {
       "edge_id": "edge_388",
       "source": "toolkit/oe/human_override.py",
-      "target": "toolkit/oe/failure_ledger.py",
+      "target": "toolkit/oe/evidence_lock.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_389",
-      "source": "toolkit/oe/evidence_lock.py",
+      "source": "toolkit/oe/human_override.py",
       "target": "toolkit/oe/failure_ledger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -58055,8 +58153,8 @@
     },
     {
       "edge_id": "edge_390",
-      "source": "toolkit/oe/ide_ai_integration.py",
-      "target": "toolkit/oe/autofix_engine.py",
+      "source": "toolkit/oe/evidence_lock.py",
+      "target": "toolkit/oe/failure_ledger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58064,7 +58162,7 @@
     {
       "edge_id": "edge_391",
       "source": "toolkit/oe/ide_ai_integration.py",
-      "target": "toolkit/oe/boundary_enforcer.py",
+      "target": "toolkit/oe/autofix_engine.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58080,7 +58178,7 @@
     {
       "edge_id": "edge_393",
       "source": "toolkit/oe/ide_ai_integration.py",
-      "target": "toolkit/oe/evidence_store.py",
+      "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58088,15 +58186,15 @@
     {
       "edge_id": "edge_394",
       "source": "toolkit/oe/ide_ai_integration.py",
-      "target": "toolkit/oe/ide_behavior_accounting.py",
+      "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_395",
-      "source": "toolkit/oe/cli.py",
-      "target": "automation/run_full_audit_with_trace.py",
+      "source": "toolkit/oe/ide_ai_integration.py",
+      "target": "toolkit/oe/ide_behavior_accounting.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58111,6 +58209,14 @@
     },
     {
       "edge_id": "edge_397",
+      "source": "toolkit/oe/cli.py",
+      "target": "automation/run_full_audit_with_trace.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_398",
       "source": "toolkit/oe/evidence_manager.py",
       "target": "toolkit/oe/evidence_manager.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58118,7 +58224,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_398",
+      "edge_id": "edge_399",
       "source": "toolkit/oe/session_continuity.py",
       "target": "toolkit/oe/regex_boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58126,7 +58232,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_399",
+      "edge_id": "edge_400",
       "source": "toolkit/oe/onboarding_check.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58134,7 +58240,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_400",
+      "edge_id": "edge_401",
       "source": "toolkit/oe/onboarding_check.py",
       "target": "oe_ifm/halt_condition.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58142,7 +58248,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_401",
+      "edge_id": "edge_402",
       "source": "toolkit/oe/ide_orchestration.py",
       "target": "toolkit/oe/boundary_enforcer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58150,7 +58256,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_402",
+      "edge_id": "edge_403",
       "source": "toolkit/oe/ide_orchestration.py",
       "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58158,7 +58264,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_403",
+      "edge_id": "edge_404",
       "source": "toolkit/oe/ide_orchestration.py",
       "target": "toolkit/oe/ide_ai_integration.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58166,16 +58272,8 @@
       "axis": []
     },
     {
-      "edge_id": "edge_404",
-      "source": "toolkit/oe/failure_ledger.py",
-      "target": "toolkit/oe/evidence_store.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_405",
-      "source": "toolkit/oe/ide_behavior_accounting.py",
+      "source": "toolkit/oe/failure_ledger.py",
       "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -58184,13 +58282,21 @@
     {
       "edge_id": "edge_406",
       "source": "toolkit/oe/ide_behavior_accounting.py",
-      "target": "toolkit/oe/failure_ledger.py",
+      "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_407",
+      "source": "toolkit/oe/ide_behavior_accounting.py",
+      "target": "toolkit/oe/failure_ledger.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_408",
       "source": "toolkit/oe/scaffold/tests/test_manifest.py",
       "target": "toolkit/oe/scaffold/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58198,7 +58304,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_408",
+      "edge_id": "edge_409",
       "source": "toolkit/oe/scaffold/tests/test_canonicalizer.py",
       "target": "toolkit/oe/scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58206,7 +58312,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_409",
+      "edge_id": "edge_410",
       "source": "toolkit/oe/scaffold/tests/test_logger.py",
       "target": "toolkit/oe/scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58214,7 +58320,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_410",
+      "edge_id": "edge_411",
       "source": "toolkit/oe/scaffold/tests/test_hasher.py",
       "target": "toolkit/oe/scaffold/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58222,7 +58328,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_411",
+      "edge_id": "edge_412",
       "source": "toolkit/oe/scaffold/tests/test_handling_pipeline.py",
       "target": "toolkit/oe/scaffold/handling_pipeline.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58230,7 +58336,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_412",
+      "edge_id": "edge_413",
       "source": "toolkit/oe/scaffold/tests/test_merkle.py",
       "target": "toolkit/oe/scaffold/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58238,7 +58344,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_413",
+      "edge_id": "edge_414",
       "source": "yeshua_math/__init__.py",
       "target": "yeshua_math/peano_invariant_checker.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58246,7 +58352,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_414",
+      "edge_id": "edge_415",
       "source": "yeshua_math/__init__.py",
       "target": "yeshua_math/boolean_purity_validator.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58254,7 +58360,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_415",
+      "edge_id": "edge_416",
       "source": "yeshua_math/__init__.py",
       "target": "yeshua_math/pure_reference_runtime/cross_validator.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58262,17 +58368,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_416",
-      "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/core/constants.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_417",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/core/main.py",
+      "target": "crusader/core/constants.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58280,7 +58378,7 @@
     {
       "edge_id": "edge_418",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/core/state_machine/mode.py",
+      "target": "crusader/core/main.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58288,7 +58386,7 @@
     {
       "edge_id": "edge_419",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/core/utils/hash_utils.py",
+      "target": "crusader/core/state_machine/mode.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58296,7 +58394,7 @@
     {
       "edge_id": "edge_420",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/core/utils/io_utils.py",
+      "target": "crusader/core/utils/hash_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58304,7 +58402,7 @@
     {
       "edge_id": "edge_421",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/core/utils/time_utils.py",
+      "target": "crusader/core/utils/io_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58312,7 +58410,7 @@
     {
       "edge_id": "edge_422",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/monitoring/diagnostics.py",
+      "target": "crusader/core/utils/time_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58320,7 +58418,7 @@
     {
       "edge_id": "edge_423",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/monitoring/sensors.py",
+      "target": "crusader/monitoring/diagnostics.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58328,7 +58426,7 @@
     {
       "edge_id": "edge_424",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/warfare/air_curtain.py",
+      "target": "crusader/monitoring/sensors.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58336,7 +58434,7 @@
     {
       "edge_id": "edge_425",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/warfare/counter.py",
+      "target": "crusader/warfare/air_curtain.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58344,7 +58442,7 @@
     {
       "edge_id": "edge_426",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/warfare/spore_deployment.py",
+      "target": "crusader/warfare/counter.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58352,7 +58450,7 @@
     {
       "edge_id": "edge_427",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/warfare/sticky_array.py",
+      "target": "crusader/warfare/spore_deployment.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58360,15 +58458,15 @@
     {
       "edge_id": "edge_428",
       "source": "crusader/test_basic_functionality.py",
-      "target": "crusader/warfare/uv_sterilization.py",
+      "target": "crusader/warfare/sticky_array.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_429",
-      "source": "crusader/FINAL_VERIFICATION.py",
-      "target": "crusader/core/utils/time_utils.py",
+      "source": "crusader/test_basic_functionality.py",
+      "target": "crusader/warfare/uv_sterilization.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58376,7 +58474,7 @@
     {
       "edge_id": "edge_430",
       "source": "crusader/FINAL_VERIFICATION.py",
-      "target": "crusader/core/utils/hash_utils.py",
+      "target": "crusader/core/utils/time_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58384,7 +58482,7 @@
     {
       "edge_id": "edge_431",
       "source": "crusader/FINAL_VERIFICATION.py",
-      "target": "crusader/core/utils/io_utils.py",
+      "target": "crusader/core/utils/hash_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58392,7 +58490,7 @@
     {
       "edge_id": "edge_432",
       "source": "crusader/FINAL_VERIFICATION.py",
-      "target": "crusader/monitoring/sensors.py",
+      "target": "crusader/core/utils/io_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58400,15 +58498,15 @@
     {
       "edge_id": "edge_433",
       "source": "crusader/FINAL_VERIFICATION.py",
-      "target": "crusader/core/main.py",
+      "target": "crusader/monitoring/sensors.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_434",
-      "source": "crusader/__init__.py",
-      "target": "crusader/core/constants.py",
+      "source": "crusader/FINAL_VERIFICATION.py",
+      "target": "crusader/core/main.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58416,7 +58514,7 @@
     {
       "edge_id": "edge_435",
       "source": "crusader/__init__.py",
-      "target": "crusader/core/utils/hash_utils.py",
+      "target": "crusader/core/constants.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58424,7 +58522,7 @@
     {
       "edge_id": "edge_436",
       "source": "crusader/__init__.py",
-      "target": "crusader/core/utils/io_utils.py",
+      "target": "crusader/core/utils/hash_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58432,7 +58530,7 @@
     {
       "edge_id": "edge_437",
       "source": "crusader/__init__.py",
-      "target": "crusader/core/utils/time_utils.py",
+      "target": "crusader/core/utils/io_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58440,7 +58538,7 @@
     {
       "edge_id": "edge_438",
       "source": "crusader/__init__.py",
-      "target": "crusader/warfare/air_curtain.py",
+      "target": "crusader/core/utils/time_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58448,7 +58546,7 @@
     {
       "edge_id": "edge_439",
       "source": "crusader/__init__.py",
-      "target": "crusader/warfare/counter.py",
+      "target": "crusader/warfare/air_curtain.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58456,7 +58554,7 @@
     {
       "edge_id": "edge_440",
       "source": "crusader/__init__.py",
-      "target": "crusader/warfare/spore_deployment.py",
+      "target": "crusader/warfare/counter.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58464,7 +58562,7 @@
     {
       "edge_id": "edge_441",
       "source": "crusader/__init__.py",
-      "target": "crusader/warfare/sticky_array.py",
+      "target": "crusader/warfare/spore_deployment.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58472,7 +58570,7 @@
     {
       "edge_id": "edge_442",
       "source": "crusader/__init__.py",
-      "target": "crusader/warfare/uv_sterilization.py",
+      "target": "crusader/warfare/sticky_array.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58480,7 +58578,7 @@
     {
       "edge_id": "edge_443",
       "source": "crusader/__init__.py",
-      "target": "crusader/monitoring/diagnostics.py",
+      "target": "crusader/warfare/uv_sterilization.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58488,7 +58586,7 @@
     {
       "edge_id": "edge_444",
       "source": "crusader/__init__.py",
-      "target": "crusader/monitoring/sensors.py",
+      "target": "crusader/monitoring/diagnostics.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58496,7 +58594,7 @@
     {
       "edge_id": "edge_445",
       "source": "crusader/__init__.py",
-      "target": "crusader/monitoring/witness.py",
+      "target": "crusader/monitoring/sensors.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58504,7 +58602,7 @@
     {
       "edge_id": "edge_446",
       "source": "crusader/__init__.py",
-      "target": "crusader/hardware/drivers/sprayer.py",
+      "target": "crusader/monitoring/witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58512,7 +58610,7 @@
     {
       "edge_id": "edge_447",
       "source": "crusader/__init__.py",
-      "target": "crusader/interface/display.py",
+      "target": "crusader/hardware/drivers/sprayer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58520,15 +58618,15 @@
     {
       "edge_id": "edge_448",
       "source": "crusader/__init__.py",
-      "target": "crusader/core/main.py",
+      "target": "crusader/interface/display.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_449",
-      "source": "crusader/demonstrate_working_system.py",
-      "target": "crusader/core/utils/time_utils.py",
+      "source": "crusader/__init__.py",
+      "target": "crusader/core/main.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58536,7 +58634,7 @@
     {
       "edge_id": "edge_450",
       "source": "crusader/demonstrate_working_system.py",
-      "target": "crusader/core/utils/hash_utils.py",
+      "target": "crusader/core/utils/time_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58544,7 +58642,7 @@
     {
       "edge_id": "edge_451",
       "source": "crusader/demonstrate_working_system.py",
-      "target": "crusader/core/utils/io_utils.py",
+      "target": "crusader/core/utils/hash_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58552,7 +58650,7 @@
     {
       "edge_id": "edge_452",
       "source": "crusader/demonstrate_working_system.py",
-      "target": "crusader/monitoring/sensors.py",
+      "target": "crusader/core/utils/io_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58560,13 +58658,21 @@
     {
       "edge_id": "edge_453",
       "source": "crusader/demonstrate_working_system.py",
-      "target": "crusader/core/main.py",
+      "target": "crusader/monitoring/sensors.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_454",
+      "source": "crusader/demonstrate_working_system.py",
+      "target": "crusader/core/main.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_455",
       "source": "crusader/tests/standards/industry_compliance_tests.py",
       "target": "crusader/monitoring/witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58574,7 +58680,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_455",
+      "edge_id": "edge_456",
       "source": "crusader/core/main.py",
       "target": "crusader/core/diagnostics/integrity_check.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58582,7 +58688,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_456",
+      "edge_id": "edge_457",
       "source": "crusader/core/main.py",
       "target": "crusader/core/diagnostics/memory_check.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58590,7 +58696,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_457",
+      "edge_id": "edge_458",
       "source": "crusader/core/main.py",
       "target": "crusader/core/diagnostics/sensor_check.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58598,7 +58704,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_458",
+      "edge_id": "edge_459",
       "source": "crusader/core/main.py",
       "target": "crusader/core/state_machine/audit.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58606,7 +58712,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_459",
+      "edge_id": "edge_460",
       "source": "crusader/core/main.py",
       "target": "crusader/core/state_machine/error_states.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58614,7 +58720,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_460",
+      "edge_id": "edge_461",
       "source": "crusader/core/main.py",
       "target": "crusader/core/state_machine/mode.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58622,7 +58728,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_461",
+      "edge_id": "edge_462",
       "source": "crusader/core/main.py",
       "target": "crusader/core/state_machine/transitions.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58630,7 +58736,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_462",
+      "edge_id": "edge_463",
       "source": "crusader/core/main.py",
       "target": "crusader/core/utils/hash_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58638,7 +58744,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_463",
+      "edge_id": "edge_464",
       "source": "crusader/core/main.py",
       "target": "crusader/core/utils/io_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58646,7 +58752,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_464",
+      "edge_id": "edge_465",
       "source": "crusader/core/main.py",
       "target": "crusader/core/utils/time_utils.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58654,7 +58760,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_465",
+      "edge_id": "edge_466",
       "source": "crusader/core/main.py",
       "target": "crusader/monitoring/diagnostics.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58662,7 +58768,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_466",
+      "edge_id": "edge_467",
       "source": "crusader/core/main.py",
       "target": "crusader/monitoring/sensors.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58670,7 +58776,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_467",
+      "edge_id": "edge_468",
       "source": "crusader/core/main.py",
       "target": "crusader/monitoring/witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58678,7 +58784,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_468",
+      "edge_id": "edge_469",
       "source": "crusader/core/main.py",
       "target": "crusader/warfare/air_curtain.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58686,7 +58792,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_469",
+      "edge_id": "edge_470",
       "source": "crusader/core/main.py",
       "target": "crusader/warfare/counter.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58694,7 +58800,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_470",
+      "edge_id": "edge_471",
       "source": "crusader/core/main.py",
       "target": "crusader/warfare/spore_deployment.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58702,7 +58808,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_471",
+      "edge_id": "edge_472",
       "source": "crusader/core/main.py",
       "target": "crusader/warfare/sticky_array.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58710,7 +58816,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_472",
+      "edge_id": "edge_473",
       "source": "crusader/core/main.py",
       "target": "crusader/warfare/uv_sterilization.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58718,7 +58824,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_473",
+      "edge_id": "edge_474",
       "source": "yeshua/__init__.py",
       "target": "yeshua/enforcement.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58726,7 +58832,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_474",
+      "edge_id": "edge_475",
       "source": "yeshua/enforcement.py",
       "target": "axioms/yeshua_axioms.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58734,7 +58840,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_475",
+      "edge_id": "edge_476",
       "source": "pr47_stewardship/movement/witness_mover.py",
       "target": "pr47_stewardship/movement/hash_preserver.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58742,7 +58848,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_476",
+      "edge_id": "edge_477",
       "source": "pr47_stewardship/invariants/forkable_remembrance.py",
       "target": "pr47_stewardship/witness/removal_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58750,7 +58856,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_477",
+      "edge_id": "edge_478",
       "source": "pr47_stewardship/invariants/forkable_remembrance.py",
       "target": "pr47_stewardship/witness/consent_log.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58758,7 +58864,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_478",
+      "edge_id": "edge_479",
       "source": "pr47_stewardship/invariants/no_silent_transition.py",
       "target": "pr47_stewardship/witness/removal_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58766,7 +58872,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_479",
+      "edge_id": "edge_480",
       "source": "pr47_stewardship/integration/pr45_verification.py",
       "target": "pr45_uvdtl/witness/append_only_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58774,7 +58880,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_480",
+      "edge_id": "edge_481",
       "source": "pr47_stewardship/integration/pr45_verification.py",
       "target": "pr47_stewardship/witness/removal_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58782,7 +58888,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_481",
+      "edge_id": "edge_482",
       "source": "pr45_uvdtl/invariants/transparency_invariants.py",
       "target": "pr45_uvdtl/state/canonical_serialization.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58790,7 +58896,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_482",
+      "edge_id": "edge_483",
       "source": "pr45_uvdtl/invariants/transparency_invariants.py",
       "target": "pr45_uvdtl/foundations/trace_interface.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58798,7 +58904,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_483",
+      "edge_id": "edge_484",
       "source": "ci/yeshua_pipeline.yml",
       "target": "merkle/global_root.json",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58806,7 +58912,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_484",
+      "edge_id": "edge_485",
       "source": "pr46_agape_witness/law/compliance_registry.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58814,7 +58920,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_485",
+      "edge_id": "edge_486",
       "source": "pr46_agape_witness/law/verification_baseline.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58822,7 +58928,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_486",
+      "edge_id": "edge_487",
       "source": "pr46_agape_witness/reconciliation/fork_healing.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58830,7 +58936,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_487",
+      "edge_id": "edge_488",
       "source": "pr46_agape_witness/reconciliation/witness_alignment.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58838,7 +58944,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_488",
+      "edge_id": "edge_489",
       "source": "pr46_agape_witness/reconciliation/state_mediation.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58846,7 +58952,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_489",
+      "edge_id": "edge_490",
       "source": "pr46_agape_witness/invariants/agape_completeness.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58854,7 +58960,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_490",
+      "edge_id": "edge_491",
       "source": "pr46_agape_witness/invariants/never_exclude.py",
       "target": "pr46_agape_witness/grace/progress_trajectory.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58862,7 +58968,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_491",
+      "edge_id": "edge_492",
       "source": "pr46_agape_witness/invariants/never_exclude.py",
       "target": "pr46_agape_witness/law/compliance_registry.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58870,7 +58976,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_492",
+      "edge_id": "edge_493",
       "source": "pr46_agape_witness/invariants/forgiveness_auditable.py",
       "target": "pr46_agape_witness/forgiveness/justification_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58878,7 +58984,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_493",
+      "edge_id": "edge_494",
       "source": "pr46_agape_witness/invariants/always_recoverable.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58886,7 +58992,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_494",
+      "edge_id": "edge_495",
       "source": "pr46_agape_witness/grace/grace_period.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58894,7 +59000,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_495",
+      "edge_id": "edge_496",
       "source": "pr46_agape_witness/grace/partial_compliance.py",
       "target": "pr46_agape_witness/grace/progress_trajectory.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58902,7 +59008,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_496",
+      "edge_id": "edge_497",
       "source": "pr46_agape_witness/grace/partial_compliance.py",
       "target": "pr46_agape_witness/law/compliance_registry.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58910,7 +59016,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_497",
+      "edge_id": "edge_498",
       "source": "pr46_agape_witness/grace/partial_compliance.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58918,7 +59024,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_498",
+      "edge_id": "edge_499",
       "source": "pr46_agape_witness/integration/pr40_witness_extension.py",
       "target": "pr46_agape_witness/util/canonical.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -58926,17 +59032,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_499",
+      "edge_id": "edge_500",
       "source": "pr46_agape_witness/integration/pr40_witness_extension.py",
       "target": "pr46_agape_witness/util/hashing.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
-      "edge_id": "edge_500",
-      "source": "pr46_agape_witness/integration/pr45_bridge.py",
-      "target": "pr45_uvdtl/witness/append_only_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58944,7 +59042,7 @@
     {
       "edge_id": "edge_501",
       "source": "pr46_agape_witness/integration/pr45_bridge.py",
-      "target": "pr46_agape_witness/forgiveness/provenance_preservation.py",
+      "target": "pr45_uvdtl/witness/append_only_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58952,7 +59050,7 @@
     {
       "edge_id": "edge_502",
       "source": "pr46_agape_witness/integration/pr45_bridge.py",
-      "target": "pr46_agape_witness/grace/grace_period.py",
+      "target": "pr46_agape_witness/forgiveness/provenance_preservation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58960,7 +59058,7 @@
     {
       "edge_id": "edge_503",
       "source": "pr46_agape_witness/integration/pr45_bridge.py",
-      "target": "pr46_agape_witness/reconciliation/fork_healing.py",
+      "target": "pr46_agape_witness/grace/grace_period.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58968,14 +59066,14 @@
     {
       "edge_id": "edge_504",
       "source": "pr46_agape_witness/integration/pr45_bridge.py",
-      "target": "pr46_agape_witness/util/hashing.py",
+      "target": "pr46_agape_witness/reconciliation/fork_healing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_505",
-      "source": "pr46_agape_witness/relational/covenant_tracking.py",
+      "source": "pr46_agape_witness/integration/pr45_bridge.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -58983,8 +59081,8 @@
     },
     {
       "edge_id": "edge_506",
-      "source": "pr46_agape_witness/relational/intent_capture.py",
-      "target": "pr46_agape_witness/util/canonical.py",
+      "source": "pr46_agape_witness/relational/covenant_tracking.py",
+      "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -58992,14 +59090,14 @@
     {
       "edge_id": "edge_507",
       "source": "pr46_agape_witness/relational/intent_capture.py",
-      "target": "pr46_agape_witness/util/hashing.py",
+      "target": "pr46_agape_witness/util/canonical.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_508",
-      "source": "pr46_agape_witness/relational/consent_verification.py",
+      "source": "pr46_agape_witness/relational/intent_capture.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -59007,8 +59105,8 @@
     },
     {
       "edge_id": "edge_509",
-      "source": "pr46_agape_witness/forgiveness/justification_witness.py",
-      "target": "pr46_agape_witness/forgiveness/provenance_preservation.py",
+      "source": "pr46_agape_witness/relational/consent_verification.py",
+      "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59016,14 +59114,14 @@
     {
       "edge_id": "edge_510",
       "source": "pr46_agape_witness/forgiveness/justification_witness.py",
-      "target": "pr46_agape_witness/util/hashing.py",
+      "target": "pr46_agape_witness/forgiveness/provenance_preservation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_511",
-      "source": "pr46_agape_witness/forgiveness/provenance_preservation.py",
+      "source": "pr46_agape_witness/forgiveness/justification_witness.py",
       "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
@@ -59031,8 +59129,8 @@
     },
     {
       "edge_id": "edge_512",
-      "source": "pr46_agape_witness/forgiveness/forgiveness_protocol.py",
-      "target": "pr46_agape_witness/forgiveness/justification_witness.py",
+      "source": "pr46_agape_witness/forgiveness/provenance_preservation.py",
+      "target": "pr46_agape_witness/util/hashing.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59040,7 +59138,7 @@
     {
       "edge_id": "edge_513",
       "source": "pr46_agape_witness/forgiveness/forgiveness_protocol.py",
-      "target": "pr46_agape_witness/forgiveness/provenance_preservation.py",
+      "target": "pr46_agape_witness/forgiveness/justification_witness.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59048,13 +59146,21 @@
     {
       "edge_id": "edge_514",
       "source": "pr46_agape_witness/forgiveness/forgiveness_protocol.py",
-      "target": "pr46_agape_witness/util/hashing.py",
+      "target": "pr46_agape_witness/forgiveness/provenance_preservation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_515",
+      "source": "pr46_agape_witness/forgiveness/forgiveness_protocol.py",
+      "target": "pr46_agape_witness/util/hashing.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_516",
       "source": "pr46_agape_witness/util/hashing.py",
       "target": "pr46_agape_witness/util/canonical.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59062,17 +59168,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_516",
-      "source": "analysis/simple_recovery_summary.py",
-      "target": "minimal_kernel/core_detector.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_517",
       "source": "analysis/simple_recovery_summary.py",
-      "target": "minimal_kernel/simple_boundary.py",
+      "target": "minimal_kernel/core_detector.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59080,7 +59178,7 @@
     {
       "edge_id": "edge_518",
       "source": "analysis/simple_recovery_summary.py",
-      "target": "minimal_kernel/statistical_validation.py",
+      "target": "minimal_kernel/simple_boundary.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59088,15 +59186,15 @@
     {
       "edge_id": "edge_519",
       "source": "analysis/simple_recovery_summary.py",
-      "target": "minimal_kernel/working_implementation.py",
+      "target": "minimal_kernel/statistical_validation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_520",
-      "source": "analysis/demo_recovery_fixes.py",
-      "target": "minimal_kernel/core_detector.py",
+      "source": "analysis/simple_recovery_summary.py",
+      "target": "minimal_kernel/working_implementation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59104,7 +59202,7 @@
     {
       "edge_id": "edge_521",
       "source": "analysis/demo_recovery_fixes.py",
-      "target": "minimal_kernel/simple_boundary.py",
+      "target": "minimal_kernel/core_detector.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59112,7 +59210,7 @@
     {
       "edge_id": "edge_522",
       "source": "analysis/demo_recovery_fixes.py",
-      "target": "minimal_kernel/statistical_validation.py",
+      "target": "minimal_kernel/simple_boundary.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59120,15 +59218,15 @@
     {
       "edge_id": "edge_523",
       "source": "analysis/demo_recovery_fixes.py",
-      "target": "minimal_kernel/working_implementation.py",
+      "target": "minimal_kernel/statistical_validation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_524",
-      "source": "analysis/test_recovery_on_real_data.py",
-      "target": "minimal_kernel/core_detector.py",
+      "source": "analysis/demo_recovery_fixes.py",
+      "target": "minimal_kernel/working_implementation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59136,7 +59234,7 @@
     {
       "edge_id": "edge_525",
       "source": "analysis/test_recovery_on_real_data.py",
-      "target": "minimal_kernel/simple_boundary.py",
+      "target": "minimal_kernel/core_detector.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59144,7 +59242,7 @@
     {
       "edge_id": "edge_526",
       "source": "analysis/test_recovery_on_real_data.py",
-      "target": "minimal_kernel/statistical_validation.py",
+      "target": "minimal_kernel/simple_boundary.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59152,13 +59250,21 @@
     {
       "edge_id": "edge_527",
       "source": "analysis/test_recovery_on_real_data.py",
-      "target": "minimal_kernel/working_implementation.py",
+      "target": "minimal_kernel/statistical_validation.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_528",
+      "source": "analysis/test_recovery_on_real_data.py",
+      "target": "minimal_kernel/working_implementation.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_529",
       "source": "scripts/ci_preflight.py",
       "target": "enforcement_matrix_generator.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59166,17 +59272,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_529",
-      "source": "core/alpha_omega_finalizer.py",
-      "target": "hasher.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_530",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "logger.py",
+      "target": "hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59184,7 +59282,7 @@
     {
       "edge_id": "edge_531",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "manifest.py",
+      "target": "logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59192,7 +59290,7 @@
     {
       "edge_id": "edge_532",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "merkle.py",
+      "target": "manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59200,7 +59298,7 @@
     {
       "edge_id": "edge_533",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "canonicalizer.py",
+      "target": "merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59208,7 +59306,7 @@
     {
       "edge_id": "edge_534",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "hasher.py",
+      "target": "canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59216,7 +59314,7 @@
     {
       "edge_id": "edge_535",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "merkle.py",
+      "target": "hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59224,7 +59322,7 @@
     {
       "edge_id": "edge_536",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "backup.py",
+      "target": "merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59232,7 +59330,7 @@
     {
       "edge_id": "edge_537",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "canonicalizer.py",
+      "target": "backup.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59240,7 +59338,7 @@
     {
       "edge_id": "edge_538",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "hasher.py",
+      "target": "canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59248,7 +59346,7 @@
     {
       "edge_id": "edge_539",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "merkle.py",
+      "target": "hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59256,15 +59354,15 @@
     {
       "edge_id": "edge_540",
       "source": "core/alpha_omega_finalizer.py",
-      "target": "backup.py",
+      "target": "merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_541",
-      "source": "core/tests/test_alpha_omega_finalizer.py",
-      "target": "core/alpha_omega_finalizer.py",
+      "source": "core/alpha_omega_finalizer.py",
+      "target": "backup.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59287,6 +59385,14 @@
     },
     {
       "edge_id": "edge_544",
+      "source": "core/tests/test_alpha_omega_finalizer.py",
+      "target": "core/alpha_omega_finalizer.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_545",
       "source": "canonicalization_scaffold/tests/test_manifest.py",
       "target": "canonicalization_scaffold/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59294,7 +59400,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_545",
+      "edge_id": "edge_546",
       "source": "canonicalization_scaffold/tests/test_canonicalizer.py",
       "target": "canonicalization_scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59302,7 +59408,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_546",
+      "edge_id": "edge_547",
       "source": "canonicalization_scaffold/tests/test_logger.py",
       "target": "canonicalization_scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59310,7 +59416,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_547",
+      "edge_id": "edge_548",
       "source": "canonicalization_scaffold/tests/test_hasher.py",
       "target": "canonicalization_scaffold/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59318,7 +59424,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_548",
+      "edge_id": "edge_549",
       "source": "canonicalization_scaffold/tests/test_hasher.py",
       "target": "canonicalization_scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59326,7 +59432,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_549",
+      "edge_id": "edge_550",
       "source": "canonicalization_scaffold/tests/test_merkle.py",
       "target": "canonicalization_scaffold/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59334,7 +59440,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_550",
+      "edge_id": "edge_551",
       "source": "canonicalization_scaffold/examples/example_logging.py",
       "target": "canonicalization_scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59342,7 +59448,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_551",
+      "edge_id": "edge_552",
       "source": "canonicalization_scaffold/examples/example_basic_indexing.py",
       "target": "canonicalization_scaffold/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59350,7 +59456,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_552",
+      "edge_id": "edge_553",
       "source": "canonicalization_scaffold/examples/example_merkle_tree.py",
       "target": "canonicalization_scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59358,7 +59464,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_553",
+      "edge_id": "edge_554",
       "source": "canonicalization_scaffold/examples/example_merkle_tree.py",
       "target": "canonicalization_scaffold/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59366,7 +59472,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_554",
+      "edge_id": "edge_555",
       "source": "scaffold/tests/test_manifest.py",
       "target": "scaffold/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59374,7 +59480,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_555",
+      "edge_id": "edge_556",
       "source": "scaffold/tests/test_canonicalizer.py",
       "target": "scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59382,7 +59488,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_556",
+      "edge_id": "edge_557",
       "source": "scaffold/tests/test_logger.py",
       "target": "scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59390,7 +59496,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_557",
+      "edge_id": "edge_558",
       "source": "scaffold/tests/test_hasher.py",
       "target": "scaffold/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59398,7 +59504,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_558",
+      "edge_id": "edge_559",
       "source": "scaffold/tests/test_handling_pipeline.py",
       "target": "scaffold/handling_pipeline.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59406,7 +59512,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_559",
+      "edge_id": "edge_560",
       "source": "scaffold/tests/test_handling_pipeline.py",
       "target": "scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59414,7 +59520,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_560",
+      "edge_id": "edge_561",
       "source": "scaffold/tests/test_merkle.py",
       "target": "scaffold/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59422,7 +59528,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_561",
+      "edge_id": "edge_562",
       "source": "pr50_bar_exam/privileges/enforcement.py",
       "target": "pr50_bar_exam/privileges/consent_bridge.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59430,17 +59536,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_562",
-      "source": "pr50_bar_exam/examination/run_exam.py",
-      "target": "pr50_bar_exam/examination/question_bank.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_563",
       "source": "pr50_bar_exam/examination/run_exam.py",
-      "target": "pr50_bar_exam/examination/prompts/templates.py",
+      "target": "pr50_bar_exam/examination/question_bank.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59448,7 +59546,7 @@
     {
       "edge_id": "edge_564",
       "source": "pr50_bar_exam/examination/run_exam.py",
-      "target": "pr50_bar_exam/candidate/environment.py",
+      "target": "pr50_bar_exam/examination/prompts/templates.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59456,13 +59554,21 @@
     {
       "edge_id": "edge_565",
       "source": "pr50_bar_exam/examination/run_exam.py",
-      "target": "pr50_bar_exam/candidate/keypair.py",
+      "target": "pr50_bar_exam/candidate/environment.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_566",
+      "source": "pr50_bar_exam/examination/run_exam.py",
+      "target": "pr50_bar_exam/candidate/keypair.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_567",
       "source": "pr50_bar_exam/witness/append.py",
       "target": "pr50_bar_exam/witness/chain.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59470,7 +59576,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_567",
+      "edge_id": "edge_568",
       "source": "pr50_bar_exam/witness/verify.py",
       "target": "pr50_bar_exam/witness/chain.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59478,7 +59584,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_568",
+      "edge_id": "edge_569",
       "source": "pr50_bar_exam/ordination/verify_certificate.py",
       "target": "pr50_bar_exam/ordination/signing_repo_key.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59486,7 +59592,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_569",
+      "edge_id": "edge_570",
       "source": "pr50_bar_exam/ordination/verify_certificate.py",
       "target": "pr50_bar_exam/witness/chain.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59494,7 +59600,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_570",
+      "edge_id": "edge_571",
       "source": "pr50_bar_exam/ordination/certificate.py",
       "target": "pr50_bar_exam/scoring/thresholds.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59502,7 +59608,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_571",
+      "edge_id": "edge_572",
       "source": "pr50_bar_exam/ordination/certificate.py",
       "target": "pr50_bar_exam/witness/append.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59510,7 +59616,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_572",
+      "edge_id": "edge_573",
       "source": "pr50_bar_exam/invariants/append_only_witness.py",
       "target": "pr50_bar_exam/witness/verify.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59518,7 +59624,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_573",
+      "edge_id": "edge_574",
       "source": "pr50_bar_exam/revocation/events.py",
       "target": "pr50_bar_exam/revocation/triggers.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59526,17 +59632,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_574",
-      "source": "pr50_bar_exam/revocation/events.py",
-      "target": "pr50_bar_exam/revocation/authority.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_575",
       "source": "pr50_bar_exam/revocation/events.py",
-      "target": "pr50_bar_exam/revocation/effects.py",
+      "target": "pr50_bar_exam/revocation/authority.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59544,13 +59642,21 @@
     {
       "edge_id": "edge_576",
       "source": "pr50_bar_exam/revocation/events.py",
-      "target": "pr50_bar_exam/witness/append.py",
+      "target": "pr50_bar_exam/revocation/effects.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_577",
+      "source": "pr50_bar_exam/revocation/events.py",
+      "target": "pr50_bar_exam/witness/append.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_578",
       "source": "pr50_bar_exam/revocation/effects.py",
       "target": "pr50_bar_exam/ordination/certificate.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59558,7 +59664,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_578",
+      "edge_id": "edge_579",
       "source": "pr50_bar_exam/revocation/restore.py",
       "target": "pr50_bar_exam/revocation/authority.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59566,7 +59672,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_579",
+      "edge_id": "edge_580",
       "source": "pr50_bar_exam/revocation/restore.py",
       "target": "pr50_bar_exam/revocation/effects.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59574,7 +59680,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_580",
+      "edge_id": "edge_581",
       "source": "pr50_bar_exam/revocation/restore.py",
       "target": "pr50_bar_exam/witness/append.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59582,7 +59688,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_581",
+      "edge_id": "edge_582",
       "source": "pr50_bar_exam/scoring/score_attempt.py",
       "target": "pr50_bar_exam/scoring/rubric.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59590,7 +59696,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_582",
+      "edge_id": "edge_583",
       "source": "pr50_bar_exam/scoring/score_attempt.py",
       "target": "pr50_bar_exam/scoring/thresholds.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59598,7 +59704,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_583",
+      "edge_id": "edge_584",
       "source": "pr50_bar_exam/scoring/score_attempt.py",
       "target": "pr50_bar_exam/scoring/peano.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59606,7 +59712,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_584",
+      "edge_id": "edge_585",
       "source": "pr50_bar_exam/scoring/score_attempt.py",
       "target": "pr50_bar_exam/examination/question_bank.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59614,7 +59720,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_585",
+      "edge_id": "edge_586",
       "source": "pr50_bar_exam/scoring/rubric.py",
       "target": "pr50_bar_exam/scoring/weights.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59622,7 +59728,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_586",
+      "edge_id": "edge_587",
       "source": "pr50_bar_exam/scoring/rubric.py",
       "target": "pr50_bar_exam/examination/question_bank.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59630,7 +59736,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_587",
+      "edge_id": "edge_588",
       "source": "examples/basic_usage.py",
       "target": "toolkit/oe/evidence_store.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59638,7 +59744,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_588",
+      "edge_id": "edge_589",
       "source": "examples/basic_usage.py",
       "target": "toolkit/oe/cli.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59646,17 +59752,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_589",
-      "source": "examples/ide_ai_runner_template.py",
-      "target": "backup.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_590",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "core/alpha_omega_finalizer.py",
+      "target": "backup.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59664,7 +59762,7 @@
     {
       "edge_id": "edge_591",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "handling_pipeline.py",
+      "target": "core/alpha_omega_finalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59672,7 +59770,7 @@
     {
       "edge_id": "edge_592",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "logger.py",
+      "target": "handling_pipeline.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59680,7 +59778,7 @@
     {
       "edge_id": "edge_593",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "manifest.py",
+      "target": "logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59688,7 +59786,7 @@
     {
       "edge_id": "edge_594",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "hasher.py",
+      "target": "manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59696,7 +59794,7 @@
     {
       "edge_id": "edge_595",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "backup.py",
+      "target": "hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59704,7 +59802,7 @@
     {
       "edge_id": "edge_596",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "manifest.py",
+      "target": "backup.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59712,13 +59810,21 @@
     {
       "edge_id": "edge_597",
       "source": "examples/ide_ai_runner_template.py",
-      "target": "core/alpha_omega_finalizer.py",
+      "target": "manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_598",
+      "source": "examples/ide_ai_runner_template.py",
+      "target": "core/alpha_omega_finalizer.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_599",
       "source": "examples/logger.py",
       "target": "logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59726,17 +59832,9 @@
       "axis": []
     },
     {
-      "edge_id": "edge_599",
-      "source": "examples/merkle_pipeline_example.py",
-      "target": "toolkit/oe/manifest.py",
-      "edge_class": "DEPENDENCY_IMPORT",
-      "directionality": "UNI",
-      "axis": []
-    },
-    {
       "edge_id": "edge_600",
       "source": "examples/merkle_pipeline_example.py",
-      "target": "toolkit/oe/merkle.py",
+      "target": "toolkit/oe/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59744,15 +59842,15 @@
     {
       "edge_id": "edge_601",
       "source": "examples/merkle_pipeline_example.py",
-      "target": "toolkit/oe/logger.py",
+      "target": "toolkit/oe/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_602",
-      "source": "examples/integration_test.py",
-      "target": "toolkit/oe/canonicalizer.py",
+      "source": "examples/merkle_pipeline_example.py",
+      "target": "toolkit/oe/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59760,7 +59858,7 @@
     {
       "edge_id": "edge_603",
       "source": "examples/integration_test.py",
-      "target": "toolkit/oe/hasher.py",
+      "target": "toolkit/oe/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59768,7 +59866,7 @@
     {
       "edge_id": "edge_604",
       "source": "examples/integration_test.py",
-      "target": "toolkit/oe/logger.py",
+      "target": "toolkit/oe/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59776,7 +59874,7 @@
     {
       "edge_id": "edge_605",
       "source": "examples/integration_test.py",
-      "target": "toolkit/oe/manifest.py",
+      "target": "toolkit/oe/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59784,15 +59882,15 @@
     {
       "edge_id": "edge_606",
       "source": "examples/integration_test.py",
-      "target": "toolkit/oe/merkle.py",
+      "target": "toolkit/oe/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_607",
-      "source": "examples/canonicalizer_example.py",
-      "target": "toolkit/oe/canonicalizer.py",
+      "source": "examples/integration_test.py",
+      "target": "toolkit/oe/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59800,15 +59898,15 @@
     {
       "edge_id": "edge_608",
       "source": "examples/canonicalizer_example.py",
-      "target": "toolkit/oe/hasher.py",
+      "target": "toolkit/oe/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_609",
-      "source": "examples/phase9/example_run.py",
-      "target": "toolkit/oe/advanced_evidence.py",
+      "source": "examples/canonicalizer_example.py",
+      "target": "toolkit/oe/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59816,7 +59914,7 @@
     {
       "edge_id": "edge_610",
       "source": "examples/phase9/example_run.py",
-      "target": "toolkit/oe/causal_analyzer.py",
+      "target": "toolkit/oe/advanced_evidence.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59824,7 +59922,7 @@
     {
       "edge_id": "edge_611",
       "source": "examples/phase9/example_run.py",
-      "target": "toolkit/oe/debt_calculator.py",
+      "target": "toolkit/oe/causal_analyzer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59832,7 +59930,7 @@
     {
       "edge_id": "edge_612",
       "source": "examples/phase9/example_run.py",
-      "target": "toolkit/oe/trace_enricher.py",
+      "target": "toolkit/oe/debt_calculator.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59840,15 +59938,15 @@
     {
       "edge_id": "edge_613",
       "source": "examples/phase9/example_run.py",
-      "target": "toolkit/oe/workflow_dsl.py",
+      "target": "toolkit/oe/trace_enricher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_614",
-      "source": "examples/scaffold/basic_usage.py",
-      "target": "toolkit/oe/scaffold/canonicalizer.py",
+      "source": "examples/phase9/example_run.py",
+      "target": "toolkit/oe/workflow_dsl.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59856,7 +59954,7 @@
     {
       "edge_id": "edge_615",
       "source": "examples/scaffold/basic_usage.py",
-      "target": "toolkit/oe/scaffold/hasher.py",
+      "target": "toolkit/oe/scaffold/canonicalizer.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59864,7 +59962,7 @@
     {
       "edge_id": "edge_616",
       "source": "examples/scaffold/basic_usage.py",
-      "target": "toolkit/oe/scaffold/manifest.py",
+      "target": "toolkit/oe/scaffold/hasher.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59872,7 +59970,7 @@
     {
       "edge_id": "edge_617",
       "source": "examples/scaffold/basic_usage.py",
-      "target": "toolkit/oe/scaffold/logger.py",
+      "target": "toolkit/oe/scaffold/manifest.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59887,8 +59985,8 @@
     },
     {
       "edge_id": "edge_619",
-      "source": "examples/scaffold/merkle_verification.py",
-      "target": "toolkit/oe/scaffold/merkle.py",
+      "source": "examples/scaffold/basic_usage.py",
+      "target": "toolkit/oe/scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59896,15 +59994,15 @@
     {
       "edge_id": "edge_620",
       "source": "examples/scaffold/merkle_verification.py",
-      "target": "toolkit/oe/scaffold/logger.py",
+      "target": "toolkit/oe/scaffold/merkle.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_621",
-      "source": "examples/scaffold/handling_processing.py",
-      "target": "toolkit/oe/scaffold/handling_pipeline.py",
+      "source": "examples/scaffold/merkle_verification.py",
+      "target": "toolkit/oe/scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59912,15 +60010,15 @@
     {
       "edge_id": "edge_622",
       "source": "examples/scaffold/handling_processing.py",
-      "target": "toolkit/oe/scaffold/logger.py",
+      "target": "toolkit/oe/scaffold/handling_pipeline.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_623",
-      "source": "examples/scaffold/full_pipeline.py",
-      "target": "toolkit/oe/scaffold/cli.py",
+      "source": "examples/scaffold/handling_processing.py",
+      "target": "toolkit/oe/scaffold/logger.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
@@ -59928,13 +60026,21 @@
     {
       "edge_id": "edge_624",
       "source": "examples/scaffold/full_pipeline.py",
-      "target": "toolkit/oe/scaffold/handling_pipeline.py",
+      "target": "toolkit/oe/scaffold/cli.py",
       "edge_class": "DEPENDENCY_IMPORT",
       "directionality": "UNI",
       "axis": []
     },
     {
       "edge_id": "edge_625",
+      "source": "examples/scaffold/full_pipeline.py",
+      "target": "toolkit/oe/scaffold/handling_pipeline.py",
+      "edge_class": "DEPENDENCY_IMPORT",
+      "directionality": "UNI",
+      "axis": []
+    },
+    {
+      "edge_id": "edge_626",
       "source": "tools/discord_witness/verify_chain.py",
       "target": "tools/discord_witness/bot.py",
       "edge_class": "DEPENDENCY_IMPORT",
@@ -59942,7 +60048,7 @@
       "axis": []
     },
     {
-      "edge_id": "edge_626",
+      "edge_id": "edge_627",
       "source": "tools/render_agnostic/render/gpu_accelerated.py",
       "target": "tools/render_agnostic/render/cpu_reference.py",
       "edge_class": "DEPENDENCY_IMPORT",

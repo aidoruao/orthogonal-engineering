@@ -139,6 +139,18 @@ nodes:
     verification_ref: "out/skate4_mp_manifest.jsonl"
     game_universe: true
     cardinality: "0..*"
+    
+  AI_SESSION_MONITOR:
+    description: "Real-time recursive self-monitoring and frame enforcement for AI sessions"
+    examples: ["deepseek_schema.py", "DEEPSEEK_COPILOT_SCHEMA.yaml"]
+    authority: VALIDATED
+    temporal: OVERLAY
+    zone: "zone_2_detection_enforcement"
+    change_policy: "TIGHTEN_ONLY"
+    monitoring_scope: "ai_copilot_sessions"
+    enforcement_capability: true
+    audit_ready: true
+    cardinality: "0..*"
 
 # 8 EDGE CLASSES - typed connections between nodes
 edges:

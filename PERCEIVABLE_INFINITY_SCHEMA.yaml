@@ -47,6 +47,7 @@ rendering_layers:
         DOCUMENTATION_INDEX: "page"
         FOOD_DISH_UNIVERSE: "plate"
         KITCHEN_TASK_UNIVERSE: "gear"
+        AI_SESSION_MONITOR: "eye"
         UNCLASSIFIED: "circle"
       temporal_to_vertical_position:
         GENESIS: "top"
@@ -70,6 +71,7 @@ rendering_layers:
         EVIDENCE_ARTIFACT: "#88ffff"
         INFRASTRUCTURE_REGISTRY: "#aaaaaa"
         DOCUMENTATION_INDEX: "#ffffff"
+        AI_SESSION_MONITOR: "#ff6600"
         UNCLASSIFIED: "#666666"
 
   # Layer 2: Edge rendering (connections)
@@ -244,6 +246,10 @@ classification_pipeline:
         assign: KITCHEN_TASK_UNIVERSE
         priority: 45
         zone: "zone_5_analysis_reporting"
+      - match: "deepseek_schema.py OR DEEPSEEK_COPILOT_SCHEMA.yaml"
+        assign: AI_SESSION_MONITOR
+        priority: 75
+        zone: "zone_2_detection_enforcement"
       - match: "**/* (default)"
         assign: UNCLASSIFIED
         priority: 0
@@ -278,7 +284,7 @@ classification_pipeline:
         node_classes: [COVENANT_ROOT, GUARDIAN_SYSTEM]
         change_policy: EXTERNAL_AUTHORITY_ONLY
       - zone: zone_2_detection_enforcement
-        node_classes: [VIOLATION_LOG]
+        node_classes: [VIOLATION_LOG, AI_SESSION_MONITOR]
         paths: ["input_guard.py", "output_validator.py", "gaslighting_detector.py"]
         change_policy: TIGHTEN_ONLY
       - zone: zone_3_correspondence_bridge
@@ -366,7 +372,7 @@ metadata:
   classified_node_count_target: "50-100"
   unclassified_node_count_target: "~65900"
   zones: 8
-  node_classes: 11 # 10 + UNCLASSIFIED
+  node_classes: 12 # 11 + UNCLASSIFIED
   edge_classes: 8
   axes: 7
   invariants: 10

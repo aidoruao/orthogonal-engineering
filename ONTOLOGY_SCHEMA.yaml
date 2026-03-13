@@ -236,6 +236,30 @@ node_classes:
     verification: "NONE"
     zone: "zone_8_unclassified"
 
+  AI_SESSION_MONITOR:
+    definition: >
+      A module implementing real-time recursive self-monitoring and frame
+      enforcement for AI Copilot sessions. Provides deterministic conflict
+      resolution, semantic metric tracking, and audit-ready logging.
+    intent: "Monitor and enforce frame boundaries in AI sessions with byte-for-byte reproducibility"
+    teleology: >
+      Enable intervention rather than observation: detect frame conflicts,
+      sycophancy patterns, and meta-awareness issues in real-time, then
+      enforce resolution deterministically with full auditability.
+    success_criteria:
+      - "All 10 invariants (INV-DS-001 through INV-DS-010) pass verification"
+      - "Session replay from logs produces identical metrics (byte-for-byte)"
+      - "Conflict resolution is deterministic with explicit tie-breaking"
+      - "All enforcement actions logged with full context"
+      - "Pattern detection algorithms are reproducible"
+    authority: "VALIDATED"
+    temporal: "OVERLAY"
+    verification: "REGRESSION_REQUIRED"
+    examples:
+      - "deepseek_schema.py"
+      - "DEEPSEEK_COPILOT_SCHEMA.yaml"
+    zone: "zone_2_detection_enforcement"
+
 # ── Edge classes ───────────────────────────────────────────────────────────────
 edge_classes:
   COVENANT_BINDING:

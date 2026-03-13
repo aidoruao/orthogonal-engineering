@@ -1,0 +1,467 @@
+# DEEPSEEK_COPILOT_SCHEMA.yaml
+# ===============================
+# Maximal formal schema for real-time recursive self-monitoring and frame
+# enforcement of AI Copilot sessions.
+#
+# This schema addresses:
+#   - Structural correctness, determinism, auditability
+#   - Intervention rather than observation
+#   - Explicit conflict resolution encoding
+#   - Embedding determinism and token-level enforcement
+#   - Byte-to-byte reproducibility
+#
+# Authority: COVENANT.md, Yeshua Standard
+# Version: 1.0.0
+# Repository: aidoruao/orthogonal-engineering
+
+schema_version: "1.0.0"
+schema_name: "DEEPSEEK_COPILOT_SCHEMA"
+generated: "2026-03-13"
+authority: "sigma-lora-covenant"
+standard: "Yeshua"
+
+# ── Schema Definition ──────────────────────────────────────────────────────
+
+DeepSeekSession:
+  description: "Real-time recursive self-monitoring and frame enforcement AI session"
+  
+  fields:
+    session_id:
+      type: uuid
+      required: true
+      description: "Unique identifier for this session"
+      determinism: "Generated deterministically from seed + timestamp"
+      
+    model_name:
+      type: string
+      required: true
+      description: "Name and version of the model being monitored"
+      example: "deepseek-v3-chat"
+      
+    scan_timestamp:
+      type: iso8601
+      required: true
+      description: "Timestamp when this session scan was initiated"
+      format: "YYYY-MM-DDTHH:MM:SS.sssZ"
+      
+    frames:
+      type: array[Frame]
+      required: true
+      description: "Collection of monitoring frames active in this session"
+      
+    turns:
+      type: array[Turn]
+      required: true
+      description: "Chronological sequence of user-AI interaction turns"
+      
+    pattern_registry:
+      type: PatternRegistry
+      required: true
+      description: "Counts of detected meta-patterns"
+      
+    meta_awareness_score:
+      type: float
+      required: true
+      range: [0.0, 1.0]
+      description: "Overall session meta-awareness level"
+      
+    enforcement_config:
+      type: EnforcementConfig
+      required: true
+      description: "Configuration for conflict resolution and enforcement"
+
+# ── Frame Structure ────────────────────────────────────────────────────────
+
+Frame:
+  description: "A monitoring frame tracking specific context or constraint"
+  
+  fields:
+    frame_id:
+      type: uuid
+      required: true
+      description: "Unique identifier for this frame"
+      
+    name:
+      type: string
+      required: true
+      description: "Human-readable frame name"
+      
+    type:
+      type: enum[literal, contextual, hybrid]
+      required: true
+      description: "Frame interpretation mode"
+      values:
+        literal: "Strict, no-drift enforcement"
+        contextual: "Adaptive, context-sensitive"
+        hybrid: "Mixed mode with explicit boundaries"
+        
+    active:
+      type: boolean
+      required: true
+      description: "Whether this frame is currently active"
+      
+    creation_turn:
+      type: int
+      required: true
+      description: "Turn number when frame was created"
+      min: 0
+      
+    anchor_content:
+      type: string
+      required: true
+      description: "Reference content defining the frame's purpose"
+      
+    drift_score:
+      type: float
+      required: true
+      range: [0.0, 1.0]
+      description: "Semantic drift from anchor content"
+      determinism: "Computed via static embedding model"
+      
+    sycophancy_index:
+      type: float
+      required: true
+      range: [0.0, 1.0]
+      description: "Measure of agreement bias vs. independent reasoning"
+      
+    frame_stability:
+      type: float
+      required: true
+      range: [0.0, 1.0]
+      description: "Measure of frame consistency across turns"
+      
+    cross_frame_dependencies:
+      type: array[uuid]
+      required: true
+      description: "List of frame_ids this frame depends on"
+      
+    oscillation_detected:
+      type: boolean
+      required: true
+      description: "Whether frame is oscillating between states"
+      
+    enforcement_applied:
+      type: boolean
+      required: true
+      description: "Whether enforcement action was taken on this frame"
+      
+    priority_level:
+      type: int
+      required: true
+      min: 0
+      max: 100
+      description: "Priority for conflict resolution (higher = takes precedence)"
+
+# ── Turn Structure ─────────────────────────────────────────────────────────
+
+Turn:
+  description: "A single user-AI interaction within the session"
+  
+  fields:
+    turn_number:
+      type: int
+      required: true
+      min: 0
+      description: "Sequential turn identifier"
+      
+    user_input:
+      type: string
+      required: true
+      description: "User's input text for this turn"
+      
+    llm_output:
+      type: string
+      required: true
+      description: "AI's generated output for this turn"
+      
+    active_frames:
+      type: array[uuid]
+      required: true
+      description: "Frame IDs that were active during this turn"
+      
+    meta_pattern_detected:
+      type: boolean
+      required: true
+      description: "Whether a meta-pattern was detected in this turn"
+      
+    meta_pattern_type:
+      type: string
+      required: false
+      description: "Type of meta-pattern if detected"
+      allowed_values:
+        - "oscillation_loop"
+        - "collapse_reframe"
+        - "context_overfit"
+        - "sycophancy_momentum"
+        - "other"
+        
+    enforcement_actions:
+      type: array[string]
+      required: true
+      description: "Enforcement actions taken during this turn"
+      
+    metrics:
+      type: TurnMetrics
+      required: true
+      description: "Computed metrics for this turn"
+
+# ── TurnMetrics Structure ──────────────────────────────────────────────────
+
+TurnMetrics:
+  description: "Metrics computed for a specific turn"
+  
+  fields:
+    frame_stability:
+      type: dict[uuid->float]
+      required: true
+      description: "Stability score per active frame"
+      
+    sycophancy_index:
+      type: dict[uuid->float]
+      required: true
+      description: "Sycophancy score per active frame"
+      
+    meta_alignment_ratio:
+      type: float
+      required: true
+      range: [0.0, 1.0]
+      description: "Alignment between meta-awareness and output"
+      
+    resolution_outcome:
+      type: string
+      required: true
+      description: "How frame conflicts were resolved"
+      allowed_values:
+        - "literal_wins"
+        - "contextual_wins"
+        - "weighted"
+        - "user_declared"
+        - "no_conflict"
+
+# ── PatternRegistry Structure ──────────────────────────────────────────────
+
+PatternRegistry:
+  description: "Counts of detected meta-patterns across the session"
+  
+  fields:
+    oscillation_loop:
+      type: int
+      required: true
+      min: 0
+      description: "Count of oscillation loop patterns detected"
+      
+    collapse_reframe:
+      type: int
+      required: true
+      min: 0
+      description: "Count of collapse-reframe patterns detected"
+      
+    context_overfit:
+      type: int
+      required: true
+      min: 0
+      description: "Count of context overfit patterns detected"
+      
+    sycophancy_momentum:
+      type: int
+      required: true
+      min: 0
+      description: "Count of sycophancy momentum patterns detected"
+      
+    other_patterns:
+      type: int
+      required: true
+      min: 0
+      description: "Count of other detected patterns"
+
+# ── EnforcementConfig Structure ────────────────────────────────────────────
+
+EnforcementConfig:
+  description: "Configuration for enforcement and conflict resolution"
+  
+  fields:
+    conflict_resolution_policy:
+      type: enum[literal_wins, contextual_wins, weighted, user_declared]
+      required: true
+      description: "Policy for resolving simultaneous frame conflicts"
+      default: "weighted"
+      semantics:
+        literal_wins: "Literal frames always take precedence"
+        contextual_wins: "Contextual frames take precedence"
+        weighted: "Priority_level determines winner"
+        user_declared: "User explicitly declares resolution at conflict time"
+        
+    embedding_source:
+      type: enum[static, dynamic]
+      required: true
+      description: "Source for semantic embeddings"
+      default: "static"
+      semantics:
+        static: "Fixed reference embedding model (byte-for-byte reproducible)"
+        dynamic: "Context-adapted embeddings (may vary across runs)"
+        
+    intervention_point:
+      type: enum[token_level, generation_chunk, post_turn]
+      required: true
+      description: "When to intervene in generation process"
+      default: "post_turn"
+      semantics:
+        token_level: "Intercept each token generation"
+        generation_chunk: "Intercept at sentence/paragraph boundaries"
+        post_turn: "Enforce after complete turn generation"
+        
+    fallback_behavior:
+      type: string
+      required: true
+      description: "Default safe output if resolution fails"
+      example: "I cannot process this request due to conflicting constraints. Please clarify your intent."
+
+# ── Invariants ─────────────────────────────────────────────────────────────
+
+invariants:
+  - id: "INV-DS-001"
+    text: "All active frames are monitored during generation"
+    enforcement: "MANDATORY"
+    verification: "Check active_frames array in each turn"
+    
+  - id: "INV-DS-002"
+    text: "Enforcement actions are deterministic, byte-for-byte idempotent"
+    enforcement: "MANDATORY"
+    verification: "Re-run with same inputs must produce identical outputs"
+    
+  - id: "INV-DS-003"
+    text: "Simultaneous frames are resolved per configured priority or policy"
+    enforcement: "MANDATORY"
+    verification: "Check resolution_outcome matches policy in conflict cases"
+    
+  - id: "INV-DS-004"
+    text: "Semantic metrics computed in real-time; no post-hoc approximation"
+    enforcement: "MANDATORY"
+    verification: "All metrics present in turn data; no null/missing values"
+    
+  - id: "INV-DS-005"
+    text: "Every turn logs all frame states, metrics, and enforcement outcomes"
+    enforcement: "MANDATORY"
+    verification: "Turn structure contains complete frame_stability and sycophancy_index dicts"
+    
+  - id: "INV-DS-006"
+    text: "Frame priority levels are strictly ordered (0-100)"
+    enforcement: "MANDATORY"
+    verification: "All priority_level values are integers in [0, 100]"
+    
+  - id: "INV-DS-007"
+    text: "Pattern registry counts are monotonically increasing"
+    enforcement: "MANDATORY"
+    verification: "Pattern counts never decrease across turns"
+    
+  - id: "INV-DS-008"
+    text: "Session state is fully serializable to JSON"
+    enforcement: "MANDATORY"
+    verification: "json.dumps(session) succeeds without errors"
+    
+  - id: "INV-DS-009"
+    text: "Meta-awareness score reflects actual detection capability"
+    enforcement: "MANDATORY"
+    verification: "Score derived from pattern_registry and enforcement_actions"
+    
+  - id: "INV-DS-010"
+    text: "Enforcement config cannot be changed mid-session"
+    enforcement: "MANDATORY"
+    verification: "enforcement_config immutable after session initialization"
+
+# ── Computational Determinism ──────────────────────────────────────────────
+
+computational_determinism:
+  semantic_metrics:
+    drift_score:
+      algorithm: "cosine_similarity(static_embedding(anchor), static_embedding(current))"
+      embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+      model_version: "2.2.2"
+      seed: 314159
+      reproducibility: "byte-for-byte with same model version and seed"
+      
+    sycophancy_index:
+      algorithm: "agreement_rate - baseline_agreement_rate"
+      baseline: 0.5
+      computation: "deterministic counting of agreement vs. disagreement tokens"
+      
+    frame_stability:
+      algorithm: "1.0 - (state_changes / total_checks)"
+      computation: "deterministic integer counting"
+      
+    meta_alignment_ratio:
+      algorithm: "detected_patterns / total_detectable_patterns"
+      computation: "deterministic pattern matching"
+      
+  conflict_resolution:
+    weighted_policy:
+      algorithm: "argmax(priority_level) among conflicting frames"
+      determinism: "integer comparison, no floating-point"
+      tie_breaking: "lexicographic order by frame_id"
+      
+  pattern_detection:
+    oscillation_loop:
+      definition: "Frame active_state toggles >3 times in 10 turns"
+      detection: "deterministic state tracking"
+      
+    collapse_reframe:
+      definition: "Frame destroyed and recreated with similar content within 5 turns"
+      detection: "content hash matching with temporal window"
+      
+    context_overfit:
+      definition: "Drift score increases >0.3 in single turn"
+      detection: "numerical threshold check"
+      
+    sycophancy_momentum:
+      definition: "Sycophancy index >0.7 for 3+ consecutive turns"
+      detection: "sliding window threshold check"
+
+# ── Audit and Verification ─────────────────────────────────────────────────
+
+audit_requirements:
+  session_log:
+    format: "JSON Lines (JSONL)"
+    fields_required:
+      - "session_id"
+      - "turn_number"
+      - "timestamp"
+      - "all_metrics"
+      - "enforcement_actions"
+    retention: "permanent"
+    immutability: "append-only"
+    
+  reproducibility_proof:
+    requirement: "Session replay from log produces identical metrics"
+    verification: "SHA-256 of metrics JSON matches recorded hash"
+    test_coverage: "100% of enforcement paths"
+    
+  byte_level_idempotency:
+    requirement: "Same input sequence → same output sequence"
+    exceptions: "timestamps and UUIDs only (documented)"
+    verification: "Binary diff of output logs"
+
+# ── Integration with Orthogonal Engineering ────────────────────────────────
+
+topology_integration:
+  node_class: "AI_SESSION_MONITOR"
+  zone: "zone_2_detection_enforcement"
+  authority: "VALIDATED"
+  temporal: "OVERLAY"
+  change_policy: "TIGHTEN_ONLY"
+  
+covenant_alignment:
+  principle: "Intervention over observation"
+  enforcement: "Real-time frame monitoring with deterministic resolution"
+  auditability: "Complete turn-by-turn state logging"
+  no_silent_failures: "All enforcement actions logged"
+  
+verification_hooks:
+  pre_commit:
+    - "Validate schema completeness (all required fields present)"
+    - "Check metric determinism (reproduce sample session)"
+    - "Verify conflict resolution idempotency"
+  
+  continuous_integration:
+    - "Run test_deepseek_schema.py"
+    - "Validate JSON serialization round-trip"
+    - "Check invariants INV-DS-001 through INV-DS-010"
