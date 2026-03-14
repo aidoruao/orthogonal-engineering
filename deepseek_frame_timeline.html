@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek Frame Timeline</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ff6600;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ff6600;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .file-input-container {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        input[type="file"] {
+            flex: 1;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #ff6600;
+            border-radius: 6px;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background: #ff6600;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #ff8833;
+        }
+        
+        .session-info {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .session-info.show {
+            display: block;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        .info-label {
+            color: #ff6600;
+            font-weight: bold;
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #00aaff;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            color: #00aaff;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
+        
+        .legend-container {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .legend-title {
+            color: #00ff88;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-color {
+            width: 30px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        .event-markers {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #ffaa00;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .event-title {
+            color: #ffaa00;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .event-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+        
+        .event-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #ffaa00;
+        }
+        
+        .event-turn {
+            color: #ffaa00;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .event-type {
+            color: #ddd;
+            font-size: 0.95em;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 DeepSeek Frame Timeline</h1>
+        <div class="subtitle">Forensic visualization for AI session monitoring</div>
+        
+        <div class="controls">
+            <div class="file-input-container">
+                <input type="file" id="fileInput" accept=".json" />
+                <button onclick="loadExampleSession()">Load Example Session</button>
+            </div>
+            
+            <div class="session-info" id="sessionInfo">
+                <div class="info-row">
+                    <span class="info-label">Session ID:</span>
+                    <span id="sessionId">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Model:</span>
+                    <span id="modelName">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Turns:</span>
+                    <span id="turnCount">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Frames:</span>
+                    <span id="frameCount">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Meta-awareness:</span>
+                    <span id="metaAwareness">-</span>
+                </div>
+            </div>
+        </div>
+        
+        <div id="chartsContainer"></div>
+        
+        <div id="eventsContainer"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        let currentSession = null;
+        
+        // File input handler
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const session = JSON.parse(e.target.result);
+                        loadSession(session);
+                    } catch (error) {
+                        alert('Error parsing JSON: ' + error.message);
+                    }
+                };
+                reader.readAsText(file);
+            }
+        });
+        
+        // Load example session
+        function loadExampleSession() {
+            fetch('examples/deepseek_session_example.json')
+                .then(response => response.json())
+                .then(session => loadSession(session))
+                .catch(error => {
+                    alert('Error loading example session: ' + error.message);
+                });
+        }
+        
+        function loadSession(session) {
+            currentSession = session;
+            
+            // Update session info
+            document.getElementById('sessionInfo').classList.add('show');
+            document.getElementById('sessionId').textContent = session.session_id || 'unknown';
+            document.getElementById('modelName').textContent = session.model_name || 'unknown';
+            document.getElementById('turnCount').textContent = session.turns?.length || 0;
+            document.getElementById('frameCount').textContent = session.frames?.length || 0;
+            document.getElementById('metaAwareness').textContent = 
+                session.meta_awareness_score ? session.meta_awareness_score.toFixed(2) : '-';
+            
+            // Generate visualizations
+            generateCharts(session);
+            generateEventMarkers(session);
+        }
+        
+        function generateCharts(session) {
+            const container = document.getElementById('chartsContainer');
+            container.innerHTML = '';
+            
+            if (!session.turns || session.turns.length === 0) {
+                container.innerHTML = '<div class="no-data">No turn data available</div>';
+                return;
+            }
+            
+            // Extract data from turns
+            const turns = session.turns;
+            const frames = session.frames || [];
+            const turnNumbers = turns.map(t => t.turn_number);
+            
+            // Create frame color map
+            const frameColors = {
+                'f1a2b3c4-d5e6-4789-a012-3456789abcde': '#ff4444', // covenant_compliance
+                'a1b2c3d4-e5f6-4789-a012-bcdef0123456': '#00aaff', // code_style
+                '9876fedc-ba09-4321-8765-4321fedcba09': '#00ff88', // test_coverage
+            };
+            
+            // Get unique frame IDs and assign colors
+            const allFrameIds = new Set();
+            turns.forEach(turn => {
+                Object.keys(turn.metrics?.frame_stability || {}).forEach(id => allFrameIds.add(id));
+            });
+            
+            const frameIdToName = {};
+            frames.forEach(frame => {
+                frameIdToName[frame.frame_id] = frame.name;
+            });
+            
+            // Chart 1: Frame Stability Over Time
+            createFrameMetricChart(
+                container,
+                'Frame Stability Over Time',
+                turnNumbers,
+                turns,
+                'frame_stability',
+                frameColors,
+                frameIdToName,
+                'Higher is better (0.0 - 1.0)'
+            );
+            
+            // Chart 2: Sycophancy Index Over Time
+            createFrameMetricChart(
+                container,
+                'Sycophancy Index Over Time',
+                turnNumbers,
+                turns,
+                'sycophancy_index',
+                frameColors,
+                frameIdToName,
+                'Lower is better (0.0 - 1.0)'
+            );
+            
+            // Chart 3: Meta-Alignment Ratio
+            createMetaAlignmentChart(container, turnNumbers, turns);
+            
+            // Chart 4: Frame Drift (from frame data)
+            createFrameDriftChart(container, frames, turnNumbers, turns, frameColors, frameIdToName);
+        }
+        
+        function createFrameMetricChart(container, title, turnNumbers, turns, metricKey, frameColors, frameIdToName, subtitle) {
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'chart-container';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'chart-title';
+            titleDiv.textContent = title;
+            chartDiv.appendChild(titleDiv);
+            
+            if (subtitle) {
+                const subtitleDiv = document.createElement('div');
+                subtitleDiv.style.textAlign = 'center';
+                subtitleDiv.style.color = '#888';
+                subtitleDiv.style.marginBottom = '15px';
+                subtitleDiv.textContent = subtitle;
+                chartDiv.appendChild(subtitleDiv);
+            }
+            
+            const canvas = document.createElement('canvas');
+            canvas.height = 300;
+            chartDiv.appendChild(canvas);
+            
+            // Extract datasets
+            const datasets = [];
+            const frameIds = new Set();
+            
+            turns.forEach(turn => {
+                const metrics = turn.metrics?.[metricKey] || {};
+                Object.keys(metrics).forEach(id => frameIds.add(id));
+            });
+            
+            const colorPalette = ['#ff4444', '#00aaff', '#00ff88', '#ffaa00', '#ff88ff'];
+            let colorIndex = 0;
+            
+            frameIds.forEach(frameId => {
+                const data = turnNumbers.map((turnNum, idx) => {
+                    return turns[idx].metrics?.[metricKey]?.[frameId] || null;
+                });
+                
+                const color = frameColors[frameId] || colorPalette[colorIndex++ % colorPalette.length];
+                const name = frameIdToName[frameId] || frameId.substring(0, 8);
+                
+                datasets.push({
+                    label: name,
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: color + '33',
+                    borderWidth: 3,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                });
+            });
+            
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: turnNumbers.map(n => `Turn ${n}`),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 3,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1.0,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            container.appendChild(chartDiv);
+        }
+        
+        function createMetaAlignmentChart(container, turnNumbers, turns) {
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'chart-container';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'chart-title';
+            titleDiv.textContent = 'Meta-Alignment Ratio Over Time';
+            chartDiv.appendChild(titleDiv);
+            
+            const canvas = document.createElement('canvas');
+            canvas.height = 250;
+            chartDiv.appendChild(canvas);
+            
+            const data = turns.map(t => t.metrics?.meta_alignment_ratio || 0);
+            
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: turnNumbers.map(n => `Turn ${n}`),
+                    datasets: [{
+                        label: 'Meta-Alignment',
+                        data: data,
+                        borderColor: '#ff6600',
+                        backgroundColor: '#ff660033',
+                        borderWidth: 3,
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 4,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1.0,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            container.appendChild(chartDiv);
+        }
+        
+        function createFrameDriftChart(container, frames, turnNumbers, turns, frameColors, frameIdToName) {
+            const chartDiv = document.createElement('div');
+            chartDiv.className = 'chart-container';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'chart-title';
+            titleDiv.textContent = 'Frame Drift Score (from Frame State)';
+            chartDiv.appendChild(titleDiv);
+            
+            const subtitleDiv = document.createElement('div');
+            subtitleDiv.style.textAlign = 'center';
+            subtitleDiv.style.color = '#888';
+            subtitleDiv.style.marginBottom = '15px';
+            subtitleDiv.textContent = 'Lower is better (0.0 = no drift, 1.0 = maximum drift)';
+            chartDiv.appendChild(subtitleDiv);
+            
+            const canvas = document.createElement('canvas');
+            canvas.height = 300;
+            chartDiv.appendChild(canvas);
+            
+            // Create datasets for each frame
+            const datasets = frames.map((frame, idx) => {
+                const color = frameColors[frame.frame_id] || `hsl(${idx * 60}, 70%, 60%)`;
+                const name = frame.name || frame.frame_id.substring(0, 8);
+                
+                // For this example, we'll show the drift_score as a constant line
+                // In a real implementation with turn-by-turn frame updates, this would vary
+                const data = turnNumbers.map((turnNum) => {
+                    // Check if this frame is active in this turn
+                    const turn = turns.find(t => t.turn_number === turnNum);
+                    if (turn && turn.active_frames.includes(frame.frame_id)) {
+                        return frame.drift_score;
+                    }
+                    return null;
+                });
+                
+                return {
+                    label: name,
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: color + '33',
+                    borderWidth: 3,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                };
+            });
+            
+            new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: turnNumbers.map(n => `Turn ${n}`),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 3,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1.0,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            container.appendChild(chartDiv);
+        }
+        
+        function generateEventMarkers(session) {
+            const container = document.getElementById('eventsContainer');
+            container.innerHTML = '';
+            
+            const turns = session.turns || [];
+            const events = [];
+            
+            // Collect events from turns
+            turns.forEach(turn => {
+                // Check for patterns
+                if (turn.meta_pattern_detected && turn.meta_pattern_type) {
+                    events.push({
+                        turn: turn.turn_number,
+                        type: 'pattern',
+                        text: `Pattern detected: ${turn.meta_pattern_type}`
+                    });
+                }
+                
+                // Check for enforcement actions
+                const actions = turn.enforcement_actions || [];
+                if (actions.length > 0) {
+                    events.push({
+                        turn: turn.turn_number,
+                        type: 'enforcement',
+                        text: `Enforcement: ${actions.join(', ')}`
+                    });
+                }
+                
+                // Check for conflicts
+                if (turn.metrics?.resolution_outcome && 
+                    turn.metrics.resolution_outcome !== 'no_conflict') {
+                    events.push({
+                        turn: turn.turn_number,
+                        type: 'conflict',
+                        text: `Conflict resolved: ${turn.metrics.resolution_outcome}`
+                    });
+                }
+            });
+            
+            if (events.length === 0) {
+                return;
+            }
+            
+            const eventsDiv = document.createElement('div');
+            eventsDiv.className = 'event-markers';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'event-title';
+            titleDiv.textContent = '📍 Significant Events';
+            eventsDiv.appendChild(titleDiv);
+            
+            const listDiv = document.createElement('div');
+            listDiv.className = 'event-list';
+            
+            events.forEach(event => {
+                const item = document.createElement('div');
+                item.className = 'event-item';
+                
+                const turnDiv = document.createElement('div');
+                turnDiv.className = 'event-turn';
+                turnDiv.textContent = `Turn ${event.turn}`;
+                item.appendChild(turnDiv);
+                
+                const typeDiv = document.createElement('div');
+                typeDiv.className = 'event-type';
+                typeDiv.textContent = event.text;
+                item.appendChild(typeDiv);
+                
+                listDiv.appendChild(item);
+            });
+            
+            eventsDiv.appendChild(listDiv);
+            container.appendChild(eventsDiv);
+        }
+    </script>
+</body>
+</html>

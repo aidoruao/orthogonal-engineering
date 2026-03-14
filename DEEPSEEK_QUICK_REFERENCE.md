@@ -46,9 +46,17 @@ python3 deepseek_schema.py
 python3 validate_deepseek_session.py examples/deepseek_session_example.json
 ```
 
+### Replay Session (Forensic Debugging)
+```bash
+python3 replay_deepseek_session.py examples/deepseek_session_example.json --verbose
+```
+
+### Visualize Frame Timeline
+Open `deepseek_frame_timeline.html` in a browser and load a session JSON file.
+
 ### Run Tests
 ```bash
-python3 -m pytest tests/test_deepseek_schema.py -v
+python3 -m pytest tests/test_deepseek_schema.py tests/test_replay_engine.py -v
 ```
 
 ### Regenerate Topology
@@ -63,8 +71,11 @@ python3 generate_perceivable_infinity.py
 | `DEEPSEEK_COPILOT_SCHEMA.yaml` | Formal schema definition | 176 |
 | `deepseek_schema.py` | Python schema module | 419 |
 | `deepseek_copilot_schema.json` | Generated JSON schema | 18 KB |
-| `tests/test_deepseek_schema.py` | Test suite (73 tests) | 735 |
+| `tests/test_deepseek_schema.py` | Test suite (74 tests) | 798 |
+| `tests/test_replay_engine.py` | Replay engine tests (18 tests) | 287 |
 | `validate_deepseek_session.py` | Session validator | 354 |
+| `replay_deepseek_session.py` | **Forensic replay engine** | 377 |
+| `deepseek_frame_timeline.html` | **Interactive timeline visualization** | 643 |
 | `examples/deepseek_session_example.json` | Working example | 172 |
 | `DEEPSEEK_COPILOT_SCHEMA_README.md` | Full documentation | 257 |
 
