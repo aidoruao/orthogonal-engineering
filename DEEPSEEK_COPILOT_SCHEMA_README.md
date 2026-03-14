@@ -113,8 +113,22 @@ Files classified as AI_SESSION_MONITOR:
 - **deepseek_schema.py** - Python schema module (419 lines)
 - **deepseek_copilot_schema.json** - Generated JSON schema (18 KB)
 
-### Tests
-- **tests/test_deepseek_schema.py** - 72 tests covering all components
+### Testing & Validation
+- **tests/test_deepseek_schema.py** - 74 tests covering all components
+- **tests/test_replay_engine.py** - 18 tests for replay engine ⭐ NEW
+- **validate_deepseek_session.py** - Session conformance validator
+- **replay_deepseek_session.py** - Forensic replay engine (377 lines) ⭐ NEW
+
+### Visualization
+- **deepseek_frame_timeline.html** - Interactive timeline graphs (643 lines) ⭐ NEW
+- **DEEPSEEK_SCHEMA_VISUAL.html** - Schema structure visualization
+
+### Examples & Documentation
+- **examples/deepseek_session_example.json** - Working 4-turn session example
+- **DEEPSEEK_COPILOT_SCHEMA_README.md** - This document
+- **DEEPSEEK_QUICK_REFERENCE.md** - Quick reference guide
+- **DEEPSEEK_FORENSIC_TOOLS.md** - Forensic tools documentation ⭐ NEW
+- **DEEPSEEK_IMPLEMENTATION_SUMMARY.md** - Complete implementation summary
 
 ### Integration
 - **ONTOLOGY_SCHEMA.yaml** - Node class definition
@@ -132,13 +146,48 @@ python3 deepseek_schema.py
 
 This generates `deepseek_copilot_schema.json` with the complete schema structure.
 
+### Validate Session
+
+```bash
+python3 validate_deepseek_session.py examples/deepseek_session_example.json
+```
+
+Validates session conformance to schema.
+
+### Replay Session (Forensic Debugging) ⭐ NEW
+
+```bash
+python3 replay_deepseek_session.py examples/deepseek_session_example.json --verbose
+```
+
+Deterministically replays turns, recomputes metrics, and verifies invariants.
+
+**Output:**
+```
+✅ REPLAY STATUS: VERIFIED
+Turns replayed: 4
+Frame drift delta: 0.780000
+Invariants violated: 0
+```
+
+### Visualize Frame Timeline ⭐ NEW
+
+Open `deepseek_frame_timeline.html` in a browser and load a session JSON file.
+
+**Features:**
+- Frame stability over time
+- Sycophancy index tracking
+- Meta-alignment graphs
+- Event markers (patterns, conflicts, enforcement)
+- Interactive charts
+
 ### Run Tests
 
 ```bash
-python3 -m pytest tests/test_deepseek_schema.py -v
+python3 -m pytest tests/test_deepseek_schema.py tests/test_replay_engine.py -v
 ```
 
-All 72 tests should pass.
+All 92 tests should pass (74 schema + 18 replay).
 
 ### Topology Integration
 
