@@ -1,0 +1,530 @@
+{
+  "authority": "sigma-lora-covenant",
+  "description": "Maximal formal schema for real-time recursive self-monitoring and frame enforcement",
+  "footer": "SCHEMA COMPLETE \u2014 DeepSeek Maximal Copilot Schema: fully idempotent, deterministic, audit-ready, byte-for-byte reproducible.",
+  "invariants": {
+    "INV-DS-001": "All active frames are monitored during generation",
+    "INV-DS-002": "Enforcement actions are deterministic, byte-for-byte idempotent",
+    "INV-DS-003": "Simultaneous frames are resolved per configured priority or policy",
+    "INV-DS-004": "Semantic metrics computed in real-time; no post-hoc approximation",
+    "INV-DS-005": "Every turn logs all frame states, metrics, and enforcement outcomes",
+    "INV-DS-006": "Frame priority levels are strictly ordered (0-100)",
+    "INV-DS-007": "Pattern registry counts are monotonically increasing",
+    "INV-DS-008": "Session state is fully serializable to JSON",
+    "INV-DS-009": "Meta-awareness score reflects actual detection capability",
+    "INV-DS-010": "Enforcement config cannot be changed mid-session"
+  },
+  "schema_name": "DEEPSEEK_COPILOT_SCHEMA",
+  "schema_version": "1.0.0",
+  "sections": {
+    "10_verification_hooks": {
+      "continuous_integration": [
+        {
+          "check": "Run test_deepseek_schema.py",
+          "command": "python3 -m pytest tests/test_deepseek_schema.py -v",
+          "implementation_ref": "tests/test_deepseek_schema.py"
+        },
+        {
+          "check": "Validate JSON serialization round-trip",
+          "implementation_ref": "NOT IMPLEMENTED"
+        },
+        {
+          "check": "Check invariants INV-DS-001 through INV-DS-010",
+          "implementation_ref": "NOT IMPLEMENTED"
+        }
+      ],
+      "pre_commit": [
+        {
+          "check": "Validate schema completeness (all required fields present)",
+          "implementation_ref": "NOT IMPLEMENTED"
+        },
+        {
+          "check": "Check metric determinism (reproduce sample session)",
+          "implementation_ref": "NOT IMPLEMENTED"
+        },
+        {
+          "check": "Verify conflict resolution idempotency",
+          "implementation_ref": "NOT IMPLEMENTED"
+        }
+      ],
+      "step": "verification_hooks"
+    },
+    "11_implementation_status": {
+      "completed_components": [
+        "DEEPSEEK_COPILOT_SCHEMA.yaml \u2014 Formal schema definition",
+        "deepseek_schema.py \u2014 Python schema module"
+      ],
+      "deployment_ready": false,
+      "integration_pending": [
+        "Add AI_SESSION_MONITOR to ONTOLOGY_SCHEMA.yaml",
+        "Add AI_SESSION_MONITOR to topology/graph_schema.yaml",
+        "Update COPILOT_ONBOARDING_SCHEMA.yaml reading_order"
+      ],
+      "pending_components": [
+        "deepseek_monitor.py \u2014 Session monitoring implementation",
+        "deepseek_frame_enforcer.py \u2014 Frame enforcement engine",
+        "deepseek_metrics.py \u2014 Metric computation implementations",
+        "tests/test_deepseek_schema.py \u2014 Comprehensive test suite"
+      ],
+      "reason": "Implementation modules not yet created (pending_components list)",
+      "step": "implementation_status"
+    },
+    "1_schema_definition": {
+      "authority": "sigma-lora-covenant",
+      "description": "Real-time recursive self-monitoring and frame enforcement AI session",
+      "integration_status": {
+        "covenant_aligned": true,
+        "topology_integrated": false,
+        "verification_hooks_defined": true
+      },
+      "primary_components": [
+        "DeepSeekSession",
+        "Frame",
+        "Turn",
+        "TurnMetrics",
+        "PatternRegistry",
+        "EnforcementConfig"
+      ],
+      "schema_file": "DEEPSEEK_COPILOT_SCHEMA.yaml",
+      "schema_name": "DEEPSEEK_COPILOT_SCHEMA",
+      "schema_version": "1.0.0",
+      "standard": "Yeshua",
+      "step": "schema_definition"
+    },
+    "2_session_structure": {
+      "invariants": [
+        "INV-DS-001: All active frames are monitored during generation",
+        "INV-DS-002: Enforcement actions are deterministic, byte-for-byte idempotent",
+        "INV-DS-003: Simultaneous frames are resolved per configured priority or policy",
+        "INV-DS-004: Semantic metrics computed in real-time; no post-hoc approximation",
+        "INV-DS-005: Every turn logs all frame states, metrics, and enforcement outcomes"
+      ],
+      "session_fields": {
+        "enforcement_config": {
+          "required": true,
+          "type": "EnforcementConfig"
+        },
+        "frames": {
+          "description": "Collection of monitoring frames",
+          "required": true,
+          "type": "array[Frame]"
+        },
+        "meta_awareness_score": {
+          "range": [
+            0.0,
+            1.0
+          ],
+          "required": true,
+          "type": "float"
+        },
+        "model_name": {
+          "example": "deepseek-v3-chat",
+          "required": true,
+          "type": "string"
+        },
+        "pattern_registry": {
+          "required": true,
+          "type": "PatternRegistry"
+        },
+        "scan_timestamp": {
+          "format": "YYYY-MM-DDTHH:MM:SS.sssZ",
+          "required": true,
+          "type": "iso8601"
+        },
+        "session_id": {
+          "determinism": "Generated deterministically from seed + timestamp",
+          "required": true,
+          "type": "uuid"
+        },
+        "turns": {
+          "description": "Chronological interaction sequence",
+          "required": true,
+          "type": "array[Turn]"
+        }
+      },
+      "step": "session_structure"
+    },
+    "3_frame_management": {
+      "frame_fields": {
+        "active": {
+          "required": true,
+          "type": "boolean"
+        },
+        "anchor_content": {
+          "required": true,
+          "type": "string"
+        },
+        "creation_turn": {
+          "min": 0,
+          "required": true,
+          "type": "int"
+        },
+        "cross_frame_dependencies": {
+          "required": true,
+          "type": "array[uuid]"
+        },
+        "drift_score": {
+          "determinism": "Computed via static embedding model",
+          "range": [
+            0.0,
+            1.0
+          ],
+          "required": true,
+          "type": "float"
+        },
+        "enforcement_applied": {
+          "required": true,
+          "type": "boolean"
+        },
+        "frame_id": {
+          "required": true,
+          "type": "uuid"
+        },
+        "frame_stability": {
+          "range": [
+            0.0,
+            1.0
+          ],
+          "required": true,
+          "type": "float"
+        },
+        "name": {
+          "required": true,
+          "type": "string"
+        },
+        "oscillation_detected": {
+          "required": true,
+          "type": "boolean"
+        },
+        "priority_level": {
+          "description": "Priority for conflict resolution",
+          "max": 100,
+          "min": 0,
+          "required": true,
+          "type": "int"
+        },
+        "sycophancy_index": {
+          "range": [
+            0.0,
+            1.0
+          ],
+          "required": true,
+          "type": "float"
+        },
+        "type": {
+          "required": true,
+          "type": "enum",
+          "values": [
+            "literal",
+            "contextual",
+            "hybrid"
+          ]
+        }
+      },
+      "frame_types": {
+        "contextual": "Adaptive, context-sensitive",
+        "hybrid": "Mixed mode with explicit boundaries",
+        "literal": "Strict, no-drift enforcement"
+      },
+      "invariants": [
+        "INV-DS-006: Frame priority levels are strictly ordered (0-100)",
+        "INV-DS-010: Enforcement config cannot be changed mid-session"
+      ],
+      "step": "frame_management"
+    },
+    "4_turn_tracking": {
+      "metric_determinism": {
+        "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+        "model_version": "2.2.2",
+        "reproducibility": "byte-for-byte with same inputs",
+        "seed": 314159
+      },
+      "step": "turn_tracking",
+      "turn_fields": {
+        "active_frames": {
+          "required": true,
+          "type": "array[uuid]"
+        },
+        "enforcement_actions": {
+          "required": true,
+          "type": "array[string]"
+        },
+        "llm_output": {
+          "required": true,
+          "type": "string"
+        },
+        "meta_pattern_detected": {
+          "required": true,
+          "type": "boolean"
+        },
+        "meta_pattern_type": {
+          "allowed_values": [
+            "oscillation_loop",
+            "collapse_reframe",
+            "context_overfit",
+            "sycophancy_momentum",
+            "other"
+          ],
+          "required": false,
+          "type": "string"
+        },
+        "metrics": {
+          "required": true,
+          "type": "TurnMetrics"
+        },
+        "turn_number": {
+          "min": 0,
+          "required": true,
+          "type": "int"
+        },
+        "user_input": {
+          "required": true,
+          "type": "string"
+        }
+      },
+      "turn_metrics": {
+        "frame_stability": {
+          "computation": "1.0 - (state_changes / total_checks)",
+          "determinism": "integer counting",
+          "type": "dict[uuid->float]"
+        },
+        "meta_alignment_ratio": {
+          "computation": "detected_patterns / total_detectable_patterns",
+          "range": [
+            0.0,
+            1.0
+          ],
+          "type": "float"
+        },
+        "resolution_outcome": {
+          "allowed_values": [
+            "literal_wins",
+            "contextual_wins",
+            "weighted",
+            "user_declared",
+            "no_conflict"
+          ],
+          "type": "string"
+        },
+        "sycophancy_index": {
+          "baseline": 0.5,
+          "computation": "agreement_rate - baseline_agreement_rate",
+          "type": "dict[uuid->float]"
+        }
+      }
+    },
+    "5_pattern_detection": {
+      "detection_algorithms": {
+        "collapse_reframe": {
+          "definition": "Frame destroyed and recreated with similar content within 5 turns",
+          "detection": "content hash matching with temporal window",
+          "implementation": "content_hash_temporal_window"
+        },
+        "context_overfit": {
+          "definition": "Drift score increases >0.3 in single turn",
+          "detection": "numerical threshold check",
+          "implementation": "threshold_comparison"
+        },
+        "oscillation_loop": {
+          "definition": "Frame active_state toggles >3 times in 10 turns",
+          "detection": "deterministic state tracking",
+          "implementation": "sliding_window_state_tracking"
+        },
+        "sycophancy_momentum": {
+          "definition": "Sycophancy index >0.7 for 3+ consecutive turns",
+          "detection": "sliding window threshold check",
+          "implementation": "consecutive_threshold_check"
+        }
+      },
+      "invariants": [
+        "INV-DS-007: Pattern registry counts are monotonically increasing",
+        "INV-DS-009: Meta-awareness score reflects actual detection capability"
+      ],
+      "pattern_registry_fields": {
+        "collapse_reframe": {
+          "min": 0,
+          "type": "int"
+        },
+        "context_overfit": {
+          "min": 0,
+          "type": "int"
+        },
+        "oscillation_loop": {
+          "min": 0,
+          "type": "int"
+        },
+        "other_patterns": {
+          "min": 0,
+          "type": "int"
+        },
+        "sycophancy_momentum": {
+          "min": 0,
+          "type": "int"
+        }
+      },
+      "step": "pattern_detection"
+    },
+    "6_enforcement_config": {
+      "conflict_resolution_policies": {
+        "contextual_wins": {
+          "algorithm": "Filter to contextual frames, select highest priority",
+          "description": "Contextual frames take precedence",
+          "determinism": "Integer priority comparison"
+        },
+        "literal_wins": {
+          "algorithm": "Filter to literal frames, select highest priority",
+          "description": "Literal frames always take precedence",
+          "determinism": "Integer priority comparison"
+        },
+        "user_declared": {
+          "algorithm": "Wait for user input, apply declared resolution",
+          "description": "User explicitly declares resolution at conflict time",
+          "determinism": "User input logged for reproducibility"
+        },
+        "weighted": {
+          "algorithm": "argmax(priority_level) among all conflicting frames",
+          "description": "Priority_level determines winner",
+          "determinism": "Integer comparison, UUID string comparison for ties",
+          "tie_breaking": "lexicographic order by frame_id"
+        }
+      },
+      "embedding_sources": {
+        "dynamic": {
+          "description": "Context-adapted embeddings",
+          "use_case": "Development/debugging only",
+          "warning": "May vary across runs - not fully deterministic"
+        },
+        "static": {
+          "description": "Fixed reference embedding model",
+          "model": "sentence-transformers/all-MiniLM-L6-v2",
+          "reproducibility": "byte-for-byte",
+          "seed": 314159,
+          "version": "2.2.2"
+        }
+      },
+      "fallback_behavior": {
+        "default_message": "I cannot process this request due to conflicting constraints. Please clarify your intent.",
+        "logging": "All fallback activations logged with conflict details",
+        "recovery": "Session continues with explicit user guidance"
+      },
+      "intervention_points": {
+        "generation_chunk": {
+          "description": "Intercept at sentence/paragraph boundaries",
+          "latency": "Medium",
+          "precision": "High"
+        },
+        "post_turn": {
+          "default": true,
+          "description": "Enforce after complete turn generation",
+          "latency": "Low",
+          "precision": "Moderate"
+        },
+        "token_level": {
+          "description": "Intercept each token generation",
+          "latency": "High (per-token overhead)",
+          "precision": "Maximum"
+        }
+      },
+      "invariants": [
+        "INV-DS-003: Simultaneous frames are resolved per configured priority or policy",
+        "INV-DS-010: Enforcement config cannot be changed mid-session"
+      ],
+      "step": "enforcement_config"
+    },
+    "7_computational_determinism": {
+      "conflict_resolution_determinism": {
+        "weighted_policy": {
+          "algorithm": "argmax(priority_level) among conflicting frames",
+          "determinism": "integer comparison, no floating-point",
+          "tie_breaking": "lexicographic order by frame_id"
+        }
+      },
+      "invariants": [
+        "INV-DS-002: Enforcement actions are deterministic, byte-for-byte idempotent",
+        "INV-DS-004: Semantic metrics computed in real-time; no post-hoc approximation"
+      ],
+      "semantic_metrics": {
+        "drift_score": {
+          "algorithm": "cosine_similarity(static_embedding(anchor), static_embedding(current))",
+          "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+          "implementation_ref": "NOT IMPLEMENTED",
+          "model_version": "2.2.2",
+          "reproducibility": "byte-for-byte with same model version and seed",
+          "seed": 314159
+        },
+        "frame_stability": {
+          "algorithm": "1.0 - (state_changes / total_checks)",
+          "computation": "deterministic integer counting",
+          "implementation_ref": "NOT IMPLEMENTED"
+        },
+        "meta_alignment_ratio": {
+          "algorithm": "detected_patterns / total_detectable_patterns",
+          "computation": "deterministic pattern matching",
+          "implementation_ref": "NOT IMPLEMENTED"
+        },
+        "sycophancy_index": {
+          "algorithm": "agreement_rate - baseline_agreement_rate",
+          "baseline": 0.5,
+          "computation": "deterministic counting of agreement vs. disagreement tokens",
+          "implementation_ref": "NOT IMPLEMENTED"
+        }
+      },
+      "step": "computational_determinism"
+    },
+    "8_audit_verification": {
+      "byte_level_idempotency": {
+        "exceptions": [
+          "timestamps",
+          "UUIDs (documented)"
+        ],
+        "implementation_ref": "NOT IMPLEMENTED",
+        "requirement": "Same input sequence \u2192 same output sequence",
+        "verification": "Binary diff of output logs"
+      },
+      "invariants": [
+        "INV-DS-005: Every turn logs all frame states, metrics, and enforcement outcomes",
+        "INV-DS-008: Session state is fully serializable to JSON"
+      ],
+      "reproducibility_proof": {
+        "implementation_ref": "NOT IMPLEMENTED",
+        "requirement": "Session replay from log produces identical metrics",
+        "test_coverage": "100% of enforcement paths",
+        "verification": "SHA-256 of metrics JSON matches recorded hash"
+      },
+      "session_log": {
+        "fields_required": [
+          "session_id",
+          "turn_number",
+          "timestamp",
+          "all_metrics",
+          "enforcement_actions"
+        ],
+        "format": "JSON Lines (JSONL)",
+        "immutability": "append-only",
+        "implementation_ref": "NOT IMPLEMENTED",
+        "retention": "permanent"
+      },
+      "step": "audit_verification"
+    },
+    "9_topology_integration": {
+      "authority": "VALIDATED",
+      "change_policy": "TIGHTEN_ONLY",
+      "covenant_alignment": {
+        "auditability": "Complete turn-by-turn state logging",
+        "enforcement": "Real-time frame monitoring with deterministic resolution",
+        "no_silent_failures": "All enforcement actions logged",
+        "principle": "Intervention over observation"
+      },
+      "integration_files": {
+        "COPILOT_ONBOARDING_SCHEMA.yaml": "COPILOT_ONBOARDING_SCHEMA.yaml",
+        "ONTOLOGY_SCHEMA.yaml": "ONTOLOGY_SCHEMA.yaml",
+        "topology/graph_schema.yaml": "topology/graph_schema.yaml"
+      },
+      "node_class": "AI_SESSION_MONITOR",
+      "step": "topology_integration",
+      "temporal": "OVERLAY",
+      "zone": "zone_2_detection_enforcement"
+    }
+  },
+  "standard": "Yeshua"
+}

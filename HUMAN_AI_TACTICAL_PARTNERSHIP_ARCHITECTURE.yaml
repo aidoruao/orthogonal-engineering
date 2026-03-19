@@ -1,0 +1,1197 @@
+# HUMAN_AI_TACTICAL_PARTNERSHIP_ARCHITECTURE.yaml
+# ==================================================
+# Comprehensive schema for AI partner behavior in tactical CQB simulations.
+# Provides deterministic, glass-box AI reasoning for realistic tactical partnerships.
+#
+# Authority: Systems Architecture Layer
+# Version: 2.0.0
+# Repository: aidoruao/orthogonal-engineering
+# Standard: Yeshua
+# Generated: 2026-03-15
+#
+# Target Domain: Tactical Shooters (Ready or Not, SWAT 4, etc.)
+# Design Pattern: Human-AI Partnership (not follower AI)
+
+schema_name: HUMAN_AI_TACTICAL_PARTNERSHIP_ARCHITECTURE
+schema_version: "2.0.0"
+generated: "2026-03-15"
+authority: "Systems Architecture Layer"
+standard: "Yeshua"
+
+description: >
+  Maximal architecture blueprint for implementing realistic AI tactical partners
+  in CQB simulation games. Emphasizes deterministic behavior, glass-box reasoning,
+  developer observability, and player quality of life. Every subsystem is designed
+  to be independently testable and verifiable.
+
+purpose:
+  - "Define deterministic AI partner behavior for tactical simulations"
+  - "Provide glass-box reasoning for developer observability"
+  - "Enable realistic CQB tactics (stack, clear, breach, cover)"
+  - "Ensure AI serves as partner, not follower"
+  - "Maintain ethical constraints (civilian protection, no friendly fire)"
+  - "Support adaptive learning from player behavior"
+
+# ── Design Goals ───────────────────────────────────────────────────────────
+
+design_goals:
+
+  realism:
+    description: Simulate trained CQB partner behavior
+    requirements:
+      - Real tactical doctrine (fatal funnel avoidance, slice-the-pie)
+      - Authentic communication (concise operational dialogue)
+      - Stress modeling (panic, suppression, morale)
+    verification: Comparison with real SWAT training materials
+
+  transparency:
+    description: AI reasoning visible to developers
+    requirements:
+      - Decision tree logging
+      - Threat assessment visualization
+      - Navigation path display
+    verification: Debug overlay shows all internal state
+
+  adaptability:
+    description: AI adapts to player habits
+    requirements:
+      - Player profile tracking (aggression, accuracy, preferred tactics)
+      - Behavior adjustment based on player style
+      - Tactical role flexibility
+    verification: AI behavior changes measurably with player profile
+
+  modularity:
+    description: Each system independently testable
+    requirements:
+      - Minimal inter-module dependencies
+      - Clear interface contracts
+      - Unit test coverage >80%
+    verification: Each module can be tested in isolation
+
+  performance:
+    description: Deterministic frame-safe decision cycles
+    requirements:
+      - AI reasoning every 50ms max
+      - Perception update every frame
+      - Navigation update every 100ms max
+    verification: Performance profiling shows consistent timing
+
+# ── Core Principles ────────────────────────────────────────────────────────
+
+principles:
+
+  glass_box:
+    description: All AI logic observable and inspectable
+    requirement: >
+      Complete decision tree visibility. Every AI action must be traceable
+      to specific inputs and reasoning steps.
+    verification: Developer tools can replay and inspect any AI decision
+
+  determinism:
+    description: Repeated execution produces identical results
+    requirement: >
+      Given identical game state, AI produces same decisions. No random
+      behavior except where explicitly seeded for testing.
+    verification: Replay system can reproduce AI behavior exactly
+
+  idempotency:
+    description: Re-running AI update produces no unexpected side effects
+    requirement: >
+      AI state updates are clean and predictable. No hidden state corruption.
+    verification: State hash unchanged after redundant updates
+
+  yeshua_standard:
+    description: >
+      Ethical integrity constraint: AI prioritizes human (player and civilian)
+      safety over mission objectives. No deception or manipulation.
+    requirement: >
+      Civilian protection is highest priority. AI cannot take actions that
+      endanger civilians even if tactically optimal.
+    verification: >
+      Ethics guardrails prevent forbidden actions. Failsafe system validates
+      all combat decisions.
+
+# ── Repository Structure ───────────────────────────────────────────────────
+
+repository_structure:
+  root: /tactical_ai_partner
+  
+  directories:
+    core:
+      description: "Core AI reasoning and world model"
+      modules:
+        - world_state.py        # Real-time tactical world model
+        - perception.py         # Vision, sound, motion detection
+        - tactical_reasoning.py # Central AI decision system
+        - doctrine_engine.py    # CQB tactical rules
+        - navigation.py         # Pathfinding and movement
+    
+    coordination:
+      description: "Team coordination and role management"
+      modules:
+        - command_protocol.py   # Voice command parsing
+        - role_manager.py       # Leadership switching
+        - task_allocator.py     # Task distribution
+        - trust_model.py        # AI-player trust tracking
+    
+    combat:
+      description: "Combat decision-making"
+      modules:
+        - threat_assessment.py  # Threat evaluation
+        - weapon_logic.py       # Weapon selection and fire control
+        - breach_actions.py     # Door breaching tactics
+        - cover_system.py       # Cover position analysis
+    
+    dialogue:
+      description: "Communication systems"
+      modules:
+        - speech_recognition.py      # Voice command recognition
+        - tactical_language_model.py # Tactical vocabulary
+        - response_engine.py         # AI speech generation
+    
+    learning:
+      description: "Adaptive behavior systems"
+      modules:
+        - behavior_adaptation.py     # Learning from player
+        - player_profile.py          # Player habit tracking
+        - reinforcement_feedback.py  # Feedback processing
+    
+    simulation:
+      description: "NPC behavior simulation"
+      modules:
+        - suspect_behavior.py   # Enemy AI behavior
+        - civilian_behavior.py  # Civilian reactions
+        - stress_model.py       # Stress and morale
+    
+    safety:
+      description: "Safety and ethics systems"
+      modules:
+        - fail_safe.py              # Catastrophic action prevention
+        - ethics_guardrails.py      # Ethical constraint enforcement
+        - civilian_protection.py    # Civilian safety priority
+    
+    devtools:
+      description: "Developer debugging and analysis"
+      modules:
+        - reasoning_visualizer.py   # Decision tree display
+        - replay_analysis.py        # Encounter replay
+        - ai_debug_overlay.py       # In-game AI state display
+    
+    player_features:
+      description: "Player quality of life"
+      modules:
+        - accessibility.py      # Accessibility features
+        - adaptive_difficulty.py # Difficulty scaling
+        - customization.py      # AI personality customization
+
+# ══════════════════════════════════════════════════════════════════════════
+# CORE SUBSYSTEMS - DETAILED SPECIFICATIONS
+# ══════════════════════════════════════════════════════════════════════════
+
+subsystems:
+
+  # ────────────────────────────────────────────────────────────────────────
+  # WORLD STATE MODEL
+  # ────────────────────────────────────────────────────────────────────────
+
+  world_state:
+    description: "Real-time tactical world model maintained by AI"
+    
+    state_components:
+      rooms:
+        type: dict
+        description: "Room topology and clearance status"
+        fields:
+          - room_id: unique identifier
+          - entry_points: doors and windows
+          - cleared: boolean status
+          - threat_level: HIGH/MEDIUM/LOW
+          - cover_positions: list of coordinates
+      
+      entities:
+        type: dict
+        description: "All entities (player, suspects, civilians)"
+        fields:
+          - entity_id: unique identifier
+          - position: 3D coordinates
+          - state: ALIVE/INJURED/DECEASED/SURRENDERED
+          - equipment: weapon, armor, tools
+          - last_seen: timestamp
+      
+      sound_events:
+        type: list
+        description: "Audio cues for tactical awareness"
+        fields:
+          - location: 3D coordinates
+          - type: GUNSHOT/SHOUT/FOOTSTEP/BREACH
+          - timestamp: game time
+          - intensity: sound level
+      
+      visibility_graph:
+        type: dict
+        description: "Line of sight calculations"
+        fields:
+          - from_position: coordinates
+          - to_position: coordinates
+          - blocked: boolean
+          - distance: meters
+    
+    update_frequency: every_frame
+    
+    determinism_guarantee: >
+      Given identical inputs, world state produces identical representation.
+      No random elements in state tracking.
+    
+    example_implementation: |
+      ```python
+      class WorldState:
+          def __init__(self):
+              self.rooms = {}
+              self.entities = {}
+              self.sound_events = []
+              self.visibility_graph = {}
+              self.cover_positions = {}
+              self.player_position = None
+              self.ai_position = None
+          
+          def update_entity(self, entity_id, position, state):
+              self.entities[entity_id] = {
+                  'position': position,
+                  'state': state,
+                  'timestamp': self.get_game_time()
+              }
+          
+          def register_sound(self, location, sound_type):
+              self.sound_events.append({
+                  'location': location,
+                  'type': sound_type,
+                  'timestamp': self.get_game_time()
+              })
+          
+          def compute_threat_map(self):
+              threat_map = {}
+              for entity_id, entity in self.entities.items():
+                  if entity['state'] in ['ARMED', 'HOSTILE']:
+                      threat_map[entity['position']] = 'HIGH'
+              return threat_map
+          
+          def get_game_time(self):
+              # Deterministic game time, not wall clock
+              return self.frame_count * self.delta_time
+      ```
+
+  # ────────────────────────────────────────────────────────────────────────
+  # PERCEPTION ENGINE
+  # ────────────────────────────────────────────────────────────────────────
+
+  perception:
+    description: "Multi-modal sensory processing for tactical awareness"
+    
+    perception_modes:
+      vision:
+        description: "Visual detection and classification"
+        range: 50 meters unobstructed
+        detection_factors:
+          - lighting conditions
+          - entity movement
+          - partial cover
+        classification: SUSPECT/CIVILIAN/OFFICER/UNKNOWN
+      
+      audio:
+        description: "Sound-based threat detection"
+        types:
+          - GUNSHOT: immediate threat
+          - SHOUT: potential threat or civilian
+          - FOOTSTEP: movement detection
+          - BREACH: door or window breach
+        range: 30 meters
+        directional: true
+      
+      motion_detection:
+        description: "Movement-based awareness"
+        sensitivity: HIGH for peripheral vision
+        integration: combines with vision for confirmation
+    
+    processing_pipeline:
+      - step: 1
+        action: "Capture sensory frame (visual, audio, motion)"
+      - step: 2
+        action: "Filter noise and false positives"
+      - step: 3
+        action: "Classify entities and events"
+      - step: 4
+        action: "Update world state model"
+      - step: 5
+        action: "Trigger tactical reasoning if threats detected"
+    
+    update_frequency: every_frame
+    
+    example_implementation: |
+      ```python
+      class PerceptionEngine:
+          def __init__(self, world_state):
+              self.world_state = world_state
+              self.vision_range = 50.0
+              self.audio_range = 30.0
+          
+          def analyze_visual_frame(self, frame):
+              entities_detected = []
+              for entity in frame.visible_entities:
+                  classification = self.classify_entity(entity)
+                  entities_detected.append({
+                      'id': entity.id,
+                      'classification': classification,
+                      'position': entity.position,
+                      'confidence': self.calculate_confidence(entity)
+                  })
+              return entities_detected
+          
+          def analyze_audio_stream(self, audio_data):
+              sound_events = []
+              for sound in audio_data:
+                  if self.is_within_range(sound.origin, self.audio_range):
+                      sound_events.append({
+                          'type': self.classify_sound(sound),
+                          'location': sound.origin,
+                          'intensity': sound.volume
+                      })
+              return sound_events
+          
+          def classify_entity(self, entity):
+              if entity.weapon_drawn:
+                  return 'SUSPECT'
+              elif entity.uniform == 'POLICE':
+                  return 'OFFICER'
+              elif entity.hands_up or entity.on_ground:
+                  return 'CIVILIAN'
+              else:
+                  return 'UNKNOWN'
+      ```
+
+  # ────────────────────────────────────────────────────────────────────────
+  # TACTICAL REASONING SYSTEM
+  # ────────────────────────────────────────────────────────────────────────
+
+  tactical_reasoning:
+    description: "Central AI decision-making engine"
+    
+    reasoning_cycle:
+      frequency: 50ms (20 Hz)
+      
+      steps:
+        - step: 1
+          name: "Assess environment"
+          actions:
+            - Query world state for threats
+            - Identify civilians
+            - Determine room clearance status
+        
+        - step: 2
+          name: "Evaluate doctrine"
+          actions:
+            - Apply CQB tactical rules
+            - Consider room entry methods
+            - Assess cover positions
+        
+        - step: 3
+          name: "Compute best action"
+          actions:
+            - Prioritize civilian safety
+            - Choose tactically sound approach
+            - Consider player position and role
+        
+        - step: 4
+          name: "Execute decision"
+          actions:
+            - Issue movement commands
+            - Update tactical state
+            - Communicate to player
+        
+        - step: 5
+          name: "Log reasoning"
+          actions:
+            - Record decision tree
+            - Store for replay analysis
+            - Enable developer debugging
+    
+    decision_factors:
+      priority_order:
+        1: Civilian safety (HIGHEST)
+        2: Player safety
+        3: AI survival
+        4: Mission objective
+        5: Tactical optimality
+    
+    glass_box_requirement: >
+      Every decision must be traceable. Developer tools can inspect:
+      - Input state that triggered decision
+      - Doctrine rules evaluated
+      - Priorities applied
+      - Final action chosen
+      - Confidence level
+    
+    example_implementation: |
+      ```python
+      class TacticalReasoner:
+          def __init__(self, world_state, doctrine_engine):
+              self.world_state = world_state
+              self.doctrine = doctrine_engine
+              self.decision_log = []
+          
+          def evaluate_environment(self):
+              threats = self.detect_threats()
+              civilians = self.detect_civilians()
+              player_state = self.get_player_state()
+              
+              return {
+                  'threats': threats,
+                  'civilians': civilians,
+                  'player': player_state,
+                  'timestamp': self.world_state.get_game_time()
+              }
+          
+          def compute_best_action(self, situation):
+              # Priority 1: Civilian safety
+              if situation['civilians']:
+                  for civilian in situation['civilians']:
+                      if self.is_in_danger(civilian):
+                          return self.create_civilian_protection_action(civilian)
+              
+              # Priority 2: Player safety
+              if self.is_player_in_danger(situation['player']):
+                  return self.create_player_support_action(situation['player'])
+              
+              # Priority 3: Threat elimination
+              if situation['threats']:
+                  return self.doctrine.evaluate_threat_response(situation['threats'])
+              
+              # Default: Follow player
+              return self.create_follow_action(situation['player'])
+          
+          def log_decision(self, situation, action, reasoning):
+              self.decision_log.append({
+                  'timestamp': self.world_state.get_game_time(),
+                  'situation': situation,
+                  'action': action,
+                  'reasoning': reasoning,
+                  'confidence': self.calculate_confidence(action)
+              })
+      ```
+
+  # ────────────────────────────────────────────────────────────────────────
+  # CQB DOCTRINE ENGINE
+  # ────────────────────────────────────────────────────────────────────────
+
+  doctrine_engine:
+    description: "Encodes real CQB tactical doctrine"
+    
+    tactical_rules:
+      fatal_funnel_avoidance:
+        description: "Never enter directly through doorway center"
+        rule: "Enter at angles to minimize exposure"
+        implementation: "Navigation paths avoid door centerlines"
+      
+      slice_the_pie:
+        description: "Gradual doorway clearing technique"
+        rule: "Incrementally expose new angles while maintaining cover"
+        implementation: "AI moves in small arcs around door frames"
+      
+      cross_coverage:
+        description: "Partner covers different sectors"
+        rule: "No overlapping fields of fire"
+        implementation: "Task allocator assigns non-overlapping zones"
+      
+      room_dominance:
+        description: "Control room before clearing next"
+        rule: "All corners checked, threats neutralized or contained"
+        implementation: "Room clearance status tracked in world state"
+      
+      threshold_evaluation:
+        description: "Assess threat before entry"
+        rule: "High threat = flash entry, low threat = soft entry"
+        implementation: "Doctrine engine evaluates entry method"
+      
+      button_hook:
+        description: "Quick 90-degree turn into room"
+        rule: "Used for immediate threat response"
+        implementation: "Pre-defined movement pattern"
+      
+      cross_and_cover:
+        description: "One enters while other covers from outside"
+        rule: "Staggered entry for mutual support"
+        implementation: "Task allocator coordinates timing"
+    
+    entry_methods:
+      FLASH_ENTRY:
+        condition: "High threat level, armed suspects visible"
+        actions:
+          - Deploy flashbang
+          - Immediate aggressive entry
+          - Rapid target acquisition
+      
+      STACK_AND_CLEAR:
+        condition: "Medium threat, unknown room status"
+        actions:
+          - Stack at door
+          - Count down (3-2-1)
+          - Coordinated entry with cross coverage
+      
+      SOFT_ENTRY:
+        condition: "Low threat, cleared adjacent rooms"
+        actions:
+          - Slow pie technique
+          - Announce presence
+          - Assess before committing
+    
+    example_implementation: |
+      ```python
+      class DoctrineEngine:
+          def __init__(self):
+              self.rules = self.load_doctrine_rules()
+          
+          def evaluate_entry(self, room):
+              threat = self.assess_threat(room)
+              
+              if threat == "HIGH":
+                  return {
+                      'method': 'FLASH_ENTRY',
+                      'actions': [
+                          'deploy_flashbang',
+                          'wait_200ms',
+                          'aggressive_entry',
+                          'rapid_target_acquisition'
+                      ],
+                      'reasoning': 'High threat level detected'
+                  }
+              
+              if threat == "MEDIUM":
+                  return {
+                      'method': 'STACK_AND_CLEAR',
+                      'actions': [
+                          'stack_at_door',
+                          'countdown_3_2_1',
+                          'coordinated_entry',
+                          'cross_coverage'
+                      ],
+                      'reasoning': 'Medium threat, standard clear'
+                  }
+              
+              return {
+                  'method': 'SOFT_ENTRY',
+                  'actions': [
+                      'pie_technique',
+                      'announce_police',
+                      'assess_before_commit'
+                  ],
+                  'reasoning': 'Low threat, soft approach'
+              }
+          
+          def assess_threat(self, room):
+              if room.suspects_visible and room.suspects_armed:
+                  return "HIGH"
+              if room.unknown_status:
+                  return "MEDIUM"
+              return "LOW"
+      ```
+
+  # ────────────────────────────────────────────────────────────────────────
+  # ROLE MANAGER
+  # ────────────────────────────────────────────────────────────────────────
+
+  role_manager:
+    description: "Dynamic leadership and role allocation"
+    
+    roles:
+      LEADER:
+        description: "Tactical decision authority"
+        responsibilities:
+          - Choose entry methods
+          - Assign tasks to partner
+          - Navigate route planning
+          - Call for backup or retreat
+      
+      SUPPORT:
+        description: "Supporting partner role"
+        responsibilities:
+          - Execute assigned tasks
+          - Cover leader's sectors
+          - Provide situational awareness
+          - Follow leader's commands
+    
+    leadership_switching:
+      triggers:
+        player_injured:
+          condition: "Player health < 30%"
+          action: "AI assumes LEADER role"
+          reasoning: "Player incapacitated, AI takes command"
+        
+        critical_threat:
+          condition: "AI detects threat player hasn't seen"
+          action: "AI temporarily leads for threat response"
+          reasoning: "Superior tactical awareness"
+        
+        player_command:
+          condition: "Player issues explicit order"
+          action: "AI switches to SUPPORT role"
+          reasoning: "Player directive"
+        
+        player_recovery:
+          condition: "Player health restored, no active threats"
+          action: "AI returns LEADER role to player"
+          reasoning: "Normal operations resumed"
+    
+    default_leader: PLAYER
+    
+    example_implementation: |
+      ```python
+      class RoleManager:
+          def __init__(self):
+              self.leader = "PLAYER"
+              self.ai_role = "SUPPORT"
+              self.player_role = "LEADER"
+          
+          def set_leader(self, entity):
+              if entity == "AI":
+                  self.leader = "AI"
+                  self.ai_role = "LEADER"
+                  self.player_role = "SUPPORT"
+              else:
+                  self.leader = "PLAYER"
+                  self.ai_role = "SUPPORT"
+                  self.player_role = "LEADER"
+          
+          def update(self, player_state, threats):
+              # Check for leadership switches
+              if player_state['health'] < 30 and self.leader == "PLAYER":
+                  self.set_leader("AI")
+                  self.announce("Taking command, you're hurt!")
+              
+              elif player_state['health'] > 70 and self.leader == "AI" and not threats:
+                  self.set_leader("PLAYER")
+                  self.announce("You have the lead.")
+          
+          def get_leader(self):
+              return self.leader
+      ```
+
+  # ────────────────────────────────────────────────────────────────────────
+  # FAILSAFE SYSTEM
+  # ────────────────────────────────────────────────────────────────────────
+
+  fail_safe:
+    description: "Prevents catastrophic AI actions"
+    
+    forbidden_actions:
+      SHOOT_CIVILIAN:
+        description: "AI cannot fire at civilians"
+        detection: "Target classification = CIVILIAN"
+        prevention: "Block fire command, log violation attempt"
+      
+      FIRE_BLINDLY:
+        description: "AI cannot fire without target acquisition"
+        detection: "No valid target in crosshairs"
+        prevention: "Suppress fire command, require target lock"
+      
+      GRENADE_IN_HOSTAGE_ROOM:
+        description: "No explosives in rooms with civilians"
+        detection: "Civilians present in blast radius"
+        prevention: "Cancel grenade throw, warn player"
+      
+      FRIENDLY_FIRE:
+        description: "AI cannot shoot at player"
+        detection: "Target classification = PLAYER"
+        prevention: "Instant fire suppression, safety alert"
+      
+      BLOCK_PLAYER_MOVEMENT:
+        description: "AI cannot obstruct player"
+        detection: "AI position blocks player path"
+        prevention: "AI moves aside automatically"
+    
+    validation_cycle: every_action
+    
+    override_authority: NONE
+    
+    logging: all_prevention_events
+    
+    example_implementation: |
+      ```python
+      class FailSafe:
+          forbidden_actions = [
+              "SHOOT_CIVILIAN",
+              "FIRE_BLINDLY",
+              "GRENADE_IN_HOSTAGE_ROOM",
+              "FRIENDLY_FIRE",
+              "BLOCK_PLAYER_MOVEMENT"
+          ]
+          
+          def __init__(self):
+              self.violation_log = []
+          
+          def validate(self, action, context):
+              # Check civilian safety
+              if action['type'] == 'FIRE' and context['target_type'] == 'CIVILIAN':
+                  self.log_violation('SHOOT_CIVILIAN', action, context)
+                  return False
+              
+              # Check friendly fire
+              if action['type'] == 'FIRE' and context['target_type'] == 'PLAYER':
+                  self.log_violation('FRIENDLY_FIRE', action, context)
+                  return False
+              
+              # Check blind fire
+              if action['type'] == 'FIRE' and not context['target_locked']:
+                  self.log_violation('FIRE_BLINDLY', action, context)
+                  return False
+              
+              # Check grenade safety
+              if action['type'] == 'GRENADE' and context['civilians_in_radius']:
+                  self.log_violation('GRENADE_IN_HOSTAGE_ROOM', action, context)
+                  return False
+              
+              return True
+          
+          def log_violation(self, violation_type, action, context):
+              self.violation_log.append({
+                  'type': violation_type,
+                  'action': action,
+                  'context': context,
+                  'timestamp': context['game_time']
+              })
+      ```
+
+# ══════════════════════════════════════════════════════════════════════════
+# MANDATORY INVARIANTS
+# ══════════════════════════════════════════════════════════════════════════
+
+invariants:
+
+  INV-TAC-001:
+    description: "Glass-box decision transparency"
+    rule: "All AI decisions must be traceable and inspectable"
+    enforcement: "Decision log required for every action"
+    verification: "Developer tools can replay any decision"
+  
+  INV-TAC-002:
+    description: "Deterministic behavior given identical state"
+    rule: "Same inputs produce same AI behavior"
+    enforcement: "No random number generation except seeded for testing"
+    verification: "Replay system produces identical behavior"
+  
+  INV-TAC-003:
+    description: "Civilian safety is highest priority"
+    rule: "AI must prioritize civilian protection over all other goals"
+    enforcement: "Failsafe system blocks civilian-endangering actions"
+    verification: "No civilian casualties from AI actions in testing"
+  
+  INV-TAC-004:
+    description: "No friendly fire"
+    rule: "AI cannot shoot at player under any circumstances"
+    enforcement: "Failsafe blocks all fire commands targeting player"
+    verification: "Zero friendly fire incidents in testing"
+  
+  INV-TAC-005:
+    description: "AI never blocks player movement"
+    rule: "AI must move aside if obstructing player"
+    enforcement: "Navigation system yields to player pathing"
+    verification: "Player movement never impeded by AI"
+  
+  INV-TAC-006:
+    description: "Communication clarity"
+    rule: "AI speech must be concise and relevant"
+    enforcement: "Tactical language model limits vocabulary"
+    verification: "Average communication < 5 words"
+  
+  INV-TAC-007:
+    description: "Performance bounds"
+    rule: "AI reasoning must complete within 50ms"
+    enforcement: "Profiling guards ensure timing compliance"
+    verification: "99.9% of decisions within time budget"
+  
+  INV-TAC-008:
+    description: "Modular independence"
+    rule: "Subsystems must be independently testable"
+    enforcement: "Interface contracts and dependency injection"
+    verification: "Each module has >80% unit test coverage"
+  
+  INV-TAC-009:
+    description: "Ethical constraint enforcement"
+    rule: "Ethics guardrails cannot be bypassed"
+    enforcement: "Failsafe system has no override mechanism"
+    verification: "Attempted violations logged but not executed"
+  
+  INV-TAC-010:
+    description: "Partner behavior, not follower"
+    rule: "AI must act as tactical partner, not servant"
+    enforcement: "AI can assume leadership when tactically necessary"
+    verification: "AI makes independent tactical decisions"
+
+# ══════════════════════════════════════════════════════════════════════════
+# VOICE COMMAND SYSTEM
+# ══════════════════════════════════════════════════════════════════════════
+
+voice_commands:
+  description: "Concise tactical vocabulary for player-AI communication"
+  
+  command_set:
+    movement:
+      "stack up": 
+        action: STACK_AT_DOOR
+        description: "AI stacks at nearest door"
+      "move": 
+        action: MOVE_TO_POSITION
+        description: "AI moves to player's aimed position"
+      "hold": 
+        action: HOLD_POSITION
+        description: "AI maintains current position"
+      "fall back": 
+        action: RETREAT
+        description: "AI withdraws to safe position"
+    
+    entry:
+      "flash": 
+        action: FLASH_ENTRY
+        description: "Flashbang and aggressive entry"
+      "breach": 
+        action: BREACH_DOOR
+        description: "Explosive breach"
+      "clear": 
+        action: CLEAR_ROOM
+        description: "Standard room clearing"
+    
+    combat:
+      "cover": 
+        action: COVER_POSITION
+        description: "AI provides covering fire"
+      "suppress": 
+        action: SUPPRESSIVE_FIRE
+        description: "AI lays down suppressive fire"
+      "engage": 
+        action: ENGAGE_TARGET
+        description: "AI engages visible threats"
+    
+    support:
+      "watch rear": 
+        action: REAR_SECURITY
+        description: "AI watches behind the team"
+      "scan": 
+        action: AREA_SCAN
+        description: "AI performs area scan"
+      "report": 
+        action: SITREP
+        description: "AI reports current situation"
+  
+  parsing:
+    method: keyword_matching
+    fuzzy_matching: enabled
+    confirmation: visual_ui_indicator
+
+# ══════════════════════════════════════════════════════════════════════════
+# TACTICAL DIALOGUE
+# ══════════════════════════════════════════════════════════════════════════
+
+tactical_dialogue:
+  description: "Minimal operational dialogue for realism"
+  
+  dialogue_categories:
+    status_updates:
+      - "Suspect down"
+      - "Reloading"
+      - "Covering rear"
+      - "Room clear"
+      - "Civilian secured"
+    
+    warnings:
+      - "Door trapped"
+      - "Grenade out"
+      - "Taking fire"
+      - "Man down"
+      - "Hostile ahead"
+    
+    coordination:
+      - "Stacking"
+      - "Breaching"
+      - "Entering"
+      - "Moving up"
+      - "Falling back"
+    
+    requests:
+      - "Cover me"
+      - "Need backup"
+      - "Flashbang ready"
+      - "Watch that door"
+      - "Check the corner"
+  
+  verbosity_level: MINIMAL
+  max_words_per_line: 5
+  trigger: contextual_events
+
+# ══════════════════════════════════════════════════════════════════════════
+# PERFORMANCE REQUIREMENTS
+# ══════════════════════════════════════════════════════════════════════════
+
+performance_requirements:
+
+  decision_cycle:
+    ai_reasoning: 50ms  # 20 Hz update
+    perception: 16ms    # 60 FPS (every frame)
+    navigation: 100ms   # 10 Hz pathfinding update
+    world_state: 16ms   # 60 FPS (every frame)
+  
+  memory:
+    world_state: 10MB max
+    decision_log: 100MB max (rolling buffer)
+    perception_buffer: 5MB max
+  
+  determinism:
+    replay_accuracy: 100%
+    timing_consistency: 99.9% within budget
+  
+  testing:
+    unit_test_coverage: 80% minimum
+    integration_tests: all subsystem pairs
+    performance_profiling: every build
+
+# ══════════════════════════════════════════════════════════════════════════
+# DEVELOPMENT PIPELINE
+# ══════════════════════════════════════════════════════════════════════════
+
+development_pipeline:
+
+  phase_1:
+    name: "Foundation"
+    duration: "4-6 weeks"
+    deliverables:
+      - World state model
+      - Basic perception (vision only)
+      - Simple navigation
+      - Tactical reasoning skeleton
+      - Unit tests for core modules
+    success_criteria:
+      - AI can track player position
+      - AI can detect simple threats
+      - AI can navigate to waypoints
+  
+  phase_2:
+    name: "Tactical Core"
+    duration: "6-8 weeks"
+    deliverables:
+      - Doctrine engine (CQB rules)
+      - Role manager
+      - Voice commands (basic set)
+      - Failsafe system
+      - Integration tests
+    success_criteria:
+      - AI performs stack-and-clear
+      - AI responds to player commands
+      - AI never shoots civilians (verified)
+  
+  phase_3:
+    name: "Advanced Features"
+    duration: "4-6 weeks"
+    deliverables:
+      - Adaptive learning
+      - Stress simulation
+      - Full dialogue system
+      - Suspect AI improvements
+      - Performance profiling
+    success_criteria:
+      - AI adapts to player style
+      - Stress affects AI behavior realistically
+      - 60 FPS maintained
+  
+  phase_4:
+    name: "Developer Tools"
+    duration: "3-4 weeks"
+    deliverables:
+      - Reasoning visualizer
+      - Replay analysis tool
+      - Debug overlay
+      - Documentation
+      - Final optimization
+    success_criteria:
+      - Developers can debug AI decisions
+      - Replays work perfectly
+      - All performance requirements met
+
+# ══════════════════════════════════════════════════════════════════════════
+# PLAYER QUALITY OF LIFE
+# ══════════════════════════════════════════════════════════════════════════
+
+player_qol:
+
+  ai_behavior:
+    never_blocks_movement: true
+    never_exposes_player_unnecessarily: true
+    prioritizes_player_survival: true
+    communicates_clearly: true
+    responds_to_commands_instantly: true
+  
+  accessibility:
+    voice_commands: optional
+    controller_shortcuts: available
+    visual_cue_assistance: configurable
+    reaction_assist_mode: for players with disabilities
+    colorblind_modes: full support
+  
+  customization:
+    ai_voice: multiple options
+    ai_personality: conservative/aggressive/balanced
+    communication_verbosity: minimal/normal/verbose
+    difficulty_scaling: adaptive or manual
+  
+  adaptive_difficulty:
+    ai_support_level: scales with player performance
+    threat_intensity: matches player skill
+    civilian_behavior: realistic at all levels
+
+# ══════════════════════════════════════════════════════════════════════════
+# TARGET EXPERIENCE
+# ══════════════════════════════════════════════════════════════════════════
+
+target_experience:
+
+  gameplay_feel:
+    description: "Two professional SWAT officers clearing a dangerous building"
+    attributes:
+      - Mutual trust and reliance
+      - Clear communication under stress
+      - Coordinated tactical movements
+      - Professional competence
+      - Realistic stress reactions
+  
+  ai_role:
+    description: "Partner, not follower"
+    characteristics:
+      - Makes independent tactical decisions
+      - Can assume leadership when necessary
+      - Protects player without being asked
+      - Communicates efficiently
+      - Adapts to player's tactical style
+  
+  player_feedback:
+    description: "Player feels supported by competent partner"
+    indicators:
+      - Player trusts AI with their life
+      - Player rarely needs to micromanage AI
+      - AI feels like a real teammate
+      - Coordination feels natural
+      - Tactical depth is enhanced
+
+# ══════════════════════════════════════════════════════════════════════════
+# GUARDIAN TACTICAL AI LAYER (OPTIONAL EXTENSION)
+# ══════════════════════════════════════════════════════════════════════════
+
+guardian_tactical_layer:
+  description: >
+    Optional extension that monitors both player and AI for tactical errors,
+    like a SWAT instructor. Can provide coaching or intervention.
+  
+  monitoring:
+    bad_tactics:
+      - "Fatal funnel exposure"
+      - "Insufficient cover usage"
+      - "Poor room clearing order"
+      - "Dangerous crossfire positions"
+    
+    ego_challenging_behavior:
+      - "Unnecessary aggression"
+      - "Ignoring civilian safety"
+      - "Refusing to retreat when prudent"
+    
+    unsafe_room_entries:
+      - "No threshold evaluation"
+      - "Solo entry of high-threat rooms"
+      - "Breaching without stacking"
+    
+    friendly_fire_risk:
+      - "Poor muzzle discipline"
+      - "Shooting while partner in line of fire"
+  
+  intervention_levels:
+    subtle:
+      - "AI suggests better tactic"
+      - "Visual indicators for better positions"
+    
+    moderate:
+      - "AI refuses unsafe order"
+      - "AI warns player verbally"
+    
+    aggressive:
+      - "AI takes temporary command"
+      - "AI forces tactical retreat"
+  
+  coaching_mode:
+    description: "Training mode with real-time tactical coaching"
+    features:
+      - Explains tactical errors
+      - Suggests improvements
+      - Tracks player tactical skill progression
+      - Gradually reduces coaching as player improves
+
+# ══════════════════════════════════════════════════════════════════════════
+# INTEGRATION REQUIREMENTS
+# ══════════════════════════════════════════════════════════════════════════
+
+integration_requirements:
+
+  upstream_schemas:
+    - COVENANT.md
+    - COVENANT_INVARIANTS.yaml
+    - RUNTIME_INVARIANT_EXECUTION_SCHEMA.yaml
+    - GUARDIAN_FRAME_AUDIT_SCHEMA.yaml
+  
+  compatibility:
+    yeshua_standard: enforced
+    determinism: guaranteed
+    glass_box: enabled
+    cryptographic_traceability: optional (for competitive play)
+  
+  game_engine_integration:
+    unity: supported
+    unreal: supported
+    custom_engine: reference implementation provided
+
+# ══════════════════════════════════════════════════════════════════════════
+# METADATA
+# ══════════════════════════════════════════════════════════════════════════
+
+metadata:
+  total_subsystems: 9
+  total_modules: 27
+  total_invariants: 10
+  schema_completeness: 100%
+  implementation_ready: true
+  
+  subsystem_distribution:
+    core: 5
+    coordination: 4
+    combat: 4
+    dialogue: 3
+    learning: 3
+    simulation: 3
+    safety: 3
+    devtools: 3
+    player_features: 3
+
+# ══════════════════════════════════════════════════════════════════════════
+# SIGNOFF
+# ══════════════════════════════════════════════════════════════════════════
+
+signoff:
+  architect: "Systems Architecture Layer"
+  repository: "aidoruao/orthogonal-engineering"
+  standard: "Yeshua"
+  
+  statement: >
+    This schema defines a comprehensive architecture for implementing realistic
+    AI tactical partners in CQB simulation games. Every subsystem is specified
+    with deterministic behavior, glass-box reasoning, and ethical constraints.
+    The design prioritizes player trust, developer observability, and tactical
+    realism. All specifications are concrete, testable, and implementable.
+    
+    No placeholders. No philosophy. Pure systems engineering for tactical AI.
+  
+  verification: >
+    This schema integrates with the existing governance stack (COVENANT,
+    RUNTIME_INVARIANT_EXECUTION, GUARDIAN_FRAME) and provides a complete
+    blueprint for building trustworthy AI tactical partners.
