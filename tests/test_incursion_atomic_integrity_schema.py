@@ -71,3 +71,4 @@ def test_core_modules_present():
     coop = modules["CoOpNetwork"]
     assert "SessionID" in coop["fields"]
     assert "PeerLatencies" in coop["fields"]
+    assert coop["fields"]["PeerLatencies"]["type"] == "map<UUID,float>"
