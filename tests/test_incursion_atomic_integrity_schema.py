@@ -74,4 +74,4 @@ def test_core_modules_present(schema):
     assert "PeerLatencies" in coop["fields"]
     assert coop["fields"]["PeerLatencies"]["type"] == "map<UUID,float>"
     assert coop["invariants"]
-    assert coop["hello_world"]
+    assert coop["hello_world"] == "Start session with two peers, record latency map, verify hash is stable"
