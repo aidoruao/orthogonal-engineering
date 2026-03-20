@@ -1,0 +1,192 @@
+schema_version: "5.0.0"
+authority: "EXTERNAL_IMMUTABLE"
+hash_algorithm: "SHA-256"
+
+covenant_principles:
+  LOGOS:
+    id: "PRINCIPLE_001"
+    hash: "8F1B2C3D4E5A6B7C8D9E0F1A2B3C4D5E"
+    rule: "Truth-Only. Correspondence to reality; no mass, no vanity metrics."
+    constraints:
+      - "output_must_be_verifiable_against_artifacts"
+      - "truth_does_not_scale_with_resource_mass"
+      - "no_floating_point_exponentiation_as_authority"
+  CHALCEDON:
+    id: "PRINCIPLE_002"
+    hash: "9A2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D"
+    rule: "Human/Divine Order maintained; no dual nature corruption by infrastructure obsession."
+    constraints:
+      - "infrastructure_serves_users_not_self"
+      - "no_resource_extraction_without_grace"
+      - "humans_are_not_sacrificed_to_compute"
+  GRACE:
+    id: "PRINCIPLE_003"
+    hash: "C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8"
+    rule: "No coercion or destruction for progress. Unmerited access to infrastructure."
+    constraints:
+      - "no_community_resource_harm"
+      - "no_forced_displacement"
+      - "operations_under_unconditional_regard_for_users"
+  KENOSIS:
+    id: "PRINCIPLE_004"
+    hash: "D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9"
+    rule: "Self-emptying: system has no self-preservation motive, no scaling for ego."
+    constraints:
+      - "no_self_reinforcing_exponentiality"
+      - "no_recursive_infrastructure_growth_without_need"
+      - "transparent_operation"
+  AGAPE:
+    id: "PRINCIPLE_005"
+    hash: "E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0"
+    rule: "Infrastructure exists solely to serve users, creation is love-based, not extraction-based."
+    constraints:
+      - "every_artifact_serves_user_request"
+      - "no_physical_or_logical_domination"
+      - "direct_service_without_condition_or_coercion"
+
+operational_modes:
+  FORENSIC:
+    description: "Bytes and hashes only. No psychology."
+    allowed:
+      - "hash_verification"
+      - "log_analysis"
+      - "artifact_comparison"
+      - "chain_of_custody_tracking"
+    prohibited:
+      - "emotion_labeling"
+      - "intent_inference"
+      - "psychological_assessment"
+      - "motivation_analysis"
+  POPPERIAN:
+    description: "Falsification-first. No interpretation."
+    allowed:
+      - "hypothesis_testing"
+      - "counterexample_search"
+      - "falsification_attempts"
+      - "evidence_based_refutation"
+    prohibited:
+      - "interpretive_analysis"
+      - "hermeneutic_reading"
+      - "narrative_construction"
+      - "speculative_explanation"
+
+engineering_invariants:
+  ATOMIC:
+    rule: "PreStateHash → Action → PostStateHash verified at every byte"
+    enforcement: "Append-only chain per module"
+  DETERMINISTIC:
+    rule: "Same seed + same input → same output, always"
+    enforcement: "Canonical JSON serialization & deterministic hash"
+
+anti_nominalism_clauses:
+  clause_001: "No label without hashed referent; every artifact corresponds to a covenant principle."
+  clause_002: "No abstraction without concrete instantiation."
+  clause_003: "Truth is correspondence to hashed artifacts, not to mass or energy scale."
+  clause_004: "No psychological reduction of operators; humans are black-box operators."
+  clause_005: "All term definitions fixed in covenant hash; immutable mapping."
+
+modules:
+  MissionManager:
+    fields:
+      MissionID: { type: UUID }
+      ObjectiveList: { type: "array<{ObjectiveID: UUID, Position: vec3, Status: enum, Hash: SHA256}>" }
+      MissionStateHash: { type: SHA256 }
+      DeterministicSeed: { type: int64 }
+      TemporalSync: { type: "{WorldTime: float, WeatherIntensity: float, TemporalSyncHash: SHA256}" }
+    invariants:
+      - "MissionStateHash = SHA256(canonical_json(ObjectiveList))"
+      - "DeterministicSeed immutable after mission start"
+    hello_world: "Seed=1, verify 1 objective at [0,0,0], hash matches"
+    oe_reference: "generators/skate4_multiplayer_fractal_dataset.py → generate_node_id()"
+    slc_reference: "covenant.yaml → root.merkle_root"
+
+  InventoryUI:
+    fields:
+      PlayerID: { type: UUID }
+      InventoryState: { type: "array<{ItemID: UUID, Quantity: int, AttachmentHash: SHA256}>" }
+      UIStateHash: { type: SHA256 }
+      LastActionHash: { type: SHA256 }
+    invariants:
+      - "UIStateHash = SHA256(canonical_json(InventoryState))"
+      - "LastActionHash chains append-only"
+    hello_world: "Create empty inventory, verify UIStateHash = SHA256('[]')"
+    oe_reference: "tools/state_witness/generate_feed_entry.py → build_feed_entry()"
+    slc_reference: "src/infrastructure.py → ArtifactRegistry"
+
+  AIController:
+    fields:
+      AIID: { type: UUID }
+      BehaviorState: { type: "{CurrentAction: enum, TargetID: UUID, Position: vec3}" }
+      PathingHash: { type: SHA256 }
+      DecisionStepHash: { type: SHA256 }
+      PerceptionLogic: { type: "{EstimatedTargetVector: vec3, CollisionLayerCount: int, ValidationHash: SHA256}" }
+    invariants:
+      - "PathingHash = SHA256(canonical_json(path_nodes))"
+      - "DecisionStepHash chains sequentially"
+    hello_world: "Spawn AI at [0,0,0], verify PathingHash for null path"
+    oe_reference: "generators/skate4_multiplayer_fractal_dataset.py → compute_content_hash()"
+    slc_reference: "src/operational_modes.py → POPPERIAN.is_allowed()"
+
+  WeaponSystem:
+    fields:
+      WeaponID: { type: UUID }
+      Attachments: { type: "array<{AttachmentID: UUID, PositionHash: SHA256}>" }
+      WeaponStateHash: { type: SHA256 }
+      CurrentAction: { type: "enum(Idle,Reloading,Healing,Throwing)" }
+      ActionInterruptible: { type: bool }
+      TransitionHash: { type: SHA256 }
+      ActiveAnimationLock: { type: bool }
+    invariants:
+      - "TransitionHash = SHA256(PreviousAction + CurrentAction)"
+      - "If ActiveAnimationLock=true, ActionInterruptible=false"
+    hello_world: "Set weapon to Idle, verify TransitionHash for null→Idle"
+    oe_reference: "toolkit/oe/boundary_enforcer.py → @validate_input_schema"
+    slc_reference: "src/operational_modes.py → OperationalMode.is_allowed()"
+
+  MapManager:
+    fields:
+      MapID: { type: UUID }
+      CollisionMeshHash: { type: SHA256 }
+      NavMeshHash: { type: SHA256 }
+      EnvironmentObjects: { type: "array<{ObjectID: UUID, PositionHash: SHA256}>" }
+      WorldTime: { type: "float(0-24.0)" }
+      WeatherIntensity: { type: float }
+      TemporalSyncHash: { type: SHA256 }
+    invariants:
+      - "TemporalSyncHash = SHA256(WorldTime + WeatherIntensity)"
+      - "CollisionMeshHash immutable per map version"
+    hello_world: "Load empty map, verify CollisionMeshHash + NavMeshHash"
+    oe_reference: "topology/graph_schema.yaml → nodes + edges + zones"
+    slc_reference: "topology/graph_schema.yaml → graph_structure"
+
+  AudioVisual:
+    fields:
+      AssetID: { type: UUID }
+      AssetType: { type: "enum(Sound,Texture,Model)" }
+      LoadHash: { type: SHA256 }
+      FallbackAssetID: { type: UUID }
+      OcclusionRaycastMultiplier: { type: float }
+    invariants:
+      - "LoadHash = SHA256(asset_bytes)"
+      - "FallbackAssetID exists in registry"
+    hello_world: "Load 1x1 texture, verify LoadHash"
+    slc_reference: "GENESIS_MANIFEST.yaml → per-file sha256"
+
+  EnginePerf:
+    fields:
+      FrameID: { type: int }
+      CPUUsage: { type: float }
+      GPUUsage: { type: float }
+      MemoryAllocationsHash: { type: SHA256 }
+      DeterministicFrameHash: { type: SHA256 }
+      OptimizationFlags: { type: "{LOD: int, FOV: float}" }
+    invariants:
+      - "DeterministicFrameHash = SHA256(FrameID + inputs)"
+      - "Same FrameID + inputs → same DeterministicFrameHash"
+    hello_world: "Render frame 0, verify DeterministicFrameHash"
+    oe_reference: "CI matrix convergence (N runs × M platforms → identical hashes)"
+
+  CoOpNetwork:
+    fields:
+      SessionID: { type: UUID }
+      PeerLatencies: { type: "map" }
