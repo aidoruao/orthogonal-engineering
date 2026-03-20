@@ -192,3 +192,9 @@ modules:
     fields:
       SessionID: { type: UUID }
       PeerLatencies: { type: "map<UUID,float>" }
+    invariants:
+      - "SessionID immutable for duration of cooperative session"
+      - "PeerLatencies hash-anchored per tick for auditability"
+    hello_world: "Start session with two peers, record latency map, verify hash is stable"
+    oe_reference: "topology/topology_scanner.py → _aggregate_clusters()"
+    slc_reference: "topology/graph_schema.yaml → clusters"

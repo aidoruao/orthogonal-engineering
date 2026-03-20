@@ -73,3 +73,5 @@ def test_core_modules_present(schema):
     assert "SessionID" in coop["fields"]
     assert "PeerLatencies" in coop["fields"]
     assert coop["fields"]["PeerLatencies"]["type"] == "map<UUID,float>"
+    assert coop["invariants"]
+    assert coop["hello_world"]
