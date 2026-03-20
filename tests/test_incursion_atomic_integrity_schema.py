@@ -1,4 +1,5 @@
 import pathlib
+import pytest
 import yaml
 
 
@@ -8,15 +9,18 @@ def load_schema():
         return yaml.safe_load(f)
 
 
-def test_top_level_metadata():
-    schema = load_schema()
+@pytest.fixture(scope="module")
+def schema():
+    return load_schema()
+
+
+def test_top_level_metadata(schema):
     assert schema["schema_version"] == "5.0.0"
     assert schema["authority"] == "EXTERNAL_IMMUTABLE"
     assert schema["hash_algorithm"] == "SHA-256"
 
 
-def test_covenant_principles_defined():
-    schema = load_schema()
+def test_covenant_principles_defined(schema):
     principles = schema["covenant_principles"]
     assert set(principles.keys()) == {"LOGOS", "CHALCEDON", "GRACE", "KENOSIS", "AGAPE"}
     assert principles["LOGOS"]["rule"].startswith("Truth-Only")
@@ -24,8 +28,7 @@ def test_covenant_principles_defined():
     assert principles["AGAPE"]["rule"].startswith("Infrastructure exists solely to serve users")
 
 
-def test_operational_modes():
-    schema = load_schema()
+def test_operational_modes(schema):
     modes = schema["operational_modes"]
     assert "FORENSIC" in modes and "POPPERIAN" in modes
     assert "hash_verification" in modes["FORENSIC"]["allowed"]
@@ -34,8 +37,7 @@ def test_operational_modes():
     assert "interpretive_analysis" in modes["POPPERIAN"]["prohibited"]
 
 
-def test_engineering_invariants_and_anti_nominalism():
-    schema = load_schema()
+def test_engineering_invariants_and_anti_nominalism(schema):
     invariants = schema["engineering_invariants"]
     assert "ATOMIC" in invariants and "DETERMINISTIC" in invariants
     assert "PreStateHash" in invariants["ATOMIC"]["rule"]
@@ -44,8 +46,7 @@ def test_engineering_invariants_and_anti_nominalism():
     assert clauses["clause_001"].startswith("No label without hashed referent")
 
 
-def test_core_modules_present():
-    schema = load_schema()
+def test_core_modules_present(schema):
     modules = schema["modules"]
     expected = {
         "MissionManager",
