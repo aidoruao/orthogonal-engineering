@@ -46,7 +46,7 @@ def test_engineering_invariants_and_anti_nominalism(schema):
     assert clauses["clause_001"].startswith("No label without hashed referent")
 
 
-def test_core_modules_present(schema):
+def test_all_13_modules_present(schema):
     modules = schema["modules"]
     expected = {
         "MissionManager",
@@ -57,8 +57,17 @@ def test_core_modules_present(schema):
         "AudioVisual",
         "EnginePerf",
         "CoOpNetwork",
+        "Logger",
+        "PatchValidator",
+        "Optimization",
+        "PhilosophyDomain",
+        "AIManager",
     }
-    assert expected.issubset(set(modules.keys()))
+    assert set(modules.keys()) == expected
+
+
+def test_core_modules_present(schema):
+    modules = schema["modules"]
 
     mission = modules["MissionManager"]
     assert mission["invariants"][0].startswith("MissionStateHash = SHA256")
@@ -75,3 +84,140 @@ def test_core_modules_present(schema):
     assert coop["fields"]["PeerLatencies"]["type"] == "map<UUID,float>"
     assert coop["invariants"]
     assert coop["hello_world"] == "Start session with two peers, record latency map, verify hash is stable"
+
+
+def test_coopnetwork_has_handshake_and_desync(schema):
+    coop = schema["modules"]["CoOpNetwork"]
+    assert "HandshakeStatus" in coop["fields"]
+    assert coop["fields"]["HandshakeStatus"]["type"] == "enum(Negotiating,Synced,TimedOut)"
+    assert "DesyncCounter" in coop["fields"]
+    assert coop["fields"]["DesyncCounter"]["type"] == "int"
+
+
+def test_logger_module(schema):
+    logger = schema["modules"]["Logger"]
+    assert "ByteToByteCheck" in logger["fields"]
+    assert any("Append-only" in inv for inv in logger["invariants"])
+
+
+def test_cross_module_invariants(schema):
+    cmi = schema["cross_module_invariants"]
+    assert len(cmi) == 5
+    names = [entry["name"] for entry in cmi]
+    assert "HASH_CHAIN_INTEGRITY" in names
+    assert "TEMPORAL_SYNC" in names
+    assert "DETERMINISTIC_REPLAY" in names
+    assert "COOP_CONSISTENCY" in names
+    assert "POPPERIAN_FALSIFIABILITY" in names
+
+
+def test_topology_axes(schema):
+    axes = schema["topology_axes"]
+    assert len(axes) == 7
+    axis_names = [a["name"] for a in axes]
+    assert axis_names == [
+        "SPATIAL",
+        "AUTHORITY",
+        "CONSTRAINT_LAYER",
+        "DEPENDENCY_FLOW",
+        "VERIFICATION_REQUIREMENT",
+        "OPERATIONAL_MODE_BINDING",
+        "TEMPORAL_ORDERING",
+    ]
+
+
+def test_topology_node_classes(schema):
+    nodes = schema["topology_node_classes"]
+    assert len(nodes) == 10
+    node_names = [n["name"] for n in nodes]
+    assert node_names == [
+        "COVENANT_ROOT",
+        "PRINCIPLE_MODULE",
+        "OPERATIONAL_MODE_ENFORCER",
+        "GUARDIAN_SYSTEM",
+        "CORRESPONDENCE_BRIDGE",
+        "FORGIVENESS_MODULE",
+        "VIOLATION_LOG",
+        "EVIDENCE_ARTIFACT",
+        "INFRASTRUCTURE_REGISTRY",
+        "DOCUMENTATION_INDEX",
+    ]
+
+
+def test_topology_edge_classes(schema):
+    edges = schema["topology_edge_classes"]
+    assert len(edges) == 8
+    edge_names = [e["name"] for e in edges]
+    assert edge_names == [
+        "COVENANT_BINDING",
+        "DEPENDENCY_IMPORT",
+        "VERIFICATION_CHAIN",
+        "MODE_RESTRICTION",
+        "GUARDIAN_WATCH",
+        "CORRESPONDENCE_MAPPING",
+        "VIOLATION_REFERENCE",
+        "SPATIAL_CONTAINMENT",
+    ]
+
+
+def test_topology_navigation_invariants(schema):
+    invariants = schema["topology_navigation_invariants"]
+    assert len(invariants) == 10
+    inv_names = [i["name"] for i in invariants]
+    assert inv_names == [
+        "ROOT_REACHABILITY",
+        "AUTHORITY_NON_ESCALATION",
+        "MODE_BOUNDARY_PRESERVATION",
+        "VERIFICATION_MONOTONICITY",
+        "CONSTRAINT_LAYER_ADDITIVITY",
+        "TEMPORAL_ORDERING_CONSISTENCY",
+        "CORRESPONDENCE_BIJECTION",
+        "GUARDIAN_NON_INTERFERENCE",
+        "VIOLATION_LOG_IMMUTABILITY",
+        "SPATIAL_ORTHOGONALITY",
+    ]
+
+
+def test_topology_forbidden_patterns(schema):
+    patterns = schema["topology_forbidden_patterns"]
+    assert len(patterns) == 10
+    pattern_names = [p["name"] for p in patterns]
+    assert pattern_names == [
+        "MIXED_AXIS_NODE",
+        "AUTHORITY_THROUGH_CONNECTIVITY",
+        "OPTIMIZATION_SHORTCUT",
+        "EMERGENT_HUB",
+        "SCALE_REINTERPRETATION",
+        "LOAD_BASED_ROUTING",
+        "CONDITIONAL_CONSTRAINT",
+        "VERIFICATION_DOWNGRADE",
+        "MODE_BLENDING_EDGE",
+        "SELF_MODIFYING_TOPOLOGY",
+    ]
+
+
+def test_ai_instructions_section(schema):
+    ai = schema["ai_instructions"]
+    assert "boot_sequence" in ai
+    assert "operational_rules" in ai
+    assert "prohibited" in ai
+    assert "external_claim_tagging" in ai
+    assert "loop_guard" in ai
+    assert "contract_enforcement" in ai
+    assert "copilot_integration" in ai
+
+
+def test_covenant_lock_section(schema):
+    lock = schema["covenant_lock"]
+    assert lock["immutability"] == "ABSOLUTE"
+    assert lock["authority"] == "EXTERNAL_IMMUTABLE"
+
+
+def test_philosophy_domain_falsifiability(schema):
+    phil = schema["modules"]["PhilosophyDomain"]
+    assert any("true" in inv for inv in phil["invariants"])
+
+
+def test_logger_append_only_invariant(schema):
+    logger = schema["modules"]["Logger"]
+    assert any("Append-only" in inv for inv in logger["invariants"])
