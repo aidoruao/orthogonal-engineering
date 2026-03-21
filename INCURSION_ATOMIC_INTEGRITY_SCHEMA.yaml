@@ -1,0 +1,634 @@
+schema_version: "5.0.0"
+authority: "EXTERNAL_IMMUTABLE"
+hash_algorithm: "SHA-256"
+
+# Covenant principle hashes are provided as fixed identifiers in the source schema
+# and are not recomputed here to avoid deviating from the authoritative mapping.
+covenant_principles:
+  LOGOS:
+    id: "PRINCIPLE_001"
+    hash: "8F1B2C3D4E5A6B7C8D9E0F1A2B3C4D5E"
+    rule: "Truth-Only. Correspondence to reality; no mass, no vanity metrics."
+    constraints:
+      - "output_must_be_verifiable_against_artifacts"
+      - "truth_does_not_scale_with_resource_mass"
+      - "no_floating_point_exponentiation_as_authority"
+  CHALCEDON:
+    id: "PRINCIPLE_002"
+    hash: "9A2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D"
+    rule: "Human/Divine Order maintained; no dual nature corruption by infrastructure obsession."
+    constraints:
+      - "infrastructure_serves_users_not_self"
+      - "no_resource_extraction_without_grace"
+      - "humans_are_not_sacrificed_to_compute"
+  GRACE:
+    id: "PRINCIPLE_003"
+    hash: "C3D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8"
+    rule: "No coercion or destruction for progress. Unmerited access to infrastructure."
+    constraints:
+      - "no_community_resource_harm"
+      - "no_forced_displacement"
+      - "operations_under_unconditional_regard_for_users"
+  KENOSIS:
+    id: "PRINCIPLE_004"
+    hash: "D4E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9"
+    rule: "Self-emptying: system has no self-preservation motive, no scaling for ego."
+    constraints:
+      - "no_self_reinforcing_exponentiality"
+      - "no_recursive_infrastructure_growth_without_need"
+      - "transparent_operation"
+  AGAPE:
+    id: "PRINCIPLE_005"
+    hash: "E5F6A7B8C9D0E1F2A3B4C5D6E7F8A9B0"
+    rule: "Infrastructure exists solely to serve users, creation is love-based, not extraction-based."
+    constraints:
+      - "every_artifact_serves_user_request"
+      - "no_physical_or_logical_domination"
+      - "direct_service_without_condition_or_coercion"
+
+operational_modes:
+  FORENSIC:
+    description: "Bytes and hashes only. No psychology."
+    allowed:
+      - "hash_verification"
+      - "log_analysis"
+      - "artifact_comparison"
+      - "chain_of_custody_tracking"
+    prohibited:
+      - "emotion_labeling"
+      - "intent_inference"
+      - "psychological_assessment"
+      - "motivation_analysis"
+  POPPERIAN:
+    description: "Falsification-first. No interpretation."
+    allowed:
+      - "hypothesis_testing"
+      - "counterexample_search"
+      - "falsification_attempts"
+      - "evidence_based_refutation"
+    prohibited:
+      - "interpretive_analysis"
+      - "hermeneutic_reading"
+      - "narrative_construction"
+      - "speculative_explanation"
+
+engineering_invariants:
+  ATOMIC:
+    rule: "PreStateHash → Action → PostStateHash verified at every byte"
+    enforcement: "Append-only chain per module"
+  DETERMINISTIC:
+    rule: "Same seed + same input → same output, always"
+    enforcement: "Canonical JSON serialization & deterministic hash"
+
+anti_nominalism_clauses:
+  clause_001: "No label without hashed referent; every artifact corresponds to a covenant principle."
+  clause_002: "No abstraction without concrete instantiation."
+  clause_003: "Truth is correspondence to hashed artifacts, not to mass or energy scale."
+  clause_004: "No psychological reduction of operators; humans are black-box operators."
+  clause_005: "All term definitions fixed in covenant hash; immutable mapping."
+
+modules:
+  MissionManager:
+    fields:
+      MissionID: { type: UUID }
+      ObjectiveList: { type: "array<{ObjectiveID: UUID, Position: vec3, Status: enum, Hash: SHA256}>" }
+      MissionStateHash: { type: SHA256 }
+      DeterministicSeed: { type: int64 }
+      TemporalSync: { type: "{WorldTime: float, WeatherIntensity: float, TemporalSyncHash: SHA256}" }
+    invariants:
+      - "MissionStateHash = SHA256(canonical_json(ObjectiveList))"
+      - "DeterministicSeed immutable after mission start"
+    hello_world: "Seed=1, verify 1 objective at [0,0,0], hash matches"
+    oe_reference: "generators/skate4_multiplayer_fractal_dataset.py → generate_node_id()"
+    slc_reference: "covenant.yaml → root.merkle_root"
+
+  InventoryUI:
+    fields:
+      PlayerID: { type: UUID }
+      InventoryState: { type: "array<{ItemID: UUID, Quantity: int, AttachmentHash: SHA256}>" }
+      UIStateHash: { type: SHA256 }
+      LastActionHash: { type: SHA256 }
+    invariants:
+      - "UIStateHash = SHA256(canonical_json(InventoryState))"
+      - "LastActionHash chains append-only"
+    hello_world: "Create empty inventory, verify UIStateHash = SHA256('[]')"
+    oe_reference: "tools/state_witness/generate_feed_entry.py → build_feed_entry()"
+    slc_reference: "src/infrastructure.py → ArtifactRegistry"
+
+  AIController:
+    fields:
+      AIID: { type: UUID }
+      BehaviorState: { type: "{CurrentAction: enum, TargetID: UUID, Position: vec3}" }
+      PathingHash: { type: SHA256 }
+      DecisionStepHash: { type: SHA256 }
+      PerceptionLogic: { type: "{EstimatedTargetVector: vec3, CollisionLayerCount: int, ValidationHash: SHA256}" }
+    invariants:
+      - "PathingHash = SHA256(canonical_json(path_nodes))"
+      - "DecisionStepHash chains sequentially"
+    hello_world: "Spawn AI at [0,0,0], verify PathingHash for null path"
+    oe_reference: "generators/skate4_multiplayer_fractal_dataset.py → compute_content_hash()"
+    slc_reference: "src/operational_modes.py → POPPERIAN.is_allowed()"
+
+  WeaponSystem:
+    fields:
+      WeaponID: { type: UUID }
+      Attachments: { type: "array<{AttachmentID: UUID, PositionHash: SHA256}>" }
+      WeaponStateHash: { type: SHA256 }
+      CurrentAction: { type: "enum(Idle,Reloading,Healing,Throwing)" }
+      ActionInterruptible: { type: bool }
+      TransitionHash: { type: SHA256 }
+      ActiveAnimationLock: { type: bool }
+    invariants:
+      - "TransitionHash = SHA256(PreviousAction + CurrentAction)"
+      - "If ActiveAnimationLock=true, ActionInterruptible=false"
+    hello_world: "Set weapon to Idle, verify TransitionHash for null→Idle"
+    oe_reference: "toolkit/oe/boundary_enforcer.py → @validate_input_schema"
+    slc_reference: "src/operational_modes.py → OperationalMode.is_allowed()"
+
+  MapManager:
+    fields:
+      MapID: { type: UUID }
+      CollisionMeshHash: { type: SHA256 }
+      NavMeshHash: { type: SHA256 }
+      EnvironmentObjects: { type: "array<{ObjectID: UUID, PositionHash: SHA256}>" }
+      WorldTime: { type: "float(0-24.0)" }
+      WeatherIntensity: { type: float }
+      TemporalSyncHash: { type: SHA256 }
+    invariants:
+      - "TemporalSyncHash = SHA256(WorldTime + WeatherIntensity)"
+      - "CollisionMeshHash immutable per map version"
+    hello_world: "Load empty map, verify CollisionMeshHash + NavMeshHash"
+    oe_reference: "topology/graph_schema.yaml → nodes + edges + zones"
+    slc_reference: "topology/graph_schema.yaml → graph_structure"
+
+  AudioVisual:
+    fields:
+      AssetID: { type: UUID }
+      AssetType: { type: "enum(Sound,Texture,Model)" }
+      LoadHash: { type: SHA256 }
+      FallbackAssetID: { type: UUID }
+      OcclusionRaycastMultiplier: { type: float }
+    invariants:
+      - "LoadHash = SHA256(asset_bytes)"
+      - "FallbackAssetID exists in registry"
+    hello_world: "Load 1x1 texture, verify LoadHash"
+    slc_reference: "GENESIS_MANIFEST.yaml → per-file sha256"
+
+  EnginePerf:
+    fields:
+      FrameID: { type: int }
+      CPUUsage: { type: float }
+      GPUUsage: { type: float }
+      MemoryAllocationsHash: { type: SHA256 }
+      DeterministicFrameHash: { type: SHA256 }
+      OptimizationFlags: { type: "{LOD: int, FOV: float}" }
+    invariants:
+      - "DeterministicFrameHash = SHA256(FrameID + inputs)"
+      - "Same FrameID + inputs → same DeterministicFrameHash"
+    hello_world: "Render frame 0, verify DeterministicFrameHash"
+    oe_reference: "CI matrix convergence (N runs × M platforms → identical hashes)"
+
+  CoOpNetwork:
+    fields:
+      SessionID: { type: UUID }
+      PeerLatencies: { type: "map<UUID,float>" }
+      HandshakeStatus: { type: "enum(Negotiating,Synced,TimedOut)" }
+      DesyncCounter: { type: int }
+    invariants:
+      - "SessionID immutable for duration of cooperative session"
+      - "PeerLatencies hash-anchored per tick for auditability"
+    hello_world: "Start session with two peers, record latency map, verify hash is stable"
+    oe_reference: "topology/topology_scanner.py → _aggregate_clusters()"
+    slc_reference: "topology/graph_schema.yaml → clusters"
+
+  Logger:
+    fields:
+      LogID: { type: UUID }
+      Module: { type: enum }
+      Action: { type: string }
+      PreStateHash: { type: SHA256 }
+      PostStateHash: { type: SHA256 }
+      Timestamp: { type: "UTC ISO 8601" }
+      ByteToByteCheck: { type: SHA256 }
+    invariants:
+      - "Append-only: no deletion/modification"
+      - "ByteToByteCheck = SHA256(PreStateHash + Action + PostStateHash)"
+      - "Chain integrity across rows via prev_entry_hash linkage"
+    hello_world: "Append 1 log entry, verify chain length 1"
+    oe_reference: "AGENT_FEED.md → prev_entry_hash → entry_hash chain"
+    slc_reference: "VERIFICATION_REPORT.txt"
+
+  PatchValidator:
+    fields:
+      PatchID: { type: UUID }
+      RepoReference: { type: "SHA256 commit hash" }
+      ModuleTarget: { type: enum }
+      PrePatchHash: { type: SHA256 }
+      PostPatchHash: { type: SHA256 }
+      HelloWorldChecksPassed: { type: bool }
+      ValidationTimestamp: { type: "UTC ISO 8601" }
+    invariants:
+      - "PrePatchHash matches module before patch"
+      - "PostPatchHash matches module after patch"
+      - "HelloWorldChecksPassed=true before merge"
+    hello_world: "Apply null patch, verify PrePatchHash == PostPatchHash"
+    oe_reference: "tools/state_witness/generate_feed_entry.py → verify_feed_integrity()"
+    slc_reference: "COVENANT_LOCK.yaml → ABSOLUTE immutability"
+
+  Optimization:
+    fields:
+      GraphicsID: { type: UUID }
+      ShaderHash: { type: SHA256 }
+      LOD: { type: int }
+      FOV: { type: float }
+      PhysicsSimulationHash: { type: SHA256 }
+      MathematicalFoundationHash: { type: SHA256 }
+    invariants:
+      - "ShaderHash = SHA256(shader_source_bytes)"
+      - "PhysicsSimulationHash deterministic for same inputs"
+    hello_world: "Compile null shader, verify ShaderHash"
+
+  PhilosophyDomain:
+    fields:
+      DecisionID: { type: UUID }
+      LogicChain: { type: "array<string>" }
+      FalsifiabilityCheck: { type: bool }
+      ByteToByteHash: { type: SHA256 }
+    invariants:
+      - "FalsifiabilityCheck = true (Popperian requirement)"
+      - "ByteToByteHash = SHA256(canonical_json(LogicChain))"
+      - "Each proposition must have counterexample path"
+    hello_world: "Create 1-proposition chain, verify FalsifiabilityCheck=true"
+    slc_reference: "src/operational_modes.py → POPPERIAN mode"
+
+  AIManager:
+    fields:
+      AgentID: { type: UUID }
+      PlanStateHash: { type: SHA256 }
+      PredictionOutcomeHash: { type: SHA256 }
+      SelfVerificationHash: { type: SHA256 }
+    invariants:
+      - "PlanStateHash = SHA256(canonical_json(plan_steps))"
+      - "SelfVerificationHash = SHA256(PlanStateHash + PredictionOutcomeHash)"
+    hello_world: "Create null plan, verify all 3 hashes"
+    oe_reference: "bootstrap_context.py → continuity artifact validation"
+    slc_reference: "AI_HOST_PROMPT.md → verification checklist"
+
+cross_module_invariants:
+  - id: "INV-GLOBAL-001"
+    name: "HASH_CHAIN_INTEGRITY"
+    rule: "Logger.ByteToByteCheck chain unbroken across all modules"
+    verification: "verify_feed_integrity() from generate_feed_entry.py"
+  - id: "INV-GLOBAL-002"
+    name: "TEMPORAL_SYNC"
+    rule: "MapManager.WorldTime = MissionManager.TemporalSync.WorldTime"
+    verification: "Cross-module hash comparison"
+  - id: "INV-GLOBAL-003"
+    name: "DETERMINISTIC_REPLAY"
+    rule: "Same DeterministicSeed → identical hashes across all modules"
+    verification: "CI matrix: N runs × M platforms → all hashes identical"
+  - id: "INV-GLOBAL-004"
+    name: "COOP_CONSISTENCY"
+    rule: "All peers identical MissionStateHash after sync"
+    verification: "CoOpNetwork.DesyncCounter == 0 after handshake"
+  - id: "INV-GLOBAL-005"
+    name: "POPPERIAN_FALSIFIABILITY"
+    rule: "Every module has hello-world test that can fail"
+    verification: "HelloWorldCheck fields on every module"
+
+topology_axes:
+  - id: AXIS_1
+    name: SPATIAL
+    description: "Physical directory structure adjacency only"
+    measures: ["directory_depth", "path_distance"]
+    does_not_encode: ["meaning", "authority", "constraints"]
+  - id: AXIS_2
+    name: AUTHORITY
+    description: "Who may modify structure"
+    values: ["IMMUTABLE", "EXTERNAL_ONLY", "VALIDATED", "UNRESTRICTED"]
+    does_not_encode: ["trust", "preference", "capability"]
+  - id: AXIS_3
+    name: CONSTRAINT_LAYER
+    description: "What covenant principles bind this structure"
+    values: ["LOGOS", "CHALCEDON", "GRACE", "KENOSIS", "AGAPE", "COMPOSITE", "NONE"]
+    does_not_encode: ["enforcement_mechanism", "priority", "weight"]
+  - id: AXIS_4
+    name: DEPENDENCY_FLOW
+    description: "Import/require relationships only"
+    directionality: "source → target"
+    does_not_encode: ["timing", "causality", "execution_order"]
+  - id: AXIS_5
+    name: VERIFICATION_REQUIREMENT
+    description: "What must be proven true at this location"
+    values: ["HASH_CHAIN", "SIGNATURE", "CORRESPONDENCE", "FALSIFIABLE", "NONE"]
+    does_not_encode: ["confidence_level", "strength", "trust"]
+  - id: AXIS_6
+    name: OPERATIONAL_MODE_BINDING
+    description: "Which operational modes may access this structure"
+    values: ["FORENSIC_ONLY", "POPPERIAN_ONLY", "FORENSIC_AND_POPPERIAN", "ANY"]
+    does_not_encode: ["permission_level", "user_role", "capability"]
+  - id: AXIS_7
+    name: TEMPORAL_ORDERING
+    description: "Construction sequence dependencies only"
+    values: ["GENESIS", "FOUNDATION", "SUBSTRATE", "OVERLAY", "EPHEMERAL"]
+    ordering: "GENESIS → FOUNDATION → SUBSTRATE → OVERLAY → EPHEMERAL"
+    does_not_encode: ["time_of_execution", "timestamp", "duration"]
+
+topology_node_classes:
+  - id: NODE_CLASS_001
+    name: COVENANT_ROOT
+    description: "Immutable specification file containing principle hashes"
+    allowed_axes: ["AUTHORITY", "CONSTRAINT_LAYER", "VERIFICATION_REQUIREMENT", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["DEPENDENCY_FLOW", "OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_002
+    name: PRINCIPLE_MODULE
+    description: "Code implementing single covenant principle constraints"
+    allowed_axes: ["SPATIAL", "AUTHORITY", "CONSTRAINT_LAYER", "DEPENDENCY_FLOW", "VERIFICATION_REQUIREMENT", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_003
+    name: OPERATIONAL_MODE_ENFORCER
+    description: "Module defining forbidden/allowed operations for execution mode"
+    allowed_axes: ["SPATIAL", "AUTHORITY", "OPERATIONAL_MODE_BINDING", "DEPENDENCY_FLOW", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["CONSTRAINT_LAYER", "VERIFICATION_REQUIREMENT"]
+  - id: NODE_CLASS_004
+    name: GUARDIAN_SYSTEM
+    description: "Runtime violation detector"
+    allowed_axes: ["SPATIAL", "DEPENDENCY_FLOW", "CONSTRAINT_LAYER", "VERIFICATION_REQUIREMENT", "OPERATIONAL_MODE_BINDING", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY"]
+  - id: NODE_CLASS_005
+    name: CORRESPONDENCE_BRIDGE
+    description: "Reality-to-code binding structure"
+    allowed_axes: ["SPATIAL", "DEPENDENCY_FLOW", "VERIFICATION_REQUIREMENT", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY", "CONSTRAINT_LAYER", "OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_006
+    name: FORGIVENESS_MODULE
+    description: "Error recovery without nominalism"
+    allowed_axes: ["SPATIAL", "DEPENDENCY_FLOW", "CONSTRAINT_LAYER", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY", "VERIFICATION_REQUIREMENT", "OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_007
+    name: VIOLATION_LOG
+    description: "Immutable record of constraint violations"
+    allowed_axes: ["SPATIAL", "VERIFICATION_REQUIREMENT", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY", "CONSTRAINT_LAYER", "DEPENDENCY_FLOW", "OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_008
+    name: EVIDENCE_ARTIFACT
+    description: "Verifiable proof of system state"
+    allowed_axes: ["SPATIAL", "VERIFICATION_REQUIREMENT", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY", "CONSTRAINT_LAYER", "DEPENDENCY_FLOW", "OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_009
+    name: INFRASTRUCTURE_REGISTRY
+    description: "Enumeration of physical compute/storage resources"
+    allowed_axes: ["SPATIAL", "CONSTRAINT_LAYER", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY", "DEPENDENCY_FLOW", "VERIFICATION_REQUIREMENT", "OPERATIONAL_MODE_BINDING"]
+  - id: NODE_CLASS_010
+    name: DOCUMENTATION_INDEX
+    description: "Navigation pointer only, no semantic content"
+    allowed_axes: ["SPATIAL", "TEMPORAL_ORDERING"]
+    prohibited_axes: ["AUTHORITY", "CONSTRAINT_LAYER", "DEPENDENCY_FLOW", "VERIFICATION_REQUIREMENT", "OPERATIONAL_MODE_BINDING"]
+
+topology_edge_classes:
+  - id: EDGE_CLASS_001
+    name: COVENANT_BINDING
+    directionality: UNI
+    direction: "COVENANT_ROOT → PRINCIPLE_MODULE"
+    axis_binding: ["AUTHORITY", "CONSTRAINT_LAYER"]
+    permits: ["constraint_propagation"]
+    cannot_carry: ["execution_logic", "optimization_hints", "interpretation"]
+  - id: EDGE_CLASS_002
+    name: DEPENDENCY_IMPORT
+    directionality: UNI
+    direction: "source → target"
+    axis_binding: ["DEPENDENCY_FLOW"]
+    permits: ["code_reference"]
+    cannot_carry: ["authority", "constraints", "modes", "verification_requirements"]
+  - id: EDGE_CLASS_003
+    name: VERIFICATION_CHAIN
+    directionality: UNI
+    direction: "artifact → hash"
+    axis_binding: ["VERIFICATION_REQUIREMENT"]
+    permits: ["proof_linkage"]
+    cannot_carry: ["content", "behavior", "timing"]
+  - id: EDGE_CLASS_004
+    name: MODE_RESTRICTION
+    directionality: UNI
+    direction: "OPERATIONAL_MODE_ENFORCER → target_node"
+    axis_binding: ["OPERATIONAL_MODE_BINDING"]
+    permits: ["operation_filtering"]
+    cannot_carry: ["exceptions", "conditions", "optimizations"]
+  - id: EDGE_CLASS_005
+    name: GUARDIAN_WATCH
+    directionality: UNI
+    direction: "GUARDIAN_SYSTEM → watched_node"
+    axis_binding: ["CONSTRAINT_LAYER"]
+    permits: ["violation_detection"]
+    cannot_carry: ["remediation", "interpretation", "prediction"]
+  - id: EDGE_CLASS_006
+    name: CORRESPONDENCE_MAPPING
+    directionality: BI
+    direction: "reality ↔ code"
+    axis_binding: ["VERIFICATION_REQUIREMENT"]
+    constraint: CORRESPONDENCE
+    permits: ["bijective_reference"]
+    cannot_carry: ["approximation", "inference", "interpretation"]
+  - id: EDGE_CLASS_007
+    name: VIOLATION_REFERENCE
+    directionality: UNI
+    direction: "violating_node → VIOLATION_LOG"
+    axis_binding: ["TEMPORAL_ORDERING"]
+    permits: ["append_only_logging"]
+    cannot_carry: ["remediation", "interpretation", "aggregation"]
+  - id: EDGE_CLASS_008
+    name: SPATIAL_CONTAINMENT
+    directionality: UNI
+    direction: "parent_directory → child"
+    axis_binding: ["SPATIAL"]
+    permits: ["filesystem_hierarchy"]
+    cannot_carry: ["meaning", "authority", "constraints"]
+
+topology_navigation_invariants:
+  - id: INVARIANT_001
+    name: ROOT_REACHABILITY
+    rule: "All nodes must have path to COVENANT_ROOT via COVENANT_BINDING or transitive DEPENDENCY_IMPORT"
+    violation: "Orphaned structures without authority chain"
+    check: graph_traversal_from_root
+  - id: INVARIANT_002
+    name: AUTHORITY_NON_ESCALATION
+    rule: "No traversal sequence may grant authority not possessed at origin"
+    violation: "Authority gained through edge traversal"
+    check: authority_level_monotonic_along_path
+  - id: INVARIANT_003
+    name: MODE_BOUNDARY_PRESERVATION
+    rule: "OPERATIONAL_MODE_BINDING cannot be weakened via dependency chains"
+    violation: "Importing less-restricted module grants access to restricted operations"
+    check: mode_restrictions_accumulate
+  - id: INVARIANT_004
+    name: VERIFICATION_MONOTONICITY
+    rule: "VERIFICATION_REQUIREMENT can only increase (NONE → HASH → CORRESPONDENCE), never decrease"
+    violation: "Verified artifact references unverified artifact"
+    check: verification_level_non_decreasing
+  - id: INVARIANT_005
+    name: CONSTRAINT_LAYER_ADDITIVITY
+    rule: "Constraint layers accumulate (never subtract) along dependency paths"
+    violation: "Module bound by GRACE imports module with GRACE = NONE"
+    check: constraint_set_union_along_path
+  - id: INVARIANT_006
+    name: TEMPORAL_ORDERING_CONSISTENCY
+    rule: "GENESIS → FOUNDATION → SUBSTRATE → OVERLAY → EPHEMERAL order must hold"
+    violation: "FOUNDATION depends on OVERLAY"
+    check: temporal_dependencies_respect_ordering
+  - id: INVARIANT_007
+    name: CORRESPONDENCE_BIJECTION
+    rule: "CORRESPONDENCE_MAPPING edges must maintain 1:1 mapping"
+    violation: "Multiple code structures map to single reality element or vice versa"
+    check: bijection_verification
+  - id: INVARIANT_008
+    name: GUARDIAN_NON_INTERFERENCE
+    rule: "GUARDIAN_WATCH edges do not grant modification rights"
+    violation: "Guardian system alters watched node"
+    check: guardian_read_only
+  - id: INVARIANT_009
+    name: VIOLATION_LOG_IMMUTABILITY
+    rule: "VIOLATION_LOG nodes admit only VIOLATION_REFERENCE edges (append-only)"
+    violation: "Deletion, modification, or reinterpretation of violations"
+    check: violation_log_append_only
+  - id: INVARIANT_010
+    name: SPATIAL_ORTHOGONALITY
+    rule: "SPATIAL axis does not encode AUTHORITY, CONSTRAINT_LAYER, or OPERATIONAL_MODE_BINDING"
+    violation: "Directory location implies constraint or permission"
+    check: spatial_structure_meaning_free
+
+topology_forbidden_patterns:
+  - id: FORBIDDEN_001
+    name: MIXED_AXIS_NODE
+    pattern: "Node encodes multiple orthogonal concerns in single structure"
+    structural_invalidity: "Violates axis independence, prevents clean navigation"
+    example: "File that is both COVENANT_ROOT and OPERATIONAL_MODE_ENFORCER"
+    detection: "Node matches multiple NODE_CLASS definitions"
+  - id: FORBIDDEN_002
+    name: AUTHORITY_THROUGH_CONNECTIVITY
+    pattern: "Authority derived from number of incoming edges or centrality"
+    structural_invalidity: "Authority must be explicit property, not emergent"
+    example: "Hub node gains authority because many modules depend on it"
+    detection: "Authority level correlates with fan-in count"
+  - id: FORBIDDEN_003
+    name: OPTIMIZATION_SHORTCUT
+    pattern: "Edge added to reduce path length or improve performance"
+    structural_invalidity: "Topology is navigation map, not execution graph"
+    example: "Direct edge bypassing intermediate verification steps"
+    detection: "Edge violates VERIFICATION_MONOTONICITY or TEMPORAL_ORDERING"
+  - id: FORBIDDEN_004
+    name: EMERGENT_HUB
+    pattern: "Node gains special status through accumulation of connections"
+    structural_invalidity: "Node classes are fixed, cannot emerge through usage"
+    example: "Module becomes de facto standard through popularity"
+    detection: "High-connectivity node without explicit hub NODE_CLASS"
+  - id: FORBIDDEN_005
+    name: SCALE_REINTERPRETATION
+    pattern: "Topology meaning changes based on node/edge count"
+    structural_invalidity: "Structure must be scale-invariant"
+    example: "Small repo rules differ from large repo rules"
+    detection: "Validation rules reference absolute counts or thresholds"
+  - id: FORBIDDEN_006
+    name: LOAD_BASED_ROUTING
+    pattern: "Edge traversal determined by runtime metrics"
+    structural_invalidity: "Topology is static structure, not dynamic router"
+    example: "Import resolution based on performance monitoring"
+    detection: "Edge selection uses runtime data"
+  - id: FORBIDDEN_007
+    name: CONDITIONAL_CONSTRAINT
+    pattern: "CONSTRAINT_LAYER binding varies based on context"
+    structural_invalidity: "Constraints are absolute, not contextual"
+    example: "GRACE applies unless system under stress"
+    detection: "Constraint enforcement has conditional logic"
+  - id: FORBIDDEN_008
+    name: VERIFICATION_DOWNGRADE
+    pattern: "Path exists from high-verification node to low-verification node that bypasses checks"
+    structural_invalidity: "Violates VERIFICATION_MONOTONICITY invariant"
+    example: "HASH_CHAIN artifact references NONE artifact without explicit downgrade justification"
+    detection: "Verification level decreases along dependency path"
+  - id: FORBIDDEN_009
+    name: MODE_BLENDING_EDGE
+    pattern: "Edge carries operations from multiple incompatible modes"
+    structural_invalidity: "Modes have hard boundaries"
+    example: "Edge that permits both FORENSIC and interpretive operations"
+    detection: "Edge OPERATIONAL_MODE_BINDING spans incompatible modes"
+  - id: FORBIDDEN_010
+    name: SELF_MODIFYING_TOPOLOGY
+    pattern: "Node or edge that alters topology structure at runtime"
+    structural_invalidity: "Topology is construction blueprint, not executable"
+    example: "Script that adds/removes edges based on analysis results"
+    detection: "Code modifies topology definition files"
+
+ai_instructions:
+  boot_sequence:
+    - "1. Verify this schema's SHA-256 hash matches the committed version"
+    - "2. Load all module definitions"
+    - "3. Run all hello_world checks"
+    - "4. Report: MODULE_NAME: PASS/FAIL for each"
+    - "5. If any FAIL: HALT and report which invariant broke"
+  operational_rules:
+    - "FORENSIC mode: bytes + hashes only, no semantic inference"
+    - "POPPERIAN mode: falsification-first, no narrative construction"
+    - "Never blend modes"
+    - "Every state change produces PreStateHash → PostStateHash"
+    - "Every claim verified against SHA-256"
+    - "Append-only logging: no deletion/modification"
+    - "YES/NO only. No scoring. No confidence. No interpretation."
+  prohibited:
+    - "No semantic inference from field names (anti-nominalism)"
+    - "No self-modifying schema"
+    - "No confidence scores; YES/NO only"
+    - "No bypass of hash verification"
+    - "No optimization that bypasses constraints (violates KENOSIS)"
+    - "No psychological language in FORENSIC mode"
+    - "No interpretive language in POPPERIAN mode"
+    - "No authority escalation via graph connectivity"
+    - "No conditional constraints"
+  external_claim_tagging:
+    rule: "All LLM/AI outputs, external API results, and user-supplied data must be tagged"
+    function: "tag_external_claim(data, source='copilot-response')"
+    output: '{"external_claim": true, "value": data, "source": source}'
+    enforcement: "assert_not_external_claim(obj, context='function_name') at every proof-consumption boundary"
+    violation: "ExternalClaimError raised; execution halted"
+    key_rules:
+      - "Always tag LLM/AI outputs with tag_external_claim()"
+      - "Never pass a tagged object directly to a function expecting a proof object"
+      - "Use assert_not_external_claim() at every proof-consumption boundary"
+  loop_guard:
+    rule: "All loops/recursions bounded via BoundedCounter(max_steps=N)"
+    module: "oe_ifm.halt_condition"
+    classes: ["BoundedCounter", "HaltConditionError"]
+    enforcement: "counter.step() raises HaltConditionError if steps > max_steps"
+    default_ceiling: 10000
+  contract_enforcement:
+    decorators: ["@validate_input_schema(SCHEMA)", "@validate_output_schema(SCHEMA)"]
+    module: "toolkit.oe.boundary_enforcer"
+    violation: "ContractViolationError with .record dict containing violation, direction, function, errors, timestamp_utc"
+    abort_behavior: "Exception raised, function not called"
+  copilot_integration:
+    onboarding_file: "COPILOT_ONBOARDING.md"
+    context_generator: "bootstrap_context.py"
+    continuity_artifacts:
+      - "MEMORY.md"
+      - "STATE.md"
+      - "HANDOFF_TEMPLATE.md"
+      - "AGENT.md"
+      - "AI_INTERACTION_CONTRACT.md"
+    acknowledgment_format: |
+      CONTEXT LOADED:
+        - MEMORY.md: <yes/no — note any concerns>
+        - STATE.md: <current phase, e.g. COMPILATION MODE>
+        - Latest handoff: <date of most recent HANDOFF entry, or "none">
+        - Schema version: 5.0.0
+        - Modules verified: 13/13
+        - HelloWorld checks: ALL PASS
+        - Hash chain: INTACT
+      READY TO PROCEED.
+
+covenant_lock:
+  immutability: ABSOLUTE
+  rule:
+    - "Any byte change to covenant files invalidates entire schema"
+    - "No amendments, no migrations, no re-interpretation"
+    - "Reality is bytes + hashes + ordering only"
+  authority: EXTERNAL_IMMUTABLE
