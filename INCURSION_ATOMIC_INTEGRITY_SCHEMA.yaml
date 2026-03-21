@@ -1,4 +1,4 @@
-schema_version: "5.0.0"
+schema_version: "5.1.0"
 authority: "EXTERNAL_IMMUTABLE"
 hash_algorithm: "SHA-256"
 
@@ -79,6 +79,16 @@ engineering_invariants:
   DETERMINISTIC:
     rule: "Same seed + same input → same output, always"
     enforcement: "Canonical JSON serialization & deterministic hash"
+  FRACTAL:
+    rule: "Sub-asset hash chains recursively; Hash(children) = parent hash"
+    enforcement: "Merkle tree verification at every level"
+    oe_reference: "ontology/falsification_tests.json → F_FRACTALS_001"
+    ontology_domain: "D_FRACTALS"
+  PEANO_ARITHMETIC:
+    rule: "Event sequencing via canonical Peano successor S(n); no gate may be skipped"
+    enforcement: "Sequential gate enforcement; S(0)=1, S(n)=n+1, no jumps"
+    oe_reference: "SOP_AI_HANDSHAKE.md → Section VI"
+    ontology_domain: "D_AXIOMS"
 
 anti_nominalism_clauses:
   clause_001: "No label without hashed referent; every artifact corresponds to a covenant principle."
@@ -95,10 +105,12 @@ modules:
       MissionStateHash: { type: SHA256 }
       DeterministicSeed: { type: int64 }
       TemporalSync: { type: "{WorldTime: float, WeatherIntensity: float, TemporalSyncHash: SHA256}" }
+      QoLFlags: { type: "{AccessibilityMode: bool, HintLevel: int}" }
     invariants:
       - "MissionStateHash = SHA256(canonical_json(ObjectiveList))"
       - "DeterministicSeed immutable after mission start"
-    hello_world: "Seed=1, verify 1 objective at [0,0,0], hash matches"
+      - "AccessibilityMode enforced across all objectives"
+    hello_world: "Seed=1, verify 1 objective at [0,0,0], hash matches + QoL flags present"
     oe_reference: "generators/skate4_multiplayer_fractal_dataset.py → generate_node_id()"
     slc_reference: "covenant.yaml → root.merkle_root"
 
@@ -108,9 +120,11 @@ modules:
       InventoryState: { type: "array<{ItemID: UUID, Quantity: int, AttachmentHash: SHA256}>" }
       UIStateHash: { type: SHA256 }
       LastActionHash: { type: SHA256 }
+      AccessibilityFlags: { type: "{ColorBlind: bool, LargeFont: bool}" }
     invariants:
       - "UIStateHash = SHA256(canonical_json(InventoryState))"
       - "LastActionHash chains append-only"
+      - "AccessibilityFlags enforced at render"
     hello_world: "Create empty inventory, verify UIStateHash = SHA256('[]')"
     oe_reference: "tools/state_witness/generate_feed_entry.py → build_feed_entry()"
     slc_reference: "src/infrastructure.py → ArtifactRegistry"
@@ -122,9 +136,12 @@ modules:
       PathingHash: { type: SHA256 }
       DecisionStepHash: { type: SHA256 }
       PerceptionLogic: { type: "{EstimatedTargetVector: vec3, CollisionLayerCount: int, ValidationHash: SHA256}" }
+      PredictiveSimulation: { type: "{FutureStates: array<SHA256>, DeterministicSeed: int64}" }
     invariants:
       - "PathingHash = SHA256(canonical_json(path_nodes))"
       - "DecisionStepHash chains sequentially"
+      - "PredictiveSimulation deterministic per seed"
+      - "Cross-module MissionStateHash sync"
     hello_world: "Spawn AI at [0,0,0], verify PathingHash for null path"
     oe_reference: "generators/skate4_multiplayer_fractal_dataset.py → compute_content_hash()"
     slc_reference: "src/operational_modes.py → POPPERIAN.is_allowed()"
@@ -138,9 +155,11 @@ modules:
       ActionInterruptible: { type: bool }
       TransitionHash: { type: SHA256 }
       ActiveAnimationLock: { type: bool }
+      ResolvedMechanics: { type: "{RecoilPattern: vec3, HitDetection: map<TargetID, bool>}" }
     invariants:
       - "TransitionHash = SHA256(PreviousAction + CurrentAction)"
       - "If ActiveAnimationLock=true, ActionInterruptible=false"
+      - "HitDetection deterministic per frame"
     hello_world: "Set weapon to Idle, verify TransitionHash for null→Idle"
     oe_reference: "toolkit/oe/boundary_enforcer.py → @validate_input_schema"
     slc_reference: "src/operational_modes.py → OperationalMode.is_allowed()"
@@ -154,9 +173,11 @@ modules:
       WorldTime: { type: "float(0-24.0)" }
       WeatherIntensity: { type: float }
       TemporalSyncHash: { type: SHA256 }
+      DAGDependencies: { type: "array<{ParentID: UUID, ChildID: UUID, Hash: SHA256}>" }
     invariants:
       - "TemporalSyncHash = SHA256(WorldTime + WeatherIntensity)"
       - "CollisionMeshHash immutable per map version"
+      - "DAGDependencies acyclic, hash chain validated"
     hello_world: "Load empty map, verify CollisionMeshHash + NavMeshHash"
     oe_reference: "topology/graph_schema.yaml → nodes + edges + zones"
     slc_reference: "topology/graph_schema.yaml → graph_structure"
@@ -295,6 +316,10 @@ cross_module_invariants:
     name: "POPPERIAN_FALSIFIABILITY"
     rule: "Every module has hello-world test that can fail"
     verification: "HelloWorldCheck fields on every module"
+  - id: "INV-GLOBAL-006"
+    name: "DAG_CONSISTENCY"
+    rule: "All MapManager DAGDependencies remain acyclic across operations"
+    verification: "verify_dag_acyclic() from generators/skate4_multiplayer_fractal_dataset.py"
 
 topology_axes:
   - id: AXIS_1
@@ -619,7 +644,7 @@ ai_instructions:
         - MEMORY.md: <yes/no — note any concerns>
         - STATE.md: <current phase, e.g. COMPILATION MODE>
         - Latest handoff: <date of most recent HANDOFF entry, or "none">
-        - Schema version: 5.0.0
+        - Schema version: 5.1.0
         - Modules verified: 13/13
         - HelloWorld checks: ALL PASS
         - Hash chain: INTACT

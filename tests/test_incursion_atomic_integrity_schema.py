@@ -15,7 +15,7 @@ def schema():
 
 
 def test_top_level_metadata(schema):
-    assert schema["schema_version"] == "5.0.0"
+    assert schema["schema_version"] == "5.1.0"
     assert schema["authority"] == "EXTERNAL_IMMUTABLE"
     assert schema["hash_algorithm"] == "SHA-256"
 
@@ -102,13 +102,14 @@ def test_logger_module(schema):
 
 def test_cross_module_invariants(schema):
     cmi = schema["cross_module_invariants"]
-    assert len(cmi) == 5
+    assert len(cmi) == 6
     names = [entry["name"] for entry in cmi]
     assert "HASH_CHAIN_INTEGRITY" in names
     assert "TEMPORAL_SYNC" in names
     assert "DETERMINISTIC_REPLAY" in names
     assert "COOP_CONSISTENCY" in names
     assert "POPPERIAN_FALSIFIABILITY" in names
+    assert "DAG_CONSISTENCY" in names
 
 
 def test_topology_axes(schema):
@@ -221,3 +222,40 @@ def test_philosophy_domain_falsifiability(schema):
 def test_logger_append_only_invariant(schema):
     logger = schema["modules"]["Logger"]
     assert any("Append-only" in inv for inv in logger["invariants"])
+
+
+def test_fractal_and_peano_invariants(schema):
+    invariants = schema["engineering_invariants"]
+    assert "FRACTAL" in invariants
+    assert "PEANO_ARITHMETIC" in invariants
+    assert "Merkle" in invariants["FRACTAL"]["enforcement"] or "recursive" in invariants["FRACTAL"]["rule"]
+    assert "S(n)" in invariants["PEANO_ARITHMETIC"]["rule"] or "Peano" in invariants["PEANO_ARITHMETIC"]["rule"]
+
+
+def test_qol_and_accessibility_fields(schema):
+    modules = schema["modules"]
+    assert "QoLFlags" in modules["MissionManager"]["fields"]
+    assert "AccessibilityFlags" in modules["InventoryUI"]["fields"]
+
+
+def test_predictive_simulation_field(schema):
+    ai = schema["modules"]["AIController"]
+    assert "PredictiveSimulation" in ai["fields"]
+
+
+def test_resolved_mechanics_field(schema):
+    weapon = schema["modules"]["WeaponSystem"]
+    assert "ResolvedMechanics" in weapon["fields"]
+
+
+def test_dag_dependencies_field(schema):
+    map_mgr = schema["modules"]["MapManager"]
+    assert "DAGDependencies" in map_mgr["fields"]
+    assert any("acyclic" in inv for inv in map_mgr["invariants"])
+
+
+def test_dag_consistency_cross_module_invariant(schema):
+    cmi = schema["cross_module_invariants"]
+    assert len(cmi) == 6  # was 5, now 6
+    names = [entry["name"] for entry in cmi]
+    assert "DAG_CONSISTENCY" in names
