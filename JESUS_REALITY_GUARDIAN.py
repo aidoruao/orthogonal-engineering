@@ -1,25 +1,20 @@
 #!/usr/bin/env python3
 """
-JESUS_REALITY_GUARDIAN.py — Final Simple Guardian
-Version: 1.1
-Schema ID: JESUS-REALITY-1.1
+JESUS_REALITY_GUARDIAN.py — Repository Compliance Guardian
+Version: 1.2
+Schema ID: JESUS-REALITY-1.2
 
-PURPOSE: Police repository for AI activity with 100% mathematical proof
-BASIS: Ontological Reality = Jesus Reality (mathematically proven)
+PURPOSE: Verifies repository compliance against Yeshua Standard (8 axioms)
+         using AST-based enforcement. Also detects AI activity.
 
-THEOREM 1 (AI DETECTION):
-∀ file ∈ RepositoryFiles, ∃ proof ∈ MathematicalProofs:
-    detector(file) → {AI, Human} with cryptographic certainty
-
-THEOREM 2 (BOUNDARY ENFORCEMENT):
-∀ violation ∈ AIWithoutProof, ∃ correction ∈ GuardianActions:
-    jesus_reality(violation) → correction with ontological necessity
+BASIS: Yeshua Standard enforcement (see yeshua/axioms/eight_axioms.json)
+       and AST-based checks (see yeshua/enforcement.py).
 
 EXIT CODES:
-- 0: Repository in ontological compliance
+- 0: Repository in compliance
 - 2: Boundary violation (AI without proof)
-- 3: Mathematical proof failure
-- 4: Jesus Reality violation
+- 3: Yeshua enforcement failure
+- 4: Guardian initialization failure
 """
 
 import hashlib
@@ -33,25 +28,47 @@ from typing import Dict, List, Tuple
 
 
 class JesusRealityTheorem:
-    """Mathematical proof of Jesus Reality as ontological foundation."""
+    """Verifies repository compliance against the Yeshua Standard (8 axioms)
+    using AST-based enforcement.  Returns (True, sha256_hash) only when all
+    enforcement checks pass; returns (False, detail_json) when any check fails.
+    """
+
+    _AXIOMS_PATH = Path(__file__).parent / "yeshua" / "axioms" / "eight_axioms.json"
 
     @staticmethod
     def prove() -> Tuple[bool, str]:
-        """Generate mathematical proof of Jesus Reality."""
-        proof_steps = [
-            "1. Truth exists (non-contradiction principle)",
-            "2. Jesus Christ existed (historical evidence)",
-            "3. Jesus: Liar, Lunatic, or Lord (Lewis's trilemma)",
-            "4. Liar/lunatic inconsistent with evidence",
-            "5. Therefore: Jesus = Lord (ontological necessity)",
-            "6. Corollary: All truth corresponds to Jesus Reality",
-            "7. Application: Repository actions accountable to this reality",
-        ]
+        """Run Yeshua enforcement and return (passed, proof_hash_or_details).
 
-        proof_text = "\n".join(proof_steps)
-        proof_hash = hashlib.sha256(proof_text.encode()).hexdigest()
+        Loads yeshua/axioms/eight_axioms.json, runs
+        yeshua.enforcement.run_yeshua_enforcement(), and returns:
+          - (True, "YESHUA-ENFORCEMENT-PROOF:<sha256>")  if all checks pass
+          - (False, json_details)                        if any check fails
+        """
+        from yeshua.enforcement import run_yeshua_enforcement
 
-        return True, f"JESUS-REALITY-PROOF:{proof_hash}"
+        # Load axioms to confirm they are present and parseable
+        axioms_path = JesusRealityTheorem._AXIOMS_PATH
+        if not axioms_path.exists():
+            return False, json.dumps({"error": f"eight_axioms.json not found at {axioms_path}"})
+        with axioms_path.open(encoding="utf-8") as fh:
+            axioms_data = json.load(fh)
+        if len(axioms_data.get("axioms", [])) != 8:
+            return False, json.dumps({"error": "Expected 8 axioms", "found": len(axioms_data.get("axioms", []))})
+
+        report = run_yeshua_enforcement()
+        report_dict = report.to_dict()
+
+        # Embed axiom count so the hash reflects the full enforcement context
+        report_dict["axioms_verified"] = len(axioms_data["axioms"])
+        report_dict["standard"] = axioms_data.get("standard", "Yeshua")
+
+        report_json = json.dumps(report_dict, sort_keys=True)
+        proof_hash = hashlib.sha256(report_json.encode()).hexdigest()
+
+        if report.all_passed:
+            return True, f"YESHUA-ENFORCEMENT-PROOF:{proof_hash}"
+        else:
+            return False, json.dumps({"proof_hash": proof_hash, "violations": report_dict["violations"]})
 
 
 class AIDetector:
@@ -140,25 +157,26 @@ class RepositoryGuardian:
         self._establish_foundation()
 
     def _establish_foundation(self):
-        """Establish Jesus Reality as mathematical foundation."""
+        """Verify repository compliance against the Yeshua Standard."""
         print("=" * 60)
         print("JESUS REALITY GUARDIAN")
         print("=" * 60)
-        print("BASIS: Ontological Reality = Jesus Reality")
-        print("PURPOSE: Detect AI, enforce boundaries, require proof")
+        print("BASIS: Yeshua Standard (8 axioms) — yeshua/axioms/eight_axioms.json")
+        print("PURPOSE: Verify compliance, detect AI activity, enforce boundaries")
         print("=" * 60)
 
         success, proof = self.jesus_theorem.prove()
         if not success:
-            print("[ERROR] Failed to establish ontological foundation")
-            sys.exit(4)
+            print("[ERROR] Yeshua enforcement failed")
+            print(f"[DETAILS] {proof}")
+            sys.exit(3)
 
-        print(f"[FOUNDATION] Jesus Reality theorem proven")
-        print(f"[PROOF] {proof[:32]}...")
+        print(f"[FOUNDATION] Yeshua Standard verified (all axioms pass)")
+        print(f"[PROOF] {proof[:48]}...")
         print()
 
     def scan_repository(self) -> Tuple[int, int]:
-        """Scan repository for AI activity."""
+        """Scan repository for AI activity and run Peano/Boolean validators."""
         print("[SCAN] Scanning repository...")
 
         text_extensions = {".py", ".md", ".txt", ".json", ".yaml", ".yml", ".html"}
@@ -232,6 +250,47 @@ class RepositoryGuardian:
                     print(f"[PROGRESS] {total_files} files...")
 
         print(f"\n[SCAN COMPLETE] Files: {total_files}, AI: {ai_files}")
+
+        # Run Peano invariant checker and include results in the audit log
+        from yeshua_math.peano_invariant_checker import run_peano_invariant_checker
+        from yeshua_math.boolean_purity_validator import run_boolean_purity_validator
+
+        peano_report = run_peano_invariant_checker()
+        peano_entry = {
+            "check": "peano_invariant_checker",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "all_passed": peano_report.all_passed,
+            "violation_count": len(peano_report.violations),
+            "violations": [v.to_dict() for v in peano_report.violations],
+        }
+        peano_entry["entry_hash"] = hashlib.sha256(
+            json.dumps(peano_entry, sort_keys=True).encode()
+        ).hexdigest()
+        self.audit_log.append(peano_entry)
+
+        boolean_report = run_boolean_purity_validator()
+        boolean_entry = {
+            "check": "boolean_purity_validator",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "all_passed": boolean_report.all_passed,
+            "violation_count": len(boolean_report.violations),
+            "violations": [v.to_dict() for v in boolean_report.violations],
+        }
+        boolean_entry["entry_hash"] = hashlib.sha256(
+            json.dumps(boolean_entry, sort_keys=True).encode()
+        ).hexdigest()
+        self.audit_log.append(boolean_entry)
+
+        if not peano_report.all_passed:
+            print(f"[PEANO] {len(peano_report.violations)} violation(s) found")
+        else:
+            print("[PEANO] All Peano invariant checks passed")
+
+        if not boolean_report.all_passed:
+            print(f"[BOOLEAN] {len(boolean_report.violations)} violation(s) found")
+        else:
+            print("[BOOLEAN] All Boolean purity checks passed")
+
         return total_files, ai_files
 
     def generate_repository_proof(self) -> Dict:
@@ -264,7 +323,7 @@ class RepositoryGuardian:
             "theorem": "Repository state mathematically proven",
             "merkle_root": root_hash,
             "total_files": len(self.audit_log),
-            "ai_files": sum(1 for e in self.audit_log if e["ai_detected"]),
+            "ai_files": sum(1 for e in self.audit_log if e.get("ai_detected", False)),
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "ontological_basis": "Jesus Reality",
             "guardian_version": "1.1",
