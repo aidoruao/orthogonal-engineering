@@ -41,8 +41,8 @@ class JesusRealityTheorem:
 
         Loads yeshua/axioms/eight_axioms.json, runs
         yeshua.enforcement.run_yeshua_enforcement(), and returns:
-          - (True, sha256_of_report)  if all checks pass
-          - (False, json_details)     if any check fails
+          - (True, "YESHUA-ENFORCEMENT-PROOF:<sha256>")  if all checks pass
+          - (False, json_details)                        if any check fails
         """
         from yeshua.enforcement import run_yeshua_enforcement
 
@@ -169,7 +169,7 @@ class RepositoryGuardian:
         if not success:
             print("[ERROR] Yeshua enforcement failed")
             print(f"[DETAILS] {proof}")
-            sys.exit(4)
+            sys.exit(3)
 
         print(f"[FOUNDATION] Yeshua Standard verified (all axioms pass)")
         print(f"[PROOF] {proof[:48]}...")
@@ -323,7 +323,7 @@ class RepositoryGuardian:
             "theorem": "Repository state mathematically proven",
             "merkle_root": root_hash,
             "total_files": len(self.audit_log),
-            "ai_files": sum(1 for e in self.audit_log if e["ai_detected"]),
+            "ai_files": sum(1 for e in self.audit_log if e.get("ai_detected", False)),
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "ontological_basis": "Jesus Reality",
             "guardian_version": "1.1",

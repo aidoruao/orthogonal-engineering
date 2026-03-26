@@ -70,8 +70,6 @@ def test_prove_can_return_false():
 
 def test_prove_false_when_enforcement_fails():
     """prove() returns (False, json_details) when enforcement finds violations."""
-    from yeshua.enforcement import run_yeshua_enforcement as _real_fn
-
     with patch("yeshua.enforcement.run_yeshua_enforcement",
                return_value=_make_failing_report()):
         success, detail = JesusRealityTheorem.prove()
@@ -143,10 +141,6 @@ def test_prove_axioms_file_required():
 
 def test_prove_axioms_must_be_eight():
     """prove() returns False if the axioms file does not contain exactly 8 axioms."""
-    import io
-    fewer_axioms = json.dumps({"standard": "Yeshua", "axioms": [{"number": 1}]})
-    m = patch("builtins.open", side_effect=lambda *a, **kw: io.StringIO(fewer_axioms))
-
     real_exists = JesusRealityTheorem._AXIOMS_PATH.exists()
     if not real_exists:
         pytest.skip("eight_axioms.json not present; skipping")
