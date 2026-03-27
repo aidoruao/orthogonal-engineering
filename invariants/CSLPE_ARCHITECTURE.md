@@ -18,10 +18,10 @@ SIGN OFF: **YES (CONDITIONAL APPROVAL)** — Approved for v2 implementation assu
 WSC (Reality/Simulation) → CEG (Append-only causal record) → PLS (Derived, compression-bounded) → PAE (Derived, deterministic) → TRS (Read-only replay) → NET (Server authority with bounded prediction).
 
 ## Files
-- `invariants/cslpe_invariants.yaml` — 41 invariants (INV-CSLPE-001 .. INV-CSLPE-041)
-- `invariants/cslpe_forbidden.yaml` — 19 forbidden topologies (FORBIDDEN_CSLPE_001 .. FORBIDDEN_CSLPE_019)
-- `invariants/cslpe_node_classes.yaml` — Node class bindings (WSC, CEG, PLS, PAE, TRS)
-- `invariants/cslpe_falsification_tests.json` — 16 falsification tests (F_CSLPE_001 .. F_CSLPE_016)
+- `invariants/cslpe_invariants.yaml` — 57 invariants (INV-CSLPE-001 .. INV-CSLPE-057)
+- `invariants/cslpe_forbidden.yaml` — 26 forbidden topologies (FORBIDDEN_CSLPE_001 .. FORBIDDEN_CSLPE_026)
+- `invariants/cslpe_node_classes.yaml` — Node class bindings (WSC, CEG, PLS, PAE, TRS, Multiplayer Fairness, Meta Invariant)
+- `invariants/cslpe_falsification_tests.json` — 24 falsification tests (F_CSLPE_001 .. F_CSLPE_024)
 - `invariants/cslpe_event_schema.json` — CEG event JSON Schema (v2)
 
 ## v2 risk resolution
@@ -30,7 +30,8 @@ WSC (Reality/Simulation) → CEG (Append-only causal record) → PLS (Derived, c
 | CEG scalability | INV-CSLPE-022..026 | FORBIDDEN_CSLPE_009, 010 | F_CSLPE_010, 011 |
 | PLS real-time cognition | INV-CSLPE-027..030 | FORBIDDEN_CSLPE_011, 012 | F_CSLPE_012 |
 | PAE determinism boundaries | INV-CSLPE-031..035 | FORBIDDEN_CSLPE_013, 014, 015 | F_CSLPE_013, 014 |
-| Networking + fairness | INV-CSLPE-036..041 | FORBIDDEN_CSLPE_016..019 | F_CSLPE_015, 016 |
+| Networking + fairness | INV-CSLPE-036..041, INV-CSLPE-055, INV-CSLPE-056 | FORBIDDEN_CSLPE_016..026 | F_CSLPE_015, 016, 023 |
+| Meta truth graph | INV-CSLPE-057 | FORBIDDEN_CSLPE_020..026 | F_CSLPE_024 |
 
 ## Enforcement expectations
 - Invariants are falsifiable, executable, and enforced in code (not documentation-only).

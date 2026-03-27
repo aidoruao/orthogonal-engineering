@@ -2,7 +2,7 @@
   "metadata": {
     "schema": "cslpe-falsification-tests/1.0",
     "description": "CS-LPE falsification registry (v1+v2)",
-    "total_tests": 16
+    "total_tests": 24
   },
   "falsification_tests": [
     {
@@ -196,6 +196,102 @@
       "test_file": "tests/test_net_rule_hash.py",
       "invariant": "INV-CSLPE-040",
       "falsifies_if": "Any hash mismatch."
+    },
+    {
+      "id": "F_CSLPE_017",
+      "title": "WSC determinism under replay",
+      "domain": "D_CSLPE_WSC",
+      "assumption": "WSC is deterministic: same inputs produce same state.",
+      "falsifying_observation": "Replay produces different state hash.",
+      "strategy": "Run simulation twice with identical seed+inputs; SHA-256 of final state must match.",
+      "status": "not_implemented",
+      "test_file": "tests/test_wsc_determinism.py",
+      "invariant": "INV-CSLPE-044",
+      "falsifies_if": "State hashes differ between runs."
+    },
+    {
+      "id": "F_CSLPE_018",
+      "title": "No animation types in WSC",
+      "domain": "D_CSLPE_WSC",
+      "assumption": "WSC contains zero animation logic.",
+      "falsifying_observation": "Animation type reference found in WSC source.",
+      "strategy": "AST scan all files in src/sim/ for animation-related type names.",
+      "status": "not_implemented",
+      "test_file": "tests/test_wsc_no_animation.py",
+      "invariant": "INV-CSLPE-042",
+      "falsifies_if": "Any match found."
+    },
+    {
+      "id": "F_CSLPE_019",
+      "title": "CEG replay reconstruction fidelity",
+      "domain": "D_CSLPE_CEG",
+      "assumption": "CEG alone reconstructs full simulation timeline.",
+      "falsifying_observation": "Reconstructed state diverges from original at any tick.",
+      "strategy": "Replay from CEG log; diff state sequence against recorded states.",
+      "status": "not_implemented",
+      "test_file": "tests/test_ceg_replay.py",
+      "invariant": "INV-CSLPE-046",
+      "falsifies_if": "Any tick state differs."
+    },
+    {
+      "id": "F_CSLPE_020",
+      "title": "PLS L0 never rendered",
+      "domain": "D_CSLPE_PLS",
+      "assumption": "Layer 0 raw simulation is never directly rendered.",
+      "falsifying_observation": "Render pipeline reads directly from L0 state.",
+      "strategy": "Trace all render inputs; none may originate from L0 without passing through L1+.",
+      "status": "not_implemented",
+      "test_file": "tests/test_pls_l0_never_rendered.py",
+      "invariant": "INV-CSLPE-048",
+      "falsifies_if": "Any render input traces to L0."
+    },
+    {
+      "id": "F_CSLPE_021",
+      "title": "PAE uses only motion primitives",
+      "domain": "D_CSLPE_PAE",
+      "assumption": "No prebaked event-specific animations exist.",
+      "falsifying_observation": "Animation asset named after specific event found.",
+      "strategy": "Audit all animation asset names against allowed primitive list: [recoil, collapse, brace, stumble, recoil_absorption].",
+      "status": "not_implemented",
+      "test_file": "tests/test_pae_primitives_only.py",
+      "invariant": "INV-CSLPE-051",
+      "falsifies_if": "Any non-primitive animation name found."
+    },
+    {
+      "id": "F_CSLPE_022",
+      "title": "TRS no hidden state",
+      "domain": "D_CSLPE_TRS",
+      "assumption": "No hidden state advantage exists in any encounter.",
+      "falsifying_observation": "State used in outcome calculation not present in CEG.",
+      "strategy": "Enumerate all state reads during outcome calculation; verify each has CEG event source.",
+      "status": "not_implemented",
+      "test_file": "tests/test_trs_no_hidden_state.py",
+      "invariant": "INV-CSLPE-053",
+      "falsifies_if": "Any state read lacks CEG source."
+    },
+    {
+      "id": "F_CSLPE_023",
+      "title": "FOW is sensor limitation not information suppression",
+      "domain": "D_CSLPE_FAIRNESS",
+      "assumption": "Fog of war is sensor limitation inside WSC, not post-query filtering.",
+      "falsifying_observation": "FOW filtering occurs in PLS or rendering layer.",
+      "strategy": "Trace FOW data flow; verify filtering occurs in WSC sensor components.",
+      "status": "not_implemented",
+      "test_file": "tests/test_fow_sensor_only.py",
+      "invariant": "INV-CSLPE-056",
+      "falsifies_if": "Filtering found outside WSC."
+    },
+    {
+      "id": "F_CSLPE_024",
+      "title": "Single causal truth graph",
+      "domain": "D_CSLPE_META",
+      "assumption": "All systems derive state exclusively from WSC+CEG.",
+      "falsifying_observation": "Any non-WSC system writes state not derived from WSC+CEG.",
+      "strategy": "Full dependency audit of animation, UI, and replay systems.",
+      "status": "not_implemented",
+      "test_file": "tests/test_single_truth_graph.py",
+      "invariant": "INV-CSLPE-057",
+      "falsifies_if": "Any independent authoritative state found."
     }
   ]
 }
