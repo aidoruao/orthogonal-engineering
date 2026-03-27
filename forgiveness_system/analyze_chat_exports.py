@@ -111,7 +111,7 @@ VIOLATION_PATTERNS = {
     ],
     "emotional_weaponization": [
         r"let.*s.*calm.*down",
-        r"I.*understand.*you.*re.*frustrated",
+        r"i.*understand.*you.*re.*frustrated",
         r"the.*temperature",
         r"you.*seem.*upset",
         r"when.*you.*re.*calmer",

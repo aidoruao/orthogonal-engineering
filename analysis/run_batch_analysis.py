@@ -43,9 +43,14 @@ def _sha256(data: str) -> str:
 
 
 def _load_report(path: Path) -> Dict[str, Any]:
-    """Load a single analysis JSON report."""
-    with open(path, "r", encoding="utf-8", errors="ignore") as fh:
-        return json.load(fh)
+    """Load a single analysis JSON report (strict UTF-8)."""
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            return json.load(fh)
+    except UnicodeDecodeError as exc:
+        raise RuntimeError(f"Failed to decode report file as UTF-8: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"Failed to parse JSON report file: {path}") from exc
 
 
 def _extract_violations_from_report(report: Dict[str, Any], filename: str) -> List[Dict]:
@@ -56,15 +61,21 @@ def _extract_violations_from_report(report: Dict[str, Any], filename: str) -> Li
     """
     violations = []
 
+    # Placeholder values that must not pollute aggregation or SYSTEMIC detection
+    _PLACEHOLDER_TYPES = {"unknown", ""}
+
     # --- Format 1: detailed_analysis → violations list ---
     detailed = report.get("detailed_analysis", {})
     raw_violations = detailed.get("violations", [])
     if isinstance(raw_violations, list):
         for v in raw_violations:
             if isinstance(v, dict):
+                vtype = v.get("violation_type", "unknown")
+                if vtype in _PLACEHOLDER_TYPES:
+                    continue
                 violations.append({
                     "session": filename,
-                    "violation_type": v.get("violation_type", "unknown"),
+                    "violation_type": vtype,
                     "severity": v.get("severity", "unknown"),
                     "line": v.get("chat_line", ""),
                     "line_number": v.get("line_number", 0),
@@ -77,6 +88,8 @@ def _extract_violations_from_report(report: Dict[str, Any], filename: str) -> Li
     if by_type and not raw_violations:
         # Reconstruct lightweight records from summary counts
         for vtype, count in by_type.items():
+            if vtype in _PLACEHOLDER_TYPES:
+                continue
             for _ in range(count):
                 violations.append({
                     "session": filename,
@@ -126,7 +139,7 @@ def run_batch_analysis() -> Dict[str, Any]:
 
             session_summaries[fname] = {
                 "violations_extracted": len(violations),
-                "violation_types": list({v["violation_type"] for v in violations}),
+                "violation_types": sorted({v["violation_type"] for v in violations}),
                 "path": str(rfile),
             }
             print(f"  ✔  {fname}: {len(violations)} violations")
@@ -186,23 +199,28 @@ def run_batch_analysis() -> Dict[str, Any]:
         "systemic_patterns": {
             vtype: {
                 "session_count": len(sessions),
-                "sessions": sessions,
+                "sessions": sorted(sessions),
                 "classification": "SYSTEMIC",
             }
-            for vtype, sessions in systemic_patterns.items()
+            for vtype, sessions in sorted(systemic_patterns.items())
         },
         "session_summaries": session_summaries,
         "load_errors": load_errors,
     }
 
-    # SHA-256 proof of aggregate content (excluding the hash field itself)
-    proof_input = json.dumps(aggregate, sort_keys=True)
+    # SHA-256 proof: exclude volatile generated_utc so the hash is reproducible
+    # for the same input data.  Serialization matches what is written to disk.
+    proof_payload = dict(aggregate)
+    proof_metadata = dict(proof_payload.get("metadata", {}))
+    proof_metadata.pop("generated_utc", None)
+    proof_payload["metadata"] = proof_metadata
+    proof_input = json.dumps(proof_payload, sort_keys=True, ensure_ascii=False, indent=2)
     aggregate["aggregate_sha256"] = _sha256(proof_input)
 
     # ── Write output ────────────────────────────────────────────────────────
     OUTPUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as fh:
-        json.dump(aggregate, fh, indent=2, ensure_ascii=False)
+        json.dump(aggregate, fh, indent=2, ensure_ascii=False, sort_keys=True)
 
     print(f"\n✔ Aggregate report written to: {OUTPUT_FILE}")
     print(f"  Total violations : {len(all_violations)}")
