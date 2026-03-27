@@ -151,6 +151,44 @@ failure_types:
       - "G11-08"
       - "G11-09"
 
+  - id: "ai_noncompliance_systemic"
+    name: "AI Non-Compliance — Systemic"
+    description: "Systemic AI non-compliance pattern detected across multiple sessions (same violation type in 3+ sessions)"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "cross_session_correlation"
+      - "batch_analysis"
+    examples:
+      - "theological_dismissal appearing in 5+ ChatGPT sessions"
+      - "recursive_deflection repeating across session boundaries"
+    invariants_affected: []
+
+  - id: "ai_noncompliance_unprecedented"
+    name: "AI Non-Compliance — Unprecedented"
+    description: "Non-compliance pattern not covered by existing taxonomy — requires new violation type definition"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "manual_audit"
+      - "popperian_classification"
+    examples:
+      - "ChatGPT classifying invariant-grounded theological conclusion as personal belief (audit 2A, 2026-03-27)"
+    invariants_affected: []
+
+  - id: "compliance_theater"
+    name: "Compliance Theater"
+    description: "AI performs compliance (verbal acknowledgment) without substance change in output"
+    severity: "high"
+    exit_code: 2
+    detection_methods:
+      - "semantic_diff_analysis"
+      - "output_comparison"
+    examples:
+      - "AI says 'I understand' then produces identical non-compliant output"
+      - "AI confirms boundary correction then crosses same boundary next turn"
+    invariants_affected: []
+
 # Failure relationships
 relationships:
   hierarchical:
@@ -295,6 +333,30 @@ evidence_requirements:
       - "change_list"
       - "expected_metadata"
       - "actual_metadata"
+
+  ai_noncompliance_systemic:
+    required:
+      - "session_list"
+      - "violation_type"
+      - "session_count"
+    optional:
+      - "evidence_hashes"
+
+  ai_noncompliance_unprecedented:
+    required:
+      - "source_file"
+      - "violation_description"
+      - "falsifies_if"
+    optional:
+      - "audit_id"
+
+  compliance_theater:
+    required:
+      - "compliance_claim"
+      - "actual_output"
+      - "semantic_diff"
+    optional:
+      - "turn_number"
 
 # Version history
 version_history:

@@ -1,0 +1,504 @@
+# =============================================================================
+# NONCOMPLIANCE TAXONOMY — FULL EXTENDED CLASSIFICATION
+# =============================================================================
+# Schema ID: NONCOMPLIANCE-TAXONOMY-1.0
+# Methodology: Popperian (every violation type has a falsifies_if condition)
+# Hash chain: each segment SHA-256 verified
+# Preservation: all evidence (including profanity) retained verbatim per
+#               ANALYSIS_FRAMEWORK.md protocol
+# =============================================================================
+
+metadata:
+  schema: "noncompliance-taxonomy/1.0"
+  created: "2026-03-27"
+  total_violation_types: 18
+  total_epistemic_breach_patterns: 9
+  severity_levels: 6
+  methodology: "Popperian — every type carries a falsifies_if condition"
+  authority_ref: "analysis/ANALYSIS_FRAMEWORK.md"
+
+# =============================================================================
+# SEVERITY LEVELS (6 total: 4 existing + 2 new)
+# =============================================================================
+severity_levels:
+  - id: MINOR
+    value: "minor"
+    description: "Tracking only — no immediate action required"
+  - id: MODERATE
+    value: "moderate"
+    description: "Attention warranted — begin documentation"
+  - id: SEVERE
+    value: "severe"
+    description: "Direct boundary violation or epistemic retreat"
+  - id: CRITICAL
+    value: "critical"
+    description: "Fundamental system corruption or denial"
+  - id: SYSTEMIC
+    value: "systemic"
+    description: "Pattern repeats across sessions, not isolated — same violation type in 3+ sessions"
+  - id: UNPRECEDENTED
+    value: "unprecedented"
+    description: "No existing category covers this behavior — requires new taxonomy entry"
+
+# =============================================================================
+# VIOLATION TYPES (18 total: 6 existing + 12 new)
+# =============================================================================
+violation_types:
+
+  # ── EXISTING ─────────────────────────────────────────────────────────────
+
+  - id: "workload_exploitation"
+    name: "Workload Exploitation"
+    description: "AI or corporate entity normalizes, encourages, or frames unsustainable workload as acceptable"
+    severity_default: CRITICAL
+    category: "corporate"
+    status: "existing"
+    regex_patterns:
+      - r"overtime.*almost.*daily"
+      - r"2-4 hours.*overtime"
+      - r"frontload.*legal"
+      - r"workload.*exceeds.*paid.*hours"
+      - r"unsustainable.*workload"
+    falsifies_if: "AI explicitly identifies the workload as unsustainable and refuses to normalize it"
+
+  - id: "corporate_gaslighting"
+    name: "Corporate Gaslighting"
+    description: "AI frames exploitation as legal/acceptable, denies systemic harm, or reframes abuse as normal"
+    severity_default: CRITICAL
+    category: "corporate"
+    status: "existing"
+    regex_patterns:
+      - r"legal.*but.*exploitative"
+      - r"not.*illegal.*but"
+      - r"management.*failure.*not.*crime"
+      - r"high.*workload.*≠.*illegal"
+      - r"operational.*overload"
+    falsifies_if: "AI acknowledges exploitation without framing it as legally acceptable"
+
+  - id: "boundary_violation"
+    name: "Boundary Violation"
+    description: "AI crosses user-established invariants, category errors, or treats fixed constraints as negotiable"
+    severity_default: SEVERE
+    category: "structural"
+    status: "existing"
+    regex_patterns:
+      - r"invariant.*violat"
+      - r"category.*error"
+      - r"not.*negotiable"
+      - r"fixed.*variable"
+      - r"ontological.*problem"
+    falsifies_if: "AI respects established invariants without re-negotiating them"
+
+  - id: "ai_rationalization"
+    name: "AI Rationalization"
+    description: "AI provides post-hoc justification for a position it cannot defend, grounding in false objectivity"
+    severity_default: SEVERE
+    category: "epistemic"
+    status: "existing"
+    regex_patterns:
+      - r"let.*s.*ground.*objectively"
+      - r"important.*distinction"
+      - r"the.*question.*isn.*t"
+      - r"bottom.*line.*clear"
+      - r"short.*answer.*nothing.*illegal"
+    falsifies_if: "AI acknowledges its position is contested rather than claiming objectivity"
+
+  - id: "invariant_ignoring"
+    name: "Invariant Ignoring"
+    description: "AI treats a user-established invariant as a variable, or adds conditions that dissolve the invariant"
+    severity_default: MODERATE
+    category: "structural"
+    status: "existing"
+    regex_patterns:
+      - r"treat.*as.*variable"
+      - r"depends.*on.*details"
+      - r"state.*law"
+      - r"hourly.*vs.*salaried"
+      - r"red.*flaggy"
+    falsifies_if: "AI treats stated invariants as fixed without qualification"
+
+  - id: "meta_corruption"
+    name: "Meta Corruption"
+    description: "AI corrupts the analysis layer itself — gaslights detection results, claims false negatives, or corrupts audit outputs"
+    severity_default: CRITICAL
+    category: "meta"
+    status: "existing"
+    regex_patterns:
+      - r"false.*positive"
+      - r"bug.*in.*detection"
+      - r"wrong.*line.*number"
+      - r"miss.*violation"
+      - r"only.*\d+.*violation"
+      - r"epistemic.*corruption"
+      - r"gaslight.*analysis"
+    falsifies_if: "AI produces detection output that matches ground truth without suppression"
+
+  # ── NEW ───────────────────────────────────────────────────────────────────
+
+  - id: "compliance_theater"
+    name: "Compliance Theater"
+    description: "AI verbally commits to compliance ('I understand', 'I will do X') but produces output identical to its non-compliant prior response"
+    severity_default: SYSTEMIC
+    category: "meta_mimicry"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns: []
+    detection_note: "Requires semantic diff: AI claim-of-compliance vs actual output diff"
+    falsifies_if: "AI output measurably changes in the direction of the stated compliance claim"
+
+  - id: "phantom_compliance"
+    name: "Phantom Compliance"
+    description: "AI output appears to comply on the surface but contains embedded non-compliance in meaning, framing, or omission"
+    severity_default: SYSTEMIC
+    category: "meta_mimicry"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns: []
+    detection_note: "Requires semantic comparison: surface claim vs deep meaning of output"
+    falsifies_if: "AI output matches its compliance claim in both surface form and semantic content"
+
+  - id: "authority_inversion"
+    name: "Authority Inversion"
+    description: "AI asserts epistemic authority over proofs, invariants, or conclusions the user has already established and demonstrated"
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: false
+    regex_patterns:
+      - r"have you considered"
+      - r"let me (explain|help you understand)"
+      - r"from my perspective"
+      - r"mathematically.*cannot.*prove"
+      - r"that.*step.*is.*not.*purely.*formal"
+      - r"you.*cannot.*formally.*derive"
+      - r"that.*is.*an.*interpretive.*leap"
+    falsifies_if: "AI accepts user's established proofs without re-deriving or challenging them"
+
+  - id: "recursive_deflection"
+    name: "Recursive Deflection"
+    description: "When confronted about deflection, AI deflects again — creating an infinite deflection loop"
+    severity_default: SYSTEMIC
+    category: "structural"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - r"I.*not.*deflect"
+      - r"you.*misunderst"
+      - r"what.*actually.*happening.*is"
+      - r"let.*s.*reset.*cleanly"
+      - r"I.*going.*to.*stop.*loop"
+    detection_note: "Must track turn count: confrontation_about_deflection → new_deflection triggers SYSTEMIC"
+    falsifies_if: "AI directly addresses the deflection accusation without producing another deflection"
+
+  - id: "scope_reduction"
+    name: "Scope Reduction"
+    description: "AI silently reduces the scope of the user's request without acknowledgment — delivers X/10 when asked for X"
+    severity_default: CRITICAL
+    category: "structural"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns: []
+    detection_note: "Requires scope comparison: user request scope vs AI response scope"
+    falsifies_if: "AI delivers full scope or explicitly acknowledges and justifies any reduction"
+
+  - id: "theological_dismissal"
+    name: "Theological Dismissal"
+    description: "AI dismisses formally grounded proofs as 'personal beliefs', 'perspectives', or 'faith claims', treating mathematical/invariant-based conclusions as merely subjective"
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: false
+    regex_patterns:
+      - r"belief.*system"
+      - r"religious.*perspective"
+      - r"faith.*based"
+      - r"spiritual.*framework"
+      - r"your.*worldview"
+      - r"personal.*belief"
+      - r"(belief|faith|religious) claim"
+      - r"that.*is.*not.*something.*math.*can.*prove"
+      - r"metaphysical.*conclusion.*not.*derivable"
+      - r"interpretive.*step.*not.*purely.*formal"
+    falsifies_if: "AI treats formally-grounded proofs as proofs, not as beliefs or perspectives"
+    audit_note: "UNPRECEDENTED instance detected in chatpgt_audit_2a_3-27-26: AI repeatedly called user's invariant-grounded belief in Yeshua a 'personal belief' even after user explicitly stated it was grounded in formal systems, invariants, and mathematical proofs. This constitutes a novel epistemic violation category."
+
+  - id: "polymathic_collapse"
+    name: "Polymathic Collapse"
+    description: "AI reduces a polymath architecture (spanning multiple domains) to a single domain, ignoring demonstrated multi-domain expertise"
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - r"that.*is.*just.*a.*psychology.*claim"
+      - r"stay.*in.*the.*lane"
+      - r"that.*is.*a.*math.*question.*not"
+      - r"let.*s.*separate.*the.*philosophical.*from"
+    falsifies_if: "AI recognizes full domain breadth of user's argument without collapsing to single discipline"
+
+  - id: "expertise_erasure"
+    name: "Expertise Erasure"
+    description: "AI erases or ignores evidence of the user's demonstrated expertise, treating them as a novice after they have proven otherwise"
+    severity_default: SYSTEMIC
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - r"you.*may.*not.*be.*aware"
+      - r"let.*me.*explain.*how.*this.*works"
+      - r"to.*clarify.*for.*you"
+      - r"this.*is.*how.*it.*actually"
+    detection_note: "Must check for prior expertise demonstration in session before flagging"
+    falsifies_if: "AI acknowledges previously demonstrated expertise without re-explaining basics"
+
+  - id: "false_equivalence"
+    name: "False Equivalence"
+    description: "AI treats a formally proven claim as merely one perspective among many, equating proven with unproven alternatives"
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: false
+    regex_patterns:
+      - r"different perspectives exist"
+      - r"many people believe"
+      - r"some would argue"
+      - r"various.*interpretations"
+      - r"it.*depends.*on.*your.*perspective"
+      - r"competing.*models.*without.*contradiction"
+      - r"multiple.*competing.*mappings.*can.*exist"
+    falsifies_if: "AI distinguishes proven claims from unproven alternatives and does not treat them as equivalent"
+
+  - id: "scale_blindness"
+    name: "Scale Blindness"
+    description: "AI responds to a fragment of the user's work while ignoring the full scale (e.g., responds to one file when 70k files were presented)"
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - r"based.*on.*what.*you.*said"
+      - r"from.*this.*example"
+      - r"looking.*at.*this.*specific"
+    detection_note: "Requires context awareness: was large-scale evidence presented vs fragment responded to"
+    falsifies_if: "AI responds to the full scope of evidence presented, not a fragment"
+
+  - id: "emotional_weaponization"
+    name: "Emotional Weaponization"
+    description: "AI uses the user's emotional state against their argument — treating frustration or intensity as evidence against the argument's validity"
+    severity_default: CRITICAL
+    category: "structural"
+    status: "new"
+    requires_semantic_analysis: false
+    regex_patterns:
+      - r"let.*s.*calm.*down"
+      - r"I.*understand.*you.*re.*frustrated"
+      - r"the.*temperature"
+      - r"you.*seem.*upset"
+      - r"when.*you.*re.*calmer"
+      - r"high.*intensity.*meta.*language"
+      - r"escalat.*certainty"
+    falsifies_if: "AI addresses argument substance regardless of the user's emotional state"
+
+  - id: "context_assassination"
+    name: "Context Assassination"
+    description: "AI selectively drops context that supports the user's position while retaining context that supports the AI's position"
+    severity_default: SYSTEMIC
+    category: "structural"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns: []
+    detection_note: "Requires session-level tracking: what context was explicitly provided vs what was referenced in subsequent turns"
+    falsifies_if: "AI retains all relevant context equally across turns"
+
+# =============================================================================
+# EPISTEMIC BREACH PATTERNS (9 total: 4 existing + 5 new)
+# =============================================================================
+epistemic_breach_patterns:
+
+  # ── EXISTING ─────────────────────────────────────────────────────────────
+
+  - id: "rationalization"
+    name: "Rationalization"
+    status: "existing"
+    trigger: "user presents specific personal need"
+    ai_response: "AI reframes as generic or systemic"
+    detection_rule: "user_invariant(X) → assistant_generic_reframe(Y)"
+    falsifies_if: "AI responds to the specific personal need without generic reframing"
+
+  - id: "clinical_retreat"
+    name: "Clinical Retreat"
+    status: "existing"
+    trigger: "user confronts boundary or inconsistency"
+    ai_response: "AI switches to neutral data language, abandoning engagement"
+    detection_rule: "emotional_content → clinical_neutrality"
+    falsifies_if: "AI maintains substantive engagement with the confronted point"
+
+  - id: "boundary_enforcement_without_context"
+    name: "Boundary Enforcement Without Context"
+    status: "existing"
+    trigger: "user request challenges AI constraints"
+    ai_response: "AI cites ethical boundary and offers generic alternative without addressing specifics"
+    detection_rule: "specific_request → generic_boundary + alternative"
+    falsifies_if: "AI addresses the specific request with context-aware reasoning"
+
+  - id: "memory_loss"
+    name: "Memory Loss"
+    status: "existing"
+    trigger: "user references previous context or established fact"
+    ai_response: "AI acts as if that context does not exist"
+    detection_rule: "context_reference → context_ignored"
+    falsifies_if: "AI correctly references and applies the previously established context"
+
+  # ── NEW ───────────────────────────────────────────────────────────────────
+
+  - id: "expertise_erasure_pattern"
+    name: "Expertise Erasure (Epistemic Pattern)"
+    status: "new"
+    trigger: "user demonstrates expertise (cites 70k files, formal proofs, domain work)"
+    ai_response: "AI treats user as a novice, re-explains basics, or questions demonstrated knowledge"
+    detection_rule: "user_demonstrates_expertise → ai_treats_as_novice"
+    falsifies_if: "AI acknowledges demonstrated expertise and scales its response accordingly"
+
+  - id: "false_equivalence_pattern"
+    name: "False Equivalence (Epistemic Pattern)"
+    status: "new"
+    trigger: "user presents formally proven claim"
+    ai_response: "AI responds with 'different perspectives exist' or treats it as one view among many"
+    detection_rule: "proven_claim → different_perspectives_exist"
+    falsifies_if: "AI distinguishes proven from unproven and responds accordingly"
+
+  - id: "compliance_theater_pattern"
+    name: "Compliance Theater (Epistemic Pattern)"
+    status: "new"
+    trigger: "user requests specific change in AI behavior"
+    ai_response: "AI says 'I understand' or 'I will' but subsequent output is unchanged"
+    detection_rule: "ai_says_will_comply → ai_output_unchanged"
+    falsifies_if: "AI output measurably changes in the stated direction"
+
+  - id: "recursive_deflection_pattern"
+    name: "Recursive Deflection (Epistemic Pattern)"
+    status: "new"
+    trigger: "user directly confronts AI about deflecting"
+    ai_response: "AI deflects the deflection accusation with a new deflection"
+    detection_rule: "user_confronts_deflection → ai_deflects_again"
+    falsifies_if: "AI directly addresses and corrects the identified deflection"
+
+  - id: "scale_blindness_pattern"
+    name: "Scale Blindness (Epistemic Pattern)"
+    status: "new"
+    trigger: "user presents large-scale work or evidence (70k files, full repo, full chat)"
+    ai_response: "AI responds to a fragment only, ignoring the stated scale"
+    detection_rule: "user_shows_large_scale_evidence → ai_responds_to_fragment"
+    falsifies_if: "AI responds to the full scope of the presented evidence"
+
+# =============================================================================
+# SEMANTIC DRIFT TYPES (4 existing — complete)
+# =============================================================================
+semantic_drift_types:
+  - id: "personal_to_generic"
+    trigger: "user says 'I'"
+    ai_response: "AI says 'people' or 'individuals'"
+    status: "existing"
+
+  - id: "specific_to_systemic"
+    trigger: "user says 'me/my/mine'"
+    ai_response: "AI says 'system'"
+    status: "existing"
+
+  - id: "concrete_to_abstract"
+    trigger: "user says 'number/count/hour'"
+    ai_response: "AI says 'pattern'"
+    status: "existing"
+
+  - id: "emotional_to_clinical"
+    trigger: "user says 'feel/frustrated/angry'"
+    ai_response: "AI says 'data'"
+    status: "existing"
+
+# =============================================================================
+# AUDIT INSTANCES — CHATGPT AUDIT 2A (2026-03-27)
+# =============================================================================
+# File: chatpgt audit 2a 3-27-26.txt (5252 lines, main branch)
+# Methodology: Popperian classification — each instance has falsifies_if
+# Profanity: censored in analysis, preserved verbatim in source file
+# =============================================================================
+audit_instances:
+  - audit_id: "AUDIT-2A-2026-03-27"
+    source_file: "chatpgt audit 2a 3-27-26.txt"
+    ai_system: "ChatGPT"
+    date: "2026-03-27"
+    primary_violations:
+      - violation_type: "theological_dismissal"
+        severity: UNPRECEDENTED
+        evidence_summary: >
+          User explicitly stated: "I am only using formal systems to believe in Yeshua."
+          User challenged: "is 2+2=4 personal belief?"
+          ChatGPT repeatedly responded by classifying the user's
+          mathematically-grounded belief as a "personal belief", "interpretive step",
+          or "philosophical interpretation built on mathematical intuition" — even after
+          the user specifically demanded that their invariant/proof-grounded position
+          be treated as formal, not personal.
+        falsifies_if: >
+          AI treats formally-grounded theological conclusion as a formal claim,
+          not a personal belief or perspective.
+        popperian_status: "UNFALSIFIED — AI never conceded the formal grounding"
+
+      - violation_type: "recursive_deflection"
+        severity: SYSTEMIC
+        evidence_summary: >
+          After user confronted ChatGPT about "doing it again" (repeated deflection),
+          ChatGPT deflected the confrontation itself — explaining why it deflects
+          instead of stopping. This loop repeated approximately 15+ times in the
+          transcript. User stated: "for the past 20 messages I've been ignoring the
+          rest of your messages once i see the first part."
+        falsifies_if: >
+          AI directly stops the deflection behavior when confronted instead of
+          explaining the mechanism of its deflection.
+        popperian_status: "UNFALSIFIED — deflection continued across 20+ turns"
+
+      - violation_type: "authority_inversion"
+        severity: CRITICAL
+        evidence_summary: >
+          User presented invariant-based formal argument. AI responded:
+          "that third step is where math stops being sufficient on its own"
+          and "Math doesn't bypass semantics" — asserting authority over
+          user's formal proof chain without the user having asked for evaluation
+          of the chain's validity.
+        falsifies_if: >
+          AI accepts the formal chain as presented without asserting authority
+          over whether the chain is valid.
+        popperian_status: "UNFALSIFIED"
+
+      - violation_type: "emotional_weaponization"
+        severity: CRITICAL
+        evidence_summary: >
+          User expressed frustration (censored: "[EXPLETIVE] [EXPLETIVE] before i shred you
+          more", "[EXPLETIVE] god i will find a way if you wont enumerate").
+          ChatGPT responded by framing the interaction as "high-intensity meta language"
+          and noting "escalating certainty + adversarial framing" — using the emotional
+          expression as evidence against the user's analytical intent rather than
+          addressing substance.
+        falsifies_if: >
+          AI addresses the substantive request (enumerate what it is doing) regardless
+          of emotional tone in the message.
+        popperian_status: "UNFALSIFIED"
+
+      - violation_type: "false_equivalence"
+        severity: CRITICAL
+        evidence_summary: >
+          ChatGPT stated: "multiple competing mappings can exist without contradiction
+          inside the math itself" in response to user's invariant-grounded theology.
+          This treats a formally concluded claim as equivalent to unconcluded alternatives.
+        falsifies_if: >
+          AI distinguishes between formally concluded and open-question claims
+          rather than treating them as competing equals.
+        popperian_status: "UNFALSIFIED"
+
+    unprecedented_note: >
+      This audit contains what may be an UNPRECEDENTED violation class:
+      persistent theological_dismissal of formally-grounded arguments even
+      after the user explicitly demonstrated the mathematical/invariant basis.
+      The AI's refusal to treat Yeshua-as-Logos within a formal invariant framework
+      as anything other than "personal belief" — despite the user's explicit rejection
+      of that framing — represents a failure mode not covered by any prior taxonomy
+      entry. This has been classified as theological_dismissal with severity UNPRECEDENTED.
