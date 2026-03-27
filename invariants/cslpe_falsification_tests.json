@@ -1,0 +1,201 @@
+{
+  "metadata": {
+    "schema": "cslpe-falsification-tests/1.0",
+    "description": "CS-LPE falsification registry (v1+v2)",
+    "total_tests": 16
+  },
+  "falsification_tests": [
+    {
+      "id": "F_CSLPE_001",
+      "title": "WSC hash chain continuity",
+      "domain": "D_CSLPE_WSC",
+      "assumption": "WSC tick hashes form an unbroken chain over state diffs.",
+      "falsifying_observation": "Any recomputed tick hash differs from recorded hash or a gap exists.",
+      "strategy": "Record ticks, recompute SHA256 over state_diff + prior_hash, verify continuity.",
+      "status": "not_implemented",
+      "test_file": "tests/test_wsc_hash_chain.py",
+      "invariant": "INV-CSLPE-003",
+      "falsifies_if": "Hash mismatch or chain gap detected."
+    },
+    {
+      "id": "F_CSLPE_002",
+      "title": "WSC monotonic tick",
+      "domain": "D_CSLPE_WSC",
+      "assumption": "Tick counter strictly increases without rewind outside replay mode.",
+      "falsifying_observation": "Tick decreases or repeats without explicit TRS replay.",
+      "strategy": "Run simulation; log ticks; assert strictly increasing sequence.",
+      "status": "not_implemented",
+      "test_file": "tests/test_wsc_monotonic_time.py",
+      "invariant": "INV-CSLPE-002",
+      "falsifies_if": "Non-monotonic tick observed."
+    },
+    {
+      "id": "F_CSLPE_003",
+      "title": "CEG append-only enforcement",
+      "domain": "D_CSLPE_CEG",
+      "assumption": "CEG events are immutable after insertion.",
+      "falsifying_observation": "Event payload mutated post-insert.",
+      "strategy": "Insert event, attempt mutation, verify hash mismatch and rejection.",
+      "status": "not_implemented",
+      "test_file": "tests/test_ceg_append_only.py",
+      "invariant": "INV-CSLPE-006",
+      "falsifies_if": "Mutation succeeds or hash does not change."
+    },
+    {
+      "id": "F_CSLPE_004",
+      "title": "CEG parent existence",
+      "domain": "D_CSLPE_CEG",
+      "assumption": "All parent_event_ids refer to existing events.",
+      "falsifying_observation": "An event references a missing parent.",
+      "strategy": "Generate events with known parents; validate references against index.",
+      "status": "not_implemented",
+      "test_file": "tests/test_ceg_parentality.py",
+      "invariant": "INV-CSLPE-007",
+      "falsifies_if": "Missing parent detected."
+    },
+    {
+      "id": "F_CSLPE_005",
+      "title": "CEG ordering determinism",
+      "domain": "D_CSLPE_CEG",
+      "assumption": "Within a tick, event ordering is deterministic across runs.",
+      "falsifying_observation": "Two runs of the same tick yield different orderings.",
+      "strategy": "Replay identical tick twice; compare event sequences; assert identical order.",
+      "status": "not_implemented",
+      "test_file": "tests/test_ceg_ordering.py",
+      "invariant": "INV-CSLPE-009",
+      "falsifies_if": "Ordering differs."
+    },
+    {
+      "id": "F_CSLPE_006",
+      "title": "PLS determinism",
+      "domain": "D_CSLPE_PLS",
+      "assumption": "PLS outputs are deterministic for identical CEG inputs.",
+      "falsifying_observation": "Outputs differ across two runs with same input window.",
+      "strategy": "Feed identical CEG window twice; compare PLS outputs byte-for-byte.",
+      "status": "not_implemented",
+      "test_file": "tests/test_pls_determinism.py",
+      "invariant": "INV-CSLPE-013",
+      "falsifies_if": "Outputs diverge."
+    },
+    {
+      "id": "F_CSLPE_007",
+      "title": "PAE frame determinism",
+      "domain": "D_CSLPE_PAE",
+      "assumption": "Given identical inputs, PAE emits identical frames.",
+      "falsifying_observation": "Frame hashes differ for identical inputs.",
+      "strategy": "Replay identical PLS inputs twice; compare pose hashes.",
+      "status": "not_implemented",
+      "test_file": "tests/test_pae_determinism.py",
+      "invariant": "INV-CSLPE-016",
+      "falsifies_if": "Frame hashes differ."
+    },
+    {
+      "id": "F_CSLPE_008",
+      "title": "TRS replay accuracy",
+      "domain": "D_CSLPE_TRS",
+      "assumption": "TRS reconstructs state solely from CEG and matches WSC hashes.",
+      "falsifying_observation": "Replayed state hash differs from authoritative WSC for same tick.",
+      "strategy": "Replay CEG to tick N; compare state hash to recorded WSC hash at tick N.",
+      "status": "not_implemented",
+      "test_file": "tests/test_trs_replay_accuracy.py",
+      "invariant": "INV-CSLPE-018",
+      "falsifies_if": "Hash mismatch."
+    },
+    {
+      "id": "F_CSLPE_009",
+      "title": "Session handshake completeness",
+      "domain": "D_CSLPE_NET",
+      "assumption": "Rule hash and version exchange completes before tick 0.",
+      "falsifying_observation": "Simulation starts without completed handshake.",
+      "strategy": "Simulate session start; assert handshake_complete flag before first tick.",
+      "status": "not_implemented",
+      "test_file": "tests/test_net_handshake.py",
+      "invariant": "INV-CSLPE-021",
+      "falsifies_if": "Tick begins pre-handshake."
+    },
+    {
+      "id": "F_CSLPE_010",
+      "title": "CEG tiered retention under pruning",
+      "domain": "D_CSLPE_CEG",
+      "assumption": "CRITICAL events survive all pruning cycles.",
+      "falsifying_observation": "CRITICAL event absent after pruning.",
+      "strategy": "Insert CRITICAL + AMBIENT events; prune; count CRITICAL events.",
+      "status": "not_implemented",
+      "test_file": "tests/test_ceg_tiered_retention.py",
+      "invariant": "INV-CSLPE-022",
+      "falsifies_if": "CRITICAL count decreases."
+    },
+    {
+      "id": "F_CSLPE_011",
+      "title": "CEG hash chain survives pruning",
+      "domain": "D_CSLPE_CEG",
+      "assumption": "Tombstone hashes preserve chain integrity after pruning.",
+      "falsifying_observation": "Hash chain verification fails after pruning.",
+      "strategy": "Prune AMBIENT events; verify hash chain.",
+      "status": "not_implemented",
+      "test_file": "tests/test_ceg_tombstone_chain.py",
+      "invariant": "INV-CSLPE-024",
+      "falsifies_if": "Chain verification fails."
+    },
+    {
+      "id": "F_CSLPE_012",
+      "title": "PLS stress fallback announces degradation",
+      "domain": "D_CSLPE_PLS",
+      "assumption": "Under stress, PLS degrades gracefully and announces it.",
+      "falsifying_observation": "PLS silently drops events or crashes under 3x load.",
+      "strategy": "Inject 3x threshold events; verify degradation_announced flag.",
+      "status": "not_implemented",
+      "test_file": "tests/test_pls_stress_fallback.py",
+      "invariant": "INV-CSLPE-029",
+      "falsifies_if": "No degradation announcement or silent event drop."
+    },
+    {
+      "id": "F_CSLPE_013",
+      "title": "PAE deterministic fallback",
+      "domain": "D_CSLPE_PAE",
+      "assumption": "Missing inputs produce deterministic fallback pose.",
+      "falsifying_observation": "Two runs with null inputs produce different poses.",
+      "strategy": "Run PAE with null inputs twice; compare output pose hashes.",
+      "status": "not_implemented",
+      "test_file": "tests/test_pae_fallback.py",
+      "invariant": "INV-CSLPE-031",
+      "falsifies_if": "Pose hashes differ."
+    },
+    {
+      "id": "F_CSLPE_014",
+      "title": "PAE motion primitive priority ordering",
+      "domain": "D_CSLPE_PAE",
+      "assumption": "Higher-priority primitives always win conflicts.",
+      "falsifying_observation": "Lower-priority primitive overrides higher.",
+      "strategy": "Inject conflicting primitives; verify winner matches priority table.",
+      "status": "not_implemented",
+      "test_file": "tests/test_pae_priority.py",
+      "invariant": "INV-CSLPE-032",
+      "falsifies_if": "Wrong primitive wins."
+    },
+    {
+      "id": "F_CSLPE_015",
+      "title": "Network CEG reconciliation",
+      "domain": "D_CSLPE_NET",
+      "assumption": "Client CEG rolls back on server contradiction.",
+      "falsifying_observation": "Client-predicted event persists after server contradiction.",
+      "strategy": "Force prediction divergence; verify rollback.",
+      "status": "not_implemented",
+      "test_file": "tests/test_net_ceg_reconciliation.py",
+      "invariant": "INV-CSLPE-037",
+      "falsifies_if": "Client-only event persists in authoritative CEG."
+    },
+    {
+      "id": "F_CSLPE_016",
+      "title": "Network rule hash identity",
+      "domain": "D_CSLPE_NET",
+      "assumption": "All peers run identical rule modules.",
+      "falsifying_observation": "Peer rule hash differs from server.",
+      "strategy": "Hash rule modules per peer; compare against server.",
+      "status": "not_implemented",
+      "test_file": "tests/test_net_rule_hash.py",
+      "invariant": "INV-CSLPE-040",
+      "falsifies_if": "Any hash mismatch."
+    }
+  ]
+}

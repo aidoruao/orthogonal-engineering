@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CSLPE CEG Event v2",
+  "type": "object",
+  "properties": {
+    "id": { "type": "string", "pattern": "^EVT-[A-F0-9]{16}$" },
+    "timestamp": { "type": "integer" },
+    "source_entity": { "type": "string" },
+    "target_entity": { "type": ["string", "null"] },
+    "event_type": { "type": "string" },
+    "physical_parameters": { "type": "object" },
+    "preconditions": { "type": "array", "items": { "type": "string" } },
+    "postconditions": { "type": "array", "items": { "type": "string" } },
+    "parent_event_ids": { "type": "array", "items": { "type": "string" } },
+    "hash": { "type": "string" },
+    "importance_weight": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+    "retention_tier": { "type": "string", "enum": ["CRITICAL", "TACTICAL", "AMBIENT"] },
+    "shard_id": { "type": "string", "pattern": "^SHARD-[A-F0-9]{8}$" }
+  },
+  "required": [
+    "id",
+    "timestamp",
+    "source_entity",
+    "event_type",
+    "physical_parameters",
+    "preconditions",
+    "postconditions",
+    "parent_event_ids",
+    "hash",
+    "importance_weight",
+    "retention_tier",
+    "shard_id"
+  ],
+  "additionalProperties": false
+}

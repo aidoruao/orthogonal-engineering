@@ -1,0 +1,114 @@
+forbidden:
+  - id: FORBIDDEN_CSLPE_001
+    name: MULTIPLE_WSC_AUTHORITIES
+    pattern: "More than one authoritative WSC instance in a session."
+    structural_invalidity: "Violates INV-CSLPE-001; single source of truth is required."
+    detection: "Session graph scan: count WSC authorities; assert count == 1."
+
+  - id: FORBIDDEN_CSLPE_002
+    name: TIME_ROLLBACK_WITHOUT_REPLAY
+    pattern: "Tick counter decreases or rewinds without explicit rollback via TRS."
+    structural_invalidity: "Violates INV-CSLPE-002; time monotonicity is broken."
+    detection: "Monitor tick stream; flag any non-monotonic step outside TRS replay mode."
+
+  - id: FORBIDDEN_CSLPE_003
+    name: EVENT_MUTATION
+    pattern: "A CEG event payload changes after insertion."
+    structural_invalidity: "Violates INV-CSLPE-006; CEG is append-only."
+    detection: "Hash recomputation diff check on stored events."
+
+  - id: FORBIDDEN_CSLPE_004
+    name: ORPHAN_PARENT_REFERENCE
+    pattern: "Event references parent_event_ids that do not exist."
+    structural_invalidity: "Violates INV-CSLPE-007; parents must exist."
+    detection: "Validate parent_event_ids against event index; flag missing."
+
+  - id: FORBIDDEN_CSLPE_005
+    name: PLS_BYPASS
+    pattern: "PAE consumes raw CEG events or WSC state without passing through PLS."
+    structural_invalidity: "Violates INV-CSLPE-011 and INV-CSLPE-015; pipeline ordering is mandatory."
+    detection: "Trace data flows into PAE; assert all originate from PLS outputs."
+
+  - id: FORBIDDEN_CSLPE_006
+    name: HIDDEN_PAE_INPUT
+    pattern: "PAE reads side-channel data not recorded in CEG/PLS."
+    structural_invalidity: "Violates INV-CSLPE-015; PAE input must be auditable."
+    detection: "Audit PAE data sources; flag any non-PLS/non-WSC pose inputs."
+
+  - id: FORBIDDEN_CSLPE_007
+    name: TRS_SIDECHANNEL_REPLAY
+    pattern: "TRS reconstructs state using side-channel caches instead of CEG-only."
+    structural_invalidity: "Violates INV-CSLPE-018; replay must come solely from CEG."
+    detection: "Inspect TRS reconstruction; ensure only CEG inputs used."
+
+  - id: FORBIDDEN_CSLPE_008
+    name: HANDSHAKE_SKIPPED
+    pattern: "Simulation tick begins before rule_hash/version handshake completes."
+    structural_invalidity: "Violates INV-CSLPE-021; handshake precedes tick 0."
+    detection: "Session telemetry: assert handshake_complete=true before tick start."
+
+  - id: FORBIDDEN_CSLPE_009
+    name: CRITICAL_EVENT_PRUNING
+    pattern: "A CRITICAL-tier event is removed during any pruning cycle."
+    structural_invalidity: "Violates INV-CSLPE-022. CRITICAL events are never pruned."
+    detection: "Post-pruning audit: count of CRITICAL events must not decrease."
+
+  - id: FORBIDDEN_CSLPE_010
+    name: BROKEN_TOMBSTONE_CHAIN
+    pattern: "Pruning removes an event without inserting a tombstone hash."
+    structural_invalidity: "Violates INV-CSLPE-024. Hash chain must survive pruning."
+    detection: "Hash-chain verification after every pruning cycle."
+
+  - id: FORBIDDEN_CSLPE_011
+    name: SILENT_EVENT_DROP
+    pattern: "PLS drops events without announcing true count or degradation state."
+    structural_invalidity: "Violates INV-CSLPE-027 and INV-CSLPE-029. Truncation is always announced."
+    detection: "Compare PLS input event count to output event count + announced compression count."
+
+  - id: FORBIDDEN_CSLPE_012
+    name: ZERO_LAYER_OUTPUT
+    pattern: "Any active PLS layer produces zero outputs in a tick with active simulation."
+    structural_invalidity: "Violates INV-CSLPE-028. Minimum readability guarantee."
+    detection: "Per-tick output count assertion per layer."
+
+  - id: FORBIDDEN_CSLPE_013
+    name: RANDOM_FALLBACK
+    pattern: "PAE produces non-deterministic output when inputs are missing."
+    structural_invalidity: "Violates INV-CSLPE-031. Fallback must be deterministic."
+    detection: "Run PAE with null inputs twice; binary diff of output must be zero."
+
+  - id: FORBIDDEN_CSLPE_014
+    name: PRIORITY_INVERSION
+    pattern: "Lower-priority motion primitive overrides higher-priority one."
+    structural_invalidity: "Violates INV-CSLPE-032. Priority ordering is strict."
+    detection: "Conflict resolution audit: verify winner matches priority table."
+
+  - id: FORBIDDEN_CSLPE_015
+    name: DESYNC_INTERPOLATION
+    pattern: "PAE interpolates across a desync boundary instead of snapping."
+    structural_invalidity: "Violates INV-CSLPE-034. Desync recovery is snap, not interpolation."
+    detection: "Desync test: verify PAE matches WSC within 1 tick, no intermediate frames."
+
+  - id: FORBIDDEN_CSLPE_016
+    name: CLIENT_AUTHORITY
+    pattern: "Client WSC state is used as authoritative for any gameplay outcome."
+    structural_invalidity: "Violates INV-CSLPE-036. Server is sole authority."
+    detection: "Trace all outcome calculations; verify server WSC source."
+
+  - id: FORBIDDEN_CSLPE_017
+    name: PERSISTENT_CLIENT_PREDICTION
+    pattern: "Client-predicted CEG event persists after server contradiction."
+    structural_invalidity: "Violates INV-CSLPE-037. Client CEG rolls back on server contradiction."
+    detection: "Post-reconciliation audit: no client-only events in authoritative CEG."
+
+  - id: FORBIDDEN_CSLPE_018
+    name: UNBOUNDED_PREDICTION
+    pattern: "Client predicts beyond RTT/2 window."
+    structural_invalidity: "Violates INV-CSLPE-039. Prediction window is bounded."
+    detection: "Compare prediction tick distance to measured RTT/2."
+
+  - id: FORBIDDEN_CSLPE_019
+    name: RULE_HASH_MISMATCH
+    pattern: "Peers operate with different rule module hashes."
+    structural_invalidity: "Violates INV-CSLPE-040. All peers must have identical rules."
+    detection: "Per-tick rule hash comparison across all peers."

@@ -1,0 +1,379 @@
+invariants:
+  # World Simulation Core (WSC)
+  - id: INV-CSLPE-001
+    name: WSC_SINGLE_SOURCE_OF_TRUTH
+    claim: "World Simulation Core (WSC) is the sole source of physical truth; all projections are derived and read-only."
+    falsifies_if: "Any downstream system mutates WSC state or authoritative state originates outside WSC."
+    test: "Trace state mutations across systems; assert only WSC writes physical state."
+    status: conditional
+    domain: world_simulation_core
+    priority: 10
+
+  - id: INV-CSLPE-002
+    name: WSC_MONOTONIC_TIME
+    claim: "WSC tick counter is strictly monotonic and never rewound."
+    falsifies_if: "Tick number decreases or repeats without rollback intent."
+    test: "Record successive ticks; assert strictly increasing sequence."
+    status: conditional
+    domain: world_simulation_core
+    priority: 9
+
+  - id: INV-CSLPE-003
+    name: WSC_HASH_CHAIN
+    claim: "Each WSC tick produces a SHA256 hash over state_diff + prior_hash, forming an append-only chain."
+    falsifies_if: "Hash verification fails or chain gap detected."
+    test: "Recompute hashes over recorded ticks; verify continuity."
+    status: conditional
+    domain: world_simulation_core
+    priority: 10
+
+  - id: INV-CSLPE-004
+    name: WSC_INPUT_AUDITABILITY
+    claim: "All external inputs to WSC are logged with source, timestamp, and signature."
+    falsifies_if: "A WSC state change lacks an auditable input record."
+    test: "Sample state changes; assert corresponding signed input exists."
+    status: conditional
+    domain: world_simulation_core
+    priority: 8
+
+  - id: INV-CSLPE-005
+    name: WSC_EMITS_CEG_EVENTS
+    claim: "Every WSC state change emits a CEG event with parent linkage to originating causes."
+    falsifies_if: "A WSC mutation occurs with no emitted CEG event."
+    test: "Diff WSC state; verify exactly one emitted CEG event with causal parents."
+    status: conditional
+    domain: world_simulation_core
+    priority: 9
+
+  # Causal Event Graph (CEG)
+  - id: INV-CSLPE-006
+    name: CEG_APPEND_ONLY
+    claim: "CEG is append-only; events are never mutated in place."
+    falsifies_if: "An event payload changes after insertion."
+    test: "Insert event, attempt mutation; verify rejection and hash mismatch detection."
+    status: conditional
+    domain: causal_event_graph
+    priority: 10
+
+  - id: INV-CSLPE-007
+    name: CEG_PARENTALITY
+    claim: "Each event references zero or more parents that exist in the graph."
+    falsifies_if: "parent_event_ids contains an unknown or missing event id."
+    test: "Validate parent_event_ids against CEG index; assert existence."
+    status: conditional
+    domain: causal_event_graph
+    priority: 8
+
+  - id: INV-CSLPE-008
+    name: CEG_HASH_INTEGRITY
+    claim: "Event hash covers immutable fields and parent hashes; verification passes for all nodes."
+    falsifies_if: "Any event hash recomputation differs from stored hash."
+    test: "Recompute event hashes across graph; assert equality."
+    status: conditional
+    domain: causal_event_graph
+    priority: 10
+
+  - id: INV-CSLPE-009
+    name: CEG_TOTAL_ORDER_WITHIN_TICK
+    claim: "Within a tick, events have a deterministic total order for replay."
+    falsifies_if: "Two runs of the same tick produce different event ordering."
+    test: "Run deterministic tick twice; compare event ordering; assert identical sequence."
+    status: conditional
+    domain: causal_event_graph
+    priority: 8
+
+  - id: INV-CSLPE-010
+    name: CEG_EVENT_TYPING
+    claim: "Every event_type is drawn from a controlled vocabulary with schema-bound payloads."
+    falsifies_if: "event_type missing from registry or payload fails schema."
+    test: "Validate events against event_type registry and payload schemas."
+    status: conditional
+    domain: causal_event_graph
+    priority: 7
+
+  # Perception Layer System (PLS)
+  - id: INV-CSLPE-011
+    name: PLS_LAYER_PIPELINE
+    claim: "PLS processes CEG events through ordered layers L1→L2→L3 without skipping."
+    falsifies_if: "A layer is bypassed or processes out of order."
+    test: "Trace event through pipeline; assert L1 precedes L2 precedes L3."
+    status: conditional
+    domain: perception_layer_system
+    priority: 9
+
+  - id: INV-CSLPE-012
+    name: PLS_EVENT_FIDELITY
+    claim: "PLS outputs retain reversible references to source CEG events."
+    falsifies_if: "PLS output lacks source_event_ids or they are invalid."
+    test: "Validate each PLS output links to extant CEG events."
+    status: conditional
+    domain: perception_layer_system
+    priority: 8
+
+  - id: INV-CSLPE-013
+    name: PLS_DETERMINISM
+    claim: "Given identical CEG input window, PLS outputs are deterministic."
+    falsifies_if: "Two runs with identical inputs produce different PLS outputs."
+    test: "Replay identical event window twice; compare PLS outputs byte-for-byte."
+    status: conditional
+    domain: perception_layer_system
+    priority: 9
+
+  - id: INV-CSLPE-014
+    name: PLS_TRACEABILITY
+    claim: "All PLS decisions expose explainability metadata (weights, filters applied)."
+    falsifies_if: "A PLS output lacks explainability metadata."
+    test: "Inspect outputs; assert presence of weights/filters metadata."
+    status: conditional
+    domain: perception_layer_system
+    priority: 7
+
+  # Procedural Animation Engine (PAE)
+  - id: INV-CSLPE-015
+    name: PAE_INPUT_IS_PLS_ONLY
+    claim: "PAE consumes only PLS outputs and authoritative WSC poses; no hidden inputs."
+    falsifies_if: "PAE references data outside PLS outputs or WSC pose."
+    test: "Audit PAE data accesses; assert restricted sources."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 9
+
+  - id: INV-CSLPE-016
+    name: PAE_FRAME_DETERMINISM
+    claim: "Given identical PLS inputs and WSC pose, PAE emits identical frames."
+    falsifies_if: "Frame outputs diverge under identical inputs."
+    test: "Replay identical inputs twice; compare pose hashes."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 10
+
+  - id: INV-CSLPE-017
+    name: PAE_FRAME_BOUNDING
+    claim: "PAE enforces physical bounds (joint limits, penetration guards) on every frame."
+    falsifies_if: "Frame violates joint limits or penetration constraints."
+    test: "Inject extreme inputs; assert constraint guards clamp outputs."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 8
+
+  # Truth Replay System (TRS)
+  - id: INV-CSLPE-018
+    name: TRS_REPLAY_FROM_CEG
+    claim: "TRS reconstructs state solely from CEG events with no side channels."
+    falsifies_if: "Replay consults non-CEG state or diverges from recorded events."
+    test: "Rebuild timeline from CEG; compare to authoritative WSC hashes."
+    status: conditional
+    domain: truth_replay_system
+    priority: 9
+
+  - id: INV-CSLPE-019
+    name: TRS_IMMUTABLE_OUTPUT
+    claim: "TRS outputs are immutable evidence artifacts with content hashes."
+    falsifies_if: "TRS output mutates after creation or hash mismatch observed."
+    test: "Hash TRS outputs; assert stable across reads."
+    status: conditional
+    domain: truth_replay_system
+    priority: 8
+
+  - id: INV-CSLPE-020
+    name: TRS_TIME_SEEK
+    claim: "TRS supports deterministic seek to any tick using CEG offsets."
+    falsifies_if: "Seek produces non-deterministic state or incorrect offset use."
+    test: "Seek to multiple ticks; assert state matches forward replay."
+    status: conditional
+    domain: truth_replay_system
+    priority: 7
+
+  # Networking baseline
+  - id: INV-CSLPE-021
+    name: NET_HANDSHAKE_INVARIANT
+    claim: "Session handshake exchanges rule hashes, version, and authority endpoints before simulation starts."
+    falsifies_if: "Simulation begins without completed handshake or hash agreement."
+    test: "Simulate handshake; assert all peers share rule_hash and version before tick 0."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 9
+
+  # v2 CEG scalability
+  - id: INV-CSLPE-022
+    name: CEG_TIERED_RETENTION
+    claim: "CEG events are classified into tiers: CRITICAL (never pruned), TACTICAL (retained for session + replay window), AMBIENT (prunable after configurable TTL)."
+    falsifies_if: "A CRITICAL-tier event is absent from CEG after any pruning cycle."
+    test: "Insert events of all tiers; run pruning; verify all CRITICAL events remain. Verify AMBIENT events older than TTL are removed."
+    status: conditional
+    domain: causal_event_graph
+    priority: 10
+
+  - id: INV-CSLPE-023
+    name: CEG_IMPORTANCE_WEIGHTING
+    claim: "Every event node has an importance_weight field (0.0-1.0) computed from event_type, causal_depth, and outcome_impact."
+    falsifies_if: "Any event node lacks importance_weight or importance_weight is not in [0.0, 1.0]."
+    test: "JSON Schema validation: importance_weight required, type number, minimum 0.0, maximum 1.0."
+    status: conditional
+    domain: causal_event_graph
+    priority: 9
+
+  - id: INV-CSLPE-024
+    name: CEG_HASH_CHAIN_SURVIVES_PRUNING
+    claim: "Pruning AMBIENT events does not break the hash chain. Pruned nodes are replaced with tombstone hashes that preserve chain integrity."
+    falsifies_if: "Hash chain verification fails after a pruning cycle."
+    test: "Prune AMBIENT events; run hash-chain verification; chain must remain unbroken."
+    status: conditional
+    domain: causal_event_graph
+    priority: 10
+
+  - id: INV-CSLPE-025
+    name: CEG_SHARD_ISOLATION
+    claim: "CEG is shardable by spatial region. Each shard maintains independent hash chains. Cross-shard references use shard_id + event_id."
+    falsifies_if: "An event references a parent in another shard without shard_id prefix."
+    test: "Validate all cross-shard parent_event_ids contain shard_id prefix."
+    status: conditional
+    domain: causal_event_graph
+    priority: 8
+
+  - id: INV-CSLPE-026
+    name: CEG_COMPRESSION
+    claim: "CEG supports lossless compression of event batches. Compressed batches round-trip to identical event sequences."
+    falsifies_if: "Decompressed batch differs from original."
+    test: "Compress batch; decompress; binary diff must be zero."
+    status: conditional
+    domain: causal_event_graph
+    priority: 7
+
+  # v2 PLS cognition
+  - id: INV-CSLPE-027
+    name: PLS_COMPRESSION_THRESHOLD
+    claim: "Each PLS layer (L1-L3) has a configurable max_events_per_tick threshold. When exceeded, events are compressed into summary clusters. No event is silently dropped."
+    falsifies_if: "Event count exceeds threshold AND no compression occurs, OR compression silently drops events without announcing true count."
+    test: "Inject N > threshold events; verify output contains compressed clusters with true_event_count field."
+    status: conditional
+    domain: perception_layer_system
+    priority: 10
+
+  - id: INV-CSLPE-028
+    name: PLS_MINIMUM_READABILITY
+    claim: "Each PLS layer guarantees a minimum readability output per tick: L1 produces at least 1 structural interpretation, L2 produces at least 1 tactical meaning unit, L3 produces at least 1 diegetic cue."
+    falsifies_if: "Any tick produces zero outputs from any active layer."
+    test: "Run simulation tick with active combat; verify each layer produces >= 1 output."
+    status: conditional
+    domain: perception_layer_system
+    priority: 9
+
+  - id: INV-CSLPE-029
+    name: PLS_STRESS_FALLBACK
+    claim: "Under stress conditions (event rate > 2x threshold), PLS degrades gracefully to highest-importance events only. Degradation is announced, never silent."
+    falsifies_if: "Stress condition occurs AND PLS either crashes, silently drops events, or fails to announce degradation."
+    test: "Inject 3x threshold events; verify PLS outputs contain degradation_announced=true flag and only importance_weight >= 0.7 events."
+    status: conditional
+    domain: perception_layer_system
+    priority: 10
+
+  - id: INV-CSLPE-030
+    name: PLS_COGNITIVE_LOAD_METRIC
+    claim: "PLS exposes a cognitive_load metric (0.0-1.0) per tick, computed from event density and layer output volume."
+    falsifies_if: "cognitive_load metric is absent or outside [0.0, 1.0]."
+    test: "Query PLS state per tick; verify cognitive_load field exists and is in range."
+    status: conditional
+    domain: perception_layer_system
+    priority: 8
+
+  # v2 PAE determinism boundaries
+  - id: INV-CSLPE-031
+    name: PAE_FALLBACK_STATE
+    claim: "When physical inputs are missing or invalid, PAE falls back to a deterministic default pose (T-pose or last-known-good pose). Fallback is never random."
+    falsifies_if: "Missing inputs produce different fallback poses on two runs."
+    test: "Provide null/invalid physical_parameters; verify PAE output matches canonical fallback pose hash."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 10
+
+  - id: INV-CSLPE-032
+    name: PAE_PRIMITIVE_PRIORITY
+    claim: "Motion primitives have a strict priority ordering: brace > recoil_absorption > stumble > recoil > collapse. Higher-priority primitives override lower when in conflict."
+    falsifies_if: "A lower-priority primitive overrides a higher-priority one during blending."
+    test: "Inject conflicting primitive triggers; verify output matches highest-priority primitive."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 9
+
+  - id: INV-CSLPE-033
+    name: PAE_CONSTRAINT_RESOLUTION
+    claim: "When multiple motion primitives are active simultaneously, PAE resolves conflicts via: (1) priority ordering, (2) body-region isolation (upper/lower body can run independent primitives), (3) temporal sequencing (queue if same region, same priority)."
+    falsifies_if: "Two same-priority, same-region primitives execute simultaneously instead of queuing."
+    test: "Inject two same-priority, same-region primitives at same tick; verify one queues."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 9
+
+  - id: INV-CSLPE-034
+    name: PAE_DESYNC_RECOVERY
+    claim: "When PAE detects skeleton state divergence from WSC (desync), it snaps to WSC-authoritative pose within 1 tick. No interpolation across desync boundary."
+    falsifies_if: "PAE skeleton state remains diverged from WSC for > 1 tick after desync detection."
+    test: "Force desync; verify PAE matches WSC state within 1 tick."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 10
+
+  - id: INV-CSLPE-035
+    name: PAE_TRANSITION_HASH
+    claim: "Every PAE state transition produces a TransitionHash = SHA256(previous_pose_hash + primitive_id + physical_parameters_hash). Transitions are auditable."
+    falsifies_if: "Any transition lacks TransitionHash or hash does not match recomputation."
+    test: "Record transition; recompute hash from inputs; compare."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 8
+
+  # v2 Networking + fairness
+  - id: INV-CSLPE-036
+    name: NET_AUTHORITY_MODEL
+    claim: "The network model is hybrid server-authority: server WSC is authoritative, clients run predictive WSC copies, reconciliation occurs on server state receipt."
+    falsifies_if: "Client WSC state is treated as authoritative for any gameplay outcome."
+    test: "Trace outcome calculation; verify all outcomes reference server WSC state, not client prediction."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 10
+
+  - id: INV-CSLPE-037
+    name: NET_CEG_RECONCILIATION
+    claim: "When client CEG diverges from server CEG (due to prediction), client CEG is rolled back and replayed from last confirmed server event. No client-only events persist as authoritative."
+    falsifies_if: "Client-predicted event persists in authoritative CEG after server contradiction."
+    test: "Force client prediction divergence; verify client CEG rolls back to server state."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 10
+
+  - id: INV-CSLPE-038
+    name: NET_DESYNC_COUNTER
+    claim: "A DesyncCounter tracks divergence events per session. If DesyncCounter exceeds configurable threshold, session enters reconciliation-only mode (no new predictions until sync)."
+    falsifies_if: "DesyncCounter exceeds threshold AND client continues making predictions."
+    test: "Force N > threshold desyncs; verify client enters reconciliation-only mode."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 9
+
+  - id: INV-CSLPE-039
+    name: NET_LATENCY_COMPENSATION
+    claim: "Client prediction compensates for measured latency. Prediction window = measured_RTT / 2. No prediction beyond this window."
+    falsifies_if: "Client predicts beyond measured_RTT / 2 ticks ahead of last server state."
+    test: "Measure RTT; verify prediction window does not exceed RTT/2."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 8
+
+  - id: INV-CSLPE-040
+    name: NET_RULE_HASH_IDENTITY
+    claim: "All peers in a session run identical rule modules. Rule module hash is exchanged during handshake and verified per tick."
+    falsifies_if: "Any peer's rule hash differs from server's rule hash after handshake."
+    test: "Hash all rule modules per peer; compare against server hash."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 10
+
+  - id: INV-CSLPE-041
+    name: NET_LOCKSTEP_OPTIONAL
+    claim: "Lockstep mode is available as a configuration option for competitive/tournament play. In lockstep mode, no prediction occurs; all clients wait for server tick."
+    falsifies_if: "Lockstep mode is enabled AND any client advances state without server tick confirmation."
+    test: "Enable lockstep; verify no client state advance without server tick."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 7

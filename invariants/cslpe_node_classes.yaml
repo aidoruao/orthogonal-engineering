@@ -1,0 +1,79 @@
+node_classes:
+  - id: WORLD_SIMULATION_CORE
+    name: World Simulation Core
+    description: "Authoritative physical state simulation; emits causal events for all changes."
+    immutable_properties:
+      - authoritative: true
+      - temporal: genesis
+      - append_only: false
+    invariants:
+      - INV-CSLPE-001
+      - INV-CSLPE-002
+      - INV-CSLPE-003
+      - INV-CSLPE-004
+      - INV-CSLPE-005
+
+  - id: CAUSAL_EVENT_GRAPH
+    name: Causal Event Graph
+    description: "Append-only causal record of all WSC changes with hash-linked parents."
+    immutable_properties:
+      - append_only: true
+      - hash_chained: true
+      - shardable: true
+    invariants:
+      - INV-CSLPE-006
+      - INV-CSLPE-007
+      - INV-CSLPE-008
+      - INV-CSLPE-009
+      - INV-CSLPE-010
+      - INV-CSLPE-022
+      - INV-CSLPE-023
+      - INV-CSLPE-024
+      - INV-CSLPE-025
+      - INV-CSLPE-026
+
+  - id: PERCEPTION_LAYER_SYSTEM
+    name: Perception Layer System
+    description: "Three-layer interpretation pipeline turning CEG events into semantic cues."
+    immutable_properties:
+      - ordered_layers: [L1, L2, L3]
+      - derived_only: true
+      - compression_announced: true
+    invariants:
+      - INV-CSLPE-011
+      - INV-CSLPE-012
+      - INV-CSLPE-013
+      - INV-CSLPE-014
+      - INV-CSLPE-027
+      - INV-CSLPE-028
+      - INV-CSLPE-029
+      - INV-CSLPE-030
+
+  - id: PROCEDURAL_ANIMATION_ENGINE
+    name: Procedural Animation Engine
+    description: "Deterministic animation synthesis from PLS outputs with enforced constraints."
+    immutable_properties:
+      - deterministic: true
+      - constraint_enforced: true
+      - fallback_defined: true
+    invariants:
+      - INV-CSLPE-015
+      - INV-CSLPE-016
+      - INV-CSLPE-017
+      - INV-CSLPE-031
+      - INV-CSLPE-032
+      - INV-CSLPE-033
+      - INV-CSLPE-034
+      - INV-CSLPE-035
+
+  - id: TRUTH_REPLAY_SYSTEM
+    name: Truth Replay System
+    description: "Deterministic replay of recorded events into evidence-grade outputs."
+    immutable_properties:
+      - read_only: true
+      - evidence_grade: true
+      - hash_verified: true
+    invariants:
+      - INV-CSLPE-018
+      - INV-CSLPE-019
+      - INV-CSLPE-020
