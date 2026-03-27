@@ -30,3 +30,10 @@ resilience/*.freeze text eol=lf
 *.ico binary
 *.whl binary
 *.zip binary
+
+# Preserve original CRLF formatting for legacy docs/scripts referenced by PR #70
+AGENT_IN_IDE.md -text
+CHANGELOG_v0.3.0.md -text
+DATA_FILESYSTEM.md -text
+DATA_SCHEMA.md -text
+DEPRECATED_canal_refiner.py -text

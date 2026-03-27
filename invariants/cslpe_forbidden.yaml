@@ -112,3 +112,45 @@ forbidden:
     pattern: "Peers operate with different rule module hashes."
     structural_invalidity: "Violates INV-CSLPE-040. All peers must have identical rules."
     detection: "Per-tick rule hash comparison across all peers."
+
+  - id: FORBIDDEN_CSLPE_020
+    name: ANIMATION_IN_SIMULATION
+    pattern: "Animation logic exists inside WSC modules."
+    structural_invalidity: "Violates INV-CSLPE-042. Animation is a derived projection, not simulation."
+    detection: "AST scan of src/sim/ for animation types."
+
+  - id: FORBIDDEN_CSLPE_021
+    name: UI_IN_SIMULATION
+    pattern: "UI/HUD logic exists inside WSC modules."
+    structural_invalidity: "Violates INV-CSLPE-043. UI is a derived projection."
+    detection: "Dependency graph: WSC has zero edges to UI modules."
+
+  - id: FORBIDDEN_CSLPE_022
+    name: INDEPENDENT_ANIMATION_STATE
+    pattern: "PAE maintains state not derived from WSC+CEG."
+    structural_invalidity: "Violates INV-CSLPE-057. All state derives from single truth graph."
+    detection: "Static analysis: PAE modules have no persistent mutable state."
+
+  - id: FORBIDDEN_CSLPE_023
+    name: PREBAKED_EVENT_ANIMATION
+    pattern: "Animation asset named after a specific game event."
+    structural_invalidity: "Violates INV-CSLPE-051. Only motion primitives allowed."
+    detection: "Asset name audit against allowed primitive list."
+
+  - id: FORBIDDEN_CSLPE_024
+    name: UPWARD_LAYER_REFERENCE
+    pattern: "Lower perception layer imports from higher perception layer."
+    structural_invalidity: "Violates INV-CSLPE-011. Layer ordering is strict."
+    detection: "Import graph analysis: no L0->L1, L1->L2, L2->L3 reverse edges."
+
+  - id: FORBIDDEN_CSLPE_025
+    name: INFORMATION_SUPPRESSION_FOW
+    pattern: "Fog of war implemented as post-query data filtering outside WSC."
+    structural_invalidity: "Violates INV-CSLPE-056. FOW must be sensor limitation inside simulation."
+    detection: "Trace FOW data flow; filtering must occur in WSC sensor components."
+
+  - id: FORBIDDEN_CSLPE_026
+    name: HIDDEN_OUTCOME_STATE
+    pattern: "State used in outcome calculation but absent from CEG."
+    structural_invalidity: "Violates INV-CSLPE-053. All state must be auditable."
+    detection: "Enumerate state reads during outcome calc; verify CEG source exists."

@@ -377,3 +377,147 @@ invariants:
     status: conditional
     domain: multiplayer_fairness
     priority: 7
+
+  - id: INV-CSLPE-042
+    name: WSC_NO_ANIMATION_LOGIC
+    claim: "WSC contains zero animation logic. No skeletal, blend, or keyframe data exists in WSC modules."
+    falsifies_if: "grep -r for animation/blend/keyframe/skeletal types returns any match inside src/sim/."
+    test: "Static analysis: AST scan of all WSC source files for animation-related type references."
+    status: conditional
+    domain: world_simulation_core
+    priority: 10
+
+  - id: INV-CSLPE-043
+    name: WSC_NO_UI_LOGIC
+    claim: "WSC contains zero UI logic. No widget, HUD, or screen-space data exists in WSC modules."
+    falsifies_if: "Any WSC module imports or references a UI/HUD/widget type."
+    test: "Static analysis: dependency graph of WSC modules must have zero edges to UI modules."
+    status: conditional
+    domain: world_simulation_core
+    priority: 10
+
+  - id: INV-CSLPE-044
+    name: WSC_DETERMINISM
+    claim: "Given identical initial state and identical input sequence, WSC produces identical output state."
+    falsifies_if: "Replay of recorded input sequence produces different state hash."
+    test: "Run simulation twice with same seed and inputs; SHA-256 of final state must match."
+    status: conditional
+    domain: world_simulation_core
+    priority: 10
+
+  - id: INV-CSLPE-045
+    name: CEG_COMPLETE_ANCESTRY
+    claim: "Every event node has a traceable parent chain to a root cause or player input."
+    falsifies_if: "Any event node has empty parent_event_ids[] AND is not a root input event."
+    test: "Graph traversal: BFS from every leaf; all paths terminate at a root-tagged node."
+    status: conditional
+    domain: causal_event_graph
+    priority: 9
+
+  - id: INV-CSLPE-046
+    name: CEG_REPLAY_RECONSTRUCTION
+    claim: "The CEG alone is sufficient to reconstruct the full simulation timeline."
+    falsifies_if: "Replay from CEG event log diverges from original WSC state at any tick."
+    test: "Replay engine consumes CEG log, produces state sequence; diff against recorded states."
+    status: conditional
+    domain: causal_event_graph
+    priority: 10
+
+  - id: INV-CSLPE-047
+    name: CEG_EVENT_SCHEMA_COMPLETE
+    claim: "Every event node contains all required fields: id, timestamp, source_entity, event_type, physical_parameters, preconditions, postconditions, parent_event_ids, hash, importance_weight, retention_tier, shard_id."
+    falsifies_if: "Any event node fails JSON schema validation against cslpe_event_schema.json."
+    test: "JSON Schema validation of every event node on insertion."
+    status: conditional
+    domain: causal_event_graph
+    priority: 9
+
+  - id: INV-CSLPE-048
+    name: PLS_L0_NEVER_RENDERED
+    claim: "Layer 0 (raw simulation) is never directly rendered to any player-facing output."
+    falsifies_if: "Any render pipeline or UI component reads directly from L0 state."
+    test: "Trace all render inputs; none may originate from L0 without passing through L1+."
+    status: conditional
+    domain: perception_layer_system
+    priority: 9
+
+  - id: INV-CSLPE-049
+    name: PLS_DERIVED_ONLY
+    claim: "All perception layer outputs are pure functions of WSC state and CEG events. No perception layer maintains independent state."
+    falsifies_if: "Any PLS module writes to persistent storage or maintains mutable state across ticks."
+    test: "Static analysis: PLS modules have no mutable class-level or module-level state."
+    status: conditional
+    domain: perception_layer_system
+    priority: 9
+
+  - id: INV-CSLPE-050
+    name: PLS_L3_NO_UI_DEPENDENCY
+    claim: "Layer 3 (diegetic) achieves comprehension without UI reliance. Sound, animation, and environmental cues are sufficient."
+    falsifies_if: "Removing all HUD/UI elements causes loss of critical gameplay information that L3 was supposed to convey."
+    test: "Integration test: disable UI overlay; verify all L3-designated information is still perceivable via audio/animation/environment."
+    status: conditional
+    domain: perception_layer_system
+    priority: 8
+
+  - id: INV-CSLPE-051
+    name: PAE_NO_PREBAKED_EVENT_ANIMATIONS
+    claim: "No animation is a pre-baked response to a named event. All animations are composed from reusable motion primitives."
+    falsifies_if: "Any animation asset or trigger is named/tagged as a specific event response (e.g., 'headshot_death_03')."
+    test: "Asset audit: all animation assets must be tagged as primitives (recoil, collapse, brace, stumble, recoil_absorption). No event-specific names."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 10
+
+  - id: INV-CSLPE-052
+    name: PAE_PHYSICS_DRIVEN
+    claim: "All PAE outputs are derived from physical inputs: force vector, impulse magnitude, body region, stance, material, fatigue."
+    falsifies_if: "Any animation output is produced without consuming at least one physical input parameter."
+    test: "Function signature audit: every PAE output function requires physical_parameters as input."
+    status: conditional
+    domain: procedural_animation_engine
+    priority: 9
+
+  - id: INV-CSLPE-053
+    name: TRS_NO_HIDDEN_STATE
+    claim: "No hidden state advantage exists in any encounter. All state is auditable."
+    falsifies_if: "Post-event verification finds state that was used in outcome calculation but not present in CEG."
+    test: "Enumerate all state reads during outcome calculation; verify each has a CEG event source."
+    status: conditional
+    domain: truth_replay_system
+    priority: 10
+
+  - id: INV-CSLPE-054
+    name: TRS_DETERMINISTIC_AUDIT
+    claim: "Post-event verification is deterministic: same CEG input produces same fairness verdict."
+    falsifies_if: "Two audit runs on same CEG data produce different verdicts."
+    test: "Run audit twice; compare verdict hashes."
+    status: conditional
+    domain: truth_replay_system
+    priority: 9
+
+  - id: INV-CSLPE-055
+    name: FAIRNESS_SHARED_RULES
+    claim: "Fairness is defined as shared simulation state + identical causal rules. No information asymmetry exists outside sensor simulation."
+    falsifies_if: "Any player receives different causal rules or simulation logic than another."
+    test: "Hash all rule modules per player session; all hashes must be identical."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 10
+
+  - id: INV-CSLPE-056
+    name: FOW_SENSOR_ONLY
+    claim: "Fog of war is implemented as sensor limitation inside simulation, not as information suppression outside simulation."
+    falsifies_if: "Any fog-of-war implementation filters data after WSC state query rather than before (i.e., at the perception layer rather than the simulation layer)."
+    test: "Trace fog-of-war data flow; filtering must occur inside WSC entity sensor components, not in PLS or rendering."
+    status: conditional
+    domain: multiplayer_fairness
+    priority: 10
+
+  - id: INV-CSLPE-057
+    name: SINGLE_CAUSAL_TRUTH
+    claim: "Gameplay, animation, UI, and replay are all derived projections of a single causal truth graph. No system maintains independent authoritative state."
+    falsifies_if: "Any system (animation, UI, replay) writes state that is not derived from WSC+CEG."
+    test: "Full dependency audit: every non-WSC system's state inputs trace exclusively to WSC or CEG."
+    status: conditional
+    domain: meta
+    priority: 10

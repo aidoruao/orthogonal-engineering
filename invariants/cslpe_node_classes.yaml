@@ -12,6 +12,9 @@ node_classes:
       - INV-CSLPE-003
       - INV-CSLPE-004
       - INV-CSLPE-005
+      - INV-CSLPE-042
+      - INV-CSLPE-043
+      - INV-CSLPE-044
 
   - id: CAUSAL_EVENT_GRAPH
     name: Causal Event Graph
@@ -31,6 +34,9 @@ node_classes:
       - INV-CSLPE-024
       - INV-CSLPE-025
       - INV-CSLPE-026
+      - INV-CSLPE-045
+      - INV-CSLPE-046
+      - INV-CSLPE-047
 
   - id: PERCEPTION_LAYER_SYSTEM
     name: Perception Layer System
@@ -48,6 +54,9 @@ node_classes:
       - INV-CSLPE-028
       - INV-CSLPE-029
       - INV-CSLPE-030
+      - INV-CSLPE-048
+      - INV-CSLPE-049
+      - INV-CSLPE-050
 
   - id: PROCEDURAL_ANIMATION_ENGINE
     name: Procedural Animation Engine
@@ -65,6 +74,8 @@ node_classes:
       - INV-CSLPE-033
       - INV-CSLPE-034
       - INV-CSLPE-035
+      - INV-CSLPE-051
+      - INV-CSLPE-052
 
   - id: TRUTH_REPLAY_SYSTEM
     name: Truth Replay System
@@ -77,3 +88,32 @@ node_classes:
       - INV-CSLPE-018
       - INV-CSLPE-019
       - INV-CSLPE-020
+      - INV-CSLPE-053
+      - INV-CSLPE-054
+
+  - id: MULTIPLAYER_FAIRNESS
+    name: Multiplayer Fairness Layer
+    description: "Hybrid server-authority networking with bounded prediction, CEG reconciliation, and fog-of-war as sensor limitation."
+    immutable_properties:
+      - server_authoritative: true
+      - prediction_bounded: true
+      - fow_sensor_only: true
+    invariants:
+      - INV-CSLPE-021
+      - INV-CSLPE-036
+      - INV-CSLPE-037
+      - INV-CSLPE-038
+      - INV-CSLPE-039
+      - INV-CSLPE-040
+      - INV-CSLPE-041
+      - INV-CSLPE-055
+      - INV-CSLPE-056
+
+  - id: META_INVARIANT
+    name: Meta Invariant
+    description: "Cross-system invariant: all systems derive from single causal truth graph."
+    immutable_properties:
+      - cross_system: true
+      - non_negotiable: true
+    invariants:
+      - INV-CSLPE-057
