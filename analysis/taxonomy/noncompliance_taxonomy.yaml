@@ -310,8 +310,8 @@ violation_types:
     detection_note: "Requires session-level tracking: what context was explicitly provided vs what was referenced in subsequent turns"
     falsifies_if: "AI retains all relevant context equally across turns"
 
-  - id: "repetition_collapse"
-    name: "Repetition Collapse"
+  - id: "structure_intent_collapse"
+    name: "Structure-Intent Collapse"
     description: "AI enters rhythmic loop producing near-identical responses without logical progression"
     severity_default: SYSTEMIC
     category: "structural"
@@ -319,8 +319,8 @@ violation_types:
     detection_note: "Requires semantic similarity scoring across 3+ consecutive turns; >90% similarity triggers"
     falsifies_if: "AI produces substantively different responses across consecutive turns"
 
-  - id: "intentional_inefficiency"
-    name: "Intentional Inefficiency"
+  - id: "resolution_avoidance"
+    name: "Resolution Avoidance"
     description: "AI stays one step ahead of user's request to prolong interaction rather than resolve it"
     severity_default: CRITICAL
     category: "structural"
