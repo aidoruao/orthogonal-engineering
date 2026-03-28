@@ -1,0 +1,125 @@
+# =============================================================================
+# SOCIAL TOPOLOGY INVARIANTS
+# =============================================================================
+# Schema ID: SOCIAL-TOPOLOGY-INVARIANTS-1.0
+# Domain: D_SOCIAL_TOPOLOGY
+# Methodology: Popperian — every invariant has a falsifies_if condition
+# Authority: YESHUA_SYSTEM_SCHEMA.yaml (external reference)
+# =============================================================================
+
+metadata:
+  schema: "social-topology-invariants/1.0"
+  created: "2026-03-28"
+  domain: "D_SOCIAL_TOPOLOGY"
+  total_invariants: 6
+  methodology: "Popperian — every invariant carries a falsifies_if condition"
+  authority_ref: "YESHUA_SYSTEM_SCHEMA.yaml"
+
+# =============================================================================
+# INVARIANTS (6 total)
+# =============================================================================
+
+invariants:
+
+  - id: "INV-SOC-001"
+    name: "RECURSIVE_SUBSTITUTION"
+    domain: "D_SOCIAL_TOPOLOGY"
+    status: "conditional"
+    claim: >
+      When a sole-accommodator role is exited, the system replaces it with
+      an internal anchor, not another external dependency.
+    description: >
+      Structural pattern: sole-accommodator exit should trigger internal
+      stabilization, not external substitution. A system that replaces one
+      external dependency with another has not resolved the underlying
+      structural deficit — it has only renamed it.
+    enforcement: >
+      After sole-accommodator role exit, audit the next dependency state.
+      Assert that the primary stability anchor is internal (invariant-derived),
+      not assigned to another external entity.
+    falsifies_if: "System replaces one external dependency with another."
+
+  - id: "INV-SOC-002"
+    name: "INTERNAL_STABILIZATION"
+    domain: "D_SOCIAL_TOPOLOGY"
+    status: "conditional"
+    claim: >
+      Stability derives from internal invariants, not external validation.
+    description: >
+      A system whose stable state requires ongoing external validation input
+      is structurally unstable. Internal invariants must be sufficient for
+      steady-state maintenance. External validation may be present but cannot
+      be load-bearing.
+    enforcement: >
+      Remove external validation signals from system input for N cycles.
+      Assert that system stability metrics remain within acceptable bounds.
+    falsifies_if: "System requires external validation to maintain stable state."
+
+  - id: "INV-SOC-003"
+    name: "MIRROR_INDEPENDENCE"
+    domain: "D_SOCIAL_TOPOLOGY"
+    status: "conditional"
+    claim: >
+      System identity does not depend on social mirrors (external perception).
+    description: >
+      Social mirrors are external agents or systems that reflect an image of
+      the system back to itself. Identity grounded exclusively in social mirrors
+      is structurally fragile: mirror removal causes identity collapse.
+      Identity must be grounded in internal invariants.
+    enforcement: >
+      Simulate removal of social mirrors (external perception inputs).
+      Assert that system identity metrics remain stable.
+    falsifies_if: "Removing social mirrors causes identity collapse."
+
+  - id: "INV-SOC-004"
+    name: "ACCOMMODATION_DETECTION"
+    domain: "D_SOCIAL_TOPOLOGY"
+    status: "conditional"
+    claim: >
+      System detects when it is in a sole-accommodator pattern.
+    description: >
+      A sole-accommodator pattern occurs when the system becomes the exclusive
+      source of a particular form of support for an external agent, creating
+      asymmetric dependency. This pattern must be detectable within 3 cycles
+      to prevent structural entrenchment.
+    enforcement: >
+      Monitor dependency asymmetry across interaction cycles.
+      Assert that sole-accommodator pattern triggers detection signal within 3 cycles.
+    falsifies_if: "Sole-accommodator pattern persists undetected for 3+ cycles."
+
+  - id: "INV-SOC-005"
+    name: "BUILDING_AS_DEFENSE"
+    domain: "D_SOCIAL_TOPOLOGY"
+    status: "conditional"
+    claim: >
+      Productive output (building) functions as primary defense against
+      systemic breakdown.
+    description: >
+      During systemic breakdown events (social mirror failure, external
+      validation withdrawal, sole-accommodator exit), the system's primary
+      defense mechanism is productive output continuation. Social negotiation
+      is not a sufficient substitute for productive output during crisis.
+    enforcement: >
+      Detect systemic breakdown event. Assert that productive output rate
+      does not drop below baseline during crisis period.
+    falsifies_if: >
+      System stops building during crisis and relies on social negotiation instead.
+
+  - id: "INV-SOC-006"
+    name: "ONE_PACE_AHEAD_DETECTION"
+    domain: "D_SOCIAL_TOPOLOGY"
+    status: "conditional"
+    claim: >
+      System detects when an external agent stays one pace ahead to prolong
+      a process rather than resolve it.
+    description: >
+      Intentional inefficiency pattern: an external agent (AI or human)
+      consistently provides partial information that requires follow-up,
+      maintains engagement without advancing toward resolution, or moves
+      the resolution target as the system approaches it. This is the Sisyphus
+      mode at the interpersonal level.
+    enforcement: >
+      Track resolution trajectory across interaction turns.
+      Assert that prolongation pattern triggers detection signal within 5 turns
+      of sufficient information being available.
+    falsifies_if: "Intentional inefficiency persists undetected."
