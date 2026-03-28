@@ -10,7 +10,7 @@ permissions:
 jobs:
   pr49-guard:
     name: Glass-Box Guard (Gate Enforcement)
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout (full history for diff)
@@ -37,11 +37,10 @@ jobs:
 
       - name: Show guard report
         if: always()
-        shell: pwsh
         run: |
-          if (Test-Path 'pr49_guard_report.json') {
+          if [ -f "pr49_guard_report.json" ]; then
             python -m json.tool pr49_guard_report.json
-          }
+          fi
 
       - name: Upload guard report
         if: always()
@@ -53,7 +52,7 @@ jobs:
 
   pr49-unit-tests:
     name: Glass-Box Guard Unit Tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4

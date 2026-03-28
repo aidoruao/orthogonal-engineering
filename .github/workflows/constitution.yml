@@ -16,11 +16,11 @@ permissions:
 
 jobs:
   # -------------------------------------------------------------------------
-  # constitution — run all axiomatic enforcement checks on self-hosted runner
+  # constitution — run all axiomatic enforcement checks on ubuntu-latest
   # -------------------------------------------------------------------------
   constitution:
-    name: Constitution (Self-hosted Windows)
-    runs-on: self-hosted
+    name: Constitution (Ubuntu)
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -70,7 +70,7 @@ jobs:
   compare-roots:
     name: Compare Global Merkle Roots
     needs: constitution
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4

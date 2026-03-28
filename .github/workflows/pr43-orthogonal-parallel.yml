@@ -37,7 +37,7 @@ env:
 jobs:
   orthogonal-parallel-verification:
     name: Orthogonal Parallel Verification (py${{ matrix.python-version }})
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
@@ -149,13 +149,12 @@ jobs:
 
   cross-platform-identity:
     name: Cross-Platform Identity Check
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     strategy:
       fail-fast: false
-      matrix:  # Commented out for self-hosted runner
-#        os: [ ubuntu-latest, windows-latest, macos-latest ]  # Not needed for self-hosted
+      matrix:
         python-version: [ "3.11" ]
 
     steps:

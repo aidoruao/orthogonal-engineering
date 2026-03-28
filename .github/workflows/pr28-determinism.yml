@@ -11,11 +11,11 @@ env:
 
 jobs:
   # -------------------------------------------------------------------------
-  # determinism — run on self-hosted runner with Python version matrix
+  # determinism — run on ubuntu-latest with Python version matrix
   # -------------------------------------------------------------------------
   determinism:
-    name: Determinism (Self-hosted, Python ${{ matrix.python-version }})
-    runs-on: self-hosted
+    name: Determinism (Ubuntu, Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -73,7 +73,7 @@ jobs:
   verify-determinism:
     name: Verify Determinism Across Python Versions
     needs: determinism
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
