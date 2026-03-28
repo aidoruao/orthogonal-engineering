@@ -45,7 +45,7 @@ def test_parse_chat():
     # Test sanitization
     print("\n--- Testing sanitization ---")
     test_texts = [
-        "I'm on HRT stage 5",
+        "I'm on [MEDICAL_REDACTED] stage 5",
         "Sexual changes are happening",
         "Penile changes observed",
         "This is about orthogonal cognition and school analysis",

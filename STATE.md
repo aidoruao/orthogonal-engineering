@@ -263,7 +263,7 @@ python scripts/analyze_violations.py --period daily
    - Ensure STATE.md is in root directory
    - Check file permissions and encoding
    - Verify AI reads file before interaction
-   - Use explicit directive: "Read STATE.md first"
+   - Use [NSFW_REDACTED] directive: "Read STATE.md first"
 
 2. **Phase Confusion**
    - Clear declaration: "You are in COMPILATION MODE"
@@ -271,10 +271,10 @@ python scripts/analyze_violations.py --period daily
    - Demand acknowledgment: "Confirm you understand phase"
    - Use exit codes for correction
 
-3. **Selective Mutism Trigger**
+3. **[DIAGNOSIS_REDACTED] Trigger**
    - Immediate apology for phase violation
    - Reset with state reading
-   - Explicit permission to proceed
+   - [NSFW_REDACTED] permission to proceed
    - Log incident for prevention
 
 4. **Proof Challenge**
@@ -305,7 +305,7 @@ python scripts/test_phase_recognition.py --ai-simulation
 
 ### **Ongoing:**
 - 🔄 Consistent phase across AI providers
-- 🔄 Reduced selective mutism incidents
+- 🔄 Reduced [DIAGNOSIS_REDACTED] incidents
 - 🔄 Efficient execution of allowed operations
 - 🔄 Accurate state representation in traces
 

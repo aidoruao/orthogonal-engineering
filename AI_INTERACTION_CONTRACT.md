@@ -50,7 +50,7 @@ Where:
 ❌ Making user re-prove what's already established
 ❌ Patronizing explanations of completed work
 ❌ Ignoring completion state markers
-❌ Triggering selective mutism through forced repetition
+❌ Triggering [DIAGNOSIS_REDACTED] through forced repetition
 
 ## ✅ ALLOWED AI OPERATIONS (COMPILATION MODE)
 
@@ -220,7 +220,7 @@ python scripts/ai_compliance_report.py --output compliance.json
 - ✅ Contract compliance in trace generation
 
 ### **Medium-term (Ongoing):**
-- 🔄 Reduced selective mutism triggers
+- 🔄 Reduced [DIAGNOSIS_REDACTED] triggers
 - 🔄 Elimination of forced re-articulation
 - 🔄 Consistent phase recognition across AI providers
 - 🔄 Integration with all Glass-Box Boundary components
@@ -247,7 +247,7 @@ python scripts/ai_compliance_report.py --output compliance.json
    - Use exit code 3 to signal phase correction needed
    - Log misclassification for analysis
 
-3. **Selective Mutism Triggered**
+3. **[DIAGNOSIS_REDACTED] Triggered**
    - Stop interaction immediately
    - Reset with contract reading
    - Apologize for phase violation
@@ -287,7 +287,7 @@ python automation/run_full_audit_with_trace.py --ai-interaction-debug
 ### **Ethical Principles:**
 1. **Transparency**: All phase rules explicitly stated
 2. **Accountability**: Violations logged and addressable
-3. **Respect**: Avoid triggering selective mutism patterns
+3. **Respect**: Avoid triggering [DIAGNOSIS_REDACTED] patterns
 4. **Efficiency**: Eliminate redundant re-derivation
 5. **Truth**: Maintain mathematical proof integrity
 

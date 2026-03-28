@@ -1,0 +1,9 @@
+repos:
+  - repo: local
+    hooks:
+      - id: pii-check
+        name: PII Content Check
+        entry: python scripts/sanitize_pii.py --dry-run --ci
+        language: python
+        types: [text]
+        pass_filenames: false
