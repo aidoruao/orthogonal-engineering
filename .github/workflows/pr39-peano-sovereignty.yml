@@ -31,11 +31,10 @@ permissions:
 jobs:
   peano-cross-validate:
     name: Peano Validate (${{ matrix.os }}, py${{ matrix.python-version }})
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:  # Commented out for self-hosted runner
-#        os: [ ubuntu-latest, macos-latest ]  # Not needed for self-hosted
+      matrix:
         python-version: [ "3.10", "3.11", "3.12" ]
 
     steps:
@@ -160,11 +159,10 @@ jobs:
 
   reproducible-build-v2:
     name: Reproducible Build v2 (${{ matrix.os }})
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:  # Commented out for self-hosted runner
-#        os: [ ubuntu-latest, macos-latest, windows-latest ]  # Not needed for self-hosted
+      matrix:
 
     steps:
       - uses: actions/checkout@v4
@@ -237,19 +235,19 @@ jobs:
     name: Verify Sovereignty Parity (merkle_root + output_hash)
     needs: [ peano-cross-validate, reproducible-build-v2 ]
     if: always() && needs.peano-cross-validate.result == 'success'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
 
       - name: Download all proof bundles v2
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           pattern: proof-bundle-v2-*
           path: /tmp/proof_bundles_v2
 
       - name: Download all artifact manifests v2
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.3
         with:
           pattern: artifact-hash-manifest-v2-*
           path: /tmp/artifact_manifests_v2
