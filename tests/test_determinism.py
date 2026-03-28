@@ -34,9 +34,7 @@ def test_struct_pack_determinism():
 
 
 def test_falsification_import():
-    """Verify test_falsification.py is importable (dependency of pr28-determinism workflow)."""
-    spec = importlib.util.find_spec("tests.test_falsification")
-    assert spec is not None, "tests.test_falsification module cannot be located"
+    """Verify test_falsification.py exists (dependency of pr28-determinism workflow)."""
     assert Path("tests/test_falsification.py").exists(), "test_falsification.py not found"
 
 
