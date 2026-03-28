@@ -95,7 +95,7 @@ The `core/labor/institution_mapper.py` documents three structural patterns (fron
 |---------|---------------------|-------------|
 | `frontloading` | workload > scheduled hours | intent > capacity (structure_intent_collapse) |
 | `compliance_extraction` | compliant employee absorbs unpaid labor | RLHF extracts compliant user behavior as free training signal |
-| `verbal_policy_deflection` | "you can work unpaid" (verbal, unrecorded) | "safety is our priority" (public statement, unenforceable) |
+| `verbal_policy_deflection` | Bay District Schools (verbal authorization of off-the-clock work, no written record) | "safety is our priority" (public statement, unenforceable) |
 
 **This table is the immune response.** Once a pattern is mapped across two independent institutions, it cannot be dismissed as an isolated incident. The mapper's `falsifies_isolated_incident_defense()` method returns `True` for all three patterns — meaning the "isolated incident" defense is already falsified before any litigation begins.
 
@@ -105,7 +105,7 @@ The `core/labor/institution_mapper.py` documents three structural patterns (fron
 
 Every artifact in this distribution specification carries a `falsifies_if` condition.
 
-- The registry: `falsifies_if: "Workload is achievable within 5.75 scheduled hours."`
+- The registry: `falsifies_if: "Workload is achievable within scheduled hours."`
 - The invariants: `falsifies_if: "Hours over 40/week are compensated at 1.5x."`
 - The tests: `assert report.violation_flag is True` — the falsifying observation is the absence of violation detection.
 - This document: **falsifies_if:** "The tools in this repository cannot be used without legal assistance, cannot be adapted to other institutions, or cannot produce documentation that persists beyond the original employment relationship."

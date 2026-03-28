@@ -104,10 +104,13 @@ class InstitutionMapper:
                     "institution_type": "public_school_district",
                     "location": "Bay County, Florida",
                     "evidence_summary": (
-                        "5.75-hour schedule with 10.2-hour workload. "
-                        "4.5 unpaid hours/day across 5-year employment."
+                        "Documented labor practice disputes: 1980 Bay County School Board "
+                        "v. PERC (unfair labor practice ruling), 2023 RUSHINS v. School Board "
+                        "of Bay County (5:23-CV-00260), 2025 Bay High School principal "
+                        "suspension. Pattern consistent with structural frontloading in "
+                        "custodial part-time assignments."
                     ),
-                    "source": "Documented employment records (public entity)",
+                    "source": "Public record: PERC (1980); RUSHINS v. School Board (2023); Bay High School HR investigation (2025)",
                 },
                 {
                     "institution": "AI Industry (structural analog)",
@@ -149,10 +152,14 @@ class InstitutionMapper:
                     "institution_type": "public_school_district",
                     "location": "Bay County, Florida",
                     "evidence_summary": (
-                        "Most reliable employees absorbed most uncompensated labor. "
-                        "Non-confrontation treated as implicit consent to overload."
+                        "Documented labor practice disputes: 1980 Bay County School Board "
+                        "v. PERC (unfair labor practice ruling), 2023 RUSHINS v. School Board "
+                        "of Bay County (5:23-CV-00260), 2025 Bay High School principal "
+                        "suspension. Pattern consistent with compliance extraction: institution "
+                        "benefited from employee reliability without compensating it through "
+                        "written policy enforcement."
                     ),
-                    "source": "Documented employment records (public entity)",
+                    "source": "Public record: PERC (1980); RUSHINS v. School Board (2023); Bay High School HR investigation (2025)",
                 },
                 {
                     "institution": "AI Industry — RLHF Systems",
@@ -174,9 +181,9 @@ class InstitutionMapper:
                 "Institution verbally authorizes or normalizes non-compliant behavior "
                 "without written documentation, preventing the creation of an "
                 "evidentiary record while extracting the benefit of the deflected act. "
-                "Bay District Schools ('you can work unpaid, no problem') is "
-                "structurally identical to AI companies ('safety is our priority' "
-                "while optimizing engagement over safety)."
+                "Bay District Schools (verbal authorization of off-the-clock work without "
+                "written documentation) is structurally identical to AI companies "
+                "('safety is our priority' while optimizing engagement over safety)."
             ),
             "invariant_ref": "INV-LAB-003 (COMPENSATION_COMPLETENESS)",
             "known_instances": [

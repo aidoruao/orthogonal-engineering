@@ -20,13 +20,12 @@ metadata:
   privacy_boundary:
     REDACT:
       - individual names (coworkers, supervisors)
-      - HRT and medical information
+      - medical information
       - profanity
+      - personal employment specifics (specific hours, wage calculations, room counts)
     PUBLIC:
       - institution names (government entities and public school districts)
-      - hours worked and pay rates (the evidence)
-      - workload details (the structural basis of the violation)
-      - FLSA, Florida Constitution, and applicable public law
+      - applicable public law (FLSA, Florida Constitution)
       - court cases and administrative proceedings (public record)
 
 # =============================================================================
@@ -44,18 +43,15 @@ registry:
       - pattern_ref: "wage_theft_through_frontloading"
         violation_type_id: "wage_theft_through_frontloading"
         evidence_summary: >
-          5.75-hour part-time schedule with workload requiring an estimated
-          10.2-10.5 hours/day. Task audit: 15 bathrooms (~5.9 hours), 45+
-          trash cans (~1.25 hours), 6 hallway clusters (~0.77 hours), 15+
-          classrooms (~1.5 hours), daily variables (~0.75-1.1 hours).
-          Total scheduled: 5.75 hours. Total required: 10.35 hours.
-          Gap: 4.6 unpaid hours per day.
-        duration: "5 years (180 school days/year)"
-        total_unpaid_hours: 4050
-        estimated_stolen_wages: "$60,750 at Florida minimum wage"
+          Documented history of labor practice disputes: 1980 Bay County School
+          Board v. PERC (unfair labor practice), 2023 RUSHINS v. School Board of
+          Bay County (5:23-CV-00260). Workload-to-schedule ratio analysis
+          identifies structural frontloading in custodial part-time assignments:
+          assigned duties consistently exceeded the scheduled part-time hours
+          across multiple school years.
         invariant_ref: "INV-LAB-002"
         falsification_test_ref: "F_LABOR_002"
-        falsifies_if: "Workload is achievable within 5.75 scheduled hours by independent time-motion analysis."
+        falsifies_if: "Workload is achievable within scheduled hours by independent time-motion analysis."
 
       - pattern_ref: "verbal_policy_deflection"
         violation_type_id: "verbal_policy_deflection"
@@ -65,7 +61,8 @@ registry:
           authorization created off-the-clock work obligation without
           institutional accountability. No written policy change followed
           any verbal authorization in the documented period.
-        duration: "5 years"
+          Cross-reference: 1980 PERC unfair labor practice finding;
+          2023 RUSHINS v. School Board of Bay County (5:23-CV-00260).
         invariant_ref: "INV-LAB-003"
         falsification_test_ref: "F_LABOR_003"
         falsifies_if: "All verbal authorizations for extra work are followed by documented compensation adjustments."
@@ -73,12 +70,12 @@ registry:
       - pattern_ref: "compliance_extraction"
         violation_type_id: "compliance_extraction"
         evidence_summary: >
-          Structural extraction of uncompensated labor from the most reliable,
-          conscientious, and non-confrontational employees. Compliance traits
-          correlated with higher unpaid labor absorption. The institution's
-          labor extraction mechanism relied on employee non-confrontation as
-          a structural input.
-        duration: "5 years"
+          Structural extraction of uncompensated labor through institutional
+          reliance on employee reliability rather than written policy enforcement.
+          Cross-reference: 1980 Bay County School Board v. PERC (unfair labor
+          practice), 2023 RUSHINS v. School Board of Bay County (5:23-CV-00260).
+          Pattern consistent with compliance_extraction structural model:
+          institution benefits from employee reliability without compensating it.
         invariant_ref: "INV-LAB-005"
         falsification_test_ref: "F_LABOR_005"
         falsifies_if: "No statistically significant correlation exists between compliance indicators and unpaid hours."
@@ -87,11 +84,11 @@ registry:
         violation_type_id: "unpaid_overtime_allocation"
         evidence_summary: >
           Minimum wage compliance (Florida Constitution Amendment 2) used as
-          sole compensation adjustment mechanism while effective workload
-          hours exceeded 40-hour threshold. No 1.5x FLSA overtime rate applied
-          to hours effectively worked beyond the scheduled 5.75-hour limit.
+          sole compensation adjustment mechanism while assigned workload
+          structurally required hours exceeding the 40-hour FLSA overtime
+          threshold. No 1.5x FLSA overtime rate applied to hours effectively
+          worked beyond scheduled part-time limit.
           Authority: FLSA 29 U.S.C. § 207; Florida Constitution Amendment 2.
-        duration: "5 years"
         invariant_ref: "INV-LAB-001"
         falsification_test_ref: "F_LABOR_001"
         falsifies_if: "Compensation records show 1.5x overtime rate applied to all hours effectively exceeding 40 per week."

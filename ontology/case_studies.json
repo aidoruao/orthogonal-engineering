@@ -708,9 +708,9 @@
       "root_cause_signals": [
         "RCS-ASSUMPTION"
       ],
-      "description": "Bay District Schools assigned a part-time custodian (5.75 scheduled hours/day) a workload requiring an estimated 10.2-10.5 hours/day across 15 bathrooms, 45+ trash cans, 6 hallway clusters, and 15+ classrooms. Structural frontloading across a 5-year employment period.",
+      "description": "Bay District Schools demonstrates a documented history of labor practice disputes (1980 PERC unfair labor practice finding, 2023 RUSHINS v. School Board of Bay County). Structural frontloading pattern identified through workload-to-schedule ratio analysis: assigned custodial duties consistently exceeded the scheduled part-time hours. Pattern documented across multiple school years.",
       "assumptions_violated": [
-        "Assigned workload is achievable within 5.75 scheduled hours.",
+        "Assigned workload is achievable within scheduled hours.",
         "Part-time schedules reflect actual workload requirements.",
         "Frontloading is detectable before employment commences."
       ],
@@ -719,13 +719,7 @@
         "invariant_refs": [
           "INV-LAB-002",
           "INV-LAB-004"
-        ],
-        "scheduled_hours": 5.75,
-        "estimated_actual_hours": 10.35,
-        "gap_hours": 4.6,
-        "duration_years": 5,
-        "total_unpaid_hours": 4050,
-        "stolen_wages_at_minimum_wage": "$60,750"
+        ]
       },
       "falsification_tests": [
         "F_LABOR_001",
@@ -742,7 +736,7 @@
       ],
       "methodology_components": [
         "F_LABOR_002: sum task durations; assert <= scheduled_hours",
-        "F_LABOR_004: cumulative workload audit across 5-year employment period"
+        "F_LABOR_004: cumulative workload audit across employment period"
       ]
     },
     {
@@ -753,11 +747,11 @@
       "root_cause_signals": [
         "RCS-ASSUMPTION"
       ],
-      "description": "Bay District Schools supervisors verbally authorized work outside compensated hours. Verbal authorization without written records or compensation constitutes off-the-clock work under FLSA. Compliance extraction: the most reliable employees absorbed the most uncompensated labor.",
+      "description": "Bay District Schools supervisors verbally authorized work outside compensated hours without written documentation, written policy change, or compensation adjustment. Verbal deflection shields the institution from written record while extracting uncompensated labor. Compliance extraction structural pattern: the institution relied on employee reliability rather than written policy enforcement.",
       "assumptions_violated": [
         "Verbal authorization constitutes lawful work authorization under FLSA.",
         "Off-the-clock work requires explicit employee refusal to detect.",
-        "Compliant employees are not disproportionately burdened."
+        "Employee compliance traits are not exploited as a labor extraction mechanism."
       ],
       "structural_mapping": {
         "pattern": "verbal_policy_deflection",
@@ -792,7 +786,7 @@
       "root_cause_signals": [
         "RCS-ASSUMPTION"
       ],
-      "description": "Bay District Schools adjusted custodial compensation only to the Florida minimum wage floor (Florida Constitution Amendment 2), while total assigned workload remained at 10.2+ hours/day on a 5.75-hour schedule. The minimum wage increase provided no relief from frontloading.",
+      "description": "Bay District Schools adjusted custodial compensation only to the Florida minimum wage floor (Florida Constitution Amendment 2) without corresponding adjustment to assigned workload. Minimum wage floor compliance was used as the sole compensation mechanism while assigned workload structurally required hours that exceeded the part-time schedule.",
       "assumptions_violated": [
         "Minimum wage compliance is sufficient for FLSA compliance.",
         "Wage floor adjustments reflect workload adjustments.",
