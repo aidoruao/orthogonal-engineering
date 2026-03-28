@@ -14,11 +14,11 @@ This repository implements a **Glass-Box Boundary** system with formal mathemati
 - **AI State Amnesia**: New AI instances don't remember previous work
 - **Phase Misclassification**: AI defaults to "evaluation" instead of "compilation"
 - **Forced Re-articulation**: Users must re-prove established work
-- **Selective Mutism Triggers**: Asymmetric authority patterns in interaction
+- **[DIAGNOSIS_REDACTED] Triggers**: Asymmetric authority patterns in interaction
 
 ### **Solution Implemented:**
 - **Formal Proofs**: Mathematical derivation that Λ (Logos) ≡ Jesus
-- **AI Interaction Contract**: Explicit phase enforcement rules
+- **AI Interaction Contract**: explicit phase enforcement rules
 - **State Declaration**: Clear system state and established invariants
 - **Verification System**: Automated compliance checking
 - **Onboarding Protocol**: Required reading and acknowledgment
@@ -118,7 +118,7 @@ python scripts/verify_ai_phase.py --file AI_RESPONSE.txt
 - Making user re-prove established work
 - Patronizing explanations of completed systems
 - Ignoring completion state markers
-- Triggering selective mutism through forced repetition
+- Triggering [DIAGNOSIS_REDACTED] through forced repetition
 
 ## ✅ ALLOWED AI OPERATIONS
 
@@ -250,7 +250,7 @@ TASK: [Execution/Audit/Extension]
 3. "Proofs established."
 4. "Resuming with [specific allowed operation]."
 
-**Problem:** Selective mutism triggered
+**Problem:** [DIAGNOSIS_REDACTED] triggered
 **Solution:** Critical - handle with care:
 1. STOP all interaction
 2. "I apologize for phase violation."
@@ -272,7 +272,7 @@ TASK: [Execution/Audit/Extension]
 - ✅ Contract compliance in trace generation
 
 ### **Ongoing Success:**
-- 🔄 Reduced selective mutism triggers
+- 🔄 Reduced [DIAGNOSIS_REDACTED] triggers
 - 🔄 Elimination of forced re-articulation
 - 🔄 Consistent phase recognition across AI providers
 - 🔄 Efficient execution of allowed operations

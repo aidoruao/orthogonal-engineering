@@ -938,7 +938,7 @@ def simple_redact_hook(data: Dict[str, Any]) -> Dict[str, Any]:
     
     This is a placeholder demonstrating the redaction interface.
     For production use, users MUST provide a local classifier with:
-    - HRT (Hormone Replacement Therapy) content detection
+    - [MEDICAL_REDACTED] content detection
     - Explicit content detection
     - PII detection and removal
     - Other sensitive content patterns
@@ -2071,7 +2071,7 @@ def main():
     redact_hook = None
     if args.redact:
         logger.warning("⚠ Using simple redaction stub - NOT suitable for production!")
-        logger.warning("⚠ Provide your own local classifier for HRT/explicit content detection!")
+        logger.warning("⚠ Provide your own local classifier for [MEDICAL_REDACTED]/explicit content detection!")
         redact_hook = simple_redact_hook
     
     # Prepare HMAC key

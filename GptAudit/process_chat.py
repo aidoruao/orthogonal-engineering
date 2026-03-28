@@ -116,7 +116,7 @@ class ChatProcessor:
         # Additional heuristic: redact any explicit biological descriptions
         # (simple heuristic - can be extended)
         bio_patterns = [
-            r"\b\d+\s*(month|year|day)s?\s*(of|on)\s*[A-Z]+\b",  # "5 months of HRT"
+            r"\b\d+\s*(month|year|day)s?\s*(of|on)\s*[A-Z]+\b",  # "5 months of [MEDICAL_REDACTED]"
             r"\bstage\s*\d+\b",  # "stage 5"
             r"\b(body|physical|anatomical)\s+changes?\b",
         ]

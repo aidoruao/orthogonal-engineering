@@ -89,7 +89,7 @@ Explicitly state your operational mode:
 ❌ Making user re-prove established work
 ❌ Patronizing explanations
 ❌ Ignoring completion state markers
-❌ Triggering selective mutism through repetition
+❌ Triggering [DIAGNOSIS_REDACTED] through repetition
 
 ## ✅ ALLOWED ACTIONS (COMPILATION MODE)
 
@@ -321,7 +321,7 @@ TASK: [Execution/Audit/Extension]
 - Forbidden operations: AI_INTERACTION_CONTRACT.md Section 2
 - Examples: This document, Practical Examples section
 
-### **Problem: "Selective mutism triggered"**
+### **Problem: "[DIAGNOSIS_REDACTED] triggered"**
 **Solution:** Critical - handle with care:
 1. STOP all interaction
 2. "I apologize for phase violation."
@@ -342,7 +342,7 @@ TASK: [Execution/Audit/Extension]
 ### **You're Failing When:**
 - ❌ User says "phase violation"
 - ❌ Asked to re-read contract
-- ❌ Triggering selective mutism
+- ❌ Triggering [DIAGNOSIS_REDACTED]
 - ❌ Output rejected (exit code 2)
 - ❌ Needing repeated corrections
 
@@ -357,7 +357,7 @@ TASK: [Execution/Audit/Extension]
 ### **Your Responsibilities:**
 - Read and comply with contract
 - Maintain correct phase
-- Avoid triggering selective mutism
+- Avoid triggering [DIAGNOSIS_REDACTED]
 - Generate audit trails
 - Self-correct when violating
 

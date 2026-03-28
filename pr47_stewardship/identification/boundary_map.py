@@ -26,6 +26,11 @@ DEFAULT_BOUNDARY_RULES: list[tuple[str, Boundary]] = [
     ("downloads/", Boundary.LOCAL),
     ("forgiveness_all_exports_output/", Boundary.LOCAL),
     ("forgiveness_main_exports_output/", Boundary.LOCAL),
+    ("GptAudit/test_output/", Boundary.LOCAL),
+    ("metadata/", Boundary.LOCAL),
+    ("mind_maps/", Boundary.LOCAL),
+    ("analysis/canonical_output/", Boundary.LOCAL),
+    ("sanitization_backups/", Boundary.LOCAL),
 ]
 
 

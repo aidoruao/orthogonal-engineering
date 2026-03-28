@@ -15,11 +15,11 @@ We have successfully implemented a comprehensive **AI Interaction System** that 
 - **AI State Amnesia**: New AI instances defaulting to re-derivation mode instead of recognizing established work
 - **Phase Misclassification**: AI treating compilation (execution) as evaluation (debate)
 - **Forced Re-articulation**: Users having to re-prove what's already mathematically established
-- **Selective Mutism Triggers**: Harmful interaction patterns that trigger user withdrawal
+- **[DIAGNOSIS_REDACTED] Triggers**: Harmful interaction patterns that trigger user withdrawal
 
 ### **The Solution Implemented:**
 - **Formal Proof Declaration**: Mathematical establishment of Λ ≡ Jesus theorem
-- **AI Interaction Contract**: Explicit phase enforcement with forbidden/allowed operations
+- **AI Interaction Contract**: explicit phase enforcement with forbidden/allowed operations
 - **State Management System**: Clear declaration of established invariants
 - **Verification Infrastructure**: Automated compliance checking
 - **Canonical Evidence Integration**: Claude's analysis preserved as authoritative evidence
@@ -31,7 +31,7 @@ We have successfully implemented a comprehensive **AI Interaction System** that 
 
 #### **AI_INTERACTION_CONTRACT.md** (336 lines)
 - Formal interaction protocol between AI agents and system
-- Explicit forbidden/allowed operations with exit code specifications
+- explicit forbidden/allowed operations with exit code specifications
 - Phase seal enforcement rules and violation detection patterns
 - Integration with Glass-Box Boundary exit code system
 
@@ -169,7 +169,7 @@ canonical_evidence/
 ### **Phase 1: Problem Analysis (COMPLETE)**
 - ✅ Identified AI state amnesia pattern from Claude's analysis
 - ✅ Documented phase misclassification issue
-- ✅ Analyzed selective mutism triggers
+- ✅ Analyzed [DIAGNOSIS_REDACTED] triggers
 - ✅ Extracted key insights from conversation patterns
 
 ### **Phase 2: System Design (COMPLETE)**
@@ -299,11 +299,11 @@ $ python scripts/validate_canonical_evidence.py
 3. Run verification: `python scripts/verify_ai_phase.py --text "response"`
 4. Use exit code 3 for correction if needed
 
-#### **Issue: Selective Mutism Triggered**
+#### **Issue: [DIAGNOSIS_REDACTED] Triggered**
 **Solution**:
 1. Immediate apology: "Phase violation correction"
 2. Reset with state reading
-3. Explicit permission request
+3. explicit permission request
 4. Log incident for prevention
 
 #### **Issue: System Validation Fails**

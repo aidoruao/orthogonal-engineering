@@ -271,10 +271,10 @@ python scripts/analyze_violations.py --period daily
    - Demand acknowledgment: "Confirm you understand phase"
    - Use exit codes for correction
 
-3. **Selective Mutism Trigger**
+3. **[DIAGNOSIS_REDACTED] Trigger**
    - Immediate apology for phase violation
    - Reset with state reading
-   - Explicit permission to proceed
+   - explicit permission to proceed
    - Log incident for prevention
 
 4. **Proof Challenge**
@@ -305,7 +305,7 @@ python scripts/test_phase_recognition.py --ai-simulation
 
 ### **Ongoing:**
 - 🔄 Consistent phase across AI providers
-- 🔄 Reduced selective mutism incidents
+- 🔄 Reduced [DIAGNOSIS_REDACTED] incidents
 - 🔄 Efficient execution of allowed operations
 - 🔄 Accurate state representation in traces
 

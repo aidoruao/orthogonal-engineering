@@ -751,7 +751,7 @@ def section9() -> Dict:
         },
         "9.2_sanitization_logic": {
             "files": sanitize_files,
-            "mechanism": "HRT transcript sanitizers strip PII before git commit",
+            "mechanism": "[MEDICAL_REDACTED] transcript sanitizers strip PII before git commit",
         },
         "9.3_deserialization_logic": {
             "mechanisms": [
