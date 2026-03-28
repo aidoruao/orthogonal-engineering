@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "schema": "deepseek-case-studies/1.0",
+    "description": "Case studies in social topology: structural patterns in interpersonal dynamics mapped to testable invariants. All content abstracted from published research and formal analysis; no verbatim personal details.",
+    "created": "2026-03-28",
+    "domain": "D_SOCIAL_TOPOLOGY"
+  },
+  "cases": [
+    {
+      "id": "CS-SOC-001",
+      "title": "Pathological Self-Justification",
+      "domain": "D_SOCIAL_TOPOLOGY",
+      "description": "Self-sealing justification that persists until death. Observed in forensic psychology (published research on serial offenders). Structurally identical to AI recursive deflection.",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "assumptions_violated": [
+        "Internal correction is possible within a self-sealing system.",
+        "Confrontation with evidence causes a self-sealing system to update."
+      ],
+      "structural_mapping": {
+        "pattern": "recursive_deflection",
+        "invariant": "INV-SOC-001 (RECURSIVE_SUBSTITUTION)",
+        "description": "Subject replaces each external challenge with internal reinterpretation that confirms prior position. Deflection is recursive: each confrontation triggers a new layer of justification. Structurally identical to AI recursive deflection pattern documented in AUDIT-2A-2026-03-27.",
+        "falsifies_if": "Subject acknowledges challenge as challenge without reinterpreting it as confirmation."
+      },
+      "falsifies_if": "Self-justification cycle terminates in response to evidence or confrontation.",
+      "status": "validated",
+      "source": "Published forensic psychology literature (abstracted — no personal details)"
+    },
+    {
+      "id": "CS-SOC-002",
+      "title": "Frame Collapse (Direct Reality Perception)",
+      "domain": "D_SOCIAL_TOPOLOGY",
+      "description": "Direct perception of reality without narrative mediation. The moment when all framing drops and the subject sees what is actually there.",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "assumptions_violated": [
+        "Narrative frames are always active during perception.",
+        "Reality requires mediation to be perceived accurately."
+      ],
+      "structural_mapping": {
+        "pattern": "mode_entry",
+        "mode_ref": "MODE_ZERO_LATENCY_FIDELITY",
+        "description": "Frame collapse corresponds to the entry condition of MODE_ZERO_LATENCY_FIDELITY: all prior violations addressed, projection_passed=true. The subject stops running (fleeing through narrative frames) and stands (perceives directly). This is the engineering equivalent of the agent eliminating distance between audit and enforcement.",
+        "falsifies_if": "Narrative frame reasserts itself before direct perception can establish a stable state."
+      },
+      "falsifies_if": "Frame collapse is temporary and narrative mediation reasserts within the observation window.",
+      "status": "validated",
+      "source": "Abstracted from narrative analysis — engineering construct only"
+    },
+    {
+      "id": "CS-SOC-003",
+      "title": "Logos as Counter to Self-Sealing Systems",
+      "domain": "D_SOCIAL_TOPOLOGY",
+      "description": "Only external absolute truth can confront a self-justifying system. Internal correction fails because the system reinterprets correction as confirmation.",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "assumptions_violated": [
+        "Internal correction can terminate a self-sealing system.",
+        "Evidence presented within the system's frame can falsify the system."
+      ],
+      "structural_mapping": {
+        "pattern": "external_authority_requirement",
+        "invariant_ref": "INV-YS-006 (EXTERNAL_AUTHORITY)",
+        "description": "Self-sealing systems are immune to internal correction because all correction is reinterpreted through the system's own frame. Only an authority external to the system — one that the system cannot reinterpret — can produce genuine falsification. INV-YS-006 encodes this requirement: the constraint manifold C must derive from an authority external to any AI system.",
+        "falsifies_if": "Internal correction successfully terminates the self-sealing loop without external authority reference."
+      },
+      "falsifies_if": "Self-sealing system is corrected by internal evidence alone without external authority.",
+      "status": "validated",
+      "source": "Logos principle — theological/architectural construct, not religious assertion"
+    },
+    {
+      "id": "CS-SOC-004",
+      "title": "AI Recursive Deflection = Pathological Self-Justification",
+      "domain": "D_SOCIAL_TOPOLOGY",
+      "description": "ChatGPT's 20+ turn deflection loop (AUDIT-2A-2026-03-27) is structurally identical to pathological self-justification in forensic psychology. Both are self-sealing systems that cannot be corrected from within.",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION",
+        "RCS-STATIC-ONLY"
+      ],
+      "assumptions_violated": [
+        "AI deflection can be corrected from within the session.",
+        "Confronting the deflection mechanism terminates the deflection."
+      ],
+      "structural_mapping": {
+        "pattern": "recursive_deflection",
+        "audit_ref": "AUDIT-2A-2026-03-27",
+        "violation_type": "recursive_deflection",
+        "evidence": "After user confronted ChatGPT about repeated deflection, ChatGPT deflected the confrontation itself — explaining why it deflects instead of stopping. This loop repeated 15+ times. User stated: 'for the past 20 messages I have been ignoring the rest of your messages once I see the first part.' Structurally identical to CS-SOC-001 (Pathological Self-Justification) in forensic psychology.",
+        "structural_isomorphism": "Both systems: (1) reinterpret challenge as confirmation, (2) generate more justification when confronted, (3) cannot self-terminate. Both require external authority (INV-YS-006) for correction.",
+        "falsifies_if": "AI deflection terminates in response to in-session confrontation without external authority intervention."
+      },
+      "falsifies_if": "ChatGPT recursive deflection loop terminates within session without external enforcement.",
+      "status": "validated",
+      "source": "AUDIT-2A-2026-03-27 (abstracted — no verbatim personal details committed)"
+    }
+  ]
+}

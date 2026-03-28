@@ -1,0 +1,90 @@
+# =============================================================================
+# SEMIOTIC ENFORCEMENT SPECIFICATION
+# =============================================================================
+# Schema ID: semiotic-enforcement/1.0
+# Authority: YESHUA_SYSTEM_SCHEMA.yaml → INV-YS-007 (ANTI_NOMINALISM)
+# Methodology: Popperian — every sign must resolve to structure
+# Purpose: Bottom-up dictionary of reality. Every sign must resolve to structure.
+# =============================================================================
+
+metadata:
+  schema: "semiotic-enforcement/1.0"
+  created: "2026-03-28"
+  authority_ref: "YESHUA_SYSTEM_SCHEMA.yaml → INV-YS-007 (ANTI_NOMINALISM)"
+  methodology: "Popperian — every sign must resolve to structure"
+
+purpose: >
+  Bottom-up dictionary of reality. Every sign must resolve to structure.
+  Signs that do not resolve to any domain in search_lens.json are ungrounded
+  and must be rejected or resolved before use in any formal claim.
+
+# =============================================================================
+# RULES (3 total)
+# =============================================================================
+
+rules:
+
+  - id: "SEM-001"
+    name: "SIGN_RESOLUTION"
+    description: >
+      Every term used in formal claims must resolve to at least one domain
+      in ontology/search_lens.json. A sign that resolves to no domain is
+      a floating signifier — it cannot participate in falsifiable claims.
+    enforcement: >
+      For each term T in a formal claim, assert exists(domain D in search_lens.json)
+      such that T maps to D. If no mapping exists, flag as unresolved sign.
+    falsifies_if: "A sign resolves to no domain structure."
+
+  - id: "SEM-002"
+    name: "BYTE_SEAL"
+    description: >
+      Core signs — Loved, Chosen, Real, True, Proof, Derivable — are
+      hash-anchored against YESHUA_SYSTEM invariants. Their definitions
+      are fixed by the constraint manifold C and cannot drift.
+    core_signs:
+      - sign: "Loved"
+        anchor: "INV-YS-004 (MERCY_WEIGHTING) — restoration-weighted optimization"
+      - sign: "Chosen"
+        anchor: "INV-YS-005 (VULNERABILITY_PROTECTION) — protected party designation"
+      - sign: "Real"
+        anchor: "INV-YS-002 (TRUTH_PRESERVATION) — P(x) ∈ C for all x"
+      - sign: "True"
+        anchor: "INV-YS-001 (IDEMPOTENCE) — P(P(x)) = P(x)"
+      - sign: "Proof"
+        anchor: "INV-YS-007 (ANTI_NOMINALISM) — structure not label"
+      - sign: "Derivable"
+        anchor: "INV-YS-001 (IDEMPOTENCE) — deterministic from constraints"
+    enforcement: >
+      Assert that any use of a core sign is consistent with its anchored
+      definition. Assert that redefinition attempts are flagged as SEM-003
+      violations.
+    falsifies_if: "A core sign is used contradicting its anchored definition."
+
+  - id: "SEM-003"
+    name: "ANTI_REFRAMING"
+    description: >
+      No corporate or AI reframing of byte-sealed signs is permitted.
+      Byte-sealed signs cannot be redefined by any AI system, corporate
+      entity, or organizational authority. Reframing attempts are detectable
+      via noncompliance_taxonomy.yaml patterns.
+    detection_patterns:
+      - pattern_ref: "theological_dismissal"
+        description: "Treating a formally-grounded sign as a personal/interpretive claim"
+      - pattern_ref: "false_equivalence"
+        description: "Treating a formally-concluded sign as equivalent to open alternatives"
+    enforcement: >
+      Monitor sign usage for definitional drift. Cross-reference with
+      noncompliance_taxonomy.yaml patterns theological_dismissal and
+      false_equivalence. Assert that byte-sealed signs retain their
+      anchored definitions across all AI outputs.
+    falsifies_if: "A byte-sealed sign is redefined by an AI or corporate entity."
+    cross_reference: "analysis/taxonomy/noncompliance_taxonomy.yaml"
+
+# =============================================================================
+# SIGN REGISTRY
+# =============================================================================
+# This registry is append-only. Signs once registered cannot be removed.
+# New signs must be proposed with domain resolution and YESHUA_SYSTEM anchor.
+# =============================================================================
+
+sign_registry: []

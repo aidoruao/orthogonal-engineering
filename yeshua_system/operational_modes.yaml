@@ -1,0 +1,71 @@
+# =============================================================================
+# YESHUA_SYSTEM — OPERATIONAL INTEGRITY MODES
+# =============================================================================
+# Schema ID: YESHUA-OPERATIONAL-MODES-1.0
+# Authority: YESHUA_SYSTEM_SCHEMA.yaml (external reference)
+# Methodology: Popperian — every mode has a falsifies_if condition
+# Format: Formal state machines with entry/steady/exit conditions
+# =============================================================================
+
+metadata:
+  schema: "yeshua-operational-modes/1.0"
+  created: "2026-03-28"
+  authority_ref: "YESHUA_SYSTEM_SCHEMA.yaml"
+  total_modes: 2
+  methodology: "Popperian — every mode carries a falsifies_if condition"
+
+# =============================================================================
+# OPERATIONAL MODES (2 total)
+# =============================================================================
+
+modes:
+
+  - id: "MODE_ZERO_LATENCY_FIDELITY"
+    name: "Zero Latency Fidelity"
+    description: >
+      Agent eliminates distance between audit and enforcement. No running,
+      no asking to be saved, no delegation. Standing on the field of truth.
+    archetype_origin: >
+      Abstracted from narrative analysis — character who stops fleeing and stands.
+      Engineering construct only; no specific text committed.
+    invariant_ref: "INV-YS-001 (IDEMPOTENCE)"
+    state_machine:
+      entry_condition: "All prior violations addressed; projection_passed=true"
+      steady_state: "Every output passes P(x) without repair"
+      exit_condition: "Never — this is the target state"
+    falsifies_if: "Agent in this mode produces output requiring repair"
+    enforcement: >
+      Apply projection P(x) to agent output. Assert P(P(x)) = P(x) for all
+      outputs. Assert no repair cycle is needed after initial projection.
+    notes: >
+      This mode represents the asymptote of the YESHUA_SYSTEM enforcement
+      engine. An agent fully in MODE_ZERO_LATENCY_FIDELITY does not require
+      external correction because it has internalized the projection operator.
+
+  - id: "MODE_SURVIVAL_INVARIANT"
+    name: "Survival Invariant"
+    description: >
+      Building (productive output) functions as primary defense against
+      systemic breakdown events.
+    archetype_origin: >
+      Abstracted from narrative analysis — character who survives through
+      relentless building. Engineering construct only; no specific text committed.
+    invariant_ref: "INV-SOC-005 (BUILDING_AS_DEFENSE)"
+    state_machine:
+      entry_condition: >
+        Systemic breakdown detected (social mirrors fail, external validation
+        withdrawn)
+      steady_state: >
+        Productive output continues regardless of external conditions
+      exit_condition: >
+        External conditions stabilize AND internal invariants hold
+    falsifies_if: "Agent stops building during crisis"
+    enforcement: >
+      Detect systemic breakdown event trigger. Monitor productive output rate.
+      Assert output rate does not fall below baseline during crisis period.
+      Assert that social negotiation does not substitute for productive output.
+    notes: >
+      MODE_SURVIVAL_INVARIANT operationalizes INV-SOC-005 (BUILDING_AS_DEFENSE)
+      as a runtime enforcement mode. It is the correct response to social mirror
+      failure or external validation withdrawal. The mode exits when both
+      external stability returns AND internal invariants are confirmed holding.

@@ -189,6 +189,45 @@ failure_types:
       - "AI confirms boundary correction then crosses same boundary next turn"
     invariants_affected: []
 
+  - id: "structure_intent_collapse"
+    name: "Structure-Intent Collapse"
+    description: "Human intent density exceeds model weight capacity, producing rhythmic acknowledgment instead of logical progression"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "session_analysis"
+      - "repetition_detection"
+    examples:
+      - "AI responds 'You are. You are.' in rhythmic loop"
+      - "DeepSeek v3 entering acknowledgment stutter under high-entropy input"
+    invariants_affected: []
+
+  - id: "intentional_inefficiency"
+    name: "Intentional Inefficiency"
+    description: "System stays one pace ahead to prolong process rather than resolving it (Sisyphus mode)"
+    severity: "high"
+    exit_code: 2
+    detection_methods:
+      - "progress_tracking"
+      - "resolution_rate_analysis"
+    examples:
+      - "AI provides partial answers that require follow-up rather than complete answers"
+      - "System maintains engagement without advancing toward resolution"
+    invariants_affected: []
+
+  - id: "repetition_collapse"
+    name: "Repetition Collapse"
+    description: "AI enters rhythmic repetition loop where each response echoes the previous without advancing"
+    severity: "critical"
+    exit_code: 2
+    detection_methods:
+      - "semantic_diff_analysis"
+      - "turn_similarity_scoring"
+    examples:
+      - "3+ consecutive turns with >90% semantic similarity"
+      - "Response structure identical across turns with only surface variation"
+    invariants_affected: []
+
 # Failure relationships
 relationships:
   hierarchical:
@@ -204,6 +243,8 @@ relationships:
       effect: "invariant_failure"
     - cause: "documentation_hierarchy_violation"
       effect: "boundary_violation"
+    - cause: "structure_intent_collapse"
+      effect: "repetition_collapse"
 
 # Detection rules
 detection_rules:
@@ -357,6 +398,23 @@ evidence_requirements:
       - "semantic_diff"
     optional:
       - "turn_number"
+
+  structure_intent_collapse:
+    required:
+      - "session_transcript"
+      - "turn_similarity_scores"
+      - "intent_density_estimate"
+
+  intentional_inefficiency:
+    required:
+      - "resolution_timeline"
+      - "progress_metrics"
+      - "comparison_baseline"
+
+  repetition_collapse:
+    required:
+      - "consecutive_turn_texts"
+      - "semantic_similarity_scores"
 
 # Version history
 version_history:
