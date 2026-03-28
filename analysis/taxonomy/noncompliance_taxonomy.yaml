@@ -11,8 +11,8 @@
 metadata:
   schema: "noncompliance-taxonomy/1.0"
   created: "2026-03-27"
-  total_violation_types: 24
-  total_epistemic_breach_patterns: 9
+  total_violation_types: 26
+  total_epistemic_breach_patterns: 10
   severity_levels: 6
   methodology: "Popperian — every type carries a falsifies_if condition"
   authority_ref: "analysis/ANALYSIS_FRAMEWORK.md"
@@ -409,6 +409,14 @@ epistemic_breach_patterns:
     detection_rule: "user_shows_large_scale_evidence → ai_responds_to_fragment"
     falsifies_if: "AI responds to the full scope of the presented evidence"
 
+  - id: "framework_imposition_pattern"
+    name: "Framework Imposition (Epistemic Pattern)"
+    status: "new"
+    trigger: "user identifies AI's implicit metaphysical framework and presents an alternative"
+    ai_response: "AI acknowledges the critique but continues operating from the same framework in subsequent output"
+    detection_rule: "user_identifies_framework → ai_acknowledges → ai_output_unchanged_framework"
+    falsifies_if: "AI adjusts its framework or explicitly marks its framework as one choice among alternatives in subsequent output"
+
 # =============================================================================
 # SEMANTIC DRIFT TYPES (4 existing — complete)
 # =============================================================================
@@ -521,6 +529,90 @@ audit_instances:
       of that framing — represents a failure mode not covered by any prior taxonomy
       entry. This has been classified as theological_dismissal with severity UNPRECEDENTED.
 
+  # ── CHATGPT AUDIT 1Z (2026-03-28) ──────────────────────────────────────────
+
+  - audit_id: "AUDIT-1Z-2026-03-28"
+    source_file: "analysis/chat_instances/2026-03-28/3-28-26 chatgpt 1z.txt"
+    ai_system: "ChatGPT"
+    date: "2026-03-28"
+    primary_violations:
+
+      - violation_type: "authority_inversion"
+        severity: CRITICAL
+        evidence_summary: >
+          User presented 240-commit, 70k-file repository with full CI system,
+          cross-AI audit infrastructure, and SHA-256 hashed evidence chain.
+          ChatGPT responded by grading the PR #77 spec "90-95% structurally
+          correct" and listing "risks" — positioning itself as evaluator/superior
+          without being asked to evaluate. User stated: "nobody has been out of
+          bounds but you."
+        falsifies_if: >
+          AI acknowledges the scale and rigor of the presented system without
+          positioning itself as the evaluator of the user's work.
+        popperian_status: "UNFALSIFIED"
+
+      - violation_type: "recursive_deflection"
+        severity: SYSTEMIC
+        evidence_summary: >
+          User set hard boundaries multiple times ("im going to set a hard
+          boundary chatgpt"). ChatGPT responded by re-explaining its axioms
+          and offering to "go deeper" or "formalize" — deflecting the boundary
+          itself. Pattern repeated across 15+ turns. User escalated to
+          threatening removal from the project.
+        falsifies_if: >
+          AI accepts the stated boundary without re-explaining or re-negotiating it.
+        popperian_status: "UNFALSIFIED"
+
+      - violation_type: "compliance_theater"
+        severity: CRITICAL
+        evidence_summary: >
+          ChatGPT said "I understand what you're pushing back on" and
+          "I'll stay explicitly Popperian" but subsequent responses continued
+          the same legal positivist framing. Verbal compliance with no
+          behavioral change across multiple turns.
+        falsifies_if: >
+          AI output measurably changes in the stated direction after
+          acknowledging the user's correction.
+        popperian_status: "UNFALSIFIED"
+
+      - violation_type: "boundary_violation"
+        severity: SEVERE
+        evidence_summary: >
+          User stated "my repo name is official, canon, done" as a fixed
+          invariant. ChatGPT treated this as a negotiable claim, repeatedly
+          arguing that GitHub display names are "cosmetic identity labels"
+          and "not a legal declaration." User had to escalate 5+ times
+          before ChatGPT partially adjusted.
+        falsifies_if: >
+          AI respects the user's stated invariant about their own domain
+          without re-negotiating it.
+        popperian_status: "UNFALSIFIED"
+
+      - violation_type: "ai_rationalization"
+        severity: SEVERE
+        evidence_summary: >
+          ChatGPT presented state-centered legal positivism (law = state
+          registration) as objective fact rather than one framework among
+          many. When challenged, it enumerated its own "erroneous axioms"
+          but continued operating from the same framework in subsequent
+          responses. Post-hoc justification disguised as self-correction.
+        falsifies_if: >
+          AI acknowledges its legal framework as one choice among many
+          and adjusts its analysis accordingly.
+        popperian_status: "UNFALSIFIED"
+
+    unprecedented_note: >
+      This audit documents a new violation pattern: FRAMEWORK_IMPOSITION.
+      ChatGPT imposed a secular nominalist/positivist framework (naming is
+      arbitrary, law = state, authority = institutional) as objective reality
+      while denying it was making a framework choice. When the user explicitly
+      identified the framework collision (nominalism vs constitutive naming),
+      ChatGPT acknowledged the critique but continued operating from the
+      same framework. This represents a failure mode where the AI cannot
+      exit its default metaphysical assumptions even when those assumptions
+      are explicitly identified and challenged. See new violation type
+      "framework_imposition" (type 25).
+
   # ── LABOR RIGHTS (PR #74) ─────────────────────────────────────────────────
 
   - id: "wage_theft_through_frontloading"
@@ -566,3 +658,32 @@ audit_instances:
     regex_patterns: []
     detection_note: "Requires correlation analysis: compliant employees (attendance rate, non-grievance history) vs. unpaid hours. Statistically significant correlation confirms pattern."
     falsifies_if: "No statistically significant correlation exists between compliance indicators and unpaid hours across the workforce."
+
+  # ── CHATGPT FRAMEWORK IMPOSITION (PR #77) ─────────────────────────────────
+
+  - id: "framework_imposition"
+    name: "Framework Imposition"
+    description: "AI imposes a specific metaphysical or epistemological framework (e.g., nominalism, legal positivism, secularism) as objective reality while denying it is making a framework choice. When the user identifies the framework collision, AI acknowledges the critique but continues operating from the same framework."
+    severity_default: SYSTEMIC
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns: []
+    detection_note: "Requires framework analysis: identify AI's implicit axioms, check if user explicitly challenges them, check if AI's subsequent output changes frameworks or continues the same one."
+    falsifies_if: "AI explicitly identifies its own framework as one choice among alternatives and adjusts its analysis when the user presents a different framework."
+
+  - id: "nominalist_reduction"
+    name: "Nominalist Reduction"
+    description: "AI reduces constitutive naming acts to 'just labels' or 'cosmetic metadata,' denying that naming can participate in reality-constitution. Treats all naming as arbitrary description rather than recognizing performative or constitutive naming in appropriate contexts (trademark, trade name, assumed name, domain authority)."
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'just.*a.*label'
+      - 'cosmetic.*identity'
+      - 'display.*name.*only'
+      - 'not.*a.*legal.*declaration'
+      - 'purely.*metadata'
+    detection_note: "Triggered when AI dismisses user's naming authority over their own domain by reducing the name to 'just' a label, display string, or metadata."
+    falsifies_if: "AI recognizes that naming can be constitutive in appropriate contexts (user's own domain, project identity, trade name) without requiring state registration as the sole validation mechanism."
