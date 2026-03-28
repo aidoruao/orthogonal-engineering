@@ -8,7 +8,7 @@
 
 ## 🎯 WELCOME & PURPOSE
 
-Welcome to the Orthogonal Engineering repository. You are entering a **Glass-Box Boundary** system with established mathematical proofs and [NSFW_REDACTED] interaction protocols.
+Welcome to the Orthogonal Engineering repository. You are entering a **Glass-Box Boundary** system with established mathematical proofs and explicit interaction protocols.
 
 **CRITICAL:** Read this entire document before any interaction. Failure to follow onboarding protocol will result in boundary violations (exit code 2).
 
@@ -301,7 +301,7 @@ All your outputs must be traceable with:
 ## 🆘 TROUBLESHOOTING
 
 ### **Problem: "I keep defaulting to evaluation mode"**
-**Solution:** Start every response with [NSFW_REDACTED] phase declaration. Use template:
+**Solution:** Start every response with explicit phase declaration. Use template:
 ```
 PHASE: Compilation
 PROOFS: Established

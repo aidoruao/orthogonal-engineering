@@ -263,7 +263,7 @@ python scripts/analyze_violations.py --period daily
    - Ensure STATE.md is in root directory
    - Check file permissions and encoding
    - Verify AI reads file before interaction
-   - Use [NSFW_REDACTED] directive: "Read STATE.md first"
+   - Use explicit directive: "Read STATE.md first"
 
 2. **Phase Confusion**
    - Clear declaration: "You are in COMPILATION MODE"
@@ -274,7 +274,7 @@ python scripts/analyze_violations.py --period daily
 3. **[DIAGNOSIS_REDACTED] Trigger**
    - Immediate apology for phase violation
    - Reset with state reading
-   - [NSFW_REDACTED] permission to proceed
+   - explicit permission to proceed
    - Log incident for prevention
 
 4. **Proof Challenge**

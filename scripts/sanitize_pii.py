@@ -105,10 +105,14 @@ PERSONAL_NAME_TERMS: list[tuple[str, str]] = [
     (r"\bAllain\b", "[NAME_REDACTED]"),
     (r"\bPomeroy\b", "[NAME_REDACTED]"),
     (r"\bCarlisle\b", "[NAME_REDACTED]"),
+    (r"\bcarslisle\b", "[NAME_REDACTED]"),  # common misspelling seen in data
     (r"\bYoungblood\b", "[NAME_REDACTED]"),
     (r"\bCowart\b", "[NAME_REDACTED]"),
     (r"\bCozad\b", "[NAME_REDACTED]"),
     (r"\bEmery\b", "[NAME_REDACTED]"),
+    (r"\bGraham\b", "[NAME_REDACTED]"),
+    (r"\bBrown\b", "[NAME_REDACTED]"),
+    (r"\bFarranda\b", "[NAME_REDACTED]"),
     (r"\bHess\b", "[NAME_REDACTED]"),
     (r"\bZam\b", "[NAME_REDACTED]"),
 ]
@@ -127,11 +131,6 @@ NSFW_TERMS: list[tuple[str, str]] = [
     (r"\bnude\b", "[NSFW_REDACTED]"),
     (r"\bnudity\b", "[NSFW_REDACTED]"),
     (r"\bnaked\b", "[NSFW_REDACTED]"),
-    # \bexplicit\b — exclude engineering uses
-    (
-        r"\bexplicit\b(?!\s*(?:content\s+flag|parameter|argument|instruction|keyword|type))",
-        "[NSFW_REDACTED]",
-    ),
 ]
 
 ALL_CATEGORIES: list[tuple[str, list[tuple[str, str]]]] = [
