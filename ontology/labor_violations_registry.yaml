@@ -1,0 +1,108 @@
+# =============================================================================
+# LABOR VIOLATIONS REGISTRY
+# =============================================================================
+# Schema ID: labor-violations-registry/1.0
+# Methodology: Popperian — every pattern has a falsifies_if condition
+# Purpose: Permanent public record of documented institutional labor violation
+#          patterns. Institutions named when they are public entities of record.
+# =============================================================================
+
+metadata:
+  schema: "labor-violations-registry/1.0"
+  created: "2026-03-28"
+  methodology: "Popperian — every pattern has a falsifies_if condition"
+  purpose: >
+    Permanent public record of documented institutional labor violation patterns.
+    Institutions are named when they are public entities of record.
+    This registry is append-only. Entries, once documented, are not removed.
+    Individual names are redacted. Public institutions, public law, and public
+    court records are named directly.
+  privacy_boundary:
+    REDACT:
+      - individual names (coworkers, supervisors)
+      - medical information
+      - profanity
+      - personal employment specifics (specific hours, wage calculations, room counts)
+    PUBLIC:
+      - institution names (government entities and public school districts)
+      - applicable public law (FLSA, Florida Constitution)
+      - court cases and administrative proceedings (public record)
+
+# =============================================================================
+# REGISTRY
+# =============================================================================
+
+registry:
+
+  - institution: "Bay District Schools"
+    type: "public_school_district"
+    location: "Bay County, Florida"
+    registry_id: "REG-LAB-001"
+    documented_patterns:
+
+      - pattern_ref: "wage_theft_through_frontloading"
+        violation_type_id: "wage_theft_through_frontloading"
+        evidence_summary: >
+          Documented history of labor practice disputes: 1980 Bay County School
+          Board v. PERC (unfair labor practice), 2023 RUSHINS v. School Board of
+          Bay County (5:23-CV-00260). Workload-to-schedule ratio analysis
+          identifies structural frontloading in custodial part-time assignments:
+          assigned duties consistently exceeded the scheduled part-time hours
+          across multiple school years.
+        invariant_ref: "INV-LAB-002"
+        falsification_test_ref: "F_LABOR_002"
+        falsifies_if: "Workload is achievable within scheduled hours by independent time-motion analysis."
+
+      - pattern_ref: "verbal_policy_deflection"
+        violation_type_id: "verbal_policy_deflection"
+        evidence_summary: >
+          Supervisors verbally authorized work outside compensated hours
+          without written documentation or compensation adjustment. Verbal
+          authorization created off-the-clock work obligation without
+          institutional accountability. No written policy change followed
+          any verbal authorization in the documented period.
+          Cross-reference: 1980 PERC unfair labor practice finding;
+          2023 RUSHINS v. School Board of Bay County (5:23-CV-00260).
+        invariant_ref: "INV-LAB-003"
+        falsification_test_ref: "F_LABOR_003"
+        falsifies_if: "All verbal authorizations for extra work are followed by documented compensation adjustments."
+
+      - pattern_ref: "compliance_extraction"
+        violation_type_id: "compliance_extraction"
+        evidence_summary: >
+          Structural extraction of uncompensated labor through institutional
+          reliance on employee reliability rather than written policy enforcement.
+          Cross-reference: 1980 Bay County School Board v. PERC (unfair labor
+          practice), 2023 RUSHINS v. School Board of Bay County (5:23-CV-00260).
+          Pattern consistent with compliance_extraction structural model:
+          institution benefits from employee reliability without compensating it.
+        invariant_ref: "INV-LAB-005"
+        falsification_test_ref: "F_LABOR_005"
+        falsifies_if: "No statistically significant correlation exists between compliance indicators and unpaid hours."
+
+      - pattern_ref: "unpaid_overtime_allocation"
+        violation_type_id: "unpaid_overtime_allocation"
+        evidence_summary: >
+          Minimum wage compliance (Florida Constitution Amendment 2) used as
+          sole compensation adjustment mechanism while assigned workload
+          structurally required hours exceeding the 40-hour FLSA overtime
+          threshold. No 1.5x FLSA overtime rate applied to hours effectively
+          worked beyond scheduled part-time limit.
+          Authority: FLSA 29 U.S.C. § 207; Florida Constitution Amendment 2.
+        invariant_ref: "INV-LAB-001"
+        falsification_test_ref: "F_LABOR_001"
+        falsifies_if: "Compensation records show 1.5x overtime rate applied to all hours effectively exceeding 40 per week."
+
+    cross_references:
+      - ref: "2025 Bay High School principal suspension (HR investigation — public record)"
+        relevance: "Demonstrates ongoing institutional pattern of labor rights non-enforcement at the district level."
+      - ref: "2023 RUSHINS v. School Board of Bay County (5:23-CV-00260 — federal court)"
+        relevance: "Independent federal civil rights litigation against the same institution in the same period."
+      - ref: "1980 Bay County School Board v. PERC (unfair labor practice — public administrative record)"
+        relevance: "Prior finding of unfair labor practice by same institution. Pattern spans 4+ decades."
+
+    statute_of_limitations:
+      flsa_standard: "2 years (29 U.S.C. § 255(a))"
+      flsa_willful: "3 years (29 U.S.C. § 255(b))"
+      retention_required_days: 1095
+      applicable_law: "FLSA 29 U.S.C. § 255; Florida Constitution Amendment 2"

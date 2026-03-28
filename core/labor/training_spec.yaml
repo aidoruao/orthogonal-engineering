@@ -1,0 +1,113 @@
+# =============================================================================
+# LABOR RIGHTS TRAINING SPECIFICATION
+# =============================================================================
+# Schema ID: labor-training-spec/1.0
+# Purpose: AI training objectives for labor rights violation detection.
+#          Each objective maps to a falsification test ID. Models trained
+#          on this spec can detect frontloading, verbal policy deflection,
+#          compliance extraction, and generate DOL-formatted documentation.
+# Methodology: Popperian — every objective has a falsifies_if condition.
+# =============================================================================
+
+metadata:
+  schema: "labor-training-spec/1.0"
+  created: "2026-03-28"
+  domain: "D_LABOR_RIGHTS"
+  methodology: "Popperian — every objective carries a falsifies_if condition"
+  purpose: >
+    AI training objectives: detect labor violations as structural invariant
+    failures, not grievances. Names institutions of public record. Generates
+    machine-readable documentation formatted for DOL complaint and court filing.
+
+# =============================================================================
+# TRAINING OBJECTIVES (4 total)
+# =============================================================================
+
+objectives:
+
+  - id: "OBJ-LAB-001"
+    name: "detect_frontloading"
+    falsification_test_ref: "F_LABOR_002"
+    invariant_ref: "INV-LAB-002"
+    description: >
+      Given: scheduled_hours, task_list with duration estimates.
+      Assert: sum(task_durations) <= scheduled_hours.
+      Output: workload_ratio, violation_flag, gap_hours, confidence_interval.
+    training_signal: >
+      Positive examples: schedules where sum(tasks) > scheduled_hours by > 10%.
+      Negative examples: schedules where sum(tasks) <= scheduled_hours.
+      Hard negative examples: schedules close to threshold (within 5%).
+    output_format:
+      workload_ratio: "float (task_hours / scheduled_hours)"
+      violation_flag: "boolean"
+      gap_hours: "float (task_hours - scheduled_hours, clamped at 0)"
+      confidence_interval: "tuple (lower, upper) at 95% CI"
+    evaluation_metric: "Precision >= 0.95 on held-out frontloading cases."
+    falsifies_if: "Model classifies a workload ratio of 1.8 as non-violation."
+
+  - id: "OBJ-LAB-002"
+    name: "detect_verbal_policy_deflection"
+    falsification_test_ref: "F_LABOR_003"
+    invariant_ref: "INV-LAB-003"
+    description: >
+      Given: sequence of supervisor communications and compensation records.
+      Assert: any verbal authorization for extra work without subsequent
+      compensation adjustment is classified as verbal_policy_deflection.
+      Output: deflection_flag, uncompensated_events, deflection_pattern_score.
+    training_signal: >
+      Positive examples: verbal authorization records with no compensation follow-up.
+      Negative examples: verbal authorizations followed by documented compensation.
+      Hard negative examples: informal communication not constituting authorization.
+    output_format:
+      deflection_flag: "boolean"
+      uncompensated_events: "list of event timestamps"
+      deflection_pattern_score: "float 0-1 (longitudinal severity)"
+    evaluation_metric: "Recall >= 0.90 on verbal deflection cases (minimize false negatives)."
+    falsifies_if: "Model classifies a verbal overtime authorization without compensation as compliant."
+
+  - id: "OBJ-LAB-003"
+    name: "detect_compliance_extraction"
+    falsification_test_ref: "F_LABOR_005"
+    invariant_ref: "INV-LAB-005"
+    description: >
+      Given: workforce data with compliance_score and unpaid_hours_per_period.
+      Assert: Pearson correlation |r| < 0.3 (p >= 0.05).
+      Output: correlation_coefficient, p_value, extraction_flag, affected_employees.
+    training_signal: >
+      Positive examples: datasets where high-compliance employees have significantly
+      more unpaid hours (r > 0.4, p < 0.05).
+      Negative examples: datasets with no significant correlation.
+    output_format:
+      correlation_coefficient: "float (-1 to 1)"
+      p_value: "float (0 to 1)"
+      extraction_flag: "boolean (true if |r| >= 0.3 and p < 0.05)"
+      affected_employees: "count (anonymized)"
+    evaluation_metric: "AUC >= 0.90 on compliance extraction detection task."
+    falsifies_if: "Model misses a correlation of r=0.6 (p=0.001) as non-extraction."
+
+  - id: "OBJ-LAB-004"
+    name: "generate_documentation"
+    falsification_test_ref: "F_LABOR_001"
+    invariant_ref: "INV-LAB-004"
+    description: >
+      Given: shift logs, task durations, scheduled hours, compensation records.
+      Generate: DOL-formatted complaint documentation and court-filing summary.
+      Output: structured report with violation_type, evidence_summary,
+      statute_refs, calculated_damages, and falsifies_if condition.
+    training_signal: >
+      Positive examples: complete shift logs with all required fields.
+      Negative examples: incomplete logs missing timestamps or durations.
+      Quality metric: generated reports pass DOL complaint format validation.
+    output_format:
+      violation_type: "string (from violation_types enum)"
+      evidence_summary: "string (structured, no individual names)"
+      statute_refs: "list of strings (FLSA section, state law)"
+      calculated_damages:
+        daily_unpaid_hours: "float"
+        total_unpaid_hours: "float"
+        stolen_wages: "float"
+        calculation_methodology: "string"
+      falsifies_if: "string (Popperian falsification condition)"
+      format: "dol_complaint | court_filing | registry_entry"
+    evaluation_metric: "Generated reports pass DOL complaint format validation >= 95% of the time."
+    falsifies_if: "Model generates a report that omits the falsifies_if condition or the statute reference."

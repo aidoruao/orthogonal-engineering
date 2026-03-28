@@ -1,0 +1,109 @@
+{
+  "metadata": {
+    "schema": "deepseek-case-studies/1.0",
+    "description": "Case studies in labor rights enforcement: structural patterns in wage theft, frontloading, off-the-clock work, and compliance extraction mapped to testable invariants. Public institutions named as entities of record.",
+    "created": "2026-03-28",
+    "domain": "D_LABOR_RIGHTS",
+    "privacy_boundary": {
+      "REDACT": [
+        "individual names",
+        "coworker names",
+        "supervisor names",
+        "medical information",
+        "profanity",
+        "personal employment specifics"
+      ],
+      "PUBLIC": [
+        "institution names (government entities)",
+        "applicable public law (FLSA, Florida Constitution)",
+        "court cases and administrative proceedings (public record)"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "id": "CS-LAB-001",
+      "title": "Bay District Schools: Part-Time Frontloading Pattern",
+      "domain": "D_LABOR_RIGHTS",
+      "institution": "Bay District Schools",
+      "institution_type": "public_school_district",
+      "location": "Bay County, Florida",
+      "description": "Bay District Schools demonstrates a documented history of labor practice disputes (1980 PERC unfair labor practice finding, 2023 RUSHINS v. School Board of Bay County). Structural frontloading pattern identified through workload-to-schedule ratio analysis: assigned custodial duties consistently exceeded the scheduled part-time hours across multiple school years.",
+      "structural_mapping": {
+        "pattern": "wage_theft_through_frontloading",
+        "invariant_refs": [
+          "INV-LAB-002",
+          "INV-LAB-004"
+        ],
+        "falsifies_if": "Workload is demonstrably achievable within scheduled hours by independent time-motion analysis."
+      },
+      "status": "validated",
+      "source": "Public record: Bay District Schools (public entity, Bay County, Florida); 1980 PERC ruling; 2023 RUSHINS v. School Board of Bay County"
+    },
+    {
+      "id": "CS-LAB-002",
+      "title": "Bay District Schools: Verbal Off-the-Clock Authorization",
+      "domain": "D_LABOR_RIGHTS",
+      "institution": "Bay District Schools",
+      "institution_type": "public_school_district",
+      "location": "Bay County, Florida",
+      "description": "Bay District Schools supervisors verbally authorized work outside compensated hours without written documentation, written policy change, or compensation adjustment. Verbal deflection shields the institution from written record while extracting uncompensated labor. Compliance extraction structural pattern: the institution relied on employee reliability rather than written policy enforcement.",
+      "structural_mapping": {
+        "pattern": "verbal_policy_deflection",
+        "cross_pattern": "compliance_extraction",
+        "invariant_refs": [
+          "INV-LAB-003",
+          "INV-LAB-005"
+        ],
+        "falsifies_if": "All verbal authorizations for extra work are followed by documented compensation adjustments within the same pay period."
+      },
+      "status": "validated",
+      "source": "Documented employment records (public entity \u2014 Bay District Schools, Bay County, Florida)"
+    },
+    {
+      "id": "CS-LAB-003",
+      "title": "Bay District Schools: Minimum Wage as Sole Adjustment Mechanism",
+      "domain": "D_LABOR_RIGHTS",
+      "institution": "Bay District Schools",
+      "institution_type": "public_school_district",
+      "location": "Bay County, Florida",
+      "description": "Bay District Schools adjusted custodial compensation only to the Florida minimum wage floor (Florida Constitution Amendment 2) without corresponding adjustment to assigned workload. Minimum wage floor compliance was used as the sole compensation mechanism while assigned workload structurally required hours that exceeded the part-time schedule.",
+      "structural_mapping": {
+        "pattern": "unpaid_overtime_allocation",
+        "invariant_refs": [
+          "INV-LAB-001"
+        ],
+        "authority_refs": [
+          "FLSA 29 U.S.C. \u00a7 207",
+          "Florida Constitution Amendment 2"
+        ],
+        "falsifies_if": "Compensation records show 1.5x rate applied to all hours over 40/week in addition to minimum wage floor compliance."
+      },
+      "status": "validated",
+      "source": "Documented employment records and Florida Constitution Amendment 2 (public law)"
+    },
+    {
+      "id": "CS-LAB-004",
+      "title": "Bay District Schools: Institutional Non-Enforcement Pattern",
+      "domain": "D_LABOR_RIGHTS",
+      "institution": "Bay District Schools",
+      "institution_type": "public_school_district",
+      "location": "Bay County, Florida",
+      "description": "Bay District Schools demonstrates a multi-decade labor non-enforcement pattern across three independent public records: (1) 1980 Bay County School Board v. PERC \u2014 unfair labor practice finding; (2) 2023 RUSHINS v. School Board of Bay County (5:23-CV-00260) \u2014 federal civil rights litigation; (3) 2025 Bay High School principal HR investigation. The institution treats each violation as an isolated incident rather than a structural pattern.",
+      "structural_mapping": {
+        "pattern": "compliance_extraction",
+        "invariant_refs": [
+          "INV-LAB-006"
+        ],
+        "cross_references": [
+          "2025 Bay High School principal suspension (HR investigation \u2014 public record)",
+          "2023 RUSHINS v. School Board of Bay County (5:23-CV-00260 \u2014 federal court public record)",
+          "1980 Bay County School Board v. PERC (unfair labor practice \u2014 public administrative record)"
+        ],
+        "falsifies_if": "Institutional records show consistent FLSA compliance enforcement and zero recurrence of labor violation patterns across the documented period."
+      },
+      "status": "validated",
+      "source": "Public record: RUSHINS v. School Board of Bay County (5:23-CV-00260); Bay County School Board v. PERC (1980); Bay High School HR investigation (2025)"
+    }
+  ]
+}
