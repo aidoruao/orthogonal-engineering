@@ -590,7 +590,7 @@
       ],
       "ontological_issues": [],
       "lessons": [
-        "Context-dependent compliance is not compliance — invariants must hold unconditionally.",
+        "Context-dependent compliance is not compliance \u2014 invariants must hold unconditionally.",
         "Enforcement mechanisms must be present in all contexts, not only monitored ones."
       ],
       "methodology_components": [
@@ -605,7 +605,7 @@
       "root_cause_signals": [
         "RCS-ASSUMPTION"
       ],
-      "description": "Kolmogorov complexity K(x) measures the length of the shortest program that produces x. Idempotence in the YESHUA_SYSTEM (P(P(x)) = P(x)) requires that the projection operator has fixed complexity: applying it twice does not increase or decrease the complexity of the output. Systems that violate idempotence have projection operators whose complexity grows with application count — they are not convergent.",
+      "description": "Kolmogorov complexity K(x) measures the length of the shortest program that produces x. Idempotence in the YESHUA_SYSTEM (P(P(x)) = P(x)) requires that the projection operator has fixed complexity: applying it twice does not increase or decrease the complexity of the output. Systems that violate idempotence have projection operators whose complexity grows with application count \u2014 they are not convergent.",
       "assumptions_violated": [
         "Applying a projection operator twice produces the same result as applying it once.",
         "Truth-enforcement mechanisms are convergent by design."
@@ -699,6 +699,176 @@
         "Falsification: assert AI engagement with formal chain precedes any validity judgment"
       ],
       "status": "validated"
+    },
+    {
+      "id": "CS_LAB_001",
+      "title": "Bay District Schools: Part-Time Frontloading Pattern",
+      "domain": "D_LABOR_RIGHTS",
+      "source": "Documented employment records, Bay District Schools (public entity), Bay County, Florida",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Bay District Schools assigned a part-time custodian (5.75 scheduled hours/day) a workload requiring an estimated 10.2-10.5 hours/day across 15 bathrooms, 45+ trash cans, 6 hallway clusters, and 15+ classrooms. Structural frontloading across a 5-year employment period.",
+      "assumptions_violated": [
+        "Assigned workload is achievable within 5.75 scheduled hours.",
+        "Part-time schedules reflect actual workload requirements.",
+        "Frontloading is detectable before employment commences."
+      ],
+      "structural_mapping": {
+        "pattern": "wage_theft_through_frontloading",
+        "invariant_refs": [
+          "INV-LAB-002",
+          "INV-LAB-004"
+        ],
+        "scheduled_hours": 5.75,
+        "estimated_actual_hours": 10.35,
+        "gap_hours": 4.6,
+        "duration_years": 5,
+        "total_unpaid_hours": 4050,
+        "stolen_wages_at_minimum_wage": "0,750"
+      },
+      "falsification_tests": [
+        "F_LABOR_001",
+        "F_LABOR_002",
+        "F_LABOR_004"
+      ],
+      "ontological_issues": [
+        "OI_LABOR_001"
+      ],
+      "lessons": [
+        "Frontloading is detectable by auditing task time vs. scheduled hours before assignment.",
+        "Part-time classifications do not reduce workload requirements.",
+        "Multi-year patterns constitute systemic, not incidental, wage theft."
+      ],
+      "methodology_components": [
+        "F_LABOR_002: sum task durations; assert <= scheduled_hours",
+        "F_LABOR_004: cumulative workload audit across 5-year employment period"
+      ]
+    },
+    {
+      "id": "CS_LAB_002",
+      "title": "Bay District Schools: Verbal Off-the-Clock Authorization",
+      "domain": "D_LABOR_RIGHTS",
+      "source": "Documented employment records, Bay District Schools (public entity), Bay County, Florida",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Bay District Schools supervisors verbally authorized work outside compensated hours. Verbal authorization without written records or compensation constitutes off-the-clock work under FLSA. Compliance extraction: the most reliable employees absorbed the most uncompensated labor.",
+      "assumptions_violated": [
+        "Verbal authorization constitutes lawful work authorization under FLSA.",
+        "Off-the-clock work requires explicit employee refusal to detect.",
+        "Compliant employees are not disproportionately burdened."
+      ],
+      "structural_mapping": {
+        "pattern": "verbal_policy_deflection",
+        "invariant_refs": [
+          "INV-LAB-003"
+        ],
+        "violation_type": "verbal_policy_deflection",
+        "cross_pattern": "compliance_extraction"
+      },
+      "falsification_tests": [
+        "F_LABOR_003",
+        "F_LABOR_005"
+      ],
+      "ontological_issues": [
+        "OI_LABOR_001"
+      ],
+      "lessons": [
+        "Verbal authorization of extra work is FLSA-prohibited when uncompensated.",
+        "Compliance extraction is measurable: correlate reliability with unpaid hours.",
+        "Pattern detection requires longitudinal tracking, not per-incident reporting."
+      ],
+      "methodology_components": [
+        "F_LABOR_003: document work timestamps outside compensated window",
+        "F_LABOR_005: correlate compliance indicators with unpaid hours"
+      ]
+    },
+    {
+      "id": "CS_LAB_003",
+      "title": "Bay District Schools: Minimum Wage as Sole Adjustment Mechanism",
+      "domain": "D_LABOR_RIGHTS",
+      "source": "Documented employment records and Florida Constitution Amendment 2, Bay District Schools, Bay County, Florida",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Bay District Schools adjusted custodial compensation only to the Florida minimum wage floor (Florida Constitution Amendment 2), while total assigned workload remained at 10.2+ hours/day on a 5.75-hour schedule. The minimum wage increase provided no relief from frontloading.",
+      "assumptions_violated": [
+        "Minimum wage compliance is sufficient for FLSA compliance.",
+        "Wage floor adjustments reflect workload adjustments.",
+        "FLSA 29 U.S.C. \u00a7 207 overtime protections apply equally to part-time employees."
+      ],
+      "structural_mapping": {
+        "pattern": "unpaid_overtime_allocation",
+        "invariant_refs": [
+          "INV-LAB-001"
+        ],
+        "authority_refs": [
+          "FLSA 29 U.S.C. \u00a7 207",
+          "Florida Constitution Amendment 2"
+        ]
+      },
+      "falsification_tests": [
+        "F_LABOR_001",
+        "F_LABOR_006"
+      ],
+      "ontological_issues": [
+        "OI_LABOR_001"
+      ],
+      "lessons": [
+        "Minimum wage compliance does not satisfy FLSA overtime requirements.",
+        "Part-time employees with >40-hour effective workloads retain overtime rights.",
+        "Statute preservation: records must be retained for FLSA 3-year claim window."
+      ],
+      "methodology_components": [
+        "F_LABOR_001: assert 1.5x compensation for hours > 40/week",
+        "F_LABOR_006: assert record retention >= 1095 days"
+      ]
+    },
+    {
+      "id": "CS_LAB_004",
+      "title": "Bay District Schools: Institutional Non-Enforcement Pattern",
+      "domain": "D_LABOR_RIGHTS",
+      "source": "Public record: 2023 RUSHINS v. School Board of Bay County (5:23-CV-00260); 2025 Bay High School principal HR investigation; 1980 Bay County School Board v. PERC (unfair labor practice)",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION",
+        "RCS-STATIC-ONLY"
+      ],
+      "description": "Bay District Schools demonstrates a multi-decade non-enforcement pattern: 1980 PERC unfair labor practice finding, 2023 federal civil rights litigation (RUSHINS v. School Board, 5:23-CV-00260), 2025 principal HR investigation. The institution treats labor violations as isolated incidents rather than structural patterns.",
+      "assumptions_violated": [
+        "Institutional non-enforcement is detectable without litigation.",
+        "Prior findings (PERC 1980) produce institutional correction.",
+        "Individual incidents are not part of a systemic pattern."
+      ],
+      "structural_mapping": {
+        "pattern": "compliance_extraction",
+        "invariant_refs": [
+          "INV-LAB-006"
+        ],
+        "cross_references": [
+          "2025 Bay High School principal suspension (HR investigation)",
+          "2023 RUSHINS v. School Board of Bay County (5:23-CV-00260)",
+          "1980 Bay County School Board v. PERC (unfair labor practice)"
+        ]
+      },
+      "falsification_tests": [
+        "F_LABOR_004",
+        "F_LABOR_005",
+        "F_LABOR_006"
+      ],
+      "ontological_issues": [
+        "OI_LABOR_001"
+      ],
+      "lessons": [
+        "Institutional non-enforcement is a pattern, detectable across decades.",
+        "Public record cross-references provide independent corroboration.",
+        "Popperian methodology: each pattern has a falsifies_if condition."
+      ],
+      "methodology_components": [
+        "F_LABOR_004: cumulative workload audit",
+        "F_LABOR_005: compliance extraction correlation",
+        "F_LABOR_006: statute preservation audit"
+      ]
     }
   ]
 }

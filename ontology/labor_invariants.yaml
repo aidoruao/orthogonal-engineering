@@ -1,0 +1,152 @@
+# =============================================================================
+# LABOR RIGHTS INVARIANTS
+# =============================================================================
+# Schema ID: LABOR-RIGHTS-INVARIANTS-1.0
+# Domain: D_LABOR_RIGHTS
+# Methodology: Popperian — every invariant has a falsifies_if condition
+# Authority: FLSA 29 U.S.C. § 207; Florida Constitution Amendment 2
+# =============================================================================
+
+metadata:
+  schema: "labor-rights-invariants/1.0"
+  created: "2026-03-28"
+  domain: "D_LABOR_RIGHTS"
+  total_invariants: 6
+  methodology: "Popperian — every invariant carries a falsifies_if condition"
+  authority_ref: "FLSA 29 U.S.C. § 207; Florida Constitution Amendment 2"
+
+# =============================================================================
+# INVARIANTS (6 total)
+# =============================================================================
+
+invariants:
+
+  - id: "INV-LAB-001"
+    name: "OVERTIME_ENTITLEMENT"
+    domain: "D_LABOR_RIGHTS"
+    status: "active"
+    claim: >
+      Any hours worked over 40 in a workweek must be compensated at not less
+      than 1.5 times the employee's regular rate of pay (FLSA 29 U.S.C. § 207).
+    description: >
+      Structural pattern: overtime entitlement is a federal floor, not a
+      negotiable condition. No verbal policy, institutional practice, or
+      classification scheme (part-time, custodial, hourly) removes FLSA
+      overtime protection. The invariant is binary: hours > 40 → 1.5x rate.
+      Any documentation of hours > 40 without 1.5x compensation falsifies
+      the institution's compliance claim.
+    enforcement: >
+      For each pay period, assert: if total_hours_worked > 40, then
+      overtime_hours = total_hours_worked - 40 and
+      overtime_compensation >= overtime_hours * (regular_rate * 1.5).
+      Assert this holds for every employee in every pay period.
+    falsifies_if: "Hours over 40 in any workweek are not compensated at 1.5x the regular rate."
+
+  - id: "INV-LAB-002"
+    name: "WORKLOAD_SCHEDULABILITY"
+    domain: "D_LABOR_RIGHTS"
+    status: "active"
+    claim: >
+      Assigned workload must be achievable within the employee's scheduled
+      and compensated hours. An assignment requiring more time than the
+      schedule provides is a structural violation regardless of whether
+      overtime is explicitly demanded.
+    description: >
+      Frontloading is the structural assignment of workload that exceeds
+      schedule capacity. The institution need not explicitly demand overtime
+      — the structural compulsion is produced by the assignment itself.
+      Any workload audit showing task_time > scheduled_hours falsifies the
+      institution's claim of no overtime requirement.
+    enforcement: >
+      For each shift, assert: sum(task_durations) <= scheduled_hours.
+      Use independent time-motion analysis for task duration estimates.
+      Assert this holds across the full employment period, not only
+      individual shifts.
+    falsifies_if: "Task time audit shows assigned work consistently exceeds scheduled hours."
+
+  - id: "INV-LAB-003"
+    name: "COMPENSATION_COMPLETENESS"
+    domain: "D_LABOR_RIGHTS"
+    status: "active"
+    claim: >
+      No employee may perform compensable work outside their scheduled and
+      compensated hours. Verbal authorization of off-the-clock work does not
+      substitute for compensation. Any work performed is compensable work.
+    description: >
+      Off-the-clock work occurs when an employee performs compensable work
+      before clock-in or after clock-out, or during unpaid periods, whether
+      verbally authorized or structurally compelled. The compensation
+      obligation follows the work, not the clock. Verbal policy deflection
+      does not transfer the FLSA liability to the employee.
+    enforcement: >
+      Compare work-performed timestamps against compensated-hours timestamps
+      for each employee per pay period. Assert zero uncompensated work
+      periods. Log any verbal authorizations for work outside scheduled
+      hours as potential violations.
+    falsifies_if: "Work is performed outside compensated hours, whether verbally authorized or structurally compelled."
+
+  - id: "INV-LAB-004"
+    name: "WORKLOAD_ACCOUNTABILITY"
+    domain: "D_LABOR_RIGHTS"
+    status: "active"
+    claim: >
+      Workload assignments must be auditable against scheduled hours across
+      the full employment period. Systemic overload is not an accident —
+      it is a pattern, and patterns are detectable before litigation.
+    description: >
+      Individual shift overload may be dismissed as incidental. Multi-period
+      overload constitutes a systemic pattern. WORKLOAD_ACCOUNTABILITY requires
+      longitudinal tracking: cumulative assigned_hours vs. cumulative
+      scheduled_hours across the full employment relationship. A ratio
+      consistently above 1.0 confirms structural frontloading.
+    enforcement: >
+      Track cumulative workload_ratio = cumulative_task_hours /
+      cumulative_scheduled_hours across all pay periods. Assert ratio <= 1.05
+      (5% tolerance for measurement uncertainty). Assert this audit is
+      performed at minimum once per pay period and documented.
+    falsifies_if: "Cumulative workload ratio exceeds 1.05 across three or more consecutive pay periods."
+
+  - id: "INV-LAB-005"
+    name: "COMPLIANCE_NEUTRALITY"
+    domain: "D_LABOR_RIGHTS"
+    status: "active"
+    claim: >
+      Employee compliance traits (reliability, conscientiousness, non-grievance
+      history) must not correlate with unpaid labor extraction. Compliance
+      must not be the mechanism by which unpaid work is obtained.
+    description: >
+      Compliance extraction occurs when the most reliable, conscientious, and
+      non-confrontational employees absorb the most uncompensated labor.
+      The institution exploits trust as a labor extraction mechanism. The
+      invariant requires that unpaid hours be uncorrelated with compliance
+      indicators across the workforce. Statistical significance (p < 0.05)
+      is the detection threshold.
+    enforcement: >
+      Compute Pearson correlation r between compliance_score and
+      unpaid_hours_per_period across all employees. Assert |r| < 0.3
+      (moderate correlation threshold) with p >= 0.05. Assert this
+      analysis is performed quarterly and documented.
+    falsifies_if: "Statistically significant positive correlation exists between compliance indicators and unpaid hours."
+
+  - id: "INV-LAB-006"
+    name: "STATUTE_PRESERVATION"
+    domain: "D_LABOR_RIGHTS"
+    status: "active"
+    claim: >
+      Employment and compensation records must be retained for the full FLSA
+      statute of limitations period (2 years standard, 3 years for willful
+      violations — 29 U.S.C. § 255). Records must remain accessible and
+      unaltered for the duration of the retention period.
+    description: >
+      Statute preservation is the institutional obligation to maintain the
+      evidentiary record that enables FLSA enforcement. Records destroyed,
+      altered, or made inaccessible before the statute of limitations expires
+      constitute spoliation and may indicate willful violation. The invariant
+      requires minimum 3-year retention for all compensation, schedule, and
+      workload records — the willful-violation standard.
+    enforcement: >
+      Audit record retention policies against FLSA 29 U.S.C. § 255 (3-year
+      willful standard). Assert all compensation records have
+      retention_days >= 1095. Assert records are unaltered (hash-verified)
+      and accessible throughout the retention period.
+    falsifies_if: "Compensation or schedule records are destroyed, altered, or made inaccessible before 1095 days have elapsed."

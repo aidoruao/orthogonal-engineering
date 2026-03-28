@@ -740,6 +740,25 @@
       ],
       "example_falsification_test": "F_FRACTALS_001",
       "example_ontological_issue": "OI_FRACTALS_001"
+    },
+    {
+      "id": "D_LABOR_RIGHTS",
+      "name": "Labor Rights Enforcement",
+      "categories": [
+        "wage-theft",
+        "frontloading",
+        "off-the-clock",
+        "compliance-extraction",
+        "documentation-as-defense"
+      ],
+      "invariants": [
+        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
+        "Assigned workload must be achievable within scheduled hours.",
+        "No employee may be allowed to work without compensation.",
+        "Compliance traits must not correlate with unpaid labor extraction."
+      ],
+      "example_falsification_test": "F_LABOR_001",
+      "example_ontological_issue": "OI_LABOR_001"
     }
   ],
   "issues": [
@@ -1776,6 +1795,35 @@
         "F_XSS_001"
       ],
       "resolution_notes": "Auto-generated coverage reference for Total CI Completion."
+    },
+    {
+      "id": "OI_LABOR_001",
+      "domain": "D_LABOR_RIGHTS",
+      "title": "Frontloading as Structural Wage Theft",
+      "category": "structural-violation",
+      "severity": "critical",
+      "status": "Open",
+      "description": "Assigning workload that exceeds scheduled hours creates a structural compulsion to work off-the-clock. The institution claims no overtime was required while making completion impossible within scheduled hours.",
+      "assumptions_violated": [
+        "Assigned workload is achievable within scheduled hours.",
+        "No employee works without compensation.",
+        "Institutions enforce FLSA 29 U.S.C. \u00a7 207 overtime requirements."
+      ],
+      "related_cases": [
+        "CS_LAB_001",
+        "CS_LAB_002",
+        "CS_LAB_003",
+        "CS_LAB_004"
+      ],
+      "falsification_tests": [
+        "F_LABOR_001",
+        "F_LABOR_002",
+        "F_LABOR_003",
+        "F_LABOR_004",
+        "F_LABOR_005",
+        "F_LABOR_006"
+      ],
+      "resolution_notes": "Enforce FLSA 29 U.S.C. \u00a7 207. Audit workload against scheduled hours. Document all off-the-clock work."
     }
   ],
   "summary": {

@@ -1,0 +1,93 @@
+# =============================================================================
+# LABOR RIGHTS ENFORCEMENT SPECIFICATION
+# =============================================================================
+# Schema ID: labor-enforcement/1.0
+# Authority: FLSA 29 U.S.C. § 207; Florida Constitution Amendment 2
+# Methodology: Popperian — every rule has a falsifies_if condition
+# Purpose: Structural enforcement of labor rights invariants. Detects
+#          frontloading, off-the-clock work, and statute preservation failures.
+# =============================================================================
+
+metadata:
+  schema: "labor-enforcement/1.0"
+  created: "2026-03-28"
+  authority_ref: "FLSA 29 U.S.C. § 207; Florida Constitution Amendment 2"
+  methodology: "Popperian — every rule carries a falsifies_if condition"
+
+purpose: >
+  Structural enforcement of labor rights invariants. Detects wage theft through
+  frontloading, off-the-clock work compulsion, and statute preservation failures.
+  Every rule maps to a falsification test and a labor invariant. Institutions
+  of public record are named directly. Individual names are redacted.
+
+# =============================================================================
+# RULES (3 total)
+# =============================================================================
+
+rules:
+
+  - id: "LAB-001"
+    name: "TIME_LOG"
+    description: >
+      Every compensable work event must be logged with timestamp, duration,
+      task description, and compensation status. Log entries are immutable
+      once created. Retroactive modification is a falsification event.
+    rule: >
+      For each shift or work event E: assert E.timestamp is not null,
+      E.duration > 0, E.task_description is not empty, and
+      E.compensation_status in {compensated, uncompensated, disputed}.
+      Assert E is written to the immutable log within 24 hours of occurrence.
+      Assert no log entry is modified after initial write (hash-verified).
+    enforcement: >
+      WageTheftDocumentationEngine.log_shift() must be called for every
+      compensable work event. Assert SHA-256 hash of each log entry matches
+      the hash stored at write time. Assert cumulative log is append-only.
+    authority_ref: "FLSA 29 U.S.C. § 211(c) — recordkeeping requirements"
+    invariant_ref: "INV-LAB-004 (WORKLOAD_ACCOUNTABILITY)"
+    falsification_test_ref: "F_LABOR_004"
+    falsifies_if: "A compensable work event occurs without a corresponding log entry within 24 hours."
+
+  - id: "LAB-002"
+    name: "WORKLOAD_BUDGET"
+    description: >
+      Assigned workload must not exceed the employee's scheduled and compensated
+      hours. Workload budget enforcement requires prospective assignment review
+      (before assignment) and retrospective audit (after period completion).
+      Violation occurs when task_time > scheduled_hours for any pay period.
+    rule: >
+      For each pay period P: assert sum(task_durations[P]) <= scheduled_hours[P].
+      For cumulative periods: assert cumulative_task_hours / cumulative_scheduled_hours
+      <= 1.05 (5% measurement tolerance). Assert violations are reported within
+      one pay period of detection. Assert workload budgets are reviewed before
+      assignment, not only after violation.
+    enforcement: >
+      WageTheftDocumentationEngine.detect_frontloading() must be called at
+      the end of each pay period. Assert output includes workload_ratio and
+      violation_flag. Assert violation_flag triggers report generation.
+    authority_ref: "FLSA 29 U.S.C. § 207 — overtime compensation; INV-LAB-002"
+    invariant_ref: "INV-LAB-002 (WORKLOAD_SCHEDULABILITY)"
+    falsification_test_ref: "F_LABOR_002"
+    falsifies_if: "Workload budget is exceeded in three or more consecutive pay periods without triggering a formal violation report."
+
+  - id: "LAB-003"
+    name: "STATUTE_PRESERVATION"
+    description: >
+      All compensation, schedule, and workload records must be retained for
+      a minimum of 1095 days (3 years) from the date of the compensable event,
+      per the FLSA willful violation statute of limitations (29 U.S.C. § 255(b)).
+      Records must be hash-verified, unaltered, and accessible throughout
+      the retention period.
+    rule: >
+      For each record R: assert R.retention_days >= 1095. Assert
+      SHA-256(R.content) == R.stored_hash at each audit interval.
+      Assert R is accessible (readable) at any point within the retention
+      period. Assert no record is deleted, overwritten, or made inaccessible
+      before R.creation_date + 1095 days.
+    enforcement: >
+      Assert WageTheftDocumentationEngine generates reports with
+      retention_days >= 1095. Assert all report archives are hash-chain
+      verified. Assert archive access is audited at minimum annually.
+    authority_ref: "FLSA 29 U.S.C. § 255(b) — 3-year statute for willful violations"
+    invariant_ref: "INV-LAB-006 (STATUTE_PRESERVATION)"
+    falsification_test_ref: "F_LABOR_006"
+    falsifies_if: "Any compensation or workload record is inaccessible or altered before 1095 days have elapsed from the date of the compensable event."

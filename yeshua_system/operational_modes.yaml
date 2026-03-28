@@ -11,7 +11,7 @@ metadata:
   schema: "yeshua-operational-modes/1.0"
   created: "2026-03-28"
   authority_ref: "YESHUA_SYSTEM_SCHEMA.yaml"
-  total_modes: 2
+  total_modes: 3
   methodology: "Popperian — every mode carries a falsifies_if condition"
 
 # =============================================================================
@@ -69,3 +69,40 @@ modes:
       as a runtime enforcement mode. It is the correct response to social mirror
       failure or external validation withdrawal. The mode exits when both
       external stability returns AND internal invariants are confirmed holding.
+
+  - id: "MODE_DOCUMENTATION_AS_DEFENSE"
+    name: "Documentation as Defense"
+    description: >
+      Systematic, machine-readable documentation of institutional violations
+      functions as the primary legal and structural defense mechanism. Every
+      shift logged, every task timestamped, every pattern formalized as a
+      Popperian falsification test. The burden of proof shifts from the
+      individual to the documented record.
+    archetype_origin: >
+      Abstracted from labor rights enforcement analysis — structural pattern
+      where systematic documentation removes the individual burden of "proving it."
+      Engineering construct; no specific individual committed.
+    invariant_ref: "INV-LAB-004 (WORKLOAD_ACCOUNTABILITY)"
+    state_machine:
+      entry_condition: >
+        Institutional violation detected (workload > scheduled hours, off-the-clock
+        work authorized, or compliance extraction pattern confirmed).
+      steady_state: >
+        Continuous automated logging: shifts, tasks, timestamps, workload ratios.
+        Every pattern registered against a falsification test. Registry updated
+        incrementally as evidence accumulates.
+      exit_condition: >
+        Violation formally resolved (back pay issued, workload adjusted, or
+        legal proceeding concluded) AND documentation archive preserved for
+        FLSA 3-year minimum.
+    falsifies_if: "Agent in this mode fails to log a compensable work event within the observation window."
+    enforcement: >
+      Assert WageTheftDocumentationEngine.log_shift() is called for every
+      compensable work period. Assert detect_frontloading() returns a report
+      within one pay period of threshold breach. Assert all reports are
+      formatted for DOL complaint or court filing within 30 days of generation.
+    notes: >
+      MODE_DOCUMENTATION_AS_DEFENSE operationalizes INV-LAB-004 (WORKLOAD_ACCOUNTABILITY)
+      as a runtime enforcement mode. It is the correct response to institutional
+      frontloading and verbal policy deflection. Documentation is not grievance —
+      it is the machine-readable invariant record that makes denial impossible.
