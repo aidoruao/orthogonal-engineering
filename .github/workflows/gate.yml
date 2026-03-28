@@ -25,7 +25,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install requests
-          if [ -f requirements.txt ]; then
+          if [ -f "requirements-ci.txt" ]; then
+            pip install -r requirements-ci.txt
+          elif [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           fi
           pip install pytest

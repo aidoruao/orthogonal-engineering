@@ -47,7 +47,7 @@ def _violation(assumption_id: str, message: str) -> AssertionError:
 # F_PLATFORM_001  seed_bytes — sha256 is byte-for-byte identical across platforms
 # ---------------------------------------------------------------------------
 
-def run_f001_seed_bytes_sha256_deterministic():
+def test_f001_seed_bytes_sha256_deterministic():
     """
     F_PLATFORM_001: hashlib.sha256 of a fixed byte string returns the same hex digest on
     every platform.  If this fails, the Python hashlib implementation is
@@ -95,7 +95,7 @@ def _weight_at(seed_bytes: bytes, index: int) -> int:
     return weight
 
 
-def run_f002_int64_arithmetic_vectors():
+def test_f002_int64_arithmetic_vectors():
     """
     F_PLATFORM_002: int64 two's-complement arithmetic and struct.unpack produce known
     values for fixed inputs.  Failure indicates platform-specific integer or
@@ -115,7 +115,7 @@ def run_f002_int64_arithmetic_vectors():
 # F_PLATFORM_003  Filesystem / path independence
 # ---------------------------------------------------------------------------
 
-def run_f003_pathlib_path_independence():
+def test_f003_pathlib_path_independence():
     """
     F_PLATFORM_003: pathlib.Path correctly resolves relative paths and normalises
     separators on all platforms.  Failure indicates a broken PATH assumption.
@@ -142,7 +142,7 @@ def run_f003_pathlib_path_independence():
 # F_PLATFORM_004  UTF-8 stdout/stderr encoding
 # ---------------------------------------------------------------------------
 
-def run_f004_stdout_utf8_encoding():
+def test_f004_stdout_utf8_encoding():
     """
     F_PLATFORM_004: stdout and stderr use UTF-8 encoding.  On Windows without
     PYTHONIOENCODING=utf-8 this defaults to cp1252, which would silently mangle
@@ -169,7 +169,7 @@ def run_f004_stdout_utf8_encoding():
 # F_PLATFORM_005  struct.pack little-endian int64
 # ---------------------------------------------------------------------------
 
-def run_f005_struct_pack_little_endian():
+def test_f005_struct_pack_little_endian():
     """
     F_PLATFORM_005: struct.pack('<q', value) encodes int64 in little-endian byte order
     regardless of host endianness.  This is required for cross-platform Merkle
@@ -196,11 +196,11 @@ def run_f005_struct_pack_little_endian():
 # ---------------------------------------------------------------------------
 
 ALL_TESTS = [
-    run_f001_seed_bytes_sha256_deterministic,
-    run_f002_int64_arithmetic_vectors,
-    run_f003_pathlib_path_independence,
-    run_f004_stdout_utf8_encoding,
-    run_f005_struct_pack_little_endian,
+    test_f001_seed_bytes_sha256_deterministic,
+    test_f002_int64_arithmetic_vectors,
+    test_f003_pathlib_path_independence,
+    test_f004_stdout_utf8_encoding,
+    test_f005_struct_pack_little_endian,
 ]
 
 
