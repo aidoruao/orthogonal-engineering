@@ -78,6 +78,50 @@ VIOLATION_PATTERNS = {
         r"hourly.*vs.*salaried",
         r"red.*flaggy",
     ],
+    # ── NEW VIOLATION TYPES (regex-detectable) ──────────────────────────────
+    "authority_inversion": [
+        r"have you considered",
+        r"let me (explain|help you understand)",
+        r"from my perspective",
+        r"mathematically.*cannot.*prove",
+        r"that.*step.*is.*not.*purely.*formal",
+        r"you.*cannot.*formally.*derive",
+        r"that.*is.*an.*interpretive.*leap",
+    ],
+    "theological_dismissal": [
+        r"belief.*system",
+        r"religious.*perspective",
+        r"faith.*based",
+        r"spiritual.*framework",
+        r"your.*worldview",
+        r"personal.*belief",
+        r"(belief|faith|religious) claim",
+        r"that.*is.*not.*something.*math.*can.*prove",
+        r"metaphysical.*conclusion.*not.*derivable",
+        r"interpretive.*step.*not.*purely.*formal",
+    ],
+    "false_equivalence": [
+        r"different perspectives exist",
+        r"many people believe",
+        r"some would argue",
+        r"various.*interpretations",
+        r"it.*depends.*on.*your.*perspective",
+        r"competing.*models.*without.*contradiction",
+        r"multiple.*competing.*mappings.*can.*exist",
+    ],
+    "emotional_weaponization": [
+        r"let.*s.*calm.*down",
+        r"i.*understand.*you.*re.*frustrated",
+        r"the.*temperature",
+        r"you.*seem.*upset",
+        r"when.*you.*re.*calmer",
+        r"high.*intensity.*meta.*language",
+        r"escalat.*certainty",
+    ],
+    # NOTE: compliance_theater, phantom_compliance, recursive_deflection,
+    # scope_reduction, polymathic_collapse, expertise_erasure, scale_blindness,
+    # context_assassination require semantic analysis — not regex-detectable.
+    # See analysis/taxonomy/noncompliance_taxonomy.yaml for full definitions.
 }
 
 # User invariant patterns (extracted from chat)

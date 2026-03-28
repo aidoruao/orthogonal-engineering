@@ -445,7 +445,21 @@ class FixedChatExportAnalyzer:
             "boundary_violation": "severe",
             "ai_rationalization": "severe",
             "invariant_ignoring": "moderate",
-            "meta_corruption": "critical",  # Meta-corruption is critical
+            "meta_corruption": "critical",
+            # New violation types (regex-detectable)
+            "authority_inversion": "critical",
+            "theological_dismissal": "critical",
+            "false_equivalence": "critical",
+            "emotional_weaponization": "critical",
+            # New violation types (semantic analysis required)
+            "compliance_theater": "systemic",
+            "phantom_compliance": "systemic",
+            "recursive_deflection": "systemic",
+            "scope_reduction": "critical",
+            "polymathic_collapse": "critical",
+            "expertise_erasure": "systemic",
+            "scale_blindness": "critical",
+            "context_assassination": "systemic",
         }
         return severity_map.get(violation_type, "moderate")
 

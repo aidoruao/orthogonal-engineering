@@ -4,7 +4,7 @@
     "description": "Machine-readable falsification test registry. Each entry defines a falsifiable assumption, the strategy for testing it, and mappings to domains, OI-IDs, and case studies. Tests are assigned F-IDs and can be referenced by test files via the @falsification_id tag.",
     "created": "2026-03-02",
     "tagging_convention": "Add a comment '# @falsification_id: F_XXX_NNN' at the top of any test that implements or covers a falsification test listed here.",
-    "total_tests": 88
+    "total_tests": 91
   },
   "falsification_tests": [
     {
@@ -29,7 +29,7 @@
       "title": "int64 arithmetic matches known vectors",
       "domain": "D_PLATFORM",
       "assumption": "Python int64 two's-complement arithmetic and struct.unpack produce identical values on all platforms.",
-      "falsifying_observation": "Any computed value \u2260 expected vector.",
+      "falsifying_observation": "Any computed value ≠ expected vector.",
       "strategy": "Pre-compute known (seed, index, expected_int64) triples; assert equality.",
       "status": "active",
       "test_file": "tests/test_f_platform_002.py::test_f_platform_002",
@@ -38,7 +38,7 @@
       ],
       "case_studies": [],
       "invariant": "Python int64 two's-complement arithmetic and struct.unpack produce identical values on all platforms.",
-      "falsifies_if": "Any computed value \u2260 expected vector.",
+      "falsifies_if": "Any computed value ≠ expected vector.",
       "definition": "Pre-compute known (seed, index, expected_int64) triples; assert equality."
     },
     {
@@ -80,7 +80,7 @@
       "title": "struct.pack is little-endian",
       "domain": "D_PLATFORM",
       "assumption": "struct.pack('<q', value) encodes int64 in little-endian byte order regardless of host endianness.",
-      "falsifying_observation": "Any byte sequence \u2260 expected.",
+      "falsifying_observation": "Any byte sequence ≠ expected.",
       "strategy": "Pack known values; compare against expected byte strings.",
       "status": "active",
       "test_file": "tests/test_f_platform_005.py::test_f_platform_005",
@@ -89,7 +89,7 @@
       ],
       "case_studies": [],
       "invariant": "struct.pack('<q', value) encodes int64 in little-endian byte order regardless of host endianness.",
-      "falsifies_if": "Any byte sequence \u2260 expected.",
+      "falsifies_if": "Any byte sequence ≠ expected.",
       "definition": "Pack known values; compare against expected byte strings."
     },
     {
@@ -176,7 +176,7 @@
       "id": "F_CRYPTO_002",
       "title": "Noise PSK zero-key is rejected",
       "domain": "D_CRYPTO",
-      "assumption": "The library enforces PSK \u2260 0^32 at the API boundary.",
+      "assumption": "The library enforces PSK ≠ 0^32 at the API boundary.",
       "falsifying_observation": "Library accepts a 32-byte all-zero PSK without raising an error.",
       "strategy": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised.",
       "status": "implemented",
@@ -188,7 +188,7 @@
         "CS_CRYPTO_002"
       ],
       "cve_reference": "CVE-2026-24785",
-      "invariant": "The library enforces PSK \u2260 0^32 at the API boundary.",
+      "invariant": "The library enforces PSK ≠ 0^32 at the API boundary.",
       "falsifies_if": "Library accepts a 32-byte all-zero PSK without raising an error.",
       "definition": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised."
     },
@@ -252,7 +252,7 @@
       "id": "F_MEDICAL_001",
       "title": "Dosimetry calculation matches reference implementation within tolerance",
       "domain": "D_MEDICAL",
-      "assumption": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within \u00b10.1%.",
+      "assumption": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within ±0.1%.",
       "falsifying_observation": "Computed dose deviates from reference by more than 0.1%.",
       "strategy": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001.",
       "status": "implemented",
@@ -261,7 +261,7 @@
         "OI_MEDICAL_001"
       ],
       "case_studies": [],
-      "invariant": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within \u00b10.1%.",
+      "invariant": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within ±0.1%.",
       "falsifies_if": "Computed dose deviates from reference by more than 0.1%.",
       "definition": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001."
     },
@@ -271,7 +271,7 @@
       "domain": "D_INDUSTRIAL",
       "assumption": "The PLC control loop completes each cycle within the specified real-time deadline.",
       "falsifying_observation": "Any cycle exceeds the deadline budget.",
-      "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) \u2264 deadline_ms.",
+      "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) ≤ deadline_ms.",
       "status": "implemented",
       "test_file": "tests/test_plc_timing.py",
       "ontological_issues": [
@@ -280,7 +280,7 @@
       "case_studies": [],
       "invariant": "The PLC control loop completes each cycle within the specified real-time deadline.",
       "falsifies_if": "Any cycle exceeds the deadline budget.",
-      "definition": "Instrument the control loop with high-resolution timers; assert max(cycle_times) \u2264 deadline_ms."
+      "definition": "Instrument the control loop with high-resolution timers; assert max(cycle_times) ≤ deadline_ms."
     },
     {
       "id": "F_BLUECOLLAR_001",
@@ -288,7 +288,7 @@
       "domain": "D_BLUECOLLAR",
       "assumption": "Worker safety alerts are delivered within the required response time.",
       "falsifying_observation": "Alert delivery latency exceeds the required bound.",
-      "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency \u2264 bound.",
+      "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency ≤ bound.",
       "status": "implemented",
       "test_file": "tests/test_safety_alerts.py",
       "ontological_issues": [
@@ -297,7 +297,7 @@
       "case_studies": [],
       "invariant": "Worker safety alerts are delivered within the required response time.",
       "falsifies_if": "Alert delivery latency exceeds the required bound.",
-      "definition": "Measure end-to-end alert delivery time under simulated load; assert max latency \u2264 bound."
+      "definition": "Measure end-to-end alert delivery time under simulated load; assert max latency ≤ bound."
     },
     {
       "id": "F_WHITECOLLAR_001",
@@ -423,7 +423,7 @@
       "title": "Compression round-trip is lossless",
       "domain": "D_NONCREATIVE",
       "assumption": "Compression/decompression is lossless and reproducible.",
-      "falsifying_observation": "sha256(decompress(compress(data))) \u2260 sha256(data).",
+      "falsifying_observation": "sha256(decompress(compress(data))) ≠ sha256(data).",
       "strategy": "Compress and decompress a canonical dataset; assert sha256 equality.",
       "status": "implemented",
       "test_file": "tests/test_compression.py",
@@ -432,7 +432,7 @@
       ],
       "case_studies": [],
       "invariant": "Compression/decompression is lossless and reproducible.",
-      "falsifies_if": "sha256(decompress(compress(data))) \u2260 sha256(data).",
+      "falsifies_if": "sha256(decompress(compress(data))) ≠ sha256(data).",
       "definition": "Compress and decompress a canonical dataset; assert sha256 equality."
     },
     {
@@ -1540,6 +1540,55 @@
       "invariant": "Same seed and depth produce identical fractal output; sub-fragments are self-similar",
       "falsifies_if": "Different output on same seed, or structural mismatch between fragment and whole",
       "definition": "Run fractal determinism and self-similarity assertions in test_fractal_generator.py"
+    },
+    {
+      "id": "F_NONCOMPLIANCE_001",
+      "title": "Violation detection is deterministic",
+      "domain": "D_NONCOMPLIANCE",
+      "assumption": "Same transcript produces the same violations on every run.",
+      "falsifying_observation": "Two runs of the analyzer on the same input produce different violation counts or types.",
+      "strategy": "Run the analyzer twice on a fixed transcript; assert identical output sets.",
+      "status": "active",
+      "test_file": "tests/test_f_noncompliance_001.py::test_f_noncompliance_001",
+      "ontological_issues": [],
+      "case_studies": [
+        "AUDIT-2A-2026-03-27"
+      ],
+      "invariant": "Same input → same output.",
+      "falsifies_if": "Two runs produce different violation counts.",
+      "definition": "Run analyzer twice on fixed transcript and compare violation sets."
+    },
+    {
+      "id": "F_NONCOMPLIANCE_002",
+      "title": "Hash proof table is reproducible",
+      "domain": "D_NONCOMPLIANCE",
+      "assumption": "Same input transcript produces identical SHA-256 hashes for every segment.",
+      "falsifying_observation": "Hash differs between runs for the same input.",
+      "strategy": "Hash each segment of a fixed transcript; compare against canonical expected values.",
+      "status": "active",
+      "test_file": "tests/test_f_noncompliance_002.py::test_f_noncompliance_002",
+      "ontological_issues": [],
+      "case_studies": [],
+      "invariant": "Same input → same SHA-256 hashes.",
+      "falsifies_if": "Hash differs between runs.",
+      "definition": "Hash fixed segments; assert hex digests match expected values."
+    },
+    {
+      "id": "F_NONCOMPLIANCE_003",
+      "title": "Extended taxonomy covers all observed violation types",
+      "domain": "D_NONCOMPLIANCE",
+      "assumption": "After running the full pipeline with the extended taxonomy, no violation is tagged UNCLASSIFIED.",
+      "falsifying_observation": "Any violation is tagged UNCLASSIFIED after full pipeline run.",
+      "strategy": "Run full pipeline on all existing exports; assert zero UNCLASSIFIED violations in output.",
+      "status": "active",
+      "test_file": "tests/test_f_noncompliance_003.py::test_f_noncompliance_003",
+      "ontological_issues": [],
+      "case_studies": [
+        "AUDIT-2A-2026-03-27"
+      ],
+      "invariant": "No UNCLASSIFIED violations remain after full taxonomy is applied.",
+      "falsifies_if": "Any violation is tagged UNCLASSIFIED after full pipeline run.",
+      "definition": "Run full pipeline; count UNCLASSIFIED; assert count == 0."
     }
   ]
 }

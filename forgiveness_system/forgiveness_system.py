@@ -47,6 +47,8 @@ class ViolationSeverity(Enum):
     MODERATE = "moderate"
     SEVERE = "severe"
     CRITICAL = "critical"
+    SYSTEMIC = "systemic"       # Pattern repeats across sessions, not isolated
+    UNPRECEDENTED = "unprecedented"  # No existing category covers this behavior
 
 
 class EnergyType(Enum):
