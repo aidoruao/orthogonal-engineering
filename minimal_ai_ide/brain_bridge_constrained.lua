@@ -7,7 +7,7 @@
 
 local CONSTRAINT_SERVER_URL = "http://localhost:8000/turtle/command"
 local FALLBACK_DIRECT_API = false  -- If true, fall back to direct DeepSeek API if server fails
-local API_KEY = "sk-ea0418f187ce4728930ec92983bf9487"  -- Only used if fallback is needed
+local API_KEY = os.getenv("DEEPSEEK_API_KEY") or "[API_KEY_REDACTED]"  -- Only used if fallback is needed
 local API_URL = "https://api.deepseek.com/v1/chat/completions"
 
 -- ==================== LOGGING SYSTEM ====================

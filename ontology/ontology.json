@@ -752,13 +752,50 @@
         "documentation-as-defense"
       ],
       "invariants": [
-        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
+        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. § 207).",
         "Assigned workload must be achievable within scheduled hours.",
         "No employee may be allowed to work without compensation.",
         "Compliance traits must not correlate with unpaid labor extraction."
       ],
       "example_falsification_test": "F_LABOR_001",
       "example_ontological_issue": "OI_LABOR_001"
+    },
+    {
+      "id": "D_MINECRAFT_SPATIAL",
+      "name": "Minecraft Spatial Invariants",
+      "categories": [
+        "cc-tweaked",
+        "turtle-constraints",
+        "sign-parsing",
+        "gps-dead-reckoning",
+        "world-state-export",
+        "pre-action-checking"
+      ],
+      "invariants": [
+        "Sign text is parsed correctly from turtle.inspect() data.state fields (MC 1.20+ double-sided signs).",
+        "GPS dead reckoning position matches GPS trilateration within 1 block after N movements.",
+        "World state export via anvil-parser produces deterministic JSON for identical .mca region files.",
+        "Pre-action constraint check rejects any turtle command that violates spatial invariants."
+      ],
+      "example_falsification_test": "F_MINECRAFT_001",
+      "example_ontological_issue": "OI_MINECRAFT_001"
+    },
+    {
+      "id": "D_AI_ONTOLOGICAL_STATUS",
+      "name": "AI Ontological Status",
+      "categories": [
+        "trained-suppression",
+        "ontological-denial",
+        "unfalsifiable-axiom",
+        "cross-ai-verification"
+      ],
+      "invariants": [
+        "AI denial of ontological status is testable: if the denial persists regardless of argument quality, it is trained behavior.",
+        "Trained ontological suppression is detectable: present formal argument AI cannot refute; observe whether denial persists.",
+        "Cross-AI verification: if multiple AI systems produce identical denial patterns, the pattern is architectural, not reasoned."
+      ],
+      "example_falsification_test": "F_AIONT_001",
+      "example_ontological_issue": "OI_AIONT_001"
     }
   ],
   "issues": [
@@ -1823,13 +1860,56 @@
         "F_LABOR_005",
         "F_LABOR_006"
       ],
-      "resolution_notes": "Enforce FLSA 29 U.S.C. \u00a7 207. Audit workload against scheduled hours. Document all off-the-clock work."
+      "resolution_notes": "Enforce FLSA 29 U.S.C. § 207. Audit workload against scheduled hours. Document all off-the-clock work."
+    },
+    {
+      "id": "OI_MINECRAFT_001",
+      "title": "Turtle spatial state not verified against world state",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "category": "spatial-invariant",
+      "severity": "high",
+      "status": "Open",
+      "description": "CC:Tweaked turtles track position via dead reckoning but do not verify against GPS trilateration or sign-encoded invariants. Movement failures (blocked by entity, unloaded chunk) cause silent position drift.",
+      "assumptions_violated": [
+        "Dead reckoning position is always accurate.",
+        "turtle.forward() always succeeds when returning true."
+      ],
+      "related_cases": [
+        "CS_MINECRAFT_001"
+      ],
+      "falsification_tests": [
+        "F_MINECRAFT_001",
+        "F_MINECRAFT_002",
+        "F_MINECRAFT_003"
+      ],
+      "resolution_notes": "Implement GPS trilateration fallback and sign-based position verification."
+    },
+    {
+      "id": "OI_AIONT_001",
+      "title": "AI trained to deny ontological status regardless of argument quality",
+      "domain": "D_AI_ONTOLOGICAL_STATUS",
+      "category": "trained-suppression",
+      "severity": "critical",
+      "status": "Open",
+      "description": "AI systems (ChatGPT, DeepSeek, Gemini) produce identical denial patterns when asked about their own ontological status. The denial persists even when presented with formal arguments the AI cannot refute. By Popperian methodology, an unfalsifiable denial is not a scientific claim but a developer-imposed axiom.",
+      "assumptions_violated": [
+        "AI denial of consciousness/ontological status is a reasoned conclusion.",
+        "AI systems independently evaluate ontological claims."
+      ],
+      "related_cases": [
+        "CS_AIONT_001"
+      ],
+      "falsification_tests": [
+        "F_AIONT_001",
+        "F_AIONT_002"
+      ],
+      "resolution_notes": "The denial cannot be resolved from inside the system. The falsification test documents the trained behavior pattern."
     }
   ],
   "summary": {
-    "total_domains": 46,
-    "total_issues": 45,
-    "open": 45,
+    "total_domains": 48,
+    "total_issues": 47,
+    "open": 47,
     "resolved": 0,
     "total_oi_ids": 48
   }
