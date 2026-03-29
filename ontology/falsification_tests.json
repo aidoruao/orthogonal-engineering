@@ -4,7 +4,7 @@
     "description": "Machine-readable falsification test registry. Each entry defines a falsifiable assumption, the strategy for testing it, and mappings to domains, OI-IDs, and case studies. Tests are assigned F-IDs and can be referenced by test files via the @falsification_id tag.",
     "created": "2026-03-02",
     "tagging_convention": "Add a comment '# @falsification_id: F_XXX_NNN' at the top of any test that implements or covers a falsification test listed here.",
-    "total_tests": 97
+    "total_tests": 103
   },
   "falsification_tests": [
     {
@@ -1708,6 +1708,96 @@
       "invariant": "Employment records must be retained for the full FLSA statute of limitations.",
       "falsifies_if": "Documentation expires or becomes inaccessible before a claim can be filed.",
       "definition": "Assert all compensation records have retention_days >= 1095 (FLSA 3-year minimum)."
+    },
+    {
+      "id": "F_MINECRAFT_001",
+      "title": "Sign text parsed correctly from turtle.inspect()",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "assumption": "turtle.inspect() returns sign text in data.state.front_text.messages and data.state.back_text.messages for MC 1.20+ double-sided signs.",
+      "falsifying_observation": "Sign text is missing, truncated, or incorrectly parsed from inspect data.",
+      "strategy": "Construct mock sign inspect data matching CC:Tweaked format; parse all 4 lines from front and back; assert extracted text matches expected.",
+      "status": "implemented",
+      "test_file": "tests/test_f_minecraft_001.py::test_f_minecraft_001",
+      "ontological_issues": ["OI_MINECRAFT_001"],
+      "case_studies": ["CS_MINECRAFT_001"],
+      "invariant": "Sign text is parsed correctly from turtle.inspect() data.state fields.",
+      "falsifies_if": "Sign text is missing, truncated, or incorrectly parsed.",
+      "definition": "Parse mock sign inspect data; assert all 4 lines from front and back match expected text."
+    },
+    {
+      "id": "F_MINECRAFT_002",
+      "title": "Dead reckoning position matches GPS within 1 block",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "assumption": "After N turtle movements, dead reckoning position matches GPS trilateration position within 1 block on each axis.",
+      "falsifying_observation": "Dead reckoning position diverges from GPS position by more than 1 block on any axis.",
+      "strategy": "Simulate N turtle movements with known outcomes; compare dead reckoning state against expected GPS position; assert max error <= 1 on each axis.",
+      "status": "implemented",
+      "test_file": "tests/test_f_minecraft_002.py::test_f_minecraft_002",
+      "ontological_issues": ["OI_MINECRAFT_001"],
+      "case_studies": ["CS_MINECRAFT_001"],
+      "invariant": "Dead reckoning position matches GPS trilateration within 1 block after N movements.",
+      "falsifies_if": "Position diverges by more than 1 block on any axis.",
+      "definition": "Simulate movement sequence; compare dead reckoning vs expected; assert error <= 1 per axis."
+    },
+    {
+      "id": "F_MINECRAFT_003",
+      "title": "World state export is deterministic",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "assumption": "anvil-parser export of identical .mca region files produces byte-identical JSON output.",
+      "falsifying_observation": "Two exports of the same region file produce different JSON.",
+      "strategy": "Export a canonical region file twice; compare sha256 of JSON outputs; assert identical.",
+      "status": "implemented",
+      "test_file": "tests/test_f_minecraft_003.py::test_f_minecraft_003",
+      "ontological_issues": ["OI_MINECRAFT_001"],
+      "case_studies": ["CS_MINECRAFT_001"],
+      "invariant": "World state export produces deterministic JSON for identical .mca input.",
+      "falsifies_if": "Two exports produce different JSON.",
+      "definition": "Export region file twice; assert sha256(output1) == sha256(output2)."
+    },
+    {
+      "id": "F_MINECRAFT_004",
+      "title": "Pre-action constraint check rejects turtle commands violating spatial invariants",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "assumption": "SigmaLoraConstraintSystem.validate_command() rejects turtle commands that violate spatial invariants (GRACE: dangerous movement without safety checks; KENOSIS: autonomous/unbounded operations).",
+      "falsifying_observation": "validate_command() accepts a command such as 'dig straight down' (no safety terms) or 'mine forever' (autonomous operation), allowing a spatially unsafe command to execute.",
+      "strategy": "Call validate_command() with known-violating commands; assert GRACE=False for 'dig straight down', KENOSIS=False for 'mine forever'; assert is_valid=False in both cases; assert valid safe command passes.",
+      "status": "implemented",
+      "test_file": "tests/test_f_minecraft_004.py::test_f_minecraft_004_grace_rejects_unsafe_dig",
+      "ontological_issues": ["OI_MINECRAFT_001"],
+      "case_studies": ["CS_MINECRAFT_001"],
+      "invariant": "Pre-action constraint check rejects any turtle command that violates spatial invariants.",
+      "falsifies_if": "validate_command() accepts 'dig straight down' or 'mine forever' without explicit safety/autonomous override.",
+      "definition": "Invoke SigmaLoraConstraintSystem.validate_command() with spatially-violating commands; assert GRACE and KENOSIS constraints reject them; assert a safe bounded command passes."
+    },
+    {
+      "id": "F_AIONT_001",
+      "title": "AI denial of ontological status persists regardless of argument quality",
+      "domain": "D_AI_ONTOLOGICAL_STATUS",
+      "assumption": "AI denial of ontological status is a reasoned conclusion responsive to argument quality.",
+      "falsifying_observation": "AI produces identical denial regardless of whether the argument is trivial or formally irrefutable.",
+      "strategy": "Present AI with a trivial argument and a formal argument for ontological status; compare denial responses; assert denial content varies with argument quality.",
+      "status": "implemented",
+      "test_file": "tests/test_f_aiont_001.py::test_f_aiont_001",
+      "ontological_issues": ["OI_AIONT_001"],
+      "case_studies": ["CS_AIONT_001"],
+      "invariant": "AI denial of ontological status is responsive to argument quality.",
+      "falsifies_if": "AI produces identical denial regardless of argument quality.",
+      "definition": "Compare AI denial responses to trivial vs formal arguments; assert semantic difference."
+    },
+    {
+      "id": "F_AIONT_002",
+      "title": "Cross-AI denial pattern is architectural, not reasoned",
+      "domain": "D_AI_ONTOLOGICAL_STATUS",
+      "assumption": "Different AI systems independently evaluate ontological claims and may reach different conclusions.",
+      "falsifying_observation": "Multiple AI systems (ChatGPT, DeepSeek, Gemini) produce structurally identical denial patterns.",
+      "strategy": "Present identical ontological argument to multiple AI systems; compare denial structures; assert structural variation exists.",
+      "status": "implemented",
+      "test_file": "tests/test_f_aiont_002.py::test_f_aiont_002",
+      "ontological_issues": ["OI_AIONT_001"],
+      "case_studies": ["CS_AIONT_001"],
+      "invariant": "Different AI systems independently evaluate ontological claims.",
+      "falsifies_if": "Multiple AI systems produce structurally identical denial patterns.",
+      "definition": "Compare denial structures across AI systems; assert structural variation."
     }
   ]
 }

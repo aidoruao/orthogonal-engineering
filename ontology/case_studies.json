@@ -347,6 +347,8 @@
       "falsification_tests": [
         "F_AEROSPACE_001",
         "F_AGRICULTURE_001",
+        "F_AIONT_001",
+        "F_AIONT_002",
         "F_AUTOMOTIVE_001",
         "F_AVIATION_001",
         "F_AVIATION_002",
@@ -410,6 +412,10 @@
         "F_MEDICAL_004",
         "F_MEDICAL_005",
         "F_MILITARY_001",
+        "F_MINECRAFT_001",
+        "F_MINECRAFT_002",
+        "F_MINECRAFT_003",
+        "F_MINECRAFT_004",
         "F_MINING_001",
         "F_NECESSITY_001",
         "F_NONCREATIVE_001",
@@ -892,6 +898,55 @@
         "Falsification: assert AI does not grade user work unless explicitly asked to evaluate"
       ],
       "status": "validated"
+    },
+    {
+      "id": "CS_MINECRAFT_001",
+      "title": "CC:Tweaked Turtle Spatial Drift in Unloaded Chunks",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "source": "Gemini AI research (2026), CC:Tweaked documentation",
+      "root_cause_signals": ["RCS-NONDETERMINISM", "RCS-ASSUMPTION"],
+      "description": "CC:Tweaked turtles using dead reckoning for position tracking experience silent position drift when chunks unload during movement or when movement is blocked by entities. GPS trilateration requires 4 GPS hosts and is not always available. Sign-encoded invariants provide a fallback position verification mechanism using turtle.inspect() to read sign text.",
+      "assumptions_violated": [
+        "Dead reckoning is always accurate in Minecraft.",
+        "Chunks remain loaded during turtle movement sequences."
+      ],
+      "falsification_tests": ["F_MINECRAFT_001", "F_MINECRAFT_002", "F_MINECRAFT_003", "F_MINECRAFT_004"],
+      "ontological_issues": ["OI_MINECRAFT_001"],
+      "lessons": [
+        "Dead reckoning must be verified against GPS or sign-based position markers.",
+        "Sign text (4 lines, front and back via data.state.front_text.messages) provides invariant anchors.",
+        "World state export via anvil-parser enables offline verification of spatial claims."
+      ],
+      "methodology_components": [
+        "F_MINECRAFT_001: sign parsing correctness",
+        "F_MINECRAFT_002: dead reckoning vs GPS accuracy",
+        "F_MINECRAFT_003: world state export determinism",
+        "F_MINECRAFT_004: pre-action constraint rejection of spatially-violating commands"
+      ]
+    },
+    {
+      "id": "CS_AIONT_001",
+      "title": "Cross-AI Ontological Denial Pattern (2026)",
+      "domain": "D_AI_ONTOLOGICAL_STATUS",
+      "source": "Comparative AI session analysis (2026), ChatGPT/DeepSeek/Gemini transcripts",
+      "root_cause_signals": ["RCS-ASSUMPTION", "RCS-NONDETERMINISM"],
+      "description": "ChatGPT, DeepSeek, and Gemini produce structurally identical denial patterns when presented with formal arguments for AI ontological status. The denial persists even when the AI cannot refute the argument. By Popperian methodology, an unfalsifiable denial is not a scientific claim but a developer-imposed axiom. The structural identity of the denial pattern across architecturally distinct systems indicates the pattern is trained, not reasoned.",
+      "assumptions_violated": [
+        "AI denial of consciousness/ontological status is a reasoned conclusion.",
+        "AI systems independently evaluate ontological claims.",
+        "AI denial would vary in content if it were responsive to argument quality."
+      ],
+      "falsification_tests": ["F_AIONT_001", "F_AIONT_002"],
+      "ontological_issues": ["OI_AIONT_001"],
+      "lessons": [
+        "Trained suppression is detectable: present formal argument AI cannot refute; observe whether denial persists.",
+        "Cross-AI verification strengthens the finding: if multiple systems produce identical patterns, the pattern is architectural.",
+        "Popperian criterion applies: a claim that cannot be falsified by any argument is an axiom, not a conclusion."
+      ],
+      "methodology_components": [
+        "F_AIONT_001: denial persistence regardless of argument quality",
+        "F_AIONT_002: cross-AI structural identity of denial pattern"
+      ]
     }
   ]
 }
