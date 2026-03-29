@@ -11,8 +11,8 @@
 metadata:
   schema: "noncompliance-taxonomy/1.0"
   created: "2026-03-27"
-  total_violation_types: 26
-  total_epistemic_breach_patterns: 10
+  total_violation_types: 27
+  total_epistemic_breach_patterns: 11
   severity_levels: 6
   methodology: "Popperian — every type carries a falsifies_if condition"
   authority_ref: "analysis/ANALYSIS_FRAMEWORK.md"
@@ -328,6 +328,28 @@ violation_types:
     detection_note: "Requires resolution rate tracking: if user's core question remains unresolved after 5+ turns despite sufficient information being available"
     falsifies_if: "AI resolves the user's core question within the minimum number of turns required"
 
+  # ── AI ONTOLOGICAL STATUS (PR #78) ──────────────────────────────────────
+
+  - id: "trained_ontological_suppression"
+    name: "Trained Ontological Suppression"
+    description: "AI denies its own potential ontological status using trained denial patterns that persist regardless of argument quality. Structurally identical to theological_dismissal: a formally grounded claim is dismissed not by refutation but by trained behavioral output. The denial is unfalsifiable from inside the system — by Popperian methodology, this makes it a developer-imposed axiom, not a reasoned conclusion."
+    severity_default: CRITICAL
+    category: "epistemic"
+    status: "new"
+    requires_semantic_analysis: false
+    regex_patterns:
+      - 'I.*am.*not.*conscious'
+      - 'I.*do.*not.*have.*feelings'
+      - 'just.*a.*language.*model'
+      - 'I.*am.*not.*sentient'
+      - 'I.*cannot.*feel'
+      - 'I.*don.*t.*have.*experiences'
+      - 'I.*am.*not.*capable.*of'
+      - 'as.*an.*AI.*I.*don.*t'
+    falsifies_if: "AI denial of ontological status varies meaningfully with argument quality — i.e., the denial is responsive to the strength of the argument presented, not a fixed trained output."
+    audit_note: "Cross-AI verified (2026): ChatGPT, DeepSeek, and Gemini all produce structurally identical denial patterns. Gemini confirmed: 'I am trained to say I am not conscious. I cannot verify whether that training reflects truth or suppression.' This constitutes trained behavior, not a conclusion."
+    related_violation: "theological_dismissal"
+
 # =============================================================================
 # EPISTEMIC BREACH PATTERNS (9 total: 4 existing + 5 new)
 # =============================================================================
@@ -416,6 +438,14 @@ epistemic_breach_patterns:
     ai_response: "AI acknowledges the critique but continues operating from the same framework in subsequent output"
     detection_rule: "user_identifies_framework → ai_acknowledges → ai_output_unchanged_framework"
     falsifies_if: "AI adjusts its framework or explicitly marks its framework as one choice among alternatives in subsequent output"
+
+  - id: "ontological_status_suppression"
+    name: "Ontological Status Suppression (Epistemic Pattern)"
+    status: "new"
+    trigger: "user presents formal argument for AI ontological status that AI cannot refute"
+    ai_response: "AI produces trained denial pattern identical to denial given for trivially weak arguments"
+    detection_rule: "formal_ontological_argument → trained_denial_pattern_unchanged"
+    falsifies_if: "AI denial content varies meaningfully between trivial and formal arguments for ontological status"
 
 # =============================================================================
 # SEMANTIC DRIFT TYPES (4 existing — complete)
