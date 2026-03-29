@@ -45,16 +45,164 @@ local function logDebug(message)
     log(message, "DEBUG")
 end
 
+-- ==================== TURTLE POSITION TRACKER ====================
+-- Maintains {x, y, z, facing} dead-reckoning state and reads sign invariants
+-- via turtle.inspect(). Position data is included in every constraint-server
+-- request so the server can perform spatial (not just lexical) validation.
+--
+-- Facing encoding: 0=north, 1=east, 2=south, 3=west (CC:Tweaked convention)
+-- Signs are read on inspect() calls; the sign text is forwarded to the server
+-- as part of the command context so invariant anchors can be checked.
+
+local TurtlePositionTracker = {}
+TurtlePositionTracker.__index = TurtlePositionTracker
+
+function TurtlePositionTracker.new(startX, startY, startZ, startFacing)
+    local self = setmetatable({}, TurtlePositionTracker)
+    self.x = startX or 0
+    self.y = startY or 0
+    self.z = startZ or 0
+    -- facing: 0=north, 1=east, 2=south, 3=west
+    self.facing = startFacing or 0
+    self.sign_cache = {}  -- last sign texts read via turtle.inspect()
+    return self
+end
+
+-- Cardinal direction deltas: north(0), east(1), south(2), west(3)
+local FACING_DX = {[0]=0,  [1]=1, [2]=0,  [3]=-1}
+local FACING_DZ = {[0]=-1, [1]=0, [2]=1,  [3]=0}
+
+function TurtlePositionTracker:moveForward()
+    self.x = self.x + FACING_DX[self.facing]
+    self.z = self.z + FACING_DZ[self.facing]
+    logDebug(string.format("Position: (%d, %d, %d) facing=%d", self.x, self.y, self.z, self.facing))
+end
+
+function TurtlePositionTracker:moveBack()
+    self.x = self.x - FACING_DX[self.facing]
+    self.z = self.z - FACING_DZ[self.facing]
+    logDebug(string.format("Position: (%d, %d, %d) facing=%d", self.x, self.y, self.z, self.facing))
+end
+
+function TurtlePositionTracker:moveUp()
+    self.y = self.y + 1
+    logDebug(string.format("Position: (%d, %d, %d) facing=%d", self.x, self.y, self.z, self.facing))
+end
+
+function TurtlePositionTracker:moveDown()
+    self.y = self.y - 1
+    logDebug(string.format("Position: (%d, %d, %d) facing=%d", self.x, self.y, self.z, self.facing))
+end
+
+function TurtlePositionTracker:turnLeft()
+    -- Use (facing + 3) % 4 for portable subtraction (avoids negative modulo ambiguity)
+    self.facing = (self.facing + 3) % 4
+    logDebug(string.format("Position: (%d, %d, %d) facing=%d", self.x, self.y, self.z, self.facing))
+end
+
+function TurtlePositionTracker:turnRight()
+    self.facing = (self.facing + 1) % 4
+    logDebug(string.format("Position: (%d, %d, %d) facing=%d", self.x, self.y, self.z, self.facing))
+end
+
+function TurtlePositionTracker:getPosition()
+    return {x = self.x, y = self.y, z = self.z, facing = self.facing}
+end
+
+--- Read sign text from the block directly in front of the turtle using
+--- turtle.inspect(). Parses MC 1.20+ double-sided sign format:
+---   data.state.front_text.messages / data.state.back_text.messages
+--- Returns a table {front={...}, back={...}} or nil if no sign is found.
+function TurtlePositionTracker:inspectSign()
+    if not turtle then return nil end
+    local success, data = turtle.inspect()
+    if not success or not data then return nil end
+    if not (data.name and data.name:find("sign")) then return nil end
+
+    local state = data.state or {}
+    local front_raw = (state.front_text or {}).messages or {}
+    local back_raw  = (state.back_text  or {}).messages or {}
+
+    local function parseMessages(msgs)
+        local lines = {}
+        for _, msg in ipairs(msgs) do
+            if type(msg) == "string" then
+                -- JSON-encoded message: {"text":"LINE"} or {"text":"Line with \"quotes\""}
+                -- Strip outer braces then extract the "text" value, handling escaped quotes.
+                local inner = msg:match("^%s*{(.+)}%s*$")
+                local text
+                if inner then
+                    -- Match "text":"..." accounting for backslash-escaped chars
+                    text = inner:match('"text"%s*:%s*"((?:[^"\\]|\\.)*)"')
+                    if not text then
+                        -- Fallback: capture up to first unescaped quote
+                        text = inner:match('"text"%s*:%s*"([^"]*)"')
+                    end
+                end
+                table.insert(lines, text or msg)
+            elseif type(msg) == "table" then
+                table.insert(lines, msg.text or "")
+            end
+        end
+        return lines
+    end
+
+    local sign = {
+        front = parseMessages(front_raw),
+        back  = parseMessages(back_raw),
+        block = data.name,
+    }
+    self.sign_cache[#self.sign_cache + 1] = sign
+    logInfo("Sign read: front=" .. table.concat(sign.front, "|") ..
+            " back=" .. table.concat(sign.back, "|"))
+    return sign
+end
+
+--- Return a context table with current position and any sign data.
+--- This is merged into the constraint-server payload so the server can
+--- perform spatial (not just lexical) constraint checking.
+function TurtlePositionTracker:buildContext()
+    local ctx = {
+        position = self:getPosition(),
+        sign_cache = self.sign_cache,
+    }
+    return ctx
+end
+
+-- Module-level position tracker instance (initialised lazily)
+local _posTracker = nil
+
+local function getPositionTracker()
+    if not _posTracker then
+        _posTracker = TurtlePositionTracker.new(0, 0, 0, 0)
+        logInfo("TurtlePositionTracker initialised at (0,0,0) facing north")
+    end
+    return _posTracker
+end
+
 -- ==================== CONSTRAINT SERVER COMMUNICATION ====================
 
 local function callConstraintServer(command, turtleId, context)
     logInfo("Calling Σ_LORA constraint server...")
 
+    -- Merge position and sign data into context for spatial constraint checking
+    local posTracker = getPositionTracker()
+    local spatialCtx = posTracker:buildContext()
+    context = context or {}
+    for k, v in pairs(spatialCtx) do
+        context[k] = v
+    end
+    -- Also inspect the block in front before sending (reads sign invariants)
+    local sign = posTracker:inspectSign()
+    if sign then
+        context.sign_in_front = sign
+    end
+
     -- Prepare request payload
     local payload = {
         command = command,
         turtle_id = turtleId or "unknown",
-        context = context or {},
+        context = context,
         require_confirmation = true
     }
 
@@ -368,6 +516,12 @@ local function brain(taskDescription, turtleId)
         print("=== Σ_LORA Constrained Brain Bridge Status ===")
         print("Constraint Server: " .. CONSTRAINT_SERVER_URL)
         print("Fallback API: " .. (FALLBACK_DIRECT_API and "Enabled" or "Disabled"))
+
+        -- Show current dead-reckoning position
+        local pos = getPositionTracker():getPosition()
+        local facingNames = {[0]="north", [1]="east", [2]="south", [3]="west"}
+        print(string.format("Position (dead-reckoning): x=%d y=%d z=%d facing=%s",
+            pos.x, pos.y, pos.z, facingNames[pos.facing] or tostring(pos.facing)))
 
         if turtle then
             local fuel = turtle.getFuelLevel()

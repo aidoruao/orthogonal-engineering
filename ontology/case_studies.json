@@ -415,6 +415,7 @@
         "F_MINECRAFT_001",
         "F_MINECRAFT_002",
         "F_MINECRAFT_003",
+        "F_MINECRAFT_004",
         "F_MINING_001",
         "F_NECESSITY_001",
         "F_NONCREATIVE_001",
@@ -909,7 +910,7 @@
         "Dead reckoning is always accurate in Minecraft.",
         "Chunks remain loaded during turtle movement sequences."
       ],
-      "falsification_tests": ["F_MINECRAFT_001", "F_MINECRAFT_002", "F_MINECRAFT_003"],
+      "falsification_tests": ["F_MINECRAFT_001", "F_MINECRAFT_002", "F_MINECRAFT_003", "F_MINECRAFT_004"],
       "ontological_issues": ["OI_MINECRAFT_001"],
       "lessons": [
         "Dead reckoning must be verified against GPS or sign-based position markers.",
@@ -919,7 +920,8 @@
       "methodology_components": [
         "F_MINECRAFT_001: sign parsing correctness",
         "F_MINECRAFT_002: dead reckoning vs GPS accuracy",
-        "F_MINECRAFT_003: world state export determinism"
+        "F_MINECRAFT_003: world state export determinism",
+        "F_MINECRAFT_004: pre-action constraint rejection of spatially-violating commands"
       ]
     },
     {

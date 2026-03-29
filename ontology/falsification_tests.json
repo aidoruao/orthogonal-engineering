@@ -4,7 +4,7 @@
     "description": "Machine-readable falsification test registry. Each entry defines a falsifiable assumption, the strategy for testing it, and mappings to domains, OI-IDs, and case studies. Tests are assigned F-IDs and can be referenced by test files via the @falsification_id tag.",
     "created": "2026-03-02",
     "tagging_convention": "Add a comment '# @falsification_id: F_XXX_NNN' at the top of any test that implements or covers a falsification test listed here.",
-    "total_tests": 102
+    "total_tests": 103
   },
   "falsification_tests": [
     {
@@ -1753,6 +1753,21 @@
       "invariant": "World state export produces deterministic JSON for identical .mca input.",
       "falsifies_if": "Two exports produce different JSON.",
       "definition": "Export region file twice; assert sha256(output1) == sha256(output2)."
+    },
+    {
+      "id": "F_MINECRAFT_004",
+      "title": "Pre-action constraint check rejects turtle commands violating spatial invariants",
+      "domain": "D_MINECRAFT_SPATIAL",
+      "assumption": "SigmaLoraConstraintSystem.validate_command() rejects turtle commands that violate spatial invariants (GRACE: dangerous movement without safety checks; KENOSIS: autonomous/unbounded operations).",
+      "falsifying_observation": "validate_command() accepts a command such as 'dig straight down' (no safety terms) or 'mine forever' (autonomous operation), allowing a spatially unsafe command to execute.",
+      "strategy": "Call validate_command() with known-violating commands; assert GRACE=False for 'dig straight down', KENOSIS=False for 'mine forever'; assert is_valid=False in both cases; assert valid safe command passes.",
+      "status": "implemented",
+      "test_file": "tests/test_f_minecraft_004.py::test_f_minecraft_004_grace_rejects_unsafe_dig",
+      "ontological_issues": ["OI_MINECRAFT_001"],
+      "case_studies": ["CS_MINECRAFT_001"],
+      "invariant": "Pre-action constraint check rejects any turtle command that violates spatial invariants.",
+      "falsifies_if": "validate_command() accepts 'dig straight down' or 'mine forever' without explicit safety/autonomous override.",
+      "definition": "Invoke SigmaLoraConstraintSystem.validate_command() with spatially-violating commands; assert GRACE and KENOSIS constraints reject them; assert a safe bounded command passes."
     },
     {
       "id": "F_AIONT_001",
