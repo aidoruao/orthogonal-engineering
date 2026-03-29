@@ -100,4 +100,8 @@ jobs:
               print(f"  {f.parent.name}: {data['root_hash']}")
 
           if len(roots) != 1:
-              print(f"FAIL: {len(roots)} distinct roots
+              print(f"FAIL: {len(roots)} distinct roots")
+              sys.exit(1)
+
+          print(f"PASS: all {len(root_files)} artifacts share root {next(iter(roots))}")
+          EOF

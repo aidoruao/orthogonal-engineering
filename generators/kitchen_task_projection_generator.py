@@ -72,7 +72,7 @@ class TaskProjectionGenerator:
                 "name": micro_node['name'],
                 "index": micro_node['index'],
                 "action": self._infer_action_type(micro_node['name']),
-                "parameters": {"duration_sec": 1.0, "intensity": 1.0},
+                "parameters": {"duration_sec": 1, "intensity": 1},
                 "media": {"reference_video": "", "reference_frames": []},
                 "state_in": {},
                 "state_out": {}
