@@ -439,11 +439,12 @@ violation_types:
     category: "institutional"
     status: "new"
     requires_semantic_analysis: true
+    pattern_syntax: "regex_patterns use Python-style regex matching"
     regex_patterns:
-      - 'BWC shows'
-      - 'footage confirms'
-      - 'video supports'
-      - 'evidence consistent with'
+      - 'BWC\\s+shows'
+      - 'footage\\s+confirms'
+      - 'video\\s+supports'
+      - 'evidence\\s+consistent\\s+with'
     detection_note: "Requires primary-source comparison: what the evidence actually shows vs what the memo claims it shows"
     falsifies_if: "Memo's characterization of evidence content matches what the evidence actually contains"
     example: "SAO Footnote 7 claims BWC shows rain on SUV; public bodycam analysis says no rain"

@@ -682,6 +682,8 @@ FACTUAL_CLAIMS = [
         "gate2": "State Attorney's Office case file / Brady-Giglio disclosure layer",
         "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
         "gate3_detail": "Supported by public attorney-quote reporting; case-file ingestion would upgrade it to repo-level verification",
+        # Inelasticity score raised from 0.74 to 0.82 to reflect upgraded
+        # VERIFIED_BY_PUBLIC_SOURCE status and inclusion in INDELIBLE_FACTS.md.
         "inelasticity_score": 0.82,
         "source": "SRC-007 public reporting anchor",
         "sources": ["SRC-007"],
@@ -857,9 +859,10 @@ def run_ghost_file_search():
 # ─────────────────────────────────────────────────────────────────────────────
 
 def write_indelible_facts(chatgpt_turns, deepseek_turns, delta, path):
+    # Missing status defaults to VERIFIED for legacy transcript-layer claims.
     verified_high_inelasticity = [
         c for c in FACTUAL_CLAIMS
-        if c["inelasticity_score"] >= 0.8 and c.get("status") in {None, "VERIFIED"}
+        if c["inelasticity_score"] >= 0.8 and (c.get("status") is None or c.get("status") == "VERIFIED")
     ]
     partial_high_inelasticity = [
         c for c in FACTUAL_CLAIMS
@@ -867,7 +870,7 @@ def write_indelible_facts(chatgpt_turns, deepseek_turns, delta, path):
     ]
     provisional_high_inelasticity = [
         c for c in FACTUAL_CLAIMS
-        if c["inelasticity_score"] >= 0.8 and c.get("status", "").startswith("PROVISIONAL")
+        if c["inelasticity_score"] >= 0.8 and (c.get("status") or "").startswith("PROVISIONAL")
     ]
 
     lines = [
@@ -1809,7 +1812,7 @@ def write_architecture_of_ambiguity(path):
     ]
     for src in SOURCE_REGISTRY:
         lines.append(
-            f"| {src['source_id']} | {src['url']} | {src['verification_status']} | {', '.join(src['claims'])} |"
+            f"| {src.get('source_id', 'UNKNOWN')} | {src.get('url', 'N/A')} | {src.get('verification_status', 'UNKNOWN')} | {', '.join(src.get('claims', [])) or 'N/A'} |"
         )
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
@@ -2112,7 +2115,7 @@ def main():
             "ghost_file_matches": ghost_matches,
             "indelible_facts_count": len([
                 c for c in FACTUAL_CLAIMS
-                if c["inelasticity_score"] >= 0.80 and c.get("status") in {None, "VERIFIED"}
+                if c["inelasticity_score"] >= 0.80 and (c.get("status") is None or c.get("status") == "VERIFIED")
             ]),
             "provisional_indelible_candidates_count": len([
                 c for c in FACTUAL_CLAIMS
