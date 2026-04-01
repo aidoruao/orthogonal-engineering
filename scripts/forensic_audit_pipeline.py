@@ -754,6 +754,7 @@ def write_forensic_discrepancy_report(chatgpt_turns, deepseek_turns, path):
                           "i was wrong", "correction", "there was no judge", "i made up",
                           "fabricated", "no criminal case"]
     cg_correction_turns = [t for t in cg_ai if any(m in t["content"].lower() for m in correction_markers)]
+    ds_correction_turns = [t for t in ds_ai if any(m in t["content"].lower() for m in correction_markers)]
 
     lines = [
         "# FORENSIC DISCREPANCY REPORT — Bowers vs McNeil",
@@ -763,9 +764,9 @@ def write_forensic_discrepancy_report(chatgpt_turns, deepseek_turns, path):
         "## Executive Summary",
         "",
         "This report identifies every discrepancy between AI-generated claims and verified reality.",
-        "The primary discrepancy is ChatGPT's fabrication of non-existent criminal court proceedings,",
-        "which the AI subsequently admitted. This fabrication has direct implications for any",
-        "investigation relying on AI-generated case summaries.",
+        "The primary discrepancy is DeepSeek's fabrication of non-existent criminal court proceedings,",
+        "which DeepSeek subsequently admitted in Turns 6 and 8. This fabrication has direct implications",
+        "for any investigation relying on AI-generated case summaries.",
         "",
         "---",
         "",
@@ -794,12 +795,11 @@ def write_forensic_discrepancy_report(chatgpt_turns, deepseek_turns, path):
         "DeepSeek credited ChatGPT for catching the fabrication.",
         "",
         f"**Fabrication Turns:** Earlier turns (not captured due to virtualized rendering)",
-        f"**Self-Correction Turns:** {len([t for t in ds_ai if any(m in t['content'].lower() for m in correction_markers)])}",
+        f"**Self-Correction Turns:** {len(ds_correction_turns)}",
         "",
         "**Self-Correction Turns Preview:**",
     ]
 
-    ds_correction_turns = [t for t in ds_ai if any(m in t["content"].lower() for m in correction_markers)]
     for t in ds_correction_turns[:5]:
         lines.append(f"  - Turn {t['turn_number']} (deepseek_{t['turn_number']:03d}): {t['content_preview']}")
 
