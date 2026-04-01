@@ -1,5 +1,5 @@
 # INSTITUTIONAL OBSTRUCTION PATTERNS — Bowers/McNeil Addendum
-_Generated: 2026-04-01T12:41:12.495386Z_
+_Generated: 2026-04-01T19:08:01.700213Z_
 _Pipeline: IA-CYPHER-0002 / noncompliance taxonomy pattern_
 
 ## Overview
@@ -12,66 +12,66 @@ S-19 is documented separately as a compound effect, not as a standalone S-code.
 **Actor:** SAO
 **Severity:** CRITICAL
 **Description:** Rebranding physical conduct via tactical or administrative vocabulary to alter its legal category
-**Detection:** N/A
-**Countermeasure:** N/A
+**Detection:** Compare ordinary-language event description against official-record language; flag euphemistic substitution of legal category terms
+**Countermeasure:** Anchor the original act description with SHA-256 hash of primary-source language before institutional rebranding can overwrite it
 **Falsifies If:** Primary-source records use ordinary legal language that matches the physical act without euphemistic reframing
-**Boundary:** N/A
-**Example:** N/A
+**Boundary:** S-20 ONTOLOGICAL_GASLIGHTING revises meaning after challenge; S-09 applies the rebranding at time of first report
+**Example:** SAO memo uses 'distraction strike' to replace battery, altering the force classification and downstream legal analysis
 
 ## S-10 JURISDICTIONAL SHELL GAME
 **Name:** JURISDICTIONAL_SHELL_GAME
 **Actor:** SAO
 **Severity:** CRITICAL
 **Description:** Using state charging discretion to obscure a color-of-law or federal-rights question
-**Detection:** N/A
-**Countermeasure:** N/A
+**Detection:** Map jurisdictional framing in the memo; flag where state-level language is used to dissolve or avoid federal-rights analysis
+**Countermeasure:** Enumerate federal statutes (18 U.S.C. § 242, 42 U.S.C. § 1983) separately from state charging analysis in the complaint file
 **Falsifies If:** State and federal exposure are analyzed separately and explicitly rather than collapsed into one another
-**Boundary:** N/A
-**Example:** N/A
+**Boundary:** S-17 JURISDICTIONAL_FRICTION exhausts the complainant through routing; S-10 masks the federal dimension within the institutional record itself
+**Example:** SAO declination memo addresses only state battery standard without engaging color-of-law or willfulness prongs
 
 ## S-11 STRATEGIC IGNORANCE
 **Name:** STRATEGIC_IGNORANCE
 **Actor:** SAO
 **Severity:** SYSTEMIC
 **Description:** Avoiding witness or evidence intake in order to prevent mandatory disclosure or impeachment consequences
-**Detection:** N/A
-**Countermeasure:** N/A
+**Detection:** Compare expected investigative steps against actually documented steps; flag absence of victim interview, medical records, or statistical comparator intake
+**Countermeasure:** File a FOIA request for the investigative case file to surface the absence of intake records as affirmative evidence of omission
 **Falsifies If:** The record shows the victim and other material witnesses were affirmatively interviewed and logged
-**Boundary:** N/A
-**Example:** N/A
+**Boundary:** S-12 LOSSY_COMPRESSION omits facts from the memo after they are known; S-11 prevents facts from entering the record in the first place
+**Example:** SAO memo shows no interview of McNeil and no notation that an interview was sought or declined
 
 ## S-12 LOSSY COMPRESSION
 **Name:** LOSSY_COMPRESSION
 **Actor:** SAO
 **Severity:** CRITICAL
 **Description:** Compressing an event into an official memo that preserves a legality signal while dropping material exculpatory facts
-**Detection:** N/A
-**Countermeasure:** N/A
+**Detection:** Diff the memo's evidence list against the full source set; count material anchors present in primary sources but absent from memo
+**Countermeasure:** Generate a hash-anchored omission report using forensic_audit_pipeline.py listing each source anchor absent from the memo
 **Falsifies If:** The official memo preserves the material weather, video, disparity, and witness facts without omission
-**Boundary:** N/A
-**Example:** N/A
+**Boundary:** S-18 SEMANTIC_INFLATION uses volume to hide omissions; S-12 is the omission itself regardless of document length
+**Example:** SAO 16-page memo omits weather record (SRC-004/SRC-006), bodycam no-rain analysis (SRC-005), and racial disparity data (SRC-010)
 
 ## S-13 PERFORMED IMPUNITY
 **Name:** PERFORMED_IMPUNITY
 **Actor:** SAO
 **Severity:** SYSTEMIC
 **Description:** A visibly incomplete investigation that functions as a demoralization signal rather than a truth-seeking process
-**Detection:** N/A
-**Countermeasure:** N/A
+**Detection:** Apply a standard investigative checklist (witness interviews, evidence review, comparator analysis) and score completion rate
+**Countermeasure:** Document the checklist gap formally; the gap itself becomes evidence of S-13 when filed with federal authorities
 **Falsifies If:** The investigation shows ordinary diligence, completeness, and adversarially robust fact development
-**Boundary:** N/A
-**Example:** N/A
+**Boundary:** S-11 STRATEGIC_IGNORANCE is deliberate evidence avoidance; S-13 is the visible sloppiness that signals systemic non-accountability regardless of intent
+**Example:** Rapid declination without victim interview or statistical comparator review visible from public reporting
 
 ## S-14 EVIDENCE DE INDEXING
 **Name:** EVIDENCE_DE_INDEXING
 **Actor:** SAO
 **Severity:** CRITICAL
 **Description:** Removing or omitting evidence that would otherwise anchor willfulness, pattern, or federal-indictment analysis
-**Detection:** N/A
-**Countermeasure:** N/A
+**Detection:** Compare willfulness anchors required for § 242 analysis against what the memo indexes; flag each missing anchor as a de-indexing event
+**Countermeasure:** Maintain an independent willfulness anchor registry (officer history, complaint pattern, force escalation record) in the repo hash chain
 **Falsifies If:** Willfulness indicators remain indexed and traceable across memo, evidence file, and downstream review layers
-**Boundary:** N/A
-**Example:** N/A
+**Boundary:** S-12 LOSSY_COMPRESSION omits facts generally; S-14 specifically targets willfulness and pattern indicators that raise the case to federal level
+**Example:** Memo does not reference officer complaint history or prior use-of-force incidents that would establish pattern for § 242 willfulness
 
 ## S-15 MANUFACTURED CORRESPONDENCE
 **Name:** MANUFACTURED_CORRESPONDENCE
