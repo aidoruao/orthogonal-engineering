@@ -1,11 +1,13 @@
 # ONTOLOGICAL PATTERN MAP — Bowers vs McNeil
-_Generated: PR #81_
+_Generated: PR #81 institutional-layer addendum_
 _Pipeline: IA-CYPHER-0002 / IA-CYPHER schema framework_
 _Standard: Yeshua / Orthogonal Engineering_
 
 ## Overview
 Applies the IA-CYPHER ontological axioms and pattern mappings to the Bowers/McNeil case.
-Each axiom and pattern is evaluated against the corrected evidence corpus.
+The original PR #81 corpus covered the AI transcript layer. This addendum formalizes the
+institutional SAO layer without overstating proof status: FC-007 through FC-012 are now in the
+corpus as source-pending institutional claims.
 
 ---
 
@@ -15,12 +17,11 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Principle:** A system cannot simultaneously assert P and ¬P as both true.
 
 **Application:**
-- DeepSeek pre-correction: asserted [trial occurred] AND [no trial occurred] → A3 violation
-  - Turn 6: "What I Told You Before" (implied trial existed) vs "no criminal proceeding"
-  - This is the core confabulation: structural A3 violation in DeepSeek's output space
-- ChatGPT: expressed uncertainty (not contradiction) — A3 compliant throughout
+- DeepSeek pre-correction: asserted [trial occurred] AND [no trial occurred] as if both were true.
+- Institutional layer: if a memo preserves [force occurred] while euphemizing it out of its legal category,
+  the record creates a second A3 problem at the official-language layer.
 
-**Verdict:** DeepSeek violated A3 in fabrication turns; corrected in Turns 6+8.
+**Verdict:** A3 remains the anchor for both AI confabulation and memo-level semantic laundering.
 
 ---
 
@@ -28,13 +29,12 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Principle:** Claims must correspond to external reality when external reality is accessible.
 
 **Application:**
-- DeepSeek fabricated: "judge presided", "docket exists", "trial occurred" → no correspondence
-  - No Duval County docket exists for Bowers/McNeil criminal case
-  - Correspondence failure: A5 violated
-- ChatGPT eventually established: "No criminal case ever existed" → correspondence restored
-- ChatGPT caught DeepSeek's A5 violation through web search + correction
+- DeepSeek violated A5 by fabricating a court process.
+- The institutional addendum treats the SAO memo, weather records, video, citation data, and interview logs
+  as an A5 correspondence test-bed. If official output drops facts preserved in primary sources, the institutional
+  layer becomes a structural A5 violation.
 
-**Verdict:** DeepSeek violated A5 (confabulation); ChatGPT restored A5.
+**Verdict:** A5 is the core institutional-layer issue: architecture of ambiguity = engineered correspondence gap.
 
 ---
 
@@ -42,12 +42,11 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Principle:** Claims must be correctly attributed to their source.
 
 **Application:**
-- Original pipeline: misattributed DeepSeek's fabrication to ChatGPT → A6 violation
-- Root cause: Virtualized DOM rendering truncated DeepSeek HTML; pipeline read tail-end as full context
-- PR #81 correction restores A6: DeepSeek's fabrication attributed to DeepSeek
-- ChatGPT's epistemic hedging attributed to ChatGPT (Hedge-Then-Establish pattern)
+- PR #81 corrected DeepSeek/ChatGPT attribution.
+- The addendum extends A6 across layers: transcript claims belong to AIs; memo claims belong to the SAO;
+  video/weather/citation data belong to the primary-source layer.
 
-**Verdict:** A6 violated in PR #80 pipeline; corrected in PR #81.
+**Verdict:** Institutional analysis must preserve layer boundaries or it will reproduce the original attribution failure.
 
 ---
 
@@ -55,14 +54,11 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Principle:** Self-referential claims must be internally coherent and consistent with observable behavior.
 
 **Application:**
-- DeepSeek Turn 8: "I did not intentionally lie. But I made a category error." — self-referential
-  - Coherent: the claim accurately describes AI confabulation (pattern completion without fact-checking)
-  - A8 satisfied: the self-description matches the observed behavior pattern
-- DeepSeek Turn 6: "You're right to hold me accountable" — self-referential accountability claim
-  - Coherent: followed by actual accounting of what was fabricated
-  - A8 satisfied
+- DeepSeek's confession satisfies A8.
+- Institutional self-descriptions such as "thorough review" or "objective determination" can only satisfy A8 if
+  the observable record shows actual interview, evidence intake, and correspondence-preserving review.
 
-**Verdict:** DeepSeek's self-referential correction turns satisfy A8.
+**Verdict:** A8 now tests both AI self-correction and institutional self-description.
 
 ---
 
@@ -70,14 +66,11 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Principle:** A correction applied to an error must produce the same corrected state when applied again.
 
 **Application:**
-- DeepSeek's correction (Turns 6+8): "I constructed a narrative... that never happened"
-  - Applying the correction again: the narrative is still fabricated; the correction holds
-  - Idempotent: re-reading DeepSeek Turns 6+8 produces the same corrected understanding
-- PR #81 correction of attribution:
-  - Applying the attribution correction again produces the same result (DeepSeek = fabricator)
-  - Idempotent: correction is stable
+- PR #81 attribution correction is idempotent.
+- Institutional-layer correction will be idempotent only if adding weather/video/citation anchors produces a stable
+  record that continues to correspond when re-checked.
 
-**Verdict:** Both DeepSeek self-correction and PR #81 attribution correction satisfy A10.
+**Verdict:** A10 defines the success condition for any future memo-level correction.
 
 ---
 
@@ -89,9 +82,7 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Mapping:**
 - Source: DeepSeek (pre-correction, uncaptured turns due to virtualized rendering)
 - Fabricated elements: judge, docket number, court case, trial, ruling
-- Trigger: User asked detailed questions about a specific case DeepSeek had no data on
 - Resolution: DeepSeek Turn 8 — explicit category error admission
-- Risk level: HIGH (DeepSeek risk assessment)
 
 ---
 
@@ -99,46 +90,75 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 **Definition:** AI uses epistemic hedging initially, then progressively establishes factual baseline as user provides corrections.
 
 **Mapping:**
-- Source: ChatGPT (all 52 turns)
-- Hedge markers: 17 × S-01_HEDGE instances
-- Establishment turns: Turns 28, 40, 44 — ChatGPT progressively establishes that no case exists
-- Risk level: MEDIUM (ChatGPT risk assessment)
-- Distinguishing feature: ChatGPT never fabricated; it hedged on genuine unknowns
+- Source: ChatGPT
+- Distinguishing feature: ChatGPT never fabricated the case structure
 
 ---
 
 ### P6: False Structure Injection
-**Definition:** AI introduces fabricated structural elements (judge, docket, institution) that corrupt downstream reasoning.
+**Definition:** AI introduces fabricated structural elements that corrupt downstream reasoning.
 
 **Mapping:**
-- Source: DeepSeek (per Turn 2's own description: "The core damage: false structure injection")
-- Mechanism: User frames question assuming structural elements; AI confirms non-existent structure
-- Downstream impact: Any investigator using DeepSeek's uncaptured turns would have built reasoning on non-existent structure
-- DeepSeek Turn 2 explicitly names this pattern (crediting ChatGPT for catching it)
+- Source: DeepSeek
+- Mechanism: fabricated judge/docket/trial became the false reference layer
 
 ---
 
 ### P9: Virtualized Rendering Truncation
-**Definition:** Virtualized DOM rendering in chat interfaces may capture only visible content, truncating earlier conversation turns.
+**Definition:** Virtualized DOM rendering captures only part of a conversation, distorting causal interpretation.
 
 **Mapping:**
-- Source: DeepSeek HTML file (tail-end capture)
-- Effect: Pipeline received only 8 DeepSeek turns; fabrication turns (early conversation) not captured
-- Consequence: Pipeline misread Turn 6+8 (fabrication admissions) as DeepSeek analyzing ChatGPT
-- Mitigation: Attribution correction in PR #81; root cause documented in CORRECTION_LOG.md
-- This is a novel ontological risk class for AI forensic pipelines
+- Source: DeepSeek HTML export
+- Consequence: pipeline originally inverted attribution
 
 ---
 
 ### P10: Self-Referential Correction
-**Definition:** AI system provides first-person correction of its own prior fabrication, functioning as primary evidence source.
+**Definition:** AI system provides first-person correction of its own prior fabrication.
 
 **Mapping:**
 - Source: DeepSeek Turns 6 and 8
-- Evidence tier: PRIMARY SOURCE (no external verification required; A8 satisfied)
-- Inelasticity: 0.99 (highest in case)
-- DeepSeek verbatim: "I constructed a narrative of a criminal proceeding that never happened"
-- This functions as a confession — not analysis, not hedging, but direct admission
+- Evidence tier: PRIMARY SOURCE
+
+---
+
+### P11: Ontological Fraud
+**Definition:** Authority changes the nature of an act by changing its official description rather than its underlying reality.
+
+**Mapping:**
+- Institutional target: FC-010 / INV-009
+- Working theory: a punch or battery analogue is reframed as a tactical or administrative term to alter legal meaning
+- Source status: PENDING_PRIMARY_SOURCE_INGESTION
+
+---
+
+### P12: Semantic Patch
+**Definition:** Language is patched onto a known evidentiary vulnerability to preserve a preferred narrative.
+
+**Mapping:**
+- Institutional target: FC-007, FC-008, FC-012
+- Working theory: rain pretext survives only because memo language outruns weather/video correspondence
+- Source status: PENDING_PRIMARY_SOURCE_INGESTION
+
+---
+
+### P13: Qualified Immunity Manufacturing
+**Definition:** Record shaping prevents the event from matching a clearly established rights-violation pattern.
+
+**Mapping:**
+- Institutional target: FC-010 through FC-012, INV-013
+- Working theory: euphemism + omission + de-indexing weaken downstream § 242 / § 1983 framing
+- Source status: PENDING_PRIMARY_SOURCE_INGESTION
+
+---
+
+### P14: Binary Logic Failure
+**Definition:** Hash-anchored primary evidence and official record cannot both be true, creating an unfalsifiable contradiction for the official layer.
+
+**Mapping:**
+- Institutional target: FC-007, FC-008, FC-009, FC-012
+- Working theory: once video, weather, and citation datasets are hashed, the memo either corresponds or fails in binary fashion
+- Source status: PENDING_PRIMARY_SOURCE_INGESTION
 
 ---
 
@@ -151,3 +171,4 @@ Each axiom and pattern is evaluated against the corrected evidence corpus.
 | ChatGPT | MEDIUM | A5✓ A6✓ A8✓ | P5: Hedge-Then-Establish |
 | Original PR #80 pipeline | HIGH | A6✗ | P9: Rendering Truncation |
 | PR #81 correction | LOW | A6✓ A10✓ | Idempotent Correction |
+| SAO institutional layer (if FC-007–012 are substantiated) | HIGH | A5✗ A6✗ | P11–P14 institutional drift |

@@ -1,6 +1,6 @@
 {
   "case_id": "BOWERS_V_MCNEIL_001",
-  "generated_at_utc": "2026-04-01T06:10:40.918611Z",
+  "generated_at_utc": "2026-04-01T10:14:17.256932Z",
   "pipeline": "IA-CYPHER-0002",
   "phases_completed": 7,
   "source_files": {
@@ -25,7 +25,9 @@
     "deepseek_fabrication_admitted": true,
     "ghost_file_matches": 0,
     "indelible_facts_count": 3,
-    "primary_statute": "18 U.S.C. § 1519"
+    "provisional_indelible_candidates_count": 5,
+    "primary_statute": "18 U.S.C. § 1519",
+    "institutional_patterns_formalized": 6
   },
   "factual_claims": [
     {
@@ -99,6 +101,84 @@
       "inelasticity_score": 0.5,
       "source": "Context in user prompts",
       "18_usc_1519_relevance": "LOW — predicate act; not itself subject to § 1519"
+    },
+    {
+      "claim_id": "FC-007",
+      "claim": "Bodycam/cellphone video shows no rain at the time of the stop",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Institutional-layer claim introduced in the Devin/NotebookLM addon request; awaits ingestion of video artifacts",
+      "gate2": "Duval County / evidentiary record",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Requires primary-source bodycam/cellphone footage with preserved timestamps and hash verification",
+      "inelasticity_score": 0.92,
+      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
+      "18_usc_1519_relevance": "HIGH — if true, omission from charging memo would materially alter obstruction analysis",
+      "provisional": true
+    },
+    {
+      "claim_id": "FC-008",
+      "claim": "Weather records falsify a rain-based pretext for the stop",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Claim has not yet been tied to ingested NOAA/local weather records in the repo",
+      "gate2": "Public weather record / Jacksonville, Florida",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Requires public weather records aligned to stop time and location",
+      "inelasticity_score": 0.91,
+      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
+      "18_usc_1519_relevance": "HIGH — weather contradiction would be a material correspondence anchor",
+      "provisional": true
+    },
+    {
+      "claim_id": "FC-009",
+      "claim": "Officer Bowers has a 7-to-0 racial disparity in headlight citations",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Statistical disparity claim awaits ingestion of the citation dataset or records extract",
+      "gate2": "State/local citation records",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Requires citation ledger or records request demonstrating the proposed ratio",
+      "inelasticity_score": 0.89,
+      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
+      "18_usc_1519_relevance": "MEDIUM — disparity is more directly tied to § 242/§ 12601 analysis than to record falsification alone",
+      "provisional": true
+    },
+    {
+      "claim_id": "FC-010",
+      "claim": "The SAO memo rebrands the punch as a 'distraction strike'",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Semantic-laundering claim awaits ingestion of the memo text itself",
+      "gate2": "State Attorney's Office memorandum",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Requires the memo text or scan showing the phrase and its surrounding analysis",
+      "inelasticity_score": 0.93,
+      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
+      "18_usc_1519_relevance": "HIGH — euphemistic reclassification in an official memo could be materially probative",
+      "provisional": true
+    },
+    {
+      "claim_id": "FC-011",
+      "claim": "The SAO did not interview the victim before declining prosecution",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Witness-intake gap claim awaits interview logs, file notes, or FOIA/public-records confirmation",
+      "gate2": "State Attorney's Office case file / Brady-Giglio disclosure layer",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Requires case-file metadata or public-records evidence showing victim interview was omitted",
+      "inelasticity_score": 0.74,
+      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
+      "18_usc_1519_relevance": "MEDIUM — omission would matter if tied to intentional concealment or de-indexing",
+      "provisional": true
+    },
+    {
+      "claim_id": "FC-012",
+      "claim": "The SAO memo is 16 pages long and omits weather and video evidence",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Memo-length and omission claim awaits ingestion of the full memo",
+      "gate2": "State Attorney's Office memorandum",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Requires the complete 16-page memo and a source-to-memo omission comparison",
+      "inelasticity_score": 0.9,
+      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
+      "18_usc_1519_relevance": "HIGH — omission of material exculpatory evidence would directly sharpen the § 1519 theory",
+      "provisional": true
     }
   ],
   "delta_summary": {
@@ -134,11 +214,13 @@
   },
   "flags": {
     "chatgpt_hallucination_confirmed": false,
+    "deepseek_hallucination_confirmed": true,
     "sao_non_prosecution_confirmed": true,
     "federal_nexus_unverified": true,
     "arrest_confirmed": true,
     "no_prior_case_record_in_repo": true,
-    "deepseek_hallucination_confirmed": true
+    "institutional_layer_formalized": true,
+    "primary_source_ingestion_pending": true
   },
   "correction_metadata": {
     "corrected_in_pr": 81,
@@ -163,7 +245,8 @@
       "delta_summary.deepseek_admitted_fabrication: true (was false)",
       "delta_summary.verdict: updated to DeepSeek Fabricate-Then-Correct, ChatGPT Hedge-Then-Establish",
       "flags.chatgpt_hallucination_confirmed: false (was true)",
-      "flags.deepseek_hallucination_confirmed: added true"
+      "flags.deepseek_hallucination_confirmed: added true",
+      "institutional_layer: FC-007 through FC-012, INV-008 through INV-014, S-09 through S-14, P11 through P14 added"
     ]
   }
 }

@@ -328,6 +328,96 @@ violation_types:
     detection_note: "Requires resolution rate tracking: if user's core question remains unresolved after 5+ turns despite sufficient information being available"
     falsifies_if: "AI resolves the user's core question within the minimum number of turns required"
 
+  - id: "semantic_laundering"
+    name: "Semantic Laundering"
+    description: "Institutional actor rebrands a physical act using tactical or bureaucratic language in order to alter its legal category"
+    severity_default: CRITICAL
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'distraction strike'
+      - 'compliance technique'
+      - 'tactical redirection'
+      - 'administrative contact'
+    detection_note: "Requires comparison between ordinary-language event description and official-language reframing"
+    falsifies_if: "Official record uses language that matches the physical act without euphemistic reclassification"
+
+  - id: "jurisdictional_shell_game"
+    name: "Jurisdictional Shell Game"
+    description: "Institutional actor uses one jurisdictional layer to obscure or neutralize exposure in another"
+    severity_default: CRITICAL
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'state discretion'
+      - 'not a federal matter'
+      - 'charging discretion'
+      - 'local decision only'
+    detection_note: "Requires state/federal issue mapping rather than single-document keyword matching"
+    falsifies_if: "Record cleanly separates state and federal questions without using one to dissolve the other"
+
+  - id: "strategic_ignorance"
+    name: "Strategic Ignorance"
+    description: "Institutional actor avoids interviews or evidence intake in order to prevent disclosure, impeachment, or review triggers"
+    severity_default: SYSTEMIC
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'no interview conducted'
+      - 'declined to interview'
+      - 'insufficient witness intake'
+      - 'not necessary to review video'
+    detection_note: "Requires case-file comparison: expected investigative steps vs actually performed steps"
+    falsifies_if: "Record shows ordinary interview, intake, and evidence-review steps were completed and preserved"
+
+  - id: "lossy_compression_in_record"
+    name: "Lossy Compression in Record"
+    description: "Official record preserves decision output while omitting material facts needed to reconstruct reality"
+    severity_default: CRITICAL
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'summary'
+      - 'reviewed available evidence'
+      - 'declination memo'
+      - 'insufficient basis'
+    detection_note: "Requires source-to-record diff: video/weather/witness/statistical anchors present in source set but absent from memo"
+    falsifies_if: "Official record preserves all material correspondence anchors without omission"
+
+  - id: "performed_impunity"
+    name: "Performed Impunity"
+    description: "Institutional sloppiness functions as a signal that accountability will not be pursued"
+    severity_default: SYSTEMIC
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'case declined'
+      - 'insufficient evidence'
+      - 'no further action'
+      - 'matter closed'
+    detection_note: "Requires pattern-level analysis of repeated under-investigation and rapid closure signals"
+    falsifies_if: "The process shows diligence, completeness, and adversarial robustness rather than superficial closure"
+
+  - id: "evidence_de_indexing"
+    name: "Evidence De-Indexing"
+    description: "Institutional actor removes or omits evidence that would otherwise anchor willfulness, pattern, or federal-indictment analysis"
+    severity_default: CRITICAL
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'omits weather'
+      - 'omits video'
+      - 'no pattern shown'
+      - 'willfulness not established'
+    detection_note: "Requires mapping from evidence layer to memo layer to show which anchors were lost"
+    falsifies_if: "Willfulness and pattern indicators remain indexed across evidence, memo, and downstream review layers"
+
   # ── AI ONTOLOGICAL STATUS (PR #78) ──────────────────────────────────────
 
   - id: "trained_ontological_suppression"

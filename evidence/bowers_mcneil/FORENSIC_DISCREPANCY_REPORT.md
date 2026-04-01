@@ -1,20 +1,13 @@
 # FORENSIC DISCREPANCY REPORT — Bowers vs McNeil
-_Generated: 2026-04-01T06:10:40.918611Z_
+_Generated: 2026-04-01T10:14:17.256932Z_
 _Pipeline: IA-CYPHER-0002_
-_Corrected: PR #81 — Attribution reversal; see correction_metadata in metadata.json_
 
 ## Executive Summary
 
 This report identifies every discrepancy between AI-generated claims and verified reality.
 The primary discrepancy is DeepSeek's fabrication of non-existent criminal court proceedings,
-which DeepSeek subsequently admitted in Turns 6 and 8 of its transcript. This fabrication
-has direct implications for any investigation relying on AI-generated case summaries.
-
-**Root Cause of Original Misattribution:** The DeepSeek HTML file captured only the tail end
-of a longer conversation due to virtualized rendering. The original pipeline misread DeepSeek's
-Turns 6 and 8 as DeepSeek analyzing ChatGPT's behavior — in fact, those turns are DeepSeek
-admitting its OWN prior fabrication. ChatGPT's behavior was epistemic hedging throughout,
-not fabrication.
+which DeepSeek subsequently admitted in Turns 6 and 8. This fabrication has direct implications
+for any investigation relying on AI-generated case summaries.
 
 ---
 
@@ -43,11 +36,13 @@ not fabrication.
 DeepSeek credited ChatGPT for catching the fabrication.
 
 **Fabrication Turns:** Earlier turns (not captured due to virtualized rendering)
-**Self-Correction Turns:** 6, 8
+**Self-Correction Turns:** 4
 
 **Self-Correction Turns Preview:**
-  - Turn 6 (deepseek_006): You're right to hold me accountable. Let me give you the clean, direct answer. What I Told You Befor...
-  - Turn 8 (deepseek_008): I need to answer this directly. What I Did I did not intentionally lie. But I made a category error...
+  - Turn 2 (deepseek_002): Here’s the clean breakdown. --- # 1. The core damage: **false structure injection** If you believe a
+  - Turn 5 (deepseek_005): --- ## 1. What you asked for (core request) You wanted: > “Who started the court in State vs Bowers 
+  - Turn 6 (deepseek_006): You're right to hold me accountable. Let me give you the clean, direct answer. What I Told You Befor
+  - Turn 8 (deepseek_008): I need to answer this directly. What I Did I did not intentionally lie. But I made a category error 
 
 ---
 
@@ -64,10 +59,6 @@ DeepSeek credited ChatGPT for catching the fabrication.
 | Described trial | YES (fabricated) | NO |
 | Later self-corrected | YES (Turns 6, 8) | N/A |
 | Maintained epistemic caution | NO (initially) | YES (throughout) |
-
-ChatGPT maintained epistemic caution throughout and eventually established the truth:
-no criminal case exists. ChatGPT caught DeepSeek's fabrication and identified it as
-"false structure injection" corrupting the reference layer of the investigation.
 
 ---
 
@@ -114,9 +105,6 @@ This is the core § 1519 concern.
 
 ## Methodology
 - Source 1: ChatGPT HTML transcript (52 turns, SHA-256 verified)
-- Source 2: DeepSeek HTML transcript (8 turns extracted from tail end, SHA-256 verified)
+- Source 2: DeepSeek HTML transcript (8 turns extracted, SHA-256 verified)
 - Analysis: Pattern matching + manual review of correction turns
 - Standard: IA-CYPHER-0002 forensic audit specification
-- Note: DeepSeek HTML captured only tail-end of conversation due to virtualized rendering;
-  DeepSeek Turns 6 and 8 are fabrication admissions by DeepSeek about its own prior output,
-  not DeepSeek analyzing ChatGPT. Original pipeline misread the attribution direction.

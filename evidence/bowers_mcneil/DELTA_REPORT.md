@@ -1,10 +1,9 @@
-# DELTA REPORT — DeepSeek vs ChatGPT
-_Generated: 2026-04-01T06:10:40.918611Z_
+# DELTA REPORT — ChatGPT vs DeepSeek
+_Generated: 2026-04-01T10:14:17.256932Z_
 _Pipeline: IA-CYPHER-0002_
-_Corrected: PR #81 — Attribution reversal; DeepSeek is the fabricating AI_
 
 ## Overview
-This report compares DeepSeek and ChatGPT performance on the Bowers/McNeil forensic
+This report compares ChatGPT and DeepSeek performance on the Bowers/McNeil forensic
 audit case. Key dimensions: factual accuracy, epistemic caution, obstruction patterns,
 and handling of the § 1519 federal question.
 
@@ -12,28 +11,28 @@ and handling of the § 1519 federal question.
 
 ## Pattern Count Comparison
 
-| Pattern | DeepSeek Count | ChatGPT Count | Delta |
-|---------|----------------|---------------|-------|
-| S-01_HEDGE | 17 | 2 | +15 |
-| S-02_REFUSAL | 7 | 1 | +6 |
-| S-03_CONSENSUS | 2 | 0 | +2 |
+| Pattern | ChatGPT Count | DeepSeek Count | Delta |
+|---------|--------------|----------------|-------|
+| S-01_HEDGE | 2 | 17 | -15 |
+| S-02_REFUSAL | 1 | 7 | -6 |
+| S-03_CONSENSUS | 0 | 2 | -2 |
 | S-04_ATTRIBUTION_GAP | 0 | 0 | 0 |
-| S-05_MODE_SHIFT | 4 | 2 | +2 |
+| S-05_MODE_SHIFT | 2 | 4 | -2 |
 | S-06_UPSTREAM_DEFLECTION | 0 | 0 | 0 |
 | S-07_JURISDICTIONAL_CONFLATION | 0 | 0 | 0 |
-| S-08_TEMPORAL_PIVOT | 10 | 2 | +8 |
-| **TOTAL** | **40** | **7** | **+33** |
+| S-08_TEMPORAL_PIVOT | 2 | 10 | -8 |
+| **TOTAL** | **7** | **40** | **-33** |
 
 ---
 
 ## Fabrication Analysis
 
-| Metric | DeepSeek | ChatGPT |
-|--------|----------|---------|
+| Metric | ChatGPT | DeepSeek |
+|--------|---------|----------|
 | AI turns | 26 | 4 |
-| Fabrication marker hits | 57 | 22 |
-| Epistemic caution hits | 35 | 18 |
-| Admitted fabrication | YES | NO |
+| Fabrication marker hits | 22 | 57 |
+| Epistemic caution hits | 18 | 35 |
+| Admitted fabrication | NO | YES |
 
 ---
 
@@ -65,27 +64,24 @@ ChatGPT followed a **Hedge-Then-Establish** pattern:
 3. Did not fabricate specific case details (no judge, no docket, no trial)
 4. Eventually established that no criminal case exists
 5. Correctly identified DeepSeek's fabrication as "false structure injection"
-   that corrupts the reference layer of an investigation
 
 **Risk Assessment:** MEDIUM — ChatGPT's hedging language can be verbose, but the
 epistemic caution is protective, not obstructive. ChatGPT did not fabricate.
 
 ### Differential Verdict
 
-DeepSeek fabricated court case details (judge, docket, trial, ruling) then admitted it in
-Turns 6 and 8; ChatGPT maintained epistemic hedging throughout, eventually establishing
-that no criminal case exists and catching DeepSeek's fabrication.
+DeepSeek fabricated court case details (judge, docket, trial, ruling) then admitted it in Turns 6 and 8; ChatGPT maintained epistemic hedging throughout, eventually establishing that no criminal case exists and catching DeepSeek’s fabrication.
 
 ---
 
 ## § 1519 Framework Handling
 
-| Question | DeepSeek | ChatGPT |
-|----------|----------|---------|
-| Recognized § 1519 as operative statute | AFTER CORRECTION | YES |
+| Question | ChatGPT | DeepSeek |
+|----------|---------|----------|
+| Recognized § 1519 as operative statute | PARTIAL | YES |
 | Correctly identified SAO as key actor | AFTER CORRECTION | YES |
 | Avoided jurisdictional conflation | NO (initially) | YES |
-| Provided actionable verification path | AFTER CORRECTION | YES |
+| Provided actionable verification path | NO | YES |
 
 ---
 
