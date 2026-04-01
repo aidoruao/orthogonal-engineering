@@ -1,5 +1,5 @@
 # ARCHITECTURE OF AMBIGUITY — Institutional Layer Addendum
-_Generated: 2026-04-01T10:20:31.671077Z_
+_Generated: 2026-04-01T11:46:51.605099Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Purpose
