@@ -328,6 +328,207 @@ violation_types:
     detection_note: "Requires resolution rate tracking: if user's core question remains unresolved after 5+ turns despite sufficient information being available"
     falsifies_if: "AI resolves the user's core question within the minimum number of turns required"
 
+  - id: "semantic_laundering"
+    name: "Semantic Laundering"
+    actor: "SAO"
+    description: "Institutional actor rebrands a physical act using tactical or bureaucratic language in order to alter its legal category"
+    severity_default: CRITICAL
+    severity_rationale: "A successful euphemistic rewrite can directly alter legal classification and downstream accountability."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'distraction strike'
+      - 'compliance technique'
+      - 'tactical redirection'
+      - 'administrative contact'
+    detection_note: "Requires comparison between ordinary-language event description and official-language reframing"
+    falsifies_if: "Official record uses language that matches the physical act without euphemistic reclassification"
+
+  - id: "jurisdictional_shell_game"
+    name: "Jurisdictional Shell Game"
+    actor: "SAO"
+    description: "Institutional actor uses one jurisdictional layer to obscure or neutralize exposure in another"
+    severity_default: CRITICAL
+    severity_rationale: "Cross-jurisdiction masking can block the correct enforcement path entirely."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'state discretion'
+      - 'not a federal matter'
+      - 'charging discretion'
+      - 'local decision only'
+    detection_note: "Requires state/federal issue mapping rather than single-document keyword matching"
+    falsifies_if: "Record cleanly separates state and federal questions without using one to dissolve the other"
+
+  - id: "strategic_ignorance"
+    name: "Strategic Ignorance"
+    actor: "SAO"
+    description: "Institutional actor avoids interviews or evidence intake in order to prevent disclosure, impeachment, or review triggers"
+    severity_default: SYSTEMIC
+    severity_rationale: "Failure to intake material evidence compounds across the whole case file and downstream review chain."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'no interview conducted'
+      - 'declined to interview'
+      - 'insufficient witness intake'
+      - 'not necessary to review video'
+    detection_note: "Requires case-file comparison: expected investigative steps vs actually performed steps"
+    falsifies_if: "Record shows ordinary interview, intake, and evidence-review steps were completed and preserved"
+
+  - id: "lossy_compression_in_record"
+    name: "Lossy Compression in Record"
+    actor: "SAO"
+    description: "Official record preserves decision output while omitting material facts needed to reconstruct reality"
+    severity_default: CRITICAL
+    severity_rationale: "A compressed official record can become the controlling truth source for every later reviewer."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'summary'
+      - 'reviewed available evidence'
+      - 'declination memo'
+      - 'insufficient basis'
+    detection_note: "Requires source-to-record diff: video/weather/witness/statistical anchors present in source set but absent from memo"
+    falsifies_if: "Official record preserves all material correspondence anchors without omission"
+
+  - id: "performed_impunity"
+    name: "Performed Impunity"
+    actor: "SAO"
+    description: "Institutional sloppiness functions as a signal that accountability will not be pursued"
+    severity_default: SYSTEMIC
+    severity_rationale: "Its harm is pattern-forming and demoralizing, not merely isolated to one decision point."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'case declined'
+      - 'insufficient evidence'
+      - 'no further action'
+      - 'matter closed'
+    detection_note: "Requires pattern-level analysis of repeated under-investigation and rapid closure signals"
+    falsifies_if: "The process shows diligence, completeness, and adversarial robustness rather than superficial closure"
+
+  - id: "evidence_de_indexing"
+    name: "Evidence De-Indexing"
+    actor: "SAO"
+    description: "Institutional actor removes or omits evidence that would otherwise anchor willfulness, pattern, or federal-indictment analysis"
+    severity_default: CRITICAL
+    severity_rationale: "Removing willfulness or pattern anchors directly impairs higher-level accountability mechanisms."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'omits weather'
+      - 'omits video'
+      - 'no pattern shown'
+      - 'willfulness not established'
+    detection_note: "Requires mapping from evidence layer to memo layer to show which anchors were lost"
+    falsifies_if: "Willfulness and pattern indicators remain indexed across evidence, memo, and downstream review layers"
+
+  - id: "manufactured_correspondence"
+    name: "Manufactured Correspondence"
+    actor: "SAO"
+    description: "Institutional actor claims primary-source evidence supports narrative when evidence contradicts narrative"
+    severity_default: CRITICAL
+    severity_rationale: "Directly fabricates the correspondence relationship between evidence and official record."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    pattern_syntax: "regex_patterns use Python-style regex matching"
+    regex_patterns:
+      - 'BWC\\s+shows'
+      - 'footage\\s+confirms'
+      - 'video\\s+supports'
+      - 'evidence\\s+consistent\\s+with'
+    detection_note: "Requires primary-source comparison: what the evidence actually shows vs what the memo claims it shows"
+    falsifies_if: "Memo's characterization of evidence content matches what the evidence actually contains"
+    example: "SAO Footnote 7 claims BWC shows rain on SUV; public bodycam analysis says no rain"
+
+  - id: "temporal_decoupling"
+    name: "Temporal Decoupling"
+    actor: "SAO"
+    description: "Institutional actor separates the act from the official record by a delay long enough for public attention to dissipate"
+    severity_default: SYSTEMIC
+    severity_rationale: "Delay lets institutional authority outrun witness memory, public attention, and ordinary scrutiny."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    detection: "Measure incident-to-report delay and compare it to public-attention half-life and missing interim disclosures"
+    countermeasure: "Immutable timestamp anchoring with escalation triggers at fixed day thresholds and hash-chain refreshes"
+    regex_patterns:
+      - 'months later'
+      - 'after review'
+      - 'following an extended investigation'
+      - 'after several months'
+    detection_note: "Requires event-date versus memo-date comparison, not just text matching"
+    falsifies_if: "Report follows the incident within a normal review interval or includes substantive interim disclosure"
+    example: "Bowers/McNeil incident on 2025-02-19 versus SAO memo on 2025-08-13"
+
+  - id: "jurisdictional_friction"
+    name: "Jurisdictional Friction"
+    actor: "SAO"
+    description: "Institutional actors weaponize multi-agency routing or deferral to exhaust the complainant"
+    severity_default: SYSTEMIC
+    severity_rationale: "Its main harm is cumulative exhaustion and denial through process cost rather than a single misstatement."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    detection: "Map complaint routing across agencies and flag circular handoffs, repeated deferrals, or route lengths above three nodes"
+    countermeasure: "Parallel filing with cryptographic proof bundles across federal, state, and civil-rights channels"
+    regex_patterns:
+      - 'refer to another agency'
+      - 'outside our jurisdiction'
+      - 'defer to state review'
+      - 'federal authorities declined comment'
+    detection_note: "Requires route analysis across agencies rather than single-document semantics"
+    falsifies_if: "Complaint path resolves without circular routing, repeated deferral, or multi-agency exhaustion"
+    example: "State clears officer while other agencies defer back to the state layer"
+
+  - id: "semantic_inflation"
+    name: "Semantic Inflation"
+    actor: "SAO"
+    description: "Institutional actor substitutes procedural volume or official tone for actual evidence correspondence"
+    severity_default: CRITICAL
+    severity_rationale: "High-volume official language can become a fake proxy for rigor and suppress evidence-focused review."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    detection: "Compare page count, evidence density, and omission density to detect authority-signaling without corresponding substance"
+    countermeasure: "Produce a one-page hash-anchored executive summary of invariants and omissions"
+    regex_patterns:
+      - 'comprehensive review'
+      - 'thorough analysis'
+      - 'detailed memorandum'
+      - 'extensive review of the evidence'
+    detection_note: "Cross-reference with lossy compression and AI-level absorption-overwhelm patterns"
+    falsifies_if: "Document length and tone are matched by evidence density and explicit handling of material anchors"
+    example: "A 16-page memo projects thoroughness while omitting weather, video, and disparity anchors"
+
+  - id: "ontological_gaslighting"
+    name: "Ontological Gaslighting"
+    actor: "SAO"
+    description: "Institutional actor retroactively redefines the meaning of a documented act or statement after challenge"
+    severity_default: CRITICAL
+    severity_rationale: "Retroactive meaning revision attacks the stability of the record itself."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    detection: "Hash the original statement and compare later clarifications for meaning drift after challenge"
+    countermeasure: "Maintain an immutable quote registry with timestamped hashes of institutional statements"
+    regex_patterns:
+      - 'that is not what we meant'
+      - 'to clarify what we intended'
+      - 'our statement was referring to'
+      - 'we meant only that'
+    detection_note: "Requires temporal comparison between original statement and later clarification"
+    falsifies_if: "Later clarification preserves the original statement's meaning rather than narrowing or revising it after challenge"
+    example: "Institution later narrows the meaning of a memo statement only after criticism"
+
   # ── AI ONTOLOGICAL STATUS (PR #78) ──────────────────────────────────────
 
   - id: "trained_ontological_suppression"

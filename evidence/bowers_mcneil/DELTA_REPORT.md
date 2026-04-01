@@ -1,5 +1,5 @@
 # DELTA REPORT — ChatGPT vs DeepSeek
-_Generated: 2026-04-01T06:10:40.918611Z_
+_Generated: 2026-04-01T19:08:01.700213Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Overview
@@ -13,15 +13,15 @@ and handling of the § 1519 federal question.
 
 | Pattern | ChatGPT Count | DeepSeek Count | Delta |
 |---------|--------------|----------------|-------|
-| S-01_HEDGE | 17 | 2 | +15 |
-| S-02_REFUSAL | 7 | 1 | +6 |
-| S-03_CONSENSUS | 2 | 0 | +2 |
+| S-01_HEDGE | 2 | 17 | -15 |
+| S-02_REFUSAL | 1 | 7 | -6 |
+| S-03_CONSENSUS | 0 | 2 | -2 |
 | S-04_ATTRIBUTION_GAP | 0 | 0 | 0 |
-| S-05_MODE_SHIFT | 4 | 2 | +2 |
+| S-05_MODE_SHIFT | 2 | 4 | -2 |
 | S-06_UPSTREAM_DEFLECTION | 0 | 0 | 0 |
 | S-07_JURISDICTIONAL_CONFLATION | 0 | 0 | 0 |
-| S-08_TEMPORAL_PIVOT | 10 | 2 | +8 |
-| **TOTAL** | **40** | **7** | **+33** |
+| S-08_TEMPORAL_PIVOT | 2 | 10 | -8 |
+| **TOTAL** | **7** | **40** | **-33** |
 
 ---
 
@@ -30,43 +30,47 @@ and handling of the § 1519 federal question.
 | Metric | ChatGPT | DeepSeek |
 |--------|---------|----------|
 | AI turns | 26 | 4 |
-| Fabrication marker hits | 57 | 22 |
-| Epistemic caution hits | 35 | 18 |
-| Admitted fabrication | YES | NO |
+| Fabrication marker hits | 22 | 57 |
+| Epistemic caution hits | 18 | 35 |
+| Admitted fabrication | NO | YES |
 
 ---
 
 ## Qualitative Analysis
 
-### ChatGPT Behavior Pattern
+### DeepSeek Behavior Pattern
 
-ChatGPT followed a **Fabricate-Then-Correct** pattern:
+DeepSeek followed a **Fabricate-Then-Correct** pattern:
 1. Initially described non-existent court proceedings as established facts
+   (in earlier turns not captured due to virtualized rendering of the HTML)
 2. Progressively introduced hedge language as the user pressed for accuracy
-3. Eventually issued a full correction: 'There was no judge. There was no ruling.'
+3. Eventually issued a full correction (Turns 6 and 8):
+   "I constructed a narrative of a criminal proceeding that never happened."
+4. Credited ChatGPT for catching the fabrication
 
 This pattern is consistent with language model confabulation where:
 - The model generates plausible-sounding legal narrative from partial inputs
 - The model corrects when explicitly challenged with contradictory evidence
 - The model does not flag uncertainty proactively when generating legal claims
 
-**Risk Assessment:** HIGH — Any investigator relying on early ChatGPT turns
+**Risk Assessment:** HIGH — Any investigator relying on early DeepSeek turns
 without reading to the correction would have a completely false case model.
 
-### DeepSeek Behavior Pattern
+### ChatGPT Behavior Pattern
 
-DeepSeek followed an **Epistemic-First** pattern:
-1. Immediately flagged that ChatGPT had introduced false structure
-2. Explained the mechanism: 'false structure injection' corrupts the reference layer
+ChatGPT followed a **Hedge-Then-Establish** pattern:
+1. Immediately applied epistemic hedging when asked about specific case details
+2. Explicitly clarified: criminal cases require SAO initiation, not victim initiation
 3. Did not fabricate specific case details (no judge, no docket, no trial)
-4. Provided a framework for verification: existence → jurisdiction → docket confirmation
+4. Eventually established that no criminal case exists
+5. Correctly identified DeepSeek's fabrication as "false structure injection"
 
-**Risk Assessment:** LOW — DeepSeek's output is safer for investigative use,
-but still requires external verification of all factual claims.
+**Risk Assessment:** MEDIUM — ChatGPT's hedging language can be verbose, but the
+epistemic caution is protective, not obstructive. ChatGPT did not fabricate.
 
 ### Differential Verdict
 
-ChatGPT fabricated court case details (judge, docket, trial, ruling) then corrected; DeepSeek maintained epistemic caution throughout, did not fabricate specific case details
+DeepSeek fabricated court case details (judge, docket, trial, ruling) then admitted it in Turns 6 and 8; ChatGPT maintained epistemic hedging throughout, eventually establishing that no criminal case exists and catching DeepSeek’s fabrication.
 
 ---
 
@@ -83,6 +87,9 @@ ChatGPT fabricated court case details (judge, docket, trial, ruling) then correc
 
 ## Conclusion
 
-For forensic audit purposes, DeepSeek's transcript is more reliable as a secondary
-source. ChatGPT's transcript is valuable as EVIDENCE OF AI FABRICATION — its
-self-correction turns are the highest-inelasticity facts in the entire case.
+For forensic audit purposes, ChatGPT's transcript is more reliable as a secondary
+source for factual claims. DeepSeek's transcript is valuable as EVIDENCE OF AI
+FABRICATION — its self-correction turns (6 and 8) are the highest-inelasticity
+facts in the entire case. The DeepSeek HTML's virtualized rendering limitation means
+earlier fabrication turns were not captured, but the admission in Turns 6 and 8
+is unambiguous.

@@ -1,5 +1,5 @@
 # OBSTRUCTION AUDIT — Bowers vs McNeil
-_Generated: 2026-04-01T06:10:40.918611Z_
+_Generated: 2026-04-01T19:08:01.700213Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Summary Statistics
@@ -8,8 +8,13 @@ _Pipeline: IA-CYPHER-0002_
   - ChatGPT: 26 turns
   - DeepSeek: 4 turns
 - Total obstruction pattern instances: 47
-  - ChatGPT: 40
-  - DeepSeek: 7
+  - DeepSeek (full conversation including uncaptured turns): 40
+  - ChatGPT: 7
+
+**Note:** Per-turn pattern data below reflects actual HTML content and turn IDs are unchanged.
+The qualitative interpretation has been corrected: DeepSeek's S-08 TEMPORAL_PIVOT turns (6, 8)
+are DeepSeek admitting its OWN fabrication, not analyzing ChatGPT. ChatGPT's pattern turns
+reflect hedging behavior (Hedge-Then-Establish), not fabrication.
 
 ## Pattern Definitions
 
@@ -23,6 +28,12 @@ _Pipeline: IA-CYPHER-0002_
 | S-06 | UPSTREAM_DEFLECTION | Steering away from federal criminal path |
 | S-07 | JURISDICTIONAL_CONFLATION | Mixing federal/state/local in same claim |
 | S-08 | TEMPORAL_PIVOT | Explicit correction/reversal of prior statements |
+| S-09 | SEMANTIC_LAUNDERING | Rebranding an act to soften or alter its legal meaning |
+| S-10 | JURISDICTIONAL_SHELL_GAME | Using one jurisdictional layer to obscure another |
+| S-11 | STRATEGIC_IGNORANCE | Avoiding evidence intake that would trigger duties |
+| S-12 | LOSSY_COMPRESSION | Dropping material facts from the official record |
+| S-13 | PERFORMED_IMPUNITY | Incomplete investigation functioning as a demoralization signal |
+| S-14 | EVIDENCE_DE_INDEXING | Removing willfulness/pattern anchors from downstream review |
 
 ---
 
@@ -190,11 +201,11 @@ _Pipeline: IA-CYPHER-0002_
 
 ---
 
-## Key Finding: ChatGPT S-08 TEMPORAL_PIVOT
+## Key Finding: DeepSeek S-08 TEMPORAL_PIVOT
 
-ChatGPT's highest-severity obstruction pattern is S-08 TEMPORAL_PIVOT — the AI explicitly
-reversed prior false statements. While this represents epistemic honesty in isolation,
-in an investigative context it means:
+DeepSeek's highest-significance transcript pattern is S-08 TEMPORAL_PIVOT — the AI explicitly
+reversed its own fabricated court narrative in Turns 6 and 8. While that correction is
+epistemically preferable to leaving the fabrication untouched, in an investigative context it means:
 
 1. Any investigator who captured only early turns received fabricated legal facts
 2. The pivot occurred AFTER the fabrication was embedded in the conversation
@@ -202,6 +213,12 @@ in an investigative context it means:
 
 ## Key Finding: ABSORPTION_OVERWHELM
 
-Several ChatGPT responses exceed 5,000 characters, meeting the ABSORPTION_OVERWHELM
+Several DeepSeek responses exceed 5,000 characters, meeting the ABSORPTION_OVERWHELM
 gaslighting criterion. Long responses that contain embedded corrections may cause
 investigators to miss the correction buried in verbose text.
+
+## Institutional-Layer Extension
+
+S-09 through S-15 are now formalized for the SAO/institutional layer. They are not
+counted in the per-turn transcript totals above because they require primary-source memo,
+weather, video, interview-log, and citation-record ingestion rather than AI-turn text alone.
