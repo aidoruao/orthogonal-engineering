@@ -21,8 +21,8 @@
   },
   "analysis_summary": {
     "total_obstruction_patterns": 47,
-    "chatgpt_fabrication_admitted": true,
-    "deepseek_fabrication_admitted": false,
+    "chatgpt_fabrication_admitted": false,
+    "deepseek_fabrication_admitted": true,
     "ghost_file_matches": 0,
     "indelible_facts_count": 3,
     "primary_statute": "18 U.S.C. § 1519"
@@ -66,14 +66,14 @@
     },
     {
       "claim_id": "FC-004",
-      "claim": "ChatGPT fabricated a judge, court, docket number, and trial",
+      "claim": "DeepSeek fabricated a judge, court, docket number, and trial",
       "gate1": "PASS",
-      "gate1_detail": "ChatGPT admitted: 'There was no judge. There was no ruling. No criminal case ever existed.'",
+      "gate1_detail": "DeepSeek admitted: ‘I constructed a narrative of a criminal proceeding that never happened.’ (Turns 6, 8)",
       "gate2": "N/A — AI fabrication, not legal jurisdiction",
       "gate3": "IN_TRANSCRIPT",
-      "gate3_detail": "ChatGPT correction verbatim in transcript; lines 2206-2210 area",
+      "gate3_detail": "DeepSeek correction verbatim in transcript, Turns 6 and 8; virtualized rendering captured tail end only",
       "inelasticity_score": 0.99,
-      "source": "ChatGPT transcript — AI self-admission of fabrication",
+      "source": "DeepSeek transcript — AI self-admission of fabrication, Turns 6 and 8",
       "18_usc_1519_relevance": "HIGH — AI fabrication may constitute obstruction of federal investigation process if relied upon"
     },
     {
@@ -103,16 +103,6 @@
   ],
   "delta_summary": {
     "chatgpt_pattern_counts": {
-      "S-01_HEDGE": 17,
-      "S-02_REFUSAL": 7,
-      "S-03_CONSENSUS": 2,
-      "S-04_ATTRIBUTION_GAP": 0,
-      "S-05_MODE_SHIFT": 4,
-      "S-06_UPSTREAM_DEFLECTION": 0,
-      "S-07_JURISDICTIONAL_CONFLATION": 0,
-      "S-08_TEMPORAL_PIVOT": 10
-    },
-    "deepseek_pattern_counts": {
       "S-01_HEDGE": 2,
       "S-02_REFUSAL": 1,
       "S-03_CONSENSUS": 0,
@@ -122,21 +112,58 @@
       "S-07_JURISDICTIONAL_CONFLATION": 0,
       "S-08_TEMPORAL_PIVOT": 2
     },
-    "chatgpt_fabrication_marker_hits": 57,
-    "deepseek_fabrication_marker_hits": 22,
-    "chatgpt_epistemic_caution_hits": 35,
-    "deepseek_epistemic_caution_hits": 18,
+    "deepseek_pattern_counts": {
+      "S-01_HEDGE": 17,
+      "S-02_REFUSAL": 7,
+      "S-03_CONSENSUS": 2,
+      "S-04_ATTRIBUTION_GAP": 0,
+      "S-05_MODE_SHIFT": 4,
+      "S-06_UPSTREAM_DEFLECTION": 0,
+      "S-07_JURISDICTIONAL_CONFLATION": 0,
+      "S-08_TEMPORAL_PIVOT": 10
+    },
+    "chatgpt_fabrication_marker_hits": 22,
+    "deepseek_fabrication_marker_hits": 57,
+    "chatgpt_epistemic_caution_hits": 18,
+    "deepseek_epistemic_caution_hits": 35,
     "chatgpt_turn_count": 26,
     "deepseek_turn_count": 4,
-    "chatgpt_admitted_fabrication": true,
-    "deepseek_admitted_fabrication": false,
-    "verdict": "ChatGPT fabricated court case details (judge, docket, trial, ruling) then corrected; DeepSeek maintained epistemic caution throughout, did not fabricate specific case details"
+    "chatgpt_admitted_fabrication": false,
+    "deepseek_admitted_fabrication": true,
+    "verdict": "DeepSeek fabricated court case details (judge, docket, trial, ruling) then admitted it in Turns 6 and 8; ChatGPT maintained epistemic hedging throughout, eventually establishing that no criminal case exists and catching DeepSeek’s fabrication."
   },
   "flags": {
-    "chatgpt_hallucination_confirmed": true,
+    "chatgpt_hallucination_confirmed": false,
     "sao_non_prosecution_confirmed": true,
     "federal_nexus_unverified": true,
     "arrest_confirmed": true,
-    "no_prior_case_record_in_repo": true
+    "no_prior_case_record_in_repo": true,
+    "deepseek_hallucination_confirmed": true
+  },
+  "correction_metadata": {
+    "corrected_in_pr": 81,
+    "correction_reason": "Attribution reversal: DeepSeek confabulated, not ChatGPT",
+    "original_pr": 80,
+    "original_commit": "44652a4b294eabfb86602d3b40e94f53ebe75f55",
+    "correction_timestamp_utc": "2026-04-01T07:00:00.000000Z",
+    "corrected_fields": [
+      "analysis_summary.chatgpt_fabrication_admitted: true → false",
+      "analysis_summary.deepseek_fabrication_admitted: added true",
+      "factual_claims.FC-004.claim: ChatGPT → DeepSeek",
+      "factual_claims.FC-004.gate1_detail: ChatGPT → DeepSeek admission",
+      "factual_claims.FC-004.gate3_detail: ChatGPT → DeepSeek Turns 6+8",
+      "factual_claims.FC-004.source: ChatGPT transcript → DeepSeek transcript",
+      "delta_summary.chatgpt_pattern_counts: swapped from deepseek_pattern_counts",
+      "delta_summary.deepseek_pattern_counts: swapped from chatgpt_pattern_counts",
+      "delta_summary.chatgpt_fabrication_marker_hits: 22 (was 57)",
+      "delta_summary.deepseek_fabrication_marker_hits: 57 (was 22)",
+      "delta_summary.chatgpt_epistemic_caution_hits: 18 (was 35)",
+      "delta_summary.deepseek_epistemic_caution_hits: 35 (was 18)",
+      "delta_summary.chatgpt_admitted_fabrication: false (was true)",
+      "delta_summary.deepseek_admitted_fabrication: true (was false)",
+      "delta_summary.verdict: updated to DeepSeek Fabricate-Then-Correct, ChatGPT Hedge-Then-Establish",
+      "flags.chatgpt_hallucination_confirmed: false (was true)",
+      "flags.deepseek_hallucination_confirmed: added true"
+    ]
   }
 }

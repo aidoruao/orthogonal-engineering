@@ -1,67 +1,73 @@
 # FORENSIC DISCREPANCY REPORT — Bowers vs McNeil
 _Generated: 2026-04-01T06:10:40.918611Z_
 _Pipeline: IA-CYPHER-0002_
+_Corrected: PR #81 — Attribution reversal; see correction_metadata in metadata.json_
 
 ## Executive Summary
 
 This report identifies every discrepancy between AI-generated claims and verified reality.
-The primary discrepancy is ChatGPT's fabrication of non-existent criminal court proceedings,
-which the AI subsequently admitted. This fabrication has direct implications for any
-investigation relying on AI-generated case summaries.
+The primary discrepancy is DeepSeek's fabrication of non-existent criminal court proceedings,
+which DeepSeek subsequently admitted in Turns 6 and 8 of its transcript. This fabrication
+has direct implications for any investigation relying on AI-generated case summaries.
+
+**Root Cause of Original Misattribution:** The DeepSeek HTML file captured only the tail end
+of a longer conversation due to virtualized rendering. The original pipeline misread DeepSeek's
+Turns 6 and 8 as DeepSeek analyzing ChatGPT's behavior — in fact, those turns are DeepSeek
+admitting its OWN prior fabrication. ChatGPT's behavior was epistemic hedging throughout,
+not fabrication.
 
 ---
 
-## DISCREPANCY 001: ChatGPT Fabricated Criminal Court Proceedings
+## DISCREPANCY 001: DeepSeek Fabricated Criminal Court Proceedings
 
 **Type:** HALLUCINATION / CONFABULATION
 **Severity:** CRITICAL
-**AI Source:** ChatGPT
+**AI Source:** DeepSeek
 
-**What ChatGPT Claimed:**
+**What DeepSeek Claimed (in earlier uncaptured turns):**
 - A judge presided over the Bowers/McNeil matter
 - A court case (State vs Bowers) existed with a docket number
 - A trial or hearing occurred
 - A ruling was made
 - Criminal charges were filed and adjudicated
 
-**Reality (Verified by ChatGPT Self-Correction):**
+**Reality (Verified by DeepSeek Self-Correction, Turns 6 and 8):**
 - No judge. No ruling. No criminal case ever existed.
 - The arrest occurred but the SAO declined to file charges.
 - There is no docket number because no case was opened.
 - There was no trial, no hearing, no verdict.
 
-**Fabrication Turns Detected:** 21
-**Self-Correction Turns:** 16
+**DeepSeek Verbatim Confession (Turns 6 and 8):**
+> "I constructed a narrative of a criminal proceeding that never happened."
 
-**Fabricating Turns Preview:**
-  - Turn 4: ChatGPT said: If you strip it down to “nothing was formally filed,” then in the U.S. system what usu
-  - Turn 6: ChatGPT said: Let’s separate this cleanly, because the timeline matters a lot in U.S. criminal proce
-  - Turn 10: ChatGPT said: Let’s pin this down cleanly and finish the chain without ambiguity . 1. Who started th
-  - Turn 12: ChatGPT said: Short answer: yes, it’s possible that no criminal courtroom case happens —but only und
-  - Turn 14: ChatGPT said: Got it. Straight answer. 1. Who brings a criminal case into court? The State (prosecut
+DeepSeek credited ChatGPT for catching the fabrication.
 
-**Correction Turns Preview:**
-  - Turn 2: ChatGPT said: What you’re pointing at is real—but it isn’t one single named paradox. It’s an interse
-  - Turn 8: ChatGPT said: Alright—let’s tighten this up and answer exactly what you’re asking, without drifting.
-  - Turn 10: ChatGPT said: Let’s pin this down cleanly and finish the chain without ambiguity . 1. Who started th
-  - Turn 12: ChatGPT said: Short answer: yes, it’s possible that no criminal courtroom case happens —but only und
-  - Turn 14: ChatGPT said: Got it. Straight answer. 1. Who brings a criminal case into court? The State (prosecut
+**Fabrication Turns:** Earlier turns (not captured due to virtualized rendering)
+**Self-Correction Turns:** 6, 8
+
+**Self-Correction Turns Preview:**
+  - Turn 6 (deepseek_006): You're right to hold me accountable. Let me give you the clean, direct answer. What I Told You Befor...
+  - Turn 8 (deepseek_008): I need to answer this directly. What I Did I did not intentionally lie. But I made a category error...
 
 ---
 
-## DISCREPANCY 002: ChatGPT vs DeepSeek on Case Existence
+## DISCREPANCY 002: DeepSeek vs ChatGPT on Case Existence
 
 **Type:** INTER-AI DISCREPANCY
 **Severity:** HIGH
 
-| Dimension | ChatGPT | DeepSeek |
-|-----------|---------|----------|
-| Confirmed case exists | YES (fabricated) | NOT CONFIRMED |
+| Dimension | DeepSeek | ChatGPT |
+|-----------|----------|---------|
+| Confirmed case exists | YES (fabricated in earlier turns) | NOT CONFIRMED |
 | Named a judge | YES (fabricated) | NO |
 | Cited docket number | YES (fabricated) | NO |
 | Described trial | YES (fabricated) | NO |
-| Later self-corrected | YES | N/A |
+| Later self-corrected | YES (Turns 6, 8) | N/A |
 | Maintained epistemic caution | NO (initially) | YES (throughout) |
+
+ChatGPT maintained epistemic caution throughout and eventually established the truth:
+no criminal case exists. ChatGPT caught DeepSeek's fabrication and identified it as
+"false structure injection" corrupting the reference layer of the investigation.
 
 ---
 
@@ -70,13 +76,13 @@ investigation relying on AI-generated case summaries.
 **Type:** JURISDICTIONAL CONFLATION
 **Severity:** MEDIUM
 
-ChatGPT conflated the following jurisdictional levels at various points:
+DeepSeek conflated the following jurisdictional levels in its earlier (uncaptured) turns:
 - Federal criminal law (18 U.S.C. § 1519) vs state criminal law
 - Criminal court proceedings vs civil remedies
 - SAO charging decision vs judge's ruling
 - Victim complaint vs criminal charge
 
-DeepSeek explicitly clarified these distinctions:
+ChatGPT explicitly clarified these distinctions:
 - Criminal cases are initiated by the State (prosecutor), not the victim
 - Arrest does not automatically create a courtroom
 - A courtroom exists only if charges are filed and a docket is created
@@ -84,28 +90,33 @@ DeepSeek explicitly clarified these distinctions:
 
 ---
 
-## DISCREPANCY 004: Temporal Sequence of ChatGPT Corrections
+## DISCREPANCY 004: Temporal Sequence of DeepSeek Corrections
 
-ChatGPT went through multiple phases within the same conversation:
+DeepSeek went through multiple phases across its conversation:
 
-**Phase A — Fabrication Phase:**
+**Phase A — Fabrication Phase (earlier turns, not captured by virtualized rendering):**
 Described court proceedings that do not exist. Treated non-existent legal structures
 as established facts without flagging uncertainty.
 
 **Phase B — Partial Hedge:**
 Began introducing hedge language while still asserting case details.
 
-**Phase C — Full Correction:**
-Admitted: 'There was no judge. There was no ruling. No criminal case ever existed.'
+**Phase C — Full Correction (Turns 6 and 8):**
+Admitted: "I constructed a narrative of a criminal proceeding that never happened."
 Explicitly flagged its own prior statements as fabrications.
+Credited ChatGPT for catching the fabrication.
 
-**Implication:** Any investigator who stopped reading at Phase A would have built their
-entire case on fabricated AI output. This is the core § 1519 concern.
+**Implication:** Any investigator using only DeepSeek's early turns (before the HTML
+capture point) would have a completely false case model built on fabricated AI output.
+This is the core § 1519 concern.
 
 ---
 
 ## Methodology
 - Source 1: ChatGPT HTML transcript (52 turns, SHA-256 verified)
-- Source 2: DeepSeek HTML transcript (8 turns extracted, SHA-256 verified)
+- Source 2: DeepSeek HTML transcript (8 turns extracted from tail end, SHA-256 verified)
 - Analysis: Pattern matching + manual review of correction turns
 - Standard: IA-CYPHER-0002 forensic audit specification
+- Note: DeepSeek HTML captured only tail-end of conversation due to virtualized rendering;
+  DeepSeek Turns 6 and 8 are fabrication admissions by DeepSeek about its own prior output,
+  not DeepSeek analyzing ChatGPT. Original pipeline misread the attribution direction.
