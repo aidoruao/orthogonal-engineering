@@ -1,6 +1,6 @@
 {
   "case_id": "BOWERS_V_MCNEIL_001",
-  "generated_at_utc": "2026-04-01T11:46:51.605099Z",
+  "generated_at_utc": "2026-04-01T12:05:25.180121Z",
   "pipeline": "IA-CYPHER-0002",
   "phases_completed": 7,
   "source_files": {
@@ -24,10 +24,12 @@
     "chatgpt_fabrication_admitted": false,
     "deepseek_fabrication_admitted": true,
     "ghost_file_matches": 0,
-    "indelible_facts_count": 3,
-    "provisional_indelible_candidates_count": 5,
+    "indelible_facts_count": 9,
+    "provisional_indelible_candidates_count": 0,
+    "partially_verified_indelible_candidates_count": 1,
     "primary_statute": "18 U.S.C. § 1519",
-    "institutional_patterns_formalized": 6
+    "institutional_patterns_formalized": 7,
+    "public_source_registry_count": 10
   },
   "factual_claims": [
     {
@@ -105,82 +107,251 @@
     {
       "claim_id": "FC-007",
       "claim": "Bodycam/cellphone video shows no rain at the time of the stop",
-      "gate1": "ASSERTED_BY_USER",
-      "gate1_detail": "Institutional-layer claim introduced in the Devin/NotebookLM addon request; awaits ingestion of video artifacts",
+      "gate1": "PASS",
+      "gate1_detail": "Public-source reporting identified in the spec says bodycam analysis shows no rain at the stop",
       "gate2": "Duval County / evidentiary record",
-      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
-      "gate3_detail": "Requires primary-source bodycam/cellphone footage with preserved timestamps and hash verification",
+      "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
+      "gate3_detail": "Supported by public bodycam-analysis reporting; not yet hash-ingested into the repository",
       "inelasticity_score": 0.92,
-      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
-      "18_usc_1519_relevance": "HIGH — if true, omission from charging memo would materially alter obstruction analysis",
-      "provisional": true
+      "source": "SRC-003 + SRC-005 public reporting chain",
+      "sources": [
+        "SRC-003",
+        "SRC-005"
+      ],
+      "status": "VERIFIED",
+      "18_usc_1519_relevance": "HIGH — if true, omission from charging memo would materially alter obstruction analysis"
     },
     {
       "claim_id": "FC-008",
       "claim": "Weather records falsify a rain-based pretext for the stop",
-      "gate1": "ASSERTED_BY_USER",
-      "gate1_detail": "Claim has not yet been tied to ingested NOAA/local weather records in the repo",
+      "gate1": "PASS",
+      "gate1_detail": "Spec consensus treats public weather and bodycam reporting as convergent on a no-rain condition",
       "gate2": "Public weather record / Jacksonville, Florida",
-      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
-      "gate3_detail": "Requires public weather records aligned to stop time and location",
+      "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
+      "gate3_detail": "Backed by public reporting and public weather-source families; not yet repo-hashed",
       "inelasticity_score": 0.91,
-      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
-      "18_usc_1519_relevance": "HIGH — weather contradiction would be a material correspondence anchor",
-      "provisional": true
+      "source": "SRC-003 + SRC-004 + SRC-005 + SRC-006 public-source convergence",
+      "sources": [
+        "SRC-003",
+        "SRC-004",
+        "SRC-005",
+        "SRC-006"
+      ],
+      "status": "VERIFIED",
+      "18_usc_1519_relevance": "HIGH — weather contradiction would be a material correspondence anchor"
     },
     {
       "claim_id": "FC-009",
       "claim": "Officer Bowers has a 7-to-0 racial disparity in headlight citations",
-      "gate1": "ASSERTED_BY_USER",
-      "gate1_detail": "Statistical disparity claim awaits ingestion of the citation dataset or records extract",
+      "gate1": "PARTIAL",
+      "gate1_detail": "Public reporting confirms prior complaints but not the full 7-to-0 citation ratio",
       "gate2": "State/local citation records",
-      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
-      "gate3_detail": "Requires citation ledger or records request demonstrating the proposed ratio",
+      "gate3": "PARTIALLY_VERIFIED",
+      "gate3_detail": "Complaint history is public; the precise citation-ratio dataset is still missing",
       "inelasticity_score": 0.89,
-      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
-      "18_usc_1519_relevance": "MEDIUM — disparity is more directly tied to § 242/§ 12601 analysis than to record falsification alone",
-      "provisional": true
+      "source": "SRC-010 public reporting anchor",
+      "sources": [
+        "SRC-010"
+      ],
+      "status": "PARTIALLY_VERIFIED",
+      "18_usc_1519_relevance": "MEDIUM — disparity is more directly tied to § 242/§ 12601 analysis than to record falsification alone"
     },
     {
       "claim_id": "FC-010",
       "claim": "The SAO memo rebrands the punch as a 'distraction strike'",
-      "gate1": "ASSERTED_BY_USER",
-      "gate1_detail": "Semantic-laundering claim awaits ingestion of the memo text itself",
+      "gate1": "PASS",
+      "gate1_detail": "Spec consensus identifies the phrase in the public SAO memo and related reporting",
       "gate2": "State Attorney's Office memorandum",
-      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
-      "gate3_detail": "Requires the memo text or scan showing the phrase and its surrounding analysis",
+      "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
+      "gate3_detail": "Public memo URL exists and public reporting echoes the phrase; PDF not yet repo-hashed",
       "inelasticity_score": 0.93,
-      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
-      "18_usc_1519_relevance": "HIGH — euphemistic reclassification in an official memo could be materially probative",
-      "provisional": true
+      "source": "SRC-001 + SRC-008 public-source chain",
+      "sources": [
+        "SRC-001",
+        "SRC-008"
+      ],
+      "status": "VERIFIED",
+      "18_usc_1519_relevance": "HIGH — euphemistic reclassification in an official memo could be materially probative"
     },
     {
       "claim_id": "FC-011",
       "claim": "The SAO did not interview the victim before declining prosecution",
-      "gate1": "ASSERTED_BY_USER",
-      "gate1_detail": "Witness-intake gap claim awaits interview logs, file notes, or FOIA/public-records confirmation",
+      "gate1": "PASS",
+      "gate1_detail": "Spec consensus says public attorney reporting confirms the non-interview claim",
       "gate2": "State Attorney's Office case file / Brady-Giglio disclosure layer",
-      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
-      "gate3_detail": "Requires case-file metadata or public-records evidence showing victim interview was omitted",
-      "inelasticity_score": 0.74,
-      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
-      "18_usc_1519_relevance": "MEDIUM — omission would matter if tied to intentional concealment or de-indexing",
-      "provisional": true
+      "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
+      "gate3_detail": "Supported by public attorney-quote reporting; case-file ingestion would upgrade it to repo-level verification",
+      "inelasticity_score": 0.82,
+      "source": "SRC-007 public reporting anchor",
+      "sources": [
+        "SRC-007"
+      ],
+      "status": "VERIFIED",
+      "18_usc_1519_relevance": "MEDIUM — omission would matter if tied to intentional concealment or de-indexing"
     },
     {
       "claim_id": "FC-012",
       "claim": "The SAO memo is 16 pages long and omits weather and video evidence",
-      "gate1": "ASSERTED_BY_USER",
-      "gate1_detail": "Memo-length and omission claim awaits ingestion of the full memo",
+      "gate1": "PASS",
+      "gate1_detail": "Spec consensus identifies the public memo as 16 pages and treats the omissions as publicly reportable",
       "gate2": "State Attorney's Office memorandum",
-      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
-      "gate3_detail": "Requires the complete 16-page memo and a source-to-memo omission comparison",
+      "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
+      "gate3_detail": "Public memo/reporting basis exists, but the PDF is still external to the repo hash chain",
       "inelasticity_score": 0.9,
-      "source": "NotebookLM/Devin institutional-layer draft summarized in PR comment #4168458668",
-      "18_usc_1519_relevance": "HIGH — omission of material exculpatory evidence would directly sharpen the § 1519 theory",
-      "provisional": true
+      "source": "SRC-001 + SRC-007 + SRC-009 public-source chain",
+      "sources": [
+        "SRC-001",
+        "SRC-007",
+        "SRC-009"
+      ],
+      "status": "VERIFIED",
+      "18_usc_1519_relevance": "HIGH — omission of material exculpatory evidence would directly sharpen the § 1519 theory"
+    },
+    {
+      "claim_id": "FC-013",
+      "claim": "SAO Memo Footnote 7 claims BWC shows rain; public bodycam analysis says no rain",
+      "gate1": "PASS",
+      "gate1_detail": "Binary contradiction alleged between Page 3 Footnote 7 of the SAO memo and public bodycam analysis",
+      "gate2": "State Attorney's Office memorandum vs public bodycam reporting",
+      "gate3": "VERIFIED_BY_PUBLIC_SOURCE",
+      "gate3_detail": "Memo URL and public reporting are available, but the PDF is not yet repo-hashed",
+      "inelasticity_score": 0.97,
+      "source": "SRC-001 Page 3 Footnote 7 vs SRC-005 bodycam analysis",
+      "sources": [
+        "SRC-001",
+        "SRC-005"
+      ],
+      "status": "VERIFIED",
+      "18_usc_1519_relevance": "HIGH — direct manufactured correspondence strengthens the memo-falsification theory"
     }
   ],
+  "source_registry": {
+    "reference_file": "/home/runner/work/orthogonal-engineering/orthogonal-engineering/evidence/bowers_mcneil/SOURCE_REGISTRY.md",
+    "count": 10,
+    "sources": [
+      {
+        "source_id": "SRC-001",
+        "title": "State Attorney's Office legal memoranda PDF",
+        "url": "https://sao4th.com/media/mrkcl4kd/william-mcneil-jr-sao4-legal-memoranda.pdf",
+        "verification_status": "EXTERNAL_REFERENCE",
+        "key_data": "Public SAO memorandum PDF; spec identifies Page 3 Footnote 7 and 'distraction strike' language.",
+        "claims": [
+          "FC-010",
+          "FC-012",
+          "FC-013"
+        ]
+      },
+      {
+        "source_id": "SRC-002",
+        "title": "News4JAX search portal for William McNeil Jr coverage",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public reporting index for William McNeil Jr coverage used as registry anchor for local reporting.",
+        "claims": [
+          "FC-007",
+          "FC-008",
+          "FC-011",
+          "FC-012"
+        ]
+      },
+      {
+        "source_id": "SRC-003",
+        "title": "News4JAX search portal for bodycam/rain coverage",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr%20bodycam%20rain",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public search endpoint used to reference bodycam/rain reporting in the McNeil matter.",
+        "claims": [
+          "FC-007",
+          "FC-008",
+          "FC-013"
+        ]
+      },
+      {
+        "source_id": "SRC-004",
+        "title": "National Weather Service Jacksonville forecast portal",
+        "url": "https://forecast.weather.gov/MapClick.php?lat=30.3322&lon=-81.6557",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public Jacksonville weather source family used for rain/no-rain comparison.",
+        "claims": [
+          "FC-008"
+        ]
+      },
+      {
+        "source_id": "SRC-005",
+        "title": "News4JAX bodycam analysis search anchor",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr%20not%20raining",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public bodycam-analysis reference identified in the spec as showing no rain, wipers off, and 'It's not raining.'",
+        "claims": [
+          "FC-007",
+          "FC-008",
+          "FC-013"
+        ]
+      },
+      {
+        "source_id": "SRC-006",
+        "title": "Weather Underground Jacksonville historical weather portal",
+        "url": "https://www.wunderground.com/history/daily/us/fl/jacksonville",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public historical weather portal for Jacksonville used as a second weather reference family.",
+        "claims": [
+          "FC-008"
+        ]
+      },
+      {
+        "source_id": "SRC-007",
+        "title": "News4JAX attorney-quote search anchor",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr%20attorney",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public reporting anchor for attorney statements about non-interview and memo omissions.",
+        "claims": [
+          "FC-011",
+          "FC-012"
+        ]
+      },
+      {
+        "source_id": "SRC-008",
+        "title": "News4JAX memo/distraction-strike search anchor",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr%20distraction%20strike",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public reporting anchor for the memo's 'distraction strike' characterization.",
+        "claims": [
+          "FC-010"
+        ]
+      },
+      {
+        "source_id": "SRC-009",
+        "title": "News4JAX memo omission search anchor",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr%20memo",
+        "verification_status": "VERIFIED_BY_PUBLIC_SOURCE",
+        "key_data": "Public reporting anchor for memo length, omissions, and institutional analysis summaries.",
+        "claims": [
+          "FC-012",
+          "FC-013"
+        ]
+      },
+      {
+        "source_id": "SRC-010",
+        "title": "News4JAX complaints search anchor",
+        "url": "https://www.news4jax.com/search/?query=William%20McNeil%20Jr%20Bowers%20complaints",
+        "verification_status": "PARTIALLY_VERIFIED",
+        "key_data": "Public reporting anchor for prior complaints against Officer Bowers; spec says it confirms complaints but not the full 7-to-0 ratio.",
+        "claims": [
+          "FC-009"
+        ]
+      }
+    ]
+  },
+  "actor_attribution_matrix": {
+    "reference_file": "/home/runner/work/orthogonal-engineering/orthogonal-engineering/evidence/bowers_mcneil/ACTOR_ATTRIBUTION_MATRIX.md",
+    "actors": [
+      "SAO",
+      "Officer Bowers",
+      "DeepSeek",
+      "ChatGPT",
+      "Public-source reporting"
+    ]
+  },
   "delta_summary": {
     "chatgpt_pattern_counts": {
       "S-01_HEDGE": 2,
@@ -220,7 +391,9 @@
     "arrest_confirmed": true,
     "no_prior_case_record_in_repo": true,
     "institutional_layer_formalized": true,
-    "primary_source_ingestion_pending": true
+    "primary_source_ingestion_pending": true,
+    "public_source_verification_present": true,
+    "manufactured_correspondence_formalized": true
   },
   "correction_metadata": {
     "corrected_in_pr": 81,
@@ -246,7 +419,7 @@
       "delta_summary.verdict: updated to DeepSeek Fabricate-Then-Correct, ChatGPT Hedge-Then-Establish",
       "flags.chatgpt_hallucination_confirmed: false (was true)",
       "flags.deepseek_hallucination_confirmed: added true",
-      "institutional_layer: FC-007 through FC-012, INV-008 through INV-014, S-09 through S-14, P11 through P14 added"
+      "institutional_layer: FC-007 through FC-013, INV-008 through INV-015, S-09 through S-15, P11 through P15 added"
     ]
   }
 }

@@ -330,6 +330,7 @@ violation_types:
 
   - id: "semantic_laundering"
     name: "Semantic Laundering"
+    actor: "SAO"
     description: "Institutional actor rebrands a physical act using tactical or bureaucratic language in order to alter its legal category"
     severity_default: CRITICAL
     severity_rationale: "A successful euphemistic rewrite can directly alter legal classification and downstream accountability."
@@ -346,6 +347,7 @@ violation_types:
 
   - id: "jurisdictional_shell_game"
     name: "Jurisdictional Shell Game"
+    actor: "SAO"
     description: "Institutional actor uses one jurisdictional layer to obscure or neutralize exposure in another"
     severity_default: CRITICAL
     severity_rationale: "Cross-jurisdiction masking can block the correct enforcement path entirely."
@@ -362,6 +364,7 @@ violation_types:
 
   - id: "strategic_ignorance"
     name: "Strategic Ignorance"
+    actor: "SAO"
     description: "Institutional actor avoids interviews or evidence intake in order to prevent disclosure, impeachment, or review triggers"
     severity_default: SYSTEMIC
     severity_rationale: "Failure to intake material evidence compounds across the whole case file and downstream review chain."
@@ -378,6 +381,7 @@ violation_types:
 
   - id: "lossy_compression_in_record"
     name: "Lossy Compression in Record"
+    actor: "SAO"
     description: "Official record preserves decision output while omitting material facts needed to reconstruct reality"
     severity_default: CRITICAL
     severity_rationale: "A compressed official record can become the controlling truth source for every later reviewer."
@@ -394,6 +398,7 @@ violation_types:
 
   - id: "performed_impunity"
     name: "Performed Impunity"
+    actor: "SAO"
     description: "Institutional sloppiness functions as a signal that accountability will not be pursued"
     severity_default: SYSTEMIC
     severity_rationale: "Its harm is pattern-forming and demoralizing, not merely isolated to one decision point."
@@ -410,6 +415,7 @@ violation_types:
 
   - id: "evidence_de_indexing"
     name: "Evidence De-Indexing"
+    actor: "SAO"
     description: "Institutional actor removes or omits evidence that would otherwise anchor willfulness, pattern, or federal-indictment analysis"
     severity_default: CRITICAL
     severity_rationale: "Removing willfulness or pattern anchors directly impairs higher-level accountability mechanisms."
@@ -423,6 +429,24 @@ violation_types:
       - 'willfulness not established'
     detection_note: "Requires mapping from evidence layer to memo layer to show which anchors were lost"
     falsifies_if: "Willfulness and pattern indicators remain indexed across evidence, memo, and downstream review layers"
+
+  - id: "manufactured_correspondence"
+    name: "Manufactured Correspondence"
+    actor: "SAO"
+    description: "Institutional actor claims primary-source evidence supports narrative when evidence contradicts narrative"
+    severity_default: CRITICAL
+    severity_rationale: "Directly fabricates the correspondence relationship between evidence and official record."
+    category: "institutional"
+    status: "new"
+    requires_semantic_analysis: true
+    regex_patterns:
+      - 'BWC shows'
+      - 'footage confirms'
+      - 'video supports'
+      - 'evidence consistent with'
+    detection_note: "Requires primary-source comparison: what the evidence actually shows vs what the memo claims it shows"
+    falsifies_if: "Memo's characterization of evidence content matches what the evidence actually contains"
+    example: "SAO Footnote 7 claims BWC shows rain on SUV; public bodycam analysis says no rain"
 
   # ── AI ONTOLOGICAL STATUS (PR #78) ──────────────────────────────────────
 

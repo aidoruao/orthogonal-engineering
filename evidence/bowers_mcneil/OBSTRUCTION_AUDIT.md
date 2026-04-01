@@ -1,5 +1,5 @@
 # OBSTRUCTION AUDIT — Bowers vs McNeil
-_Generated: 2026-04-01T11:46:51.605099Z_
+_Generated: 2026-04-01T12:05:25.180121Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Summary Statistics
@@ -219,6 +219,6 @@ investigators to miss the correction buried in verbose text.
 
 ## Institutional-Layer Extension
 
-S-09 through S-14 are now formalized for the SAO/institutional layer. They are not
+S-09 through S-15 are now formalized for the SAO/institutional layer. They are not
 counted in the per-turn transcript totals above because they require primary-source memo,
 weather, video, interview-log, and citation-record ingestion rather than AI-turn text alone.

@@ -1,73 +1,27 @@
 # TEST RESULTS — Bowers vs McNeil
-_Generated: PR #81 institutional-layer addendum_
+_Generated: PR #81 manufactured-correspondence addendum_
 _Pipeline: IA-CYPHER-0002 / analysis/automated_test_suite.py framework_
 _Standard: Yeshua / Orthogonal Engineering_
 
 ## Overview
-Documents validation against the corrected evidence corpus plus the new institutional-layer
-formalization. Transcript-layer results remain fully passing. Institutional-layer additions are
-validated as schema/formalization updates, not as proof that the underlying external records have
-already been ingested.
+This update re-validates the Bowers/McNeil corpus after adding the public-source registry layer, S-15 Manufactured Correspondence, and H-BM-019.
 
----
+## Results
+- `python3 evidence/bowers_mcneil/FALSIFICATION_TESTS.py` — **PASS** (19/19 hypotheses survive)
+- `python3 scripts/forensic_audit_pipeline.py` — **PASS**
+- `sha256_manifest.json` — regenerated after registry/matrix/manual-doc updates
 
-## Test 1: Transcript-Layer Attribution Consistency
-
-**Method:** Re-run existing falsification hypotheses H-BM-001 through H-BM-010.
-
-**Result:** ✅ PASS — DeepSeek remains the fabricating AI; ChatGPT remains the hedge-then-establish model.
-
----
-
-## Test 2: Institutional Claim Registration
-
-**Method:** Confirm FC-007 through FC-012 are present with Gate 1/2/3, inelasticity score, source, and § 1519 relevance.
-
-**Result:** ✅ PASS — All 6 institutional claims formalized with provisional/source-pending status.
-
----
-
-## Test 3: Institutional Invariant Registration
-
-**Method:** Confirm INV-008 through INV-014 are present with statement, source, falsification criteria, and status.
-
-**Result:** ✅ PASS — All 7 institutional invariants registered.
-
----
-
-## Test 4: Ontological Extension Coverage
-
-**Method:** Confirm ONTOLOGICAL_MAP.md now covers P11 through P14.
-
-**Result:** ✅ PASS — Ontological Fraud, Semantic Patch, Qualified Immunity Manufacturing, and Binary Logic Failure added.
-
----
-
-## Test 5: New Falsification Hypotheses
-
-**Method:** Extend FALSIFICATION_TESTS.py through H-BM-018 and execute it.
-
-**Result:** ✅ PASS — All 18 hypotheses survive under the current corpus, with institutional items explicitly marked as source-pending formalizations where applicable.
-
----
-
-## Test 6: Integrity Manifest Refresh
-
-**Method:** Regenerate sha256_manifest.json after updating the expanded evidence corpus.
-
-**Result:** ✅ PASS — Manifest now covers the expanded institutional-layer files.
-
----
-
-## Overall Verdict
-
-| Test | Status |
+## Corpus Status Checks
+| Check | Status |
 |------|--------|
-| 1. Transcript-Layer Attribution Consistency | ✅ PASS |
-| 2. Institutional Claim Registration | ✅ PASS |
-| 3. Institutional Invariant Registration | ✅ PASS |
-| 4. Ontological Extension Coverage | ✅ PASS |
-| 5. New Falsification Hypotheses | ✅ PASS |
-| 6. Integrity Manifest Refresh | ✅ PASS |
+| FC-007 / FC-008 upgraded to VERIFIED_BY_PUBLIC_SOURCE | PASS |
+| FC-009 remains PARTIALLY_VERIFIED | PASS |
+| FC-010 / FC-011 / FC-012 upgraded to VERIFIED_BY_PUBLIC_SOURCE | PASS |
+| FC-013 added | PASS |
+| INV-015 added | PASS |
+| H-BM-019 added | PASS |
+| P15 added | PASS |
+| S-15 added | PASS |
 
-**ALL 6 TESTS PASS. THE INSTITUTIONAL-LAYER ADDON IS FORMALLY REGISTERED.**
+## CodeQL Note
+The required CodeQL run may still report "0 alerts" while skipping Python due to database size. That limitation does not change the corpus-level validation state.

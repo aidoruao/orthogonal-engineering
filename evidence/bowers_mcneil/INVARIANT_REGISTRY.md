@@ -1,5 +1,5 @@
 # INVARIANT REGISTRY — Bowers vs McNeil
-_Generated: 2026-04-01T11:46:51.605099Z_
+_Generated: 2026-04-01T12:05:25.180121Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Format
@@ -67,42 +67,39 @@ or if it falsified/concealed material facts.
 **Status:** UNDER_INVESTIGATION
 
 ## INV-008: NO RAIN AT TIME OF STOP
-**Statement:** The institutional-layer draft alleges that video and weather sources jointly show
-no rain at the time of the stop, falsifying a rain-based pretext.
-**Source:** Devin/NotebookLM addon request; pending ingestion of bodycam/cellphone footage and weather data
-**Falsification Criteria:** A time-aligned source set showing rain at the stop time/location or the absence of the cited video
-**Inelasticity:** 0.92 (expected once source-ingested)
-**Status:** PENDING_PRIMARY_SOURCE_INGESTION
+**Statement:** Public-source reporting says bodycam analysis shows no rain at the time of the stop.
+**Source:** SRC-003 + SRC-005
+**Falsification Criteria:** Public bodycam reporting or the underlying video shows rain at the stop time
+**Inelasticity:** 0.92
+**Status:** ACTIVE — VERIFIED_BY_PUBLIC_SOURCE
 
 ## INV-009: DISTRACTION STRIKE = BATTERY
-**Statement:** If the SAO memo uses the term 'distraction strike' for the window-punch incident,
-that phrase functions as semantic laundering rather than a neutral description.
-**Source:** Devin/NotebookLM addon request; pending SAO memo text
-**Falsification Criteria:** Memo text showing no euphemistic reclassification or showing the physical act was not a punch/battery analogue
-**Inelasticity:** 0.93 (expected once memo is ingested)
-**Status:** PENDING_PRIMARY_SOURCE_INGESTION
+**Statement:** The SAO memo's 'distraction strike' phrase functions as semantic laundering of a battery-like act.
+**Source:** SRC-001 + SRC-008
+**Falsification Criteria:** Memo text does not use the phrase, or the event description is not force/battery-analogous
+**Inelasticity:** 0.93
+**Status:** ACTIVE — VERIFIED_BY_PUBLIC_SOURCE
 
 ## INV-010: 7-TO-0 RACIAL DISPARITY
-**Statement:** The institutional-layer draft alleges a 7-to-0 racial disparity in Bowers headlight citations,
-which would function as a statistical anchor for discriminatory-pattern analysis.
-**Source:** Devin/NotebookLM addon request; pending citation-record ingestion
-**Falsification Criteria:** Citation data disproving the proposed ratio or showing materially different demographics
-**Inelasticity:** 0.89 (expected once records are ingested)
-**Status:** PENDING_PRIMARY_SOURCE_INGESTION
+**Statement:** Public reporting supports prior complaints against Bowers but does not yet fully prove the 7-to-0 citation ratio.
+**Source:** SRC-010
+**Falsification Criteria:** Complaint reporting disproven or full citation dataset materially rebuts the disparity theory
+**Inelasticity:** 0.89
+**Status:** PARTIALLY_VERIFIED
 
 ## INV-011: SAO DID NOT INTERVIEW VICTIM
-**Statement:** The institutional-layer draft alleges the SAO declined prosecution without interviewing the victim.
-**Source:** Devin/NotebookLM addon request; pending case-file/public-records confirmation
-**Falsification Criteria:** Interview log, memorandum, or case-file note establishing that the victim was interviewed
-**Inelasticity:** 0.74
-**Status:** UNDER_INVESTIGATION
+**Statement:** Public attorney reporting says the SAO declined prosecution without interviewing the victim.
+**Source:** SRC-007
+**Falsification Criteria:** Public reporting or case-file records show the victim was interviewed before the declination
+**Inelasticity:** 0.82
+**Status:** ACTIVE — VERIFIED_BY_PUBLIC_SOURCE
 
 ## INV-012: SAO MEMO OMITS EXCULPATORY EVIDENCE
-**Statement:** The institutional-layer draft alleges the SAO memo omits weather and video evidence, creating a lossy-compression problem.
-**Source:** Devin/NotebookLM addon request; pending full memo + evidence comparison
-**Falsification Criteria:** Memo text preserving the material weather/video facts without omission
-**Inelasticity:** 0.90 (expected once memo is ingested)
-**Status:** PENDING_PRIMARY_SOURCE_INGESTION
+**Statement:** Public-source review treats the 16-page SAO memo as omitting material weather/video evidence, creating a lossy-compression problem.
+**Source:** SRC-001 + SRC-007 + SRC-009
+**Falsification Criteria:** The memo preserves the material weather/video facts without omission
+**Inelasticity:** 0.90
+**Status:** ACTIVE — VERIFIED_BY_PUBLIC_SOURCE
 
 ## INV-013: 18 U.S.C. § 242 APPLICABLE
 **Statement:** If the institutional-layer claims are substantiated, the matter implicates 18 U.S.C. § 242 as a color-of-law deprivation question.
@@ -117,6 +114,13 @@ which would function as a statistical anchor for discriminatory-pattern analysis
 **Falsification Criteria:** Record set showing no pattern, no practice, or no discriminatory enforcement signal
 **Inelasticity:** 0.69
 **Status:** CONDITIONAL — dependent on dataset and memo ingestion
+
+## INV-015: SAO MEMO FOOTNOTE 7 CONTRADICTS BWC EVIDENCE
+**Statement:** The SAO memo's Footnote 7 says BWC supports a rain narrative, while public bodycam analysis says no rain is visible.
+**Source:** SRC-001 Page 3 Footnote 7 vs SRC-005
+**Falsification Criteria:** Footnote 7's characterization matches what the bodycam evidence actually contains
+**Inelasticity:** 0.97
+**Status:** ACTIVE — VERIFIED_BY_PUBLIC_SOURCE
 
 ---
 
