@@ -1,5 +1,5 @@
 # INVARIANT REGISTRY — Bowers vs McNeil
-_Generated: 2026-04-01T19:08:01.700213Z_
+_Generated: 2026-04-01T21:45:46.058322Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Format

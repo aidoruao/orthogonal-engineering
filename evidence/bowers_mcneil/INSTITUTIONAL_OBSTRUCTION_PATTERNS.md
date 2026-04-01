@@ -1,5 +1,5 @@
 # INSTITUTIONAL OBSTRUCTION PATTERNS — Bowers/McNeil Addendum
-_Generated: 2026-04-01T19:08:01.700213Z_
+_Generated: 2026-04-01T21:45:46.058322Z_
 _Pipeline: IA-CYPHER-0002 / noncompliance taxonomy pattern_
 
 ## Overview
@@ -127,6 +127,50 @@ S-19 is documented separately as a compound effect, not as a standalone S-code.
 **Falsifies If:** Subsequent clarification preserves the original statement's meaning rather than narrowing or revising it after challenge
 **Boundary:** S-09 renames the act at report time; S-15 misstates what evidence shows; S-20 revises meaning only after challenge
 **Example:** After challenge, the institution narrows what it claims a previously documented statement really meant
+
+## S-26 EDUCATIONAL WAREHOUSING
+**Name:** EDUCATIONAL_WAREHOUSING
+**Actor:** School_District / CPS / DCF
+**Severity:** SYSTEMIC
+**Description:** Institutional placement of a child in an educational setting that satisfies enrollment metrics without providing services matched to the child's diagnosed or observable condition. The child is counted as 'served' while receiving no effective intervention.
+**Detection:** Compare enrollment record against service delivery record; flag cases where enrollment duration >> cumulative intervention hours, or where no IEP/504 exists despite documented condition
+**Countermeasure:** Hash-anchor the enrollment date, condition documentation date, and first service delivery date; compute warehousing_gap := service_start - enrollment_start; flag if warehousing_gap > 30 days or if service_record is NULL
+**Falsifies If:** The child's IEP, 504 plan, or equivalent service record shows individualized intervention matched to the diagnosed condition, with measurable progress benchmarks met within the review period
+**Boundary:** S-27 EDUCATIONAL_NEGLECT is the omission of mandated services; S-26 is the structural placement that makes the omission invisible to metrics
+**Example:** Child with selective mutism enrolled in Okaloosa County school for N semesters with no IEP, no 504, no speech-language referral, while district reports 100% enrollment compliance
+
+## S-27 EDUCATIONAL NEGLECT
+**Name:** EDUCATIONAL_NEGLECT
+**Actor:** School_District / Teacher / Administration
+**Severity:** CRITICAL
+**Description:** Failure to provide legally mandated educational services (IDEA, Section 504, FAPE) to a child whose condition is known or reasonably discoverable by the institution. Distinguished from warehousing by the presence of a duty to act that was not fulfilled.
+**Detection:** Extract statutory timeline from IDEA/504 (e.g., 60-day evaluation window); compare against actual referral-to-service timeline in the child's record; flag where statutory_deadline < actual_delivery_date or delivery = NULL
+**Countermeasure:** File FAPE complaint with Florida DOE; hash-anchor the CPS record, enrollment record, and absence-of-service record as a cryptographic proof bundle
+**Falsifies If:** The institution demonstrates it conducted timely screening, identified the condition, initiated the referral process within statutory timelines, and delivered services consistent with the resulting plan
+**Boundary:** S-26 EDUCATIONAL_WAREHOUSING is the structural placement; S-27 is the specific legal duty breach. S-11 STRATEGIC_IGNORANCE avoids evidence intake; S-27 avoids service delivery despite known condition
+**Example:** Child with documented selective mutism (CPS case 2013-278708) enrolled in Okaloosa County school; no IDEA referral initiated despite observable non-verbal behavior across multiple school years
+
+## S-28 ADAPTIVE INVISIBILITY
+**Name:** ADAPTIVE_INVISIBILITY
+**Actor:** Multi-Agency (School + CPS + Family)
+**Severity:** SYSTEMIC
+**Description:** A child's adaptive response to institutional neglect (e.g., selective mutism, social withdrawal, compliance without engagement) is misread by the institution as absence of need, creating a feedback loop where the adaptation itself prevents detection of the condition it was caused by.
+**Detection:** Flag children where behavioral_incident_count = 0 AND academic_flag_count = 0 AND social_engagement_metric < threshold AND no_service_record = TRUE; the conjunction of 'no problems' with 'no engagement' is the diagnostic signal
+**Countermeasure:** Invert the detection heuristic: treat zero-incident + zero-engagement as a HIGH-PRIORITY screening trigger rather than as evidence of well-being. Hash-anchor the absence-of-record as affirmative evidence of S-28.
+**Falsifies If:** The institution's screening protocol detects the adaptive behavior as a signal of underlying condition rather than as evidence of compliance or absence of distress
+**Boundary:** S-26 EDUCATIONAL_WAREHOUSING is the institutional structure; S-27 is the duty breach; S-28 is the child's adaptive response that closes the feedback loop and makes S-26 and S-27 self-concealing. Analogous to S-13 PERFORMED_IMPUNITY in the law-enforcement domain: the system's failure mode produces its own cover.
+**Example:** Selectively mute child does not disrupt class, does not fail academically (passes via non-verbal compliance), does not trigger behavioral referral — institution concludes no intervention needed. The mutism IS the invisibility.
+
+## S-29 INSTITUTIONAL ERASURE
+**Name:** INSTITUTIONAL_ERASURE
+**Actor:** Multi-Agency (School_District + CPS + DCF)
+**Severity:** SYSTEMIC
+**Description:** Compound pattern: S-26 ∧ S-27 ∧ S-28. The child is enrolled (S-26 satisfied), no services are delivered (S-27 satisfied), and the child's adaptation prevents detection (S-28 satisfied). The institution's own records show a compliant, served child while the actual child received nothing.
+**Detection:** Evaluate WAREHOUSED(child) ∧ NEGLECTED(child) ∧ INVISIBLE(child); S-29 is present iff all three predicates hold simultaneously
+**Countermeasure:** Document compound predicate as a single cryptographic proof bundle; treat S-29 as the educational analogue of S-19 EPISTEMIC_FATIGUE: the system's architecture makes truth-seeking cost exceed the child's capacity to pursue it
+**Falsifies If:** Any one of S-26, S-27, or S-28 is falsified for the same child and enrollment period
+**Boundary:** S-26, S-27, S-28 are component patterns; S-29 is only triggered when all three hold simultaneously for the same child. S-19 EPISTEMIC_FATIGUE is the analogous compound in the law-enforcement domain.
+**Example:** CPS case 2013-278708: child enrolled, no services delivered, zero-incident record interpreted as well-being. Institution reports compliance. Child erased.
 
 ## S-19 EPISTEMIC FATIGUE (Compound Effect Only)
 **Status:** COMPOUND_EFFECT_ONLY
