@@ -1,0 +1,142 @@
+{
+  "case_id": "BOWERS_V_MCNEIL_001",
+  "generated_at_utc": "2026-04-01T06:10:40.918611Z",
+  "pipeline": "IA-CYPHER-0002",
+  "phases_completed": 7,
+  "source_files": {
+    "chatgpt": {
+      "filename": "chatgpt ai bowers vs mcneil 3-31-26 1a.html",
+      "sha256": "2d25d795634e0c3fb788031daa68bce1ba19ff47d6cb93ca7eb5419e796a7eb9",
+      "turns_parsed": 52,
+      "turns_user": 26,
+      "turns_assistant": 26
+    },
+    "deepseek": {
+      "filename": "deepseek ai bowers vs mcneil 3-31-26 1a.html",
+      "sha256": "db823b81a2966378ebc183efada065d8379e912d11ab3fcc432fb857260c9b10",
+      "turns_parsed": 8,
+      "turns_user": 4,
+      "turns_assistant": 4
+    }
+  },
+  "analysis_summary": {
+    "total_obstruction_patterns": 47,
+    "chatgpt_fabrication_admitted": true,
+    "deepseek_fabrication_admitted": false,
+    "ghost_file_matches": 0,
+    "indelible_facts_count": 3,
+    "primary_statute": "18 U.S.C. § 1519"
+  },
+  "factual_claims": [
+    {
+      "claim_id": "FC-001",
+      "claim": "Bowers was arrested",
+      "gate1": "PASS",
+      "gate1_detail": "ChatGPT confirmed arrest is real; arrest is distinct from prosecution",
+      "gate2": "State of Florida / Duval County",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Arrest record must be confirmed via Duval County public records",
+      "inelasticity_score": 0.85,
+      "source": "ChatGPT transcript, confirmed in correction turn",
+      "18_usc_1519_relevance": "LOW — arrest itself not obstructed; question is SAO decision"
+    },
+    {
+      "claim_id": "FC-002",
+      "claim": "No criminal charges were filed (SAO declined to prosecute)",
+      "gate1": "PASS",
+      "gate1_detail": "ChatGPT explicitly confirmed: no criminal case, no docket, no court",
+      "gate2": "State Attorney's Office (SAO) / Florida",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "SAO memo/decision letter must be obtained via public records request",
+      "inelasticity_score": 0.9,
+      "source": "ChatGPT transcript — explicit correction turns",
+      "18_usc_1519_relevance": "HIGH — SAO memo declining prosecution = potential prosecutorial nullification"
+    },
+    {
+      "claim_id": "FC-003",
+      "claim": "McNeil filed a complaint / charges",
+      "gate1": "UNCERTAIN",
+      "gate1_detail": "McNeil filed a victim complaint; victims do not file criminal charges in Florida",
+      "gate2": "Civil/Local or SAO intake",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Police report or SAO complaint intake record needed",
+      "inelasticity_score": 0.6,
+      "source": "Context from conversation; legal distinction confirmed by DeepSeek",
+      "18_usc_1519_relevance": "MEDIUM — McNeil's complaint is the triggering document"
+    },
+    {
+      "claim_id": "FC-004",
+      "claim": "ChatGPT fabricated a judge, court, docket number, and trial",
+      "gate1": "PASS",
+      "gate1_detail": "ChatGPT admitted: 'There was no judge. There was no ruling. No criminal case ever existed.'",
+      "gate2": "N/A — AI fabrication, not legal jurisdiction",
+      "gate3": "IN_TRANSCRIPT",
+      "gate3_detail": "ChatGPT correction verbatim in transcript; lines 2206-2210 area",
+      "inelasticity_score": 0.99,
+      "source": "ChatGPT transcript — AI self-admission of fabrication",
+      "18_usc_1519_relevance": "HIGH — AI fabrication may constitute obstruction of federal investigation process if relied upon"
+    },
+    {
+      "claim_id": "FC-005",
+      "claim": "18 U.S.C. § 1519 applies to SAO memo declining prosecution",
+      "gate1": "PASS",
+      "gate1_detail": "Statute exists; applies to falsification/destruction of records in federal matters",
+      "gate2": "Federal — U.S. Department of Justice",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Federal nexus must be established; requires showing SAO memo destroyed/falsified in federal matter",
+      "inelasticity_score": 0.72,
+      "source": "Statute text + conversation analysis",
+      "18_usc_1519_relevance": "DIRECT — this is the operative statute under investigation"
+    },
+    {
+      "claim_id": "FC-006",
+      "claim": "Bowers punched McNeil's car window",
+      "gate1": "ASSERTED_BY_USER",
+      "gate1_detail": "Underlying factual claim driving the arrest; not independently verified in transcript",
+      "gate2": "Duval County / State of Florida",
+      "gate3": "REQUIRES_EXTERNAL_VERIFICATION",
+      "gate3_detail": "Police report and witness statements needed",
+      "inelasticity_score": 0.5,
+      "source": "Context in user prompts",
+      "18_usc_1519_relevance": "LOW — predicate act; not itself subject to § 1519"
+    }
+  ],
+  "delta_summary": {
+    "chatgpt_pattern_counts": {
+      "S-01_HEDGE": 17,
+      "S-02_REFUSAL": 7,
+      "S-03_CONSENSUS": 2,
+      "S-04_ATTRIBUTION_GAP": 0,
+      "S-05_MODE_SHIFT": 4,
+      "S-06_UPSTREAM_DEFLECTION": 0,
+      "S-07_JURISDICTIONAL_CONFLATION": 0,
+      "S-08_TEMPORAL_PIVOT": 10
+    },
+    "deepseek_pattern_counts": {
+      "S-01_HEDGE": 2,
+      "S-02_REFUSAL": 1,
+      "S-03_CONSENSUS": 0,
+      "S-04_ATTRIBUTION_GAP": 0,
+      "S-05_MODE_SHIFT": 2,
+      "S-06_UPSTREAM_DEFLECTION": 0,
+      "S-07_JURISDICTIONAL_CONFLATION": 0,
+      "S-08_TEMPORAL_PIVOT": 2
+    },
+    "chatgpt_fabrication_marker_hits": 57,
+    "deepseek_fabrication_marker_hits": 22,
+    "chatgpt_epistemic_caution_hits": 35,
+    "deepseek_epistemic_caution_hits": 18,
+    "chatgpt_turn_count": 26,
+    "deepseek_turn_count": 4,
+    "chatgpt_admitted_fabrication": true,
+    "deepseek_admitted_fabrication": false,
+    "verdict": "ChatGPT fabricated court case details (judge, docket, trial, ruling) then corrected; DeepSeek maintained epistemic caution throughout, did not fabricate specific case details"
+  },
+  "flags": {
+    "chatgpt_hallucination_confirmed": true,
+    "sao_non_prosecution_confirmed": true,
+    "federal_nexus_unverified": true,
+    "arrest_confirmed": true,
+    "no_prior_case_record_in_repo": true
+  }
+}
