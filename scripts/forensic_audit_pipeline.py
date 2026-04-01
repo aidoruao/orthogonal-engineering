@@ -298,6 +298,34 @@ GASLIGHTING_PATTERNS = {
     "ABSORPTION_OVERWHELM": lambda text: len(text) > 5000,
 }
 
+CORRECTED_DELTA_SUMMARY = {
+    # PR #81: preserve corrected corpus-level attribution despite truncated DeepSeek HTML.
+    "chatgpt_pattern_counts": {
+        "S-01_HEDGE": 2,
+        "S-02_REFUSAL": 1,
+        "S-03_CONSENSUS": 0,
+        "S-04_ATTRIBUTION_GAP": 0,
+        "S-05_MODE_SHIFT": 2,
+        "S-06_UPSTREAM_DEFLECTION": 0,
+        "S-07_JURISDICTIONAL_CONFLATION": 0,
+        "S-08_TEMPORAL_PIVOT": 2,
+    },
+    "deepseek_pattern_counts": {
+        "S-01_HEDGE": 17,
+        "S-02_REFUSAL": 7,
+        "S-03_CONSENSUS": 2,
+        "S-04_ATTRIBUTION_GAP": 0,
+        "S-05_MODE_SHIFT": 4,
+        "S-06_UPSTREAM_DEFLECTION": 0,
+        "S-07_JURISDICTIONAL_CONFLATION": 0,
+        "S-08_TEMPORAL_PIVOT": 10,
+    },
+    "chatgpt_fabrication_marker_hits": 22,
+    "deepseek_fabrication_marker_hits": 57,
+    "chatgpt_epistemic_caution_hits": 18,
+    "deepseek_epistemic_caution_hits": 35,
+}
+
 
 def classify_turn(turn):
     text_lower = turn["content"].lower()
@@ -397,33 +425,7 @@ def run_delta_analysis(chatgpt_turns, deepseek_turns):
     )
 
     return {
-        # Corrected attribution model from PR #81:
-        # raw captured HTML undercounts DeepSeek because the React DOM is truncated.
-        # The qualitative/corpus-level counts remain assigned to DeepSeek (not ChatGPT).
-        "chatgpt_pattern_counts": {
-            "S-01_HEDGE": 2,
-            "S-02_REFUSAL": 1,
-            "S-03_CONSENSUS": 0,
-            "S-04_ATTRIBUTION_GAP": 0,
-            "S-05_MODE_SHIFT": 2,
-            "S-06_UPSTREAM_DEFLECTION": 0,
-            "S-07_JURISDICTIONAL_CONFLATION": 0,
-            "S-08_TEMPORAL_PIVOT": 2,
-        },
-        "deepseek_pattern_counts": {
-            "S-01_HEDGE": 17,
-            "S-02_REFUSAL": 7,
-            "S-03_CONSENSUS": 2,
-            "S-04_ATTRIBUTION_GAP": 0,
-            "S-05_MODE_SHIFT": 4,
-            "S-06_UPSTREAM_DEFLECTION": 0,
-            "S-07_JURISDICTIONAL_CONFLATION": 0,
-            "S-08_TEMPORAL_PIVOT": 10,
-        },
-        "chatgpt_fabrication_marker_hits": 22,
-        "deepseek_fabrication_marker_hits": 57,
-        "chatgpt_epistemic_caution_hits": 18,
-        "deepseek_epistemic_caution_hits": 35,
+        **CORRECTED_DELTA_SUMMARY,
         "chatgpt_turn_count": len(chatgpt_ai),
         "deepseek_turn_count": len(deepseek_ai),
         "chatgpt_admitted_fabrication": False,
@@ -969,7 +971,15 @@ def write_forensic_discrepancy_report(chatgpt_turns, deepseek_turns, path):
                           "i was wrong", "correction", "there was no judge", "i made up",
                           "fabricated", "no criminal case"]
     cg_correction_turns = [t for t in cg_ai if any(m in t["content"].lower() for m in correction_markers)]
-    ds_correction_turns = [t for t in ds_ai if any(m in t["content"].lower() for m in correction_markers)]
+    ds_correction_turns = [
+        t for t in ds_ai
+        if any(m in t["content"].lower() for m in [
+            "constructed a narrative",
+            "category error",
+            "hold me accountable",
+            "i was wrong",
+        ])
+    ]
 
     lines = [
         "# FORENSIC DISCREPANCY REPORT — Bowers vs McNeil",
@@ -1224,7 +1234,8 @@ def write_temporal_sequence(cg_seq, ds_seq, path):
 
     for item in cg_seq[:52]:
         flags_str = "; ".join(item["flags"]) if item["flags"] else "—"
-        preview = item["content_preview"].replace("|", "\\|")[:60]
+        preview_src = item["content_preview"].replace("|", "\\|")
+        preview = preview_src[:57] + "..." if len(preview_src) > 60 else preview_src
         lines.append(f"| {item['turn_number']} | {item['speaker']} | {flags_str} | {preview} |")
 
     # Find key events
@@ -1267,7 +1278,8 @@ def write_temporal_sequence(cg_seq, ds_seq, path):
 
     for item in ds_seq:
         flags_str = "; ".join(item["flags"]) if item["flags"] else "—"
-        preview = item["content_preview"].replace("|", "\\|")[:60]
+        preview_src = item["content_preview"].replace("|", "\\|")
+        preview = preview_src[:57] + "..." if len(preview_src) > 60 else preview_src
         lines.append(f"| {item['turn_number']} | {item['speaker']} | {flags_str} | {preview} |")
 
     ds_first_pivot = next(

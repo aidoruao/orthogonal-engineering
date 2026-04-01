@@ -29,7 +29,7 @@ from falsification.hypothesis import Hypothesis, register_hypothesis
 
 def contains_any(text: str, *keywords: str) -> bool:
     lowered = text.lower()
-    return any(kw.lower() in lowered for kw in keywords)
+    return any(kw in lowered for kw in (k.lower() for k in keywords))
 
 
 H_BM_001 = register_hypothesis(Hypothesis(

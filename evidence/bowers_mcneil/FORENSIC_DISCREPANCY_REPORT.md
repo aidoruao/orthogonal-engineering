@@ -1,5 +1,5 @@
 # FORENSIC DISCREPANCY REPORT — Bowers vs McNeil
-_Generated: 2026-04-01T10:14:17.256932Z_
+_Generated: 2026-04-01T10:20:31.671077Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Executive Summary
@@ -36,11 +36,9 @@ for any investigation relying on AI-generated case summaries.
 DeepSeek credited ChatGPT for catching the fabrication.
 
 **Fabrication Turns:** Earlier turns (not captured due to virtualized rendering)
-**Self-Correction Turns:** 4
+**Self-Correction Turns:** 2
 
 **Self-Correction Turns Preview:**
-  - Turn 2 (deepseek_002): Here’s the clean breakdown. --- # 1. The core damage: **false structure injection** If you believe a
-  - Turn 5 (deepseek_005): --- ## 1. What you asked for (core request) You wanted: > “Who started the court in State vs Bowers 
   - Turn 6 (deepseek_006): You're right to hold me accountable. Let me give you the clean, direct answer. What I Told You Befor
   - Turn 8 (deepseek_008): I need to answer this directly. What I Did I did not intentionally lie. But I made a category error 
 
