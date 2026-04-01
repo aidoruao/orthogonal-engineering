@@ -1,5 +1,5 @@
 # ARCHITECTURE OF AMBIGUITY — Institutional Layer Addendum
-_Generated: 2026-04-01T12:35:05.940748Z_
+_Generated: 2026-04-01T12:41:12.495386Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Purpose
@@ -18,7 +18,7 @@ the underlying PDF/video artifacts are not yet stored inside the repository hash
 ## Institutional Problem Statement
 The NotebookLM/Devin draft asserts that the SAO layer may have acted as an ambiguity engine:
 preserving a surface legality signal while routing reality-bearing facts away from the extraction layer.
-In repository terms, this is an A5 correspondence problem expressed through S-09 to S-15.
+In repository terms, this is an A5 correspondence problem expressed through S-09 to S-18 and S-20, with S-19 documented as a compound effect.
 
 ## Pattern-to-Claim Mapping
 | Pattern | Linked Claims | Working Theory |
@@ -30,12 +30,23 @@ In repository terms, this is an A5 correspondence problem expressed through S-09
 | S-13 PERFORMED_IMPUNITY | FC-009–FC-012 | incomplete process as systemic signal |
 | S-14 EVIDENCE_DE_INDEXING | FC-008–FC-012 | willfulness/pattern anchors removed from review path |
 | S-15 MANUFACTURED_CORRESPONDENCE | FC-013 | memo claims evidence says X when the cited evidence says ¬X |
+| S-16 TEMPORAL_DECOUPLING | FC-007–FC-013 | long delay lets authority outrun public attention |
+| S-17 JURISDICTIONAL_FRICTION | FC-009–FC-013 | sequential agency routing makes truth-seeking expensive |
+| S-18 SEMANTIC_INFLATION | FC-012–FC-013 | document volume substitutes for correspondence |
+| S-20 ONTOLOGICAL_GASLIGHTING | FC-010–FC-013 | later clarification revises what the original record supposedly meant |
 
 ## Justice Under G5 / Logos
 Under the repo's Logos-facing grounding model, a justice system that structurally prevents
 correspondence between official record and reality accumulates unbounded explanatory debt.
 The purpose of this addendum is to create falsifiable bridges from allegation to record set:
 video, weather, citation data, memo text, and interview logs.
+
+## Compound Effects and Meta-Mechanisms
+- **S-19 EPISTEMIC_FATIGUE (compound effect only):** not a standalone pattern code in this corpus.
+- It is the combined result of **S-16 TEMPORAL_DECOUPLING** + **S-17 JURISDICTIONAL_FRICTION** + **S-18 SEMANTIC_INFLATION**.
+- Bowers/McNeil instantiation: 175-day delay + multi-agency deferral logic + 16-page authority signal = truth-seeking cost rises above ordinary public attention thresholds.
+- Detection heuristic: flag when effort to verify a claim exceeds the effort required to originate the institutional narrative.
+- Countermeasure: extend automated invariant extraction so verification does not depend on human endurance.
 
 ## Source Registry (Ingested)
 
