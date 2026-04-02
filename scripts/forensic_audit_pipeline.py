@@ -381,6 +381,145 @@ INSTITUTIONAL_OBSTRUCTION_PATTERNS = {
         "example": "After challenge, the institution narrows what it claims a previously documented statement really meant",
         "boundary_with": "S-09 renames the act at report time; S-15 misstates what evidence shows; S-20 revises meaning only after challenge",
     },
+    "S-26_EDUCATIONAL_WAREHOUSING": {
+        "actor": "School_District / CPS / DCF",
+        "severity_default": "SYSTEMIC",
+        "name": "EDUCATIONAL_WAREHOUSING",
+        "description": (
+            "Institutional placement of a child in an educational setting that satisfies "
+            "enrollment metrics without providing services matched to the child's diagnosed "
+            "or observable condition. The child is counted as 'served' while receiving no "
+            "effective intervention."
+        ),
+        "falsifies_if": (
+            "The child's IEP, 504 plan, or equivalent service record shows individualized "
+            "intervention matched to the diagnosed condition, with measurable progress "
+            "benchmarks met within the review period"
+        ),
+        "detection": (
+            "Compare enrollment record against service delivery record; flag cases where "
+            "enrollment duration >> cumulative intervention hours, or where no IEP/504 "
+            "exists despite documented condition"
+        ),
+        "countermeasure": (
+            "Hash-anchor the enrollment date, condition documentation date, and first "
+            "service delivery date; compute warehousing_gap := service_start - enrollment_start; "
+            "flag if warehousing_gap > 30 days or if service_record is NULL"
+        ),
+        "boundary_with": (
+            "S-27 EDUCATIONAL_NEGLECT is the omission of mandated services; "
+            "S-26 is the structural placement that makes the omission invisible to metrics"
+        ),
+        "example": (
+            "Child with selective mutism enrolled in Okaloosa County school for N semesters "
+            "with no IEP, no 504, no speech-language referral, while district reports 100% "
+            "enrollment compliance"
+        ),
+    },
+    "S-27_EDUCATIONAL_NEGLECT": {
+        "actor": "School_District / Teacher / Administration",
+        "severity_default": "CRITICAL",
+        "name": "EDUCATIONAL_NEGLECT",
+        "description": (
+            "Failure to provide legally mandated educational services (IDEA, Section 504, "
+            "FAPE) to a child whose condition is known or reasonably discoverable by the "
+            "institution. Distinguished from warehousing by the presence of a duty to act "
+            "that was not fulfilled."
+        ),
+        "falsifies_if": (
+            "The institution demonstrates it conducted timely screening, identified the "
+            "condition, initiated the referral process within statutory timelines, and "
+            "delivered services consistent with the resulting plan"
+        ),
+        "detection": (
+            "Extract statutory timeline from IDEA/504 (e.g., 60-day evaluation window); "
+            "compare against actual referral-to-service timeline in the child's record; "
+            "flag where statutory_deadline < actual_delivery_date or delivery = NULL"
+        ),
+        "countermeasure": (
+            "File FAPE complaint with Florida DOE; hash-anchor the CPS record, enrollment "
+            "record, and absence-of-service record as a cryptographic proof bundle"
+        ),
+        "boundary_with": (
+            "S-26 EDUCATIONAL_WAREHOUSING is the structural placement; S-27 is the "
+            "specific legal duty breach. S-11 STRATEGIC_IGNORANCE avoids evidence intake; "
+            "S-27 avoids service delivery despite known condition"
+        ),
+        "example": (
+            "Child with documented selective mutism (CPS case 2013-278708) enrolled in "
+            "Okaloosa County school; no IDEA referral initiated despite observable "
+            "non-verbal behavior across multiple school years"
+        ),
+    },
+    "S-28_ADAPTIVE_INVISIBILITY": {
+        "actor": "Multi-Agency (School + CPS + Family)",
+        "severity_default": "SYSTEMIC",
+        "name": "ADAPTIVE_INVISIBILITY",
+        "description": (
+            "A child's adaptive response to institutional neglect (e.g., selective mutism, "
+            "social withdrawal, compliance without engagement) is misread by the institution "
+            "as absence of need, creating a feedback loop where the adaptation itself "
+            "prevents detection of the condition it was caused by."
+        ),
+        "falsifies_if": (
+            "The institution's screening protocol detects the adaptive behavior as a "
+            "signal of underlying condition rather than as evidence of compliance or "
+            "absence of distress"
+        ),
+        "detection": (
+            "Flag children where behavioral_incident_count = 0 AND academic_flag_count = 0 "
+            "AND social_engagement_metric < threshold AND no_service_record = TRUE; "
+            "the conjunction of 'no problems' with 'no engagement' is the diagnostic signal"
+        ),
+        "countermeasure": (
+            "Invert the detection heuristic: treat zero-incident + zero-engagement as a "
+            "HIGH-PRIORITY screening trigger rather than as evidence of well-being. "
+            "Hash-anchor the absence-of-record as affirmative evidence of S-28."
+        ),
+        "boundary_with": (
+            "S-26 EDUCATIONAL_WAREHOUSING is the institutional structure; S-27 is the "
+            "duty breach; S-28 is the child's adaptive response that closes the feedback "
+            "loop and makes S-26 and S-27 self-concealing. Analogous to S-13 PERFORMED_IMPUNITY "
+            "in the law-enforcement domain: the system's failure mode produces its own cover."
+        ),
+        "example": (
+            "Selectively mute child does not disrupt class, does not fail academically "
+            "(passes via non-verbal compliance), does not trigger behavioral referral — "
+            "institution concludes no intervention needed. The mutism IS the invisibility."
+        ),
+    },
+    "S-29_INSTITUTIONAL_ERASURE": {
+        "actor": "Multi-Agency (School_District + CPS + DCF)",
+        "severity_default": "SYSTEMIC",
+        "name": "INSTITUTIONAL_ERASURE",
+        "description": (
+            "Compound pattern: S-26 ∧ S-27 ∧ S-28. The child is enrolled (S-26 satisfied), "
+            "no services are delivered (S-27 satisfied), and the child's adaptation prevents "
+            "detection (S-28 satisfied). The institution's own records show a compliant, "
+            "served child while the actual child received nothing."
+        ),
+        "falsifies_if": (
+            "Any one of S-26, S-27, or S-28 is falsified for the same child and enrollment period"
+        ),
+        "detection": (
+            "Evaluate WAREHOUSED(child) ∧ NEGLECTED(child) ∧ INVISIBLE(child); "
+            "S-29 is present iff all three predicates hold simultaneously"
+        ),
+        "countermeasure": (
+            "Document compound predicate as a single cryptographic proof bundle; "
+            "treat S-29 as the educational analogue of S-19 EPISTEMIC_FATIGUE: "
+            "the system's architecture makes truth-seeking cost exceed the child's capacity to pursue it"
+        ),
+        "boundary_with": (
+            "S-26, S-27, S-28 are component patterns; S-29 is only triggered when all three "
+            "hold simultaneously for the same child. S-19 EPISTEMIC_FATIGUE is the analogous "
+            "compound in the law-enforcement domain."
+        ),
+        "example": (
+            "CPS case 2013-278708: child enrolled, no services delivered, zero-incident "
+            "record interpreted as well-being. Institution reports compliance. Child erased."
+        ),
+    },
 }
 
 GASLIGHTING_PATTERNS = {
@@ -922,6 +1061,22 @@ def run_ghost_file_search():
         results.append(dir_results)
 
     return results
+
+
+def is_self_referential_ghost_match(match):
+    rel_path = os.path.relpath(match["file"], REPO_ROOT)
+    return rel_path.startswith(os.path.join("evidence", "case_001") + os.sep)
+
+
+def count_substantive_ghost_matches(ghost_results):
+    total_matches = sum(len(r["matches"]) for r in ghost_results)
+    self_referential_matches = sum(
+        1
+        for result in ghost_results
+        for match in result["matches"]
+        if is_self_referential_ghost_match(match)
+    )
+    return total_matches, self_referential_matches, total_matches - self_referential_matches
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1651,7 +1806,7 @@ def write_delta_report(delta, path):
 
 
 def write_ghost_file_references(ghost_results, path):
-    total_matches = sum(len(r["matches"]) for r in ghost_results)
+    total_matches, self_referential_matches, substantive_matches = count_substantive_ghost_matches(ghost_results)
     total_scanned = sum(r["files_scanned"] for r in ghost_results)
 
     lines = [
@@ -1686,7 +1841,10 @@ def write_ghost_file_references(ghost_results, path):
         if result["matches"]:
             for match in result["matches"]:
                 rel_path = os.path.relpath(match["file"], REPO_ROOT)
-                lines.append(f"- `{rel_path}` — {match['match_type']}: keyword='{match['keyword']}'")
+                note = ""
+                if is_self_referential_ghost_match(match):
+                    note = " [SELF-REFERENCE: CASE_001 cross-reference, not prior contamination]"
+                lines.append(f"- `{rel_path}` — {match['match_type']}: keyword='{match['keyword']}'{note}")
             lines.append("")
         else:
             lines.append("_No matches found._")
@@ -1697,11 +1855,11 @@ def write_ghost_file_references(ghost_results, path):
         "",
         "## Finding",
         "",
-        f"{'GHOST FILES FOUND — SEE ABOVE' if total_matches > 0 else 'NO PRIOR BOWERS/MCNEIL REFERENCES FOUND'}",
+        f"{'GHOST FILES FOUND — SEE ABOVE' if substantive_matches > 0 else 'NO PRIOR BOWERS/MCNEIL REFERENCES FOUND'}",
         "",
     ]
 
-    if total_matches == 0:
+    if substantive_matches == 0:
         lines += [
             "The repository contains no prior references to the Bowers/McNeil case, the",
             "parties involved, or the 18 U.S.C. § 1519 investigation in the scanned directories.",
@@ -1709,6 +1867,12 @@ def write_ghost_file_references(ghost_results, path):
             "This finding supports the integrity of the current forensic audit — the case",
             "record has not been contaminated by prior AI-generated summaries stored in this repo.",
         ]
+        if self_referential_matches:
+            lines += [
+                "",
+                f"Note: {self_referential_matches} match(es) are self-referential CASE_001 cross-references",
+                "created by the current audit corpus. They are not treated as prior-case contamination.",
+            ]
     else:
         lines += [
             "ALERT: Prior references found. Each match above must be reviewed to determine",
@@ -2107,8 +2271,10 @@ def main():
     # ── Phase 6: Ghost File Search ────────────────────────────────────────
     print("\nPhase 6: Searching for ghost file references...")
     ghost_results = run_ghost_file_search()
-    ghost_matches = sum(len(r["matches"]) for r in ghost_results)
+    ghost_matches, ghost_self_references, ghost_substantive_matches = count_substantive_ghost_matches(ghost_results)
     print(f"  Ghost file matches found: {ghost_matches}")
+    print(f"  Self-referential CASE_001 matches: {ghost_self_references}")
+    print(f"  Substantive prior-case matches: {ghost_substantive_matches}")
 
     # ── Phase 7: Write Output Artifacts ───────────────────────────────────
     print("\nPhase 7: Writing output artifacts...")
@@ -2206,7 +2372,8 @@ def main():
             "total_obstruction_patterns": sum(r["total_pattern_hits"] for r in obstruction_results),
             "chatgpt_fabrication_admitted": False,
             "deepseek_fabrication_admitted": True,
-            "ghost_file_matches": ghost_matches,
+            "ghost_file_matches": ghost_substantive_matches,
+            "ghost_file_self_references": ghost_self_references,
             "indelible_facts_count": len([
                 c for c in FACTUAL_CLAIMS
                 if c["inelasticity_score"] >= 0.80 and (c.get("status") is None or c.get("status") == "VERIFIED")
@@ -2246,7 +2413,7 @@ def main():
             "sao_non_prosecution_confirmed": True,
             "federal_nexus_unverified": True,
             "arrest_confirmed": True,
-            "no_prior_case_record_in_repo": ghost_matches == 0,
+            "no_prior_case_record_in_repo": ghost_substantive_matches == 0,
             "institutional_layer_formalized": True,
             "primary_source_ingestion_pending": True,
             "public_source_verification_present": True,
