@@ -1,4 +1,4 @@
-"""Combinatorics helpers with proof objects for PR #83."""
+"""Combinatorics helpers with proof objects for PR #84."""
 
 from __future__ import annotations
 
@@ -51,10 +51,26 @@ def pigeonhole(items: int, containers: int) -> ProofObject:
     )
 
 
-def inclusion_exclusion(set_sizes: Sequence[int], intersection_sizes: Sequence[int]) -> Tuple[int, ProofObject]:
-    union_size = sum(set_sizes) - sum(intersection_sizes)
-    return union_size, ProofObject(
+def inclusion_exclusion(
+    set_sizes: Sequence[int],
+    intersections_by_order: Sequence[Sequence[int]] | Sequence[int],
+) -> Tuple[int, ProofObject]:
+    total = sum(set_sizes)
+    steps = [f"sum(set_sizes)={total}"]
+    if intersections_by_order and isinstance(intersections_by_order[0], int):  # type: ignore[index]
+        normalized = [intersections_by_order]  # type: ignore[list-item]
+    else:
+        normalized = list(intersections_by_order)  # type: ignore[arg-type]
+    sign = -1
+    for order, intersections in enumerate(normalized, start=2):
+        magnitude = sum(intersections)
+        contribution = sign * magnitude
+        total += contribution
+        steps.append(f"order_{order}={magnitude}")
+        steps.append(f"contribution_{order}={contribution}")
+        sign *= -1
+    return total, ProofObject(
         "InclusionExclusion",
-        [f"sum(set_sizes)={sum(set_sizes)}", f"sum(intersections)={sum(intersection_sizes)}"],
-        f"Union size = {union_size}",
+        steps,
+        f"Union size = {total}",
     )

@@ -1,4 +1,4 @@
-"""PR #83 benchmark formalization pipeline."""
+"""PR #84 benchmark formalization pipeline."""
 
 from __future__ import annotations
 
@@ -33,6 +33,7 @@ NEW_FILES = [
     "axioms/pattern_recognition.py",
     "benchmarks/ai_invariant_tests.py",
     "benchmarks/KIMI_PERFORMANCE_REGISTRY.md",
+    "benchmarks/MODEL_PERFORMANCE_REGISTRY.md",
     "documentation/BENCHMARK_METHODOLOGY.md",
     "scripts/benchmark_pipeline.py",
     "tests/test_peano_extended.py",
@@ -43,6 +44,19 @@ NEW_FILES = [
     "tests/test_computability.py",
     "tests/test_pattern_recognition.py",
     "tests/test_ai_invariants.py",
+    "tests/test_conditional_patterns.py",
+    "tests/test_cross_model.py",
+    "tests/test_epistemic_advanced.py",
+    "tests/test_inclusion_exclusion_fixed.py",
+]
+BUG_FIXES = [
+    "KK_PRINCIPLE_TAUTOLOGY",
+    "MISSING_CONDITIONAL_TESTS",
+    "MISSING_SCALE_PRIMITIVE",
+    "INCLUSION_EXCLUSION_OVERSIMPLIFIED",
+    "GETTIER_TRIVIAL",
+    "PARACONSISTENT_DEAD_IMPORT",
+    "PROPERTY_DETECTOR_EXPANSION",
 ]
 
 
@@ -68,11 +82,24 @@ def run_pipeline() -> Dict[str, object]:
         if path.exists():
             manifest_entries.append({"path": relative, "sha256": _sha256(path)})
     result = {
-        "pipeline": "IA-CYPHER-0004",
-        "pr": 83,
+        "pipeline": "IA-CYPHER-0005",
+        "pr": 84,
         "ai_invariants": suite,
         "proof_chain_integrity": 1.0 if suite["all_valid"] else 0.0,
         "antifragility_coefficient": _compute_antifragility(),
+        "bug_fixes": BUG_FIXES,
+        "model_targeting": {entry["id"]: entry["model_targeting"] for entry in suite["results"]},
+        "models_tracked": [
+            "GPT-5.2",
+            "Claude Opus 4.5",
+            "Gemini 3 Pro",
+            "Kimi K2.5",
+            "DeepSeek-V3.2",
+            "Llama 4 Maverick",
+            "Grok 3",
+            "Qwen 3",
+            "Mistral Large 3",
+        ],
         "files": manifest_entries,
     }
     OUTPUT_PATH.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")

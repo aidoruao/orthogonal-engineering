@@ -1,4 +1,4 @@
-"""ARC-style pattern recognition helpers with proof objects for PR #83."""
+"""ARC-style pattern recognition helpers with proof objects for PR #84."""
 
 from __future__ import annotations
 
@@ -31,6 +31,7 @@ class PrimitiveOperation(Enum):
     DETECT_BOUNDARY = "detect_boundary"
     COUNT = "count"
     CONDITIONAL = "conditional"
+    SCALE = "scale"
     FILL = "fill"
     CROP = "crop"
 
@@ -121,6 +122,24 @@ def _recolor_mapping(inp: Grid, out: Grid) -> Optional[Dict[int, int]]:
     return mapping
 
 
+def _dominant_color(grid: Grid) -> int:
+    histogram = grid.get_color_histogram()
+    return max(histogram, key=histogram.get) if histogram else 0
+
+
+def _property_detectors() -> List[Callable[[Grid], int]]:
+    return [
+        lambda grid: grid.rows,
+        lambda grid: grid.cols,
+        lambda grid: grid.rows * grid.cols,
+        lambda grid: int(grid.rows == grid.cols),
+        lambda grid: sum(1 for row in grid.cells for cell in row if cell != 0),
+        lambda grid: len(grid.get_contiguous_regions()),
+        lambda grid: len(grid.get_color_histogram()),
+        _dominant_color,
+    ]
+
+
 
 def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
     current = grid.copy()
@@ -182,6 +201,18 @@ def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
         elif operation == PrimitiveOperation.COUNT:
             nonzero = sum(1 for row in current.cells for cell in row if cell != 0)
             current = Grid([[nonzero]])
+        elif operation == PrimitiveOperation.SCALE:
+            factor = int(params.get("factor", 2))
+            if factor <= 0:
+                raise ValueError("scale factor must be positive")
+            scaled: List[List[int]] = []
+            for row in current.cells:
+                expanded = []
+                for cell in row:
+                    expanded.extend([cell] * factor)
+                for _ in range(factor):
+                    scaled.append(expanded[:])
+            current = Grid(scaled)
         elif operation == PrimitiveOperation.CONDITIONAL:
             prop = params["property"]
             value_rules = params["value_rules"]
@@ -262,12 +293,7 @@ def detect_compositional_rule(input_output_pairs: List[Tuple[Grid, Grid]], max_c
             candidates.append(candidate)
     conditional = None
     if not candidates and requires_conditional(input_output_pairs):
-        properties = [
-            lambda grid: grid.rows,
-            lambda grid: sum(1 for row in grid.cells for cell in row if cell != 0),
-            lambda grid: max(grid.get_color_histogram(), key=grid.get_color_histogram().get),
-        ]
-        conditional = infer_conditional_rule(input_output_pairs, properties)
+        conditional = infer_conditional_rule(input_output_pairs, _property_detectors())
         if conditional is not None and all(apply_rule(conditional, inp) == out for inp, out in input_output_pairs):
             candidates.append(conditional)
     if not candidates:
