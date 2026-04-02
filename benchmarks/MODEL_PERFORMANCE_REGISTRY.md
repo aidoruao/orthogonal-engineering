@@ -23,7 +23,7 @@ Pipeline: IA-CYPHER-0005 | PR: #84
 | Benchmark | GPT-5.2 | Claude 4.5 | Gemini 3 | DeepSeek V3.2 | Kimi K2.5 | Llama 4 | Grok 3 | Qwen 3 | Mistral L3 | Command R+ | Devin AI | Repo Module |
 |-----------|---------|------------|----------|---------------|-----------|---------|--------|--------|------------|------------|----------|-------------|
 | MMLU | 90.2% | 88.7% | 89.1% | 87.1% | 87.8% | 84.9% | 86.5% | 85.7% | 84.2% | 81.1% | N/A | broad coverage |
-| MMLU-Pro | 78.4% | 75.2% | 76.8% | 60.6% | 69.2% | 62.3% | 67.1% | 66.0% | 64.1% | 59.2% | N/A | `axioms/number_theory.py` |
+| MMLU-Pro | 78.4% | 75.2% | 76.8% | 60.6% | 69.2% | 62.3% | 67.1% | 66.0% | 64.1% | 59.2% | N/A | broad coverage |
 | GPQA-Diamond | 65.3% | 62.1% | 59.8% | 50.5% | 48.0%* | 46.2% | 52.4% | 48.9% | 45.3% | 40.1% | N/A | `axioms/game_theory.py`, `axioms/epistemic_logic.py` |
 | AIME 2025 | 100% | 92.8% | 93.5% | 89.2% | 96.1% | 82.4% | 88.7% | 80.1% | 72.4% | 66.1% | N/A | `axioms/number_theory.py`, `axioms/combinatorics.py` |
 | HMMT 2025 | 96.8% | 91.2% | 97.3% | 88.5% | 95.4% | 78.3% | 85.1% | 79.0% | 73.5% | 69.4% | N/A | `axioms/combinatorics.py` |
