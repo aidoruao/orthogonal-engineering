@@ -178,7 +178,7 @@ def shapley_value(players: Iterable[str], coalition_values: Dict[frozenset[str],
     def _weight(size: int) -> float:
         return factorial_terms[size] * factorial_terms[player_count - size - 1] / factorial_terms[player_count]
 
-    result = {player: 0.0 for player in ordered_players}
+    result = {player: 0 for player in ordered_players}
     steps: List[str] = [f"players={ordered_players}"]
     for player in ordered_players:
         others = [other for other in ordered_players if other != player]
@@ -186,7 +186,7 @@ def shapley_value(players: Iterable[str], coalition_values: Dict[frozenset[str],
             for coalition in combinations(others, size):
                 base = frozenset(coalition)
                 expanded = base | {player}
-                marginal = coalition_values.get(expanded, 0.0) - coalition_values.get(base, 0.0)
+                marginal = coalition_values.get(expanded, 0) - coalition_values.get(base, 0)
                 contribution = _weight(size) * marginal
                 result[player] += contribution
                 steps.append(
