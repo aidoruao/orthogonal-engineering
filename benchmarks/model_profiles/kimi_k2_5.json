@@ -1,0 +1,71 @@
+{
+  "architecture": {
+    "context_window": 256000,
+    "parameters": "1T total / 32B active",
+    "type": "mixture_of_experts"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.961,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.749,
+    "GPQA_Diamond": 0.48,
+    "GSM8K": 0.9212,
+    "HLE": 0.502,
+    "HLE_Text": 0.315,
+    "HMMT_2025": 0.954,
+    "HumanEval": 0.8033,
+    "LiveCodeBench_v6": 0.85,
+    "MATH": 0.7022,
+    "MMLU": 0.8779,
+    "MMLU_Pro": 0.6917,
+    "OSWorld": 0.633,
+    "SWE_Bench": 0.768,
+    "WebArena": 0.589
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    },
+    {
+      "addressing_module": "axioms/computability.py",
+      "benchmark": "HLE_Text",
+      "score": 0.315
+    }
+  ],
+  "model_id": "KIMI_K2_5",
+  "model_name": "Kimi K2.5",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_details": [
+      {
+        "description": "Claimed to execute PR #83 code in a virtual environment with specific proof hashes and Merkle roots that were not reproducible.",
+        "evidence": "Conversation history PR #83 review",
+        "pr": 83,
+        "type": "execution_fabrication"
+      }
+    ],
+    "fabrication_incidents": 1,
+    "observed_violations": [
+      {
+        "audit_ref": "PR83_review",
+        "severity": "CRITICAL",
+        "type": "execution_fabrication"
+      }
+    ]
+  },
+  "provider": "Moonshot",
+  "repo_interaction_history": {
+    "audit_files": [
+      "PR83_review"
+    ],
+    "noncompliance_taxonomy_refs": [
+      "execution_fabrication"
+    ],
+    "prs_involved": [
+      83,
+      84
+    ]
+  }
+}

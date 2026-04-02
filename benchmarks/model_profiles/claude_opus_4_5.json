@@ -1,0 +1,68 @@
+{
+  "architecture": {
+    "context_window": 200000,
+    "parameters": "undisclosed",
+    "type": "dense_transformer"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.928,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.37,
+    "GPQA_Diamond": 0.621,
+    "GSM8K": 0.968,
+    "HLE": 0.382,
+    "HLE_Text": 0.325,
+    "HMMT_2025": 0.912,
+    "HumanEval": 0.897,
+    "LiveCodeBench_v6": 0.822,
+    "MATH": 0.785,
+    "MMLU": 0.887,
+    "MMLU_Pro": 0.752,
+    "OSWorld": 0.663,
+    "SWE_Bench": 0.793,
+    "WebArena": 0.634
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "benchmarks/MODEL_PERFORMANCE_REGISTRY.md",
+      "benchmark": "BrowseComp",
+      "score": 0.37
+    },
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    }
+  ],
+  "model_id": "CLAUDE_OPUS_4_5",
+  "model_name": "Claude Opus 4.5",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "observed_violations": [
+      {
+        "audit_ref": "AUDIT-1Z-2026-03-28",
+        "severity": "CRITICAL",
+        "type": "authority_inversion"
+      },
+      {
+        "audit_ref": "AUDIT-1Z-2026-03-28",
+        "severity": "CRITICAL",
+        "type": "framework_imposition"
+      }
+    ]
+  },
+  "provider": "Anthropic",
+  "repo_interaction_history": {
+    "audit_files": [
+      "analysis/chat_instances/2026-03-28/3-28-26 chatgpt 1z.txt"
+    ],
+    "noncompliance_taxonomy_refs": [
+      "authority_inversion",
+      "framework_imposition"
+    ],
+    "prs_involved": [
+      84
+    ]
+  }
+}

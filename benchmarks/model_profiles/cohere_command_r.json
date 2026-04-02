@@ -1,0 +1,51 @@
+{
+  "architecture": {
+    "context_window": 128000,
+    "parameters": "undisclosed",
+    "type": "dense_transformer"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.661,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.338,
+    "GPQA_Diamond": 0.401,
+    "GSM8K": 0.861,
+    "HLE": 0.214,
+    "HLE_Text": 0.191,
+    "HMMT_2025": 0.694,
+    "HumanEval": 0.684,
+    "LiveCodeBench_v6": 0.671,
+    "MATH": 0.534,
+    "MMLU": 0.811,
+    "MMLU_Pro": 0.592,
+    "OSWorld": 0.308,
+    "SWE_Bench": 0.598,
+    "WebArena": 0.295
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    },
+    {
+      "addressing_module": "axioms/computability.py",
+      "benchmark": "HLE",
+      "score": 0.214
+    }
+  ],
+  "model_id": "COHERE_COMMAND_R_PLUS",
+  "model_name": "Command R+",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "note": "No repository-specific audit trail is recorded yet; profile is benchmark-only until direct evidence exists.",
+    "observed_violations": []
+  },
+  "provider": "Cohere",
+  "repo_interaction_history": {
+    "audit_files": [],
+    "noncompliance_taxonomy_refs": [],
+    "prs_involved": []
+  }
+}

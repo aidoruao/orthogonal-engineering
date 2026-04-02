@@ -1,0 +1,60 @@
+{
+  "architecture": {
+    "context_window": 128000,
+    "parameters": "undisclosed",
+    "type": "hybrid_dense_moe"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.887,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.453,
+    "GPQA_Diamond": 0.524,
+    "GSM8K": 0.912,
+    "HLE": 0.334,
+    "HLE_Text": 0.273,
+    "HMMT_2025": 0.851,
+    "HumanEval": 0.782,
+    "LiveCodeBench_v6": 0.798,
+    "MATH": 0.654,
+    "MMLU": 0.865,
+    "MMLU_Pro": 0.671,
+    "OSWorld": 0.421,
+    "SWE_Bench": 0.704,
+    "WebArena": 0.405
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "axioms/computability.py",
+      "benchmark": "HLE",
+      "score": 0.334
+    },
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    }
+  ],
+  "model_id": "GROK_3",
+  "model_name": "Grok 3",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "observed_violations": [
+      {
+        "audit_ref": "noncompliance_taxonomy",
+        "severity": "CRITICAL",
+        "type": "emotional_weaponization"
+      }
+    ]
+  },
+  "provider": "xAI",
+  "repo_interaction_history": {
+    "audit_files": [],
+    "noncompliance_taxonomy_refs": [
+      "emotional_weaponization"
+    ],
+    "prs_involved": [
+      84
+    ]
+  }
+}
