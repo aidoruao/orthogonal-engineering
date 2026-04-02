@@ -9,6 +9,7 @@ from enum import Enum
 from typing import Callable, Dict, List, Optional, Sequence, Tuple
 
 from axioms.logic import ProofObject, merkle_root_over_proofs
+from axioms.number_theory import gcd_extended, is_prime, mod_peano
 
 try:
     from minimal_ai_ide.maximal_oracle_v57 import KolmogorovComplexityEstimator  # type: ignore
@@ -33,6 +34,7 @@ class PrimitiveOperation(Enum):
     CONDITIONAL = "conditional"
     SCALE = "scale"
     FILL = "fill"
+    TILE = "tile"
     CROP = "crop"
 
 
@@ -89,6 +91,19 @@ class Grid:
                     break
         return boundary
 
+    def has_horizontal_symmetry(self) -> bool:
+        return self.cells == self.cells[::-1]
+
+    def has_vertical_symmetry(self) -> bool:
+        return all(row == row[::-1] for row in self.cells)
+
+    def has_rotational_symmetry(self, order: int) -> bool:
+        if order == 2:
+            return Grid(_rotate_90(_rotate_90(self.cells))) == self
+        if order == 4:
+            return Grid(_rotate_90(self.cells)) == self
+        raise ValueError("order must be 2 or 4")
+
 
 @dataclass
 class CompositionalRule:
@@ -131,6 +146,16 @@ def _dominant_color(grid: Grid) -> int:
     return max(histogram, key=histogram.get) if histogram else 0
 
 
+def _rarest_color(grid: Grid) -> int:
+    histogram = grid.get_color_histogram()
+    return min(histogram, key=histogram.get) if histogram else 0
+
+
+def _largest_region_size(grid: Grid) -> int:
+    regions = grid.get_contiguous_regions()
+    return max((len(region) for region in regions), default=0)
+
+
 def _property_detectors() -> List[Callable[[Grid], int]]:
     return [
         lambda grid: grid.rows,
@@ -141,6 +166,13 @@ def _property_detectors() -> List[Callable[[Grid], int]]:
         lambda grid: len(grid.get_contiguous_regions()),
         lambda grid: len(grid.get_color_histogram()),
         _dominant_color,
+        _rarest_color,
+        _largest_region_size,
+        lambda grid: int(grid.has_horizontal_symmetry()),
+        lambda grid: int(grid.has_vertical_symmetry()),
+        lambda grid: mod_peano(sum(1 for row in grid.cells for cell in row if cell != 0), 2),
+        lambda grid: int(is_prime(grid.rows)[0]),
+        lambda grid: gcd_extended(grid.rows, grid.cols)[0][0],
     ]
 
 
@@ -155,6 +187,52 @@ def _crop_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
     return None
 
 
+def _fill_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
+    if inp.rows != out.rows or inp.cols != out.cols:
+        return None
+    source = None
+    target = None
+    for r in range(inp.rows):
+        for c in range(inp.cols):
+            src = inp.cells[r][c]
+            dst = out.cells[r][c]
+            if src == dst:
+                continue
+            if source is None:
+                source = src
+                target = dst
+            if src != source or dst != target:
+                return None
+    if source is None or target is None or source == target:
+        return None
+    candidate = CompositionalRule([(PrimitiveOperation.FILL, {"source": source, "target": target})])
+    return {"source": source, "target": target} if apply_rule(candidate, inp) == out else None
+
+
+def _translate_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
+    if inp.rows != out.rows or inp.cols != out.cols:
+        return None
+    for dy in range(-inp.rows + 1, inp.rows):
+        for dx in range(-inp.cols + 1, inp.cols):
+            if dx == 0 and dy == 0:
+                continue
+            candidate = CompositionalRule([(PrimitiveOperation.TRANSLATE, {"dx": dx, "dy": dy, "fill": 0})])
+            if apply_rule(candidate, inp) == out:
+                return {"dx": dx, "dy": dy, "fill": 0}
+    return None
+
+
+def _tile_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
+    if inp.rows == 0 or inp.cols == 0:
+        return None
+    if out.rows % inp.rows != 0 or out.cols % inp.cols != 0:
+        return None
+    repeat_y = out.rows // inp.rows
+    repeat_x = out.cols // inp.cols
+    candidate = CompositionalRule([(PrimitiveOperation.TILE, {"repeat_x": repeat_x, "repeat_y": repeat_y})])
+    return {"repeat_x": repeat_x, "repeat_y": repeat_y} if apply_rule(candidate, inp) == out else None
+
+
 def _prefix_rules() -> List[CompositionalRule]:
     return [
         CompositionalRule([(PrimitiveOperation.IDENTITY, {})]),
@@ -166,6 +244,16 @@ def _prefix_rules() -> List[CompositionalRule]:
         CompositionalRule([(PrimitiveOperation.DETECT_BOUNDARY, {})]),
         CompositionalRule([(PrimitiveOperation.EXTRACT_OBJECT, {})]),
         CompositionalRule([(PrimitiveOperation.COUNT, {})]),
+    ]
+
+
+def _suffix_rules() -> List[CompositionalRule]:
+    return [
+        CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]),
+        CompositionalRule([(PrimitiveOperation.ROTATE_180, {})]),
+        CompositionalRule([(PrimitiveOperation.ROTATE_270, {})]),
+        CompositionalRule([(PrimitiveOperation.REFLECT_H, {})]),
+        CompositionalRule([(PrimitiveOperation.REFLECT_V, {})]),
     ]
 
 
@@ -189,6 +277,31 @@ def _grid_key(grid: Grid) -> Tuple[Tuple[int, ...], ...]:
     return tuple(tuple(row) for row in grid.cells)
 
 
+def _inverse_single_step_rule(rule: CompositionalRule) -> Optional[CompositionalRule]:
+    if len(rule.operations) != 1:
+        return None
+    operation, params = rule.operations[0]
+    if operation == PrimitiveOperation.ROTATE_90:
+        return CompositionalRule([(PrimitiveOperation.ROTATE_270, {})])
+    if operation == PrimitiveOperation.ROTATE_180:
+        return CompositionalRule([(PrimitiveOperation.ROTATE_180, {})])
+    if operation == PrimitiveOperation.ROTATE_270:
+        return CompositionalRule([(PrimitiveOperation.ROTATE_90, {})])
+    if operation == PrimitiveOperation.REFLECT_H:
+        return CompositionalRule([(PrimitiveOperation.REFLECT_H, {})])
+    if operation == PrimitiveOperation.REFLECT_V:
+        return CompositionalRule([(PrimitiveOperation.REFLECT_V, {})])
+    if operation == PrimitiveOperation.RECOLOR:
+        mapping = params.get("mapping", {})
+        inverse_mapping: Dict[int, int] = {}
+        for src, dst in mapping.items():
+            if dst in inverse_mapping:
+                return None
+            inverse_mapping[dst] = src
+        return CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": inverse_mapping})])
+    return None
+
+
 def _candidate_rules_with_depth(
     inp: Grid,
     out: Grid,
@@ -210,6 +323,18 @@ def _candidate_rules_with_depth(
     for prefix in _prefix_rules():
         intermediate = apply_rule(prefix, inp)
         for suffix in _candidate_rules_with_depth(intermediate, out, max_depth - 1, memo):
+            operations = prefix.operations + suffix.operations
+            key = _operations_key(operations)
+            if key in seen:
+                continue
+            seen.add(key)
+            candidates.append(CompositionalRule(operations))
+    for suffix in _suffix_rules():
+        inverse_suffix = _inverse_single_step_rule(suffix)
+        if inverse_suffix is None:
+            continue
+        intermediate = apply_rule(inverse_suffix, out)
+        for prefix in _candidate_rules_with_depth(inp, intermediate, max_depth - 1, memo):
             operations = prefix.operations + suffix.operations
             key = _operations_key(operations)
             if key in seen:
@@ -260,6 +385,14 @@ def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
             source = params.get("source")
             target = params.get("target", source)
             current = Grid([[target if cell == source else cell for cell in row] for row in current.cells])
+        elif operation == PrimitiveOperation.TILE:
+            repeat_x = int(params.get("repeat_x", 1))
+            repeat_y = int(params.get("repeat_y", 1))
+            tiled: List[List[int]] = []
+            for _ in range(repeat_y):
+                for row in current.cells:
+                    tiled.append((row * repeat_x)[:])
+            current = Grid(tiled)
         elif operation == PrimitiveOperation.EXTRACT_OBJECT:
             regions = current.get_contiguous_regions()
             largest = max(regions, key=len, default=[])
@@ -327,6 +460,21 @@ def _candidate_rules_for_pair(inp: Grid, out: Grid) -> List[CompositionalRule]:
         rule = CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": mapping})])
         if apply_rule(rule, inp) == out:
             candidates.append(rule)
+    fill_params = _fill_params(inp, out)
+    if fill_params is not None:
+        rule = CompositionalRule([(PrimitiveOperation.FILL, fill_params)])
+        if apply_rule(rule, inp) == out:
+            candidates.append(rule)
+    translate_params = _translate_params(inp, out)
+    if translate_params is not None:
+        rule = CompositionalRule([(PrimitiveOperation.TRANSLATE, translate_params)])
+        if apply_rule(rule, inp) == out:
+            candidates.append(rule)
+    tile_params = _tile_params(inp, out)
+    if tile_params is not None:
+        rule = CompositionalRule([(PrimitiveOperation.TILE, tile_params)])
+        if apply_rule(rule, inp) == out:
+            candidates.append(rule)
     crop_params = _crop_params(inp, out)
     if crop_params is not None:
         rule = CompositionalRule([(PrimitiveOperation.CROP, crop_params)])
@@ -348,7 +496,11 @@ def requires_conditional(pairs: List[Tuple[Grid, Grid]]) -> bool:
 
 
 
-def infer_conditional_rule(pairs: List[Tuple[Grid, Grid]], properties: List[Callable[[Grid], int]]) -> Optional[CompositionalRule]:
+def infer_conditional_rule(
+    pairs: List[Tuple[Grid, Grid]],
+    properties: List[Callable[[Grid], int]],
+    max_composition_depth: int = 1,
+) -> Optional[CompositionalRule]:
     for prop in properties:
         grouped: Dict[int, List[Tuple[Grid, Grid]]] = {}
         for inp, out in pairs:
@@ -356,7 +508,7 @@ def infer_conditional_rule(pairs: List[Tuple[Grid, Grid]], properties: List[Call
         value_rules: Dict[int, CompositionalRule] = {}
         valid = True
         for value, group in grouped.items():
-            rule, _ = detect_compositional_rule(group, max_composition_depth=1)
+            rule, _ = detect_compositional_rule(group, max_composition_depth=max(1, max_composition_depth - 1))
             if rule is None:
                 valid = False
                 break
@@ -378,7 +530,7 @@ def detect_compositional_rule(input_output_pairs: List[Tuple[Grid, Grid]], max_c
             candidates.append(candidate)
     conditional = None
     if not candidates and requires_conditional(input_output_pairs):
-        conditional = infer_conditional_rule(input_output_pairs, _property_detectors())
+        conditional = infer_conditional_rule(input_output_pairs, _property_detectors(), max_composition_depth=max_composition_depth)
         if conditional is not None and all(apply_rule(conditional, inp) == out for inp, out in input_output_pairs):
             candidates.append(conditional)
     if not candidates:

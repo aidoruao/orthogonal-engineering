@@ -5,7 +5,16 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from axioms.pattern_recognition import CompositionalRule, Grid, PrimitiveOperation, apply_rule, detect_compositional_rule, verify_rule
+from axioms.pattern_recognition import (
+    CompositionalRule,
+    Grid,
+    PrimitiveOperation,
+    _inverse_single_step_rule,
+    _property_detectors,
+    apply_rule,
+    detect_compositional_rule,
+    verify_rule,
+)
 
 
 def test_pattern_recognition_suite():
@@ -44,6 +53,50 @@ def test_pattern_recognition_suite():
     assert apply_rule(conditional, Grid([[1, 2], [3, 4]])) == Grid([[3, 4], [1, 2]])
     assert apply_rule(conditional, Grid([[1, 2], [3, 4], [5, 6]])) == Grid([[1, 2]])
     assert conditional_proof.is_valid()
+
+    filled, fill_proof = detect_compositional_rule([
+        (Grid([[0, 1], [0, 0]]), Grid([[2, 1], [2, 2]])),
+    ])
+    assert filled is not None
+    assert filled.operations[0][0] == PrimitiveOperation.FILL
+    assert fill_proof.is_valid()
+
+    translated, translate_proof = detect_compositional_rule([
+        (Grid([[1, 0, 0], [0, 0, 0], [0, 0, 0]]), Grid([[0, 1, 0], [0, 0, 0], [0, 0, 0]])),
+    ])
+    assert translated is not None
+    assert translated.operations[0][0] == PrimitiveOperation.TRANSLATE
+    assert translate_proof.is_valid()
+
+    tiled, tile_proof = detect_compositional_rule([
+        (Grid([[1, 2], [3, 4]]), Grid([[1, 2, 1, 2], [3, 4, 3, 4], [1, 2, 1, 2], [3, 4, 3, 4]])),
+    ])
+    assert tiled is not None
+    assert tiled.operations[0][0] == PrimitiveOperation.TILE
+    assert tile_proof.is_valid()
+
+    symmetric = Grid([[1, 0, 1], [2, 0, 2]])
+    asymmetric = Grid([[1, 0, 0], [2, 0, 2]])
+    assert symmetric.has_vertical_symmetry()
+    assert not asymmetric.has_vertical_symmetry()
+    assert Grid([[1, 2], [1, 2]]).has_horizontal_symmetry()
+
+    detectors = _property_detectors()
+    assert any(detector(symmetric) == 1 and detector(asymmetric) == 0 for detector in detectors)
+    odd_nonzero = Grid([[1, 0], [0, 0]])
+    even_nonzero = Grid([[1, 1], [0, 0]])
+    assert any(detector(odd_nonzero) != detector(even_nonzero) for detector in detectors)
+
+    inverse_rotation = _inverse_single_step_rule(CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]))
+    assert inverse_rotation is not None
+    assert apply_rule(inverse_rotation, apply_rule(CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]), Grid([[1, 2], [3, 4]]))) == Grid([[1, 2], [3, 4]])
+
+    inverse_recolor = _inverse_single_step_rule(
+        CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": {0: 0, 1: 7, 2: 8}})])
+    )
+    assert inverse_recolor is not None
+    recolored = apply_rule(CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": {0: 0, 1: 7, 2: 8}})]), Grid([[1, 2], [0, 1]]))
+    assert apply_rule(inverse_recolor, recolored) == Grid([[1, 2], [0, 1]])
 
 
 def main():
