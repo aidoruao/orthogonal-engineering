@@ -79,10 +79,16 @@ def test_pattern_recognition_suite():
     asymmetric = Grid([[1, 0, 0], [2, 0, 2]])
     assert symmetric.has_vertical_symmetry()
     assert not asymmetric.has_vertical_symmetry()
-    assert Grid([[1, 2], [1, 2]]).has_horizontal_symmetry()
+    horizontal_symmetric = Grid([[1, 2], [1, 2]])
+    horizontal_asymmetric = Grid([[1, 2], [3, 4]])
+    assert horizontal_symmetric.has_horizontal_symmetry()
+    assert not horizontal_asymmetric.has_horizontal_symmetry()
 
     detectors = _property_detectors()
-    assert any(detector(symmetric) == 1 and detector(asymmetric) == 0 for detector in detectors)
+    vertical_symmetry_pairs = [(detector(symmetric), detector(asymmetric)) for detector in detectors]
+    horizontal_symmetry_pairs = [(detector(horizontal_symmetric), detector(horizontal_asymmetric)) for detector in detectors]
+    assert (1, 0) in vertical_symmetry_pairs
+    assert (1, 0) in horizontal_symmetry_pairs
     odd_nonzero = Grid([[1, 0], [0, 0]])
     even_nonzero = Grid([[1, 1], [0, 0]])
     assert any(detector(odd_nonzero) != detector(even_nonzero) for detector in detectors)

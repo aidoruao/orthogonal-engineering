@@ -98,6 +98,7 @@ class Grid:
         return all(row == row[::-1] for row in self.cells)
 
     def has_rotational_symmetry(self, order: int) -> bool:
+        """Return whether the grid is invariant under 180° (order=2) or 90° (order=4) rotation."""
         if order == 2:
             return Grid(_rotate_90(_rotate_90(self.cells))) == self
         if order == 4:
@@ -160,7 +161,7 @@ def _nonzero_count(grid: Grid) -> int:
     return sum(cell != 0 for row in grid.cells for cell in row)
 
 
-def _row_count_is_prime(grid: Grid) -> int:
+def _is_row_count_prime(grid: Grid) -> int:
     prime, _ = is_prime(grid.rows)
     return int(prime)
 
@@ -185,7 +186,7 @@ def _property_detectors() -> List[Callable[[Grid], int]]:
         lambda grid: int(grid.has_horizontal_symmetry()),
         lambda grid: int(grid.has_vertical_symmetry()),
         lambda grid: mod_peano(_nonzero_count(grid), 2),
-        _row_count_is_prime,
+        _is_row_count_prime,
         _dimension_gcd,
     ]
 
