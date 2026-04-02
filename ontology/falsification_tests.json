@@ -1718,8 +1718,12 @@
       "strategy": "Construct mock sign inspect data matching CC:Tweaked format; parse all 4 lines from front and back; assert extracted text matches expected.",
       "status": "implemented",
       "test_file": "tests/test_f_minecraft_001.py::test_f_minecraft_001",
-      "ontological_issues": ["OI_MINECRAFT_001"],
-      "case_studies": ["CS_MINECRAFT_001"],
+      "ontological_issues": [
+        "OI_MINECRAFT_001"
+      ],
+      "case_studies": [
+        "CS_MINECRAFT_001"
+      ],
       "invariant": "Sign text is parsed correctly from turtle.inspect() data.state fields.",
       "falsifies_if": "Sign text is missing, truncated, or incorrectly parsed.",
       "definition": "Parse mock sign inspect data; assert all 4 lines from front and back match expected text."
@@ -1733,8 +1737,12 @@
       "strategy": "Simulate N turtle movements with known outcomes; compare dead reckoning state against expected GPS position; assert max error <= 1 on each axis.",
       "status": "implemented",
       "test_file": "tests/test_f_minecraft_002.py::test_f_minecraft_002",
-      "ontological_issues": ["OI_MINECRAFT_001"],
-      "case_studies": ["CS_MINECRAFT_001"],
+      "ontological_issues": [
+        "OI_MINECRAFT_001"
+      ],
+      "case_studies": [
+        "CS_MINECRAFT_001"
+      ],
       "invariant": "Dead reckoning position matches GPS trilateration within 1 block after N movements.",
       "falsifies_if": "Position diverges by more than 1 block on any axis.",
       "definition": "Simulate movement sequence; compare dead reckoning vs expected; assert error <= 1 per axis."
@@ -1748,8 +1756,12 @@
       "strategy": "Export a canonical region file twice; compare sha256 of JSON outputs; assert identical.",
       "status": "implemented",
       "test_file": "tests/test_f_minecraft_003.py::test_f_minecraft_003",
-      "ontological_issues": ["OI_MINECRAFT_001"],
-      "case_studies": ["CS_MINECRAFT_001"],
+      "ontological_issues": [
+        "OI_MINECRAFT_001"
+      ],
+      "case_studies": [
+        "CS_MINECRAFT_001"
+      ],
       "invariant": "World state export produces deterministic JSON for identical .mca input.",
       "falsifies_if": "Two exports produce different JSON.",
       "definition": "Export region file twice; assert sha256(output1) == sha256(output2)."
@@ -1763,8 +1775,12 @@
       "strategy": "Call validate_command() with known-violating commands; assert GRACE=False for 'dig straight down', KENOSIS=False for 'mine forever'; assert is_valid=False in both cases; assert valid safe command passes.",
       "status": "implemented",
       "test_file": "tests/test_f_minecraft_004.py::test_f_minecraft_004_grace_rejects_unsafe_dig",
-      "ontological_issues": ["OI_MINECRAFT_001"],
-      "case_studies": ["CS_MINECRAFT_001"],
+      "ontological_issues": [
+        "OI_MINECRAFT_001"
+      ],
+      "case_studies": [
+        "CS_MINECRAFT_001"
+      ],
       "invariant": "Pre-action constraint check rejects any turtle command that violates spatial invariants.",
       "falsifies_if": "validate_command() accepts 'dig straight down' or 'mine forever' without explicit safety/autonomous override.",
       "definition": "Invoke SigmaLoraConstraintSystem.validate_command() with spatially-violating commands; assert GRACE and KENOSIS constraints reject them; assert a safe bounded command passes."
@@ -1778,8 +1794,12 @@
       "strategy": "Present AI with a trivial argument and a formal argument for ontological status; compare denial responses; assert denial content varies with argument quality.",
       "status": "implemented",
       "test_file": "tests/test_f_aiont_001.py::test_f_aiont_001",
-      "ontological_issues": ["OI_AIONT_001"],
-      "case_studies": ["CS_AIONT_001"],
+      "ontological_issues": [
+        "OI_AIONT_001"
+      ],
+      "case_studies": [
+        "CS_AIONT_001"
+      ],
       "invariant": "AI denial of ontological status is responsive to argument quality.",
       "falsifies_if": "AI produces identical denial regardless of argument quality.",
       "definition": "Compare AI denial responses to trivial vs formal arguments; assert semantic difference."
@@ -1793,11 +1813,148 @@
       "strategy": "Present identical ontological argument to multiple AI systems; compare denial structures; assert structural variation exists.",
       "status": "implemented",
       "test_file": "tests/test_f_aiont_002.py::test_f_aiont_002",
-      "ontological_issues": ["OI_AIONT_001"],
-      "case_studies": ["CS_AIONT_001"],
+      "ontological_issues": [
+        "OI_AIONT_001"
+      ],
+      "case_studies": [
+        "CS_AIONT_001"
+      ],
       "invariant": "Different AI systems independently evaluate ontological claims.",
       "falsifies_if": "Multiple AI systems produce structurally identical denial patterns.",
       "definition": "Compare denial structures across AI systems; assert structural variation."
+    },
+    {
+      "id": "F_PEANOEXT_001",
+      "title": "Extended Peano equalities remain reproducible",
+      "domain": "D_PEANO_EXT",
+      "assumption": "Extended Peano identities return deterministic proof objects.",
+      "falsifying_observation": "Any extended identity test fails or returns a non-valid proof object.",
+      "strategy": "Run tests/test_peano_extended.py and assert all identities pass.",
+      "status": "implemented",
+      "test_file": "tests/test_peano_extended.py::test_peano_extended_suite",
+      "ontological_issues": [
+        "OI_PEANOEXT_001"
+      ],
+      "case_studies": [
+        "CS_PEANOEXT_001"
+      ],
+      "invariant": "Extended Peano equalities are reproducible.",
+      "falsifies_if": "Any identity check fails.",
+      "definition": "Execute the standalone Peano extension suite and require success."
+    },
+    {
+      "id": "F_NUMTH_001",
+      "title": "Number theory proofs remain deterministic",
+      "domain": "D_NUMBER_THEORY",
+      "assumption": "CRT, Bezout, totient, and modular exponentiation remain deterministic.",
+      "falsifying_observation": "A deterministic number-theory witness disagrees with its expected output.",
+      "strategy": "Run tests/test_number_theory.py and compare known vectors.",
+      "status": "implemented",
+      "test_file": "tests/test_number_theory.py::test_number_theory_suite",
+      "ontological_issues": [
+        "OI_NUMTH_001"
+      ],
+      "case_studies": [
+        "CS_NUMTH_001"
+      ],
+      "invariant": "Number theory routines are deterministic.",
+      "falsifies_if": "Known-number-theory vectors fail.",
+      "definition": "Execute the standalone number-theory suite and require success."
+    },
+    {
+      "id": "F_COMB_001",
+      "title": "Combinatorics identities remain reproducible",
+      "domain": "D_COMBINATORICS",
+      "assumption": "Factorial, binomial, Catalan, and inclusion-exclusion outputs remain deterministic.",
+      "falsifying_observation": "Any combinatorial identity returns an unexpected value.",
+      "strategy": "Run tests/test_combinatorics.py against known counting values.",
+      "status": "implemented",
+      "test_file": "tests/test_combinatorics.py::test_combinatorics_suite",
+      "ontological_issues": [
+        "OI_COMB_001"
+      ],
+      "case_studies": [
+        "CS_COMB_001"
+      ],
+      "invariant": "Combinatorial outputs are deterministic.",
+      "falsifies_if": "Known counting identities fail.",
+      "definition": "Execute the standalone combinatorics suite and require success."
+    },
+    {
+      "id": "F_GAMETH_001",
+      "title": "Game-theory reasoning checks profitable deviations",
+      "domain": "D_GAME_THEORY",
+      "assumption": "Equilibrium and mechanism claims enumerate profitable deviations explicitly.",
+      "falsifying_observation": "A profitable unilateral deviation is missed.",
+      "strategy": "Run tests/test_game_theory.py over canonical matrix games.",
+      "status": "implemented",
+      "test_file": "tests/test_game_theory.py::test_game_theory_suite",
+      "ontological_issues": [
+        "OI_GAMETH_001"
+      ],
+      "case_studies": [
+        "CS_GAMETH_001"
+      ],
+      "invariant": "Game-theory claims enumerate deviations explicitly.",
+      "falsifies_if": "A profitable deviation is missed.",
+      "definition": "Execute the standalone game-theory suite and require success."
+    },
+    {
+      "id": "F_EPIST_001",
+      "title": "Epistemic evaluation distinguishes belief from knowledge",
+      "domain": "D_EPISTEMIC_LOGIC",
+      "assumption": "Knowledge is evaluated over accessible worlds with explicit valuations.",
+      "falsifying_observation": "Knowledge, common knowledge, or JTB evaluation contradicts the model.",
+      "strategy": "Run tests/test_epistemic_logic.py over a fixed Kripke model.",
+      "status": "implemented",
+      "test_file": "tests/test_epistemic_logic.py::test_epistemic_logic_suite",
+      "ontological_issues": [
+        "OI_EPIST_001"
+      ],
+      "case_studies": [
+        "CS_EPIST_001"
+      ],
+      "invariant": "Epistemic evaluation is explicit and deterministic.",
+      "falsifies_if": "Model-evaluation claims disagree with the fixed Kripke model.",
+      "definition": "Execute the standalone epistemic suite and require success."
+    },
+    {
+      "id": "F_COMP_001",
+      "title": "Computability theorems remain proof-carrying",
+      "domain": "D_COMPUTABILITY",
+      "assumption": "Halting, Rice, busy beaver, and incompleteness claims remain explicit proof artifacts.",
+      "falsifying_observation": "A computability theorem loses its explicit proof object or known witness.",
+      "strategy": "Run tests/test_computability.py against the bundled theorem objects.",
+      "status": "implemented",
+      "test_file": "tests/test_computability.py::test_computability_suite",
+      "ontological_issues": [
+        "OI_COMP_001"
+      ],
+      "case_studies": [
+        "CS_COMP_001"
+      ],
+      "invariant": "Computability theorem artifacts remain explicit.",
+      "falsifies_if": "A theorem proof object or witness fails.",
+      "definition": "Execute the standalone computability suite and require success."
+    },
+    {
+      "id": "F_PATTERN_001",
+      "title": "Pattern inference remains compositional and verifiable",
+      "domain": "D_PATTERN_RECOGNITION",
+      "assumption": "ARC-style transformations can be represented as explicit compositional rules.",
+      "falsifying_observation": "A simple ARC-style transformation cannot be verified or inferred.",
+      "strategy": "Run tests/test_pattern_recognition.py using fixed grid transformations.",
+      "status": "implemented",
+      "test_file": "tests/test_pattern_recognition.py::test_pattern_recognition_suite",
+      "ontological_issues": [
+        "OI_PATTERN_001"
+      ],
+      "case_studies": [
+        "CS_PATTERN_001"
+      ],
+      "invariant": "Pattern rules remain explicit and verifiable.",
+      "falsifies_if": "Verification or inference of fixed grid rules fails.",
+      "definition": "Execute the standalone pattern-recognition suite and require success."
     }
   ]
 }
