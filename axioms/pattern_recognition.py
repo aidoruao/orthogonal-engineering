@@ -147,10 +147,6 @@ def _property_detectors() -> List[Callable[[Grid], int]]:
 def _crop_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
     if out.rows == 0 or out.cols == 0:
         return None
-    if out.rows > inp.rows:
-        return None
-    if out.cols > inp.cols:
-        return None
     for top in range(inp.rows - out.rows + 1):
         for left in range(inp.cols - out.cols + 1):
             cropped = [row[left:left + out.cols] for row in inp.cells[top:top + out.rows]]
