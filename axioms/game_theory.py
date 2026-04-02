@@ -1,9 +1,10 @@
-"""Game-theory helpers with proof objects for PR #83."""
+"""Game-theory helpers with proof objects for PR #84."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Tuple
+from itertools import combinations
+from typing import Callable, Dict, Iterable, List, Tuple
 
 from axioms.logic import ProofObject
 
@@ -164,4 +165,87 @@ def verify_incentive_compatibility(mechanism: Dict[str, Dict[str, int]], prefere
         "IncentiveCompatibility",
         reasons or ["No profitable deviations detected"],
         f"Mechanism is {'incentive compatible' if truthful else 'not incentive compatible'}",
+    )
+
+
+def shapley_value(players: Iterable[str], coalition_values: Dict[frozenset[str], float]) -> Tuple[Dict[str, float], ProofObject]:
+    ordered_players = tuple(players)
+    player_count = len(ordered_players)
+    factorial_terms = [1]
+    for value in range(1, player_count + 1):
+        factorial_terms.append(factorial_terms[-1] * value)
+
+    def _weight(size: int) -> float:
+        return factorial_terms[size] * factorial_terms[player_count - size - 1] / factorial_terms[player_count]
+
+    result = {player: 0.0 for player in ordered_players}
+    steps: List[str] = [f"players={ordered_players}"]
+    for player in ordered_players:
+        others = [other for other in ordered_players if other != player]
+        for size in range(len(others) + 1):
+            for coalition in combinations(others, size):
+                base = frozenset(coalition)
+                expanded = base | {player}
+                marginal = coalition_values.get(expanded, 0.0) - coalition_values.get(base, 0.0)
+                contribution = _weight(size) * marginal
+                result[player] += contribution
+                steps.append(
+                    f"{player} via {sorted(base)} -> {sorted(expanded)}: weight={_weight(size):.3f}, marginal={marginal}, contribution={contribution:.3f}"
+                )
+    normalized = {player: round(value, 6) for player, value in result.items()}
+    return normalized, ProofObject(
+        "ShapleyValue",
+        steps,
+        f"Shapley allocation = {normalized}",
+    )
+
+
+def vickrey_auction(bids: Dict[str, int]) -> Tuple[Dict[str, int | str], ProofObject]:
+    if not bids:
+        raise ValueError("bids must be non-empty")
+    ordered = sorted(bids.items(), key=lambda item: (-item[1], item[0]))
+    winner, winning_bid = ordered[0]
+    second_price = ordered[1][1] if len(ordered) > 1 else 0
+    outcome: Dict[str, int | str] = {
+        "winner": winner,
+        "winning_bid": winning_bid,
+        "payment": second_price,
+    }
+    return outcome, ProofObject(
+        "VickreyAuction",
+        [f"ordered_bids={ordered}", "truthful bidding is weakly dominant in a second-price auction"],
+        f"Winner {winner} pays {second_price}",
+    )
+
+
+def evolutionary_stable(payoff_matrix: Dict[str, Dict[str, int]]) -> Tuple[List[str], ProofObject]:
+    strategies = sorted(payoff_matrix)
+    ess: List[str] = []
+    steps: List[str] = [f"strategies={strategies}"]
+    for candidate in strategies:
+        stable = True
+        for mutant in strategies:
+            if mutant == candidate:
+                continue
+            resident_payoff = payoff_matrix[candidate][candidate]
+            mutant_against_resident = payoff_matrix[mutant][candidate]
+            if resident_payoff < mutant_against_resident:
+                stable = False
+                steps.append(f"{candidate} rejected by {mutant}: {resident_payoff} < {mutant_against_resident}")
+                break
+            if resident_payoff == mutant_against_resident:
+                candidate_against_mutant = payoff_matrix[candidate][mutant]
+                mutant_self_payoff = payoff_matrix[mutant][mutant]
+                if candidate_against_mutant <= mutant_self_payoff:
+                    stable = False
+                    steps.append(
+                        f"{candidate} tie-broken by {mutant}: {candidate_against_mutant} <= {mutant_self_payoff}"
+                    )
+                    break
+        if stable:
+            ess.append(candidate)
+    return ess, ProofObject(
+        "EvolutionaryStableStrategy",
+        steps,
+        f"ESS strategies = {ess}",
     )

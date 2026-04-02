@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from axioms.combinatorics import binomial, catalan, factorial, inclusion_exclusion, pigeonhole
+from axioms.combinatorics import bell_number, binomial, catalan, derangement, factorial, inclusion_exclusion, pigeonhole, stirling_second
 
 
 def test_combinatorics_suite():
@@ -14,6 +14,10 @@ def test_combinatorics_suite():
     assert catalan(3)[0] == 5
     assert "at least two" in pigeonhole(5, 4).conclusion
     assert inclusion_exclusion([4, 5], [2])[0] == 7
+    assert stirling_second(5, 2)[0] == 15
+    assert stirling_second(5, 3)[0] == 25
+    assert derangement(4)[0] == 9
+    assert bell_number(5)[0] == 52
 
 
 def main():

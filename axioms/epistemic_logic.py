@@ -149,6 +149,24 @@ def public_announcement(model: KripkeModel, announcement: str) -> Tuple[KripkeMo
     ), proof
 
 
+def agm_revision(beliefs: Set[str], new_evidence: str | Set[str]) -> Tuple[Set[str], ProofObject]:
+    evidence = {new_evidence} if isinstance(new_evidence, str) else set(new_evidence)
+    revised = set(beliefs)
+    removed = []
+    for proposition in evidence:
+        negation = proposition[4:] if proposition.startswith("not:") else f"not:{proposition}"
+        if negation in revised:
+            revised.remove(negation)
+            removed.append(negation)
+    revised.update(evidence)
+    proof = ProofObject(
+        "AGMRevision",
+        [f"prior={sorted(beliefs)}", f"evidence={sorted(evidence)}", f"removed_conflicts={sorted(removed)}"],
+        f"Revised belief set = {sorted(revised)}",
+    )
+    return revised, proof
+
+
 def construct_gettier_counterexample():
     model = KripkeModel(
         worlds={"w1", "w2"},

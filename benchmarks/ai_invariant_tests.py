@@ -10,17 +10,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
-from axioms.combinatorics import binomial, catalan, inclusion_exclusion, pigeonhole
+from axioms.combinatorics import bell_number, binomial, catalan, derangement, inclusion_exclusion, pigeonhole, stirling_second
 from axioms.computability import (
+    ackermann,
     busy_beaver,
+    classify_arithmetical_hierarchy,
     demonstrate_incompleteness,
     prove_halting_undecidable,
+    prove_post_correspondence_undecidable,
     prove_kolmogorov_uncomputability,
     prove_rice_theorem,
     verify_turing_complete,
 )
 from axioms.epistemic_logic import (
     KripkeModel,
+    agm_revision,
     construct_gettier_counterexample,
     evaluate_common_knowledge,
     evaluate_distributed_knowledge,
@@ -33,13 +37,29 @@ from axioms.epistemic_logic import (
 from axioms.game_theory import (
     StrategyProfile,
     analyze_iterated_prisoners_dilemma,
+    evolutionary_stable,
     eliminate_dominated,
     find_nash_equilibria,
     prove_minimax,
+    shapley_value,
+    vickrey_auction,
     verify_incentive_compatibility,
 )
 from axioms.logic import ProofObject, merkle_root_over_proofs
-from axioms.number_theory import bezout, chinese_remainder_theorem, euler_totient, fermat_little, gcd_extended, is_prime, modular_exponentiation
+from axioms.number_theory import (
+    bezout,
+    chinese_remainder_theorem,
+    euler_totient,
+    fermat_little,
+    gcd_extended,
+    is_prime,
+    legendre_symbol,
+    modular_exponentiation,
+    multiplicative_order,
+    primitive_root,
+    sum_of_two_squares,
+    wilson_theorem,
+)
 from axioms.pattern_recognition import CompositionalRule, Grid, PrimitiveOperation, verify_rule
 from axioms.peano_extended import (
     verify_p10_distributivity,
@@ -147,6 +167,21 @@ def _register_all() -> None:
     for test_id, proof, solution, problem in nt_entries:
         _register_invariant(test_id, "D_NUMBER_THEORY", "AIME", problem, solution, proof, "axioms/number_theory.py")
 
+    advanced_nt_entries = [
+        ("AI_NUMTH_011", legendre_symbol(5, 11)[1], legendre_symbol(5, 11)[0], "Legendre symbol (5/11)"),
+        ("AI_NUMTH_012", legendre_symbol(3, 7)[1], legendre_symbol(3, 7)[0], "Legendre symbol (3/7)"),
+        ("AI_NUMTH_013", sum_of_two_squares(25)[1], sum_of_two_squares(25)[0], "Sum of two squares for 25"),
+        ("AI_NUMTH_014", sum_of_two_squares(3)[1], sum_of_two_squares(3)[0], "No sum-of-two-squares decomposition for 3"),
+        ("AI_NUMTH_015", wilson_theorem(5)[1], wilson_theorem(5)[0], "Wilson theorem for 5"),
+        ("AI_NUMTH_016", multiplicative_order(2, 7)[1], multiplicative_order(2, 7)[0], "Multiplicative order of 2 modulo 7"),
+        ("AI_NUMTH_017", multiplicative_order(10, 11)[1], multiplicative_order(10, 11)[0], "Multiplicative order of 10 modulo 11"),
+        ("AI_NUMTH_018", primitive_root(7)[1], primitive_root(7)[0], "Primitive root modulo 7"),
+        ("AI_NUMTH_019", primitive_root(11)[1], primitive_root(11)[0], "Primitive root modulo 11"),
+        ("AI_NUMTH_020", wilson_theorem(11)[1], wilson_theorem(11)[0], "Wilson theorem for 11"),
+    ]
+    for test_id, proof, solution, problem in advanced_nt_entries:
+        _register_invariant(test_id, "D_NUMBER_THEORY", "AIME", problem, solution, proof, "axioms/number_theory.py")
+
     # Combinatorics: 10
     comb_entries = [
         ("AI_COMB_001", binomial(5, 2)[1], binomial(5, 2)[0], "Binomial coefficient C(5,2)"),
@@ -161,6 +196,16 @@ def _register_all() -> None:
         ("AI_COMB_010", catalan(4)[1], catalan(4)[0], "Catalan number C4"),
     ]
     for test_id, proof, solution, problem in comb_entries:
+        _register_invariant(test_id, "D_COMBINATORICS", "HMMT", problem, solution, proof, "axioms/combinatorics.py")
+
+    advanced_comb_entries = [
+        ("AI_COMB_011", stirling_second(5, 2)[1], stirling_second(5, 2)[0], "Stirling number S(5,2)"),
+        ("AI_COMB_012", stirling_second(5, 3)[1], stirling_second(5, 3)[0], "Stirling number S(5,3)"),
+        ("AI_COMB_013", derangement(4)[1], derangement(4)[0], "Derangement count !4"),
+        ("AI_COMB_014", bell_number(5)[1], bell_number(5)[0], "Bell number B5"),
+        ("AI_COMB_015", bell_number(0)[1], bell_number(0)[0], "Bell number B0"),
+    ]
+    for test_id, proof, solution, problem in advanced_comb_entries:
         _register_invariant(test_id, "D_COMBINATORICS", "HMMT", problem, solution, proof, "axioms/combinatorics.py")
 
     # Game theory: 5
@@ -194,6 +239,44 @@ def _register_all() -> None:
     for test_id, proof, solution, problem in gt_entries:
         _register_invariant(test_id, "D_GAME_THEORY", "GPQA", problem, solution, proof, "axioms/game_theory.py")
 
+    majority_game = {
+        frozenset(): 0.0,
+        frozenset({"alice"}): 0.0,
+        frozenset({"bob"}): 0.0,
+        frozenset({"carol"}): 0.0,
+        frozenset({"alice", "bob"}): 1.0,
+        frozenset({"alice", "carol"}): 1.0,
+        frozenset({"bob", "carol"}): 1.0,
+        frozenset({"alice", "bob", "carol"}): 1.0,
+    }
+    additive_game = {
+        frozenset(): 0.0,
+        frozenset({"alice"}): 1.0,
+        frozenset({"bob"}): 2.0,
+        frozenset({"carol"}): 3.0,
+        frozenset({"alice", "bob"}): 3.0,
+        frozenset({"alice", "carol"}): 4.0,
+        frozenset({"bob", "carol"}): 5.0,
+        frozenset({"alice", "bob", "carol"}): 6.0,
+    }
+    coordination_payoff = {
+        "Stag": {"Stag": 4, "Hare": 0},
+        "Hare": {"Stag": 3, "Hare": 3},
+    }
+    dominance_payoff = {
+        "A": {"A": 3, "B": 1},
+        "B": {"A": 2, "B": 1},
+    }
+    advanced_gt_entries = [
+        ("AI_GAME_006", shapley_value(("alice", "bob", "carol"), majority_game)[1], shapley_value(("alice", "bob", "carol"), majority_game)[0], "Shapley value for symmetric majority game"),
+        ("AI_GAME_007", shapley_value(("alice", "bob", "carol"), additive_game)[1], shapley_value(("alice", "bob", "carol"), additive_game)[0], "Shapley value for additive cooperative game"),
+        ("AI_GAME_008", vickrey_auction({"alice": 10, "bob": 7, "carol": 5})[1], vickrey_auction({"alice": 10, "bob": 7, "carol": 5})[0], "Vickrey auction outcome"),
+        ("AI_GAME_009", evolutionary_stable(coordination_payoff)[1], evolutionary_stable(coordination_payoff)[0], "ESS in coordination game"),
+        ("AI_GAME_010", evolutionary_stable(dominance_payoff)[1], evolutionary_stable(dominance_payoff)[0], "Unique ESS in dominance game"),
+    ]
+    for test_id, proof, solution, problem in advanced_gt_entries:
+        _register_invariant(test_id, "D_GAME_THEORY", "GPQA", problem, solution, proof, "axioms/game_theory.py")
+
     # Epistemic logic: 5
     model = KripkeModel(
         worlds={"w1", "w2"},
@@ -215,6 +298,32 @@ def _register_all() -> None:
     for test_id, proof, solution, problem in epi_entries:
         _register_invariant(test_id, "D_EPISTEMIC_LOGIC", "GPQA", problem, solution, proof, "axioms/epistemic_logic.py")
 
+    advanced_epistemic_model = KripkeModel(
+        worlds={"w1", "w2", "w3"},
+        accessibility={
+            "alice": {("w1", "w1"), ("w1", "w2"), ("w2", "w2"), ("w3", "w3")},
+            "bob": {("w1", "w1"), ("w1", "w3"), ("w2", "w2"), ("w3", "w3")},
+            "carol": {("w1", "w1"), ("w2", "w2"), ("w3", "w3")},
+        },
+        valuation={
+            "w1": {"p": True, "q": True, "not:q": True, "announce": True, "believes:alice:p": True},
+            "w2": {"p": False, "q": True, "not:q": False, "announce": True, "believes:alice:p": False},
+            "w3": {"p": True, "q": False, "not:q": False, "announce": False, "believes:alice:p": True},
+        },
+    )
+    announced_epistemic_model, announced_epistemic_proof = public_announcement(advanced_epistemic_model, "announce")
+    revision_conflict, revision_conflict_proof = agm_revision({"p", "q"}, "not:p")
+    revision_extend, revision_extend_proof = agm_revision({"p", "q"}, {"q", "r"})
+    advanced_epi_entries = [
+        ("AI_EPIST_006", evaluate_distributed_knowledge(advanced_epistemic_model, ["alice", "bob"], "p", "w1")[1], evaluate_distributed_knowledge(advanced_epistemic_model, ["alice", "bob"], "p", "w1")[0], "Distributed knowledge from intersected accessibility"),
+        ("AI_EPIST_007", evaluate_common_knowledge(announced_epistemic_model, ["alice", "bob"], "announce", "w1")[1], evaluate_common_knowledge(announced_epistemic_model, ["alice", "bob"], "announce", "w1")[0], "Common knowledge after public announcement"),
+        ("AI_EPIST_008", announced_epistemic_proof, sorted(announced_epistemic_model.worlds), "Public announcement model restriction"),
+        ("AI_EPIST_009", revision_conflict_proof, revision_conflict, "AGM revision with contradictory evidence"),
+        ("AI_EPIST_010", revision_extend_proof, revision_extend, "AGM revision with compatible evidence"),
+    ]
+    for test_id, proof, solution, problem in advanced_epi_entries:
+        _register_invariant(test_id, "D_EPISTEMIC_LOGIC", "HLE", problem, solution, proof, "axioms/epistemic_logic.py")
+
     # Computability: 5
     comp_entries = [
         ("AI_COMP_001", prove_halting_undecidable(), "undecidable", "Halting problem"),
@@ -224,6 +333,16 @@ def _register_all() -> None:
         ("AI_COMP_005", demonstrate_incompleteness("epsilon_0")[1], demonstrate_incompleteness("epsilon_0")[0], "Gödel incompleteness witness"),
     ]
     for test_id, proof, solution, problem in comp_entries:
+        _register_invariant(test_id, "D_COMPUTABILITY", "HLE", problem, solution, proof, "axioms/computability.py")
+
+    advanced_comp_entries = [
+        ("AI_COMP_006", ackermann(0, 0)[1], ackermann(0, 0)[0], "Ackermann value A(0,0)"),
+        ("AI_COMP_007", ackermann(2, 2)[1], ackermann(2, 2)[0], "Ackermann value A(2,2)"),
+        ("AI_COMP_008", classify_arithmetical_hierarchy("halting_problem")[1], classify_arithmetical_hierarchy("halting_problem")[0], "Arithmetical hierarchy classification of halting"),
+        ("AI_COMP_009", classify_arithmetical_hierarchy("totality_problem")[1], classify_arithmetical_hierarchy("totality_problem")[0], "Arithmetical hierarchy classification of totality"),
+        ("AI_COMP_010", prove_post_correspondence_undecidable(), "undecidable", "Post correspondence undecidability"),
+    ]
+    for test_id, proof, solution, problem in advanced_comp_entries:
         _register_invariant(test_id, "D_COMPUTABILITY", "HLE", problem, solution, proof, "axioms/computability.py")
 
     # Pattern recognition: 10
