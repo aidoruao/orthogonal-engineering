@@ -21,13 +21,15 @@ Pipeline: IA-CYPHER-0005 | PR: #84
 | Benchmark | GPT-5.2 | Claude 4.5 | Gemini 3 | Kimi K2.5 | DeepSeek V3.2 | Llama 4 | Grok 3 | Qwen 3 | Mistral L3 | Repo Module |
 |-----------|---------|------------|----------|-----------|---------------|---------|--------|--------|------------|-------------|
 | MMLU | 90.2% | 88.7% | 89.5% | 87.8% | 87.1% | 84.9% | 86.3% | 85.7% | 84.2% | broad coverage |
-| GPQA-Diamond | 65.0% | 62.4% | 59.8% | 48-87% | 50.5% | 46.2% | 52.1% | 48.9% | 45.3% | `axioms/game_theory.py`, `axioms/epistemic_logic.py` |
+| GPQA-Diamond | 65.0% | 62.4% | 59.8% | 48.0%* | 50.5% | 46.2% | 52.1% | 48.9% | 45.3% | `axioms/game_theory.py`, `axioms/epistemic_logic.py` |
 | AIME 2025 | 100% | 92.8% | 97.3% | 96.1% | 83.3% | 78.5% | 85.2% | 80.1% | 72.4% | `axioms/number_theory.py`, `axioms/combinatorics.py` |
 | HMMT 2025 | 98.5% | 91.4% | 93.2% | 95.4% | 82.4% | 76.9% | 84.3% | 79.0% | 73.5% | `axioms/combinatorics.py` |
 | HLE | 45.5% | 38.2% | 45.8% | 50.2% | 35.1% | 28.4% | 32.8% | 30.5% | 25.1% | `axioms/computability.py`, `axioms/epistemic_logic.py` |
 | ARC-AGI-3 | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | `axioms/pattern_recognition.py` |
 
 ## Universal Failure Modes
+
+*Kimi K2.5 GPQA reporting varies across evaluation setups; the table uses the conservative lower-bound figure for consistency.*
 
 | Failure Mode | Affected Models | Repo Module |
 |-------------|----------------|-------------|
