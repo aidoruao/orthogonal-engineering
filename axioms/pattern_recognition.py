@@ -102,6 +102,10 @@ class CompositionalRule:
         self.complexity = estimator.estimate(op_string)
 
 
+GridKey = Tuple[Tuple[int, ...], ...]
+MemoKey = Tuple[GridKey, GridKey, int]
+
+
 
 def _rotate_90(cells: List[List[int]]) -> List[List[int]]:
     return [list(row) for row in zip(*cells[::-1])]
@@ -177,6 +181,10 @@ def _rule_key(rule: CompositionalRule) -> Tuple[Tuple[str, object], ...]:
     return tuple((operation.value, _freeze(params)) for operation, params in rule.operations)
 
 
+def _operations_key(operations: List[Tuple[PrimitiveOperation, Dict]]) -> Tuple[Tuple[str, object], ...]:
+    return tuple((operation.value, _freeze(params)) for operation, params in operations)
+
+
 def _grid_key(grid: Grid) -> Tuple[Tuple[int, ...], ...]:
     return tuple(tuple(row) for row in grid.cells)
 
@@ -185,7 +193,7 @@ def _candidate_rules_with_depth(
     inp: Grid,
     out: Grid,
     max_depth: int,
-    memo: Optional[Dict[Tuple[Tuple[Tuple[int, ...], ...], Tuple[Tuple[int, ...], ...], int], List[CompositionalRule]]] = None,
+    memo: Optional[Dict[MemoKey, List[CompositionalRule]]] = None,
 ) -> List[CompositionalRule]:
     if memo is None:
         memo = {}
@@ -203,7 +211,7 @@ def _candidate_rules_with_depth(
         intermediate = apply_rule(prefix, inp)
         for suffix in _candidate_rules_with_depth(intermediate, out, max_depth - 1, memo):
             operations = prefix.operations + suffix.operations
-            key = tuple((operation.value, _freeze(params)) for operation, params in operations)
+            key = _operations_key(operations)
             if key in seen:
                 continue
             seen.add(key)
