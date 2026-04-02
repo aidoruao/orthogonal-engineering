@@ -89,13 +89,16 @@ def test_pattern_recognition_suite():
 
     inverse_rotation = _inverse_single_step_rule(CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]))
     assert inverse_rotation is not None
-    assert apply_rule(inverse_rotation, apply_rule(CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]), Grid([[1, 2], [3, 4]]))) == Grid([[1, 2], [3, 4]])
+    original = Grid([[1, 2], [3, 4]])
+    rotated = apply_rule(CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]), original)
+    assert apply_rule(inverse_rotation, rotated) == original
 
+    recolor_mapping = {0: 0, 1: 7, 2: 8}
     inverse_recolor = _inverse_single_step_rule(
-        CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": {0: 0, 1: 7, 2: 8}})])
+        CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": recolor_mapping})])
     )
     assert inverse_recolor is not None
-    recolored = apply_rule(CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": {0: 0, 1: 7, 2: 8}})]), Grid([[1, 2], [0, 1]]))
+    recolored = apply_rule(CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": recolor_mapping})]), Grid([[1, 2], [0, 1]]))
     assert apply_rule(inverse_recolor, recolored) == Grid([[1, 2], [0, 1]])
 
 

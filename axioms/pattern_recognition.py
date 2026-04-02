@@ -161,11 +161,12 @@ def _nonzero_count(grid: Grid) -> int:
 
 
 def _row_count_is_prime(grid: Grid) -> int:
-    return int(is_prime(grid.rows)[0])
+    prime, _ = is_prime(grid.rows)
+    return int(prime)
 
 
 def _dimension_gcd(grid: Grid) -> int:
-    gcd_value, _, _ = gcd_extended(grid.rows, grid.cols)[0]
+    (gcd_value, _, _), _ = gcd_extended(grid.rows, grid.cols)
     return gcd_value
 
 
@@ -205,18 +206,20 @@ def _fill_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
         return None
     source = None
     target = None
+    changed = False
     for r in range(inp.rows):
         for c in range(inp.cols):
             src = inp.cells[r][c]
             dst = out.cells[r][c]
             if src == dst:
                 continue
+            changed = True
             if source is None:
                 source = src
                 target = dst
             if src != source or dst != target:
                 return None
-    if source is None or target is None or source == target:
+    if not changed or source is None or target is None or source == target:
         return None
     candidate = CompositionalRule([(PrimitiveOperation.FILL, {"source": source, "target": target})])
     return {"source": source, "target": target} if apply_rule(candidate, inp) == out else None
