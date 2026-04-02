@@ -140,6 +140,49 @@ def _property_detectors() -> List[Callable[[Grid], int]]:
     ]
 
 
+def _crop_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
+    if out.rows == 0 or out.cols == 0 or out.rows > inp.rows or out.cols > inp.cols:
+        return None
+    for top in range(inp.rows - out.rows + 1):
+        for left in range(inp.cols - out.cols + 1):
+            cropped = [row[left:left + out.cols] for row in inp.cells[top:top + out.rows]]
+            if cropped == out.cells:
+                return {"top": top, "left": left, "height": out.rows, "width": out.cols}
+    return None
+
+
+def _prefix_rules() -> List[CompositionalRule]:
+    return [
+        CompositionalRule([(PrimitiveOperation.IDENTITY, {})]),
+        CompositionalRule([(PrimitiveOperation.ROTATE_90, {})]),
+        CompositionalRule([(PrimitiveOperation.ROTATE_180, {})]),
+        CompositionalRule([(PrimitiveOperation.ROTATE_270, {})]),
+        CompositionalRule([(PrimitiveOperation.REFLECT_H, {})]),
+        CompositionalRule([(PrimitiveOperation.REFLECT_V, {})]),
+        CompositionalRule([(PrimitiveOperation.DETECT_BOUNDARY, {})]),
+        CompositionalRule([(PrimitiveOperation.EXTRACT_OBJECT, {})]),
+        CompositionalRule([(PrimitiveOperation.COUNT, {})]),
+    ]
+
+
+def _candidate_rules_with_depth(inp: Grid, out: Grid, max_depth: int) -> List[CompositionalRule]:
+    candidates = _candidate_rules_for_pair(inp, out)
+    if max_depth <= 1:
+        return candidates
+
+    seen = {repr(rule.operations) for rule in candidates}
+    for prefix in _prefix_rules():
+        intermediate = apply_rule(prefix, inp)
+        for suffix in _candidate_rules_with_depth(intermediate, out, max_depth - 1):
+            operations = prefix.operations + suffix.operations
+            key = repr(operations)
+            if key in seen:
+                continue
+            seen.add(key)
+            candidates.append(CompositionalRule(operations))
+    return candidates
+
+
 
 def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
     current = grid.copy()
@@ -247,6 +290,11 @@ def _candidate_rules_for_pair(inp: Grid, out: Grid) -> List[CompositionalRule]:
         rule = CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": mapping})])
         if apply_rule(rule, inp) == out:
             candidates.append(rule)
+    crop_params = _crop_params(inp, out)
+    if crop_params is not None:
+        rule = CompositionalRule([(PrimitiveOperation.CROP, crop_params)])
+        if apply_rule(rule, inp) == out:
+            candidates.append(rule)
     return candidates
 
 
@@ -287,7 +335,7 @@ def detect_compositional_rule(input_output_pairs: List[Tuple[Grid, Grid]], max_c
     if not input_output_pairs:
         proof = ProofObject("PatternRuleDetection", ["No examples provided"], "No rule inferred")
         return None, proof
-    first_candidates = _candidate_rules_for_pair(*input_output_pairs[0])
+    first_candidates = _candidate_rules_with_depth(*input_output_pairs[0], max_depth=max_composition_depth)
     for candidate in first_candidates:
         if all(apply_rule(candidate, inp) == out for inp, out in input_output_pairs):
             candidates.append(candidate)

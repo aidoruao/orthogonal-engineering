@@ -20,6 +20,28 @@ def test_pattern_recognition_suite():
     boundary = CompositionalRule([(PrimitiveOperation.DETECT_BOUNDARY, {})])
     assert verify_rule(boundary, [(Grid([[1, 1, 1], [1, 1, 1], [1, 1, 1]]), Grid([[1, 1, 1], [1, 0, 1], [1, 1, 1]]))])[0]
 
+    crop_pairs = [(Grid([[1, 2], [3, 4], [5, 6]]), Grid([[1, 2]]))]
+    cropped, crop_proof = detect_compositional_rule(crop_pairs)
+    assert cropped is not None
+    assert cropped.operations[0][0] == PrimitiveOperation.CROP
+    assert crop_proof.is_valid()
+
+    composed, composed_proof = detect_compositional_rule([
+        (Grid([[1, 2], [1, 0]]), Grid([[7, 7], [0, 8]])),
+        (Grid([[2, 0], [1, 1]]), Grid([[7, 8], [7, 0]])),
+    ], max_composition_depth=2)
+    assert composed is not None
+    assert [op for op, _ in composed.operations] == [PrimitiveOperation.ROTATE_90, PrimitiveOperation.RECOLOR]
+    assert composed_proof.is_valid()
+
+    conditional, conditional_proof = detect_compositional_rule([
+        (Grid([[1, 2], [3, 4]]), Grid([[3, 4], [1, 2]])),
+        (Grid([[1, 2], [3, 4], [5, 6]]), Grid([[1, 2]])),
+    ])
+    assert conditional is not None
+    assert conditional.operations[0][0] == PrimitiveOperation.CONDITIONAL
+    assert conditional_proof.is_valid()
+
 
 def main():
     test_pattern_recognition_suite()
