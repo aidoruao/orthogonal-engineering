@@ -157,7 +157,7 @@ def main():
     test_pattern_recognition_suite()
     test_per_object_pattern_suite()
     test_pattern_governance_suite()
-    print("PASS test_pattern_recognition_suite")
+    print("PASS all pattern recognition tests")
 
 
 if __name__ == "__main__":

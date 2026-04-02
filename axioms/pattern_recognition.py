@@ -217,15 +217,12 @@ def _record_inference_failure(input_output_pairs: List[Tuple[Grid, Grid]], requi
     )
     system.redirect_energy_to_building(fork_id)
     building_output = system.execute_building_workflow(fork_id, output_type="feature")
-    output_id = ""
+    output_id: Optional[str] = None
     if building_output is not None:
-        for feature in fork.building_context["features_built"]:
-            if feature not in building_output.features_built:
-                building_output.features_built.append(feature)
         system.building_outputs[building_output.id] = building_output
         _persist_building_output_metadata(system, building_output.id)
         output_id = building_output.id
-    return {"violation_id": violation_id, "fork_id": fork_id, "building_output_id": output_id}
+    return {"violation_id": violation_id, "fork_id": fork_id, "building_output_id": output_id or ""}
 
 
 
