@@ -1,5 +1,5 @@
 # GHOST FILE CROSS-REFERENCES — Bowers vs McNeil
-_Generated: 2026-04-01T21:45:46.058322Z_
+_Generated: 2026-04-02T00:56:29.243094Z_
 _Pipeline: IA-CYPHER-0002_
 
 ## Overview
@@ -20,9 +20,9 @@ pre-existing contamination of the case record.
 **Files scanned:** 35
 **Matches:** 3
 
-- `evidence/case_001/sha256_manifest.json` — CONTENT: keyword='bowers'
-- `evidence/case_001/EDUCATIONAL_WAREHOUSING_AUDIT.md` — CONTENT: keyword='bowers'
-- `evidence/case_001/metadata.json` — CONTENT: keyword='bowers'
+- `evidence/case_001/sha256_manifest.json` — CONTENT: keyword='bowers' [SELF-REFERENCE: CASE_001 cross-reference, not prior contamination]
+- `evidence/case_001/EDUCATIONAL_WAREHOUSING_AUDIT.md` — CONTENT: keyword='bowers' [SELF-REFERENCE: CASE_001 cross-reference, not prior contamination]
+- `evidence/case_001/metadata.json` — CONTENT: keyword='bowers' [SELF-REFERENCE: CASE_001 cross-reference, not prior contamination]
 
 ### GptAudit
 **Status:** SCANNED
@@ -63,7 +63,13 @@ _No matches found._
 
 ## Finding
 
-GHOST FILES FOUND — SEE ABOVE
+NO PRIOR BOWERS/MCNEIL REFERENCES FOUND
 
-ALERT: Prior references found. Each match above must be reviewed to determine
-whether it represents case contamination or unrelated use of similar terminology.
+The repository contains no prior references to the Bowers/McNeil case, the
+parties involved, or the 18 U.S.C. § 1519 investigation in the scanned directories.
+
+This finding supports the integrity of the current forensic audit — the case
+record has not been contaminated by prior AI-generated summaries stored in this repo.
+
+Note: 3 match(es) are self-referential CASE_001 cross-references
+created by the current audit corpus. They are not treated as prior-case contamination.

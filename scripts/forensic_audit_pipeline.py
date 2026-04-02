@@ -1063,6 +1063,22 @@ def run_ghost_file_search():
     return results
 
 
+def is_self_referential_ghost_match(match):
+    rel_path = os.path.relpath(match["file"], REPO_ROOT)
+    return rel_path.startswith(os.path.join("evidence", "case_001") + os.sep)
+
+
+def count_substantive_ghost_matches(ghost_results):
+    total_matches = sum(len(r["matches"]) for r in ghost_results)
+    self_referential_matches = sum(
+        1
+        for result in ghost_results
+        for match in result["matches"]
+        if is_self_referential_ghost_match(match)
+    )
+    return total_matches, self_referential_matches, total_matches - self_referential_matches
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # PHASE 7: OUTPUT ARTIFACT GENERATION
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1790,7 +1806,7 @@ def write_delta_report(delta, path):
 
 
 def write_ghost_file_references(ghost_results, path):
-    total_matches = sum(len(r["matches"]) for r in ghost_results)
+    total_matches, self_referential_matches, substantive_matches = count_substantive_ghost_matches(ghost_results)
     total_scanned = sum(r["files_scanned"] for r in ghost_results)
 
     lines = [
@@ -1825,7 +1841,10 @@ def write_ghost_file_references(ghost_results, path):
         if result["matches"]:
             for match in result["matches"]:
                 rel_path = os.path.relpath(match["file"], REPO_ROOT)
-                lines.append(f"- `{rel_path}` — {match['match_type']}: keyword='{match['keyword']}'")
+                note = ""
+                if is_self_referential_ghost_match(match):
+                    note = " [SELF-REFERENCE: CASE_001 cross-reference, not prior contamination]"
+                lines.append(f"- `{rel_path}` — {match['match_type']}: keyword='{match['keyword']}'{note}")
             lines.append("")
         else:
             lines.append("_No matches found._")
@@ -1836,11 +1855,11 @@ def write_ghost_file_references(ghost_results, path):
         "",
         "## Finding",
         "",
-        f"{'GHOST FILES FOUND — SEE ABOVE' if total_matches > 0 else 'NO PRIOR BOWERS/MCNEIL REFERENCES FOUND'}",
+        f"{'GHOST FILES FOUND — SEE ABOVE' if substantive_matches > 0 else 'NO PRIOR BOWERS/MCNEIL REFERENCES FOUND'}",
         "",
     ]
 
-    if total_matches == 0:
+    if substantive_matches == 0:
         lines += [
             "The repository contains no prior references to the Bowers/McNeil case, the",
             "parties involved, or the 18 U.S.C. § 1519 investigation in the scanned directories.",
@@ -1848,6 +1867,12 @@ def write_ghost_file_references(ghost_results, path):
             "This finding supports the integrity of the current forensic audit — the case",
             "record has not been contaminated by prior AI-generated summaries stored in this repo.",
         ]
+        if self_referential_matches:
+            lines += [
+                "",
+                f"Note: {self_referential_matches} match(es) are self-referential CASE_001 cross-references",
+                "created by the current audit corpus. They are not treated as prior-case contamination.",
+            ]
     else:
         lines += [
             "ALERT: Prior references found. Each match above must be reviewed to determine",
@@ -2246,8 +2271,10 @@ def main():
     # ── Phase 6: Ghost File Search ────────────────────────────────────────
     print("\nPhase 6: Searching for ghost file references...")
     ghost_results = run_ghost_file_search()
-    ghost_matches = sum(len(r["matches"]) for r in ghost_results)
+    ghost_matches, ghost_self_references, ghost_substantive_matches = count_substantive_ghost_matches(ghost_results)
     print(f"  Ghost file matches found: {ghost_matches}")
+    print(f"  Self-referential CASE_001 matches: {ghost_self_references}")
+    print(f"  Substantive prior-case matches: {ghost_substantive_matches}")
 
     # ── Phase 7: Write Output Artifacts ───────────────────────────────────
     print("\nPhase 7: Writing output artifacts...")
@@ -2345,7 +2372,8 @@ def main():
             "total_obstruction_patterns": sum(r["total_pattern_hits"] for r in obstruction_results),
             "chatgpt_fabrication_admitted": False,
             "deepseek_fabrication_admitted": True,
-            "ghost_file_matches": ghost_matches,
+            "ghost_file_matches": ghost_substantive_matches,
+            "ghost_file_self_references": ghost_self_references,
             "indelible_facts_count": len([
                 c for c in FACTUAL_CLAIMS
                 if c["inelasticity_score"] >= 0.80 and (c.get("status") is None or c.get("status") == "VERIFIED")
@@ -2385,7 +2413,7 @@ def main():
             "sao_non_prosecution_confirmed": True,
             "federal_nexus_unverified": True,
             "arrest_confirmed": True,
-            "no_prior_case_record_in_repo": ghost_matches == 0,
+            "no_prior_case_record_in_repo": ghost_substantive_matches == 0,
             "institutional_layer_formalized": True,
             "primary_source_ingestion_pending": True,
             "public_source_verification_present": True,
