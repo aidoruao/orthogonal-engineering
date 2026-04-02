@@ -142,7 +142,7 @@ def _rotate_90(cells: List[List[int]]) -> List[List[int]]:
     return [list(row) for row in zip(*cells[::-1])]
 
 
-def _peano_count_cells(grid: Grid) -> int:
+def _count_nonzero_cells(grid: Grid) -> int:
     count = 0
     for row in grid.cells:
         for cell in row:
@@ -256,7 +256,7 @@ def _largest_region_size(grid: Grid) -> int:
 
 
 def _nonzero_count(grid: Grid) -> int:
-    return _peano_count_cells(grid)
+    return _count_nonzero_cells(grid)
 
 
 def _is_row_count_prime(grid: Grid) -> int:
@@ -402,6 +402,7 @@ def _suffix_rules() -> List[CompositionalRule]:
 
 
 def _freeze(value):
+    """Convert nested rule/grid/object state into hashable structural tuples for memoization."""
     if isinstance(value, CompositionalRule):
         return tuple((operation.value, _freeze(params)) for operation, params in value.operations)
     if isinstance(value, Grid):
@@ -593,7 +594,7 @@ def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
                     output[r][c] = current.cells[r][c]
             current = Grid(output)
         elif operation == PrimitiveOperation.COUNT:
-            nonzero = _peano_count_cells(current)
+            nonzero = _count_nonzero_cells(current)
             current = Grid([[nonzero]])
         elif operation == PrimitiveOperation.SCALE:
             factor = int(params.get("factor", 2))
@@ -727,7 +728,7 @@ def detect_compositional_rule(
         if conditional is not None and all(apply_rule(conditional, inp) == out for inp, out in input_output_pairs):
             candidates.append(conditional)
     if not candidates:
-        failure_metadata = {"violation_id": "", "fork_id": "", "building_output_id": ""}
+        failure_metadata = {"violation_id": "none", "fork_id": "none", "building_output_id": "none"}
         if record_failure:
             failure_metadata = _record_inference_failure(input_output_pairs, requires_conditional_flag)
         proof = ProofObject(

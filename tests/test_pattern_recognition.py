@@ -138,7 +138,7 @@ def test_pattern_governance_suite():
     assert any(str(premise).startswith("yeshua_hash_commitment=") for premise in valid_proof.premises)
     assert "selection_strategy=minimum_description_length" in valid_proof.premises
 
-    ForgivenessSystem._instance = None
+    ForgivenessSystem.reset_instance()
     PATTERN_FORGIVENESS_BASE_PATH.mkdir(parents=True, exist_ok=True)
     system = ForgivenessSystem.get_instance(str(PATTERN_FORGIVENESS_BASE_PATH))
     violations_before = len(system.violations)

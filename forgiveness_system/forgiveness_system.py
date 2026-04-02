@@ -273,6 +273,11 @@ class ForgivenessSystem:
             cls._instance = cls(base_path)
         return cls._instance
 
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Clear the singleton instance for test isolation."""
+        cls._instance = None
+
     def _setup_logging(self) -> logging.Logger:
         """Setup forgiveness system logging"""
         logger = logging.getLogger("forgiveness_system")
