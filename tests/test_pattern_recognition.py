@@ -32,6 +32,8 @@ def test_pattern_recognition_suite():
     ], max_composition_depth=2)
     assert composed is not None
     assert [op for op, _ in composed.operations] == [PrimitiveOperation.ROTATE_90, PrimitiveOperation.RECOLOR]
+    assert apply_rule(composed, Grid([[1, 2], [1, 0]])) == Grid([[7, 7], [0, 8]])
+    assert apply_rule(composed, Grid([[2, 0], [1, 1]])) == Grid([[7, 8], [7, 0]])
     assert composed_proof.is_valid()
 
     conditional, conditional_proof = detect_compositional_rule([
@@ -40,6 +42,8 @@ def test_pattern_recognition_suite():
     ])
     assert conditional is not None
     assert conditional.operations[0][0] == PrimitiveOperation.CONDITIONAL
+    assert apply_rule(conditional, Grid([[1, 2], [3, 4]])) == Grid([[3, 4], [1, 2]])
+    assert apply_rule(conditional, Grid([[1, 2], [3, 4], [5, 6]])) == Grid([[1, 2]])
     assert conditional_proof.is_valid()
 
 
