@@ -165,21 +165,50 @@ def _prefix_rules() -> List[CompositionalRule]:
     ]
 
 
-def _candidate_rules_with_depth(inp: Grid, out: Grid, max_depth: int) -> List[CompositionalRule]:
-    candidates = _candidate_rules_for_pair(inp, out)
+def _freeze(value):
+    if isinstance(value, dict):
+        return tuple(sorted((key, _freeze(inner)) for key, inner in value.items()))
+    if isinstance(value, list):
+        return tuple(_freeze(item) for item in value)
+    return value
+
+
+def _rule_key(rule: CompositionalRule) -> Tuple[Tuple[str, object], ...]:
+    return tuple((operation.value, _freeze(params)) for operation, params in rule.operations)
+
+
+def _grid_key(grid: Grid) -> Tuple[Tuple[int, ...], ...]:
+    return tuple(tuple(row) for row in grid.cells)
+
+
+def _candidate_rules_with_depth(
+    inp: Grid,
+    out: Grid,
+    max_depth: int,
+    memo: Optional[Dict[Tuple[Tuple[Tuple[int, ...], ...], Tuple[Tuple[int, ...], ...], int], List[CompositionalRule]]] = None,
+) -> List[CompositionalRule]:
+    if memo is None:
+        memo = {}
+    memo_key = (_grid_key(inp), _grid_key(out), max_depth)
+    if memo_key in memo:
+        return memo[memo_key]
+
+    candidates = list(_candidate_rules_for_pair(inp, out))
     if max_depth <= 1:
+        memo[memo_key] = candidates
         return candidates
 
-    seen = {repr(rule.operations) for rule in candidates}
+    seen = {_rule_key(rule) for rule in candidates}
     for prefix in _prefix_rules():
         intermediate = apply_rule(prefix, inp)
-        for suffix in _candidate_rules_with_depth(intermediate, out, max_depth - 1):
+        for suffix in _candidate_rules_with_depth(intermediate, out, max_depth - 1, memo):
             operations = prefix.operations + suffix.operations
-            key = repr(operations)
+            key = tuple((operation.value, _freeze(params)) for operation, params in operations)
             if key in seen:
                 continue
             seen.add(key)
             candidates.append(CompositionalRule(operations))
+    memo[memo_key] = candidates
     return candidates
 
 
