@@ -1,0 +1,61 @@
+{
+  "architecture": {
+    "context_window": 128000,
+    "parameters": "235B",
+    "type": "dense_transformer"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.801,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.44,
+    "GPQA_Diamond": 0.489,
+    "GSM8K": 0.901,
+    "HLE": 0.305,
+    "HLE_Text": 0.258,
+    "HMMT_2025": 0.79,
+    "HumanEval": 0.771,
+    "LiveCodeBench_v6": 0.785,
+    "MATH": 0.631,
+    "MMLU": 0.857,
+    "MMLU_Pro": 0.66,
+    "OSWorld": 0.406,
+    "SWE_Bench": 0.69,
+    "WebArena": 0.392
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    },
+    {
+      "addressing_module": "axioms/number_theory.py",
+      "benchmark": "MATH",
+      "score": 0.631
+    }
+  ],
+  "model_id": "QWEN_3",
+  "model_name": "Qwen 3",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "note": "No repository-specific audit trail is recorded yet; profile is benchmark-only until direct evidence exists.",
+    "observed_violations": [
+      {
+        "audit_ref": "MODEL_REGISTRY_ALIGNMENT",
+        "severity": "MEDIUM",
+        "type": "multi_step_math_drift"
+      }
+    ]
+  },
+  "provider": "Alibaba",
+  "repo_interaction_history": {
+    "audit_files": [],
+    "noncompliance_taxonomy_refs": [
+      "multi_step_math_drift"
+    ],
+    "prs_involved": [
+      84
+    ]
+  }
+}

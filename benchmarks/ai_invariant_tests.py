@@ -108,6 +108,8 @@ ALL_MODELS = [
     "Grok 3",
     "Qwen 3",
     "Mistral Large 3",
+    "Command R+",
+    "Devin AI",
 ]
 
 

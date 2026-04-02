@@ -69,7 +69,7 @@ Pipeline: IA-CYPHER-0005 | PR: #84
 
 ## Model Profiles
 
-Per-model JSON profiles live in `benchmarks/model_profiles/` and capture benchmark scores, observed noncompliance patterns, failure modes, and repository interaction history for GPT-5.2, Claude Opus 4.5, Gemini 3 Pro, DeepSeek V3.2, Kimi K2.5, Llama 4 Maverick, Grok 3, Mistral Large 3, Command R+, and Devin AI.
+Per-model JSON profiles live in `benchmarks/model_profiles/` and capture benchmark scores, observed noncompliance patterns, failure modes, and repository interaction history for GPT-5.2, Claude Opus 4.5, Gemini 3 Pro, DeepSeek V3.2, Kimi K2.5, Llama 4 Maverick, Grok 3, Qwen 3, Mistral Large 3, Command R+, and Devin AI.
 
 ## Cross-Reference
 
