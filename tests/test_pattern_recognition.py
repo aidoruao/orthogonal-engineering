@@ -10,6 +10,7 @@ from forgiveness_system.forgiveness_system import ForgivenessSystem
 from axioms.pattern_recognition import (
     CompositionalRule,
     Grid,
+    PATTERN_FORGIVENESS_BASE_PATH,
     PrimitiveOperation,
     _inverse_single_step_rule,
     _property_detectors,
@@ -137,7 +138,9 @@ def test_pattern_governance_suite():
     assert any(str(premise).startswith("yeshua_hash_commitment=") for premise in valid_proof.premises)
     assert "selection_strategy=minimum_description_length" in valid_proof.premises
 
-    system = ForgivenessSystem.get_instance()
+    ForgivenessSystem._instance = None
+    PATTERN_FORGIVENESS_BASE_PATH.mkdir(parents=True, exist_ok=True)
+    system = ForgivenessSystem.get_instance(str(PATTERN_FORGIVENESS_BASE_PATH))
     violations_before = len(system.violations)
     builds_before = len(system.building_outputs)
     invalid_rule, invalid_proof = detect_compositional_rule([

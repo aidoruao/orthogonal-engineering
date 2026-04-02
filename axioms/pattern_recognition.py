@@ -134,6 +134,7 @@ class ObjectComponent:
 
 GridKey = Tuple[Tuple[int, ...], ...]
 MemoKey = Tuple[GridKey, GridKey, int]
+PATTERN_FORGIVENESS_BASE_PATH = Path("/tmp/orthogonal_pattern_recognition_forgiveness")
 
 
 
@@ -187,7 +188,8 @@ def _persist_building_output_metadata(system: ForgivenessSystem, output_id: str)
 
 
 def _record_inference_failure(input_output_pairs: List[Tuple[Grid, Grid]], requires_conditional_flag: bool) -> Dict[str, str]:
-    system = ForgivenessSystem.get_instance()
+    PATTERN_FORGIVENESS_BASE_PATH.mkdir(parents=True, exist_ok=True)
+    system = ForgivenessSystem.get_instance(base_path=str(PATTERN_FORGIVENESS_BASE_PATH))
     evidence = json.dumps(
         {
             "pair_count": len(input_output_pairs),
