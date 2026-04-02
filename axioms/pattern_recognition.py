@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
+import json
 import zlib
 from collections import Counter, deque
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable, Dict, List, Optional, Sequence, Tuple
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 from axioms.logic import ProofObject, merkle_root_over_proofs
 from axioms.number_theory import gcd_extended, is_prime, mod_peano
+from axioms.yeshua_axioms import YeshuaClaim, verify_yeshua_standard
+from forgiveness_system.forgiveness_system import ForgivenessSystem
 
 try:
     from minimal_ai_ide.maximal_oracle_v57 import KolmogorovComplexityEstimator  # type: ignore
@@ -36,6 +40,8 @@ class PrimitiveOperation(Enum):
     FILL = "fill"
     TILE = "tile"
     CROP = "crop"
+    DECOMPOSE_OBJECTS = "decompose_objects"
+    COMPOSE_OBJECTS = "compose_objects"
 
 
 @dataclass
@@ -118,6 +124,14 @@ class CompositionalRule:
         self.complexity = estimator.estimate(op_string)
 
 
+@dataclass(frozen=True)
+class ObjectComponent:
+    top: int
+    left: int
+    color: int
+    grid: Grid
+
+
 GridKey = Tuple[Tuple[int, ...], ...]
 MemoKey = Tuple[GridKey, GridKey, int]
 
@@ -125,6 +139,91 @@ MemoKey = Tuple[GridKey, GridKey, int]
 
 def _rotate_90(cells: List[List[int]]) -> List[List[int]]:
     return [list(row) for row in zip(*cells[::-1])]
+
+
+def _peano_count_cells(grid: Grid) -> int:
+    count = 0
+    for row in grid.cells:
+        for cell in row:
+            if cell != 0:
+                count += 1
+    return count
+
+
+def _extract_region_grid(grid: Grid, region: List[Tuple[int, int]]) -> ObjectComponent:
+    rows = [r for r, _ in region]
+    cols = [c for _, c in region]
+    top, bottom = min(rows), max(rows)
+    left, right = min(cols), max(cols)
+    extracted = [[0 for _ in range(right - left + 1)] for _ in range(bottom - top + 1)]
+    for r, c in region:
+        extracted[r - top][c - left] = grid.cells[r][c]
+    return ObjectComponent(top=top, left=left, color=grid.cells[rows[0]][cols[0]], grid=Grid(extracted))
+
+
+def _decompose_objects(grid: Grid) -> List[ObjectComponent]:
+    components = [_extract_region_grid(grid, region) for region in grid.get_contiguous_regions()]
+    return sorted(components, key=lambda component: (component.top, component.left, component.color, component.grid.rows, component.grid.cols))
+
+
+def _compose_objects(components: List[ObjectComponent], rows: int, cols: int) -> Grid:
+    canvas = [[0 for _ in range(cols)] for _ in range(rows)]
+    for component in components:
+        for r in range(component.grid.rows):
+            for c in range(component.grid.cols):
+                value = component.grid.cells[r][c]
+                target_r = component.top + r
+                target_c = component.left + c
+                if value != 0 and 0 <= target_r < rows and 0 <= target_c < cols:
+                    canvas[target_r][target_c] = value
+    return Grid(canvas)
+
+
+def _persist_building_output_metadata(system: ForgivenessSystem, output_id: str) -> None:
+    output = system.building_outputs[output_id]
+    metadata_file = Path(system.building_path) / f"{output_id}.json"
+    with open(metadata_file, "w", encoding="utf-8") as handle:
+        json.dump(output.to_dict(), handle, indent=2)
+
+
+def _record_inference_failure(input_output_pairs: List[Tuple[Grid, Grid]], requires_conditional_flag: bool) -> Dict[str, str]:
+    system = ForgivenessSystem.get_instance()
+    evidence = json.dumps(
+        {
+            "pair_count": len(input_output_pairs),
+            "requires_conditional": requires_conditional_flag,
+            "input_shapes": [(inp.rows, inp.cols) for inp, _ in input_output_pairs],
+            "output_shapes": [(out.rows, out.cols) for _, out in input_output_pairs],
+        },
+        sort_keys=True,
+    )
+    violation_id = system.log_violation(
+        description="Pattern inference failed to find a compositional rule",
+        system_source="axioms/pattern_recognition.py",
+        evidence=evidence,
+    )
+    fork_id = system.create_state_fork(violation_id)
+    fork = system.forks[fork_id]
+    fork.building_context.update(
+        {
+            "features_built": [
+                "expand_pattern_primitive_vocabulary",
+                "expand_pattern_property_detectors",
+            ],
+            "pair_count": len(input_output_pairs),
+        }
+    )
+    system.redirect_energy_to_building(fork_id)
+    building_output = system.execute_building_workflow(fork_id, output_type="feature")
+    output_id = ""
+    if building_output is not None:
+        for feature in fork.building_context["features_built"]:
+            if feature not in building_output.features_built:
+                building_output.features_built.append(feature)
+        system.building_outputs[building_output.id] = building_output
+        _persist_building_output_metadata(system, building_output.id)
+        output_id = building_output.id
+    return {"violation_id": violation_id, "fork_id": fork_id, "building_output_id": output_id}
 
 
 
@@ -158,7 +257,7 @@ def _largest_region_size(grid: Grid) -> int:
 
 
 def _nonzero_count(grid: Grid) -> int:
-    return sum(cell != 0 for row in grid.cells for cell in row)
+    return _peano_count_cells(grid)
 
 
 def _is_row_count_prime(grid: Grid) -> int:
@@ -250,6 +349,35 @@ def _tile_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
     return {"repeat_x": repeat_x, "repeat_y": repeat_y} if apply_rule(candidate, inp) == out else None
 
 
+def _infer_per_object_rule(inp: Grid, out: Grid, max_depth: int = 2) -> Optional[CompositionalRule]:
+    input_objects = _decompose_objects(inp)
+    output_objects = _decompose_objects(out)
+    if len(input_objects) < 2 or len(input_objects) != len(output_objects):
+        return None
+    if any((source.top, source.left) != (target.top, target.left) for source, target in zip(input_objects, output_objects)):
+        return None
+    object_candidates = _candidate_rules_with_depth(
+        input_objects[0].grid,
+        output_objects[0].grid,
+        max_depth=max(1, min(max_depth, 2)),
+    )
+    for candidate in object_candidates:
+        if not all(apply_rule(candidate, source.grid) == target.grid for source, target in zip(input_objects, output_objects)):
+            continue
+        rule = CompositionalRule(
+            [
+                (PrimitiveOperation.DECOMPOSE_OBJECTS, {}),
+                (
+                    PrimitiveOperation.COMPOSE_OBJECTS,
+                    {"object_rule": candidate, "canvas_rows": out.rows, "canvas_cols": out.cols},
+                ),
+            ]
+        )
+        if apply_rule(rule, inp) == out:
+            return rule
+    return None
+
+
 def _prefix_rules() -> List[CompositionalRule]:
     return [
         CompositionalRule([(PrimitiveOperation.IDENTITY, {})]),
@@ -275,6 +403,12 @@ def _suffix_rules() -> List[CompositionalRule]:
 
 
 def _freeze(value):
+    if isinstance(value, CompositionalRule):
+        return tuple((operation.value, _freeze(params)) for operation, params in value.operations)
+    if isinstance(value, Grid):
+        return _grid_key(value)
+    if isinstance(value, ObjectComponent):
+        return (value.top, value.left, value.color, _grid_key(value.grid))
     if isinstance(value, dict):
         return tuple(sorted((key, _freeze(inner)) for key, inner in value.items()))
     if isinstance(value, list):
@@ -364,7 +498,7 @@ def _candidate_rules_with_depth(
 
 
 def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
-    current = grid.copy()
+    current: Any = grid.copy()
     for operation, params in rule.operations:
         if operation == PrimitiveOperation.IDENTITY:
             current = current.copy()
@@ -398,6 +532,37 @@ def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
             height = params.get("height", current.rows)
             width = params.get("width", current.cols)
             current = Grid([row[left:left + width] for row in current.cells[top:top + height]])
+        elif operation == PrimitiveOperation.DECOMPOSE_OBJECTS:
+            if not isinstance(current, Grid):
+                raise ValueError("DECOMPOSE_OBJECTS expects a Grid")
+            current = {
+                "canvas_rows": current.rows,
+                "canvas_cols": current.cols,
+                "objects": _decompose_objects(current),
+            }
+        elif operation == PrimitiveOperation.COMPOSE_OBJECTS:
+            if not isinstance(current, dict):
+                raise ValueError("COMPOSE_OBJECTS expects decomposed object state")
+            components = current.get("objects", [])
+            if not isinstance(components, list):
+                raise ValueError("COMPOSE_OBJECTS expects an object list")
+            object_rule = params.get("object_rule")
+            transformed_components: List[ObjectComponent] = []
+            for component in components:
+                if not isinstance(component, ObjectComponent):
+                    raise ValueError("COMPOSE_OBJECTS received an invalid component")
+                transformed_grid = apply_rule(object_rule, component.grid) if isinstance(object_rule, CompositionalRule) else component.grid
+                transformed_components.append(
+                    ObjectComponent(
+                        top=component.top,
+                        left=component.left,
+                        color=_dominant_color(transformed_grid),
+                        grid=transformed_grid,
+                    )
+                )
+            canvas_rows = int(params.get("canvas_rows", current.get("canvas_rows", 0)))
+            canvas_cols = int(params.get("canvas_cols", current.get("canvas_cols", 0)))
+            current = _compose_objects(transformed_components, canvas_rows, canvas_cols)
         elif operation == PrimitiveOperation.FILL:
             source = params.get("source")
             target = params.get("target", source)
@@ -429,7 +594,7 @@ def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
                     output[r][c] = current.cells[r][c]
             current = Grid(output)
         elif operation == PrimitiveOperation.COUNT:
-            nonzero = sum(1 for row in current.cells for cell in row if cell != 0)
+            nonzero = _peano_count_cells(current)
             current = Grid([[nonzero]])
         elif operation == PrimitiveOperation.SCALE:
             factor = int(params.get("factor", 2))
@@ -497,6 +662,9 @@ def _candidate_rules_for_pair(inp: Grid, out: Grid) -> List[CompositionalRule]:
         rule = CompositionalRule([(PrimitiveOperation.CROP, crop_params)])
         if apply_rule(rule, inp) == out:
             candidates.append(rule)
+    per_object_rule = _infer_per_object_rule(inp, out)
+    if per_object_rule is not None:
+        candidates.append(per_object_rule)
     return candidates
 
 
@@ -525,7 +693,11 @@ def infer_conditional_rule(
         value_rules: Dict[int, CompositionalRule] = {}
         valid = True
         for value, group in grouped.items():
-            rule, _ = detect_compositional_rule(group, max_composition_depth=max(1, max_composition_depth - 1))
+            rule, _ = detect_compositional_rule(
+                group,
+                max_composition_depth=max(1, max_composition_depth - 1),
+                record_failure=False,
+            )
             if rule is None:
                 valid = False
                 break
@@ -536,32 +708,70 @@ def infer_conditional_rule(
 
 
 
-def detect_compositional_rule(input_output_pairs: List[Tuple[Grid, Grid]], max_composition_depth: int = 3) -> Tuple[Optional[CompositionalRule], ProofObject]:
+def detect_compositional_rule(
+    input_output_pairs: List[Tuple[Grid, Grid]],
+    max_composition_depth: int = 3,
+    record_failure: bool = True,
+) -> Tuple[Optional[CompositionalRule], ProofObject]:
     candidates: List[CompositionalRule] = []
     if not input_output_pairs:
         proof = ProofObject("PatternRuleDetection", ["No examples provided"], "No rule inferred")
         return None, proof
+    requires_conditional_flag = requires_conditional(input_output_pairs)
     first_candidates = _candidate_rules_with_depth(*input_output_pairs[0], max_depth=max_composition_depth)
     for candidate in first_candidates:
         if all(apply_rule(candidate, inp) == out for inp, out in input_output_pairs):
             candidates.append(candidate)
     conditional = None
-    if not candidates and requires_conditional(input_output_pairs):
+    if not candidates and requires_conditional_flag:
         conditional = infer_conditional_rule(input_output_pairs, _property_detectors(), max_composition_depth=max_composition_depth)
         if conditional is not None and all(apply_rule(conditional, inp) == out for inp, out in input_output_pairs):
             candidates.append(conditional)
     if not candidates:
+        failure_metadata = {"violation_id": "", "fork_id": "", "building_output_id": ""}
+        if record_failure:
+            failure_metadata = _record_inference_failure(input_output_pairs, requires_conditional_flag)
         proof = ProofObject(
             "PatternRuleDetection",
-            [f"pairs={len(input_output_pairs)}", f"requires_conditional={requires_conditional(input_output_pairs)}"],
+            [
+                f"pairs={len(input_output_pairs)}",
+                f"requires_conditional={requires_conditional_flag}",
+                f"forgiveness_violation_id={failure_metadata['violation_id']}",
+                f"forgiveness_fork_id={failure_metadata['fork_id']}",
+                f"forgiveness_building_output_id={failure_metadata['building_output_id']}",
+            ],
             "No compositional rule inferred",
         )
         return None, proof
     rule = min(candidates, key=lambda candidate: candidate.complexity)
+    candidate_complexities = sorted(candidate.complexity for candidate in candidates)
     proof = ProofObject(
         "PatternRuleDetection",
-        [f"candidate_count={len(candidates)}", f"selected_complexity={rule.complexity}"],
+        [
+            f"candidate_count={len(candidates)}",
+            f"candidate_complexities={candidate_complexities}",
+            "selection_strategy=minimum_description_length",
+            f"selected_complexity={rule.complexity}",
+        ],
         f"Inferred rule with operations {[op.value for op, _ in rule.operations]}",
+    )
+    claim = YeshuaClaim(
+        source="axioms/pattern_recognition.py",
+        statement=proof.conclusion,
+        derivation=proof,
+    )
+    violations = verify_yeshua_standard(claim)
+    if violations:
+        rejection_proof = ProofObject(
+            "PatternRuleDetection",
+            [violation.detail for violation in violations],
+            "Rule rejected by Yeshua standard",
+        )
+        return None, rejection_proof
+    proof = ProofObject(
+        "PatternRuleDetection",
+        proof.premises + [f"yeshua_hash_commitment={claim.hash_commitment}", "yeshua_violations=0"],
+        proof.conclusion,
     )
     return rule, proof
 

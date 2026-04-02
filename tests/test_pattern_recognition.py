@@ -5,6 +5,8 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from forgiveness_system.forgiveness_system import ForgivenessSystem
+
 from axioms.pattern_recognition import (
     CompositionalRule,
     Grid,
@@ -108,8 +110,50 @@ def test_pattern_recognition_suite():
     assert apply_rule(inverse_recolor, recolored) == Grid([[1, 2], [0, 1]])
 
 
+# @falsification_id: F_PATTERN_002
+def test_per_object_pattern_suite():
+    pairs = [(
+        Grid([
+            [1, 0, 0, 2, 2],
+            [1, 1, 0, 0, 2],
+        ]),
+        Grid([
+            [0, 1, 0, 2, 2],
+            [1, 1, 0, 2, 0],
+        ]),
+    )]
+    inferred, proof = detect_compositional_rule(pairs, max_composition_depth=2)
+    assert inferred is not None
+    assert inferred.operations[0][0] == PrimitiveOperation.DECOMPOSE_OBJECTS
+    assert inferred.operations[1][0] == PrimitiveOperation.COMPOSE_OBJECTS
+    assert apply_rule(inferred, pairs[0][0]) == pairs[0][1]
+    assert proof.is_valid()
+
+
+# @falsification_id: F_PATTERN_003
+def test_pattern_governance_suite():
+    valid_rule, valid_proof = detect_compositional_rule([(Grid([[1, 2], [3, 4]]), Grid([[3, 1], [4, 2]]))])
+    assert valid_rule is not None
+    assert any(str(premise).startswith("yeshua_hash_commitment=") for premise in valid_proof.premises)
+    assert "selection_strategy=minimum_description_length" in valid_proof.premises
+
+    system = ForgivenessSystem.get_instance()
+    violations_before = len(system.violations)
+    builds_before = len(system.building_outputs)
+    invalid_rule, invalid_proof = detect_compositional_rule([
+        (Grid([[1]]), Grid([[2]])),
+        (Grid([[1]]), Grid([[3]])),
+    ])
+    assert invalid_rule is None
+    assert any(str(premise).startswith("forgiveness_violation_id=") for premise in invalid_proof.premises)
+    assert len(system.violations) >= violations_before + 1
+    assert len(system.building_outputs) >= builds_before + 1
+
+
 def main():
     test_pattern_recognition_suite()
+    test_per_object_pattern_suite()
+    test_pattern_governance_suite()
     print("PASS test_pattern_recognition_suite")
 
 

@@ -4,7 +4,7 @@
     "description": "Machine-readable falsification test registry. Each entry defines a falsifiable assumption, the strategy for testing it, and mappings to domains, OI-IDs, and case studies. Tests are assigned F-IDs and can be referenced by test files via the @falsification_id tag.",
     "created": "2026-03-02",
     "tagging_convention": "Add a comment '# @falsification_id: F_XXX_NNN' at the top of any test that implements or covers a falsification test listed here.",
-    "total_tests": 103
+    "total_tests": 112
   },
   "falsification_tests": [
     {
@@ -1955,6 +1955,44 @@
       "invariant": "Pattern rules remain explicit and verifiable.",
       "falsifies_if": "Verification or inference of fixed grid rules fails.",
       "definition": "Execute the standalone pattern-recognition suite and require success."
+    },
+    {
+      "id": "F_PATTERN_002",
+      "title": "Per-object pattern transforms remain compositional",
+      "domain": "D_PATTERN_RECOGNITION",
+      "assumption": "Multiple disconnected ARC-style objects can share a single inferred object-local transform and be recomposed on the original canvas.",
+      "falsifying_observation": "A disconnected multi-object transformation cannot be inferred or reconstructed correctly.",
+      "strategy": "Run tests/test_pattern_recognition.py::test_per_object_pattern_suite and require success.",
+      "status": "implemented",
+      "test_file": "tests/test_pattern_recognition.py::test_per_object_pattern_suite",
+      "ontological_issues": [
+        "OI_PATTERN_001"
+      ],
+      "case_studies": [
+        "CS_PATTERN_001"
+      ],
+      "invariant": "Disconnected objects remain inferable through explicit decompose/compose structure.",
+      "falsifies_if": "The inferred per-object rule fails to reconstruct the expected output grid.",
+      "definition": "Execute the dedicated per-object pattern suite and require success."
+    },
+    {
+      "id": "F_PATTERN_003",
+      "title": "Pattern inference is governance-anchored",
+      "domain": "D_PATTERN_RECOGNITION",
+      "assumption": "Successful pattern inference is Yeshua-verified and failed inference is redirected through the forgiveness workflow.",
+      "falsifying_observation": "A successful inference lacks Yeshua proof metadata or a failed inference does not emit forgiveness trace metadata.",
+      "strategy": "Run tests/test_pattern_recognition.py::test_pattern_governance_suite and require success.",
+      "status": "implemented",
+      "test_file": "tests/test_pattern_recognition.py::test_pattern_governance_suite",
+      "ontological_issues": [
+        "OI_PATTERN_001"
+      ],
+      "case_studies": [
+        "CS_PATTERN_001"
+      ],
+      "invariant": "Pattern-rule inference remains both proof-anchored and failure-redirected.",
+      "falsifies_if": "Yeshua metadata or forgiveness trace metadata is missing from the proof surfaces.",
+      "definition": "Execute the dedicated governance integration suite and require success."
     }
   ]
 }
