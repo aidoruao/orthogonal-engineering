@@ -156,13 +156,26 @@ def _largest_region_size(grid: Grid) -> int:
     return max((len(region) for region in regions), default=0)
 
 
+def _nonzero_count(grid: Grid) -> int:
+    return sum(cell != 0 for row in grid.cells for cell in row)
+
+
+def _row_count_is_prime(grid: Grid) -> int:
+    return int(is_prime(grid.rows)[0])
+
+
+def _dimension_gcd(grid: Grid) -> int:
+    gcd_value, _, _ = gcd_extended(grid.rows, grid.cols)[0]
+    return gcd_value
+
+
 def _property_detectors() -> List[Callable[[Grid], int]]:
     return [
         lambda grid: grid.rows,
         lambda grid: grid.cols,
         lambda grid: grid.rows * grid.cols,
         lambda grid: int(grid.rows == grid.cols),
-        lambda grid: sum(1 for row in grid.cells for cell in row if cell != 0),
+        _nonzero_count,
         lambda grid: len(grid.get_contiguous_regions()),
         lambda grid: len(grid.get_color_histogram()),
         _dominant_color,
@@ -170,9 +183,9 @@ def _property_detectors() -> List[Callable[[Grid], int]]:
         _largest_region_size,
         lambda grid: int(grid.has_horizontal_symmetry()),
         lambda grid: int(grid.has_vertical_symmetry()),
-        lambda grid: mod_peano(sum(1 for row in grid.cells for cell in row if cell != 0), 2),
-        lambda grid: int(is_prime(grid.rows)[0]),
-        lambda grid: gcd_extended(grid.rows, grid.cols)[0][0],
+        lambda grid: mod_peano(_nonzero_count(grid), 2),
+        _row_count_is_prime,
+        _dimension_gcd,
     ]
 
 
@@ -391,7 +404,7 @@ def apply_rule(rule: CompositionalRule, grid: Grid) -> Grid:
             tiled: List[List[int]] = []
             for _ in range(repeat_y):
                 for row in current.cells:
-                    tiled.append((row * repeat_x)[:])
+                    tiled.append(row * repeat_x)
             current = Grid(tiled)
         elif operation == PrimitiveOperation.EXTRACT_OBJECT:
             regions = current.get_contiguous_regions()
