@@ -289,7 +289,7 @@ def _register_all() -> None:
         (
             "dominant_color_branch",
             CompositionalRule([(PrimitiveOperation.CONDITIONAL, {
-                "property": lambda grid: max(grid.get_color_histogram(), key=grid.get_color_histogram().get) if grid.get_color_histogram() else 0,
+                "property": lambda grid: max(histogram, key=histogram.get) if (histogram := grid.get_color_histogram()) else 0,
                 "value_rules": {
                     1: CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": {0: 0, 1: 9, 2: 2}})]),
                     2: CompositionalRule([(PrimitiveOperation.RECOLOR, {"mapping": {0: 0, 1: 1, 2: 8}})]),

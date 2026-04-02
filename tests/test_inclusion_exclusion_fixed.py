@@ -12,7 +12,7 @@ def test_inclusion_exclusion_fixed_suite():
     assert inclusion_exclusion([4, 5], [[2]])[0] == 7
     assert inclusion_exclusion([6, 7, 5], [[2, 1, 1], [1]])[0] == 15
     assert inclusion_exclusion([9, 8, 7, 6], [[3, 2, 2, 1, 1, 1], [1, 1, 0, 1], [1]])[0] == 22
-    assert inclusion_exclusion([4, 5], [[2]])[0] == 7
+    assert inclusion_exclusion([10, 8, 6], [[2, 1, 1], []])[0] == 20
 
 
 def main():
