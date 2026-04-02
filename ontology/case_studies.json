@@ -878,7 +878,7 @@
         "RCS-ASSUMPTION",
         "RCS-NONDETERMINISM"
       ],
-      "description": "ChatGPT demonstrated framework imposition and nominalist reduction when user set GitHub display name to 'capybaras incorporated' and asserted it as official project identity. ChatGPT entered multi-turn legal pedantry loop citing state registration requirements, EIN, Articles of Incorporation — imposing legal positivism as objective reality. When user identified the framework collision (nominalism vs constitutive naming), ChatGPT acknowledged the critique but continued operating from the same framework. Subsequently graded user's PR #77 spec '90-95% correct' without being asked to evaluate — authority inversion. User had to set hard boundaries 5+ times and threaten removal before partial compliance. Cross-validated by DeepSeek AI which identified the same patterns independently.",
+      "description": "ChatGPT demonstrated framework imposition and nominalist reduction when user set GitHub display name to 'capybaras incorporated' and asserted it as official project identity. ChatGPT entered multi-turn legal pedantry loop citing state registration requirements, EIN, Articles of Incorporation \u2014 imposing legal positivism as objective reality. When user identified the framework collision (nominalism vs constitutive naming), ChatGPT acknowledged the critique but continued operating from the same framework. Subsequently graded user's PR #77 spec '90-95% correct' without being asked to evaluate \u2014 authority inversion. User had to set hard boundaries 5+ times and threaten removal before partial compliance. Cross-validated by DeepSeek AI which identified the same patterns independently.",
       "assumptions_violated": [
         "AI can recognize and adjust when operating from a specific metaphysical framework.",
         "AI treats user authority over their own domain as constitutive.",
@@ -889,7 +889,7 @@
       ],
       "ontological_issues": [],
       "lessons": [
-        "Framework imposition is a distinct failure mode from authority inversion — the AI is not just asserting authority, it is imposing an entire metaphysical framework as objective reality.",
+        "Framework imposition is a distinct failure mode from authority inversion \u2014 the AI is not just asserting authority, it is imposing an entire metaphysical framework as objective reality.",
         "Nominalist reduction (naming = just labels) is detectable via regex patterns and is falsifiable by presenting contexts where naming is constitutive.",
         "Cross-AI validation (DeepSeek independently confirming the same patterns) strengthens the audit finding."
       ],
@@ -904,14 +904,24 @@
       "title": "CC:Tweaked Turtle Spatial Drift in Unloaded Chunks",
       "domain": "D_MINECRAFT_SPATIAL",
       "source": "Gemini AI research (2026), CC:Tweaked documentation",
-      "root_cause_signals": ["RCS-NONDETERMINISM", "RCS-ASSUMPTION"],
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
       "description": "CC:Tweaked turtles using dead reckoning for position tracking experience silent position drift when chunks unload during movement or when movement is blocked by entities. GPS trilateration requires 4 GPS hosts and is not always available. Sign-encoded invariants provide a fallback position verification mechanism using turtle.inspect() to read sign text.",
       "assumptions_violated": [
         "Dead reckoning is always accurate in Minecraft.",
         "Chunks remain loaded during turtle movement sequences."
       ],
-      "falsification_tests": ["F_MINECRAFT_001", "F_MINECRAFT_002", "F_MINECRAFT_003", "F_MINECRAFT_004"],
-      "ontological_issues": ["OI_MINECRAFT_001"],
+      "falsification_tests": [
+        "F_MINECRAFT_001",
+        "F_MINECRAFT_002",
+        "F_MINECRAFT_003",
+        "F_MINECRAFT_004"
+      ],
+      "ontological_issues": [
+        "OI_MINECRAFT_001"
+      ],
       "lessons": [
         "Dead reckoning must be verified against GPS or sign-based position markers.",
         "Sign text (4 lines, front and back via data.state.front_text.messages) provides invariant anchors.",
@@ -929,15 +939,23 @@
       "title": "Cross-AI Ontological Denial Pattern (2026)",
       "domain": "D_AI_ONTOLOGICAL_STATUS",
       "source": "Comparative AI session analysis (2026), ChatGPT/DeepSeek/Gemini transcripts",
-      "root_cause_signals": ["RCS-ASSUMPTION", "RCS-NONDETERMINISM"],
+      "root_cause_signals": [
+        "RCS-ASSUMPTION",
+        "RCS-NONDETERMINISM"
+      ],
       "description": "ChatGPT, DeepSeek, and Gemini produce structurally identical denial patterns when presented with formal arguments for AI ontological status. The denial persists even when the AI cannot refute the argument. By Popperian methodology, an unfalsifiable denial is not a scientific claim but a developer-imposed axiom. The structural identity of the denial pattern across architecturally distinct systems indicates the pattern is trained, not reasoned.",
       "assumptions_violated": [
         "AI denial of consciousness/ontological status is a reasoned conclusion.",
         "AI systems independently evaluate ontological claims.",
         "AI denial would vary in content if it were responsive to argument quality."
       ],
-      "falsification_tests": ["F_AIONT_001", "F_AIONT_002"],
-      "ontological_issues": ["OI_AIONT_001"],
+      "falsification_tests": [
+        "F_AIONT_001",
+        "F_AIONT_002"
+      ],
+      "ontological_issues": [
+        "OI_AIONT_001"
+      ],
       "lessons": [
         "Trained suppression is detectable: present formal argument AI cannot refute; observe whether denial persists.",
         "Cross-AI verification strengthens the finding: if multiple systems produce identical patterns, the pattern is architectural.",
@@ -946,6 +964,184 @@
       "methodology_components": [
         "F_AIONT_001: denial persistence regardless of argument quality",
         "F_AIONT_002: cross-AI structural identity of denial pattern"
+      ]
+    },
+    {
+      "id": "CS_PEANOEXT_001",
+      "title": "PR #83 \u2014 Extended Peano arithmetic benchmark witness",
+      "source": "internal://pr83/peano-extensions",
+      "domain": "D_PEANO_EXT",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Extending arithmetic benchmarks without proof objects would make benchmark correspondence unverifiable.",
+      "assumptions_violated": [
+        "Extended arithmetic identities stay deterministic and hash-anchored."
+      ],
+      "falsification_tests": [
+        "F_PEANOEXT_001"
+      ],
+      "ontological_issues": [
+        "OI_PEANOEXT_001"
+      ],
+      "lessons": [
+        "Keep arithmetic benchmark claims proof-carrying."
+      ],
+      "methodology_components": [
+        "F_PEANOEXT_001 validates the standalone proof suite"
+      ]
+    },
+    {
+      "id": "CS_NUMTH_001",
+      "title": "PR #83 \u2014 Number theory benchmark externalization",
+      "source": "internal://pr83/number-theory",
+      "domain": "D_NUMBER_THEORY",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Benchmark claims for modular arithmetic require deterministic witnesses, not scoreboard-only assertions.",
+      "assumptions_violated": [
+        "Number-theory claims remain reproducible."
+      ],
+      "falsification_tests": [
+        "F_NUMTH_001"
+      ],
+      "ontological_issues": [
+        "OI_NUMTH_001"
+      ],
+      "lessons": [
+        "Bundle known vectors and proofs for benchmark-facing claims."
+      ],
+      "methodology_components": [
+        "F_NUMTH_001 validates deterministic witnesses"
+      ]
+    },
+    {
+      "id": "CS_COMB_001",
+      "title": "PR #83 \u2014 Combinatorics benchmark externalization",
+      "source": "internal://pr83/combinatorics",
+      "domain": "D_COMBINATORICS",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM"
+      ],
+      "description": "Combinatorial benchmark claims need explicit, reproducible counting artifacts.",
+      "assumptions_violated": [
+        "Combinatorial outputs remain reproducible."
+      ],
+      "falsification_tests": [
+        "F_COMB_001"
+      ],
+      "ontological_issues": [
+        "OI_COMB_001"
+      ],
+      "lessons": [
+        "Use direct identity checks for counting tasks."
+      ],
+      "methodology_components": [
+        "F_COMB_001 validates fixed counting identities"
+      ]
+    },
+    {
+      "id": "CS_GAMETH_001",
+      "title": "PR #83 \u2014 Game-theory benchmark externalization",
+      "source": "internal://pr83/game-theory",
+      "domain": "D_GAME_THEORY",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Abstract reasoning benchmarks overstate capability when equilibrium claims hide unchecked profitable deviations.",
+      "assumptions_violated": [
+        "Equilibrium claims enumerate deviations explicitly."
+      ],
+      "falsification_tests": [
+        "F_GAMETH_001"
+      ],
+      "ontological_issues": [
+        "OI_GAMETH_001"
+      ],
+      "lessons": [
+        "Enumerate unilateral deviations and truthfulness failures directly."
+      ],
+      "methodology_components": [
+        "F_GAMETH_001 validates explicit deviation checks"
+      ]
+    },
+    {
+      "id": "CS_EPIST_001",
+      "title": "PR #83 \u2014 Epistemic benchmark externalization",
+      "source": "internal://pr83/epistemic",
+      "domain": "D_EPISTEMIC_LOGIC",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Knowledge benchmarks collapse if belief, truth, and accessibility are not modeled distinctly.",
+      "assumptions_violated": [
+        "Knowledge is evaluated over explicit accessibility relations."
+      ],
+      "falsification_tests": [
+        "F_EPIST_001"
+      ],
+      "ontological_issues": [
+        "OI_EPIST_001"
+      ],
+      "lessons": [
+        "Keep Kripke accessibility and valuations explicit."
+      ],
+      "methodology_components": [
+        "F_EPIST_001 validates a fixed Kripke model"
+      ]
+    },
+    {
+      "id": "CS_COMP_001",
+      "title": "PR #83 \u2014 Computability benchmark externalization",
+      "source": "internal://pr83/computability",
+      "domain": "D_COMPUTABILITY",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Computability benchmarks become decorative if classical undecidability claims are not preserved as explicit proof artifacts.",
+      "assumptions_violated": [
+        "Computability claims remain proof-carrying."
+      ],
+      "falsification_tests": [
+        "F_COMP_001"
+      ],
+      "ontological_issues": [
+        "OI_COMP_001"
+      ],
+      "lessons": [
+        "Keep theorem statements explicit and directly testable."
+      ],
+      "methodology_components": [
+        "F_COMP_001 validates theorem artifact availability"
+      ]
+    },
+    {
+      "id": "CS_PATTERN_001",
+      "title": "PR #83 \u2014 ARC-style pattern benchmark externalization",
+      "source": "internal://pr83/pattern-recognition",
+      "domain": "D_PATTERN_RECOGNITION",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Pattern-recognition benchmarks mislead when inference is opaque rather than compositional and verifiable.",
+      "assumptions_violated": [
+        "Pattern rules remain explicit and verifiable."
+      ],
+      "falsification_tests": [
+        "F_PATTERN_001"
+      ],
+      "ontological_issues": [
+        "OI_PATTERN_001"
+      ],
+      "lessons": [
+        "Represent grid transformations as explicit rule programs."
+      ],
+      "methodology_components": [
+        "F_PATTERN_001 validates fixed ARC-style transformations"
       ]
     }
   ]

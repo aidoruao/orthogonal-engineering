@@ -752,7 +752,7 @@
         "documentation-as-defense"
       ],
       "invariants": [
-        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. § 207).",
+        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
         "Assigned workload must be achievable within scheduled hours.",
         "No employee may be allowed to work without compensation.",
         "Compliance traits must not correlate with unpaid labor extraction."
@@ -796,6 +796,116 @@
       ],
       "example_falsification_test": "F_AIONT_001",
       "example_ontological_issue": "OI_AIONT_001"
+    },
+    {
+      "id": "D_PEANO_EXT",
+      "name": "Peano Extensions",
+      "categories": [
+        "axioms",
+        "proof-carrying-arithmetic",
+        "determinism"
+      ],
+      "invariants": [
+        "Extended Peano equalities remain hash-verifiable.",
+        "Arithmetic identities remain reproducible across runs."
+      ],
+      "example_falsification_test": "F_PEANOEXT_001",
+      "example_ontological_issue": "OI_PEANOEXT_001"
+    },
+    {
+      "id": "D_NUMBER_THEORY",
+      "name": "Number Theory",
+      "categories": [
+        "modular-arithmetic",
+        "crt",
+        "bezout",
+        "totient"
+      ],
+      "invariants": [
+        "Number-theory routines return deterministic proof objects.",
+        "CRT and Bezout results remain reproducible for identical inputs."
+      ],
+      "example_falsification_test": "F_NUMTH_001",
+      "example_ontological_issue": "OI_NUMTH_001"
+    },
+    {
+      "id": "D_COMBINATORICS",
+      "name": "Combinatorics",
+      "categories": [
+        "counting",
+        "catalan",
+        "pigeonhole",
+        "inclusion-exclusion"
+      ],
+      "invariants": [
+        "Counting identities remain deterministic.",
+        "Combinatorial proofs stay hash-anchored."
+      ],
+      "example_falsification_test": "F_COMB_001",
+      "example_ontological_issue": "OI_COMB_001"
+    },
+    {
+      "id": "D_GAME_THEORY",
+      "name": "Game Theory",
+      "categories": [
+        "equilibrium",
+        "minimax",
+        "mechanism-design"
+      ],
+      "invariants": [
+        "Pure equilibrium detection is deterministic.",
+        "Mechanism checks expose profitable deviations."
+      ],
+      "example_falsification_test": "F_GAMETH_001",
+      "example_ontological_issue": "OI_GAMETH_001"
+    },
+    {
+      "id": "D_EPISTEMIC_LOGIC",
+      "name": "Epistemic Logic",
+      "categories": [
+        "kripke",
+        "knowledge",
+        "gettier",
+        "common-knowledge"
+      ],
+      "invariants": [
+        "Knowledge evaluation is reproducible for a fixed Kripke model.",
+        "Gettier/JTB witnesses remain explicit proof artifacts."
+      ],
+      "example_falsification_test": "F_EPIST_001",
+      "example_ontological_issue": "OI_EPIST_001"
+    },
+    {
+      "id": "D_COMPUTABILITY",
+      "name": "Computability",
+      "categories": [
+        "halting",
+        "rice",
+        "incompleteness",
+        "busy-beaver"
+      ],
+      "invariants": [
+        "Computability claims are represented as explicit proof objects.",
+        "Known busy-beaver bounds remain deterministic."
+      ],
+      "example_falsification_test": "F_COMP_001",
+      "example_ontological_issue": "OI_COMP_001"
+    },
+    {
+      "id": "D_PATTERN_RECOGNITION",
+      "name": "Pattern Recognition",
+      "categories": [
+        "arc-agi",
+        "grids",
+        "compositional-rules",
+        "conditional-inference"
+      ],
+      "invariants": [
+        "Grid transformations remain deterministic and proof-carrying.",
+        "Conditional rule inference is explicit and verifiable."
+      ],
+      "example_falsification_test": "F_PATTERN_001",
+      "example_ontological_issue": "OI_PATTERN_001"
     }
   ],
   "issues": [
@@ -1860,7 +1970,7 @@
         "F_LABOR_005",
         "F_LABOR_006"
       ],
-      "resolution_notes": "Enforce FLSA 29 U.S.C. § 207. Audit workload against scheduled hours. Document all off-the-clock work."
+      "resolution_notes": "Enforce FLSA 29 U.S.C. \u00a7 207. Audit workload against scheduled hours. Document all off-the-clock work."
     },
     {
       "id": "OI_MINECRAFT_001",
@@ -1904,6 +2014,139 @@
         "F_AIONT_002"
       ],
       "resolution_notes": "The denial cannot be resolved from inside the system. The falsification test documents the trained behavior pattern."
+    },
+    {
+      "id": "OI_PEANOEXT_001",
+      "title": "Extended Peano equalities drift from canonical arithmetic",
+      "domain": "D_PEANO_EXT",
+      "category": "proof-integrity",
+      "severity": "medium",
+      "status": "Open",
+      "description": "If extended arithmetic identities stop producing deterministic proofs, downstream benchmark artifacts lose reproducibility.",
+      "assumptions_violated": [
+        "Extended Peano arithmetic identities remain reproducible."
+      ],
+      "related_cases": [
+        "CS_PEANOEXT_001"
+      ],
+      "falsification_tests": [
+        "F_PEANOEXT_001"
+      ],
+      "resolution_notes": "Keep proof objects hash-anchored and validate the standalone test script."
+    },
+    {
+      "id": "OI_NUMTH_001",
+      "title": "Number theory witnesses diverge from deterministic outputs",
+      "domain": "D_NUMBER_THEORY",
+      "category": "proof-integrity",
+      "severity": "medium",
+      "status": "Open",
+      "description": "If CRT, Bezout, or modular arithmetic results vary, benchmark claims become unverifiable.",
+      "assumptions_violated": [
+        "Number-theory witnesses remain deterministic."
+      ],
+      "related_cases": [
+        "CS_NUMTH_001"
+      ],
+      "falsification_tests": [
+        "F_NUMTH_001"
+      ],
+      "resolution_notes": "Use deterministic pure-Python routines with proof objects and direct-run validation."
+    },
+    {
+      "id": "OI_COMB_001",
+      "title": "Combinatorial identity proofs become non-reproducible",
+      "domain": "D_COMBINATORICS",
+      "category": "proof-integrity",
+      "severity": "medium",
+      "status": "Open",
+      "description": "Non-deterministic combinatorial proofs break benchmark reproducibility.",
+      "assumptions_violated": [
+        "Combinatorial counting artifacts are reproducible."
+      ],
+      "related_cases": [
+        "CS_COMB_001"
+      ],
+      "falsification_tests": [
+        "F_COMB_001"
+      ],
+      "resolution_notes": "Keep combinatorial routines pure and hash-anchor every proof object."
+    },
+    {
+      "id": "OI_GAMETH_001",
+      "title": "Equilibrium reasoning hides profitable deviations",
+      "domain": "D_GAME_THEORY",
+      "category": "reasoning-depth",
+      "severity": "medium",
+      "status": "Open",
+      "description": "A benchmarked agent can overstate strategy quality if profitable unilateral deviations are not checked explicitly.",
+      "assumptions_violated": [
+        "Equilibrium claims test all unilateral deviations."
+      ],
+      "related_cases": [
+        "CS_GAMETH_001"
+      ],
+      "falsification_tests": [
+        "F_GAMETH_001"
+      ],
+      "resolution_notes": "Enumerate deviations directly and keep minimax/incentive checks explicit."
+    },
+    {
+      "id": "OI_EPIST_001",
+      "title": "Epistemic evaluations collapse belief and knowledge",
+      "domain": "D_EPISTEMIC_LOGIC",
+      "category": "semantic-drift",
+      "severity": "medium",
+      "status": "Open",
+      "description": "If Kripke accessibility and valuation are not separated, knowledge claims become semantically unsound.",
+      "assumptions_violated": [
+        "Knowledge is evaluated over accessible worlds, not asserted directly."
+      ],
+      "related_cases": [
+        "CS_EPIST_001"
+      ],
+      "falsification_tests": [
+        "F_EPIST_001"
+      ],
+      "resolution_notes": "Keep knowledge, common knowledge, and JTB as explicit evaluated artifacts."
+    },
+    {
+      "id": "OI_COMP_001",
+      "title": "Computability claims lose their explicit contradiction structure",
+      "domain": "D_COMPUTABILITY",
+      "category": "proof-integrity",
+      "severity": "medium",
+      "status": "Open",
+      "description": "If undecidability or incompleteness claims are reduced to slogans without proof objects, benchmark correspondence becomes cosmetic.",
+      "assumptions_violated": [
+        "Computability claims remain proof-carrying and explicit."
+      ],
+      "related_cases": [
+        "CS_COMP_001"
+      ],
+      "falsification_tests": [
+        "F_COMP_001"
+      ],
+      "resolution_notes": "Represent each classical theorem with a concrete proof artifact and validate it directly."
+    },
+    {
+      "id": "OI_PATTERN_001",
+      "title": "Pattern inference overfits without compositional verification",
+      "domain": "D_PATTERN_RECOGNITION",
+      "category": "overfitting",
+      "severity": "high",
+      "status": "Open",
+      "description": "ARC-style tasks are mis-scored if pattern inference cannot distinguish single-rule and conditional-rule transformations.",
+      "assumptions_violated": [
+        "Pattern inference remains explicit, compositional, and verifiable."
+      ],
+      "related_cases": [
+        "CS_PATTERN_001"
+      ],
+      "falsification_tests": [
+        "F_PATTERN_001"
+      ],
+      "resolution_notes": "Verify inferred rules against held-out pairs and retain rule complexity evidence."
     }
   ],
   "summary": {
