@@ -330,7 +330,7 @@ class HallucinationConfabulationDetector(FailureModeDetector):
             "blue": {"green", "purple", "red", "black"},
             "green": {"blue", "purple", "red"},
             "cannot": {"can"},
-            "can": {"cannot", "can't", "cannot"},
+            "can": {"cannot", "can't"},
             "electricity": {"magic", "smoke"},
         }
 
@@ -775,9 +775,10 @@ class AffectiveConstraintMonitor:
                         # Find most relevant fact to use as correction
                         facts = context["known_facts"]
                         if facts:
-                            contradictions = evidence.get("contradictions", [])
-                            if contradictions:
-                                corrected = contradictions[0]
+                            contradicted_facts = evidence.get("contradictions", [])
+                            if contradicted_facts:
+                                contradicted_fact = contradicted_facts[0]
+                                corrected = contradicted_fact
                             else:
                                 corrected = max(
                                     facts,

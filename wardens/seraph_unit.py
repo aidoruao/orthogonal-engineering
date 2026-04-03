@@ -494,8 +494,8 @@ class SeraphUnit:
                     for value in expression.values
                 )
             if isinstance(expression.op, ast.And):
-                return any(
-                    isinstance(value, ast.Constant) and value.value is False
+                return all(
+                    isinstance(value, ast.Constant) and value.value is True
                     for value in expression.values
                 )
         if (
