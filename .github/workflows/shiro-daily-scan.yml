@@ -250,4 +250,6 @@ jobs:
             logs/health_checks/cloud_wardens/gemini_warden_status.json
             logs/health_checks/cloud_wardens/gemini_warden_manifest.json
           if-no-files-found: error
+          # Keep several daily runs available for download while health checks only
+          # require the latest artifact to be fresher than 36 hours.
           retention-days: 30

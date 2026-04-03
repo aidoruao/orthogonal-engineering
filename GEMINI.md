@@ -40,6 +40,8 @@ Return strict JSON with this shape:
 }
 ```
 
+Valid `status` values: `healthy`, `warning`, `degraded`, `critical`.
+
 ### Constraints
 - No file edits.
 - No destructive recommendations.

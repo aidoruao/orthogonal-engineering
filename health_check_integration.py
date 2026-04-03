@@ -22,6 +22,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 VALID_WARDEN_STATUSES = ["active", "pending", "error", "disabled"]
+SECONDS_PER_HOUR = 3600
 
 
 class HealthCheckIntegration:
@@ -179,8 +180,8 @@ class HealthCheckIntegration:
                 health["issues"].append("Cloud report timestamp missing or invalid")
             else:
                 report_age = datetime.now(timezone.utc) - report_timestamp
-                report_age_hours = report_age.total_seconds() / 3600
-                health["checks"]["report_age_hours"] = round(report_age_hours, 3)
+                report_age_in_hours = report_age.total_seconds() / SECONDS_PER_HOUR
+                health["checks"]["report_age_hours"] = round(report_age_in_hours, 3)
                 health["checks"]["report_fresh"] = (
                     report_age <= timedelta(hours=max_report_age_hours)
                 )
@@ -188,7 +189,7 @@ class HealthCheckIntegration:
                 if not health["checks"]["report_fresh"]:
                     health["status"] = self._elevate_status(health["status"], "warning")
                     health["issues"].append(
-                        f"Cloud report is stale ({report_age_hours:.1f}h old)"
+                        f"Cloud report is stale ({report_age_in_hours:.1f}h old)"
                     )
                     health["recommendations"].append(
                         "Re-run the cloud warden workflow to refresh its status artifact"
