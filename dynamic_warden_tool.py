@@ -512,6 +512,12 @@ class DynamicWardenTool:
             logger.warning(f"generate_proposals: cannot list {root_path}: {e}")
             return proposals
 
+        # If a catch-all warden already covers the whole repo, no proposals needed
+        if has_catchall:
+            self.registry.setdefault("dynamic_wardens", {})["proposals"] = proposals
+            self._save_registry()
+            return proposals
+
         for item in sorted(items):
             item_path = os.path.join(root_path, item)
             if not os.path.isdir(item_path):
@@ -519,8 +525,6 @@ class DynamicWardenTool:
             if item.startswith("."):
                 continue
             if item in skip_names:
-                continue
-            if has_catchall:
                 continue
             if item in covered or item_path in covered:
                 continue

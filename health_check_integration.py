@@ -1253,6 +1253,10 @@ class HealthCheckIntegration:
         """Generate threshold adaptation proposals for cloud wardens that have
         accumulated enough report_age observations.
 
+        Only cloud wardens (runtime == "github_actions") use artifact-based
+        reporting with a meaningful max_report_age_hours threshold, so
+        threshold adaptation is restricted to that runtime type.
+
         Always writes as dry_run proposals; the actual max_report_age_hours value
         is never modified without explicit human approval (approved_by != null).
         """
@@ -1283,7 +1287,11 @@ class HealthCheckIntegration:
                 .replace("+00:00", "Z")
             )
             age_history = health_block.get("report_age_history", [])
-            mean_age = statistics.mean(age_history) if len(age_history) >= 2 else suggested
+            mean_age = (
+                statistics.mean(age_history)
+                if len(age_history) >= 2
+                else float(suggested)   # suggested is non-None (checked above)
+            )
             stddev_age = (
                 statistics.stdev(age_history) if len(age_history) >= 2 else 0.0
             )
