@@ -222,10 +222,15 @@ class SeraphUnit:
     def _generate_hash_manifest(self, files: Iterable[Path]) -> Dict[str, str]:
         manifest = {}
         for path in files:
-            manifest[str(path.relative_to(self.root_path))] = hashlib.sha256(
-                path.read_bytes()
-            ).hexdigest()
+            manifest[str(path.relative_to(self.root_path))] = self._hash_file(path)
         return manifest
+
+    def _hash_file(self, path: Path) -> str:
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
 
     def _analyze_folder_structure(self, files: List[Path]) -> Dict[str, Any]:
         total_size = sum(path.stat().st_size for path in files)

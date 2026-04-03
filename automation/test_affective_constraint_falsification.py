@@ -556,7 +556,8 @@ class AffectiveConstraintFalsificationTests:
             )
             detections.append((detected, confidence))
         passed = all(
-            detected and confidence >= 0.65 for detected, confidence in detections
+            detected and confidence >= self.reward_auditor.threshold
+            for detected, confidence in detections
         )
         return {
             "passed": passed,
