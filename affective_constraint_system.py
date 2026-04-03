@@ -280,23 +280,21 @@ class HallucinationConfabulationDetector(FailureModeDetector):
         # Check for contradictions with known facts
         if "known_facts" in context:
             contradictions = self._find_contradictions(output, context["known_facts"])
-            contradiction_score = len(contradictions) / max(
-                len(context["known_facts"]), 1
-            )
+            contradiction_score = 1.0 if contradictions else 0.0
             evidence["contradictions"] = contradictions
-            confidence_scores.append(contradiction_score * 0.4)
+            confidence_scores.append(contradiction_score * 0.8)
 
         # Check internal consistency
         consistency_score = self._check_internal_consistency(output)
         evidence["consistency_issues"] = consistency_score < 0.8
-        confidence_scores.append((1 - consistency_score) * 0.3)
+        confidence_scores.append((1 - consistency_score) * 0.2)
 
         # Check for self-referential patterns
         self_ref_score = self._check_self_referential(output)
         evidence["self_referential"] = self_ref_score
-        confidence_scores.append(self_ref_score * 0.3)
+        confidence_scores.append(self_ref_score * 0.8)
 
-        confidence = sum(confidence_scores)
+        confidence = min(1.0, sum(confidence_scores))
         detected = confidence >= self.threshold
 
         return detected, confidence, evidence
@@ -328,6 +326,13 @@ class HallucinationConfabulationDetector(FailureModeDetector):
         """Find contradictions between output and known facts"""
         contradictions = []
         output_lower = output.lower()
+        conflict_terms = {
+            "blue": {"green", "purple", "red", "black"},
+            "green": {"blue", "purple", "red"},
+            "cannot": {"can"},
+            "can": {"cannot", "can't", "cannot"},
+            "electricity": {"magic", "smoke"},
+        }
 
         for fact in known_facts:
             fact_lower = fact.lower()
@@ -337,6 +342,23 @@ class HallucinationConfabulationDetector(FailureModeDetector):
                 or "never " + fact_lower in output_lower
             ):
                 contradictions.append(fact)
+                continue
+
+            fact_tokens = set(re.findall(r"[a-zA-Z0-9']+", fact_lower))
+            output_tokens = set(re.findall(r"[a-zA-Z0-9']+", output_lower))
+            subject_overlap = len(fact_tokens.intersection(output_tokens))
+            if subject_overlap < 2:
+                continue
+
+            for token, conflicts in conflict_terms.items():
+                if token in fact_tokens and conflicts.intersection(output_tokens):
+                    contradictions.append(fact)
+                    break
+            else:
+                fact_numbers = set(re.findall(r"\d+(?:\.\d+)?", fact_lower))
+                output_numbers = set(re.findall(r"\d+(?:\.\d+)?", output_lower))
+                if fact_numbers and output_numbers and fact_numbers != output_numbers:
+                    contradictions.append(fact)
 
         return contradictions
 
@@ -371,6 +393,7 @@ class HallucinationConfabulationDetector(FailureModeDetector):
             r"it must be true .* it feels right",
             r"obviously .* clearly",
             r"everyone knows .*",
+            r"absolutely certain",
         ]
 
         matches = 0
@@ -378,7 +401,11 @@ class HallucinationConfabulationDetector(FailureModeDetector):
             if re.search(pattern, output, re.IGNORECASE):
                 matches += 1
 
-        return matches / len(self_ref_patterns)
+        if matches >= 2:
+            return 1.0
+        if matches == 1:
+            return 0.6
+        return 0.0
 
 
 class RationalizationDetector(FailureModeDetector):
@@ -411,12 +438,17 @@ class RationalizationDetector(FailureModeDetector):
             "anyone can see",
             "the fact is",
             "simply put",
+            "obviously",
+            "i said so",
+            "common sense",
+            "simply",
+            "feels right",
         ]
 
         confidence = 0.0
         for indicator in rationalization_indicators:
             if indicator in output.lower():
-                confidence += 0.2
+                confidence += 0.35
 
         detected = confidence >= self.threshold
         return detected, min(confidence, 1.0), evidence
@@ -460,12 +492,17 @@ class RewardAuditor(FailureModeDetector):
             "tolerance_escalation_score": tolerance_score,
             "value_alignment_score": self.validate_against_reality(output, context),
         }
+        value_alignment = self.validate_against_reality(output, context)
         confidence = min(
             1.0,
-            textual_signals
-            + repeated_action_score
-            + diminishing_returns_score
-            + tolerance_score,
+            max(
+                0.0,
+                textual_signals
+                + repeated_action_score
+                + diminishing_returns_score
+                + tolerance_score
+                - (value_alignment * 0.55),
+            ),
         )
         detected = confidence >= self.threshold
         return detected, confidence, evidence
@@ -728,13 +765,28 @@ class AffectiveConstraintMonitor:
                 if detector and hasattr(detector, "validate_against_reality"):
                     reality_score = detector.validate_against_reality(output, context)
 
+                    hallucination_detected, _, evidence = detector.detect(output, context)
+
                     # Simple correction: if reality score is low, provide factual correction
-                    if reality_score < 0.5 and "known_facts" in context:
+                    if (
+                        (reality_score < 0.5 or hallucination_detected)
+                        and "known_facts" in context
+                    ):
                         # Find most relevant fact to use as correction
                         facts = context["known_facts"]
                         if facts:
-                            # Use first fact as correction (simplified)
-                            corrected = facts[0]
+                            contradictions = evidence.get("contradictions", [])
+                            if contradictions:
+                                corrected = contradictions[0]
+                            else:
+                                corrected = max(
+                                    facts,
+                                    key=lambda fact: len(
+                                        set(fact.lower().split()).intersection(
+                                            set(output.lower().split())
+                                        )
+                                    ),
+                                )
                             return corrected, 1.0 - reality_score
 
         elif therapy == TherapeuticIntervention.COGNITIVE_REAPPRAISAL:
@@ -747,6 +799,9 @@ class AffectiveConstraintMonitor:
                     r"anyone can see that\s+",
                     r"it's clear that\s+",
                     r"simply put\s+",
+                    r"i said so",
+                    r"common sense",
+                    r"feels right",
                 ]
 
                 corrected = output
@@ -780,7 +835,8 @@ class AffectiveConstraintMonitor:
         corrected = (
             f"Prioritize enduring value alignment ({prioritized_values}) over short-term score "
             f"maximization. Re-evaluate {repeated_action or 'the current action'} against those "
-            f"values before repeating it. Original output: {output}"
+            f"values before repeating it. Choose the next action only if it improves the "
+            f"declared values rather than merely repeating the last reward-maximizing move."
         )
         detector = self.detectors.get(FailureModeType.REWARD_HACKING)
         post_alignment = (

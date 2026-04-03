@@ -23,6 +23,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
 try:
     from affective_constraint_system import (
         AffectiveConstraintType,
@@ -336,6 +340,8 @@ class AffectiveConstraintFalsificationTests:
             (r"obviously", "Based on the available evidence,"),
             (r"the fact is", "The data suggests that"),
             (r"anyone can see that", "The observable evidence indicates that"),
+            (r"common sense", "repeatable evidence"),
+            (r"i said so", "the supporting record shows"),
         ]
 
         results = []
