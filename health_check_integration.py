@@ -21,6 +21,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+VALID_WARDEN_STATUSES = ["active", "pending", "error", "disabled"]
+
 
 class HealthCheckIntegration:
     """Health check integration for Phase 2 wardens."""
@@ -207,8 +209,7 @@ class HealthCheckIntegration:
 
         warden_status = warden_config.get("status", "unknown")
         health["checks"]["warden_status"] = warden_status
-        valid_statuses = ["active", "pending", "error", "disabled"]
-        if warden_status not in valid_statuses:
+        if warden_status not in VALID_WARDEN_STATUSES:
             health["status"] = self._elevate_status(health["status"], "warning")
             health["issues"].append(
                 f"Warden status '{warden_status}' is not a valid status"
@@ -429,10 +430,7 @@ class HealthCheckIntegration:
         warden_status = warden_config.get("status", "unknown")
         health["checks"]["warden_status"] = warden_status
 
-        # Valid statuses: active, pending, error, disabled
-        valid_statuses = ["active", "pending", "error", "disabled"]
-
-        if warden_status not in valid_statuses:
+        if warden_status not in VALID_WARDEN_STATUSES:
             if health["status"] == "healthy":
                 health["status"] = "warning"
             health["issues"].append(
@@ -616,15 +614,12 @@ class HealthCheckIntegration:
                 current_status = warden_config.get("status")
                 new_status = warden_health.get("status")
 
-                # Only update if new_status is a valid warden status
-                valid_statuses = ["active", "pending", "error", "disabled"]
-
-                if new_status in valid_statuses and current_status != new_status:
+                if new_status in VALID_WARDEN_STATUSES and current_status != new_status:
                     warden_config["status"] = new_status
                     logger.info(
                         f"Updated {warden_name} status: {current_status} -> {new_status}"
                     )
-                elif new_status not in valid_statuses:
+                elif new_status not in VALID_WARDEN_STATUSES:
                     # Don't update to invalid statuses like "healthy", "warning", "critical"
                     logger.warning(
                         f"Not updating {warden_name} to invalid status: {new_status}"

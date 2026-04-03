@@ -78,13 +78,14 @@ jobs:
               top_levels = Counter()
               total_bytes = 0
               for rel_path in files:
-                  path = repo / rel_path
+                  relative_path = Path(rel_path)
+                  path = repo / relative_path
                   if not path.is_file():
                       continue
                   manifest[rel_path] = sha256_for(path)
                   suffix = path.suffix or "<no_ext>"
                   extensions[suffix] += 1
-                  top_levels[path.parts[0] if len(path.parts) > 1 else "."] += 1
+                  top_levels[relative_path.parts[0] if relative_path.parts else "."] += 1
                   total_bytes += path.stat().st_size
               summary = {
                   "timestamp": utcnow(),
