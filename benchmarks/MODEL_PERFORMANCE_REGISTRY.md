@@ -35,11 +35,13 @@ Pipeline: IA-CYPHER-0006 | PR: #84
 | BrowseComp | 65.8% | 37.0% | 52.4% | 41.2% | 74.9% | 28.5% | 45.3% | 44.0% | 35.2% | 33.8% | 73.0% | agentic browsing |
 | HLE | 45.5% | 38.2% | 45.8% | 35.1% | 50.2% | 28.7% | 33.4% | 30.5% | 25.1% | 21.4% | N/A | `axioms/computability.py`, `axioms/epistemic_logic.py` |
 | HLE-Text | 38.1% | 32.5% | 38.4% | 29.8% | 31.5% | 22.1% | 27.3% | 25.8% | 20.5% | 19.1% | N/A | `axioms/computability.py`, `axioms/epistemic_logic.py` |
-| ARC-AGI-3 | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | N/A | `axioms/arc_solver.py` |
+| ARC-AGI-3 | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 5.0%† | `axioms/arc_solver.py` |
 | OSWorld | 58.7% | 66.3% | 55.2% | 48.1% | 63.3% | 35.8% | 42.1% | 40.6% | 34.4% | 30.8% | 69.0% | computer use |
 | WebArena | 55.2% | 63.4% | 51.8% | 44.3% | 58.9% | 32.1% | 40.5% | 39.2% | 33.1% | 29.5% | 67.0% | web agent |
 
 ## Universal Failure Modes
+
+*†ARC-AGI-3 Devin AI score: bounded symbolic solver (`axioms/arc_solver.py`) — 20/400 training (5.0%), 2/400 evaluation (0.5%). Merkle-anchored evidence in `evidence/arc_agi_3/`. All other models show 0% as no deterministic solver results have been submitted for them.*
 
 *Kimi K2.5 GPQA reporting varies across evaluation setups; the table uses the conservative lower-bound figure for consistency.*
 

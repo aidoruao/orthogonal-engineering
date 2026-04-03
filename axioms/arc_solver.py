@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
 from dataclasses import dataclass
-from typing import List, Optional, Tuple
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 from axioms.arc_dsl import BoundedDSL
 from axioms.arc_types import ARCTask, GoalHypothesis, Interaction, InteractionType, Program, grid_hash
@@ -99,6 +102,125 @@ def benchmark_arc_task(task: ARCTask, expected_outputs: List[Grid], max_depth: i
         f"ARC benchmark {'passed' if solved else 'failed'} for {task.task_id}",
     )
     return solved, proof
+
+
+def load_arc_task_from_json(task_id: str, data: Dict[str, Any]) -> Tuple[ARCTask, List[Grid]]:
+    """Load an ARC task from the official JSON format (fchollet/ARC-AGI)."""
+    train_pairs: List[Tuple[Grid, Grid]] = []
+    for pair in data["train"]:
+        train_pairs.append((Grid(pair["input"]), Grid(pair["output"])))
+    test_inputs: List[Grid] = []
+    expected_outputs: List[Grid] = []
+    for pair in data["test"]:
+        test_inputs.append(Grid(pair["input"]))
+        expected_outputs.append(Grid(pair["output"]))
+    task = ARCTask(task_id=task_id, train_pairs=train_pairs, test_inputs=test_inputs)
+    return task, expected_outputs
+
+
+def load_arc_dataset(directory: Path) -> List[Tuple[ARCTask, List[Grid]]]:
+    """Load all ARC tasks from a directory of JSON files."""
+    tasks: List[Tuple[ARCTask, List[Grid]]] = []
+    for json_file in sorted(directory.glob("*.json")):
+        task_id = json_file.stem
+        with open(json_file, "r", encoding="utf-8") as handle:
+            data = json.load(handle)
+        tasks.append(load_arc_task_from_json(task_id, data))
+    return tasks
+
+
+@dataclass
+class ARCBenchmarkResult:
+    """Result of running the solver against a full ARC dataset."""
+    total_tasks: int
+    solved_tasks: int
+    pass_rate: float
+    task_results: List[Dict[str, Any]]
+    merkle_root: str
+    manifest_hash: str
+
+
+def run_arc_benchmark(
+    dataset_dir: Path,
+    max_depth: int = 3,
+    timeout_per_task: int = 30,
+) -> Tuple[ARCBenchmarkResult, ProofObject]:
+    """Run the bounded symbolic solver against every task in a directory."""
+    import signal
+
+    tasks = load_arc_dataset(dataset_dir)
+    task_results: List[Dict[str, Any]] = []
+    task_proofs: List[ProofObject] = []
+    solved_count = 0
+
+    class _Timeout(Exception):
+        pass
+
+    def _handler(_signum: int, _frame: Any) -> None:
+        raise _Timeout()
+
+    for task, expected_outputs in tasks:
+        try:
+            old_handler = signal.signal(signal.SIGALRM, _handler)
+            signal.alarm(timeout_per_task)
+            solved, proof = benchmark_arc_task(task, expected_outputs, max_depth=max_depth)
+            signal.alarm(0)
+            signal.signal(signal.SIGALRM, old_handler)
+        except _Timeout:
+            signal.alarm(0)
+            solved = False
+            proof = ProofObject(
+                "ARCBenchmarkTask",
+                [f"task_id={task.task_id}", "timeout"],
+                f"ARC benchmark timed out for {task.task_id}",
+            )
+        except Exception as exc:
+            solved = False
+            proof = ProofObject(
+                "ARCBenchmarkTask",
+                [f"task_id={task.task_id}", f"error={type(exc).__name__}: {exc}"],
+                f"ARC benchmark errored for {task.task_id}",
+            )
+        prediction_hash = proof.proof_hash
+        task_results.append({
+            "task_id": task.task_id,
+            "solved": solved,
+            "prediction_hash": prediction_hash,
+        })
+        task_proofs.append(proof)
+        if solved:
+            solved_count += 1
+
+    pass_rate = solved_count / len(tasks) if tasks else 0
+    root = merkle_root_over_proofs(task_proofs)
+
+    manifest_payload = json.dumps(
+        [{"task_id": r["task_id"], "solved": r["solved"], "prediction_hash": r["prediction_hash"]} for r in task_results],
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    manifest_hash = hashlib.sha256(manifest_payload.encode("utf-8")).hexdigest()
+
+    result = ARCBenchmarkResult(
+        total_tasks=len(tasks),
+        solved_tasks=solved_count,
+        pass_rate=round(pass_rate, 6),
+        task_results=task_results,
+        merkle_root=root,
+        manifest_hash=manifest_hash,
+    )
+    proof = ProofObject(
+        "ARCFullBenchmark",
+        [
+            f"total_tasks={len(tasks)}",
+            f"solved_tasks={solved_count}",
+            f"pass_rate={pass_rate:.4f}",
+            f"merkle_root={root}",
+            f"manifest_hash={manifest_hash}",
+        ],
+        f"ARC benchmark: {solved_count}/{len(tasks)} tasks solved ({pass_rate:.2%})",
+    )
+    return result, proof
 
 
 def build_demo_arc_tasks() -> List[Tuple[ARCTask, List[Grid]]]:

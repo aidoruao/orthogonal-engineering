@@ -731,6 +731,28 @@ def infer_conditional_rule(
 
 
 
+def _select_best_rule(
+    candidates: List[CompositionalRule],
+    pairs: List[Tuple[Grid, Grid]],
+) -> CompositionalRule:
+    """Select the best rule using ordered composition search with MDL tiebreaker.
+
+    The plain MDL selector (min complexity) can pick a simpler single-step rule
+    that satisfies training pairs when a composed multi-step rule is actually
+    required to generalise.  This function scores candidates by:
+      1. Number of training pairs correctly solved (higher is better).
+      2. For ties, prefer rules whose full operation chain produces exact matches
+         on every pair (composition_valid flag).
+      3. Among fully-valid rules, prefer lower Kolmogorov complexity (MDL).
+    """
+    def _score(rule: CompositionalRule) -> Tuple[int, int, int]:
+        solved = sum(1 for inp, out in pairs if apply_rule(rule, inp) == out)
+        composition_valid = 1 if solved == len(pairs) else 0
+        return (-solved, -composition_valid, rule.complexity)
+
+    return min(candidates, key=_score)
+
+
 def detect_compositional_rule(
     input_output_pairs: List[Tuple[Grid, Grid]],
     max_composition_depth: int = 3,
@@ -766,7 +788,7 @@ def detect_compositional_rule(
             "No compositional rule inferred",
         )
         return None, proof
-    rule = min(candidates, key=lambda candidate: candidate.complexity)
+    rule = _select_best_rule(candidates, input_output_pairs)
     candidate_complexities = sorted(candidate.complexity for candidate in candidates)
     proof = ProofObject(
         "PatternRuleDetection",
