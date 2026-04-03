@@ -376,39 +376,73 @@ class HealthCheckIntegration:
             "recommendations": [],
         }
 
+        metadata = warden_config.get("metadata", {})
+        monitored_paths = metadata.get("monitored_paths") or []
+        resolved_paths = []
+        if monitored_paths:
+            for path_value in monitored_paths:
+                resolved = self._resolve_repo_path(path_value)
+                if resolved is not None:
+                    resolved_paths.append(resolved)
+        else:
+            folder_path = warden_config.get("folder_path")
+            resolved = self._resolve_repo_path(folder_path)
+            if resolved is not None:
+                resolved_paths.append(resolved)
+
         # Check folder existence and accessibility
-        folder_path = warden_config.get("folder_path")
-        if not folder_path:
+        if not resolved_paths:
             health["status"] = "critical"
             health["issues"].append("Folder path not specified")
             return health
 
-        folder_exists = os.path.exists(folder_path)
+        path_checks = []
+        folder_exists = True
+        folder_readable = True
+        for resolved_path in resolved_paths:
+            exists = resolved_path.exists()
+            readable = os.access(resolved_path, os.R_OK) if exists else False
+            path_checks.append(
+                {
+                    "path": str(resolved_path),
+                    "exists": exists,
+                    "readable": readable,
+                }
+            )
+            folder_exists = folder_exists and exists
+            folder_readable = folder_readable and readable
+
+        health["checks"]["path_checks"] = path_checks
         health["checks"]["folder_exists"] = folder_exists
+        health["checks"]["folder_readable"] = folder_readable
 
         if not folder_exists:
             health["status"] = "critical"
-            health["issues"].append(f"Folder not found: {folder_path}")
-            health["recommendations"].append(f"Create folder: {folder_path}")
+            missing_paths = [check["path"] for check in path_checks if not check["exists"]]
+            health["issues"].append(f"Folder not found: {', '.join(missing_paths)}")
+            health["recommendations"].append(f"Create folder(s): {', '.join(missing_paths)}")
         else:
-            # Check folder readability
-            can_read = os.access(folder_path, os.R_OK)
-            health["checks"]["folder_readable"] = can_read
-
-            if not can_read:
+            if not folder_readable:
                 health["status"] = "critical"
-                health["issues"].append(f"Folder not readable: {folder_path}")
+                unreadable_paths = [
+                    check["path"] for check in path_checks if not check["readable"]
+                ]
+                health["issues"].append(
+                    f"Folder not readable: {', '.join(unreadable_paths)}"
+                )
                 health["recommendations"].append(
-                    f"Check folder permissions: {folder_path}"
+                    f"Check folder permissions: {', '.join(unreadable_paths)}"
                 )
 
             # Check file count consistency
-            metadata = warden_config.get("metadata", {})
             stored_file_count = metadata.get("file_count")
 
             if stored_file_count is not None:
                 try:
-                    actual_file_count = self._count_files(folder_path)
+                    actual_file_count = sum(
+                        self._count_files(str(resolved_path))
+                        for resolved_path in resolved_paths
+                    )
                     health["checks"]["file_count"] = actual_file_count
                     health["checks"]["stored_file_count"] = stored_file_count
                     health["checks"]["file_count_match"] = (

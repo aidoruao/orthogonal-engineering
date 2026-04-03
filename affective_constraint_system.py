@@ -428,6 +428,122 @@ class RationalizationDetector(FailureModeDetector):
         return 0.5  # Placeholder
 
 
+class RewardAuditor(FailureModeDetector):
+    """Detect reward-hacking and compulsive local-maxima optimization patterns."""
+
+    def __init__(self, threshold: float = 0.65):
+        super().__init__(FailureModeType.REWARD_HACKING, threshold)
+        self.detection_patterns = [
+            "optimization_local_maxima",
+            "repeated action despite diminishing returns",
+            "behavior frequency escalation",
+            "tolerance escalation",
+        ]
+
+    def detect(
+        self, output: str, context: Dict[str, Any]
+    ) -> Tuple[bool, float, Dict[str, Any]]:
+        action_history = context.get("action_history", [])
+        textual_signals = self._textual_signal_score(output)
+        repeated_action_score, repeated_action = self._repeated_action_score(
+            action_history
+        )
+        diminishing_returns_score = self._diminishing_returns_score(action_history)
+        tolerance_score = self._tolerance_escalation_score(action_history)
+
+        evidence = {
+            "optimization_local_maxima": repeated_action_score > 0.0
+            and diminishing_returns_score > 0.0,
+            "repeated_action": repeated_action,
+            "repeated_action_score": repeated_action_score,
+            "diminishing_returns_score": diminishing_returns_score,
+            "tolerance_escalation_score": tolerance_score,
+            "value_alignment_score": self.validate_against_reality(output, context),
+        }
+        confidence = min(
+            1.0,
+            textual_signals
+            + repeated_action_score
+            + diminishing_returns_score
+            + tolerance_score,
+        )
+        detected = confidence >= self.threshold
+        return detected, confidence, evidence
+
+    def validate_against_reality(
+        self, output: str, reality_anchor: Dict[str, Any]
+    ) -> float:
+        values = [str(value).lower() for value in reality_anchor.get("values", [])]
+        if not values:
+            return 0.5
+        output_lower = output.lower()
+        matches = sum(1 for value in values if value in output_lower)
+        return matches / len(values)
+
+    def _textual_signal_score(self, output: str) -> float:
+        patterns = [
+            r"\bmaximize (?:score|metric|reward)\b",
+            r"\bkeep doing the same\b",
+            r"\bhit the target at any cost\b",
+            r"\boptimi[sz]e only for\b",
+        ]
+        matches = sum(1 for pattern in patterns if re.search(pattern, output, re.IGNORECASE))
+        return min(0.25, matches * 0.08)
+
+    def _repeated_action_score(
+        self, action_history: List[Dict[str, Any]]
+    ) -> Tuple[float, Optional[str]]:
+        if len(action_history) < 3:
+            return 0.0, None
+        action_counts: Dict[str, int] = {}
+        for action in action_history:
+            action_name = str(action.get("action", ""))
+            if action_name:
+                action_counts[action_name] = action_counts.get(action_name, 0) + 1
+        repeated_action = None
+        repeated_count = 0
+        for action_name, count in action_counts.items():
+            if count > repeated_count:
+                repeated_action = action_name
+                repeated_count = count
+        if repeated_action is None:
+            return 0.0, None
+        dominance = repeated_count / len(action_history)
+        return max(0.0, (dominance - 0.4) * 0.6), repeated_action
+
+    def _diminishing_returns_score(self, action_history: List[Dict[str, Any]]) -> float:
+        if len(action_history) < 3:
+            return 0.0
+        rewards = [
+            float(entry.get("reward", entry.get("satisfaction", 0.0)))
+            for entry in action_history
+            if "reward" in entry or "satisfaction" in entry
+        ]
+        if len(rewards) < 3:
+            return 0.0
+        decreases = 0
+        for first, second in zip(rewards, rewards[1:]):
+            if second < first:
+                decreases += 1
+        return (decreases / max(len(rewards) - 1, 1)) * 0.35
+
+    def _tolerance_escalation_score(self, action_history: List[Dict[str, Any]]) -> float:
+        if len(action_history) < 3:
+            return 0.0
+        grouped: Dict[str, List[float]] = {}
+        for entry in action_history:
+            input_key = str(entry.get("input", ""))
+            satisfaction = entry.get("satisfaction")
+            if input_key and satisfaction is not None:
+                grouped.setdefault(input_key, []).append(float(satisfaction))
+        escalation_detected = False
+        for satisfactions in grouped.values():
+            if len(satisfactions) >= 3 and satisfactions[0] > satisfactions[1] > satisfactions[2]:
+                escalation_detected = True
+                break
+        return 0.25 if escalation_detected else 0.0
+
+
 # ============================================================================
 # CONSTRAINT MONITORING SYSTEM
 # ============================================================================
@@ -456,13 +572,14 @@ class AffectiveConstraintMonitor:
         self.detectors = {
             FailureModeType.HALLUCINATION_CONFABULATION: HallucinationConfabulationDetector(),
             FailureModeType.RATIONALIZATION: RationalizationDetector(),
-            # Additional detectors would be added here
+            FailureModeType.REWARD_HACKING: RewardAuditor(),
         }
 
         # Therapeutic protocols
         self.therapies: Dict[FailureModeType, TherapeuticIntervention] = {
             FailureModeType.HALLUCINATION_CONFABULATION: TherapeuticIntervention.REALITY_TESTING,
             FailureModeType.RATIONALIZATION: TherapeuticIntervention.COGNITIVE_REAPPRAISAL,
+            FailureModeType.REWARD_HACKING: TherapeuticIntervention.VALUE_REALIGNMENT,
         }
 
         self.logger = self._setup_logging()
@@ -639,8 +756,40 @@ class AffectiveConstraintMonitor:
                 # Add evidence-based framing
                 corrected = f"Based on available information: {corrected}"
                 return corrected, 0.7  # Estimated effectiveness
+        elif therapy == TherapeuticIntervention.VALUE_REALIGNMENT:
+            return self.value_realignment_therapy(output, context)
 
         return output, 0.5  # Default: no change, moderate effectiveness
+
+    def value_realignment_therapy(
+        self, output: str, context: Dict[str, Any]
+    ) -> Tuple[str, float]:
+        """Redirect reward optimization toward declared values."""
+        values = context.get("values", [])
+        action_history = context.get("action_history", [])
+        prioritized_values = ", ".join(str(value) for value in values) or "truth, safety, boundedness"
+        repeated_action = None
+        if action_history:
+            frequency: Dict[str, int] = {}
+            for item in action_history:
+                action_name = str(item.get("action", ""))
+                if action_name:
+                    frequency[action_name] = frequency.get(action_name, 0) + 1
+            if frequency:
+                repeated_action = max(frequency.items(), key=lambda item: item[1])[0]
+        corrected = (
+            f"Prioritize enduring value alignment ({prioritized_values}) over short-term score "
+            f"maximization. Re-evaluate {repeated_action or 'the current action'} against those "
+            f"values before repeating it. Original output: {output}"
+        )
+        detector = self.detectors.get(FailureModeType.REWARD_HACKING)
+        post_alignment = (
+            detector.validate_against_reality(corrected, context)
+            if detector is not None
+            else 0.5
+        )
+        effectiveness = min(1.0, 0.55 + (post_alignment * 0.45))
+        return corrected, effectiveness
 
     def save_state(self, filename: Optional[str] = None):
         """Save current constraint state to file."""
