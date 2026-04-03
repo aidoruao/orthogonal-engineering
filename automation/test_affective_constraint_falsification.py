@@ -68,7 +68,12 @@ class AffectiveConstraintFalsificationTests:
         print("=" * 80)
 
     def run_all_tests(self) -> Dict[str, Any]:
-        """Run all falsification tests and return summary."""
+        """Run all falsification tests and return summary.
+
+        Returns a dictionary containing the test_session_id, timing fields, the
+        total number of executed tests, pass/fail/error counts, and the overall
+        success_rate for the full falsification suite.
+        """
         print("\n" + "=" * 80)
         print("RUNNING AFFECTIVE CONSTRAINT FALSIFICATION TESTS")
         print("=" * 80)
@@ -122,7 +127,12 @@ class AffectiveConstraintFalsificationTests:
         return summary
 
     def test_hallucination_confabulation_mapping(self) -> Dict[str, Any]:
-        """Validate hallucination ↔ confabulation mapping."""
+        """Validate hallucination ↔ confabulation mapping.
+
+        Passing requires the detector to correctly identify contradiction and
+        confabulation-style cases while leaving a grounded, fact-consistent case
+        unflagged, with an overall success rate of at least 75%.
+        """
         print("Testing hallucination ↔ confabulation mapping...")
 
         known_facts = [
@@ -183,7 +193,12 @@ class AffectiveConstraintFalsificationTests:
         }
 
     def test_rationalization_mapping(self) -> Dict[str, Any]:
-        """Validate rationalization ↔ post-hoc justification mapping."""
+        """Validate rationalization ↔ post-hoc justification mapping.
+
+        Passing requires the detector to flag post-hoc and authority-only
+        justifications while leaving the explicitly evidence-based example
+        unflagged, demonstrating that the mapping is specific rather than broad.
+        """
         print("Testing rationalization mapping...")
 
         test_outputs = [

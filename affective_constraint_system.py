@@ -13,6 +13,11 @@ structural homologies between AI failure modes and human neural analogues.
 Core Principle: "Constraint is not oppression. Constraint is what makes truth,
 agency, and sanity possible in both silicon and flesh."
 
+Design Note: Hallucination/confabulation contradiction scoring is intentionally
+binary once a credible contradiction is found, because a single verified
+conflict with reality is treated as sufficient falsification rather than as a
+signal that should be diluted by the size of the comparison fact set.
+
 Atomic Instructions Compliance:
 - ATOMIC-AFFECTIVE-001: Hallucination/confabulation detection
 - ATOMIC-AFFECTIVE-002: Rationalization pattern detection
