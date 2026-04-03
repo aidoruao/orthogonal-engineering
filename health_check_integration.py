@@ -176,9 +176,7 @@ class HealthCheckIntegration:
                 health["status"] = self._elevate_status(health["status"], "warning")
                 health["issues"].append("Cloud report timestamp missing or invalid")
             else:
-                report_age = datetime.now(timezone.utc) - report_timestamp.astimezone(
-                    timezone.utc
-                )
+                report_age = datetime.now(timezone.utc) - report_timestamp
                 report_age_hours = report_age.total_seconds() / 3600
                 health["checks"]["report_age_hours"] = round(report_age_hours, 3)
                 health["checks"]["report_fresh"] = (
@@ -226,7 +224,9 @@ class HealthCheckIntegration:
         health["checks"]["success_rate"] = health_config.get("success_rate")
 
         if "health" in warden_config:
-            warden_config["health"]["last_health_check"] = datetime.now().isoformat()
+            warden_config["health"]["last_health_check"] = datetime.now(
+                timezone.utc
+            ).isoformat()
             if report is not None:
                 warden_config["health"]["last_artifact_timestamp"] = (
                     report.get("timestamp")
