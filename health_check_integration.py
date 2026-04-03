@@ -11,7 +11,7 @@ import logging
 import os
 import sys
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -20,6 +20,9 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+VALID_WARDEN_STATUSES = ["active", "pending", "error", "disabled"]
+SECONDS_PER_HOUR = 3600
 
 
 class HealthCheckIntegration:
@@ -57,6 +60,183 @@ class HealthCheckIntegration:
             logger.debug("Registry saved successfully")
         except Exception as e:
             logger.error(f"Failed to save AI registry: {e}")
+
+    def _resolve_repo_path(self, path_value: Optional[str]) -> Optional[Path]:
+        """Resolve a path relative to the registry location."""
+        if not path_value:
+            return None
+
+        path = Path(path_value)
+        if path.is_absolute():
+            return path
+
+        return Path(self.registry_path).resolve().parent / path
+
+    def _elevate_status(self, current_status: str, candidate_status: str) -> str:
+        """Return the more severe health status."""
+        priority = {"healthy": 0, "warning": 1, "critical": 2}
+        current_priority = priority.get(current_status, 0)
+        candidate_priority = priority.get(candidate_status, 0)
+        return candidate_status if candidate_priority > current_priority else current_status
+
+    def _parse_iso_timestamp(self, timestamp_value: Optional[str]) -> Optional[datetime]:
+        """Parse ISO timestamps with optional Z suffix."""
+        if not timestamp_value:
+            return None
+
+        try:
+            parsed = datetime.fromisoformat(timestamp_value.replace("Z", "+00:00"))
+        except ValueError:
+            return None
+
+        if parsed.tzinfo is None:
+            return parsed.replace(tzinfo=timezone.utc)
+        return parsed
+
+    def _load_cloud_report(self, report_path: Optional[str]) -> Tuple[Optional[Dict[str, Any]], Optional[Path]]:
+        """Load a cloud warden JSON report if present."""
+        resolved_path = self._resolve_repo_path(report_path)
+        if resolved_path is None or not resolved_path.exists():
+            return None, resolved_path
+
+        try:
+            with open(resolved_path, "r", encoding="utf-8") as f:
+                return json.load(f), resolved_path
+        except Exception as e:
+            logger.warning(f"Failed to load cloud warden report {resolved_path}: {e}")
+            return None, resolved_path
+
+    def _check_cloud_warden(
+        self, warden_name: str, warden_config: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Check health of a cloud warden that reports through workflow artifacts."""
+        metadata = warden_config.get("metadata", {})
+        health_config = warden_config.get("health", {})
+        workflow_path = (
+            warden_config.get("workflow_path")
+            or metadata.get("workflow_path")
+            or f".github/workflows/{warden_name}.yml"
+        )
+        report_path = (
+            health_config.get("artifact_report_path")
+            or metadata.get("artifact_report_path")
+            or f"logs/health_checks/cloud_wardens/{warden_name}_status.json"
+        )
+        max_report_age_hours = health_config.get("max_report_age_hours", 36)
+
+        health = {
+            "warden_name": warden_name,
+            "status": "healthy",
+            "folder_path": warden_config.get("folder_path", "repo-wide"),
+            "model_name": warden_config.get("model_name", "unknown"),
+            "checks": {
+                "runtime": warden_config.get("runtime", "unknown"),
+                "workflow_path": workflow_path,
+                "artifact_report_path": report_path,
+            },
+            "issues": [],
+            "recommendations": [],
+        }
+
+        workflow_file = self._resolve_repo_path(workflow_path)
+        workflow_exists = workflow_file is not None and workflow_file.exists()
+        health["checks"]["workflow_exists"] = workflow_exists
+        if not workflow_exists:
+            health["status"] = "critical"
+            health["issues"].append(f"Workflow not found: {workflow_path}")
+            health["recommendations"].append(
+                f"Create or restore workflow: {workflow_path}"
+            )
+
+        report, resolved_report_path = self._load_cloud_report(report_path)
+        health["checks"]["report_exists"] = report is not None
+        health["checks"]["resolved_report_path"] = (
+            str(resolved_report_path) if resolved_report_path else None
+        )
+
+        if report is None:
+            health["status"] = self._elevate_status(health["status"], "warning")
+            health["issues"].append(f"Cloud report not found: {report_path}")
+            health["recommendations"].append(
+                "Run the cloud warden workflow or download its latest artifact locally"
+            )
+        else:
+            report_status = report.get("status", "healthy")
+            findings = report.get("findings", [])
+            report_timestamp = self._parse_iso_timestamp(
+                report.get("timestamp")
+                or report.get("completed_at")
+                or report.get("scan", {}).get("timestamp")
+            )
+
+            health["checks"]["report_status"] = report_status
+            health["checks"]["finding_count"] = len(findings)
+            health["checks"]["last_report_timestamp"] = (
+                report_timestamp.isoformat() if report_timestamp else None
+            )
+
+            if report_timestamp is None:
+                health["status"] = self._elevate_status(health["status"], "warning")
+                health["issues"].append("Cloud report timestamp missing or invalid")
+            else:
+                report_age = datetime.now(timezone.utc) - report_timestamp
+                report_age_in_hours = report_age.total_seconds() / SECONDS_PER_HOUR
+                health["checks"]["report_age_hours"] = round(report_age_in_hours, 3)
+                health["checks"]["report_fresh"] = (
+                    report_age <= timedelta(hours=max_report_age_hours)
+                )
+
+                if not health["checks"]["report_fresh"]:
+                    health["status"] = self._elevate_status(health["status"], "warning")
+                    health["issues"].append(
+                        f"Cloud report is stale ({report_age_in_hours:.1f}h old)"
+                    )
+                    health["recommendations"].append(
+                        "Re-run the cloud warden workflow to refresh its status artifact"
+                    )
+
+            if report_status in {"warning", "degraded"}:
+                health["status"] = self._elevate_status(health["status"], "warning")
+            elif report_status in {"critical", "error", "failed"}:
+                health["status"] = self._elevate_status(health["status"], "critical")
+
+            for issue in report.get("issues", []):
+                if issue not in health["issues"]:
+                    health["issues"].append(issue)
+
+            for recommendation in report.get("recommendations", []):
+                if recommendation not in health["recommendations"]:
+                    health["recommendations"].append(recommendation)
+
+        warden_status = warden_config.get("status", "unknown")
+        health["checks"]["warden_status"] = warden_status
+        if warden_status not in VALID_WARDEN_STATUSES:
+            health["status"] = self._elevate_status(health["status"], "warning")
+            health["issues"].append(
+                f"Warden status '{warden_status}' is not a valid status"
+            )
+        elif warden_status != "active":
+            health["status"] = self._elevate_status(health["status"], "warning")
+            health["issues"].append(
+                f"Warden status is '{warden_status}', should be 'active' for optimal operation"
+            )
+
+        health["checks"]["last_query"] = health_config.get("last_query")
+        health["checks"]["response_time_ms"] = health_config.get("response_time_ms")
+        health["checks"]["success_rate"] = health_config.get("success_rate")
+
+        if "health" in warden_config:
+            warden_config["health"]["last_health_check"] = datetime.now(
+                timezone.utc
+            ).isoformat()
+            if report is not None:
+                warden_config["health"]["last_artifact_timestamp"] = (
+                    report.get("timestamp")
+                    or report.get("completed_at")
+                    or report.get("scan", {}).get("timestamp")
+                )
+
+        return health
 
     def run_health_checks(self) -> Dict[str, Any]:
         """
@@ -183,6 +363,9 @@ class HealthCheckIntegration:
         self, warden_name: str, warden_config: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Check health of a specific warden."""
+        if warden_config.get("runtime") == "github_actions":
+            return self._check_cloud_warden(warden_name, warden_config)
+
         health = {
             "warden_name": warden_name,
             "status": "healthy",
@@ -248,10 +431,7 @@ class HealthCheckIntegration:
         warden_status = warden_config.get("status", "unknown")
         health["checks"]["warden_status"] = warden_status
 
-        # Valid statuses: active, pending, error, disabled
-        valid_statuses = ["active", "pending", "error", "disabled"]
-
-        if warden_status not in valid_statuses:
+        if warden_status not in VALID_WARDEN_STATUSES:
             if health["status"] == "healthy":
                 health["status"] = "warning"
             health["issues"].append(
@@ -435,15 +615,12 @@ class HealthCheckIntegration:
                 current_status = warden_config.get("status")
                 new_status = warden_health.get("status")
 
-                # Only update if new_status is a valid warden status
-                valid_statuses = ["active", "pending", "error", "disabled"]
-
-                if new_status in valid_statuses and current_status != new_status:
+                if new_status in VALID_WARDEN_STATUSES and current_status != new_status:
                     warden_config["status"] = new_status
                     logger.info(
                         f"Updated {warden_name} status: {current_status} -> {new_status}"
                     )
-                elif new_status not in valid_statuses:
+                elif new_status not in VALID_WARDEN_STATUSES:
                     # Don't update to invalid statuses like "healthy", "warning", "critical"
                     logger.warning(
                         f"Not updating {warden_name} to invalid status: {new_status}"

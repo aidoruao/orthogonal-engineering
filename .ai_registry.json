@@ -2570,6 +2570,39 @@
         "initialization_time_seconds": 0.318963,
         "overall_status": "healthy"
       }
+    },
+    "gemini_warden": {
+      "folder_path": "**",
+      "model_name": "gemini-2.5-flash",
+      "api_key": "github_secret:GEMINI_API_KEY",
+      "status": "active",
+      "runtime": "github_actions",
+      "schedule": "0 12 * * *",
+      "workflow_path": ".github/workflows/shiro-daily-scan.yml",
+      "metadata": {
+        "file_count": null,
+        "last_hash_manifest": null,
+        "semantic_embedding": null,
+        "capabilities": [
+          "s28_pattern_detection",
+          "reward_hacking_detection",
+          "safety_override_detection",
+          "cross_warden_analysis",
+          "constraint_violation_detection"
+        ],
+        "scope": "repo_wide",
+        "warden_type": "cloud_external",
+        "artifact_report_path": "logs/health_checks/cloud_wardens/gemini_warden_status.json"
+      },
+      "health": {
+        "last_query": null,
+        "response_time_ms": null,
+        "success_rate": null,
+        "last_health_check": null,
+        "last_artifact_timestamp": null,
+        "max_report_age_hours": 36,
+        "overall_status": "pending"
+      }
     }
   },
   "dynamic_wardens": {
