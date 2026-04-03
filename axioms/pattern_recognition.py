@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import zlib
 from collections import Counter, deque
@@ -56,6 +57,10 @@ class Grid:
 
     def copy(self) -> "Grid":
         return Grid([row[:] for row in self.cells])
+
+    def hash(self) -> str:
+        payload = json.dumps(self.cells, separators=(",", ":"), sort_keys=False)
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
     def __eq__(self, other):
         return isinstance(other, Grid) and self.cells == other.cells
@@ -346,6 +351,19 @@ def _tile_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
     repeat_x = out.cols // inp.cols
     candidate = CompositionalRule([(PrimitiveOperation.TILE, {"repeat_x": repeat_x, "repeat_y": repeat_y})])
     return {"repeat_x": repeat_x, "repeat_y": repeat_y} if apply_rule(candidate, inp) == out else None
+
+
+def _scale_params(inp: Grid, out: Grid) -> Optional[Dict[str, int]]:
+    if inp.rows == 0 or inp.cols == 0:
+        return None
+    if out.rows % inp.rows != 0 or out.cols % inp.cols != 0:
+        return None
+    factor_y = out.rows // inp.rows
+    factor_x = out.cols // inp.cols
+    if factor_x != factor_y or factor_x <= 0:
+        return None
+    candidate = CompositionalRule([(PrimitiveOperation.SCALE, {"factor": factor_x})])
+    return {"factor": factor_x} if apply_rule(candidate, inp) == out else None
 
 
 def _infer_per_object_rule(inp: Grid, out: Grid, max_depth: int = 2) -> Optional[CompositionalRule]:
@@ -655,6 +673,11 @@ def _candidate_rules_for_pair(inp: Grid, out: Grid) -> List[CompositionalRule]:
     tile_params = _tile_params(inp, out)
     if tile_params is not None:
         rule = CompositionalRule([(PrimitiveOperation.TILE, tile_params)])
+        if apply_rule(rule, inp) == out:
+            candidates.append(rule)
+    scale_params = _scale_params(inp, out)
+    if scale_params is not None:
+        rule = CompositionalRule([(PrimitiveOperation.SCALE, scale_params)])
         if apply_rule(rule, inp) == out:
             candidates.append(rule)
     crop_params = _crop_params(inp, out)

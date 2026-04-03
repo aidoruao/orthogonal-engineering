@@ -31,6 +31,9 @@ NEW_FILES = [
     "axioms/epistemic_logic.py",
     "axioms/computability.py",
     "axioms/pattern_recognition.py",
+    "axioms/arc_types.py",
+    "axioms/arc_dsl.py",
+    "axioms/arc_solver.py",
     "benchmarks/ai_invariant_tests.py",
     "benchmarks/KIMI_PERFORMANCE_REGISTRY.md",
     "benchmarks/MODEL_PERFORMANCE_REGISTRY.md",
@@ -46,7 +49,14 @@ NEW_FILES = [
     "benchmarks/model_profiles/cohere_command_r.json",
     "benchmarks/model_profiles/devin.json",
     "documentation/BENCHMARK_METHODOLOGY.md",
+    "forgiveness_system/NONCOMPLIANCE_BRIDGE.md",
     "scripts/benchmark_pipeline.py",
+    "scripts/forensic_audit_pipeline.py",
+    "analysis/taxonomy/noncompliance_taxonomy.yaml",
+    "ontology/ontology.json",
+    "ontology/search_lens.json",
+    "ontology/falsification_tests.json",
+    "ontology/case_studies.json",
     "tests/test_peano_extended.py",
     "tests/test_number_theory.py",
     "tests/test_combinatorics.py",
@@ -59,6 +69,8 @@ NEW_FILES = [
     "tests/test_cross_model.py",
     "tests/test_epistemic_advanced.py",
     "tests/test_inclusion_exclusion_fixed.py",
+    "tests/test_arc_solver.py",
+    "tests/test_forgiveness_integration.py",
 ]
 BUG_FIXES = [
     "KK_PRINCIPLE_TAUTOLOGY",
@@ -93,7 +105,7 @@ def run_pipeline() -> Dict[str, object]:
         if path.exists():
             manifest_entries.append({"path": relative, "sha256": _sha256(path)})
     result = {
-        "pipeline": "IA-CYPHER-0005",
+        "pipeline": "IA-CYPHER-0006",
         "pr": 84,
         "ai_invariants": suite,
         "proof_chain_integrity": 1.0 if suite["all_valid"] else 0.0,
@@ -125,6 +137,12 @@ def run_pipeline() -> Dict[str, object]:
             "mistral_large.json",
             "cohere_command_r.json",
             "devin.json",
+        ],
+        "workstreams": [
+            "multi-model benchmark formalization",
+            "sycophancy and deflection audit formalization",
+            "forgiveness-system bridge",
+            "bounded symbolic arc solver",
         ],
         "files": manifest_entries,
     }

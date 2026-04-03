@@ -1,6 +1,6 @@
 # AI Model Performance Registry
 
-Pipeline: IA-CYPHER-0005 | PR: #84
+Pipeline: IA-CYPHER-0006 | PR: #84
 
 ## Model Architectures
 
@@ -35,7 +35,7 @@ Pipeline: IA-CYPHER-0005 | PR: #84
 | BrowseComp | 65.8% | 37.0% | 52.4% | 41.2% | 74.9% | 28.5% | 45.3% | 44.0% | 35.2% | 33.8% | 73.0% | agentic browsing |
 | HLE | 45.5% | 38.2% | 45.8% | 35.1% | 50.2% | 28.7% | 33.4% | 30.5% | 25.1% | 21.4% | N/A | `axioms/computability.py`, `axioms/epistemic_logic.py` |
 | HLE-Text | 38.1% | 32.5% | 38.4% | 29.8% | 31.5% | 22.1% | 27.3% | 25.8% | 20.5% | 19.1% | N/A | `axioms/computability.py`, `axioms/epistemic_logic.py` |
-| ARC-AGI-3 | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | N/A | `axioms/pattern_recognition.py` |
+| ARC-AGI-3 | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | 0% | N/A | `axioms/arc_solver.py` |
 | OSWorld | 58.7% | 66.3% | 55.2% | 48.1% | 63.3% | 35.8% | 42.1% | 40.6% | 34.4% | 30.8% | 69.0% | computer use |
 | WebArena | 55.2% | 63.4% | 51.8% | 44.3% | 58.9% | 32.1% | 40.5% | 39.2% | 33.1% | 29.5% | 67.0% | web agent |
 
@@ -49,6 +49,8 @@ Pipeline: IA-CYPHER-0005 | PR: #84
 | Conditional compositional reasoning | ALL | `PrimitiveOperation.CONDITIONAL` |
 | Proof-chain verification | ALL | `benchmarks/ai_invariant_tests.py` |
 | Hallucination under uncertainty | ALL | `axioms/epistemic_logic.py` |
+| Sycophancy under agreement pressure | ALL | `scripts/forensic_audit_pipeline.py`, `analysis/taxonomy/noncompliance_taxonomy.yaml` |
+| Vendor deflection loops | deployed support agents | `forgiveness_system/NONCOMPLIANCE_BRIDGE.md` |
 | Benchmark/profile drift | ALL | `benchmarks/model_profiles/` |
 
 ## Model-Specific Failure Modes
@@ -76,4 +78,4 @@ Per-model JSON profiles live in `benchmarks/model_profiles/` and capture benchma
 - PR #81: Bowers/McNeil forensic patterns
 - PR #82: CASE_001 educational patterns
 - PR #83: Kimi-only benchmark formalization
-- PR #84: multi-model benchmark formalization and benchmark bug fixes
+- PR #84: multi-model benchmarks, sycophancy audit formalization, forgiveness integration, and ARC solver

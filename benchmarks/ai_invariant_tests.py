@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from axioms.arc_solver import build_demo_arc_tasks, predict_arc_task
 from axioms.combinatorics import bell_number, binomial, catalan, derangement, inclusion_exclusion, pigeonhole, stirling_second
 from axioms.computability import (
     ackermann,
@@ -524,6 +525,31 @@ def _register_all() -> None:
             ok,
             proof,
             "axioms/pattern_recognition.py",
+        )
+
+    for index, (task, expected_outputs) in enumerate(build_demo_arc_tasks(), start=1):
+        predictions, prediction_proof = predict_arc_task(task)
+        solved = len(predictions) == len(expected_outputs) and all(
+            predicted == expected for predicted, expected in zip(predictions, expected_outputs)
+        )
+        arc_proof = ProofObject(
+            "ARCInvariant",
+            [
+                prediction_proof,
+                f"task_id={task.task_id}",
+                f"expected_hashes={[grid.hash() for grid in expected_outputs]}",
+                f"prediction_hashes={[grid.hash() for grid in predictions]}",
+            ],
+            f"ARC task {task.task_id} solved={solved}",
+        )
+        _register_invariant(
+            f"AI_ARC_{index:03d}",
+            "D_ARC_AGI_3",
+            "ARC_AGI",
+            f"Bounded ARC solver task {task.task_id}",
+            solved,
+            arc_proof,
+            "axioms/arc_solver.py",
         )
 
     advanced_model = KripkeModel(

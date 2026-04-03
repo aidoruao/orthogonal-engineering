@@ -17,7 +17,7 @@ def test_cross_model_suite():
     assert all(entry["model_targeting"] for entry in cross_entries)
 
     pipeline = run_pipeline()
-    assert pipeline["pipeline"] == "IA-CYPHER-0005"
+    assert pipeline["pipeline"] == "IA-CYPHER-0006"
     assert pipeline["pr"] == 84
     assert len(pipeline["bug_fixes"]) == 7
     for entry in cross_entries:
