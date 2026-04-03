@@ -1,5 +1,5 @@
 # FEDERAL STATUTE ENUMERATION — Institutional Layer Addendum
-_Generated: 2026-04-02T00:56:29.243094Z_
+_Generated: 2026-04-03T02:42:48.286729Z_
 _Pipeline: IA-CYPHER-0002_
 
 | Authority | Current Corpus Status | What Would Trigger Applicability | Current Gap |

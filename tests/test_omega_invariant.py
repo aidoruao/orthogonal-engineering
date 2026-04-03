@@ -32,8 +32,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 try:
     import yaml
 except ImportError:
-    print("ERROR: PyYAML not installed. Run: pip install pyyaml", file=sys.stderr)
-    sys.exit(1)
+    yaml = None
 
 
 def test_omega_seed_structure():

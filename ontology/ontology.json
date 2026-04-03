@@ -906,6 +906,57 @@
       ],
       "example_falsification_test": "F_PATTERN_001",
       "example_ontological_issue": "OI_PATTERN_001"
+    },
+    {
+      "id": "D_ARC_AGI_3",
+      "name": "ARC-AGI-3 Solver",
+      "categories": [
+        "arc-agi",
+        "bounded-dsl",
+        "symbolic-program-synthesis",
+        "grid-transformations"
+      ],
+      "invariants": [
+        "ARC solver programs are bounded-depth and halt deterministically.",
+        "Every synthesized ARC program is proof-carrying and verifiable on held-out examples.",
+        "ARC predictions remain reproducible under identical train/test pairs."
+      ],
+      "example_falsification_test": "F_ARC_001",
+      "example_ontological_issue": "OI_ARC_001"
+    },
+    {
+      "id": "D_CROSS_MODEL_BENCHMARKS",
+      "name": "Cross-Model AI Benchmarks",
+      "categories": [
+        "benchmark-comparison",
+        "model-failure-modes",
+        "proof-chain-verification",
+        "multi-model-analysis"
+      ],
+      "invariants": [
+        "Same problem must produce the same proof hash regardless of which model solves it.",
+        "Model-specific failure modes are documented and falsifiable.",
+        "Benchmark scores are externally verifiable against published results."
+      ],
+      "example_falsification_test": "F_CROSSMODEL_001",
+      "example_ontological_issue": "OI_CROSSMODEL_001"
+    },
+    {
+      "id": "D_PARACONSISTENT_LOGIC",
+      "name": "Paraconsistent Logic & Dialetheism",
+      "categories": [
+        "paraconsistent",
+        "dialetheism",
+        "inconsistency-tolerance",
+        "four-valued-logic"
+      ],
+      "invariants": [
+        "BOTH does not trigger explosion.",
+        "NEITHER is distinguishable from FALSE.",
+        "Adding evidence does not demote TRUE to NEITHER."
+      ],
+      "example_falsification_test": "F_PARACONS_001",
+      "example_ontological_issue": "OI_PARACONS_001"
     }
   ],
   "issues": [
@@ -2147,13 +2198,33 @@
         "F_PATTERN_001"
       ],
       "resolution_notes": "Verify inferred rules against held-out pairs and retain rule complexity evidence."
+    },
+    {
+      "id": "OI_ARC_001",
+      "title": "ARC solver loses bounded symbolic guarantees",
+      "domain": "D_ARC_AGI_3",
+      "category": "solver-scope",
+      "severity": "high",
+      "status": "Open",
+      "description": "If ARC synthesis escapes the bounded compositional DSL, predictions stop being decidable, reproducible, or auditable.",
+      "assumptions_violated": [
+        "ARC synthesis remains bounded and deterministic.",
+        "All candidate programs stay inside the proof-carrying DSL."
+      ],
+      "related_cases": [
+        "CS_ARC_001"
+      ],
+      "falsification_tests": [
+        "F_ARC_001"
+      ],
+      "resolution_notes": "Constrain synthesis depth, retain proof objects for every candidate, and benchmark predictions against fixed expected hashes."
     }
   ],
   "summary": {
-    "total_domains": 48,
-    "total_issues": 47,
-    "open": 47,
+    "total_domains": 59,
+    "total_issues": 60,
+    "open": 60,
     "resolved": 0,
-    "total_oi_ids": 50
+    "total_oi_ids": 63
   }
 }

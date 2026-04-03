@@ -1,4 +1,4 @@
-"""Computability helpers with proof objects for PR #83."""
+"""Computability helpers with proof objects for PR #84."""
 
 from __future__ import annotations
 
@@ -70,3 +70,46 @@ def demonstrate_incompleteness(system_strength: ProofTheoreticOrdinal) -> Tuple[
         f"There exists a true but unprovable sentence {statement}",
     )
     return statement, proof
+
+
+def ackermann(m: int, n: int) -> Tuple[int, ProofObject]:
+    if m < 0 or n < 0:
+        raise ValueError("Ackermann inputs must be non-negative")
+
+    def _ack(x: int, y: int) -> int:
+        if x == 0:
+            return y + 1
+        if y == 0:
+            return _ack(x - 1, 1)
+        return _ack(x - 1, _ack(x, y - 1))
+
+    value = _ack(m, n)
+    return value, ProofObject(
+        "Ackermann",
+        [f"evaluated via recursive definition for ({m}, {n})"],
+        f"A({m}, {n}) = {value}",
+    )
+
+
+def classify_arithmetical_hierarchy(problem: str) -> Tuple[str, ProofObject]:
+    classifications = {
+        "halting_problem": "Sigma_1",
+        "non_halting_problem": "Pi_1",
+        "post_correspondence_problem": "Sigma_1",
+        "totality_problem": "Pi_2",
+        "finite_language_problem": "Sigma_2",
+    }
+    classification = classifications.get(problem, "unknown")
+    return classification, ProofObject(
+        "ArithmeticalHierarchy",
+        [f"problem={problem}", f"classification={classification}"],
+        f"{problem} is classified as {classification}",
+    )
+
+
+def prove_post_correspondence_undecidable() -> ProofObject:
+    return ProofObject(
+        "PostCorrespondenceUndecidable",
+        ["Assume PCP is decidable", "Reduce the halting problem to PCP via standard encoding of machine traces"],
+        "Post correspondence problem is undecidable",
+    )

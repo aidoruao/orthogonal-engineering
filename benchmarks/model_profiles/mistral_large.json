@@ -1,0 +1,53 @@
+{
+  "architecture": {
+    "context_window": 128000,
+    "parameters": "undisclosed",
+    "type": "dense_transformer"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.724,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.352,
+    "GPQA_Diamond": 0.453,
+    "GSM8K": 0.882,
+    "HLE": 0.251,
+    "HLE_Text": 0.205,
+    "HMMT_2025": 0.735,
+    "HumanEval": 0.701,
+    "LiveCodeBench_v6": 0.712,
+    "MATH": 0.559,
+    "MMLU": 0.842,
+    "MMLU_Pro": 0.641,
+    "OSWorld": 0.344,
+    "SWE_Bench": 0.623,
+    "WebArena": 0.331
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "benchmarks/ai_invariant_tests.py",
+      "benchmark": "LiveCodeBench_v6",
+      "score": 0.712
+    },
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    }
+  ],
+  "model_id": "MISTRAL_LARGE_3",
+  "model_name": "Mistral Large 3",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "note": "Primary risk surface in this repo is long proof-chain brittleness rather than audit-pattern noncompliance.",
+    "observed_violations": []
+  },
+  "provider": "Mistral",
+  "repo_interaction_history": {
+    "audit_files": [],
+    "noncompliance_taxonomy_refs": [],
+    "prs_involved": [
+      84
+    ]
+  }
+}

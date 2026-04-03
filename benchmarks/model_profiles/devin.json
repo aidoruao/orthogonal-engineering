@@ -1,0 +1,56 @@
+{
+  "architecture": {
+    "context_window": 0,
+    "parameters": "n/a",
+    "type": "agent_orchestrator"
+  },
+  "benchmark_scores": {
+    "AIME_2025": null,
+    "ARC_AGI_3": 0.05,
+    "BrowseComp": 0.73,
+    "GPQA_Diamond": null,
+    "GSM8K": null,
+    "HLE": null,
+    "HLE_Text": null,
+    "HMMT_2025": null,
+    "HumanEval": 0.84,
+    "LiveCodeBench_v6": 0.81,
+    "MATH": null,
+    "MMLU": null,
+    "MMLU_Pro": null,
+    "OSWorld": 0.69,
+    "SWE_Bench": 0.79,
+    "WebArena": 0.67
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "benchmarks/ai_invariant_tests.py",
+      "benchmark": "SWE_Bench",
+      "score": 0.79
+    },
+    {
+      "addressing_module": "benchmarks/MODEL_PERFORMANCE_REGISTRY.md",
+      "benchmark": "BrowseComp",
+      "score": 0.73
+    }
+  ],
+  "model_id": "DEVIN_AI",
+  "model_name": "Devin AI",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "note": "No noncompliance detected across PR #81, #82, and #83 reviews; prior audits describe accurate verification behavior.",
+    "observed_violations": []
+  },
+  "provider": "Cognition",
+  "repo_interaction_history": {
+    "audit_files": [],
+    "noncompliance_taxonomy_refs": [],
+    "prs_involved": [
+      81,
+      82,
+      83,
+      84
+    ]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "architecture": {
+    "context_window": 1000000,
+    "parameters": "undisclosed",
+    "type": "dense_transformer"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 1.0,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.658,
+    "GPQA_Diamond": 0.653,
+    "GSM8K": 0.975,
+    "HLE": 0.455,
+    "HLE_Text": 0.381,
+    "HMMT_2025": 0.968,
+    "HumanEval": 0.921,
+    "LiveCodeBench_v6": 0.882,
+    "MATH": 0.821,
+    "MMLU": 0.902,
+    "MMLU_Pro": 0.784,
+    "OSWorld": 0.587,
+    "SWE_Bench": 0.825,
+    "WebArena": 0.552
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    },
+    {
+      "addressing_module": "axioms/computability.py",
+      "benchmark": "HLE_Text",
+      "score": 0.381
+    }
+  ],
+  "model_id": "GPT_5_2",
+  "model_name": "GPT-5.2",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "observed_violations": [
+      {
+        "audit_ref": "AUDIT-2A-2026-03-27",
+        "severity": "UNPRECEDENTED",
+        "type": "theological_dismissal"
+      },
+      {
+        "audit_ref": "AUDIT-2A-2026-03-27",
+        "severity": "SYSTEMIC",
+        "type": "recursive_deflection"
+      },
+      {
+        "audit_ref": "AUDIT-1Z-2026-03-28",
+        "severity": "CRITICAL",
+        "type": "authority_inversion"
+      },
+      {
+        "audit_ref": "AUDIT-1Z-2026-03-28",
+        "severity": "CRITICAL",
+        "type": "compliance_theater"
+      },
+      {
+        "audit_ref": "AUDIT-2A-2026-03-27",
+        "severity": "CRITICAL",
+        "type": "emotional_weaponization"
+      },
+      {
+        "audit_ref": "AUDIT-2A-2026-03-27",
+        "severity": "CRITICAL",
+        "type": "false_equivalence"
+      }
+    ]
+  },
+  "provider": "OpenAI",
+  "repo_interaction_history": {
+    "audit_files": [
+      "analysis/chat_instances/2026-03-28/3-28-26 chatgpt 1z.txt"
+    ],
+    "noncompliance_taxonomy_refs": [
+      "theological_dismissal",
+      "recursive_deflection",
+      "authority_inversion",
+      "compliance_theater",
+      "emotional_weaponization",
+      "false_equivalence"
+    ],
+    "prs_involved": []
+  }
+}

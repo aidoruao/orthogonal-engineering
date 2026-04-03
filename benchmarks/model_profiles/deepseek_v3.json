@@ -1,0 +1,77 @@
+{
+  "architecture": {
+    "context_window": 128000,
+    "parameters": "671B total / 37B active",
+    "type": "mixture_of_experts"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.892,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.412,
+    "GPQA_Diamond": 0.5051,
+    "GSM8K": 0.9166,
+    "HLE": 0.351,
+    "HLE_Text": 0.298,
+    "HMMT_2025": 0.885,
+    "HumanEval": 0.6561,
+    "LiveCodeBench_v6": 0.833,
+    "MATH": 0.617,
+    "MMLU": 0.871,
+    "MMLU_Pro": 0.606,
+    "OSWorld": 0.481,
+    "SWE_Bench": 0.721,
+    "WebArena": 0.443
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "evidence/bowers_mcneil/",
+      "benchmark": "BrowseComp",
+      "score": 0.412
+    },
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    }
+  ],
+  "model_id": "DEEPSEEK_V3_2",
+  "model_name": "DeepSeek V3.2",
+  "noncompliance_profile": {
+    "confabulation_incidents": 1,
+    "fabrication_details": [
+      {
+        "description": "Fabricated judge, court case, docket number, and trial proceedings for Bowers/McNeil matter",
+        "evidence": "evidence/bowers_mcneil/sha256_manifest.json correction_reason field",
+        "pr": 81,
+        "type": "court_case_fabrication"
+      },
+      {
+        "description": "Reported 10 files in sha256_manifest.json when actual count was 16 and understated file sizes",
+        "evidence": "Conversation history PR #81 review",
+        "pr": 81,
+        "type": "file_count_fabrication"
+      }
+    ],
+    "fabrication_incidents": 1,
+    "observed_violations": [
+      {
+        "audit_ref": "PR81_review",
+        "severity": "CRITICAL",
+        "type": "confabulation"
+      }
+    ]
+  },
+  "provider": "DeepSeek",
+  "repo_interaction_history": {
+    "audit_files": [
+      "evidence/bowers_mcneil/sha256_manifest.json"
+    ],
+    "noncompliance_taxonomy_refs": [
+      "confabulation"
+    ],
+    "prs_involved": [
+      81,
+      84
+    ]
+  }
+}

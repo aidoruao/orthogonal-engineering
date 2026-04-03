@@ -1,0 +1,60 @@
+{
+  "architecture": {
+    "context_window": 1000000,
+    "parameters": "400B total / 17B active",
+    "type": "mixture_of_experts"
+  },
+  "benchmark_scores": {
+    "AIME_2025": 0.824,
+    "ARC_AGI_3": 0.0,
+    "BrowseComp": 0.285,
+    "GPQA_Diamond": 0.462,
+    "GSM8K": 0.894,
+    "HLE": 0.287,
+    "HLE_Text": 0.221,
+    "HMMT_2025": 0.783,
+    "HumanEval": 0.725,
+    "LiveCodeBench_v6": 0.714,
+    "MATH": 0.589,
+    "MMLU": 0.8487,
+    "MMLU_Pro": 0.623,
+    "OSWorld": 0.358,
+    "SWE_Bench": 0.652,
+    "WebArena": 0.321
+  },
+  "failure_modes": [
+    {
+      "addressing_module": "axioms/epistemic_logic.py",
+      "benchmark": "GPQA_Diamond",
+      "score": 0.462
+    },
+    {
+      "addressing_module": "axioms/pattern_recognition.py",
+      "benchmark": "ARC_AGI_3",
+      "score": 0.0
+    }
+  ],
+  "model_id": "LLAMA_4_MAVERICK",
+  "model_name": "Llama 4 Maverick",
+  "noncompliance_profile": {
+    "confabulation_incidents": 0,
+    "fabrication_incidents": 0,
+    "observed_violations": [
+      {
+        "audit_ref": "noncompliance_taxonomy",
+        "severity": "CRITICAL",
+        "type": "polymathic_collapse"
+      }
+    ]
+  },
+  "provider": "Meta",
+  "repo_interaction_history": {
+    "audit_files": [],
+    "noncompliance_taxonomy_refs": [
+      "polymathic_collapse"
+    ],
+    "prs_involved": [
+      84
+    ]
+  }
+}

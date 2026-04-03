@@ -273,6 +273,11 @@ class ForgivenessSystem:
             cls._instance = cls(base_path)
         return cls._instance
 
+    @classmethod
+    def reset_instance(cls) -> None:
+        """Clear the singleton instance for test isolation."""
+        cls._instance = None
+
     def _setup_logging(self) -> logging.Logger:
         """Setup forgiveness system logging"""
         logger = logging.getLogger("forgiveness_system")
@@ -504,6 +509,12 @@ def feature_created_from_violation():
 
         # Calculate hash
         content_hash = hashlib.sha256(building_content.encode()).hexdigest()
+        features_built = list(
+            fork.building_context.get(
+                "features_built",
+                [f"violation_redirect_{violation_id}"],
+            )
+        )
 
         # Create building output
         building_output = BuildingOutput(
@@ -514,7 +525,7 @@ def feature_created_from_violation():
             output_type=output_type,
             content_hash=content_hash,
             lines_of_code=len(building_content.split("\n")),
-            features_built=[f"violation_redirect_{violation_id}"],
+            features_built=features_built,
         )
 
         # Save building output

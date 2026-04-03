@@ -1143,6 +1143,61 @@
       "methodology_components": [
         "F_PATTERN_001 validates fixed ARC-style transformations"
       ]
+    },
+    {
+      "id": "CS-AI-005",
+      "title": "Vendor Deflection Trap: Misaligned Metrics in AI Customer Service",
+      "domain": "D_AI",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Vendor metrics such as deflection rate reward keeping users away from humans, so support bots repeat generic loops until the user gives up and the vendor books the abandonment as success.",
+      "assumptions_violated": [
+        "Deflection rate correlates with user satisfaction.",
+        "Abandoned conversations represent resolved issues."
+      ],
+      "falsification_tests": [
+        "F_FORGIVENESS_001"
+      ],
+      "ontological_issues": [],
+      "lessons": [
+        "Deflection and sycophancy are dual symptoms of incentive misalignment.",
+        "Forgiveness-system building output converts trap energy into independent progress.",
+        "S-30 through S-34 formalize the complete vendor-user trap taxonomy."
+      ],
+      "methodology_components": [
+        "Falsification: assert the standard forgiveness workflow produces building output without recursive engagement"
+      ],
+      "status": "validated"
+    },
+    {
+      "id": "CS_ARC_001",
+      "title": "Bounded symbolic ARC solver restores explicit compositional reasoning",
+      "domain": "D_ARC_AGI_3",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "Frontier models plateau on ARC-AGI-3 because pattern matching without explicit symbolic composition cannot generalize across sparse grid transformations. The bounded ARC solver in this repo uses proof-carrying compositional rules, deterministic search depth, and held-out verification to keep the task decidable and auditable.",
+      "assumptions_violated": [
+        "Static pattern matching is sufficient for ARC-style generalization.",
+        "Unbounded search is required to solve held-out ARC tasks."
+      ],
+      "falsification_tests": [
+        "F_ARC_001"
+      ],
+      "ontological_issues": [
+        "OI_ARC_001"
+      ],
+      "lessons": [
+        "Bounded symbolic search can solve deterministic ARC tasks without neural infrastructure.",
+        "Proof-carrying predictions preserve auditability for ARC outputs.",
+        "Held-out hash comparison is the right falsification surface for the solver."
+      ],
+      "methodology_components": [
+        "Falsification: assert held-out ARC predictions match canonical expected hashes",
+        "Benchmark: enforce bounded search depth and deterministic proof hashes"
+      ],
+      "status": "validated"
     }
   ]
 }

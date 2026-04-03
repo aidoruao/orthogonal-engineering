@@ -1,4 +1,4 @@
-"""PR #83 benchmark formalization pipeline."""
+"""PR #84 benchmark formalization pipeline."""
 
 from __future__ import annotations
 
@@ -31,10 +31,32 @@ NEW_FILES = [
     "axioms/epistemic_logic.py",
     "axioms/computability.py",
     "axioms/pattern_recognition.py",
+    "axioms/arc_types.py",
+    "axioms/arc_dsl.py",
+    "axioms/arc_solver.py",
     "benchmarks/ai_invariant_tests.py",
     "benchmarks/KIMI_PERFORMANCE_REGISTRY.md",
+    "benchmarks/MODEL_PERFORMANCE_REGISTRY.md",
+    "benchmarks/model_profiles/gpt5.json",
+    "benchmarks/model_profiles/claude_opus_4_5.json",
+    "benchmarks/model_profiles/gemini_3_pro.json",
+    "benchmarks/model_profiles/deepseek_v3.json",
+    "benchmarks/model_profiles/kimi_k2_5.json",
+    "benchmarks/model_profiles/llama_4.json",
+    "benchmarks/model_profiles/grok_3.json",
+    "benchmarks/model_profiles/qwen_3.json",
+    "benchmarks/model_profiles/mistral_large.json",
+    "benchmarks/model_profiles/cohere_command_r.json",
+    "benchmarks/model_profiles/devin.json",
     "documentation/BENCHMARK_METHODOLOGY.md",
+    "forgiveness_system/NONCOMPLIANCE_BRIDGE.md",
     "scripts/benchmark_pipeline.py",
+    "scripts/forensic_audit_pipeline.py",
+    "analysis/taxonomy/noncompliance_taxonomy.yaml",
+    "ontology/ontology.json",
+    "ontology/search_lens.json",
+    "ontology/falsification_tests.json",
+    "ontology/case_studies.json",
     "tests/test_peano_extended.py",
     "tests/test_number_theory.py",
     "tests/test_combinatorics.py",
@@ -43,6 +65,21 @@ NEW_FILES = [
     "tests/test_computability.py",
     "tests/test_pattern_recognition.py",
     "tests/test_ai_invariants.py",
+    "tests/test_conditional_patterns.py",
+    "tests/test_cross_model.py",
+    "tests/test_epistemic_advanced.py",
+    "tests/test_inclusion_exclusion_fixed.py",
+    "tests/test_arc_solver.py",
+    "tests/test_forgiveness_integration.py",
+]
+BUG_FIXES = [
+    "KK_PRINCIPLE_TAUTOLOGY",
+    "MISSING_CONDITIONAL_TESTS",
+    "MISSING_SCALE_PRIMITIVE",
+    "INCLUSION_EXCLUSION_OVERSIMPLIFIED",
+    "GETTIER_TRIVIAL",
+    "PARACONSISTENT_DEAD_IMPORT",
+    "PROPERTY_DETECTOR_EXPANSION",
 ]
 
 
@@ -68,11 +105,45 @@ def run_pipeline() -> Dict[str, object]:
         if path.exists():
             manifest_entries.append({"path": relative, "sha256": _sha256(path)})
     result = {
-        "pipeline": "IA-CYPHER-0004",
-        "pr": 83,
+        "pipeline": "IA-CYPHER-0006",
+        "pr": 84,
         "ai_invariants": suite,
         "proof_chain_integrity": 1.0 if suite["all_valid"] else 0.0,
         "antifragility_coefficient": _compute_antifragility(),
+        "bug_fixes": BUG_FIXES,
+        "model_targeting": {entry["id"]: entry["model_targeting"] for entry in suite["results"]},
+        "models_tracked": [
+            "GPT-5.2",
+            "Claude Opus 4.5",
+            "Gemini 3 Pro",
+            "Kimi K2.5",
+            "DeepSeek-V3.2",
+            "Llama 4 Maverick",
+            "Grok 3",
+            "Qwen 3",
+            "Mistral Large 3",
+            "Command R+",
+            "Devin AI",
+        ],
+        "model_profiles": [
+            "gpt5.json",
+            "claude_opus_4_5.json",
+            "gemini_3_pro.json",
+            "deepseek_v3.json",
+            "kimi_k2_5.json",
+            "llama_4.json",
+            "grok_3.json",
+            "qwen_3.json",
+            "mistral_large.json",
+            "cohere_command_r.json",
+            "devin.json",
+        ],
+        "workstreams": [
+            "multi-model benchmark formalization",
+            "sycophancy and deflection audit formalization",
+            "forgiveness-system bridge",
+            "bounded symbolic arc solver",
+        ],
         "files": manifest_entries,
     }
     OUTPUT_PATH.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")

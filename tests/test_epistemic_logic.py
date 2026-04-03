@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from axioms.epistemic_logic import KripkeModel, construct_gettier_counterexample, evaluate_common_knowledge, evaluate_jtb, evaluate_knowledge, test_kk_principle
+from axioms.epistemic_logic import agm_revision, KripkeModel, construct_gettier_counterexample, evaluate_common_knowledge, evaluate_distributed_knowledge, evaluate_jtb, evaluate_knowledge, public_announcement, test_kk_principle
 from axioms.logic import ProofObject
 
 
@@ -21,6 +21,14 @@ def test_epistemic_logic_suite():
     assert evaluate_jtb(model, "alice", "p", "w1", just)[0]
     assert construct_gettier_counterexample()[1].is_valid()
     assert test_kk_principle(model, "alice", "p")[0]
+    richer = KripkeModel(
+        worlds={"w1", "w2", "w3"},
+        accessibility={"alice": {("w1", "w1"), ("w1", "w2")}, "bob": {("w1", "w1"), ("w1", "w3")}},
+        valuation={"w1": {"p": True, "announce": True}, "w2": {"p": False, "announce": True}, "w3": {"p": False, "announce": False}},
+    )
+    assert evaluate_distributed_knowledge(richer, ["alice", "bob"], "p", "w1")[0]
+    assert public_announcement(richer, "announce")[0].worlds == {"w1", "w2"}
+    assert agm_revision({"p", "q"}, "not:p")[0] == {"q", "not:p"}
 
 
 def main():

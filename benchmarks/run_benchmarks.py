@@ -41,6 +41,8 @@ except Exception as exc:  # pragma: no cover - fallback for constrained env
 from benchmarks.ai_invariant_tests import run_ai_invariant_suite
 from scripts.benchmark_pipeline import run_pipeline
 
+REQUIRED_INVARIANT_TOTAL = 110
+
 # Minimum acceptable thresholds (0.0 – 1.0)
 THRESHOLDS = {
     "determinism_score": 1.0,       # Must be perfect
@@ -122,12 +124,13 @@ def benchmark_hash_reproducibility() -> Dict:
 
 def benchmark_ai_invariants() -> Dict:
     suite = run_ai_invariant_suite()
-    score = 1.0 if suite["all_valid"] and suite["total"] == 50 else 0.0
+    score = 1.0 if suite["all_valid"] and suite["total"] == REQUIRED_INVARIANT_TOTAL else 0.0
     return {
         "name": "ai_invariant_pass_rate",
         "score": score,
         "threshold": THRESHOLDS["ai_invariant_pass_rate"],
         "passed": score >= THRESHOLDS["ai_invariant_pass_rate"],
+        "expected_total": REQUIRED_INVARIANT_TOTAL,
         "total": suite["total"],
         "merkle_root": suite["merkle_root"],
     }
