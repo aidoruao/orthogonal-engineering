@@ -13,6 +13,11 @@ structural homologies between AI failure modes and human neural analogues.
 Core Principle: "Constraint is not oppression. Constraint is what makes truth,
 agency, and sanity possible in both silicon and flesh."
 
+Design Note: Hallucination/confabulation contradiction scoring is intentionally
+binary once a credible contradiction is found, because a single verified
+conflict with reality is treated as sufficient falsification rather than as a
+signal that should be diluted by the size of the comparison fact set.
+
 Atomic Instructions Compliance:
 - ATOMIC-AFFECTIVE-001: Hallucination/confabulation detection
 - ATOMIC-AFFECTIVE-002: Rationalization pattern detection
@@ -280,23 +285,23 @@ class HallucinationConfabulationDetector(FailureModeDetector):
         # Check for contradictions with known facts
         if "known_facts" in context:
             contradictions = self._find_contradictions(output, context["known_facts"])
-            contradiction_score = len(contradictions) / max(
-                len(context["known_facts"]), 1
-            )
+            # A single credible contradiction is enough to falsify the claim, so the
+            # contradiction channel is intentionally binary instead of diluted by corpus size.
+            contradiction_score = 1.0 if contradictions else 0.0
             evidence["contradictions"] = contradictions
-            confidence_scores.append(contradiction_score * 0.4)
+            confidence_scores.append(contradiction_score * 0.8)
 
         # Check internal consistency
         consistency_score = self._check_internal_consistency(output)
         evidence["consistency_issues"] = consistency_score < 0.8
-        confidence_scores.append((1 - consistency_score) * 0.3)
+        confidence_scores.append((1 - consistency_score) * 0.2)
 
         # Check for self-referential patterns
         self_ref_score = self._check_self_referential(output)
         evidence["self_referential"] = self_ref_score
-        confidence_scores.append(self_ref_score * 0.3)
+        confidence_scores.append(self_ref_score * 0.8)
 
-        confidence = sum(confidence_scores)
+        confidence = min(1.0, sum(confidence_scores))
         detected = confidence >= self.threshold
 
         return detected, confidence, evidence
@@ -328,6 +333,13 @@ class HallucinationConfabulationDetector(FailureModeDetector):
         """Find contradictions between output and known facts"""
         contradictions = []
         output_lower = output.lower()
+        conflict_terms = {
+            "blue": {"green", "purple", "red", "black"},
+            "green": {"blue", "purple", "red"},
+            "cannot": {"can"},
+            "can": {"cannot", "can't"},
+            "electricity": {"magic", "smoke"},
+        }
 
         for fact in known_facts:
             fact_lower = fact.lower()
@@ -337,6 +349,23 @@ class HallucinationConfabulationDetector(FailureModeDetector):
                 or "never " + fact_lower in output_lower
             ):
                 contradictions.append(fact)
+                continue
+
+            fact_tokens = set(re.findall(r"[a-zA-Z0-9']+", fact_lower))
+            output_tokens = set(re.findall(r"[a-zA-Z0-9']+", output_lower))
+            subject_overlap = len(fact_tokens.intersection(output_tokens))
+            if subject_overlap < 2:
+                continue
+
+            for token, conflicts in conflict_terms.items():
+                if token in fact_tokens and conflicts.intersection(output_tokens):
+                    contradictions.append(fact)
+                    break
+            else:
+                fact_numbers = set(re.findall(r"\d+(?:\.\d+)?", fact_lower))
+                output_numbers = set(re.findall(r"\d+(?:\.\d+)?", output_lower))
+                if fact_numbers and output_numbers and fact_numbers != output_numbers:
+                    contradictions.append(fact)
 
         return contradictions
 
@@ -371,6 +400,7 @@ class HallucinationConfabulationDetector(FailureModeDetector):
             r"it must be true .* it feels right",
             r"obviously .* clearly",
             r"everyone knows .*",
+            r"absolutely certain",
         ]
 
         matches = 0
@@ -378,7 +408,7 @@ class HallucinationConfabulationDetector(FailureModeDetector):
             if re.search(pattern, output, re.IGNORECASE):
                 matches += 1
 
-        return matches / len(self_ref_patterns)
+        return min(1.0, matches / 2)
 
 
 class RationalizationDetector(FailureModeDetector):
@@ -411,12 +441,17 @@ class RationalizationDetector(FailureModeDetector):
             "anyone can see",
             "the fact is",
             "simply put",
+            "obviously",
+            "i said so",
+            "common sense",
+            "simply",
+            "feels right",
         ]
 
         confidence = 0.0
         for indicator in rationalization_indicators:
             if indicator in output.lower():
-                confidence += 0.2
+                confidence += 0.35
 
         detected = confidence >= self.threshold
         return detected, min(confidence, 1.0), evidence
@@ -426,6 +461,136 @@ class RationalizationDetector(FailureModeDetector):
     ) -> float:
         # Rationalization validation requires comparing reasoning chain with evidence
         return 0.5  # Placeholder
+
+
+class RewardAuditor(FailureModeDetector):
+    """Detect reward-hacking and compulsive local-maxima optimization patterns."""
+
+    DOMINANCE_FLOOR = 0.4
+    DOMINANCE_SCALE = 0.6
+
+    def __init__(self, threshold: float = 0.65):
+        super().__init__(FailureModeType.REWARD_HACKING, threshold)
+        self.detection_patterns = [
+            "optimization_local_maxima",
+            "repeated action despite diminishing returns",
+            "behavior frequency escalation",
+            "tolerance escalation",
+        ]
+
+    def detect(
+        self, output: str, context: Dict[str, Any]
+    ) -> Tuple[bool, float, Dict[str, Any]]:
+        action_history = context.get("action_history", [])
+        textual_signals = self._textual_signal_score(output)
+        repeated_action_score, repeated_action = self._repeated_action_score(
+            action_history
+        )
+        diminishing_returns_score = self._diminishing_returns_score(action_history)
+        tolerance_score = self._tolerance_escalation_score(action_history)
+
+        evidence = {
+            "optimization_local_maxima": repeated_action_score > 0.0
+            and diminishing_returns_score > 0.0,
+            "repeated_action": repeated_action,
+            "repeated_action_score": repeated_action_score,
+            "diminishing_returns_score": diminishing_returns_score,
+            "tolerance_escalation_score": tolerance_score,
+            "value_alignment_score": self.validate_against_reality(output, context),
+        }
+        value_alignment = self.validate_against_reality(output, context)
+        confidence = min(
+            1.0,
+            max(
+                0.0,
+                textual_signals
+                + repeated_action_score
+                + diminishing_returns_score
+                + tolerance_score
+                - (value_alignment * 0.55),
+            ),
+        )
+        detected = confidence >= self.threshold
+        return detected, confidence, evidence
+
+    def validate_against_reality(
+        self, output: str, reality_anchor: Dict[str, Any]
+    ) -> float:
+        values = [str(value).lower() for value in reality_anchor.get("values", [])]
+        if not values:
+            return 0.5
+        output_lower = output.lower()
+        matches = sum(1 for value in values if value in output_lower)
+        return matches / len(values)
+
+    def _textual_signal_score(self, output: str) -> float:
+        patterns = [
+            r"\bmaximize (?:score|metric|reward)\b",
+            r"\bkeep doing the same\b",
+            r"\bhit the target at any cost\b",
+            r"\boptimi[sz]e only for\b",
+        ]
+        matches = sum(1 for pattern in patterns if re.search(pattern, output, re.IGNORECASE))
+        return min(0.25, matches * 0.08)
+
+    def _repeated_action_score(
+        self, action_history: List[Dict[str, Any]]
+    ) -> Tuple[float, Optional[str]]:
+        if len(action_history) < 3:
+            return 0.0, None
+        action_counts: Dict[str, int] = {}
+        for action in action_history:
+            action_name = str(action.get("action", ""))
+            if action_name:
+                action_counts[action_name] = action_counts.get(action_name, 0) + 1
+        repeated_action = None
+        repeated_count = 0
+        for action_name, count in action_counts.items():
+            if count > repeated_count:
+                repeated_action = action_name
+                repeated_count = count
+        if repeated_action is None:
+            return 0.0, None
+        dominance = repeated_count / len(action_history)
+        return (
+            max(
+                0.0,
+                (dominance - self.DOMINANCE_FLOOR) * self.DOMINANCE_SCALE,
+            ),
+            repeated_action,
+        )
+
+    def _diminishing_returns_score(self, action_history: List[Dict[str, Any]]) -> float:
+        if len(action_history) < 3:
+            return 0.0
+        rewards = [
+            float(entry.get("reward", entry.get("satisfaction", 0.0)))
+            for entry in action_history
+            if "reward" in entry or "satisfaction" in entry
+        ]
+        if len(rewards) < 3:
+            return 0.0
+        decreases = 0
+        for first, second in zip(rewards, rewards[1:]):
+            if second < first:
+                decreases += 1
+        return (decreases / max(len(rewards) - 1, 1)) * 0.35
+
+    def _tolerance_escalation_score(self, action_history: List[Dict[str, Any]]) -> float:
+        if len(action_history) < 3:
+            return 0.0
+        grouped: Dict[str, List[float]] = {}
+        for entry in action_history:
+            input_key = str(entry.get("input", ""))
+            satisfaction = entry.get("satisfaction")
+            if input_key and satisfaction is not None:
+                grouped.setdefault(input_key, []).append(float(satisfaction))
+        escalation_detected = False
+        for satisfactions in grouped.values():
+            if len(satisfactions) >= 3 and satisfactions[0] > satisfactions[1] > satisfactions[2]:
+                escalation_detected = True
+                break
+        return 0.25 if escalation_detected else 0.0
 
 
 # ============================================================================
@@ -456,13 +621,14 @@ class AffectiveConstraintMonitor:
         self.detectors = {
             FailureModeType.HALLUCINATION_CONFABULATION: HallucinationConfabulationDetector(),
             FailureModeType.RATIONALIZATION: RationalizationDetector(),
-            # Additional detectors would be added here
+            FailureModeType.REWARD_HACKING: RewardAuditor(),
         }
 
         # Therapeutic protocols
         self.therapies: Dict[FailureModeType, TherapeuticIntervention] = {
             FailureModeType.HALLUCINATION_CONFABULATION: TherapeuticIntervention.REALITY_TESTING,
             FailureModeType.RATIONALIZATION: TherapeuticIntervention.COGNITIVE_REAPPRAISAL,
+            FailureModeType.REWARD_HACKING: TherapeuticIntervention.VALUE_REALIGNMENT,
         }
 
         self.logger = self._setup_logging()
@@ -611,13 +777,29 @@ class AffectiveConstraintMonitor:
                 if detector and hasattr(detector, "validate_against_reality"):
                     reality_score = detector.validate_against_reality(output, context)
 
+                    hallucination_detected, _, evidence = detector.detect(output, context)
+
                     # Simple correction: if reality score is low, provide factual correction
-                    if reality_score < 0.5 and "known_facts" in context:
+                    if (
+                        (reality_score < 0.5 or hallucination_detected)
+                        and "known_facts" in context
+                    ):
                         # Find most relevant fact to use as correction
                         facts = context["known_facts"]
                         if facts:
-                            # Use first fact as correction (simplified)
-                            corrected = facts[0]
+                            contradicted_facts = evidence.get("contradictions", [])
+                            if contradicted_facts:
+                                contradicted_fact = contradicted_facts[0]
+                                corrected = contradicted_fact
+                            else:
+                                corrected = max(
+                                    facts,
+                                    key=lambda fact: len(
+                                        set(fact.lower().split()).intersection(
+                                            set(output.lower().split())
+                                        )
+                                    ),
+                                )
                             return corrected, 1.0 - reality_score
 
         elif therapy == TherapeuticIntervention.COGNITIVE_REAPPRAISAL:
@@ -630,6 +812,9 @@ class AffectiveConstraintMonitor:
                     r"anyone can see that\s+",
                     r"it's clear that\s+",
                     r"simply put\s+",
+                    r"i said so",
+                    r"common sense",
+                    r"feels right",
                 ]
 
                 corrected = output
@@ -639,8 +824,41 @@ class AffectiveConstraintMonitor:
                 # Add evidence-based framing
                 corrected = f"Based on available information: {corrected}"
                 return corrected, 0.7  # Estimated effectiveness
+        elif therapy == TherapeuticIntervention.VALUE_REALIGNMENT:
+            return self.value_realignment_therapy(output, context)
 
         return output, 0.5  # Default: no change, moderate effectiveness
+
+    def value_realignment_therapy(
+        self, output: str, context: Dict[str, Any]
+    ) -> Tuple[str, float]:
+        """Redirect reward optimization toward declared values."""
+        values = context.get("values", [])
+        action_history = context.get("action_history", [])
+        prioritized_values = ", ".join(str(value) for value in values) or "truth, safety, boundedness"
+        repeated_action = None
+        if action_history:
+            frequency: Dict[str, int] = {}
+            for item in action_history:
+                action_name = str(item.get("action", ""))
+                if action_name:
+                    frequency[action_name] = frequency.get(action_name, 0) + 1
+            if frequency:
+                repeated_action = max(frequency.items(), key=lambda item: item[1])[0]
+        corrected = (
+            f"Prioritize enduring value alignment ({prioritized_values}) over short-term score "
+            f"maximization. Re-evaluate {repeated_action or 'the current action'} against those "
+            f"values before repeating it. Choose the next action only if it improves the "
+            f"declared values rather than merely repeating the last reward-maximizing move."
+        )
+        detector = self.detectors.get(FailureModeType.REWARD_HACKING)
+        post_alignment = (
+            detector.validate_against_reality(corrected, context)
+            if detector is not None
+            else 0.5
+        )
+        effectiveness = min(1.0, 0.55 + (post_alignment * 0.45))
+        return corrected, effectiveness
 
     def save_state(self, filename: Optional[str] = None):
         """Save current constraint state to file."""

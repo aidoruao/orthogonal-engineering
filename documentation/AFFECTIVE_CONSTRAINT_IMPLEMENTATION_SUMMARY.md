@@ -133,7 +133,7 @@ This document summarizes the complete implementation of an **Affective Constrain
 | **Hedging** | Avoidant Ambiguity | *Planned: `HedgingDetector`* |
 | **Context Overflow** | Working-memory Collapse | *Planned: `ContextMonitor`* |
 | **Mode Collapse** | Rigid Thinking/Obsession | *Planned: `DiversityMonitor`* |
-| **Reward Hacking** | Addiction/Compulsive Behavior | *Planned: `RewardAuditor`* |
+| **Reward Hacking** | Addiction/Compulsive Behavior | `RewardAuditor` |
 | **Safety Override** | Panic/Amygdala Hijack | *Planned: `StressMonitor`* |
 
 ---
