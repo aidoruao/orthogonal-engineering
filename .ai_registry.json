@@ -76,7 +76,12 @@
         "success_rate": null,
         "last_health_check": "2026-01-26T01:35:00.678493",
         "initialization_time_seconds": 0.46679186820983887,
-        "overall_status": "healthy"
+        "overall_status": "healthy",
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "toolkit_warden": {
@@ -143,7 +148,12 @@
         "success_rate": null,
         "last_health_check": "2026-01-26T01:35:00.678595",
         "initialization_time_seconds": 0.4049091339111328,
-        "overall_status": "healthy"
+        "overall_status": "healthy",
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "documentation_warden": {
@@ -242,7 +252,12 @@
         "success_rate": null,
         "last_health_check": "2026-01-26T01:35:00.678662",
         "initialization_time_seconds": 0.6943864822387695,
-        "overall_status": "healthy"
+        "overall_status": "healthy",
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "logs_warden": {
@@ -2486,7 +2501,12 @@
         "success_rate": null,
         "last_health_check": "2026-01-26T02:21:01.548150",
         "initialization_time_seconds": 0.660865,
-        "overall_status": "healthy"
+        "overall_status": "healthy",
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "evidence_warden": {
@@ -2568,7 +2588,12 @@
         "success_rate": null,
         "last_health_check": "2026-01-26T02:21:01.868264",
         "initialization_time_seconds": 0.318963,
-        "overall_status": "healthy"
+        "overall_status": "healthy",
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "gemini_warden": {
@@ -2601,7 +2626,16 @@
         "last_health_check": null,
         "last_artifact_timestamp": null,
         "max_report_age_hours": 36,
-        "overall_status": "pending"
+        "overall_status": "pending",
+        "report_age_history": [],
+        "suggested_max_report_age_hours": null,
+        "threshold_adapted_at": null,
+        "threshold_confidence": null,
+        "threshold_sample_size": 0
+      },
+      "credential_resolver": {
+        "source": "github_secret",
+        "ref": "GEMINI_API_KEY"
       }
     },
     "seraph_unit": {
@@ -3972,7 +4006,12 @@
         "initialization_time_seconds": 0.12094998359680176,
         "overall_status": "healthy",
         "total_queries": 0,
-        "successful_queries": 0
+        "successful_queries": 0,
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "cherub_unit": {
@@ -4191,7 +4230,12 @@
         "initialization_time_seconds": 0.035401344299316406,
         "overall_status": "healthy",
         "total_queries": 0,
-        "successful_queries": 0
+        "successful_queries": 0,
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     },
     "ophanim_unit": {
@@ -5559,13 +5603,19 @@
         "initialization_time_seconds": 0.1188056468963623,
         "overall_status": "healthy",
         "total_queries": 0,
-        "successful_queries": 0
+        "successful_queries": 0,
+        "file_count_history": []
+      },
+      "credential_resolver": {
+        "source": "none",
+        "ref": ""
       }
     }
   },
   "dynamic_wardens": {
     "unclassified_folders": [],
-    "temporary_wardens": {}
+    "temporary_wardens": {},
+    "proposals": []
   },
   "health_checks": {
     "interval_seconds": 300,
@@ -5600,5 +5650,61 @@
     "last_health_check": "2026-01-26T01:35:00.678376",
     "health_check_count": 4,
     "overall_health": "healthy"
+  },
+  "autonomy_policy": {
+    "schema_version": "1.0",
+    "policy_id": "AP-2026-001",
+    "provenance": {
+      "created_by": "gemini_warden",
+      "created_at": "2026-04-03T23:34:00Z",
+      "approved_by": null,
+      "approval_required": true
+    },
+    "global_mode": "dry_run",
+    "action_policies": {
+      "update_file_count": {
+        "mode": "dry_run",
+        "requires_approval": false,
+        "max_delta_pct": 10,
+        "evidence_required": true,
+        "audit_log": true,
+        "idempotency_window_seconds": 300
+      },
+      "refresh_temporary_warden": {
+        "mode": "dry_run",
+        "requires_approval": false,
+        "max_age_hours": 25,
+        "audit_log": true,
+        "idempotency_window_seconds": 60
+      },
+      "propose_new_warden": {
+        "mode": "dry_run",
+        "requires_approval": true,
+        "min_confidence": 0.7,
+        "audit_log": true
+      },
+      "adapt_threshold": {
+        "mode": "dry_run",
+        "requires_approval": true,
+        "min_sample_size": 7,
+        "max_adaptation_pct": 30,
+        "audit_log": true
+      },
+      "execute_remediation": {
+        "mode": "dry_run",
+        "requires_approval": true,
+        "allowed_action_types": [
+          "update_file_count",
+          "refresh_temporary_warden"
+        ],
+        "audit_log": true
+      }
+    },
+    "guardrails": {
+      "no_credential_commits": true,
+      "no_warden_file_creation": true,
+      "registry_backup_before_write": true,
+      "max_writes_per_run": 5
+    }
   }
 }

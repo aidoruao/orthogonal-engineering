@@ -6,11 +6,15 @@ This script integrates Phase 2 wardens into BASE AI health checks,
 monitors warden health, and provides comprehensive health reporting.
 """
 
+import hashlib
 import json
 import logging
 import os
+import shutil
+import statistics
 import sys
 import time
+import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -23,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 VALID_WARDEN_STATUSES = ["active", "pending", "error", "disabled"]
 SECONDS_PER_HOUR = 3600
+REPORT_AGE_HISTORY_MAX_SIZE = 30
 
 
 class HealthCheckIntegration:
@@ -42,6 +47,7 @@ class HealthCheckIntegration:
         self.health_check_interval = self.registry.get("health_checks", {}).get(
             "interval_seconds", 300
         )
+        self._writes_this_run: int = 0
 
     def _load_registry(self) -> Dict[str, Any]:
         """Load the AI registry."""
@@ -186,6 +192,36 @@ class HealthCheckIntegration:
                     report_age <= timedelta(hours=max_report_age_hours)
                 )
 
+                # A-2: append observation to report_age_history ring buffer
+                warden_health_block = warden_config.setdefault("health", {})
+                age_history = warden_health_block.setdefault("report_age_history", [])
+                age_history.append(round(report_age_in_hours, 3))
+                if len(age_history) > REPORT_AGE_HISTORY_MAX_SIZE:
+                    del age_history[: len(age_history) - REPORT_AGE_HISTORY_MAX_SIZE]
+                warden_health_block["report_age_history"] = age_history
+                # A-2: compute suggested threshold shadow field
+                autonomy_policy = self._load_autonomy_policy()
+                min_sample_size = (
+                    autonomy_policy.get("action_policies", {})
+                    .get("adapt_threshold", {})
+                    .get("min_sample_size", 7)
+                )
+                sample_size = len(age_history)
+                warden_health_block["threshold_sample_size"] = sample_size
+                if sample_size >= min_sample_size:
+                    mean_age = statistics.mean(age_history)
+                    stddev_age = statistics.stdev(age_history)
+                    suggested = mean_age + 1.5 * stddev_age
+                    warden_health_block["suggested_max_report_age_hours"] = round(
+                        suggested, 2
+                    )
+                    warden_health_block["threshold_confidence"] = round(
+                        min(1.0, sample_size / REPORT_AGE_HISTORY_MAX_SIZE), 3
+                    )
+                else:
+                    warden_health_block["suggested_max_report_age_hours"] = None
+                    warden_health_block["threshold_confidence"] = None
+
                 if not health["checks"]["report_fresh"]:
                     health["status"] = self._elevate_status(health["status"], "warning")
                     health["issues"].append(
@@ -225,6 +261,9 @@ class HealthCheckIntegration:
         health["checks"]["response_time_ms"] = health_config.get("response_time_ms")
         health["checks"]["success_rate"] = health_config.get("success_rate")
 
+        # A-6: record credential source reference (never the actual value)
+        health["checks"]["credential_source"] = self._resolve_credential(warden_config)
+
         if "health" in warden_config:
             warden_config["health"]["last_health_check"] = datetime.now(
                 timezone.utc
@@ -247,6 +286,7 @@ class HealthCheckIntegration:
         """
         start_time = time.time()
         self.last_check_time = datetime.now().isoformat()
+        self._writes_this_run = 0  # reset per-run write counter
 
         logger.info("Starting comprehensive health checks for Phase 2 wardens")
 
@@ -303,6 +343,12 @@ class HealthCheckIntegration:
 
         # Generate recommendations
         results["recommendations"] = self._generate_recommendations(results)
+
+        # A-3: generate warden proposals for uncovered directories
+        results["warden_proposals"] = self._generate_warden_proposals()
+
+        # A-5: write threshold adaptation proposals (dry-run, never auto-applies)
+        self._adapt_thresholds()
 
         # Update registry with health check results
         self._update_registry_health(results)
@@ -450,13 +496,149 @@ class HealthCheckIntegration:
                     )
 
                     if actual_file_count != stored_file_count:
+                        delta = actual_file_count - stored_file_count
+                        delta_pct = abs(delta) / max(stored_file_count, 1) * 100
                         health["status"] = "warning"
                         health["issues"].append(
                             f"File count mismatch: stored={stored_file_count}, actual={actual_file_count}"
                         )
-                        health["recommendations"].append(
-                            f"Run scan for {warden_name} to update file count"
+                        # A-1: attempt self-healing under autonomy policy
+                        autonomy = self._load_autonomy_policy()
+                        action_policy = autonomy.get("action_policies", {}).get(
+                            "update_file_count", {}
                         )
+                        max_delta_pct = action_policy.get("max_delta_pct", 10)
+                        guardrails = autonomy.get("guardrails", {})
+                        max_writes = guardrails.get("max_writes_per_run", 5)
+                        action_taken = "dry_run"
+                        backup_path = None
+                        if (
+                            self._get_action_mode(autonomy, "update_file_count")
+                            == "execute"
+                            and delta_pct <= max_delta_pct
+                            and self._writes_this_run < max_writes
+                        ):
+                            if guardrails.get("registry_backup_before_write", True):
+                                backup_path = self._backup_registry()
+                            self.registry["wardens"][warden_name]["metadata"][
+                                "file_count"
+                            ] = actual_file_count
+                            self._writes_this_run += 1
+                            action_taken = "execute"
+                            health["checks"]["file_count_match"] = True
+                            health["checks"]["self_healed"] = True
+                            health["status"] = "healthy"
+                            health["issues"] = [
+                                i
+                                for i in health["issues"]
+                                if not i.startswith("File count mismatch")
+                            ]
+                            logger.info(
+                                f"Self-healed file count for {warden_name}: "
+                                f"{stored_file_count} -> {actual_file_count}"
+                            )
+                        else:
+                            health["recommendations"].append(
+                                f"Run scan for {warden_name} to update file count"
+                            )
+                        # A-1: record observation in file_count_history
+                        warden_reg = self.registry.get("wardens", {}).get(
+                            warden_name, {}
+                        )
+                        warden_health_block = warden_reg.setdefault("health", {})
+                        fc_history = warden_health_block.setdefault(
+                            "file_count_history", []
+                        )
+                        ts_now = (
+                            datetime.now(timezone.utc)
+                            .replace(microsecond=0)
+                            .isoformat()
+                            .replace("+00:00", "Z")
+                        )
+                        fc_history.append(
+                            {
+                                "timestamp": ts_now,
+                                "stored": stored_file_count,
+                                "actual": actual_file_count,
+                                "delta": delta,
+                                "action_taken": action_taken,
+                            }
+                        )
+                        # A-1: write audit log entry
+                        if action_policy.get("audit_log", True):
+                            self._write_audit_log(
+                                {
+                                    "log_id": f"AL-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{uuid.uuid4().hex[:8]}",
+                                    "timestamp": ts_now,
+                                    "action_type": "update_file_count",
+                                    "target": warden_name,
+                                    "mode": action_taken,
+                                    "before_state": {
+                                        "metadata.file_count": stored_file_count
+                                    },
+                                    "after_state": {
+                                        "metadata.file_count": actual_file_count
+                                        if action_taken == "execute"
+                                        else stored_file_count
+                                    },
+                                    "outcome": "success"
+                                    if action_taken == "execute"
+                                    else "dry_run",
+                                    "evidence": {
+                                        "delta": delta,
+                                        "delta_pct": round(delta_pct, 2),
+                                    },
+                                    "backup_path": backup_path,
+                                    "agent": "health_check_integration",
+                                }
+                            )
+                        # A-4: write structured remediation proposal when dry_run
+                        if action_taken == "dry_run":
+                            date_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+                            proposal = {
+                                "proposal_id": f"REM-{date_str}-{warden_name}-filecount",
+                                "idempotency_key": f"update_file_count:{warden_name}:{date_str}",
+                                "created_at": ts_now,
+                                "created_by": "health_check_integration",
+                                "schema_version": "1.0",
+                                "action_type": "update_file_count",
+                                "target_warden": warden_name,
+                                "mode": "dry_run",
+                                "status": "pending",
+                                "evidence": {
+                                    "stored_file_count": stored_file_count,
+                                    "actual_file_count": actual_file_count,
+                                    "delta": delta,
+                                    "delta_pct": round(delta_pct, 2),
+                                    "scan_timestamp": ts_now,
+                                    "confidence": 1.0,
+                                },
+                                "policy_check": {
+                                    "policy_id": autonomy.get(
+                                        "policy_id", "default"
+                                    ),
+                                    "action_permitted": delta_pct <= max_delta_pct,
+                                    "mode_override": None,
+                                    "max_delta_pct_exceeded": delta_pct
+                                    > max_delta_pct,
+                                },
+                                "reversibility": {
+                                    "reversible": True,
+                                    "revert_action": "restore_from_backup",
+                                    "backup_path": backup_path,
+                                },
+                                "falsifiability_note": (
+                                    "Valid iff actual_file_count != stored_file_count. "
+                                    "Re-running scan after execution must yield file_count_match=true."
+                                ),
+                                "provenance_chain": [
+                                    "health_check_integration._check_warden",
+                                    "health_check_integration._update_registry_health",
+                                ],
+                                "applied_at": None,
+                                "applied_by": None,
+                            }
+                            self._write_proposal(proposal)
                 except Exception as e:
                     health["status"] = "warning"
                     health["issues"].append(f"Could not count files: {e}")
@@ -483,6 +665,9 @@ class HealthCheckIntegration:
         health["checks"]["last_query"] = warden_health.get("last_query")
         health["checks"]["response_time_ms"] = warden_health.get("response_time_ms")
         health["checks"]["success_rate"] = warden_health.get("success_rate")
+
+        # A-6: record credential source reference (never the actual value)
+        health["checks"]["credential_source"] = self._resolve_credential(warden_config)
 
         # Update last health check time
         if "health" in warden_config:
@@ -861,6 +1046,304 @@ class HealthCheckIntegration:
 
         except Exception as e:
             logger.error(f"Failed to log monitoring results: {e}")
+
+    # ------------------------------------------------------------------ #
+    # A-1 / A-5 / A-6: autonomy policy helpers                           #
+    # ------------------------------------------------------------------ #
+
+    def _load_autonomy_policy(self) -> Dict[str, Any]:
+        """Return the autonomy_policy block from the registry, or a safe dry_run default."""
+        policy = self.registry.get("autonomy_policy")
+        if not isinstance(policy, dict):
+            return {
+                "global_mode": "dry_run",
+                "action_policies": {},
+                "guardrails": {
+                    "no_credential_commits": True,
+                    "no_warden_file_creation": True,
+                    "registry_backup_before_write": True,
+                    "max_writes_per_run": 5,
+                },
+            }
+        return policy
+
+    def _get_action_mode(self, policy: Dict[str, Any], action_type: str) -> str:
+        """Return the effective execution mode for a given action type."""
+        global_mode = policy.get("global_mode", "dry_run")
+        action_policy = policy.get("action_policies", {}).get(action_type, {})
+        return action_policy.get("mode", global_mode)
+
+    def _backup_registry(self) -> Optional[str]:
+        """Create a timestamped backup of the registry and return its path."""
+        try:
+            backup_dir = Path(self.registry_path).parent / ".ai_registry_backups"
+            backup_dir.mkdir(exist_ok=True)
+            ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            backup_path = backup_dir / f"registry_{ts}.json"
+            shutil.copy2(self.registry_path, backup_path)
+            logger.debug(f"Registry backed up to {backup_path}")
+            return str(backup_path)
+        except Exception as e:
+            logger.warning(f"Could not back up registry: {e}")
+            return None
+
+    def _write_audit_log(self, entry: Dict[str, Any]) -> None:
+        """Append a JSONL audit entry to logs/audit/."""
+        try:
+            audit_dir = (
+                Path(self.registry_path).parent / "logs" / "audit"
+            )
+            audit_dir.mkdir(parents=True, exist_ok=True)
+            date_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+            log_path = audit_dir / f"autonomy_audit_{date_str}.jsonl"
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(entry) + "\n")
+        except Exception as e:
+            logger.warning(f"Could not write audit log: {e}")
+
+    def _write_proposal(
+        self, proposal: Dict[str, Any], subdir: str = "proposals"
+    ) -> Optional[str]:
+        """Write a proposal JSON file to logs/health_checks/<subdir>/ and return its path."""
+        try:
+            proposal_dir = (
+                Path(self.registry_path).parent
+                / "logs"
+                / "health_checks"
+                / subdir
+            )
+            proposal_dir.mkdir(parents=True, exist_ok=True)
+            proposal_id = proposal.get("proposal_id", "unknown")
+            proposal_path = proposal_dir / f"{proposal_id}.json"
+            proposal_path.write_text(
+                json.dumps(proposal, indent=2), encoding="utf-8"
+            )
+            return str(proposal_path)
+        except Exception as e:
+            logger.warning(f"Could not write proposal {proposal.get('proposal_id')}: {e}")
+            return None
+
+    def _resolve_credential(self, warden_config: Dict[str, Any]) -> str:
+        """Return a credential source reference string (never the actual credential value).
+
+        A-6: structured credential_resolver field is preferred; falls back to legacy api_key.
+        Valid source values: none | env_var | github_secret | vault_path
+        """
+        resolver = warden_config.get("credential_resolver")
+        if isinstance(resolver, dict):
+            source = resolver.get("source", "unknown")
+            ref = resolver.get("ref", "")
+            return f"{source}:{ref}" if ref else source
+        api_key = warden_config.get("api_key", "")
+        if not api_key or api_key == "local_ollama":
+            return "none"
+        if api_key.startswith("github_secret:"):
+            return api_key
+        return "env_var"
+
+    # ------------------------------------------------------------------ #
+    # A-3: dynamic warden proposal generation                             #
+    # ------------------------------------------------------------------ #
+
+    def _generate_warden_proposals(self) -> List[Dict[str, Any]]:
+        """Scan for uncovered directories and write dry-run warden proposals.
+
+        Uses DynamicWardenTool to classify folders.  Never creates warden files
+        or edits .gitignore — those steps require human approval.
+        """
+        try:
+            from dynamic_warden_tool import DynamicWardenTool  # local import
+        except ImportError:
+            logger.debug("DynamicWardenTool not available; skipping warden proposals")
+            return []
+
+        try:
+            tool = DynamicWardenTool(self.registry_path)
+            proposals = tool.generate_proposals()
+            # Persist proposals into the registry
+            dyn = self.registry.setdefault("dynamic_wardens", {})
+            dyn["proposals"] = proposals
+            return proposals
+        except Exception as e:
+            logger.warning(f"Warden proposal generation failed: {e}")
+            return []
+
+    # ------------------------------------------------------------------ #
+    # A-4: apply pending proposals (execute-mode only, guarded)          #
+    # ------------------------------------------------------------------ #
+
+    def apply_proposals(self) -> Dict[str, Any]:
+        """Apply any pending proposals that are permitted in execute mode.
+
+        Only update_file_count and refresh_temporary_warden are safe for
+        unattended execution.  All other action types remain as dry_run proposals.
+
+        Returns a summary dict with applied/skipped/error counts.
+        """
+        autonomy = self._load_autonomy_policy()
+        allowed = (
+            autonomy.get("action_policies", {})
+            .get("execute_remediation", {})
+            .get("allowed_action_types", ["update_file_count", "refresh_temporary_warden"])
+        )
+        proposal_dir = (
+            Path(self.registry_path).parent / "logs" / "health_checks" / "proposals"
+        )
+        summary: Dict[str, Any] = {"applied": 0, "skipped": 0, "errors": []}
+        if not proposal_dir.exists():
+            return summary
+        for proposal_file in proposal_dir.glob("*.json"):
+            try:
+                proposal = json.loads(proposal_file.read_text(encoding="utf-8"))
+                if proposal.get("status") != "pending":
+                    summary["skipped"] += 1
+                    continue
+                action_type = proposal.get("action_type")
+                if action_type not in allowed:
+                    summary["skipped"] += 1
+                    continue
+                mode = self._get_action_mode(autonomy, action_type)
+                if mode != "execute":
+                    summary["skipped"] += 1
+                    continue
+                if action_type == "update_file_count":
+                    warden_name = proposal.get("target_warden")
+                    actual = proposal.get("evidence", {}).get("actual_file_count")
+                    if warden_name and actual is not None:
+                        backup_path = self._backup_registry()
+                        self.registry.setdefault("wardens", {}).setdefault(
+                            warden_name, {}
+                        ).setdefault("metadata", {})["file_count"] = actual
+                        self._writes_this_run += 1
+                        proposal["status"] = "applied"
+                        proposal["applied_at"] = (
+                            datetime.now(timezone.utc)
+                            .replace(microsecond=0)
+                            .isoformat()
+                            .replace("+00:00", "Z")
+                        )
+                        proposal["applied_by"] = "health_check_integration.apply_proposals"
+                        proposal_file.write_text(
+                            json.dumps(proposal, indent=2), encoding="utf-8"
+                        )
+                        self._save_registry()
+                        summary["applied"] += 1
+                        self._write_audit_log(
+                            {
+                                "log_id": f"AL-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{uuid.uuid4().hex[:8]}",
+                                "timestamp": proposal["applied_at"],
+                                "action_type": action_type,
+                                "target": warden_name,
+                                "mode": "execute",
+                                "proposal_id": proposal.get("proposal_id"),
+                                "outcome": "success",
+                                "backup_path": backup_path,
+                                "agent": "health_check_integration.apply_proposals",
+                            }
+                        )
+            except Exception as e:
+                summary["errors"].append(str(e))
+        return summary
+
+    # ------------------------------------------------------------------ #
+    # A-5: threshold adaptation                                           #
+    # ------------------------------------------------------------------ #
+
+    def _adapt_thresholds(self) -> None:
+        """Generate threshold adaptation proposals for cloud wardens that have
+        accumulated enough report_age observations.
+
+        Always writes as dry_run proposals; the actual max_report_age_hours value
+        is never modified without explicit human approval (approved_by != null).
+        """
+        autonomy = self._load_autonomy_policy()
+        adapt_policy = autonomy.get("action_policies", {}).get("adapt_threshold", {})
+        min_sample = adapt_policy.get("min_sample_size", 7)
+        max_adapt_pct = adapt_policy.get("max_adaptation_pct", 30)
+
+        for warden_name, warden_config in self.registry.get("wardens", {}).items():
+            if warden_config.get("runtime") != "github_actions":
+                continue
+            health_block = warden_config.get("health", {})
+            suggested = health_block.get("suggested_max_report_age_hours")
+            sample_size = health_block.get("threshold_sample_size", 0)
+            current = health_block.get("max_report_age_hours", 36)
+            if suggested is None or sample_size < min_sample:
+                continue
+            # Clamp proposal to ± max_adapt_pct
+            lower = current * (1 - max_adapt_pct / 100)
+            upper = current * (1 + max_adapt_pct / 100)
+            proposed_clamped = max(lower, min(upper, suggested))
+            within_policy = lower <= suggested <= upper
+            date_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+            ts_now = (
+                datetime.now(timezone.utc)
+                .replace(microsecond=0)
+                .isoformat()
+                .replace("+00:00", "Z")
+            )
+            age_history = health_block.get("report_age_history", [])
+            mean_age = statistics.mean(age_history) if len(age_history) >= 2 else suggested
+            stddev_age = (
+                statistics.stdev(age_history) if len(age_history) >= 2 else 0.0
+            )
+            proposal: Dict[str, Any] = {
+                "proposal_id": f"TA-{date_str}-{warden_name}-max_report_age_hours",
+                "idempotency_key": f"adapt_threshold:{warden_name}:max_report_age_hours:{date_str}",
+                "created_at": ts_now,
+                "created_by": "health_check_integration",
+                "schema_version": "1.0",
+                "action_type": "adapt_threshold",
+                "target_warden": warden_name,
+                "target_field": "max_report_age_hours",
+                "current_value": current,
+                "proposed_value": round(proposed_clamped, 2),
+                "mode": "dry_run",
+                "status": "pending_approval",
+                "confidence": health_block.get("threshold_confidence"),
+                "evidence": {
+                    "sample_size": sample_size,
+                    "sample_ages_hours": age_history[-min_sample:],
+                    "mean_hours": round(mean_age, 3),
+                    "stddev_hours": round(stddev_age, 3),
+                    "formula": "mean + 1.5 * stddev",
+                    "computed": round(suggested, 3),
+                    "proposed_clamped": round(proposed_clamped, 2),
+                },
+                "policy_check": {
+                    "policy_id": autonomy.get("policy_id", "default"),
+                    "approval_required": True,
+                    "adaptation_within_policy": within_policy,
+                    "max_adaptation_pct": max_adapt_pct,
+                },
+                "reversibility": {
+                    "reversible": True,
+                    "revert_action": "restore_previous_threshold",
+                    "previous_value": current,
+                },
+                "falsifiability_note": (
+                    "If the adapted threshold causes 'stale' alerts on runs that "
+                    "completed successfully, the adaptation should be reverted."
+                ),
+                "approved_by": None,
+                "approved_at": None,
+            }
+            self._write_proposal(proposal)
+            # Also record in warden health block for visibility
+            health_block["threshold_adapted_at"] = ts_now
+            if adapt_policy.get("audit_log", True):
+                self._write_audit_log(
+                    {
+                        "log_id": f"AL-{date_str}-{uuid.uuid4().hex[:8]}",
+                        "timestamp": ts_now,
+                        "action_type": "adapt_threshold",
+                        "target": warden_name,
+                        "mode": "dry_run",
+                        "proposal_id": proposal["proposal_id"],
+                        "outcome": "dry_run",
+                        "agent": "health_check_integration._adapt_thresholds",
+                    }
+                )
 
 
 def main():
