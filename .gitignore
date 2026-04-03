@@ -136,6 +136,12 @@ package-lock.json
 # MCP and orchestration
 mcp/
 oe-agent/
+# wardens/ is intentionally locked to exactly three canonical unit files.
+# Only seraph_unit.py, cherub_unit.py, and ophanim_unit.py are tracked.
+# Any other file created under wardens/ (temp files, debug scripts, etc.)
+# will be silently ignored by git — this is by design to prevent accidental
+# commits of transient warden state or debug artifacts.
+# To add a new permanent warden unit, explicitly extend the allowlist below.
 wardens/
 !wardens/
 wardens/*
