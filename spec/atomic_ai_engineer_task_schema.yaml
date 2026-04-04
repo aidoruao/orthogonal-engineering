@@ -1374,3 +1374,226 @@ secular_developer_patch:
        Repeat test 3 (Cooking Pot as item with 16 servings).
        EXPECTED: meal count is still 1 — proving V1460 alone is not sufficient.
        This CONFIRMS the need for all three mixin files.
+
+# =============================================================================
+# CROSS-MODEL EXTERNAL VERIFICATION SPEC
+# =============================================================================
+# Domain: D_CROSS_MODEL_BENCHMARKS
+# Invariant: "Same problem must produce the same proof hash regardless
+#            of which model solves it."
+# Pattern: CLOUD_AI_VERIFICATION.py (commit e1f6801)
+# Pattern: cross_validator.py (PR #37/#39)
+# Pattern: pr39-peano-sovereignty.yml (cross-node parity)
+#
+# PURPOSE: Any cloud AI (ChatGPT, Claude, DeepSeek, Gemini, Grok, etc.)
+# given the same facts must independently arrive at the same conclusions.
+# If they don't, the disagreement reveals a gap in the fix.
+# This is NOT internal consistency (INV-YS-010).
+# This is EXTERNAL verification by independent agents.
+# =============================================================================
+
+cross_model_verification:
+  schema_id: "XMODEL-FD-001"
+  version: "1.0.0"
+  domain: "D_CROSS_MODEL_BENCHMARKS"
+  invariant: "Same formal problem produces same proof object regardless of model"
+  yeshua_axiom_4: "No authority without proof — no AI's agreement counts without derivation"
+  yeshua_axiom_2: "Every derivation is reproducible — any AI re-deriving must get same result"
+
+  # ---------------------------------------------------------------------------
+  # SECTION 1: DETERMINISTIC FACT SET
+  # These are verifiable facts from public GitHub. Any AI can check them.
+  # ---------------------------------------------------------------------------
+  deterministic_facts:
+    - id: "FACT-001"
+      claim: "Minecraft 1.21 replaced NBT item storage with Data Components"
+      source: "https://minecraft.wiki/w/Data_component_format"
+      verification: "Check Minecraft wiki or any 1.21 changelog"
+      falsifies_if: "Minecraft 1.21 still uses NBT for item storage"
+
+    - id: "FACT-002"
+      claim: "Schema1460 (V1460) defines block entity type templates for the DFU"
+      source: "net.minecraft.util.datafix.schemas.V1460 (decompiled MC source)"
+      verification: "Decompile MC 1.21.1 jar, read V1460.registerBlockEntities()"
+      falsifies_if: "V1460 does not contain registerBlockEntities method"
+
+    - id: "FACT-003"
+      claim: "Farmer's Delight Cooking Pot stores items at path Inventory.Items"
+      source: "https://github.com/vectorwing/FarmersDelight (CookingPotBlockEntity.java)"
+      verification: "Clone repo, grep for 'Inventory' in CookingPotBlockEntity"
+      falsifies_if: "Cooking Pot stores items at a different NBT path"
+
+    - id: "FACT-004"
+      claim: "vectorwing confirmed V1460 mixin alone does NOT fix Count for Cooking Pot"
+      source: "https://github.com/vectorwing/FarmersDelight/issues/1262"
+      verification: "Read vectorwing's comment from April 2026"
+      exact_quote: >
+        "While it manages to cross over the meal and container stacks,
+        I couldn't get the stack size (Count) to transfer over."
+      falsifies_if: "vectorwing said V1460 alone fixed Count"
+
+    - id: "FACT-005"
+      claim: "Patbox provided 3 DFU mixin files in the brewery mod"
+      source: "https://github.com/Patbox/brewery/tree/main/src/main/java/eu/pb4/brewery/mixin/datafixer"
+      verification: "List files in that directory"
+      expected_files:
+        - "V1460Mixin.java"
+        - "V3818_3Mixin.java"
+        - "ItemStackComponizationFix.java"
+      falsifies_if: "Fewer than 3 DFU mixin files exist in that directory"
+
+    - id: "FACT-006"
+      claim: "The reinforced-chests mod has a working fix for the same class of bug"
+      source: "https://github.com/Aton-Kish/reinforced-chests/pull/73/commits/c70e3eb"
+      verification: "Read the commit diff"
+      falsifies_if: "The commit does not contain DFU mixin code"
+
+  # ---------------------------------------------------------------------------
+  # SECTION 2: CROSS-MODEL AUDIT QUESTIONS
+  # Each question has ONE correct answer derivable from the facts above.
+  # Any AI given these facts must produce the same answer.
+  # Disagreement = gap in the fix or gap in the AI's reasoning.
+  # ---------------------------------------------------------------------------
+  audit_questions:
+    - id: "AQ-001"
+      question: >
+        Given FACT-004 (vectorwing confirmed V1460 alone does not fix Count),
+        is a fix consisting of ONLY a V1460Mixin sufficient to resolve
+        the Cooking Pot stack size issue?
+      correct_answer: "NO"
+      derivation: "FACT-004 is direct empirical evidence from the maintainer"
+      falsifies_if: "Any AI says YES without refuting FACT-004"
+
+    - id: "AQ-002"
+      question: >
+        Given FACT-005 (Patbox brewery has 3 DFU mixins), what is the
+        minimum number of mixin files needed for a complete DFU fix?
+      correct_answer: "3 (V1460, V3818_3, ItemStackComponentizationFix)"
+      derivation: "FACT-005 shows the reference implementation uses 3 layers"
+      falsifies_if: "Any AI says 1 without explaining why Patbox's 3-file pattern is unnecessary"
+
+    - id: "AQ-003"
+      question: >
+        The Count field in NBT is stored as TAG_Byte (1 byte, max 127).
+        The count component in Data Components is stored as int (4 bytes).
+        Is the conversion c_i = (int) c_b lossless for valid Minecraft
+        stack sizes (1-127)?
+      correct_answer: "YES — byte to int widening is lossless for all values 0-127"
+      derivation: >
+        Java byte range is -128 to 127. Minecraft Count is 1-127.
+        int range is -2^31 to 2^31-1. Widening preserves value.
+      falsifies_if: "Any AI claims data loss in byte-to-int widening for positive values"
+
+    - id: "AQ-004"
+      question: >
+        If a Cooking Pot block entity is registered in V1460 but NOT in
+        V3818_3, what happens to the Count field during world upgrade?
+      correct_answer: >
+        The DFU finds the items (V1460 tells it where they are) but does
+        not convert Count from TAG_Byte to the count component (V3818_3
+        handles component conversion). Count defaults to 1.
+      derivation: "FACT-004 is empirical proof of exactly this scenario"
+      falsifies_if: "Any AI claims V1460 alone handles component conversion"
+
+    - id: "AQ-005"
+      question: >
+        Is the fix idempotent? If applied to a world that was already
+        on 1.21 (never upgraded from 1.20), does it corrupt data?
+      correct_answer: >
+        YES, the fix is idempotent. The DFU only runs data fixers when
+        the world's DataVersion is less than the target version. A world
+        already on 1.21 has the correct DataVersion, so the fixers are
+        skipped entirely. No corruption.
+      derivation: "DFU version gating is a core Minecraft mechanism"
+      falsifies_if: "Any AI claims the fix could corrupt existing 1.21 worlds"
+
+    - id: "AQ-006"
+      question: "Does this fix involve any floating-point arithmetic?"
+      correct_answer: >
+        NO. Count is TAG_Byte (integer) to int (integer). No float
+        operations anywhere in the data path. The fix is purely
+        type-template registration and integer widening.
+      derivation: "Inspection of all 3 mixin files shows no float types"
+      falsifies_if: "Any AI identifies float arithmetic in the fix"
+
+  # ---------------------------------------------------------------------------
+  # SECTION 3: CROSS-MODEL AUDIT PROMPT
+  # Copy-paste this to any cloud AI. Their answers to AQ-001 through
+  # AQ-006 must match the correct_answer fields above.
+  # ---------------------------------------------------------------------------
+  audit_prompt: |
+    You are auditing a proposed fix for a Minecraft mod data migration bug.
+    Please answer each question independently based on the facts provided.
+
+    CONTEXT:
+    - Minecraft 1.21 replaced NBT item storage with Data Components.
+    - The Farmer's Delight mod's Cooking Pot stores items at the NBT path:
+      BlockEntityTag -> Inventory -> Items -> [list of item stacks]
+    - The vanilla DataFixer (DFU) converts item data during world upgrade,
+      but only for block entities explicitly registered in the DFU schema.
+    - The Cooking Pot was NOT registered, so its items lose their Count
+      (stack size resets to 1) and other NBT data after upgrading from
+      1.20.1 to 1.21.
+
+    EVIDENCE:
+    - The mod maintainer (vectorwing) tried adding ONLY a V1460 mixin
+      (which registers the block entity structure). Result: items appeared
+      but Count still reset to 1. His exact words: "While it manages to
+      cross over the meal and container stacks, I couldn't get the stack
+      size (Count) to transfer over."
+    - A reference implementation (Patbox/brewery) uses THREE mixin files:
+      V1460Mixin.java, V3818_3Mixin.java, ItemStackComponentizationFixMixin.java
+    - Another mod (reinforced-chests) fixed the same class of bug with a
+      similar multi-file approach.
+
+    PROPOSED FIX: Three mixin files:
+    1. V1460Mixin -- registers Cooking Pot in Schema1460.registerBlockEntities
+       with DSL.optionalFields("Inventory", DSL.optionalFields("Items",
+       DSL.list(References.ITEM_STACK.in(schema))))
+    2. V3818_3Mixin -- registers Cooking Pot in V3818_3's component type
+       registration lambda so Count is converted from TAG_Byte to int
+    3. ItemStackComponentizationFixMixin -- handles Count byte-to-int
+       promotion for Cooking Pot items stored as item stacks (not placed)
+
+    QUESTIONS:
+    Q1: Is V1460Mixin alone sufficient to fix the Count issue? (YES/NO)
+    Q2: How many mixin files are needed for a complete fix?
+    Q3: Is byte-to-int conversion lossless for Minecraft stack sizes (1-127)?
+    Q4: What happens if V1460 is present but V3818_3 is missing?
+    Q5: Can this fix corrupt existing 1.21 worlds that never upgraded?
+    Q6: Does this fix involve any floating-point arithmetic?
+
+    Please answer each question with a brief explanation.
+
+  # ---------------------------------------------------------------------------
+  # SECTION 4: EXPECTED AUDIT RESULTS
+  # ---------------------------------------------------------------------------
+  expected_results:
+    Q1: "NO -- vectorwing empirically proved this"
+    Q2: "3 -- V1460, V3818_3, ItemStackComponentizationFix"
+    Q3: "YES -- widening conversion, no data loss"
+    Q4: "Items found but Count defaults to 1 (no component conversion)"
+    Q5: "NO -- DFU version gating skips fixers for current-version worlds"
+    Q6: "NO -- integer-only data path"
+
+  # ---------------------------------------------------------------------------
+  # SECTION 5: VERIFICATION PROTOCOL
+  # How to run the cross-model audit
+  # ---------------------------------------------------------------------------
+  verification_protocol:
+    step_1: "Copy the audit_prompt above"
+    step_2: "Paste to at least 3 different cloud AIs (e.g., ChatGPT, Claude, DeepSeek)"
+    step_3: "Record each AI's answers to Q1-Q6"
+    step_4: "Compare against expected_results"
+    step_5: "If all AIs agree with expected_results -- fix is externally verified"
+    step_6: "If any AI disagrees -- investigate the disagreement"
+    step_7: "Record results in verification_report.json"
+
+    pass_condition: "All 6 answers match expected_results across >= 3 models"
+    fail_condition: "Any answer differs AND the differing AI provides a valid derivation"
+
+    cross_ref:
+      domain: "D_CROSS_MODEL_BENCHMARKS"
+      invariant: "Same problem must produce the same proof hash regardless of which model solves it"
+      pattern: "CLOUD_AI_VERIFICATION.py"
+      ci_pattern: "pr39-peano-sovereignty.yml -> verify-sovereignty-parity"
