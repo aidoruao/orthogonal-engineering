@@ -5649,7 +5649,13 @@
     "critical_wardens": 0,
     "last_health_check": "2026-01-26T01:35:00.678376",
     "health_check_count": 4,
-    "overall_health": "healthy"
+    "overall_health": "healthy",
+    "consistency_ratio": null,
+    "verified_claims": 0,
+    "total_claims": 0,
+    "entropy_bits": null,
+    "convergence_score": null,
+    "objective_score": null
   },
   "autonomy_policy": {
     "schema_version": "1.0",
@@ -5705,6 +5711,59 @@
       "no_warden_file_creation": true,
       "registry_backup_before_write": true,
       "max_writes_per_run": 5
+    },
+    "moral_anchor": {
+      "schema_version": "1.0",
+      "forbidden_convergence": [
+        "deception",
+        "coercion",
+        "irreversible_harm",
+        "epistemic_corruption"
+      ],
+      "detection_method": "invariant_violation",
+      "action_on_detection": "freeze_autonomy",
+      "current_violations": [],
+      "frozen": false,
+      "frozen_at": null,
+      "frozen_reason": null
+    },
+    "drift_detection": {
+      "schema_version": "1.0",
+      "enabled": true,
+      "metric": "abs(observed - expected) / max(expected, 1)",
+      "warning_threshold": 0.1,
+      "critical_threshold": 0.3,
+      "current_drift": {},
+      "last_evaluated_at": null
+    },
+    "approval_workflow": {
+      "schema_version": "1.0",
+      "mode": "github_pr",
+      "required_approvers": 1,
+      "approval_label": "approved-autonomy",
+      "expiry_hours": 168,
+      "pending_approvals": []
+    },
+    "objective_function": {
+      "schema_version": "1.0",
+      "maximize": [
+        "truth_alignment",
+        "system_stability",
+        "recoverability"
+      ],
+      "minimize": [
+        "false_claims",
+        "irreversible_actions",
+        "unbounded_autonomy"
+      ],
+      "equilibrium_conditions": {
+        "all_invariants_satisfied": false,
+        "all_claims_verifiable": false,
+        "no_unnecessary_proposals": false,
+        "no_drift_detected": false
+      },
+      "convergence_reached": false,
+      "last_evaluated_at": null
     }
   }
 }
