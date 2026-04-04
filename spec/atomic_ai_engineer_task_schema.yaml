@@ -2183,3 +2183,215 @@ productive_chatgpt_questions:
     deterministic facts, those facts are useful at L2/L3.
     If it says "I don't know", that's also useful — it defines
     the boundary of what training data covers.
+
+# =============================================================================
+# DEEPSEEK/ZED AI ARTIFACT INSPECTION — COMMIT 83c72a99 (2026-04-04)
+# =============================================================================
+# Source: DeepSeek session executed by user in Zed AI IDE, results committed
+# Commit: 83c72a99 ("Update print statement from 'Hello' to 'Goodbye'")
+# File: "zed ai pr 90# work farmer delight operation rescue issue 135# ai thread 4-3-26 1a"
+# Lines: 4199 (full session transcript, raw artifact inspection output)
+# Methodology: Empirical — direct artifact inspection (L3_empirical_mod_behavior)
+# Epistemic status: Class A (tool-accessed artifacts, no inference)
+# Cross-references:
+#   - productive_chatgpt_questions (DFU-Q1/Q2/Q3 now answered by inspection)
+#   - secular_developer_patch (superseded — all 3 files already exist)
+#   - correction_absorption_taxonomy_entry (demonstrates Class D boundary)
+# =============================================================================
+
+deepseek_artifact_inspection:
+  commit: "83c72a99"
+  date: "2026-04-04"
+  source_file: "zed ai pr 90# work farmer delight operation rescue issue 135# ai thread 4-3-26 1a"
+  lines: 4199
+  epistemic_class: "A — direct tool inspection, no inference required"
+
+  # ---------------------------------------------------------------------------
+  # DFU-Q1 RESOLVED: V3818_3 lambda method name
+  # ---------------------------------------------------------------------------
+  dfu_q1_resolved:
+    question_id: "DFU-Q1"
+    status: "RESOLVED_BY_INSPECTION"
+    answer: "lambda$registerTypes$0"
+    source: >
+      vectorwing's own V3818_3Mixin.java on dev-1.21.1/1.3:
+      @ModifyArg(method = "lambda$registerTypes$0", at = @At(value = "INVOKE",
+      target = "Lcom/mojang/datafixers/DSL;optionalFields(...)..."))
+    popperian_status: "FALSIFIED — answer obtained from artifact, not from ChatGPT training data"
+    note: "ChatGPT was not needed for this answer. Class A inspection resolved it."
+
+  # ---------------------------------------------------------------------------
+  # DFU-Q2 RESOLVED: Does ItemStackComponentizationFix need a separate mixin?
+  # ---------------------------------------------------------------------------
+  dfu_q2_resolved:
+    question_id: "DFU-Q2"
+    status: "RESOLVED_BY_INSPECTION"
+    answer: >
+      vectorwing already wrote ItemStackComponentizationFixMixin.java targeting
+      fixItemStack() at @At("HEAD"). The method does NOT re-run on components set
+      inside its own execution. vectorwing confirmed this limitation empirically
+      with the "// NOT WORKING?" comment on the meal extraction block.
+    source: "FarmersDelight dev-1.21.1/1.3, common/mixin/ItemStackComponentizationFixMixin.java"
+    popperian_status: "FALSIFIED — answer obtained from artifact"
+
+  # ---------------------------------------------------------------------------
+  # DFU-Q3 RESOLVED: reinforced-chests mixin targets (with commit hash correction)
+  # ---------------------------------------------------------------------------
+  dfu_q3_resolved:
+    question_id: "DFU-Q3"
+    status: "RESOLVED_BY_INSPECTION"
+    commit_hash_correction:
+      wrong: "c70e3eb"
+      correct: "3ec8866"
+      note: "Commit hash c70e3eb in DFU-Q3 and secular_developer_patch was incorrect"
+    answer: >
+      reinforced-chests (commit 3ec8866) has exactly 2 datafixer mixin files:
+      1. Schema1460Mixin.java — @Mixin(Schema1460.class),
+         @Inject(method = "registerBlockEntities", at = @At("RETURN"), cancellable = true)
+      2. ItemStackComponentizationFixMixin.java — @Mixin(ItemStackComponentizationFix.class),
+         @Inject(method = "fixBlockEntityData", at = @At("RETURN"), cancellable = true)
+      NO V3818_3 mixin exists in reinforced-chests.
+    source: "reinforced-chests repo, commit 3ec8866"
+    popperian_status: "FALSIFIED — answer obtained from artifact"
+
+  # ---------------------------------------------------------------------------
+  # VECTORWING'S EXISTING FILES (all 3 already in dev-1.21.1/1.3)
+  # ---------------------------------------------------------------------------
+  vectorwing_existing_files:
+    branch: "dev-1.21.1/1.3"
+    discovery: >
+      All three mixin files proposed in secular_developer_patch already exist
+      in vectorwing's dev branch. They are registered in farmersdelight.mixins.json.
+
+    files_found:
+      - path: "common/mixin/V1460Mixin.java"
+        status: "COMPLETE"
+        target_class: "V1460"
+        target_method: "registerBlockEntities()"
+        injection_point: "@At(RETURN)"
+        registers:
+          - "farmersdelight:stove (Inventory.Items)"
+          - "farmersdelight:cutting_board (Inventory.Items)"
+          - "farmersdelight:skillet (Inventory.Items)"
+          - "farmersdelight:cooking_pot (Inventory.Items + Container)"
+          - "farmersdelight:cabinet (flat Items)"
+          - "farmersdelight:basket (flat Items)"
+        assessment: "structurally correct — identical to secular_developer_patch File 1"
+
+      - path: "common/mixin/V3818_3Mixin.java"
+        status: "COMPLETE"
+        target_class: "V3818_3"
+        target_method: "lambda$registerTypes$0"
+        injection_type: "@ModifyArg"
+        adds_components:
+          - "farmersdelight:meal -> References.ITEM_STACK"
+          - "farmersdelight:container -> References.ITEM_STACK"
+        assessment: "structurally correct — identical to secular_developer_patch File 2"
+
+      - path: "common/mixin/ItemStackComponentizationFixMixin.java"
+        status: "BUG_PRESENT"
+        target_class: "ItemStackComponentizationFix"
+        target_method: "fixItemStack()"
+        injection_point: "@At(HEAD)"
+        working_block: >
+          data.setComponent("farmersdelight:container", subTag.get("Container"));
+          // Container (bowl/bucket) transfers correctly
+        broken_block: >
+          List<Dynamic<?>> list = subTag.get("Inventory").get("Items")
+              .asList(listTag -> listTag.remove("Slot"));
+          if (!list.isEmpty()) {
+              data.setComponent("farmersdelight:meal", list.getFirst());
+          }
+        vectorwing_comment: "// NOT WORKING?"
+        assessment: "BUG — meal Count does not transfer; vectorwing already identified this"
+
+    mixins_json_registered: true
+    mixins_json_entries:
+      - "ItemStackComponentizationFixMixin"
+      - "V1460Mixin"
+      - "V3818_3Mixin"
+
+  # ---------------------------------------------------------------------------
+  # SECULAR_DEVELOPER_PATCH REVISION
+  # ---------------------------------------------------------------------------
+  secular_developer_patch_revision:
+    status: "SUPERSEDED"
+    reason: >
+      secular_developer_patch (lines 777+) proposed writing 3 new mixin files
+      as the fix for Issue #135. All 3 files already exist in vectorwing's
+      dev-1.21.1/1.3 branch and are registered in mixins.json.
+      The task is NOT to write new files.
+      The task IS to debug and fix the "// NOT WORKING?" section in the existing
+      ItemStackComponentizationFixMixin.java.
+    new_task: "fix_existing_mixin_bug"
+    bug_location: >
+      FarmersDelight dev-1.21.1/1.3:
+      common/mixin/ItemStackComponentizationFixMixin.java,
+      meal extraction block (lines after "// NOT WORKING?")
+
+  # ---------------------------------------------------------------------------
+  # CRITICAL DIAGNOSTIC: fixBlockEntityData vs fixItemStack
+  # ---------------------------------------------------------------------------
+  critical_diagnostic:
+    finding: >
+      reinforced-chests targets fixBlockEntityData() — vectorwing targets fixItemStack().
+      These are different methods with different semantics.
+    method_comparison:
+      reinforced_chests:
+        method: "fixBlockEntityData"
+        injection: "@At(RETURN), cancellable = true"
+        context: >
+          Called once per block entity item. Receives the full BlockEntityTag
+          before component conversion. Has access to the complete NBT tree.
+      vectorwing:
+        method: "fixItemStack"
+        injection: "@At(HEAD)"
+        context: >
+          Called per individual item stack during componentization.
+          The BlockEntityTag sub-items have not been individually upgraded yet.
+          The Inventory.Items path may resolve differently at this stage.
+    hypothesis: >
+      vectorwing's "// NOT WORKING?" bug may be caused by targeting fixItemStack
+      instead of fixBlockEntityData. At fixItemStack HEAD, the BlockEntityTag
+      context is present but the Inventory.Items sub-stacks have not yet been
+      individually processed by the DFU — meaning the path
+      subTag.get("Inventory").get("Items") may resolve to an empty or malformed
+      list at that point in the pipeline.
+      Switching to fixBlockEntityData (as reinforced-chests does) would provide
+      the full NBT context at the correct pipeline stage.
+    falsifies_if: >
+      Switching the @Inject target from fixItemStack to fixBlockEntityData and
+      adjusting the method signature resolves the meal Count not transferring.
+      If the bug persists after the method switch, the hypothesis is falsified
+      and a different cause must be identified.
+    popperian_status: "OPEN — hypothesis generated, not yet tested"
+    next_action: >
+      Propose patch to vectorwing's ItemStackComponentizationFixMixin.java:
+      change @Inject(method = "fixItemStack") to @Inject(method = "fixBlockEntityData")
+      with matching method signature changes. Test against a 1.20.1 world with
+      a Cooking Pot containing a stacked meal item. Verify Count transfers.
+
+  # ---------------------------------------------------------------------------
+  # COOKING POT NBT STRUCTURE (from CookingPotBlockEntity.saveAdditional)
+  # ---------------------------------------------------------------------------
+  cooking_pot_nbt_structure:
+    source: "FarmersDelight dev-1.21.1/1.3, CookingPotBlockEntity.java"
+    structure: >
+      BlockEntityTag:
+        Inventory:     (ItemStackHandler NBT wrapper)
+          Items:       (list of item stacks with Slot field)
+            - {Slot: 0b, id: "...", Count: Xb}   (ingredient slot 0)
+            - {Slot: 1b, id: "...", Count: Xb}   (ingredient slot 1)
+            ...
+            - {Slot: Nb, id: "...", Count: Xb}   (output/meal slot)
+        Container:     (bowl/bucket item — the serving vessel)
+          id: "minecraft:bowl"
+          Count: 1b
+        CookTime: 0
+        CookTimeTotal: 200
+    meal_storage_note: >
+      The meal output is stored in Inventory.Items at a specific slot index,
+      NOT at index 0. list.getFirst() in vectorwing's code likely retrieves
+      the first ingredient rather than the meal output item.
+      This may be a SECOND bug in the meal extraction, compounding the
+      fixItemStack vs fixBlockEntityData method targeting issue.
