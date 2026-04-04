@@ -378,28 +378,63 @@ test_case:
     affected_files:
       - "src/main/java/.../mixin/datafixer/Schema1460Mixin.java"
     affected_functions:
-      - "registerBlockEntities (data fixer schema registration)"
+      - "V1460.registerBlockEntities (block entity DFU registration — primary fix)"
+      - "V3818_3.registerTypes lambda$registerTypes$0 (component type registration)"
+      - "ItemStackComponentizationFix.fixItemStack (cooking pot item Count conversion)"
     data_flow: >
-      World load → DataFixer → Schema1460 → registerBlockEntities →
-      Cooking Pot entity → Inventory → Items → (Count field dropped)
+      CASE 1 — Placed block entity (most common; world upgrade):
+        World load → DataFixer → V1460.registerBlockEntities →
+        [cooking_pot not registered] → Inventory.Items skipped →
+        Count field dropped → stack size reset to 1
+      CASE 2 — Cooking Pot stored as item (edge case):
+        Item stack processed by ItemStackComponentizationFix →
+        BlockEntityTag.Inventory.Items[Slot 6] not moved to farmersdelight:meal component →
+        Count lost because DFU does not re-run ItemStackComponentizationFix
+        on components set inside fixItemStack
     reference_implementation: >
-      https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java
+      https://github.com/Patbox/brewery/tree/main/src/main/java/eu/pb4/brewery/mixin/datafixer
+      (V1460Mixin.java, V3818_3Mixin.java, ItemStackComponizationFix.java — confirmed working by Patbox)
+      Patbox comment in issue: https://github.com/vectorwing/FarmersDelight/issues/1262#issuecomment-4160029492
+      vectorwing WIP code: https://github.com/vectorwing/FarmersDelight/tree/dev-1.21.1/1.3
+    ontological_paradox: >
+      FALSE SUFFICIENCY: V1460 registration alone is necessary but NOT sufficient.
+      vectorwing confirmed in issue #1262 (2026-04-01): "it manages to cross over
+      the meal and container stacks, I couldn't get the stack size (Count) to transfer over."
+      Three classes are required (confirmed by Patbox): V1460, V3818_3, ItemStackComponentizationFix.
+      The original PR #90 schema proposed only V1460 — this is the corrected complete fix.
   code_fix:
-    patch_format: "unified_diff"
-    description: >
-      Register Cooking Pot block entity in the data fixer schema with
-      nested Inventory.Items path pointing to References.ITEM_STACK:
-
-      .register(map, farmersdelight$mod("cooking_pot"), string ->
-          DSL.optionalFields(
-              "Inventory",
-              DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema)))
-          )
-      );
+    patch_format: "file_changes"
+    files:
+      - path: "src/main/java/vectorwing/farmersdelight/common/mixin/V1460Mixin.java"
+        action: "create"
+        description: >
+          Registers all FD block entities (stove, cutting_board, skillet,
+          cooking_pot, cabinet, basket) in the DFU so Count and all item
+          data are migrated during world upgrade. The cooking_pot registration
+          uses DSL.list() (required) and also registers Container as ITEM_STACK.
+      - path: "src/main/java/vectorwing/farmersdelight/common/mixin/V3818_3Mixin.java"
+        action: "create"
+        description: >
+          Registers farmersdelight:meal and farmersdelight:container as ITEM_STACK
+          component types in the 1.21 component schema, so the DFU knows their
+          structure when the cooking pot is stored as an item.
+      - path: "src/main/java/vectorwing/farmersdelight/common/mixin/ItemStackComponentizationFixMixin.java"
+        action: "create"
+        description: >
+          Moves meal and container data from BlockEntityTag into the new component
+          format when a cooking pot is stored as an item. The Count field must be
+          manually converted from old TAG_Byte (Count: 16b) to new int (count: 16)
+          because the DFU does not re-run ItemStackComponentizationFix on components
+          set inside fixItemStack.
+      - path: "src/main/resources/farmersdelight.mixins.json"
+        action: "modify"
+        description: "Add V1460Mixin, V3818_3Mixin, ItemStackComponentizationFixMixin to mixins array"
   falsification_conditions:
-    - "Place items with Count > 1 in a Cooking Pot in MC 1.20.1, upgrade to 1.21.1, verify Count is preserved"
+    - "Place items with Count > 1 in a Cooking Pot in MC 1.20.1 (placed in world), upgrade to 1.21.1, verify Count is preserved — tests V1460Mixin"
+    - "Place a Cooking Pot containing 16 servings in a chest as an item in MC 1.20.1, upgrade to 1.21.1, verify meal count is 16 — tests ItemStackComponentizationFixMixin Count conversion"
     - "Place enchanted items in a Cooking Pot in MC 1.20.1, upgrade to 1.21.1, verify enchantments are preserved"
     - "Existing 1.21.1 worlds with Cooking Pots must not be corrupted by the fix"
+    - "V1460 registration alone (without ItemStackComponentizationFix) FAILS the item-in-chest test — this is the ontological paradox falsification"
 
 # =============================================================================
 # ATOMIC TASK LIST — Numbered tasks with pass/fail tests
@@ -430,54 +465,192 @@ atomic_task_list:
       fail: "No file found — data fixer layer is absent; escalate before proceeding"
 
   - id: "T-003"
-    name: "CONFIRM_COOKING_POT_IS_UNREGISTERED"
+    name: "CONFIRM_FD_BLOCK_ENTITIES_UNREGISTERED"
     action: >
-      Confirm that 'cooking_pot' block entity is NOT currently registered
-      in the data fixer schema (proving the bug exists).
-    command: "grep -r 'cooking_pot' src/ --include='*.java'"
+      Confirm that FD block entities (cooking_pot, stove, cutting_board, skillet,
+      cabinet, basket) are NOT registered in any data fixer mixin.
+      Search for V1460Mixin and any DFU registration of FD entity IDs.
+    command: "grep -r 'V1460\\|cooking_pot\\|farmersdelight.*register' src/ --include='*.java'"
     test:
-      condition: "cooking_pot does NOT appear in any data fixer registration block"
-      pass: "Bug confirmed: cooking_pot is absent from data fixer registration"
-      fail: "cooking_pot IS already registered — bug may already be fixed upstream"
+      condition: "No V1460Mixin exists and farmersdelight block entities are absent from DFU registration"
+      pass: "Bug confirmed: no DFU mixin registers FD block entities"
+      fail: "V1460Mixin already exists — check if it is complete (all 5 block entities + correct DSL)"
 
   - id: "T-004"
-    name: "IDENTIFY_REFERENCE_IMPLEMENTATION"
+    name: "STUDY_REFERENCE_IMPLEMENTATIONS"
     action: >
-      Retrieve the reference implementation from PolyDecorations to understand
-      the DSL.optionalFields pattern for nested Inventory.Items registration.
-    url: "https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java"
+      Read Patbox's Brewery reference implementation and vectorwing's own WIP code.
+      Three files are required: V1460Mixin, V3818_3Mixin, ItemStackComponentizationFixMixin.
+      Patbox confirmed all three in: https://github.com/vectorwing/FarmersDelight/issues/1262#issuecomment-4160029492
+    references:
+      - "https://github.com/Patbox/brewery/blob/main/src/main/java/eu/pb4/brewery/mixin/datafixer/V1460Mixin.java"
+      - "https://github.com/vectorwing/FarmersDelight/tree/dev-1.21.1/1.3 (vectorwing WIP)"
     test:
-      condition: "Agent can read and summarize the DSL.optionalFields nesting pattern from the file"
-      pass: "Pattern confirmed: DSL.optionalFields('Inventory', DSL.optionalFields('Items', DSL.list(References.ITEM_STACK.in(schema))))"
-      fail: "URL unreachable or file does not contain the nesting pattern"
+      condition: "Agent can describe the role of each of the three mixin classes"
+      pass: |
+        V1460Mixin: registers block entities in DFU schema (placed-in-world case)
+        V3818_3Mixin: registers component types so DFU knows farmersdelight:meal is ITEM_STACK
+        ItemStackComponentizationFixMixin: moves BlockEntityTag to components when cooking pot is an item;
+          must manually convert Count: TAG_Byte → count: int (DFU does not re-run on set components)
+      fail: "Agent cannot explain why all three files are needed"
 
   - id: "T-005"
-    name: "CREATE_SCHEMA1460_MIXIN"
+    name: "CREATE_THREE_DFU_MIXIN_FILES"
     action: >
-      Create or modify the data fixer mixin to register the cooking_pot block
-      entity with nested Inventory.Items → ITEM_STACK path.
-    target_file: "src/main/java/.../mixin/datafixer/Schema1460Mixin.java"
-    patch: |
-      @Mixin(value = Schema1460.class, remap = false)
-      public abstract class Schema1460Mixin {
+      Create all three mixin files and update farmersdelight.mixins.json.
+      File locations follow the existing mixin package: vectorwing.farmersdelight.common.mixin.
+      CRITICAL: The lambda method name in V3818_3Mixin is 'lambda$registerTypes$0'
+      for NeoForge 1.21.1 (it was renamed to 'components' in NeoForge 26.1+).
+    files:
+      - "src/main/java/vectorwing/farmersdelight/common/mixin/V1460Mixin.java"
+      - "src/main/java/vectorwing/farmersdelight/common/mixin/V3818_3Mixin.java"
+      - "src/main/java/vectorwing/farmersdelight/common/mixin/ItemStackComponentizationFixMixin.java"
+      - "src/main/resources/farmersdelight.mixins.json"
+    patch_v1460: |
+      package vectorwing.farmersdelight.common.mixin;
+
+      import com.mojang.datafixers.DSL;
+      import com.mojang.datafixers.schemas.Schema;
+      import com.mojang.datafixers.types.templates.TypeTemplate;
+      import net.minecraft.util.datafix.fixes.References;
+      import net.minecraft.util.datafix.schemas.V1460;
+      import org.spongepowered.asm.mixin.Mixin;
+      import org.spongepowered.asm.mixin.Shadow;
+      import org.spongepowered.asm.mixin.Unique;
+      import org.spongepowered.asm.mixin.injection.At;
+      import org.spongepowered.asm.mixin.injection.Inject;
+      import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+      import vectorwing.farmersdelight.FarmersDelight;
+
+      import java.util.Map;
+      import java.util.function.Supplier;
+
+      @Mixin(V1460.class)
+      public abstract class V1460Mixin extends Schema
+      {
+          @Shadow
+          protected static void registerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {}
+
+          public V1460Mixin(int versionKey, Schema parent) {
+              super(versionKey, parent);
+          }
+
           @Inject(method = "registerBlockEntities", at = @At("RETURN"))
-          private static void farmersdelight$registerBlockEntities(
-                  Schema schema, Map<String, Supplier<TypeTemplate>> map, CallbackInfo ci) {
-              schema.register(map, "farmersdelight:cooking_pot", string ->
-                  DSL.optionalFields(
-                      "Inventory",
+          private void registerFarmersDelightBlockEntities(Schema schema, CallbackInfoReturnable<Map<String, Supplier<TypeTemplate>>> cir) {
+              var map = cir.getReturnValue();
+
+              // Workstations: store items in Inventory.Items (nested via ItemStackHandler)
+              farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("stove"));
+              farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("cutting_board"));
+              farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("skillet"));
+
+              // Cooking Pot: nested Inventory.Items + separate Container ITEM_STACK
+              schema.register(map, farmersdelight$id("cooking_pot"), p_17586_ ->
                       DSL.optionalFields(
-                          "Items",
-                          DSL.list(References.ITEM_STACK.in(schema))
-                      )
-                  )
-              );
+                              "Inventory", DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema))),
+                              "Container", References.ITEM_STACK.in(schema)
+                      ));
+
+              // Storage blocks: flat Items list (vanilla registerInventory works)
+              registerInventory(schema, map, farmersdelight$id("cabinet"));
+              registerInventory(schema, map, farmersdelight$id("basket"));
+          }
+
+          @Unique
+          private static String farmersdelight$id(String path) {
+              return FarmersDelight.MODID + ":" + path;
+          }
+
+          @Unique
+          private static void farmersdelight$registerHandlerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {
+              schema.register(map, name, string -> DSL.optionalFields("Inventory", DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema)))));
           }
       }
+    patch_v3818_3: |
+      package vectorwing.farmersdelight.common.mixin;
+
+      import com.llamalad7.mixinextras.sugar.Local;
+      import com.mojang.datafixers.schemas.Schema;
+      import com.mojang.datafixers.types.templates.TypeTemplate;
+      import com.mojang.datafixers.util.Pair;
+      import net.minecraft.util.datafix.fixes.References;
+      import net.minecraft.util.datafix.schemas.V3818_3;
+      import org.spongepowered.asm.mixin.Mixin;
+      import org.spongepowered.asm.mixin.injection.At;
+      import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+      import java.util.ArrayList;
+      import java.util.List;
+
+      @Mixin(V3818_3.class)
+      public class V3818_3Mixin
+      {
+          // NOTE: method name is the lambda name in NeoForge 1.21.1.
+          // In NeoForge 26.1+ it was renamed to "components".
+          // Use IntelliJ View > Show Bytecode to verify the lambda name for your build.
+          @ModifyArg(method = "lambda$registerTypes$0", at = @At(value = "INVOKE", target = "Lcom/mojang/datafixers/DSL;optionalFields([Lcom/mojang/datafixers/util/Pair;)Lcom/mojang/datafixers/types/templates/TypeTemplate;"))
+          private static Pair<String, TypeTemplate>[] addFDCustomComponents(Pair<String, TypeTemplate>[] components, @Local(argsOnly = true) Schema schema) {
+              var list = new ArrayList<>(List.of(components));
+              list.add(Pair.of("farmersdelight:meal", References.ITEM_STACK.in(schema)));
+              list.add(Pair.of("farmersdelight:container", References.ITEM_STACK.in(schema)));
+              return list.toArray(components);
+          }
+      }
+    patch_item_stack_fix: |
+      package vectorwing.farmersdelight.common.mixin;
+
+      import com.mojang.serialization.Dynamic;
+      import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
+      import org.spongepowered.asm.mixin.Mixin;
+      import org.spongepowered.asm.mixin.injection.At;
+      import org.spongepowered.asm.mixin.injection.Inject;
+      import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+      import java.util.List;
+
+      @SuppressWarnings({"rawtypes"})
+      @Mixin(ItemStackComponentizationFix.class)
+      public class ItemStackComponentizationFixMixin
+      {
+          @Inject(method = "fixItemStack", at = @At("HEAD"))
+          private static void fixCustomStacks(ItemStackComponentizationFix.ItemStackData data, Dynamic tag, CallbackInfo ci) {
+              if (data.is("farmersdelight:cooking_pot")) {
+                  data.fixSubTag("BlockEntityTag", false, subTag -> {
+                      // Container: count is always 1 for bowl/bottle containers
+                      data.setComponent("farmersdelight:container", subTag.get("Container"));
+
+                      // Meal: manually convert Count (old TAG_Byte) to count (new TAG_Int).
+                      // The DFU does NOT re-run ItemStackComponentizationFix on components
+                      // that are set inside fixItemStack — the Count would be silently dropped
+                      // (reset to 1) without this explicit conversion.
+                      List<Dynamic<?>> items = subTag.get("Inventory").get("Items")
+                              .asList(itemTag -> {
+                                  int count = itemTag.get("Count").asNumber(1).result()
+                                          .map(Number::intValue).orElse(1);
+                                  Dynamic<?> converted = itemTag.remove("Slot").remove("Count");
+                                  if (count > 1) {
+                                      converted = converted.set("count", converted.createInt(count));
+                                  }
+                                  return converted;
+                              });
+                      if (!items.isEmpty()) {
+                          data.setComponent("farmersdelight:meal", items.getFirst());
+                      }
+                      return subTag.remove("Container").remove("Inventory");
+                  });
+                  data.removeTag("BlockEntityTag");
+              }
+          }
+      }
+    patch_mixins_json: |
+      // In farmersdelight.mixins.json, add to "mixins" array:
+      "ItemStackComponentizationFixMixin",
+      "V1460Mixin",
+      "V3818_3Mixin",
     test:
-      condition: "The mixin file compiles without errors when ./gradlew compileJava is run"
-      pass: "BUILD SUCCESSFUL with zero compilation errors"
-      fail: "Compilation error — patch contains incorrect DSL expression or import"
+      condition: "./gradlew compileJava exits with code 0 after all three files are created"
+      pass: "BUILD SUCCESSFUL with zero compilation errors across all three mixin files"
+      fail: "Compilation error — verify lambda method name for V3818_3 (may need bytecode inspection)"
 
   - id: "T-006"
     name: "BUILD_TARGET_PROJECT"
@@ -573,7 +746,7 @@ atomic_task_list:
     name: "SUBMIT_PR_TO_TARGET_REPO"
     action: >
       Open a pull request on vectorwing/FarmersDelight with:
-      - Title: 'fix: register cooking_pot block entity in data fixer schema (fixes #1262)'
+      - Title: 'fix: register FD block entities in DFU and fix Cooking Pot item Count migration (fixes #1262)'
       - Body: copy-paste from secular_developer_patch.pr_body (see below)
       - Linked issue: #1262
     test:
@@ -588,155 +761,294 @@ atomic_task_list:
 # No internal tooling names, no theological naming.
 # Everything here is verifiable by any Java developer with a Minecraft modding
 # environment. Paste pr_body directly into the GitHub PR description field.
+#
+# CORRECTION FROM ORIGINAL PR #90 SCHEMA:
+#   The original schema proposed only a V1460 mixin (Schema1460Mixin).
+#   This is NECESSARY but NOT SUFFICIENT.
+#   vectorwing confirmed (2026-04-01): V1460 alone finds items but Count is lost.
+#   The complete fix requires THREE mixin files (confirmed by Patbox).
+#   This corrected section reflects the complete fix including the Count bug.
 # =============================================================================
 secular_developer_patch:
 
   issue_reference: "https://github.com/vectorwing/FarmersDelight/issues/1262"
   target_repository: "https://github.com/vectorwing/FarmersDelight"
-  pr_title: "fix: register cooking_pot block entity in data fixer schema (fixes #1262)"
-  timestamp: "2026-04-04T02:04:16Z"
+  pr_title: "fix: register FD block entities in DFU and fix Cooking Pot item Count migration (fixes #1262)"
+  timestamp: "2026-04-04T02:22:38Z"
 
   # ── COPY THIS BLOCK AS THE PR BODY ──────────────────────────────────────────
   pr_body: |
     ## Problem
 
     When upgrading a world from Minecraft 1.20.1 to 1.21+, items stored inside
-    a **Cooking Pot** block entity lose their stack size (Count resets to 1).
-    Enchantments and other NBT data on those items are also silently dropped.
+    Farmer's Delight block entities (Cooking Pot, Cabinets, Baskets, Stove,
+    Cutting Board, Skillet) lose their **stack size** (Count resets to 1) and
+    other NBT data. Additionally, a Cooking Pot stored as an **item** (e.g., in
+    a chest or player inventory) loses its meal's stack count on upgrade.
 
     Reported in: https://github.com/vectorwing/FarmersDelight/issues/1262
-    (Also discussed in: https://github.com/vectorwing/FarmersDelight/issues/135)
 
     ---
 
-    ## Root Cause
+    ## Root Cause — Two Separate Issues
 
-    Minecraft 1.21 migrated item data storage from NBT (`TAG_Byte Count`,
-    `TAG_String id`, etc.) to **Data Components** (`minecraft:count`,
-    `minecraft:custom_data`, etc.). This migration is handled by the vanilla
-    `DataFixer` system, specifically `Schema1460`.
+    ### Issue 1: Placed block entities (world upgrade — most common)
 
-    `Schema1460.registerBlockEntities()` must explicitly register every
-    block entity type that contains items so the data fixer knows to recurse
-    into those item stacks and convert them.
+    Minecraft 1.21 migrated item data storage from NBT to **Data Components**.
+    This migration is performed by `DataFixerUpper`, which must explicitly know
+    every block entity type that contains items. This is registered in `V1460`
+    (Minecraft's data fixer schema for block entities, introduced in 1.13).
 
-    Farmer's Delight stores Cooking Pot inventory under the path:
+    Farmer's Delight uses NeoForge's `ItemStackHandler` to store items, which
+    wraps them in an extra `Inventory` NBT layer:
 
         BlockEntityTag → Inventory → Items → [list of ITEM_STACK]
 
-    Because `farmersdelight:cooking_pot` was never registered in
-    `Schema1460.registerBlockEntities()`, the data fixer skips the entire
-    `Inventory` sub-tree. Result: item Count and all NBT data on those items
-    are silently lost during world upgrade.
+    None of the FD block entities were registered in the DFU, so the fixer
+    never traverses into `Inventory.Items`. All item data, including `Count`,
+    is silently dropped.
+
+    ### Issue 2: Cooking Pot stored as an item (edge case)
+
+    When a Cooking Pot is stored as an item (e.g., picked up by Carry On or
+    similar mods), its meal and container are stored in `BlockEntityTag`.
+    `ItemStackComponentizationFix` must move this data to the new component
+    format (`farmersdelight:meal`, `farmersdelight:container`). However, the
+    DFU **does not** re-run `ItemStackComponentizationFix` on components set
+    inside `fixItemStack`, so the `Count` field (`TAG_Byte Count`) is not
+    automatically converted to the new `int count` format — it defaults to 1.
 
     ---
 
     ## Causal Chain
 
+    **Block entity case:**
     1. Minecraft 1.21 replaces NBT item storage with Data Components.
-    2. Vanilla `DataFixer` runs `Schema1460.registerBlockEntities()` on world load.
-    3. Only block entities explicitly registered in that method are recursed into.
-    4. `farmersdelight:cooking_pot` is not registered → `Inventory.Items` is skipped.
-    5. `Count` field (stack size) is not converted → resets to default (1).
-    6. Player opens Cooking Pot after upgrade → all stack sizes show as 1.
+    2. DFU runs `V1460.registerBlockEntities()` on world load.
+    3. Only block entities explicitly registered are recursed into.
+    4. FD block entities not registered → `Inventory.Items` skipped → `Count` lost.
+
+    **Item case (Cooking Pot as item):**
+    1. `ItemStackComponentizationFix.fixItemStack()` processes the Cooking Pot item.
+    2. Meal item is moved from `BlockEntityTag.Inventory.Items` to `farmersdelight:meal`.
+    3. The moved item is raw old-format NBT: `{Count: 16b, id: "minecraft:bread"}`.
+    4. DFU does not re-run `ItemStackComponentizationFix` on the newly-set component.
+    5. `Count: 16b` (byte) is never converted to `count: 16` (int) → defaults to 1.
 
     ---
 
-    ## Fix
+    ## Fix — Three Mixin Files
 
-    Register `farmersdelight:cooking_pot` in the data fixer schema using a Mixin
-    on `Schema1460`, following the same pattern used by other mods that store
-    items in nested block entity structures.
+    Patbox confirmed the three required classes in this thread:
+    https://github.com/vectorwing/FarmersDelight/issues/1262#issuecomment-4160029492
 
-    **Reference implementation** (PolyDecorations mod — same pattern, working):
-    https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java
+    Reference implementations: https://github.com/Patbox/brewery/tree/main/src/main/java/eu/pb4/brewery/mixin/datafixer
 
-    ### New file: `src/main/java/.../mixin/datafixer/Schema1460Mixin.java`
+    ### File 1 — `V1460Mixin.java` (fixes placed block entities)
 
     ```java
-    package vectorwing.farmersdelight.mixin.datafixer;
+    package vectorwing.farmersdelight.common.mixin;
 
     import com.mojang.datafixers.DSL;
     import com.mojang.datafixers.schemas.Schema;
     import com.mojang.datafixers.types.templates.TypeTemplate;
+    import net.minecraft.util.datafix.fixes.References;
+    import net.minecraft.util.datafix.schemas.V1460;
+    import org.spongepowered.asm.mixin.Mixin;
+    import org.spongepowered.asm.mixin.Shadow;
+    import org.spongepowered.asm.mixin.Unique;
+    import org.spongepowered.asm.mixin.injection.At;
+    import org.spongepowered.asm.mixin.injection.Inject;
+    import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+    import vectorwing.farmersdelight.FarmersDelight;
+
+    import java.util.Map;
+    import java.util.function.Supplier;
+
+    @Mixin(V1460.class)
+    public abstract class V1460Mixin extends Schema
+    {
+        @Shadow
+        protected static void registerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {}
+
+        public V1460Mixin(int versionKey, Schema parent) {
+            super(versionKey, parent);
+        }
+
+        @Inject(method = "registerBlockEntities", at = @At("RETURN"))
+        private void registerFarmersDelightBlockEntities(Schema schema, CallbackInfoReturnable<Map<String, Supplier<TypeTemplate>>> cir) {
+            var map = cir.getReturnValue();
+
+            // Workstations: items in Inventory.Items (ItemStackHandler adds the Inventory wrapper)
+            farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("stove"));
+            farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("cutting_board"));
+            farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("skillet"));
+
+            // Cooking Pot: nested Inventory.Items + separate Container ITEM_STACK
+            schema.register(map, farmersdelight$id("cooking_pot"), p_17586_ ->
+                    DSL.optionalFields(
+                            "Inventory", DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema))),
+                            "Container", References.ITEM_STACK.in(schema)
+                    ));
+
+            // Storage blocks: flat Items list — vanilla registerInventory works
+            registerInventory(schema, map, farmersdelight$id("cabinet"));
+            registerInventory(schema, map, farmersdelight$id("basket"));
+        }
+
+        @Unique
+        private static String farmersdelight$id(String path) {
+            return FarmersDelight.MODID + ":" + path;
+        }
+
+        @Unique
+        private static void farmersdelight$registerHandlerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {
+            schema.register(map, name, string ->
+                    DSL.optionalFields("Inventory", DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema)))));
+        }
+    }
+    ```
+
+    ### File 2 — `V3818_3Mixin.java` (registers component types for Cooking Pot item)
+
+    ```java
+    package vectorwing.farmersdelight.common.mixin;
+
+    import com.llamalad7.mixinextras.sugar.Local;
+    import com.mojang.datafixers.schemas.Schema;
+    import com.mojang.datafixers.types.templates.TypeTemplate;
     import com.mojang.datafixers.util.Pair;
     import net.minecraft.util.datafix.fixes.References;
-    import net.minecraft.util.datafix.schemas.Schema1460;
+    import net.minecraft.util.datafix.schemas.V3818_3;
+    import org.spongepowered.asm.mixin.Mixin;
+    import org.spongepowered.asm.mixin.injection.At;
+    import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+    import java.util.ArrayList;
+    import java.util.List;
+
+    @Mixin(V3818_3.class)
+    public class V3818_3Mixin
+    {
+        // NOTE: In NeoForge 1.21.1, this method is a lambda named "lambda$registerTypes$0".
+        // In NeoForge 26.1+ it was renamed to "components". If this mixin fails to apply,
+        // use IntelliJ > View > Show Bytecode on V3818_3.class to find the correct name.
+        @ModifyArg(method = "lambda$registerTypes$0", at = @At(value = "INVOKE",
+                target = "Lcom/mojang/datafixers/DSL;optionalFields([Lcom/mojang/datafixers/util/Pair;)Lcom/mojang/datafixers/types/templates/TypeTemplate;"))
+        private static Pair<String, TypeTemplate>[] addFDCustomComponents(
+                Pair<String, TypeTemplate>[] components, @Local(argsOnly = true) Schema schema) {
+            var list = new ArrayList<>(List.of(components));
+            list.add(Pair.of("farmersdelight:meal", References.ITEM_STACK.in(schema)));
+            list.add(Pair.of("farmersdelight:container", References.ITEM_STACK.in(schema)));
+            return list.toArray(components);
+        }
+    }
+    ```
+
+    ### File 3 — `ItemStackComponentizationFixMixin.java` (fixes Cooking Pot item Count)
+
+    ```java
+    package vectorwing.farmersdelight.common.mixin;
+
+    import com.mojang.serialization.Dynamic;
+    import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
     import org.spongepowered.asm.mixin.Mixin;
     import org.spongepowered.asm.mixin.injection.At;
     import org.spongepowered.asm.mixin.injection.Inject;
     import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-    import java.util.Map;
-    import java.util.function.Supplier;
+    import java.util.List;
 
-    @Mixin(value = Schema1460.class, remap = false)
-    public abstract class Schema1460Mixin {
+    @SuppressWarnings({"rawtypes"})
+    @Mixin(ItemStackComponentizationFix.class)
+    public class ItemStackComponentizationFixMixin
+    {
+        @Inject(method = "fixItemStack", at = @At("HEAD"))
+        private static void fixCustomStacks(ItemStackComponentizationFix.ItemStackData data, Dynamic tag, CallbackInfo ci) {
+            if (data.is("farmersdelight:cooking_pot")) {
+                data.fixSubTag("BlockEntityTag", false, subTag -> {
+                    // Container: count is always 1 for bowl/bottle — no conversion needed
+                    data.setComponent("farmersdelight:container", subTag.get("Container"));
 
-        @Inject(method = "registerBlockEntities", at = @At("RETURN"))
-        private static void farmersdelight$registerBlockEntities(
-                Schema schema,
-                Map<String, Supplier<TypeTemplate>> map,
-                CallbackInfo ci) {
-
-            // Register cooking_pot so the DataFixer recurses into Inventory.Items
-            // and converts each ITEM_STACK from NBT to Data Components.
-            schema.register(map, "farmersdelight:cooking_pot", string ->
-                DSL.optionalFields(
-                    "Inventory",
-                    DSL.optionalFields(
-                        "Items",
-                        DSL.list(References.ITEM_STACK.in(schema))
-                    )
-                )
-            );
+                    // Meal: must manually convert Count (old TAG_Byte) to count (new TAG_Int).
+                    // The DFU does NOT re-run ItemStackComponentizationFix on components
+                    // set inside fixItemStack. Without this explicit conversion, Count
+                    // defaults to 1 regardless of the original stack size.
+                    List<Dynamic<?>> items = subTag.get("Inventory").get("Items")
+                            .asList(itemTag -> {
+                                int count = itemTag.get("Count").asNumber(1).result()
+                                        .map(Number::intValue).orElse(1);
+                                Dynamic<?> converted = itemTag.remove("Slot").remove("Count");
+                                if (count > 1) {
+                                    converted = converted.set("count", converted.createInt(count));
+                                }
+                                return converted;
+                            });
+                    if (!items.isEmpty()) {
+                        data.setComponent("farmersdelight:meal", items.getFirst());
+                    }
+                    return subTag.remove("Container").remove("Inventory");
+                });
+                data.removeTag("BlockEntityTag");
+            }
         }
     }
     ```
 
-    ### Mixin registration: `src/main/resources/farmersdelight.mixins.json`
-
-    Add `"mixin.datafixer.Schema1460Mixin"` to the `"mixins"` array:
+    ### `farmersdelight.mixins.json` — add three entries to "mixins" array
 
     ```json
-    {
-      "mixins": [
-        "...",
-        "mixin.datafixer.Schema1460Mixin"
-      ]
-    }
+    "mixins": [
+      "ItemStackComponentizationFixMixin",
+      "V1460Mixin",
+      "V3818_3Mixin",
+      ...existing entries...
+    ]
     ```
 
     ---
 
     ## Math / Data Integrity
 
-    The `Count` field is a signed 32-bit integer (`TAG_Int` in NBT, integer
-    component in Data Components). The fix performs no arithmetic on `Count`;
-    it only registers the path so the vanilla converter can find and migrate it.
-    There is no numeric transformation, no floating-point arithmetic, no
-    precision loss.
+    **Block entity case (V1460Mixin):**
+    Let `c ∈ ℤ` be the item count in a placed Cooking Pot. The data fixer
+    is `F: WorldState → WorldState`. Without fix: `F` skips `Inventory.Items`,
+    `Count` field absent → Minecraft defaults `c' = 1` (data loss).
+    With fix: `F` traverses `Inventory → Items → ITEM_STACK` for each item,
+    vanilla converter maps `Count: TAG_Byte(c) → count: c`, so `c' = c` (identity).
 
-    Formally: let `c ∈ ℤ` be the item count before migration. After applying
-    this fix, the data fixer produces `c' = c` (identity). Without the fix,
-    `c'` is undefined (field dropped), effectively `c' = 1` (default).
+    **Item case (ItemStackComponentizationFixMixin):**
+    The old format stores count as `Count: TAG_Byte(c)`. In new format, count
+    is `count: TAG_Int(c)`. Since the DFU does not recursively apply
+    `ItemStackComponentizationFix` to custom components set inside `fixItemStack`,
+    the conversion `Count: c_b → count: c_i` must be performed explicitly:
+    `c_i = (int) c_b` — a lossless integer promotion. No floating-point arithmetic.
+    Count remains in `ℤ` throughout. For `c = 1` (default), the field is omitted
+    (Minecraft interprets absent count as 1).
 
     ---
 
     ## How to Verify
 
+    **Block entity case (V1460Mixin):**
     1. Create a Minecraft 1.20.1 world with Farmer's Delight installed.
-    2. Place a Cooking Pot. Fill it with a stack of 64 bread.
+    2. Place a Cooking Pot. Put a stack of 64 bread in it. Fill 3 ingredient slots.
     3. Save and close the world.
-    4. Upgrade to Minecraft 1.21 with this PR's build of Farmer's Delight.
-    5. Open the world. Open the Cooking Pot.
-    6. **Expected (with fix):** Stack of 64 bread is present.
-    7. **Expected (without fix):** 1 bread is present (bug).
+    4. Open the world in Minecraft 1.21 with this build. Open the Cooking Pot.
+    5. **Expected:** 64 bread present, ingredient slots populated.
+    6. **FAIL:** Count resets to 1 — V1460Mixin not applied or DSL.list() missing.
 
-    Additional falsification conditions:
-    - Enchanted items in a Cooking Pot must retain their enchantments after upgrade.
-    - Existing 1.21.1 worlds with Cooking Pots must not be corrupted by this fix.
-    - If no items were in a Cooking Pot at upgrade time, the fix must have no effect.
+    **Item case (ItemStackComponentizationFixMixin Count fix):**
+    1. In 1.20.1, use Carry On (or similar) to pick up a Cooking Pot with 16 meal servings.
+    2. Store the cooking pot item in a chest. Save and close.
+    3. Open the world in 1.21. Open the chest. Take out the Cooking Pot. Check meal count.
+    4. **Expected:** Meal shows 16 servings.
+    5. **FAIL:** Meal count is 1 — the explicit Count conversion in ItemStackComponentizationFixMixin
+       is missing or incorrect.
+
+    **Regression (no corruption of existing 1.21 worlds):**
+    - Open a 1.21 world with existing Cooking Pots. Verify no item count changes.
+    - Create a fresh 1.21 Cooking Pot. Put 32 carrots in it. Reload. Verify count unchanged.
 
     ---
 
@@ -744,12 +1056,14 @@ secular_developer_patch:
 
     | File | Change |
     |------|--------|
-    | `src/main/java/.../mixin/datafixer/Schema1460Mixin.java` | Added (new file) |
-    | `src/main/resources/farmersdelight.mixins.json` | Added mixin class to mixins array |
+    | `src/main/java/.../common/mixin/V1460Mixin.java` | Added |
+    | `src/main/java/.../common/mixin/V3818_3Mixin.java` | Added |
+    | `src/main/java/.../common/mixin/ItemStackComponentizationFixMixin.java` | Added |
+    | `src/main/resources/farmersdelight.mixins.json` | Three mixin entries added |
 
     ---
 
-    Timestamp: 2026-04-04T02:04:16Z
+    Timestamp: 2026-04-04T02:22:38Z
     Issue: https://github.com/vectorwing/FarmersDelight/issues/1262
 
   # ── END COPY BLOCK ───────────────────────────────────────────────────────────
@@ -757,135 +1071,301 @@ secular_developer_patch:
   # Standalone sections for agents that need individual pieces:
 
   ontological_diagnosis: |
-    ROOT CAUSE
+    ROOT CAUSE — TWO DISTINCT FAILURE MODES
+
+    FAILURE MODE 1: Placed block entity (world upgrade)
     Minecraft 1.21 changed item data storage from NBT to Data Components.
-    The vanilla DataFixer (Schema1460.registerBlockEntities) only converts
-    block entity inventories that are explicitly registered. Farmer's Delight
-    never registered farmersdelight:cooking_pot in that method.
+    The vanilla DataFixer (V1460.registerBlockEntities) only converts block entity
+    inventories that are explicitly registered. Farmer's Delight never registered
+    any of its block entities (stove, cutting_board, skillet, cooking_pot, cabinet,
+    basket). Because FD uses NeoForge's ItemStackHandler, items are stored in a
+    nested path: Inventory → Items → [list], not a flat Items list. The vanilla
+    helper registerInventory() only handles flat lists — FD needs the extra nesting.
 
-    ASSUMPTION VIOLATED
-    The original code assumed the vanilla data fixer would automatically
-    recurse into all block entity sub-trees containing items. It does not —
-    it only processes explicitly registered paths.
+    FAILURE MODE 2: Cooking Pot stored as item (Count = 1 after upgrade)
+    When a Cooking Pot is stored as an item, its meal is in BlockEntityTag.Inventory.Items.
+    ItemStackComponentizationFix moves this data into the farmersdelight:meal component.
+    However, the DFU does NOT re-run ItemStackComponentizationFix on components set
+    inside fixItemStack. This means Count: TAG_Byte is never converted to count: int —
+    it is silently dropped and defaults to 1.
 
-    CAUSAL CHAIN
-    1. Minecraft 1.21 replaces NBT item storage with Data Components.
-    2. Vanilla DataFixer runs Schema1460.registerBlockEntities on world load.
-    3. Only explicitly registered block entities are recursed into.
-    4. farmersdelight:cooking_pot is not registered → Inventory.Items is skipped.
-    5. Count field (stack size) is not converted → silently lost.
-    6. Player opens Cooking Pot after upgrade → all stack sizes show as 1.
+    ASSUMPTIONS VIOLATED
+    A1: "V1460 registration alone is sufficient for complete item data migration."
+      → FALSIFIED by vectorwing's own test (2026-04-01): items found but Count = 1.
+    A2: "The vanilla DataFixer automatically recurses into all block entity sub-trees."
+      → FALSIFIED: only explicitly registered types are traversed.
+    A3: "Setting a component inside fixItemStack causes the DFU to recursively convert it."
+      → FALSIFIED: DFU does not re-run ItemStackComponentizationFix on newly-set components.
+
+    CAUSAL CHAIN (complete)
+    C1: MC 1.21 replaces NBT with Data Components.
+    C2: DataFixer runs V1460.registerBlockEntities.
+    C3: FD block entities not registered → Inventory.Items skipped (CASE 1).
+    C4: V1460Mixin registers them → DFU finds items → Count converted (CASE 1 FIXED).
+    C5: When cooking pot is an item, ItemStackComponentizationFix runs.
+    C6: Mixin moves meal item to farmersdelight:meal, but Count: TAG_Byte not converted.
+    C7: DFU does not re-process the component → Count defaults to 1 (CASE 2 UNFIXED).
+    C8: ItemStackComponentizationFixMixin explicitly converts Count: 16b → count: 16 (CASE 2 FIXED).
 
   technical_diagnosis: |
-    AFFECTED FILES
-    - src/main/java/.../mixin/datafixer/Schema1460Mixin.java  (new file)
-    - src/main/resources/farmersdelight.mixins.json           (add mixin entry)
+    AFFECTED FILES (all new)
+    1. src/main/java/vectorwing/farmersdelight/common/mixin/V1460Mixin.java
+    2. src/main/java/vectorwing/farmersdelight/common/mixin/V3818_3Mixin.java
+    3. src/main/java/vectorwing/farmersdelight/common/mixin/ItemStackComponentizationFixMixin.java
+    4. src/main/resources/farmersdelight.mixins.json (add three entries)
 
-    AFFECTED FUNCTION
-    - Schema1460.registerBlockEntities (vanilla method; fixed via Mixin injection)
+    AFFECTED FUNCTIONS
+    - V1460.registerBlockEntities (vanilla; mixin injects @RETURN)
+    - V3818_3.lambda$registerTypes$0 (vanilla; mixin @ModifyArg)
+    - ItemStackComponentizationFix.fixItemStack (vanilla; mixin injects @HEAD)
 
-    DATA FLOW (BROKEN)
-    World load → DataFixer → Schema1460.registerBlockEntities →
-    [cooking_pot not registered] → Inventory.Items skipped →
-    Count field dropped → stack size reset to 1
+    DATA FLOW — CASE 1 (placed block entity)
+    BROKEN:  World load → DFU → V1460.registerBlockEntities →
+             [no FD entries] → Inventory.Items skipped → Count lost
+    FIXED:   World load → DFU → V1460.registerBlockEntities →
+             [V1460Mixin adds FD entries] → Inventory → Items →
+             each ITEM_STACK converted by vanilla converter → Count preserved
 
-    DATA FLOW (FIXED)
-    World load → DataFixer → Schema1460.registerBlockEntities →
-    [cooking_pot registered via Mixin] →
-    Inventory → Items → each ITEM_STACK converted by vanilla converter →
-    Count preserved
+    DATA FLOW — CASE 2 (cooking pot as item)
+    BROKEN:  Cooking pot item processed by ItemStackComponentizationFix →
+             BlockEntityTag.Inventory.Items[Slot 6] moved to farmersdelight:meal →
+             raw old-format {Count: 16b, id: "minecraft:bread"} stored →
+             DFU does not re-run ItemStackComponentizationFix on component →
+             Count: 16b never converted → defaults to 1
+    FIXED:   Same as above, but mixin explicitly converts:
+             Count: 16b → count: 16 before calling setComponent →
+             farmersdelight:meal = {count: 16, id: "minecraft:bread"}
 
-    REFERENCE IMPLEMENTATION
-    https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java
+    CRITICAL DETAIL — V3818_3 lambda method name:
+    In NeoForge 1.21.1: method is "lambda$registerTypes$0" (anonymous lambda)
+    In NeoForge 26.1+: method was renamed to "components"
+    If the mixin fails to apply, use IntelliJ View > Show Bytecode to find the name.
+
+    REFERENCE IMPLEMENTATIONS
+    Patbox Brewery: https://github.com/Patbox/brewery/tree/main/src/main/java/eu/pb4/brewery/mixin/datafixer
+    vectorwing WIP (3 files already exist): https://github.com/vectorwing/FarmersDelight/tree/dev-1.21.1/1.3
 
   the_math: |
-    Let c ∈ ℤ be the item count (stack size) stored in a Cooking Pot before
-    world upgrade. The data fixer is a function F: WorldState → WorldState.
+    CASE 1 — Block entity (placed in world)
 
-    WITHOUT FIX:
-      F(cooking_pot_inventory) = {} (empty; Inventory.Items path not traversed)
-      Result: Count field absent → Minecraft defaults Count to 1
-      c' = 1  for all c ≠ 1  (data loss)
+    Let c ∈ ℤ be the item count in a Cooking Pot before upgrade.
+    Let F: WorldState → WorldState be the data fixer.
 
-    WITH FIX:
-      F(cooking_pot_inventory) = convert(Inventory.Items, ITEM_STACK_schema)
-      The vanilla ITEM_STACK converter maps Count: TAG_Int(c) → count: c
-      c' = c  (identity; no arithmetic transformation)
+    WITHOUT V1460Mixin:
+      F does not traverse Inventory.Items for farmersdelight:cooking_pot.
+      Count field absent after conversion → Minecraft default: c' = 1
+      Data loss: c' ≠ c for all c ≠ 1.
 
-    The fix performs NO arithmetic on c. It only registers the traversal path
-    so the vanilla converter can reach and migrate the Count field.
-    There is no floating-point arithmetic. Count remains in ℤ throughout.
+    WITH V1460Mixin:
+      F traverses Inventory → Items → [ITEM_STACK_1, ..., ITEM_STACK_n].
+      For each ITEM_STACK_i: vanilla converter maps Count: TAG_Byte(c_i) → count: c_i.
+      c_i' = c_i (identity). No arithmetic transformation. No float. c ∈ ℤ throughout.
 
-    Formally, the registration call:
-      schema.register(map, "farmersdelight:cooking_pot", string ->
-          DSL.optionalFields("Inventory",
-              DSL.optionalFields("Items",
-                  DSL.list(References.ITEM_STACK.in(schema)))))
+    CASE 2 — Cooking Pot as item (stored in chest/inventory)
 
-    defines a type-template T such that for any Cooking Pot block entity D:
-      T(D).Inventory.Items[i] is typed as ITEM_STACK
-    This allows F to apply the ITEM_STACK conversion rule to each item i,
-    preserving Count, id, tag, and all other fields.
+    Let m ∈ ℤ be the meal count in the Cooking Pot item before upgrade.
+    Old NBT format: {Count: m_b, id: "minecraft:bread"} where m_b is TAG_Byte.
+    New format expected by 1.21: {count: m_i, id: "minecraft:bread"} where m_i is TAG_Int.
+
+    WITHOUT Count fix in ItemStackComponentizationFixMixin:
+      setComponent("farmersdelight:meal", {Count: m_b, id: ...})
+      DFU does not re-run ItemStackComponentizationFix on the component.
+      Count: m_b not converted → Minecraft reads absent count → m' = 1 (default).
+      Data loss: m' = 1 for all m ≠ 1.
+
+    WITH Count fix:
+      count = (int) m_b    [lossless integer promotion; m_b ∈ [1, 127] ⊂ ℤ]
+      setComponent("farmersdelight:meal", {count: count, id: ...})
+      m' = count = m  (identity). No float. No precision loss. m ∈ ℤ throughout.
+
+    Special case: if m = 1, the count field is omitted (Minecraft convention).
+    Minecraft reads absent count as 1, so m' = 1 = m (identity preserved).
 
   the_code: |
-    // FILE: src/main/java/vectorwing/farmersdelight/mixin/datafixer/Schema1460Mixin.java
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FILE 1: V1460Mixin.java — registers FD block entities in DFU
+    // PATH: src/main/java/vectorwing/farmersdelight/common/mixin/V1460Mixin.java
+    // ═══════════════════════════════════════════════════════════════════════════
 
-    package vectorwing.farmersdelight.mixin.datafixer;
+    package vectorwing.farmersdelight.common.mixin;
 
     import com.mojang.datafixers.DSL;
     import com.mojang.datafixers.schemas.Schema;
     import com.mojang.datafixers.types.templates.TypeTemplate;
     import net.minecraft.util.datafix.fixes.References;
-    import net.minecraft.util.datafix.schemas.Schema1460;
+    import net.minecraft.util.datafix.schemas.V1460;
+    import org.spongepowered.asm.mixin.Mixin;
+    import org.spongepowered.asm.mixin.Shadow;
+    import org.spongepowered.asm.mixin.Unique;
+    import org.spongepowered.asm.mixin.injection.At;
+    import org.spongepowered.asm.mixin.injection.Inject;
+    import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+    import vectorwing.farmersdelight.FarmersDelight;
+
+    import java.util.Map;
+    import java.util.function.Supplier;
+
+    @Mixin(V1460.class)
+    public abstract class V1460Mixin extends Schema
+    {
+        @Shadow
+        protected static void registerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {}
+
+        public V1460Mixin(int versionKey, Schema parent) {
+            super(versionKey, parent);
+        }
+
+        @Inject(method = "registerBlockEntities", at = @At("RETURN"))
+        private void registerFarmersDelightBlockEntities(Schema schema, CallbackInfoReturnable<Map<String, Supplier<TypeTemplate>>> cir) {
+            var map = cir.getReturnValue();
+
+            farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("stove"));
+            farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("cutting_board"));
+            farmersdelight$registerHandlerInventory(schema, map, farmersdelight$id("skillet"));
+
+            schema.register(map, farmersdelight$id("cooking_pot"), p_17586_ ->
+                    DSL.optionalFields(
+                            "Inventory", DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema))),
+                            "Container", References.ITEM_STACK.in(schema)
+                    ));
+
+            registerInventory(schema, map, farmersdelight$id("cabinet"));
+            registerInventory(schema, map, farmersdelight$id("basket"));
+        }
+
+        @Unique
+        private static String farmersdelight$id(String path) {
+            return FarmersDelight.MODID + ":" + path;
+        }
+
+        @Unique
+        private static void farmersdelight$registerHandlerInventory(Schema schema, Map<String, Supplier<TypeTemplate>> map, String name) {
+            schema.register(map, name, string ->
+                    DSL.optionalFields("Inventory", DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema)))));
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FILE 2: V3818_3Mixin.java — registers farmersdelight:meal/container component types
+    // PATH: src/main/java/vectorwing/farmersdelight/common/mixin/V3818_3Mixin.java
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    package vectorwing.farmersdelight.common.mixin;
+
+    import com.llamalad7.mixinextras.sugar.Local;
+    import com.mojang.datafixers.schemas.Schema;
+    import com.mojang.datafixers.types.templates.TypeTemplate;
+    import com.mojang.datafixers.util.Pair;
+    import net.minecraft.util.datafix.fixes.References;
+    import net.minecraft.util.datafix.schemas.V3818_3;
+    import org.spongepowered.asm.mixin.Mixin;
+    import org.spongepowered.asm.mixin.injection.At;
+    import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+    import java.util.ArrayList;
+    import java.util.List;
+
+    @Mixin(V3818_3.class)
+    public class V3818_3Mixin
+    {
+        @ModifyArg(method = "lambda$registerTypes$0", at = @At(value = "INVOKE",
+                target = "Lcom/mojang/datafixers/DSL;optionalFields([Lcom/mojang/datafixers/util/Pair;)Lcom/mojang/datafixers/types/templates/TypeTemplate;"))
+        private static Pair<String, TypeTemplate>[] addFDCustomComponents(
+                Pair<String, TypeTemplate>[] components, @Local(argsOnly = true) Schema schema) {
+            var list = new ArrayList<>(List.of(components));
+            list.add(Pair.of("farmersdelight:meal", References.ITEM_STACK.in(schema)));
+            list.add(Pair.of("farmersdelight:container", References.ITEM_STACK.in(schema)));
+            return list.toArray(components);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // FILE 3: ItemStackComponentizationFixMixin.java — fixes Cooking Pot item Count
+    // PATH: src/main/java/vectorwing/farmersdelight/common/mixin/ItemStackComponentizationFixMixin.java
+    //
+    // KEY FIX: The original WIP code had "NOT WORKING?" on the Count conversion.
+    // The bug: setComponent() with raw old-format NBT does not trigger recursive
+    // DFU processing. Count: TAG_Byte must be manually renamed to count: TAG_Int.
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    package vectorwing.farmersdelight.common.mixin;
+
+    import com.mojang.serialization.Dynamic;
+    import net.minecraft.util.datafix.fixes.ItemStackComponentizationFix;
     import org.spongepowered.asm.mixin.Mixin;
     import org.spongepowered.asm.mixin.injection.At;
     import org.spongepowered.asm.mixin.injection.Inject;
     import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-    import java.util.Map;
-    import java.util.function.Supplier;
+    import java.util.List;
 
-    @Mixin(value = Schema1460.class, remap = false)
-    public abstract class Schema1460Mixin {
+    @SuppressWarnings({"rawtypes"})
+    @Mixin(ItemStackComponentizationFix.class)
+    public class ItemStackComponentizationFixMixin
+    {
+        @Inject(method = "fixItemStack", at = @At("HEAD"))
+        private static void fixCustomStacks(ItemStackComponentizationFix.ItemStackData data, Dynamic tag, CallbackInfo ci) {
+            if (data.is("farmersdelight:cooking_pot")) {
+                data.fixSubTag("BlockEntityTag", false, subTag -> {
+                    data.setComponent("farmersdelight:container", subTag.get("Container"));
 
-        @Inject(method = "registerBlockEntities", at = @At("RETURN"))
-        private static void farmersdelight$registerBlockEntities(
-                Schema schema,
-                Map<String, Supplier<TypeTemplate>> map,
-                CallbackInfo ci) {
-            schema.register(map, "farmersdelight:cooking_pot", string ->
-                DSL.optionalFields(
-                    "Inventory",
-                    DSL.optionalFields(
-                        "Items",
-                        DSL.list(References.ITEM_STACK.in(schema))
-                    )
-                )
-            );
+                    List<Dynamic<?>> items = subTag.get("Inventory").get("Items")
+                            .asList(itemTag -> {
+                                int count = itemTag.get("Count").asNumber(1).result()
+                                        .map(Number::intValue).orElse(1);
+                                Dynamic<?> converted = itemTag.remove("Slot").remove("Count");
+                                if (count > 1) {
+                                    converted = converted.set("count", converted.createInt(count));
+                                }
+                                return converted;
+                            });
+                    if (!items.isEmpty()) {
+                        data.setComponent("farmersdelight:meal", items.getFirst());
+                    }
+                    return subTag.remove("Container").remove("Inventory");
+                });
+                data.removeTag("BlockEntityTag");
+            }
         }
     }
 
-    // FILE: src/main/resources/farmersdelight.mixins.json  (diff)
-    // Add the following line to the "mixins" array:
-    //   "mixin.datafixer.Schema1460Mixin"
+    // ═══════════════════════════════════════════════════════════════════════════
+    // farmersdelight.mixins.json — add to "mixins" array
+    // ═══════════════════════════════════════════════════════════════════════════
+    // "ItemStackComponentizationFixMixin",
+    // "V1460Mixin",
+    // "V3818_3Mixin",
 
   falsification_conditions: |
     FALSIFICATION CONDITIONS (how to disprove the fix works)
 
-    1. Place a stack of 64 bread in a Cooking Pot in MC 1.20.1.
-       Upgrade world to MC 1.21. Open the Cooking Pot.
-       FIX FAILS if: stack size is 1 instead of 64.
+    1. BLOCK ENTITY — COUNT (tests V1460Mixin, primary fix):
+       In MC 1.20.1: place a Cooking Pot. Put 64 bread in an ingredient slot.
+       Upgrade to MC 1.21. Open the Cooking Pot.
+       FIX FAILS if: bread count is 1 instead of 64.
 
-    2. Place an enchanted item (e.g. diamond sword with Sharpness V) in a
-       Cooking Pot in MC 1.20.1. Upgrade to MC 1.21. Open the Cooking Pot.
-       FIX FAILS if: enchantment is absent or item reverts to unenchanted.
+    2. BLOCK ENTITY — ALL FD ENTITIES (tests V1460Mixin completeness):
+       In MC 1.20.1: fill a Cabinet with 64-stacks of items. Upgrade to 1.21.
+       FIX FAILS if: any Cabinet slot shows count = 1.
 
-    3. Open an existing 1.21 world that already has a Cooking Pot (no upgrade
-       needed). Apply this mod build.
-       FIX FAILS if: any existing 1.21 Cooking Pot inventory is corrupted
-       (item count changes, items disappear, or items duplicate).
+    3. COOKING POT AS ITEM — COUNT (tests ItemStackComponentizationFix Count fix):
+       In MC 1.20.1: use Carry On to pick up a Cooking Pot with 16 meal servings.
+       Store the Cooking Pot item in a chest. Upgrade to 1.21. Open the chest.
+       Take out the Cooking Pot. Check meal servings.
+       FIX FAILS if: meal count is 1 instead of 16.
+       (This is the original "NOT WORKING?" bug in the WIP code.)
 
-    4. Create a Cooking Pot in a fresh 1.21 world (no upgrade). Put 32 carrots
-       in it. Save and reload.
-       FIX FAILS if: carrot count changes on reload (the fix must be no-op for
-       worlds that were already on 1.21 and never needed data migration).
+    4. REGRESSION — EXISTING 1.21 WORLDS:
+       Open an existing 1.21 world with placed Cooking Pots containing items.
+       FIX FAILS if: any item count in an existing 1.21 Cooking Pot changes.
+
+    5. REGRESSION — FRESH 1.21 WORLD:
+       Create a fresh 1.21 world. Place a Cooking Pot. Put 32 carrots in it.
+       Save and reload the world.
+       FIX FAILS if: carrot count changes on reload.
+
+    6. ONTOLOGICAL PARADOX FALSIFICATION (V1460 alone is insufficient):
+       Apply ONLY V1460Mixin (no V3818_3, no ItemStackComponentizationFix).
+       Repeat test 3 (Cooking Pot as item with 16 servings).
+       EXPECTED: meal count is still 1 — proving V1460 alone is not sufficient.
+       This CONFIRMS the need for all three mixin files.
