@@ -13,6 +13,7 @@ Example usage:
     python cli.py process file.txt --dry-run
     python cli.py manifest create files/*.txt
 """
+"""
 CLI module - Main entrypoint for the deterministic pipeline scaffold.
 
 This module provides command-line interface with subcommands:
@@ -178,6 +179,7 @@ from manifest import generate_manifest, ManifestGenerator
 from merkle import MerkleTreeBuilder, verify_inclusion_proof
 from handling_pipeline import process_handling_file
 from logger import create_logger
+from tools.repo_diagnoser.diagnoser import RepoDiagnoser
 
 
 VERSION = "1.0.0"
@@ -368,6 +370,54 @@ def cmd_verify(args):
         return 0
 
 
+def cmd_diagnose(args) -> int:
+    """Diagnose command — clone and analyse a public Git repository."""
+    diagnoser = RepoDiagnoser(clone_dir=args.clone_dir)
+
+    if args.url:
+        prefix = "DRY RUN — " if not args.apply else ""
+        print(f"{prefix}Cloning {args.url} …")
+        if not args.apply:
+            print("  (pass --apply to perform the clone and analysis)")
+            return 0
+        try:
+            result = diagnoser.diagnose(args.url, depth=args.depth, ref=args.ref)
+        except RuntimeError as exc:
+            print(f"Error: {exc}", file=sys.stderr)
+            return 1
+    else:
+        local_path = Path(args.local)
+        if not local_path.is_dir():
+            print(f"Error: local path not found: {local_path}", file=sys.stderr)
+            return 1
+        print(f"Analysing local repository: {local_path}")
+        result = diagnoser.analyze(local_path)
+        result["repo_path"] = str(local_path)
+
+    if args.out_proofs:
+        if not args.apply:
+            print(f"DRY RUN — would write proofs to: {args.out_proofs}")
+        else:
+            result["tree"].export_proofs_jsonl(Path(args.out_proofs))
+            print(f"Inclusion proofs written to: {args.out_proofs}")
+
+    print("\nDiagnosis complete.")
+    summary = {
+        "repo_path": result.get("repo_path", ""),
+        "merkle_root": result["merkle_root"],
+        "file_count": len(result["file_hashes"]),
+        "scan_timestamp": result["scan"].get("scan_timestamp", ""),
+    }
+    if args.json:
+        print(json.dumps(summary, indent=2))
+    else:
+        print(f"  Repo path  : {summary['repo_path']}")
+        print(f"  Files      : {summary['file_count']}")
+        print(f"  Merkle root: {summary['merkle_root']}")
+        print(f"  Scanned at : {summary['scan_timestamp']}")
+    return 0
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
@@ -428,37 +478,7 @@ def main():
                                 help="Output path (for create)")
     manifest_parser.add_argument("--verbose", action="store_true",
                                 help="Verbose output")
-    
-        description='Deterministic Pipeline Scaffold - Default behavior is DRY-RUN',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Index repository (dry-run)
-  python cli.py index --repo /path/to/repo
-  
-  # Index and create manifest (apply)
-  python cli.py index --repo /path/to/repo --apply --out manifest.jsonl
-  
-  # Build Merkle tree from manifest
-  python cli.py merkle --manifest manifest.jsonl --apply
-  
-  # Process handling file (dry-run)
-  python cli.py handling-clamp --handling-path handling.meta
-  
-  # Process handling file (apply)
-  python cli.py handling-clamp --handling-path handling.meta --apply --out ./output
-  
-  # Verify proofs
-  python cli.py verify --manifest merkle_proofs.jsonl
 
-Safety Notes:
-  - Default behavior is DRY-RUN (no writes)
-  - Use --apply flag to perform actual writes
-  - Backups are created automatically before overwrites
-  - No network calls or credentials used
-"""
-    )
-    
     parser.add_argument('--version', action='version', version=f'%(prog)s {VERSION}')
     
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
@@ -486,6 +506,38 @@ Safety Notes:
     # Verify command
     verify_parser = subparsers.add_parser('verify', help='Verify manifest or proofs')
     verify_parser.add_argument('--manifest', type=str, required=True, help='Manifest or proof file to verify')
+
+    # Diagnose command
+    diagnose_parser = subparsers.add_parser(
+        'diagnose', help='Clone and analyse a public Git repository'
+    )
+    diagnose_source = diagnose_parser.add_mutually_exclusive_group(required=True)
+    diagnose_source.add_argument('--url', metavar='URL', help='Public Git repository URL to clone')
+    diagnose_source.add_argument(
+        '--local', metavar='PATH', help='Path to an already-cloned local repository'
+    )
+    diagnose_parser.add_argument(
+        '--depth', type=int, default=1, metavar='N',
+        help='Shallow-clone depth (default: 1).  Use 0 for a full clone.'
+    )
+    diagnose_parser.add_argument(
+        '--ref', metavar='REF', default=None,
+        help='Branch or tag to check out (default: repository default branch)'
+    )
+    diagnose_parser.add_argument(
+        '--clone-dir', metavar='DIR', default='/tmp/repo_analysis',
+        help='Base directory for clones (default: /tmp/repo_analysis)'
+    )
+    diagnose_parser.add_argument(
+        '--out-proofs', metavar='FILE', default=None,
+        help='Write Merkle inclusion proofs to this JSONL file (requires --apply)'
+    )
+    diagnose_parser.add_argument(
+        '--apply', action='store_true', help='Apply changes (default is dry-run)'
+    )
+    diagnose_parser.add_argument(
+        '--json', action='store_true', help='Print summary as JSON'
+    )
     
     # Parse arguments
     args = parser.parse_args()
@@ -496,41 +548,32 @@ Safety Notes:
     
     try:
         if args.command == "hash":
-            cmd_hash(args)
+            return cmd_hash(args)
         elif args.command == "process":
-            cmd_process(args)
+            return cmd_process(args)
         elif args.command == "backup":
-            cmd_backup(args)
+            return cmd_backup(args)
         elif args.command == "manifest":
-            cmd_manifest(args)
+            return cmd_manifest(args)
+        elif args.command == 'index':
+            return cmd_index(args)
+        elif args.command == 'merkle':
+            return cmd_merkle(args)
+        elif args.command == 'handling-clamp':
+            return cmd_handling_clamp(args)
+        elif args.command == 'verify':
+            return cmd_verify(args)
+        elif args.command == 'diagnose':
+            return cmd_diagnose(args)
         else:
             parser.print_help()
             return 1
-        
-        return 0
-        
+
     except Exception as e:
         logger = get_logger("cli")
         logger.error(f"Command failed: {e}")
         if "--verbose" in sys.argv:
             raise
-        return 1
-
-
-if __name__ == "__main__":
-        return 1
-    
-    # Dispatch to command handler
-    if args.command == 'index':
-        return cmd_index(args)
-    elif args.command == 'merkle':
-        return cmd_merkle(args)
-    elif args.command == 'handling-clamp':
-        return cmd_handling_clamp(args)
-    elif args.command == 'verify':
-        return cmd_verify(args)
-    else:
-        parser.print_help()
         return 1
 
 
