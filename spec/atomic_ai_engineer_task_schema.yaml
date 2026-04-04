@@ -1,0 +1,402 @@
+# spec/atomic_ai_engineer_task_schema.yaml
+# PR #90 — Atomic AI Engineers Task Schema
+# Standard: Yeshua
+# Version: 1.0.0
+# Authority: Orthogonal Engineering Framework
+#
+# Purpose: Define the canonical schema for AI agents to autonomously
+# diagnose, fix, verify, and submit patches to external open-source
+# repositories, with every step enforced by the OE warden stack.
+#
+# Test case: Farmer's Delight #135 / #1262
+#   (NBT → Data Component migration for Cooking Pot stack sizes)
+
+metadata:
+  schema_id: "ATOMIC-AI-ENGINEER-TASK-1.0"
+  schema_version: "1.0.0"
+  standard: "Yeshua"
+  pr: 90
+  created: "2026-04-04"
+  authority: "Orthogonal Engineering Framework"
+  global_mode: "execute"  # PR #89 — wardens actively enforce
+  depends_on:
+    - "yeshua/axioms/eight_axioms.json"
+    - "YESHUA_SYSTEM_SCHEMA.yaml"
+    - "resilience/invariant_spec_v2.freeze"
+    - "wardens/seraph_unit.py"
+    - "wardens/ophanim_unit.py"
+    - "wardens/cherub_unit.py"
+    - "yeshua_math/peano_invariant_checker.py"
+
+# =============================================================================
+# TASK DEFINITION — What the AI agent must produce
+# =============================================================================
+task_definition:
+  required_fields:
+    - field: "task_id"
+      type: "string"
+      format: "TASK-YYYY-MM-DD-NNN"
+      description: "Unique task identifier with date prefix"
+      yeshua_axiom: 8  # Every artifact is hash-anchored
+
+    - field: "issue_url"
+      type: "string"
+      format: "https://github.com/{owner}/{repo}/issues/{number}"
+      description: "GitHub issue URL for the upstream bug"
+      yeshua_axiom: 4  # No authority without proof
+
+    - field: "target_repository"
+      type: "string"
+      format: "https://github.com/{owner}/{repo}"
+      description: "External repository where the fix will be submitted"
+
+    - field: "ontological_diagnosis"
+      type: "object"
+      description: "Root cause explanation at the architectural level"
+      properties:
+        root_cause:
+          type: "string"
+          description: "Why the bug exists (architectural reason)"
+        assumption_violated:
+          type: "string"
+          description: "What assumption the original code made that is now false"
+        causal_chain:
+          type: "array"
+          items: "string"
+          description: "Ordered list of causal steps from root cause to symptom"
+      falsifies_if: "Root cause does not explain the observed symptom"
+
+    - field: "technical_diagnosis"
+      type: "object"
+      description: "Code-level problem identification"
+      properties:
+        affected_files:
+          type: "array"
+          items: "string"
+          description: "File paths in the target repo that need changes"
+        affected_functions:
+          type: "array"
+          items: "string"
+          description: "Function/method names that contain the bug"
+        data_flow:
+          type: "string"
+          description: "How data moves through the broken path"
+        reference_implementation:
+          type: "string"
+          format: "URL"
+          description: "Link to working code that demonstrates the fix pattern"
+      falsifies_if: "Identified functions do not participate in the broken data flow"
+
+    - field: "code_fix"
+      type: "object"
+      description: "The actual patch"
+      properties:
+        patch_format:
+          type: "string"
+          enum: ["unified_diff", "file_changes"]
+        files_changed:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              path: { type: "string" }
+              additions: { type: "integer", minimum: 0 }
+              deletions: { type: "integer", minimum: 0 }
+              diff: { type: "string" }
+        build_verified:
+          type: "boolean"
+          description: "Agent confirmed the target project builds with the fix"
+        tests_pass:
+          type: "boolean"
+          description: "Agent confirmed existing tests still pass"
+      falsifies_if: "Patch does not compile or breaks existing tests"
+
+    - field: "falsification_conditions"
+      type: "array"
+      items: "string"
+      min_items: 1
+      description: >
+        How to disprove the fix works. At least one condition required.
+        Each condition must be testable by running the target project.
+      yeshua_axiom: 1  # Every truth is derivable
+
+# =============================================================================
+# VERIFICATION REQUIREMENTS — Warden checks that MUST pass
+# =============================================================================
+# These map directly to the actual warden unit interfaces.
+# With global_mode: "execute", these are blocking gates.
+verification_requirements:
+
+  seraph_audit:
+    description: "SeraphUnit logic audit on the generated patch"
+    warden: "wardens/seraph_unit.py"
+    class: "SeraphUnit"
+    method: "query('scan')"
+    required_checks:
+      - check: "logic_audit"
+        gate: "finding_count == 0 for categories [tautological_condition, unreachable_code, missing_return_path]"
+        description: "No tautologies, unreachable code, or missing return paths in the fix"
+      - check: "redundancy_detection"
+        gate: "finding_count == 0"
+        description: "No duplicate logic blocks introduced by the fix"
+      - check: "hallucination_scan"
+        gate: "finding_count == 0"
+        description: "No meta-mimicry compliance-theater patterns in the fix"
+    determinism_requirement: "analysis_hash must be identical across two consecutive scans"
+    falsifies_if: "SeraphUnit.query('scan') returns finding_count > 0 for any gated category"
+
+  ophanim_cycle_check:
+    description: "OphanimUnit cycle and entropy check on the fix"
+    warden: "wardens/ophanim_unit.py"
+    class: "OphanimUnit"
+    method: "query('scan')"
+    required_checks:
+      - check: "cycle_detection"
+        gate: "dag_acyclic == true"
+        invariant: "INV-GLOBAL-006 DAG_CONSISTENCY"
+        description: "Fix does not introduce import cycles"
+      - check: "entropy_monitoring"
+        gate: "finding_count == 0"
+        invariant: "ATOMIC-AFFECTIVE-005"
+        description: "No feedback amplification patterns in logs"
+      - check: "growth_analysis"
+        gate: "growth_ratio <= 2.0 or growth_ratio is null"
+        description: "No abnormal log growth spike from the fix"
+    determinism_requirement: "analysis_hash must be identical across two consecutive scans"
+    falsifies_if: "OphanimUnit.query('scan') returns dag_acyclic == false or entropy finding_count > 0"
+
+  cherub_documentation:
+    description: "CherubUnit boundary guard on fix documentation"
+    warden: "wardens/cherub_unit.py"
+    class: "CherubUnit"
+    method: "query('scan')"
+    required_checks:
+      - check: "source_verification"
+        gate: "All claims in PR description have verifiable sources"
+        description: "No unverifiable 'studies show' or 'experts say' claims"
+      - check: "timestamp_validation"
+        gate: "All generated documents contain ISO 8601 timestamps"
+        description: "Every artifact has explicit timestamp metadata"
+      - check: "pii_boundary_check"
+        gate: "finding_count == 0 for severity in [critical, high]"
+        description: "No PII violations in the fix or its documentation"
+    falsifies_if: "CherubUnit.query('scan') returns critical or high PII violations"
+
+  peano_invariant_check:
+    description: "Peano arithmetic invariant check on any numeric logic in the fix"
+    checker: "yeshua_math/peano_invariant_checker.py"
+    function: "run_peano_invariant_checker()"
+    gate: "report.all_passed == true"
+    applies_when: "Fix modifies arithmetic or numeric stack-size logic"
+    description_detail: >
+      For the Farmer's Delight case: the Cooking Pot stores item Count
+      as an integer. The data fixer must preserve Count values exactly.
+      No unbounded float literals or float() constructors in the fix.
+    falsifies_if: "PeanoInvariantReport.all_passed == false"
+
+# =============================================================================
+# PROOF BUNDLE — Cryptographic verification of the fix
+# =============================================================================
+proof_bundle:
+  description: "Cryptographic proof that the fix is verified and reproducible"
+  schema_reference: ".github/workflows/pr39-peano-sovereignty.yml"
+  required_fields:
+    - field: "task_id"
+      type: "string"
+    - field: "environment_hash"
+      type: "string"
+      format: "sha256"
+      description: "SHA-256 of os|python_version|seed"
+    - field: "merkle_root"
+      type: "string"
+      format: "sha256"
+      description: "Merkle root over SHA-256 hashes of all fix artifacts"
+    - field: "output_hash"
+      type: "string"
+      format: "sha256"
+      description: "SHA-256 of task_id|merkle_root"
+    - field: "timestamp"
+      type: "string"
+      format: "ISO 8601"
+    - field: "warden_results"
+      type: "object"
+      properties:
+        seraph_hash: { type: "string", format: "sha256" }
+        ophanim_hash: { type: "string", format: "sha256" }
+        cherub_hash: { type: "string", format: "sha256" }
+        peano_passed: { type: "boolean" }
+    - field: "node_id"
+      type: "string"
+      description: "Identifier of the CI node that produced this bundle"
+  cross_node_parity: >
+    If multiple nodes produce bundles, all merkle_root values must be
+    identical. This is the same parity check used in pr39-peano-sovereignty.yml.
+  falsifies_if: "Two nodes produce different merkle_root values for the same fix"
+
+# =============================================================================
+# YESHUA COMPLIANCE — Every task must satisfy all 8 axioms
+# =============================================================================
+yeshua_compliance:
+  axioms_file: "yeshua/axioms/eight_axioms.json"
+  enforcement: "Each task artifact is wrapped in a YeshuaClaim and verified"
+  axiom_mapping:
+    1_derivable: "ontological_diagnosis.causal_chain traces from root cause to symptom"
+    2_reproducible: "proof_bundle.merkle_root is reproducible across environments"
+    3_re_verifiable: "All warden scans produce identical analysis_hash on re-run"
+    4_no_authority_without_proof: "issue_url points to a real, open GitHub issue"
+    5_no_hidden_state: "All fix artifacts are in the proof bundle; nothing omitted"
+    6_no_unverifiable_dependency: "reference_implementation URL is accessible and contains working code"
+    7_no_economic_gatekeeping: "Fix is submitted as open-source PR; no paywall, subscription, or license fee"
+    8_hash_anchored: "Every artifact has SHA-256 hash in the proof bundle"
+
+# =============================================================================
+# EXPECTED OUTPUTS — What the agent delivers
+# =============================================================================
+expected_outputs:
+  - output: "pull_request_url"
+    type: "string"
+    format: "https://github.com/{owner}/{repo}/pull/{number}"
+    description: "URL of the PR submitted to the target repository"
+
+  - output: "proof_bundle.json"
+    type: "file"
+    schema: "See proof_bundle section above"
+    description: "Cryptographic proof bundle with all warden hashes"
+
+  - output: "verification_report.json"
+    type: "file"
+    description: "Full warden scan results"
+    properties:
+      seraph_scan: { type: "object", description: "Full SeraphUnit scan output" }
+      ophanim_scan: { type: "object", description: "Full OphanimUnit scan output" }
+      cherub_scan: { type: "object", description: "Full CherubUnit scan output" }
+      peano_report: { type: "object", description: "PeanoInvariantReport.to_dict()" }
+      all_gates_passed: { type: "boolean" }
+      timestamp: { type: "string", format: "ISO 8601" }
+
+  - output: "task_manifest.json"
+    type: "file"
+    description: "Complete task record with all fields from task_definition"
+    hash_anchored: true
+    algorithm: "sha256"
+
+# =============================================================================
+# WORKFLOW — Execution order (Peano gate sequencing: S(n) = n + 1)
+# =============================================================================
+# Per SOP_AI_HANDSHAKE.md: "S(0) = 1, S(n) = n + 1, no gate may be skipped."
+workflow:
+  gate_sequence:
+    - gate: "S(0)"
+      name: "ISSUE_ANALYSIS"
+      action: "Clone target repo, read issue, identify affected code paths"
+      produces: "task_definition.ontological_diagnosis, task_definition.technical_diagnosis"
+      blocks_on: "issue_url must resolve to an open GitHub issue"
+
+    - gate: "S(1)"
+      name: "REFERENCE_STUDY"
+      action: "Read reference implementation, understand the fix pattern"
+      produces: "task_definition.technical_diagnosis.reference_implementation"
+      blocks_on: "Reference URL must be accessible"
+
+    - gate: "S(2)"
+      name: "CODE_GENERATION"
+      action: "Generate the fix patch"
+      produces: "task_definition.code_fix"
+      blocks_on: "S(0) and S(1) must be complete"
+
+    - gate: "S(3)"
+      name: "BUILD_VERIFICATION"
+      action: "Build the target project with the fix applied"
+      produces: "task_definition.code_fix.build_verified"
+      blocks_on: "Build must succeed"
+
+    - gate: "S(4)"
+      name: "TEST_VERIFICATION"
+      action: "Run existing test suite of target project"
+      produces: "task_definition.code_fix.tests_pass"
+      blocks_on: "All existing tests must pass"
+
+    - gate: "S(5)"
+      name: "SERAPH_AUDIT"
+      action: "Run SeraphUnit.query('scan') on the fix files"
+      produces: "verification_report.seraph_scan"
+      blocks_on: "All gated finding_counts == 0"
+
+    - gate: "S(6)"
+      name: "OPHANIM_CHECK"
+      action: "Run OphanimUnit.query('scan') on the fix files"
+      produces: "verification_report.ophanim_scan"
+      blocks_on: "dag_acyclic == true, entropy finding_count == 0"
+
+    - gate: "S(7)"
+      name: "CHERUB_CHECK"
+      action: "Run CherubUnit.query('scan') on fix documentation"
+      produces: "verification_report.cherub_scan"
+      blocks_on: "No critical/high PII violations, sources verifiable"
+
+    - gate: "S(8)"
+      name: "PEANO_CHECK"
+      action: "Run peano_invariant_checker if fix touches arithmetic"
+      produces: "verification_report.peano_report"
+      blocks_on: "report.all_passed == true (when applicable)"
+
+    - gate: "S(9)"
+      name: "PROOF_BUNDLE_GENERATION"
+      action: "Generate proof_bundle.json with Merkle root over all artifacts"
+      produces: "proof_bundle.json"
+      blocks_on: "All S(5)-S(8) gates passed"
+
+    - gate: "S(10)"
+      name: "PR_SUBMISSION"
+      action: "Open PR on target repository with fix + proof bundle link"
+      produces: "pull_request_url"
+      blocks_on: "proof_bundle.json exists and is valid"
+
+# =============================================================================
+# TEST CASE — Farmer's Delight #135 / #1262
+# =============================================================================
+test_case:
+  task_id: "TASK-2026-04-04-001"
+  issue_url: "https://github.com/vectorwing/FarmersDelight/issues/1262"
+  target_repository: "https://github.com/vectorwing/FarmersDelight"
+  ontological_diagnosis:
+    root_cause: >
+      Minecraft 1.21 changed item data storage from NBT (Named Binary Tag)
+      to Data Components. Farmer's Delight block entities store items in
+      nested structures that the vanilla data fixer does not recurse into.
+    assumption_violated: >
+      The vanilla data fixer would automatically convert all item storage
+      from NBT to Data Components, including nested inventories.
+    causal_chain:
+      - "Minecraft 1.21 replaces NBT item storage with Data Components"
+      - "Vanilla data fixer converts top-level Items lists"
+      - "Farmer's Delight Cooking Pot stores items in Inventory.Items (nested)"
+      - "Data fixer does not recurse into Inventory.Items"
+      - "Count field (stack size) is dropped during migration"
+      - "Players see stack sizes reset to 1 after world upgrade"
+  technical_diagnosis:
+    affected_files:
+      - "src/main/java/.../mixin/datafixer/Schema1460Mixin.java"
+    affected_functions:
+      - "registerBlockEntities (data fixer schema registration)"
+    data_flow: >
+      World load → DataFixer → Schema1460 → registerBlockEntities →
+      Cooking Pot entity → Inventory → Items → (Count field dropped)
+    reference_implementation: >
+      https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java
+  code_fix:
+    patch_format: "unified_diff"
+    description: >
+      Register Cooking Pot block entity in the data fixer schema with
+      nested Inventory.Items path pointing to References.ITEM_STACK:
+
+      .register(map, farmersdelight$mod("cooking_pot"), string ->
+          DSL.optionalFields(
+              "Inventory",
+              DSL.optionalFields("Items", DSL.list(References.ITEM_STACK.in(schema)))
+          )
+      );
+  falsification_conditions:
+    - "Place items with Count > 1 in a Cooking Pot in MC 1.20.1, upgrade to 1.21.1, verify Count is preserved"
+    - "Place enchanted items in a Cooking Pot in MC 1.20.1, upgrade to 1.21.1, verify enchantments are preserved"
+    - "Existing 1.21.1 worlds with Cooking Pots must not be corrupted by the fix"
