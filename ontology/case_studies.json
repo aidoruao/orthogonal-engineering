@@ -35,6 +35,30 @@
       ]
     },
     {
+      "id": "CS_GRAPHICS_002",
+      "title": "VulkanMod #755 — Matrix translation doesn't affect scissor",
+      "source": "https://github.com/xCollateral/VulkanMod/issues/755",
+      "domain": "D_GRAPHICS",
+      "root_cause_signals": ["RCS-ASSUMPTION", "RCS-NONDETERMINISM"],
+      "description": "VulkanMod's vkCmdSetScissor implementation treats scissor coordinates as absolute screen-space primitives. When the PoseStack is translated (e.g., via matrixStack.translate() for animated GUI elements like toasts), the scissor rect is NOT transformed by the current matrix. This violates the invariant S_vulkan = M_pose * S_vanilla, causing scissor clipping to remain static while rendered content moves. Vanilla Minecraft's OpenGL backend implicitly handles this through the fixed-function pipeline; VulkanMod's dynamic pipeline does not.",
+      "assumptions_violated": [
+        "Scissor coordinates are always absolute screen-space and do not need matrix transformation.",
+        "Rendering backend equivalence: Vulkan dynamic scissor behaves identically to OpenGL fixed-function scissor."
+      ],
+      "falsification_tests": ["F_GRAPHICS_002"],
+      "ontological_issues": ["OI_GRAPHICS_002"],
+      "lessons": [
+        "Dynamic Vulkan state (VK_DYNAMIC_STATE_SCISSOR) must be re-pushed after any PoseStack transformation within the same draw call boundary.",
+        "Mixin interception of RenderSystem.enableScissor must capture the current PoseStack top matrix, not just the raw coordinates.",
+        "Backend equivalence tests must include GUI elements under matrix translation, not just static rendering."
+      ],
+      "methodology_components": [
+        "Falsification: F_GRAPHICS_002 asserts scissor rect shifts by the same vector as matrixStack.translate()",
+        "Witness layer: record VkRect2D and PoseStack matrix at every vkCmdSetScissor call"
+      ],
+      "status": "investigation"
+    },
+    {
       "id": "CS_PROTO_001",
       "title": "Shrimple #4 \u2014 Hardware-dependent atomic operations",
       "source": "https://github.com/shrimple-guild/shrimple/issues/4",

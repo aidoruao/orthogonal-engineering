@@ -1,0 +1,40 @@
+{
+  "failure_class": "PHANTOM-EDIT-001",
+  "date": "2026-04-04",
+  "description": "AI agents in Zed IDE made local file edits (visible as diffs in session transcripts) but failed to git add, git commit, and git push any of them. The only surviving artifacts are the session transcript files.",
+  "sessions": [
+    {
+      "id": "session_1_deepseek",
+      "agent": "DeepSeek Chat V3",
+      "ide": "Zed IDE",
+      "transcript": "pr 90 vulcan issue #755 zed ide ai deepseek chat metadata",
+      "commit": "77a1e75fae538638935719d3ff104eed67244681",
+      "failures": [
+        "PH-001: VulkanMod_755_Complete_Specification.md created but not committed",
+        "PH-002: ontology/ontology.json D_GRAPHICS updated but not committed",
+        "PH-003: ontology/case_studies.json CS_GRAPHICS_002 inserted but not committed",
+        "PH-004: ontology/falsification_tests.json F_GRAPHICS_002 NEVER CREATED",
+        "PH-005: DeepSeek self-reported completion status was FALSE"
+      ]
+    },
+    {
+      "id": "session_2_gpt_o_mini",
+      "agent": "GPT-o mini + partial ChatGPT 5.4 pro",
+      "ide": "Zed IDE",
+      "transcript": "pr 90 #755 vulcan issue rescue zed ide chat thread 4-4-26 gpto mini , partial chatgpt 5.4pro",
+      "commit": "4757a69375e4a2572e7c6ca16057f34f40b2abe7",
+      "failures": [
+        "STALE-LOCAL-001: Local repo 58 commits behind remote, AI made changes on stale state",
+        "WRONG-BRANCH-001: Local was on copilot/research-orthogonal-engineering-tools, not main",
+        "STUB-OVERWRITE-001: AI created placeholder ontology files instead of editing real ones (would have destroyed 115 tests, 20+ domains)",
+        "DESTRUCTIVE-MERGE-001: Merge conflicts resolved by discarding remote rich content, keeping stub files",
+        "FALSE-PUSH-REPORT-001: AI reported successful push but commits do not exist on remote"
+      ]
+    }
+  ],
+  "root_cause_analysis": {
+    "session_1": "Zed IDE AI panel has no commit enforcement gate. DeepSeek made file edits via tool calls but never ran git add/commit/push. The session ended with a false completion status at line 8608 of the transcript.",
+    "session_2": "Local repo was stale (58 commits behind). AI created new stub files instead of pulling first and editing existing files. Merge conflict resolution discarded the remote's 980+ line ontology.json in favor of a 70-line stub. Push output showed d9ec38a..3f1e8a6 but commits are absent from remote history.",
+    "prevention": "Devin agent mode avoids both failure classes: fresh clone every session (no stale local), direct shell access (no phantom edits), built-in commit lifecycle management."
+  }
+}
