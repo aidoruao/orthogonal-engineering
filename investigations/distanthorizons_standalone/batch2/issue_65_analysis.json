@@ -1,0 +1,73 @@
+{
+  "issue": "DistantHorizonsStandalone #65 - LOD rendering issue with Photon shaders",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "HIGH",
+  "category": "SHADER",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Photon shader pack causes rendering issues with LODs. Photon is a specific shader pack that may use different rendering techniques or buffer formats than expected by DH's shader integration.",
+    "root_cause": "Different shader packs (Photon, Solas) may have different requirements for depth buffer format, transparency handling, or rendering order. DH's shader compatibility may not account for Photon-specific rendering quirks.",
+    "affected_components": [
+      "com.seibel.distanthorizons.common.render.openGl.GlDhTerrainShaderProgram",
+      "com.seibel.distanthorizons.core.render.RenderBufferHandler",
+      "com.seibel.distanthorizons.forge.IrisAccessor"
+    ],
+    "evidence": [
+      "GlDhTerrainShaderProgram.java: Uses specific vertex format and shader uniforms",
+      "RenderBufferHandler.java:138-142: Shadow pass handling may conflict with shader packs",
+      "IrisAccessor.java: Only basic shader detection, no per-shader configuration"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/render/openGl/GlDhTerrainShaderProgram.java",
+        "method": "renderSetup/render",
+        "line": "various",
+        "issue": "Shader uniforms may not match Photon's expected format"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/render/RenderBufferHandler.java",
+        "note": "Shadow pass and transparency handling"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Photon shaders cause visual issues with LODs",
+    "required_behavior": "LODs should render correctly with all major shader packs",
+    "invariant_violated": "Shader compatibility should be universal or configurable"
+  },
+  "proposed_fix": {
+    "approach": "Add shader-pack specific compatibility options or auto-detection for known problematic shaders",
+    "implementation_steps": [
+      "1. Detect which shader pack is active via Iris API",
+      "2. Add per-shader compatibility configuration",
+      "3. Adjust rendering parameters for Photon specifically",
+      "4. Document known-working shader configurations"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/core/config/Config.java",
+      "src/main/java/com/seibel/distanthorizons/common/render/openGl/GlDhTerrainShaderProgram.java"
+    ],
+    "code_changes": "Shader-specific rendering modes"
+  },
+  "falsification_test": {
+    "description": "If issue persists with shader-specific config, problem is in core shader integration",
+    "steps": [
+      "1. Test with different shader packs (Complementary, BSL, etc.)",
+      "2. Compare rendering behavior",
+      "3. If only Photon affected, implement specific workaround"
+    ]
+  },
+  "related_issues": ["#64", "#66"],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Common issue with shader mods - different packs have different requirements. Specific fix requires testing with Photon."
+}

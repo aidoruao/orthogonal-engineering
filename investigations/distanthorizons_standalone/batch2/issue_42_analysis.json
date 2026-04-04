@@ -1,0 +1,70 @@
+{
+  "issue": "DistantHorizonsStandalone #42 - Blindness, and underwater overlays opaque",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "MEDIUM",
+  "category": "RENDERING",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Blindness and underwater overlays render as opaque instead of transparent. DH's rendering doesn't respect Minecraft's overlay/blend state for these effects.",
+    "root_cause": "LodRenderer and associated renderers manipulate OpenGL blend state but don't check or preserve Minecraft's overlay rendering state. The fade rendering and terrain rendering may overwrite the overlay's blend settings.",
+    "affected_components": [
+      "com.seibel.distanthorizons.core.render.renderer.LodRenderer",
+      "com.seibel.distanthorizons.common.render.openGl.postProcessing.fade.GlVanillaFadeRenderer",
+      "com.seibel.distanthorizons.RenderHelper"
+    ],
+    "evidence": [
+      "RenderHelper.java:37: GL32.glDisable(GL32.GL_BLEND) - disables blending",
+      "LodRenderer.java: Various GL state manipulation",
+      "GlVanillaFadeRenderer.java: Fade overlay rendering"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/RenderHelper.java",
+        "method": "drawLods()",
+        "line": "37",
+        "issue": "Disables GL_BLEND unconditionally"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/render/renderer/LodRenderer.java",
+        "note": "GL state management"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "OpenGL blend state not preserved, breaking overlay transparency",
+    "required_behavior": "DH rendering should preserve or restore blend state for overlays",
+    "invariant_violated": "Overlay transparency should work correctly"
+  },
+  "proposed_fix": {
+    "approach": "Save and restore GL_BLEND state in RenderHelper",
+    "implementation_steps": [
+      "1. Check if GL_BLEND was enabled before DH rendering",
+      "2. Restore original state after rendering"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/RenderHelper.java"
+    ],
+    "code_changes": "Save/restore blend state"
+  },
+  "falsification_test": {
+    "description": "If overlays still broken after blend fix, issue is in shader program binding",
+    "steps": [
+      "1. Apply blend state fix",
+      "2. Test underwater/blindness",
+      "3. If still broken, check shader uniform handling"
+    ]
+  },
+  "related_issues": ["#56"],
+  "confidence": "HIGH",
+  "confidence_reason": "Same pattern as #56 - OpenGL state not preserved"
+}

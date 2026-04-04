@@ -1,0 +1,71 @@
+{
+  "issue": "DistantHorizonsStandalone #66 - LOD rendering issue with Solas shader",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "HIGH",
+  "category": "SHADER",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Solas shader pack causes rendering issues with LODs. Similar to #65, Solas shader pack likely has specific rendering requirements that conflict with DH's rendering pipeline.",
+    "root_cause": "Solas shaders may use specific depth buffer formats, transparency handling, or shadow mapping that conflicts with DH's LOD rendering. The deferred rendering path may not properly integrate with Solas' pipeline.",
+    "affected_components": [
+      "com.seibel.distanthorizons.common.render.openGl.GlDhTerrainShaderProgram",
+      "com.seibel.distanthorizons.core.render.RenderBufferHandler",
+      "com.seibel.distanthorizons.common.render.openGl.postProcessing.fade.GlVanillaFadeRenderer"
+    ],
+    "evidence": [
+      "Same code path as #65 - shader integration issues",
+      "GlVanillaFadeRenderer.java: May conflict with shader's own fade effects",
+      "RenderBufferHandler.java: Shadow pass handling"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/render/openGl/postProcessing/fade/GlVanillaFadeRenderer.java",
+        "method": "render",
+        "line": "various",
+        "issue": "Fade rendering may conflict with shader effects"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/render/RenderBufferHandler.java",
+        "note": "Same as #65"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Solas shaders cause visual issues with LODs",
+    "required_behavior": "LODs should render correctly with Solas",
+    "invariant_violated": "Same as #65"
+  },
+  "proposed_fix": {
+    "approach": "Same as #65 - shader-specific compatibility layer",
+    "implementation_steps": [
+      "1. Group with #65 fix - unified shader compatibility system",
+      "2. Test Solas-specific rendering quirks",
+      "3. Document Solas compatibility settings"
+    ],
+    "files_to_modify": [
+      "Same as #65"
+    ],
+    "code_changes": "Part of shader compatibility system"
+  },
+  "falsification_test": {
+    "description": "Same approach as #65",
+    "steps": [
+      "1. Test with other shader packs",
+      "2. Identify Solas-specific issues",
+      "3. Apply targeted fixes"
+    ]
+  },
+  "related_issues": ["#64", "#65"],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Same root cause pattern as #65"
+}
