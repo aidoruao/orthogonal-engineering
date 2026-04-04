@@ -1654,3 +1654,247 @@ non_oracular_verification_layer:
         - fact_ids_used: [...]
         - transformations: [...]
         - final_step: "explicit logical conclusion"
+
+# =============================================================================
+# HARDENING PATCH: YESHUA-COMPLIANT INVARIANTS + EPISTEMIC LAYERS
+# =============================================================================
+# Source: ChatGPT atomic hardening suggestions; implemented in priority order:
+#   1. Formal invariants and math (highest — Yeshua Axiom 1/2)
+#   2. Epistemic layering (structural integrity)
+#   3. Derivation contract (replaces answer-assertion)
+#   4. Executable verification gate (closes spec-vs-execution gap)
+#   5. State transition proof (cryptographic grounding)
+#   6. External audit protocol (context isolation)
+# Devin schema (cross_model_verification) remains primary.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# PRIORITY 1: GUIDING AXIOM (Yeshua-compliant)
+# -----------------------------------------------------------------------------
+axiom_no_inference_overrides_execution:
+  name: "NO_INFERENCE_OVERRIDES_EXECUTION"
+  yeshua_axiom_ref: "Axiom 1 (Determinism) + Axiom 2 (Reproducibility)"
+  statement: >
+    No model inference, regardless of confidence or consensus,
+    may override an executable or deterministic contradiction.
+    Execution results at L1/L2 are absolutely authoritative.
+    L4 (language model reasoning) is advisory only.
+  corollary: >
+    If any tier-1 artifact (build result, DFU trace, type proof) contradicts
+    a tier-3 cross-model consensus, the artifact wins. Always.
+
+# -----------------------------------------------------------------------------
+# PRIORITY 2: EPISTEMIC LAYERS (strict ordering, no collapse)
+# -----------------------------------------------------------------------------
+epistemic_layers:
+  description: >
+    Four epistemic layers with strict authority ordering.
+    Lower layers cannot override higher layers under any circumstance.
+
+  L1_deterministic:
+    description: "Mathematical + type-level + byte-level rules"
+    authority: "absolute"
+    examples:
+      - "Java byte range: -128 to 127 (JLS §4.2.1)"
+      - "Widening primitive conversion byte -> int is lossless (JLS §5.1.2)"
+      - "Minecraft Count is 1-127, always positive, always fits in byte"
+    verification_method: "formal type proof or language spec citation"
+
+  L2_system_behavior:
+    description: "Minecraft DFU / schema transformation rules"
+    authority: "derived from decompiled source and Mojang schema contracts"
+    examples:
+      - "DFU only runs fixers for worlds with DataVersion < target"
+      - "V1460.registerBlockEntities defines traversal paths"
+      - "V3818_3 handles TAG_Byte -> int component conversion"
+    verification_method: "decompiled MC jar or MCP/Yarn mappings"
+
+  L3_empirical_mod_behavior:
+    description: "Farmer's Delight implementation behavior"
+    authority: "source repo truth (github.com/vectorwing/FarmersDelight)"
+    examples:
+      - "CookingPotBlockEntity stores items at Inventory.Items"
+      - "vectorwing empirically tested V1460 alone: Count still reset to 1"
+    verification_method: "clone repo + grep + empirical test result from maintainer"
+
+  L4_language_model_reasoning:
+    description: "Cross-model inference (ChatGPT, Claude, DeepSeek, Gemini)"
+    authority: "non-authoritative confidence signal only"
+    examples:
+      - "Cross-model agreement on Q1-Q6 audit questions"
+    verification_method: "cross-model audit protocol (see cross_model_verification)"
+
+  ordering_rule: "L1 > L2 > L3 > L4 strictly — no lower layer overrides higher"
+
+# -----------------------------------------------------------------------------
+# PRIORITY 3: COUNT PRESERVATION INVARIANT (core math, Yeshua-grounded)
+# -----------------------------------------------------------------------------
+count_preservation_invariant:
+  name: "COUNT_PRESERVATION_INVARIANT"
+  id: "INV-DFU-COUNT-001"
+  domain: "D_CROSS_MODEL_BENCHMARKS"
+  yeshua_axiom_ref: "Axiom 1 (Determinism) — same input must produce same output"
+
+  formal_statement: >
+    For all valid CookingPot ItemStack transitions under DFU world upgrade,
+    item.count_after == item.count_before.
+
+  math_proof:
+    claim: "byte-to-int widening is lossless for all valid Minecraft Count values"
+    steps:
+      - step: 1
+        fact: "TAG_Byte is a signed Java byte: range [-128, 127] (JLS §4.2.1)"
+        epistemic_layer: "L1_deterministic"
+      - step: 2
+        fact: "Minecraft Count is constrained to [1, 127] (non-negative, max stack)"
+        epistemic_layer: "L1_deterministic"
+      - step: 3
+        fact: "Java widening conversion byte -> int preserves value for all inputs (JLS §5.1.2)"
+        epistemic_layer: "L1_deterministic"
+      - step: 4
+        fact: "For all c_b in [1, 127]: (int) c_b == c_b. No overflow, no truncation."
+        epistemic_layer: "L1_deterministic"
+      - step: 5
+        conclusion: "c_i = (int) c_b is lossless. COUNT_PRESERVATION_INVARIANT holds at L1."
+        epistemic_layer: "L1_deterministic"
+    no_floating_point: true
+    no_rounding: true
+    proof_type: "type-widening proof via Java Language Specification"
+
+  falsification_condition:
+    - "any world upgrade path produces item.count_after != item.count_before"
+    - "any AI identifies float arithmetic in the Count conversion path"
+    - "any AI demonstrates byte value in [1,127] loses precision under widening"
+
+  verification_gap:
+    status: "SPEC_ONLY — not yet confirmed by executable build artifact"
+    required_to_close: "gradlew build success + falsification test 1 (COUNT scenario) passing"
+
+# -----------------------------------------------------------------------------
+# PRIORITY 4: DERIVATION CONTRACT
+# (answers must be derived, not asserted; strengthens NOV-1)
+# -----------------------------------------------------------------------------
+derivation_contract:
+  description: >
+    Every answer in cross_model_verification.audit_questions must be derived
+    from the deterministic_facts via an explicit chain. Assertion without
+    derivation is a violation of Yeshua Axiom 4 (No authority without proof).
+
+  requirement: "Every correct_answer MUST have an accompanying derivation chain"
+
+  format:
+    derivation_trace:
+      fact_ids_used: "list of FACT-xxx IDs used in derivation"
+      transformations: "list of logical steps applied to facts"
+      intermediate_states: "any intermediate conclusions"
+      final_conclusion: "the derived answer (must match correct_answer)"
+
+  invalid_if:
+    - "answer appears without derivation chain"
+    - "derivation chain uses facts not in deterministic_facts"
+    - "derivation chain contains circular reasoning"
+    - "derivation uses L4 (LLM consensus) as the primary justification"
+
+  sample_derivation_for_AQ001:
+    question_id: "AQ-001"
+    fact_ids_used: ["FACT-004"]
+    transformations:
+      - "FACT-004 states vectorwing empirically tested V1460 alone"
+      - "FACT-004 states Count still reset to 1 after test"
+      - "Empirical result from maintainer is L3 evidence (authoritative for mod behavior)"
+    intermediate_states:
+      - "V1460 alone is insufficient as demonstrated by L3 empirical result"
+    final_conclusion: "NO — V1460 alone is not sufficient"
+
+# -----------------------------------------------------------------------------
+# PRIORITY 5: EXECUTABLE VERIFICATION GATE
+# (closes the spec-vs-execution gap identified in ChatGPT critique #7)
+# -----------------------------------------------------------------------------
+executable_verification_gate:
+  description: >
+    No claim is considered verified unless reproducible via at least one
+    executable artifact. This gate separates SPEC from PROOF.
+    Until this gate passes, the fix is classified as SPEC_ONLY.
+
+  current_status: "SPEC_ONLY — gate not yet passed"
+
+  required_artifacts:
+    - artifact: "gradlew_build"
+      description: "./gradlew build succeeds with all 3 mixin files present"
+      falsifies_if: "build fails"
+
+    - artifact: "falsification_test_1"
+      description: "Block entity COUNT scenario: 64 bread in Cooking Pot, upgrade 1.20.1 -> 1.21, count == 64"
+      falsifies_if: "count != 64 after upgrade"
+
+    - artifact: "falsification_test_3"
+      description: "Item stack COUNT scenario: Cooking Pot as item (via Carry On) with 16 meal servings, upgrade, count == 16"
+      falsifies_if: "count != 16 after upgrade"
+
+    - artifact: "falsification_test_4"
+      description: "Regression: existing 1.21 world counts unchanged after mod update"
+      falsifies_if: "any count changes in a world that was never on 1.20.1"
+
+  pass_condition: "all required_artifacts produce expected results in a Minecraft test environment"
+  fail_condition: "any artifact contradicts expected result"
+
+  cross_ref:
+    falsification_tests: "manual_falsification_tests (6 scenarios defined in task_schema)"
+    epistemic_layer: "L2_system_behavior (build) + L3_empirical_mod_behavior (runtime)"
+
+# -----------------------------------------------------------------------------
+# PRIORITY 6: STATE TRANSITION PROOF
+# (cryptographic grounding for deterministic replay)
+# -----------------------------------------------------------------------------
+state_transition_proof:
+  description: >
+    Cryptographic grounding for the DFU transformation. Same input state
+    must always produce identical output state. This is the Yeshua Axiom 2
+    (Reproducibility) applied to the DFU data pipeline.
+
+  required_fields:
+    pre_state_hash: "SHA-256(NBT_blob + schema_version_string)"
+    post_state_hash: "SHA-256(transformed_NBT_blob)"
+    diff_hash: "SHA-256(deterministic_transformation_log)"
+
+  invariants:
+    - "same pre_state_hash always produces same post_state_hash"
+    - "same pre_state_hash always produces same diff_hash"
+    - "diff_hash is deterministic: independent of JVM version, OS, or run order"
+
+  falsification_condition:
+    - "two runs with identical pre_state_hash produce different post_state_hash"
+    - "diff_hash differs across runs with identical inputs"
+
+  current_status: "PENDING — no NBT pre/post hashes captured yet"
+  required_to_close: >
+    Capture NBT snapshot of a 1.20.1 Cooking Pot world region,
+    run the upgrade, capture post-upgrade NBT, compute hashes.
+    Store in verification_report.json alongside falsification test results.
+
+  yeshua_axiom_ref: "Axiom 2 (Reproducibility) — any derivation is independently reproducible"
+
+# -----------------------------------------------------------------------------
+# PRIORITY 7: EXTERNAL AUDIT PROTOCOL (hardened context isolation)
+# -----------------------------------------------------------------------------
+external_audit_protocol:
+  description: >
+    Strict protocol for providing FACT_SET to external AI auditors.
+    Prevents prompt contamination and ensures context isolation (NOV-3).
+
+  requirements:
+    - "ONLY the FACT_SET defined in cross_model_verification.deterministic_facts may be provided"
+    - "No prior PR context, no commit history, no diff context"
+    - "No reasoning hints or leading framing beyond the FACT_SET"
+    - "The audit_prompt in cross_model_verification.audit_prompt is the canonical input"
+
+  enforcement:
+    canonicalized_input: "audit_prompt field rendered as plain text only"
+    fact_set_hash: "SHA-256 of the deterministic_facts YAML block (canonical form)"
+    goal: "eliminate prompt contamination; ensure model sees only declared facts"
+
+  audit_consistency_check:
+    rule: "All auditing models must receive identical fact_set_hash"
+    violation_if: "any model receives additional context not in fact_set_hash"
+
+  yeshua_axiom_ref: "Axiom 4 (No authority without proof) — proof must be reproducible from same inputs"
