@@ -113,22 +113,6 @@
       "definition": "Compile a canonical test shader twice in the same process; assert sha256(output1) == sha256(output2). Also compare across backends (Vulkan/Metal/D3D via cross-compilation)."
     },
     {
-      "id": "F_GRAPHICS_002",
-      "title": "Scissor rect is covariant with PoseStack translation",
-      "domain": "D_GRAPHICS",
-      "assumption": "Moving a GUI element via matrixStack.translate(dx, dy, dz) shifts the scissor box by the exact same (dx, dy) vector scaled by GUI scale factor.",
-      "falsifying_observation": "VkRect2D passed to vkCmdSetScissor does not change when PoseStack is translated.",
-      "strategy": "Instrument vkCmdSetScissor to log VkRect2D. Render a GUI element with enableScissor. Apply matrixStack.translate(50, 50, 0). Re-render. Assert VkRect2D.offset has shifted by (50 * guiScale, 50 * guiScale).",
-      "status": "pending",
-      "test_file": "tests/test_scissor_matrix_covariance.py",
-      "ontological_issues": ["OI_GRAPHICS_002"],
-      "case_studies": ["CS_GRAPHICS_002"],
-      "implementation_notes": "Requires VulkanMod dev environment. Instrument the Drawer/Pipeline class where currentScissor is stored. Compare VkRect2D before and after PoseStack translation.",
-      "invariant": "S_vulkan = M_pose * S_vanilla for all GUI scissor operations.",
-      "falsifies_if": "VkRect2D offset does not change when PoseStack is translated.",
-      "definition": "Render GUI element with scissor, translate PoseStack, re-render, assert VkRect2D shifted by translation vector * scale."
-    },
-    {
       "id": "F_PLATFORM_006",
       "title": "Lock-free atomics are sequentially consistent on target hardware",
       "domain": "D_PLATFORM",

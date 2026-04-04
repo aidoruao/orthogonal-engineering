@@ -2561,22 +2561,6 @@
       "resolution_notes": "Replace hash-map iteration with sorted iteration in all pipeline stages that produce hashed output. TODO: wire into CI via F_GRAPHICS_001."
     },
     {
-      "id": "OI_GRAPHICS_002",
-      "title": "Vulkan dynamic scissor lacks PoseStack topological awareness",
-      "domain": "D_GRAPHICS",
-      "category": "coordinate-transform",
-      "severity": "high",
-      "status": "Open",
-      "description": "VulkanMod's vkCmdSetScissor receives absolute screen-space coordinates from the enableScissor mixin without applying the current PoseStack matrix. This breaks all animated GUI elements that use matrix translation (toasts, custom HUDs, animated overlays). The vanilla OpenGL backend handles this implicitly; the Vulkan dynamic pipeline requires explicit matrix-aware coordinate transformation.",
-      "assumptions_violated": [
-        "Scissor coordinates are absolute screen-space and do not require matrix transformation.",
-        "Rendering backend equivalence holds for GUI elements under matrix translation."
-      ],
-      "related_cases": ["CS_GRAPHICS_002"],
-      "falsification_tests": ["F_GRAPHICS_002"],
-      "resolution_notes": "Modify the enableScissor mixin to capture the current PoseStack top matrix. Transform scissor coordinates: x' = (x * scale) + translationX, y' = (y * scale) + translationY. Re-push VkRect2D to command buffer when PoseStack is dirty."
-    },
-    {
       "id": "OI_PROTO_001",
       "title": "Lock-free atomics assume sequentially-consistent hardware",
       "domain": "D_PLATFORM",
