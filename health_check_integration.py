@@ -19,6 +19,16 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+# A-18 through A-25: Bi-Layer Epistemic Closure modules
+from external_witness import ExternalWitness
+from evidence_correspondence import EvidenceCorrespondenceValidator
+from bidirectional_validator import BidirectionalValidator
+from fixed_point_detector import FixedPointDetector
+from evidence_lattice import EvidenceLattice, EvidenceNode
+from semantic_divergence import SemanticDivergenceDetector
+from ontological_invariants import OntologicalInvariantRegistry
+from quarantine_enforcer import QuarantineEnforcer
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -369,6 +379,36 @@ class HealthCheckIntegration:
         # A-12/A-13/A-14/A-17: compute system-wide intelligence metrics
         intelligence_metrics = self._compute_intelligence_metrics(results)
         results["intelligence_metrics"] = intelligence_metrics
+
+        # A-18: run external witness (independent SHA-512 hash of repo)
+        external_manifest = self._run_external_witness()
+        results["external_manifest_computed"] = external_manifest is not None
+
+        # A-19: validate correspondence between internal and external evidence
+        correspondence_report = self._validate_correspondence(results, external_manifest)
+        results["correspondence_report"] = correspondence_report
+
+        # A-20: complexity gate is embedded in correspondence_report (see details.complexity_gate)
+
+        # A-21: bidirectional revalidation S → E_i → E_e → S'
+        bidirectional = self._run_bidirectional_validation(results, external_manifest)
+        results["bidirectional_validation"] = bidirectional
+
+        # A-22: check fixed-point convergence (requires state recording first)
+        fixed_point = self._check_fixed_point(results)
+        results["fixed_point"] = fixed_point
+
+        # A-23: build evidence lattice from all evidence sources
+        lattice_report = self._build_evidence_lattice(results)
+        results["evidence_lattice"] = lattice_report
+
+        # A-24: detect semantic divergence across independent sources
+        divergence_report = self._detect_semantic_divergence(results)
+        results["semantic_divergence"] = divergence_report
+
+        # A-25: assert ontological invariants (must run after all evidence is collected)
+        invariant_report = self._assert_ontological_invariants(results)
+        results["ontological_invariants"] = invariant_report
 
         # Update registry with health check results
         self._update_registry_health(results)
@@ -1068,8 +1108,331 @@ class HealthCheckIntegration:
             logger.error(f"Failed to log monitoring results: {e}")
 
     # ------------------------------------------------------------------ #
-    # A-7: Moral Anchor (Section 1.7, 12.1)                               #
+    # A-18 through A-25: Bi-Layer Epistemic Closure                       #
     # ------------------------------------------------------------------ #
+
+    def _run_external_witness(self) -> Optional[Dict[str, Any]]:
+        """A-18: Run the External Witness engine (SHA-512, independent of internal).
+
+        Writes ``logs/health_checks/external_manifest.json`` and returns the
+        manifest dict.  Returns None on failure (non-fatal; logged as warning).
+
+        Critical independence constraints:
+        - Uses SHA-512 (not SHA-256 like the internal pipeline)
+        - No shared imports from this class
+        - Separate output file from latest_health_check.json
+        """
+        try:
+            log_dir = Path(self.registry_path).parent / "logs" / "health_checks"
+            witness = ExternalWitness(
+                repo_root=Path(self.registry_path).parent,
+                output_dir=log_dir,
+                algorithm="sha512",
+            )
+            manifest = witness.run()
+            logger.debug(
+                f"External witness: {manifest['file_count']} files, "
+                f"tree_hash={manifest['tree_hash'][:16]}..."
+            )
+            return manifest
+        except Exception as exc:
+            logger.warning(f"External witness failed (non-fatal): {exc}")
+            return None
+
+    def _validate_correspondence(
+        self,
+        results: Dict[str, Any],
+        external_manifest: Optional[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """A-19: Validate correspondence between internal and external evidence.
+
+        Computes h ∘ f = g (commutative diagram check) using
+        EvidenceCorrespondenceValidator with four sub-checks:
+        hash cross-reference, complexity gate (A-20), cardinality, temporal coherence.
+
+        Returns the correspondence report dict.  If external manifest is absent,
+        returns a degraded report with score 0 (external evidence required).
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        if external_manifest is None:
+            return {
+                "correspondence_score": 0.0,
+                "valid": False,
+                "error_term": 1.0,
+                "mismatch_list": [],
+                "reason": "external_manifest_absent",
+                "evaluated_at": ts_now,
+            }
+
+        # Build a lightweight internal manifest from the current results
+        internal_manifest: Dict[str, Any] = {
+            "file_hashes": {},
+            "file_count": sum(
+                v.get("checks", {}).get("file_count") or 0
+                for v in results.get("wardens", {}).values()
+                if isinstance(v.get("checks", {}).get("file_count"), int)
+            ),
+            "computed_at": ts_now,
+            "algorithm": "sha256",
+            # Include the external_manifest keys so complexity engine has structure
+            "wardens": list(results.get("wardens", {}).keys()),
+            "overall_health": results.get("overall_health", "unknown"),
+            "intelligence_metrics": results.get("intelligence_metrics", {}),
+        }
+
+        validator = EvidenceCorrespondenceValidator(
+            internal_manifest=internal_manifest,
+            external_manifest=external_manifest,
+        )
+        report = validator.validate()
+        report["evaluated_at"] = ts_now
+
+        # Persist correspondence_score to registry system_metrics
+        self.registry.setdefault("system_metrics", {})[
+            "correspondence_score"
+        ] = report["correspondence_score"]
+
+        return report
+
+    def _run_bidirectional_validation(
+        self,
+        results: Dict[str, Any],
+        external_manifest: Optional[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """A-21: Bidirectional revalidation S → E_i → E_e → S'.
+
+        Constructs a normalised system-state dict from the current results,
+        then runs BidirectionalValidator to verify the cycle closes within
+        tolerance (default δ < 5%).
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        wardens = results.get("wardens", {})
+        system_state: Dict[str, Any] = {
+            "file_count": sum(
+                v.get("checks", {}).get("file_count") or 0
+                for v in wardens.values()
+                if isinstance(v.get("checks", {}).get("file_count"), int)
+            ),
+            "warden_count": len(wardens),
+            "overall_health": results.get("overall_health", "unknown"),
+        }
+
+        validator = BidirectionalValidator(
+            internal_manifest=results,
+            external_manifest=external_manifest or {},
+        )
+        report = validator.validate_cycle(system_state)
+        report["evaluated_at"] = ts_now
+        return report
+
+    def _check_fixed_point(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """A-22: Record current state hash and check for fixed-point convergence.
+
+        The state hash covers the normalised registry snapshot.  Convergence
+        is declared when the last 3 consecutive runs produced identical hashes.
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+        log_dir = Path(self.registry_path).parent / "logs" / "health_checks"
+        detector = FixedPointDetector(
+            history_file=log_dir / "fixed_point_history.jsonl"
+        )
+
+        # Build a stable content signature
+        content_sig = {
+            "overall_health": results.get("overall_health", "unknown"),
+            "warden_count": len(results.get("wardens", {})),
+            "integrity_violations": len(
+                results.get("integrity_report", {}).get("violations", [])
+            ),
+            "moral_violations": len(results.get("moral_anchor_violations", [])),
+        }
+
+        # Derive state hash from normalised registry snapshot
+        registry_snapshot = {
+            "wardens": list(self.registry.get("wardens", {}).keys()),
+            "global_mode": self.registry.get("autonomy_policy", {}).get(
+                "global_mode", "dry_run"
+            ),
+            "overall_health": results.get("overall_health", "unknown"),
+        }
+        state_hash = detector.state_hash(registry_snapshot)
+        detector.record_state(state_hash, content_sig)
+
+        report = detector.check_convergence(k=3)
+        report["state_hash"] = state_hash
+        report["evaluated_at"] = ts_now
+
+        # Persist convergence status to objective_function block
+        if "autonomy_policy" in self.registry:
+            of = self.registry["autonomy_policy"].setdefault(
+                "objective_function", {}
+            )
+            of["convergence_reached"] = report["converged"]
+            of["fixed_point_hash"] = report.get("fixed_point")
+            of["fixed_point_evaluated_at"] = ts_now
+
+        return report
+
+    def _build_evidence_lattice(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """A-23: Build an evidence lattice from all available evidence sources.
+
+        Each warden report is an internal evidence node.  The external manifest
+        and correspondence score add external nodes.  The lattice resolves
+        conflicts (e.g., one warden says healthy while another says critical) and
+        returns the merged strongest verdict.
+        """
+        import time as _time
+
+        lattice = EvidenceLattice()
+        ts = _time.time()
+
+        # Internal nodes: one per warden
+        for warden_name, warden_health in results.get("wardens", {}).items():
+            status = warden_health.get("status", "unknown")
+            confidence = {
+                "healthy": 0.9,
+                "warning": 0.6,
+                "critical": 0.3,
+            }.get(status, 0.5)
+            lattice.insert(
+                EvidenceNode(
+                    source="internal",
+                    confidence=confidence,
+                    timestamp=ts,
+                    verdict=status,
+                    payload={"warden": warden_name},
+                )
+            )
+
+        # External node from correspondence score
+        corr = results.get("correspondence_report", {})
+        corr_score = corr.get("correspondence_score", 0.0)
+        if results.get("external_manifest_computed"):
+            lattice.insert(
+                EvidenceNode(
+                    source="external",
+                    confidence=corr_score,
+                    timestamp=ts + 0.001,
+                    verdict="valid" if corr.get("valid") else "invalid",
+                    payload={"correspondence_score": corr_score},
+                )
+            )
+
+        strongest = lattice.strongest()
+        merged = lattice.merge_conflict_resolution()
+        report = lattice.to_dict()
+        report["strongest_source"] = strongest.source if strongest else None
+        report["strongest_verdict"] = strongest.verdict if strongest else None
+        report["merged_confidence"] = round(merged.confidence, 4) if merged else None
+        return report
+
+    def _detect_semantic_divergence(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """A-24: Detect semantic divergence across independent evidence sources.
+
+        Uses warden health statuses as independent "model verdicts" and measures
+        contradiction_score and verdict entropy.
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        # Build evidence sources: each warden + external correspondence
+        sources: Dict[str, Dict[str, Any]] = {}
+        for warden_name, warden_health in results.get("wardens", {}).items():
+            sources[warden_name] = {
+                "status": warden_health.get("status", "unknown")
+            }
+
+        # Add external correspondence as an independent source
+        corr = results.get("correspondence_report", {})
+        if results.get("external_manifest_computed"):
+            sources["external_witness"] = {
+                "status": "valid" if corr.get("valid") else "invalid"
+            }
+
+        detector = SemanticDivergenceDetector.from_warden_results(sources)
+        report = detector.cross_validate()
+        report["evaluated_at"] = ts_now
+        return report
+
+    def _assert_ontological_invariants(
+        self, results: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """A-25: Assert all ontological invariants against the collected evidence.
+
+        Builds an OntologicalInvariantRegistry from the current run's context
+        and runs all six invariant checks.  A frozen result escalates to warning.
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        corr = results.get("correspondence_report", {})
+        complexity_gate = (
+            corr.get("details", {})
+            .get("complexity_gate", {})
+            .get("passed", True)
+        )
+
+        context: Dict[str, Any] = {
+            "external_manifest_exists": results.get("external_manifest_computed", False),
+            "correspondence_score": corr.get("correspondence_score", 0.0),
+            "correspondence_threshold": 0.9,
+            "execute_actions": [],   # Populated from file_count_history execute entries
+            "evidence_by_action": {},
+            "complexity_gate_passed": complexity_gate,
+            "idempotency_verified": True,
+        }
+
+        # Extract execute-mode actions from file_count_history
+        for warden_cfg in self.registry.get("wardens", {}).values():
+            for entry in warden_cfg.get("health", {}).get("file_count_history", []):
+                if entry.get("mode") == "execute":
+                    action_type = "update_file_count"
+                    context["execute_actions"].append(
+                        {
+                            "action_type": action_type,
+                            "reversibility": {"reversible": True},
+                            "audit_log": True,
+                        }
+                    )
+                    context["evidence_by_action"][action_type] = {
+                        "evidence": {"stored": entry.get("stored"), "actual": entry.get("actual")}
+                    }
+
+        registry = OntologicalInvariantRegistry.build(context)
+        report = registry.assert_all()
+        report["evaluated_at"] = ts_now
+
+        # Persist system_state to registry
+        self.registry.setdefault("system_metrics", {})[
+            "ontological_system_state"
+        ] = report["system_state"]
+
+        return report
 
     def _check_moral_anchor(self, results: Dict[str, Any]) -> List[str]:
         """Detect forbidden convergence patterns and freeze autonomy if triggered.

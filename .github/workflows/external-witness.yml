@@ -1,0 +1,115 @@
+---
+# A-18: External Witness Engine — Separate CI Job
+# ================================================
+# This workflow runs INDEPENDENTLY from the internal health-check pipeline:
+#   - Different trigger time (12:30 UTC vs internal at 12:00 UTC)
+#   - Separate runner (ubuntu-latest, fresh environment)
+#   - Different hash algorithm (SHA-512 vs internal SHA-256)
+#   - No shared memory, no shared process
+#
+# This satisfies the Kimi bi-layer epistemic spec requirement:
+#   "External witness must not share execution context with internal"
+#
+# Output: logs/health_checks/external_manifest.json uploaded as artifact
+# (retained 90 days for correspondence validation by A-19)
+
+name: External Witness (Epistemic Anchor)
+
+on:
+  schedule:
+    - cron: "30 12 * * *"  # 12:30 UTC — 30 min after internal scan at 12:00
+  workflow_dispatch:
+    inputs:
+      algorithm:
+        description: "Hash algorithm (sha512 or sha256)"
+        required: false
+        default: "sha512"
+
+jobs:
+  external-verification:
+    name: External Witness (SHA-512 Independent Scan)
+    runs-on: ubuntu-latest  # Separate runner from internal pipeline
+    permissions:
+      contents: read
+      actions: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run External Witness (independent SHA-512)
+        id: witness
+        run: |
+          python3 - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from external_witness import ExternalWitness
+          import json
+
+          # Explicitly use SHA-512 — different from internal SHA-256
+          witness = ExternalWitness(
+              repo_root=".",
+              output_dir="logs/health_checks",
+              filename="external_manifest.json",
+              algorithm="sha512",
+          )
+          manifest = witness.run()
+
+          print(f"External manifest computed:")
+          print(f"  algorithm : {manifest['algorithm']}")
+          print(f"  file_count: {manifest['file_count']}")
+          print(f"  tree_hash : {manifest['tree_hash'][:32]}...")
+          print(f"  witness_id: {manifest['witness_id']}")
+          print(f"  written to: logs/health_checks/external_manifest.json")
+          EOF
+
+      - name: Verify quarantine (different algorithm)
+        run: |
+          python3 - <<'EOF'
+          import sys
+          sys.path.insert(0, ".")
+          from quarantine_enforcer import QuarantineEnforcer
+          import json
+
+          manifest = json.load(open("logs/health_checks/external_manifest.json"))
+
+          enforcer = QuarantineEnforcer({
+              "internal_algorithm": "sha256",
+              "external_algorithm": manifest["algorithm"],
+              "internal_manifest_path": "logs/health_checks/latest_health_check.json",
+              "external_manifest_path": "logs/health_checks/external_manifest.json",
+          })
+          result = enforcer.validate_quarantine(strict=False)
+          print(json.dumps(result, indent=2))
+
+          # no_shared_hash_algorithms must be satisfied
+          alg_rule = next(
+              (r for r in result["results"] if r["name"] == "no_shared_hash_algorithms"), None
+          )
+          if alg_rule and not alg_rule["satisfied"]:
+              print("ERROR: Algorithm quarantine violated!")
+              sys.exit(1)
+          print("Quarantine checks passed.")
+          EOF
+
+      - name: Upload external manifest artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-manifest-sha512-${{ github.run_id }}
+          path: logs/health_checks/external_manifest.json
+          retention-days: 90
+
+      - name: Upload external manifest (latest)
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-manifest-latest
+          path: logs/health_checks/external_manifest.json
+          retention-days: 90
+          overwrite: true

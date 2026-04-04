@@ -7,15 +7,17 @@ the repository state from first principles — walking the filesystem, hashing
 every tracked file — without reusing any hash logic from
 health_check_integration.py.
 
-Key invariant (from the bi-layer epistemic spec):
-    hash_internal == hash_external
-    → if this fails, the system is in an epistemically inconsistent state.
+Critical independence invariants (Kimi spec):
+  - DIFFERENT ALGORITHM: external uses SHA-512; internal uses SHA-256.
+    The hash values are never equal even for identical content — proving
+    the two pipelines cannot share a result.
+  - NO SHARED IMPORTS from health_check_integration.py
+  - Separate output file (external_manifest.json ≠ latest_health_check.json)
 
-The engine writes its result to ``external_manifest.json`` in the
-``logs/health_checks/`` directory.  It is deliberately kept independent:
-  - No imports from health_check_integration.py
-  - Uses its own hash accumulation order (sorted file paths)
-  - Uses SHA-256 directly, not any registry-level hash
+Key invariant (dual-evidence spec):
+    hash_internal != hash_external  (by algorithm)
+    …but both refer to the SAME ground truth — proven via the correspondence
+    validator (A-19) which re-hashes common files with both algorithms.
 """
 from __future__ import annotations
 
@@ -26,9 +28,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Directories that are runtime-generated and must NOT be included in the
-# external manifest — otherwise the manifest would be invalidated by its own
-# creation.
+# ------------------------------------------------------------------ #
+# Configuration                                                       #
+# ------------------------------------------------------------------ #
+
+# Internal pipeline uses SHA-256; we use SHA-512 for true independence.
+_EXTERNAL_ALGORITHM = "sha512"
+
+# Directories that are runtime-generated and must NOT be included.
 _EXCLUDED_DIRS: frozenset = frozenset(
     {
         ".git",
@@ -42,11 +49,9 @@ _EXCLUDED_DIRS: frozenset = frozenset(
         ".tox",
         "dist",
         "build",
-        "*.egg-info",
     }
 )
 
-# File extensions to include (source + config only)
 _INCLUDED_EXTENSIONS: frozenset = frozenset(
     {
         ".py",
@@ -64,7 +69,6 @@ _INCLUDED_EXTENSIONS: frozenset = frozenset(
 
 
 def _should_include(path: Path) -> bool:
-    """Return True if this path should be hashed by the external witness."""
     for part in path.parts:
         if part in _EXCLUDED_DIRS or part.endswith(".egg-info"):
             return False
@@ -73,24 +77,42 @@ def _should_include(path: Path) -> bool:
     return False
 
 
-def compute_external_manifest(root: str | Path) -> Dict[str, Any]:
+def _hash_file(path: Path, algorithm: str = _EXTERNAL_ALGORITHM) -> str:
+    """Hash a file with the specified algorithm (independent from internal SHA-256)."""
+    h = hashlib.new(algorithm)
+    try:
+        h.update(path.read_bytes())
+    except OSError:
+        return "unreadable"
+    return h.hexdigest()
+
+
+# ------------------------------------------------------------------ #
+# Core computation (no dependency on health_check_integration.py)    #
+# ------------------------------------------------------------------ #
+
+def compute_external_manifest(
+    root: str | Path,
+    algorithm: str = _EXTERNAL_ALGORITHM,
+) -> Dict[str, Any]:
     """Walk the repository tree and compute an independent file-level manifest.
 
-    The manifest contains:
-    - ``file_hashes``: mapping of relative path → SHA-256 hex digest
-    - ``tree_hash``: SHA-256 of all (path, digest) pairs in sorted order
-    - ``file_count``: number of files included
-    - ``computed_at``: ISO-8601 UTC timestamp
-    - ``root``: resolved absolute root path
-    - ``algorithm``: "sha256"
+    Uses SHA-512 by default — deliberately different from the internal SHA-256
+    hash — so the two pipelines cannot accidentally share a cached result.
 
-    Returns the manifest dict (does not write to disk; use write_manifest()).
+    Returns:
+        manifest dict with:
+        - ``file_hashes``: relative_path → hex digest (sha-512)
+        - ``tree_hash``:   sha-512 of all (path, digest) pairs sorted
+        - ``file_count``:  number of included files
+        - ``computed_at``: ISO-8601 UTC timestamp
+        - ``algorithm``:   "sha512"
+        - ``root``:        resolved absolute root path
     """
     root_path = Path(root).resolve()
     file_hashes: Dict[str, str] = {}
 
     for dirpath, dirnames, filenames in os.walk(root_path):
-        # Prune excluded dirs in-place so os.walk won't descend
         dirnames[:] = [
             d for d in sorted(dirnames)
             if d not in _EXCLUDED_DIRS and not d.endswith(".egg-info")
@@ -100,21 +122,17 @@ def compute_external_manifest(root: str | Path) -> Dict[str, Any]:
             if not _should_include(fpath):
                 continue
             rel = str(fpath.relative_to(root_path))
-            try:
-                digest = hashlib.sha256(fpath.read_bytes()).hexdigest()
-            except OSError:
-                digest = "unreadable"
-            file_hashes[rel] = digest
+            file_hashes[rel] = _hash_file(fpath, algorithm)
 
     # Tree hash: deterministic over sorted (path, digest) pairs
-    tree_hasher = hashlib.sha256()
+    tree_hasher = hashlib.new(algorithm)
     for rel, digest in sorted(file_hashes.items()):
         tree_hasher.update(f"{rel}:{digest}\n".encode("utf-8"))
     tree_hash = tree_hasher.hexdigest()
 
     return {
         "schema_version": "1.0",
-        "algorithm": "sha256",
+        "algorithm": algorithm,
         "root": str(root_path),
         "computed_at": (
             datetime.now(timezone.utc)
@@ -125,6 +143,10 @@ def compute_external_manifest(root: str | Path) -> Dict[str, Any]:
         "file_count": len(file_hashes),
         "tree_hash": tree_hash,
         "file_hashes": file_hashes,
+        # Witness identity: unique per run, proves independent execution
+        "witness_id": hashlib.sha256(
+            f"{tree_hash}{os.getpid()}".encode()
+        ).hexdigest()[:12],
     }
 
 
@@ -133,10 +155,7 @@ def write_manifest(
     output_dir: str | Path,
     filename: str = "external_manifest.json",
 ) -> Path:
-    """Persist the manifest to ``output_dir/filename``.
-
-    Returns the resolved path of the written file.
-    """
+    """Persist the manifest to ``output_dir/filename``."""
     out_dir = Path(output_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     out_path = out_dir / filename
@@ -145,7 +164,7 @@ def write_manifest(
 
 
 def load_manifest(path: str | Path) -> Optional[Dict[str, Any]]:
-    """Load and return a previously written manifest, or None if missing."""
+    """Load and return a previously written manifest, or None if missing/corrupt."""
     p = Path(path)
     if not p.exists():
         return None
@@ -155,14 +174,23 @@ def load_manifest(path: str | Path) -> Optional[Dict[str, Any]]:
         return None
 
 
+# ------------------------------------------------------------------ #
+# High-level facade                                                   #
+# ------------------------------------------------------------------ #
+
 class ExternalWitness:
     """High-level facade for A-18: External Witness Engine.
+
+    Uses SHA-512 (not SHA-256) to ensure complete independence from the
+    internal pipeline.  The ``correspondence_validator`` (A-19) bridges
+    the two by re-hashing common files with both algorithms to prove
+    they reference the same ground truth.
 
     Usage::
 
         witness = ExternalWitness(repo_root=".", output_dir="logs/health_checks")
         result = witness.run()
-        # result["tree_hash"] is the external ground truth
+        # result["tree_hash"] is the external SHA-512 ground truth
     """
 
     def __init__(
@@ -170,17 +198,26 @@ class ExternalWitness:
         repo_root: str | Path,
         output_dir: str | Path = "logs/health_checks",
         filename: str = "external_manifest.json",
+        algorithm: str = _EXTERNAL_ALGORITHM,
     ) -> None:
         self.repo_root = Path(repo_root).resolve()
         self.output_dir = Path(output_dir)
         self.filename = filename
+        self.algorithm = algorithm
+        self.manifest_path: Optional[Path] = None
 
     def run(self) -> Dict[str, Any]:
         """Compute manifest and write to disk.  Returns the manifest dict."""
-        manifest = compute_external_manifest(self.repo_root)
+        manifest = compute_external_manifest(self.repo_root, self.algorithm)
         self.manifest_path = write_manifest(manifest, self.output_dir, self.filename)
         return manifest
 
     def load_previous(self) -> Optional[Dict[str, Any]]:
         """Load the last persisted manifest without recomputing."""
         return load_manifest(self.output_dir / self.filename)
+
+    @staticmethod
+    def exists(output_dir: str | Path = "logs/health_checks") -> bool:
+        """Return True if a previous external manifest exists on disk."""
+        return (Path(output_dir) / "external_manifest.json").exists()
+
