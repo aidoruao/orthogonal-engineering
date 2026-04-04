@@ -548,13 +548,13 @@ def main():
     
     try:
         if args.command == "hash":
-            return cmd_hash(args)
+            return cmd_hash(args) or 0
         elif args.command == "process":
-            return cmd_process(args)
+            return cmd_process(args) or 0
         elif args.command == "backup":
-            return cmd_backup(args)
+            return cmd_backup(args) or 0
         elif args.command == "manifest":
-            return cmd_manifest(args)
+            return cmd_manifest(args) or 0
         elif args.command == 'index':
             return cmd_index(args)
         elif args.command == 'merkle':
