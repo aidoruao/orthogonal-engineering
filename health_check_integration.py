@@ -1585,10 +1585,12 @@ class HealthCheckIntegration:
 
         # A-17: Objective score = weighted average of three maximize targets
         # truth_alignment ← consistency_ratio (0..1)
-        # system_stability ← 1 - entropy / log2(n_states) normalized
+        # system_stability ← 1 - entropy / log2(n_possible_states) normalized
+        #   n_possible_states = 3 (healthy, warning, critical) — the fixed vocabulary
         # recoverability ← 1.0 if all wardens have reversible proposals
         truth_alignment = consistency_ratio if consistency_ratio is not None else 0.5
-        max_entropy = math.log2(max(len(status_counts), 2))
+        n_possible_states = 3  # healthy | warning | critical
+        max_entropy = math.log2(n_possible_states)  # theoretical maximum
         system_stability = max(0.0, 1.0 - entropy_bits / max(max_entropy, 1.0))
         recoverability = 1.0  # default — self-healing is always reversible
         objective_score = round(

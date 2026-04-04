@@ -368,7 +368,7 @@ def test_structural_integrity_healthy_on_complete_registry(tmp_path, monkeypatch
 def test_epistemic_conflict_detects_overlapping_paths(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     registry = _build_registry()
-    # Add a second warden monitoring the same path as gemini_warden (**) — but both non-catch-all
+    # Two non-catch-all wardens sharing the same folder_path (overlap via folder_path)
     registry["wardens"]["local_warden"] = {
         "folder_path": "monitored_dir",
         "model_name": "llama3.2:3b",
@@ -382,7 +382,8 @@ def test_epistemic_conflict_detects_overlapping_paths(tmp_path, monkeypatch):
         "model_name": "llama3.2:3b",
         "api_key": "local_ollama",
         "status": "active",
-        "metadata": {"file_count": 0},
+        # Also explicitly declares the overlapping path in monitored_paths
+        "metadata": {"file_count": 0, "monitored_paths": ["monitored_dir"]},
         "health": {},
     }
     registry_path = _prepare_workspace(tmp_path, registry)
@@ -391,6 +392,9 @@ def test_epistemic_conflict_detects_overlapping_paths(tmp_path, monkeypatch):
     results = HealthCheckIntegration(str(registry_path)).run_health_checks()
     conflicts = results["conflict_report"]["conflicts"]
     assert any(c["type"] == "overlapping_monitored_path" for c in conflicts)
+    # Both folder_path and monitored_paths contribute — should see the conflict
+    overlap = [c for c in conflicts if c["type"] == "overlapping_monitored_path"]
+    assert any("local_warden" in c["wardens"] and "local_warden2" in c["wardens"] for c in overlap)
 
 
 def test_epistemic_conflict_clean_on_single_warden(tmp_path, monkeypatch):
