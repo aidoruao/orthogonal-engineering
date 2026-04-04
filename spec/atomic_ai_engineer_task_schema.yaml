@@ -1597,3 +1597,60 @@ cross_model_verification:
       invariant: "Same problem must produce the same proof hash regardless of which model solves it"
       pattern: "CLOUD_AI_VERIFICATION.py"
       ci_pattern: "pr39-peano-sovereignty.yml -> verify-sovereignty-parity"
+
+# =============================================================================
+# ADD-ON: NON-ORACULAR VERIFICATION ENFORCEMENT LAYER
+# Priority: EXTENDS Devin schema (cross_model_verification), does not override
+# Source: ChatGPT suggestion, adopted as subordinate extension
+# =============================================================================
+
+non_oracular_verification_layer:
+
+  principle: >
+    No model output is treated as ground truth.
+    All outputs are derivations from deterministic or inspectable sources.
+
+  enforcement_rules:
+    - rule_id: "NOV-1"
+      statement: >
+        All answers labeled as 'correct_answer' MUST be reproducible from
+        deterministic facts or executable logic.
+      violation_if: "Any correct_answer depends on LLM agreement or majority vote"
+
+    - rule_id: "NOV-2"
+      statement: "Cross-model agreement is classified as a SIGNAL, not a PROOF."
+      classification:
+        agreement: "confidence_signal"
+        proof: "deterministic_derivation_only"
+
+    - rule_id: "NOV-3"
+      statement: >
+        Any external AI audit MUST be provided identical FACT SET only
+        (no hidden context, no prior PR knowledge).
+      requirement: "context_isolation"
+
+    - rule_id: "NOV-4"
+      statement: >
+        Any claim referencing external human statements must include commit hash,
+        file path, or immutable source reference.
+      violation_if: "temporal claims without verifiable source ID"
+
+    - rule_id: "NOV-5"
+      statement: >
+        If a question cannot be resolved deterministically from FACT-SET,
+        output MUST be 'UNRESOLVABLE_BY_SPEC'.
+      fallback_behavior: "no forced consensus"
+
+  evaluation_hierarchy:
+    tier_1: "deterministic_execution (code, schema, DFU logic, type conversion rules)"
+    tier_2: "static_referential_validation (repo files, commits, schemas)"
+    tier_3: "cross_model_reasoning (ChatGPT/Claude/DeepSeek agreement)"
+    rule: "Tier-3 can never override Tier-1 or Tier-2"
+
+  output_constraint:
+    required_field_addition: "derivation_trace"
+    format: |
+      derivation_trace:
+        - fact_ids_used: [...]
+        - transformations: [...]
+        - final_step: "explicit logical conclusion"
