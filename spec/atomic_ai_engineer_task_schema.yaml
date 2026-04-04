@@ -400,3 +400,492 @@ test_case:
     - "Place items with Count > 1 in a Cooking Pot in MC 1.20.1, upgrade to 1.21.1, verify Count is preserved"
     - "Place enchanted items in a Cooking Pot in MC 1.20.1, upgrade to 1.21.1, verify enchantments are preserved"
     - "Existing 1.21.1 worlds with Cooking Pots must not be corrupted by the fix"
+
+# =============================================================================
+# ATOMIC TASK LIST — Numbered tasks with pass/fail tests
+# Each task is atomic: one action, one verifiable result, no skipping allowed.
+# Gate sequencing: T(n) blocks T(n+1). No task may be marked PASS until its
+# test condition is confirmed by the AI agent or CI.
+# =============================================================================
+atomic_task_list:
+
+  - id: "T-001"
+    name: "CLONE_AND_INDEX_TARGET_REPO"
+    action: "Clone vectorwing/FarmersDelight and index the source tree"
+    command: "git clone https://github.com/vectorwing/FarmersDelight.git"
+    test:
+      condition: "src/main/java/ directory exists and is non-empty after clone"
+      pass: "Directory tree rooted at src/main/java/ contains at least one .java file"
+      fail: "Clone failed or src/main/java/ is absent"
+
+  - id: "T-002"
+    name: "LOCATE_DATA_FIXER_REGISTRATION"
+    action: >
+      Find the data fixer schema registration file. Search for 'Schema1460'
+      or 'registerBlockEntities' in the source tree.
+    command: "grep -r 'Schema1460\\|registerBlockEntities' src/ --include='*.java' -l"
+    test:
+      condition: "At least one .java file is returned by the grep"
+      pass: "File path printed; agent notes whether a Schema1460Mixin already exists"
+      fail: "No file found — data fixer layer is absent; escalate before proceeding"
+
+  - id: "T-003"
+    name: "CONFIRM_COOKING_POT_IS_UNREGISTERED"
+    action: >
+      Confirm that 'cooking_pot' block entity is NOT currently registered
+      in the data fixer schema (proving the bug exists).
+    command: "grep -r 'cooking_pot' src/ --include='*.java'"
+    test:
+      condition: "cooking_pot does NOT appear in any data fixer registration block"
+      pass: "Bug confirmed: cooking_pot is absent from data fixer registration"
+      fail: "cooking_pot IS already registered — bug may already be fixed upstream"
+
+  - id: "T-004"
+    name: "IDENTIFY_REFERENCE_IMPLEMENTATION"
+    action: >
+      Retrieve the reference implementation from PolyDecorations to understand
+      the DSL.optionalFields pattern for nested Inventory.Items registration.
+    url: "https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java"
+    test:
+      condition: "Agent can read and summarize the DSL.optionalFields nesting pattern from the file"
+      pass: "Pattern confirmed: DSL.optionalFields('Inventory', DSL.optionalFields('Items', DSL.list(References.ITEM_STACK.in(schema))))"
+      fail: "URL unreachable or file does not contain the nesting pattern"
+
+  - id: "T-005"
+    name: "CREATE_SCHEMA1460_MIXIN"
+    action: >
+      Create or modify the data fixer mixin to register the cooking_pot block
+      entity with nested Inventory.Items → ITEM_STACK path.
+    target_file: "src/main/java/.../mixin/datafixer/Schema1460Mixin.java"
+    patch: |
+      @Mixin(value = Schema1460.class, remap = false)
+      public abstract class Schema1460Mixin {
+          @Inject(method = "registerBlockEntities", at = @At("RETURN"))
+          private static void farmersdelight$registerBlockEntities(
+                  Schema schema, Map<String, Supplier<TypeTemplate>> map, CallbackInfo ci) {
+              schema.register(map, "farmersdelight:cooking_pot", string ->
+                  DSL.optionalFields(
+                      "Inventory",
+                      DSL.optionalFields(
+                          "Items",
+                          DSL.list(References.ITEM_STACK.in(schema))
+                      )
+                  )
+              );
+          }
+      }
+    test:
+      condition: "The mixin file compiles without errors when ./gradlew compileJava is run"
+      pass: "BUILD SUCCESSFUL with zero compilation errors"
+      fail: "Compilation error — patch contains incorrect DSL expression or import"
+
+  - id: "T-006"
+    name: "BUILD_TARGET_PROJECT"
+    action: "Build the full Farmer's Delight project with the mixin applied"
+    command: "./gradlew build"
+    test:
+      condition: "Gradle build exits with code 0"
+      pass: "BUILD SUCCESSFUL"
+      fail: "BUILD FAILED — fix compilation error before proceeding"
+
+  - id: "T-007"
+    name: "RUN_EXISTING_TEST_SUITE"
+    action: "Run any existing tests in the target project"
+    command: "./gradlew test"
+    test:
+      condition: "All existing tests pass (or no tests exist — both are PASS)"
+      pass: "Test suite exits with code 0 or reports 'No tests found'"
+      fail: "Any pre-existing test fails due to the patch"
+
+  - id: "T-008"
+    name: "STATIC_ANALYSIS_CHECK"
+    action: >
+      Run static analysis on the patch. Check for: tautological conditions,
+      unreachable code, duplicate logic blocks, missing return paths.
+      (Internal: SeraphUnit.query('scan'); External: any static analysis tool
+      available in the target project, e.g. checkstyle, spotbugs, or manual review)
+    command: "./gradlew check 2>/dev/null || echo 'No check task; manual review required'"
+    test:
+      condition: "No tautologies, unreachable code, or duplicate logic in the patch"
+      pass: "Static analysis clean or manual review finds zero issues in T-005 patch"
+      fail: "Tautological condition, unreachable branch, or duplicate block found in patch"
+
+  - id: "T-009"
+    name: "CYCLE_AND_DEPENDENCY_CHECK"
+    action: >
+      Confirm the mixin does not introduce circular imports or unexpected
+      dependency on transitive classes not already in the project's compile scope.
+    command: "./gradlew dependencies 2>/dev/null | grep -i 'circular\\|cycle' || echo 'No cycles detected'"
+    test:
+      condition: "Import graph remains acyclic after patch"
+      pass: "No circular dependency reported"
+      fail: "Circular dependency introduced — refactor import structure"
+
+  - id: "T-010"
+    name: "DOCUMENTATION_VALIDATION"
+    action: >
+      Confirm the PR description contains: (a) a link to the upstream issue,
+      (b) an ISO 8601 timestamp, (c) no unverifiable claims ('studies show',
+      'experts say', etc.), (d) no PII.
+    test:
+      condition: "PR description satisfies all four documentation requirements"
+      pass: "Issue link present, timestamp present, no unverifiable claims, no PII"
+      fail: "Any documentation requirement missing"
+
+  - id: "T-011"
+    name: "ARITHMETIC_INTEGRITY_CHECK"
+    action: >
+      Verify the patch contains no unbounded float literals or float() casts
+      in any numeric path that touches item Count or stack size values.
+      Item Count is an integer (NBT TAG_Int / Data Component integer).
+    test:
+      condition: "grep -n 'float\\|Float\\|double\\|Double' <patch-file> returns no hits in Count/stack-size paths"
+      pass: "No float arithmetic in the data migration path"
+      fail: "Float found in Count arithmetic — replace with integer arithmetic"
+
+  - id: "T-012"
+    name: "GENERATE_VERIFICATION_REPORT"
+    action: >
+      Produce verification_report.json containing results of T-005 through T-011.
+      Each task entry must include: task_id, name, pass (bool), evidence (string).
+    output_file: "verification_report.json"
+    schema:
+      type: "object"
+      properties:
+        task_id: { type: "string" }
+        generated_at: { type: "string", format: "ISO 8601" }
+        tasks:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              id: { type: "string" }
+              name: { type: "string" }
+              pass: { type: "boolean" }
+              evidence: { type: "string" }
+        all_passed: { type: "boolean" }
+    test:
+      condition: "all_passed == true in verification_report.json"
+      pass: "All 12 tasks in verification_report.json have pass: true"
+      fail: "Any task has pass: false — fix that task before proceeding"
+
+  - id: "T-013"
+    name: "SUBMIT_PR_TO_TARGET_REPO"
+    action: >
+      Open a pull request on vectorwing/FarmersDelight with:
+      - Title: 'fix: register cooking_pot block entity in data fixer schema (fixes #1262)'
+      - Body: copy-paste from secular_developer_patch.pr_body (see below)
+      - Linked issue: #1262
+    test:
+      condition: "PR URL is returned and PR is in 'open' state"
+      pass: "https://github.com/vectorwing/FarmersDelight/pull/{N} is accessible and open"
+      fail: "PR creation failed or PR was immediately closed/rejected by bot"
+
+# =============================================================================
+# SECULAR DEVELOPER PATCH
+# ─────────────────────────────────────────────────────────────────────────────
+# COPY-PASTE THIS SECTION FOR EXTERNAL PR SUBMISSION.
+# No internal tooling names, no theological naming.
+# Everything here is verifiable by any Java developer with a Minecraft modding
+# environment. Paste pr_body directly into the GitHub PR description field.
+# =============================================================================
+secular_developer_patch:
+
+  issue_reference: "https://github.com/vectorwing/FarmersDelight/issues/1262"
+  target_repository: "https://github.com/vectorwing/FarmersDelight"
+  pr_title: "fix: register cooking_pot block entity in data fixer schema (fixes #1262)"
+  timestamp: "2026-04-04T02:04:16Z"
+
+  # ── COPY THIS BLOCK AS THE PR BODY ──────────────────────────────────────────
+  pr_body: |
+    ## Problem
+
+    When upgrading a world from Minecraft 1.20.1 to 1.21+, items stored inside
+    a **Cooking Pot** block entity lose their stack size (Count resets to 1).
+    Enchantments and other NBT data on those items are also silently dropped.
+
+    Reported in: https://github.com/vectorwing/FarmersDelight/issues/1262
+    (Also discussed in: https://github.com/vectorwing/FarmersDelight/issues/135)
+
+    ---
+
+    ## Root Cause
+
+    Minecraft 1.21 migrated item data storage from NBT (`TAG_Byte Count`,
+    `TAG_String id`, etc.) to **Data Components** (`minecraft:count`,
+    `minecraft:custom_data`, etc.). This migration is handled by the vanilla
+    `DataFixer` system, specifically `Schema1460`.
+
+    `Schema1460.registerBlockEntities()` must explicitly register every
+    block entity type that contains items so the data fixer knows to recurse
+    into those item stacks and convert them.
+
+    Farmer's Delight stores Cooking Pot inventory under the path:
+
+        BlockEntityTag → Inventory → Items → [list of ITEM_STACK]
+
+    Because `farmersdelight:cooking_pot` was never registered in
+    `Schema1460.registerBlockEntities()`, the data fixer skips the entire
+    `Inventory` sub-tree. Result: item Count and all NBT data on those items
+    are silently lost during world upgrade.
+
+    ---
+
+    ## Causal Chain
+
+    1. Minecraft 1.21 replaces NBT item storage with Data Components.
+    2. Vanilla `DataFixer` runs `Schema1460.registerBlockEntities()` on world load.
+    3. Only block entities explicitly registered in that method are recursed into.
+    4. `farmersdelight:cooking_pot` is not registered → `Inventory.Items` is skipped.
+    5. `Count` field (stack size) is not converted → resets to default (1).
+    6. Player opens Cooking Pot after upgrade → all stack sizes show as 1.
+
+    ---
+
+    ## Fix
+
+    Register `farmersdelight:cooking_pot` in the data fixer schema using a Mixin
+    on `Schema1460`, following the same pattern used by other mods that store
+    items in nested block entity structures.
+
+    **Reference implementation** (PolyDecorations mod — same pattern, working):
+    https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java
+
+    ### New file: `src/main/java/.../mixin/datafixer/Schema1460Mixin.java`
+
+    ```java
+    package vectorwing.farmersdelight.mixin.datafixer;
+
+    import com.mojang.datafixers.DSL;
+    import com.mojang.datafixers.schemas.Schema;
+    import com.mojang.datafixers.types.templates.TypeTemplate;
+    import com.mojang.datafixers.util.Pair;
+    import net.minecraft.util.datafix.fixes.References;
+    import net.minecraft.util.datafix.schemas.Schema1460;
+    import org.spongepowered.asm.mixin.Mixin;
+    import org.spongepowered.asm.mixin.injection.At;
+    import org.spongepowered.asm.mixin.injection.Inject;
+    import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+    import java.util.Map;
+    import java.util.function.Supplier;
+
+    @Mixin(value = Schema1460.class, remap = false)
+    public abstract class Schema1460Mixin {
+
+        @Inject(method = "registerBlockEntities", at = @At("RETURN"))
+        private static void farmersdelight$registerBlockEntities(
+                Schema schema,
+                Map<String, Supplier<TypeTemplate>> map,
+                CallbackInfo ci) {
+
+            // Register cooking_pot so the DataFixer recurses into Inventory.Items
+            // and converts each ITEM_STACK from NBT to Data Components.
+            schema.register(map, "farmersdelight:cooking_pot", string ->
+                DSL.optionalFields(
+                    "Inventory",
+                    DSL.optionalFields(
+                        "Items",
+                        DSL.list(References.ITEM_STACK.in(schema))
+                    )
+                )
+            );
+        }
+    }
+    ```
+
+    ### Mixin registration: `src/main/resources/farmersdelight.mixins.json`
+
+    Add `"mixin.datafixer.Schema1460Mixin"` to the `"mixins"` array:
+
+    ```json
+    {
+      "mixins": [
+        "...",
+        "mixin.datafixer.Schema1460Mixin"
+      ]
+    }
+    ```
+
+    ---
+
+    ## Math / Data Integrity
+
+    The `Count` field is a signed 32-bit integer (`TAG_Int` in NBT, integer
+    component in Data Components). The fix performs no arithmetic on `Count`;
+    it only registers the path so the vanilla converter can find and migrate it.
+    There is no numeric transformation, no floating-point arithmetic, no
+    precision loss.
+
+    Formally: let `c ∈ ℤ` be the item count before migration. After applying
+    this fix, the data fixer produces `c' = c` (identity). Without the fix,
+    `c'` is undefined (field dropped), effectively `c' = 1` (default).
+
+    ---
+
+    ## How to Verify
+
+    1. Create a Minecraft 1.20.1 world with Farmer's Delight installed.
+    2. Place a Cooking Pot. Fill it with a stack of 64 bread.
+    3. Save and close the world.
+    4. Upgrade to Minecraft 1.21 with this PR's build of Farmer's Delight.
+    5. Open the world. Open the Cooking Pot.
+    6. **Expected (with fix):** Stack of 64 bread is present.
+    7. **Expected (without fix):** 1 bread is present (bug).
+
+    Additional falsification conditions:
+    - Enchanted items in a Cooking Pot must retain their enchantments after upgrade.
+    - Existing 1.21.1 worlds with Cooking Pots must not be corrupted by this fix.
+    - If no items were in a Cooking Pot at upgrade time, the fix must have no effect.
+
+    ---
+
+    ## Files Changed
+
+    | File | Change |
+    |------|--------|
+    | `src/main/java/.../mixin/datafixer/Schema1460Mixin.java` | Added (new file) |
+    | `src/main/resources/farmersdelight.mixins.json` | Added mixin class to mixins array |
+
+    ---
+
+    Timestamp: 2026-04-04T02:04:16Z
+    Issue: https://github.com/vectorwing/FarmersDelight/issues/1262
+
+  # ── END COPY BLOCK ───────────────────────────────────────────────────────────
+
+  # Standalone sections for agents that need individual pieces:
+
+  ontological_diagnosis: |
+    ROOT CAUSE
+    Minecraft 1.21 changed item data storage from NBT to Data Components.
+    The vanilla DataFixer (Schema1460.registerBlockEntities) only converts
+    block entity inventories that are explicitly registered. Farmer's Delight
+    never registered farmersdelight:cooking_pot in that method.
+
+    ASSUMPTION VIOLATED
+    The original code assumed the vanilla data fixer would automatically
+    recurse into all block entity sub-trees containing items. It does not —
+    it only processes explicitly registered paths.
+
+    CAUSAL CHAIN
+    1. Minecraft 1.21 replaces NBT item storage with Data Components.
+    2. Vanilla DataFixer runs Schema1460.registerBlockEntities on world load.
+    3. Only explicitly registered block entities are recursed into.
+    4. farmersdelight:cooking_pot is not registered → Inventory.Items is skipped.
+    5. Count field (stack size) is not converted → silently lost.
+    6. Player opens Cooking Pot after upgrade → all stack sizes show as 1.
+
+  technical_diagnosis: |
+    AFFECTED FILES
+    - src/main/java/.../mixin/datafixer/Schema1460Mixin.java  (new file)
+    - src/main/resources/farmersdelight.mixins.json           (add mixin entry)
+
+    AFFECTED FUNCTION
+    - Schema1460.registerBlockEntities (vanilla method; fixed via Mixin injection)
+
+    DATA FLOW (BROKEN)
+    World load → DataFixer → Schema1460.registerBlockEntities →
+    [cooking_pot not registered] → Inventory.Items skipped →
+    Count field dropped → stack size reset to 1
+
+    DATA FLOW (FIXED)
+    World load → DataFixer → Schema1460.registerBlockEntities →
+    [cooking_pot registered via Mixin] →
+    Inventory → Items → each ITEM_STACK converted by vanilla converter →
+    Count preserved
+
+    REFERENCE IMPLEMENTATION
+    https://github.com/Patbox/PolyDecorations/blob/master/src/main/java/eu/pb4/polydecorations/mixin/datafixer/Schema1460Mixin.java
+
+  the_math: |
+    Let c ∈ ℤ be the item count (stack size) stored in a Cooking Pot before
+    world upgrade. The data fixer is a function F: WorldState → WorldState.
+
+    WITHOUT FIX:
+      F(cooking_pot_inventory) = {} (empty; Inventory.Items path not traversed)
+      Result: Count field absent → Minecraft defaults Count to 1
+      c' = 1  for all c ≠ 1  (data loss)
+
+    WITH FIX:
+      F(cooking_pot_inventory) = convert(Inventory.Items, ITEM_STACK_schema)
+      The vanilla ITEM_STACK converter maps Count: TAG_Int(c) → count: c
+      c' = c  (identity; no arithmetic transformation)
+
+    The fix performs NO arithmetic on c. It only registers the traversal path
+    so the vanilla converter can reach and migrate the Count field.
+    There is no floating-point arithmetic. Count remains in ℤ throughout.
+
+    Formally, the registration call:
+      schema.register(map, "farmersdelight:cooking_pot", string ->
+          DSL.optionalFields("Inventory",
+              DSL.optionalFields("Items",
+                  DSL.list(References.ITEM_STACK.in(schema)))))
+
+    defines a type-template T such that for any Cooking Pot block entity D:
+      T(D).Inventory.Items[i] is typed as ITEM_STACK
+    This allows F to apply the ITEM_STACK conversion rule to each item i,
+    preserving Count, id, tag, and all other fields.
+
+  the_code: |
+    // FILE: src/main/java/vectorwing/farmersdelight/mixin/datafixer/Schema1460Mixin.java
+
+    package vectorwing.farmersdelight.mixin.datafixer;
+
+    import com.mojang.datafixers.DSL;
+    import com.mojang.datafixers.schemas.Schema;
+    import com.mojang.datafixers.types.templates.TypeTemplate;
+    import net.minecraft.util.datafix.fixes.References;
+    import net.minecraft.util.datafix.schemas.Schema1460;
+    import org.spongepowered.asm.mixin.Mixin;
+    import org.spongepowered.asm.mixin.injection.At;
+    import org.spongepowered.asm.mixin.injection.Inject;
+    import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+    import java.util.Map;
+    import java.util.function.Supplier;
+
+    @Mixin(value = Schema1460.class, remap = false)
+    public abstract class Schema1460Mixin {
+
+        @Inject(method = "registerBlockEntities", at = @At("RETURN"))
+        private static void farmersdelight$registerBlockEntities(
+                Schema schema,
+                Map<String, Supplier<TypeTemplate>> map,
+                CallbackInfo ci) {
+            schema.register(map, "farmersdelight:cooking_pot", string ->
+                DSL.optionalFields(
+                    "Inventory",
+                    DSL.optionalFields(
+                        "Items",
+                        DSL.list(References.ITEM_STACK.in(schema))
+                    )
+                )
+            );
+        }
+    }
+
+    // FILE: src/main/resources/farmersdelight.mixins.json  (diff)
+    // Add the following line to the "mixins" array:
+    //   "mixin.datafixer.Schema1460Mixin"
+
+  falsification_conditions: |
+    FALSIFICATION CONDITIONS (how to disprove the fix works)
+
+    1. Place a stack of 64 bread in a Cooking Pot in MC 1.20.1.
+       Upgrade world to MC 1.21. Open the Cooking Pot.
+       FIX FAILS if: stack size is 1 instead of 64.
+
+    2. Place an enchanted item (e.g. diamond sword with Sharpness V) in a
+       Cooking Pot in MC 1.20.1. Upgrade to MC 1.21. Open the Cooking Pot.
+       FIX FAILS if: enchantment is absent or item reverts to unenchanted.
+
+    3. Open an existing 1.21 world that already has a Cooking Pot (no upgrade
+       needed). Apply this mod build.
+       FIX FAILS if: any existing 1.21 Cooking Pot inventory is corrupted
+       (item count changes, items disappear, or items duplicate).
+
+    4. Create a Cooking Pot in a fresh 1.21 world (no upgrade). Put 32 carrots
+       in it. Save and reload.
+       FIX FAILS if: carrot count changes on reload (the fix must be no-op for
+       worlds that were already on 1.21 and never needed data migration).
