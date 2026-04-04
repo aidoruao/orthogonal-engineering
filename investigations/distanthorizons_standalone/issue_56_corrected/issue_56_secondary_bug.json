@@ -1,0 +1,57 @@
+{
+  "issue": "DistantHorizonsStandalone #56 - Secondary Bug (Game Rendering)",
+  "title": "Black Screen During Gameplay Without Angelica",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "note": "This is a SEPARATE bug from the splash screen crash. The Batch 1 analysis correctly identified a gameplay rendering issue, but it is NOT the cause of the splash screen crash.",
+  "status": "GAP_IDENTIFIED",
+  "priority": "HIGH",
+  "category": "RENDERING",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json"
+  },
+  "findings": {
+    "summary": "During gameplay (after world load), the screen may be black when Angelica is not installed. This is a separate issue from the splash screen crash.",
+    "root_cause": "RenderHelper.drawLods() manipulates OpenGL state without preserving it. Specifically, glClearColor(1,1,1,0.0F) uses alpha=0 which can cause framebuffer issues, and GL_BLEND is disabled unconditionally.",
+    "affected_components": [
+      "com.seibel.distanthorizons.RenderHelper"
+    ],
+    "evidence": [
+      "RenderHelper.java:29: GL11.glClearColor(1, 1, 1, 0.0F) — alpha=0 transparent clear",
+      "RenderHelper.java:37: GL32.glDisable(GL32.GL_BLEND) — unconditional blend disable",
+      "RenderHelper.java:27,35: GL_ALPHA_TEST manipulation without state preservation"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/RenderHelper.java",
+        "method": "drawLods()",
+        "line": "22-39",
+        "issue": "OpenGL state not preserved"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "OpenGL state modified without preservation, causing rendering issues",
+    "required_behavior": "OpenGL state should be saved and restored",
+    "invariant_violated": "OpenGL state consistency"
+  },
+  "proposed_fix": {
+    "approach": "Save and restore OpenGL state in RenderHelper",
+    "implementation_steps": [
+      "1. Save GL_BLEND, GL_ALPHA_TEST, GL_COLOR_CLEAR_VALUE state before changes",
+      "2. Restore state after rendering"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/RenderHelper.java"
+    ],
+    "code_changes": "State preservation"
+  },
+  "relation_to_primary_bug": {
+    "note": "This is a DIFFERENT bug from the splash screen crash. Both should be fixed, but they occur at different times (gameplay vs initialization) and have different root causes (RenderHelper vs MixinFramebuffer)."
+  },
+  "confidence": "HIGH",
+  "confidence_reason": "Code clearly shows GL state manipulation without preservation"
+}

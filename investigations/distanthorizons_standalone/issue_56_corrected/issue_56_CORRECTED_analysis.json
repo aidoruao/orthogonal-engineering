@@ -1,0 +1,135 @@
+{
+  "issue": "DistantHorizonsStandalone #56 - CORRECTED",
+  "title": "Screen is Black and then Crashes when Angelica isn't Present",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "correction_note": "This REPLACES the previous Batch 1 analysis which incorrectly identified RenderHelper.drawLods() as root cause. The crash log (crash-2026-03-22_19.39.31-client.txt) shows the actual crash is in SplashProgress$Texture.<init>() during game initialization.",
+  "status": "GAP_IDENTIFIED",
+  "priority": "CRITICAL",
+  "category": "CRASH",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-56-RESPLASH-001"
+  },
+  "crash_log_analysis": {
+    "file": "crash-2026-03-22_19.39.31-client.txt",
+    "timestamp": "3/22/26, 7:39 PM",
+    "phase": "Initializing game",
+    "exception_chain": [
+      {
+        "level": "wrapper",
+        "class": "cpw.mods.fml.client.SplashProgress$5",
+        "message": "java.lang.IllegalStateException: Splash thread",
+        "location": "SplashProgress.finish(SplashProgress.java:507)"
+      },
+      {
+        "level": "intermediate",
+        "class": "java.lang.IllegalStateException",
+        "message": "Splash thread",
+        "location": "SplashProgress.checkThreadState(SplashProgress.java:438)"
+      },
+      {
+        "level": "ROOT_CAUSE",
+        "class": "java.lang.IllegalStateException",
+        "message": "Texture creation: Invalid operation",
+        "location": "SplashProgress$Texture.<init>(SplashProgress.java:621)"
+      }
+    ],
+    "call_chain": [
+      "SplashProgress$3.run() [line 212] — splash thread worker",
+      "SplashProgress$Texture.<init>() [line 621] — texture creation",
+      "SplashProgress.checkGLError() [line 753] — GL error detection",
+      "GL_INVALID_OPERATION thrown — GL context in bad state"
+    ]
+  },
+  "findings": {
+    "summary": "The crash occurs during FML's splash screen initialization, NOT during gameplay LOD rendering. The FML splash thread attempts to create a texture for the splash screen logo and gets GL_INVALID_OPERATION because the GL context is in a corrupted state. This happens only without Angelica because Angelica replaces the rendering pipeline and manages GL contexts differently.",
+    "root_cause": "DH's MixinFramebuffer makes direct GL calls (glBindTexture, glTexImage2D, glTexParameteri) in createDepthTexture() which can execute during the splash screen phase. When the mixin is active and Framebuffer.createFramebuffer is called (which happens during splash screen initialization), these GL calls happen while the splash thread holds the GL context, causing context corruption.",
+    "affected_components": [
+      "com.seibel.distanthorizons.mixin.MixinFramebuffer",
+      "cpw.mods.fml.client.SplashProgress (FML — victim, not cause)"
+    ],
+    "evidence": [
+      "MixinFramebuffer.java:37-51: createDepthTexture() makes GL calls directly in the mixin",
+      "MixinFramebuffer.java:28-29: @Redirect targets Framebuffer.createFramebuffer",
+      "MixinFramebuffer.java:54: bindDepthTexture() also makes GL calls",
+      "crash log line 621: SplashProgress$Texture.<init>() fails with GL_INVALID_OPERATION",
+      "crash log line 753: GL error detected in checkGLError()",
+      "crash log: 'Texture creation: Invalid operation'"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/mixin/MixinFramebuffer.java",
+        "method": "createDepthTexture()",
+        "line": "37-51",
+        "issue": "GL calls (glBindTexture, glTexImage2D, glTexParameteri) execute during Framebuffer.createFramebuffer which can be called during splash screen"
+      },
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/mixin/MixinFramebuffer.java",
+        "method": "bindDepthTexture()",
+        "line": "54-62",
+        "issue": "GL30.glFramebufferTexture2D call during framebuffer creation"
+      }
+    ],
+    "victim": [
+      {
+        "file": "cpw.mods.fml.client.SplashProgress",
+        "method": "SplashProgress$Texture.<init>()",
+        "line": "621",
+        "note": "FML code — crashes because GL context is corrupted by DH's mixin GL calls"
+      }
+    ],
+    "mixin": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/mixin/MixinFramebuffer.java",
+        "target": "Framebuffer.createFramebuffer()",
+        "note": "Mixin redirects GL calls that execute during splash screen initialization"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "MixinFramebuffer makes GL calls during Framebuffer.createFramebuffer which can execute on the splash thread, corrupting the GL context",
+    "required_behavior": "DH must not make GL calls during the splash screen phase; mixin should be disabled until after SplashProgress.finish()",
+    "invariant_violated": "GL context thread safety: no GL calls should be made while SplashProgress holds the GL context on its splash thread"
+  },
+  "proposed_fix": {
+    "approach": "Defer MixinFramebuffer's GL operations until after the splash screen completes, or add a guard that checks if splash screen is active",
+    "implementation_steps": [
+      "1. Add splash screen detection in MixinFramebuffer",
+      "2. When splash is active, delegate to original OpenGlHelper methods instead of making direct GL calls",
+      "3. Only use custom GL logic after SplashProgress.finish() has been called"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/mixin/MixinFramebuffer.java"
+    ],
+    "code_changes": "Add splash screen state checking before making GL calls in the mixin"
+  },
+  "falsification_test": {
+    "description": "If the crash persists after deferring MixinFramebuffer GL calls until after splash screen, then the root cause is NOT the mixin's GL operations",
+    "steps": [
+      "1. Apply fix: make MixinFramebuffer delegate to original methods during splash screen",
+      "2. Test with splash.properties enabled, Angelica NOT installed",
+      "3. If crash persists: root cause is elsewhere (check other mixins, classloading order)",
+      "4. If crash resolves: root cause confirmed as MixinFramebuffer GL calls during splash"
+    ]
+  },
+  "secondary_bug": {
+    "exists": true,
+    "description": "RenderHelper.drawLods() glClearColor(1,1,1,0.0F) alpha=0 may cause black screen during GAMEPLAY when Angelica is not present (separate from this init crash)",
+    "note": "This is a DIFFERENT bug from the splash screen crash. The Batch 1 analysis identified a real gameplay rendering issue, but it is NOT the cause of the splash screen crash in the crash log."
+  },
+  "previous_analysis_error": {
+    "what_was_wrong": "Batch 1 analysis identified RenderHelper.drawLods() as root cause without examining the crash log",
+    "why_it_was_wrong": "The crash occurs during 'Initializing game' phase in SplashProgress, before any LOD rendering happens. RenderHelper.drawLods() is only called during gameplay rendering, not during init.",
+    "lesson": "EF Rule 1 (Artifact Primacy): crash logs outrank source code speculation. Always analyze crash logs first."
+  },
+  "angelica_mitigation": {
+    "why_angelica_prevents_crash": "Angelica replaces FML's SplashProgress with its own initialization system that manages GL contexts differently. With Angelica installed, the problematic FML splash screen code path is bypassed entirely.",
+    "note": "This explains why the crash only happens without Angelica"
+  },
+  "confidence": "HIGH",
+  "confidence_reason": "Crash log clearly shows the crash is in SplashProgress$Texture.<init>() during game initialization, not in RenderHelper. MixinFramebuffer makes GL calls that would execute during this phase."
+}
