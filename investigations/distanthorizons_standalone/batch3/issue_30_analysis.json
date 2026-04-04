@@ -1,0 +1,65 @@
+{
+  "issue": "DistantHorizonsStandalone #30 - Blocks with NBT do not render correctly",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "HIGH",
+  "category": "RENDERING",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Blocks with NBT data (TileEntities) don't render correctly. DH samples block states but NBT data can change block appearance. The FakeWorld.getTileEntity() returns null, so NBT-based rendering fails.",
+    "root_cause": "FakeWorld.java returns null for getTileEntity(), and BlockStateWrapper doesn't capture NBT data. Blocks like chests, signs, banners that rely on TileEntity data won't render correctly.",
+    "affected_components": [
+      "com.seibel.distanthorizons.common.wrappers.block.FakeWorld",
+      "com.seibel.distanthorizons.common.wrappers.block.BlockStateWrapper"
+    ],
+    "evidence": [
+      "FakeWorld.java:42: getTileEntity() returns null",
+      "BlockStateWrapper.java: No NBT data storage",
+      "DhApiChunkProcessingEvent.java:34: Mentions 'modded blocks that use NBT data'"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/wrappers/block/FakeWorld.java",
+        "method": "getTileEntity()",
+        "line": "42",
+        "issue": "Always returns null - no NBT data"
+      }
+    ],
+    "related": []
+  },
+  "gap_analysis": {
+    "current_behavior": "NBT blocks render incorrectly or as default",
+    "required_behavior": "NBT blocks should render with correct appearance",
+    "invariant_violated": "Block rendering should handle NBT data"
+  },
+  "proposed_fix": {
+    "approach": "Document limitation or implement NBT-aware rendering fallback",
+    "implementation_steps": [
+      "1. Detect NBT-dependent blocks",
+      "2. Use base block appearance as fallback",
+      "3. Document which blocks aren't fully supported"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/common/wrappers/block/FakeWorld.java"
+    ],
+    "code_changes": "NBT detection and fallback rendering"
+  },
+  "falsification_test": {
+    "description": "If implementing full NBT support, test performance impact",
+    "steps": [
+      "1. Test with NBT-heavy world",
+      "2. Measure LOD generation performance",
+      "3. If too slow, stick with fallback approach"
+    ]
+  },
+  "related_issues": ["#44"],
+  "confidence": "HIGH",
+  "confidence_reason": "Clear code path - FakeWorld.getTileEntity() returns null"
+}

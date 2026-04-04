@@ -1,0 +1,74 @@
+{
+  "issue": "DistantHorizonsStandalone #49 - /dh pregen commands don't work?",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "HIGH",
+  "category": "COMMANDS",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "The /dh pregen command doesn't work. The PregenManager exists but commands may not be registered properly in the Forge 1.7.10 environment. The SessionConfig registers config entries with chat command names but actual command registration may be missing.",
+    "root_cause": "No evidence of traditional command registration (ICommand) found. The mod may rely on config-based commands that aren't properly wired up. PregenManager exists but no command handler connects it to player input.",
+    "affected_components": [
+      "com.seibel.distanthorizons.core.generation.PregenManager",
+      "com.seibel.distanthorizons.core.multiplayer.config.SessionConfig",
+      "com.seibel.distanthorizons.forge.ForgeServerProxy"
+    ],
+    "evidence": [
+      "PregenManager.java:39-60: startPregen() method exists",
+      "SessionConfig.java:35: Registers config entries with 'chatCommandName'",
+      "No ICommand implementation found in codebase",
+      "ForgeServerProxy.java: No command registration in event handlers"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+        "method": "registerEvents()",
+        "line": "48-56",
+        "issue": "No command registration"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/generation/PregenManager.java",
+        "note": "Pregen functionality exists but not connected to commands"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "/dh pregen command not available or non-functional",
+    "required_behavior": "Commands should be registered and functional",
+    "invariant_violated": "Documented commands should work"
+  },
+  "proposed_fix": {
+    "approach": "Add Forge command registration for /dh commands",
+    "implementation_steps": [
+      "1. Create DhCommand class implementing ICommand",
+      "2. Register command in ForgeServerProxy.serverStartingEvent",
+      "3. Connect command to PregenManager",
+      "4. Add subcommands: pregen start, pregen stop, pregen status"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+      "Create: src/main/java/com/seibel/distanthorizons/forge/DhCommand.java"
+    ],
+    "code_changes": "Command registration and implementation"
+  },
+  "falsification_test": {
+    "description": "If commands still don't work after registration, check permission handling",
+    "steps": [
+      "1. Add command registration",
+      "2. Test with op player",
+      "3. If still fails, check command event handling"
+    ]
+  },
+  "related_issues": ["#57"],
+  "confidence": "HIGH",
+  "confidence_reason": "No command registration found in codebase despite /dh command documentation"
+}

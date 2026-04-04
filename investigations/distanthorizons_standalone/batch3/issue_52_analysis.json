@@ -1,0 +1,72 @@
+{
+  "issue": "DistantHorizonsStandalone #52 - Pollution fog does not render in LOD terrain",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "MEDIUM",
+  "category": "RENDERING",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "GTNH pollution fog doesn't affect LOD terrain. DH has its own fog rendering system (GlDhFogRenderer) that may not integrate with GTNH's pollution fog effects.",
+    "root_cause": "DH renders LODs to separate textures with its own fog shader. GTNH's pollution fog modifies vanilla fog, but DH's separate render pass doesn't pick up these changes. The fog color and density from pollution aren't applied to DH's LOD rendering.",
+    "affected_components": [
+      "com.seibel.distanthorizons.common.render.openGl.postProcessing.fog.GlDhFogRenderer",
+      "com.seibel.distanthorizons.common.render.openGl.postProcessing.fog.GlDhFogShader",
+      "com.seibel.distanthorizons.RenderHelper"
+    ],
+    "evidence": [
+      "GlDhFogRenderer.java: DH's own fog rendering",
+      "RenderHelper.java:118-127: disableFog() sets extreme fog values for Angelica",
+      "DH fog is separate from vanilla MC fog system"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/render/openGl/postProcessing/fog/GlDhFogRenderer.java",
+        "method": "render()",
+        "line": "various",
+        "issue": "Uses DH fog, not vanilla/pollution fog"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/RenderHelper.java",
+        "note": "Fog state manipulation"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Pollution fog doesn't affect LODs",
+    "required_behavior": "LODs should respect pollution fog",
+    "invariant_violated": "Environmental effects should apply to all rendering"
+  },
+  "proposed_fix": {
+    "approach": "Add pollution fog integration or config to disable DH fog and use vanilla",
+    "implementation_steps": [
+      "1. Detect if pollution mod is active",
+      "2. Query pollution fog color/density",
+      "3. Apply to DH fog renderer",
+      "4. Or disable DH fog when pollution detected"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/common/render/openGl/postProcessing/fog/GlDhFogRenderer.java"
+    ],
+    "code_changes": "Pollution fog integration"
+  },
+  "falsification_test": {
+    "description": "If pollution fog still doesn't work after integration, issue is in fog shader",
+    "steps": [
+      "1. Add pollution fog query",
+      "2. Test in polluted areas",
+      "3. If still broken, check shader uniform binding"
+    ]
+  },
+  "related_issues": [],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Clear separation between DH and vanilla fog systems"
+}
