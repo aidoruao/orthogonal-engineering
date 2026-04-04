@@ -1,0 +1,75 @@
+{
+  "issue": "DistantHorizonsStandalone #57 - Restore Commands (add a flag in config)",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "FEATURE_REQUEST",
+  "priority": "MEDIUM",
+  "category": "FEATURE",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Feature request: Restore the /dh commands with a config flag to enable/disable them. As identified in #49, the commands don't currently exist because no ICommand implementation was found.",
+    "root_cause": "Related to #49 - commands were never implemented (or were removed). The PregenManager exists but has no command interface.",
+    "affected_components": [
+      "com.seibel.distanthorizons.core.generation.PregenManager",
+      "com.seibel.distanthorizons.forge.ForgeServerProxy",
+      "com.seibel.distanthorizons.core.config.Config"
+    ],
+    "evidence": [
+      "Same as #49: No ICommand implementation found",
+      "PregenManager.java: Full functionality but no command interface",
+      "SessionConfig.java: Config-based 'chat commands' exist"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/generation/PregenManager.java",
+        "method": "startPregen() / getStatusString()",
+        "line": "39-88",
+        "issue": "No command interface to access these methods"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+        "note": "Where command registration should go"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "No /dh commands available",
+    "required_behavior": "Restored commands with config flag",
+    "invariant_violated": "User-accessible admin commands for pregen"
+  },
+  "proposed_fix": {
+    "approach": "Create ICommand implementation with config flag to enable/disable",
+    "implementation_steps": [
+      "1. Add config: enableDhCommands",
+      "2. Create DhCommand class implementing ICommand",
+      "3. Register command in ForgeServerProxy if enabled",
+      "4. Implement subcommands: pregen, status, etc."
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/core/config/Config.java",
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+      "Create: src/main/java/com/seibel/distanthorizons/forge/DhCommand.java"
+    ],
+    "code_changes": "Command system implementation"
+  },
+  "falsification_test": {
+    "description": "If commands don't work after implementation, check registration timing",
+    "steps": [
+      "1. Implement DhCommand",
+      "2. Register in serverStarting event",
+      "3. Test /dh pregen start",
+      "4. Check logs for registration"
+    ]
+  },
+  "related_issues": ["#49"],
+  "confidence": "HIGH",
+  "confidence_reason": "Clear implementation path, PregenManager already exists"
+}

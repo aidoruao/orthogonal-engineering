@@ -1,0 +1,75 @@
+{
+  "issue": "DistantHorizonsStandalone #58 - Added White/Blacklist System for what Worlds to Support DH",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "FEATURE_REQUEST",
+  "priority": "MEDIUM",
+  "category": "FEATURE",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Feature request: Add a whitelist/blacklist system to control which worlds/dimensions DH is enabled for. Currently DH runs in all dimensions which may not be desired.",
+    "root_cause": "No dimension filtering exists. ForgeServerProxy.serverLevelLoadEvent() and ForgeClientProxy initialize DH for every world without checking a whitelist.",
+    "affected_components": [
+      "com.seibel.distanthorizons.forge.ForgeServerProxy",
+      "com.seibel.distanthorizons.forge.ForgeClientProxy",
+      "com.seibel.distanthorizons.core.config.Config"
+    ],
+    "evidence": [
+      "ForgeServerProxy.java:146: serverLevelLoadEvent loads for all WorldServer instances",
+      "ForgeClientProxy.java: Initializes client level without filtering",
+      "No dimension whitelist config found"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+        "method": "serverLevelLoadEvent()",
+        "line": "146",
+        "issue": "No dimension filtering"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeClientProxy.java",
+        "note": "Client level loading"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "DH runs in all dimensions",
+    "required_behavior": "Configurable dimension whitelist/blacklist",
+    "invariant_violated": "User control over which worlds use DH"
+  },
+  "proposed_fix": {
+    "approach": "Add config option for dimension whitelist/blacklist and check before initializing DH for a world",
+    "implementation_steps": [
+      "1. Add config: dimensionWhitelist and dimensionBlacklist",
+      "2. Add helper method to check if dimension allowed",
+      "3. Modify serverLevelLoadEvent to check filter",
+      "4. Modify client proxy similarly"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/core/config/Config.java",
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeClientProxy.java"
+    ],
+    "code_changes": "Dimension filtering system"
+  },
+  "falsification_test": {
+    "description": "If filter doesn't work, check dimension name matching",
+    "steps": [
+      "1. Add filter config",
+      "2. Test with overworld blacklisted",
+      "3. Verify DH doesn't initialize",
+      "4. Test whitelist mode"
+    ]
+  },
+  "related_issues": [],
+  "confidence": "HIGH",
+  "confidence_reason": "Clear implementation path, config system already exists"
+}

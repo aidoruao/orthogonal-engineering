@@ -1,0 +1,81 @@
+{
+  "issue": "DistantHorizonsStandalone #56 - Screen is Black and then Crashes when Angelica isn't Present",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "CRITICAL",
+  "category": "CRASH",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Black screen followed by crash when Angelica mod is not installed. RenderHelper.java handles both Angelica and non-Angelica code paths, but the non-Angelica path may have OpenGL state management issues.",
+    "root_cause": "RenderHelper.drawLods() and drawLodsFade() manipulate OpenGL state (GL_ALPHA_TEST, GL_BLEND) differently when Angelica is absent. The GL_CLEAR_COLOR with alpha 0 and disable/enable of alpha test may cause framebuffer issues on some GPUs/drivers.",
+    "affected_components": [
+      "com.seibel.distanthorizons.RenderHelper",
+      "com.seibel.distanthorizons.forge.ForgeMain",
+      "com.seibel.distanthorizons.common.render.openGl.glObject.GLProxy"
+    ],
+    "evidence": [
+      "RenderHelper.java:22-37: drawLods() disables GL_ALPHA_TEST when angelicaCompat == null",
+      "RenderHelper.java:28: GL11.glClearColor(1, 1, 1, 0.0F) - clears with transparent white",
+      "RenderHelper.java:46: drawDeferredLods() returns early if angelicaCompat == null - this is a problem",
+      "GLProxy.java:124-134: Crashes if OpenGL 3.2 not supported - but error message would be clear",
+      "ForgeMain.java:40: dependencies = 'after:angelica;' - Angelica is optional dependency"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/RenderHelper.java",
+        "method": "drawLods()",
+        "line": "22-37",
+        "issue": "OpenGL state manipulation without Angelica may cause black screen on some systems"
+      },
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/RenderHelper.java",
+        "method": "drawDeferredLods()",
+        "line": "46-48",
+        "issue": "Early return when Angelica absent - deferred rendering completely disabled"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/render/openGl/glObject/GLProxy.java",
+        "note": "OpenGL version check - may be related if GPU doesn't support required features"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Non-Angelica rendering path modifies OpenGL state (alpha test, clear color) which may conflict with vanilla MC rendering",
+    "required_behavior": "Non-Angelica path should preserve OpenGL state better or use different rendering approach",
+    "invariant_violated": "OpenGL state consistency between vanilla and mod rendering"
+  },
+  "proposed_fix": {
+    "approach": "Save and restore complete OpenGL state in drawLods(), or add config option to disable problematic rendering when Angelica absent",
+    "implementation_steps": [
+      "1. Save all modified OpenGL state before changes in drawLods()",
+      "2. Restore state after rendering instead of partial restoration",
+      "3. Add config option to disable DH rendering if Angelica not present",
+      "4. Consider forcing Angelica as required dependency for rendering features"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/RenderHelper.java"
+    ],
+    "code_changes": "Save/restore GL state; add null-Angelica safety mode"
+  },
+  "falsification_test": {
+    "description": "If black screen persists after GL state fix, issue is in shader/program usage without Angelica",
+    "steps": [
+      "1. Test with GL state fix applied",
+      "2. If still black screen, check GLProxy shader program compilation",
+      "3. Test with `enableDistantGeneration=false` to disable rendering",
+      "4. If no black screen without rendering, issue confirmed in RenderHelper"
+    ]
+  },
+  "related_issues": ["#64", "#65", "#66"],
+  "confidence": "HIGH",
+  "confidence_reason": "Clear code path identified: non-Angelica rendering manipulates GL state differently. Pattern matches common OpenGL modding issues."
+}

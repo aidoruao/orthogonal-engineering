@@ -1,0 +1,84 @@
+{
+  "issue": "DistantHorizonsStandalone #62 - Server crashing with the latest alpha16",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "CRITICAL",
+  "category": "CRASH",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Server crashes with alpha16 release. Server-side code path differs from client - ForgeServerProxy runs on dedicated server while ForgeClientProxy handles client. Server initialization may have null pointer issues or class loading problems.",
+    "root_cause": "ForgeServerProxy initialization may fail due to client-only classes being loaded or null checks missing for client-specific dependencies. The ServerLevelWrapper uses ConcurrentHashMap caching without null checks.",
+    "affected_components": [
+      "com.seibel.distanthorizons.forge.ForgeServerProxy",
+      "com.seibel.distanthorizons.forge.ForgeMain",
+      "com.seibel.distanthorizons.common.wrappers.world.ServerLevelWrapper"
+    ],
+    "evidence": [
+      "ForgeMain.java:82-86: Server initialization calls onInitializeServer() which may assume client classes available",
+      "ForgeServerProxy.java:146-157: serverLevelLoadEvent/unloadEvent cast to WorldServer without instanceof validation",
+      "ServerLevelWrapper.java:37: LEVEL_WRAPPER_BY_SERVER_LEVEL ConcurrentHashMap - no null key checks",
+      "ForgeServerProxy.java:60: connected static field - potential race condition",
+      "ForgeServerProxy.java:282-296: getServerLevelWrapper/getServerPlayerWrapper may throw NPE"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+        "method": "serverLevelLoadEvent(WorldEvent.Load)",
+        "line": "146-149",
+        "issue": "Casts to WorldServer without full validation - could fail with modded dimensions"
+      },
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+        "method": "serverTickEvent(TickEvent.ServerTickEvent)",
+        "line": "117-144",
+        "issue": "Processes chunk load events without null checking level wrapper"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/wrappers/world/ServerLevelWrapper.java",
+        "note": "Cache map operations need null safety review"
+      },
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeMain.java",
+        "note": "Server initialization path vs client initialization"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Server-side code assumes WorldServer instances and may fail with null pointers or ClassCastException",
+    "required_behavior": "Server code should validate all casts and handle null cases gracefully",
+    "invariant_violated": "Server assumes all worlds are WorldServer instances"
+  },
+  "proposed_fix": {
+    "approach": "Add defensive null checks and instanceof validation in ForgeServerProxy event handlers",
+    "implementation_steps": [
+      "1. Add null check after GetEventLevel() in serverLevelLoadEvent",
+      "2. Validate WorldServer cast with instanceof before casting",
+      "3. Add try-catch in serverTickEvent to prevent crash from single bad event",
+      "4. Add null check for chunksPendingResetByWorld.get() result"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java"
+    ],
+    "code_changes": "Add defensive programming guards around all event handlers"
+  },
+  "falsification_test": {
+    "description": "If server still crashes after null checks, issue is deeper in core server API initialization",
+    "steps": [
+      "1. Add logging at each server event handler entry point",
+      "2. Run server and identify which event handler triggers crash",
+      "3. Check if crash is in ForgeServerProxy or deeper in ServerApi/Core"
+    ]
+  },
+  "related_issues": ["#53", "#51"],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Common pattern in server crashes - lack of defensive programming in event handlers. Without actual crash log, specific line cannot be confirmed."
+}

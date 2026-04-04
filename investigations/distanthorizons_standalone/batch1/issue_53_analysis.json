@@ -1,0 +1,73 @@
+{
+  "issue": "DistantHorizonsStandalone #53 - Server boot issue",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "CRITICAL",
+  "category": "SERVER",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Server fails to boot/startup when DistantHorizons is installed. Server initialization path in ForgeMain creates different proxies for client vs server, but server proxy may fail during initialization.",
+    "root_cause": "ForgeMain.init() calls onInitializeClient() or onInitializeServer() based on side, but server initialization may attempt to access client-only classes through AbstractModInitializer. The ServerApi.serverLoadEvent() may fail if called before full server initialization.",
+    "affected_components": [
+      "com.seibel.distanthorizons.forge.ForgeMain",
+      "com.seibel.distanthorizons.forge.ForgeServerProxy",
+      "com.seibel.distanthorizons.core.api.internal.ServerApi"
+    ],
+    "evidence": [
+      "ForgeMain.java:82-86: Server init calls onInitializeServer() without client checks",
+      "ForgeMain.java:107-110: dedicatedWorldLoadEvent calls ServerApi.serverLoadEvent()",
+      "ForgeServerProxy.java:44-46: Constructor stores isDedicated but doesn't validate",
+      "ForgeServerProxy.java:146: serverLevelLoadEvent may be called before server fully ready"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/forge/ForgeMain.java",
+        "method": "dedicatedWorldLoadEvent(FMLServerAboutToStartEvent)",
+        "line": "107-110",
+        "issue": "ServerApi.serverLoadEvent called - may fail if initialization incomplete"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/api/internal/ServerApi.java",
+        "note": "Core server API initialization - needs examination"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Server initialization may race with server startup, causing boot failure",
+    "required_behavior": "Server should wait for full initialization before enabling DH features",
+    "invariant_violated": "Server API assumes server is fully initialized when events fire"
+  },
+  "proposed_fix": {
+    "approach": "Add defensive checks in server event handlers to ensure server is ready before processing",
+    "implementation_steps": [
+      "1. Add server readiness validation in ForgeServerProxy",
+      "2. Delay DH initialization until server is fully started",
+      "3. Add try-catch around serverLoadEvent with graceful failure"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+      "src/main/java/com/seibel/distanthorizons/forge/ForgeMain.java"
+    ],
+    "code_changes": "Add server readiness checks and error handling"
+  },
+  "falsification_test": {
+    "description": "If boot issue persists after fixes, problem is in core ServerApi initialization",
+    "steps": [
+      "1. Add logging at each server initialization step",
+      "2. Identify exact point of failure",
+      "3. Check if issue is in ServerApi singleton initialization"
+    ]
+  },
+  "related_issues": ["#62", "#51"],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Pattern suggests initialization order issue. Without boot logs, specific failure point unknown."
+}

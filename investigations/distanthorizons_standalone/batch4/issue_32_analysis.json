@@ -1,0 +1,70 @@
+{
+  "issue": "DistantHorizonsStandalone #32 - Fade effect should wait for remote chunks to load",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "FEATURE_REQUEST",
+  "priority": "MEDIUM",
+  "category": "FEATURE",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Feature request: The fade effect (smooth transition between vanilla and LOD chunks) should wait for remote chunks to fully load before fading. Currently it may fade in incomplete or loading chunks.",
+    "root_cause": "The fade rendering in GlVanillaFadeRenderer doesn't check if remote LOD chunks are fully loaded and ready. It renders based on distance without considering load state.",
+    "affected_components": [
+      "com.seibel.distanthorizons.common.render.openGl.postProcessing.fade.GlVanillaFadeRenderer",
+      "com.seibel.distanthorizons.core.render.QuadTree.LodRenderSection"
+    ],
+    "evidence": [
+      "GlVanillaFadeRenderer.java: Renders fade without checking chunk load state",
+      "LodRenderSection.java: Tracks render buffer state",
+      "ClientLevelModule.java: Manages client render state"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/render/openGl/postProcessing/fade/GlVanillaFadeRenderer.java",
+        "method": "render()",
+        "line": "various",
+        "issue": "No check for chunk load completion"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/core/render/QuadTree/LodRenderSection.java",
+        "note": "Has render buffer upload tracking"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Fade renders regardless of chunk load state",
+    "required_behavior": "Fade should wait for chunks to be fully loaded",
+    "invariant_violated": "Visual quality - shouldn't show incomplete chunks"
+  },
+  "proposed_fix": {
+    "approach": "Add check for chunk load completion before rendering fade at that position",
+    "implementation_steps": [
+      "1. Query LodRenderSection for buffer upload completion",
+      "2. Only render fade if chunk is ready",
+      "3. Add config option for this behavior"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/common/render/openGl/postProcessing/fade/GlVanillaFadeRenderer.java"
+    ],
+    "code_changes": "Load state checking in fade renderer"
+  },
+  "falsification_test": {
+    "description": "If fade waits but still shows incomplete chunks, issue is in load detection",
+    "steps": [
+      "1. Add load state check",
+      "2. Test with slow loading",
+      "3. Verify detection works correctly"
+    ]
+  },
+  "related_issues": [],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Feature request with clear implementation path"
+}

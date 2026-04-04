@@ -1,0 +1,76 @@
+{
+  "issue": "DistantHorizonsStandalone #40 - Nether gets stuck on generating chunks",
+  "repository": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "analysis_date": "2026-04-04",
+  "status": "GAP_IDENTIFIED",
+  "priority": "HIGH",
+  "category": "WORLD_GENERATION",
+  "methodology_ref": {
+    "epistemic_forensics": "Methodology/EPISTEMIC_FORENSICS_TOOLS.md",
+    "template_source": "investigations/vulkanmod_755/VulkanMod_755_Gap_Analysis.json",
+    "pipeline_id": "DH-STANDALONE-001"
+  },
+  "findings": {
+    "summary": "Nether dimension chunk generation gets stuck/hangs. The world generation system uses BatchGenerationEnvironment with InternalServerGenerator, which may have dimension-specific issues with Nether's unique generation (ceiling, lava oceans, different height).",
+    "root_cause": "InternalServerGenerator may not handle Nether dimension correctly. The generation event queue in BatchGenerationEnvironment could deadlock or loop infinitely with Nether chunks. The WORLD_GEN_CHUNK_BORDER_NEEDED map may not account for Nether's different structure generation requirements.",
+    "affected_components": [
+      "com.seibel.distanthorizons.common.wrappers.worldGeneration.InternalServerGenerator",
+      "com.seibel.distanthorizons.common.wrappers.worldGeneration.BatchGenerationEnvironment",
+      "com.seibel.distanthorizons.common.wrappers.world.ServerLevelWrapper"
+    ],
+    "evidence": [
+      "BatchGenerationEnvironment.java:102-112: TerraFirmaCraft detection but no Nether-specific handling",
+      "BatchGenerationEnvironment.java:127-130: Comment about extreme lag with larger radius - applies to all dimensions",
+      "ServerLevelWrapper.java:86-88: hasCeiling() method checks dimension type - used for rendering",
+      "InternalServerGenerator.java:88: ForgeChunkManager ticket manipulation - may fail in Nether",
+      "BatchGenerationEnvironment.java:241-253: queueGenEvent adds to LinkedBlockingQueue - could grow unbounded"
+    ]
+  },
+  "code_locations": {
+    "primary": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/wrappers/worldGeneration/InternalServerGenerator.java",
+        "method": "generateChunks() / serverTick()",
+        "line": "unknown",
+        "issue": "May not handle Nether's unique generation requirements"
+      }
+    ],
+    "related": [
+      {
+        "file": "src/main/java/com/seibel/distanthorizons/common/wrappers/worldGeneration/BatchGenerationEnvironment.java",
+        "note": "Generation event queue management - may hang in Nether"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": "Nether chunk generation may hang or loop infinitely",
+    "required_behavior": "Generation should complete or timeout gracefully for all dimensions",
+    "invariant_violated": "World generation should not hang indefinitely"
+  },
+  "proposed_fix": {
+    "approach": "Add dimension-specific generation limits and timeout handling",
+    "implementation_steps": [
+      "1. Add timeout for generation events per dimension",
+      "2. Add Nether-specific generation parameters",
+      "3. Limit queue size to prevent unbounded growth",
+      "4. Add logging for stuck generation events"
+    ],
+    "files_to_modify": [
+      "src/main/java/com/seibel/distanthorizons/common/wrappers/worldGeneration/BatchGenerationEnvironment.java",
+      "src/main/java/com/seibel/distanthorizons/common/wrappers/worldGeneration/InternalServerGenerator.java"
+    ],
+    "code_changes": "Timeouts; dimension-specific handling; queue limits"
+  },
+  "falsification_test": {
+    "description": "If Nether still hangs after timeout fix, issue is in chunk generation logic itself",
+    "steps": [
+      "1. Add timeout and logging",
+      "2. Test Nether generation",
+      "3. If events timeout consistently, issue is in InternalServerGenerator chunk generation",
+      "4. Compare Overworld vs Nether generation behavior"
+    ]
+  },
+  "related_issues": ["#51"],
+  "confidence": "MEDIUM",
+  "confidence_reason": "Nether-specific generation issue likely but exact failure point unknown without logs. Pattern suggests dimension handling gap."
+}
