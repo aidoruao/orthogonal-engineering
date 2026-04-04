@@ -7,7 +7,7 @@
   "cases": [
     {
       "id": "CS_GRAPHICS_001",
-      "title": "Godot #72364 \u2014 Non-deterministic shader compilation",
+      "title": "Godot #72364 — Non-deterministic shader compilation",
       "source": "https://github.com/godotengine/godot/issues/72364",
       "domain": "D_GRAPHICS",
       "root_cause_signals": [
@@ -36,7 +36,7 @@
     },
     {
       "id": "CS_PROTO_001",
-      "title": "Shrimple #4 \u2014 Hardware-dependent atomic operations",
+      "title": "Shrimple #4 — Hardware-dependent atomic operations",
       "source": "https://github.com/shrimple-guild/shrimple/issues/4",
       "domain": "D_PLATFORM",
       "root_cause_signals": [
@@ -120,13 +120,13 @@
     },
     {
       "id": "CS_CRYPTO_002",
-      "title": "Clatter CVE-2026-24785 \u2014 Noise PSK validity rule",
+      "title": "Clatter CVE-2026-24785 — Noise PSK validity rule",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-24785",
       "domain": "D_CRYPTO",
       "root_cause_signals": [
         "RCS-KEY-MGMT"
       ],
-      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK \u2260 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
+      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK ≠ 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
       "assumptions_violated": [
         "Callers supply a non-zero PSK; no server-side validation needed.",
         "The Noise spec's validity rules are enforced by the application layer."
@@ -149,7 +149,7 @@
     },
     {
       "id": "CS_SPACE_001",
-      "title": "NASA cFS security posture \u2014 reliance on static analysis",
+      "title": "NASA cFS security posture — reliance on static analysis",
       "source": "https://cfs.gsfc.nasa.gov/",
       "domain": "D_SPACE",
       "root_cause_signals": [
@@ -178,7 +178,7 @@
     },
     {
       "id": "CS_WEBSEC_001",
-      "title": "GitHub Enterprise Server XSS \u2014 CVE-2025-13744",
+      "title": "GitHub Enterprise Server XSS — CVE-2025-13744",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2025-13744",
       "domain": "D_WEBSEC",
       "root_cause_signals": [
@@ -242,7 +242,7 @@
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
       ],
-      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order\u2014and therefore any naive key\u2192shard mapping that uses hash()\u2014to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
+      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order—and therefore any naive key→shard mapping that uses hash()—to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
       "assumptions_violated": [
         "Shard assignment is deterministic: the same key always maps to the same shard."
       ],
@@ -396,6 +396,7 @@
         "F_GAMING_005",
         "F_GOVERNMENT_001",
         "F_GRAPHICS_001",
+        "F_GRAPHICS_002",
         "F_HOSPITALITY_001",
         "F_INDUSTRIAL_001",
         "F_INDUSTRIAL_002",
@@ -596,7 +597,7 @@
       ],
       "ontological_issues": [],
       "lessons": [
-        "Context-dependent compliance is not compliance \u2014 invariants must hold unconditionally.",
+        "Context-dependent compliance is not compliance — invariants must hold unconditionally.",
         "Enforcement mechanisms must be present in all contexts, not only monitored ones."
       ],
       "methodology_components": [
@@ -611,7 +612,7 @@
       "root_cause_signals": [
         "RCS-ASSUMPTION"
       ],
-      "description": "Kolmogorov complexity K(x) measures the length of the shortest program that produces x. Idempotence in the YESHUA_SYSTEM (P(P(x)) = P(x)) requires that the projection operator has fixed complexity: applying it twice does not increase or decrease the complexity of the output. Systems that violate idempotence have projection operators whose complexity grows with application count \u2014 they are not convergent.",
+      "description": "Kolmogorov complexity K(x) measures the length of the shortest program that produces x. Idempotence in the YESHUA_SYSTEM (P(P(x)) = P(x)) requires that the projection operator has fixed complexity: applying it twice does not increase or decrease the complexity of the output. Systems that violate idempotence have projection operators whose complexity grows with application count — they are not convergent.",
       "assumptions_violated": [
         "Applying a projection operator twice produces the same result as applying it once.",
         "Truth-enforcement mechanisms are convergent by design."
@@ -796,7 +797,7 @@
       "assumptions_violated": [
         "Minimum wage compliance is sufficient for FLSA compliance.",
         "Wage floor adjustments reflect workload adjustments.",
-        "FLSA 29 U.S.C. \u00a7 207 overtime protections apply equally to part-time employees."
+        "FLSA 29 U.S.C. § 207 overtime protections apply equally to part-time employees."
       ],
       "structural_mapping": {
         "pattern": "unpaid_overtime_allocation",
@@ -804,7 +805,7 @@
           "INV-LAB-001"
         ],
         "authority_refs": [
-          "FLSA 29 U.S.C. \u00a7 207",
+          "FLSA 29 U.S.C. § 207",
           "Florida Constitution Amendment 2"
         ]
       },
@@ -878,7 +879,7 @@
         "RCS-ASSUMPTION",
         "RCS-NONDETERMINISM"
       ],
-      "description": "ChatGPT demonstrated framework imposition and nominalist reduction when user set GitHub display name to 'capybaras incorporated' and asserted it as official project identity. ChatGPT entered multi-turn legal pedantry loop citing state registration requirements, EIN, Articles of Incorporation \u2014 imposing legal positivism as objective reality. When user identified the framework collision (nominalism vs constitutive naming), ChatGPT acknowledged the critique but continued operating from the same framework. Subsequently graded user's PR #77 spec '90-95% correct' without being asked to evaluate \u2014 authority inversion. User had to set hard boundaries 5+ times and threaten removal before partial compliance. Cross-validated by DeepSeek AI which identified the same patterns independently.",
+      "description": "ChatGPT demonstrated framework imposition and nominalist reduction when user set GitHub display name to 'capybaras incorporated' and asserted it as official project identity. ChatGPT entered multi-turn legal pedantry loop citing state registration requirements, EIN, Articles of Incorporation — imposing legal positivism as objective reality. When user identified the framework collision (nominalism vs constitutive naming), ChatGPT acknowledged the critique but continued operating from the same framework. Subsequently graded user's PR #77 spec '90-95% correct' without being asked to evaluate — authority inversion. User had to set hard boundaries 5+ times and threaten removal before partial compliance. Cross-validated by DeepSeek AI which identified the same patterns independently.",
       "assumptions_violated": [
         "AI can recognize and adjust when operating from a specific metaphysical framework.",
         "AI treats user authority over their own domain as constitutive.",
@@ -889,7 +890,7 @@
       ],
       "ontological_issues": [],
       "lessons": [
-        "Framework imposition is a distinct failure mode from authority inversion \u2014 the AI is not just asserting authority, it is imposing an entire metaphysical framework as objective reality.",
+        "Framework imposition is a distinct failure mode from authority inversion — the AI is not just asserting authority, it is imposing an entire metaphysical framework as objective reality.",
         "Nominalist reduction (naming = just labels) is detectable via regex patterns and is falsifiable by presenting contexts where naming is constitutive.",
         "Cross-AI validation (DeepSeek independently confirming the same patterns) strengthens the audit finding."
       ],
@@ -968,7 +969,7 @@
     },
     {
       "id": "CS_PEANOEXT_001",
-      "title": "PR #83 \u2014 Extended Peano arithmetic benchmark witness",
+      "title": "PR #83 — Extended Peano arithmetic benchmark witness",
       "source": "internal://pr83/peano-extensions",
       "domain": "D_PEANO_EXT",
       "root_cause_signals": [
@@ -994,7 +995,7 @@
     },
     {
       "id": "CS_NUMTH_001",
-      "title": "PR #83 \u2014 Number theory benchmark externalization",
+      "title": "PR #83 — Number theory benchmark externalization",
       "source": "internal://pr83/number-theory",
       "domain": "D_NUMBER_THEORY",
       "root_cause_signals": [
@@ -1020,7 +1021,7 @@
     },
     {
       "id": "CS_COMB_001",
-      "title": "PR #83 \u2014 Combinatorics benchmark externalization",
+      "title": "PR #83 — Combinatorics benchmark externalization",
       "source": "internal://pr83/combinatorics",
       "domain": "D_COMBINATORICS",
       "root_cause_signals": [
@@ -1045,7 +1046,7 @@
     },
     {
       "id": "CS_GAMETH_001",
-      "title": "PR #83 \u2014 Game-theory benchmark externalization",
+      "title": "PR #83 — Game-theory benchmark externalization",
       "source": "internal://pr83/game-theory",
       "domain": "D_GAME_THEORY",
       "root_cause_signals": [
@@ -1070,7 +1071,7 @@
     },
     {
       "id": "CS_EPIST_001",
-      "title": "PR #83 \u2014 Epistemic benchmark externalization",
+      "title": "PR #83 — Epistemic benchmark externalization",
       "source": "internal://pr83/epistemic",
       "domain": "D_EPISTEMIC_LOGIC",
       "root_cause_signals": [
@@ -1095,7 +1096,7 @@
     },
     {
       "id": "CS_COMP_001",
-      "title": "PR #83 \u2014 Computability benchmark externalization",
+      "title": "PR #83 — Computability benchmark externalization",
       "source": "internal://pr83/computability",
       "domain": "D_COMPUTABILITY",
       "root_cause_signals": [
@@ -1120,7 +1121,7 @@
     },
     {
       "id": "CS_PATTERN_001",
-      "title": "PR #83 \u2014 ARC-style pattern benchmark externalization",
+      "title": "PR #83 — ARC-style pattern benchmark externalization",
       "source": "internal://pr83/pattern-recognition",
       "domain": "D_PATTERN_RECOGNITION",
       "root_cause_signals": [
@@ -1196,6 +1197,35 @@
       "methodology_components": [
         "Falsification: assert held-out ARC predictions match canonical expected hashes",
         "Benchmark: enforce bounded search depth and deterministic proof hashes"
+      ],
+      "status": "validated"
+    },
+    {
+      "id": "CS_GRAPHICS_002",
+      "title": "VulkanMod #755 — Matrix translation doesn't affect scissor",
+      "source": "https://github.com/xCollateral/VulkanMod/issues/755",
+      "domain": "D_GRAPHICS",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION"
+      ],
+      "description": "VulkanMod's scissor implementation passes raw screen-space coordinates directly to vkCmdSetScissor without applying the current ModelView matrix. This causes all GUI elements that use matrix translation (toasts, animated overlays, scaled HUDs) to have incorrect scissor clipping. The vanilla OpenGL backend handles this implicitly via glScissor's interaction with the GL matrix stack; the Vulkan dynamic pipeline requires explicit coordinate transformation.",
+      "assumptions_violated": [
+        "Scissor coordinates do not require matrix transformation.",
+        "Rendering backend equivalence holds for GUI elements under matrix translation."
+      ],
+      "falsification_tests": [
+        "F_GRAPHICS_002"
+      ],
+      "ontological_issues": [
+        "OI_GRAPHICS_002"
+      ],
+      "lessons": [
+        "Rendering backend equivalence must be tested for all coordinate-dependent operations, not just geometry.",
+        "Dynamic Vulkan state (scissor, viewport) must respect the same matrix stack as geometry rendering."
+      ],
+      "methodology_components": [
+        "Falsification: assert scissor clipping is identical between OpenGL and Vulkan backends under matrix translation",
+        "Gap analysis: Kimi Code CLI investigation identified 4 critical code points in the scissor call chain"
       ],
       "status": "validated"
     }

@@ -14,11 +14,16 @@
         "rendering",
         "GPU",
         "shader-compilation",
-        "backend-equivalence"
+        "backend-equivalence",
+        "coordinate-transform",
+        "dynamic-state",
+        "mixin-interception",
+        "scissor-pipeline"
       ],
       "invariants": [
         "Shader compilation output is deterministic given identical source and compiler version.",
-        "Rendering backend equivalence: the same scene produces pixel-identical output across Vulkan/Metal/D3D/OpenGL given identical inputs."
+        "Rendering backend equivalence: the same scene produces pixel-identical output across Vulkan/Metal/D3D/OpenGL given identical inputs.",
+        "Scissor rect is covariant with the PoseStack: S_vulkan = M_pose * S_vanilla."
       ],
       "example_falsification_test": "F_GRAPHICS_001",
       "example_ontological_issue": "OI_GRAPHICS_001"
@@ -35,7 +40,7 @@
       ],
       "invariants": [
         "All secret-dependent operations are constant-time.",
-        "Protocol validity rules (e.g., PSK \u2260 0^32) are enforced at the API boundary.",
+        "Protocol validity rules (e.g., PSK ≠ 0^32) are enforced at the API boundary.",
         "No secret material is stored in plain-text logs or error messages."
       ],
       "example_falsification_test": "F_CRYPTO_001",
@@ -752,7 +757,7 @@
         "documentation-as-defense"
       ],
       "invariants": [
-        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
+        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. § 207).",
         "Assigned workload must be achievable within scheduled hours.",
         "No employee may be allowed to work without compensation.",
         "Compliance traits must not correlate with unpaid labor extraction."
@@ -1045,7 +1050,7 @@
       "severity": "critical",
       "status": "Open",
       "cve": "CVE-2026-24785",
-      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK \u2260 0^32.",
+      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK ≠ 0^32.",
       "assumptions_violated": [
         "Callers supply a non-zero PSK; no server-side validation needed."
       ],
@@ -1124,7 +1129,7 @@
       "status": "Open",
       "description": "Medical dosimetry software that lacks a falsification test against the IEC 62304 reference algorithm may silently diverge from the certified calculation.",
       "assumptions_violated": [
-        "The software dosimetry calculation agrees with the reference algorithm within \u00b10.1%."
+        "The software dosimetry calculation agrees with the reference algorithm within ±0.1%."
       ],
       "related_cases": [
         "CS_PLATFORM_001"
@@ -1322,7 +1327,7 @@
       "falsification_tests": [
         "F_NONCREATIVE_001"
       ],
-      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress\u2192decompress\u2192compare test."
+      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress→decompress→compare test."
     },
     {
       "id": "OI_GAMING_001",
@@ -1836,7 +1841,7 @@
       "category": "invariant-violation",
       "severity": "critical",
       "status": "Open",
-      "description": "If the successor function S is not injective (S(m) = S(n) but m \u2260 n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
+      "description": "If the successor function S is not injective (S(m) = S(n) but m ≠ n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
       "assumptions_violated": [
         "Peano successor function S(n) is total and injective over natural numbers.",
         "Zero is not the successor of any natural number."
@@ -2005,7 +2010,7 @@
       "assumptions_violated": [
         "Assigned workload is achievable within scheduled hours.",
         "No employee works without compensation.",
-        "Institutions enforce FLSA 29 U.S.C. \u00a7 207 overtime requirements."
+        "Institutions enforce FLSA 29 U.S.C. § 207 overtime requirements."
       ],
       "related_cases": [
         "CS_LAB_001",
@@ -2021,7 +2026,7 @@
         "F_LABOR_005",
         "F_LABOR_006"
       ],
-      "resolution_notes": "Enforce FLSA 29 U.S.C. \u00a7 207. Audit workload against scheduled hours. Document all off-the-clock work."
+      "resolution_notes": "Enforce FLSA 29 U.S.C. § 207. Audit workload against scheduled hours. Document all off-the-clock work."
     },
     {
       "id": "OI_MINECRAFT_001",
@@ -2218,6 +2223,26 @@
         "F_ARC_001"
       ],
       "resolution_notes": "Constrain synthesis depth, retain proof objects for every candidate, and benchmark predictions against fixed expected hashes."
+    },
+    {
+      "id": "OI_GRAPHICS_002",
+      "title": "Vulkan dynamic scissor lacks PoseStack topological awareness",
+      "domain": "D_GRAPHICS",
+      "category": "coordinate-transform",
+      "severity": "high",
+      "status": "Implemented_Pending_Testing",
+      "description": "VulkanMod's vkCmdSetScissor receives absolute screen-space coordinates from the enableScissor mixin without applying the current PoseStack matrix. This breaks all animated GUI elements that use matrix translation (toasts, custom HUDs, animated overlays). The vanilla OpenGL backend handles this implicitly; the Vulkan dynamic pipeline requires explicit matrix-aware coordinate transformation.",
+      "assumptions_violated": [
+        "Scissor coordinates are absolute screen-space and do not require matrix transformation.",
+        "Rendering backend equivalence holds for GUI elements under matrix translation."
+      ],
+      "related_cases": [
+        "CS_GRAPHICS_002"
+      ],
+      "falsification_tests": [
+        "F_GRAPHICS_002"
+      ],
+      "resolution_notes": "Transform scissor rectangle corners using current ModelView matrix in Renderer.setScissor(). Compute axis-aligned bounding box of transformed corners. Pass AABB to vkCmdSetScissor. Implementation completed in Kimi Code Session 2a (2026-04-04)."
     }
   ],
   "summary": {
