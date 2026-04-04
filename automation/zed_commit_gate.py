@@ -48,13 +48,14 @@ def main():
 
     log_dir = Path("failure_log")
     log_dir.mkdir(exist_ok=True)
+    now = datetime.now()
     violation = {
-        "timestamp": datetime.now().isoformat(),
+        "timestamp": now.isoformat(),
         "type": "PHANTOM-EDIT-PREVENTION",
         "uncommitted_files": uncommitted,
         "action": "Session blocked until committed"
     }
-    log_file = log_dir / f"commit_gate_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    log_file = log_dir / f"commit_gate_{now.strftime('%Y%m%d_%H%M%S')}.json"
     log_file.write_text(json.dumps(violation, indent=2))
     sys.exit(2)
 
