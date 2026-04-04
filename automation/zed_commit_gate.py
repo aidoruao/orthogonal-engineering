@@ -22,6 +22,10 @@ def check_uncommitted():
         ["git", "status", "--porcelain"],
         capture_output=True, text=True
     )
+    if result.returncode != 0:
+        print(f"COMMIT GATE: ERROR - git status failed (exit code {result.returncode})")
+        print(f"stderr: {result.stderr.strip()}")
+        sys.exit(2)
     return [
         line for line in result.stdout.strip().split("\n")
         if line.strip()
