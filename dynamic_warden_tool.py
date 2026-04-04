@@ -454,6 +454,140 @@ class DynamicWardenTool:
         logger.info(f"Created temporary warden {warden_id} for {folder_path}")
         return warden_id
 
+    def generate_proposals(self) -> List[Dict[str, Any]]:
+        """
+        Scan for directories not covered by any existing warden and return
+        dry-run warden proposals.
+
+        Proposals are written to dynamic_wardens.proposals[] in the registry.
+        This method never creates warden Python files or edits .gitignore —
+        those steps require human approval of a PR.
+
+        Returns:
+            List of WardenerProposal dicts.
+        """
+        from datetime import datetime as _dt, timezone as _tz
+
+        root_path = "."
+
+        # Build the set of paths already covered by permanent wardens
+        covered: set = set()
+        for warden_name, warden_config in self.registry.get("wardens", {}).items():
+            fp = warden_config.get("folder_path", "")
+            # Catch-all wardens (folder_path "." or "**") cover everything
+            if fp in (".", "**"):
+                covered.add("**")
+            elif fp:
+                covered.add(fp.strip("/"))
+            monitored = (
+                warden_config.get("metadata", {}).get("monitored_paths") or []
+            )
+            for mp in monitored:
+                covered.add(mp.strip("/"))
+
+        # If any catch-all warden exists, every subfolder is already covered
+        has_catchall = "**" in covered
+
+        # Skip directories that should never get wardens
+        skip_names = {
+            "__pycache__",
+            "node_modules",
+            ".git",
+            ".idea",
+            ".vscode",
+            "venv",
+            "env",
+        }
+
+        autonomy_policy = self.registry.get("autonomy_policy", {})
+        proposal_policy = autonomy_policy.get("action_policies", {}).get(
+            "propose_new_warden", {}
+        )
+        min_confidence = proposal_policy.get("min_confidence", 0.7)
+
+        proposals: List[Dict[str, Any]] = []
+        try:
+            items = os.listdir(root_path)
+        except OSError as e:
+            logger.warning(f"generate_proposals: cannot list {root_path}: {e}")
+            return proposals
+
+        # If a catch-all warden already covers the whole repo, no proposals needed
+        if has_catchall:
+            self.registry.setdefault("dynamic_wardens", {})["proposals"] = proposals
+            self._save_registry()
+            return proposals
+
+        for item in sorted(items):
+            item_path = os.path.join(root_path, item)
+            if not os.path.isdir(item_path):
+                continue
+            if item.startswith("."):
+                continue
+            if item in skip_names:
+                continue
+            if item in covered or item_path in covered:
+                continue
+
+            folder_analysis = self._analyze_folder(item_path)
+            classification = self._classify_folder(item_path, folder_analysis)
+            confidence = classification.get("confidence", 0.0)
+
+            ts_now = (
+                _dt.now(_tz.utc)
+                .replace(microsecond=0)
+                .isoformat()
+                .replace("+00:00", "Z")
+            )
+            date_str = _dt.now(_tz.utc).strftime("%Y%m%d")
+            proposal_id = f"WP-{date_str}-{item}"
+            proposal: Dict[str, Any] = {
+                "proposal_id": proposal_id,
+                "idempotency_key": f"propose_new_warden:{item}:{date_str}",
+                "created_at": ts_now,
+                "created_by": "dynamic_warden_tool",
+                "schema_version": "1.0",
+                "action_type": "propose_new_warden",
+                "folder_path": item_path,
+                "classification": classification,
+                "mode": "dry_run",
+                "status": "pending_approval" if confidence >= min_confidence else "rejected",
+                "evidence": {
+                    "file_count": folder_analysis.get("file_count", 0),
+                    "extension_counts": folder_analysis.get("file_types", {}),
+                    "dominant_file_type": folder_analysis.get("dominant_file_type"),
+                },
+                "policy_check": {
+                    "policy_id": autonomy_policy.get("policy_id", "default"),
+                    "approval_required": True,
+                    "min_confidence_met": confidence >= min_confidence,
+                },
+                "gitignore_note": (
+                    "Adding a permanent warden requires extending the wardens/ allowlist "
+                    "in .gitignore. This is a manual step that cannot be automated by this proposal."
+                ),
+                "reversibility": {
+                    "reversible": True,
+                    "revert_action": "remove_from_dynamic_wardens.proposals",
+                },
+                "falsifiability_note": (
+                    f"Proposal is valid iff folder '{item}' exists and confidence >= {min_confidence}. "
+                    "Reject if folder is already covered by an existing warden's monitored_paths."
+                ),
+                "approved_by": None,
+                "approved_at": None,
+            }
+            proposals.append(proposal)
+
+        # Persist into registry
+        if "dynamic_wardens" not in self.registry:
+            self.registry["dynamic_wardens"] = {}
+        self.registry["dynamic_wardens"]["proposals"] = proposals
+        self._save_registry()
+
+        logger.info(f"generate_proposals: produced {len(proposals)} warden proposals")
+        return proposals
+
     def process_unclassified_folders(self) -> Dict[str, Any]:
         """
         Process all unclassified folders and create temporary wardens.

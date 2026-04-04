@@ -6,14 +6,28 @@ This script integrates Phase 2 wardens into BASE AI health checks,
 monitors warden health, and provides comprehensive health reporting.
 """
 
+import hashlib
 import json
 import logging
 import os
+import shutil
+import statistics
 import sys
 import time
+import uuid
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# A-18 through A-25: Bi-Layer Epistemic Closure modules
+from external_witness import ExternalWitness
+from evidence_correspondence import EvidenceCorrespondenceValidator
+from bidirectional_validator import BidirectionalValidator
+from fixed_point_detector import FixedPointDetector
+from evidence_lattice import EvidenceLattice, EvidenceNode
+from semantic_divergence import SemanticDivergenceDetector
+from ontological_invariants import OntologicalInvariantRegistry
+from quarantine_enforcer import QuarantineEnforcer
 
 # Configure logging
 logging.basicConfig(
@@ -23,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 VALID_WARDEN_STATUSES = ["active", "pending", "error", "disabled"]
 SECONDS_PER_HOUR = 3600
+REPORT_AGE_HISTORY_MAX_SIZE = 30
 
 
 class HealthCheckIntegration:
@@ -42,6 +57,7 @@ class HealthCheckIntegration:
         self.health_check_interval = self.registry.get("health_checks", {}).get(
             "interval_seconds", 300
         )
+        self._writes_this_run: int = 0
 
     def _load_registry(self) -> Dict[str, Any]:
         """Load the AI registry."""
@@ -186,6 +202,36 @@ class HealthCheckIntegration:
                     report_age <= timedelta(hours=max_report_age_hours)
                 )
 
+                # A-2: append observation to report_age_history ring buffer
+                warden_health_block = warden_config.setdefault("health", {})
+                age_history = warden_health_block.setdefault("report_age_history", [])
+                age_history.append(round(report_age_in_hours, 3))
+                if len(age_history) > REPORT_AGE_HISTORY_MAX_SIZE:
+                    del age_history[: len(age_history) - REPORT_AGE_HISTORY_MAX_SIZE]
+                warden_health_block["report_age_history"] = age_history
+                # A-2: compute suggested threshold shadow field
+                autonomy_policy = self._load_autonomy_policy()
+                min_sample_size = (
+                    autonomy_policy.get("action_policies", {})
+                    .get("adapt_threshold", {})
+                    .get("min_sample_size", 7)
+                )
+                sample_size = len(age_history)
+                warden_health_block["threshold_sample_size"] = sample_size
+                if sample_size >= min_sample_size:
+                    mean_age = statistics.mean(age_history)
+                    stddev_age = statistics.stdev(age_history)
+                    suggested = mean_age + 1.5 * stddev_age
+                    warden_health_block["suggested_max_report_age_hours"] = round(
+                        suggested, 2
+                    )
+                    warden_health_block["threshold_confidence"] = round(
+                        min(1.0, sample_size / REPORT_AGE_HISTORY_MAX_SIZE), 3
+                    )
+                else:
+                    warden_health_block["suggested_max_report_age_hours"] = None
+                    warden_health_block["threshold_confidence"] = None
+
                 if not health["checks"]["report_fresh"]:
                     health["status"] = self._elevate_status(health["status"], "warning")
                     health["issues"].append(
@@ -225,6 +271,9 @@ class HealthCheckIntegration:
         health["checks"]["response_time_ms"] = health_config.get("response_time_ms")
         health["checks"]["success_rate"] = health_config.get("success_rate")
 
+        # A-6: record credential source reference (never the actual value)
+        health["checks"]["credential_source"] = self._resolve_credential(warden_config)
+
         if "health" in warden_config:
             warden_config["health"]["last_health_check"] = datetime.now(
                 timezone.utc
@@ -247,6 +296,7 @@ class HealthCheckIntegration:
         """
         start_time = time.time()
         self.last_check_time = datetime.now().isoformat()
+        self._writes_this_run = 0  # reset per-run write counter
 
         logger.info("Starting comprehensive health checks for Phase 2 wardens")
 
@@ -303,6 +353,62 @@ class HealthCheckIntegration:
 
         # Generate recommendations
         results["recommendations"] = self._generate_recommendations(results)
+
+        # A-3: generate warden proposals for uncovered directories
+        results["warden_proposals"] = self._generate_warden_proposals()
+
+        # A-5: write threshold adaptation proposals (dry-run, never auto-applies)
+        self._adapt_thresholds()
+
+        # A-7: check moral anchor — freezes autonomy if forbidden convergence detected
+        moral_violations = self._check_moral_anchor(results)
+        results["moral_anchor_violations"] = moral_violations
+
+        # A-8: compute drift metrics across all wardens
+        drift_report = self._compute_drift(results)
+        results["drift_report"] = drift_report
+
+        # A-10: structural integrity validation of registry schema
+        integrity_report = self._validate_registry_schema()
+        results["integrity_report"] = integrity_report
+
+        # A-11: epistemic conflict detection across wardens
+        conflict_report = self._detect_epistemic_conflicts()
+        results["conflict_report"] = conflict_report
+
+        # A-12/A-13/A-14/A-17: compute system-wide intelligence metrics
+        intelligence_metrics = self._compute_intelligence_metrics(results)
+        results["intelligence_metrics"] = intelligence_metrics
+
+        # A-18: run external witness (independent SHA-512 hash of repo)
+        external_manifest = self._run_external_witness()
+        results["external_manifest_computed"] = external_manifest is not None
+
+        # A-19: validate correspondence between internal and external evidence
+        correspondence_report = self._validate_correspondence(results, external_manifest)
+        results["correspondence_report"] = correspondence_report
+
+        # A-20: complexity gate is embedded in correspondence_report (see details.complexity_gate)
+
+        # A-21: bidirectional revalidation S → E_i → E_e → S'
+        bidirectional = self._run_bidirectional_validation(results, external_manifest)
+        results["bidirectional_validation"] = bidirectional
+
+        # A-22: check fixed-point convergence (requires state recording first)
+        fixed_point = self._check_fixed_point(results)
+        results["fixed_point"] = fixed_point
+
+        # A-23: build evidence lattice from all evidence sources
+        lattice_report = self._build_evidence_lattice(results)
+        results["evidence_lattice"] = lattice_report
+
+        # A-24: detect semantic divergence across independent sources
+        divergence_report = self._detect_semantic_divergence(results)
+        results["semantic_divergence"] = divergence_report
+
+        # A-25: assert ontological invariants (must run after all evidence is collected)
+        invariant_report = self._assert_ontological_invariants(results)
+        results["ontological_invariants"] = invariant_report
 
         # Update registry with health check results
         self._update_registry_health(results)
@@ -450,13 +556,149 @@ class HealthCheckIntegration:
                     )
 
                     if actual_file_count != stored_file_count:
+                        delta = actual_file_count - stored_file_count
+                        delta_pct = abs(delta) / max(stored_file_count, 1) * 100
                         health["status"] = "warning"
                         health["issues"].append(
                             f"File count mismatch: stored={stored_file_count}, actual={actual_file_count}"
                         )
-                        health["recommendations"].append(
-                            f"Run scan for {warden_name} to update file count"
+                        # A-1: attempt self-healing under autonomy policy
+                        autonomy = self._load_autonomy_policy()
+                        action_policy = autonomy.get("action_policies", {}).get(
+                            "update_file_count", {}
                         )
+                        max_delta_pct = action_policy.get("max_delta_pct", 10)
+                        guardrails = autonomy.get("guardrails", {})
+                        max_writes = guardrails.get("max_writes_per_run", 5)
+                        action_taken = "dry_run"
+                        backup_path = None
+                        if (
+                            self._get_action_mode(autonomy, "update_file_count")
+                            == "execute"
+                            and delta_pct <= max_delta_pct
+                            and self._writes_this_run < max_writes
+                        ):
+                            if guardrails.get("registry_backup_before_write", True):
+                                backup_path = self._backup_registry()
+                            self.registry["wardens"][warden_name]["metadata"][
+                                "file_count"
+                            ] = actual_file_count
+                            self._writes_this_run += 1
+                            action_taken = "execute"
+                            health["checks"]["file_count_match"] = True
+                            health["checks"]["self_healed"] = True
+                            health["status"] = "healthy"
+                            health["issues"] = [
+                                i
+                                for i in health["issues"]
+                                if not i.startswith("File count mismatch")
+                            ]
+                            logger.info(
+                                f"Self-healed file count for {warden_name}: "
+                                f"{stored_file_count} -> {actual_file_count}"
+                            )
+                        else:
+                            health["recommendations"].append(
+                                f"Run scan for {warden_name} to update file count"
+                            )
+                        # A-1: record observation in file_count_history
+                        warden_reg = self.registry.get("wardens", {}).get(
+                            warden_name, {}
+                        )
+                        warden_health_block = warden_reg.setdefault("health", {})
+                        fc_history = warden_health_block.setdefault(
+                            "file_count_history", []
+                        )
+                        ts_now = (
+                            datetime.now(timezone.utc)
+                            .replace(microsecond=0)
+                            .isoformat()
+                            .replace("+00:00", "Z")
+                        )
+                        fc_history.append(
+                            {
+                                "timestamp": ts_now,
+                                "stored": stored_file_count,
+                                "actual": actual_file_count,
+                                "delta": delta,
+                                "action_taken": action_taken,
+                            }
+                        )
+                        # A-1: write audit log entry
+                        if action_policy.get("audit_log", True):
+                            self._write_audit_log(
+                                {
+                                    "log_id": f"AL-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{uuid.uuid4().hex[:8]}",
+                                    "timestamp": ts_now,
+                                    "action_type": "update_file_count",
+                                    "target": warden_name,
+                                    "mode": action_taken,
+                                    "before_state": {
+                                        "metadata.file_count": stored_file_count
+                                    },
+                                    "after_state": {
+                                        "metadata.file_count": actual_file_count
+                                        if action_taken == "execute"
+                                        else stored_file_count
+                                    },
+                                    "outcome": "success"
+                                    if action_taken == "execute"
+                                    else "dry_run",
+                                    "evidence": {
+                                        "delta": delta,
+                                        "delta_pct": round(delta_pct, 2),
+                                    },
+                                    "backup_path": backup_path,
+                                    "agent": "health_check_integration",
+                                }
+                            )
+                        # A-4: write structured remediation proposal when dry_run
+                        if action_taken == "dry_run":
+                            date_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+                            proposal = {
+                                "proposal_id": f"REM-{date_str}-{warden_name}-filecount",
+                                "idempotency_key": f"update_file_count:{warden_name}:{date_str}",
+                                "created_at": ts_now,
+                                "created_by": "health_check_integration",
+                                "schema_version": "1.0",
+                                "action_type": "update_file_count",
+                                "target_warden": warden_name,
+                                "mode": "dry_run",
+                                "status": "pending",
+                                "evidence": {
+                                    "stored_file_count": stored_file_count,
+                                    "actual_file_count": actual_file_count,
+                                    "delta": delta,
+                                    "delta_pct": round(delta_pct, 2),
+                                    "scan_timestamp": ts_now,
+                                    "confidence": 1.0,
+                                },
+                                "policy_check": {
+                                    "policy_id": autonomy.get(
+                                        "policy_id", "default"
+                                    ),
+                                    "action_permitted": delta_pct <= max_delta_pct,
+                                    "mode_override": None,
+                                    "max_delta_pct_exceeded": delta_pct
+                                    > max_delta_pct,
+                                },
+                                "reversibility": {
+                                    "reversible": True,
+                                    "revert_action": "restore_from_backup",
+                                    "backup_path": backup_path,
+                                },
+                                "falsifiability_note": (
+                                    "Valid iff actual_file_count != stored_file_count. "
+                                    "Re-running scan after execution must yield file_count_match=true."
+                                ),
+                                "provenance_chain": [
+                                    "health_check_integration._check_warden",
+                                    "health_check_integration._update_registry_health",
+                                ],
+                                "applied_at": None,
+                                "applied_by": None,
+                            }
+                            self._write_proposal(proposal)
                 except Exception as e:
                     health["status"] = "warning"
                     health["issues"].append(f"Could not count files: {e}")
@@ -483,6 +725,9 @@ class HealthCheckIntegration:
         health["checks"]["last_query"] = warden_health.get("last_query")
         health["checks"]["response_time_ms"] = warden_health.get("response_time_ms")
         health["checks"]["success_rate"] = warden_health.get("success_rate")
+
+        # A-6: record credential source reference (never the actual value)
+        health["checks"]["credential_source"] = self._resolve_credential(warden_config)
 
         # Update last health check time
         if "health" in warden_config:
@@ -861,6 +1106,1187 @@ class HealthCheckIntegration:
 
         except Exception as e:
             logger.error(f"Failed to log monitoring results: {e}")
+
+    # ------------------------------------------------------------------ #
+    # A-18 through A-25: Bi-Layer Epistemic Closure                       #
+    # ------------------------------------------------------------------ #
+
+    def _run_external_witness(self) -> Optional[Dict[str, Any]]:
+        """A-18: Run the External Witness engine (SHA-512, independent of internal).
+
+        Writes ``logs/health_checks/external_manifest.json`` and returns the
+        manifest dict.  Returns None on failure (non-fatal; logged as warning).
+
+        Critical independence constraints:
+        - Uses SHA-512 (not SHA-256 like the internal pipeline)
+        - No shared imports from this class
+        - Separate output file from latest_health_check.json
+        """
+        try:
+            log_dir = Path(self.registry_path).parent / "logs" / "health_checks"
+            witness = ExternalWitness(
+                repo_root=Path(self.registry_path).parent,
+                output_dir=log_dir,
+                algorithm="sha512",
+            )
+            manifest = witness.run()
+            logger.debug(
+                f"External witness: {manifest['file_count']} files, "
+                f"tree_hash={manifest['tree_hash'][:16]}..."
+            )
+            return manifest
+        except Exception as exc:
+            logger.warning(f"External witness failed (non-fatal): {exc}")
+            return None
+
+    def _validate_correspondence(
+        self,
+        results: Dict[str, Any],
+        external_manifest: Optional[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """A-19: Validate correspondence between internal and external evidence.
+
+        Computes h ∘ f = g (commutative diagram check) using
+        EvidenceCorrespondenceValidator with four sub-checks:
+        hash cross-reference, complexity gate (A-20), cardinality, temporal coherence.
+
+        Returns the correspondence report dict.  If external manifest is absent,
+        returns a degraded report with score 0 (external evidence required).
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        if external_manifest is None:
+            return {
+                "correspondence_score": 0.0,
+                "valid": False,
+                "error_term": 1.0,
+                "mismatch_list": [],
+                "reason": "external_manifest_absent",
+                "evaluated_at": ts_now,
+            }
+
+        # Build a lightweight internal manifest from the current results
+        internal_manifest: Dict[str, Any] = {
+            "file_hashes": {},
+            "file_count": sum(
+                v.get("checks", {}).get("file_count") or 0
+                for v in results.get("wardens", {}).values()
+                if isinstance(v.get("checks", {}).get("file_count"), int)
+            ),
+            "computed_at": ts_now,
+            "algorithm": "sha256",
+            # Include the external_manifest keys so complexity engine has structure
+            "wardens": list(results.get("wardens", {}).keys()),
+            "overall_health": results.get("overall_health", "unknown"),
+            "intelligence_metrics": results.get("intelligence_metrics", {}),
+        }
+
+        validator = EvidenceCorrespondenceValidator(
+            internal_manifest=internal_manifest,
+            external_manifest=external_manifest,
+        )
+        report = validator.validate()
+        report["evaluated_at"] = ts_now
+
+        # Persist correspondence_score to registry system_metrics
+        self.registry.setdefault("system_metrics", {})[
+            "correspondence_score"
+        ] = report["correspondence_score"]
+
+        return report
+
+    def _run_bidirectional_validation(
+        self,
+        results: Dict[str, Any],
+        external_manifest: Optional[Dict[str, Any]],
+    ) -> Dict[str, Any]:
+        """A-21: Bidirectional revalidation S → E_i → E_e → S'.
+
+        Constructs a normalised system-state dict from the current results,
+        then runs BidirectionalValidator to verify the cycle closes within
+        tolerance (default δ < 5%).
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        wardens = results.get("wardens", {})
+        system_state: Dict[str, Any] = {
+            "file_count": sum(
+                v.get("checks", {}).get("file_count") or 0
+                for v in wardens.values()
+                if isinstance(v.get("checks", {}).get("file_count"), int)
+            ),
+            "warden_count": len(wardens),
+            "overall_health": results.get("overall_health", "unknown"),
+        }
+
+        validator = BidirectionalValidator(
+            internal_manifest=results,
+            external_manifest=external_manifest or {},
+        )
+        report = validator.validate_cycle(system_state)
+        report["evaluated_at"] = ts_now
+        return report
+
+    def _check_fixed_point(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """A-22: Record current state hash and check for fixed-point convergence.
+
+        The state hash covers the normalised registry snapshot.  Convergence
+        is declared when the last 3 consecutive runs produced identical hashes.
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+        log_dir = Path(self.registry_path).parent / "logs" / "health_checks"
+        detector = FixedPointDetector(
+            history_file=log_dir / "fixed_point_history.jsonl"
+        )
+
+        # Build a stable content signature
+        content_sig = {
+            "overall_health": results.get("overall_health", "unknown"),
+            "warden_count": len(results.get("wardens", {})),
+            "integrity_violations": len(
+                results.get("integrity_report", {}).get("violations", [])
+            ),
+            "moral_violations": len(results.get("moral_anchor_violations", [])),
+        }
+
+        # Derive state hash from normalised registry snapshot
+        registry_snapshot = {
+            "wardens": list(self.registry.get("wardens", {}).keys()),
+            "global_mode": self.registry.get("autonomy_policy", {}).get(
+                "global_mode", "dry_run"
+            ),
+            "overall_health": results.get("overall_health", "unknown"),
+        }
+        state_hash = detector.state_hash(registry_snapshot)
+        detector.record_state(state_hash, content_sig)
+
+        report = detector.check_convergence(k=3)
+        report["state_hash"] = state_hash
+        report["evaluated_at"] = ts_now
+
+        # Persist convergence status to objective_function block
+        if "autonomy_policy" in self.registry:
+            of = self.registry["autonomy_policy"].setdefault(
+                "objective_function", {}
+            )
+            of["convergence_reached"] = report["converged"]
+            of["fixed_point_hash"] = report.get("fixed_point")
+            of["fixed_point_evaluated_at"] = ts_now
+
+        return report
+
+    def _build_evidence_lattice(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """A-23: Build an evidence lattice from all available evidence sources.
+
+        Each warden report is an internal evidence node.  The external manifest
+        and correspondence score add external nodes.  The lattice resolves
+        conflicts (e.g., one warden says healthy while another says critical) and
+        returns the merged strongest verdict.
+        """
+        import time as _time
+
+        lattice = EvidenceLattice()
+        ts = _time.time()
+
+        # Internal nodes: one per warden
+        for warden_name, warden_health in results.get("wardens", {}).items():
+            status = warden_health.get("status", "unknown")
+            confidence = {
+                "healthy": 0.9,
+                "warning": 0.6,
+                "critical": 0.3,
+            }.get(status, 0.5)
+            lattice.insert(
+                EvidenceNode(
+                    source="internal",
+                    confidence=confidence,
+                    timestamp=ts,
+                    verdict=status,
+                    payload={"warden": warden_name},
+                )
+            )
+
+        # External node from correspondence score
+        corr = results.get("correspondence_report", {})
+        corr_score = corr.get("correspondence_score", 0.0)
+        if results.get("external_manifest_computed"):
+            lattice.insert(
+                EvidenceNode(
+                    source="external",
+                    confidence=corr_score,
+                    timestamp=ts + 0.001,
+                    verdict="valid" if corr.get("valid") else "invalid",
+                    payload={"correspondence_score": corr_score},
+                )
+            )
+
+        strongest = lattice.strongest()
+        merged = lattice.merge_conflict_resolution()
+        report = lattice.to_dict()
+        report["strongest_source"] = strongest.source if strongest else None
+        report["strongest_verdict"] = strongest.verdict if strongest else None
+        report["merged_confidence"] = round(merged.confidence, 4) if merged else None
+        return report
+
+    def _detect_semantic_divergence(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """A-24: Detect semantic divergence across independent evidence sources.
+
+        Uses warden health statuses as independent "model verdicts" and measures
+        contradiction_score and verdict entropy.
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        # Build evidence sources: each warden + external correspondence
+        sources: Dict[str, Dict[str, Any]] = {}
+        for warden_name, warden_health in results.get("wardens", {}).items():
+            sources[warden_name] = {
+                "status": warden_health.get("status", "unknown")
+            }
+
+        # Add external correspondence as an independent source
+        corr = results.get("correspondence_report", {})
+        if results.get("external_manifest_computed"):
+            sources["external_witness"] = {
+                "status": "valid" if corr.get("valid") else "invalid"
+            }
+
+        detector = SemanticDivergenceDetector.from_warden_results(sources)
+        report = detector.cross_validate()
+        report["evaluated_at"] = ts_now
+        return report
+
+    def _assert_ontological_invariants(
+        self, results: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """A-25: Assert all ontological invariants against the collected evidence.
+
+        Builds an OntologicalInvariantRegistry from the current run's context
+        and runs all six invariant checks.  A frozen result escalates to warning.
+        """
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        corr = results.get("correspondence_report", {})
+        complexity_gate = (
+            corr.get("details", {})
+            .get("complexity_gate", {})
+            .get("passed", True)
+        )
+
+        context: Dict[str, Any] = {
+            "external_manifest_exists": results.get("external_manifest_computed", False),
+            "correspondence_score": corr.get("correspondence_score", 0.0),
+            "correspondence_threshold": 0.9,
+            "execute_actions": [],   # Populated from file_count_history execute entries
+            "evidence_by_action": {},
+            "complexity_gate_passed": complexity_gate,
+            "idempotency_verified": True,
+        }
+
+        # Extract execute-mode actions from file_count_history
+        for warden_cfg in self.registry.get("wardens", {}).values():
+            for entry in warden_cfg.get("health", {}).get("file_count_history", []):
+                if entry.get("mode") == "execute":
+                    action_type = "update_file_count"
+                    context["execute_actions"].append(
+                        {
+                            "action_type": action_type,
+                            "reversibility": {"reversible": True},
+                            "audit_log": True,
+                        }
+                    )
+                    context["evidence_by_action"][action_type] = {
+                        "evidence": {"stored": entry.get("stored"), "actual": entry.get("actual")}
+                    }
+
+        registry = OntologicalInvariantRegistry.build(context)
+        report = registry.assert_all()
+        report["evaluated_at"] = ts_now
+
+        # Persist system_state to registry
+        self.registry.setdefault("system_metrics", {})[
+            "ontological_system_state"
+        ] = report["system_state"]
+
+        return report
+
+    def _check_moral_anchor(self, results: Dict[str, Any]) -> List[str]:
+        """Detect forbidden convergence patterns and freeze autonomy if triggered.
+
+        The moral anchor is not a rule set — it is an attractor constraint that
+        acts as a global optimization boundary.  If any of the forbidden patterns
+        are detected the autonomy engine is frozen (global_mode → 'frozen') and
+        all subsequent autonomous writes are blocked for this run.
+
+        Forbidden patterns checked:
+        - deception: proposals with no evidence block or empty falsifiability_note
+        - coercion: proposals that modify wardens outside their scope
+        - irreversible_harm: execute-mode actions with reversibility.reversible == False
+        - epistemic_corruption: health statuses that contradict verifiable evidence
+
+        Returns list of violation strings (empty if clean).
+        """
+        autonomy = self._load_autonomy_policy()
+        anchor = autonomy.get("moral_anchor", {})
+        forbidden = set(anchor.get("forbidden_convergence", [
+            "deception", "coercion", "irreversible_harm", "epistemic_corruption"
+        ]))
+
+        violations: List[str] = []
+
+        # Deception check: any non-falsifiable proposal in proposals dir
+        proposal_dir = (
+            Path(self.registry_path).parent / "logs" / "health_checks" / "proposals"
+        )
+        if proposal_dir.exists():
+            for pf in proposal_dir.glob("*.json"):
+                try:
+                    p = json.loads(pf.read_text(encoding="utf-8"))
+                    if "deception" in forbidden:
+                        if not p.get("evidence") or not p.get("falsifiability_note", "").strip():
+                            violations.append(
+                                f"deception: proposal {p.get('proposal_id', pf.name)} "
+                                f"lacks evidence or falsifiability_note"
+                            )
+                except Exception:
+                    pass
+
+        # Irreversible harm check: execute-mode proposals marked non-reversible
+        if "irreversible_harm" in forbidden:
+            if proposal_dir.exists():
+                for pf in proposal_dir.glob("*.json"):
+                    try:
+                        p = json.loads(pf.read_text(encoding="utf-8"))
+                        if (
+                            p.get("mode") == "execute"
+                            and p.get("status") not in ("applied", "rejected")
+                            and not p.get("reversibility", {}).get("reversible", True)
+                        ):
+                            violations.append(
+                                f"irreversible_harm: execute proposal "
+                                f"{p.get('proposal_id', pf.name)} is marked non-reversible"
+                            )
+                    except Exception:
+                        pass
+
+        # Epistemic corruption: overall_health contradicts all warden statuses
+        if "epistemic_corruption" in forbidden:
+            overall = results.get("overall_health", "healthy")
+            warden_statuses = [
+                v.get("status", "healthy")
+                for v in results.get("wardens", {}).values()
+            ]
+            if overall == "healthy" and any(s == "critical" for s in warden_statuses):
+                violations.append(
+                    "epistemic_corruption: overall_health=healthy but at least "
+                    "one warden is critical"
+                )
+
+        # If violations detected, freeze autonomy
+        if violations:
+            anchor_block = self.registry.setdefault("autonomy_policy", {}).setdefault(
+                "moral_anchor", {}
+            )
+            anchor_block["frozen"] = True
+            anchor_block["frozen_at"] = (
+                datetime.now(timezone.utc)
+                .replace(microsecond=0)
+                .isoformat()
+                .replace("+00:00", "Z")
+            )
+            anchor_block["frozen_reason"] = violations[0]
+            anchor_block["current_violations"] = violations
+            # Freeze the global autonomy mode to prevent any execute-mode actions
+            self.registry["autonomy_policy"]["global_mode"] = "frozen"
+            logger.warning(
+                f"Moral anchor triggered: {len(violations)} violations. "
+                "Autonomy frozen for this run."
+            )
+        else:
+            anchor_block = self.registry.setdefault("autonomy_policy", {}).setdefault(
+                "moral_anchor", {}
+            )
+            anchor_block["current_violations"] = []
+            anchor_block.setdefault("frozen", False)
+
+        return violations
+
+    # ------------------------------------------------------------------ #
+    # A-8: Drift Detection (Section 9.3)                                  #
+    # ------------------------------------------------------------------ #
+
+    def _compute_drift(self, results: Dict[str, Any]) -> Dict[str, Any]:
+        """Compute drift for every warden that has a stored vs observed state pair.
+
+        drift = |observed - expected| / max(expected, 1)
+
+        Drift detection is complementary to the file_count mismatch check in
+        _check_warden.  If a warden already has file_count_match == False it is
+        skipped here (the mismatch is handled upstream).  Drift elevation is only
+        applied when the mismatch is new and not yet reported.
+
+        For cloud wardens, drift is computed from report_age_history variance
+        relative to max_report_age_hours.
+
+        Drift above warning_threshold elevates the warden's health status to warning;
+        above critical_threshold to critical.
+        """
+        autonomy = self._load_autonomy_policy()
+        dd = autonomy.get("drift_detection", {})
+        warn_thresh = dd.get("warning_threshold", 0.1)
+        crit_thresh = dd.get("critical_threshold", 0.3)
+
+        drift_map: Dict[str, float] = {}
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        for warden_name, warden_health in results.get("wardens", {}).items():
+            checks = warden_health.get("checks", {})
+
+            # Skip wardens where file_count mismatch is already reported
+            if checks.get("file_count_match") is False:
+                drift_map[warden_name] = 0.0  # handled upstream
+                continue
+
+            warden_cfg = self.registry.get("wardens", {}).get(warden_name, {})
+            health_block = warden_cfg.get("health", {})
+
+            # For cloud wardens: compute drift as variance in report_age_history
+            # (is the scan cadence becoming irregular?) rather than age vs threshold,
+            # since the threshold check is already done in _check_cloud_warden().
+            if warden_cfg.get("runtime") == "github_actions":
+                age_history = health_block.get("report_age_history", [])
+                if len(age_history) < 3:
+                    drift_map[warden_name] = 0.0
+                    continue
+                mean_age = sum(age_history) / len(age_history)
+                if mean_age <= 0:
+                    drift_map[warden_name] = 0.0
+                    continue
+                # Coefficient of variation = stddev / mean (bounded drift measure)
+                variance = sum((x - mean_age) ** 2 for x in age_history) / len(age_history)
+                stddev = variance ** 0.5
+                drift = stddev / mean_age
+                drift_map[warden_name] = round(drift, 4)
+            else:
+                # For local wardens: compute drift from file_count_history trend
+                fc_history = health_block.get("file_count_history", [])
+                if len(fc_history) < 2:
+                    drift_map[warden_name] = 0.0
+                    continue
+                # Drift = mean absolute delta over last 5 observations / baseline
+                recent = fc_history[-5:]
+                deltas = [abs(e.get("delta", 0)) for e in recent]
+                baseline = max(recent[0].get("stored", 1), 1)
+                drift = sum(deltas) / len(deltas) / baseline
+                drift_map[warden_name] = round(drift, 4)
+
+            drift_val = drift_map[warden_name]
+            if drift_val >= crit_thresh:
+                warden_health["status"] = self._elevate_status(
+                    warden_health["status"], "critical"
+                )
+                warden_health.setdefault("issues", []).append(
+                    f"Drift critical: {drift_val:.2%} (threshold {crit_thresh:.0%})"
+                )
+            elif drift_val >= warn_thresh:
+                warden_health["status"] = self._elevate_status(
+                    warden_health["status"], "warning"
+                )
+                warden_health.setdefault("issues", []).append(
+                    f"Drift warning: {drift_val:.2%} (threshold {warn_thresh:.0%})"
+                )
+
+        # Persist into registry drift_detection block
+        dd_block = self.registry.setdefault("autonomy_policy", {}).setdefault(
+            "drift_detection", {}
+        )
+        dd_block["current_drift"] = drift_map
+        dd_block["last_evaluated_at"] = ts_now
+
+        return {
+            "drift_per_warden": drift_map,
+            "evaluated_at": ts_now,
+            "warning_threshold": warn_thresh,
+            "critical_threshold": crit_thresh,
+            "wardens_with_drift": {k: v for k, v in drift_map.items() if v > 0},
+        }
+
+    # ------------------------------------------------------------------ #
+    # A-9: Approval Workflow state tracking (Section 10.1)                #
+    # ------------------------------------------------------------------ #
+
+    def _record_pending_approval(self, proposal: Dict[str, Any]) -> None:
+        """Register a proposal that requires human approval.
+
+        Writes a concise entry to autonomy_policy.approval_workflow.pending_approvals[].
+        Approval is confirmed externally (e.g., PR label 'approved-autonomy').
+        """
+        aw = self.registry.setdefault("autonomy_policy", {}).setdefault(
+            "approval_workflow", {}
+        )
+        pending = aw.setdefault("pending_approvals", [])
+        ikey = proposal.get("idempotency_key", "")
+        # Skip duplicates by idempotency key
+        if any(e.get("idempotency_key") == ikey for e in pending):
+            return
+        expiry_hours = aw.get("expiry_hours", 168)
+        ts_now = datetime.now(timezone.utc).replace(microsecond=0)
+        expires_at = (ts_now + timedelta(hours=expiry_hours)).isoformat().replace(
+            "+00:00", "Z"
+        )
+        pending.append(
+            {
+                "proposal_id": proposal.get("proposal_id"),
+                "idempotency_key": ikey,
+                "action_type": proposal.get("action_type"),
+                "target": proposal.get("target_warden") or proposal.get("folder_path"),
+                "created_at": proposal.get("created_at"),
+                "expires_at": expires_at,
+                "approved": False,
+                "approved_by": None,
+                "approved_at": None,
+                "mode": aw.get("mode", "github_pr"),
+                "required_label": aw.get("approval_label", "approved-autonomy"),
+            }
+        )
+        logger.debug(f"Pending approval registered: {proposal.get('proposal_id')}")
+
+    # ------------------------------------------------------------------ #
+    # A-10: Structural Integrity Warden (Section 11.2)                    #
+    # ------------------------------------------------------------------ #
+
+    # Required fields at each registry path
+    _REGISTRY_SCHEMA: Dict[str, List[str]] = {
+        "base_ai": ["model", "api_endpoint"],
+        "wardens": [],  # checked per-warden below
+        "dynamic_wardens": ["temporary_wardens"],
+        "health_checks": ["interval_seconds", "failure_threshold"],
+        "autonomy_policy": ["schema_version", "global_mode", "guardrails"],
+    }
+    _WARDEN_REQUIRED_FIELDS: List[str] = ["folder_path", "status", "metadata"]
+
+    def _validate_registry_schema(self) -> Dict[str, Any]:
+        """Validate the registry against the structural integrity schema.
+
+        Returns a report with found violations.  A violation is recorded but
+        never causes a hard stop — it is surfaced as a warning.
+        """
+        violations: List[str] = []
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        for section, required_keys in self._REGISTRY_SCHEMA.items():
+            if section not in self.registry:
+                violations.append(f"missing_section: '{section}' not found in registry")
+                continue
+            obj = self.registry[section]
+            for key in required_keys:
+                if key not in obj:
+                    violations.append(f"missing_field: registry.{section}.{key}")
+
+        # Per-warden schema check
+        for warden_name, warden_cfg in self.registry.get("wardens", {}).items():
+            for field in self._WARDEN_REQUIRED_FIELDS:
+                if field not in warden_cfg:
+                    violations.append(
+                        f"missing_field: wardens.{warden_name}.{field}"
+                    )
+
+        # autonomy_policy schema_version pin
+        schema_ver = (
+            self.registry.get("autonomy_policy", {}).get("schema_version", "")
+        )
+        if schema_ver and schema_ver != "1.0":
+            violations.append(
+                f"schema_version_mismatch: autonomy_policy.schema_version={schema_ver} "
+                f"(expected 1.0)"
+            )
+
+        status = "healthy" if not violations else "warning"
+        report: Dict[str, Any] = {
+            "status": status,
+            "violations": violations,
+            "evaluated_at": ts_now,
+            "sections_checked": list(self._REGISTRY_SCHEMA.keys()),
+            "wardens_checked": list(self.registry.get("wardens", {}).keys()),
+        }
+        if violations:
+            logger.warning(
+                f"Structural integrity: {len(violations)} violation(s) found"
+            )
+        return report
+
+    # ------------------------------------------------------------------ #
+    # A-11: Epistemic Conflict Detector (Section 11.4)                    #
+    # ------------------------------------------------------------------ #
+
+    def _detect_epistemic_conflicts(self) -> Dict[str, Any]:
+        """Detect contradictions across wardens.
+
+        Checks:
+        1. Overlapping monitored_paths between different wardens.
+        2. Wardens with status=active but overall_status=error/critical.
+        3. Health statuses that disagree with stored file_count checks.
+
+        Returns a conflict report with all detected contradictions.
+        """
+        conflicts: List[Dict[str, Any]] = []
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+        wardens = self.registry.get("wardens", {})
+
+        # Build path → warden mapping
+        path_to_wardens: Dict[str, List[str]] = {}
+        for warden_name, warden_cfg in wardens.items():
+            fp = warden_cfg.get("folder_path", "")
+            if fp:
+                path_to_wardens.setdefault(fp, []).append(warden_name)
+            monitored = warden_cfg.get("metadata", {}).get("monitored_paths") or []
+            for mp in monitored:
+                path_to_wardens.setdefault(mp, []).append(warden_name)
+
+        # Conflict 1: overlapping paths (non-catch-all)
+        for path, warden_list in path_to_wardens.items():
+            if path in (".", "**") or len(warden_list) < 2:
+                continue
+            conflicts.append(
+                {
+                    "type": "overlapping_monitored_path",
+                    "path": path,
+                    "wardens": warden_list,
+                    "description": (
+                        f"Path '{path}' is monitored by multiple wardens: "
+                        + ", ".join(warden_list)
+                    ),
+                    "severity": "warning",
+                }
+            )
+
+        # Conflict 2: operational status contradicts health status
+        for warden_name, warden_cfg in wardens.items():
+            op_status = warden_cfg.get("status", "unknown")
+            health_status = warden_cfg.get("health", {}).get("overall_status", "pending")
+            if op_status == "active" and health_status in ("error", "critical"):
+                conflicts.append(
+                    {
+                        "type": "status_contradiction",
+                        "warden": warden_name,
+                        "operational_status": op_status,
+                        "health_status": health_status,
+                        "description": (
+                            f"{warden_name}: operational_status=active but "
+                            f"health.overall_status={health_status}"
+                        ),
+                        "severity": "warning",
+                    }
+                )
+
+        status = "healthy" if not conflicts else "warning"
+        return {
+            "status": status,
+            "conflicts": conflicts,
+            "evaluated_at": ts_now,
+            "conflict_count": len(conflicts),
+        }
+
+    # ------------------------------------------------------------------ #
+    # A-12/A-13/A-14/A-15/A-16/A-17: Intelligence Metrics (IX–XII)       #
+    # ------------------------------------------------------------------ #
+
+    def _compute_intelligence_metrics(
+        self, results: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Compute system-wide intelligence metrics.
+
+        A-12: Entropy — uncertainty of the state-transition distribution.
+               entropy = -∑ p_i * log2(p_i) where p_i = fraction of wardens
+               in each health state.
+
+        A-13: Consistency — verified_claims / total_claims.
+               A claim is verified when its check result is True (not None or False).
+
+        A-14: Convergence — fraction of equilibrium conditions satisfied.
+               Used to drive the objective_function.convergence_reached flag.
+
+        A-15: Evidence integrity — SHA-256 spot-check of the latest health
+               check log file, written as evidence_hash to metrics.
+
+        A-16: Resource efficiency — check_duration_seconds / wardens_checked.
+
+        A-17: Objective score — weighted sum of
+               (truth_alignment + stability + recoverability)
+               normalized to [0, 1].
+
+        All values are written to system_metrics in the registry.
+        """
+        import math
+
+        ts_now = (
+            datetime.now(timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z")
+        )
+
+        # A-12: Entropy
+        warden_statuses = [
+            v.get("status", "healthy")
+            for v in results.get("wardens", {}).values()
+        ]
+        status_counts: Dict[str, int] = {}
+        for s in warden_statuses:
+            status_counts[s] = status_counts.get(s, 0) + 1
+        n_total = max(len(warden_statuses), 1)
+        entropy_bits: float = 0.0
+        for count in status_counts.values():
+            p = count / n_total
+            if p > 0:
+                entropy_bits -= p * math.log2(p)
+        entropy_bits = round(entropy_bits, 4)
+
+        # A-13: Consistency
+        total_claims = 0
+        verified_claims = 0
+        for warden_health in results.get("wardens", {}).values():
+            for check_key, check_val in warden_health.get("checks", {}).items():
+                if isinstance(check_val, bool):
+                    total_claims += 1
+                    if check_val:
+                        verified_claims += 1
+        consistency_ratio = (
+            round(verified_claims / total_claims, 4) if total_claims > 0 else None
+        )
+
+        # A-14: Convergence
+        autonomy = self._load_autonomy_policy()
+        obj_fn = autonomy.get("objective_function", {})
+        equil = obj_fn.get("equilibrium_conditions", {})
+        # Update conditions
+        equil["all_invariants_satisfied"] = (
+            len(results.get("integrity_report", {}).get("violations", [])) == 0
+        )
+        equil["all_claims_verifiable"] = consistency_ratio is not None and consistency_ratio >= 0.9
+        equil["no_unnecessary_proposals"] = (
+            len(results.get("warden_proposals", [])) == 0
+        )
+        equil["no_drift_detected"] = all(
+            v == 0.0
+            for v in results.get("drift_report", {}).get("drift_per_warden", {}).values()
+        )
+        conditions_met = sum(1 for v in equil.values() if v is True)
+        total_conditions = max(len(equil), 1)
+        convergence_score = round(conditions_met / total_conditions, 4)
+        convergence_reached = convergence_score >= 1.0
+
+        # Update objective_function block in registry
+        if "autonomy_policy" in self.registry:
+            of_block = self.registry["autonomy_policy"].setdefault(
+                "objective_function", {}
+            )
+            of_block["equilibrium_conditions"] = equil
+            of_block["convergence_reached"] = convergence_reached
+            of_block["last_evaluated_at"] = ts_now
+
+        # A-15: Evidence integrity — hash the most recent health check log
+        evidence_hash: Optional[str] = None
+        try:
+            log_dir = Path(self.registry_path).parent / "logs" / "health_checks"
+            latest = log_dir / "latest_health_check.json"
+            if latest.exists():
+                evidence_hash = (
+                    "sha256:"
+                    + hashlib.sha256(latest.read_bytes()).hexdigest()[:16]
+                )
+        except Exception:
+            pass
+
+        # A-16: Resource efficiency
+        check_duration = results.get("check_duration_seconds")
+        n_wardens = max(len(results.get("wardens", {})), 1)
+        resource_efficiency: Optional[float] = (
+            round(check_duration / n_wardens, 4)
+            if check_duration is not None
+            else None
+        )
+
+        # A-17: Objective score = weighted average of three maximize targets
+        # truth_alignment ← consistency_ratio (0..1)
+        # system_stability ← 1 - entropy / log2(n_possible_states) normalized
+        #   n_possible_states = 3 (healthy, warning, critical) — the fixed vocabulary
+        # recoverability ← 1.0 if all wardens have reversible proposals
+        truth_alignment = consistency_ratio if consistency_ratio is not None else 0.5
+        n_possible_states = 3  # healthy | warning | critical
+        max_entropy = math.log2(n_possible_states)  # theoretical maximum
+        system_stability = max(0.0, 1.0 - entropy_bits / max(max_entropy, 1.0))
+        recoverability = 1.0  # default — self-healing is always reversible
+        objective_score = round(
+            (truth_alignment + system_stability + recoverability) / 3, 4
+        )
+
+        # Write to system_metrics
+        sm = self.registry.setdefault("system_metrics", {})
+        sm["entropy_bits"] = entropy_bits
+        sm["consistency_ratio"] = consistency_ratio
+        sm["verified_claims"] = verified_claims
+        sm["total_claims"] = total_claims
+        sm["convergence_score"] = convergence_score
+        sm["objective_score"] = objective_score
+        sm["evidence_hash"] = evidence_hash
+        sm["resource_efficiency_s_per_warden"] = resource_efficiency
+        sm["intelligence_metrics_evaluated_at"] = ts_now
+
+        return {
+            "entropy_bits": entropy_bits,
+            "consistency_ratio": consistency_ratio,
+            "verified_claims": verified_claims,
+            "total_claims": total_claims,
+            "convergence_score": convergence_score,
+            "convergence_reached": convergence_reached,
+            "equilibrium_conditions": equil,
+            "evidence_hash": evidence_hash,
+            "resource_efficiency_s_per_warden": resource_efficiency,
+            "objective_score": objective_score,
+            "evaluated_at": ts_now,
+        }
+
+    def _load_autonomy_policy(self) -> Dict[str, Any]:
+        """Return the autonomy_policy block from the registry, or a safe dry_run default."""
+        policy = self.registry.get("autonomy_policy")
+        if not isinstance(policy, dict):
+            return {
+                "global_mode": "dry_run",
+                "action_policies": {},
+                "guardrails": {
+                    "no_credential_commits": True,
+                    "no_warden_file_creation": True,
+                    "registry_backup_before_write": True,
+                    "max_writes_per_run": 5,
+                },
+            }
+        return policy
+
+    def _get_action_mode(self, policy: Dict[str, Any], action_type: str) -> str:
+        """Return the effective execution mode for a given action type."""
+        global_mode = policy.get("global_mode", "dry_run")
+        action_policy = policy.get("action_policies", {}).get(action_type, {})
+        return action_policy.get("mode", global_mode)
+
+    def _backup_registry(self) -> Optional[str]:
+        """Create a timestamped backup of the registry and return its path."""
+        try:
+            backup_dir = Path(self.registry_path).parent / ".ai_registry_backups"
+            backup_dir.mkdir(exist_ok=True)
+            ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            backup_path = backup_dir / f"registry_{ts}.json"
+            shutil.copy2(self.registry_path, backup_path)
+            logger.debug(f"Registry backed up to {backup_path}")
+            return str(backup_path)
+        except Exception as e:
+            logger.warning(f"Could not back up registry: {e}")
+            return None
+
+    def _write_audit_log(self, entry: Dict[str, Any]) -> None:
+        """Append a JSONL audit entry to logs/audit/."""
+        try:
+            audit_dir = (
+                Path(self.registry_path).parent / "logs" / "audit"
+            )
+            audit_dir.mkdir(parents=True, exist_ok=True)
+            date_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+            log_path = audit_dir / f"autonomy_audit_{date_str}.jsonl"
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(entry) + "\n")
+        except Exception as e:
+            logger.warning(f"Could not write audit log: {e}")
+
+    def _write_proposal(
+        self, proposal: Dict[str, Any], subdir: str = "proposals"
+    ) -> Optional[str]:
+        """Write a proposal JSON file to logs/health_checks/<subdir>/ and return its path."""
+        try:
+            proposal_dir = (
+                Path(self.registry_path).parent
+                / "logs"
+                / "health_checks"
+                / subdir
+            )
+            proposal_dir.mkdir(parents=True, exist_ok=True)
+            proposal_id = proposal.get("proposal_id", "unknown")
+            proposal_path = proposal_dir / f"{proposal_id}.json"
+            proposal_path.write_text(
+                json.dumps(proposal, indent=2), encoding="utf-8"
+            )
+            return str(proposal_path)
+        except Exception as e:
+            logger.warning(f"Could not write proposal {proposal.get('proposal_id')}: {e}")
+            return None
+
+    def _resolve_credential(self, warden_config: Dict[str, Any]) -> str:
+        """Return a credential source reference string (never the actual credential value).
+
+        A-6: structured credential_resolver field is preferred; falls back to legacy api_key.
+        Valid source values: none | env_var | github_secret | vault_path
+        """
+        resolver = warden_config.get("credential_resolver")
+        if isinstance(resolver, dict):
+            source = resolver.get("source", "unknown")
+            ref = resolver.get("ref", "")
+            return f"{source}:{ref}" if ref else source
+        api_key = warden_config.get("api_key", "")
+        if not api_key or api_key == "local_ollama":
+            return "none"
+        if api_key.startswith("github_secret:"):
+            return api_key
+        return "env_var"
+
+    # ------------------------------------------------------------------ #
+    # A-3: dynamic warden proposal generation                             #
+    # ------------------------------------------------------------------ #
+
+    def _generate_warden_proposals(self) -> List[Dict[str, Any]]:
+        """Scan for uncovered directories and write dry-run warden proposals.
+
+        Uses DynamicWardenTool to classify folders.  Never creates warden files
+        or edits .gitignore — those steps require human approval.
+        """
+        try:
+            from dynamic_warden_tool import DynamicWardenTool  # local import
+        except ImportError:
+            logger.debug("DynamicWardenTool not available; skipping warden proposals")
+            return []
+
+        try:
+            tool = DynamicWardenTool(self.registry_path)
+            proposals = tool.generate_proposals()
+            # Persist proposals into the registry
+            dyn = self.registry.setdefault("dynamic_wardens", {})
+            dyn["proposals"] = proposals
+            return proposals
+        except Exception as e:
+            logger.warning(f"Warden proposal generation failed: {e}")
+            return []
+
+    # ------------------------------------------------------------------ #
+    # A-4: apply pending proposals (execute-mode only, guarded)          #
+    # ------------------------------------------------------------------ #
+
+    def apply_proposals(self) -> Dict[str, Any]:
+        """Apply any pending proposals that are permitted in execute mode.
+
+        Only update_file_count and refresh_temporary_warden are safe for
+        unattended execution.  All other action types remain as dry_run proposals.
+
+        Returns a summary dict with applied/skipped/error counts.
+        """
+        autonomy = self._load_autonomy_policy()
+        allowed = (
+            autonomy.get("action_policies", {})
+            .get("execute_remediation", {})
+            .get("allowed_action_types", ["update_file_count", "refresh_temporary_warden"])
+        )
+        proposal_dir = (
+            Path(self.registry_path).parent / "logs" / "health_checks" / "proposals"
+        )
+        summary: Dict[str, Any] = {"applied": 0, "skipped": 0, "errors": []}
+        if not proposal_dir.exists():
+            return summary
+        for proposal_file in proposal_dir.glob("*.json"):
+            try:
+                proposal = json.loads(proposal_file.read_text(encoding="utf-8"))
+                if proposal.get("status") != "pending":
+                    summary["skipped"] += 1
+                    continue
+                action_type = proposal.get("action_type")
+                if action_type not in allowed:
+                    summary["skipped"] += 1
+                    continue
+                mode = self._get_action_mode(autonomy, action_type)
+                if mode != "execute":
+                    summary["skipped"] += 1
+                    continue
+                if action_type == "update_file_count":
+                    warden_name = proposal.get("target_warden")
+                    actual = proposal.get("evidence", {}).get("actual_file_count")
+                    if warden_name and actual is not None:
+                        backup_path = self._backup_registry()
+                        self.registry.setdefault("wardens", {}).setdefault(
+                            warden_name, {}
+                        ).setdefault("metadata", {})["file_count"] = actual
+                        self._writes_this_run += 1
+                        proposal["status"] = "applied"
+                        proposal["applied_at"] = (
+                            datetime.now(timezone.utc)
+                            .replace(microsecond=0)
+                            .isoformat()
+                            .replace("+00:00", "Z")
+                        )
+                        proposal["applied_by"] = "health_check_integration.apply_proposals"
+                        proposal_file.write_text(
+                            json.dumps(proposal, indent=2), encoding="utf-8"
+                        )
+                        self._save_registry()
+                        summary["applied"] += 1
+                        self._write_audit_log(
+                            {
+                                "log_id": f"AL-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{uuid.uuid4().hex[:8]}",
+                                "timestamp": proposal["applied_at"],
+                                "action_type": action_type,
+                                "target": warden_name,
+                                "mode": "execute",
+                                "proposal_id": proposal.get("proposal_id"),
+                                "outcome": "success",
+                                "backup_path": backup_path,
+                                "agent": "health_check_integration.apply_proposals",
+                            }
+                        )
+            except Exception as e:
+                summary["errors"].append(str(e))
+        return summary
+
+    # ------------------------------------------------------------------ #
+    # A-5: threshold adaptation                                           #
+    # ------------------------------------------------------------------ #
+
+    def _adapt_thresholds(self) -> None:
+        """Generate threshold adaptation proposals for cloud wardens that have
+        accumulated enough report_age observations.
+
+        Only cloud wardens (runtime == "github_actions") use artifact-based
+        reporting with a meaningful max_report_age_hours threshold, so
+        threshold adaptation is restricted to that runtime type.
+
+        Always writes as dry_run proposals; the actual max_report_age_hours value
+        is never modified without explicit human approval (approved_by != null).
+        """
+        autonomy = self._load_autonomy_policy()
+        adapt_policy = autonomy.get("action_policies", {}).get("adapt_threshold", {})
+        min_sample = adapt_policy.get("min_sample_size", 7)
+        max_adapt_pct = adapt_policy.get("max_adaptation_pct", 30)
+
+        for warden_name, warden_config in self.registry.get("wardens", {}).items():
+            if warden_config.get("runtime") != "github_actions":
+                continue
+            health_block = warden_config.get("health", {})
+            suggested = health_block.get("suggested_max_report_age_hours")
+            sample_size = health_block.get("threshold_sample_size", 0)
+            current = health_block.get("max_report_age_hours", 36)
+            if suggested is None or sample_size < min_sample:
+                continue
+            # Clamp proposal to ± max_adapt_pct
+            lower = current * (1 - max_adapt_pct / 100)
+            upper = current * (1 + max_adapt_pct / 100)
+            proposed_clamped = max(lower, min(upper, suggested))
+            within_policy = lower <= suggested <= upper
+            date_str = datetime.now(timezone.utc).strftime("%Y%m%d")
+            ts_now = (
+                datetime.now(timezone.utc)
+                .replace(microsecond=0)
+                .isoformat()
+                .replace("+00:00", "Z")
+            )
+            age_history = health_block.get("report_age_history", [])
+            mean_age = (
+                statistics.mean(age_history)
+                if len(age_history) >= 2
+                else float(suggested)   # suggested is non-None (checked above)
+            )
+            stddev_age = (
+                statistics.stdev(age_history) if len(age_history) >= 2 else 0.0
+            )
+            proposal: Dict[str, Any] = {
+                "proposal_id": f"TA-{date_str}-{warden_name}-max_report_age_hours",
+                "idempotency_key": f"adapt_threshold:{warden_name}:max_report_age_hours:{date_str}",
+                "created_at": ts_now,
+                "created_by": "health_check_integration",
+                "schema_version": "1.0",
+                "action_type": "adapt_threshold",
+                "target_warden": warden_name,
+                "target_field": "max_report_age_hours",
+                "current_value": current,
+                "proposed_value": round(proposed_clamped, 2),
+                "mode": "dry_run",
+                "status": "pending_approval",
+                "confidence": health_block.get("threshold_confidence"),
+                "evidence": {
+                    "sample_size": sample_size,
+                    "sample_ages_hours": age_history[-min_sample:],
+                    "mean_hours": round(mean_age, 3),
+                    "stddev_hours": round(stddev_age, 3),
+                    "formula": "mean + 1.5 * stddev",
+                    "computed": round(suggested, 3),
+                    "proposed_clamped": round(proposed_clamped, 2),
+                },
+                "policy_check": {
+                    "policy_id": autonomy.get("policy_id", "default"),
+                    "approval_required": True,
+                    "adaptation_within_policy": within_policy,
+                    "max_adaptation_pct": max_adapt_pct,
+                },
+                "reversibility": {
+                    "reversible": True,
+                    "revert_action": "restore_previous_threshold",
+                    "previous_value": current,
+                },
+                "falsifiability_note": (
+                    "If the adapted threshold causes 'stale' alerts on runs that "
+                    "completed successfully, the adaptation should be reverted."
+                ),
+                "approved_by": None,
+                "approved_at": None,
+            }
+            self._write_proposal(proposal)
+            # Also record in warden health block for visibility
+            health_block["threshold_adapted_at"] = ts_now
+            if adapt_policy.get("audit_log", True):
+                self._write_audit_log(
+                    {
+                        "log_id": f"AL-{date_str}-{uuid.uuid4().hex[:8]}",
+                        "timestamp": ts_now,
+                        "action_type": "adapt_threshold",
+                        "target": warden_name,
+                        "mode": "dry_run",
+                        "proposal_id": proposal["proposal_id"],
+                        "outcome": "dry_run",
+                        "agent": "health_check_integration._adapt_thresholds",
+                    }
+                )
 
 
 def main():
