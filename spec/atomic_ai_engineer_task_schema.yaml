@@ -368,15 +368,20 @@ test_case:
       The vanilla data fixer would automatically convert all item storage
       from NBT to Data Components, including nested inventories.
     causal_chain:
-      - "Minecraft 1.21 replaces NBT item storage with Data Components"
-      - "Vanilla data fixer converts top-level Items lists"
-      - "Farmer's Delight Cooking Pot stores items in Inventory.Items (nested)"
-      - "Data fixer does not recurse into Inventory.Items"
-      - "Count field (stack size) is dropped during migration"
-      - "Players see stack sizes reset to 1 after world upgrade"
+      - "CASE 1 (placed block entity): Minecraft 1.21 replaces NBT item storage with Data Components"
+      - "CASE 1: Vanilla DFU runs V1460.registerBlockEntities; only explicitly registered block entities are traversed"
+      - "CASE 1: FD block entities not registered → Inventory.Items skipped → Count field dropped → stack sizes reset to 1"
+      - "CASE 1 FIX: V1460Mixin injects at RETURN, registers all FD block entities with nested DSL.optionalFields path"
+      - "CASE 2 (Cooking Pot as item): ItemStackComponentizationFix.fixItemStack processes the item's BlockEntityTag"
+      - "CASE 2: Meal item moved to farmersdelight:meal component, but Count: TAG_Byte not converted to count: TAG_Int"
+      - "CASE 2: DFU does NOT re-run ItemStackComponentizationFix on components set inside fixItemStack → Count defaults to 1"
+      - "CASE 2 FIX: ItemStackComponentizationFixMixin explicitly promotes Count: (int)c_b → count: c_i before setComponent"
   technical_diagnosis:
     affected_files:
-      - "src/main/java/.../mixin/datafixer/Schema1460Mixin.java"
+      - "src/main/java/vectorwing/farmersdelight/common/mixin/V1460Mixin.java"
+      - "src/main/java/vectorwing/farmersdelight/common/mixin/V3818_3Mixin.java"
+      - "src/main/java/vectorwing/farmersdelight/common/mixin/ItemStackComponentizationFixMixin.java"
+      - "src/main/resources/farmersdelight.mixins.json"
     affected_functions:
       - "V1460.registerBlockEntities (block entity DFU registration — primary fix)"
       - "V3818_3.registerTypes lambda$registerTypes$0 (component type registration)"
