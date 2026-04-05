@@ -13,9 +13,15 @@ def _schema(domain_id: str, invariants: list[str]) -> dict:
 
 
 def test_adjoint_triple_construction(triple: AdjointTriple):
-    assert triple.L.name.startswith("L")
-    assert triple.M.name.startswith("M")
-    assert triple.R.name.startswith("R")
+    assert triple.L.name == "L (Free/Generation/Spirit)"
+    assert triple.M.name == "M (Mediator/Law/Christ)"
+    assert triple.R.name == "R (Forgetful/Constraint/Father)"
+    assert len(triple.L._principles) > 0
+    assert len(triple.M._principles) > 0
+    assert len(triple.R._principles) > 0
+    assert "output_must_be_verifiable_against_artifacts" in triple.L._principles
+    assert "transparent_operation" in triple.M._principles
+    assert "every_artifact_serves_user_request" in triple.R._principles
 
 
 def test_check_counit_passes_for_valid_schema(triple: AdjointTriple):

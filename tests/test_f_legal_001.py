@@ -17,3 +17,14 @@ def test_legal_citation_verifiability():
 
     assert validate_precedent_chain(["29 U.S.C. § 207", "18 U.S.C. § 1030"])
     assert not validate_precedent_chain(["29 U.S.C. § 207", "77 U.S.C. § 1"])
+
+
+def test_legal_invalid_citation_rejected():
+    import pytest
+
+    with pytest.raises(ValueError):
+        parse_citation("29 USC 207")
+    with pytest.raises(ValueError):
+        parse_citation("§ 207")
+    with pytest.raises(ValueError):
+        parse_citation("29 U.S.C. 207")

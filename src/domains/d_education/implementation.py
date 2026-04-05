@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import copy
 from dataclasses import dataclass
 
 
@@ -32,7 +33,7 @@ def issue_credential(student_id: str, payload: dict) -> Credential:
         raise ValueError("student_id must not be empty")
     canonical = _canonical_payload(payload)
     digest = hashlib.sha256(f"{student_id}:{canonical}".encode("utf-8")).hexdigest()
-    return Credential(student_id=student_id, payload=dict(payload), issued_hash=digest)
+    return Credential(student_id=student_id, payload=copy.deepcopy(payload), issued_hash=digest)
 
 
 def verify_credential(credential: Credential) -> bool:

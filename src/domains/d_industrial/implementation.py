@@ -57,7 +57,7 @@ class IndustrialController:
             raise InterlockError(f"Interlock denied {cmd.command_id}")
 
         t0 = time.perf_counter_ns()
-        # deterministic bounded work
+        # Deterministic bounded work used to validate response-time envelope.
         _ = sum(range(500))
         elapsed_ms = (time.perf_counter_ns() - t0) / 1_000_000
         if elapsed_ms > self.timeout_ms:

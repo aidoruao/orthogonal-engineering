@@ -31,7 +31,7 @@ class Citation:
 
 def parse_citation(raw: str) -> Citation:
     if "§" not in raw or "U.S.C." not in raw:
-        raise ValueError("invalid citation format")
+        raise ValueError("Citation must contain '§' and 'U.S.C.' (e.g., '29 U.S.C. § 207')")
     left, right = raw.split("§", 1)
     left = left.strip()
     right = right.strip()

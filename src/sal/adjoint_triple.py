@@ -32,12 +32,12 @@ class Functor(ABC):
 
     @abstractmethod
     def apply(self, state: Any) -> Any:
-        raise NotImplementedError
+        ...
 
     @property
     @abstractmethod
     def name(self) -> str:
-        raise NotImplementedError
+        ...
 
 
 class LeftAdjoint(Functor):
@@ -172,7 +172,7 @@ def has_adjunction(domain_schema: dict[str, Any], triple: AdjointTriple) -> Adju
     unit_holds, unit_evidence = triple.check_unit(domain_schema)
     combined = ProofObject(
         rule="AdjunctionVerification",
-        premises=[counit_evidence, unit_evidence],
+        premises=[counit_evidence.conclusion, unit_evidence.conclusion],
         conclusion=f"has_adjunction({domain_schema.get('id', 'unknown')}) = {counit_holds and unit_holds}",
     )
     claim = YeshuaClaim(

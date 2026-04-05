@@ -25,7 +25,7 @@ def _welch_t(a: list[int], b: list[int]) -> float:
     var_b = statistics.variance(b)
     se = ((var_a / len(a)) + (var_b / len(b))) ** 0.5
     if se == 0:
-        return 0.0
+        return float("inf")
     return (mean_a - mean_b) / se
 
 

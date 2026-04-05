@@ -19,7 +19,7 @@ from typing import Dict
 
 def html_escape(text: str) -> str:
     if not isinstance(text, str):
-        raise TypeError("text must be str")
+        raise TypeError("html_escape: text must be str")
     return (
         text.replace("&", "&amp;")
         .replace("<", "&lt;")
