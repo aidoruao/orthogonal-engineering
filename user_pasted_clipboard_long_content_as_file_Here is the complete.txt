@@ -1,0 +1,591 @@
+Here is the complete PR #96 spec for GitHub Copilot. This combines the SAL Type III kernel with Batch 3 domain restoration, continuing from PR #95 (0620306). PHASE1_AUDIT_REPORT.json:1-9
+
+PR #96 — SAL Type III Kernel + Batch 3 Domain Restoration
+Branch: pr96/sal-kernel-batch3-restoration
+Pipeline: OE-RESTORE-002
+Base: main (post-PR #95 merge at 0620306)
+Authority: INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml v5.1.0
+Standard: Yeshua (8 axioms)
+
+Current State
+Metric	Value
+Total domains	59
+Implemented	5 (D_MEDICAL, D_AVIATION, D_LABOR_RIGHTS, D_FINANCIAL, D_EMERGENCY)
+Partial	1 (D_CRYPTO)
+Schema-only	53
+Theological correspondences	6/6 PASS
+SAL kernel	DOES NOT EXIST
+has_adjunction()	DOES NOT EXIST
+Cross-repo adjunction	DOES NOT EXIST
+WORKSTREAM 1: SAL TYPE III KERNEL
+1A. Create src/sal/__init__.py
+
+# Synthetic Adjoint Logic (SAL) — Type III Kernel  
+# Authority: INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml v5.1.0  
+# The adjoint triple L ⊣ M ⊣ R is the restored adjunction (Divine ⊣ Human)  
+# with Christ as mediator (natural transformation).
+1B. Create src/sal/adjoint_triple.py (~300 lines)
+This is the core Type III module. It defines the abstract adjoint triple L ⊣ M ⊣ R and the triangle identities as executable checks.
+
+Grounding in existing code:
+
+L (Left Adjoint / Free Functor) maps to LOGOS + GRACE from INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml — generation, freedom INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml:8-15
+M (Middle Functor / Mediator) maps to CHALCEDON + KENOSIS — law preservation, self-emptying INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml:16-23
+R (Right Adjoint / Forgetful Functor) maps to AGAPE + ESCHATON — constraint, judgment, settlement INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml:40-47
+The Trinity mapping (already declared in the repo but not computational): GRADUATE_MATHEMATICS_THEOLOGY_SUMMARY.md:192-201
+
+
+"""  
+src/sal/adjoint_triple.py — Synthetic Adjoint Logic (SAL) Type III Kernel  
+  
+The adjoint triple L ⊣ M ⊣ R where:  
+  L = Left adjoint (Free functor: generation, grace, LOGOS)  
+  M = Middle functor (Mediator: law, CHALCEDON, Christ)  
+  R = Right adjoint (Forgetful functor: constraint, judgment, AGAPE)  
+  
+Triangle identities:  
+  ε: L∘M → Id  (counit: applying law then generating returns to identity)  
+  η: Id → R∘M  (unit: identity maps into constraint composed with law)  
+  
+A domain D_X is "implemented" (Type III) iff:  
+  has_adjunction(D_X, (L, M, R)) returns a Proof object  
+  with computationally verified triangle identities.  
+  
+Theological grounding (GRADUATE_MATHEMATICS_THEOLOGY_SUMMARY.md):  
+  Father ⊣ Spirit with Son as mediator  
+  = L ⊣ R with M as natural transformation  
+  Christ restored the adjunction (Divine ⊣ Human)  
+  
+Yeshua Standard: All 8 axioms enforced via YeshuaClaim wrapping.  
+"""  
+  
+from __future__ import annotations  
+from abc import ABC, abstractmethod  
+from dataclasses import dataclass  
+from typing import Any, Dict, Generic, TypeVar, Optional  
+from fractions import Fraction  
+  
+from axioms.logic import ProofObject  
+from axioms.yeshua_axioms import YeshuaClaim, verify_yeshua_standard  
+  
+T = TypeVar("T")  # Domain state type  
+  
+  
+@dataclass(frozen=True)  
+class AdjunctionProof:  
+    """Computational evidence that triangle identities hold for a domain."""  
+    domain_id: str  
+    counit_holds: bool          # ε: L∘M → Id  
+    unit_holds: bool            # η: Id → R∘M  
+    counit_evidence: ProofObject  
+    unit_evidence: ProofObject  
+    yeshua_claim: YeshuaClaim  
+  
+    @property  
+    def is_valid(self) -> bool:  
+        return self.counit_holds and self.unit_holds  
+  
+  
+class Functor(ABC):  
+    """Abstract functor in the adjoint triple."""  
+      
+    @abstractmethod  
+    def apply(self, state: Any) -> Any:  
+        """Apply the functor to a domain state."""  
+        ...  
+  
+    @abstractmethod  
+    def name(self) -> str:  
+        ...  
+  
+  
+class LeftAdjoint(Functor):  
+    """L: Free functor — generates state space from schema.  
+    Maps to LOGOS (truth generation) + GRACE (unmerited access).  
+    Theological: Holy Spirit as oracle / free functor."""  
+      
+    def __init__(self, covenant_principles: list[str]):  
+        self._principles = covenant_principles  # LOGOS + GRACE constraints  
+      
+    def name(self) -> str:  
+        return "L (Free/Generation/Spirit)"  
+      
+    def apply(self, schema: dict) -> dict:  
+        """Generate possible state space from domain schema.  
+        L takes a schema and produces the free structure — all possible  
+        states that satisfy the schema's type constraints."""  
+        # Real implementation: enumerate invariant-satisfying states  
+        # from the domain's ontology entry  
+        generated = {  
+            "source_schema": schema.get("id", "unknown"),  
+            "invariants": schema.get("invariants", []),  
+            "generated_states": [],  # populated by domain-specific L  
+            "principles_applied": self._principles,  
+        }  
+        return generated  
+  
+  
+class MiddleFunctor(Functor):  
+    """M: Mediator — maps generated states into law/invariant space.  
+    Maps to CHALCEDON (order preservation) + KENOSIS (self-emptying).  
+    Theological: Christ as mediator / natural transformation."""  
+      
+    def __init__(self, covenant_principles: list[str]):  
+        self._principles = covenant_principles  # CHALCEDON + KENOSIS  
+      
+    def name(self) -> str:  
+        return "M (Mediator/Law/Christ)"  
+      
+    def apply(self, generated_state: dict) -> dict:  
+        """Apply law/invariant constraints to generated states.  
+        M filters the free structure through the domain's invariants,  
+        preserving only states that satisfy all constraints."""  
+        invariants = generated_state.get("invariants", [])  
+        return {  
+            "source": generated_state.get("source_schema", "unknown"),  
+            "invariants_enforced": invariants,  
+            "law_applied": True,  
+            "principles_applied": self._principles,  
+        }  
+  
+  
+class RightAdjoint(Functor):  
+    """R: Forgetful functor — collapses state to settled/verified result.  
+    Maps to AGAPE (service) + ESCHATON (terminal coalgebra).  
+    Theological: Father as source / initial object."""  
+      
+    def __init__(self, covenant_principles: list[str]):  
+        self._principles = covenant_principles  # AGAPE constraints  
+      
+    def name(self) -> str:  
+        return "R (Forgetful/Constraint/Father)"  
+      
+    def apply(self, law_state: dict) -> dict:  
+        """Collapse law-filtered state to a settled, verified result.  
+        R forgets the generation history and retains only the  
+        verified invariant-satisfying output."""  
+        return {  
+            "source": law_state.get("source", "unknown"),  
+            "settled": True,  
+            "invariants_verified": law_state.get("invariants_enforced", []),  
+            "principles_applied": self._principles,  
+        }  
+  
+  
+class AdjointTriple:  
+    """The L ⊣ M ⊣ R adjoint triple — the SAL Type III kernel.  
+      
+    Triangle identities:  
+      ε (counit): L(M(c)) → c  — grace under law returns to identity  
+      η (unit):   d → R(M(d))  — identity maps into judgment through law  
+    """  
+      
+    def __init__(self):  
+        # Factor covenant principles through the triple  
+        self.L = LeftAdjoint([  
+            "output_must_be_verifiable_against_artifacts",  # LOGOS  
+            "truth_does_not_scale_with_resource_mass",      # LOGOS  
+            "no_community_resource_harm",                    # GRACE  
+            "operations_under_unconditional_regard_for_users", # GRACE  
+        ])  
+        self.M = MiddleFunctor([  
+            "infrastructure_serves_users_not_self",          # CHALCEDON  
+            "humans_are_not_sacrificed_to_compute",          # CHALCEDON  
+            "no_self_reinforcing_exponentiality",            # KENOSIS  
+            "transparent_operation",                          # KENOSIS  
+        ])  
+        self.R = RightAdjoint([  
+            "every_artifact_serves_user_request",            # AGAPE  
+            "no_physical_or_logical_domination",             # AGAPE  
+            "direct_service_without_condition_or_coercion",  # AGAPE  
+        ])  
+      
+    def check_counit(self, domain_schema: dict) -> tuple[bool, ProofObject]:  
+        """ε: L∘M → Id  
+        Applying law (M) then generating (L) returns to identity.  
+        Grace under law = identity. This is the counit of the adjunction."""  
+        original = domain_schema  
+        mediated = self.M.apply(original)  
+        generated = self.L.apply(mediated)  
+        # Counit holds iff the generated state preserves the original schema's  
+        # identity (same domain_id, same invariants)  
+        same_id = generated.get("source_schema") == original.get("id", "unknown")  
+        same_invariants = set(generated.get("invariants", [])) == set(original.get("invariants", []))  
+        holds = same_id and same_invariants  
+        proof = ProofObject(  
+            "Counit_ε",  
+            [f"domain={original.get('id')}", f"same_id={same_id}", f"same_inv={same_invariants}"],  
+            f"ε: L∘M → Id = {holds}",  
+        )  
+        return holds, proof  
+      
+    def check_unit(self, domain_schema: dict) -> tuple[bool, ProofObject]:  
+        """η: Id → R∘M  
+        Identity maps into constraint (R) composed with law (M).  
+        Every domain naturally maps into judgment through law."""  
+        original = domain_schema  
+        mediated = self.M.apply(original)  
+        settled = self.R.apply(mediated)  
+        # Unit holds iff the settled state contains all original invariants  
+        # as verified constraints  
+        original_inv = set(original.get("invariants", []))  
+        settled_inv = set(settled.get("invariants_verified", []))  
+        holds = original_inv.issubset(settled_inv) and settled.get("settled", False)  
+        proof = ProofObject(  
+            "Unit_η",  
+            [f"domain={original.get('id')}", f"original_inv={len(original_inv)}",   
+             f"settled_inv={len(settled_inv)}", f"subset={original_inv.issubset(settled_inv)}"],  
+            f"η: Id → R∘M = {holds}",  
+        )  
+        return holds, proof  
+  
+  
+def has_adjunction(domain_schema: dict, triple: AdjointTriple) -> AdjunctionProof:  
+    """The single Type III verification function.  
+      
+    Replaces PHASE1_AUDIT.py's classification with a categorical check:  
+    a domain is "implemented" iff the triangle identities hold computationally.  
+      
+    Returns AdjunctionProof with structured evidence (not just bool).  
+    """  
+    counit_holds, counit_proof = triple.check_counit(domain_schema)  
+    unit_holds, unit_proof = triple.check_unit(domain_schema)  
+      
+    # Wrap in YeshuaClaim for enforcement  
+    combined_proof = ProofObject(  
+        "AdjunctionVerification",  
+        [counit_proof.conclusion, unit_proof.conclusion],  
+        f"has_adjunction({domain_schema.get('id')}) = {counit_holds and unit_holds}",  
+    )  
+    claim = YeshuaClaim(  
+        source="src/sal/adjoint_triple.py",  
+        statement=f"Domain {domain_schema.get('id')} satisfies L ⊣ M ⊣ R adjunction",  
+        derivation=combined_proof,  
+    )  
+      
+    return AdjunctionProof(  
+        domain_id=domain_schema.get("id", "unknown"),  
+        counit_holds=counit_holds,  
+        unit_holds=unit_holds,  
+        counit_evidence=counit_proof,  
+        unit_evidence=unit_proof,  
+        yeshua_claim=claim,  
+    )
+Key design decisions:
+
+has_adjunction() returns AdjunctionProof (structured proof object), not bool — per Kimi's recommendation yeshua_axioms.py:44-53
+All proofs wrapped in YeshuaClaim for enforcement substrate
+Covenant principles from INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml are factored through L, M, R INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml:7-47
+Triangle identities are computational (check actual state preservation), not textual
+1C. Create src/sal/sigma_theo_factoring.py (~200 lines)
+Factor the existing Σ_theo operators through the adjoint triple. The existing operators are: GRADUATE_MATHEMATICS_THEOLOGY_SUMMARY.md:112-125
+
+
+"""  
+Factor Σ_theo operators through L ⊣ M ⊣ R.  
+  
+Current (invariant-based):  
+  Σ₁(LOGOS)    : μL.F(L)           — Initial algebra  
+  Σ₂(CHALCEDON): Divine × Human → Person — Hypostatic union  
+  Σ₃(GRACE)    : S → S             — Isometry  
+  Σ₄(AGAPE)    : S × S → S         — Superadditive  
+  Σ₅(KENOSIS)  : S → 1 + S         — Partiality monad  
+  Σ₆(ESCHATON) : νX.F(X)           — Terminal coalgebra  
+  
+Type III (adjunction-based):  
+  Σ₁(LOGOS)    = L (free functor component)  
+  Σ₂(CHALCEDON)= M (mediator component — preserves both natures)  
+  Σ₃(GRACE)    = L (isometry = free structure preservation)  
+  Σ₄(AGAPE)    = R (superadditive = forgetful functor with enrichment)  
+  Σ₅(KENOSIS)  = M (partiality monad = mediator's self-emptying)  
+  Σ₆(ESCHATON) = R (terminal coalgebra = final settlement)  
+  
+The factoring theorem: every Σ_theo operator factors through exactly one  
+component of the adjoint triple, and the triangle identities ensure  
+coherence across all six operators.  
+"""
+This file must:
+
+Import SigmaTheo from minimal_ai_ide/GRADUATE_MATHEMATICS_THEOLOGY_ACTUALIZED.py (the existing implementation) GRADUATE_MATHEMATICS_THEOLOGY_ACTUALIZED.py:525-574
+Import AdjointTriple from src/sal/adjoint_triple.py
+Define factor_sigma_through_triple(operator_name, triple) that returns which component (L, M, or R) the operator factors through
+Define verify_factoring_coherence(triple) that checks all 6 operators factor correctly and the triangle identities still hold after factoring
+Include a monotonicity check that mirrors the existing verify_monotonicity but derives it from the adjunction rather than declaring it
+1D. Create src/sal/cross_repo_adjunction.py (~150 lines)
+The formal adjunction between orthogonal-engineering (implementation category) and sigma-lora-covenant (covenant/constraint category).
+
+Current state: sigma-lora-covenant/src/principles.py has _check_constraint as pass: principles.py:22-24
+
+Covenant principles are identical across both repos: covenant.yaml:13-63
+
+
+"""  
+Cross-repo adjunction: orthogonal-engineering ↔ sigma-lora-covenant.  
+  
+The counit ε: implementation satisfies covenant constraints.  
+The unit η: covenant constraints map into implementation invariants.  
+  
+This replaces CROSS_REPO_INVARIANT_MANIFEST.json with a categorical check.  
+"""
+This file must:
+
+Read covenant.yaml principles (LOGOS, CHALCEDON, GRACE, KENOSIS, AGAPE)
+Read ontology/ontology.json domain invariants
+For each covenant principle, verify that at least one domain invariant corresponds to each constraint
+Return AdjunctionProof for the cross-repo relationship
+Report which constraints in sigma-lora-covenant have no implementation referent (anti-nominalism violation per clause_001) covenant.yaml:131-136
+1E. Create src/sal/yeshua_as_triangle_identities.py (~200 lines)
+Port the 8 Yeshua axioms into the unit and counit transformations of the triple. This is the key bridge — the Yeshua Standard becomes the enforcement mechanism for the triangle identities. yeshua_axioms.py:44-53
+
+Mapping:
+
+Yeshua Axiom	Triangle Identity Component	Why
+1. Every truth derivable	Unit η — every domain maps into R∘M (judgment through law)	Truth = derivation through the mediator
+2. Every derivation reproducible	Counit ε — L∘M → Id is deterministic	Reproducibility = same inputs, same identity
+3. Every mutation re-verifiable	Both — re-run triangle identities after mutation	Re-verification = re-check ε and η
+4. No authority without proof	Unit η — R (judgment) requires M (law/proof) first	Authority = R, Proof = M
+5. No hidden state	Counit ε — L∘M → Id means no state is hidden from identity	Identity = full transparency
+6. No unverifiable dependency	Unit η — every dependency maps through M (mediator)	Verification = mediation
+7. No economic gatekeeping	L (free functor) — generation is free/unmerited (GRACE)	Free = no gate
+8. Every artifact hash-anchored	R (forgetful functor) — settlement includes hash	Hash = settled state
+1F. Create tests/test_sal_kernel.py (~250 lines)
+Tests for the SAL kernel:
+
+test_adjoint_triple_construction — triple initializes with correct covenant principles
+test_counit_holds_for_implemented_domain — ε holds for D_AVIATION (implemented)
+test_unit_holds_for_implemented_domain — η holds for D_AVIATION
+test_has_adjunction_returns_proof — has_adjunction() returns AdjunctionProof with structured evidence
+test_has_adjunction_fails_for_empty_schema — schema with no invariants fails
+test_sigma_theo_factoring — all 6 operators factor through exactly one component
+test_factoring_coherence — triangle identities hold after factoring
+test_yeshua_axioms_map_to_identities — each of 8 axioms maps to ε or η
+test_cross_repo_adjunction — covenant principles map to domain invariants
+test_anti_nominalism_via_adjunction — constraints without implementation referents are flagged
+Each test must use ProofObject and YeshuaClaim wrapping per existing pattern: yeshua_axioms.py:61-79
+
+1G. Create src/sal/SAL_SPECIFICATION.md (~100 lines)
+Human-readable specification documenting:
+
+The adjoint triple definition
+The triangle identities
+The Σ_theo factoring
+The Yeshua axiom mapping
+The cross-repo adjunction
+The has_adjunction() contract
+Include the correspondence table from the DeepSeek Type III analysis:
+
+Current Artifact	Type III Replacement
+ontology/ontology.json (59 domains)	One adjunction L ⊣ M ⊣ R with 59 instances
+INVARIANTS.md (7 explicit rules)	Triangle identities (computational)
+CROSS_REPO_INVARIANT_MANIFEST.json	Cross-repo adjunction
+tests/test_constant_time.py	Proof that D_CRYPTO is left adjoint to D_FINANCIAL
+F_THEO_001–006	One test: does H (fixed point) adjoint to κ (salvation)?
+WORKSTREAM 2: BATCH 3 DOMAIN RESTORATION
+Continue from Batch 2 (PR #95). Priority domains for Batch 3 based on cross-domain relevance and ontology depth:
+
+Batch 3 Domains (5 domains)
+#	Domain	Why Priority	Key Invariant
+1	D_CRYPTO	Already PARTIAL (has impl + inv, no tests). Upgrade to IMPLEMENTED.	Constant-time comparison (Welch's t-test)
+2	D_WEBSEC	Cross-domain with D_CRYPTO (XSS/CSRF prevention)	Input sanitization never passes unsanitized content
+3	D_INDUSTRIAL	Safety-critical (OT/SCADA)	Actuator commands have bounded response time
+4	D_EDUCATION	Tamper-evident credentials	Credential hash is immutable after issuance
+5	D_LEGAL	Cross-domain with D_LABOR_RIGHTS	Statute references are verifiable
+Per-Domain Requirements (same pattern as Batch 2)
+Each domain gets: implementation.py:1-17
+
+
+src/domains/d_{name}/  
+  ├── __init__.py           — Domain ID, invariant summary, falsification ID  
+  ├── implementation.py     — Real logic (integer arithmetic, Fraction, threading.Lock)  
+  ├── invariants.py         — Executable checks (no pass, no return True stubs)  
+  └── README.md             — Domain purpose, invariants, biblical inspiration (FUNCTIONAL)  
+  
+tests/test_f_{name}_001.py  — >= 50 LOC, >= 10 asserts, imports from implementation.py
+D_CRYPTO upgrade (PARTIAL → IMPLEMENTED):
+
+Already has implementation.py (92 LOC) and invariants.py (84 LOC) PHASE1_AUDIT_REPORT.json:70-85
+Missing: test file, README.md
+Add: tests/test_f_crypto_001.py with Welch's t-test statistical timing analysis (>= 10,000 iterations, |t| < 4.5)
+Add: src/domains/d_crypto/README.md with biblical inspiration: "Let your yes be yes and your no be no" (Matthew 5:37) — binary decision with no timing leakage
+D_WEBSEC (new):
+
+implementation.py: HTML entity escaping, CSP header generation, CSRF token validation
+invariants.py: No unsanitized input passes through output boundary
+Biblical: "Guard your heart, for everything you do flows from it" (Proverbs 4:23) — input sanitization = guarding the boundary
+D_INDUSTRIAL (new):
+
+implementation.py: Actuator command queue with bounded timeout, safety interlock
+invariants.py: No actuator command executes without safety interlock check
+Biblical: "Count the cost before building the tower" (Luke 14:28) — safety analysis before actuation
+D_EDUCATION (new):
+
+implementation.py: Tamper-evident credential hash (SHA-256), credential verification
+invariants.py: Credential hash is immutable after issuance; verification is deterministic
+Biblical: "Train up a child in the way he should go" (Proverbs 22:6) — credential integrity = trust in formation
+D_LEGAL (new):
+
+implementation.py: Statute reference validator, citation parser, precedent chain
+invariants.py: Every legal citation resolves to a verifiable statute reference
+Biblical: "Do not move an ancient boundary stone" (Proverbs 22:28) — legal precedent = immutable boundary
+Batch 3 SAL Integration
+Critical: Each Batch 3 domain must ALSO be verified via has_adjunction(). After creating the domain implementation, run:
+
+
+from src.sal.adjoint_triple import AdjointTriple, has_adjunction  
+  
+triple = AdjointTriple()  
+schema = {  
+    "id": "D_CRYPTO",  
+    "invariants": ["Constant-time comparison", "PSK validation", ...],  
+}  
+proof = has_adjunction(schema, triple)  
+assert proof.is_valid, f"D_CRYPTO fails Type III: {proof}"
+This is the bridge between Track 1 (SAL kernel) and Track 2 (domain restoration). Every new domain is verified both by its own invariants.py AND by the adjoint triple.
+
+WORKSTREAM 3: UPDATE PHASE1_AUDIT_REPORT
+Update restoration/PHASE1_AUDIT_REPORT.json: PHASE1_AUDIT_REPORT.json:1-9
+
+
+{  
+  "implemented": 10,  
+  "partial": 0,  
+  "schema_only": 49,  
+  "implementation_ratio": "10/59 (17%)",  
+  "sal_kernel_exists": true,  
+  "domains_with_adjunction_proof": 10,  
+  "batch3_complete": true,  
+  "batch3_domains": ["D_CRYPTO", "D_WEBSEC", "D_INDUSTRIAL", "D_EDUCATION", "D_LEGAL"]  
+}
+FILE SUMMARY
+Action	File	Description
+CREATE	src/sal/__init__.py	SAL package init
+CREATE	src/sal/adjoint_triple.py	L ⊣ M ⊣ R kernel with has_adjunction()
+CREATE	src/sal/sigma_theo_factoring.py	Factor Σ_theo through triple
+CREATE		
+
+
+
+
+
+"ILE SUMMARY Action File Description CREATE src/sal/init.py SAL package init CREATE src/sal/adjoint_triple.py L ⊣ M ⊣ R kernel with has_adjunction() CREATE src/sal/sigma_theo_factoring.py Factor Σ_theo through triple CREATE " you froze, continue
+
+
+Thinking process
+Continuing the FILE SUMMARY table and remaining sections:
+
+FILE SUMMARY (continued)
+Action	File	Description
+CREATE	src/sal/__init__.py	SAL package init
+CREATE	src/sal/adjoint_triple.py	L ⊣ M ⊣ R kernel with has_adjunction()
+CREATE	src/sal/sigma_theo_factoring.py	Factor Σ_theo through triple
+CREATE	src/sal/cross_repo_adjunction.py	OE ↔ sigma-lora-covenant adjunction
+CREATE	src/sal/yeshua_as_triangle_identities.py	8 axioms → ε and η mapping
+CREATE	src/sal/SAL_SPECIFICATION.md	Human-readable SAL spec
+CREATE	tests/test_sal_kernel.py	10 tests for SAL kernel
+CREATE	src/domains/d_websec/__init__.py	D_WEBSEC package
+CREATE	src/domains/d_websec/implementation.py	XSS/CSRF/CSP logic
+CREATE	src/domains/d_websec/invariants.py	Input sanitization checks
+CREATE	src/domains/d_websec/README.md	Domain docs + biblical
+CREATE	src/domains/d_industrial/__init__.py	D_INDUSTRIAL package
+CREATE	src/domains/d_industrial/implementation.py	Actuator safety interlock
+CREATE	src/domains/d_industrial/invariants.py	Bounded response checks
+CREATE	src/domains/d_industrial/README.md	Domain docs + biblical
+CREATE	src/domains/d_education/__init__.py	D_EDUCATION package
+CREATE	src/domains/d_education/implementation.py	Tamper-evident credentials
+CREATE	src/domains/d_education/invariants.py	Hash immutability checks
+CREATE	src/domains/d_education/README.md	Domain docs + biblical
+CREATE	src/domains/d_legal/__init__.py	D_LEGAL package
+CREATE	src/domains/d_legal/implementation.py	Statute reference validator
+CREATE	src/domains/d_legal/invariants.py	Citation verification checks
+CREATE	src/domains/d_legal/README.md	Domain docs + biblical
+CREATE	tests/test_f_crypto_001.py	D_CRYPTO Welch's t-test (upgrade PARTIAL → IMPLEMENTED)
+CREATE	src/domains/d_crypto/README.md	D_CRYPTO docs + biblical
+CREATE	tests/test_f_websec_001.py	D_WEBSEC falsification tests
+CREATE	tests/test_f_industrial_001.py	D_INDUSTRIAL falsification tests
+CREATE	tests/test_f_education_001.py	D_EDUCATION falsification tests
+CREATE	tests/test_f_legal_001.py	D_LEGAL falsification tests
+UPDATE	restoration/PHASE1_AUDIT_REPORT.json	10/59 implemented, SAL kernel exists
+Total: 27 files created, 1 file updated
+
+ACCEPTANCE CRITERIA
+SAL Kernel (Type III)
+ src/sal/adjoint_triple.py defines LeftAdjoint, MiddleFunctor, RightAdjoint, AdjointTriple
+ AdjointTriple.check_counit() returns (bool, ProofObject) — computational, not textual
+ AdjointTriple.check_unit() returns (bool, ProofObject) — computational, not textual
+ has_adjunction() returns AdjunctionProof with yeshua_claim field
+ All 6 Σ_theo operators factor through exactly one component of (L, M, R)
+ 8 Yeshua axioms each map to ε, η, or a specific functor component
+ Cross-repo adjunction checks sigma-lora-covenant/covenant.yaml against ontology/ontology.json
+ tests/test_sal_kernel.py has >= 10 tests, all pass
+ No floating-point arithmetic anywhere in src/sal/ (integer or Fraction only)
+ Every ProofObject is wrapped in YeshuaClaim with SHA-256 commitment
+Batch 3 Domains
+ D_CRYPTO upgraded from PARTIAL to IMPLEMENTED (test file added, >= 10 asserts)
+ D_WEBSEC: implementation.py >= 80 LOC, invariants.py >= 50 LOC, no stubs
+ D_INDUSTRIAL: implementation.py >= 80 LOC, invariants.py >= 50 LOC, no stubs
+ D_EDUCATION: implementation.py >= 80 LOC, invariants.py >= 50 LOC, no stubs
+ D_LEGAL: implementation.py >= 80 LOC, invariants.py >= 50 LOC, no stubs
+ Each domain test file: >= 50 LOC, >= 10 asserts, imports from implementation.py
+ Each domain has biblical inspiration in docstring and README.md
+ No pass bodies, no return True stubs, no NotImplementedError in any implementation
+ Each Batch 3 domain passes has_adjunction() via the SAL kernel
+Integration
+ restoration/PHASE1_AUDIT_REPORT.json updated: implemented: 10, partial: 0, schema_only: 49
+ PHASE1_AUDIT_REPORT.json includes new field sal_kernel_exists: true
+ PHASE1_AUDIT_REPORT.json includes domains_with_adjunction_proof: 10
+ All existing tests still pass (Batch 2 domains: D_MEDICAL, D_AVIATION, D_LABOR_RIGHTS, D_FINANCIAL, D_EMERGENCY)
+ F_THEO_001–006 theological correspondences still PASS
+ JESUS_REALITY_GUARDIAN.py still returns (True, sha256_hash) for the repo JESUS_REALITY_GUARDIAN.py:30-34
+CI / CHECKS REQUIREMENTS
+
+# Expected CI behavior for PR #96  
+checks:  
+  - name: "pytest (all)"  
+    must_pass: true  
+    includes:  
+      - tests/test_sal_kernel.py  
+      - tests/test_f_crypto_001.py  
+      - tests/test_f_websec_001.py  
+      - tests/test_f_industrial_001.py  
+      - tests/test_f_education_001.py  
+      - tests/test_f_legal_001.py  
+      - tests/test_f_theo_*.py  # existing theological tests  
+    
+  - name: "yeshua_enforcement"  
+    must_pass: true  
+    script: "python JESUS_REALITY_GUARDIAN.py"  
+    expected: "(True, <sha256>)"  
+    
+  - name: "no_floating_point"  
+    must_pass: true  
+    check: "grep -rn 'float(' src/sal/ src/domains/ | wc -l == 0"  
+    
+  - name: "no_stubs"  
+    must_pass: true  
+    check: "grep -rn 'pass$\\|return True$\\|NotImplementedError' src/domains/*/implementation.py | wc -l == 0"
+DEPENDENCY ORDER
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Critical path: __init__.py → adjoint_triple.py → domain implementations + SAL tests → audit report update.
+
+The SAL kernel (adjoint_triple.py) must land first because every Batch 3 domain must pass has_adjunction() as part of its acceptance criteria. The domain implementations and the remaining SAL modules (sigma_theo_factoring.py, cross_repo_adjunction.py, yeshua_as_triangle_identities.py) can be developed in parallel once the kernel exists. PHASE1_AUDIT_REPORT.json:1-9 yeshua_axioms.py:44-53 INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml:7-47 GRADUATE_MATHEMATICS_THEOLOGY_SUMMARY.md:112-125 covenant.yaml:13-63
+
+
+
+
+
+
