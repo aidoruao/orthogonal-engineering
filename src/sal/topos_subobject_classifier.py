@@ -69,7 +69,7 @@ class SheafContext:
         covering_families = self.covers.get(obj, [])
         if not covering_families:
             # Trivial topology: only the maximal sieve covers.
-            return Fraction(1) if sieve >= self.objects else Fraction(0)
+            return Fraction(1) if sieve == self.objects else Fraction(0)
         for fam in covering_families:
             if fam <= sieve:
                 return Fraction(1)

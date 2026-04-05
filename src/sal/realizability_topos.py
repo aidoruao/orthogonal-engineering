@@ -143,7 +143,7 @@ class PartialEquivalenceRelation:
     related_pairs: Tuple[Tuple[str, str], ...]
 
     def is_defined(self, element: str) -> bool:
-        return any(a == element and a == b for a, b in self.related_pairs)
+        return (element, element) in self.related_pairs
 
     def are_related(self, a: str, b: str) -> bool:
         return (a, b) in self.related_pairs or (b, a) in self.related_pairs
