@@ -1,0 +1,27 @@
+{
+  "manifest_id": "CROSS_REPO_INVARIANT_MANIFEST",
+  "created": "2026-04-05",
+  "spec": "RESTORATION-POLYMATHIC-001 / PATCH 1",
+  "description": "Tracks D_CRYPTO and other invariants across repos to prevent drift.",
+  "invariants": [
+    {
+      "invariant_id": "CRYPTO_INV_001",
+      "description": "All secret-dependent operations are constant-time",
+      "source_repo": "aidoruao/orthogonal-engineering",
+      "source_file": "ontology/ontology.json",
+      "source_domain": "D_CRYPTO",
+      "target_repo": "aidoruao/sigma-lora-covenant",
+      "target_file": "covenant.yaml",
+      "target_section": "infrastructure.crypto_invariants.constant_time",
+      "status": "ABSENT",
+      "enforcement": "validation/test_constant_time.py",
+      "note": "ABSENT until PATCH 1 is applied to sigma-lora-covenant. Target: PRESENT.",
+      "sync_date": null
+    }
+  ],
+  "status_legend": {
+    "PRESENT": "Invariant exists and is enforced in target repo",
+    "ABSENT": "Invariant is missing from target repo — PATCH 1 required",
+    "INCONSISTENT": "Invariant text differs between source and target"
+  }
+}
