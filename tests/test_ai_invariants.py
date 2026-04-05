@@ -9,7 +9,7 @@ from benchmarks.ai_invariant_tests import run_ai_invariant_suite
 
 def test_ai_invariants_suite():
     result = run_ai_invariant_suite()
-    assert result["total"] == 110
+    assert result["total"] == 130
     assert result["all_valid"]
     assert len(result["merkle_root"]) == 64
     assert all("model_targeting" in entry for entry in result["results"])

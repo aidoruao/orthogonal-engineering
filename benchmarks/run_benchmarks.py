@@ -41,7 +41,7 @@ except Exception as exc:  # pragma: no cover - fallback for constrained env
 from benchmarks.ai_invariant_tests import run_ai_invariant_suite
 from scripts.benchmark_pipeline import run_pipeline
 
-REQUIRED_INVARIANT_TOTAL = 110
+REQUIRED_INVARIANT_TOTAL = 130
 
 # Minimum acceptable thresholds (0.0 – 1.0)
 THRESHOLDS = {
