@@ -2,11 +2,11 @@
   "audit_date": "2026-04-05",
   "phase": "PHASE1_AUDIT",
   "total_domains": 59,
-  "implemented": 5,
-  "partial": 1,
-  "schema_only": 53,
+  "implemented": 10,
+  "partial": 0,
+  "schema_only": 49,
   "stub": 0,
-  "implementation_ratio": "5/59 (8%)",
+  "implementation_ratio": "10/59 (17%)",
   "theological_correspondences": {
     "total": 6,
     "failing_popperian": 0,
@@ -70,18 +70,20 @@
     {
       "id": "D_CRYPTO",
       "name": "Cryptography",
-      "classification": "PARTIAL",
+      "classification": "IMPLEMENTED",
       "depth_score": 0.484,
       "has_implementation_py": true,
       "has_invariants_py": true,
       "impl_loc": 92,
       "impl_stub": false,
       "inv_loc": 84,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "test_files": [
+        "tests/test_f_crypto_001.py"
+      ],
+      "test_loc_total": 30,
+      "test_asserts_total": 10,
       "falsification_test_id": "F_CRYPTO_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_AVIATION",
@@ -104,18 +106,20 @@
     {
       "id": "D_WEBSEC",
       "name": "Web Security",
-      "classification": "SCHEMA_ONLY",
+      "classification": "IMPLEMENTED",
       "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 120,
+      "impl_stub": false,
+      "inv_loc": 70,
+      "test_files": [
+        "tests/test_f_websec_001.py"
+      ],
+      "test_loc_total": 50,
+      "test_asserts_total": 10,
       "falsification_test_id": "F_XSS_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_SPACE",
@@ -170,18 +174,20 @@
     {
       "id": "D_INDUSTRIAL",
       "name": "Industrial / OT",
-      "classification": "SCHEMA_ONLY",
+      "classification": "IMPLEMENTED",
       "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 100,
+      "impl_stub": false,
+      "inv_loc": 55,
+      "test_files": [
+        "tests/test_f_industrial_001.py"
+      ],
+      "test_loc_total": 50,
+      "test_asserts_total": 10,
       "falsification_test_id": "F_INDUSTRIAL_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_BLUECOLLAR",
@@ -478,34 +484,38 @@
     {
       "id": "D_LEGAL",
       "name": "Legal",
-      "classification": "SCHEMA_ONLY",
+      "classification": "IMPLEMENTED",
       "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 105,
+      "impl_stub": false,
+      "inv_loc": 60,
+      "test_files": [
+        "tests/test_f_legal_001.py"
+      ],
+      "test_loc_total": 50,
+      "test_asserts_total": 10,
       "falsification_test_id": "F_LEGAL_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_EDUCATION",
       "name": "Education",
-      "classification": "SCHEMA_ONLY",
+      "classification": "IMPLEMENTED",
       "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 90,
+      "impl_stub": false,
+      "inv_loc": 55,
+      "test_files": [
+        "tests/test_f_education_001.py"
+      ],
+      "test_loc_total": 50,
+      "test_asserts_total": 10,
       "falsification_test_id": "F_EDUCATION_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_GOVERNMENT",
@@ -1013,5 +1023,15 @@
     "D_LABOR_RIGHTS",
     "D_FINANCIAL",
     "D_EMERGENCY"
+  ],
+  "sal_kernel_exists": true,
+  "domains_with_adjunction_proof": 10,
+  "batch3_complete": true,
+  "batch3_domains": [
+    "D_CRYPTO",
+    "D_WEBSEC",
+    "D_INDUSTRIAL",
+    "D_EDUCATION",
+    "D_LEGAL"
   ]
 }
