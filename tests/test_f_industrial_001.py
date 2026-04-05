@@ -27,4 +27,5 @@ def test_industrial_interlock_and_timeout():
     assert result["command_id"] == "ok"
     assert result["executed"] is True
     assert result["interlock"] is True
-    assert result["elapsed_ms"] <= 25
+    assert result["elapsed_ns"] <= 25 * 1_000_000
+    assert result["elapsed_ms_den"] == 1_000_000

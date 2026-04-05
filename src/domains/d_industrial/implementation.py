@@ -17,6 +17,10 @@ import time
 from dataclasses import dataclass
 
 
+BOUNDED_WORK_ITERATIONS = 500
+NS_PER_MS = 1_000_000
+
+
 @dataclass(frozen=True)
 class ActuatorCommand:
     command_id: str
@@ -56,18 +60,24 @@ class IndustrialController:
         if not self.check_interlock(cmd):
             raise InterlockError(f"Interlock denied {cmd.command_id}")
 
-        t0 = time.perf_counter_ns()
+        t0_ns = time.perf_counter_ns()
         # Deterministic bounded work used to validate response-time envelope.
-        _ = sum(range(500))
-        elapsed_ms = (time.perf_counter_ns() - t0) / 1_000_000
-        if elapsed_ms > self.timeout_ms:
+        _ = sum(range(BOUNDED_WORK_ITERATIONS))
+        elapsed_ns = time.perf_counter_ns() - t0_ns
+        elapsed_ms_num = elapsed_ns
+        elapsed_ms_den = NS_PER_MS
+
+        timeout_ns = self.timeout_ms * NS_PER_MS
+        if elapsed_ns > timeout_ns:
             raise ResponseTimeoutError(
-                f"Command {cmd.command_id} exceeded timeout: {elapsed_ms}ms > {self.timeout_ms}ms"
+                f"Command {cmd.command_id} exceeded timeout: {elapsed_ns}ns > {timeout_ns}ns"
             )
         return {
             "command_id": cmd.command_id,
             "executed": True,
-            "elapsed_ms": elapsed_ms,
+            "elapsed_ns": elapsed_ns,
+            "elapsed_ms_num": elapsed_ms_num,
+            "elapsed_ms_den": elapsed_ms_den,
             "interlock": True,
         }
 
