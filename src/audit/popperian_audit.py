@@ -43,7 +43,7 @@ THEOLOGICAL_FALSIFICATION_IDS = {
 
 def _find_test_file_for_id(falsification_id: str) -> str | None:
     """Return path to test file implementing the given falsification ID, or None."""
-    pattern = falsification_id.lower().replace("_", "_")
+    pattern = falsification_id.lower()
     # Search tests/ for any file containing the ID string
     for test_file in sorted(TESTS_DIR.glob("*.py")):
         try:

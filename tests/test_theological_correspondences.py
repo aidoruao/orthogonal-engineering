@@ -39,7 +39,8 @@ class _ContractionMap:
 
     def iterate(self, x: list[float], tol: float = 1e-9) -> list[float]:
         """Iterate until consecutive step delta < tol (1e-9), or max 50_000 steps.
-        Using 1e-9 ensures |x_final - H|_∞ < 1e-6 for any contraction rate."""
+        Using 1e-9 ensures |x_final - H|_∞ < 1e-6 for any contraction rate.
+        Raises RuntimeError if max_steps is exhausted without convergence."""
         max_steps = 50_000
         for _ in range(max_steps):
             x_new = self.apply(x)
@@ -47,8 +48,11 @@ class _ContractionMap:
             delta = max(abs(a - b) for a, b in zip(x_new, x))
             x = x_new
             if delta < tol:
-                break
-        return x
+                return x
+        raise RuntimeError(
+            f"F_THEO_001: fixed-point iteration did not converge in {max_steps} steps. "
+            f"alpha={self.alpha}, lambda={self.lambda_:.6f}. Correspondence void."
+        )
 
 
 def test_f_theo_001_fixed_point_convergence():
@@ -95,8 +99,8 @@ def test_f_theo_001_fixed_point_convergence():
 # merit-based κ as "grace."
 # ---------------------------------------------------------------------------
 
-def _kappa_merit(x: list[float], theta: float) -> int:
-    """κ(x) = 1 iff ‖x‖₂ > θ. Merit-conditioned salvation decision."""
+def _merit_conditioned_kappa(x: list[float], theta: float) -> int:
+    """κ(x) = 1 iff ‖x‖₂ > θ. Merit-conditioned (NOT grace) salvation decision."""
     norm = math.sqrt(sum(xi ** 2 for xi in x))
     return 1 if norm > theta else 0
 
@@ -123,8 +127,8 @@ def test_f_theo_002_grace_input_dependence_is_documented():
     # x_rich has high merit (‖x‖ > θ) → κ = 1
     x_rich = [5.0, 5.0, 5.0]
 
-    kappa_poor = _kappa_merit(x_poor, theta)
-    kappa_rich = _kappa_merit(x_rich, theta)
+    kappa_poor = _merit_conditioned_kappa(x_poor, theta)
+    kappa_rich = _merit_conditioned_kappa(x_rich, theta)
 
     # Verify κ is input-dependent (merit-based) — this is the documented falsification
     assert kappa_poor != kappa_rich, (

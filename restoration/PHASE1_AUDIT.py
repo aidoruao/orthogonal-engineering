@@ -78,15 +78,21 @@ def _has_real_imports(path: Path) -> bool:
 
 
 def _stub_check(path: Path) -> bool:
-    """Return True if the file appears to be a stub (pass, return True, return 1.0)."""
+    """Return True if the file appears to be a stub.
+    A stub has stub patterns as the majority of its non-blank lines AND is short (<30 LOC).
+    This avoids false-positives on short-but-real implementations that use `return True`
+    for a legitimate boolean check."""
     try:
         content = path.read_text(encoding="utf-8", errors="ignore")
     except OSError:
         return True
-    stub_patterns = ["    pass", "return True", "return 1.0", "return None"]
-    stub_count = sum(content.count(p) for p in stub_patterns)
+    stub_patterns = ["    pass\n", "    return True\n", "    return 1.0\n", "    return None\n"]
+    stub_line_count = sum(content.count(p) for p in stub_patterns)
     loc = _count_real_lines(path)
-    return stub_count > 0 and loc < 30
+    if loc == 0:
+        return True
+    # Only classify as stub if stub patterns make up > 50% of real lines AND file is small
+    return stub_line_count > 0 and (stub_line_count / loc) > 0.5 and loc < 30
 
 
 def _find_test_files_for_domain(domain_id: str) -> list[Path]:

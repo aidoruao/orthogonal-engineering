@@ -36,6 +36,7 @@ def _welch_t_statistic(a: list, b: list) -> float:
     Welch's t-statistic: (mean_a - mean_b) / sqrt(var_a/n_a + var_b/n_b).
     When |t| < 4.5 we fail to reject H0 (constant-time hypothesis) — invariant holds.
     When |t| >= 4.5 we detect a timing leak — invariant violated.
+    Returns 0.0 if pooled_se is 0 (identical timing distributions — perfectly constant-time).
     """
     mean_a = statistics.mean(a)
     mean_b = statistics.mean(b)
@@ -45,6 +46,8 @@ def _welch_t_statistic(a: list, b: list) -> float:
     n_b = len(b)
     pooled_se = ((var_a / n_a) + (var_b / n_b)) ** 0.5
     if pooled_se == 0:
+        # Both distributions are perfectly identical (zero variance) — ideally constant-time.
+        # t-statistic is 0 by convention (no detectable difference).
         return 0.0
     return (mean_a - mean_b) / pooled_se
 

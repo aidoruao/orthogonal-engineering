@@ -79,11 +79,16 @@ def validate_psk(psk: bytes) -> bytes:
 
 
 def generate_psk() -> bytes:
-    """Generate a cryptographically random 32-byte PSK (never all-zero by design)."""
-    while True:
+    """Generate a cryptographically random 32-byte PSK (never all-zero by design).
+    Raises RuntimeError if RNG fails to produce a non-zero key in 1000 attempts."""
+    for _ in range(1000):
         key = secrets.token_bytes(32)
         if not constant_time_compare(key, _ZERO_PSK):
             return key
+    raise RuntimeError(
+        "generate_psk: RNG produced 1000 consecutive all-zero keys — "
+        "system random source appears compromised."
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -97,10 +102,12 @@ class CryptoError(Exception):
     """
 
     def __init__(self, message: str, *, secret_involved: bool = False):
-        if secret_involved and any(c not in "abcdefghijklmnopqrstuvwxyz _-." for c in message.lower()):
-            # Sanitise: strip anything that looks like hex or base64
+        if secret_involved:
             import re
+            # Redact any hex sequences (8+ hex chars) that might be key material
             message = re.sub(r"[0-9A-Fa-f]{8,}", "<redacted>", message)
+            # Redact base64-like sequences (12+ chars from base64 alphabet)
+            message = re.sub(r"[A-Za-z0-9+/]{12,}={0,2}", "<redacted>", message)
         super().__init__(message)
 
 

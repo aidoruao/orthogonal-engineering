@@ -17,7 +17,7 @@
 | ID | Name | Classification | Depth | Impl LOC | Test Files |
 |---|---|---|---|---|---|
 | D_GRAPHICS | Graphics & Shaders | SCHEMA_ONLY | 0.000 | 0 | 0 |
-| D_CRYPTO | Cryptography | PARTIAL | 0.472 | 86 | 0 |
+| D_CRYPTO | Cryptography | PARTIAL | 0.484 | 92 | 0 |
 | D_AVIATION | Aviation & ATC | SCHEMA_ONLY | 0.000 | 0 | 0 |
 | D_WEBSEC | Web Security | SCHEMA_ONLY | 0.000 | 0 | 0 |
 | D_SPACE | Space Systems | SCHEMA_ONLY | 0.000 | 0 | 0 |
