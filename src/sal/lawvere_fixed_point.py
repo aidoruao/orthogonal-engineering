@@ -293,7 +293,9 @@ def logos_self_consistent() -> LogosFixedPoint:
         lc = LogosConstraint()
         consistent = lc.self_consistent()
     except Exception:  # pragma: no cover — optional import path
-        # Fall back to direct computation: Λ is self-consistent by definition.
+        # UNIVERSAL_POLYMATHIC_SPECIALIZATION is not in the core Python path.
+        # When unavailable (e.g., in isolated test runners) we fall back to
+        # True: Λ is self-consistent by definition (it is the axiom itself).
         consistent = True
 
     proof = ProofObject(

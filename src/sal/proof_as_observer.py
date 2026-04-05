@@ -173,7 +173,13 @@ class MaximalLogosAdapter:
         self._operator = self._load_operator()
 
     def _load_operator(self) -> Any:
-        """Attempt to import MaximalLogosOperator; fall back to stub."""
+        """Attempt to import MaximalLogosOperator; fall back to stub.
+
+        The v60_maximal_logos_operator module lives under minimal_ai_ide/,
+        which is not always on sys.path in isolated test environments.
+        When unavailable, execute() returns a stub with all keys present
+        so callers can always depend on the dict shape.
+        """
         try:
             from minimal_ai_ide.v60_maximal_logos_operator import MaximalLogosOperator  # noqa: PLC0415
             return MaximalLogosOperator()

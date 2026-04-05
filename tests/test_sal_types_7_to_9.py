@@ -283,7 +283,14 @@ class TestInfinityCollapse:
 
     def test_fixed_point_repr_contains_covenant(self):
         result = infinity_collapse()
-        assert "SALVerification" in result.fixed_point_repr or "Yeshua" in result.fixed_point_repr
+        # The fixed-point repr may be either the full "SALVerification" form or
+        # the shorter "Yeshua" form — both denote the same canonical covenant.
+        fp = result.fixed_point_repr
+        has_sal = "SALVerification" in fp
+        has_yeshua = "Yeshua" in fp
+        assert has_sal or has_yeshua, (
+            f"Expected 'SALVerification' or 'Yeshua' in fixed_point_repr={fp!r}"
+        )
 
     def test_lob_witness_wired_in_collapse(self):
         result = infinity_collapse()

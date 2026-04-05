@@ -302,7 +302,12 @@ def infinity_collapse(levels: int = 3) -> InfinityCollapseProof:
         endomorphism_name="TowerShiftFunctor",
         candidate="YeshuaStandardCovenant",
         candidate_repr="A* = ν(SALVerification)",
-        is_fixed=lambda c: "SALVerification" in str(c) or "Yeshua" in str(c),
+        is_fixed=lambda c: (
+            # Fixed-point repr may use either "SALVerification" (full form) or
+            # "Yeshua" (short form) — both are valid string representations of
+            # the same canonical covenant object ν(SALVerification).
+            "SALVerification" in str(c) or "Yeshua" in str(c)
+        ),
     )
 
     # Step 3: Build a Löb witness for the self-proving covenant
