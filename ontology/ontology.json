@@ -962,6 +962,44 @@
       ],
       "example_falsification_test": "F_PARACONS_001",
       "example_ontological_issue": "OI_PARACONS_001"
+    },
+    {
+      "id": "D_CAPABILITY_BENCHMARK",
+      "name": "Capability Benchmark",
+      "categories": [
+        "forensic-adjunction",
+        "determinism",
+        "proof-carrying",
+        "hash-anchoring",
+        "realizability",
+        "ordinal-strength"
+      ],
+      "invariants": [
+        "Every SAL operation produces a ProofObject, not a bare boolean.",
+        "All kernel computations are deterministic (same input = same hash).",
+        "No floating-point arithmetic in src/sal/ modules."
+      ],
+      "example_falsification_test": "F_CAP_001",
+      "example_ontological_issue": "OI_CAP_001"
+    },
+    {
+      "id": "D_ARCHITECTURE_PROOF",
+      "name": "Architecture Proof",
+      "categories": [
+        "heyting-vs-boolean",
+        "fraction-vs-binary",
+        "geometric-morphism",
+        "axiom-independence",
+        "forcing-necessity",
+        "names-vs-structure"
+      ],
+      "invariants": [
+        "Heyting algebra produces different results than Boolean for partial truth.",
+        "Each Yeshua axiom is independently necessary.",
+        "Mathematical structures are computational; theological names are documentation."
+      ],
+      "example_falsification_test": "F_ARCH_001",
+      "example_ontological_issue": "OI_ARCH_001"
     }
   ],
   "issues": [

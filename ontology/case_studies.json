@@ -1228,6 +1228,39 @@
         "Gap analysis: Kimi Code CLI investigation identified 4 critical code points in the scissor call chain"
       ],
       "status": "validated"
+    },
+    {
+      "id": "CS_CAP_001",
+      "title": "Dollar Tree detention — SAL forensic adjunction vs stochastic inference",
+      "source": "https://youtube.com/shorts/EWO8OpdsjHI",
+      "domain": "D_CAPABILITY_BENCHMARK",
+      "root_cause_signals": [
+        "RCS-ADJUNCTION-FAILURE",
+        "RCS-COUNIT-VIOLATION"
+      ],
+      "description": "A Dollar Tree store employee and officer detained a customer who was attempting to leave (complying with trespass request). The SAL kernel proves this is a counit violation: you cannot simultaneously order someone to leave and prevent them from leaving. The geometric morphism between the officer's situs and the video evidence situs exposes the truth divergence.",
+      "assumptions_violated": [
+        "Officer's detention was lawful.",
+        "Store's version and video evidence agree."
+      ],
+      "falsification_tests": [
+        "F_CAP_001",
+        "F_CAP_002",
+        "F_CAP_003"
+      ],
+      "ontological_issues": [
+        "OI_CAP_001"
+      ],
+      "lessons": [
+        "Stochastic inference (pattern matching) cannot produce a ProofObject for lawfulness.",
+        "Site-relative truth (Heyting algebra) is required to detect contradictions between perspectives.",
+        "Forcing provides a constructive remedy path, not just a failure report."
+      ],
+      "methodology_components": [
+        "Topos: geometric_morphism() between officer_situs and video_situs",
+        "Adjunction: has_adjunction() returns (False, ProofObject) with counit violation",
+        "Forcing: force_domain() produces GenericExtension where justice holds"
+      ]
     }
   ]
 }
