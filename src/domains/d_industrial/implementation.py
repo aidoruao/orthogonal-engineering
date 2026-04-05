@@ -64,8 +64,6 @@ class IndustrialController:
         # Deterministic bounded work used to validate response-time envelope.
         _ = sum(range(BOUNDED_WORK_ITERATIONS))
         elapsed_ns = time.perf_counter_ns() - t0_ns
-        elapsed_ms_num = elapsed_ns
-        elapsed_ms_den = NS_PER_MS
 
         timeout_ns = self.timeout_ms * NS_PER_MS
         if elapsed_ns > timeout_ns:
@@ -76,8 +74,6 @@ class IndustrialController:
             "command_id": cmd.command_id,
             "executed": True,
             "elapsed_ns": elapsed_ns,
-            "elapsed_ms_num": elapsed_ms_num,
-            "elapsed_ms_den": elapsed_ms_den,
             "interlock": True,
         }
 

@@ -12,7 +12,12 @@ from axioms.yeshua_axioms import YeshuaClaim, verify_yeshua_standard
 
 @dataclass(frozen=True)
 class AdjunctionProof:
-    """Computational evidence that triangle identities hold for a domain."""
+    """
+    Computational evidence that triangle identities hold for a domain.
+
+    `yeshua_violations` captures any violations returned by `verify_yeshua_standard`.
+    `is_valid` is true only when counit/unit hold and `yeshua_violations` is empty.
+    """
 
     domain_id: str
     counit_holds: bool

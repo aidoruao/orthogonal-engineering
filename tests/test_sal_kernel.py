@@ -89,3 +89,14 @@ def test_proof_objects_are_hash_valid(triple: AdjointTriple):
     proof = has_adjunction(_schema("D_TEST", ["i1"]), triple)
     assert proof.counit_evidence.is_valid()
     assert proof.unit_evidence.is_valid()
+
+
+def test_has_adjunction_fails_when_triple_is_broken():
+    class BrokenTriple(AdjointTriple):
+        def check_unit(self, domain_schema):  # type: ignore[override]
+            ok, p = super().check_unit(domain_schema)
+            return False, p
+
+    proof = has_adjunction(_schema("D_BROKEN", ["i1"]), BrokenTriple())
+    assert proof.unit_holds is False
+    assert proof.is_valid is False

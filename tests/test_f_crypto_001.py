@@ -6,9 +6,9 @@ import time
 from src.domains.d_crypto.implementation import constant_time_hmac
 
 ITERATIONS = 10_000
-# Scaled by 10. CI/container jitter can inflate Welch t slightly above 4.5
-# even for constant-time primitives, so use a conservative acceptance margin.
-T_THRESHOLD = 60
+# Scaled by 10. CI/container jitter can inflate Welch t above 4.5 on shared runners.
+# 5.5 keeps the falsification bar strict while avoiding frequent flaky failures.
+T_THRESHOLD = 55
 
 
 def _collect(secret: bytes, n: int) -> list[int]:

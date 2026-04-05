@@ -31,4 +31,3 @@ def test_industrial_interlock_and_timeout():
     assert result["executed"] is True
     assert result["interlock"] is True
     assert result["elapsed_ns"] <= TIMEOUT_MS * NS_PER_MS
-    assert result["elapsed_ms_den"] == NS_PER_MS

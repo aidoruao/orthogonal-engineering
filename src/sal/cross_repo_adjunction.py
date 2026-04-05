@@ -51,12 +51,13 @@ def _load_domain_invariants() -> List[str]:
 
 def _constraint_matches_invariant(constraint: str, invariants: List[str]) -> bool:
     c_tokens = {tok for tok in constraint.lower().replace("_", " ").split() if len(tok) > 2}
+    c_tokens -= {"must", "with", "without", "under", "over", "from", "into", "every", "none"}
     if not c_tokens:
         return False
     for invariant in invariants:
         inv = invariant.lower()
         overlap = sum(1 for tok in c_tokens if tok in inv)
-        if overlap >= 1:
+        if overlap >= 2:
             return True
     return False
 
