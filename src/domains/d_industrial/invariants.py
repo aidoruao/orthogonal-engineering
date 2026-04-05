@@ -28,7 +28,8 @@ def check_bounded_response() -> bool:
     c.enqueue(good)
     r = c.execute_next()
     assert r["executed"] is True
-    assert r["elapsed_ms"] <= 25
+    assert r["elapsed_ns"] <= 25 * 1_000_000
+    assert r["elapsed_ms_den"] == 1_000_000
     return True
 
 

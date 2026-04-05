@@ -16,7 +16,7 @@ INCURSION_SCHEMA = REPO_ROOT / "INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml"
 ONTOLOGY_JSON = REPO_ROOT / "ontology" / "ontology.json"
 
 
-def _extract_constraints_from_incurion_yaml() -> Dict[str, List[str]]:
+def _extract_constraints_from_incursion_yaml() -> Dict[str, List[str]]:
     """Conservative parser for covenant principles/constraints from schema yaml text."""
     text = INCURSION_SCHEMA.read_text(encoding="utf-8")
     principles = ["LOGOS", "CHALCEDON", "GRACE", "KENOSIS", "AGAPE"]
@@ -63,7 +63,7 @@ def _constraint_matches_invariant(constraint: str, invariants: List[str]) -> boo
 
 def verify_cross_repo_adjunction() -> dict:
     """Return cross-repo adjunction evidence and anti-nominalism gaps."""
-    constraints_by_principle = _extract_constraints_from_incurion_yaml()
+    constraints_by_principle = _extract_constraints_from_incursion_yaml()
     invariants = _load_domain_invariants()
 
     missing: List[str] = []

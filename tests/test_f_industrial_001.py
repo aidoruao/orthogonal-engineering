@@ -6,11 +6,14 @@ from src.domains.d_industrial.implementation import (
     ActuatorCommand,
     IndustrialController,
     InterlockError,
+    NS_PER_MS,
 )
+
+TIMEOUT_MS = 25
 
 
 def test_industrial_interlock_and_timeout():
-    c = IndustrialController(timeout_ms=25)
+    c = IndustrialController(timeout_ms=TIMEOUT_MS)
 
     blocked = ActuatorCommand("bad", "", "open", time.monotonic_ns())
     c.enqueue(blocked)
@@ -27,5 +30,5 @@ def test_industrial_interlock_and_timeout():
     assert result["command_id"] == "ok"
     assert result["executed"] is True
     assert result["interlock"] is True
-    assert result["elapsed_ns"] <= 25 * 1_000_000
-    assert result["elapsed_ms_den"] == 1_000_000
+    assert result["elapsed_ns"] <= TIMEOUT_MS * NS_PER_MS
+    assert result["elapsed_ms_den"] == NS_PER_MS
