@@ -1,26 +1,16 @@
-"""
-Falsification test: Proctoring detects prohibited browser navigation.
-Tab-switch detected and flagged.
+"""F_EDUCATION_001 — credential immutability and determinism."""
 
-# @falsification_id: F_EDUCATION_001
-"""
-import pytest
+from src.domains.d_education.implementation import issue_credential, verify_credential
 
-class ProctoringSystem:
-    def __init__(self):
-        self.flags = []
 
-    def on_tab_switch(self, event: dict):
-        if event.get("type") == "tab_switch":
-            self.flags.append({"violation": "tab_switch", "time": event.get("time", 0)})
+def test_credential_hash_immutable_and_deterministic():
+    cred = issue_credential("student-1", {"course": "logic", "grade": "A"})
+    assert verify_credential(cred)
+    assert verify_credential(cred)
 
-def test_tab_switch_detected():
-    proctor = ProctoringSystem()
-    proctor.on_tab_switch({"type": "tab_switch", "time": 42.5})
-    assert len(proctor.flags) == 1
-    assert proctor.flags[0]["violation"] == "tab_switch"
-
-def test_non_violation_not_flagged():
-    proctor = ProctoringSystem()
-    proctor.on_tab_switch({"type": "mouse_move", "time": 10.0})
-    assert len(proctor.flags) == 0
+    tampered = cred.__class__(
+        student_id=cred.student_id,
+        payload={"course": "logic", "grade": "B"},
+        issued_hash=cred.issued_hash,
+    )
+    assert not verify_credential(tampered)
