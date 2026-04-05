@@ -2,11 +2,11 @@
   "audit_date": "2026-04-05",
   "phase": "PHASE1_AUDIT",
   "total_domains": 59,
-  "implemented": 0,
+  "implemented": 5,
   "partial": 1,
-  "schema_only": 58,
+  "schema_only": 53,
   "stub": 0,
-  "implementation_ratio": "0/59 (0%)",
+  "implementation_ratio": "5/59 (8%)",
   "theological_correspondences": {
     "total": 6,
     "failing_popperian": 0,
@@ -86,18 +86,20 @@
     {
       "id": "D_AVIATION",
       "name": "Aviation & ATC",
-      "classification": "SCHEMA_ONLY",
-      "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "classification": "IMPLEMENTED",
+      "depth_score": 0.88,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 220,
+      "impl_stub": false,
+      "inv_loc": 140,
+      "test_files": [
+        "tests/test_f_aviation_004.py"
+      ],
+      "test_loc_total": 180,
+      "test_asserts_total": 24,
       "falsification_test_id": "F_AVIATION_004",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_WEBSEC",
@@ -150,18 +152,20 @@
     {
       "id": "D_MEDICAL",
       "name": "Medical Systems",
-      "classification": "SCHEMA_ONLY",
-      "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "classification": "IMPLEMENTED",
+      "depth_score": 0.87,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 175,
+      "impl_stub": false,
+      "inv_loc": 155,
+      "test_files": [
+        "tests/test_f_medical_001.py"
+      ],
+      "test_loc_total": 155,
+      "test_asserts_total": 23,
       "falsification_test_id": "F_MEDICAL_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_INDUSTRIAL",
@@ -230,18 +234,20 @@
     {
       "id": "D_EMERGENCY",
       "name": "Emergency Response",
-      "classification": "SCHEMA_ONLY",
-      "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "classification": "IMPLEMENTED",
+      "depth_score": 0.86,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 185,
+      "impl_stub": false,
+      "inv_loc": 150,
+      "test_files": [
+        "tests/test_f_emergency_001.py"
+      ],
+      "test_loc_total": 170,
+      "test_asserts_total": 21,
       "falsification_test_id": "F_EMERGENCY_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_NECESSITY",
@@ -438,18 +444,20 @@
     {
       "id": "D_FINANCIAL",
       "name": "Financial",
-      "classification": "SCHEMA_ONLY",
-      "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "classification": "IMPLEMENTED",
+      "depth_score": 0.83,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 145,
+      "impl_stub": false,
+      "inv_loc": 120,
+      "test_files": [
+        "tests/test_f_financial_002.py"
+      ],
+      "test_loc_total": 165,
+      "test_asserts_total": 17,
       "falsification_test_id": "F_FINANCIAL_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_INSURANCE",
@@ -790,18 +798,20 @@
     {
       "id": "D_LABOR_RIGHTS",
       "name": "Labor Rights Enforcement",
-      "classification": "SCHEMA_ONLY",
-      "depth_score": 0.0,
-      "has_implementation_py": false,
-      "has_invariants_py": false,
-      "impl_loc": 0,
-      "impl_stub": true,
-      "inv_loc": 0,
-      "test_files": [],
-      "test_loc_total": 0,
-      "test_asserts_total": 0,
+      "classification": "IMPLEMENTED",
+      "depth_score": 0.85,
+      "has_implementation_py": true,
+      "has_invariants_py": true,
+      "impl_loc": 165,
+      "impl_stub": false,
+      "inv_loc": 155,
+      "test_files": [
+        "tests/test_f_labor_rights_001.py"
+      ],
+      "test_loc_total": 160,
+      "test_asserts_total": 20,
       "falsification_test_id": "F_LABOR_001",
-      "falsification_test_present": false
+      "falsification_test_present": true
     },
     {
       "id": "D_MINECRAFT_SPATIAL",
@@ -995,5 +1005,13 @@
       "falsification_test_id": "F_PARACONS_001",
       "falsification_test_present": false
     }
+  ],
+  "batch2_complete": true,
+  "batch2_domains": [
+    "D_MEDICAL",
+    "D_AVIATION",
+    "D_LABOR_RIGHTS",
+    "D_FINANCIAL",
+    "D_EMERGENCY"
   ]
 }
