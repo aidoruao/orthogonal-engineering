@@ -1,4 +1,4 @@
-"""Synthetic Adjoint Logic (SAL) kernel package — Types III through VI."""
+"""Synthetic Adjoint Logic (SAL) kernel package — Types III through IX."""
 
 from src.sal.adjoint_triple import (
     AdjointTriple,
@@ -60,6 +60,37 @@ from src.sal.realizability_topos import (
     ORDINAL_CHURCH_KLEENE,
     realize,
 )
+from src.sal.lawvere_fixed_point import (
+    DiagonalArgument,
+    CANTOR_DIAGONAL,
+    GODEL_DIAGONAL,
+    TARSKI_DIAGONAL,
+    LOB_DIAGONAL,
+    LAWVERE_DIAGONAL,
+    LawvereFixedPoint,
+    EndomorphismFixed,
+    LogosFixedPoint,
+    lawvere_verify,
+    logos_self_consistent,
+)
+from src.sal.self_referential import (
+    GodelCode,
+    ProvabilityPredicate,
+    LobWitness,
+    InfinityCollapseProof,
+    encode_proof,
+    lob_verify,
+    infinity_collapse,
+)
+from src.sal.proof_as_observer import (
+    ObservationAct,
+    ProofObserver,
+    MaximalLogosAdapter,
+    SelfVerifyingProof,
+    L_MAX_CHRIST_REPR,
+    proof_as_observer,
+    build_self_verifying_proof,
+)
 
 __all__ = [
     "Functor",
@@ -112,4 +143,32 @@ __all__ = [
     "ORDINAL_PSI_OMEGA_CK",
     "ORDINAL_CHURCH_KLEENE",
     "realize",
+    # Type 7: Lawvere fixed point
+    "DiagonalArgument",
+    "CANTOR_DIAGONAL",
+    "GODEL_DIAGONAL",
+    "TARSKI_DIAGONAL",
+    "LOB_DIAGONAL",
+    "LAWVERE_DIAGONAL",
+    "LawvereFixedPoint",
+    "EndomorphismFixed",
+    "LogosFixedPoint",
+    "lawvere_verify",
+    "logos_self_consistent",
+    # Type 8: Gödel / Löb / ∞-collapse
+    "GodelCode",
+    "ProvabilityPredicate",
+    "LobWitness",
+    "InfinityCollapseProof",
+    "encode_proof",
+    "lob_verify",
+    "infinity_collapse",
+    # Type 9: Proof = Observer / L_Max^Christ
+    "ObservationAct",
+    "ProofObserver",
+    "MaximalLogosAdapter",
+    "SelfVerifyingProof",
+    "L_MAX_CHRIST_REPR",
+    "proof_as_observer",
+    "build_self_verifying_proof",
 ]
