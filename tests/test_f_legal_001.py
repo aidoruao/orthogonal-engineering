@@ -1,5 +1,7 @@
 """F_LEGAL_001 — citation verification and deterministic parsing."""
 
+import pytest
+
 from src.domains.d_legal.implementation import (
     parse_citation,
     validate_precedent_chain,
@@ -20,8 +22,6 @@ def test_legal_citation_verifiability():
 
 
 def test_legal_invalid_citation_rejected():
-    import pytest
-
     with pytest.raises(ValueError):
         parse_citation("29 USC 207")
     with pytest.raises(ValueError):
