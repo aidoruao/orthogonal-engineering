@@ -14,14 +14,15 @@ permissions:
 
 jobs:
   # -------------------------------------------------------------------------
-  # determinism — run on ubuntu-latest with Python version matrix
+  # determinism — run on ubuntu-latest and macos-latest with Python matrix
   # -------------------------------------------------------------------------
   determinism:
-    name: Determinism (Ubuntu, Python ${{ matrix.python-version }})
-    runs-on: ubuntu-latest
+    name: Determinism (${{ matrix.os }}, Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, macos-latest]
         python-version: ["3.11", "3.12"]
 
     steps:
@@ -66,7 +67,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: determinism-report-py${{ matrix.python-version }}
+          name: determinism-report-${{ matrix.os }}-py${{ matrix.python-version }}
           path: determinism_report.json
           if-no-files-found: ignore
 

@@ -11,4 +11,5 @@ __all__ = [
     "d_industrial",
     "d_education",
     "d_legal",
+    "d_dollartree",
 ]
