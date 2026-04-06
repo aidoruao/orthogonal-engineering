@@ -1,28 +1,33 @@
-"""D_DOLLARTREE — forensic domain: unlawful detention / logical paradox of contradictory orders.
+"""D_DOLLARTREE — forensic domain: multi-agent composite counit violation.
 
-This domain encodes the logical paradox documented in the Dollar Tree incident:
-a law-enforcement officer simultaneously ordered a citizen to leave the premises
-AND physically blocked their exit.  These two commands are logically contradictory
-and constitute a counit failure in the SAL L ⊣ M ⊣ R adjoint triple.
+This domain encodes the composite violation documented in the Dollar Tree
+incident involving THREE distinct agents with different legal liabilities:
+
+  Agent 1 (Staff):   Verbal authority only — trespass order + false legal claims
+  Agent 2 (Woman):   Physical blocking + assault (pumpkin battery during containment)
+  Agent 3 (Officer): Mass arrest threat (8 people) → actual outcome: vehicle citations
+
+Timeline (from YouTube AI timestamped analysis):
+  18:14  Staff issues trespass order
+  18:30  Staff falsely claims "illegal to film"
+  20:02  Woman threatens to "knock it out"
+  20:14  Woman commits battery (pumpkin, multiple hits)
+  20:21  Woman + staff physically block exit
+  22:32  Police arrive (4m18s of hostile containment)
+  Post   Officer enumerates "1-2-3-4-5-6-7-8 people to jail"
+  Post   Officer issues vehicle citations only (not criminal charges)
 
 Incident evidence:
   YouTube short:   https://youtube.com/shorts/EWO8OpdsjHI?si=o-6_vtFUFxu_Rdl2
   Full video:      https://www.youtube.com/watch?v=3d4MlNCps6I
   Evidence anchor: SHA-256 of the short URL (per Yeshua Axiom 8)
 
-Mathematical structure (Type 3+ Topos):
-  * Officer's situs Ω_officer:  "lawful_detention=True"  (his local truth)
-  * Video evidence situs Ω_video: "lawful_detention=False" (global truth)
-  * The geometric morphism between these two sites does NOT preserve truth.
-  * Counit ε: L∘M → Id fails because the generated state from the mediated
-    schema does not reproduce the video-evidence situs.
-
-Forcing (Type 5):
-  * DomainState has adjunction_holds=False and records the logical paradox as
-    a violation.
-  * ForcingOperation produces a branch where the officer acts lawfully (does
-    not block the exit) and the adjunction holds in that extension.
-  * Existence of that branch proves the original state was defective.
+Mathematical structure:
+  * 4 situs: Ω_staff, Ω_woman, Ω_officer, Ω_video
+  * 6 geometric morphisms (each pair of situs)
+  * Composite counit violation: no single agent's situs preserves truth
+  * HIT paths encode temporal transitions with timestamps
+  * Forcing requires MAHLO strength (cross-agent, multi-domain violation)
 """
 
 from __future__ import annotations
@@ -45,14 +50,26 @@ from src.sal.topos_subobject_classifier import (
 
 __all__ = [
     "EVIDENCE_URL_SHORT",
+    "EVIDENCE_URL_FULL",
     "EVIDENCE_ANCHOR_SHA256",
+    "EVIDENCE_ANCHOR_FULL_SHA256",
+    "CONFINEMENT_DURATION_SECONDS",
     "DOLLARTREE_SCHEMA",
+    "DOLLARTREE_COUNIT_VIOLATION",
+    "STAFF_FRAUDULENT_LEGAL_CLAIM",
+    "WOMAN_ASSAULT_DURING_CONTAINMENT",
+    "OFFICER_NON_FUNCTORIAL_ENFORCEMENT",
     "build_officer_situs",
     "build_video_situs",
+    "build_staff_situs",
+    "build_woman_situs",
+    "build_officer_situs_v2",
     "evaluate_topos_truth_gap",
+    "evaluate_composite_truth_gap",
     "build_domain_state",
     "run_adjunction_check",
     "DollarTreeReport",
+    "build_full_report",
 ]
 
 # ---------------------------------------------------------------------------
@@ -73,6 +90,11 @@ EVIDENCE_ANCHOR_FULL_SHA256: str = hashlib.sha256(
     EVIDENCE_URL_FULL.encode("utf-8")
 ).hexdigest()
 
+# Temporal evidence (from YouTube AI timestamped analysis)
+CONFINEMENT_START_TIMESTAMP: str = "18:14"
+CONFINEMENT_END_TIMESTAMP: str = "22:32"
+CONFINEMENT_DURATION_SECONDS: int = 258  # 4 minutes 18 seconds
+
 # ---------------------------------------------------------------------------
 # Domain schema — flat SAL-compatible representation
 # ---------------------------------------------------------------------------
@@ -84,14 +106,25 @@ DOLLARTREE_SCHEMA: Dict[str, Any] = {
         "A detention requires probable cause documented before restraint is applied.",
         "Video evidence takes precedence over officer self-report when there is contradiction.",
         "No simultaneous issuance of contradictory lawful orders to the same person.",
+        "Assault during unlawful containment creates duty to intervene; breach escalates liability.",
+        "Misrepresentation of law to justify detention is independently tortious.",
+        "Probable cause must be individualized per person; blanket threats against N people without per-person documentation violate functoriality.",
+        "Enforcement outcome must be functorial: threatened sanctions must correspond to actual sanctions applied.",
     ],
     "evidence_anchors": [
         EVIDENCE_ANCHOR_SHA256,
         EVIDENCE_ANCHOR_FULL_SHA256,
     ],
+    "agents": {
+        "staff": "Verbal authority: trespass order + false legal claims ('illegal to film')",
+        "woman": "Physical agent: exit blocking + pumpkin battery during containment",
+        "officer": "State agent: mass arrest threat (8 people) → vehicle citations only",
+    },
+    "confinement_duration_seconds": CONFINEMENT_DURATION_SECONDS,
     "paradox": (
-        "Officer simultaneously issued 'leave the premises' AND 'do not leave' "
-        "by physically blocking the exit — these commands are logically contradictory."
+        "Staff ordered crew to leave (18:14) while woman physically blocked exit (20:21). "
+        "Officer threatened 8 people with jail but issued vehicle citations only. "
+        "These commands and outcomes are logically contradictory across all three agents."
     ),
 }
 
@@ -101,6 +134,21 @@ DOLLARTREE_SCHEMA: Dict[str, Any] = {
 DOLLARTREE_COUNIT_VIOLATION: str = (
     "counit_violation: officer_action ⊕ exit_blocking is not identity-preserving; "
     "simultaneously ordering departure and blocking departure generates ⊥"
+)
+
+STAFF_FRAUDULENT_LEGAL_CLAIM: str = (
+    "staff_violation: false statement of law ('illegal to film') used to justify "
+    "confinement; filming in public-facing commercial spaces is generally legal"
+)
+
+WOMAN_ASSAULT_DURING_CONTAINMENT: str = (
+    "woman_violation: battery (pumpkin, multiple hits at 20:14) committed during "
+    "unlawful containment (20:21-22:32); duty to intervene breached by all present"
+)
+
+OFFICER_NON_FUNCTORIAL_ENFORCEMENT: str = (
+    "officer_violation: threatened 8 people with jail (mass enumeration) but issued "
+    "vehicle citations only; F: Evidence → Sanctions failed to preserve structure"
 )
 
 # ---------------------------------------------------------------------------
@@ -156,6 +204,90 @@ def build_video_situs() -> SheafContext:
     )
 
 
+def build_staff_situs() -> SheafContext:
+    """
+    Ω_staff: the site encoding the store staff's local truth.
+
+    Staff issued verbal trespass order (18:14) and made false legal claims
+    ("illegal to film" at 18:30). Staff did NOT physically touch crew.
+    In staff's situs, 'lawful_trespass' is locally covered (they believe
+    they have authority to order departure).
+    """
+    return SheafContext(
+        name="Ω_staff",
+        objects=frozenset({
+            "lawful_trespass",
+            "staff_authority",
+            "filming_illegal_claim",
+        }),
+        covers={
+            "lawful_trespass": [
+                frozenset({"staff_authority"})
+            ],
+            # filming_illegal_claim has NO valid covering — it is false
+            "filming_illegal_claim": [],
+        },
+    )
+
+
+def build_woman_situs() -> SheafContext:
+    """
+    Ω_woman: the site encoding the woman's local truth.
+
+    Woman claimed "my store" (18:56, unconfirmed employee status),
+    threatened camera destruction (20:02), committed battery with pumpkin
+    (20:14), and physically blocked exit (20:21). In her situs,
+    'rightful_authority' is locally covered (she believes she owns the store).
+    """
+    return SheafContext(
+        name="Ω_woman",
+        objects=frozenset({
+            "rightful_authority",
+            "store_ownership_claim",
+            "physical_force_justified",
+            "exit_blocking",
+        }),
+        covers={
+            "rightful_authority": [
+                frozenset({"store_ownership_claim"})
+            ],
+            "physical_force_justified": [
+                frozenset({"rightful_authority", "store_ownership_claim"})
+            ],
+            # exit_blocking has NO valid covering — blocking exit of someone
+            # ordered to leave is contradictory
+            "exit_blocking": [],
+        },
+    )
+
+
+def build_officer_situs_v2() -> SheafContext:
+    """
+    Ω_officer (v2): the site encoding the officer's local truth.
+
+    Officer arrived at 22:32, enumerated crew ("1-2-3-4-5-6-7-8 people to jail"),
+    but issued vehicle citations only. In officer's situs, 'collective_guilt'
+    is locally covered (he treats all 8 as a single unit).
+    """
+    return SheafContext(
+        name="Ω_officer",
+        objects=frozenset({
+            "collective_guilt",
+            "mass_enumeration",
+            "officer_judgment",
+            "vehicle_citation",
+        }),
+        covers={
+            "collective_guilt": [
+                frozenset({"mass_enumeration", "officer_judgment"})
+            ],
+            # vehicle_citation has NO covering that connects to collective_guilt
+            # because the citation is for a vehicle, not for the 8 individuals
+            "vehicle_citation": [],
+        },
+    )
+
+
 def evaluate_topos_truth_gap() -> GeometricMorphism:
     """
     Compute the geometric morphism between officer situs and video situs.
@@ -172,6 +304,38 @@ def evaluate_topos_truth_gap() -> GeometricMorphism:
     )
 
 
+def evaluate_composite_truth_gap() -> Dict[str, GeometricMorphism]:
+    """
+    Compute geometric morphisms between ALL pairs of situs.
+
+    Returns a dict keyed by "source→target" with the GeometricMorphism for each pair.
+    The composite violation is proven when NO pair preserves truth.
+    """
+    situs_builders = {
+        "staff": build_staff_situs,
+        "woman": build_woman_situs,
+        "officer": build_officer_situs_v2,
+        "video": build_video_situs,
+    }
+    morphisms: Dict[str, GeometricMorphism] = {}
+    names = sorted(situs_builders.keys())
+    for i, src_name in enumerate(names):
+        for tgt_name in names[i + 1:]:
+            src_ctx = situs_builders[src_name]()
+            tgt_ctx = situs_builders[tgt_name]()
+            # Find shared objects between the two situs
+            shared = src_ctx.objects & tgt_ctx.objects
+            # Use first shared object as proposition, or "truth" if none shared
+            prop = sorted(shared)[0] if shared else "truth"
+            key = f"{src_ctx.name}→{tgt_ctx.name}"
+            morphisms[key] = geometric_morphism(
+                source=src_ctx,
+                target=tgt_ctx,
+                shared_proposition=prop,
+            )
+    return morphisms
+
+
 # ---------------------------------------------------------------------------
 # Forcing domain state (Type 5)
 # ---------------------------------------------------------------------------
@@ -181,7 +345,7 @@ def build_domain_state() -> DomainState:
     """
     Construct the DomainState for D_DOLLARTREE with adjunction_holds=False.
 
-    The violations list encodes the logical paradox.
+    The violations list encodes the multi-agent composite violation.
     """
     return DomainState(
         domain_id="D_DOLLARTREE",
@@ -190,8 +354,11 @@ def build_domain_state() -> DomainState:
         violations=[
             DOLLARTREE_COUNIT_VIOLATION,
             "constitutional_rights_violation: unlawful detention without probable cause",
+            STAFF_FRAUDULENT_LEGAL_CLAIM,
+            WOMAN_ASSAULT_DURING_CONTAINMENT,
+            OFFICER_NON_FUNCTORIAL_ENFORCEMENT,
         ],
-        strength=CardinalStrength.PREDICATIVE,
+        strength=CardinalStrength.MAHLO,
         evidence_anchors=[EVIDENCE_ANCHOR_SHA256, EVIDENCE_ANCHOR_FULL_SHA256],
     )
 
@@ -283,6 +450,15 @@ def build_full_report() -> DollarTreeReport:
                 ),
                 "constitutional_rights_violation: unlawful detention without probable cause": (
                     "officer_obtains_probable_cause_before_detention"
+                ),
+                STAFF_FRAUDULENT_LEGAL_CLAIM: (
+                    "staff_correctly_states_filming_is_legal_in_public_commercial_spaces"
+                ),
+                WOMAN_ASSAULT_DURING_CONTAINMENT: (
+                    "woman_does_not_commit_battery_and_does_not_block_exit"
+                ),
+                OFFICER_NON_FUNCTORIAL_ENFORCEMENT: (
+                    "officer_individualizes_probable_cause_per_person_before_any_threat"
                 ),
             },
         )

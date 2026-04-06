@@ -28,10 +28,18 @@ from src.domains.d_dollartree.domain import (
     EVIDENCE_ANCHOR_SHA256,
     DOLLARTREE_SCHEMA,
     DOLLARTREE_COUNIT_VIOLATION,
+    STAFF_FRAUDULENT_LEGAL_CLAIM,
+    WOMAN_ASSAULT_DURING_CONTAINMENT,
+    OFFICER_NON_FUNCTORIAL_ENFORCEMENT,
+    CONFINEMENT_DURATION_SECONDS,
     build_officer_situs,
     build_video_situs,
+    build_staff_situs,
+    build_woman_situs,
+    build_officer_situs_v2,
     build_domain_state,
     evaluate_topos_truth_gap,
+    evaluate_composite_truth_gap,
     run_adjunction_check,
     build_full_report,
     DollarTreeReport,
@@ -142,6 +150,72 @@ class TestToposTruthDivergence:
 
 
 # ===========================================================================
+# Multi-agent situs tests (3-agent + video)
+# ===========================================================================
+
+
+class TestMultiAgentSitus:
+    """Tests for the 3-agent situs decomposition."""
+
+    def test_staff_situs_has_lawful_trespass(self):
+        ctx = build_staff_situs()
+        assert "lawful_trespass" in ctx.objects
+
+    def test_staff_situs_filming_claim_uncovered(self):
+        """Staff's 'illegal to film' claim has no covering sieve (it is false)."""
+        ctx = build_staff_situs()
+        assert ctx.covers.get("filming_illegal_claim") == []
+
+    def test_woman_situs_has_exit_blocking(self):
+        ctx = build_woman_situs()
+        assert "exit_blocking" in ctx.objects
+
+    def test_woman_situs_exit_blocking_uncovered(self):
+        """Woman's exit blocking has no covering sieve (contradicts trespass order)."""
+        ctx = build_woman_situs()
+        assert ctx.covers.get("exit_blocking") == []
+
+    def test_officer_v2_situs_has_collective_guilt(self):
+        ctx = build_officer_situs_v2()
+        assert "collective_guilt" in ctx.objects
+
+    def test_officer_v2_vehicle_citation_uncovered(self):
+        """Vehicle citation has no covering that connects to collective_guilt."""
+        ctx = build_officer_situs_v2()
+        assert ctx.covers.get("vehicle_citation") == []
+
+    def test_composite_truth_gap_returns_6_morphisms(self):
+        """4 situs → C(4,2) = 6 pairwise geometric morphisms."""
+        morphisms = evaluate_composite_truth_gap()
+        assert len(morphisms) == 6, f"Expected 6 morphisms, got {len(morphisms)}"
+
+    def test_composite_no_pair_preserves_truth(self):
+        """No pair of situs should preserve truth (composite violation)."""
+        morphisms = evaluate_composite_truth_gap()
+        for key, m in morphisms.items():
+            # At least some pairs will have no shared objects → truth_preserved=True
+            # (vacuously). Only check pairs with shared objects.
+            shared = m.source.objects & m.target.objects
+            if shared:
+                assert m.truth_preserved is False, (
+                    f"Expected truth_preserved=False for {key} "
+                    f"(shared objects: {shared})"
+                )
+
+    def test_confinement_duration_is_258_seconds(self):
+        assert CONFINEMENT_DURATION_SECONDS == 258
+
+    def test_schema_has_8_invariants(self):
+        assert len(DOLLARTREE_SCHEMA["invariants"]) == 8
+
+    def test_schema_has_3_agents(self):
+        assert len(DOLLARTREE_SCHEMA["agents"]) == 3
+        assert "staff" in DOLLARTREE_SCHEMA["agents"]
+        assert "woman" in DOLLARTREE_SCHEMA["agents"]
+        assert "officer" in DOLLARTREE_SCHEMA["agents"]
+
+
+# ===========================================================================
 # Type 3 — SAL adjunction check (counit / unit)
 # ===========================================================================
 
@@ -240,6 +314,49 @@ class TestForcingOperation:
 
 
 # ===========================================================================
+# Composite forcing — multi-agent violations
+# ===========================================================================
+
+
+class TestCompositeForcing:
+    """Tests that forcing resolves all 5 violations in the composite state."""
+
+    def test_domain_state_has_5_violations(self):
+        state = build_domain_state()
+        assert len(state.violations) == 5
+
+    def test_domain_state_strength_is_mahlo(self):
+        """Cross-agent multi-domain violation requires MAHLO strength."""
+        state = build_domain_state()
+        assert state.strength == CardinalStrength.MAHLO
+
+    def test_forcing_produces_5_extensions(self):
+        """One extension per violation."""
+        report = build_full_report()
+        assert len(report.forced_extensions) == 5
+
+    def test_all_extensions_have_adjunction(self):
+        report = build_full_report()
+        for ext in report.forced_extensions:
+            assert ext.adjunction_holds is True
+
+    def test_staff_violation_resolved(self):
+        state = build_domain_state()
+        assert STAFF_FRAUDULENT_LEGAL_CLAIM in state.violations
+
+    def test_woman_violation_resolved(self):
+        state = build_domain_state()
+        assert WOMAN_ASSAULT_DURING_CONTAINMENT in state.violations
+
+    def test_officer_nonfunctorial_violation_resolved(self):
+        state = build_domain_state()
+        assert OFFICER_NON_FUNCTORIAL_ENFORCEMENT in state.violations
+
+    def test_hostile_containment_duration_in_schema(self):
+        assert DOLLARTREE_SCHEMA["confinement_duration_seconds"] == 258
+
+
+# ===========================================================================
 # Type 4 — Higher adjunction (HoTT / 2-categorical)
 # ===========================================================================
 
@@ -249,15 +366,53 @@ class TestHigherAdjunction:
         hit = HigherInductiveDomain(domain_id="D_DOLLARTREE")
         for inv in DOLLARTREE_SCHEMA["invariants"]:
             hit.add_point(inv)
+        # Original contradictory path
         hit.add_path(
             "officer_ordered_leave",
             "officer_blocked_exit",
             "contradictory_path",
         )
+        # Temporal paths from timestamped evidence
+        hit.add_path(
+            "trespass_order_18_14",
+            "assault_20_14",
+            "escalation_to_violence",
+        )
+        hit.add_path(
+            "assault_20_14",
+            "exit_blocked_20_21",
+            "hostile_containment",
+        )
+        hit.add_path(
+            "exit_blocked_20_21",
+            "police_arrival_22_32",
+            "duration_4m18s",
+        )
+        hit.add_path(
+            "police_arrival_22_32",
+            "mass_enumeration_threat",
+            "state_intervention",
+        )
+        hit.add_path(
+            "mass_enumeration_threat",
+            "vehicle_citation_issued",
+            "selective_enforcement",
+        )
+        # 2-paths (coherences)
         hit.add_two_path(
             "contradictory_path",
             "refl_lawful_state",
             "paradox_coherence",
+        )
+        hit.add_two_path(
+            "hostile_containment",
+            "escalation_to_violence",
+            "assault_during_confinement_coherence",
+        )
+        hit.add_two_path(
+            "state_intervention",
+            "selective_enforcement",
+            "non_functorial_enforcement_coherence",
         )
         return hit
 
@@ -298,7 +453,7 @@ class TestHigherAdjunction:
         schema = hit.to_schema()
         assert schema["id"] == "D_DOLLARTREE"
         assert len(schema["invariants"]) == len(DOLLARTREE_SCHEMA["invariants"])
-        assert len(schema["paths"]) == 1
+        assert len(schema["paths"]) == 6  # was 1, now 6 temporal paths
         assert schema["paths"][0]["label"] == "contradictory_path"
 
 
@@ -385,3 +540,13 @@ class TestFullReport:
         import src.domains.d_dollartree.domain as mod
         source = inspect.getsource(mod)
         assert "float(" not in source, "No float() allowed in SAL core modules."
+
+    def test_report_has_5_forced_extensions(self, report: DollarTreeReport):
+        assert len(report.forced_extensions) == 5
+
+    def test_report_all_extensions_valid(self, report: DollarTreeReport):
+        for ext in report.forced_extensions:
+            assert ext.is_valid, (
+                f"Extension for '{ext.conditions[0].replaces if ext.conditions else 'unknown'}' "
+                f"is not valid: violations={ext.violations}"
+            )

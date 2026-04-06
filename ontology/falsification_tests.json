@@ -4,7 +4,7 @@
     "description": "Machine-readable falsification test registry. Each entry defines a falsifiable assumption, the strategy for testing it, and mappings to domains, OI-IDs, and case studies. Tests are assigned F-IDs and can be referenced by test files via the @falsification_id tag.",
     "created": "2026-03-02",
     "tagging_convention": "Add a comment '# @falsification_id: F_XXX_NNN' at the top of any test that implements or covers a falsification test listed here.",
-    "total_tests": 143
+    "total_tests": 144
   },
   "falsification_tests": [
     {
@@ -29,7 +29,7 @@
       "title": "int64 arithmetic matches known vectors",
       "domain": "D_PLATFORM",
       "assumption": "Python int64 two's-complement arithmetic and struct.unpack produce identical values on all platforms.",
-      "falsifying_observation": "Any computed value ≠ expected vector.",
+      "falsifying_observation": "Any computed value \u2260 expected vector.",
       "strategy": "Pre-compute known (seed, index, expected_int64) triples; assert equality.",
       "status": "active",
       "test_file": "tests/test_f_platform_002.py::test_f_platform_002",
@@ -38,7 +38,7 @@
       ],
       "case_studies": [],
       "invariant": "Python int64 two's-complement arithmetic and struct.unpack produce identical values on all platforms.",
-      "falsifies_if": "Any computed value ≠ expected vector.",
+      "falsifies_if": "Any computed value \u2260 expected vector.",
       "definition": "Pre-compute known (seed, index, expected_int64) triples; assert equality."
     },
     {
@@ -80,7 +80,7 @@
       "title": "struct.pack is little-endian",
       "domain": "D_PLATFORM",
       "assumption": "struct.pack('<q', value) encodes int64 in little-endian byte order regardless of host endianness.",
-      "falsifying_observation": "Any byte sequence ≠ expected.",
+      "falsifying_observation": "Any byte sequence \u2260 expected.",
       "strategy": "Pack known values; compare against expected byte strings.",
       "status": "active",
       "test_file": "tests/test_f_platform_005.py::test_f_platform_005",
@@ -89,7 +89,7 @@
       ],
       "case_studies": [],
       "invariant": "struct.pack('<q', value) encodes int64 in little-endian byte order regardless of host endianness.",
-      "falsifies_if": "Any byte sequence ≠ expected.",
+      "falsifies_if": "Any byte sequence \u2260 expected.",
       "definition": "Pack known values; compare against expected byte strings."
     },
     {
@@ -176,7 +176,7 @@
       "id": "F_CRYPTO_002",
       "title": "Noise PSK zero-key is rejected",
       "domain": "D_CRYPTO",
-      "assumption": "The library enforces PSK ≠ 0^32 at the API boundary.",
+      "assumption": "The library enforces PSK \u2260 0^32 at the API boundary.",
       "falsifying_observation": "Library accepts a 32-byte all-zero PSK without raising an error.",
       "strategy": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised.",
       "status": "implemented",
@@ -188,7 +188,7 @@
         "CS_CRYPTO_002"
       ],
       "cve_reference": "CVE-2026-24785",
-      "invariant": "The library enforces PSK ≠ 0^32 at the API boundary.",
+      "invariant": "The library enforces PSK \u2260 0^32 at the API boundary.",
       "falsifies_if": "Library accepts a 32-byte all-zero PSK without raising an error.",
       "definition": "Call the PSK-setting API with bytes(32); assert a ValueError or ProtocolError is raised."
     },
@@ -252,7 +252,7 @@
       "id": "F_MEDICAL_001",
       "title": "Dosimetry calculation matches reference implementation within tolerance",
       "domain": "D_MEDICAL",
-      "assumption": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within ±0.1%.",
+      "assumption": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within \u00b10.1%.",
       "falsifying_observation": "Computed dose deviates from reference by more than 0.1%.",
       "strategy": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001.",
       "status": "implemented",
@@ -261,7 +261,7 @@
         "OI_MEDICAL_001"
       ],
       "case_studies": [],
-      "invariant": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within ±0.1%.",
+      "invariant": "The software dosimetry calculation agrees with the IEC 62304 reference algorithm within \u00b10.1%.",
       "falsifies_if": "Computed dose deviates from reference by more than 0.1%.",
       "definition": "Feed a canonical patient-phantom dataset through both implementations; assert relative error < 0.001."
     },
@@ -271,7 +271,7 @@
       "domain": "D_INDUSTRIAL",
       "assumption": "The PLC control loop completes each cycle within the specified real-time deadline.",
       "falsifying_observation": "Any cycle exceeds the deadline budget.",
-      "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) ≤ deadline_ms.",
+      "strategy": "Instrument the control loop with high-resolution timers; assert max(cycle_times) \u2264 deadline_ms.",
       "status": "implemented",
       "test_file": "tests/test_plc_timing.py",
       "ontological_issues": [
@@ -280,7 +280,7 @@
       "case_studies": [],
       "invariant": "The PLC control loop completes each cycle within the specified real-time deadline.",
       "falsifies_if": "Any cycle exceeds the deadline budget.",
-      "definition": "Instrument the control loop with high-resolution timers; assert max(cycle_times) ≤ deadline_ms."
+      "definition": "Instrument the control loop with high-resolution timers; assert max(cycle_times) \u2264 deadline_ms."
     },
     {
       "id": "F_BLUECOLLAR_001",
@@ -288,7 +288,7 @@
       "domain": "D_BLUECOLLAR",
       "assumption": "Worker safety alerts are delivered within the required response time.",
       "falsifying_observation": "Alert delivery latency exceeds the required bound.",
-      "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency ≤ bound.",
+      "strategy": "Measure end-to-end alert delivery time under simulated load; assert max latency \u2264 bound.",
       "status": "implemented",
       "test_file": "tests/test_safety_alerts.py",
       "ontological_issues": [
@@ -297,7 +297,7 @@
       "case_studies": [],
       "invariant": "Worker safety alerts are delivered within the required response time.",
       "falsifies_if": "Alert delivery latency exceeds the required bound.",
-      "definition": "Measure end-to-end alert delivery time under simulated load; assert max latency ≤ bound."
+      "definition": "Measure end-to-end alert delivery time under simulated load; assert max latency \u2264 bound."
     },
     {
       "id": "F_WHITECOLLAR_001",
@@ -423,7 +423,7 @@
       "title": "Compression round-trip is lossless",
       "domain": "D_NONCREATIVE",
       "assumption": "Compression/decompression is lossless and reproducible.",
-      "falsifying_observation": "sha256(decompress(compress(data))) ≠ sha256(data).",
+      "falsifying_observation": "sha256(decompress(compress(data))) \u2260 sha256(data).",
       "strategy": "Compress and decompress a canonical dataset; assert sha256 equality.",
       "status": "implemented",
       "test_file": "tests/test_compression.py",
@@ -432,7 +432,7 @@
       ],
       "case_studies": [],
       "invariant": "Compression/decompression is lossless and reproducible.",
-      "falsifies_if": "sha256(decompress(compress(data))) ≠ sha256(data).",
+      "falsifies_if": "sha256(decompress(compress(data))) \u2260 sha256(data).",
       "definition": "Compress and decompress a canonical dataset; assert sha256 equality."
     },
     {
@@ -1554,7 +1554,7 @@
       "case_studies": [
         "AUDIT-2A-2026-03-27"
       ],
-      "invariant": "Same input → same output.",
+      "invariant": "Same input \u2192 same output.",
       "falsifies_if": "Two runs produce different violation counts.",
       "definition": "Run analyzer twice on fixed transcript and compare violation sets."
     },
@@ -1569,7 +1569,7 @@
       "test_file": "tests/test_f_noncompliance_002.py::test_f_noncompliance_002",
       "ontological_issues": [],
       "case_studies": [],
-      "invariant": "Same input → same SHA-256 hashes.",
+      "invariant": "Same input \u2192 same SHA-256 hashes.",
       "falsifies_if": "Hash differs between runs.",
       "definition": "Hash fixed segments; assert hex digests match expected values."
     },
@@ -1594,8 +1594,8 @@
       "id": "F_LABOR_001",
       "title": "Overtime entitlement is enforced",
       "domain": "D_LABOR_RIGHTS",
-      "assumption": "Hours worked over 40 in a week are compensated at 1.5x per FLSA 29 U.S.C. § 207.",
-      "falsifying_observation": "Unpaid overtime is documented — hours over 40 in a week with no 1.5x compensation.",
+      "assumption": "Hours worked over 40 in a week are compensated at 1.5x per FLSA 29 U.S.C. \u00a7 207.",
+      "falsifying_observation": "Unpaid overtime is documented \u2014 hours over 40 in a week with no 1.5x compensation.",
       "strategy": "Audit timesheets and payroll records. Assert compensation rate >= 1.5x for all hours beyond 40/week.",
       "status": "active",
       "test_file": "tests/test_f_labor_001.py::test_f_labor_001",
@@ -1606,7 +1606,7 @@
         "CS_LAB_001",
         "CS_LAB_003"
       ],
-      "invariant": "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. § 207).",
+      "invariant": "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
       "falsifies_if": "Unpaid overtime is documented or admitted.",
       "definition": "Audit compensation records against hours-worked records for any week exceeding 40 hours."
     },
@@ -2064,8 +2064,12 @@
       "strategy": "Build officer_situs + video_situs, run has_adjunction(), verify ProofObject fields.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_forensic_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "run_adjunction_check() returns a ProofObject where is_valid() is True.",
       "falsifies_if": "ProofObject.is_valid() returns False.",
       "definition": "Execute D_DOLLARTREE pipeline; assert ProofObject validity."
@@ -2079,8 +2083,12 @@
       "strategy": "Call evaluate_topos_truth_gap(); assert morphism.truth_preserved is False.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_forensic_002",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Geometric morphism between contradictory sites has truth_preserved=False.",
       "falsifies_if": "truth_preserved == True for contradictory sites.",
       "definition": "Compare officer_situs vs video_situs on 'lawful_detention'; assert divergence detected."
@@ -2094,8 +2102,12 @@
       "strategy": "Build domain state with adjunction_holds=False; force it; assert extensions exist.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_forensic_003",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Forcing a defective domain produces valid extensions.",
       "falsifies_if": "force_domain() returns empty list.",
       "definition": "Build D_DOLLARTREE state; force_domain(); assert len(extensions) >= 1 and adjunction_holds=True."
@@ -2109,8 +2121,12 @@
       "strategy": "Run run_adjunction_check() twice; compare proof hashes.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_determinism_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Deterministic SAL functions produce identical hashes for identical inputs.",
       "falsifies_if": "Two runs produce different hashes.",
       "definition": "Execute SAL function twice; assert proof_hash equality."
@@ -2124,8 +2140,12 @@
       "strategy": "Parse all .py files in src/sal/ with ast module; assert no float calls or literals.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_determinism_002",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "SAL kernel uses Fraction (rational) arithmetic exclusively.",
       "falsifies_if": "float() or float literal found in src/sal/.",
       "definition": "AST scan of src/sal/ for float usage; assert none found."
@@ -2139,8 +2159,12 @@
       "strategy": "Call has_adjunction(); assert isinstance(result, AdjunctionProof).",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_adjunction_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "SAL functions return structured proofs with unit/counit evidence.",
       "falsifies_if": "Return type is bare bool.",
       "definition": "Check has_adjunction return type; assert AdjunctionProof with .valid and .proof attributes."
@@ -2154,8 +2178,12 @@
       "strategy": "Run run_adjunction_check(); extract YeshuaClaim; assert is_hash_anchored().",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_adjunction_002",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Every SAL claim carries a 64-char hex SHA-256 commitment.",
       "falsifies_if": "is_hash_anchored() returns False.",
       "definition": "Verify YeshuaClaim hash_commitment is 64-char hex."
@@ -2169,8 +2197,12 @@
       "strategy": "Create SubobjectClassifier; evaluate proposition; assert isinstance(result, Fraction).",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_topos_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Topos truth values are Fraction-valued (Heyting algebra).",
       "falsifies_if": "evaluate() returns float or binary.",
       "definition": "Evaluate proposition; assert Fraction return type."
@@ -2184,8 +2216,12 @@
       "strategy": "Call geometric_morphism(officer_situs, video_situs); assert valid GeometricMorphism.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_topos_002",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Geometric morphisms can be constructed between any two sites.",
       "falsifies_if": "geometric_morphism() raises or returns None.",
       "definition": "Build two sites; construct morphism; assert valid result with inverse_image and direct_image."
@@ -2199,8 +2235,12 @@
       "strategy": "Build defective state; force it; assert extensions exist AND original state was defective.",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_forcing_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Existence of forcing extension proves ground model defect (proof by generic extension).",
       "falsifies_if": "Extension exists but ground model was valid.",
       "definition": "Conjunction test: extensions exist AND original state had adjunction_holds=False."
@@ -2214,8 +2254,12 @@
       "strategy": "Create RealizabilityTopos; realize proposition; assert internal_truth == Fraction(1).",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_realizability_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Realized propositions have full internal truth (Fraction(1)).",
       "falsifies_if": "internal_truth() != Fraction(1) for a realized proposition.",
       "definition": "Realize proposition; assert internal truth equals Fraction(1)."
@@ -2229,8 +2273,12 @@
       "strategy": "Collect all YeshuaClaims from full D_DOLLARTREE pipeline; assert all is_hash_anchored().",
       "status": "active",
       "test_file": "tests/test_capability_benchmark.py::test_cap_hash_chain_001",
-      "ontological_issues": ["OI-CAP-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-CAP-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "All SAL claims carry SHA-256 Merkle anchoring.",
       "falsifies_if": "Any claim lacks 64-char hex commitment.",
       "definition": "Run full pipeline; verify every claim has valid hash_commitment."
@@ -2244,8 +2292,12 @@
       "strategy": "Compare SubobjectClassifier.heyting_implies() vs classical_implies(); assert difference.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_heyting_001",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Heyting algebra is architecturally necessary (not replaceable by Boolean).",
       "falsifies_if": "Both algebras produce identical results for all inputs.",
       "definition": "Test heyting_implies vs classical_implies; assert they differ for some input."
@@ -2259,8 +2311,12 @@
       "strategy": "Create claim violating axiom 5; run full and partial verification; compare results.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_axiom_removal_001",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Axioms 5-8 do real work (not redundant).",
       "falsifies_if": "Partial verify catches the same violations as full verify.",
       "definition": "Compare violations found by full vs partial (1-4) verifier."
@@ -2274,8 +2330,12 @@
       "strategy": "Build defective domain; assert no remedy exists without forcing; assert remedy exists with forcing.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_forcing_removal",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Forcing is architecturally necessary for remedy.",
       "falsifies_if": "Some other mechanism produces a valid extension without forcing.",
       "definition": "Test defective domain with and without forcing; assert forcing is required."
@@ -2289,8 +2349,12 @@
       "strategy": "Create RealizabilityTopos; access covenant; assert valid convergence_proof.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_coalgebra_001",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Terminal coalgebra structure provides convergence.",
       "falsifies_if": "Covenant has empty or None convergence_proof.",
       "definition": "Verify covenant.convergence_proof exists and is valid ProofObject."
@@ -2304,8 +2368,12 @@
       "strategy": "Run full D_DOLLARTREE pipeline with type aliases; assert results identical to original.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_rename_001",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Names are documentation, not computation.",
       "falsifies_if": "An if/elif/match statement in src/sal/ checks for theological strings.",
       "definition": "Use type aliases; run pipeline; assert identical results."
@@ -2319,8 +2387,12 @@
       "strategy": "Test both implication functions; assert they produce different outputs for some input.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_heyting_002",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Heyting algebra structure does computational work (not cosmetic).",
       "falsifies_if": "heyting_implies and classical_implies are equivalent for all inputs.",
       "definition": "Compare outputs for p=1/2, q=1/3; assert difference."
@@ -2334,8 +2406,12 @@
       "strategy": "Evaluate proposition in both sites; assert different covering sieves cause divergence.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_fraction_001",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Site-relative truth (Grothendieck topology) is architecturally necessary.",
       "falsifies_if": "truth_preserved=False for a reason other than sieve disagreement.",
       "definition": "Build sites with different covers; assert divergence tracks sieve difference."
@@ -2349,8 +2425,12 @@
       "strategy": "Validate capability_matrix.py; assert all DOES_NOT_HAVE entries have falsifies_if.",
       "status": "active",
       "test_file": "tests/test_architecture_not_dogma.py::test_arch_rename_001",
-      "ontological_issues": ["OI-ARCH-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-ARCH-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "All capability claims are Popperian-falsifiable.",
       "falsifies_if": "Any DOES_NOT_HAVE entry has empty or missing falsifies_if.",
       "definition": "Run validate_matrix(); assert all entries properly falsifiable."
@@ -2364,11 +2444,15 @@
       "strategy": "Create LogosConstraint; assert self_consistent() is True.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_001",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Lawvere fixed point theorem holds computationally.",
       "falsifies_if": "self_consistent() returns False.",
-      "definition": "Test Λ(Λ) = Λ computationally via LogosConstraint."
+      "definition": "Test \u039b(\u039b) = \u039b computationally via LogosConstraint."
     },
     {
       "id": "F_WALL_002",
@@ -2379,24 +2463,32 @@
       "strategy": "Create YeshuaClaim; compute expected hash; assert matches hash_commitment.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_002",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
       "invariant": "Self-referential claims are computable (Kleene recursion).",
       "falsifies_if": "Self-application produces different result.",
       "definition": "Verify claim hash equals SHA-256 of (source + statement + proof_hash)."
     },
     {
       "id": "F_WALL_003",
-      "title": "Feferman reflection resolves Gödel limit",
+      "title": "Feferman reflection resolves G\u00f6del limit",
       "domain": "D_ARCHITECTURE_PROOF",
       "assumption": "GoedelianReflector can climb past initial limit via add_reflection_principle().",
       "falsifying_observation": "Reflection principle does not increase proof_tree_height.",
       "strategy": "Add reflection principle; assert proof_tree_height increased.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_003",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
-      "invariant": "Feferman progressions enable climbing past Gödel limits.",
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
+      "invariant": "Feferman progressions enable climbing past G\u00f6del limits.",
       "falsifies_if": "Reflection principle does not increase proof_tree_height.",
       "definition": "Add reflection principle; verify ordinal increase."
     },
@@ -2409,9 +2501,13 @@
       "strategy": "Call kenotic_override with condemnatory input; assert MERCY_OVERRIDE.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_004",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
-      "invariant": "Kenotic override (κ) selectively overrides condemnatory rules.",
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
+      "invariant": "Kenotic override (\u03ba) selectively overrides condemnatory rules.",
       "falsifies_if": "kenotic_override('condemn') returns 'condemn' unchanged.",
       "definition": "Test kenotic_override with 'condemn'; assert 'MERCY_OVERRIDE'."
     },
@@ -2424,9 +2520,13 @@
       "strategy": "Create HypostaticUnion; call incarnation(); assert divine_nature preserved.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_005",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
-      "invariant": "Incarnation (ε) preserves mathematical content in Python embedding.",
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
+      "invariant": "Incarnation (\u03b5) preserves mathematical content in Python embedding.",
       "falsifies_if": "divine_nature is altered or lost.",
       "definition": "Verify incarnation preserves divine_nature unchanged."
     },
@@ -2439,9 +2539,13 @@
       "strategy": "Call grace_truncation with large debt; assert returns 0.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_006",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
-      "invariant": "Grace truncation (|·|₀) erases any debt completely.",
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
+      "invariant": "Grace truncation (|\u00b7|\u2080) erases any debt completely.",
       "falsifies_if": "grace_truncation returns non-zero.",
       "definition": "Test grace_truncation(999999); assert 0."
     },
@@ -2454,11 +2558,35 @@
       "strategy": "Build violation state; force it; assert valid extensions exist.",
       "status": "active",
       "test_file": "tests/test_yeshua_wall_inversions.py::test_wall_inv_007",
-      "ontological_issues": ["OI-WALL-001"],
-      "case_studies": ["CS_CAP_001"],
-      "invariant": "Forgiveness atomic IS forcing operation (ground→generic extension).",
+      "ontological_issues": [
+        "OI-WALL-001"
+      ],
+      "case_studies": [
+        "CS_CAP_001"
+      ],
+      "invariant": "Forgiveness atomic IS forcing operation (ground\u2192generic extension).",
       "falsifies_if": "force_domain() returns empty list or extensions with adjunction_holds=False.",
       "definition": "Force defective state; assert extensions exist with adjunction_holds=True."
+    },
+    {
+      "id": "F_CAP_005",
+      "title": "Hostile environment detention: assault during unlawful containment",
+      "domain": "D_DOLLARTREE",
+      "assumption": "When exit is physically blocked while assault is ongoing, the containment creates a duty to intervene. Breach of that duty converts false imprisonment into reckless endangerment.",
+      "falsifying_observation": "force_domain() resolves the hostile_containment violation at PEANO strength (civil) instead of requiring PREDICATIVE (constitutional).",
+      "strategy": "Build DomainState with assault_during_containment violation, call force_domain(), verify minimum strength is PREDICATIVE.",
+      "status": "active",
+      "test_file": "tests/test_f_dollartree_001.py::TestCompositeForcing::test_domain_state_strength_is_mahlo",
+      "related_f_ids": [
+        "F_CAP_001",
+        "F_CAP_003"
+      ],
+      "related_oi_ids": [
+        "OI_CAP_001"
+      ],
+      "invariant": "Cross-agent multi-domain violations require MAHLO (not PEANO) forcing strength.",
+      "falsifies_if": "force_domain() uses PEANO strength for composite violations.",
+      "definition": "Build DomainState with 5 violations spanning 3 agents; assert strength == MAHLO."
     }
   ]
 }
