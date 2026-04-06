@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 @dataclass
@@ -57,7 +57,7 @@ class DiplomaticLaw:
             declaring_country=declaring_country,
             declaration_date=now,
             reason=reason,
-            departure_deadline=now + datetime.timedelta(days=departure_days),
+            departure_deadline=now + timedelta(days=departure_days),
         )
         self.png_declarations.append(png)
         return png

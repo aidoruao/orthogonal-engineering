@@ -10,39 +10,11 @@ Each layer is a topos with:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum, auto
 from typing import List, Optional, Set, Dict
 
-
-class CardinalStrength(Enum):
-    """
-    Consistency strength for layer authority.
-    
-    Higher strength = harder to violate = requires stronger proof to override.
-    
-    Ordering (weakest to strongest):
-      PEANO < PREDICATIVE < INACCESSIBLE < MAHLO < MEASURABLE < WOODIN < SUPERCOMPACT
-    """
-    
-    PEANO = auto()
-    PREDICATIVE = auto()
-    INACCESSIBLE = auto()
-    MAHLO = auto()
-    MEASURABLE = auto()
-    WOODIN = auto()
-    SUPERCOMPACT = auto()
-    
-    def __lt__(self, other: CardinalStrength) -> bool:
-        return self.value < other.value
-    
-    def __le__(self, other: CardinalStrength) -> bool:
-        return self.value <= other.value
-    
-    def __gt__(self, other: CardinalStrength) -> bool:
-        return self.value > other.value
-    
-    def __ge__(self, other: CardinalStrength) -> bool:
-        return self.value >= other.value
+# Import CardinalStrength from SAL to avoid duplication
+# See: src/sal/forcing_operation.py
+from src.sal.forcing_operation import CardinalStrength
 
 
 # Layer 0 (Supranational) has highest authority → MAHLO

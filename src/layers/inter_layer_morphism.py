@@ -23,6 +23,51 @@ from src.sal.topos_subobject_classifier import (
 from axioms.logic import ProofObject
 
 
+def _load_domain_invariants(domain_id: str) -> Optional[Any]:
+    """
+    Dynamically load the invariants module for a given domain.
+    
+    Args:
+        domain_id: The domain identifier (e.g., "D_UN_CHARTER")
+        
+    Returns:
+        The invariants module with run_all_invariants function, or None if not found.
+    """
+    # Map domain IDs to their module paths
+    domain_module_map = {
+        "D_UN_CHARTER": "src.domains.d_un_charter.invariants",
+        "D_TREATIES": "src.domains.d_treaties.invariants",
+        "D_DIPLOMATIC": "src.domains.d_diplomatic.invariants",
+        "D_INTL_CRIMINAL": "src.domains.d_intl_criminal.invariants",
+        "D_INTL_HUMANITARIAN": "src.domains.d_intl_humanitarian.invariants",
+        "D_ISO_STANDARDS": "src.domains.d_iso_standards.invariants",
+        "D_TRADE_AGREEMENTS": "src.domains.d_trade_agreements.invariants",
+        "D_LABOR_RIGHTS": "src.domains.d_labor_rights.invariants",
+        "D_LEGAL": "src.domains.d_legal.invariants",
+        "D_MEDICAL": "src.domains.d_medical.invariants",
+        "D_FINANCIAL": "src.domains.d_financial.invariants",
+        "D_EDUCATION": "src.domains.d_education.invariants",
+        "D_EMERGENCY": "src.domains.d_emergency.invariants",
+        "D_INDUSTRIAL": "src.domains.d_industrial.invariants",
+        "D_AVATION": "src.domains.d_aviation.invariants",
+        "D_CRYPTO": "src.domains.d_crypto.invariants",
+        "D_WEBSEC": "src.domains.d_websec.invariants",
+    }
+    
+    module_path = domain_module_map.get(domain_id)
+    if not module_path:
+        return None
+    
+    try:
+        import importlib
+        module = importlib.import_module(module_path)
+        if hasattr(module, 'run_all_invariants'):
+            return module
+        return None
+    except ImportError:
+        return None
+
+
 @dataclass
 class LayerContradiction:
     """
@@ -133,13 +178,28 @@ def check_layer_consistency(
     
     # For each shared domain, check consistency
     for domain_id in shared_domains:
-        # In full implementation, this would:
-        # 1. Load the domain's invariants from ontology
-        # 2. Check if lower layer's implementation contradicts upper
-        # 3. Record any violations
-        #
-        # For now, we construct the geometric morphism to check structure
-        pass
+        # Load and run the domain's invariants to check for contradictions
+        # Upper layer invariants must be respected by lower layer
+        try:
+            domain_invariants = _load_domain_invariants(domain_id)
+            if domain_invariants:
+                invariant_results = domain_invariants.run_all_invariants()
+                for check_name, result in invariant_results.items():
+                    if result != "PASS":
+                        contradictions.append(LayerContradiction(
+                            upper_layer=upper,
+                            lower_layer=lower,
+                            violation=f"Domain {domain_id}: {check_name} failed - {result}",
+                            domain_id=domain_id,
+                        ))
+        except Exception as e:
+            # If we can't load/run invariants, record as potential contradiction
+            contradictions.append(LayerContradiction(
+                upper_layer=upper,
+                lower_layer=lower,
+                violation=f"Domain {domain_id}: Could not verify invariants - {e}",
+                domain_id=domain_id,
+            ))
     
     # Construct geometric morphism
     # The morphism goes from upper (source) to lower (target)
@@ -235,14 +295,52 @@ class CountryVerifier:
         results = check_all_layer_morphisms(self.layers)
         return list(results.values())
     
-    def verify_all_intra_layer_adjunctions(self) -> List[Any]:
+    def verify_all_intra_layer_adjunctions(self) -> List[Dict[str, Any]]:
         """
         Verify adjunctions within each layer (domain-to-domain checks).
         
-        This will be implemented when domain adjunctions are defined.
+        For each layer, this checks that domains within the same layer
+        are mutually consistent (no domain contradicts another in the same layer).
+        
+        Returns:
+            List of verification results, one per layer.
         """
-        # TODO: Implement intra-layer adjunction checking
-        return []
+        results = []
+        
+        for layer in self.layers:
+            layer_result = {
+                "layer_id": layer.layer_id,
+                "layer_name": layer.name,
+                "domains_checked": len(layer.domains),
+                "domain_results": {},
+                "all_passed": True,
+            }
+            
+            # Run invariants for each domain in this layer
+            for domain_id in layer.domains:
+                try:
+                    domain_invariants = _load_domain_invariants(domain_id)
+                    if domain_invariants and hasattr(domain_invariants, 'run_all_invariants'):
+                        invariant_results = domain_invariants.run_all_invariants()
+                        layer_result["domain_results"][domain_id] = invariant_results
+                        
+                        # Check if any invariants failed
+                        if any(v != "PASS" for v in invariant_results.values()):
+                            layer_result["all_passed"] = False
+                    else:
+                        layer_result["domain_results"][domain_id] = {
+                            "status": "NO_INVARIANTS"
+                        }
+                except Exception as e:
+                    layer_result["domain_results"][domain_id] = {
+                        "status": "ERROR",
+                        "error": str(e),
+                    }
+                    layer_result["all_passed"] = False
+            
+            results.append(layer_result)
+        
+        return results
     
     def find_contradictions(self) -> List[LayerContradiction]:
         """Find all contradictions across all layers."""
