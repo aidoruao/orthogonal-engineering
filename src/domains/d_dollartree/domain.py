@@ -28,6 +28,13 @@ Mathematical structure:
   * Composite counit violation: no single agent's situs preserves truth
   * HIT paths encode temporal transitions with timestamps
   * Forcing requires MAHLO strength (cross-agent, multi-domain violation)
+
+Officer utterance (primary source, 0:13):
+  The officer completed the count "1-2-3-4-5-6-7-8" then trailed off.
+  This was a definite enumeration of 8 distinct persons, followed by
+  abrupt cessation — not an indefinite "8-plus" abandoned count.
+  The distinction matters: deliberate collapse of 8 individuals into
+  one collective unit (non-functorial mapping) vs. lazy approximation.
 """
 
 from __future__ import annotations
@@ -126,6 +133,12 @@ DOLLARTREE_SCHEMA: Dict[str, Any] = {
         "Officer threatened 8 people with jail but issued vehicle citations only. "
         "These commands and outcomes are logically contradictory across all three agents."
     ),
+    "officer_utterance": (
+        "Officer completed enumeration '1-2-3-4-5-6-7-8' then trailed off (0:13); "
+        "asserted collective guilt over exactly 8 individuals without per-person "
+        "probable cause. The count was definite (not indefinite '8-plus'), indicating "
+        "deliberate collapse of 8 distinct persons into one collective unit."
+    ),
 }
 
 # The counit is expected to FAIL because the officer's generated state does not
@@ -147,8 +160,8 @@ WOMAN_ASSAULT_DURING_CONTAINMENT: str = (
 )
 
 OFFICER_NON_FUNCTORIAL_ENFORCEMENT: str = (
-    "officer_violation: threatened 8 people with jail (mass enumeration) but issued "
-    "vehicle citations only; F: Evidence → Sanctions failed to preserve structure"
+    "officer_violation: completed enumeration to 8 ('1-2-3-4-5-6-7-8') then trailed off; "
+    "asserted collective guilt over exactly 8 individuals without per-person probable cause"
 )
 
 # ---------------------------------------------------------------------------

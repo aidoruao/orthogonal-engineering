@@ -550,3 +550,23 @@ class TestFullReport:
                 f"Extension for '{ext.conditions[0].replaces if ext.conditions else 'unknown'}' "
                 f"is not valid: violations={ext.violations}"
             )
+
+
+# ===========================================================================
+# Officer utterance — primary source correction (0:13)
+# ===========================================================================
+
+
+class TestOfficerUtterance:
+    def test_officer_utterance_is_definite_enumeration(self):
+        """Primary source (0:13): officer counted '1-2-3-4-5-6-7-8' then stopped."""
+        assert "officer_utterance" in DOLLARTREE_SCHEMA
+        utterance = DOLLARTREE_SCHEMA["officer_utterance"]
+        assert "1-2-3-4-5-6-7-8" in utterance
+        assert "trailed off" in utterance
+        assert "per-person" in utterance
+
+    def test_officer_non_functorial_enforcement_in_violations(self):
+        from src.domains.d_dollartree.domain import OFFICER_NON_FUNCTORIAL_ENFORCEMENT
+        state = build_domain_state()
+        assert OFFICER_NON_FUNCTORIAL_ENFORCEMENT in state.violations
