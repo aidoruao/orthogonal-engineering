@@ -88,17 +88,63 @@
         "value": false,
         "default": "UNKNOWN (likely true)",
         "risk": "CRITICAL - Queue overload warnings are SUPPRESSED. MrFuzzihead won't see in-game warnings about queue buildup."
+      },
+      {
+        "setting": "generationBoundsRadius",
+        "value": 0,
+        "default": "UNKNOWN (likely > 0)",
+        "risk": "CRITICAL - Value 0 means generation bounds are DISABLED. No geographic limit on LOD generation. Work area expands indefinitely."
+      },
+      {
+        "setting": "maxHorizontalResolution",
+        "value": "BLOCK",
+        "default": "UNKNOWN (likely CHUNK or HALF_CHUNK)",
+        "risk": "CRITICAL - BLOCK = 256 LODs per chunk (HIGHEST). CHUNK = 1 LOD per chunk. This is a 256x multiplier on processing work. Combined with 52.7M blocks² = ~13.5 BILLION LOD units per player."
+      },
+      {
+        "setting": "threadRunTimeRatio",
+        "value": "1.0",
+        "default": "UNKNOWN (likely 1.0)",
+        "risk": "CRITICAL - All 8 threads run at 100% capacity with ZERO idle time. At 0.5, CPU usage would halve without changing thread count."
+      },
+      {
+        "setting": "dataCompression",
+        "value": "Z_STD",
+        "default": "UNKNOWN (likely LZ4)",
+        "risk": "HIGH - Z_STD: read 9.31ms, write 15.13ms per DTO. LZ4: read 3.25ms, write 5.99ms. Z_STD is ~3x slower on reads, ~2.5x slower on writes. Compounds with millions of blocks."
+      },
+      {
+        "setting": "enableRealTimeUpdates",
+        "value": true,
+        "default": true,
+        "risk": "HIGH - Real-time LOD updates continuously push to clients as chunks change. Adds processing load on top of generation and sync."
+      },
+      {
+        "setting": "enableNSizedGeneration",
+        "value": false,
+        "default": false,
+        "risk": "MEDIUM - When enabled, allows loading lower detail levels to speed up terrain generation. Could reduce generation load. Disabled = missing optimization."
+      },
+      {
+        "setting": "showQueuedChunkUpdateCount",
+        "value": true,
+        "default": true,
+        "risk": "INFO - F3 screen shows queued chunk update count. MrFuzzihead has this enabled but hasn't been told to monitor it. Would show queue buildup in real-time."
       }
     ],
-    "root_cause": "MrFuzzihead's config has EXTREMELY aggressive distance settings (4096 blocks for both generation and sync). Combined with the 15ms tick budget in ForgeServerProxy.java, this creates a perfect storm for TPS lag. The server is trying to generate and sync LODs for a massive area (4096 block radius = ~52 million square blocks per player!)"
+    "root_cause": "MrFuzzihead's config has EVERY knob cranked to MAXIMUM simultaneously: (1) Distance: 4096 blocks with generationBoundsRadius=0 (no geographic limit), (2) Resolution: maxHorizontalResolution='BLOCK' (256 LODs per chunk = 256x multiplier), (3) Threads: 8 at threadRunTimeRatio='1.0' (100% CPU, no idle), (4) Compression: Z_STD (3x slower I/O than LZ4), (5) Queue warnings: disabled. The COMPOUND EFFECT: 52.7M blocks² × 256 LODs/chunk = ~13.5 BILLION LOD units per player. Combined with 15ms tick budget, this creates catastrophic TPS lag."
   },
   "findings": {
-    "summary": "Server TPS lag is caused by a combination of: (1) ForgeServerProxy.serverTickEvent() with unbounded chunk event queue and 15ms time budget, (2) EXTREMELY aggressive config settings - 4096 block radius for both generationRequestDistance and syncOnLoadRequestDistance, (3) 256 chunk real-time update radius. With 20 threads/16GB RAM, the server hardware is adequate, but DH's config is asking it to process an impossibly large area.",
-    "root_cause": "Config settings are 4x more aggressive than typical defaults. The 4096 block generation distance combined with 15ms tick handler budget causes the server to spend excessive time on DH operations per tick. Each player triggers generation/sync for ~52 million square blocks (4096 radius).",
+    "summary": "Server TPS lag is caused by a COMPOUND EFFECT of EVERY setting cranked to MAXIMUM: (1) ForgeServerProxy.serverTickEvent() with unbounded queue and 15ms budget, (2) 4096-block distances with NO geographic bounds (generationBoundsRadius=0), (3) BLOCK resolution (256 LODs/chunk = 256x multiplier), (4) 8 threads at 100% CPU (threadRunTimeRatio=1.0), (5) Z_STD compression (3x slower I/O), (6) Queue warnings disabled. The actual processing volume is ~13.5 BILLION LOD units per player (52.7M blocks² × 256 LODs/chunk). With 20 threads/16GB, the server is overwhelmed by the combinatorial explosion of settings.",
+    "root_cause": "COMPOUND EFFECT: MrFuzzihead's config has EVERY setting at MAXIMUM simultaneously. Distance (4096 blocks) × Resolution (256 LODs/chunk) × Threads (8 @ 100%) × No bounds (generationBoundsRadius=0) = ~13.5 BILLION LOD units per player. The 15ms tick budget cannot handle this combinatorial explosion. Issue #50 (slow rate limiting) may also contribute to queue buildup.",
     "affected_components": [
       "com.seibel.distanthorizons.forge.ForgeServerProxy (15ms tick budget)",
       "DistantHorizons.toml config (aggressive distance settings)",
-      "Server world generation thread pool"
+      "Server world generation thread pool",
+      "SyncOnLoadRequestQueue (related to Issue #50 - slow rate limiting)"
+    ],
+    "related_issues": [
+      "#50 - Slow rate limiting in SyncOnLoadRequestQueue (feeds same queue pipeline)"
     ],
     "evidence": [
       "ForgeServerProxy.java:105-141 - serverTickEvent method (VERIFIED line numbers)",

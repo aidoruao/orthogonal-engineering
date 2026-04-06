@@ -52,6 +52,41 @@ numberOfThreads = 4
 
 ---
 
+### ADDITIONAL Critical Settings (Read This!)
+
+Your config has **THREE MORE** critical settings that multiply the problem:
+
+#### 1. Generation Bounds Disabled (CRITICAL)
+```toml
+[server]
+# Change this:
+generationBoundsRadius = 0
+# To this:
+generationBoundsRadius = 1024  # Limit generation to 1024 blocks from center
+```
+**Why:** `0` means NO geographic limit on generation. Combined with 4096-block distances, LODs generate everywhere indefinitely.
+
+#### 2. LOD Resolution Too High (CRITICAL - 256x Multiplier!)
+```toml
+[client.advanced.graphics.quality]
+# Change this:
+maxHorizontalResolution = "BLOCK"
+# To this:
+maxHorizontalResolution = "FOUR_BLOCKS"  # or "HALF_CHUNK" for lower quality
+```
+**Why:** `BLOCK` = 256 LODs per chunk (HIGHEST). `CHUNK` = 1 LOD per chunk. You're generating **256x more LOD data** than necessary. The actual processing volume is:
+- 52.7M blocks² × 256 LODs/chunk = **~13.5 BILLION LOD units per player!**
+
+#### 3. Threads at 100% CPU (No Idle Time)
+```toml
+[common.multiThreading]
+# Add this:
+threadRunTimeRatio = "0.5"  # Was "1.0" (100% CPU)
+```
+**Why:** `"1.0"` means threads never idle. `"0.5"` halves CPU usage without reducing thread count.
+
+---
+
 ### How to Verify the Fix
 
 1. **Install Spark mod** (if not already installed): https://www.curseforge.com/minecraft/mc-mods/spark
@@ -60,6 +95,18 @@ numberOfThreads = 4
 4. **Compare:** Look for `ForgeServerProxy.serverTickEvent` time usage
 
 Expected result: TPS should stabilize at 20, and `serverTickEvent` should consume significantly less time.
+
+---
+
+### F3 Diagnostic: Monitor Queue in Real-Time
+
+You already have this enabled in your config:
+```toml
+[client.advanced.debugging.f3Screen]
+showQueuedChunkUpdateCount = true
+```
+
+**Press F3 in-game** and look for the queued chunk update count. If this number is consistently high (thousands+) and growing, your queue is backing up.
 
 ---
 
