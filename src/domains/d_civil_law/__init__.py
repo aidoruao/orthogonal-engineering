@@ -4,10 +4,12 @@ from src.domains.d_civil_law.implementation import (
     TortClaim,
     DutyBreachCausationDamages,
     StatuteOfLimitations,
+    TortType,
 )
 __all__ = [
     "CivilLaw",
     "TortClaim",
     "DutyBreachCausationDamages",
     "StatuteOfLimitations",
+    "TortType",
 ]

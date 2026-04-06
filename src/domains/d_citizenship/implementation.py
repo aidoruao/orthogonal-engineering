@@ -10,7 +10,7 @@ CardinalStrength: INACCESSIBLE
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Set
+from typing import Dict, List, Optional, Set
 from enum import Enum, auto
 from datetime import datetime, timedelta
 from fractions import Fraction
