@@ -146,6 +146,21 @@
       "Use /spark profiler --thread Server Thread to verify fix"
     ]
   },
+  "falsification_test": {
+    "description": "If TPS issues persist after reducing config distances to 1024 and threads to 4, then the root cause is NOT the config settings but in the code (ForgeServerProxy tick handler).",
+    "steps": [
+      "1. Apply config changes: maxGenerationRequestDistance = 1024, maxSyncOnLoadRequestDistance = 1024, realTimeUpdateDistanceRadiusInChunks = 64, numberOfThreads = 4",
+      "2. Restart server and profile with /spark profiler --thread Server Thread for 60 seconds",
+      "3. Check if TPS stabilizes at 20 and serverTickEvent time drops",
+      "4. If lag persists: Root cause is in ForgeServerProxy code (15ms budget, unbounded queue)",
+      "5. If lag resolves: Root cause was the aggressive config settings"
+    ],
+    "expected_result": "TPS should improve significantly with config changes alone, confirming config as primary cause"
+  },
+  "deliverables": {
+    "developer_comment": "issue_51_CORRECTED_comment.md - For DarkShadow44 with code fix proposal",
+    "user_comment": "issue_51_USER_COMMENT.md - For MrFuzzihead with config workaround and mathematical explanation"
+  },
   "previous_analysis_error": {
     "what_was_wrong": "Initial analysis claimed files were NOT_FOUND when they existed in commit ac67026 on main branch. Failed to locate files due to working on sovereign-topos/operation-main branch instead of checking main branch.",
     "files_were": "In commit ac67026 on main branch, not in working directory",
