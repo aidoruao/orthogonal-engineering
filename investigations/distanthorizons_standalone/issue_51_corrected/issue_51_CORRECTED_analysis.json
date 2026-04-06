@@ -33,7 +33,7 @@
   "config_analysis": {
     "file": "DistantHorizons.toml",
     "status": "ANALYZED",
-    "note": "806 lines - AGGRESSIVE settings identified that contribute to server lag",
+    "note": "806 lines - AGGRESSIVE settings identified that contribute to server lag. CRITICAL: showUpdateQueueOverloadedChatWarning = false means queue overload warnings are suppressed",
     "critical_settings": [
       {
         "setting": "maxGenerationRequestDistance",
@@ -82,6 +82,12 @@
         "value": "SURFACE",
         "default": "SURFACE",
         "risk": "MEDIUM - SURFACE mode generates terrain features outside render distance"
+      },
+      {
+        "setting": "showUpdateQueueOverloadedChatWarning",
+        "value": false,
+        "default": "UNKNOWN (likely true)",
+        "risk": "CRITICAL - Queue overload warnings are SUPPRESSED. MrFuzzihead won't see in-game warnings about queue buildup."
       }
     ],
     "root_cause": "MrFuzzihead's config has EXTREMELY aggressive distance settings (4096 blocks for both generation and sync). Combined with the 15ms tick budget in ForgeServerProxy.java, this creates a perfect storm for TPS lag. The server is trying to generate and sync LODs for a massive area (4096 block radius = ~52 million square blocks per player!)"

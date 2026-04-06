@@ -63,6 +63,22 @@ Expected result: TPS should stabilize at 20, and `serverTickEvent` should consum
 
 ---
 
+### Diagnostic Tip: Enable Queue Overload Warnings
+
+I noticed your config has queue overload warnings **disabled**:
+
+```toml
+[common.logging.warning]
+# Change this:
+showUpdateQueueOverloadedChatWarning = false
+# To this:
+showUpdateQueueOverloadedChatWarning = true
+```
+
+With this enabled, you'll see in-game chat warnings when DH's internal queue is backing up. This provides real-time confirmation that the config changes are helping.
+
+---
+
 ### Alternative (Nuclear Option)
 
 If you want to completely eliminate DH server-side processing:
