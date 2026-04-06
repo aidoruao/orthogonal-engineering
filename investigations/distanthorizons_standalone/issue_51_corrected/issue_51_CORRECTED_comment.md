@@ -170,9 +170,15 @@ To verify the fix works:
 
 | Layer | Issue | Impact |
 |-------|-------|--------|
-| Config | 4096-block distances | 16x more blocks than typical |
+| Config | 4096-block distances + 256x resolution | ~13.5B LOD units per player |
 | Code | Unbounded queue + 15ms budget | 30%+ of tick consumed by DH |
-| Combined | Both issues active | TPS drops below 20 |
+| SQLite | Database I/O on server thread | Additional blocking (mentioned by you) |
+| Combined | All issues active | TPS drops below 20 |
+
+**Note on SQLite:** You mentioned "delete the sqlite on the server to delete all LODs" in a previous response. SQLite database operations on the server thread could contribute to tick lag, especially with Z_STD compression (15ms writes vs 6ms for LZ4) and 13.5B LOD units being processed. Consider:
+1. Using WAL mode for SQLite if not already enabled
+2. Moving DB operations off the main server thread
+3. Recommending users switch to LZ4 compression for faster I/O
 
 The code fix alone helps, but users with extreme configs will still experience lag. Recommending both: (1) code improvements for robustness, and (2) config validation to guide users toward sane defaults.
 

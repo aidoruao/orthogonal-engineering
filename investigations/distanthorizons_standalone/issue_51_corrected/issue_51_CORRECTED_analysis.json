@@ -141,10 +141,13 @@
       "com.seibel.distanthorizons.forge.ForgeServerProxy (15ms tick budget)",
       "DistantHorizons.toml config (aggressive distance settings)",
       "Server world generation thread pool",
-      "SyncOnLoadRequestQueue (related to Issue #50 - slow rate limiting)"
+      "SyncOnLoadRequestQueue (related to Issue #50 - slow rate limiting)",
+      "SQLite database (mentioned by DarkShadow44 - potential I/O bottleneck)",
+      "GTNH modpack context (heavy modpack already pushes TPS limits)"
     ],
     "related_issues": [
-      "#50 - Slow rate limiting in SyncOnLoadRequestQueue (feeds same queue pipeline)"
+      "#50 - Slow rate limiting in SyncOnLoadRequestQueue (feeds same queue pipeline)",
+      "MrFuzzihead Jan 16 comment - Already halved settings, lag persisted (suggests combinatorial cause)"
     ],
     "evidence": [
       "ForgeServerProxy.java:105-141 - serverTickEvent method (VERIFIED line numbers)",

@@ -139,6 +139,30 @@ This disables distant generation entirely. Clients will still render LODs for ex
 
 ---
 
+### Important Note: You Already Tried Reducing Settings
+
+I see from your Jan 16 comment that you already halved the LOD distance and network rates, but lag was still unmanageable. This suggests the problem is **combinatorial** - it's not just one setting, but the interaction of:
+- Distance settings (even halved, likely still 2048+)
+- BLOCK resolution (256x multiplier)
+- generationBoundsRadius = 0 (no limits)
+- 8 threads at 100% CPU
+- Z_STD compression (slow I/O)
+
+**You need to change ALL of these simultaneously** to see improvement. Changing just one or two may not be enough due to the multiplicative effect.
+
+---
+
+### GTNH Modpack Context
+
+Your server is running GTNH (GregTech: New Horizons), which is one of the heaviest modpacks available. GTNH already pushes server TPS to its limits with:
+- Complex ore processing chains
+- Large multiblock structures
+- Extensive world generation
+
+Adding DH with extreme settings on top of GTNH creates a "perfect storm" for TPS lag. The config changes above are especially important for GTNH servers.
+
+---
+
 ### Root Cause Summary
 
 Your config isn't "wrong" - it's just tuned for a much more powerful server. The default values (if they existed) would likely be ~1024 for distances. Your 4096-block settings create a "perfect storm" when combined with:
