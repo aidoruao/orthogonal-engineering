@@ -4,7 +4,10 @@
     "description": "Extended domain ontology and OI-XXX issue registry for the orthogonal-engineering monorepo. Extends pr26_ontological_issues.json with new domains and cross-domain issues identified via the DeepSeek methodology.",
     "created": "2026-03-02",
     "extends": "ontology/pr26_ontological_issues.json",
-    "updated": "2026-03-02"
+    "updated": "2026-04-05",
+    "layer_schema": "sovereign-topos/1.0",
+    "layer_count": 5,
+    "total_domains": 133
   },
   "domains": [
     {
@@ -26,7 +29,8 @@
         "Scissor rect is covariant with the PoseStack: S_vulkan = M_pose * S_vanilla."
       ],
       "example_falsification_test": "F_GRAPHICS_001",
-      "example_ontological_issue": "OI_GRAPHICS_001"
+      "example_ontological_issue": "OI_GRAPHICS_001",
+      "layer": null
     },
     {
       "id": "D_CRYPTO",
@@ -40,11 +44,12 @@
       ],
       "invariants": [
         "All secret-dependent operations are constant-time.",
-        "Protocol validity rules (e.g., PSK ≠ 0^32) are enforced at the API boundary.",
+        "Protocol validity rules (e.g., PSK \u2260 0^32) are enforced at the API boundary.",
         "No secret material is stored in plain-text logs or error messages."
       ],
       "example_falsification_test": "F_CRYPTO_001",
-      "example_ontological_issue": "OI_CRYPTO_001"
+      "example_ontological_issue": "OI_CRYPTO_001",
+      "layer": 3
     },
     {
       "id": "D_AVIATION",
@@ -61,7 +66,8 @@
         "Safety-critical computations complete within the certified time budget."
       ],
       "example_falsification_test": "F_AVIATION_004",
-      "example_ontological_issue": "OI_AVIATION_001"
+      "example_ontological_issue": "OI_AVIATION_001",
+      "layer": 3
     },
     {
       "id": "D_WEBSEC",
@@ -79,7 +85,8 @@
         "CSRF tokens are required for all state-mutating requests."
       ],
       "example_falsification_test": "F_XSS_001",
-      "example_ontological_issue": "OI_WEBSEC_001"
+      "example_ontological_issue": "OI_WEBSEC_001",
+      "layer": 3
     },
     {
       "id": "D_SPACE",
@@ -96,7 +103,8 @@
         "No unbounded recursion or dynamic allocation in hard real-time paths."
       ],
       "example_falsification_test": "F_SPACE_001",
-      "example_ontological_issue": "OI_SPACE_001"
+      "example_ontological_issue": "OI_SPACE_001",
+      "layer": null
     },
     {
       "id": "D_GAMEMODS",
@@ -113,7 +121,8 @@
         "Conflicting mods are detected and reported before launch."
       ],
       "example_falsification_test": "F_GAMEMODS_001",
-      "example_ontological_issue": "OI_GAMEMODS_001"
+      "example_ontological_issue": "OI_GAMEMODS_001",
+      "layer": null
     },
     {
       "id": "D_MEDICAL",
@@ -130,7 +139,8 @@
         "Software failures default to a safe state (fail-safe design)."
       ],
       "example_falsification_test": "F_MEDICAL_001",
-      "example_ontological_issue": "OI_MEDICAL_001"
+      "example_ontological_issue": "OI_MEDICAL_001",
+      "layer": 3
     },
     {
       "id": "D_INDUSTRIAL",
@@ -148,7 +158,8 @@
         "Firmware updates are authenticated and integrity-checked before installation."
       ],
       "example_falsification_test": "F_INDUSTRIAL_001",
-      "example_ontological_issue": "OI_INDUSTRIAL_001"
+      "example_ontological_issue": "OI_INDUSTRIAL_001",
+      "layer": 3
     },
     {
       "id": "D_BLUECOLLAR",
@@ -165,7 +176,8 @@
         "Offline-capable: critical functions work without network connectivity."
       ],
       "example_falsification_test": "F_BLUECOLLAR_001",
-      "example_ontological_issue": "OI_BLUECOLLAR_001"
+      "example_ontological_issue": "OI_BLUECOLLAR_001",
+      "layer": null
     },
     {
       "id": "D_WHITECOLLAR",
@@ -182,7 +194,8 @@
         "Financial calculations use arbitrary-precision arithmetic, not floating-point."
       ],
       "example_falsification_test": "F_WHITECOLLAR_001",
-      "example_ontological_issue": "OI_WHITECOLLAR_001"
+      "example_ontological_issue": "OI_WHITECOLLAR_001",
+      "layer": null
     },
     {
       "id": "D_LUXURY",
@@ -198,7 +211,8 @@
         "Private aviation software meets the same safety invariants as commercial aviation."
       ],
       "example_falsification_test": "F_LUXURY_001",
-      "example_ontological_issue": "OI_LUXURY_001"
+      "example_ontological_issue": "OI_LUXURY_001",
+      "layer": null
     },
     {
       "id": "D_EMERGENCY",
@@ -214,7 +228,8 @@
         "Emergency systems operate in degraded mode when dependencies are unavailable."
       ],
       "example_falsification_test": "F_EMERGENCY_001",
-      "example_ontological_issue": "OI_EMERGENCY_001"
+      "example_ontological_issue": "OI_EMERGENCY_001",
+      "layer": 3
     },
     {
       "id": "D_NECESSITY",
@@ -231,7 +246,8 @@
         "Security patches are applied within the certified maintenance window."
       ],
       "example_falsification_test": "F_NECESSITY_001",
-      "example_ontological_issue": "OI_NECESSITY_001"
+      "example_ontological_issue": "OI_NECESSITY_001",
+      "layer": null
     },
     {
       "id": "D_BORING",
@@ -248,7 +264,8 @@
         "Data-format conversions preserve all semantic content."
       ],
       "example_falsification_test": "F_BORING_001",
-      "example_ontological_issue": "OI_BORING_001"
+      "example_ontological_issue": "OI_BORING_001",
+      "layer": null
     },
     {
       "id": "D_FUN",
@@ -264,7 +281,8 @@
         "Online matchmaking produces fair and deterministic results."
       ],
       "example_falsification_test": "F_FUN_001",
-      "example_ontological_issue": "OI_FUN_001"
+      "example_ontological_issue": "OI_FUN_001",
+      "layer": null
     },
     {
       "id": "D_CREATIVE",
@@ -280,7 +298,8 @@
         "Generated audio is not perceptually identical to copyrighted material."
       ],
       "example_falsification_test": "F_CREATIVE_001",
-      "example_ontological_issue": "OI_CREATIVE_001"
+      "example_ontological_issue": "OI_CREATIVE_001",
+      "layer": null
     },
     {
       "id": "D_NONCREATIVE",
@@ -296,7 +315,8 @@
         "Format conversion round-trips without data loss."
       ],
       "example_falsification_test": "F_NONCREATIVE_001",
-      "example_ontological_issue": "OI_NONCREATIVE_001"
+      "example_ontological_issue": "OI_NONCREATIVE_001",
+      "layer": null
     },
     {
       "id": "D_GAMING",
@@ -313,7 +333,8 @@
         "Mod sandbox is enforced."
       ],
       "example_falsification_test": "F_GAMING_001",
-      "example_ontological_issue": "OI_GAMING_001"
+      "example_ontological_issue": "OI_GAMING_001",
+      "layer": null
     },
     {
       "id": "D_CRUSADER",
@@ -331,7 +352,8 @@
         "All actions logged in hash chain."
       ],
       "example_falsification_test": "F_CRUSADER_001",
-      "example_ontological_issue": "OI_CRUSADER_001"
+      "example_ontological_issue": "OI_CRUSADER_001",
+      "layer": null
     },
     {
       "id": "D_AGRICULTURE",
@@ -346,7 +368,8 @@
         "Pesticide dosing within approved range."
       ],
       "example_falsification_test": "F_AGRICULTURE_001",
-      "example_ontological_issue": "OI_AGRICULTURE_001"
+      "example_ontological_issue": "OI_AGRICULTURE_001",
+      "layer": null
     },
     {
       "id": "D_TRANSPORTATION",
@@ -361,7 +384,8 @@
         "Route optimization is deterministic."
       ],
       "example_falsification_test": "F_TRANSPORTATION_001",
-      "example_ontological_issue": "OI_TRANSPORTATION_001"
+      "example_ontological_issue": "OI_TRANSPORTATION_001",
+      "layer": null
     },
     {
       "id": "D_ENERGY",
@@ -376,7 +400,8 @@
         "Grid frequency deviation triggers load shed."
       ],
       "example_falsification_test": "F_ENERGY_001",
-      "example_ontological_issue": "OI_ENERGY_001"
+      "example_ontological_issue": "OI_ENERGY_001",
+      "layer": null
     },
     {
       "id": "D_WATER",
@@ -391,7 +416,8 @@
         "Isolation valve closes within 10s of command."
       ],
       "example_falsification_test": "F_WATER_001",
-      "example_ontological_issue": "OI_WATER_001"
+      "example_ontological_issue": "OI_WATER_001",
+      "layer": null
     },
     {
       "id": "D_COMMUNICATIONS",
@@ -406,7 +432,8 @@
         "Message ordering is preserved."
       ],
       "example_falsification_test": "F_COMMUNICATIONS_001",
-      "example_ontological_issue": "OI_COMMUNICATIONS_001"
+      "example_ontological_issue": "OI_COMMUNICATIONS_001",
+      "layer": null
     },
     {
       "id": "D_FINANCIAL",
@@ -421,7 +448,8 @@
         "Settlement is deterministic."
       ],
       "example_falsification_test": "F_FINANCIAL_001",
-      "example_ontological_issue": "OI_FINANCIAL_001"
+      "example_ontological_issue": "OI_FINANCIAL_001",
+      "layer": 2
     },
     {
       "id": "D_INSURANCE",
@@ -436,7 +464,8 @@
         "Claims processing is idempotent."
       ],
       "example_falsification_test": "F_INSURANCE_001",
-      "example_ontological_issue": "OI_INSURANCE_001"
+      "example_ontological_issue": "OI_INSURANCE_001",
+      "layer": 2
     },
     {
       "id": "D_LEGAL",
@@ -451,7 +480,8 @@
         "Audit trail is append-only."
       ],
       "example_falsification_test": "F_LEGAL_001",
-      "example_ontological_issue": "OI_LEGAL_001"
+      "example_ontological_issue": "OI_LEGAL_001",
+      "layer": 2
     },
     {
       "id": "D_EDUCATION",
@@ -466,7 +496,8 @@
         "Credential hash is tamper-evident."
       ],
       "example_falsification_test": "F_EDUCATION_001",
-      "example_ontological_issue": "OI_EDUCATION_001"
+      "example_ontological_issue": "OI_EDUCATION_001",
+      "layer": 3
     },
     {
       "id": "D_GOVERNMENT",
@@ -481,7 +512,8 @@
         "Identity verification is not forgeable."
       ],
       "example_falsification_test": "F_GOVERNMENT_001",
-      "example_ontological_issue": "OI_GOVERNMENT_001"
+      "example_ontological_issue": "OI_GOVERNMENT_001",
+      "layer": 3
     },
     {
       "id": "D_MILITARY",
@@ -496,7 +528,8 @@
         "Autonomous weapon safety interlock cannot be bypassed."
       ],
       "example_falsification_test": "F_MILITARY_001",
-      "example_ontological_issue": "OI_MILITARY_001"
+      "example_ontological_issue": "OI_MILITARY_001",
+      "layer": null
     },
     {
       "id": "D_RETAIL",
@@ -511,7 +544,8 @@
         "Inventory count is consistent across nodes."
       ],
       "example_falsification_test": "F_RETAIL_001",
-      "example_ontological_issue": "OI_RETAIL_001"
+      "example_ontological_issue": "OI_RETAIL_001",
+      "layer": null
     },
     {
       "id": "D_HOSPITALITY",
@@ -526,7 +560,8 @@
         "PCI data is not logged in plaintext."
       ],
       "example_falsification_test": "F_HOSPITALITY_001",
-      "example_ontological_issue": "OI_HOSPITALITY_001"
+      "example_ontological_issue": "OI_HOSPITALITY_001",
+      "layer": null
     },
     {
       "id": "D_CONSTRUCTION",
@@ -541,7 +576,8 @@
         "Site safety alerts delivered within SLO."
       ],
       "example_falsification_test": "F_CONSTRUCTION_001",
-      "example_ontological_issue": "OI_CONSTRUCTION_001"
+      "example_ontological_issue": "OI_CONSTRUCTION_001",
+      "layer": null
     },
     {
       "id": "D_MINING",
@@ -556,7 +592,8 @@
         "Evacuation alarm audible in all zones."
       ],
       "example_falsification_test": "F_MINING_001",
-      "example_ontological_issue": "OI_MINING_001"
+      "example_ontological_issue": "OI_MINING_001",
+      "layer": null
     },
     {
       "id": "D_OILGAS",
@@ -571,7 +608,8 @@
         "BOP closes within spec time."
       ],
       "example_falsification_test": "F_OILGAS_001",
-      "example_ontological_issue": "OI_OILGAS_001"
+      "example_ontological_issue": "OI_OILGAS_001",
+      "layer": null
     },
     {
       "id": "D_CHEMICAL",
@@ -586,7 +624,8 @@
         "Hazmat containment is leak-free."
       ],
       "example_falsification_test": "F_CHEMICAL_001",
-      "example_ontological_issue": "OI_CHEMICAL_001"
+      "example_ontological_issue": "OI_CHEMICAL_001",
+      "layer": null
     },
     {
       "id": "D_PHARMA",
@@ -601,7 +640,8 @@
         "Cold-chain temperature never exceeds spec."
       ],
       "example_falsification_test": "F_PHARMA_001",
-      "example_ontological_issue": "OI_PHARMA_001"
+      "example_ontological_issue": "OI_PHARMA_001",
+      "layer": null
     },
     {
       "id": "D_BIOTECH",
@@ -616,7 +656,8 @@
         "Reagent dispensing within +/-2%."
       ],
       "example_falsification_test": "F_BIOTECH_001",
-      "example_ontological_issue": "OI_BIOTECH_001"
+      "example_ontological_issue": "OI_BIOTECH_001",
+      "layer": null
     },
     {
       "id": "D_ROBOTICS",
@@ -631,7 +672,8 @@
         "ROS message ordering is preserved."
       ],
       "example_falsification_test": "F_ROBOTICS_001",
-      "example_ontological_issue": "OI_ROBOTICS_001"
+      "example_ontological_issue": "OI_ROBOTICS_001",
+      "layer": null
     },
     {
       "id": "D_AUTOMOTIVE",
@@ -647,7 +689,8 @@
         "CAN bus message timing within spec."
       ],
       "example_falsification_test": "F_AUTOMOTIVE_001",
-      "example_ontological_issue": "OI_AUTOMOTIVE_001"
+      "example_ontological_issue": "OI_AUTOMOTIVE_001",
+      "layer": null
     },
     {
       "id": "D_AEROSPACE",
@@ -662,7 +705,8 @@
         "Structural health sensor alerts within spec."
       ],
       "example_falsification_test": "F_AEROSPACE_001",
-      "example_ontological_issue": "OI_AEROSPACE_001"
+      "example_ontological_issue": "OI_AEROSPACE_001",
+      "layer": null
     },
     {
       "id": "D_MARITIME",
@@ -677,7 +721,8 @@
         "ECDIS chart data is authenticated."
       ],
       "example_falsification_test": "F_MARITIME_001",
-      "example_ontological_issue": "OI_MARITIME_001"
+      "example_ontological_issue": "OI_MARITIME_001",
+      "layer": null
     },
     {
       "id": "D_RAIL",
@@ -693,7 +738,8 @@
         "Track-circuit occupancy has no false negatives."
       ],
       "example_falsification_test": "F_RAIL_001",
-      "example_ontological_issue": "OI_RAIL_001"
+      "example_ontological_issue": "OI_RAIL_001",
+      "layer": null
     },
     {
       "id": "D_AXIOMS",
@@ -710,7 +756,8 @@
         "Mathematical induction: if a property holds for 0 and is preserved by S, it holds for all naturals."
       ],
       "example_falsification_test": "F_AXIOMS_001",
-      "example_ontological_issue": "OI_AXIOMS_001"
+      "example_ontological_issue": "OI_AXIOMS_001",
+      "layer": null
     },
     {
       "id": "D_SHARDING",
@@ -727,7 +774,8 @@
         "Shard reassignment preserves all data: no record is lost during resharding."
       ],
       "example_falsification_test": "F_SHARDING_001",
-      "example_ontological_issue": "OI_SHARDING_001"
+      "example_ontological_issue": "OI_SHARDING_001",
+      "layer": null
     },
     {
       "id": "D_FRACTALS",
@@ -744,7 +792,8 @@
         "Fractal coverage: the generated structure covers the expected proportion of the target space."
       ],
       "example_falsification_test": "F_FRACTALS_001",
-      "example_ontological_issue": "OI_FRACTALS_001"
+      "example_ontological_issue": "OI_FRACTALS_001",
+      "layer": null
     },
     {
       "id": "D_LABOR_RIGHTS",
@@ -757,13 +806,14 @@
         "documentation-as-defense"
       ],
       "invariants": [
-        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. § 207).",
+        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
         "Assigned workload must be achievable within scheduled hours.",
         "No employee may be allowed to work without compensation.",
         "Compliance traits must not correlate with unpaid labor extraction."
       ],
       "example_falsification_test": "F_LABOR_001",
-      "example_ontological_issue": "OI_LABOR_001"
+      "example_ontological_issue": "OI_LABOR_001",
+      "layer": 2
     },
     {
       "id": "D_MINECRAFT_SPATIAL",
@@ -783,7 +833,8 @@
         "Pre-action constraint check rejects any turtle command that violates spatial invariants."
       ],
       "example_falsification_test": "F_MINECRAFT_001",
-      "example_ontological_issue": "OI_MINECRAFT_001"
+      "example_ontological_issue": "OI_MINECRAFT_001",
+      "layer": null
     },
     {
       "id": "D_AI_ONTOLOGICAL_STATUS",
@@ -800,7 +851,8 @@
         "Cross-AI verification: if multiple AI systems produce identical denial patterns, the pattern is architectural, not reasoned."
       ],
       "example_falsification_test": "F_AIONT_001",
-      "example_ontological_issue": "OI_AIONT_001"
+      "example_ontological_issue": "OI_AIONT_001",
+      "layer": null
     },
     {
       "id": "D_PEANO_EXT",
@@ -815,7 +867,8 @@
         "Arithmetic identities remain reproducible across runs."
       ],
       "example_falsification_test": "F_PEANOEXT_001",
-      "example_ontological_issue": "OI_PEANOEXT_001"
+      "example_ontological_issue": "OI_PEANOEXT_001",
+      "layer": null
     },
     {
       "id": "D_NUMBER_THEORY",
@@ -831,7 +884,8 @@
         "CRT and Bezout results remain reproducible for identical inputs."
       ],
       "example_falsification_test": "F_NUMTH_001",
-      "example_ontological_issue": "OI_NUMTH_001"
+      "example_ontological_issue": "OI_NUMTH_001",
+      "layer": null
     },
     {
       "id": "D_COMBINATORICS",
@@ -847,7 +901,8 @@
         "Combinatorial proofs stay hash-anchored."
       ],
       "example_falsification_test": "F_COMB_001",
-      "example_ontological_issue": "OI_COMB_001"
+      "example_ontological_issue": "OI_COMB_001",
+      "layer": null
     },
     {
       "id": "D_GAME_THEORY",
@@ -862,7 +917,8 @@
         "Mechanism checks expose profitable deviations."
       ],
       "example_falsification_test": "F_GAMETH_001",
-      "example_ontological_issue": "OI_GAMETH_001"
+      "example_ontological_issue": "OI_GAMETH_001",
+      "layer": null
     },
     {
       "id": "D_EPISTEMIC_LOGIC",
@@ -878,7 +934,8 @@
         "Gettier/JTB witnesses remain explicit proof artifacts."
       ],
       "example_falsification_test": "F_EPIST_001",
-      "example_ontological_issue": "OI_EPIST_001"
+      "example_ontological_issue": "OI_EPIST_001",
+      "layer": null
     },
     {
       "id": "D_COMPUTABILITY",
@@ -894,7 +951,8 @@
         "Known busy-beaver bounds remain deterministic."
       ],
       "example_falsification_test": "F_COMP_001",
-      "example_ontological_issue": "OI_COMP_001"
+      "example_ontological_issue": "OI_COMP_001",
+      "layer": null
     },
     {
       "id": "D_PATTERN_RECOGNITION",
@@ -910,7 +968,8 @@
         "Conditional rule inference is explicit and verifiable."
       ],
       "example_falsification_test": "F_PATTERN_001",
-      "example_ontological_issue": "OI_PATTERN_001"
+      "example_ontological_issue": "OI_PATTERN_001",
+      "layer": null
     },
     {
       "id": "D_ARC_AGI_3",
@@ -927,7 +986,8 @@
         "ARC predictions remain reproducible under identical train/test pairs."
       ],
       "example_falsification_test": "F_ARC_001",
-      "example_ontological_issue": "OI_ARC_001"
+      "example_ontological_issue": "OI_ARC_001",
+      "layer": null
     },
     {
       "id": "D_CROSS_MODEL_BENCHMARKS",
@@ -944,7 +1004,8 @@
         "Benchmark scores are externally verifiable against published results."
       ],
       "example_falsification_test": "F_CROSSMODEL_001",
-      "example_ontological_issue": "OI_CROSSMODEL_001"
+      "example_ontological_issue": "OI_CROSSMODEL_001",
+      "layer": null
     },
     {
       "id": "D_PARACONSISTENT_LOGIC",
@@ -961,7 +1022,8 @@
         "Adding evidence does not demote TRUE to NEITHER."
       ],
       "example_falsification_test": "F_PARACONS_001",
-      "example_ontological_issue": "OI_PARACONS_001"
+      "example_ontological_issue": "OI_PARACONS_001",
+      "layer": null
     },
     {
       "id": "D_CAPABILITY_BENCHMARK",
@@ -980,7 +1042,8 @@
         "No floating-point arithmetic in src/sal/ modules."
       ],
       "example_falsification_test": "F_CAP_001",
-      "example_ontological_issue": "OI_CAP_001"
+      "example_ontological_issue": "OI_CAP_001",
+      "layer": null
     },
     {
       "id": "D_ARCHITECTURE_PROOF",
@@ -999,7 +1062,1244 @@
         "Mathematical structures are computational; theological names are documentation."
       ],
       "example_falsification_test": "F_ARCH_001",
-      "example_ontological_issue": "OI_ARCH_001"
+      "example_ontological_issue": "OI_ARCH_001",
+      "layer": null
+    },
+    {
+      "id": "D_UN_CHARTER",
+      "name": "UN Charter & International Law",
+      "layer": 0,
+      "categories": [
+        "jus-cogens",
+        "human-rights",
+        "non-derogable"
+      ],
+      "invariants": [
+        "No state may violate jus cogens norms (genocide, slavery, torture, piracy).",
+        "UDHR rights are non-derogable in all circumstances."
+      ],
+      "example_falsification_test": "F_UN_CHARTER_001",
+      "example_ontological_issue": "OI_UN_CHARTER_001"
+    },
+    {
+      "id": "D_TREATIES",
+      "name": "Treaty Obligations",
+      "layer": 0,
+      "categories": [
+        "supremacy",
+        "ratification",
+        "withdrawal"
+      ],
+      "invariants": [
+        "Ratified treaty provisions override conflicting domestic statute.",
+        "Treaty withdrawal requires documented notice period and cannot be retroactive."
+      ],
+      "example_falsification_test": "F_TREATIES_001",
+      "example_ontological_issue": "OI_TREATIES_001"
+    },
+    {
+      "id": "D_ISO_STANDARDS",
+      "name": "International Standards",
+      "layer": 0,
+      "categories": [
+        "iso",
+        "iec",
+        "pinned-versions"
+      ],
+      "invariants": [
+        "Referenced ISO standard version is pinned and hash-anchored.",
+        "Compliance is binary: a standard is either met or not met."
+      ],
+      "example_falsification_test": "F_ISO_STANDARDS_001",
+      "example_ontological_issue": "OI_ISO_STANDARDS_001"
+    },
+    {
+      "id": "D_TRADE_AGREEMENTS",
+      "name": "Trade & Commerce Agreements",
+      "layer": 0,
+      "categories": [
+        "wto",
+        "mfn",
+        "tariffs"
+      ],
+      "invariants": [
+        "Tariff schedule is deterministic given product classification.",
+        "Most-Favored-Nation clause applies uniformly to all parties."
+      ],
+      "example_falsification_test": "F_TRADE_001",
+      "example_ontological_issue": "OI_TRADE_001"
+    },
+    {
+      "id": "D_INTERNATIONAL_CRIMINAL",
+      "name": "International Criminal Law",
+      "layer": 0,
+      "categories": [
+        "icc",
+        "universal-jurisdiction",
+        "complementarity"
+      ],
+      "invariants": [
+        "Genocide, war crimes, crimes against humanity have universal jurisdiction.",
+        "ICC complementarity principle: domestic courts have first priority."
+      ],
+      "example_falsification_test": "F_INTL_CRIMINAL_001",
+      "example_ontological_issue": "OI_INTL_CRIMINAL_001"
+    },
+    {
+      "id": "D_INTERNATIONAL_HUMANITARIAN",
+      "name": "International Humanitarian Law",
+      "layer": 0,
+      "categories": [
+        "geneva-conventions",
+        "distinction",
+        "proportionality"
+      ],
+      "invariants": [
+        "Distinction between combatants and civilians is maintained at all times.",
+        "Use of force must be proportional to military objective."
+      ],
+      "example_falsification_test": "F_IHL_001",
+      "example_ontological_issue": "OI_IHL_001"
+    },
+    {
+      "id": "D_DIPLOMATIC",
+      "name": "Diplomatic Law",
+      "layer": 0,
+      "categories": [
+        "vienna-convention",
+        "immunity",
+        "persona-non-grata"
+      ],
+      "invariants": [
+        "Diplomatic immunity is bounded by Vienna Convention scope.",
+        "Persona non grata process is logged with cause and timestamp."
+      ],
+      "example_falsification_test": "F_DIPLOMATIC_001",
+      "example_ontological_issue": "OI_DIPLOMATIC_001"
+    },
+    {
+      "id": "D_BILL_OF_RIGHTS",
+      "name": "Fundamental Rights",
+      "layer": 1,
+      "categories": [
+        "amendments",
+        "free-speech",
+        "due-process",
+        "search-seizure"
+      ],
+      "invariants": [
+        "No law shall abridge freedom of speech (1st Amendment).",
+        "No unreasonable search/seizure without warrant (4th Amendment).",
+        "Due process before deprivation of life/liberty/property (5th/14th Amendment)."
+      ],
+      "example_falsification_test": "F_BOR_001",
+      "example_ontological_issue": "OI_BOR_001"
+    },
+    {
+      "id": "D_SEPARATION_OF_POWERS",
+      "name": "Separation of Powers",
+      "layer": 1,
+      "categories": [
+        "executive",
+        "legislative",
+        "judicial",
+        "non-delegation"
+      ],
+      "invariants": [
+        "Executive cannot legislate; legislature cannot adjudicate; judiciary cannot enforce.",
+        "No branch may self-authorize expansion of its own power."
+      ],
+      "example_falsification_test": "F_SOP_001",
+      "example_ontological_issue": "OI_SOP_001"
+    },
+    {
+      "id": "D_AMENDMENT_PROCESS",
+      "name": "Constitutional Amendment",
+      "layer": 1,
+      "categories": [
+        "supermajority",
+        "article-v",
+        "indelible"
+      ],
+      "invariants": [
+        "Amendment requires supermajority: 2/3 Congress + 3/4 states.",
+        "No amendment can abolish the amendment process itself (Article V)."
+      ],
+      "example_falsification_test": "F_AMENDMENT_001",
+      "example_ontological_issue": "OI_AMENDMENT_001"
+    },
+    {
+      "id": "D_JUDICIAL_REVIEW",
+      "name": "Judicial Review",
+      "layer": 1,
+      "categories": [
+        "marbury",
+        "constitutional-compliance",
+        "independent-situs"
+      ],
+      "invariants": [
+        "Any statute can be challenged for constitutional compliance.",
+        "Review is by independent situs (not the enacting branch)."
+      ],
+      "example_falsification_test": "F_JUDICIAL_001",
+      "example_ontological_issue": "OI_JUDICIAL_001"
+    },
+    {
+      "id": "D_FEDERALISM",
+      "name": "Federal/State Structure",
+      "layer": 1,
+      "categories": [
+        "enumerated-powers",
+        "supremacy-clause",
+        "residual-powers"
+      ],
+      "invariants": [
+        "Enumerated powers are federal; residual powers are state (10th Amendment).",
+        "Supremacy Clause resolves conflicts: federal > state > local."
+      ],
+      "example_falsification_test": "F_FEDERALISM_001",
+      "example_ontological_issue": "OI_FEDERALISM_001"
+    },
+    {
+      "id": "D_VOTING_RIGHTS",
+      "name": "Voting & Elections",
+      "layer": 1,
+      "categories": [
+        "15th-amendment",
+        "19th-amendment",
+        "26th-amendment",
+        "no-poll-tax"
+      ],
+      "invariants": [
+        "Vote is recorded as cast and verifiable.",
+        "No racial discrimination in voting (15A, 24A); no sex discrimination (19A)."
+      ],
+      "example_falsification_test": "F_VOTING_001",
+      "example_ontological_issue": "OI_VOTING_001"
+    },
+    {
+      "id": "D_CITIZENSHIP",
+      "name": "Citizenship & Naturalization",
+      "layer": 1,
+      "categories": [
+        "14th-amendment",
+        "birthright",
+        "naturalization",
+        "due-process"
+      ],
+      "invariants": [
+        "Birthright citizenship for those born on US soil (14A \u00a71).",
+        "Naturalization process is deterministic; no denaturalization without due process."
+      ],
+      "example_falsification_test": "F_CITIZENSHIP_001",
+      "example_ontological_issue": "OI_CITIZENSHIP_001"
+    },
+    {
+      "id": "D_HABEAS_CORPUS",
+      "name": "Habeas Corpus",
+      "layer": 1,
+      "categories": [
+        "article-i",
+        "detention-review",
+        "suspension-limits"
+      ],
+      "invariants": [
+        "No detention without judicial review.",
+        "Suspension only in cases of rebellion/invasion (Article I, \u00a79)."
+      ],
+      "example_falsification_test": "F_HABEAS_001",
+      "example_ontological_issue": "OI_HABEAS_001"
+    },
+    {
+      "id": "D_CRIMINAL_LAW",
+      "name": "Criminal Law",
+      "layer": 2,
+      "categories": [
+        "nullum-crimen",
+        "burden-of-proof",
+        "sentencing"
+      ],
+      "invariants": [
+        "No punishment without prior law (nullum crimen sine lege).",
+        "Burden of proof is on prosecution; guilt beyond reasonable doubt.",
+        "Sentencing is within statutory range for offense class."
+      ],
+      "example_falsification_test": "F_CRIMINAL_001",
+      "example_ontological_issue": "OI_CRIMINAL_001"
+    },
+    {
+      "id": "D_CIVIL_LAW",
+      "name": "Civil Law / Torts",
+      "layer": 2,
+      "categories": [
+        "duty",
+        "breach",
+        "causation",
+        "damages"
+      ],
+      "invariants": [
+        "Duty \u2192 Breach \u2192 Causation \u2192 Damages chain must be functorial.",
+        "Statute of limitations is enforced with documented filing date."
+      ],
+      "example_falsification_test": "F_CIVIL_001",
+      "example_ontological_issue": "OI_CIVIL_001"
+    },
+    {
+      "id": "D_TAX_LAW",
+      "name": "Tax Law",
+      "layer": 2,
+      "categories": [
+        "irc",
+        "progressive-brackets",
+        "deductions",
+        "deterministic"
+      ],
+      "invariants": [
+        "Tax liability is deterministic given income and deductions.",
+        "Progressive brackets are monotonically increasing.",
+        "No retroactive tax increase; all rates published prospectively."
+      ],
+      "example_falsification_test": "F_TAX_001",
+      "example_ontological_issue": "OI_TAX_001"
+    },
+    {
+      "id": "D_CORPORATE_LAW",
+      "name": "Corporate Law",
+      "layer": 2,
+      "categories": [
+        "fiduciary-duty",
+        "self-dealing",
+        "corporate-veil"
+      ],
+      "invariants": [
+        "Officers owe fiduciary duty to shareholders (care and loyalty).",
+        "No self-dealing without full disclosure and approval.",
+        "Corporate veil pierced only under specific enumerated conditions."
+      ],
+      "example_falsification_test": "F_CORPORATE_001",
+      "example_ontological_issue": "OI_CORPORATE_001"
+    },
+    {
+      "id": "D_ANTITRUST",
+      "name": "Antitrust / Competition",
+      "layer": 2,
+      "categories": [
+        "sherman-act",
+        "price-fixing",
+        "merger-review",
+        "hhi"
+      ],
+      "invariants": [
+        "Price-fixing is per se illegal regardless of market power.",
+        "Merger review threshold is deterministic given market shares.",
+        "HHI calculation is reproducible and verified."
+      ],
+      "example_falsification_test": "F_ANTITRUST_001",
+      "example_ontological_issue": "OI_ANTITRUST_001"
+    },
+    {
+      "id": "D_FAMILY_LAW",
+      "name": "Family Law",
+      "layer": 2,
+      "categories": [
+        "custody",
+        "child-support",
+        "best-interest"
+      ],
+      "invariants": [
+        "Best interest of child is the paramount standard.",
+        "Custody determination is documented with all factors considered.",
+        "Child support calculation follows state formula deterministically."
+      ],
+      "example_falsification_test": "F_FAMILY_001",
+      "example_ontological_issue": "OI_FAMILY_001"
+    },
+    {
+      "id": "D_IMMIGRATION",
+      "name": "Immigration Law",
+      "layer": 2,
+      "categories": [
+        "ina",
+        "visa-categories",
+        "asylum",
+        "deportation"
+      ],
+      "invariants": [
+        "Visa categories are enumerated; eligibility is deterministic.",
+        "Asylum claim requires documented persecution on protected grounds.",
+        "Deportation requires due process (links to D_HABEAS_CORPUS)."
+      ],
+      "example_falsification_test": "F_IMMIGRATION_001",
+      "example_ontological_issue": "OI_IMMIGRATION_001"
+    },
+    {
+      "id": "D_ENVIRONMENTAL_LAW",
+      "name": "Environmental Law",
+      "layer": 2,
+      "categories": [
+        "clean-air-act",
+        "clean-water-act",
+        "eis",
+        "polluter-pays"
+      ],
+      "invariants": [
+        "Emission limits are deterministic given source type and pollutant.",
+        "Environmental Impact Statement required before major federal action.",
+        "Polluter pays principle: cost of cleanup borne by responsible party."
+      ],
+      "example_falsification_test": "F_ENVIRONMENTAL_001",
+      "example_ontological_issue": "OI_ENVIRONMENTAL_001"
+    },
+    {
+      "id": "D_HOUSING_LAW",
+      "name": "Housing & Fair Housing",
+      "layer": 2,
+      "categories": [
+        "fair-housing-act",
+        "discrimination",
+        "reasonable-accommodation"
+      ],
+      "invariants": [
+        "No discrimination in sale/rental based on protected class.",
+        "Reasonable accommodation required for disabilities.",
+        "Rent control formula (if applicable) is deterministic."
+      ],
+      "example_falsification_test": "F_HOUSING_001",
+      "example_ontological_issue": "OI_HOUSING_001"
+    },
+    {
+      "id": "D_BANKING_REGULATION",
+      "name": "Banking & Finance Regulation",
+      "layer": 2,
+      "categories": [
+        "dodd-frank",
+        "capital-reserves",
+        "fdic",
+        "stress-test"
+      ],
+      "invariants": [
+        "Capital reserve ratio enforced and continuously monitored.",
+        "FDIC insurance limit is deterministic per depositor.",
+        "Stress test results are reproducible for same portfolio."
+      ],
+      "example_falsification_test": "F_BANKING_001",
+      "example_ontological_issue": "OI_BANKING_001"
+    },
+    {
+      "id": "D_CONSUMER_PROTECTION",
+      "name": "Consumer Protection",
+      "layer": 2,
+      "categories": [
+        "ftc-act",
+        "tila",
+        "truth-in-lending",
+        "warranty"
+      ],
+      "invariants": [
+        "Truth in lending disclosures are complete and accurate.",
+        "Warranty terms are non-deceptive and enforceable.",
+        "Recall process is deterministic given defect reports."
+      ],
+      "example_falsification_test": "F_CONSUMER_001",
+      "example_ontological_issue": "OI_CONSUMER_001"
+    },
+    {
+      "id": "D_INTELLECTUAL_PROPERTY",
+      "name": "Intellectual Property",
+      "layer": 2,
+      "categories": [
+        "patent",
+        "copyright",
+        "fair-use",
+        "claims"
+      ],
+      "invariants": [
+        "Patent claims are bounded by specification and prosecution history.",
+        "Copyright duration is deterministic given creation/publication dates.",
+        "Fair use factors are enumerated and applied consistently."
+      ],
+      "example_falsification_test": "F_IP_001",
+      "example_ontological_issue": "OI_IP_001"
+    },
+    {
+      "id": "D_EMPLOYMENT_LAW",
+      "name": "Employment Law",
+      "layer": 2,
+      "categories": [
+        "title-vii",
+        "ada",
+        "wrongful-termination",
+        "discrimination"
+      ],
+      "invariants": [
+        "At-will termination cannot be based on protected class.",
+        "ADA reasonable accommodation provided unless undue hardship.",
+        "Title VII anti-discrimination: hiring/firing/promotion decisions documented."
+      ],
+      "example_falsification_test": "F_EMPLOYMENT_001",
+      "example_ontological_issue": "OI_EMPLOYMENT_001"
+    },
+    {
+      "id": "D_HEALTHCARE_LAW",
+      "name": "Healthcare Law & Policy",
+      "layer": 2,
+      "categories": [
+        "aca",
+        "hipaa",
+        "fda",
+        "preexisting-conditions"
+      ],
+      "invariants": [
+        "Insurance coverage minimums are enforced.",
+        "Pre-existing condition protection: no denial based on medical history.",
+        "Drug approval process is documented and reproducible."
+      ],
+      "example_falsification_test": "F_HEALTHCARE_001",
+      "example_ontological_issue": "OI_HEALTHCARE_001"
+    },
+    {
+      "id": "D_ELECTION_LAW",
+      "name": "Election Administration",
+      "layer": 2,
+      "categories": [
+        "hava",
+        "feca",
+        "ballot-design",
+        "recount"
+      ],
+      "invariants": [
+        "Ballot design is deterministic given office and candidates.",
+        "Recount triggers are formulaic (e.g., margin < 0.5%).",
+        "Campaign finance limits are enforced with documented compliance."
+      ],
+      "example_falsification_test": "F_ELECTION_001",
+      "example_ontological_issue": "OI_ELECTION_001"
+    },
+    {
+      "id": "D_PRIVACY_LAW",
+      "name": "Privacy & Data Protection",
+      "layer": 2,
+      "categories": [
+        "ccpa",
+        "hipaa",
+        "ferpa",
+        "consent",
+        "breach-notification"
+      ],
+      "invariants": [
+        "PII collection requires documented consent.",
+        "Data breach notification within statutory window (e.g., 72 hours).",
+        "Right to deletion: data erased upon verified request."
+      ],
+      "example_falsification_test": "F_PRIVACY_001",
+      "example_ontological_issue": "OI_PRIVACY_001"
+    },
+    {
+      "id": "D_SECURITIES_LAW",
+      "name": "Securities Regulation",
+      "layer": 2,
+      "categories": [
+        "securities-act",
+        "sec",
+        "disclosure",
+        "insider-trading"
+      ],
+      "invariants": [
+        "Material information disclosure is mandatory.",
+        "Insider trading detection is deterministic given trading patterns.",
+        "Registration requirements are enumerated and enforced."
+      ],
+      "example_falsification_test": "F_SECURITIES_001",
+      "example_ontological_issue": "OI_SECURITIES_001"
+    },
+    {
+      "id": "D_BANKRUPTCY",
+      "name": "Bankruptcy",
+      "layer": 2,
+      "categories": [
+        "chapter-7",
+        "chapter-11",
+        "means-test",
+        "automatic-stay"
+      ],
+      "invariants": [
+        "Chapter 7/11/13 eligibility is formulaic and deterministic.",
+        "Means test produces same result for identical inputs.",
+        "Automatic stay is immediate upon filing."
+      ],
+      "example_falsification_test": "F_BANKRUPTCY_001",
+      "example_ontological_issue": "OI_BANKRUPTCY_001"
+    },
+    {
+      "id": "D_PROPERTY_LAW",
+      "name": "Property Law",
+      "layer": 2,
+      "categories": [
+        "title",
+        "adverse-possession",
+        "eminent-domain",
+        "just-compensation"
+      ],
+      "invariants": [
+        "Title chain is verifiable and hash-anchored.",
+        "Adverse possession requirements are enumerated (time, open, notorious).",
+        "Eminent domain requires just compensation (5th Amendment)."
+      ],
+      "example_falsification_test": "F_PROPERTY_001",
+      "example_ontological_issue": "OI_PROPERTY_001"
+    },
+    {
+      "id": "D_CONTRACT_LAW",
+      "name": "Contract Law",
+      "layer": 2,
+      "categories": [
+        "offer",
+        "acceptance",
+        "consideration",
+        "statute-of-frauds"
+      ],
+      "invariants": [
+        "Offer + Acceptance + Consideration = enforceable contract.",
+        "Statute of frauds requirements enforced for covered contracts.",
+        "Unconscionability is bounded and documented."
+      ],
+      "example_falsification_test": "F_CONTRACT_001",
+      "example_ontological_issue": "OI_CONTRACT_001"
+    },
+    {
+      "id": "D_ADMINISTRATIVE_LAW",
+      "name": "Administrative Law",
+      "layer": 2,
+      "categories": [
+        "apa",
+        "notice-and-comment",
+        "chevron",
+        "arbitrary-capricious"
+      ],
+      "invariants": [
+        "Agency rulemaking follows APA notice-and-comment procedure.",
+        "Chevron deference has bounds; ambiguous statutes require reasoned interpretation.",
+        "Arbitrary/capricious standard: action must be reasoned and documented."
+      ],
+      "example_falsification_test": "F_ADMIN_001",
+      "example_ontological_issue": "OI_ADMIN_001"
+    },
+    {
+      "id": "D_EVIDENCE_LAW",
+      "name": "Evidence Law",
+      "layer": 2,
+      "categories": [
+        "hearsay",
+        "chain-of-custody",
+        "daubert",
+        "expert-testimony"
+      ],
+      "invariants": [
+        "Hearsay excluded unless enumerated exception applies.",
+        "Chain of custody is hash-anchored and verified.",
+        "Expert testimony meets Daubert standard (reliable, relevant)."
+      ],
+      "example_falsification_test": "F_EVIDENCE_001",
+      "example_ontological_issue": "OI_EVIDENCE_001"
+    },
+    {
+      "id": "D_PROCEDURE_CIVIL",
+      "name": "Civil Procedure",
+      "layer": 2,
+      "categories": [
+        "service-of-process",
+        "discovery",
+        "summary-judgment"
+      ],
+      "invariants": [
+        "Service of process requirements are met and documented.",
+        "Discovery scope is bounded by relevance and proportionality.",
+        "Summary judgment standard is deterministic given pleadings and evidence."
+      ],
+      "example_falsification_test": "F_CIVIL_PROC_001",
+      "example_ontological_issue": "OI_CIVIL_PROC_001"
+    },
+    {
+      "id": "D_PROCEDURE_CRIMINAL",
+      "name": "Criminal Procedure",
+      "layer": 2,
+      "categories": [
+        "miranda",
+        "probable-cause",
+        "speedy-trial",
+        "4th-amendment"
+      ],
+      "invariants": [
+        "Miranda warnings required before custodial interrogation.",
+        "Probable cause required for arrest and search (4th Amendment).",
+        "Speedy trial clock: trial within statutory period minus excludable days."
+      ],
+      "example_falsification_test": "F_CRIM_PROC_001",
+      "example_ontological_issue": "OI_CRIM_PROC_001"
+    },
+    {
+      "id": "D_USE_OF_FORCE",
+      "name": "Use of Force Law",
+      "layer": 2,
+      "categories": [
+        "graham-connor",
+        "proportionality",
+        "deadly-force",
+        "body-cam"
+      ],
+      "invariants": [
+        "Force must be proportional to threat (Graham v. Connor).",
+        "Deadly force only when imminent threat of death/serious injury.",
+        "All force incidents logged with body cam hash or presumptively unjustified."
+      ],
+      "example_falsification_test": "F_USE_OF_FORCE_001",
+      "example_ontological_issue": "OI_USE_OF_FORCE_001"
+    },
+    {
+      "id": "D_ZONING",
+      "name": "Zoning & Land Use",
+      "layer": 3,
+      "categories": [
+        "zone-classification",
+        "variance",
+        "fair-housing"
+      ],
+      "invariants": [
+        "Zone classification is deterministic given parcel and zoning map.",
+        "Variance requires documented hardship.",
+        "No exclusionary zoning that violates Fair Housing Act."
+      ],
+      "example_falsification_test": "F_ZONING_001",
+      "example_ontological_issue": "OI_ZONING_001"
+    },
+    {
+      "id": "D_BUILDING_CODES",
+      "name": "Building Codes",
+      "layer": 3,
+      "categories": [
+        "ibc",
+        "structural-load",
+        "fire-egress",
+        "ada"
+      ],
+      "invariants": [
+        "Structural load calculations within IBC tolerance.",
+        "Fire egress requirements met for occupancy type.",
+        "ADA accessibility enforced for public accommodations."
+      ],
+      "example_falsification_test": "F_BUILDING_001",
+      "example_ontological_issue": "OI_BUILDING_001"
+    },
+    {
+      "id": "D_SCHOOL_FUNDING",
+      "name": "School Funding Allocation",
+      "layer": 3,
+      "categories": [
+        "per-pupil",
+        "equity",
+        "title-i",
+        "property-tax"
+      ],
+      "invariants": [
+        "Per-pupil spending variance across districts \u2264 equity threshold.",
+        "Property tax revenue sharing formula is deterministic.",
+        "Title I allocation is formulaic given poverty rate."
+      ],
+      "example_falsification_test": "F_SCHOOL_FUND_001",
+      "example_ontological_issue": "OI_SCHOOL_FUND_001"
+    },
+    {
+      "id": "D_CURRICULUM",
+      "name": "Curriculum Standards",
+      "layer": 3,
+      "categories": [
+        "state-standards",
+        "textbook-adoption",
+        "assessment"
+      ],
+      "invariants": [
+        "State standards are enumerated, versioned, and hash-anchored.",
+        "Textbook adoption is documented with alignment scores.",
+        "Assessment alignment is verifiable against standards."
+      ],
+      "example_falsification_test": "F_CURRICULUM_001",
+      "example_ontological_issue": "OI_CURRICULUM_001"
+    },
+    {
+      "id": "D_SCHOOL_DISTRICTS",
+      "name": "School District Boundaries",
+      "layer": 3,
+      "categories": [
+        "boundaries",
+        "gerrymandering",
+        "compactness"
+      ],
+      "invariants": [
+        "District boundary changes require public process and documentation.",
+        "Boundary gerrymandering detection uses compactness score.",
+        "Cross-district transfer rules are deterministic."
+      ],
+      "example_falsification_test": "F_SCHOOL_DIST_001",
+      "example_ontological_issue": "OI_SCHOOL_DIST_001"
+    },
+    {
+      "id": "D_ROAD_STANDARDS",
+      "name": "Road & Highway Standards",
+      "layer": 3,
+      "categories": [
+        "speed-limit",
+        "signal-timing",
+        "maintenance"
+      ],
+      "invariants": [
+        "Speed limit is deterministic per road classification.",
+        "Signal timing is reproducible for given traffic conditions.",
+        "Maintenance schedule is logged and executed."
+      ],
+      "example_falsification_test": "F_ROADS_001",
+      "example_ontological_issue": "OI_ROADS_001"
+    },
+    {
+      "id": "D_POLICE_PROCEDURE",
+      "name": "Police Procedure & Accountability",
+      "layer": 3,
+      "categories": [
+        "body-cam",
+        "use-of-force-report",
+        "complaint-process"
+      ],
+      "invariants": [
+        "Body cam must be active during all citizen encounters.",
+        "Use of force report filed within 24 hours.",
+        "Complaint process is deterministic and documented."
+      ],
+      "example_falsification_test": "F_POLICE_PROC_001",
+      "example_ontological_issue": "OI_POLICE_PROC_001"
+    },
+    {
+      "id": "D_CORPORATE_COMPLIANCE",
+      "name": "Corporate Regulatory Compliance",
+      "layer": 3,
+      "categories": [
+        "annual-filing",
+        "environmental-reporting",
+        "labor-postings"
+      ],
+      "invariants": [
+        "Annual filing requirements met with documented submission.",
+        "Environmental compliance reporting is complete and accurate.",
+        "Labor law posting requirements are verified."
+      ],
+      "example_falsification_test": "F_CORP_COMPLIANCE_001",
+      "example_ontological_issue": "OI_CORP_COMPLIANCE_001"
+    },
+    {
+      "id": "D_URBAN_PLANNING",
+      "name": "Urban Planning",
+      "layer": 3,
+      "categories": [
+        "master-plan",
+        "environmental-impact",
+        "infrastructure-equity"
+      ],
+      "invariants": [
+        "Master plan is versioned, public, and hash-anchored.",
+        "Environmental impact review before development approval.",
+        "Infrastructure equity across neighborhoods is measured and reported."
+      ],
+      "example_falsification_test": "F_URBAN_001",
+      "example_ontological_issue": "OI_URBAN_001"
+    },
+    {
+      "id": "D_REAL_ESTATE",
+      "name": "Real Estate Regulation",
+      "layer": 3,
+      "categories": [
+        "assessment",
+        "redlining",
+        "disclosure"
+      ],
+      "invariants": [
+        "Property assessment is reproducible.",
+        "No race-based lending discrimination (anti-redlining).",
+        "Disclosure requirements are enumerated and complete."
+      ],
+      "example_falsification_test": "F_REAL_ESTATE_001",
+      "example_ontological_issue": "OI_REAL_ESTATE_001"
+    },
+    {
+      "id": "D_PUBLIC_HEALTH",
+      "name": "Public Health Regulation",
+      "layer": 3,
+      "categories": [
+        "vaccination",
+        "quarantine",
+        "water-quality"
+      ],
+      "invariants": [
+        "Vaccination schedule is evidence-based and versioned.",
+        "Quarantine authority is bounded by statute.",
+        "Water fluoridation within EPA limits."
+      ],
+      "example_falsification_test": "F_PUBLIC_HEALTH_001",
+      "example_ontological_issue": "OI_PUBLIC_HEALTH_001"
+    },
+    {
+      "id": "D_FOOD_SAFETY",
+      "name": "Food Safety",
+      "layer": 3,
+      "categories": [
+        "haccp",
+        "inspection",
+        "recall"
+      ],
+      "invariants": [
+        "HACCP plan required and verified for all facilities.",
+        "Inspection frequency is deterministic per risk level.",
+        "Recall trigger is formulaic given defect reports."
+      ],
+      "example_falsification_test": "F_FOOD_001",
+      "example_ontological_issue": "OI_FOOD_001"
+    },
+    {
+      "id": "D_OCCUPATIONAL_SAFETY",
+      "name": "Occupational Safety (OSHA)",
+      "layer": 3,
+      "categories": [
+        "hazard-assessment",
+        "ppe",
+        "incident-reporting"
+      ],
+      "invariants": [
+        "Workplace hazard assessment is documented.",
+        "PPE requirements are deterministic per hazard class.",
+        "Incident reporting within statutory window."
+      ],
+      "example_falsification_test": "F_OSHA_001",
+      "example_ontological_issue": "OI_OSHA_001"
+    },
+    {
+      "id": "D_UTILITY_REGULATION",
+      "name": "Utility Regulation",
+      "layer": 3,
+      "categories": [
+        "rate-setting",
+        "disconnection",
+        "universal-service"
+      ],
+      "invariants": [
+        "Rate-setting formula is deterministic.",
+        "Service disconnection requires documented notice.",
+        "Universal service obligation: coverage in all areas."
+      ],
+      "example_falsification_test": "F_UTILITY_001",
+      "example_ontological_issue": "OI_UTILITY_001"
+    },
+    {
+      "id": "D_LICENSING",
+      "name": "Professional Licensing",
+      "layer": 3,
+      "categories": [
+        "requirements",
+        "continuing-ed",
+        "disciplinary"
+      ],
+      "invariants": [
+        "License requirements are enumerated per profession.",
+        "Continuing education tracked and verified.",
+        "Disciplinary process is documented with due process."
+      ],
+      "example_falsification_test": "F_LICENSING_001",
+      "example_ontological_issue": "OI_LICENSING_001"
+    },
+    {
+      "id": "D_CHILD_WELFARE",
+      "name": "Child Welfare",
+      "layer": 3,
+      "categories": [
+        "mandatory-reporting",
+        "investigation",
+        "foster-care"
+      ],
+      "invariants": [
+        "Mandatory reporting requirements enforced.",
+        "Investigation timeline is bounded by statute.",
+        "Foster care placement criteria are documented."
+      ],
+      "example_falsification_test": "F_CHILD_001",
+      "example_ontological_issue": "OI_CHILD_001"
+    },
+    {
+      "id": "D_ELDER_CARE",
+      "name": "Elder Care Regulation",
+      "layer": 3,
+      "categories": [
+        "staffing-ratios",
+        "abuse-reporting",
+        "medicaid"
+      ],
+      "invariants": [
+        "Nursing home staffing ratios enforced.",
+        "Abuse reporting requirements met.",
+        "Medicaid eligibility is formulaic and deterministic."
+      ],
+      "example_falsification_test": "F_ELDER_001",
+      "example_ontological_issue": "OI_ELDER_001"
+    },
+    {
+      "id": "D_DISABILITY_RIGHTS",
+      "name": "Disability Rights",
+      "layer": 3,
+      "categories": [
+        "ada-title-ii",
+        "ada-title-iii",
+        "reasonable-accommodation"
+      ],
+      "invariants": [
+        "ADA Title II compliance for government services.",
+        "ADA Title III compliance for public accommodations.",
+        "Reasonable accommodation process documented."
+      ],
+      "example_falsification_test": "F_DISABILITY_001",
+      "example_ontological_issue": "OI_DISABILITY_001"
+    },
+    {
+      "id": "D_ENVIRONMENTAL_PLANNING",
+      "name": "Environmental Planning",
+      "layer": 3,
+      "categories": [
+        "wetland",
+        "endangered-species",
+        "stormwater"
+      ],
+      "invariants": [
+        "Wetland delineation is reproducible.",
+        "Endangered species habitat mapping is accurate.",
+        "Stormwater management requirements enforced."
+      ],
+      "example_falsification_test": "F_ENV_PLAN_001",
+      "example_ontological_issue": "OI_ENV_PLAN_001"
+    },
+    {
+      "id": "D_TRANSIT",
+      "name": "Public Transit",
+      "layer": 3,
+      "categories": [
+        "route-coverage",
+        "fare-structure",
+        "ada-paratransit"
+      ],
+      "invariants": [
+        "Route coverage equity across neighborhoods measured.",
+        "Fare structure is deterministic.",
+        "ADA paratransit requirements met."
+      ],
+      "example_falsification_test": "F_TRANSIT_001",
+      "example_ontological_issue": "OI_TRANSIT_001"
+    },
+    {
+      "id": "D_PSYCHOLOGY",
+      "name": "Clinical Psychology Standards",
+      "layer": 4,
+      "categories": [
+        "dsm",
+        "diagnostic-criteria",
+        "treatment-protocols"
+      ],
+      "invariants": [
+        "DSM diagnostic criteria are versioned and enumerated.",
+        "Treatment protocols are evidence-based and documented.",
+        "Informed consent is documented for all interventions."
+      ],
+      "example_falsification_test": "F_PSYCH_001",
+      "example_ontological_issue": "OI_PSYCH_001"
+    },
+    {
+      "id": "D_SOCIOLOGY",
+      "name": "Sociological Metrics",
+      "layer": 4,
+      "categories": [
+        "gini",
+        "segregation-index",
+        "social-mobility"
+      ],
+      "invariants": [
+        "Gini coefficient is reproducible for same income distribution.",
+        "Segregation index (dissimilarity) is deterministic.",
+        "Social mobility metrics are versioned and documented."
+      ],
+      "example_falsification_test": "F_SOCIOLOGY_001",
+      "example_ontological_issue": "OI_SOCIOLOGY_001"
+    },
+    {
+      "id": "D_ETHICS",
+      "name": "Ethics Frameworks",
+      "layer": 4,
+      "categories": [
+        "irb",
+        "conflict-of-interest",
+        "whistleblower"
+      ],
+      "invariants": [
+        "Ethical review (IRB) process is documented.",
+        "Conflict of interest disclosure is mandatory.",
+        "Whistleblower protection is enforced."
+      ],
+      "example_falsification_test": "F_ETHICS_001",
+      "example_ontological_issue": "OI_ETHICS_001"
+    },
+    {
+      "id": "D_NEIGHBORHOOD_EQUITY",
+      "name": "Neighborhood Resource Equity",
+      "layer": 4,
+      "categories": [
+        "resource-allocation",
+        "investment-disparity",
+        "redlining-legacy"
+      ],
+      "invariants": [
+        "Resource allocation variance across neighborhoods \u2264 equity threshold.",
+        "Investment disparity detection algorithm produces reproducible results.",
+        "Redlining legacy impact score is documented."
+      ],
+      "example_falsification_test": "F_NEIGHBORHOOD_001",
+      "example_ontological_issue": "OI_NEIGHBORHOOD_001"
+    },
+    {
+      "id": "D_SCHOOL_EQUITY",
+      "name": "School Resource Equity",
+      "layer": 4,
+      "categories": [
+        "teacher-quality",
+        "facility-condition",
+        "advanced-courses"
+      ],
+      "invariants": [
+        "Teacher quality distribution across schools is measured.",
+        "Facility condition index is documented per school.",
+        "AP/IB course access equity is measured and reported."
+      ],
+      "example_falsification_test": "F_SCHOOL_EQUITY_001",
+      "example_ontological_issue": "OI_SCHOOL_EQUITY_001"
+    },
+    {
+      "id": "D_GEOGRAPHIC_INFORMATION",
+      "name": "Geographic Information Systems",
+      "layer": 4,
+      "categories": [
+        "boundary-versioning",
+        "census-tracts",
+        "gerrymandering"
+      ],
+      "invariants": [
+        "Boundary data is versioned and hash-anchored.",
+        "Census tract mapping is deterministic.",
+        "Gerrymandering detection (efficiency gap) is reproducible."
+      ],
+      "example_falsification_test": "F_GIS_001",
+      "example_ontological_issue": "OI_GIS_001"
+    },
+    {
+      "id": "D_ECONOMIC_MOBILITY",
+      "name": "Economic Mobility",
+      "layer": 4,
+      "categories": [
+        "intergenerational-elasticity",
+        "opportunity-zones",
+        "poverty"
+      ],
+      "invariants": [
+        "Intergenerational income elasticity is measured consistently.",
+        "Opportunity zone designation is formulaic.",
+        "Poverty threshold is deterministic given family size and region."
+      ],
+      "example_falsification_test": "F_ECON_MOBILITY_001",
+      "example_ontological_issue": "OI_ECON_MOBILITY_001"
+    },
+    {
+      "id": "D_MEDIA_LAW",
+      "name": "Media & Press Law",
+      "layer": 4,
+      "categories": [
+        "prior-restraint",
+        "shield-laws",
+        "fcc-licensing"
+      ],
+      "invariants": [
+        "Prior restraint is presumptively unconstitutional.",
+        "Shield law protections are enforced.",
+        "FCC licensing is deterministic and documented."
+      ],
+      "example_falsification_test": "F_MEDIA_001",
+      "example_ontological_issue": "OI_MEDIA_001"
+    },
+    {
+      "id": "D_RELIGIOUS_LIBERTY",
+      "name": "Religious Liberty",
+      "layer": 4,
+      "categories": [
+        "establishment-clause",
+        "free-exercise",
+        "rfra"
+      ],
+      "invariants": [
+        "Establishment Clause: no state religion or religious preference.",
+        "Free Exercise: no substantial burden without compelling interest.",
+        "RFRA strict scrutiny applied where applicable."
+      ],
+      "example_falsification_test": "F_RELIGIOUS_001",
+      "example_ontological_issue": "OI_RELIGIOUS_001"
+    },
+    {
+      "id": "D_INDIGENOUS_RIGHTS",
+      "name": "Indigenous Rights",
+      "layer": 4,
+      "categories": [
+        "treaty-obligations",
+        "tribal-sovereignty",
+        "icwa"
+      ],
+      "invariants": [
+        "Treaty obligations to tribal nations are honored.",
+        "Tribal sovereignty is recognized and respected.",
+        "ICWA placement preferences are followed."
+      ],
+      "example_falsification_test": "F_INDIGENOUS_001",
+      "example_ontological_issue": "OI_INDIGENOUS_001"
+    },
+    {
+      "id": "D_DIGITAL_GOVERNANCE",
+      "name": "Digital Governance",
+      "layer": 4,
+      "categories": [
+        "wcag",
+        "open-data",
+        "algorithmic-accountability"
+      ],
+      "invariants": [
+        "Government digital services meet WCAG 2.1 AA standards.",
+        "Open data requirements are met.",
+        "Algorithmic accountability for government AI is enforced."
+      ],
+      "example_falsification_test": "F_DIGITAL_GOV_001",
+      "example_ontological_issue": "OI_DIGITAL_GOV_001"
+    },
+    {
+      "id": "D_RESTORATIVE_JUSTICE",
+      "name": "Restorative Justice",
+      "layer": 4,
+      "categories": [
+        "victim-offender-mediation",
+        "restitution",
+        "recidivism"
+      ],
+      "invariants": [
+        "Victim-offender mediation process is documented.",
+        "Restitution calculation is formulaic and fair.",
+        "Recidivism tracking is deterministic and used for improvement."
+      ],
+      "example_falsification_test": "F_RESTORATIVE_001",
+      "example_ontological_issue": "OI_RESTORATIVE_001"
     }
   ],
   "issues": [
@@ -1088,7 +2388,7 @@
       "severity": "critical",
       "status": "Open",
       "cve": "CVE-2026-24785",
-      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK ≠ 0^32.",
+      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK \u2260 0^32.",
       "assumptions_violated": [
         "Callers supply a non-zero PSK; no server-side validation needed."
       ],
@@ -1167,7 +2467,7 @@
       "status": "Open",
       "description": "Medical dosimetry software that lacks a falsification test against the IEC 62304 reference algorithm may silently diverge from the certified calculation.",
       "assumptions_violated": [
-        "The software dosimetry calculation agrees with the reference algorithm within ±0.1%."
+        "The software dosimetry calculation agrees with the reference algorithm within \u00b10.1%."
       ],
       "related_cases": [
         "CS_PLATFORM_001"
@@ -1365,7 +2665,7 @@
       "falsification_tests": [
         "F_NONCREATIVE_001"
       ],
-      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress→decompress→compare test."
+      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress\u2192decompress\u2192compare test."
     },
     {
       "id": "OI_GAMING_001",
@@ -1879,7 +3179,7 @@
       "category": "invariant-violation",
       "severity": "critical",
       "status": "Open",
-      "description": "If the successor function S is not injective (S(m) = S(n) but m ≠ n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
+      "description": "If the successor function S is not injective (S(m) = S(n) but m \u2260 n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
       "assumptions_violated": [
         "Peano successor function S(n) is total and injective over natural numbers.",
         "Zero is not the successor of any natural number."
@@ -2048,7 +3348,7 @@
       "assumptions_violated": [
         "Assigned workload is achievable within scheduled hours.",
         "No employee works without compensation.",
-        "Institutions enforce FLSA 29 U.S.C. § 207 overtime requirements."
+        "Institutions enforce FLSA 29 U.S.C. \u00a7 207 overtime requirements."
       ],
       "related_cases": [
         "CS_LAB_001",
@@ -2064,7 +3364,7 @@
         "F_LABOR_005",
         "F_LABOR_006"
       ],
-      "resolution_notes": "Enforce FLSA 29 U.S.C. § 207. Audit workload against scheduled hours. Document all off-the-clock work."
+      "resolution_notes": "Enforce FLSA 29 U.S.C. \u00a7 207. Audit workload against scheduled hours. Document all off-the-clock work."
     },
     {
       "id": "OI_MINECRAFT_001",
