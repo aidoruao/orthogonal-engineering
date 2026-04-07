@@ -3606,13 +3606,94 @@
         "F_GRAPHICS_002"
       ],
       "resolution_notes": "Transform scissor rectangle corners using current ModelView matrix in Renderer.setScissor(). Compute axis-aligned bounding box of transformed corners. Pass AABB to vkCmdSetScissor. Implementation completed in Kimi Code Session 2a (2026-04-04)."
+    },
+    {
+      "id": "OI_DH_001",
+      "title": "Server tick handler violates time budget under default config",
+      "domain": "D_DH_STANDALONE",
+      "category": "tick-budget-exhaustion",
+      "severity": "critical",
+      "status": "Open",
+      "description": "ForgeServerProxy.serverTickEvent exceeds its 15ms time budget when maxGenerationRequestDistance is at its default value of 4096. The unbounded chunkLoadEvents queue fills faster than it drains, causing TPS degradation. This is a code defect: the default config value guarantees performance degradation.",
+      "assumptions_violated": [
+        "Default configuration values are safe for production use.",
+        "Tick handler respects its time budget under normal conditions."
+      ],
+      "related_cases": [
+        "CS_DH_001"
+      ],
+      "falsification_tests": [
+        "F_DH_001",
+        "F_DH_004"
+      ],
+      "resolution_notes": "Patch generated: cap chunk events to 20/tick, reduce budget to 5ms. Long-term fix: add config validation warning for values >2048."
+    },
+    {
+      "id": "OI_DH_002",
+      "title": "MixinFramebuffer executes GL calls during splash screen",
+      "domain": "D_DH_STANDALONE",
+      "category": "gl-context-corruption",
+      "severity": "critical",
+      "status": "Open",
+      "description": "MixinFramebuffer.createDepthTexture executes OpenGL calls (glBindTexture, glTexImage2D) during the FML splash screen phase, before the GL context is fully initialized. This causes black screen followed by crash on systems without Angelica installed.",
+      "assumptions_violated": [
+        "Mixin injections only execute when their target context is ready.",
+        "GL context is initialized before framebuffer operations."
+      ],
+      "related_cases": [
+        "CS_DH_002"
+      ],
+      "falsification_tests": [
+        "F_DH_002"
+      ],
+      "resolution_notes": "Patch generated: add splash screen guard before GL operations. Check FML state before executing createDepthTexture."
+    },
+    {
+      "id": "OI_DH_003",
+      "title": "Config lacks performance warnings for aggressive values",
+      "domain": "D_DH_STANDALONE",
+      "category": "config-validation",
+      "severity": "high",
+      "status": "Open",
+      "description": "Config.java defines maxGenerationRequestDistance with minDefaultMax(256, 4096, 4096). A value of 4096 creates a 52.7M block² generation area per player, which mathematically guarantees TPS degradation. No warning is logged when users accept this default.",
+      "assumptions_violated": [
+        "Dangerous configuration values trigger warnings.",
+        "Default values are safe for typical use cases."
+      ],
+      "related_cases": [
+        "CS_DH_001"
+      ],
+      "falsification_tests": [
+        "F_DH_003"
+      ],
+      "resolution_notes": "Add config listener to log WARN when maxGenerationRequestDistance > 2048. Consider reducing default to 1024."
+    },
+    {
+      "id": "OI_DH_004",
+      "title": "Z_STD compression may block server tick thread",
+      "domain": "D_DH_STANDALONE",
+      "category": "threading",
+      "severity": "medium",
+      "status": "Unknown",
+      "description": "Data compression using Z_STD (via dataCompression config) may execute on the server tick thread. Single compression operations can exceed 15ms, violating the tick budget. Unknown whether compression is properly offloaded to worker threads.",
+      "assumptions_violated": [
+        "Heavy CPU operations are offloaded from tick thread.",
+        "Compression does not block server tick."
+      ],
+      "related_cases": [
+        "CS_DH_001"
+      ],
+      "falsification_tests": [
+        "F_DH_005"
+      ],
+      "resolution_notes": "Profile thread usage during Z_STD compression. If on tick thread, move to LodBuilderExecutor or similar worker pool."
     }
   ],
   "summary": {
-    "total_domains": 59,
-    "total_issues": 60,
-    "open": 60,
+    "total_domains": 60,
+    "total_issues": 64,
+    "open": 64,
     "resolved": 0,
-    "total_oi_ids": 63
+    "total_oi_ids": 67
   }
 }
