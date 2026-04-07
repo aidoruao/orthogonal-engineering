@@ -85,6 +85,8 @@ from src.sal.topos_subobject_classifier import (
     geometric_morphism,
     GeometricMorphism,
 )
+from src.sal.yeshua_categories import YeshuaAxiomID, DomainYeshuaFunctor
+from src.sal.cross_domain_adjunction import DomainSignature, DomainCategory
 
 __all__ = [
     # Domain constants
@@ -535,6 +537,47 @@ class DhStandaloneReport:
             or not self.gl_context_truth_preserved
             or bool(self.domain_state.violations)
         )
+    
+    def to_domain_signature(self) -> DomainSignature:
+        """
+        Convert this report to a domain signature for the category of domains.
+        
+        This enables cross-domain adjunctions — relating D_DH_STANDALONE
+        to other forensic domains through shared structure.
+        """
+        return DomainSignature(
+            domain_id="D_DH_STANDALONE",
+            invariant_count=len(DH_SCHEMA["invariants"]),
+            violation_types=frozenset({
+                "counit_violation",
+                "config_paradox",
+                "unbounded_queue",
+                "tick_budget_exhaustion",
+                "gl_context_race",
+            }),
+            sal_level=6,  # Type 6 (realizability)
+            evidence_count=len(self.evidence_anchor),
+        )
+    
+    def verify_yeshua_axioms(self) -> Dict[str, bool]:
+        """
+        Verify all 8 Yeshua axioms for this domain.
+        
+        Returns a map from axiom name to satisfaction status.
+        This is the SECULAR PROJECTION of the Yeshua categories —
+        the theological structure mapped to computational checks.
+        """
+        functor = DomainYeshuaFunctor(self)
+        return {
+            "derivable": functor.apply(YeshuaAxiomID.DERIVABLE),
+            "reproducible": functor.apply(YeshuaAxiomID.REPRODUCIBLE),
+            "reverifiable": functor.apply(YeshuaAxiomID.REVERIFIABLE),
+            "no_authority_without_proof": functor.apply(YeshuaAxiomID.NO_AUTHORITY_WITHOUT_PROOF),
+            "no_hidden_state": functor.apply(YeshuaAxiomID.NO_HIDDEN_STATE),
+            "no_unverifiable_dependency": functor.apply(YeshuaAxiomID.NO_UNVERIFIABLE_DEP),
+            "no_economic_gatekeeping": functor.apply(YeshuaAxiomID.NO_ECONOMIC_GATEKEEPING),
+            "hash_anchored": functor.apply(YeshuaAxiomID.HASH_ANCHORED),
+        }
 
 
 def build_full_report() -> DhStandaloneReport:
