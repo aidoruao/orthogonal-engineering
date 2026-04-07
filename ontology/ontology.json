@@ -337,6 +337,24 @@
       "layer": null
     },
     {
+      "id": "D_PLATFORM",
+      "name": "Platform / OS",
+      "categories": [
+        "kernel",
+        "abi",
+        "cross-platform",
+        "memory-model"
+      ],
+      "invariants": [
+        "Lock-free atomics use explicit memory ordering.",
+        "ABI stability across minor versions.",
+        "Kernel interfaces validate all pointers from userspace."
+      ],
+      "example_falsification_test": "F_PLATFORM_001",
+      "example_ontological_issue": "OI_PROTO_001",
+      "layer": 3
+    },
+    {
       "id": "D_CRUSADER",
       "name": "Crusader Fly-Control",
       "categories": [
