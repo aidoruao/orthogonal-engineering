@@ -430,6 +430,31 @@
       "id": "RCS-RESOURCE",
       "name": "Resource Exhaustion",
       "description": "Memory, file-descriptor, or CPU budget exceeded under production load."
+    },
+    {
+      "id": "RCS-CONFIG-PARADOX",
+      "name": "Config Paradox",
+      "description": "Default or documented configuration values cause system failure under normal operation."
+    },
+    {
+      "id": "RCS-TICK-BUDGET-EXHAUSTION",
+      "name": "Tick Budget Exhaustion",
+      "description": "Per-tick time budget exceeded due to unbounded work or single-operation overrun."
+    },
+    {
+      "id": "RCS-UNBOUNDED-QUEUE",
+      "name": "Unbounded Queue",
+      "description": "Producer-consumer queue grows without bound due to missing backpressure or cap."
+    },
+    {
+      "id": "RCS-GL-CONTEXT-RACE",
+      "name": "GL Context Race",
+      "description": "OpenGL calls execute before GL context is fully initialized or on wrong thread."
+    },
+    {
+      "id": "RCS-SPLASH-SCREEN-INJECTION",
+      "name": "Splash Screen Injection",
+      "description": "Mixin or hook executes during splash screen phase when target subsystem is not ready."
     }
   ]
 }
