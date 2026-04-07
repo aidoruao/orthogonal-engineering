@@ -68,9 +68,30 @@ public class DhDiagnosticsCommand extends CommandBase {
     /**
      * Registers this command with the server.
      * Call from FMLServerStartingEvent handler.
+     * 
+     * NOTE: If you already have a "/dh" command (DH has one for #49, #57),
+     * use registerAsDhDiag() instead to avoid collision.
      */
     public static void register(FMLServerStartingEvent event) {
         event.registerServerCommand(new DhDiagnosticsCommand());
+    }
+    
+    /**
+     * Registers as "/dhdiag" to avoid collision with existing "/dh" command.
+     * Alternative registration if "/dh" is already taken.
+     */
+    public static void registerAsDhDiag(FMLServerStartingEvent event) {
+        event.registerServerCommand(new DhDiagnosticsCommand("dhdiag"));
+    }
+    
+    private final String commandName;
+    
+    public DhDiagnosticsCommand() {
+        this.commandName = COMMAND_NAME;
+    }
+    
+    public DhDiagnosticsCommand(String name) {
+        this.commandName = name;
     }
     
     /**
@@ -93,7 +114,7 @@ public class DhDiagnosticsCommand extends CommandBase {
     
     @Override
     public String getCommandName() {
-        return COMMAND_NAME;
+        return commandName;
     }
     
     @Override
@@ -216,6 +237,12 @@ public class DhDiagnosticsCommand extends CommandBase {
     
     /**
      * Gets current queue sizes via reflection.
+     * 
+     * PERFORMANCE NOTE: ConcurrentLinkedQueue.size() is O(n) - it traverses the
+     * entire queue to count elements. At 10,000+ events, this itself could add
+     * measurable latency to the tick. This is a diagnostic trade-off: we accept
+     * the O(n) cost for visibility into the queue state. For production use,
+     * consider sampling (call size() every N ticks instead of every tick).
      */
     private QueueInfo getQueueInfo() {
         int chunkSize = 0;
@@ -233,6 +260,7 @@ public class DhDiagnosticsCommand extends CommandBase {
                     ConcurrentLinkedQueue<Object> chunkQueue = 
                         (ConcurrentLinkedQueue<Object>) chunkLoadEventsField.get(forgeServerProxyInstance);
                     if (chunkQueue != null) {
+                        // O(n) operation - see method javadoc for performance note
                         chunkSize = chunkQueue.size();
                     }
                 }
@@ -243,6 +271,7 @@ public class DhDiagnosticsCommand extends CommandBase {
                     ConcurrentLinkedQueue<Object> taskQueue =
                         (ConcurrentLinkedQueue<Object>) taskQueueField.get(forgeServerProxyInstance);
                     if (taskQueue != null) {
+                        // O(n) operation - see method javadoc for performance note
                         taskSize = taskQueue.size();
                     }
                 }
@@ -334,14 +363,6 @@ public class DhDiagnosticsCommand extends CommandBase {
         sender.addChatMessage(component);
     }
     
-    /**
-     * Alternative registration method using event handler.
-     * Add this to your main mod class if not using FMLServerStartingEvent directly.
-     */
-    @cpw.mods.fml.common.eventhandler.SubscribeEvent
-    public void onCommand(CommandEvent event) {
-        // This can be used for command interception if needed
-    }
 }
 
 /*

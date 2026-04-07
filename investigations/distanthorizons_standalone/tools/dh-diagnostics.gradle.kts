@@ -115,13 +115,15 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
     
     for (match in matches) {
         val (minStr, defaultStr, maxStr) = match.destructured
-        val min = minStr.toInt()
-        val default = defaultStr.toInt()
-        val max = maxStr.toInt()
+        val minVal = minStr.toInt()
+        val defaultValue = defaultStr.toInt()  // NOT 'default' - Kotlin reserved word
+        val maxVal = maxStr.toInt()
         
         // Try to identify what setting this is by looking at surrounding context
-        val contextStart = maxOf(0, match.range.start - 500)
-        val context = content.substring(contextStart, match.range.end)
+        // NOTE: This uses a 500-char lookback which is fragile if multiple
+        // setMinDefaultMax calls are close together. In practice, Config.java
+        // has these calls well-separated. A more robust approach would parse
+        // the AST, but regex is sufficient for this diagnostic tool.
         
         val settingName = when {
             context.contains("maxGenerationRequestDistance") -> "maxGenerationRequestDistance"
@@ -133,14 +135,14 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
         
         // Compute area for distance settings
         val area = if (isDistanceSetting(settingName)) {
-            PI * default * default
+            PI * defaultValue * defaultValue
         } else {
             0.0
         }
         
         // Determine severity and recommendation
         val (severity, recommended, message) = when {
-            settingName == "maxGenerationRequestDistance" && default >= 4096 -> {
+            settingName == "maxGenerationRequestDistance" && defaultValue >= 4096 -> {
                 Triple(
                     Severity.CRITICAL,
                     1024,
@@ -149,7 +151,7 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
                     "This guarantees TPS degradation."
                 )
             }
-            settingName == "maxGenerationRequestDistance" && default >= 2048 -> {
+            settingName == "maxGenerationRequestDistance" && defaultValue >= 2048 -> {
                 Triple(
                     Severity.WARNING,
                     1024,
@@ -157,7 +159,7 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
                     "Consider reducing to 1024 for better performance."
                 )
             }
-            settingName == "generationMaxChunkRadius" && default == 0 -> {
+            settingName == "generationMaxChunkRadius" && defaultValue == 0 -> {
                 Triple(
                     Severity.WARNING,
                     128,
@@ -168,18 +170,18 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
             isDistanceSetting(settingName) && area > 10_000_000 -> {
                 Triple(
                     Severity.WARNING,
-                    default / 2,
+                    defaultValue / 2,
                     "Distance setting creates large area: ${formatNumber(area)} blocks²"
                 )
             }
             else -> {
-                Triple(Severity.INFO, default, "Within acceptable range")
+                Triple(Severity.INFO, defaultValue, "Within acceptable range")
             }
         }
         
         findings.add(ConfigFinding(
             setting = settingName,
-            currentValue = default,
+            currentValue = defaultValue,
             recommendedValue = recommended,
             areaBlocksSquared = area,
             severity = severity,
@@ -254,7 +256,7 @@ fun printReport(findings: List<ConfigFinding>) {
         println()
         println("MATHEMATICAL ANALYSIS:")
         println("  The default configuration creates π × 4096² = ~52.7M blocks² per player.")
-        println("  This is the root cause of TPS degradation in issue #51.")
+        println("  This is the root cause of server tick performance degradation.")
         println()
         println("RECOMMENDED ACTIONS:")
         println("  1. Change maxGenerationRequestDistance default from 4096 to 1024")
