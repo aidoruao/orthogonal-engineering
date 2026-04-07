@@ -1261,6 +1261,80 @@
         "Adjunction: has_adjunction() returns (False, ProofObject) with counit violation",
         "Forcing: force_domain() produces GenericExtension where justice holds"
       ]
+    },
+    {
+      "id": "CS_DH_001",
+      "title": "DistantHorizonsStandalone #51 — Server TPS lag from defective default config",
+      "source": "https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/51",
+      "domain": "D_DH_STANDALONE",
+      "root_cause_signals": [
+        "RCS-CONFIG-PARADOX",
+        "RCS-TICK-BUDGET-EXHAUSTION",
+        "RCS-UNBOUNDED-QUEUE"
+      ],
+      "description": "ForgeServerProxy.serverTickEvent() exceeds its 15ms time budget because maxGenerationRequestDistance defaults to 4096 blocks, creating 52.7M blocks² generation area per player. The unbounded chunkLoadEvents queue fills faster than it drains. MrFuzzihead's server experienced TPS degradation despite using DEFAULT configuration values — this is a code defect, not user misconfiguration.",
+      "assumptions_violated": [
+        "Default configuration values are safe for production use.",
+        "Tick handler respects its time budget under normal conditions.",
+        "ConcurrentLinkedQueue growth is bounded by processing rate."
+      ],
+      "falsification_tests": [
+        "F_DH_001",
+        "F_DH_003",
+        "F_DH_004"
+      ],
+      "ontological_issues": [
+        "OI_DH_001",
+        "OI_DH_003"
+      ],
+      "lessons": [
+        "Config defaults must be validated for worst-case performance, not just best-case.",
+        "Unbounded queues with unbounded producers guarantee memory pressure.",
+        "Time budgets without count caps are vulnerable to queue flooding.",
+        "Epistemic forensics: verifying Config.java defaults revealed the defect was in the code, not user config."
+      ],
+      "methodology_components": [
+        "Epistemic Forensics: verbatim quoting of Config.java line 1744 setMinDefaultMax(256, 4096, 4096)",
+        "Gap Analysis: identified unbounded queue iteration without count limit",
+        "Falsification: F_DH_001 tests tick budget compliance under synthetic load",
+        "Ontological: OI_DH_001 classifies this as tick-budget-exhaustion terminal root"
+      ],
+      "status": "validated"
+    },
+    {
+      "id": "CS_DH_002",
+      "title": "DistantHorizonsStandalone #56 — Black screen crash without Angelica",
+      "source": "https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/56",
+      "domain": "D_DH_STANDALONE",
+      "root_cause_signals": [
+        "RCS-GL-CONTEXT-RACE",
+        "RCS-SPLASH-SCREEN-INJECTION"
+      ],
+      "description": "MixinFramebuffer.createDepthTexture executes OpenGL calls (glBindTexture, glTexImage2D) during the FML splash screen phase, before the GL context is fully initialized. This causes black screen followed by crash on systems without Angelica installed. The Mixin injects into Framebuffer.createFramebuffer which is called during early initialization.",
+      "assumptions_violated": [
+        "Mixin injections only execute when their target context is ready.",
+        "GL context is initialized before framebuffer operations.",
+        "Splash screen phase is safe for render-related mixins."
+      ],
+      "falsification_tests": [
+        "F_DH_002"
+      ],
+      "ontological_issues": [
+        "OI_DH_002"
+      ],
+      "lessons": [
+        "Mixin injections during initialization must verify context readiness.",
+        "GL operations require explicit guards for splash screen phase.",
+        "Dependency on optional mods (Angelica) must have fallback paths.",
+        "Boundary paradox: DH's mixin executes during FML's splash screen, outside DH's responsibility boundary."
+      ],
+      "methodology_components": [
+        "Gap Analysis: MixinFramebuffer.java lines 31-52 lack splash screen guard",
+        "Falsification: F_DH_002 intercepts GL calls during initialization",
+        "Ontological: OI_DH_002 classifies as GL-context-corruption terminal root",
+        "Paradox: PX-002 documents the boundary paradox between DH and FML"
+      ],
+      "status": "validated"
     }
   ]
 }
