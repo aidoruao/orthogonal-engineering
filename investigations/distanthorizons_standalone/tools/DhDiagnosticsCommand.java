@@ -71,27 +71,19 @@ public class DhDiagnosticsCommand extends CommandBase {
     private static final AtomicLong lastTickEventsProcessed = new AtomicLong(0);
     
     /**
-     * Registers this command with the server.
+     * Registers this command as "/dhdiag" with the server.
      * Call from FMLServerStartingEvent handler.
      * 
-     * NOTE: If you already have a "/dh" command (DH has one for #49, #57),
-     * use registerAsDhDiag() instead to avoid collision.
+     * Default is "dhdiag" to avoid collision with DH's existing "/dh" command.
      */
     public static void register(FMLServerStartingEvent event) {
         event.registerServerCommand(new DhDiagnosticsCommand());
     }
     
     /**
-     * Registers as "/dhdiag" to avoid collision with existing "/dh" command.
-     * Alternative registration if "/dh" is already taken.
-     */
-    public static void registerAsDhDiag(FMLServerStartingEvent event) {
-        event.registerServerCommand(new DhDiagnosticsCommand("dhdiag"));
-    }
-    
-    /**
      * Registers with a custom command name.
      * Use this if you want "/dh" instead of "/dhdiag".
+     * WARNING: DH already has a "/dh" command (issues #49, #57) - collision likely.
      * 
      * @param event The server starting event
      * @param name The command name (e.g., "dh" for "/dh diagnostics")
@@ -135,7 +127,7 @@ public class DhDiagnosticsCommand extends CommandBase {
     
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/dh diagnostics - Show DH performance diagnostics";
+        return "/" + commandName + " diagnostics - Show DH performance diagnostics";
     }
     
     @Override

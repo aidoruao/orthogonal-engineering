@@ -13,7 +13,9 @@
  * 
  * IMPORTANT: This models the ACTUAL two-loop structure:
  *   - Loop 1 (chunkLoadEvents): NO time budget, processes ALL events
- *   - Loop 2 (taskQueue): 15ms budget with processedAtLeastOne gate
+ *   - Loop 2 (taskQueue): 15ms budget with isLimited() + processedAtLeastOne gate
+ *     * isLimited=true tasks: check budget AFTER running (first task always runs)
+ *     * isLimited=false tasks: skip budget check entirely (always run)
  */
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -186,15 +188,17 @@ public class TickHandlerBenchmark {
      *   - while (!chunkLoadEvents.isEmpty()) { pollAndProcessEvent(); }
      *   - NO time check - runs until queue is empty
      * 
-     * Loop 2 (taskQueue): 15ms budget with isLimited() gate
+     * Loop 2 (taskQueue): 15ms budget with isLimited() + processedAtLeastOne gate
      *   - Inside serverTickEvent()  
      *   - while (!taskQueue.isEmpty()) { ScheduledTask<?> task = taskQueue.poll(); ... }
      *   - boolean isLimited = task.isLimited();  // Some tasks skip budget check
-     *   - if (isLimited && System.nanoTime() >= timeBudget) break;
-     *   - process task...
+     *   - processedAtLeastOne starts FALSE, so FIRST limited task ALWAYS runs
+     *   - Budget check: if (processedAtLeastOne && isLimited && nanoTime >= deadline) break
+     *   - After running any task: processedAtLeastOne = true
      * 
-     * CRITICAL: Unlimited tasks (isLimited=false) ALWAYS run - they skip budget check.
-     * This means even with a 15ms budget, unlimited tasks can extend tick indefinitely.
+     * CRITICAL: First limited task ALWAYS runs (processedAtLeastOne starts false).
+     * Unlimited tasks (isLimited=false) ALWAYS run - they skip budget check entirely.
+     * This means even with a 15ms budget, the actual tick time can exceed it.
      */
     private static BenchmarkResult runBenchmark(int queueDepth, long taskBudgetNs) {
         // Populate queues with simulated events
@@ -230,12 +234,15 @@ public class TickHandlerBenchmark {
         int chunksRemaining = chunkQueue.size();
         
         // ========== LOOP 2: taskQueue (WITH BUDGET + isLimited GATE) ==========
-        // This loop has a 15ms time budget BUT unlimited tasks skip the check
+        // This loop has a 15ms time budget BUT:
+        //   - First limited task ALWAYS runs (processedAtLeastOne starts false)
+        //   - Unlimited tasks skip budget check entirely
         long loop2Start = System.nanoTime();
         long loop2Deadline = loop2Start + taskBudgetNs;
         int tasksProcessed = 0;
         int limitedTasksProcessed = 0;
         int unlimitedTasksProcessed = 0;
+        boolean processedAtLeastOne = false;  // Starts false - first limited task always runs
         
         // Original code: while (!taskQueue.isEmpty())
         while (!taskQueue.isEmpty()) {
@@ -243,13 +250,12 @@ public class TickHandlerBenchmark {
             if (task == null) break;
             
             // CRITICAL: isLimited() gate from original code
-            // Unlimited tasks skip budget check entirely
+            // For limited tasks: check budget AFTER running, with processedAtLeastOne gate
             if (task.isLimited) {
-                // Check budget BEFORE processing limited tasks
-                if (System.nanoTime() >= loop2Deadline) {
-                    // Put task back (original doesn't do this, but for accuracy)
-                    // In reality, task is lost or deferred to next tick
-                    break;
+                // Budget check: only if we've processed at least one task AND budget exceeded
+                // First limited task always runs because processedAtLeastOne starts false
+                if (processedAtLeastOne && System.nanoTime() >= loop2Deadline) {
+                    break;  // Budget exceeded after first task
                 }
                 limitedTasksProcessed++;
             } else {
@@ -259,6 +265,7 @@ public class TickHandlerBenchmark {
             
             processTask(task);
             tasksProcessed++;
+            processedAtLeastOne = true;  // After first task, budget checks apply
         }
         long loop2Time = System.nanoTime() - loop2Start;
         int tasksRemaining = taskQueue.size();
