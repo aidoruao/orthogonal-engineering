@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DhDiagnosticsCommand extends CommandBase {
     
     // Default to "dhdiag" to avoid collision with DH's existing "/dh" command
-    // If you prefer "/dh diagnostics", use register(event) instead of registerAsDhDiag()
+    // If you prefer "/dh diagnostics", use registerWithName(event, "dh")
     private static final String COMMAND_NAME = "dhdiag";
     private static final String SUBCOMMAND = "diagnostics";
     
