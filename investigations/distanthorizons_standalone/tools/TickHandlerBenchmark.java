@@ -249,22 +249,21 @@ public class TickHandlerBenchmark {
             SimulatedTask task = taskQueue.poll();
             if (task == null) break;
             
-            // CRITICAL: isLimited() gate from original code
-            // For limited tasks: check budget AFTER running, with processedAtLeastOne gate
+            // RUN TASK FIRST (matches original DH code: scheduledTask.run() before budget check)
+            processTask(task);
+            tasksProcessed++;
+            
+            // THEN check budget (only for limited tasks, only after first task)
             if (task.isLimited) {
-                // Budget check: only if we've processed at least one task AND budget exceeded
-                // First limited task always runs because processedAtLeastOne starts false
-                if (processedAtLeastOne && System.nanoTime() >= loop2Deadline) {
-                    break;  // Budget exceeded after first task
-                }
                 limitedTasksProcessed++;
+                if (processedAtLeastOne && System.nanoTime() >= loop2Deadline) {
+                    break;  // Budget exceeded — stop processing MORE tasks
+                }
             } else {
                 unlimitedTasksProcessed++;
                 // Unlimited tasks: NO budget check - always run
             }
             
-            processTask(task);
-            tasksProcessed++;
             processedAtLeastOne = true;  // After first task, budget checks apply
         }
         long loop2Time = System.nanoTime() - loop2Start;

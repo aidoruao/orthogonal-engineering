@@ -387,7 +387,7 @@ public class DhDiagnosticsCommand extends CommandBase {
  *    @EventHandler
  *    public void onServerStarting(FMLServerStartingEvent event) {
  *        DhDiagnosticsCommand.register(event);  // Uses /dhdiag
- *        // OR: DhDiagnosticsCommand.registerAsDhDiag(event);  // Same as above
+ *        // (register() defaults to /dhdiag — see COMMAND_NAME constant)
  *        // OR: DhDiagnosticsCommand.registerWithName(event, "dh");  // Uses /dh
  *    }
  * 

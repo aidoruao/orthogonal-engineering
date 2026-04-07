@@ -32,7 +32,7 @@ the adjunction relates individual instances (domains) to the universal (vine).
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
+from typing import Any, Callable, Dict, FrozenSet, List, Optional, Tuple, TypeVar
 
 from axioms.logic import ProofObject
 from axioms.yeshua_axioms import YeshuaClaim
