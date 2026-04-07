@@ -57,13 +57,20 @@ public class TickHandlerBenchmark {
     }
     
     // Simulated scheduled task (minimal stand-in for DH's ScheduledTask)
+    // Models the isLimited() method from DH - unlimited tasks skip budget check
     private static class SimulatedTask {
         final Runnable action;
         final long scheduledTime;
+        final boolean isLimited;  // If false, task skips budget check (always runs)
         
         SimulatedTask(Runnable action, long delayMs) {
+            this(action, delayMs, true);  // Default: limited (respects budget)
+        }
+        
+        SimulatedTask(Runnable action, long delayMs, boolean isLimited) {
             this.action = action;
             this.scheduledTime = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(delayMs);
+            this.isLimited = isLimited;
         }
     }
     
@@ -78,11 +85,14 @@ public class TickHandlerBenchmark {
         final int chunkEventsRemaining;
         final int tasksProcessed;
         final int tasksRemaining;
+        final int limitedTasksProcessed;     // Tasks that respected budget
+        final int unlimitedTasksProcessed;   // Tasks that skipped budget check
         final boolean budgetExceeded;
         final boolean loop1ExhaustedBudget;  // Did Loop 1 alone exceed 15ms?
         
         BenchmarkResult(int depth, long budget, long loop1, long loop2, 
-                       int chunksProc, int chunksRem, int tasksProc, int tasksRem) {
+                       int chunksProc, int chunksRem, int tasksProc, int tasksRem,
+                       int limitedTasks, int unlimitedTasks) {
             this.queueDepth = depth;
             this.budgetNs = budget;
             this.loop1TimeNs = loop1;
@@ -92,6 +102,8 @@ public class TickHandlerBenchmark {
             this.chunkEventsRemaining = chunksRem;
             this.tasksProcessed = tasksProc;
             this.tasksRemaining = tasksRem;
+            this.limitedTasksProcessed = limitedTasks;
+            this.unlimitedTasksProcessed = unlimitedTasks;
             this.budgetExceeded = loop2 > budget;  // Budget only applies to Loop 2
             this.loop1ExhaustedBudget = loop1 > BUDGET_NS;  // Loop 1 has no budget but we track if it exceeded
         }
@@ -167,20 +179,22 @@ public class TickHandlerBenchmark {
     }
     
     /**
-     * Runs the benchmark modeling the ACTUAL two-loop structure:
+     * Runs the benchmark modeling the ACTUAL two-loop structure from ForgeServerProxy:
      * 
      * Loop 1 (chunkLoadEvents): NO time budget - processes ALL events
-     *   - Lines 163-175 in ForgeServerProxy.java
-     *   - while (!chunkLoadEvents.isEmpty()) { process event; }
-     *   - NO time check in original code
+     *   - Inside serverTickEvent()
+     *   - while (!chunkLoadEvents.isEmpty()) { pollAndProcessEvent(); }
+     *   - NO time check - runs until queue is empty
      * 
-     * Loop 2 (taskQueue): 15ms budget with processedAtLeastOne gate
-     *   - Lines 108-141 in ForgeServerProxy.java  
-     *   - while (processedAtLeastOne || !taskQueue.isEmpty()) { ... }
-     *   - if (System.nanoTime() > timeBudget) break;
+     * Loop 2 (taskQueue): 15ms budget with isLimited() gate
+     *   - Inside serverTickEvent()  
+     *   - while (!taskQueue.isEmpty()) { ScheduledTask<?> task = taskQueue.poll(); ... }
+     *   - boolean isLimited = task.isLimited();  // Some tasks skip budget check
+     *   - if (isLimited && System.nanoTime() >= timeBudget) break;
+     *   - process task...
      * 
-     * The bug: Loop 1 can consume unlimited time, leaving nothing for Loop 2,
-     * causing tick handler to exceed 50ms total even though Loop 2 "has a budget".
+     * CRITICAL: Unlimited tasks (isLimited=false) ALWAYS run - they skip budget check.
+     * This means even with a 15ms budget, unlimited tasks can extend tick indefinitely.
      */
     private static BenchmarkResult runBenchmark(int queueDepth, long taskBudgetNs) {
         // Populate queues with simulated events
@@ -191,10 +205,12 @@ public class TickHandlerBenchmark {
             chunkQueue.offer(new SimulatedChunkEvent(i % 1000 - 500, i / 1000 - 500));
         }
         
-        // Add some tasks (typically fewer than chunk events)
+        // Add mixed tasks: some limited (respect budget), some unlimited (ignore budget)
         int numTasks = Math.max(1, queueDepth / 10);
         for (int i = 0; i < numTasks; i++) {
-            taskQueue.offer(new SimulatedTask(() -> {}, 0));
+            // 70% of tasks are limited (respect budget), 30% unlimited
+            boolean isLimited = (i % 10) < 7;
+            taskQueue.offer(new SimulatedTask(() -> {}, 0, isLimited));
         }
         
         // ========== LOOP 1: chunkLoadEvents (NO BUDGET) ==========
@@ -213,38 +229,44 @@ public class TickHandlerBenchmark {
         long loop1Time = System.nanoTime() - loop1Start;
         int chunksRemaining = chunkQueue.size();
         
-        // ========== LOOP 2: taskQueue (WITH BUDGET) ==========
-        // This loop has a 15ms time budget
-        // But it starts AFTER Loop 1, so if Loop 1 took 20ms,
-        // Loop 2 starts with negative budget remaining
+        // ========== LOOP 2: taskQueue (WITH BUDGET + isLimited GATE) ==========
+        // This loop has a 15ms time budget BUT unlimited tasks skip the check
         long loop2Start = System.nanoTime();
         long loop2Deadline = loop2Start + taskBudgetNs;
         int tasksProcessed = 0;
-        boolean processedAtLeastOne = true; // Start true to enter loop
+        int limitedTasksProcessed = 0;
+        int unlimitedTasksProcessed = 0;
         
-        while (processedAtLeastOne || !taskQueue.isEmpty()) {
-            processedAtLeastOne = false;
-            
-            // Check budget (this is the 15ms check from line 124)
-            if (System.nanoTime() > loop2Deadline) {
-                break; // Budget exhausted
-            }
-            
+        // Original code: while (!taskQueue.isEmpty())
+        while (!taskQueue.isEmpty()) {
             SimulatedTask task = taskQueue.poll();
-            if (task == null) {
-                break;
+            if (task == null) break;
+            
+            // CRITICAL: isLimited() gate from original code
+            // Unlimited tasks skip budget check entirely
+            if (task.isLimited) {
+                // Check budget BEFORE processing limited tasks
+                if (System.nanoTime() >= loop2Deadline) {
+                    // Put task back (original doesn't do this, but for accuracy)
+                    // In reality, task is lost or deferred to next tick
+                    break;
+                }
+                limitedTasksProcessed++;
+            } else {
+                unlimitedTasksProcessed++;
+                // Unlimited tasks: NO budget check - always run
             }
             
             processTask(task);
             tasksProcessed++;
-            processedAtLeastOne = true;
         }
         long loop2Time = System.nanoTime() - loop2Start;
         int tasksRemaining = taskQueue.size();
         
         return new BenchmarkResult(queueDepth, taskBudgetNs, loop1Time, loop2Time,
                                    chunksProcessed, chunksRemaining,
-                                   tasksProcessed, tasksRemaining);
+                                   tasksProcessed, tasksRemaining,
+                                   limitedTasksProcessed, unlimitedTasksProcessed);
     }
     
     /**
@@ -267,28 +289,32 @@ public class TickHandlerBenchmark {
         System.out.println("See comments in processChunkEvent() for derivation.");
         System.out.println();
         
-        System.out.println("-".repeat(90));
-        System.out.printf("%-12s %-12s %-12s %-12s %-12s %-12s %-12s%n",
-            "Queue Depth", "Loop 1 (ms)", "Loop 2 (ms)", "Total (ms)", "Chunks", "Tasks", "Status");
-        System.out.println("-".repeat(90));
+        System.out.println("-".repeat(110));
+        System.out.printf("%-12s %-12s %-12s %-12s %-10s %-8s %-8s %-8s %-8s%n",
+            "Queue Depth", "Loop 1", "Loop 2", "Total", "Chunks", "Ltd", "Unltd", "Rem", "Status");
+        System.out.printf("%-12s %-12s %-12s %-12s %-10s %-8s %-8s %-8s %-8s%n",
+            "", "(ms)", "(ms)", "(ms)", "", "Tasks", "Tasks", "Tasks", "");
+        System.out.println("-".repeat(110));
         
         for (BenchmarkResult r : results) {
             String status;
             if (r.loop1ExhaustedBudget) {
-                status = "CRITICAL-L1";  // Loop 1 alone exceeded 15ms
+                status = "CRIT-L1";  // Loop 1 alone exceeded 15ms
             } else if (r.budgetExceeded) {
-                status = "EXCEEDED";
+                status = "EXCEED";
             } else {
                 status = "OK";
             }
             
-            System.out.printf("%-12d %-12.2f %-12.2f %-12.2f %-12d %-12d %-12s%n",
+            System.out.printf("%-12d %-12.2f %-12.2f %-12.2f %-10d %-8d %-8d %-8d %-8s%n",
                 r.queueDepth,
                 r.getLoop1TimeMs(),
                 r.getLoop2TimeMs(),
                 r.getTotalTimeMs(),
                 r.chunkEventsProcessed,
-                r.tasksProcessed,
+                r.limitedTasksProcessed,
+                r.unlimitedTasksProcessed,
+                r.tasksRemaining,
                 status);
         }
         

@@ -3,13 +3,13 @@
  * 
  * Forge server command for DistantHorizonsStandalone real-time diagnostics.
  * 
- * Usage: Add to ForgeServerProxy.java or create as standalone class:
+ * Usage: Add to ForgeServerProxy.java:
  *   @EventHandler
  *   public void onServerStarting(FMLServerStartingEvent event) {
- *       DhDiagnosticsCommand.register(event);
+ *       DhDiagnosticsCommand.register(event);  // Registers as /dhdiag
  *   }
  * 
- * In-game command: /dh diagnostics
+ * In-game command: /dhdiag diagnostics
  * 
  * Outputs:
  *   - Chunk event queue size
@@ -27,7 +27,6 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.event.CommandEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 
 import java.lang.reflect.Field;
@@ -40,12 +39,18 @@ import java.util.concurrent.atomic.AtomicLong;
  * This command uses reflection to access ForgeServerProxy's private fields
  * and report real-time queue depths and tick timing.
  * 
- * No modification to existing DH code required — just register this command
- * in your server startup handler.
+ * INSTALLATION: Requires 3 lines added to ForgeServerProxy.java:
+ *   1. DhDiagnosticsCommand.setProxyInstance(this); in constructor
+ *   2. DhDiagnosticsCommand.register(event); in onServerStarting()
+ *   3. (Optional) DhDiagnosticsCommand.recordTickTiming() in serverTickEvent()
+ * 
+ * Default command is /dhdiag to avoid collision with DH's existing /dh command.
  */
 public class DhDiagnosticsCommand extends CommandBase {
     
-    private static final String COMMAND_NAME = "dh";
+    // Default to "dhdiag" to avoid collision with DH's existing "/dh" command
+    // If you prefer "/dh diagnostics", use register(event) instead of registerAsDhDiag()
+    private static final String COMMAND_NAME = "dhdiag";
     private static final String SUBCOMMAND = "diagnostics";
     
     // Thresholds for status determination
@@ -82,6 +87,17 @@ public class DhDiagnosticsCommand extends CommandBase {
      */
     public static void registerAsDhDiag(FMLServerStartingEvent event) {
         event.registerServerCommand(new DhDiagnosticsCommand("dhdiag"));
+    }
+    
+    /**
+     * Registers with a custom command name.
+     * Use this if you want "/dh" instead of "/dhdiag".
+     * 
+     * @param event The server starting event
+     * @param name The command name (e.g., "dh" for "/dh diagnostics")
+     */
+    public static void registerWithName(FMLServerStartingEvent event, String name) {
+        event.registerServerCommand(new DhDiagnosticsCommand(name));
     }
     
     private final String commandName;
@@ -368,22 +384,28 @@ public class DhDiagnosticsCommand extends CommandBase {
 /*
  * INTEGRATION INSTRUCTIONS:
  * 
+ * REQUIRED MODIFICATIONS (3 lines to add):
+ * 
  * 1. Copy this file to: src/main/java/com/seibel/distanthorizons/forge/
  * 
- * 2. In ForgeServerProxy.java, add to constructor or init:
+ * 2. In ForgeServerProxy.java constructor, add:
  *    DhDiagnosticsCommand.setProxyInstance(this);
  * 
  * 3. In ForgeServerProxy.java, add event handler:
  *    @EventHandler
  *    public void onServerStarting(FMLServerStartingEvent event) {
- *        DhDiagnosticsCommand.register(event);
+ *        DhDiagnosticsCommand.register(event);  // Uses /dhdiag
+ *        // OR: DhDiagnosticsCommand.registerAsDhDiag(event);  // Same as above
+ *        // OR: DhDiagnosticsCommand.registerWithName(event, "dh");  // Uses /dh
  *    }
  * 
- * 4. (Optional) For tick timing, add to serverTickEvent():
+ * OPTIONAL (for tick timing):
+ * 4. In serverTickEvent(), add timing instrumentation:
  *    long tickStart = System.nanoTime();
  *    // ... existing tick handler code ...
  *    long tickDuration = System.nanoTime() - tickStart;
  *    DhDiagnosticsCommand.recordTickTiming(tickDuration, eventsProcessed);
  * 
- * 5. Build and run. In-game, use: /dh diagnostics
+ * 5. Build and run. In-game, use: /dhdiag diagnostics
+ *    (If you used registerWithName(event, "dh"), then use: /dh diagnostics)
  */

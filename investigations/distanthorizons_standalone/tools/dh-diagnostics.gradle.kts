@@ -124,6 +124,8 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
         // setMinDefaultMax calls are close together. In practice, Config.java
         // has these calls well-separated. A more robust approach would parse
         // the AST, but regex is sufficient for this diagnostic tool.
+        val contextStart = maxOf(0, match.range.start - 500)
+        val context = content.substring(contextStart, match.range.end)
         
         val settingName = when {
             context.contains("maxGenerationRequestDistance") -> "maxGenerationRequestDistance"
@@ -255,11 +257,25 @@ fun printReport(findings: List<ConfigFinding>) {
     if (criticalCount > 0) {
         println()
         println("MATHEMATICAL ANALYSIS:")
-        println("  The default configuration creates π × 4096² = ~52.7M blocks² per player.")
+        // Find the maxGenerationRequestDistance finding to get actual values
+        val maxGenFinding = findings.find { it.setting == "maxGenerationRequestDistance" }
+        if (maxGenFinding != null) {
+            val r = maxGenFinding.currentValue
+            val area = maxGenFinding.areaBlocksSquared
+            println("  Distance setting: $r blocks")
+            println("  Generation area: π × $r² = ${formatNumber(area)} blocks² per player")
+            println("  With 10 players: ${formatNumber(area * 10)} blocks² total generation area")
+        } else {
+            println("  Distance settings create large generation areas per player.")
+        }
         println("  This is the root cause of server tick performance degradation.")
         println()
         println("RECOMMENDED ACTIONS:")
-        println("  1. Change maxGenerationRequestDistance default from 4096 to 1024")
+        if (maxGenFinding != null) {
+            println("  1. Change ${maxGenFinding.setting} default from ${maxGenFinding.currentValue} to ${maxGenFinding.recommendedValue}")
+        } else {
+            println("  1. Reduce maxGenerationRequestDistance default to 1024")
+        }
         println("  2. Add performance warning for values > 2048")
         println("  3. Cap chunk event queue size to prevent unbounded growth")
     }
@@ -290,8 +306,16 @@ fun writeReportToFile(findings: List<ConfigFinding>, file: File) {
         appendLine("=".repeat(80))
         appendLine("Mathematical Proof of Config Defect:")
         appendLine("  Generation area per player = π × r²")
-        appendLine("  With default r = 4096: area = π × 4096² ≈ 52.7 million blocks²")
-        appendLine("  With 10 players: total area ≈ 527 million blocks²")
+        // Find maxGenerationRequestDistance finding for accurate report
+        val maxGenFinding = findings.find { it.setting == "maxGenerationRequestDistance" }
+        if (maxGenFinding != null) {
+            val r = maxGenFinding.currentValue
+            val area = maxGenFinding.areaBlocksSquared
+            appendLine("  With default r = $r: area = π × $r² ≈ ${formatNumber(area)} blocks²")
+            appendLine("  With 10 players: total area ≈ ${formatNumber(area * 10)} blocks²")
+        } else {
+            appendLine("  Large distance settings create excessive generation area per player.")
+        }
         appendLine("  This guarantees server tick time > 50ms, degrading TPS below 20.")
     })
 }
