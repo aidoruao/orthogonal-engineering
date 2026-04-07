@@ -31,6 +31,7 @@ from src.domains.d_dh_standalone.domain import (
     TICK_BUDGET_VIOLATION,
     GL_CONTEXT_RACE_VIOLATION,
     BLOCKS_SQUARED_PER_PLAYER,
+    SECULAR_PROJECTION_TOOLS,
     build_config_situs,
     build_runtime_situs,
     build_server_tick_situs,
@@ -70,6 +71,8 @@ __all__ = [
     "TICK_BUDGET_VIOLATION",
     "GL_CONTEXT_RACE_VIOLATION",
     "BLOCKS_SQUARED_PER_PLAYER",
+    # Secular projection tools
+    "SECULAR_PROJECTION_TOOLS",
     # Situs builders
     "build_config_situs",
     "build_runtime_situs",

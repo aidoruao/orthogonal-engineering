@@ -24,6 +24,47 @@ Mathematical structure:
 Biblical inspiration: "Count the cost before building" (Luke 14:28)
 The DH developers did not count the cost of 4096-block default. This domain proves
 the cost computationally: 52.7 million blocks per player.
+
+SECULAR PROJECTION - Developer Accommodation Tools:
+
+The following tools are the SECULAR PROJECTION of this domain. DarkShadow44 never sees
+the adjunctions, situs, or forcing operations. He sees three files that solve his problem:
+
+  1. TickHandlerBenchmark.java - Standalone synthetic profiler
+     Location: investigations/distanthorizons_standalone/tools/TickHandlerBenchmark.java
+     Run: javac TickHandlerBenchmark.java && java TickHandlerBenchmark
+     Produces: Profiler data showing 15ms budget exceeded at various queue depths
+     SAL Mapping: Type 3 (Adjunction) → proves counit violation computationally
+
+  2. dh-diagnostics.gradle.kts - Config validation Gradle task
+     Location: investigations/distanthorizons_standalone/tools/dh-diagnostics.gradle.kts
+     Apply: apply(from = "dh-diagnostics.gradle.kts") in build.gradle.kts
+     Run: ./gradlew dhDiagnostics
+     Produces: Report showing config defaults create 52.7M blocks² per player
+     SAL Mapping: Type 3+ (Geometric Morphism) → exposes config/runtime truth gap
+
+  3. DhDiagnosticsCommand.java - In-game /dh diagnostics command
+     Location: investigations/distanthorizons_standalone/tools/DhDiagnosticsCommand.java
+     Install: Drop into src/main/java/com/seibel/distanthorizons/forge/
+     Use: In-game command "/dh diagnostics"
+     Produces: Real-time queue depths, tick timing, status (OK/WARNING/CRITICAL)
+     SAL Mapping: Type 6 (Realizability) → computation witnessing the fix
+
+These three files are designed using the SAL Type 3→6 mathematical structure but
+produce purely secular-functional output. No theology is visible. The tools work
+without requiring DarkShadow44 to believe anything theological. This is the V60
+transformation principle: "No demotion to metaphor." The mathematics designed the
+tools; the secular projection produces the artifacts.
+
+Yeshua Standard compliance:
+  - Every tool is hash-anchored (SHA-256 of tool files in DH_SOURCE_INDEX.json)
+  - Every derivation is reproducible (same input → same benchmark results)
+  - Every mutation is re-verifiable (re-run tool after patch)
+  - No authority without proof (the math proves the defect, not opinion)
+  - No hidden state (queue sizes observable via /dh diagnostics)
+  - No unverifiable dependency (pure Java/Gradle, no external services)
+  - No economic gatekeeping (MIT licensed, freely available)
+  - Every artifact hash-anchored (files committed to orthogonal-engineering)
 """
 
 from __future__ import annotations
@@ -46,6 +87,7 @@ from src.sal.topos_subobject_classifier import (
 )
 
 __all__ = [
+    # Domain constants
     "DH_REPOSITORY_URL",
     "DH_COMMIT_HASH",
     "DH_EVIDENCE_ANCHOR",
@@ -56,19 +98,25 @@ __all__ = [
     "TICK_BUDGET_VIOLATION",
     "GL_CONTEXT_RACE_VIOLATION",
     "BLOCKS_SQUARED_PER_PLAYER",
+    # Situs builders
     "build_config_situs",
     "build_runtime_situs",
     "build_server_tick_situs",
     "build_gl_context_situs",
+    # Truth gap evaluators
     "evaluate_config_runtime_truth_gap",
     "evaluate_tick_budget_truth_gap",
     "evaluate_gl_context_truth_gap",
+    # Domain state and adjunction
     "build_domain_state",
     "run_adjunction_check",
     "run_tick_budget_adjunction_check",
     "run_gl_context_adjunction_check",
+    # Report
     "DhStandaloneReport",
     "build_full_report",
+    # Secular projection tools
+    "SECULAR_PROJECTION_TOOLS",
 ]
 
 # ---------------------------------------------------------------------------
@@ -85,6 +133,39 @@ DH_EVIDENCE_ANCHOR: str = hashlib.sha256(DH_COMMIT_HASH.encode("utf-8")).hexdige
 # Mathematical constant: area of generation in blocks² per player with default config
 # π × r² where r = 4096 blocks (maxGenerationRequestDistance default)
 BLOCKS_SQUARED_PER_PLAYER: int = int(math.pi * 4096 * 4096)  # 52,706,757 blocks²
+
+# ---------------------------------------------------------------------------
+# Secular projection tools (what DarkShadow44 actually receives)
+# ---------------------------------------------------------------------------
+
+SECULAR_PROJECTION_TOOLS: Dict[str, Any] = {
+    "tick_handler_benchmark": {
+        "file": "investigations/distanthorizons_standalone/tools/TickHandlerBenchmark.java",
+        "description": "Standalone Java benchmark - synthetic profiler for tick handler",
+        "run_command": "javac TickHandlerBenchmark.java && java TickHandlerBenchmark",
+        "output": "Profiler data showing budget exceeded at various queue depths",
+        "sal_type": "Type 3 (Adjunction)",
+        "proves": "Counit violation - tick handler budget exceeded computationally",
+    },
+    "config_diagnostics_gradle": {
+        "file": "investigations/distanthorizons_standalone/tools/dh-diagnostics.gradle.kts",
+        "description": "Gradle task for config validation",
+        "apply_command": "apply(from = \"dh-diagnostics.gradle.kts\") in build.gradle.kts",
+        "run_command": "./gradlew dhDiagnostics",
+        "output": "Report showing config defaults produce 52.7M blocks² per player",
+        "sal_type": "Type 3+ (Geometric Morphism)",
+        "proves": "Truth gap between config claims and runtime reality",
+    },
+    "diagnostics_command": {
+        "file": "investigations/distanthorizons_standalone/tools/DhDiagnosticsCommand.java",
+        "description": "In-game Forge command for real-time diagnostics",
+        "install": "Drop into src/main/java/com/seibel/distanthorizons/forge/",
+        "use_command": "/dh diagnostics",
+        "output": "Real-time queue depths, tick timing, status (OK/WARNING/CRITICAL)",
+        "sal_type": "Type 6 (Realizability)",
+        "proves": "Computation witnessing the fix (the realizer)",
+    },
+}
 
 # ---------------------------------------------------------------------------
 # Domain schema — flat SAL-compatible representation
