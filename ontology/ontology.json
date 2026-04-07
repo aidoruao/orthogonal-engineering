@@ -2300,6 +2300,31 @@
       ],
       "example_falsification_test": "F_RESTORATIVE_001",
       "example_ontological_issue": "OI_RESTORATIVE_001"
+    },
+    {
+      "id": "D_DH_STANDALONE",
+      "name": "DistantHorizonsStandalone Forensic Domain",
+      "categories": [
+        "minecraft-mod",
+        "forge-1.7.10",
+        "server-performance",
+        "opengl-rendering",
+        "mixin-injection",
+        "config-validation",
+        "tick-budget",
+        "chunk-generation"
+      ],
+      "invariants": [
+        "serverTickEvent must complete within 15ms (30% of 50ms tick).",
+        "No GL calls during FML splash screen phase.",
+        "Config distance values must have upper bound validation.",
+        "Mixin redirects must check thread context before GL operations.",
+        "Every error path must have a user-facing message."
+      ],
+      "oi_ids": ["OI_DH_001"],
+      "status": "active",
+      "example_falsification_test": "F_DH_001",
+      "example_ontological_issue": "OI_DH_001"
     }
   ],
   "issues": [

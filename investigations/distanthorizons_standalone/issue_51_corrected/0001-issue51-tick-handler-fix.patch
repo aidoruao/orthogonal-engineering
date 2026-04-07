@@ -1,0 +1,49 @@
+From 0868f4ac8fe42e476799b75d76279f843dee6c5b Mon Sep 17 00:00:00 2001
+From: aidoruao <aidoruao@gmail.com>
+Date: Mon, 6 Apr 2026 20:50:24 -0500
+Subject: [PATCH] Fix: Cap chunk event queue and reduce tick budget
+
+- Cap chunk events processed per tick to 20 (was unbounded)
+- Reduce time budget from 15ms to 5ms (was 30% of tick)
+- Prevents TPS degradation with aggressive config settings
+
+Fixes DarkShadow44/DistantHorizonsStandalone#51
+---
+ .../com/seibel/distanthorizons/forge/ForgeServerProxy.java | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java b/src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java
+index cb6deb7..a54dda7 100644
+--- a/src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java
++++ b/src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java
+@@ -100,13 +100,18 @@ public class ForgeServerProxy implements AbstractModInitializer.IEventProxy {
+ 
+     private static final Queue<ChunkLoadEvent> chunkLoadEvents = new ConcurrentLinkedQueue<>();
+     private static final Map<World, LongOpenHashSet> chunksPendingResetByWorld = new IdentityHashMap<>();
++    private static final int MAX_CHUNK_EVENTS_PER_TICK = 20;
+ 
+     // ServerTickEvent (at end)
+     @SubscribeEvent
+     public void serverTickEvent(TickEvent.ServerTickEvent event) {
+         if (event.phase == TickEvent.Phase.END) {
+             Iterator<ChunkLoadEvent> iterator = chunkLoadEvents.iterator();
++            int processedChunkEvents = 0;
+             while (iterator.hasNext()) {
++                if (++processedChunkEvents >= MAX_CHUNK_EVENTS_PER_TICK) {
++                    break;
++                }
+                 ChunkLoadEvent chunkLoadEvent = iterator.next();
+                 if (chunkLoadEvent.chunk.isChunkReady()) {
+                     this.serverApi.serverChunkLoadEvent(chunkLoadEvent.chunk, chunkLoadEvent.level);
+@@ -121,7 +126,7 @@ public class ForgeServerProxy implements AbstractModInitializer.IEventProxy {
+             }
+ 
+             // Time budget instead of count
+-            long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(15);
++            long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(5);
+             boolean processedAtLeastOne = false;
+             while (!taskQueue.isEmpty()) {
+                 ScheduledTask<?> scheduledTask = taskQueue.poll();
+-- 
+2.43.0
+
