@@ -66,7 +66,7 @@ generationBoundsRadius = 1024  # Limit generation to 1024 blocks from center
 ```
 **Why:** `0` means NO geographic limit on generation. Combined with 4096-block distances, LODs generate everywhere indefinitely.
 
-#### 2. LOD Resolution Too High (CRITICAL - 256x Multiplier!)
+#### 2. LOD Resolution (CLIENT-SIDE ONLY - Visual Quality)
 ```toml
 [client.advanced.graphics.quality]
 # Change this:
@@ -74,8 +74,9 @@ maxHorizontalResolution = "BLOCK"
 # To this:
 maxHorizontalResolution = "FOUR_BLOCKS"  # or "HALF_CHUNK" for lower quality
 ```
-**Why:** `BLOCK` = 256 LODs per chunk (HIGHEST). `CHUNK` = 1 LOD per chunk. You're generating **256x more LOD data** than necessary. The actual processing volume is:
-- 52.7M blocks² × 256 LODs/chunk = **~13.5 BILLION LOD units per player!**
+**Why:** `BLOCK` = 256 LODs per chunk (HIGHEST). `CHUNK` = 1 LOD per chunk. This affects **client-side rendering quality**, not server TPS. The client generates more detailed LODs for display, but this doesn't impact the server's tick rate.
+
+**Note:** This setting is under `[client.advanced.graphics.quality]` — it's a visual quality setting, not a server performance setting. The 256x multiplier affects GPU load, not server CPU.
 
 #### 3. Threads at 100% CPU (No Idle Time)
 ```toml

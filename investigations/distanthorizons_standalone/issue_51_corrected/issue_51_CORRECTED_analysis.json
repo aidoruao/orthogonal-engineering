@@ -99,7 +99,8 @@
         "setting": "maxHorizontalResolution",
         "value": "BLOCK",
         "default": "UNKNOWN (likely CHUNK or HALF_CHUNK)",
-        "risk": "CRITICAL - BLOCK = 256 LODs per chunk (HIGHEST). CHUNK = 1 LOD per chunk. This is a 256x multiplier on processing work. Combined with 52.7M blocks² = ~13.5 BILLION LOD units per player."
+        "risk": "CLIENT-SIDE ONLY - This is a visual quality setting under [client.advanced.graphics.quality]. BLOCK = 256 LODs per chunk (highest visual quality). Does NOT affect server TPS. The 256x multiplier affects GPU load, not server CPU.",
+        "note": "Removed from server TPS analysis - this is a client rendering setting, not a server performance factor."
       },
       {
         "setting": "threadRunTimeRatio",
