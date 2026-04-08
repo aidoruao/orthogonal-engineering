@@ -414,6 +414,272 @@ public class TickHandlerBenchmark {
     }
     
     /**
+     * Memory pressure test: measures heap allocation during queue processing.
+     */
+    private static void runMemoryPressureTest() {
+        System.out.println();
+        System.out.println("=".repeat(100));
+        System.out.println("MEMORY PRESSURE TEST");
+        System.out.println("=".repeat(100));
+        System.out.println();
+        System.out.println("Measuring heap allocation at various queue depths...");
+        System.out.println();
+        System.out.printf("%-12s %-15s %-20s %-15s%n", "Queue Depth", "Before (MB)", "After (MB)", "Allocated (MB)");
+        System.out.println("-".repeat(70));
+        
+        Runtime runtime = Runtime.getRuntime();
+        
+        for (int depth : new int[]{100, 1000, 10000}) {
+            // Force GC and get baseline
+            System.gc();
+            try { Thread.sleep(100); } catch (InterruptedException e) {}
+            long beforeUsed = (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024);
+            
+            // Run benchmark
+            runBenchmark(depth, BUDGET_NS, TimingProfile.LZ4_READ);
+            
+            // Measure after
+            long afterUsed = (runtime.totalMemory() - runtime.freeMemory()) / (1024 * 1024);
+            long allocated = afterUsed - beforeUsed;
+            
+            System.out.printf("%-12d %-15d %-20d %-15d%n", depth, beforeUsed, afterUsed, allocated);
+        }
+        System.out.println();
+        System.out.println("Note: Positive allocation indicates heap growth during processing.");
+    }
+    
+    /**
+     * GC pause simulation: models stop-the-world pauses during tick processing.
+     */
+    private static void runGCPauseSimulation() {
+        System.out.println();
+        System.out.println("=".repeat(100));
+        System.out.println("GC PAUSE SIMULATION");
+        System.out.println("=".repeat(100));
+        System.out.println();
+        System.out.println("Modeling 5ms stop-the-world pauses at various intervals...");
+        System.out.println();
+        System.out.printf("%-12s %-12s %-15s %-15s %-12s%n", 
+            "Queue Depth", "Pause Freq", "Base Time (ms)", "With GC (ms)", "Overhead");
+        System.out.println("-".repeat(75));
+        
+        int[] pauseFrequencies = {50, 100, 500}; // Pause every N events
+        
+        for (int depth : new int[]{100, 500, 1000}) {
+            for (int freq : pauseFrequencies) {
+                long baseTime = runBenchmarkWithGCPauses(depth, BUDGET_NS, TimingProfile.LZ4_READ, 0, 0);
+                long withGCTime = runBenchmarkWithGCPauses(depth, BUDGET_NS, TimingProfile.LZ4_READ, 5, freq);
+                double overhead = ((double)(withGCTime - baseTime) / baseTime) * 100;
+                
+                System.out.printf("%-12d %-12d %-15.2f %-15.2f %-11.1f%%%n", 
+                    depth, freq, baseTime / 1_000_000.0, withGCTime / 1_000_000.0, overhead);
+            }
+        }
+        System.out.println();
+        System.out.println("Interpretation: GC pauses compound with queue depth.");
+    }
+    
+    /**
+     * Runs benchmark with simulated GC pauses.
+     */
+    private static long runBenchmarkWithGCPauses(int queueDepth, long taskBudgetNs, 
+                                                   TimingProfile profile, int pauseMs, int pauseFreq) {
+        currentTimingProfile = profile;
+        ConcurrentLinkedQueue<SimulatedChunkEvent> chunkQueue = new ConcurrentLinkedQueue<>();
+        
+        for (int i = 0; i < queueDepth; i++) {
+            chunkQueue.offer(new SimulatedChunkEvent(i % 1000 - 500, i / 1000 - 500));
+        }
+        
+        long start = System.nanoTime();
+        int processed = 0;
+        
+        while (!chunkQueue.isEmpty()) {
+            SimulatedChunkEvent event = chunkQueue.poll();
+            if (event == null) break;
+            
+            processChunkEvent(event);
+            processed++;
+            
+            // Simulate GC pause at specified frequency
+            if (pauseMs > 0 && pauseFreq > 0 && processed % pauseFreq == 0) {
+                try {
+                    Thread.sleep(pauseMs);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        
+        return System.nanoTime() - start;
+    }
+    
+    /**
+     * Concurrent producer test: models chunks loading while tick processes.
+     */
+    private static void runConcurrentProducerTest() {
+        System.out.println();
+        System.out.println("=".repeat(100));
+        System.out.println("CONCURRENT PRODUCER TEST");
+        System.out.println("=".repeat(100));
+        System.out.println();
+        System.out.println("Modeling background thread adding events while tick handler drains...");
+        System.out.println();
+        System.out.printf("%-15s %-15s %-15s %-15s %-12s%n", 
+            "Initial Depth", "Add Rate", "Drained", "Remaining", "Net Change");
+        System.out.println("-".repeat(80));
+        
+        int[] addRates = {10, 50, 100}; // Events added per "tick" of producer
+        int[] initialDepths = {100, 500, 1000};
+        
+        for (int initial : initialDepths) {
+            for (int rate : addRates) {
+                ConcurrentProducerResult result = runConcurrentProducerBenchmark(
+                    initial, BUDGET_NS, TimingProfile.LZ4_READ, rate);
+                
+                int netChange = result.remaining - initial;
+                System.out.printf("%-15d %-15d %-15d %-15d %-+12d%n", 
+                    initial, rate, result.drained, result.remaining, netChange);
+            }
+        }
+        System.out.println();
+        System.out.println("Interpretation: Positive net change indicates queue growth.");
+        System.out.println("Sustained growth leads to memory pressure and eventual OOM.");
+    }
+    
+    private static class ConcurrentProducerResult {
+        final int drained;
+        final int remaining;
+        
+        ConcurrentProducerResult(int drained, int remaining) {
+            this.drained = drained;
+            this.remaining = remaining;
+        }
+    }
+    
+    private static ConcurrentProducerResult runConcurrentProducerBenchmark(
+            int initialDepth, long taskBudgetNs, TimingProfile profile, int addRate) {
+        currentTimingProfile = profile;
+        ConcurrentLinkedQueue<SimulatedChunkEvent> chunkQueue = new ConcurrentLinkedQueue<>();
+        AtomicLong eventsAdded = new AtomicLong(0);
+        AtomicLong eventsDrained = new AtomicLong(0);
+        
+        // Populate initial queue
+        for (int i = 0; i < initialDepth; i++) {
+            chunkQueue.offer(new SimulatedChunkEvent(i % 1000 - 500, i / 1000 - 500));
+        }
+        
+        // Producer thread
+        Thread producer = new Thread(() -> {
+            int added = 0;
+            while (!Thread.currentThread().isInterrupted()) {
+                for (int i = 0; i < addRate; i++) {
+                    chunkQueue.offer(new SimulatedChunkEvent(added % 1000 - 500, added / 1000));
+                    added++;
+                }
+                eventsAdded.set(added);
+                try {
+                    Thread.sleep(50); // Add events every 50ms
+                } catch (InterruptedException e) {
+                    break;
+                }
+            }
+        });
+        
+        producer.start();
+        
+        // Consumer (tick handler) - process for 100ms (2 ticks at 20 TPS)
+        long deadline = System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(100);
+        int drained = 0;
+        
+        while (System.nanoTime() < deadline && !chunkQueue.isEmpty()) {
+            SimulatedChunkEvent event = chunkQueue.poll();
+            if (event == null) continue;
+            
+            processChunkEvent(event);
+            drained++;
+        }
+        
+        eventsDrained.set(drained);
+        producer.interrupt();
+        
+        return new ConcurrentProducerResult(drained, chunkQueue.size());
+    }
+    
+    /**
+     * Multi-player scaling test: shows impact of player count on queue depth.
+     */
+    private static void runMultiPlayerScalingTest() {
+        System.out.println();
+        System.out.println("=".repeat(100));
+        System.out.println("MULTI-PLAYER SCALING TEST");
+        System.out.println("=".repeat(100));
+        System.out.println();
+        System.out.println("Computing expected events using π × r² formula...");
+        System.out.println();
+        System.out.printf("%-10s %-12s %-15s %-15s %-15s %-12s%n", 
+            "Players", "Distance", "Area (blocks²)", "Base Events", "Total Events", "Tick Time");
+        System.out.println("-".repeat(90));
+        
+        int[] playerCounts = {1, 2, 5, 10, 20};
+        int[] distances = {1024, 2048, 4096};
+        
+        for (int distance : distances) {
+            double areaPerPlayer = Math.PI * distance * distance;
+            // Assume 1 event per 1000 blocks² (simplified model)
+            int baseEvents = (int)(areaPerPlayer / 1000);
+            
+            for (int players : playerCounts) {
+                int totalEvents = baseEvents * players;
+                // Estimate tick time: 3.25ms per event at LZ4_READ speed
+                double tickTimeMs = (totalEvents * TimingProfile.LZ4_READ.ms) / 1000.0;
+                String timeStatus = tickTimeMs > 50 ? "EXCEEDS" : String.format("%.1f ms", tickTimeMs);
+                
+                System.out.printf("%-10d %-12d %-15.0f %-15d %-15d %-12s%n", 
+                    players, distance, areaPerPlayer, baseEvents, totalEvents, timeStatus);
+            }
+            System.out.println("-".repeat(90));
+        }
+        System.out.println();
+        System.out.println("Area formula: π × r² where r = maxGenerationRequestDistance");
+    }
+    
+    /**
+     * Budget comparison test: 15ms vs 5ms budget side-by-side.
+     */
+    private static void runBudgetComparisonTest() {
+        System.out.println();
+        System.out.println("=".repeat(100));
+        System.out.println("BUDGET COMPARISON: 15ms vs 5ms");
+        System.out.println("=".repeat(100));
+        System.out.println();
+        System.out.printf("%-12s %-12s %-15s %-15s %-15s %-15s%n", 
+            "Depth", "Profile", "15ms Time (ms)", "5ms Time (ms)", "15ms Status", "5ms Status");
+        System.out.println("-".repeat(95));
+        
+        int[] testDepths = {10, 20, 30, 50, 100};
+        TimingProfile[] testProfiles = {TimingProfile.LZ4_READ, TimingProfile.ZSTD_READ};
+        
+        for (int depth : testDepths) {
+            for (TimingProfile profile : testProfiles) {
+                BenchmarkResult result15 = runBenchmark(depth, BUDGET_NS, profile);
+                BenchmarkResult result5 = runBenchmark(depth, BUDGET_5MS_NS, profile);
+                
+                String status15 = result15.loop1ExhaustedTickBudget ? "CRITICAL" : 
+                                 (result15.budgetExceeded ? "EXCEED" : "OK");
+                String status5 = result5.loop1ExhaustedTickBudget ? "CRITICAL" : 
+                                (result5.budgetExceeded ? "EXCEED" : "OK");
+                
+                System.out.printf("%-12d %-12s %-15.2f %-15.2f %-15s %-15s%n",
+                    depth, profile.name(), result15.getTotalTimeMs(), 
+                    result5.getTotalTimeMs(), status15, status5);
+            }
+        }
+        System.out.println();
+        System.out.println("Interpretation: 5ms budget reduces tick time but increases queue backlog.");
+    }
+    
+    /**
      * Main entry point.
      */
     public static void main(String[] args) {
@@ -463,12 +729,23 @@ public class TickHandlerBenchmark {
         // Print the threshold analysis
         printThresholdAnalysis();
         
+        // Phase 4: Additional diagnostic scenarios
+        runMemoryPressureTest();
+        runGCPauseSimulation();
+        runConcurrentProducerTest();
+        runMultiPlayerScalingTest();
+        runBudgetComparisonTest();
+        
         // Exit with error code if LZ4_READ (minimum) causes defect at depth 30
         boolean defectProven = TimingProfile.LZ4_READ.ms > (TICK_BUDGET_MS / 30.0);
         System.out.println();
+        System.out.println("=".repeat(100));
+        System.out.println("FINAL STATUS");
+        System.out.println("=".repeat(100));
+        System.out.println();
         System.out.println(defectProven ? 
-            "EXIT CODE 1: Defect proven — min(DH_timings) > threshold(30)" :
-            "EXIT CODE 0: No defect proven");
+            "EXIT CODE 1: Threshold exceeded — min(DH_timings) > threshold(30)" :
+            "EXIT CODE 0: Within threshold");
         System.out.println();
         
         System.exit(defectProven ? 1 : 0);

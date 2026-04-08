@@ -32,6 +32,8 @@ import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  * Server command for DH performance diagnostics.
@@ -69,6 +71,16 @@ public class DhDiagnosticsCommand extends CommandBase {
     // Track tick timing (would be populated by ForgeServerProxy instrumentation)
     private static final AtomicLong lastTickDurationNanos = new AtomicLong(0);
     private static final AtomicLong lastTickEventsProcessed = new AtomicLong(0);
+    
+    // Phase 4: Tick history ring buffer (last 20 ticks)
+    private static final int HISTORY_SIZE = 20;
+    private static final AtomicReferenceArray<Long> tickHistory = new AtomicReferenceArray<>(HISTORY_SIZE);
+    private static final AtomicInteger historyIndex = new AtomicInteger(0);
+    
+    // Phase 4: Queue growth rate tracking
+    private static final AtomicLong lastChunkQueueSize = new AtomicLong(-1);
+    private static final AtomicLong lastTaskQueueSize = new AtomicLong(-1);
+    private static final AtomicLong lastSampleTime = new AtomicLong(0);
     
     /**
      * Registers this command as "/dhdiag" with the server.
@@ -118,6 +130,20 @@ public class DhDiagnosticsCommand extends CommandBase {
     public static void recordTickTiming(long durationNanos, int eventsProcessed) {
         lastTickDurationNanos.set(durationNanos);
         lastTickEventsProcessed.set(eventsProcessed);
+        
+        // Phase 4: Add to history ring buffer
+        int idx = historyIndex.getAndUpdate(i -> (i + 1) % HISTORY_SIZE);
+        tickHistory.set(idx, durationNanos);
+    }
+    
+    /**
+     * Records queue sizes for growth rate calculation.
+     * Call this from serverTickEvent() to enable rate tracking.
+     */
+    public static void recordQueueSizes(int chunkQueueSize, int taskQueueSize) {
+        lastChunkQueueSize.set(chunkQueueSize);
+        lastTaskQueueSize.set(taskQueueSize);
+        lastSampleTime.set(System.nanoTime());
     }
     
     @Override
@@ -127,7 +153,7 @@ public class DhDiagnosticsCommand extends CommandBase {
     
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + commandName + " diagnostics - Show DH performance diagnostics";
+        return "/" + commandName + " <diagnostics|history|config|queue-rate> - Show DH performance diagnostics";
     }
     
     @Override
@@ -137,11 +163,36 @@ public class DhDiagnosticsCommand extends CommandBase {
     
     @Override
     public void processCommand(ICommandSender sender, String[] args) {
-        if (args.length == 0 || !args[0].equalsIgnoreCase(SUBCOMMAND)) {
+        if (args.length == 0) {
             sendMessage(sender, "Usage: " + getCommandUsage(sender), EnumChatFormatting.RED);
             return;
         }
         
+        String subcommand = args[0].toLowerCase();
+        
+        switch (subcommand) {
+            case "diagnostics":
+                handleDiagnostics(sender);
+                break;
+            case "history":
+                handleHistory(sender);
+                break;
+            case "config":
+                handleConfig(sender);
+                break;
+            case "queue-rate":
+                handleQueueRate(sender);
+                break;
+            default:
+                sendMessage(sender, "Unknown subcommand: " + subcommand, EnumChatFormatting.RED);
+                sendMessage(sender, "Usage: " + getCommandUsage(sender), EnumChatFormatting.RED);
+        }
+    }
+    
+    /**
+     * Handles the 'diagnostics' subcommand.
+     */
+    private void handleDiagnostics(ICommandSender sender) {
         sendMessage(sender, "=== DistantHorizons Diagnostics ===", EnumChatFormatting.GREEN);
         sendMessage(sender, "", EnumChatFormatting.WHITE);
         
@@ -213,6 +264,233 @@ public class DhDiagnosticsCommand extends CommandBase {
         
         sendMessage(sender, "", EnumChatFormatting.WHITE);
         sendMessage(sender, "=================================", EnumChatFormatting.GREEN);
+    }
+    
+    /**
+     * Handles the 'history' subcommand.
+     * Shows tick timing history (last 20 ticks).
+     */
+    private void handleHistory(ICommandSender sender) {
+        sendMessage(sender, "=== Tick Timing History (last 20 ticks) ===", EnumChatFormatting.GREEN);
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        
+        // Collect non-null values
+        long[] values = new long[HISTORY_SIZE];
+        int count = 0;
+        long sum = 0;
+        long min = Long.MAX_VALUE;
+        long max = Long.MIN_VALUE;
+        
+        for (int i = 0; i < HISTORY_SIZE; i++) {
+            Long val = tickHistory.get(i);
+            if (val != null) {
+                values[count++] = val;
+                sum += val;
+                if (val < min) min = val;
+                if (val > max) max = val;
+            }
+        }
+        
+        if (count == 0) {
+            sendMessage(sender, "No history available. Instrumentation required.", EnumChatFormatting.GRAY);
+            return;
+        }
+        
+        // Calculate statistics
+        double avgMs = (sum / count) / 1_000_000.0;
+        double minMs = min / 1_000_000.0;
+        double maxMs = max / 1_000_000.0;
+        
+        // Calculate p95
+        java.util.Arrays.sort(values, 0, count);
+        int p95Index = (int)(count * 0.95);
+        double p95Ms = values[p95Index] / 1_000_000.0;
+        
+        sendMessage(sender, String.format("Samples: %d", count), EnumChatFormatting.WHITE);
+        sendMessage(sender, String.format("Min: %.2f ms", minMs), EnumChatFormatting.GREEN);
+        sendMessage(sender, String.format("Max: %.2f ms", maxMs), 
+            maxMs > 50 ? EnumChatFormatting.RED : (maxMs > 15 ? EnumChatFormatting.YELLOW : EnumChatFormatting.GREEN));
+        sendMessage(sender, String.format("Avg: %.2f ms", avgMs), EnumChatFormatting.WHITE);
+        sendMessage(sender, String.format("P95: %.2f ms", p95Ms), 
+            p95Ms > 50 ? EnumChatFormatting.RED : (p95Ms > 15 ? EnumChatFormatting.YELLOW : EnumChatFormatting.GREEN));
+        
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        sendMessage(sender, "Recent tick times (ms):", EnumChatFormatting.GRAY);
+        
+        // Show last 10 values
+        StringBuilder sb = new StringBuilder();
+        int startIdx = Math.max(0, count - 10);
+        for (int i = startIdx; i < count; i++) {
+            if (i > startIdx) sb.append(", ");
+            sb.append(String.format("%.1f", values[i] / 1_000_000.0));
+        }
+        sendMessage(sender, sb.toString(), EnumChatFormatting.WHITE);
+    }
+    
+    /**
+     * Handles the 'config' subcommand.
+     * Reads maxGenerationRequestDistance and computes area.
+     */
+    private void handleConfig(ICommandSender sender) {
+        sendMessage(sender, "=== DH Configuration Analysis ===", EnumChatFormatting.GREEN);
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        
+        // Try to read config via reflection
+        Integer maxGenDistance = readConfigValue("maxGenerationRequestDistance");
+        Integer maxChunkRadius = readConfigValue("generationMaxChunkRadius");
+        
+        if (maxGenDistance != null) {
+            double area = Math.PI * maxGenDistance * maxGenDistance;
+            double area10Players = area * 10;
+            
+            sendMessage(sender, "maxGenerationRequestDistance: " + maxGenDistance, EnumChatFormatting.WHITE);
+            sendMessage(sender, String.format("Generation area per player: π × %d² = %.0f blocks²", 
+                maxGenDistance, area), EnumChatFormatting.WHITE);
+            sendMessage(sender, String.format("With 10 players: %.0f blocks²", area10Players), 
+                area10Players > 10_000_000 ? EnumChatFormatting.YELLOW : EnumChatFormatting.WHITE);
+            
+            // Estimate events (assume 1 event per 1000 blocks²)
+            int estimatedEvents = (int)(area / 1000);
+            sendMessage(sender, String.format("Estimated events per player: ~%d", estimatedEvents), 
+                EnumChatFormatting.GRAY);
+        } else {
+            sendMessage(sender, "maxGenerationRequestDistance: Not available via reflection", EnumChatFormatting.GRAY);
+        }
+        
+        if (maxChunkRadius != null) {
+            sendMessage(sender, "generationMaxChunkRadius: " + maxChunkRadius, EnumChatFormatting.WHITE);
+            if (maxChunkRadius == 0) {
+                sendMessage(sender, "Warning: 0 means unbounded generation", EnumChatFormatting.YELLOW);
+            }
+        } else {
+            sendMessage(sender, "generationMaxChunkRadius: Not available", EnumChatFormatting.GRAY);
+        }
+        
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        sendMessage(sender, "Recommendation: maxGenerationRequestDistance ≤ 1024", EnumChatFormatting.GREEN);
+    }
+    
+    /**
+     * Attempts to read a config value via reflection.
+     */
+    private Integer readConfigValue(String fieldName) {
+        try {
+            // Try common config class locations
+            String[] classNames = {
+                "com.seibel.distanthorizons.core.config.Config",
+                "com.seibel.distanthorizons.config.Config",
+                "com.seibel.distanthorizons.Config"
+            };
+            
+            for (String className : classNames) {
+                try {
+                    Class<?> configClass = Class.forName(className);
+                    Field field = configClass.getDeclaredField(fieldName);
+                    field.setAccessible(true);
+                    return (Integer) field.get(null);
+                } catch (ClassNotFoundException | NoSuchFieldException e) {
+                    // Try next class
+                }
+            }
+        } catch (Exception e) {
+            // Reflection failed
+        }
+        return null;
+    }
+    
+    /**
+     * Handles the 'queue-rate' subcommand.
+     * Shows queue growth rate.
+     */
+    private void handleQueueRate(ICommandSender sender) {
+        sendMessage(sender, "=== Queue Growth Rate ===", EnumChatFormatting.GREEN);
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        
+        QueueInfo current = getQueueInfo();
+        long currentTime = System.nanoTime();
+        long lastTime = lastSampleTime.get();
+        
+        if (lastTime == 0 || lastChunkQueueSize.get() < 0) {
+            // First sample, store and report
+            recordQueueSizes(current.chunkQueueSize, current.taskQueueSize);
+            sendMessage(sender, "Initial sample recorded.", EnumChatFormatting.GRAY);
+            sendMessage(sender, String.format("Chunk Queue: %d events", current.chunkQueueSize), EnumChatFormatting.WHITE);
+            sendMessage(sender, String.format("Task Queue: %d tasks", current.taskQueueSize), EnumChatFormatting.WHITE);
+            sendMessage(sender, "", EnumChatFormatting.GRAY);
+            sendMessage(sender, "Run /dhdiag queue-rate again in a few ticks", EnumChatFormatting.GRAY);
+            return;
+        }
+        
+        long timeDeltaMs = (currentTime - lastTime) / 1_000_000;
+        if (timeDeltaMs < 1) timeDeltaMs = 1; // Prevent division by zero
+        
+        long chunkDelta = current.chunkQueueSize - lastChunkQueueSize.get();
+        long taskDelta = current.taskQueueSize - lastTaskQueueSize.get();
+        
+        double chunkRate = (double) chunkDelta * 1000.0 / timeDeltaMs; // events per second
+        double taskRate = (double) taskDelta * 1000.0 / timeDeltaMs;   // tasks per second
+        
+        sendMessage(sender, String.format("Time delta: %d ms", timeDeltaMs), EnumChatFormatting.GRAY);
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        
+        // Chunk queue rate
+        String chunkTrend;
+        EnumChatFormatting chunkColor;
+        if (chunkRate > 10) {
+            chunkTrend = "GROWING (backlog increasing)";
+            chunkColor = EnumChatFormatting.RED;
+        } else if (chunkRate > 0) {
+            chunkTrend = "SLOW GROWTH";
+            chunkColor = EnumChatFormatting.YELLOW;
+        } else if (chunkRate < -10) {
+            chunkTrend = "SHRINKING (draining)";
+            chunkColor = EnumChatFormatting.GREEN;
+        } else if (chunkRate < 0) {
+            chunkTrend = "SLOW DRAIN";
+            chunkColor = EnumChatFormatting.GREEN;
+        } else {
+            chunkTrend = "STABLE";
+            chunkColor = EnumChatFormatting.GREEN;
+        }
+        
+        sendMessage(sender, "Chunk Event Queue:", EnumChatFormatting.WHITE);
+        sendMessage(sender, String.format("  Current: %d events", current.chunkQueueSize), EnumChatFormatting.WHITE);
+        sendMessage(sender, String.format("  Rate: %+.1f events/sec", chunkRate), chunkColor);
+        sendMessage(sender, String.format("  Trend: %s", chunkTrend), chunkColor);
+        
+        // Task queue rate
+        String taskTrend;
+        EnumChatFormatting taskColor;
+        if (taskRate > 10) {
+            taskTrend = "GROWING";
+            taskColor = EnumChatFormatting.RED;
+        } else if (taskRate > 0) {
+            taskTrend = "SLOW GROWTH";
+            taskColor = EnumChatFormatting.YELLOW;
+        } else if (taskRate < -10) {
+            taskTrend = "SHRINKING";
+            taskColor = EnumChatFormatting.GREEN;
+        } else if (taskRate < 0) {
+            taskTrend = "SLOW DRAIN";
+            taskColor = EnumChatFormatting.GREEN;
+        } else {
+            taskTrend = "STABLE";
+            taskColor = EnumChatFormatting.GREEN;
+        }
+        
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        sendMessage(sender, "Task Queue:", EnumChatFormatting.WHITE);
+        sendMessage(sender, String.format("  Current: %d tasks", current.taskQueueSize), EnumChatFormatting.WHITE);
+        sendMessage(sender, String.format("  Rate: %+.1f tasks/sec", taskRate), taskColor);
+        sendMessage(sender, String.format("  Trend: %s", taskTrend), taskColor);
+        
+        // Update stored values
+        recordQueueSizes(current.chunkQueueSize, current.taskQueueSize);
+        
+        sendMessage(sender, "", EnumChatFormatting.WHITE);
+        sendMessage(sender, "Interpretation:", EnumChatFormatting.GRAY);
+        sendMessage(sender, "GROWING = queue building up, will cause lag", EnumChatFormatting.GRAY);
+        sendMessage(sender, "STABLE/DRAINING = queue under control", EnumChatFormatting.GRAY);
     }
     
     /**
