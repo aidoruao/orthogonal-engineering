@@ -56,6 +56,9 @@ jobs:
         continue-on-error: true
         run: python benchmarks/run_benchmarks.py
 
+      - name: Generate global Merkle root
+        run: python merkle/global_merkle.py
+
       - name: V - Global Merkle root tests
         run: python -m pytest tests/test_global_merkle.py -v
 
