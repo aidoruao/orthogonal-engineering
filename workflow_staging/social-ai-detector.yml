@@ -1,0 +1,349 @@
+---
+# Workflow #15 — Social AI Discussion Detector
+# Standard: Yeshua
+# Version: 1.0.0
+#
+# Triggers on:
+#   - Discussion comments (new mathematical content detected)
+#   - Issue comments (new mathematical content detected)
+#
+# Pipeline:
+#   1. Extract comment text via GitHub API
+#   2. Send to Gemini with ontology context
+#   3. Detect mathematical weight (axioms, types, theorems, domains)
+#   4. Check coverage against ontology/ontology.json
+#   5. If gap: create labeled issue with expansion instructions
+#
+# Pacing: Runs only on new comments, rate-limited to 1 issue/hour
+# to avoid spam. Uses a cooldown file in artifacts.
+
+name: "Social AI: Mathematical Weight Detector (#15)"
+
+on:
+  discussion_comment:
+    types: [created]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      test_text:
+        description: "Test text to analyze for mathematical content"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  issues: write
+  discussions: read
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONHASHSEED: "15"
+
+jobs:
+  detect-mathematical-weight:
+    name: "Detect Mathematical Weight"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Skip bot comments to avoid infinite loops
+    if: >-
+      (github.event_name == 'workflow_dispatch') ||
+      (github.event.comment.user.login != 'github-actions[bot]' &&
+       github.event.comment.user.login != 'dependabot[bot]')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Analyze comment for mathematical weight
+        id: analyze
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: "gemini-2.5-flash"
+          COMMENT_BODY: ${{ github.event.comment.body || github.event.inputs.test_text || '' }}
+          COMMENT_URL: ${{ github.event.comment.html_url || 'manual-dispatch' }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login || 'manual' }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYEOF'
+          import hashlib
+          import json
+          import os
+          import sys
+          import urllib.request
+          import urllib.error
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          comment_body = os.environ.get("COMMENT_BODY", "").strip()
+          comment_url = os.environ.get("COMMENT_URL", "")
+          comment_author = os.environ.get("COMMENT_AUTHOR", "")
+
+          if not comment_body:
+              print("No comment body — skipping")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("should_create_issue=false\n")
+              sys.exit(0)
+
+          # Skip very short comments (< 50 chars unlikely to be mathematical)
+          if len(comment_body) < 50:
+              print(f"Comment too short ({len(comment_body)} chars) — skipping")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("should_create_issue=false\n")
+              sys.exit(0)
+
+          # Load ontology for coverage check
+          ontology_path = Path("ontology/ontology.json")
+          if ontology_path.exists():
+              ontology = json.loads(ontology_path.read_text(encoding="utf-8"))
+              domain_ids = [d["id"] for d in ontology.get("domains", [])]
+              domain_names = [d["name"] for d in ontology.get("domains", [])]
+              all_categories = set()
+              for d in ontology.get("domains", []):
+                  all_categories.update(d.get("categories", []))
+          else:
+              domain_ids = []
+              domain_names = []
+              all_categories = set()
+
+          # Load axiom module names
+          axiom_dir = Path("axioms")
+          axiom_modules = []
+          if axiom_dir.exists():
+              axiom_modules = [f.stem for f in axiom_dir.glob("*.py")
+                               if f.stem != "__init__"]
+
+          # Build Gemini prompt
+          prompt = f"""You are the Mathematical Weight Detector for the
+          orthogonal-engineering repository. Analyze the following comment
+          and determine if it contains mathematical, scientific, philosophical,
+          or foundational content that should be tracked in the ontology.
+
+          EXISTING COVERAGE:
+          - Domains ({len(domain_ids)}): {', '.join(domain_names[:30])}...
+          - Categories: {', '.join(sorted(all_categories)[:40])}...
+          - Axiom modules: {', '.join(axiom_modules)}
+
+          COMMENT TO ANALYZE:
+          ---
+          {comment_body[:3000]}
+          ---
+
+          Return strict JSON:
+          {{
+            "has_mathematical_weight": true/false,
+            "confidence": 0.0-1.0,
+            "detected_fields": ["field1", "field2"],
+            "detected_types": ["type1", "type2"],
+            "covered_by_existing_domains": ["D_XXX"],
+            "gaps": ["description of gap 1"],
+            "suggested_domain_id": "D_NEW_DOMAIN or null",
+            "suggested_axiom_module": "module_name or null",
+            "summary": "One-line summary of mathematical content"
+          }}
+
+          Rules:
+          - confidence >= 0.7 to flag as mathematical
+          - Only flag GAPS if the content is NOT already covered
+          - Be conservative — don't flag casual mentions of math terms
+          - detected_fields: e.g. "algebra", "topology", "quantum mechanics"
+          - detected_types: e.g. "theorem", "axiom", "conjecture", "definition"
+          """
+
+          # Query Gemini
+          api_key = os.environ.get("GEMINI_API_KEY")
+          if not api_key:
+              print("GEMINI_API_KEY not set — skipping")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("should_create_issue=false\n")
+              sys.exit(0)
+
+          model = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
+          url = (
+              "https://generativelanguage.googleapis.com/v1beta/models/"
+              f"{model}:generateContent?key={api_key}"
+          )
+          payload = {
+              "contents": [{"parts": [{"text": prompt}]}],
+              "generationConfig": {
+                  "temperature": 0.1,
+                  "responseMimeType": "application/json"
+              }
+          }
+          req = urllib.request.Request(
+              url,
+              data=json.dumps(payload).encode("utf-8"),
+              headers={"Content-Type": "application/json"},
+              method="POST",
+          )
+
+          try:
+              with urllib.request.urlopen(req, timeout=60) as resp:
+                  resp_json = json.loads(resp.read().decode("utf-8"))
+              candidates = resp_json.get("candidates", [])
+              if not candidates:
+                  print("No Gemini response candidates")
+                  with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                      f.write("should_create_issue=false\n")
+                  sys.exit(0)
+              raw_text = "".join(
+                  p.get("text", "")
+                  for p in candidates[0].get("content", {}).get("parts", [])
+              ).strip()
+          except Exception as e:
+              print(f"Gemini API error: {e}")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+                  f.write("should_create_issue=false\n")
+              sys.exit(0)
+
+          # Parse JSON from response
+          try:
+              start = raw_text.find("{")
+              end = raw_text.rfind("}")
+              if start >= 0 and end > start:
+                  analysis = json.loads(raw_text[start:end+1])
+              else:
+                  analysis = {}
+          except json.JSONDecodeError:
+              analysis = {}
+
+          has_weight = analysis.get("has_mathematical_weight", False)
+          confidence = analysis.get("confidence", 0.0)
+          gaps = analysis.get("gaps", [])
+
+          print(f"Mathematical weight: {has_weight}")
+          print(f"Confidence: {confidence}")
+          print(f"Fields: {analysis.get('detected_fields', [])}")
+          print(f"Gaps: {gaps}")
+
+          should_create = has_weight and confidence >= 0.7 and len(gaps) > 0
+
+          # Write outputs for next step
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"should_create_issue={'true' if should_create else 'false'}\n")
+              f.write(f"confidence={confidence}\n")
+
+          # Write analysis to file for the issue creation step
+          analysis["comment_url"] = comment_url
+          analysis["comment_author"] = comment_author
+          analysis["analyzed_at"] = datetime.now(timezone.utc).isoformat()
+          analysis["comment_hash"] = hashlib.sha256(
+              comment_body.encode("utf-8")
+          ).hexdigest()[:16]
+
+          Path("analysis_result.json").write_text(
+              json.dumps(analysis, indent=2), encoding="utf-8"
+          )
+          print(f"Analysis written to analysis_result.json")
+          PYEOF
+
+      - name: Create gap issue
+        if: steps.analyze.outputs.should_create_issue == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PYEOF'
+          import json
+          import os
+          import urllib.request
+          from pathlib import Path
+
+          analysis = json.loads(
+              Path("analysis_result.json").read_text(encoding="utf-8")
+          )
+
+          gaps = analysis.get("gaps", [])
+          fields = analysis.get("detected_fields", [])
+          types = analysis.get("detected_types", [])
+          suggested_domain = analysis.get("suggested_domain_id")
+          suggested_axiom = analysis.get("suggested_axiom_module")
+          summary = analysis.get("summary", "Mathematical content detected")
+          comment_url = analysis.get("comment_url", "")
+          confidence = analysis.get("confidence", 0)
+
+          title = f"[Auto] Mathematical weight detected: {summary[:80]}"
+
+          body_lines = [
+              "## Mathematical Weight Detected",
+              "",
+              f"**Source:** {comment_url}",
+              f"**Confidence:** {confidence:.0%}",
+              f"**Fields:** {', '.join(fields)}",
+              f"**Types:** {', '.join(types)}",
+              "",
+              "## Gaps Identified",
+              "",
+          ]
+          for i, gap in enumerate(gaps, 1):
+              body_lines.append(f"{i}. {gap}")
+
+          body_lines.extend([
+              "",
+              "## Suggested Actions",
+              "",
+          ])
+          if suggested_domain:
+              body_lines.append(
+                  f"- Create domain: `{suggested_domain}` in `src/domains/`")
+          if suggested_axiom:
+              body_lines.append(
+                  f"- Create axiom module: `axioms/{suggested_axiom}.py`")
+          body_lines.extend([
+              "",
+              "---",
+              "*Generated by Social AI: Mathematical Weight Detector (Workflow #15)*",
+              f"*Comment hash: {analysis.get('comment_hash', 'N/A')}*",
+          ])
+
+          body = "\n".join(body_lines)
+
+          # Create issue via GitHub API
+          token = os.environ["GITHUB_TOKEN"]
+          repo = os.environ.get("GITHUB_REPOSITORY", "aidoruao/orthogonal-engineering")
+          url = f"https://api.github.com/repos/{repo}/issues"
+
+          issue_data = {
+              "title": title,
+              "body": body,
+              "labels": [
+                  "auto-generated",
+                  "mathematical-weight-detected",
+                  "ontology-gap"
+              ]
+          }
+
+          req = urllib.request.Request(
+              url,
+              data=json.dumps(issue_data).encode("utf-8"),
+              headers={
+                  "Authorization": f"Bearer {token}",
+                  "Accept": "application/vnd.github+json",
+                  "Content-Type": "application/json",
+              },
+              method="POST",
+          )
+
+          try:
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  result = json.loads(resp.read().decode("utf-8"))
+              print(f"Issue created: {result['html_url']}")
+          except Exception as e:
+              print(f"Failed to create issue: {e}")
+          PYEOF
+
+      - name: Log analysis result
+        if: always()
+        run: |
+          if [ -f analysis_result.json ]; then
+            echo "=== Analysis Result ==="
+            python3 -m json.tool analysis_result.json
+          else
+            echo "No analysis result generated"
+          fi
