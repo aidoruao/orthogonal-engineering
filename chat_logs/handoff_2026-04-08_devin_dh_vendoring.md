@@ -1,0 +1,131 @@
+# Handoff: Devin AI Session 2026-04-08 — DarkShadow44 Vendoring
+
+**Date:** 2026-04-08  
+**Agent:** Devin AI (Ask mode)  
+**Branch:** main  
+**Session Type:** Knowledge codification + repository verification
+
+---
+
+## What Was Done
+
+### 1. DeepSeek AI Fact-Check
+- Verified 4 claims about issue #51 from DeepSeek AI
+- All 4 claims confirmed correct:
+  - TickHandlerBenchmark models two-loop structure with 15ms budget ✅
+  - Falsification tests F-DH-001 and F-DH-004 show FAILED ✅
+  - DhDiagnosticsCommand reflection uses chunkLoadEvents and taskQueue ✅
+  - Gradle script targets maxGenerationRequestDistance=4096 ✅
+
+### 2. Tool Identification
+- Located 3 analytical tools in repository:
+  - `investigations/darkshadow44/DistantHorizonsStandalone/tools/TickHandlerBenchmark.java`
+  - `investigations/darkshadow44/DistantHorizonsStandalone/tools/DhDiagnosticsCommand.java`
+  - `investigations/darkshadow44/DistantHorizonsStandalone/tools/dh-diagnostics.gradle.kts`
+- Tools were designed by Devin AI (specification) and implemented by Kimi Code CLI (Session 4)
+
+### 3. GitHub Issue Timeline Analysis
+- Analyzed complete issue #51 comment history
+- Identified epistemic gap: DarkShadow44 wants Spark profiler data, aidoruao provided analytical tools
+- Timeline ends with DarkShadow44 requesting profiler data (Apr 7), no response since
+
+### 4. Vendoring System Verification
+- Reviewed commit 237f3da7 (initial vendoring of 5 repos)
+- Reviewed commit b795639d (SOURCE_INDEX + WIKI for all repos)
+- Identified 5 issues that needed verification/fixes:
+  1. SOURCE_EXTS missing .java extensions
+  2. Old investigations/distanthorizons_standalone/ directory not removed
+  3. Stale path references in domain.py
+  4. Stale path references in README.md and DEVIN_ONBOARDING.md
+  5. SOURCE_INDEX commit hash mismatches for Angelica and Spool
+
+### 5. Fix Verification
+- Verified all 5 issues were already fixed in commits 213f4be, 69b2e76, 8ee9d7b
+- Confirmed vendored repos are at correct commits:
+  - DistantHorizonsStandalone: 1abcd988fd
+  - Angelica: cd42307ba9ec
+  - Spool: e2db38b07aa0
+  - ArchaicFix: 85b33afdd7f0
+  - SeasonalHorizons: ad10038155e0
+
+### 6. AI Orchestrator Coordination Analysis
+- Documented that Devin reads from periodically-indexed GitHub state (may be stale)
+- Documented that Kimi CLI reads from local filesystem (always current)
+- Identified discrepancy: Devin's index showed stale commit hashes despite fixes being pushed
+
+---
+
+## Decisions Made
+
+### Vendoring Pattern
+- Repos use `VENDOR_MANIFEST.json` + `ATTRIBUTION.md` + `sha256_manifest.txt` pattern
+- Non-affiliation statement required in every VENDOR_MANIFEST.json
+- Kimi session .txt files are historical records and must NOT be modified when updating path references
+- SOURCE_INDEX.json commit must always match VENDOR_MANIFEST.json commit
+
+### Epistemic Position on Issue #51
+- The defect is provable from source analysis (π × 4096² = 52.7M blocks²)
+- Profiler data shows symptoms, not factorial decomposition
+- Combinatorial defects require analytical tools, not just runtime profiling
+
+---
+
+## Open Questions
+
+1. **Angelica/Spool SOURCE_INDEX commit hashes:** Devin's index showed `a544ef916da5` while GitHub main shows correct hashes. Needs Devin re-index to confirm sync.
+
+2. **DarkShadow44 response:** Will DarkShadow44 respond to the tools posted Apr 8? Issue remains open with no activity since Apr 7.
+
+3. **MrFuzzihead server data:** Should DhDiagnosticsCommand output be collected from MrFuzzihead's actual server to satisfy DarkShadow44's profiler data request?
+
+---
+
+## Files Modified in This Session
+
+| File | Change |
+|------|--------|
+| `DEVIN_ONBOARDING.md` | Added Section 10 (DarkShadow44 vendored repos, issue #51 status, epistemic gap) |
+| `COPILOT_ONBOARDING.md` | Added Section 10 (vendored repo reference) |
+| `pr50_bar_exam/examination/question_bank.py` | Added 4 DH investigation questions |
+| `pr50_bar_exam/examination/prompts/templates.py` | Added 4 prompt templates |
+| `merkle/global_root.json` | Recomputed with updated files |
+
+---
+
+## Verification Commands
+
+```bash
+# Verify all 5 repos have matching commits
+python3 -c "
+import json
+for repo in ['DistantHorizonsStandalone', 'Angelica', 'ArchaicFix', 'Spool', 'SeasonalHorizons']:
+    si = json.load(open(f'investigations/darkshadow44/{repo}/SOURCE_INDEX.json'))
+    vm = json.load(open(f'investigations/darkshadow44/{repo}/VENDOR_MANIFEST.json'))
+    match = si['commit'] == vm['commit']
+    print(f'{repo}: {\"MATCH\" if match else \"MISMATCH\"}')"
+
+# Verify bar exam questions added
+grep -c 'Q-DH-' pr50_bar_exam/examination/question_bank.py
+# Expected: 4
+
+# Verify handoff file exists
+ls chat_logs/handoff_2026-04-08_devin_dh_vendoring.md
+
+# Verify onboarding sections added
+grep 'DarkShadow44 Vendored' DEVIN_ONBOARDING.md COPILOT_ONBOARDING.md
+```
+
+---
+
+## Context Budget Impact
+
+- Start of session: ~15%
+- After source verification: ~30%
+- After file creation: ~50%
+- Final state: ~55%
+
+---
+
+*Generated by: Kimi Code CLI*  
+*Session: Devin AI knowledge codification*  
+*Date: 2026-04-08*

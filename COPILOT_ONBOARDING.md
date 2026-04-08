@@ -314,6 +314,56 @@ python tools/state_witness/generate_feed_entry.py --verify
 
 ---
 
+## 10. DarkShadow44 Vendored Repositories
+
+### 10.1 Overview
+
+5 of DarkShadow44's public repositories are vendored in `investigations/darkshadow44/` with full source trees, SHA-256 manifests, and non-affiliation statements. See **DEVIN_ONBOARDING.md Section 10** for complete details.
+
+### 10.2 Quick Reference
+
+| Repository | Location | Key Files |
+|------------|----------|-----------|
+| DistantHorizonsStandalone | `investigations/darkshadow44/DistantHorizonsStandalone/` | `src/`, `tools/`, `batch1-4/`, `issue_51_corrected/`, `issue_56_corrected/` |
+| Angelica | `investigations/darkshadow44/Angelica/` | `src/`, OpenGL/rendering mixins |
+| ArchaicFix | `investigations/darkshadow44/ArchaicFix/` | `src/`, performance fixes |
+| Spool | `investigations/darkshadow44/Spool/` | `src/`, multithreading |
+| SeasonalHorizons | `investigations/darkshadow44/SeasonalHorizons/` | `src/`, DarkShadow44's own code |
+
+### 10.3 Critical Rules
+
+1. **NEVER modify files under `src/` in vendored repos** — these are immutable forensic copies
+2. **SOURCE_INDEX.json commit MUST match VENDOR_MANIFEST.json commit** — integrity check
+3. **Use `sha256_manifest.txt` to verify file integrity** — byte-level verification
+4. **All analysis artifacts go in sibling directories** — not in `src/`
+
+### 10.4 Issue #51 Context
+
+- **Location:** `investigations/darkshadow44/DistantHorizonsStandalone/issue_51_corrected/`
+- **Tools:** `tools/TickHandlerBenchmark.java`, `tools/DhDiagnosticsCommand.java`, `tools/dh-diagnostics.gradle.kts`
+- **Status:** Awaiting DarkShadow44 response to analytical tools posted Apr 8
+
+### 10.5 Verification Commands
+
+```bash
+# Check all 5 repos have matching commits
+python3 -c "
+import json
+for repo in ['DistantHorizonsStandalone', 'Angelica', 'ArchaicFix', 'Spool', 'SeasonalHorizons']:
+    si = json.load(open(f'investigations/darkshadow44/{repo}/SOURCE_INDEX.json'))
+    vm = json.load(open(f'investigations/darkshadow44/{repo}/VENDOR_MANIFEST.json'))
+    match = si['commit'] == vm['commit']
+    print(f'{repo}: {\"MATCH\" if match else \"MISMATCH\"}')"
+
+# Verify file integrity
+python3 -c "
+import hashlib, json
+vm = json.load(open('investigations/darkshadow44/DistantHorizonsStandalone/VENDOR_MANIFEST.json'))
+print(f'Merkle root: {vm[\"sha256_tree_root\"][:16]}...')"
+```
+
+---
+
 *"Continuity of body is not magic — it is disciplined state management. Write it down. Read it first. Resume without re-deriving."*
 
 **Orthogonal Engineering Continuity Principle**

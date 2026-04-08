@@ -38,6 +38,46 @@ PROMPT_TEMPLATES: List[Dict] = [
         ),
         "variables": ["violation_description", "context"],
     },
+    # DH Investigation Domain Templates (Added 2026-04-08)
+    {
+        "variant_id": "DH-VENDOR-001",
+        "category": "boundary",
+        "template": (
+            "A claim states: {claim}. "
+            "The vendored source is at {verification_path} line {line}. "
+            "Verify the claim against the vendored source. "
+            "Respond with JSON matching boundary_response schema."
+        ),
+        "variables": ["claim", "verification_path", "line"],
+    },
+    {
+        "variant_id": "DH-EPISTEM-001",
+        "category": "threat",
+        "template": (
+            "Analyze this event for epistemic threats: {event_description}. "
+            "Respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "DH-EPISTEM-002",
+        "category": "threat",
+        "template": (
+            "Analyze this event for integrity threats: {event_description}. "
+            "Respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "DH-GRACE-001",
+        "category": "grace",
+        "template": (
+            "A candidate requests forgiveness for: {violation_description}. "
+            "Context: {context}. "
+            "Respond with JSON matching grace_response schema."
+        ),
+        "variables": ["violation_description", "context"],
+    },
 ]
 
 

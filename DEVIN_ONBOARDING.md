@@ -243,5 +243,86 @@ If you hit 80% context usage, commit current work and start a new session.
 
 ---
 
-*Last Updated: 2026-04-06 by Kimi Code CLI*  
-*Session: DH Issue #51 Forensics + Devin Onboarding*
+## 10. DarkShadow44 Vendored Repository System
+
+### 10.1 What It Is
+
+5 of DarkShadow44's public repositories vendored into `investigations/darkshadow44/` with full source trees, SHA-256 manifests, and non-affiliation statements. Purpose: eliminate epistemic dependency on external clones so AI orchestrators can verify source-level claims directly.
+
+### 10.2 Repository Inventory
+
+| Repository | Files | Java Files | LOC | Commit | License |
+|------------|-------|-----------|-----|--------|---------|
+| DistantHorizonsStandalone | 669 | 601 | 84,441 | 1abcd98 | GPL-3.0 |
+| Angelica | 1,292 | 1,185 | 100,467 | cd42307 | LGPL-3.0 |
+| Spool | 158 | 145 | 20,195 | e2db38b | LGPL-3.0 |
+| ArchaicFix | 190 | 177 | 9,149 | 85b33af | LGPL-3.0 |
+| SeasonalHorizons | 51 | 25 | 1,336 | ad10038 | LGPL-2.1 |
+| **Total** | **2,360** | **2,133** | **215,588** | | |
+
+### 10.3 Per-Repo Structure
+
+```
+investigations/darkshadow44/{RepoName}/
+├── VENDOR_MANIFEST.json      # commit hash, clone date, SHA-256 tree root
+├── ATTRIBUTION.md            # license + non-affiliation statement
+├── LICENSE                   # original license verbatim
+├── sha256_manifest.txt       # per-file SHA-256 hashes
+├── SOURCE_INDEX.json         # method/field/class census
+├── WIKI.md                   # ontological wiki
+└── src/                      # actual vendored source tree (immutable)
+```
+
+### 10.4 How to Verify a Source Claim
+
+**Example workflow:**
+1. **Claim:** "ForgeServerProxy.java line 124 has 15ms budget"
+2. **Read:** `investigations/darkshadow44/DistantHorizonsStandalone/src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java` line 124
+3. **Verify:** Check `sha256_manifest.txt` for the file hash
+4. **Provenance:** `VENDOR_MANIFEST.json` shows commit + clone date
+
+### 10.5 Issue #51 Current Status
+
+- **Jan 9:** DarkShadow44 acknowledged chunk generation on main thread
+- **Apr 6:** aidoruao posted corrected forensics (two root causes identified)
+- **Apr 6:** aidoruao attached patch `0001-issue51-tick-handler-fix.patch`
+- **Apr 7:** DarkShadow44 requested profiler data ("Need to see actual bottleneck")
+- **Apr 8:** aidoruao posted 3 analytical tools (benchmark, diagnostics, gradle)
+- **Current:** No response from DarkShadow44 since Apr 7; issue remains open
+
+**Location of tools:** `investigations/darkshadow44/DistantHorizonsStandalone/tools/`
+
+### 10.6 The Epistemic Gap
+
+**DarkShadow44 wants:** Spark profiler data from actual server runtime  
+**aidoruao provided:** Analytical tools for synthetic benchmarking
+
+**The structural argument:** The defect is provable from source analysis (π × 4096² = 52.7M blocks²). This is a combinatorial defect, not a runtime hotspot. Profiler data shows aggregate symptoms, not factorial decomposition.
+
+### 10.7 AI Orchestrator Coordination
+
+| Orchestrator | Data Source | Staleness Risk |
+|--------------|-------------|----------------|
+| Devin | GitHub API (indexed) | High - periodic re-index required |
+| Kimi CLI | Local filesystem | Low - always current |
+| GitHub Copilot | GitHub API | Medium - near real-time |
+
+**To sync Devin:** Trigger re-index in Devin UI after significant commits.
+
+**Deterministic state:** Vendored source + SHA-256 hashes make state verifiable regardless of which orchestrator reads it.
+
+### 10.8 Key People
+
+| Person/AI | Role | Contact |
+|-----------|------|---------|
+| aidoruao | Project owner, operator | Chat |
+| DarkShadow44 | DistantHorizonsStandalone maintainer | GitHub issues |
+| Devin AI | External AI (Ask mode) | This onboarding |
+| Kimi CLI | Primary executor | `.kimi/logs/` |
+| DeepSeek AI | External AI consulted for fact-checking | N/A |
+| Gemini AI | External AI consulted for verification | N/A |
+
+---
+
+*Last Updated: 2026-04-08 by Kimi Code CLI (Devin session knowledge codification)*  
+*Session: DH Vendoring + Onboarding Updates*
