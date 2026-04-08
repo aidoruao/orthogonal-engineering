@@ -1,1 +1,1 @@
-# Tests for d_urban_planning
+# Tests for D_URBAN_PLANNING domain
