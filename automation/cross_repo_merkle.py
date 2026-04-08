@@ -7,12 +7,39 @@ Cryptographically binds all 3 repositories into a single verifiable artifact:
 
 Usage: python automation/cross_repo_merkle.py
 Output: CROSS_REPO_MERKLE_ROOT.txt
+
+Note: truthsystems-mod uses 'master' branch (not 'main')
 """
 
 import hashlib
+import json
 import os
+import urllib.request
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Dict, Any
+
+
+def get_github_tree(owner: str, repo: str, branch: str = "main") -> Dict[str, Any]:
+    """Fetch repository tree from GitHub API.
+    
+    Falls back to GitHub API when local clone doesn't exist.
+    truthsystems-mod uses 'master' branch - others use 'main'.
+    """
+    url = f"https://api.github.com/repos/{owner}/{repo}/git/trees/{branch}?recursive=1"
+    req = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "orthogonal-engineering-merkle"
+        }
+    )
+    
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        print(f"   ⚠️  GitHub API error: {e}")
+        return {}
 
 
 def compute_file_hash(filepath: str) -> str:
@@ -81,39 +108,66 @@ def compute_cross_repo_merkle():
     print("Computing cross-repository Merkle root...")
     print("=" * 60)
     
-    # Repository paths
+    # Repository configurations: (local_path, extensions, github_owner, github_repo, branch)
     repos = {
-        'orthogonal-engineering': ('~/orthogonal-engineering', ('.py', '.md', '.json', '.yaml', '.yml')),
-        'sigma-lora-covenant': ('~/sigma-lora-covenant', ('.py', '.md', '.json')),
-        'truthsystems-mod': ('~/truthsystems-mod', ('.java', '.md', '.json')),
+        'orthogonal-engineering': (
+            '~/orthogonal-engineering', 
+            ('.py', '.md', '.json', '.yaml', '.yml', '.lean'),
+            'aidoruao', 'orthogonal-engineering', 'main'
+        ),
+        'sigma-lora-covenant': (
+            '~/sigma-lora-covenant', 
+            ('.py', '.md', '.json'),
+            'aidoruao', 'sigma-lora-covenant', 'main'
+        ),
+        'truthsystems-mod': (
+            '~/truthsystems-mod', 
+            ('.java', '.md', '.json'),
+            'aidoruao', 'truthsystems-mod', 'master'  # Note: uses 'master'
+        ),
     }
     
     all_hashes = []
     
-    for repo_name, (path, extensions) in repos.items():
+    for repo_name, (path, extensions, gh_owner, gh_repo, branch) in repos.items():
         expanded_path = os.path.expanduser(path)
         
-        if not os.path.exists(expanded_path):
-            print(f"⚠️  {repo_name}: Directory not found at {expanded_path}")
-            continue
-        
         print(f"\n📁 {repo_name}")
-        print(f"   Path: {expanded_path}")
+        print(f"   Branch: {branch}")
         
-        files = collect_files(expanded_path, extensions)
+        files = []
+        
+        if os.path.exists(expanded_path):
+            # Use local files
+            print(f"   Path: {expanded_path} (local)")
+            files = collect_files(expanded_path, extensions)
+        else:
+            # Fall back to GitHub API
+            print(f"   Path: {expanded_path} (not found)")
+            print(f"   Falling back to GitHub API...")
+            
+            tree_data = get_github_tree(gh_owner, gh_repo, branch)
+            if tree_data and 'tree' in tree_data:
+                # Use GitHub tree SHA as proxy for content
+                for item in tree_data['tree']:
+                    if item['type'] == 'blob':
+                        rel_path = item['path']
+                        # Use GitHub's blob SHA as content hash
+                        file_hash = item['sha']
+                        files.append((rel_path, file_hash))
         
         print(f"   Files: {len(files)}")
         
         # Add repo prefix to paths
-        for rel_path, file_hash in files:
+        for i, (rel_path, file_hash) in enumerate(files):
             prefixed_path = f"{repo_name}/{rel_path}"
             # Hash the path + content hash
             combined = hashlib.sha256((prefixed_path + file_hash).encode()).hexdigest()
             all_hashes.append(combined)
             
-            if len(files) <= 5 or files.index((rel_path, file_hash)) < 3:
+            if len(files) <= 5 or i < 3:
                 print(f"   - {rel_path}: {file_hash[:16]}...")
-            elif files.index((rel_path, file_hash)) == 3:
+            elif i == 3:
                 print(f"   ... and {len(files) - 3} more files")
     
     if not all_hashes:
@@ -139,8 +193,10 @@ def compute_cross_repo_merkle():
             f.write(f"Tree depth: {len(tree)}\n")
             f.write(f"\nROOT: {root}\n")
             f.write(f"\nRepositories included:\n")
-            for repo_name in repos:
-                f.write(f"  - {repo_name}\n")
+            for repo_name, (_, _, _, _, branch) in repos.items():
+                f.write(f"  - {repo_name} ({branch})\n")
+            f.write(f"\nNote: truthsystems-mod uses 'master' branch\n")
+            f.write(f"      Others use 'main' branch\n")
         
         print(f"\n📝 Written to: {output_file}")
         
