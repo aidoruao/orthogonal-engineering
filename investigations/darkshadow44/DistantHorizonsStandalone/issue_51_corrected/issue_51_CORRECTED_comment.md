@@ -1,5 +1,7 @@
 ## Investigation: Server TPS Lag - Code Fix + Default Config Defect
 
+**TRANSPARENCY NOTE:** A previous comment containing diagnostic tools was deleted due to secular projection violations (editorial language). Corrected tools are attached below. See: [GLASS_BOX_DELETION_RECORD.md](./GLASS_BOX_DELETION_RECORD.md)
+
 Hi @DarkShadow44,
 
 I've analyzed MrFuzzihead's server log and config. The TPS lag has **two contributing factors** - one in the code and one in the **default configuration**.
