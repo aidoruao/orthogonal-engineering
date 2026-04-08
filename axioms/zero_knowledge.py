@@ -251,6 +251,8 @@ def zk_soundness_check(protocol: SchnorrProtocol, fake_secret: int) -> Tuple[boo
     # Soundness: random responses should fail most of the time
     sound = Fraction(rejections, trials) > Fraction(1, 2)  # Expect >50% rejection
 
+    sound = Fraction(rejections, trials) > Fraction(1, 2)  # Expect >50% rejection for random responses
+    
     proof = ProofObject(
         conclusion=f"Soundness {'verified' if sound else 'FAILED'}",
         premises=[f"Rejection rate: {rejections}/{trials}"],
