@@ -249,12 +249,11 @@ def zk_soundness_check(protocol: SchnorrProtocol, fake_secret: int) -> Tuple[boo
             rejections += 1
     
     # Soundness: random responses should fail most of the time
-    rejection_rate = rejections / trials
-    sound = rejection_rate > 0.5  # Expect >50% rejection for random responses
-    
+    sound = Fraction(rejections, trials) > Fraction(1, 2)  # Expect >50% rejection
+
     proof = ProofObject(
         conclusion=f"Soundness {'verified' if sound else 'FAILED'}",
-        premises=[f"Rejection rate: {rejection_rate:.0%} ({rejections}/{trials})"],
+        premises=[f"Rejection rate: {rejections}/{trials}"],
         rule="zk_soundness",
         derivation=["Dishonest prover rejected as expected"]
     )
