@@ -9,6 +9,7 @@ Biblical: Hebrews 11:3 — "By faith we understand that the universe was formed 
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple, Optional
@@ -45,7 +46,7 @@ class QuantumState:
             raise ValueError("Cannot normalize zero state")
         norm = ComplexFraction(norm_sq.sqrt() if hasattr(norm_sq, 'sqrt') else Fraction(1), Fraction(0))
         # Simple approximation: divide by sqrt of norm
-        norm_val = Fraction(int(norm_sq.numerator ** 0.5), int(norm_sq.denominator ** 0.5))
+        norm_val = Fraction(math.isqrt(norm_sq.numerator), math.isqrt(norm_sq.denominator))
         new_amps = [ComplexFraction(a.real / norm_val, a.imag / norm_val) for a in self.amplitudes]
         return QuantumState(new_amps)
     
@@ -132,7 +133,7 @@ class Observable:
         discriminant = diff_half * diff_half + b_mag_sq
         
         # Approximate sqrt for Fraction
-        sqrt_disc = Fraction(int(discriminant.numerator ** 0.5), int(discriminant.denominator ** 0.5))
+        sqrt_disc = Fraction(math.isqrt(discriminant.numerator), math.isqrt(discriminant.denominator))
         
         lambda1 = trace_half + sqrt_disc
         lambda2 = trace_half - sqrt_disc
