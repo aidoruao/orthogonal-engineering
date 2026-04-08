@@ -1,1 +1,1 @@
-# Tests for d_corporate_compliance
+# Tests for D_CORPORATE_COMPLIANCE domain
