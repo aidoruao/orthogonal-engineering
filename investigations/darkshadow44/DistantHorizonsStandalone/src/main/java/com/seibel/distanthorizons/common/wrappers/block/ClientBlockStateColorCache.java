@@ -18,7 +18,6 @@ package com.seibel.distanthorizons.common.wrappers.block;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import net.minecraft.block.*;
@@ -39,6 +38,7 @@ import com.seibel.distanthorizons.core.wrapperInterfaces.world.IClientLevelWrapp
 import com.seibel.distanthorizons.forge.ForgeMain;
 
 import cpw.mods.fml.common.FMLLog;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 
 /**
  * This stores and calculates the colors
@@ -84,7 +84,7 @@ public class ClientBlockStateColorCache {
     private int tintIndex = 0;
 
     /** Lazily initialized cache of biome ID -> tinted color result for this block state. */
-    private volatile ConcurrentHashMap<Integer, Integer> biomeColorCache;
+    private Int2IntOpenHashMap biomeColorCache;
 
     // ===========//
     // constants //
@@ -419,10 +419,8 @@ public class ClientBlockStateColorCache {
         // per biome for each block state.
         // Avoids (potentially) expensive colorMultiplier om some Block subclasses
         int biomeId = (biomeWrapper.biome != null) ? biomeWrapper.biome.biomeID : -1;
-        // Read the volatile field once so clearBiomeColorCache() can't null it between the null check and getOrDefault().
-        ConcurrentHashMap<Integer, Integer> biomeColorCache = this.biomeColorCache;
-        if (biomeColorCache != null) {
-            int cached = biomeColorCache.getOrDefault(biomeId, Integer.MIN_VALUE);
+        if (this.biomeColorCache != null) {
+            int cached = this.biomeColorCache.getOrDefault(biomeId, Integer.MIN_VALUE);
             if (cached != Integer.MIN_VALUE) {
                 return cached;
             }
@@ -443,21 +441,18 @@ public class ClientBlockStateColorCache {
             result = this.baseColor;
         }
 
-        synchronized (this) {
-            if (this.biomeColorCache == null) {
-                this.biomeColorCache = new ConcurrentHashMap<>();
-            }
-            this.biomeColorCache.put(biomeId, result);
+        if (this.biomeColorCache == null) {
+            this.biomeColorCache = new Int2IntOpenHashMap();
+            this.biomeColorCache.defaultReturnValue(Integer.MIN_VALUE);
         }
+        this.biomeColorCache.put(biomeId, result);
 
         return result;
     }
 
     /** Clears the cached biome tint colors, forcing recomputation on next access. */
     public void clearBiomeColorCache() {
-        synchronized (this) {
-            this.biomeColorCache = null;
-        }
+        this.biomeColorCache = null;
     }
 
     // ================//

@@ -4,8 +4,8 @@ This directory contains a read-only copy of source code from:
 - **Repository:** https://github.com/DarkShadow44/DistantHorizonsStandalone
 - **Author:** DarkShadow44 and contributors
 - **License:** GNU General Public License v3.0
-- **Commit:** 6c3ae1d6920da8b512ed238e9b2f77baf6d3f02a
-- **Cloned:** 2026-04-08T00:58:38Z
+- **Commit:** 1abcd988fd4d350795f34dd2e9f678c14ba6162f
+- **Cloned:** 2026-04-08T01:15:00Z
 
 ## Purpose
 
@@ -26,7 +26,7 @@ To verify this copy against the original:
 ```bash
 git clone https://github.com/DarkShadow44/DistantHorizonsStandalone.git
 cd DistantHorizonsStandalone
-git checkout 6c3ae1d6920da8b512ed238e9b2f77baf6d3f02a
+git checkout 1abcd988fd4d350795f34dd2e9f678c14ba6162f
 sha256sum $(find src -type f | sort) > /tmp/original_manifest.txt
 diff /tmp/original_manifest.txt sha256_manifest.txt
 ```
