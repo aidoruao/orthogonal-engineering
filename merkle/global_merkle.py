@@ -27,7 +27,8 @@ OUTPUT_FILE = Path(__file__).parent / "global_root.json"
 SKIP_DIRS = {".git", "node_modules", "__pycache__", ".venv", "venv"}
 SOURCE_EXTS = {
     ".py", ".js", ".ts", ".yaml", ".yml", ".json", ".md",
-    ".txt", ".html", ".csv", ".sh",
+    ".txt", ".html", ".csv", ".sh", ".java", ".kts", ".gradle",
+    ".toml", ".properties", ".xml",
 }
 
 

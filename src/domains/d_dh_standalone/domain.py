@@ -31,20 +31,20 @@ The following tools are the SECULAR PROJECTION of this domain. DarkShadow44 neve
 the adjunctions, situs, or forcing operations. He sees three files that solve his problem:
 
   1. TickHandlerBenchmark.java - Standalone synthetic profiler
-     Location: investigations/distanthorizons_standalone/tools/TickHandlerBenchmark.java
+     Location: investigations/darkshadow44/DistantHorizonsStandalone/tools/TickHandlerBenchmark.java
      Run: javac TickHandlerBenchmark.java && java TickHandlerBenchmark
      Produces: Profiler data showing 15ms budget exceeded at various queue depths
      SAL Mapping: Type 3 (Adjunction) → proves counit violation computationally
 
   2. dh-diagnostics.gradle.kts - Config validation Gradle task
-     Location: investigations/distanthorizons_standalone/tools/dh-diagnostics.gradle.kts
+     Location: investigations/darkshadow44/DistantHorizonsStandalone/tools/dh-diagnostics.gradle.kts
      Apply: apply(from = "dh-diagnostics.gradle.kts") in build.gradle.kts
      Run: ./gradlew dhDiagnostics
      Produces: Report showing config defaults create 52.7M blocks² per player
      SAL Mapping: Type 3+ (Geometric Morphism) → exposes config/runtime truth gap
 
   3. DhDiagnosticsCommand.java - In-game /dh diagnostics command
-     Location: investigations/distanthorizons_standalone/tools/DhDiagnosticsCommand.java
+     Location: investigations/darkshadow44/DistantHorizonsStandalone/tools/DhDiagnosticsCommand.java
      Install: Drop into src/main/java/com/seibel/distanthorizons/forge/
      Use: In-game command "/dh diagnostics"
      Produces: Real-time queue depths, tick timing, status (OK/WARNING/CRITICAL)
@@ -142,7 +142,7 @@ BLOCKS_SQUARED_PER_PLAYER: int = int(math.pi * 4096 * 4096)  # 52,706,757 blocks
 
 SECULAR_PROJECTION_TOOLS: Dict[str, Any] = {
     "tick_handler_benchmark": {
-        "file": "investigations/distanthorizons_standalone/tools/TickHandlerBenchmark.java",
+        "file": "investigations/darkshadow44/DistantHorizonsStandalone/tools/TickHandlerBenchmark.java",
         "description": "Standalone Java benchmark - synthetic profiler for tick handler",
         "run_command": "javac TickHandlerBenchmark.java && java TickHandlerBenchmark",
         "output": "Profiler data showing budget exceeded at various queue depths",
@@ -150,7 +150,7 @@ SECULAR_PROJECTION_TOOLS: Dict[str, Any] = {
         "proves": "Counit violation - tick handler budget exceeded computationally",
     },
     "config_diagnostics_gradle": {
-        "file": "investigations/distanthorizons_standalone/tools/dh-diagnostics.gradle.kts",
+        "file": "investigations/darkshadow44/DistantHorizonsStandalone/tools/dh-diagnostics.gradle.kts",
         "description": "Gradle task for config validation",
         "apply_command": "apply(from = \"dh-diagnostics.gradle.kts\") in build.gradle.kts",
         "run_command": "./gradlew dhDiagnostics",
@@ -159,7 +159,7 @@ SECULAR_PROJECTION_TOOLS: Dict[str, Any] = {
         "proves": "Truth gap between config claims and runtime reality",
     },
     "diagnostics_command": {
-        "file": "investigations/distanthorizons_standalone/tools/DhDiagnosticsCommand.java",
+        "file": "investigations/darkshadow44/DistantHorizonsStandalone/tools/DhDiagnosticsCommand.java",
         "description": "In-game Forge command for real-time diagnostics",
         "install": "Drop into src/main/java/com/seibel/distanthorizons/forge/",
         "use_command": "/dh diagnostics",

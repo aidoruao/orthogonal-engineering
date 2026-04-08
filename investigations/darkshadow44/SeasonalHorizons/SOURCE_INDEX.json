@@ -1,1 +1,303 @@
-{"note": "To be populated - source index for $repo"}
+{
+  "project": {
+    "name": "SeasonalHorizons",
+    "author": "DarkShadow44",
+    "license": "LGPL-2.1",
+    "repository": "https://github.com/DarkShadow44/SeasonalHorizons",
+    "commit": "ad10038155e00cdb3c80aaacebcd6c39adb6504a",
+    "minecraft_version": "1.7.10",
+    "is_original_work": true,
+    "is_fork": false
+  },
+  "stats": {
+    "java_files": 25,
+    "lines_of_code": 1336,
+    "packages": 6
+  },
+  "package_structure": {
+    "com.darkshadow44.seasonalhorizons": {
+      "purpose": "Main mod entry point and configuration",
+      "files": [
+        {
+          "file": "SeasonalHorizons.java",
+          "lines": 43,
+          "type": "mod_entry",
+          "patterns": ["@Mod annotation", "SidedProxy pattern", "EventHandler delegation to proxy"]
+        },
+        {
+          "file": "CommonProxy.java",
+          "lines": 86,
+          "type": "proxy_common",
+          "patterns": ["FML event bus registration", "Forge event subscription", "Conditional early returns for client-side"]
+        },
+        {
+          "file": "ClientProxy.java",
+          "lines": 32,
+          "type": "proxy_client",
+          "patterns": ["Extends CommonProxy", "Client-only event subscription", "Resource reload listener registration"]
+        },
+        {
+          "file": "Config.java",
+          "lines": 16,
+          "type": "config",
+          "patterns": ["Minimal config stub", "Configuration.save() pattern", "Placeholder for future config options"]
+        }
+      ]
+    },
+    "com.darkshadow44.seasonalhorizons.season": {
+      "purpose": "Core season mechanics and snow simulation",
+      "files": [
+        {
+          "file": "Season.java",
+          "lines": 94,
+          "type": "enum",
+          "patterns": ["Composite enum (MainSeason + SubSeason)", "Color map management", "Temperature adjustment logic", "nextSeason() cyclic progression"]
+        },
+        {
+          "file": "MainSeason.java",
+          "lines": 19,
+          "type": "enum",
+          "patterns": ["Simple ID-based enum", "spring/summer/autumn/winter"]
+        },
+        {
+          "file": "SubSeason.java",
+          "lines": 18,
+          "type": "enum",
+          "patterns": ["Simple ID-based enum", "early/mid/late"]
+        },
+        {
+          "file": "SeasonHandler.java",
+          "lines": 74,
+          "type": "handler",
+          "patterns": ["Client-side static state (currentSeasonClient)", "World type checking with RuntimeException", "Optional<> for lookups", "Network synchronization"]
+        },
+        {
+          "file": "SeasonEvent.java",
+          "lines": 38,
+          "type": "data_class",
+          "patterns": ["Immutable-ish design", "NBT serialization", "writeToNBT/readFromNBT pattern"]
+        },
+        {
+          "file": "SnowHandler.java",
+          "lines": 354,
+          "type": "handler_complex",
+          "patterns": ["Deterministic block scheduling using hash mixing", "Event-based snow/thaw tracking", "Sparse array optimization", "Inner static class (ScheduleEntry)"]
+        }
+      ]
+    },
+    "com.darkshadow44.seasonalhorizons.mixin": {
+      "purpose": "Mixin transformations for Minecraft classes",
+      "files": [
+        {
+          "file": "MixinWorld.java",
+          "lines": 26,
+          "type": "mixin",
+          "patterns": ["@Redirect for temperature", "Null-safe season handling", "Ordinal-conditional logic"]
+        },
+        {
+          "file": "MixinWorldServer.java",
+          "lines": 87,
+          "type": "mixin",
+          "patterns": ["@Unique field naming (seasonalHorizons$prefix)", "Constructor injection @At(TAIL)", "@Redirect for game logic override", "IMixinWorldServer interface implementation"]
+        },
+        {
+          "file": "MixinChunk.java",
+          "lines": 25,
+          "type": "mixin",
+          "patterns": ["@Unique private field", "Interface implementation for mixin data", "IMixinChunk accessor pattern"]
+        },
+        {
+          "file": "MixinBiomeGenBase.java",
+          "lines": 60,
+          "type": "mixin",
+          "patterns": ["@WrapMethod from MixinExtras", "Client-side world null checks", "Shadow annotation for vanilla fields", "@Unique for interface methods"]
+        }
+      ],
+      "mixin_config": "mixins.seasonalhorizons.json"
+    },
+    "com.darkshadow44.seasonalhorizons.mixininterfaces": {
+      "purpose": "Interface contracts for mixin-injected methods",
+      "files": [
+        {
+          "file": "IMixinBiomeGenBase.java",
+          "lines": 6,
+          "type": "interface",
+          "patterns": ["seasonalHorizons$ prefixed method names", "Minimal interface design"]
+        }
+      ]
+    },
+    "com.darkshadow44.seasonalhorizons.save": {
+      "purpose": "World data persistence and chunk data management",
+      "files": [
+        {
+          "file": "SeasonWorldData.java",
+          "lines": 74,
+          "type": "world_saved_data",
+          "patterns": ["Extends WorldSavedData", "List management with MAX limits", "NBT list serialization helpers", "Default initialization in constructor"]
+        },
+        {
+          "file": "AdditionalChunkData.java",
+          "lines": 58,
+          "type": "data_manager",
+          "patterns": ["Implements DataManager.ChunkDataManager", "FalsePattern Chunk API integration", "Domain/ID/Version contract methods"]
+        },
+        {
+          "file": "IMixinChunk.java",
+          "lines": 8,
+          "type": "interface",
+          "patterns": ["Getter/setter pair", "seasonalHorizons$ prefix convention"]
+        },
+        {
+          "file": "IMixinWorldServer.java",
+          "lines": 10,
+          "type": "interface",
+          "patterns": ["Accessor for mixin-injected fields", "Returns handler instances"]
+        }
+      ]
+    },
+    "com.darkshadow44.seasonalhorizons.network": {
+      "purpose": "Client-server communication",
+      "files": [
+        {
+          "file": "NetworkHandler.java",
+          "lines": 26,
+          "type": "network",
+          "patterns": ["SimpleNetworkWrapper channel", "Packet ID registry", "sendToAll broadcast"]
+        },
+        {
+          "file": "MessageSeasonChange.java",
+          "lines": 50,
+          "type": "packet",
+          "patterns": ["IMessage + IMessageHandler", "ByteBuf serialization", "Dimension-aware client update", "Side.CLIENT conditional processing"]
+        }
+      ]
+    },
+    "com.darkshadow44.seasonalhorizons.color": {
+      "purpose": "Biome color modification for seasons",
+      "files": [
+        {
+          "file": "ColorHandler.java",
+          "lines": 21,
+          "type": "handler",
+          "patterns": ["Static utility methods", "Client season retrieval", "Biome color override"]
+        },
+        {
+          "file": "SeasonColorMap.java",
+          "lines": 22,
+          "type": "util",
+          "patterns": ["Temperature/humidity to color mapping", "MathHelper.clamp_float bounds checking"]
+        },
+        {
+          "file": "ResourceReloadListener.java",
+          "lines": 42,
+          "type": "resource_listener",
+          "patterns": ["IResourceManagerReloadListener", "Dynamic resource loading", "RuntimeException for IO failures", "Season loop for resource binding"]
+        }
+      ]
+    },
+    "com.darkshadow44.seasonalhorizons.command": {
+      "purpose": "Console commands",
+      "files": [
+        {
+          "file": "SeasonCommand.java",
+          "lines": 47,
+          "type": "command",
+          "patterns": ["Extends CommandBase", "Optional<> for argument parsing", "ChatComponentText feedback", "Subcommand dispatch pattern"]
+        }
+      ]
+    }
+  },
+  "architectural_patterns": {
+    "proxy_pattern": {
+      "description": "SidedProxy pattern for client/server separation",
+      "implementation": "CommonProxy (server) + ClientProxy extends CommonProxy (client)",
+      "registration": "Event buses registered in CommonProxy.preInit()"
+    },
+    "event_handling": {
+      "description": "Forge Event Bus subscription with @SubscribeEvent",
+      "patterns": [
+        "MinecraftForge.EVENT_BUS.register(this)",
+        "FMLCommonHandler.instance().bus().register(this)",
+        "Explicit isRemote checks for side safety",
+        "Early return pattern for null/invalid states"
+      ]
+    },
+    "mixin_patterns": {
+      "description": "Mixin usage for vanilla code modification",
+      "patterns": [
+        "@Unique annotation with seasonalHorizons$ prefix",
+        "Interface exposure via mixin implementation",
+        "MixinExtras @WrapMethod for method wrapping",
+        "@Inject at TAIL for constructor extensions",
+        "@Redirect for replacing vanilla logic"
+      ],
+      "naming_convention": "seasonalHorizons$ prefix for all unique members"
+    },
+    "data_persistence": {
+      "description": "World and chunk data saving patterns",
+      "patterns": [
+        "WorldSavedData for dimension-level state",
+        "FalsePattern Chunk API for chunk-level data",
+        "NBT tag serialization with compound tags",
+        "readFromNBT/writeToNBT method pairs"
+      ]
+    },
+    "networking": {
+      "description": "SimpleImpl packet system",
+      "patterns": [
+        "SimpleNetworkWrapper per channel",
+        "IMessage + IMessageHandler combined",
+        "Dimension-aware packet filtering",
+        "Client-side only processing guards"
+      ]
+    }
+  },
+  "coding_style": {
+    "error_handling": [
+      "RuntimeException for programming errors (invalid world type)",
+      "Early return pattern for edge cases",
+      "Null checks before casting",
+      "Optional<> for lookup operations that may fail"
+    ],
+    "naming_conventions": [
+      "seasonalHorizons$ prefix for mixin unique members",
+      "Descriptive variable names (e.g., seasonalHorizons$seasonWorldData)",
+      "Interface methods match field purpose"
+    ],
+    "documentation": [
+      "Minimal inline comments",
+      "Javadoc only for complex algorithms (SnowHandler)",
+      "Self-documenting code preferred"
+    ],
+    "java_features": [
+      "Java 8+ features (Optional, Streams, lambdas)",
+      "Enum composition (Season = MainSeason + SubSeason)",
+      "Static imports avoided"
+    ]
+  },
+  "what_this_tells_us": {
+    "patch_acceptance_criteria": [
+      "Follows existing architectural patterns (proxy, handler, data separation)",
+      "Uses Mixin with proper @Unique annotations",
+      "Maintains side-safety (isRemote checks)",
+      "Includes NBT serialization for persistent data",
+      "Adds defensive null checks",
+      "Uses Optional<> instead of null returns",
+      "Follows seasonalHorizons$ naming convention for mixins"
+    ],
+    "preferred_complexity": "Moderate - functional but not over-engineered",
+    "testing_approach": "Manual testing implied, no unit test infrastructure",
+    "integration_preferences": [
+      "Uses FalsePattern libs (chunk API)",
+      "MixinExtras for advanced mixin operations",
+      "Forge events for cross-mod compatibility"
+    ],
+    "code_quality_indicators": [
+      "Clean separation of concerns",
+      "Deterministic algorithms (SnowHandler scheduling)",
+      "Side-safe implementation",
+      "No magic numbers (extracted to constants)",
+      "Immutable design where practical"
+    ]
+  }
+}

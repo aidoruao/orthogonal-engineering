@@ -229,9 +229,9 @@ The domain provides lawful replacements for each violation:
 
 ## References
 
-- **DH Source Index:** `investigations/distanthorizons_standalone/DH_SOURCE_INDEX.json`
-- **Issue #51 Analysis:** `investigations/distanthorizons_standalone/batch1/issue_51_analysis.json`
-- **Issue #56 Analysis:** `investigations/distanthorizons_standalone/batch1/issue_56_analysis.json`
+- **DH Source Index:** `investigations/darkshadow44/DistantHorizonsStandalone/DH_SOURCE_INDEX.json`
+- **Issue #51 Analysis:** `investigations/darkshadow44/DistantHorizonsStandalone/batch1/issue_51_analysis.json`
+- **Issue #56 Analysis:** `investigations/darkshadow44/DistantHorizonsStandalone/batch1/issue_56_analysis.json`
 - **GitHub Issue #51:** https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/51
 - **GitHub Issue #56:** https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/56
 

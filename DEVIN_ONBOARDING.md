@@ -73,7 +73,7 @@ src/domains/d_{name}/
 
 #### Investigation File Locations
 ```
-investigations/distanthorizons_standalone/
+investigations/darkshadow44/DistantHorizonsStandalone/
 ├── batch1/                    # Initial investigations (may have errors)
 ├── batch2/
 ├── batch3/
@@ -185,11 +185,11 @@ Result: SHIFTED by ~12 lines
 ### For DistantHorizons Investigation
 
 1. **Post corrected #51 comment** to DarkShadow44's repo
-   - File: `investigations/distanthorizons_standalone/issue_51_corrected/issue_51_CORRECTED_comment.md`
+   - File: `investigations/darkshadow44/DistantHorizonsStandalone/issue_51_corrected/issue_51_CORRECTED_comment.md`
    - Note: Server log was NOT FOUND - comment reflects source code verification only
 
 2. **Next issue after #51:** #62 (server crashing)
-   - Location: `investigations/distanthorizons_standalone/batch1/issue_62_analysis.json`
+   - Location: `investigations/darkshadow44/DistantHorizonsStandalone/batch1/issue_62_analysis.json`
    - Verify line numbers against current DarkShadow44 source
 
 ### For All Tasks

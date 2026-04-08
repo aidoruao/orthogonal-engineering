@@ -1,1 +1,630 @@
-{"note": "To be populated - source index for $repo"}
+{
+  "repository": "DarkShadow44/ArchaicFix",
+  "repository_url": "https://github.com/DarkShadow44/ArchaicFix",
+  "forked_from": "embeddedt/ArchaicFix",
+  "commit": "85b33afdd7f08b0842d944b198b0de966a72d778",
+  "commit_date": "2025-03-15",
+  "index_date": "2026-04-07",
+  "minecraft_version": "1.7.10",
+  "methodology": "Epistemic Forensics - Artifact Primacy, Verbatim Quoting, Low Narrative Smoothing",
+  "license": "LGPL-3.0 (with caveats for occlusion module)",
+  "census": {
+    "total_java_files": 177,
+    "total_loc": 9149,
+    "total_packages": 35,
+    "total_mixin_files": 111,
+    "total_mixin_annotations": 250,
+    "config_options": 45,
+    "mod_compat_targets": 25
+  },
+  "packages": [
+    {
+      "path": "org.embeddedt.archaicfix",
+      "files": ["ArchaicFix.java", "ArchaicCore.java", "ArchaicLogger.java", "FixHelper.java", "LeftClickEventHandler.java", "CommandDebugUpdateQueue.java"],
+      "role": "Main mod entry point, core initialization, event handling",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.config",
+      "files": ["ArchaicConfig.java", "ConfigurationManager.java", "Config.java", "ArchaicGuiConfig.java"],
+      "role": "Configuration system with 45+ toggleable fixes and optimizations",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.asm",
+      "files": ["ArchaicTransformer.java", "EarlyStringPool.java", "LateMixinPlugin.java", "Mixin.java", "TargetedMod.java"],
+      "role": "ASM transformation layer, Mixin plugin management",
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.lighting",
+      "files": ["world/lighting/", "api/", "collections/"],
+      "role": "Phosphor lighting engine backport - optimized lighting calculations",
+      "criticality": "CRITICAL",
+      "note": "Derived from Phosphor (Angeline's work), LGPL-3.0"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.mixins.client.core",
+      "files": ["MixinMinecraft.java", "MixinEntityRenderer.java", "MixinRenderItem.java", "MixinWorldRenderer.java", "MixinTimer.java"],
+      "role": "Client-side vanilla fixes: graphics, input, timing",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.mixins.common.core",
+      "files": ["MixinWorld.java", "MixinChunkProviderServer.java", "MixinEntity.java", "MixinEntityLiving.java", "MixinCraftingManager.java", "MixinChunk.java"],
+      "role": "Server-side vanilla fixes: chunk loading, entities, recipes, world logic",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.mixins.common.lighting",
+      "files": ["MixinChunk.java", "MixinWorld_Lighting.java", "MixinChunkProviderServer.java", "MixinExtendedBlockStorage.java"],
+      "role": "Lighting engine integration hooks",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.helpers",
+      "files": ["CascadeDetectionHelper.java", "ChunkQueueSorter.java", "SoundDeviceThread.java", "LetsEncryptHelper.java"],
+      "role": "Utility helpers for worldgen detection, chunk sorting, sound threading",
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.recipe",
+      "files": ["RecipeCacheLoader.java", "LastMatchedInfo.java", "RecipeWeigher.java", "IFasterCraftingManager.java"],
+      "role": "Recipe caching system for faster crafting lookups",
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "org.embeddedt.archaicfix.proxy",
+      "files": ["ClientProxy.java", "CommonProxy.java"],
+      "role": "Sided proxy for client/server specific logic",
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "zone.rong.loliasm",
+      "files": ["api/"],
+      "role": "LoliASM integration - memory optimization helpers (LGPL-2.1)",
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "ca.fxco.memoryleakfix",
+      "files": ["MemoryLeakFix.java"],
+      "role": "Memory leak fixes (LGPL-2.1)",
+      "criticality": "MEDIUM"
+    }
+  ],
+  "critical_classes": [
+    {
+      "file": "ArchaicConfig.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/config/ArchaicConfig.java",
+      "loc": 183,
+      "package": "org.embeddedt.archaicfix.config",
+      "role": "Central configuration with 45+ toggleable fixes",
+      "critical_configs": [
+        {
+          "key": "enablePhosphor",
+          "default": true,
+          "description": "Enables Phosphor lighting engine backport - MAJOR performance improvement"
+        },
+        {
+          "key": "cacheRecipes",
+          "default": false,
+          "description": "Caches crafting recipe lookups - reduces crafting lag"
+        },
+        {
+          "key": "optimizeEntityTicking",
+          "default": false,
+          "description": "Skips entity ticking outside player range - significant TPS improvement"
+        },
+        {
+          "key": "fixVanillaCascadingWorldgen",
+          "default": true,
+          "description": "Fixes vanilla cascading worldgen lag"
+        },
+        {
+          "key": "increaseBlockUpdateLimit",
+          "default": true,
+          "description": "Increases block update limit from 1000 to 65000 per tick"
+        },
+        {
+          "key": "disableSpawnChunks",
+          "default": false,
+          "description": "Disables spawn chunk loading - reduces idle server load"
+        },
+        {
+          "key": "fixTickListSynchronization",
+          "default": true,
+          "description": "Fixes 'TickNextTick list out of synch' crashes"
+        },
+        {
+          "key": "fixTEUnloadLag",
+          "default": true,
+          "description": "Fixes TileEntity unloading lag spikes"
+        }
+      ]
+    },
+    {
+      "file": "LightingEngine.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/lighting/world/lighting/LightingEngine.java",
+      "loc": 608,
+      "package": "org.embeddedt.archaicfix.lighting",
+      "role": "Phosphor lighting engine - optimized async light propagation",
+      "methods": [
+        {
+          "name": "processLightUpdatesForType",
+          "line": "172-194",
+          "type": "LIGHTING_ENGINE",
+          "description": "Main light update processor with thread safety checks"
+        },
+        {
+          "name": "scheduleLightUpdate",
+          "line": "134-142",
+          "type": "SCHEDULER",
+          "description": "Queues light updates for batch processing"
+        },
+        {
+          "name": "acquireLock",
+          "line": "201-230",
+          "type": "SYNC",
+          "description": "ReentrantLock with illegal thread access detection"
+        }
+      ],
+      "thread_safety": "Thread-owned with ReentrantLock for cross-thread access detection"
+    },
+    {
+      "file": "MixinCraftingManager.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/mixins/common/core/MixinCraftingManager.java",
+      "loc": 77,
+      "package": "org.embeddedt.archaicfix.mixins.common.core",
+      "role": "Recipe caching for faster crafting lookups",
+      "methods": [
+        {
+          "name": "fasterRecipeSearch",
+          "line": "42-70",
+          "type": "OPTIMIZATION",
+          "description": "Guava Cache-backed recipe lookup with 500k entry limit"
+        }
+      ]
+    },
+    {
+      "file": "CascadeDetectionHelper.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/helpers/CascadeDetectionHelper.java",
+      "loc": 88,
+      "package": "org.embeddedt.archaicfix.helpers",
+      "role": "Cascading worldgen detection and logging",
+      "methods": [
+        {
+          "name": "arch$populateWithCascadeDetection",
+          "line": "78-87",
+          "type": "DETECTION",
+          "description": "Tracks chunk population stack to detect cascading worldgen"
+        }
+      ]
+    },
+    {
+      "file": "MixinWorld.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/mixins/common/core/MixinWorld.java",
+      "loc": 143,
+      "package": "org.embeddedt.archaicfix.mixins.common.core",
+      "role": "Entity ticking optimization, regional difficulty, block ticking",
+      "methods": [
+        {
+          "name": "skipUpdateIfOptimizing",
+          "line": "84-108",
+          "type": "OPTIMIZATION",
+          "description": "Skips entity ticking outside configured player distance"
+        },
+        {
+          "name": "saveInactiveChunks",
+          "line": "110-142",
+          "type": "OPTIMIZATION",
+          "description": "Reduces block ticking range beyond render distance"
+        }
+      ]
+    },
+    {
+      "file": "MixinChunkProviderServer.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/mixins/common/core/MixinChunkProviderServer.java",
+      "loc": 46,
+      "package": "org.embeddedt.archaicfix.mixins.common.core",
+      "role": "Spawn chunk disabling, cascade detection integration, biome population",
+      "methods": [
+        {
+          "name": "neverLoadSpawn",
+          "line": "23-26",
+          "type": "OPTIMIZATION",
+          "description": "Disables spawn chunk loading when configured"
+        },
+        {
+          "name": "populate2WithCascade",
+          "line": "42-45",
+          "type": "DETECTION",
+          "description": "Wraps chunk population with cascade detection"
+        }
+      ]
+    },
+    {
+      "file": "MixinMinecraft.java",
+      "path": "src/main/java/org/embeddedt/archaicfix/mixins/client/core/MixinMinecraft.java",
+      "loc": 82,
+      "package": "org.embeddedt.archaicfix.mixins.client.core",
+      "role": "Client performance: removes System.gc(), fixes fullscreen, reduces GL error checks",
+      "methods": [
+        {
+          "name": "onSystemGC",
+          "line": "36-37",
+          "type": "OPTIMIZATION",
+          "description": "Removes forced System.gc() during world load"
+        },
+        {
+          "name": "skipErrorCheck",
+          "line": "39-42",
+          "type": "OPTIMIZATION",
+          "description": "Disables expensive GL error checking"
+        },
+        {
+          "name": "resetResizeableFlag",
+          "line": "75-81",
+          "type": "BUGFIX",
+          "description": "Fixes MC-68754 (fullscreen resize issue)"
+        }
+      ]
+    }
+  ],
+  "mixin_index": [
+    {
+      "category": "Client - Core",
+      "mixins": [
+        {"file": "MixinMinecraft.java", "targets": ["net.minecraft.client.Minecraft"], "fixes": ["MC-68754", "Remove System.gc()", "GL error check skip"]},
+        {"file": "MixinEntityRenderer.java", "targets": ["net.minecraft.client.renderer.EntityRenderer"], "fixes": ["MC-30845 (camera clip)"]},
+        {"file": "MixinRenderItem.java", "targets": ["net.minecraft.client.renderer.entity.RenderItem"], "fixes": ["Fancy items force"]},
+        {"file": "MixinTimer.java", "targets": ["net.minecraft.util.Timer"], "fixes": ["Clock coordination fix"]},
+        {"file": "MixinWorldRenderer.java", "targets": ["net.minecraft.client.renderer.WorldRenderer"], "fixes": ["Render distance optimization"]},
+        {"file": "MixinSkinManager.java", "targets": ["net.minecraft.client.renderer.SkinManager"], "fixes": ["Skin memory leak fix"]},
+        {"file": "MixinSplashProgress.java", "targets": ["net.minecraftforge.fml.client.SplashProgress"], "fixes": ["Memory bar display"]},
+        {"file": "MixinGuiContainerCreative.java", "targets": ["net.minecraft.client.gui.inventory.GuiContainerCreative"], "fixes": ["Async creative search"]}
+      ]
+    },
+    {
+      "category": "Common - Core",
+      "mixins": [
+        {"file": "MixinWorld.java", "targets": ["net.minecraft.world.World"], "fixes": ["Entity ticking optimization", "Regional difficulty", "Block ticking distance"]},
+        {"file": "MixinChunkProviderServer.java", "targets": ["net.minecraft.world.gen.ChunkProviderServer"], "fixes": ["Spawn chunk disable", "Cascading worldgen detection", "Biome population"]},
+        {"file": "MixinChunk.java", "targets": ["net.minecraft.world.chunk.Chunk"], "fixes": ["Structure persistence", "Various chunk optimizations"]},
+        {"file": "MixinEntity.java", "targets": ["net.minecraft.entity.Entity"], "fixes": ["Fall distance calculation fix"]},
+        {"file": "MixinEntityLiving.java", "targets": ["net.minecraft.entity.EntityLiving"], "fixes": ["Higher armor chances (TMCW)"]},
+        {"file": "MixinEntityLivingBase_EarlyXpDrop.java", "targets": ["net.minecraft.entity.EntityLivingBase"], "fixes": ["Immediate XP drop on death"]},
+        {"file": "MixinCraftingManager.java", "targets": ["net.minecraft.item.crafting.CraftingManager"], "fixes": ["Recipe caching"]},
+        {"file": "MixinLongHashMap.java", "targets": ["net.minecraft.util.LongHashMap"], "fixes": ["Better hash function (TMCW)"]},
+        {"file": "MixinWorldServer.java", "targets": ["net.minecraft.world.WorldServer"], "fixes": ["Tick synchronization fix", "Entity structure persistence"]},
+        {"file": "MixinEntityItem.java", "targets": ["net.minecraft.entity.item.EntityItem"], "fixes": ["Item lag reduction"]}
+      ]
+    },
+    {
+      "category": "Lighting (Phosphor)",
+      "mixins": [
+        {"file": "MixinChunk.java", "targets": ["net.minecraft.world.chunk.Chunk"], "fixes": ["Optimized relightBlock", "checkLight hooks", "recheckGaps optimization"]},
+        {"file": "MixinWorld_Lighting.java", "targets": ["net.minecraft.world.World"], "fixes": ["Lighting engine replacement"]},
+        {"file": "MixinChunkProviderServer.java", "targets": ["net.minecraft.world.gen.ChunkProviderServer"], "fixes": ["Light initialization optimization"]},
+        {"file": "MixinExtendedBlockStorage.java", "targets": ["net.minecraft.world.chunk.storage.ExtendedBlockStorage"], "fixes": ["Light reference counting"]}
+      ]
+    },
+    {
+      "category": "Mod Compatibility",
+      "mixins": [
+        {"file": "MixinVersionCheckThread.java", "mod": "OptiFine", "fixes": ["Disable version checker"]},
+        {"file": "MixinNEIItemRender.java", "mod": "AE2", "fixes": ["Duplicate stack size fix"]},
+        {"file": "MixinPlayerChunkViewerManager.java", "mod": "ChickenChunks", "fixes": ["Chunk viewer optimization"]},
+        {"file": "MixinBlockSpecialFlower.java", "mod": "Botania", "fixes": ["Cascading worldgen fix"]},
+        {"file": "MixinGenHandler.java", "mod": "Mekanism", "fixes": ["Cascading worldgen fix"]},
+        {"file": "MixinEventHandlerServer.java", "mod": "ExtraUtilities", "fixes": ["Performance fixes"]},
+        {"file": "MixinGT_API_Proxy_Client.java", "mod": "GregTech6", "fixes": ["Tooltip optimization"]},
+        {"file": "MixinAdvancedCraftingXToY.java", "mod": "GregTech6", "fixes": ["Crafting optimization"]},
+        {"file": "MixinTileDrawStep.java", "mod": "JourneyMap", "fixes": ["Debug feature removal"]},
+        {"file": "MixinReikaWorldHelper.java", "mod": "DragonAPI", "fixes": ["World helper fixes"]},
+        {"file": "MixinServerHandler.java", "mod": "Diversity", "fixes": ["Infinite loop fix"]},
+        {"file": "MixinMatterRegistrationHandler.java", "mod": "MatterOverdrive", "fixes": ["Thread priority fix"]},
+        {"file": "MixinGenerateItemHash.java", "mod": "TC4Tweaks", "fixes": ["Thaumcraft hashing optimization"]}
+      ]
+    }
+  ],
+  "fixes_taxonomy": {
+    "performance": [
+      {
+        "id": "PERF-001",
+        "name": "Phosphor Lighting Engine",
+        "description": "Backport of Phosphor lighting engine - reduces light update lag by 80%+",
+        "config": "enablePhosphor",
+        "default": true,
+        "files": ["LightingEngine.java", "mixins/common/lighting/"],
+        "dh_overlap_risk": "MEDIUM - DH has its own lighting system, verify compatibility"
+      },
+      {
+        "id": "PERF-002",
+        "name": "Entity Ticking Optimization",
+        "description": "Skips entity AI/ticking outside configured player distance",
+        "config": "optimizeEntityTicking",
+        "default": false,
+        "files": ["MixinWorld.java"],
+        "dh_overlap_risk": "LOW - DH does not modify entity ticking"
+      },
+      {
+        "id": "PERF-003",
+        "name": "Recipe Caching",
+        "description": "Guava Cache-based recipe lookup with 500k entry limit",
+        "config": "cacheRecipes",
+        "default": false,
+        "files": ["MixinCraftingManager.java"],
+        "dh_overlap_risk": "NONE - DH has no crafting system"
+      },
+      {
+        "id": "PERF-004",
+        "name": "Spawn Chunk Disabling",
+        "description": "Prevents spawn chunks from loading, reducing idle server load",
+        "config": "disableSpawnChunks",
+        "default": false,
+        "files": ["MixinChunkProviderServer.java"],
+        "dh_overlap_risk": "LOW - DH uses its own chunk management"
+      },
+      {
+        "id": "PERF-005",
+        "name": "Block Update Limit Increase",
+        "description": "Increases block update limit from 1000 to 65000 per tick",
+        "config": "increaseBlockUpdateLimit",
+        "default": true,
+        "files": ["MixinWorld.java (updateEntities)"],
+        "dh_overlap_risk": "MEDIUM - DH may have its own block update handling"
+      },
+      {
+        "id": "PERF-006",
+        "name": "Remove System.gc()",
+        "description": "Removes forced garbage collection during world loading",
+        "config": "N/A (always active)",
+        "files": ["MixinMinecraft.java"],
+        "dh_overlap_risk": "NONE"
+      },
+      {
+        "id": "PERF-007",
+        "name": "GL Error Check Skip",
+        "description": "Disables expensive OpenGL error checking",
+        "config": "N/A (always active)",
+        "files": ["MixinMinecraft.java"],
+        "dh_overlap_risk": "MEDIUM - DH does GL rendering, verify no conflict"
+      },
+      {
+        "id": "PERF-008",
+        "name": "Async Creative Search",
+        "description": "Async implementation of creative inventory search",
+        "config": "asyncCreativeSearch",
+        "default": true,
+        "files": ["MixinGuiContainerCreative.java"],
+        "dh_overlap_risk": "NONE - DH has no GUI search"
+      },
+      {
+        "id": "PERF-009",
+        "name": "LongHashMap Better Hash",
+        "description": "TMCW's better hash function to avoid collisions",
+        "config": "N/A (always active)",
+        "files": ["MixinLongHashMap.java"],
+        "dh_overlap_risk": "LOW - DH uses its own data structures"
+      },
+      {
+        "id": "PERF-010",
+        "name": "Item Lag Reduction",
+        "description": "Reduces lag caused by item entities",
+        "config": "itemLagReduction",
+        "default": true,
+        "files": ["MixinEntityItem.java"],
+        "dh_overlap_risk": "LOW - DH does not modify item entities"
+      }
+    ],
+    "bugfixes": [
+      {
+        "id": "BUG-001",
+        "name": "Tick List Synchronization",
+        "description": "Fixes 'TickNextTick list out of synch' error/crash",
+        "config": "fixTickListSynchronization",
+        "default": true,
+        "vanilla_bug": "MC-Unknown",
+        "files": ["MixinWorldServer.java"],
+        "dh_overlap_risk": "MEDIUM - DH has tick handling, verify compatibility"
+      },
+      {
+        "id": "BUG-002",
+        "name": "MC-68754 Fix",
+        "description": "Fixes fullscreen resize issue on Windows",
+        "config": "N/A (always active)",
+        "vanilla_bug": "MC-68754",
+        "files": ["MixinMinecraft.java"],
+        "dh_overlap_risk": "NONE - Display issue only"
+      },
+      {
+        "id": "BUG-003",
+        "name": "MC-30845 Fix",
+        "description": "Third-person camera passes through non-solid blocks",
+        "config": "N/A (always active)",
+        "vanilla_bug": "MC-30845",
+        "files": ["MixinEntityRenderer.java"],
+        "dh_overlap_risk": "NONE - Visual fix only"
+      },
+      {
+        "id": "BUG-004",
+        "name": "Entity Fall Distance",
+        "description": "Fixes fall distance not updated before onFallenUpon",
+        "config": "N/A (always active)",
+        "vanilla_bug": "MC-Unknown",
+        "files": ["MixinEntity.java"],
+        "dh_overlap_risk": "LOW - DH does not modify fall damage"
+      },
+      {
+        "id": "BUG-005",
+        "name": "Skin Memory Leak",
+        "description": "Fixes client memory leak from cached skins",
+        "config": "fixSkinMemoryLeak",
+        "default": true,
+        "vanilla_bug": "MC-Unknown",
+        "files": ["MixinSkinManager.java"],
+        "dh_overlap_risk": "NONE - Client-only fix"
+      },
+      {
+        "id": "BUG-006",
+        "name": "TileEntity Unload Lag",
+        "description": "Fixes lag when TileEntities unload",
+        "config": "fixTEUnloadLag",
+        "default": true,
+        "vanilla_bug": "MC-Unknown",
+        "files": ["MixinWorld.java (updateEntities)"],
+        "dh_overlap_risk": "MEDIUM - DH may have TE interactions"
+      },
+      {
+        "id": "BUG-007",
+        "name": "Login Race Condition",
+        "description": "Fixes SP hanging when logging in",
+        "config": "fixLoginRaceCondition",
+        "default": true,
+        "vanilla_bug": "MC-Unknown",
+        "files": ["MixinIntegratedServer.java"],
+        "dh_overlap_risk": "LOW - DH may have login timing assumptions"
+      },
+      {
+        "id": "BUG-008",
+        "name": "Entity Structure Persistence",
+        "description": "Fixes entities from structures not marked persistent (MC-108664)",
+        "config": "fixEntityStructurePersistence",
+        "default": true,
+        "vanilla_bug": "MC-108664",
+        "files": ["MixinWorldServer.java", "MixinStructureStart.java"],
+        "dh_overlap_risk": "LOW - Structure generation issue"
+      }
+    ],
+    "worldgen": [
+      {
+        "id": "GEN-001",
+        "name": "Cascading Worldgen Detection",
+        "description": "Logs when mods cause cascading worldgen lag",
+        "config": "logCascadingWorldgen",
+        "default": true,
+        "files": ["CascadeDetectionHelper.java"],
+        "dh_overlap_risk": "MEDIUM - DH has world generation, verify no false positives"
+      },
+      {
+        "id": "GEN-002",
+        "name": "Vanilla Cascading Worldgen Fix",
+        "description": "Fixes vanilla cascading worldgen instances",
+        "config": "fixVanillaCascadingWorldgen",
+        "default": true,
+        "files": ["MixinChunkProviderServer.java", "MixinMapGenStructure.java"],
+        "dh_overlap_risk": "LOW - DH uses different chunk generation"
+      }
+    ]
+  },
+  "dh_overlap_analysis": {
+    "summary": "ArchaicFix and DH share concerns in chunk loading, tick handling, and GL context. Most fixes are complementary.",
+    "high_risk_overlaps": [
+      {
+        "area": "Chunk Loading",
+        "description": "Both mods modify chunk loading behavior",
+        "archaicfix_files": ["MixinChunkProviderServer.java", "mixins/common/lighting/MixinChunkProviderServer.java"],
+        "dh_files": ["ForgeServerProxy.java (chunkLoadEvents)"],
+        "recommendation": "ArchaicFix's spawn chunk disabling and cascade detection should not conflict with DH's chunk event queue. Monitor for interaction issues."
+      },
+      {
+        "area": "Tick Handling",
+        "description": "Both mods have tick event handlers",
+        "archaicfix_files": ["MixinWorld.java (entity ticking)", "MixinWorldServer.java"],
+        "dh_files": ["ForgeServerProxy.serverTickEvent"],
+        "recommendation": "ArchaicFix's entity ticking optimization is on a different path than DH's chunk processing. No direct conflict expected."
+      },
+      {
+        "area": "GL Context",
+        "description": "Both mods have GL rendering code",
+        "archaicfix_files": ["MixinMinecraft.java (GL error skip)", "mixins/client/lighting/"],
+        "dh_files": ["RenderHelper.java", "MixinFramebuffer.java"],
+        "recommendation": "ArchaicFix's GL error check skip should not affect DH's framebuffer operations. Monitor for rendering artifacts."
+      },
+      {
+        "area": "Lighting Engine",
+        "description": "Phosphor replaces vanilla lighting; DH has its own lighting",
+        "archaicfix_files": ["LightingEngine.java", "mixins/common/lighting/"],
+        "dh_files": ["LodRenderer.java (lighting calculations)"],
+        "recommendation": "Phosphor affects block lighting updates; DH LODs use their own lighting. Should be complementary but verify LOD lighting correctness."
+      }
+    ],
+    "complementary_fixes": [
+      "PERF-002 (Entity ticking optimization) - DH does not modify entity ticking",
+      "PERF-003 (Recipe caching) - DH has no crafting system",
+      "PERF-004 (Spawn chunk disabling) - DH uses different chunk management",
+      "PERF-009 (LongHashMap) - DH uses different data structures",
+      "GEN-001 (Cascading worldgen detection) - Helps identify DH worldgen issues too"
+    ],
+    "fixes_dh_should_not_duplicate": [
+      "PERF-001 Phosphor Lighting Engine - DH should use vanilla/Phosphor lighting, not implement its own",
+      "BUG-001 Tick List Synchronization - DH should verify its tick handling doesn't cause this issue",
+      "BUG-006 TileEntity Unload Lag - DH should not modify TE unloading",
+      "PERF-005 Block Update Limit - DH should work within vanilla constraints"
+    ]
+  },
+  "licensing_notes": {
+    "primary_license": "LGPL-3.0",
+    "caveats": [
+      {
+        "component": "occlusion culling module",
+        "note": "Derived from CoFHTweaks (Minecraft 1.8 derived), separate license",
+        "path": "src/main/java/org/embeddedt/archaicfix/occlusion/",
+        "status": "NOT present in current commit"
+      },
+      {
+        "component": "zone.rong.loliasm",
+        "note": "From LoliASM, LGPL-2.1",
+        "path": "src/main/java/zone/rong/loliasm/"
+      },
+      {
+        "component": "ca.fxco.memoryleakfix",
+        "note": "From MemoryLeakFix, LGPL-2.1",
+        "path": "src/main/java/ca/fxco/memoryleakfix/"
+      },
+      {
+        "component": "lighting engine (Phosphor)",
+        "note": "Derived from Phosphor by Angeline, LGPL-3.0 compatible",
+        "path": "src/main/java/org/embeddedt/archaicfix/lighting/"
+      }
+    ]
+  },
+  "threading_analysis": {
+    "thread_safe_components": [
+      {
+        "component": "LightingEngine",
+        "mechanism": "ReentrantLock with thread ownership validation",
+        "note": "Detects and warns about illegal cross-thread access"
+      },
+      {
+        "component": "CascadeDetectionHelper",
+        "mechanism": "ThreadLocal<LinkedList<ChunkCoordIntPair>>",
+        "note": "Per-thread population stack tracking"
+      },
+      {
+        "component": "Recipe Cache",
+        "mechanism": "Guava LoadingCache (thread-safe)",
+        "note": "Concurrent recipe lookup caching"
+      }
+    ],
+    "threading_fixes": [
+      {
+        "fix": "MixinMatterRegistrationHandler",
+        "mod": "MatterOverdrive",
+        "description": "Runs matter registration on separate thread with lowered priority"
+      },
+      {
+        "fix": "MixinTileDrawStep",
+        "mod": "JourneyMap",
+        "description": "Removes debug feature that could cause threading issues"
+      }
+    ]
+  },
+  "metadata": {
+    "index_version": "1.0.0",
+    "epistemic_standard": "EPISTEMIC_FORENSICS_TOOLS.md",
+    "artifact_primacy": true,
+    "verbatim_quoting": true,
+    "narrative_smoothing_bias": "LOW"
+  }
+}

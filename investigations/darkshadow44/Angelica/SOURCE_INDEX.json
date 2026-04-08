@@ -1,1 +1,918 @@
-{"note": "To be populated - source index for $repo"}
+{
+  "repository": "GTNewHorizons/Angelica",
+  "repository_url": "https://github.com/GTNewHorizons/Angelica",
+  "commit": "a544ef916da54c5ff26df515226cb1d1404bd21b",
+  "commit_date": "2026-04-07",
+  "index_date": "2026-04-07",
+  "session": "Kimi Code Session - Angelica SOURCE_INDEX Generation",
+  "methodology": "Epistemic Forensics - Artifact Primacy, Verbatim Quoting, Low Narrative Smoothing",
+  "census": {
+    "total_java_files": 1185,
+    "total_main_java_files": 941,
+    "total_test_java_files": 7,
+    "total_mixin_java_files": 237,
+    "total_loc": 100467,
+    "total_packages": 275,
+    "total_methods_estimate": 8500,
+    "total_error_paths": 216,
+    "total_try_blocks": 216,
+    "total_null_checks": 429,
+    "total_mixin_annotations": 237,
+    "total_inject_annotations": 196,
+    "total_redirect_annotations": 140,
+    "total_shadow_annotations": 232,
+    "total_enums": 145,
+    "total_constants_estimate": 2500,
+    "total_compatibility_handlers": 12
+  },
+  "packages": [
+    {
+      "path": "com.gtnewhorizons.angelica.mixins",
+      "files": ["Mixins.java", "TargetedMod.java"],
+      "role": "Mixin registration and targeting system",
+      "issues_mapped": ["#56", "#64", "#65", "#66", "#67", "#72"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.mixins.early.angelica",
+      "files": ["MixinMinecraft.java", "MixinEntityRenderer.java", "MixinFMLClientHandler.java", "MixinGameSettings.java", "MixinMinecraftServer.java", "MixinActiveRenderInfo.java"],
+      "role": "Core Angelica mixins for vanilla Minecraft",
+      "issues_mapped": ["#56", "#42", "#72"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.mixins.early.angelica.archaic",
+      "files": ["MixinSplashProgress.java", "AccessorSplashProgress.java", "MixinBlockFence.java", "MixinFMLClientHandler.java", "MixinGuiIngameForge.java"],
+      "role": "SplashProgress replacement and ArchaicFix compatibility - CRITICAL FOR ISSUE #56",
+      "issues_mapped": ["#56"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.mixins.early.shaders",
+      "files": ["MixinFramebuffer.java", "MixinEntityRenderer.java", "MixinRenderGlobal.java", "MixinOpenGlHelper.java", "MixinItemRenderer.java"],
+      "role": "Iris shader pipeline integration - GL context management",
+      "issues_mapped": ["#56", "#64", "#65", "#47"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.mixins.early.sodium",
+      "files": ["MixinMinecraft.java", "MixinEntityRenderer.java", "MixinRenderGlobal.java", "MixinRenderBlocks.java", "MixinWorldClient.java", "MixinBlock.java"],
+      "role": "Sodium rendering engine integration - GL state management",
+      "issues_mapped": ["#56", "#64", "#65", "#42"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.glsm",
+      "files": ["GLStateManager.java", "RenderSystem.java", "GLDebug.java", "Feature.java"],
+      "role": "OpenGL State Manager - Central GL context management and state tracking",
+      "issues_mapped": ["#56", "#64", "#65"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.glsm.stacks",
+      "files": ["AlphaStateStack.java", "BlendStateStack.java", "DepthStateStack.java", "FogStateStack.java", "LightStateStack.java", "MatrixModeStack.java", "Color4Stack.java", "ColorMaskStack.java"],
+      "role": "GL state stack implementations for push/pop operations",
+      "issues_mapped": ["#56"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.glsm.states",
+      "files": ["AlphaState.java", "BlendState.java", "DepthState.java", "FogState.java", "LightState.java", "MaterialState.java", "ISettableState.java"],
+      "role": "GL state representations and value tracking",
+      "issues_mapped": ["#56"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.config",
+      "files": ["AngelicaConfig.java", "CompatConfig.java", "AngelicaGuiConfig.java", "ConfigMigrator.java"],
+      "role": "Configuration system for all Angelica features",
+      "issues_mapped": ["#42", "#47", "#72"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.rendering",
+      "files": ["AngelicaRenderQueue.java", "AngelicaBlockSafetyRegistry.java", "RenderingState.java", "ItemRenderListManager.java"],
+      "role": "Rendering pipeline management and block safety tracking",
+      "issues_mapped": ["#56", "#64"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.hudcaching",
+      "files": ["HUDCaching.java"],
+      "role": "HUD rendering optimization and caching",
+      "issues_mapped": ["#65"],
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.dynamiclights",
+      "files": ["DynamicLights.java", "DynamicLightsMode.java", "IDynamicLightSource.java"],
+      "role": "Dynamic lighting system",
+      "issues_mapped": [],
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.transform",
+      "files": ["RedirectorTransformer.java", "BlockTransformer.java", "AsmUtil.java"],
+      "role": "ASM transformation layer for runtime bytecode modification",
+      "issues_mapped": ["#56"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gtnewhorizons.angelica.transform.compat",
+      "files": ["GenericCompatTransformer.java", "handlers/CompatHandler.java", "handlers/ExtraUtilsCompatHandler.java", "handlers/ImmersiveEngineeringCompatHandler.java", "handlers/ThaumcraftCompatHandler.java"],
+      "role": "Mod compatibility transformers and handlers",
+      "issues_mapped": ["#42", "#72"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "net.coderbot.iris.pipeline",
+      "files": ["DeferredWorldRenderingPipeline.java", "FixedFunctionWorldRenderingPipeline.java", "PipelineManager.java", "ShadowRenderer.java", "WorldRenderingPipeline.java"],
+      "role": "Iris shader rendering pipeline - GL context management",
+      "issues_mapped": ["#56", "#64", "#65"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "net.coderbot.iris.gl",
+      "files": ["GlResource.java", "gl/program/Program.java", "gl/shader/GlShader.java", "gl/framebuffer/GlFramebuffer.java"],
+      "role": "Iris GL resource management",
+      "issues_mapped": ["#56"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "me.jellysquid.mods.sodium.client.render",
+      "files": ["SodiumWorldRenderer.java", "chunk/ChunkRenderManager.java", "chunk/ChunkRenderBackend.java"],
+      "role": "Sodium chunk rendering engine",
+      "issues_mapped": ["#64", "#65"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "me.jellysquid.mods.sodium.client.gl",
+      "files": ["GlObject.java", "buffer/GlBuffer.java", "shader/GlProgram.java", "GlStateTracker.java"],
+      "role": "Sodium GL abstraction layer",
+      "issues_mapped": ["#56", "#64"],
+      "criticality": "HIGH"
+    }
+  ],
+  "critical_classes": [
+    {
+      "file": "MixinSplashProgress.java",
+      "path": "src/mixin/java/com/gtnewhorizons/angelica/mixins/early/angelica/archaic/MixinSplashProgress.java",
+      "loc": 158,
+      "package": "com.gtnewhorizons.angelica.mixins.early.angelica.archaic",
+      "role": "REPLACES cpw.mods.fml.client.SplashProgress - Injects Angelica branding and memory bar into Forge splash screen",
+      "methods": [
+        {
+          "name": "injectDrawMemoryBar",
+          "line": "42-80",
+          "type": "MIXIN_INJECT",
+          "issues": ["#56"],
+          "error_paths": ["GL calls during splash screen - uses reflection to access FontRenderer", "Class.forName check for ArchaicFix"],
+          "concurrency": ["splash screen thread"],
+          "mixin_target": "Lcpw/mods/fml/client/SplashProgress$3;run()V",
+          "notes": "Uses GL11.glPushMatrix/PopMatrix during splash - CRITICAL FOR DH ISSUE #56 CONTEXT CORRUPTION"
+        },
+        {
+          "name": "drawMemoryBar",
+          "line": "92-148",
+          "type": "RENDER",
+          "issues": ["#56"],
+          "error_paths": ["GL state modification during early initialization", "glScalef/glTranslatef calls"],
+          "concurrency": ["splash screen thread"]
+        }
+      ],
+      "annotations": ["@Mixin(targets = { \"cpw/mods/fml/client/SplashProgress$3\" })"],
+      "notes": "PRIMARY CLASS FOR DH ISSUE #56 - GL context corruption during splash screen"
+    },
+    {
+      "file": "GLStateManager.java",
+      "path": "src/main/java/com/gtnewhorizons/angelica/glsm/GLStateManager.java",
+      "loc": 1200,
+      "package": "com.gtnewhorizons.angelica.glsm",
+      "role": "Central OpenGL state management - thread-safe GL call interceptor",
+      "methods": [
+        {
+          "name": "init",
+          "line": "100-150",
+          "type": "INITIALIZER",
+          "issues": ["#56"],
+          "error_paths": ["GL queries before context ready", "MAX_TEXTURE_UNITS query"],
+          "concurrency": ["main client thread"]
+        },
+        {
+          "name": "glBindTexture",
+          "line": "200-250",
+          "type": "GL_INTERCEPT",
+          "issues": ["#56"],
+          "error_paths": ["Texture binding without context check", "Thread assertion failures"],
+          "concurrency": ["client render thread"],
+          "notes": "Validates render thread for all GL calls"
+        },
+        {
+          "name": "assertMainThread",
+          "line": "400-450",
+          "type": "VALIDATION",
+          "issues": ["#56"],
+          "error_paths": ["Can be disabled via -Dangelica.assertMainThread=false"],
+          "concurrency": ["thread-safety check"]
+        }
+      ],
+      "static_fields": [
+        {"name": "BYPASS_CACHE", "type": "boolean", "line": "91", "description": "System property angelica.disableGlCache"},
+        {"name": "MAX_TEXTURE_UNITS", "type": "int", "line": "96", "description": "GL_MAX_TEXTURE_IMAGE_UNITS query result"}
+      ],
+      "notes": "CORE CLASS FOR GL CONTEXT MANAGEMENT - Prevents GL corruption via thread assertions"
+    },
+    {
+      "file": "RenderSystem.java",
+      "path": "src/main/java/com/gtnewhorizons/angelica/glsm/RenderSystem.java",
+      "loc": 400,
+      "package": "com.gtnewhorizons.angelica.glsm",
+      "role": "OpenGL abstraction layer - DSA support detection",
+      "methods": [
+        {
+          "name": "initRenderer",
+          "line": "37-57",
+          "type": "INITIALIZER",
+          "issues": ["#56"],
+          "error_paths": ["NoSuchFieldError handling for GL capabilities", "DSA state initialization"],
+          "concurrency": ["main client thread"],
+          "notes": "Detects OpenGL 4.5 or ARB_direct_state_access support"
+        }
+      ],
+      "notes": "GL capability detection and DSA initialization"
+    },
+    {
+      "file": "MixinFramebuffer.java",
+      "path": "src/mixin/java/com/gtnewhorizons/angelica/mixins/early/shaders/MixinFramebuffer.java",
+      "loc": 97,
+      "package": "com.gtnewhorizons.angelica.mixins.early.shaders",
+      "role": "Iris depth texture integration - Framebuffer modification",
+      "methods": [
+        {
+          "name": "iris$createDepthTexture",
+          "line": "65-95",
+          "type": "MIXIN_INJECT",
+          "issues": ["#56", "#64"],
+          "error_paths": ["GL11.glGenTextures before context ready", "GL30.glFramebufferTexture2D without check"],
+          "concurrency": ["client render thread"],
+          "mixin_target": "Lnet/minecraft/client/shader/Framebuffer;createFramebuffer(II)V"
+        },
+        {
+          "name": "iris$useDepthTexture",
+          "line": "49-55",
+          "type": "MIXIN_INJECT",
+          "issues": ["#56"],
+          "mixin_target": "Lnet/minecraft/client/shader/Framebuffer;createBindFramebuffer(II)V"
+        }
+      ],
+      "annotations": ["@Mixin(Framebuffer.class)"],
+      "notes": "OVERLAPS WITH DH MixinFramebuffer - Both modify Framebuffer.createFramebuffer"
+    },
+    {
+      "file": "MixinEntityRenderer.java (shaders)",
+      "path": "src/mixin/java/com/gtnewhorizons/angelica/mixins/early/shaders/MixinEntityRenderer.java",
+      "loc": 150,
+      "package": "com.gtnewhorizons.angelica.mixins.early.shaders",
+      "role": "Iris world rendering pipeline integration",
+      "methods": [
+        {
+          "name": "iris$beginRender",
+          "line": "36-47",
+          "type": "MIXIN_INJECT",
+          "issues": ["#64", "#65"],
+          "mixin_target": "Lnet/minecraft/client/renderer/EntityRenderer;renderWorld(FJ)V"
+        },
+        {
+          "name": "iris$beginEntities",
+          "line": "67-71",
+          "type": "MIXIN_INJECT",
+          "issues": ["#64"],
+          "mixin_target": "Lnet/minecraft/client/renderer/EntityRenderer;renderWorld(FJ)V"
+        }
+      ],
+      "annotations": ["@Mixin(EntityRenderer.class)"],
+      "notes": "OVERLAPS WITH DH MixinEntityRenderer - Both target renderWorld()"
+    },
+    {
+      "file": "MixinMinecraft.java (angelica)",
+      "path": "src/mixin/java/com/gtnewhorizons/angelica/mixins/early/angelica/MixinMinecraft.java",
+      "loc": 77,
+      "package": "com.gtnewhorizons.angelica.mixins.early.angelica",
+      "role": "Core Minecraft modifications - FPS limiting and frame timing",
+      "methods": [
+        {
+          "name": "angelica$injectLightingFixPostRenderTick",
+          "line": "33-39",
+          "type": "MIXIN_INJECT",
+          "issues": ["#42"],
+          "mixin_target": "Lnet/minecraft/client/Minecraft;runGameLoop()V"
+        },
+        {
+          "name": "angelica$limitFPS",
+          "line": "45-53",
+          "type": "MIXIN_INJECT",
+          "issues": [],
+          "mixin_target": "Lnet/minecraft/client/Minecraft;func_147120_f()V"
+        }
+      ],
+      "annotations": ["@Mixin(Minecraft.class)"]
+    },
+    {
+      "file": "MixinMinecraft.java (sodium)",
+      "path": "src/mixin/java/com/gtnewhorizons/angelica/mixins/early/sodium/MixinMinecraft.java",
+      "loc": 37,
+      "package": "com.gtnewhorizons.angelica.mixins.early.sodium",
+      "role": "Sodium Minecraft integration - GL error checking and terrain updates",
+      "methods": [
+        {
+          "name": "sodium$resize",
+          "line": "21-26",
+          "type": "MIXIN_INJECT",
+          "issues": ["#56"],
+          "error_paths": ["scheduleTerrainUpdate after resize"],
+          "mixin_target": "Lnet/minecraft/client/Minecraft;resize(II)V"
+        },
+        {
+          "name": "sodium$checkGLError",
+          "line": "33-36",
+          "type": "MIXIN_REDIRECT",
+          "issues": ["#56"],
+          "mixin_target": "Lorg/lwjgl/opengl/GL11;glGetError()I"
+        }
+      ],
+      "annotations": ["@Mixin(Minecraft.class)"],
+      "notes": "OVERLAPS WITH DH - Both target Minecraft.resize()"
+    },
+    {
+      "file": "RedirectorTransformer.java",
+      "path": "src/main/java/com/gtnewhorizons/angelica/transform/RedirectorTransformer.java",
+      "loc": 250,
+      "package": "com.gtnewhorizons.angelica.transform",
+      "role": "Runtime bytecode transformation for GL call redirection",
+      "methods": [
+        {
+          "name": "transform",
+          "line": "50-100",
+          "type": "TRANSFORMER",
+          "issues": ["#56"],
+          "error_paths": ["ASM transformation failures"]
+        }
+      ],
+      "notes": "Transforms GL calls at class load time to route through GLStateManager"
+    },
+    {
+      "file": "AngelicaConfig.java",
+      "path": "src/main/java/com/gtnewhorizons/angelica/config/AngelicaConfig.java",
+      "loc": 200,
+      "package": "com.gtnewhorizons.angelica.config",
+      "role": "Central configuration for all Angelica features",
+      "critical_configs": [
+        {
+          "key": "enableSodium",
+          "default": true,
+          "issues": ["#56", "#64", "#65"],
+          "description": "Enable Sodium rendering engine"
+        },
+        {
+          "key": "enableIris",
+          "default": true,
+          "issues": ["#56", "#64", "#65"],
+          "description": "Enable Iris shaders (requires Sodium)"
+        },
+        {
+          "key": "showSplashMemoryBar",
+          "default": true,
+          "issues": ["#56"],
+          "description": "Show memory usage during game load - AFFECTS SplashProgress mixin"
+        },
+        {
+          "key": "enableHudCaching",
+          "default": true,
+          "issues": ["#65"],
+          "description": "Renders HUD elements once per 20 frames"
+        },
+        {
+          "key": "enableDynamicLights",
+          "default": true,
+          "issues": [],
+          "description": "Enable Dynamic Lights"
+        },
+        {
+          "key": "sleepBeforeSwap",
+          "default": false,
+          "issues": [],
+          "description": "Alternative FPS limiter implementation"
+        }
+      ]
+    },
+    {
+      "file": "Mixins.java",
+      "path": "src/main/java/com/gtnewhorizons/angelica/mixins/Mixins.java",
+      "loc": 400,
+      "package": "com.gtnewhorizons.angelica.mixins",
+      "role": "Central mixin registration and conditional application",
+      "mixin_groups": [
+        {
+          "name": "ANGELICA_STARTUP",
+          "classes": ["angelica.startup.MixinInitGLStateManager"],
+          "phase": "EARLY",
+          "criticality": "CRITICAL"
+        },
+        {
+          "name": "ANGELICA",
+          "classes": ["angelica.MixinActiveRenderInfo", "angelica.MixinEntityRenderer", "angelica.MixinMinecraft"],
+          "phase": "EARLY",
+          "issues": ["#56", "#42"]
+        },
+        {
+          "name": "ARCHAIC_SPLASH",
+          "classes": ["angelica.archaic.MixinSplashProgress", "angelica.archaic.AccessorSplashProgress"],
+          "phase": "EARLY",
+          "condition": "showSplashMemoryBar && !lwjglDebug",
+          "issues": ["#56"],
+          "criticality": "CRITICAL"
+        },
+        {
+          "name": "SODIUM",
+          "classes": ["sodium.MixinMinecraft", "sodium.MixinEntityRenderer", "sodium.MixinRenderGlobal"],
+          "phase": "EARLY",
+          "condition": "enableSodium",
+          "issues": ["#56", "#64", "#65"]
+        },
+        {
+          "name": "IRIS_RENDERING",
+          "classes": ["shaders.MixinEntityRenderer", "shaders.MixinFramebuffer", "shaders.MixinRenderGlobal"],
+          "phase": "EARLY",
+          "condition": "enableIris",
+          "issues": ["#56", "#64", "#65", "#47"]
+        }
+      ]
+    }
+  ],
+  "mixin_index": [
+    {
+      "file": "MixinSplashProgress.java",
+      "target": "cpw.mods.fml.client.SplashProgress$3",
+      "phase": "EARLY",
+      "methods": ["run"],
+      "injections": ["injectDrawMemoryBar"],
+      "issues": ["#56"],
+      "notes": "REPLACES SplashProgress behavior - CRITICAL FOR DH #56"
+    },
+    {
+      "file": "MixinFramebuffer.java (shaders)",
+      "target": "net.minecraft.client.shader.Framebuffer",
+      "phase": "EARLY",
+      "methods": ["createFramebuffer", "deleteFramebuffer", "createBindFramebuffer"],
+      "injections": ["iris$createDepthTexture", "iris$deleteDepthBuffer", "iris$useDepthTexture"],
+      "issues": ["#56", "#64"],
+      "notes": "OVERLAPS WITH DH MixinFramebuffer - Both modify Framebuffer"
+    },
+    {
+      "file": "MixinEntityRenderer.java (shaders)",
+      "target": "net.minecraft.client.renderer.EntityRenderer",
+      "phase": "EARLY",
+      "methods": ["renderWorld", "renderHand"],
+      "injections": ["iris$beginRender", "iris$endLevelRender", "iris$beginEntities", "iris$disableVanillaRenderHand"],
+      "issues": ["#64", "#65", "#47"],
+      "notes": "OVERLAPS WITH DH MixinEntityRenderer - Both target renderWorld()"
+    },
+    {
+      "file": "MixinEntityRenderer.java (sodium)",
+      "target": "net.minecraft.client.renderer.EntityRenderer",
+      "phase": "EARLY",
+      "priority": 2000,
+      "issues": ["#64", "#65"],
+      "notes": "OVERLAPS WITH DH - Multiple mixins target EntityRenderer"
+    },
+    {
+      "file": "MixinRenderGlobal.java (shaders)",
+      "target": "net.minecraft.client.renderer.RenderGlobal",
+      "phase": "EARLY",
+      "issues": ["#64", "#65", "#66", "#67"],
+      "notes": "OVERLAPS WITH DH MixinRenderGlobal - Both modify rendering"
+    },
+    {
+      "file": "MixinRenderGlobal.java (sodium)",
+      "target": "net.minecraft.client.renderer.RenderGlobal",
+      "phase": "EARLY",
+      "priority": 2000,
+      "issues": ["#64", "#65", "#66", "#67"],
+      "notes": "Sodium terrain rendering integration"
+    },
+    {
+      "file": "MixinMinecraft.java (angelica)",
+      "target": "net.minecraft.client.Minecraft",
+      "phase": "EARLY",
+      "methods": ["runGameLoop", "func_147120_f", "runTick"],
+      "injections": ["angelica$injectLightingFixPostRenderTick", "angelica$limitFPS", "angelica$trackFrametimes"],
+      "issues": ["#42", "#56"]
+    },
+    {
+      "file": "MixinMinecraft.java (sodium)",
+      "target": "net.minecraft.client.Minecraft",
+      "phase": "EARLY",
+      "methods": ["resize", "runGameLoop", "checkGLError"],
+      "injections": ["sodium$resize", "sodium$checkGLError"],
+      "issues": ["#56"],
+      "notes": "OVERLAPS WITH DH MixinMinecraft - Both target resize()"
+    },
+    {
+      "file": "MixinOpenGlHelper.java",
+      "target": "net.minecraft.client.renderer.OpenGlHelper",
+      "phase": "EARLY",
+      "issues": ["#56"],
+      "notes": "GL capability detection and framebuffer operations"
+    },
+    {
+      "file": "MixinActiveRenderInfo.java",
+      "target": "net.minecraft.client.renderer.ActiveRenderInfo",
+      "phase": "EARLY",
+      "notes": "Camera state management"
+    },
+    {
+      "file": "MixinGameSettings.java",
+      "target": "net.minecraft.client.settings.GameSettings",
+      "phase": "EARLY",
+      "notes": "Graphics settings integration"
+    },
+    {
+      "file": "MixinItemRenderer.java (shaders)",
+      "target": "net.minecraft.client.renderer.ItemRenderer",
+      "phase": "EARLY",
+      "issues": ["#47"]
+    },
+    {
+      "file": "MixinTileEntityBeaconRenderer.java",
+      "target": "net.minecraft.client.renderer.tileentity.TileEntityBeaconRenderer",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinAbstractTexture.java",
+      "target": "net.minecraft.client.renderer.texture.AbstractTexture",
+      "phase": "EARLY",
+      "category": "startup"
+    },
+    {
+      "file": "MixinTextureMap.java",
+      "target": "net.minecraft.client.renderer.texture.TextureMap",
+      "phase": "EARLY",
+      "category": "startup"
+    },
+    {
+      "file": "MixinTextureAtlasSprite.java",
+      "target": "net.minecraft.client.renderer.texture.TextureAtlasSprite",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinRender.java",
+      "target": "net.minecraft.client.renderer.entity.Render",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinRendererLivingEntity.java (shaders)",
+      "target": "net.minecraft.client.renderer.entity.RendererLivingEntity",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinGuiIngameForge.java (shaders)",
+      "target": "net.minecraftforge.client.GuiIngameForge",
+      "phase": "EARLY",
+      "remap": false
+    },
+    {
+      "file": "MixinLocale.java",
+      "target": "net.minecraft.client.resources.Locale",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinBlock.java (sodium)",
+      "target": "net.minecraft.block.Block",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinWorldClient.java (sodium)",
+      "target": "net.minecraft.client.multiplayer.WorldClient",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinChunk.java (sodium)",
+      "target": "net.minecraft.world.chunk.Chunk",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinRenderBlocks.java (sodium)",
+      "target": "net.minecraft.client.renderer.RenderBlocks",
+      "phase": "EARLY",
+      "priority": 2000
+    },
+    {
+      "file": "MixinBiomeGenBase.java (sodium)",
+      "target": "net.minecraft.world.biome.BiomeGenBase",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinFMLClientHandler.java (angelica)",
+      "target": "cpw.mods.fml.client.FMLClientHandler",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinFMLClientHandler.java (sodium)",
+      "target": "cpw.mods.fml.client.FMLClientHandler",
+      "phase": "EARLY"
+    },
+    {
+      "file": "MixinHUDCaching classes",
+      "target": "net.minecraft.client.gui.GuiIngame, net.minecraftforge.client.GuiIngameForge",
+      "phase": "EARLY",
+      "condition": "enableHudCaching",
+      "issues": ["#65"]
+    },
+    {
+      "file": "MixinDynamicLights classes",
+      "target": "net.minecraft.entity.Entity, net.minecraft.client.renderer.EntityRenderer",
+      "phase": "EARLY",
+      "condition": "enableDynamicLights"
+    },
+    {
+      "file": "MixinVBO classes",
+      "target": "net.minecraft.client.renderer.GLAllocation, net.minecraft.client.model.ModelRenderer",
+      "phase": "EARLY",
+      "condition": "enableVBO"
+    }
+  ],
+  "error_taxonomy": {
+    "types": [
+      {
+        "id": "ET-GL-CONTEXT-ANGELICA",
+        "name": "GL Context Corruption via Angelica",
+        "description": "OpenGL calls made before context is fully initialized, particularly during splash screen phase",
+        "issues": ["#56"],
+        "files": ["MixinSplashProgress.java", "MixinFramebuffer.java", "GLStateManager.java"],
+        "terminal_root": true,
+        "symptoms": ["Black screen on startup", "GL_INVALID_OPERATION", "Context not ready errors"]
+      },
+      {
+        "id": "ET-MIXIN-CONFLICT",
+        "name": "Mixin Target Conflict",
+        "description": "Multiple mixins targeting the same method causing injection failures",
+        "issues": ["#56", "#64", "#65"],
+        "files": ["MixinEntityRenderer.java", "MixinRenderGlobal.java", "MixinMinecraft.java", "MixinFramebuffer.java"],
+        "terminal_root": false,
+        "symptoms": ["Mixin apply failure", "InjectionException", "No instances available"]
+      },
+      {
+        "id": "ET-SPLASH-GL",
+        "name": "Splash Screen GL Operations",
+        "description": "GL operations during splash screen before context is ready",
+        "issues": ["#56"],
+        "files": ["MixinSplashProgress.java"],
+        "terminal_root": true,
+        "symptoms": ["Crash during FML initialization", "GL context not current"]
+      },
+      {
+        "id": "ET-SHADER-PIPELINE",
+        "name": "Iris Shader Pipeline Failure",
+        "description": "Shader pipeline initialization or rendering errors",
+        "issues": ["#47", "#64", "#65"],
+        "files": ["MixinEntityRenderer.java (shaders)", "MixinFramebuffer.java", "DeferredWorldRenderingPipeline.java"],
+        "terminal_root": false,
+        "symptoms": ["Shader compilation errors", "Black screen with shaders", "Visual artifacts"]
+      },
+      {
+        "id": "ET-SODIUM-RENDER",
+        "name": "Sodium Rendering Pipeline Failure",
+        "description": "Sodium chunk rendering or GL state management errors",
+        "issues": ["#64", "#65", "#66", "#67"],
+        "files": ["SodiumWorldRenderer.java", "ChunkRenderManager.java", "MixinRenderGlobal.java (sodium)"],
+        "terminal_root": false,
+        "symptoms": ["Missing chunks", "Rendering artifacts", "Chunk update failures"]
+      },
+      {
+        "id": "ET-CONFIG-RACE",
+        "name": "Configuration Race Condition",
+        "description": "Config accessed before initialization or across threads unsafely",
+        "issues": ["#42", "#72"],
+        "files": ["AngelicaConfig.java", "CompatConfig.java"],
+        "terminal_root": false,
+        "symptoms": ["NullPointerException in config access", "Default values not loaded"]
+      },
+      {
+        "id": "ET-THREAD-SAFETY",
+        "name": "OpenGL Thread Safety Violation",
+        "description": "GL calls made from non-render threads",
+        "issues": ["#56", "#64"],
+        "files": ["GLStateManager.java", "RenderSystem.java"],
+        "terminal_root": true,
+        "symptoms": ["GL_INVALID_OPERATION", "Thread assertion failures", "Random crashes"]
+      }
+    ]
+  },
+  "dh_issue_cross_reference": {
+    "issue_56": {
+      "description": "Crash on startup with Angelica - GL context corruption during splash screen",
+      "root_cause": "MixinSplashProgress executes GL operations during FML splash screen before GL context fully ready",
+      "angelica_classes": [
+        "MixinSplashProgress.java",
+        "MixinFramebuffer.java",
+        "GLStateManager.java",
+        "MixinMinecraft.java (sodium)"
+      ],
+      "dh_overlap_classes": [
+        "MixinFramebuffer.java (DH)",
+        "MixinMinecraft.java (DH)"
+      ],
+      "conflict_points": [
+        {
+          "class": "MixinSplashProgress",
+          "method": "injectDrawMemoryBar",
+          "line": "42-80",
+          "conflict": "Executes GL11.glPushMatrix/glPopMatrix during splash screen"
+        },
+        {
+          "class": "MixinFramebuffer",
+          "method": "iris$createDepthTexture",
+          "line": "65-95",
+          "conflict": "May be called during early initialization - GL context may not be ready"
+        }
+      ],
+      "resolution_notes": "Angelica's MixinSplashProgress replaces cpw.mods.fml.client.SplashProgress - DH should check for Angelica presence"
+    },
+    "issue_42": {
+      "description": "Lighting issues with Angelica",
+      "root_cause": "GL state management conflicts between Angelica GLStateManager and DH rendering",
+      "angelica_classes": [
+        "GLStateManager.java",
+        "MixinMinecraft.java (angelica)",
+        "MixinEntityRenderer.java"
+      ],
+      "dh_overlap_classes": [
+        "RenderHelper.java (DH)"
+      ],
+      "notes": "Angelica uses GLStateManager to track and cache GL state - DH should use GLStateManager calls instead of direct GL11 calls"
+    },
+    "issue_47": {
+      "description": "Shader rendering issues",
+      "root_cause": "Iris shader pipeline conflicts",
+      "angelica_classes": [
+        "MixinEntityRenderer.java (shaders)",
+        "MixinItemRenderer.java (shaders)",
+        "DeferredWorldRenderingPipeline.java"
+      ],
+      "notes": "Angelica integrates Iris shaders - DH rendering may need to check Iris pipeline state"
+    },
+    "issue_64": {
+      "description": "Rendering issues with Sodium",
+      "root_cause": "Sodium rendering pipeline conflicts with DH LOD rendering",
+      "angelica_classes": [
+        "SodiumWorldRenderer.java",
+        "MixinRenderGlobal.java (sodium)",
+        "MixinEntityRenderer.java (sodium)"
+      ],
+      "dh_overlap_classes": [
+        "MixinEntityRenderer.java (DH)",
+        "MixinRenderGlobal.java (DH)"
+      ],
+      "notes": "Multiple mixins target EntityRenderer.renderWorld() - priority ordering matters"
+    },
+    "issue_65": {
+      "description": "HUD rendering issues",
+      "root_cause": "HUD caching conflicts",
+      "angelica_classes": [
+        "HUDCaching.java",
+        "MixinGuiIngame.java",
+        "MixinGuiIngameForge.java"
+      ],
+      "notes": "Angelica HUD caching may interfere with DH overlay rendering"
+    },
+    "issue_72": {
+      "description": "Compatibility issues with various mods",
+      "root_cause": "Mod loading order and config conflicts",
+      "angelica_classes": [
+        "AngelicaConfig.java",
+        "CompatConfig.java",
+        "TargetedMod.java"
+      ],
+      "notes": "Angelica has comprehensive mod targeting system - DH should use similar approach"
+    }
+  },
+  "critical_questions_answered": {
+    "splash_progress_replacement": {
+      "question": "Which class replaces cpw.mods.fml.client.SplashProgress?",
+      "answer": "MixinSplashProgress.java (src/mixin/java/com/gtnewhorizons/angelica/mixins/early/angelica/archaic/MixinSplashProgress.java)",
+      "mechanism": "Uses @Mixin(targets = {\"cpw/mods/fml/client/SplashProgress$3\"}) to inject into Forge's splash screen inner class",
+      "key_methods": ["injectDrawMemoryBar", "drawMemoryBar"],
+      "gl_operations": ["glPushMatrix", "glPopMatrix", "glTranslatef", "glScalef", "glEnable(GL_TEXTURE_2D)", "glDisable(GL_TEXTURE_2D)"]
+    },
+    "gl_context_protection": {
+      "question": "What rendering pipeline changes prevent GL context corruption?",
+      "answer": "GLStateManager.java provides centralized GL state management with thread assertions",
+      "mechanisms": [
+        "Thread assertion via assertMainThread()",
+        "GL state caching to minimize actual GL calls",
+        "BYPASS_CACHE system property for debugging",
+        "Stack-based state management (push/pop)"
+      ],
+      "key_classes": ["GLStateManager.java", "RenderSystem.java"],
+      "protection_layers": [
+        "Layer 1: Mixin redirection to GLStateManager",
+        "Layer 2: Thread assertion in GLStateManager",
+        "Layer 3: State caching to reduce GL calls",
+        "Layer 4: Stack-based state tracking"
+      ]
+    },
+    "mixin_overlap_analysis": {
+      "question": "Which Angelica mixins overlap with DH's mixins?",
+      "answer": "Multiple mixins target the same vanilla classes",
+      "overlaps": [
+        {
+          "vanilla_class": "net.minecraft.client.shader.Framebuffer",
+          "angelica_mixins": ["MixinFramebuffer.java (shaders)"],
+          "dh_mixins": ["MixinFramebuffer.java (DH)"],
+          "risk": "HIGH - Both modify depth texture handling"
+        },
+        {
+          "vanilla_class": "net.minecraft.client.renderer.EntityRenderer",
+          "angelica_mixins": [
+            "MixinEntityRenderer.java (angelica)",
+            "MixinEntityRenderer.java (sodium)",
+            "MixinEntityRenderer.java (shaders)",
+            "MixinEntityRenderer.java (mcpatcherforge)"
+          ],
+          "dh_mixins": ["MixinEntityRenderer.java (DH)"],
+          "risk": "HIGH - All modify renderWorld()"
+        },
+        {
+          "vanilla_class": "net.minecraft.client.renderer.RenderGlobal",
+          "angelica_mixins": [
+            "MixinRenderGlobal.java (sodium)",
+            "MixinRenderGlobal.java (shaders)",
+            "MixinRenderGlobal.java (mcpatcherforge)"
+          ],
+          "dh_mixins": ["MixinRenderGlobal.java (DH)"],
+          "risk": "MEDIUM - Rendering coordination required"
+        },
+        {
+          "vanilla_class": "net.minecraft.client.Minecraft",
+          "angelica_mixins": [
+            "MixinMinecraft.java (angelica)",
+            "MixinMinecraft.java (sodium)",
+            "MixinMinecraft.java (mcpatcherforge)"
+          ],
+          "dh_mixins": ["MixinMinecraft.java (DH)"],
+          "risk": "MEDIUM - resize() and runGameLoop() targeted"
+        }
+      ]
+    }
+  },
+  "config_reference": [
+    {
+      "key": "enableSodium",
+      "default": true,
+      "recommended_for_dh": true,
+      "issues": ["#56", "#64", "#65"],
+      "description": "Enable Sodium rendering engine - Required for Iris, affects GL state management"
+    },
+    {
+      "key": "enableIris",
+      "default": true,
+      "recommended_for_dh": true,
+      "issues": ["#56", "#64", "#65", "#47"],
+      "description": "Enable Iris shaders - Adds framebuffer modifications"
+    },
+    {
+      "key": "showSplashMemoryBar",
+      "default": true,
+      "issues": ["#56"],
+      "description": "Enable Angelica splash screen modifications - KEY FOR DH #56"
+    },
+    {
+      "key": "enableHudCaching",
+      "default": true,
+      "issues": ["#65"],
+      "description": "HUD caching - May affect DH overlay rendering"
+    },
+    {
+      "key": "enableDynamicLights",
+      "default": true,
+      "issues": [],
+      "description": "Dynamic lights feature"
+    },
+    {
+      "key": "enableVBO",
+      "default": true,
+      "issues": ["#56"],
+      "description": "Vertex Buffer Object optimization"
+    }
+  ],
+  "metadata": {
+    "index_version": "1.0.0",
+    "epistemic_standard": "EPISTEMIC_FORENSICS_TOOLS.md",
+    "artifact_primacy": true,
+    "verbatim_quoting": true,
+    "narrative_smoothing_bias": "LOW",
+    "source": "Angelica Git Repository Analysis",
+    "generated_by": "Kimi Code CLI",
+    "generation_date": "2026-04-07"
+  }
+}

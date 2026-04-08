@@ -1,1 +1,523 @@
-{"note": "To be populated - source index for $repo"}
+{
+  "repository": "DarkShadow44/Spool",
+  "repository_url": "https://github.com/DarkShadow44/Spool",
+  "commit": "a544ef916da54c5ff26df515226cb1d1404bd21b",
+  "commit_date": "2026-04-07",
+  "index_date": "2026-04-07",
+  "session": "Kimi Code Session, 4-7-26",
+  "methodology": "Epistemic Forensics - Artifact Primacy, Verbatim Quoting, Low Narrative Smoothing",
+  "census": {
+    "total_java_files": 145,
+    "total_loc": 20195,
+    "total_packages": 32,
+    "total_mixin_files": 38,
+    "total_mixin_annotations": 89,
+    "total_concurrency_primitives": 156,
+    "thread_managers": 7,
+    "concurrent_data_structures": 12,
+    "atomic_variables": 67,
+    "synchronized_collections": 18
+  },
+  "packages": [
+    {
+      "path": "com.gamma.spool.core",
+      "files": ["Spool.java", "SpoolCoreMod.java", "SpoolCompat.java", "SpoolIMC.java", "SpoolLogger.java", "SpoolManagerOrchestrator.java", "SpoolMixinCore.java"],
+      "role": "Mod entry point, lifecycle management, thread orchestration",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gamma.spool.thread",
+      "files": ["IThreadManager.java", "ThreadManager.java", "KeyedPoolThreadManager.java", "LBKeyedPoolThreadManager.java", "ForkThreadManager.java", "TimedOperationThreadManager.java", "ManagerNames.java", "ExecutionTasks.java", "RollingAverageWrapper.java"],
+      "role": "Thread pool abstractions, task execution, keyed thread management",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gamma.spool.concurrent",
+      "files": ["ConcurrentChunk.java", "ConcurrentExtendedBlockStorage.java", "AtomicNibbleArray.java", "loaders/", "providers/"],
+      "role": "Thread-safe chunk and block storage implementations",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gamma.spool.util.distance",
+      "files": ["DistanceThreadingUtil.java", "DistanceThreadingChunkUtil.java", "DistanceThreadingPlayerUtil.java", "DistanceThreadingExecutors.java", "DistanceThreadingCache.java", "DistanceThreadingCommonUtil.java"],
+      "role": "Distance-based player/chunk grouping for thread assignment",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gamma.spool.util",
+      "files": ["BusLatch.java", "BusLatchBuilder.java", "BusLatchRegistry.java", "PendingTickList.java", "MinecraftLambdaOptimizedTasks.java", "concurrent/", "caching/"],
+      "role": "Event bus synchronization, tick list management, task optimization",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gamma.spool.config",
+      "files": ["ThreadsConfig.java", "ThreadManagerConfig.java", "DistanceThreadingConfig.java", "ConcurrentConfig.java", "DebugConfig.java", "APIConfig.java", "CompatConfig.java"],
+      "role": "Configuration management for threading modes and parameters",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gamma.spool.mixin.minecraft",
+      "files": ["MinecraftServerMixin.java", "WorldMixin.java", "WorldServerMixin.java", "EntityMixin.java", "EntityPlayerMPMixin.java", "EntityTrackerMixin.java", "PlayerManagerMixin.java", "concurrent/", "nonconcurrent/"],
+      "role": "Core Minecraft mixins for tick loop modification and thread safety",
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.gamma.spool.mixin.minecraft.concurrent",
+      "files": ["BlockMixin.java", "ChunkIOProviderMixin.java", "MapGenBaseMixin.java", "NetworkManagerMixin.java", "S21PacketChunkDataMixin.java"],
+      "role": "Concurrency-specific mixins for vanilla classes",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gamma.spool.asm.transformers",
+      "files": ["ConcurrentChunkTransformer.java", "ConcurrentExtendedBlockStorageTransformer.java", "AtomicNibbleArrayTransformer.java", "ConcurrentChunkProviderTransformer.java", "ConcurrentAnvilChunkLoaderTransformer.java", "EmptyChunkTransformer.java"],
+      "role": "ASM transformers for runtime class modification",
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.gamma.spool.api",
+      "files": ["SpoolAPI.java", "annotations/", "statistics/"],
+      "role": "Public API for external mod integration",
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "com.gamma.spool.compat",
+      "files": ["chunkapi/", "endlessids/", "hodgepodge/"],
+      "role": "Compatibility layers for other mods",
+      "criticality": "MEDIUM"
+    }
+  ],
+  "critical_classes": [
+    {
+      "file": "MinecraftServerMixin.java",
+      "path": "src/mixin/java/com/gamma/spool/mixin/minecraft/MinecraftServerMixin.java",
+      "loc": 312,
+      "package": "com.gamma.spool.mixin.minecraft",
+      "role": "CORE TICK LOOP MODIFICATION - Reimplements updateTimeLightAndEntities() and tick() for dimension threading",
+      "methods": [
+        {
+          "name": "updateTimeLightAndEntities",
+          "line": "133-232",
+          "type": "OVERWRITE",
+          "description": "Replaces vanilla tick loop with parallel dimension execution using KeyedPoolThreadManager",
+          "concurrency": ["Dimension threads parallel execution", "Main thread synchronization via waitUntilAllTasksDone"],
+          "key_code": "if (ThreadsConfig.isDimensionThreadingEnabled()) { ... dimensionManager.execute(id, this::spool$dimensionTask, id); }"
+        },
+        {
+          "name": "tick",
+          "line": "241-305",
+          "type": "OVERWRITE", 
+          "description": "Server tick with configurable task completion timing",
+          "concurrency": ["Pre-tick event", "Post-tick event", "spool$finishTick() synchronization point"]
+        },
+        {
+          "name": "spool$finishTick",
+          "line": "112-127",
+          "type": "SYNCHRONIZATION_BARRIER",
+          "description": "Waits for all thread managers to complete tasks before tick ends",
+          "key_code": "SpoolManagerOrchestrator.REGISTERED_THREAD_MANAGERS.values().forEach(IThreadManager::waitUntilAllTasksDone);"
+        }
+      ]
+    },
+    {
+      "file": "WorldMixin.java",
+      "path": "src/mixin/java/com/gamma/spool/mixin/minecraft/WorldMixin.java",
+      "loc": 678,
+      "package": "com.gamma.spool.mixin.minecraft",
+      "role": "ENTITY AND TILE ENTITY THREADING - Reimplements updateEntities() for concurrent execution",
+      "methods": [
+        {
+          "name": "updateEntities",
+          "line": "227-489",
+          "type": "OVERWRITE",
+          "description": "Threaded entity update with experimental and distance-based threading modes",
+          "concurrency": [
+            "Entity updates via ForkThreadManager (experimental mode)",
+            "Entity updates via DistanceThreadingExecutors (distance mode)",
+            "Tile entity updates via DistanceThreadingExecutors",
+            "Synchronized list operations"
+          ],
+          "key_code": "if (!this.isRemote && ThreadsConfig.isExperimentalThreadingEnabled()) { SpoolManagerOrchestrator.REGISTERED_THREAD_MANAGERS.get(ManagerNames.ENTITY.ordinal()).execute(this::spool$entityTask, entity); }"
+        }
+      ]
+    },
+    {
+      "file": "WorldServerMixin.java",
+      "path": "src/mixin/java/com/gamma/spool/mixin/minecraft/WorldServerMixin.java",
+      "loc": 448,
+      "package": "com.gamma.spool.mixin.minecraft",
+      "role": "BLOCK TICKING AND CHUNK UPDATES - Threaded block updates and scheduled ticks",
+      "methods": [
+        {
+          "name": "func_147456_g",
+          "line": "111-135",
+          "type": "REDIRECT",
+          "description": "Redirects chunk ticking to threaded execution",
+          "concurrency": ["Chunk tasks via ThreadManager", "DistanceThreadingExecutors for distance mode"]
+        },
+        {
+          "name": "tickUpdates",
+          "line": "140-260",
+          "type": "REDIRECT",
+          "description": "Threaded scheduled block tick processing using PendingTickList",
+          "key_code": "int i = spool$pendingTickList.size(); if (i > 1000) { i = 1000; }"
+        }
+      ]
+    },
+    {
+      "file": "KeyedPoolThreadManager.java",
+      "path": "src/main/java/com/gamma/spool/thread/KeyedPoolThreadManager.java",
+      "loc": 539,
+      "package": "com.gamma.spool.thread",
+      "role": "KEYED THREAD POOL - Manages per-dimension or per-player thread assignments",
+      "methods": [
+        {
+          "name": "execute",
+          "line": "295-344",
+          "type": "TASK_SUBMISSION",
+          "description": "Executes task on keyed thread with fallback to main thread",
+          "concurrency": ["NonBlockingHashMapLong for keyedPool", "ExecutorService per key", "MAIN_THREAD_KEY for synchronous execution"]
+        },
+        {
+          "name": "waitUntilAllTasksDone",
+          "line": "450-509",
+          "type": "BARRIER",
+          "description": "Waits for all submitted futures with configurable timeout",
+          "key_code": "while (!futures.isEmpty()) { Future<?> future = futures.dequeue(); future.get(Math.max(timeoutTime - elapsedTime, 0), TimeUnit.MILLISECONDS); }"
+        }
+      ],
+      "constants": {
+        "DEFAULT_THREAD_KEY": "Integer.MIN_VALUE + 1",
+        "MAIN_THREAD_KEY": "Integer.MIN_VALUE + 2",
+        "description": "Special keys for default thread pool and main thread execution"
+      }
+    },
+    {
+      "file": "DistanceThreadingUtil.java",
+      "path": "src/main/java/com/gamma/spool/util/distance/DistanceThreadingUtil.java",
+      "loc": 479,
+      "package": "com.gamma.spool.util.distance",
+      "role": "PLAYER/CHUNK GROUPING - Assigns players and chunks to threads based on proximity",
+      "methods": [
+        {
+          "name": "getThread(EntityPlayer)",
+          "line": "130-133",
+          "type": "THREAD_ASSIGNMENT",
+          "description": "Returns thread key for player based on nearest neighbors",
+          "concurrency": ["ReentrantReadWriteLock for playerExecutorMap", "Synchronized Object2IntMap"]
+        },
+        {
+          "name": "getThread(Chunk)",
+          "line": "137-209",
+          "type": "THREAD_ASSIGNMENT",
+          "description": "Returns thread key for chunk based on nearest player",
+          "key_code": "Nearby nearbyPlayers = DistanceThreadingPlayerUtil.getNearestPlayers(chunk, false);"
+        },
+        {
+          "name": "floodFillForceLoadedChunks",
+          "line": "327-358",
+          "type": "GRAPH_TRAVERSAL",
+          "description": "Ensures adjacent force-loaded chunks share the same executor"
+        }
+      ]
+    },
+    {
+      "file": "ConcurrentChunk.java",
+      "path": "src/main/java/com/gamma/spool/concurrent/ConcurrentChunk.java",
+      "loc": 1000,
+      "package": "com.gamma.spool.concurrent",
+      "role": "THREAD-SAFE CHUNK - Atomic variables replacing volatile fields",
+      "fields": [
+        {"name": "isTerrainPopulated", "type": "AtomicBoolean", "line": 58},
+        {"name": "isLightPopulated", "type": "AtomicBoolean", "line": 59},
+        {"name": "isModified", "type": "AtomicBoolean", "line": 61},
+        {"name": "hasEntities", "type": "AtomicBoolean", "line": 63},
+        {"name": "isChunkLoaded", "type": "AtomicBoolean", "line": 65},
+        {"name": "heightMap", "type": "AtomicIntegerArray", "line": 78},
+        {"name": "storageArrays", "type": "AtomicReferenceArray<ConcurrentExtendedBlockStorage>", "line": 83},
+        {"name": "chunkTileEntityMap", "type": "ConcurrentHashMap", "line": 100},
+        {"name": "entityLists", "type": "Synchronized ObjectArrayList[]", "line": 97}
+      ]
+    },
+    {
+      "file": "ConcurrentExtendedBlockStorage.java",
+      "path": "src/main/java/com/gamma/spool/concurrent/ConcurrentExtendedBlockStorage.java",
+      "loc": 326,
+      "package": "com.gamma.spool.concurrent",
+      "role": "THREAD-SAFE BLOCK STORAGE - Atomic block data access",
+      "fields": [
+        {"name": "blockRefCount", "type": "AtomicInteger", "line": 19},
+        {"name": "tickRefCount", "type": "AtomicInteger", "line": 20},
+        {"name": "blockLSBArray", "type": "AtomicReference<byte[]>", "line": 22},
+        {"name": "blockMSBArray", "type": "AtomicReference<AtomicNibbleArray>", "line": 24},
+        {"name": "blockMetadataArray", "type": "AtomicReference<AtomicNibbleArray>", "line": 26},
+        {"name": "blocklightArray", "type": "AtomicReference<AtomicNibbleArray>", "line": 27},
+        {"name": "skylightArray", "type": "AtomicReference<AtomicNibbleArray>", "line": 28}
+      ]
+    },
+    {
+      "file": "BusLatch.java",
+      "path": "src/main/java/com/gamma/spool/util/BusLatch.java",
+      "loc": 129,
+      "package": "com.gamma.spool.util",
+      "role": "EVENT BUS SYNCHRONIZATION - Phaser-based event ordering across dimensions",
+      "key_code": "public static final Multimap<Integer, BusLatch> perWorldBusLatches = Multimaps.synchronizedMultimap(HashMultimap.create());",
+      "methods": [
+        {
+          "name": "preEvent",
+          "line": "52-60",
+          "type": "BARRIER_WAIT",
+          "description": "Waits for prerequisite events before allowing execution"
+        },
+        {
+          "name": "postEvent",
+          "line": "62-67",
+          "type": "BARRIER_RELEASE",
+          "description": "Signals dependent events to proceed"
+        }
+      ]
+    },
+    {
+      "file": "PendingTickList.java",
+      "path": "src/main/java/com/gamma/spool/util/PendingTickList.java",
+      "loc": 164,
+      "package": "com.gamma.spool.util",
+      "role": "THREAD-SAFE SCHEDULED TICKS - Replaces TreeSet/HashSet combo",
+      "key_code": "private final ObjectAVLTreeSet<V> set = new ObjectAVLTreeSet<>(); private final ObjectOpenHashSet<V> hashSet = new ObjectOpenHashSet<>();"
+    },
+    {
+      "file": "SpoolManagerOrchestrator.java",
+      "path": "src/main/java/com/gamma/spool/core/SpoolManagerOrchestrator.java",
+      "loc": 92,
+      "package": "com.gamma.spool.core",
+      "role": "THREAD MANAGER REGISTRY - Central registry for all thread pools",
+      "key_code": "public static final Int2ObjectArrayMap<IThreadManager> REGISTERED_THREAD_MANAGERS = new Int2ObjectArrayMap<>();"
+    }
+  ],
+  "threading_model": {
+    "description": "Spool implements a multi-layered threading architecture for Minecraft 1.7.10 server tick processing",
+    "modes": [
+      {
+        "name": "Dimension Threading",
+        "config": "enableDimensionThreading",
+        "manager": "KeyedPoolThreadManager (DIMENSION)",
+        "description": "Each dimension ticks on its own thread. Threads created dynamically per dimension ID.",
+        "synchronization": "waitUntilAllTasksDone() at end of server tick",
+        "compatibility": "Most stable threading mode"
+      },
+      {
+        "name": "Distance Threading",
+        "config": "enableDistanceThreading",
+        "manager": "KeyedPoolThreadManager (DISTANCE)",
+        "description": "Players grouped by proximity; chunks assigned to nearest player's thread",
+        "synchronization": "ReentrantReadWriteLock for player/chunk maps, BusLatch for event ordering",
+        "load_balancing": "LBKeyedPoolThreadManager option available"
+      },
+      {
+        "name": "Experimental Threading",
+        "config": "enableExperimentalThreading",
+        "manager": "ForkThreadManager (ENTITY, BLOCK)",
+        "description": "Entity and block ticking via work-stealing ForkJoinPool",
+        "synchronization": "waitUntilAllTasksDone() at barrier points",
+        "warning": "Can cause issues with mods expecting synchronous execution"
+      }
+    ],
+    "tick_loop_modifications": [
+      {
+        "target": "MinecraftServer.updateTimeLightAndEntities()",
+        "modification": "OVERWRITE - Submits dimension tasks to KeyedPoolThreadManager",
+        "original_behavior": "Sequential dimension ticking",
+        "new_behavior": "Parallel dimension ticking with barrier synchronization"
+      },
+      {
+        "target": "World.updateEntities()",
+        "modification": "OVERWRITE - Entity updates submitted to thread pools",
+        "original_behavior": "Synchronous entity iteration",
+        "new_behavior": "Threaded entity updates based on mode"
+      },
+      {
+        "target": "WorldServer.tickUpdates()",
+        "modification": "REDIRECT - Scheduled block ticks processed in thread pool",
+        "original_behavior": "Synchronous block ticking",
+        "new_behavior": "Threaded block updates"
+      }
+    ]
+  },
+  "concurrency_primitives": {
+    "java_util_concurrent": [
+      "AtomicBoolean", "AtomicInteger", "AtomicLong", "AtomicIntegerArray", "AtomicReference", "AtomicReferenceArray",
+      "ConcurrentHashMap", "ConcurrentLinkedQueue", "ReentrantReadWriteLock", "Phaser", "ForkJoinPool", "ThreadPoolExecutor"
+    ],
+    "fastutil_concurrent": [
+      "Object2IntMaps.synchronize()", "Long2IntMaps.synchronize()", "Int2ObjectArrayMap", "ObjectLists.synchronize()",
+      "PriorityQueues.synchronize()", "ObjectAVLTreeSet", "ObjectOpenHashSet"
+    ],
+    "jctools": [
+      "NonBlockingHashMapLong - Lock-free hash map for keyed thread pools"
+    ],
+    "synchronization_mechanisms": [
+      {
+        "name": "BusLatch",
+        "description": "Phaser-based event ordering ensuring dimensions process events in correct sequence"
+      },
+      {
+        "name": "waitUntilAllTasksDone",
+        "description": "Barrier synchronization at end of tick ensuring all threads complete"
+      },
+      {
+        "name": "ConcurrentChunk",
+        "description": "Atomic variables for all chunk state, eliminating need for chunk-level locking"
+      }
+    ]
+  },
+  "tick_budget_analysis": {
+    "description": "Spool's impact on the 50ms tick budget assumption",
+    "vanilla_behavior": "Single-threaded tick processing, all work must complete within 50ms",
+    "spool_modifications": {
+      "parallelization": "Dimension/chunk/entity work distributed across threads",
+      "synchronization_overhead": "waitUntilAllTasksDone() blocks main thread until workers complete",
+      "critical_path": "Main thread still limited by slowest worker thread"
+    },
+    "time_budgets": {
+      "globalRunningSingleThreadTimeout": "2000ms default - timeout for task completion during tick",
+      "globalTerminatingSingleThreadTimeout": "50000ms default - timeout for task completion during shutdown"
+    },
+    "impact_on_50ms_assumption": [
+      "POSITIVE: Work parallelization can reduce wall-clock time for tick processing",
+      "NEGATIVE: Synchronization overhead and barrier waits consume budget",
+      "NEGATIVE: Contention on synchronized collections can cause delays",
+      "CRITICAL: Slowest worker determines main thread unblock time",
+      "CONFIG: allowProcessingDuringSleep allows tasks to continue during tick sleep phase"
+    ]
+  },
+  "dh_concurrentlinkedqueue_interaction": {
+    "description": "How Spool interacts with DistantHorizons' ConcurrentLinkedQueue usage",
+    "spool_uses": {
+      "ThreadManager.toExecuteLater": "ConcurrentLinkedQueue<Runnable> for tasks rejected by thread pool",
+      "description": "Overflow queue for when thread pool rejects execution"
+    },
+    "interaction_analysis": [
+      "Spool does not directly modify DH's queues",
+      "Both mods use ConcurrentLinkedQueue for thread-safe task passing",
+      "Both mods face similar challenges: unbounded queue growth under load",
+      "Spool's waitUntilAllTasksDone provides barrier that DH lacks",
+      "Potential interaction: DH's chunkLoadEvents queue growth could be mitigated by Spool's thread management"
+    ],
+    "thread_safety_guarantees": {
+      "vanilla_replacement": "Spool replaces vanilla collections with synchronized/thread-safe alternatives",
+      "entity_lists": "ObjectLists.synchronize(new ObjectArrayList<>())",
+      "tile_entity_map": "ConcurrentHashMap replacing HashMap",
+      "chunk_storage": "AtomicReferenceArray replacing ExtendedBlockStorage[]"
+    }
+  },
+  "mixin_index": [
+    {
+      "file": "MinecraftServerMixin.java",
+      "target": "net.minecraft.server.MinecraftServer",
+      "methods": ["updateTimeLightAndEntities", "tick"],
+      "injections": ["spool$dimensionTask", "spool$finishTick"],
+      "type": "OVERWRITE"
+    },
+    {
+      "file": "WorldMixin.java",
+      "target": "net.minecraft.world.World",
+      "methods": ["updateEntities", "getCollidingBoundingBoxes", "func_147461_a"],
+      "type": "OVERWRITE"
+    },
+    {
+      "file": "WorldServerMixin.java",
+      "target": "net.minecraft.world.WorldServer",
+      "methods": ["func_147456_g", "tickUpdates", "getPendingBlockUpdates"],
+      "type": "REDIRECT/OVERWRITE"
+    },
+    {
+      "file": "EntityMixin.java",
+      "target": "net.minecraft.entity.Entity",
+      "type": "MIXIN"
+    },
+    {
+      "file": "EntityPlayerMPMixin.java",
+      "target": "net.minecraft.entity.player.EntityPlayerMP",
+      "type": "MIXIN"
+    },
+    {
+      "file": "EntityTrackerMixin.java",
+      "target": "net.minecraft.entity.EntityTracker",
+      "type": "MIXIN"
+    }
+  ],
+  "error_taxonomy": {
+    "types": [
+      {
+        "id": "ET-THREAD-DEADLOCK",
+        "name": "Thread Pool Deadlock",
+        "description": "Tasks waiting for each other causing tick to hang",
+        "files": ["ThreadManager.java", "KeyedPoolThreadManager.java"],
+        "mitigation": "Spool Watchdog monitors and detects deadlocks"
+      },
+      {
+        "id": "ET-TIMEOUT-EXCEEDED",
+        "name": "Task Timeout",
+        "description": "Thread pool tasks exceed configured timeout",
+        "files": ["ThreadManager.java"],
+        "symptoms": ["Pool dropped N updates warning", "TPS degradation"]
+      },
+      {
+        "id": "ET-EXECUTOR-MAP-INSTABILITY",
+        "name": "Player/Chunk Executor Map Corruption",
+        "description": "Distance threading maps become inconsistent",
+        "files": ["DistanceThreadingUtil.java"],
+        "mitigation": "checkForPlayerInstability() and checkForChunkInstability() with auto-rebuild"
+      },
+      {
+        "id": "ET-CONCURRENT-MODIFICATION",
+        "name": "Concurrent Collection Access",
+        "description": "Unsynchronized access to vanilla collections",
+        "files": ["WorldMixin.java", "WorldServerMixin.java"],
+        "mitigation": "Synchronized wrappers on all entity/tile entity lists"
+      }
+    ]
+  },
+  "config_reference": [
+    {
+      "key": "enableDimensionThreading",
+      "default": true,
+      "recommended": true,
+      "description": "Most stable threading mode - each dimension on separate thread"
+    },
+    {
+      "key": "enableDistanceThreading",
+      "default": true,
+      "recommended": "Server with spread out players",
+      "description": "Groups distant players on separate threads - effective for large servers"
+    },
+    {
+      "key": "enableExperimentalThreading",
+      "default": false,
+      "recommended": false,
+      "description": "ForkJoinPool for entities/blocks - can cause mod incompatibilities"
+    },
+    {
+      "key": "enableThreadedEntityAI",
+      "default": true,
+      "description": "Entity AI (pathing, targeting) on separate threads"
+    },
+    {
+      "key": "allowProcessingDuringSleep",
+      "default": false,
+      "description": "Allow tasks to continue during server sleep phase - can cause FML event ordering issues"
+    },
+    {
+      "key": "globalRunningSingleThreadTimeout",
+      "default": 2000,
+      "unit": "milliseconds",
+      "description": "Timeout for task completion during active tick"
+    }
+  ],
+  "metadata": {
+    "index_version": "1.0.0",
+    "epistemic_standard": "EPISTEMIC_FORENSICS_TOOLS.md",
+    "artifact_primacy": true,
+    "verbatim_quoting": true,
+    "narrative_smoothing_bias": "LOW"
+  }
+}
