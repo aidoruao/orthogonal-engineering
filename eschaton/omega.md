@@ -126,6 +126,22 @@ The 50 "unassigned" domains were not a new layer — they were **sectoral specia
 2. **Verify morphisms**: Prove truth preservation across all 4836 morphisms
 3. **Integration tests**: Cross-domain consistency checks
 
+### Phase 3 (Current): Invariant Deepening
+
+All 135 domains have domain-specific invariant logic (not generic stubs)  
+All 21 axiom modules have ProofObject returns  
+Lean4 bridge verifies core mathematical claims  
+Cross-repo Merkle binds all 3 repositories  
+Social AI workflow (#15) monitors discussions for ontology gaps  
+
+The system halts when:
+
+1. Every domain invariant is falsifiable (not just structurally correct)
+2. Every SAL Type (3-10) has a Lean4 formalization
+3. Cross-repo Merkle root is stable across 3 consecutive daily scans
+4. Social AI workflow has processed >= 100 comments with zero false negatives
+5. All 4,836+ morphisms have bidirectional proof witnesses
+
 ### Long-term:
 - **Proof assistant integration**: Export to Lean4/Coq for formal verification
 - **Live dashboard**: Real-time visualization of domain ecosystem

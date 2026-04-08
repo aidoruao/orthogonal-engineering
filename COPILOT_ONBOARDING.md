@@ -2,7 +2,7 @@
 
 **Version:** 1.0  
 **Applies to:** GitHub Copilot, Claude, GPT, and any AI agent working in this repository  
-**Updated:** 2026-02-21  
+**Updated:** 2026-04-08  
 **Status:** ACTIVE — REQUIRED READING
 
 ---
