@@ -225,7 +225,7 @@ class NICSBackgroundCheckSystem:
         
         # Calculate business days elapsed
         days_elapsed = (datetime.now() - nics_check.submit_date).days
-        brady_eligible = days_eligible >= self.BRADY_TRANSFER_DAYS
+        brady_eligible = days_elapsed >= self.BRADY_TRANSFER_DAYS
         
         return {
             "brady_transfer_permitted": brady_eligible,
