@@ -6,8 +6,7 @@
  * 
  * Run: javac TickHandlerBenchmark.java && java TickHandlerBenchmark
  * 
- * Produces the profiler data DarkShadow44 requested in issue #51.
- * Measures tick handler performance at various queue depths.
+ * Measures tick handler performance at various queue depths and timing profiles.
  * 
  * Based on ForgeServerProxy.java lines 105-141 from commit 1abcd98.
  * 
@@ -17,16 +16,14 @@
  *     * isLimited=true tasks: check budget AFTER running (first task always runs)
  *     * isLimited=false tasks: skip budget check entirely (always run)
  * 
- * METHODOLOGY: Falsification Envelope (Popperian boundary search)
- * Instead of a single hardcoded timing, we sweep across DH's documented timing
- * profiles to find the critical threshold where the defect appears.
+ * METHODOLOGY: Parameterized sweep across documented compression timing profiles.
+ * Tests all queue depths against all documented operation times to identify
+ * which combinations exceed the 50ms tick budget.
  * 
- * CRITICAL THRESHOLD CALCULATION:
- *   - 50ms tick budget / queue_depth = max_time_per_event
- *   - At queue depth 30: threshold = 50ms / 30 = 1.67ms per event
- *   - DH's minimum documented operation: 3.25ms (LZ4 read)
- *   - Since 3.25ms > 1.67ms, the defect is PROVEN for ANY compression algorithm
- *     at queue depth 30+, regardless of actual task time.
+ * THRESHOLD CALCULATION:
+ *   threshold_ms = tick_budget_ms / queue_depth
+ *   Example: At queue depth 30, threshold = 50ms / 30 = 1.67ms per event
+ *   If an operation takes longer than the threshold, the tick budget is exceeded.
  */
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -42,7 +39,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * - Events processed vs remaining
  * - The impact of Loop 1 consuming unlimited time before Loop 2 starts
  * 
- * Uses ARTIFACT PRIMACY — all timing values come from DH's own documentation.
+ * All timing values are sourced from DH's published documentation.
  * 
  * No external dependencies. Pure Java 8+ standard library.
  */
@@ -70,8 +67,8 @@ public class TickHandlerBenchmark {
      * compression algorithm. Any operation using these algorithms will
      * take AT LEAST this long.
      * 
-     * ARTIFACT PRIMACY: Every number comes from DH's published docs,
-     * not from guesswork or single-machine measurement.
+     * Source: DH configuration documentation. These are documented minimum
+     * operation times, not empirical measurements from a specific machine.
      */
     enum TimingProfile {
         HASH_ONLY(0.001, "Hash-only (lower bound)"),
@@ -204,7 +201,7 @@ public class TickHandlerBenchmark {
      * Simulates processing a single chunk event.
      * Uses the current timing profile from DH's documented values.
      * 
-     * ARTIFACT PRIMACY: Timing comes from DH's own documentation, not guesswork.
+     * Timing values sourced from DH documentation.
      */
     private static void processChunkEvent(SimulatedChunkEvent event) {
         long workStart = System.nanoTime();
@@ -357,63 +354,61 @@ public class TickHandlerBenchmark {
     }
     
     /**
-     * Prints the falsification envelope analysis.
+     * Prints the threshold analysis.
      * Shows critical thresholds and which profiles exceed them.
      */
-    private static void printFalsificationAnalysis() {
+    private static void printThresholdAnalysis() {
         System.out.println("=".repeat(100));
-        System.out.println("FALSIFICATION ENVELOPE ANALYSIS (Popperian boundary search)");
+        System.out.println("THRESHOLD ANALYSIS");
         System.out.println("=".repeat(100));
         System.out.println();
         System.out.println("Critical Threshold Calculation:");
         System.out.println("  Formula: threshold_ms = tick_budget_ms / queue_depth");
         System.out.println("  Tick budget: 50ms (for 20 TPS target)");
         System.out.println();
-        System.out.println("  Queue Depth  |  Critical Threshold  |  Defect if timing > threshold");
+        System.out.println("  Queue Depth  |  Critical Threshold  |  Exceeds if timing > threshold");
         System.out.println("  -------------|----------------------|------------------------------");
         
         int[] criticalDepths = {10, 20, 30, 50, 100};
         for (int depth : criticalDepths) {
             double threshold = TICK_BUDGET_MS / (double) depth;
-            System.out.printf("  %-12d |  %-18.2f ms |  Any timing > %.2f ms causes defect%n", 
+            System.out.printf("  %-12d |  %-18.2f ms |  Any timing > %.2f ms exceeds budget%n", 
                 depth, threshold, threshold);
         }
         System.out.println();
         
         System.out.println("DH Documented Timing Profiles:");
-        System.out.println("  Profile              |  Time (ms)  |  Causes defect at depth");
+        System.out.println("  Profile              |  Time (ms)  |  Exceeds threshold at depth");
         System.out.println("  ---------------------|-------------|------------------------");
         
         for (TimingProfile profile : TimingProfile.values()) {
-            StringBuilder defectDepths = new StringBuilder();
+            StringBuilder exceedDepths = new StringBuilder();
             for (int depth : criticalDepths) {
                 double threshold = TICK_BUDGET_MS / (double) depth;
                 if (profile.ms > threshold) {
-                    if (defectDepths.length() > 0) defectDepths.append(", ");
-                    defectDepths.append(depth);
+                    if (exceedDepths.length() > 0) exceedDepths.append(", ");
+                    exceedDepths.append(depth);
                 }
             }
-            if (defectDepths.length() == 0) defectDepths.append("None (below all thresholds)");
+            if (exceedDepths.length() == 0) exceedDepths.append("None (below all thresholds)");
             
             System.out.printf("  %-20s |  %-10.3f  |  %s%n", 
-                profile.name(), profile.ms, defectDepths.toString());
+                profile.name(), profile.ms, exceedDepths.toString());
         }
         System.out.println();
         
-        // Key finding
+        // Summary
         double thresholdAt30 = TICK_BUDGET_MS / 30.0;
-        System.out.println("KEY FINDING:");
+        System.out.println("SUMMARY:");
         System.out.printf("  At queue depth 30: threshold = %.2f ms%n", thresholdAt30);
         System.out.printf("  DH minimum documented operation: %.2f ms (LZ4 read)%n", TimingProfile.LZ4_READ.ms);
         System.out.println();
-        System.out.println("  MATHEMATICAL PROOF:");
-        System.out.printf("    min(DH_timings) = %.2f ms%n", TimingProfile.LZ4_READ.ms);
-        System.out.printf("    threshold(30) = %.2f ms%n", thresholdAt30);
-        System.out.printf("    %.2f ms > %.2f ms%n", TimingProfile.LZ4_READ.ms, thresholdAt30);
-        System.out.println();
-        System.out.println("  CONCLUSION: The defect is PROVEN for queue depth >= 30.");
-        System.out.println("  DarkShadow44 cannot dismiss this as 'your machine is slow' because");
-        System.out.println("  the numbers come from DH's own documentation, not measurement.");
+        System.out.println("  RESULT:");
+        System.out.printf("    Minimum documented operation time (LZ4 read): %.2f ms%n", TimingProfile.LZ4_READ.ms);
+        System.out.printf("    Threshold at queue depth 30: %.2f ms%n", thresholdAt30);
+        System.out.printf("    %.2f ms exceeds %.2f ms threshold%n", TimingProfile.LZ4_READ.ms, thresholdAt30);
+        System.out.println("    At queue depth >= 30 with any compression algorithm,");
+        System.out.println("    total tick time exceeds 50ms budget.");
         System.out.println();
         System.out.println("=".repeat(100));
     }
@@ -424,7 +419,7 @@ public class TickHandlerBenchmark {
     public static void main(String[] args) {
         System.out.println("=".repeat(100));
         System.out.println("DistantHorizonsStandalone Tick Handler Benchmark");
-        System.out.println("Falsification Envelope Methodology (Artifact Primacy)");
+        System.out.println("Parameterized Timing Sweep");
         System.out.println("=".repeat(100));
         System.out.println();
         System.out.println("Java version: " + System.getProperty("java.version"));
@@ -439,9 +434,9 @@ public class TickHandlerBenchmark {
         
         // Print methodology
         System.out.println("METHODOLOGY:");
-        System.out.println("  1. Falsification Envelope: Find threshold where defect appears");
-        System.out.println("  2. Artifact Primacy: Use DH's own documented timing values");
-        System.out.println("  3. Parameterized Sweep: Test all documented compression profiles");
+        System.out.println("  1. Sweep all documented compression timing profiles");
+        System.out.println("  2. Test each profile against queue depths: 10, 20, 30, 50, 100, 1000, 10000");
+        System.out.println("  3. Report which combinations exceed tick budget");
         System.out.println();
         
         // Run benchmark for each timing profile
@@ -465,8 +460,8 @@ public class TickHandlerBenchmark {
             printResults(results);
         }
         
-        // Print the critical analysis
-        printFalsificationAnalysis();
+        // Print the threshold analysis
+        printThresholdAnalysis();
         
         // Exit with error code if LZ4_READ (minimum) causes defect at depth 30
         boolean defectProven = TimingProfile.LZ4_READ.ms > (TICK_BUDGET_MS / 30.0);

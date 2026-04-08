@@ -286,7 +286,7 @@ public class DhDiagnosticsCommand extends CommandBase {
             }
         } catch (Exception e) {
             // Reflection failed - queues will show as 0
-            // This is graceful degradation per DarkShadow44's style
+            // Graceful degradation: report zeros rather than crashing
         }
         
         return new QueueInfo(chunkSize, taskSize);

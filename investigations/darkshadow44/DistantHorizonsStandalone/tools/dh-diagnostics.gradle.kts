@@ -150,7 +150,7 @@ fun analyzeConfig(content: String): List<ConfigFinding> {
                     1024,
                     "Default creates ${formatNumber(area)} blocks² generation area per player. " +
                     "With 10 players: ${formatNumber(area * 10)} blocks². " +
-                    "This guarantees TPS degradation."
+                    "This exceeds recommended generation area thresholds."
                 )
             }
             settingName == "maxGenerationRequestDistance" && defaultValue >= 2048 -> {
@@ -304,7 +304,7 @@ fun writeReportToFile(findings: List<ConfigFinding>, file: File) {
         }
         
         appendLine("=".repeat(80))
-        appendLine("Mathematical Proof of Config Defect:")
+        appendLine("Configuration Impact Analysis:")
         appendLine("  Generation area per player = π × r²")
         // Find maxGenerationRequestDistance finding for accurate report
         val maxGenFinding = findings.find { it.setting == "maxGenerationRequestDistance" }
@@ -316,7 +316,7 @@ fun writeReportToFile(findings: List<ConfigFinding>, file: File) {
         } else {
             appendLine("  Large distance settings create excessive generation area per player.")
         }
-        appendLine("  This guarantees server tick time > 50ms, degrading TPS below 20.")
+        appendLine("  At this generation area, server tick time is expected to exceed 50ms.")
     })
 }
 
