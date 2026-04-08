@@ -1,4 +1,4 @@
-"""D_DISABILITYRIGHTS implementation — Disability Rights
+"""D_LICENSING implementation — Professional Licensing
 
 Layer: 3 (Regulatory)
 CardinalStrength: PREDICATIVE
@@ -11,24 +11,24 @@ from enum import Enum, auto
 from datetime import datetime
 from fractions import Fraction
 
-class DisabilityRightsStatus(Enum):
-    """Status for Disability Rights."""
+class LicensingStatus(Enum):
+    """Status for Professional Licensing."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 @dataclass
-class DisabilityRightsRecord:
-    """Record in Disability Rights."""
+class LicensingRecord:
+    """Record in Professional Licensing."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: DisabilityRightsStatus = DisabilityRightsStatus.PENDING
+    status: LicensingStatus = LicensingStatus.PENDING
 
-class DisabilityRightsComplianceChecker:
+class LicensingComplianceChecker:
     """Compliance checker."""
-    def check_compliance(self, record: DisabilityRightsRecord) -> Dict:
+    def check_compliance(self, record: LicensingRecord) -> Dict:
         return {
             "record_id": record.record_id,
-            "compliant": record.status == DisabilityRightsStatus.COMPLIANT,
+            "compliant": record.status == LicensingStatus.COMPLIANT,
             "status": record.status.name,
         }

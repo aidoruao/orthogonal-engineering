@@ -1,16 +1,16 @@
-"""D_CHILDWELFARE invariant checks."""
+"""D_ENVIRONMENTALPLANNING invariant checks."""
 
-from src.domains.d_child_welfare.implementation import (
-    ChildWelfareRecord,
-    ChildWelfareStatus,
-    ChildWelfareComplianceChecker,
+from src.domains.d_environmental_planning.implementation import (
+    EnvironmentalPlanningRecord,
+    EnvironmentalPlanningStatus,
+    EnvironmentalPlanningComplianceChecker,
 )
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = ChildWelfareComplianceChecker()
-    compliant = ChildWelfareRecord(record_id="T1", status=ChildWelfareStatus.COMPLIANT)
-    non_compliant = ChildWelfareRecord(record_id="T2", status=ChildWelfareStatus.NON_COMPLIANT)
+    checker = EnvironmentalPlanningComplianceChecker()
+    compliant = EnvironmentalPlanningRecord(record_id="T1", status=EnvironmentalPlanningStatus.COMPLIANT)
+    non_compliant = EnvironmentalPlanningRecord(record_id="T2", status=EnvironmentalPlanningStatus.NON_COMPLIANT)
     assert checker.check_compliance(compliant)["compliant"] is True
     assert checker.check_compliance(non_compliant)["compliant"] is False
     return True

@@ -1,4 +1,4 @@
-"""D_DISABILITYRIGHTS implementation — Disability Rights
+"""D_TRANSIT implementation — Public Transit
 
 Layer: 3 (Regulatory)
 CardinalStrength: PREDICATIVE
@@ -11,24 +11,24 @@ from enum import Enum, auto
 from datetime import datetime
 from fractions import Fraction
 
-class DisabilityRightsStatus(Enum):
-    """Status for Disability Rights."""
+class TransitStatus(Enum):
+    """Status for Public Transit."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 @dataclass
-class DisabilityRightsRecord:
-    """Record in Disability Rights."""
+class TransitRecord:
+    """Record in Public Transit."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: DisabilityRightsStatus = DisabilityRightsStatus.PENDING
+    status: TransitStatus = TransitStatus.PENDING
 
-class DisabilityRightsComplianceChecker:
+class TransitComplianceChecker:
     """Compliance checker."""
-    def check_compliance(self, record: DisabilityRightsRecord) -> Dict:
+    def check_compliance(self, record: TransitRecord) -> Dict:
         return {
             "record_id": record.record_id,
-            "compliant": record.status == DisabilityRightsStatus.COMPLIANT,
+            "compliant": record.status == TransitStatus.COMPLIANT,
             "status": record.status.name,
         }
