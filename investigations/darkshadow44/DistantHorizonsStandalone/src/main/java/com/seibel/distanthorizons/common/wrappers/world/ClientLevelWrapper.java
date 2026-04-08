@@ -1,0 +1,303 @@
+package com.seibel.distanthorizons.common.wrappers.world;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.WorldServer;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import com.seibel.distanthorizons.api.enums.worldGeneration.EDhApiLevelType;
+import com.seibel.distanthorizons.api.interfaces.render.IDhApiCustomRenderRegister;
+import com.seibel.distanthorizons.common.wrappers.block.BiomeWrapper;
+import com.seibel.distanthorizons.common.wrappers.block.BlockStateWrapper;
+import com.seibel.distanthorizons.common.wrappers.block.ClientBlockStateColorCache;
+import com.seibel.distanthorizons.common.wrappers.block.FakeBlockState;
+import com.seibel.distanthorizons.core.dataObjects.fullData.sources.FullDataSourceV2;
+import com.seibel.distanthorizons.core.dependencyInjection.SingletonInjector;
+import com.seibel.distanthorizons.core.level.*;
+import com.seibel.distanthorizons.core.level.IServerKeyedClientLevel;
+import com.seibel.distanthorizons.core.logging.DhLogger;
+import com.seibel.distanthorizons.core.logging.DhLoggerBuilder;
+import com.seibel.distanthorizons.core.pos.blockPos.DhBlockPos;
+import com.seibel.distanthorizons.core.wrapperInterfaces.block.IBlockStateWrapper;
+import com.seibel.distanthorizons.core.wrapperInterfaces.world.IBiomeWrapper;
+import com.seibel.distanthorizons.core.wrapperInterfaces.world.IClientLevelWrapper;
+import com.seibel.distanthorizons.core.wrapperInterfaces.world.IServerLevelWrapper;
+
+public class ClientLevelWrapper implements IClientLevelWrapper {
+
+    private static final DhLogger LOGGER = new DhLoggerBuilder().build();
+    private static final Map<WorldClient, WeakReference<ClientLevelWrapper>> LEVEL_WRAPPER_BY_CLIENT_LEVEL = Collections
+        .synchronizedMap(new WeakHashMap<>());
+
+    private static final IKeyedClientLevelManager KEYED_CLIENT_LEVEL_MANAGER = SingletonInjector.INSTANCE
+        .get(IKeyedClientLevelManager.class);
+
+    private static final Minecraft MINECRAFT = Minecraft.getMinecraft();
+
+    private final WorldClient level;
+    private final ConcurrentHashMap<FakeBlockState, ClientBlockStateColorCache> blockCache = new ConcurrentHashMap<>();
+
+    private BlockStateWrapper dirtBlockWrapper;
+    private IDhLevel dhLevel;
+
+    // =============//
+    // constructor //
+    // =============//
+
+    protected ClientLevelWrapper(WorldClient level) {
+        this.level = level;
+    }
+
+    // ===============//
+    // wrapper logic //
+    // ===============//
+
+    public static IClientLevelWrapper getWrapper(@NotNull WorldClient level) {
+        return getWrapper(level, false);
+    }
+
+    @Nullable
+    public static IClientLevelWrapper getWrapper(@Nullable WorldClient level, boolean bypassLevelKeyManager) {
+        if (!bypassLevelKeyManager) {
+            if (level == null) {
+                return null;
+            }
+
+            // used if the client is connected to a server that defines the currently loaded level
+            IServerKeyedClientLevel overrideLevel = KEYED_CLIENT_LEVEL_MANAGER.getServerKeyedLevel();
+            if (overrideLevel != null) {
+                return overrideLevel;
+            }
+        }
+
+        WeakReference<ClientLevelWrapper> wrapperRef = LEVEL_WRAPPER_BY_CLIENT_LEVEL.get(level);
+        if (wrapperRef != null) {
+            ClientLevelWrapper wrapper = wrapperRef.get();
+            if (wrapper != null) {
+                return wrapper;
+            }
+        }
+        ClientLevelWrapper wrapper = new ClientLevelWrapper(level);
+        LEVEL_WRAPPER_BY_CLIENT_LEVEL.put(level, new WeakReference<>(wrapper));
+        return wrapper;
+    }
+
+    @Nullable
+    @Override
+    public IServerLevelWrapper tryGetServerSideWrapper() {
+        try {
+            WorldServer[] serverLevels = MINECRAFT.getIntegratedServer().worldServers;
+
+            // attempt to find the server level with the same dimension type
+            // TODO this assumes only one level per dimension type, the SubDimensionLevelMatcher will need to be added
+            // for supporting multiple levels per dimension
+            ServerLevelWrapper foundLevelWrapper = null;
+
+            // TODO: Surely there is a more efficient way to write this code
+            for (WorldServer serverLevel : serverLevels) {
+                if (serverLevel.provider.dimensionId == this.level.provider.dimensionId) {
+                    foundLevelWrapper = ServerLevelWrapper.getWrapper(serverLevel);
+                    break;
+                }
+            }
+
+            return foundLevelWrapper;
+        } catch (Exception e) {
+            LOGGER.error("Failed to get server side wrapper for client level: " + this.level);
+            return null;
+        }
+    }
+
+    private ClientBlockStateColorCache createBlockColorCache(FakeBlockState block) {
+        return new ClientBlockStateColorCache(block, this);
+    }
+
+    private final Function<FakeBlockState, ClientBlockStateColorCache> cachedBlockColorCacheFunction = this::createBlockColorCache;
+
+    /** Clears cached biome tint colors on all cached block states for this level. */
+    public void clearBiomeColorCaches() {
+        for (ClientBlockStateColorCache cache : this.blockCache.values()) {
+            cache.clearBiomeColorCache();
+        }
+    }
+
+    /** Clears biome color caches across all active ClientLevelWrappers. */
+    public static void clearAllBiomeColorCaches() {
+        for (WeakReference<ClientLevelWrapper> wrapperRef : LEVEL_WRAPPER_BY_CLIENT_LEVEL.values()) {
+            ClientLevelWrapper wrapper = wrapperRef.get();
+            if (wrapper != null) {
+                wrapper.clearBiomeColorCaches();
+            }
+        }
+    }
+
+    // ====================//
+    // base level methods //
+    // ====================//
+
+    @Override
+    public int getBlockColor(DhBlockPos pos, IBiomeWrapper biome, FullDataSourceV2 fullDataSource,
+        IBlockStateWrapper blockWrapper) {
+        final ClientBlockStateColorCache blockColorCache = this.blockCache
+            .computeIfAbsent(((BlockStateWrapper) blockWrapper).blockState, cachedBlockColorCacheFunction);
+
+        return blockColorCache.getColor((BiomeWrapper) biome, pos, this);
+    }
+
+    @Override
+    public int getDirtBlockColor() {
+        if (this.dirtBlockWrapper == null) {
+            try {
+                this.dirtBlockWrapper = (BlockStateWrapper) BlockStateWrapper
+                    .deserialize(BlockStateWrapper.DIRT_RESOURCE_LOCATION_STRING, this);
+            } catch (IOException e) {
+                // shouldn't happen, but just in case
+                LOGGER.warn(
+                    "Unable to get dirt color with resource location ["
+                        + BlockStateWrapper.DIRT_RESOURCE_LOCATION_STRING
+                        + "] with level ["
+                        + this
+                        + "].",
+                    e);
+                return -1;
+            }
+        }
+
+        return this.getBlockColor(DhBlockPos.ZERO, BiomeWrapper.EMPTY_WRAPPER, null, this.dirtBlockWrapper);
+    }
+
+    @Override
+    public void clearBlockColorCache() {
+        this.blockCache.clear();
+        this.clearBiomeColorCaches();
+    }
+
+    @Override
+    public DimensionTypeWrapper getDimensionType() {
+        return DimensionTypeWrapper.getDimensionTypeWrapper(this.level.provider.dimensionId);
+    }
+
+    @Override
+    public String getDimensionName() {
+        return DimensionTypeWrapper.getDimensionTypeWrapper(this.level.provider.dimensionId)
+            .getName();
+    }
+
+    @Override
+    public long getHashedSeed() {
+        return this.level.getSeed();
+    } // TODO?
+
+    @Override
+    public String getDhIdentifier() {
+        return this.getHashedSeedEncoded() + "@" + this.getDimensionName();
+    }
+
+    @Override
+    public EDhApiLevelType getLevelType() {
+        return EDhApiLevelType.CLIENT_LEVEL;
+    }
+
+    public WorldClient getLevel() {
+        return this.level;
+    }
+
+    @Override
+    public boolean hasCeiling() {
+        return DimensionTypeWrapper.getDimensionTypeWrapper(this.level.provider.dimensionId)
+            .hasCeiling();
+    }
+
+    @Override
+    public boolean hasSkyLight() {
+        return DimensionTypeWrapper.getDimensionTypeWrapper(this.level.provider.dimensionId)
+            .hasSkyLight();
+    }
+
+    @Override
+    public int getMaxHeight() {
+        return this.level.getHeight();
+    }
+
+    @Override
+    public int getMinHeight() {
+        return 0;
+    }
+
+    @Override
+    public WorldClient getWrappedMcObject() {
+        return this.level;
+    }
+
+    @Override
+    public void onUnload() {
+        LEVEL_WRAPPER_BY_CLIENT_LEVEL.remove(this.level);
+        this.dhLevel = null;
+    }
+
+    @Override
+    public void setDhLevel(IDhLevel level) {
+        dhLevel = level;
+    }
+
+    @Override
+    public @Nullable IDhLevel getDhLevel() {
+        return dhLevel;
+    }
+
+    @Override
+    public File getDhSaveFolder() {
+        if (this.dhLevel == null) {
+            return null;
+        }
+
+        return this.dhLevel.getSaveStructure()
+            .getSaveFolder(this);
+    }
+
+    // ===================//
+    // generic rendering //
+    // ===================//
+
+    @Override
+    public IDhApiCustomRenderRegister getRenderRegister() {
+        if (this.dhLevel == null) {
+            return null;
+        }
+
+        return this.dhLevel.getGenericRenderer();
+    }
+
+    @Override
+    public Color getCloudColor(float tickDelta) {
+        Vec3 colorVec3 = this.level.getCloudColour(tickDelta);
+        return new Color((float) colorVec3.xCoord, (float) colorVec3.yCoord, (float) colorVec3.zCoord);
+    }
+
+    // ================//
+    // base overrides //
+    // ================//
+
+    @Override
+    public String toString() {
+        if (this.level == null) {
+            return "Wrapped{null}";
+        }
+
+        return "Wrapped{" + this.level.toString() + "@" + this.getDhIdentifier() + "}";
+    }
+
+}

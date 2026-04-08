@@ -1,0 +1,112 @@
+package com.gamma.spool.core;
+
+import java.util.concurrent.TimeUnit;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.gamma.spool.api.annotations.SkipSpoolASMChecks;
+import com.gamma.spool.config.DebugConfig;
+import com.gamma.spool.thread.ManagerNames;
+
+import it.unimi.dsi.fastutil.ints.Int2LongMap;
+import it.unimi.dsi.fastutil.ints.Int2LongMaps;
+import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
+
+@SkipSpoolASMChecks(SkipSpoolASMChecks.SpoolASMCheck.ALL)
+public class SpoolLogger {
+
+    public static final Logger logger = LogManager.getLogger("Spool");
+    private static final Int2LongMap lastLogTime = Int2LongMaps.synchronize(new Int2LongOpenHashMap());
+    private static final long DEFAULT_RATE_LIMIT = TimeUnit.SECONDS.toMillis(1);
+
+    public SpoolLogger() {}
+
+    public static void debug(String message, Object... args) {
+        if (DebugConfig.debugLogging) logger.info(message, args);
+    }
+
+    public static void debugWarn(String message, Object... args) {
+        if (DebugConfig.debugLogging) logger.warn(message, args);
+    }
+
+    public static void compatInfo(String message, Object... args) {
+        if (DebugConfig.compatLogging) logger.info("[Compat]: " + message, args);
+    }
+
+    public static void compatFatal(String message, Object... args) {
+        logger.fatal("[Compat]: " + message, args);
+    }
+
+    public static <T> void asmInfo(T that, String message, Object... args) {
+        if (DebugConfig.logASM) logger.info(
+            "[" + that.getClass()
+                .getSimpleName() + "]: " + message,
+            args);
+    }
+
+    public static void info(String message, Object... args) {
+        logger.info(message, args);
+    }
+
+    public static void warn(String message, Object... args) {
+        logger.warn(message, args);
+    }
+
+    public static void error(String message, Object... args) {
+        logger.error(message, args);
+    }
+
+    public static void error(Throwable t) {
+        logger.error("", t);
+    }
+
+    public static boolean debugRateLimited(String message, Object... args) {
+        if (DebugConfig.debugLogging) {
+            boolean canLog = canLog(message);
+            if (canLog) logger.debug(message, args);
+            return canLog;
+        }
+        return false;
+    }
+
+    public static boolean infoRateLimited(String message, Object... args) {
+        boolean canLog = canLog(message);
+        if (canLog) logger.info(message, args);
+        return canLog;
+    }
+
+    public static boolean warnRateLimited(String message, Object... args) {
+        boolean canLog = canLog(message);
+        if (canLog) logger.warn(message, args);
+        return canLog;
+    }
+
+    public static boolean warnRateLimited(String message, String managerName, Object... args) {
+        boolean canLog = canLog(message + managerName);
+        if (canLog) logger.warn(message, managerName, args);
+        return canLog;
+    }
+
+    public static boolean warnRateLimited(String message, ManagerNames managerName, Object... args) {
+        return warnRateLimited(message, managerName.getName(), args);
+    }
+
+    public static boolean errorRateLimited(String message, Object... args) {
+        boolean canLog = canLog(message);
+        if (canLog) logger.error(message, args);
+        return canLog;
+    }
+
+    private static boolean canLog(String message) {
+        long currentTime = System.currentTimeMillis();
+        long lastTime = lastLogTime.get(message.hashCode());
+
+        if (currentTime - lastTime >= DEFAULT_RATE_LIMIT) {
+            lastLogTime.put(message.hashCode(), currentTime);
+            return true;
+        }
+        return false;
+    }
+
+}

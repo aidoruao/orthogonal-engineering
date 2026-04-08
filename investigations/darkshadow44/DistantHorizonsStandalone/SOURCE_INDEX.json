@@ -1,0 +1,706 @@
+{
+  "repository": "DarkShadow44/DistantHorizonsStandalone",
+  "repository_url": "https://github.com/DarkShadow44/DistantHorizonsStandalone",
+  "commit": "1abcd988fd4d350795f34dd2e9f678c14ba6162f",
+  "commit_date": "2025-04-04",
+  "index_date": "2026-04-07",
+  "session": "Kimi Code Session #2, 1a, 4-7-26",
+  "methodology": "Epistemic Forensics - Artifact Primacy, Verbatim Quoting, Low Narrative Smoothing",
+  "census": {
+    "total_java_files": 601,
+    "total_loc": 84402,
+    "total_packages": 160,
+    "total_methods": 3605,
+    "total_error_paths": 839,
+    "total_log_statements": 471,
+    "total_error_log_calls": 283,
+    "total_mixin_annotations": 42,
+    "total_mixin_files": 13,
+    "total_enums": 56,
+    "total_concurrency_primitives": 283,
+    "total_constants": 902
+  },
+  "packages": [
+    {
+      "path": "com.seibel.distanthorizons.forge",
+      "files": ["ForgeMain.java", "ForgeServerProxy.java", "ForgeClientProxy.java", "AngelicaCompat.java", "GTCompat.java", "RPLECompat.java", "ForgePluginPacketSender.java", "IrisAccessor.java", "MixinEnvironmentFixer.java", "wrs/", "wrappers/"],
+      "role": "Forge mod entry point, proxy layer, mod compatibility",
+      "issues_mapped": ["#51", "#53", "#56", "#58", "#62", "#72"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.mixin",
+      "files": ["MixinFramebuffer.java", "MixinEntityRenderer.java", "MixinMinecraft.java", "MixinRenderGlobal.java", "MixinActiveRenderInfo.java", "MixinBiomeGenBase.java", "MixinBlock_SideFacingUnloadedChunk.java", "MixinChunkCache_SideFacingUnloaded.java", "MixinNetHandlerPlayClient.java", "MixinOptionsScreen.java", "MixinTesselator.java", "MixinTextureAtlasSprite.java", "MixinTextureMap.java"],
+      "role": "Mixin injection layer for vanilla Minecraft hooks",
+      "issues_mapped": ["#56", "#64", "#65", "#66", "#67"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.config",
+      "files": ["Config.java", "ConfigEntry.java", "ConfigCategory.java", "ConfigHandler.java", "types/", "eventHandlers/", "listeners/", "api/"],
+      "role": "Configuration system, config validation, defaults",
+      "issues_mapped": ["#51", "#50", "#40"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.generation",
+      "files": ["BatchGenerator.java", "IWorldGenerationProgressTracker.java", "WorldGenerationQueue.java"],
+      "role": "World generation orchestration and batch processing",
+      "issues_mapped": ["#40", "#51"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.common.wrappers.worldGeneration",
+      "files": ["BatchGenerationEnvironment.java", "InternalServerGenerator.java", "SingletonWorker.java", "UpdateManager.java", "HodgePodgeCompat.java", "WorldGenerationHandler.java", "WorldGeneratorState.java"],
+      "role": "World generation implementation, server-side chunk generation",
+      "issues_mapped": ["#40", "#51"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.render",
+      "files": ["LodQuadTree.java", "LodRenderer.java", "RenderBufferHandler.java", "renderer/"],
+      "role": "LOD rendering engine, quadtree management",
+      "issues_mapped": ["#64", "#65", "#66", "#67", "#69"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.common.render",
+      "files": ["openGl/", "RenderHelper.java"],
+      "role": "OpenGL rendering, shader management, framebuffer operations",
+      "issues_mapped": ["#56", "#64", "#65", "#66", "#67", "#69", "#20", "#30", "#31", "#59"],
+      "criticality": "CRITICAL"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.level",
+      "files": ["AbstractDhServerLevel.java", "AbstractDhLevel.java", "DhClientLevel.java", "DhServerLevel.java", "ServerLevelDelegator.java"],
+      "role": "Level/world management, server-client level abstraction",
+      "issues_mapped": ["#51", "#53", "#58"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.multiplayer",
+      "files": ["client/", "server/", "fullData/", "config/", "SessionConfig.java"],
+      "role": "Multiplayer networking, session management, data synchronization",
+      "issues_mapped": ["#51", "#53", "#58"],
+      "criticality": "HIGH"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.network",
+      "files": ["messages/", "exceptions/", "event/", "NetworkSession.java", "PluginChannelMessage.java"],
+      "role": "Network protocol, message handling, packet serialization",
+      "issues_mapped": ["#51", "#53"],
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "com.seibel.distanthorizons.core.util",
+      "files": ["ThreadPoolUtil.java", "StringUtil.java", "MathUtil.java", "ColorUtil.java", "objects/", "threading/", "delayedSaveCache/"],
+      "role": "Utility classes, threading, data structures",
+      "issues_mapped": [],
+      "criticality": "MEDIUM"
+    },
+    {
+      "path": "com.seibel.distanthorizons.api",
+      "files": ["DhApi.java", "interfaces/", "methods/", "enums/", "objects/"],
+      "role": "Public API for external mod integration",
+      "issues_mapped": ["#49", "#57"],
+      "criticality": "MEDIUM"
+    }
+  ],
+  "critical_classes": [
+    {
+      "file": "ForgeServerProxy.java",
+      "path": "src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java",
+      "loc": 306,
+      "package": "com.seibel.distanthorizons.forge",
+      "role": "Server-side event proxy handling all server events",
+      "methods": [
+        {
+          "name": "registerEvents",
+          "line": "54-63",
+          "type": "INITIALIZER",
+          "issues": [],
+          "error_paths": [],
+          "concurrency": ["main server thread"]
+        },
+        {
+          "name": "serverTickEvent",
+          "line": "105-141",
+          "type": "EVENT_HANDLER",
+          "issues": ["#51"],
+          "error_paths": ["unbounded chunkLoadEvents queue", "15ms deadline may exceed 50ms tick", "taskQueue processing without count limit"],
+          "concurrency": ["main server thread", "ConcurrentLinkedQueue access"],
+          "invariant_violations": ["IV-TICK-001: tick budget 15ms > 30% of 50ms"],
+          "fix_status": "PATCH_GENERATED"
+        },
+        {
+          "name": "serverLevelLoadEvent",
+          "line": "144-150",
+          "type": "EVENT_HANDLER",
+          "issues": ["#53"],
+          "error_paths": ["WorldServer cast without null check"],
+          "concurrency": ["main server thread"]
+        },
+        {
+          "name": "serverChunkLoadEvent",
+          "line": "163-175",
+          "type": "EVENT_HANDLER",
+          "issues": ["#51"],
+          "error_paths": ["chunkLoadEvents queue growth unbounded"],
+          "concurrency": ["main server thread", "ConcurrentLinkedQueue add"]
+        },
+        {
+          "name": "clickBlockEvent",
+          "line": "238-251",
+          "type": "EVENT_HANDLER",
+          "issues": ["#62"],
+          "error_paths": ["schedule task without timeout"],
+          "concurrency": ["main server thread"]
+        },
+        {
+          "name": "schedule",
+          "line": "255-260",
+          "type": "UTILITY",
+          "issues": [],
+          "error_paths": [],
+          "concurrency": ["ConcurrentLinkedQueue"]
+        }
+      ],
+      "fields": [
+        {"name": "chunkLoadEvents", "type": "ConcurrentLinkedQueue<ChunkLoadEvent>", "line": "101", "concurrency": "thread-safe queue"},
+        {"name": "taskQueue", "type": "ConcurrentLinkedQueue<ScheduledTask<?>>", "line": "253", "concurrency": "thread-safe queue"},
+        {"name": "chunksPendingResetByWorld", "type": "IdentityHashMap<World, LongOpenHashSet>", "line": "102", "concurrency": "requires synchronization"}
+      ]
+    },
+    {
+      "file": "ForgeMain.java",
+      "path": "src/main/java/com/seibel/distanthorizons/forge/ForgeMain.java",
+      "loc": 181,
+      "package": "com.seibel.distanthorizons.forge",
+      "role": "Main mod entry point and initializer",
+      "methods": [
+        {
+          "name": "init",
+          "line": "76-98",
+          "type": "INITIALIZER",
+          "issues": ["#56", "#53", "#62"],
+          "error_paths": ["mod compatibility check failures"],
+          "concurrency": ["FML initialization thread"]
+        },
+        {
+          "name": "dedicatedWorldLoadEvent",
+          "line": "105-110",
+          "type": "EVENT_HANDLER",
+          "issues": ["#53"],
+          "error_paths": [],
+          "concurrency": ["server thread"]
+        }
+      ],
+      "static_fields": [
+        {"name": "isHodgePodgeInstalled", "type": "boolean", "line": "62"},
+        {"name": "angelicaCompat", "type": "AngelicaCompat", "line": "64", "issues": ["#56"]},
+        {"name": "gtCompat", "type": "GTCompat", "line": "63"}
+      ]
+    },
+    {
+      "file": "MixinFramebuffer.java",
+      "path": "src/main/java/com/seibel/distanthorizons/mixin/MixinFramebuffer.java",
+      "loc": 79,
+      "package": "com.seibel.distanthorizons.mixin",
+      "role": "Framebuffer mixin for depth texture handling",
+      "methods": [
+        {
+          "name": "createDepthTexture",
+          "line": "31-52",
+          "type": "MIXIN_REDIRECT",
+          "issues": ["#56"],
+          "error_paths": ["GL calls during splash screen - GL context may not be ready"],
+          "concurrency": ["client render thread"],
+          "mixin_target": "Lnet/minecraft/client/renderer/OpenGlHelper;func_153185_f()I",
+          "fix_status": "PATCH_GENERATED"
+        },
+        {
+          "name": "bindDepthTexture",
+          "line": "57-63",
+          "type": "MIXIN_REDIRECT",
+          "issues": ["#56"],
+          "error_paths": ["GL30.glFramebufferTexture2D without context check"],
+          "concurrency": ["client render thread"]
+        }
+      ],
+      "annotations": ["@Mixin(Framebuffer.class)", "@Shadow", "@Redirect"]
+    },
+    {
+      "file": "Config.java",
+      "path": "src/main/java/com/seibel/distanthorizons/core/config/Config.java",
+      "loc": 2000,
+      "package": "com.seibel.distanthorizons.core.config",
+      "role": "Central configuration definition and defaults",
+      "critical_configs": [
+        {
+          "key": "Server.maxGenerationRequestDistance",
+          "line": "1744-1750",
+          "default": 4096,
+          "min": 256,
+          "max": 4096,
+          "issues": ["#51"],
+          "paradox": "PX-001: Config allows values that guarantee TPS degradation"
+        },
+        {
+          "key": "Common.WorldGenerator.generationMaxChunkRadius",
+          "line": "1378-1390",
+          "default": 0,
+          "min": 0,
+          "max": 2147483647,
+          "issues": ["#40", "#51"],
+          "note": "0 disables generation bounds"
+        },
+        {
+          "key": "Server.clientConnectionTimeoutInSeconds",
+          "line": "1732-1742",
+          "default": 120,
+          "issues": ["#53"]
+        }
+      ]
+    },
+    {
+      "file": "RenderHelper.java",
+      "path": "src/main/java/com/seibel/distanthorizons/RenderHelper.java",
+      "loc": 120,
+      "package": "com.seibel.distanthorizons",
+      "role": "Main rendering helper for LOD drawing",
+      "methods": [
+        {
+          "name": "drawLods",
+          "line": "21-42",
+          "type": "RENDER",
+          "issues": ["#56", "#64", "#65", "#66"],
+          "error_paths": ["GL state manipulation without Angelica", "GL_ALPHA_TEST disable/enable mismatch"],
+          "concurrency": ["client render thread"]
+        },
+        {
+          "name": "drawDeferredLods",
+          "line": "72-85",
+          "type": "RENDER",
+          "issues": ["#56", "#20", "#30"],
+          "error_paths": ["Early return when Angelica absent - deferred rendering disabled"]
+        }
+      ]
+    }
+  ],
+  "mixin_index": [
+    {
+      "file": "MixinFramebuffer.java",
+      "target": "net.minecraft.client.shader.Framebuffer",
+      "methods": ["createFramebuffer", "deleteFramebuffer"],
+      "injections": ["createDepthTexture", "bindDepthTexture", "oldBindStuff", "deleteDepthTexture"],
+      "issues": ["#56"]
+    },
+    {
+      "file": "MixinEntityRenderer.java",
+      "target": "net.minecraft.client.renderer.EntityRenderer",
+      "issues": ["#64", "#65"]
+    },
+    {
+      "file": "MixinMinecraft.java",
+      "target": "net.minecraft.client.Minecraft",
+      "issues": ["#56"]
+    },
+    {
+      "file": "MixinRenderGlobal.java",
+      "target": "net.minecraft.client.renderer.RenderGlobal",
+      "issues": ["#66", "#67"]
+    },
+    {
+      "file": "MixinActiveRenderInfo.java",
+      "target": "net.minecraft.client.renderer.ActiveRenderInfo"
+    },
+    {
+      "file": "MixinBiomeGenBase.java",
+      "target": "net.minecraft.world.biome.BiomeGenBase"
+    },
+    {
+      "file": "MixinBlock_SideFacingUnloadedChunk.java",
+      "target": "net.minecraft.block.Block"
+    },
+    {
+      "file": "MixinChunkCache_SideFacingUnloaded.java",
+      "target": "net.minecraft.world.ChunkCache"
+    },
+    {
+      "file": "MixinNetHandlerPlayClient.java",
+      "target": "net.minecraft.client.network.NetHandlerPlayClient",
+      "issues": ["#53"]
+    },
+    {
+      "file": "MixinOptionsScreen.java",
+      "target": "net.minecraft.client.gui.screen.OptionsScreen"
+    },
+    {
+      "file": "MixinTesselator.java",
+      "target": "net.minecraft.client.renderer.Tessellator"
+    },
+    {
+      "file": "MixinTextureAtlasSprite.java",
+      "target": "net.minecraft.client.texture.TextureAtlasSprite"
+    },
+    {
+      "file": "MixinTextureMap.java",
+      "target": "net.minecraft.client.texture.TextureMap"
+    }
+  ],
+  "error_taxonomy": {
+    "types": [
+      {
+        "id": "ET-GL-CONTEXT",
+        "name": "GL Context Corruption",
+        "description": "OpenGL calls on wrong thread or during splash screen before context is ready",
+        "issues": ["#56"],
+        "files": ["MixinFramebuffer.java", "RenderHelper.java"],
+        "terminal_root": true,
+        "symptoms": ["Black screen", "Crash on startup", "GL_INVALID_OPERATION"]
+      },
+      {
+        "id": "ET-TICK-BUDGET",
+        "name": "Tick Budget Exhaustion",
+        "description": "serverTickEvent exceeds 50ms tick budget, causing TPS degradation",
+        "issues": ["#51", "#50"],
+        "files": ["ForgeServerProxy.java"],
+        "terminal_root": true,
+        "symptoms": ["TPS drops below 20", "Server lag", "Timeout disconnects"]
+      },
+      {
+        "id": "ET-QUEUE-UNBOUNDED",
+        "name": "Unbounded Queue Growth",
+        "description": "Queue grows without limit, consuming memory and processing time",
+        "issues": ["#51"],
+        "files": ["ForgeServerProxy.java"],
+        "terminal_root": false,
+        "cascade_of": "ET-TICK-BUDGET",
+        "symptoms": ["Memory pressure", "GC pressure", "Tick time increase"]
+      },
+      {
+        "id": "ET-NULL-DEREF",
+        "name": "Null Pointer in Event Handler",
+        "description": "Missing null checks in server event handlers",
+        "issues": ["#62", "#53"],
+        "files": ["ForgeServerProxy.java", "ForgeMain.java"],
+        "terminal_root": false,
+        "cascade_of": "ET-INIT-RACE",
+        "symptoms": ["NullPointerException", "Server crash"]
+      },
+      {
+        "id": "ET-INIT-RACE",
+        "name": "Initialization Race Condition",
+        "description": "Component accessed before initialization complete",
+        "issues": ["#53", "#62", "#72"],
+        "files": ["ForgeMain.java", "ForgeServerProxy.java"],
+        "terminal_root": true,
+        "symptoms": ["NullPointerException", "Incomplete setup"]
+      },
+      {
+        "id": "ET-CONFIG-PARADOX",
+        "name": "Configuration Value Paradox",
+        "description": "Config allows values that guarantee system degradation",
+        "issues": ["#51", "#40"],
+        "files": ["Config.java"],
+        "terminal_root": true,
+        "symptoms": ["TPS degradation", "Excessive memory use", "Unbounded generation"]
+      },
+      {
+        "id": "ET-RENDER-FAILURE",
+        "name": "Rendering Pipeline Failure",
+        "description": "OpenGL state mismatch causing rendering artifacts",
+        "issues": ["#64", "#65", "#66", "#67", "#69"],
+        "files": ["RenderHelper.java", "MixinEntityRenderer.java", "MixinRenderGlobal.java"],
+        "terminal_root": false,
+        "cascade_of": "ET-GL-CONTEXT",
+        "symptoms": ["Visual artifacts", "Missing LODs", "Z-fighting"]
+      },
+      {
+        "id": "ET-NETWORK-TIMEOUT",
+        "name": "Network Timeout",
+        "description": "Client-server communication exceeds timeout threshold",
+        "issues": ["#53", "#58"],
+        "files": ["ForgeServerProxy.java", "core/network/", "core/multiplayer/"],
+        "terminal_root": false,
+        "cascade_of": "ET-TICK-BUDGET",
+        "symptoms": ["Disconnected", "Connection timeout", "Lag"]
+      }
+    ]
+  },
+  "issue_type_taxonomy": {
+    "CRASH": ["#56", "#62", "#72"],
+    "PERFORMANCE": ["#51", "#50"],
+    "RENDERING": ["#64", "#65", "#66", "#67", "#69", "#31", "#30", "#20", "#59", "#52", "#42", "#47"],
+    "SERVER": ["#53", "#58"],
+    "COMMANDS": ["#49", "#57"],
+    "GENERATION": ["#40"],
+    "BY_DESIGN": ["#73"],
+    "FEATURE_REQUEST": ["#32", "#58", "#57"]
+  },
+  "causal_chains": [
+    {
+      "id": "CC-001",
+      "issue": "#51",
+      "chain": [
+        {"level": 0, "type": "TERMINAL_ROOT", "entity": "config: maxGenerationRequestDistance=4096", "description": "52.7M blocks² per player - no upper bound validation warning"},
+        {"level": 1, "type": "CASCADE", "entity": "ForgeServerProxy.serverTickEvent unbounded queue", "description": "chunkLoadEvents fills faster than it drains - ConcurrentLinkedQueue unlimited growth"},
+        {"level": 2, "type": "CASCADE", "entity": "15ms time budget (line 124)", "description": "30% of 50ms tick consumed by DH processing alone"},
+        {"level": 3, "type": "CASCADE", "entity": "taskQueue processing without count limit", "description": "while(!taskQueue.isEmpty()) may never terminate within budget"},
+        {"level": 4, "type": "CASCADE", "entity": "Z_STD compression 15.13ms writes", "description": "single write can exceed 15ms budget"},
+        {"level": 5, "type": "SYMPTOM", "entity": "TPS drops below 20", "description": "user-visible lag, potential disconnects"}
+      ],
+      "ontological_root": "Config distance settings have no upper bound validation or performance warning",
+      "falsification": "If queue is capped at 20 events AND budget reduced to 5ms, does TPS stabilize at 20 even with 4096-block config?",
+      "countermeasures": ["CM-001", "CM-003"]
+    },
+    {
+      "id": "CC-002",
+      "issue": "#56",
+      "chain": [
+        {"level": 0, "type": "TERMINAL_ROOT", "entity": "MixinFramebuffer.createDepthTexture executes during splash screen", "description": "GL context may not be fully initialized during FML splash"},
+        {"level": 1, "type": "CASCADE", "entity": "GL11.glBindTexture + GL11.glTexImage2D", "description": "OpenGL calls without context readiness check"},
+        {"level": 2, "type": "CASCADE", "entity": "GL state corruption", "description": "Frame buffer initialization fails"},
+        {"level": 3, "type": "SYMPTOM", "entity": "Black screen then crash", "description": "User sees black screen followed by crash"}
+      ],
+      "ontological_root": "Mixin injection during splash screen phase without context readiness guard",
+      "falsification": "If splash screen check is added, does black screen issue resolve on affected systems?",
+      "countermeasures": ["CM-002"]
+    },
+    {
+      "id": "CC-003",
+      "issue": "#53",
+      "chain": [
+        {"level": 0, "type": "TERMINAL_ROOT", "entity": "Server initialization race condition", "description": "Components accessed before full initialization"},
+        {"level": 1, "type": "CASCADE", "entity": "serverLevelLoadEvent WorldServer cast", "description": "Cast without instanceof validation"},
+        {"level": 2, "type": "CASCADE", "entity": "NullPointerException or ClassCastException", "description": "Exception in event handler"},
+        {"level": 3, "type": "SYMPTOM", "entity": "Server crash or player disconnect", "description": "Visible server instability"}
+      ],
+      "ontological_root": "Server event handlers assume initialization state without validation",
+      "falsification": "If all casts have validation, does server stability improve?",
+      "countermeasures": ["CM-004"]
+    },
+    {
+      "id": "CC-004",
+      "issue": "#40",
+      "chain": [
+        {"level": 0, "type": "TERMINAL_ROOT", "entity": "generationMaxChunkRadius default 0 (unbounded)", "description": "No generation bounds by default"},
+        {"level": 1, "type": "CASCADE", "entity": "BatchGenerationEnvironment unbounded generation", "description": "Generation continues indefinitely"},
+        {"level": 2, "type": "CASCADE", "entity": "Disk and memory pressure", "description": "Unbounded storage consumption"},
+        {"level": 3, "type": "SYMPTOM", "entity": "Excessive world file size", "description": "User reports massive storage use"}
+      ],
+      "ontological_root": "Default config allows unbounded generation without explicit user opt-in",
+      "falsification": "If default is changed to 128 chunks, does storage issue resolve?",
+      "countermeasures": ["CM-005"]
+    }
+  ],
+  "paradoxes": [
+    {
+      "id": "PX-001",
+      "description": "DH config allows values (maxGenerationRequestDistance=4096) that mathematically guarantee TPS degradation, but provides no validation warning or performance safeguard",
+      "issues": ["#51"],
+      "type": "DESIGN_PARADOX",
+      "severity": "HIGH"
+    },
+    {
+      "id": "PX-002",
+      "description": "MixinFramebuffer executes GL operations during splash screen phase, but splash screen is not DH's responsibility and GL context may not be ready",
+      "issues": ["#56"],
+      "type": "BOUNDARY_PARADOX",
+      "severity": "CRITICAL"
+    },
+    {
+      "id": "PX-003",
+      "description": "ForgeServerProxy.serverTickEvent uses time budget (15ms) instead of count limit, but time measurement doesn't account for system load variation",
+      "issues": ["#51", "#50"],
+      "type": "ASSUMPTION_PARADOX",
+      "severity": "MEDIUM"
+    },
+    {
+      "id": "PX-004",
+      "description": "RenderHelper.drawDeferredLods() returns early when Angelica absent, completely disabling deferred rendering without user notification",
+      "issues": ["#56"],
+      "type": "FEATURE_PARADOX",
+      "severity": "MEDIUM"
+    }
+  ],
+  "countermeasures": [
+    {
+      "id": "CM-001",
+      "for_error": "ET-TICK-BUDGET",
+      "type": "BUDGET_REDUCTION",
+      "description": "Reduce tick handler time budget from 15ms to 5ms (10% of 50ms tick)",
+      "file": "ForgeServerProxy.java",
+      "line": "124",
+      "patch_status": "GENERATED",
+      "patch_file": "0001-issue51-tick-handler-fix.patch"
+    },
+    {
+      "id": "CM-002",
+      "for_error": "ET-GL-CONTEXT",
+      "type": "SPLASH_GUARD",
+      "description": "Check isSplashScreenActive() before executing GL operations in MixinFramebuffer",
+      "file": "MixinFramebuffer.java",
+      "line": "31-52",
+      "patch_status": "GENERATED",
+      "patch_file": "0001-test.patch"
+    },
+    {
+      "id": "CM-003",
+      "for_error": "ET-QUEUE-UNBOUNDED",
+      "type": "QUEUE_CAP",
+      "description": "Cap chunk events processed per tick to 20 with counter in serverTickEvent loop",
+      "file": "ForgeServerProxy.java",
+      "line": "108-121",
+      "patch_status": "GENERATED",
+      "patch_file": "0001-issue51-tick-handler-fix.patch"
+    },
+    {
+      "id": "CM-004",
+      "for_error": "ET-NULL-DEREF",
+      "type": "VALIDATION",
+      "description": "Add null checks and instanceof validation in server event handlers",
+      "file": "ForgeServerProxy.java",
+      "line": "144-150, 163-175",
+      "patch_status": "NOT_GENERATED"
+    },
+    {
+      "id": "CM-005",
+      "for_error": "ET-CONFIG-PARADOX",
+      "type": "VALIDATION",
+      "description": "Add config validation warning for values >2048 blocks and recommended limits",
+      "file": "Config.java",
+      "line": "1744-1750",
+      "patch_status": "NOT_GENERATED"
+    }
+  ],
+  "config_reference": [
+    {
+      "key": "Server.maxGenerationRequestDistance",
+      "default": 4096,
+      "mrfuzzihead_value": 4096,
+      "recommended_value": 1024,
+      "min": 256,
+      "max": 4096,
+      "issues": ["#51"],
+      "description": "Distance allowed to generate around player - high values cause TPS lag"
+    },
+    {
+      "key": "Common.WorldGenerator.generationMaxChunkRadius",
+      "default": 0,
+      "recommended_value": 128,
+      "min": 0,
+      "max": 2147483647,
+      "issues": ["#40", "#51"],
+      "description": "Max radius for world generation (0=unbounded)"
+    },
+    {
+      "key": "Client.Advanced.Graphics.Quality.lodChunkRenderDistanceRadius",
+      "default": 256,
+      "min": 32,
+      "max": 4096,
+      "issues": ["#64", "#65"],
+      "description": "LOD render distance radius in chunks"
+    },
+    {
+      "key": "Server.clientConnectionTimeoutInSeconds",
+      "default": 120,
+      "issues": ["#53"],
+      "description": "Timeout for client connections"
+    }
+  ],
+  "investigation_status": {
+    "total_issues": 25,
+    "batches": [
+      {"batch": 1, "issues": ["#40", "#51", "#53", "#56", "#62", "#72", "#73"], "status": "COMPLETED", "corrected": ["#51"]},
+      {"batch": 2, "issues": ["#42", "#44", "#64", "#65", "#66", "#67", "#69"], "status": "COMPLETED"},
+      {"batch": 3, "issues": ["#20", "#30", "#31", "#49", "#50", "#52", "#59"], "status": "COMPLETED"},
+      {"batch": 4, "issues": ["#32", "#47", "#57", "#58"], "status": "COMPLETED"}
+    ],
+ "corrected_analyses": ["#51", "#56"]
+  },
+  "cross_issue_patterns": [
+    {
+      "id": "PATTERN-1",
+      "name": "Config Distance Cascade",
+      "description": "High distance config values cause cascading performance issues",
+      "issues": ["#40", "#51", "#50"],
+      "terminal_root": "config distance validation"
+    },
+    {
+      "id": "PATTERN-2",
+      "name": "GL Context Initialization Race",
+      "description": "OpenGL operations during early initialization cause crashes",
+      "issues": ["#56", "#64", "#65"],
+      "terminal_root": "splash screen GL readiness"
+    },
+    {
+      "id": "PATTERN-3",
+      "name": "Server Event Handler Validation Gap",
+      "description": "Missing null/state validation in server event handlers",
+      "issues": ["#53", "#58", "#62"],
+      "terminal_root": "event handler validation"
+    },
+    {
+      "id": "PATTERN-4",
+      "name": "Unbounded Queue Growth",
+      "description": "ConcurrentLinkedQueue without size limits causes memory pressure",
+      "issues": ["#51"],
+      "terminal_root": "queue size management"
+    }
+  ],
+  "falsification_tests": [
+    {
+      "id": "F-DH-001",
+      "name": "Tick Budget Test",
+      "description": "serverTickEvent completes within 15ms under load",
+      "assumption": "Tick handler respects time budget",
+      "falsifies_if": "Tick handler exceeds 15ms with >20 chunk events",
+      "status": "FAILED",
+      "related_issue": "#51"
+    },
+    {
+      "id": "F-DH-002",
+      "name": "GL Context Readiness Test",
+      "description": "No GL calls execute during splash screen phase",
+      "assumption": "MixinFramebuffer checks context readiness",
+      "fails_if": "GL calls execute before splash screen completes",
+      "status": "FAILED",
+      "related_issue": "#56"
+    },
+    {
+      "id": "F-DH-003",
+      "name": "Config Validation Test",
+      "description": "Config values >2048 trigger warning log",
+      "assumption": "Config has performance warnings",
+      "fails_if": "No warning for aggressive config values",
+      "status": "FAILED",
+      "related_issue": "#51"
+    },
+    {
+      "id": "F-DH-004",
+      "name": "Queue Bound Test",
+      "description": "Chunk event queue has bounded size",
+      "assumption": "Queue cannot grow indefinitely",
+      "fails_if": "Queue grows beyond 1000 entries",
+      "status": "FAILED",
+      "related_issue": "#51"
+    },
+    {
+      "id": "F-DH-005",
+      "name": "Z_STD Thread Test",
+      "description": "Z_STD write does not execute on tick thread",
+      "assumption": "Compression is off-thread",
+      "fails_if": "Compression blocks tick thread >5ms",
+      "status": "UNKNOWN",
+      "related_issue": "#51"
+    }
+  ],
+  "metadata": {
+    "index_version": "1.0.0",
+    "epistemic_standard": "EPISTEMIC_FORENSICS_TOOLS.md",
+    "artifact_primacy": true,
+    "verbatim_quoting": true,
+    "narrative_smoothing_bias": "LOW"
+  }
+}
