@@ -1,6 +1,6 @@
 """D_AGRICULTURE domain definition — Agriculture
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_AGRICULTURE"
 DOMAIN_NAME = "Agriculture"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['precision-farming', 'irrigation', 'livestock']

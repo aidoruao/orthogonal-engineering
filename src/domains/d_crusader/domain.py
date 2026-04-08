@@ -1,6 +1,6 @@
 """D_CRUSADER domain definition — Crusader Fly-Control
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_CRUSADER"
 DOMAIN_NAME = "Crusader Fly-Control"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['UV-safety', 'spore-containment', 'detection-accuracy', 'witness']

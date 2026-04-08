@@ -1,6 +1,6 @@
 """D_BLUECOLLAR domain definition — Blue-Collar / Trades
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_BLUECOLLAR"
 DOMAIN_NAME = "Blue-Collar / Trades"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['worker-safety', 'field-service', 'logistics', 'manufacturing']

@@ -1,6 +1,6 @@
 """D_NONCREATIVE domain definition — Non-Creative / Deterministic
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_NONCREATIVE"
 DOMAIN_NAME = "Non-Creative / Deterministic"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['batch-processing', 'compression', 'data-format-conversion']

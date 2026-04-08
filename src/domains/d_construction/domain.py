@@ -1,6 +1,6 @@
 """D_CONSTRUCTION domain definition — Construction
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_CONSTRUCTION"
 DOMAIN_NAME = "Construction"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['BIM', 'structural-analysis', 'site-safety']

@@ -1,6 +1,6 @@
 """D_NECESSITY domain definition — Necessity / Infrastructure
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_NECESSITY"
 DOMAIN_NAME = "Necessity / Infrastructure"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['power-grid', 'water-treatment', 'telecom', 'food-supply']

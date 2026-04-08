@@ -1,6 +1,6 @@
 """D_ENERGY domain definition — Energy
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_ENERGY"
 DOMAIN_NAME = "Energy"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['smart-grid', 'demand-response', 'renewable']

@@ -1,6 +1,6 @@
 """D_ROBOTICS domain definition — Robotics
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_ROBOTICS"
 DOMAIN_NAME = "Robotics"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['kinematics', 'collision-avoidance', 'ROS']

@@ -1,6 +1,6 @@
 """D_AUTOMOTIVE domain definition — Automotive
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_AUTOMOTIVE"
 DOMAIN_NAME = "Automotive"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['AUTOSAR', 'ISO-26262', 'OTA', 'CAN-bus']

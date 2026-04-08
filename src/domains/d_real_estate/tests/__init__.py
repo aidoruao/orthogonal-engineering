@@ -1,1 +1,1 @@
-# Tests for d_real_estate
+# Tests for D_REAL_ESTATE domain

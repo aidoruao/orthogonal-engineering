@@ -1,6 +1,6 @@
 """D_GAMEMODS domain definition — Video Game Mods
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_GAMEMODS"
 DOMAIN_NAME = "Video Game Mods"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['ASI-loader', 'DLL-injection', 'version-identity', 'mod-conflict']

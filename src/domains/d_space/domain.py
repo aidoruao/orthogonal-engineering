@@ -1,6 +1,6 @@
 """D_SPACE domain definition — Space Systems
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_SPACE"
 DOMAIN_NAME = "Space Systems"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['NASA-cFS', 'embedded-RTOS', 'static-analysis', 'memory-safety']

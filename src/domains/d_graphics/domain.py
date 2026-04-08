@@ -1,6 +1,6 @@
 """D_GRAPHICS domain definition — Graphics & Shaders
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_GRAPHICS"
 DOMAIN_NAME = "Graphics & Shaders"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['rendering', 'GPU', 'shader-compilation', 'backend-equivalence', 'coordinate-transform', 'dynamic-state', 'mixin-interception', 'scissor-pipeline']

@@ -1,6 +1,6 @@
 """D_AEROSPACE domain definition — Aerospace
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_AEROSPACE"
 DOMAIN_NAME = "Aerospace"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['DO-178C', 'avionics', 'structural-health']

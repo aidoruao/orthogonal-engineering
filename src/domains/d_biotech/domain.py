@@ -1,6 +1,6 @@
 """D_BIOTECH domain definition — Biotechnology
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_BIOTECH"
 DOMAIN_NAME = "Biotechnology"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['sequencing', 'lab-automation', 'biosafety']

@@ -1,6 +1,6 @@
 """D_CREATIVE domain definition — Creative / Generative
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_CREATIVE"
 DOMAIN_NAME = "Creative / Generative"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['AI-art', 'procedural-generation', 'music-synthesis']

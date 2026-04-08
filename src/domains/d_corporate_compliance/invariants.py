@@ -30,12 +30,12 @@ def check_annual_filing_requirements_met() -> bool:
     """
     manager = AnnualFilingManager()
     
-    # Complete filing
+    # Complete filing (use far future deadline so test doesn't expire)
     complete_filing = manager.create_filing(
         filing_id="F001",
         corporation_id="C001",
         filing_type=FilingType.ANNUAL_REPORT_10K,
-        fiscal_year_end=datetime(2023, 12, 31),
+        fiscal_year_end=datetime(2099, 12, 31),
     )
     complete_filing.financial_statements_included = True
     complete_filing.auditor_report_included = True
@@ -64,7 +64,7 @@ def check_annual_filing_requirements_met() -> bool:
         filing_id="F002",
         corporation_id="C002",
         filing_type=FilingType.ANNUAL_REPORT_10K,
-        fiscal_year_end=datetime(2023, 12, 31),
+        fiscal_year_end=datetime(2099, 12, 31),
     )
     # Missing some required components
     incomplete_filing.financial_statements_included = True

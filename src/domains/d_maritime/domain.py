@@ -1,6 +1,6 @@
 """D_MARITIME domain definition — Maritime
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_MARITIME"
 DOMAIN_NAME = "Maritime"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['AIS', 'navigation', 'IMO-2021-cyber']

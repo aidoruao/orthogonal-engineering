@@ -1,6 +1,6 @@
 """D_BORING domain definition — Boring / Commodity
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_BORING"
 DOMAIN_NAME = "Boring / Commodity"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['CRUD', 'ETL', 'report-generation', 'data-format-conversion']

@@ -1,6 +1,6 @@
 """D_CHEMICAL domain definition — Chemical
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_CHEMICAL"
 DOMAIN_NAME = "Chemical"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['reactor-control', 'process-safety', 'hazmat']

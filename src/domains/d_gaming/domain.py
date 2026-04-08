@@ -1,6 +1,6 @@
 """D_GAMING domain definition — Gaming
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_GAMING"
 DOMAIN_NAME = "Gaming"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['multiplayer', 'anti-cheat', 'save-files', 'network-safety']

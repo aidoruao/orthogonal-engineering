@@ -106,7 +106,7 @@ class MasterPlan:
         """Compute SHA-256 hash of plan content."""
         content = f"{self.plan_id}:{self.version}:{self.jurisdiction}:{len(self.elements)}"
         for element in self.elements:
-            content += f":{element.element_id}"
+            content += f":{element.element_id}:{element.description}"
         return hashlib.sha256(content.encode()).hexdigest()
     
     def verify_integrity(self) -> bool:
@@ -331,8 +331,14 @@ class EnvironmentalReviewManager:
         if not project:
             return {"error": "Project not found"}
         
-        # Check EIA completion
-        if project.eia_required and project.eia_id:
+        # Check EIA completion if required
+        if project.eia_required:
+            if not project.eia_id:
+                return {
+                    "project_id": project_id,
+                    "approved": False,
+                    "reason": "EIA required but not created",
+                }
             eia = self.eias.get(project.eia_id)
             if not eia or not eia.final_date:
                 return {

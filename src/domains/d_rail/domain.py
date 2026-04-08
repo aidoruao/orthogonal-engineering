@@ -1,6 +1,6 @@
 """D_RAIL domain definition — Rail
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_RAIL"
 DOMAIN_NAME = "Rail"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['ETCS', 'signalling', 'PTC', 'IEC-62280']

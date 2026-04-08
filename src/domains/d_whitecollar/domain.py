@@ -1,6 +1,6 @@
 """D_WHITECOLLAR domain definition — White-Collar / Knowledge Work
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_WHITECOLLAR"
 DOMAIN_NAME = "White-Collar / Knowledge Work"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['compliance', 'audit-trail', 'document-pipeline', 'financial-software']

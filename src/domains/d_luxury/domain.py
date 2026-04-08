@@ -1,6 +1,6 @@
 """D_LUXURY domain definition — Luxury / High-End
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_LUXURY"
 DOMAIN_NAME = "Luxury / High-End"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['premium-UX', 'high-frequency-trading', 'private-aviation']

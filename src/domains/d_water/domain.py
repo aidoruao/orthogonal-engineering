@@ -1,6 +1,6 @@
 """D_WATER domain definition — Water and Utilities
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_WATER"
 DOMAIN_NAME = "Water and Utilities"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['quality-monitoring', 'distribution', 'SCADA']

@@ -238,22 +238,30 @@ class VarianceEvaluator:
         
         evaluation = self.evaluate_variance(application)
         
-        # Approved variance must have all findings
-        if application.approved and not evaluation["eligible_for_approval"]:
+        # Approved variance must have all findings and documentation
+        if application.approved:
+            if not evaluation["eligible_for_approval"]:
+                return {
+                    "decided": True,
+                    "approved": True,
+                    "compliant": False,
+                    "violation": "Approved variance without required findings",
+                }
+            # Approved variance must have documentation
+            has_documentation = len(application.hardship_documentation) > 0
             return {
                 "decided": True,
                 "approved": True,
-                "compliant": False,
-                "violation": "Approved variance without required findings",
+                "compliant": has_documentation,
+                "has_required_findings": evaluation["all_findings_met"],
             }
         
-        # Variance decision must be documented
-        has_documentation = len(application.hardship_documentation) > 0
-        
+        # Denied variance is compliant even without documentation
+        # (hardship not required to deny)
         return {
             "decided": True,
-            "approved": application.approved,
-            "compliant": has_documentation,
+            "approved": False,
+            "compliant": True,
             "has_required_findings": evaluation["all_findings_met"],
         }
 

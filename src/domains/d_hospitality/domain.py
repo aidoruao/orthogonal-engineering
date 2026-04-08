@@ -1,6 +1,6 @@
 """D_HOSPITALITY domain definition — Hospitality
 
-Layer: TBD (Unassigned)
+Layer: 3
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_HOSPITALITY"
 DOMAIN_NAME = "Hospitality"
-LAYER = None  # Unassigned
+LAYER = 3  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['reservations', 'room-keys', 'PCI-DSS']

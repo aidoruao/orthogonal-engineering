@@ -114,11 +114,13 @@ class LoadCalculation:
     # Load combinations per IBC Section 1605
     dead_load: Fraction
     live_load: Fraction
-    other_loads: Dict[LoadType, Fraction] = field(default_factory=dict)
     
-    # Results
+    # Results (required)
     calculated_capacity: Fraction
     applied_load: Fraction
+    
+    # Optional
+    other_loads: Dict[LoadType, Fraction] = field(default_factory=dict)
     
     @property
     def safety_ratio(self) -> Fraction:

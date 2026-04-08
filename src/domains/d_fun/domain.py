@@ -1,6 +1,6 @@
 """D_FUN domain definition — Fun / Entertainment
 
-Layer: TBD (Unassigned)
+Layer: 4
 CardinalStrength: PREDICATIVE
 """
 
@@ -8,7 +8,7 @@ from src.sal.forcing_operation import CardinalStrength
 
 DOMAIN_ID = "D_FUN"
 DOMAIN_NAME = "Fun / Entertainment"
-LAYER = None  # Unassigned
+LAYER = 4  # Unassigned
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
 CATEGORIES = ['games', 'interactive-media', 'generative-art']
