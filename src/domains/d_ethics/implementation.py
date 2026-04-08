@@ -1,4 +1,4 @@
-"""D_INDIGENOUS_RIGHTS implementation — Indigenous Rights
+"""D_ETHICS implementation — Ethics Frameworks
 
 Layer: 4 (Institutional)
 CardinalStrength: PREDICATIVE
@@ -11,24 +11,24 @@ from enum import Enum, auto
 from datetime import datetime
 from fractions import Fraction
 
-class IndigenousRightsStatus(Enum):
-    """Status for Indigenous Rights."""
+class EthicsFrameworksStatus(Enum):
+    """Status for Ethics Frameworks."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 @dataclass
-class IndigenousRightsRecord:
-    """Record in Indigenous Rights."""
+class EthicsFrameworksRecord:
+    """Record in Ethics Frameworks."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: IndigenousRightsStatus = IndigenousRightsStatus.PENDING
+    status: EthicsFrameworksStatus = EthicsFrameworksStatus.PENDING
 
-class IndigenousRightsChecker:
-    """Checker for Indigenous Rights."""
-    def check_compliance(self, record: IndigenousRightsRecord) -> Dict:
+class EthicsFrameworksChecker:
+    """Checker for Ethics Frameworks."""
+    def check_compliance(self, record: EthicsFrameworksRecord) -> Dict:
         return {
             "record_id": record.record_id,
-            "compliant": record.status == IndigenousRightsStatus.COMPLIANT,
+            "compliant": record.status == EthicsFrameworksStatus.COMPLIANT,
             "status": record.status.name,
         }

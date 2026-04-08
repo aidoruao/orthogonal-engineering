@@ -1,16 +1,16 @@
-"""D_INDIGENOUS_RIGHTS invariant checks."""
+"""D_RELIGIOUS_LIBERTY invariant checks."""
 
-from src.domains.d_indigenous_rights.implementation import (
-    IndigenousRightsRecord,
-    IndigenousRightsStatus,
-    IndigenousRightsChecker,
+from src.domains.d_religious_liberty.implementation import (
+    ReligiousLibertyRecord,
+    ReligiousLibertyStatus,
+    ReligiousLibertyChecker,
 )
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = IndigenousRightsChecker()
-    compliant = IndigenousRightsRecord(record_id="T1", status=IndigenousRightsStatus.COMPLIANT)
-    non_compliant = IndigenousRightsRecord(record_id="T2", status=IndigenousRightsStatus.NON_COMPLIANT)
+    checker = ReligiousLibertyChecker()
+    compliant = ReligiousLibertyRecord(record_id="T1", status=ReligiousLibertyStatus.COMPLIANT)
+    non_compliant = ReligiousLibertyRecord(record_id="T2", status=ReligiousLibertyStatus.NON_COMPLIANT)
     assert checker.check_compliance(compliant)["compliant"] is True
     assert checker.check_compliance(non_compliant)["compliant"] is False
     return True

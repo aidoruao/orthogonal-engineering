@@ -1,4 +1,4 @@
-"""D_INDIGENOUS_RIGHTS implementation — Indigenous Rights
+"""D_SOCIOLOGY implementation — Sociological Metrics
 
 Layer: 4 (Institutional)
 CardinalStrength: PREDICATIVE
@@ -11,24 +11,24 @@ from enum import Enum, auto
 from datetime import datetime
 from fractions import Fraction
 
-class IndigenousRightsStatus(Enum):
-    """Status for Indigenous Rights."""
+class SociologicalMetricsStatus(Enum):
+    """Status for Sociological Metrics."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 @dataclass
-class IndigenousRightsRecord:
-    """Record in Indigenous Rights."""
+class SociologicalMetricsRecord:
+    """Record in Sociological Metrics."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: IndigenousRightsStatus = IndigenousRightsStatus.PENDING
+    status: SociologicalMetricsStatus = SociologicalMetricsStatus.PENDING
 
-class IndigenousRightsChecker:
-    """Checker for Indigenous Rights."""
-    def check_compliance(self, record: IndigenousRightsRecord) -> Dict:
+class SociologicalMetricsChecker:
+    """Checker for Sociological Metrics."""
+    def check_compliance(self, record: SociologicalMetricsRecord) -> Dict:
         return {
             "record_id": record.record_id,
-            "compliant": record.status == IndigenousRightsStatus.COMPLIANT,
+            "compliant": record.status == SociologicalMetricsStatus.COMPLIANT,
             "status": record.status.name,
         }

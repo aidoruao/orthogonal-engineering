@@ -1,4 +1,4 @@
-"""D_INDIGENOUS_RIGHTS implementation — Indigenous Rights
+"""D_MEDIA_LAW implementation — Media & Press Law
 
 Layer: 4 (Institutional)
 CardinalStrength: PREDICATIVE
@@ -11,24 +11,24 @@ from enum import Enum, auto
 from datetime import datetime
 from fractions import Fraction
 
-class IndigenousRightsStatus(Enum):
-    """Status for Indigenous Rights."""
+class Media&PressLawStatus(Enum):
+    """Status for Media & Press Law."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 @dataclass
-class IndigenousRightsRecord:
-    """Record in Indigenous Rights."""
+class Media&PressLawRecord:
+    """Record in Media & Press Law."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: IndigenousRightsStatus = IndigenousRightsStatus.PENDING
+    status: Media&PressLawStatus = Media&PressLawStatus.PENDING
 
-class IndigenousRightsChecker:
-    """Checker for Indigenous Rights."""
-    def check_compliance(self, record: IndigenousRightsRecord) -> Dict:
+class Media&PressLawChecker:
+    """Checker for Media & Press Law."""
+    def check_compliance(self, record: Media&PressLawRecord) -> Dict:
         return {
             "record_id": record.record_id,
-            "compliant": record.status == IndigenousRightsStatus.COMPLIANT,
+            "compliant": record.status == Media&PressLawStatus.COMPLIANT,
             "status": record.status.name,
         }

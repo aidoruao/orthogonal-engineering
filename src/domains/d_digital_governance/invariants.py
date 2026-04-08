@@ -1,16 +1,16 @@
-"""D_INDIGENOUS_RIGHTS invariant checks."""
+"""D_DIGITAL_GOVERNANCE invariant checks."""
 
-from src.domains.d_indigenous_rights.implementation import (
-    IndigenousRightsRecord,
-    IndigenousRightsStatus,
-    IndigenousRightsChecker,
+from src.domains.d_digital_governance.implementation import (
+    DigitalGovernanceRecord,
+    DigitalGovernanceStatus,
+    DigitalGovernanceChecker,
 )
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = IndigenousRightsChecker()
-    compliant = IndigenousRightsRecord(record_id="T1", status=IndigenousRightsStatus.COMPLIANT)
-    non_compliant = IndigenousRightsRecord(record_id="T2", status=IndigenousRightsStatus.NON_COMPLIANT)
+    checker = DigitalGovernanceChecker()
+    compliant = DigitalGovernanceRecord(record_id="T1", status=DigitalGovernanceStatus.COMPLIANT)
+    non_compliant = DigitalGovernanceRecord(record_id="T2", status=DigitalGovernanceStatus.NON_COMPLIANT)
     assert checker.check_compliance(compliant)["compliant"] is True
     assert checker.check_compliance(non_compliant)["compliant"] is False
     return True

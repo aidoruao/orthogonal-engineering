@@ -1,1 +1,1 @@
-# Tests for d_police_procedure
+# Tests for D_POLICE_PROCEDURE domain

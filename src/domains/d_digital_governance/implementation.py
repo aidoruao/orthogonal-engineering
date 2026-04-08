@@ -1,4 +1,4 @@
-"""D_INDIGENOUS_RIGHTS implementation — Indigenous Rights
+"""D_DIGITAL_GOVERNANCE implementation — Digital Governance
 
 Layer: 4 (Institutional)
 CardinalStrength: PREDICATIVE
@@ -11,24 +11,24 @@ from enum import Enum, auto
 from datetime import datetime
 from fractions import Fraction
 
-class IndigenousRightsStatus(Enum):
-    """Status for Indigenous Rights."""
+class DigitalGovernanceStatus(Enum):
+    """Status for Digital Governance."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 @dataclass
-class IndigenousRightsRecord:
-    """Record in Indigenous Rights."""
+class DigitalGovernanceRecord:
+    """Record in Digital Governance."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: IndigenousRightsStatus = IndigenousRightsStatus.PENDING
+    status: DigitalGovernanceStatus = DigitalGovernanceStatus.PENDING
 
-class IndigenousRightsChecker:
-    """Checker for Indigenous Rights."""
-    def check_compliance(self, record: IndigenousRightsRecord) -> Dict:
+class DigitalGovernanceChecker:
+    """Checker for Digital Governance."""
+    def check_compliance(self, record: DigitalGovernanceRecord) -> Dict:
         return {
             "record_id": record.record_id,
-            "compliant": record.status == IndigenousRightsStatus.COMPLIANT,
+            "compliant": record.status == DigitalGovernanceStatus.COMPLIANT,
             "status": record.status.name,
         }

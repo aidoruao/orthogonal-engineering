@@ -1,20 +1,28 @@
-"""D_CORPORATECOMPLIANCE domain definition — Corporate Regulatory Compliance
+"""D_CORPORATE_COMPLIANCE domain definition — Corporate Compliance
 
 Layer: 3 (Regulatory)
 CardinalStrength: PREDICATIVE
-Source: State and federal regulations
+Source: SEC regulations, EPA reporting, DOL posting requirements
 """
 
 from src.sal.forcing_operation import CardinalStrength
 
-DOMAIN_ID = "D_CORPORATECOMPLIANCE"
-DOMAIN_NAME = "Corporate Regulatory Compliance"
+DOMAIN_ID = "D_CORPORATE_COMPLIANCE"
+DOMAIN_NAME = "Corporate Compliance"
 LAYER = 3
 CARDINAL_STRENGTH = CardinalStrength.PREDICATIVE
 
-CATEGORIES = ['annual-filing', 'environmental-reporting', 'labor-postings']
+CATEGORIES = [
+    "annual-filing",
+    "environmental-reporting",
+    "labor-postings"
+]
 
-INVARIANTS = ['Annual filing requirements met with documented submission.', 'Environmental compliance reporting is complete and accurate.', 'Labor law posting requirements are verified.']
+INVARIANTS = [
+    "Annual filing requirements met with documented submission.",
+    "Environmental compliance reporting is complete and accurate.",
+    "Labor law posting requirements are verified."
+]
 
-FALSIFICATION_TESTS = ["F_CORPORATECOMPLIANCE_001"]
-ONTOLOGICAL_ISSUES = ["OI_CORPORATECOMPLIANCE_001"]
+FALSIFICATION_TESTS = ["F_CORPORATE_COMPLIANCE_001"]
+ONTOLOGICAL_ISSUES = ["OI_CORPORATE_COMPLIANCE_001"]

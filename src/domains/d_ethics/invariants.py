@@ -1,16 +1,16 @@
-"""D_INDIGENOUS_RIGHTS invariant checks."""
+"""D_ETHICS invariant checks."""
 
-from src.domains.d_indigenous_rights.implementation import (
-    IndigenousRightsRecord,
-    IndigenousRightsStatus,
-    IndigenousRightsChecker,
+from src.domains.d_ethics.implementation import (
+    EthicsFrameworksRecord,
+    EthicsFrameworksStatus,
+    EthicsFrameworksChecker,
 )
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = IndigenousRightsChecker()
-    compliant = IndigenousRightsRecord(record_id="T1", status=IndigenousRightsStatus.COMPLIANT)
-    non_compliant = IndigenousRightsRecord(record_id="T2", status=IndigenousRightsStatus.NON_COMPLIANT)
+    checker = EthicsFrameworksChecker()
+    compliant = EthicsFrameworksRecord(record_id="T1", status=EthicsFrameworksStatus.COMPLIANT)
+    non_compliant = EthicsFrameworksRecord(record_id="T2", status=EthicsFrameworksStatus.NON_COMPLIANT)
     assert checker.check_compliance(compliant)["compliant"] is True
     assert checker.check_compliance(non_compliant)["compliant"] is False
     return True

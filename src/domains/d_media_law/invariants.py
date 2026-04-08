@@ -1,16 +1,16 @@
-"""D_INDIGENOUS_RIGHTS invariant checks."""
+"""D_MEDIA_LAW invariant checks."""
 
-from src.domains.d_indigenous_rights.implementation import (
-    IndigenousRightsRecord,
-    IndigenousRightsStatus,
-    IndigenousRightsChecker,
+from src.domains.d_media_law.implementation import (
+    Media&PressLawRecord,
+    Media&PressLawStatus,
+    Media&PressLawChecker,
 )
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = IndigenousRightsChecker()
-    compliant = IndigenousRightsRecord(record_id="T1", status=IndigenousRightsStatus.COMPLIANT)
-    non_compliant = IndigenousRightsRecord(record_id="T2", status=IndigenousRightsStatus.NON_COMPLIANT)
+    checker = Media&PressLawChecker()
+    compliant = Media&PressLawRecord(record_id="T1", status=Media&PressLawStatus.COMPLIANT)
+    non_compliant = Media&PressLawRecord(record_id="T2", status=Media&PressLawStatus.NON_COMPLIANT)
     assert checker.check_compliance(compliant)["compliant"] is True
     assert checker.check_compliance(non_compliant)["compliant"] is False
     return True
