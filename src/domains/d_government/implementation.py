@@ -1,4 +1,4 @@
-"""D_INDUSTRIALSYSTEMS implementation — Industrial / OT
+"""D_GOVERNMENT implementation — Government
 
 Layer: 3 (Regulatory)
 CardinalStrength: PREDICATIVE
@@ -13,28 +13,28 @@ from datetime import datetime
 from fractions import Fraction
 
 
-class IndustrialSystemsStatus(Enum):
-    """Status classifications for Industrial / OT."""
+class GovernmentStatus(Enum):
+    """Status classifications for Government."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 
 @dataclass
-class IndustrialSystemsRecord:
-    """A record in the Industrial / OT domain."""
+class GovernmentRecord:
+    """A record in the Government domain."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: IndustrialSystemsStatus = IndustrialSystemsStatus.PENDING
+    status: GovernmentStatus = GovernmentStatus.PENDING
 
 
-class IndustrialSystemsComplianceChecker:
-    """Compliance checker for Industrial / OT."""
+class GovernmentComplianceChecker:
+    """Compliance checker for Government."""
     
-    def check_compliance(self, record: IndustrialSystemsRecord) -> Dict:
+    def check_compliance(self, record: GovernmentRecord) -> Dict:
         """Check compliance for a record."""
         return {
             "record_id": record.record_id,
-            "compliant": record.status == IndustrialSystemsStatus.COMPLIANT,
+            "compliant": record.status == GovernmentStatus.COMPLIANT,
             "status": record.status.name,
         }

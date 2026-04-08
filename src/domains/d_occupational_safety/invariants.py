@@ -1,27 +1,27 @@
-"""D_INDUSTRIALSYSTEMS invariant checks."""
+"""D_OCCUPATIONALSAFETY invariant checks."""
 
 from datetime import datetime
-from src.domains.d_industrial.implementation import (
-    IndustrialSystemsRecord,
-    IndustrialSystemsStatus,
-    IndustrialSystemsComplianceChecker,
+from src.domains.d_occupational_safety.implementation import (
+    OccupationalSafetyRecord,
+    OccupationalSafetyStatus,
+    OccupationalSafetyComplianceChecker,
 )
 
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = IndustrialSystemsComplianceChecker()
+    checker = OccupationalSafetyComplianceChecker()
     
-    compliant_record = IndustrialSystemsRecord(
+    compliant_record = OccupationalSafetyRecord(
         record_id="TEST001",
-        status=IndustrialSystemsStatus.COMPLIANT
+        status=OccupationalSafetyStatus.COMPLIANT
     )
     result = checker.check_compliance(compliant_record)
     assert result["compliant"] is True, "Compliant record should pass"
     
-    non_compliant = IndustrialSystemsRecord(
+    non_compliant = OccupationalSafetyRecord(
         record_id="TEST002",
-        status=IndustrialSystemsStatus.NON_COMPLIANT
+        status=OccupationalSafetyStatus.NON_COMPLIANT
     )
     result2 = checker.check_compliance(non_compliant)
     assert result2["compliant"] is False, "Non-compliant record should fail"

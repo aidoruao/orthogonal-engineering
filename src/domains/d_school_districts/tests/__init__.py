@@ -1,1 +1,1 @@
-# Tests for d_school_districts
+# Tests for D_SCHOOL_DISTRICTS domain

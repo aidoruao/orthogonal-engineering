@@ -1,4 +1,4 @@
-"""D_INDUSTRIALSYSTEMS implementation — Industrial / OT
+"""D_OCCUPATIONALSAFETY implementation — Occupational Safety (OSHA)
 
 Layer: 3 (Regulatory)
 CardinalStrength: PREDICATIVE
@@ -13,28 +13,28 @@ from datetime import datetime
 from fractions import Fraction
 
 
-class IndustrialSystemsStatus(Enum):
-    """Status classifications for Industrial / OT."""
+class OccupationalSafetyStatus(Enum):
+    """Status classifications for Occupational Safety (OSHA)."""
     COMPLIANT = auto()
     NON_COMPLIANT = auto()
     PENDING = auto()
 
 
 @dataclass
-class IndustrialSystemsRecord:
-    """A record in the Industrial / OT domain."""
+class OccupationalSafetyRecord:
+    """A record in the Occupational Safety (OSHA) domain."""
     record_id: str
     created_at: datetime = field(default_factory=datetime.now)
-    status: IndustrialSystemsStatus = IndustrialSystemsStatus.PENDING
+    status: OccupationalSafetyStatus = OccupationalSafetyStatus.PENDING
 
 
-class IndustrialSystemsComplianceChecker:
-    """Compliance checker for Industrial / OT."""
+class OccupationalSafetyComplianceChecker:
+    """Compliance checker for Occupational Safety (OSHA)."""
     
-    def check_compliance(self, record: IndustrialSystemsRecord) -> Dict:
+    def check_compliance(self, record: OccupationalSafetyRecord) -> Dict:
         """Check compliance for a record."""
         return {
             "record_id": record.record_id,
-            "compliant": record.status == IndustrialSystemsStatus.COMPLIANT,
+            "compliant": record.status == OccupationalSafetyStatus.COMPLIANT,
             "status": record.status.name,
         }

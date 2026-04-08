@@ -1,27 +1,27 @@
-"""D_INDUSTRIALSYSTEMS invariant checks."""
+"""D_PLATFORMOS invariant checks."""
 
 from datetime import datetime
-from src.domains.d_industrial.implementation import (
-    IndustrialSystemsRecord,
-    IndustrialSystemsStatus,
-    IndustrialSystemsComplianceChecker,
+from src.domains.d_platform.implementation import (
+    PlatformOSRecord,
+    PlatformOSStatus,
+    PlatformOSComplianceChecker,
 )
 
 
 def check_compliance_deterministic() -> bool:
     """Invariant: Compliance checks produce consistent results."""
-    checker = IndustrialSystemsComplianceChecker()
+    checker = PlatformOSComplianceChecker()
     
-    compliant_record = IndustrialSystemsRecord(
+    compliant_record = PlatformOSRecord(
         record_id="TEST001",
-        status=IndustrialSystemsStatus.COMPLIANT
+        status=PlatformOSStatus.COMPLIANT
     )
     result = checker.check_compliance(compliant_record)
     assert result["compliant"] is True, "Compliant record should pass"
     
-    non_compliant = IndustrialSystemsRecord(
+    non_compliant = PlatformOSRecord(
         record_id="TEST002",
-        status=IndustrialSystemsStatus.NON_COMPLIANT
+        status=PlatformOSStatus.NON_COMPLIANT
     )
     result2 = checker.check_compliance(non_compliant)
     assert result2["compliant"] is False, "Non-compliant record should fail"
