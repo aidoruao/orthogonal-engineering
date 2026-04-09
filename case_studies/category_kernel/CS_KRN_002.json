@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_002",
+  "title": "Spectre v1 Bounds Check Bypass",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5753",
+  "language": "C/Assembly",
+  "domains": ["axioms/capability_security.py", "D_PLATFORM"],
+  "root_cause": "Speculative execution allows out-of-bounds memory access before bounds check resolves. CPU speculatively executes code paths that leak secret data via cache timing side channels.",
+  "resolution_type": "Speculation barriers (lfence), array index masking, site-specific mitigations. Kernel uses nospec accessors.",
+  "status": "ANALYZED"
+}

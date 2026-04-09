@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_007",
+  "title": "Rust Ownership as Linear Types",
+  "source": "https://github.com/rust-lang/rust",
+  "language": "Rust",
+  "domains": ["axioms/type_registry.py"],
+  "root_cause": "C/C++ memory unsafety (use-after-free, double-free) stems from unrestricted aliasing. Rust borrow checker enforces linear/affine types at compile time.",
+  "resolution_type": "Ownership: each value has exactly one owner. Borrowing: immutable xor mutable references. Lifetime analysis prevents dangling pointers. Zero-cost at runtime.",
+  "status": "ANALYZED"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_005",
+  "title": "Fuchsia Zircon Capability Model",
+  "source": "https://fuchsia.googlesource.com/fuchsia",
+  "language": "C++",
+  "domains": ["kernel/", "axioms/capability_security.py"],
+  "root_cause": "Traditional POSIX APIs use ambient authority (UID-based). Zircon uses capability-based access control: all resources accessed via handles. No global namespace.",
+  "resolution_type": "Object-capability model at kernel level. All kernel objects referenced by handles. Rights attenuation via zx_handle_duplicate with reduced rights.",
+  "status": "ANALYZED"
+}

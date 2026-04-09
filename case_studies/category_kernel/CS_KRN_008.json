@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_008",
+  "title": "Redox OS Microkernel",
+  "source": "https://gitlab.redox-os.org/redox-os/kernel",
+  "language": "Rust",
+  "domains": ["kernel/", "D_PLATFORM"],
+  "root_cause": "Monolithic kernels mix policy and mechanism. Redox uses microkernel design: drivers in userspace, message-passing IPC, capability-based scheme.",
+  "resolution_type": "Everything-is-a-URL. Kernel provides only memory management, process scheduling, and IPC. Filesystem, drivers, network stack in userspace with capabilities.",
+  "status": "ANALYZED"
+}

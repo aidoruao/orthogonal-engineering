@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_010",
+  "title": "TempleOS Single Address Space",
+  "source": "https://templeos.org",
+  "language": "HolyC",
+  "domains": ["kernel/memory_manager.py", "D_PLATFORM"],
+  "root_cause": "Ring-based protection adds complexity. TempleOS runs everything in ring-0, single address space. No user/kernel mode. No virtual memory. Full access to all memory.",
+  "resolution_type": "Cooperative multitasking. No memory protection by hardware—all processes trust each other. Compiler-enforced safety where possible. Reboot on crash.",
+  "status": "ANALYZED"
+}

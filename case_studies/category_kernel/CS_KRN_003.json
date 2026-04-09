@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_003",
+  "title": "Meltdown Kernel Page Table Isolation",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-5754",
+  "language": "C",
+  "domains": ["axioms/memory_model.py", "D_PLATFORM"],
+  "root_cause": "Out-of-order execution allows user-mode code to read kernel memory by speculatively executing after faulting load. CPU exception handling is too slow; data already in cache.",
+  "resolution_type": "Kernel Page Table Isolation (KPTI). Separate page tables for user/kernel. TLB flush on syscall entry/exit. Massive performance cost.",
+  "status": "ANALYZED"
+}

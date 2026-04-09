@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_006",
+  "title": "CHERI Capability Hardware",
+  "source": "https://github.com/CTSRD-CHERI",
+  "language": "C/Verilog",
+  "domains": ["axioms/capability_security.py", "D_HARDWARE_AGNOSTICISM"],
+  "root_cause": "Software-based capabilities can be forged via memory corruption. CHERI (Capability Hardware Enhanced RISC Instructions) implements capabilities in hardware.",
+  "resolution_type": "128-bit capabilities with bounds and permissions in hardware. Tagged memory prevents capability forgery. LLVM/Clang with CHERI extensions.",
+  "status": "ANALYZED"
+}

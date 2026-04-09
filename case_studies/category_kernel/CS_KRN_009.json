@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_009",
+  "title": "Plan 9 Everything is a File",
+  "source": "https://9p.io/plan9",
+  "language": "C",
+  "domains": ["kernel/ipc.py", "D_PLATFORM"],
+  "root_cause": "Unix has inconsistent namespaces (files, sockets, pipes, devices). Plan 9 unifies all resources under 9P protocol: everything is a file, names are hierarchical.",
+  "resolution_type": "9P protocol for all resources. Per-process namespace (bind/mount). Union directories. No special socket APIs—just file read/write on /net/tcp.",
+  "status": "ANALYZED"
+}

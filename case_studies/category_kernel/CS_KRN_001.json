@@ -1,0 +1,10 @@
+{
+  "id": "CS_KRN_001",
+  "title": "Linux CFS Scheduler Latency",
+  "source": "https://github.com/torvalds/linux",
+  "language": "C",
+  "domains": ["D_PLATFORM", "axioms/process_algebra.py"],
+  "root_cause": "CFS (Completely Fair Scheduler) vruntime calculation can starve high-priority tasks when CPU frequency scaling causes time accounting drift. vruntime is virtual runtime; frequency changes break the time scale.",
+  "resolution_type": "Per-entity load tracking with normalized vruntime. Freq-invariant accounting using rq_clock_task().",
+  "status": "ANALYZED"
+}
