@@ -23,7 +23,7 @@ The repository has grown substantially since PR #30:
 
 | Metric | PR #30 | Current (2026-04-08) |
 |--------|--------|---------------------|
-| Domains | ~40 | **135** |
+| Domains | ~40 | **149** |
 | Layers | 3 | **5** (0-4) |
 | Cross-domain morphisms | 0 | **~4800** |
 | SAL Types | 1-9 | **10** (Yoneda) |
