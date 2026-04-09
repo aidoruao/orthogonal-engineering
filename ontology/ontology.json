@@ -2516,6 +2516,28 @@
       "example_falsification_test": "F_D_WEAPONS_REGULATION_001",
       "example_ontological_issue": "OI_D_WEAPONS_REGULATION_001",
       "layer": 3
+    },
+    {
+      "id": "D_REMOTE_SENSING",
+      "name": "Remote Sensing & Geospatial ML",
+      "categories": [
+        "cross-scale-consistency",
+        "masking-strategy",
+        "geographic-coverage",
+        "representation-alignment",
+        "deterministic-reproducibility",
+        "spectral-band-integrity"
+      ],
+      "invariants": [
+        "Cross-scale representations align under known geometric transform within provable epsilon bound.",
+        "Masking strategy preserves minimum geographic semantic coverage.",
+        "Spectral band ratios remain consistent across resolution levels.",
+        "Experiment reproducibility: identical config produces identical output hash.",
+        "Augmentation pipeline is invertible or its information loss is bounded."
+      ],
+      "example_falsification_test": "F_REMOTE_SENSING_001",
+      "example_ontological_issue": "OI_REMOTE_SENSING_001",
+      "layer": 3
     }
   ],
   "issues": [
@@ -3887,5 +3909,5 @@
     "resolved": 0,
     "total_oi_ids": 67
   },
-  "total_domains": 154
+  "total_domains": 155
 }
