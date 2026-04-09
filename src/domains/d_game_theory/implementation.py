@@ -1,33 +1,123 @@
-"""D_GAME_THEORY implementation — Game Theory
+#!/usr/bin/env python3
+"""Game Theory — Nash equilibrium, minimax, Pareto optimality."""
 
-Layer: TBD (Unassigned)
-"""
-
-from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from enum import Enum, auto
-from datetime import datetime
 from fractions import Fraction
+from dataclasses import dataclass
+from typing import List, Tuple, Dict, Optional
 
-class Game_TheoryStatus(Enum):
-    """Status for Game Theory."""
-    COMPLIANT = auto()
-    NON_COMPLIANT = auto()
-    PENDING = auto()
 
 @dataclass
-class Game_TheoryRecord:
-    """Record in Game Theory."""
-    record_id: str
-    created_at: datetime = field(default_factory=datetime.now)
-    status: Game_TheoryStatus = Game_TheoryStatus.PENDING
+class Game:
+    """Normal form game."""
+    players: List[str]
+    strategies: Dict[str, List[str]]  # player -> strategies
+    payoffs: Dict[Tuple[str, ...], List[Fraction]]  # (strategy profile) -> payoffs
+    
+    def get_payoff(self, player: str, profile: Tuple[str, ...]) -> Fraction:
+        """Get payoff for player given strategy profile."""
+        payoffs = self.payoffs.get(profile, [Fraction(0)] * len(self.players))
+        idx = self.players.index(player)
+        return payoffs[idx]
 
-class Game_TheoryChecker:
-    """Checker for Game Theory."""
-    def check_compliance(self, record: Game_TheoryRecord) -> Dict:
-        return {
-            "record_id": record.record_id,
-            "compliant": record.status == Game_TheoryStatus.COMPLIANT,
-            "status": record.status.name,
-        }
+
+@dataclass
+class NashSolver:
+    """Find and verify Nash equilibria."""
+    game: Game
+    equilibrium_profile: Tuple[str, ...]
+    
+    def is_nash_equilibrium(self) -> bool:
+        """
+        Check if no player can unilaterally deviate and improve.
+        Nash: no unilateral deviation improves payoff.
+        """
+        for i, player in enumerate(self.game.players):
+            current_strategy = self.equilibrium_profile[i]
+            current_payoff = self.game.get_payoff(player, self.equilibrium_profile)
+            
+            # Check all deviations
+            for deviation in self.game.strategies[player]:
+                if deviation == current_strategy:
+                    continue
+                
+                # Create deviated profile
+                deviated = list(self.equilibrium_profile)
+                deviated[i] = deviation
+                deviated_profile = tuple(deviated)
+                
+                deviated_payoff = self.game.get_payoff(player, deviated_profile)
+                
+                if deviated_payoff > current_payoff:
+                    return False  # Profitable deviation exists
+        
+        return True
+
+
+@dataclass
+class ZeroSumVerifier:
+    """Verify zero-sum game properties."""
+    game: Game
+    
+    def is_zero_sum(self) -> bool:
+        """Sum of all payoffs equals zero for all profiles."""
+        for profile, payoffs in self.game.payoffs.items():
+            total = sum(payoffs)
+            if total != Fraction(0):
+                return False
+        return True
+
+
+@dataclass
+class ParetoFrontier:
+    """Find Pareto optimal outcomes."""
+    outcomes: List[Tuple[str, ...]]  # Strategy profiles
+    payoffs: Dict[Tuple[str, ...], List[Fraction]]
+    
+    def is_pareto_optimal(self, outcome: Tuple[str, ...]) -> bool:
+        """
+        Outcome is Pareto optimal if no other outcome makes
+        everyone at least as well off and someone strictly better.
+        """
+        outcome_payoffs = self.payoffs.get(outcome, [])
+        
+        for other in self.outcomes:
+            if other == outcome:
+                continue
+            
+            other_payoffs = self.payoffs.get(other, [])
+            
+            # Check if other dominates outcome
+            all_ge = all(o >= p for o, p in zip(other_payoffs, outcome_payoffs))
+            some_gt = any(o > p for o, p in zip(other_payoffs, outcome_payoffs))
+            
+            if all_ge and some_gt:
+                return False  # Found dominating outcome
+        
+        return True
+    
+    def get_pareto_frontier(self) -> List[Tuple[str, ...]]:
+        """Return all Pareto optimal outcomes."""
+        return [o for o in self.outcomes if self.is_pareto_optimal(o)]
+
+
+@dataclass
+class MinimaxSolver:
+    """Solve zero-sum games using minimax."""
+    game: Game
+    player: str
+    
+    def maximin_value(self) -> Fraction:
+        """Maximum of minimum payoffs (security level)."""
+        max_min = Fraction(float('-inf'))
+        
+        for strategy in self.game.strategies.get(self.player, []):
+            min_payoff = Fraction(float('inf'))
+            
+            for profile, payoffs in self.game.payoffs.items():
+                idx = self.game.players.index(self.player)
+                if profile[idx] == strategy:
+                    min_payoff = min(min_payoff, payoffs[idx])
+            
+            max_min = max(max_min, min_payoff)
+        
+        return max_min

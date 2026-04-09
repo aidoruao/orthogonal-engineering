@@ -1,34 +1,74 @@
-"""D_ENVIRONMENTALPLANNING implementation — Environmental Planning
+#!/usr/bin/env python3
+"""Environmental Planning — NEPA, CEQA, EIS requirements."""
 
-Layer: 3 (Regulatory)
-CardinalStrength: PREDICATIVE
-"""
-
-from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from enum import Enum, auto
-from datetime import datetime
 from fractions import Fraction
+from dataclasses import dataclass, field
+from typing import List, Dict
+from enum import Enum, auto
 
-class EnvironmentalPlanningStatus(Enum):
-    """Status for Environmental Planning."""
-    COMPLIANT = auto()
-    NON_COMPLIANT = auto()
-    PENDING = auto()
+
+class ImpactCategory(Enum):
+    AIR = auto()
+    WATER = auto()
+    BIOLOGY = auto()
+    NOISE = auto()
+    CULTURAL = auto()
+
 
 @dataclass
-class EnvironmentalPlanningRecord:
-    """Record in Environmental Planning."""
-    record_id: str
-    created_at: datetime = field(default_factory=datetime.now)
-    status: EnvironmentalPlanningStatus = EnvironmentalPlanningStatus.PENDING
+class ImpactScore:
+    """Environmental impact score for a category."""
+    category: ImpactCategory
+    score: Fraction  # 0-100 scale
+    mitigation: List[str] = field(default_factory=list)
+    
+    def has_mitigation(self) -> bool:
+        return len(self.mitigation) > 0
 
-class EnvironmentalPlanningComplianceChecker:
-    """Compliance checker."""
-    def check_compliance(self, record: EnvironmentalPlanningRecord) -> Dict:
-        return {
-            "record_id": record.record_id,
-            "compliant": record.status == EnvironmentalPlanningStatus.COMPLIANT,
-            "status": record.status.name,
-        }
+
+@dataclass
+class EnvironmentalImpactStatement:
+    """EIS with impact scores."""
+    project_id: str
+    impact_scores: List[ImpactScore]
+    
+    def total_impact(self) -> Fraction:
+        if not self.impact_scores:
+            return Fraction(0)
+        return sum(i.score for i in self.impact_scores) / len(self.impact_scores)
+    
+    def significant_impacts(self) -> List[ImpactScore]:
+        return [i for i in self.impact_scores if i.score > Fraction(50)]
+
+
+@dataclass
+class CommentPeriod:
+    """Public comment period tracking."""
+    start_date: str
+    end_date: str
+    days_duration: int
+    
+    MINIMUM_COMMENT_DAYS = 30
+    
+    def is_adequate(self) -> bool:
+        return self.days_duration >= self.MINIMUM_COMMENT_DAYS
+
+
+@dataclass
+class MitigationTracker:
+    """Track mitigation measure implementation."""
+    required_measures: List[str]
+    implemented_measures: List[str]
+    
+    def completion_rate(self) -> Fraction:
+        if not self.required_measures:
+            return Fraction(100)
+        return Fraction(len(self.implemented_measures) * 100, len(self.required_measures))
+    
+    def is_complete(self) -> bool:
+        return set(self.required_measures) <= set(self.implemented_measures)
+
+
+# Environmental thresholds
+SIGNIFICANT_IMPACT_THRESHOLD = Fraction(50)
+MIN_MITIGATION_COMPLETION = Fraction(100)

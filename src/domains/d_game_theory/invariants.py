@@ -1,28 +1,55 @@
-"""D_GAME_THEORY invariant checks."""
+#!/usr/bin/env python3
+"""Game Theory Invariants — Nash, zero-sum, Pareto."""
 
-from src.domains.d_game_theory.implementation import (
-    Game_TheoryRecord,
-    Game_TheoryStatus,
-    Game_TheoryChecker,
-)
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import NashSolver, ZeroSumVerifier, ParetoFrontier
 
-def check_compliance_deterministic() -> bool:
-    """Invariant: Compliance checks produce consistent results."""
-    checker = Game_TheoryChecker()
-    compliant = Game_TheoryRecord(record_id="T1", status=Game_TheoryStatus.COMPLIANT)
-    non_compliant = Game_TheoryRecord(record_id="T2", status=Game_TheoryStatus.NON_COMPLIANT)
-    assert checker.check_compliance(compliant)["compliant"] is True
-    assert checker.check_compliance(non_compliant)["compliant"] is False
-    return True
 
-def run_all_invariants() -> dict:
-    results = {}
-    for name, fn in [("compliance_deterministic", check_compliance_deterministic)]:
-        try:
-            fn()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    return results
+def check_nash_equilibrium(solver: NashSolver) -> Tuple[bool, ProofObject]:
+    """Verify strategy profile is Nash equilibrium."""
+    if not solver.is_nash_equilibrium():
+        return False, ProofObject(
+            conclusion="VIOLATION: Not a Nash equilibrium — profitable deviation exists",
+            premises=[],
+            rule="nash_equilibrium"
+        )
+    
+    return True, ProofObject(
+        conclusion="Nash equilibrium verified",
+        premises=[f"Profile: {solver.equilibrium_profile}"],
+        rule="nash_equilibrium"
+    )
+
+
+def check_zero_sum_property(verifier: ZeroSumVerifier) -> Tuple[bool, ProofObject]:
+    """Zero-sum game: payoffs sum to zero for all profiles."""
+    if not verifier.is_zero_sum():
+        return False, ProofObject(
+            conclusion="VIOLATION: Game not zero-sum (payoff sums non-zero)",
+            premises=[],
+            rule="zero_sum_property"
+        )
+    
+    return True, ProofObject(
+        conclusion="Zero-sum property satisfied",
+        premises=[],
+        rule="zero_sum_property"
+    )
+
+
+def check_pareto_optimality(frontier: ParetoFrontier, outcome) -> Tuple[bool, ProofObject]:
+    """Verify outcome is Pareto optimal."""
+    if not frontier.is_pareto_optimal(outcome):
+        return False, ProofObject(
+            conclusion="VIOLATION: Outcome not Pareto optimal (dominated alternative exists)",
+            premises=[],
+            rule="pareto_optimality"
+        )
+    
+    return True, ProofObject(
+        conclusion="Pareto optimality confirmed",
+        premises=[],
+        rule="pareto_optimality"
+    )
