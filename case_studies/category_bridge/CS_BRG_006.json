@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_006",
+  "title": "Tesla Autopilot OTA Regression",
+  "source": "https://www.tesla.com/support/software-updates",
+  "language": "N/A",
+  "domains": ["kernel/bridge/storage.py", "kernel/hal.py"],
+  "root_cause": "Over-the-air updates could not be rolled back. Storage write was ambient authority—no capability-gated versioning or rollback.",
+  "resolution_type": "StorageCap with versioning. Firmware blobs are content-addressed. RollbackCap grants right to restore previous hash. Kernel verifies hash before boot.",
+  "status": "ANALYZED"
+}

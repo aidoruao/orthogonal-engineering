@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_004",
+  "title": "Nest Thermostat Battery Drain",
+  "source": "https://www.nest.com/support/article/Battery-troubleshooting",
+  "language": "N/A",
+  "domains": ["kernel/hal.py"],
+  "root_cause": "No energy budget enforcement in hardware abstraction. Background processes could consume unlimited power without capability-gated energy quotas.",
+  "resolution_type": "HalState with energy_budget field. Every hardware operation checks energy_budget first. Processes receive EnergyCap with explicit joule quotas.",
+  "status": "ANALYZED"
+}

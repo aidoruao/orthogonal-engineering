@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_010",
+  "title": "PrintNightmare Network Printer",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527",
+  "language": "C",
+  "domains": ["kernel/bridge/process.py", "kernel/hal.py"],
+  "root_cause": "Printer drivers installed with ambient authority—no capability for kernel module loading. Network-printed documents could trigger driver installation.",
+  "resolution_type": "ProcessCap with driver_allowlist. HalCap for printer MMIO only—no driver loading. Driver updates require explicit DriverInstallCap delegation.",
+  "status": "ANALYZED"
+}

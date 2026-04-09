@@ -1,6 +1,6 @@
 # Domain Invariant Status
 
-Updated: 2026-04-09T07:30:00Z
+Updated: 2026-04-09T08:00:00Z
 
 ## Summary
 
@@ -10,73 +10,83 @@ Updated: 2026-04-09T07:30:00Z
 | Deepened (50+ lines) | 91 | 58% |
 | Stubs (<50 lines) | 66 | 42% |
 
-## Session 2ea874e7-2a — KINGDOM OS KERNEL FORMALIZATION
+## Session 2ea874e7-3a — YESHUA INVERSION: HARDWARE & COMPATIBILITY BRIDGES
 
-### New Axiom Modules (3)
-- `axioms/process_algebra.py` — CCS/CSP process calculus with synchronization
-- `axioms/memory_model.py` — Sequential consistency, TSO, release-acquire
-- `axioms/capability_security.py` — Object-capability model with POLA
+### Impossibility Audit
+- `investigations/impossibility_audit.py` — 20 limitation classifications
+  - PHYSICAL_INVARIANT (4): Landauer's principle, speed of light, finite matter, Heisenberg
+  - LOGICAL_INVARIANT (5): Halting, Goedel, Rice, Arrow's, CAP theorem
+  - METHODOLOGICAL_CONSTRAINT (4): 0 floats, 0 random, ProofObject, capability-gated
+  - CONVENTIONAL_DIFFICULTY (7): Yeshua Inversions for bare metal, GPU, apps, network, storage, audio, USB
 
-### Kernel Specification (5 files)
-- `kernel/scheduler.py` — CFS-like deterministic scheduler, vruntime, quotas
-- `kernel/memory_manager.py` — Capability-based memory allocation
-- `kernel/ipc.py` — Typed, bounded, capability-gated channels
-- `kernel/anti_mimicry.py` — Structural authenticity verification
-- `kernel/tests/test_kernel.py` — 10 test cases
+### Hardware Abstraction Layer
+- `kernel/hal.py` — Capability-gated hardware mediation
+  - MMIO/Port I/O read/write with HalCap verification
+  - IRQ registration with isolation guarantees
+  - Deterministic timer ticks
+  - Energy budget enforcement
+  - No unmapped access verification
 
-### New Case Studies (10)
-- CS_KRN_001: Linux CFS Scheduler Latency
-- CS_KRN_002: Spectre v1 Bounds Check Bypass
-- CS_KRN_003: Meltdown Kernel Page Table Isolation
-- CS_KRN_004: seL4 Formal Verification
-- CS_KRN_005: Fuchsia Zircon Capability Model
-- CS_KRN_006: CHERI Capability Hardware
-- CS_KRN_007: Rust Ownership as Linear Types
-- CS_KRN_008: Redox OS Microkernel
-- CS_KRN_009: Plan 9 Everything is a File
-- CS_KRN_010: TempleOS Single Address Space
+### Bridge Layer (5 Bridges)
+- `kernel/bridge/gpu.py` — GPU command buffer submission with VRAM quotas
+- `kernel/bridge/net.py` — Network packets with bandwidth/port restrictions
+- `kernel/bridge/storage.py` — Content-addressed storage with integrity checks
+- `kernel/bridge/linux_compat.py` — Linux syscall translation to capabilities
+- `kernel/bridge/process.py` — External process spawning with resource limits
 
-### Kingdom OS Invariants
-1. **Deterministic**: Identical inputs produce identical outputs
-2. **Inspectable**: All state transitions are witnessed
-3. **Capability-secured**: No ambient authority
-4. **Consent-bound**: All authority is delegated, never assumed
-5. **Falsifiable**: Every claim is testable
+### Boot Sequence
+- `kernel/boot.py` — Deterministic 6-phase boot
+  - POWER_ON → HAL_INIT → MEMORY_INIT → SCHEDULER_INIT → IPC_INIT → BRIDGE_INIT → USERLAND
+  - Each phase witnessed with ProofObject
+  - Boot integrity verification
+
+### Bridge Case Studies (10)
+- CS_BRG_001: Mirai Botnet — default credentials, ambient network
+- CS_BRG_002: Samsung Smart Fridge — SSL validation failure
+- CS_BRG_003: Philips Hue — Zigbee worm propagation
+- CS_BRG_004: Nest Thermostat — no energy budget enforcement
+- CS_BRG_005: Ring Doorbell — privacy breach via third parties
+- CS_BRG_006: Tesla Autopilot — OTA rollback failure
+- CS_BRG_007: Stuxnet — USB air-gap bypass
+- CS_BRG_008: Log4Shell — IoT deserialization
+- CS_BRG_009: Bluetooth KNOB — weak key negotiation
+- CS_BRG_010: PrintNightmare — driver installation authority
 
 ### Metrics
-- Axiom modules: 32 → 35
-- Case studies: 40 → 50
-- Kernel specification: 0 → 5 files
-- Kernel tests: 10 passing
+- Bridge files: 6 new (5 bridges + init)
+- HAL file: 1 new
+- Impossibility audit: 1 new
+- Boot sequence: 1 new
+- Tests: 12 passing (kernel/tests/test_bridges.py)
+- Case studies: 50 → 60
 
-## Previous: Session 2ea874e7 — MAXIMAL GRAPHICS & PHYSICS RESTORATION
+## Previous: Session 2ea874e7-2a — Kingdom OS Kernel Formalization
+
+### New Axiom Modules (3)
+- `axioms/process_algebra.py` — CCS/CSP process calculus
+- `axioms/memory_model.py` — Sequential consistency, TSO
+- `axioms/capability_security.py` — Object-capability model
+
+### Kernel Specification (6 files)
+- `kernel/scheduler.py`, `memory_manager.py`, `ipc.py`, `anti_mimicry.py`
+- `kernel/tests/test_kernel.py` — 10 passing tests
+
+### Kernel Case Studies (10)
+- CS_KRN_001 through CS_KRN_010 — OS kernel security
+
+## Previous: Session 2ea874e7 — Graphics & Physics Restoration
 
 ### New Axiom Modules (5)
-- `axioms/classical_mechanics.py` — Newton, Lagrangian, Hamiltonian, conservation laws
-- `axioms/control_theory.py` — PID, Routh-Hurwitz, Lyapunov stability
-- `axioms/kinematics.py` — DH parameters, forward kinematics, workspace reachability
-- `axioms/sampling_theory.py` — Nyquist-Shannon for upscaling
-- `axioms/colorimetry.py` — CIE 1931, HDR tone mapping, gamut containment
+- Classical mechanics, control theory, kinematics, sampling theory, colorimetry
 
 ### New Domains (3)
-- `d_graphics_reality/` — Vendor-agnostic super resolution (DLSS/FSR/XeSS/PSSR)
-- `d_hardware_agnosticism/` — Vendor lock-in detection, instruction set baseline
-- `d_physics/` — Energy/momentum conservation, equation of motion, joint torques
-
-### Deepened Domains (4)
-- `d_graphics/` — Rewritten with real GPU pipeline invariants
-
-### New Case Studies (10)
-- CS_GFX_001 through CS_GFX_010 — Graphics/GPU case studies
-
-### Physics Gap Closure (Copilot Audit)
-- **Before**: Regulatory compliance only (ISO 10218, DO-178C)
-- **After**: Real mechanics, kinematics, dynamics, control theory
+- d_graphics_reality, d_hardware_agnosticism, d_physics
 
 ## Verification
 
 All invariants use Fraction arithmetic (0 floats).
 All invariants return ProofObject.
 All invariants are falsifiable.
+All tests passing.
 
 Run: python tools/doc_generator/generate_docs.py --drift

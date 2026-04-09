@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_002",
+  "title": "Samsung Smart Fridge SSL Validation",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2015-0564",
+  "language": "N/A",
+  "domains": ["kernel/bridge/storage.py", "kernel/bridge/net.py"],
+  "root_cause": "Smart fridge did not validate SSL certificates. Storage and network access were ambient—no capability-gated verification of remote endpoints.",
+  "resolution_type": "StorageCap with certificate pinning. NetworkCap with verified endpoints. All TLS connections require explicit capability.",
+  "status": "ANALYZED"
+}

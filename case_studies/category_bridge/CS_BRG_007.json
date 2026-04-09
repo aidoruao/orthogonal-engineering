@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_007",
+  "title": "Stuxnet Air-Gap Bypass",
+  "source": "https://www.us-cert.gov/ics/advisories/ICSA-10-238-01B",
+  "language": "C",
+  "domains": ["kernel/hal.py", "axioms/capability_security.py"],
+  "root_cause": "USB devices had ambient authority—no capability model for peripheral access. Malware spread via USB without explicit capability delegation.",
+  "resolution_type": "HalCap for USB with explicit device whitelist. PeripheralCap grants right to specific device IDs. No ambient USB access.",
+  "status": "ANALYZED"
+}

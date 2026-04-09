@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_008",
+  "title": "Log4Shell IoT Deserialization",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-44228",
+  "language": "Java",
+  "domains": ["kernel/bridge/net.py", "kernel/bridge/process.py"],
+  "root_cause": "JNDI lookup had ambient authority—no capability for class loading. Network-triggered code execution without explicit capability gate.",
+  "resolution_type": "ProcessCap with allowed_classes field. NetworkCap with content_type restrictions. ClassLoaderCap explicitly grants right to load specific classes.",
+  "status": "ANALYZED"
+}

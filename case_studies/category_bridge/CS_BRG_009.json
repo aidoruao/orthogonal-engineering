@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_009",
+  "title": "Bluetooth KNOB Key Negotiation",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-9506",
+  "language": "C",
+  "domains": ["kernel/bridge/net.py"],
+  "root_cause": "Bluetooth pairing allowed entropy reduction without capability-gated minimums. Network protocol negotiated weak keys without explicit capability bounds.",
+  "resolution_type": "NetworkCap with min_entropy field. BluetoothCap includes minimum key length. Protocol negotiation rejected if below capability threshold.",
+  "status": "ANALYZED"
+}

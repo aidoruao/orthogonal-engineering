@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_003",
+  "title": "Philips Hue Zigbee Worm",
+  "source": "https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-6007",
+  "language": "C",
+  "domains": ["kernel/bridge/net.py", "axioms/capability_security.py"],
+  "root_cause": "Zigbee protocol allowed device-to-device communication without capability attenuation. Once one bulb was compromised, it could propagate to all.",
+  "resolution_type": "Capability attenuation in mesh networks. Each device receives limited, delegatable capabilities. Worm propagation blocked by capability boundaries.",
+  "status": "ANALYZED"
+}

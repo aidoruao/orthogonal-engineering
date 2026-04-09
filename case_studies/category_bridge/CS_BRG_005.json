@@ -1,0 +1,10 @@
+{
+  "id": "CS_BRG_005",
+  "title": "Ring Doorbell Privacy Breach",
+  "source": "https://www.eff.org/deeplinks/2020/01/ring-doorbell-app-packed-third-party-trackers",
+  "language": "N/A",
+  "domains": ["kernel/bridge/net.py", "D_PRIVACY"],
+  "root_cause": "Video data shared with third parties without explicit consent capability. Network access was ambient, not gated by data-sharing permissions.",
+  "resolution_type": "NetworkCap with data_destination field. VideoStreamCap explicitly lists allowed endpoints. Third-party sharing requires separate capability delegation.",
+  "status": "ANALYZED"
+}
