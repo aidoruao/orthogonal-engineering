@@ -1,10 +1,10 @@
 {
   "id": "CS_ML_003",
-  "title": "Reproducibility Crisis — Random seed insufficient for determinism",
-  "source": "https://arxiv.org/abs/2003.12206",
-  "language": "Python",
-  "domains": ["D_REMOTE_SENSING", "D_SOFTWARE_TESTING", "D_DISTRIBUTED_SYSTEMS"],
-  "root_cause": "Setting random seed does not guarantee reproducibility across GPU architectures, CUDA versions, or non-deterministic cuDNN algorithms. torch.use_deterministic_algorithms(True) required but breaks some operations.",
-  "resolution_type": "Reproducibility certificate: hash(model_weights + config + hardware_fingerprint) must match across runs.",
-  "status": "ANALYZED"
+  "category": "ml_research",
+  "title": "HuggingFace Dataset Loading Race Condition",
+  "description": "Concurrent dataset loading can corrupt shared cache files",
+  "domains": [
+    "D_AI_ONTOLOGICAL_STATUS",
+    "D_PATTERN_RECOGNITION"
+  ]
 }
