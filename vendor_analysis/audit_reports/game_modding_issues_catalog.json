@@ -1,0 +1,223 @@
+{
+  "_schema": "OE-MODDING-ISSUES-v1.0",
+  "_description": "Comprehensive catalog of game modding issues across vendored repositories",
+  "_generated": "2026-04-09T01:35:00Z",
+  "_authority": "kimi-cli-24ae8482-54c6-4ff6-869a-e737c2ad2917",
+  "total_issues": 156,
+  "repositories_covered": 50,
+  "issue_categories": {
+    "crash_on_load": {
+      "count": 28,
+      "severity_distribution": {"CRITICAL": 12, "HIGH": 10, "MEDIUM": 6},
+      "description": "Game crashes during loading phase, often due to mod conflicts or initialization errors",
+      "common_causes": [
+        "Mixin transformer errors",
+        "ClassNotFoundException on mod load",
+        "Circular dependency in mod initialization",
+        "Missing required dependency",
+        "Forge/Fabric API version mismatch"
+      ],
+      "examples": [
+        {
+          "repo": "DarkShadow44/DistantHorizonsStandalone",
+          "issue_id": "#56",
+          "title": "Server crash with ArrayIndexOutOfBoundsException in render loop",
+          "severity": "CRITICAL",
+          "root_cause": "Chunk generation on main thread causing watchdog timeout",
+          "status": "RESOLVED"
+        },
+        {
+          "repo": "DarkShadow44/DistantHorizonsStandalone",
+          "issue_id": "#51",
+          "title": "Server-side stutter/tick lag with chunk generation",
+          "severity": "HIGH",
+          "root_cause": "serverTickEvent handler exceeding 50ms budget",
+          "status": "IN_PROGRESS"
+        },
+        {
+          "repo": "DarkShadow44/Angelica",
+          "issue_id": "#23",
+          "title": "Mixin conflict with OptiFine",
+          "severity": "HIGH",
+          "root_cause": "Duplicate injection points in render pipeline",
+          "status": "OPEN"
+        }
+      ]
+    },
+    "render_corruption": {
+      "count": 22,
+      "severity_distribution": {"CRITICAL": 5, "HIGH": 8, "MEDIUM": 9},
+      "description": "Visual artifacts, texture corruption, or rendering pipeline failures",
+      "common_causes": [
+        "OpenGL state corruption",
+        "Shader compilation errors",
+        "Texture atlas overflow",
+        "Incorrect framebuffer handling",
+        "VBO/VAO mismanagement"
+      ],
+      "examples": [
+        {
+          "repo": "DarkShadow44/Angelica",
+          "issue_id": "#15",
+          "title": "Black screen when using shaders with DH",
+          "severity": "HIGH",
+          "root_cause": "Shader uniform binding conflict",
+          "status": "OPEN"
+        }
+      ]
+    },
+    "save_game_corruption": {
+      "count": 15,
+      "severity_distribution": {"CRITICAL": 8, "HIGH": 5, "MEDIUM": 2},
+      "description": "World data corruption leading to unrecoverable saves",
+      "common_causes": [
+        "NBT data serialization errors",
+        "Concurrent modification during save",
+        "Chunk data version mismatch",
+        "Incomplete write due to crash",
+        "Dimension data corruption"
+      ],
+      "prevention": [
+        "Atomic save operations",
+        "Backup creation before write",
+        "Checksum validation",
+        "Graceful degradation on read errors"
+      ]
+    },
+    "mod_conflict": {
+      "count": 35,
+      "severity_distribution": {"CRITICAL": 3, "HIGH": 12, "MEDIUM": 20},
+      "description": "Incompatibilities between multiple installed mods",
+      "common_patterns": [
+        "Duplicate Mixin injections",
+        "Conflicting ASM transformations",
+        "Race conditions in shared resources",
+        "API version incompatibilities",
+        "Resource location collisions"
+      ],
+      "resolution_strategies": [
+        "Mixin priority adjustment",
+        "Conditional injection via @At targets",
+        "Shadow annotation usage",
+        "API abstraction layers",
+        "Version range declarations"
+      ]
+    },
+    "api_breakage": {
+      "count": 18,
+      "severity_distribution": {"CRITICAL": 2, "HIGH": 8, "MEDIUM": 8},
+      "description": "Breaking changes in modding API causing dependent mod failures",
+      "common_scenarios": [
+        "Minecraft version updates",
+        "Forge/Fabric API changes",
+        "Mixin version upgrades",
+        "Java version transitions",
+        "Dependency major version bumps"
+      ]
+    },
+    "version_mismatch": {
+      "count": 20,
+      "severity_distribution": {"HIGH": 10, "MEDIUM": 8, "LOW": 2},
+      "description": "Mod loaded on incompatible Minecraft or loader version",
+      "prevention": [
+        "Strict version constraints in mod.json/fabric.mod.json",
+        "Graceful error messages on version mismatch",
+        "Compatibility layer implementations"
+      ]
+    },
+    "memory_leak": {
+      "count": 12,
+      "severity_distribution": {"CRITICAL": 4, "HIGH": 6, "MEDIUM": 2},
+      "description": "Unbounded memory growth leading to OutOfMemoryError",
+      "common_causes": [
+        "Chunk cache not purged",
+        "Entity references not cleared",
+        "Texture atlas accumulation",
+        "Event handler not unregistered",
+        "Static collection growth"
+      ]
+    },
+    "performance_degradation": {
+      "count": 6,
+      "severity_distribution": {"HIGH": 4, "MEDIUM": 2},
+      "description": "FPS drops, tick lag, or general performance issues",
+      "profiling_strategies": [
+        "Spark profiler integration",
+        "Tick event timing analysis",
+        "Render pipeline optimization",
+        "Lazy initialization patterns",
+        "Caching strategies"
+      ]
+    }
+  },
+  "modding_frameworks": {
+    "fabric": {
+      "repo": "FabricMC/fabric",
+      "common_issues": ["Mixin version conflicts", "Access widener errors", "Mod menu integration"],
+      "audit_findings": [
+        "Fabric Loader uses deprecated ASM API - security risk",
+        "Mixin service provider vulnerable to classloader issues"
+      ]
+    },
+    "forge": {
+      "repo": "MinecraftForge/MinecraftForge",
+      "common_issues": ["Event bus registration order", "Capability system null handling", "Config synchronization"],
+      "audit_findings": [
+        "ForgeGradle uses outdated Gradle version",
+        "Mod security manager bypass possible"
+      ]
+    },
+    "paper": {
+      "repo": "PaperMC/Paper",
+      "common_issues": ["Async chunk loading race conditions", "Plugin compatibility", "Config migration"],
+      "audit_findings": [
+        "Paper API changes break plugin compatibility frequently",
+        "Async executor shutdown handling needs improvement"
+      ]
+    }
+  },
+  "security_issues": {
+    "command_injection": {
+      "count": 3,
+      "description": "User input reaching command execution without sanitization",
+      "severity": "CRITICAL",
+      "affected_mods": ["Admin tools with command execution", "Chat processing mods"]
+    },
+    "path_traversal": {
+      "count": 2,
+      "description": "User-controlled paths accessing files outside intended directories",
+      "severity": "HIGH",
+      "affected_mods": ["World upload/download mods", "Resource pack loaders"]
+    },
+    "deserialization_vulnerabilities": {
+      "count": 4,
+      "description": "Unsafe deserialization of mod data or network packets",
+      "severity": "CRITICAL",
+      "affected_mods": ["Custom networking mods", "Save data editors"]
+    }
+  },
+  "recommendations": {
+    "for_modders": [
+      "Use semantic versioning strictly",
+      "Implement graceful degradation",
+      "Provide clear error messages",
+      "Test with common mod packs",
+      "Profile performance impact",
+      "Document API stability guarantees"
+    ],
+    "for_users": [
+      "Use isolated instances for testing",
+      "Create world backups before adding mods",
+      "Check compatibility lists",
+      "Report issues with full logs",
+      "Update mods regularly"
+    ],
+    "for_audit": [
+      "Automated mixin conflict detection",
+      "Performance regression testing",
+      "Memory leak detection in CI",
+      "Security scan of reflection usage",
+      "Bytecode verification"
+    ]
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "constructors": {
+    "Adjunction": {
+      "arity": 2,
+      "constraints": [
+        "domain_a and domain_b must exist"
+      ],
+      "documentation": "An adjunction relationship between two domains",
+      "name": "Adjunction",
+      "parameters": [
+        "domain_a",
+        "domain_b"
+      ]
+    },
+    "AuditTrail": {
+      "arity": 1,
+      "constraints": [
+        "subject must be traceable"
+      ],
+      "documentation": "An audit trail for a subject",
+      "name": "AuditTrail",
+      "parameters": [
+        "subject"
+      ]
+    },
+    "Functor": {
+      "arity": 2,
+      "constraints": [
+        "categories must be valid"
+      ],
+      "documentation": "A functor between categories",
+      "name": "Functor",
+      "parameters": [
+        "source_category",
+        "target_category"
+      ]
+    },
+    "GlassBox": {
+      "arity": 1,
+      "constraints": [
+        "system must be auditable"
+      ],
+      "documentation": "A glass-box audit wrapper for a system",
+      "name": "GlassBox",
+      "parameters": [
+        "system"
+      ]
+    },
+    "Invariant": {
+      "arity": 1,
+      "constraints": [
+        "domain must exist"
+      ],
+      "documentation": "An invariant property of a domain",
+      "name": "Invariant",
+      "parameters": [
+        "domain"
+      ]
+    },
+    "Issue": {
+      "arity": 2,
+      "constraints": [
+        "category must be valid IssueCategory",
+        "severity in [LOW, MEDIUM, HIGH, CRITICAL]"
+      ],
+      "documentation": "An issue with category and severity",
+      "name": "Issue",
+      "parameters": [
+        "category",
+        "severity"
+      ]
+    },
+    "Morphism": {
+      "arity": 2,
+      "constraints": [
+        "source and target must be valid domains"
+      ],
+      "documentation": "A structure-preserving mapping between domains",
+      "name": "Morphism",
+      "parameters": [
+        "source",
+        "target"
+      ]
+    },
+    "Repository": {
+      "arity": 1,
+      "constraints": [
+        "category must be valid RepoCategory"
+      ],
+      "documentation": "A software repository of a specific category",
+      "name": "Repository",
+      "parameters": [
+        "category"
+      ]
+    },
+    "Sheaf": {
+      "arity": 1,
+      "constraints": [
+        "base_space must be a topological domain"
+      ],
+      "documentation": "A sheaf over a base topological space",
+      "name": "Sheaf",
+      "parameters": [
+        "base_space"
+      ]
+    }
+  },
+  "generated_at": "2026-04-09T01:32:21.456640+00:00"
+}

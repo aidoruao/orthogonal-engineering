@@ -1,0 +1,437 @@
+{
+  "city_name": "Orthogonal City",
+  "domains": {
+    "ci_cybersecurity": {
+      "category": "cybersecurity",
+      "criticality_level": "CRITICAL",
+      "description": "Security operations, threat monitoring, and incident response",
+      "domain_id": "ci_cybersecurity",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "CISO Office",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Municipal Cybersecurity",
+      "regulatory_framework": [
+        "NIST CSF",
+        "State Cybersecurity Laws"
+      ],
+      "relevant_repos": [
+        "wazuh/wazuh",
+        "Security-Onion-Solutions"
+      ],
+      "software_systems": [
+        "SIEM",
+        "EDR",
+        "Vulnerability Scanner",
+        "SOAR"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_elections": {
+      "category": "elections",
+      "criticality_level": "CRITICAL",
+      "description": "Voter registration, polling, and results reporting",
+      "domain_id": "ci_elections",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "Elections Department",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Elections Administration",
+      "regulatory_framework": [
+        "HAVA",
+        "State Election Codes"
+      ],
+      "relevant_repos": [],
+      "software_systems": [
+        "Voter Registration",
+        "Ballot Tabulation",
+        "Results Reporting"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_electricity": {
+      "category": "electricity",
+      "criticality_level": "CRITICAL",
+      "description": "Power generation, transmission, and distribution",
+      "domain_id": "ci_electricity",
+      "downstream_dependencies": [
+        "ci_water_supply",
+        "ci_telecommunications",
+        "ci_smart_city"
+      ],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "Municipal Utility Department",
+      "iot_sensors": [
+        "Smart Meters",
+        "Grid Sensors",
+        "Transformer Monitors"
+      ],
+      "layer": "regional",
+      "name": "Electrical Grid",
+      "regulatory_framework": [
+        "NERC CIP",
+        "State PUC Regulations"
+      ],
+      "relevant_repos": [],
+      "software_systems": [
+        "Grid Management System",
+        "Outage Management",
+        "AMI"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_ems": {
+      "category": "emergency_medical",
+      "criticality_level": "CRITICAL",
+      "description": "Ambulance services and medical emergency response",
+      "domain_id": "ci_ems",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "EMS Department",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Emergency Medical Services",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "CAD System",
+        "ePCR",
+        "Hospital Diversion"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_fire": {
+      "category": "fire_department",
+      "criticality_level": "CRITICAL",
+      "description": "Fire suppression, rescue, and emergency medical first response",
+      "domain_id": "ci_fire",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "Fire Department",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Fire Department",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "CAD System",
+        "Mobile Data",
+        "Hazmat Database"
+      ],
+      "upstream_dependencies": [
+        "ci_water_supply"
+      ]
+    },
+    "ci_internet": {
+      "category": "internet",
+      "criticality_level": "HIGH",
+      "description": "Public internet access and digital equity programs",
+      "domain_id": "ci_internet",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "MEDIUM",
+      "governing_authority": "Digital Equity Office",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Municipal Broadband",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "Network Management",
+        "User Portal",
+        "Bandwidth Monitoring"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_open_data": {
+      "category": "open_data",
+      "criticality_level": "MEDIUM",
+      "description": "Public datasets, APIs, and transparency initiatives",
+      "domain_id": "ci_open_data",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "LOW",
+      "governing_authority": "Chief Data Officer",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Open Data Portal",
+      "regulatory_framework": [],
+      "relevant_repos": [
+        "opendatakit",
+        "ckan/ckan"
+      ],
+      "software_systems": [
+        "Data Portal Platform",
+        "ETL Pipelines",
+        "API Gateway"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_parks": {
+      "category": "parks_recreation",
+      "criticality_level": "MEDIUM",
+      "description": "Public parks, facilities, and recreational programs",
+      "domain_id": "ci_parks",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "LOW",
+      "governing_authority": "Parks and Recreation Department",
+      "iot_sensors": [],
+      "layer": "district",
+      "name": "Parks and Recreation",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "Facility Booking",
+        "Program Registration",
+        "Asset Management"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_permits": {
+      "category": "permits_licensing",
+      "criticality_level": "HIGH",
+      "description": "Building permits, business licenses, and regulatory approvals",
+      "domain_id": "ci_permits",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "MEDIUM",
+      "governing_authority": "Department of Building and Safety",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Permits and Licensing",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "Permit Tracking",
+        "Inspection Scheduling",
+        "Plan Review"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_police": {
+      "category": "police",
+      "criticality_level": "CRITICAL",
+      "description": "Law enforcement, patrol, and emergency response",
+      "domain_id": "ci_police",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "Police Department",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Police Department",
+      "regulatory_framework": [
+        "CJIS Security Policy",
+        "State LE Standards"
+      ],
+      "relevant_repos": [
+        "codeforamerica/police-data-trust"
+      ],
+      "software_systems": [
+        "CAD System",
+        "RMS",
+        "Body Cameras",
+        "LPR",
+        "Analytics"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_public_health": {
+      "category": "public_health",
+      "criticality_level": "CRITICAL",
+      "description": "Disease surveillance, health education, and prevention",
+      "domain_id": "ci_public_health",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "HIGH",
+      "governing_authority": "Department of Public Health",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Public Health Department",
+      "regulatory_framework": [
+        "HIPAA",
+        "CDC Guidelines"
+      ],
+      "relevant_repos": [],
+      "software_systems": [
+        "Disease Surveillance",
+        "Immunization Registry",
+        "EHR"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_public_transit": {
+      "category": "public_transit",
+      "criticality_level": "HIGH",
+      "description": "Bus, light rail, and paratransit services",
+      "domain_id": "ci_public_transit",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "HIGH",
+      "governing_authority": "Metropolitan Transit Authority",
+      "iot_sensors": [
+        "GPS Trackers",
+        "Passenger Counters",
+        "Vehicle Diagnostics"
+      ],
+      "layer": "citywide",
+      "name": "Public Transit System",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "AVL System",
+        "Fare Collection",
+        "Scheduling",
+        "Real-time Info"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_roads": {
+      "category": "roads",
+      "criticality_level": "HIGH",
+      "description": "Street maintenance, traffic management, and paving",
+      "domain_id": "ci_roads",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "HIGH",
+      "governing_authority": "Department of Transportation",
+      "iot_sensors": [
+        "Traffic Counters",
+        "Road Condition Sensors"
+      ],
+      "layer": "citywide",
+      "name": "Road Network",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "Traffic Signal Control",
+        "Pavement Management",
+        "Work Order System"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_smart_city": {
+      "category": "smart_city",
+      "criticality_level": "HIGH",
+      "description": "IoT integration, data analytics, and intelligent infrastructure",
+      "domain_id": "ci_smart_city",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "MEDIUM",
+      "governing_authority": "Smart City Office",
+      "iot_sensors": [
+        "Environmental Sensors",
+        "Traffic Sensors",
+        "Utility Sensors"
+      ],
+      "layer": "citywide",
+      "name": "Smart City Platform",
+      "regulatory_framework": [],
+      "relevant_repos": [
+        "thingsboard/thingsboard",
+        "fiware"
+      ],
+      "software_systems": [
+        "IoT Platform",
+        "Data Lake",
+        "Analytics Engine",
+        "Dashboard"
+      ],
+      "upstream_dependencies": [
+        "ci_electricity",
+        "ci_telecommunications"
+      ]
+    },
+    "ci_telecommunications": {
+      "category": "telecommunications",
+      "criticality_level": "CRITICAL",
+      "description": "Fiber optic, wireless, and public safety networks",
+      "domain_id": "ci_telecommunications",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "HIGH",
+      "governing_authority": "Information Technology Department",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Telecommunications Infrastructure",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "Network Monitoring",
+        "DNS",
+        "Radio Systems"
+      ],
+      "upstream_dependencies": [
+        "ci_electricity"
+      ]
+    },
+    "ci_waste_management": {
+      "category": "waste_management",
+      "criticality_level": "HIGH",
+      "description": "Trash collection, disposal, and landfill operations",
+      "domain_id": "ci_waste_management",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "HIGH",
+      "governing_authority": "Department of Sanitation",
+      "iot_sensors": [
+        "Bin Fill Sensors",
+        "GPS Trackers"
+      ],
+      "layer": "citywide",
+      "name": "Solid Waste Management",
+      "regulatory_framework": [],
+      "relevant_repos": [],
+      "software_systems": [
+        "Route Optimization",
+        "Fleet Management",
+        "Weighbridge"
+      ],
+      "upstream_dependencies": []
+    },
+    "ci_wastewater": {
+      "category": "wastewater",
+      "criticality_level": "CRITICAL",
+      "description": "Sewage collection, treatment, and environmental discharge",
+      "domain_id": "ci_wastewater",
+      "downstream_dependencies": [],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "Wastewater Treatment Authority",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Wastewater Management",
+      "regulatory_framework": [
+        "Clean Water Act",
+        "EPA NPDES"
+      ],
+      "relevant_repos": [],
+      "software_systems": [
+        "Treatment Plant SCADA",
+        "Flow Monitoring"
+      ],
+      "upstream_dependencies": [
+        "ci_water_supply"
+      ]
+    },
+    "ci_water_supply": {
+      "category": "water_supply",
+      "criticality_level": "CRITICAL",
+      "description": "Potable water treatment, distribution, and storage",
+      "domain_id": "ci_water_supply",
+      "downstream_dependencies": [
+        "ci_wastewater",
+        "ci_fire"
+      ],
+      "failure_cascade_risk": "SEVERE",
+      "governing_authority": "Department of Water and Power",
+      "iot_sensors": [],
+      "layer": "citywide",
+      "name": "Water Supply System",
+      "regulatory_framework": [
+        "Safe Drinking Water Act",
+        "EPA Standards"
+      ],
+      "relevant_repos": [],
+      "software_systems": [
+        "SCADA",
+        "GIS Mapping",
+        "Pressure Monitoring"
+      ],
+      "upstream_dependencies": []
+    }
+  },
+  "generated_at": "2026-04-09T01:39:58.962464+00:00",
+  "total_domains": 18
+}
