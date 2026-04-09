@@ -25,9 +25,9 @@
 ## Case Studies
 - **Severity:** LOW
 - **Documented:** 0
-- **Actual:** 43
-- **Drift:** +43
+- **Actual:** 48
+- **Drift:** +48
 
 **Suggestions:**
-- Update CASE_STUDY_INDEX.json with 43 case studies
-- Progress: 43/0 (0%)
+- Update CASE_STUDY_INDEX.json with 48 case studies
+- Progress: 48/0 (0%)

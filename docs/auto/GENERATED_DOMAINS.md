@@ -1,15 +1,15 @@
 # Auto-Generated Domain Documentation
 
-**Generated:** 2026-04-09T06:36:47.754212+00:00
+**Generated:** 2026-04-09T06:50:34.274303+00:00
 **Total Domains:** 155
 
 ## Summary Statistics
 
 | Status | Count |
 |--------|-------|
-| Deep (100+ lines) | 55 |
+| Deep (100+ lines) | 63 |
 | Developing (50-99 lines) | 25 |
-| Stub (<50 lines) | 74 |
+| Stub (<50 lines) | 66 |
 | Empty | 1 |
 
 ## Domain Details
@@ -38,12 +38,16 @@
   - `check_function_size()`
 
 ### d_agriculture
-- **Status:** stub
-- **Lines:** 28
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 162
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_organic_certification_requirements()`
+  - `check_pesticide_safety_protocols()`
+  - `check_water_permit_compliance()`
+  - `check_pre_harvest_interval()`
+  - `check_subsidy_eligibility()`
 
 ### d_ai_ontological_status
 - **Status:** deep
@@ -797,12 +801,16 @@
   - `check_status_transition()`
 
 ### d_incident_response
-- **Status:** stub
-- **Lines:** 11
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 168
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_response_time_sla()`
+  - `check_severity_classification()`
+  - `check_response_procedures_exist()`
+  - `check_incident_team_assignment()`
+  - `check_mttr_calculation()`
 
 ### d_indigenous_rights
 - **Status:** stub
@@ -843,20 +851,28 @@
   - `check_patent_term_20_years()`
 
 ### d_international_criminal
-- **Status:** stub
-- **Lines:** 19
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 143
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_jurisdiction_rules()`
+  - `check_complementarity_principle()`
+  - `check_evidence_chain_of_custody()`
+  - `check_case_timeline_reasonableness()`
+  - `check_crime_type_classification()`
 
 ### d_international_humanitarian
-- **Status:** stub
-- **Lines:** 19
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 139
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_distinction_principle()`
+  - `check_proportionality()`
+  - `check_protection_of_civilians()`
+  - `check_medical_neutrality()`
+  - `check_pow_rights()`
 
 ### d_intl_criminal
 - **Status:** deep
@@ -993,12 +1009,16 @@
   - `check_compliance_deterministic()`
 
 ### d_mobile_development
-- **Status:** stub
-- **Lines:** 11
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 147
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_cross_platform_coverage()`
+  - `check_battery_efficiency()`
+  - `check_crash_rate_threshold()`
+  - `check_permission_minimalism()`
+  - `check_launch_time_performance()`
 
 ### d_necessity
 - **Status:** stub
@@ -1062,12 +1082,16 @@
   - `check_compliance_deterministic()`
 
 ### d_open_source_governance
-- **Status:** stub
-- **Lines:** 11
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 167
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_license_compatibility()`
+  - `check_governance_files_present()`
+  - `check_contribution_review_time()`
+  - `check_maintainer_coverage()`
+  - `check_cla_compliance()`
 
 ### d_paraconsistent_logic
 - **Status:** stub
@@ -1349,12 +1373,16 @@
   - `check_seu_protection()`
 
 ### d_supply_chain_security
-- **Status:** stub
-- **Lines:** 11
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 152
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_dependency_hash_verification()`
+  - `check_vulnerability_scanning()`
+  - `check_artifact_signing()`
+  - `check_sbom_completeness()`
+  - `check_provenance_tracking()`
 
 ### d_tax_law
 - **Status:** developing
@@ -1443,12 +1471,16 @@
   - `check_eia_public_comment()`
 
 ### d_use_of_force
-- **Status:** stub
-- **Lines:** 19
-- **Invariants:** 1
+- **Status:** deep
+- **Lines:** 196
+- **Invariants:** 6
 - **Tests:** 1
 - **Key Invariants:**
-  - `check_compliance_deterministic()`
+  - `check_force_proportionality()`
+  - `check_deadly_force_necessity()`
+  - `check_de_escalation_attempted()`
+  - `check_documentation_complete()`
+  - `check_less_lethal_before_deadly()`
 
 ### d_utility_regulation
 - **Status:** stub
