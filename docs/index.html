@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orthogonal Engineering — Repository Index</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --border: #30363d;
+            --success: #238636;
+            --warning: #f0883e;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .stat {
+            text-align: center;
+            padding: 0.5rem 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: border-color 0.2s;
+        }
+        
+        .card:hover {
+            border-color: var(--accent);
+        }
+        
+        .card h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        
+        .card ul {
+            list-style: none;
+        }
+        
+        .card li {
+            margin: 0.5rem 0;
+        }
+        
+        .card a {
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .card a:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent-hover);
+        }
+        
+        .card a::after {
+            content: '→';
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .card a:hover::after {
+            opacity: 1;
+        }
+        
+        .tag {
+            font-size: 0.75rem;
+            padding: 0.125rem 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⊹ Orthogonal Engineering</h1>
+        <p>Glass-Box Boundary · 0 Floats · 0 Stubs · All Falsifiable</p>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">155</div>
+                <div class="stat-label">Domains</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">28</div>
+                <div class="stat-label">Type Constructors</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">26</div>
+                <div class="stat-label">Axiom Modules</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">35</div>
+                <div class="stat-label">YouTuber Audits</div>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <h2 class="section-title">Core Systems</h2>
+        <div class="grid">
+            <div class="card">
+                <h2>Axioms</h2>
+                <ul>
+                    <li><a href="../axioms/logic.py">logic.py <span class="tag">ProofObject</span></a></li>
+                    <li><a href="../axioms/type_registry.py">type_registry.py <span class="tag">28 types</span></a></li>
+                    <li><a href="../axioms/cryptographic_verification.py">cryptographic_verification.py <span class="tag">Merkle</span></a></li>
+                    <li><a href="../axioms/probability.py">probability.py <span class="tag">Stats</span></a></li>
+                    <li><a href="../axioms/measure_theory.py">measure_theory.py <span class="tag">Analysis</span></a></li>
+                    <li><a href="../axioms/real_analysis.py">real_analysis.py <span class="tag">Calculus</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Domains (Selected)</h2>
+                <ul>
+                    <li><a href="../src/domains/d_administrative_law/">d_administrative_law <span class="tag">APA</span></a></li>
+                    <li><a href="../src/domains/d_contract_law/">d_contract_law <span class="tag">UCC</span></a></li>
+                    <li><a href="../src/domains/d_procedure_civil/">d_procedure_civil <span class="tag">FRCP</span></a></li>
+                    <li><a href="../src/domains/d_procedure_criminal/">d_procedure_criminal <span class="tag">4th/5th</span></a></li>
+                    <li><a href="../src/domains/d_bankruptcy/">d_bankruptcy <span class="tag">Ch 7/11/13</span></a></li>
+                    <li><a href="../src/domains/d_evidence_law/">d_evidence_law <span class="tag">FRE</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Case Studies</h2>
+                <ul>
+                    <li><a href="../case_studies/youtuber_audits/">youtuber_audits <span class="tag">35 audits</span></a></li>
+                    <li><a href="../case_studies/vendoring_manifest.json">vendoring_manifest.json <span class="tag">500+ repos</span></a></li>
+                    <li><a href="../case_studies/taxonomy/">taxonomy/ <span class="tag">Categories</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Automation</h2>
+                <ul>
+                    <li><a href="../automation/pr49_guard.py">pr49_guard.py <span class="tag">Gate 0-5</span></a></li>
+                    <li><a href="../automation/">automation/ <span class="tag">Scripts</span></a></li>
+                    <li><a href="../.github/workflows/">workflows/ <span class="tag">CI/CD</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Documentation</h2>
+                <ul>
+                    <li><a href="../AGENT.md">AGENT.md <span class="tag">Instructions</span></a></li>
+                    <li><a href="../AI_INTERACTION_CONTRACT.md">AI_INTERACTION_CONTRACT.md <span class="tag">Phase</span></a></li>
+                    <li><a href="../SOP_AI_HANDSHAKE.md">SOP_AI_HANDSHAKE.md <span class="tag">SOP</span></a></li>
+                    <li><a href="../DOMAIN_INVARIANT_STATUS.md">DOMAIN_INVARIANT_STATUS.md <span class="tag">Status</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Bar Exam</h2>
+                <ul>
+                    <li><a href="../pr50_bar_exam/">pr50_bar_exam/ <span class="tag">Examination</span></a></li>
+                    <li><a href="../pr50_bar_exam/examination/run_exam.py">run_exam.py <span class="tag">Take Exam</span></a></li>
+                    <li><a href="../pr47_stewardship/witness/consent_log.jsonl">consent_log.jsonl <span class="tag">Witness</span></a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <h2 class="section-title">YouTuber Audit Channels</h2>
+        <div class="grid">
+            <div class="card">
+                <h2>Josh Strife Hayes</h2>
+                <ul>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_JSH_001 <span class="tag">QA</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_JSH_002 <span class="tag">Balance</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_JSH_003 <span class="tag">Marketing</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_JSH_004 <span class="tag">Servers</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_JSH_005 <span class="tag">FOMO</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Bellular</h2>
+                <ul>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_BELL_001 <span class="tag">Layoffs</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_BELL_002 <span class="tag">Closures</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_BELL_003 <span class="tag">Crunch</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_BELL_004 <span class="tag">Abandonment</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_BELL_005 <span class="tag">Antitrust</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Thunderf00t</h2>
+                <ul>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_TF_001 <span class="tag">Thermodynamics</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_TF_002 <span class="tag">Solar</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_TF_003 <span class="tag">Hyperloop</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_TF_004 <span class="tag">Batteries</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_TF_005 <span class="tag">Medical</span></a></li>
+                </ul>
+            </div>
+            
+            <div class="card">
+                <h2>Louis Rossmann</h2>
+                <ul>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_LR_001 <span class="tag">Repair</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_LR_002 <span class="tag">Warranty</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_LR_003 <span class="tag">Lobbying</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_LR_004 <span class="tag">Software</span></a></li>
+                    <li><a href="../case_studies/youtuber_audits/framework.py">CA_LR_005 <span class="tag">DMCA</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Session 668876d6-051d-4376-9fb2-143c413ce43c · 
+           <a href="https://github.com/aidoruao/orthogonal-engineering" style="color: var(--accent);">GitHub</a></p>
+        <p style="margin-top: 0.5rem; font-size: 0.875rem;">
+            Yeshua Standard · Glass-Box Boundary · Orthogonal Engineering Covenant
+        </p>
+    </footer>
+</body>
+</html>
