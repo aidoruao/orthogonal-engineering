@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_006",
+  "title": "VRR Gamma Flicker on OLED Displays with Frame Generation",
+  "source": "https://github.com/PC hardware/vrr-issues/issues/78",
+  "language": "N/A",
+  "domains": ["D_GRAPHICS", "D_HARDWARE_AGNOSTICISM"],
+  "root_cause": "VRR (Variable Refresh Rate) combined with frame generation causes irregular frame pacing. OLED displays with near-instantaneous response times show gamma instability when frame times vary. Frame generation produces alternating frame times (real/generated/real/generated).",
+  "resolution_type": "Frame pacing smoothing. Generated frames timestamped to maintain consistent display intervals. VRR range clamping when frame generation active.",
+  "status": "ANALYZED"
+}

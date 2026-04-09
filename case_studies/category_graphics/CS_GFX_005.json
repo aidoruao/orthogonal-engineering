@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_005",
+  "title": "UE5 Shader Compilation Stutter from PSO Cache Misses",
+  "source": "https://github.com/EpicGames/UnrealEngine/issues/11245",
+  "language": "C++",
+  "domains": ["D_COMPILER_DESIGN", "D_GRAPHICS"],
+  "root_cause": "UE5's PSO (Pipeline State Object) cache misses during gameplay cause shader compilation on foreground thread. stutter occurs when encountering new material combinations not in startup PSO cache.",
+  "resolution_type": "Async shader compilation with placeholder fallback. Background pipeline warming based on level analysis. Deterministic PSO pre-warming from recorded gameplay traces.",
+  "status": "ANALYZED"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_001",
+  "title": "NVIDIA DLSS 4 Transformer Architecture Frame Generation Artifacts",
+  "source": "https://github.com/NVIDIA/DLSS/issues/42",
+  "language": "C++",
+  "domains": ["D_GRAPHICS_REALITY", "D_AI_ONTOLOGICAL_STATUS"],
+  "root_cause": "DLSS 4 Transformer model produces temporal artifacts when motion vectors exceed training distribution. Frame generation extrapolates beyond learned motion bounds, causing ghosting on fast camera movements.",
+  "resolution_type": "Motion vector clamping to training distribution bounds. Fallback to CNN-based model when motion exceeds transformer comfort zone.",
+  "status": "ANALYZED"
+}

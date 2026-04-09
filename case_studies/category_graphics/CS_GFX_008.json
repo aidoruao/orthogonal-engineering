@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_008",
+  "title": "Anti-Lag 2 vs NVIDIA Reflex Latency Interoperability Conflict",
+  "source": "https://github.com/GPUOpen-Effects/AntiLag2/issues/12",
+  "language": "C++",
+  "domains": ["D_NETWORKING", "D_GRAPHICS"],
+  "root_cause": "AMD Anti-Lag 2 and NVIDIA Reflex both attempt to control frame pacing via marker injection. When both active, marker collision causes incorrect latency measurements and pacing decisions. Race condition on Present() timestamp registration.",
+  "resolution_type": "Vendor API mutual exclusion. Runtime detection of competing latency technologies. Single source of truth for frame pacing markers.",
+  "status": "ANALYZED"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_002",
+  "title": "AMD FSR 3.1 Frame Generation Motion Vector Mismatch",
+  "source": "https://github.com/GPUOpen-Effects/FidelityFX-SDK/issues/28",
+  "language": "HLSL",
+  "domains": ["D_GRAPHICS_REALITY", "D_GRAPHICS"],
+  "root_cause": "FSR 3.1 frame generation interpolates using application-provided motion vectors. When game engine motion vectors don't account for camera cutscenes or teleportation, interpolation produces discontinuities.",
+  "resolution_type": "Motion vector validity flags. Frame generation disabled when motion vector discontinuity detected. Fallback to base frame rate.",
+  "status": "ANALYZED"
+}

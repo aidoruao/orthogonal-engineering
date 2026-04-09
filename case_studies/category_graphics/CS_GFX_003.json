@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_003",
+  "title": "Sony PSSR PlayStation Spectral Super Resolution Platform Lock-in",
+  "source": "https://github.com/PlayStation/PlayStation-API/issues/15",
+  "language": "C++",
+  "domains": ["D_GRAPHICS_REALITY", "D_ANTITRUST", "D_PLATFORM"],
+  "root_cause": "PSSR uses PlayStation 5-specific ML accelerators (NN accelerators in RDNA2) without documented fallback path. Cross-platform titles must maintain separate rendering paths for PS5 vs PC/Xbox.",
+  "resolution_type": "Vendor-agnostic abstraction layer. FSR 3.1 as documented fallback for non-PS5 platforms. Feature parity matrix published.",
+  "status": "ANALYZED"
+}

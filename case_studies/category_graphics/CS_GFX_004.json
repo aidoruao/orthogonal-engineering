@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_004",
+  "title": "Intel XeSS DP4a vs XMX Fallback Quality Divergence",
+  "source": "https://github.com/GameTechDev/XeSS/issues/33",
+  "language": "HLSL",
+  "domains": ["D_HARDWARE_AGNOSTICISM", "D_GRAPHICS"],
+  "root_cause": "XeSS uses XMX (Xe Matrix Extensions) on Arc GPUs for ML inference. On non-Arc GPUs, falls back to DP4a instructions. DP4a path has different numerical precision causing visible quality degradation (more ghosting, less stable temporal).",
+  "resolution_type": "Documented quality tiers. DP4a path adjusts temporal accumulation parameters to match XMX perceptual quality. User-visible quality setting reflects actual output.",
+  "status": "ANALYZED"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_007",
+  "title": "DLSS 3.5 Ray Reconstruction Denoiser Bias in High-Frequency Detail",
+  "source": "https://github.com/NVIDIA/DLSS/issues/56",
+  "language": "C++",
+  "domains": ["D_GRAPHICS_REALITY", "axioms/measure_theory.py"],
+  "root_cause": "Ray Reconstruction neural denoiser introduces bias toward learned scene priors. High-frequency geometric detail (foliage, wires, grates) gets over-smoothed when ray sample count is low. Bias-variance tradeoff favors smoothness over detail preservation.",
+  "resolution_type": "Detail-preserving fallback to SVGF (Spatiotemporal Variance-Guided Filtering) for high-frequency regions. Hybrid approach: neural for low-freq, SVGF for high-freq.",
+  "status": "ANALYZED"
+}

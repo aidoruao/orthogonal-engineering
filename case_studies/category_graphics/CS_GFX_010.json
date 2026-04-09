@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_010",
+  "title": "DirectStorage RTX IO Queue Depth Overflow on Slow Storage",
+  "source": "https://github.com/microsoft/DirectStorage/issues/23",
+  "language": "C++",
+  "domains": ["D_DATABASE_SYSTEMS", "D_GRAPHICS"],
+  "root_cause": "DirectStorage maintains GPU decompression queue. When storage device slower than GPU decompression rate, queue fills to max capacity (default 64). Subsequent requests block on CPU, defeating async purpose. No backpressure signaling to application.",
+  "resolution_type": "Dynamic queue depth scaling based on measured storage throughput. Application-visible queue fullness signal. Fallback to synchronous I/O when queue saturation detected.",
+  "status": "ANALYZED"
+}

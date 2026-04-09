@@ -1,0 +1,10 @@
+{
+  "id": "CS_GFX_009",
+  "title": "Neural Texture Compression Reproducibility Across GPU Vendors",
+  "source": "https://github.com/Binary-serialization/NTC/issues/8",
+  "language": "C++",
+  "domains": ["axioms/cryptographic_verification.py", "D_GRAPHICS_REALITY"],
+  "root_cause": "Neural Texture Compression uses ML inference for decompression. FP16 numerical differences between NVIDIA Tensor Cores, AMD Matrix Cores, and Intel XMX produce bit-exact differences in decompressed output. Cross-platform multiplayer games see texture hash mismatches.",
+  "resolution_type": "Deterministic inference profile. Fixed-point quantization specified for inference. Reference CPU decoder for authoritative cross-platform verification.",
+  "status": "ANALYZED"
+}
