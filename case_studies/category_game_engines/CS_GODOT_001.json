@@ -1,0 +1,10 @@
+{
+  "id": "CS_GODOT_001",
+  "title": "Godot GDScript type inference unsoundness",
+  "source": "https://github.com/godotengine/godot/issues/45678",
+  "language": "GDScript",
+  "domains": ["D_COMPILER_DESIGN", "D_GAME_ENGINE_DEVELOPMENT"],
+  "root_cause": "GDScript gradual typing allows runtime type violations. Inferred types not checked at boundaries when calling from dynamically-typed code.",
+  "resolution_type": "Runtime type checks at all gradual boundaries. Invariant: typeof(actual) <: inferred_type on every assignment.",
+  "status": "ANALYZED"
+}

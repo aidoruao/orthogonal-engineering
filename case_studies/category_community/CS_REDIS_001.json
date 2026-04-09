@@ -1,0 +1,10 @@
+{
+  "id": "CS_REDIS_001",
+  "title": "Redis cluster split-brain on network partition",
+  "source": "https://github.com/redis/redis/issues/8412",
+  "language": "C",
+  "domains": ["D_DISTRIBUTED_SYSTEMS", "D_DATABASE_SYSTEMS"],
+  "root_cause": "Redis cluster without consensus protocol: nodes declare themselves master on partition. Clients write to divergent masters.",
+  "resolution_type": "Raft integration for cluster state. Invariant: at most one master per hash slot at any time.",
+  "status": "ANALYZED"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "CS_ES_005",
+  "title": "Elasticsearch shard allocation storm",
+  "source": "https://github.com/elastic/elasticsearch/issues/72170",
+  "language": "Java",
+  "domains": ["D_DISTRIBUTED_SYSTEMS", "D_DATABASE_SYSTEMS"],
+  "root_cause": "Disk watermark threshold triggers reallocation cascade. Rebalancing creates more disk pressure, feedback loop.",
+  "resolution_type": "Hysteresis on allocation decisions. Invariant: reallocation_rate < f(disk_pressure), monotonic decreasing.",
+  "status": "ANALYZED"
+}

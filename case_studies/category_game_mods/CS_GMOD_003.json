@@ -1,0 +1,10 @@
+{
+  "id": "CS_GMOD_003",
+  "title": "Sodium chunk rendering regression — CaffeineMC/sodium",
+  "source": "https://github.com/CaffeineMC/sodium/issues/1016",
+  "language": "Java",
+  "domains": ["D_GAMEMODS", "D_GRAPHICS"],
+  "root_cause": "Chunk meshing fails to invalidate cached geometry when neighbor chunks update. Visibility graph becomes stale leading to invisible chunks.",
+  "resolution_type": "Invariant: chunk mesh must rebuild when any neighbor block changes. Hash(chunk_geometry + neighbor_states) determines cache validity.",
+  "status": "ANALYZED"
+}

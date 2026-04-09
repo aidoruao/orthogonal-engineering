@@ -1,0 +1,10 @@
+{
+  "id": "CS_GHA_001",
+  "title": "GitHub Actions runner memory leak on long-running jobs",
+  "source": "https://github.com/actions/runner/issues/1589",
+  "language": "C#",
+  "domains": ["D_DEVOPS", "D_SOFTWARE_TESTING"],
+  "root_cause": "Process stdout/stderr pipes not drained when child process exits. Pipe buffer fills, process blocks, zombie accumulates.",
+  "resolution_type": "Eager pipe draining with bounded buffer. Invariant: pipe_buffer_size < PIPE_MAX at all times.",
+  "status": "ANALYZED"
+}

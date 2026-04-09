@@ -1,0 +1,10 @@
+{
+  "id": "CS_MOB_004",
+  "title": "Expo EAS build cache invalidation failure",
+  "source": "https://github.com/expo/expo/issues/18432",
+  "language": "TypeScript",
+  "domains": ["D_MOBILE_DEVELOPMENT", "D_DEVOPS"],
+  "root_cause": "Build cache keyed only on package.json, not on native dependency versions. Cached native modules incompatible with new native code.",
+  "resolution_type": "Cache key must include all native dependency versions. Invariant: cache_key = hash(package.json + native_modules.lock).",
+  "status": "ANALYZED"
+}

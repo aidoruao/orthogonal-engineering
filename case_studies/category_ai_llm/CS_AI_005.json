@@ -1,0 +1,10 @@
+{
+  "id": "CS_AI_005",
+  "title": "Ollama model loading memory spike",
+  "source": "https://github.com/ollama/ollama/issues/1952",
+  "language": "Go",
+  "domains": ["D_AI_ONTOLOGICAL_STATUS", "D_DISTRIBUTED_SYSTEMS"],
+  "root_cause": "Model weights loaded into RAM then copied to GPU, doubling memory requirement. No zero-copy path for mmap'd weights.",
+  "resolution_type": "Direct GPU memory mapping: weights stay in GPU memory only. Invariant: model_size_RAM + model_size_GPU <= model_size_total.",
+  "status": "ANALYZED"
+}

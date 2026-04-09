@@ -1,0 +1,10 @@
+{
+  "id": "CS_SVELTE_001",
+  "title": "Svelte hydration mismatch on dynamic content",
+  "source": "https://github.com/sveltejs/svelte/issues/7563",
+  "language": "TypeScript",
+  "domains": ["D_PLATFORM", "D_WEBSEC"],
+  "root_cause": "Server-rendered HTML differs from client initial state due to time-sensitive data. Hydration assumes identical DOM.",
+  "resolution_type": "SSR data serialization with checksum validation. Invariant: server_state_hash == client_initial_state_hash.",
+  "status": "ANALYZED"
+}

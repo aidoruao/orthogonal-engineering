@@ -1,0 +1,10 @@
+{
+  "id": "CS_GMOD_006",
+  "title": "Iris shader pipeline stall — IrisShaders/Iris",
+  "source": "https://github.com/IrisShaders/Iris/issues/1234",
+  "language": "Java",
+  "domains": ["D_GAMEMODS", "D_GRAPHICS"],
+  "root_cause": "Shader uniform updates block render thread while pipeline compiles. No async compilation path for dynamic uniforms.",
+  "resolution_type": "Async compilation: shader variants compiled off-thread with fallback to previous version during compilation.",
+  "status": "ANALYZED"
+}
