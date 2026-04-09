@@ -2,7 +2,7 @@
 
 **Status:** FOUNDATIONAL HALT REACHED (PR #30)  
 **Current Phase:** CITY EXTENSION (PRs 40–100+)  
-**Last Updated:** 2026-04-08
+**Last Updated: 2026-04-09
 
 ---
 
@@ -21,13 +21,13 @@ Both conditions were satisfied at PR #30. The **foundational halt** was correctl
 
 The repository has grown substantially since PR #30:
 
-| Metric | PR #30 | Current (2026-04-08) |
+| Metric | PR #30 | Current (2026-04-09) |
 |--------|--------|---------------------|
-| Domains | ~40 | **149** |
-| Layers | 3 | **5** (0-4) |
+| Domains | ~40 | **155** |
+| Layers | 3 | **5** (0-4 + null) |
 | Cross-domain morphisms | 0 | **~4800** |
 | SAL Types | 1-9 | **10** (Yoneda) |
-| Axiom modules | 5 | **10** (+algebra, topology, measure, formal languages, category theory) |
+| Axiom modules | 5 | **27** |
 
 This is not a violation of the halt condition. It is the **city being built on the foundation**.
 
@@ -64,7 +64,7 @@ The SOVEREIGN TOPOS expansion builds the city on the foundation:
 The **extension phase** completes when:
 
 ```
-all_135_domains_have_real_invariants == True
+all_155_domains_have_real_invariants == True
   AND
 all_inter_layer_morphisms_preserve_truth == True
   AND
@@ -75,7 +75,7 @@ yoneda_embedding_fully_faithful == True
 
 | Condition | Status |
 |-----------|--------|
-| 135 domains created | ✅ 100% |
+| 155 domains created | ✅ 100% |
 | Domain invariants (non-stub) | 🔄 30% |
 | Inter-layer morphisms | ✅ 4836 defined |
 | Morphism truth preservation | 🔄 Verification pending |

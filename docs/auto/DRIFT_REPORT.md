@@ -4,9 +4,9 @@
 
 ## Domain Count
 - **Severity:** MEDIUM
-- **Documented:** 149
+- **Documented:** 154
 - **Actual:** 155
-- **Drift:** +6
+- **Drift:** +1
 
 **Suggestions:**
 - Update DOMAIN_INVARIANT_STATUS.md to reflect 155 domains
