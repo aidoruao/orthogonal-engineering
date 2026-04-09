@@ -1335,6 +1335,345 @@
         "Paradox: PX-002 documents the boundary paradox between DH and FML"
       ],
       "status": "validated"
+    },
+    {
+      "id": "CS_071",
+      "title": "Administrative Law: Chevron Deference Overruled — Loper Bright v. Raimondo",
+      "source": "https://www.supremecourt.gov/opinions/23pdf/22-451_7m58.pdf",
+      "domain": "D_ADMINISTRATIVE_LAW",
+      "root_cause_signals": [
+        "RCS-AMBIENT-AUTHORITY",
+        "RCS-NON-VERIFIABLE-DISCRETION"
+      ],
+      "description": "Supreme Court overruled Chevron deference (1984-2024), which gave agencies interpretive authority over ambiguous statutes. The doctrine created ambient authority: agencies could reinterpret statutes without legislative amendment. Loper Bright held that courts must exercise independent judgment on statutory interpretation (APA § 706).",
+      "assumptions_violated": [
+        "Agency expertise justifies deference on statutory ambiguity.",
+        "Chevron framework is constitutionally sound.",
+        "Administrative efficiency requires deference doctrine."
+      ],
+      "falsification_tests": [
+        "F_ADMINISTRATIVE_LAW_002"
+      ],
+      "ontological_issues": [
+        "OI_ADMINISTRATIVE_LAW_002"
+      ],
+      "lessons": [
+        "Ambient authority (deference without verification) violates separation of powers.",
+        "Statutory interpretation is a judicial function, not delegable to agencies.",
+        "Capability-gated authority: agencies interpret regulations, not statutes.",
+        "Glass-box principle: interpretation must be verifiable by courts."
+      ],
+      "methodology_components": [
+        "Yeshua Axiom 4: No authority without proof (statutory interpretation requires judicial proof).",
+        "Capability model: AgencyInterpretationCap bounded by statute text, not ambiguity.",
+        "Falsification: F_ADMINISTRATIVE_LAW_002 tests for ambient interpretive authority."
+      ]
+    },
+    {
+      "id": "CS_072",
+      "title": "Aerospace: Boeing 737 MAX MCAS — Single AOA sensor reliance",
+      "source": "https://www.ntsb.gov/investigations/AccidentReports/Reports/AAR2003.pdf",
+      "domain": "D_AEROSPACE",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-FAILURE",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "MCAS (Maneuvering Characteristics Augmentation System) relied on a single AOA (angle of attack) sensor. Lion Air 610 and Ethiopian 302 crashes resulted from faulty AOA sensor triggering repeated nose-down trim. Pilots lacked training on MCAS behavior and recovery procedure. DO-178C Level A certification required redundant critical sensors.",
+      "assumptions_violated": [
+        "Single AOA sensor is sufficient for flight-critical system.",
+        "Pilots will recognize and counter MCAS malfunction.",
+        "MCAS authority limited enough to not require training disclosure."
+      ],
+      "falsification_tests": [
+        "F_AEROSPACE_002"
+      ],
+      "ontological_issues": [
+        "OI_AEROSPACE_002"
+      ],
+      "lessons": [
+        "Byzantine fault tolerance: critical systems require redundant sensors with voting logic.",
+        "DO-178C Level A: single-point failures must be <10^-9 per flight hour.",
+        "Glass-box disclosure: pilots must know all flight control authorities.",
+        "Deterministic recovery: MCAS cutout switches must be documented and trained."
+      ],
+      "methodology_components": [
+        "Adjunction violation: MCAS counit check failed (single sensor != Byzantine consensus).",
+        "Falsification: F_AEROSPACE_002 injects AOA sensor faults with voting logic.",
+        "Yeshua Axiom 5: No hidden state (MCAS behavior must be disclosed to pilots)."
+      ]
+    },
+    {
+      "id": "CS_073",
+      "title": "Antitrust: Microsoft IE Bundling — United States v. Microsoft",
+      "source": "https://www.justice.gov/atr/case/us-v-microsoft-corp",
+      "domain": "D_ANTITRUST",
+      "root_cause_signals": [
+        "RCS-TYING-ARRANGEMENT",
+        "RCS-MONOPOLY-LEVERAGE"
+      ],
+      "description": "Microsoft bundled Internet Explorer with Windows 95/98, leveraging OS monopoly into browser market. Tying arrangement foreclosed competition (Netscape market share dropped from 80% to <15%). District court ordered breakup; DC Circuit affirmed liability but remanded remedy. Settlement imposed middleware disclosure and OEM flexibility.",
+      "assumptions_violated": [
+        "Bundling improves user experience without anticompetitive harm.",
+        "Browser market competition unaffected by OS tying.",
+        "Technical integration justifies all bundling decisions."
+      ],
+      "falsification_tests": [
+        "F_ANTITRUST_002"
+      ],
+      "ontological_issues": [
+        "OI_ANTITRUST_001"
+      ],
+      "lessons": [
+        "Tying illegal when seller has market power in tying product (Windows OS).",
+        "Sherman Act § 2: monopolization via exclusionary conduct, not superior product.",
+        "Capability-gated bundling: user must have Cap to unbundle components.",
+        "Glass-box disclosure: middleware APIs must be documented for competitors."
+      ],
+      "methodology_components": [
+        "Market definition: relevant market = Intel-compatible PC operating systems (>95% share).",
+        "HHI analysis: tying increased browser market concentration above threshold.",
+        "Yeshua principle: no economic gatekeeping via bundling without user consent."
+      ]
+    },
+    {
+      "id": "CS_074",
+      "title": "Banking: 2008 Financial Crisis — Subprime mortgage securitization",
+      "source": "https://www.fdic.gov/bank/historical/crisis/",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-HIDDEN-RISK",
+        "RCS-MORAL-HAZARD",
+        "RCS-SYSTEMIC-CONTAGION"
+      ],
+      "description": "Mortgage-backed securities (MBS) and collateralized debt obligations (CDOs) concealed subprime default risk. Credit rating agencies (Moody's, S&P) assigned AAA ratings to toxic assets. Lehman Brothers collapse triggered systemic failure. Dodd-Frank Act (2010) established stress testing, living wills, and Volcker Rule.",
+      "assumptions_violated": [
+        "Credit ratings accurately reflect default risk.",
+        "Securitization diversifies away idiosyncratic risk.",
+        "Financial institutions hold sufficient capital for tail events.",
+        "Systemic risk is manageable without regulatory intervention."
+      ],
+      "falsification_tests": [
+        "F_BANKING_REGULATION_002"
+      ],
+      "ontological_issues": [
+        "OI_BANKING_REGULATION_002"
+      ],
+      "lessons": [
+        "Hidden state (opaque CDO structures) violates Yeshua Axiom 5.",
+        "Stress testing: capital adequacy must survive tail scenarios (CCAR/DFAST).",
+        "Glass-box risk: MBS tranches must have transparent cash flow waterfalls.",
+        "Volcker Rule: proprietary trading creates moral hazard with FDIC backstop."
+      ],
+      "methodology_components": [
+        "Basel III capital buffers: CET1 ≥4.5%, total capital ≥8%, LCR ≥100%.",
+        "Falsification: F_BANKING_REGULATION_002 stress tests portfolio under 2008 scenario.",
+        "Yeshua Axiom 6: No unverifiable dependency (credit ratings must be auditable)."
+      ]
+    },
+    {
+      "id": "CS_075",
+      "title": "Automotive: Jeep Cherokee UConnect — CVE-2015-5611 remote hijack",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2015-5611",
+      "domain": "D_AUTOMOTIVE",
+      "root_cause_signals": [
+        "RCS-AMBIENT-NETWORK",
+        "RCS-NO-AUTHENTICATION"
+      ],
+      "description": "Jeep Cherokee UConnect infotainment system exposed cellular modem to internet without authentication. Researchers remotely disabled transmission and brakes via CAN bus injection. FCA recalled 1.4 million vehicles. ISO 26262 and automotive cybersecurity standards now require capability-gated network access.",
+      "assumptions_violated": [
+        "Infotainment system isolation from safety-critical CAN bus.",
+        "Cellular modem connectivity does not expose attack surface.",
+        "Physical separation sufficient for security boundary."
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_002"
+      ],
+      "ontological_issues": [
+        "OI_AUTOMOTIVE_002"
+      ],
+      "lessons": [
+        "Ambient network authority: no unauthenticated internet access to vehicle systems.",
+        "CAN bus requires capability-gated access (NetworkCap with message authentication).",
+        "ISO 26262 + cybersecurity: intrusion detection system (IDS) monitors CAN traffic.",
+        "OTA updates must have cryptographic signature verification (Yeshua Axiom 8)."
+      ],
+      "methodology_components": [
+        "Capability model: NetworkCap required for cellular, EcuCap required for CAN injection.",
+        "Falsification: F_AUTOMOTIVE_002 injects unauthenticated CAN messages.",
+        "Yeshua Axiom 4: No authority without proof (network access requires authentication)."
+      ]
+    },
+    {
+      "id": "CS_076",
+      "title": "Biotech: Theranos Edison — Non-reproducible blood test results",
+      "source": "https://www.sec.gov/litigation/complaints/2018/comp-pr2018-41.pdf",
+      "domain": "D_BIOTECH",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-HIDDEN-STATE",
+        "RCS-FRAUD"
+      ],
+      "description": "Theranos claimed Edison device performed 200+ blood tests from fingerprick. Tests were non-reproducible, yielded false results, and used competitor devices (Siemens) for most assays. SEC fraud charges: misrepresented accuracy, FDA approval status, and clinical validation. Glass-box principle: clinical devices require reproducible, verifiable results.",
+      "assumptions_violated": [
+        "Edison device produces clinically valid results.",
+        "Fingerprick samples equivalent to venous draws for all tests.",
+        "Theranos obtained FDA clearance and clinical validation."
+      ],
+      "falsification_tests": [
+        "F_BIOTECH_002"
+      ],
+      "ontological_issues": [
+        "OI_BIOTECH_002"
+      ],
+      "lessons": [
+        "Determinism: clinical test results must be reproducible within spec (CLIA, CAP).",
+        "Glass-box verification: test validation data must be auditable by regulators.",
+        "Yeshua Axiom 2: Every derivation is reproducible (same sample yields same result).",
+        "Yeshua Axiom 5: No hidden state (device methodology must be disclosed)."
+      ],
+      "methodology_components": [
+        "Reproducibility test: technical replicates must yield Cq within ±0.5 cycles (qPCR).",
+        "Falsification: F_BIOTECH_002 runs same sample through pipeline twice, asserts equality.",
+        "FDA 510(k): substantial equivalence requires clinical validation with reproducible data."
+      ]
+    },
+    {
+      "id": "CS_077",
+      "title": "Chemical: Bhopal Disaster — MIC leak from Union Carbide plant",
+      "source": "https://www.csb.gov/bhopal-methyl-isocyanate-explosion/",
+      "domain": "D_CHEMICAL",
+      "root_cause_signals": [
+        "RCS-THERMAL-RUNAWAY",
+        "RCS-SAFETY-INTERLOCK-BYPASS",
+        "RCS-MAINTENANCE-DEFICIENCY"
+      ],
+      "description": "Methyl isocyanate (MIC) storage tank runaway reaction at Union Carbide, Bhopal (1984). Water ingress triggered exothermic reaction, temperature exceeded T_critical, relief valve opened, 40+ tons MIC released. 3,800+ deaths. Safety systems (refrigeration, scrubber, flare) were offline or inadequate. Process safety management (PSM) now mandates interlocks, LOPA, HAZOP.",
+      "assumptions_violated": [
+        "Storage tank refrigeration is operational.",
+        "Scrubber and flare tower can handle relief valve discharge.",
+        "Water ingress into MIC tank is prevented by design.",
+        "Maintenance schedules are followed for safety systems."
+      ],
+      "falsification_tests": [
+        "F_CHEMICAL_002"
+      ],
+      "ontological_issues": [
+        "OI_CHEMICAL_002"
+      ],
+      "lessons": [
+        "Thermal runaway interlock must activate before T_critical (LOPA analysis required).",
+        "Safety Instrumented Systems (SIS): SIL 3 for catastrophic hazards (PFD <10^-3).",
+        "Layer of Protection Analysis (LOPA): independent layers reduce risk.",
+        "HAZOP (Hazard and Operability Study): identifies deviations from design intent.",
+        "Glass-box maintenance: safety system status must be continuously monitored."
+      ],
+      "methodology_components": [
+        "LOPA: vent scrubber, refrigeration, operator response as independent layers.",
+        "Falsification: F_CHEMICAL_002 simulates water ingress with interlock verification.",
+        "Yeshua Axiom 5: No hidden state (safety system status must be logged)."
+      ]
+    },
+    {
+      "id": "CS_078",
+      "title": "Construction: Hyatt Regency Walkway Collapse — Load path design change",
+      "source": "https://www.nist.gov/el/hyatt-regency-walkway-collapse",
+      "domain": "D_CONSTRUCTION",
+      "root_cause_signals": [
+        "RCS-LOAD-PATH-VIOLATION",
+        "RCS-FIELD-CHANGE-NO-REVIEW"
+      ],
+      "description": "Kansas City Hyatt Regency skybridge collapse (1981). Original design: single rod through 4th and 2nd floor walkways. Field change: stacked rods with box beam connection at 4th floor. Load transfer doubled at 4th floor connection (failed at 60% of design live load). 114 deaths. Structural engineers convicted of gross negligence.",
+      "assumptions_violated": [
+        "Field fabrication change maintains original load path.",
+        "Connection design reviewed by structural engineer.",
+        "Box beam-to-rod connection capacity adequate for doubled load."
+      ],
+      "falsification_tests": [
+        "F_CONSTRUCTION_002"
+      ],
+      "ontological_issues": [
+        "OI_CONSTRUCTION_002"
+      ],
+      "lessons": [
+        "Load path changes require structural engineer approval (ASCE 7, building codes).",
+        "FEM (Finite Element Method) verification: connection capacity must exceed demand.",
+        "Glass-box change control: field modifications logged and reviewed.",
+        "Deterministic load transfer: stacked rods double shear force at upper connection.",
+        "Safety factor: connection capacity ≥1.5× applied load (AISC steel design)."
+      ],
+      "methodology_components": [
+        "Structural analysis: stacked rod configuration doubles force on 4th floor connection.",
+        "Falsification: F_CONSTRUCTION_002 verifies load path equivalence before/after change.",
+        "Yeshua Axiom 3: Every mutation is re-verifiable (design changes require approval)."
+      ]
+    },
+    {
+      "id": "CS_079",
+      "title": "Energy: Texas Grid Failure (Winter Storm Uri 2021) — Winterization gaps",
+      "source": "https://www.ferc.gov/media/february-2021-cold-weather-outages-texas-and-south-central-united-states-ferc-nerc-and",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION",
+        "RCS-INSUFFICIENT-MARGIN"
+      ],
+      "description": "Winter Storm Uri (Feb 2021) caused 69 GW generation loss in ERCOT. Natural gas wellheads, pipelines, and power plants froze due to inadequate winterization. Rolling blackouts affected 4.5 million customers, 246 deaths. FERC/NERC report: generation failed to meet N-1 contingency under extreme weather. Winterization now mandatory (Texas PUC rules).",
+      "assumptions_violated": [
+        "Texas winter temperatures stay above freezing for critical infrastructure.",
+        "Natural gas supply chain is robust to cold weather.",
+        "Generation capacity meets peak demand with adequate reserve margin."
+      ],
+      "falsification_tests": [
+        "F_ENERGY_002"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_002"
+      ],
+      "lessons": [
+        "N-1 contingency: system must survive single largest generator/line failure.",
+        "Winterization: heat tracing, insulation, wind breaks for equipment rated to design temperature.",
+        "Reserve margin: planning reserve >15% to handle extreme weather + forced outages.",
+        "Load forecasting: peak demand models must include tail scenarios (e.g., 1-in-50-year cold).",
+        "Glass-box monitoring: real-time generation/load balance with automated load shedding."
+      ],
+      "methodology_components": [
+        "Grid frequency: load shedding triggers at 59.5 Hz (ERCOT) to prevent cascading failure.",
+        "Falsification: F_ENERGY_002 simulates extreme cold with generation availability model.",
+        "Yeshua principle: infrastructure must survive tail scenarios, not just typical conditions."
+      ]
+    },
+    {
+      "id": "CS_080",
+      "title": "Environmental Law: Deepwater Horizon — Blowout preventer failure",
+      "source": "https://www.csb.gov/macondo-blowout-and-explosion/",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-SAFETY-CRITICAL-FAILURE",
+        "RCS-HIDDEN-DEFECT"
+      ],
+      "description": "Deepwater Horizon blowout (2010): Macondo well blowout preventer (BOP) failed to seal well during gas influx. 11 deaths, 4.9 million barrels oil spilled into Gulf of Mexico. BP pled guilty to Clean Water Act and MBTA violations, paid $20.8B in fines and damages. BOP testing inadequate; decision-making prioritized schedule over safety.",
+      "assumptions_violated": [
+        "Blowout preventer (BOP) will seal well under all conditions.",
+        "Well pressure monitoring detects influx before uncontrolled flow.",
+        "Cementing and mud weight provide primary well control."
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_LAW_002"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_LAW_002"
+      ],
+      "lessons": [
+        "Clean Water Act penalties: $4,300/barrel for gross negligence (33 U.S.C. § 1321).",
+        "Natural resource damages: trustees (NOAA, DOI) assess injury to ecosystems (OPA § 1006).",
+        "BOP testing: functional test must simulate well conditions (pressure, temperature).",
+        "Polluter pays principle: BP liable for cleanup + restoration + economic damages (CERCLA § 107).",
+        "Glass-box audit: well control decisions must be logged with justification."
+      ],
+      "methodology_components": [
+        "Fault tree analysis: BOP failure + cementing defect + influx detection failure = blowout.",
+        "Falsification: F_ENVIRONMENTAL_LAW_002 verifies BOP closure under design pressure.",
+        "Yeshua Axiom 5: No hidden state (well pressure data must be continuously recorded)."
+      ]
     }
   ]
 }
