@@ -1,48 +1,57 @@
-"""D_OCCUPATIONALSAFETY invariant checks."""
+#!/usr/bin/env python3
+"""Occupational Safety Invariants — OSHA compliance."""
 
-from datetime import datetime
-from src.domains.d_occupational_safety.implementation import (
-    OccupationalSafetyRecord,
-    OccupationalSafetyStatus,
-    OccupationalSafetyComplianceChecker,
-)
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import Hazard, FallProtection, OSHAInspection
 
-
-def check_compliance_deterministic() -> bool:
-    """Invariant: Compliance checks produce consistent results."""
-    checker = OccupationalSafetyComplianceChecker()
-    
-    compliant_record = OccupationalSafetyRecord(
-        record_id="TEST001",
-        status=OccupationalSafetyStatus.COMPLIANT
+def check_pel(hazard: Hazard) -> Tuple[bool, ProofObject]:
+    """OSHA Permissible Exposure Limit compliance."""
+    if not hazard.exceeds_pel():
+        return True, ProofObject(
+            conclusion=f"PEL compliant ({hazard.chemical_exposure_ppm} <= {hazard.permissible_exposure_limit})",
+            premises=[],
+            rule="osha_pel"
+        )
+    return False, ProofObject(
+        conclusion="VIOLATION: PEL exceeded",
+        premises=[f"Actual: {hazard.chemical_exposure_ppm}", f"Limit: {hazard.permissible_exposure_limit}"],
+        rule="osha_pel"
     )
-    result = checker.check_compliance(compliant_record)
-    assert result["compliant"] is True, "Compliant record should pass"
+
+def check_fall_protection(fp: FallProtection) -> Tuple[bool, ProofObject]:
+    """OSHA 1926.501: Fall protection at 6+ feet."""
+    if not fp.protection_required():
+        return True, ProofObject(
+            conclusion=f"Fall protection not required ({fp.work_height_feet} < {fp.FALL_PROTECTION_THRESHOLD} ft)",
+            premises=[],
+            rule="osha_fall_protection"
+        )
     
-    non_compliant = OccupationalSafetyRecord(
-        record_id="TEST002",
-        status=OccupationalSafetyStatus.NON_COMPLIANT
+    if fp.is_compliant():
+        return True, ProofObject(
+            conclusion="Fall protection adequate",
+            premises=[],
+            rule="osha_fall_protection"
+        )
+    
+    return False, ProofObject(
+        conclusion="VIOLATION: Fall protection required but not provided",
+        premises=[f"Height: {fp.work_height_feet} feet"],
+        rule="osha_fall_protection"
     )
-    result2 = checker.check_compliance(non_compliant)
-    assert result2["compliant"] is False, "Non-compliant record should fail"
-    
-    return True
 
-
-def run_all_invariants() -> dict:
-    """Run all invariant checks."""
-    results = {}
-    checks = [
-        ("compliance_deterministic", check_compliance_deterministic),
-    ]
-    
-    for name, check_func in checks:
-        try:
-            check_func()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
-    return results
+def check_general_duty(inspection: OSHAInspection) -> Tuple[bool, ProofObject]:
+    """OSH Act § 5(a)(1): General duty clause."""
+    if inspection.has_general_duty_violation():
+        return False, ProofObject(
+            conclusion="VIOLATION: General duty clause — recognized hazard not abated",
+            premises=[],
+            rule="osha_general_duty"
+        )
+    return True, ProofObject(
+        conclusion="General duty clause satisfied",
+        premises=[],
+        rule="osha_general_duty"
+    )

@@ -1,2 +1,2 @@
-"""d_bankruptcy domain module."""
+"""d_healthcare_law domain module."""
 from . import implementation, invariants

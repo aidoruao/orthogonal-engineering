@@ -1,19 +1,49 @@
-"""D_HEALTHCARE_LAW invariant checks."""
-from src.domains.d_healthcare_law.implementation import Healthcare_LawRecord, Healthcare_LawStatus, Healthcare_LawChecker
+#!/usr/bin/env python3
+"""Healthcare Law Invariants."""
 
-def check_compliance_deterministic() -> bool:
-    checker = Healthcare_LawChecker()
-    compliant = Healthcare_LawRecord(record_id="T1", status=Healthcare_LawStatus.COMPLIANT)
-    non_compliant = Healthcare_LawRecord(record_id="T2", status=Healthcare_LawStatus.NON_COMPLIANT)
-    assert checker.check_compliance(compliant)["compliant"] is True
-    assert checker.check_compliance(non_compliant)["compliant"] is False
-    return True
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import Referral, EMTPatient, PHI_Access
 
-def run_all_invariants() -> dict:
-    results = {}
-    try:
-        check_compliance_deterministic()
-        results["compliance_deterministic"] = "PASS"
-    except Exception as e:
-        results["compliance_deterministic"] = f"ERROR: {e}"
-    return results
+def check_stark(referral: Referral) -> Tuple[bool, ProofObject]:
+    """Stark Law: Physician self-referral prohibition."""
+    if referral.violates_stark():
+        return False, ProofObject(
+            conclusion="VIOLATION: Stark Law self-referral prohibited",
+            premises=["DHS", "Financial relationship"],
+            rule="stark_law"
+        )
+    return True, ProofObject(
+        conclusion="Stark Law compliant",
+        premises=[],
+        rule="stark_law"
+    )
+
+def check_emtala(patient: EMTPatient) -> Tuple[bool, ProofObject]:
+    """EMTALA: Emergency screening and stabilization."""
+    if patient.emtala_violation():
+        return False, ProofObject(
+            conclusion="VIOLATION: EMTALA screening/stabilization not provided",
+            premises=[f"Screened: {patient.screened}", f"Stabilized: {patient.stabilized}"],
+            rule="emtala"
+        )
+    return True, ProofObject(
+        conclusion="EMTALA requirements satisfied",
+        premises=[],
+        rule="emtala"
+    )
+
+def check_hipaa_minimum_necessary(access: PHI_Access) -> Tuple[bool, ProofObject]:
+    """HIPAA minimum necessary standard."""
+    if access.exceeds_minimum_necessary():
+        return False, ProofObject(
+            conclusion="VIOLATION: PHI disclosure exceeds minimum necessary",
+            premises=[],
+            rule="hipaa_minimum_necessary"
+        )
+    return True, ProofObject(
+        conclusion="HIPAA minimum necessary standard satisfied",
+        premises=[],
+        rule="hipaa_minimum_necessary"
+    )
