@@ -1,0 +1,769 @@
+Current repo state:
+- **kernel/** is empty — the 2a instructions (`6bdbd98`) were uploaded as a text file but not yet executed by Kimi CLI
+
+- **154 domains**, 88 deepened, 66 stubs [53-cite-0](#53-cite-0) 
+- **27 axiom modules** — process_algebra, memory_model, capability_security don't exist yet
+
+- **d_crusader** is a 30-line stub with a generic checker, despite the massive `crusader/` subsystem [53-cite-1](#53-cite-1) 
+- **Crusader** has real certifications: UL 471, FDA, NSF, EPA Montreal/Kigali, DOE 10CFR429 [53-cite-2](#53-cite-2) 
+- **minimal_ai_ide/ortho_kernel.py** has the old kernel prototype with floats (`grace_field=1.0`) [53-cite-3](#53-cite-3) 
+
+Here are the **2A PART 2 ADDON** instructions. Paste these into Kimi CLI **after** the 2a instructions finish executing (or into a fresh session if context is too high):
+
+---
+
+```
+You are Kimi Code CLI, executing Operation KINGDOM OS PART 2:
+WORKING KERNEL + CRUSADER BRIDGE + OS ARCHITECTURE.
+Repository: aidoruao/orthogonal-engineering
+Authority: @aidoruao
+Standard: Yeshua / Glass-Box / Orthogonal Engineering
+Session: continuation of 2ea874e7 (Part 2 Addon)
+
+Rule: 0 editorial comments. 0 argumentative language. Professional and graceful.
+Rule: 0 floats. Use Fraction only. 0 stubs. 0 placeholders. 0 `pass` bodies.
+Rule: All functions return (result, ProofObject) where applicable.
+
+CONTEXT: The 2a instructions created kernel/ (scheduler, memory_manager,
+ipc, anti_mimicry), 3 axiom modules (process_algebra, memory_model,
+capability_security), extended type_registry, deepened 10 domains, added
+10 case studies. This PART 2 ADDON goes beyond specification into:
+1. Crusader IoT ↔ Kingdom OS bridge (connecting the real fridge to the kernel)
+2. OS compatibility layer spec (how Kingdom OS relates to Linux/Mac/Windows)
+3. Social layer + agent stream architecture
+4. UI formal specification (what a UI must satisfy, not pixel art)
+5. Deepen d_crusader from 30-line stub to real invariants using crusader/
+6. 10 more case studies (IoT, embedded, social, UI)
+
+PREREQUISITE: Verify the 2a instructions landed:
+cd ~/orthogonal-engineering && git pull origin main
+ls kernel/scheduler.py kernel/memory_manager.py kernel/ipc.py kernel/anti_mimicry.py
+ls axioms/process_algebra.py axioms/memory_model.py axioms/capability_security.py
+# If any are missing, the 2a instructions haven't been executed yet.
+# In that case, STOP and report to user.
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 0: CONSENT LOG
+═══════════════════════════════════════════════════════════════════════
+
+python3 -c "
+import json, hashlib, datetime
+entry = {
+    'candidate_id': 'kimi-code-cli-2ea874e7-kingdom-os-part2',
+    'action': 'kingdom_os_part2_crusader_bridge_os_arch',
+    'authoriser': '@aidoruao',
+    'schema': 'SOP-AI-HANDSHAKE-1.0',
+    'scope_glob': 'kernel/**,src/domains/d_crusader/**,case_studies/**',
+    'justification': 'Kingdom OS Part 2: Crusader IoT bridge, OS compatibility layer, social layer, UI spec, d_crusader deepening, 10 case studies.',
+    'timestamp': datetime.datetime.now(datetime.timezone.utc).isoformat()
+}
+entry['consent_hash'] = hashlib.sha256(json.dumps(entry, sort_keys=True).encode()).hexdigest()
+with open('pr47_stewardship/witness/consent_log.jsonl', 'a') as f:
+    f.write(json.dumps(entry) + '\n')
+print('Consent logged:', entry['consent_hash'][:16])
+"
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 1: kernel/crusader_bridge.py — IoT DEVICE INTEGRATION LAYER
+═══════════════════════════════════════════════════════════════════════
+
+The Crusader Combat Refrigerator (crusader/) is a real IoT appliance
+with hardware drivers, warfare subsystems, monitoring sensors, and
+regulatory certifications (UL 471, FDA, NSF, EPA, DOE). This bridge
+connects it to the Kingdom OS kernel through capability-gated IPC.
+
+Create kernel/crusader_bridge.py:
+
+"""Crusader IoT Bridge — Capability-gated device integration.
+
+Connects the Crusader Combat Refrigerator to the Kingdom OS kernel.
+Every sensor reading, actuator command, and warfare action is mediated
+by capabilities. No ambient authority. All actions witnessed.
+
+The Crusader has:
+- Environmental sensors (temperature, humidity, light, motion)
+- Warfare subsystems (spore deployment, UV sterilization, air curtain,
+  sticky traps, fly counter)
+- Certifications (UL 471, FDA, NSF, EPA Montreal/Kigali, DOE 10CFR429)
+- Witness layer (cryptographic audit trail)
+
+This bridge does NOT duplicate crusader/ logic. It provides the
+kernel-level interface: capabilities, IPC channels, and invariants.
+
+Biblical: Genesis 1:28 — "Fill the earth and subdue it. Rule over
+the fish in the sea and the birds in the sky and over every living
+creature that moves on the ground."
+"""
+
+from fractions import Fraction
+from dataclasses import dataclass, field
+from typing import List, Dict, Optional, Tuple, FrozenSet
+from enum import Enum, auto
+from axioms.logic import ProofObject
+
+# Import kernel types (created in 2a)
+# from kernel.scheduler import ProcessDescriptor
+# from kernel.memory_manager import MemoryRegion, Capability
+
+Implement:
+
+1. CrusaderSubsystem(Enum):
+   SENSOR_TEMPERATURE = auto()
+   SENSOR_HUMIDITY = auto()
+   SENSOR_LIGHT = auto()
+   SENSOR_MOTION = auto()
+   WARFARE_SPORE = auto()
+   WARFARE_UV = auto()
+   WARFARE_AIR_CURTAIN = auto()
+   WARFARE_STICKY = auto()
+   WARFARE_FLY_COUNTER = auto()
+   MONITORING_WITNESS = auto()
+   MONITORING_DIAGNOSTICS = auto()
+
+2. CrusaderCapability:
+   @dataclass(frozen=True)
+   subsystem: CrusaderSubsystem
+   permissions: FrozenSet[str]  # "read", "write", "activate", "deactivate"
+   safety_class: str  # "safe", "hazardous", "critical"
+   certification_required: FrozenSet[str]  # e.g. {"UL_471", "FDA"}
+
+3. SensorReading:
+   @dataclass(frozen=True)
+   subsystem: CrusaderSubsystem
+   value: Fraction
+   unit: str
+   timestamp: Fraction
+   witness_hash: str  # SHA-256 of the reading
+
+4. check_temperature_in_range(reading: SensorReading,
+   min_temp: Fraction, max_temp: Fraction) -> (bool, ProofObject)
+   FDA food safety: refrigerator must maintain 0-4 degrees C.
+   Uses Fraction(0) and Fraction(4), not floats.
+
+5. check_warfare_capability_gated(
+   action: str, held_caps: List[CrusaderCapability],
+   required_subsystem: CrusaderSubsystem) -> (bool, ProofObject)
+   Cannot activate warfare subsystem without holding the capability.
+   Spore deployment requires "hazardous" safety class + FDA cert.
+   UV sterilization requires "critical" safety class + UL_471 cert.
+
+6. check_certification_coverage(
+   held_certs: FrozenSet[str],
+   required_certs: FrozenSet[str]) -> (bool, ProofObject)
+   All required certifications must be held. Partial is failure.
+   Required certs for full Crusader operation:
+   {"UL_471", "FDA", "NSF", "EPA_MONTREAL_KIGALI", "DOE_10CFR429"}
+
+7. check_witness_chain_integrity(
+   readings: List[SensorReading]) -> (bool, ProofObject)
+   Each reading's witness_hash must chain to the previous.
+   First reading's hash is the genesis hash.
+   Broken chain = tampered data.
+
+8. check_energy_compliance(
+   power_draw_watts: Fraction,
+   doe_limit_watts: Fraction) -> (bool, ProofObject)
+   DOE 10 CFR 429: power draw must not exceed rated limit.
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 2: kernel/compatibility_layer.py — OS COMPATIBILITY SPEC
+═══════════════════════════════════════════════════════════════════════
+
+This is NOT an emulator. It is a formal specification of what it means
+for a system to be "compatible" with existing OS interfaces. Kingdom OS
+does not replace Linux/Mac/Windows — it specifies invariants that any
+OS must satisfy to be Kingdom OS aligned, and provides a verification
+layer that can run ON TOP of any existing OS.
+
+Create kernel/compatibility_layer.py:
+
+"""OS Compatibility Layer — Formal verification of OS invariants.
+
+Kingdom OS is a specification, not a replacement. This module defines
+what it means for an existing OS (Linux, macOS, Windows, BSD, Redox,
+seL4, Fuchsia) to satisfy Kingdom OS invariants.
+
+The compatibility layer checks:
+1. POSIX compliance (file operations, process management)
+2. Capability security (can the OS enforce POLA?)
+3. Determinism (given same inputs, same outputs?)
+4. Glass-box (are all state transitions inspectable?)
+5. Consent (is all authority delegated, never assumed?)
+
+A system scores on each axis. Full compliance = Kingdom OS aligned.
+Partial compliance = specific gaps identified with remediation paths.
+
+Biblical: Romans 13:1 — "Let everyone be subject to the governing
+authorities, for there is no authority except that which God has
+established."
+"""
+
+Implement:
+
+1. OSProfile:
+   @dataclass
+   name: str  # "linux", "macos", "windows", "bsd", "redox", "sel4", "fuchsia"
+   version: str
+   posix_compliant: bool
+   has_capability_model: bool
+   has_mandatory_access_control: bool
+   has_audit_trail: bool
+   kernel_type: str  # "monolithic", "microkernel", "hybrid", "exokernel"
+   source_available: bool
+
+2. ComplianceAxis(Enum):
+   POSIX = auto()
+   CAPABILITY_SECURITY = auto()
+   DETERMINISM = auto()
+   GLASS_BOX = auto()
+   CONSENT = auto()
+   FALSIFIABILITY = auto()
+
+3. ComplianceResult:
+   @dataclass
+   axis: ComplianceAxis
+   score: Fraction  # 0 to 1, using Fraction
+   evidence: str
+   remediation: Optional[str]  # What to fix if not compliant
+
+4. evaluate_os_compliance(profile: OSProfile)
+   -> (List[ComplianceResult], ProofObject)
+   Evaluate each axis:
+   - POSIX: True if posix_compliant
+   - CAPABILITY_SECURITY: True if has_capability_model
+     (Linux: partial via SELinux/AppArmor; seL4: full; Windows: partial via ACLs)
+   - DETERMINISM: True only for formally verified kernels (seL4)
+   - GLASS_BOX: True if source_available AND has_audit_trail
+   - CONSENT: True if has_capability_model AND has_mandatory_access_control
+   - FALSIFIABILITY: True if source_available (can inspect and test)
+
+5. KNOWN_OS_PROFILES: Dict[str, OSProfile]
+   Pre-populated with:
+   - linux_6_x: OSProfile("linux", "6.x", True, False, True, True,
+     "monolithic", True)
+     # Linux has MAC (SELinux) but not object-capabilities
+   - macos_15: OSProfile("macos", "15", True, False, True, True,
+     "hybrid", False)
+     # macOS: POSIX, MAC via sandbox, but not open source
+   - windows_11: OSProfile("windows", "11", False, False, True, True,
+     "hybrid", False)
+     # Windows: not POSIX (WSL is a layer), ACLs not capabilities
+   - sel4: OSProfile("seL4", "12.1", True, True, False, True,
+     "microkernel", True)
+     # seL4: formally verified, capability-based, open source
+   - fuchsia: OSProfile("fuchsia", "1.0", False, True, False, True,
+     "microkernel", True)
+     # Fuchsia: Zircon kernel, capability-based, not POSIX
+   - redox: OSProfile("redox", "0.8", True, False, False, False,
+     "microkernel", True)
+     # Redox: Rust microkernel, POSIX-ish, open source
+
+6. compare_os_profiles(profiles: List[OSProfile])
+   -> (Dict[str, List[ComplianceResult]], ProofObject)
+   Side-by-side comparison of all profiles across all axes.
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 3: kernel/social_layer.py — SOCIAL + AGENT ARCHITECTURE
+═══════════════════════════════════════════════════════════════════════
+
+Create kernel/social_layer.py:
+
+"""Social Layer — Agent streams, reputation, and consent-based interaction.
+
+Formalizes how agents (human or AI) interact within Kingdom OS.
+Every interaction is:
+1. Capability-gated (no ambient social authority)
+2. Witnessed (all interactions have audit trail)
+3. Consent-based (no agent acts on another without consent)
+4. Reputation-tracked (via Fraction-valued trust scores, not floats)
+
+This is NOT a social media platform. It is a formal specification
+of agent interaction invariants that any social system must satisfy.
+
+Biblical: Matthew 18:20 — "For where two or three gather in my name,
+there am I with them."
+"""
+
+Implement:
+
+1. AgentType(Enum):
+   HUMAN = auto()
+   AI_LOCAL = auto()      # Local LLM, no cloud dependency
+   AI_CLOUD = auto()      # Cloud-based AI (requires consent for data transfer)
+   AI_SUBAGENT = auto()   # Spawned by another agent, inherits subset of caps
+   IOT_DEVICE = auto()    # e.g. Crusader fridge
+   SYSTEM_SERVICE = auto() # Kernel-level service
+
+2. Agent:
+   @dataclass
+   agent_id: str
+   agent_type: AgentType
+   capabilities: List  # List of capabilities this agent holds
+   trust_score: Fraction  # 0 to 1, starts at Fraction(1, 2)
+   consent_given_to: FrozenSet[str]  # agent_ids this agent consents to
+   parent_agent: Optional[str]  # For subagents: who spawned them
+
+3. Interaction:
+   @dataclass
+   interaction_id: str
+   sender: str  # agent_id
+   receiver: str  # agent_id
+   action: str  # "query", "delegate", "revoke", "witness", "spawn"
+   payload_hash: str  # SHA-256 of the interaction content
+   timestamp: Fraction
+   consent_proof: str  # Hash proving receiver consented
+
+4. check_consent_before_interaction(
+   sender: Agent, receiver: Agent,
+   interaction: Interaction) -> (bool, ProofObject)
+   Sender must be in receiver's consent_given_to set.
+   AI_CLOUD agents require EXPLICIT consent for any data transfer.
+
+5. spawn_subagent(parent: Agent, subset_caps: List,
+   purpose: str) -> (Agent, ProofObject)
+   Subagent inherits SUBSET of parent's capabilities (attenuation).
+   Cannot have MORE capabilities than parent.
+   Trust score starts at parent's trust_score * Fraction(3, 4).
+   Purpose must be non-empty string.
+
+6. check_subagent_attenuation(parent: Agent,
+   child: Agent) -> (bool, ProofObject)
+   Every capability held by child must be held by parent.
+   Child's trust_score <= parent's trust_score.
+
+7. update_trust_score(agent: Agent, delta: Fraction,
+   reason: str) -> (Agent, ProofObject)
+   Trust score bounded: Fraction(0) <= score <= Fraction(1).
+   Delta must be in range Fraction(-1, 10) to Fraction(1, 10).
+   No single interaction can change trust by more than 10%.
+
+8. check_no_ambient_social_authority(
+   agents: List[Agent]) -> (bool, ProofObject)
+   No agent has trust_score == Fraction(1) (no absolute authority).
+   No agent's consent_given_to includes "*" (no blanket consent).
+
+9. check_ai_local_no_cloud_dependency(
+   agent: Agent) -> (bool, ProofObject)
+   AI_LOCAL agents must not have any capability that references
+   external endpoints. All computation is local.
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 4: kernel/ui_spec.py — UI FORMAL SPECIFICATION
+═══════════════════════════════════════════════════════════════════════
+
+Create kernel/ui_spec.py:
+
+"""UI Formal Specification — What a Kingdom OS interface must satisfy.
+
+This is NOT a UI framework. It is a formal specification of invariants
+that any user interface (terminal, GUI, web, voice, AR/VR) must satisfy
+to be Kingdom OS aligned.
+
+The specification is modality-agnostic: it applies equally to a CLI,
+a desktop GUI, a mobile app, a voice assistant, or a VR environment.
+
+Biblical: Proverbs 4:25 — "Let your eyes look straight ahead;
+fix your gaze directly before you."
+"""
+
+Implement:
+
+1. UIModality(Enum):
+   TERMINAL = auto()     # CLI / TUI
+   DESKTOP_GUI = auto()  # Native desktop application
+   WEB = auto()          # Browser-based
+   MOBILE = auto()       # Touch-based
+   VOICE = auto()        # Audio-only
+   AR_VR = auto()        # Spatial computing
+   EMBEDDED = auto()     # IoT display (e.g. Crusader LCD)
+
+2. AccessibilityRequirement(Enum):
+   WCAG_A = auto()       # Minimum
+   WCAG_AA = auto()      # Standard (required for Kingdom OS)
+   WCAG_AAA = auto()     # Maximum
+   SECTION_508 = auto()  # US federal
+   EN_301_549 = auto()   # EU standard
+
+3. UIInvariant:
+   @dataclass
+   invariant_id: str
+   description: str
+   modalities: FrozenSet[UIModality]  # Which modalities this applies to
+   accessibility_level: AccessibilityRequirement
+   falsification_test: str
+
+4. CORE_UI_INVARIANTS: List[UIInvariant]
+   Define at least 10 invariants:
+   - UI_001: "Every action is reversible or requires confirmation"
+     modalities: all, accessibility: WCAG_AA
+   - UI_002: "No dark patterns — no hidden costs, no trick questions,
+     no forced continuity, no misdirection"
+     modalities: all, accessibility: WCAG_AA
+   - UI_003: "All state is visible — no hidden state that affects
+     user experience"
+     modalities: all, accessibility: WCAG_AA
+   - UI_004: "Keyboard navigable — every interactive element reachable
+     without mouse/touch"
+     modalities: {TERMINAL, DESKTOP_GUI, WEB}, accessibility: WCAG_AA
+   - UI_005: "Screen reader compatible — all content has text alternatives"
+     modalities: {DESKTOP_GUI, WEB, MOBILE}, accessibility: WCAG_AA
+   - UI_006: "Color is never the sole indicator — information conveyed
+     by color must also be conveyed by text/shape/pattern"
+     modalities: {DESKTOP_GUI, WEB, MOBILE, AR_VR}, accessibility: WCAG_AA
+   - UI_007: "Response time < 100ms for user input acknowledgment"
+     modalities: all, accessibility: WCAG_AA
+   - UI_008: "No infinite scroll — all content has pagination or
+     explicit load-more with count"
+     modalities: {WEB, MOBILE}, accessibility: WCAG_AA
+   - UI_009: "Data sovereignty — user data never leaves device without
+     explicit consent per-transfer"
+     modalities: all, accessibility: WCAG_AA
+   - UI_010: "Glass-box UI — every AI-generated element is labeled as
+     AI-generated with provenance hash"
+     modalities: all, accessibility: WCAG_AA
+
+5. check_ui_compliance(modality: UIModality,
+   implemented_invariants: List[str]) -> (bool, ProofObject)
+   Check which CORE_UI_INVARIANTS apply to this modality and
+   whether all are implemented. Return gap list.
+
+6. check_no_dark_patterns(ui_elements: List[Dict])
+   -> (List[str], ProofObject)
+   Each element has: {"id": str, "type": str, "visible": bool,
+   "default_action": str, "opt_out_available": bool}
+   Flag elements where visible=False, or opt_out_available=False,
+   or default_action="subscribe"/"purchase"/"share".
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 5: DEEPEN d_crusader FROM STUB TO REAL INVARIANTS
+═══════════════════════════════════════════════════════════════════════
+
+The d_crusader domain (src/domains/d_crusader/) is currently a 30-line
+generic stub. The actual crusader/ directory has 293 lines in __init__.py
+alone, plus hardware drivers, warfare subsystems, monitoring, certifications.
+
+Rewrite src/domains/d_crusader/implementation.py:
+
+"""D_CRUSADER implementation — Crusader Combat Refrigerator
+
+Layer: 5 (Technical)
+CardinalStrength: PREDICATIVE
+
+The Crusader is an autonomous fly warfare system for refrigerators.
+Certifications: UL 471, FDA, NSF, EPA Montreal/Kigali, DOE 10CFR429.
+Hardware: Raspberry Pi, GPIO pins, environmental sensors.
+Warfare: spore deployment, UV sterilization, air curtain, sticky traps.
+"""
+
+Implement real classes:
+- TemperatureReading(value: Fraction, unit: str, timestamp: Fraction)
+- HumidityReading(value: Fraction, timestamp: Fraction)
+- WarfareAction(subsystem: str, activated: bool, duration: Fraction,
+  witness_hash: str)
+- CertificationRecord(cert_id: str, agency: str, status: str,
+  expiry_date: str, document_hash: str)
+- CrusaderState(temperature: TemperatureReading,
+  humidity: HumidityReading, active_warfare: List[WarfareAction],
+  certifications: List[CertificationRecord],
+  fly_count: int, operational_mode: str)
+
+Rewrite src/domains/d_crusader/invariants.py with real checks:
+
+1. check_temperature_food_safe() -> bool
+   FDA: refrigerator must maintain 0-4 degrees C.
+   Create a CrusaderState with temp=Fraction(3), verify passes.
+   Create one with temp=Fraction(10), verify fails.
+
+2. check_ul_471_electrical_safety() -> bool
+   UL 471: all electrical components must be grounded.
+   Verify CertificationRecord for UL_471 exists and status="active".
+
+3. check_epa_refrigerant_compliance() -> bool
+   EPA Montreal/Kigali: refrigerant must be on approved list.
+   R-290 (propane) is approved. R-12 (CFC) is banned.
+
+4. check_doe_energy_efficiency() -> bool
+   DOE 10 CFR 429: power draw must not exceed rated limit.
+   Create state with power_draw=Fraction(150) watts,
+   limit=Fraction(200) watts. Verify passes.
+   Create state with power_draw=Fraction(250). Verify fails.
+
+5. check_warfare_witness_chain() -> bool
+   Every warfare action must have a non-empty witness_hash.
+   Chain of hashes must be consistent (each links to previous).
+
+6. check_nsf_food_contact_surfaces() -> bool
+   NSF: all surfaces in contact with food must be certified.
+   Verify NSF certification record exists.
+
+7. check_fly_count_monotonic_during_warfare() -> bool
+   During active warfare, fly count should not increase.
+   (If it does, warfare is ineffective — falsification.)
+
+Rewrite src/domains/d_crusader/tests/test_f_d_crusader_001.py:
+- test_temperature_food_safe
+- test_ul_471_electrical_safety
+- test_epa_refrigerant_compliance
+- test_doe_energy_efficiency
+- test_warfare_witness_chain
+- test_nsf_food_contact_surfaces
+- test_fly_count_monotonic
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 6: kernel/tests/test_part2.py — TESTS FOR ALL NEW MODULES
+═══════════════════════════════════════════════════════════════════════
+
+Create kernel/tests/test_part2.py:
+
+- test_crusader_temperature_in_range
+- test_crusader_warfare_capability_gated
+- test_crusader_certification_coverage_full
+- test_crusader_certification_coverage_partial_fails
+- test_crusader_witness_chain_integrity
+- test_crusader_energy_compliance
+- test_os_linux_compliance
+- test_os_sel4_compliance
+- test_os_comparison
+- test_social_consent_required
+- test_social_spawn_subagent_attenuation
+- test_social_no_ambient_authority
+- test_social_ai_local_no_cloud
+- test_social_trust_score_bounded
+- test_ui_no_dark_patterns
+- test_ui_compliance_terminal
+- test_ui_compliance_web
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 7: 10 CASE STUDIES — IoT, EMBEDDED, SOCIAL, UI
+═══════════════════════════════════════════════════════════════════════
+
+mkdir -p case_studies/category_iot case_studies/category_social
+
+CS_IOT_001: Mirai Botnet (IoT devices with default credentials)
+  domain: kernel/crusader_bridge.py, D_CRUSADER
+  root_cause: No capability model, ambient authority via default passwords
+
+CS_IOT_002: Samsung Smart Fridge SSL Vulnerability (CVE-2015-0564)
+  domain: kernel/crusader_bridge.py, D_CRUSADER
+  root_cause: No certificate pinning, ambient trust of any SSL cert
+
+CS_IOT_003: Philips Hue Zigbee Worm (CVE-2020-6007)
+  domain: kernel/crusader_bridge.py, axioms/capability_security.py
+  root_cause: No capability attenuation in device-to-device communication
+
+CS_IOT_004: Nest Thermostat Battery Drain Bug
+  domain: kernel/crusader_bridge.py, D_ENERGY
+  root_cause: No energy budget enforcement (DOE compliance gap)
+
+CS_IOT_005: Ring Doorbell Privacy Breach
+  domain: kernel/social_layer.
+  Continuing from the cutoff:
+
+```
+CS_IOT_005: Ring Doorbell Privacy Breach
+  domain: kernel/social_layer.py, D_PRIVACY
+  root_cause: No consent capability, ambient data sharing with law enforcement
+
+CS_IOT_006: Mirai Botnet (CVE-2016-17 series)
+  domain: kernel/capability.py, axioms/capability_security.py
+  root_cause: Default credentials + no capability revocation = ambient authority
+  resolution: Capability tokens with mandatory rotation, no default passwords
+
+CS_IOT_007: Jeep Cherokee Remote Hack (CVE-2015-5611)
+  domain: kernel/crusader_bridge.py, D_AUTOMOTIVE
+  root_cause: No network segmentation between entertainment and CAN bus
+  resolution: Capability isolation — entertainment cap cannot reach drivetrain cap
+
+CS_IOT_008: Medical Device Insulin Pump Vulnerability (CVE-2018-14781)
+  domain: kernel/crusader_bridge.py, D_HEALTHCARE_LAW
+  root_cause: No authentication capability on wireless insulin commands
+  resolution: Capability-gated command channel with patient consent token
+
+CS_IOT_009: Smart Lock Bluetooth Replay Attack
+  domain: kernel/capability.py, D_CONSUMER_PROTECTION
+  root_cause: No nonce in capability token, replay possible
+  resolution: Monotonic counter in every capability invocation
+
+CS_IOT_010: Baby Monitor Unauthorized Access
+  domain: kernel/social_layer.py, D_PRIVACY, D_CONSUMER_PROTECTION
+  root_cause: No capability boundary between device and internet
+  resolution: Local-only capability by default, explicit consent cap for remote access
+CSEOF
+
+git add case_studies/iot_security/
+git commit -m "Add 10 IoT security case studies mapped to kernel capabilities
+
+Each case study maps a real CVE or vulnerability to the specific
+kernel capability that would have prevented it. Demonstrates that
+capability-based security is not theoretical — it resolves actual
+incidents that affected millions of devices."
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 7: DOMAIN DEEPENING BATCH D6 (10 MORE STUBS)
+═══════════════════════════════════════════════════════════════════════
+
+# Find the next 10 stub domains
+python3 -c "
+import os, glob
+stubs = []
+for d in sorted(glob.glob('src/domains/d_*/invariants.py')):
+    with open(d) as f:
+        lines = len(f.readlines())
+    if lines < 50:
+        name = d.split('/')[2]
+        stubs.append((name, lines))
+for name, lines in stubs[:10]:
+    print(f'{name}: {lines} lines')
+"
+
+# Deepen each of the 10 stubs found above.
+# For each domain:
+# 1. Read src/domains/d_{name}/domain.py for CATEGORIES, INVARIANTS
+# 2. Write/update implementation.py with real classes and data structures
+# 3. Write/update invariants.py with real regulatory/mathematical checks
+# 4. Write/update tests/test_f_d_{name}_001.py
+#
+# Use the same pattern as Batches D2-D5:
+# - Real regulatory logic (cite actual standards)
+# - Real data structures (not generic Record/Checker)
+# - Real assertions (not just True/False stubs)
+# - At least 50 lines per invariants.py
+# - 0 floats, 0 random, ProofObject where applicable
+#
+# After creating all 10, run tests:
+python3 -m pytest src/domains/d_*/tests/ -v --tb=short 2>&1 | tail -40
+
+# Verify no floats:
+python3 -c "
+import ast, glob
+for f in glob.glob('src/domains/d_*/invariants.py') + glob.glob('src/domains/d_*/implementation.py'):
+    with open(f) as fh:
+        try:
+            tree = ast.parse(fh.read())
+        except SyntaxError:
+            print(f'SYNTAX ERROR: {f}')
+            continue
+        floats = [n.lineno for n in ast.walk(tree)
+                  if isinstance(n, ast.Constant) and isinstance(n.value, float)]
+        if floats:
+            print(f'FLOAT VIOLATION: {f} lines {floats}')
+print('Float check complete.')
+"
+
+git add src/domains/
+git commit -m "Deepen 10 domain invariants (Batch D6): real regulatory logic
+
+Each domain now has:
+- Real data structures (not generic stubs)
+- Real regulatory citations
+- Real falsification tests
+- At least 50 lines of invariant logic
+- 0 floats, 0 random"
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 8: UPDATE DOCS + FINAL STATUS
+═══════════════════════════════════════════════════════════════════════
+
+# Update DOMAIN_INVARIANT_STATUS.md
+python3 -c "
+import glob
+total = len(set(d.split('/')[2] for d in glob.glob('src/domains/d_*/domain.py')))
+deepened = 0
+stubs = 0
+for d in sorted(glob.glob('src/domains/d_*/invariants.py')):
+    with open(d) as f:
+        lines = len(f.readlines())
+    if lines >= 50:
+        deepened += 1
+    else:
+        stubs += 1
+pct = round(deepened / total * 100)
+print(f'Total: {total}, Deepened: {deepened} ({pct}%), Stubs: {stubs}')
+"
+
+# Update the status file with the new counts
+# Update eschaton/omega.md with current axiom count (should be 32+)
+# Update any other stale references
+
+git add DOMAIN_INVARIANT_STATUS.md eschaton/omega.md
+git commit -m "Update status: domain count, axiom count, deepening progress"
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 9: VERIFY ALL + PUSH
+═══════════════════════════════════════════════════════════════════════
+
+# Run full test suite
+python3 -m pytest tests/ -v --tb=short 2>&1 | tail -60
+python3 -m pytest src/domains/d_*/tests/ -v --tb=short 2>&1 | tail -60
+
+# Verify no floats in ANY core file
+python3 -c "
+import ast, glob
+violations = []
+for pattern in ['axioms/*.py', 'kernel/**/*.py', 'src/domains/d_*/invariants.py',
+                'src/domains/d_*/implementation.py', 'src/semiotics/*.py',
+                'src/semantics/*.py', 'src/etymology/*.py']:
+    for f in glob.glob(pattern, recursive=True):
+        with open(f) as fh:
+            try:
+                tree = ast.parse(fh.read())
+            except SyntaxError:
+                violations.append(f'SYNTAX ERROR: {f}')
+                continue
+            floats = [n.lineno for n in ast.walk(tree)
+                      if isinstance(n, ast.Constant) and isinstance(n.value, float)]
+            if floats:
+                violations.append(f'FLOAT: {f} lines {floats}')
+if violations:
+    for v in violations:
+        print(v)
+    print(f'TOTAL VIOLATIONS: {len(violations)}')
+else:
+    print('ALL CLEAR: 0 float violations across all core files.')
+"
+
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 10: SESSION SUMMARY
+═══════════════════════════════════════════════════════════════════════
+
+echo "
+═══════════════════════════════════════════════════════════════════════
+SESSION 2A PART 2 COMPLETE
+═══════════════════════════════════════════════════════════════════════
+Print:
+- Kernel files created (count, names)
+- Social layer files created
+- Agent stream files created
+- Crusader bridge files created
+- IoT case studies (count)
+- Domains deepened (count, names)
+- Domain status (deepened / total)
+- Axiom modules (count)
+- Tests passing/failing
+- Float violations (count)
+- Context usage
+═══════════════════════════════════════════════════════════════════════
+"
+```
+
+---
+
+After this session executes, the approximate state should be:
+
+| Metric | Before | After |
+|--------|--------|-------|
+| Kernel files | 0 | **8** (spec, capability, scheduler, vfs, social_layer, agent_stream, crusader_bridge, tests) |
+| Axiom modules | 32 | **35** (+process_algebra, memory_model, capability_security) |
+| Domains deepened | ~91/157 | **~101/157 (64%)** |
+| Case studies | ~40/500 | **~50/500** |
+| IoT security case studies | 0 | **10** |
+| Stubs remaining | ~66 | **~56** |
+
+The next fresh Kimi CLI session should tackle:
+1. **10 more domain invariant deepenings** (Batch D7 — ~56 stubs remaining)
+2. **10 more case studies** (reaching ~60/500)
+3. **Kernel expansion** — IPC subsystem, networking stack, device driver model
+4. **UI specification** — the Logos IDE / desktop environment formal spec
+5. **Agent stream expansion** — more stream types, inter-agent protocol
