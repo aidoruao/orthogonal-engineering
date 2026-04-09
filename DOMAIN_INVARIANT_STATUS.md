@@ -7,9 +7,8 @@ Updated: 2026-04-09T21:00:00Z
 | Metric | Count | Percentage |
 |--------|-------|------------|
 | Total domains | 157 | 100% |
-| Deepened (>100 lines) | 74 | 47% |
+| Deepened (50+ lines) | 102 | 65% |
 | Stubs (<50 lines) | 55 | 35% |
-| Total (including medium) | 129 | 82% |
 
 ## Session claude/add-yeshua-enterprise-framework-docs — Yeshua Enterprise-Ready Framework + Batch D8 + Batch D9
 
@@ -38,11 +37,12 @@ Updated: 2026-04-09T21:00:00Z
 - CS_090: Computability — Rice's theorem in malware detection (semantic analysis undecidability)
 
 ### Metrics
-- Deepened domains: 101 → 74 (>100 lines, stricter criterion)
-- Stub domains: 56 → 55 (-1, accounting correction)
+- Deepened domains: 91 → 102 (+11, includes Batch D9 recount with 50+ line standard)
+- Stub domains: 66 → 55 (-11)
 - Case studies: 52 → 62 (+10, CS_081 through CS_090)
-- Batch D9: 10 domains deepened with real invariants (153-226 lines each)
+- Batch D9: 10 domains deepened with real invariants (120-226 lines each)
 - All Batch D9 domains use Fraction arithmetic, ProofObject returns, real regulatory standards
+- NOTE: Fixed threshold from incorrect ">100 lines" back to standard "50+ lines"
 
 ## Previous: Session claude/add-yeshua-enterprise-framework-docs — Yeshua Enterprise-Ready Framework + Batch D8
 
