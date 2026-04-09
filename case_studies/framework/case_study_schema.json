@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Case Study Gap Analysis",
+  "type": "object",
+  "required": ["id", "issue_url", "repository", "language",
+    "analysis_date", "status", "domain_mapping", "findings",
+    "code_locations", "fix_proposal", "falsification",
+    "sha256_hash"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^CS_[A-Z]+_[0-9]{3}$"},
+    "issue_url": {"type": "string", "format": "uri"},
+    "repository": {"type": "string"},
+    "language": {"type": "string"},
+    "framework": {"type": "string"},
+    "analysis_date": {"type": "string", "format": "date"},
+    "status": {"type": "string", "enum": [
+      "INVESTIGATION", "ANALYZED", "FIX_PROPOSED",
+      "IMPLEMENTED_PENDING_TESTING", "COMPLETE"
+    ]},
+    "domain_mapping": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^D_"},
+      "minItems": 1
+    },
+    "findings": {
+      "type": "object",
+      "required": ["summary", "root_cause", "affected_components"],
+      "properties": {
+        "summary": {"type": "string"},
+        "root_cause": {"type": "string"},
+        "affected_components": {
+          "type": "array", "items": {"type": "string"}
+        },
+        "invariant_violations": {
+          "type": "array", "items": {"type": "string"}
+        }
+      }
+    },
+    "code_locations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "line", "issue"],
+        "properties": {
+          "file": {"type": "string"},
+          "method": {"type": "string"},
+          "line": {"type": "integer"},
+          "issue": {"type": "string"},
+          "verbatim_quote": {"type": "string"}
+        }
+      }
+    },
+    "fix_proposal": {
+      "type": "object",
+      "required": ["description", "changes"],
+      "properties": {
+        "description": {"type": "string"},
+        "changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "file": {"type": "string"},
+              "before": {"type": "string"},
+              "after": {"type": "string"}
+            }
+          }
+        }
+      }
+    },
+    "falsification": {
+      "type": "object",
+      "required": ["condition", "test_id"],
+      "properties": {
+        "condition": {"type": "string"},
+        "test_id": {"type": "string"}
+      }
+    },
+    "sha256_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "issue": "VulkanMod #755 - Matrix-aware scissor pipeline",
+  "repository": "https://github.com/xCollateral/VulkanMod",
+  "analysis_date": "2026-04-04",
+  "implementation_date": "2026-04-04",
+  "status": "IMPLEMENTED_PENDING_TESTING",
+  "findings": {
+    "summary": "The scissor implementation in VulkanMod does not account for ModelView matrix transformations. When GUI elements are scaled or transformed, the scissor rectangle clips the wrong area because it operates in untransformed screen coordinates while the geometry is transformed.",
+    "root_cause": "Scissor coordinates are passed directly to vkCmdSetScissor() without applying the current ModelView matrix transformation.",
+    "affected_components": [
+      "net.vulkanmod.vulkan.Renderer",
+      "net.vulkanmod.render.engine.VkRenderPass", 
+      "net.vulkanmod.render.engine.VkCommandEncoder",
+      "net.vulkanmod.mixin.render.GlStateManagerM",
+      "net.vulkanmod.mixin.render.CompositeRenderTypeM"
+    ]
+  },
+  "code_locations": {
+    "scissor_entry_points": [
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/Renderer.java",
+        "method": "setScissor(int x, int y, int width, int height)",
+        "line": 806,
+        "issue": "Directly passes screen coordinates to vkCmdSetScissor without matrix transformation"
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/render/engine/VkRenderPass.java",
+        "method": "enableScissor(int i, int j, int k, int l)",
+        "line": 117,
+        "issue": "Stores raw scissor coordinates in ScissorState without transformation"
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/render/engine/VkCommandEncoder.java",
+        "method": "trySetup(VkRenderPass renderPass)",
+        "line": 773,
+        "issue": "Applies scissor using untransformed coordinates from ScissorState"
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/mixin/render/GlStateManagerM.java",
+        "method": "_scissorBox(int x, int y, int width, int height)",
+        "line": 104,
+        "issue": "Directly forwards scissor box to Renderer without transformation"
+      }
+    ],
+    "matrix_handling": [
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/VRenderSystem.java",
+        "method": "applyModelViewMatrix(Matrix4f mat)",
+        "line": 102,
+        "note": "ModelView matrix is stored but not used for scissor transformation"
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/mixin/render/CompositeRenderTypeM.java",
+        "method": "draw(MeshData meshData)",
+        "line": 98,
+        "note": "ModelView matrix is applied to geometry but scissor uses untransformed coordinates"
+      }
+    ],
+    "vulkan_calls": [
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/Renderer.java",
+        "method": "setScissor()",
+        "line": 819,
+        "vk_call": "vkCmdSetScissor(INSTANCE.currentCmdBuffer, 0, scissor)"
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/pass/DefaultMainPass.java",
+        "method": "begin()",
+        "line": 72,
+        "vk_call": "vkCmdSetScissor(commandBuffer, 0, pScissor)"
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/shader/GraphicsPipeline.java",
+        "method": "createGraphicsPipeline()",
+        "line": 172,
+        "vk_dynamic_state": "VK_DYNAMIC_STATE_SCISSOR"
+      }
+    ]
+  },
+  "gap_analysis": {
+    "current_behavior": {
+      "description": "Scissor coordinates are treated as screen-space pixel coordinates",
+      "flow": [
+        "1. Caller (e.g., GuiRenderer) calls enableScissor(x, y, w, h) with screen coordinates",
+        "2. VkRenderPass stores coordinates in ScissorState",
+        "3. VkCommandEncoder.trySetup() retrieves coordinates and calls GlStateManager._scissorBox()",
+        "4. GlStateManagerM._scissorBox() calls Renderer.setScissor()",
+        "5. Renderer.setScissor() calls vkCmdSetScissor() with raw coordinates"
+      ]
+    },
+    "required_behavior": {
+      "description": "Scissor coordinates must be transformed by the current ModelView matrix",
+      "rationale": "When GUI scaling or transformations are applied, the scissor rectangle must follow the transformed geometry",
+      "solution_approach": [
+        "Option A: Transform scissor coordinates in Renderer.setScissor() using current ModelView matrix",
+        "Option B: Transform scissor coordinates in VkRenderPass.enableScissor() before storing",
+        "Option C: Pass matrix to scissor calls and transform at Vulkan command submission time"
+      ]
+    },
+    "transformation_math": {
+      "description": "Scissor rectangle corners must be transformed by ModelView matrix",
+      "input": "Scissor box: (x, y, width, height) in screen coordinates",
+      "corners": [
+        "(x, y)",
+        "(x + width, y)",
+        "(x, y + height)",
+        "(x + width, y + height)"
+      ],
+      "operation": "Multiply each corner by ModelView matrix to get transformed coordinates",
+      "output": "Compute bounding box of transformed corners for vkCmdSetScissor"
+    }
+  },
+  "invariant_violations": {
+    "INV-A": {
+      "description": "Scissor coordinates must be in framebuffer-space pixels",
+      "status": "SATISFIED",
+      "notes": "Current implementation correctly uses pixel coordinates"
+    },
+    "INV-B": {
+      "description": "Scissor must be axis-aligned in framebuffer space",
+      "status": "SATISFIED_VIA_BOUNDING_BOX",
+      "notes": "After matrix transformation, scissor corners are computed and axis-aligned bounding box is used. This is a conservative approximation that ensures content is never clipped prematurely."
+    },
+    "INV-C": {
+      "description": "Scissor Y-coordinate must account for Vulkan's inverted Y",
+      "status": "SATISFIED",
+      "notes": "Renderer.setScissor() correctly flips Y: framebufferHeight - (y + height)"
+    },
+    "INV-D": {
+      "description": "Scissor must respect current ModelView transformation",
+      "status": "FIXED",
+      "notes": "FIXED: Renderer.setScissor() now retrieves ModelView matrix from VRenderSystem and transforms all 4 scissor corners before computing the final scissor bounds."
+    }
+  },
+  "implementation": {
+    "status": "COMPLETED",
+    "files_modified": [
+      "src/main/java/net/vulkanmod/vulkan/Renderer.java"
+    ],
+    "changes": {
+      "imports_added": [
+        "org.joml.Matrix4f",
+        "org.joml.Vector4f"
+      ],
+      "method_modified": "Renderer.setScissor(int x, int y, int width, int height)",
+      "algorithm": [
+        "1. Retrieve ModelView matrix from VRenderSystem.modelViewMatrix.buffer",
+        "2. Define 4 corners of scissor rectangle as Vector4f",
+        "3. Transform each corner using ModelView matrix",
+        "4. Compute min/max X and Y from transformed corners",
+        "5. Convert to integer bounds with clamping to non-negative values",
+        "6. Apply transformed bounds to vkCmdSetScissor()"
+      ]
+    },
+    "test_specification": "VulkanMod_755_Test_Specification.md"
+  },
+  "recommended_fix": {
+    "approach": "Transform scissor coordinates using current ModelView matrix in Renderer.setScissor()",
+    "implementation_steps": [
+      "1. In Renderer.setScissor(), retrieve current ModelView matrix from VRenderSystem",
+      "2. Transform the 4 corners of the scissor rectangle by the matrix",
+      "3. Compute the axis-aligned bounding box of the transformed corners",
+      "4. Apply the bounding box to vkCmdSetScissor()",
+      "5. Handle edge cases: negative scales, rotations, non-invertible matrices"
+    ],
+    "files_to_modify": [
+      "src/main/java/net/vulkanmod/vulkan/Renderer.java",
+      "src/main/java/net/vulkanmod/vulkan/VRenderSystem.java (if matrix access needed)"
+    ],
+    "test_cases": [
+      "GUI at normal scale (1.0x)",
+      "GUI at 2x scale (scaled GUI mode)",
+      "GUI with translation offsets",
+      "Rotated GUI elements (if supported)"
+    ]
+  },
+  "additional_notes": {
+    "related_commits": [
+      {
+        "hash": "d9dea3c",
+        "message": "Fix scissor negative values",
+        "note": "Previous fix for negative scissor extents, unrelated to matrix awareness"
+      },
+      {
+        "hash": "e4aeaf8",
+        "message": "dynamic scissor",
+        "note": "Initial dynamic scissor implementation, uses VK_DYNAMIC_STATE_SCISSOR"
+      }
+    ],
+    "related_mixin": {
+      "file": "GL11M.java",
+      "line": 22,
+      "note": "Comment indicates vkCmdSetScissor caused issues with replay mod - may need regression testing"
+    }
+  }
+}

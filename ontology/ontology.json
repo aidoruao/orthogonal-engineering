@@ -4,7 +4,7 @@
     "description": "Extended domain ontology and OI-XXX issue registry for the orthogonal-engineering monorepo. Extends pr26_ontological_issues.json with new domains and cross-domain issues identified via the DeepSeek methodology.",
     "created": "2026-03-02",
     "extends": "ontology/pr26_ontological_issues.json",
-    "updated": "2026-04-08",
+    "updated": "2026-04-09",
     "layer_schema": "sovereign-topos/1.0",
     "layer_count": 5,
     "total_domains": 135
@@ -44,7 +44,7 @@
       ],
       "invariants": [
         "All secret-dependent operations are constant-time.",
-        "Protocol validity rules (e.g., PSK ≠ 0^32) are enforced at the API boundary.",
+        "Protocol validity rules (e.g., PSK \u2260 0^32) are enforced at the API boundary.",
         "No secret material is stored in plain-text logs or error messages."
       ],
       "example_falsification_test": "F_CRYPTO_001",
@@ -824,7 +824,7 @@
         "documentation-as-defense"
       ],
       "invariants": [
-        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. § 207).",
+        "Any hours worked over 40 in a week must be compensated at 1.5x (FLSA 29 U.S.C. \u00a7 207).",
         "Assigned workload must be achievable within scheduled hours.",
         "No employee may be allowed to work without compensation.",
         "Compliance traits must not correlate with unpaid labor extraction."
@@ -1306,7 +1306,7 @@
         "due-process"
       ],
       "invariants": [
-        "Birthright citizenship for those born on US soil (14A §1).",
+        "Birthright citizenship for those born on US soil (14A \u00a71).",
         "Naturalization process is deterministic; no denaturalization without due process."
       ],
       "example_falsification_test": "F_CITIZENSHIP_001",
@@ -1323,7 +1323,7 @@
       ],
       "invariants": [
         "No detention without judicial review.",
-        "Suspension only in cases of rebellion/invasion (Article I, §9)."
+        "Suspension only in cases of rebellion/invasion (Article I, \u00a79)."
       ],
       "example_falsification_test": "F_HABEAS_001",
       "example_ontological_issue": "OI_HABEAS_001"
@@ -1356,7 +1356,7 @@
         "damages"
       ],
       "invariants": [
-        "Duty → Breach → Causation → Damages chain must be functorial.",
+        "Duty \u2192 Breach \u2192 Causation \u2192 Damages chain must be functorial.",
         "Statute of limitations is enforced with documented filing date."
       ],
       "example_falsification_test": "F_CIVIL_001",
@@ -1819,7 +1819,7 @@
         "property-tax"
       ],
       "invariants": [
-        "Per-pupil spending variance across districts ≤ equity threshold.",
+        "Per-pupil spending variance across districts \u2264 equity threshold.",
         "Property tax revenue sharing formula is deterministic.",
         "Title I allocation is formulaic given poverty rate."
       ],
@@ -2176,7 +2176,7 @@
         "redlining-legacy"
       ],
       "invariants": [
-        "Resource allocation variance across neighborhoods ≤ equity threshold.",
+        "Resource allocation variance across neighborhoods \u2264 equity threshold.",
         "Investment disparity detection algorithm produces reproducible results.",
         "Redlining legacy impact score is documented."
       ],
@@ -2345,6 +2345,177 @@
       "status": "active",
       "example_falsification_test": "F_DH_001",
       "example_ontological_issue": "OI_DH_001"
+    },
+    {
+      "id": "D_COMPILER_DESIGN",
+      "name": "Compiler Design",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_COMPILER_DESIGN_001",
+      "example_ontological_issue": "OI_D_COMPILER_DESIGN_001",
+      "layer": 3
+    },
+    {
+      "id": "D_CRYPTOGRAPHY",
+      "name": "Cryptography",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_CRYPTOGRAPHY_001",
+      "example_ontological_issue": "OI_D_CRYPTOGRAPHY_001",
+      "layer": 3
+    },
+    {
+      "id": "D_DATABASE_SYSTEMS",
+      "name": "Database Systems",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_DATABASE_SYSTEMS_001",
+      "example_ontological_issue": "OI_D_DATABASE_SYSTEMS_001",
+      "layer": 3
+    },
+    {
+      "id": "D_DEVOPS",
+      "name": "Devops",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_DEVOPS_001",
+      "example_ontological_issue": "OI_D_DEVOPS_001",
+      "layer": 3
+    },
+    {
+      "id": "D_DISTRIBUTED_SYSTEMS",
+      "name": "Distributesystems",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_DISTRIBUTED_SYSTEMS_001",
+      "example_ontological_issue": "OI_D_DISTRIBUTED_SYSTEMS_001",
+      "layer": 3
+    },
+    {
+      "id": "D_DOLLARTREE",
+      "name": "Dollartree",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_DOLLARTREE_001",
+      "example_ontological_issue": "OI_D_DOLLARTREE_001",
+      "layer": 3
+    },
+    {
+      "id": "D_DRUG_REGULATION",
+      "name": "Drug Regulation",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_DRUG_REGULATION_001",
+      "example_ontological_issue": "OI_D_DRUG_REGULATION_001",
+      "layer": 3
+    },
+    {
+      "id": "D_ELDER_LAW",
+      "name": "Elder Law",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_ELDER_LAW_001",
+      "example_ontological_issue": "OI_D_ELDER_LAW_001",
+      "layer": 3
+    },
+    {
+      "id": "D_GAME_ENGINE_DEVELOPMENT",
+      "name": "Game Engine Development",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_GAME_ENGINE_DEVELOPMENT_001",
+      "example_ontological_issue": "OI_D_GAME_ENGINE_DEVELOPMENT_001",
+      "layer": 3
+    },
+    {
+      "id": "D_INCIDENT_RESPONSE",
+      "name": "Incident Response",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_INCIDENT_RESPONSE_001",
+      "example_ontological_issue": "OI_D_INCIDENT_RESPONSE_001",
+      "layer": 3
+    },
+    {
+      "id": "D_INTL_CRIMINAL",
+      "name": "Intl Criminal",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_INTL_CRIMINAL_001",
+      "example_ontological_issue": "OI_D_INTL_CRIMINAL_001",
+      "layer": 3
+    },
+    {
+      "id": "D_INTL_HUMANITARIAN",
+      "name": "Intl Humanitarian",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_INTL_HUMANITARIAN_001",
+      "example_ontological_issue": "OI_D_INTL_HUMANITARIAN_001",
+      "layer": 3
+    },
+    {
+      "id": "D_MOBILE_DEVELOPMENT",
+      "name": "Mobile Development",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_MOBILE_DEVELOPMENT_001",
+      "example_ontological_issue": "OI_D_MOBILE_DEVELOPMENT_001",
+      "layer": 3
+    },
+    {
+      "id": "D_NETWORKING",
+      "name": "Networking",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_NETWORKING_001",
+      "example_ontological_issue": "OI_D_NETWORKING_001",
+      "layer": 3
+    },
+    {
+      "id": "D_OPEN_SOURCE_GOVERNANCE",
+      "name": "Open Source Governance",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_OPEN_SOURCE_GOVERNANCE_001",
+      "example_ontological_issue": "OI_D_OPEN_SOURCE_GOVERNANCE_001",
+      "layer": 3
+    },
+    {
+      "id": "D_SOFTWARE_TESTING",
+      "name": "Software Testing",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_SOFTWARE_TESTING_001",
+      "example_ontological_issue": "OI_D_SOFTWARE_TESTING_001",
+      "layer": 3
+    },
+    {
+      "id": "D_SUPPLY_CHAIN_SECURITY",
+      "name": "Supply Chain Security",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_SUPPLY_CHAIN_SECURITY_001",
+      "example_ontological_issue": "OI_D_SUPPLY_CHAIN_SECURITY_001",
+      "layer": 3
+    },
+    {
+      "id": "D_TELECOMMUNICATIONS_LAW",
+      "name": "Telecommunications Law",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_TELECOMMUNICATIONS_LAW_001",
+      "example_ontological_issue": "OI_D_TELECOMMUNICATIONS_LAW_001",
+      "layer": 3
+    },
+    {
+      "id": "D_WEAPONS_REGULATION",
+      "name": "Weapons Regulation",
+      "categories": [],
+      "invariants": [],
+      "example_falsification_test": "F_D_WEAPONS_REGULATION_001",
+      "example_ontological_issue": "OI_D_WEAPONS_REGULATION_001",
+      "layer": 3
     }
   ],
   "issues": [
@@ -2433,7 +2604,7 @@
       "severity": "critical",
       "status": "Open",
       "cve": "CVE-2026-24785",
-      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK ≠ 0^32.",
+      "description": "Library accepts a 32-byte all-zero PSK, violating the Noise Protocol Framework invariant PSK \u2260 0^32.",
       "assumptions_violated": [
         "Callers supply a non-zero PSK; no server-side validation needed."
       ],
@@ -2512,7 +2683,7 @@
       "status": "Open",
       "description": "Medical dosimetry software that lacks a falsification test against the IEC 62304 reference algorithm may silently diverge from the certified calculation.",
       "assumptions_violated": [
-        "The software dosimetry calculation agrees with the reference algorithm within ±0.1%."
+        "The software dosimetry calculation agrees with the reference algorithm within \u00b10.1%."
       ],
       "related_cases": [
         "CS_PLATFORM_001"
@@ -2710,7 +2881,7 @@
       "falsification_tests": [
         "F_NONCREATIVE_001"
       ],
-      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress→decompress→compare test."
+      "resolution_notes": "TODO: implement F_NONCREATIVE_001 with compress\u2192decompress\u2192compare test."
     },
     {
       "id": "OI_GAMING_001",
@@ -3224,7 +3395,7 @@
       "category": "invariant-violation",
       "severity": "critical",
       "status": "Open",
-      "description": "If the successor function S is not injective (S(m) = S(n) but m ≠ n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
+      "description": "If the successor function S is not injective (S(m) = S(n) but m \u2260 n), or zero is reachable as a successor, the entire arithmetic foundation collapses, invalidating all inductive proofs built on top.",
       "assumptions_violated": [
         "Peano successor function S(n) is total and injective over natural numbers.",
         "Zero is not the successor of any natural number."
@@ -3393,7 +3564,7 @@
       "assumptions_violated": [
         "Assigned workload is achievable within scheduled hours.",
         "No employee works without compensation.",
-        "Institutions enforce FLSA 29 U.S.C. § 207 overtime requirements."
+        "Institutions enforce FLSA 29 U.S.C. \u00a7 207 overtime requirements."
       ],
       "related_cases": [
         "CS_LAB_001",
@@ -3409,7 +3580,7 @@
         "F_LABOR_005",
         "F_LABOR_006"
       ],
-      "resolution_notes": "Enforce FLSA 29 U.S.C. § 207. Audit workload against scheduled hours. Document all off-the-clock work."
+      "resolution_notes": "Enforce FLSA 29 U.S.C. \u00a7 207. Audit workload against scheduled hours. Document all off-the-clock work."
     },
     {
       "id": "OI_MINECRAFT_001",
@@ -3675,7 +3846,7 @@
       "category": "config-validation",
       "severity": "high",
       "status": "Open",
-      "description": "Config.java defines maxGenerationRequestDistance with minDefaultMax(256, 4096, 4096). A value of 4096 creates a 52.7M block² generation area per player, which mathematically guarantees TPS degradation. No warning is logged when users accept this default.",
+      "description": "Config.java defines maxGenerationRequestDistance with minDefaultMax(256, 4096, 4096). A value of 4096 creates a 52.7M block\u00b2 generation area per player, which mathematically guarantees TPS degradation. No warning is logged when users accept this default.",
       "assumptions_violated": [
         "Dangerous configuration values trigger warnings.",
         "Default values are safe for typical use cases."
@@ -3715,5 +3886,6 @@
     "open": 64,
     "resolved": 0,
     "total_oi_ids": 67
-  }
+  },
+  "total_domains": 154
 }
