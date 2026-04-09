@@ -1,0 +1,10 @@
+{
+  "id": "CS_GAME_MODS_005",
+  "title": "Forge Capability System — Type erasure breaks runtime dispatch",
+  "source": "https://github.com/MinecraftForge/MinecraftForge/issues/9225",
+  "language": "Java",
+  "domains": ["D_GAMEMODS", "D_COMPILER_DESIGN"],
+  "root_cause": "Java generics type erasure means Capability<T> loses T at runtime. LazyOptional dispatch relies on class identity which is erased.",
+  "resolution_type": "Type witness: attach reified type token to capability registration.",
+  "status": "ANALYZED"
+}

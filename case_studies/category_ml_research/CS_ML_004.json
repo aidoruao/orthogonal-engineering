@@ -1,0 +1,10 @@
+{
+  "id": "CS_ML_004",
+  "title": "Gradient Accumulation Bug — Effective batch size miscalculation",
+  "source": "https://github.com/huggingface/transformers/issues/22794",
+  "language": "Python",
+  "domains": ["D_AI_ONTOLOGICAL_STATUS", "D_SOFTWARE_TESTING"],
+  "root_cause": "When using gradient accumulation with mixed precision, loss scaling interacts with accumulation steps. Effective batch size = micro_batch * accumulation_steps * world_size, but some frameworks only account for two of three factors.",
+  "resolution_type": "Invariant: effective_batch_size = micro * accum * world_size. Falsifiable by comparing gradient norms.",
+  "status": "ANALYZED"
+}

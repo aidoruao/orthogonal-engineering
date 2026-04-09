@@ -1,0 +1,10 @@
+{
+  "id": "CS_SYS_004",
+  "title": "XZ Utils Backdoor (CVE-2024-3094) — Supply chain compromise",
+  "source": "https://nvd.nist.gov/vuln/detail/CVE-2024-3094",
+  "language": "C",
+  "domains": ["D_SUPPLY_CHAIN_SECURITY", "D_CRYPTOGRAPHY", "D_OPEN_SOURCE_GOVERNANCE"],
+  "root_cause": "Malicious maintainer inserted obfuscated backdoor into build system over 2+ years of social engineering. No reproducible build verification. No multi-party review requirement for release artifacts.",
+  "resolution_type": "Invariant: release_artifact_hash == reproducible_build_hash. Multi-signature requirement for releases. Build provenance attestation (SLSA Level 3+).",
+  "status": "ANALYZED"
+}

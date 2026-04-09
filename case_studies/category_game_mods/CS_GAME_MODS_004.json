@@ -1,0 +1,10 @@
+{
+  "id": "CS_GAME_MODS_004",
+  "title": "Fabric API Event Ordering — Non-deterministic mod initialization",
+  "source": "https://github.com/FabricMC/fabric/issues/2540",
+  "language": "Java",
+  "domains": ["D_GAMEMODS", "D_SOFTWARE_TESTING"],
+  "root_cause": "Event listener registration order depends on mod loading order which is filesystem-dependent. No topological sort on declared dependencies.",
+  "resolution_type": "Invariant enforcement: listener ordering must be deterministic given declared dependency graph.",
+  "status": "ANALYZED"
+}

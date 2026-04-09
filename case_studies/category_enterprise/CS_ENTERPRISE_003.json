@@ -1,0 +1,10 @@
+{
+  "id": "CS_ENTERPRISE_003",
+  "title": "Kubernetes OOMKilled — Memory limits vs requests misconfiguration",
+  "source": "https://github.com/kubernetes/kubernetes/issues/108082",
+  "language": "Go",
+  "domains": ["D_DEVOPS", "D_DISTRIBUTED_SYSTEMS"],
+  "root_cause": "Pod memory limit set equal to request leaves zero headroom for kernel overhead (page tables, slab cache). Container runtime overhead not accounted for in resource planning.",
+  "resolution_type": "Invariant: memory_limit >= memory_request + kernel_overhead_estimate. Falsifiable by measuring RSS vs cgroup limit.",
+  "status": "ANALYZED"
+}

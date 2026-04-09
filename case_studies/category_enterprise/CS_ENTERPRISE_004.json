@@ -1,0 +1,10 @@
+{
+  "id": "CS_ENTERPRISE_004",
+  "title": "PostgreSQL Vacuum Wraparound — Transaction ID exhaustion",
+  "source": "https://www.postgresql.org/docs/current/routine-vacuuming.html#VACUUM-FOR-WRAPAROUND",
+  "language": "C",
+  "domains": ["D_DATABASE_SYSTEMS", "D_DEVOPS"],
+  "root_cause": "PostgreSQL uses 32-bit transaction IDs. Without regular VACUUM, the ID space wraps around and the database shuts down to prevent data loss. autovacuum_freeze_max_age default (200M) may be too high for write-heavy workloads.",
+  "resolution_type": "Invariant: oldest_unfrozen_xid < current_xid - safety_margin. Monitoring alert when age > 150M.",
+  "status": "ANALYZED"
+}

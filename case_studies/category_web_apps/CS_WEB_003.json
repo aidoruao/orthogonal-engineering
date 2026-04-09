@@ -1,0 +1,10 @@
+{
+  "id": "CS_WEB_003",
+  "title": "React Server Components — Serialization boundary violations",
+  "source": "https://github.com/facebook/react/issues/27573",
+  "language": "TypeScript",
+  "domains": ["D_PLATFORM", "D_COMPILER_DESIGN"],
+  "root_cause": "Server Components cannot pass functions or class instances to Client Components. The serialization boundary is implicit (file-level 'use client' directive) rather than type-enforced.",
+  "resolution_type": "Type-level enforcement: Serializable<T> type that statically rejects non-serializable props at the boundary.",
+  "status": "ANALYZED"
+}
