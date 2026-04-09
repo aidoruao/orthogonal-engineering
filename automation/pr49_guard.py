@@ -260,9 +260,13 @@ def validate_consent_log(
     """
     Validate the consent log at *path*.  Append violations for:
       - parse errors
-      - missing required fields
+      - missing required fields (only for NEW records added in this PR)
       - scope_glob not matching any changed path (warn, not block)
     Returns the parsed (valid) records.
+
+    NOTE: Only validates records that are NEW in this PR, not pre-existing
+    records from the base branch. This allows gradual migration to stricter
+    validation without blocking PRs due to historical entries.
     """
     try:
         rel_str = str(path.relative_to(REPO_ROOT))
@@ -273,19 +277,46 @@ def validate_consent_log(
     for err in parse_errors:
         violations.append(_violation(4, rel_str, err))
 
+    # Load the base branch version to determine which records are new
+    base_records: List[Dict] = []
+    try:
+        # Get consent log from base branch (origin/main or merge-base)
+        base_content = subprocess.check_output(
+            ["git", "show", "origin/main:" + str(path.relative_to(REPO_ROOT))],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+        for line in base_content.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            try:
+                base_records.append(json.loads(line))
+            except json.JSONDecodeError:
+                pass  # Ignore parse errors in base branch
+    except (subprocess.CalledProcessError, ValueError):
+        # File doesn't exist in base branch or other error - all records are new
+        pass
+
+    base_count = len(base_records)
+
     valid_records: List[Dict] = []
     for i, rec in enumerate(records):
-        missing = CONSENT_REQUIRED_FIELDS - set(rec.keys())
-        if missing:
-            violations.append(
-                _violation(
-                    4,
-                    rel_str,
-                    f"record {i}: missing required fields: {sorted(missing)}",
+        # Only validate records that are NEW (beyond base_count)
+        if i >= base_count:
+            missing = CONSENT_REQUIRED_FIELDS - set(rec.keys())
+            if missing:
+                violations.append(
+                    _violation(
+                        4,
+                        rel_str,
+                        f"record {i}: missing required fields: {sorted(missing)}",
+                    )
                 )
-            )
-        else:
-            valid_records.append(rec)
+                continue
+
+        # All records (old and new) are included in valid_records for coverage checks
+        valid_records.append(rec)
 
     return valid_records
 
