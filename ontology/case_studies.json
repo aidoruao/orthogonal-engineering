@@ -1674,6 +1674,331 @@
         "Falsification: F_ENVIRONMENTAL_LAW_002 verifies BOP closure under design pressure.",
         "Yeshua Axiom 5: No hidden state (well pressure data must be continuously recorded)."
       ]
+    },
+    {
+      "id": "CS_081",
+      "title": "Child Welfare: Gabriel Fernandez case — CPS response time violations",
+      "source": "https://www.acf.hhs.gov/sites/default/files/documents/cb/capta_reauth_2016.pdf",
+      "domain": "D_CHILDWELFARE",
+      "root_cause_signals": [
+        "RCS-TIMELINE-VIOLATION",
+        "RCS-INVESTIGATION-FAILURE"
+      ],
+      "description": "Gabriel Fernandez (8 years old) died from abuse after multiple CPS reports. LA County DCFS received 8 reports over 8 months; investigations exceeded mandated response timelines (IMMEDIATE reports took >48 hours). California ASFA compliance: permanency hearings exceeded 12-month deadline. Structural failure: caseload exceeded safe ratios (1:15 recommended, actual >1:25).",
+      "assumptions_violated": [
+        "CPS investigations meet priority-based response timelines (CAPTA standards).",
+        "Caseworker staffing adequate to handle investigation load.",
+        "ASFA permanency hearing deadlines enforced by courts."
+      ],
+      "falsification_tests": [
+        "F_CHILDWELFARE_002"
+      ],
+      "ontological_issues": [
+        "OI_CHILDWELFARE_002"
+      ],
+      "lessons": [
+        "IMMEDIATE priority investigations must respond within 24 hours (state CPS regulations).",
+        "Caseload caps: caseworker-to-case ratio must not exceed 1:15 for safety investigations.",
+        "ASFA timeline: permanency hearing required within 365 days of entry into care.",
+        "Glass-box accountability: investigation timestamps must be logged and auditable."
+      ],
+      "methodology_components": [
+        "Falsification: F_CHILDWELFARE_002 verifies response time compliance by priority level.",
+        "Yeshua Axiom 5: No hidden state (investigation actions must be timestamped)."
+      ]
+    },
+    {
+      "id": "CS_082",
+      "title": "Communications: AT&T 911 outage (2020) — Call routing QoS failure",
+      "source": "https://www.fcc.gov/document/fcc-proposes-57m-fine-att-nationwide-911-outages",
+      "domain": "D_COMMUNICATIONS",
+      "root_cause_signals": [
+        "RCS-QOS-VIOLATION",
+        "RCS-SINGLE-POINT-FAILURE"
+      ],
+      "description": "AT&T 911 outage (March 2020) affected 15,000+ failed emergency calls across multiple states. Root cause: software update to routing management system introduced latency spike (P99 > 10 seconds) that violated E911 routing SLA. FCC proposed $5.7M fine for violating 911 reliability rules (47 CFR § 12.4). Network diversity requirements mandate N-1 redundancy for E911 infrastructure.",
+      "assumptions_violated": [
+        "911 call routing meets P99 latency < 200ms SLA under normal load.",
+        "Software updates tested for E911 performance impact before deployment.",
+        "Network redundancy prevents single-point-of-failure in 911 infrastructure."
+      ],
+      "falsification_tests": [
+        "F_COMMUNICATIONS_002"
+      ],
+      "ontological_issues": [
+        "OI_COMMUNICATIONS_002"
+      ],
+      "lessons": [
+        "E911 routing: P99 latency must meet <200ms under 10x load (FCC 911 Reliability Order).",
+        "Network diversity: N-1 redundancy required for critical infrastructure (ATIS standards).",
+        "Glass-box testing: E911 software updates require load testing before deployment.",
+        "Message ordering: 911 calls must preserve FIFO sequencing through routing hops."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMMUNICATIONS_002 tests E911 routing under synthetic load spike.",
+        "Yeshua Axiom 6: No unverifiable dependency (E911 routing must not depend on single system)."
+      ]
+    },
+    {
+      "id": "CS_083",
+      "title": "Creative: Getty Images v. Stability AI — Copyright infringement via AI training",
+      "source": "https://www.courtlistener.com/docket/66806083/getty-images-us-inc-v-stability-ai-inc/",
+      "domain": "D_CREATIVE",
+      "root_cause_signals": [
+        "RCS-COPYRIGHT-VIOLATION",
+        "RCS-DMCA-NONCOMPLIANCE"
+      ],
+      "description": "Getty Images sued Stability AI (Stable Diffusion) for training on 12M+ copyrighted images without license. Stable Diffusion outputs reproduced Getty watermark, demonstrating perceptual similarity >95% to source images. DMCA § 512(c) safe harbor requires notice-and-takedown; generative AI training does not qualify. Fair use defense challenged: commercial use, substantial similarity, market harm to Getty licensing.",
+      "assumptions_violated": [
+        "AI training on copyrighted works qualifies as fair use (17 USC § 107).",
+        "Generative AI outputs are transformative enough to avoid copyright infringement.",
+        "DMCA safe harbor protections apply to AI training datasets."
+      ],
+      "falsification_tests": [
+        "F_CREATIVE_002"
+      ],
+      "ontological_issues": [
+        "OI_CREATIVE_002"
+      ],
+      "lessons": [
+        "DMCA § 512(c): safe harbor requires responsive notice-and-takedown mechanism.",
+        "Fair use factors: commercial use + substantial similarity = likely infringement.",
+        "Perceptual similarity >95%: outputs identical to copyrighted source violate exclusive rights.",
+        "Reproducibility: fixed seed must not produce copyrighted outputs (determinism test).",
+        "Glass-box attribution: training data provenance must be disclosed."
+      ],
+      "methodology_components": [
+        "Falsification: F_CREATIVE_002 tests perceptual similarity between AI outputs and training set.",
+        "Yeshua Axiom 2: Every derivation is reproducible (seed must not yield copyrighted output)."
+      ]
+    },
+    {
+      "id": "CS_084",
+      "title": "Computability: Halting problem in automated code review — Unbounded CI pipelines",
+      "source": "internal://ci-timeout-analysis",
+      "domain": "D_COMPUTABILITY",
+      "root_cause_signals": [
+        "RCS-HALTING-VIOLATION",
+        "RCS-UNBOUNDED-EXECUTION"
+      ],
+      "description": "Automated code review CI pipeline using abstract interpretation for bug detection encountered halting problem: symbolic execution on recursive programs without timeout caused CI jobs to run indefinitely. GitHub Actions enforces 6-hour max job runtime, but users expect <10 minute feedback. Decidability tradeoff: sound bug detection requires undecidable analysis (Rice's theorem).",
+      "assumptions_violated": [
+        "Static analysis always terminates within CI timeout window.",
+        "Symbolic execution bounds are sufficient to guarantee halting.",
+        "Bug detection soundness achievable without undecidable analysis."
+      ],
+      "falsification_tests": [
+        "F_COMPUTABILITY_002"
+      ],
+      "ontological_issues": [
+        "OI_COMPUTABILITY_002"
+      ],
+      "lessons": [
+        "Halting problem: undecidable analysis must have timeout (practical decidability via resource bounds).",
+        "Rice's theorem: nontrivial semantic properties are undecidable—approximate with conservative analysis.",
+        "CI timeout: max execution time must be enforced (e.g., 10M steps for TM simulation).",
+        "Glass-box feedback: CI must report partial results when timeout reached."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMPUTABILITY_002 runs symbolic executor on pathological recursion with timeout.",
+        "Busy Beaver lower bound: CI step limit based on Σ(n) proven values."
+      ]
+    },
+    {
+      "id": "CS_085",
+      "title": "Combinatorics: Pigeonhole principle violation in hash table design",
+      "source": "internal://hash-collision-analysis",
+      "domain": "D_COMBINATORICS",
+      "root_cause_signals": [
+        "RCS-COLLISION-ASSUMPTION",
+        "RCS-COUNTING-ERROR"
+      ],
+      "description": "Hash table with 256 buckets and 1000 keys violated pigeonhole principle: developers assumed uniform distribution would prevent bucket overflow. By pigeonhole principle, at least ⌈1000/256⌉ = 4 keys per bucket guaranteed. Worst-case: pathological hash function caused 900+ keys to collide in single bucket, degrading O(1) to O(n) lookup. Birthday paradox: 50% collision probability at √(n) insertions.",
+      "assumptions_violated": [
+        "Hash function produces uniform distribution across buckets.",
+        "Collision probability negligible for reasonable load factors.",
+        "Bucket count sufficient to avoid overflow without chaining."
+      ],
+      "falsification_tests": [
+        "F_COMBINATORICS_002"
+      ],
+      "ontological_issues": [
+        "OI_COMBINATORICS_002"
+      ],
+      "lessons": [
+        "Pigeonhole principle: n pigeons in m holes → at least ⌈n/m⌉ pigeons in some hole.",
+        "Birthday paradox: collision probability 50% at √(n) insertions for n-bucket table.",
+        "Catalan numbers: balanced BST restructuring uses C_n recursive patterns.",
+        "Glass-box hashing: hash distribution must be measured and verified uniform."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMBINATORICS_002 tests hash uniformity with χ² goodness-of-fit test.",
+        "Yeshua Axiom 1: Deterministic counting formulas must match implementation."
+      ]
+    },
+    {
+      "id": "CS_086",
+      "title": "Blue-Collar: Amazon warehouse OSHA violations — Injury reporting failures",
+      "source": "https://www.osha.gov/news/newsreleases/region1/04192023",
+      "domain": "D_BLUECOLLAR",
+      "root_cause_signals": [
+        "RCS-OSHA-NONCOMPLIANCE",
+        "RCS-INCIDENT-UNDERREPORTING"
+      ],
+      "description": "Amazon warehouses cited for OSHA violations: serious injuries (days away from work) not reported within 8-hour deadline (29 CFR § 1904.39). Defect rate at fulfillment centers exceeded 2% (Six Sigma standard), indicating systematic process control failures. Safety alerts for critical hazards (e.g., forklift near-miss) delivered in >30 seconds, violating SLO for CRITICAL hazard level.",
+      "assumptions_violated": [
+        "OSHA serious incidents reported within 8 hours (29 CFR § 1904.39).",
+        "Safety alert delivery meets <30 second SLO for CRITICAL hazards.",
+        "Manufacturing defect rate ≤2% per Six Sigma quality control.",
+        "Field service records are tamper-evident and immutable."
+      ],
+      "falsification_tests": [
+        "F_BLUECOLLAR_002"
+      ],
+      "ontological_issues": [
+        "OI_BLUECOLLAR_002"
+      ],
+      "lessons": [
+        "OSHA 1904: serious injuries (hospitalization, amputation, death) reported within 8 hours.",
+        "Safety alert SLO: CRITICAL hazards <30s, HIGH hazards <120s response time.",
+        "Six Sigma: defect rate must be ≤2% for production quality control.",
+        "Glass-box audit: OSHA 300 log must be tamper-evident with cryptographic hashing."
+      ],
+      "methodology_components": [
+        "Falsification: F_BLUECOLLAR_002 tests OSHA incident reporting timeline compliance.",
+        "Yeshua Axiom 5: No hidden state (incident timestamps must be immutably logged)."
+      ]
+    },
+    {
+      "id": "CS_087",
+      "title": "Child Welfare: ICWA compliance failure — Adoptive Couple v. Baby Girl",
+      "source": "https://www.supremecourt.gov/opinions/12pdf/12-399_1b7d.pdf",
+      "domain": "D_CHILDWELFARE",
+      "root_cause_signals": [
+        "RCS-ICWA-VIOLATION",
+        "RCS-TRIBAL-NOTIFICATION-FAILURE"
+      ],
+      "description": "Adoptive Couple v. Baby Girl (2013): biological father (Cherokee Nation member) contested adoption of daughter without ICWA compliance. Tribe was not notified of proceedings, violating ICWA § 1912(a) tribal notification requirement. Active efforts (ICWA § 1912(d)) to prevent family breakup not documented. Supreme Court held ICWA did not apply when father never had custody, but case highlighted ICWA procedural failures.",
+      "assumptions_violated": [
+        "ICWA tribal notification automatic when child has tribal heritage.",
+        "Active efforts to prevent family separation documented for all tribal cases.",
+        "ICWA protections apply uniformly regardless of custody status."
+      ],
+      "falsification_tests": [
+        "F_CHILDWELFARE_003"
+      ],
+      "ontological_issues": [
+        "OI_CHILDWELFARE_003"
+      ],
+      "lessons": [
+        "ICWA § 1912(a): tribes must be notified when tribal child enters child welfare system.",
+        "ICWA § 1912(d): active efforts to prevent family breakup must be documented.",
+        "Qualified expert witness: tribal representative required for termination proceedings (ICWA § 1912(f)).",
+        "Glass-box compliance: ICWA compliance checklist must be part of case file."
+      ],
+      "methodology_components": [
+        "Falsification: F_CHILDWELFARE_003 tests ICWA tribal notification and active efforts documentation.",
+        "Yeshua Axiom 5: No hidden state (tribal notification must be logged with confirmation)."
+      ]
+    },
+    {
+      "id": "CS_088",
+      "title": "Communications: Verizon P2P throttling (2007) — Network neutrality violation",
+      "source": "https://www.fcc.gov/document/fcc-settles-investigation-verizon-internets-compliance-open-internet-order",
+      "domain": "D_COMMUNICATIONS",
+      "root_cause_signals": [
+        "RCS-QOS-DISCRIMINATION",
+        "RCS-TRAFFIC-SHAPING"
+      ],
+      "description": "Verizon throttled P2P traffic (BitTorrent, Gnutella) without disclosure, violating FCC Open Internet Order (network neutrality). QoS GUARANTEED class requires equal treatment; P2P traffic experienced P99 latency >5 seconds vs <200ms for HTTP. Message ordering violated: TCP packet reordering caused by traffic shaping broke FIFO guarantee. FCC settlement required disclosure and non-discrimination.",
+      "assumptions_violated": [
+        "All internet traffic treated equally (network neutrality).",
+        "QoS latency SLA applies uniformly across traffic types.",
+        "Message ordering (TCP) preserved by ISP infrastructure."
+      ],
+      "falsification_tests": [
+        "F_COMMUNICATIONS_003"
+      ],
+      "ontological_issues": [
+        "OI_COMMUNICATIONS_003"
+      ],
+      "lessons": [
+        "FCC Open Internet Order: no blocking, throttling, or paid prioritization of lawful traffic.",
+        "QoS non-discrimination: P99 latency must meet SLA for all traffic classes.",
+        "Message ordering: TCP FIFO sequencing must be preserved through ISP routing.",
+        "Glass-box disclosure: traffic management practices must be publicly disclosed."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMMUNICATIONS_003 measures P2P vs HTTP latency parity.",
+        "Yeshua Axiom 4: No authority without proof (traffic discrimination requires user notification)."
+      ]
+    },
+    {
+      "id": "CS_089",
+      "title": "Creative: AI-generated music copyright — Udio lawsuit",
+      "source": "https://www.theverge.com/2024/6/24/24185033/riaa-sues-ai-music-generators-suno-udio-copyright",
+      "domain": "D_CREATIVE",
+      "root_cause_signals": [
+        "RCS-DERIVATIVE-WORK-VIOLATION",
+        "RCS-FAIR-USE-FAILURE"
+      ],
+      "description": "RIAA sued Udio (AI music generator) for copyright infringement: training on copyrighted recordings without license, outputs perceptually similar to training data. Reproducibility test: fixed seed produced outputs matching copyrighted songs (>95% perceptual similarity via audio fingerprinting). Fair use defense challenged: commercial use, substantial copying, market harm to music licensing. Creative Commons BY-SA license violations: derivative works not released under same license.",
+      "assumptions_violated": [
+        "AI training on copyrighted music qualifies as fair use.",
+        "Generative AI outputs are sufficiently transformative to avoid infringement.",
+        "Fixed seed generation does not reproduce copyrighted material.",
+        "CC BY-SA ShareAlike license not violated by AI training."
+      ],
+      "falsification_tests": [
+        "F_CREATIVE_003"
+      ],
+      "ontological_issues": [
+        "OI_CREATIVE_003"
+      ],
+      "lessons": [
+        "Reproducibility: fixed seed must not generate copyrighted outputs (determinism test).",
+        "Perceptual similarity >95%: audio fingerprinting detects copyright violation.",
+        "CC BY-SA ShareAlike: derivative works must use same license (viral license).",
+        "Fair use: commercial use + substantial similarity + market harm = likely infringement.",
+        "Glass-box attribution: training data sources must be disclosed and licensed."
+      ],
+      "methodology_components": [
+        "Falsification: F_CREATIVE_003 tests audio fingerprint similarity between AI outputs and training corpus.",
+        "Yeshua Axiom 2: Every derivation is reproducible (seed determinism must not yield copyrighted work)."
+      ]
+    },
+    {
+      "id": "CS_090",
+      "title": "Computability: Rice's theorem in malware detection — Semantic analysis limits",
+      "source": "internal://antivirus-undecidability-analysis",
+      "domain": "D_COMPUTABILITY",
+      "root_cause_signals": [
+        "RCS-RICE-THEOREM-VIOLATION",
+        "RCS-SEMANTIC-UNDECIDABILITY"
+      ],
+      "description": "Antivirus malware detection using semantic analysis (behavioral detection) violates Rice's theorem: determining if a program exhibits malicious behavior is undecidable (nontrivial semantic property). Signature-based detection (syntactic) is decidable but incomplete. Heuristic-based detection (semantic approximation) has false positives/negatives. Practical solution: timeout-bounded symbolic execution with conservative overapproximation.",
+      "assumptions_violated": [
+        "Behavioral malware detection can perfectly identify all malicious programs.",
+        "Semantic analysis of program behavior is decidable with enough resources.",
+        "Heuristic detection achieves zero false positives and zero false negatives."
+      ],
+      "falsification_tests": [
+        "F_COMPUTABILITY_003"
+      ],
+      "ontological_issues": [
+        "OI_COMPUTABILITY_003"
+      ],
+      "lessons": [
+        "Rice's theorem: all nontrivial semantic properties of programs are undecidable.",
+        "Malware detection tradeoff: decidable (signature-based) vs sound (semantic) analysis.",
+        "Timeout-bounded analysis: practical decidability via resource limits (TM step limit).",
+        "Conservative overapproximation: flag suspicious behavior, accept false positives.",
+        "Glass-box heuristics: detection rules must be transparent and auditable."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMPUTABILITY_003 tests malware detector on undecidable semantic properties.",
+        "Rice's theorem proof: construct program P that behaves maliciously iff halting problem instance halts."
+      ]
     }
   ]
 }
