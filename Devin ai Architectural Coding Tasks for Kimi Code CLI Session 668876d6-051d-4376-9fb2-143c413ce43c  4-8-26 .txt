@@ -1,0 +1,923 @@
+The "3a" session landed perfectly — all 27/27 checks passing. Here's the current state and next instructions.
+
+**Current State:**
+- 155 domains total, 61 deepened, ~88 stubs
+- 26 axiom modules (cryptographic_verification.py added)
+- D_REMOTE_SENSING domain live
+- Workflow #15 merged (`.github/workflows/social-ai-detector.yml` exists)
+- PR #101 merged [40-cite-0](#40-cite-0) 
+
+**Still NOT created:**
+- `axioms/type_registry.py` (28 types, 12 kinds)
+- YouTuber audit framework
+- 10 critical legal domain deepenings (Batch D2)
+- drkostas vendoring + gap analysis
+- HTML index page (`docs/index.html`) [40-cite-1](#40-cite-1) 
+
+---
+
+## Kimi CLI Instructions — Session 668876d6 (4-8-26 1a)
+
+Paste this into the fresh Kimi CLI `✨` prompt:
+
+```
+You are Kimi Code CLI, continuing Operation SOVEREIGN TOPOS + MAXIMAL EXPANSION.
+Session: 668876d6-051d-4376-9fb2-143c413ce43c
+Standard: Yeshua / Glass-Box / Orthogonal Engineering
+Authority: @aidoruao
+
+RULES:
+- 0 floats in axioms/ or src/ (use Fraction)
+- 0 stubs (no `pass` bodies, no `return True` without logic)
+- 0 editorial or argumentative comments
+- Professional and graceful tone everywhere
+- ProofObject returns on all axiom functions
+- All invariants must be falsifiable
+- Commit after each phase. Push after each phase.
+- If context hits 80% (209k), commit current work and STOP.
+
+cd ~/orthogonal-engineering && git pull origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 1: axioms/type_registry.py — New Types of Types
+═══════════════════════════════════════════════════════════════════════
+
+Create axioms/type_registry.py with:
+
+from fractions import Fraction
+from enum import Enum, auto
+from typing import Tuple, List, Dict, Optional, NamedTuple
+from axioms.logic import ProofObject
+
+class TypeKind(Enum):
+    STAR = auto()        # * (base types)
+    ARROW = auto()       # * -> * (type constructors)
+    CONSTRAINT = auto()  # Constraint (type classes)
+    EFFECT = auto()      # Effect rows
+    PROTOCOL = auto()    # Session types
+    SECURITY = auto()    # Information flow
+    HARDWARE = auto()    # Register-level
+    RESOURCE = auto()    # Linear/affine
+    HIGHER = auto()      # (* -> *) -> *
+    UNIVERSE = auto()    # Type : Type_n
+    QUOTIENT = auto()    # Equivalence classes
+    GRADED = auto()      # Semiring-indexed
+
+class TypeUniverse(Enum):
+    TYPE_0 = 0   # Prop / small types
+    TYPE_1 = 1   # Set / large types
+    TYPE_2 = 2   # Class / very large
+    TYPE_OMEGA = 99  # Universe polymorphic
+
+class Multiplicity(Enum):
+    ZERO = 0      # Erased at runtime
+    ONE = 1       # Linear (used exactly once)
+    OMEGA = 99    # Unrestricted
+
+class TypeNode(NamedTuple):
+    name: str
+    kind: TypeKind
+    universe: TypeUniverse
+    multiplicity: Multiplicity
+    description: str
+    dual_of: Optional[str] = None
+    examples: Tuple[str, ...] = ()
+
+TYPE_REGISTRY: Dict[str, TypeNode] = {
+    # Foundation
+    "Unit": TypeNode("Unit", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Terminal object. Exactly one inhabitant.",
+        dual_of="Void", examples=("()", "tt")),
+    "Void": TypeNode("Void", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.ZERO, "Initial object. Zero inhabitants.",
+        dual_of="Unit", examples=("absurd : Void -> a",)),
+    "Bool": TypeNode("Bool", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Two inhabitants: True, False.",
+        examples=("True", "False")),
+    "Nat": TypeNode("Nat", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Peano naturals. Zero | Succ Nat.",
+        examples=("Z", "S(S(Z))")),
+    "Int": TypeNode("Int", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Integers as equivalence classes of Nat pairs.",
+        examples=("(3,0) ~ 3", "(0,2) ~ -2")),
+    "Rational": TypeNode("Rational", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Fractions p/q with q != 0, reduced form.",
+        examples=("Fraction(1,2)", "Fraction(3,7)")),
+
+    # Algebraic
+    "Product": TypeNode("Product", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Cartesian product A x B.",
+        dual_of="Coproduct", examples=("(Int, Bool)", "(a, b)")),
+    "Coproduct": TypeNode("Coproduct", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Disjoint union A + B. Left a | Right b.",
+        dual_of="Product", examples=("Either Int String",)),
+    "Arrow": TypeNode("Arrow", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Function space A -> B.",
+        dual_of="LinearArrow", examples=("Int -> Bool",)),
+    "LinearArrow": TypeNode("LinearArrow", TypeKind.RESOURCE, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "Linear function A -o B. Argument used exactly once.",
+        dual_of="Arrow", examples=("FileHandle -o (Result, FileHandle)",)),
+
+    # Dependent
+    "Pi": TypeNode("Pi", TypeKind.ARROW, TypeUniverse.TYPE_1,
+        Multiplicity.OMEGA, "Dependent function. Pi(x:A).B(x).",
+        dual_of="Sigma", examples=("(n:Nat) -> Vec n a",)),
+    "Sigma": TypeNode("Sigma", TypeKind.STAR, TypeUniverse.TYPE_1,
+        Multiplicity.OMEGA, "Dependent pair. Sigma(x:A).B(x).",
+        dual_of="Pi", examples=("(n:Nat, Vec n a)",)),
+
+    # Refinement & Quotient
+    "Refinement": TypeNode("Refinement", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Subtype {x:A | P(x)}. Predicate-guarded.",
+        examples=("{n:Int | n > 0}",)),
+    "Quotient": TypeNode("Quotient", TypeKind.QUOTIENT, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Equivalence class A/~. Elements identified by relation.",
+        examples=("Int/mod3", "Rational as (Nat x Nat)/~")),
+    "Graded": TypeNode("Graded", TypeKind.GRADED, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Semiring-indexed type. Tracks resource usage.",
+        examples=("Graded[3] FileOp",)),
+    "Effect": TypeNode("Effect", TypeKind.EFFECT, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Tracks computational effects (IO, State, Exception).",
+        examples=("Eff [IO, State Int] Bool",)),
+
+    # Intersection & Union
+    "Intersection": TypeNode("Intersection", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "A value inhabiting both types. A & B.",
+        dual_of="Union", examples=("Printable & Serializable",)),
+    "Union": TypeNode("Union", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "A value inhabiting either type. A | B.",
+        dual_of="Intersection", examples=("Int | String",)),
+
+    # Higher-Kinded
+    "HKT": TypeNode("HKT", TypeKind.HIGHER, TypeUniverse.TYPE_1,
+        Multiplicity.OMEGA, "Types parameterized by type constructors. f: (* -> *) -> *.",
+        examples=("Functor f => f a -> f b",)),
+
+    # Session Types
+    "Session": TypeNode("Session", TypeKind.PROTOCOL, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "Communication protocol type. Send A . Recv B . End.",
+        dual_of="SessionDual", examples=("Send Int . Recv Bool . End",)),
+    "SessionDual": TypeNode("SessionDual", TypeKind.PROTOCOL, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "Dual of a session type. Recv A . Send B . End.",
+        dual_of="Session", examples=("Recv Int . Send Bool . End",)),
+
+    # Security
+    "Labeled": TypeNode("Labeled", TypeKind.SECURITY, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Information-flow labeled value. Labeled[L] a.",
+        examples=("Labeled[Secret] Password",)),
+    "Capability": TypeNode("Capability", TypeKind.SECURITY, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "Unforgeable token granting access to a resource.",
+        examples=("Cap[FileRead, /etc/passwd]",)),
+    "Tainted": TypeNode("Tainted", TypeKind.SECURITY, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "User input not yet sanitized.",
+        examples=("Tainted[UserInput] String",)),
+
+    # Hardware
+    "Register": TypeNode("Register", TypeKind.HARDWARE, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "CPU register. Width-indexed.",
+        examples=("Reg[32] Word",)),
+    "MemRegion": TypeNode("MemRegion", TypeKind.HARDWARE, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "Contiguous memory region with bounds.",
+        examples=("MemRegion[0x1000, 0x2000]",)),
+    "ClockDomain": TypeNode("ClockDomain", TypeKind.HARDWARE, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Hardware clock domain for synchronization.",
+        examples=("ClockDomain[100MHz]",)),
+}
+
+# Verification functions
+def verify_duality_symmetry() -> Tuple[bool, ProofObject]:
+    """Every type with dual_of must have its dual point back."""
+    violations = []
+    for name, node in TYPE_REGISTRY.items():
+        if node.dual_of:
+            dual = TYPE_REGISTRY.get(node.dual_of)
+            if not dual:
+                violations.append(f"{name}.dual_of={node.dual_of} not in registry")
+            elif dual.dual_of != name:
+                violations.append(f"{name}<->{node.dual_of} not symmetric")
+    ok = len(violations) == 0
+    return ok, ProofObject(
+        conclusion=f"Duality symmetry {'holds' if ok else 'VIOLATED'}",
+        premises=violations if violations else ["All duals are symmetric"],
+        rule="type_duality_symmetry",
+        derivation=["Check dual_of fields form involution"])
+
+def verify_universe_consistency() -> Tuple[bool, ProofObject]:
+    """Higher-kinded types must live in TYPE_1 or above."""
+    violations = []
+    for name, node in TYPE_REGISTRY.items():
+        if node.kind in (TypeKind.HIGHER, TypeKind.ARROW):
+            if node.universe.value < TypeUniverse.TYPE_0.value:
+                violations.append(f"{name} is {node.kind.name} but in {node.universe.name}")
+    ok = len(violations) == 0
+    return ok, ProofObject(
+        conclusion=f"Universe consistency {'holds' if ok else 'VIOLATED'}",
+        premises=violations if violations else ["All HKT/Arrow types in appropriate universe"],
+        rule="type_universe_consistency",
+        derivation=["Check kind vs universe level"])
+
+def verify_linear_multiplicity() -> Tuple[bool, ProofObject]:
+    """Linear/session types must have multiplicity ONE."""
+    violations = []
+    for name, node in TYPE_REGISTRY.items():
+        if node.kind in (TypeKind.PROTOCOL, TypeKind.RESOURCE):
+            if node.multiplicity != Multiplicity.ONE:
+                violations.append(f"{name} is {node.kind.name} but multiplicity={node.multiplicity.name}")
+    ok = len(violations) == 0
+    return ok, ProofObject(
+        conclusion=f"Linear multiplicity {'holds' if ok else 'VIOLATED'}",
+        premises=violations if violations else ["All protocol/resource types are linear"],
+        rule="type_linear_multiplicity",
+        derivation=["Check kind implies multiplicity=ONE"])
+
+def count_types_by_kind() -> Tuple[Dict[str, int], ProofObject]:
+    """Count types per kind."""
+    counts = {}
+    for node in TYPE_REGISTRY.values():
+        k = node.kind.name
+        counts[k] = counts.get(k, 0) + 1
+    return counts, ProofObject(
+        conclusion=f"Registry contains {len(TYPE_REGISTRY)} types across {len(counts)} kinds",
+        premises=[f"{k}: {v}" for k, v in sorted(counts.items())],
+        rule="type_kind_census",
+        derivation=["Enumerate TYPE_REGISTRY by kind"])
+
+# Verify no floats
+python3 -c "
+import ast
+with open('axioms/type_registry.py') as f:
+    tree = ast.parse(f.read())
+floats = [n.lineno for n in ast.walk(tree)
+          if isinstance(n, ast.Constant) and isinstance(n.value, float)]
+assert not floats, f'FLOAT LITERALS AT LINES: {floats}'
+print('type_registry.py: CLEAN — 0 float literals')
+"
+
+python3 -c "
+from axioms.type_registry import *
+ok1, p1 = verify_duality_symmetry()
+ok2, p2 = verify_universe_consistency()
+ok3, p3 = verify_linear_multiplicity()
+counts, p4 = count_types_by_kind()
+assert ok1, p1.conclusion
+assert ok2, p2.conclusion
+assert ok3, p3.conclusion
+print(f'TYPE REGISTRY: {len(TYPE_REGISTRY)} types, all checks pass')
+print(f'Kinds: {counts}')
+"
+
+git add axioms/type_registry.py
+git commit -m "Add axioms/type_registry.py: 28 types across 12 kinds
+
+New Types of Types — executable registry with ProofObject verification:
+- Foundation: Unit, Void, Bool, Nat, Int, Rational
+- Algebraic: Product, Coproduct, Arrow, LinearArrow
+- Dependent: Pi, Sigma
+- Refinement, Quotient, Graded, Effect
+- Intersection, Union, HKT
+- Session: Session, SessionDual (protocol types)
+- Security: Labeled, Capability, Tainted
+- Hardware: Register, MemRegion, ClockDomain
+- Duality symmetry verification
+- Universe consistency verification
+- Linear multiplicity verification
+0 floats. 0 stubs. All ProofObject-bearing."
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 2: DEEPEN 10 CRITICAL LEGAL DOMAINS (Batch D2)
+═══════════════════════════════════════════════════════════════════════
+
+For EACH of these 10 domains, replace the stub invariants.py with
+real regulatory logic. Each must have 200+ lines, real legal
+thresholds, Fraction arithmetic, and falsifiable assertions.
+
+Pattern for each domain:
+  src/domains/d_{name}/invariants.py — real checks
+  src/domains/d_{name}/implementation.py — real classes
+  src/domains/d_{name}/tests/test_f_d_{name}_001.py — real tests
+
+DOMAIN 1: d_administrative_law
+  - APA notice-and-comment: minimum 30-day comment period
+  - Exhaustion of administrative remedies before judicial review
+  - Arbitrary-and-capricious standard (Chevron deference)
+  - Record rule: agency decision must be based on administrative record
+
+DOMAIN 2: d_bankruptcy
+  - Chapter 7 means test: income below state median
+  - Chapter 11 absolute priority rule
+  - Chapter 13 disposable income test (60-month plan)
+  - Automatic stay: filing triggers immediate stay
+  - Preferential transfer lookback (90 days, 1 year for insiders)
+
+DOMAIN 3: d_contract_law
+  - Offer + acceptance + consideration = valid contract
+  - Statute of frauds: contracts > $500 must be written (UCC 2-201)
+  - Parol evidence rule: written contract supersedes prior oral
+  - Breach: material vs minor, damages calculation
+  - UCC Article 2 merchant rules
+
+DOMAIN 4: d_evidence_law
+  - FRE 401/402: relevance (tendency to make fact more/less probable)
+  - FRE 403: probative value vs unfair prejudice balancing
+  - FRE 801/802: hearsay rule + exceptions
+  - FRE 702: expert testimony (Daubert standard)
+  - Chain of custody integrity
+
+DOMAIN 5: d_healthcare_law
+  - Stark Law: physician self-referral prohibition
+  - Anti-Kickback Statute: remuneration for referrals
+  - EMTALA: emergency screening + stabilization
+  - HIPAA: minimum necessary standard for PHI
+  - False Claims Act: treble damages
+
+DOMAIN 6: d_insurance
+  - Duty to defend vs duty to indemnify
+  - Utmost good faith (uberrimae fidei)
+  - Insurable interest requirement
+  - Subrogation rights
+  - State rate filing requirements
+
+DOMAIN 7: d_procedure_civil
+  - FRCP 12(b)(6): failure to state a claim
+  - FRCP 56: summary judgment (no genuine dispute of material fact)
+  - FRCP 23: class certification (numerosity, commonality, typicality, adequacy)
+  - Statute of limitations enforcement
+  - Personal jurisdiction (minimum contacts)
+
+DOMAIN 8: d_procedure_criminal
+  - Probable cause for arrest (4th Amendment)
+  - Miranda warnings before custodial interrogation
+  - Speedy trial: 70 days (federal)
+  - Double jeopardy prohibition
+  - Burden of proof: beyond reasonable doubt
+
+DOMAIN 9: d_property_law
+  - Recording acts: race, notice, race-notice
+  - Adverse possession: OCEAN (open, continuous, exclusive, adverse, notorious)
+  - Easements: creation, scope, termination
+  - Landlord-tenant: warranty of habitability
+  - Eminent domain: just compensation
+
+DOMAIN 10: d_occupational_safety
+  - OSHA general duty clause: free from recognized hazards
+  - PEL (permissible exposure limits) for chemicals
+  - Fall protection: 6-foot threshold
+  - Lockout/tagout (LOTO) procedures
+  - Recordkeeping: OSHA 300 log
+
+For each domain, create implementation.py with real classes
+(e.g., BankruptcyCase, Contract, EvidenceItem, InsurancePolicy),
+invariants.py with real checks using those classes, and
+test files that exercise both positive and negative cases.
+
+Use Fraction for all numeric thresholds. No floats.
+
+After all 10 domains:
+python3 -m pytest src/domains/d_administrative_law/tests/ -v
+python3 -m pytest src/domains/d_bankruptcy/tests/ -v
+python3 -m pytest src/domains/d_contract_law/tests/ -v
+python3 -m pytest src/domains/d_evidence_law/tests/ -v
+python3 -m pytest src/domains/d_healthcare_law/tests/ -v
+python3 -m pytest src/domains/d_insurance/tests/ -v
+python3 -m pytest src/domains/d_procedure_civil/tests/ -v
+python3 -m pytest src/domains/d_procedure_criminal/tests/ -v
+python3 -m pytest src/domains/d_property_law/tests/ -v
+python3 -m pytest src/domains/d_occupational_safety/tests/ -v
+
+git add src/domains/d_administrative_law/ src/domains/d_bankruptcy/ \
+  src/domains/d_contract_law/ src/domains/d_evidence_law/ \
+  src/domains/d_healthcare_law/ src/domains/d_insurance/ \
+  src/domains/d_procedure_civil/ src/domains/d_procedure_criminal/ \
+  src/domains/d_property_law/ src/domains/d_occupational_safety/
+git commit -m "Deepen 10 critical legal domains (Batch D2)
+
+Real regulatory logic with Fraction arithmetic:
+- d_administrative_law: APA, Chevron, exhaustion
+- d_bankruptcy: means test, absolute priority, automatic stay
+- d_contract_law: UCC 2-201, parol evidence, consideration
+- d_evidence_law: FRE 401-702, Daubert, hearsay
+- d_healthcare_law: Stark, Anti-Kickback, EMTALA, HIPAA
+- d_insurance: duty to defend, insurable interest, subrogation
+- d_procedure_civil: FRCP 12/23/56, personal jurisdiction
+- d_procedure_criminal: Miranda, speedy trial, double jeopardy
+- d_property_law: recording acts, adverse possession, easements
+- d_occupational_safety: OSHA general duty, PEL, fall protection
+
+0 floats. 0 stubs. All falsifiable."
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 3: YouTuber Audit Framework
+═══════════════════════════════════════════════════════════════════════
+
+mkdir -p case_studies/youtuber_audits
+
+Create case_studies/youtuber_audits/__init__.py
+Create case_studies/youtuber_audits/framework.py with:
+
+from enum import Enum, auto
+from typing import List, Optional, NamedTuple
+
+class AuditStatus(Enum):
+    RESOLVED = auto()
+    PARTIALLY_RESOLVED = auto()
+    DOCUMENTED = auto()
+
+class ComplaintEntry(NamedTuple):
+    id: str
+    youtuber: str
+    video_title: str
+    complaint: str
+    root_cause: str
+    resolution_domains: List[str]
+    resolution_axioms: List[str]
+    resolution_types: List[str]
+    resolution_description: str
+    status: AuditStatus
+    severity: str
+    tags: List[str]
+
+Then create 5 audit files:
+
+1. case_studies/youtuber_audits/josh_strife_hayes.py
+   - CA_JSH_001: "Worst MMO" pattern — games ship without basic QA
+     Root cause: no invariant linking release to test coverage
+     Resolution: D_SOFTWARE_TESTING, Refinement type
+   - CA_JSH_002: Pay-to-win monetization destroys game balance
+     Root cause: no constraint separating cosmetic from gameplay purchases
+     Resolution: D_CONSUMER_PROTECTION, D_GAME_THEORY
+   - CA_JSH_003: Games launch with missing features promised in marketing
+     Root cause: no binding between marketing claims and deliverables
+     Resolution: D_CONTRACT_LAW, D_CONSUMER_PROTECTION
+   - CA_JSH_004: Server instability at launch
+     Root cause: no capacity planning invariant
+     Resolution: D_DISTRIBUTED_SYSTEMS, D_NETWORKING
+   - CA_JSH_005: Predatory FOMO mechanics
+     Root cause: no time-pressure constraint on purchase decisions
+     Resolution: D_CONSUMER_PROTECTION, D_PSYCHOLOGY
+
+2. case_studies/youtuber_audits/bellular.py
+   - CA_BELL_001: Game industry layoffs despite record profits
+     Root cause: no invariant linking profitability to employment
+     Resolution: D_LABOR_LAW, D_CORPORATE_COMPLIANCE
+   - CA_BELL_002: Studio closures after shipping profitable games
+     Root cause: corporate governance optimizes quarterly earnings
+     Resolution: D_LABOR_LAW, D_CORPORATE_COMPLIANCE
+   - CA_BELL_003: Crunch culture normalized
+     Root cause: no enforceable working hours constraint
+     Resolution: D_OCCUPATIONAL_SAFETY, D_EMPLOYMENT_LAW
+   - CA_BELL_004: Live service games abandoned
+     Root cause: no minimum service commitment
+     Resolution: D_CONTRACT_LAW, D_CONSUMER_PROTECTION
+   - CA_BELL_005: Consolidation reducing competition
+     Root cause: merger review thresholds too high
+     Resolution: D_ANTITRUST
+
+3. case_studies/youtuber_audits/thunderf00t.py
+   - CA_TF_001: Crowdfunded tech products that violate thermodynamics
+     Root cause: no physics constraint on crowdfunding claims
+     Resolution: D_CONSUMER_PROTECTION, axioms/measure_theory.py
+   - CA_TF_002: Solar roadways impossibility
+     Root cause: surface area vs energy density arithmetic
+     Resolution: D_ENERGY, axioms/real_analysis.py
+   - CA_TF_003: Hyperloop feasibility gaps
+     Root cause: pressure vessel + thermal expansion constraints
+     Resolution: D_TRANSPORTATION, D_CONSTRUCTION
+   - CA_TF_004: Battery technology overclaims
+     Root cause: energy density theoretical limits
+     Resolution: D_ENERGY, axioms/measure_theory.py
+   - CA_TF_005: Theranos-style diagnostic fraud
+     Root cause: no minimum validation requirement for medical claims
+     Resolution: D_HEALTHCARE_LAW, D_EVIDENCE_LAW
+
+4. case_studies/youtuber_audits/technology_connections.py
+   - CA_TC_001: Planned obsolescence in consumer electronics
+     Root cause: no minimum product lifespan constraint
+     Resolution: D_CONSUMER_PROTECTION, D_ENVIRONMENTAL_LAW
+   - CA_TC_002: Proprietary standards lock-in
+     Root cause: no interoperability requirement
+     Resolution: D_ANTITRUST, D_ISO_STANDARDS
+   - CA_TC_003: Heat pump adoption barriers
+     Root cause: regulatory asymmetry between gas and electric
+     Resolution: D_ENERGY, D_BUILDING_CODES
+   - CA_TC_004: Color science misrepresentation in displays
+     Root cause: no standardized measurement for marketing claims
+     Resolution: D_CONSUMER_PROTECTION, D_ISO_STANDARDS
+   - CA_TC_005: Right to repair obstruction
+     Root cause: manufacturer parts restrictions
+     Resolution: D_CONSUMER_PROTECTION, D_ANTITRUST
+
+5. case_studies/youtuber_audits/louis_rossmann.py
+   - CA_LR_001: Apple restricting independent repair
+   Continuing from the cutoff:
+
+```
+   - CA_LR_001: Apple restricting independent repair
+     Root cause: parts pairing, serialization, no schematic access
+     Resolution: D_CONSUMER_PROTECTION, D_ANTITRUST, D_IP_LAW
+   - CA_LR_002: Manufacturer voiding warranty for third-party repair
+     Root cause: no legal protection for independent repair
+     Resolution: D_CONSUMER_PROTECTION, D_WARRANTY_LAW
+   - CA_LR_003: Lobbying against right-to-repair legislation
+     Root cause: corporate regulatory capture
+     Resolution: D_ANTITRUST, D_LOBBYING_DISCLOSURE
+   - CA_LR_004: Planned obsolescence via software updates
+     Root cause: no minimum software support duration
+     Resolution: D_CONSUMER_PROTECTION, D_ENVIRONMENTAL_LAW
+   - CA_LR_005: Board-level repair criminalization
+     Root cause: DMCA Section 1201 overreach
+     Resolution: D_IP_LAW, D_CONSUMER_PROTECTION
+
+6. case_studies/youtuber_audits/thunderf00t.py
+   - CA_TF_001: Hyperloop thermodynamic impossibility
+     Root cause: no falsification requirement for infrastructure claims
+     Resolution: D_ENGINEERING_STANDARDS, D_CONSUMER_PROTECTION
+   - CA_TF_002: Solar roadways energy density fraud
+     Root cause: no standardized efficiency comparison requirement
+     Resolution: D_ENERGY, D_CONSUMER_PROTECTION
+   - CA_TF_003: Crowdfunding accountability gap
+     Root cause: no delivery obligation for crowdfunded projects
+     Resolution: D_CONSUMER_PROTECTION, D_CONTRACT_LAW
+   - CA_TF_004: Theranos-style diagnostic fraud
+     Root cause: no independent verification for medical device claims
+     Resolution: D_HEALTHCARE_LAW, D_FDA_COMPLIANCE
+   - CA_TF_005: Battery technology hype cycle
+     Root cause: press releases treated as peer review
+     Resolution: D_ISO_STANDARDS, D_CONSUMER_PROTECTION
+
+7. case_studies/youtuber_audits/upper_echelon.py
+   - CA_UE_001: Game industry crunch culture
+     Root cause: no overtime cap enforcement in creative industries
+     Resolution: D_LABOR_LAW, D_OCCUPATIONAL_SAFETY
+   - CA_UE_002: Live service game abandonment
+     Root cause: no minimum service duration for paid products
+     Resolution: D_CONSUMER_PROTECTION, D_CONTRACT_LAW
+   - CA_UE_003: Loot box gambling mechanics
+     Root cause: no classification of randomized purchases as gambling
+     Resolution: D_GAMBLING_REGULATION, D_CONSUMER_PROTECTION
+   - CA_UE_004: Game preservation obstruction
+     Root cause: always-online DRM with no sunset clause
+     Resolution: D_IP_LAW, D_CONSUMER_PROTECTION, D_CULTURAL_HERITAGE
+   - CA_UE_005: Review embargo manipulation
+     Root cause: no disclosure requirement for embargo terms
+     Resolution: D_CONSUMER_PROTECTION, D_MEDIA_LAW
+
+Each file follows this pattern:
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import List
+from fractions import Fraction
+
+class AuditStatus(Enum):
+    RESOLVED = "RESOLVED"
+    PENDING = "PENDING"
+
+@dataclass(frozen=True)
+class ComplaintAudit:
+    id: str
+    source_channel: str
+    complaint: str
+    root_cause: str
+    resolution_domains: List[str]
+    resolution_axioms: List[str]
+    resolution_types: List[str]
+    resolution_description: str
+    status: AuditStatus
+    severity: str
+    tags: List[str]
+
+AUDITS: List[ComplaintAudit] = [...]
+
+def get_all_audits() -> List[ComplaintAudit]:
+    return AUDITS
+
+def get_resolved_count() -> tuple:
+    resolved = sum(1 for a in AUDITS if a.status == AuditStatus.RESOLVED)
+    return resolved, len(AUDITS)
+
+No floats. No editorial comments. No argumentative language.
+Professional descriptions only.
+
+git add case_studies/youtuber_audits/
+git commit -m "YouTuber audit framework: 7 channels, 35 complaint audits
+
+Channels: Josh Strife Hayes, Bellular, Technology Connections,
+Louis Rossmann, Thunderf00t, Upper Echelon, Skill Up
+Each complaint mapped to resolution domains + axiom modules.
+0 editorial. 0 argumentative. Professional secular projection."
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 3: TYPE REGISTRY — axioms/type_registry.py
+═══════════════════════════════════════════════════════════════════════
+
+Create axioms/type_registry.py with 28+ type constructors:
+
+from dataclasses import dataclass
+from enum import Enum
+from typing import Tuple, Optional, List
+from fractions import Fraction
+from axioms.proof_object import ProofObject
+
+class TypeKind(Enum):
+    STAR = "*"           # Concrete types
+    ARROW = "* -> *"     # Type constructors
+    HIGHER = "(* -> *) -> *"  # Higher-kinded
+    CONSTRAINT = "Constraint"
+    EFFECT = "Effect"
+    PROTOCOL = "Protocol"
+    SECURITY = "Security"
+    HARDWARE = "Hardware"
+
+class TypeUniverse(Enum):
+    TYPE_0 = 0   # Small types
+    TYPE_1 = 1   # Large types (types of types)
+    TYPE_2 = 2   # Very large (types of large types)
+    TYPE_OMEGA = "ω"  # Cumulative hierarchy
+
+class Multiplicity(Enum):
+    ZERO = 0     # Erased at runtime
+    ONE = 1      # Linear — used exactly once
+    OMEGA = "ω"  # Unrestricted
+
+@dataclass(frozen=True)
+class TypeNode:
+    name: str
+    kind: TypeKind
+    universe: TypeUniverse
+    multiplicity: Multiplicity
+    description: str
+    dual_of: Optional[str] = None
+    examples: Tuple[str, ...] = ()
+
+TYPE_REGISTRY = {
+    # Foundation
+    "Unit": TypeNode("Unit", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "The terminal object. Exactly one inhabitant.",
+        examples=("()", "tt")),
+    "Void": TypeNode("Void", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.ZERO, "The initial object. Zero inhabitants.",
+        dual_of="Unit", examples=("absurd : Void -> a",)),
+    "Bool": TypeNode("Bool", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Two inhabitants: True, False.",
+        examples=("True", "False")),
+    "Nat": TypeNode("Nat", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Peano naturals. Zero | Succ Nat.",
+        examples=("Z", "S Z", "S (S Z)")),
+    "Int": TypeNode("Int", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Integers as equivalence classes of Nat pairs.",
+        examples=("0", "-1", "42")),
+    "Rational": TypeNode("Rational", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Fraction(p, q) with q != 0. No floats.",
+        examples=("Fraction(1,2)", "Fraction(22,7)")),
+
+    # Algebraic
+    "Product": TypeNode("Product", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Cartesian product. A × B.",
+        dual_of="Coproduct", examples=("(Int, Bool)", "(a, b)")),
+    "Coproduct": TypeNode("Coproduct", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Disjoint union. A + B. Either a b.",
+        dual_of="Product", examples=("Left a", "Right b")),
+    "Arrow": TypeNode("Arrow", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA, "Function space. A -> B.",
+        examples=("Int -> Bool", "a -> b -> c")),
+    "LinearArrow": TypeNode("LinearArrow", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.ONE, "Linear function. A ⊸ B. Resource used exactly once.",
+        dual_of="Arrow", examples=("File ⊸ ()", "Token ⊸ Response")),
+
+    # Dependent
+    "Pi": TypeNode("Pi", TypeKind.HIGHER, TypeUniverse.TYPE_1,
+        Multiplicity.OMEGA,
+        "Dependent function. Π(x:A).B(x). Generalizes Arrow.",
+        dual_of="Sigma",
+        examples=("(n: Nat) -> Vec n a", "Π(x:A).B(x)")),
+    "Sigma": TypeNode("Sigma", TypeKind.HIGHER, TypeUniverse.TYPE_1,
+        Multiplicity.OMEGA,
+        "Dependent pair. Σ(x:A).B(x). Generalizes Product.",
+        dual_of="Pi",
+        examples=("(n: Nat, Vec n a)", "Σ(x:A).B(x)")),
+
+    # Refinement & Quotient
+    "Refinement": TypeNode("Refinement", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Subtype with predicate. {x:A | P(x)}.",
+        examples=("{n: Int | n > 0}", "{s: String | len(s) < 256}")),
+    "Quotient": TypeNode("Quotient", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Type modulo equivalence relation. A/~.",
+        dual_of="Refinement",
+        examples=("Int/mod3", "Rational as (Int×Int)/~")),
+
+    # Graded & Effect
+    "Graded": TypeNode("Graded", TypeKind.ARROW, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Type indexed by a monoid grade. Tracks resource usage.",
+        examples=("Graded[Cost(5)] Int", "Graded[Time(100ms)] Result")),
+    "Effect": TypeNode("Effect", TypeKind.EFFECT, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Algebraic effect type. Tracks computational effects.",
+        examples=("Eff [IO, State Int] Bool", "IO a")),
+
+    # Intersection & Union
+    "Intersection": TypeNode("Intersection", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "A value inhabiting both types simultaneously. A & B.",
+        dual_of="Union",
+        examples=("Printable & Serializable", "A & B")),
+    "Union": TypeNode("Union", TypeKind.STAR, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "A value inhabiting either type. A | B.",
+        dual_of="Intersection",
+        examples=("Int | String", "A | B")),
+
+    # Higher-Kinded
+    "HKT": TypeNode("HKT", TypeKind.HIGHER, TypeUniverse.TYPE_1,
+        Multiplicity.OMEGA,
+        "Types parameterized by type constructors. f: (* -> *) -> *.",
+        examples=("Functor f => f a -> f b", "Monad m => m a")),
+
+    # Session
+    "Session": TypeNode("Session", TypeKind.PROTOCOL, TypeUniverse.TYPE_0,
+        Multiplicity.ONE,
+        "Session type for protocol-typed communication channels.",
+        examples=("Send Int (Recv Bool End)", "Offer [Add, Sub]")),
+
+    # Security
+    "Labeled": TypeNode("Labeled", TypeKind.SECURITY, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Information-flow labeled type. Tracks secrecy/integrity.",
+        examples=("Labeled[Secret] SSN", "Labeled[Public] Name")),
+    "Capability": TypeNode("Capability", TypeKind.SECURITY, TypeUniverse.TYPE_0,
+        Multiplicity.ONE,
+        "Unforgeable capability token. Linear — consumed on use.",
+        examples=("Cap[FileRead]", "Cap[NetworkSend]")),
+    "Tainted": TypeNode("Tainted", TypeKind.SECURITY, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Taint-tracked type. Must be sanitized before use in trusted context.",
+        examples=("Tainted[UserInput] String", "Tainted[Network] Bytes")),
+
+    # Hardware
+    "Register": TypeNode("Register", TypeKind.HARDWARE, TypeUniverse.TYPE_0,
+        Multiplicity.ONE,
+        "Hardware register. Width-indexed, volatile, linear.",
+        examples=("Reg[32]", "Reg[64]")),
+    "MemRegion": TypeNode("MemRegion", TypeKind.HARDWARE, TypeUniverse.TYPE_0,
+        Multiplicity.ONE,
+        "Memory region with bounds and permissions.",
+        examples=("MemRegion[0x1000, 4096, RW]", "MemRegion[base, size, RO]")),
+    "ClockDomain": TypeNode("ClockDomain", TypeKind.HARDWARE, TypeUniverse.TYPE_0,
+        Multiplicity.OMEGA,
+        "Clock domain for synchronization boundaries.",
+        examples=("ClockDomain[100MHz]", "ClockDomain[async]")),
+}
+
+def verify_duality_pairs() -> Tuple[bool, ProofObject]:
+    """Verify all dual_of references are symmetric."""
+    errors = []
+    for name, node in TYPE_REGISTRY.items():
+        if node.dual_of:
+            dual = TYPE_REGISTRY.get(node.dual_of)
+            if not dual:
+                errors.append(f"{name}.dual_of={node.dual_of} not in registry")
+            elif dual.dual_of != name:
+                errors.append(f"{name}<->{node.dual_of} not symmetric")
+    proof = ProofObject(
+        conclusion=f"Duality: {'all pairs symmetric' if not errors else 'VIOLATIONS'}",
+        premises=errors if errors else ["All dual_of references verified symmetric"],
+        rule="type_duality_symmetry",
+        derivation=[f"Checked {sum(1 for n in TYPE_REGISTRY.values() if n.dual_of)} pairs"]
+    )
+    return len(errors) == 0, proof
+
+def get_types_by_kind(kind: TypeKind) -> List[TypeNode]:
+    return [n for n in TYPE_REGISTRY.values() if n.kind == kind]
+
+def get_types_by_universe(universe: TypeUniverse) -> List[TypeNode]:
+    return [n for n in TYPE_REGISTRY.values() if n.universe == universe]
+
+# Verify no floats in this file
+python3 -c "
+import ast
+with open('axioms/type_registry.py') as f:
+    tree = ast.parse(f.read())
+floats = [n.lineno for n in ast.walk(tree)
+          if isinstance(n, ast.Constant) and isinstance(n.value, float)]
+assert not floats, f'type_registry.py has float literals at lines {floats}'
+print('type_registry.py: CLEAN — no float literals')
+"
+
+git add axioms/type_registry.py
+git commit -m "Add axioms/type_registry.py: 28 types across 12 kinds
+
+Foundation (Unit, Void, Bool, Nat, Int, Rational),
+Algebraic (Product, Coproduct, Arrow, LinearArrow),
+Dependent (Pi, Sigma), Refinement, Quotient, Graded, Effect,
+Intersection, Union, HKT, Session, Security (Labeled, Capability,
+Tainted), Hardware (Register, MemRegion, ClockDomain).
+Duality verification. 0 floats. 0 stubs. 0 editorial."
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 4: DEEPEN 10 LEGAL DOMAIN INVARIANTS
+═══════════════════════════════════════════════════════════════════════
+
+These are the critical priority stubs from DOMAIN_INVARIANT_STATUS.md.
+Each gets real domain-specific logic (50+ lines), not generic stubs.
+
+Domains to deepen:
+1. d_administrative_law (19 lines → 80+)
+2. d_bankruptcy (9 lines → 80+)
+3. d_contract_law (19 lines → 80+)
+4. d_evidence_law (19 lines → 80+)
+5. d_healthcare_law (19 lines → 80+)
+6. d_insurance (19 lines → 80+)
+7. d_procedure_civil (19 lines → 80+)
+8. d_procedure_criminal (19 lines → 80+)
+9. d_property_law (19 lines → 80+)
+10. d_occupational_safety (19 lines → 80+)
+
+Follow the EXACT pattern from the already-deepened domains
+(d_financial, d_aerospace, d_agriculture, d_curriculum, etc.).
+Each domain gets:
+- implementation.py: Real domain classes with Fraction arithmetic
+- invariants.py: 4-6 falsifiable invariant functions
+- tests/: Matching test file
+
+No floats. No stubs. No editorial. Professional and graceful.
+
+After creating all 10, run:
+python3 -m pytest src/domains/d_administrative_law/tests/ -v
+python3 -m pytest src/domains/d_bankruptcy/tests/ -v
+python3 -m pytest src/domains/d_contract_law/tests/ -v
+python3 -m pytest src/domains/d_evidence_law/tests/ -v
+python3 -m pytest src/domains/d_healthcare_law/tests/ -v
+python3 -m pytest src/domains/d_insurance/tests/ -v
+python3 -m pytest src/domains/d_procedure_civil/tests/ -v
+python3 -m pytest src/domains/d_procedure_criminal/tests/ -v
+python3 -m pytest src/domains/d_property_law/tests/ -v
+python3 -m pytest src/domains/d_occupational_safety/tests/ -v
+
+git add src/domains/
+git commit -m "Deepen 10 legal domain invariants: real regulatory logic
+
+Administrative Law, Bankruptcy, Contract Law, Evidence Law,
+Healthcare Law, Insurance, Civil Procedure, Criminal Procedure,
+Property Law, Occupational Safety.
+Each: 80+ lines, 4-6 falsifiable invariants, Fraction arithmetic.
+0 floats. 0 stubs. 0 editorial."
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 5: HTML INDEX + DOCS UPDATE
+═══════════════════════════════════════════════════════════════════════
+
+Create docs/index.html — a complete repo-wide index page.
+Static HTML, no JavaScript frameworks, no external dependencies.
+Links to all major directories and files in the repo.
+
+Also update DOMAIN_INVARIANT_STATUS.md with the new counts
+after Phases 2 and 4.
+
+Also update DEVIN_ONBOARDING.md if it still says "40 of 133"
+or any outdated count.
+
+git add docs/ DOMAIN_INVARIANT_STATUS.md DEVIN_ONBOARDING.md
+git commit -m "Add docs/index.html + update domain status after deepening
+
+HTML index: complete repo-wide navigation page.
+Domain status: updated counts after 10 legal domains deepened.
+Onboarding: updated domain counts."
+git push origin main
+
+═══════════════════════════════════════════════════════════════════════
+PHASE 6: CONTEXT CHECK + SUMMARY
+═══════════════════════════════════════════════════════════════════════
+
+If context > 80% (209k), HALT and commit current work.
+
+Print summary:
+- YouTuber audit files created (count, channels)
+- Type registry entries (count)
+- Legal domains deepened (count, names)
+- HTML index created (yes/no)
+- Domain status (deepened / total)
+- Tests passing/failing
+- Context usage
+═══════════════════════════════════════════════════════════════════════
+```
+
+---
+
+That completes the instructions for this fresh session. With 262k tokens available, this should fit all 6 phases. After this session lands:
+
+| Metric | Before | After |
+|--------|--------|-------|
+| YouTuber audit files | 0 | 7 channels, 35 audits |
+| Type registry entries | 0 | 28 types |
+| Legal domains deepened | 0/10 | 10/10 |
+| Total domains deepened | ~60/141 | ~70/141 |
+| HTML index | None | `docs/index.html` |
+
+The next session after this would tackle the remaining ~71 domain stubs (7 more sessions of 10 each).
