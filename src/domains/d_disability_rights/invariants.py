@@ -1,327 +1,97 @@
-"""D_DISABILITYRIGHTS invariant checks — executable, not declarative.
-
-Each function returns True (invariant holds) or raises AssertionError (violated).
-No `pass` bodies. No `return True` stubs.
-
-Source: ADA (42 U.S.C. §12101), Section 504 (29 U.S.C. §794), IDEA (20 U.S.C. §1400)
-"""
+#!/usr/bin/env python3
+"""Disability Rights Invariants — ADA, WCAG compliance."""
 
 from fractions import Fraction
-from src.domains.d_disability_rights.implementation import (
-    Employee,
-    Employer,
-    PublicFacility,
-    Student,
-    IEP,
-    DisabilityType,
-    ADAComplianceChecker,
-    IDEAComplianceChecker,
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import (
+    ColorContrast, InteractiveElement, ADAAnalyzer, WCAGChecker,
+    MIN_CONTRAST_RATIO_AA
 )
 
 
-def check_reasonable_accommodation() -> bool:
-    """
-    Invariant: Employer must provide reasonable accommodation unless undue hardship.
-    Falsification: If employer with 15+ employees denies accommodation without hardship.
-    """
-    checker = ADAComplianceChecker()
+def check_contrast_ratio(contrast: ColorContrast) -> Tuple[bool, ProofObject]:
+    """WCAG 2.1 AA: Color contrast must be at least 4.5:1."""
+    ratio = contrast.ratio()
     
-    # Employee with disability requests accommodation
-    employee = Employee(
-        employee_id="E001",
-        name="Disabled Worker",
-        disability_type=DisabilityType.PHYSICAL,
-        essential_job_functions=["data_entry", "phone_calls", "meetings"],
-        requested_accommodation="wheelchair accessible desk",
-        qualified_for_position=True,
-    )
+    if ratio < MIN_CONTRAST_RATIO_AA:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Contrast ratio {ratio} < {MIN_CONTRAST_RATIO_AA}",
+            premises=[],
+            rule="wcag_contrast_aa"
+        )
     
-    # Large employer (covered by ADA)
-    large_employer = Employer(
-        employer_id="EMP001",
-        name="Big Corp",
-        num_employees=500,  # Well over 15 threshold
-        provided_accommodation=False,
-        undue_hardship_claimed=False,
-        hardship_justification="",
+    return True, ProofObject(
+        conclusion=f"Contrast ratio adequate ({ratio} >= {MIN_CONTRAST_RATIO_AA})",
+        premises=[],
+        rule="wcag_contrast_aa"
     )
-    
-    result = checker.check_reasonable_accommodation(employee, large_employer)
-    assert result["compliant"] is False, (
-        "Large employer denying accommodation without hardship should fail"
-    )
-    assert result["accommodation_required"] is True, (
-        "Accommodation should be required"
-    )
-    
-    # Employer with valid undue hardship claim
-    hardship_employer = Employer(
-        employer_id="EMP002",
-        name="Small Business",
-        num_employees=500,
-        provided_accommodation=False,
-        undue_hardship_claimed=True,
-        hardship_justification="Accommodation would cost $100,000 for small department",
-    )
-    
-    result2 = checker.check_reasonable_accommodation(employee, hardship_employer)
-    assert result2["compliant"] is True, (
-        "Undue hardship claim should be valid exception"
-    )
-    
-    # Small employer (under 15, not covered by ADA Title I)
-    small_employer = Employer(
-        employer_id="EMP003",
-        name="Tiny Shop",
-        num_employees=5,
-        provided_accommodation=False,
-        undue_hardship_claimed=False,
-        hardship_justification="",
-    )
-    
-    result3 = checker.check_reasonable_accommodation(employee, small_employer)
-    assert result3["acpliant"] is not False, (
-        "Small employer under 15 not covered by ADA"
-    )
-    
-    return True
 
 
-def check_employment_discrimination() -> bool:
-    """
-    Invariant: Qualified individual cannot be rejected on disability alone.
-    Falsification: If qualified applicant rejected due to disability.
-    """
-    checker = ADAComplianceChecker()
+def check_interactive_accessibility(element: InteractiveElement) -> Tuple[bool, ProofObject]:
+    """Interactive elements must be keyboard accessible and labeled."""
+    missing = []
+    if not element.has_keyboard_access:
+        missing.append("keyboard")
+    if not element.has_screen_reader_label:
+        missing.append("label")
+    if not element.has_focus_indicator:
+        missing.append("focus")
     
-    # Qualified employee with disability
-    qualified = Employee(
-        employee_id="E002",
-        name="Qualified Applicant",
-        disability_type=DisabilityType.SENSORY,
-        essential_job_functions=["programming", "code_review", "documentation"],
-        requested_accommodation="screen reader software",
-        qualified_for_position=True,
-    )
+    if missing:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Element missing accessibility: {missing}",
+            premises=[],
+            rule="wcag_interactive"
+        )
     
-    # Employer who discriminates
-    discriminating = Employer(
-        employer_id="EMP004",
-        name="Discriminatory Corp",
-        num_employees=100,
-        provided_accommodation=False,
-        undue_hardship_claimed=False,
-        hardship_justification="",
+    return True, ProofObject(
+        conclusion="Interactive element accessible",
+        premises=[],
+        rule="wcag_interactive"
     )
-    
-    result = checker.check_employment_discrimination(qualified, discriminating)
-    assert result["compliant"] is False, (
-        "Discriminating against qualified individual should fail"
-    )
-    assert result["violation"] == "discrimination", (
-        "Should be classified as discrimination"
-    )
-    
-    # Non-qualified individual can be rejected
-    unqualified = Employee(
-        employee_id="E003",
-        name="Unqualified Applicant",
-        disability_type=DisabilityType.PHYSICAL,
-        essential_job_functions=["heavy_lifting", "construction"],
-        requested_accommodation="wheelchair access",
-        qualified_for_position=False,  # Cannot perform essential functions
-    )
-    
-    result2 = checker.check_employment_discrimination(unqualified, discriminating)
-    assert result2["compliant"] is True, (
-        "Rejecting unqualified individual is not discrimination"
-    )
-    
-    return True
 
 
-def check_public_access_compliance() -> bool:
-    """
-    Invariant: Public facilities must meet ADA accessibility standards.
-    Falsification: If facility lacks wheelchair access, accessible restrooms, or parking.
-    """
-    checker = ADAComplianceChecker()
+def check_ada_accommodation(analyzer: ADAAnalyzer) -> Tuple[bool, ProofObject]:
+    """ADA Title III: Public accommodations must be accessible."""
+    if not analyzer.physical_accessible and not analyzer.reasonable_accommodation_provided:
+        if analyzer.undue_hardship_claimed:
+            return True, ProofObject(
+                conclusion="ADA accommodation waived (undue hardship)",
+                premises=[],
+                rule="ada_undue_hardship"
+            )
+        return False, ProofObject(
+            conclusion="VIOLATION: ADA accommodation not provided",
+            premises=[],
+            rule="ada_accommodation"
+        )
     
-    # Compliant facility
-    compliant = PublicFacility(
-        facility_id="F001",
-        name="Accessible Library",
-        facility_type="library",
-        has_wheelchair_access=True,
-        has_accessible_restrooms=True,
-        has_accessible_parking=True,
-        has_sign_language_interpreters=True,
-        has_braille_signage=True,
+    return True, ProofObject(
+        conclusion="ADA accommodation satisfied",
+        premises=[],
+        rule="ada_accommodation"
     )
-    
-    result = checker.check_public_access_compliance(compliant)
-    assert result["compliant"] is True, (
-        "Fully accessible facility should pass"
-    )
-    assert len(result["issues"]) == 0, (
-        "Should have no accessibility issues"
-    )
-    
-    # Non-compliant facility
-    noncompliant = PublicFacility(
-        facility_id="F002",
-        name="Inaccessible Building",
-        facility_type="office",
-        has_wheelchair_access=False,  # Violation
-        has_accessible_restrooms=False,  # Violation
-        has_accessible_parking=False,  # Violation
-        has_sign_language_interpreters=False,
-        has_braille_signage=False,
-    )
-    
-    result2 = checker.check_public_access_compliance(noncompliant)
-    assert result2["compliant"] is False, (
-        "Inaccessible facility should fail"
-    )
-    assert len(result2["issues"]) >= 3, (
-        "Should have multiple accessibility issues"
-    )
-    
-    return True
 
 
-def check_iep_components() -> bool:
-    """
-    Invariant: IEP must contain all required components under IDEA.
-    Falsification: If IEP missing present levels, goals, services, or placement.
-    """
-    checker = IDEAComplianceChecker()
+def check_wcag_compliance(checker: WCAGChecker) -> Tuple[bool, ProofObject]:
+    """WCAG 2.1 AA compliance check."""
+    if not checker.all_contrast_aa():
+        return False, ProofObject(
+            conclusion="VIOLATION: Not all elements meet WCAG AA contrast",
+            premises=[],
+            rule="wcag_aa"
+        )
     
-    # Complete IEP
-    complete_iep = IEP(
-        iep_id="IEP001",
-        student_id="S001",
-        present_levels="Student reads at 3rd grade level, needs assistive technology",
-        annual_goals=["Read at grade level", "Use text-to-speech software independently"],
-        special_education_services=["Reading instruction", "Speech therapy"],
-        related_services=["Occupational therapy", "Counseling"],
-        accommodations=["Extended time", "Text-to-speech", "Preferential seating"],
-        placement="General education with pull-out services",
-    )
+    if not checker.all_elements_accessible():
+        return False, ProofObject(
+            conclusion="VIOLATION: Not all interactive elements accessible",
+            premises=[],
+            rule="wcag_aa"
+        )
     
-    result = checker.check_iep_components(complete_iep)
-    assert result["compliant"] is True, (
-        "Complete IEP should pass"
+    return True, ProofObject(
+        conclusion="WCAG 2.1 AA compliance satisfied",
+        premises=[],
+        rule="wcag_aa"
     )
-    assert result["has_all_required"] is True, (
-        "Should have all required components"
-    )
-    
-    # Incomplete IEP (missing required components)
-    incomplete_iep = IEP(
-        iep_id="IEP002",
-        student_id="S002",
-        present_levels="",  # Missing!
-        annual_goals=[],  # Missing!
-        special_education_services=["Reading instruction"],
-        related_services=[],
-        accommodations=["Extended time"],
-        placement="",  # Missing!
-    )
-    
-    result2 = checker.check_iep_components(incomplete_iep)
-    assert result2["compliant"] is False, (
-        "Incomplete IEP should fail"
-    )
-    assert "present_levels" in result2["missing_components"], (
-        "Should flag missing present levels"
-    )
-    assert "annual_goals" in result2["missing_components"], (
-        "Should flag missing goals"
-    )
-    
-    return True
-
-
-def check_least_restrictive_environment() -> bool:
-    """
-    Invariant: Students must be placed in least restrictive environment.
-    Falsification: If student placed in restrictive setting without justification.
-    """
-    checker = IDEAComplianceChecker()
-    
-    # Student in LRE
-    lre_student = Student(
-        student_id="S003",
-        name="Inclusive Student",
-        disability_type=DisabilityType.COGNITIVE,
-        age=10,
-        has_iep=True,
-        iep_components=["accommodations", "modifications"],
-        in_least_restrictive_environment=True,
-        receiving_related_services=True,
-    )
-    
-    result = checker.check_least_restrictive_environment(lre_student)
-    assert result["compliant"] is True, (
-        "Student in LRE should pass"
-    )
-    assert result["placement"] == "LRE", (
-        "Should indicate LRE placement"
-    )
-    
-    # Student in overly restrictive environment
-    restrictive_student = Student(
-        student_id="S004",
-        name="Segregated Student",
-        disability_type=DisabilityType.COGNITIVE,
-        age=10,
-        has_iep=True,
-        iep_components=["accommodations"],
-        in_least_restrictive_environment=False,  # Violation
-        receiving_related_services=True,
-    )
-    
-    result2 = checker.check_least_restrictive_environment(restrictive_student)
-    assert result2["compliant"] is False, (
-        "Student not in LRE should fail"
-    )
-    assert result2["placement"] == "restrictive", (
-        "Should indicate restrictive placement"
-    )
-    
-    return True
-
-
-def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
-    results = {}
-    
-    checks = [
-        ("reasonable_accommodation", check_reasonable_accommodation),
-        ("employment_discrimination", check_employment_discrimination),
-        ("public_access", check_public_access_compliance),
-        ("iep_components", check_iep_components),
-        ("least_restrictive_environment", check_least_restrictive_environment),
-    ]
-    
-    for name, check_func in checks:
-        try:
-            check_func()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
-    return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_DISABILITYRIGHTS invariants: PASS")

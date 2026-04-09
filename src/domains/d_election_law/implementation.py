@@ -1,157 +1,119 @@
-"""D_ELECTION_LAW implementation — Election Law (Voting Rights Act, FECA)
+#!/usr/bin/env python3
+"""
+Election Law Domain — Voter Eligibility, Chain of Custody, Recounts
 
-Implements election law including voting rights, campaign finance,
-and electoral procedure integrity.
-
-Layer: 2 (Statutory)
-CardinalStrength: PREDICATIVE
-Source: 52 U.S.C. (Voting Rights Act), 52 U.S.C. §30101 (FECA)
-
-Biblical: Deuteronomy 1:13 — "Choose some wise, understanding and
-respected men from each of your tribes, and I will set them over you."
-Implies fair selection processes.
+Key concepts:
+- One person, one vote
+- Ballot chain of custody
+- Recount thresholds
 """
 
-from __future__ import annotations
+from fractions import Fraction
 from dataclasses import dataclass, field
 from typing import List, Dict, Optional
-from enum import Enum, auto
 from datetime import datetime
-from fractions import Fraction
+from enum import Enum, auto
 
-class VotingMethod(Enum):
-    IN_PERSON = auto()
-    ABSENTEE_MAIL = auto()
-    EARLY_VOTING = auto()
-    PROVISIONAL = auto()
 
-class CampaignFinanceType(Enum):
-    INDIVIDUAL_CONTRIBUTION = auto()
-    PAC_CONTRIBUTION = auto()
-    SUPER_PAC_INDEPENDENT = auto()
-    CORPORATE = auto()  # Prohibited directly
+class BallotStatus(Enum):
+    CAST = auto()
+    RECEIVED = auto()
+    COUNTED = auto()
+    CHALLENGED = auto()
+    REJECTED = auto()
+
 
 @dataclass
 class Voter:
+    """Registered voter."""
     voter_id: str
-    name: str
-    registered: bool
-    registration_date: Optional[datetime] = None
-    felony_conviction: bool = False
-    citizenship_verified: bool = True
-    
-    def eligible_to_vote(self) -> bool:
-        """Check voting eligibility."""
-        return (
-            self.registered and
-            self.citizenship_verified and
-            not self.felony_conviction
-        )
+    registered: bool = False
+    voted: bool = False
+    vote_timestamp: Optional[datetime] = None
+
 
 @dataclass
-class CampaignContribution:
-    contributor: str
-    recipient: str
-    amount: Fraction
-    contribution_type: CampaignFinanceType
-    date: datetime
+class EligibilityVerifier:
+    """Verify voter eligibility."""
+    voter: Voter
     
-    def check_limits(self) -> Dict:
-        """Check contribution limits."""
-        limits = {
-            CampaignFinanceType.INDIVIDUAL_CONTRIBUTION: Fraction(3300),  # Per election
-            CampaignFinanceType.PAC_CONTRIBUTION: Fraction(5000),
-            CampaignFinanceType.SUPER_PAC_INDEPENDENT: None,  # Unlimited independent
-            CampaignFinanceType.CORPORATE: Fraction(0),  # Prohibited
-        }
-        
-        limit = limits.get(self.contribution_type)
-        
-        if limit is None:
-            return {"compliant": True, "limit": None}
-        
-        if limit == Fraction(0):
-            return {"compliant": False, "violation": "CORPORATE_PROHIBITED"}
-        
-        return {
-            "compliant": self.amount <= limit,
-            "limit": limit,
-            "excess": max(self.amount - limit, Fraction(0)) if self.amount > limit else Fraction(0),
-        }
+    def is_eligible(self) -> bool:
+        """One person, one vote: registered and not yet voted."""
+        return self.voter.registered and not self.voter.voted
 
-class ElectionLawAnalyzer:
-    """Analyzer for election law compliance."""
-    
-    def check_voter_suppression(self, jurisdiction_changes: Dict) -> Dict:
-        """Check for potential voter suppression."""
-        issues = []
-        
-        # Poll closure analysis
-        if jurisdiction_changes.get("polls_closed", 0) > 5:
-            issues.append("Significant poll closures")
-        
-        # Voter ID strictness
-        if jurisdiction_changes.get("voter_id_required") and jurisdiction_changes.get("free_id_not_available"):
-            issues.append("Strict ID without free alternative")
-        
-        # Registration deadline changes
-        if jurisdiction_changes.get("registration_deadline_change", 0) < -7:
-            issues.append("Registration deadline moved earlier")
-        
-        return {
-            "suppression_concerns": len(issues) > 0,
-            "issues": issues,
-        }
-    
-    def check_redistricting_fairness(
-        self,
-        district_populations: List[int],
-        minority_representation: List[Fraction],
-    ) -> Dict:
-        """Check redistricting for fairness (one person, one vote)."""
-        avg_pop = sum(district_populations) / len(district_populations)
-        max_deviation = max(abs(p - avg_pop) for p in district_populations) / avg_pop
-        
-        # Check for minority vote dilution
-        dilution_risk = any(mr < Fraction(1, 2) for mr in minority_representation)
-        
-        return {
-            "population_deviation_acceptable": max_deviation <= 0.1,  # 10% max
-            "max_deviation": max_deviation,
-            "minority_dilution_risk": dilution_risk,
-        }
-    
-    def check_campaign_finance_compliance(
-        self,
-        contributions: List[CampaignContribution],
-    ) -> Dict:
-        """Check campaign finance compliance."""
-        violations = []
-        total_contributions = Fraction(0)
-        
-        for contrib in contributions:
-            check = contrib.check_limits()
-            total_contributions += contrib.amount
-            
-            if not check["compliant"]:
-                violations.append({
-                    "contributor": contrib.contributor,
-                    "violation": check.get("violation", "EXCEEDS_LIMIT"),
-                })
-        
-        return {
-            "compliant": len(violations) == 0,
-            "violations": violations,
-            "total_contributions": total_contributions,
-        }
 
-def check_voting_rights_eligibility(registered: bool, citizenship: bool, felony: bool) -> Dict:
-    """Quick check for voting eligibility."""
-    return {
-        "eligible": registered and citizenship and not felony,
-        "requirements": {
-            "registered": registered,
-            "citizenship": citizenship,
-            "no_felony_disqualification": not felony,
-        },
-    }
+@dataclass
+class BallotCustodyRecord:
+    """Single link in chain of custody."""
+    timestamp: datetime
+    location: str
+    custodian: str
+    ballot_count: int
+    seal_number: str
+
+
+@dataclass
+class BallotCustodyTracker:
+    """Track ballot chain of custody."""
+    ballot_batch_id: str
+    custody_chain: List[BallotCustodyRecord]
+    
+    def chain_unbroken(self) -> bool:
+        """Chain of custody must be unbroken."""
+        if len(self.custody_chain) < 2:
+            return True
+        
+        # Check timestamps are sequential
+        for i in range(1, len(self.custody_chain)):
+            if self.custody_chain[i].timestamp < self.custody_chain[i-1].timestamp:
+                return False
+        
+        return True
+    
+    def ballot_count_consistent(self) -> bool:
+        """Ballot count must remain consistent throughout chain."""
+        if not self.custody_chain:
+            return True
+        
+        first_count = self.custody_chain[0].ballot_count
+        return all(r.ballot_count == first_count for r in self.custody_chain)
+
+
+@dataclass
+class ElectionResult:
+    """Election vote totals."""
+    candidate: str
+    votes: int
+
+
+@dataclass
+class RecountAnalyzer:
+    """Analyze if recount is required."""
+    results: List[ElectionResult]
+    total_votes_cast: int
+    
+    RECOUNT_THRESHOLD_PCT = Fraction(1, 2)  # 0.5% margin triggers recount
+    
+    def winning_margin(self) -> Fraction:
+        """Calculate margin between top two candidates."""
+        if len(self.results) < 2:
+            return Fraction(0)
+        
+        sorted_results = sorted(self.results, key=lambda r: r.votes, reverse=True)
+        winner_votes = sorted_results[0].votes
+        runner_up_votes = sorted_results[1].votes
+        
+        if self.total_votes_cast == 0:
+            return Fraction(0)
+        
+        return Fraction(abs(winner_votes - runner_up_votes), self.total_votes_cast)
+    
+    def recount_required(self) -> bool:
+        """Check if margin is within recount threshold."""
+        margin_pct = self.winning_margin() * Fraction(100)
+        return margin_pct < self.RECOUNT_THRESHOLD_PCT
+
+
+# Election thresholds
+MIN_TURNOUT_PCT = Fraction(50)  # Some jurisdictions require minimum turnout
+MAX_SPOILED_PCT = Fraction(2)  # Maximum acceptable spoiled ballot rate
