@@ -14,14 +14,22 @@ from src.domains.d_un_charter.implementation import (
     check_jus_cogens_compliance,
 )
 from src.domains.d_un_charter.invariants import (
+    check_un_charter_purposes_principles,
+    check_security_council_membership_voting,
+    check_chapter_vii_collective_security,
+    check_general_assembly_powers,
     check_jus_cogens_non_derogable,
-    check_udhr_universal,
+    check_international_court_justice,
 )
 
 __all__ = [
     "JusCogensNorms",
     "UNCharterChecker",
     "check_jus_cogens_compliance",
+    "check_un_charter_purposes_principles",
+    "check_security_council_membership_voting",
+    "check_chapter_vii_collective_security",
+    "check_general_assembly_powers",
     "check_jus_cogens_non_derogable",
-    "check_udhr_universal",
+    "check_international_court_justice",
 ]
