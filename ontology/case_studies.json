@@ -1999,6 +1999,338 @@
         "Falsification: F_COMPUTABILITY_003 tests malware detector on undecidable semantic properties.",
         "Rice's theorem proof: construct program P that behaves maliciously iff halting problem instance halts."
       ]
+    },
+    {
+      "id": "CS_091",
+      "title": "Crusader: First Crusade siege of Jerusalem (1099) — Noncombatant protection failure",
+      "source": "historical://first-crusade-jerusalem-siege",
+      "domain": "D_CRUSADER",
+      "root_cause_signals": [
+        "RCS-JUST-WAR-VIOLATION",
+        "RCS-NONCOMBATANT-MASSACRE"
+      ],
+      "description": "Siege of Jerusalem (July 15, 1099): Crusaders breached city walls after 40-day siege. Medieval siege law required surrender offer after 40 days and noncombatant exit. Instead, mass killing of civilians (Muslim and Jewish populations) violated chivalric code's noncombatant immunity principle. Proportional force doctrine (Aquinas Summa Theologica II-II Q.40) violated: force exceeded military necessity.",
+      "assumptions_violated": [
+        "Noncombatants granted immunity from deliberate harm (chivalric code).",
+        "Siege law: surrender offered after 40 days, noncombatants allowed exit.",
+        "Proportional force: destruction limited to military objectives.",
+        "Quarter granted to surrendering combatants."
+      ],
+      "falsification_tests": [
+        "F_CRUSADER_001"
+      ],
+      "ontological_issues": [
+        "OI_CRUSADER_001"
+      ],
+      "lessons": [
+        "Aquinas Just War Theory: proportionality and necessity criteria violated.",
+        "Noncombatant immunity: clergy, women, children, merchants must be protected.",
+        "Siege law: 40-day limit requires honorable surrender offer.",
+        "Glass-box warfare: war conduct must be documented and auditable."
+      ],
+      "methodology_components": [
+        "Falsification: F_CRUSADER_001 tests siege duration and noncombatant protection compliance.",
+        "Yeshua Axiom 5: No hidden state (war crimes must be publicly recorded)."
+      ]
+    },
+    {
+      "id": "CS_092",
+      "title": "Transit: WMATA 2009 Red Line collision — Automatic train control failure",
+      "source": "https://www.ntsb.gov/investigations/AccidentReports/Reports/RAR1002.pdf",
+      "domain": "D_TRANSIT",
+      "root_cause_signals": [
+        "RCS-ATC-FAILURE",
+        "RCS-MAINTENANCE-NEGLECT"
+      ],
+      "description": "Washington Metro Red Line collision (June 22, 2009): train struck stopped train, killing 9. Track circuit module failed to detect stopped train (headway reliability failure). FTA on-time performance <80% at time of crash. Vehicles exceeded FTA useful life (30+ years vs 12-year standard). No ADA-compliant safety announcements during emergency. FTA incident reporting delayed >8 hours (49 CFR 659).",
+      "assumptions_violated": [
+        "Automatic train control detects stopped trains reliably.",
+        "FTA on-time performance ≥80% indicates system health.",
+        "Vehicles within FTA useful life maintain safety standards.",
+        "FTA incident reporting within required timeframe."
+      ],
+      "falsification_tests": [
+        "F_TRANSIT_001"
+      ],
+      "ontological_issues": [
+        "OI_TRANSIT_001"
+      ],
+      "lessons": [
+        "FTA on-time performance: <80% indicates reliability degradation.",
+        "FTA useful life: buses 12 years, rail cars 25 years (WMATA vehicles exceeded limits).",
+        "ADA 49 CFR Part 38: emergency announcements must be audio+visual.",
+        "FTA 49 CFR 659: major incidents (fatalities, injuries, $25k damage) reported immediately."
+      ],
+      "methodology_components": [
+        "Falsification: F_TRANSIT_001 tests ATC circuit failure modes and redundancy.",
+        "Yeshua Axiom 4: No authority without proof (maintenance records must be verifiable)."
+      ]
+    },
+    {
+      "id": "CS_093",
+      "title": "Space: Mars Climate Orbiter (1999) — Unit conversion error",
+      "source": "https://sma.nasa.gov/docs/default-source/safety-messages/safetymessage-1999-08-01-marsclimateorbiter.pdf",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-UNIT-MISMATCH",
+        "RCS-VERIFICATION-FAILURE"
+      ],
+      "description": "NASA Mars Climate Orbiter lost September 23, 1999: navigation software produced thrust data in pound-seconds (imperial), but spacecraft expected newton-seconds (metric). Spacecraft entered Martian atmosphere too low and disintegrated. NASA-STD-8719.13B violation: no unit verification in critical path. Defense-in-depth failure: static analysis did not catch unit mismatch, no runtime checks for thrust magnitude plausibility.",
+      "assumptions_violated": [
+        "All spacecraft subsystems use consistent unit systems (metric).",
+        "Static analysis detects unit mismatches in interface contracts.",
+        "Runtime checks validate thrust magnitude against physics limits.",
+        "Integration testing exercises full mission profile."
+      ],
+      "falsification_tests": [
+        "F_SPACE_001"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_001"
+      ],
+      "lessons": [
+        "NASA-STD-8719.13B: defense-in-depth requires static + runtime checks.",
+        "Unit safety: type system must enforce dimensional analysis (F = ma, not F + L).",
+        "Plausibility checks: thrust magnitude must satisfy Δv budget constraints.",
+        "Glass-box verification: all unit conversions must be explicit and logged."
+      ],
+      "methodology_components": [
+        "Falsification: F_SPACE_001 tests unit consistency across module interfaces.",
+        "Yeshua Axiom 1: Every truth is derivable (unit conversions must be provably correct)."
+      ]
+    },
+    {
+      "id": "CS_094",
+      "title": "WebSec: Equifax breach (2017) — Unpatched Apache Struts CVE-2017-5638",
+      "source": "https://www.gao.gov/products/gao-18-559",
+      "domain": "D_WEBSEC",
+      "root_cause_signals": [
+        "RCS-UNPATCHED-VULNERABILITY",
+        "RCS-CREDENTIAL-EXPOSURE"
+      ],
+      "description": "Equifax data breach (March-July 2017): attackers exploited Apache Struts CVE-2017-5638 (remote code execution via Content-Type header deserialization). Patch available March 7, breach discovered July 29 (143 days unpatched). HTTPS enforced but HSTS not enabled (downgrade attack risk). Database credentials stored plaintext (PCI DSS violation). No MFA on admin panels. Session timeout >60 minutes (NIST 800-63B violation).",
+      "assumptions_violated": [
+        "Critical CVE patches applied within 30 days of disclosure.",
+        "HTTPS sites have HSTS enabled to prevent downgrade attacks.",
+        "PII data encrypted at rest (PCI DSS Requirement 3).",
+        "Admin authentication uses MFA (NIST 800-63B).",
+        "Session timeout ≤60 minutes for sensitive operations."
+      ],
+      "falsification_tests": [
+        "F_WEBSEC_001"
+      ],
+      "ontological_issues": [
+        "OI_WEBSEC_001"
+      ],
+      "lessons": [
+        "OWASP A06:2021 Vulnerable Components: patch critical CVEs within 30 days.",
+        "OWASP A02:2021 Cryptographic Failures: encrypt PII at rest and in transit.",
+        "NIST 800-63B: MFA required for admin access to sensitive systems.",
+        "PCI DSS Requirement 3: cardholder data must be encrypted (Equifax violated).",
+        "Glass-box patching: vulnerability scan results must trigger automatic alerts."
+      ],
+      "methodology_components": [
+        "Falsification: F_WEBSEC_001 tests patch application timeline and encryption compliance.",
+        "Yeshua Axiom 5: No hidden state (credentials must never be stored plaintext)."
+      ]
+    },
+    {
+      "id": "CS_095",
+      "title": "Transit: San Francisco BART delay (2018) — Computer failure cascade",
+      "source": "https://www.bart.gov/news/articles/2018/news20180418",
+      "domain": "D_TRANSIT",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-FAILURE",
+        "RCS-HEADWAY-VIOLATION"
+      ],
+      "description": "BART system-wide delays April 18, 2018: computer server controlling train dispatch failed. Single point of failure (no redundancy). Headway deviations exceeded 20% of scheduled frequency on all lines. Real-time passenger information systems failed (ADA violation: no alternative audio announcements). On-time performance dropped to 45% (FTA threshold 80%). Service restoration took 4+ hours.",
+      "assumptions_violated": [
+        "Dispatch system has redundant failover (no single point of failure).",
+        "Headway deviation ≤20% of scheduled frequency (FTA reliability standard).",
+        "Real-time information systems have backup channels (ADA compliance).",
+        "On-time performance maintained ≥80% during incidents."
+      ],
+      "falsification_tests": [
+        "F_TRANSIT_002"
+      ],
+      "ontological_issues": [
+        "OI_TRANSIT_002"
+      ],
+      "lessons": [
+        "Byzantine fault tolerance: N+1 redundancy for critical systems.",
+        "FTA headway reliability: deviation must not exceed 20% of scheduled frequency.",
+        "ADA 49 CFR Part 37: backup communication methods required for real-time info.",
+        "Glass-box failover: redundancy architecture must be documented and tested."
+      ],
+      "methodology_components": [
+        "Falsification: F_TRANSIT_002 tests dispatch system failover and headway recovery.",
+        "Yeshua Axiom 4: No authority without proof (failover must be provably reliable)."
+      ]
+    },
+    {
+      "id": "CS_096",
+      "title": "Space: Hubble Space Telescope spherical aberration (1990) — Measurement error",
+      "source": "https://www.nasa.gov/content/hubbles-mirror-flaw",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-MEASUREMENT-ERROR",
+        "RCS-VERIFICATION-BYPASS"
+      ],
+      "description": "Hubble primary mirror ground to wrong shape (spherical aberration 2.2 micrometers): null corrector test instrument miscalibrated. Ground mirror matched test instrument (both wrong). NASA-STD-8719.13B defense-in-depth violated: independent verification (interferometry) not performed. ECSS-Q-ST-80C: critical components require independent validation methods. Cost: $50M+ for corrective optics (COSTAR), 3-year repair delay.",
+      "assumptions_violated": [
+        "Primary test instrument provides ground truth for mirror figure.",
+        "Single verification method sufficient for flight-critical components.",
+        "Null corrector calibration error would be detected during grinding.",
+        "Independent interferometry test unnecessary if null corrector passes."
+      ],
+      "falsification_tests": [
+        "F_SPACE_002"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_002"
+      ],
+      "lessons": [
+        "NASA-STD-8719.13B: defense-in-depth requires independent verification methods.",
+        "ECSS-Q-ST-80C: critical measurements must use ≥2 independent techniques.",
+        "Null corrector calibration: reference mirror must be independently verified.",
+        "Glass-box verification: measurement chain must be end-to-end traceable."
+      ],
+      "methodology_components": [
+        "Falsification: F_SPACE_002 tests measurement redundancy and cross-validation.",
+        "Yeshua Axiom 1: Every truth is derivable (measurements must be independently confirmed)."
+      ]
+    },
+    {
+      "id": "CS_097",
+      "title": "Crusader: Ransom of Richard I (1192-1194) — Excessive ransom demand",
+      "source": "historical://richard-lionheart-ransom",
+      "domain": "D_CRUSADER",
+      "root_cause_signals": [
+        "RCS-RANSOM-EXTORTION",
+        "RCS-CHIVALRIC-CODE-VIOLATION"
+      ],
+      "description": "King Richard I (Lionheart) captured by Duke Leopold of Austria (December 1192). Ransom demand: 150,000 marks (2-3x England's annual revenue), vastly exceeding chivalric custom of ~1 year's income for knight captive. Ransom paid February 1194 (impoverished England for years). Violated medieval ransom limits: excessive demands considered extortion, not honorable conduct. Pope Celestine III condemned ransom as sacrilege (Richard was crusader under papal protection).",
+      "assumptions_violated": [
+        "Ransom capped at ~1 year captive's income (chivalric custom).",
+        "Crusaders under papal protection exempt from capture and ransom.",
+        "Ransom negotiations honor proportionality (not extortion).",
+        "Fellow Christian monarchs observe chivalric code during crusades."
+      ],
+      "falsification_tests": [
+        "F_CRUSADER_002"
+      ],
+      "ontological_issues": [
+        "OI_CRUSADER_002"
+      ],
+      "lessons": [
+        "Chivalric code: ransom ≤1 year income for knight, higher for nobility (but not 3x GDP).",
+        "Just war theory: proportionality applies to ransom demands (not extortion).",
+        "Papal protection: crusaders theoretically immune from Christian capture.",
+        "Glass-box ransom: demand must be publicly justified and proportional."
+      ],
+      "methodology_components": [
+        "Falsification: F_CRUSADER_002 tests ransom proportionality against income limits.",
+        "Yeshua Axiom 4: No authority without proof (ransom must be justified by custom)."
+      ]
+    },
+    {
+      "id": "CS_098",
+      "title": "WebSec: Heartbleed OpenSSL CVE-2014-0160 — Buffer over-read",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2014-0160",
+      "domain": "D_WEBSEC",
+      "root_cause_signals": [
+        "RCS-BUFFER-OVERFLOW",
+        "RCS-INPUT-VALIDATION-MISSING"
+      ],
+      "description": "Heartbleed (April 2014): OpenSSL TLS heartbeat extension lacked input validation on payload length field. Attacker sends heartbeat with length=64KB but payload=1 byte; server responds with 64KB from memory (including private keys, session cookies, passwords). OWASP A03:2021 Injection violation: attacker-controlled length field used without validation. Affected ~17% of internet servers. No static analysis detected missing bounds check.",
+      "assumptions_violated": [
+        "TLS library implementations validate all protocol field lengths.",
+        "Memory access bounded by attacker-supplied length fields is safe.",
+        "Static analysis detects buffer over-read vulnerabilities.",
+        "HTTPS provides confidentiality even if TLS implementation flawed."
+      ],
+      "falsification_tests": [
+        "F_WEBSEC_002"
+      ],
+      "ontological_issues": [
+        "OI_WEBSEC_002"
+      ],
+      "lessons": [
+        "OWASP A03:2021 Injection: all input fields (including protocol headers) must be validated.",
+        "Buffer bounds: attacker-controlled length must be checked against buffer size.",
+        "Defense-in-depth: ASLR, stack canaries mitigate but don't prevent information disclosure.",
+        "Glass-box protocols: TLS implementation must be auditable and bounds-checked."
+      ],
+      "methodology_components": [
+        "Falsification: F_WEBSEC_002 tests protocol field validation and buffer bounds.",
+        "Yeshua Axiom 5: No hidden state (memory contents must not leak via protocol flaws)."
+      ]
+    },
+    {
+      "id": "CS_099",
+      "title": "Space: Ariane 5 Flight 501 (1996) — Integer overflow",
+      "source": "https://www-users.cse.umn.edu/~arnold/disasters/ariane.html",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-INTEGER-OVERFLOW",
+        "RCS-REUSE-ASSUMPTION"
+      ],
+      "description": "Ariane 5 first flight (June 4, 1996) exploded 37 seconds after launch: inertial reference system software (reused from Ariane 4) converted 64-bit floating-point horizontal velocity to 16-bit signed integer. Ariane 5 higher acceleration caused overflow (velocity >32,767). No runtime overflow check. NASA-STD-8719.13B violation: reused code not re-verified for new flight envelope. Exception handler shut down both redundant systems (common-mode failure).",
+      "assumptions_violated": [
+        "Ariane 4 software safe for Ariane 5 without re-verification.",
+        "16-bit integer sufficient for horizontal velocity across all flight profiles.",
+        "Exception handler isolates faults (instead: shut down both redundant systems).",
+        "Static analysis would catch integer overflow in reused code."
+      ],
+      "falsification_tests": [
+        "F_SPACE_003"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_003"
+      ],
+      "lessons": [
+        "NASA-STD-8719.13B: code reuse requires re-verification for new mission constraints.",
+        "Integer overflow: runtime checks required when casting 64-bit to 16-bit.",
+        "Common-mode failure: redundant systems must have independent failure modes.",
+        "Glass-box reuse: code provenance and verification status must be tracked."
+      ],
+      "methodology_components": [
+        "Falsification: F_SPACE_003 tests integer overflow and redundancy independence.",
+        "Yeshua Axiom 1: Every truth is derivable (safety claims must be re-proven for new context)."
+      ]
+    },
+    {
+      "id": "CS_100",
+      "title": "Transit: NYC Subway L train shutdown cancellation (2019) — Engineering re-assessment",
+      "source": "https://www.nytimes.com/2019/01/03/nyregion/l-train-shutdown-tunnel.html",
+      "domain": "D_TRANSIT",
+      "root_cause_signals": [
+        "RCS-OVER-ENGINEERING",
+        "RCS-MAINTENANCE-SCOPE-CHANGE"
+      ],
+      "description": "NYC L train planned 15-month shutdown (2019-2020) to repair Superstorm Sandy damage. Independent engineers proposed alternative: track-side cable racking instead of full tunnel reconstruction. New plan: nights/weekends only, no full shutdown. Original plan violated FTA on-time performance (≥80%): 15-month shutdown would have caused 0% on-time for L train. Revised plan maintained ADA accessibility (full shutdown would have violated accessible alternative service requirement).",
+      "assumptions_violated": [
+        "Full tunnel reconstruction necessary for safety certification.",
+        "Alternative repair methods not viable for hurricane-damaged infrastructure.",
+        "15-month shutdown acceptable despite FTA on-time performance impact.",
+        "Temporary bus service adequate replacement for ADA accessibility."
+      ],
+      "falsification_tests": [
+        "F_TRANSIT_003"
+      ],
+      "ontological_issues": [
+        "OI_TRANSIT_003"
+      ],
+      "lessons": [
+        "FTA on-time performance: extended shutdown violates ≥80% threshold (0% during closure).",
+        "ADA 49 CFR Part 37: replacement service must be equivalent accessibility.",
+        "Engineering re-assessment: independent review can identify lower-impact solutions.",
+        "Glass-box planning: maintenance alternatives must be transparently evaluated."
+      ],
+      "methodology_components": [
+        "Falsification: F_TRANSIT_003 tests service continuity and ADA compliance during repairs.",
+        "Yeshua Axiom 7: No economic gatekeeping (public transit access must not be eliminated for convenience)."
+      ]
     }
   ]
 }
