@@ -2751,6 +2751,1266 @@
       "methodology_components": [
         "F_ENERGY_001: N-1 contingency verification"
       ]
+    },
+    {
+      "id": "CS_156",
+      "title": "Apple v. Samsung Design Patent Infringement",
+      "source": "https://www.supremecourt.gov/opinions/16pdf/15-777_7mho.pdf",
+      "domain": "D_INTELLECTUAL_PROPERTY",
+      "root_cause_signals": [
+        "RCS-PATENT-SCOPE",
+        "RCS-DAMAGES-CALCULATION"
+      ],
+      "description": "Samsung ordered to pay $399M for infringing iPhone design patents on rounded rectangles. Supreme Court limited damages to component not whole product.",
+      "assumptions_violated": [
+        "Design patents cover only ornamental features",
+        "Damages proportional to component value"
+      ],
+      "falsification_tests": [
+        "F_IP_001"
+      ],
+      "ontological_issues": [
+        "OI_IP_001"
+      ],
+      "lessons": [
+        "Patent scope must be precisely defined",
+        "Fraction arithmetic required for damages precision"
+      ],
+      "methodology_components": [
+        "F_IP_001: design patent scope verification"
+      ]
+    },
+    {
+      "id": "CS_157",
+      "title": "Flint Water Crisis Lead Contamination",
+      "source": "https://www.michigan.gov/mdehservices/lead",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-LEAD-CONTAMINATION",
+        "RCS-REGULATORY-FAILURE"
+      ],
+      "description": "Flint switched water source without corrosion control. State officials dismissed resident complaints for 18 months. Lead levels exceeded Safe Drinking Water Act limits.",
+      "assumptions_violated": [
+        "Switch to Flint River water is safe",
+        "Regulatory monitoring detects contamination promptly"
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_001"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_001"
+      ],
+      "lessons": [
+        "Environmental justice communities require enhanced monitoring",
+        "Community complaints must trigger immediate investigation"
+      ],
+      "methodology_components": [
+        "F_ENVIRONMENTAL_001: water quality verification"
+      ]
+    },
+    {
+      "id": "CS_158",
+      "title": "Miranda v. Arizona Custodial Interrogation Rights",
+      "source": "https://www.law.cornell.edu/supremecourt/text/384/436",
+      "domain": "D_CRIMINAL_LAW",
+      "root_cause_signals": [
+        "RCS-SELF-INCRIMINATION",
+        "RCS-CUSTODIAL-INTERROGATION"
+      ],
+      "description": "Supreme Court established requirement for warnings before custodial interrogation. Ernesto Miranda confessed without knowing right to counsel or silence.",
+      "assumptions_violated": [
+        "Suspects know constitutional rights without notification",
+        "Voluntary confessions are truly voluntary without warnings"
+      ],
+      "falsification_tests": [
+        "F_CRIMINAL_001"
+      ],
+      "ontological_issues": [
+        "OI_CRIMINAL_001"
+      ],
+      "lessons": [
+        "Constitutional rights must be affirmatively stated",
+        "ProofObject witnessing required for waiver validity"
+      ],
+      "methodology_components": [
+        "F_CRIMINAL_001: Miranda rights verification"
+      ]
+    },
+    {
+      "id": "CS_159",
+      "title": "Brown v. Board Overrules Plessy",
+      "source": "https://www.law.cornell.edu/supremecourt/text/347/483",
+      "domain": "D_CIVIL_LAW",
+      "root_cause_signals": [
+        "RCS-SEPARATE-BUT-EQUAL",
+        "RCS-EDUCATIONAL-EQUITY"
+      ],
+      "description": "Supreme Court unanimously declared separate educational facilities inherently unequal. Overturned 58 years of Jim Crow segregation precedent.",
+      "assumptions_violated": [
+        "Separate facilities can be equal",
+        "Racial segregation does not harm educational outcomes"
+      ],
+      "falsification_tests": [
+        "F_CIVIL_001"
+      ],
+      "ontological_issues": [
+        "OI_CIVIL_001"
+      ],
+      "lessons": [
+        "Separate but equal is inherently unequal",
+        "Educational equity requires integration"
+      ],
+      "methodology_components": [
+        "F_CIVIL_001: educational equity verification"
+      ]
+    },
+    {
+      "id": "CS_160",
+      "title": "Chevron Doctrine Overruled Loper Bright v. Raimondo",
+      "source": "https://www.supremecourt.gov/opinions/23pdf/22-451_7m58.pdf",
+      "domain": "D_ADMINISTRATIVE_LAW",
+      "root_cause_signals": [
+        "RCS-AMBIENT-AUTHORITY",
+        "RCS-JUDICIAL-DEFERENCE"
+      ],
+      "description": "Supreme Court overruled Chevron deference ending 40 years of judicial deference to agency interpretations of ambiguous statutes.",
+      "assumptions_violated": [
+        "Agencies have expertise to interpret ambiguous statutes",
+        "Judicial deference promotes regulatory consistency"
+      ],
+      "falsification_tests": [
+        "F_ADMIN_001"
+      ],
+      "ontological_issues": [
+        "OI_ADMIN_001"
+      ],
+      "lessons": [
+        "Judicial authority cannot be delegated to agencies",
+        "Statutory interpretation is judicial function"
+      ],
+      "methodology_components": [
+        "F_ADMIN_001: agency authority boundary verification"
+      ]
+    },
+    {
+      "id": "CS_161",
+      "title": "Volkswagen Dieselgate Emissions Cheating",
+      "source": "https://www.epa.gov/enforcement/volkswagen-clean-diesel-litigation",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-DEFEAT-DEVICE",
+        "RCS-HIDDEN-STATE"
+      ],
+      "description": "VW installed software to detect EPA testing conditions and reduce emissions only during tests. 11M vehicles polluted 40x legal limits during real driving.",
+      "assumptions_violated": [
+        "EPA test conditions represent real-world driving",
+        "Automakers comply with emissions regulations honestly"
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_002"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_002"
+      ],
+      "lessons": [
+        "Defeat devices are criminal fraud not engineering",
+        "Real-world monitoring required beyond lab tests"
+      ],
+      "methodology_components": [
+        "F_ENVIRONMENTAL_002: emissions verification with road testing"
+      ]
+    },
+    {
+      "id": "CS_162",
+      "title": "Equifax Data Breach 2017 Unpatched Struts",
+      "source": "https://www.govinfo.gov/content/pkg/FR-2019-02-14/pdf/2019-02564.pdf",
+      "domain": "D_CORPORATE_COMPLIANCE",
+      "root_cause_signals": [
+        "RCS-PATCH-MANAGEMENT",
+        "RCS-DATA-ENCRYPTION"
+      ],
+      "description": "Equifax failed to patch known Apache Struts vulnerability for months. 147M Americans' SSNs, DOBs, and credit data exposed. Data not encrypted at rest.",
+      "assumptions_violated": [
+        "Critical vulnerabilities will be patched promptly",
+        "Sensitive data is encrypted at rest"
+      ],
+      "falsification_tests": [
+        "F_COMPLIANCE_001"
+      ],
+      "ontological_issues": [
+        "OI_COMPLIANCE_001"
+      ],
+      "lessons": [
+        "Patch SLAs must be enforced with ProofObject",
+        "Encryption at rest is mandatory not optional"
+      ],
+      "methodology_components": [
+        "F_COMPLIANCE_001: vulnerability patch SLA verification"
+      ]
+    },
+    {
+      "id": "CS_163",
+      "title": "Silk Road Darknet Marketplace Prosecution",
+      "source": "https://www.justice.gov/usao-sdny/pr/ross-ulbricht-sentenced-life-prison-connection-his-creation-and-operation-silk-road",
+      "domain": "D_CRIMINAL_LAW",
+      "root_cause_signals": [
+        "RCS-BITCOIN-TRACEABILITY",
+        "RCS-ANONYMITY-ASSUMPTION"
+      ],
+      "description": "Ross Ulbricht operated Silk Road believing Bitcoin provided anonymity. Blockchain analysis and FBI infiltration led to arrest and life sentence.",
+      "assumptions_violated": [
+        "Bitcoin transactions are anonymous",
+        "Tor provides complete identity protection"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_002"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_002"
+      ],
+      "lessons": [
+        "Bitcoin is pseudonymous not anonymous",
+        "All digital activity leaves forensic evidence"
+      ],
+      "methodology_components": [
+        "F_CRYPTO_002: blockchain analysis verification"
+      ]
+    },
+    {
+      "id": "CS_164",
+      "title": "Fukushima Daiichi Nuclear Disaster",
+      "source": "https://www.nsr.go.jp/english/fukushima/",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-TSUNAMI-DESIGN",
+        "RCS-BEYOND-DESIGN-BASIS"
+      ],
+      "description": "TEPCO reactors lost cooling after 14m tsunami exceeded 5.7m design basis. Three meltdowns, hydrogen explosions, 150k+ evacuated. Regulator captured by industry.",
+      "assumptions_violated": [
+        "Design basis tsunami is maximum possible",
+        "Backup power systems will survive disasters"
+      ],
+      "falsification_tests": [
+        "F_ENERGY_002"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_002"
+      ],
+      "lessons": [
+        "Beyond-design-basis events must be considered",
+        "Regulatory independence is safety-critical"
+      ],
+      "methodology_components": [
+        "F_ENERGY_002: beyond-design-basis event analysis"
+      ]
+    },
+    {
+      "id": "CS_165",
+      "title": "Roe v. Wade Overruled Dobbs v. Jackson",
+      "source": "https://www.supremecourt.gov/opinions/21pdf/19-1392_6j37.pdf",
+      "domain": "D_CONSTITUTIONAL_LAW",
+      "root_cause_signals": [
+        "RCS-STARE-DECISIS",
+        "RCS-SUBSTANTIVE-DUE-PROCESS"
+      ],
+      "description": "Supreme Court overruled 49-year precedent eliminating federal constitutional right to abortion. Returned authority to states under 10th Amendment.",
+      "assumptions_violated": [
+        "Roe is settled precedent",
+        "Substantive due process protects unenumerated rights"
+      ],
+      "falsification_tests": [
+        "F_CONST_001"
+      ],
+      "ontological_issues": [
+        "OI_CONST_001"
+      ],
+      "lessons": [
+        "Constitutional interpretation changes with Court composition",
+        "Stare decisis is prudential not absolute"
+      ],
+      "methodology_components": [
+        "F_CONST_001: constitutional interpretation verification"
+      ]
+    },
+    {
+      "id": "CS_166",
+      "title": "Wells Fargo Fake Accounts Scandal",
+      "source": "https://www.cfpb.gov/about-us/newsroom/cfpb-fines-wells-fargo-100-million-widespread-illegal-practice-secretly-opening-unauthorized-accounts/",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-SALES-QUOTA-PRESSURE",
+        "RCS-CONSUMER-HARM"
+      ],
+      "description": "Wells Fargo opened 3.5M fake accounts without customer consent to meet aggressive sales quotas. $185M fine, 5,300 employees fired, CEO resigned.",
+      "assumptions_violated": [
+        "Incentive structures align employee and customer interests",
+        "Internal controls prevent widespread fraud"
+      ],
+      "falsification_tests": [
+        "F_BANKING_002"
+      ],
+      "ontological_issues": [
+        "OI_BANKING_002"
+      ],
+      "lessons": [
+        "Sales quotas must have falsifiable integrity checks",
+        "Consumer consent requires ProofObject witnessing"
+      ],
+      "methodology_components": [
+        "F_BANKING_002: account opening consent verification"
+      ]
+    },
+    {
+      "id": "CS_167",
+      "title": "Cambridge Analytica Facebook Data Harvesting",
+      "source": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook/",
+      "domain": "D_DIGITAL_GOVERNANCE",
+      "root_cause_signals": [
+        "RCS-THIRD-PARTY-ACCESS",
+        "RCS-CONSENT-FAILURE"
+      ],
+      "description": "Cambridge Analytica harvested 87M Facebook profiles via personality quiz without meaningful consent. Data used for political microtargeting. $5B FTC fine.",
+      "assumptions_violated": [
+        "Third-party app permissions are clearly understood by users",
+        "Social graph data is protected from misuse"
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_001"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_001"
+      ],
+      "lessons": [
+        "Consent must be informed not just clicked",
+        "Data sharing requires ProofObject audit trail"
+      ],
+      "methodology_components": [
+        "F_PRIVACY_001: informed consent verification"
+      ]
+    },
+    {
+      "id": "CS_168",
+      "title": "Huawei CFO Arrest US Sanctions Violation",
+      "source": "https://www.justice.gov/opa/pr/huawei-cfo-wanzhou-meng-enters-agreement-resolve-bank-fraud-charges",
+      "domain": "D_TRADE_AGREEMENTS",
+      "root_cause_signals": [
+        "RCS-SANCTIONS-EVASION",
+        "RCS-BANK-FRAUD"
+      ],
+      "description": "Meng Wanzhou arrested for allegedly violating Iran sanctions via Skycom subsidiary. HSBC misled about Huawei-Iran relationship. Deferred prosecution agreement.",
+      "assumptions_violated": [
+        "Corporate subsidiaries provide legal separation",
+        "Banks verify customer representations"
+      ],
+      "falsification_tests": [
+        "F_TRADE_001"
+      ],
+      "ontological_issues": [
+        "OI_TRADE_001"
+      ],
+      "lessons": [
+        "Sanctions apply to beneficial ownership not formal structure",
+        "Bank due diligence must be falsifiable"
+      ],
+      "methodology_components": [
+        "F_TRADE_001: sanctions compliance verification"
+      ]
+    },
+    {
+      "id": "CS_169",
+      "title": "Takata Airbag Defect Recall",
+      "source": "https://www.nhtsa.gov/equipment/takata-recall-spotlight",
+      "domain": "D_AUTOMOTIVE",
+      "root_cause_signals": [
+        "RCS-DEFECT-COVER-UP",
+        "RCS-AMMONIUM-NITRATE"
+      ],
+      "description": "Takata airbag inflators used ammonium nitrate without desiccant. 67M recalled in US, 24 deaths, 400+ injuries. Company knew of defects for years before recall.",
+      "assumptions_violated": [
+        "Airbags improve safety in all crashes",
+        "Automotive suppliers promptly report defects"
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_001"
+      ],
+      "ontological_issues": [
+        "OI_AUTOMOTIVE_001"
+      ],
+      "lessons": [
+        "Safety-critical components require humidity-resistant chemistry",
+        "Defect reporting delays are criminal"
+      ],
+      "methodology_components": [
+        "F_AUTOMOTIVE_001: airbag chemical stability verification"
+      ]
+    },
+    {
+      "id": "CS_170",
+      "title": "Google Street View WiFi Data Collection",
+      "source": "https://www.ftc.gov/news-events/news/press-releases/2013/03/google-settles-ftc-charges-it-misrepresented-privacy-assurances-users-apples-safari-internet-browser",
+      "domain": "D_TELECOMMUNICATIONS_LAW",
+      "root_cause_signals": [
+        "RCS-PAYLOAD-DATA",
+        "RCS-NETWORK-SNOOPING"
+      ],
+      "description": "Google Street View cars collected 600GB of payload data from unencrypted WiFi networks. Company claimed only SSID/network info collected. FCC fined $25k.",
+      "assumptions_violated": [
+        "Unencrypted WiFi is public not private",
+        "Corporate statements about data collection are accurate"
+      ],
+      "falsification_tests": [
+        "F_TELECOM_001"
+      ],
+      "ontological_issues": [
+        "OI_TELECOM_001"
+      ],
+      "lessons": [
+        "Payload data collection requires explicit consent",
+        "Network scanning must distinguish header from content"
+      ],
+      "methodology_components": [
+        "F_TELECOM_001: network data collection boundary verification"
+      ]
+    },
+    {
+      "id": "CS_171",
+      "title": "PG&E California Wildfires Bankruptcy",
+      "source": "https://www.cpuc.ca.gov/industries-and-topics/electrical-energy/electrical-safety/wildfires",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-INFRASTRUCTURE-MAINTENANCE",
+        "RCS-CLIMATE-RISK"
+      ],
+      "description": "PG&E equipment caused 2018 Camp Fire killing 85 people. Decades of deferred maintenance on power lines. Company filed bankruptcy facing $30B+ liabilities.",
+      "assumptions_violated": [
+        "Utility infrastructure is properly maintained",
+        "Climate change doesn't increase fire risk significantly"
+      ],
+      "falsification_tests": [
+        "F_ENERGY_003"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_003"
+      ],
+      "lessons": [
+        "Infrastructure maintenance must be falsifiably verified",
+        "Climate risk must be priced into utility operations"
+      ],
+      "methodology_components": [
+        "F_ENERGY_003: power line maintenance verification"
+      ]
+    },
+    {
+      "id": "CS_172",
+      "title": "Opioid Crisis Purdue Pharma OxyContin",
+      "source": "https://www.justice.gov/opa/pr/justice-department-announces-global-resolution-criminal-and-civil-investigations-opioid-manufacturer",
+      "domain": "D_DRUG_REGULATION",
+      "root_cause_signals": [
+        "RCS-MARKETING-FRAUD",
+        "RCS-ADDICTION-RISK-HIDDEN"
+      ],
+      "description": "Purdue Pharma marketed OxyContin as less addictive knowing 12-hour dosing caused withdrawal. $8.3B settlement, company dissolved. 500k+ US overdose deaths.",
+      "assumptions_violated": [
+        "FDA approved drugs are safe as marketed",
+        "Pharmaceutical marketing is truthful"
+      ],
+      "falsification_tests": [
+        "F_DRUG_001"
+      ],
+      "ontological_issues": [
+        "OI_DRUG_001"
+      ],
+      "lessons": [
+        "Addiction risk must be disclosed with ProofObject",
+        "Marketing claims require independent verification"
+      ],
+      "methodology_components": [
+        "F_DRUG_001: addiction risk disclosure verification"
+      ]
+    },
+    {
+      "id": "CS_173",
+      "title": "Sackler Family Bankruptcy Shield",
+      "source": "https://www.supremecourt.gov/opinions/23pdf/23-647_01m2.pdf",
+      "domain": "D_BANKRUPTCY",
+      "root_cause_signals": [
+        "RCS-NON-DEBTOR-RELEASE",
+        "RCS-LIABILITY-SHIELD"
+      ],
+      "description": "Sackler family sought bankruptcy protection without filing personal bankruptcy. Supreme Court blocked $6B settlement with third-party releases. Ongoing litigation.",
+      "assumptions_violated": [
+        "Bankruptcy requires actual financial distress",
+        "Third-party releases require consent of all creditors"
+      ],
+      "falsification_tests": [
+        "F_BANKRUPTCY_001"
+      ],
+      "ontological_issues": [
+        "OI_BANKRUPTCY_001"
+      ],
+      "lessons": [
+        "Bankruptcy cannot shield non-debtors from liability",
+        "Consent must be individual not representative"
+      ],
+      "methodology_components": [
+        "F_BANKRUPTCY_001: third-party release consent verification"
+      ]
+    },
+    {
+      "id": "CS_174",
+      "title": "Gulf of Mexico Deepwater Horizon Spill",
+      "source": "https://www.epa.gov/enforcement/deepwater-horizon-spill-gulf-mexico",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-BLOWOUT-PREVENTER",
+        "RCS-SAFETY-CULTURE"
+      ],
+      "description": "BP Macondo well blowout killed 11 workers, spilled 4.9M barrels. Multiple BOP failures, ignored cement test warnings. $20.8B settlement, criminal pleas.",
+      "assumptions_violated": [
+        "Blowout preventers are failsafe",
+        "Cost-cutting doesn't affect safety-critical decisions"
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_003"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_003"
+      ],
+      "lessons": [
+        "BOP testing must be falsifiable with ProofObject",
+        "Safety culture requires independent verification"
+      ],
+      "methodology_components": [
+        "F_ENVIRONMENTAL_003: BOP functional testing verification"
+      ]
+    },
+    {
+      "id": "CS_175",
+      "title": "Uber Self-Driving Car Fatality Elaine Herzberg",
+      "source": "https://www.ntsb.gov/investigations/accidentreports/reports/har1902.pdf",
+      "domain": "D_AUTOMOTIVE",
+      "root_cause_signals": [
+        "RCS-SAFETY-DRIVER-ATTENTION",
+        "RCS-OBJECT-CLASSIFICATION"
+      ],
+      "description": "Uber AV struck and killed pedestrian in Tempe AZ. Safety driver distracted watching Hulu. System classified pedestrian as false positive 1.3s before impact.",
+      "assumptions_violated": [
+        "Safety drivers maintain constant vigilance",
+        "Object classification works for all pedestrian scenarios"
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_002"
+      ],
+      "ontological_issues": [
+        "OI_AUTOMOTIVE_002"
+      ],
+      "lessons": [
+        "Human supervision cannot be assumed effective",
+        "Edge cases must be falsifiably tested"
+      ],
+      "methodology_components": [
+        "F_AUTOMOTIVE_002: pedestrian detection edge case verification"
+      ]
+    },
+    {
+      "id": "CS_176",
+      "title": "WeWork IPO Collapse Valuation Fraud",
+      "source": "https://www.sec.gov/news/press-release/2023-195",
+      "domain": "D_CORPORATE_LAW",
+      "root_cause_signals": [
+        "RCS-GOVERNANCE-FAILURE",
+        "RCS-CONFLICT-OF-INTEREST"
+      ],
+      "description": "WeWork filed for IPO at $47B valuation. Disclosed $47B lease obligations, founder self-dealing, no path to profit. IPO withdrawn, valuation collapsed to $8B. SEC settlement.",
+      "assumptions_violated": [
+        "Unicorn valuations reflect fundamental value",
+        "Founder control aligns with shareholder interests"
+      ],
+      "falsification_tests": [
+        "F_CORP_001"
+      ],
+      "ontological_issues": [
+        "OI_CORP_001"
+      ],
+      "lessons": [
+        "Related-party transactions require ProofObject disclosure",
+        "Dual-class structures need fiduciary safeguards"
+      ],
+      "methodology_components": [
+        "F_CORP_001: related-party transaction verification"
+      ]
+    },
+    {
+      "id": "CS_177",
+      "title": "Binance Money Laundering Settlement",
+      "source": "https://www.justice.gov/opa/pr/binance-and-ceo-plead-guilty-federal-charges-4b-resolution",
+      "domain": "D_CRYPTO",
+      "root_cause_signals": [
+        "RCS-KYC-FAILURE",
+        "RCS-SANCTIONS-VIOLATION"
+      ],
+      "description": "Binance failed to maintain AML program, processed $900M for Iranian users violating sanctions. $4.3B settlement, largest in Treasury history. CEO resigned.",
+      "assumptions_violated": [
+        "Cryptocurrency exchanges enforce KYC/AML",
+        "Decentralized systems prevent regulatory capture"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_003"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_003"
+      ],
+      "lessons": [
+        "KYC must be falsifiably verified not checkbox compliance",
+        "Sanctions apply equally to crypto and fiat"
+      ],
+      "methodology_components": [
+        "F_CRYPTO_003: KYC verification with ProofObject"
+      ]
+    },
+    {
+      "id": "CS_178",
+      "title": "FTX Collapse Customer Fund Commingling",
+      "source": "https://www.sec.gov/news/statement/gensler-statement-crypto-121222",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-CUSTOMER-FUND-COMMINGLING",
+        "RCS-RESERVE-FRAUD"
+      ],
+      "description": "FTX transferred $10B+ customer funds to Alameda Research. Balance sheet backed by FTT token. Bank run collapsed exchange in days. $8B customer deficit.",
+      "assumptions_violated": [
+        "Customer funds are segregated 1:1",
+        "Exchange proof of reserves is accurate"
+      ],
+      "falsification_tests": [
+        "F_FINANCIAL_001"
+      ],
+      "ontological_issues": [
+        "OI_FINANCIAL_001"
+      ],
+      "lessons": [
+        "Proof of reserves requires ProofObject not attestation",
+        "Customer funds must be cryptographically segregated"
+      ],
+      "methodology_components": [
+        "F_FINANCIAL_001: cryptographic proof of reserves verification"
+      ]
+    },
+    {
+      "id": "CS_179",
+      "title": "Section 230 Platform Liability Shield",
+      "source": "https://www.supremecourt.gov/opinions/22pdf/21-1333_6j7a.pdf",
+      "domain": "D_TELECOMMUNICATIONS_LAW",
+      "root_cause_signals": [
+        "RCS-PLATFORM-ACCOUNTABILITY",
+        "RCS-CONTENT-MODERATION"
+      ],
+      "description": "Supreme Court upheld Section 230 immunity for algorithmic recommendations. Platforms not liable for third-party content. Ongoing legislative debates.",
+      "assumptions_violated": [
+        "Algorithmic amplification is neutral",
+        "Platforms act as common carriers"
+      ],
+      "falsification_tests": [
+        "F_TELECOM_002"
+      ],
+      "ontological_issues": [
+        "OI_TELECOM_002"
+      ],
+      "lessons": [
+        "Algorithmic curation is editorial not passive",
+        "Liability shields require transparency obligations"
+      ],
+      "methodology_components": [
+        "F_TELECOM_002: algorithmic amplification disclosure verification"
+      ]
+    },
+    {
+      "id": "CS_180",
+      "title": "Muslim Travel Ban Trump v. Hawaii",
+      "source": "https://www.supremecourt.gov/opinions/17pdf/17-965_h315.pdf",
+      "domain": "D_IMMIGRATION",
+      "root_cause_signals": [
+        "RCS-RELIGIOUS-DISCRIMINATION",
+        "RCS-NATIONAL-SECURITY-PRETEXT"
+      ],
+      "description": "Supreme Court upheld travel ban from Muslim-majority countries. Court considered only final proclamation not campaign statements. 5-4 decision with strong dissent.",
+      "assumptions_violated": [
+        "National security claims receive judicial deference",
+        "Executive proclamations are facially neutral"
+      ],
+      "falsification_tests": [
+        "F_IMMIGRATION_001"
+      ],
+      "ontological_issues": [
+        "OI_IMMIGRATION_001"
+      ],
+      "lessons": [
+        "Motive inquiry limited to official statements",
+        "National security cannot mask discrimination"
+      ],
+      "methodology_components": [
+        "F_IMMIGRATION_001: discriminatory motive verification"
+      ]
+    },
+    {
+      "id": "CS_181",
+      "title": "Amazon Warehouse Unionization ALU",
+      "source": "https://www.nlrb.gov/case/29-CA-282783",
+      "domain": "D_LABOR_RIGHTS",
+      "root_cause_signals": [
+        "RCS-UNION-BUSTING",
+        "RCS-WORKING-CONDITIONS"
+      ],
+      "description": "Amazon workers in Staten Island voted to unionize first US facility. Company spent $4.3M on anti-union consultants. NLRB found illegal anti-union tactics.",
+      "assumptions_violated": [
+        "Workers freely choose unionization without pressure",
+        "Company anti-union speech is protected"
+      ],
+      "falsification_tests": [
+        "F_LABOR_001"
+      ],
+      "ontological_issues": [
+        "OI_LABOR_001"
+      ],
+      "lessons": [
+        "Captive audience meetings violate free choice",
+        "Union busting requires ProofObject documentation"
+      ],
+      "methodology_components": [
+        "F_LABOR_001: union interference verification"
+      ]
+    },
+    {
+      "id": "CS_182",
+      "title": "Stop and Frisk Terry v. Ohio Practice",
+      "source": "https://www.nyc.gov/assets/nypd/downloads/pdf/analysis_and_planning/year-end-2013-stop-question-frisk-report.pdf",
+      "domain": "D_POLICE_PROCEDURE",
+      "root_cause_signals": [
+        "RCS-RACIAL-PROFILING",
+        "RCS-REASONABLE-SUSPICION"
+      ],
+      "description": "NYPD stopped 4.4M people 2004-2012. 88% innocent, 52% Black. Federal judge found unconstitutional racial profiling. Court-appointed monitor instituted reforms.",
+      "assumptions_violated": [
+        "Reasonable suspicion is race-neutral",
+        "Stop and frisk reduces crime"
+      ],
+      "falsification_tests": [
+        "F_POLICE_001"
+      ],
+      "ontological_issues": [
+        "OI_POLICE_001"
+      ],
+      "lessons": [
+        "Racial disparities prove unconstitutional motive",
+        "Crime reduction doesn't justify Fourth Amendment violations"
+      ],
+      "methodology_components": [
+        "F_POLICE_001: racial disparity in stops verification"
+      ]
+    },
+    {
+      "id": "CS_183",
+      "title": "Qualified Immunity Doctrine Reform Debate",
+      "source": "https://www.supremecourt.gov/opinions/20pdf/20-18_8m58.pdf",
+      "domain": "D_CIVIL_LAW",
+      "root_cause_signals": [
+        "RCS-ACCOUNTABILITY-GAP",
+        "RCS-CLEARLY-ESTABLISHED"
+      ],
+      "description": "Supreme Court strengthened qualified immunity shielding officers from civil liability unless right was clearly established. Bipartisan calls for reform.",
+      "assumptions_violated": [
+        "Civil liability deters constitutional violations",
+        "Rights clearly established in context"
+      ],
+      "falsification_tests": [
+        "F_CIVIL_002"
+      ],
+      "ontological_issues": [
+        "OI_CIVIL_002"
+      ],
+      "lessons": [
+        "Immunity doctrines require falsifiable boundaries",
+        "Every rights violation should have remedy"
+      ],
+      "methodology_components": [
+        "F_CIVIL_002: qualified immunity scope verification"
+      ]
+    },
+    {
+      "id": "CS_184",
+      "title": "Citizens United Campaign Finance",
+      "source": "https://www.supremecourt.gov/opinions/09pdf/08-205.pdf",
+      "domain": "D_VOTING_RIGHTS",
+      "root_cause_signals": [
+        "RCS-MONEY-AS-SPEECH",
+        "RCS-CORPORATE-PERSONHOOD"
+      ],
+      "description": "Supreme Court held corporate independent political expenditures are protected speech. Allowed unlimited dark money. Super PACs proliferated.",
+      "assumptions_violated": [
+        "Campaign finance limits prevent corruption",
+        "Corporations have First Amendment rights"
+      ],
+      "falsification_tests": [
+        "F_VOTING_001"
+      ],
+      "ontological_issues": [
+        "OI_VOTING_001"
+      ],
+      "lessons": [
+        "Money in politics requires transparency not just limits",
+        "Corporate speech rights undermine democratic equality"
+      ],
+      "methodology_components": [
+        "F_VOTING_001: campaign finance transparency verification"
+      ]
+    },
+    {
+      "id": "CS_185",
+      "title": "Shelby County VRA Preclearance Gutting",
+      "source": "https://www.supremecourt.gov/opinions/12pdf/12-96_6k47.pdf",
+      "domain": "D_VOTING_RIGHTS",
+      "root_cause_signals": [
+        "RCS-PRECLEARANCE",
+        "RCS-DISCRIMINATION-HISTORY"
+      ],
+      "description": "Supreme Court struck down VRA Section 4(b) coverage formula. States immediately enacted voter ID laws, closed polling places. 1000+ polling places closed.",
+      "assumptions_violated": [
+        "Voting discrimination is history not present",
+        "States will protect minority voting rights voluntarily"
+      ],
+      "falsification_tests": [
+        "F_VOTING_002"
+      ],
+      "ontological_issues": [
+        "OI_VOTING_002"
+      ],
+      "lessons": [
+        "Voting rights require proactive not reactive protection",
+        "Discrimination history predicts future discrimination"
+      ],
+      "methodology_components": [
+        "F_VOTING_002: discriminatory impact verification"
+      ]
+    },
+    {
+      "id": "CS_186",
+      "title": "Redistricting Gerrymandering Rucho v. Common Cause",
+      "source": "https://www.supremecourt.gov/opinions/18pdf/18-422_9131.pdf",
+      "domain": "D_VOTING_RIGHTS",
+      "root_cause_signals": [
+        "RCS-PARTISAN-GERYMANDERING",
+        "RCS-JUDICIABLE-STANDARD"
+      ],
+      "description": "Supreme Court held partisan gerrymandering claims are non-justiciable political questions. Left to states and Congress. Extreme maps enacted in multiple states.",
+      "assumptions_violated": [
+        "Courts can adjudicate partisan gerrymandering",
+        "Democratic process produces fair districts"
+      ],
+      "falsification_tests": [
+        "F_VOTING_003"
+      ],
+      "ontological_issues": [
+        "OI_VOTING_003"
+      ],
+      "lessons": [
+        "Partisan manipulation requires statistical falsifiability",
+        "Independent commissions needed for fair districts"
+      ],
+      "methodology_components": [
+        "F_VOTING_003: partisan symmetry verification"
+      ]
+    },
+    {
+      "id": "CS_187",
+      "title": "Assange Espionage Act Prosecution",
+      "source": "https://www.justice.gov/opa/pr/wikileaks-founder-charged-computer-hacking-conspiracy",
+      "domain": "D_FIRST_AMENDMENT",
+      "root_cause_signals": [
+        "RCS-PRESS-FREEDOM",
+        "RCS-ESPIONAGE-ACT"
+      ],
+      "description": "DOJ charged Assange under Espionage Act for publishing classified documents. First such prosecution of publisher. Press freedom advocates alarmed.",
+      "assumptions_violated": [
+        "First Amendment protects publishing classified information",
+        "Espionage Act targets leakers not publishers"
+      ],
+      "falsification_tests": [
+        "F_FIRSTAM_001"
+      ],
+      "ontological_issues": [
+        "OI_FIRSTAM_001"
+      ],
+      "lessons": [
+        "Publishing requires source protection",
+        "Espionage Act needs press exception"
+      ],
+      "methodology_components": [
+        "F_FIRSTAM_001: press freedom boundary verification"
+      ]
+    },
+    {
+      "id": "CS_188",
+      "title": "Stuxnet Iranian Nuclear Facility Attack",
+      "source": "https://www.cisa.gov/news-events/news/stuxnet-0",
+      "domain": "D_CYBERSECURITY",
+      "root_cause_signals": [
+        "RCS-AIR-GAP-BYPASS",
+        "RCS-ICS-SECURITY"
+      ],
+      "description": "Stuxnet worm destroyed 1000 Iranian centrifuges. Spread via USB to air-gapped network. First known nation-state cyber weapon.",
+      "assumptions_violated": [
+        "Air gaps provide security",
+        "ICS systems are isolated from internet threats"
+      ],
+      "falsification_tests": [
+        "F_CYBER_001"
+      ],
+      "ontological_issues": [
+        "OI_CYBER_001"
+      ],
+      "lessons": [
+        "Air gaps are penetrable via supply chain",
+        "ICS requires intrusion detection not just isolation"
+      ],
+      "methodology_components": [
+        "F_CYBER_001: air-gap security verification"
+      ]
+    },
+    {
+      "id": "CS_189",
+      "title": "Colonial Pipeline Ransomware Shutdown",
+      "source": "httpswww.cisa.gov/news-events/news/cisa-and-fbi-release-joint-advisory-darkside-ransomware",
+      "domain": "D_CYBERSECURITY",
+      "root_cause_signals": [
+        "RCS-RANSOMWARE",
+        "RCS-CRITICAL-INFRASTRUCTURE"
+      ],
+      "description": "DarkSide ransomware shut down Colonial Pipeline causing East Coast fuel shortages. Company paid $4.4M ransom. Biden declared state of emergency.",
+      "assumptions_violated": [
+        "Critical infrastructure has adequate cybersecurity",
+        "Ransomware targets data not operations"
+      ],
+      "falsification_tests": [
+        "F_CYBER_002"
+      ],
+      "ontological_issues": [
+        "OI_CYBER_002"
+      ],
+      "lessons": [
+        "OT networks require segmentation from IT",
+        "Ransomware response plans mandatory for CI"
+      ],
+      "methodology_components": [
+        "F_CYBER_002: OT/IT segmentation verification"
+      ]
+    },
+    {
+      "id": "CS_190",
+      "title": "SolarWinds Orion Supply Chain Attack",
+      "source": "https://www.cisa.gov/news-events/news/cisa-issues-emergency-directive-mitigate-compromise-solarwinds-orion-network",
+      "domain": "D_SUPPLY_CHAIN_SECURITY",
+      "root_cause_signals": [
+        "RCS-SUPPLY-CHAIN",
+        "RCS-TRUSTED-UPDATE"
+      ],
+      "description": "Russian SVR compromised SolarWinds build process. 18k customers received backdoored updates. 9 federal agencies breached including Treasury and Commerce.",
+      "assumptions_violated": [
+        "Signed updates are trustworthy",
+        "Software vendors maintain secure build environments"
+      ],
+      "falsification_tests": [
+        "F_SUPPLYCHAIN_001"
+      ],
+      "ontological_issues": [
+        "OI_SUPPLYCHAIN_001"
+      ],
+      "lessons": [
+        "Signed updates require build environment attestation",
+        "SBOMs enable supply chain transparency"
+      ],
+      "methodology_components": [
+        "F_SUPPLYCHAIN_001: build integrity verification"
+      ]
+    },
+    {
+      "id": "CS_191",
+      "title": "Log4Shell Log4j Zero-Day Exploitation",
+      "source": "https://www.cisa.gov/news-events/news/cisa-issues-emergency-directive-mitigate-log4j-vulnerability",
+      "domain": "D_SOFTWARE_SECURITY",
+      "root_cause_signals": [
+        "RCS-INPUT-VALIDATION",
+        "RCS-DESERIALIZATION"
+      ],
+      "description": "Log4j JNDI lookup feature allowed remote code execution via log messages. Ubiquitous Java logging library. Millions of systems affected. CVSS 10.0.",
+      "assumptions_violated": [
+        "Logging libraries don't execute user input",
+        "JNDI lookups are safe"
+      ],
+      "falsification_tests": [
+        "F_SOFTWARE_001"
+      ],
+      "ontological_issues": [
+        "OI_SOFTWARE_001"
+      ],
+      "lessons": [
+        "Never interpret user input in logging",
+        "Supply chain dependencies require security audit"
+      ],
+      "methodology_components": [
+        "F_SOFTWARE_001: input sanitization verification"
+      ]
+    },
+    {
+      "id": "CS_192",
+      "title": "Kaseya VSA Ransomware Supply Chain",
+      "source": "https://www.cisa.gov/news-events/news/cisa-kaseya-ransomware-attack-update",
+      "domain": "D_SUPPLY_CHAIN_SECURITY",
+      "root_cause_signals": [
+        "RCS-ZERO-DAY",
+        "RCS-MANAGED-SERVICE-PROVIDER"
+      ],
+      "description": "REvil exploited Kaseya VSA zero-day affecting MSPs and 1500 downstream businesses. $70M ransom demanded. Meat processor and Swedish grocery chain shut down.",
+      "assumptions_violated": [
+        "MSP tools are secure",
+        "Zero-days are rare and quickly patched"
+      ],
+      "falsification_tests": [
+        "F_MSP_001"
+      ],
+      "ontological_issues": [
+        "OI_MSP_001"
+      ],
+      "lessons": [
+        "MSP tools require zero-trust architecture",
+        "Cascading failure requires compartmentalization"
+      ],
+      "methodology_components": [
+        "F_MSP_001: MSP tool security verification"
+      ]
+    },
+    {
+      "id": "CS_193",
+      "title": "Hertz False Arrest Rental Car Tracking",
+      "source": "https://www.courtlistener.com/docket/6309659/hertz-corporation-v-henderson/",
+      "domain": "D_CONSUMER_PROTECTION",
+      "root_cause_signals": [
+        "RCS-INVENTORY-SYSTEM",
+        "RCS-FALSE-REPORTING"
+      ],
+      "description": "Hertz reported rental cars stolen when they were returned or extended. 364 customers falsely arrested, some jailed for months. Settled for $168M.",
+      "assumptions_violated": [
+        "Inventory systems are accurate",
+        "Theft reports verified before police referral"
+      ],
+      "falsification_tests": [
+        "F_CONSUMER_001"
+      ],
+      "ontological_issues": [
+        "OI_CONSUMER_001"
+      ],
+      "lessons": [
+        "System errors must not trigger criminal reports",
+        "False arrest liability requires ProofObject safeguards"
+      ],
+      "methodology_components": [
+        "F_CONSUMER_001: inventory accuracy verification"
+      ]
+    },
+    {
+      "id": "CS_194",
+      "title": "Zillow Offers iBuying Algorithm Failure",
+      "source": "https://www.sec.gov/Archives/edgar/data/1802011/000180201121000035/zg-20210930.htm",
+      "domain": "D_REAL_ESTATE",
+      "root_cause_signals": [
+        "RCS-PRICING-ALGORITHM",
+        "RCS-HOME-VALUATION"
+      ],
+      "description": "Zillow's Zestimate algorithm overpaid for homes in volatile market. Lost $881M in 2021, laid off 25% staff, exited iBuying business entirely.",
+      "assumptions_violated": [
+        "Algorithmic pricing outperforms human appraisers",
+        "Real estate markets are predictable"
+      ],
+      "falsification_tests": [
+        "F_REALESTATE_001"
+      ],
+      "ontological_issues": [
+        "OI_REALESTATE_001"
+      ],
+      "lessons": [
+        "Algorithmic trading requires circuit breakers",
+        "Model drift requires continuous monitoring"
+      ],
+      "methodology_components": [
+        "F_REALESTATE_001: home valuation accuracy verification"
+      ]
+    },
+    {
+      "id": "CS_195",
+      "title": "Robinhood GameStop Trading Halt",
+      "source": "https://www.sec.gov/news/statement/gensler-statement-gamestop-012921",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-CLEARING-DEPOSIT",
+        "RCS-PAYMENT-FOR-ORDER-FLOW"
+      ],
+      "description": "Robinhood halted GME buying during short squeeze. Cited $3B clearing deposit requirement. Accused of protecting hedge funds. Settled for $70M.",
+      "assumptions_violated": [
+        "Retail brokers provide unfettered market access",
+        "Clearing deposits are transparent"
+      ],
+      "falsification_tests": [
+        "F_BROKER_001"
+      ],
+      "ontological_issues": [
+        "OI_BROKER_001"
+      ],
+      "lessons": [
+        "Clearing requirements must be disclosed",
+        "Payment for order flow creates conflicts"
+      ],
+      "methodology_components": [
+        "F_BROKER_001: clearing deposit transparency verification"
+      ]
+    },
+    {
+      "id": "CS_196",
+      "title": "Archegos Capital Margin Call Collapse",
+      "source": "https://www.sec.gov/news/statement/archegos-consent-order-042721",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-TOTAL-RETURN-SWAP",
+        "RCS-CONCENTRATED-POSITION"
+      ],
+      "description": "Bill Hwang's family office used total return swaps to hide $160B stock exposure. Margin calls wiped out $20B in 2 days. Credit Suisse lost $5.5B, fired executives.",
+      "assumptions_violated": [
+        "Swaps provide effective leverage concealment",
+        "Prime brokers monitor concentrated risk"
+      ],
+      "falsification_tests": [
+        "F_SWAP_001"
+      ],
+      "ontological_issues": [
+        "OI_SWAP_001"
+      ],
+      "lessons": [
+        "Synthetic positions require consolidated reporting",
+        "Margin models must stress extreme moves"
+      ],
+      "methodology_components": [
+        "F_SWAP_001: swap exposure aggregation verification"
+      ]
+    },
+    {
+      "id": "CS_197",
+      "title": "Wirecard Accounting Fraud Collapse",
+      "source": "https://www.bundesanzeiger.de/pub/de/suche",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-TRUST-ACCOUNT",
+        "RCS-AUDIT-FAILURE"
+      ],
+      "description": "German payment processor Wirecard admitted $2.1B cash didn't exist. FT reported fraud years earlier. EY issued clean audits. CEO arrested, company bankrupt.",
+      "assumptions_violated": [
+        "Big Four audits detect material fraud",
+        "Regulated fintechs are trustworthy"
+      ],
+      "falsification_tests": [
+        "F_AUDIT_001"
+      ],
+      "ontological_issues": [
+        "OI_AUDIT_001"
+      ],
+      "lessons": [
+        "Audit confirmations must be cryptographically verified",
+        "Whistleblower reports require investigation"
+      ],
+      "methodology_components": [
+        "F_AUDIT_001: bank confirmation verification"
+      ]
+    },
+    {
+      "id": "CS_198",
+      "title": "Nomura Greensill Supply Chain Finance",
+      "source": "https://www.fca.org.uk/news/press-releases/fca-announces-decision-greensill-capital",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-SUPPLY-CHAIN-FINANCE",
+        "RCS-INSURANCE-WRAPPER"
+      ],
+      "description": "Greensill packaged supplier invoices into bonds backed by questionable insurance. SoftBank invested $1.5B. Credit Suisse froze $10B funds. 50k jobs at risk.",
+      "assumptions_violated": [
+        "Supply chain finance is low risk",
+        "Credit insurance is reliable"
+      ],
+      "falsification_tests": [
+        "F_SCF_001"
+      ],
+      "ontological_issues": [
+        "OI_SCF_001"
+      ],
+      "lessons": [
+        "Shadow banking requires bank-level regulation",
+        "Insurance backing requires ProofObject verification"
+      ],
+      "methodology_components": [
+        "F_SCF_001: credit insurance verification"
+      ]
+    },
+    {
+      "id": "CS_199",
+      "title": "JBS Meatpacking Ransomware Supply Chain",
+      "source": "https://www.cisa.gov/news-events/news/cisa-and-fbi-release-joint-advisory-ransomware-attack-jbs",
+      "domain": "D_FOOD_SAFETY",
+      "root_cause_signals": [
+        "RCS-FOOD-SUPPLY-CHAIN",
+        "RCS-CRITICAL-INFRASTRUCTURE"
+      ],
+      "description": "REvil ransomware shut down JBS beef processing plants supplying 25% of US beef. $11M ransom paid. Food supply disruption nationwide.",
+      "assumptions_violated": [
+        "Food processing has adequate cybersecurity",
+        "Ransomware doesn't target physical infrastructure"
+      ],
+      "falsification_tests": [
+        "F_FOOD_001"
+      ],
+      "ontological_issues": [
+        "OI_FOOD_001"
+      ],
+      "lessons": [
+        "Food supply is critical infrastructure",
+        "Cyber resilience mandatory for food security"
+      ],
+      "methodology_components": [
+        "F_FOOD_001: food processing security verification"
+      ]
+    },
+    {
+      "id": "CS_200",
+      "title": "Ever Given Suez Canal Blockage",
+      "source": "https://www.transport.gov.eg/en",
+      "domain": "D_TRANSPORTATION",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-OF-FAILURE",
+        "RCS-SUPPLY-CHAIN-RESILIENCE"
+      ],
+      "description": "Container ship Ever Given blocked Suez Canal for 6 days. 400+ ships delayed. $9.6B daily trade disrupted. Global supply chain ripple effects for months.",
+      "assumptions_violated": [
+        "Maritime chokepoints are resilient",
+        "Just-in-time supply chains are efficient"
+      ],
+      "falsification_tests": [
+        "F_TRANSPORT_001"
+      ],
+      "ontological_issues": [
+        "OI_TRANSPORT_001"
+      ],
+      "lessons": [
+        "Chokepoints require redundancy",
+        "Supply chains need buffer inventory"
+      ],
+      "methodology_components": [
+        "F_TRANSPORT_001: supply chain resilience verification"
+      ]
     }
   ]
 }
