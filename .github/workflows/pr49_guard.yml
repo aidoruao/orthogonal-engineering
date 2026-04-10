@@ -24,7 +24,18 @@ jobs:
           python-version: "3.11"
 
       - name: Fetch base branch
-        run: git fetch origin ${{ github.base_ref }} --depth=50
+        run: |
+          # Fetch with sufficient depth for merge-base calculation
+          git fetch origin ${{ github.base_ref }} --depth=200
+
+      - name: Debug Git State
+        run: |
+          echo "=== Branch Info ==="
+          git branch -a
+          echo "=== Merge Base ==="
+          git merge-base origin/${{ github.base_ref }} HEAD || echo "Merge-base failed, using fallback"
+          echo "=== Recent Commits ==="
+          git log -n 3 --oneline
 
       - name: Run PR #49 guard
         env:
