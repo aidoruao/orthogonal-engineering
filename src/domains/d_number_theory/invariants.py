@@ -1,28 +1,183 @@
-"""D_NUMBER_THEORY invariant checks."""
+#!/usr/bin/env python3
+"""Number Theory Domain Invariants — Primes, congruences, Diophantine equations.
 
-from src.domains.d_number_theory.implementation import (
-    Number_TheoryRecord,
-    Number_TheoryStatus,
-    Number_TheoryChecker,
-)
+Standards:
+- Fundamental theorem of arithmetic
+- Modular arithmetic
+- Bezout's identity
+- Euler's theorem
 
-def check_compliance_deterministic() -> bool:
-    """Invariant: Compliance checks produce consistent results."""
-    checker = Number_TheoryChecker()
-    compliant = Number_TheoryRecord(record_id="T1", status=Number_TheoryStatus.COMPLIANT)
-    non_compliant = Number_TheoryRecord(record_id="T2", status=Number_TheoryStatus.NON_COMPLIANT)
-    assert checker.check_compliance(compliant)["compliant"] is True
-    assert checker.check_compliance(non_compliant)["compliant"] is False
-    return True
+Falsifies if:
+- Prime factorization incorrect
+- Congruence solution claimed when impossible
+- GCD miscalculation
+"""
 
-def run_all_invariants() -> dict:
-    results = {}
-    for name, fn in [("compliance_deterministic", check_compliance_deterministic)]:
-        try:
-            fn()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    return results
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import Integer, Congruence, DiophantineEquation
+
+
+def check_prime_factorization(n: Integer) -> Tuple[bool, ProofObject]:
+    """Fundamental theorem: every integer has unique prime factorization.
+    
+    falsifies_if:
+        - Product of factors != n
+    """
+    if n.value < 2:
+        return True, ProofObject(
+            conclusion="Prime factorization not applicable",
+            premises=[f"Value: {n.value}"],
+            rule="factorization_not_applicable"
+        )
+    
+    factors = n.prime_factors()
+    product = 1
+    for prime, power in factors:
+        product *= prime ** power
+    
+    if product != abs(n.value):
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Prime factorization incorrect for {n.value}",
+            premises=[
+                f"Factors: {factors}",
+                f"Product: {product}",
+                f"Expected: {abs(n.value)}"
+            ],
+            rule="fundamental_theorem_arithmetic"
+        )
+    
+    return True, ProofObject(
+        conclusion="Prime factorization verified",
+        premises=[f"Factors: {factors}"],
+        rule="factorization_valid"
+    )
+
+
+def check_congruence_solvability(c: Congruence) -> Tuple[bool, ProofObject]:
+    """Linear congruence ax ≡ b (mod m) solvable iff gcd(a,m) | b.
+    
+    falsifies_if:
+        - Solution claimed when gcd(a,m) ∤ b
+    """
+    from math import gcd
+    g = gcd(c.a, c.m)
+    
+    if not c.has_solution():
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Congruence {c.a}x ≡ {c.b} (mod {c.m}) has no solution",
+            premises=[
+                f"gcd({c.a}, {c.m}) = {g}",
+                f"{c.b} mod {g} = {c.b % g}",
+                "Solution requires gcd | b"
+            ],
+            rule="linear_congruence_solvability"
+        )
+    
+    return True, ProofObject(
+        conclusion="Congruence solvable",
+        premises=[f"gcd({c.a}, {c.m}) = {g} divides {c.b}"],
+        rule="congruence_solvable"
+    )
+
+
+def check_diophantine_solvability(eq: DiophantineEquation) -> Tuple[bool, ProofObject]:
+    """ax + by = c has integer solutions iff gcd(a,b) | c (Bezout).
+    
+    falsifies_if:
+        - Solution claimed when gcd(a,b) ∤ c
+    """
+    from math import gcd
+    g = gcd(eq.a, eq.b)
+    
+    if not eq.has_solution():
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Diophantine equation {eq.a}x + {eq.b}y = {eq.c} has no integer solutions",
+            premises=[
+                f"gcd({eq.a}, {eq.b}) = {g}",
+                f"{eq.c} mod {g} = {eq.c % g}",
+                "Solution requires gcd(a,b) | c"
+            ],
+            rule="bezout_identity"
+        )
+    
+    return True, ProofObject(
+        conclusion="Diophantine equation has integer solutions",
+        premises=[f"gcd({eq.a}, {eq.b}) = {g} divides {eq.c}"],
+        rule="diophantine_solvable"
+    )
+
+
+def check_euler_totient(n: Integer) -> Tuple[bool, ProofObject]:
+    """Euler's totient φ(n) counts integers 1≤k≤n coprime to n.
+    
+    falsifies_if:
+        - Computed totient incorrect
+    """
+    if n.value <= 0:
+        return True, ProofObject(
+            conclusion="Totient not defined for non-positive integers",
+            premises=[f"n = {n.value}"],
+            rule="totient_positive_only"
+        )
+    
+    # Verify by counting
+    from math import gcd
+    expected = sum(1 for k in range(1, n.value + 1) if gcd(k, n.value) == 1)
+    computed = n.euler_totient()
+    
+    if computed != expected:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Euler totient incorrect for {n.value}",
+            premises=[
+                f"Computed: {computed}",
+                f"Expected: {expected}"
+            ],
+            rule="euler_totient_definition"
+        )
+    
+    return True, ProofObject(
+        conclusion="Euler totient verified",
+        premises=[f"φ({n.value}) = {computed}"],
+        rule="totient_valid"
+    )
+
+
+def check_perfect_square(n: Integer) -> Tuple[bool, ProofObject]:
+    """Perfect square has integer square root.
+    
+    falsifies_if:
+        - is_perfect_square True but no integer root
+    """
+    if n.value < 0:
+        if n.is_perfect_square():
+            return False, ProofObject(
+                conclusion=f"VIOLATION: Negative number {n.value} claimed perfect square",
+                premises=["Perfect square: True", "Value: Negative"],
+                rule="perfect_square_non_negative"
+            )
+        return True, ProofObject(
+            conclusion="Negative number correctly not perfect square",
+            premises=[f"n = {n.value}"],
+            rule="perfect_square_negative_valid"
+        )
+    
+    root = int(n.value ** 0.5)
+    is_square = root * root == n.value
+    
+    if n.is_perfect_square() != is_square:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Perfect square check incorrect for {n.value}",
+            premises=[
+                f"Claimed: {n.is_perfect_square()}",
+                f"Actual: {is_square}"
+            ],
+            rule="perfect_square_verification"
+        )
+    
+    return True, ProofObject(
+        conclusion="Perfect square check verified",
+        premises=[f"Is square: {is_square}"],
+        rule="perfect_square_valid"
+    )

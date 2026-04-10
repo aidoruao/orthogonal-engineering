@@ -1,28 +1,149 @@
-"""D_NECESSITY invariant checks."""
+#!/usr/bin/env python3
+"""Necessity Domain Invariants — Modal logic frame conditions.
 
-from src.domains.d_necessity.implementation import (
-    NecessityRecord,
-    NecessityStatus,
-    NecessityChecker,
-)
+Standards:
+- Kripke semantics
+- Modal systems (K, T, S4, S5)
+- Frame correspondence theory
 
-def check_compliance_deterministic() -> bool:
-    """Invariant: Compliance checks produce consistent results."""
-    checker = NecessityChecker()
-    compliant = NecessityRecord(record_id="T1", status=NecessityStatus.COMPLIANT)
-    non_compliant = NecessityRecord(record_id="T2", status=NecessityStatus.NON_COMPLIANT)
-    assert checker.check_compliance(compliant)["compliant"] is True
-    assert checker.check_compliance(non_compliant)["compliant"] is False
-    return True
+Falsifies if:
+- T axiom fails (reflexivity)
+- 4 axiom fails (transitivity)
+- 5 axiom fails (Euclidean)
+"""
 
-def run_all_invariants() -> dict:
-    results = {}
-    for name, fn in [("compliance_deterministic", check_compliance_deterministic)]:
-        try:
-            fn()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    return results
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import KripkeFrame, ModalSystem
+
+
+def check_frame_reflexivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
+    """T axiom: □p → p requires reflexive frames.
+    
+    falsifies_if:
+        - Any world not accessible from itself
+    """
+    for world in frame.worlds:
+        accessible = frame.accessibility.get(world.world_id, set())
+        if world.world_id not in accessible:
+            return False, ProofObject(
+                conclusion=f"VIOLATION: Frame not reflexive - world {world.world_id} cannot see itself",
+                premises=[
+                    f"World: {world.world_id}",
+                    "Self-accessibility: False"
+                ],
+                rule="modal_axiom_t_reflexivity"
+            )
+    
+    return True, ProofObject(
+        conclusion="Frame reflexive - T axiom satisfied",
+        premises=[f"Worlds: {len(frame.worlds)}"],
+        rule="frame_reflexive"
+    )
+
+
+def check_frame_transitivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
+    """4 axiom: □p → □□p requires transitive frames.
+    
+    falsifies_if:
+        - wRv and vRu but not wRu
+    """
+    for w in frame.worlds:
+        for v_id in frame.accessibility.get(w.world_id, set()):
+            for u_id in frame.accessibility.get(v_id, set()):
+                if u_id not in frame.accessibility.get(w.world_id, set()):
+                    return False, ProofObject(
+                        conclusion=f"VIOLATION: Frame not transitive - {w.world_id}→{v_id}→{u_id} but {w.world_id}↛{u_id}",
+                        premises=[
+                            f"Path: {w.world_id} → {v_id} → {u_id}",
+                            f"Missing: {w.world_id} → {u_id}"
+                        ],
+                        rule="modal_axiom_4_transitivity"
+                    )
+    
+    return True, ProofObject(
+        conclusion="Frame transitive - 4 axiom satisfied",
+        premises=[f"Worlds: {len(frame.worlds)}"],
+        rule="frame_transitive"
+    )
+
+
+def check_frame_symmetry(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
+    """B axiom: p → □◇p requires symmetric frames.
+    
+    falsifies_if:
+        - wRv but not vRw
+    """
+    for w in frame.worlds:
+        for v_id in frame.accessibility.get(w.world_id, set()):
+            if w.world_id not in frame.accessibility.get(v_id, set()):
+                return False, ProofObject(
+                    conclusion=f"VIOLATION: Frame not symmetric - {w.world_id}→{v_id} but {v_id}↛{w.world_id}",
+                    premises=[
+                        f"Relation: {w.world_id} → {v_id}",
+                        f"Reverse: Not present"
+                    ],
+                    rule="modal_axiom_b_symmetry"
+                )
+    
+    return True, ProofObject(
+        conclusion="Frame symmetric - B axiom satisfied",
+        premises=[f"Worlds: {len(frame.worlds)}"],
+        rule="frame_symmetric"
+    )
+
+
+def check_system_compliance(frame: KripkeFrame, system: ModalSystem) -> Tuple[bool, ProofObject]:
+    """Frame validates modal system axioms.
+    
+    falsifies_if:
+        - Frame doesn't satisfy system requirements
+    """
+    if system == ModalSystem.T and not frame.is_reflexive():
+        return False, ProofObject(
+            conclusion="VIOLATION: Frame does not satisfy T system (not reflexive)",
+            premises=["Required: Reflexive", "Frame: Not reflexive"],
+            rule="modal_system_t"
+        )
+    
+    if system == ModalSystem.S4 and not (frame.is_reflexive() and frame.is_transitive()):
+        return False, ProofObject(
+            conclusion="VIOLATION: Frame does not satisfy S4 system",
+            premises=["Required: Reflexive + Transitive"],
+            rule="modal_system_s4"
+        )
+    
+    if system == ModalSystem.S5 and not (frame.is_reflexive() and frame.is_transitive() and frame.is_symmetric()):
+        return False, ProofObject(
+            conclusion="VIOLATION: Frame does not satisfy S5 system",
+            premises=["Required: Reflexive + Transitive + Symmetric"],
+            rule="modal_system_s5"
+        )
+    
+    return True, ProofObject(
+        conclusion=f"Frame satisfies {system.name} system",
+        premises=[f"System: {system.name}"],
+        rule="system_compliant"
+    )
+
+
+def check_accessibility_non_empty(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
+    """Serial frames require every world has at least one accessible world.
+    
+    falsifies_if:
+        - Any world has empty accessibility set
+    """
+    for world in frame.worlds:
+        if not frame.accessibility.get(world.world_id, set()):
+            return False, ProofObject(
+                conclusion=f"VIOLATION: World {world.world_id} has no accessible worlds",
+                premises=[f"World: {world.world_id}", "Accessibility: Empty"],
+                rule="modal_serial_frames"
+            )
+    
+    return True, ProofObject(
+        conclusion="All worlds have accessible successors",
+        premises=[f"Worlds: {len(frame.worlds)}"],
+        rule="accessibility_non_empty"
+    )
