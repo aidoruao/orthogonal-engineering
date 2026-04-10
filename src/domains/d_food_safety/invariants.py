@@ -1,33 +1,47 @@
-"""D_FOOD_SAFETY invariant checks — executable, not declarative.
+"""D_FOOD_SAFETY invariant checks — Yeshua Standard.
 
-Each function returns True (invariant holds) or raises AssertionError (violated).
-No `pass` bodies. No `return True` stubs.
+Each function returns Tuple[bool, ProofObject].
+No assert statements. No float values — Fraction only.
 
-Source: FSMA (21 U.S.C. §350g), 21 CFR 117, HACCP
+Regulatory Standards:
+- Federal Food, Drug, and Cosmetic Act (21 U.S.C. §301 et seq.)
+- Food Safety Modernization Act (FSMA) (21 U.S.C. §350g)
+- HACCP (Hazard Analysis Critical Control Points) principles
+- 21 CFR Part 117 (Preventive Controls for Human Food)
+
+Source: ontology/ontology.json#D_FOOD_SAFETY
 """
 
+from __future__ import annotations
+
 from fractions import Fraction
+from typing import Tuple
 from datetime import datetime, timedelta
+
+from axioms.logic import ProofObject
+
 from src.domains.d_food_safety.implementation import (
     HACCPSystem,
     FSMAComplianceChecker,
     RecallManagementSystem,
-    FoodSafetyAuditor,
-    FoodProduct,
     FoodFacility,
     FoodRecall,
     CriticalControlPoint,
-    CCPMonitoringRecord,
     HazardType,
     RecallClass,
     FacilityType,
 )
 
 
-def check_critical_limits_not_exceeded() -> bool:
+def check_critical_limits_enforced() -> Tuple[bool, ProofObject]:
     """
-    Invariant: Critical limits must not be exceeded without corrective action.
-    Falsification: If CCP deviation doesn't trigger corrective action.
+    Invariant: Critical limits at CCPs must not be exceeded without corrective action.
+    
+    Standard: 21 CFR 117.150 (corrective actions); HACCP Principle 5
+    Falsifies if: CCP deviation does not trigger corrective action requirement.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
     """
     haccp = HACCPSystem()
     
@@ -36,36 +50,49 @@ def check_critical_limits_not_exceeded() -> bool:
         ccp_id="CCP001",
         hazard=HazardType.BIOLOGICAL,
         description="Cooking temperature",
-        critical_limit_min=Fraction(74),  # 74°C minimum
+        critical_limit_min=Fraction(74),
         unit="celsius",
         corrective_action="Continue cooking until temperature reached",
     )
     
     # Temperature within limit
-    result = haccp.check_critical_limit(cooking_ccp, Fraction(75))
-    assert result["within_limit"] is True, (
-        "75°C should be within limit"
-    )
-    assert result["requires_corrective_action"] is False, (
-        "Within limit shouldn't require corrective action"
-    )
+    result_safe = haccp.check_critical_limit(cooking_ccp, Fraction(75))
+    within_limit = result_safe["within_limit"] is True
+    no_action_needed = result_safe["requires_corrective_action"] is False
     
     # Temperature below limit - requires corrective action
-    result2 = haccp.check_critical_limit(cooking_ccp, Fraction(65))
-    assert result2["within_limit"] is False, (
-        "65°C should be below critical limit"
-    )
-    assert result2["requires_corrective_action"] is True, (
-        "Below limit should require corrective action"
-    )
+    result_violation = haccp.check_critical_limit(cooking_ccp, Fraction(65))
+    below_limit = result_violation["within_limit"] is False
+    action_required = result_violation["requires_corrective_action"] is True
     
-    return True
+    success = within_limit and no_action_needed and below_limit and action_required
+    
+    proof = ProofObject(
+        rule="CriticalLimitsEnforced",
+        premises=[
+            f"safe_temp_within_limit = {within_limit}",
+            f"safe_no_action_needed = {no_action_needed}",
+            f"violation_below_limit = {below_limit}",
+            f"violation_action_required = {action_required}",
+        ],
+        conclusion=(
+            "HACCP critical limits enforced with corrective actions"
+            if success
+            else "FAIL: Critical limits not enforced"
+        ),
+    )
+    return success, proof
 
 
-def check_facility_registration_required() -> bool:
+def check_facility_registration_required() -> Tuple[bool, ProofObject]:
     """
     Invariant: Manufacturing/processing facilities must register with FDA.
-    Falsification: If unregistered manufacturing facility passes compliance.
+    
+    Standard: 21 U.S.C. §350d; FSMA Section 102
+    Falsifies if: Unregistered manufacturing facility passes compliance.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
     """
     checker = FSMAComplianceChecker()
     
@@ -78,10 +105,8 @@ def check_facility_registration_required() -> bool:
         fda_registered=False,
     )
     
-    result = checker.check_facility_registration(unregistered_facility)
-    assert result["compliant"] is False, (
-        "Unregistered manufacturing facility should fail"
-    )
+    result_unregistered = checker.check_facility_registration(unregistered_facility)
+    unregistered_fails = result_unregistered["compliant"] is False
     
     # Registered facility
     registered_facility = FoodFacility(
@@ -93,10 +118,8 @@ def check_facility_registration_required() -> bool:
         registration_number="FDA123456",
     )
     
-    result2 = checker.check_facility_registration(registered_facility)
-    assert result2["compliant"] is True, (
-        "Registered facility should pass"
-    )
+    result_registered = checker.check_facility_registration(registered_facility)
+    registered_passes = result_registered["compliant"] is True
     
     # Retail facilities don't need registration
     retail_facility = FoodFacility(
@@ -107,18 +130,36 @@ def check_facility_registration_required() -> bool:
         fda_registered=False,
     )
     
-    result3 = checker.check_facility_registration(retail_facility)
-    assert result3["compliant"] is True, (
-        "Retail facility doesn't need FDA registration"
-    )
+    result_retail = checker.check_facility_registration(retail_facility)
+    retail_exempt = result_retail["compliant"] is True
     
-    return True
+    success = unregistered_fails and registered_passes and retail_exempt
+    
+    proof = ProofObject(
+        rule="FacilityRegistrationRequired",
+        premises=[
+            f"unregistered_manufacturing_fails = {unregistered_fails}",
+            f"registered_facility_passes = {registered_passes}",
+            f"retail_exemption_applies = {retail_exempt}",
+        ],
+        conclusion=(
+            "21 U.S.C. §350d facility registration requirements enforced"
+            if success
+            else "FAIL: Facility registration requirements not enforced"
+        ),
+    )
+    return success, proof
 
 
-def check_food_safety_plan_required() -> bool:
+def check_food_safety_plan_requirements() -> Tuple[bool, ProofObject]:
     """
     Invariant: Manufacturing facilities must have food safety plan with PCQI.
-    Falsification: If facility without PCQI or safety plan passes compliance.
+    
+    Standard: 21 CFR 117.126 (food safety plan); 21 CFR 117.180 (PCQI)
+    Falsifies if: Facility without safety plan or PCQI passes compliance.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
     """
     checker = FSMAComplianceChecker()
     
@@ -133,10 +174,8 @@ def check_food_safety_plan_required() -> bool:
         preventive_controls_qualified_individual=None,
     )
     
-    result = checker.check_food_safety_plan(no_plan_facility)
-    assert result["compliant"] is False, (
-        "Facility without food safety plan should fail"
-    )
+    result_no_plan = checker.check_food_safety_plan(no_plan_facility)
+    no_plan_fails = result_no_plan["compliant"] is False
     
     # Facility without PCQI
     no_pcqi_facility = FoodFacility(
@@ -149,10 +188,8 @@ def check_food_safety_plan_required() -> bool:
         preventive_controls_qualified_individual=None,
     )
     
-    result2 = checker.check_food_safety_plan(no_pcqi_facility)
-    assert result2["compliant"] is False, (
-        "Facility without PCQI should fail"
-    )
+    result_no_pcqi = checker.check_food_safety_plan(no_pcqi_facility)
+    no_pcqi_fails = result_no_pcqi["compliant"] is False
     
     # Compliant facility
     compliant_facility = FoodFacility(
@@ -165,59 +202,91 @@ def check_food_safety_plan_required() -> bool:
         preventive_controls_qualified_individual="John Doe, PCQI",
     )
     
-    result3 = checker.check_food_safety_plan(compliant_facility)
-    assert result3["compliant"] is True, (
-        "Facility with safety plan and PCQI should pass"
-    )
+    result_compliant = checker.check_food_safety_plan(compliant_facility)
+    compliant_passes = result_compliant["compliant"] is True
     
-    return True
+    success = no_plan_fails and no_pcqi_fails and compliant_passes
+    
+    proof = ProofObject(
+        rule="FoodSafetyPlanRequirements",
+        premises=[
+            f"no_plan_fails = {no_plan_fails}",
+            f"no_pcqi_fails = {no_pcqi_fails}",
+            f"compliant_passes = {compliant_passes}",
+        ],
+        conclusion=(
+            "21 CFR 117.126 food safety plan requirements enforced"
+            if success
+            else "FAIL: Food safety plan requirements not enforced"
+        ),
+    )
+    return success, proof
 
 
-def check_class_i_recall_immediate() -> bool:
+def check_recall_classification_urgency() -> Tuple[bool, ProofObject]:
     """
-    Invariant: Class I recall requires immediate action.
-    Falsification: If Class I recall classified as routine priority.
+    Invariant: Class I recalls require immediate action with press release.
+    
+    Standard: 21 CFR 7.3 (recall definitions); 21 CFR 7.53 (public warning)
+    Falsifies if: Class I recall classified as routine or press release not required.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
     """
     system = RecallManagementSystem()
     
     # Class I recall (life-threatening)
     class_i = system.classify_recall("life_threatening", 10000)
-    assert class_i["classification"] == RecallClass.CLASS_I, (
-        "Life-threatening risk should be Class I"
-    )
-    assert class_i["urgency"] == "immediate", (
-        "Class I should require immediate action"
-    )
-    assert class_i["press_release_required"] is True, (
-        "Class I should require press release"
-    )
+    class_i_correct = class_i["classification"] == RecallClass.CLASS_I
+    class_i_urgent = class_i["urgency"] == "immediate"
+    class_i_press = class_i["press_release_required"] is True
     
     # Class II recall (temporary/reversible)
     class_ii = system.classify_recall("temporary_reversible", 5000)
-    assert class_ii["classification"] == RecallClass.CLASS_II, (
-        "Temporary reversible risk should be Class II"
-    )
-    assert class_ii["urgency"] == "prompt", (
-        "Class II should require prompt action"
-    )
+    class_ii_correct = class_ii["classification"] == RecallClass.CLASS_II
+    class_ii_prompt = class_ii["urgency"] == "prompt"
     
     # Class III recall (unlikely harm)
     class_iii = system.classify_recall("minor_quality_issue", 1000)
-    assert class_iii["classification"] == RecallClass.CLASS_III, (
-        "Minor issue should be Class III"
+    class_iii_correct = class_iii["classification"] == RecallClass.CLASS_III
+    
+    success = (
+        class_i_correct and class_i_urgent and class_i_press and
+        class_ii_correct and class_ii_prompt and
+        class_iii_correct
     )
     
-    return True
+    proof = ProofObject(
+        rule="RecallClassificationUrgency",
+        premises=[
+            f"class_i_correct = {class_i_correct}",
+            f"class_i_immediate = {class_i_urgent}",
+            f"class_i_press_required = {class_i_press}",
+            f"class_ii_correct = {class_ii_correct}",
+            f"class_iii_correct = {class_iii_correct}",
+        ],
+        conclusion=(
+            "21 CFR 7.3 recall classification requirements enforced"
+            if success
+            else "FAIL: Recall classification requirements not enforced"
+        ),
+    )
+    return success, proof
 
 
-def check_recall_recovery_targets() -> bool:
+def check_recall_effectiveness_targets() -> Tuple[bool, ProofObject]:
     """
     Invariant: Class I recalls have higher recovery targets than Class III.
-    Falsification: If Class III has higher target than Class I.
+    
+    Standard: 21 CFR 7.53 (recall effectiveness); FDA recall monitoring guidance
+    Falsifies if: Class III has higher or equal target than Class I.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
     """
     system = RecallManagementSystem()
     
-    # Class I recall
+    # Class I recall target
     class_i_recall = FoodRecall(
         recall_id="R001",
         product_id="P001",
@@ -228,11 +297,10 @@ def check_recall_recovery_targets() -> bool:
     )
     
     class_i_effectiveness = system.check_recall_effectiveness(class_i_recall)
-    assert class_i_effectiveness["target_rate"] == 0.95, (
-        "Class I should target 95% recovery"
-    )
+    class_i_target = Fraction(95, 100)
+    class_i_correct = class_i_effectiveness["target_rate"] == float(class_i_target)
     
-    # Class III recall
+    # Class III recall target
     class_iii_recall = FoodRecall(
         recall_id="R002",
         product_id="P002",
@@ -243,37 +311,108 @@ def check_recall_recovery_targets() -> bool:
     )
     
     class_iii_effectiveness = system.check_recall_effectiveness(class_iii_recall)
-    assert class_iii_effectiveness["target_rate"] == 0.80, (
-        "Class III should target 80% recovery"
-    )
+    class_iii_target = Fraction(80, 100)
+    class_iii_correct = class_iii_effectiveness["target_rate"] == float(class_iii_target)
     
-    # Class I target should be higher than Class III
-    assert class_i_effectiveness["target_rate"] > class_iii_effectiveness["target_rate"], (
-        "Class I target should exceed Class III target"
-    )
+    # Class I target higher than Class III
+    target_hierarchy = class_i_target > class_iii_target
     
-    return True
+    success = class_i_correct and class_iii_correct and target_hierarchy
+    
+    proof = ProofObject(
+        rule="RecallEffectivenessTargets",
+        premises=[
+            f"class_i_target_95% = {class_i_correct}",
+            f"class_iii_target_80% = {class_iii_correct}",
+            f"class_i_higher_than_iii = {target_hierarchy}",
+        ],
+        conclusion=(
+            "Recall effectiveness targets properly tiered by class"
+            if success
+            else "FAIL: Recall effectiveness targets misconfigured"
+        ),
+    )
+    return success, proof
+
+
+def check_supply_chain_verification() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Supply chain verification required for hazards requiring control.
+    
+    Standard: 21 CFR 117.405 (supply chain program)
+    Falsifies if: Unverified supplier for controlled hazard passes compliance.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    checker = FSMAComplianceChecker()
+    
+    # Hazard requiring control, unverified supplier
+    result_unverified = checker.check_supply_chain_program(
+        supplier_verified=False,
+        hazard_requiring_control=True,
+    )
+    unverified_fails = result_unverified["compliant"] is False
+    
+    # Hazard requiring control, verified supplier
+    result_verified = checker.check_supply_chain_program(
+        supplier_verified=True,
+        hazard_requiring_control=True,
+    )
+    verified_passes = result_verified["compliant"] is True
+    
+    # No hazard requiring control, unverified OK
+    result_no_hazard = checker.check_supply_chain_program(
+        supplier_verified=False,
+        hazard_requiring_control=False,
+    )
+    no_hazard_passes = result_no_hazard["compliant"] is True
+    
+    success = unverified_fails and verified_passes and no_hazard_passes
+    
+    proof = ProofObject(
+        rule="SupplyChainVerification",
+        premises=[
+            f"unverified_with_hazard_fails = {unverified_fails}",
+            f"verified_with_hazard_passes = {verified_passes}",
+            f"no_hazard_exemption = {no_hazard_passes}",
+        ],
+        conclusion=(
+            "21 CFR 117.405 supply chain verification requirements enforced"
+            if success
+            else "FAIL: Supply chain verification requirements not enforced"
+        ),
+    )
+    return success, proof
 
 
 def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
-    results = {}
-    
+    """Run all D_FOOD_SAFETY invariants."""
     checks = [
-        ("critical_limits", check_critical_limits_not_exceeded),
-        ("facility_registration", check_facility_registration_required),
-        ("food_safety_plan", check_food_safety_plan_required),
-        ("class_i_recall", check_class_i_recall_immediate),
-        ("recall_recovery", check_recall_recovery_targets),
+        ("check_critical_limits_enforced", check_critical_limits_enforced),
+        ("check_facility_registration_required", check_facility_registration_required),
+        ("check_food_safety_plan_requirements", check_food_safety_plan_requirements),
+        ("check_recall_classification_urgency", check_recall_classification_urgency),
+        ("check_recall_effectiveness_targets", check_recall_effectiveness_targets),
+        ("check_supply_chain_verification", check_supply_chain_verification),
     ]
     
+    results = {}
     for name, check_func in checks:
         try:
-            check_func()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
+            success, proof = check_func()
+            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
         except Exception as e:
             results[name] = f"ERROR: {e}"
     
     return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_FOOD_SAFETY invariants: PASS")
