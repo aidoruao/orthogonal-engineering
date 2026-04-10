@@ -415,6 +415,11 @@ class TestRequiredFields:
             "authoriser",
             "scope_glob",
             "rule_exceptions",
+        }
+
+    def test_optional_fields_defined(self):
+        from automation.pr49_guard import CONSENT_OPTIONAL_FIELDS
+        assert CONSENT_OPTIONAL_FIELDS == {
             "justification_hash",
             "scope_hash",
         }
