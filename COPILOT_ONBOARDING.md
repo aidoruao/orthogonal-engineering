@@ -314,7 +314,33 @@ python tools/state_witness/generate_feed_entry.py --verify
 
 ---
 
-## 10. DarkShadow44 Vendored Repositories
+## 10. Kimi Code CLI Integration
+
+### 10.1 Session Format
+
+Kimi Code CLI sessions use identifier format: `kimi-cli-<uuid>`
+
+Example: `kimi-cli-8fbdcdb9-7ab9-403c-a146-8e4224b8ba29`
+
+### 10.2 For Devin Coordinating with Kimi
+
+See `docs/DEVIN_ONBOARDING.md` for:
+- How to onboard Kimi sessions
+- Paste-in format for Kimi
+- Commit stamping requirements
+- Token budget coordination
+
+### 10.3 For Kimi Sessions
+
+See `docs/KIMI_ONBOARDING.md` for:
+- Quick start commands
+- Session identity format
+- Commit message templates
+- Token budget management
+
+---
+
+## 11. DarkShadow44 Vendored Repositories
 
 ### 10.1 Overview
 
