@@ -45,7 +45,82 @@ Updated: 2026-04-09T20:30:00Z
 
 # Domain Invariant Status
 
-Updated: 2026-04-10T01:06:00Z
+Updated: 2026-04-10T03:30:00Z
+
+## Summary
+
+| Metric | Count | Percentage |
+|--------|-------|------------|
+| Total domains | 157 | 100% |
+| Deepened (50+ lines) | 116 | 74% |
+| Stubs (<50 lines) | 41 | 26% |
+
+## Session 8fbdcdb9 — Kernel Infrastructure + UI Spec + Crusader Bridge
+
+### Phase 3: Kernel Social Layer (COMPLETE)
+- `kernel/social/__init__.py` — Module exports
+- `kernel/social/identity.py` — P2P identity with IdentityCap
+  - Bar Exam passage issues IdentityCap (≥70% threshold)
+  - Cryptographic delegation only, no ambient authority
+  - Delegation chain verification
+- `kernel/social/consent_comms.py` — Consent-gated communications
+  - CommsCap with consent status
+  - Message witnessing with ProofObject
+  - Grant/revoke consent operations
+- `kernel/social/reputation.py` — Decentralized reputation
+  - ReputationCap for read/write
+  - Fraction-based scoring [-1, +1]
+  - Attestation aggregation
+- `src/kernel/tests/test_social.py` — 20+ tests
+
+### Phase 4: Agent Stream (COMPLETE)
+- `kernel/agent_stream.py` — Symbolic subagent spawning
+  - AgentCap for capability-gated operations
+  - SymbolicAgent with lazy evaluation (materialize on observation)
+  - spawn_agent() — Create symbolic agents at near-zero cost
+  - materialize_agent() — Convert symbolic to materialized
+  - fork_agent_cow() — Copy-on-write state forking
+  - terminate_agent() — Resource reclamation
+  - Fraction-based resource accounting
+- `src/kernel/tests/test_agent_stream.py` — 20+ tests
+
+### Phase 5: Logos IDE UI Spec (COMPLETE)
+- `spec/logos_ide/formal_spec.py` — Fixed-point rendering pipeline
+  - UIState with content-addressed components
+  - FractionalRect (all coordinates Fraction, 0 floats)
+  - EditCap, ViewCap, DebugCap for capability-gated actions
+  - transition_state() with ProofObject returns
+  - verify_deterministic_layout() — 0 floats verification
+- `spec/logos_ide/renderer.py` — Content-addressed rendering
+  - RenderCommand with Fraction geometry
+  - content_addressed_render() — same state → same pixels
+  - Color using Fraction components (0-1 range)
+- `spec/tests/test_logos_ide.py` — 25+ tests
+
+### Phase 6: Crusader Bridge (COMPLETE)
+- `kernel/bridge/crusader_bridge.py` — Ethical warfare capability integration
+  - CrusaderCap with just war criteria (Aquinas II-II Q.40)
+  - verify_just_cause(), verify_legitimate_authority()
+  - verify_proportionality(), verify_necessity()
+  - authorize_force_operation() — All 4 criteria verification
+  - ForceOperationRecord with ethical status
+  - get_ethical_audit_log() — Audit trail
+- `kernel/bridge/__init__.py` — Registered crusader bridge
+- `src/kernel/tests/test_crusader_bridge.py` — 20+ tests
+
+### Documentation
+- `docs/KIMI_ONBOARDING.md` — Kimi Code CLI quick start
+- `docs/DEVIN_ONBOARDING.md` — Devin coordination guide
+- `COPILOT_ONBOARDING.md` — Added Kimi/Devin sections
+
+### Session Metrics
+- New kernel files: 5 (social layer, agent stream, crusader bridge)
+- New spec files: 4 (Logos IDE formal spec)
+- New test files: 4 (80+ tests total)
+- All commits stamped: Session 8fbdcdb9-7ab9-403c-a146-8e4224b8ba29
+- 0 floats, 0 stubs, all ProofObject returns
+
+---
 
 ## Summary
 
