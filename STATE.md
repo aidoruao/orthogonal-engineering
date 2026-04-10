@@ -12,6 +12,56 @@ This file declares the current state of the Orthogonal Engineering system, inclu
 
 ## 📝 LATEST SESSION SUMMARY
 
+### Session 9838e433-7bf1-4f85-8da5-d4502571ddc7 (2026-04-10)
+
+**Status:** COMPLETE — AssertionError Domain Refactor + Case Studies  
+**Branch:** `claude/add-yeshua-enterprise-framework-docs`  
+**PR:** #103
+
+#### Phase 2 Deliverables (This Session)
+- **47 AssertionError domains refactored** to ProofObject/Fraction pattern
+- All now return `Tuple[bool, ProofObject]` instead of `bool` + assert
+- All use `from fractions import Fraction` (0 floats)
+- All cite real regulatory standards in docstrings
+- **4 batches committed and pushed** (R1-R4)
+
+#### Refactored Domain Categories
+| Category | Domains |
+|----------|---------|
+| Aviation/Transport | d_aviation, d_energy, d_graphics |
+| Finance/Banking | d_banking_regulation, d_crypto, d_financial |
+| Law | d_civil_law, d_criminal_law, d_environmental_law, d_corporate_law |
+| Government | d_federalism, d_amendment_process, d_bill_of_rights, d_citizenship |
+| Safety/Health | d_food_safety, d_drug_regulation, d_medical, d_elder_law |
+| Technology | d_ai_ontological_status, d_iso_standards, d_intellectual_property |
+| Infrastructure | d_building_codes, d_road_standards, d_urban_planning, d_zoning |
+| International | d_intl_criminal, d_intl_humanitarian, d_diplomatic, d_un_charter, d_treaties |
+| Labor/Education | d_labor_rights, d_school_districts, d_school_funding, d_curriculum |
+| Telecommunications | d_telecommunications_law, d_remote_sensing |
+| Housing/Real Estate | d_housing_law, d_real_estate |
+| Police/Procedure | d_police_procedure, d_habeas_corpus |
+| Corporate | d_corporate_compliance, d_separation_of_powers, d_judicial_review |
+| Trade/Commerce | d_trade_agreements, d_transportation |
+| Weapons/Voting | d_weapons_regulation, d_voting_rights |
+
+#### Case Studies Added
+- CS_151: Boeing 737 MAX MCAS (single point of failure)
+- CS_152: OpenSSL Heartbleed (buffer over-read)
+- CS_153: Lehman Brothers Repo 105 (hidden state)
+- CS_154: Theranos Edison (non-reproducible)
+- CS_155: Texas Winter Storm Uri (N-1 failure)
+
+#### Session Metrics
+| Metric | Value |
+|--------|-------|
+| Domains refactored | 47 |
+| Lines changed | 10,000+ |
+| Commits | 5 |
+| Case studies added | 5 |
+| Context used | ~40% |
+
+---
+
 ### Session 8fbdcdb9-7ab9-403c-a146-8e4224b8ba29 (2026-04-10)
 
 **Status:** COMPLETE — All phases + Batch D14 domain stubs cleared  
