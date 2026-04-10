@@ -2331,6 +2331,286 @@
         "Falsification: F_TRANSIT_003 tests service continuity and ADA compliance during repairs.",
         "Yeshua Axiom 7: No economic gatekeeping (public transit access must not be eliminated for convenience)."
       ]
+    },
+    {
+      "id": "CS_101",
+      "title": "Twitter/X DSA Compliance Failure 2023",
+      "source": "https://digital-strategy.ec.europa.eu/en/policies/enforcement-dsa",
+      "domain": "D_DIGITAL_GOVERNANCE",
+      "root_cause_signals": [
+        "RCS-VIOLATION",
+        "RCS-GOVERNANCE"
+      ],
+      "description": "Twitter/X failed to comply with EU Digital Services Act requirements including transparency reporting and statement of reasons for content moderation. The platform removed over 1,000 content moderation staff and stopped issuing required statements.",
+      "assumptions_violated": [
+        "VLOPs maintain adequate content moderation capacity",
+        "Content restrictions include required statement of reasons"
+      ],
+      "falsification_tests": [
+        "F_DIGITAL_GOV_001"
+      ],
+      "ontological_issues": [
+        "OI_DIGITAL_GOV_001"
+      ],
+      "lessons": [
+        "DSA Article 17 statements of reasons must be automated and non-bypassable",
+        "VLOP designation requires proportional ongoing compliance investment"
+      ],
+      "methodology_components": [
+        "check_statement_of_reasons - verify all content restrictions have required documentation"
+      ]
+    },
+    {
+      "id": "CS_102",
+      "title": "US Intergenerational Mobility Decline 1940-1980 cohorts",
+      "source": "Chetty et al. (2017) The Fading American Dream",
+      "domain": "D_ECONOMIC_MOBILITY",
+      "root_cause_signals": [
+        "RCS-INEQUALITY",
+        "RCS-POLICY"
+      ],
+      "description": "Absolute upward mobility (fraction of children earning more than parents) fell from 90% for 1940 cohort to 50% for 1980 cohort. Regional variation shows high-mobility areas have less segregation, better schools, and more social capital.",
+      "assumptions_violated": [
+        "Each generation will do better than the previous",
+        "Geographic location doesn't determine economic opportunity"
+      ],
+      "falsification_tests": [
+        "F_ECON_MOB_001"
+      ],
+      "ontological_issues": [
+        "OI_ECON_MOB_001"
+      ],
+      "lessons": [
+        "Mobility matrices must account for regional variation",
+        "Place-based interventions require accurate opportunity atlas data"
+      ],
+      "methodology_components": [
+        "check_intergenerational_mobility_floor - verify minimum upward mobility from bottom quintile"
+      ]
+    },
+    {
+      "id": "CS_103",
+      "title": "Nursing Home Staffing Crisis COVID-19",
+      "source": "CMS data 2020-2021, GAO-21-85",
+      "domain": "D_ELDER_CARE",
+      "root_cause_signals": [
+        "RCS-STAFFING",
+        "RCS-EMERGENCY"
+      ],
+      "description": "Nursing homes with below-average staffing had 2x COVID-19 mortality. CMS staffing minimums (0.3 HPRD) were revealed as insufficient. Many facilities failed to meet even these minimums during the pandemic.",
+      "assumptions_violated": [
+        "CMS staffing minimums ensure adequate care",
+        "Facilities maintain compliance during emergencies"
+      ],
+      "falsification_tests": [
+        "F_ELDER_001"
+      ],
+      "ontological_issues": [
+        "OI_ELDER_001"
+      ],
+      "lessons": [
+        "Staffing check must include surge capacity assessment",
+        "Historical compliance doesn't predict emergency performance"
+      ],
+      "methodology_components": [
+        "check_staffing_compliance - verify RN, LPN, CNA hours per resident day"
+      ]
+    },
+    {
+      "id": "CS_104",
+      "title": "Gettier 'Is Justified True Belief Knowledge?' 1963",
+      "source": "Gettier, E. (1963) Analysis 23: 121-123",
+      "domain": "D_EPISTEMIC_LOGIC",
+      "root_cause_signals": [
+        "RCS-DEFINITION",
+        "RCS-LUCK"
+      ],
+      "description": "Gettier presented counterexamples where a belief is justified and true but not knowledge because the truth is accidental relative to the justification. Smith believes Jones owns a Ford (justified but false); Smith disjuncts with 'Brown is in Barcelona' (true by accident).",
+      "assumptions_violated": [
+        "Justified true belief is sufficient for knowledge",
+        "Truth and justification together guarantee non-accidentality"
+      ],
+      "falsification_tests": [
+        "F_EPISTEMIC_001"
+      ],
+      "ontological_issues": [
+        "OI_EPISTEMIC_001"
+      ],
+      "lessons": [
+        "Knowledge requires proper connection between justification and truth",
+        "Reliability must be part of knowledge evaluation"
+      ],
+      "methodology_components": [
+        "check_gettier_detection - identify JTB cases that are true by luck"
+      ]
+    },
+    {
+      "id": "CS_105",
+      "title": "Theranos Blood Testing Fraud",
+      "source": "SEC v. Holmes, 2018; Carreyrou (2018) Bad Blood",
+      "domain": "D_ETHICS",
+      "root_cause_signals": [
+        "RCS-FRAUD",
+        "RCS-DECEPTION"
+      ],
+      "description": "Theranos claimed revolutionary blood testing technology while using standard equipment for most tests. Holmes and Balwani used Kantian persons (investors, patients) merely as means to their ends, violating humanity-as-end principle.",
+      "assumptions_violated": [
+        "Medical device companies report accurate efficacy data",
+        "CEOs have duty of candor to investors"
+      ],
+      "falsification_tests": [
+        "F_ETHICS_001"
+      ],
+      "ontological_issues": [
+        "OI_ETHICS_001"
+      ],
+      "lessons": [
+        "Deontological constraints are non-overrideable by utility",
+        "Using sick persons as means for profit violates categorical imperative"
+      ],
+      "methodology_components": [
+        "check_humanity_as_end - verify persons not used merely as means"
+      ]
+    },
+    {
+      "id": "CS_106",
+      "title": "Mandelbrot Set Computation Errors",
+      "source": "Early fractal software floating-point errors (1990s)",
+      "domain": "D_FRACTALS",
+      "root_cause_signals": [
+        "RCS-PRECISION",
+        "RCS-FLOAT"
+      ],
+      "description": "Early fractal exploration software used floating-point arithmetic causing incorrect set membership classification near boundaries. Points requiring >1000 iterations accumulated enough error to escape prematurely.",
+      "assumptions_violated": [
+        "Floating-point arithmetic is sufficient for mathematical visualization",
+        "Escape radius of 2.0 works for all iterations"
+      ],
+      "falsification_tests": [
+        "F_FRACTAL_001"
+      ],
+      "ontological_issues": [
+        "OI_FRACTAL_001"
+      ],
+      "lessons": [
+        "Fractal computation requires arbitrary-precision arithmetic",
+        "Escape radius must account for iteration count"
+      ],
+      "methodology_components": [
+        "check_escape_radius_sufficient - verify radius > 2 for correctness"
+      ]
+    },
+    {
+      "id": "CS_107",
+      "title": "World of Warcraft Flow State Research",
+      "source": "Yee (2006) Motivations of Play; Csikszentmihalyi (1990)",
+      "domain": "D_FUN",
+      "root_cause_signals": [
+        "RCS-ENGAGEMENT",
+        "RCS-FLOW"
+      ],
+      "description": "WoW raid encounters designed with progressive difficulty scaling to maintain flow state (challenge-skill balance). Boss mechanics escalate through phases, keeping players in flow channel rather than anxiety or boredom.",
+      "assumptions_violated": [
+        "Difficulty should be constant throughout encounter",
+        "Players prefer easy content over challenging content"
+      ],
+      "falsification_tests": [
+        "F_FUN_001"
+      ],
+      "ontological_issues": [
+        "OI_FUN_001"
+      ],
+      "lessons": [
+        "Flow requires dynamic challenge-skill balance",
+        "Progressive difficulty maintains engagement better than static"
+      ],
+      "methodology_components": [
+        "check_flow_conditions - verify clear goals, feedback, challenge balance"
+      ]
+    },
+    {
+      "id": "CS_108",
+      "title": "Skyrim Mod Compatibility Crisis 2012-2015",
+      "source": "Nexus Mods data; Steam Workshop launch",
+      "domain": "D_GAMEMODS",
+      "root_cause_signals": [
+        "RCS-CONFLICT",
+        "RCS-DEPENDENCY"
+      ],
+      "description": "Skyrim mod ecosystem experienced widespread compatibility issues due to lack of formal dependency resolution and load order management. Unresolved conflicts between popular mods (USKP, ENB, script extenders) caused CTDs.",
+      "assumptions_violated": [
+        "Mods can be installed independently without conflicts",
+        "Community will resolve compatibility issues organically"
+      ],
+      "falsification_tests": [
+        "F_GAMEMOD_001"
+      ],
+      "ontological_issues": [
+        "OI_GAMEMOD_001"
+      ],
+      "lessons": [
+        "Mod dependency resolution must be automated",
+        "Load order must validate critical conflict resolution"
+      ],
+      "methodology_components": [
+        "check_load_order_validity - verify critical conflicts resolved"
+      ]
+    },
+    {
+      "id": "CS_109",
+      "title": "EA Star Wars Battlefront II Loot Box Controversy",
+      "source": "Belgium Gaming Commission 2018; FTC investigation",
+      "domain": "D_GAMING",
+      "root_cause_signals": [
+        "RCS-DISCLOSURE",
+        "RCS-GAMBLING"
+      ],
+      "description": "Battlefront II launched with pay-to-win loot boxes containing gameplay-affecting items. Belgium determined loot boxes constituted gambling. EA failed to disclose drop rates, violating emerging transparency regulations.",
+      "assumptions_violated": [
+        "Loot box mechanics don't require odds disclosure",
+        "Players accept randomized rewards without transparency"
+      ],
+      "falsification_tests": [
+        "F_GAMING_001"
+      ],
+      "ontological_issues": [
+        "OI_GAMING_001"
+      ],
+      "lessons": [
+        "Loot box odds must be disclosed to players",
+        "Real-money gambling mechanics require regulatory compliance"
+      ],
+      "methodology_components": [
+        "check_loot_box_odds_disclosure - verify drop rates published"
+      ]
+    },
+    {
+      "id": "CS_110",
+      "title": "Census Bureau Differential Privacy 2020",
+      "source": "U.S. Census Bureau (2021) 2020 Census Disclosure Avoidance",
+      "domain": "D_GEOGRAPHIC_INFORMATION",
+      "root_cause_signals": [
+        "RCS-PRIVACY",
+        "RCS-ACCURACY"
+      ],
+      "description": "2020 US Census implemented differential privacy, injecting noise to protect individual privacy. Redistricting data showed non-existent people in some blocks and removed real people from others, affecting political representation.",
+      "assumptions_violated": [
+        "Census data represents actual population counts",
+        "Privacy protection doesn't affect aggregate statistics"
+      ],
+      "falsification_tests": [
+        "F_GEO_001"
+      ],
+      "ontological_issues": [
+        "OI_GEO_001"
+      ],
+      "lessons": [
+        "Statistical privacy mechanisms alter geographic data",
+        "GIS invariants must account for intentional noise injection"
+      ],
+      "methodology_components": [
+        "check_crs_consistency - verify features use dataset CRS"
+      ]
     }
   ]
 }
