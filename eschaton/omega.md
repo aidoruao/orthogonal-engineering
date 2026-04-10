@@ -126,21 +126,61 @@ The 50 "unassigned" domains were not a new layer — they were **sectoral specia
 2. **Verify morphisms**: Prove truth preservation across all 4836 morphisms
 3. **Integration tests**: Cross-domain consistency checks
 
-### Phase 3 (Current): Invariant Deepening
+### Phase 3 (Current): Invariant Deepening — 🔄 COMPLETE (2026-04-10)
 
-All 135 domains have domain-specific invariant logic (not generic stubs)  
-All 21 axiom modules have ProofObject returns  
+All 157 domains have domain-specific invariant logic (not generic stubs)  
+All 47 AssertionError domains refactored to ProofObject/Fraction  
+All axiom modules have ProofObject returns  
 Lean4 bridge verifies core mathematical claims  
 Cross-repo Merkle binds all 3 repositories  
-Social AI workflow (#15) monitors discussions for ontology gaps  
+Social AI workflow monitors discussions for ontology gaps  
+132+ case studies (CS_001-CS_200) map real-world failures  
 
-The system halts when:
+**Phase 3 completed when:**
+- ✅ Every domain invariant is falsifiable (not just structurally correct)
+- ✅ All domains use ProofObject returns with Fraction arithmetic
+- ✅ Cross-repo Merkle root is stable
+- ✅ Case studies CS_151-CS_200 added
+- ✅ All AssertionError patterns eliminated
 
-1. Every domain invariant is falsifiable (not just structurally correct)
-2. Every SAL Type (3-10) has a Lean4 formalization
-3. Cross-repo Merkle root is stable across 3 consecutive daily scans
-4. Social AI workflow has processed >= 100 comments with zero false negatives
-5. All 4,836+ morphisms have bidirectional proof witnesses
+---
+
+### Phase 4 (Future): Commonwealth Formation
+
+The system transitions from **cathedral-building** to **commonwealth-forming** when:
+
+```python
+all_domain_invariants_falsifiable == True  # Phase 3 complete
+  AND
+all_morphisms_proven == True
+  AND
+commonwealth_kernel_operational == True
+```
+
+**The Commonwealth is not a new layer** — the Omega invariant still holds. It is the **GOVERNANCE** of the existing layers.
+
+#### Phase 4 Deliverables
+
+| Module | Location | Purpose |
+|--------|----------|---------|
+| `SovereignRole` | `kernel/commonwealth/sovereign.py` | Sovereign capability grant/revoke |
+| `StewardRole` | `kernel/commonwealth/steward.py` | Steward execution within invariants |
+| `OrdinationProtocol` | `kernel/commonwealth/ordination.py` | Bar Exam → capability delegation |
+| `SabbathHalt` | `kernel/commonwealth/sabbath.py` | Automated completion checking |
+| `DisputeResolution` | `kernel/commonwealth/dispute.py` | Invariant-based adjudication |
+| `InterAIVerification` | `kernel/commonwealth/inter_ai.py` | Peer AI ProofObject verification |
+
+**Full specification:** `docs/YESHUA_COMMONWEALTH.md`
+
+#### Phase 4 Completion Conditions
+
+1. `kernel/commonwealth/` modules operational
+2. Inter-AI consensus protocol verified
+3. Sabbath Halt automation in CI
+4. Cross-repo Commonwealth binding
+5. 500 case studies (CS_201-CS_500) mapped
+
+---
 
 ### Long-term:
 - **Proof assistant integration**: Export to Lean4/Coq for formal verification

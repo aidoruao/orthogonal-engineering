@@ -1,9 +1,24 @@
-"""D_GRAPHICS invariant checks — GPU Pipeline Invariants."""
+"""D_GRAPHICS invariant checks — Yeshua Standard.
 
-from typing import Tuple
+Each function returns Tuple[bool, ProofObject].
+No assert statements. No float values — Fraction only.
+
+Regulatory Standards:
+- ISO 32000 (PDF graphics)
+- ICC.1:2022 (Color management)
+- Khronos Vulkan/Direct3D/OpenGL specifications
+- VESA Display Standards
+
+Source: ontology/ontology.json#D_GRAPHICS
+"""
+
+from __future__ import annotations
+
 from fractions import Fraction
+from typing import Tuple
 
 from axioms.logic import ProofObject
+
 from src.domains.d_graphics.implementation import (
     ShaderCompilation,
     FrameTimeBudget,
@@ -11,161 +26,354 @@ from src.domains.d_graphics.implementation import (
     UpscalePass,
     PipelineStateObject,
     VRRDisplay,
-    GraphicsRecord,
-    GraphicsStatus,
-    GraphicsChecker,
+    UpscaleMethod,
+    FrameGenerationPass,
 )
 
 
-def check_shader_determinism(s1: ShaderCompilation, s2: ShaderCompilation) -> Tuple[bool, ProofObject]:
-    """Invariant: Same source + same compiler → same output hash.
-    
-    Shader compilation must be deterministic for reproducible builds
-    and correct PSO caching.
+def check_shader_compilation_determinism() -> Tuple[bool, ProofObject]:
     """
-    if s1.source_hash != s2.source_hash:
-        # Different sources, can't check determinism
-        return True, ProofObject(
-            rule="ShaderDeterminism",
-            premises=["different source hashes"],
-            conclusion="n/a (different sources)"
-        )
+    Invariant: Same source + same compiler → same output hash.
     
-    if s1.compiler_version != s2.compiler_version:
-        # Different compilers may produce different outputs
-        return True, ProofObject(
-            rule="ShaderDeterminism",
-            premises=["different compiler versions"],
-            conclusion="n/a (different compilers)"
-        )
+    Standard: Khronos SPIR-V specification; GPU driver ISV certification
+    Falsifies if: Identical shader sources produce different compiled outputs.
     
-    # Same source, same compiler → must have same output
-    deterministic = s1.output_hash == s2.output_hash
-    
-    proof = ProofObject(
-        rule="ShaderDeterminism",
-        premises=[
-            f"source={s1.source_hash}",
-            f"compiler={s1.compiler_version}",
-            f"output1={s1.output_hash}",
-            f"output2={s2.output_hash}"
-        ],
-        conclusion=f"deterministic={deterministic}"
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    # Two compilations of same source with same compiler
+    compile1 = ShaderCompilation(
+        source_hash="sha256:abc123",
+        compiler_version="DXC 1.7.2308",
+        output_hash="sha256:output456",
+        optimization_level="O2",
     )
     
-    return deterministic, proof
-
-
-def check_frame_time_budget(budget: FrameTimeBudget) -> Tuple[bool, ProofObject]:
-    """Invariant: render_ms + present_ms <= 1000 / target_fps
-    
-    Frame time must fit within budget to maintain target FPS.
-    """
-    return budget.within_budget()
-
-
-def check_gpu_memory_bounded(pool: GPUMemoryPool) -> Tuple[bool, ProofObject]:
-    """Invariant: allocated <= capacity AND fragmentation < 1/4
-    
-    GPU memory must not exceed capacity and fragmentation
-    should stay below 25% for efficient allocation.
-    """
-    within_capacity = pool.allocated <= pool.capacity
-    low_fragmentation = pool.fragmentation < Fraction(1, 4)
-    valid = within_capacity and low_fragmentation
-    
-    proof = ProofObject(
-        rule="GPUMemoryBounded",
-        premises=[
-            f"allocated={pool.allocated}",
-            f"capacity={pool.capacity}",
-            f"fragmentation={pool.fragmentation}"
-        ],
-        conclusion=f"valid={valid} (within_capacity={within_capacity}, low_frag={low_fragmentation})"
+    compile2 = ShaderCompilation(
+        source_hash="sha256:abc123",
+        compiler_version="DXC 1.7.2308",
+        output_hash="sha256:output456",
+        optimization_level="O2",
     )
     
-    return valid, proof
-
-
-def check_upscale_information_theoretic(upscale: UpscalePass, 
-                                        nyquist_limit: Fraction) -> Tuple[bool, ProofObject]:
-    """Invariant: Upscale ratio within information-theoretic limits.
+    # Same source, same compiler → deterministic output
+    deterministic_same = compile1.is_deterministic_with(compile2)
     
-    Uses sampling_theory to verify upscale ratio is within bounds.
-    """
-    ratio = upscale.upscale_ratio()
-    within_limit = ratio <= nyquist_limit
-    
-    proof = ProofObject(
-        rule="UpscaleInfoTheoretic",
-        premises=[
-            f"input=({upscale.input_width},{upscale.input_height})",
-            f"output=({upscale.output_width},{upscale.output_height})",
-            f"ratio={ratio}",
-            f"nyquist_limit={nyquist_limit}"
-        ],
-        conclusion=f"within_limit={within_limit}"
+    # Different source should not match
+    compile3 = ShaderCompilation(
+        source_hash="sha256:def789",
+        compiler_version="DXC 1.7.2308",
+        output_hash="sha256:output999",
+        optimization_level="O2",
     )
     
-    return within_limit, proof
-
-
-def check_pso_cache_hit(cached: PipelineStateObject, 
-                        requested: PipelineStateObject) -> Tuple[bool, ProofObject]:
-    """Invariant: PSO cache hit requires all hashes to match.
+    different_source_not_deterministic = not compile1.is_deterministic_with(compile3)
     
-    Vertex, fragment, and state hashes must all match for a cache hit.
-    """
-    vertex_match = cached.vertex_shader_hash == requested.vertex_shader_hash
-    fragment_match = cached.fragment_shader_hash == requested.fragment_shader_hash
-    state_match = cached.render_state_hash == requested.render_state_hash
-    
-    cache_hit = vertex_match and fragment_match and state_match
+    success = deterministic_same and different_source_not_deterministic
     
     proof = ProofObject(
-        rule="PSOCacheHit",
+        rule="ShaderCompilationDeterminism",
         premises=[
-            f"vertex_match={vertex_match}",
-            f"fragment_match={fragment_match}",
-            f"state_match={state_match}"
+            f"same_source_compiler_deterministic = {deterministic_same}",
+            f"different_source_not_deterministic = {different_source_not_deterministic}",
         ],
-        conclusion=f"cache_hit={cache_hit}"
+        conclusion=(
+            "Shader compilation determinism verified"
+            if success
+            else "FAIL: Shader compilation not deterministic"
+        ),
+    )
+    return success, proof
+
+
+def check_frame_time_budget() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Frame time must not exceed budget for target FPS.
+    
+    Standard: VESA AdaptiveSync; platform certification requirements
+    Falsifies if: render_ms + present_ms > 1000 / target_fps
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    # 60 FPS target (16.67ms budget)
+    budget_60fps = FrameTimeBudget(
+        render_ms=Fraction(10),
+        present_ms=Fraction(5),
+        target_fps=Fraction(60),
+    )
+    within_60fps, proof_60 = budget_60fps.within_budget()
+    
+    # Over budget
+    over_budget = FrameTimeBudget(
+        render_ms=Fraction(20),
+        present_ms=Fraction(5),
+        target_fps=Fraction(60),
+    )
+    over_budget_result, proof_over = over_budget.within_budget()
+    over_budget_detected = not over_budget_result
+    
+    success = within_60fps and over_budget_detected
+    
+    proof = ProofObject(
+        rule="FrameTimeBudget",
+        premises=[
+            f"60fps_within_budget = {within_60fps}",
+            f"over_budget_detected = {over_budget_detected}",
+            f"render_budget_ms = {budget_60fps.target_frame_time_ms()}",
+        ],
+        conclusion=(
+            "Frame time budget constraints enforced"
+            if success
+            else "FAIL: Frame time budget constraints violated"
+        ),
+    )
+    return success, proof
+
+
+def check_gpu_memory_bounds() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: GPU allocation must not exceed capacity; fragmentation limited.
+    
+    Standard: Khronos Vulkan Memory Model; D3D12 residency requirements
+    Falsifies if: allocated > capacity OR fragmentation >= 25%
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    # Valid memory pool
+    valid_pool = GPUMemoryPool(
+        allocated=Fraction(6 * 1024 * 1024 * 1024),  # 6 GB
+        capacity=Fraction(8 * 1024 * 1024 * 1024),   # 8 GB
+        fragmentation=Fraction(1, 10),  # 10%
+    )
+    within_capacity = valid_pool.allocated <= valid_pool.capacity
+    low_fragmentation = valid_pool.fragmentation < Fraction(1, 4)
+    valid_pool_ok = within_capacity and low_fragmentation
+    
+    # Over capacity
+    over_pool = GPUMemoryPool(
+        allocated=Fraction(10 * 1024 * 1024 * 1024),  # 10 GB
+        capacity=Fraction(8 * 1024 * 1024 * 1024),   # 8 GB
+        fragmentation=Fraction(1, 10),
+    )
+    over_capacity_detected = over_pool.allocated > over_pool.capacity
+    
+    # High fragmentation
+    frag_pool = GPUMemoryPool(
+        allocated=Fraction(4 * 1024 * 1024 * 1024),
+        capacity=Fraction(8 * 1024 * 1024 * 1024),
+        fragmentation=Fraction(3, 10),  # 30%
+    )
+    high_frag_detected = frag_pool.fragmentation >= Fraction(1, 4)
+    
+    success = valid_pool_ok and over_capacity_detected and high_frag_detected
+    
+    proof = ProofObject(
+        rule="GPUMemoryBounds",
+        premises=[
+            f"valid_pool_ok = {valid_pool_ok}",
+            f"over_capacity_detected = {over_capacity_detected}",
+            f"high_fragmentation_detected = {high_frag_detected}",
+            f"utilization = {valid_pool.utilization()}",
+        ],
+        conclusion=(
+            "GPU memory bounds enforced"
+            if success
+            else "FAIL: GPU memory bounds violated"
+        ),
+    )
+    return success, proof
+
+
+def check_upscale_information_limit() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Upscale ratio respects information-theoretic limits.
+    
+    Standard: Nyquist-Shannon sampling theorem; ISO 32000 rendering
+    Falsifies if: Upscale ratio exceeds 4x without proper synthesis.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    # 2x upscale (valid)
+    upscale_2x = UpscalePass(
+        input_width=1920,
+        input_height=1080,
+        output_width=3840,
+        output_height=2160,
+        method=UpscaleMethod.DLSS,
+    )
+    ratio_2x = upscale_2x.upscale_ratio()
+    valid_2x = ratio_2x <= Fraction(4)
+    
+    # 4x upscale (at limit)
+    upscale_4x = UpscalePass(
+        input_width=960,
+        input_height=540,
+        output_width=3840,
+        output_height=2160,
+        method=UpscaleMethod.FSR,
+    )
+    ratio_4x = upscale_4x.upscale_ratio()
+    at_limit_4x = ratio_4x == Fraction(4)
+    
+    # Information-theoretic check
+    within_limit, info_proof = upscale_2x.information_theoretic_limit()
+    
+    success = valid_2x and at_limit_4x and within_limit
+    
+    proof = ProofObject(
+        rule="UpscaleInformationLimit",
+        premises=[
+            f"2x_upscale_valid = {valid_2x} (ratio={ratio_2x})",
+            f"4x_upscale_at_limit = {at_limit_4x} (ratio={ratio_4x})",
+            f"information_limit_respected = {within_limit}",
+        ],
+        conclusion=(
+            "Upscale information-theoretic limits enforced"
+            if success
+            else "FAIL: Upscale information limits violated"
+        ),
+    )
+    return success, proof
+
+
+def check_pso_cache_determinism() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: PSO cache hit requires exact shader and state hash match.
+    
+    Standard: D3D12 PSO caching; Vulkan pipeline cache
+    Falsifies if: Cache hit occurs with mismatched shaders or states.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    # Cached PSO
+    cached = PipelineStateObject(
+        vertex_shader_hash="sha256:vs_abc",
+        fragment_shader_hash="sha256:fs_def",
+        render_state_hash="sha256:rs_blend",
     )
     
-    return cache_hit, proof
-
-
-def check_vrr_range(display: VRRDisplay, frame_rate: Fraction) -> Tuple[bool, ProofObject]:
-    """Invariant: frame_rate must be within [min_hz, max_hz].
+    # Exact match request
+    exact_request = PipelineStateObject(
+        vertex_shader_hash="sha256:vs_abc",
+        fragment_shader_hash="sha256:fs_def",
+        render_state_hash="sha256:rs_blend",
+    )
+    cache_hit = cached.matches(exact_request)
     
-    VRR display must support the requested frame rate.
+    # Mismatched vertex shader
+    diff_vs = PipelineStateObject(
+        vertex_shader_hash="sha256:vs_xyz",
+        fragment_shader_hash="sha256:fs_def",
+        render_state_hash="sha256:rs_blend",
+    )
+    vs_mismatch_no_hit = not cached.matches(diff_vs)
+    
+    # Mismatched render state
+    diff_rs = PipelineStateObject(
+        vertex_shader_hash="sha256:vs_abc",
+        fragment_shader_hash="sha256:fs_def",
+        render_state_hash="sha256:rs_noblend",
+    )
+    rs_mismatch_no_hit = not cached.matches(diff_rs)
+    
+    success = cache_hit and vs_mismatch_no_hit and rs_mismatch_no_hit
+    
+    proof = ProofObject(
+        rule="PSOCacheDeterminism",
+        premises=[
+            f"exact_match_cache_hit = {cache_hit}",
+            f"vs_mismatch_no_hit = {vs_mismatch_no_hit}",
+            f"rs_mismatch_no_hit = {rs_mismatch_no_hit}",
+            f"cache_key = {cached.cache_key()}",
+        ],
+        conclusion=(
+            "PSO cache determinism enforced"
+            if success
+            else "FAIL: PSO cache determinism violated"
+        ),
+    )
+    return success, proof
+
+
+def check_vrr_range_compliance() -> Tuple[bool, ProofObject]:
     """
-    return display.supports_rate(frame_rate)
-
-
-# Legacy checks for backward compatibility
-def check_compliance_deterministic() -> bool:
-    """Invariant: Compliance checks produce consistent results."""
-    checker = GraphicsChecker()
-    compliant = GraphicsRecord(record_id="T1", status=GraphicsStatus.COMPLIANT)
-    non_compliant = GraphicsRecord(record_id="T2", status=GraphicsStatus.NON_COMPLIANT)
-    assert checker.check_compliance(compliant)["compliant"] is True
-    assert checker.check_compliance(non_compliant)["compliant"] is False
-    return True
+    Invariant: VRR display must support frame rates within [min_hz, max_hz].
+    
+    Standard: VESA AdaptiveSync; HDMI 2.1 VRR
+    Falsifies if: Frame rate outside VRR range is accepted.
+    
+    Returns:
+        Tuple of (success: bool, proof: ProofObject)
+    """
+    # VRR display: 48-144 Hz
+    vrr_display = VRRDisplay(
+        min_hz=Fraction(48),
+        max_hz=Fraction(144),
+        current_hz=Fraction(120),
+    )
+    
+    # Within range
+    supported_60, proof_60 = vrr_display.supports_rate(Fraction(60))
+    supported_144, proof_144 = vrr_display.supports_rate(Fraction(144))
+    
+    # Outside range
+    below_min, proof_below = vrr_display.supports_rate(Fraction(30))
+    above_max, proof_above = vrr_display.supports_rate(Fraction(240))
+    
+    below_detected = not below_min
+    above_detected = not above_max
+    
+    success = supported_60 and supported_144 and below_detected and above_detected
+    
+    proof = ProofObject(
+        rule="VRRRangeCompliance",
+        premises=[
+            f"60hz_supported = {supported_60}",
+            f"144hz_supported = {supported_144}",
+            f"30hz_below_detected = {below_detected}",
+            f"240hz_above_detected = {above_detected}",
+            f"vrr_range = [{vrr_display.min_hz}, {vrr_display.max_hz}]",
+        ],
+        conclusion=(
+            "VRR range compliance enforced"
+            if success
+            else "FAIL: VRR range compliance violated"
+        ),
+    )
+    return success, proof
 
 
 def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
-    results = {}
+    """Run all D_GRAPHICS invariants."""
+    checks = [
+        ("check_shader_compilation_determinism", check_shader_compilation_determinism),
+        ("check_frame_time_budget", check_frame_time_budget),
+        ("check_gpu_memory_bounds", check_gpu_memory_bounds),
+        ("check_upscale_information_limit", check_upscale_information_limit),
+        ("check_pso_cache_determinism", check_pso_cache_determinism),
+        ("check_vrr_range_compliance", check_vrr_range_compliance),
+    ]
     
-    # Legacy checks
-    for name, fn in [("compliance_deterministic", check_compliance_deterministic)]:
+    results = {}
+    for name, check_func in checks:
         try:
-            fn()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
+            success, proof = check_func()
+            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
         except Exception as e:
             results[name] = f"ERROR: {e}"
     
     return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GRAPHICS invariants: PASS")

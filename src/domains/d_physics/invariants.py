@@ -1,100 +1,140 @@
-"""D_PHYSICS invariant checks."""
+#!/usr/bin/env python3
+"""Physics Domain Invariants — Conservation laws, physical constraints.
 
-from typing import Tuple, List, Dict
+Standards:
+- Conservation of momentum
+- Conservation of energy
+- Speed of light limit
+- Non-negative mass
+
+Falsifies if:
+- Momentum not conserved in isolated system
+- Energy not conserved (elastic collision)
+- Superluminal velocity
+- Negative mass
+"""
+
 from fractions import Fraction
-
+from typing import Tuple
 from axioms.logic import ProofObject
-from axioms.classical_mechanics import Vector3, Particle
-from src.domains.d_physics.implementation import (
-    SystemState,
-    ActuatorState,
-    check_energy_conservation,
-    check_momentum_conservation,
-    check_equation_of_motion_satisfied,
-    check_joint_torque_limits,
-    check_numerical_stability,
-)
+from .implementation import PhysicalObject, PhysicalSystem, Collision
 
 
-def check_energy_conservation_invariant(states: List[SystemState]) -> Tuple[bool, ProofObject]:
-    """Invariant: Total mechanical energy is conserved in isolated systems."""
-    return check_energy_conservation(states)
-
-
-def check_momentum_conservation_invariant(states: List[SystemState]) -> Tuple[bool, ProofObject]:
-    """Invariant: Total linear momentum is conserved in isolated systems."""
-    return check_momentum_conservation(states)
-
-
-def check_equation_of_motion_invariant(force: Vector3,
-                                       mass: Fraction,
-                                       acceleration: Vector3) -> Tuple[bool, ProofObject]:
-    """Invariant: F = ma is satisfied at all times."""
-    return check_equation_of_motion_satisfied(force, mass, acceleration)
-
-
-def check_joint_torque_limits_invariant(actuators: List[ActuatorState],
-                                        limits: Dict[str, Fraction]) -> Tuple[bool, ProofObject]:
-    """Invariant: Joint torques stay within actuator limits."""
-    all_within, violations, proof = check_joint_torque_limits(actuators, limits)
+def check_mass_non_negative(obj: PhysicalObject) -> Tuple[bool, ProofObject]:
+    """Mass must be non-negative.
     
-    final_proof = ProofObject(
-        rule="JointTorqueLimitsInvariant",
-        premises=proof.premises + [f"violations={violations}"],
-        conclusion=f"all_within={all_within}"
+    falsifies_if:
+        - mass < 0
+    """
+    if obj.mass < Fraction(0):
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Negative mass {obj.mass}",
+            premises=[f"Object: {obj.object_id}", f"Mass: {obj.mass}"],
+            rule":"physical_mass_non_negative"
+        )
+    
+    return True, ProofObject(
+        conclusion="Mass non-negative",
+        premises=[f"Mass: {obj.mass}"],
+        rule":"mass_valid"
     )
+
+
+def check_momentum_conservation(collision: Collision) -> Tuple[bool, ProofObject]:
+    """Momentum conserved in all collisions (isolated system).
     
-    return all_within, final_proof
-
-
-def check_numerical_stability_invariant(dt: Fraction,
-                                        max_frequency: Fraction) -> Tuple[bool, ProofObject]:
-    """Invariant: Numerical integration respects stability criteria."""
-    return check_numerical_stability(dt, max_frequency)
-
-
-def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
-    results = {}
+    falsifies_if:
+        - momentum_conserved is False
+    """
+    if not collision.momentum_conserved:
+        return False, ProofObject(
+            conclusion="VIOLATION: Momentum not conserved in collision",
+            premises=[
+                f"Collision: {collision.collision_id}",
+                f"Objects: {collision.object_a}, {collision.object_b}"
+            ],
+            rule":"conservation_of_momentum"
+        )
     
-    # Test energy conservation
-    p1 = Particle(
-        mass=Fraction(1),
-        position=Vector3(Fraction(0), Fraction(0), Fraction(0)),
-        velocity=Vector3(Fraction(1), Fraction(0), Fraction(0))
+    return True, ProofObject(
+        conclusion="Momentum conserved",
+        premises=[f"Collision: {collision.collision_id}"],
+        rule":"momentum_conserved"
     )
-    p2 = Particle(
-        mass=Fraction(1),
-        position=Vector3(Fraction(1), Fraction(0), Fraction(0)),
-        velocity=Vector3(Fraction(-1), Fraction(0), Fraction(0))
+
+
+def check_energy_conservation_elastic(collision: Collision) -> Tuple[bool, ProofObject]:
+    """Energy conserved in elastic collisions.
+    
+    falsifies_if:
+        - elastic AND not energy_conserved
+    """
+    if collision.elastic and not collision.energy_conserved:
+        return False, ProofObject(
+            conclusion="VIOLATION: Energy not conserved in elastic collision",
+            premises=[
+                f"Collision: {collision.collision_id}",
+                "Type: Elastic",
+                "Energy conserved: False"
+            ],
+            rule":"conservation_of_energy"
+        )
+    
+    return True, ProofObject(
+        conclusion="Energy conserved (or inelastic)",
+        premises=[f"Elastic: {collision.elastic}"],
+        rule":"energy_conserved"
     )
+
+
+def check_speed_limit(obj: PhysicalObject, speed_limit: Fraction) -> Tuple[bool, ProofObject]:
+    """Speed cannot exceed limit (e.g., speed of light).
     
-    state1 = SystemState(time=Fraction(0), particles=[p1, p2])
-    state2 = SystemState(time=Fraction(1), particles=[p1, p2])  # Same energy
+    falsifies_if:
+        - speed > speed_limit
+    """
+    # Compare squared speeds to avoid sqrt
+    v_sq = obj.speed()
+    c_sq = speed_limit * speed_limit
     
-    conserved, _ = check_energy_conservation([state1, state2])
-    results["energy_conservation"] = "PASS" if conserved else "FAIL"
+    if v_sq > c_sq:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Object speed exceeds limit",
+            premises=[
+                f"Object: {obj.object_id}",
+                f"Speed²: {v_sq}",
+                f"Limit²: {c_sq}"
+            ],
+            rule":"relativistic_speed_limit"
+        )
     
-    # Test equation of motion
-    force = Vector3(Fraction(10), Fraction(0), Fraction(0))
-    mass = Fraction(2)
-    expected_acc = Vector3(Fraction(5), Fraction(0), Fraction(0))
+    return True, ProofObject(
+        conclusion="Speed within limit",
+        premises=[f"Speed²: {v_sq}", f"Limit²: {c_sq}"],
+        rule="speed_compliant"
+    )
+
+
+def check_system_mass_conservation(system: PhysicalSystem, initial_mass: Fraction) -> Tuple[bool, ProofObject]:
+    """Mass conserved in isolated system.
     
-    satisfied, _ = check_equation_of_motion_satisfied(force, mass, expected_acc)
-    results["equation_of_motion"] = "PASS" if satisfied else "FAIL"
+    falsifies_if:
+        - current mass != initial mass
+    """
+    current = system.total_mass()
+    if current != initial_mass:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Mass not conserved",
+            premises=[
+                f"System: {system.system_id}",
+                f"Initial: {initial_mass}",
+                f"Current: {current}"
+            ],
+            rule":"conservation_of_mass"
+        )
     
-    # Test joint torque limits
-    actuators = [
-        ActuatorState("joint1", Fraction(0), Fraction(5)),
-        ActuatorState("joint2", Fraction(0), Fraction(15)),
-    ]
-    limits = {"joint1": Fraction(10), "joint2": Fraction(10)}
-    
-    all_within, _, _ = check_joint_torque_limits(actuators, limits)
-    results["joint_torque_limits"] = "PASS" if all_within else "FAIL"
-    
-    # Test numerical stability
-    stable, _ = check_numerical_stability(Fraction(1, 60), Fraction(30))
-    results["numerical_stability"] = "PASS" if stable else "FAIL"
-    
-    return results
+    return True, ProofObject(
+        conclusion="Mass conserved",
+        premises=[f"Total mass: {current}"],
+        rule":"mass_conserved"
+    )

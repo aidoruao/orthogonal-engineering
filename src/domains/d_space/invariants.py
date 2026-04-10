@@ -1,223 +1,251 @@
-"""D_SPACE invariant checks — executable, not declarative.
+#!/usr/bin/env python3
+"""D_SPACE Invariants — Space Systems
 
-Each function returns True (invariant holds) or raises AssertionError (violated).
-No `pass` bodies. No `return True` stubs.
-
-Source: NASA-STD-8719.13B (Software Safety), ECSS-Q-ST-80C
+Verifies spaceflight software safety, radiation tolerance, orbital mechanics.
+NASA-STD-8719.13B (Software Safety), ECSS-Q-ST-80C (ESA Space Product Assurance).
 """
 
-from __future__ import annotations
-
-from dataclasses import dataclass
 from fractions import Fraction
-from typing import List, Dict, Optional
-from datetime import datetime
-import hashlib
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import (
+    SpaceSoftware, RadiationTolerance, OrbitParameters,
+    SoftwareCriticality,
+    nasa_safety_critical_no_dynamic_alloc, nasa_seu_protection_required,
+    nasa_radiation_margin_factor, orbital_escape_eccentricity
+)
 
 
-@dataclass
-class SpaceSoftware:
-    """Spaceflight software module."""
-    module_id: str
-    name: str
-    safety_critical: bool
-    has_static_analysis: bool
-    has_runtime_checks: bool
-    uses_dynamic_allocation: bool
-    has_canaries: bool
-    has_aslr: bool
-
-
-@dataclass
-class RadiationTolerance:
-    """Radiation tolerance specification."""
-    component_id: str
-    name: str
-    total_dose_rads: Fraction
-    seu_immune: bool
-    latchup_protected: bool
-
-
-@dataclass
-class OrbitParameters:
-    """Orbital mechanics parameters."""
-    semi_major_axis: Fraction  # km
-    eccentricity: Fraction
-    inclination: Fraction  # degrees
-
-
-def check_memory_protection_enabled() -> bool:
+def check_memory_protection_enabled(software: SpaceSoftware) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Safety-critical binaries have stack canaries and ASLR enabled.
-    Falsification: If safety-critical binary lacks memory protection.
+    Safety-critical flight software must have memory protection (canaries, ASLR).
+
+    NASA-STD-8719.13B: Safety-critical software shall employ memory protection
+    mechanisms to prevent buffer overflows and corruption.
+
+    Falsifies if: safety_critical and (no canaries or no ASLR)
     """
-    # Safety-critical flight software
-    fsw = SpaceSoftware(
-        module_id="FSW001",
-        name="Attitude Determination",
-        safety_critical=True,
-        has_static_analysis=True,
-        has_runtime_checks=True,
-        uses_dynamic_allocation=False,
-        has_canaries=True,
-        has_aslr=True,
-    )
-    
-    if fsw.safety_critical:
-        assert fsw.has_canaries is True, (
-            f"Safety-critical software {fsw.name} must have stack canaries"
+    if software.criticality != SoftwareCriticality.SAFETY_CRITICAL:
+        return True, ProofObject(
+            conclusion=f"Software {software.module_id} not safety-critical, memory protection N/A",
+            premises=[f"Criticality: {software.criticality.name}"],
+            rule="nasa_8719_13b_memory_protection"
         )
-        assert fsw.has_aslr is True, (
-            f"Safety-critical software {fsw.name} must have ASLR"
+
+    if not software.has_canaries:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Safety-critical software {software.name} lacks stack canaries",
+            premises=[
+                f"Module: {software.module_id} ({software.name})",
+                f"Criticality: {software.criticality.name}",
+                f"Stack canaries: {software.has_canaries}",
+                "NASA-STD-8719.13B requires memory protection"
+            ],
+            rule="nasa_8719_13b_memory_protection"
         )
-        assert fsw.uses_dynamic_allocation is False, (
-            f"Safety-critical software {fsw.name} must not use dynamic allocation"
+
+    if not software.has_aslr:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Safety-critical software {software.name} lacks ASLR",
+            premises=[
+                f"Module: {software.module_id}",
+                f"ASLR: {software.has_aslr}",
+                "NASA-STD-8719.13B requires memory protection"
+            ],
+            rule="nasa_8719_13b_memory_protection"
         )
-    
-    return True
 
-
-def check_no_dynamic_allocation_in_realtime() -> bool:
-    """
-    Invariant: Real-time paths use static allocation only.
-    Falsification: If real-time code path calls malloc/new.
-    """
-    rt_modules = [
-        SpaceSoftware("RT001", "Guidance", True, True, True, False, True, True),
-        SpaceSoftware("RT002", "Navigation", True, True, True, False, True, True),
-        SpaceSoftware("RT003", "Control", True, True, True, False, True, True),
-    ]
-    
-    for module in rt_modules:
-        if module.safety_critical:
-            assert module.uses_dynamic_allocation is False, (
-                f"Real-time module {module.name} must not use dynamic allocation"
-            )
-    
-    return True
-
-
-def check_static_analysis_complement() -> bool:
-    """
-    Invariant: Static analysis findings have corresponding runtime checks.
-    Falsification: If static analysis warning has no runtime mitigation.
-    """
-    module = SpaceSoftware(
-        module_id="SA001",
-        name="Power Management",
-        safety_critical=True,
-        has_static_analysis=True,
-        has_runtime_checks=True,
-        uses_dynamic_allocation=False,
-        has_canaries=True,
-        has_aslr=True,
+    return True, ProofObject(
+        conclusion=f"Software {software.name} has required memory protections",
+        premises=[f"Canaries: {software.has_canaries}", f"ASLR: {software.has_aslr}"],
+        rule="nasa_8719_13b_memory_protection"
     )
-    
-    # Static analysis performed
-    assert module.has_static_analysis is True, (
-        f"Module {module.name} must have static analysis"
-    )
-    
-    # Runtime checks complement static analysis
-    assert module.has_runtime_checks is True, (
-        f"Module {module.name} must have runtime checks complementing static analysis"
-    )
-    
-    return True
 
 
-def check_radiation_tolerance_specs() -> bool:
+def check_no_dynamic_allocation_in_realtime(software: SpaceSoftware) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Components meet mission radiation requirements.
-    Falsification: If component total dose rating < mission requirement.
+    Real-time safety-critical paths must use static allocation only (no malloc/new).
+
+    NASA-STD-8719.13B: Dynamic memory allocation introduces non-determinism
+    and fragmentation risks in real-time systems.
+
+    Falsifies if: safety_critical and uses_dynamic_allocation=True
     """
-    mission_requirement_rads = Fraction(50000)  # 50 krad for LEO
-    
-    components = [
-        RadiationTolerance("CPU001", "Main Processor", Fraction(100000), True, True),
-        RadiationTolerance("MEM001", "SRAM", Fraction(60000), True, False),
-    ]
-    
-    for comp in components:
-        assert comp.total_dose_rads >= mission_requirement_rads, (
-            f"Component {comp.name} dose rating {comp.total_dose_rads} rads "
-            f"below mission requirement {mission_requirement_rads} rads"
+    if software.criticality != SoftwareCriticality.SAFETY_CRITICAL:
+        return True, ProofObject(
+            conclusion=f"Module {software.module_id} not safety-critical, dynamic allocation N/A",
+            premises=[f"Criticality: {software.criticality.name}"],
+            rule="nasa_8719_13b_dynamic_allocation"
         )
-    
-    return True
 
-
-def check_seu_protection() -> bool:
-    """
-    Invariant: Critical components have SEU protection.
-    Falsification: If safety-critical component lacks SEU immunity.
-    """
-    critical_components = [
-        RadiationTolerance("FPGA001", "FPGA Config", Fraction(80000), True, True),
-        RadiationTolerance("REG001", "Status Register", Fraction(50000), False, True),
-    ]
-    
-    for comp in critical_components:
-        # All critical components should have SEU protection
-        assert comp.seu_immune is True or comp.latchup_protected is True, (
-            f"Critical component {comp.name} must have SEU or latchup protection"
+    if software.uses_dynamic_allocation:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Safety-critical module {software.name} uses dynamic allocation",
+            premises=[
+                f"Module: {software.module_id}",
+                f"Criticality: {software.criticality.name}",
+                f"Dynamic allocation: {software.uses_dynamic_allocation}",
+                "NASA-STD-8719.13B prohibits dynamic allocation in safety-critical real-time code"
+            ],
+            rule="nasa_8719_13b_dynamic_allocation"
         )
-    
-    return True
 
-
-def check_orbit_validity() -> bool:
-    """
-    Invariant: Orbital parameters are physically valid.
-    Falsification: If eccentricity >= 1 (not an orbit) or negative semi-major axis.
-    """
-    # Valid LEO orbit
-    leo = OrbitParameters(
-        semi_major_axis=Fraction(6678),  # km (Earth radius + 300km altitude)
-        eccentricity=Fraction(1, 100),   # Nearly circular
-        inclination=Fraction(51, 1),     # 51 degrees
+    return True, ProofObject(
+        conclusion=f"Module {software.name} uses static allocation only",
+        premises=["Dynamic allocation: False"],
+        rule="nasa_8719_13b_dynamic_allocation"
     )
-    
-    assert leo.semi_major_axis > Fraction(0), "Semi-major axis must be positive"
-    assert leo.eccentricity >= Fraction(0), "Eccentricity must be non-negative"
-    assert leo.eccentricity < Fraction(1), "Eccentricity must be < 1 for bound orbit"
-    
-    # Check Earth escape velocity would need e >= 1
-    assert leo.eccentricity < Fraction(1), "Orbit is bound (e < 1)"
-    
-    return True
 
 
-def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
-    results = {}
-    
-    checks = [
-        ("memory_protection", check_memory_protection_enabled),
-        ("no_dynamic_alloc", check_no_dynamic_allocation_in_realtime),
-        ("static_analysis", check_static_analysis_complement),
-        ("radiation_tolerance", check_radiation_tolerance_specs),
-        ("seu_protection", check_seu_protection),
-        ("orbit_validity", check_orbit_validity),
-    ]
-    
-    for name, check_func in checks:
-        try:
-            check_func()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
-    return results
+def check_static_analysis_complement(software: SpaceSoftware) -> Tuple[bool, ProofObject]:
+    """
+    Static analysis findings must have corresponding runtime checks.
+
+    NASA-STD-8719.13B: Defense-in-depth requires both static and dynamic analysis.
+    Static analysis identifies potential issues; runtime checks mitigate them.
+
+    Falsifies if: has_static_analysis but not has_runtime_checks
+    """
+    if not software.has_static_analysis:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Module {software.name} lacks static analysis",
+            premises=[
+                f"Module: {software.module_id}",
+                f"Static analysis: {software.has_static_analysis}",
+                "NASA-STD-8719.13B requires static analysis"
+            ],
+            rule="nasa_8719_13b_defense_in_depth"
+        )
+
+    if not software.has_runtime_checks:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Module {software.name} has static analysis but no runtime checks",
+            premises=[
+                f"Static analysis: {software.has_static_analysis}",
+                f"Runtime checks: {software.has_runtime_checks}",
+                "Defense-in-depth requires runtime checks to complement static analysis"
+            ],
+            rule="nasa_8719_13b_defense_in_depth"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Module {software.name} has defense-in-depth (static + runtime)",
+        premises=["Static analysis: True", "Runtime checks: True"],
+        rule="nasa_8719_13b_defense_in_depth"
+    )
 
 
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_SPACE invariants: PASS")
+def check_radiation_tolerance_specs(component: RadiationTolerance, mission_dose: Fraction) -> Tuple[bool, ProofObject]:
+    """
+    Components must meet mission radiation requirements with margin.
+
+    ECSS-Q-ST-80C: Component total dose rating must exceed mission requirement
+    by design margin (typically 2x).
+
+    Falsifies if: total_dose_rads < mission_dose * margin_factor
+    """
+    margin = nasa_radiation_margin_factor()
+    required_dose = mission_dose * margin
+
+    if component.total_dose_rads < required_dose:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Component {component.name} dose rating {component.total_dose_rads} rads insufficient",
+            premises=[
+                f"Component: {component.component_id} ({component.name})",
+                f"Rating: {component.total_dose_rads} rads",
+                f"Mission dose: {mission_dose} rads",
+                f"Margin: {margin}x",
+                f"Required: {required_dose} rads",
+                "ECSS-Q-ST-80C requires 2x margin"
+            ],
+            rule="ecss_q_st_80c_radiation_margin"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Component {component.name} meets radiation tolerance with margin",
+        premises=[f"{component.total_dose_rads} rads >= {required_dose} rads"],
+        rule="ecss_q_st_80c_radiation_margin"
+    )
+
+
+def check_seu_protection(component: RadiationTolerance) -> Tuple[bool, ProofObject]:
+    """
+    Critical components must have SEU (Single Event Upset) protection.
+
+    ECSS-Q-ST-80C: Safety-critical components require SEU immunity or mitigation
+    (EDAC, TMR, scrubbing) and latchup protection.
+
+    Falsifies if: neither SEU immune nor latchup protected
+    """
+    if not component.seu_immune and not component.latchup_protected:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Component {component.name} lacks SEU/latchup protection",
+            premises=[
+                f"Component: {component.component_id}",
+                f"SEU immune: {component.seu_immune}",
+                f"Latchup protected: {component.latchup_protected}",
+                "ECSS-Q-ST-80C requires SEU protection for critical components"
+            ],
+            rule="ecss_q_st_80c_seu_protection"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Component {component.name} has SEU/latchup protection",
+        premises=[
+            f"SEU immune: {component.seu_immune}",
+            f"Latchup protected: {component.latchup_protected}"
+        ],
+        rule="ecss_q_st_80c_seu_protection"
+    )
+
+
+def check_orbit_validity(orbit: OrbitParameters) -> Tuple[bool, ProofObject]:
+    """
+    Orbital parameters must be physically valid (bound orbit: e < 1, a > 0).
+
+    Orbital mechanics: For a bound (closed) orbit, eccentricity must be < 1.
+    Semi-major axis must be positive. Escape trajectory has e >= 1.
+
+    Falsifies if: eccentricity >= 1 or semi_major_axis <= 0
+    """
+    escape_e = orbital_escape_eccentricity()
+
+    if orbit.semi_major_axis <= Fraction(0):
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Semi-major axis {orbit.semi_major_axis} km not positive",
+            premises=[
+                f"Semi-major axis: {orbit.semi_major_axis} km",
+                "Semi-major axis must be positive for valid orbit"
+            ],
+            rule="orbital_mechanics_bound_orbit"
+        )
+
+    if orbit.eccentricity < Fraction(0):
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Eccentricity {orbit.eccentricity} is negative",
+            premises=[
+                f"Eccentricity: {orbit.eccentricity}",
+                "Eccentricity must be non-negative"
+            ],
+            rule="orbital_mechanics_bound_orbit"
+        )
+
+    if orbit.eccentricity >= escape_e:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Eccentricity {orbit.eccentricity} >= {escape_e} (escape/hyperbolic trajectory, not bound orbit)",
+            premises=[
+                f"Eccentricity: {orbit.eccentricity}",
+                f"Escape threshold: {escape_e}",
+                "Bound orbit requires e < 1"
+            ],
+            rule="orbital_mechanics_bound_orbit"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Orbit parameters valid: bound orbit (e={orbit.eccentricity}, a={orbit.semi_major_axis} km)",
+        premises=[
+            f"Eccentricity: {orbit.eccentricity} < {escape_e}",
+            f"Semi-major axis: {orbit.semi_major_axis} km > 0"
+        ],
+        rule="orbital_mechanics_bound_orbit"
+    )

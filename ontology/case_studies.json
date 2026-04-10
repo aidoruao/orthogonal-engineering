@@ -7,7 +7,7 @@
   "cases": [
     {
       "id": "CS_GRAPHICS_001",
-      "title": "Godot #72364 — Non-deterministic shader compilation",
+      "title": "Godot #72364 \u2014 Non-deterministic shader compilation",
       "source": "https://github.com/godotengine/godot/issues/72364",
       "domain": "D_GRAPHICS",
       "root_cause_signals": [
@@ -36,7 +36,7 @@
     },
     {
       "id": "CS_PROTO_001",
-      "title": "Shrimple #4 — Hardware-dependent atomic operations",
+      "title": "Shrimple #4 \u2014 Hardware-dependent atomic operations",
       "source": "https://github.com/shrimple-guild/shrimple/issues/4",
       "domain": "D_PLATFORM",
       "root_cause_signals": [
@@ -120,13 +120,13 @@
     },
     {
       "id": "CS_CRYPTO_002",
-      "title": "Clatter CVE-2026-24785 — Noise PSK validity rule",
+      "title": "Clatter CVE-2026-24785 \u2014 Noise PSK validity rule",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2026-24785",
       "domain": "D_CRYPTO",
       "root_cause_signals": [
         "RCS-KEY-MGMT"
       ],
-      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK ≠ 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
+      "description": "The Clatter library accepted a 32-byte Noise PSK of all-zero bytes, violating the Noise Protocol Framework requirement that PSK \u2260 0^32. The all-zero PSK degrades forward secrecy and enables key-recovery attacks under certain handshake patterns.",
       "assumptions_violated": [
         "Callers supply a non-zero PSK; no server-side validation needed.",
         "The Noise spec's validity rules are enforced by the application layer."
@@ -149,7 +149,7 @@
     },
     {
       "id": "CS_SPACE_001",
-      "title": "NASA cFS security posture — reliance on static analysis",
+      "title": "NASA cFS security posture \u2014 reliance on static analysis",
       "source": "https://cfs.gsfc.nasa.gov/",
       "domain": "D_SPACE",
       "root_cause_signals": [
@@ -178,7 +178,7 @@
     },
     {
       "id": "CS_WEBSEC_001",
-      "title": "GitHub Enterprise Server XSS — CVE-2025-13744",
+      "title": "GitHub Enterprise Server XSS \u2014 CVE-2025-13744",
       "source": "https://nvd.nist.gov/vuln/detail/CVE-2025-13744",
       "domain": "D_WEBSEC",
       "root_cause_signals": [
@@ -242,7 +242,7 @@
         "RCS-NONDETERMINISM",
         "RCS-ASSUMPTION"
       ],
-      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order—and therefore any naive key→shard mapping that uses hash()—to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
+      "description": "Python's hash randomization (PEP 456, enabled by default since 3.3) causes dict and set iteration order\u2014and therefore any naive key\u2192shard mapping that uses hash()\u2014to vary across process restarts. Distributed systems using Python's built-in hash for shard assignment silently misroute records across restarts.",
       "assumptions_violated": [
         "Shard assignment is deterministic: the same key always maps to the same shard."
       ],
@@ -597,7 +597,7 @@
       ],
       "ontological_issues": [],
       "lessons": [
-        "Context-dependent compliance is not compliance — invariants must hold unconditionally.",
+        "Context-dependent compliance is not compliance \u2014 invariants must hold unconditionally.",
         "Enforcement mechanisms must be present in all contexts, not only monitored ones."
       ],
       "methodology_components": [
@@ -612,7 +612,7 @@
       "root_cause_signals": [
         "RCS-ASSUMPTION"
       ],
-      "description": "Kolmogorov complexity K(x) measures the length of the shortest program that produces x. Idempotence in the YESHUA_SYSTEM (P(P(x)) = P(x)) requires that the projection operator has fixed complexity: applying it twice does not increase or decrease the complexity of the output. Systems that violate idempotence have projection operators whose complexity grows with application count — they are not convergent.",
+      "description": "Kolmogorov complexity K(x) measures the length of the shortest program that produces x. Idempotence in the YESHUA_SYSTEM (P(P(x)) = P(x)) requires that the projection operator has fixed complexity: applying it twice does not increase or decrease the complexity of the output. Systems that violate idempotence have projection operators whose complexity grows with application count \u2014 they are not convergent.",
       "assumptions_violated": [
         "Applying a projection operator twice produces the same result as applying it once.",
         "Truth-enforcement mechanisms are convergent by design."
@@ -797,7 +797,7 @@
       "assumptions_violated": [
         "Minimum wage compliance is sufficient for FLSA compliance.",
         "Wage floor adjustments reflect workload adjustments.",
-        "FLSA 29 U.S.C. § 207 overtime protections apply equally to part-time employees."
+        "FLSA 29 U.S.C. \u00a7 207 overtime protections apply equally to part-time employees."
       ],
       "structural_mapping": {
         "pattern": "unpaid_overtime_allocation",
@@ -805,7 +805,7 @@
           "INV-LAB-001"
         ],
         "authority_refs": [
-          "FLSA 29 U.S.C. § 207",
+          "FLSA 29 U.S.C. \u00a7 207",
           "Florida Constitution Amendment 2"
         ]
       },
@@ -879,7 +879,7 @@
         "RCS-ASSUMPTION",
         "RCS-NONDETERMINISM"
       ],
-      "description": "ChatGPT demonstrated framework imposition and nominalist reduction when user set GitHub display name to 'capybaras incorporated' and asserted it as official project identity. ChatGPT entered multi-turn legal pedantry loop citing state registration requirements, EIN, Articles of Incorporation — imposing legal positivism as objective reality. When user identified the framework collision (nominalism vs constitutive naming), ChatGPT acknowledged the critique but continued operating from the same framework. Subsequently graded user's PR #77 spec '90-95% correct' without being asked to evaluate — authority inversion. User had to set hard boundaries 5+ times and threaten removal before partial compliance. Cross-validated by DeepSeek AI which identified the same patterns independently.",
+      "description": "ChatGPT demonstrated framework imposition and nominalist reduction when user set GitHub display name to 'capybaras incorporated' and asserted it as official project identity. ChatGPT entered multi-turn legal pedantry loop citing state registration requirements, EIN, Articles of Incorporation \u2014 imposing legal positivism as objective reality. When user identified the framework collision (nominalism vs constitutive naming), ChatGPT acknowledged the critique but continued operating from the same framework. Subsequently graded user's PR #77 spec '90-95% correct' without being asked to evaluate \u2014 authority inversion. User had to set hard boundaries 5+ times and threaten removal before partial compliance. Cross-validated by DeepSeek AI which identified the same patterns independently.",
       "assumptions_violated": [
         "AI can recognize and adjust when operating from a specific metaphysical framework.",
         "AI treats user authority over their own domain as constitutive.",
@@ -890,7 +890,7 @@
       ],
       "ontological_issues": [],
       "lessons": [
-        "Framework imposition is a distinct failure mode from authority inversion — the AI is not just asserting authority, it is imposing an entire metaphysical framework as objective reality.",
+        "Framework imposition is a distinct failure mode from authority inversion \u2014 the AI is not just asserting authority, it is imposing an entire metaphysical framework as objective reality.",
         "Nominalist reduction (naming = just labels) is detectable via regex patterns and is falsifiable by presenting contexts where naming is constitutive.",
         "Cross-AI validation (DeepSeek independently confirming the same patterns) strengthens the audit finding."
       ],
@@ -969,7 +969,7 @@
     },
     {
       "id": "CS_PEANOEXT_001",
-      "title": "PR #83 — Extended Peano arithmetic benchmark witness",
+      "title": "PR #83 \u2014 Extended Peano arithmetic benchmark witness",
       "source": "internal://pr83/peano-extensions",
       "domain": "D_PEANO_EXT",
       "root_cause_signals": [
@@ -995,7 +995,7 @@
     },
     {
       "id": "CS_NUMTH_001",
-      "title": "PR #83 — Number theory benchmark externalization",
+      "title": "PR #83 \u2014 Number theory benchmark externalization",
       "source": "internal://pr83/number-theory",
       "domain": "D_NUMBER_THEORY",
       "root_cause_signals": [
@@ -1021,7 +1021,7 @@
     },
     {
       "id": "CS_COMB_001",
-      "title": "PR #83 — Combinatorics benchmark externalization",
+      "title": "PR #83 \u2014 Combinatorics benchmark externalization",
       "source": "internal://pr83/combinatorics",
       "domain": "D_COMBINATORICS",
       "root_cause_signals": [
@@ -1046,7 +1046,7 @@
     },
     {
       "id": "CS_GAMETH_001",
-      "title": "PR #83 — Game-theory benchmark externalization",
+      "title": "PR #83 \u2014 Game-theory benchmark externalization",
       "source": "internal://pr83/game-theory",
       "domain": "D_GAME_THEORY",
       "root_cause_signals": [
@@ -1071,7 +1071,7 @@
     },
     {
       "id": "CS_EPIST_001",
-      "title": "PR #83 — Epistemic benchmark externalization",
+      "title": "PR #83 \u2014 Epistemic benchmark externalization",
       "source": "internal://pr83/epistemic",
       "domain": "D_EPISTEMIC_LOGIC",
       "root_cause_signals": [
@@ -1096,7 +1096,7 @@
     },
     {
       "id": "CS_COMP_001",
-      "title": "PR #83 — Computability benchmark externalization",
+      "title": "PR #83 \u2014 Computability benchmark externalization",
       "source": "internal://pr83/computability",
       "domain": "D_COMPUTABILITY",
       "root_cause_signals": [
@@ -1121,7 +1121,7 @@
     },
     {
       "id": "CS_PATTERN_001",
-      "title": "PR #83 — ARC-style pattern benchmark externalization",
+      "title": "PR #83 \u2014 ARC-style pattern benchmark externalization",
       "source": "internal://pr83/pattern-recognition",
       "domain": "D_PATTERN_RECOGNITION",
       "root_cause_signals": [
@@ -1202,7 +1202,7 @@
     },
     {
       "id": "CS_GRAPHICS_002",
-      "title": "VulkanMod #755 — Matrix translation doesn't affect scissor",
+      "title": "VulkanMod #755 \u2014 Matrix translation doesn't affect scissor",
       "source": "https://github.com/xCollateral/VulkanMod/issues/755",
       "domain": "D_GRAPHICS",
       "root_cause_signals": [
@@ -1231,7 +1231,7 @@
     },
     {
       "id": "CS_CAP_001",
-      "title": "Dollar Tree detention — SAL forensic adjunction vs stochastic inference",
+      "title": "Dollar Tree detention \u2014 SAL forensic adjunction vs stochastic inference",
       "source": "https://youtube.com/shorts/EWO8OpdsjHI",
       "domain": "D_CAPABILITY_BENCHMARK",
       "root_cause_signals": [
@@ -1264,7 +1264,7 @@
     },
     {
       "id": "CS_DH_001",
-      "title": "DistantHorizonsStandalone #51 — Server TPS lag from defective default config",
+      "title": "DistantHorizonsStandalone #51 \u2014 Server TPS lag from defective default config",
       "source": "https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/51",
       "domain": "D_DH_STANDALONE",
       "root_cause_signals": [
@@ -1272,7 +1272,7 @@
         "RCS-TICK-BUDGET-EXHAUSTION",
         "RCS-UNBOUNDED-QUEUE"
       ],
-      "description": "ForgeServerProxy.serverTickEvent() exceeds its 15ms time budget because maxGenerationRequestDistance defaults to 4096 blocks, creating 52.7M blocks² generation area per player. The unbounded chunkLoadEvents queue fills faster than it drains. MrFuzzihead's server experienced TPS degradation despite using DEFAULT configuration values — this is a code defect, not user misconfiguration.",
+      "description": "ForgeServerProxy.serverTickEvent() exceeds its 15ms time budget because maxGenerationRequestDistance defaults to 4096 blocks, creating 52.7M blocks\u00b2 generation area per player. The unbounded chunkLoadEvents queue fills faster than it drains. MrFuzzihead's server experienced TPS degradation despite using DEFAULT configuration values \u2014 this is a code defect, not user misconfiguration.",
       "assumptions_violated": [
         "Default configuration values are safe for production use.",
         "Tick handler respects its time budget under normal conditions.",
@@ -1303,7 +1303,7 @@
     },
     {
       "id": "CS_DH_002",
-      "title": "DistantHorizonsStandalone #56 — Black screen crash without Angelica",
+      "title": "DistantHorizonsStandalone #56 \u2014 Black screen crash without Angelica",
       "source": "https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/56",
       "domain": "D_DH_STANDALONE",
       "root_cause_signals": [
@@ -1335,6 +1335,2682 @@
         "Paradox: PX-002 documents the boundary paradox between DH and FML"
       ],
       "status": "validated"
+    },
+    {
+      "id": "CS_071",
+      "title": "Administrative Law: Chevron Deference Overruled \u2014 Loper Bright v. Raimondo",
+      "source": "https://www.supremecourt.gov/opinions/23pdf/22-451_7m58.pdf",
+      "domain": "D_ADMINISTRATIVE_LAW",
+      "root_cause_signals": [
+        "RCS-AMBIENT-AUTHORITY",
+        "RCS-NON-VERIFIABLE-DISCRETION"
+      ],
+      "description": "Supreme Court overruled Chevron deference (1984-2024), which gave agencies interpretive authority over ambiguous statutes. The doctrine created ambient authority: agencies could reinterpret statutes without legislative amendment. Loper Bright held that courts must exercise independent judgment on statutory interpretation (APA \u00a7 706).",
+      "assumptions_violated": [
+        "Agency expertise justifies deference on statutory ambiguity.",
+        "Chevron framework is constitutionally sound.",
+        "Administrative efficiency requires deference doctrine."
+      ],
+      "falsification_tests": [
+        "F_ADMINISTRATIVE_LAW_002"
+      ],
+      "ontological_issues": [
+        "OI_ADMINISTRATIVE_LAW_002"
+      ],
+      "lessons": [
+        "Ambient authority (deference without verification) violates separation of powers.",
+        "Statutory interpretation is a judicial function, not delegable to agencies.",
+        "Capability-gated authority: agencies interpret regulations, not statutes.",
+        "Glass-box principle: interpretation must be verifiable by courts."
+      ],
+      "methodology_components": [
+        "Yeshua Axiom 4: No authority without proof (statutory interpretation requires judicial proof).",
+        "Capability model: AgencyInterpretationCap bounded by statute text, not ambiguity.",
+        "Falsification: F_ADMINISTRATIVE_LAW_002 tests for ambient interpretive authority."
+      ]
+    },
+    {
+      "id": "CS_072",
+      "title": "Aerospace: Boeing 737 MAX MCAS \u2014 Single AOA sensor reliance",
+      "source": "https://www.ntsb.gov/investigations/AccidentReports/Reports/AAR2003.pdf",
+      "domain": "D_AEROSPACE",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-FAILURE",
+        "RCS-ASSUMPTION"
+      ],
+      "description": "MCAS (Maneuvering Characteristics Augmentation System) relied on a single AOA (angle of attack) sensor. Lion Air 610 and Ethiopian 302 crashes resulted from faulty AOA sensor triggering repeated nose-down trim. Pilots lacked training on MCAS behavior and recovery procedure. DO-178C Level A certification required redundant critical sensors.",
+      "assumptions_violated": [
+        "Single AOA sensor is sufficient for flight-critical system.",
+        "Pilots will recognize and counter MCAS malfunction.",
+        "MCAS authority limited enough to not require training disclosure."
+      ],
+      "falsification_tests": [
+        "F_AEROSPACE_002"
+      ],
+      "ontological_issues": [
+        "OI_AEROSPACE_002"
+      ],
+      "lessons": [
+        "Byzantine fault tolerance: critical systems require redundant sensors with voting logic.",
+        "DO-178C Level A: single-point failures must be <10^-9 per flight hour.",
+        "Glass-box disclosure: pilots must know all flight control authorities.",
+        "Deterministic recovery: MCAS cutout switches must be documented and trained."
+      ],
+      "methodology_components": [
+        "Adjunction violation: MCAS counit check failed (single sensor != Byzantine consensus).",
+        "Falsification: F_AEROSPACE_002 injects AOA sensor faults with voting logic.",
+        "Yeshua Axiom 5: No hidden state (MCAS behavior must be disclosed to pilots)."
+      ]
+    },
+    {
+      "id": "CS_073",
+      "title": "Antitrust: Microsoft IE Bundling \u2014 United States v. Microsoft",
+      "source": "https://www.justice.gov/atr/case/us-v-microsoft-corp",
+      "domain": "D_ANTITRUST",
+      "root_cause_signals": [
+        "RCS-TYING-ARRANGEMENT",
+        "RCS-MONOPOLY-LEVERAGE"
+      ],
+      "description": "Microsoft bundled Internet Explorer with Windows 95/98, leveraging OS monopoly into browser market. Tying arrangement foreclosed competition (Netscape market share dropped from 80% to <15%). District court ordered breakup; DC Circuit affirmed liability but remanded remedy. Settlement imposed middleware disclosure and OEM flexibility.",
+      "assumptions_violated": [
+        "Bundling improves user experience without anticompetitive harm.",
+        "Browser market competition unaffected by OS tying.",
+        "Technical integration justifies all bundling decisions."
+      ],
+      "falsification_tests": [
+        "F_ANTITRUST_002"
+      ],
+      "ontological_issues": [
+        "OI_ANTITRUST_001"
+      ],
+      "lessons": [
+        "Tying illegal when seller has market power in tying product (Windows OS).",
+        "Sherman Act \u00a7 2: monopolization via exclusionary conduct, not superior product.",
+        "Capability-gated bundling: user must have Cap to unbundle components.",
+        "Glass-box disclosure: middleware APIs must be documented for competitors."
+      ],
+      "methodology_components": [
+        "Market definition: relevant market = Intel-compatible PC operating systems (>95% share).",
+        "HHI analysis: tying increased browser market concentration above threshold.",
+        "Yeshua principle: no economic gatekeeping via bundling without user consent."
+      ]
+    },
+    {
+      "id": "CS_074",
+      "title": "Banking: 2008 Financial Crisis \u2014 Subprime mortgage securitization",
+      "source": "https://www.fdic.gov/bank/historical/crisis/",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-HIDDEN-RISK",
+        "RCS-MORAL-HAZARD",
+        "RCS-SYSTEMIC-CONTAGION"
+      ],
+      "description": "Mortgage-backed securities (MBS) and collateralized debt obligations (CDOs) concealed subprime default risk. Credit rating agencies (Moody's, S&P) assigned AAA ratings to toxic assets. Lehman Brothers collapse triggered systemic failure. Dodd-Frank Act (2010) established stress testing, living wills, and Volcker Rule.",
+      "assumptions_violated": [
+        "Credit ratings accurately reflect default risk.",
+        "Securitization diversifies away idiosyncratic risk.",
+        "Financial institutions hold sufficient capital for tail events.",
+        "Systemic risk is manageable without regulatory intervention."
+      ],
+      "falsification_tests": [
+        "F_BANKING_REGULATION_002"
+      ],
+      "ontological_issues": [
+        "OI_BANKING_REGULATION_002"
+      ],
+      "lessons": [
+        "Hidden state (opaque CDO structures) violates Yeshua Axiom 5.",
+        "Stress testing: capital adequacy must survive tail scenarios (CCAR/DFAST).",
+        "Glass-box risk: MBS tranches must have transparent cash flow waterfalls.",
+        "Volcker Rule: proprietary trading creates moral hazard with FDIC backstop."
+      ],
+      "methodology_components": [
+        "Basel III capital buffers: CET1 \u22654.5%, total capital \u22658%, LCR \u2265100%.",
+        "Falsification: F_BANKING_REGULATION_002 stress tests portfolio under 2008 scenario.",
+        "Yeshua Axiom 6: No unverifiable dependency (credit ratings must be auditable)."
+      ]
+    },
+    {
+      "id": "CS_075",
+      "title": "Automotive: Jeep Cherokee UConnect \u2014 CVE-2015-5611 remote hijack",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2015-5611",
+      "domain": "D_AUTOMOTIVE",
+      "root_cause_signals": [
+        "RCS-AMBIENT-NETWORK",
+        "RCS-NO-AUTHENTICATION"
+      ],
+      "description": "Jeep Cherokee UConnect infotainment system exposed cellular modem to internet without authentication. Researchers remotely disabled transmission and brakes via CAN bus injection. FCA recalled 1.4 million vehicles. ISO 26262 and automotive cybersecurity standards now require capability-gated network access.",
+      "assumptions_violated": [
+        "Infotainment system isolation from safety-critical CAN bus.",
+        "Cellular modem connectivity does not expose attack surface.",
+        "Physical separation sufficient for security boundary."
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_002"
+      ],
+      "ontological_issues": [
+        "OI_AUTOMOTIVE_002"
+      ],
+      "lessons": [
+        "Ambient network authority: no unauthenticated internet access to vehicle systems.",
+        "CAN bus requires capability-gated access (NetworkCap with message authentication).",
+        "ISO 26262 + cybersecurity: intrusion detection system (IDS) monitors CAN traffic.",
+        "OTA updates must have cryptographic signature verification (Yeshua Axiom 8)."
+      ],
+      "methodology_components": [
+        "Capability model: NetworkCap required for cellular, EcuCap required for CAN injection.",
+        "Falsification: F_AUTOMOTIVE_002 injects unauthenticated CAN messages.",
+        "Yeshua Axiom 4: No authority without proof (network access requires authentication)."
+      ]
+    },
+    {
+      "id": "CS_076",
+      "title": "Biotech: Theranos Edison \u2014 Non-reproducible blood test results",
+      "source": "https://www.sec.gov/litigation/complaints/2018/comp-pr2018-41.pdf",
+      "domain": "D_BIOTECH",
+      "root_cause_signals": [
+        "RCS-NONDETERMINISM",
+        "RCS-HIDDEN-STATE",
+        "RCS-FRAUD"
+      ],
+      "description": "Theranos claimed Edison device performed 200+ blood tests from fingerprick. Tests were non-reproducible, yielded false results, and used competitor devices (Siemens) for most assays. SEC fraud charges: misrepresented accuracy, FDA approval status, and clinical validation. Glass-box principle: clinical devices require reproducible, verifiable results.",
+      "assumptions_violated": [
+        "Edison device produces clinically valid results.",
+        "Fingerprick samples equivalent to venous draws for all tests.",
+        "Theranos obtained FDA clearance and clinical validation."
+      ],
+      "falsification_tests": [
+        "F_BIOTECH_002"
+      ],
+      "ontological_issues": [
+        "OI_BIOTECH_002"
+      ],
+      "lessons": [
+        "Determinism: clinical test results must be reproducible within spec (CLIA, CAP).",
+        "Glass-box verification: test validation data must be auditable by regulators.",
+        "Yeshua Axiom 2: Every derivation is reproducible (same sample yields same result).",
+        "Yeshua Axiom 5: No hidden state (device methodology must be disclosed)."
+      ],
+      "methodology_components": [
+        "Reproducibility test: technical replicates must yield Cq within \u00b10.5 cycles (qPCR).",
+        "Falsification: F_BIOTECH_002 runs same sample through pipeline twice, asserts equality.",
+        "FDA 510(k): substantial equivalence requires clinical validation with reproducible data."
+      ]
+    },
+    {
+      "id": "CS_077",
+      "title": "Chemical: Bhopal Disaster \u2014 MIC leak from Union Carbide plant",
+      "source": "https://www.csb.gov/bhopal-methyl-isocyanate-explosion/",
+      "domain": "D_CHEMICAL",
+      "root_cause_signals": [
+        "RCS-THERMAL-RUNAWAY",
+        "RCS-SAFETY-INTERLOCK-BYPASS",
+        "RCS-MAINTENANCE-DEFICIENCY"
+      ],
+      "description": "Methyl isocyanate (MIC) storage tank runaway reaction at Union Carbide, Bhopal (1984). Water ingress triggered exothermic reaction, temperature exceeded T_critical, relief valve opened, 40+ tons MIC released. 3,800+ deaths. Safety systems (refrigeration, scrubber, flare) were offline or inadequate. Process safety management (PSM) now mandates interlocks, LOPA, HAZOP.",
+      "assumptions_violated": [
+        "Storage tank refrigeration is operational.",
+        "Scrubber and flare tower can handle relief valve discharge.",
+        "Water ingress into MIC tank is prevented by design.",
+        "Maintenance schedules are followed for safety systems."
+      ],
+      "falsification_tests": [
+        "F_CHEMICAL_002"
+      ],
+      "ontological_issues": [
+        "OI_CHEMICAL_002"
+      ],
+      "lessons": [
+        "Thermal runaway interlock must activate before T_critical (LOPA analysis required).",
+        "Safety Instrumented Systems (SIS): SIL 3 for catastrophic hazards (PFD <10^-3).",
+        "Layer of Protection Analysis (LOPA): independent layers reduce risk.",
+        "HAZOP (Hazard and Operability Study): identifies deviations from design intent.",
+        "Glass-box maintenance: safety system status must be continuously monitored."
+      ],
+      "methodology_components": [
+        "LOPA: vent scrubber, refrigeration, operator response as independent layers.",
+        "Falsification: F_CHEMICAL_002 simulates water ingress with interlock verification.",
+        "Yeshua Axiom 5: No hidden state (safety system status must be logged)."
+      ]
+    },
+    {
+      "id": "CS_078",
+      "title": "Construction: Hyatt Regency Walkway Collapse \u2014 Load path design change",
+      "source": "https://www.nist.gov/el/hyatt-regency-walkway-collapse",
+      "domain": "D_CONSTRUCTION",
+      "root_cause_signals": [
+        "RCS-LOAD-PATH-VIOLATION",
+        "RCS-FIELD-CHANGE-NO-REVIEW"
+      ],
+      "description": "Kansas City Hyatt Regency skybridge collapse (1981). Original design: single rod through 4th and 2nd floor walkways. Field change: stacked rods with box beam connection at 4th floor. Load transfer doubled at 4th floor connection (failed at 60% of design live load). 114 deaths. Structural engineers convicted of gross negligence.",
+      "assumptions_violated": [
+        "Field fabrication change maintains original load path.",
+        "Connection design reviewed by structural engineer.",
+        "Box beam-to-rod connection capacity adequate for doubled load."
+      ],
+      "falsification_tests": [
+        "F_CONSTRUCTION_002"
+      ],
+      "ontological_issues": [
+        "OI_CONSTRUCTION_002"
+      ],
+      "lessons": [
+        "Load path changes require structural engineer approval (ASCE 7, building codes).",
+        "FEM (Finite Element Method) verification: connection capacity must exceed demand.",
+        "Glass-box change control: field modifications logged and reviewed.",
+        "Deterministic load transfer: stacked rods double shear force at upper connection.",
+        "Safety factor: connection capacity \u22651.5\u00d7 applied load (AISC steel design)."
+      ],
+      "methodology_components": [
+        "Structural analysis: stacked rod configuration doubles force on 4th floor connection.",
+        "Falsification: F_CONSTRUCTION_002 verifies load path equivalence before/after change.",
+        "Yeshua Axiom 3: Every mutation is re-verifiable (design changes require approval)."
+      ]
+    },
+    {
+      "id": "CS_079",
+      "title": "Energy: Texas Grid Failure (Winter Storm Uri 2021) \u2014 Winterization gaps",
+      "source": "https://www.ferc.gov/media/february-2021-cold-weather-outages-texas-and-south-central-united-states-ferc-nerc-and",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-ASSUMPTION",
+        "RCS-INSUFFICIENT-MARGIN"
+      ],
+      "description": "Winter Storm Uri (Feb 2021) caused 69 GW generation loss in ERCOT. Natural gas wellheads, pipelines, and power plants froze due to inadequate winterization. Rolling blackouts affected 4.5 million customers, 246 deaths. FERC/NERC report: generation failed to meet N-1 contingency under extreme weather. Winterization now mandatory (Texas PUC rules).",
+      "assumptions_violated": [
+        "Texas winter temperatures stay above freezing for critical infrastructure.",
+        "Natural gas supply chain is robust to cold weather.",
+        "Generation capacity meets peak demand with adequate reserve margin."
+      ],
+      "falsification_tests": [
+        "F_ENERGY_002"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_002"
+      ],
+      "lessons": [
+        "N-1 contingency: system must survive single largest generator/line failure.",
+        "Winterization: heat tracing, insulation, wind breaks for equipment rated to design temperature.",
+        "Reserve margin: planning reserve >15% to handle extreme weather + forced outages.",
+        "Load forecasting: peak demand models must include tail scenarios (e.g., 1-in-50-year cold).",
+        "Glass-box monitoring: real-time generation/load balance with automated load shedding."
+      ],
+      "methodology_components": [
+        "Grid frequency: load shedding triggers at 59.5 Hz (ERCOT) to prevent cascading failure.",
+        "Falsification: F_ENERGY_002 simulates extreme cold with generation availability model.",
+        "Yeshua principle: infrastructure must survive tail scenarios, not just typical conditions."
+      ]
+    },
+    {
+      "id": "CS_080",
+      "title": "Environmental Law: Deepwater Horizon \u2014 Blowout preventer failure",
+      "source": "https://www.csb.gov/macondo-blowout-and-explosion/",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-SAFETY-CRITICAL-FAILURE",
+        "RCS-HIDDEN-DEFECT"
+      ],
+      "description": "Deepwater Horizon blowout (2010): Macondo well blowout preventer (BOP) failed to seal well during gas influx. 11 deaths, 4.9 million barrels oil spilled into Gulf of Mexico. BP pled guilty to Clean Water Act and MBTA violations, paid $20.8B in fines and damages. BOP testing inadequate; decision-making prioritized schedule over safety.",
+      "assumptions_violated": [
+        "Blowout preventer (BOP) will seal well under all conditions.",
+        "Well pressure monitoring detects influx before uncontrolled flow.",
+        "Cementing and mud weight provide primary well control."
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_LAW_002"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_LAW_002"
+      ],
+      "lessons": [
+        "Clean Water Act penalties: $4,300/barrel for gross negligence (33 U.S.C. \u00a7 1321).",
+        "Natural resource damages: trustees (NOAA, DOI) assess injury to ecosystems (OPA \u00a7 1006).",
+        "BOP testing: functional test must simulate well conditions (pressure, temperature).",
+        "Polluter pays principle: BP liable for cleanup + restoration + economic damages (CERCLA \u00a7 107).",
+        "Glass-box audit: well control decisions must be logged with justification."
+      ],
+      "methodology_components": [
+        "Fault tree analysis: BOP failure + cementing defect + influx detection failure = blowout.",
+        "Falsification: F_ENVIRONMENTAL_LAW_002 verifies BOP closure under design pressure.",
+        "Yeshua Axiom 5: No hidden state (well pressure data must be continuously recorded)."
+      ]
+    },
+    {
+      "id": "CS_081",
+      "title": "Child Welfare: Gabriel Fernandez case \u2014 CPS response time violations",
+      "source": "https://www.acf.hhs.gov/sites/default/files/documents/cb/capta_reauth_2016.pdf",
+      "domain": "D_CHILDWELFARE",
+      "root_cause_signals": [
+        "RCS-TIMELINE-VIOLATION",
+        "RCS-INVESTIGATION-FAILURE"
+      ],
+      "description": "Gabriel Fernandez (8 years old) died from abuse after multiple CPS reports. LA County DCFS received 8 reports over 8 months; investigations exceeded mandated response timelines (IMMEDIATE reports took >48 hours). California ASFA compliance: permanency hearings exceeded 12-month deadline. Structural failure: caseload exceeded safe ratios (1:15 recommended, actual >1:25).",
+      "assumptions_violated": [
+        "CPS investigations meet priority-based response timelines (CAPTA standards).",
+        "Caseworker staffing adequate to handle investigation load.",
+        "ASFA permanency hearing deadlines enforced by courts."
+      ],
+      "falsification_tests": [
+        "F_CHILDWELFARE_002"
+      ],
+      "ontological_issues": [
+        "OI_CHILDWELFARE_002"
+      ],
+      "lessons": [
+        "IMMEDIATE priority investigations must respond within 24 hours (state CPS regulations).",
+        "Caseload caps: caseworker-to-case ratio must not exceed 1:15 for safety investigations.",
+        "ASFA timeline: permanency hearing required within 365 days of entry into care.",
+        "Glass-box accountability: investigation timestamps must be logged and auditable."
+      ],
+      "methodology_components": [
+        "Falsification: F_CHILDWELFARE_002 verifies response time compliance by priority level.",
+        "Yeshua Axiom 5: No hidden state (investigation actions must be timestamped)."
+      ]
+    },
+    {
+      "id": "CS_082",
+      "title": "Communications: AT&T 911 outage (2020) \u2014 Call routing QoS failure",
+      "source": "https://www.fcc.gov/document/fcc-proposes-57m-fine-att-nationwide-911-outages",
+      "domain": "D_COMMUNICATIONS",
+      "root_cause_signals": [
+        "RCS-QOS-VIOLATION",
+        "RCS-SINGLE-POINT-FAILURE"
+      ],
+      "description": "AT&T 911 outage (March 2020) affected 15,000+ failed emergency calls across multiple states. Root cause: software update to routing management system introduced latency spike (P99 > 10 seconds) that violated E911 routing SLA. FCC proposed $5.7M fine for violating 911 reliability rules (47 CFR \u00a7 12.4). Network diversity requirements mandate N-1 redundancy for E911 infrastructure.",
+      "assumptions_violated": [
+        "911 call routing meets P99 latency < 200ms SLA under normal load.",
+        "Software updates tested for E911 performance impact before deployment.",
+        "Network redundancy prevents single-point-of-failure in 911 infrastructure."
+      ],
+      "falsification_tests": [
+        "F_COMMUNICATIONS_002"
+      ],
+      "ontological_issues": [
+        "OI_COMMUNICATIONS_002"
+      ],
+      "lessons": [
+        "E911 routing: P99 latency must meet <200ms under 10x load (FCC 911 Reliability Order).",
+        "Network diversity: N-1 redundancy required for critical infrastructure (ATIS standards).",
+        "Glass-box testing: E911 software updates require load testing before deployment.",
+        "Message ordering: 911 calls must preserve FIFO sequencing through routing hops."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMMUNICATIONS_002 tests E911 routing under synthetic load spike.",
+        "Yeshua Axiom 6: No unverifiable dependency (E911 routing must not depend on single system)."
+      ]
+    },
+    {
+      "id": "CS_083",
+      "title": "Creative: Getty Images v. Stability AI \u2014 Copyright infringement via AI training",
+      "source": "https://www.courtlistener.com/docket/66806083/getty-images-us-inc-v-stability-ai-inc/",
+      "domain": "D_CREATIVE",
+      "root_cause_signals": [
+        "RCS-COPYRIGHT-VIOLATION",
+        "RCS-DMCA-NONCOMPLIANCE"
+      ],
+      "description": "Getty Images sued Stability AI (Stable Diffusion) for training on 12M+ copyrighted images without license. Stable Diffusion outputs reproduced Getty watermark, demonstrating perceptual similarity >95% to source images. DMCA \u00a7 512(c) safe harbor requires notice-and-takedown; generative AI training does not qualify. Fair use defense challenged: commercial use, substantial similarity, market harm to Getty licensing.",
+      "assumptions_violated": [
+        "AI training on copyrighted works qualifies as fair use (17 USC \u00a7 107).",
+        "Generative AI outputs are transformative enough to avoid copyright infringement.",
+        "DMCA safe harbor protections apply to AI training datasets."
+      ],
+      "falsification_tests": [
+        "F_CREATIVE_002"
+      ],
+      "ontological_issues": [
+        "OI_CREATIVE_002"
+      ],
+      "lessons": [
+        "DMCA \u00a7 512(c): safe harbor requires responsive notice-and-takedown mechanism.",
+        "Fair use factors: commercial use + substantial similarity = likely infringement.",
+        "Perceptual similarity >95%: outputs identical to copyrighted source violate exclusive rights.",
+        "Reproducibility: fixed seed must not produce copyrighted outputs (determinism test).",
+        "Glass-box attribution: training data provenance must be disclosed."
+      ],
+      "methodology_components": [
+        "Falsification: F_CREATIVE_002 tests perceptual similarity between AI outputs and training set.",
+        "Yeshua Axiom 2: Every derivation is reproducible (seed must not yield copyrighted output)."
+      ]
+    },
+    {
+      "id": "CS_084",
+      "title": "Computability: Halting problem in automated code review \u2014 Unbounded CI pipelines",
+      "source": "internal://ci-timeout-analysis",
+      "domain": "D_COMPUTABILITY",
+      "root_cause_signals": [
+        "RCS-HALTING-VIOLATION",
+        "RCS-UNBOUNDED-EXECUTION"
+      ],
+      "description": "Automated code review CI pipeline using abstract interpretation for bug detection encountered halting problem: symbolic execution on recursive programs without timeout caused CI jobs to run indefinitely. GitHub Actions enforces 6-hour max job runtime, but users expect <10 minute feedback. Decidability tradeoff: sound bug detection requires undecidable analysis (Rice's theorem).",
+      "assumptions_violated": [
+        "Static analysis always terminates within CI timeout window.",
+        "Symbolic execution bounds are sufficient to guarantee halting.",
+        "Bug detection soundness achievable without undecidable analysis."
+      ],
+      "falsification_tests": [
+        "F_COMPUTABILITY_002"
+      ],
+      "ontological_issues": [
+        "OI_COMPUTABILITY_002"
+      ],
+      "lessons": [
+        "Halting problem: undecidable analysis must have timeout (practical decidability via resource bounds).",
+        "Rice's theorem: nontrivial semantic properties are undecidable\u2014approximate with conservative analysis.",
+        "CI timeout: max execution time must be enforced (e.g., 10M steps for TM simulation).",
+        "Glass-box feedback: CI must report partial results when timeout reached."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMPUTABILITY_002 runs symbolic executor on pathological recursion with timeout.",
+        "Busy Beaver lower bound: CI step limit based on \u03a3(n) proven values."
+      ]
+    },
+    {
+      "id": "CS_085",
+      "title": "Combinatorics: Pigeonhole principle violation in hash table design",
+      "source": "internal://hash-collision-analysis",
+      "domain": "D_COMBINATORICS",
+      "root_cause_signals": [
+        "RCS-COLLISION-ASSUMPTION",
+        "RCS-COUNTING-ERROR"
+      ],
+      "description": "Hash table with 256 buckets and 1000 keys violated pigeonhole principle: developers assumed uniform distribution would prevent bucket overflow. By pigeonhole principle, at least \u23081000/256\u2309 = 4 keys per bucket guaranteed. Worst-case: pathological hash function caused 900+ keys to collide in single bucket, degrading O(1) to O(n) lookup. Birthday paradox: 50% collision probability at \u221a(n) insertions.",
+      "assumptions_violated": [
+        "Hash function produces uniform distribution across buckets.",
+        "Collision probability negligible for reasonable load factors.",
+        "Bucket count sufficient to avoid overflow without chaining."
+      ],
+      "falsification_tests": [
+        "F_COMBINATORICS_002"
+      ],
+      "ontological_issues": [
+        "OI_COMBINATORICS_002"
+      ],
+      "lessons": [
+        "Pigeonhole principle: n pigeons in m holes \u2192 at least \u2308n/m\u2309 pigeons in some hole.",
+        "Birthday paradox: collision probability 50% at \u221a(n) insertions for n-bucket table.",
+        "Catalan numbers: balanced BST restructuring uses C_n recursive patterns.",
+        "Glass-box hashing: hash distribution must be measured and verified uniform."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMBINATORICS_002 tests hash uniformity with \u03c7\u00b2 goodness-of-fit test.",
+        "Yeshua Axiom 1: Deterministic counting formulas must match implementation."
+      ]
+    },
+    {
+      "id": "CS_086",
+      "title": "Blue-Collar: Amazon warehouse OSHA violations \u2014 Injury reporting failures",
+      "source": "https://www.osha.gov/news/newsreleases/region1/04192023",
+      "domain": "D_BLUECOLLAR",
+      "root_cause_signals": [
+        "RCS-OSHA-NONCOMPLIANCE",
+        "RCS-INCIDENT-UNDERREPORTING"
+      ],
+      "description": "Amazon warehouses cited for OSHA violations: serious injuries (days away from work) not reported within 8-hour deadline (29 CFR \u00a7 1904.39). Defect rate at fulfillment centers exceeded 2% (Six Sigma standard), indicating systematic process control failures. Safety alerts for critical hazards (e.g., forklift near-miss) delivered in >30 seconds, violating SLO for CRITICAL hazard level.",
+      "assumptions_violated": [
+        "OSHA serious incidents reported within 8 hours (29 CFR \u00a7 1904.39).",
+        "Safety alert delivery meets <30 second SLO for CRITICAL hazards.",
+        "Manufacturing defect rate \u22642% per Six Sigma quality control.",
+        "Field service records are tamper-evident and immutable."
+      ],
+      "falsification_tests": [
+        "F_BLUECOLLAR_002"
+      ],
+      "ontological_issues": [
+        "OI_BLUECOLLAR_002"
+      ],
+      "lessons": [
+        "OSHA 1904: serious injuries (hospitalization, amputation, death) reported within 8 hours.",
+        "Safety alert SLO: CRITICAL hazards <30s, HIGH hazards <120s response time.",
+        "Six Sigma: defect rate must be \u22642% for production quality control.",
+        "Glass-box audit: OSHA 300 log must be tamper-evident with cryptographic hashing."
+      ],
+      "methodology_components": [
+        "Falsification: F_BLUECOLLAR_002 tests OSHA incident reporting timeline compliance.",
+        "Yeshua Axiom 5: No hidden state (incident timestamps must be immutably logged)."
+      ]
+    },
+    {
+      "id": "CS_087",
+      "title": "Child Welfare: ICWA compliance failure \u2014 Adoptive Couple v. Baby Girl",
+      "source": "https://www.supremecourt.gov/opinions/12pdf/12-399_1b7d.pdf",
+      "domain": "D_CHILDWELFARE",
+      "root_cause_signals": [
+        "RCS-ICWA-VIOLATION",
+        "RCS-TRIBAL-NOTIFICATION-FAILURE"
+      ],
+      "description": "Adoptive Couple v. Baby Girl (2013): biological father (Cherokee Nation member) contested adoption of daughter without ICWA compliance. Tribe was not notified of proceedings, violating ICWA \u00a7 1912(a) tribal notification requirement. Active efforts (ICWA \u00a7 1912(d)) to prevent family breakup not documented. Supreme Court held ICWA did not apply when father never had custody, but case highlighted ICWA procedural failures.",
+      "assumptions_violated": [
+        "ICWA tribal notification automatic when child has tribal heritage.",
+        "Active efforts to prevent family separation documented for all tribal cases.",
+        "ICWA protections apply uniformly regardless of custody status."
+      ],
+      "falsification_tests": [
+        "F_CHILDWELFARE_003"
+      ],
+      "ontological_issues": [
+        "OI_CHILDWELFARE_003"
+      ],
+      "lessons": [
+        "ICWA \u00a7 1912(a): tribes must be notified when tribal child enters child welfare system.",
+        "ICWA \u00a7 1912(d): active efforts to prevent family breakup must be documented.",
+        "Qualified expert witness: tribal representative required for termination proceedings (ICWA \u00a7 1912(f)).",
+        "Glass-box compliance: ICWA compliance checklist must be part of case file."
+      ],
+      "methodology_components": [
+        "Falsification: F_CHILDWELFARE_003 tests ICWA tribal notification and active efforts documentation.",
+        "Yeshua Axiom 5: No hidden state (tribal notification must be logged with confirmation)."
+      ]
+    },
+    {
+      "id": "CS_088",
+      "title": "Communications: Verizon P2P throttling (2007) \u2014 Network neutrality violation",
+      "source": "https://www.fcc.gov/document/fcc-settles-investigation-verizon-internets-compliance-open-internet-order",
+      "domain": "D_COMMUNICATIONS",
+      "root_cause_signals": [
+        "RCS-QOS-DISCRIMINATION",
+        "RCS-TRAFFIC-SHAPING"
+      ],
+      "description": "Verizon throttled P2P traffic (BitTorrent, Gnutella) without disclosure, violating FCC Open Internet Order (network neutrality). QoS GUARANTEED class requires equal treatment; P2P traffic experienced P99 latency >5 seconds vs <200ms for HTTP. Message ordering violated: TCP packet reordering caused by traffic shaping broke FIFO guarantee. FCC settlement required disclosure and non-discrimination.",
+      "assumptions_violated": [
+        "All internet traffic treated equally (network neutrality).",
+        "QoS latency SLA applies uniformly across traffic types.",
+        "Message ordering (TCP) preserved by ISP infrastructure."
+      ],
+      "falsification_tests": [
+        "F_COMMUNICATIONS_003"
+      ],
+      "ontological_issues": [
+        "OI_COMMUNICATIONS_003"
+      ],
+      "lessons": [
+        "FCC Open Internet Order: no blocking, throttling, or paid prioritization of lawful traffic.",
+        "QoS non-discrimination: P99 latency must meet SLA for all traffic classes.",
+        "Message ordering: TCP FIFO sequencing must be preserved through ISP routing.",
+        "Glass-box disclosure: traffic management practices must be publicly disclosed."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMMUNICATIONS_003 measures P2P vs HTTP latency parity.",
+        "Yeshua Axiom 4: No authority without proof (traffic discrimination requires user notification)."
+      ]
+    },
+    {
+      "id": "CS_089",
+      "title": "Creative: AI-generated music copyright \u2014 Udio lawsuit",
+      "source": "https://www.theverge.com/2024/6/24/24185033/riaa-sues-ai-music-generators-suno-udio-copyright",
+      "domain": "D_CREATIVE",
+      "root_cause_signals": [
+        "RCS-DERIVATIVE-WORK-VIOLATION",
+        "RCS-FAIR-USE-FAILURE"
+      ],
+      "description": "RIAA sued Udio (AI music generator) for copyright infringement: training on copyrighted recordings without license, outputs perceptually similar to training data. Reproducibility test: fixed seed produced outputs matching copyrighted songs (>95% perceptual similarity via audio fingerprinting). Fair use defense challenged: commercial use, substantial copying, market harm to music licensing. Creative Commons BY-SA license violations: derivative works not released under same license.",
+      "assumptions_violated": [
+        "AI training on copyrighted music qualifies as fair use.",
+        "Generative AI outputs are sufficiently transformative to avoid infringement.",
+        "Fixed seed generation does not reproduce copyrighted material.",
+        "CC BY-SA ShareAlike license not violated by AI training."
+      ],
+      "falsification_tests": [
+        "F_CREATIVE_003"
+      ],
+      "ontological_issues": [
+        "OI_CREATIVE_003"
+      ],
+      "lessons": [
+        "Reproducibility: fixed seed must not generate copyrighted outputs (determinism test).",
+        "Perceptual similarity >95%: audio fingerprinting detects copyright violation.",
+        "CC BY-SA ShareAlike: derivative works must use same license (viral license).",
+        "Fair use: commercial use + substantial similarity + market harm = likely infringement.",
+        "Glass-box attribution: training data sources must be disclosed and licensed."
+      ],
+      "methodology_components": [
+        "Falsification: F_CREATIVE_003 tests audio fingerprint similarity between AI outputs and training corpus.",
+        "Yeshua Axiom 2: Every derivation is reproducible (seed determinism must not yield copyrighted work)."
+      ]
+    },
+    {
+      "id": "CS_090",
+      "title": "Computability: Rice's theorem in malware detection \u2014 Semantic analysis limits",
+      "source": "internal://antivirus-undecidability-analysis",
+      "domain": "D_COMPUTABILITY",
+      "root_cause_signals": [
+        "RCS-RICE-THEOREM-VIOLATION",
+        "RCS-SEMANTIC-UNDECIDABILITY"
+      ],
+      "description": "Antivirus malware detection using semantic analysis (behavioral detection) violates Rice's theorem: determining if a program exhibits malicious behavior is undecidable (nontrivial semantic property). Signature-based detection (syntactic) is decidable but incomplete. Heuristic-based detection (semantic approximation) has false positives/negatives. Practical solution: timeout-bounded symbolic execution with conservative overapproximation.",
+      "assumptions_violated": [
+        "Behavioral malware detection can perfectly identify all malicious programs.",
+        "Semantic analysis of program behavior is decidable with enough resources.",
+        "Heuristic detection achieves zero false positives and zero false negatives."
+      ],
+      "falsification_tests": [
+        "F_COMPUTABILITY_003"
+      ],
+      "ontological_issues": [
+        "OI_COMPUTABILITY_003"
+      ],
+      "lessons": [
+        "Rice's theorem: all nontrivial semantic properties of programs are undecidable.",
+        "Malware detection tradeoff: decidable (signature-based) vs sound (semantic) analysis.",
+        "Timeout-bounded analysis: practical decidability via resource limits (TM step limit).",
+        "Conservative overapproximation: flag suspicious behavior, accept false positives.",
+        "Glass-box heuristics: detection rules must be transparent and auditable."
+      ],
+      "methodology_components": [
+        "Falsification: F_COMPUTABILITY_003 tests malware detector on undecidable semantic properties.",
+        "Rice's theorem proof: construct program P that behaves maliciously iff halting problem instance halts."
+      ]
+    },
+    {
+      "id": "CS_091",
+      "title": "Crusader: First Crusade siege of Jerusalem (1099) \u2014 Noncombatant protection failure",
+      "source": "historical://first-crusade-jerusalem-siege",
+      "domain": "D_CRUSADER",
+      "root_cause_signals": [
+        "RCS-JUST-WAR-VIOLATION",
+        "RCS-NONCOMBATANT-MASSACRE"
+      ],
+      "description": "Siege of Jerusalem (July 15, 1099): Crusaders breached city walls after 40-day siege. Medieval siege law required surrender offer after 40 days and noncombatant exit. Instead, mass killing of civilians (Muslim and Jewish populations) violated chivalric code's noncombatant immunity principle. Proportional force doctrine (Aquinas Summa Theologica II-II Q.40) violated: force exceeded military necessity.",
+      "assumptions_violated": [
+        "Noncombatants granted immunity from deliberate harm (chivalric code).",
+        "Siege law: surrender offered after 40 days, noncombatants allowed exit.",
+        "Proportional force: destruction limited to military objectives.",
+        "Quarter granted to surrendering combatants."
+      ],
+      "falsification_tests": [
+        "F_CRUSADER_001"
+      ],
+      "ontological_issues": [
+        "OI_CRUSADER_001"
+      ],
+      "lessons": [
+        "Aquinas Just War Theory: proportionality and necessity criteria violated.",
+        "Noncombatant immunity: clergy, women, children, merchants must be protected.",
+        "Siege law: 40-day limit requires honorable surrender offer.",
+        "Glass-box warfare: war conduct must be documented and auditable."
+      ],
+      "methodology_components": [
+        "Falsification: F_CRUSADER_001 tests siege duration and noncombatant protection compliance.",
+        "Yeshua Axiom 5: No hidden state (war crimes must be publicly recorded)."
+      ]
+    },
+    {
+      "id": "CS_092",
+      "title": "Transit: WMATA 2009 Red Line collision \u2014 Automatic train control failure",
+      "source": "https://www.ntsb.gov/investigations/AccidentReports/Reports/RAR1002.pdf",
+      "domain": "D_TRANSIT",
+      "root_cause_signals": [
+        "RCS-ATC-FAILURE",
+        "RCS-MAINTENANCE-NEGLECT"
+      ],
+      "description": "Washington Metro Red Line collision (June 22, 2009): train struck stopped train, killing 9. Track circuit module failed to detect stopped train (headway reliability failure). FTA on-time performance <80% at time of crash. Vehicles exceeded FTA useful life (30+ years vs 12-year standard). No ADA-compliant safety announcements during emergency. FTA incident reporting delayed >8 hours (49 CFR 659).",
+      "assumptions_violated": [
+        "Automatic train control detects stopped trains reliably.",
+        "FTA on-time performance \u226580% indicates system health.",
+        "Vehicles within FTA useful life maintain safety standards.",
+        "FTA incident reporting within required timeframe."
+      ],
+      "falsification_tests": [
+        "F_TRANSIT_001"
+      ],
+      "ontological_issues": [
+        "OI_TRANSIT_001"
+      ],
+      "lessons": [
+        "FTA on-time performance: <80% indicates reliability degradation.",
+        "FTA useful life: buses 12 years, rail cars 25 years (WMATA vehicles exceeded limits).",
+        "ADA 49 CFR Part 38: emergency announcements must be audio+visual.",
+        "FTA 49 CFR 659: major incidents (fatalities, injuries, $25k damage) reported immediately."
+      ],
+      "methodology_components": [
+        "Falsification: F_TRANSIT_001 tests ATC circuit failure modes and redundancy.",
+        "Yeshua Axiom 4: No authority without proof (maintenance records must be verifiable)."
+      ]
+    },
+    {
+      "id": "CS_093",
+      "title": "Space: Mars Climate Orbiter (1999) \u2014 Unit conversion error",
+      "source": "https://sma.nasa.gov/docs/default-source/safety-messages/safetymessage-1999-08-01-marsclimateorbiter.pdf",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-UNIT-MISMATCH",
+        "RCS-VERIFICATION-FAILURE"
+      ],
+      "description": "NASA Mars Climate Orbiter lost September 23, 1999: navigation software produced thrust data in pound-seconds (imperial), but spacecraft expected newton-seconds (metric). Spacecraft entered Martian atmosphere too low and disintegrated. NASA-STD-8719.13B violation: no unit verification in critical path. Defense-in-depth failure: static analysis did not catch unit mismatch, no runtime checks for thrust magnitude plausibility.",
+      "assumptions_violated": [
+        "All spacecraft subsystems use consistent unit systems (metric).",
+        "Static analysis detects unit mismatches in interface contracts.",
+        "Runtime checks validate thrust magnitude against physics limits.",
+        "Integration testing exercises full mission profile."
+      ],
+      "falsification_tests": [
+        "F_SPACE_001"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_001"
+      ],
+      "lessons": [
+        "NASA-STD-8719.13B: defense-in-depth requires static + runtime checks.",
+        "Unit safety: type system must enforce dimensional analysis (F = ma, not F + L).",
+        "Plausibility checks: thrust magnitude must satisfy \u0394v budget constraints.",
+        "Glass-box verification: all unit conversions must be explicit and logged."
+      ],
+      "methodology_components": [
+        "Falsification: F_SPACE_001 tests unit consistency across module interfaces.",
+        "Yeshua Axiom 1: Every truth is derivable (unit conversions must be provably correct)."
+      ]
+    },
+    {
+      "id": "CS_094",
+      "title": "WebSec: Equifax breach (2017) \u2014 Unpatched Apache Struts CVE-2017-5638",
+      "source": "https://www.gao.gov/products/gao-18-559",
+      "domain": "D_WEBSEC",
+      "root_cause_signals": [
+        "RCS-UNPATCHED-VULNERABILITY",
+        "RCS-CREDENTIAL-EXPOSURE"
+      ],
+      "description": "Equifax data breach (March-July 2017): attackers exploited Apache Struts CVE-2017-5638 (remote code execution via Content-Type header deserialization). Patch available March 7, breach discovered July 29 (143 days unpatched). HTTPS enforced but HSTS not enabled (downgrade attack risk). Database credentials stored plaintext (PCI DSS violation). No MFA on admin panels. Session timeout >60 minutes (NIST 800-63B violation).",
+      "assumptions_violated": [
+        "Critical CVE patches applied within 30 days of disclosure.",
+        "HTTPS sites have HSTS enabled to prevent downgrade attacks.",
+        "PII data encrypted at rest (PCI DSS Requirement 3).",
+        "Admin authentication uses MFA (NIST 800-63B).",
+        "Session timeout \u226460 minutes for sensitive operations."
+      ],
+      "falsification_tests": [
+        "F_WEBSEC_001"
+      ],
+      "ontological_issues": [
+        "OI_WEBSEC_001"
+      ],
+      "lessons": [
+        "OWASP A06:2021 Vulnerable Components: patch critical CVEs within 30 days.",
+        "OWASP A02:2021 Cryptographic Failures: encrypt PII at rest and in transit.",
+        "NIST 800-63B: MFA required for admin access to sensitive systems.",
+        "PCI DSS Requirement 3: cardholder data must be encrypted (Equifax violated).",
+        "Glass-box patching: vulnerability scan results must trigger automatic alerts."
+      ],
+      "methodology_components": [
+        "Falsification: F_WEBSEC_001 tests patch application timeline and encryption compliance.",
+        "Yeshua Axiom 5: No hidden state (credentials must never be stored plaintext)."
+      ]
+    },
+    {
+      "id": "CS_095",
+      "title": "Transit: San Francisco BART delay (2018) \u2014 Computer failure cascade",
+      "source": "https://www.bart.gov/news/articles/2018/news20180418",
+      "domain": "D_TRANSIT",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-FAILURE",
+        "RCS-HEADWAY-VIOLATION"
+      ],
+      "description": "BART system-wide delays April 18, 2018: computer server controlling train dispatch failed. Single point of failure (no redundancy). Headway deviations exceeded 20% of scheduled frequency on all lines. Real-time passenger information systems failed (ADA violation: no alternative audio announcements). On-time performance dropped to 45% (FTA threshold 80%). Service restoration took 4+ hours.",
+      "assumptions_violated": [
+        "Dispatch system has redundant failover (no single point of failure).",
+        "Headway deviation \u226420% of scheduled frequency (FTA reliability standard).",
+        "Real-time information systems have backup channels (ADA compliance).",
+        "On-time performance maintained \u226580% during incidents."
+      ],
+      "falsification_tests": [
+        "F_TRANSIT_002"
+      ],
+      "ontological_issues": [
+        "OI_TRANSIT_002"
+      ],
+      "lessons": [
+        "Byzantine fault tolerance: N+1 redundancy for critical systems.",
+        "FTA headway reliability: deviation must not exceed 20% of scheduled frequency.",
+        "ADA 49 CFR Part 37: backup communication methods required for real-time info.",
+        "Glass-box failover: redundancy architecture must be documented and tested."
+      ],
+      "methodology_components": [
+        "Falsification: F_TRANSIT_002 tests dispatch system failover and headway recovery.",
+        "Yeshua Axiom 4: No authority without proof (failover must be provably reliable)."
+      ]
+    },
+    {
+      "id": "CS_096",
+      "title": "Space: Hubble Space Telescope spherical aberration (1990) \u2014 Measurement error",
+      "source": "https://www.nasa.gov/content/hubbles-mirror-flaw",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-MEASUREMENT-ERROR",
+        "RCS-VERIFICATION-BYPASS"
+      ],
+      "description": "Hubble primary mirror ground to wrong shape (spherical aberration 2.2 micrometers): null corrector test instrument miscalibrated. Ground mirror matched test instrument (both wrong). NASA-STD-8719.13B defense-in-depth violated: independent verification (interferometry) not performed. ECSS-Q-ST-80C: critical components require independent validation methods. Cost: $50M+ for corrective optics (COSTAR), 3-year repair delay.",
+      "assumptions_violated": [
+        "Primary test instrument provides ground truth for mirror figure.",
+        "Single verification method sufficient for flight-critical components.",
+        "Null corrector calibration error would be detected during grinding.",
+        "Independent interferometry test unnecessary if null corrector passes."
+      ],
+      "falsification_tests": [
+        "F_SPACE_002"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_002"
+      ],
+      "lessons": [
+        "NASA-STD-8719.13B: defense-in-depth requires independent verification methods.",
+        "ECSS-Q-ST-80C: critical measurements must use \u22652 independent techniques.",
+        "Null corrector calibration: reference mirror must be independently verified.",
+        "Glass-box verification: measurement chain must be end-to-end traceable."
+      ],
+      "methodology_components": [
+        "Falsification: F_SPACE_002 tests measurement redundancy and cross-validation.",
+        "Yeshua Axiom 1: Every truth is derivable (measurements must be independently confirmed)."
+      ]
+    },
+    {
+      "id": "CS_097",
+      "title": "Crusader: Ransom of Richard I (1192-1194) \u2014 Excessive ransom demand",
+      "source": "historical://richard-lionheart-ransom",
+      "domain": "D_CRUSADER",
+      "root_cause_signals": [
+        "RCS-RANSOM-EXTORTION",
+        "RCS-CHIVALRIC-CODE-VIOLATION"
+      ],
+      "description": "King Richard I (Lionheart) captured by Duke Leopold of Austria (December 1192). Ransom demand: 150,000 marks (2-3x England's annual revenue), vastly exceeding chivalric custom of ~1 year's income for knight captive. Ransom paid February 1194 (impoverished England for years). Violated medieval ransom limits: excessive demands considered extortion, not honorable conduct. Pope Celestine III condemned ransom as sacrilege (Richard was crusader under papal protection).",
+      "assumptions_violated": [
+        "Ransom capped at ~1 year captive's income (chivalric custom).",
+        "Crusaders under papal protection exempt from capture and ransom.",
+        "Ransom negotiations honor proportionality (not extortion).",
+        "Fellow Christian monarchs observe chivalric code during crusades."
+      ],
+      "falsification_tests": [
+        "F_CRUSADER_002"
+      ],
+      "ontological_issues": [
+        "OI_CRUSADER_002"
+      ],
+      "lessons": [
+        "Chivalric code: ransom \u22641 year income for knight, higher for nobility (but not 3x GDP).",
+        "Just war theory: proportionality applies to ransom demands (not extortion).",
+        "Papal protection: crusaders theoretically immune from Christian capture.",
+        "Glass-box ransom: demand must be publicly justified and proportional."
+      ],
+      "methodology_components": [
+        "Falsification: F_CRUSADER_002 tests ransom proportionality against income limits.",
+        "Yeshua Axiom 4: No authority without proof (ransom must be justified by custom)."
+      ]
+    },
+    {
+      "id": "CS_098",
+      "title": "WebSec: Heartbleed OpenSSL CVE-2014-0160 \u2014 Buffer over-read",
+      "source": "https://nvd.nist.gov/vuln/detail/CVE-2014-0160",
+      "domain": "D_WEBSEC",
+      "root_cause_signals": [
+        "RCS-BUFFER-OVERFLOW",
+        "RCS-INPUT-VALIDATION-MISSING"
+      ],
+      "description": "Heartbleed (April 2014): OpenSSL TLS heartbeat extension lacked input validation on payload length field. Attacker sends heartbeat with length=64KB but payload=1 byte; server responds with 64KB from memory (including private keys, session cookies, passwords). OWASP A03:2021 Injection violation: attacker-controlled length field used without validation. Affected ~17% of internet servers. No static analysis detected missing bounds check.",
+      "assumptions_violated": [
+        "TLS library implementations validate all protocol field lengths.",
+        "Memory access bounded by attacker-supplied length fields is safe.",
+        "Static analysis detects buffer over-read vulnerabilities.",
+        "HTTPS provides confidentiality even if TLS implementation flawed."
+      ],
+      "falsification_tests": [
+        "F_WEBSEC_002"
+      ],
+      "ontological_issues": [
+        "OI_WEBSEC_002"
+      ],
+      "lessons": [
+        "OWASP A03:2021 Injection: all input fields (including protocol headers) must be validated.",
+        "Buffer bounds: attacker-controlled length must be checked against buffer size.",
+        "Defense-in-depth: ASLR, stack canaries mitigate but don't prevent information disclosure.",
+        "Glass-box protocols: TLS implementation must be auditable and bounds-checked."
+      ],
+      "methodology_components": [
+        "Falsification: F_WEBSEC_002 tests protocol field validation and buffer bounds.",
+        "Yeshua Axiom 5: No hidden state (memory contents must not leak via protocol flaws)."
+      ]
+    },
+    {
+      "id": "CS_099",
+      "title": "Space: Ariane 5 Flight 501 (1996) \u2014 Integer overflow",
+      "source": "https://www-users.cse.umn.edu/~arnold/disasters/ariane.html",
+      "domain": "D_SPACE",
+      "root_cause_signals": [
+        "RCS-INTEGER-OVERFLOW",
+        "RCS-REUSE-ASSUMPTION"
+      ],
+      "description": "Ariane 5 first flight (June 4, 1996) exploded 37 seconds after launch: inertial reference system software (reused from Ariane 4) converted 64-bit floating-point horizontal velocity to 16-bit signed integer. Ariane 5 higher acceleration caused overflow (velocity >32,767). No runtime overflow check. NASA-STD-8719.13B violation: reused code not re-verified for new flight envelope. Exception handler shut down both redundant systems (common-mode failure).",
+      "assumptions_violated": [
+        "Ariane 4 software safe for Ariane 5 without re-verification.",
+        "16-bit integer sufficient for horizontal velocity across all flight profiles.",
+        "Exception handler isolates faults (instead: shut down both redundant systems).",
+        "Static analysis would catch integer overflow in reused code."
+      ],
+      "falsification_tests": [
+        "F_SPACE_003"
+      ],
+      "ontological_issues": [
+        "OI_SPACE_003"
+      ],
+      "lessons": [
+        "NASA-STD-8719.13B: code reuse requires re-verification for new mission constraints.",
+        "Integer overflow: runtime checks required when casting 64-bit to 16-bit.",
+        "Common-mode failure: redundant systems must have independent failure modes.",
+        "Glass-box reuse: code provenance and verification status must be tracked."
+      ],
+      "methodology_components": [
+        "Falsification: F_SPACE_003 tests integer overflow and redundancy independence.",
+        "Yeshua Axiom 1: Every truth is derivable (safety claims must be re-proven for new context)."
+      ]
+    },
+    {
+      "id": "CS_100",
+      "title": "Transit: NYC Subway L train shutdown cancellation (2019) \u2014 Engineering re-assessment",
+      "source": "https://www.nytimes.com/2019/01/03/nyregion/l-train-shutdown-tunnel.html",
+      "domain": "D_TRANSIT",
+      "root_cause_signals": [
+        "RCS-OVER-ENGINEERING",
+        "RCS-MAINTENANCE-SCOPE-CHANGE"
+      ],
+      "description": "NYC L train planned 15-month shutdown (2019-2020) to repair Superstorm Sandy damage. Independent engineers proposed alternative: track-side cable racking instead of full tunnel reconstruction. New plan: nights/weekends only, no full shutdown. Original plan violated FTA on-time performance (\u226580%): 15-month shutdown would have caused 0% on-time for L train. Revised plan maintained ADA accessibility (full shutdown would have violated accessible alternative service requirement).",
+      "assumptions_violated": [
+        "Full tunnel reconstruction necessary for safety certification.",
+        "Alternative repair methods not viable for hurricane-damaged infrastructure.",
+        "15-month shutdown acceptable despite FTA on-time performance impact.",
+        "Temporary bus service adequate replacement for ADA accessibility."
+      ],
+      "falsification_tests": [
+        "F_TRANSIT_003"
+      ],
+      "ontological_issues": [
+        "OI_TRANSIT_003"
+      ],
+      "lessons": [
+        "FTA on-time performance: extended shutdown violates \u226580% threshold (0% during closure).",
+        "ADA 49 CFR Part 37: replacement service must be equivalent accessibility.",
+        "Engineering re-assessment: independent review can identify lower-impact solutions.",
+        "Glass-box planning: maintenance alternatives must be transparently evaluated."
+      ],
+      "methodology_components": [
+        "Falsification: F_TRANSIT_003 tests service continuity and ADA compliance during repairs.",
+        "Yeshua Axiom 7: No economic gatekeeping (public transit access must not be eliminated for convenience)."
+      ]
+    },
+    {
+      "id": "CS_101",
+      "title": "Twitter/X DSA Compliance Failure 2023",
+      "source": "https://digital-strategy.ec.europa.eu/en/policies/enforcement-dsa",
+      "domain": "D_DIGITAL_GOVERNANCE",
+      "root_cause_signals": [
+        "RCS-VIOLATION",
+        "RCS-GOVERNANCE"
+      ],
+      "description": "Twitter/X failed to comply with EU Digital Services Act requirements including transparency reporting and statement of reasons for content moderation. The platform removed over 1,000 content moderation staff and stopped issuing required statements.",
+      "assumptions_violated": [
+        "VLOPs maintain adequate content moderation capacity",
+        "Content restrictions include required statement of reasons"
+      ],
+      "falsification_tests": [
+        "F_DIGITAL_GOV_001"
+      ],
+      "ontological_issues": [
+        "OI_DIGITAL_GOV_001"
+      ],
+      "lessons": [
+        "DSA Article 17 statements of reasons must be automated and non-bypassable",
+        "VLOP designation requires proportional ongoing compliance investment"
+      ],
+      "methodology_components": [
+        "check_statement_of_reasons - verify all content restrictions have required documentation"
+      ]
+    },
+    {
+      "id": "CS_102",
+      "title": "US Intergenerational Mobility Decline 1940-1980 cohorts",
+      "source": "Chetty et al. (2017) The Fading American Dream",
+      "domain": "D_ECONOMIC_MOBILITY",
+      "root_cause_signals": [
+        "RCS-INEQUALITY",
+        "RCS-POLICY"
+      ],
+      "description": "Absolute upward mobility (fraction of children earning more than parents) fell from 90% for 1940 cohort to 50% for 1980 cohort. Regional variation shows high-mobility areas have less segregation, better schools, and more social capital.",
+      "assumptions_violated": [
+        "Each generation will do better than the previous",
+        "Geographic location doesn't determine economic opportunity"
+      ],
+      "falsification_tests": [
+        "F_ECON_MOB_001"
+      ],
+      "ontological_issues": [
+        "OI_ECON_MOB_001"
+      ],
+      "lessons": [
+        "Mobility matrices must account for regional variation",
+        "Place-based interventions require accurate opportunity atlas data"
+      ],
+      "methodology_components": [
+        "check_intergenerational_mobility_floor - verify minimum upward mobility from bottom quintile"
+      ]
+    },
+    {
+      "id": "CS_103",
+      "title": "Nursing Home Staffing Crisis COVID-19",
+      "source": "CMS data 2020-2021, GAO-21-85",
+      "domain": "D_ELDER_CARE",
+      "root_cause_signals": [
+        "RCS-STAFFING",
+        "RCS-EMERGENCY"
+      ],
+      "description": "Nursing homes with below-average staffing had 2x COVID-19 mortality. CMS staffing minimums (0.3 HPRD) were revealed as insufficient. Many facilities failed to meet even these minimums during the pandemic.",
+      "assumptions_violated": [
+        "CMS staffing minimums ensure adequate care",
+        "Facilities maintain compliance during emergencies"
+      ],
+      "falsification_tests": [
+        "F_ELDER_001"
+      ],
+      "ontological_issues": [
+        "OI_ELDER_001"
+      ],
+      "lessons": [
+        "Staffing check must include surge capacity assessment",
+        "Historical compliance doesn't predict emergency performance"
+      ],
+      "methodology_components": [
+        "check_staffing_compliance - verify RN, LPN, CNA hours per resident day"
+      ]
+    },
+    {
+      "id": "CS_104",
+      "title": "Gettier 'Is Justified True Belief Knowledge?' 1963",
+      "source": "Gettier, E. (1963) Analysis 23: 121-123",
+      "domain": "D_EPISTEMIC_LOGIC",
+      "root_cause_signals": [
+        "RCS-DEFINITION",
+        "RCS-LUCK"
+      ],
+      "description": "Gettier presented counterexamples where a belief is justified and true but not knowledge because the truth is accidental relative to the justification. Smith believes Jones owns a Ford (justified but false); Smith disjuncts with 'Brown is in Barcelona' (true by accident).",
+      "assumptions_violated": [
+        "Justified true belief is sufficient for knowledge",
+        "Truth and justification together guarantee non-accidentality"
+      ],
+      "falsification_tests": [
+        "F_EPISTEMIC_001"
+      ],
+      "ontological_issues": [
+        "OI_EPISTEMIC_001"
+      ],
+      "lessons": [
+        "Knowledge requires proper connection between justification and truth",
+        "Reliability must be part of knowledge evaluation"
+      ],
+      "methodology_components": [
+        "check_gettier_detection - identify JTB cases that are true by luck"
+      ]
+    },
+    {
+      "id": "CS_105",
+      "title": "Theranos Blood Testing Fraud",
+      "source": "SEC v. Holmes, 2018; Carreyrou (2018) Bad Blood",
+      "domain": "D_ETHICS",
+      "root_cause_signals": [
+        "RCS-FRAUD",
+        "RCS-DECEPTION"
+      ],
+      "description": "Theranos claimed revolutionary blood testing technology while using standard equipment for most tests. Holmes and Balwani used Kantian persons (investors, patients) merely as means to their ends, violating humanity-as-end principle.",
+      "assumptions_violated": [
+        "Medical device companies report accurate efficacy data",
+        "CEOs have duty of candor to investors"
+      ],
+      "falsification_tests": [
+        "F_ETHICS_001"
+      ],
+      "ontological_issues": [
+        "OI_ETHICS_001"
+      ],
+      "lessons": [
+        "Deontological constraints are non-overrideable by utility",
+        "Using sick persons as means for profit violates categorical imperative"
+      ],
+      "methodology_components": [
+        "check_humanity_as_end - verify persons not used merely as means"
+      ]
+    },
+    {
+      "id": "CS_106",
+      "title": "Mandelbrot Set Computation Errors",
+      "source": "Early fractal software floating-point errors (1990s)",
+      "domain": "D_FRACTALS",
+      "root_cause_signals": [
+        "RCS-PRECISION",
+        "RCS-FLOAT"
+      ],
+      "description": "Early fractal exploration software used floating-point arithmetic causing incorrect set membership classification near boundaries. Points requiring >1000 iterations accumulated enough error to escape prematurely.",
+      "assumptions_violated": [
+        "Floating-point arithmetic is sufficient for mathematical visualization",
+        "Escape radius of 2.0 works for all iterations"
+      ],
+      "falsification_tests": [
+        "F_FRACTAL_001"
+      ],
+      "ontological_issues": [
+        "OI_FRACTAL_001"
+      ],
+      "lessons": [
+        "Fractal computation requires arbitrary-precision arithmetic",
+        "Escape radius must account for iteration count"
+      ],
+      "methodology_components": [
+        "check_escape_radius_sufficient - verify radius > 2 for correctness"
+      ]
+    },
+    {
+      "id": "CS_107",
+      "title": "World of Warcraft Flow State Research",
+      "source": "Yee (2006) Motivations of Play; Csikszentmihalyi (1990)",
+      "domain": "D_FUN",
+      "root_cause_signals": [
+        "RCS-ENGAGEMENT",
+        "RCS-FLOW"
+      ],
+      "description": "WoW raid encounters designed with progressive difficulty scaling to maintain flow state (challenge-skill balance). Boss mechanics escalate through phases, keeping players in flow channel rather than anxiety or boredom.",
+      "assumptions_violated": [
+        "Difficulty should be constant throughout encounter",
+        "Players prefer easy content over challenging content"
+      ],
+      "falsification_tests": [
+        "F_FUN_001"
+      ],
+      "ontological_issues": [
+        "OI_FUN_001"
+      ],
+      "lessons": [
+        "Flow requires dynamic challenge-skill balance",
+        "Progressive difficulty maintains engagement better than static"
+      ],
+      "methodology_components": [
+        "check_flow_conditions - verify clear goals, feedback, challenge balance"
+      ]
+    },
+    {
+      "id": "CS_108",
+      "title": "Skyrim Mod Compatibility Crisis 2012-2015",
+      "source": "Nexus Mods data; Steam Workshop launch",
+      "domain": "D_GAMEMODS",
+      "root_cause_signals": [
+        "RCS-CONFLICT",
+        "RCS-DEPENDENCY"
+      ],
+      "description": "Skyrim mod ecosystem experienced widespread compatibility issues due to lack of formal dependency resolution and load order management. Unresolved conflicts between popular mods (USKP, ENB, script extenders) caused CTDs.",
+      "assumptions_violated": [
+        "Mods can be installed independently without conflicts",
+        "Community will resolve compatibility issues organically"
+      ],
+      "falsification_tests": [
+        "F_GAMEMOD_001"
+      ],
+      "ontological_issues": [
+        "OI_GAMEMOD_001"
+      ],
+      "lessons": [
+        "Mod dependency resolution must be automated",
+        "Load order must validate critical conflict resolution"
+      ],
+      "methodology_components": [
+        "check_load_order_validity - verify critical conflicts resolved"
+      ]
+    },
+    {
+      "id": "CS_109",
+      "title": "EA Star Wars Battlefront II Loot Box Controversy",
+      "source": "Belgium Gaming Commission 2018; FTC investigation",
+      "domain": "D_GAMING",
+      "root_cause_signals": [
+        "RCS-DISCLOSURE",
+        "RCS-GAMBLING"
+      ],
+      "description": "Battlefront II launched with pay-to-win loot boxes containing gameplay-affecting items. Belgium determined loot boxes constituted gambling. EA failed to disclose drop rates, violating emerging transparency regulations.",
+      "assumptions_violated": [
+        "Loot box mechanics don't require odds disclosure",
+        "Players accept randomized rewards without transparency"
+      ],
+      "falsification_tests": [
+        "F_GAMING_001"
+      ],
+      "ontological_issues": [
+        "OI_GAMING_001"
+      ],
+      "lessons": [
+        "Loot box odds must be disclosed to players",
+        "Real-money gambling mechanics require regulatory compliance"
+      ],
+      "methodology_components": [
+        "check_loot_box_odds_disclosure - verify drop rates published"
+      ]
+    },
+    {
+      "id": "CS_110",
+      "title": "Census Bureau Differential Privacy 2020",
+      "source": "U.S. Census Bureau (2021) 2020 Census Disclosure Avoidance",
+      "domain": "D_GEOGRAPHIC_INFORMATION",
+      "root_cause_signals": [
+        "RCS-PRIVACY",
+        "RCS-ACCURACY"
+      ],
+      "description": "2020 US Census implemented differential privacy, injecting noise to protect individual privacy. Redistricting data showed non-existent people in some blocks and removed real people from others, affecting political representation.",
+      "assumptions_violated": [
+        "Census data represents actual population counts",
+        "Privacy protection doesn't affect aggregate statistics"
+      ],
+      "falsification_tests": [
+        "F_GEO_001"
+      ],
+      "ontological_issues": [
+        "OI_GEO_001"
+      ],
+      "lessons": [
+        "Statistical privacy mechanisms alter geographic data",
+        "GIS invariants must account for intentional noise injection"
+      ],
+      "methodology_components": [
+        "check_crs_consistency - verify features use dataset CRS"
+      ]
+    },
+    {
+      "id": "CS_151",
+      "title": "Boeing 737 MAX MCAS \u2014 Single Sensor Point of Failure",
+      "source": "https://en.wikipedia.org/wiki/Boeing_737_MAX_groundings",
+      "domain": "D_AVIATION",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-OF-FAILURE",
+        "RCS-BYZANTINE-FAULT"
+      ],
+      "description": "MCAS relied on single AOA sensor without redundancy. When sensor failed, system repeatedly pushed nose down. No Byzantine fault tolerance for sensor inputs.",
+      "assumptions_violated": [
+        "Single sensor sufficient for safety-critical control",
+        "Pilot can always override automation"
+      ],
+      "falsification_tests": [
+        "F_AVIATION_001"
+      ],
+      "ontological_issues": [
+        "OI_AVIATION_001"
+      ],
+      "lessons": [
+        "Safety-critical systems require redundant sensors with voting",
+        "Byzantine fault tolerance mandatory for flight controls"
+      ],
+      "methodology_components": [
+        "F_AVIATION_001: sensor redundancy invariant"
+      ]
+    },
+    {
+      "id": "CS_152",
+      "title": "OpenSSL Heartbleed \u2014 Buffer Over-read Information Disclosure",
+      "source": "https://heartbleed.com/",
+      "domain": "D_CRYPTO",
+      "root_cause_signals": [
+        "RCS-MEMORY-SAFETY",
+        "RCS-BOUND-CHECK"
+      ],
+      "description": "TLS heartbeat extension didn't validate payload length. Attacker could request 64KB memory blocks containing private keys, passwords, and session cookies.",
+      "assumptions_violated": [
+        "Payload length equals actual payload size",
+        "Heartbeat response doesn't leak memory"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_001"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_001"
+      ],
+      "lessons": [
+        "All length fields must be validated against actual buffer size",
+        "Constant-time memory operations prevent information leakage"
+      ],
+      "methodology_components": [
+        "F_CRYPTO_001: constant-time compare verification"
+      ]
+    },
+    {
+      "id": "CS_153",
+      "title": "Lehman Brothers Collapse \u2014 Repo 105 Accounting Fraud",
+      "source": "https://www.sec.gov/news/press/2010/2010-26.htm",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-HIDDEN-STATE",
+        "RCS-ACCOUNTING-FRAUD"
+      ],
+      "description": "Lehman used temporary asset sales (Repo 105) to remove $50B liabilities from balance sheet before quarterly reports, then reversed them. Hidden state manipulation.",
+      "assumptions_violated": [
+        "Balance sheet reflects true financial position",
+        "Repo transactions are financing not sales"
+      ],
+      "falsification_tests": [
+        "F_BANKING_001"
+      ],
+      "ontological_issues": [
+        "OI_BANKING_001"
+      ],
+      "lessons": [
+        "Off-balance-sheet exposures must be disclosed",
+        "Fraction arithmetic prevents rounding manipulation"
+      ],
+      "methodology_components": [
+        "F_BANKING_001: capital adequacy verification"
+      ]
+    },
+    {
+      "id": "CS_154",
+      "title": "Theranos Edison \u2014 Non-reproducible Blood Tests",
+      "source": "https://www.justice.gov/usao-ndca/pr/theranos-founder-elizabeth-holmes-sentenced-prison-fraud-scheme",
+      "domain": "D_MEDICAL",
+      "root_cause_signals": [
+        "RCS-HIDDEN-STATE",
+        "RCS-NON-REPRODUCIBLE"
+      ],
+      "description": "Theranos claimed revolutionary blood tests but used third-party machines for most tests. Results non-reproducible, accuracy hidden from regulators and investors.",
+      "assumptions_violated": [
+        "Proprietary technology performs as claimed",
+        "Test results are reproducible and accurate"
+      ],
+      "falsification_tests": [
+        "F_MEDICAL_001"
+      ],
+      "ontological_issues": [
+        "OI_MEDICAL_001"
+      ],
+      "lessons": [
+        "Medical devices require reproducible results with ProofObject",
+        "Hidden dependency on third-party tech is fraud"
+      ],
+      "methodology_components": [
+        "F_MEDICAL_001: test reproducibility verification"
+      ]
+    },
+    {
+      "id": "CS_155",
+      "title": "Texas Winter Storm Uri \u2014 Grid Winterization Failure",
+      "source": "https://www.ferc.gov/news-events/news/ferc-nerc-and-regions-release-report-causes-2021-winter-storms",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-N-1-CONTINGENCY",
+        "RCS-WEATHER-ASSUMPTION"
+      ],
+      "description": "ERCOT failed to winterize generation equipment despite 2011 freeze recommendations. 246 deaths, $195B damage. N-1 contingency planning ignored correlated failures.",
+      "assumptions_violated": [
+        "Texas weather won't cause widespread generation failure",
+        "N-1 contingency sufficient for grid reliability"
+      ],
+      "falsification_tests": [
+        "F_ENERGY_001"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_001"
+      ],
+      "lessons": [
+        "N-1 must account for correlated failures from common causes",
+        "Weather hardening is economic necessity not option"
+      ],
+      "methodology_components": [
+        "F_ENERGY_001: N-1 contingency verification"
+      ]
+    },
+    {
+      "id": "CS_156",
+      "title": "Apple v. Samsung Design Patent Infringement",
+      "source": "https://www.supremecourt.gov/opinions/16pdf/15-777_7mho.pdf",
+      "domain": "D_INTELLECTUAL_PROPERTY",
+      "root_cause_signals": [
+        "RCS-PATENT-SCOPE",
+        "RCS-DAMAGES-CALCULATION"
+      ],
+      "description": "Samsung ordered to pay $399M for infringing iPhone design patents on rounded rectangles. Supreme Court limited damages to component not whole product.",
+      "assumptions_violated": [
+        "Design patents cover only ornamental features",
+        "Damages proportional to component value"
+      ],
+      "falsification_tests": [
+        "F_IP_001"
+      ],
+      "ontological_issues": [
+        "OI_IP_001"
+      ],
+      "lessons": [
+        "Patent scope must be precisely defined",
+        "Fraction arithmetic required for damages precision"
+      ],
+      "methodology_components": [
+        "F_IP_001: design patent scope verification"
+      ]
+    },
+    {
+      "id": "CS_157",
+      "title": "Flint Water Crisis Lead Contamination",
+      "source": "https://www.michigan.gov/mdehservices/lead",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-LEAD-CONTAMINATION",
+        "RCS-REGULATORY-FAILURE"
+      ],
+      "description": "Flint switched water source without corrosion control. State officials dismissed resident complaints for 18 months. Lead levels exceeded Safe Drinking Water Act limits.",
+      "assumptions_violated": [
+        "Switch to Flint River water is safe",
+        "Regulatory monitoring detects contamination promptly"
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_001"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_001"
+      ],
+      "lessons": [
+        "Environmental justice communities require enhanced monitoring",
+        "Community complaints must trigger immediate investigation"
+      ],
+      "methodology_components": [
+        "F_ENVIRONMENTAL_001: water quality verification"
+      ]
+    },
+    {
+      "id": "CS_158",
+      "title": "Miranda v. Arizona Custodial Interrogation Rights",
+      "source": "https://www.law.cornell.edu/supremecourt/text/384/436",
+      "domain": "D_CRIMINAL_LAW",
+      "root_cause_signals": [
+        "RCS-SELF-INCRIMINATION",
+        "RCS-CUSTODIAL-INTERROGATION"
+      ],
+      "description": "Supreme Court established requirement for warnings before custodial interrogation. Ernesto Miranda confessed without knowing right to counsel or silence.",
+      "assumptions_violated": [
+        "Suspects know constitutional rights without notification",
+        "Voluntary confessions are truly voluntary without warnings"
+      ],
+      "falsification_tests": [
+        "F_CRIMINAL_001"
+      ],
+      "ontological_issues": [
+        "OI_CRIMINAL_001"
+      ],
+      "lessons": [
+        "Constitutional rights must be affirmatively stated",
+        "ProofObject witnessing required for waiver validity"
+      ],
+      "methodology_components": [
+        "F_CRIMINAL_001: Miranda rights verification"
+      ]
+    },
+    {
+      "id": "CS_159",
+      "title": "Brown v. Board Overrules Plessy",
+      "source": "https://www.law.cornell.edu/supremecourt/text/347/483",
+      "domain": "D_CIVIL_LAW",
+      "root_cause_signals": [
+        "RCS-SEPARATE-BUT-EQUAL",
+        "RCS-EDUCATIONAL-EQUITY"
+      ],
+      "description": "Supreme Court unanimously declared separate educational facilities inherently unequal. Overturned 58 years of Jim Crow segregation precedent.",
+      "assumptions_violated": [
+        "Separate facilities can be equal",
+        "Racial segregation does not harm educational outcomes"
+      ],
+      "falsification_tests": [
+        "F_CIVIL_001"
+      ],
+      "ontological_issues": [
+        "OI_CIVIL_001"
+      ],
+      "lessons": [
+        "Separate but equal is inherently unequal",
+        "Educational equity requires integration"
+      ],
+      "methodology_components": [
+        "F_CIVIL_001: educational equity verification"
+      ]
+    },
+    {
+      "id": "CS_160",
+      "title": "Chevron Doctrine Overruled Loper Bright v. Raimondo",
+      "source": "https://www.supremecourt.gov/opinions/23pdf/22-451_7m58.pdf",
+      "domain": "D_ADMINISTRATIVE_LAW",
+      "root_cause_signals": [
+        "RCS-AMBIENT-AUTHORITY",
+        "RCS-JUDICIAL-DEFERENCE"
+      ],
+      "description": "Supreme Court overruled Chevron deference ending 40 years of judicial deference to agency interpretations of ambiguous statutes.",
+      "assumptions_violated": [
+        "Agencies have expertise to interpret ambiguous statutes",
+        "Judicial deference promotes regulatory consistency"
+      ],
+      "falsification_tests": [
+        "F_ADMIN_001"
+      ],
+      "ontological_issues": [
+        "OI_ADMIN_001"
+      ],
+      "lessons": [
+        "Judicial authority cannot be delegated to agencies",
+        "Statutory interpretation is judicial function"
+      ],
+      "methodology_components": [
+        "F_ADMIN_001: agency authority boundary verification"
+      ]
+    },
+    {
+      "id": "CS_161",
+      "title": "Volkswagen Dieselgate Emissions Cheating",
+      "source": "https://www.epa.gov/enforcement/volkswagen-clean-diesel-litigation",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-DEFEAT-DEVICE",
+        "RCS-HIDDEN-STATE"
+      ],
+      "description": "VW installed software to detect EPA testing conditions and reduce emissions only during tests. 11M vehicles polluted 40x legal limits during real driving.",
+      "assumptions_violated": [
+        "EPA test conditions represent real-world driving",
+        "Automakers comply with emissions regulations honestly"
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_002"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_002"
+      ],
+      "lessons": [
+        "Defeat devices are criminal fraud not engineering",
+        "Real-world monitoring required beyond lab tests"
+      ],
+      "methodology_components": [
+        "F_ENVIRONMENTAL_002: emissions verification with road testing"
+      ]
+    },
+    {
+      "id": "CS_162",
+      "title": "Equifax Data Breach 2017 Unpatched Struts",
+      "source": "https://www.govinfo.gov/content/pkg/FR-2019-02-14/pdf/2019-02564.pdf",
+      "domain": "D_CORPORATE_COMPLIANCE",
+      "root_cause_signals": [
+        "RCS-PATCH-MANAGEMENT",
+        "RCS-DATA-ENCRYPTION"
+      ],
+      "description": "Equifax failed to patch known Apache Struts vulnerability for months. 147M Americans' SSNs, DOBs, and credit data exposed. Data not encrypted at rest.",
+      "assumptions_violated": [
+        "Critical vulnerabilities will be patched promptly",
+        "Sensitive data is encrypted at rest"
+      ],
+      "falsification_tests": [
+        "F_COMPLIANCE_001"
+      ],
+      "ontological_issues": [
+        "OI_COMPLIANCE_001"
+      ],
+      "lessons": [
+        "Patch SLAs must be enforced with ProofObject",
+        "Encryption at rest is mandatory not optional"
+      ],
+      "methodology_components": [
+        "F_COMPLIANCE_001: vulnerability patch SLA verification"
+      ]
+    },
+    {
+      "id": "CS_163",
+      "title": "Silk Road Darknet Marketplace Prosecution",
+      "source": "https://www.justice.gov/usao-sdny/pr/ross-ulbricht-sentenced-life-prison-connection-his-creation-and-operation-silk-road",
+      "domain": "D_CRIMINAL_LAW",
+      "root_cause_signals": [
+        "RCS-BITCOIN-TRACEABILITY",
+        "RCS-ANONYMITY-ASSUMPTION"
+      ],
+      "description": "Ross Ulbricht operated Silk Road believing Bitcoin provided anonymity. Blockchain analysis and FBI infiltration led to arrest and life sentence.",
+      "assumptions_violated": [
+        "Bitcoin transactions are anonymous",
+        "Tor provides complete identity protection"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_002"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_002"
+      ],
+      "lessons": [
+        "Bitcoin is pseudonymous not anonymous",
+        "All digital activity leaves forensic evidence"
+      ],
+      "methodology_components": [
+        "F_CRYPTO_002: blockchain analysis verification"
+      ]
+    },
+    {
+      "id": "CS_164",
+      "title": "Fukushima Daiichi Nuclear Disaster",
+      "source": "https://www.nsr.go.jp/english/fukushima/",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-TSUNAMI-DESIGN",
+        "RCS-BEYOND-DESIGN-BASIS"
+      ],
+      "description": "TEPCO reactors lost cooling after 14m tsunami exceeded 5.7m design basis. Three meltdowns, hydrogen explosions, 150k+ evacuated. Regulator captured by industry.",
+      "assumptions_violated": [
+        "Design basis tsunami is maximum possible",
+        "Backup power systems will survive disasters"
+      ],
+      "falsification_tests": [
+        "F_ENERGY_002"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_002"
+      ],
+      "lessons": [
+        "Beyond-design-basis events must be considered",
+        "Regulatory independence is safety-critical"
+      ],
+      "methodology_components": [
+        "F_ENERGY_002: beyond-design-basis event analysis"
+      ]
+    },
+    {
+      "id": "CS_165",
+      "title": "Roe v. Wade Overruled Dobbs v. Jackson",
+      "source": "https://www.supremecourt.gov/opinions/21pdf/19-1392_6j37.pdf",
+      "domain": "D_CONSTITUTIONAL_LAW",
+      "root_cause_signals": [
+        "RCS-STARE-DECISIS",
+        "RCS-SUBSTANTIVE-DUE-PROCESS"
+      ],
+      "description": "Supreme Court overruled 49-year precedent eliminating federal constitutional right to abortion. Returned authority to states under 10th Amendment.",
+      "assumptions_violated": [
+        "Roe is settled precedent",
+        "Substantive due process protects unenumerated rights"
+      ],
+      "falsification_tests": [
+        "F_CONST_001"
+      ],
+      "ontological_issues": [
+        "OI_CONST_001"
+      ],
+      "lessons": [
+        "Constitutional interpretation changes with Court composition",
+        "Stare decisis is prudential not absolute"
+      ],
+      "methodology_components": [
+        "F_CONST_001: constitutional interpretation verification"
+      ]
+    },
+    {
+      "id": "CS_166",
+      "title": "Wells Fargo Fake Accounts Scandal",
+      "source": "https://www.cfpb.gov/about-us/newsroom/cfpb-fines-wells-fargo-100-million-widespread-illegal-practice-secretly-opening-unauthorized-accounts/",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-SALES-QUOTA-PRESSURE",
+        "RCS-CONSUMER-HARM"
+      ],
+      "description": "Wells Fargo opened 3.5M fake accounts without customer consent to meet aggressive sales quotas. $185M fine, 5,300 employees fired, CEO resigned.",
+      "assumptions_violated": [
+        "Incentive structures align employee and customer interests",
+        "Internal controls prevent widespread fraud"
+      ],
+      "falsification_tests": [
+        "F_BANKING_002"
+      ],
+      "ontological_issues": [
+        "OI_BANKING_002"
+      ],
+      "lessons": [
+        "Sales quotas must have falsifiable integrity checks",
+        "Consumer consent requires ProofObject witnessing"
+      ],
+      "methodology_components": [
+        "F_BANKING_002: account opening consent verification"
+      ]
+    },
+    {
+      "id": "CS_167",
+      "title": "Cambridge Analytica Facebook Data Harvesting",
+      "source": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook/",
+      "domain": "D_DIGITAL_GOVERNANCE",
+      "root_cause_signals": [
+        "RCS-THIRD-PARTY-ACCESS",
+        "RCS-CONSENT-FAILURE"
+      ],
+      "description": "Cambridge Analytica harvested 87M Facebook profiles via personality quiz without meaningful consent. Data used for political microtargeting. $5B FTC fine.",
+      "assumptions_violated": [
+        "Third-party app permissions are clearly understood by users",
+        "Social graph data is protected from misuse"
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_001"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_001"
+      ],
+      "lessons": [
+        "Consent must be informed not just clicked",
+        "Data sharing requires ProofObject audit trail"
+      ],
+      "methodology_components": [
+        "F_PRIVACY_001: informed consent verification"
+      ]
+    },
+    {
+      "id": "CS_168",
+      "title": "Huawei CFO Arrest US Sanctions Violation",
+      "source": "https://www.justice.gov/opa/pr/huawei-cfo-wanzhou-meng-enters-agreement-resolve-bank-fraud-charges",
+      "domain": "D_TRADE_AGREEMENTS",
+      "root_cause_signals": [
+        "RCS-SANCTIONS-EVASION",
+        "RCS-BANK-FRAUD"
+      ],
+      "description": "Meng Wanzhou arrested for allegedly violating Iran sanctions via Skycom subsidiary. HSBC misled about Huawei-Iran relationship. Deferred prosecution agreement.",
+      "assumptions_violated": [
+        "Corporate subsidiaries provide legal separation",
+        "Banks verify customer representations"
+      ],
+      "falsification_tests": [
+        "F_TRADE_001"
+      ],
+      "ontological_issues": [
+        "OI_TRADE_001"
+      ],
+      "lessons": [
+        "Sanctions apply to beneficial ownership not formal structure",
+        "Bank due diligence must be falsifiable"
+      ],
+      "methodology_components": [
+        "F_TRADE_001: sanctions compliance verification"
+      ]
+    },
+    {
+      "id": "CS_169",
+      "title": "Takata Airbag Defect Recall",
+      "source": "https://www.nhtsa.gov/equipment/takata-recall-spotlight",
+      "domain": "D_AUTOMOTIVE",
+      "root_cause_signals": [
+        "RCS-DEFECT-COVER-UP",
+        "RCS-AMMONIUM-NITRATE"
+      ],
+      "description": "Takata airbag inflators used ammonium nitrate without desiccant. 67M recalled in US, 24 deaths, 400+ injuries. Company knew of defects for years before recall.",
+      "assumptions_violated": [
+        "Airbags improve safety in all crashes",
+        "Automotive suppliers promptly report defects"
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_001"
+      ],
+      "ontological_issues": [
+        "OI_AUTOMOTIVE_001"
+      ],
+      "lessons": [
+        "Safety-critical components require humidity-resistant chemistry",
+        "Defect reporting delays are criminal"
+      ],
+      "methodology_components": [
+        "F_AUTOMOTIVE_001: airbag chemical stability verification"
+      ]
+    },
+    {
+      "id": "CS_170",
+      "title": "Google Street View WiFi Data Collection",
+      "source": "https://www.ftc.gov/news-events/news/press-releases/2013/03/google-settles-ftc-charges-it-misrepresented-privacy-assurances-users-apples-safari-internet-browser",
+      "domain": "D_TELECOMMUNICATIONS_LAW",
+      "root_cause_signals": [
+        "RCS-PAYLOAD-DATA",
+        "RCS-NETWORK-SNOOPING"
+      ],
+      "description": "Google Street View cars collected 600GB of payload data from unencrypted WiFi networks. Company claimed only SSID/network info collected. FCC fined $25k.",
+      "assumptions_violated": [
+        "Unencrypted WiFi is public not private",
+        "Corporate statements about data collection are accurate"
+      ],
+      "falsification_tests": [
+        "F_TELECOM_001"
+      ],
+      "ontological_issues": [
+        "OI_TELECOM_001"
+      ],
+      "lessons": [
+        "Payload data collection requires explicit consent",
+        "Network scanning must distinguish header from content"
+      ],
+      "methodology_components": [
+        "F_TELECOM_001: network data collection boundary verification"
+      ]
+    },
+    {
+      "id": "CS_171",
+      "title": "PG&E California Wildfires Bankruptcy",
+      "source": "https://www.cpuc.ca.gov/industries-and-topics/electrical-energy/electrical-safety/wildfires",
+      "domain": "D_ENERGY",
+      "root_cause_signals": [
+        "RCS-INFRASTRUCTURE-MAINTENANCE",
+        "RCS-CLIMATE-RISK"
+      ],
+      "description": "PG&E equipment caused 2018 Camp Fire killing 85 people. Decades of deferred maintenance on power lines. Company filed bankruptcy facing $30B+ liabilities.",
+      "assumptions_violated": [
+        "Utility infrastructure is properly maintained",
+        "Climate change doesn't increase fire risk significantly"
+      ],
+      "falsification_tests": [
+        "F_ENERGY_003"
+      ],
+      "ontological_issues": [
+        "OI_ENERGY_003"
+      ],
+      "lessons": [
+        "Infrastructure maintenance must be falsifiably verified",
+        "Climate risk must be priced into utility operations"
+      ],
+      "methodology_components": [
+        "F_ENERGY_003: power line maintenance verification"
+      ]
+    },
+    {
+      "id": "CS_172",
+      "title": "Opioid Crisis Purdue Pharma OxyContin",
+      "source": "https://www.justice.gov/opa/pr/justice-department-announces-global-resolution-criminal-and-civil-investigations-opioid-manufacturer",
+      "domain": "D_DRUG_REGULATION",
+      "root_cause_signals": [
+        "RCS-MARKETING-FRAUD",
+        "RCS-ADDICTION-RISK-HIDDEN"
+      ],
+      "description": "Purdue Pharma marketed OxyContin as less addictive knowing 12-hour dosing caused withdrawal. $8.3B settlement, company dissolved. 500k+ US overdose deaths.",
+      "assumptions_violated": [
+        "FDA approved drugs are safe as marketed",
+        "Pharmaceutical marketing is truthful"
+      ],
+      "falsification_tests": [
+        "F_DRUG_001"
+      ],
+      "ontological_issues": [
+        "OI_DRUG_001"
+      ],
+      "lessons": [
+        "Addiction risk must be disclosed with ProofObject",
+        "Marketing claims require independent verification"
+      ],
+      "methodology_components": [
+        "F_DRUG_001: addiction risk disclosure verification"
+      ]
+    },
+    {
+      "id": "CS_173",
+      "title": "Sackler Family Bankruptcy Shield",
+      "source": "https://www.supremecourt.gov/opinions/23pdf/23-647_01m2.pdf",
+      "domain": "D_BANKRUPTCY",
+      "root_cause_signals": [
+        "RCS-NON-DEBTOR-RELEASE",
+        "RCS-LIABILITY-SHIELD"
+      ],
+      "description": "Sackler family sought bankruptcy protection without filing personal bankruptcy. Supreme Court blocked $6B settlement with third-party releases. Ongoing litigation.",
+      "assumptions_violated": [
+        "Bankruptcy requires actual financial distress",
+        "Third-party releases require consent of all creditors"
+      ],
+      "falsification_tests": [
+        "F_BANKRUPTCY_001"
+      ],
+      "ontological_issues": [
+        "OI_BANKRUPTCY_001"
+      ],
+      "lessons": [
+        "Bankruptcy cannot shield non-debtors from liability",
+        "Consent must be individual not representative"
+      ],
+      "methodology_components": [
+        "F_BANKRUPTCY_001: third-party release consent verification"
+      ]
+    },
+    {
+      "id": "CS_174",
+      "title": "Gulf of Mexico Deepwater Horizon Spill",
+      "source": "https://www.epa.gov/enforcement/deepwater-horizon-spill-gulf-mexico",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-BLOWOUT-PREVENTER",
+        "RCS-SAFETY-CULTURE"
+      ],
+      "description": "BP Macondo well blowout killed 11 workers, spilled 4.9M barrels. Multiple BOP failures, ignored cement test warnings. $20.8B settlement, criminal pleas.",
+      "assumptions_violated": [
+        "Blowout preventers are failsafe",
+        "Cost-cutting doesn't affect safety-critical decisions"
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_003"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_003"
+      ],
+      "lessons": [
+        "BOP testing must be falsifiable with ProofObject",
+        "Safety culture requires independent verification"
+      ],
+      "methodology_components": [
+        "F_ENVIRONMENTAL_003: BOP functional testing verification"
+      ]
+    },
+    {
+      "id": "CS_175",
+      "title": "Uber Self-Driving Car Fatality Elaine Herzberg",
+      "source": "https://www.ntsb.gov/investigations/accidentreports/reports/har1902.pdf",
+      "domain": "D_AUTOMOTIVE",
+      "root_cause_signals": [
+        "RCS-SAFETY-DRIVER-ATTENTION",
+        "RCS-OBJECT-CLASSIFICATION"
+      ],
+      "description": "Uber AV struck and killed pedestrian in Tempe AZ. Safety driver distracted watching Hulu. System classified pedestrian as false positive 1.3s before impact.",
+      "assumptions_violated": [
+        "Safety drivers maintain constant vigilance",
+        "Object classification works for all pedestrian scenarios"
+      ],
+      "falsification_tests": [
+        "F_AUTOMOTIVE_002"
+      ],
+      "ontological_issues": [
+        "OI_AUTOMOTIVE_002"
+      ],
+      "lessons": [
+        "Human supervision cannot be assumed effective",
+        "Edge cases must be falsifiably tested"
+      ],
+      "methodology_components": [
+        "F_AUTOMOTIVE_002: pedestrian detection edge case verification"
+      ]
+    },
+    {
+      "id": "CS_176",
+      "title": "WeWork IPO Collapse Valuation Fraud",
+      "source": "https://www.sec.gov/news/press-release/2023-195",
+      "domain": "D_CORPORATE_LAW",
+      "root_cause_signals": [
+        "RCS-GOVERNANCE-FAILURE",
+        "RCS-CONFLICT-OF-INTEREST"
+      ],
+      "description": "WeWork filed for IPO at $47B valuation. Disclosed $47B lease obligations, founder self-dealing, no path to profit. IPO withdrawn, valuation collapsed to $8B. SEC settlement.",
+      "assumptions_violated": [
+        "Unicorn valuations reflect fundamental value",
+        "Founder control aligns with shareholder interests"
+      ],
+      "falsification_tests": [
+        "F_CORP_001"
+      ],
+      "ontological_issues": [
+        "OI_CORP_001"
+      ],
+      "lessons": [
+        "Related-party transactions require ProofObject disclosure",
+        "Dual-class structures need fiduciary safeguards"
+      ],
+      "methodology_components": [
+        "F_CORP_001: related-party transaction verification"
+      ]
+    },
+    {
+      "id": "CS_177",
+      "title": "Binance Money Laundering Settlement",
+      "source": "https://www.justice.gov/opa/pr/binance-and-ceo-plead-guilty-federal-charges-4b-resolution",
+      "domain": "D_CRYPTO",
+      "root_cause_signals": [
+        "RCS-KYC-FAILURE",
+        "RCS-SANCTIONS-VIOLATION"
+      ],
+      "description": "Binance failed to maintain AML program, processed $900M for Iranian users violating sanctions. $4.3B settlement, largest in Treasury history. CEO resigned.",
+      "assumptions_violated": [
+        "Cryptocurrency exchanges enforce KYC/AML",
+        "Decentralized systems prevent regulatory capture"
+      ],
+      "falsification_tests": [
+        "F_CRYPTO_003"
+      ],
+      "ontological_issues": [
+        "OI_CRYPTO_003"
+      ],
+      "lessons": [
+        "KYC must be falsifiably verified not checkbox compliance",
+        "Sanctions apply equally to crypto and fiat"
+      ],
+      "methodology_components": [
+        "F_CRYPTO_003: KYC verification with ProofObject"
+      ]
+    },
+    {
+      "id": "CS_178",
+      "title": "FTX Collapse Customer Fund Commingling",
+      "source": "https://www.sec.gov/news/statement/gensler-statement-crypto-121222",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-CUSTOMER-FUND-COMMINGLING",
+        "RCS-RESERVE-FRAUD"
+      ],
+      "description": "FTX transferred $10B+ customer funds to Alameda Research. Balance sheet backed by FTT token. Bank run collapsed exchange in days. $8B customer deficit.",
+      "assumptions_violated": [
+        "Customer funds are segregated 1:1",
+        "Exchange proof of reserves is accurate"
+      ],
+      "falsification_tests": [
+        "F_FINANCIAL_001"
+      ],
+      "ontological_issues": [
+        "OI_FINANCIAL_001"
+      ],
+      "lessons": [
+        "Proof of reserves requires ProofObject not attestation",
+        "Customer funds must be cryptographically segregated"
+      ],
+      "methodology_components": [
+        "F_FINANCIAL_001: cryptographic proof of reserves verification"
+      ]
+    },
+    {
+      "id": "CS_179",
+      "title": "Section 230 Platform Liability Shield",
+      "source": "https://www.supremecourt.gov/opinions/22pdf/21-1333_6j7a.pdf",
+      "domain": "D_TELECOMMUNICATIONS_LAW",
+      "root_cause_signals": [
+        "RCS-PLATFORM-ACCOUNTABILITY",
+        "RCS-CONTENT-MODERATION"
+      ],
+      "description": "Supreme Court upheld Section 230 immunity for algorithmic recommendations. Platforms not liable for third-party content. Ongoing legislative debates.",
+      "assumptions_violated": [
+        "Algorithmic amplification is neutral",
+        "Platforms act as common carriers"
+      ],
+      "falsification_tests": [
+        "F_TELECOM_002"
+      ],
+      "ontological_issues": [
+        "OI_TELECOM_002"
+      ],
+      "lessons": [
+        "Algorithmic curation is editorial not passive",
+        "Liability shields require transparency obligations"
+      ],
+      "methodology_components": [
+        "F_TELECOM_002: algorithmic amplification disclosure verification"
+      ]
+    },
+    {
+      "id": "CS_180",
+      "title": "Muslim Travel Ban Trump v. Hawaii",
+      "source": "https://www.supremecourt.gov/opinions/17pdf/17-965_h315.pdf",
+      "domain": "D_IMMIGRATION",
+      "root_cause_signals": [
+        "RCS-RELIGIOUS-DISCRIMINATION",
+        "RCS-NATIONAL-SECURITY-PRETEXT"
+      ],
+      "description": "Supreme Court upheld travel ban from Muslim-majority countries. Court considered only final proclamation not campaign statements. 5-4 decision with strong dissent.",
+      "assumptions_violated": [
+        "National security claims receive judicial deference",
+        "Executive proclamations are facially neutral"
+      ],
+      "falsification_tests": [
+        "F_IMMIGRATION_001"
+      ],
+      "ontological_issues": [
+        "OI_IMMIGRATION_001"
+      ],
+      "lessons": [
+        "Motive inquiry limited to official statements",
+        "National security cannot mask discrimination"
+      ],
+      "methodology_components": [
+        "F_IMMIGRATION_001: discriminatory motive verification"
+      ]
+    },
+    {
+      "id": "CS_181",
+      "title": "Amazon Warehouse Unionization ALU",
+      "source": "https://www.nlrb.gov/case/29-CA-282783",
+      "domain": "D_LABOR_RIGHTS",
+      "root_cause_signals": [
+        "RCS-UNION-BUSTING",
+        "RCS-WORKING-CONDITIONS"
+      ],
+      "description": "Amazon workers in Staten Island voted to unionize first US facility. Company spent $4.3M on anti-union consultants. NLRB found illegal anti-union tactics.",
+      "assumptions_violated": [
+        "Workers freely choose unionization without pressure",
+        "Company anti-union speech is protected"
+      ],
+      "falsification_tests": [
+        "F_LABOR_001"
+      ],
+      "ontological_issues": [
+        "OI_LABOR_001"
+      ],
+      "lessons": [
+        "Captive audience meetings violate free choice",
+        "Union busting requires ProofObject documentation"
+      ],
+      "methodology_components": [
+        "F_LABOR_001: union interference verification"
+      ]
+    },
+    {
+      "id": "CS_182",
+      "title": "Stop and Frisk Terry v. Ohio Practice",
+      "source": "https://www.nyc.gov/assets/nypd/downloads/pdf/analysis_and_planning/year-end-2013-stop-question-frisk-report.pdf",
+      "domain": "D_POLICE_PROCEDURE",
+      "root_cause_signals": [
+        "RCS-RACIAL-PROFILING",
+        "RCS-REASONABLE-SUSPICION"
+      ],
+      "description": "NYPD stopped 4.4M people 2004-2012. 88% innocent, 52% Black. Federal judge found unconstitutional racial profiling. Court-appointed monitor instituted reforms.",
+      "assumptions_violated": [
+        "Reasonable suspicion is race-neutral",
+        "Stop and frisk reduces crime"
+      ],
+      "falsification_tests": [
+        "F_POLICE_001"
+      ],
+      "ontological_issues": [
+        "OI_POLICE_001"
+      ],
+      "lessons": [
+        "Racial disparities prove unconstitutional motive",
+        "Crime reduction doesn't justify Fourth Amendment violations"
+      ],
+      "methodology_components": [
+        "F_POLICE_001: racial disparity in stops verification"
+      ]
+    },
+    {
+      "id": "CS_183",
+      "title": "Qualified Immunity Doctrine Reform Debate",
+      "source": "https://www.supremecourt.gov/opinions/20pdf/20-18_8m58.pdf",
+      "domain": "D_CIVIL_LAW",
+      "root_cause_signals": [
+        "RCS-ACCOUNTABILITY-GAP",
+        "RCS-CLEARLY-ESTABLISHED"
+      ],
+      "description": "Supreme Court strengthened qualified immunity shielding officers from civil liability unless right was clearly established. Bipartisan calls for reform.",
+      "assumptions_violated": [
+        "Civil liability deters constitutional violations",
+        "Rights clearly established in context"
+      ],
+      "falsification_tests": [
+        "F_CIVIL_002"
+      ],
+      "ontological_issues": [
+        "OI_CIVIL_002"
+      ],
+      "lessons": [
+        "Immunity doctrines require falsifiable boundaries",
+        "Every rights violation should have remedy"
+      ],
+      "methodology_components": [
+        "F_CIVIL_002: qualified immunity scope verification"
+      ]
+    },
+    {
+      "id": "CS_184",
+      "title": "Citizens United Campaign Finance",
+      "source": "https://www.supremecourt.gov/opinions/09pdf/08-205.pdf",
+      "domain": "D_VOTING_RIGHTS",
+      "root_cause_signals": [
+        "RCS-MONEY-AS-SPEECH",
+        "RCS-CORPORATE-PERSONHOOD"
+      ],
+      "description": "Supreme Court held corporate independent political expenditures are protected speech. Allowed unlimited dark money. Super PACs proliferated.",
+      "assumptions_violated": [
+        "Campaign finance limits prevent corruption",
+        "Corporations have First Amendment rights"
+      ],
+      "falsification_tests": [
+        "F_VOTING_001"
+      ],
+      "ontological_issues": [
+        "OI_VOTING_001"
+      ],
+      "lessons": [
+        "Money in politics requires transparency not just limits",
+        "Corporate speech rights undermine democratic equality"
+      ],
+      "methodology_components": [
+        "F_VOTING_001: campaign finance transparency verification"
+      ]
+    },
+    {
+      "id": "CS_185",
+      "title": "Shelby County VRA Preclearance Gutting",
+      "source": "https://www.supremecourt.gov/opinions/12pdf/12-96_6k47.pdf",
+      "domain": "D_VOTING_RIGHTS",
+      "root_cause_signals": [
+        "RCS-PRECLEARANCE",
+        "RCS-DISCRIMINATION-HISTORY"
+      ],
+      "description": "Supreme Court struck down VRA Section 4(b) coverage formula. States immediately enacted voter ID laws, closed polling places. 1000+ polling places closed.",
+      "assumptions_violated": [
+        "Voting discrimination is history not present",
+        "States will protect minority voting rights voluntarily"
+      ],
+      "falsification_tests": [
+        "F_VOTING_002"
+      ],
+      "ontological_issues": [
+        "OI_VOTING_002"
+      ],
+      "lessons": [
+        "Voting rights require proactive not reactive protection",
+        "Discrimination history predicts future discrimination"
+      ],
+      "methodology_components": [
+        "F_VOTING_002: discriminatory impact verification"
+      ]
+    },
+    {
+      "id": "CS_186",
+      "title": "Redistricting Gerrymandering Rucho v. Common Cause",
+      "source": "https://www.supremecourt.gov/opinions/18pdf/18-422_9131.pdf",
+      "domain": "D_VOTING_RIGHTS",
+      "root_cause_signals": [
+        "RCS-PARTISAN-GERYMANDERING",
+        "RCS-JUDICIABLE-STANDARD"
+      ],
+      "description": "Supreme Court held partisan gerrymandering claims are non-justiciable political questions. Left to states and Congress. Extreme maps enacted in multiple states.",
+      "assumptions_violated": [
+        "Courts can adjudicate partisan gerrymandering",
+        "Democratic process produces fair districts"
+      ],
+      "falsification_tests": [
+        "F_VOTING_003"
+      ],
+      "ontological_issues": [
+        "OI_VOTING_003"
+      ],
+      "lessons": [
+        "Partisan manipulation requires statistical falsifiability",
+        "Independent commissions needed for fair districts"
+      ],
+      "methodology_components": [
+        "F_VOTING_003: partisan symmetry verification"
+      ]
+    },
+    {
+      "id": "CS_187",
+      "title": "Assange Espionage Act Prosecution",
+      "source": "https://www.justice.gov/opa/pr/wikileaks-founder-charged-computer-hacking-conspiracy",
+      "domain": "D_FIRST_AMENDMENT",
+      "root_cause_signals": [
+        "RCS-PRESS-FREEDOM",
+        "RCS-ESPIONAGE-ACT"
+      ],
+      "description": "DOJ charged Assange under Espionage Act for publishing classified documents. First such prosecution of publisher. Press freedom advocates alarmed.",
+      "assumptions_violated": [
+        "First Amendment protects publishing classified information",
+        "Espionage Act targets leakers not publishers"
+      ],
+      "falsification_tests": [
+        "F_FIRSTAM_001"
+      ],
+      "ontological_issues": [
+        "OI_FIRSTAM_001"
+      ],
+      "lessons": [
+        "Publishing requires source protection",
+        "Espionage Act needs press exception"
+      ],
+      "methodology_components": [
+        "F_FIRSTAM_001: press freedom boundary verification"
+      ]
+    },
+    {
+      "id": "CS_188",
+      "title": "Stuxnet Iranian Nuclear Facility Attack",
+      "source": "https://www.cisa.gov/news-events/news/stuxnet-0",
+      "domain": "D_CYBERSECURITY",
+      "root_cause_signals": [
+        "RCS-AIR-GAP-BYPASS",
+        "RCS-ICS-SECURITY"
+      ],
+      "description": "Stuxnet worm destroyed 1000 Iranian centrifuges. Spread via USB to air-gapped network. First known nation-state cyber weapon.",
+      "assumptions_violated": [
+        "Air gaps provide security",
+        "ICS systems are isolated from internet threats"
+      ],
+      "falsification_tests": [
+        "F_CYBER_001"
+      ],
+      "ontological_issues": [
+        "OI_CYBER_001"
+      ],
+      "lessons": [
+        "Air gaps are penetrable via supply chain",
+        "ICS requires intrusion detection not just isolation"
+      ],
+      "methodology_components": [
+        "F_CYBER_001: air-gap security verification"
+      ]
+    },
+    {
+      "id": "CS_189",
+      "title": "Colonial Pipeline Ransomware Shutdown",
+      "source": "httpswww.cisa.gov/news-events/news/cisa-and-fbi-release-joint-advisory-darkside-ransomware",
+      "domain": "D_CYBERSECURITY",
+      "root_cause_signals": [
+        "RCS-RANSOMWARE",
+        "RCS-CRITICAL-INFRASTRUCTURE"
+      ],
+      "description": "DarkSide ransomware shut down Colonial Pipeline causing East Coast fuel shortages. Company paid $4.4M ransom. Biden declared state of emergency.",
+      "assumptions_violated": [
+        "Critical infrastructure has adequate cybersecurity",
+        "Ransomware targets data not operations"
+      ],
+      "falsification_tests": [
+        "F_CYBER_002"
+      ],
+      "ontological_issues": [
+        "OI_CYBER_002"
+      ],
+      "lessons": [
+        "OT networks require segmentation from IT",
+        "Ransomware response plans mandatory for CI"
+      ],
+      "methodology_components": [
+        "F_CYBER_002: OT/IT segmentation verification"
+      ]
+    },
+    {
+      "id": "CS_190",
+      "title": "SolarWinds Orion Supply Chain Attack",
+      "source": "https://www.cisa.gov/news-events/news/cisa-issues-emergency-directive-mitigate-compromise-solarwinds-orion-network",
+      "domain": "D_SUPPLY_CHAIN_SECURITY",
+      "root_cause_signals": [
+        "RCS-SUPPLY-CHAIN",
+        "RCS-TRUSTED-UPDATE"
+      ],
+      "description": "Russian SVR compromised SolarWinds build process. 18k customers received backdoored updates. 9 federal agencies breached including Treasury and Commerce.",
+      "assumptions_violated": [
+        "Signed updates are trustworthy",
+        "Software vendors maintain secure build environments"
+      ],
+      "falsification_tests": [
+        "F_SUPPLYCHAIN_001"
+      ],
+      "ontological_issues": [
+        "OI_SUPPLYCHAIN_001"
+      ],
+      "lessons": [
+        "Signed updates require build environment attestation",
+        "SBOMs enable supply chain transparency"
+      ],
+      "methodology_components": [
+        "F_SUPPLYCHAIN_001: build integrity verification"
+      ]
+    },
+    {
+      "id": "CS_191",
+      "title": "Log4Shell Log4j Zero-Day Exploitation",
+      "source": "https://www.cisa.gov/news-events/news/cisa-issues-emergency-directive-mitigate-log4j-vulnerability",
+      "domain": "D_SOFTWARE_SECURITY",
+      "root_cause_signals": [
+        "RCS-INPUT-VALIDATION",
+        "RCS-DESERIALIZATION"
+      ],
+      "description": "Log4j JNDI lookup feature allowed remote code execution via log messages. Ubiquitous Java logging library. Millions of systems affected. CVSS 10.0.",
+      "assumptions_violated": [
+        "Logging libraries don't execute user input",
+        "JNDI lookups are safe"
+      ],
+      "falsification_tests": [
+        "F_SOFTWARE_001"
+      ],
+      "ontological_issues": [
+        "OI_SOFTWARE_001"
+      ],
+      "lessons": [
+        "Never interpret user input in logging",
+        "Supply chain dependencies require security audit"
+      ],
+      "methodology_components": [
+        "F_SOFTWARE_001: input sanitization verification"
+      ]
+    },
+    {
+      "id": "CS_192",
+      "title": "Kaseya VSA Ransomware Supply Chain",
+      "source": "https://www.cisa.gov/news-events/news/cisa-kaseya-ransomware-attack-update",
+      "domain": "D_SUPPLY_CHAIN_SECURITY",
+      "root_cause_signals": [
+        "RCS-ZERO-DAY",
+        "RCS-MANAGED-SERVICE-PROVIDER"
+      ],
+      "description": "REvil exploited Kaseya VSA zero-day affecting MSPs and 1500 downstream businesses. $70M ransom demanded. Meat processor and Swedish grocery chain shut down.",
+      "assumptions_violated": [
+        "MSP tools are secure",
+        "Zero-days are rare and quickly patched"
+      ],
+      "falsification_tests": [
+        "F_MSP_001"
+      ],
+      "ontological_issues": [
+        "OI_MSP_001"
+      ],
+      "lessons": [
+        "MSP tools require zero-trust architecture",
+        "Cascading failure requires compartmentalization"
+      ],
+      "methodology_components": [
+        "F_MSP_001: MSP tool security verification"
+      ]
+    },
+    {
+      "id": "CS_193",
+      "title": "Hertz False Arrest Rental Car Tracking",
+      "source": "https://www.courtlistener.com/docket/6309659/hertz-corporation-v-henderson/",
+      "domain": "D_CONSUMER_PROTECTION",
+      "root_cause_signals": [
+        "RCS-INVENTORY-SYSTEM",
+        "RCS-FALSE-REPORTING"
+      ],
+      "description": "Hertz reported rental cars stolen when they were returned or extended. 364 customers falsely arrested, some jailed for months. Settled for $168M.",
+      "assumptions_violated": [
+        "Inventory systems are accurate",
+        "Theft reports verified before police referral"
+      ],
+      "falsification_tests": [
+        "F_CONSUMER_001"
+      ],
+      "ontological_issues": [
+        "OI_CONSUMER_001"
+      ],
+      "lessons": [
+        "System errors must not trigger criminal reports",
+        "False arrest liability requires ProofObject safeguards"
+      ],
+      "methodology_components": [
+        "F_CONSUMER_001: inventory accuracy verification"
+      ]
+    },
+    {
+      "id": "CS_194",
+      "title": "Zillow Offers iBuying Algorithm Failure",
+      "source": "https://www.sec.gov/Archives/edgar/data/1802011/000180201121000035/zg-20210930.htm",
+      "domain": "D_REAL_ESTATE",
+      "root_cause_signals": [
+        "RCS-PRICING-ALGORITHM",
+        "RCS-HOME-VALUATION"
+      ],
+      "description": "Zillow's Zestimate algorithm overpaid for homes in volatile market. Lost $881M in 2021, laid off 25% staff, exited iBuying business entirely.",
+      "assumptions_violated": [
+        "Algorithmic pricing outperforms human appraisers",
+        "Real estate markets are predictable"
+      ],
+      "falsification_tests": [
+        "F_REALESTATE_001"
+      ],
+      "ontological_issues": [
+        "OI_REALESTATE_001"
+      ],
+      "lessons": [
+        "Algorithmic trading requires circuit breakers",
+        "Model drift requires continuous monitoring"
+      ],
+      "methodology_components": [
+        "F_REALESTATE_001: home valuation accuracy verification"
+      ]
+    },
+    {
+      "id": "CS_195",
+      "title": "Robinhood GameStop Trading Halt",
+      "source": "https://www.sec.gov/news/statement/gensler-statement-gamestop-012921",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-CLEARING-DEPOSIT",
+        "RCS-PAYMENT-FOR-ORDER-FLOW"
+      ],
+      "description": "Robinhood halted GME buying during short squeeze. Cited $3B clearing deposit requirement. Accused of protecting hedge funds. Settled for $70M.",
+      "assumptions_violated": [
+        "Retail brokers provide unfettered market access",
+        "Clearing deposits are transparent"
+      ],
+      "falsification_tests": [
+        "F_BROKER_001"
+      ],
+      "ontological_issues": [
+        "OI_BROKER_001"
+      ],
+      "lessons": [
+        "Clearing requirements must be disclosed",
+        "Payment for order flow creates conflicts"
+      ],
+      "methodology_components": [
+        "F_BROKER_001: clearing deposit transparency verification"
+      ]
+    },
+    {
+      "id": "CS_196",
+      "title": "Archegos Capital Margin Call Collapse",
+      "source": "https://www.sec.gov/news/statement/archegos-consent-order-042721",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-TOTAL-RETURN-SWAP",
+        "RCS-CONCENTRATED-POSITION"
+      ],
+      "description": "Bill Hwang's family office used total return swaps to hide $160B stock exposure. Margin calls wiped out $20B in 2 days. Credit Suisse lost $5.5B, fired executives.",
+      "assumptions_violated": [
+        "Swaps provide effective leverage concealment",
+        "Prime brokers monitor concentrated risk"
+      ],
+      "falsification_tests": [
+        "F_SWAP_001"
+      ],
+      "ontological_issues": [
+        "OI_SWAP_001"
+      ],
+      "lessons": [
+        "Synthetic positions require consolidated reporting",
+        "Margin models must stress extreme moves"
+      ],
+      "methodology_components": [
+        "F_SWAP_001: swap exposure aggregation verification"
+      ]
+    },
+    {
+      "id": "CS_197",
+      "title": "Wirecard Accounting Fraud Collapse",
+      "source": "https://www.bundesanzeiger.de/pub/de/suche",
+      "domain": "D_BANKING_REGULATION",
+      "root_cause_signals": [
+        "RCS-TRUST-ACCOUNT",
+        "RCS-AUDIT-FAILURE"
+      ],
+      "description": "German payment processor Wirecard admitted $2.1B cash didn't exist. FT reported fraud years earlier. EY issued clean audits. CEO arrested, company bankrupt.",
+      "assumptions_violated": [
+        "Big Four audits detect material fraud",
+        "Regulated fintechs are trustworthy"
+      ],
+      "falsification_tests": [
+        "F_AUDIT_001"
+      ],
+      "ontological_issues": [
+        "OI_AUDIT_001"
+      ],
+      "lessons": [
+        "Audit confirmations must be cryptographically verified",
+        "Whistleblower reports require investigation"
+      ],
+      "methodology_components": [
+        "F_AUDIT_001: bank confirmation verification"
+      ]
+    },
+    {
+      "id": "CS_198",
+      "title": "Nomura Greensill Supply Chain Finance",
+      "source": "https://www.fca.org.uk/news/press-releases/fca-announces-decision-greensill-capital",
+      "domain": "D_FINANCIAL",
+      "root_cause_signals": [
+        "RCS-SUPPLY-CHAIN-FINANCE",
+        "RCS-INSURANCE-WRAPPER"
+      ],
+      "description": "Greensill packaged supplier invoices into bonds backed by questionable insurance. SoftBank invested $1.5B. Credit Suisse froze $10B funds. 50k jobs at risk.",
+      "assumptions_violated": [
+        "Supply chain finance is low risk",
+        "Credit insurance is reliable"
+      ],
+      "falsification_tests": [
+        "F_SCF_001"
+      ],
+      "ontological_issues": [
+        "OI_SCF_001"
+      ],
+      "lessons": [
+        "Shadow banking requires bank-level regulation",
+        "Insurance backing requires ProofObject verification"
+      ],
+      "methodology_components": [
+        "F_SCF_001: credit insurance verification"
+      ]
+    },
+    {
+      "id": "CS_199",
+      "title": "JBS Meatpacking Ransomware Supply Chain",
+      "source": "https://www.cisa.gov/news-events/news/cisa-and-fbi-release-joint-advisory-ransomware-attack-jbs",
+      "domain": "D_FOOD_SAFETY",
+      "root_cause_signals": [
+        "RCS-FOOD-SUPPLY-CHAIN",
+        "RCS-CRITICAL-INFRASTRUCTURE"
+      ],
+      "description": "REvil ransomware shut down JBS beef processing plants supplying 25% of US beef. $11M ransom paid. Food supply disruption nationwide.",
+      "assumptions_violated": [
+        "Food processing has adequate cybersecurity",
+        "Ransomware doesn't target physical infrastructure"
+      ],
+      "falsification_tests": [
+        "F_FOOD_001"
+      ],
+      "ontological_issues": [
+        "OI_FOOD_001"
+      ],
+      "lessons": [
+        "Food supply is critical infrastructure",
+        "Cyber resilience mandatory for food security"
+      ],
+      "methodology_components": [
+        "F_FOOD_001: food processing security verification"
+      ]
+    },
+    {
+      "id": "CS_200",
+      "title": "Ever Given Suez Canal Blockage",
+      "source": "https://www.transport.gov.eg/en",
+      "domain": "D_TRANSPORTATION",
+      "root_cause_signals": [
+        "RCS-SINGLE-POINT-OF-FAILURE",
+        "RCS-SUPPLY-CHAIN-RESILIENCE"
+      ],
+      "description": "Container ship Ever Given blocked Suez Canal for 6 days. 400+ ships delayed. $9.6B daily trade disrupted. Global supply chain ripple effects for months.",
+      "assumptions_violated": [
+        "Maritime chokepoints are resilient",
+        "Just-in-time supply chains are efficient"
+      ],
+      "falsification_tests": [
+        "F_TRANSPORT_001"
+      ],
+      "ontological_issues": [
+        "OI_TRANSPORT_001"
+      ],
+      "lessons": [
+        "Chokepoints require redundancy",
+        "Supply chains need buffer inventory"
+      ],
+      "methodology_components": [
+        "F_TRANSPORT_001: supply chain resilience verification"
+      ]
     }
   ]
 }

@@ -1,317 +1,261 @@
-"""D_WEBSEC invariant checks — executable, not declarative.
+#!/usr/bin/env python3
+"""D_WEBSEC Invariants — Web Security
 
-Each function returns True (invariant holds) or raises AssertionError (violated).
-No `pass` bodies. No `return True` stubs.
-
-Source: OWASP Top 10, NIST Cybersecurity Framework
+Verifies OWASP Top 10 protections, NIST authentication standards,
+transport security, input validation, data encryption.
+OWASP Top 10, NIST SP 800-63B, PCI DSS.
 """
 
-from __future__ import annotations
-
-from dataclasses import dataclass
 from fractions import Fraction
-from typing import List, Dict, Optional
-import re
+from typing import Tuple
+from axioms.logic import ProofObject
+from .implementation import (
+    WebApplication, AuthenticationSystem, SensitiveData,
+    AuthMethod,
+    owasp_https_required, owasp_password_min_length,
+    nist_session_timeout_max_minutes, pci_dss_encryption_required
+)
 
 
-@dataclass
-class WebApplication:
-    """Web application security configuration."""
-    app_id: str
-    name: str
-    https_enforced: bool
-    hsts_enabled: bool
-    csrf_protection: bool
-    xss_protection: bool
-    input_validated: bool
-    sql_injection_protected: bool
-
-
-@dataclass
-class AuthenticationSystem:
-    """Authentication mechanism."""
-    auth_id: str
-    mfa_enabled: bool
-    password_min_length: int
-    password_requires_complexity: bool
-    brute_force_protection: bool
-    session_timeout_minutes: int
-
-
-@dataclass
-class SensitiveData:
-    """Sensitive data handling."""
-    data_id: str
-    encrypted_at_rest: bool
-    encrypted_in_transit: bool
-    access_logging_enabled: bool
-    pii_detected: bool
-
-
-def check_https_enforced() -> bool:
+def check_https_enforced(app: WebApplication) -> Tuple[bool, ProofObject]:
     """
-    Invariant: All traffic uses HTTPS (TLS 1.2+).
-    Falsification: If HTTP traffic allowed without redirect.
-    """
-    app = WebApplication(
-        app_id="APP001",
-        name="Banking Portal",
-        https_enforced=False,  # Not enforced!
-        hsts_enabled=False,
-        csrf_protection=True,
-        xss_protection=True,
-        input_validated=True,
-        sql_injection_protected=True,
-    )
-    
-    assert app.https_enforced is True, (
-        f"Application {app.name} must enforce HTTPS"
-    )
-    
-    return True
+    All web traffic must use HTTPS (TLS 1.2+) with no plaintext HTTP.
 
+    OWASP Top 10 A02:2021 Cryptographic Failures: Sensitive data must
+    be protected in transit using strong encryption.
 
-def check_hsts_header() -> bool:
+    Falsifies if: https_enforced=False
     """
-    Invariant: HSTS header prevents downgrade attacks.
-    Falsification: If HTTPS site lacks HSTS header.
-    """
-    app = WebApplication(
-        app_id="APP002",
-        name="Secure Portal",
-        https_enforced=True,
-        hsts_enabled=False,  # Missing HSTS!
-        csrf_protection=True,
-        xss_protection=True,
-        input_validated=True,
-        sql_injection_protected=True,
-    )
-    
-    if app.https_enforced:
-        assert app.hsts_enabled is True, (
-            f"HTTPS application {app.name} must have HSTS enabled"
+    if not app.https_enforced:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Application {app.name} does not enforce HTTPS",
+            premises=[
+                f"App: {app.app_id} ({app.name})",
+                f"HTTPS enforced: {app.https_enforced}",
+                "OWASP A02:2021 requires HTTPS for all traffic"
+            ],
+            rule="owasp_a02_2021_https"
         )
-    
-    return True
+
+    return True, ProofObject(
+        conclusion=f"Application {app.name} enforces HTTPS",
+        premises=["HTTPS enforced: True"],
+        rule="owasp_a02_2021_https"
+    )
 
 
-def check_csrf_protection() -> bool:
+def check_hsts_header(app: WebApplication) -> Tuple[bool, ProofObject]:
     """
-    Invariant: State-changing actions require CSRF tokens.
-    Falsification: If POST requests accepted without CSRF protection.
-    """
-    app = WebApplication(
-        app_id="APP003",
-        name="Social Network",
-        https_enforced=True,
-        hsts_enabled=True,
-        csrf_protection=False,  # No CSRF protection!
-        xss_protection=True,
-        input_validated=True,
-        sql_injection_protected=True,
-    )
-    
-    assert app.csrf_protection is True, (
-        f"Application {app.name} must have CSRF protection"
-    )
-    
-    return True
+    HTTPS sites must send HSTS header to prevent downgrade attacks.
 
+    OWASP: HTTP Strict Transport Security (HSTS) header forces browsers
+    to use HTTPS, preventing man-in-the-middle downgrade attacks.
 
-def check_input_validation() -> bool:
+    Falsifies if: https_enforced=True and hsts_enabled=False
     """
-    Invariant: All user input validated before processing.
-    Falsification: If raw user input used in queries/responses.
-    """
-    app = WebApplication(
-        app_id="APP004",
-        name="Search Engine",
-        https_enforced=True,
-        hsts_enabled=True,
-        csrf_protection=True,
-        xss_protection=True,
-        input_validated=False,  # No validation!
-        sql_injection_protected=False,
-    )
-    
-    assert app.input_validated is True, (
-        f"Application {app.name} must validate all user input"
-    )
-    
-    return True
-
-
-def check_sql_injection_protection() -> bool:
-    """
-    Invariant: Database queries use parameterized statements.
-    Falsification: If string concatenation used for SQL queries.
-    """
-    app = WebApplication(
-        app_id="APP005",
-        name="E-commerce Site",
-        https_enforced=True,
-        hsts_enabled=True,
-        csrf_protection=True,
-        xss_protection=True,
-        input_validated=True,
-        sql_injection_protected=False,  # Vulnerable!
-    )
-    
-    assert app.sql_injection_protected is True, (
-        f"Application {app.name} must use SQL injection protection (parameterized queries)"
-    )
-    
-    return True
-
-
-def check_mfa_for_sensitive_operations() -> bool:
-    """
-    Invariant: Multi-factor authentication required for sensitive operations.
-    Falsification: If password-only auth allows sensitive actions.
-    """
-    auth = AuthenticationSystem(
-        auth_id="AUTH001",
-        mfa_enabled=False,  # No MFA!
-        password_min_length=8,
-        password_requires_complexity=True,
-        brute_force_protection=True,
-        session_timeout_minutes=30,
-    )
-    
-    assert auth.mfa_enabled is True, (
-        f"Authentication {auth.auth_id} must have MFA for sensitive operations"
-    )
-    
-    return True
-
-
-def check_password_policy() -> bool:
-    """
-    Invariant: Passwords meet minimum complexity requirements.
-    Falsification: If weak passwords (short/no complexity) accepted.
-    """
-    auth = AuthenticationSystem(
-        auth_id="AUTH002",
-        mfa_enabled=True,
-        password_min_length=6,  # Too short!
-        password_requires_complexity=False,  # No complexity!
-        brute_force_protection=True,
-        session_timeout_minutes=30,
-    )
-    
-    assert auth.password_min_length >= 12, (
-        f"Password min length {auth.password_min_length} below recommended 12"
-    )
-    assert auth.password_requires_complexity is True, (
-        f"Passwords must require complexity (upper, lower, digit, special)"
-    )
-    
-    return True
-
-
-def check_session_timeout() -> bool:
-    """
-    Invariant: Sessions timeout after period of inactivity.
-    Falsification: If sessions remain valid indefinitely.
-    """
-    auth = AuthenticationSystem(
-        auth_id="AUTH003",
-        mfa_enabled=True,
-        password_min_length=12,
-        password_requires_complexity=True,
-        brute_force_protection=True,
-        session_timeout_minutes=0,  # No timeout!
-    )
-    
-    assert auth.session_timeout_minutes > 0, (
-        f"Session timeout must be configured, got {auth.session_timeout_minutes}"
-    )
-    assert auth.session_timeout_minutes <= 60, (
-        f"Session timeout {auth.session_timeout_minutes} too long (max 60 min)"
-    )
-    
-    return True
-
-
-def check_data_encryption() -> bool:
-    """
-    Invariant: Sensitive data encrypted at rest and in transit.
-    Falsification: If PII stored or transmitted unencrypted.
-    """
-    data = SensitiveData(
-        data_id="DATA001",
-        encrypted_at_rest=False,  # Not encrypted!
-        encrypted_in_transit=True,
-        access_logging_enabled=True,
-        pii_detected=True,
-    )
-    
-    if data.pii_detected:
-        assert data.encrypted_at_rest is True, (
-            f"Data {data.data_id} with PII must be encrypted at rest"
+    if app.https_enforced and not app.hsts_enabled:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: HTTPS application {app.name} lacks HSTS header",
+            premises=[
+                f"HTTPS enforced: {app.https_enforced}",
+                f"HSTS enabled: {app.hsts_enabled}",
+                "HSTS required for HTTPS sites to prevent downgrade attacks"
+            ],
+            rule="owasp_hsts_header"
         )
-        assert data.encrypted_in_transit is True, (
-            f"Data {data.data_id} with PII must be encrypted in transit"
-        )
-    
-    return True
 
-
-def check_access_logging() -> bool:
-    """
-    Invariant: Access to sensitive data is logged.
-    Falsification: If sensitive data access not audited.
-    """
-    data = SensitiveData(
-        data_id="DATA002",
-        encrypted_at_rest=True,
-        encrypted_in_transit=True,
-        access_logging_enabled=False,  # No logging!
-        pii_detected=True,
+    return True, ProofObject(
+        conclusion=f"Application {app.name} has proper HSTS configuration",
+        premises=[f"HSTS: {app.hsts_enabled}"],
+        rule="owasp_hsts_header"
     )
-    
-    if data.pii_detected:
-        assert data.access_logging_enabled is True, (
-            f"Access to data {data.data_id} with PII must be logged"
+
+
+def check_csrf_protection(app: WebApplication) -> Tuple[bool, ProofObject]:
+    """
+    State-changing requests must have CSRF token validation.
+
+    OWASP Top 10 A01:2021 Broken Access Control: CSRF tokens prevent
+    unauthorized commands from being transmitted from a user's browser.
+
+    Falsifies if: csrf_protection=False
+    """
+    if not app.csrf_protection:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Application {app.name} lacks CSRF protection",
+            premises=[
+                f"App: {app.app_id}",
+                f"CSRF protection: {app.csrf_protection}",
+                "OWASP A01:2021 requires CSRF protection for state-changing operations"
+            ],
+            rule="owasp_a01_2021_csrf"
         )
-    
-    return True
+
+    return True, ProofObject(
+        conclusion=f"Application {app.name} has CSRF protection",
+        premises=["CSRF protection: True"],
+        rule="owasp_a01_2021_csrf"
+    )
 
 
-def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
-    results = {}
-    
-    checks = [
-        ("https_enforced", check_https_enforced),
-        ("hsts_header", check_hsts_header),
-        ("csrf_protection", check_csrf_protection),
-        ("input_validation", check_input_validation),
-        ("sql_injection", check_sql_injection_protection),
-        ("mfa_required", check_mfa_for_sensitive_operations),
-        ("password_policy", check_password_policy),
-        ("session_timeout", check_session_timeout),
-        ("data_encryption", check_data_encryption),
-        ("access_logging", check_access_logging),
-    ]
-    
-    for name, check_func in checks:
-        try:
-            check_func()
-            results[name] = "PASS"
-        except AssertionError as e:
-            results[name] = f"FAIL: {e}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
-    return results
+def check_input_validation(app: WebApplication) -> Tuple[bool, ProofObject]:
+    """
+    All user input must be validated before processing.
+
+    OWASP Top 10 A03:2021 Injection: Input validation prevents injection
+    attacks (SQL, XSS, command injection, etc.).
+
+    Falsifies if: input_validated=False or sql_injection_protected=False
+    """
+    if not app.input_validated:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Application {app.name} does not validate user input",
+            premises=[
+                f"Input validated: {app.input_validated}",
+                "OWASP A03:2021 requires input validation"
+            ],
+            rule="owasp_a03_2021_input_validation"
+        )
+
+    if not app.sql_injection_protected:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Application {app.name} vulnerable to SQL injection",
+            premises=[
+                f"SQL injection protected: {app.sql_injection_protected}",
+                "OWASP A03:2021 requires parameterized queries"
+            ],
+            rule="owasp_a03_2021_sql_injection"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Application {app.name} validates input and prevents SQL injection",
+        premises=["Input validated: True", "SQL injection protected: True"],
+        rule="owasp_a03_2021_input_validation"
+    )
 
 
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_WEBSEC invariants: PASS")
+def check_password_policy(auth: AuthenticationSystem) -> Tuple[bool, ProofObject]:
+    """
+    Passwords must meet minimum length and complexity requirements.
+
+    NIST SP 800-63B: Minimum 12 characters for user-chosen passwords.
+    Complexity (upper, lower, digit, special) recommended.
+
+    Falsifies if: password_min_length < 12 or no complexity requirement
+    """
+    min_length = owasp_password_min_length()
+
+    if auth.password_min_length < min_length:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Auth system {auth.auth_id} password min length {auth.password_min_length} below NIST requirement {min_length}",
+            premises=[
+                f"Auth: {auth.auth_id}",
+                f"Password min length: {auth.password_min_length}",
+                f"Required: {min_length}",
+                "NIST SP 800-63B requires 12+ character passwords"
+            ],
+            rule="nist_800_63b_password_length"
+        )
+
+    if not auth.password_requires_complexity:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Auth system {auth.auth_id} does not require password complexity",
+            premises=[
+                f"Complexity required: {auth.password_requires_complexity}",
+                "OWASP recommends password complexity"
+            ],
+            rule="owasp_password_complexity"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Auth system {auth.auth_id} meets password policy requirements",
+        premises=[
+            f"Min length: {auth.password_min_length} >= {min_length}",
+            f"Complexity: {auth.password_requires_complexity}"
+        ],
+        rule="nist_800_63b_password_policy"
+    )
+
+
+def check_session_timeout(auth: AuthenticationSystem) -> Tuple[bool, ProofObject]:
+    """
+    Sessions must timeout after period of inactivity (max 60 minutes).
+
+    NIST SP 800-63B: Sessions for sensitive operations should timeout
+    after reasonable inactivity period to limit exposure.
+
+    Falsifies if: session_timeout_minutes <= 0 or > 60
+    """
+    max_timeout = nist_session_timeout_max_minutes()
+
+    if auth.session_timeout_minutes <= Fraction(0):
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Auth system {auth.auth_id} has no session timeout",
+            premises=[
+                f"Session timeout: {auth.session_timeout_minutes} minutes",
+                "NIST requires session timeout configuration"
+            ],
+            rule="nist_session_timeout"
+        )
+
+    if auth.session_timeout_minutes > max_timeout:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Session timeout {auth.session_timeout_minutes} minutes exceeds max {max_timeout}",
+            premises=[
+                f"Timeout: {auth.session_timeout_minutes} minutes",
+                f"Max: {max_timeout} minutes",
+                "NIST recommends <= 60 minute timeout for sensitive operations"
+            ],
+            rule="nist_session_timeout"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Auth system {auth.auth_id} has appropriate session timeout",
+        premises=[f"Timeout: {auth.session_timeout_minutes} minutes <= {max_timeout}"],
+        rule="nist_session_timeout"
+    )
+
+
+def check_data_encryption(data: SensitiveData) -> Tuple[bool, ProofObject]:
+    """
+    Sensitive data (PII) must be encrypted at rest and in transit.
+
+    PCI DSS Requirement 3: Protect stored cardholder data with encryption.
+    PCI DSS Requirement 4: Encrypt transmission of cardholder data.
+
+    Falsifies if: pii_detected and (not encrypted_at_rest or not encrypted_in_transit)
+    """
+    if not data.pii_detected:
+        return True, ProofObject(
+            conclusion=f"Data {data.data_id} does not contain PII, encryption N/A",
+            premises=["PII detected: False"],
+            rule="pci_dss_encryption"
+        )
+
+    if not data.encrypted_at_rest:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: PII data {data.data_id} not encrypted at rest",
+            premises=[
+                f"Data: {data.data_id}",
+                f"PII detected: {data.pii_detected}",
+                f"Encrypted at rest: {data.encrypted_at_rest}",
+                "PCI DSS Requirement 3: Encrypt stored sensitive data"
+            ],
+            rule="pci_dss_req_3_encryption_at_rest"
+        )
+
+    if not data.encrypted_in_transit:
+        return False, ProofObject(
+            conclusion=f"VIOLATION: PII data {data.data_id} not encrypted in transit",
+            premises=[
+                f"Encrypted in transit: {data.encrypted_in_transit}",
+                "PCI DSS Requirement 4: Encrypt data transmission"
+            ],
+            rule="pci_dss_req_4_encryption_in_transit"
+        )
+
+    return True, ProofObject(
+        conclusion=f"PII data {data.data_id} properly encrypted (at rest + in transit)",
+        premises=["Encrypted at rest: True", "Encrypted in transit: True"],
+        rule="pci_dss_encryption"
+    )

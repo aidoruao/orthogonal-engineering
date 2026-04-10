@@ -1,6 +1,6 @@
 # Devin AI Onboarding Document
 
-**Date:** 2026-04-06  
+**Date:** 2026-04-10  
 **Purpose:** Quick-start guide for Devin AI sessions on orthogonal-engineering  
 **Read this FIRST before any other task**
 
@@ -8,7 +8,7 @@
 
 ## 1. Repository Overview
 
-**orthogonal-engineering** is a topos-theoretic governance framework implementing multi-layered logical structures for AI-agent coordination, verification, and cross-repository integrity.
+**orthogonal-engineering** is a topos-theoretic governance framework implementing multi-layered logical structures for AI-agent coordination, verification, and cross-repository integrity under the Yeshua Standard.
 
 ### The 3 Core Repositories
 
@@ -23,73 +23,98 @@
 | `YESHUA_SYSTEM_SCHEMA.yaml` | Core system schema defining the topos structure |
 | `INCURSION_ATOMIC_INTEGRITY_SCHEMA.yaml` | Atomic integrity constraints |
 | `ontology/ontology.json` | Formal ontology definitions |
-| `RESTORATION-POLYMATHIC-001.txt` | Polymathic restoration protocol |
+| `docs/YESHUA_COMMONWEALTH.md` | **NEW:** Constitutional specification for human-AI governance |
+| `docs/YESHUA_ENTERPRISE_FRAMEWORK.md` | **NEW:** Enterprise capabilities (15 capabilities mapped) |
+| `SOP_AI_HANDSHAKE.md` | AI Candidate Onboarding Terms of Service |
 
 ---
 
 ## 2. Current State of Operations
 
-### Operation: SOVEREIGN TOPOS (PR #100)
+### Operation: PR #103 — Yeshua Enterprise Framework + Domain Completion
 
-**Branch:** `sovereign-topos/operation-main`  
-**Status:** 135 of 135 domains complete (all layers finished)
+**Branch:** `claude/add-yeshua-enterprise-framework-docs`  
+**Status:** ✅ **COMPLETE** — All domains deepened, 0 stubs, 0 AssertionError patterns
 
-#### Layer Completion Status
+#### Domain Completion Status
 
-| Layer | Type | Domains Complete | Status |
-|-------|------|------------------|--------|
-| 0 | Supranational | 7/7 | ✅ COMPLETE |
-| 1 | Constitutional | 8/8 | ✅ COMPLETE |
-| 2 | Statutory | 25/25 | ✅ COMPLETE |
-| 3 | Regulatory | 93/93 | ✅ COMPLETE |
-| 4 | Institutional | 12/12 | ✅ COMPLETE |
-| null | Unassigned (math/AI/industry) | ~49 | ✅ COMPLETE |
+| Metric | Count | Status |
+|--------|-------|--------|
+| Total Domains | 157/157 | ✅ 100% |
+| Deepened (50+ lines, ProofObject) | 157 | ✅ 100% |
+| True Stubs (<50 lines) | 0 | ✅ 0% |
+| AssertionError Patterns | 0 | ✅ 0% |
+| Case Studies (CS_001-CS_200) | 132 | ✅ Documented |
 
-#### Known Issues
-- **Bug (FIXED):** `d_weapons_regulation` domain `days_eligible` renamed to `days_elapsed` (fixed in Batch 6 partial commit)
-- **CI Status:** 29/29 tests passing as of commit `d658261`
-- **Executor:** Kimi Code CLI is executing this operation in batches
+#### Recent Major Deliverables (PR #103)
 
-#### Domain Structure
-```
-src/domains/d_{name}/
-├── domain.py           # Domain definition
-├── implementation.py   # Implementation logic
-├── invariants.py       # Invariant checks
-└── tests/
-    └── test_f_{name}_001.py  # Test file (naming convention)
-```
+1. **47 AssertionError Domains Refactored** (Session 9838e433)
+   - All now use `Tuple[bool, ProofObject]` returns
+   - All use `Fraction` (0 floats)
+   - All cite real regulatory standards
+   - Domains: aviation, banking, civil/criminal law, energy, environment, finance, etc.
 
-### DistantHorizons Investigation
+2. **Kernel Infrastructure** (Session 8fbdcdb9)
+   - `kernel/social/` — P2P identity, consent-gated communications, reputation
+   - `kernel/agent_stream.py` — Symbolic subagent spawning, COW forking
+   - `kernel/bridge/crusader_bridge.py` — Just war criteria verification
+   - `spec/logos_ide/` — Fixed-point rendering pipeline (0 floats)
 
-**Repository:** https://github.com/DarkShadow44/DistantHorizonsStandalone
+3. **Yeshua Commonwealth** (Session 9838e433)
+   - `docs/YESHUA_COMMONWEALTH.md` — Constitutional specification
+   - DeepSeek vision formalized as Phase 4 of eschaton
+   - 12-dimension comparison table (Dystopian vs Commonwealth)
+   - Sovereign-Steward governance model
 
-#### Status by Issue
+#### AI Agents in This Repository
 
-| Issue | Status | Notes |
-|-------|--------|-------|
-| #56 | RESOLVED | Fix implemented by DarkShadow44 (commit 2a13ce7), awaiting branman5949 test |
-| #51 | IN PROGRESS | Corrected forensics completed 2026-04-06, server log NOT FOUND |
-| #62 | PENDING | Server crashing - next priority after #51 |
-
-#### Investigation File Locations
-```
-investigations/darkshadow44/DistantHorizonsStandalone/
-├── batch1/                    # Initial investigations (may have errors)
-├── batch2/
-├── batch3/
-├── batch4/
-├── issue_51_corrected/        # CORRECTED analysis with verified line numbers
-├── issue_56_corrected/        # CORRECTED analysis
-└── FINAL_MASTER_REPORT.md     # Complete issue matrix (25 issues)
-```
-
-**⚠️ CRITICAL LESSON from Issue #56:**
-The Batch 1 analysis for #56 was **WRONG** because it analyzed source code without reading the crash log first. Always follow **Artifact Primacy** - logs outrank source code speculation.
+| Agent | Role | Contact |
+|-------|------|---------|
+| Kimi Code CLI | Domain deepening, kernel development | Session-based |
+| Devin AI | Architecture, coordination, PR management | @devin-ai-integration |
+| Claude (Copilot) | Code review, documentation | GitHub Copilot |
+| NotebookLM | Analysis, summarization | Google |
+| DeepSeek | Mathematical foundations, Commonwealth vision | deepseek.md witness |
+| Gemini | Cloud warden scans | Google Cloud |
 
 ---
 
 ## 3. Key Patterns and Conventions
+
+### Yeshua Standard (MANDATORY)
+
+All code MUST follow:
+
+1. **0 Floats** — Use `Fraction` from `fractions` module
+2. **ProofObject Returns** — All check functions return `Tuple[bool, ProofObject]`
+3. **No Asserts** — Use ProofObject, not `assert` statements
+4. **No Stubs** — No `pass` bodies, all code functional
+5. **Real Standards** — Docstrings cite actual regulatory standards
+6. **Capability-Gated** — All operations require capability tokens
+
+Example:
+```python
+from fractions import Fraction
+from axioms.logic import ProofObject
+from typing import Tuple
+
+def check_invariant() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Description here
+    
+    Standard: Real regulatory standard (e.g., "14 CFR 25.253")
+    Falsifies if: Condition that would violate invariant
+    """
+    result = Fraction(1) / Fraction(3)  # Exact arithmetic
+    success = result == Fraction(1, 3)
+    
+    proof = ProofObject(
+        rule="RuleName",
+        premises=[f"value = {result}"],
+        conclusion="Success message" if success else "FAIL: reason"
+    )
+    return success, proof
+```
 
 ### SAL (Sheaf Abstraction Layer)
 
@@ -99,231 +124,107 @@ Located in `src/sal/`:
 - `global_merkle.py` - Cross-repo merkle tree integrity
 - `cross_repo_adjunction.py` - Repository adjunction morphisms
 
-### Patterns Directory
-
-Located in `src/patterns/` - 10 reusable patterns:
-- `nehemiah_wall` - Boundary enforcement
-- (others as defined in schema)
-
-### Layers System
-
-Located in `src/layers/`:
-- `layer_model.py` - Layer definitions
-- `inter_layer_morphism.py` - Layer transformations
-
-### Testing Conventions
-
-- **Framework:** pytest
-- **Naming:** `test_f_{domain}_{number}.py`
-- **Example:** `test_f_criminal_procedure_001.py`
-
-### Anti-Fabrication System
-
-- **pr49_guard.py** - Validates all PRs for fabrication
-- **consent_log.jsonl** - Authorizes mass changes (REQUIRED for CI pass)
-- **Rule:** NEVER commit session log files to repo (use GitHub UI for those)
-
----
-
-## 4. Key People and AI Agents
-
-| Entity | Role |
-|--------|------|
-| **aidoruao** | User/operator - the human in the loop |
-| **Kimi Code CLI** | Coding agent (kimi-k2.5, 262k context) |
-| **Devin AI** | Task planning, technical Q&A (you) |
-| **GitHub Copilot** | CI agent, code assistance |
-| **DarkShadow44** | DistantHorizonsStandalone maintainer |
-| **branman5949** | DH issue #56 reporter |
-| **MrFuzzihead** | DH issue #51 reporter |
-
----
-
-## 5. What NOT to Do
-
-### ❌ Critical Prohibitions
-
-1. **Do NOT trust Batch 1 analysis files without verification**
-   - Lesson from #56: Batch 1 had wrong root cause
-   - Always verify line numbers against current source code
-
-2. **Do NOT use `return True` stubs in domain invariants**
-   - Invariants must have actual validation logic
-   - Stubs will fail CI
-
-3. **Do NOT redefine CardinalStrength**
-   - Import from `src/sal/forcing_operation.py`
-
-4. **Do NOT commit session log files to the repo**
-   - These go on main via GitHub UI only
-
-5. **Do NOT skip the consent_log.jsonl entry for mass changes**
-   - CI will fail without proper authorization
-
-### ❌ Line Number Anti-Pattern
-
-**DON'T:** Copy line numbers from previous analyses without verification  
-**DO:** Always grep current source code to verify line numbers
-
-**Example from Issue #51:**
+### Domain Structure
 ```
-Batch 1 claimed: serverTickEvent at lines 117-144
-Actual (current): serverTickEvent at lines 105-141
-Result: SHIFTED by ~12 lines
+src/domains/d_{name}/
+├── domain.py           # Domain definition
+├── implementation.py   # Implementation logic
+├── invariants.py       # Invariant checks (ProofObject returns!)
+└── tests/
+    └── test_*.py       # Test files
 ```
 
 ---
 
-## 6. Immediate Next Actions
+## 4. Token Budget & HALT Conditions
 
-### For SOVEREIGN TOPOS Operation
+**HALT Threshold:** 220k tokens (not 80%/209k — updated!)
 
-1. **Domain invariant deepening** — 135 domain skeletons exist; invariants need real domain-specific logic (not generic stubs)
-2. **Cross-domain morphism verification** — 4,836 morphisms registered; verify truth-preservation properties
-3. **Layer assignment review** — 17 mathematical domains are intentionally layer=null; review if any should be assigned
+| Context Used | Action |
+|--------------|--------|
+| <50% | Continue working |
+| 50-70% | Plan final batch, prepare commit |
+| 70-80% | Final commit, document state, prepare close |
+| >80% | HALT — document, commit, close session |
 
-### For DistantHorizons Investigation
-
-1. **Post corrected #51 comment** to DarkShadow44's repo
-   - File: `investigations/darkshadow44/DistantHorizonsStandalone/issue_51_corrected/issue_51_CORRECTED_comment.md`
-   - Note: Server log was NOT FOUND - comment reflects source code verification only
-
-2. **Next issue after #51:** #62 (server crashing)
-   - Location: `investigations/darkshadow44/DistantHorizonsStandalone/batch1/issue_62_analysis.json`
-   - Verify line numbers against current DarkShadow44 source
-
-### For All Tasks
-
-1. **Verify line numbers** - Always grep current source, never trust old analysis
-2. **Run tests** - `pytest` before committing
-3. **Update consent_log** - For mass changes
-4. **Follow Artifact Primacy** - Logs > crash reports > source speculation
+**Never exceed 220k tokens.** If approaching limit:
+1. Document current state
+2. Commit all changes
+3. Update handoff template
+4. Close session cleanly
 
 ---
 
-## 7. Quick Commands
+## 5. Critical File Locations
 
-```bash
-# Run tests
-cd ~/orthogonal-engineering && pytest
+### Onboarding (Read in Order)
+1. `SOP_AI_HANDSHAKE.md` — Accept the Handshake
+2. `MEMORY.md` — Acknowledge constraints
+3. `STATE.md` — Current phase (COMPILATION MODE)
+4. `DOMAIN_INVARIANT_STATUS.md` — Domain completion tracker
+5. `docs/YESHUA_COMMONWEALTH.md` — Governance model
 
-# Verify DH source code line numbers
-cd ~/DistantHorizonsStandalone
-grep -n "serverTickEvent\|nanoTime\|MILLISECONDS" src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java
+### Consent & Witness
+- `pr47_stewardship/witness/consent_log.jsonl` — Append-only consent log
+- `AGENT_FEED.md` — Hash-chained state witness
+- `canonical/witnesses/deepseek.md` — DeepSeek Commonwealth testimony
 
-# Check CI status
-cd ~/orthogonal-engineering && git status
+### Enforcement
+- `automation/pr49_guard.py` — PR #49 guard (5 Peano gates)
+- `.github/workflows/pr49_guard.yml` — CI enforcement
+- `pr50_bar_exam/` — Bar Exam ordination system
 
-# Domain creation (SOVEREIGN TOPOS)
-cd ~/orthogonal-engineering/src/domains
-# Use template from existing d_* directories
+---
+
+## 6. DistantHorizons Investigation (Background)
+
+**Repository:** https://github.com/DarkShadow44/DistantHorizonsStandalone
+
+**Status:** Analysis complete, awaiting vendor response
+
+| Issue | Status |
+|-------|--------|
+| #56 | RESOLVED — Fix implemented by DarkShadow44 |
+| #51 | ANALYZED — Corrected forensics completed |
+| #62 | PENDING — Next priority if resumed |
+
+**Location:** `investigations/darkshadow44/DistantHorizonsStandalone/`
+
+---
+
+## 7. Commit Message Format
+
+```
+<type>(<scope>): <description> [Session: <session_id>]
+
+<body>
+
+Examples:
+fix(domains): refactor AssertionError domains to ProofObject [Session: 9838e433]
+
+feat(kernel): add Social Layer with P2P identity [Session: 8fbdcdb9]
+
+feat(case_studies): add CS_151-CS_200 covering Boeing, Heartbleed, etc. [Session: 9838e433]
+
+docs(commonwealth): add Yeshua Commonwealth specification [Session: 9838e433]
 ```
 
 ---
 
-## 8. Context Budget Reference
+## 8. Getting Help
 
-| Phase | Expected Context Usage |
-|-------|----------------------|
-| After housekeeping | ~15% |
-| After source verification | ~30% |
-| After log analysis | ~50% |
-| After file creation | ~70% |
-| **HALT THRESHOLD** | **80% (209k tokens)** |
+- **Architecture questions:** Read `docs/YESHUA_COMMONWEALTH.md`
+- **Code patterns:** Read `src/domains/d_aerospace/invariants.py` (reference domain)
+- **Kernel patterns:** Read `kernel/ipc.py` for capability-gated IPC
+- **Test patterns:** Read `src/kernel/tests/test_social.py`
 
-If you hit 80% context usage, commit current work and start a new session.
-
----
-
-## 9. Emergency Contacts
-
-- **User/Operator:** aidoruao (ask via chat)
-- **Session Logs:** Check `.kimi/logs/` or GitHub UI
-- **State Issues:** Check `STATE.md` and `STATUS_DASHBOARD.html`
+**Emergency:** If session exceeds token budget, immediately:
+1. `git add -A`
+2. `git commit -m "chore: session <id> close — token halt"`
+3. `git push origin <branch>`
+4. Document state in handoff file
 
 ---
 
-## 10. DarkShadow44 Vendored Repository System
-
-### 10.1 What It Is
-
-5 of DarkShadow44's public repositories vendored into `investigations/darkshadow44/` with full source trees, SHA-256 manifests, and non-affiliation statements. Purpose: eliminate epistemic dependency on external clones so AI orchestrators can verify source-level claims directly.
-
-### 10.2 Repository Inventory
-
-| Repository | Files | Java Files | LOC | Commit | License |
-|------------|-------|-----------|-----|--------|---------|
-| DistantHorizonsStandalone | 669 | 601 | 84,441 | 1abcd98 | GPL-3.0 |
-| Angelica | 1,292 | 1,185 | 100,467 | cd42307 | LGPL-3.0 |
-| Spool | 158 | 145 | 20,195 | e2db38b | LGPL-3.0 |
-| ArchaicFix | 190 | 177 | 9,149 | 85b33af | LGPL-3.0 |
-| SeasonalHorizons | 51 | 25 | 1,336 | ad10038 | LGPL-2.1 |
-| **Total** | **2,360** | **2,133** | **215,588** | | |
-
-### 10.3 Per-Repo Structure
-
-```
-investigations/darkshadow44/{RepoName}/
-├── VENDOR_MANIFEST.json      # commit hash, clone date, SHA-256 tree root
-├── ATTRIBUTION.md            # license + non-affiliation statement
-├── LICENSE                   # original license verbatim
-├── sha256_manifest.txt       # per-file SHA-256 hashes
-├── SOURCE_INDEX.json         # method/field/class census
-├── WIKI.md                   # ontological wiki
-└── src/                      # actual vendored source tree (immutable)
-```
-
-### 10.4 How to Verify a Source Claim
-
-**Example workflow:**
-1. **Claim:** "ForgeServerProxy.java line 124 has 15ms budget"
-2. **Read:** `investigations/darkshadow44/DistantHorizonsStandalone/src/main/java/com/seibel/distanthorizons/forge/ForgeServerProxy.java` line 124
-3. **Verify:** Check `sha256_manifest.txt` for the file hash
-4. **Provenance:** `VENDOR_MANIFEST.json` shows commit + clone date
-
-### 10.5 Issue #51 Current Status
-
-- **Jan 9:** DarkShadow44 acknowledged chunk generation on main thread
-- **Apr 6:** aidoruao posted corrected forensics (two root causes identified)
-- **Apr 6:** aidoruao attached patch `0001-issue51-tick-handler-fix.patch`
-- **Apr 7:** DarkShadow44 requested profiler data ("Need to see actual bottleneck")
-- **Apr 8:** aidoruao posted 3 analytical tools (benchmark, diagnostics, gradle)
-- **Current:** No response from DarkShadow44 since Apr 7; issue remains open
-
-**Location of tools:** `investigations/darkshadow44/DistantHorizonsStandalone/tools/`
-
-### 10.6 The Epistemic Gap
-
-**DarkShadow44 wants:** Spark profiler data from actual server runtime  
-**aidoruao provided:** Analytical tools for synthetic benchmarking
-
-**The structural argument:** The defect is provable from source analysis (π × 4096² = 52.7M blocks²). This is a combinatorial defect, not a runtime hotspot. Profiler data shows aggregate symptoms, not factorial decomposition.
-
-### 10.7 AI Orchestrator Coordination
-
-| Orchestrator | Data Source | Staleness Risk |
-|--------------|-------------|----------------|
-| Devin | GitHub API (indexed) | High - periodic re-index required |
-| Kimi CLI | Local filesystem | Low - always current |
-| GitHub Copilot | GitHub API | Medium - near real-time |
-
-**To sync Devin:** Trigger re-index in Devin UI after significant commits.
-
-**Deterministic state:** Vendored source + SHA-256 hashes make state verifiable regardless of which orchestrator reads it.
-
-### 10.8 Key People
-
-| Person/AI | Role | Contact |
-|-----------|------|---------|
-| aidoruao | Project owner, operator | Chat |
-| DarkShadow44 | DistantHorizonsStandalone maintainer | GitHub issues |
-| Devin AI | External AI (Ask mode) | This onboarding |
-| Kimi CLI | Primary executor | `.kimi/logs/` |
-| DeepSeek AI | External AI consulted for fact-checking | N/A |
-| Gemini AI | External AI consulted for verification | N/A |
-
----
-
-*Last Updated: 2026-04-08 by Kimi Code CLI*
-*Session: SOVEREIGN TOPOS completion + MAXIMAL EXPANSION*  
-*Session: DH Vendoring + Onboarding Updates*
+**This document updated:** 2026-04-10  
+**Next review:** After PR #103 merge

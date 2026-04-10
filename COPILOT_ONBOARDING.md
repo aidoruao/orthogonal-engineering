@@ -1,8 +1,8 @@
 # COPILOT_ONBOARDING.md — GitHub Copilot / AI Agent Onboarding
 
-**Version:** 1.0  
-**Applies to:** GitHub Copilot, Claude, GPT, and any AI agent working in this repository  
-**Updated:** 2026-04-08  
+**Version:** 2.0  
+**Applies to:** GitHub Copilot, Claude, GPT, Kimi, Devin, and any AI agent working in this repository  
+**Updated:** 2026-04-10  
 **Status:** ACTIVE — REQUIRED READING
 
 ---
@@ -68,9 +68,22 @@ This script:
 |---|------|---------|
 | 1 | `MEMORY.md` | Durable facts, constraints, and architectural decisions |
 | 2 | `STATE.md` | Established proofs, current phase, closed decisions, open questions |
-| 3 | `HANDOFF_TEMPLATE.md` | Template for writing session handoff summaries |
-| 4 | `AGENT.md` | Glass-Box Boundary enforcement rules |
-| 5 | `AI_INTERACTION_CONTRACT.md` | AI interaction protocol |
+| 3 | `SOP_AI_HANDSHAKE.md` | **REQUIRED:** AI Candidate Onboarding Terms of Service |
+| 4 | `docs/YESHUA_COMMONWEALTH.md` | Constitutional specification for human-AI governance |
+| 5 | `docs/YESHUA_ENTERPRISE_FRAMEWORK.md` | Enterprise capabilities (15 capabilities mapped) |
+| 6 | `HANDOFF_TEMPLATE.md` | Template for writing session handoff summaries |
+| 7 | `AGENT.md` | Glass-Box Boundary enforcement rules |
+| 8 | `AI_INTERACTION_CONTRACT.md` | AI interaction protocol |
+
+### Step 5 — Review kernel infrastructure (for architectural work)
+
+| Module | Location | Purpose |
+|--------|----------|---------|
+| Social Layer | `kernel/social/` | P2P identity, consent-gated comms, reputation |
+| Agent Stream | `kernel/agent_stream.py` | Symbolic subagent spawning, COW forking |
+| Crusader Bridge | `kernel/bridge/crusader_bridge.py` | Just war criteria verification |
+| IPC | `kernel/ipc.py` | Typed channels, capability-gated IPC |
+| Logos IDE | `spec/logos_ide/` | Fixed-point rendering, UI state management |
 
 ### Step 5 — Acknowledge your starting context
 
@@ -314,7 +327,33 @@ python tools/state_witness/generate_feed_entry.py --verify
 
 ---
 
-## 10. DarkShadow44 Vendored Repositories
+## 10. Kimi Code CLI Integration
+
+### 10.1 Session Format
+
+Kimi Code CLI sessions use identifier format: `kimi-cli-<uuid>`
+
+Example: `kimi-cli-8fbdcdb9-7ab9-403c-a146-8e4224b8ba29`
+
+### 10.2 For Devin Coordinating with Kimi
+
+See `docs/DEVIN_ONBOARDING.md` for:
+- How to onboard Kimi sessions
+- Paste-in format for Kimi
+- Commit stamping requirements
+- Token budget coordination
+
+### 10.3 For Kimi Sessions
+
+See `docs/KIMI_ONBOARDING.md` for:
+- Quick start commands
+- Session identity format
+- Commit message templates
+- Token budget management
+
+---
+
+## 11. DarkShadow44 Vendored Repositories
 
 ### 10.1 Overview
 

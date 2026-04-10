@@ -1,33 +1,84 @@
-"""D_CROSS_MODEL_BENCHMARKS implementation — Cross-Model AI Benchmarks
+"""D_CROSS_MODEL_BENCHMARKS implementation — Multi-model comparison, reproducibility
 
-Layer: TBD (Unassigned)
+Layer: 3 (Regulatory/Research)
+CardinalStrength: PREDICATIVE
+
+Cross-model evaluation, benchmark consistency, normalization, cherry-picking detection.
+Liang et al. (2022): Holistic Evaluation of Language Models (HELM).
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from enum import Enum, auto
-from datetime import datetime
+from dataclasses import dataclass
 from fractions import Fraction
+from enum import Enum
+from typing import List, Optional
 
-class Cross_Model_BenchmarStatus(Enum):
-    """Status for Cross-Model AI Benchmarks."""
-    COMPLIANT = auto()
-    NON_COMPLIANT = auto()
-    PENDING = auto()
+
+class NormalizationType(Enum):
+    """Score normalization method"""
+    Z_SCORE = 1
+    MIN_MAX = 2
+    PERCENTILE = 3
+    RAW = 4
+
 
 @dataclass
-class Cross_Model_BenchmarRecord:
-    """Record in Cross-Model AI Benchmarks."""
-    record_id: str
-    created_at: datetime = field(default_factory=datetime.now)
-    status: Cross_Model_BenchmarStatus = Cross_Model_BenchmarStatus.PENDING
+class ModelEval:
+    """Model evaluation result"""
+    model_id: str
+    benchmark_id: str
+    raw_score: Fraction
+    normalized_score: Fraction
+    normalization_type: NormalizationType
+    num_runs: int
 
-class Cross_Model_BenchmarChecker:
-    """Checker for Cross-Model AI Benchmarks."""
-    def check_compliance(self, record: Cross_Model_BenchmarRecord) -> Dict:
-        return {
-            "record_id": record.record_id,
-            "compliant": record.status == Cross_Model_BenchmarStatus.COMPLIANT,
-            "status": record.status.name,
-        }
+
+@dataclass
+class CrossModelComparison:
+    """Comparison across multiple models"""
+    comparison_id: str
+    model_ids: List[str]
+    benchmark_id: str
+    reproducible: bool
+    cherry_picked: bool
+
+
+@dataclass
+class BenchmarkCoverage:
+    """Coverage of evaluation across benchmarks"""
+    evaluation_id: str
+    model_id: str
+    num_benchmarks_evaluated: int
+    num_benchmarks_total: int
+    coverage_fraction: Fraction
+
+
+@dataclass
+class OrderingConsistency:
+    """Model ranking consistency check"""
+    consistency_id: str
+    model_a_id: str
+    model_b_id: str
+    benchmark_ids: List[str]
+    consistent: bool
+    num_reversals: int
+
+
+def min_benchmarks_threshold() -> int:
+    """Minimum number of benchmarks for valid comparison"""
+    return 5
+
+
+def min_runs_reproducibility() -> int:
+    """Minimum runs for reproducibility"""
+    return 3
+
+
+def cherry_pick_threshold() -> Fraction:
+    """Threshold for cherry-picking detection (< 50% coverage)"""
+    return Fraction(1, 2)
+
+
+def consistency_threshold() -> Fraction:
+    """Maximum allowed ranking reversals (< 20%)"""
+    return Fraction(1, 5)
