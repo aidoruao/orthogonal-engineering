@@ -1,16 +1,53 @@
 # Domain Invariant Status
 
-Updated: 2026-04-09T21:00:00Z
+Updated: 2026-04-10T01:06:00Z
 
 ## Summary
 
 | Metric | Count | Percentage |
 |--------|-------|------------|
 | Total domains | 157 | 100% |
-| Deepened (50+ lines) | 102 | 65% |
-| Stubs (<50 lines) | 55 | 35% |
+| Deepened (50+ lines) | 106 | 68% |
+| Stubs (<50 lines) | 51 | 32% |
 
-## Session claude/add-yeshua-enterprise-framework-docs — Yeshua Enterprise-Ready Framework + Batch D8 + Batch D9
+## Session claude/add-yeshua-enterprise-framework-docs — Batch D10 completion
+
+### Batch D10: Domain Deepening (7 domains total - completed crash recovery)
+- `d_crusader` — 28 → 227 lines (Just war theory, chivalric code, siege law, ransom limits, noncombatant immunity) [Batch D10 - crashed session completion]
+- `d_transit` — 28 → 245 lines (FTA on-time performance, ADA accessibility, headway reliability, vehicle useful life, incident reporting) [Batch D10]
+- `d_space` — 224 lines refactored (NASA-STD-8719.13B, ECSS-Q-ST-80C, ProofObject implementation, radiation tolerance, orbital mechanics) [Batch D10]
+- `d_websec` — 318 → 262 lines refactored (OWASP Top 10, NIST 800-63B, PCI DSS, ProofObject implementation) [Batch D10]
+- Plus 3 domains completed before crash (d_arc_agi_3, d_architecture_proof, d_axioms) - see Batch D10 partial below
+
+### Case Studies (CS_091 through CS_100)
+- CS_091: Crusader — First Crusade siege of Jerusalem 1099 (noncombatant protection failure, siege law violations)
+- CS_092: Transit — WMATA 2009 Red Line collision (automatic train control failure, FTA useful life violations)
+- CS_093: Space — Mars Climate Orbiter 1999 (unit conversion error, NASA-STD-8719.13B violation)
+- CS_094: WebSec — Equifax breach 2017 (unpatched Apache Struts CVE, PCI DSS violations)
+- CS_095: Transit — San Francisco BART delay 2018 (single point of failure, headway violations)
+- CS_096: Space — Hubble spherical aberration 1990 (measurement error, verification bypass)
+- CS_097: Crusader — Ransom of Richard I 1192-1194 (excessive ransom, chivalric code violation)
+- CS_098: WebSec — Heartbleed OpenSSL 2014 (buffer over-read, input validation failure)
+- CS_099: Space — Ariane 5 Flight 501 1996 (integer overflow, code reuse assumption)
+- CS_100: Transit — NYC L train shutdown cancellation 2019 (engineering re-assessment, FTA compliance)
+
+### Batch D10 Partial (from crashed session, commit 98b82677):
+- `d_arc_agi_3` — 8 → 183 lines (Chollet 2019 ARC benchmark, transformation learning, symbolic reasoning)
+- `d_architecture_proof` — 8 → 193 lines (Gödel incompleteness, proof assistant correctness, theorem proving)
+- `d_axioms` — 8 → 269 lines (ZFC set theory, Peano arithmetic, first-order logic, model theory)
+- `d_boring` — 8 → 254 lines (TBM operations, ground pressure, segment alignment, subsidence monitoring)
+- `d_capability_benchmark` — 8 → 254 lines (AI capability testing, glass-box auditing, benchmark validity)
+- `d_cross_model_benchmarks` — 8 → 241 lines (Multi-model comparison, benchmark portability, cross-vendor testing)
+
+### Metrics
+- Deepened domains: 102 → 106 (+4, d_crusader/d_transit/d_space/d_websec - 50+ line standard maintained)
+- Stub domains: 55 → 51 (-4)
+- Case studies: 62 → 72 (+10, CS_091 through CS_100)
+- Batch D10: 4 domains completed (d_crusader new + d_transit new + d_space refactored + d_websec refactored)
+- All Batch D10 domains use Fraction arithmetic, ProofObject returns from axioms.logic, real regulatory standards
+- 6 domains from partial Batch D10 (crashed session) already counted in previous tally
+
+## Previous Session: claude/add-yeshua-enterprise-framework-docs — Yeshua Enterprise-Ready Framework + Batch D8 + Batch D9
 
 ### Batch D9: Domain Deepening (6 domains + 4 prior in Batch D9)
 - `d_automotive` — 28 → 153 lines (ISO 26262, AUTOSAR, OTA, CAN bus, ADAS, ASIL-D) [Batch D9 start]

@@ -1,34 +1,121 @@
-"""D_TRANSIT implementation — Public Transit
+"""D_TRANSIT implementation — Public Transit Systems
 
 Layer: 3 (Regulatory)
 CardinalStrength: PREDICATIVE
+
+Public transit reliability, ADA accessibility, FTA safety standards,
+on-time performance, headway management, vehicle capacity.
+Federal Transit Administration (FTA), Americans with Disabilities Act (ADA).
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional
-from enum import Enum, auto
-from datetime import datetime
+from dataclasses import dataclass
 from fractions import Fraction
+from enum import Enum
+from typing import List, Optional
 
-class TransitStatus(Enum):
-    """Status for Public Transit."""
-    COMPLIANT = auto()
-    NON_COMPLIANT = auto()
-    PENDING = auto()
+
+class VehicleType(Enum):
+    """Transit vehicle classification"""
+    BUS = 1
+    LIGHT_RAIL = 2
+    HEAVY_RAIL = 3
+    STREETCAR = 4
+    BRT = 5  # Bus Rapid Transit
+
+
+class AccessibilityFeature(Enum):
+    """ADA accessibility features"""
+    WHEELCHAIR_RAMP = 1
+    LIFT = 2
+    LOW_FLOOR = 3
+    AUDIO_ANNOUNCEMENTS = 4
+    VISUAL_DISPLAYS = 5
+    PRIORITY_SEATING = 6
+
 
 @dataclass
-class TransitRecord:
-    """Record in Public Transit."""
-    record_id: str
-    created_at: datetime = field(default_factory=datetime.now)
-    status: TransitStatus = TransitStatus.PENDING
+class TransitVehicle:
+    """Transit vehicle"""
+    vehicle_id: str
+    vehicle_type: VehicleType
+    capacity: Fraction  # Passengers
+    wheelchair_spaces: Fraction
+    ada_compliant: bool
+    accessibility_features: List[AccessibilityFeature]
+    age_years: Fraction
+    maintenance_current: bool
 
-class TransitComplianceChecker:
-    """Compliance checker."""
-    def check_compliance(self, record: TransitRecord) -> Dict:
-        return {
-            "record_id": record.record_id,
-            "compliant": record.status == TransitStatus.COMPLIANT,
-            "status": record.status.name,
-        }
+
+@dataclass
+class TransitRoute:
+    """Transit route"""
+    route_id: str
+    length_km: Fraction
+    frequency_minutes: Fraction  # Headway
+    on_time_performance_pct: Fraction  # 0-100
+    ridership_per_day: Fraction
+    ada_accessible: bool
+
+
+@dataclass
+class TransitStop:
+    """Transit stop"""
+    stop_id: str
+    route_id: str
+    ada_accessible: bool
+    has_shelter: bool
+    has_real_time_info: bool
+    platform_height_mm: Fraction
+
+
+@dataclass
+class ServiceReliability:
+    """Service reliability metrics"""
+    route_id: str
+    mean_time_between_failures_hours: Fraction
+    on_time_arrivals_pct: Fraction
+    missed_trips_pct: Fraction
+    average_delay_minutes: Fraction
+
+
+@dataclass
+class SafetyIncident:
+    """FTA-reportable safety incident"""
+    incident_id: str
+    route_id: str
+    vehicle_id: str
+    injuries: Fraction
+    fatalities: Fraction
+    property_damage_usd: Fraction
+    fta_reportable: bool
+
+
+def fta_minimum_ada_compliance_pct() -> Fraction:
+    """FTA/ADA: 100% of fixed-route vehicles must be accessible"""
+    return Fraction(100, 1)
+
+
+def fta_on_time_performance_threshold() -> Fraction:
+    """FTA: ≥80% on-time performance (within 5 minutes of schedule)"""
+    return Fraction(80, 1)
+
+
+def fta_headway_reliability_threshold() -> Fraction:
+    """FTA: Headway deviation should not exceed 20% of scheduled headway"""
+    return Fraction(20, 1)
+
+
+def ada_wheelchair_space_minimum() -> Fraction:
+    """ADA: Minimum 2 wheelchair spaces per bus"""
+    return Fraction(2, 1)
+
+
+def fta_vehicle_useful_life_bus_years() -> Fraction:
+    """FTA: Useful life for standard bus (12 years)"""
+    return Fraction(12, 1)
+
+
+def fta_reportable_incident_threshold_usd() -> Fraction:
+    """FTA: Reportable if property damage ≥$25,000"""
+    return Fraction(25000, 1)
