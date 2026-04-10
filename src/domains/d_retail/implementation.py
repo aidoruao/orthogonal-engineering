@@ -1,33 +1,105 @@
-"""D_RETAIL implementation — Retail
+"""D_RETAIL implementation — Retail Compliance, Consumer Protection, Safety
 
-Layer: TBD (Unassigned)
+Layer: 3 (Commercial)
+CardinalStrength: PREDICATIVE
+Source: CPSC, FTC, State retail laws, PCI DSS
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import List, Dict, Optional
 from enum import Enum, auto
-from datetime import datetime
 from fractions import Fraction
 
-class RetailStatus(Enum):
-    """Status for Retail."""
-    COMPLIANT = auto()
-    NON_COMPLIANT = auto()
-    PENDING = auto()
+
+class ProductCategory(Enum):
+    """Product categories for safety tracking."""
+    CHILDREN_PRODUCTS = auto()
+    FOOD = auto()
+    ELECTRONICS = auto()
+    APPAREL = auto()
+    HOME_GOODS = auto()
+
+
+class RecallStatus(Enum):
+    """CPSC recall status."""
+    NO_RECALL = auto()
+    VOLUNTARY_RECALL = auto()
+    MANDATORY_RECALL = auto()
+    PENDING_INVESTIGATION = auto()
+
 
 @dataclass
-class RetailRecord:
-    """Record in Retail."""
-    record_id: str
-    created_at: datetime = field(default_factory=datetime.now)
-    status: RetailStatus = RetailStatus.PENDING
+class RetailProduct:
+    """Retail product with safety tracking."""
+    product_id: str
+    sku: str
+    category: ProductCategory
+    
+    # Safety
+    cpsc_compliant: bool
+    recall_status: RecallStatus
+    safety_testing_complete: bool
+    
+    # Pricing
+    base_price: Fraction
+    sale_price: Optional[Fraction]
+    cost: Fraction
+    
+    # Inventory
+    units_in_stock: int
+    units_sold_annual: int
+    
+    def get_margin(self) -> Fraction:
+        """Calculate profit margin."""
+        if self.base_price == 0:
+            return Fraction(0)
+        return (self.base_price - self.cost) / self.base_price
+    
+    def is_profitable(self) -> bool:
+        """Check if product is profitable."""
+        return self.base_price > self.cost
 
-class RetailChecker:
-    """Checker for Retail."""
-    def check_compliance(self, record: RetailRecord) -> Dict:
-        return {
-            "record_id": record.record_id,
-            "compliant": record.status == RetailStatus.COMPLIANT,
-            "status": record.status.name,
-        }
+
+@dataclass
+class RetailStore:
+    """Retail store compliance and safety."""
+    store_id: str
+    name: str
+    
+    # Safety inspections
+    last_safety_inspection: str
+    safety_violations: int
+    fire_inspection_passed: bool
+    accessibility_compliant: bool
+    
+    # PCI DSS
+    pci_compliant: bool
+    last_pci_audit: str
+    data_breaches_annual: int
+    
+    # Returns
+    returns_annual: int
+    sales_annual: int
+    
+    def get_return_rate(self) -> Fraction:
+        """Calculate return rate."""
+        if self.sales_annual == 0:
+            return Fraction(0)
+        return Fraction(self.returns_annual, self.sales_annual)
+
+
+# Retail standards
+MIN_MARGIN_PERCENTAGE = Fraction(1, 10)  # 10% minimum margin
+MAX_RETURN_RATE = Fraction(2, 10)  # 20% max return rate
+CPSC_COMPLIANCE_REQUIRED = True
+
+
+def min_profit_margin() -> Fraction:
+    """Minimum acceptable profit margin."""
+    return MIN_MARGIN_PERCENTAGE
+
+
+def max_return_rate() -> Fraction:
+    """Maximum acceptable return rate."""
+    return MAX_RETURN_RATE
