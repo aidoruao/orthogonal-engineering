@@ -166,25 +166,51 @@ def compute_diff(base_ref: str) -> Tuple[List[str], int]:
     HEAD against the merge-base so that the result is deterministic regardless
     of whether the caller passes a branch name or a SHA.
     """
+    # Try to find merge base for accurate diff
+    merge_base = None
     try:
         merge_base = subprocess.check_output(
             ["git", "merge-base", base_ref, "HEAD"],
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             text=True,
         ).strip()
-    except subprocess.CalledProcessError:
-        merge_base = base_ref
-
-    diff_out = subprocess.check_output(
-        ["git", "diff", "--name-only", merge_base, "HEAD"],
-        stderr=subprocess.DEVNULL,
-        text=True,
-    )
-    changed = [p.strip() for p in diff_out.splitlines() if p.strip()]
+    except subprocess.CalledProcessError as e:
+        # merge-base failed - might not have enough history
+        print(f"Warning: merge-base failed ({e}), using direct diff", file=sys.stderr)
+    
+    # Use merge_base if found, otherwise use base_ref directly
+    diff_target = merge_base if merge_base else base_ref
+    
+    try:
+        diff_out = subprocess.check_output(
+            ["git", "diff", "--name-only", diff_target, "HEAD"],
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        changed = [p.strip() for p in diff_out.splitlines() if p.strip()]
+    except subprocess.CalledProcessError as e:
+        # If diff fails, try comparing against HEAD~1 (last commit only)
+        print(f"Warning: diff against {diff_target} failed ({e}), using HEAD~1", file=sys.stderr)
+        try:
+            diff_out = subprocess.check_output(
+                ["git", "diff", "--name-only", "HEAD~1", "HEAD"],
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            changed = [p.strip() for p in diff_out.splitlines() if p.strip()]
+        except subprocess.CalledProcessError:
+            # Last resort: list all files in HEAD
+            print("Warning: using ls-files as fallback", file=sys.stderr)
+            diff_out = subprocess.check_output(
+                ["git", "ls-files"],
+                stderr=subprocess.PIPE,
+                text=True,
+            )
+            changed = [p.strip() for p in diff_out.splitlines() if p.strip()]
 
     ls_out = subprocess.check_output(
         ["git", "ls-files"],
-        stderr=subprocess.DEVNULL,
+        stderr=subprocess.PIPE,
         text=True,
     )
     total = len([p for p in ls_out.splitlines() if p.strip()])
