@@ -55,6 +55,10 @@ CONSENT_REQUIRED_FIELDS = {
     "authoriser",
     "scope_glob",
     "rule_exceptions",
+}
+
+# Optional fields that are recommended but not strictly required
+CONSENT_OPTIONAL_FIELDS = {
     "justification_hash",
     "scope_hash",
 }
@@ -340,6 +344,14 @@ def validate_consent_log(
                     )
                 )
                 continue
+            
+            # Warn about optional fields but don't block
+            missing_optional = CONSENT_OPTIONAL_FIELDS - set(rec.keys())
+            if missing_optional:
+                print(
+                    f"Warning: record {i} missing optional fields: {sorted(missing_optional)}",
+                    file=sys.stderr
+                )
 
         # All records (old and new) are included in valid_records for coverage checks
         valid_records.append(rec)
