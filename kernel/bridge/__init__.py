@@ -15,6 +15,12 @@ from kernel.bridge.net import NetworkBridgeState, NetworkCap, Packet, net_send, 
 from kernel.bridge.storage import StorageBridgeState, StorageCap, Blob, storage_write, storage_read, check_integrity
 from kernel.bridge.linux_compat import LinuxCompatState, LinuxCompatCap, translate_syscall
 from kernel.bridge.process import ProcessBridgeState, ProcessCap, spawn_external
+from kernel.bridge.crusader_bridge import (
+    CrusaderBridgeState, CrusaderCap, ForceOperation, EthicalStatus,
+    ForceOperationRecord, verify_just_cause, verify_legitimate_authority,
+    verify_proportionality, verify_necessity, authorize_force_operation,
+    get_ethical_audit_log
+)
 
 __all__ = [
     # GPU bridge
@@ -44,4 +50,16 @@ __all__ = [
     "ProcessBridgeState",
     "ProcessCap",
     "spawn_external",
+    # Crusader bridge
+    "CrusaderBridgeState",
+    "CrusaderCap",
+    "ForceOperation",
+    "EthicalStatus",
+    "ForceOperationRecord",
+    "verify_just_cause",
+    "verify_legitimate_authority",
+    "verify_proportionality",
+    "verify_necessity",
+    "authorize_force_operation",
+    "get_ethical_audit_log",
 ]
