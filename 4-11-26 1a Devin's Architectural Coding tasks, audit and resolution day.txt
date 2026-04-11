@@ -1,0 +1,309 @@
+Here's the full audit resolution task for Claude Copilot. I've verified the current state against main:
+
+## Current State Summary
+
+| Issue | Scope | Priority |
+|-------|-------|----------|
+| PR #108 `eschaton/omega.md` missing YAML frontmatter | 1 file | Quick fix |
+| 32 domain `invariants.py` files use `float()`/`isclose()` | 32 files, ~120 violations | CRITICAL |
+| `pr50_bar_exam/scoring/thresholds.py` uses `float` type | 1 file | CRITICAL |
+| ~112 domains lack `falsifies_if` conditions | ~112 files | HIGH |
+| `runtime/invariant_engine.py` — 4 TODOs, placeholder evaluation | 1 file | HIGH |
+| `runtime/guardian_monitor.py` — 5 TODOs, always returns None | 1 file | HIGH |
+| No CI check for float/Fraction enforcement | new workflow | MEDIUM | [17-cite-0](#17-cite-0) [17-cite-1](#17-cite-1) [17-cite-2](#17-cite-2) [17-cite-3](#17-cite-3) 
+
+The `runtime/verifier.py` is actually well-implemented (10 real checks using Fraction and ProofObject) — it's the `invariant_engine.py` and `guardian_monitor.py` that are skeletons. [17-cite-4](#17-cite-4) 
+
+---
+
+## Copilot Paste-in
+
+```
+═══════════════════════════════════════════════════════════════
+COPILOT AUDIT RESOLUTION — 2026-04-11
+═══════════════════════════════════════════════════════════════
+
+Context: Devin AI forensic audit identified constraint violations
+across the repo. You are fixing them. This is audit resolution day.
+
+Branch: Create new branch: claude/audit-resolution-2026-04-11
+Base: main (git checkout main && git pull --no-rebase first)
+Rule: git pull --no-rebase before EVERY push
+Session ID in every commit: [Session: <YOUR_SESSION_ID>]
+
+═══════════════════════════════════════════════════════════════
+PHASE 0 — SOP HANDSHAKE + CONSENT
+═══════════════════════════════════════════════════════════════
+
+1. Read SOP_AI_HANDSHAKE.md
+2. Read COPILOT_ONBOARDING.md
+3. Declare: "I am in COMPILATION MODE. I accept the Handshake."
+4. Append consent entry to pr47_stewardship/witness/consent_log.jsonl:
+   {
+     "schema": "SOP-AI-HANDSHAKE-1.0",
+     "candidate_id": "claude-copilot-audit-resolution",
+     "authoriser": "@aidoruao",
+     "action": "audit_resolution_2026-04-11",
+     "scope_glob": "src/domains/*/invariants.py,runtime/*.py,pr50_bar_exam/**/*.py,.github/workflows/*.yml",
+     "rule_exceptions": ["mass_change"],
+     "justification_hash": "<SHA-256 of: Audit resolution: convert 32 domain float violations to Fraction, implement runtime layer TODOs, add falsifies_if to 112 domains>",
+     "scope_hash": "<SHA-256 of the scope_glob string>",
+     "timestamp": "<ISO-8601 now>",
+     "consent_hash": "<SHA-256 of full entry>"
+   }
+
+Commit: chore(consent): audit resolution consent entry [Session: <ID>]
+
+═══════════════════════════════════════════════════════════════
+PHASE 1 — FLOAT-TO-FRACTION CONVERSION (CRITICAL)
+═══════════════════════════════════════════════════════════════
+
+The repo constraint is "0 floats. Fraction only." But 32 domain
+invariants.py files still use float() or math.isclose().
+
+THE 32 FILES (from grep):
+  src/domains/d_guardian/invariants.py (17 matches)
+  src/domains/d_public_health/invariants.py (9)
+  src/domains/d_curriculum/invariants.py (6)
+  src/domains/d_neighborhood_equity/invariants.py (6)
+  src/domains/d_sharding/invariants.py (6)
+  src/domains/d_utility_regulation/invariants.py (6)
+  src/domains/d_education/invariants.py (5)
+  src/domains/d_emergency/invariants.py (4)
+  src/domains/d_government/invariants.py (4)
+  src/domains/d_healthcare_law/invariants.py (4)
+  src/domains/d_industrial/invariants.py (4)
+  src/domains/d_legal/invariants.py (4)
+  src/domains/d_retail/invariants.py (4)
+  src/domains/d_sociology/invariants.py (4)
+  src/domains/d_banking_regulation/invariants.py (3)
+  src/domains/d_building_codes/invariants.py (3)
+  src/domains/d_criminal_law/invariants.py (3)
+  src/domains/d_oilgas/invariants.py (3)
+  src/domains/d_restorative_justice/invariants.py (3)
+  src/domains/d_whitecollar/invariants.py (3)
+  src/domains/d_amendment_process/invariants.py (2)
+  src/domains/d_corporate_compliance/invariants.py (2)
+  src/domains/d_energy/invariants.py (2)
+  src/domains/d_food_safety/invariants.py (2)
+  src/domains/d_platform/invariants.py (2)
+  src/domains/d_architecture_proof/invariants.py (1)
+  src/domains/d_corporate_law/invariants.py (1)
+  src/domains/d_elder_law/invariants.py (1)
+  src/domains/d_financial/invariants.py (1)
+  src/domains/d_labor_rights/invariants.py (1)
+  src/domains/d_religious_liberty/invariants.py (1)
+  src/domains/d_water/invariants.py (1)
+
+TRANSFORMATION RULES:
+  - float(x) → Fraction(x)
+  - math.isclose(a, b) → (abs(a - b) <= Fraction(1, 1000))
+    or appropriate epsilon as Fraction
+  - 0.0 → Fraction(0)
+  - 1.0 → Fraction(1)
+  - Any float literal like 0.95 → Fraction(95, 100)
+  - import math (if only used for isclose) → remove
+  - Add "from fractions import Fraction" if not already present
+
+ALSO FIX: pr50_bar_exam/scoring/thresholds.py
+  PASS_THRESHOLD: float = 0.70  →  PASS_THRESHOLD = Fraction(7, 10)
+  "boundary": 0.60  →  "boundary": Fraction(6, 10)
+  "threat": 0.60  →  "threat": Fraction(6, 10)
+  "grace": 0.50  →  "grace": Fraction(1, 2)
+  def is_pass(overall_score: float, ...)  →  Fraction type hints
+  category_scores.get(cat, 0.0)  →  category_scores.get(cat, Fraction(0))
+  Add: from fractions import Fraction
+
+REFERENCE PATTERN (correct, no floats):
+  See src/domains/d_automotive/invariants.py — uses Fraction throughout
+  See src/domains/d_guardian/invariants.py docstring says "Fraction only.
+  0 floats." but the code violates this — fix the code to match the doc.
+
+Commit after every 8 files:
+  fix(domains): float-to-Fraction batch N [Session: <ID>]
+
+Final commit for thresholds.py:
+  fix(bar-exam): float-to-Fraction in scoring thresholds [Session: <ID>]
+
+═══════════════════════════════════════════════════════════════
+PHASE 2 — RUNTIME LAYER IMPLEMENTATION (HIGH)
+═══════════════════════════════════════════════════════════════
+
+Two files need their TODOs implemented. The runtime/verifier.py
+is already well-implemented — use it as the reference pattern.
+
+─────────────────────────────────────────────────────────────
+FILE 1: runtime/invariant_engine.py
+─────────────────────────────────────────────────────────────
+
+4 TODOs to implement:
+
+TODO 1 (line 59): load_invariants — schema loading
+  - Load YAML from schema_path
+  - Parse invariant definitions into self.invariants dict
+  - Verify schema file hash for integrity (SHA-256)
+  - Use: import yaml (or safe_load from yaml)
+  - Store invariants as {inv_id: invariant_spec} dict
+
+TODO 2 (line 99): _evaluate_invariant — actual evaluation
+  - Replace placeholder that always returns SATISFIED
+  - Import and call the domain's check function
+  - Map the (bool, ProofObject) return to InvariantResult
+  - If check returns False → InvariantStatus.VIOLATED
+  - If check raises → InvariantStatus.ERROR
+  - Wrap in try/except for robustness
+
+TODO 3 (line 123): _handle_violation — violation handling
+  - Before raising, emit a forensic record (JSON to stderr or log)
+  - Notify guardian monitor (import GuardianMonitor, call escalate)
+  - Capture state snapshot (serialize current state to JSON)
+  - Then raise InvariantViolationError (already there)
+
+TODO 4 (implied): Remove "Skeleton implementation complete" comment
+  at bottom of file (lines 137-143)
+
+─────────────────────────────────────────────────────────────
+FILE 2: runtime/guardian_monitor.py
+─────────────────────────────────────────────────────────────
+
+5 TODOs to implement:
+
+TODO 1 (line 80): check_condition — condition detection
+  - Implement pattern matching against context dict
+  - For INVARIANT_OVERRIDE_ATTEMPT: check if context has
+    "override" or "bypass" keys
+  - For RULE_EVASION_PATTERN: check for repeated failures
+    followed by success (suspicious pattern)
+  - For RUNTIME_STATE_CORRUPTION: check state hash mismatch
+  - For PURPOSE_MISALIGNMENT: check if action contradicts
+    declared purpose
+  - Return GuardianAlert if detected, None if clean
+
+TODO 2 (line 135): _determine_escalation_level — smart logic
+  - Already has basic heuristic (critical → LOCKDOWN)
+  - Add: repeated alerts for same condition → escalate
+  - Add: context["severity"] if present → use it
+  - Add: if self.lockdown_active → always SYSTEM_LOCKDOWN
+
+TODO 3 (line 150): _log_to_audit_trail
+  - Write alert as JSON to a log file or stderr
+  - Include timestamp, condition, message, context hash
+
+TODO 4 (line 155): _notify_guardian_frame
+  - Capture full context snapshot (JSON serialize)
+  - Write to guardian alert log
+  - If invariant_engine available, trigger re-evaluation
+
+TODO 5 (line 161): _initiate_lockdown
+  - Already sets self.lockdown_active = True
+  - Add: complete state dump to JSON
+  - Add: write lockdown record with timestamp and reason
+  - Add: log all current alerts
+
+TODO 6: Remove "Skeleton implementation complete" comment
+  at bottom (lines 168-173)
+
+CONSTRAINT: Use Fraction, not float, for any numeric values.
+CONSTRAINT: All new code must have type annotations.
+
+Commit: feat(runtime): implement invariant engine evaluation [Session: <ID>]
+Commit: feat(runtime): implement guardian monitor detection [Session: <ID>]
+
+═══════════════════════════════════════════════════════════════
+PHASE 3 — ADD falsifies_if TO DOMAINS (HIGH)
+═══════════════════════════════════════════════════════════════
+
+~112 of 157 domains lack falsifies_if conditions in their
+invariant check functions. The Popperian falsifiability
+requirement says every claim must have a falsifies_if.
+
+DOMAINS THAT ALREADY HAVE IT (reference patterns):
+  src/domains/d_supply_chain_security/invariants.py — 20 instances
+  src/domains/d_use_of_force/invariants.py — 20 instances
+  src/domains/d_guardian/invariants.py — 7 instances
+  src/domains/d_automotive/invariants.py — uses "Falsifies if:" in docstrings
+
+TWO PATTERNS USED:
+  Pattern A (docstring): """... falsifies_if: condition ..."""
+  Pattern B (ProofObject kwarg): ProofObject(..., falsifies_if="condition")
+
+TASK: For every domain invariants.py that does NOT have
+falsifies_if, add it to each check function's docstring.
+The condition should describe what would make the invariant
+false — this is domain-specific.
+
+Example for d_automotive:
+  def check_ota_signature(...):
+      """... Falsifies if: signature_valid is False ..."""
+
+DO NOT modify domains that already have falsifies_if.
+DO NOT change any function logic — only add docstring text.
+
+This is a large batch. Commit every 20 domains:
+  feat(domains): add falsifies_if batch N [Session: <ID>]
+
+═══════════════════════════════════════════════════════════════
+PHASE 4 — CI ENFORCEMENT (MEDIUM)
+═══════════════════════════════════════════════════════════════
+
+Add a new workflow: .github/workflows/fraction-enforcement.yml
+
+```yaml
+name: Fraction Enforcement
+on: [push, pull_request]
+jobs:
+  no-floats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for float violations in domains
+        run: |
+          violations=$(grep -rn "float()\|isclose(" src/domains/*/invariants.py || true)
+          if [ -n "$violations" ]; then
+            echo "FLOAT VIOLATIONS FOUND:"
+            echo "$violations"
+            exit 1
+          fi
+          echo "No float violations found."
+      - name: Check for float violations in bar exam
+        run: |
+          violations=$(grep -rn "float(" pr50_bar_exam/ || true)
+          if [ -n "$violations" ]; then
+            echo "FLOAT VIOLATIONS IN BAR EXAM:"
+            echo "$violations"
+            exit 1
+          fi
+      - name: Verify falsifies_if coverage
+        run: |
+          total=$(ls -d src/domains/*/invariants.py | wc -l)
+          covered=$(grep -rl "falsifies_if" src/domains/*/invariants.py | wc -l)
+          echo "falsifies_if coverage: $covered / $total"
+          if [ "$covered" -lt "$total" ]; then
+            echo "WARNING: Not all domains have falsifies_if"
+          fi
+```
+
+Commit: ci: add fraction enforcement and falsifies_if check [Session: <ID>]
+
+═══════════════════════════════════════════════════════════════
+PHASE 5 — OPEN PR
+═══════════════════════════════════════════════════════════════
+
+Open PR from claude/audit-resolution-2026-04-11 → main
+Title: "Audit resolution: float-to-Fraction, runtime implementation, falsifies_if coverage"
+Body: List all phases completed with commit counts.
+
+═══════════════════════════════════════════════════════════════
+RULES
+═══════════════════════════════════════════════════════════════
+- Session ID in EVERY commit
+- git pull --no-rebase before EVERY push
+- 0 floats. Fraction only. This is the ENTIRE POINT of Phase 1.
+- All new code must have type annotations
+- No stubs, no pass bodies, no NotImplementedError
+- HALT at 220k tokens
+- Begin with Phase 0
+═══════════════════════════════════════════════════════════════
+```
+
+The 32 float-violating domain files are the highest priority — they directly contradict the repo's core constraint ("0 floats. Fraction only.") that's stated in the domain docstrings themselves. [17-cite-5](#17-cite-5) [17-cite-6](#17-cite-6)
