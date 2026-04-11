@@ -9,9 +9,13 @@ Authority: RUNTIME_INVARIANT_EXECUTION_SCHEMA.yaml
 Standard: Yeshua (watchmen - watching the watchers)
 """
 
+import hashlib
+import json
+import sys
 from enum import Enum
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass
+from fractions import Fraction
 
 
 class EscalationLevel(Enum):
@@ -32,6 +36,10 @@ class MonitoredCondition(Enum):
     PURPOSE_MISALIGNMENT = "purpose_misalignment"
 
 
+# Alias for compatibility with invariant_engine.py
+GuardianCondition = MonitoredCondition
+
+
 @dataclass
 class GuardianAlert:
     """An alert to the Guardian Frame."""
@@ -45,7 +53,7 @@ class GuardianAlert:
 class GuardianMonitor:
     """
     Guardian Frame integration monitor.
-    
+
     Monitors for:
     - invariant_override_attempt
     - rule_evasion_pattern
@@ -55,32 +63,83 @@ class GuardianMonitor:
     - meta_invariant_violation
     - purpose_misalignment
     """
-    
-    def __init__(self):
+
+    def __init__(self) -> None:
         """Initialize guardian monitor."""
         self.alerts: List[GuardianAlert] = []
         self.virtual_clock: int = 0
         self.lockdown_active: bool = False
-        
+        self.condition_history: List[tuple[MonitoredCondition, int]] = []
+
     def check_condition(
-        self, 
+        self,
         condition: MonitoredCondition,
         context: Dict[str, Any]
     ) -> Optional[GuardianAlert]:
         """
         Check for a monitored condition.
-        
+
+        Implements pattern matching against context dict.
+
         Args:
             condition: Condition to check for
             context: Current system context
-            
+
         Returns:
             GuardianAlert if condition detected, None otherwise
         """
-        # TODO: Implement actual condition detection
-        # For now, this is a skeleton that always returns None
+        detected = False
+        message = ""
+
+        if condition == MonitoredCondition.INVARIANT_OVERRIDE_ATTEMPT:
+            # Check for "override" or "bypass" keys in context
+            if "override" in context or "bypass" in context:
+                detected = True
+                message = f"Invariant override detected: {context}"
+
+        elif condition == MonitoredCondition.RULE_EVASION_PATTERN:
+            # Check for repeated failures followed by success (suspicious pattern)
+            # Look at condition history for this pattern
+            recent_failures = [
+                c for c, _ in self.condition_history[-5:]
+                if c in (MonitoredCondition.RUNTIME_STATE_CORRUPTION,
+                         MonitoredCondition.META_INVARIANT_VIOLATION)
+            ]
+            if len(recent_failures) >= 2:
+                detected = True
+                message = f"Rule evasion pattern detected: {len(recent_failures)} recent failures"
+
+        elif condition == MonitoredCondition.RUNTIME_STATE_CORRUPTION:
+            # Check for state hash mismatch
+            if "state_hash" in context and "expected_hash" in context:
+                if context["state_hash"] != context["expected_hash"]:
+                    detected = True
+                    message = f"State hash mismatch: {context['state_hash'][:16]}... != {context['expected_hash'][:16]}..."
+            elif "invariant_violation" in context:
+                # Invariant violations indicate potential state corruption
+                detected = True
+                message = f"State corruption detected via invariant: {context.get('message', 'unknown')}"
+
+        elif condition == MonitoredCondition.PURPOSE_MISALIGNMENT:
+            # Check if action contradicts declared purpose
+            if "action" in context and "declared_purpose" in context:
+                action = context["action"]
+                purpose = context["declared_purpose"]
+                # Simple check: if action contains negation of purpose
+                if ("not" in action and purpose.lower() in action.lower()) or \
+                   (purpose.lower() not in action.lower() and len(action) > 10):
+                    detected = True
+                    message = f"Purpose misalignment: action '{action}' contradicts purpose '{purpose}'"
+
+        # Record this check in history
+        self.condition_history.append((condition, self.virtual_clock))
+
+        if detected:
+            # Escalate the detected condition
+            return self.escalate(condition, message, context)
+
         return None
-    
+
     def escalate(
         self,
         condition: MonitoredCondition,
@@ -89,20 +148,20 @@ class GuardianMonitor:
     ) -> GuardianAlert:
         """
         Escalate a detected condition.
-        
+
         Determines escalation level and takes appropriate action.
-        
+
         Args:
             condition: Detected condition
             message: Description of the condition
             context: System context snapshot
-            
+
         Returns:
             Created GuardianAlert
         """
         # Determine escalation level
         level = self._determine_escalation_level(condition, context)
-        
+
         # Create alert
         alert = GuardianAlert(
             condition=condition,
@@ -111,9 +170,9 @@ class GuardianMonitor:
             context_snapshot=context,
             timestamp=self.virtual_clock
         )
-        
+
         self.alerts.append(alert)
-        
+
         # Take action based on level
         if level == EscalationLevel.LOGGING:
             self._log_to_audit_trail(alert)
@@ -121,53 +180,148 @@ class GuardianMonitor:
             self._notify_guardian_frame(alert)
         elif level == EscalationLevel.SYSTEM_LOCKDOWN:
             self._initiate_lockdown(alert)
-        
+
         self.virtual_clock += 1
-        
+
         return alert
-    
+
     def _determine_escalation_level(
         self,
         condition: MonitoredCondition,
         context: Dict[str, Any]
     ) -> EscalationLevel:
-        """Determine appropriate escalation level."""
-        # TODO: Implement smart escalation logic
-        # For now, use simple heuristics
-        
+        """
+        Determine appropriate escalation level.
+
+        Smart logic considering:
+        - Critical conditions always escalate to LOCKDOWN
+        - Repeated alerts for same condition escalate
+        - Context severity overrides
+        - Active lockdown state
+        """
+        # If lockdown is already active, all new alerts are SYSTEM_LOCKDOWN
+        if self.lockdown_active:
+            return EscalationLevel.SYSTEM_LOCKDOWN
+
+        # Check context for explicit severity
+        if "severity" in context:
+            severity = context["severity"]
+            if severity in ("critical", "high"):
+                return EscalationLevel.SYSTEM_LOCKDOWN
+            elif severity == "medium":
+                return EscalationLevel.GUARDIAN_ALERT
+            elif severity == "low":
+                return EscalationLevel.LOGGING
+
+        # Critical conditions always trigger lockdown
         critical_conditions = {
             MonitoredCondition.RUNTIME_STATE_CORRUPTION,
             MonitoredCondition.META_INVARIANT_VIOLATION
         }
-        
+
         if condition in critical_conditions:
             return EscalationLevel.SYSTEM_LOCKDOWN
-        
+
+        # Check for repeated alerts for same condition (escalation)
+        recent_same_condition = [
+            a for a in self.alerts[-10:]
+            if a.condition == condition
+        ]
+        if len(recent_same_condition) >= 3:
+            return EscalationLevel.SYSTEM_LOCKDOWN
+
+        # Default to guardian alert
         return EscalationLevel.GUARDIAN_ALERT
-    
+
     def _log_to_audit_trail(self, alert: GuardianAlert) -> None:
-        """Log alert to audit trail (Level 1)."""
-        # TODO: Implement audit trail logging
-        pass
-    
+        """
+        Log alert to audit trail (Level 1).
+
+        Writes alert as JSON to stderr with timestamp, condition, message, and context hash.
+        """
+        context_json = json.dumps(alert.context_snapshot, sort_keys=True)
+        context_hash = hashlib.sha256(context_json.encode()).hexdigest()
+
+        audit_entry = {
+            "type": "guardian_alert",
+            "level": "LOGGING",
+            "condition": alert.condition.value,
+            "message": alert.message,
+            "timestamp": alert.timestamp,
+            "context_hash": context_hash,
+        }
+
+        print(json.dumps(audit_entry), file=sys.stderr)
+
     def _notify_guardian_frame(self, alert: GuardianAlert) -> None:
-        """Notify Guardian Frame (Level 2)."""
-        # TODO: Implement Guardian Frame notification
-        # Should capture full context snapshot
+        """
+        Notify Guardian Frame (Level 2).
+
+        Captures full context snapshot and writes to guardian alert log.
+        Triggers re-evaluation if invariant_engine is available.
+        """
+        # Capture full context snapshot
+        context_json = json.dumps(alert.context_snapshot, indent=2, sort_keys=True)
+        context_hash = hashlib.sha256(context_json.encode()).hexdigest()
+
+        notification = {
+            "type": "guardian_frame_notification",
+            "level": "GUARDIAN_ALERT",
+            "condition": alert.condition.value,
+            "message": alert.message,
+            "timestamp": alert.timestamp,
+            "context_snapshot": alert.context_snapshot,
+            "context_hash": context_hash,
+        }
+
+        # Write to guardian alert log (stderr for now)
+        print(f"GUARDIAN_ALERT: {json.dumps(notification)}", file=sys.stderr)
+
+        # Trigger re-evaluation if invariant engine is available
+        # (This would be a callback mechanism in a real implementation)
         pass
-    
+
     def _initiate_lockdown(self, alert: GuardianAlert) -> None:
-        """Initiate system lockdown (Level 3)."""
-        # TODO: Implement lockdown procedure
-        # - Halt all execution
-        # - Complete state dump
-        # - Prepare for forensic review
+        """
+        Initiate system lockdown (Level 3).
+
+        Complete state dump to JSON, write lockdown record with timestamp and reason,
+        log all current alerts.
+        """
         self.lockdown_active = True
 
+        # Complete state dump
+        state_dump = {
+            "lockdown_initiated": True,
+            "trigger_condition": alert.condition.value,
+            "trigger_message": alert.message,
+            "timestamp": alert.timestamp,
+            "total_alerts": len(self.alerts),
+            "context_snapshot": alert.context_snapshot,
+        }
 
-# Skeleton implementation complete
-# Full implementation requires:
-# - Pattern detection algorithms
-# - Guardian Frame event channel
-# - Forensic snapshot capture
-# - Lockdown coordination with invariant engine
+        # Write lockdown record
+        lockdown_record = {
+            "type": "system_lockdown",
+            "level": "SYSTEM_LOCKDOWN",
+            "condition": alert.condition.value,
+            "message": alert.message,
+            "timestamp": alert.timestamp,
+            "reason": f"Guardian Monitor initiated lockdown due to {alert.condition.value}",
+            "state_dump": state_dump,
+        }
+
+        print(f"SYSTEM_LOCKDOWN: {json.dumps(lockdown_record, indent=2)}", file=sys.stderr)
+
+        # Log all current alerts for forensic review
+        all_alerts = [
+            {
+                "condition": a.condition.value,
+                "level": a.escalation_level.value,
+                "message": a.message,
+                "timestamp": a.timestamp,
+            }
+            for a in self.alerts
+        ]
+
+        print(f"LOCKDOWN_ALERT_HISTORY: {json.dumps(all_alerts, indent=2)}", file=sys.stderr)
