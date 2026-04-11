@@ -28,7 +28,7 @@ def check_phmsa_hoop_stress(pipeline: Pipeline) -> Tuple[bool, ProofObject]:
     
     if pipeline.hoop_stress_percent > max_stress:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Pipeline {pipeline.pipeline_id} hoop stress {float(pipeline.hoop_stress_percent):.1%} exceeds {float(max_stress):.1%} for {pipeline.pipeline_class.name}",
+            conclusion=f"VIOLATION: Pipeline {pipeline.pipeline_id} hoop stress {pipeline.hoop_stress_percent} exceeds {max_stress} for {pipeline.pipeline_class.name}",
             premises=[
                 f"Hoop stress: {pipeline.hoop_stress_percent}",
                 f"Max allowed: {max_stress}",
@@ -164,7 +164,7 @@ def check_pipeline_incident_rate(pipeline: Pipeline) -> Tuple[bool, ProofObject]
     
     if rate > max_acceptable_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Pipeline {pipeline.pipeline_id} incident rate {float(rate):.2f} per 1000 miles exceeds threshold",
+            conclusion=f"VIOLATION: Pipeline {pipeline.pipeline_id} incident rate {rate} per 1000 miles exceeds threshold",
             premises=[
                 f"Incidents: {pipeline.incidents_annual}",
                 f"Length: {pipeline.length_miles} miles",
@@ -197,7 +197,7 @@ def check_offshore_violation_rate(platform: OffshorePlatform) -> Tuple[bool, Pro
     
     if platform.bsee_inspections_annual > 0 and rate > max_violation_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Platform {platform.platform_id} violation rate {float(rate):.2f} per inspection indicates systemic issues",
+            conclusion=f"VIOLATION: Platform {platform.platform_id} violation rate {rate} per inspection indicates systemic issues",
             premises=[
                 f"Violations: {platform.violations_issued}",
                 f"Inspections: {platform.bsee_inspections_annual}",

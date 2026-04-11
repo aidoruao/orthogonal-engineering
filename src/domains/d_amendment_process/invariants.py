@@ -49,9 +49,9 @@ def check_congressional_supermajority_requirement() -> Tuple[bool, ProofObject]:
         rule="CongressionalSupermajorityRequirement",
         premises=[
             f"required_threshold = {required_threshold} (~66.67%)",
-            f"senate_support = {senate_support} ({float(senate_support):.2%})",
+            f"senate_support = {senate_support} ({senate_support})",
             f"senate_threshold_met = {senate_threshold_met}",
-            f"house_support = {house_support} ({float(house_support):.2%})",
+            f"house_support = {house_support} ({house_support})",
             f"house_threshold_met = {house_threshold_met}",
             f"simple_majority_fails = {simple_majority_fails}",
         ],
