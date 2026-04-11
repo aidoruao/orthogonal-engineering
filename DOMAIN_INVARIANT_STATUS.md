@@ -1,6 +1,58 @@
 # Domain Invariant Status
 
-Updated: 2026-04-10T04:00:00Z
+Updated: 2026-04-11T05:09:47.503645+00:00
+
+## Summary
+
+| Metric | Count | Percentage |
+|--------|-------|------------|
+| Total domains with invariants | 150 | 100% |
+| ProofObject domains (gold) | **101** | **67%** |
+| AssertionError domains (legacy) | **49** | **32%** |
+| True stubs (<50 lines) | 0 | 0% |
+
+## Session 471cf772 — Accurate Status Recount + d_agriculture Refactor
+
+### Current State
+- **ProofObject domains:** 101 (return Tuple[bool, ProofObject], Fraction only)
+- **AssertionError domains:** 49 (still use assert/AssertionError pattern)
+- **True stubs:** 0 (<50 lines)
+
+### Refactored This Session
+- `d_agriculture` — Converted to ProofObject returns (5 check functions)
+
+### AssertionError Domains Remaining (49)
+- `d_ai_ontological_status` — 348 lines
+- `d_amendment_process` — 324 lines
+- `d_aviation` — 350 lines
+- `d_banking_regulation` — 445 lines
+- `d_bill_of_rights` — 347 lines
+- `d_building_codes` — 406 lines
+- `d_citizenship` — 389 lines
+- `d_civil_law` — 319 lines
+- `d_corporate_compliance` — 445 lines
+- `d_corporate_law` — 362 lines
+- `d_criminal_law` — 311 lines
+- `d_crypto` — 279 lines
+- `d_curriculum` — 443 lines
+- `d_devops` — 185 lines
+- `d_diplomatic` — 427 lines
+- `d_drug_regulation` — 486 lines
+- `d_elder_law` — 496 lines
+- `d_energy` — 335 lines
+- `d_environmental_law` — 338 lines
+- `d_federalism` — 342 lines
+- ... and 29 more
+
+### Standards
+All ProofObject domains use:
+- `from fractions import Fraction` — 0 floats
+- `from axioms.logic import ProofObject` — all returns ProofObject
+- `Tuple[bool, ProofObject]` return types
+- Real regulatory standards in docstrings
+
+---
+
 
 ## Summary
 
