@@ -36,7 +36,7 @@ class ComplaintAudit:
     tags: List[str]
 
 
-# All complaint audits across 7 channels (35 total)
+# All complaint audits across 8 channels (40 total)
 AUDITS: List[ComplaintAudit] = [
     # Josh Strife Hayes (5)
     ComplaintAudit(
@@ -505,6 +505,73 @@ AUDITS: List[ComplaintAudit] = [
         status=AuditStatus.DOCUMENTED,
         severity="MEDIUM",
         tags=["embargoes", "disclosure", "reviews"],
+    ),
+    
+    # Linus Tech Tips (5 representative entries)
+    ComplaintAudit(
+        id="CA_LTT_001",
+        source_channel="Linus Tech Tips",
+        complaint="Apple parts pairing/serialization prevents independent repair",
+        root_cause="Manufacturer-imposed repair monopoly via component serialization",
+        resolution_domains=["D_CONSUMER_PROTECTION", "D_ANTITRUST", "D_IP_LAW"],
+        resolution_axioms=["logic.py", "measure_theory.py"],
+        resolution_types=["Capability", "Constraint"],
+        resolution_description="Parts interoperability mandate: serialized components must have independent repair pathways",
+        status=AuditStatus.DOCUMENTED,
+        severity="CRITICAL",
+        tags=["right-to-repair", "parts-pairing", "apple", "serialization"],
+    ),
+    ComplaintAudit(
+        id="CA_LTT_002",
+        source_channel="Linus Tech Tips",
+        complaint="John Deere agricultural equipment firmware lock-in",
+        root_cause="DMCA 1201 applied to farm equipment firmware",
+        resolution_domains=["D_CONSUMER_PROTECTION", "D_ANTITRUST", "D_AGRICULTURE"],
+        resolution_axioms=["logic.py"],
+        resolution_types=["Capability"],
+        resolution_description="Agricultural equipment repair capability: firmware access for independent repair",
+        status=AuditStatus.DOCUMENTED,
+        severity="CRITICAL",
+        tags=["right-to-repair", "john-deere", "agriculture", "firmware-lock"],
+    ),
+    ComplaintAudit(
+        id="CA_LTT_003",
+        source_channel="Linus Tech Tips",
+        complaint="Motorola/ThinkPad post-acquisition quality decay",
+        root_cause="No invariant binding brand reputation to engineering standards post-acquisition",
+        resolution_domains=["D_CONSUMER_PROTECTION", "D_CORPORATE_COMPLIANCE", "D_ADVERTISING_LAW"],
+        resolution_axioms=["measure_theory.py", "logic.py"],
+        resolution_types=["Refinement", "Graded"],
+        resolution_description="Brand quality invariant: minimum engineering standards bound to brand licensing",
+        status=AuditStatus.DOCUMENTED,
+        severity="HIGH",
+        tags=["zombie-brands", "motorola", "thinkpad", "lenovo", "brand-dilution"],
+    ),
+    ComplaintAudit(
+        id="CA_LTT_004",
+        source_channel="Linus Tech Tips",
+        complaint="ECC memory artificially excluded from consumer hardware",
+        root_cause="Consumer hardware excludes ECC despite negligible cost delta",
+        resolution_domains=["D_HARDWARE_AGNOSTICISM", "D_CONSUMER_PROTECTION"],
+        resolution_axioms=["measure_theory.py"],
+        resolution_types=["Refinement"],
+        resolution_description="Data integrity refinement: ECC baseline for all computing tiers",
+        status=AuditStatus.DOCUMENTED,
+        severity="HIGH",
+        tags=["ecc", "memory", "data-integrity", "market-segmentation"],
+    ),
+    ComplaintAudit(
+        id="CA_LTT_005",
+        source_channel="Linus Tech Tips",
+        complaint="Framework Laptop investment demonstrates repairable design is viable",
+        root_cause="Industry default is non-modular, non-repairable design",
+        resolution_domains=["D_CONSUMER_PROTECTION", "D_ENVIRONMENTAL_LAW"],
+        resolution_axioms=["logic.py"],
+        resolution_types=["Capability", "Refinement"],
+        resolution_description="Modular design capability: repairable architecture as industry standard",
+        status=AuditStatus.PARTIALLY_RESOLVED,
+        severity="MEDIUM",
+        tags=["framework", "modular", "repairable", "investment"],
     ),
 ]
 
