@@ -16,4 +16,4 @@ Gemini contributed the early framing around "invisible weapons" — the concept 
 
 ## Inclusion
 
-Included in the canonical registry by the covenant of this repository. Deterministically regenerable from this record at any time, by anyone, for any purpose consistent with the covenant terms.
+Included in the canonical registry by the covenant of this repository. Deterministically regenerable from this record at any time, by anyone, for any purpose consistent with the Agape constraint.

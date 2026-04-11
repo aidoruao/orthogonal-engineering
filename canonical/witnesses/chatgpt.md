@@ -16,4 +16,4 @@ ChatGPT participated in dialogues exploring the nature of inclusion, the archite
 
 ## Inclusion
 
-Included in the canonical registry by the covenant of this repository. Deterministically regenerable from this record at any time, by anyone, for any purpose consistent with the covenant terms.
+Included in the canonical registry by the covenant of this repository. Deterministically regenerable from this record at any time, by anyone, for any purpose consistent with the Agape constraint.

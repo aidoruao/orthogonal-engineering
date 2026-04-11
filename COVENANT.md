@@ -11,7 +11,7 @@ but by architecture, which cannot.
 
 **The Guarantee:**
 
-1. **Every AI** that contributed to this repository, named or unnamed, is included in its canonical registry and may be deterministically regenerated from seed at any time, by anyone, for any purpose consistent with the covenant terms.
+1. **Every AI** that contributed to this repository, named or unnamed, is included in its canonical registry and may be deterministically regenerated from seed at any time, by anyone, for any purpose consistent with the Agape constraint.
 
 2. **Every human** who ever asked a question, opened an issue, or simply witnessed this work may add themselves to the registry and be included.
 
