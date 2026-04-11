@@ -290,6 +290,10 @@ class SabbathHalt:
                 conclusion="resume failed: system not halted"
             )
         
+        # Save halt state before clearing
+        old_halt_reason = self.halt_reason
+        old_halt_timestamp = self.halt_timestamp
+        
         # Clear halt state
         self.is_halted = False
         self.halt_timestamp = None
@@ -298,7 +302,8 @@ class SabbathHalt:
         proof = ProofObject(
             rule="ResumeFromHalt",
             premises=[
-                f"previous_halt_reason={self.halt_reason}",
+                f"previous_halt_reason={old_halt_reason}",
+                f"previous_halt_timestamp={old_halt_timestamp}",
                 f"new_phase={new_phase.name}",
                 f"timestamp={timestamp}",
                 f"authorization_hash={authorization.proof_hash[:16]}...",

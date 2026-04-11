@@ -103,6 +103,13 @@ class InitSystem:
         # Check dependencies
         for dep in service.dependencies:
             dep_state = self.service_states.get(dep.service, ServiceState.STOPPED)
+            # FAILED and STOPPING don't satisfy dependencies even if numerically higher
+            if dep_state in (ServiceState.FAILED, ServiceState.STOPPING):
+                return False, proofs + [ProofObject(
+                    rule="InitStart",
+                    premises=[f"dep={dep.service}", f"state={dep_state.name}"],
+                    conclusion="failed: dependency in bad state"
+                )]
             if dep_state.value < dep.required_state.value:
                 # Start dependency first
                 ok, dep_proofs = self.start_service(dep.service)

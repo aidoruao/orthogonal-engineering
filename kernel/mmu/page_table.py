@@ -306,13 +306,25 @@ class PageMapLevel4:
                 flags=0x7  # Present, writable, user
             ))
         
-        # Ensure PD exists
+        # Ensure PD exists and link from PDPT
         if (pml4_idx, pdpt_idx) not in self.pds:
             self.pds[(pml4_idx, pdpt_idx)] = PageTable(level=1)
+            # Link PDPT -> PD
+            pd_phys = Fraction(0x2000 * (pdpt_idx + 1) + 0x1000 * pml4_idx)
+            self.pdpts[pml4_idx].set_entry(pdpt_idx, PageTableEntry(
+                physical_address=pd_phys,
+                flags=0x7  # Present, writable, user
+            ))
         
-        # Ensure PT exists
+        # Ensure PT exists and link from PD
         if (pml4_idx, pdpt_idx, pd_idx) not in self.pts:
             self.pts[(pml4_idx, pdpt_idx, pd_idx)] = PageTable(level=0)
+            # Link PD -> PT
+            pt_phys = Fraction(0x3000 * (pd_idx + 1) + 0x1000 * (pdpt_idx + pml4_idx))
+            self.pds[(pml4_idx, pdpt_idx)].set_entry(pd_idx, PageTableEntry(
+                physical_address=pt_phys,
+                flags=0x7  # Present, writable, user
+            ))
         
         # Create PTE
         flags = (1 << PagePermission.PRESENT.value)
