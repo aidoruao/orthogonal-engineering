@@ -11,17 +11,22 @@ Updated: 2026-04-11T05:09:47.503645+00:00
 | AssertionError domains (legacy) | **49** | **32%** |
 | True stubs (<50 lines) | 0 | 0% |
 
-## Session 471cf772 — Accurate Status Recount + d_agriculture Refactor
+## Session 7533ab94 — Complete 471cf772 Handoff + 5 Domain Refactors
 
 ### Current State
-- **ProofObject domains:** 101 (return Tuple[bool, ProofObject], Fraction only)
-- **AssertionError domains:** 49 (still use assert/AssertionError pattern)
+- **ProofObject domains:** 106 (return Tuple[bool, ProofObject], Fraction only)
+- **AssertionError domains:** 44 (still use assert/AssertionError pattern)
 - **True stubs:** 0 (<50 lines)
 
 ### Refactored This Session
-- `d_agriculture` — Converted to ProofObject returns (5 check functions)
+- `d_agriculture` — Converted to ProofObject returns (5 check functions) [from 471cf772]
+- `d_international_humanitarian` — Converted to ProofObject (5 check functions)
+- `d_international_criminal` — Converted to ProofObject (5 check functions)
+- `d_mobile_development` — Converted to ProofObject (5 check functions)
+- `d_supply_chain_security` — Converted to ProofObject (5 check functions)
+- `d_open_source_governance` — Converted to ProofObject (5 check functions)
 
-### AssertionError Domains Remaining (49)
+### AssertionError Domains Remaining (44)
 - `d_ai_ontological_status` — 348 lines
 - `d_amendment_process` — 324 lines
 - `d_aviation` — 350 lines
