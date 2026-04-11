@@ -295,7 +295,10 @@ def check_shelby_county_v_holder() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_VOTING_RIGHTS invariants."""
+    """Run all D_VOTING_RIGHTS invariants.
+
+    Falsifies if: any voting rights invariant check fails or raises an exception.
+    """
     checks = [
         ("check_fifteenth_amendment_race", check_fifteenth_amendment_race),
         ("check_nineteenth_amendment_sex", check_nineteenth_amendment_sex),

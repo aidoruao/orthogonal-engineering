@@ -310,7 +310,10 @@ def check_statute_of_frauds_real_property() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_REAL_ESTATE invariants."""
+    """Run all D_REAL_ESTATE invariants.
+
+    Falsifies if: any real estate invariant check fails or raises an exception.
+    """
     checks = [
         ("check_recording_act_priorities", check_recording_act_priorities),
         ("check_title_insurance_coverage", check_title_insurance_coverage),

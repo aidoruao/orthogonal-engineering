@@ -18,7 +18,11 @@ from src.domains.d_hardware_agnosticism.implementation import (
 
 
 def check_no_vendor_lockin_invariant(api_calls: List[APICall]) -> Tuple[bool, ProofObject]:
-    """Invariant: No vendor-specific API calls without fallback."""
+    """Invariant: No vendor-specific API calls without fallback.
+
+    Falsifies if: vendor-specific calls lack fallbacks such that acceptable
+    coverage drops below 90%.
+    """
     report, proof = check_no_vendor_lockin(api_calls)
     
     # Acceptable if coverage >= 90%
@@ -37,19 +41,28 @@ def check_instruction_set_baseline_invariant(
     instructions: List[InstructionSetRequirement],
     baseline: InstructionSet = InstructionSet.SSE2
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: No ungated instructions above baseline."""
+    """Invariant: No ungated instructions above baseline.
+
+    Falsifies if: required instructions exceed baseline without proper gating.
+    """
     return check_instruction_set_baseline(instructions, baseline)
 
 
 def check_software_renderer_path_invariant(
     renderers: List[SoftwareRenderer]
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: At least one software fallback available."""
+    """Invariant: At least one software fallback available.
+
+    Falsifies if: no software renderer fallback is available.
+    """
     return check_software_renderer_path(renderers)
 
 
 def check_cross_platform_paths_invariant(paths: List[str]) -> Tuple[bool, ProofObject]:
-    """Invariant: All paths are cross-platform compatible."""
+    """Invariant: All paths are cross-platform compatible.
+
+    Falsifies if: any path violates cross-platform compatibility rules.
+    """
     valid, violations, proof = check_cross_platform_paths(paths)
     
     final_proof = ProofObject(
@@ -62,7 +75,10 @@ def check_cross_platform_paths_invariant(paths: List[str]) -> Tuple[bool, ProofO
 
 
 def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
+    """Run all invariant checks and return results.
+
+    Falsifies if: any hardware agnosticism invariant check fails or raises an exception.
+    """
     results = {}
     
     # Test cases

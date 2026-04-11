@@ -8,7 +8,10 @@ from .implementation import Schedule, BTreeNode, Transaction, TransactionStatus
 
 
 def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObject]:
-    """Schedule must be conflict-serializable for correctness."""
+    """Schedule must be conflict-serializable for correctness.
+
+    Falsifies if: schedule.is_conflict_serializable() is False.
+    """
     if schedule.is_conflict_serializable():
         return True, ProofObject(
             conclusion="Schedule is conflict-serializable",
@@ -24,7 +27,10 @@ def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObjec
 
 
 def check_btree_invariants(node: BTreeNode) -> Tuple[bool, ProofObject]:
-    """B-tree must satisfy structural invariants."""
+    """B-tree must satisfy structural invariants.
+
+    Falsifies if: node.is_valid() is False.
+    """
     if not node.is_valid():
         return False, ProofObject(
             conclusion="VIOLATION: B-tree invariants violated",
@@ -40,7 +46,10 @@ def check_btree_invariants(node: BTreeNode) -> Tuple[bool, ProofObject]:
 
 
 def check_atomicity(tx: Transaction) -> Tuple[bool, ProofObject]:
-    """Transaction must be all-or-nothing (Atomicity)."""
+    """Transaction must be all-or-nothing (Atomicity).
+
+    Falsifies if: transaction status is neither COMMITTED nor ABORTED (partial state).
+    """
     if tx.status == TransactionStatus.COMMITTED:
         return True, ProofObject(
             conclusion="Transaction committed (atomicity satisfied)",
@@ -63,7 +72,10 @@ def check_atomicity(tx: Transaction) -> Tuple[bool, ProofObject]:
 
 
 def check_durability(tx: Transaction) -> Tuple[bool, ProofObject]:
-    """Committed transactions must be durable."""
+    """Committed transactions must be durable.
+
+    Falsifies if: not applicable (function assumes durability when committed).
+    """
     if tx.status != TransactionStatus.COMMITTED:
         return True, ProofObject(
             conclusion="Durability not applicable (not committed)",
@@ -80,5 +92,8 @@ def check_durability(tx: Transaction) -> Tuple[bool, ProofObject]:
 
 
 def check_isolation(schedule: Schedule) -> Tuple[bool, ProofObject]:
-    """Concurrent transactions must be isolated (serializable)."""
+    """Concurrent transactions must be isolated (serializable).
+
+    Falsifies if: conflict serializability check fails.
+    """
     return check_conflict_serializability(schedule)

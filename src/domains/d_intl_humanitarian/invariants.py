@@ -316,7 +316,10 @@ def check_non_combatant_immunity() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_INTERNATIONAL_HUMANITARIAN invariants."""
+    """Run all D_INTERNATIONAL_HUMANITARIAN invariants.
+
+    Falsifies if: any international humanitarian invariant check fails or raises an exception.
+    """
     checks = [
         ("check_distinction_principle", check_distinction_principle),
         ("check_proportionality_principle", check_proportionality_principle),

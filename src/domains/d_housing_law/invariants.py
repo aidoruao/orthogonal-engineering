@@ -329,7 +329,10 @@ def check_reasonable_accommodation_requirement() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_HOUSING_LAW invariants."""
+    """Run all D_HOUSING_LAW invariants.
+
+    Falsifies if: any housing law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_fha_protected_classes", check_fha_protected_classes),
         ("check_eviction_notice_requirements", check_eviction_notice_requirements),

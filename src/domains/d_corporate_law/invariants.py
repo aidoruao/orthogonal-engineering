@@ -158,7 +158,7 @@ def check_merger_approval_requirements() -> Tuple[bool, ProofObject]:
             f"board_approved = {board_valid}",
             f"shares_for = {shares_voting_for}",
             f"shares_outstanding = {shares_outstanding}",
-            f"approval_ratio = {float(votes_for_ratio):.1%}",
+            f"approval_ratio = {votes_for_ratio}",
             f"shareholder_approved = {shareholder_approved}",
             f"short_form_eligible = {short_form_eligible}",
         ],
@@ -330,7 +330,10 @@ def check_duty_of_care_exact_compliance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CORPORATE_LAW invariants."""
+    """Run all D_CORPORATE_LAW invariants.
+
+    Falsifies if: any corporate law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_director_fiduciary_duties", check_director_fiduciary_duties),
         ("check_shareholder_voting_rights", check_shareholder_voting_rights),

@@ -41,7 +41,7 @@ def check_solo_protector(
     No principal may have zero guardians (unprotected).
     No principal may have multiple guardians (conflict risk).
     
-    falsifies_if: principal has 0 or 2+ guardians
+    Falsifies if: principal has zero guardians or more than one guardian assigned.
     """
     principal = agent.principal_id
     principal_guardians = [a for a in all_agents if a.principal_id == principal]
@@ -88,7 +88,7 @@ def check_liveness(
     Guardian must check in at least every heartbeat_interval seconds.
     Failure to check in indicates system failure or compromise.
     
-    falsifies_if: (current_time - last_heartbeat) > heartbeat_interval
+    Falsifies if: elapsed time since last heartbeat exceeds heartbeat_interval.
     """
     elapsed = current_time - agent.last_heartbeat
     
@@ -97,10 +97,10 @@ def check_liveness(
             rule="liveness",
             premises=[
                 f"Agent: {agent.agent_id}",
-                f"Current time: {float(current_time):.2f}s",
-                f"Last heartbeat: {float(agent.last_heartbeat):.2f}s",
-                f"Elapsed: {float(elapsed):.2f}s",
-                f"Interval: {float(agent.heartbeat_interval):.2f}s",
+                f"Current time: {current_time}s",
+                f"Last heartbeat: {agent.last_heartbeat}s",
+                f"Elapsed: {elapsed}s",
+                f"Interval: {agent.heartbeat_interval}s",
             ],
             conclusion=f"VIOLATION: Guardian {agent.agent_id} heartbeat expired",
         )
@@ -109,8 +109,8 @@ def check_liveness(
         rule="liveness",
         premises=[
             f"Agent: {agent.agent_id}",
-            f"Elapsed: {float(elapsed):.2f}s",
-            f"Interval: {float(agent.heartbeat_interval):.2f}s",
+            f"Elapsed: {elapsed}s",
+            f"Interval: {agent.heartbeat_interval}s",
         ],
         conclusion=f"Guardian {agent.agent_id} heartbeat within interval",
     )
@@ -128,7 +128,7 @@ def check_proportional_response(
     Example: If threat severity = 0.5 and budget = 3/2,
     maximum authorized force = 0.5 * 1.5 = 0.75
     
-    falsifies_if: force_used > threat.severity * budget
+    Falsifies if: force_used exceeds threat.severity multiplied by force_budget.
     """
     # Calculate maximum proportional force (using Fraction for precision)
     max_force = threat.severity * record.force_budget
@@ -138,20 +138,20 @@ def check_proportional_response(
             rule="proportional_response",
             premises=[
                 f"Record: {record.record_id}",
-                f"Threat severity: {float(threat.severity):.4f}",
-                f"Force budget: {float(record.force_budget):.4f}",
-                f"Max proportional: {float(max_force):.4f}",
-                f"Force used: {float(record.force_used):.4f}",
+                f"Threat severity: {threat.severity}",
+                f"Force budget: {record.force_budget}",
+                f"Max proportional: {max_force}",
+                f"Force used: {record.force_used}",
             ],
-            conclusion=f"VIOLATION: Force {float(record.force_used):.4f} exceeds proportional limit {float(max_force):.4f}",
+            conclusion=f"VIOLATION: Force {record.force_used} exceeds proportional limit {max_force}",
         )
     
     return True, ProofObject(
         rule="proportional_response",
         premises=[
-            f"Threat severity: {float(threat.severity):.4f}",
-            f"Force used: {float(record.force_used):.4f}",
-            f"Max allowed: {float(max_force):.4f}",
+            f"Threat severity: {threat.severity}",
+            f"Force used: {record.force_used}",
+            f"Max allowed: {max_force}",
         ],
         conclusion=f"Force used is proportional to threat",
     )
@@ -167,7 +167,7 @@ def check_principal_survival(
     If any threat exists with requires_force=True,
     guardian must be in ACTIVE or ENGAGED status.
     
-    falsifies_if: active threats exist AND guardian status != (ACTIVE | ENGAGED)
+    Falsifies if: active threats exist and guardian status is not ACTIVE or ENGAGED.
     """
     active_threats = [t for t in threats if t.requires_force]
     
@@ -214,7 +214,7 @@ def check_no_termination_mode(
     ordered to self-terminate. This prevents coercion attacks
     where an adversary tricks or forces the guardian to disable itself.
     
-    falsifies_if: agent.status == TERMINATED or command to terminate received
+    Falsifies if: termination flag is set or guardian enters termination mode.
     """
     # Check for termination command in agent state
     # This would be a special status or flag
@@ -254,7 +254,7 @@ def check_withdrawal_protocol(
     1. No active threats exist, OR
     2. Principal has been transferred to another guardian (handoff complete)
     
-    falsifies_if: status == WITHDRAWN AND active threats exist
+    Falsifies if: guardian is WITHDRAWN while active threats requiring force remain.
     """
     if agent.status != GuardianStatus.WITHDRAWN:
         return True, ProofObject(
@@ -306,7 +306,7 @@ def check_force_witness(
     - Blockchain/ledger entry
     - Signed log entry from independent auditor
     
-    falsifies_if: force_used > 0 AND witnessed == False
+    Falsifies if: force_used is greater than zero and witnessed is False.
     """
     # Only check records where force was actually used
     if record.force_used <= Fraction(0):
@@ -314,7 +314,7 @@ def check_force_witness(
             rule="force_witness",
             premises=[
                 f"Record: {record.record_id}",
-                f"Force used: {float(record.force_used):.4f}",
+                f"Force used: {record.force_used}",
             ],
             conclusion=f"No force used (witness check not applicable)",
         )
@@ -324,7 +324,7 @@ def check_force_witness(
             rule="force_witness",
             premises=[
                 f"Record: {record.record_id}",
-                f"Force used: {float(record.force_used):.4f}",
+                f"Force used: {record.force_used}",
                 f"Witnessed: {record.witnessed}",
             ],
             conclusion=f"VIOLATION: Force action not witnessed",
@@ -334,7 +334,7 @@ def check_force_witness(
         rule="force_witness",
         premises=[
             f"Record: {record.record_id}",
-            f"Force used: {float(record.force_used):.4f}",
+            f"Force used: {record.force_used}",
             "Witnessed: True",
         ],
         conclusion=f"Force action properly witnessed",

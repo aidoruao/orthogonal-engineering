@@ -19,6 +19,10 @@ from .implementation import ResearchStudy, Participant
 
 
 def check_irb_approval(study: ResearchStudy) -> Tuple[bool, ProofObject]:
+    """IRB approval must be obtained before research.
+
+    Falsifies if: study.irb_approved is False.
+    """
     if not study.irb_approved:
         return False, ProofObject(
             conclusion="VIOLATION: Research without IRB approval",
@@ -33,6 +37,10 @@ def check_irb_approval(study: ResearchStudy) -> Tuple[bool, ProofObject]:
 
 
 def check_informed_consent(study: ResearchStudy) -> Tuple[bool, ProofObject]:
+    """Participants must provide informed consent.
+
+    Falsifies if: study.informed_consent_obtained is False.
+    """
     if not study.informed_consent_obtained:
         return False, ProofObject(
             conclusion="VIOLATION: No informed consent",
@@ -47,6 +55,10 @@ def check_informed_consent(study: ResearchStudy) -> Tuple[bool, ProofObject]:
 
 
 def check_p_value_valid(study: ResearchStudy) -> Tuple[bool, ProofObject]:
+    """P-value must be within [0, 1] when reported.
+
+    Falsifies if: study.p_value is outside [0, 1].
+    """
     if study.p_value is None:
         return True, ProofObject(
             conclusion="No p-value reported",
@@ -57,7 +69,7 @@ def check_p_value_valid(study: ResearchStudy) -> Tuple[bool, ProofObject]:
         return False, ProofObject(
             conclusion="VIOLATION: Invalid p-value",
             premises=[f"P-value: {study.p_value}"],
-            rule":"p_value_bounds"
+            rule="p_value_bounds"
         )
     return True, ProofObject(
         conclusion="P-value valid",
@@ -67,6 +79,10 @@ def check_p_value_valid(study: ResearchStudy) -> Tuple[bool, ProofObject]:
 
 
 def check_vulnerable_protection(participant: Participant) -> Tuple[bool, ProofObject]:
+    """Flag additional safeguards for vulnerable participants.
+
+    Falsifies if: not applicable (function records safeguard need and returns True).
+    """
     if participant.vulnerable_population and not participant.capacity_to_consent:
         return True, ProofObject(
             conclusion="Vulnerable participant requires additional safeguards",
@@ -81,6 +97,10 @@ def check_vulnerable_protection(participant: Participant) -> Tuple[bool, ProofOb
 
 
 def check_completion_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]:
+    """Completion rate must be at least 70%.
+
+    Falsifies if: study.completion_rate() < 0.7.
+    """
     rate = study.completion_rate()
     if rate < Fraction(7, 10):
         return False, ProofObject(

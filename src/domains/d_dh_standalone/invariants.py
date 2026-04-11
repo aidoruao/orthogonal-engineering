@@ -52,6 +52,8 @@ def check_tick_budget_compliance(
         tick_duration_ms: The full tick duration (default 50ms for 20 TPS)
         max_events: Maximum events to process per tick (should be bounded)
     
+    Falsifies if: estimated_time_for_max_events exceeds time_budget_ms or budget_percentage > 30%.
+    
     Returns:
         InvariantCheck with pass/fail status
     """
@@ -92,6 +94,8 @@ def check_queue_boundedness(max_queue_size: int = 1000) -> InvariantCheck:
     Args:
         max_queue_size: Maximum acceptable queue size
     
+    Falsifies if: queue has no size limit.
+    
     Returns:
         InvariantCheck with pass/fail status
     """
@@ -122,6 +126,8 @@ def check_gl_context_guard() -> InvariantCheck:
     
     From DH analysis: createDepthTexture executes GL during splash screen.
     
+    Falsifies if: GL operations occur without splash-screen guard.
+    
     Returns:
         InvariantCheck with pass/fail status
     """
@@ -144,6 +150,8 @@ def check_gl_context_guard() -> InvariantCheck:
 def check_thread_context_before_gl() -> InvariantCheck:
     """
     Check that GL operations verify thread context.
+    
+    Falsifies if: GL operations proceed without thread verification.
     
     Returns:
         InvariantCheck with pass/fail status
@@ -179,6 +187,8 @@ def check_config_validation_warning(
         default_value: The default config value
         warning_threshold: Value above which warning should be shown
     
+    Falsifies if: default_value exceeds warning_threshold without a warning.
+    
     Returns:
         InvariantCheck with pass/fail status
     """
@@ -209,6 +219,8 @@ def check_error_path_messages() -> InvariantCheck:
     """
     Check that error paths have user-facing messages.
     
+    Falsifies if: any error path lacks a user-facing message.
+    
     Returns:
         InvariantCheck with pass/fail status
     """
@@ -230,7 +242,10 @@ def check_error_path_messages() -> InvariantCheck:
 
 
 def run_all_invariant_checks() -> Tuple[InvariantCheck, ...]:
-    """Run all 6 invariant checks and return results."""
+    """Run all 6 invariant checks and return results.
+
+    Falsifies if: any individual invariant check returns passed=False.
+    """
     return (
         check_tick_budget_compliance(),
         check_queue_boundedness(),
@@ -242,7 +257,10 @@ def run_all_invariant_checks() -> Tuple[InvariantCheck, ...]:
 
 
 def get_invariant_summary() -> Dict[str, Any]:
-    """Get a summary of all invariant checks."""
+    """Get a summary of all invariant checks.
+
+    Falsifies if: summary indicates any failed check.
+    """
     checks = run_all_invariant_checks()
     passed = sum(1 for c in checks if c.passed)
     failed = len(checks) - passed

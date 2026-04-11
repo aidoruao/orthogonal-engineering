@@ -302,7 +302,10 @@ def check_dispute_settlement_understanding() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_TRADE_AGREEMENTS invariants."""
+    """Run all D_TRADE_AGREEMENTS invariants.
+
+    Falsifies if: any trade agreement invariant check fails or raises an exception.
+    """
     checks = [
         ("check_usma_origin_requirements", check_usma_origin_requirements),
         ("check_wto_mfn_principle", check_wto_mfn_principle),

@@ -7,7 +7,10 @@ from axioms.logic import ProofObject
 from .implementation import PropertyInterest, AdversePossession
 
 def check_recording(prior: PropertyInterest, subsequent: PropertyInterest) -> Tuple[bool, ProofObject]:
-    """Recording act priority analysis."""
+    """Recording act priority analysis.
+
+    Falsifies if: unrecorded prior interest attempts to prevail over recorded subsequent interest.
+    """
     if prior.recorded and not subsequent.recorded:
         return True, ProofObject(
             conclusion="Prior recorded interest prevails",
@@ -27,7 +30,10 @@ def check_recording(prior: PropertyInterest, subsequent: PropertyInterest) -> Tu
     )
 
 def check_adverse_possession(claim: AdversePossession) -> Tuple[bool, ProofObject]:
-    """Adverse possession OCEAN elements and statutory period."""
+    """Adverse possession OCEAN elements and statutory period.
+
+    Falsifies if: any OCEAN element is missing or statutory period not met.
+    """
     if not claim.all_elements_present():
         missing = []
         if not claim.open_notorious: missing.append("open/notorious")

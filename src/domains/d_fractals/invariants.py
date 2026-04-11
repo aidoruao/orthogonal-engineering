@@ -25,10 +25,9 @@ from .implementation import (
 
 def check_mandelbrot_membership(point: FractalPoint) -> Tuple[bool, ProofObject]:
     """Mandelbrot set: z_{n+1} = z_n² + c, z_0 = 0, bounded for all n.
-    
-    falsifies_if:
-        - Point inside main cardioid or period-2 bulb misclassified
-        - Escape radius set too low (false negatives)
+
+    Falsifies if: mandelbrot_iterations cannot classify escape (error) or produces
+    inconsistent escape status for the point.
     """
     # Quick check for main cardioid (exact formula)
     c = point.c
@@ -54,10 +53,8 @@ def check_mandelbrot_membership(point: FractalPoint) -> Tuple[bool, ProofObject]
 
 def check_ifs_probability_sum(ifs: IteratedFunctionSystem) -> Tuple[bool, ProofObject]:
     """IFS probabilities must form valid distribution (sum to 1).
-    
-    falsifies_if:
-        - Sum of probabilities != 1
-        - Any probability < 0 or > 1
+
+    Falsifies if: probabilities do not sum to 1 or any probability is outside [0, 1].
     """
     total = sum(ifs.probabilities, Fraction(0))
     
@@ -85,10 +82,8 @@ def check_ifs_probability_sum(ifs: IteratedFunctionSystem) -> Tuple[bool, ProofO
 
 def check_box_count_monotonicity(box_count: BoxCount) -> Tuple[bool, ProofObject]:
     """Box count must increase (or stay same) as box size decreases.
-    
-    falsifies_if:
-        - count(large_boxes) > count(small_boxes)
-        - Non-monotonic behavior suggests error
+
+    Falsifies if: box_count with smaller boxes is less than with larger boxes.
     """
     n_large = box_count.count_boxes(box_count.max_box_size)
     n_small = box_count.count_boxes(box_count.min_box_size)
@@ -112,10 +107,8 @@ def check_box_count_monotonicity(box_count: BoxCount) -> Tuple[bool, ProofObject
 
 def check_dimension_bounds(dimension: Fraction, space_dimension: int) -> Tuple[bool, ProofObject]:
     """Fractal dimension must be between 0 and embedding space dimension.
-    
-    falsifies_if:
-        - Dimension < 0 (impossible)
-        - Dimension > space_dimension (cannot exceed embedding)
+
+    Falsifies if: dimension is negative or exceeds the embedding space dimension.
     """
     if dimension < Fraction(0):
         return False, ProofObject(
@@ -140,11 +133,9 @@ def check_dimension_bounds(dimension: Fraction, space_dimension: int) -> Tuple[b
 
 def check_self_similarity_consistency(ss: SelfSimilarity) -> Tuple[bool, ProofObject]:
     """Self-similarity parameters must be consistent.
-    
-    falsifies_if:
-        - Scaling factor not in (0, 1)
-        - Number of pieces < 1
-        - Similarity dimension calculation error
+
+    Falsifies if: scaling factor is not in (0, 1), number of pieces < 1, or the
+    similarity dimension is negative.
     """
     if ss.scaling_factor <= Fraction(0) or ss.scaling_factor >= Fraction(1):
         return False, ProofObject(
@@ -181,10 +172,8 @@ def check_self_similarity_consistency(ss: SelfSimilarity) -> Tuple[bool, ProofOb
 
 def check_escape_radius_sufficient(radius: Fraction) -> Tuple[bool, ProofObject]:
     """Escape radius for Mandelbrot/Julia must be > 2 for correctness.
-    
-    falsifies_if:
-        - Escape radius <= 2 (may miss points that should escape)
-        - Escape radius > 4 (unnecessary computation)
+
+    Falsifies if: escape radius is less than or equal to 2, risking missed escapes.
     """
     MIN_RADIUS = Fraction(2)
     

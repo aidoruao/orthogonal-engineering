@@ -291,7 +291,7 @@ def check_erisa_pension_vesting() -> Tuple[bool, ProofObject]:
         premises=[
             f"years_of_service = {years_of_service}",
             f"cliff_vested = {cliff_vested}",
-            f"graded_vested_percentage = {float(graded_vested_percentage):.0%}",
+            f"graded_vested_percentage = {graded_vested_percentage}",
             f"forfeiture_invalid = {not forfeiture_invalid}",
             f"spousal_protection = {spousal_protection}",
         ],
@@ -464,7 +464,10 @@ def check_nursing_facility_medicaid_requirements() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ELDER_LAW invariants."""
+    """Run all D_ELDER_LAW invariants.
+
+    Falsifies if: any elder law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_adea_age_discrimination_prohibition", check_adea_age_discrimination_prohibition),
         ("check_older_americans_act_services", check_older_americans_act_services),

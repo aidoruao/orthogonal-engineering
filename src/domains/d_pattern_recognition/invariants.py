@@ -23,8 +23,7 @@ from .implementation import ConfusionMatrix, CrossValidation, ClassificationResu
 def check_precision_bounds(matrix: ConfusionMatrix, cls: str) -> Tuple[bool, ProofObject]:
     """Precision must be in [0, 1].
     
-    falsifies_if:
-        - precision < 0 or > 1
+    Falsifies if: precision is below 0 or above 1.
     """
     p = matrix.precision(cls)
     
@@ -45,8 +44,7 @@ def check_precision_bounds(matrix: ConfusionMatrix, cls: str) -> Tuple[bool, Pro
 def check_recall_bounds(matrix: ConfusionMatrix, cls: str) -> Tuple[bool, ProofObject]:
     """Recall must be in [0, 1].
     
-    falsifies_if:
-        - recall < 0 or > 1
+    Falsifies if: recall is below 0 or above 1.
     """
     r = matrix.recall(cls)
     
@@ -67,8 +65,7 @@ def check_recall_bounds(matrix: ConfusionMatrix, cls: str) -> Tuple[bool, ProofO
 def check_f1_harmonic_mean(matrix: ConfusionMatrix, cls: str) -> Tuple[bool, ProofObject]:
     """F1 should be harmonic mean of precision and recall.
     
-    falsifies_if:
-        - F1 != 2*p*r/(p+r)
+    Falsifies if: F1 differs from 2pr/(p+r) beyond tolerance.
     """
     p = matrix.precision(cls)
     r = matrix.recall(cls)
@@ -93,8 +90,7 @@ def check_f1_harmonic_mean(matrix: ConfusionMatrix, cls: str) -> Tuple[bool, Pro
 def check_confusion_matrix_sum(matrix: ConfusionMatrix) -> Tuple[bool, ProofObject]:
     """All entries in confusion matrix should be non-negative.
     
-    falsifies_if:
-        - Any count < 0
+    Falsifies if: any confusion matrix count is negative.
     """
     for (t, p), count in matrix.matrix.items():
         if count < 0:
@@ -114,8 +110,7 @@ def check_confusion_matrix_sum(matrix: ConfusionMatrix) -> Tuple[bool, ProofObje
 def check_overfitting(cv: CrossValidation) -> Tuple[bool, ProofObject]:
     """High variance in cross-validation indicates overfitting.
     
-    falsifies_if:
-        - variance > threshold
+    Falsifies if: variance exceeds threshold.
     """
     variance = cv.variance()
     THRESHOLD = Fraction(1, 100)  # 0.01
@@ -141,8 +136,7 @@ def check_overfitting(cv: CrossValidation) -> Tuple[bool, ProofObject]:
 def check_confidence_calibration(result: ClassificationResult) -> Tuple[bool, ProofObject]:
     """Confidence should reflect accuracy (well-calibrated).
     
-    falsifies_if:
-        - Confidence very high but prediction wrong
+    Falsifies if: high-confidence prediction is incorrect.
     """
     HIGH_CONFIDENCE = Fraction(95, 100)
     

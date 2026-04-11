@@ -316,7 +316,10 @@ def check_audit_trail_completeness() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_AI_ONTOLOGICAL_STATUS invariants."""
+    """Run all D_AI_ONTOLOGICAL_STATUS invariants.
+
+    Falsifies if: any individual invariant check fails or raises an exception.
+    """
     checks = [
         ("check_ai_system_self_identification", check_ai_system_self_identification),
         ("check_transparency_report_required", check_transparency_report_required),

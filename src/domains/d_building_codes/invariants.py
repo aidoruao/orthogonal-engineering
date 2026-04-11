@@ -160,10 +160,10 @@ def check_ada_ramp_slope() -> Tuple[bool, ProofObject]:
     proof = ProofObject(
         rule="ADARampSlope",
         premises=[
-            f"max_slope = 1:{max_slope_run} ({float(max_slope_ratio):.4f})",
-            f"compliant_slope = {compliant_slope} ({float(compliant_slope):.4f})",
+            f"max_slope = 1:{max_slope_run} ({max_slope_ratio})",
+            f"compliant_slope = {compliant_slope} ({compliant_slope})",
             f"compliant_check = {compliant_check}",
-            f"noncompliant_slope = {noncompliant_slope} ({float(noncompliant_slope):.4f})",
+            f"noncompliant_slope = {noncompliant_slope} ({noncompliant_slope})",
             f"cross_slope_compliant = {cross_slope_compliant}",
         ],
         conclusion=(
@@ -374,7 +374,10 @@ def check_nfpa_egress_travel_distance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_BUILDING_CODES invariants."""
+    """Run all D_BUILDING_CODES invariants.
+
+    Falsifies if: any building codes invariant check fails or raises an error.
+    """
     checks = [
         ("check_egress_capacity_calculation", check_egress_capacity_calculation),
         ("check_fire_resistance_rating", check_fire_resistance_rating),

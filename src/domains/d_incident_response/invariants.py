@@ -28,7 +28,7 @@ def check_response_time_sla() -> Tuple[bool, ProofObject]:
     """Verify critical incidents are responded to within SLA.
     
     Critical: 15 minutes, High: 1 hour, Medium: 4 hours, Low: 24 hours
-    falsifies_if: response time exceeds SLA
+    Falsifies if: measured response time exceeds the SLA for the severity level.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -77,7 +77,7 @@ def check_response_time_sla() -> Tuple[bool, ProofObject]:
 def check_severity_classification() -> Tuple[bool, ProofObject]:
     """Verify all incidents have valid severity classification.
     
-    falsifies_if: severity classification invalid
+    Falsifies if: incident severity classification is invalid.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -107,7 +107,7 @@ def check_severity_classification() -> Tuple[bool, ProofObject]:
 def check_response_procedures_exist() -> Tuple[bool, ProofObject]:
     """Verify response procedures exist for each severity level.
     
-    falsifies_if: procedure has insufficient steps
+    Falsifies if: any response procedure has insufficient steps for coverage.
     """
     procedures = [
         ResponseProcedure(
@@ -143,7 +143,7 @@ def check_response_procedures_exist() -> Tuple[bool, ProofObject]:
 def check_incident_team_assignment() -> Tuple[bool, ProofObject]:
     """Verify all active incidents have assigned response teams.
     
-    falsifies_if: incident lacks response team
+    Falsifies if: an incident lacking a response team is treated as compliant.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -191,7 +191,7 @@ def check_incident_team_assignment() -> Tuple[bool, ProofObject]:
 def check_mttr_calculation() -> Tuple[bool, ProofObject]:
     """Verify mean time to recovery is calculated correctly.
     
-    falsifies_if: MTTR is negative
+    Falsifies if: computed MTTR is negative.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -222,7 +222,10 @@ def check_mttr_calculation() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check — deterministic execution."""
+    """Master compliance check — deterministic execution.
+
+    Falsifies if: any incident response invariant check fails.
+    """
     checks = [
         check_response_time_sla,
         check_severity_classification,

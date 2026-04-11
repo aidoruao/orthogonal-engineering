@@ -27,9 +27,7 @@ from .implementation import (
 def check_treaty_obligation_status(treaty: Treaty) -> Tuple[bool, ProofObject]:
     """Treaties are the supreme law of the land (U.S. Constitution, Article VI).
     
-    falsifies_if:
-        - treaty.status is BREACHED
-        - Reserved rights not honored
+    Falsifies if: treaty.status is BREACHED or TERMINATED without consent.
     """
     if treaty.status == TreatyStatus.BREACHED:
         return False, ProofObject(
@@ -62,9 +60,7 @@ def check_treaty_obligation_status(treaty: Treaty) -> Tuple[bool, ProofObject]:
 def check_icwa_tribal_notification(case: ICWCase) -> Tuple[bool, ProofObject]:
     """ICWA 25 U.S.C. 1912(a) requires immediate notification to tribe.
     
-    falsifies_if:
-        - tribe_notified is False
-        - notification_date not within required timeframe
+    Falsifies if: tribe_notified is False or notification_date is missing/late.
     """
     if not case.tribe_notified:
         return False, ProofObject(
@@ -98,9 +94,8 @@ def check_icwa_tribal_notification(case: ICWCase) -> Tuple[bool, ProofObject]:
 def check_icwa_placement_preference(case: ICWCase) -> Tuple[bool, ProofObject]:
     """ICWA 25 U.S.C. 1915 establishes placement preferences.
     
-    falsifies_if:
-        - placement_made AND preference_followed is False
-        - Good cause determination not documented
+    Falsifies if: placement made without following preference or lacking good
+    cause documentation.
     """
     if not case.placement_made:
         return True, ProofObject(
@@ -131,9 +126,7 @@ def check_icwa_placement_preference(case: ICWCase) -> Tuple[bool, ProofObject]:
 def check_meaningful_consultation(consultation: TribalConsultation) -> Tuple[bool, ProofObject]:
     """Executive Order 13175 requires meaningful consultation (not just notification).
     
-    falsifies_if:
-        - meaningful_consultation is False
-        - Consultation occurred after decision already made
+    Falsifies if: meaningful_consultation is False or determination is missing.
     """
     if consultation.meaningful_consultation is None:
         return False, ProofObject(
@@ -170,9 +163,7 @@ def check_meaningful_consultation(consultation: TribalConsultation) -> Tuple[boo
 def check_free_prior_informed_consent(consultation: TribalConsultation) -> Tuple[bool, ProofObject]:
     """UNDRIP Article 32 requires FPIC for projects affecting indigenous lands.
     
-    falsifies_if:
-        - consent_given is False
-        - Consent not obtained before project approval
+    Falsifies if: consent_given is False or absent before project approval.
     """
     if consultation.consent_given is None:
         return True, ProofObject(
@@ -205,9 +196,7 @@ def check_free_prior_informed_consent(consultation: TribalConsultation) -> Tuple
 def check_cultural_resource_protection(resource: CulturalResource) -> Tuple[bool, ProofObject]:
     """NHPA Section 106 requires review of effects on historic properties.
     
-    falsifies_if:
-        - nhpa_section_106_reviewed is False
-        - Adverse effect not mitigated
+    Falsifies if: nhpa_section_106_reviewed is False or mitigation is absent.
     """
     if not resource.nhpa_section_106_reviewed:
         return False, ProofObject(

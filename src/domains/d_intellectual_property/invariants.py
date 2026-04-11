@@ -372,7 +372,10 @@ def check_trademark_likelihood_of_confusion() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_INTELLECTUAL_PROPERTY invariants."""
+    """Run all D_INTELLECTUAL_PROPERTY invariants.
+
+    Falsifies if: any intellectual property invariant check fails or raises an exception.
+    """
     checks = [
         ("check_patent_novelty_requirement", check_patent_novelty_requirement),
         ("check_patent_term_twenty_years", check_patent_term_twenty_years),

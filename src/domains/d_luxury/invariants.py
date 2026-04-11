@@ -26,9 +26,7 @@ from .implementation import (
 def check_authenticity_verified(item: LuxuryItem) -> Tuple[bool, ProofObject]:
     """Luxury items must be authentic or clearly marked unverified.
     
-    falsifies_if:
-        - authenticity is COUNTERFEIT
-        - authenticity is DISPUTED without resolution
+    Falsifies if: authenticity status is COUNTERFEIT or DISPUTED.
     """
     if item.authenticity == AuthenticityStatus.COUNTERFEIT:
         return False, ProofObject(
@@ -62,9 +60,7 @@ def check_authenticity_verified(item: LuxuryItem) -> Tuple[bool, ProofObject]:
 def check_provenance_completeness(item: LuxuryItem) -> Tuple[bool, ProofObject]:
     """High-value items require complete chain of custody.
     
-    falsifies_if:
-        - provenance has gaps for items > $50k
-        - No manufacturer record
+    Falsifies if: high-value item (>= $50k) lacks complete provenance records.
     """
     HIGH_VALUE_THRESHOLD = Fraction(50000)
     
@@ -94,9 +90,7 @@ def check_provenance_completeness(item: LuxuryItem) -> Tuple[bool, ProofObject]:
 def check_customs_valuation(customs: CustomsDeclaration) -> Tuple[bool, ProofObject]:
     """WTO requires customs valuation at transaction value.
     
-    falsifies_if:
-        - declared_value significantly below market
-        - valuation_review_required flag set
+    Falsifies if: valuation_review_required is True or declared_value is suspect for undervaluation.
     """
     if customs.valuation_review_required:
         return False, ProofObject(
@@ -119,9 +113,7 @@ def check_customs_valuation(customs: CustomsDeclaration) -> Tuple[bool, ProofObj
 def check_sanctions_compliance(transaction: LuxuryMarketTransaction) -> Tuple[bool, ProofObject]:
     """OFAC and international sanctions prohibit transactions with blocked parties.
     
-    falsifies_if:
-        - sanctions_check_passed is False
-        - Buyer/seller on sanctions list
+    Falsifies if: sanctions_check_passed is False or counterparties are blocked.
     """
     if not transaction.sanctions_check_passed:
         return False, ProofObject(
@@ -149,8 +141,7 @@ def check_sanctions_compliance(transaction: LuxuryMarketTransaction) -> Tuple[bo
 def check_authenticity_certificate_confidence(cert: AuthenticityCertificate) -> Tuple[bool, ProofObject]:
     """Third-party authentication must meet confidence threshold.
     
-    falsifies_if:
-        - confidence_score < 0.9 for high-value items
+    Falsifies if: confidence_score is below 0.9 for authentication.
     """
     MIN_CONFIDENCE = Fraction(9, 10)  # 90%
     
@@ -175,9 +166,7 @@ def check_authenticity_certificate_confidence(cert: AuthenticityCertificate) -> 
 def check_luxury_transaction_due_diligence(transaction: LuxuryMarketTransaction) -> Tuple[bool, ProofObject]:
     """High-value luxury transactions require due diligence.
     
-    falsifies_if:
-        - authenticity_verified is False
-        - provenance_checked is False
+    Falsifies if: high-value transaction lacks authenticity verification or provenance check.
     """
     HIGH_VALUE = Fraction(10000)  # $10k
     

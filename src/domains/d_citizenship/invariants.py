@@ -357,7 +357,10 @@ def check_renunciation_requirements() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CITIZENSHIP invariants."""
+    """Run all D_CITIZENSHIP invariants.
+
+    Falsifies if: any citizenship invariant check fails or raises an exception.
+    """
     checks = [
         ("check_fourteenth_amendment_birthright", check_fourteenth_amendment_birthright),
         ("check_naturalization_residency_requirement", check_naturalization_residency_requirement),

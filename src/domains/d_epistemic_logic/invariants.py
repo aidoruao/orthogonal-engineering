@@ -26,8 +26,7 @@ from .implementation import (
 def check_frame_reflexivity(frame: EpistemicFrame, agent_id: str) -> Tuple[bool, ProofObject]:
     """S4/S5 requires reflexive accessibility: w R w for all worlds.
     
-    falsifies_if:
-        - Any world lacks self-accessibility
+    Falsifies if: any world is missing self-accessibility for the agent.
     """
     for w in frame.worlds:
         accessible = frame.accessibility.get(agent_id, set())
@@ -48,8 +47,7 @@ def check_frame_reflexivity(frame: EpistemicFrame, agent_id: str) -> Tuple[bool,
 def check_knowledge_necessitation(belief: BeliefState, prop: Proposition, world_id: str) -> Tuple[bool, ProofObject]:
     """Knowledge necessitation: If P is known, P is true.
     
-    falsifies_if:
-        - Agent claims knowledge of P but P is false
+    Falsifies if: belief.knows(prop, world_id) is True while prop.is_true_in(world_id) is False.
     """
     claims_knowledge = belief.knows(prop, world_id)
     is_true = prop.is_true_in(world_id)
@@ -75,10 +73,7 @@ def check_knowledge_necessitation(belief: BeliefState, prop: Proposition, world_
 def check_jtb_completeness(analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
     """Justified True Belief requires all three components.
     
-    falsifies_if:
-        - Belief claimed without justification
-        - True belief without adequate justification
-        - Justification strength below threshold
+    Falsifies if: true belief lacks justification or justification strength falls below threshold.
     """
     MIN_JUSTIFICATION_STRENGTH = Fraction(1, 2)  # 50%
     
@@ -120,9 +115,7 @@ def check_jtb_completeness(analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
 def check_gettier_detection(analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
     """Detect Gettier cases: JTB that is not knowledge due to luck.
     
-    falsifies_if:
-        - JTB exists with low reliability (suggesting luck)
-        - True belief is accidental given the justification
+    Falsifies if: JTB exists with low justification reliability indicating luck-based belief.
     """
     if not analysis.is_jtb():
         return True, ProofObject(
@@ -153,9 +146,7 @@ def check_gettier_detection(analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
 def check_tracking_sensitivity(tracking: TrackingCondition, analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
     """Nozick's sensitivity: If P were false, S would not believe P.
     
-    falsifies_if:
-        - Knowledge claim fails sensitivity condition
-        - Agent would still believe P even if P were false
+    Falsifies if: tracking.sensitivity is False for a JTB claim (agent would believe P even if false).
     """
     if not analysis.is_jtb():
         return True, ProofObject(
@@ -185,9 +176,7 @@ def check_tracking_sensitivity(tracking: TrackingCondition, analysis: JTBAnalysi
 def check_safety_condition(safety: SafetyCondition, threshold: Fraction) -> Tuple[bool, ProofObject]:
     """Safety: Belief could not easily have been false.
     
-    falsifies_if:
-        - Safety score below threshold
-        - Belief is true by luck in actual world
+    Falsifies if: safety.safety_score() < threshold (belief too close to being false).
     """
     score = safety.safety_score()
     

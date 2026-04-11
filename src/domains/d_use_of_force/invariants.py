@@ -27,7 +27,7 @@ from .implementation import (
 def check_force_proportionality() -> Tuple[bool, ProofObject]:
     """Verify force level is proportional to threat level.
     
-    falsifies_if: force not proportional to threat
+    Falsifies if: force applied exceeds threat level proportionality.
     """
     checker = D_USE_OF_FORCEChecker()
     
@@ -79,7 +79,7 @@ def check_force_proportionality() -> Tuple[bool, ProofObject]:
 def check_deadly_force_necessity() -> Tuple[bool, ProofObject]:
     """Verify deadly force is only used for imminent threat of death.
     
-    falsifies_if: deadly force used without necessity
+    Falsifies if: deadly force is used absent an imminent death threat or policy exception.
     """
     checker = D_USE_OF_FORCEChecker()
     
@@ -139,7 +139,7 @@ def check_deadly_force_necessity() -> Tuple[bool, ProofObject]:
 def check_de_escalation_attempted() -> Tuple[bool, ProofObject]:
     """Verify de-escalation is attempted before physical force.
     
-    falsifies_if: de-escalation not attempted when required
+    Falsifies if: de-escalation is required but not attempted before force.
     """
     checker = D_USE_OF_FORCEChecker()
     
@@ -199,7 +199,8 @@ def check_de_escalation_attempted() -> Tuple[bool, ProofObject]:
 def check_documentation_complete() -> Tuple[bool, ProofObject]:
     """Verify all use of force incidents are fully documented.
     
-    falsifies_if: required documentation fields missing
+    Falsifies if: required documentation fields (id, timestamp, officer, justification,
+    force_used, threat_level) are missing.
     """
     incident = UseOfForceIncident(
         incident_id="INC-007",
@@ -260,7 +261,8 @@ def check_documentation_complete() -> Tuple[bool, ProofObject]:
 def check_less_lethal_before_deadly() -> Tuple[bool, ProofObject]:
     """Verify less-lethal options considered before deadly force.
     
-    falsifies_if: less-lethal not used when appropriate
+    Falsifies if: less-lethal options are bypassed when threat is high but not
+    imminent death.
     """
     # When threat is high but not imminent death, less-lethal should be used
     incident = UseOfForceIncident(
@@ -295,7 +297,10 @@ def check_less_lethal_before_deadly() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check."""
+    """Master compliance check.
+
+    Falsifies if: any use-of-force invariant check fails.
+    """
     checks = [
         check_force_proportionality,
         check_deadly_force_necessity,

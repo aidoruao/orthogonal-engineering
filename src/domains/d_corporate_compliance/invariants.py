@@ -260,7 +260,7 @@ def check_third_party_due_diligence() -> Tuple[bool, ProofObject]:
             f"risk_score = {risk_score} (high)",
             f"enhanced_due_diligence_required = {enhanced_due_diligence_required}",
             f"source_of_funds_verified = {source_of_funds_verified}",
-            f"proposed_commission = {float(proposed_commission_rate):.0%}",
+            f"proposed_commission = {proposed_commission_rate}",
             f"commission_acceptable = {commission_acceptable}",
         ],
         conclusion=(
@@ -400,7 +400,7 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
             f"risk_based_training = {risk_based_training}",
             f"coverage_complete = {coverage_complete}",
             f"training_current = {training_current}",
-            f"pass_rate = {float(actual_pass_rate):.0%}",
+            f"pass_rate = {actual_pass_rate}",
             f"effectiveness_score = {effectiveness_score}/4",
         ],
         conclusion=(
@@ -413,7 +413,10 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CORPORATE_COMPLIANCE invariants."""
+    """Run all D_CORPORATE_COMPLIANCE invariants.
+
+    Falsifies if: any corporate compliance invariant check fails or raises an exception.
+    """
     checks = [
         ("check_sentencing_guidelines_compliance_program", check_sentencing_guidelines_compliance_program),
         ("check_doj_ecmp_independence_resources", check_doj_ecmp_independence_resources),

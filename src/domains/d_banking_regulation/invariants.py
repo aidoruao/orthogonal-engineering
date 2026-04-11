@@ -273,10 +273,10 @@ def check_reserve_ratio_requirement() -> Tuple[bool, ProofObject]:
         premises=[
             f"typical_reserve_requirement = 10%",
             f"good_bank_reserves = ${good_reserves}",
-            f"good_bank_ratio = {float(good_ratio):.1%}",
+            f"good_bank_ratio = {good_ratio}",
             f"good_meets = {good_meets}",
             f"bad_bank_reserves = ${bad_reserves}",
-            f"bad_bank_ratio = {float(bad_ratio):.1%}",
+            f"bad_bank_ratio = {bad_ratio}",
             f"bad_below = {bad_below}",
         ],
         conclusion=(
@@ -401,7 +401,7 @@ def check_capital_computation_fraction_precision() -> Tuple[bool, ProofObject]:
             f"total_capital_exact = {total_exact}",
             f"ratio_type = {type(ratio).__name__}",
             f"ratio_exact = {ratio_exact}",
-            f"ratio_value = {float(ratio):.4f}",
+            f"ratio_value = {ratio}",
         ],
         conclusion=(
             "Exact Fraction arithmetic verified per Basel III"
@@ -413,7 +413,10 @@ def check_capital_computation_fraction_precision() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_BANKING_REGULATION invariants."""
+    """Run all D_BANKING_REGULATION invariants.
+
+    Falsifies if: any banking regulation invariant check fails or raises an exception.
+    """
     checks = [
         ("check_tier1_capital_minimum", check_tier1_capital_minimum),
         ("check_fdic_insurance_per_depositor", check_fdic_insurance_per_depositor),

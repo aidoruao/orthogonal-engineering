@@ -88,7 +88,7 @@ def check_overtime_rate_one_and_half() -> Tuple[bool, ProofObject]:
     proof = ProofObject(
         rule="FLSA_Overtime_Rate",
         premises=[
-            f"overtime_multiplier = {overtime_multiplier} ({float(overtime_multiplier)}x)",
+            f"overtime_multiplier = {overtime_multiplier} ({overtime_multiplier}x)",
             f"regular_rate = {regular_rate} cents",
             f"expected_ot_rate = {expected_ot_rate} cents",
             f"no_float_used = {no_float_used}",
@@ -285,7 +285,10 @@ def check_flsa_minimum_wage_compliance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_LABOR_RIGHTS invariants."""
+    """Run all D_LABOR_RIGHTS invariants.
+
+    Falsifies if: any labor rights invariant check fails or raises an exception.
+    """
     checks = [
         ("check_flsa_overtime_threshold", check_flsa_overtime_threshold),
         ("check_overtime_rate_one_and_half", check_overtime_rate_one_and_half),

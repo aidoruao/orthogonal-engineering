@@ -49,9 +49,9 @@ def check_congressional_supermajority_requirement() -> Tuple[bool, ProofObject]:
         rule="CongressionalSupermajorityRequirement",
         premises=[
             f"required_threshold = {required_threshold} (~66.67%)",
-            f"senate_support = {senate_support} ({float(senate_support):.2%})",
+            f"senate_support = {senate_support} ({senate_support})",
             f"senate_threshold_met = {senate_threshold_met}",
-            f"house_support = {house_support} ({float(house_support):.2%})",
+            f"house_support = {house_support} ({house_support})",
             f"house_threshold_met = {house_threshold_met}",
             f"simple_majority_fails = {simple_majority_fails}",
         ],
@@ -292,7 +292,10 @@ def check_twenty_seventh_amendment_ratification() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_AMENDMENT_PROCESS invariants."""
+    """Run all D_AMENDMENT_PROCESS invariants.
+
+    Falsifies if: any amendment process invariant check returns False or raises an error.
+    """
     checks = [
         ("check_congressional_supermajority_requirement", check_congressional_supermajority_requirement),
         ("check_state_ratification_three_fourths", check_state_ratification_three_fourths),

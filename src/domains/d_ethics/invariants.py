@@ -26,9 +26,7 @@ from .implementation import (
 def check_universal_law(maxim: Maxim, coherence_fn: Callable[[str], bool]) -> Tuple[bool, ProofObject]:
     """Kant's first formulation: Can maxim be willed as universal law?
     
-    falsifies_if:
-        - Universalization creates contradiction in conception
-        - Maxim cannot be coherently universalized
+    Falsifies if: universalized maxim is incoherent or creates contradiction in conception.
     """
     universal = maxim.universal_form()
     coherent = coherence_fn(universal)
@@ -53,9 +51,7 @@ def check_universal_law(maxim: Maxim, coherence_fn: Callable[[str], bool]) -> Tu
 def check_humanity_as_end(action: Action) -> Tuple[bool, ProofObject]:
     """Kant's second formulation: Treat humanity as end, never merely as means.
     
-    falsifies_if:
-        - Rational person harmed for others' benefit
-        - Person used instrumentally without regard to their dignity
+    Falsifies if: rational persons are harmed or used merely as means without regard for dignity.
     """
     persons_used_as_means = []
     
@@ -84,8 +80,7 @@ def check_humanity_as_end(action: Action) -> Tuple[bool, ProofObject]:
 def check_utilitarian_dominance(action_a: Action, action_b: Action) -> Tuple[bool, ProofObject]:
     """Utilitarian dominance: If A has >= utility for all and > for some, A dominates B.
     
-    falsifies_if:
-        - Action chosen that is dominated by available alternative
+    Falsifies if: chosen action is dominated by an available higher-utility alternative.
     """
     util_a = action_a.total_expected_utility()
     util_b = action_b.total_expected_utility()
@@ -110,9 +105,7 @@ def check_utilitarian_dominance(action_a: Action, action_b: Action) -> Tuple[boo
 def check_virtue_mean(virtue: Virtue, action_trait: str) -> Tuple[bool, ProofObject]:
     """Aristotelian virtue: action should demonstrate mean between excess and deficiency.
     
-    falsifies_if:
-        - Action demonstrates excess of virtue
-        - Action demonstrates deficiency of virtue
+    Falsifies if: action demonstrates excess or deficiency rather than virtuous mean.
     """
     if action_trait == virtue.excess:
         return False, ProofObject(
@@ -147,9 +140,7 @@ def check_virtue_mean(virtue: Virtue, action_trait: str) -> Tuple[bool, ProofObj
 def check_contractualist_rejectability(evaluation: ContractualistEvaluation) -> Tuple[bool, ProofObject]:
     """Scanlonian contractualism: principle must not be reasonably rejectable.
     
-    falsifies_if:
-        - Some agent has reasonable grounds to reject the principle
-        - Burden on one agent outweighs stakes for others
+    Falsifies if: any agent can reasonably reject the principle due to disproportionate burden.
     """
     rejecting_agents = []
     
@@ -177,9 +168,7 @@ def check_contractualist_rejectability(evaluation: ContractualistEvaluation) -> 
 def check_agent_autonomy(agent: MoralAgent) -> Tuple[bool, ProofObject]:
     """Moral agency requires both rationality and autonomy.
     
-    falsifies_if:
-        - Agent claims moral status without rationality
-        - Agent claims moral status without autonomy
+    Falsifies if: agent lacks rationality while claiming autonomy, or lacks autonomy despite rationality.
     """
     if not agent.rational and agent.autonomous:
         return False, ProofObject(

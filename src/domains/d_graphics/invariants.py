@@ -348,7 +348,10 @@ def check_vrr_range_compliance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_GRAPHICS invariants."""
+    """Run all D_GRAPHICS invariants.
+
+    Falsifies if: any graphics invariant check fails or raises an exception.
+    """
     checks = [
         ("check_shader_compilation_determinism", check_shader_compilation_determinism),
         ("check_frame_time_budget", check_frame_time_budget),

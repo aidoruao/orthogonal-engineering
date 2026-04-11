@@ -395,7 +395,10 @@ def check_special_mission_immunity() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_DIPLOMATIC invariants."""
+    """Run all D_DIPLOMATIC invariants.
+
+    Falsifies if: any diplomatic invariant check fails or raises an exception.
+    """
     checks = [
         ("check_diplomatic_inviolability_person", check_diplomatic_inviolability_person),
         ("check_diplomatic_inviolability_premises", check_diplomatic_inviolability_premises),

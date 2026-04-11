@@ -70,9 +70,9 @@ def check_essa_academic_standards() -> Tuple[bool, ProofObject]:
         premises=[
             "standards_aligned_to_higher_ed = True",
             "standards_aligned_to_career = True",
-            f"math_ccss_alignment = {float(ccss_math_alignment):.0%}",
-            f"ela_ccss_alignment = {float(ccss_ela_alignment):.0%}",
-            f"alignment_threshold = {float(alignment_threshold):.0%}",
+            f"math_ccss_alignment = {ccss_math_alignment}",
+            f"ela_ccss_alignment = {ccss_ela_alignment}",
+            f"alignment_threshold = {alignment_threshold}",
             f"full_coverage = {full_coverage}",
         ],
         conclusion=(
@@ -130,8 +130,8 @@ def check_assessment_system_validity() -> Tuple[bool, ProofObject]:
         rule="AssessmentSystemValidity",
         premises=[
             "assessment_coverage_3-8_and_high_school = True",
-            f"reliability_coefficient = {float(reliability_coefficient):.2f}",
-            f"content_alignment = {float(content_alignment):.0%}",
+            f"reliability_coefficient = {reliability_coefficient}",
+            f"content_alignment = {content_alignment}",
             f"accommodations_for_ell = {accommodations_for_ell}",
             f"accommodations_for_idea = {accommodations_for_idea}",
             "disaggregated_reporting = True",
@@ -395,7 +395,7 @@ def check_state_accountability_system() -> Tuple[bool, ProofObject]:
     proof = ProofObject(
         rule="StateAccountabilitySystem",
         premises=[
-            f"academic_weight = {float(academic_weight):.0%}",
+            f"academic_weight = {academic_weight}",
             f"substantial_majority = {academic_weight_sufficient}",
             f"sqss_included = {sqss_included}",
             f"minimum_n_size = {minimum_n_size}",
@@ -411,7 +411,10 @@ def check_state_accountability_system() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CURRICULUM invariants."""
+    """Run all D_CURRICULUM invariants.
+
+    Falsifies if: any curriculum invariant check fails or raises an exception.
+    """
     checks = [
         ("check_essa_academic_standards", check_essa_academic_standards),
         ("check_assessment_system_validity", check_assessment_system_validity),

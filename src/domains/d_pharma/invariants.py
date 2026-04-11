@@ -14,6 +14,10 @@ from .implementation import Drug, ClinicalTrial, AdverseEvent
 
 
 def check_fda_approved(drug: Drug) -> Tuple[bool, ProofObject]:
+    """Drug must be FDA approved before marketing.
+
+    Falsifies if: drug.is_approved() returns False.
+    """
     if not drug.is_approved():
         return False, ProofObject(
             conclusion="VIOLATION: Unapproved drug in commerce",
@@ -28,6 +32,10 @@ def check_fda_approved(drug: Drug) -> Tuple[bool, ProofObject]:
 
 
 def check_gmp_compliance(drug: Drug) -> Tuple[bool, ProofObject]:
+    """Manufacturing must comply with GMP certification.
+
+    Falsifies if: gmp_certified is False.
+    """
     if not drug.gmp_certified:
         return False, ProofObject(
             conclusion="VIOLATION: GMP certification missing",
@@ -42,6 +50,10 @@ def check_gmp_compliance(drug: Drug) -> Tuple[bool, ProofObject]:
 
 
 def check_ind_status(trial: ClinicalTrial) -> Tuple[bool, ProofObject]:
+    """Clinical trials require active IND through Phase 3.
+
+    Falsifies if: phase < 4 and ind_active is False.
+    """
     if trial.phase < 4 and not trial.ind_active:
         return False, ProofObject(
             conclusion="VIOLATION: Clinical trial without active IND",
@@ -56,6 +68,10 @@ def check_ind_status(trial: ClinicalTrial) -> Tuple[bool, ProofObject]:
 
 
 def check_ae_reporting(event: AdverseEvent) -> Tuple[bool, ProofObject]:
+    """Serious adverse events must be reported within regulatory timelines.
+
+    Falsifies if: reported_timely returns False.
+    """
     if not event.reported_timely():
         days = (event.fda_received - event.report_date).days
         limit = 15 if event.serious else 90
@@ -72,6 +88,10 @@ def check_ae_reporting(event: AdverseEvent) -> Tuple[bool, ProofObject]:
 
 
 def check_recall_status(drug: Drug) -> Tuple[bool, ProofObject]:
+    """Recalls must halt distribution.
+
+    Falsifies if: recall_status indicates an active recall.
+    """
     if drug.recall_status:
         return False, ProofObject(
             conclusion="WARNING: Drug subject to recall",
@@ -86,6 +106,10 @@ def check_recall_status(drug: Drug) -> Tuple[bool, ProofObject]:
 
 
 def check_trial_enrollment(trial: ClinicalTrial) -> Tuple[bool, ProofObject]:
+    """Clinical trials must sustain adequate enrollment/retention.
+
+    Falsifies if: enrollment_rate falls below the threshold (0.8).
+    """
     rate = trial.enrollment_rate()
     if rate < Fraction(8, 10):
         return False, ProofObject(

@@ -115,7 +115,7 @@ def check_survey_response_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]
     
     if rate < min_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Study {study.study_id} response rate {float(rate):.1%} below minimum {float(min_rate):.1%}",
+            conclusion=f"VIOLATION: Study {study.study_id} response rate {rate} below minimum {min_rate}",
             premises=[
                 f"Responses: {study.responses_received}",
                 f"Contacts: {study.contacts_attempted}",
@@ -127,7 +127,7 @@ def check_survey_response_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]
     
     return True, ProofObject(
         conclusion=f"Study {study.study_id} survey response rate acceptable",
-        premises=[f"Rate: {float(rate):.1%}"],
+        premises=[f"Rate: {rate}"],
         rule="survey_response_rate"
     )
 
@@ -157,7 +157,7 @@ def check_survey_reliability(instrument: SurveyInstrument) -> Tuple[bool, ProofO
     
     if instrument.reliability_coefficient < min_alpha:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Instrument {instrument.instrument_id} reliability {float(instrument.reliability_coefficient):.2f} below {float(min_alpha):.2f}",
+            conclusion=f"VIOLATION: Instrument {instrument.instrument_id} reliability {instrument.reliability_coefficient} below {min_alpha}",
             premises=[
                 f"Alpha: {instrument.reliability_coefficient}",
                 f"Required: {min_alpha}",
@@ -168,7 +168,7 @@ def check_survey_reliability(instrument: SurveyInstrument) -> Tuple[bool, ProofO
     
     return True, ProofObject(
         conclusion=f"Instrument {instrument.instrument_id} reliability acceptable",
-        premises=[f"Alpha: {float(instrument.reliability_coefficient):.2f}"],
+        premises=[f"Alpha: {instrument.reliability_coefficient}"],
         rule="survey_reliability"
     )
 

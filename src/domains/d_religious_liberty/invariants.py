@@ -110,7 +110,7 @@ def check_third_party_harm_limit(exemption: ReligiousExemption) -> Tuple[bool, P
     
     if exemption.harm_to_third_parties > harm_threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Exemption {exemption.exemption_id} causes {float(exemption.harm_to_third_parties):.1%} harm to third parties",
+            conclusion=f"VIOLATION: Exemption {exemption.exemption_id} causes {exemption.harm_to_third_parties} harm to third parties",
             premises=[
                 f"Harm: {exemption.harm_to_third_parties}",
                 f"Threshold: {harm_threshold}",

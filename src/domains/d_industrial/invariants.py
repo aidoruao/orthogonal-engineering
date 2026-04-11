@@ -29,7 +29,7 @@ def check_osha_trir(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
     
     if trir > max_trir:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Facility {facility.name} TRIR {float(trir):.2f} exceeds maximum {float(max_trir):.2f}",
+            conclusion=f"VIOLATION: Facility {facility.name} TRIR {trir} exceeds maximum {max_trir}",
             premises=[
                 f"Recordable incidents: {facility.osha_recordable_incidents}",
                 f"Hours worked: {facility.total_hours_worked}",
@@ -41,7 +41,7 @@ def check_osha_trir(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Facility {facility.name} TRIR acceptable",
-        premises=[f"TRIR: {float(trir):.2f}"],
+        premises=[f"TRIR: {trir}"],
         rule="osha_trir"
     )
 
@@ -62,7 +62,7 @@ def check_osha_dart(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
     
     if dart > max_dart:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Facility {facility.name} DART {float(dart):.2f} exceeds {float(max_dart):.2f}",
+            conclusion=f"VIOLATION: Facility {facility.name} DART {dart} exceeds {max_dart}",
             premises=[
                 f"DART cases: {facility.days_away_restricted}",
                 f"Hours: {facility.total_hours_worked}",
@@ -74,7 +74,7 @@ def check_osha_dart(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Facility {facility.name} DART rate acceptable",
-        premises=[f"DART: {float(dart):.2f}"],
+        premises=[f"DART: {dart}"],
         rule="osha_dart"
     )
 

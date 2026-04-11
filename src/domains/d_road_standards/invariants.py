@@ -309,7 +309,10 @@ def check_stopping_sight_distance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ROAD_STANDARDS invariants."""
+    """Run all D_ROAD_STANDARDS invariants.
+
+    Falsifies if: any road standards invariant check fails or raises an exception.
+    """
     checks = [
         ("check_mutcd_compliance_required", check_mutcd_compliance_required),
         ("check_aashto_green_book_design", check_aashto_green_book_design),

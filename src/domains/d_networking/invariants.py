@@ -8,7 +8,10 @@ from .implementation import TCPCongestionController, RoutingVerifier, DNSResolve
 
 
 def check_congestion_window_after_loss(controller: TCPCongestionController) -> Tuple[bool, ProofObject]:
-    """TCP: Window halves on loss (multiplicative decrease)."""
+    """TCP: Window halves on loss (multiplicative decrease).
+
+    Falsifies if: congestion window is not reduced after packet loss.
+    """
     if not controller.packets_lost:
         return True, ProofObject(
             conclusion="No loss detected",
@@ -33,7 +36,10 @@ def check_congestion_window_after_loss(controller: TCPCongestionController) -> T
 
 
 def check_no_routing_loops(verifier: RoutingVerifier) -> Tuple[bool, ProofObject]:
-    """Routing tables must not contain loops."""
+    """Routing tables must not contain loops.
+
+    Falsifies if: routing loop is detected.
+    """
     if verifier.has_loop():
         return False, ProofObject(
             conclusion="VIOLATION: Routing loop detected",
@@ -49,7 +55,10 @@ def check_no_routing_loops(verifier: RoutingVerifier) -> Tuple[bool, ProofObject
 
 
 def check_dns_determinism(resolver: DNSResolver, query: str) -> Tuple[bool, ProofObject]:
-    """DNS must return consistent results for same query."""
+    """DNS must return consistent results for same query.
+
+    Falsifies if: resolver is non-deterministic for identical queries.
+    """
     if not resolver.is_deterministic(query):
         return False, ProofObject(
             conclusion="VIOLATION: DNS resolution non-deterministic",
@@ -65,7 +74,10 @@ def check_dns_determinism(resolver: DNSResolver, query: str) -> Tuple[bool, Proo
 
 
 def check_congestion_window_bounds(controller: TCPCongestionController) -> Tuple[bool, ProofObject]:
-    """TCP cwnd must stay within valid bounds."""
+    """TCP cwnd must stay within valid bounds.
+
+    Falsifies if: cwnd falls below MIN_CWND or exceeds MAX_CWND.
+    """
     from .implementation import MIN_CWND, MAX_CWND
     
     if controller.cwnd < MIN_CWND:

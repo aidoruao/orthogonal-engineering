@@ -24,10 +24,8 @@ from .implementation import (
 
 def check_player_count_validity(game: Game, player_count: int) -> Tuple[bool, ProofObject]:
     """Game must support the number of players attempting to play.
-    
-    falsifies_if:
-        - player_count < game.min_players
-        - player_count > game.max_players
+
+    Falsifies if: player_count is below min_players or above max_players.
     """
     if player_count < game.min_players:
         return False, ProofObject(
@@ -60,12 +58,9 @@ def check_player_count_validity(game: Game, player_count: int) -> Tuple[bool, Pr
 
 def check_flow_conditions(flow: FlowState) -> Tuple[bool, ProofObject]:
     """Flow requires clear goals, immediate feedback, and challenge-skill balance.
-    
-    falsifies_if:
-        - clear_goals_present is False
-        - immediate_feedback_present is False
-        - Challenge vastly exceeds skill (anxiety)
-        - Skill vastly exceeds challenge (boredom)
+
+    Falsifies if: clear goals or immediate feedback are absent, or challenge-skill
+    imbalance exceeds tolerance (anxiety or boredom).
     """
     if not flow.clear_goals_present:
         return False, ProofObject(
@@ -108,11 +103,9 @@ def check_flow_conditions(flow: FlowState) -> Tuple[bool, ProofObject]:
 
 def check_bartle_profile_normalization(player: Player) -> Tuple[bool, ProofObject]:
     """Bartle type profile must be a valid probability distribution.
-    
-    falsifies_if:
-        - Profile values sum != 1
-        - Any value < 0 or > 1
-        - Profile incomplete (missing types)
+
+    Falsifies if: profile values do not sum to 1, any value falls outside [0, 1],
+    or any Bartle type is missing.
     """
     total = sum(player.bartle_profile.values(), Fraction(0))
     
@@ -150,10 +143,8 @@ def check_bartle_profile_normalization(player: Player) -> Tuple[bool, ProofObjec
 
 def check_cooperative_consistency(game: Game) -> Tuple[bool, ProofObject]:
     """Cooperative games must support multiple players.
-    
-    falsifies_if:
-        - cooperative is True but max_players == 1
-        - Single-player game marked as cooperative
+
+    Falsifies if: game is marked cooperative but max_players equals 1.
     """
     if game.cooperative and game.max_players == 1:
         return False, ProofObject(
@@ -174,11 +165,9 @@ def check_cooperative_consistency(game: Game) -> Tuple[bool, ProofObject]:
 
 def check_session_validity(session: PlaySession) -> Tuple[bool, ProofObject]:
     """Play session must be valid instance of its game.
-    
-    falsifies_if:
-        - Player count outside game bounds
-        - Zero players
-        - Negative duration
+
+    Falsifies if: player count is zero, duration is non-positive, or player count
+    lies outside the game's allowed range.
     """
     if session.player_count() == 0:
         return False, ProofObject(

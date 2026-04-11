@@ -315,7 +315,10 @@ def check_eighth_amendment_cruel_unusual() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_BILL_OF_RIGHTS invariants."""
+    """Run all D_BILL_OF_RIGHTS invariants.
+
+    Falsifies if: any Bill of Rights invariant check fails or raises an error.
+    """
     checks = [
         ("check_first_amendment_free_speech", check_first_amendment_free_speech),
         ("check_first_amendment_religion_clauses", check_first_amendment_religion_clauses),

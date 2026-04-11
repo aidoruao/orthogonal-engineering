@@ -10,6 +10,8 @@ from .implementation import Contract, Breach, STATUTE_OF_FRAUDS_THRESHOLD, Contr
 def check_statute_of_frauds(contract: Contract) -> Tuple[bool, ProofObject]:
     """
     UCC § 2-201: Contracts for sale of goods >= $500 must be in writing.
+
+    Falsifies if: contract is within statute threshold and contract.is_written is False.
     """
     if not contract.is_within_statute_of_frauds():
         return True, ProofObject(
@@ -33,7 +35,10 @@ def check_statute_of_frauds(contract: Contract) -> Tuple[bool, ProofObject]:
 
 
 def check_formation(contract: Contract) -> Tuple[bool, ProofObject]:
-    """Offer + Acceptance + Consideration = Valid Contract."""
+    """Offer + Acceptance + Consideration = Valid Contract.
+
+    Falsifies if: any of offer, acceptance, or consideration is missing.
+    """
     missing = []
     if contract.offer_date is None:
         missing.append("offer")
@@ -57,7 +62,10 @@ def check_formation(contract: Contract) -> Tuple[bool, ProofObject]:
 
 
 def check_breach_materiality(breach: Breach) -> Tuple[bool, ProofObject]:
-    """Material breach excuses further performance; minor does not."""
+    """Material breach excuses further performance; minor does not.
+
+    Falsifies if: not applicable (function reports whether breach is material or minor).
+    """
     if breach.material:
         return True, ProofObject(
             conclusion="Material breach — non-breaching party excused from performance",
@@ -75,6 +83,8 @@ def check_expectation_principle(breach: Breach) -> Tuple[bool, ProofObject]:
     """
     Expectation damages should put injured party in position 
     they would have been in had contract been performed.
+
+    Falsifies if: breach.total_damages() exceeds breach.expectation_damages.
     """
     total = breach.total_damages()
     if total > breach.expectation_damages:

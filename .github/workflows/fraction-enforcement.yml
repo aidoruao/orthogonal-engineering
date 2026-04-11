@@ -1,0 +1,32 @@
+name: Fraction Enforcement
+on: [push, pull_request]
+jobs:
+  no-floats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for float violations in domains
+        run: |
+          violations=$(grep -rn "float(\|isclose(" src/domains/*/invariants.py || true)
+          if [ -n "$violations" ]; then
+            echo "FLOAT VIOLATIONS FOUND:"
+            echo "$violations"
+            exit 1
+          fi
+          echo "No float violations found."
+      - name: Check for float violations in bar exam
+        run: |
+          violations=$(grep -rn "float(" pr50_bar_exam/ || true)
+          if [ -n "$violations" ]; then
+            echo "FLOAT VIOLATIONS IN BAR EXAM:"
+            echo "$violations"
+            exit 1
+          fi
+      - name: Verify falsifies_if coverage
+        run: |
+          total=$(ls -d src/domains/*/invariants.py | wc -l)
+          covered=$(grep -rl "falsifies_if" src/domains/*/invariants.py | wc -l)
+          echo "falsifies_if coverage: $covered / $total"
+          if [ "$covered" -lt "$total" ]; then
+            echo "WARNING: Not all domains have falsifies_if"
+          fi

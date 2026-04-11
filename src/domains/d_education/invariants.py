@@ -50,7 +50,7 @@ def check_essa_graduation_rate(record: EducationRecord) -> Tuple[bool, ProofObje
     
     if record.graduation_rate < threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: {record.institution_name} graduation rate {float(record.graduation_rate):.1%} below threshold {float(threshold):.1%}",
+            conclusion=f"VIOLATION: {record.institution_name} graduation rate {record.graduation_rate} below threshold {threshold}",
             premises=[
                 f"Graduation rate: {record.graduation_rate}",
                 f"Threshold: {threshold}",
@@ -84,7 +84,7 @@ def check_idea_iep_compliance(program: SpecialEducationProgram) -> Tuple[bool, P
     
     if program.iep_compliance_rate < min_compliance:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Program {program.program_id} IEP compliance {float(program.iep_compliance_rate):.1%} below required {float(min_compliance):.1%}",
+            conclusion=f"VIOLATION: Program {program.program_id} IEP compliance {program.iep_compliance_rate} below required {min_compliance}",
             premises=[
                 f"IEP compliance: {program.iep_compliance_rate}",
                 f"Required: {min_compliance}",
@@ -148,7 +148,7 @@ def check_ferpa_unauthorized_disclosure(ferpa_record: FERPAComplianceRecord) -> 
     
     if rate > max_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Institution {ferpa_record.institution_id} unauthorized disclosure rate {float(rate):.2%} exceeds {float(max_rate):.2%} limit",
+            conclusion=f"VIOLATION: Institution {ferpa_record.institution_id} unauthorized disclosure rate {rate} exceeds {max_rate} limit",
             premises=[
                 f"Unauthorized rate: {rate}",
                 f"Third-party disclosures: {ferpa_record.third_party_disclosures}",
@@ -234,7 +234,7 @@ def check_student_privacy_protection(ferpa_record: FERPAComplianceRecord) -> Tup
     
     if ferpa_record.student_access_requests > 0 and student_rate < min_fulfillment:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Institution {ferpa_record.institution_id} student access fulfillment {float(student_rate):.1%} below requirement",
+            conclusion=f"VIOLATION: Institution {ferpa_record.institution_id} student access fulfillment {student_rate} below requirement",
             premises=[
                 f"Student requests: {ferpa_record.student_access_requests}",
                 f"Student fulfilled: {ferpa_record.student_access_fulfilled}",
@@ -245,7 +245,7 @@ def check_student_privacy_protection(ferpa_record: FERPAComplianceRecord) -> Tup
     
     if ferpa_record.parent_access_requests > 0 and parent_rate < min_fulfillment:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Institution {ferpa_record.institution_id} parent access fulfillment {float(parent_rate):.1%} below requirement",
+            conclusion=f"VIOLATION: Institution {ferpa_record.institution_id} parent access fulfillment {parent_rate} below requirement",
             premises=[
                 f"Parent requests: {ferpa_record.parent_access_requests}",
                 f"Parent fulfilled: {ferpa_record.parent_access_fulfilled}",

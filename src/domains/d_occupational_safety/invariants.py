@@ -7,7 +7,10 @@ from axioms.logic import ProofObject
 from .implementation import Hazard, FallProtection, OSHAInspection
 
 def check_pel(hazard: Hazard) -> Tuple[bool, ProofObject]:
-    """OSHA Permissible Exposure Limit compliance."""
+    """OSHA Permissible Exposure Limit compliance.
+
+    Falsifies if: chemical exposure exceeds the permissible exposure limit.
+    """
     if not hazard.exceeds_pel():
         return True, ProofObject(
             conclusion=f"PEL compliant ({hazard.chemical_exposure_ppm} <= {hazard.permissible_exposure_limit})",
@@ -21,7 +24,10 @@ def check_pel(hazard: Hazard) -> Tuple[bool, ProofObject]:
     )
 
 def check_fall_protection(fp: FallProtection) -> Tuple[bool, ProofObject]:
-    """OSHA 1926.501: Fall protection at 6+ feet."""
+    """OSHA 1926.501: Fall protection at 6+ feet.
+
+    Falsifies if: fall protection is required but not provided.
+    """
     if not fp.protection_required():
         return True, ProofObject(
             conclusion=f"Fall protection not required ({fp.work_height_feet} < {fp.FALL_PROTECTION_THRESHOLD} ft)",
@@ -43,7 +49,10 @@ def check_fall_protection(fp: FallProtection) -> Tuple[bool, ProofObject]:
     )
 
 def check_general_duty(inspection: OSHAInspection) -> Tuple[bool, ProofObject]:
-    """OSH Act § 5(a)(1): General duty clause."""
+    """OSH Act § 5(a)(1): General duty clause.
+
+    Falsifies if: recognized hazard is not abated under the general duty clause.
+    """
     if inspection.has_general_duty_violation():
         return False, ProofObject(
             conclusion="VIOLATION: General duty clause — recognized hazard not abated",

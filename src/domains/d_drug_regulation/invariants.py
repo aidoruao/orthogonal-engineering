@@ -454,7 +454,10 @@ def check_dea_registration_controlled_substance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_DRUG_REGULATION invariants."""
+    """Run all D_DRUG_REGULATION invariants.
+
+    Falsifies if: any drug regulation invariant check fails or raises an exception.
+    """
     checks = [
         ("check_new_drug_approval_requirement", check_new_drug_approval_requirement),
         ("check_controlled_substance_scheduling", check_controlled_substance_scheduling),

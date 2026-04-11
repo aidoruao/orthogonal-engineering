@@ -14,12 +14,16 @@ from .implementation import School, DisciplineRecord
 
 
 def check_spending_equity(school: School) -> Tuple[bool, ProofObject]:
+    """Spending ratio must be at least 0.8 of state average.
+
+    Falsifies if: school.spending_equity_ratio() < 0.8.
+    """
     ratio = school.spending_equity_ratio()
     if ratio < Fraction(8, 10):
         return False, ProofObject(
             conclusion=f"VIOLATION: Spending {ratio}x below state average",
             premises=[f"School: {school.school_id}"],
-            rule":"essa_equitable_spending"
+            rule="essa_equitable_spending"
         )
     return True, ProofObject(
         conclusion="Spending equitable",
@@ -29,6 +33,10 @@ def check_spending_equity(school: School) -> Tuple[bool, ProofObject]:
 
 
 def check_disparate_impact(discipline: DisciplineRecord, threshold: Fraction) -> Tuple[bool, ProofObject]:
+    """Disparate impact ratio must stay within threshold.
+
+    Falsifies if: discipline.disparate_impact_ratio(r1, r2) > threshold for any races.
+    """
     races = list(discipline.enrollment_by_race.keys())
     for r1 in races:
         for r2 in races:
@@ -38,7 +46,7 @@ def check_disparate_impact(discipline: DisciplineRecord, threshold: Fraction) ->
                     return False, ProofObject(
                         conclusion=f"VIOLATION: Disparate impact {ratio}x between {r1} and {r2}",
                         premises=[],
-                        rule":"civil_rights_title_vi"
+                        rule="civil_rights_title_vi"
                     )
     return True, ProofObject(
         conclusion="No disparate impact detected",
@@ -48,11 +56,15 @@ def check_disparate_impact(discipline: DisciplineRecord, threshold: Fraction) ->
 
 
 def check_title_i_allocation(school: School) -> Tuple[bool, ProofObject]:
+    """Title I eligible schools must receive funding.
+
+    Falsifies if: school.title_i_eligible is True and title_i_funding == 0.
+    """
     if school.title_i_eligible and school.title_i_funding == 0:
         return False, ProofObject(
             conclusion="VIOLATION: Title I eligible but no funding",
             premises=[f"School: {school.school_id}"],
-            rule":"essa_title_i_funding"
+            rule="essa_title_i_funding"
         )
     return True, ProofObject(
         conclusion="Title I funding appropriate",
@@ -62,12 +74,16 @@ def check_title_i_allocation(school: School) -> Tuple[bool, ProofObject]:
 
 
 def check_suspension_rate_reasonable(discipline: DisciplineRecord) -> Tuple[bool, ProofObject]:
+    """Suspension rate must not exceed 10%.
+
+    Falsifies if: total suspension rate > 0.1.
+    """
     total_rate = Fraction(discipline.suspensions_total, sum(discipline.enrollment_by_race.values()))
     if total_rate > Fraction(1, 10):  # > 10%
         return False, ProofObject(
             conclusion=f"VIOLATION: Suspension rate {total_rate} excessive",
             premises=[],
-            rule":"school_discipline_reform"
+            rule="school_discipline_reform"
         )
     return True, ProofObject(
         conclusion="Suspension rate acceptable",
@@ -77,12 +93,15 @@ def check_suspension_rate_reasonable(discipline: DisciplineRecord) -> Tuple[bool
 
 
 def check_racial_compliance(discipline: DisciplineRecord) -> Tuple[bool, ProofObject]:
-    """All racial groups must have enrollment data."""
+    """All racial groups must have enrollment data.
+
+    Falsifies if: discipline.enrollment_by_race is empty.
+    """
     if not discipline.enrollment_by_race:
         return False, ProofObject(
             conclusion="VIOLATION: No enrollment data by race",
             premises=[],
-            rule":"civil_rights_data_collection"
+            rule="civil_rights_data_collection"
         )
     return True, ProofObject(
         conclusion="Racial data collected",

@@ -346,7 +346,10 @@ def check_smart_growth_principles() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_URBAN_PLANNING invariants."""
+    """Run all D_URBAN_PLANNING invariants.
+
+    Falsifies if: any urban planning invariant check fails or raises an exception.
+    """
     checks = [
         ("check_standard_zoning_enabling_act", check_standard_zoning_enabling_act),
         ("check_apa_planning_principles", check_apa_planning_principles),

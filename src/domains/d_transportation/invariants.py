@@ -322,7 +322,10 @@ def check_dot_pipeline_safety() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_TRANSPORTATION invariants."""
+    """Run all D_TRANSPORTATION invariants.
+
+    Falsifies if: any transportation invariant check fails or raises an exception.
+    """
     checks = [
         ("check_fmcsa_hos_limits", check_fmcsa_hos_limits),
         ("check_faa_pilot_certification", check_faa_pilot_certification),

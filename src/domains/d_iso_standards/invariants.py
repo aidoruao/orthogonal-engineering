@@ -352,7 +352,10 @@ def check_iso_27001_information_security() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ISO_STANDARDS invariants."""
+    """Run all D_ISO_STANDARDS invariants.
+
+    Falsifies if: any ISO standards invariant check fails or raises an exception.
+    """
     checks = [
         ("check_standard_integrity_verification", check_standard_integrity_verification),
         ("check_compliance_requires_integrity", check_compliance_requires_integrity),

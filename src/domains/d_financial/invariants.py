@@ -28,6 +28,8 @@ def check_securities_registration_requirement() -> Tuple[bool, ProofObject]:
     Standard: Securities Act of 1933 §5
     Falsifies if: Unregistered non-exempt security offered.
     
+    Falsifies if: valid_offering or exempt_offering is False, or unregistered_public is True.
+    
     Returns:
         Tuple of (success: bool, proof: ProofObject)
     """
@@ -70,6 +72,8 @@ def check_sox_internal_controls() -> Tuple[bool, ProofObject]:
     
     Standard: SOX §404 (15 U.S.C. §7262)
     Falsifies if: CEO/CFO certify without adequate ICFR.
+    
+    Falsifies if: certification_valid is False, auditor_attestation is False, or revenue_exact is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -116,6 +120,8 @@ def check_insider_trading_prohibition() -> Tuple[bool, ProofObject]:
     
     Standard: SEC Rule 10b-5; Dirks v. SEC (1983)
     Falsifies if: Trade on MNPI without violation detection.
+    
+    Falsifies if: violation or tippee_liability is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -169,6 +175,8 @@ def check_investment_adviser_fiduciary() -> Tuple[bool, ProofObject]:
     Standard: SEC v. Capital Gains (1963); Advisers Act §206
     Falsifies if: Adviser profits at client's expense.
     
+    Falsifies if: duty_of_care, duty_of_loyalty, fee_exact, or fee_disclosed is False.
+    
     Returns:
         Tuple of (success: bool, proof: ProofObject)
     """
@@ -200,7 +208,7 @@ def check_investment_adviser_fiduciary() -> Tuple[bool, ProofObject]:
             f"duty_of_care = {duty_of_care}",
             f"duty_of_loyalty = {duty_of_loyalty}",
             f"aum = ${assets_under_management}",
-            f"fee_rate = {float(fee_rate):.0%}",
+            f"fee_rate = {fee_rate}",
             f"annual_fee_exact = {fee_exact}",
             f"fee_disclosed = {fee_disclosed}",
         ],
@@ -307,7 +315,10 @@ def check_financial_reporting_fraction_precision() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_FINANCIAL invariants."""
+    """Run all D_FINANCIAL invariants.
+
+    Falsifies if: any financial invariant check fails or raises an exception.
+    """
     checks = [
         ("check_securities_registration_requirement", check_securities_registration_requirement),
         ("check_sox_internal_controls", check_sox_internal_controls),
