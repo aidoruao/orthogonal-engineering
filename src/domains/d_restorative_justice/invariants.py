@@ -65,7 +65,7 @@ def check_agreement_completion(program: RJProgramMetrics) -> Tuple[bool, ProofOb
     
     if rate < target:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Program {program.program_id} completion rate {float(rate):.1%} below target {float(target):.1%}",
+            conclusion=f"VIOLATION: Program {program.program_id} completion rate {rate} below target {target}",
             premises=[
                 f"Completed: {program.cases_completed}",
                 f"Breached: {program.cases_breached}",
@@ -104,7 +104,7 @@ def check_victim_satisfaction(case: RestorativeJusticeCase) -> Tuple[bool, Proof
     
     if case.completion_status == "completed" and case.victim_satisfaction < target:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Case {case.case_id} victim satisfaction {float(case.victim_satisfaction):.1%} below target {float(target):.1%}",
+            conclusion=f"VIOLATION: Case {case.case_id} victim satisfaction {case.victim_satisfaction} below target {target}",
             premises=[
                 f"Satisfaction: {case.victim_satisfaction}",
                 f"Target: {target}",
@@ -172,7 +172,7 @@ def check_restitution_collection(program: RJProgramMetrics) -> Tuple[bool, Proof
     
     if program.restitution_owed > 0 and rate < min_collection_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Program {program.program_id} restitution collection {float(rate):.1%} below minimum {float(min_collection_rate):.1%}",
+            conclusion=f"VIOLATION: Program {program.program_id} restitution collection {rate} below minimum {min_collection_rate}",
             premises=[
                 f"Collected: {program.restitution_collected}",
                 f"Owed: {program.restitution_owed}",

@@ -298,7 +298,7 @@ def check_recall_effectiveness_targets() -> Tuple[bool, ProofObject]:
     
     class_i_effectiveness = system.check_recall_effectiveness(class_i_recall)
     class_i_target = Fraction(95, 100)
-    class_i_correct = class_i_effectiveness["target_rate"] == float(class_i_target)
+    class_i_correct = class_i_effectiveness["target_rate"] == class_i_target
     
     # Class III recall target
     class_iii_recall = FoodRecall(
@@ -312,7 +312,7 @@ def check_recall_effectiveness_targets() -> Tuple[bool, ProofObject]:
     
     class_iii_effectiveness = system.check_recall_effectiveness(class_iii_recall)
     class_iii_target = Fraction(80, 100)
-    class_iii_correct = class_iii_effectiveness["target_rate"] == float(class_iii_target)
+    class_iii_correct = class_iii_effectiveness["target_rate"] == class_iii_target
     
     # Class I target higher than Class III
     target_hierarchy = class_i_target > class_iii_target

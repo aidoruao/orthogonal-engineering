@@ -134,10 +134,10 @@ def check_beyond_reasonable_doubt() -> Tuple[bool, ProofObject]:
     proof = ProofObject(
         rule="BeyondReasonableDoubt",
         premises=[
-            f"criminal_standard = {float(criminal_standard):.0%}",
-            f"evidence_strength_strong = {float(evidence_strength):.0%}",
+            f"criminal_standard = {criminal_standard}",
+            f"evidence_strength_strong = {evidence_strength}",
             f"conviction_valid = {conviction_valid}",
-            f"evidence_weak = {float(weak_evidence):.0%}",
+            f"evidence_weak = {weak_evidence}",
             f"conviction_invalid = {conviction_invalid}",
         ],
         conclusion=(
