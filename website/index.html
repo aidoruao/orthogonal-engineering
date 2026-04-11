@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orthogonal Engineering — Witness Node</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: #12121a;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: border-color 0.2s;
+        }
+        
+        .card:hover {
+            border-color: #3a3a5e;
+        }
+        
+        .card h2 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+        
+        .card h2.warning::before {
+            background: #fbbf24;
+        }
+        
+        .big-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #4ade80;
+            margin: 0.5rem 0;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: #888;
+        }
+        
+        .metric-value {
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        .merkle-root {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.8rem;
+            background: #0a0a0f;
+            padding: 1rem;
+            border-radius: 4px;
+            word-break: break-all;
+            color: #4ade80;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-deepened {
+            background: #064e3b;
+            color: #4ade80;
+        }
+        
+        .status-moderate {
+            background: #1e3a5f;
+            color: #60a5fa;
+        }
+        
+        .status-basic {
+            background: #451a03;
+            color: #fbbf24;
+        }
+        
+        .status-stub {
+            background: #450a0a;
+            color: #f87171;
+        }
+        
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .domain-cell {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3e;
+            border-radius: 4px;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .domain-cell:hover {
+            border-color: #4ade80;
+            transform: translateY(-2px);
+        }
+        
+        .domain-cell .domain-id {
+            color: #888;
+            font-size: 0.65rem;
+        }
+        
+        .domain-cell .domain-status {
+            margin-top: 0.25rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid #2a2a3e;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .nav-links a {
+            color: #60a5fa;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2a2a3e;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        
+        .nav-links a:hover {
+            background: #1e3a5f;
+            border-color: #60a5fa;
+        }
+        
+        #loading {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+        }
+        
+        .error {
+            background: #450a0a;
+            color: #f87171;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏛️ Orthogonal Engineering — Witness Node</h1>
+            <p class="subtitle">Glass-Box Boundary Enforcement • Yeshua Standard • Runtime Verification</p>
+            <nav class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/commonwealth/">Commonwealth</a>
+                <a href="/game-witness/">Game Witness</a>
+                <a href="/api/status.json">API</a>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="container">
+        <div id="loading">Loading witness data...</div>
+        
+        <div id="dashboard" style="display: none;">
+            <div class="grid">
+                <div class="card">
+                    <h2>Domains</h2>
+                    <div class="big-number" id="domain-count">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Deepened</span>
+                        <span class="metric-value" id="domain-deepened">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Moderate</span>
+                        <span class="metric-value" id="domain-moderate">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Basic</span>
+                        <span class="metric-value" id="domain-basic">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Stub</span>
+                        <span class="metric-value" id="domain-stub">-</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Case Studies</h2>
+                    <div class="big-number" id="cs-count">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Categories</span>
+                        <span class="metric-value" id="cs-categories">-</span>
+                    </div>
+                    <div id="cs-recent" style="margin-top: 1rem; font-size: 0.85rem; color: #888;">
+                        Loading recent entries...
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Kernel</h2>
+                    <div class="big-number" id="kernel-files">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Total Lines</span>
+                        <span class="metric-value" id="kernel-lines">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Modules</span>
+                        <span class="metric-value">commonwealth, firmware, mmu, interrupts, syscall, vfs, services</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>YouTuber Audits</h2>
+                    <div class="big-number" id="yt-channels">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Total Entries</span>
+                        <span class="metric-value" id="yt-entries">-</span>
+                    </div>
+                    <div id="yt-channels-list" style="margin-top: 1rem; font-size: 0.85rem; color: #888;">
+                        Loading channels...
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Merkle Root (Ω State Hash)</h2>
+                <div class="merkle-root" id="merkle-root">Loading...</div>
+                <div style="margin-top: 1rem; font-size: 0.85rem; color: #888;">
+                    <span id="merkle-meta">Computing...</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="warning">Domain Invariant Heatmap</h2>
+                <div id="domain-heatmap" class="domain-grid">
+                    Loading domains...
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Orthogonal Engineering Framework • <span id="footer-commit">loading...</span></p>
+        <p style="margin-top: 0.5rem; font-size: 0.75rem;">
+            Generated: <span id="footer-time">-</span>
+        </p>
+    </footer>
+    
+    <script>
+        // Load data from API
+        async function loadData() {
+            try {
+                const response = await fetch('/api/status.json');
+                if (!response.ok) throw new Error('Failed to load status');
+                const status = await response.json();
+                
+                // Update dashboard
+                document.getElementById('domain-count').textContent = status.domains || '-';
+                document.getElementById('cs-count').textContent = status.case_studies || '-';
+                document.getElementById('kernel-files').textContent = status.kernel_files || '-';
+                document.getElementById('kernel-lines').textContent = (status.kernel_lines || 0).toLocaleString();
+                document.getElementById('yt-channels').textContent = status.youtuber_channels || '-';
+                document.getElementById('merkle-root').textContent = status.merkle_root || 'N/A';
+                document.getElementById('footer-commit').textContent = status.commit || 'unknown';
+                document.getElementById('footer-time').textContent = new Date(status.generated).toLocaleString();
+                
+                // Load domain details
+                const domainRes = await fetch('/api/domain_status.json');
+                if (domainRes.ok) {
+                    const domainData = await domainRes.json();
+                    document.getElementById('domain-deepened').textContent = domainData.deepened || 0;
+                    document.getElementById('domain-moderate').textContent = domainData.moderate || 0;
+                    document.getElementById('domain-basic').textContent = domainData.basic || 0;
+                    document.getElementById('domain-stub').textContent = domainData.stub || 0;
+                    
+                    // Build heatmap
+                    const heatmap = document.getElementById('domain-heatmap');
+                    heatmap.innerHTML = '';
+                    (domainData.domains || []).forEach(d => {
+                        const cell = document.createElement('div');
+                        cell.className = 'domain-cell';
+                        cell.innerHTML = `
+                            <div class="domain-id">${d.id}</div>
+                            <div class="domain-status">
+                                <span class="status-badge status-${d.status}">${d.status}</span>
+                            </div>
+                        `;
+                        heatmap.appendChild(cell);
+                    });
+                }
+                
+                // Load case study details
+                const csRes = await fetch('/api/case_study_index.json');
+                if (csRes.ok) {
+                    const csData = await csRes.json();
+                    document.getElementById('cs-categories').textContent = 
+                        Object.keys(csData.categories || {}).length;
+                    
+                    const recent = (csData.recent || []).slice(-5);
+                    document.getElementById('cs-recent').innerHTML = 
+                        '<strong>Recent:</strong> ' + recent.map(r => r.id).join(', ');
+                }
+                
+                // Load YouTube stats
+                const ytRes = await fetch('/api/youtuber_audit_stats.json');
+                if (ytRes.ok) {
+                    const ytData = await ytRes.json();
+                    document.getElementById('yt-entries').textContent = ytData.total_entries || 0;
+                    
+                    const channels = (ytData.channels || []).map(c => c.name).slice(0, 4);
+                    document.getElementById('yt-channels-list').textContent = channels.join(', ');
+                }
+                
+                // Load merkle state
+                const merkleRes = await fetch('/api/merkle_state.json');
+                if (merkleRes.ok) {
+                    const merkleData = await merkleRes.json();
+                    document.getElementById('merkle-meta').textContent = 
+                        `Files: ${merkleData.file_count || 'N/A'} • Method: ${merkleData.method || 'evidence_manager'}`;
+                }
+                
+                // Show dashboard
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                
+            } catch (err) {
+                document.getElementById('loading').innerHTML = 
+                    `<div class="error">Error loading data: ${err.message}</div>`;
+            }
+        }
+        
+        // Load on page ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadData);
+        } else {
+            loadData();
+        }
+    </script>
+</body>
+</html>

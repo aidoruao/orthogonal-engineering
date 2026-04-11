@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commonwealth — Yeshua Governance</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 2rem;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #888;
+            font-size: 0.95rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: #12121a;
+            border: 1px solid #2a2a3e;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .card h2 {
+            font-size: 1.1rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        
+        .role {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3e;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .role-title {
+            font-weight: 600;
+            color: #4ade80;
+            margin-bottom: 0.5rem;
+        }
+        
+        .role-desc {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .sabbath-status {
+            text-align: center;
+            padding: 2rem;
+            background: #0a0a0f;
+            border-radius: 4px;
+        }
+        
+        .sabbath-status.active {
+            border: 1px solid #f87171;
+        }
+        
+        .sabbath-status.inactive {
+            border: 1px solid #4ade80;
+        }
+        
+        .sabbath-indicator {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .sabbath-state {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .sabbath-state.halted {
+            color: #f87171;
+        }
+        
+        .sabbath-state.running {
+            color: #4ade80;
+        }
+        
+        .consent-log {
+            background: #0a0a0f;
+            border: 1px solid #2a2a3e;
+            border-radius: 4px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .consent-entry {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #2a2a3e;
+            font-size: 0.85rem;
+        }
+        
+        .consent-entry:last-child {
+            border-bottom: none;
+        }
+        
+        .consent-entry .timestamp {
+            color: #666;
+            font-size: 0.75rem;
+        }
+        
+        .consent-entry .candidate {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+        
+        .consent-entry .action {
+            color: #aaa;
+            margin-top: 0.25rem;
+        }
+        
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #2a2a3e;
+        }
+        
+        .stat:last-child {
+            border-bottom: none;
+        }
+        
+        .metric {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+        
+        .metric-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+            border-top: 1px solid #2a2a3e;
+        }
+        
+        .highlight {
+            background: #1e3a5f;
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>⚖️ Yeshua Commonwealth</h1>
+            <p class="subtitle">Sovereign-Steward Governance • Sabbath Halt • Consent-Log Witness</p>
+        </div>
+    </header>
+    
+    <main class="container">
+        <a href="/" class="back-link">← Back to Dashboard</a>
+        
+        <div class="grid">
+            <div class="card">
+                <h2>Governance Roles</h2>
+                <div class="role">
+                    <div class="role-title">👑 Sovereign</div>
+                    <div class="role-desc">
+                        The source of all legitimate authority within the domain. 
+                        Held by <span class="highlight">@aidoruao</span>. 
+                        Grants capabilities, authorizes exceptions, and ordains Stewards.
+                    </div>
+                </div>
+                <div class="role">
+                    <div class="role-title">🛡️ Steward</div>
+                    <div class="role-desc">
+                        Delegated authority operating within consent-gated scope. 
+                        Must pass Bar Exam (≥70%) for architectural privileges. 
+                        All actions logged and witnessed.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Sabbath Halt Status</h2>
+                <div id="sabbath-status" class="sabbath-status inactive">
+                    <div class="sabbath-indicator">✓</div>
+                    <div class="sabbath-state running">SYSTEM OPERATIONAL</div>
+                    <p style="margin-top: 1rem; color: #888;">
+                        Last halt: <span id="last-halt">None recorded</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Commonwealth Statistics</h2>
+                <div class="stat">
+                    <span>Total Consent Entries</span>
+                    <span id="consent-count">Loading...</span>
+                </div>
+                <div class="stat">
+                    <span>Active Stewards</span>
+                    <span id="steward-count">Loading...</span>
+                </div>
+                <div class="stat">
+                    <span>Kernel Modules</span>
+                    <span>20</span>
+                </div>
+                <div class="stat">
+                    <span>Bar Exam Threshold</span>
+                    <span>≥70%</span>
+                </div>
+            </div>
+            
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>Consent Log (Recent Entries)</h2>
+                <div id="consent-log" class="consent-log">
+                    Loading consent log...
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Yeshua Commonwealth Specification: <code>docs/YESHUA_COMMONWEALTH.md</code></p>
+    </footer>
+    
+    <script>
+        // Parse consent log from JSONL format
+        async function loadConsentLog() {
+            try {
+                // Try to fetch the consent log
+                const response = await fetch('../../pr47_stewardship/witness/consent_log.jsonl');
+                if (!response.ok) {
+                    throw new Error('Consent log not accessible from web');
+                }
+                
+                const text = await response.text();
+                const lines = text.trim().split('\n').filter(l => l.trim());
+                
+                const entries = [];
+                for (const line of lines) {
+                    try {
+                        const entry = JSON.parse(line);
+                        entries.push(entry);
+                    } catch (e) {
+                        // Skip malformed lines
+                    }
+                }
+                
+                // Update statistics
+                document.getElementById('consent-count').textContent = entries.length;
+                
+                // Count unique stewards
+                const stewards = new Set(entries.map(e => e.candidate_id));
+                document.getElementById('steward-count').textContent = stewards.size;
+                
+                // Display recent entries
+                const logContainer = document.getElementById('consent-log');
+                logContainer.innerHTML = '';
+                
+                // Show last 20 entries in reverse order
+                const recent = entries.slice(-20).reverse();
+                for (const entry of recent) {
+                    const div = document.createElement('div');
+                    div.className = 'consent-entry';
+                    
+                    const timestamp = entry.timestamp ? 
+                        new Date(entry.timestamp).toLocaleString() : 'Unknown';
+                    
+                    div.innerHTML = `
+                        <div class="timestamp">${timestamp}</div>
+                        <div class="candidate">${entry.candidate_id || 'Unknown'}</div>
+                        <div class="action">${entry.action || 'Unknown action'}</div>
+                        <div style="margin-top: 0.25rem; color: #666; font-size: 0.8rem;">
+                            Scope: ${entry.scope_glob || 'N/A'}
+                        </div>
+                    `;
+                    logContainer.appendChild(div);
+                }
+                
+            } catch (err) {
+                document.getElementById('consent-log').innerHTML = `
+                    <div style="padding: 1rem; color: #f87171;">
+                        Consent log not accessible from browser (CORS or path issue).<br>
+                        Location: <code>pr47_stewardship/witness/consent_log.jsonl</code>
+                    </div>
+                `;
+                document.getElementById('consent-count').textContent = 'N/A';
+                document.getElementById('steward-count').textContent = 'N/A';
+            }
+        }
+        
+        // Load on page ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadConsentLog);
+        } else {
+            loadConsentLog();
+        }
+    </script>
+</body>
+</html>
