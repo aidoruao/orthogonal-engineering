@@ -29,7 +29,7 @@ def check_hipaa_compliance(provider: HealthcareProvider) -> Tuple[bool, ProofObj
     
     if score < threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Provider {provider.name} HIPAA readiness {float(score):.1%} below {float(threshold):.1%}",
+            conclusion=f"VIOLATION: Provider {provider.name} HIPAA readiness {score} below {threshold}",
             premises=[
                 f"HIPAA compliant: {provider.hipaa_compliant}",
                 f"Privacy officer: {provider.privacy_officer_assigned}",
@@ -41,7 +41,7 @@ def check_hipaa_compliance(provider: HealthcareProvider) -> Tuple[bool, ProofObj
     
     return True, ProofObject(
         conclusion=f"Provider {provider.name} HIPAA readiness acceptable",
-        premises=[f"Score: {float(score):.1%}"],
+        premises=[f"Score: {score}"],
         rule="hipaa_compliance"
     )
 
@@ -170,7 +170,7 @@ def check_patient_satisfaction(provider: HealthcareProvider) -> Tuple[bool, Proo
     
     if provider.patient_satisfaction_score < min_satisfaction:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Provider {provider.name} patient satisfaction {float(provider.patient_satisfaction_score):.1%} below {float(min_satisfaction):.1%}",
+            conclusion=f"VIOLATION: Provider {provider.name} patient satisfaction {provider.patient_satisfaction_score} below {min_satisfaction}",
             premises=[
                 f"Satisfaction: {provider.patient_satisfaction_score}",
                 f"Complaints: {provider.patient_complaints}",
@@ -181,6 +181,6 @@ def check_patient_satisfaction(provider: HealthcareProvider) -> Tuple[bool, Proo
     
     return True, ProofObject(
         conclusion=f"Provider {provider.name} patient satisfaction acceptable",
-        premises=[f"Satisfaction: {float(provider.patient_satisfaction_score):.1%}"],
+        premises=[f"Satisfaction: {provider.patient_satisfaction_score}"],
         rule="patient_satisfaction"
     )

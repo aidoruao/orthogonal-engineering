@@ -151,7 +151,7 @@ def check_return_rate_reasonable(store: RetailStore) -> Tuple[bool, ProofObject]
     
     if rate > max_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Store {store.store_id} return rate {float(rate):.1%} exceeds maximum {float(max_rate):.1%}",
+            conclusion=f"VIOLATION: Store {store.store_id} return rate {rate} exceeds maximum {max_rate}",
             premises=[
                 f"Returns: {store.returns_annual}",
                 f"Sales: {store.sales_annual}",
@@ -163,7 +163,7 @@ def check_return_rate_reasonable(store: RetailStore) -> Tuple[bool, ProofObject]
     
     return True, ProofObject(
         conclusion=f"Store {store.store_id} return rate acceptable",
-        premises=[f"Return rate: {float(rate):.1%}"],
+        premises=[f"Return rate: {rate}"],
         rule="retail_return_rate"
     )
 
@@ -184,7 +184,7 @@ def check_product_profitability(product: RetailProduct) -> Tuple[bool, ProofObje
     
     if margin < min_margin:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Product {product.sku} margin {float(margin):.1%} below minimum {float(min_margin):.1%}",
+            conclusion=f"VIOLATION: Product {product.sku} margin {margin} below minimum {min_margin}",
             premises=[
                 f"Price: {product.base_price}",
                 f"Cost: {product.cost}",
@@ -196,6 +196,6 @@ def check_product_profitability(product: RetailProduct) -> Tuple[bool, ProofObje
     
     return True, ProofObject(
         conclusion=f"Product {product.sku} profitability acceptable",
-        premises=[f"Margin: {float(margin):.1%}"],
+        premises=[f"Margin: {margin}"],
         rule="retail_profitability"
     )
