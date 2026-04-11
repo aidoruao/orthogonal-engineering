@@ -34,6 +34,14 @@ You are a **software engineering agent**, not a warden. You have full write acce
 - **Every claim has a `falsifies_if` condition** — Popperian falsifiability.
 - **No defamation** — capability comparison only, not company criticism.
 
+## Documentation Register
+
+- All markdown documentation uses **technical register** (engineering documentation style), not liturgical, poetic, or sacral prose.
+- Yeshua Standard theological concepts (New Jerusalem, Eschaton, Covenant, Resurrection, Judgment, Omega) are used as **technical terms** with precise architectural meanings — not as devotional language.
+- All rewritten docs have YAML frontmatter with `tags` and `register: technical`.
+- Scripture quotations are NOT used in documentation. Theological concepts are referenced by name only.
+- When creating or updating markdown documentation, maintain technical register. Avoid emotional language, biblical cadence, and direct address forms.
+
 ## SAL Kernel Patterns
 
 ```python
