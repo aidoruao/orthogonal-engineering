@@ -331,7 +331,10 @@ def check_armed_career_criminal_act() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_WEAPONS_REGULATION invariants."""
+    """Run all D_WEAPONS_REGULATION invariants.
+
+    Falsifies if: any weapons regulation invariant check fails or raises an exception.
+    """
     checks = [
         ("check_nfa_registration_requirements", check_nfa_registration_requirements),
         ("check_gca_prohibited_persons", check_gca_prohibited_persons),

@@ -341,7 +341,10 @@ def check_zoning_board_adjustment() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ZONING invariants."""
+    """Run all D_ZONING invariants.
+
+    Falsifies if: any zoning invariant check fails or raises an exception.
+    """
     checks = [
         ("check_euclid_constitutionality", check_euclid_constitutionality),
         ("check_euclidean_zoning_districts", check_euclidean_zoning_districts),

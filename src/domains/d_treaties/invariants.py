@@ -313,7 +313,10 @@ def check_us_treaty_ratification_process() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_TREATIES invariants."""
+    """Run all D_TREATIES invariants.
+
+    Falsifies if: any treaty invariant check fails or raises an exception.
+    """
     checks = [
         ("check_vclt_treaty_formation", check_vclt_treaty_formation),
         ("check_vclt_interpretation_rules", check_vclt_interpretation_rules),

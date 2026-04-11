@@ -297,7 +297,10 @@ def check_universal_service_fund_contributions() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_TELECOMMUNICATIONS_LAW invariants."""
+    """Run all D_TELECOMMUNICATIONS_LAW invariants.
+
+    Falsifies if: any telecommunications law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_communications_act_common_carrier", check_communications_act_common_carrier),
         ("check_fcc_spectrum_licensing", check_fcc_spectrum_licensing),

@@ -334,7 +334,10 @@ def check_international_court_justice() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_UN_CHARTER invariants."""
+    """Run all D_UN_CHARTER invariants.
+
+    Falsifies if: any UN Charter invariant check fails or raises an exception.
+    """
     checks = [
         ("check_un_charter_purposes_principles", check_un_charter_purposes_principles),
         ("check_security_council_membership_voting", check_security_council_membership_voting),
