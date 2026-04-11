@@ -29,7 +29,7 @@ def check_herd_immunity(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofObject]:
     
     if outbreak.disease_name.lower() in ("measles", "pertussis") and coverage < threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Outbreak {outbreak.outbreak_id} {outbreak.disease_name} vaccination {float(coverage):.1%} below herd immunity {float(threshold):.1%}",
+            conclusion=f"VIOLATION: Outbreak {outbreak.outbreak_id} {outbreak.disease_name} vaccination {coverage} below herd immunity {threshold}",
             premises=[
                 f"Vaccinated: {outbreak.population_vaccinated}",
                 f"At risk: {outbreak.population_at_risk}",
@@ -41,7 +41,7 @@ def check_herd_immunity(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Outbreak {outbreak.outbreak_id} vaccination coverage acceptable",
-        premises=[f"Coverage: {float(coverage):.1%}"],
+        premises=[f"Coverage: {coverage}"],
         rule="herd_immunity"
     )
 
@@ -63,7 +63,7 @@ def check_case_fatality_rate(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofObje
     total_cases = outbreak.cases_confirmed + outbreak.cases_probable
     if total_cases > 10 and cfr > max_cfr:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Outbreak {outbreak.outbreak_id} CFR {float(cfr):.1%} exceeds {float(max_cfr):.1%}",
+            conclusion=f"VIOLATION: Outbreak {outbreak.outbreak_id} CFR {cfr} exceeds {max_cfr}",
             premises=[
                 f"Deaths: {outbreak.deaths}",
                 f"Cases: {total_cases}",
@@ -75,7 +75,7 @@ def check_case_fatality_rate(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofObje
     
     return True, ProofObject(
         conclusion=f"Outbreak {outbreak.outbreak_id} CFR acceptable",
-        premises=[f"CFR: {float(cfr):.1%}"],
+        premises=[f"CFR: {cfr}"],
         rule="case_fatality_rate"
     )
 
@@ -96,7 +96,7 @@ def check_public_health_coverage(program: PublicHealthProgram) -> Tuple[bool, Pr
     
     if rate < min_coverage:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Program {program.program_id} coverage {float(rate):.1%} below {float(min_coverage):.1%}",
+            conclusion=f"VIOLATION: Program {program.program_id} coverage {rate} below {min_coverage}",
             premises=[
                 f"Reached: {program.people_reached}",
                 f"Target: {program.target_population}",
@@ -108,7 +108,7 @@ def check_public_health_coverage(program: PublicHealthProgram) -> Tuple[bool, Pr
     
     return True, ProofObject(
         conclusion=f"Program {program.program_id} coverage acceptable",
-        premises=[f"Rate: {float(rate):.1%}"],
+        premises=[f"Rate: {rate}"],
         rule="public_health_coverage"
     )
 
@@ -161,7 +161,7 @@ def check_program_budget_utilization(program: PublicHealthProgram) -> Tuple[bool
     
     if utilization < min_util:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Program {program.program_id} budget utilization {float(utilization):.1%} below {float(min_util):.1%}",
+            conclusion=f"VIOLATION: Program {program.program_id} budget utilization {utilization} below {min_util}",
             premises=[
                 f"Spent: {program.budget_spent}",
                 f"Allocated: {program.budget_allocated}",
@@ -173,7 +173,7 @@ def check_program_budget_utilization(program: PublicHealthProgram) -> Tuple[bool
     
     if utilization > max_util:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Program {program.program_id} budget over-utilization {float(utilization):.1%}",
+            conclusion=f"VIOLATION: Program {program.program_id} budget over-utilization {utilization}",
             premises=[
                 f"Spent: {program.budget_spent}",
                 f"Allocated: {program.budget_allocated}",
@@ -185,6 +185,6 @@ def check_program_budget_utilization(program: PublicHealthProgram) -> Tuple[bool
     
     return True, ProofObject(
         conclusion=f"Program {program.program_id} budget utilization appropriate",
-        premises=[f"Utilization: {float(utilization):.1%}"],
+        premises=[f"Utilization: {utilization}"],
         rule="budget_utilization"
     )

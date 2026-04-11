@@ -40,7 +40,7 @@ def check_fair_housing_lending_disparity(neighborhood: Neighborhood) -> Tuple[bo
     
     if impact_ratio > threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: {neighborhood.name} lending shows disparate impact ratio {float(impact_ratio):.2f}, exceeds {float(threshold):.2f}",
+            conclusion=f"VIOLATION: {neighborhood.name} lending shows disparate impact ratio {impact_ratio}, exceeds {threshold}",
             premises=[
                 f"Minority denial rate: {neighborhood.mortgage_denial_rate_minority}",
                 f"Non-minority denial rate: {neighborhood.mortgage_denial_rate_non_minority}",
@@ -77,7 +77,7 @@ def check_cra_lending_ratio(institution: LendingInstitution) -> Tuple[bool, Proo
     # Expect loan ratio to be reasonably proportional to population
     if population_ratio > cra_low_mod_threshold() and loan_ratio < population_ratio * Fraction(8, 10):
         return False, ProofObject(
-            conclusion=f"VIOLATION: {institution.name} CRA loan ratio {float(loan_ratio):.1%} below LMI population ratio {float(population_ratio):.1%}",
+            conclusion=f"VIOLATION: {institution.name} CRA loan ratio {loan_ratio} below LMI population ratio {population_ratio}",
             premises=[
                 f"LMI loans: {institution.home_purchase_to_low_mod + institution.refinancing_to_low_mod}",
                 f"Total loans: {institution.home_purchase_loans + institution.refinancing_loans}",
@@ -112,7 +112,7 @@ def check_affordable_housing_availability(neighborhood: Neighborhood) -> Tuple[b
     # Check for severe shortage
     if affordability_ratio < min_affordable_ratio and neighborhood.low_income_population > Fraction(neighborhood.total_population, 4):
         return False, ProofObject(
-            conclusion=f"VIOLATION: {neighborhood.name} affordable housing shortage {float(affordability_ratio):.1%} with {float(neighborhood.low_income_population)} low-income residents",
+            conclusion=f"VIOLATION: {neighborhood.name} affordable housing shortage {affordability_ratio} with {neighborhood.low_income_population} low-income residents",
             premises=[
                 f"Affordable units: {neighborhood.affordable_housing_units}",
                 f"Total units: {neighborhood.total_housing_units}",
@@ -148,7 +148,7 @@ def check_service_access_equity(neighborhood: Neighborhood) -> Tuple[bool, Proof
         if (neighborhood.grocery_access_score < min_access_score or
             neighborhood.healthcare_access_score < min_access_score):
             return False, ProofObject(
-                conclusion=f"VIOLATION: {neighborhood.name} ({float(minority_ratio):.1%} minority) has inadequate service access",
+                conclusion=f"VIOLATION: {neighborhood.name} ({minority_ratio} minority) has inadequate service access",
                 premises=[
                     f"Grocery access: {neighborhood.grocery_access_score}",
                     f"Healthcare access: {neighborhood.healthcare_access_score}",
@@ -186,7 +186,7 @@ def check_cra_branch_presence(institution: LendingInstitution) -> Tuple[bool, Pr
     
     if population_ratio > cra_low_mod_threshold() and branch_ratio == 0:
         return False, ProofObject(
-            conclusion=f"VIOLATION: {institution.name} has no branches in LMI areas despite {float(population_ratio):.1%} LMI population",
+            conclusion=f"VIOLATION: {institution.name} has no branches in LMI areas despite {population_ratio} LMI population",
             premises=[
                 f"Branches in LMI: {institution.branches_in_low_mod_tracts}",
                 f"Total branches: {institution.total_branches}",
@@ -220,7 +220,7 @@ def check_transit_equity(neighborhood: Neighborhood) -> Tuple[bool, ProofObject]
     if (low_income_ratio > Fraction(1, 3) and 
         neighborhood.avg_transit_time_to_jobs > max_acceptable_transit_time):
         return False, ProofObject(
-            conclusion=f"VIOLATION: {neighborhood.name} ({float(low_income_ratio):.1%} low-income) has excessive transit time {neighborhood.avg_transit_time_to_jobs} min",
+            conclusion=f"VIOLATION: {neighborhood.name} ({low_income_ratio} low-income) has excessive transit time {neighborhood.avg_transit_time_to_jobs} min",
             premises=[
                 f"Transit time: {neighborhood.avg_transit_time_to_jobs} min",
                 f"Max acceptable: {max_acceptable_transit_time} min",

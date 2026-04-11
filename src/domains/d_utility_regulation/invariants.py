@@ -67,7 +67,7 @@ def check_return_on_equity(rate_case: RateCase) -> Tuple[bool, ProofObject]:
     
     if requested_roe > max_roe:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Rate case {rate_case.case_id} ROE {float(requested_roe):.2%} exceeds {float(max_roe):.2%}",
+            conclusion=f"VIOLATION: Rate case {rate_case.case_id} ROE {requested_roe} exceeds {max_roe}",
             premises=[
                 f"Rate base: {rate_case.rate_base}",
                 f"Requested profit: {rate_case.requested_revenue - rate_case.operating_expenses}",
@@ -79,7 +79,7 @@ def check_return_on_equity(rate_case: RateCase) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Rate case {rate_case.case_id} ROE acceptable",
-        premises=[f"ROE: {float(requested_roe):.2%}"],
+        premises=[f"ROE: {requested_roe}"],
         rule="return_on_equity"
     )
 
@@ -132,7 +132,7 @@ def check_cost_of_service_ratemaking(rate_case: RateCase) -> Tuple[bool, ProofOb
     
     if variance > Fraction(5, 100):  # 5% tolerance
         return False, ProofObject(
-            conclusion=f"VIOLATION: Rate case {rate_case.case_id} requested revenue varies {float(variance):.1%} from cost of service",
+            conclusion=f"VIOLATION: Rate case {rate_case.case_id} requested revenue varies {variance} from cost of service",
             premises=[
                 f"Requested: {rate_case.requested_revenue}",
                 f"Cost-based: {calculated_revenue}",
@@ -144,7 +144,7 @@ def check_cost_of_service_ratemaking(rate_case: RateCase) -> Tuple[bool, ProofOb
     
     return True, ProofObject(
         conclusion=f"Rate case {rate_case.case_id} cost of service verified",
-        premises=[f"Variance: {float(variance):.1%}"],
+        premises=[f"Variance: {variance}"],
         rule="cost_of_service"
     )
 
@@ -170,7 +170,7 @@ def check_affordability(utility: UtilityCompany) -> Tuple[bool, ProofObject]:
     
     if energy_burden > max_burden:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Utility {utility.name} typical energy burden {float(energy_burden):.1%} exceeds {float(max_burden):.1%}",
+            conclusion=f"VIOLATION: Utility {utility.name} typical energy burden {energy_burden} exceeds {max_burden}",
             premises=[
                 f"Typical bill: {typical_bill}",
                 f"Burden: {energy_burden}",
@@ -181,6 +181,6 @@ def check_affordability(utility: UtilityCompany) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Utility {utility.name} rates affordable",
-        premises=[f"Energy burden: {float(energy_burden):.1%}"],
+        premises=[f"Energy burden: {energy_burden}"],
         rule="utility_affordability"
     )
