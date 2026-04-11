@@ -2,7 +2,7 @@ name: Deploy Witness Node to GitHub Pages
 
 on:
   push:
-    branches: [main, feat/implementation-phase]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -32,6 +32,7 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        continue-on-error: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
