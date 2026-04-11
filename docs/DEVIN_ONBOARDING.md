@@ -261,6 +261,46 @@ Ready for Phase 4-6 or handoff to next Kimi session.
 
 ---
 
+## Devin's Code Review Findings (PR #104 → PR #105)
+
+Devin's review of PR #104 kernel code identified **5 real bugs** that were fixed in PR #105:
+
+| File | Bug | Fix |
+|------|-----|-----|
+| `kernel/social/sabbath.py` | Incorrect day calculation for sabbath boundary | Fixed arithmetic for week rollover |
+| `kernel/memory/page_table.py` | Off-by-one error in page table entry indexing | Corrected index bounds check |
+| `kernel/boot/init.py` | Missing capability validation during init sequence | Added CommsCap verification |
+| `kernel/memory/tlb.py` | Race condition in TLB shootdown | Added proper barrier/fence |
+| `runtime/verifier.py` | **Substring match bug** in capability checking | Changed to exact match |
+
+### Critical: runtime/verifier.py Substring Bug
+
+**Issue:** Capability checking used substring match:
+```python
+# BUGGY: matches "mem_all_regions" when checking "mem_1"
+if f"mem_{region}" in cap:
+    return True
+```
+
+**Fix:** Use exact match:
+```python
+# CORRECT: only matches exact region
+if cap == f"mem_{region}":
+    return True
+```
+
+**Lesson:** Devin's code review catches real bugs — always request review for kernel surfaces.
+
+## Website Data Regeneration
+
+The `website/api/data.json` file may become stale. Regenerate with:
+
+```bash
+python tools/website/generate_data.py
+```
+
+This updates the public API data feed used by the Orthogonal Engineering website.
+
 ## Quick Reference
 
 | Item | Value |

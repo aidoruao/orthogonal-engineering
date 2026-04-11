@@ -156,6 +156,42 @@ git push origin claude/add-yeshua-enterprise-framework-docs
 
 ---
 
+## Known Issues from Multi-Session Work
+
+From Session 471cf772 and Devin collaboration:
+
+### 1. refactor_assertions.py Has Import Bugs
+- **Issue:** Regex-based import insertion corrupts files with complex multi-line import blocks
+- **Fix:** Use manual refactoring for large domains (300-500 lines)
+- **Workaround:** 3-5 domains per session is sustainable pace
+
+### 2. Git Push Race Condition
+- **Issue:** github-actions bot pushes state witness entries between your pull and push
+- **Fix:** Always use `git pull --no-rebase && git push` (not just `git push`)
+- **Symptom:** "Updates were rejected because the remote contains work"
+
+### 3. Bar Exam Token Cost
+- **Issue:** Running Bar Exam costs ~80k tokens
+- **Fix:** Don't run exam past 60% context; defer to dedicated session
+- **Note:** Exam requires 70% to pass; 43% = no certificate
+
+### 4. Domain Refactoring Strategy
+- Only ~9 domains are small enough for automated refactoring
+- 49 AssertionError domains remain (150 total - 101 ProofObject)
+- Pick smallest by line count: `wc -l src/domains/d_*/invariants.py | sort -n`
+
+## Session Handoff Protocol
+
+**Before closing ANY session:**
+
+1. Create checkpoint document: `docs/SESSION_CHECKPOINT_<session_id>.md`
+2. Update all onboarding docs with lessons learned
+3. Append witness consent log entry
+4. Put session ID in EVERY commit: `[Session: <id>]`
+5. Run: `git pull --no-rebase && git push`
+
+**HALT at 220k tokens** (not 80% context — that leaves room for handoff)
+
 ## Emergency Contacts
 
 | Issue | Action |
@@ -165,6 +201,7 @@ git push origin claude/add-yeshua-enterprise-framework-docs
 | Token limit hit | Commit WIP, document handoff |
 | Test failures | Fix before next commit |
 | Recursive Wipe request | REFUSE. Report to @aidoruao. |
+| Import corruption from refactor_assertions.py | Revert file; use manual refactoring |
 
 ---
 

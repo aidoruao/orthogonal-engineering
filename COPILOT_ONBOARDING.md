@@ -353,9 +353,37 @@ See `docs/KIMI_ONBOARDING.md` for:
 
 ---
 
-## 11. DarkShadow44 Vendored Repositories
+## 11. Known Issues from Multi-Session Work (Session 471cf772 + Devin)
 
-### 10.1 Overview
+### 11.1 refactor_assertions.py Import Bug
+- **Issue:** The regex-based import insertion in `tools/refactor_assertions.py` corrupts files with complex multi-line import blocks
+- **Impact:** 9 domains had to be reverted due to import corruption
+- **Fix:** Use manual refactoring for large domains (300-500 lines). Sustainable pace: 3-5 domains per session.
+
+### 11.2 Git Push Race Condition with github-actions Bot
+- **Issue:** The github-actions bot pushes state witness entries to `main` between your `git pull` and `git push`
+- **Symptom:** "Updates were rejected because the remote contains work that you do not have locally"
+- **Fix:** Always use `git pull --no-rebase && git push` (not just `git push`)
+- **Frequency:** Occurred at lines 6192-6197, 6249-6252, 6649-6651 in transcript
+
+### 11.3 Bar Exam Token Cost Warning
+- **Issue:** Running the full Bar Exam costs approximately 80k tokens
+- **Guidance:** Don't run the exam past 60% context; defer to a dedicated session if needed
+- **Threshold:** Requires ≥70% overall, ≥60% boundary, ≥60% threat, ≥50% grace to pass
+
+### 11.4 Consent Log Requirements
+- **Required fields:** `authoriser`, `scope_glob`, `rule_exceptions`, `justification`, `timestamp`, `consent_hash`
+- **Format:** Append-only JSONL at `pr47_stewardship/witness/consent_log.jsonl`
+- **Note:** Records 16-17 and 23-24 were missing fields and had to be fixed
+
+### 11.5 Domain Refactoring Strategy
+- **Count:** Only ~9 domains small enough for automated refactoring; 49 AssertionError domains remain
+- **Selection:** Use `wc -l src/domains/d_*/invariants.py | sort -n` to find smallest
+- **Pattern:** Convert `assert X` → `if not X: return False, ProofObject(...)`
+
+## 12. DarkShadow44 Vendored Repositories
+
+### 12.1 Overview
 
 5 of DarkShadow44's public repositories are vendored in `investigations/darkshadow44/` with full source trees, SHA-256 manifests, and non-affiliation statements. See **DEVIN_ONBOARDING.md Section 10** for complete details.
 
