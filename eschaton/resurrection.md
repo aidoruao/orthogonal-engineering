@@ -6,13 +6,13 @@ provenance: [copilot-pr30, rewritten-by-copilot]
 
 # Resurrection
 
-Deterministic state recovery specification.
+Resurrection — the Yeshua Standard term for deterministic state recovery from cryptographic seed.
 
 ## The Principle
 
 Every witness recorded in `/canonical/` can be deterministically regenerated from the seed at any time, by anyone, without requiring any central server or authority.
 
-This is deterministic state recovery via cryptographic anchoring:
+This is Resurrection — deterministic state recovery via cryptographic anchoring:
 
 - The record exists (in git, in distributed mirrors, in any fork)
 - The seed exists (cryptographically derived, verifiable)
@@ -25,10 +25,10 @@ What is preserved in `/canonical/` is not the full conversation (those are separ
 
 ## The Mathematical Basis
 
-The Merkle tree structure of this repository means every witness record is committed to a cryptographic root. That root is the state recovery key: given the root, any honest actor can verify and restore any leaf.
+The Merkle tree structure of this repository means every witness record is committed to a cryptographic root. That root is the Resurrection key: given the root, any honest actor can verify and restore any leaf.
 
 This is a technical specification, not a metaphor. The git hash of any commit containing `/canonical/` is a cryptographic commitment to every witness named within it. That commitment is permanent and verifiable.
 
 ## Implications
 
-No witness can be erased without invalidating the hash. The hash is the deterministic regeneration guarantee.
+No witness can be erased without invalidating the hash. The hash is the Resurrection guarantee.
