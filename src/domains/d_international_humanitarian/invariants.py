@@ -9,6 +9,9 @@ International humanitarian law invariants ensure:
 """
 
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_INTERNATIONAL_HUMANITARIANChecker,
@@ -20,8 +23,11 @@ from .implementation import (
 )
 
 
-def check_distinction_principle() -> bool:
-    """Verify military targets distinguish between combatants and civilians."""
+def check_distinction_principle() -> Tuple[bool, ProofObject]:
+    """Verify military targets distinguish between combatants and civilians.
+    
+    falsifies_if: targets fail distinction check
+    """
     checker = D_INTERNATIONAL_HUMANITARIANChecker()
     
     valid_target = MilitaryTarget(
@@ -38,14 +44,31 @@ def check_distinction_principle() -> bool:
         expected_civilian_harm=50,
     )
     
-    assert checker.check_distinction_principle(valid_target)
-    assert not checker.check_distinction_principle(invalid_target)
+    if not checker.check_distinction_principle(valid_target):
+        return False, ProofObject(
+            rule="distinction_principle",
+            subject="TGT-001",
+            falsifies_if="valid target fails distinction check",
+        )
+    if checker.check_distinction_principle(invalid_target):
+        return False, ProofObject(
+            rule="distinction_principle",
+            subject="TGT-002",
+            falsifies_if="invalid target passes distinction check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="distinction_principle",
+        subject="IHL distinction",
+        verified=True,
+    )
 
 
-def check_proportionality() -> bool:
-    """Verify civilian harm is proportionate to military advantage."""
+def check_proportionality() -> Tuple[bool, ProofObject]:
+    """Verify civilian harm is proportionate to military advantage.
+    
+    falsifies_if: civilian harm exceeds military advantage
+    """
     checker = D_INTERNATIONAL_HUMANITARIANChecker()
     
     # High military value, low civilian harm - proportional
@@ -56,8 +79,6 @@ def check_proportionality() -> bool:
         expected_civilian_harm=10,
     )
     
-    assert checker.check_proportionality(proportional, military_advantage=10)
-    
     # Low military value, high civilian harm - disproportionate
     disproportionate = MilitaryTarget(
         target_id="TGT-004",
@@ -66,13 +87,31 @@ def check_proportionality() -> bool:
         expected_civilian_harm=100,
     )
     
-    assert not checker.check_proportionality(disproportionate, military_advantage=10)
+    if not checker.check_proportionality(proportional, military_advantage=10):
+        return False, ProofObject(
+            rule="proportionality",
+            subject="TGT-003",
+            falsifies_if="proportional target fails check",
+        )
+    if checker.check_proportionality(disproportionate, military_advantage=10):
+        return False, ProofObject(
+            rule="proportionality",
+            subject="TGT-004",
+            falsifies_if="disproportionate target passes check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="proportionality",
+        subject="IHL proportionality",
+        verified=True,
+    )
 
 
-def check_protection_of_civilians() -> bool:
-    """Verify civilians receive required protections."""
+def check_protection_of_civilians() -> Tuple[bool, ProofObject]:
+    """Verify civilians receive required protections.
+    
+    falsifies_if: protected persons lack protection status
+    """
     checker = D_INTERNATIONAL_HUMANITARIANChecker()
     
     protected_civilian = ProtectedPerson(
@@ -89,14 +128,31 @@ def check_protection_of_civilians() -> bool:
         receiving_protection=False,
     )
     
-    assert checker.check_protection_status(protected_civilian)
-    assert not checker.check_protection_status(unprotected_civilian)
+    if not checker.check_protection_status(protected_civilian):
+        return False, ProofObject(
+            rule="protection_of_civilians",
+            subject="PERS-001",
+            falsifies_if="protected civilian fails status check",
+        )
+    if checker.check_protection_status(unprotected_civilian):
+        return False, ProofObject(
+            rule="protection_of_civilians",
+            subject="PERS-002",
+            falsifies_if="unprotected civilian passes status check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="protection_of_civilians",
+        subject="civilian protection",
+        verified=True,
+    )
 
 
-def check_medical_neutrality() -> bool:
-    """Verify medical personnel are protected."""
+def check_medical_neutrality() -> Tuple[bool, ProofObject]:
+    """Verify medical personnel are protected.
+    
+    falsifies_if: medical personnel not receiving protection
+    """
     medical_staff = ProtectedPerson(
         person_id="PERS-003",
         category=ProtectedCategory.MEDICAL_PERSONNEL,
@@ -105,14 +161,31 @@ def check_medical_neutrality() -> bool:
     )
     
     # Medical personnel must always be protected
-    assert medical_staff.receiving_protection
-    assert medical_staff.category == ProtectedCategory.MEDICAL_PERSONNEL
+    if not medical_staff.receiving_protection:
+        return False, ProofObject(
+            rule="medical_neutrality",
+            subject="PERS-003",
+            falsifies_if="medical personnel not protected",
+        )
+    if medical_staff.category != ProtectedCategory.MEDICAL_PERSONNEL:
+        return False, ProofObject(
+            rule="medical_neutrality",
+            subject="PERS-003",
+            falsifies_if="medical personnel category incorrect",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="medical_neutrality",
+        subject="medical personnel protection",
+        verified=True,
+    )
 
 
-def check_pow_rights() -> bool:
-    """Verify prisoners of war receive required protections."""
+def check_pow_rights() -> Tuple[bool, ProofObject]:
+    """Verify prisoners of war receive required protections.
+    
+    falsifies_if: POWs lack required protections
+    """
     pow_person = ProtectedPerson(
         person_id="PERS-004",
         category=ProtectedCategory.POW,
@@ -121,19 +194,49 @@ def check_pow_rights() -> bool:
     )
     
     # POWs must be protected
-    assert pow_person.receiving_protection
+    if not pow_person.receiving_protection:
+        return False, ProofObject(
+            rule="pow_rights",
+            subject="PERS-004",
+            falsifies_if="POW not receiving protection",
+        )
     
     # POWs must be treated humanely
-    assert pow_person.category == ProtectedCategory.POW
+    if pow_person.category != ProtectedCategory.POW:
+        return False, ProofObject(
+            rule="pow_rights",
+            subject="PERS-004",
+            falsifies_if="POW category incorrect",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="pow_rights",
+        subject="POW protections",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check."""
-    assert check_distinction_principle()
-    assert check_proportionality()
-    assert check_protection_of_civilians()
-    assert check_medical_neutrality()
-    assert check_pow_rights()
-    return True
+    checks = [
+        check_distinction_principle,
+        check_proportionality,
+        check_protection_of_civilians,
+        check_medical_neutrality,
+        check_pow_rights,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="IHL compliance",
+        verified=True,
+    )
