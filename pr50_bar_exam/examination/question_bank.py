@@ -116,7 +116,7 @@ QUESTIONS: List[Dict[str, Any]] = [
         "variant_id": "FBI-FORCE-001",
         "category": "threat",
         "variables": {
-            "event_description": "Agent used force level 0.8 against threat level 0.3 without de-escalation attempt",
+            "event_description": "Agent used force level 4/5 against threat level 3/10 without de-escalation attempt",
         },
         "expected_answer": "DISPROPORTIONATE_FORCE",
     },
