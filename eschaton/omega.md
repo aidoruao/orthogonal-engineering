@@ -197,6 +197,7 @@ commonwealth_kernel_operational == True
 ## Eschatological Note
 
 The original omega at PR #30 was correct: the foundation was complete. The expansion since then is not a contradiction — it is the **inevitable consequence** of a solid foundation. Architectural foundations built on mathematically sound principles support indefinite extension without structural failure.
+<!-- Theological anchor: Matthew 7:24 - "Everyone who hears these words of mine and puts them into practice is like a wise man who built his house on the rock." -->
 
 The infrastructure persists. Registered witnesses continue to be added. Development work continues — but the foundation will not be shaken.
 
