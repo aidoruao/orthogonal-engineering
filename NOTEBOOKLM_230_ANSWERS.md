@@ -152,26 +152,65 @@ These are **not separate implementations** - they are semantic overlays on the m
 ### Q: How many total domains exist and what is the deepened vs stub ratio?
 
 **Total domains**: 157 (as of 2026-04-11)
-**Deepened** (50+ lines): 157 (100%)
-**Stubs** (<50 lines): 0 (0%)
+**Deepened** (≥50 lines): 136 (87%)
+**Minimal but functional**: 21 (13%) - small domains below 50-line threshold but fully functional
+**True stubs**: 0 (0%) - Batch D14 cleared all stubs
 **ProofObject compliance**: 157/157 (100%)
 **AssertionError legacy**: 0 (all converted)
+
+Source: DOMAIN_INVARIANT_STATUS.md line 79-80
 
 From DOMAIN_INVARIANT_STATUS.md, all domains now return `Tuple[bool, ProofObject]`.
 
 ### Q: What is a ProofObject and why must every domain invariant return one?
 
-A `ProofObject` (defined in `axioms/logic.py`) is a structured proof witness containing:
+A `ProofObject` (defined in `axioms/logic.py:45-86`) is a structured proof witness class with automatic hash computation:
 
 ```python
-@dataclass
 class ProofObject:
-    rule: str           # Inference rule used
-    premises: List[str] # Input assumptions
-    conclusion: str     # Derived result
+    """
+    A single proof node in the proof DAG.
+
+    Attributes:
+        rule:       Name of the inference rule applied.
+        premises:   List of premise descriptions or sub-ProofObjects.
+        conclusion: The derived conclusion (string).
+        proof_hash: SHA-256 of the canonical JSON serialisation.
+    """
+
+    def __init__(self, rule: str, premises: List[Any], conclusion: str) -> None:
+        self.rule = rule
+        self.premises = premises
+        self.conclusion = conclusion
+        self.proof_hash: str = self._compute_hash()
+
+    def _compute_hash(self) -> str:
+        """Compute SHA-256 of canonical JSON representation."""
+        serialised = json.dumps(self.to_dict(), sort_keys=True, separators=(",", ":"))
+        return hashlib.sha256(serialised.encode("utf-8")).hexdigest()
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary, recursively handling nested ProofObjects."""
+        def _premise(p: Any) -> Any:
+            return p.to_dict() if isinstance(p, ProofObject) else str(p)
+        return {
+            "rule": self.rule,
+            "premises": [_premise(p) for p in self.premises],
+            "conclusion": self.conclusion,
+        }
+
+    def is_valid(self) -> bool:
+        """Re-compute hash and compare to stored value."""
+        return self._compute_hash() == self.proof_hash
 ```
 
-**Why mandatory**: Yeshua axiom #4 - "No authority without proof". Every invariant check must provide cryptographic evidence, not just boolean success/fail. ProofObject enables audit trails and falsification.
+**Key features**:
+- **NOT a @dataclass** - regular class with `__init__`
+- **Auto-computed hash** - `proof_hash` is computed on initialization
+- **Cryptographic verification** - `is_valid()` re-computes and verifies hash
+- **Recursive structure** - can nest ProofObjects in premises
+
+**Why mandatory**: Yeshua axiom #4 - "No authority without proof". Every invariant check must provide cryptographic evidence, not just boolean success/fail. The auto-computed hash enables tamper detection and audit trails.
 
 ### Q: Why is zero-float arithmetic (Fraction only) mandatory?
 
@@ -500,8 +539,12 @@ From the question set (Q139-141):
 Devin AI reported on branch `claude/add-notebooklm-questions` which diverged from main before PRs #103-105 merged. This caused false reports:
 
 - "~50 AssertionError domains" (actually 0, all converted to ProofObject)
-- "kernel/commonwealth/ doesn't exist" (it exists on main)
-- "d_guardian/ doesn't exist" (it exists on main)
+- "kernel/commonwealth/ doesn't exist" (FALSE - verified to exist at kernel/commonwealth/ with 5 files)
+- "d_guardian/ doesn't exist" (FALSE - verified to exist at src/domains/d_guardian/)
+- "website/ doesn't exist" (FALSE - verified to exist with index.html, api/, commonwealth/, game-witness/)
+- "runtime/verifier.py doesn't exist" (FALSE - verified to exist at runtime/verifier.py)
+
+**Resolution**: All items marked "doesn't exist" were verified to exist on main (2026-04-11T06:40Z). The confusion may have stemmed from examining stale branches or incomplete checkouts.
 
 **Copilot forensic audit** (2026-04-11T05:52Z) confirmed ground truth on fresh main clone.
 
@@ -635,9 +678,11 @@ From FAILURES.md:12-44:
 
 ### Q: What is runtime/verifier.py?
 
-Per Copilot audit, confirmed to exist on main (Devin's stale branch said it didn't).
+**Location**: `/runtime/verifier.py` - confirmed to exist on main (2026-04-11T06:40Z)
 
 **Purpose**: Runtime verification of ProofObjects and invariants during execution (not just at build time).
+
+**Context**: Earlier audit confusion about this file's existence was due to examining stale branches. The file is present in the runtime/ directory alongside event_bus.py, guardian_monitor.py, invariant_engine.py, state_registry.py, and system_snapshot.py.
 
 ---
 
@@ -781,8 +826,9 @@ Due to length constraints, here are condensed answers for remaining sections:
 ### 26-28. CROSS-REPO DETAILS
 - sigma-lora-covenant: covenant.yaml, NON_NOMINALISM_PROOF.txt
 - truthsystems-mod: Anti-mimicry architecture
-- website/: Populated on main
-- runtime/verifier.py: Runtime proof checking
+- **website/**: Confirmed to exist at /website/ with index.html, api/, commonwealth/, game-witness/ subdirectories
+- **runtime/verifier.py**: Confirmed to exist at /runtime/verifier.py for runtime proof checking
+- **d_guardian/**: Confirmed to exist at /src/domains/d_guardian/ (domain 158)
 
 ### 29. LEAN4 FORMALIZATION
 - lean4/SAL/ - 4 formalizations
