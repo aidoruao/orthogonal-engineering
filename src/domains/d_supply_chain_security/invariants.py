@@ -10,6 +10,9 @@ Supply chain security invariants ensure:
 
 from datetime import datetime
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_SUPPLY_CHAIN_SECURITYChecker,
@@ -22,8 +25,11 @@ from .implementation import (
 )
 
 
-def check_dependency_hash_verification() -> bool:
-    """Verify all dependencies have matching hashes."""
+def check_dependency_hash_verification() -> Tuple[bool, ProofObject]:
+    """Verify all dependencies have matching hashes.
+    
+    falsifies_if: dependency hash verification fails
+    """
     checker = D_SUPPLY_CHAIN_SECURITYChecker()
     
     verified_dep = Dependency(
@@ -34,14 +40,31 @@ def check_dependency_hash_verification() -> bool:
         verified=True,
     )
     
-    assert checker.verify_dependency(verified_dep, "abc123")
-    assert not checker.verify_dependency(verified_dep, "wrong_hash")
+    if not checker.verify_dependency(verified_dep, "abc123"):
+        return False, ProofObject(
+            rule="dependency_hash_verification",
+            subject="numpy",
+            falsifies_if="verified dependency with correct hash failed",
+        )
+    if checker.verify_dependency(verified_dep, "wrong_hash"):
+        return False, ProofObject(
+            rule="dependency_hash_verification",
+            subject="numpy",
+            falsifies_if="dependency with wrong hash passed",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="dependency_hash_verification",
+        subject="dependency hash",
+        verified=True,
+    )
 
 
-def check_vulnerability_scanning() -> bool:
-    """Verify dependencies are checked against known vulnerabilities."""
+def check_vulnerability_scanning() -> Tuple[bool, ProofObject]:
+    """Verify dependencies are checked against known vulnerabilities.
+    
+    falsifies_if: vulnerability exposure not detected
+    """
     checker = D_SUPPLY_CHAIN_SECURITYChecker()
     
     deps = [
@@ -63,15 +86,32 @@ def check_vulnerability_scanning() -> bool:
     exposed = checker.check_vulnerability_exposure(deps, vulns)
     
     # OpenSSL should be flagged as exposed
-    assert any("openssl" in e for e in exposed)
+    if not any("openssl" in e for e in exposed):
+        return False, ProofObject(
+            rule="vulnerability_scanning",
+            subject="openssl",
+            falsifies_if="vulnerable dependency not flagged",
+        )
     # Safe-lib should not be exposed
-    assert not any("safe-lib" in e for e in exposed)
+    if any("safe-lib" in e for e in exposed):
+        return False, ProofObject(
+            rule="vulnerability_scanning",
+            subject="safe-lib",
+            falsifies_if="safe dependency incorrectly flagged",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="vulnerability_scanning",
+        subject="vulnerability scanning",
+        verified=True,
+    )
 
 
-def check_artifact_signing() -> bool:
-    """Verify all artifacts are cryptographically signed."""
+def check_artifact_signing() -> Tuple[bool, ProofObject]:
+    """Verify all artifacts are cryptographically signed.
+    
+    falsifies_if: artifact signature verification fails
+    """
     checker = D_SUPPLY_CHAIN_SECURITYChecker()
     
     signed_artifact = Artifact(
@@ -89,14 +129,31 @@ def check_artifact_signing() -> bool:
         status=ArtifactStatus.UNSIGNED,
     )
     
-    assert checker.verify_artifact_signature(signed_artifact, "public_key")
-    assert not checker.verify_artifact_signature(unsigned_artifact, "public_key")
+    if not checker.verify_artifact_signature(signed_artifact, "public_key"):
+        return False, ProofObject(
+            rule="artifact_signing",
+            subject="ART-001",
+            falsifies_if="signed artifact verification failed",
+        )
+    if checker.verify_artifact_signature(unsigned_artifact, "public_key"):
+        return False, ProofObject(
+            rule="artifact_signing",
+            subject="ART-002",
+            falsifies_if="unsigned artifact passed verification",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="artifact_signing",
+        subject="artifact signing",
+        verified=True,
+    )
 
 
-def check_sbom_completeness() -> bool:
-    """Verify SBOM includes all dependencies."""
+def check_sbom_completeness() -> Tuple[bool, ProofObject]:
+    """Verify SBOM includes all dependencies.
+    
+    falsifies_if: SBOM incomplete or missing required fields
+    """
     deps = [
         Dependency(name="lib1", version="1.0", hash="h1", source="pypi"),
         Dependency(name="lib2", version="2.0", hash="h2", source="npm"),
@@ -104,20 +161,52 @@ def check_sbom_completeness() -> bool:
     ]
     
     # SBOM should list all direct dependencies
-    assert len(deps) >= 3
+    if len(deps) < 3:
+        return False, ProofObject(
+            rule="sbom_completeness",
+            subject="dependency_list",
+            falsifies_if="insufficient dependencies listed",
+        )
     
     # Each dependency should have required fields
     for dep in deps:
-        assert dep.name
-        assert dep.version
-        assert dep.hash
-        assert dep.source
+        if not dep.name:
+            return False, ProofObject(
+                rule="sbom_completeness",
+                subject=dep.hash,
+                falsifies_if="dependency missing name",
+            )
+        if not dep.version:
+            return False, ProofObject(
+                rule="sbom_completeness",
+                subject=dep.name,
+                falsifies_if="dependency missing version",
+            )
+        if not dep.hash:
+            return False, ProofObject(
+                rule="sbom_completeness",
+                subject=dep.name,
+                falsifies_if="dependency missing hash",
+            )
+        if not dep.source:
+            return False, ProofObject(
+                rule="sbom_completeness",
+                subject=dep.name,
+                falsifies_if="dependency missing source",
+            )
     
-    return True
+    return True, ProofObject(
+        rule="sbom_completeness",
+        subject="SBOM completeness",
+        verified=True,
+    )
 
 
-def check_provenance_tracking() -> bool:
-    """Verify artifact provenance is tracked."""
+def check_provenance_tracking() -> Tuple[bool, ProofObject]:
+    """Verify artifact provenance is tracked.
+    
+    falsifies_if: provenance incomplete or missing required info
+    """
     artifact = Artifact(
         artifact_id="ART-003",
         name="build.zip",
@@ -132,21 +221,56 @@ def check_provenance_tracking() -> bool:
     )
     
     # Provenance should have at least 3 entries
-    assert len(artifact.provenance) >= 3
+    if len(artifact.provenance) < 3:
+        return False, ProofObject(
+            rule="provenance_tracking",
+            subject="ART-003",
+            falsifies_if="insufficient provenance entries",
+        )
     
     # Should include commit and builder info
     prov_str = " ".join(artifact.provenance)
-    assert "commit" in prov_str
-    assert "builder" in prov_str
+    if "commit" not in prov_str:
+        return False, ProofObject(
+            rule="provenance_tracking",
+            subject="ART-003",
+            falsifies_if="provenance missing commit info",
+        )
+    if "builder" not in prov_str:
+        return False, ProofObject(
+            rule="provenance_tracking",
+            subject="ART-003",
+            falsifies_if="provenance missing builder info",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="provenance_tracking",
+        subject="provenance tracking",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check."""
-    assert check_dependency_hash_verification()
-    assert check_vulnerability_scanning()
-    assert check_artifact_signing()
-    assert check_sbom_completeness()
-    assert check_provenance_tracking()
-    return True
+    checks = [
+        check_dependency_hash_verification,
+        check_vulnerability_scanning,
+        check_artifact_signing,
+        check_sbom_completeness,
+        check_provenance_tracking,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="supply chain compliance",
+        verified=True,
+    )
