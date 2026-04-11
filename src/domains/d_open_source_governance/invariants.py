@@ -10,6 +10,9 @@ Open source governance invariants ensure:
 
 from datetime import datetime, timedelta
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_OPEN_SOURCE_GOVERNANCEChecker,
@@ -21,8 +24,11 @@ from .implementation import (
 )
 
 
-def check_license_compatibility() -> bool:
-    """Verify dependency licenses are compatible with project license."""
+def check_license_compatibility() -> Tuple[bool, ProofObject]:
+    """Verify dependency licenses are compatible with project license.
+    
+    falsifies_if: license compatibility check fails
+    """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
     mit_project = OpenSourceProject(
@@ -35,8 +41,13 @@ def check_license_compatibility() -> bool:
     )
     
     # MIT is compatible with most licenses
-    assert checker.check_license_compatibility(mit_project, 
-                                                [LicenseType.BSD, LicenseType.APACHE])
+    if not checker.check_license_compatibility(mit_project, 
+                                                [LicenseType.BSD, LicenseType.APACHE]):
+        return False, ProofObject(
+            rule="license_compatibility",
+            subject="PROJ-001",
+            falsifies_if="MIT project failed compatible license check",
+        )
     
     gpl_project = OpenSourceProject(
         project_id="PROJ-002",
@@ -48,13 +59,25 @@ def check_license_compatibility() -> bool:
     )
     
     # GPL not compatible with proprietary
-    assert not checker.check_license_compatibility(gpl_project, [LicenseType.PROPRIETARY])
+    if checker.check_license_compatibility(gpl_project, [LicenseType.PROPRIETARY]):
+        return False, ProofObject(
+            rule="license_compatibility",
+            subject="PROJ-002",
+            falsifies_if="GPL project passed incompatible license check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="license_compatibility",
+        subject="license compatibility",
+        verified=True,
+    )
 
 
-def check_governance_files_present() -> bool:
-    """Verify projects have required governance files."""
+def check_governance_files_present() -> Tuple[bool, ProofObject]:
+    """Verify projects have required governance files.
+    
+    falsifies_if: project missing required governance files
+    """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
     healthy_project = OpenSourceProject(
@@ -75,14 +98,31 @@ def check_governance_files_present() -> bool:
         has_code_of_conduct=False,
     )
     
-    assert checker.check_project_health(healthy_project)
-    assert not checker.check_project_health(unhealthy_project)
+    if not checker.check_project_health(healthy_project):
+        return False, ProofObject(
+            rule="governance_files_present",
+            subject="PROJ-003",
+            falsifies_if="healthy project failed health check",
+        )
+    if checker.check_project_health(unhealthy_project):
+        return False, ProofObject(
+            rule="governance_files_present",
+            subject="PROJ-004",
+            falsifies_if="unhealthy project passed health check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="governance_files_present",
+        subject="governance files",
+        verified=True,
+    )
 
 
-def check_contribution_review_time() -> bool:
-    """Verify contributions are reviewed within SLA."""
+def check_contribution_review_time() -> Tuple[bool, ProofObject]:
+    """Verify contributions are reviewed within SLA.
+    
+    falsifies_if: review time exceeds 48 hours
+    """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
     submitted = datetime(2026, 4, 9, 10, 0, 0)
@@ -102,13 +142,25 @@ def check_contribution_review_time() -> bool:
     review_hours = checker.check_contribution_review_time(contrib, reviewed)
     
     # Should be reviewed within 48 hours
-    assert review_hours <= 48, f"Review took {review_hours} hours"
+    if review_hours > 48:
+        return False, ProofObject(
+            rule="contribution_review_time",
+            subject="CONTRIB-001",
+            falsifies_if=f"review took {review_hours} hours (exceeds 48h SLA)",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="contribution_review_time",
+        subject="CONTRIB-001",
+        verified=True,
+    )
 
 
-def check_maintainer_coverage() -> bool:
-    """Verify projects have sufficient maintainer coverage."""
+def check_maintainer_coverage() -> Tuple[bool, ProofObject]:
+    """Verify projects have sufficient maintainer coverage.
+    
+    falsifies_if: project has fewer than 2 maintainers
+    """
     well_maintained = OpenSourceProject(
         project_id="PROJ-006",
         name="WellMaintained",
@@ -124,14 +176,31 @@ def check_maintainer_coverage() -> bool:
     )
     
     # At least 2 maintainers recommended
-    assert len(well_maintained.maintainers) >= 2
-    assert len(under_maintained.maintainers) < 2
+    if len(well_maintained.maintainers) < 2:
+        return False, ProofObject(
+            rule="maintainer_coverage",
+            subject="PROJ-006",
+            falsifies_if="well maintained project has < 2 maintainers",
+        )
+    if len(under_maintained.maintainers) >= 2:
+        return False, ProofObject(
+            rule="maintainer_coverage",
+            subject="PROJ-007",
+            falsifies_if="under maintained project has >= 2 maintainers",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="maintainer_coverage",
+        subject="maintainer coverage",
+        verified=True,
+    )
 
 
-def check_cla_compliance() -> bool:
-    """Verify CLA requirements for corporate-backed projects."""
+def check_cla_compliance() -> Tuple[bool, ProofObject]:
+    """Verify CLA requirements for corporate-backed projects.
+    
+    falsifies_if: CLA requirements not met
+    """
     corporate_project = OpenSourceProject(
         project_id="PROJ-008",
         name="CorporateProject",
@@ -149,19 +218,49 @@ def check_cla_compliance() -> bool:
     )
     
     # Corporate projects should have CLA
-    assert corporate_project.has_cla
+    if not corporate_project.has_cla:
+        return False, ProofObject(
+            rule="cla_compliance",
+            subject="PROJ-008",
+            falsifies_if="corporate project missing CLA",
+        )
     
     # Community projects may not need CLA
-    assert not community_project.has_cla
+    if community_project.has_cla:
+        return False, ProofObject(
+            rule="cla_compliance",
+            subject="PROJ-009",
+            falsifies_if="community project unexpectedly has CLA",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="cla_compliance",
+        subject="CLA compliance",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check."""
-    assert check_license_compatibility()
-    assert check_governance_files_present()
-    assert check_contribution_review_time()
-    assert check_maintainer_coverage()
-    assert check_cla_compliance()
-    return True
+    checks = [
+        check_license_compatibility,
+        check_governance_files_present,
+        check_contribution_review_time,
+        check_maintainer_coverage,
+        check_cla_compliance,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="open source governance compliance",
+        verified=True,
+    )
