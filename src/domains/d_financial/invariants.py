@@ -200,7 +200,7 @@ def check_investment_adviser_fiduciary() -> Tuple[bool, ProofObject]:
             f"duty_of_care = {duty_of_care}",
             f"duty_of_loyalty = {duty_of_loyalty}",
             f"aum = ${assets_under_management}",
-            f"fee_rate = {float(fee_rate):.0%}",
+            f"fee_rate = {fee_rate}",
             f"annual_fee_exact = {fee_exact}",
             f"fee_disclosed = {fee_disclosed}",
         ],

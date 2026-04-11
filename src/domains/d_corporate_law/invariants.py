@@ -158,7 +158,7 @@ def check_merger_approval_requirements() -> Tuple[bool, ProofObject]:
             f"board_approved = {board_valid}",
             f"shares_for = {shares_voting_for}",
             f"shares_outstanding = {shares_outstanding}",
-            f"approval_ratio = {float(votes_for_ratio):.1%}",
+            f"approval_ratio = {votes_for_ratio}",
             f"shareholder_approved = {shareholder_approved}",
             f"short_form_eligible = {short_form_eligible}",
         ],

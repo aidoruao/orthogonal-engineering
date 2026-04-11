@@ -88,7 +88,7 @@ def check_overtime_rate_one_and_half() -> Tuple[bool, ProofObject]:
     proof = ProofObject(
         rule="FLSA_Overtime_Rate",
         premises=[
-            f"overtime_multiplier = {overtime_multiplier} ({float(overtime_multiplier)}x)",
+            f"overtime_multiplier = {overtime_multiplier} ({overtime_multiplier}x)",
             f"regular_rate = {regular_rate} cents",
             f"expected_ot_rate = {expected_ot_rate} cents",
             f"no_float_used = {no_float_used}",
