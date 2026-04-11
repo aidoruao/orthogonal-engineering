@@ -38,7 +38,9 @@ def check_federal_enumerated_powers() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FederalismChecker()
     
     # Enumerated power: regulate interstate commerce
@@ -86,7 +88,9 @@ def check_tenth_amendment_reserved_powers() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FederalismChecker()
     
     # State police power (reserved)
@@ -132,7 +136,9 @@ def check_supremacy_clause_preemption() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FederalismChecker()
     
     resolution = checker.check_supremacy(
@@ -172,7 +178,9 @@ def check_concurrent_powers_exercisable() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FederalismChecker()
     
     # Federal taxation
@@ -230,7 +238,9 @@ def check_tenth_amendment_violation_detection() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FederalismChecker()
     
     violation = checker.is_tenth_amendment_violation(
@@ -268,7 +278,9 @@ def check_power_category_assignments() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Check federal enumerated powers
     commerce_in_federal = PowerType.REGULATE_INTERSTATE_COMMERCE in FEDERAL_POWERS
     war_in_federal = PowerType.DECLARE_WAR in FEDERAL_POWERS

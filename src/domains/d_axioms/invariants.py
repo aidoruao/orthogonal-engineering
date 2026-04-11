@@ -21,7 +21,9 @@ def check_axiom_consistency(system: ProofSystem) -> Tuple[bool, ProofObject]:
 
     Gödel (1931): Consistency cannot be proven within the system.
     Falsifies if: consistent == False (system proves contradiction)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not system.consistent:
         return False, ProofObject(
             conclusion=f"VIOLATION: System {system.system_id} is inconsistent",
@@ -46,7 +48,9 @@ def check_independence(proof: IndependenceProof) -> Tuple[bool, ProofObject]:
 
     Cohen (1963): Independence of Choice via forcing.
     Falsifies if: independent == True but no countermodel exists
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if proof.independent and not proof.model_without_axiom:
         return False, ProofObject(
             conclusion=f"VIOLATION: Axiom {proof.axiom_name.name} claimed independent but no countermodel",
@@ -82,7 +86,9 @@ def check_completeness_limit(system: ProofSystem, godel: GodelSentence) -> Tuple
 
     Gödel (1931): First Incompleteness Theorem.
     Falsifies if: system is PA or ZFC and complete == True
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     strong_systems = [AxiomSystem.ZFC, AxiomSystem.PEANO, AxiomSystem.ZF_NO_CHOICE]
 
     if system.axiom_system in strong_systems and system.complete:
@@ -129,7 +135,9 @@ def check_zfc_foundation(system: ProofSystem) -> Tuple[bool, ProofObject]:
 
     Zermelo (1908): Foundation prevents sets containing themselves.
     Falsifies if: system is ZFC but FOUNDATION not in axioms
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if system.axiom_system in [AxiomSystem.ZFC, AxiomSystem.ZF_NO_CHOICE]:
         if AxiomName.FOUNDATION not in system.axioms:
             return False, ProofObject(
@@ -155,7 +163,9 @@ def check_peano_induction(system: ProofSystem) -> Tuple[bool, ProofObject]:
 
     Peano (1889): Induction is essential for natural number properties.
     Falsifies if: system is PEANO but INDUCTION not in axioms
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if system.axiom_system == AxiomSystem.PEANO:
         if AxiomName.INDUCTION not in system.axioms:
             return False, ProofObject(
@@ -189,7 +199,9 @@ def check_choice_independence(proof: IndependenceProof) -> Tuple[bool, ProofObje
 
     Cohen (1963): Choice is independent via forcing method.
     Falsifies if: Choice claimed dependent on ZF
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if proof.axiom_name == AxiomName.CHOICE and proof.system == AxiomSystem.ZF_NO_CHOICE:
         if not proof.independent:
             return False, ProofObject(
@@ -225,7 +237,9 @@ def check_consistency_strength_ordering(strength: ConsistencyStrength) -> Tuple[
 
     Gödel (1940): If ZF consistent, then ZFC consistent.
     Falsifies if: ordering violates known results
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Known orderings: PEANO < ZF_NO_CHOICE <= ZFC
     known_orderings = {
         (AxiomSystem.PEANO, AxiomSystem.ZF_NO_CHOICE): True,

@@ -7,7 +7,9 @@ from axioms.logic import ProofObject
 from .implementation import Evidence, ExpertWitness
 
 def check_relevance(evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """FRE 401: Evidence must be relevant."""
+    """FRE 401: Evidence must be relevant.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if evidence.is_relevant():
         return True, ProofObject(
             conclusion=f"Relevant (probative value: {evidence.probative_value})",
@@ -21,7 +23,9 @@ def check_relevance(evidence: Evidence) -> Tuple[bool, ProofObject]:
     )
 
 def check_403_balance(evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """FRE 403: Probative value vs. prejudice."""
+    """FRE 403: Probative value vs. prejudice.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if evidence.is_admissible_403():
         return True, ProofObject(
             conclusion="Admissible under FRE 403",
@@ -35,7 +39,9 @@ def check_403_balance(evidence: Evidence) -> Tuple[bool, ProofObject]:
     )
 
 def check_hearsay(evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """FRE 801/802: Hearsay rule and exceptions."""
+    """FRE 801/802: Hearsay rule and exceptions.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not evidence.hearsay:
         return True, ProofObject(
             conclusion="Not hearsay",
@@ -55,7 +61,9 @@ def check_hearsay(evidence: Evidence) -> Tuple[bool, ProofObject]:
     )
 
 def check_daubert(expert: ExpertWitness) -> Tuple[bool, ProofObject]:
-    """FRE 702/Daubert: Expert testimony reliability."""
+    """FRE 702/Daubert: Expert testimony reliability.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if expert.is_admissible_daubert():
         return True, ProofObject(
             conclusion="Expert testimony admissible under Daubert",

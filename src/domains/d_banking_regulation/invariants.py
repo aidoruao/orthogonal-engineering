@@ -38,7 +38,9 @@ def check_tier1_capital_minimum() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     calc = CapitalAdequacyCalculator()
     
     # Well capitalized bank (Tier 1 ratio = 12.5%)
@@ -108,7 +110,9 @@ def check_fdic_insurance_per_depositor() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     calc = FDICInsuranceCalculator()
     
     # Fully insured deposit ($200k < $250k)
@@ -169,7 +173,9 @@ def check_usury_limit_by_state() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = LendingComplianceChecker()
     
     # Compliant loan in California (8% < 10% limit)
@@ -229,7 +235,9 @@ def check_reserve_ratio_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Well reserved bank (12.5% reserve ratio)
     good_bank = Bank(
         bank_id="B003",
@@ -297,7 +305,9 @@ def check_lending_standards_compliance() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = LendingComplianceChecker()
     
     # Compliant loan with documented income
@@ -366,7 +376,9 @@ def check_capital_computation_fraction_precision() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     calc = CapitalAdequacyCalculator()
     
     test_bank = Bank(

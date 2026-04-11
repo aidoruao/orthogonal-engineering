@@ -11,7 +11,9 @@ from .implementation import (
 
 
 def check_contrast_ratio(contrast: ColorContrast) -> Tuple[bool, ProofObject]:
-    """WCAG 2.1 AA: Color contrast must be at least 4.5:1."""
+    """WCAG 2.1 AA: Color contrast must be at least 4.5:1.
+    
+    falsifies_if: condition_evaluated_to_false"""
     ratio = contrast.ratio()
     
     if ratio < MIN_CONTRAST_RATIO_AA:
@@ -29,7 +31,9 @@ def check_contrast_ratio(contrast: ColorContrast) -> Tuple[bool, ProofObject]:
 
 
 def check_interactive_accessibility(element: InteractiveElement) -> Tuple[bool, ProofObject]:
-    """Interactive elements must be keyboard accessible and labeled."""
+    """Interactive elements must be keyboard accessible and labeled.
+    
+    falsifies_if: condition_evaluated_to_false"""
     missing = []
     if not element.has_keyboard_access:
         missing.append("keyboard")
@@ -53,7 +57,9 @@ def check_interactive_accessibility(element: InteractiveElement) -> Tuple[bool, 
 
 
 def check_ada_accommodation(analyzer: ADAAnalyzer) -> Tuple[bool, ProofObject]:
-    """ADA Title III: Public accommodations must be accessible."""
+    """ADA Title III: Public accommodations must be accessible.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not analyzer.physical_accessible and not analyzer.reasonable_accommodation_provided:
         if analyzer.undue_hardship_claimed:
             return True, ProofObject(
@@ -75,7 +81,9 @@ def check_ada_accommodation(analyzer: ADAAnalyzer) -> Tuple[bool, ProofObject]:
 
 
 def check_wcag_compliance(checker: WCAGChecker) -> Tuple[bool, ProofObject]:
-    """WCAG 2.1 AA compliance check."""
+    """WCAG 2.1 AA compliance check.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not checker.all_contrast_aa():
         return False, ProofObject(
             conclusion="VIOLATION: Not all elements meet WCAG AA contrast",

@@ -34,7 +34,9 @@ def check_universal_jurisdiction_core_crimes() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     icl = InternationalCriminalLaw()
     
     all_core_crimes_prosecutable = True
@@ -82,7 +84,9 @@ def check_no_prosecution_without_evidence() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     case_no_evidence = UniversalJurisdictionCase(
         case_id="TEST-NO-EVIDENCE",
         crime=CoreCrime.WAR_CRIMES,
@@ -130,7 +134,9 @@ def check_icc_complementarity_principle() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     icl = InternationalCriminalLaw()
     
     # Domestic proceedings adequate: ICC cannot prosecute
@@ -190,7 +196,9 @@ def check_all_core_crimes_defined() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     expected_crimes = {
         CoreCrime.GENOCIDE,
         CoreCrime.CRIMES_AGAINST_HUMANITY,
@@ -231,7 +239,9 @@ def check_genocide_elements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Genocide is first defined core crime
     genocide_defined = CoreCrime.GENOCIDE in CoreCrime
     
@@ -274,7 +284,9 @@ def check_war_crimes_grave_breaches() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # War crimes defined as core crime
     war_crimes_defined = CoreCrime.WAR_CRIMES in CoreCrime
     

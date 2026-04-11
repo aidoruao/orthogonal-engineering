@@ -28,7 +28,9 @@ def check_fmcsa_hos_limits() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Property-carrying drivers
     max_driving_time = Fraction(11)  # hours
     max_duty_window = Fraction(14)  # hours after coming on duty
@@ -71,7 +73,9 @@ def check_faa_pilot_certification() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Certificate types
     student_pilot = True
     recreational_pilot = True
@@ -123,7 +127,9 @@ def check_dot_drug_testing() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Testing circumstances
     pre_employment = True
     random_testing = True
@@ -179,7 +185,9 @@ def check_faa_airworthiness_certification() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Airworthiness certificates
     standard_airworthiness = True  # Normal, utility, acrobatic, commuter, transport
     special_airworthiness = True  # Primary, restricted, limited, light-sport, experimental
@@ -229,7 +237,9 @@ def check_fmcsa_cdl_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # CMV definitions
     gvwr_threshold = Fraction(26001)  # pounds
     passengers_for_hire = Fraction(16)  # or more including driver
@@ -281,7 +291,9 @@ def check_dot_pipeline_safety() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Part 191 - Transportation of natural and other gas by pipeline
     part_191_gas_transmission = True
     part_191_gas_distribution = True

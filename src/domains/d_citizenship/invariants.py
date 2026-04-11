@@ -28,7 +28,9 @@ def check_fourteenth_amendment_birthright() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Birthright citizenship elements
     born_in_united_states = True
     subject_to_us_jurisdiction = True
@@ -81,7 +83,9 @@ def check_naturalization_residency_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Standard naturalization
     required_years_standard = Fraction(5)
     lpr_years_standard = Fraction(4)
@@ -133,7 +137,9 @@ def check_naturalization_good_moral_character() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Statutory period for GMC
     gmc_period_years = Fraction(5)
     
@@ -189,7 +195,9 @@ def check_citizenship_through_derivation() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # CCA 2000 requirements
     child_under_18 = True
     lpr_status = True
@@ -250,7 +258,9 @@ def check_dual_nationality_recognition() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # U.S. citizenship acquisition
     us_birthright = True
     
@@ -306,7 +316,9 @@ def check_renunciation_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Voluntary intent required
     voluntary_intent = True
     duress_present = False

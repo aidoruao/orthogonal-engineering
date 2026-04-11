@@ -22,7 +22,9 @@ def check_eval_reproducibility(eval: ModelEval) -> Tuple[bool, ProofObject]:
 
     HELM guidelines: Minimum 3 runs for reproducible results.
     Falsifies if: num_runs < 3
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_runs = min_runs_reproducibility()
 
     if eval.num_runs < min_runs:
@@ -49,7 +51,9 @@ def check_model_ordering_consistency(ordering: OrderingConsistency) -> Tuple[boo
     Model rankings must be consistent across benchmarks (< 20% reversals).
 
     Falsifies if: num_reversals / num_benchmarks > 20%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     threshold = consistency_threshold()
     num_benchmarks = len(ordering.benchmark_ids)
     reversal_fraction = Fraction(ordering.num_reversals, num_benchmarks)
@@ -87,7 +91,9 @@ def check_benchmark_coverage(coverage: BenchmarkCoverage) -> Tuple[bool, ProofOb
     Models must be evaluated on sufficient benchmarks (> 50% coverage).
 
     Falsifies if: coverage_fraction < 50%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_coverage = cherry_pick_threshold()
 
     if coverage.coverage_fraction < min_coverage:
@@ -114,7 +120,9 @@ def check_normalization(eval: ModelEval) -> Tuple[bool, ProofObject]:
     Normalized scores must be in valid range [0, 1] and consistent with raw scores.
 
     Falsifies if: normalized_score out of bounds or inconsistent ordering
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if eval.normalized_score < Fraction(0, 1) or eval.normalized_score > Fraction(1, 1):
         return False, ProofObject(
             conclusion=f"VIOLATION: Normalized score {eval.normalized_score} out of bounds [0, 1]",
@@ -138,7 +146,9 @@ def check_no_cherry_picking(comparison: CrossModelComparison, coverage: Benchmar
     Cross-model comparisons must not cherry-pick favorable benchmarks.
 
     Falsifies if: cherry_picked == True or coverage < 50%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     threshold = cherry_pick_threshold()
 
     if comparison.cherry_picked:
@@ -175,7 +185,9 @@ def check_minimum_benchmarks(coverage: BenchmarkCoverage) -> Tuple[bool, ProofOb
     Evaluations must cover minimum number of benchmarks (5+).
 
     Falsifies if: num_benchmarks_evaluated < 5
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_benchmarks = min_benchmarks_threshold()
 
     if coverage.num_benchmarks_evaluated < min_benchmarks:
@@ -201,7 +213,9 @@ def check_comparison_reproducibility(comparison: CrossModelComparison) -> Tuple[
     Cross-model comparisons must be reproducible.
 
     Falsifies if: reproducible == False
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not comparison.reproducible:
         return False, ProofObject(
             conclusion=f"VIOLATION: Comparison {comparison.comparison_id} not reproducible",
@@ -225,7 +239,9 @@ def check_normalization_consistency(eval1: ModelEval, eval2: ModelEval) -> Tuple
     Models evaluated on same benchmark must use same normalization.
 
     Falsifies if: same benchmark but different normalization types
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if eval1.benchmark_id == eval2.benchmark_id:
         if eval1.normalization_type != eval2.normalization_type:
             return False, ProofObject(

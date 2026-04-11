@@ -44,7 +44,9 @@ def check_patent_novelty_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     analyzer = PatentAnalyzer()
     
     # Novel invention (no prior art)
@@ -101,7 +103,9 @@ def check_patent_term_twenty_years() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Patent filed 25+ years ago (expired)
     old_patent = Invention(
         invention_id="I003",
@@ -152,7 +156,9 @@ def check_copyright_originality_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Original work
     original = CreativeWork(
         work_id="W001",
@@ -206,7 +212,9 @@ def check_fair_use_four_factors() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     work = CreativeWork(
         work_id="W003",
         title="Famous Novel",
@@ -270,7 +278,9 @@ def check_trademark_distinctiveness() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Strong distinctive mark (fanciful)
     distinctive = Trademark(
         mark_id="T001",
@@ -324,7 +334,9 @@ def check_trademark_likelihood_of_confusion() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     analyzer = TrademarkAnalyzer()
     
     # Similar marks

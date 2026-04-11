@@ -29,7 +29,9 @@ def check_renewable_interconnection_standards() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Voltage ride-through requirement
     nominal_voltage = Fraction(120)  # V
     min_voltage = Fraction(88)  # 73% of nominal per IEEE 1547
@@ -80,7 +82,9 @@ def check_nerc_cip_compliance() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # CIP-005: Electronic security perimeters
     has_esp = True
     esp_monitoring = True
@@ -127,7 +131,9 @@ def check_ferc_transmission_planning() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Order 1000 requirements
     regional_planning = True
     cost_allocation = True
@@ -173,7 +179,9 @@ def check_load_shedding_priority() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Load priority categories
     critical_loads = ["hospitals", "emergency_services", "water_pumping"]
     non_critical_loads = ["commercial", "residential_optional", "industrial_curtailable"]
@@ -220,7 +228,9 @@ def check_energy_storage_efficiency() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Round-trip efficiency calculation using Fraction
     energy_charged_mwh = Fraction(100)
     energy_discharged_mwh = Fraction(85)
@@ -264,7 +274,9 @@ def check_demand_response_enrollment() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # DR resource must be paid LMP (locational marginal price)
     lmp_price = Fraction(50)  # $/MWh
     dr_payment = Fraction(50)  # Must equal LMP

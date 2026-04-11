@@ -26,7 +26,9 @@ def check_just_war_criteria(order: MilitaryOrder) -> Tuple[bool, ProofObject]:
     3. Right intention (proportional, necessary)
 
     Falsifies if: any criterion fails
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     criteria = [
         ("legitimate_authority", order.legitimate_authority, "Legitimate authority required"),
         ("proportional", order.proportional, "Proportional force required"),
@@ -63,7 +65,9 @@ def check_noncombatant_protection(rules: RulesOfWar) -> Tuple[bool, ProofObject]
     have immunity from deliberate targeting.
 
     Falsifies if: noncombatant_protection = False
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not rules.noncombatant_protection:
         return False, ProofObject(
             conclusion=f"VIOLATION: Rules {rules.rule_id} fail to protect noncombatants",
@@ -90,7 +94,9 @@ def check_quarter_granted(combatant: Combatant, rules: RulesOfWar) -> Tuple[bool
     Refusal to grant quarter is a violation of the code of chivalry.
 
     Falsifies if: combatant.captured=True and combatant.quarter_given=False
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if combatant.captured and not combatant.quarter_given:
         return False, ProofObject(
             conclusion=f"VIOLATION: Combatant {combatant.combatant_id} captured but no quarter granted",
@@ -125,7 +131,9 @@ def check_ransom_limits(combatant: Combatant) -> Tuple[bool, ProofObject]:
     for approximately one year's income. Excessive ransom is considered extortion.
 
     Falsifies if: ransom_demanded > 365 (days of income) for knight
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if combatant.status != CombatantStatus.KNIGHT:
         return True, ProofObject(
             conclusion=f"Combatant {combatant.combatant_id} not knight, ransom limit N/A",
@@ -162,7 +170,9 @@ def check_siege_law_compliance(siege: SiegeLaw) -> Tuple[bool, ProofObject]:
     Noncombatants must be allowed to leave. Starvation as sole tactic is prohibited.
 
     Falsifies if: duration > 40 days without surrender offer, or noncombatants not allowed exit
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     limit = siege_duration_limit()
     violations = []
 
@@ -207,7 +217,9 @@ def check_proportional_force(rules: RulesOfWar) -> Tuple[bool, ProofObject]:
     indiscriminate. Wanton destruction beyond military necessity is forbidden.
 
     Falsifies if: proportional_force = False
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not rules.proportional_force:
         return False, ProofObject(
             conclusion=f"VIOLATION: Rules {rules.rule_id} permit disproportionate force",

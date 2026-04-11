@@ -72,7 +72,9 @@ def check_ptc_equipped(vehicle: RailVehicle) -> Tuple[bool, ProofObject]:
 
 
 def check_track_class_speed(track: TrackSegment) -> Tuple[bool, ProofObject]:
-    """Track class determines maximum speed."""
+    """Track class determines maximum speed.
+    
+    falsifies_if: condition_evaluated_to_false"""
     class_speeds = {1: 10, 2: 25, 3: 40, 4: 60, 5: 80, 6: 110}
     max_allowed = class_speeds.get(track.track_class, 10)
     if track.max_speed > max_allowed:

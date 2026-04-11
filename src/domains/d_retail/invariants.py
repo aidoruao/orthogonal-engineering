@@ -23,7 +23,9 @@ def check_cpsc_product_safety(product: RetailProduct) -> Tuple[bool, ProofObject
     - Testing and certification required
     
     Falsifies if: active recall or non-compliant
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if product.recall_status == RecallStatus.MANDATORY_RECALL:
         return False, ProofObject(
             conclusion=f"VIOLATION: Product {product.sku} under mandatory CPSC recall",
@@ -63,7 +65,9 @@ def check_pci_compliance(store: RetailStore) -> Tuple[bool, ProofObject]:
     - Breach notification mandatory
     
     Falsifies if: not PCI compliant and processing cards
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if store.data_breaches_annual > 0 and store.pci_compliant:
         return False, ProofObject(
             conclusion=f"VIOLATION: Store {store.store_id} PCI compliant but had {store.data_breaches_annual} breaches",
@@ -103,7 +107,9 @@ def check_store_safety_inspection(store: RetailStore) -> Tuple[bool, ProofObject
     - ADA accessibility
     
     Falsifies if: failed fire inspection or major violations
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not store.fire_inspection_passed:
         return False, ProofObject(
             conclusion=f"VIOLATION: Store {store.store_id} failed fire safety inspection",
@@ -145,7 +151,9 @@ def check_return_rate_reasonable(store: RetailStore) -> Tuple[bool, ProofObject]
     - Fraud prevention required
     
     Falsifies if: return rate > 20%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     max_rate = max_return_rate()
     rate = store.get_return_rate()
     
@@ -178,7 +186,9 @@ def check_product_profitability(product: RetailProduct) -> Tuple[bool, ProofObje
     - Below-cost pricing regulations (some jurisdictions)
     
     Falsifies if: margin < 10% (sustainability concern)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_margin = min_profit_margin()
     margin = product.get_margin()
     

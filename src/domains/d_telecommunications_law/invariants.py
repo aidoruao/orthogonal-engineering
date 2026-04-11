@@ -28,7 +28,9 @@ def check_communications_act_common_carrier() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Common carrier duties
     service_upon_reasonable_request = True
     charges_just_and_reasonable = True
@@ -74,7 +76,9 @@ def check_fcc_spectrum_licensing() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Licensing authority
     fcc_licensing_authority = True
     term_of_license = Fraction(8)  # years for most services
@@ -120,7 +124,9 @@ def check_telecommunications_act_1996_competition() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Competition goals
     local_exchange_competition = True
     long_distance_competition = True  # Already achieved
@@ -166,7 +172,9 @@ def check_tcpa_autodialer_restrictions() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Prohibitions
     autodialer_to_cellular = True  # Without consent
     artificial_voice_prerecorded = True  # Without consent
@@ -211,7 +219,9 @@ def check_net_neutrality_principles() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # 2015 rules (Title II classification)
     no_blocking = True
     no_throttling = True
@@ -259,7 +269,9 @@ def check_universal_service_fund_contributions() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Contribution factor
     contribution_base = True  # Interstate and international revenues
     contribution_rate = Fraction(30, 100)  # ~30% (varies quarterly)
