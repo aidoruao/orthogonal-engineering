@@ -289,7 +289,10 @@ def check_youngstown_executive_power_framework() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_SEPARATION_OF_POWERS invariants."""
+    """Run all D_SEPARATION_OF_POWERS invariants.
+
+    Falsifies if: any separation of powers invariant check fails or raises an exception.
+    """
     checks = [
         ("check_article_i_legislative_power", check_article_i_legislative_power),
         ("check_article_ii_executive_power", check_article_ii_executive_power),

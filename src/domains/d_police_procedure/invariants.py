@@ -287,7 +287,10 @@ def check_exclusionary_rule_fruit_of_poisonous_tree() -> Tuple[bool, ProofObject
 
 
 def run_all_invariants() -> dict:
-    """Run all D_POLICE_PROCEDURE invariants."""
+    """Run all D_POLICE_PROCEDURE invariants.
+
+    Falsifies if: any police procedure invariant check fails or raises an exception.
+    """
     checks = [
         ("check_fourth_amendment_search_warrant", check_fourth_amendment_search_warrant),
         ("check_graham_v_connor_objective_reasonableness", check_graham_v_connor_objective_reasonableness),

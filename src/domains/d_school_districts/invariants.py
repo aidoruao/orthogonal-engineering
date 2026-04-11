@@ -293,7 +293,10 @@ def check_title_i_schoolwide_programs() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_SCHOOL_DISTRICTS invariants."""
+    """Run all D_SCHOOL_DISTRICTS invariants.
+
+    Falsifies if: any school district invariant check fails or raises an exception.
+    """
     checks = [
         ("check_idea_free_appropriate_education", check_idea_free_appropriate_education),
         ("check_title_i_participation_threshold", check_title_i_participation_threshold),

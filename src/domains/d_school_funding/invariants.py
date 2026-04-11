@@ -306,7 +306,10 @@ def check_property_tax_reliance_limits() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_SCHOOL_FUNDING invariants."""
+    """Run all D_SCHOOL_FUNDING invariants.
+
+    Falsifies if: any school funding invariant check fails or raises an exception.
+    """
     checks = [
         ("check_san_antonio_rodriguez_rational_basis", check_san_antonio_rodriguez_rational_basis),
         ("check_state_equalization_requirements", check_state_equalization_requirements),

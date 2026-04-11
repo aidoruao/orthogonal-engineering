@@ -305,7 +305,10 @@ def check_spatial_resolution_accuracy() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_REMOTE_SENSING invariants."""
+    """Run all D_REMOTE_SENSING invariants.
+
+    Falsifies if: any remote sensing invariant check fails or raises an exception.
+    """
     checks = [
         ("check_land_remote_sensing_policy_act_compliance", check_land_remote_sensing_policy_act_compliance),
         ("check_noaa_regulatory_compliance", check_noaa_regulatory_compliance),
