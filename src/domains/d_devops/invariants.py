@@ -10,8 +10,10 @@ DevOps invariants ensure:
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Any, List, Set
+from typing import Dict, Any, List, Set, Tuple
 from fractions import Fraction
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_DEVOPSChecker, D_DEVOPSRecord, D_DEVOPSStatus,
@@ -35,10 +37,11 @@ class PipelineResult:
     deterministic: bool
 
 
-def check_pipeline_determinism() -> bool:
+def check_pipeline_determinism() -> Tuple[bool, ProofObject]:
     """Verify that identical inputs produce identical outputs.
     
     This is the core DevOps invariant: reproducible builds.
+    falsifies_if: pipeline not deterministic
     """
     checker = D_DEVOPSChecker()
     
@@ -55,15 +58,31 @@ def check_pipeline_determinism() -> bool:
     run2 = checker.simulate_pipeline(config, commit_hash="commit_a")
     
     # Outcomes must match for determinism
-    assert run1.outcome == run2.outcome, "Non-deterministic pipeline behavior"
-    assert run1.artifacts == run2.artifacts, "Artifact mismatch on identical input"
+    if run1.outcome != run2.outcome:
+        return False, ProofObject(
+            rule="pipeline_determinism",
+            subject="pipeline",
+            falsifies_if="Non-deterministic pipeline behavior",
+        )
+    if run1.artifacts != run2.artifacts:
+        return False, ProofObject(
+            rule="pipeline_determinism",
+            subject="pipeline",
+            falsifies_if="Artifact mismatch on identical input",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="pipeline_determinism",
+        subject="pipeline",
+        verified=True,
+    )
 
 
-def check_infrastructure_idempotency() -> bool:
+def check_infrastructure_idempotency() -> Tuple[bool, ProofObject]:
     """Verify that applying infrastructure config multiple times
     produces the same end state (no drift on re-apply).
+    
+    falsifies_if: infrastructure not idempotent
     """
     checker = D_DEVOPSChecker()
     
@@ -87,14 +106,25 @@ def check_infrastructure_idempotency() -> bool:
     state2 = checker.apply_infrastructure(resources)
     
     # States must be identical
-    assert state1 == state2, "Infrastructure not idempotent"
+    if state1 != state2:
+        return False, ProofObject(
+            rule="infrastructure_idempotency",
+            subject="infrastructure",
+            falsifies_if="Infrastructure not idempotent",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="infrastructure_idempotency",
+        subject="infrastructure",
+        verified=True,
+    )
 
 
-def check_rollback_capability() -> bool:
+def check_rollback_capability() -> Tuple[bool, ProofObject]:
     """Verify that any deployment can be rolled back to a previous
     known-good state within the RTO (Recovery Time Objective).
+    
+    falsifies_if: rollback fails or exceeds RTO
     """
     checker = D_DEVOPSChecker()
     
@@ -107,15 +137,31 @@ def check_rollback_capability() -> bool:
     # Attempt rollback
     rollback_result = checker.rollback_to(deployments, target_version="v1.0.0")
     
-    assert rollback_result.success, "Rollback failed"
-    assert rollback_result.time_seconds <= 300, "Rollback exceeded RTO (5 min)"
+    if not rollback_result.success:
+        return False, ProofObject(
+            rule="rollback_capability",
+            subject="rollback",
+            falsifies_if="Rollback failed",
+        )
+    if rollback_result.time_seconds > 300:
+        return False, ProofObject(
+            rule="rollback_capability",
+            subject="rollback",
+            falsifies_if=f"Rollback exceeded RTO (5 min): {rollback_result.time_seconds}s",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="rollback_capability",
+        subject="rollback",
+        verified=True,
+    )
 
 
-def check_secret_rotation() -> bool:
+def check_secret_rotation() -> Tuple[bool, ProofObject]:
     """Verify that secrets are rotated within policy-defined windows
     and that expired secrets trigger alerts.
+    
+    falsifies_if: expired secret not detected or no rotation plan
     """
     checker = D_DEVOPSChecker()
     
@@ -128,22 +174,37 @@ def check_secret_rotation() -> bool:
     violations = checker.check_secret_age(secrets)
     
     # The stale secret should be flagged
-    assert any(v["name"] == "stale_secret" for v in violations), \
-        "Expired secret not detected"
+    if not any(v["name"] == "stale_secret" for v in violations):
+        return False, ProofObject(
+            rule="secret_rotation",
+            subject="secrets",
+            falsifies_if="Expired secret not detected",
+        )
     
     # All violations should have rotation plans
     for v in violations:
-        assert "rotation_deadline" in v, f"No rotation plan for {v['name']}"
+        if "rotation_deadline" not in v:
+            return False, ProofObject(
+                rule="secret_rotation",
+                subject=v["name"],
+                falsifies_if=f"No rotation plan for {v['name']}",
+            )
     
-    return True
+    return True, ProofObject(
+        rule="secret_rotation",
+        subject="secret rotation",
+        verified=True,
+    )
 
 
-def check_monitoring_coverage() -> bool:
+def check_monitoring_coverage() -> Tuple[bool, ProofObject]:
     """Verify that all production services have:
     - Health checks
     - Metrics collection
     - Alerting rules
     - Log aggregation
+    
+    falsifies_if: monitoring gaps not detected
     """
     checker = D_DEVOPSChecker()
     
@@ -168,17 +229,41 @@ def check_monitoring_coverage() -> bool:
     
     # The background worker should be flagged for missing metrics
     worker_gaps = [g for g in gaps if g["service"] == "background-worker"]
-    assert any("metrics" in g["missing"] for g in worker_gaps), \
-        "Missing metrics not detected"
+    if not any("metrics" in g["missing"] for g in worker_gaps):
+        return False, ProofObject(
+            rule="monitoring_coverage",
+            subject="background-worker",
+            falsifies_if="Missing metrics not detected",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="monitoring_coverage",
+        subject="monitoring coverage",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check — deterministic execution."""
-    assert check_pipeline_determinism()
-    assert check_infrastructure_idempotency()
-    assert check_rollback_capability()
-    assert check_secret_rotation()
-    assert check_monitoring_coverage()
-    return True
+    checks = [
+        check_pipeline_determinism,
+        check_infrastructure_idempotency,
+        check_rollback_capability,
+        check_secret_rotation,
+        check_monitoring_coverage,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="DevOps compliance",
+        verified=True,
+    )

@@ -12,6 +12,8 @@ from dataclasses import dataclass
 from typing import Dict, Any, List, Tuple
 from fractions import Fraction
 
+from axioms.logic import ProofObject
+
 from .implementation import (
     D_GAME_ENGINE_DEVELOPMENTChecker,
     D_GAME_ENGINE_DEVELOPMENTRecord,
@@ -20,10 +22,11 @@ from .implementation import (
 )
 
 
-def check_physics_determinism() -> bool:
+def check_physics_determinism() -> Tuple[bool, ProofObject]:
     """Verify physics simulation produces same result regardless of frame rate.
     
     Critical for: replays, multiplayer sync, testing.
+    falsifies_if: physics not frame-rate independent
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -49,14 +52,25 @@ def check_physics_determinism() -> bool:
     result_30fps = checker.simulate_physics(initial_state, config_30fps, duration=1.0)
     
     # Final positions must match (within epsilon for floating point, exact for fixed)
-    assert result_60fps.objects[0]["pos"] == result_30fps.objects[0]["pos"], \
-        "Physics not frame-rate independent"
+    if result_60fps.objects[0]["pos"] != result_30fps.objects[0]["pos"]:
+        return False, ProofObject(
+            rule="physics_determinism",
+            subject="physics simulation",
+            falsifies_if="Physics not frame-rate independent",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="physics_determinism",
+        subject="physics simulation",
+        verified=True,
+    )
 
 
-def check_rng_determinism() -> bool:
-    """Verify seeded random number generation is reproducible."""
+def check_rng_determinism() -> Tuple[bool, ProofObject]:
+    """Verify seeded random number generation is reproducible.
+    
+    falsifies_if: RNG not deterministic
+    """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
     seed = 12345
@@ -66,20 +80,36 @@ def check_rng_determinism() -> bool:
     seq2 = checker.generate_random_sequence(seed, count=100)
     
     # Must be identical
-    assert seq1 == seq2, "RNG not deterministic"
+    if seq1 != seq2:
+        return False, ProofObject(
+            rule="rng_determinism",
+            subject="RNG",
+            falsifies_if="RNG not deterministic",
+        )
     
     # Different seed → different sequence
     seq3 = checker.generate_random_sequence(seed=54321, count=100)
-    assert seq1 != seq3, "Different seeds produce same sequence"
+    if seq1 == seq3:
+        return False, ProofObject(
+            rule="rng_determinism",
+            subject="RNG",
+            falsifies_if="Different seeds produce same sequence",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="rng_determinism",
+        subject="RNG",
+        verified=True,
+    )
 
 
-def check_save_file_integrity() -> bool:
+def check_save_file_integrity() -> Tuple[bool, ProofObject]:
     """Verify save files:
     - Can be written and read back identically
     - Versioned for backward compatibility
     - Checksum validates data integrity
+    
+    falsifies_if: save file integrity compromised
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -98,20 +128,45 @@ def check_save_file_integrity() -> bool:
     loaded = checker.read_save(save_path)
     
     # Data integrity
-    assert loaded.player_name == save_data.player_name
-    assert loaded.level == save_data.level
-    assert loaded.inventory == save_data.inventory
+    if loaded.player_name != save_data.player_name:
+        return False, ProofObject(
+            rule="save_file_integrity",
+            subject="save file",
+            falsifies_if="player_name mismatch",
+        )
+    if loaded.level != save_data.level:
+        return False, ProofObject(
+            rule="save_file_integrity",
+            subject="save file",
+            falsifies_if="level mismatch",
+        )
+    if loaded.inventory != save_data.inventory:
+        return False, ProofObject(
+            rule="save_file_integrity",
+            subject="save file",
+            falsifies_if="inventory mismatch",
+        )
     
     # Checksum validation
-    assert checker.validate_save_checksum(loaded), "Save file checksum invalid"
+    if not checker.validate_save_checksum(loaded):
+        return False, ProofObject(
+            rule="save_file_integrity",
+            subject="save file",
+            falsifies_if="Save file checksum invalid",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="save_file_integrity",
+        subject="save file",
+        verified=True,
+    )
 
 
-def check_multiplayer_sync() -> bool:
+def check_multiplayer_sync() -> Tuple[bool, ProofObject]:
     """Verify game state synchronization between clients.
     
     All clients must converge to the same state given same inputs.
+    falsifies_if: client states diverge
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -129,18 +184,29 @@ def check_multiplayer_sync() -> bool:
     reconciled1 = checker.reconcile_state(client1_state, authority="server")
     reconciled2 = checker.reconcile_state(client2_state, authority="server")
     
-    assert reconciled1.hash == reconciled2.hash, "Client states diverged"
+    if reconciled1.hash != reconciled2.hash:
+        return False, ProofObject(
+            rule="multiplayer_sync",
+            subject="multiplayer",
+            falsifies_if="Client states diverged",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="multiplayer_sync",
+        subject="multiplayer",
+        verified=True,
+    )
 
 
-def check_hot_reload_safety() -> bool:
+def check_hot_reload_safety() -> Tuple[bool, ProofObject]:
     """Verify asset hot-reload doesn't corrupt game state.
     
     Assets should reload without:
     - Crashing
     - Memory leaks
     - State corruption
+    
+    falsifies_if: hot reload causes issues
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -154,19 +220,49 @@ def check_hot_reload_safety() -> bool:
     
     # Memory growth should be bounded (no leak)
     memory_growth = final_memory - initial_memory
-    assert memory_growth < 10, f"Memory leak detected: {memory_growth}MB growth"
+    if memory_growth >= 10:
+        return False, ProofObject(
+            rule="hot_reload_safety",
+            subject="hot reload",
+            falsifies_if=f"Memory leak detected: {memory_growth}MB growth",
+        )
     
     # Game state should remain valid
-    assert checker.validate_game_state(), "Game state corrupted after hot-reload"
+    if not checker.validate_game_state():
+        return False, ProofObject(
+            rule="hot_reload_safety",
+            subject="hot reload",
+            falsifies_if="Game state corrupted after hot-reload",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="hot_reload_safety",
+        subject="hot reload",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check — deterministic execution."""
-    assert check_physics_determinism()
-    assert check_rng_determinism()
-    assert check_save_file_integrity()
-    assert check_multiplayer_sync()
-    assert check_hot_reload_safety()
-    return True
+    checks = [
+        check_physics_determinism,
+        check_rng_determinism,
+        check_save_file_integrity,
+        check_multiplayer_sync,
+        check_hot_reload_safety,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="game engine compliance",
+        verified=True,
+    )

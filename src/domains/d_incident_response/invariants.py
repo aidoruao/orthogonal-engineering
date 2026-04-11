@@ -10,6 +10,9 @@ Incident response invariants ensure:
 
 from datetime import datetime, timedelta
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_INCIDENT_RESPONSEChecker,
@@ -21,10 +24,11 @@ from .implementation import (
 )
 
 
-def check_response_time_sla() -> bool:
+def check_response_time_sla() -> Tuple[bool, ProofObject]:
     """Verify critical incidents are responded to within SLA.
     
     Critical: 15 minutes, High: 1 hour, Medium: 4 hours, Low: 24 hours
+    falsifies_if: response time exceeds SLA
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -56,13 +60,25 @@ def check_response_time_sla() -> bool:
             # Must respond within 15 minutes
             responded_at = base_time + timedelta(minutes=10)
             rt = checker.response_time(inc, responded_at)
-            assert rt <= 15, f"Critical incident response time {rt}min exceeds SLA"
+            if rt > 15:
+                return False, ProofObject(
+                    rule="response_time_sla",
+                    subject=inc.incident_id,
+                    falsifies_if=f"Critical incident response time {rt}min exceeds 15min SLA",
+                )
     
-    return True
+    return True, ProofObject(
+        rule="response_time_sla",
+        subject="incident response SLA",
+        verified=True,
+    )
 
 
-def check_severity_classification() -> bool:
-    """Verify all incidents have valid severity classification."""
+def check_severity_classification() -> Tuple[bool, ProofObject]:
+    """Verify all incidents have valid severity classification.
+    
+    falsifies_if: severity classification invalid
+    """
     checker = D_INCIDENT_RESPONSEChecker()
     
     valid_incident = Incident(
@@ -74,14 +90,25 @@ def check_severity_classification() -> bool:
         response_team=["responder"],
     )
     
-    assert checker.check_severity_classification(valid_incident), \
-        "Valid incident failed severity check"
+    if not checker.check_severity_classification(valid_incident):
+        return False, ProofObject(
+            rule="severity_classification",
+            subject="INC-003",
+            falsifies_if="Valid incident failed severity check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="severity_classification",
+        subject="severity classification",
+        verified=True,
+    )
 
 
-def check_response_procedures_exist() -> bool:
-    """Verify response procedures exist for each severity level."""
+def check_response_procedures_exist() -> Tuple[bool, ProofObject]:
+    """Verify response procedures exist for each severity level.
+    
+    falsifies_if: procedure has insufficient steps
+    """
     procedures = [
         ResponseProcedure(
             procedure_id="PROC-CRIT",
@@ -99,13 +126,25 @@ def check_response_procedures_exist() -> bool:
     
     # Each procedure must have at least 3 steps
     for proc in procedures:
-        assert len(proc.steps) >= 3, f"Procedure {proc.name} has insufficient steps"
+        if len(proc.steps) < 3:
+            return False, ProofObject(
+                rule="response_procedures_exist",
+                subject=proc.procedure_id,
+                falsifies_if=f"Procedure {proc.name} has insufficient steps ({len(proc.steps)} < 3)",
+            )
     
-    return True
+    return True, ProofObject(
+        rule="response_procedures_exist",
+        subject="response procedures",
+        verified=True,
+    )
 
 
-def check_incident_team_assignment() -> bool:
-    """Verify all active incidents have assigned response teams."""
+def check_incident_team_assignment() -> Tuple[bool, ProofObject]:
+    """Verify all active incidents have assigned response teams.
+    
+    falsifies_if: incident lacks response team
+    """
     checker = D_INCIDENT_RESPONSEChecker()
     
     # Incident without team should fail
@@ -118,8 +157,12 @@ def check_incident_team_assignment() -> bool:
         response_team=[],
     )
     
-    assert not checker.check_response_team_assigned(unassigned), \
-        "Unassigned incident passed team check"
+    if checker.check_response_team_assigned(unassigned):
+        return False, ProofObject(
+            rule="incident_team_assignment",
+            subject="INC-004",
+            falsifies_if="Unassigned incident passed team check",
+        )
     
     # Incident with team should pass
     assigned = Incident(
@@ -131,14 +174,25 @@ def check_incident_team_assignment() -> bool:
         response_team=["alice", "bob"],
     )
     
-    assert checker.check_response_team_assigned(assigned), \
-        "Assigned incident failed team check"
+    if not checker.check_response_team_assigned(assigned):
+        return False, ProofObject(
+            rule="incident_team_assignment",
+            subject="INC-005",
+            falsifies_if="Assigned incident failed team check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="incident_team_assignment",
+        subject="team assignment",
+        verified=True,
+    )
 
 
-def check_mttr_calculation() -> bool:
-    """Verify mean time to recovery is calculated correctly."""
+def check_mttr_calculation() -> Tuple[bool, ProofObject]:
+    """Verify mean time to recovery is calculated correctly.
+    
+    falsifies_if: MTTR is negative
+    """
     checker = D_INCIDENT_RESPONSEChecker()
     
     incidents = [
@@ -153,16 +207,41 @@ def check_mttr_calculation() -> bool:
     ]
     
     mttr = checker.mean_time_to_recovery(incidents)
-    assert mttr >= Fraction(0), "MTTR must be non-negative"
+    if mttr < Fraction(0):
+        return False, ProofObject(
+            rule="mttr_calculation",
+            subject="MTTR",
+            falsifies_if="MTTR is negative",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="mttr_calculation",
+        subject="MTTR calculation",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check — deterministic execution."""
-    assert check_response_time_sla()
-    assert check_severity_classification()
-    assert check_response_procedures_exist()
-    assert check_incident_team_assignment()
-    assert check_mttr_calculation()
-    return True
+    checks = [
+        check_response_time_sla,
+        check_severity_classification,
+        check_response_procedures_exist,
+        check_incident_team_assignment,
+        check_mttr_calculation,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="incident response compliance",
+        verified=True,
+    )
