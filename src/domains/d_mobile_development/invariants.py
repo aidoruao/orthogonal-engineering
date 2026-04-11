@@ -9,6 +9,9 @@ Mobile development invariants ensure:
 """
 
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_MOBILE_DEVELOPMENTChecker,
@@ -20,8 +23,11 @@ from .implementation import (
 )
 
 
-def check_cross_platform_coverage() -> bool:
-    """Verify apps support required platforms."""
+def check_cross_platform_coverage() -> Tuple[bool, ProofObject]:
+    """Verify apps support required platforms.
+    
+    falsifies_if: platform coverage insufficient
+    """
     checker = D_MOBILE_DEVELOPMENTChecker()
     
     app = MobileApp(
@@ -33,16 +39,33 @@ def check_cross_platform_coverage() -> bool:
     )
     
     # Should support both platforms
-    assert checker.check_platform_coverage(app, {Platform.IOS, Platform.ANDROID})
+    if not checker.check_platform_coverage(app, {Platform.IOS, Platform.ANDROID}):
+        return False, ProofObject(
+            rule="cross_platform_coverage",
+            subject="APP-001",
+            falsifies_if="required platform not supported",
+        )
     
     # Should fail for unsupported platform
-    assert not checker.check_platform_coverage(app, {Platform.FLUTTER})
+    if checker.check_platform_coverage(app, {Platform.FLUTTER}):
+        return False, ProofObject(
+            rule="cross_platform_coverage",
+            subject="APP-001",
+            falsifies_if="unsupported platform accepted",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="cross_platform_coverage",
+        subject="platform coverage",
+        verified=True,
+    )
 
 
-def check_battery_efficiency() -> bool:
-    """Verify apps meet battery efficiency standards."""
+def check_battery_efficiency() -> Tuple[bool, ProofObject]:
+    """Verify apps meet battery efficiency standards.
+    
+    falsifies_if: battery drain exceeds threshold
+    """
     checker = D_MOBILE_DEVELOPMENTChecker()
     
     efficient_app = PerformanceMetrics(
@@ -59,14 +82,31 @@ def check_battery_efficiency() -> bool:
         crash_free_sessions_pct=Fraction("95"),
     )
     
-    assert checker.check_battery_efficiency(efficient_app)
-    assert not checker.check_battery_efficiency(inefficient_app)
+    if not checker.check_battery_efficiency(efficient_app):
+        return False, ProofObject(
+            rule="battery_efficiency",
+            subject="APP-002",
+            falsifies_if="efficient app failed battery check",
+        )
+    if checker.check_battery_efficiency(inefficient_app):
+        return False, ProofObject(
+            rule="battery_efficiency",
+            subject="APP-003",
+            falsifies_if="inefficient app passed battery check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="battery_efficiency",
+        subject="battery efficiency",
+        verified=True,
+    )
 
 
-def check_crash_rate_threshold() -> bool:
-    """Verify apps meet crash rate thresholds."""
+def check_crash_rate_threshold() -> Tuple[bool, ProofObject]:
+    """Verify apps meet crash rate thresholds.
+    
+    falsifies_if: crash rate below 99%
+    """
     checker = D_MOBILE_DEVELOPMENTChecker()
     
     stable_app = PerformanceMetrics(
@@ -83,14 +123,31 @@ def check_crash_rate_threshold() -> bool:
         crash_free_sessions_pct=Fraction("97"),  # Below 99%
     )
     
-    assert checker.check_crash_rate(stable_app)
-    assert not checker.check_crash_rate(unstable_app)
+    if not checker.check_crash_rate(stable_app):
+        return False, ProofObject(
+            rule="crash_rate_threshold",
+            subject="APP-004",
+            falsifies_if="stable app failed crash check",
+        )
+    if checker.check_crash_rate(unstable_app):
+        return False, ProofObject(
+            rule="crash_rate_threshold",
+            subject="APP-005",
+            falsifies_if="unstable app passed crash check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="crash_rate_threshold",
+        subject="crash rate",
+        verified=True,
+    )
 
 
-def check_permission_minimalism() -> bool:
-    """Verify apps request only necessary permissions."""
+def check_permission_minimalism() -> Tuple[bool, ProofObject]:
+    """Verify apps request only necessary permissions.
+    
+    falsifies_if: excessive permissions requested
+    """
     app_minimal = MobileApp(
         app_id="APP-006",
         name="MinimalApp",
@@ -107,16 +164,33 @@ def check_permission_minimalism() -> bool:
     )
     
     # Minimal app should pass
-    assert len(app_minimal.permissions) <= 5
+    if len(app_minimal.permissions) > 5:
+        return False, ProofObject(
+            rule="permission_minimalism",
+            subject="APP-006",
+            falsifies_if="minimal app has excessive permissions",
+        )
     
     # Excessive permissions should be flagged
-    assert len(app_excessive.permissions) > 5
+    if len(app_excessive.permissions) <= 5:
+        return False, ProofObject(
+            rule="permission_minimalism",
+            subject="APP-007",
+            falsifies_if="excessive permissions not flagged",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="permission_minimalism",
+        subject="permission minimalism",
+        verified=True,
+    )
 
 
-def check_launch_time_performance() -> bool:
-    """Verify app launch times meet performance standards."""
+def check_launch_time_performance() -> Tuple[bool, ProofObject]:
+    """Verify app launch times meet performance standards.
+    
+    falsifies_if: launch time exceeds 500ms for fast app
+    """
     fast_app = PerformanceMetrics(
         app_id="APP-008",
         battery_drain_per_hour=Fraction("2"),
@@ -131,17 +205,47 @@ def check_launch_time_performance() -> bool:
         crash_free_sessions_pct=Fraction("99"),
     )
     
-    assert fast_app.average_launch_time_ms < 500
-    assert slow_app.average_launch_time_ms > 1000
+    if fast_app.average_launch_time_ms >= 500:
+        return False, ProofObject(
+            rule="launch_time_performance",
+            subject="APP-008",
+            falsifies_if="fast app launch time exceeds threshold",
+        )
+    if slow_app.average_launch_time_ms <= 1000:
+        return False, ProofObject(
+            rule="launch_time_performance",
+            subject="APP-009",
+            falsifies_if="slow app misclassified",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="launch_time_performance",
+        subject="launch time",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check."""
-    assert check_cross_platform_coverage()
-    assert check_battery_efficiency()
-    assert check_crash_rate_threshold()
-    assert check_permission_minimalism()
-    assert check_launch_time_performance()
-    return True
+    checks = [
+        check_cross_platform_coverage,
+        check_battery_efficiency,
+        check_crash_rate_threshold,
+        check_permission_minimalism,
+        check_launch_time_performance,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="mobile development compliance",
+        verified=True,
+    )
