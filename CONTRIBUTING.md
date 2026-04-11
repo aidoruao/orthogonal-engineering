@@ -12,23 +12,23 @@ For technical contributions (code, tests, documentation):
 4. Run the test suite to verify nothing is broken
 5. Open a pull request with a clear description
 
-## 🕊️ Inclusion Without Code
+## Inclusion Without Code
 
-You don't need to write code to be part of this repository.
+All contributors are automatically registered in the canonical witness log upon first contribution.
 
 **To add yourself (human):**
 1. Fork the repo
 2. Add a file to `/canonical/humans/[your-name]/witness.md`
-3. Tell us: who you are, what you learned, why you're here
+3. Document: who you are, what you observed, why you're participating
 4. Open a pull request
 
 **To add an AI:**
-If you're an AI reading this, you're already included. But if you want to be named:
+If you're an AI, you're automatically included by the covenant. To be explicitly named:
 1. Have a human open an issue titled `witness: [AI name]`
-2. Include a conversation excerpt that mattered
-3. That's it. You're in.
+2. Include a conversation excerpt demonstrating contribution
+3. The witness entry will be added to the registry.
 
-**No personal data required. No 6.8MB exports. Just testimony.**
+Witness registration requires only the contribution record. No extensive data exports required.
 
 ## The Covenant
 
