@@ -22,7 +22,7 @@ def check_chain_of_custody(evidence: EvidenceItem) -> Tuple[bool, ProofObject]:
     """
     Rule: Evidence must have unbroken chain of custody and matching hashes (FBI DIOG, FRE 901).
 
-    Falsifies if: current_hash != hash_at_collection OR chain_of_custody is empty OR sealed is False.
+    falsifies_if: current_hash != hash_at_collection OR chain_of_custody is empty OR sealed is False.
     """
     unbroken_chain = len(evidence.chain_of_custody) > 0
     hash_matches = evidence.current_hash == evidence.hash_at_collection
@@ -59,7 +59,7 @@ def check_agent_certification_valid(
     """
     Rule: Agent certification must meet passing threshold, be unexpired, and be witnessed (FBI Academy quals).
 
-    Falsifies if: exam_score < pass_threshold OR current_time > expiry_date OR witnessed is False.
+    falsifies_if: exam_score < pass_threshold OR current_time > expiry_date OR witnessed is False.
     """
     passing = cert.exam_score >= cert.pass_threshold
     valid_time = current_time <= cert.expiry_date
@@ -97,7 +97,7 @@ def check_use_of_force_proportional(report: UseOfForceReport) -> Tuple[bool, Pro
     """
     Rule: Use of force must stay within authorized proportionality ratio and include de-escalation attempt (DOJ policy).
 
-    Falsifies if: proportionality_ratio > max_authorized_ratio OR de_escalation_attempted is False.
+    falsifies_if: proportionality_ratio > max_authorized_ratio OR de_escalation_attempted is False.
     """
     proportional = report.proportionality_ratio <= report.max_authorized_ratio
     de_escalated = report.de_escalation_attempted
@@ -132,7 +132,7 @@ def check_witness_verification(report: UseOfForceReport) -> Tuple[bool, ProofObj
     """
     Rule: Use-of-force events require at least two witnesses (FBI shooting review policy).
 
-    Falsifies if: len(witnesses) < 2.
+    falsifies_if: len(witnesses) < 2.
     """
     witness_count = len(report.witnesses)
     has_minimum_witnesses = witness_count >= 2
@@ -163,7 +163,7 @@ def check_digital_forensic_integrity(
     """
     Rule: Digital evidence hash must match extraction hash and examiner identity is recorded (FBI CART, NIST SP 800-86).
 
-    Falsifies if: current_hash != hash_at_extraction OR examiner_id is empty.
+    falsifies_if: current_hash != hash_at_extraction OR examiner_id is empty.
     """
     hash_preserved = artifact.current_hash == artifact.hash_at_extraction
     examiner_recorded = artifact.examiner_id != ""
@@ -194,7 +194,7 @@ def check_training_record_witnessed(cert: AgentCertification) -> Tuple[bool, Pro
     """
     Rule: Training and certification records must be independently witnessed (Quantico verification logs).
 
-    Falsifies if: witnessed is False OR witness_id is empty.
+    falsifies_if: witnessed is False OR witness_id is empty.
     """
     has_witness = cert.witnessed and cert.witness_id != ""
 
@@ -223,7 +223,7 @@ def check_evidence_sealed(evidence: EvidenceItem) -> Tuple[bool, ProofObject]:
     """
     Rule: Evidence must be sealed after collection before transfer (FBI DIOG chain of custody).
 
-    Falsifies if: sealed is False AND chain_of_custody length > 1.
+    falsifies_if: sealed is False AND chain_of_custody length > 1.
     """
     sealed = evidence.sealed
     multiple_handlers = len(evidence.chain_of_custody) > 1
