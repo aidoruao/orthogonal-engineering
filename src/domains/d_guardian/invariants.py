@@ -97,10 +97,10 @@ def check_liveness(
             rule="liveness",
             premises=[
                 f"Agent: {agent.agent_id}",
-                f"Current time: {float(current_time):.2f}s",
-                f"Last heartbeat: {float(agent.last_heartbeat):.2f}s",
-                f"Elapsed: {float(elapsed):.2f}s",
-                f"Interval: {float(agent.heartbeat_interval):.2f}s",
+                f"Current time: {current_time}s",
+                f"Last heartbeat: {agent.last_heartbeat}s",
+                f"Elapsed: {elapsed}s",
+                f"Interval: {agent.heartbeat_interval}s",
             ],
             conclusion=f"VIOLATION: Guardian {agent.agent_id} heartbeat expired",
         )
@@ -109,8 +109,8 @@ def check_liveness(
         rule="liveness",
         premises=[
             f"Agent: {agent.agent_id}",
-            f"Elapsed: {float(elapsed):.2f}s",
-            f"Interval: {float(agent.heartbeat_interval):.2f}s",
+            f"Elapsed: {elapsed}s",
+            f"Interval: {agent.heartbeat_interval}s",
         ],
         conclusion=f"Guardian {agent.agent_id} heartbeat within interval",
     )
@@ -138,20 +138,20 @@ def check_proportional_response(
             rule="proportional_response",
             premises=[
                 f"Record: {record.record_id}",
-                f"Threat severity: {float(threat.severity):.4f}",
-                f"Force budget: {float(record.force_budget):.4f}",
-                f"Max proportional: {float(max_force):.4f}",
-                f"Force used: {float(record.force_used):.4f}",
+                f"Threat severity: {threat.severity}",
+                f"Force budget: {record.force_budget}",
+                f"Max proportional: {max_force}",
+                f"Force used: {record.force_used}",
             ],
-            conclusion=f"VIOLATION: Force {float(record.force_used):.4f} exceeds proportional limit {float(max_force):.4f}",
+            conclusion=f"VIOLATION: Force {record.force_used} exceeds proportional limit {max_force}",
         )
     
     return True, ProofObject(
         rule="proportional_response",
         premises=[
-            f"Threat severity: {float(threat.severity):.4f}",
-            f"Force used: {float(record.force_used):.4f}",
-            f"Max allowed: {float(max_force):.4f}",
+            f"Threat severity: {threat.severity}",
+            f"Force used: {record.force_used}",
+            f"Max allowed: {max_force}",
         ],
         conclusion=f"Force used is proportional to threat",
     )
@@ -314,7 +314,7 @@ def check_force_witness(
             rule="force_witness",
             premises=[
                 f"Record: {record.record_id}",
-                f"Force used: {float(record.force_used):.4f}",
+                f"Force used: {record.force_used}",
             ],
             conclusion=f"No force used (witness check not applicable)",
         )
@@ -324,7 +324,7 @@ def check_force_witness(
             rule="force_witness",
             premises=[
                 f"Record: {record.record_id}",
-                f"Force used: {float(record.force_used):.4f}",
+                f"Force used: {record.force_used}",
                 f"Witnessed: {record.witnessed}",
             ],
             conclusion=f"VIOLATION: Force action not witnessed",
@@ -334,7 +334,7 @@ def check_force_witness(
         rule="force_witness",
         premises=[
             f"Record: {record.record_id}",
-            f"Force used: {float(record.force_used):.4f}",
+            f"Force used: {record.force_used}",
             "Witnessed: True",
         ],
         conclusion=f"Force action properly witnessed",

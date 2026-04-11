@@ -29,7 +29,7 @@ def check_shard_storage_balance(shard: Shard) -> Tuple[bool, ProofObject]:
     
     if util > max_util:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Shard {shard.shard_id} storage {float(util):.1%} exceeds limit {float(max_util):.1%}",
+            conclusion=f"VIOLATION: Shard {shard.shard_id} storage {util} exceeds limit {max_util}",
             premises=[
                 f"Used: {shard.storage_used_gb} GB",
                 f"Capacity: {shard.storage_capacity_gb} GB",
@@ -41,7 +41,7 @@ def check_shard_storage_balance(shard: Shard) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Shard {shard.shard_id} storage within limits",
-        premises=[f"Utilization: {float(util):.1%}"],
+        premises=[f"Utilization: {util}"],
         rule="shard_storage_balance"
     )
 
@@ -93,7 +93,7 @@ def check_cross_shard_queries(cluster: ShardCluster) -> Tuple[bool, ProofObject]
     
     if ratio > max_ratio:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Cluster {cluster.cluster_id} cross-shard ratio {float(ratio):.1%} exceeds {float(max_ratio):.1%}",
+            conclusion=f"VIOLATION: Cluster {cluster.cluster_id} cross-shard ratio {ratio} exceeds {max_ratio}",
             premises=[
                 f"Cross-shard queries: {cluster.cross_shard_queries_annual}",
                 f"Total queries: {cluster.total_queries_annual}",
@@ -105,7 +105,7 @@ def check_cross_shard_queries(cluster: ShardCluster) -> Tuple[bool, ProofObject]
     
     return True, ProofObject(
         conclusion=f"Cluster {cluster.cluster_id} cross-shard query ratio acceptable",
-        premises=[f"Ratio: {float(ratio):.1%}"],
+        premises=[f"Ratio: {ratio}"],
         rule="cross_shard_query_limit"
     )
 
@@ -131,7 +131,7 @@ def check_cluster_rebalancing(cluster: ShardCluster) -> Tuple[bool, ProofObject]
             conclusion=f"VIOLATION: Cluster {cluster.cluster_id} has {len(hot_shards)} hot shards, rebalancing required",
             premises=[
                 f"Hot shards: {len(hot_shards)}",
-                f"Utilization variance: {float(variance):.4f}",
+                f"Utilization variance: {variance}",
                 f"Last rebalance: {cluster.last_rebalance}",
                 "Sharding maintenance — Rebalance required"
             ],
@@ -142,7 +142,7 @@ def check_cluster_rebalancing(cluster: ShardCluster) -> Tuple[bool, ProofObject]
         conclusion=f"Cluster {cluster.cluster_id} shard balance acceptable",
         premises=[
             f"Hot shards: {len(hot_shards)}",
-            f"Variance: {float(variance):.4f}"
+            f"Variance: {variance}"
         ],
         rule="shard_rebalancing"
     )

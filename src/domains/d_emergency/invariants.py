@@ -60,7 +60,7 @@ def check_cardiac_arrest_survival(agency: EMSAgency) -> Tuple[bool, ProofObject]
     
     if agency.cardiac_arrest_calls > 10 and rate < target:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Agency {agency.name} cardiac survival {float(rate):.1%} below target {float(target):.1%}",
+            conclusion=f"VIOLATION: Agency {agency.name} cardiac survival {rate} below target {target}",
             premises=[
                 f"Survivals: {agency.cardiac_arrest_survivals}",
                 f"Calls: {agency.cardiac_arrest_calls}",
@@ -72,7 +72,7 @@ def check_cardiac_arrest_survival(agency: EMSAgency) -> Tuple[bool, ProofObject]
     
     return True, ProofObject(
         conclusion=f"Agency {agency.name} cardiac arrest survival rate acceptable",
-        premises=[f"Rate: {float(rate):.1%}"],
+        premises=[f"Rate: {rate}"],
         rule="cardiac_arrest_survival"
     )
 
@@ -93,7 +93,7 @@ def check_ambulance_availability(agency: EMSAgency) -> Tuple[bool, ProofObject]:
     
     if avail < min_availability:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Agency {agency.name} ambulance availability {float(avail):.1%} below {float(min_availability):.1%}",
+            conclusion=f"VIOLATION: Agency {agency.name} ambulance availability {avail} below {min_availability}",
             premises=[
                 f"Available: {agency.ambulances_available}",
                 f"Total: {agency.ambulances_total}",
@@ -105,7 +105,7 @@ def check_ambulance_availability(agency: EMSAgency) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Agency {agency.name} ambulance availability adequate",
-        premises=[f"Availability: {float(avail):.1%}"],
+        premises=[f"Availability: {avail}"],
         rule="ambulance_availability"
     )
 
