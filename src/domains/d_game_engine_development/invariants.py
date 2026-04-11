@@ -26,7 +26,7 @@ def check_physics_determinism() -> Tuple[bool, ProofObject]:
     """Verify physics simulation produces same result regardless of frame rate.
     
     Critical for: replays, multiplayer sync, testing.
-    falsifies_if: physics not frame-rate independent
+    Falsifies if: physics outputs diverge when simulated at different frame rates.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -69,7 +69,8 @@ def check_physics_determinism() -> Tuple[bool, ProofObject]:
 def check_rng_determinism() -> Tuple[bool, ProofObject]:
     """Verify seeded random number generation is reproducible.
     
-    falsifies_if: RNG not deterministic
+    Falsifies if: identical seeds do not produce identical sequences or distinct
+    seeds produce the same sequence.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -109,7 +110,7 @@ def check_save_file_integrity() -> Tuple[bool, ProofObject]:
     - Versioned for backward compatibility
     - Checksum validates data integrity
     
-    falsifies_if: save file integrity compromised
+    Falsifies if: read data mismatches written data or checksum validation fails.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -166,7 +167,7 @@ def check_multiplayer_sync() -> Tuple[bool, ProofObject]:
     """Verify game state synchronization between clients.
     
     All clients must converge to the same state given same inputs.
-    falsifies_if: client states diverge
+    Falsifies if: reconciled client states diverge when given identical inputs.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -206,7 +207,7 @@ def check_hot_reload_safety() -> Tuple[bool, ProofObject]:
     - Memory leaks
     - State corruption
     
-    falsifies_if: hot reload causes issues
+    Falsifies if: hot reload leaks memory beyond bound or leaves game state invalid.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -243,7 +244,10 @@ def check_hot_reload_safety() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check — deterministic execution."""
+    """Master compliance check — deterministic execution.
+
+    Falsifies if: any deterministic game engine check fails.
+    """
     checks = [
         check_physics_determinism,
         check_rng_determinism,

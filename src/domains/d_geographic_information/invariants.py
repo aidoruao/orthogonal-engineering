@@ -25,11 +25,8 @@ from .implementation import (
 
 def check_crs_bounds(coord: Coordinate, crs: CoordinateReferenceSystem) -> Tuple[bool, ProofObject]:
     """Coordinates must be within valid range for their CRS.
-    
-    falsifies_if:
-        - coord.x outside CRS x bounds
-        - coord.y outside CRS y bounds
-        - Geographic CRS with |lon| > 180 or |lat| > 90
+
+    Falsifies if: coordinate exceeds CRS bounds (including |lon| > 180 or |lat| > 90 for geographic).
     """
     if crs.geographic:
         # Geographic: longitude [-180, 180], latitude [-90, 90]
@@ -66,10 +63,8 @@ def check_crs_bounds(coord: Coordinate, crs: CoordinateReferenceSystem) -> Tuple
 
 def check_polygon_closure(geometry: Geometry) -> Tuple[bool, ProofObject]:
     """Polygon rings must be closed (first vertex = last vertex).
-    
-    falsifies_if:
-        - GeometryType.POLYGON with open rings
-        - First and last coordinate differ
+
+    Falsifies if: polygon ring lacks sufficient vertices or first/last coordinates differ.
     """
     if geometry.geometry_type not in (GeometryType.POLYGON, GeometryType.MULTIPOLYGON):
         return True, ProofObject(
@@ -107,9 +102,8 @@ def check_polygon_closure(geometry: Geometry) -> Tuple[bool, ProofObject]:
 
 def check_crs_consistency(dataset: SpatialDataset) -> Tuple[bool, ProofObject]:
     """All features in dataset must use the dataset CRS.
-    
-    falsifies_if:
-        - Feature CRS differs from dataset CRS
+
+    Falsifies if: any feature's CRS differs from the dataset CRS.
     """
     mismatches = []
     for feature in dataset.features:
@@ -135,9 +129,8 @@ def check_crs_consistency(dataset: SpatialDataset) -> Tuple[bool, ProofObject]:
 
 def check_topology_no_overlap(rule: TopologyRule, features: List[Geometry]) -> Tuple[bool, ProofObject]:
     """Polygons in same layer must not overlap (topological consistency).
-    
-    falsifies_if:
-        - Two polygon features share interior area
+
+    Falsifies if: geometry pairs overlap when rule type requires no overlap.
     """
     if rule.rule_type != "must_not_overlap":
         return True, ProofObject(
@@ -171,11 +164,8 @@ def check_topology_no_overlap(rule: TopologyRule, features: List[Geometry]) -> T
 
 def check_metadata_completeness(dataset: SpatialDataset) -> Tuple[bool, ProofObject]:
     """ISO 19115 requires certain metadata fields.
-    
-    falsifies_if:
-        - Abstract missing or too short
-        - Creation date missing
-        - No CRS defined
+
+    Falsifies if: abstract is missing/too short or creation_date is absent.
     """
     MIN_ABSTRACT_LENGTH = 50
     
@@ -209,10 +199,8 @@ def check_metadata_completeness(dataset: SpatialDataset) -> Tuple[bool, ProofObj
 def check_raster_consistency(raster: RasterDataset) -> Tuple[bool, ProofObject]:
     """Raster datasets must have consistent dimensions and cell size.
     
-    falsifies_if:
-        - width or height <= 0
-        - cell_size <= 0
-        - Computed extent is invalid
+    Falsifies if: raster dimensions are non-positive, cell size is non-positive,
+    or computed extent is invalid.
     """
     if raster.width <= 0 or raster.height <= 0:
         return False, ProofObject(

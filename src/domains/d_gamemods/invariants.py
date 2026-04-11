@@ -25,9 +25,8 @@ from .implementation import (
 
 def check_version_compatibility(mod: Mod, game_version: GameVersion) -> Tuple[bool, ProofObject]:
     """Mod must support the installed game version.
-    
-    falsifies_if:
-        - No supported_game_versions compatible with game_version
+
+    Falsifies if: game_version is not within the mod's supported versions.
     """
     if not mod.supports_game_version(game_version):
         return False, ProofObject(
@@ -49,9 +48,8 @@ def check_version_compatibility(mod: Mod, game_version: GameVersion) -> Tuple[bo
 
 def check_dependency_resolution(mod: Mod, available_mods: Set[str]) -> Tuple[bool, ProofObject]:
     """All dependencies must be available for mod to function.
-    
-    falsifies_if:
-        - Any dependency not in available_mods
+
+    Falsifies if: any required dependency is missing from available_mods.
     """
     missing = mod.has_unresolved_dependencies(available_mods)
     
@@ -76,9 +74,7 @@ def check_dependency_resolution(mod: Mod, available_mods: Set[str]) -> Tuple[boo
 def check_asset_integrity(asset: AssetChecksum, content: bytes) -> Tuple[bool, ProofObject]:
     """Mod assets must match registered checksums (content-addressed).
     
-    falsifies_if:
-        - SHA-256 of content doesn't match registered checksum
-        - Asset file size mismatch
+    Falsifies if: asset size differs from expected or checksum verification fails.
     """
     if len(content) != asset.size_bytes:
         return False, ProofObject(
@@ -110,10 +106,7 @@ def check_asset_integrity(asset: AssetChecksum, content: bytes) -> Tuple[bool, P
 def check_load_order_validity(load_order: ModLoadOrder) -> Tuple[bool, ProofObject]:
     """Load order must resolve critical conflicts.
     
-    falsifies_if:
-        - Critical conflicts without resolution
-        - Duplicate mod entries
-        - Circular overrides (if tracked)
+    Falsifies if: duplicate mods appear or any critical conflict lacks a resolution.
     """
     # Check for duplicates
     seen = set()
@@ -158,10 +151,8 @@ def check_load_order_validity(load_order: ModLoadOrder) -> Tuple[bool, ProofObje
 def check_eula_compliance(mod: Mod) -> Tuple[bool, ProofObject]:
     """Mods must comply with game EULA to be legally distributed.
     
-    falsifies_if:
-        - eula_compliant is False
-        - Contains third-party IP without permission
-        - Cheat mods violating online terms
+    Falsifies if: mod is marked non-compliant, distributes incompatible third-party
+    IP, or is a widely distributed cheat mod.
     """
     if not mod.eula_compliant:
         return False, ProofObject(
@@ -205,9 +196,8 @@ def check_eula_compliance(mod: Mod) -> Tuple[bool, ProofObject]:
 def check_moderation_resolution(report: ContentModerationReport) -> Tuple[bool, ProofObject]:
     """Content moderation reports must be resolved in timely manner.
     
-    falsifies_if:
-        - Report pending > 30 days
-        - Report approved without review
+    Falsifies if: report is approved without reviewer or remains pending beyond
+    policy limits.
     """
     from datetime import datetime
     

@@ -22,10 +22,9 @@ from .implementation import Property, FoodService, Reservation, GuestRoom
 
 def check_ada_compliance(property: Property) -> Tuple[bool, ProofObject]:
     """ADA Title III requires accessible accommodations in public lodging.
-    
-    falsifies_if:
-        - ada_compliant is True but no ada_accessible rooms exist
-        - Less than required percentage of rooms are accessible
+
+    Falsifies if: property claims ADA compliance but has zero accessible rooms or
+    accessible room ratio is below the required threshold.
     """
     if not property.ada_compliant:
         return True, ProofObject(
@@ -69,10 +68,8 @@ def check_ada_compliance(property: Property) -> Tuple[bool, ProofObject]:
 
 def check_health_inspection_current(outlet: FoodService) -> Tuple[bool, ProofObject]:
     """FDA Food Code requires regular health inspections.
-    
-    falsifies_if:
-        - No inspection within 6 months
-        - Critical violations not corrected
+
+    Falsifies if: no inspection exists or last inspection is overdue.
     """
     if outlet.last_health_inspection is None:
         return False, ProofObject(
@@ -102,10 +99,8 @@ def check_health_inspection_current(outlet: FoodService) -> Tuple[bool, ProofObj
 
 def check_fire_safety_compliance(property: Property) -> Tuple[bool, ProofObject]:
     """NFPA 101 Life Safety Code requires current fire inspection.
-    
-    falsifies_if:
-        - fire_inspection_current is False
-        - No evacuation plan posted
+
+    Falsifies if: fire_inspection_current is False.
     """
     if not property.fire_inspection_current:
         return False, ProofObject(
@@ -126,9 +121,8 @@ def check_fire_safety_compliance(property: Property) -> Tuple[bool, ProofObject]
 
 def check_critical_violations(outlet: FoodService, threshold: int) -> Tuple[bool, ProofObject]:
     """Critical health violations pose immediate public health risk.
-    
-    falsifies_if:
-        - critical_violations > threshold
+
+    Falsifies if: critical_violations exceed the allowed threshold.
     """
     if outlet.critical_violations > threshold:
         return False, ProofObject(
@@ -150,9 +144,9 @@ def check_critical_violations(outlet: FoodService, threshold: int) -> Tuple[bool
 
 def check_overbooking_protection(property: Property, reservation_count: int) -> Tuple[bool, ProofObject]:
     """Overbooking without walk protection plan violates consumer protection.
-    
-    falsifies_if:
-        - reservation_count > total_rooms without walk policy
+
+    Falsifies if: reservation_count exceeds total_rooms by more than the allowed
+    tolerance without protection.
     """
     if reservation_count > property.total_rooms:
         overbook_amount = reservation_count - property.total_rooms
@@ -181,9 +175,9 @@ def check_overbooking_protection(property: Property, reservation_count: int) -> 
 
 def check_ada_reservation_honored(reservation: Reservation, assigned_room: GuestRoom) -> Tuple[bool, ProofObject]:
     """ADA requires accessible room requests be honored when available.
-    
-    falsifies_if:
-        - Guest requested accessible room but assigned non-accessible
+
+    Falsifies if: guest requested an accessible room but received a non-accessible
+    assignment while such rooms are available.
     """
     if reservation.ada_room_requested and not assigned_room.ada_accessible:
         return False, ProofObject(

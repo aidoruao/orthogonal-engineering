@@ -25,10 +25,8 @@ from .implementation import (
 
 def check_age_appropriateness(game: Game, player: Player) -> Tuple[bool, ProofObject]:
     """Player must meet minimum age requirement for game.
-    
-    falsifies_if:
-        - player.age() < game.minimum_age()
-        - No age verification for mature content
+
+    Falsifies if: player age is unknown or below the game's minimum age.
     """
     player_age = player.age()
     min_age = game.minimum_age()
@@ -65,10 +63,8 @@ def check_age_appropriateness(game: Game, player: Player) -> Tuple[bool, ProofOb
 
 def check_loot_box_odds_disclosure(loot_box: LootBox) -> Tuple[bool, ProofObject]:
     """Loot boxes must disclose drop rates (China, Belgium, Netherlands, etc.).
-    
-    falsifies_if:
-        - odds_disclosed is False
-        - Drop rates don't sum to 1.0
+
+    Falsifies if: odds_disclosed is False or drop rates do not sum to 1.
     """
     if not loot_box.odds_disclosed:
         return False, ProofObject(
@@ -104,10 +100,8 @@ def check_loot_box_odds_disclosure(loot_box: LootBox) -> Tuple[bool, ProofObject
 
 def check_coppa_compliance(player: Player) -> Tuple[bool, ProofObject]:
     """COPPA requires parental consent for collecting data from under-13s.
-    
-    falsifies_if:
-        - player.age() < 13 AND parent_email is None
-        - Under-13 with verified account without consent
+
+    Falsifies if: player is under 13 without recorded parental consent.
     """
     if player.coppa_requires_consent():
         if player.parent_email is None:
@@ -131,9 +125,9 @@ def check_coppa_compliance(player: Player) -> Tuple[bool, ProofObject]:
 
 def check_accessibility_minimum(game: Game, required_coverage: Fraction) -> Tuple[bool, ProofObject]:
     """CVAA requires certain accessibility features for communication.
-    
-    falsifies_if:
-        - game has online communication AND accessibility_coverage < required
+
+    Falsifies if: game has online features and accessibility coverage is below the
+    required threshold.
     """
     coverage = game.accessibility_coverage()
     
@@ -158,10 +152,9 @@ def check_accessibility_minimum(game: Game, required_coverage: Fraction) -> Tupl
 
 def check_spending_limits(session: GamingSession, player: Player) -> Tuple[bool, ProofObject]:
     """Player spending must respect set limits.
-    
-    falsifies_if:
-        - Session spending > weekly limit
-        - Minor spending exceeds parental limits
+
+    Falsifies if: spending exceeds configured weekly limits or minor spending rate
+    exceeds safe thresholds.
     """
     if player.spending_limit_weekly is not None:
         if session.purchase_amount > player.spending_limit_weekly:
@@ -199,10 +192,9 @@ def check_spending_limits(session: GamingSession, player: Player) -> Tuple[bool,
 
 def check_content_descriptor_consistency(rating: AgeRating) -> Tuple[bool, ProofObject]:
     """Content descriptors must be consistent with age rating.
-    
-    falsifies_if:
-        - ESRB E (Everyone) with Mature descriptors
-        - Missing required descriptors for content type
+
+    Falsifies if: age rating is Everyone/EC but includes gambling or sexual content
+    descriptors, or other descriptors conflict with the assigned rating.
     """
     if rating.rating in ("E", "EC") and ContentDescriptor.SEXUAL_CONTENT in rating.descriptors:
         return False, ProofObject(

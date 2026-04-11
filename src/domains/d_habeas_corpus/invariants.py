@@ -299,7 +299,10 @@ def check_criminal_detention_requires_charges() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_HABEAS_CORPUS invariants."""
+    """Run all D_HABEAS_CORPUS invariants.
+
+    Falsifies if: any habeas corpus invariant check fails or raises an exception.
+    """
     checks = [
         ("check_habeas_availability_default", check_habeas_availability_default),
         ("check_suspension_requires_rebellion_or_invasion", check_suspension_requires_rebellion_or_invasion),

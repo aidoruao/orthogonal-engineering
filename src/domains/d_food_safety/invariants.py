@@ -387,7 +387,10 @@ def check_supply_chain_verification() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_FOOD_SAFETY invariants."""
+    """Run all D_FOOD_SAFETY invariants.
+
+    Falsifies if: any food safety invariant check fails or raises an exception.
+    """
     checks = [
         ("check_critical_limits_enforced", check_critical_limits_enforced),
         ("check_facility_registration_required", check_facility_registration_required),
