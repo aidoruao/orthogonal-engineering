@@ -63,7 +63,7 @@ def check_compliance_program_effectiveness(program: ComplianceProgram) -> Tuple[
     
     if coverage < min_coverage:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Compliance program {program.program_id} training coverage {float(coverage):.1%} below {float(min_coverage):.1%}",
+            conclusion=f"VIOLATION: Compliance program {program.program_id} training coverage {coverage} below {min_coverage}",
             premises=[
                 f"Trained: {program.employees_trained_annual}",
                 f"Total: {program.total_employees}",
@@ -85,7 +85,7 @@ def check_compliance_program_effectiveness(program: ComplianceProgram) -> Tuple[
     
     return True, ProofObject(
         conclusion=f"Compliance program {program.program_id} effectiveness verified",
-        premises=[f"Training: {float(coverage):.1%}"],
+        premises=[f"Training: {coverage}"],
         rule="compliance_program_effectiveness"
     )
 
@@ -103,7 +103,7 @@ def check_self_reporting_incentive(case: WhiteCollarCase) -> Tuple[bool, ProofOb
     """
     if case.self_reported and case.cooperation_level < min_cooperation_threshold():
         return False, ProofObject(
-            conclusion=f"VIOLATION: Case {case.case_id} self-reported but cooperation {float(case.cooperation_level):.1%} below threshold",
+            conclusion=f"VIOLATION: Case {case.case_id} self-reported but cooperation {case.cooperation_level} below threshold",
             premises=[
                 f"Self-reported: {case.self_reported}",
                 f"Cooperation: {case.cooperation_level}",

@@ -289,8 +289,8 @@ def check_demand_response_enrollment() -> Tuple[bool, ProofObject]:
             f"lmp_price = ${lmp_price}/MWh",
             f"dr_payment = ${dr_payment}/MWh",
             f"payment_correct = {payment_correct}",
-            f"min_size = {float(min_size_mw)} MW",
-            f"resource_size = {float(resource_size)} MW",
+            f"min_size = {min_size_mw} MW",
+            f"resource_size = {resource_size} MW",
             f"response_time = {actual_response} min (max {max_response_min})",
         ],
         conclusion=(
