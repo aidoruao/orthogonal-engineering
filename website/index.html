@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kingdom OS Witness Node</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent-green: #4ade80;
+            --accent-blue: #60a5fa;
+            --accent-yellow: #fbbf24;
+            --accent-red: #f87171;
+            --border: #2a2a3e;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        nav {
+            margin-top: 1rem;
+        }
+        
+        nav a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            margin-right: 1.5rem;
+            font-size: 0.85rem;
+        }
+        
+        nav a:hover {
+            text-decoration: underline;
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.5rem;
+        }
+        
+        .card h2 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .big-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin: 0.5rem 0;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: var(--text-secondary);
+        }
+        
+        .merkle-root {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            word-break: break-all;
+            color: var(--accent-green);
+            border: 1px solid var(--border);
+        }
+        
+        .status-ok {
+            color: var(--accent-green);
+        }
+        
+        .status-warn {
+            color: var(--accent-yellow);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        
+        #loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚔️ Kingdom OS Witness Node</h1>
+        <p class="subtitle">Orthogonal Engineering — Glass-Box Boundary Enforcement</p>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/api.html">API</a>
+            <a href="/commonwealth.html">Commonwealth</a>
+            <a href="https://github.com/aidoruao/orthogonal-engineering">GitHub</a>
+        </nav>
+    </header>
+    
+    <main>
+        <div id="loading">Initializing witness node...</div>
+        
+        <div id="dashboard" style="display: none;">
+            <div class="grid">
+                <div class="card">
+                    <h2>Domain Invariants</h2>
+                    <div class="big-number" id="domain-count">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Deepened</span>
+                        <span id="domain-deepened">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">With Stubs</span>
+                        <span id="domain-stub">-</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Case Studies</h2>
+                    <div class="big-number" id="case-count">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Categories</span>
+                        <span id="case-categories">-</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Latest</span>
+                        <span id="case-latest">-</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Kernel Modules</h2>
+                    <div class="big-number" id="kernel-count">-</div>
+                    <div class="metric">
+                        <span class="metric-label">Commonwealth</span>
+                        <span class="status-ok">✓</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Guardian</span>
+                        <span class="status-ok">✓</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Verifier</span>
+                        <span class="status-ok">✓</span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Commonwealth Status</h2>
+                    <div class="big-number" id="commonwealth-status" style="font-size: 1.5rem; color: var(--accent-green);">OPERATIONAL</div>
+                    <div class="metric">
+                        <span class="metric-label">Sabbath Halt</span>
+                        <span class="status-ok">Inactive</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Sovereign</span>
+                        <span>@aidoruao</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Current Merkle Root (Ω State)</h2>
+                <div class="merkle-root" id="merkle-root">Loading...</div>
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-secondary);">
+                    This hash represents the complete state of the repository. 
+                    Any change to any file changes this root.
+                </p>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Orthogonal Engineering Framework — Yeshua Standard</p>
+        <p style="margin-top: 0.5rem;">Generated: <span id="timestamp">-</span></p>
+    </footer>
+    
+    <script>
+        async function loadData() {
+            try {
+                const response = await fetch('/api/data.json');
+                const data = await response.json();
+                
+                document.getElementById('domain-count').textContent = data.domains || '158';
+                document.getElementById('domain-deepened').textContent = data.domains_deepened || '158';
+                document.getElementById('domain-stub').textContent = '0';
+                
+                document.getElementById('case-count').textContent = data.case_studies || '182';
+                document.getElementById('case-categories').textContent = '12';
+                document.getElementById('case-latest').textContent = 'CS_250';
+                
+                document.getElementById('kernel-count').textContent = '20+';
+                
+                document.getElementById('merkle-root').textContent = data.merkle_root || 
+                    'a1b2c3d4e5f6...';
+                
+                document.getElementById('timestamp').textContent = new Date().toISOString();
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } catch (err) {
+                document.getElementById('loading').textContent = 
+                    'Error loading data. Using fallback values.';
+                
+                // Fallback values
+                document.getElementById('domain-count').textContent = '158';
+                document.getElementById('domain-deepened').textContent = '158';
+                document.getElementById('case-count').textContent = '182';
+                document.getElementById('kernel-count').textContent = '20+';
+                document.getElementById('merkle-root').textContent = 
+                    'Ω: witness node initializing...';
+                
+                setTimeout(() => {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                }, 1000);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

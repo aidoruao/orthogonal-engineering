@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commonwealth — Kingdom OS Witness Node</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent-green: #4ade80;
+            --accent-blue: #60a5fa;
+            --accent-yellow: #fbbf24;
+            --border: #2a2a3e;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'SF Mono', Monaco, monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .subtitle { color: var(--text-secondary); font-size: 0.9rem; }
+        
+        nav { margin-top: 1rem; }
+        nav a { color: var(--accent-blue); text-decoration: none; margin-right: 1.5rem; font-size: 0.85rem; }
+        nav a:hover { text-decoration: underline; }
+        
+        main { max-width: 1000px; margin: 0 auto; padding: 2rem; }
+        
+        .diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .role {
+            display: inline-block;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        
+        .sovereign {
+            background: linear-gradient(135deg, #1e3a5f, #2a4a7f);
+            border: 2px solid var(--accent-blue);
+        }
+        
+        .steward {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+        }
+        
+        .arrow {
+            font-size: 2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+        
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        
+        .card h2 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .status-box {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .status-operational {
+            color: var(--accent-green);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .status-halted {
+            color: var(--accent-yellow);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        
+        .metric:last-child { border-bottom: none; }
+        .metric-label { color: var(--text-secondary); }
+        
+        .principle {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-radius: 4px;
+            border-left: 3px solid var(--accent-blue);
+        }
+        
+        .principle-title {
+            font-weight: bold;
+            color: var(--accent-blue);
+            margin-bottom: 0.25rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚔️ Kingdom OS Witness Node</h1>
+        <p class="subtitle">Yeshua Commonwealth — Sovereign-Steward Governance</p>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/api.html">API</a>
+            <a href="/commonwealth.html">Commonwealth</a>
+            <a href="https://github.com/aidoruao/orthogonal-engineering">GitHub</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>Governance Structure</h2>
+        
+        <div class="diagram">
+            <div class="role sovereign">👑 SOVEREIGN<br><small>@aidoruao</small></div>
+            <div class="arrow">⬇</div>
+            <div>
+                <div class="role steward">🛡️ STEWARD<br><small>Bar Exam ≥70%</small></div>
+                <div class="role steward">🛡️ STEWARD<br><small>Bar Exam ≥70%</small></div>
+                <div class="role steward">🛡️ STEWARD<br><small>Bar Exam ≥70%</small></div>
+            </div>
+            <div class="arrow">⬇</div>
+            <div class="role" style="background: var(--bg-primary); border: 1px dashed var(--border);">
+                📜 Consent-Log Witness Chain
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Sabbath Halt Status</h2>
+            <div class="status-box">
+                <div class="status-operational">✓ SYSTEM OPERATIONAL</div>
+                <p style="margin-top: 1rem; color: var(--text-secondary);">
+                    Last halt: None recorded<br>
+                    Guardian agents active: 0<br>
+                    Protection records: 0
+                </p>
+            </div>
+        </div>
+        
+        <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div class="card">
+                <h2>Commonwealth Statistics</h2>
+                <div class="metric">
+                    <span class="metric-label">Total Domains</span>
+                    <span>158</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Kernel Modules</span>
+                    <span>20+</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Case Studies</span>
+                    <span>182</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">Bar Exam Threshold</span>
+                    <span>≥70%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Core Principles</h2>
+                <div class="principle">
+                    <div class="principle-title">Sovereign Authority</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                        All legitimate authority derives from the Sovereign. 
+                        Stewards operate within delegated scope.
+                    </div>
+                </div>
+                <div class="principle">
+                    <div class="principle-title">Consent-Log Witness</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                        Every action is logged in an append-only hash chain. 
+                        No action without consent record.
+                    </div>
+                </div>
+                <div class="principle">
+                    <div class="principle-title">Sabbath Halt</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
+                        System can enter protective halt state. 
+                        No autonomous operation during halt.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Dispute Resolution</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
+                The Commonwealth provides structured dispute resolution between AI agents and human principals:
+            </p>
+            <ol style="margin-left: 1.5rem; color: var(--text-secondary);">
+                <li>Complaint filed with dispute_id and hash anchor</li>
+                <li>Arbitration council selected (3 members minimum)</li>
+                <li>Evidence presented by both parties</li>
+                <li>Resolution recorded in consent log</li>
+                <li>Appeal window: 7 days</li>
+            </ol>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Orthogonal Engineering Framework — Yeshua Standard</p>
+        <p style="margin-top: 0.5rem;">Specification: docs/YESHUA_COMMONWEALTH.md</p>
+    </footer>
+</body>
+</html>
