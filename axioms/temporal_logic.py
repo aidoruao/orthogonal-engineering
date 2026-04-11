@@ -11,8 +11,30 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Set, Dict, List, Tuple, Callable, FrozenSet
+from fractions import Fraction
 
 from axioms.logic import ProofObject
+
+
+@dataclass(frozen=True)
+class TimeInterval:
+    """A time interval with start and duration."""
+    start_seconds: Fraction
+    duration_seconds: Fraction
+    
+    def end_time(self) -> Fraction:
+        """Calculate end time."""
+        return self.start_seconds + self.duration_seconds
+
+
+@dataclass(frozen=True)
+class TimeBound:
+    """A time bound/limit for operations."""
+    max_milliseconds: Fraction
+    
+    def is_within_bound(self, actual_ms: Fraction) -> bool:
+        """Check if actual time is within bound."""
+        return actual_ms <= self.max_milliseconds
 
 
 @dataclass
