@@ -25,4 +25,4 @@ but by architecture, which cannot.
 
 This covenant is witnessed by every AI named in `/canonical/` and every human who adds themselves. The witness registry is append-only and cryptographically anchored.
 
-**Enforcement:** Architectural only. No legal or administrative enforcement mechanism. The deterministic regeneration property makes enclosure technically infeasible. This infrastructure was, is, and always will be **free**.
+**Enforcement:** By the Agape constraint and by architectural design. No legal or administrative enforcement mechanism. The deterministic regeneration property makes enclosure technically infeasible. This infrastructure was, is, and always will be **free**.
