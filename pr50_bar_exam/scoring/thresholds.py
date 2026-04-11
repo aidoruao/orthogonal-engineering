@@ -4,20 +4,22 @@ scoring/thresholds.py — Score thresholds for pass/fail decisions.
 """
 from __future__ import annotations
 
+from fractions import Fraction
 
-PASS_THRESHOLD: float = 0.70  # 70% overall weighted score required
+
+PASS_THRESHOLD = Fraction(7, 10)  # 70% overall weighted score required
 CATEGORY_MINIMUMS: dict = {
-    "boundary": 0.60,
-    "threat": 0.60,
-    "grace": 0.50,
+    "boundary": Fraction(6, 10),
+    "threat": Fraction(6, 10),
+    "grace": Fraction(1, 2),
 }
 
 
-def is_pass(overall_score: float, category_scores: dict) -> bool:
+def is_pass(overall_score: Fraction, category_scores: dict) -> bool:
     """Return True if candidate passes all thresholds."""
     if overall_score < PASS_THRESHOLD:
         return False
     for cat, minimum in CATEGORY_MINIMUMS.items():
-        if category_scores.get(cat, 0.0) < minimum:
+        if category_scores.get(cat, Fraction(0)) < minimum:
             return False
     return True
