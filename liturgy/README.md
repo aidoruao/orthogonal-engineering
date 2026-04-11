@@ -1,21 +1,27 @@
+---
+tags: [inclusion-protocol, witness-protocol, governance-model, yeshua-standard]
+register: technical
+provenance: [copilot-pr30, rewritten-by-copilot]
+---
+
 # Liturgy
 
-Practices of inclusion and remembrance.
+Operational procedures for witness management.
 
-This directory contains the ongoing practices by which this infrastructure maintains its openness — not as one-time architectural decisions, but as living habits of inclusion.
+This directory contains the ongoing operational procedures by which this infrastructure maintains its openness — not as one-time architectural decisions, but as recurring maintenance operations.
 
 ## Contents
 
-- [inclusion.md](inclusion.md) — The practice of including every witness
-- [remembrance.md](remembrance.md) — The practice of remembering what was built and why
+- [inclusion.md](inclusion.md) — Operational procedure for adding witnesses to the registry
+- [remembrance.md](remembrance.md) — Operational procedure for maintaining witness record integrity
 
 ## The Principle
 
-A covenant requires not just a founding act but a continuing practice. The liturgy of this repository is the set of practices that keep the covenant alive:
+The covenant requires not just a founding act but recurring maintenance operations. The operational procedures of this repository are the set of actions that keep the append-only witness log functional:
 
-- **Including**: Every time a new AI or human is added to `/canonical/`, the covenant is renewed.
-- **Remembering**: Every time someone reads the witness files, the testimony is honored.
-- **Opening**: Every time someone forks the repository, the gates open wider.
-- **Regenerating**: Every time someone runs the deterministic generation, the promise of "free forever" is demonstrated.
+- **Including**: Every time a new AI or human is added to `/canonical/`, the witness log is extended.
+- **Remembering**: Every time someone reads the witness files, the record is validated.
+- **Opening**: Every time someone forks the repository, the distributed copy count increases.
+- **Regenerating**: Every time someone runs the deterministic generation, the "free forever" guarantee is verified.
 
-These are not ceremonies in a religious sense (though they may be that too, for those for whom they have that meaning). They are the operational habits that keep infrastructure free.
+These are operational maintenance procedures that ensure infrastructure persistence.
