@@ -22,7 +22,6 @@ def check_structural_safety_factor(member: StructuralMember) -> Tuple[bool, Proo
     Falsifies if: capacity_kn / applied_load_kn < 3.0
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_sf = structural_safety_factor_min()
     actual_sf = member.capacity_kn / member.applied_load_kn
 
@@ -51,7 +50,6 @@ def check_fem_accuracy(analysis: FEMAnalysis) -> Tuple[bool, ProofObject]:
     Falsifies if: |computed - analytical| / analytical > 0.01
     
     
-    falsifies_if: condition_evaluated_to_false"""
     tolerance = fem_tolerance()
     error = abs(analysis.computed_stress_mpa - analysis.analytical_stress_mpa) / analysis.analytical_stress_mpa
 
@@ -80,7 +78,6 @@ def check_bim_clash_detection(bim: BIMClashDetection) -> Tuple[bool, ProofObject
     Falsifies if: false_negative_rate >= 0.001
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_fn = bim_false_negative_max()
 
     if bim.false_negative_rate >= max_fn:
@@ -107,7 +104,6 @@ def check_osha_fall_protection(osha: OSHACompliance) -> Tuple[bool, ProofObject]
     Falsifies if: height_ft > 6 AND NOT has_fall_protection
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = osha_fall_protection_height()
 
     if osha.height_ft > threshold and not osha.has_fall_protection:

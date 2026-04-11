@@ -42,7 +42,6 @@ def check_shader_compilation_determinism() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Two compilations of same source with same compiler
     compile1 = ShaderCompilation(
         source_hash="sha256:abc123",
@@ -99,7 +98,6 @@ def check_frame_time_budget() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # 60 FPS target (16.67ms budget)
     budget_60fps = FrameTimeBudget(
         render_ms=Fraction(10),
@@ -146,7 +144,6 @@ def check_gpu_memory_bounds() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Valid memory pool
     valid_pool = GPUMemoryPool(
         allocated=Fraction(6 * 1024 * 1024 * 1024),  # 6 GB
@@ -203,7 +200,6 @@ def check_upscale_information_limit() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # 2x upscale (valid)
     upscale_2x = UpscalePass(
         input_width=1920,
@@ -258,7 +254,6 @@ def check_pso_cache_determinism() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Cached PSO
     cached = PipelineStateObject(
         vertex_shader_hash="sha256:vs_abc",
@@ -320,7 +315,6 @@ def check_vrr_range_compliance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # VRR display: 48-144 Hz
     vrr_display = VRRDisplay(
         min_hz=Fraction(48),

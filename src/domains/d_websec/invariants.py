@@ -27,7 +27,6 @@ def check_https_enforced(app: WebApplication) -> Tuple[bool, ProofObject]:
     Falsifies if: https_enforced=False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not app.https_enforced:
         return False, ProofObject(
             conclusion=f"VIOLATION: Application {app.name} does not enforce HTTPS",
@@ -56,7 +55,6 @@ def check_hsts_header(app: WebApplication) -> Tuple[bool, ProofObject]:
     Falsifies if: https_enforced=True and hsts_enabled=False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if app.https_enforced and not app.hsts_enabled:
         return False, ProofObject(
             conclusion=f"VIOLATION: HTTPS application {app.name} lacks HSTS header",
@@ -85,7 +83,6 @@ def check_csrf_protection(app: WebApplication) -> Tuple[bool, ProofObject]:
     Falsifies if: csrf_protection=False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not app.csrf_protection:
         return False, ProofObject(
             conclusion=f"VIOLATION: Application {app.name} lacks CSRF protection",
@@ -114,7 +111,6 @@ def check_input_validation(app: WebApplication) -> Tuple[bool, ProofObject]:
     Falsifies if: input_validated=False or sql_injection_protected=False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not app.input_validated:
         return False, ProofObject(
             conclusion=f"VIOLATION: Application {app.name} does not validate user input",
@@ -152,7 +148,6 @@ def check_password_policy(auth: AuthenticationSystem) -> Tuple[bool, ProofObject
     Falsifies if: password_min_length < 12 or no complexity requirement
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_length = owasp_password_min_length()
 
     if auth.password_min_length < min_length:
@@ -197,7 +192,6 @@ def check_session_timeout(auth: AuthenticationSystem) -> Tuple[bool, ProofObject
     Falsifies if: session_timeout_minutes <= 0 or > 60
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_timeout = nist_session_timeout_max_minutes()
 
     if auth.session_timeout_minutes <= Fraction(0):
@@ -238,7 +232,6 @@ def check_data_encryption(data: SensitiveData) -> Tuple[bool, ProofObject]:
     Falsifies if: pii_detected and (not encrypted_at_rest or not encrypted_in_transit)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not data.pii_detected:
         return True, ProofObject(
             conclusion=f"Data {data.data_id} does not contain PII, encryption N/A",

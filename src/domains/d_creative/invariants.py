@@ -22,7 +22,6 @@ def check_cc_by_attribution(work: CreativeWork) -> Tuple[bool, ProofObject]:
     Falsifies if: license_type == CC_BY AND NOT author_attributed
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if work.license_type == LicenseType.CC_BY and not work.author_attributed:
         return False, ProofObject(
             conclusion=f"VIOLATION: Work {work.work_id} uses CC-BY license but lacks author attribution",
@@ -50,7 +49,6 @@ def check_generative_reproducibility(gen: GenerativeOutput) -> Tuple[bool, Proof
     Falsifies if: mode == DETERMINISTIC AND seed is not None AND NOT reproducible
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if gen.mode == GenerationMode.DETERMINISTIC and gen.seed is not None and not gen.reproducible:
         return False, ProofObject(
             conclusion=f"VIOLATION: Generative output {gen.output_id} is deterministic with seed {gen.seed} but not reproducible",
@@ -80,7 +78,6 @@ def check_style_transfer_content_preservation(transfer: StyleTransfer) -> Tuple[
     Falsifies if: content_preserved_percent < 0.70
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_content = style_transfer_content_min()
 
     if transfer.content_preserved_percent < min_content:
@@ -107,7 +104,6 @@ def check_dmca_copyright_infringement(dmca: DMCACompliance) -> Tuple[bool, Proof
     Falsifies if: perceptually_identical AND copyrighted_source AND NOT fair_use_exception
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if dmca.perceptually_identical and dmca.copyrighted_source and not dmca.fair_use_exception:
         return False, ProofObject(
             conclusion=f"VIOLATION: Content {dmca.content_id} is perceptually identical to copyrighted source {dmca.copyrighted_source} without fair use",
@@ -137,7 +133,6 @@ def check_cc_by_sa_share_alike(work: CreativeWork) -> Tuple[bool, ProofObject]:
     (This check requires access to parent work license, simplified here)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if work.license_type == LicenseType.CC_BY_SA and work.derivative_of:
         return True, ProofObject(
             conclusion=f"Work {work.work_id} is CC-BY-SA derivative (ShareAlike compliant)",

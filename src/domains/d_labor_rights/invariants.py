@@ -31,7 +31,6 @@ def check_flsa_overtime_threshold() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     standard_threshold = Fraction(40)
     
     # Check standard 40-hour threshold
@@ -115,7 +114,6 @@ def check_nlra_collective_bargaining_right() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # NLRA Section 7 rights
     rights_protected = {
         "self_organization": True,
@@ -161,7 +159,6 @@ def check_osha_general_duty_clause() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # General Duty Clause requirements
     employer_duties = {
         "furnish_employment_free_from_hazards": True,
@@ -206,7 +203,6 @@ def check_title_vii_prohibited_discrimination() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Title VII protected classes
     protected_classes = {
         "race": True,
@@ -258,7 +254,6 @@ def check_flsa_minimum_wage_compliance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Federal minimum wage: $7.25 = 725 cents
     federal_minimum_wage = Fraction(725)  # cents per hour
     

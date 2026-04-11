@@ -10,7 +10,6 @@ from .implementation import Schedule, BTreeNode, Transaction, TransactionStatus
 def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObject]:
     """Schedule must be conflict-serializable for correctness.
     
-    falsifies_if: condition_evaluated_to_false"""
     if schedule.is_conflict_serializable():
         return True, ProofObject(
             conclusion="Schedule is conflict-serializable",
@@ -28,7 +27,6 @@ def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObjec
 def check_btree_invariants(node: BTreeNode) -> Tuple[bool, ProofObject]:
     """B-tree must satisfy structural invariants.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not node.is_valid():
         return False, ProofObject(
             conclusion="VIOLATION: B-tree invariants violated",
@@ -46,7 +44,6 @@ def check_btree_invariants(node: BTreeNode) -> Tuple[bool, ProofObject]:
 def check_atomicity(tx: Transaction) -> Tuple[bool, ProofObject]:
     """Transaction must be all-or-nothing (Atomicity).
     
-    falsifies_if: condition_evaluated_to_false"""
     if tx.status == TransactionStatus.COMMITTED:
         return True, ProofObject(
             conclusion="Transaction committed (atomicity satisfied)",
@@ -71,7 +68,6 @@ def check_atomicity(tx: Transaction) -> Tuple[bool, ProofObject]:
 def check_durability(tx: Transaction) -> Tuple[bool, ProofObject]:
     """Committed transactions must be durable.
     
-    falsifies_if: condition_evaluated_to_false"""
     if tx.status != TransactionStatus.COMMITTED:
         return True, ProofObject(
             conclusion="Durability not applicable (not committed)",
@@ -90,5 +86,4 @@ def check_durability(tx: Transaction) -> Tuple[bool, ProofObject]:
 def check_isolation(schedule: Schedule) -> Tuple[bool, ProofObject]:
     """Concurrent transactions must be isolated (serializable).
     
-    falsifies_if: condition_evaluated_to_false"""
     return check_conflict_serializability(schedule)

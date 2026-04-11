@@ -10,7 +10,6 @@ from .implementation import MCDCChecker, MutationScorer, DeterminismVerifier, MI
 def check_mcdc_completeness(checker: MCDCChecker) -> Tuple[bool, ProofObject]:
     """MC/DC: Each condition must independently affect outcome.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not checker.is_mcdc_complete():
         pairs = checker.get_independence_pairs()
         incomplete = [c for c, p in pairs.items() if len(p) == 0]
@@ -30,7 +29,6 @@ def check_mcdc_completeness(checker: MCDCChecker) -> Tuple[bool, ProofObject]:
 def check_mutation_score(scorer: MutationScorer) -> Tuple[bool, ProofObject]:
     """Mutation score must meet threshold.
     
-    falsifies_if: condition_evaluated_to_false"""
     score = scorer.score()
     
     if score < MIN_MUTATION_SCORE:
@@ -50,7 +48,6 @@ def check_mutation_score(scorer: MutationScorer) -> Tuple[bool, ProofObject]:
 def check_test_determinism(verifier: DeterminismVerifier) -> Tuple[bool, ProofObject]:
     """Tests must produce same result across runs.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not verifier.is_deterministic():
         return False, ProofObject(
             conclusion=f"VIOLATION: Test '{verifier.test_name}' non-deterministic",

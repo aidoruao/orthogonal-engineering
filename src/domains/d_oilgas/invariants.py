@@ -25,7 +25,6 @@ def check_phmsa_hoop_stress(pipeline: Pipeline) -> Tuple[bool, ProofObject]:
     Falsifies if: hoop_stress > max_allowed
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_stress = phmsa_max_hoop_stress(pipeline.pipeline_class)
     
     if pipeline.hoop_stress_percent > max_stress:
@@ -59,7 +58,6 @@ def check_phmsa_leak_detection(pipeline: Pipeline) -> Tuple[bool, ProofObject]:
     Falsifies if: HCA pipeline without leak detection
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if pipeline.pipeline_class == PipelineClass.CLASS_1:
         return True, ProofObject(
             conclusion=f"Pipeline {pipeline.pipeline_id} in rural area — leak detection recommended but not mandatory",
@@ -97,7 +95,6 @@ def check_bsee_bop_testing(platform: OffshorePlatform) -> Tuple[bool, ProofObjec
     Falsifies if: BOP test interval > 14 days
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_interval = bsee_bop_test_interval()
     
     if platform.bop_test_frequency_days > max_interval:
@@ -130,7 +127,6 @@ def check_spill_response_capacity(plan: SpillResponsePlan) -> Tuple[bool, ProofO
     Falsifies if: response capacity < worst case discharge
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Response must be able to recover worst case in reasonable time
     # Assuming 24-hour response capability check
     required_skimmer_bpd = plan.worst_case_discharge_barrels * Fraction(1, 10)  # 10% per day recovery
@@ -167,7 +163,6 @@ def check_pipeline_incident_rate(pipeline: Pipeline) -> Tuple[bool, ProofObject]
     Falsifies if: incident rate > 5 per 1000 miles (10x average)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_acceptable_rate = Fraction(5)  # 5 per 1000 miles
     
     rate = pipeline.get_incident_rate()
@@ -202,7 +197,6 @@ def check_offshore_violation_rate(platform: OffshorePlatform) -> Tuple[bool, Pro
     Falsifies if: >2 violations per inspection (pattern of non-compliance)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_violation_rate = Fraction(2)  # 2 violations per inspection
     
     rate = platform.get_violation_rate()

@@ -30,7 +30,6 @@ def check_article_i_legislative_power() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Legislative powers
     law_making = True
     taxing_and_spending = True
@@ -76,7 +75,6 @@ def check_article_ii_executive_power() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Executive powers
     executing_laws = True
     commander_in_chief = True
@@ -122,7 +120,6 @@ def check_article_iii_judicial_power() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Judicial powers
     cases_and_controversies = True
     interpreting_constitution = True
@@ -168,7 +165,6 @@ def check_ins_v_chadha_legislative_veto() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Chadha holding
     legislative_veto_unconstitutional = True
     
@@ -216,7 +212,6 @@ def check_non_delegation_doctrine() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Intelligible principle required
     intelligible_principle_required = True
     
@@ -262,7 +257,6 @@ def check_youngstown_executive_power_framework() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Jackson's three zones
     zone_1_congressional_authorization = True  # Maximum power
     zone_2_congressional_silence = True  # Twilight zone

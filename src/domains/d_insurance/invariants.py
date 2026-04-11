@@ -9,7 +9,6 @@ from .implementation import InsurancePolicy, InsurableInterest
 def check_duty_to_defend(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
     """Duty to defend when claim potentially covered.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not policy.duty_to_defend_owed():
         return True, ProofObject(
             conclusion="No duty to defend triggered",
@@ -33,7 +32,6 @@ def check_duty_to_defend(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
 def check_insurable_interest(interest: InsurableInterest) -> Tuple[bool, ProofObject]:
     """Must have insurable interest at time of loss.
     
-    falsifies_if: condition_evaluated_to_false"""
     if interest.has_insurable_interest():
         return True, ProofObject(
             conclusion="Insurable interest exists",
@@ -49,7 +47,6 @@ def check_insurable_interest(interest: InsurableInterest) -> Tuple[bool, ProofOb
 def check_uberimmae_fidei(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
     """Utmost good faith — premiums must be paid.
     
-    falsifies_if: condition_evaluated_to_false"""
     if policy.premiums_current():
         return True, ProofObject(
             conclusion="Good faith — premiums current",

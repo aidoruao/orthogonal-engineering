@@ -46,7 +46,6 @@ def check_program_halts_deterministically(prog: ARCProgram) -> Tuple[bool, Proof
     Falsifies if: halts_deterministically == False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not prog.halts_deterministically:
         return False, ProofObject(
             conclusion=f"VIOLATION: ARC program {prog.program_id} does not halt deterministically",
@@ -71,7 +70,6 @@ def check_prediction_reproducibility(pred1: ARCPrediction, pred2: ARCPrediction)
     Falsifies if: same task_id and test_index but different predicted_grid
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if pred1.task_id != pred2.task_id or pred1.test_index != pred2.test_index:
         return True, ProofObject(
             conclusion=f"Predictions {pred1.prediction_id} and {pred2.prediction_id} are for different tasks/indices",
@@ -108,7 +106,6 @@ def check_prediction_proof_carrying(pred: ARCPrediction) -> Tuple[bool, ProofObj
     Falsifies if: proof_trace is empty
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not pred.proof_trace or len(pred.proof_trace) == 0:
         return False, ProofObject(
             conclusion=f"VIOLATION: ARC prediction {pred.prediction_id} has no proof trace",
@@ -133,7 +130,6 @@ def check_train_test_consistency(task: ARCTask) -> Tuple[bool, ProofObject]:
     Falsifies if: len(train_inputs) != len(train_outputs) OR len(test_inputs) != len(test_outputs)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if len(task.train_inputs) != len(task.train_outputs):
         return False, ProofObject(
             conclusion=f"VIOLATION: ARC task {task.task_id} has mismatched train inputs/outputs",
@@ -173,7 +169,6 @@ def check_grid_color_range(grid: GridState) -> Tuple[bool, ProofObject]:
     Falsifies if: any cell value < 0 or > 9
     
     
-    falsifies_if: condition_evaluated_to_false"""
     for i, row in enumerate(grid.cells):
         for j, cell in enumerate(row):
             if cell < 0 or cell > 9:

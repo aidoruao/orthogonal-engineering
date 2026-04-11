@@ -28,7 +28,6 @@ def check_fair_housing_lending_disparity(neighborhood: Neighborhood) -> Tuple[bo
     Falsifies if: minority_denial_rate > 1.25 * non_minority_denial_rate
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = fair_housing_disparate_impact_threshold()
     
     if neighborhood.mortgage_applications < 10:  # Small sample size exemption
@@ -71,7 +70,6 @@ def check_cra_lending_ratio(institution: LendingInstitution) -> Tuple[bool, Proo
     Falsifies if: CRA loan ratio < LMI population ratio (indicative of underserving)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     loan_ratio = institution.get_cra_loan_ratio()
     population_ratio = Fraction(
         int(institution.low_mod_income_population),
@@ -110,7 +108,6 @@ def check_affordable_housing_availability(neighborhood: Neighborhood) -> Tuple[b
     Falsifies if: affordable housing ratio < 5% in high-cost areas
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_affordable_ratio = Fraction(5, 100)  # 5% minimum
     
     affordability_ratio = neighborhood.get_affordability_ratio()
@@ -146,7 +143,6 @@ def check_service_access_equity(neighborhood: Neighborhood) -> Tuple[bool, Proof
     Falsifies if: minority neighborhoods have significantly lower access scores
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_access_score = Fraction(3, 10)  # 0.3 minimum threshold
     
     minority_ratio = Fraction(neighborhood.minority_population, max(neighborhood.total_population, 1))
@@ -187,7 +183,6 @@ def check_cra_branch_presence(institution: LendingInstitution) -> Tuple[bool, Pr
     Falsifies if: no branches in LMI areas despite significant LMI population
     
     
-    falsifies_if: condition_evaluated_to_false"""
     branch_ratio = institution.get_branch_equity_ratio()
     population_ratio = Fraction(
         int(institution.low_mod_income_population),
@@ -224,7 +219,6 @@ def check_transit_equity(neighborhood: Neighborhood) -> Tuple[bool, ProofObject]
     Falsifies if: transit time to jobs > 60 minutes in low-income areas
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_acceptable_transit_time = Fraction(60)  # 60 minutes
     
     low_income_ratio = Fraction(neighborhood.low_income_population, max(neighborhood.total_population, 1))

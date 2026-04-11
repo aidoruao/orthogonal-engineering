@@ -30,7 +30,6 @@ def check_sentencing_guidelines_compliance_program() -> Tuple[bool, ProofObject]
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Seven minimum requirements per USSG §8B2.1
     standards_procedures = True
     high_level_oversight = True
@@ -94,7 +93,6 @@ def check_doj_ecmp_independence_resources() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Structural independence
     cco_reports_to_board = True
     cco_reports_to_ceo_not_general_counsel = True
@@ -158,7 +156,6 @@ def check_risk_assessment_periodic_review() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Risk assessment elements
     risk_assessment_conducted = True
     risk_assessment_documented = True
@@ -222,7 +219,6 @@ def check_third_party_due_diligence() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Third party risk tiers
     low_risk = Fraction(1)
     medium_risk = Fraction(2)
@@ -291,7 +287,6 @@ def check_investigation_response_remediation() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Investigation protocol
     independent_investigation = True
     adequate_scope = True
@@ -357,7 +352,6 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Training requirements
     code_of_conduct_acknowledgment = True
     risk_based_training = True

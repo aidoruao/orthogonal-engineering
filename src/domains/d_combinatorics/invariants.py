@@ -21,7 +21,6 @@ def check_catalan_correctness(cat: CatalanSequence) -> Tuple[bool, ProofObject]:
     Falsifies if: computed_value != catalan_number(n)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     expected = catalan_number(cat.n)
 
     if cat.computed_value != expected:
@@ -49,7 +48,6 @@ def check_pigeonhole_principle(php: PigeonholeProblem) -> Tuple[bool, ProofObjec
     Falsifies if: min_pigeons_per_hole < ceil(n_pigeons / n_holes)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     import math
     expected_min = math.ceil(php.n_pigeons / php.n_holes)
 
@@ -79,7 +77,6 @@ def check_combination_formula(prob: CountingProblem) -> Tuple[bool, ProofObject]
     Falsifies if: principle == COMBINATION AND computed_count != binomial_coefficient(n, k)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if prob.principle != CountingPrinciple.COMBINATION:
         return True, ProofObject(
             conclusion=f"Problem {prob.problem_id} not a combination problem",
@@ -114,7 +111,6 @@ def check_permutation_formula(prob: CountingProblem) -> Tuple[bool, ProofObject]
     Falsifies if: principle == PERMUTATION AND computed_count != n! / (n-k)!
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if prob.principle != CountingPrinciple.PERMUTATION:
         return True, ProofObject(
             conclusion=f"Problem {prob.problem_id} not a permutation problem",
@@ -149,7 +145,6 @@ def check_inclusion_exclusion_size(ie: InclusionExclusion) -> Tuple[bool, ProofO
     Falsifies if: union_size != sum(individual_sizes) - sum(intersections) for n=2
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if ie.n_sets == 2:
         expected_union = sum(ie.individual_sizes) - sum(ie.intersections)
 

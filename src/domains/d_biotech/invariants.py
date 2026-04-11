@@ -22,7 +22,6 @@ def check_ngs_quality(run: SequencingRun) -> Tuple[bool, ProofObject]:
     Falsifies if: phred_q30_percent < 90%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = phred_q30_threshold()
 
     if run.phred_q30_percent < threshold:
@@ -46,7 +45,6 @@ def check_crispr_precision(edit: CRISPREdit) -> Tuple[bool, ProofObject]:
     Falsifies if: on_target < 80% OR off_target >= 1%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     on_target_min = crispr_on_target_threshold()
     off_target_max_val = crispr_off_target_max()
 
@@ -87,7 +85,6 @@ def check_lab_automation_fidelity(automation: LabAutomation) -> Tuple[bool, Proo
     Falsifies if: sample_swap_rate >= 0.0001%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_swap = sample_swap_max()
 
     if automation.sample_swap_rate >= max_swap:
@@ -114,7 +111,6 @@ def check_biosafety_containment(cabinet: BiosafetyCabinet) -> Tuple[bool, ProofO
     Falsifies if: hepa_efficiency < 99.97%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_efficiency = hepa_filtration_min()
 
     if cabinet.hepa_efficiency < min_efficiency:
@@ -141,7 +137,6 @@ def check_biosafety_pressure(cabinet: BiosafetyCabinet) -> Tuple[bool, ProofObje
     Falsifies if: biosafety_level >= BSL3 AND negative_pressure_pa <= 0
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if cabinet.biosafety_level.value >= BiosafetLevel.BSL3.value:
         if cabinet.negative_pressure_pa <= Fraction(0):
             return False, ProofObject(

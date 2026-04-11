@@ -28,7 +28,6 @@ def check_ada_vehicle_compliance(vehicle: TransitVehicle) -> Tuple[bool, ProofOb
     Falsifies if: ada_compliant=False or wheelchair_spaces < 2
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_spaces = ada_wheelchair_space_minimum()
 
     if not vehicle.ada_compliant:
@@ -73,7 +72,6 @@ def check_on_time_performance(reliability: ServiceReliability) -> Tuple[bool, Pr
     Falsifies if: on_time_arrivals_pct < 80%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = fta_on_time_performance_threshold()
 
     if reliability.on_time_arrivals_pct < threshold:
@@ -105,7 +103,6 @@ def check_headway_reliability(route: TransitRoute, actual_headway: Fraction) -> 
     Falsifies if: |actual - scheduled| / scheduled > 20%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     scheduled = route.frequency_minutes
     deviation_pct = abs(actual_headway - scheduled) * Fraction(100) / scheduled
     threshold = fta_headway_reliability_threshold()
@@ -140,7 +137,6 @@ def check_vehicle_useful_life(vehicle: TransitVehicle) -> Tuple[bool, ProofObjec
     Falsifies if: age_years > 12 for buses
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if vehicle.vehicle_type not in [VehicleType.BUS, VehicleType.BRT]:
         return True, ProofObject(
             conclusion=f"Vehicle {vehicle.vehicle_id} not bus type, useful life N/A",
@@ -180,7 +176,6 @@ def check_ada_stop_accessibility(stop: TransitStop) -> Tuple[bool, ProofObject]:
     Falsifies if: ada_accessible=False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not stop.ada_accessible:
         return False, ProofObject(
             conclusion=f"VIOLATION: Stop {stop.stop_id} on route {stop.route_id} not ADA accessible",
@@ -210,7 +205,6 @@ def check_fta_incident_reporting(incident: SafetyIncident) -> Tuple[bool, ProofO
     Falsifies if: fta_reportable=False when criteria met
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = fta_reportable_incident_threshold_usd()
 
     reportable_criteria = (

@@ -31,7 +31,6 @@ def check_idea_free_appropriate_education() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # FAPE requirements
     fape_guaranteed = True
     public_expense = True
@@ -80,7 +79,6 @@ def check_title_i_participation_threshold() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Formula factors
     census_poverty_count = True
     state_per_pupil_expenditure = True
@@ -126,7 +124,6 @@ def check_esea_accountability_assessments() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Assessment requirements
     annual_assessments_required = True
     grades_3_8_reading_math = True
@@ -174,7 +171,6 @@ def check_brown_v_board_integration() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Brown holding
     separate_inherently_unequal = True
     de_jure_segregation_prohibited = True
@@ -221,7 +217,6 @@ def check_idea_procedural_safeguards() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Procedural safeguards
     prior_written_notice = True
     parental_consent_required = True
@@ -268,7 +263,6 @@ def check_title_i_schoolwide_programs() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Schoolwide program requirements
     poverty_threshold = Fraction(40)  # percent
     threshold_met = poverty_threshold == Fraction(40)

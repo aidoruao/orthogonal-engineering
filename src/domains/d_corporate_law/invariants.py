@@ -31,7 +31,6 @@ def check_director_fiduciary_duties() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Duty of care
     informed_decision = True
     rational_basis = True
@@ -79,7 +78,6 @@ def check_shareholder_voting_rights() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Voting rights
     voting_shares = Fraction(1000)
     votes_per_share = Fraction(1)
@@ -133,7 +131,6 @@ def check_merger_approval_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Board approval required
     board_approved = True
     majority_directors = True
@@ -188,7 +185,6 @@ def check_piercing_corporate_veil() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Factors for piercing
     undercapitalization = True
     failure_follow_formalities = True
@@ -244,7 +240,6 @@ def check_proxy_statement_disclosure() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Required disclosures
     executive_compensation = True
     related_party_transactions = True
@@ -304,7 +299,6 @@ def check_duty_of_care_exact_compliance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Board consideration of transaction value
     company_value = Fraction(100_000_000)
     offer_price = Fraction(120_000_000)

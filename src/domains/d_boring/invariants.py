@@ -24,7 +24,6 @@ def check_tbm_advance_rate(tbm: TBM, ground: GroundConditions) -> Tuple[bool, Pr
     Falsifies if: advance_rate exceeds 2x standard rate for ground type
     
     
-    falsifies_if: condition_evaluated_to_false"""
     standard_rate = tbm_standard_advance_rate(ground.ground_type)
     max_rate = standard_rate * 2
 
@@ -55,7 +54,6 @@ def check_ground_pressure_limits(advance: TBMAdvance, ground: GroundConditions) 
     Falsifies if: face_pressure < ground_pressure or face_pressure > 2x ground_pressure
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_face_pressure = advance.ground_pressure_kpa
     max_face_pressure = advance.ground_pressure_kpa * 2
 
@@ -96,7 +94,6 @@ def check_segment_alignment(installation: SegmentInstallation) -> Tuple[bool, Pr
     Falsifies if: alignment_deviation_mm > tolerance
     
     
-    falsifies_if: condition_evaluated_to_false"""
     tolerance = alignment_tolerance_threshold()
 
     if installation.alignment_deviation_mm > tolerance:
@@ -125,7 +122,6 @@ def check_grouting_coverage(installation: SegmentInstallation) -> Tuple[bool, Pr
     Falsifies if: grouting_volume_m3 < minimum required volume
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_volume = grouting_volume_per_ring()
 
     if installation.grouting_volume_m3 < min_volume:
@@ -154,7 +150,6 @@ def check_subsidence_tolerance(monitoring: SubsidenceMonitoring) -> Tuple[bool, 
     Falsifies if: settlement_mm > limit
     
     
-    falsifies_if: condition_evaluated_to_false"""
     limit = subsidence_limit_mm()
 
     if monitoring.settlement_mm > limit:
@@ -183,7 +178,6 @@ def check_tbm_operational_status(tbm: TBM) -> Tuple[bool, ProofObject]:
     Falsifies if: operational but thrust_force_kn <= 0 or cutterhead_rpm <= 0
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if tbm.operational:
         if tbm.thrust_force_kn <= 0:
             return False, ProofObject(
@@ -220,7 +214,6 @@ def check_water_bearing_ground(ground: GroundConditions, advance: TBMAdvance) ->
     Falsifies if: ground is WATER_BEARING but pressure control inadequate
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if ground.ground_type == GroundType.WATER_BEARING:
         # For water-bearing ground, face pressure must be significantly higher
         water_pressure_estimate = ground.water_table_depth_m * Fraction(10, 1)  # ~10 kPa per meter
@@ -252,7 +245,6 @@ def check_segment_installation_sequence(installation: SegmentInstallation, segme
     Falsifies if: grouting_complete but not installed
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if segment.grouting_complete and not segment.installed:
         return False, ProofObject(
             conclusion=f"VIOLATION: Segment {segment.segment_id} grouted before installation",

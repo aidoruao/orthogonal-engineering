@@ -25,7 +25,6 @@ def check_speedy_trial_compliance(case: CourtCase, days_pending: int) -> Tuple[b
     Falsifies if: criminal case > 70 days without trial
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.case_type != CaseType.CRIMINAL:
         return True, ProofObject(
             conclusion=f"Case {case.case_id} is civil — Speedy Trial Act N/A",
@@ -66,7 +65,6 @@ def check_civil_case_timeliness(case: CourtCase, months_pending: int) -> Tuple[b
     Falsifies if: civil case > 24 months pending
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.case_type != CaseType.CIVIL:
         return True, ProofObject(
             conclusion=f"Case {case.case_id} not civil — timeliness N/A",
@@ -106,7 +104,6 @@ def check_court_clearance_rate(court: Court) -> Tuple[bool, ProofObject]:
     Falsifies if: clearance rate < 95%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_clearance = Fraction(95, 100)
     rate = court.get_clearance_rate()
     
@@ -141,7 +138,6 @@ def check_access_to_justice(court: Court) -> Tuple[bool, ProofObject]:
     Falsifies if: no access services
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not court.interpreter_services:
         return False, ProofObject(
             conclusion=f"VIOLATION: Court {court.court_name} lacks interpreter services",
@@ -184,7 +180,6 @@ def check_case_backlog(court: Court) -> Tuple[bool, ProofObject]:
     Falsifies if: >5% of cases > 24 months old
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if court.cases_pending == 0:
         return True, ProofObject(
             conclusion=f"Court {court.court_name} no pending cases",

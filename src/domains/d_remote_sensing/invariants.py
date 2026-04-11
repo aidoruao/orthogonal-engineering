@@ -31,7 +31,6 @@ def check_land_remote_sensing_policy_act_compliance() -> Tuple[bool, ProofObject
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Licensing requirements
     noaa_license_required = True
     secretary_of_commerce_authority = True
@@ -78,7 +77,6 @@ def check_noaa_regulatory_compliance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Operating conditions
     orbit_maintained = True
     sensor_calibration = True
@@ -125,7 +123,6 @@ def check_nasa_earth_observation_standards() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Data quality
     data_quality_flags = True
     uncertainty_quantified = True
@@ -176,7 +173,6 @@ def check_geospatial_metadata_compliance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # ISO 19115 metadata elements
     identification_info = True
     quality_info = True
@@ -227,7 +223,6 @@ def check_ndvi_calculation_bounds() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # NDVI formula: (NIR - RED) / (NIR + RED)
     
     # Maximum NDVI: all NIR, no RED
@@ -278,7 +273,6 @@ def check_spatial_resolution_accuracy() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Licensed resolution
     licensed_gsd = Fraction(30, 100)  # 0.3 meters
     

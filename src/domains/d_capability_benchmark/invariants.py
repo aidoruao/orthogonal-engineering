@@ -23,7 +23,6 @@ def check_benchmark_reproducibility(bench: Benchmark, repro: ReproducibilityTest
     Falsifies if: reproducible claimed but difference exceeds tolerance
     
     
-    falsifies_if: condition_evaluated_to_false"""
     tolerance = reproducibility_tolerance()
 
     if repro.reproducible and repro.difference > tolerance:
@@ -63,7 +62,6 @@ def check_no_data_leakage(leakage: DataLeakageCheck) -> Tuple[bool, ProofObject]
     Falsifies if: overlap_fraction >= 1% and not detected
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = leakage_threshold()
 
     if leakage.overlap_fraction >= threshold and not leakage.leakage_detected:
@@ -101,7 +99,6 @@ def check_score_bounds(score: CapabilityScore) -> Tuple[bool, ProofObject]:
     Falsifies if: accuracy < 0 or accuracy > 1
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_score, max_score = score_bounds()
 
     if score.accuracy < min_score or score.accuracy > max_score:
@@ -130,7 +127,6 @@ def check_statistical_significance(score: CapabilityScore) -> Tuple[bool, ProofO
     Falsifies if: statistically_significant but num_trials < 10 or variance too high
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_trials = 10
     max_variance = Fraction(1, 10)  # 10% variance max for significance
 
@@ -171,7 +167,6 @@ def check_capability_ordering(score1: CapabilityScore, score2: CapabilityScore) 
     Falsifies if: same model on same benchmark has inconsistent scores
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if score1.model_id == score2.model_id and score1.benchmark_id == score2.benchmark_id:
         if abs(score1.accuracy - score2.accuracy) > Fraction(5, 100):  # 5% tolerance
             return False, ProofObject(
@@ -198,7 +193,6 @@ def check_ground_truth_verified(test: TestCase) -> Tuple[bool, ProofObject]:
     Falsifies if: ground_truth_verified == False
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not test.ground_truth_verified:
         return False, ProofObject(
             conclusion=f"VIOLATION: Test case {test.test_id} lacks verified ground truth",
@@ -224,7 +218,6 @@ def check_training_data_exclusion(test: TestCase, leakage: DataLeakageCheck) -> 
     Falsifies if: test.in_training_data but not leakage.leakage_detected
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if test.benchmark_id == leakage.benchmark_id:
         if test.in_training_data and not leakage.leakage_detected:
             return False, ProofObject(
@@ -250,7 +243,6 @@ def check_benchmark_coverage(bench: Benchmark) -> Tuple[bool, ProofObject]:
     Falsifies if: num_test_cases < 100
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_cases = 100
 
     if bench.num_test_cases < min_cases:

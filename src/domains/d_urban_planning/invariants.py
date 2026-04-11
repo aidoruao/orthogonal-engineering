@@ -30,7 +30,6 @@ def check_standard_zoning_enabling_act() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Purposes
     lessen_congestion = True
     secure_safety_from_fire_panic = True
@@ -85,7 +84,6 @@ def check_apa_planning_principles() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Ethical principles
     high_standards_integrity = True
     competence = True
@@ -140,7 +138,6 @@ def check_nepa_environmental_review() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # NEPA requirements
     environmental_impact_statement = True
     categorical_exclusion = True
@@ -196,7 +193,6 @@ def check_zoning_variance_standards() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Variance types
     use_variance = True
     area_variance = True
@@ -252,7 +248,6 @@ def check_comprehensive_plan_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # SCPEA elements
     land_use = True
     transportation = True
@@ -309,7 +304,6 @@ def check_smart_growth_principles() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Smart growth principles
     mixed_land_uses = True
     compact_building_design = True

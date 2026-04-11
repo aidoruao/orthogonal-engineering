@@ -30,7 +30,6 @@ def check_vclt_treaty_formation() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Consent mechanisms
     signature = True
     exchange_of_instruments = True
@@ -80,7 +79,6 @@ def check_vclt_interpretation_rules() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Article 31 elements
     ordinary_meaning = True
     context = True
@@ -131,7 +129,6 @@ def check_treaty_supremacy_clause() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Supremacy clause
     constitution_supreme = True
     laws_supreme = True
@@ -179,7 +176,6 @@ def check_treaty_reservations() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # When reservations allowed
     reservation_prohibited = False  # Unless treaty prohibits
     specified_reservations_only = False  # Unless treaty specifies
@@ -228,7 +224,6 @@ def check_treaty_withdrawal_termination() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Termination grounds
     provisions_of_treaty = True
     consent_of_parties = True
@@ -280,7 +275,6 @@ def check_us_treaty_ratification_process() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Constitutional process
     president_negotiates = True
     senate_advice_and_consent = True

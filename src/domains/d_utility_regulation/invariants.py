@@ -25,7 +25,6 @@ def check_electric_reliability(utility: UtilityCompany) -> Tuple[bool, ProofObje
     Falsifies if: SAIDI > 240 minutes
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if utility.utility_type != UtilityType.ELECTRIC:
         return True, ProofObject(
             conclusion=f"Utility {utility.name} not electric — reliability N/A",
@@ -65,7 +64,6 @@ def check_return_on_equity(rate_case: RateCase) -> Tuple[bool, ProofObject]:
     Falsifies if: requested ROE > 11%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_roe = max_allowed_roe()
     requested_roe = rate_case.get_return_on_equity()
     
@@ -100,7 +98,6 @@ def check_public_participation(rate_case: RateCase) -> Tuple[bool, ProofObject]:
     Falsifies if: no public participation opportunities
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if rate_case.public_hearings == 0:
         return False, ProofObject(
             conclusion=f"VIOLATION: Rate case {rate_case.case_id} no public hearings held",
@@ -134,7 +131,6 @@ def check_cost_of_service_ratemaking(rate_case: RateCase) -> Tuple[bool, ProofOb
     Falsifies if: rate request not tied to cost evidence
     
     
-    falsifies_if: condition_evaluated_to_false"""
     calculated_revenue = rate_case.operating_expenses + (rate_case.rate_base * rate_case.allowed_return_rate)
     variance = abs(rate_case.requested_revenue - calculated_revenue) / calculated_revenue if calculated_revenue > 0 else Fraction(0)
     
@@ -169,7 +165,6 @@ def check_affordability(utility: UtilityCompany) -> Tuple[bool, ProofObject]:
     Falsifies if: rates result in excessive energy burden
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Calculate approximate monthly bill for typical residential customer
     typical_bill = utility.revenue_annual / utility.customers_total if utility.customers_total > 0 else Fraction(0)
     

@@ -12,7 +12,6 @@ def check_statute_of_frauds(contract: Contract) -> Tuple[bool, ProofObject]:
     UCC § 2-201: Contracts for sale of goods >= $500 must be in writing.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not contract.is_within_statute_of_frauds():
         return True, ProofObject(
             conclusion=f"Below Statute of Frauds threshold ({contract.price} < {STATUTE_OF_FRAUDS_THRESHOLD})",
@@ -37,7 +36,6 @@ def check_statute_of_frauds(contract: Contract) -> Tuple[bool, ProofObject]:
 def check_formation(contract: Contract) -> Tuple[bool, ProofObject]:
     """Offer + Acceptance + Consideration = Valid Contract.
     
-    falsifies_if: condition_evaluated_to_false"""
     missing = []
     if contract.offer_date is None:
         missing.append("offer")
@@ -63,7 +61,6 @@ def check_formation(contract: Contract) -> Tuple[bool, ProofObject]:
 def check_breach_materiality(breach: Breach) -> Tuple[bool, ProofObject]:
     """Material breach excuses further performance; minor does not.
     
-    falsifies_if: condition_evaluated_to_false"""
     if breach.material:
         return True, ProofObject(
             conclusion="Material breach — non-breaching party excused from performance",
@@ -83,7 +80,6 @@ def check_expectation_principle(breach: Breach) -> Tuple[bool, ProofObject]:
     they would have been in had contract been performed.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     total = breach.total_damages()
     if total > breach.expectation_damages:
         return False, ProofObject(

@@ -22,7 +22,6 @@ def check_thermal_runaway_protection(reactor: ReactorControl) -> Tuple[bool, Pro
     Falsifies if: temperature_c >= t_critical_c - 10°C
     
     
-    falsifies_if: condition_evaluated_to_false"""
     margin = thermal_runaway_margin()
     threshold = reactor.t_critical_c - margin
 
@@ -51,7 +50,6 @@ def check_pressure_interlock(reactor: ReactorControl) -> Tuple[bool, ProofObject
     Falsifies if: pressure_bar >= 0.9 * design_pressure_bar
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold_fraction = pressure_interlock_threshold()
     threshold = reactor.design_pressure_bar * threshold_fraction
 
@@ -80,7 +78,6 @@ def check_sis_reliability(sis: SafetyInstrumentedSystem) -> Tuple[bool, ProofObj
     Falsifies if: sil_level == SIL3 AND pfd_avg >= 0.001
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if sis.sil_level == SILLevel.SIL3:
         max_pfd = sil3_pfd_max()
 
@@ -109,7 +106,6 @@ def check_leak_detection(hazmat: HazmatContainment) -> Tuple[bool, ProofObject]:
     Falsifies if: leak_detection_ppm >= lel_percent * 0.1
     
     
-    falsifies_if: condition_evaluated_to_false"""
     alarm_threshold = hazmat.lel_percent * lel_alarm_threshold()
 
     if hazmat.leak_detection_ppm >= alarm_threshold:
@@ -137,7 +133,6 @@ def check_esd_timing(esd: EmergencyShutdown) -> Tuple[bool, ProofObject]:
     Falsifies if: trigger_to_isolation_ms > 5000ms
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_time = esd_isolation_max_ms()
 
     if esd.trigger_to_isolation_ms > max_time:

@@ -10,7 +10,6 @@ from .implementation import EnvironmentalImpactStatement, CommentPeriod, Mitigat
 def check_impact_score_bounded(eis: EnvironmentalImpactStatement) -> Tuple[bool, ProofObject]:
     """Impact scores must be on 0-100 scale.
     
-    falsifies_if: condition_evaluated_to_false"""
     for score in eis.impact_scores:
         if score.score < Fraction(0) or score.score > Fraction(100):
             return False, ProofObject(
@@ -29,7 +28,6 @@ def check_impact_score_bounded(eis: EnvironmentalImpactStatement) -> Tuple[bool,
 def check_comment_period_duration(period: CommentPeriod) -> Tuple[bool, ProofObject]:
     """NEPA: Minimum 30-day comment period required.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not period.is_adequate():
         return False, ProofObject(
             conclusion=f"VIOLATION: Comment period {period.days_duration} days < {period.MINIMUM_COMMENT_DAYS}",
@@ -47,7 +45,6 @@ def check_comment_period_duration(period: CommentPeriod) -> Tuple[bool, ProofObj
 def check_mitigation_completeness(tracker: MitigationTracker) -> Tuple[bool, ProofObject]:
     """All required mitigation measures must be implemented.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not tracker.is_complete():
         missing = set(tracker.required_measures) - set(tracker.implemented_measures)
         return False, ProofObject(

@@ -31,7 +31,6 @@ def check_ai_system_self_identification() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # AI system must identify as such
     system_type = "AI"
     self_declared = True
@@ -74,7 +73,6 @@ def check_transparency_report_required() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Risk classification
     risk_level_high = True
     transparency_doc_required = risk_level_high
@@ -126,7 +124,6 @@ def check_model_card_exists() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Model card sections required
     sections = {
         "model_details": True,
@@ -177,7 +174,6 @@ def check_capability_boundary_documentation() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Documented capabilities
     capabilities = [
         "natural_language_understanding",
@@ -232,7 +228,6 @@ def check_human_in_the_loop_for_high_stakes() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Decision stakes
     stakes = "high"  # Could be: low, medium, high, critical
     
@@ -283,7 +278,6 @@ def check_audit_trail_completeness() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Audit trail components
     input_logged = True
     output_logged = True

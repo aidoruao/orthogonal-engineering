@@ -25,7 +25,6 @@ def check_rfra_substantial_burden(accommodation: ReligiousAccommodation) -> Tupl
     Falsifies if: insincere belief or no substantial burden
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not accommodation.religious_belief_sincere:
         return False, ProofObject(
             conclusion=f"VIOLATION: Claim {accommodation.claim_id} religious belief not sincere",
@@ -69,7 +68,6 @@ def check_rfra_least_restrictive_means(accommodation: ReligiousAccommodation) ->
     Falsifies if: less restrictive alternative exists
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if accommodation.is_substantial_burden() and not accommodation.least_restrictive_alternative_exists:
         return True, ProofObject(
             conclusion=f"Claim {accommodation.claim_id} passes RFRA strict scrutiny",
@@ -111,7 +109,6 @@ def check_third_party_harm_limit(exemption: ReligiousExemption) -> Tuple[bool, P
     Falsifies if: harm_to_third_parties > threshold
     
     
-    falsifies_if: condition_evaluated_to_false"""
     harm_threshold = Fraction(1, 10)  # 10% harm threshold
     
     if exemption.harm_to_third_parties > harm_threshold:
@@ -144,7 +141,6 @@ def check_establishment_clause_neutrality(accommodations: list) -> Tuple[bool, P
     Falsifies if: preferential treatment evident
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if len(accommodations) < 2:
         return True, ProofObject(
             conclusion="Single accommodation — neutrality check N/A",

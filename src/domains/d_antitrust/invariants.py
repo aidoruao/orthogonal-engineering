@@ -10,7 +10,6 @@ from .implementation import Market, Merger, CollusionDetector, HHI_MERGER_CONCER
 def check_hhi_concentration(market: Market) -> Tuple[bool, ProofObject]:
     """HHI must accurately reflect market concentration.
     
-    falsifies_if: condition_evaluated_to_false"""
     hhi = market.get_hhi()
     level = market.get_concentration_level()
     
@@ -31,7 +30,6 @@ def check_hhi_concentration(market: Market) -> Tuple[bool, ProofObject]:
 def check_merger_threshold(merger: Merger) -> Tuple[bool, ProofObject]:
     """Clayton Act § 7: Mergers exceeding threshold require review.
     
-    falsifies_if: condition_evaluated_to_false"""
     combined = merger.combined_share()
     threshold = merger.MERGER_THRESHOLD_PCT
     
@@ -59,7 +57,6 @@ def check_merger_threshold(merger: Merger) -> Tuple[bool, ProofObject]:
 def check_price_filing_collusion(detector: CollusionDetector) -> Tuple[bool, ProofObject]:
     """Sherman Act § 1: Price-fixing detection via identical pricing.
     
-    falsifies_if: condition_evaluated_to_false"""
     identical = detector.find_identical_pricing()
     
     if identical:
@@ -79,7 +76,6 @@ def check_price_filing_collusion(detector: CollusionDetector) -> Tuple[bool, Pro
 def check_market_shares_sum(market: Market) -> Tuple[bool, ProofObject]:
     """Market shares should sum to approximately 100%.
     
-    falsifies_if: condition_evaluated_to_false"""
     total = market.total_market_size()
     
     if total > Fraction(100):

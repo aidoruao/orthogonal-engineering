@@ -25,7 +25,6 @@ def check_hipaa_compliance(provider: HealthcareProvider) -> Tuple[bool, ProofObj
     Falsifies if: compliance score < 67%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = hipaa_compliance_threshold()
     score = provider.get_hipaa_readiness()
     
@@ -60,7 +59,6 @@ def check_hipaa_breach_notification(breach: HIPAABreach) -> Tuple[bool, ProofObj
     Falsifies if: notification > 60 days
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_days = Fraction(60)
     
     # Simplified check — actual date calculation needed
@@ -97,7 +95,6 @@ def check_stark_law_compliance(provider: HealthcareProvider) -> Tuple[bool, Proo
     Falsifies if: undisclosed financial relationships with referrals
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if provider.entity_type != HealthcareEntityType.PHYSICIAN_PRACTICE:
         return True, ProofObject(
             conclusion=f"Provider {provider.name} Stark Law check N/A",
@@ -135,7 +132,6 @@ def check_emtala_compliance(provider: HealthcareProvider) -> Tuple[bool, ProofOb
     Falsifies if: hospital with EMTALA violations
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if provider.entity_type != HealthcareEntityType.HOSPITAL:
         return True, ProofObject(
             conclusion=f"Provider {provider.name} not hospital — EMTALA N/A",
@@ -175,7 +171,6 @@ def check_patient_satisfaction(provider: HealthcareProvider) -> Tuple[bool, Proo
     Falsifies if: satisfaction < 50%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_satisfaction = Fraction(1, 2)  # 50%
     
     if provider.patient_satisfaction_score < min_satisfaction:

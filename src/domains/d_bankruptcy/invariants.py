@@ -9,7 +9,6 @@ from .implementation import BankruptcyCase, Chapter
 def check_means_test(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
     """Ch 7 means test — income below state median.
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.chapter != Chapter.CH_7:
         return True, ProofObject(
             conclusion="Means test not applicable",
@@ -33,7 +32,6 @@ def check_means_test(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
 def check_ch13_plan(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
     """Ch 13 requires 60-month plan.
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.chapter != Chapter.CH_13:
         return True, ProofObject(
             conclusion="Ch 13 plan not applicable",
@@ -57,7 +55,6 @@ def check_ch13_plan(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
 def check_automatic_stay(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
     """Automatic stay effective upon filing.
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.automatic_stay_active:
         return True, ProofObject(
             conclusion="Automatic stay in effect",

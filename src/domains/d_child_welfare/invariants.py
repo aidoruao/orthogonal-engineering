@@ -23,7 +23,6 @@ def check_mandatory_reporting_timeline(report: MandatoryReport) -> Tuple[bool, P
     Falsifies if: reporter_mandated AND report_filed_within_hours > 48
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_hours = mandatory_reporting_hours()
 
     if report.reporter_mandated and report.report_filed_within_hours > max_hours:
@@ -51,7 +50,6 @@ def check_cps_investigation_response_time(inv: CPSInvestigation) -> Tuple[bool, 
     Falsifies if: IMMEDIATE AND hours_to_response > 24, or PRIORITY AND hours_to_response > 72
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if inv.priority == InvestigationPriority.IMMEDIATE:
         max_hours = investigation_immediate_hours()
         if inv.hours_to_response > max_hours:
@@ -106,7 +104,6 @@ def check_foster_placement_screening(placement: FosterPlacement) -> Tuple[bool, 
     Falsifies if: NOT (home_study_completed AND background_check_passed)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not placement.home_study_completed or not placement.background_check_passed:
         return False, ProofObject(
             conclusion=f"VIOLATION: Placement {placement.placement_id} missing required screening",
@@ -134,7 +131,6 @@ def check_asfa_permanency_hearing(asfa: ASFATimeline) -> Tuple[bool, ProofObject
     Falsifies if: days_in_care > 365 AND NOT permanency_hearing_held
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_days = asfa_permanency_days()
 
     if asfa.days_in_care > max_days and not asfa.permanency_hearing_held:
@@ -162,7 +158,6 @@ def check_asfa_tpr_filing(asfa: ASFATimeline) -> Tuple[bool, ProofObject]:
     Falsifies if: days_in_care > 450 AND NOT tpr_filed
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_days = asfa_tpr_filing_days()
 
     if asfa.days_in_care > max_days and not asfa.tpr_filed:
@@ -190,7 +185,6 @@ def check_icwa_tribal_notification(icwa: ICWACompliance) -> Tuple[bool, ProofObj
     Falsifies if: child_is_tribal_member AND NOT tribe_notified
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if icwa.child_is_tribal_member and not icwa.tribe_notified:
         return False, ProofObject(
             conclusion=f"VIOLATION: Case {icwa.case_id} tribal child without tribe notification",
@@ -218,7 +212,6 @@ def check_icwa_active_efforts(icwa: ICWACompliance) -> Tuple[bool, ProofObject]:
     Falsifies if: child_is_tribal_member AND NOT active_efforts_documented
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if icwa.child_is_tribal_member and not icwa.active_efforts_documented:
         return False, ProofObject(
             conclusion=f"VIOLATION: Case {icwa.case_id} tribal child without documented active efforts",

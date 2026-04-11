@@ -38,7 +38,6 @@ def check_constant_time_compare_uses_hmac() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     import inspect
     source = inspect.getsource(constant_time_compare)
     uses_hmac = "hmac.compare_digest" in source
@@ -69,7 +68,6 @@ def check_psk_zero_rejected() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     zero_psk = b"\x00" * 32
     rejected = False
     error_type = None
@@ -109,7 +107,6 @@ def check_psk_nonzero_accepted() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     psk = generate_psk()
     accepted = False
     returned_value = None
@@ -147,7 +144,6 @@ def check_hmac_deterministic() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     key = b"\x42" * 32
     msg = b"test message"
     
@@ -188,7 +184,6 @@ def check_key_entropy_minimum() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     psk = generate_psk()
     # 32 bytes = 256 bits of raw data
     # Assuming cryptographic randomness, this provides 256 bits entropy
@@ -232,7 +227,6 @@ def check_hmac_length_integrity() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     key = b"test_key_1234567890123456789012"
     msg = b"test message"
     

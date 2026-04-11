@@ -29,7 +29,6 @@ def check_notice_period(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     Returns: (passes, ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if rule.rule_type == RulemakingType.INTERPRETIVE:
         # Exempt from notice-and-comment
         return True, ProofObject(
@@ -72,7 +71,6 @@ def check_exhaustion(claim: ExhaustionClaim) -> Tuple[bool, ProofObject]:
     - Purely legal question
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if claim.is_exhausted():
         return True, ProofObject(
             conclusion="Administrative remedies exhausted",
@@ -103,7 +101,6 @@ def check_chevron_step_one(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     Returns False if agency interpreted unambiguous statute.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not rule.statutory_ambiguity:
         # Statute is unambiguous — agency cannot reinterpret
         return False, ProofObject(
@@ -129,7 +126,6 @@ def check_finality(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     2. Action is one by which rights/obligations determined
     
     
-    falsifies_if: condition_evaluated_to_false"""
     has_final_date = rule.final_rule_date is not None
     has_effective_date = rule.effective_date is not None
     
@@ -168,7 +164,6 @@ def check_record_based_decision(
     Minimal check: At least some public participation recorded.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     comment_count = rule.get_comment_count()
     
     if comment_count < comments_required:

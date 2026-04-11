@@ -23,7 +23,6 @@ def check_halting_undecidability(problem: DecisionProblem) -> Tuple[bool, ProofO
     Falsifies if: problem_id == 'HALTING' AND decidability != UNDECIDABLE
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if problem.problem_id == "HALTING" and problem.decidability != DecidabilityClass.UNDECIDABLE:
         return False, ProofObject(
             conclusion=f"VIOLATION: Halting problem marked as {problem.decidability.name} (must be UNDECIDABLE)",
@@ -48,7 +47,6 @@ def check_rice_theorem_semantic(rice: RiceTheoremCheck) -> Tuple[bool, ProofObje
     Falsifies if: is_semantic AND is_nontrivial (property must be undecidable)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if rice.is_semantic and rice.is_nontrivial:
         return True, ProofObject(
             conclusion=f"Property {rice.property_id} is undecidable (Rice's theorem)",
@@ -77,7 +75,6 @@ def check_busy_beaver_lower_bound(bb: BusyBeaverCandidate) -> Tuple[bool, ProofO
     Falsifies if: n=2 AND sigma_lower_bound > 4, or n=3 AND sigma_lower_bound > 6, etc.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if bb.n_states == 2:
         proven_sigma = busy_beaver_sigma_2()
         if bb.sigma_lower_bound > proven_sigma:
@@ -128,7 +125,6 @@ def check_tm_simulation_timeout(tm: TuringMachine) -> Tuple[bool, ProofObject]:
     Falsifies if: steps_executed > max_tm_steps_before_timeout() AND NOT halted
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_steps = max_tm_steps_before_timeout()
 
     if tm.steps_executed > max_steps and not tm.halted:
@@ -159,7 +155,6 @@ def check_decidable_halts_always(problem: DecisionProblem) -> Tuple[bool, ProofO
     Falsifies if: decidability == DECIDABLE AND no reduction proof provided
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if problem.decidability == DecidabilityClass.DECIDABLE and not problem.reduction_proof:
         return False, ProofObject(
             conclusion=f"VIOLATION: Problem {problem.problem_id} marked DECIDABLE but no halting proof",

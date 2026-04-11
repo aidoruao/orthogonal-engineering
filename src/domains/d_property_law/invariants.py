@@ -9,7 +9,6 @@ from .implementation import PropertyInterest, AdversePossession
 def check_recording(prior: PropertyInterest, subsequent: PropertyInterest) -> Tuple[bool, ProofObject]:
     """Recording act priority analysis.
     
-    falsifies_if: condition_evaluated_to_false"""
     if prior.recorded and not subsequent.recorded:
         return True, ProofObject(
             conclusion="Prior recorded interest prevails",
@@ -31,7 +30,6 @@ def check_recording(prior: PropertyInterest, subsequent: PropertyInterest) -> Tu
 def check_adverse_possession(claim: AdversePossession) -> Tuple[bool, ProofObject]:
     """Adverse possession OCEAN elements and statutory period.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not claim.all_elements_present():
         missing = []
         if not claim.open_notorious: missing.append("open/notorious")

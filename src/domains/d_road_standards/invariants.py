@@ -30,7 +30,6 @@ def check_mutcd_compliance_required() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # MUTCD applicability
     all_public_roads = True
     all_private_roads_open_to_public = True
@@ -80,7 +79,6 @@ def check_aashto_green_book_design() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Design speed
     design_speed_urban = Fraction(30)  # mph
     design_speed_rural = Fraction(55)  # mph
@@ -130,7 +128,6 @@ def check_fhwa_bridge_inspection() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Inspection intervals
     routine_inspection_interval = Fraction(24)  # months
     underwater_inspection_interval = Fraction(60)  # months
@@ -177,7 +174,6 @@ def check_speed_limit_setting_criteria() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # 85th percentile speed
     percentile_85 = True  # Primary factor
     
@@ -228,7 +224,6 @@ def check_horizontal_curve_design() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Design speed
     v = Fraction(60)  # mph
     
@@ -279,7 +274,6 @@ def check_stopping_sight_distance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # SSD formula: SSD = 1.47 * V * t + 1.075 * V^2 / a
     # where V = speed (mph), t = perception-reaction time (sec), a = deceleration (ft/s^2)
     

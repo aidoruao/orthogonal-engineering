@@ -29,7 +29,6 @@ def check_congressional_supermajority_requirement() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Required threshold for proposal
     required_threshold = Fraction(2, 3)
     
@@ -77,7 +76,6 @@ def check_state_ratification_three_fourths() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     total_states = Fraction(50)
     required_fraction = Fraction(3, 4)
     required_states = Fraction(38)  # 3/4 of 50 = 37.5, rounded up to 38
@@ -126,7 +124,6 @@ def check_indelible_equal_state_suffrage() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Proviso clause in Article V
     indelible_clause = True
     equal_state_suffrage_protected = True
@@ -172,7 +169,6 @@ def check_amendment_process_protection() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Article V is structurally protected
     article_v_exists = True
     amendment_process_exists = True
@@ -219,7 +215,6 @@ def check_alternative_state_convention_method() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     total_states = Fraction(50)
     required_to_apply = Fraction(2, 3)
     
@@ -268,7 +263,6 @@ def check_twenty_seventh_amendment_ratification() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # 27th Amendment content
     pay_adjustment_delay = True
     intervening_election_required = True

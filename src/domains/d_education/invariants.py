@@ -30,7 +30,6 @@ def check_essa_graduation_rate(record: EducationRecord) -> Tuple[bool, ProofObje
     Falsifies if: graduation_rate < 67%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     threshold = essa_graduation_threshold()
     
     if record.education_level != EducationLevel.HIGH_SCHOOL:
@@ -83,7 +82,6 @@ def check_idea_iep_compliance(program: SpecialEducationProgram) -> Tuple[bool, P
     Falsifies if: iep_compliance_rate < 95%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_compliance = Fraction(95, 100)
     
     if program.iep_compliance_rate < min_compliance:
@@ -116,7 +114,6 @@ def check_idea_parental_notice(program: SpecialEducationProgram) -> Tuple[bool, 
     Falsifies if: parental_notice_days > 30
     
     
-    falsifies_if: condition_evaluated_to_false"""
     limit = idea_parental_notice_limit()
     
     if program.parental_notice_days > limit:
@@ -149,7 +146,6 @@ def check_ferpa_unauthorized_disclosure(ferpa_record: FERPAComplianceRecord) -> 
     Falsifies if: unauthorized_disclosure_rate > 1%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_rate = Fraction(1, 100)  # 1% maximum
     
     rate = ferpa_record.get_unauthorized_disclosure_rate()
@@ -187,7 +183,6 @@ def check_title_ix_equity(record: EducationRecord) -> Tuple[bool, ProofObject]:
     Falsifies if: significant disparities in resource allocation detected
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Check for reasonable representation across demographics
     disability_ratio = record.get_disability_ratio()
     el_ratio = record.get_english_learner_ratio()
@@ -237,7 +232,6 @@ def check_student_privacy_protection(ferpa_record: FERPAComplianceRecord) -> Tup
     Falsifies if: access fulfillment rate < 100%
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Calculate fulfillment rates
     student_rate = Fraction(ferpa_record.student_access_fulfilled, max(ferpa_record.student_access_requests, 1))
     parent_rate = Fraction(ferpa_record.parent_access_fulfilled, max(ferpa_record.parent_access_requests, 1))

@@ -31,7 +31,6 @@ def check_contract_formation_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Valid contract elements
     has_offer = True
     has_acceptance = True
@@ -73,7 +72,6 @@ def check_statute_of_frauds_compliance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Land contract - must be written
     land_contract_value = Fraction(1)  # Any value for land
     land_in_writing = True
@@ -128,7 +126,6 @@ def check_frcp_timing_deadlines() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     answer_deadline_days = Fraction(21)
     
     # Timely answer (day 20)
@@ -170,7 +167,6 @@ def check_damages_calculation_precision() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     contract_price = Fraction(100_000)
     costs_saved = Fraction(1, 3) * contract_price  # 33,333.33... exactly
     expected_profit = Fraction(20_000)
@@ -218,7 +214,6 @@ def check_burden_of_proof_allocation() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Plaintiff bears burden of proof on elements of claim
     plaintiff_claim_elements = [
         "duty",
@@ -263,7 +258,6 @@ def check_res_judicata_effect() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Requirements for claim preclusion
     same_parties = True
     same_claim = True

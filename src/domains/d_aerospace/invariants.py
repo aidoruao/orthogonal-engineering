@@ -13,7 +13,6 @@ from .implementation import (
 def check_certification_coverage(component: SoftwareComponent) -> Tuple[bool, ProofObject]:
     """DO-178C requires specific structural coverage based on DAL.
     
-    falsifies_if: condition_evaluated_to_false"""
     required = component.required_mc_dc_coverage()
     
     if component.dal == CertificationLevel.LEVEL_A:
@@ -44,7 +43,6 @@ def check_certification_coverage(component: SoftwareComponent) -> Tuple[bool, Pr
 def check_redundancy_agreement(checker: RedundancyChecker) -> Tuple[bool, ProofObject]:
     """Redundant channels must agree on output for voting.
     
-    falsifies_if: condition_evaluated_to_false"""
     healthy = checker.get_healthy_channels()
     
     if len(healthy) == 0:
@@ -78,7 +76,6 @@ def check_redundancy_agreement(checker: RedundancyChecker) -> Tuple[bool, ProofO
 def check_structural_health(monitor: StructuralHealthMonitor) -> Tuple[bool, ProofObject]:
     """Structural health sensors must be within specification.
     
-    falsifies_if: condition_evaluated_to_false"""
     alerted = monitor.get_alerted_sensors()
     
     if len(alerted) > 0:
@@ -98,7 +95,6 @@ def check_structural_health(monitor: StructuralHealthMonitor) -> Tuple[bool, Pro
 def check_function_size(component: SoftwareComponent) -> Tuple[bool, ProofObject]:
     """Advisory: functions should not exceed recommended size.
     
-    falsifies_if: condition_evaluated_to_false"""
     lines_per_func = Fraction(component.lines_of_code, max(1, component.requirements_based_tests))
     
     if lines_per_func > MAX_LINES_PER_FUNCTION:

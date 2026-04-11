@@ -30,7 +30,6 @@ def check_essa_academic_standards() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # ESSA requirements
     standards_in_reading_math = True
     standards_science = True
@@ -97,7 +96,6 @@ def check_assessment_system_validity() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Assessment requirements
     annually_grades_3_8 = True
     once_high_school = True
@@ -160,7 +158,6 @@ def check_idea_fape_requirement() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Endrew F. v. Douglas County standard
     more_than_de_minimis_progress = True
     challenging_objectives = True
@@ -231,7 +228,6 @@ def check_common_core_math_progressions() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Grade-level focus
     k_2_focus = "addition_subtraction_concepts"
     grades_3_5_focus = "multiplication_division_fractions"
@@ -290,7 +286,6 @@ def check_common_core_ela_text_complexity() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Lexile ranges by grade (approximate CCSS)
     grade_2_lexile_min = Fraction(420)
     grade_2_lexile_max = Fraction(650)
@@ -361,7 +356,6 @@ def check_state_accountability_system() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Required indicators (minimum)
     academic_achievement = True
     academic_growth = True  # or other academic indicator

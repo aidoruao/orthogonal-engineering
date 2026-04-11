@@ -31,7 +31,6 @@ def check_recording_act_priorities() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Types of recording acts
     race_act = True  # First to record wins
     notice_act = True  # Subsequent bona fide purchaser without notice wins
@@ -78,7 +77,6 @@ def check_title_insurance_coverage() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Standard coverage (ALTA Owner's Policy)
     standard_coverage = {
         "defects_in_title": True,
@@ -132,7 +130,6 @@ def check_respa_disclosure_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Required disclosures
     gfe_provided = True  # Good Faith Estimate
     hud1_provided = True  # HUD-1 Settlement Statement
@@ -179,7 +176,6 @@ def check_fair_housing_prohibited_bases() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Protected classes under Fair Housing Act
     protected_classes = {
         "race": True,
@@ -237,7 +233,6 @@ def check_mortgage_note_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Required note provisions
     principal_amount = Fraction(300000)  # dollars
     interest_rate = Fraction(5)  # percent
@@ -284,7 +279,6 @@ def check_statute_of_frauds_real_property() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Writing required for
     real_property_conveyance = True
     lease_over_one_year = True

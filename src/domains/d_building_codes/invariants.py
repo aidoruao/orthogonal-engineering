@@ -30,7 +30,6 @@ def check_egress_capacity_calculation() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Occupant load factors (square feet per occupant)
     assembly_concentrated = Fraction(7)  # 7 sq ft/person
     assembly_unconcentrated = Fraction(15)
@@ -86,7 +85,6 @@ def check_fire_resistance_rating() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Type I-A construction (highest rating)
     structural_frame_required = Fraction(3)  # 3 hours
     floor_construction_required = Fraction(2)  # 2 hours
@@ -139,7 +137,6 @@ def check_ada_ramp_slope() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Maximum slope 1:12 (rise:run)
     max_slope_rise = Fraction(1)
     max_slope_run = Fraction(12)
@@ -192,7 +189,6 @@ def check_structural_load_combinations() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Dead load (D)
     D = Fraction(30)  # psf
     
@@ -250,7 +246,6 @@ def check_accessible_parking_ratio() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Total parking spaces
     total_spaces = Fraction(100)
     
@@ -331,7 +326,6 @@ def check_nfpa_egress_travel_distance() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # NFPA 101 Table 7.6 (selected occupancy types in feet)
     # Assembly - sprinklered: 250 feet
     # Assembly - unsprinklered: 200 feet

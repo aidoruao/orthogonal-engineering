@@ -32,7 +32,6 @@ def check_securities_registration_requirement() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Public offering requires registration
     public_offering = True
     registered = True
@@ -77,7 +76,6 @@ def check_sox_internal_controls() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Management assessment required
     ico_assessment = True
     auditor_attestation = True  # For accelerated filers
@@ -125,7 +123,6 @@ def check_insider_trading_prohibition() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Material nonpublic information
     material_information = True
     nonpublic = True
@@ -179,7 +176,6 @@ def check_investment_adviser_fiduciary() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Duty of care
     suitable_recommendations = True
     reasonable_basis = True
@@ -232,7 +228,6 @@ def check_derivatives_clearing_mandatory() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Swap characteristics
     standardized = True
     accepted_for_clearing = True
@@ -281,7 +276,6 @@ def check_financial_reporting_fraction_precision() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # EPS calculation using Fraction
     net_income = Fraction(1_000_000)
     shares_outstanding = Fraction(3)

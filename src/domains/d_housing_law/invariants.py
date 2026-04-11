@@ -43,7 +43,6 @@ def check_fha_protected_classes() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     expected_classes = {
         "RACE", "COLOR", "RELIGION", "NATIONAL_ORIGIN",
         "SEX", "FAMILIAL_STATUS", "DISABILITY",
@@ -86,7 +85,6 @@ def check_eviction_notice_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     lease = LeaseAgreement(
         lease_id="L001",
         tenant_name="Tenant",
@@ -148,7 +146,6 @@ def check_habitability_requirements() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     essential_requirements = {
         HabitabilityRequirement.STRUCTURAL_INTEGRITY,
         HabitabilityRequirement.WEATHER_PROTECTION,
@@ -195,7 +192,6 @@ def check_fair_housing_discrimination_prohibition() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     analyzer = FairHousingAnalyzer()
     
     # Test discriminatory advertisement
@@ -239,7 +235,6 @@ def check_retaliation_protection() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     lease = LeaseAgreement(
         lease_id="L002",
         tenant_name="Tenant",
@@ -301,7 +296,6 @@ def check_reasonable_accommodation_requirement() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     analyzer = FairHousingAnalyzer()
     
     # Mobility accommodations

@@ -10,7 +10,6 @@ from .implementation import KeyStrengthAnalyzer, HashAnalyzer, CertChainValidato
 def check_key_strength(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject]:
     """NIST SP 800-57: Keys must meet minimum size requirements.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not analyzer.is_acceptable():
         return False, ProofObject(
             conclusion=f"VIOLATION: {analyzer.algorithm.value} key size {analyzer.key_bits} below minimum",
@@ -36,7 +35,6 @@ def check_key_strength(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject
 def check_hash_collision_resistance(analyzer: HashAnalyzer) -> Tuple[bool, ProofObject]:
     """Hash must provide adequate collision resistance.
     
-    falsifies_if: condition_evaluated_to_false"""
     collision_bits = analyzer.collision_resistance_bits()
     
     if collision_bits < MIN_SECURITY_STRENGTH:
@@ -56,7 +54,6 @@ def check_hash_collision_resistance(analyzer: HashAnalyzer) -> Tuple[bool, Proof
 def check_cert_chain(chain: CertChainValidator) -> Tuple[bool, ProofObject]:
     """Certificate chain must validate completely.
     
-    falsifies_if: condition_evaluated_to_false"""
     if len(chain.certificates) == 0:
         return False, ProofObject(
             conclusion="VIOLATION: Empty certificate chain",
@@ -88,7 +85,6 @@ def check_cert_chain(chain: CertChainValidator) -> Tuple[bool, ProofObject]:
 def check_key_algorithm_compliance(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject]:
     """NIST SP 800-131A: Approved algorithms only.
     
-    falsifies_if: condition_evaluated_to_false"""
     from .implementation import KeyAlgorithm
     
     # Deprecated algorithms

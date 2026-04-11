@@ -20,7 +20,6 @@ from src.domains.d_hardware_agnosticism.implementation import (
 def check_no_vendor_lockin_invariant(api_calls: List[APICall]) -> Tuple[bool, ProofObject]:
     """Invariant: No vendor-specific API calls without fallback.
     
-    falsifies_if: condition_evaluated_to_false"""
     report, proof = check_no_vendor_lockin(api_calls)
     
     # Acceptable if coverage >= 90%
@@ -41,7 +40,6 @@ def check_instruction_set_baseline_invariant(
 ) -> Tuple[bool, ProofObject]:
     """Invariant: No ungated instructions above baseline.
     
-    falsifies_if: condition_evaluated_to_false"""
     return check_instruction_set_baseline(instructions, baseline)
 
 
@@ -50,14 +48,12 @@ def check_software_renderer_path_invariant(
 ) -> Tuple[bool, ProofObject]:
     """Invariant: At least one software fallback available.
     
-    falsifies_if: condition_evaluated_to_false"""
     return check_software_renderer_path(renderers)
 
 
 def check_cross_platform_paths_invariant(paths: List[str]) -> Tuple[bool, ProofObject]:
     """Invariant: All paths are cross-platform compatible.
     
-    falsifies_if: condition_evaluated_to_false"""
     valid, violations, proof = check_cross_platform_paths(paths)
     
     final_proof = ProofObject(

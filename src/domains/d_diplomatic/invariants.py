@@ -30,7 +30,6 @@ def check_diplomatic_inviolability_person() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Diplomatic agent status
     diplomatic_agent = True
     recognized_by_receiving_state = True
@@ -90,7 +89,6 @@ def check_diplomatic_inviolability_premises() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Premises definition
     mission_building = True
     head_of_mission_residence = True
@@ -153,7 +151,6 @@ def check_diplomatic_immunity_jurisdiction() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Immunity scope
     criminal_jurisdiction_immunity = True  # Absolute
     civil_jurisdiction_immunity = True     # Official acts only
@@ -220,7 +217,6 @@ def check_persona_non_grata_procedure() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # PNG declaration
     receiving_state_declares_png = True
     no_reason_required = True
@@ -288,7 +284,6 @@ def check_consular_functions_immunity() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Consular immunity scope (functional, not full)
     official_acts_immunity = True
     private_acts_no_immunity = True
@@ -349,7 +344,6 @@ def check_special_mission_immunity() -> Tuple[bool, ProofObject]:
         Tuple of (success: bool, proof: ProofObject)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     # Special mission requirements
     mutual_consent = True
     official_invitation = True

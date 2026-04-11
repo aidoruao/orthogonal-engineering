@@ -21,7 +21,6 @@ def check_temporal_stability(frame_a: TemporalFrame, frame_b: TemporalFrame,
     Large motion should correlate with expected frame differences.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     stability, proof = temporal_stability_metric(frame_a, frame_b, motion_magnitude)
     
     # Threshold for stability (arbitrary, would be tuned)
@@ -44,7 +43,6 @@ def check_upscale_spectral_preservation(input_bandwidth: Fraction,
     given the upscale ratio.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if input_bandwidth == Fraction(0):
         return True, ProofObject(
             rule="SpectralPreservation",
@@ -76,7 +74,6 @@ def check_frame_gen_motion_error(pass_: FrameGenerationPass,
     High motion vector error leads to visual artifacts.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     return pass_.generation_valid(threshold)
 
 
@@ -86,7 +83,6 @@ def check_vendor_fallback_exists(capability: VendorCapability) -> Tuple[bool, Pr
     Ensures portability across GPU vendors.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     has_fallback = capability.fallback_available
     
     proof = ProofObject(
@@ -110,7 +106,6 @@ def check_ray_reconstruction_bias_variance(pass_: RayReconstructionPass,
     Denoising must not introduce excessive bias or leave excessive variance.
     
     
-    falsifies_if: condition_evaluated_to_false"""
     return pass_.is_acceptable(max_bias, max_variance)
 
 

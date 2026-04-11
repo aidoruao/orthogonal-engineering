@@ -25,7 +25,6 @@ def check_penalty_proportionality(case: WhiteCollarCase) -> Tuple[bool, ProofObj
     Falsifies if: penalty > 3x gain (unusual)
     
     
-    falsifies_if: condition_evaluated_to_false"""
     max_multiplier = max_penalty_multiplier()
     ratio = case.penalty_to_gain_ratio()
     
@@ -61,7 +60,6 @@ def check_compliance_program_effectiveness(program: ComplianceProgram) -> Tuple[
     Falsifies if: <90% training coverage
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_coverage = Fraction(9, 10)
     coverage = program.get_training_coverage()
     
@@ -106,7 +104,6 @@ def check_self_reporting_incentive(case: WhiteCollarCase) -> Tuple[bool, ProofOb
     Falsifies if: self-reported but no cooperation credit
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.self_reported and case.cooperation_level < min_cooperation_threshold():
         return False, ProofObject(
             conclusion=f"VIOLATION: Case {case.case_id} self-reported but cooperation {case.cooperation_level} below threshold",
@@ -140,7 +137,6 @@ def check_monitor_independence(case: WhiteCollarCase) -> Tuple[bool, ProofObject
     Falsifies if: monitor duration excessive without cause
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if not case.compliance_monitor_appointed:
         return True, ProofObject(
             conclusion=f"Case {case.case_id} no compliance monitor appointed",
@@ -180,7 +176,6 @@ def check_fcpa_anti_bribery(case: WhiteCollarCase) -> Tuple[bool, ProofObject]:
     Falsifies if: bribery confirmed without remediation
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.violation_type != ViolationType.BRIBERY:
         return True, ProofObject(
             conclusion=f"Case {case.case_id} not FCPA bribery case",

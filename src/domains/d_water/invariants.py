@@ -28,7 +28,6 @@ def check_lead_copper_rule(sample: WaterQualitySample) -> Tuple[bool, ProofObjec
     Falsifies if: lead > 0.015 mg/L or copper > 1.3 mg/L
     
     
-    falsifies_if: condition_evaluated_to_false"""
     lead_limit = epa_lead_action_level()
     copper_limit = epa_copper_action_level()
     
@@ -70,7 +69,6 @@ def check_ph_compliance(sample: WaterQualitySample) -> Tuple[bool, ProofObject]:
     Falsifies if: pH < 6.5 or pH > 8.5
     
     
-    falsifies_if: condition_evaluated_to_false"""
     ph_min, ph_max = epa_ph_range()
     
     if sample.ph_level < ph_min or sample.ph_level > ph_max:
@@ -103,7 +101,6 @@ def check_microbial_compliance(sample: WaterQualitySample) -> Tuple[bool, ProofO
     Falsifies if: E. coli detected
     
     
-    falsifies_if: condition_evaluated_to_false"""
     if sample.e_coli_detected:
         return False, ProofObject(
             conclusion=f"VIOLATION: Sample {sample.sample_id} E. coli detected — acute health risk",
@@ -145,7 +142,6 @@ def check_consumer_confidence_report(utility: WaterUtility) -> Tuple[bool, Proof
     Falsifies if: CCR not delivered for systems serving >1000 people
     
     
-    falsifies_if: condition_evaluated_to_false"""
     min_population_for_ccr = Fraction(1000)
     
     if utility.population_served < min_population_for_ccr:
@@ -186,7 +182,6 @@ def check_npdes_discharge_limits(discharge: WastewaterDischarge) -> Tuple[bool, 
     Falsifies if: actual > limit for any parameter
     
     
-    falsifies_if: condition_evaluated_to_false"""
     violations = []
     
     if discharge.bod_actual > discharge.bod_limit:
@@ -228,7 +223,6 @@ def check_lead_service_line_replacement(utility: WaterUtility) -> Tuple[bool, Pr
     Falsifies if: lead lines exist but replacement rate < 7% annually
     
     
-    falsifies_if: condition_evaluated_to_false"""
     required_annual_rate = Fraction(7, 100)  # 7% per year
     
     if utility.estimated_lead_service_lines == 0:

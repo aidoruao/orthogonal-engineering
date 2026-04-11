@@ -9,7 +9,6 @@ from .implementation import Arrest, Interrogation, CriminalCase, SPEEDY_TRIAL_DA
 def check_probable_cause(arrest: Arrest) -> Tuple[bool, ProofObject]:
     """4th Amendment: Arrest requires probable cause.
     
-    falsifies_if: condition_evaluated_to_false"""
     if arrest.probable_cause_exists:
         return True, ProofObject(
             conclusion="Probable cause exists — arrest valid",
@@ -25,7 +24,6 @@ def check_probable_cause(arrest: Arrest) -> Tuple[bool, ProofObject]:
 def check_miranda(interrogation: Interrogation) -> Tuple[bool, ProofObject]:
     """Miranda v. Arizona: Warnings required for custodial interrogation.
     
-    falsifies_if: condition_evaluated_to_false"""
     if not interrogation.miranda_required():
         return True, ProofObject(
             conclusion="Miranda not applicable",
@@ -49,7 +47,6 @@ def check_miranda(interrogation: Interrogation) -> Tuple[bool, ProofObject]:
 def check_speedy_trial(case: CriminalCase) -> Tuple[bool, ProofObject]:
     """Speedy Trial Act: 70 days from indictment to trial.
     
-    falsifies_if: condition_evaluated_to_false"""
     if case.speedy_trial_violation():
         return False, ProofObject(
             conclusion="VIOLATION: Speedy trial right violated",
