@@ -26,7 +26,7 @@ from .implementation import (
 def check_distinction_principle() -> Tuple[bool, ProofObject]:
     """Verify military targets distinguish between combatants and civilians.
     
-    falsifies_if: targets fail distinction check
+    Falsifies if: valid targets fail or invalid targets pass the distinction check.
     """
     checker = D_INTERNATIONAL_HUMANITARIANChecker()
     
@@ -67,7 +67,8 @@ def check_distinction_principle() -> Tuple[bool, ProofObject]:
 def check_proportionality() -> Tuple[bool, ProofObject]:
     """Verify civilian harm is proportionate to military advantage.
     
-    falsifies_if: civilian harm exceeds military advantage
+    Falsifies if: expected civilian harm exceeds permissible proportionality relative
+    to military advantage.
     """
     checker = D_INTERNATIONAL_HUMANITARIANChecker()
     
@@ -110,7 +111,8 @@ def check_proportionality() -> Tuple[bool, ProofObject]:
 def check_protection_of_civilians() -> Tuple[bool, ProofObject]:
     """Verify civilians receive required protections.
     
-    falsifies_if: protected persons lack protection status
+    Falsifies if: protection status check fails for civilians or passes for
+    unprotected civilians.
     """
     checker = D_INTERNATIONAL_HUMANITARIANChecker()
     
@@ -151,7 +153,7 @@ def check_protection_of_civilians() -> Tuple[bool, ProofObject]:
 def check_medical_neutrality() -> Tuple[bool, ProofObject]:
     """Verify medical personnel are protected.
     
-    falsifies_if: medical personnel not receiving protection
+    Falsifies if: medical personnel lack protection or incorrect category is set.
     """
     medical_staff = ProtectedPerson(
         person_id="PERS-003",
@@ -184,7 +186,7 @@ def check_medical_neutrality() -> Tuple[bool, ProofObject]:
 def check_pow_rights() -> Tuple[bool, ProofObject]:
     """Verify prisoners of war receive required protections.
     
-    falsifies_if: POWs lack required protections
+    Falsifies if: POW does not receive required protections or is misclassified.
     """
     pow_person = ProtectedPerson(
         person_id="PERS-004",
@@ -217,7 +219,10 @@ def check_pow_rights() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check."""
+    """Master compliance check.
+
+    Falsifies if: any international humanitarian law invariant check fails.
+    """
     checks = [
         check_distinction_principle,
         check_proportionality,

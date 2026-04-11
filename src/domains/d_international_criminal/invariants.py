@@ -27,7 +27,7 @@ from .implementation import (
 def check_jurisdiction_rules() -> Tuple[bool, ProofObject]:
     """Verify ICC jurisdiction rules are followed.
     
-    falsifies_if: jurisdiction check fails for valid case
+    Falsifies if: territorial or nationality jurisdiction is incorrectly rejected.
     """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
@@ -66,7 +66,8 @@ def check_jurisdiction_rules() -> Tuple[bool, ProofObject]:
 def check_complementarity_principle() -> Tuple[bool, ProofObject]:
     """Verify complementarity principle is respected.
     
-    falsifies_if: complementarity logic fails
+    Falsifies if: ICC complementarity logic allows action when domestic systems
+    are willing/able or blocks action when they are unwilling/unable.
     """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
@@ -104,7 +105,7 @@ def check_complementarity_principle() -> Tuple[bool, ProofObject]:
 def check_evidence_chain_of_custody() -> Tuple[bool, ProofObject]:
     """Verify evidence maintains chain of custody.
     
-    falsifies_if: evidence chain verification fails
+    Falsifies if: valid evidence fails chain verification or invalid evidence passes.
     """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
@@ -147,7 +148,7 @@ def check_evidence_chain_of_custody() -> Tuple[bool, ProofObject]:
 def check_case_timeline_reasonableness() -> Tuple[bool, ProofObject]:
     """Verify cases proceed within reasonable timeframes.
     
-    falsifies_if: investigation exceeds 5 years without trial
+    Falsifies if: investigation duration exceeds five years without trial.
     """
     opened = datetime(2025, 1, 1)
     now = datetime(2026, 4, 9)
@@ -181,7 +182,7 @@ def check_case_timeline_reasonableness() -> Tuple[bool, ProofObject]:
 def check_crime_type_classification() -> Tuple[bool, ProofObject]:
     """Verify crimes are properly classified.
     
-    falsifies_if: crime type classification incorrect
+    Falsifies if: crime type classification does not match expected category.
     """
     war_crime = Case(
         case_id="CASE-004",
@@ -222,7 +223,10 @@ def check_crime_type_classification() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check."""
+    """Master compliance check.
+
+    Falsifies if: any international criminal invariant check fails.
+    """
     checks = [
         check_jurisdiction_rules,
         check_complementarity_principle,

@@ -285,7 +285,10 @@ def check_flsa_minimum_wage_compliance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_LABOR_RIGHTS invariants."""
+    """Run all D_LABOR_RIGHTS invariants.
+
+    Falsifies if: any labor rights invariant check fails or raises an exception.
+    """
     checks = [
         ("check_flsa_overtime_threshold", check_flsa_overtime_threshold),
         ("check_overtime_rate_one_and_half", check_overtime_rate_one_and_half),

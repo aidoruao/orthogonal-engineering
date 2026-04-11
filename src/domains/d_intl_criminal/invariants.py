@@ -309,7 +309,10 @@ def check_war_crimes_grave_breaches() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_INTERNATIONAL_CRIMINAL invariants."""
+    """Run all D_INTERNATIONAL_CRIMINAL invariants.
+
+    Falsifies if: any international criminal invariant check fails or raises an exception.
+    """
     checks = [
         ("check_universal_jurisdiction_core_crimes", check_universal_jurisdiction_core_crimes),
         ("check_no_prosecution_without_evidence", check_no_prosecution_without_evidence),

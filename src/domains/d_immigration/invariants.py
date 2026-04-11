@@ -8,7 +8,10 @@ from .implementation import VisaCategoryChecker, ProcessingTimer, StatusStateMac
 
 
 def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObject]:
-    """INA: Visa category requirements must be met."""
+    """INA: Visa category requirements must be met.
+
+    Falsifies if: applicant fails to meet the requirements for the requested visa category.
+    """
     if not checker.meets_category_requirements():
         return False, ProofObject(
             conclusion=f"VIOLATION: Applicant does not meet {checker.applicant.visa_category.name} requirements",
@@ -24,7 +27,10 @@ def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObj
 
 
 def check_processing_deadline(timer: ProcessingTimer) -> Tuple[bool, ProofObject]:
-    """INA: Processing must not exceed statutory deadlines."""
+    """INA: Processing must not exceed statutory deadlines.
+
+    Falsifies if: days_elapsed exceeds statutory_deadline_days.
+    """
     if timer.is_overdue():
         return False, ProofObject(
             conclusion=f"VIOLATION: Processing {timer.days_elapsed} days > deadline {timer.statutory_deadline_days}",
@@ -40,7 +46,10 @@ def check_processing_deadline(timer: ProcessingTimer) -> Tuple[bool, ProofObject
 
 
 def check_status_transition(machine: StatusStateMachine) -> Tuple[bool, ProofObject]:
-    """Status transitions must follow valid paths."""
+    """Status transitions must follow valid paths.
+
+    Falsifies if: requested_status is not reachable from current_status.
+    """
     if not machine.is_valid_transition():
         return False, ProofObject(
             conclusion=f"VIOLATION: Invalid transition {machine.current_status} -> {machine.requested_status}",

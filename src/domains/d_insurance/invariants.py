@@ -7,7 +7,10 @@ from axioms.logic import ProofObject
 from .implementation import InsurancePolicy, InsurableInterest
 
 def check_duty_to_defend(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
-    """Duty to defend when claim potentially covered."""
+    """Duty to defend when claim potentially covered.
+
+    Falsifies if: duty_to_defend_owed is True but defense_provided is False.
+    """
     if not policy.duty_to_defend_owed():
         return True, ProofObject(
             conclusion="No duty to defend triggered",
@@ -29,7 +32,10 @@ def check_duty_to_defend(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
     )
 
 def check_insurable_interest(interest: InsurableInterest) -> Tuple[bool, ProofObject]:
-    """Must have insurable interest at time of loss."""
+    """Must have insurable interest at time of loss.
+
+    Falsifies if: insurable interest does not exist when evaluated.
+    """
     if interest.has_insurable_interest():
         return True, ProofObject(
             conclusion="Insurable interest exists",
@@ -43,7 +49,10 @@ def check_insurable_interest(interest: InsurableInterest) -> Tuple[bool, ProofOb
     )
 
 def check_uberimmae_fidei(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
-    """Utmost good faith — premiums must be paid."""
+    """Utmost good faith — premiums must be paid.
+
+    Falsifies if: premiums_current returns False.
+    """
     if policy.premiums_current():
         return True, ProofObject(
             conclusion="Good faith — premiums current",

@@ -346,7 +346,10 @@ def check_apa_scope_of_review() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_JUDICIAL_REVIEW invariants."""
+    """Run all D_JUDICIAL_REVIEW invariants.
+
+    Falsifies if: any judicial review invariant check fails or raises an exception.
+    """
     checks = [
         ("check_any_statute_may_be_challenged", check_any_statute_may_be_challenged),
         ("check_review_requires_independent_situs", check_review_requires_independent_situs),
