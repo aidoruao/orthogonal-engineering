@@ -330,7 +330,10 @@ def check_duty_of_care_exact_compliance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CORPORATE_LAW invariants."""
+    """Run all D_CORPORATE_LAW invariants.
+
+    Falsifies if: any corporate law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_director_fiduciary_duties", check_director_fiduciary_duties),
         ("check_shareholder_voting_rights", check_shareholder_voting_rights),

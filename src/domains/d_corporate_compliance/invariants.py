@@ -413,7 +413,10 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CORPORATE_COMPLIANCE invariants."""
+    """Run all D_CORPORATE_COMPLIANCE invariants.
+
+    Falsifies if: any corporate compliance invariant check fails or raises an exception.
+    """
     checks = [
         ("check_sentencing_guidelines_compliance_program", check_sentencing_guidelines_compliance_program),
         ("check_doj_ecmp_independence_resources", check_doj_ecmp_independence_resources),

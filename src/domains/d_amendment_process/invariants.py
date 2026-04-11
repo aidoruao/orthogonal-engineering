@@ -292,7 +292,10 @@ def check_twenty_seventh_amendment_ratification() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_AMENDMENT_PROCESS invariants."""
+    """Run all D_AMENDMENT_PROCESS invariants.
+
+    Falsifies if: any amendment process invariant check returns False or raises an error.
+    """
     checks = [
         ("check_congressional_supermajority_requirement", check_congressional_supermajority_requirement),
         ("check_state_ratification_three_fourths", check_state_ratification_three_fourths),

@@ -287,7 +287,10 @@ def check_res_judicata_effect() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CIVIL_LAW invariants."""
+    """Run all D_CIVIL_LAW invariants.
+
+    Falsifies if: any civil law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_contract_formation_requirements", check_contract_formation_requirements),
         ("check_statute_of_frauds_compliance", check_statute_of_frauds_compliance),

@@ -411,7 +411,10 @@ def check_state_accountability_system() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CURRICULUM invariants."""
+    """Run all D_CURRICULUM invariants.
+
+    Falsifies if: any curriculum invariant check fails or raises an exception.
+    """
     checks = [
         ("check_essa_academic_standards", check_essa_academic_standards),
         ("check_assessment_system_validity", check_assessment_system_validity),

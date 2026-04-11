@@ -22,29 +22,27 @@ from .implementation import PhysicalObject, PhysicalSystem, Collision
 
 def check_mass_non_negative(obj: PhysicalObject) -> Tuple[bool, ProofObject]:
     """Mass must be non-negative.
-    
-    falsifies_if:
-        - mass < 0
+
+    Falsifies if: obj.mass < 0.
     """
     if obj.mass < Fraction(0):
         return False, ProofObject(
             conclusion=f"VIOLATION: Negative mass {obj.mass}",
             premises=[f"Object: {obj.object_id}", f"Mass: {obj.mass}"],
-            rule":"physical_mass_non_negative"
+            rule="physical_mass_non_negative"
         )
     
     return True, ProofObject(
         conclusion="Mass non-negative",
         premises=[f"Mass: {obj.mass}"],
-        rule":"mass_valid"
+        rule="mass_valid"
     )
 
 
 def check_momentum_conservation(collision: Collision) -> Tuple[bool, ProofObject]:
     """Momentum conserved in all collisions (isolated system).
-    
-    falsifies_if:
-        - momentum_conserved is False
+
+    Falsifies if: collision.momentum_conserved is False.
     """
     if not collision.momentum_conserved:
         return False, ProofObject(
@@ -53,21 +51,20 @@ def check_momentum_conservation(collision: Collision) -> Tuple[bool, ProofObject
                 f"Collision: {collision.collision_id}",
                 f"Objects: {collision.object_a}, {collision.object_b}"
             ],
-            rule":"conservation_of_momentum"
+            rule="conservation_of_momentum"
         )
     
     return True, ProofObject(
         conclusion="Momentum conserved",
         premises=[f"Collision: {collision.collision_id}"],
-        rule":"momentum_conserved"
+        rule="momentum_conserved"
     )
 
 
 def check_energy_conservation_elastic(collision: Collision) -> Tuple[bool, ProofObject]:
     """Energy conserved in elastic collisions.
-    
-    falsifies_if:
-        - elastic AND not energy_conserved
+
+    Falsifies if: collision.elastic is True and energy_conserved is False.
     """
     if collision.elastic and not collision.energy_conserved:
         return False, ProofObject(
@@ -77,21 +74,20 @@ def check_energy_conservation_elastic(collision: Collision) -> Tuple[bool, Proof
                 "Type: Elastic",
                 "Energy conserved: False"
             ],
-            rule":"conservation_of_energy"
+            rule="conservation_of_energy"
         )
     
     return True, ProofObject(
         conclusion="Energy conserved (or inelastic)",
         premises=[f"Elastic: {collision.elastic}"],
-        rule":"energy_conserved"
+        rule="energy_conserved"
     )
 
 
 def check_speed_limit(obj: PhysicalObject, speed_limit: Fraction) -> Tuple[bool, ProofObject]:
     """Speed cannot exceed limit (e.g., speed of light).
-    
-    falsifies_if:
-        - speed > speed_limit
+
+    Falsifies if: object speed squared exceeds limit squared.
     """
     # Compare squared speeds to avoid sqrt
     v_sq = obj.speed()
@@ -105,7 +101,7 @@ def check_speed_limit(obj: PhysicalObject, speed_limit: Fraction) -> Tuple[bool,
                 f"Speed²: {v_sq}",
                 f"Limit²: {c_sq}"
             ],
-            rule":"relativistic_speed_limit"
+            rule="relativistic_speed_limit"
         )
     
     return True, ProofObject(
@@ -117,9 +113,8 @@ def check_speed_limit(obj: PhysicalObject, speed_limit: Fraction) -> Tuple[bool,
 
 def check_system_mass_conservation(system: PhysicalSystem, initial_mass: Fraction) -> Tuple[bool, ProofObject]:
     """Mass conserved in isolated system.
-    
-    falsifies_if:
-        - current mass != initial mass
+
+    Falsifies if: system total mass differs from initial_mass.
     """
     current = system.total_mass()
     if current != initial_mass:
@@ -130,11 +125,11 @@ def check_system_mass_conservation(system: PhysicalSystem, initial_mass: Fractio
                 f"Initial: {initial_mass}",
                 f"Current: {current}"
             ],
-            rule":"conservation_of_mass"
+            rule="conservation_of_mass"
         )
     
     return True, ProofObject(
         conclusion="Mass conserved",
         premises=[f"Total mass: {current}"],
-        rule":"mass_conserved"
+        rule="mass_conserved"
     )

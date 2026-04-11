@@ -26,6 +26,8 @@ def check_notice_period(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     Standard: Minimum 30 days for comment period.
     Exception: Good cause (documented separately).
     
+    Falsifies if: rule is not interpretive and comment period days < MIN_COMMENT_PERIOD_DAYS.
+    
     Returns: (passes, ProofObject)
     """
     if rule.rule_type == RulemakingType.INTERPRETIVE:
@@ -68,6 +70,8 @@ def check_exhaustion(claim: ExhaustionClaim) -> Tuple[bool, ProofObject]:
     - Futility
     - Irreparable injury
     - Purely legal question
+    
+    Falsifies if: claim.is_exhausted() is False.
     """
     if claim.is_exhausted():
         return True, ProofObject(
@@ -96,6 +100,8 @@ def check_chevron_step_one(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     Chevron Step 1: Has Congress spoken directly to the precise 
     question at issue? If yes, statutory language controls.
     
+    Falsifies if: rule.statutory_ambiguity is False (unambiguous statute interpreted).
+    
     Returns False if agency interpreted unambiguous statute.
     """
     if not rule.statutory_ambiguity:
@@ -121,6 +127,8 @@ def check_finality(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     Bennett v. Spear (1997) — Final agency action test:
     1. Action marks consummation of agency decision-making
     2. Action is one by which rights/obligations determined
+    
+    Falsifies if: final_rule_date or effective_date is missing.
     """
     has_final_date = rule.final_rule_date is not None
     has_effective_date = rule.effective_date is not None
@@ -158,6 +166,8 @@ def check_record_based_decision(
     the administrative record. No ex parte contacts.
     
     Minimal check: At least some public participation recorded.
+    
+    Falsifies if: rule.get_comment_count() < comments_required.
     """
     comment_count = rule.get_comment_count()
     
@@ -179,7 +189,10 @@ def check_record_based_decision(
 
 
 def run_all_invariants(rule: Rulemaking, claim: ExhaustionClaim) -> List[Tuple[str, bool, ProofObject]]:
-    """Run all administrative law invariants and return results."""
+    """Run all administrative law invariants and return results.
+
+    Falsifies if: any individual administrative law check returns False.
+    """
     results = []
     
     results.append(("notice_period", *check_notice_period(rule)))

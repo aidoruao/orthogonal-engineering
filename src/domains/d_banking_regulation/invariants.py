@@ -413,7 +413,10 @@ def check_capital_computation_fraction_precision() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_BANKING_REGULATION invariants."""
+    """Run all D_BANKING_REGULATION invariants.
+
+    Falsifies if: any banking regulation invariant check fails or raises an exception.
+    """
     checks = [
         ("check_tier1_capital_minimum", check_tier1_capital_minimum),
         ("check_fdic_insurance_per_depositor", check_fdic_insurance_per_depositor),

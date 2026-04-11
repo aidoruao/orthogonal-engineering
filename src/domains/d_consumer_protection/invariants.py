@@ -8,7 +8,10 @@ from .implementation import ClaimVerifier, WarrantyChecker, RecallTracker, MIN_N
 
 
 def check_deceptive_practices(verifier: ClaimVerifier) -> Tuple[bool, ProofObject]:
-    """FTC Act § 5: Claims must be substantiated."""
+    """FTC Act § 5: Claims must be substantiated.
+
+    Falsifies if: verifier.find_unsubstantiated() returns any claims.
+    """
     unsubstantiated = verifier.find_unsubstantiated()
     
     if unsubstantiated:
@@ -26,7 +29,10 @@ def check_deceptive_practices(verifier: ClaimVerifier) -> Tuple[bool, ProofObjec
 
 
 def check_warranty_coverage(checker: WarrantyChecker) -> Tuple[bool, ProofObject]:
-    """Magnuson-Moss: Warranty must honor covered repairs."""
+    """Magnuson-Moss: Warranty must honor covered repairs.
+
+    Falsifies if: checker.is_covered() is False.
+    """
     if not checker.is_covered():
         return False, ProofObject(
             conclusion="VIOLATION: Warranty denial for covered item",
@@ -42,7 +48,10 @@ def check_warranty_coverage(checker: WarrantyChecker) -> Tuple[bool, ProofObject
 
 
 def check_recall_completeness(tracker: RecallTracker) -> Tuple[bool, ProofObject]:
-    """Recall notifications must reach 95%+ of affected consumers."""
+    """Recall notifications must reach 95%+ of affected consumers.
+
+    Falsifies if: tracker.notification_rate() < MIN_NOTIFICATION_RATE.
+    """
     rate = tracker.notification_rate()
     
     if rate < MIN_NOTIFICATION_RATE:

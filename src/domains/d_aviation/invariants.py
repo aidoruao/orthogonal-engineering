@@ -317,7 +317,10 @@ def check_flight_envelope_fraction_precision() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_AVIATION invariants. Returns dict of check_name → pass/fail."""
+    """Run all D_AVIATION invariants. Returns dict of check_name → pass/fail.
+
+    Falsifies if: any aviation invariant check returns False or raises an exception.
+    """
     checks = [
         ("check_envelope_overspeed_rejected", check_envelope_overspeed_rejected),
         ("check_envelope_normal_state_accepted", check_envelope_normal_state_accepted),

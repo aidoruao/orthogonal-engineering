@@ -247,7 +247,10 @@ def check_hmac_length_integrity() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CRYPTO invariants. Returns dict of check_name → pass/fail."""
+    """Run all D_CRYPTO invariants. Returns dict of check_name → pass/fail.
+
+    Falsifies if: any crypto invariant check fails or raises an exception.
+    """
     checks = [
         ("check_constant_time_compare_uses_hmac", check_constant_time_compare_uses_hmac),
         ("check_psk_zero_rejected", check_psk_zero_rejected),

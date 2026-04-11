@@ -11,6 +11,8 @@ def check_type_soundness(checker: TypeChecker) -> Tuple[bool, ProofObject]:
     """
     Type soundness: Well-typed terms don't get stuck (Progress).
     Either the term is a value or it can take a step.
+
+    Falsifies if: checker.is_well_typed() is False.
     """
     if not checker.is_well_typed():
         return False, ProofObject(
@@ -28,7 +30,10 @@ def check_type_soundness(checker: TypeChecker) -> Tuple[bool, ProofObject]:
 
 
 def check_optimization_correctness(opt: OptimizationPass) -> Tuple[bool, ProofObject]:
-    """Optimizations must preserve semantics."""
+    """Optimizations must preserve semantics.
+
+    Falsifies if: opt.preserves_semantics() is False.
+    """
     if not opt.preserves_semantics():
         return False, ProofObject(
             conclusion=f"VIOLATION: Optimization '{opt.name}' does not preserve semantics",
@@ -44,7 +49,10 @@ def check_optimization_correctness(opt: OptimizationPass) -> Tuple[bool, ProofOb
 
 
 def check_register_allocation(allocator: RegisterAllocator) -> Tuple[bool, ProofObject]:
-    """Register allocation must be k-colorable."""
+    """Register allocation must be k-colorable.
+
+    Falsifies if: allocator.can_allocate() is False.
+    """
     if not allocator.can_allocate():
         return False, ProofObject(
             conclusion=f"VIOLATION: Cannot allocate {len(allocator.interference.nodes)} variables to {allocator.num_registers} registers",
@@ -60,7 +68,10 @@ def check_register_allocation(allocator: RegisterAllocator) -> Tuple[bool, Proof
 
 
 def check_no_type_confusion(checker: TypeChecker) -> Tuple[bool, ProofObject]:
-    """Type system prevents runtime type errors."""
+    """Type system prevents runtime type errors.
+
+    Falsifies if: checker.term.typ is None.
+    """
     if checker.term.typ is None:
         return False, ProofObject(
             conclusion="VIOLATION: Untyped term (potential type confusion)",

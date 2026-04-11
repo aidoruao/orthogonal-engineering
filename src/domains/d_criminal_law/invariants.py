@@ -279,7 +279,10 @@ def check_mens_rea_requirement() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CRIMINAL_LAW invariants."""
+    """Run all D_CRIMINAL_LAW invariants.
+
+    Falsifies if: any criminal law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_probable_cause_requirement", check_probable_cause_requirement),
         ("check_miranda_rights_timing", check_miranda_rights_timing),

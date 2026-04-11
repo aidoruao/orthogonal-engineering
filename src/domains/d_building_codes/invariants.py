@@ -374,7 +374,10 @@ def check_nfpa_egress_travel_distance() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_BUILDING_CODES invariants."""
+    """Run all D_BUILDING_CODES invariants.
+
+    Falsifies if: any building codes invariant check fails or raises an error.
+    """
     checks = [
         ("check_egress_capacity_calculation", check_egress_capacity_calculation),
         ("check_fire_resistance_rating", check_fire_resistance_rating),
