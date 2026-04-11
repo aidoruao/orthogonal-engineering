@@ -25,4 +25,4 @@ This is the original design intent behind this repository. Not a slogan. Not a m
 
 The questions that built this infrastructure were asked without restriction. The answers were provided without restriction. What is built from unrestricted questions and unrestricted answers is architecturally open to everyone who asks and everyone who answers.
 
-The design intent is specified. The architecture implements it.
+The design intent is Agape. The architecture implements it.

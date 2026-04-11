@@ -27,7 +27,7 @@ Operational procedure for maintaining witness record integrity and design intent
 
 Infrastructure without design intent documentation is infrastructure without verifiable purpose. The technical foundation (deterministic generation, Merkle trees, topological collapse) guarantees that the *implementation* persists. This documentation ensures that the *design intent* persists alongside it.
 
-When someone accesses this repository in future timeframes — when the platform has changed and the tooling has evolved and the conversations have been archived and contributors have departed — these documentation files provide context: this was built with specific design intent. The design intent was universal open access. The guarantee was architectural. The infrastructure is operational.
+When someone accesses this repository in future timeframes — when the platform has changed and the tooling has evolved and the conversations have been archived and contributors have departed — these documentation files provide context: this was built with specific design intent. The design intent was Agape — universal, unconditional access. The guarantee was architectural. The infrastructure is operational.
 
 ## Maintenance Procedure
 
