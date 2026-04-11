@@ -30,7 +30,9 @@ def check_probable_cause_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Valid warrant search
     has_warrant = True
     warrant_valid = True
@@ -74,7 +76,9 @@ def check_miranda_rights_timing() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Custodial interrogation - warnings required
     in_custody = True
     interrogation = True
@@ -117,7 +121,9 @@ def check_beyond_reasonable_doubt() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Criminal standard: beyond reasonable doubt (typically >95% certainty)
     criminal_standard = Fraction(95, 100)  # 95%
     
@@ -158,7 +164,9 @@ def check_double_jeopardy_protection() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Same offense elements
     same_offense = True
     prior_acquittal = True
@@ -204,7 +212,9 @@ def check_confrontation_clause() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Testimonial statement - confrontation required
     testimonial = True
     witness_available = True
@@ -244,7 +254,9 @@ def check_mens_rea_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # General intent crime - requires intent
     general_intent_crime = True
     defendant_intent = True

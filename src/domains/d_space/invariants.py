@@ -24,7 +24,9 @@ def check_memory_protection_enabled(software: SpaceSoftware) -> Tuple[bool, Proo
     mechanisms to prevent buffer overflows and corruption.
 
     Falsifies if: safety_critical and (no canaries or no ASLR)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if software.criticality != SoftwareCriticality.SAFETY_CRITICAL:
         return True, ProofObject(
             conclusion=f"Software {software.module_id} not safety-critical, memory protection N/A",
@@ -70,7 +72,9 @@ def check_no_dynamic_allocation_in_realtime(software: SpaceSoftware) -> Tuple[bo
     and fragmentation risks in real-time systems.
 
     Falsifies if: safety_critical and uses_dynamic_allocation=True
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if software.criticality != SoftwareCriticality.SAFETY_CRITICAL:
         return True, ProofObject(
             conclusion=f"Module {software.module_id} not safety-critical, dynamic allocation N/A",
@@ -105,7 +109,9 @@ def check_static_analysis_complement(software: SpaceSoftware) -> Tuple[bool, Pro
     Static analysis identifies potential issues; runtime checks mitigate them.
 
     Falsifies if: has_static_analysis but not has_runtime_checks
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not software.has_static_analysis:
         return False, ProofObject(
             conclusion=f"VIOLATION: Module {software.name} lacks static analysis",
@@ -143,7 +149,9 @@ def check_radiation_tolerance_specs(component: RadiationTolerance, mission_dose:
     by design margin (typically 2x).
 
     Falsifies if: total_dose_rads < mission_dose * margin_factor
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     margin = nasa_radiation_margin_factor()
     required_dose = mission_dose * margin
 
@@ -176,7 +184,9 @@ def check_seu_protection(component: RadiationTolerance) -> Tuple[bool, ProofObje
     (EDAC, TMR, scrubbing) and latchup protection.
 
     Falsifies if: neither SEU immune nor latchup protected
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not component.seu_immune and not component.latchup_protected:
         return False, ProofObject(
             conclusion=f"VIOLATION: Component {component.name} lacks SEU/latchup protection",
@@ -207,7 +217,9 @@ def check_orbit_validity(orbit: OrbitParameters) -> Tuple[bool, ProofObject]:
     Semi-major axis must be positive. Escape trajectory has e >= 1.
 
     Falsifies if: eccentricity >= 1 or semi_major_axis <= 0
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     escape_e = orbital_escape_eccentricity()
 
     if orbit.semi_major_axis <= Fraction(0):

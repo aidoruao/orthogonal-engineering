@@ -8,7 +8,9 @@ from .implementation import BracketCalculator, DeductionValidator, WithholdingCh
 
 
 def check_bracket_monotonicity(calc: BracketCalculator) -> Tuple[bool, ProofObject]:
-    """Tax brackets must be monotonic (higher income → higher rate)."""
+    """Tax brackets must be monotonic (higher income → higher rate).
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not calc.is_monotonic():
         return False, ProofObject(
             conclusion="VIOLATION: Tax brackets not monotonic (regressive detected)",
@@ -24,7 +26,9 @@ def check_bracket_monotonicity(calc: BracketCalculator) -> Tuple[bool, ProofObje
 
 
 def check_salt_cap(validator: DeductionValidator) -> Tuple[bool, ProofObject]:
-    """SALT deduction must not exceed $10,000 cap."""
+    """SALT deduction must not exceed $10,000 cap.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not validator.salt_within_cap():
         return False, ProofObject(
             conclusion=f"VIOLATION: SALT deduction {validator.salt_deduction} exceeds cap {validator.SALT_CAP}",
@@ -40,7 +44,9 @@ def check_salt_cap(validator: DeductionValidator) -> Tuple[bool, ProofObject]:
 
 
 def check_withholding_adequacy(checker: WithholdingChecker) -> Tuple[bool, ProofObject]:
-    """Withholding must meet safe harbor (90% of liability)."""
+    """Withholding must meet safe harbor (90% of liability).
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not checker.is_adequate():
         return False, ProofObject(
             conclusion=f"VIOLATION: Withholding inadequate for safe harbor",

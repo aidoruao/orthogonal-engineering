@@ -38,7 +38,9 @@ def check_habeas_availability_default() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = HabeasCorpusChecker()
     
     # Register detention
@@ -82,7 +84,9 @@ def check_suspension_requires_rebellion_or_invasion() -> Tuple[bool, ProofObject
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = HabeasCorpusChecker()
     
     # Attempt suspension without rebellion or invasion
@@ -123,7 +127,9 @@ def check_valid_suspension_rebellion() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = HabeasCorpusChecker()
     
     result = checker.suspend_habeas_corpus(
@@ -165,7 +171,9 @@ def check_valid_suspension_invasion() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = HabeasCorpusChecker()
     
     result = checker.suspend_habeas_corpus(
@@ -207,7 +215,9 @@ def check_judicial_review_required() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = HabeasCorpusChecker()
     
     # Register national security detention without charges
@@ -258,7 +268,9 @@ def check_criminal_detention_requires_charges() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # With charges
     case_with_charges = DetentionCase(
         case_id="WITH-CHARGES",

@@ -8,7 +8,9 @@ from .implementation import NashSolver, ZeroSumVerifier, ParetoFrontier
 
 
 def check_nash_equilibrium(solver: NashSolver) -> Tuple[bool, ProofObject]:
-    """Verify strategy profile is Nash equilibrium."""
+    """Verify strategy profile is Nash equilibrium.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not solver.is_nash_equilibrium():
         return False, ProofObject(
             conclusion="VIOLATION: Not a Nash equilibrium — profitable deviation exists",
@@ -24,7 +26,9 @@ def check_nash_equilibrium(solver: NashSolver) -> Tuple[bool, ProofObject]:
 
 
 def check_zero_sum_property(verifier: ZeroSumVerifier) -> Tuple[bool, ProofObject]:
-    """Zero-sum game: payoffs sum to zero for all profiles."""
+    """Zero-sum game: payoffs sum to zero for all profiles.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not verifier.is_zero_sum():
         return False, ProofObject(
             conclusion="VIOLATION: Game not zero-sum (payoff sums non-zero)",
@@ -40,7 +44,9 @@ def check_zero_sum_property(verifier: ZeroSumVerifier) -> Tuple[bool, ProofObjec
 
 
 def check_pareto_optimality(frontier: ParetoFrontier, outcome) -> Tuple[bool, ProofObject]:
-    """Verify outcome is Pareto optimal."""
+    """Verify outcome is Pareto optimal.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not frontier.is_pareto_optimal(outcome):
         return False, ProofObject(
             conclusion="VIOLATION: Outcome not Pareto optimal (dominated alternative exists)",

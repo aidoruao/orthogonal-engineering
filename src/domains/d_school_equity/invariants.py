@@ -77,7 +77,9 @@ def check_suspension_rate_reasonable(discipline: DisciplineRecord) -> Tuple[bool
 
 
 def check_racial_compliance(discipline: DisciplineRecord) -> Tuple[bool, ProofObject]:
-    """All racial groups must have enrollment data."""
+    """All racial groups must have enrollment data.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not discipline.enrollment_by_race:
         return False, ProofObject(
             conclusion="VIOLATION: No enrollment data by race",

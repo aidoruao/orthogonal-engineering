@@ -8,7 +8,9 @@ from .implementation import WageCalculator, DisparateImpactAnalyzer
 
 
 def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
-    """FLSA: Hourly rate must meet federal minimum wage."""
+    """FLSA: Hourly rate must meet federal minimum wage.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not calculator.meets_minimum_wage():
         return False, ProofObject(
             conclusion=f"VIOLATION: Rate {calculator.employee.hourly_rate} < minimum {calculator.employee.FEDERAL_MINIMUM_WAGE}",
@@ -24,7 +26,9 @@ def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
 
 
 def check_overtime_calculation(employee) -> Tuple[bool, ProofObject]:
-    """FLSA: Overtime must be 1.5x regular rate."""
+    """FLSA: Overtime must be 1.5x regular rate.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if employee.hours_worked <= employee.OVERTIME_THRESHOLD:
         return True, ProofObject(
             conclusion="No overtime hours",
@@ -50,7 +54,9 @@ def check_overtime_calculation(employee) -> Tuple[bool, ProofObject]:
 
 
 def check_disparate_impact(analyzer: DisparateImpactAnalyzer) -> Tuple[bool, ProofObject]:
-    """Title VII: 4/5ths rule for disparate impact detection."""
+    """Title VII: 4/5ths rule for disparate impact detection.
+    
+    falsifies_if: condition_evaluated_to_false"""
     violations = analyzer.four_fifths_rule()
     
     if violations:

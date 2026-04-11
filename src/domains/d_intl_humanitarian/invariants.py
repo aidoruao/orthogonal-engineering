@@ -34,7 +34,9 @@ def check_distinction_principle() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = IHLChecker()
     
     # Cannot target civilians
@@ -82,7 +84,9 @@ def check_proportionality_principle() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Proportional: military gain > civilian harm
     proportional = UseOfForceEvaluation(
         military_objective_value=Fraction(10),
@@ -131,7 +135,9 @@ def check_precautionary_obligations() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = IHLChecker()
     
     # High military value, low civilian risk - allowed with precautions
@@ -177,7 +183,9 @@ def check_hors_de_combat_protection() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Hors de combat status protection
     surrendered_protected = True
     wounded_protected = True
@@ -219,7 +227,9 @@ def check_fraction_precision_war_crimes() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Use fractions that would be imprecise in floating point
     eval1 = UseOfForceEvaluation(
         military_objective_value=Fraction(1, 3),
@@ -269,7 +279,9 @@ def check_non_combatant_immunity() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = IHLChecker()
     
     # Civilians are non-combatants

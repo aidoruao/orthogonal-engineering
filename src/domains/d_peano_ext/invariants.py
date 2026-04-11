@@ -22,7 +22,9 @@ def check_peano_axiom_1_zero_exists() -> Tuple[bool, ProofObject]:
     - Foundation of all arithmetic
     
     Falsifies if: zero construction fails
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     try:
         zero = peano_zero()
         if zero.value != 0:
@@ -53,7 +55,9 @@ def check_peano_axiom_2_successor(n: PeanoExt) -> Tuple[bool, ProofObject]:
     - S(n) = n + 1
     
     Falsifies if: successor construction fails
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     try:
         successor = n.successor()
         if successor.value != n.value + 1:
@@ -87,7 +91,9 @@ def check_peano_axiom_3_non_zero(n: PeanoExt) -> Tuple[bool, ProofObject]:
     - Zero is not the successor of any natural number
     
     Falsifies if: any number claims 0 as successor
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if n.value == 0:
         # 0's successor is 1, not 0 — verified by construction
         return True, ProofObject(
@@ -112,7 +118,9 @@ def check_construction_depth_limit(n: PeanoExt, max_depth: int = 10000) -> Tuple
     - Excessive depth indicates runaway recursion
     
     Falsifies if: construction_depth > max_depth
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if n.construction_depth > max_depth:
         return False, ProofObject(
             conclusion=f"VIOLATION: Peano number construction depth {n.construction_depth} exceeds limit {max_depth}",
@@ -141,7 +149,9 @@ def check_goodstein_decreases(seq: GoodsteinSequence) -> Tuple[bool, ProofObject
     - Sequence appears to increase but actually decreases in ordinal sense
     
     Falsifies if: sequence increases without bound (computational limit hit)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if seq.current_value == 0:
         return True, ProofObject(
             conclusion=f"Goodstein sequence terminated at step {seq.step_count}",
@@ -178,7 +188,9 @@ def check_fast_growing_bound(func: FastGrowingFunction) -> Tuple[bool, ProofObje
     - F_ε0 dominates all primitive recursive functions
     
     Falsifies if: computation exceeds practical limits
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     result = func.compute_bounded(max_steps=1000)
     
     if result is None:

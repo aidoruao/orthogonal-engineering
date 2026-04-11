@@ -29,7 +29,9 @@ def check_nfa_registration_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # NFA firearms
     machine_gun = True
     short_barreled_rifle = True
@@ -82,7 +84,9 @@ def check_gca_prohibited_persons() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Prohibited categories
     felon = True
     fugitive = True
@@ -133,7 +137,9 @@ def check_brady_act_background_checks() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # NICS check required
     ffl_transfers_only = True
     private_sales_exempt = True
@@ -185,7 +191,9 @@ def check_second_amendment_individual_right() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Heller holding
     individual_right = True
     unconnected_with_militia_service = True
@@ -238,7 +246,9 @@ def check_nfa_machine_gun_definition() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Definition
     shoots_automatically = True
     more_than_one_shot = True
@@ -287,7 +297,9 @@ def check_armed_career_criminal_act() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Predicate offenses required
     three_or_more_violent_felonies = Fraction(3)
     serious_drug_offenses = True

@@ -29,7 +29,9 @@ def check_san_antonio_rodriguez_rational_basis() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Holding: No federal fundamental right to education
     no_federal_fundamental_right = True
     rational_basis_applies = True
@@ -73,7 +75,9 @@ def check_state_equalization_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # State constitutional provisions
     state_education_mandate = True
     thorough_and_efficient_language = True  # Many states
@@ -117,7 +121,9 @@ def check_foundation_program_formula() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Foundation amount
     foundation_amount = Fraction(6000)  # per pupil
     
@@ -174,7 +180,9 @@ def check_title_i_allocation_formula() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Formula components
     formula_children_count = True  # Census poor children 5-17
     state_per_pupil_expenditure = True
@@ -269,7 +277,9 @@ def check_property_tax_reliance_limits() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Property tax share
     typical_local_share = Fraction(45, 100)  # ~45%
     typical_state_share = Fraction(47, 100)  # ~47%

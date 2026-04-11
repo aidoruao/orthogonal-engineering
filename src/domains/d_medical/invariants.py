@@ -29,7 +29,9 @@ def check_hipaa_phi_protection() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # PHI elements that require protection
     phi_elements = {
         "names": True,
@@ -83,7 +85,9 @@ def check_fda_device_classification() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Device classification requirements
     class_i_controls = True  # General controls
     class_ii_special_controls = True
@@ -129,7 +133,9 @@ def check_stark_law_prohibition() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Designated health services under Stark
     designated_health_services = {
         "clinical_laboratory": True,
@@ -183,7 +189,9 @@ def check_fda_qsr_documentation() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Design History File (DHF) requirements
     dhf_requirements = {
         "design_plan": True,
@@ -236,7 +244,9 @@ def check_hipaa_security_rule_safeguards() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Administrative safeguards (§ 164.308)
     administrative_safeguards = {
         "security_management": True,
@@ -298,7 +308,9 @@ def check_emtala_mse_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # EMTALA requirements
     mse_required = True
     stabilization_required = True

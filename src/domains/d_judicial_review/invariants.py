@@ -35,7 +35,9 @@ def check_any_statute_may_be_challenged() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     review = JudicialReview()
     
     # Can challenge legislative statute
@@ -92,7 +94,9 @@ def check_review_requires_independent_situs() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     review = JudicialReview()
     
     review.file_challenge(
@@ -148,7 +152,9 @@ def check_independent_situs_accepts_review() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     review = JudicialReview()
     
     review.file_challenge(
@@ -198,7 +204,9 @@ def check_unconstitutional_statute_invalidated() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     review = JudicialReview()
     
     review.file_challenge(
@@ -247,7 +255,9 @@ def check_situs_independence_score() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Fully independent situs
     situs1 = SitusIndependence(
         court_name="Independent Court",
@@ -299,7 +309,9 @@ def check_apa_scope_of_review() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     review = JudicialReview()
     
     # Challenge agency action under APA

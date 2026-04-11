@@ -8,7 +8,9 @@ from .implementation import CAPAnalyzer, VectorClock, ConsensusVerifier
 
 
 def check_cap_theorem(analyzer: CAPAnalyzer) -> Tuple[bool, ProofObject]:
-    """CAP theorem: Cannot have Consistency + Availability + Partition tolerance simultaneously."""
+    """CAP theorem: Cannot have Consistency + Availability + Partition tolerance simultaneously.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if analyzer.satisfies_cap():
         return True, ProofObject(
             conclusion="CAP constraint satisfied",
@@ -24,7 +26,9 @@ def check_cap_theorem(analyzer: CAPAnalyzer) -> Tuple[bool, ProofObject]:
 
 
 def check_vector_clock_causality(vc1: VectorClock, vc2: VectorClock) -> Tuple[bool, ProofObject]:
-    """Vector clocks must correctly track causality."""
+    """Vector clocks must correctly track causality.
+    
+    falsifies_if: condition_evaluated_to_false"""
     relation = vc1.compare(vc2)
     
     if relation == "concurrent":
@@ -42,7 +46,9 @@ def check_vector_clock_causality(vc1: VectorClock, vc2: VectorClock) -> Tuple[bo
 
 
 def check_consensus_quorum(verifier: ConsensusVerifier) -> Tuple[bool, ProofObject]:
-    """Consensus requires quorum > n/2 for safety."""
+    """Consensus requires quorum > n/2 for safety.
+    
+    falsifies_if: condition_evaluated_to_false"""
     quorum = verifier.quorum_size()
     received = len(verifier.votes_received)
     
@@ -69,7 +75,9 @@ def check_consensus_quorum(verifier: ConsensusVerifier) -> Tuple[bool, ProofObje
 
 
 def check_quorum_size(verifier: ConsensusVerifier) -> Tuple[bool, ProofObject]:
-    """Quorum must be > n/2 to prevent split-brain."""
+    """Quorum must be > n/2 to prevent split-brain.
+    
+    falsifies_if: condition_evaluated_to_false"""
     from .implementation import MIN_QUORUM_RATIO
     
     quorum_ratio = Fraction(verifier.quorum_size(), verifier.node_count)

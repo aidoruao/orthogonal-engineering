@@ -28,7 +28,9 @@ def check_euclid_constitutionality() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Police power basis
     police_power_valid = True
     state_granted = True
@@ -78,7 +80,9 @@ def check_euclidean_zoning_districts() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Basic district types
     residential = True
     commercial = True
@@ -134,7 +138,9 @@ def check_zoning_regulatory_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Uniformity
     uniform_regulations = True
     similar_treatment = True
@@ -191,7 +197,9 @@ def check_special_exception_conditional_use() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Characteristics
     allowed_in_zoning_ordinance = True
     requires_additional_standards = True
@@ -245,7 +253,9 @@ def check_zoning_amendment_procedures() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Legislative body authority
     local_legislative_body = True
     
@@ -297,7 +307,9 @@ def check_zoning_board_adjustment() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Jurisdiction
     hear_appeals = True
     grant_variances = True

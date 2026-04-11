@@ -26,7 +26,9 @@ def check_first_amendment_free_speech() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Core protected speech
     political_speech = True
     content_based_restriction = True
@@ -73,7 +75,9 @@ def check_first_amendment_religion_clauses() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Establishment Clause
     government_establishes_religion = False
     establishment_clause_violated = government_establishes_religion
@@ -118,7 +122,9 @@ def check_fourth_amendment_search_seizure() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Warrant requirements
     probable_cause = True
     particular_description = True
@@ -169,7 +175,9 @@ def check_fifth_amendment_due_process() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Protected interests
     life_interest = True
     liberty_interest = True
@@ -221,7 +229,9 @@ def check_fifth_amendment_double_jeopardy() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Same elements test (Blockburger)
     same_offense_elements = True
     
@@ -272,7 +282,9 @@ def check_eighth_amendment_cruel_unusual() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Evolving standards of decency
     national_consensus_against_punishment = True
     state_legislation_trend = True

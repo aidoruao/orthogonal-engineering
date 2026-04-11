@@ -28,7 +28,9 @@ def check_un_charter_purposes_principles() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Article 1 Purposes
     maintain_international_peace = True
     develop_friendly_relations = True
@@ -75,7 +77,9 @@ def check_security_council_membership_voting() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Membership
     total_members = Fraction(15)
     permanent_members = Fraction(5)
@@ -128,7 +132,9 @@ def check_chapter_vii_collective_security() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Article 39
     determination_by_security_council = True
     breach_of_peace = True
@@ -180,7 +186,9 @@ def check_general_assembly_powers() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Composition
     all_members_represented = True
     one_vote_per_member = True
@@ -235,7 +243,9 @@ def check_jus_cogens_non_derogable() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Jus cogens norms
     prohibition_of_aggression = True
     prohibition_of_genocide = True
@@ -287,7 +297,9 @@ def check_international_court_justice() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Principal judicial organ
     principal_judicial_organ = True
     successor_to_pciJ = True

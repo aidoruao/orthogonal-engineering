@@ -7,7 +7,9 @@ from axioms.logic import ProofObject
 from .implementation import Lawsuit, MIN_CLASS_SIZE
 
 def check_class_certification(suit: Lawsuit) -> Tuple[bool, ProofObject]:
-    """FRCP 23(a): Class certification requires all four elements."""
+    """FRCP 23(a): Class certification requires all four elements.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not suit.class_action:
         return True, ProofObject(
             conclusion="Not a class action",
@@ -40,7 +42,9 @@ def check_class_certification(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     )
 
 def check_12b6_plausibility(suit: Lawsuit) -> Tuple[bool, ProofObject]:
-    """FRCP 12(b)(6): Complaint must state plausible claim."""
+    """FRCP 12(b)(6): Complaint must state plausible claim.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if len(suit.complaint_allegations) == 0:
         return False, ProofObject(
             conclusion="VIOLATION: No factual allegations",
@@ -54,7 +58,9 @@ def check_12b6_plausibility(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     )
 
 def check_summary_judgment(suit: Lawsuit) -> Tuple[bool, ProofObject]:
-    """FRCP 56: Summary judgment only if no genuine dispute."""
+    """FRCP 56: Summary judgment only if no genuine dispute.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if suit.genuine_dispute_exists:
         return False, ProofObject(
             conclusion="Genuine dispute of material fact exists",

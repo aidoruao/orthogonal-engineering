@@ -9,7 +9,9 @@ from .implementation import GDPRAnalyzer, CCPAComplianceChecker, DataProcessing,
 
 
 def check_gdpr_response_time(analyzer: GDPRAnalyzer, current_date: datetime) -> Tuple[bool, ProofObject]:
-    """GDPR: Data subject requests must be fulfilled within 30 days."""
+    """GDPR: Data subject requests must be fulfilled within 30 days.
+    
+    falsifies_if: condition_evaluated_to_false"""
     overdue = analyzer.get_overdue_requests(current_date)
     
     if overdue:
@@ -27,7 +29,9 @@ def check_gdpr_response_time(analyzer: GDPRAnalyzer, current_date: datetime) -> 
 
 
 def check_ccpa_opt_out(checker: CCPAComplianceChecker) -> Tuple[bool, ProofObject]:
-    """CCPA: Opt-out requests must be honored."""
+    """CCPA: Opt-out requests must be honored.
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Check that opted-out consumers are tracked
     opted_out = checker.get_opted_out_count()
     
@@ -39,7 +43,9 @@ def check_ccpa_opt_out(checker: CCPAComplianceChecker) -> Tuple[bool, ProofObjec
 
 
 def check_data_minimization(processing: DataProcessing, declared_purpose: str) -> Tuple[bool, ProofObject]:
-    """GDPR: Data collected must not exceed stated purpose."""
+    """GDPR: Data collected must not exceed stated purpose.
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not processing.is_minimized(declared_purpose):
         return False, ProofObject(
             conclusion="VIOLATION: Data collection exceeds stated purpose",
@@ -55,7 +61,9 @@ def check_data_minimization(processing: DataProcessing, declared_purpose: str) -
 
 
 def check_gdpr_compliance_rate(analyzer: GDPRAnalyzer) -> Tuple[bool, ProofObject]:
-    """GDPR compliance rate should be 100%."""
+    """GDPR compliance rate should be 100%.
+    
+    falsifies_if: condition_evaluated_to_false"""
     rate = analyzer.compliance_rate()
     
     if rate < Fraction(100):

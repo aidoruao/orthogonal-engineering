@@ -30,7 +30,9 @@ def check_nepa_environmental_review() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Major federal action triggers NEPA
     major_federal_action = True
     environmental_impact_significant = True
@@ -78,7 +80,9 @@ def check_clean_air_act_naaqs() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # NAAQS standards (annual mean PM2.5 = 12 μg/m³)
     pm25_standard = Fraction(12)  # μg/m³
     
@@ -125,7 +129,9 @@ def check_clean_water_act_permitting() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Point source defined
     point_source = True
     navigable_waters = True
@@ -173,7 +179,9 @@ def check_cercla_liability_allocation() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Potentially Responsible Parties (PRPs)
     current_owner = True
     past_owner = True
@@ -224,7 +232,9 @@ def check_esa_species_protection() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Listed species
     endangered = True
     threatened = False  # Different protections
@@ -271,7 +281,9 @@ def check_environmental_compliance_fraction_precision() -> Tuple[bool, ProofObje
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Pollutant concentration
     measured_ppb = Fraction(1, 3)  # 0.333... ppb
     limit_ppb = Fraction(1)  # 1 ppb

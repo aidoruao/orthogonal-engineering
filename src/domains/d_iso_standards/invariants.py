@@ -36,7 +36,9 @@ def check_standard_integrity_verification() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     registry = ISOStandardsRegistry()
     
     # Pin a standard
@@ -88,7 +90,9 @@ def check_compliance_requires_integrity() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     registry = ISOStandardsRegistry()
     
     content = b"Standard requirements: section_A, section_B"
@@ -134,7 +138,9 @@ def check_compliance_sections_required() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     registry = ISOStandardsRegistry()
     
     content = b"Standard spec with required parts"
@@ -193,7 +199,9 @@ def check_hash_consistency() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     content1 = b"Test content A"
     content2 = b"Test content B"
     
@@ -237,7 +245,9 @@ def check_iso_9001_quality_management() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     registry = ISOStandardsRegistry()
     
     # ISO 9001-like requirements
@@ -297,7 +307,9 @@ def check_iso_27001_information_security() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     registry = ISOStandardsRegistry()
     
     # ISO 27001-like requirements

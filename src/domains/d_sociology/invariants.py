@@ -23,7 +23,9 @@ def check_irb_approval(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     - Unanticipated problems must be reported
     
     Falsifies if: no IRB approval for human subjects research
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if study.research_type == ResearchType.SECONDARY_ANALYSIS and study.data_anonymized:
         return True, ProofObject(
             conclusion=f"Study {study.study_id} exempt — secondary analysis of anonymized data",
@@ -66,7 +68,9 @@ def check_informed_consent(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     - Informed consent demonstrates respect
     
     Falsifies if: no consent for non-exempt research
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if study.irb_status == IRBStatus.EXEMPT:
         return True, ProofObject(
             conclusion=f"Study {study.study_id} IRB exempt — informed consent waived",
@@ -102,7 +106,9 @@ def check_survey_response_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]
     - Minimum thresholds vary by mode
     
     Falsifies if: response rate < 30%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if study.research_type != ResearchType.SURVEY:
         return True, ProofObject(
             conclusion=f"Study {study.study_id} not survey — response rate N/A",
@@ -142,7 +148,9 @@ def check_survey_reliability(instrument: SurveyInstrument) -> Tuple[bool, ProofO
     - Validity assessment
     
     Falsifies if: alpha < 0.70
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_alpha = min_reliability_alpha()
     
     if not instrument.pilot_tested:
@@ -183,7 +191,9 @@ def check_data_protection(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     - Secure storage required
     
     Falsifies if: retention > 7 years without justification
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     max_retention = Fraction(7)  # 7 years
     
     if study.data_retention_years > max_retention:

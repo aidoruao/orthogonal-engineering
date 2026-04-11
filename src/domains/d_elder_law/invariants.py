@@ -28,7 +28,9 @@ def check_adea_age_discrimination_prohibition() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Protected class
     age = Fraction(52)
     age_threshold = Fraction(40)
@@ -95,7 +97,9 @@ def check_older_americans_act_services() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Eligibility
     age = Fraction(68)
     age_threshold_oaa = Fraction(60)
@@ -168,7 +172,9 @@ def check_long_term_care_ombudsman_program() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Ombudsman authority
     access_to_facilities = True
     access_to_residents = True
@@ -242,7 +248,9 @@ def check_erisa_pension_vesting() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Vesting schedules
     cliff_vesting_max_years = Fraction(5)
     graded_vesting_minimum = Fraction(5)  # 5-year graded vesting
@@ -313,7 +321,9 @@ def check_adult_protective_services_mandate() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # APS responsibilities
     receive_reports = True
     investigate_abuse = True
@@ -389,7 +399,9 @@ def check_nursing_facility_medicaid_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Resident rights
     right_to_be_treated_with_dignity = True
     right_to_participate_in_planning = True

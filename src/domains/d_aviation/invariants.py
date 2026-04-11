@@ -39,7 +39,9 @@ def check_envelope_overspeed_rejected() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     raised = False
     error_msg = ""
     
@@ -81,7 +83,9 @@ def check_envelope_normal_state_accepted() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     try:
         result = check_flight_envelope(
             speed_kt=250,
@@ -122,7 +126,9 @@ def check_circuit_breaker_open_on_failures() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     cb = CircuitBreaker(failure_threshold=3, recovery_timeout_s=60)
     initial_state = cb.state
     
@@ -161,7 +167,9 @@ def check_circuit_breaker_returns_cache_when_open() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     cb = CircuitBreaker(failure_threshold=1, recovery_timeout_s=60)
     cached = {"wind_kt": 15, "visibility_sm": 10}
     
@@ -206,7 +214,9 @@ def check_malformed_atc_no_exception() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     malformed_inputs = ["", "X", "\x00\xff", "A" * 5000, "   "]
     all_passed = True
     failures = []
@@ -249,7 +259,9 @@ def check_lift_deterministic() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     args = (250, 1225, 1000, 12, 10, 200)
     r1 = compute_lift_mcn(*args)
     r2 = compute_lift_mcn(*args)
@@ -285,7 +297,9 @@ def check_flight_envelope_fraction_precision() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Verify envelope values are Fraction-compatible
     max_speed = Fraction(ENVELOPE["max_speed_kt"])
     min_speed = Fraction(ENVELOPE.get("min_speed_kt", 0))

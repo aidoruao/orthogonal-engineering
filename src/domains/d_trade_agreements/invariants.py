@@ -28,7 +28,9 @@ def check_usma_origin_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Originating goods criteria
     wholly_obtained_produced = True
     regional_value_content = True
@@ -74,7 +76,9 @@ def check_wto_mfn_principle() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # MFN principle
     immediately_and_unconditionally = True
     any_advantage_granted = True
@@ -119,7 +123,9 @@ def check_wto_national_treatment() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Internal taxes and charges
     no_less_favorable_treatment = True
     internal_taxes_equal = True
@@ -165,7 +171,9 @@ def check_trade_promotion_authority_procedures() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Negotiating objectives
     overall_objectives = True
     principal_commercial_objectives = True
@@ -213,7 +221,9 @@ def check_antidumping_calculation() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Dumping margin calculation
     export_price = Fraction(100)
     normal_value = Fraction(120)
@@ -262,7 +272,9 @@ def check_dispute_settlement_understanding() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Stages
     consultations = True  # 60 days
     panel_establishment = True

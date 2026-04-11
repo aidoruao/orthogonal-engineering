@@ -28,7 +28,9 @@ def check_fifteenth_amendment_race() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Prohibition
     right_not_denied_on_race = True
     right_not_denied_on_color = True
@@ -74,7 +76,9 @@ def check_nineteenth_amendment_sex() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Prohibition
     right_not_denied_on_sex = True
     
@@ -115,7 +119,9 @@ def check_twenty_fourth_amendment_poll_tax() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Prohibition
     no_poll_tax_primary = True
     no_poll_tax_other_federal = True
@@ -155,7 +161,9 @@ def check_twenty_sixth_amendment_age() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Right at 18
     voting_age = Fraction(18)
     right_at_18 = voting_age == Fraction(18)
@@ -203,7 +211,9 @@ def check_vra_section_2_results_test() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # No intent required (post-1982 amendment)
     results_based_only = True
     discriminatory_effect_sufficient = True
@@ -254,7 +264,9 @@ def check_shelby_county_v_holder() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Holding
     section_4b_unconstitutional = True
     coverage_formula_outdated = True

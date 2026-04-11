@@ -23,7 +23,9 @@ def check_victim_participation(case: RestorativeJusticeCase) -> Tuple[bool, Proo
     - Victim safety and support required
     
     Falsifies if: victim willing but excluded
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if case.victim_id is None:
         return True, ProofObject(
             conclusion=f"Case {case.case_id} has no identified victim",
@@ -59,7 +61,9 @@ def check_agreement_completion(program: RJProgramMetrics) -> Tuple[bool, ProofOb
     - Breach should be exception, not norm
     
     Falsifies if: completion rate < 60%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     target = completion_rate_target()
     rate = program.get_completion_rate()
     
@@ -92,7 +96,9 @@ def check_victim_satisfaction(case: RestorativeJusticeCase) -> Tuple[bool, Proof
     - Satisfaction tracking required
     
     Falsifies if: victim satisfaction < 70% on completed cases
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     target = victim_satisfaction_target()
     
     if not case.victim_participating:
@@ -130,7 +136,9 @@ def check_preparation_standards(case: RestorativeJusticeCase) -> Tuple[bool, Pro
     - Expectations clarified
     
     Falsifies if: no preparation and conference held
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not case.conference_held:
         return True, ProofObject(
             conclusion=f"Case {case.case_id} no conference held — preparation check N/A",
@@ -165,7 +173,9 @@ def check_restitution_collection(program: RJProgramMetrics) -> Tuple[bool, Proof
     - Victims should receive owed amounts
     
     Falsifies if: collection rate < 50%
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_collection_rate = Fraction(1, 2)  # 50%
     
     rate = program.get_restitution_rate()

@@ -42,7 +42,9 @@ def check_critical_limits_enforced() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     haccp = HACCPSystem()
     
     # CCP for cooking temperature (min 74°C for poultry)
@@ -93,7 +95,9 @@ def check_facility_registration_required() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FSMAComplianceChecker()
     
     # Unregistered manufacturing facility
@@ -160,7 +164,9 @@ def check_food_safety_plan_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FSMAComplianceChecker()
     
     # Facility without safety plan
@@ -232,7 +238,9 @@ def check_recall_classification_urgency() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     system = RecallManagementSystem()
     
     # Class I recall (life-threatening)
@@ -283,7 +291,9 @@ def check_recall_effectiveness_targets() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     system = RecallManagementSystem()
     
     # Class I recall target
@@ -344,7 +354,9 @@ def check_supply_chain_verification() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     checker = FSMAComplianceChecker()
     
     # Hazard requiring control, unverified supplier

@@ -29,7 +29,9 @@ def check_fourth_amendment_search_warrant() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Fourth Amendment requirements
     warrant_requirement = True
     probable_cause_required = True
@@ -76,7 +78,9 @@ def check_graham_v_connor_objective_reasonableness() -> Tuple[bool, ProofObject]
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Graham factors
     severity_of_crime_factor = True
     immediate_threat_factor = True
@@ -120,7 +124,9 @@ def check_qualified_immunity_test() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Two-pronged test (can be done in any order per Pearson)
     prong_1_constitutional_violation = True
     prong_2_clearly_established_law = True
@@ -162,7 +168,9 @@ def check_terry_stop_reasonable_suspicion() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Terry requirements
     reasonable_suspicion_required = True
     articulable_facts_required = True
@@ -205,7 +213,9 @@ def check_miranda_warning_requirements() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Miranda warnings required
     custody_plus_interrogation = True
     
@@ -251,7 +261,9 @@ def check_exclusionary_rule_fruit_of_poisonous_tree() -> Tuple[bool, ProofObject
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Fruit of the poisonous tree doctrine
     exclusionary_rule_applies = True
     derivative_evidence_excluded = True

@@ -28,7 +28,9 @@ def check_new_drug_approval_requirement() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # New drug application requirements
     new_drug = True
     new_active_moiety = True
@@ -89,7 +91,9 @@ def check_controlled_substance_scheduling() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Scheduling criteria
     abuse_potential = Fraction(10, 10)  # High
     accepted_medical_use = False
@@ -168,7 +172,9 @@ def check_prescription_requirement_schedule_ii() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Schedule II prescription requirements
     written_prescription_required = True
     prescribers_dea_registration = True
@@ -232,7 +238,9 @@ def check_clinical_trial_informed_consent() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # IND requirements
     ind_active = True
     clinical_hold_lifted = True
@@ -309,7 +317,9 @@ def check_rems_risk_mitigation() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # REMS determination
     serious_risk_identified = True
     risk_outweighs_benefit_without_mitigation = True
@@ -384,7 +394,9 @@ def check_dea_registration_controlled_substance() -> Tuple[bool, ProofObject]:
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     # Registration categories
     manufacturer_registration = True
     distributor_registration = True

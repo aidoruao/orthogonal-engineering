@@ -23,7 +23,9 @@ def check_foia_timeliness(request: FOIRequest) -> Tuple[bool, ProofObject]:
     - Expedited processing available
     
     Falsifies if: response > 30 days without justification
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     max_days = foia_response_limit() + Fraction(10)  # 30 days with extension
     
     if request.status in (RequestStatus.GRANTED, RequestStatus.DENIED, RequestStatus.PARTIAL):
@@ -55,7 +57,9 @@ def check_agency_backlog(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
     - <10% backlog ratio acceptable
     
     Falsifies if: backlog > 10% of annual receipts
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     max_ratio = max_backlog_threshold()
     ratio = agency.get_backlog_ratio()
     
@@ -89,7 +93,9 @@ def check_fee_waiver_appropriateness(request: FOIRequest) -> Tuple[bool, ProofOb
     - Educational/media/non-commercial requesters
     
     Falsifies if: waiver denied for clear public interest
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if not request.fee_waiver_requested:
         return True, ProofObject(
             conclusion=f"Request {request.request_id} no fee waiver requested",
@@ -127,7 +133,9 @@ def check_national_security_exemption(request: FOIRequest) -> Tuple[bool, ProofO
     - Declassification review
     
     Falsifies if: Exemption 1 used excessively
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     if request.denial_reason != DenialReason.EXEMPTION_1:
         return True, ProofObject(
             conclusion=f"Request {request.request_id} not denied under Exemption 1",
@@ -152,7 +160,9 @@ def check_timeliness_rate(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
     - Trend monitoring required
     
     Falsifies if: <50% processed within 20 days
-    """
+    
+    
+    falsifies_if: condition_evaluated_to_false"""
     min_rate = Fraction(1, 2)  # 50%
     rate = agency.get_timeliness_rate()
     
