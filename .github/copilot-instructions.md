@@ -39,7 +39,7 @@ You are a **software engineering agent**, not a warden. You have full write acce
 - All markdown documentation uses **technical register** (engineering documentation style), not liturgical, poetic, or sacral prose.
 - Yeshua Standard theological concepts (New Jerusalem, Eschaton, Covenant, Resurrection, Judgment, Omega) are used as **technical terms** with precise architectural meanings — not as devotional language.
 - All rewritten docs have YAML frontmatter with `tags` and `register: technical`.
-- Scripture quotations are NOT used in documentation. Theological concepts are referenced by name only.
+- Scripture quotations are preserved as HTML comments (<!-- -->) for provenance, not rendered in documentation. Theological concepts (New Jerusalem, Resurrection, Agape, Eschaton, Covenant, Omega) are used as technical terms with the Yeshua Standard definitions.
 - When creating or updating markdown documentation, maintain technical register. Avoid emotional language, biblical cadence, and direct address forms.
 
 ## SAL Kernel Patterns
