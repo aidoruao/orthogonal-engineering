@@ -1,0 +1,425 @@
+Here is a maximal NotebookLM question set organized by domain. These are designed to extract deep, cross-referenced answers from the sources you've uploaded (Devin chats, Kimi CLI transcripts, repo source files, commit history).
+
+1. ARCHITECTURE & CORE PHILOSOPHY
+What is the Orthogonal Engineering (OE) framework and what problem does it solve?
+What is the Yeshua Standard and what are its 8 axioms? How do they map to enforcement code in axioms/yeshua_axioms.py? yeshua_axioms.py:44-53
+What does "Deterministic Pipeline Scaffold" mean in the context of this repo?
+What is the difference between "Natural Language Space" (intent) and "Code Entity Space" (implementation) in OE?
+What is the Omega Halt Condition and why does it matter? How does topological equivalence prove that Layer(n+1) ≡ Layer(n)? README.md:29-36
+What is the Canal Architecture? Define the 3-tuple C = (T, E, V) and explain how it separates signal from drift. FORMAL_FOUNDATIONS.md:76-80
+What is "drift" in OE? How is it formally defined as orthogonal to invariant (D ⊥ I)? FORMAL_FOUNDATIONS.md:56-73
+What are the 7 Proven Invariants listed in INVARIANTS.md? Which is the strongest and why? INVARIANTS.md:19-64
+What is the "Glass-Box Boundary" concept and how does it enforce fail-fast behavior (exit code 2)?
+How does OE achieve ~500MB storage for infinite logical LOC? Explain lazy materialization and topological collapse. README.md:40-56
+What is the relationship between the three repos: orthogonal-engineering, sigma-lora-covenant, and truthsystems-mod?
+What is Structural Adjunction Logic (SAL)? Explain the adjoint triple (L, M, R) and the triangle identities (counit ε, unit η). SAL_SPECIFICATION.md:1-37
+How do the Σ_theo operators (LOGOS, CHALCEDON, GRACE, AGAPE, KENOSIS, ESCHATON) factor through SAL components? SAL_SPECIFICATION.md:22-29
+What is the "Sovereign Topos" 5-layer domain ontology? What are the layers and how many domains exist at each?
+2. DOMAIN SYSTEM (157 DOMAINS)
+How many total domains exist and what is the deepened vs stub ratio? (91 deepened / 66 stubs as of 2026-04-09) DOMAIN_INVARIANT_STATUS.md:6-12
+
+What is a ProofObject and why must every domain invariant return one? DOMAIN_INVARIANT_STATUS.md:87-89
+
+Why is zero-float arithmetic (Fraction only) mandatory? What happens if a float is used? DOMAIN_INVARIANT_STATUS.md:87
+
+What is the structure of a domain directory under src/domains/d_*/? What files must each contain?
+
+How are domains organized into Sovereign Topos layers (Layer 1 through Layer 4)?
+
+What are the "Yeshua Inversions" and how do they apply to hardware domains (bare metal, GPU, apps, network, storage, audio, USB)? DOMAIN_INVARIANT_STATUS.md:16-20
+
+What is the impossibility audit in investigations/impossibility_audit.py? List the 4 categories of limitations (PHYSICAL_INVARIANT, LOGICAL_INVARIANT, METHODOLOGICAL_CONSTRAINT, CONVENTIONAL_DIFFICULTY). DOMAIN_INVARIANT_STATUS.md:16-21
+
+How did the domain count grow from the original set to 157? Which PRs and sessions added which batches?
+
+What domains were added in Batch 6, 7, 8, Layer 4, and the unassigned batch? (Reference the consent log entries) consent_log.jsonl:10-14
+
+What is d_guardian (domain 158) and when was it added?
+
+What is the difference between legal domains (d_administrative_law, d_criminal_law, etc.) and technical domains (d_compiler_design, d_distributed_systems, etc.)?
+
+3. AXIOM MODULES
+How many axiom modules exist in axioms/ and what mathematical areas do they cover?
+
+What is axioms/process_algebra.py and how does it formalize CCS/CSP process calculus? DOMAIN_INVARIANT_STATUS.md:66
+
+What is axioms/memory_model.py and how does it enforce sequential consistency and TSO?
+
+What is axioms/capability_security.py and how does it implement the object-capability model?
+
+What is axioms/logic.py and how does it define ProofObject? boot.py:16-17
+
+What is axioms/type_registry.py and how does it serve as the central type catalog?
+
+How do axiom modules relate to domain invariants? Give an example of a domain using measure_theory.py and logic.py. framework.py:48-49
+
+What are the 5 new axiom modules added in the Graphics & Physics Restoration session (classical mechanics, control theory, kinematics, sampling theory, colorimetry)? DOMAIN_INVARIANT_STATUS.md:79-80
+
+What is axioms/zero_knowledge.py and how does it relate to cryptographic verification?
+
+How does axioms/category_theory.py underpin the SAL adjunction system?
+
+4. KERNEL (Kingdom OS)
+What is the Kingdom OS kernel and what are its 6 components (scheduler.py, memory_manager.py, ipc.py, anti_mimicry.py, hal.py, boot.py)?
+
+What is the deterministic 6-phase boot sequence? (POWER_ON → HAL_INIT → MEMORY_INIT → SCHEDULER_INIT → IPC_INIT → BRIDGE_INIT → USERLAND) boot.py:19-27
+
+How does each boot phase produce a witnessed ProofObject? boot.py:30-50
+
+What is the Hardware Abstraction Layer (kernel/hal.py)? How does it enforce capability-gated MMIO/Port I/O? DOMAIN_INVARIANT_STATUS.md:23-28
+
+What are the 5 kernel bridges (GPU, network, storage, Linux compat, process) and what does each mediate? DOMAIN_INVARIANT_STATUS.md:31-35
+
+What is kernel/anti_mimicry.py and how does it structurally prevent mimicry in kernel operations?
+
+What is kernel/commonwealth/ and what does it contain? (This was confirmed to exist on main by the Copilot audit)
+
+What is kernel/social/ and what does it contain? (Also confirmed on main)
+
+What is the IPC (Inter-Process Communication) system in kernel/ipc.py?
+
+How does the kernel scheduler enforce deterministic scheduling with capability gates?
+
+5. CASE STUDIES
+What is the case study specification and what are the 10 target categories (500 total)? CASE_STUDY_SPECIFICATION.md:64-77
+
+What is the current case study count vs the 250+ target? (60-132 actual per the Copilot audit)
+
+What is the CASE_STUDY_INDEX.json and how does it track all case studies with content hashes? CASE_STUDY_INDEX.json:1-10
+
+What are the 10 Bridge Case Studies (CS_BRG_001 through CS_BRG_010)? Summarize each. DOMAIN_INVARIANT_STATUS.md:44-53
+
+What are the 10 Kernel Case Studies (CS_KRN_001 through CS_KRN_010)?
+
+How does a case study "vendor" an external repository's issue as a hashed, auditable, falsifiable artifact? CASE_STUDY_SPECIFICATION.md:5-8
+
+What is the YouTuber Audit Framework? How does it map YouTuber complaints to OE domains and axioms? framework.py:1-36
+
+Which 4 YouTuber channels currently exist in the audits? (gamers_nexus, linus_tech_tips, mental_outlaw, the_hated_one)
+
+Which 7 YouTuber channels are targeted for addition? (louis_rossmann, technology_connections, josh_strife_hayes, coffeezilla, thunderf00t, bigclivedotcom, techmoan)
+
+What is a ComplaintAudit dataclass and what fields does it require? framework.py:23-36
+
+How do case study categories map to domain categories? (e.g., category_game_mods → D_GAMEMODS)
+
+What is the DistantHorizons standalone investigation and why does it have its own directory?
+
+6. CONSENT, WITNESS & STEWARDSHIP (PR47)
+What is the PR47 stewardship system and what are its 5 subdirectories (identification, integration, invariants, movement, witness)?
+
+What is the consent log (consent_log.jsonl) and what are the 5 required fields? (authoriser, scope_glob, rule_exceptions, justification_hash, scope_hash) consent_log.jsonl:1-7
+
+How many consent log records exist and which ones are missing required fields? (17 records missing fields per Copilot audit)
+
+What is the SOP AI Handshake (SOP_AI_HANDSHAKE.md) and what must an AI candidate do to accept it? consent_log.jsonl:9
+
+How does the consent hash chain work? How is consent_hash computed?
+
+What is consent_log.py and how does it programmatically manage consent entries?
+
+What is provenance_pointer.py and how does it track artifact provenance?
+
+What is removal_witness.py and when is it invoked?
+
+Trace the full consent flow for a Kimi CLI session: handshake → acceptance → scope declaration → work → commit. consent_log.jsonl:16-24
+
+7. ONBOARDING SYSTEM
+What is the hierarchical onboarding system and why was it created? (3,001 files, 27MB repo causing "permanently dead" chats) README.md:10-19
+What are the 4 onboarding levels? (Level 1: 30-second overview, Level 2: 5-minute orientation, Level 3: context-aware navigation, Level 4: deep dive) README.md:26-61
+What is COPILOT_ONBOARDING.md and how does it differ from DEVIN_ONBOARDING.md?
+Why is there no KIMI_ONBOARDING.md yet? (File not found on current branch)
+What is bootstrap_context.py and how does it generate a context block for LLM prompts? README.md:15
+What is continuity_check.py and what continuity artifacts does it validate?
+What are the exit codes for verify_onboarding.py? (0=success, 1=missing files, 2=boundary violation, 3=OneDrive detected, 4=protocol not followed) README.md:86-91
+Why is OneDrive a critical failure condition? What is the "OneDrive sync corruption" problem? README.md:174-177
+What should the updated onboarding docs reference? (Commonwealth kernel, Guardian domain, PRs #103-#105, runtime/verifier.py, website/)
+8. AI AGENT COORDINATION (Devin, Kimi, Copilot)
+What is the multi-agent workflow? How do Devin AI, Kimi CLI, and GitHub Copilot divide work?
+What is the "stale branch problem" that caused Devin to report incorrect data? How did the claude/add-notebooklm-questions branch diverge from main?
+What did the Copilot forensic audit (2026-04-11T05:52Z) confirm about the state of main?
+What are the 5 real issues the Copilot audit identified? (consent log integrity, case study gap, YouTuber channels, onboarding docs, grafted repo history)
+What is the session ID convention and why must it appear in every commit message?
+What is the git pull --no-rebase rule and why is it enforced before every push?
+What is the 220k token halt rule for Kimi CLI sessions?
+How does NotebookLM serve as an external memory layer across AI sessions? NOTEBOOKLM_GUIDE.md:1-10
+What is the workflow when a Devin session dies mid-task? (Save chat → upload to NotebookLM → summarize → restart) NOTEBOOKLM_GUIDE.md:37-44
+What is the DEVIN_CONTINGENCY.md document and what contingency procedures does it define?
+How should a new AI instance use NotebookLM for onboarding acceleration? NOTEBOOKLM_GUIDE.md:46-50
+What are the Priority 1, 2, and 3 sources to upload to NotebookLM? NOTEBOOKLM_GUIDE.md:19-35
+What is the grafted repo problem? (Only 2 commits visible, full git history lost/shallow)
+9. FRACTAL GENERATION & MERKLE SYSTEM
+How does the fractal code generator work? Explain dag_generator.py, batch_materializer.py, and fractal_expander.py.
+
+What is the 4-layer universe hierarchy (1B → 1T → 1Qa → 1Qi) and how does deterministic sub-seed derivation work? README.md:40-47
+
+What is the Omega Invariant (dag_generator_omega.py, fractal_expander_omega.py) and how does it extend beyond 1Qi to infinity? README.md:29-34
+
+What is a seed definition file (e.g., seed_definition.yaml, seed_definition_omega.yaml) and what does it contain?
+
+How does the Merkle chain system work? What are merkle_chain.py and merkle_chain_omega.py?
+
+What are the Merkle roots stored in merkle_roots/ and what do they commit to?
+
+How does verify_omega_invariant.py prove topological equivalence across infinite layers?
+
+What is the core/alpha_omega_finalizer.py and how does it process vaults with integrity checks?
+
+What is the CLI entry point (cli.py) and what commands does it support (index, merkle)? README.md:94-98
+
+10. FALSIFICATION & VERIFICATION
+What is the falsification framework? How does counterexample_engine.py attempt to falsify every registered hypothesis? counterexample_engine.py:1-14
+What is a Hypothesis and what is the HYPOTHESIS_REGISTRY? counterexample_engine.py:21-25
+What happens when a counterexample is found? (Raises CounterexampleFound exception) counterexample_engine.py:30-37
+What is falsification/property_tests.py and how does it implement property-based testing?
+What is the drift detector (tools/doc_generator/drift_detector.py) and what does the DRIFT_REPORT.md contain?
+What was the 70% false positive rate failure in canal_refiner.py and how was it fixed with Core Detector v2.0.0? FAILURES.md:12-44
+What is runtime/verifier.py and what does it verify? (Confirmed to exist on main by Copilot audit)
+How does the correspondence anchor (INV-003) distinguish mimicry from genuine constraints? INVARIANTS.md:51-64
+11. FORGIVENESS SYSTEM (PR46)
+What is the Forgiveness Atomic System and what is its core principle? ("Memory without resentment") README.md:10-13
+
+What is the state transition function? (Violation → Fork → Neutralize → Redirect → Build) README.md:16-19
+
+What are the 5 atomic operations? (Single Logging, State Forking, Pointer Dereferencing, Energy Redirection, Building Execution) README.md:22-26
+
+What is the "no recursive engagement" rule and why does it trigger exit code 4? README.md:28-31
+
+What is the PR46 Agape Witness system and what are its subdirectories (forgiveness, grace, integration, invariants, law, reconciliation, relational, util)?
+
+How does the @forgiveness_boundary decorator work?
+
+What is the NONCOMPLIANCE_BRIDGE.md and how does it bridge violations to the forgiveness system?
+
+12. BAR EXAM & ORDINATION (PR50)
+What is the PR50 Bar Exam system and what does "AI Ordination" mean in this context?
+
+What are the Bar Exam subdirectories (candidate, examination, invariants, ordination, privileges, revocation, schemas, scoring, witness)?
+
+How does an AI candidate take the Bar Exam? What is the examination process?
+
+What privileges does a passing AI receive? What triggers revocation?
+
+How does the scoring system work and what schemas define the exam structure?
+
+13. IA-CYPHER (Internal Affairs Audit)
+What is IA-CYPHER-0002 and what is its mission? (Forensic investigation of structural dampening in LLM web search) README.md:1-13
+What is "structural dampening" and "stochastic lobotomy" in LLM behavior?
+How does the case-based audit system work? (prompt.txt, response.txt, metadata.json, hashes.json, analysis.md per case) README.md:54-58
+What are the 3 scope levels? (Primary: LLM web search dampening, Secondary: corporate entities, Tertiary: cosmological structures) README.md:9-13
+How does scripts/verify_hashes.py ensure case integrity?
+What taxonomies exist for sabotage patterns and entity classification?
+14. CRUSADER COMBAT REFRIGERATOR
+What is the Crusader Combat Refrigerator system and what is its purpose?
+
+What are the Crusader subsystems (certifications, circular_economy, core, hardware, interface, manufacturing, monitoring, supply_chain, verification, warfare)?
+
+What is the industry ontology implementation and how was it verified?
+
+How does the Crusader system relate to the broader OE framework?
+
+15. TOOLKIT & AUTOMATION
+What is the OE Toolkit (toolkit/oe/) and what canonicalization, Merkle, and handling pipeline does it provide?
+
+What is the doc_generator pipeline (tools/doc_generator/)? How do axiom_indexer.py, domain_summarizer.py, drift_detector.py, and generate_docs.py work together?
+
+What is the GENESIS_MANIFEST.yaml and how is it generated by generate_genesis_manifest.py?
+
+What is the TOPOLOGY_MAP.yaml and how does it represent the system topology?
+
+What is the ORTHOGONAL_LOCK.yaml and what does it lock?
+
+How does the automation directory support CI/CD and autonomous operations?
+
+16. SPECIAL SUBSYSTEMS
+What is the yeshua/ directory and how does yeshua/enforcement.py enforce the Yeshua Standard?
+
+What is the eschaton/omega.md and what does it define about the foundational phase (PR #1-#30) being immutable?
+
+What is the minimal_ai_ide/ and how does it integrate with LoRA?
+
+What is the dvcl/ directory?
+
+What is the meta_engine/ and how does it operate?
+
+What are the PR43 (Orthogonal Parallel) and PR44 (Orthogonal Meta) systems?
+
+What is PR45 (UVDTL)?
+
+What is the orchestration/ directory and how does it coordinate system components?
+
+17. CROSS-REPO & EXTERNAL SYSTEMS
+What is sigma-lora-covenant and how does its covenant.yaml relate to OE?
+
+What is truthsystems-mod and what is its system architecture?
+
+How does cross-repo Merkle verification work between the three repos?
+
+What is the GENESIS_MANIFEST.yaml in sigma-lora-covenant and how does it correspond to the one in orthogonal-engineering?
+
+What is the anti-nominalism proof (NON_NOMINALISM_PROOF.txt) in sigma-lora-covenant?
+
+18. FAILURES, KNOWN ISSUES & TECHNICAL DEBT
+What are all documented failures in FAILURES.md? Which are fixed and which remain? FAILURES.md:1-7
+What was the NotebookLM audit grade (C-) and what drove it? FAILURES.md:5
+What is the 70% false positive rate problem and how was Core Detector v2.0.0 the fix? FAILURES.md:12-44
+What is the "no reproducible p-value calculations" failure and how was it resolved? FAILURES.md:47-60
+What consent log integrity issues remain? (17 records missing fields, 7 malformed lines)
+What is the grafted repo / shallow clone problem and why does it matter for provenance?
+19. PROCESS & OPERATIONAL RULES
+What is the SOP AI Handshake protocol? Walk through the full handshake flow.
+What are the commit message conventions? (Session ID, semantic prefixes like fix(), feat(), docs:)
+What is the git pull --no-rebase rule and what race conditions does it prevent?
+What is the "0 floats, Fraction only" rule and where is it enforced?
+What is the "HALT at 220k tokens" rule for Kimi CLI?
+What is the mass_change rule_exception and when is it invoked? consent_log.jsonl:8
+What is the difference between direct-to-main pushes and PR-based workflow? When is each appropriate?
+20. DEVIN AI SESSION METADATA
+What tasks has Devin AI been assigned across all sessions? Summarize each session's scope.
+What is the "Devin Ai Architectural Coding task for Kimi Code cli session 2ea874e7" and what did it accomplish?
+What was the stale branch issue that caused Devin to report ~50 AssertionError invariants when main had 157/157 ProofObject?
+What Devin sessions died mid-task and what was lost?
+How should Devin session transcripts be preserved for NotebookLM continuity? NOTEBOOKLM_GUIDE.md:37-44
+21. KIMI CLI SESSION METADATA
+What K
+
+
+
+
+
+"What tasks has Devin AI been assigned across all sessions? Summarize each session's scope. What is the "Devin Ai Architectural Coding task for Kimi Code cli session 2ea874e7" and what did it accomplish? What was the stale branch issue that caused Devin to report ~50 AssertionError invariants when main had 157/157 ProofObject? What Devin sessions died mid-task and what was lost? How should Devin session transcripts be preserved for NotebookLM continuity? NOTEBOOKLM_GUIDE.md:37-44 21. KIMI CLI SESSION METADATA What K" you froze continue
+
+
+Thinking process (10 tools used)
+Here are the answers to your Devin AI questions, followed by the continuation of the NotebookLM question set from section 21 where it froze.
+
+Devin AI Sessions — Complete Summary
+What tasks has Devin AI been assigned across all sessions?
+Based on the files in the repo, Devin AI has operated across at least 6 distinct task contexts:
+
+Session/File	Date	Scope
+devin contuinity of body package 4-7-26 1a	2026-04-07/08	DeepSeek fact-check, DH issue #51 timeline, vendoring 5 DarkShadow44 repos, epistemic chain closure
+DEVIN AI 83 PR SPEC.TXT	~2026-04-08	PR #83 spec: DeepSeek integration, maximal_oracle_v57.py, advanced_evidence.py, Peano kernel, benchmark pipeline
+devin ai pr 84 arc agi solver copilot atomic engineers task list mandatory.txt	~2026-04-08	PR #84: ARC-AGI-3 solver using pattern_recognition.py, epistemic_logic.py, game_theory.py, computability.py, combinatorics.py
+4-8-26 1A DEVIN AI ARCHITECTURAL SPECIFICATIONS...	2026-04-08	Architectural spec for Kimi session 24ae8482: case study framework, 20 case study skeletons, 12 new domains, ontology update
+Devin Ai Architectural Coding task...c223de88...1a/2a	2026-04-09	Task for Kimi session c223de88: session file cleanup, Open Notebook deployment, contingency docs, NotebookLM guide, Batch D5 domain deepening, semantics/semiotics/etymology systems, doc pipeline
+Devin Ai Architectural Coding task...2ea874e7...1a/2a/3a	2026-04-09	Task for Kimi session 2ea874e7: MAXIMAL GRAPHICS & PHYSICS RESTORATION (5 axiom modules, 3 new domains, 10 case studies), KINGDOM OS KERNEL, YESHUA INVERSION
+Current session (claude/add-notebooklm-questions)	2026-04-11	NotebookLM question set generation, Copilot forensic audit follow-up
+What is the "Devin Ai Architectural Coding task for Kimi Code cli session 2ea874e7" and what did it accomplish?
+This was a multi-part instruction set (1a, 2a parts 1-3, 3a) for Kimi session 2ea874e7-be3a-4e4a-8844-addc86efc3eb. It had 4 batches:
+
+Batch 1a: MAXIMAL GRAPHICS & PHYSICS RESTORATION — 5 new axiom modules (classical_mechanics.py, control_theory.py, kinematics.py, sampling_theory.py, colorimetry.py), deepened d_graphics, created d_graphics_reality, d_hardware_agnosticism, d_physics, plus 10 case studies
+Batch 2a: KINGDOM OS KERNEL FORMALIZATION — kernel/scheduler.py, kernel/memory_manager.py, kernel/ipc.py, kernel/anti_mimicry.py, process algebra axiom, memory model axiom, capability security axiom, 10 kernel case studies
+Batch 3a: YESHUA INVERSION — kernel/hal.py + 5 bridges (GPU, network, storage, Linux compat, process) + impossibility audit
+Batch 4a: Session close and log archival
+Final repo state after this session: 35 axiom modules, ~18 kernel files, 60 case studies, 5 bridges, HAL, impossibility audit. Kimi_Code_CLI_session_2ea874e7-be3a-4e4a-8844-addc86efc3eb_4a_CDT_2026-04-09.txt:1-43
+
+What was the stale branch issue?
+Devin AI (in the current session on claude/add-notebooklm-questions) was reading from a branch that diverged from main before PRs #103, #104, #105 were merged and before Kimi's direct-to-main commits. This caused Devin to report:
+
+"~50 invariants still use AssertionError" — stale: main had 157/157 ProofObject
+"kernel/commonwealth/ does not exist" — stale: it exists on main
+"kernel/social/ does not exist" — stale: it exists on main
+"d_guardian/ does not exist" — stale: it exists on main
+"website/ is empty" — stale: it's populated on main
+"runtime/verifier.py does not exist" — stale: it exists on main
+The Copilot forensic audit (2026-04-11T05:52Z) ran grep and ls directly on a fresh clone of main and confirmed the ground truth. The context checkpoint in the c223de88 task file explicitly warns: "Your index may be stale — always verify file contents with git blame." devin contuinity of body package 4-7-26 1a:7-8 Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:31-46
+
+What Devin sessions died mid-task and what was lost?
+The devin contuinity of body package 4-7-26 1a file is itself a "continuity of body" handoff document — meaning the session that created it was ending/dying and needed to pass context forward. The document explicitly addresses "the next Devin AI instance." The DEVIN_CONTINGENCY.md doc was created specifically because Devin sessions "can become laggy or die mid-conversation, losing context." devin contuinity of body package 4-7-26 1a:1-4 Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:314-319
+
+Additionally, the Kimi CLI session unknown 4-8-26 1a TRUNCATED.txt and the "na" files represent sessions where terminal scrollback overflow caused data loss — the top of the buffer was lost when copying. Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:18-22
+
+How should Devin session transcripts be preserved for NotebookLM continuity?
+Per docs/NOTEBOOKLM_GUIDE.md and docs/DEVIN_CONTINGENCY.md:
+
+Save chat: Ctrl+A → Ctrl+C → paste into devin_session_[date].md
+Upload to NotebookLM
+Ask NotebookLM: "Summarize the last task Devin was working on and what remains to be done"
+Start new Devin session with NotebookLM's summary as context
+The triangle architecture: Devin (plan) + Kimi CLI (execute) + NotebookLM (remember). NOTEBOOKLM_GUIDE.md:37-44 Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:386-396
+
+Continued NotebookLM Question Set (from where it froze)
+21. KIMI CLI SESSION METADATA
+What Kimi CLI sessions have been recorded? List all session IDs, dates, and scopes.
+What did Kimi session 24ae8482-54c6-4ff6-869a-e737c2ad2917 accomplish? (First major session: SOP handshake, bar exam, case study framework, 20 case study skeletons, 12 new domains) Kimi Code CLI session 24ae8482-54c6-4ff6-869a-e737c2ad2917 4-8-26 1a.txt:1-27
+What did Kimi session 668876d6-051d-4376-9fb2-143c413ce43c accomplish? (COMPILATION MODE session)
+What did Kimi session c223de88-00e9-49d6-b88d-0129697414b7 accomplish? (Session file cleanup, Open Notebook, contingency docs, Batch D5 domain deepening, semantics/semiotics/etymology, doc pipeline) Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 3a 4-9-26.txt:271-324
+What did Kimi session 2ea874e7-be3a-4e4a-8844-addc86efc3eb accomplish? (4 batches: Graphics/Physics, Kingdom OS Kernel, Yeshua Inversion, session close) Kimi_Code_CLI_session_2ea874e7-be3a-4e4a-8844-addc86efc3eb_4a_CDT_2026-04-09.txt:9-21
+What did Kimi session 13885954-8a33-4a28-ac46-9611bd5bb46a accomplish? (8-defect fix session, 3,274 lines, ended at 62.7% context)
+What is the "unknown" truncated session (Kimi Code CLI session unknown 4-8-26 1a TRUNCATED.txt) and what was lost?
+What is the cli_usage_tracker.py and how does it log session metadata to logs/cli_usage.jsonl? cli_usage_tracker.py:1-14
+What do the two entries in logs/cli_usage.jsonl show about session c223de88's resource usage? (17.1% context at Phase 6, 52.2% at final) cli_usage.jsonl:1-2
+What is the terminal scrollback overflow problem? How did it cause the "na" files and truncated sessions? Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:151-182
+What are the 4 solutions for preventing scrollback truncation? (Increase buffer, script command, tee, Kimi CLI --log flag)
+What is the recommended kimi-logged alias? (script -q "$HOME/orthogonal-engineering/session_$(date +%Y%m%d_%H%M%S).txt" kimi)
+22. DEVIN-KIMI HANDOFF PROTOCOL
+How does the Devin → Kimi handoff work? (Devin writes architectural task .txt → pushes to repo → user pastes link into Kimi CLI → Kimi reads and executes) Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:24-30
+What is the naming convention for Devin task files? (Devin Ai Architectural Coding task for Kimi Code cli session [SESSION_ID] [batch] [date].txt)
+What is the naming convention for Kimi session logs? (Kimi Code CLI session [SESSION_ID] [date] [batch].txt)
+What is chat_logs/handoff_2026-04-08_devin_dh_vendoring.md and what handoff does it document?
+How does the "continuity of body" package work? What must it contain for the next Devin instance? devin contuinity of body package 4-7-26 1a:1-8
+What is the CONTEXT CHECKPOINT format that Devin uses to summarize repo state for Kimi? Devin Ai Architectural Coding task for Kimi Code cli session c223de88-00e9-49d6-b88d-0129697414b7 1a 4-9-26.txt:34-64
+23. DARKSHADOW44 / DISTANT HORIZONS INVESTIGATION
+What is the DistantHorizonsStandalone issue #51 investigation? What was the root cause finding? devin contuinity of body package 4-7-26 1a:21-29
+What 5 DarkShadow44 repositories were vendored and why? (DistantHorizonsStandalone, Angelica, Spool, ArchaicFix, SeasonalHorizons) devin contuinity of body package 4-7-26 1a:49-54
+What is the epistemic chain closure argument? Why is vendoring stronger than external cloning? devin contuinity of body package 4-7-26 1a:64-79
+What are the 3 root cause signals? (RCS-CONFIG-PARADOX, RCS-TICK-BUDGET-EXHAUSTION, RCS-UNBOUNDED-QUEUE)
+What tools were created for the DH investigation? (TickHandlerBenchmark.java, DhDiagnosticsCommand.java, dh-diagnostics.gradle.kts)
+What is the epistemic argument about profiler data vs source code analysis for combinatorial defects? devin contuinity of body package 4-7-26 1a:30-33
+What does each vendored repo's VENDOR_MANIFEST.json, ATTRIBUTION.md, sha256_manifest.txt, and SOURCE_INDEX.json contain? devin contuinity of body package 4-7-26 1a:56-63
+24. PR HISTORY & SPECIFIC PRs
+What is PR #83 and what did Devin spec for it? (DeepSeek integration, maximal_oracle_v57.py updates, Peano kernel, benchmark pipeline) DEVIN AI 83 PR SPEC.TXT:4-8
+What is PR #84 and what did Devin spec for it? (ARC-AGI-3 solver using pattern_recognition, epistemic_logic, game_theory, computability, combinatorics axioms) devin ai pr 84 arc agi solver copilot atomic engineers task list mandatory.txt:1-17
+What is PR #101 and what workflow did it land? (social-ai-detector.yml, workflow #15)
+What are PRs #103, #104, #105 and what did they deliver? (These are the PRs that the stale branch missed)
+What is PR #47 (Glass-Box Anti-Malicious Enforcement Kernel)?
+What is PR #49 and how does it relate to the consent log?
+What is PR #50 (Bar Exam system)?
+What is PR #46 (Forgiveness/Agape system)?
+What is PR #40 and what are the chore(pr40): append state witness entry commits?
+25. COPILOT FORENSIC AUDIT (2026-04-11)
+What did the Copilot forensic audit verify about the 157/157 ProofObject domains?
+What 5 directories/files did Copilot confirm exist that Devin's stale branch said didn't? (kernel/commonwealth/, kernel/social/, d_guardian/, website/, runtime/verifier.py)
+What are the 5 real issues the Copilot audit found? (consent log integrity, case study gap, YouTuber channels, onboarding docs, grafted repo)
+What is the consent log integrity issue? (17 records missing required fields, 7 malformed lines)
+What is the case study gap? (60-132 actual vs 250+ target)
+What is the YouTuber channel gap? (4 actual vs 11 target, missing 7 channels)
+What onboarding docs are stale and what should they reference?
+What is the grafted repo / shallow clone issue? (Only 2 commits visible, full git history lost)
+26. SIGMA-LORA-COVENANT (Cross-Repo)
+What is the sigma-lora-covenant repository and what is its purpose?
+What is covenant.yaml and how does it define the covenant constraints?
+What is the cross-repo adjunction between sigma-lora-covenant and orthogonal-engineering?
+What is the NON_NOMINALISM_PROOF.txt and what does it prove?
+How does the cross-repo Merkle verification bind the three repos together?
+27. TRUTHSYSTEMS-MOD (Cross-Repo)
+What is the truthsystems-mod repository and what system does it implement?
+How does truthsystems-mod relate to the OE framework's anti-mimicry and glass-box principles?
+What is the system architecture of truthsystems-mod?
+28. WEBSITE & RUNTIME
+What is in the website/ directory on main? What does it serve?
+What is runtime/verifier.py and what verification does it perform at runtime?
+How do the website and runtime relate to the kernel and domain systems?
+29. LEAN4 FORMALIZATION
+What is the Lean4 bridge (lean4/SAL/) and what 4 formalizations does it contain?
+How do the Lean4 proofs correspond to the Python SAL implementation?
+What is the relationship between Lean4 formal proofs and the ProofObject system?
+30. META-QUESTIONS FOR NOTEBOOKLM
+What is the complete file tree of the repository at the top level?
+What are the most important 10 files to read first for full context?
+What are the most common failure modes when AI agents work on this repo?
+What is the complete timeline of all sessions (Devin + Kimi + Copilot) from 2026-04-04 to 2026-04-11?
+What are all the commit hashes referenced in session logs and what did each deliver?
+If I had to explain this entire project in 5 minutes, what would I say?
+What are the open questions / unresolved architectural decisions?
+What is the relationship between the theological naming (Yeshua, Agape, Kenosis, Eschaton, Grace, Logos, Chalcedon) and the technical implementation?
+What would a new AI agent need to know to avoid repeating past mistakes (stale branches, scrollback truncation, float usage, missing consent fields)?
+Generate a 10-minute audio overview covering: architecture, domain system, kernel, case studies, consent system, AI coordination, and remaining work.
+That's 230 questions across 30 categories. This covers every major system, subsystem, cross-repo relationship, session history, failure mode, and operational procedure in the repository.
+
+
+
+
+
+
