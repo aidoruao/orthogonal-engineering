@@ -8,7 +8,10 @@ from .implementation import WageCalculator, DisparateImpactAnalyzer
 
 
 def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
-    """FLSA: Hourly rate must meet federal minimum wage."""
+    """FLSA: Hourly rate must meet federal minimum wage.
+
+    Falsifies if: calculator.meets_minimum_wage() is False.
+    """
     if not calculator.meets_minimum_wage():
         return False, ProofObject(
             conclusion=f"VIOLATION: Rate {calculator.employee.hourly_rate} < minimum {calculator.employee.FEDERAL_MINIMUM_WAGE}",
@@ -24,7 +27,10 @@ def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
 
 
 def check_overtime_calculation(employee) -> Tuple[bool, ProofObject]:
-    """FLSA: Overtime must be 1.5x regular rate."""
+    """FLSA: Overtime must be 1.5x regular rate.
+
+    Falsifies if: actual overtime pay < expected 1.5x rate when overtime hours exist.
+    """
     if employee.hours_worked <= employee.OVERTIME_THRESHOLD:
         return True, ProofObject(
             conclusion="No overtime hours",
@@ -50,7 +56,10 @@ def check_overtime_calculation(employee) -> Tuple[bool, ProofObject]:
 
 
 def check_disparate_impact(analyzer: DisparateImpactAnalyzer) -> Tuple[bool, ProofObject]:
-    """Title VII: 4/5ths rule for disparate impact detection."""
+    """Title VII: 4/5ths rule for disparate impact detection.
+
+    Falsifies if: analyzer.four_fifths_rule() reports any violating groups.
+    """
     violations = analyzer.four_fifths_rule()
     
     if violations:

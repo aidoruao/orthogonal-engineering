@@ -26,10 +26,7 @@ from .implementation import (
 def check_mobility_matrix_valid(matrix: MobilityMatrix) -> Tuple[bool, ProofObject]:
     """Mobility matrix must be valid probability distribution (sums to 1).
     
-    falsifies_if:
-        - Sum of all transition probabilities != 1.0
-        - Any probability < 0 or > 1
-        - Sample size < 100 (insufficient data)
+    Falsifies if: transition probabilities do not sum to 1, any probability is outside [0,1], or sample size < 100.
     """
     total = sum(matrix.transitions.values(), Fraction(0))
     
@@ -65,8 +62,7 @@ def check_mobility_matrix_valid(matrix: MobilityMatrix) -> Tuple[bool, ProofObje
 def check_credit_disparity(metrics: CreditAccessMetrics, threshold: Fraction) -> Tuple[bool, ProofObject]:
     """ECOA disparate impact: denial rate ratio should not exceed threshold (typically 2:1).
     
-    falsifies_if:
-        - Any group denial rate / lowest denial rate > threshold
+    Falsifies if: any group denial rate divided by the minimum denial rate exceeds threshold.
     """
     all_rates = list(metrics.denial_rate_by_race.values())
     if not all_rates:
@@ -110,8 +106,7 @@ def check_credit_disparity(metrics: CreditAccessMetrics, threshold: Fraction) ->
 def check_intervention_completion(outcome: InterventionOutcome) -> Tuple[bool, ProofObject]:
     """Effective interventions must reach substantial portion of target population.
     
-    falsifies_if:
-        - completion_rate < 50% (program design/implementation failure)
+    Falsifies if: completion_rate < 50%.
     """
     completion = outcome.completion_rate()
     MIN_COMPLETION = Fraction(1, 2)  # 50%
@@ -137,10 +132,7 @@ def check_intervention_completion(outcome: InterventionOutcome) -> Tuple[bool, P
 def check_opportunity_atlas_validity(atlas: OpportunityAtlas) -> Tuple[bool, ProofObject]:
     """Opportunity Atlas data must have valid ranges.
     
-    falsifies_if:
-        - Rates outside [0, 1]
-        - Negative income values
-        - Incarceration rate > 100%
+    Falsifies if: income is negative or any rate lies outside [0, 1].
     """
     if atlas.household_income_at_35 < Fraction(0):
         return False, ProofObject(
@@ -176,8 +168,7 @@ def check_opportunity_atlas_validity(atlas: OpportunityAtlas) -> Tuple[bool, Pro
 def check_intergenerational_mobility_floor(matrix: MobilityMatrix) -> Tuple[bool, ProofObject]:
     """Society should provide minimum upward mobility from bottom quintile.
     
-    falsifies_if:
-        - P(upward | Q1) < 20% (absolute mobility below random chance)
+    Falsifies if: probability of upward mobility from bottom quintile is below 20%.
     """
     upward_prob = matrix.probability_upward(1)  # From bottom quintile
     MIN_MOBILITY = Fraction(1, 5)  # 20% - at least random chance

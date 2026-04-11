@@ -464,7 +464,10 @@ def check_nursing_facility_medicaid_requirements() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ELDER_LAW invariants."""
+    """Run all D_ELDER_LAW invariants.
+
+    Falsifies if: any elder law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_adea_age_discrimination_prohibition", check_adea_age_discrimination_prohibition),
         ("check_older_americans_act_services", check_older_americans_act_services),

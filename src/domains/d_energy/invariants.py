@@ -303,7 +303,10 @@ def check_demand_response_enrollment() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ENERGY invariants."""
+    """Run all D_ENERGY invariants.
+
+    Falsifies if: any energy domain invariant check fails or raises an exception.
+    """
     checks = [
         ("check_renewable_interconnection_standards", check_renewable_interconnection_standards),
         ("check_nerc_cip_compliance", check_nerc_cip_compliance),

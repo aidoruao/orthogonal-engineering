@@ -306,7 +306,10 @@ def check_environmental_compliance_fraction_precision() -> Tuple[bool, ProofObje
 
 
 def run_all_invariants() -> dict:
-    """Run all D_ENVIRONMENTAL_LAW invariants."""
+    """Run all D_ENVIRONMENTAL_LAW invariants.
+
+    Falsifies if: any environmental law invariant check fails or raises an exception.
+    """
     checks = [
         ("check_nepa_environmental_review", check_nepa_environmental_review),
         ("check_clean_air_act_naaqs", check_clean_air_act_naaqs),
