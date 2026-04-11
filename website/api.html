@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API — Kingdom OS Witness Node</title>
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --accent-green: #4ade80;
+            --accent-blue: #60a5fa;
+            --border: #2a2a3e;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'SF Mono', Monaco, monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        h1 { font-size: 1.5rem; margin-bottom: 0.5rem; color: #fff; }
+        .subtitle { color: var(--text-secondary); font-size: 0.9rem; }
+        
+        nav { margin-top: 1rem; }
+        nav a { color: var(--accent-blue); text-decoration: none; margin-right: 1.5rem; font-size: 0.85rem; }
+        nav a:hover { text-decoration: underline; }
+        
+        main { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        
+        .endpoint {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            overflow: hidden;
+        }
+        
+        .endpoint-header {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .method {
+            background: var(--accent-green);
+            color: var(--bg-primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .path {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+        
+        .endpoint-body {
+            padding: 1rem;
+        }
+        
+        .endpoint-body p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .response {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1rem;
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+        
+        .response pre {
+            margin: 0;
+            color: var(--accent-green);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚔️ Kingdom OS Witness Node</h1>
+        <p class="subtitle">API Documentation — Machine-Readable Endpoints</p>
+        <nav>
+            <a href="/">Dashboard</a>
+            <a href="/api.html">API</a>
+            <a href="/commonwealth.html">Commonwealth</a>
+            <a href="https://github.com/aidoruao/orthogonal-engineering">GitHub</a>
+        </nav>
+    </header>
+    
+    <main>
+        <h2 style="margin-bottom: 1rem;">API Endpoints</h2>
+        
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/data.json</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Returns complete repository state including domain count, case studies, and current Merkle root.</p>
+                <div class="response">
+                    <pre>{
+  "domains": 158,
+  "domains_deepened": 158,
+  "case_studies": 182,
+  "kernel_modules": 20,
+  "merkle_root": "a1b2c3d4...",
+  "generated": "2026-04-11T04:30:00Z"
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/domains</span>
+            </div>
+            <div class="endpoint-body">
+                <p>List all domains with their invariant status.</p>
+                <div class="response">
+                    <pre>{
+  "count": 158,
+  "domains": [
+    {"id": "D_GUARDIAN", "name": "Operation T-800 Guardian", "status": "deepened"},
+    {"id": "D_COMMONWEALTH", "name": "Yeshua Commonwealth", "status": "deepened"}
+  ]
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/invariants/{domain}</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Get invariants for a specific domain (e.g., /api/invariants/D_GUARDIAN).</p>
+                <div class="response">
+                    <pre>{
+  "domain": "D_GUARDIAN",
+  "invariants": [
+    "Exactly one guardian per principal",
+    "Guardian heartbeat within configured interval",
+    "Force used never exceeds proportional budget"
+  ]
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/case-studies</span>
+            </div>
+            <div class="endpoint-body">
+                <p>List all case studies with category distribution.</p>
+                <div class="response">
+                    <pre>{
+  "count": 182,
+  "categories": {
+    "AI_FAILURES": 20,
+    "INFRASTRUCTURE": 20,
+    "PRIVACY": 10,
+    "FINANCIAL_FRAUD": 10,
+    "LABOR": 10
+  }
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">GET</span>
+                <span class="path">/api/merkle-root</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Get current repository Merkle root.</p>
+                <div class="response">
+                    <pre>{
+  "merkle_root": "a1b2c3d4e5f6789...",
+  "timestamp": "2026-04-11T04:30:00Z",
+  "files_hashed": 500
+}</pre>
+                </div>
+            </div>
+        </div>
+        
+        <div class="endpoint">
+            <div class="endpoint-header">
+                <span class="method">POST</span>
+                <span class="path">/api/verify-proof</span>
+            </div>
+            <div class="endpoint-body">
+                <p>Verify a ProofObject hash against the witness chain.</p>
+                <div class="response">
+                    <pre>// Request
+{
+  "proof_hash": "sha256:abc123...",
+  "context": "guardian_protection_record_001"
+}
+
+// Response
+{
+  "valid": true,
+  "witnessed_at": "2026-04-11T04:30:00Z",
+  "witness_node": "witness-001"
+}</pre>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>Orthogonal Engineering Framework — Yeshua Standard</p>
+    </footer>
+</body>
+</html>

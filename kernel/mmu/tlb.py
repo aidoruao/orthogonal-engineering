@@ -177,9 +177,10 @@ class TLB:
         return count, proof
     
     def flush_asid(self, asid: AddressSpaceID) -> Tuple[int, ProofObject]:
-        """Flush all entries for a specific ASID."""
+        """Flush all entries for a specific ASID (preserving global pages)."""
         before = len(self.entries)
-        self.entries = [e for e in self.entries if e.asid.asid != asid.asid]
+        # Keep entries that are global OR have different ASID
+        self.entries = [e for e in self.entries if e.global_page or e.asid.asid != asid.asid]
         flushed = before - len(self.entries)
         
         proof = ProofObject(
