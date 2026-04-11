@@ -10,6 +10,9 @@ International criminal law invariants ensure:
 
 from datetime import datetime, timedelta
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_INTERNATIONAL_CRIMINALChecker,
@@ -21,8 +24,11 @@ from .implementation import (
 )
 
 
-def check_jurisdiction_rules() -> bool:
-    """Verify ICC jurisdiction rules are followed."""
+def check_jurisdiction_rules() -> Tuple[bool, ProofObject]:
+    """Verify ICC jurisdiction rules are followed.
+    
+    falsifies_if: jurisdiction check fails for valid case
+    """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
     case = Case(
@@ -35,32 +41,71 @@ def check_jurisdiction_rules() -> bool:
     )
     
     # Should have jurisdiction if territorial
-    assert checker.check_jurisdiction(case, "State X", "State Y")
+    if not checker.check_jurisdiction(case, "State X", "State Y"):
+        return False, ProofObject(
+            rule="jurisdiction_rules",
+            subject="CASE-001",
+            falsifies_if="territorial jurisdiction denied",
+        )
     
     # Should have jurisdiction if nationality-based
-    assert checker.check_jurisdiction(case, "State Z", "State X")
+    if not checker.check_jurisdiction(case, "State Z", "State X"):
+        return False, ProofObject(
+            rule="jurisdiction_rules",
+            subject="CASE-001",
+            falsifies_if="nationality jurisdiction denied",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="jurisdiction_rules",
+        subject="ICC jurisdiction",
+        verified=True,
+    )
 
 
-def check_complementarity_principle() -> bool:
-    """Verify complementarity principle is respected."""
+def check_complementarity_principle() -> Tuple[bool, ProofObject]:
+    """Verify complementarity principle is respected.
+    
+    falsifies_if: complementarity logic fails
+    """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
     # No domestic proceedings = ICC can act
-    assert checker.check_complementarity(False, False)
+    if not checker.check_complementarity(False, False):
+        return False, ProofObject(
+            rule="complementarity_principle",
+            subject="no_domestic_proceedings",
+            falsifies_if="ICC cannot act when no domestic proceedings",
+        )
     
     # Domestic proceedings active and willing/able = ICC cannot act
-    assert not checker.check_complementarity(True, True)
+    if checker.check_complementarity(True, True):
+        return False, ProofObject(
+            rule="complementarity_principle",
+            subject="domestic_proceedings_active",
+            falsifies_if="ICC can act when domestic proceedings willing/able",
+        )
     
     # Domestic proceedings but unwilling/unable = ICC can act
-    assert checker.check_complementarity(True, False)
+    if not checker.check_complementarity(True, False):
+        return False, ProofObject(
+            rule="complementarity_principle",
+            subject="domestic_unwilling_unable",
+            falsifies_if="ICC cannot act when domestic unwilling/unable",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="complementarity_principle",
+        subject="complementarity",
+        verified=True,
+    )
 
 
-def check_evidence_chain_of_custody() -> bool:
-    """Verify evidence maintains chain of custody."""
+def check_evidence_chain_of_custody() -> Tuple[bool, ProofObject]:
+    """Verify evidence maintains chain of custody.
+    
+    falsifies_if: evidence chain verification fails
+    """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
     valid_evidence = Evidence(
@@ -79,14 +124,31 @@ def check_evidence_chain_of_custody() -> bool:
         chain_of_custody=[],
     )
     
-    assert checker.verify_evidence_chain(valid_evidence)
-    assert not checker.verify_evidence_chain(invalid_evidence)
+    if not checker.verify_evidence_chain(valid_evidence):
+        return False, ProofObject(
+            rule="evidence_chain_of_custody",
+            subject="EVID-001",
+            falsifies_if="valid evidence fails chain check",
+        )
+    if checker.verify_evidence_chain(invalid_evidence):
+        return False, ProofObject(
+            rule="evidence_chain_of_custody",
+            subject="EVID-002",
+            falsifies_if="invalid evidence passes chain check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="evidence_chain_of_custody",
+        subject="evidence chain",
+        verified=True,
+    )
 
 
-def check_case_timeline_reasonableness() -> bool:
-    """Verify cases proceed within reasonable timeframes."""
+def check_case_timeline_reasonableness() -> Tuple[bool, ProofObject]:
+    """Verify cases proceed within reasonable timeframes.
+    
+    falsifies_if: investigation exceeds 5 years without trial
+    """
     opened = datetime(2025, 1, 1)
     now = datetime(2026, 4, 9)
     
@@ -102,13 +164,25 @@ def check_case_timeline_reasonableness() -> bool:
     duration = now - opened
     
     # Investigation should not exceed 5 years without trial
-    assert duration.days < 365 * 5, "Investigation exceeded 5 years"
+    if duration.days >= 365 * 5:
+        return False, ProofObject(
+            rule="case_timeline_reasonableness",
+            subject="CASE-003",
+            falsifies_if=f"investigation exceeded 5 years ({duration.days} days)",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="case_timeline_reasonableness",
+        subject="CASE-003",
+        verified=True,
+    )
 
 
-def check_crime_type_classification() -> bool:
-    """Verify crimes are properly classified."""
+def check_crime_type_classification() -> Tuple[bool, ProofObject]:
+    """Verify crimes are properly classified.
+    
+    falsifies_if: crime type classification incorrect
+    """
     war_crime = Case(
         case_id="CASE-004",
         crime_type=CrimeType.WAR_CRIME,
@@ -127,17 +201,47 @@ def check_crime_type_classification() -> bool:
         jurisdiction="State W",
     )
     
-    assert war_crime.crime_type == CrimeType.WAR_CRIME
-    assert genocide.crime_type == CrimeType.GENOCIDE
+    if war_crime.crime_type != CrimeType.WAR_CRIME:
+        return False, ProofObject(
+            rule="crime_type_classification",
+            subject="CASE-004",
+            falsifies_if="war crime misclassified",
+        )
+    if genocide.crime_type != CrimeType.GENOCIDE:
+        return False, ProofObject(
+            rule="crime_type_classification",
+            subject="CASE-005",
+            falsifies_if="genocide misclassified",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="crime_type_classification",
+        subject="crime classification",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check."""
-    assert check_jurisdiction_rules()
-    assert check_complementarity_principle()
-    assert check_evidence_chain_of_custody()
-    assert check_case_timeline_reasonableness()
-    assert check_crime_type_classification()
-    return True
+    checks = [
+        check_jurisdiction_rules,
+        check_complementarity_principle,
+        check_evidence_chain_of_custody,
+        check_case_timeline_reasonableness,
+        check_crime_type_classification,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="international criminal compliance",
+        verified=True,
+    )
