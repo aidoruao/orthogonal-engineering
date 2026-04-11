@@ -11,6 +11,7 @@ from dataclasses import dataclass, field
 from typing import Tuple, List, Dict, Optional, Any
 from fractions import Fraction
 from enum import Enum, auto
+from datetime import datetime, timezone
 
 from axioms.logic import ProofObject
 
@@ -348,7 +349,7 @@ class DisputeResolution:
             severity=ViolationSeverity.HIGH,
             evidence=check_proof,
             claimant="auto_checker",
-            timestamp=check_proof.to_dict().get("timestamp", "unknown"),
+            timestamp=datetime.now(timezone.utc).isoformat(),
         )
         
         proof = ProofObject(
