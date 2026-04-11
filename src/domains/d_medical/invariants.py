@@ -335,7 +335,10 @@ def check_emtala_mse_requirement() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> dict:
-    """Run all D_MEDICAL invariants."""
+    """Run all D_MEDICAL invariants.
+
+    Falsifies if: any medical invariant check fails or raises an exception.
+    """
     checks = [
         ("check_hipaa_phi_protection", check_hipaa_phi_protection),
         ("check_fda_device_classification", check_fda_device_classification),

@@ -26,7 +26,7 @@ from .implementation import (
 def check_cross_platform_coverage() -> Tuple[bool, ProofObject]:
     """Verify apps support required platforms.
     
-    falsifies_if: platform coverage insufficient
+    Falsifies if: required platforms are not supported.
     """
     checker = D_MOBILE_DEVELOPMENTChecker()
     
@@ -64,7 +64,7 @@ def check_cross_platform_coverage() -> Tuple[bool, ProofObject]:
 def check_battery_efficiency() -> Tuple[bool, ProofObject]:
     """Verify apps meet battery efficiency standards.
     
-    falsifies_if: battery drain exceeds threshold
+    Falsifies if: battery drain exceeds the configured efficiency threshold.
     """
     checker = D_MOBILE_DEVELOPMENTChecker()
     
@@ -105,7 +105,7 @@ def check_battery_efficiency() -> Tuple[bool, ProofObject]:
 def check_crash_rate_threshold() -> Tuple[bool, ProofObject]:
     """Verify apps meet crash rate thresholds.
     
-    falsifies_if: crash rate below 99%
+    Falsifies if: crash-free sessions percentage falls below 99%.
     """
     checker = D_MOBILE_DEVELOPMENTChecker()
     
@@ -146,7 +146,7 @@ def check_crash_rate_threshold() -> Tuple[bool, ProofObject]:
 def check_permission_minimalism() -> Tuple[bool, ProofObject]:
     """Verify apps request only necessary permissions.
     
-    falsifies_if: excessive permissions requested
+    Falsifies if: app requests excessive permissions beyond minimal needs.
     """
     app_minimal = MobileApp(
         app_id="APP-006",
@@ -189,7 +189,7 @@ def check_permission_minimalism() -> Tuple[bool, ProofObject]:
 def check_launch_time_performance() -> Tuple[bool, ProofObject]:
     """Verify app launch times meet performance standards.
     
-    falsifies_if: launch time exceeds 500ms for fast app
+    Falsifies if: fast app launch time exceeds threshold or slow app misclassified.
     """
     fast_app = PerformanceMetrics(
         app_id="APP-008",
@@ -226,7 +226,10 @@ def check_launch_time_performance() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check."""
+    """Master compliance check.
+
+    Falsifies if: any mobile development invariant check fails.
+    """
     checks = [
         check_cross_platform_coverage,
         check_battery_efficiency,

@@ -27,7 +27,7 @@ from .implementation import (
 def check_license_compatibility() -> Tuple[bool, ProofObject]:
     """Verify dependency licenses are compatible with project license.
     
-    falsifies_if: license compatibility check fails
+    Falsifies if: license compatibility check fails for valid set or passes for incompatible set.
     """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
@@ -76,7 +76,7 @@ def check_license_compatibility() -> Tuple[bool, ProofObject]:
 def check_governance_files_present() -> Tuple[bool, ProofObject]:
     """Verify projects have required governance files.
     
-    falsifies_if: project missing required governance files
+    Falsifies if: project missing required governance files passes health check.
     """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
@@ -121,7 +121,7 @@ def check_governance_files_present() -> Tuple[bool, ProofObject]:
 def check_contribution_review_time() -> Tuple[bool, ProofObject]:
     """Verify contributions are reviewed within SLA.
     
-    falsifies_if: review time exceeds 48 hours
+    Falsifies if: contribution review time exceeds 48 hours.
     """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
@@ -159,7 +159,7 @@ def check_contribution_review_time() -> Tuple[bool, ProofObject]:
 def check_maintainer_coverage() -> Tuple[bool, ProofObject]:
     """Verify projects have sufficient maintainer coverage.
     
-    falsifies_if: project has fewer than 2 maintainers
+    Falsifies if: project has fewer than two maintainers when two are required.
     """
     well_maintained = OpenSourceProject(
         project_id="PROJ-006",
@@ -199,7 +199,7 @@ def check_maintainer_coverage() -> Tuple[bool, ProofObject]:
 def check_cla_compliance() -> Tuple[bool, ProofObject]:
     """Verify CLA requirements for corporate-backed projects.
     
-    falsifies_if: CLA requirements not met
+    Falsifies if: corporate project lacks CLA or community project incorrectly enforces one.
     """
     corporate_project = OpenSourceProject(
         project_id="PROJ-008",
@@ -241,7 +241,10 @@ def check_cla_compliance() -> Tuple[bool, ProofObject]:
 
 
 def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check."""
+    """Master compliance check.
+
+    Falsifies if: any open source governance invariant check fails.
+    """
     checks = [
         check_license_compatibility,
         check_governance_files_present,

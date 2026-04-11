@@ -21,8 +21,7 @@ from .implementation import KripkeFrame, ModalSystem
 def check_frame_reflexivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
     """T axiom: □p → p requires reflexive frames.
     
-    falsifies_if:
-        - Any world not accessible from itself
+    Falsifies if: any world is not accessible from itself.
     """
     for world in frame.worlds:
         accessible = frame.accessibility.get(world.world_id, set())
@@ -46,8 +45,7 @@ def check_frame_reflexivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
 def check_frame_transitivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
     """4 axiom: □p → □□p requires transitive frames.
     
-    falsifies_if:
-        - wRv and vRu but not wRu
+    Falsifies if: wRv and vRu hold but wRu does not.
     """
     for w in frame.worlds:
         for v_id in frame.accessibility.get(w.world_id, set()):
@@ -72,8 +70,7 @@ def check_frame_transitivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
 def check_frame_symmetry(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
     """B axiom: p → □◇p requires symmetric frames.
     
-    falsifies_if:
-        - wRv but not vRw
+    Falsifies if: wRv holds but vRw does not.
     """
     for w in frame.worlds:
         for v_id in frame.accessibility.get(w.world_id, set()):
@@ -97,8 +94,7 @@ def check_frame_symmetry(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
 def check_system_compliance(frame: KripkeFrame, system: ModalSystem) -> Tuple[bool, ProofObject]:
     """Frame validates modal system axioms.
     
-    falsifies_if:
-        - Frame doesn't satisfy system requirements
+    Falsifies if: frame fails the reflexive/transitive/symmetric requirements for the modal system.
     """
     if system == ModalSystem.T and not frame.is_reflexive():
         return False, ProofObject(
@@ -131,8 +127,7 @@ def check_system_compliance(frame: KripkeFrame, system: ModalSystem) -> Tuple[bo
 def check_accessibility_non_empty(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
     """Serial frames require every world has at least one accessible world.
     
-    falsifies_if:
-        - Any world has empty accessibility set
+    Falsifies if: any world has an empty accessibility set.
     """
     for world in frame.worlds:
         if not frame.accessibility.get(world.world_id, set()):

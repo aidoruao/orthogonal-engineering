@@ -27,8 +27,7 @@ from .implementation import (
 def check_pow_rights(detention: DetentionOperation) -> Tuple[bool, ProofObject]:
     """Geneva III requires ICRC notification for POWs.
     
-    falsifies_if:
-        - pow_rights_applicable AND icrc_notified is False
+    Falsifies if: POW rights apply and icrc_notified is False.
     """
     if detention.pow_rights_applicable() and not detention.icrc_notified:
         return False, ProofObject(
@@ -54,8 +53,7 @@ def check_pow_rights(detention: DetentionOperation) -> Tuple[bool, ProofObject]:
 def check_proportionality(operation: MilitaryOperation) -> Tuple[bool, ProofObject]:
     """LOAC requires proportionality between military advantage and collateral damage.
     
-    falsifies_if:
-        - civilian_casualties excessive relative to military gain
+    Falsifies if: civilian casualties are excessive relative to military gain.
     """
     if operation.civilian_casualties > 0:
         # If high civilian casualties but minimal military gain
@@ -84,8 +82,7 @@ def check_proportionality(operation: MilitaryOperation) -> Tuple[bool, ProofObje
 def check_indiscriminate_weapons(operation: MilitaryOperation) -> Tuple[bool, ProofObject]:
     """Weapons that cannot be directed at military objectives are prohibited.
     
-    falsifies_if:
-        - indiscriminate_weapon is True
+    Falsifies if: operation uses an indiscriminate weapon.
     """
     if operation.indiscriminate_weapon:
         return False, ProofObject(
@@ -108,8 +105,7 @@ def check_indiscriminate_weapons(operation: MilitaryOperation) -> Tuple[bool, Pr
 def check_medical_neutrality(operation: MilitaryOperation) -> Tuple[bool, ProofObject]:
     """Medical units and personnel are protected under Geneva Conventions.
     
-    falsifies_if:
-        - target_category is MEDICAL
+    Falsifies if: target_category is MEDICAL.
     """
     if operation.target_category == TargetCategory.MEDICAL:
         return False, ProofObject(
@@ -131,8 +127,7 @@ def check_medical_neutrality(operation: MilitaryOperation) -> Tuple[bool, ProofO
 def check_cultural_property_protection(operation: MilitaryOperation) -> Tuple[bool, ProofObject]:
     """Hague Convention protects cultural property in armed conflict.
     
-    falsifies_if:
-        - target_category is CULTURAL_PROPERTY
+    Falsifies if: target_category is CULTURAL_PROPERTY.
     """
     if operation.target_category == TargetCategory.CULTURAL_PROPERTY:
         return False, ProofObject(
@@ -154,8 +149,7 @@ def check_cultural_property_protection(operation: MilitaryOperation) -> Tuple[bo
 def check_enhanced_interrogation_prohibition(detention: DetentionOperation) -> Tuple[bool, ProofObject]:
     """Torture and CIDTP (Cruel, Inhuman, Degrading Treatment) absolutely prohibited.
     
-    falsifies_if:
-        - enhanced_interrogation_used is True
+    Falsifies if: enhanced_interrogation_used is True.
     """
     if detention.enhanced_interrogation_used:
         return False, ProofObject(

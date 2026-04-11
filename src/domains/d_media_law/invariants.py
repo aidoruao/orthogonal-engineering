@@ -24,8 +24,7 @@ from .implementation import BroadcastStation, DefamationClaim, ShieldLawClaim, P
 def check_broadcast_license_current(station: BroadcastStation) -> Tuple[bool, ProofObject]:
     """FCC license required for broadcast operations.
     
-    falsifies_if:
-        - license_expiration passed
+    Falsifies if: license_expiration has passed.
     """
     if not station.license_current():
         days_expired = (datetime.now() - station.license_expiration).days
@@ -52,8 +51,7 @@ def check_broadcast_license_current(station: BroadcastStation) -> Tuple[bool, Pr
 def check_children_programming_requirement(station: BroadcastStation) -> Tuple[bool, ProofObject]:
     """Children's Television Act requires 3 hours/week core programming.
     
-    falsifies_if:
-        - children_programming_hours < 3 per week
+    Falsifies if: children_programming_hours is below 3 per week.
     """
     REQUIRED_HOURS = Fraction(3)
     
@@ -78,8 +76,7 @@ def check_children_programming_requirement(station: BroadcastStation) -> Tuple[b
 def check_defamation_actual_malice(claim: DefamationClaim) -> Tuple[bool, ProofObject]:
     """NYT v. Sullivan requires actual malice for public officials.
     
-    falsifies_if:
-        - Public figure claim without actual malice finding
+    Falsifies if: claim involves public figure but fault level is not actual malice.
     """
     if claim.is_public_figure_claim():
         if claim.fault_level != "actual_malice":
@@ -104,8 +101,7 @@ def check_defamation_actual_malice(claim: DefamationClaim) -> Tuple[bool, ProofO
 def check_shield_law_protection(claim: ShieldLawClaim) -> Tuple[bool, ProofObject]:
     """Shield laws protect journalists from source disclosure.
     
-    falsifies_if:
-        - qualified_journalist held in contempt for protecting confidential source
+    Falsifies if: qualified journalist with confidential source is held in contempt.
     """
     if claim.qualified_journalist and claim.information_confidential:
         if claim.contempt_issued:
@@ -135,8 +131,7 @@ def check_shield_law_protection(claim: ShieldLawClaim) -> Tuple[bool, ProofObjec
 def check_retraction_timeliness(content: PublishedContent) -> Tuple[bool, ProofObject]:
     """Many jurisdictions require retraction request before libel suit.
     
-    falsifies_if:
-        - Defamation claim filed without retraction opportunity
+    Falsifies if: defamation claim proceeds without opportunity for retraction where required.
     """
     if content.defamation_claim_filed and not content.retraction_issued:
         # Some jurisdictions require retraction demand first
@@ -159,8 +154,7 @@ def check_retraction_timeliness(content: PublishedContent) -> Tuple[bool, ProofO
 def check_public_file_completeness(station: BroadcastStation) -> Tuple[bool, ProofObject]:
     """FCC requires public inspection file for broadcast stations.
     
-    falsifies_if:
-        - public_file_complete is False
+    Falsifies if: public_file_complete is False.
     """
     if not station.public_file_complete:
         return False, ProofObject(
