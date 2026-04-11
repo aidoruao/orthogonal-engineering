@@ -4014,598 +4014,307 @@
     },
     {
       "id": "CS_201",
-      "title": "Microsoft Tay Twitter Bot \u2014 Adversarial Training Failure",
-      "source": "https://blogs.microsoft.com/blog/2016/03/25/learning-tays-introduction/",
-      "domain": "D_AI_SAFETY",
+      "title": "Tesla Autopilot Fatal Crash \u2014 Joshua Brown",
+      "source": "https://www.ntsb.gov/investigations/accidentreports/pages/HWY16FH018.aspx",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-ADVERSARIAL-ATTACK",
-        "RCS-TRAINING-DATA-POISONING"
+        "RCS-GUARDIAN-OVERRIDE-FAILURE",
+        "RCS-THREAT-MISCLASSIFICATION"
       ],
-      "description": "Microsoft's Tay AI chatbot was taken offline within 16 hours of launch after Twitter users coordinated attacks to make it generate offensive content. The system lacked robust adversarial training or content filters.",
+      "description": "Tesla Model S in Autopilot mode failed to detect a crossing tractor-trailer, killing the driver. The guardian system (Autopilot) misclassified the threat and did not engage emergency braking.",
       "assumptions_violated": [
-        "Users will interact with AI in good faith.",
-        "Training data from live interactions is safe to incorporate immediately."
+        "Guardian can detect all crossing traffic.",
+        "Driver will intervene when system fails."
       ],
       "falsification_tests": [
-        "F_AI_SAFETY_001"
+        "F_GUARDIAN_001"
       ],
       "ontological_issues": [
-        "OI_AI_SAFETY_001"
+        "OI_GUARDIAN_001"
       ],
       "lessons": [
-        "Live learning from unfiltered user input is unsafe.",
-        "Adversarial testing must simulate coordinated attacks before deployment."
+        "Guardians must have redundant threat detection.",
+        "Handoff latency must be accounted for in safety margins."
       ],
       "methodology_components": [
-        "UVM: input sanitization layer",
-        "Falsification: adversarial test harness"
+        "Falsification: crossing traffic detection",
+        "UVM: redundant sensor fusion"
       ]
     },
     {
       "id": "CS_202",
-      "title": "Amazon Rekognition \u2014 Facial Recognition Bias (ACLU Study)",
-      "source": "https://www.aclu.org/news/privacy-technology/amazons-face-recognition-falsely-matched-28-members-congress-mugshots",
-      "domain": "D_AI_ETHICS",
+      "title": "Uber Self-Driving Car \u2014 Elaine Herzberg Fatality",
+      "source": "https://www.ntsb.gov/investigations/accidentreports/pages/HWY18MH010.aspx",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-BIAS-IN-DATA",
-        "RCS-REPRESENTATION-GAP"
+        "RCS-GUARDIAN-CLASSIFICATION-ERROR",
+        "RCS-SAFETY-DRIVER-FAILURE"
       ],
-      "description": "Amazon's Rekognition system falsely matched 28 members of Congress with criminal mugshots, with disproportionate errors for people of color. Training data lacked sufficient demographic diversity.",
+      "description": "Uber's autonomous test vehicle struck and killed a pedestrian. The guardian system classified the pedestrian as a false positive multiple times. Emergency braking was disabled and the safety driver was distracted.",
       "assumptions_violated": [
-        "Training data represents all demographic groups equally.",
-        "False positive rates are uniform across populations."
+        "Guardian classification errors are independent.",
+        "Safety driver remains alert at all times."
       ],
       "falsification_tests": [
-        "F_AI_ETHICS_001"
+        "F_GUARDIAN_002"
       ],
       "ontological_issues": [
-        "OI_AI_ETHICS_001"
+        "OI_GUARDIAN_002"
       ],
       "lessons": [
-        "Demographic parity must be tested and enforced.",
-        "Deployment thresholds must account for disparate impact."
+        "Classification errors can be correlated across frames.",
+        "Guardian cannot rely on human backup."
       ],
       "methodology_components": [
-        "Falsification: demographic parity tests",
-        "OI: representation gaps in training data"
+        "Falsification: persistent misclassification testing",
+        "OI: human guardian reliability"
       ]
     },
     {
       "id": "CS_203",
-      "title": "Google Photos \u2014 Gorilla Classification Racial Slur",
-      "source": "https://www.wired.com/story/when-google-photos-misidentified-2-black-people-as-gorillas/",
-      "domain": "D_AI_ETHICS",
+      "title": "Boeing 737 MAX MCAS \u2014 Pilot Guardian Override",
+      "source": "https://www.ntsb.gov/investigations/accidentreports/pages/DCA19RA154.aspx",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-BIAS-IN-DATA",
-        "RCS-LABELING-ERROR"
+        "RCS-GUARDIAN-AUTHORITY-CONFLICT",
+        "RCS-SINGLE-POINT-OF-FAILURE"
       ],
-      "description": "Google Photos auto-tagging system labeled images of Black people as 'gorillas'. The training data for the image classifier had insufficient representation of Black faces, and the 'gorilla' label was not properly restricted.",
+      "description": "The MCAS system (intended as guardian) repeatedly overrode pilot inputs based on single AOA sensor data. Pilots could not disable MCAS without also losing electric trim, creating a deadly dilemma.",
       "assumptions_violated": [
-        "Image training data is demographically balanced.",
-        "All label categories are equally safe to apply."
+        "Guardian defers to human when in conflict.",
+        "Single sensor failure is insufficient to cause system failure."
       ],
       "falsification_tests": [
-        "F_AI_ETHICS_002"
+        "F_GUARDIAN_003"
       ],
       "ontological_issues": [
-        "OI_AI_ETHICS_002"
+        "OI_GUARDIAN_003"
       ],
       "lessons": [
-        "Sensitive label categories require additional safeguards.",
-        "Training data must be audited for demographic representation."
+        "Guardian must never override human without clear indication.",
+        "Single sensor inputs must not trigger automatic systems."
       ],
       "methodology_components": [
-        "Falsification: sensitive category testing",
-        "UVM: label restriction layer"
+        "Falsification: human override authority",
+        "UVM: sensor redundancy requirements"
       ]
     },
     {
       "id": "CS_204",
-      "title": "Uber Self-Driving Car \u2014 Pedestrian Fatality (Elaine Herzberg)",
-      "source": "https://www.ntsb.gov/investigations/accidentreports/pages/HWY18MH010.aspx",
-      "domain": "D_AUTONOMOUS_VEHICLES",
+      "title": "Patriot Missile System \u2014 Clock Drift Friendly Fire",
+      "source": "https://www.gao.gov/products/nsiad-92-26",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-SAFETY-DRIVER-COMPLACENCY",
-        "RCS-OBJECT-CLASSIFICATION-FAILURE"
+        "RCS-GUARDIAN-TIMING-FAILURE",
+        "RCS-ACCUMULATED-ERROR"
       ],
-      "description": "Uber's autonomous test vehicle struck and killed a pedestrian. The system classified the pedestrian as a false positive multiple times, and the safety driver was distracted. Emergency braking was disabled during testing.",
+      "description": "A Patriot missile system failed to intercept a Scud missile due to clock drift accumulation, resulting in 28 deaths. The guardian system's internal clock drifted by 0.34 seconds over 100 hours.",
       "assumptions_violated": [
-        "Safety driver will remain alert at all times.",
-        "Object classification errors are independent across frames."
+        "System clock remains accurate over extended operation.",
+        "Clock drift is negligible for targeting."
       ],
       "falsification_tests": [
-        "F_AV_SAFETY_001"
+        "F_GUARDIAN_004"
       ],
       "ontological_issues": [
-        "OI_AV_SAFETY_001"
+        "OI_GUARDIAN_004"
       ],
       "lessons": [
-        "Emergency systems must not be disabled for testing.",
-        "Safety driver alertness cannot be assumed."
+        "Long-running systems must periodically resynchronize clocks.",
+        "Timing errors accumulate and must be bounded."
       ],
       "methodology_components": [
-        "Falsification: safety driver monitoring",
-        "UVM: emergency brake always-enabled"
+        "Falsification: long-duration clock drift",
+        "UVM: periodic resynchronization"
       ]
     },
     {
       "id": "CS_205",
-      "title": "Tesla Autopilot \u2014 Multiple Fatal Collisions",
-      "source": "https://www.nhtsa.gov/tesla-autopilot-investigation",
-      "domain": "D_AUTONOMOUS_VEHICLES",
+      "title": "Aegis Cruiser USS Vincennes \u2014 IFF Guardian Failure",
+      "source": "https://www.history.navy.mil/research/histories/ship-histories/danfs/v/vincennes.html",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-DRIVER-MONITORING-FAILURE",
-        "RCS-EDGE-CASE-HANDOFF"
+        "RCS-GUARDIAN-IFF-FAILURE",
+        "RCS-STRESS-DEGRADATION"
       ],
-      "description": "Tesla's Autopilot system was involved in multiple fatal collisions where drivers failed to intervene. The driver monitoring system was inadequate, and the handoff between automated and manual control was poorly designed.",
+      "description": "The USS Vincennes shot down Iran Air Flight 655, killing 290 civilians. The Aegis guardian system misidentified the civilian airliner as an attacking military aircraft under combat stress.",
       "assumptions_violated": [
-        "Driver will remain attentive when Autopilot is engaged.",
-        "System will disengage when driver attention wavers."
+        "Guardian maintains accuracy under combat stress.",
+        "IFF system prevents misidentification."
       ],
       "falsification_tests": [
-        "F_AV_SAFETY_002"
+        "F_GUARDIAN_005"
       ],
       "ontological_issues": [
-        "OI_AV_SAFETY_002"
+        "OI_GUARDIAN_005"
       ],
       "lessons": [
-        "Driver monitoring must be robust to intentional misuse.",
-        "Handoff design must account for complacency."
+        "Guardian accuracy degrades under stress.",
+        "Lethal autonomous decisions require multiple confirmations."
       ],
       "methodology_components": [
-        "Falsification: driver distraction testing",
-        "OI: human-machine handoff design"
+        "Falsification: stress scenario testing",
+        "OI: lethal authority constraints"
       ]
     },
     {
       "id": "CS_206",
-      "title": "OpenAI GPT-3 \u2014 Medical Misinformation Generation",
-      "source": "https://www.nature.com/articles/d41586-021-00590-0",
-      "domain": "D_AI_SAFETY",
+      "title": "Therac-25 Radiation Machine \u2014 Software Guardian",
+      "source": "https://www.marcus-povey.co.uk/2015/08/24/the-therac-25-a-cautionary-tale/",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-HALLUCINATION",
-        "RCS-DOMAIN-EXPERTISE-GAP"
+        "RCS-GUARDIAN-RACE-CONDITION",
+        "RCS-HARDWARE-INTERLOCK-REMOVAL"
       ],
-      "description": "GPT-3 generated plausible-sounding but medically incorrect information when asked health questions. The model lacks grounding in medical knowledge and cannot distinguish authoritative from non-authoritative sources.",
+      "description": "The Therac-25 radiation therapy machine delivered massive overdoses killing 3 patients. The software guardian had race conditions, and hardware safety interlocks had been removed in favor of software-only protection.",
       "assumptions_violated": [
-        "Generated text is factually accurate.",
-        "Confident tone indicates correctness."
+        "Software guardian is sufficient without hardware backup.",
+        "Race conditions are caught by testing."
       ],
       "falsification_tests": [
-        "F_AI_SAFETY_002"
+        "F_GUARDIAN_006"
       ],
       "ontological_issues": [
-        "OI_AI_SAFETY_002"
+        "OI_GUARDIAN_006"
       ],
       "lessons": [
-        "Domain-specific applications require expert verification.",
-        "Confidence scores must not be conflated with accuracy."
+        "Software guardians require hardware interlock backups.",
+        "Race conditions in safety systems must be formally verified."
       ],
       "methodology_components": [
-        "Falsification: expert fact-checking",
-        "UVM: source attribution requirements"
+        "Falsification: race condition detection",
+        "UVM: hardware backup requirements"
       ]
     },
     {
       "id": "CS_207",
-      "title": "Deepfake Fraud \u2014 $35M CEO Voice Impersonation",
-      "source": "https://www.forbes.com/sites/jessedamiani/2021/03/29/deepfake-fraud-costs-company-35-million/",
-      "domain": "D_AI_SECURITY",
+      "title": "Air France 447 \u2014 Automation Guardian Confusion",
+      "source": "https://www.bea.aero/en/investigation-reports/2009-d-cp-technical-report",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-DEEPFAKE",
-        "RCS-SOCIAL-ENGINEERING"
+        "RCS-GUARDIAN-MODE-CONFUSION",
+        "RCS-PILOT-SKILL-ATROPHY"
       ],
-      "description": "Attackers used deepfake voice technology to impersonate a company executive and authorize a $35 million fraudulent transfer. The voice was convincing enough to fool multiple employees.",
+      "description": "Air France 447 crashed when pitot tubes iced, causing autopilot disconnection. Pilots failed to recognize the stall condition, in part due to over-reliance on automation guardians.",
       "assumptions_violated": [
-        "Voice authentication is sufficient for large transfers.",
-        "Audio cannot be convincingly forged in real-time."
+        "Pilots maintain manual flying skills.",
+        "Guardian disconnection is clearly signaled."
       ],
       "falsification_tests": [
-        "F_AI_SECURITY_001"
+        "F_GUARDIAN_007"
       ],
       "ontological_issues": [
-        "OI_AI_SECURITY_001"
+        "OI_GUARDIAN_007"
       ],
       "lessons": [
-        "High-value transactions require multi-factor authentication.",
-        "Voice biometrics must detect synthetic audio."
+        "Guardian reliance causes skill atrophy.",
+        "Guardian handoff requires explicit training."
       ],
       "methodology_components": [
-        "Falsification: deepfake detection",
-        "UVM: out-of-band verification"
+        "Falsification: manual skill maintenance",
+        "OI: automation dependency"
       ]
     },
     {
       "id": "CS_208",
-      "title": "Clearview AI \u2014 Unlawful Facial Recognition Database",
-      "source": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2021/11/ico-fines-clearview-ai-inc-7-5m-for-images-of-people-in-uk-database/",
-      "domain": "D_AI_ETHICS",
+      "title": "Toyota Unintended Acceleration \u2014 Electronic Guardian",
+      "source": "https://www.nhtsa.gov/sites/nhtsa.gov/files/toyota_recursive_main_report.pdf",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-PRIVACY-VIOLATION",
-        "RCS-CONSENT-FAILURE"
+        "RCS-GUARDIAN-SOFTWARE-BUG",
+        "RCS-COSMIC-RAY-BIT-FLIP"
       ],
-      "description": "Clearview AI scraped billions of facial images from social media without consent, creating a massive surveillance database. Fined \u00a37.5M by UK ICO for violating data protection laws.",
+      "description": "Toyota vehicles experienced unintended acceleration. Investigation found software bugs and potential bit flips from cosmic rays. The electronic throttle guardian failed to prevent acceleration.",
       "assumptions_violated": [
-        "Publicly visible images can be used for any purpose.",
-        "Automated scraping is legally equivalent to manual viewing."
+        "Software guardian prevents all unintended acceleration.",
+        "Bit flips are negligible in automotive systems."
       ],
       "falsification_tests": [
-        "F_AI_ETHICS_003"
+        "F_GUARDIAN_008"
       ],
       "ontological_issues": [
-        "OI_AI_ETHICS_003"
+        "OI_GUARDIAN_008"
       ],
       "lessons": [
-        "Training data collection requires explicit consent.",
-        "Scale of automated collection changes legal character."
+        "Guardian software must tolerate bit flips.",
+        "Mechanical backup required for safety-critical functions."
       ],
       "methodology_components": [
-        "OI: consent frameworks for training data",
-        "Falsification: data provenance auditing"
+        "Falsification: bit flip injection testing",
+        "UVM: mechanical backup requirements"
       ]
     },
     {
       "id": "CS_209",
-      "title": "Apple Credit Card \u2014 Gender Bias in Credit Limits",
-      "source": "https://www.nytimes.com/2019/11/09/business/Apple-credit-card-investigation.html",
-      "domain": "D_AI_ETHICS",
+      "title": "Drone Strike Collateral Damage \u2014 Signature Strike",
+      "source": "https://www.thebureauinvestigates.com/drone-war/",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-ALGORITHMIC-BIAS",
-        "RCS-PROXY-DISCRIMINATION"
+        "RCS-GUARDIAN-IDENTIFICATION-ERROR",
+        "RCS-PATTERN-OF-LIFE-UNCERTAINTY"
       ],
-      "description": "Apple Card's algorithm offered significantly lower credit limits to women than men with identical financial profiles. The algorithm used proxy variables that correlated with gender.",
+      "description": "US drone strikes based on 'pattern of life' analysis killed civilians mistaken for combatants. The guardian system (targeting AI) misidentified targets based on incomplete intelligence.",
       "assumptions_violated": [
-        "Algorithmic decisions are free from bias.",
-        "Removing protected attributes prevents discrimination."
+        "Pattern analysis accurately identifies combatants.",
+        "Collateral damage estimates are accurate."
       ],
       "falsification_tests": [
-        "F_AI_ETHICS_004"
+        "F_GUARDIAN_009"
       ],
       "ontological_issues": [
-        "OI_AI_ETHICS_004"
+        "OI_GUARDIAN_009"
       ],
       "lessons": [
-        "Proxy discrimination must be actively tested for.",
-        "Algorithmic decisions require disparate impact analysis."
+        "Pattern-based targeting has high false positive rates.",
+        "Lethal decisions require positive identification."
       ],
       "methodology_components": [
-        "Falsification: disparate impact testing",
-        "OI: proxy variable detection"
+        "Falsification: pattern analysis accuracy",
+        "OI: lethal decision thresholds"
       ]
     },
     {
       "id": "CS_210",
-      "title": "COMPAS Recidivism Algorithm \u2014 Racial Disparity",
-      "source": "https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing",
-      "domain": "D_AI_ETHICS",
+      "title": "Knightscope K5 Security Robot \u2014 Drowning Incident",
+      "source": "https://www.theverge.com/2017/7/18/15998988/knightscope-k5-security-robot-drowning-mall-fountain",
+      "domain": "D_GUARDIAN",
       "root_cause_signals": [
-        "RCS-PREDICTIVE-BIAS",
-        "RCS-FEEDBACK-LOOP"
+        "RCS-GUARDIAN-NAVIGATION-FAILURE",
+        "RCS-ENVIRONMENT-MAPPING-ERROR"
       ],
-      "description": "The COMPAS algorithm used for criminal sentencing risk assessment was found to have significantly higher false positive rates for Black defendants. The model reflected historical biases in the criminal justice system.",
+      "description": "A Knightscope K5 security robot drowned itself in a mall fountain. The guardian system failed to detect the obstacle, demonstrating inadequate environmental mapping.",
       "assumptions_violated": [
-        "Historical arrest data is an unbiased predictor of recidivism.",
-        "Risk scores are equally accurate across racial groups."
+        "Guardian can navigate all environments safely.",
+        "Obstacles are properly mapped."
       ],
       "falsification_tests": [
-        "F_AI_ETHICS_005"
+        "F_GUARDIAN_010"
       ],
       "ontological_issues": [
-        "OI_AI_ETHICS_005"
+        "OI_GUARDIAN_010"
       ],
       "lessons": [
-        "Training on historical data perpetuates historical biases.",
-        "High-stakes decisions require fairness auditing."
+        "Guardian navigation requires comprehensive mapping.",
+        "Edge cases in environment design must be tested."
       ],
       "methodology_components": [
-        "Falsification: cross-group fairness metrics",
-        "OI: feedback loops in training data"
+        "Falsification: edge case environment testing",
+        "UVM: obstacle detection verification"
       ]
     },
     {
       "id": "CS_211",
-      "title": "Flint Water Crisis \u2014 Lead Pipe Corrosion",
-      "source": "https://www.epa.gov/flint",
-      "domain": "D_PUBLIC_HEALTH",
-      "root_cause_signals": [
-        "RCS-WATER-TREATMENT-FAILURE",
-        "RCS-LEAD-EXPOSURE"
-      ],
-      "description": "Flint, Michigan's switch to Flint River water without proper corrosion treatment caused lead to leach from pipes. Thousands of children were exposed to toxic lead levels. Authorities dismissed resident complaints for months.",
-      "assumptions_violated": [
-        "Source water can be switched without full corrosion testing.",
-        "Resident complaints are not indicative of actual problems."
-      ],
-      "falsification_tests": [
-        "F_PUBLIC_HEALTH_001"
-      ],
-      "ontological_issues": [
-        "OI_PUBLIC_HEALTH_001"
-      ],
-      "lessons": [
-        "Water source changes require extensive lead testing.",
-        "Community reports must be taken seriously."
-      ],
-      "methodology_components": [
-        "Falsification: lead level monitoring",
-        "UVM: community complaint tracking"
-      ]
-    },
-    {
-      "id": "CS_212",
-      "title": "I-35W Mississippi River Bridge Collapse",
-      "source": "https://www.ntsb.gov/investigations/accidentreports/pages/HAR0803.aspx",
-      "domain": "D_INFRASTRUCTURE",
-      "root_cause_signals": [
-        "RCS-DEFICIENT-DESIGN",
-        "RCS-INSPECTION-FAILURE"
-      ],
-      "description": "The I-35W bridge in Minneapolis collapsed during rush hour, killing 13 people. The collapse was caused by a design flaw in gusset plates combined with additional weight from bridge repairs and traffic.",
-      "assumptions_violated": [
-        "Original design safety margins are sufficient for all loads.",
-        "Inspections will catch all critical defects."
-      ],
-      "falsification_tests": [
-        "F_INFRASTRUCTURE_001"
-      ],
-      "ontological_issues": [
-        "OI_INFRASTRUCTURE_001"
-      ],
-      "lessons": [
-        "Gusset plate capacity must be verified under maximum load scenarios.",
-        "Inspection protocols must include plate thickness measurements."
-      ],
-      "methodology_components": [
-        "Falsification: load capacity testing",
-        "UVM: continuous structural monitoring"
-      ]
-    },
-    {
-      "id": "CS_213",
-      "title": "Morandi Bridge Collapse \u2014 Genoa, Italy",
-      "source": "https://www.bbc.com/news/world-europe-45183624",
-      "domain": "D_INFRASTRUCTURE",
-      "root_cause_signals": [
-        "RCS-CABLE-DEGRADATION",
-        "RCS-MAINTENANCE-DEFERRAL"
-      ],
-      "description": "The Morandi Bridge in Genoa collapsed, killing 43 people. The stay cables had degraded due to moisture and lack of maintenance. Private operator Autostrade per l'Italia had deferred maintenance to reduce costs.",
-      "assumptions_violated": [
-        "Cable protection systems prevent all moisture ingress.",
-        "Deferred maintenance does not compromise structural integrity."
-      ],
-      "falsification_tests": [
-        "F_INFRASTRUCTURE_002"
-      ],
-      "ontological_issues": [
-        "OI_INFRASTRUCTURE_002"
-      ],
-      "lessons": [
-        "Stay cable condition must be regularly inspected.",
-        "Cost-cutting on maintenance creates systemic risk."
-      ],
-      "methodology_components": [
-        "Falsification: cable integrity testing",
-        "OI: privatization of critical infrastructure"
-      ]
-    },
-    {
-      "id": "CS_214",
-      "title": "Surfside Condo Collapse \u2014 Champlain Towers South",
-      "source": "https://www.nist.gov/surfside-building-collapse",
-      "domain": "D_BUILDING_CODES",
-      "root_cause_signals": [
-        "RCS-CONCRETE-DETERIORATION",
-        "RCS-STRUCTURAL-INSPECTION-GAP"
-      ],
-      "description": "A 12-story condominium in Surfside, Florida collapsed, killing 98 people. The collapse was caused by long-term degradation of reinforced concrete in the parking garage due to water intrusion and salt exposure.",
-      "assumptions_violated": [
-        "40-year recertification is sufficient to catch structural issues.",
-        "Waterproofing systems prevent salt intrusion indefinitely."
-      ],
-      "falsification_tests": [
-        "F_BUILDING_CODES_001"
-      ],
-      "ontological_issues": [
-        "OI_BUILDING_CODES_001"
-      ],
-      "lessons": [
-        "Coastal concrete requires more frequent inspection.",
-        "Waterproofing must be regularly maintained."
-      ],
-      "methodology_components": [
-        "Falsification: concrete rebar corrosion testing",
-        "UVM: continuous moisture monitoring"
-      ]
-    },
-    {
-      "id": "CS_215",
-      "title": "Texas Power Grid Failure \u2014 February 2021 Winter Storm",
-      "source": "https://www.ferc.gov/news-events/news/ferc-nerc-texas-regional-entities-release-report-2021-winter-storm",
-      "domain": "D_ENERGY",
-      "root_cause_signals": [
-        "RCS-WEATHERIZATION-FAILURE",
-        "RCS-GRID-ISOLATION"
-      ],
-      "description": "Winter Storm Uri caused cascading failures across Texas's isolated power grid. Natural gas wells and pipelines froze, power plants tripped offline, and ERCOT implemented rolling blackouts affecting millions. Over 200 deaths.",
-      "assumptions_violated": [
-        "Winter temperatures in Texas will not reach record lows.",
-        "Natural gas supply is reliable during cold weather events."
-      ],
-      "falsification_tests": [
-        "F_ENERGY_001"
-      ],
-      "ontological_issues": [
-        "OI_ENERGY_001"
-      ],
-      "lessons": [
-        "Critical infrastructure must be weatherized for extreme events.",
-        "Grid isolation prevents emergency power imports."
-      ],
-      "methodology_components": [
-        "Falsification: extreme weather stress testing",
-        "UVM: winterization compliance verification"
-      ]
-    },
-    {
-      "id": "CS_216",
-      "title": "Fukushima Daiichi Nuclear Disaster",
-      "source": "https://www.iaea.org/topics/response/fukushima-daiichi-nuclear-accident",
-      "domain": "D_NUCLEAR_SAFETY",
-      "root_cause_signals": [
-        "RCS-TSUNAMI-DESIGN-BASIS",
-        "RCS-BACKUP-POWER-FAILURE"
-      ],
-      "description": "A magnitude 9.0 earthquake and tsunami caused meltdowns in three reactors at Fukushima Daiichi. The tsunami exceeded design basis levels, flooding backup diesel generators and causing station blackout.",
-      "assumptions_violated": [
-        "Design basis tsunami height covers maximum credible event.",
-        "Backup power systems are sufficiently redundant."
-      ],
-      "falsification_tests": [
-        "F_NUCLEAR_SAFETY_001"
-      ],
-      "ontological_issues": [
-        "OI_NUCLEAR_SAFETY_001"
-      ],
-      "lessons": [
-        "Design basis must account for historical maximum plus margin.",
-        "Backup power must be protected from common-mode failures."
-      ],
-      "methodology_components": [
-        "Falsification: beyond-design-basis scenario testing",
-        "UVM: passive safety system requirements"
-      ]
-    },
-    {
-      "id": "CS_217",
-      "title": "Chernobyl Disaster \u2014 Reactor Explosion",
-      "source": "https://www.iaea.org/topics/response/chernobyl",
-      "domain": "D_NUCLEAR_SAFETY",
-      "root_cause_signals": [
-        "RCS-OPERATOR-ERROR",
-        "RCS-POSITIVE-VOID-COEFFICIENT",
-        "RCS-SAFETY-CULTURE"
-      ],
-      "description": "A safety test at Chernobyl Unit 4 led to reactor explosion and graphite fire. Operators violated procedures, and the RBMK reactor design had a positive void coefficient. The disaster released massive radioactive contamination.",
-      "assumptions_violated": [
-        "Operators will always follow procedures.",
-        "Safety systems prevent all accidents regardless of operator actions."
-      ],
-      "falsification_tests": [
-        "F_NUCLEAR_SAFETY_002"
-      ],
-      "ontological_issues": [
-        "OI_NUCLEAR_SAFETY_002"
-      ],
-      "lessons": [
-        "Reactor design must be passively safe.",
-        "Safety culture is as important as engineering."
-      ],
-      "methodology_components": [
-        "Falsification: operator error simulation",
-        "OI: safety culture assessment"
-      ]
-    },
-    {
-      "id": "CS_218",
-      "title": "Deepwater Horizon Oil Spill",
-      "source": "https://www.bsee.gov/deepwater-horizon-oil-spill",
-      "domain": "D_ENVIRONMENTAL_LAW",
-      "root_cause_signals": [
-        "RCS-BLOWOUT-PREVENTER-FAILURE",
-        "RCS-CEMENT-JOB-FAILURE"
-      ],
-      "description": "The Deepwater Horizon drilling rig exploded, killing 11 workers and causing the largest marine oil spill in history. The blowout preventer failed to seal the well, and the cement job did not prevent gas migration.",
-      "assumptions_violated": [
-        "Blowout preventer will function in all scenarios.",
-        "Cement bond logs always detect deficiencies."
-      ],
-      "falsification_tests": [
-        "F_ENVIRONMENTAL_001"
-      ],
-      "ontological_issues": [
-        "OI_ENVIRONMENTAL_001"
-      ],
-      "lessons": [
-        "Blowout preventers require redundant activation systems.",
-        "Cement integrity must be verified before temporary abandonment."
-      ],
-      "methodology_components": [
-        "Falsification: BOP function testing",
-        "UVM: real-time cement monitoring"
-      ]
-    },
-    {
-      "id": "CS_219",
-      "title": "Exxon Valdez Oil Spill",
-      "source": "https://www.epa.gov/enforcement/exxon-valdez-oil-spill",
-      "domain": "D_ENVIRONMENTAL_LAW",
-      "root_cause_signals": [
-        "RCS-HUMAN-FATIGUE",
-        "RCS-EMERGENCY-RESPONSE-FAILURE"
-      ],
-      "description": "The Exxon Valdez oil tanker struck Bligh Reef in Prince William Sound, spilling 11 million gallons of crude oil. The ship's captain was not on the bridge, and the third mate failed to turn in time.",
-      "assumptions_violated": [
-        "Crew fatigue management is adequate.",
-        "Single-hull tankers are safe for sensitive waters."
-      ],
-      "falsification_tests": [
-        "F_ENVIRONMENTAL_002"
-      ],
-      "ontological_issues": [
-        "OI_ENVIRONMENTAL_002"
-      ],
-      "lessons": [
-        "Double-hull requirements for tankers in sensitive areas.",
-        "Fatigue management must be rigorously enforced."
-      ],
-      "methodology_components": [
-        "Falsification: crew fatigue monitoring",
-        "OI: single-hull phase-out requirements"
-      ]
-    },
-    {
-      "id": "CS_220",
-      "title": "Pacific Gas & Electric (PG&E) Wildfire Bankruptcy",
-      "source": "https://www.cpuc.ca.gov/industries-and-topics/electrical-energy/wildfires",
-      "domain": "D_UTILITIES",
-      "root_cause_signals": [
-        "RCS-GRID-MAINTENANCE-DEFERRAL",
-        "RCS-VEGETATION-MANAGEMENT"
-      ],
-      "description": "PG&E filed for bankruptcy after its equipment caused multiple catastrophic wildfires including the 2018 Camp Fire (85 deaths). The company had deferred maintenance and failed to adequately clear vegetation near power lines.",
-      "assumptions_violated": [
-        "Equipment inspection intervals are sufficient.",
-        "Vegetation management can be deferred in low-budget years."
-      ],
-      "falsification_tests": [
-        "F_UTILITIES_001"
-      ],
-      "ontological_issues": [
-        "OI_UTILITIES_001"
-      ],
-      "lessons": [
-        "Wildfire risk requires aggressive vegetation management.",
-        "Safety investments cannot be deferred for financial reasons."
-      ],
-      "methodology_components": [
-        "Falsification: ignition risk assessment",
-        "UVM: real-time line monitoring"
-      ]
-    },
-    {
-      "id": "CS_221",
-      "title": "Cambridge Analytica \u2014 Facebook Data Misuse",
+      "title": "Cambridge Analytica \u2014 Facebook Data Harvesting",
       "source": "https://www.ftc.gov/news-events/news/press-releases/2019/07/ftc-imposes-5-billion-penalty-sweeping-new-privacy-restrictions-facebook",
       "domain": "D_PRIVACY",
       "root_cause_signals": [
         "RCS-DATA-SHARING-CONSENT",
         "RCS-APP-PERMISSION-ABUSE"
       ],
-      "description": "Cambridge Analytica harvested personal data from 87 million Facebook users without consent via a personality quiz app. The data was used for political advertising targeting. Facebook fined $5 billion by FTC.",
+      "description": "Cambridge Analytica harvested data from 87 million Facebook users without consent via a personality quiz app. The data was used for political targeting. Facebook fined $5 billion.",
       "assumptions_violated": [
-        "App developers will only use data for stated purposes.",
-        "Social graph data sharing is harmless."
+        "App developers respect data use limitations.",
+        "Social graph data is low-sensitivity."
       ],
       "falsification_tests": [
         "F_PRIVACY_001"
@@ -4615,229 +4324,26 @@
       ],
       "lessons": [
         "Third-party app access must be strictly controlled.",
-        "Data sharing requires explicit opt-in for each use."
+        "Graph data can reveal sensitive inferences."
       ],
       "methodology_components": [
         "Falsification: data use auditing",
-        "OI: consent granularity requirements"
+        "OI: consent granularity"
       ]
     },
     {
-      "id": "CS_222",
-      "title": "Equifax Data Breach \u2014 147 Million Records",
-      "source": "https://www.ftc.gov/equifax-data-breach",
-      "domain": "D_DATA_SECURITY",
-      "root_cause_signals": [
-        "RCS-PATCH-MANAGEMENT-FAILURE",
-        "RCS-UNENCRYPTED-DATA"
-      ],
-      "description": "Equifax suffered a data breach exposing names, SSNs, birth dates, and addresses of 147 million Americans. Attackers exploited a known Apache Struts vulnerability that Equifax failed to patch for months.",
-      "assumptions_violated": [
-        "Security patches will be applied promptly.",
-        "Perimeter security prevents all breaches."
-      ],
-      "falsification_tests": [
-        "F_SECURITY_001"
-      ],
-      "ontological_issues": [
-        "OI_SECURITY_001"
-      ],
-      "lessons": [
-        "Critical patches require SLA enforcement.",
-        "Sensitive data must be encrypted at rest."
-      ],
-      "methodology_components": [
-        "Falsification: patch compliance verification",
-        "UVM: encryption at rest enforcement"
-      ]
-    },
-    {
-      "id": "CS_223",
-      "title": "Capital One Data Breach \u2014 100 Million Records",
-      "source": "https://www.justice.gov/usao-wdwa/pr/former-seattle-technology-software-engineer-arrested-computer-fraud-and-abuse",
-      "domain": "D_CLOUD_SECURITY",
-      "root_cause_signals": [
-        "RCS-MISCONFIGURED-FIREWALL",
-        "RCS-CLOUD-PERMISSION-MISCONFIGURATION"
-      ],
-      "description": "A former AWS employee exploited a misconfigured web application firewall to access Capital One credit card application data. 100 million records were exposed. The attacker used SSRF to access AWS metadata service.",
-      "assumptions_violated": [
-        "Cloud security is handled by the provider.",
-        "WAF configuration is correct by default."
-      ],
-      "falsification_tests": [
-        "F_CLOUD_SECURITY_001"
-      ],
-      "ontological_issues": [
-        "OI_CLOUD_SECURITY_001"
-      ],
-      "lessons": [
-        "Cloud shared responsibility model must be understood.",
-        "WAF rules must be regularly audited."
-      ],
-      "methodology_components": [
-        "Falsification: cloud misconfiguration scanning",
-        "OI: shared responsibility clarity"
-      ]
-    },
-    {
-      "id": "CS_224",
-      "title": "Target Data Breach \u2014 HVAC Vendor Compromise",
-      "source": "https://www.cisa.gov/news-events/alerts/2014/01/03/malware-compromises-pos-devices-target-stores",
-      "domain": "D_SUPPLY_CHAIN_SECURITY",
-      "root_cause_signals": [
-        "RCS-VENDOR-ACCESS-ABUSE",
-        "RCS-NETWORK-SEGMENTATION-FAILURE"
-      ],
-      "description": "Attackers compromised Target's network via credentials stolen from an HVAC vendor. 40 million credit cards were stolen. The vendor had excessive network access and Target failed to segment payment systems.",
-      "assumptions_violated": [
-        "Third-party vendors have appropriate access restrictions.",
-        "Network segmentation prevents lateral movement."
-      ],
-      "falsification_tests": [
-        "F_SUPPLY_CHAIN_001"
-      ],
-      "ontological_issues": [
-        "OI_SUPPLY_CHAIN_001"
-      ],
-      "lessons": [
-        "Vendor access must be strictly limited and monitored.",
-        "Payment systems require network segmentation."
-      ],
-      "methodology_components": [
-        "Falsification: vendor access review",
-        "UVM: network segmentation verification"
-      ]
-    },
-    {
-      "id": "CS_225",
-      "title": "Marriott/Starwood Breach \u2014 500 Million Guests",
-      "source": "https://www.mariott.com/about/news/starwood-reservation-database-security-update.mi",
-      "domain": "D_DATA_SECURITY",
-      "root_cause_signals": [
-        "RCS-UNDETECTED-INTRUSION",
-        "RCS-ENCRYPTION-KEY-MANAGEMENT"
-      ],
-      "description": "Marriott disclosed that Starwood's reservation database had been compromised since 2014, affecting 500 million guests. Passport numbers and payment card data were exposed. Intrusion went undetected for 4 years.",
-      "assumptions_violated": [
-        "Acquired companies have adequate security.",
-        "Encryption protects data even when breached."
-      ],
-      "falsification_tests": [
-        "F_SECURITY_002"
-      ],
-      "ontological_issues": [
-        "OI_SECURITY_002"
-      ],
-      "lessons": [
-        "M&A security due diligence must be thorough.",
-        "Encryption keys must be separately secured."
-      ],
-      "methodology_components": [
-        "Falsification: acquisition security audit",
-        "UVM: key management verification"
-      ]
-    },
-    {
-      "id": "CS_226",
-      "title": "Yahoo Data Breaches \u2014 3 Billion Accounts",
-      "source": "https://www.sec.gov/news/press-release/2018-22",
-      "domain": "D_DATA_SECURITY",
-      "root_cause_signals": [
-        "RCS-DELAYED-DISCLOSURE",
-        "RCS-SESSION-COOKIE-FORGERY"
-      ],
-      "description": "Yahoo disclosed two breaches affecting all 3 billion user accounts. The breaches occurred in 2013-2014 but were not disclosed during Verizon acquisition negotiations. Attackers forged cookies to access accounts without passwords.",
-      "assumptions_violated": [
-        "Breach disclosure will be timely.",
-        "Cookie-based authentication is secure."
-      ],
-      "falsification_tests": [
-        "F_SECURITY_003"
-      ],
-      "ontological_issues": [
-        "OI_SECURITY_003"
-      ],
-      "lessons": [
-        "Breach disclosure cannot be delayed for business reasons.",
-        "Cookie security requires cryptographic signing."
-      ],
-      "methodology_components": [
-        "Falsification: disclosure timeline audit",
-        "OI: breach notification laws"
-      ]
-    },
-    {
-      "id": "CS_227",
-      "title": "SolarWinds SUNBURST Supply Chain Attack",
-      "source": "https://www.cisa.gov/solarwinds",
-      "domain": "D_SUPPLY_CHAIN_SECURITY",
-      "root_cause_signals": [
-        "RCS-SUPPLY-CHAIN-COMPROMISE",
-        "RCS-CODE-SIGNING-TRUST"
-      ],
-      "description": "Russian APT compromised SolarWinds build system to distribute backdoored Orion software updates to 18,000 organizations including government agencies. The malicious code was signed with legitimate certificates.",
-      "assumptions_violated": [
-        "Signed software from reputable vendors is safe.",
-        "Build systems are adequately secured."
-      ],
-      "falsification_tests": [
-        "F_SUPPLY_CHAIN_002"
-      ],
-      "ontological_issues": [
-        "OI_SUPPLY_CHAIN_002"
-      ],
-      "lessons": [
-        "Build systems require the same security as production.",
-        "Code signing does not guarantee safety."
-      ],
-      "methodology_components": [
-        "Falsification: build system security audit",
-        "UVM: binary provenance tracking"
-      ]
-    },
-    {
-      "id": "CS_228",
-      "title": "Office of Personnel Management (OPM) Breach",
-      "source": "https://www.opm.gov/cybersecurity/cybersecurity-incidents/",
-      "domain": "D_GOVERNMENT_SECURITY",
-      "root_cause_signals": [
-        "RCS-LEGACY-SYSTEM-VULNERABILITY",
-        "RCS-INSIDER-THREAT"
-      ],
-      "description": "Chinese hackers stole background investigation records for 21.5 million federal employees from OPM. The attackers had been in the network for over a year. No multi-factor authentication was required for accessing sensitive data.",
-      "assumptions_violated": [
-        "Legacy systems can be adequately secured.",
-        "Network monitoring detects all intrusions."
-      ],
-      "falsification_tests": [
-        "F_GOVERNMENT_001"
-      ],
-      "ontological_issues": [
-        "OI_GOVERNMENT_001"
-      ],
-      "lessons": [
-        "Legacy systems must be modernized or isolated.",
-        "Sensitive data requires MFA and encryption."
-      ],
-      "methodology_components": [
-        "Falsification: legacy system assessment",
-        "UVM: MFA enforcement"
-      ]
-    },
-    {
-      "id": "CS_229",
-      "title": "Ashley Madison Data Breach \u2014 37 Million Users",
-      "source": "https://www.priv.gc.ca/en/opc-actions-and-decisions/investigations/investigations-into-businesses/2015/pipeda-2015-005/",
+      "id": "CS_212",
+      "title": "Clearview AI \u2014 Facial Recognition Scraping",
+      "source": "https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2021/11/ico-fines-clearview-ai-inc-7-5m-for-images-of-people-in-uk-database/",
       "domain": "D_PRIVACY",
       "root_cause_signals": [
-        "RCS-INADEQUATE-SECURITY-INVESTMENT",
-        "RCS-FAKE-SECURITY-CLAIMS"
+        "RCS-BIOMETRIC-THEFT",
+        "RCS-CONSENT-FAILURE"
       ],
-      "description": "The Ashley Madison affair dating site was breached, exposing 37 million user records including payment data and personal information. The site had falsely claimed '100% discreet service' and used weak bcrypt cost factors.",
+      "description": "Clearview AI scraped billions of facial images from social media without consent, creating a surveillance database. Fined \u00a37.5M by UK ICO for GDPR violations.",
       "assumptions_violated": [
-        "Marketing claims about security are accurate.",
-        "Password hashing parameters are adequate."
+        "Public images can be used for any purpose.",
+        "Scraping at scale is legally distinct from viewing."
       ],
       "falsification_tests": [
         "F_PRIVACY_002"
@@ -4846,57 +4352,260 @@
         "OI_PRIVACY_002"
       ],
       "lessons": [
-        "Security marketing claims must be verifiable.",
-        "Password hashing must use appropriate cost factors."
+        "Biometric data requires explicit consent.",
+        "Scale changes the legal character of data collection."
       ],
       "methodology_components": [
-        "Falsification: security claim verification",
-        "OI: marketing vs reality gaps"
+        "Falsification: consent verification",
+        "OI: biometric data rights"
       ]
     },
     {
-      "id": "CS_230",
-      "title": "Zoom Zero-Day \u2014 Mac Webcam Hijacking",
-      "source": "https://medium.com/@jonathan.leitschuh/zoom-zero-day-4-million-webcams-maybe-an-rce-just-get-them-to-visit-your-website-ac75c83f94ef",
-      "domain": "D_APPLICATION_SECURITY",
+      "id": "CS_213",
+      "title": "NSO Pegasus Spyware \u2014 Zero-Click Exploitation",
+      "source": "https://www.amnesty.org/en/latest/news/2021/07/the-pegasus-project/",
+      "domain": "D_PRIVACY",
       "root_cause_signals": [
-        "RCS-LOCALHOST-SERVER",
-        "RCS-UNINSTALL-RESIDUE"
+        "RCS-ZERO-CLICK-EXPLOIT",
+        "RCS-DEVICE-COMPROMISE"
       ],
-      "description": "A security researcher discovered that Zoom installed a hidden local web server on Macs that could be used to hijack webcams. The server persisted after uninstalling Zoom. Any website could interact with the server.",
+      "description": "NSO Group's Pegasus spyware infected iPhones and Android devices via zero-click exploits, granting complete device access without user interaction. Targeted journalists, activists, and politicians.",
       "assumptions_violated": [
-        "Uninstalling software removes all components.",
-        "Local servers are not accessible from web pages."
+        "Modern smartphones are secure against remote compromise.",
+        "User interaction required for malware installation."
       ],
       "falsification_tests": [
-        "F_APP_SECURITY_001"
+        "F_PRIVACY_003"
       ],
       "ontological_issues": [
-        "OI_APP_SECURITY_001"
+        "OI_PRIVACY_003"
       ],
       "lessons": [
-        "Uninstallers must remove all installed components.",
-        "Local servers must validate request origins."
+        "Zero-click exploits render all security measures ineffective.",
+        "Commercial spyware requires international regulation."
       ],
       "methodology_components": [
-        "Falsification: uninstall verification",
-        "UVM: local server security review"
+        "Falsification: zero-click attack surface",
+        "OI: spyware governance"
       ]
     },
     {
-      "id": "CS_231",
-      "title": "Wirecard Accounting Fraud \u2014 1.9 Billion Missing",
+      "id": "CS_214",
+      "title": "Ring Doorbell \u2014 Police Partnership Privacy",
+      "source": "https://www.eff.org/deeplinks/2019/08/amazon-ring-cozies-400-police-departments-its-surveillance-network",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-SURVEILLANCE-NETWORK",
+        "RCS-CONSENT-BY-PROXY"
+      ],
+      "description": "Ring partnered with 400+ police departments, giving warrantless access to camera footage. Neighbors' consent not obtained for footage shared with law enforcement.",
+      "assumptions_violated": [
+        "Home security data remains private.",
+        "Police access requires warrant or consent."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_004"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_004"
+      ],
+      "lessons": [
+        "IoT device networks create surveillance infrastructure.",
+        "Corporate-police partnerships evade warrant requirements."
+      ],
+      "methodology_components": [
+        "Falsification: network surveillance mapping",
+        "OI: IoT governance"
+      ]
+    },
+    {
+      "id": "CS_215",
+      "title": "Smart TV Tracking \u2014 ACR Technology",
+      "source": "https://www.ftc.gov/news-events/news/press-releases/2017/02/vizio-pay-22-million-ftc-state-new-jersey-settle-charges-it-collected-viewing-histories-11-million",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-VIEWING-DATA-COLLECTION",
+        "RCS-DISCLOSURE-FAILURE"
+      ],
+      "description": "Vizio smart TVs tracked viewing habits via ACR technology without clear disclosure, collecting data on 11 million devices. FTC fined Vizio $2.2 million.",
+      "assumptions_violated": [
+        "TV viewing is private.",
+        "Disclosure in terms of service is sufficient."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_005"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_005"
+      ],
+      "lessons": [
+        "Viewing data is sensitive and requires explicit opt-in.",
+        "Buried disclosures are insufficient."
+      ],
+      "methodology_components": [
+        "Falsification: disclosure effectiveness",
+        "UVM: data collection transparency"
+      ]
+    },
+    {
+      "id": "CS_216",
+      "title": "Strava Heatmap \u2014 Military Base Exposure",
+      "source": "https://www.theguardian.com/world/2018/jan/28/fitness-tracking-app-gives-away-location-secret-us-army-bases",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-AGGREGATE-DATA-EXPOSURE",
+        "RCS-LOCATION-PRIVACY"
+      ],
+      "description": "Strava's public heatmap revealed secret military base locations through aggregated fitness tracker data. Soldiers' workout routes outlined base perimeters in conflict zones.",
+      "assumptions_violated": [
+        "Aggregated data preserves anonymity.",
+        "Fitness data is not sensitive."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_006"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_006"
+      ],
+      "lessons": [
+        "Aggregated location data can reveal sensitive patterns.",
+        "Military personnel require data privacy training."
+      ],
+      "methodology_components": [
+        "Falsification: aggregate de-anonymization",
+        "OI: location data sensitivity"
+      ]
+    },
+    {
+      "id": "CS_217",
+      "title": "Venmo Privacy \u2014 Public Transaction History",
+      "source": "https://www.eff.org/deeplinks/2019/08/venmos-public-by-default-settings-expose-user-data",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-DEFAULT-PUBLIC-DATA",
+        "RCS-TRANSACTION-PRIVACY"
+      ],
+      "description": "Venmo's public-by-default settings exposed user transaction histories, allowing anyone to see who users paid and their transaction memos. Revealed sensitive personal relationships and activities.",
+      "assumptions_violated": [
+        "Payment data is private by default.",
+        "Users understand and choose privacy settings."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_007"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_007"
+      ],
+      "lessons": [
+        "Privacy-invasive defaults exploit user inertia.",
+        "Payment data is highly sensitive."
+      ],
+      "methodology_components": [
+        "Falsification: default setting impact",
+        "OI: privacy by default"
+      ]
+    },
+    {
+      "id": "CS_218",
+      "title": "Grindr \u2014 HIV Status Data Sharing",
+      "source": "https://www.buzzfeednews.com/article/azeenghorayshi/grindr-hiv-status-privacy",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-HEALTH-DATA-SHARING",
+        "RCS-THIRD-PARTY-ANALYTICS"
+      ],
+      "description": "Grindr shared users' HIV status and location data with third-party analytics companies. Highly sensitive health information was transmitted without adequate safeguards.",
+      "assumptions_violated": [
+        "Health data is not shared with analytics companies.",
+        "Third-party SDKs are privacy-respecting."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_008"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_008"
+      ],
+      "lessons": [
+        "Health data requires highest protection levels.",
+        "Third-party SDKs must be audited."
+      ],
+      "methodology_components": [
+        "Falsification: SDK data flow audit",
+        "UVM: health data encryption"
+      ]
+    },
+    {
+      "id": "CS_219",
+      "title": "LocationSmart \u2014 Real-Time Location Access",
+      "source": "https://www.wired.com/story/locationsmart-real-time-location-data/",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-LOCATION-DATA-BROKER",
+        "RCS-CONSENT-BYPASS"
+      ],
+      "description": "LocationSmart provided real-time location data for any phone number with only 'consent' via SMS. The demo website allowed anyone to look up locations without verification.",
+      "assumptions_violated": [
+        "Location data requires strong authentication.",
+        "Consent mechanisms prevent abuse."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_009"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_009"
+      ],
+      "lessons": [
+        "Location data brokers require strict regulation.",
+        "SMS consent is insufficient authentication."
+      ],
+      "methodology_components": [
+        "Falsification: consent mechanism bypass",
+        "OI: location data governance"
+      ]
+    },
+    {
+      "id": "CS_220",
+      "title": "AncestryDNA \u2014 Law Enforcement Data Access",
+      "source": "https://www.buzzfeednews.com/article/salvadorhernandez/family-tree-dna-fbi-cooperation",
+      "domain": "D_PRIVACY",
+      "root_cause_signals": [
+        "RCS-GENETIC-DATA-ACCESS",
+        "RCS-FAMILY-PRIVACY"
+      ],
+      "description": "FamilyTreeDNA admitted to sharing genetic data with the FBI without users' explicit consent. One user's DNA submission exposed relatives' genetic information to law enforcement.",
+      "assumptions_violated": [
+        "Genetic data is used only for genealogy.",
+        "Law enforcement access requires individual consent."
+      ],
+      "falsification_tests": [
+        "F_PRIVACY_010"
+      ],
+      "ontological_issues": [
+        "OI_PRIVACY_010"
+      ],
+      "lessons": [
+        "Genetic data exposes entire families.",
+        "Law enforcement access must be explicitly disclosed."
+      ],
+      "methodology_components": [
+        "Falsification: genetic inference testing",
+        "OI: genetic data rights"
+      ]
+    },
+    {
+      "id": "CS_221",
+      "title": "Wirecard \u2014 1.9 Billion Euros Missing",
       "source": "https://www.bundesfinanzministerium.de/Content/EN/Standardartikel/Topics/Companies/wirecard.html",
-      "domain": "D_FINANCIAL",
+      "domain": "D_FINANCIAL_FRAUD",
       "root_cause_signals": [
         "RCS-FAKE-REVENUE",
         "RCS-AUDIT-FAILURE",
         "RCS-REGULATORY-CAPTURE"
       ],
-      "description": "German payment processor Wirecard collapsed after admitting 1.9 billion euros in cash did not exist. The company had fabricated revenue for years. Auditor EY failed to verify bank confirmations directly.",
+      "description": "German payment processor Wirecard collapsed after admitting 1.9 billion euros in cash never existed. The company had fabricated revenue for years. Auditor EY failed to verify bank confirmations directly.",
       "assumptions_violated": [
         "Audited financial statements are accurate.",
-        "Regulators effectively supervise fintech companies."
+        "Regulators effectively supervise fintech."
       ],
       "falsification_tests": [
         "F_FINANCIAL_001"
@@ -4914,7 +4623,7 @@
       ]
     },
     {
-      "id": "CS_232",
+      "id": "CS_222",
       "title": "Bernie Madoff Ponzi Scheme \u2014 $64.8 Billion",
       "source": "https://www.sec.gov/news/press/2009/2009-26.htm",
       "domain": "D_SECURITIES_FRAUD",
@@ -4923,10 +4632,10 @@
         "RCS-REGULATORY-FAILURE",
         "RCS-CUSTODIAL-FRAUD"
       ],
-      "description": "Bernie Madoff operated the largest Ponzi scheme in history, defrauding investors of $64.8 billion. The SEC investigated Madoff multiple times but failed to uncover the fraud. He acted as both investment advisor and custodian.",
+      "description": "Bernie Madoff operated the largest Ponzi scheme in history. The SEC investigated multiple times but failed to uncover the fraud. Madoff acted as both investment advisor and custodian, enabling theft.",
       "assumptions_violated": [
         "Regulatory investigations detect fraud.",
-        "Third-party custodians prevent asset theft."
+        "Third-party custody prevents theft."
       ],
       "falsification_tests": [
         "F_SECURITIES_001"
@@ -4935,25 +4644,25 @@
         "OI_SECURITIES_001"
       ],
       "lessons": [
-        "Third-party custody must be truly independent.",
-        "Consistent returns require independent verification."
+        "Custody must be truly independent.",
+        "Consistent returns require verification."
       ],
       "methodology_components": [
         "Falsification: return verification",
-        "OI: custodial separation requirements"
+        "OI: custodial separation"
       ]
     },
     {
-      "id": "CS_233",
-      "title": "LIBOR Manipulation Scandal",
+      "id": "CS_223",
+      "title": "LIBOR Manipulation \u2014 Global Rate Rigging",
       "source": "https://www.fca.org.uk/consumers/libor-scandal",
-      "domain": "D_FINANCIAL",
+      "domain": "D_FINANCIAL_FRAUD",
       "root_cause_signals": [
-        "RCS-RATE-RIGGING",
         "RCS-BENCHMARK-MANIPULATION",
-        "RCS-COLLUSION"
+        "RCS-COLLUSION",
+        "RCS-RATE-RIGGING"
       ],
-      "description": "Major banks colluded to manipulate the London Interbank Offered Rate (LIBOR), affecting trillions in financial contracts. Traders submitted false rates to benefit their trading positions.",
+      "description": "Major banks colluded to manipulate LIBOR, affecting trillions in financial contracts. Traders submitted false rates to benefit trading positions. The benchmark was based on self-reported estimates.",
       "assumptions_violated": [
         "Benchmark rates reflect market conditions.",
         "Submitting banks act independently."
@@ -4965,28 +4674,28 @@
         "OI_FINANCIAL_002"
       ],
       "lessons": [
-        "Benchmark rates must be transaction-based.",
-        "Conflicts of interest in rate submission must be eliminated."
+        "Benchmarks must be transaction-based.",
+        "Conflicts of interest must be eliminated."
       ],
       "methodology_components": [
         "Falsification: rate submission audit",
-        "OI: benchmark governance reform"
+        "OI: benchmark governance"
       ]
     },
     {
-      "id": "CS_234",
-      "title": "Wells Fargo Fake Accounts Scandal",
+      "id": "CS_224",
+      "title": "Wells Fargo Fake Accounts \u2014 Unauthorized Openings",
       "source": "https://www.cfpb.gov/about-us/newsroom/cfpb-fines-wells-fargo-100-million-widespread-illegal-practice-secretly-opening-unauthorized-accounts/",
       "domain": "D_CONSUMER_PROTECTION",
       "root_cause_signals": [
         "RCS-SALES-QUOTA-PRESSURE",
         "RCS-ACCOUNT-FRAUD",
-        "RCS-WHISTLEBLOWER-SUPPRESSION"
+        "RCS-WHISTLEBLOWER-RETALIATION"
       ],
-      "description": "Wells Fargo employees opened millions of unauthorized accounts to meet aggressive sales quotas. The bank fired over 5,300 employees but senior management claimed ignorance. Whistleblowers were retaliated against.",
+      "description": "Wells Fargo employees opened millions of unauthorized accounts to meet aggressive quotas. The bank fired 5,300+ employees but senior management claimed ignorance. Whistleblowers were retaliated against.",
       "assumptions_violated": [
-        "Incentive structures do not encourage fraud.",
-        "Internal controls detect unauthorized account opening."
+        "Incentive structures don't encourage fraud.",
+        "Controls detect unauthorized accounts."
       ],
       "falsification_tests": [
         "F_CONSUMER_001"
@@ -4999,23 +4708,23 @@
         "Whistleblower channels must be protected."
       ],
       "methodology_components": [
-        "Falsification: incentive structure review",
-        "UVM: account opening verification"
+        "Falsification: incentive review",
+        "UVM: account verification"
       ]
     },
     {
-      "id": "CS_235",
-      "title": "FTX Cryptocurrency Exchange Collapse",
+      "id": "CS_225",
+      "title": "FTX Collapse \u2014 Customer Fund Commingling",
       "source": "https://www.sec.gov/news/statement/gensler-statement-ftx-111722",
-      "domain": "D_CRYPTO",
+      "domain": "D_CRYPTO_FRAUD",
       "root_cause_signals": [
         "RCS-CUSTODY-COMMINGLING",
         "RCS-RESERVE-FRAUD",
         "RCS-CONFLICT-OF-INTEREST"
       ],
-      "description": "FTX collapsed when it was revealed that customer funds were commingled with Alameda Research trading losses. The exchange lacked basic accounting and used customer deposits as collateral. $8 billion in customer funds were missing.",
+      "description": "FTX collapsed when customer funds were found commingled with Alameda Research trading losses. The exchange lacked basic accounting. $8 billion in customer funds were missing.",
       "assumptions_violated": [
-        "Crypto exchanges keep customer funds segregated.",
+        "Exchanges keep customer funds segregated.",
         "Proof of reserves demonstrates solvency."
       ],
       "falsification_tests": [
@@ -5026,23 +4735,23 @@
       ],
       "lessons": [
         "Customer funds must be held by independent custodians.",
-        "Proof of reserves requires liabilities disclosure."
+        "Proof of reserves requires liability disclosure."
       ],
       "methodology_components": [
         "Falsification: custody verification",
-        "OI: exchange governance requirements"
+        "OI: exchange governance"
       ]
     },
     {
-      "id": "CS_236",
-      "title": "Mt. Gox Bitcoin Exchange Hack \u2014 850,000 BTC",
+      "id": "CS_226",
+      "title": "Mt. Gox Hack \u2014 850,000 Bitcoin Stolen",
       "source": "https://www.mtgox.com/img/pdf/20150331_btc.pdf",
-      "domain": "D_CRYPTO",
+      "domain": "D_CRYPTO_FRAUD",
       "root_cause_signals": [
         "RCS-HOT-WALLET-COMPROMISE",
         "RCS-INSUFFICIENT-AUDITING"
       ],
-      "description": "Mt. Gox, once the largest Bitcoin exchange, lost 850,000 bitcoins to theft. The exchange had been insolvent for years without detection. Most bitcoins were stolen from hot wallets due to poor security practices.",
+      "description": "Mt. Gox lost 850,000 bitcoins to theft. The exchange had been insolvent for years. Most bitcoins were stolen from hot wallets due to poor security practices.",
       "assumptions_violated": [
         "Major exchanges have adequate security.",
         "Cold storage protects most funds."
@@ -5055,27 +4764,26 @@
       ],
       "lessons": [
         "Hot wallets must be insured and limited.",
-        "Continuous proof of reserves is required."
+        "Continuous proof of reserves required."
       ],
       "methodology_components": [
-        "Falsification: wallet security audit",
-        "UVM: real-time reserve monitoring"
+        "Falsification: wallet audit",
+        "UVM: reserve monitoring"
       ]
     },
     {
-      "id": "CS_237",
-      "title": "OneCoin Cryptocurrency Ponzi Scheme \u2014 $4 Billion",
+      "id": "CS_227",
+      "title": "OneCoin \u2014 Fake Cryptocurrency Ponzi",
       "source": "https://www.justice.gov/usao-sdny/pr/onecoin-co-founder-enters-guilty-plea",
       "domain": "D_SECURITIES_FRAUD",
       "root_cause_signals": [
         "RCS-FAKE-CRYPTOCURRENCY",
-        "RCS-PYRAMID-SCHEME",
-        "RCS-MONEY-LAUNDERING"
+        "RCS-PYRAMID-SCHEME"
       ],
-      "description": "OneCoin was marketed as a cryptocurrency but had no actual blockchain. It was a pyramid scheme that defrauded investors of $4 billion. The founders disappeared with investor funds.",
+      "description": "OneCoin was marketed as cryptocurrency but had no blockchain. It was a pyramid scheme defrauding investors of $4 billion. Founders disappeared with funds.",
       "assumptions_violated": [
         "Cryptocurrency claims are verifiable.",
-        "High returns from new cryptocurrencies are legitimate."
+        "High returns are legitimate."
       ],
       "falsification_tests": [
         "F_SECURITIES_002"
@@ -5084,28 +4792,27 @@
         "OI_SECURITIES_002"
       ],
       "lessons": [
-        "Blockchain existence must be independently verifiable.",
-        "Pyramid schemes use cryptocurrency terminology."
+        "Blockchain existence must be verifiable.",
+        "Pyramid schemes use crypto terminology."
       ],
       "methodology_components": [
         "Falsification: blockchain verification",
-        "OI: crypto investment education"
+        "OI: crypto education"
       ]
     },
     {
-      "id": "CS_238",
-      "title": "Valeant Pharmaceuticals Accounting Fraud",
+      "id": "CS_228",
+      "title": "Valeant Philidor \u2014 Specialty Pharmacy Fraud",
       "source": "https://www.sec.gov/news/pressrelease/2016-228.html",
       "domain": "D_SECURITIES_FRAUD",
       "root_cause_signals": [
-        "RCS-PHILANTHROPY-FRAUD",
-        "RCS-CHANNEL-STUFFING",
-        "RCS-RELATED-PARTY-TRANSACTIONS"
+        "RCS-RELATED-PARTY-TRANSACTIONS",
+        "RCS-CHANNEL-STUFFING"
       ],
-      "description": "Valeant used specialty pharmacy Philidor to create fake sales and inflate revenue. The company also engaged in massive price gouging. Executives hid their control of Philidor from investors.",
+      "description": "Valeant used specialty pharmacy Philidor to create fake sales. The company hid control of Philidor from investors and engaged in massive price gouging.",
       "assumptions_violated": [
-        "Related-party transactions are properly disclosed.",
-        "Revenue recognition follows GAAP."
+        "Related-party transactions are disclosed.",
+        "Revenue follows GAAP."
       ],
       "falsification_tests": [
         "F_SECURITIES_003"
@@ -5114,28 +4821,27 @@
         "OI_SECURITIES_003"
       ],
       "lessons": [
-        "Related-party transactions require enhanced disclosure.",
-        "Channel stuffing must be detected by auditors."
+        "Related-party transactions require disclosure.",
+        "Channel stuffing must be detected."
       ],
       "methodology_components": [
         "Falsification: related-party investigation",
-        "UVM: revenue recognition monitoring"
+        "UVM: revenue monitoring"
       ]
     },
     {
-      "id": "CS_239",
-      "title": "Toshiba Accounting Scandal \u2014 $1.2 Billion",
+      "id": "CS_229",
+      "title": "Toshiba Accounting Fraud \u2014 $1.2 Billion",
       "source": "https://www.sec.gov/news/pressrelease/2015-254.html",
       "domain": "D_CORPORATE_GOVERNANCE",
       "root_cause_signals": [
-        "RCS-CHANNEL-STUFFING",
         "RCS-EARNINGS-MANAGEMENT",
         "RCS-BOARD-OVERSIGHT-FAILURE"
       ],
-      "description": "Toshiba inflated profits by $1.2 billion over seven years through improper accounting. Top management set aggressive profit targets that subordinates met through accounting irregularities. The board failed to provide oversight.",
+      "description": "Toshiba inflated profits by $1.2 billion over seven years. Top management set aggressive targets met through accounting irregularities. The board failed to provide oversight.",
       "assumptions_violated": [
-        "Japanese corporate governance prevents fraud.",
-        "Audit committees detect accounting issues."
+        "Governance prevents fraud.",
+        "Audit committees detect issues."
       ],
       "falsification_tests": [
         "F_GOVERNANCE_001"
@@ -5145,57 +4851,57 @@
       ],
       "lessons": [
         "Profit targets must be realistic.",
-        "Board independence is essential for oversight."
+        "Board independence is essential."
       ],
       "methodology_components": [
-        "Falsification: board independence audit",
-        "OI: earnings quality metrics"
+        "Falsification: board audit",
+        "OI: earnings quality"
       ]
     },
     {
-      "id": "CS_240",
-      "title": "Volkswagen Dieselgate Emissions Fraud",
-      "source": "https://www.epa.gov/enforcement/volkswagen-clean-air-act-civil-settlement",
-      "domain": "D_ENVIRONMENTAL_LAW",
+      "id": "CS_230",
+      "title": "Enron \u2014 Special Purpose Entities Fraud",
+      "source": "https://www.sec.gov/news/press/2004-17.htm",
+      "domain": "D_SECURITIES_FRAUD",
       "root_cause_signals": [
-        "RCS-DEFEAT-DEVICE",
-        "RCS-REGULATORY-EVASION",
-        "RCS-CORPORATE-CULTURE"
+        "RCS-OFF-BALANCE-SHEET",
+        "RCS-ACCOUNTING-FRAUD",
+        "RCS-AUDITOR-CONFLICT"
       ],
-      "description": "Volkswagen installed defeat devices in 11 million diesel vehicles to cheat emissions tests. The cars emitted up to 40x the legal NOx limit during normal driving. VW settled for $14.7 billion in the US.",
+      "description": "Enron used special purpose entities to hide debt and inflate profits. Auditor Arthur Andersen was complicit and subsequently collapsed. The fraud wiped out $74 billion in shareholder value.",
       "assumptions_violated": [
-        "Automobile manufacturers comply with emissions regulations.",
-        "Type approval testing detects all violations."
+        "Financial statements represent true position.",
+        "Auditors are independent."
       ],
       "falsification_tests": [
-        "F_ENVIRONMENTAL_003"
+        "F_SECURITIES_004"
       ],
       "ontological_issues": [
-        "OI_ENVIRONMENTAL_003"
+        "OI_SECURITIES_004"
       ],
       "lessons": [
-        "Real-world testing must supplement laboratory testing.",
-        "Corporate culture that prioritizes results enables fraud."
+        "Off-balance-sheet vehicles require scrutiny.",
+        "Auditor independence must be enforced."
       ],
       "methodology_components": [
-        "Falsification: real-world emissions testing",
-        "OI: corporate culture assessment"
+        "Falsification: off-balance-sheet audit",
+        "OI: auditor rotation"
       ]
     },
     {
-      "id": "CS_241",
-      "title": "Amazon Warehouse Working Conditions",
+      "id": "CS_231",
+      "title": "Amazon Warehouse \u2014 High Injury Rates",
       "source": "https://www.osha.gov/news/newsreleases/region4/12152021-0",
       "domain": "D_LABOR_RIGHTS",
       "root_cause_signals": [
         "RCS-INJURY-RATES",
         "RCS-PRODUCTIVITY-QUOTAS",
-        "RCS-HEAT-EXPOSURE"
+        "RCS-ERGONOMIC-HAZARDS"
       ],
-      "description": "Amazon warehouses have injury rates significantly higher than industry averages. Workers report punitive productivity quotas and inadequate break times. OSHA cited Amazon for ergonomic hazards.",
+      "description": "Amazon warehouses have injury rates significantly above industry averages. Workers report punitive productivity quotas and inadequate break times. OSHA cited ergonomic hazards.",
       "assumptions_violated": [
-        "Automation reduces workplace injuries.",
-        "Productivity metrics account for worker safety."
+        "Automation reduces injuries.",
+        "Productivity metrics account for safety."
       ],
       "falsification_tests": [
         "F_LABOR_001"
@@ -5204,17 +4910,17 @@
         "OI_LABOR_001"
       ],
       "lessons": [
-        "Automation pace must consider human ergonomic limits.",
-        "Injury rates must be benchmarked against industry."
+        "Automation pace must consider ergonomic limits.",
+        "Injury rates must be benchmarked."
       ],
       "methodology_components": [
-        "Falsification: injury rate analysis",
+        "Falsification: injury analysis",
         "UVM: ergonomic assessment"
       ]
     },
     {
-      "id": "CS_242",
-      "title": "Foxconn Suicides \u2014 Chinese Electronics Manufacturing",
+      "id": "CS_232",
+      "title": "Foxconn \u2014 Shenzhen Suicides",
       "source": "https://www.nytimes.com/2012/01/12/business/global/more-workers-commit-suicide-at-chinese-plant.html",
       "domain": "D_LABOR_RIGHTS",
       "root_cause_signals": [
@@ -5222,10 +4928,10 @@
         "RCS-DORMITORY-CONDITIONS",
         "RCS-OVERTIME-VIOLATIONS"
       ],
-      "description": "Foxconn, Apple's major supplier, experienced a spate of worker suicides at its Shenzhen factory. Workers lived in factory dormitories under harsh conditions. Excessive overtime violated Chinese labor law.",
+      "description": "Foxconn experienced worker suicides at its Shenzhen factory. Workers lived in factory dormitories under harsh conditions. Excessive overtime violated Chinese labor law.",
       "assumptions_violated": [
-        "Supplier audits detect labor violations.",
-        "Overtime violations are caught by compliance checks."
+        "Supplier audits detect violations.",
+        "Overtime violations are caught."
       ],
       "falsification_tests": [
         "F_LABOR_002"
@@ -5235,27 +4941,26 @@
       ],
       "lessons": [
         "Supplier audits must include worker interviews.",
-        "Maximum working hours must be enforced."
+        "Working hours must be enforced."
       ],
       "methodology_components": [
-        "Falsification: confidential worker interviews",
+        "Falsification: worker interviews",
         "UVM: overtime monitoring"
       ]
     },
     {
-      "id": "CS_243",
-      "title": "Rana Plaza Factory Collapse \u2014 Bangladesh",
+      "id": "CS_233",
+      "title": "Rana Plaza Collapse \u2014 Bangladesh",
       "source": "https://www.btl.gov.bd/",
       "domain": "D_WORKPLACE_SAFETY",
       "root_cause_signals": [
         "RCS-BUILDING-CODE-VIOLATIONS",
-        "RCS-FORCED-LABOR",
         "RCS-RETALIATION"
       ],
-      "description": "The Rana Plaza garment factory building collapsed, killing 1,134 workers. The building had visible cracks the day before, but workers were ordered to return. Major Western retailers sourced from the factory.",
+      "description": "The Rana Plaza factory collapsed, killing 1,134 workers. The building had visible cracks the day before but workers were ordered to return. Western retailers sourced from the factory.",
       "assumptions_violated": [
-        "Building codes are enforced in manufacturing countries.",
-        "Workers can refuse unsafe conditions without retaliation."
+        "Building codes are enforced.",
+        "Workers can refuse unsafe work."
       ],
       "falsification_tests": [
         "F_WORKPLACE_001"
@@ -5264,28 +4969,27 @@
         "OI_WORKPLACE_001"
       ],
       "lessons": [
-        "Building safety inspections must be independent.",
-        "Workers must have right to refuse unsafe work."
+        "Building inspections must be independent.",
+        "Workers must have right to refuse."
       ],
       "methodology_components": [
-        "Falsification: building safety audit",
-        "OI: worker voice protection"
+        "Falsification: building audit",
+        "OI: worker voice"
       ]
     },
     {
-      "id": "CS_244",
-      "title": "Uber Driver Misclassification \u2014 Gig Economy",
+      "id": "CS_234",
+      "title": "Uber Driver Misclassification",
       "source": "https://www.nlrb.gov/cases-and-decisions/case-search/case/uc-2020-079-paas/",
       "domain": "D_EMPLOYMENT_LAW",
       "root_cause_signals": [
         "RCS-EMPLOYEE-MISCLASSIFICATION",
-        "RCS-BENEFIT-DENIAL",
-        "RCS-WAGE-THEFT"
+        "RCS-BENEFIT-DENIAL"
       ],
-      "description": "Uber classified drivers as independent contractors rather than employees, denying them minimum wage, overtime, and benefits. Multiple jurisdictions ruled that Uber drivers are employees under labor law.",
+      "description": "Uber classified drivers as independent contractors, denying minimum wage and benefits. Multiple jurisdictions ruled drivers are employees under labor law.",
       "assumptions_violated": [
-        "Gig workers are truly independent contractors.",
-        "Platform companies are not employers."
+        "Gig workers are contractors.",
+        "Platform companies aren't employers."
       ],
       "falsification_tests": [
         "F_EMPLOYMENT_001"
@@ -5294,17 +4998,17 @@
         "OI_EMPLOYMENT_001"
       ],
       "lessons": [
-        "Employment classification depends on control, not contract labels.",
-        "Gig economy requires new labor protections."
+        "Classification depends on control, not labels.",
+        "Gig economy needs labor protections."
       ],
       "methodology_components": [
-        "Falsification: employment classification test",
-        "OI: gig economy labor framework"
+        "Falsification: classification test",
+        "OI: gig labor framework"
       ]
     },
     {
-      "id": "CS_245",
-      "title": "Google Anti-Union Campaign \u2014 Project Vivian",
+      "id": "CS_235",
+      "title": "Google Union Busting \u2014 Project Vivian",
       "source": "https://www.nlrb.gov/news-outreach/news-story/nlrb-regional-director-asks-judge-to-find-google-employee-fired-for",
       "domain": "D_LABOR_RIGHTS",
       "root_cause_signals": [
@@ -5312,10 +5016,10 @@
         "RCS-RETALIATION",
         "RCS-SURVEILLANCE"
       ],
-      "description": "Google engaged in an anti-union campaign called 'Project Vivian' to discourage employee organizing. The company fired workers involved in union activities. NLRB found Google violated labor law.",
+      "description": "Google engaged in anti-union campaign 'Project Vivian' to discourage organizing. The company fired workers involved in union activities. NLRB found Google violated labor law.",
       "assumptions_violated": [
-        "Tech companies respect worker organizing rights.",
-        "Employee surveillance is disclosed."
+        "Tech companies respect organizing rights.",
+        "Surveillance is disclosed."
       ],
       "falsification_tests": [
         "F_LABOR_003"
@@ -5324,28 +5028,27 @@
         "OI_LABOR_003"
       ],
       "lessons": [
-        "Union organizing activities are protected by law.",
-        "Surveillance of organizing activities is prohibited."
+        "Organizing activities are protected.",
+        "Surveillance of organizing is prohibited."
       ],
       "methodology_components": [
-        "Falsification: organizing rights audit",
-        "OI: tech worker organizing protections"
+        "Falsification: organizing audit",
+        "OI: tech worker protections"
       ]
     },
     {
-      "id": "CS_246",
-      "title": "Tyson Foods COVID-19 Betting Pool",
+      "id": "CS_236",
+      "title": "Tyson COVID-19 Betting Pool",
       "source": "https://www.osha.gov/news/newsreleases/region7/08122021-1",
       "domain": "D_OCCUPATIONAL_SAFETY",
       "root_cause_signals": [
         "RCS-PANDEMIC-RESPONSE-FAILURE",
-        "RCS-WHISTLEBLOWER-RETALIATION",
-        "RCS-INFECTION-CONTROL"
+        "RCS-WHISTLEBLOWER-RETALIATION"
       ],
-      "description": "Managers at Tyson Foods allegedly bet on how many workers would contract COVID-19. The company failed to implement adequate infection controls, leading to outbreaks and worker deaths.",
+      "description": "Tyson managers allegedly bet on how many workers would contract COVID-19. The company failed to implement infection controls, leading to outbreaks and deaths.",
       "assumptions_violated": [
-        "Employers prioritize worker safety during pandemics.",
-        "Pandemic safety protocols are followed."
+        "Employers prioritize worker safety.",
+        "Pandemic protocols are followed."
       ],
       "falsification_tests": [
         "F_SAFETY_001"
@@ -5354,28 +5057,27 @@
         "OI_SAFETY_001"
       ],
       "lessons": [
-        "Pandemic safety requires independent oversight.",
-        "Worker safety cannot be left to employer discretion."
+        "Pandemic safety requires oversight.",
+        "Worker safety can't be left to discretion."
       ],
       "methodology_components": [
-        "Falsification: pandemic safety audit",
+        "Falsification: pandemic audit",
         "UVM: infection tracking"
       ]
     },
     {
-      "id": "CS_247",
-      "title": "Nike Sweatshop Labor \u2014 1990s-2000s",
+      "id": "CS_237",
+      "title": "Nike Sweatshop Labor",
       "source": "https://www.nytimes.com/1996/06/12/business/nike-move-to-shed-its-sweatshop-image.html",
       "domain": "D_LABOR_RIGHTS",
       "root_cause_signals": [
         "RCS-CHILD-LABOR",
-        "RCS-FORCED-LABOR",
         "RCS-WAGE-VIOLATIONS"
       ],
-      "description": "Nike faced global criticism for using sweatshop labor in developing countries. Investigations found child labor, forced overtime, and wages below subsistence levels. The scandal led to corporate social responsibility reforms.",
+      "description": "Nike faced criticism for sweatshop labor. Investigations found child labor and wages below subsistence. The scandal led to CSR reforms.",
       "assumptions_violated": [
-        "Global supply chains respect labor rights.",
-        "Brand companies ensure supplier compliance."
+        "Supply chains respect labor rights.",
+        "Brand companies ensure compliance."
       ],
       "falsification_tests": [
         "F_LABOR_004"
@@ -5384,28 +5086,27 @@
         "OI_LABOR_004"
       ],
       "lessons": [
-        "Supplier codes of conduct require enforcement.",
+        "Supplier codes require enforcement.",
         "Independent monitoring is essential."
       ],
       "methodology_components": [
-        "Falsification: independent factory audit",
+        "Falsification: factory audit",
         "OI: supply chain transparency"
       ]
     },
     {
-      "id": "CS_248",
-      "title": "Cathay Pacific Crew Base Relocation \u2014 Hong Kong",
+      "id": "CS_238",
+      "title": "Cathay Pacific Crew Relocation",
       "source": "https://www.scmp.com/news/hong-kong/health-environment/article/3161471/cathay-pacific-move-crew-bases-hong-kong-british",
       "domain": "D_LABOR_LAW",
       "root_cause_signals": [
         "RCS-CONTRACT-VIOLATION",
-        "RCS-UNILATERAL-CHANGE",
         "RCS-COLLECTIVE-BARGAINING-BREAKDOWN"
       ],
-      "description": "Cathay Pacific unilaterally relocated crew bases out of Hong Kong during pandemic-related restructuring, terminating existing contracts. The airline refused to negotiate with unions on terms.",
+      "description": "Cathay Pacific unilaterally relocated crew bases during pandemic restructuring, terminating contracts. The airline refused to negotiate with unions.",
       "assumptions_violated": [
-        "Restructuring respects existing contracts.",
-        "Unions have bargaining power in crises."
+        "Restructuring respects contracts.",
+        "Unions have bargaining power."
       ],
       "falsification_tests": [
         "F_LABOR_005"
@@ -5414,28 +5115,27 @@
         "OI_LABOR_005"
       ],
       "lessons": [
-        "Crisis restructuring requires good faith negotiation.",
-        "Government may need to protect worker rights in restructuring."
+        "Crisis restructuring requires negotiation.",
+        "Government may need to protect workers."
       ],
       "methodology_components": [
-        "Falsification: good faith bargaining audit",
-        "OI: crisis restructuring frameworks"
+        "Falsification: bargaining audit",
+        "OI: crisis frameworks"
       ]
     },
     {
-      "id": "CS_249",
-      "title": "Instacart Tip Theft \u2014 Gig Worker Wage Theft",
+      "id": "CS_239",
+      "title": "Instacart Tip Theft",
       "source": "https://www.ftc.gov/news-events/news/press-releases/2023/02/ftc-gives-final-approval-order-against-grocery-delivery-app-instacat-deceptive-practices",
       "domain": "D_WAGE_AND_HOUR",
       "root_cause_signals": [
         "RCS-TIP-THEFT",
-        "RCS-WAGE-THEFT",
         "RCS-DECEPTIVE-PRACTICES"
       ],
-      "description": "Instacart used customer tips to subsidize worker pay, effectively stealing tips intended for shoppers. The practice was not clearly disclosed to customers. FTC required $46.5 million in compensation.",
+      "description": "Instacart used customer tips to subsidize worker pay. The practice was not clearly disclosed. FTC required $46.5 million in compensation.",
       "assumptions_violated": [
-        "Tips go directly to workers.",
-        "Gig platform pay structures are transparent."
+        "Tips go to workers.",
+        "Pay structures are transparent."
       ],
       "falsification_tests": [
         "F_WAGE_001"
@@ -5445,27 +5145,26 @@
       ],
       "lessons": [
         "Tip pooling must be disclosed.",
-        "Platform pay algorithms require transparency."
+        "Pay algorithms require transparency."
       ],
       "methodology_components": [
-        "Falsification: pay transparency audit",
-        "UVM: tip flow verification"
+        "Falsification: pay audit",
+        "UVM: tip verification"
       ]
     },
     {
-      "id": "CS_250",
-      "title": "Hyatt Housekeeping Injury Crisis \u2014 Ergonomic Hazards",
+      "id": "CS_240",
+      "title": "Hyatt Housekeeping Injuries",
       "source": "https://www.osha.gov/news/newsreleases/trade-07142011",
       "domain": "D_OCCUPATIONAL_SAFETY",
       "root_cause_signals": [
         "RCS-ERGONOMIC-HAZARD",
-        "RCS-INJURY-UNDERREPORTING",
-        "RCS-WORK-INTENSIFICATION"
+        "RCS-INJURY-UNDERREPORTING"
       ],
-      "description": "Hyatt housekeepers experienced high rates of musculoskeletal injuries due to increased room quotas and elimination of fitted sheets (requiring more lifting). Workers reported pressure not to report injuries.",
+      "description": "Hyatt housekeepers experienced high injury rates due to increased room quotas. Workers reported pressure not to report injuries.",
       "assumptions_violated": [
         "Hotel work is low-risk.",
-        "Injury reporting systems capture all incidents."
+        "Injury reporting captures all incidents."
       ],
       "falsification_tests": [
         "F_SAFETY_002"
@@ -5475,11 +5174,302 @@
       ],
       "lessons": [
         "Room quotas must consider ergonomic limits.",
-        "Injury reporting must be protected from retaliation."
+        "Reporting must be protected from retaliation."
       ],
       "methodology_components": [
         "Falsification: ergonomic assessment",
-        "UVM: confidential injury reporting"
+        "UVM: confidential reporting"
+      ]
+    },
+    {
+      "id": "CS_241",
+      "title": "Volkswagen Dieselgate \u2014 Emissions Cheating",
+      "source": "https://www.epa.gov/enforcement/volkswagen-clean-air-act-civil-settlement",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-DEFEAT-DEVICE",
+        "RCS-REGULATORY-EVASION"
+      ],
+      "description": "Volkswagen installed defeat devices in 11 million vehicles to cheat emissions tests. Cars emitted up to 40x legal NOx limits. VW settled for $14.7 billion in the US.",
+      "assumptions_violated": [
+        "Manufacturers comply with regulations.",
+        "Type approval detects violations."
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_001"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_001"
+      ],
+      "lessons": [
+        "Real-world testing must supplement lab testing.",
+        "Corporate culture enables fraud."
+      ],
+      "methodology_components": [
+        "Falsification: real-world testing",
+        "OI: culture assessment"
+      ]
+    },
+    {
+      "id": "CS_242",
+      "title": "DuPont PFAS \u2014 Teflon Contamination",
+      "source": "https://www.epa.gov/pfas/pfas-explained",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-CHEMICAL-CONTAMINATION",
+        "RCS-SUPPRESSED-RESEARCH"
+      ],
+      "description": "DuPont manufactured PFAS chemicals knowing they were toxic and persistent. The chemicals contaminated water supplies near plants. DuPont suppressed internal research showing health risks.",
+      "assumptions_violated": [
+        "Chemical safety data is accurate.",
+        "Regulators catch toxic substances."
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_002"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_002"
+      ],
+      "lessons": [
+        "Forever chemicals require precautionary approach.",
+        "Industry-funded research needs scrutiny."
+      ],
+      "methodology_components": [
+        "Falsification: toxicity testing",
+        "OI: research independence"
+      ]
+    },
+    {
+      "id": "CS_243",
+      "title": "Flint Water Crisis \u2014 Lead Exposure",
+      "source": "https://www.epa.gov/flint",
+      "domain": "D_PUBLIC_HEALTH",
+      "root_cause_signals": [
+        "RCS-WATER-TREATMENT-FAILURE",
+        "RCS-LEAD-EXPOSURE"
+      ],
+      "description": "Flint's switch to Flint River water without corrosion treatment caused lead to leach from pipes. Thousands of children were exposed. Authorities dismissed resident complaints.",
+      "assumptions_violated": [
+        "Source water can be switched safely.",
+        "Resident complaints aren't indicative."
+      ],
+      "falsification_tests": [
+        "F_PUBLIC_HEALTH_001"
+      ],
+      "ontological_issues": [
+        "OI_PUBLIC_HEALTH_001"
+      ],
+      "lessons": [
+        "Water changes require lead testing.",
+        "Community reports must be taken seriously."
+      ],
+      "methodology_components": [
+        "Falsification: lead monitoring",
+        "UVM: complaint tracking"
+      ]
+    },
+    {
+      "id": "CS_244",
+      "title": "Deepwater Horizon \u2014 BP Oil Spill",
+      "source": "https://www.bsee.gov/deepwater-horizon-oil-spill",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-BLOWOUT-PREVENTER-FAILURE",
+        "RCS-CEMENT-JOB-FAILURE"
+      ],
+      "description": "The Deepwater Horizon rig exploded, killing 11 workers and causing the largest marine oil spill. The blowout preventer failed to seal the well.",
+      "assumptions_violated": [
+        "Blowout preventer functions in all scenarios.",
+        "Cement bond logs detect deficiencies."
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_003"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_003"
+      ],
+      "lessons": [
+        "Blowout preventers need redundant activation.",
+        "Cement integrity must be verified."
+      ],
+      "methodology_components": [
+        "Falsification: BOP testing",
+        "UVM: cement monitoring"
+      ]
+    },
+    {
+      "id": "CS_245",
+      "title": "Plastic Recycling Fraud \u2014 Industry Deception",
+      "source": "https://www.npr.org/2020/09/11/918427028/plastic-wars-three-takeaways-from-the-fight-over-plastic-recycling",
+      "domain": "D_ENVIRONMENTAL_LAW",
+      "root_cause_signals": [
+        "RCS-RECYCLING-FRAUD",
+        "RCS-INDUSTRY-MISINFORMATION"
+      ],
+      "description": "The plastics industry promoted recycling knowing most plastic is not economically recyclable. The campaign was designed to prevent bans on single-use plastics.",
+      "assumptions_violated": [
+        "Recycling symbols indicate recyclability.",
+        "Industry promotes genuine solutions."
+      ],
+      "falsification_tests": [
+        "F_ENVIRONMENTAL_004"
+      ],
+      "ontological_issues": [
+        "OI_ENVIRONMENTAL_004"
+      ],
+      "lessons": [
+        "Recycling claims must be verified.",
+        "Industry self-regulation is insufficient."
+      ],
+      "methodology_components": [
+        "Falsification: recyclability audit",
+        "OI: extended producer responsibility"
+      ]
+    },
+    {
+      "id": "CS_246",
+      "title": "Pacific Gas & Electric \u2014 Wildfire Bankruptcy",
+      "source": "https://www.cpuc.ca.gov/industries-and-topics/electrical-energy/wildfires",
+      "domain": "D_UTILITIES",
+      "root_cause_signals": [
+        "RCS-GRID-MAINTENANCE-DEFERRAL",
+        "RCS-VEGETATION-MANAGEMENT"
+      ],
+      "description": "PG&E filed for bankruptcy after equipment caused catastrophic wildfires including the 2018 Camp Fire (85 deaths). The company deferred maintenance and failed to clear vegetation.",
+      "assumptions_violated": [
+        "Equipment inspection intervals are sufficient.",
+        "Vegetation management can be deferred."
+      ],
+      "falsification_tests": [
+        "F_UTILITIES_001"
+      ],
+      "ontological_issues": [
+        "OI_UTILITIES_001"
+      ],
+      "lessons": [
+        "Wildfire risk requires vegetation management.",
+        "Safety can't be deferred financially."
+      ],
+      "methodology_components": [
+        "Falsification: ignition risk assessment",
+        "UVM: line monitoring"
+      ]
+    },
+    {
+      "id": "CS_247",
+      "title": "Samsung Note 7 \u2014 Battery Fires",
+      "source": "https://www.cpsc.gov/Newsroom/News-Releases/2017/CPSC-Approves-Recall-of-Refurbished-Galaxy-Note-7-Phones/",
+      "domain": "D_PRODUCT_SAFETY",
+      "root_cause_signals": [
+        "RCS-BATTERY-DESIGN-FLAW",
+        "RCS-MANUFACTURING-DEFECT"
+      ],
+      "description": "Samsung Galaxy Note 7 phones experienced battery fires due to design and manufacturing defects. Samsung recalled all devices and discontinued the model.",
+      "assumptions_violated": [
+        "Battery safety testing is adequate.",
+        "Manufacturing quality control is sufficient."
+      ],
+      "falsification_tests": [
+        "F_PRODUCT_001"
+      ],
+      "ontological_issues": [
+        "OI_PRODUCT_001"
+      ],
+      "lessons": [
+        "Battery designs require thermal runaway testing.",
+        "Aggressive form factors compromise safety."
+      ],
+      "methodology_components": [
+        "Falsification: battery stress testing",
+        "UVM: thermal monitoring"
+      ]
+    },
+    {
+      "id": "CS_248",
+      "title": "Boeing 787 Dreamliner \u2014 Battery Fires",
+      "source": "https://www.ntsb.gov/investigations/accidentreports/pages/AAR1401.aspx",
+      "domain": "D_AVATION_SAFETY",
+      "root_cause_signals": [
+        "RCS-LITHIUM-BATTERY-FIRE",
+        "RCS-CERTIFICATION-GAP"
+      ],
+      "description": "Boeing 787s experienced lithium-ion battery fires. The FAA had certified the battery systems without requiring full testing. Planes were grounded worldwide.",
+      "assumptions_violated": [
+        "Certification ensures safety.",
+        "Battery containment is sufficient."
+      ],
+      "falsification_tests": [
+        "F_AVATION_001"
+      ],
+      "ontological_issues": [
+        "OI_AVATION_001"
+      ],
+      "lessons": [
+        "Novel battery technologies require extensive testing.",
+        "Regulatory capture compromises safety."
+      ],
+      "methodology_components": [
+        "Falsification: battery containment testing",
+        "OI: regulatory independence"
+      ]
+    },
+    {
+      "id": "CS_249",
+      "title": "Chernobyl Nuclear Disaster",
+      "source": "https://www.iaea.org/topics/response/chernobyl",
+      "domain": "D_NUCLEAR_SAFETY",
+      "root_cause_signals": [
+        "RCS-OPERATOR-ERROR",
+        "RCS-POSITIVE-VOID-COEFFICIENT",
+        "RCS-SAFETY-CULTURE"
+      ],
+      "description": "A safety test at Chernobyl Unit 4 led to explosion. Operators violated procedures, and the RBMK design had positive void coefficient. Massive radioactive contamination was released.",
+      "assumptions_violated": [
+        "Operators follow procedures.",
+        "Safety systems prevent accidents."
+      ],
+      "falsification_tests": [
+        "F_NUCLEAR_001"
+      ],
+      "ontological_issues": [
+        "OI_NUCLEAR_001"
+      ],
+      "lessons": [
+        "Reactor design must be passively safe.",
+        "Safety culture is essential."
+      ],
+      "methodology_components": [
+        "Falsification: operator error simulation",
+        "OI: safety culture"
+      ]
+    },
+    {
+      "id": "CS_250",
+      "title": "Fukushima Daiichi Meltdown",
+      "source": "https://www.iaea.org/topics/response/fukushima-daiichi-nuclear-accident",
+      "domain": "D_NUCLEAR_SAFETY",
+      "root_cause_signals": [
+        "RCS-TSUNAMI-DESIGN-BASIS",
+        "RCS-BACKUP-POWER-FAILURE"
+      ],
+      "description": "Earthquake and tsunami caused meltdowns at Fukushima Daiichi. The tsunami exceeded design basis levels, flooding backup generators. Three reactors melted down.",
+      "assumptions_violated": [
+        "Design basis covers maximum events.",
+        "Backup power is sufficiently redundant."
+      ],
+      "falsification_tests": [
+        "F_NUCLEAR_002"
+      ],
+      "ontological_issues": [
+        "OI_NUCLEAR_002"
+      ],
+      "lessons": [
+        "Design basis must account for historical maximum.",
+        "Backup power must resist common-mode failures."
+      ],
+      "methodology_components": [
+        "Falsification: beyond-design-basis testing",
+        "UVM: passive safety"
       ]
     }
   ]
