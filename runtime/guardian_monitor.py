@@ -131,6 +131,40 @@ class GuardianMonitor:
                     detected = True
                     message = f"Purpose misalignment: action '{action}' contradicts purpose '{purpose}'"
 
+        elif condition == MonitoredCondition.RECURSIVE_FRAME_MANIPULATION:
+            # Check for recursive self-reference or frame depth exceeding threshold
+            if "frame_depth" in context:
+                max_depth = context.get("max_frame_depth", 10)
+                if context["frame_depth"] > max_depth:
+                    detected = True
+                    message = f"Recursive frame depth {context['frame_depth']} exceeds threshold {max_depth}"
+            elif "recursive_reference" in context or "self_reference" in context:
+                detected = True
+                message = f"Recursive frame manipulation detected: {context}"
+
+        elif condition == MonitoredCondition.ENFORCEMENT_PRIORITY_CHANGE:
+            # Check if enforcement rules were reordered or priority was modified
+            if "priority_change" in context or "rule_reorder" in context:
+                detected = True
+                old_priority = context.get("old_priority", "unknown")
+                new_priority = context.get("new_priority", "unknown")
+                message = f"Enforcement priority changed: {old_priority} -> {new_priority}"
+            elif "enforcement_modified" in context:
+                detected = True
+                message = f"Enforcement rules modified: {context.get('modification', 'unknown')}"
+
+        elif condition == MonitoredCondition.META_INVARIANT_VIOLATION:
+            # Check if an invariant about invariants was violated
+            if "invariant_count_changed" in context:
+                detected = True
+                old_count = context.get("old_count", 0)
+                new_count = context.get("new_count", 0)
+                message = f"Invariant count changed: {old_count} -> {new_count}"
+            elif "invariant_deleted" in context or "invariant_disabled" in context:
+                detected = True
+                inv_id = context.get("invariant_id", "unknown")
+                message = f"Meta-invariant violation: invariant {inv_id} deleted or disabled"
+
         # Record this check in history
         self.condition_history.append((condition, self.virtual_clock))
 
