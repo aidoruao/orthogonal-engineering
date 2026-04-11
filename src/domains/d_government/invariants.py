@@ -61,7 +61,7 @@ def check_agency_backlog(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
     
     if ratio > max_ratio:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Agency {agency.agency_name} FOIA backlog {float(ratio):.1%} exceeds {float(max_ratio):.1%}",
+            conclusion=f"VIOLATION: Agency {agency.agency_name} FOIA backlog {ratio} exceeds {max_ratio}",
             premises=[
                 f"Backlog: {agency.requests_backlog}",
                 f"Annual receipts: {agency.requests_received_annual}",
@@ -74,7 +74,7 @@ def check_agency_backlog(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Agency {agency.agency_name} FOIA backlog acceptable",
-        premises=[f"Backlog ratio: {float(ratio):.1%}"],
+        premises=[f"Backlog ratio: {ratio}"],
         rule="foia_backlog"
     )
 
@@ -158,7 +158,7 @@ def check_timeliness_rate(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
     
     if rate < min_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Agency {agency.agency_name} only {float(rate):.1%} requests within 20 days (min {float(min_rate):.1%})",
+            conclusion=f"VIOLATION: Agency {agency.agency_name} only {rate} requests within 20 days (min {min_rate})",
             premises=[
                 f"Within 20 days: {agency.processed_within_20_days}",
                 f"Total: {agency.requests_processed_annual}",
@@ -170,6 +170,6 @@ def check_timeliness_rate(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Agency {agency.agency_name} FOIA timeliness rate acceptable",
-        premises=[f"Rate: {float(rate):.1%}"],
+        premises=[f"Rate: {rate}"],
         rule="foia_timeliness_rate"
     )

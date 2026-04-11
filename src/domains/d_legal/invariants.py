@@ -106,7 +106,7 @@ def check_court_clearance_rate(court: Court) -> Tuple[bool, ProofObject]:
     
     if rate < min_clearance:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Court {court.court_name} clearance rate {float(rate):.1%} below {float(min_clearance):.1%}",
+            conclusion=f"VIOLATION: Court {court.court_name} clearance rate {rate} below {min_clearance}",
             premises=[
                 f"Resolved: {court.cases_resolved_annual}",
                 f"Filed: {court.cases_filed_annual}",
@@ -118,7 +118,7 @@ def check_court_clearance_rate(court: Court) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Court {court.court_name} clearance rate acceptable",
-        premises=[f"Rate: {float(rate):.1%}"],
+        premises=[f"Rate: {rate}"],
         rule="court_clearance_rate"
     )
 
@@ -187,7 +187,7 @@ def check_case_backlog(court: Court) -> Tuple[bool, ProofObject]:
     
     if old_case_ratio > max_ratio:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Court {court.court_name} has {float(old_case_ratio):.1%} cases > 24 months (max {float(max_ratio):.1%})",
+            conclusion=f"VIOLATION: Court {court.court_name} has {old_case_ratio} cases > 24 months (max {max_ratio})",
             premises=[
                 f">24 months: {court.cases_over_24_months}",
                 f"Total pending: {court.cases_pending}",
@@ -199,6 +199,6 @@ def check_case_backlog(court: Court) -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         conclusion=f"Court {court.court_name} backlog within limits",
-        premises=[f">24 months ratio: {float(old_case_ratio):.1%}"],
+        premises=[f">24 months ratio: {old_case_ratio}"],
         rule="case_backlog"
     )
