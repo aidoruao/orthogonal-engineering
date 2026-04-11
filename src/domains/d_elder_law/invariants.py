@@ -291,7 +291,7 @@ def check_erisa_pension_vesting() -> Tuple[bool, ProofObject]:
         premises=[
             f"years_of_service = {years_of_service}",
             f"cliff_vested = {cliff_vested}",
-            f"graded_vested_percentage = {float(graded_vested_percentage):.0%}",
+            f"graded_vested_percentage = {graded_vested_percentage}",
             f"forfeiture_invalid = {not forfeiture_invalid}",
             f"spousal_protection = {spousal_protection}",
         ],

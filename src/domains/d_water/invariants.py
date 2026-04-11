@@ -231,7 +231,7 @@ def check_lead_service_line_replacement(utility: WaterUtility) -> Tuple[bool, Pr
     # Check if at least 7% annual replacement rate maintained
     if replacement_rate < required_annual_rate and utility.estimated_lead_service_lines > 0:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Utility {utility.system_name} lead service line replacement rate {float(replacement_rate):.1%} below required {float(required_annual_rate):.1%}",
+            conclusion=f"VIOLATION: Utility {utility.system_name} lead service line replacement rate {replacement_rate} below required {required_annual_rate}",
             premises=[
                 f"Lead lines: {utility.estimated_lead_service_lines}",
                 f"Replaced: {utility.lead_service_lines_replaced}",

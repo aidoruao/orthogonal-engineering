@@ -187,7 +187,7 @@ def check_appeal_success_rate(platform: DigitalPlatform) -> Tuple[bool, ProofObj
     
     if rate > max_upheld_rate:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Platform {platform.name} appeal upheld rate {float(rate):.1%} high (>{float(max_upheld_rate):.1%}) — over-removal suspected",
+            conclusion=f"VIOLATION: Platform {platform.name} appeal upheld rate {rate} high (>{max_upheld_rate}) — over-removal suspected",
             premises=[
                 f"Appeals: {platform.appeals_received}",
                 f"Upheld: {platform.appeals_upheld}",
@@ -199,6 +199,6 @@ def check_appeal_success_rate(platform: DigitalPlatform) -> Tuple[bool, ProofObj
     
     return True, ProofObject(
         conclusion=f"Platform {platform.name} appeal upheld rate acceptable",
-        premises=[f"Rate: {float(rate):.1%}"],
+        premises=[f"Rate: {rate}"],
         rule="appeal_success_rate"
     )

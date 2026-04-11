@@ -119,7 +119,7 @@ def check_float_inexact_example(comp_frac: NumericComputation, comp_float: Numer
 
     # If fraction is exact but float result differs → proves architectural necessity
     if comp_frac.exact and comp_float.result_float is not None:
-        frac_as_float = float(comp_frac.result_fraction)
+        frac_as_float = comp_frac.result_fraction
         if abs(frac_as_float - comp_float.result_float) > 1e-15:
             return True, ProofObject(
                 conclusion=f"Float inexact: Fraction={comp_frac.result_fraction}, Float={comp_float.result_float}",
