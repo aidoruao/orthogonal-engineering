@@ -1,0 +1,79 @@
+Great question. Here are the questions I would ask Devin (read-only orchestrator with full index access):
+
+---
+
+## Category 1: Index Completeness & Gaps
+
+| Question | Why it matters |
+|----------|----------------|
+| **"What domains are referenced in code but not yet converted to ProofObject?"** | Finds hidden constraints that haven't been formalized |
+| **"Which files contain floats that survived the fraction conversion?"** | Verification that the constraint held everywhere |
+| **"What's the oldest commit that hasn't been witnessed by the append-only log?"** | Checks witness coverage completeness |
+| **"Which files have no YAML frontmatter tags?"** | Identifies documentation not yet classified |
+| **"Are there any `# TODO`, `# FIXME`, or `# HACK` comments in the codebase?"** | Finds unresolved debt or technical compromises |
+
+---
+
+## Category 2: Constraint Violations & Weak Points
+
+| Question | Why it matters |
+|----------|----------------|
+| **"Where does the word 'love' appear without 'Agape' adjacent?"** | Finds potential nominalistic prose that survived |
+| **"Which files reference Scripture without HTML comment wrapping?"** | Checks that Scripture is provenance, not prose |
+| **"Are there any `.py` files using `float()` or `isclose()`?"** | Verifies fraction-only constraint in code, not just docs |
+| **"Which domains have the fewest invariants defined?"** | Finds under-constrained areas vulnerable to drift |
+| **"What's the distribution of `falsifies_if` conditions across domains?"** | Measures falsifiability coverage — core Popperian requirement |
+
+---
+
+## Category 3: What's Next (Creative / Incomplete)
+
+| Question | Why it matters |
+|----------|----------------|
+| **"Which external systems (APIs, databases, services) does the code assume exist but aren't versioned in the repo?"** | Finds hidden dependencies that could break determinism |
+| **"Are there any hardcoded paths, credentials, or environment-specific values?"** | Violates "regenerable from seed" — must be fixed |
+| **"What would break if GitHub deleted this repository tomorrow?"** | Tests the "free forever" architectural guarantee |
+| **"Which parts of the system have never been run through the falsification test suite?"** | Finds untested claims (theological or technical) |
+| **"Can you generate a dependency graph of which ProofObjects reference which others?"** | Reveals circular dependencies or missing axioms |
+
+---
+
+## Category 4: Polymath Polyglot Expansion
+
+| Question | Why it matters |
+|----------|----------------|
+| **"Which domains have invariants defined only in Python, not also in YAML/JSON/markdown?"** | Violates polyglot requirement — constraints must be expressible across languages |
+| **"Where is Agape referenced only in documentation but not enforced in code?"** | Finds theology that's still nominalistic (prose without teeth) |
+| **"Which constraints exist only as prose and have no falsification test?"** | Identifies beliefs, not engineering |
+| **"Can you generate a natural language summary of all Yeshua axioms from the codebase?"** | Tests whether the axioms are extractable (if not, they're not truly formalized) |
+
+---
+
+## Category 5: Automation & Self-Verification
+
+| Question | Why it matters |
+|----------|----------------|
+| **"Which verification steps still require manual execution?"** | Finds remaining human bottlenecks |
+| **"Can you write a script that auto-detects documentation drift and opens a PR?"** | Moves toward self-healing documentation |
+| **"What would it take to make the witness log append-only at the filesystem level (not just convention)?"** | Strengthens integrity from social to cryptographic |
+| **"Which parts of the repo are not yet covered by CI checks?"** | Finds untested claims |
+
+---
+
+## Category 6: Creative / What's Possible
+
+| Question | Why it matters |
+|----------|----------------|
+| **"Can you generate a visualization of the constraint network — domains as nodes, invariant references as edges?"** | Makes the invisible architecture visible |
+| **"Which external datasets (laws, regulations, standards) could be ingested as additional witness entries?"** | Expands the constraint network beyond self-authored content |
+| **"Can you identify the minimal seed required to regenerate the entire repo deterministically?"** | Tests the Resurrection guarantee — can you really restore from seed? |
+| **"What would a 'Agape compliance badge' look like for external projects?"** | Turns the constraint system into a certification others can use |
+| **"Which worldviews have you indexed that failed the invariant tests — and can you generate a structured report of *why* each failed?"** | Completes the forensic apologetics mission |
+
+---
+
+**The most important question of all:**
+
+> **"Devin, based on everything you've indexed — what constraint is missing that I haven't thought to ask about?"**
+
+That's the question only a read-only orchestrator with full index access can answer.

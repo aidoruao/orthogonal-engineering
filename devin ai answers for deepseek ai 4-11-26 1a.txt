@@ -1,0 +1,185 @@
+Here are the answers to DeepSeek's questions, backed by actual grep/search results against `main`.
+
+---
+
+## Category 1: Index Completeness & Gaps
+
+### "What domains are referenced in code but not yet converted to ProofObject?"
+
+**Zero.** All 157 domains now use `ProofObject`. The final conversion was completed in Kimi session `7533ab94` on 2026-04-11. [15-cite-0](#15-cite-0) 
+
+### "Which files contain floats that survived the fraction conversion?"
+
+**This is a real finding. 32 domain `invariants.py` files still use `float()` or `isclose()`.** The claim "Use `Fraction` (0 floats)" in `DOMAIN_INVARIANT_STATUS.md` line 38 is **false** for these domains:
+
+| Domain | `float()`/`isclose()` count |
+|--------|---------------------------|
+| `d_guardian` | 17 |
+| `d_public_health` | 9 |
+| `d_curriculum` | 6 |
+| `d_neighborhood_equity` | 6 |
+| `d_sharding` | 6 |
+| `d_utility_regulation` | 6 |
+| `d_education` | 5 |
+| `d_emergency` | 4 |
+| `d_government` | 4 |
+| `d_healthcare_law` | 4 |
+| `d_industrial` | 4 |
+| `d_legal` | 4 |
+| `d_retail` | 4 |
+| `d_sociology` | 4 |
+| + 18 more domains | 1-3 each |
+
+Additionally, `pr50_bar_exam/scoring/thresholds.py` uses `float` for `PASS_THRESHOLD: float = 0.70` and all category minimums — the bar exam itself violates the fraction-only constraint. [15-cite-1](#15-cite-1) 
+
+### "Which files have no YAML frontmatter tags?"
+
+**All markdown files on main.** The `^tags:` grep returned **zero matches** across all `.md` files. The YAML frontmatter tags only exist on the `claude/transform-liturgical-prose-to-technical` branch (PR #108), which hasn't been merged yet.
+
+### "Are there any TODO, FIXME, or HACK comments?"
+
+**Yes — 15 files**, most critically in the **runtime layer** which is supposed to be operational:
+
+| File | Count | Severity |
+|------|-------|----------|
+| `runtime/guardian_monitor.py` | 5 | **CRITICAL** — `check_condition()` returns `None` always ("TODO: Implement actual condition detection") |
+| `runtime/invariant_engine.py` | 3 | **CRITICAL** — `load_invariants()` is `pass` ("TODO: Implement schema loading"), `_evaluate_invariant()` returns placeholder |
+| `minimal_ai_ide/implement_frameworks.ps1` | 10 | Low |
+| `docs/KIMI_ONBOARDING.md` | 2 | Low |
+| `src/domains/d_graphics_reality/invariants.py` | 1 | Medium |
+| `topology/renderer.py` | 1 | Medium |
+
+The runtime layer (`runtime/guardian_monitor.py`, `runtime/invariant_engine.py`) is **structurally complete but functionally hollow** — the classes exist, the types are correct, but the actual logic is TODO stubs. [15-cite-2](#15-cite-2) [15-cite-3](#15-cite-3) 
+
+---
+
+## Category 2: Constraint Violations & Weak Points
+
+### "Where does the word 'love' appear without 'Agape' adjacent?"
+
+**50+ files** contain "love" on main. "Agape" appears in only ~31 files, almost entirely within `pr46_agape_witness/`. The overlap is minimal — "love" appears as bare prose in:
+
+- All 8 `canonical/witnesses/*.md` files ("consistent with love")
+- `COVENANT.md` ("consistent with love", "Only by love")
+- `liturgy/remembrance.md` ("The intent was love")
+- 20+ `minimal_ai_ide/` files (theological operator code)
+- Multiple session logs and task files
+
+On the PR #108 branch, the `canonical/witnesses/` and `COVENANT.md` instances were changed to "Agape constraint" — but that hasn't merged to main yet. [15-cite-4](#15-cite-4) 
+
+### "Which files reference Scripture without HTML comment wrapping?"
+
+**50+ files** contain bare Scripture references (Matthew, Revelation, Genesis, Psalms, etc.) without HTML comment wrapping. The heaviest concentrations:
+
+- `minimal_ai_ide/` — 30+ files with 300+ total Scripture references
+- `RESTORATION-POLYMATHIC-001.txt` — 28 references
+- Kimi session logs — 100+ references across session transcripts
+- `eschaton/omega.md` — Matthew 7:24 (bare quote on main)
+
+The PR #108 branch adds HTML comment anchors for `eschaton/omega.md` and `COVENANT.md`, but the `minimal_ai_ide/` directory is untouched. [15-cite-5](#15-cite-5) 
+
+### "Are there any .py files using float() or isclose()?"
+
+**Yes — 50+ files.** Beyond the 32 domain invariants listed above, float violations exist in:
+
+- `GptAudit/analyze_handling.py` (22 matches)
+- `minimal_ai_ide/mathematical_theology_v60.py` (19 matches)
+- `tools/render_agnostic/render/cpu_reference.py` (13 matches)
+- `GptAudit/covenant_physics_corrector.py` (11 matches)
+- `src/patterns/pattern_equity_threshold.py` (8 matches)
+- `tests/test_capability_benchmark.py` (4 matches)
+- `axioms/measure_theory.py` (2 matches)
+- `pr50_bar_exam/scoring/thresholds.py` (2 matches)
+
+### "What's the distribution of falsifies_if conditions across domains?"
+
+`falsifies_if` appears in **45 domain invariant files** out of 157. That means **112 domains (~71%) lack explicit falsification conditions**. The best-covered domains have 15-20 `falsifies_if` entries (e.g., `d_supply_chain_security`, `d_use_of_force`, `d_game_engine_development`). The worst have zero.
+
+---
+
+## Category 3: What's Next
+
+### "Which external systems does the code assume exist but aren't versioned?"
+
+**47+ Python files** import HTTP client libraries (`requests`, `httpx`, `aiohttp`, `urllib.request`), indicating external API dependencies:
+
+- `tools/discord_witness/bot.py` — Discord API
+- `automation/cross_repo_merkle.py` — GitHub API
+- `minimal_ai_ide/test_deepseek_api.py` — DeepSeek API
+- `minimal_ai_ide/daemon_client.py` — local daemon HTTP
+- `minimal_ai_ide/logos_proxy.py` — proxy server
+- `crusader/scripts/phase7_supply_chain_integration.py` — supply chain APIs
+
+None of these external services are versioned or vendored. If any API changes, the code breaks silently. [15-cite-6](#15-cite-6) 
+
+### "Are there hardcoded paths, credentials, or environment-specific values?"
+
+**Yes — massively.** `aidor_filesystem_scan.json` contains `C:\Users\Aidor` as root path (3496 matches of hardcoded paths in that file alone). Session logs contain `/home/idor/orthogonal-engineering` paths throughout. `minimal_ai_ide/` files contain hardcoded localhost URLs, API endpoints, and configuration paths. [15-cite-7](#15-cite-7) 
+
+### "What would break if GitHub deleted this repository tomorrow?"
+
+Based on what I can see:
+1. **`automation/cross_repo_merkle.py`** — imports `requests` and presumably hits GitHub API for cross-repo verification
+2. **All CI/CD** — the 27 workflow checks shown on PR #108 would be gone
+3. **Discord witness bot** — `tools/discord_witness/bot.py` depends on Discord API
+4. **The "deterministic regeneration from seed" claim** — the seed files exist in `seed/`, but the actual regeneration tooling (`generators/`) depends on the repo being cloneable. The Resurrection guarantee is architecturally sound in theory but operationally untested.
+
+---
+
+## Category 4: Polymath Polyglot
+
+### "Where is Agape referenced only in documentation but not enforced in code?"
+
+`Agape` appears in **31 files**, almost entirely within `pr46_agape_witness/` (the dedicated Agape subsystem). It does **NOT** appear in:
+- Any of the 157 domain `invariants.py` files
+- The kernel modules (`kernel/commonwealth/`, `kernel/social/`)
+- The runtime layer (`runtime/`)
+- The bar exam (`pr50_bar_exam/`)
+- The axiom modules (`axioms/`) except indirectly
+
+The Agape constraint is a self-contained subsystem that doesn't integrate with the domain invariant enforcement. It's theology with code, but the code doesn't enforce Agape across the system — it only enforces it within its own module.
+
+### "Which constraints exist only as prose and have no falsification test?"
+
+The entire `eschaton/`, `liturgy/`, `canonical/`, and `COVENANT.md` infrastructure makes claims ("free forever guaranteed", "deterministic regeneration", "no entity may enclose") that have **zero falsification tests**. There is no test that attempts to enclose the system and verifies it fails. There is no test that deletes the repo and regenerates from seed. These are prose guarantees, not engineering guarantees.
+
+---
+
+## Category 5: Automation & Self-Verification
+
+### "Which verification steps still require manual execution?"
+
+- **Bar exam** — must be run manually (`python -m pr50_bar_exam.examination.run_exam`)
+- **Consent log validation** — no CI check validates the JSONL structure
+- **Domain float audit** — no CI check enforces the fraction-only constraint
+- **Cross-repo Merkle** — `automation/cross_repo_merkle.py` exists but isn't in CI
+- **Witness chain integrity** — manual: `python -c "from pr50_bar_exam.invariants.append_only_witness import assert_chain_integrity; print(assert_chain_integrity())"`
+
+### "Which parts of the repo are not covered by CI checks?"
+
+The `.github/workflows/` directory returned empty from my listing tool, which is inconsistent with the 27 CI checks that ran on PR #108. I cannot confirm the exact CI coverage without reading the workflow files. However, based on the check names visible on PR #108 (Determinism, Glass-Box Guard, Orthogonal Parallel, Render Agnostic, State Witness), the CI covers **structural verification** but likely does NOT cover:
+- Float/Fraction enforcement
+- Consent log integrity
+- `falsifies_if` coverage
+- Agape constraint integration
+- Runtime layer functionality (since it's all TODOs)
+
+---
+
+## Category 6: The Missing Constraint
+
+> "Devin, based on everything you've indexed — what constraint is missing that I haven't thought to ask about?"
+
+**The runtime layer is a Potemkin village.**
+
+The system has 157 domains with `ProofObject` returns, 35+ axiom modules, a kernel with commonwealth/social subsystems, a guardian monitor, and an invariant engine. But `runtime/invariant_engine.py` line 59 says `# TODO: Implement schema loading with validation` and line 99 says `# TODO: Implement actual invariant evaluation logic`. `runtime/guardian_monitor.py` line 80 says `# TODO: Implement actual condition detection`. [15-cite-8](#15-cite-8) [15-cite-9](#15-cite-9) 
+
+**The constraint that's missing: there is no runtime that actually executes the invariants.** The 157 domains define check functions that return `(bool, ProofObject)`, but nothing calls them. The invariant engine that's supposed to evaluate them is a skeleton. The guardian monitor that's supposed to detect violations always returns `None`. The entire enforcement layer is type-correct but functionally inert.
+
+This means:
+- Every `ProofObject` is a **static artifact**, not a runtime proof
+- Every `falsifies_if` condition is **documentation**, not an executable test
+- The "halt on violation" behavior described in `RUNTIME_INVARIANT_EXECUTION_SCHEMA.yaml` is **specified but not implemented**
+- The system can describe what would violate an invariant, but it cannot detect a violation at runtime
+
+The missing constraint is: **"Every invariant check function must be callable by the runtime engine, and the runtime engine must actually call them."** Without this, the ProofObject system is a type-level guarantee (the code compiles and the types align) but not a runtime guarantee (the code runs and the invariants hold).
