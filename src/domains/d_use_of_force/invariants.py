@@ -10,6 +10,9 @@ Use of force invariants ensure:
 
 from datetime import datetime
 from fractions import Fraction
+from typing import Tuple
+
+from axioms.logic import ProofObject
 
 from .implementation import (
     D_USE_OF_FORCEChecker,
@@ -21,8 +24,11 @@ from .implementation import (
 )
 
 
-def check_force_proportionality() -> bool:
-    """Verify force level is proportional to threat level."""
+def check_force_proportionality() -> Tuple[bool, ProofObject]:
+    """Verify force level is proportional to threat level.
+    
+    falsifies_if: force not proportional to threat
+    """
     checker = D_USE_OF_FORCEChecker()
     
     # Appropriate: verbal command for low threat
@@ -37,7 +43,12 @@ def check_force_proportionality() -> bool:
         justification="Subject non-compliant",
     )
     
-    assert checker.check_proportionality(proportional)
+    if not checker.check_proportionality(proportional):
+        return False, ProofObject(
+            rule="force_proportionality",
+            subject="INC-001",
+            falsifies_if="Proportional force failed check",
+        )
     
     # Inappropriate: deadly force for low threat
     disproportionate = UseOfForceIncident(
@@ -51,13 +62,25 @@ def check_force_proportionality() -> bool:
         justification="Invalid",
     )
     
-    assert not checker.check_proportionality(disproportionate)
+    if checker.check_proportionality(disproportionate):
+        return False, ProofObject(
+            rule="force_proportionality",
+            subject="INC-002",
+            falsifies_if="Disproportionate force passed check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="force_proportionality",
+        subject="force proportionality",
+        verified=True,
+    )
 
 
-def check_deadly_force_necessity() -> bool:
-    """Verify deadly force is only used for imminent threat of death."""
+def check_deadly_force_necessity() -> Tuple[bool, ProofObject]:
+    """Verify deadly force is only used for imminent threat of death.
+    
+    falsifies_if: deadly force used without necessity
+    """
     checker = D_USE_OF_FORCEChecker()
     
     policy = ForcePolicy(
@@ -80,7 +103,12 @@ def check_deadly_force_necessity() -> bool:
         justification="Subject had weapon",
     )
     
-    assert checker.check_necessity(valid_deadly_force, policy)
+    if not checker.check_necessity(valid_deadly_force, policy):
+        return False, ProofObject(
+            rule="deadly_force_necessity",
+            subject="INC-003",
+            falsifies_if="Valid deadly force failed necessity check",
+        )
     
     # Invalid: deadly force without imminent threat
     invalid_deadly_force = UseOfForceIncident(
@@ -94,13 +122,25 @@ def check_deadly_force_necessity() -> bool:
         justification="Invalid",
     )
     
-    assert not checker.check_necessity(invalid_deadly_force, policy)
+    if checker.check_necessity(invalid_deadly_force, policy):
+        return False, ProofObject(
+            rule="deadly_force_necessity",
+            subject="INC-004",
+            falsifies_if="Invalid deadly force passed necessity check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="deadly_force_necessity",
+        subject="deadly force necessity",
+        verified=True,
+    )
 
 
-def check_de_escalation_attempted() -> bool:
-    """Verify de-escalation is attempted before physical force."""
+def check_de_escalation_attempted() -> Tuple[bool, ProofObject]:
+    """Verify de-escalation is attempted before physical force.
+    
+    falsifies_if: de-escalation not attempted when required
+    """
     checker = D_USE_OF_FORCEChecker()
     
     policy = ForcePolicy(
@@ -123,7 +163,12 @@ def check_de_escalation_attempted() -> bool:
         justification="De-escalation failed",
     )
     
-    assert checker.check_de_escalation(good_incident, policy)
+    if not checker.check_de_escalation(good_incident, policy):
+        return False, ProofObject(
+            rule="de_escalation_attempted",
+            subject="INC-005",
+            falsifies_if="Good incident failed de-escalation check",
+        )
     
     # Bad: no de-escalation attempted
     bad_incident = UseOfForceIncident(
@@ -137,13 +182,25 @@ def check_de_escalation_attempted() -> bool:
         justification="None",
     )
     
-    assert not checker.check_de_escalation(bad_incident, policy)
+    if checker.check_de_escalation(bad_incident, policy):
+        return False, ProofObject(
+            rule="de_escalation_attempted",
+            subject="INC-006",
+            falsifies_if="Bad incident passed de-escalation check",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="de_escalation_attempted",
+        subject="de-escalation",
+        verified=True,
+    )
 
 
-def check_documentation_complete() -> bool:
-    """Verify all use of force incidents are fully documented."""
+def check_documentation_complete() -> Tuple[bool, ProofObject]:
+    """Verify all use of force incidents are fully documented.
+    
+    falsifies_if: required documentation fields missing
+    """
     incident = UseOfForceIncident(
         incident_id="INC-007",
         timestamp=datetime.now(),
@@ -156,18 +213,55 @@ def check_documentation_complete() -> bool:
     )
     
     # Required fields must be present
-    assert incident.incident_id
-    assert incident.timestamp
-    assert incident.officer_id
-    assert incident.justification
-    assert isinstance(incident.force_used, ForceLevel)
-    assert isinstance(incident.threat_level, ThreatLevel)
+    if not incident.incident_id:
+        return False, ProofObject(
+            rule="documentation_complete",
+            subject="INC-007",
+            falsifies_if="incident_id missing",
+        )
+    if not incident.timestamp:
+        return False, ProofObject(
+            rule="documentation_complete",
+            subject="INC-007",
+            falsifies_if="timestamp missing",
+        )
+    if not incident.officer_id:
+        return False, ProofObject(
+            rule="documentation_complete",
+            subject="INC-007",
+            falsifies_if="officer_id missing",
+        )
+    if not incident.justification:
+        return False, ProofObject(
+            rule="documentation_complete",
+            subject="INC-007",
+            falsifies_if="justification missing",
+        )
+    if not isinstance(incident.force_used, ForceLevel):
+        return False, ProofObject(
+            rule="documentation_complete",
+            subject="INC-007",
+            falsifies_if="force_used not ForceLevel",
+        )
+    if not isinstance(incident.threat_level, ThreatLevel):
+        return False, ProofObject(
+            rule="documentation_complete",
+            subject="INC-007",
+            falsifies_if="threat_level not ThreatLevel",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="documentation_complete",
+        subject="documentation",
+        verified=True,
+    )
 
 
-def check_less_lethal_before_deadly() -> bool:
-    """Verify less-lethal options considered before deadly force."""
+def check_less_lethal_before_deadly() -> Tuple[bool, ProofObject]:
+    """Verify less-lethal options considered before deadly force.
+    
+    falsifies_if: less-lethal not used when appropriate
+    """
     # When threat is high but not imminent death, less-lethal should be used
     incident = UseOfForceIncident(
         incident_id="INC-008",
@@ -180,17 +274,47 @@ def check_less_lethal_before_deadly() -> bool:
         justification="Less-lethal appropriate",
     )
     
-    assert incident.force_used == ForceLevel.LESS_LETHAL
-    assert incident.threat_level == ThreatLevel.HIGH
+    if incident.force_used != ForceLevel.LESS_LETHAL:
+        return False, ProofObject(
+            rule="less_lethal_before_deadly",
+            subject="INC-008",
+            falsifies_if="force_used not LESS_LETHAL",
+        )
+    if incident.threat_level != ThreatLevel.HIGH:
+        return False, ProofObject(
+            rule="less_lethal_before_deadly",
+            subject="INC-008",
+            falsifies_if="threat_level not HIGH",
+        )
     
-    return True
+    return True, ProofObject(
+        rule="less_lethal_before_deadly",
+        subject="less lethal options",
+        verified=True,
+    )
 
 
-def check_compliance_deterministic() -> bool:
+def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check."""
-    assert check_force_proportionality()
-    assert check_deadly_force_necessity()
-    assert check_de_escalation_attempted()
-    assert check_documentation_complete()
-    assert check_less_lethal_before_deadly()
-    return True
+    checks = [
+        check_force_proportionality,
+        check_deadly_force_necessity,
+        check_de_escalation_attempted,
+        check_documentation_complete,
+        check_less_lethal_before_deadly,
+    ]
+    
+    for check in checks:
+        result, proof = check()
+        if not result:
+            return False, ProofObject(
+                rule="compliance_deterministic",
+                subject="master_check",
+                falsifies_if=f"{proof.rule} failed",
+            )
+    
+    return True, ProofObject(
+        rule="compliance_deterministic",
+        subject="use of force compliance",
+        verified=True,
+    )
