@@ -28,7 +28,9 @@ def check_support_calculation(calc: ChildSupportCalculator) -> Tuple[bool, Proof
 
 
 def check_home_state_determination(jurisdiction: CustodyJurisdiction) -> Tuple[bool, ProofObject]:
-    """UCCJEA: Home state requires 6+ consecutive months.
+    
+    
+    Falsifies if: home == "undetermined""""UCCJEA: Home state requires 6+ consecutive months.
     
     home = jurisdiction.home_state()
     

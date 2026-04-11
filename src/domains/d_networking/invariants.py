@@ -34,7 +34,9 @@ def check_congestion_window_after_loss(controller: TCPCongestionController) -> T
 
 
 def check_no_routing_loops(verifier: RoutingVerifier) -> Tuple[bool, ProofObject]:
-    """Routing tables must not contain loops.
+    
+    
+    Falsifies if: verifier.has_loop()"""Routing tables must not contain loops.
     
     if verifier.has_loop():
         return False, ProofObject(
@@ -68,7 +70,9 @@ def check_dns_determinism(resolver: DNSResolver, query: str) -> Tuple[bool, Proo
 
 
 def check_congestion_window_bounds(controller: TCPCongestionController) -> Tuple[bool, ProofObject]:
-    """TCP cwnd must stay within valid bounds.
+    
+    
+    Falsifies if: controller.cwnd < MIN_CWND"""TCP cwnd must stay within valid bounds.
     
     from .implementation import MIN_CWND, MAX_CWND
     

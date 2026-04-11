@@ -22,7 +22,9 @@ def check_pel(hazard: Hazard) -> Tuple[bool, ProofObject]:
     )
 
 def check_fall_protection(fp: FallProtection) -> Tuple[bool, ProofObject]:
-    """OSHA 1926.501: Fall protection at 6+ feet.
+    
+    
+    Falsifies if: pel condition not met"""OSHA 1926.501: Fall protection at 6+ feet.
     
     if not fp.protection_required():
         return True, ProofObject(

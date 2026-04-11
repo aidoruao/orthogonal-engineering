@@ -29,7 +29,9 @@ def check_type_soundness(checker: TypeChecker) -> Tuple[bool, ProofObject]:
 
 
 def check_optimization_correctness(opt: OptimizationPass) -> Tuple[bool, ProofObject]:
-    """Optimizations must preserve semantics.
+    
+    
+    Falsifies if: opt.preserves_semantics()"""Optimizations must preserve semantics.
     
     if not opt.preserves_semantics():
         return False, ProofObject(
@@ -63,7 +65,9 @@ def check_register_allocation(allocator: RegisterAllocator) -> Tuple[bool, Proof
 
 
 def check_no_type_confusion(checker: TypeChecker) -> Tuple[bool, ProofObject]:
-    """Type system prevents runtime type errors.
+    
+    
+    Falsifies if: checker.term.typ is None"""Type system prevents runtime type errors.
     
     if checker.term.typ is None:
         return False, ProofObject(

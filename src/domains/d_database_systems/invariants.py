@@ -25,7 +25,9 @@ def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObjec
 
 
 def check_btree_invariants(node: BTreeNode) -> Tuple[bool, ProofObject]:
-    """B-tree must satisfy structural invariants.
+    
+    
+    Falsifies if: node.is_valid()"""B-tree must satisfy structural invariants.
     
     if not node.is_valid():
         return False, ProofObject(
@@ -66,7 +68,9 @@ def check_atomicity(tx: Transaction) -> Tuple[bool, ProofObject]:
 
 
 def check_durability(tx: Transaction) -> Tuple[bool, ProofObject]:
-    """Committed transactions must be durable.
+    
+    
+    Falsifies if: atomicity condition not met"""Committed transactions must be durable.
     
     if tx.status != TransactionStatus.COMMITTED:
         return True, ProofObject(

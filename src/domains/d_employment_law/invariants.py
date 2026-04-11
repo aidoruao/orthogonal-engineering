@@ -25,7 +25,9 @@ def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
 
 
 def check_overtime_calculation(employee) -> Tuple[bool, ProofObject]:
-    """FLSA: Overtime must be 1.5x regular rate.
+    
+    
+    Falsifies if: actual_overtime < expected_overtime"""FLSA: Overtime must be 1.5x regular rate.
     
     if employee.hours_worked <= employee.OVERTIME_THRESHOLD:
         return True, ProofObject(

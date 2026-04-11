@@ -38,7 +38,9 @@ def check_instruction_set_baseline_invariant(
     instructions: List[InstructionSetRequirement],
     baseline: InstructionSet = InstructionSet.SSE2
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: No ungated instructions above baseline.
+    
+    
+    Falsifies if: no vendor lockin invariant condition not met"""Invariant: No ungated instructions above baseline.
     
     return check_instruction_set_baseline(instructions, baseline)
 
@@ -52,7 +54,9 @@ def check_software_renderer_path_invariant(
 
 
 def check_cross_platform_paths_invariant(paths: List[str]) -> Tuple[bool, ProofObject]:
-    """Invariant: All paths are cross-platform compatible.
+    
+    
+    Falsifies if: software renderer path invariant condition not met"""Invariant: All paths are cross-platform compatible.
     
     valid, violations, proof = check_cross_platform_paths(paths)
     

@@ -28,7 +28,9 @@ def check_recording(prior: PropertyInterest, subsequent: PropertyInterest) -> Tu
     )
 
 def check_adverse_possession(claim: AdversePossession) -> Tuple[bool, ProofObject]:
-    """Adverse possession OCEAN elements and statutory period.
+    
+    
+    Falsifies if: not claim.all_elements_present()"""Adverse possession OCEAN elements and statutory period.
     
     if not claim.all_elements_present():
         missing = []

@@ -33,7 +33,9 @@ def check_key_strength(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject
 
 
 def check_hash_collision_resistance(analyzer: HashAnalyzer) -> Tuple[bool, ProofObject]:
-    """Hash must provide adequate collision resistance.
+    
+    
+    Falsifies if: collision_bits < MIN_SECURITY_STRENGTH"""Hash must provide adequate collision resistance.
     
     collision_bits = analyzer.collision_resistance_bits()
     
@@ -83,7 +85,9 @@ def check_cert_chain(chain: CertChainValidator) -> Tuple[bool, ProofObject]:
 
 
 def check_key_algorithm_compliance(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject]:
-    """NIST SP 800-131A: Approved algorithms only.
+    
+    
+    Falsifies if: analyzer.algorithm.value in deprecated"""NIST SP 800-131A: Approved algorithms only.
     
     from .implementation import KeyAlgorithm
     

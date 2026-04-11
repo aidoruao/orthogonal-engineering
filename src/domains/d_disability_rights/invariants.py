@@ -30,7 +30,9 @@ def check_contrast_ratio(contrast: ColorContrast) -> Tuple[bool, ProofObject]:
 
 
 def check_interactive_accessibility(element: InteractiveElement) -> Tuple[bool, ProofObject]:
-    """Interactive elements must be keyboard accessible and labeled.
+    
+    
+    Falsifies if: missing"""Interactive elements must be keyboard accessible and labeled.
     
     missing = []
     if not element.has_keyboard_access:
@@ -78,7 +80,9 @@ def check_ada_accommodation(analyzer: ADAAnalyzer) -> Tuple[bool, ProofObject]:
 
 
 def check_wcag_compliance(checker: WCAGChecker) -> Tuple[bool, ProofObject]:
-    """WCAG 2.1 AA compliance check.
+    
+    
+    Falsifies if: checker.all_contrast_aa()"""WCAG 2.1 AA compliance check.
     
     if not checker.all_contrast_aa():
         return False, ProofObject(

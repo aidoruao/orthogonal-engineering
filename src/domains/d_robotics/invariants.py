@@ -37,7 +37,9 @@ def check_force_limits(robot: CollaborativeRobot) -> Tuple[bool, ProofObject]:
 
 
 def check_emergency_stop_response(e_stop: EmergencyStopSystem) -> Tuple[bool, ProofObject]:
-    """ISO 10218: Emergency stop must complete within 500ms.
+    
+    
+    Falsifies if: response > max_allowed"""ISO 10218: Emergency stop must complete within 500ms.
     
     if not e_stop.e_stop_triggered:
         return True, ProofObject(
@@ -82,7 +84,9 @@ def check_safety_zone_violations(analyzer: SafetyZoneAnalyzer) -> Tuple[bool, Pr
 
 
 def check_collaborative_mode_constraints(robot: CollaborativeRobot) -> Tuple[bool, ProofObject]:
-    """Collaborative mode requires force sensors and speed limits.
+    
+    
+    Falsifies if: len(robot.force_sensors) == 0"""Collaborative mode requires force sensors and speed limits.
     
     if robot.mode != RobotMode.COLLABORATIVE:
         return True, ProofObject(

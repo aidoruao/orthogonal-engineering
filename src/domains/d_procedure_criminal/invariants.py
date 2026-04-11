@@ -22,7 +22,9 @@ def check_probable_cause(arrest: Arrest) -> Tuple[bool, ProofObject]:
     )
 
 def check_miranda(interrogation: Interrogation) -> Tuple[bool, ProofObject]:
-    """Miranda v. Arizona: Warnings required for custodial interrogation.
+    
+    
+    Falsifies if: probable cause condition not met"""Miranda v. Arizona: Warnings required for custodial interrogation.
     
     if not interrogation.miranda_required():
         return True, ProofObject(

@@ -30,7 +30,9 @@ def check_means_test(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
     )
 
 def check_ch13_plan(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
-    """Ch 13 requires 60-month plan.
+    
+    
+    Falsifies if: means test condition not met"""Ch 13 requires 60-month plan.
     
     if case.chapter != Chapter.CH_13:
         return True, ProofObject(

@@ -25,7 +25,9 @@ def check_bracket_monotonicity(calc: BracketCalculator) -> Tuple[bool, ProofObje
 
 
 def check_salt_cap(validator: DeductionValidator) -> Tuple[bool, ProofObject]:
-    """SALT deduction must not exceed $10,000 cap.
+    
+    
+    Falsifies if: validator.salt_within_cap()"""SALT deduction must not exceed $10,000 cap.
     
     if not validator.salt_within_cap():
         return False, ProofObject(

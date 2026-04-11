@@ -34,7 +34,9 @@ def check_statute_of_frauds(contract: Contract) -> Tuple[bool, ProofObject]:
 
 
 def check_formation(contract: Contract) -> Tuple[bool, ProofObject]:
-    """Offer + Acceptance + Consideration = Valid Contract.
+    
+    
+    Falsifies if: missing"""Offer + Acceptance + Consideration = Valid Contract.
     
     missing = []
     if contract.offer_date is None:
@@ -75,7 +77,9 @@ def check_breach_materiality(breach: Breach) -> Tuple[bool, ProofObject]:
 
 
 def check_expectation_principle(breach: Breach) -> Tuple[bool, ProofObject]:
-    """
+    
+    
+    Falsifies if: total > breach.expectation_damages"""
     Expectation damages should put injured party in position 
     they would have been in had contract been performed.
     

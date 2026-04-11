@@ -34,7 +34,9 @@ def check_one_person_one_vote(verifier: EligibilityVerifier) -> Tuple[bool, Proo
 
 
 def check_custody_chain_unbroken(tracker: BallotCustodyTracker) -> Tuple[bool, ProofObject]:
-    """Ballot chain of custody must be unbroken.
+    
+    
+    Falsifies if: tracker.chain_unbroken()"""Ballot chain of custody must be unbroken.
     
     if not tracker.chain_unbroken():
         return False, ProofObject(
@@ -78,7 +80,9 @@ def check_recount_threshold(analyzer: RecountAnalyzer) -> Tuple[bool, ProofObjec
 
 
 def check_eligibility_before_voting(verifier: EligibilityVerifier) -> Tuple[bool, ProofObject]:
-    """Eligibility must be verified before voting.
+    
+    
+    Falsifies if: verifier.is_eligible()"""Eligibility must be verified before voting.
     
     if not verifier.is_eligible():
         return False, ProofObject(

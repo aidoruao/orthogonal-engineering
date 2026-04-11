@@ -30,7 +30,9 @@ def check_duty_to_defend(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
     )
 
 def check_insurable_interest(interest: InsurableInterest) -> Tuple[bool, ProofObject]:
-    """Must have insurable interest at time of loss.
+    
+    
+    Falsifies if: duty to defend condition not met"""Must have insurable interest at time of loss.
     
     if interest.has_insurable_interest():
         return True, ProofObject(

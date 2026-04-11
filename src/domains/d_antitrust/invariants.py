@@ -28,7 +28,9 @@ def check_hhi_concentration(market: Market) -> Tuple[bool, ProofObject]:
 
 
 def check_merger_threshold(merger: Merger) -> Tuple[bool, ProofObject]:
-    """Clayton Act § 7: Mergers exceeding threshold require review.
+    
+    
+    Falsifies if: delta > HHI_MERGER_CONCERN_DELTA"""Clayton Act § 7: Mergers exceeding threshold require review.
     
     combined = merger.combined_share()
     threshold = merger.MERGER_THRESHOLD_PCT
@@ -74,7 +76,9 @@ def check_price_filing_collusion(detector: CollusionDetector) -> Tuple[bool, Pro
 
 
 def check_market_shares_sum(market: Market) -> Tuple[bool, ProofObject]:
-    """Market shares should sum to approximately 100%.
+    
+    
+    Falsifies if: total > Fraction(100)"""Market shares should sum to approximately 100%.
     
     total = market.total_market_size()
     

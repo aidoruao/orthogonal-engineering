@@ -27,7 +27,9 @@ def check_deceptive_practices(verifier: ClaimVerifier) -> Tuple[bool, ProofObjec
 
 
 def check_warranty_coverage(checker: WarrantyChecker) -> Tuple[bool, ProofObject]:
-    """Magnuson-Moss: Warranty must honor covered repairs.
+    
+    
+    Falsifies if: checker.is_covered()"""Magnuson-Moss: Warranty must honor covered repairs.
     
     if not checker.is_covered():
         return False, ProofObject(

@@ -37,7 +37,9 @@ def check_temporal_stability(frame_a: TemporalFrame, frame_b: TemporalFrame,
 
 def check_upscale_spectral_preservation(input_bandwidth: Fraction, 
                                         output_bandwidth: Fraction) -> Tuple[bool, ProofObject]:
-    """Invariant: Upscaling preserves spectral content within Nyquist limits.
+    
+    
+    Falsifies if: temporal stability condition not met"""Invariant: Upscaling preserves spectral content within Nyquist limits.
     
     Output bandwidth should not exceed what can be properly represented
     given the upscale ratio.
@@ -78,7 +80,9 @@ def check_frame_gen_motion_error(pass_: FrameGenerationPass,
 
 
 def check_vendor_fallback_exists(capability: VendorCapability) -> Tuple[bool, ProofObject]:
-    """Invariant: Vendor-specific features have fallback paths.
+    
+    
+    Falsifies if: frame gen motion error condition not met"""Invariant: Vendor-specific features have fallback paths.
     
     Ensures portability across GPU vendors.
     
@@ -110,7 +114,9 @@ def check_ray_reconstruction_bias_variance(pass_: RayReconstructionPass,
 
 
 def run_all_invariants() -> dict:
-    """Run all invariant checks and return results."""
+    
+    
+    Falsifies if: ray reconstruction bias variance condition not met"""Run all invariant checks and return results."""
     results = {}
     
     # TODO: Add test cases with real data

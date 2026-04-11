@@ -26,7 +26,9 @@ def check_impact_score_bounded(eis: EnvironmentalImpactStatement) -> Tuple[bool,
 
 
 def check_comment_period_duration(period: CommentPeriod) -> Tuple[bool, ProofObject]:
-    """NEPA: Minimum 30-day comment period required.
+    
+    
+    Falsifies if: period.is_adequate()"""NEPA: Minimum 30-day comment period required.
     
     if not period.is_adequate():
         return False, ProofObject(

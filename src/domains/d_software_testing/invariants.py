@@ -27,7 +27,9 @@ def check_mcdc_completeness(checker: MCDCChecker) -> Tuple[bool, ProofObject]:
 
 
 def check_mutation_score(scorer: MutationScorer) -> Tuple[bool, ProofObject]:
-    """Mutation score must meet threshold.
+    
+    
+    Falsifies if: score < MIN_MUTATION_SCORE"""Mutation score must meet threshold.
     
     score = scorer.score()
     

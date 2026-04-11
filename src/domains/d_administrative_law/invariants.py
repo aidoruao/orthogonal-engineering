@@ -61,7 +61,9 @@ def check_notice_period(rule: Rulemaking) -> Tuple[bool, ProofObject]:
 
 
 def check_exhaustion(claim: ExhaustionClaim) -> Tuple[bool, ProofObject]:
-    """
+    
+    
+    Falsifies if: notice period condition not met"""
     McKart v. United States (1975) — Exhaustion of administrative 
     remedies is generally required before judicial review.
     
@@ -120,7 +122,9 @@ def check_chevron_step_one(rule: Rulemaking) -> Tuple[bool, ProofObject]:
 
 
 def check_finality(rule: Rulemaking) -> Tuple[bool, ProofObject]:
-    """
+    
+    
+    Falsifies if: has_final_date"""
     Bennett v. Spear (1997) — Final agency action test:
     1. Action marks consummation of agency decision-making
     2. Action is one by which rights/obligations determined
@@ -184,7 +188,9 @@ def check_record_based_decision(
 
 
 def run_all_invariants(rule: Rulemaking, claim: ExhaustionClaim) -> List[Tuple[str, bool, ProofObject]]:
-    """Run all administrative law invariants and return results."""
+    
+    
+    Falsifies if: record based decision condition not met"""Run all administrative law invariants and return results."""
     results = []
     
     results.append(("notice_period", *check_notice_period(rule)))

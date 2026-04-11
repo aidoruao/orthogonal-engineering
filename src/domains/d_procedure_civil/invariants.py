@@ -41,7 +41,9 @@ def check_class_certification(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     )
 
 def check_12b6_plausibility(suit: Lawsuit) -> Tuple[bool, ProofObject]:
-    """FRCP 12(b)(6): Complaint must state plausible claim.
+    
+    
+    Falsifies if: len(suit.complaint_allegations) == 0"""FRCP 12(b)(6): Complaint must state plausible claim.
     
     if len(suit.complaint_allegations) == 0:
         return False, ProofObject(

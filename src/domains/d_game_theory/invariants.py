@@ -25,7 +25,9 @@ def check_nash_equilibrium(solver: NashSolver) -> Tuple[bool, ProofObject]:
 
 
 def check_zero_sum_property(verifier: ZeroSumVerifier) -> Tuple[bool, ProofObject]:
-    """Zero-sum game: payoffs sum to zero for all profiles.
+    
+    
+    Falsifies if: verifier.is_zero_sum()"""Zero-sum game: payoffs sum to zero for all profiles.
     
     if not verifier.is_zero_sum():
         return False, ProofObject(

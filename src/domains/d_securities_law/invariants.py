@@ -25,7 +25,9 @@ def check_accredited_investor(investor: Investor) -> Tuple[bool, ProofObject]:
 
 
 def check_form_d_deadline(filing: FormDFiling) -> Tuple[bool, ProofObject]:
-    """Reg D: Form D must be filed within 15 days of first sale.
+    
+    
+    Falsifies if: filing.is_timely()"""Reg D: Form D must be filed within 15 days of first sale.
     
     if not filing.is_timely():
         return False, ProofObject(

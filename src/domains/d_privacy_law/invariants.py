@@ -28,7 +28,9 @@ def check_gdpr_response_time(analyzer: GDPRAnalyzer, current_date: datetime) -> 
 
 
 def check_ccpa_opt_out(checker: CCPAComplianceChecker) -> Tuple[bool, ProofObject]:
-    """CCPA: Opt-out requests must be honored.
+    
+    
+    Falsifies if: gdpr response time condition not met"""CCPA: Opt-out requests must be honored.
     
     # Check that opted-out consumers are tracked
     opted_out = checker.get_opted_out_count()
@@ -58,7 +60,9 @@ def check_data_minimization(processing: DataProcessing, declared_purpose: str) -
 
 
 def check_gdpr_compliance_rate(analyzer: GDPRAnalyzer) -> Tuple[bool, ProofObject]:
-    """GDPR compliance rate should be 100%.
+    
+    
+    Falsifies if: rate < Fraction(100)"""GDPR compliance rate should be 100%.
     
     rate = analyzer.compliance_rate()
     

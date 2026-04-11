@@ -25,7 +25,9 @@ def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObj
 
 
 def check_processing_deadline(timer: ProcessingTimer) -> Tuple[bool, ProofObject]:
-    """INA: Processing must not exceed statutory deadlines.
+    
+    
+    Falsifies if: timer.is_overdue()"""INA: Processing must not exceed statutory deadlines.
     
     if timer.is_overdue():
         return False, ProofObject(

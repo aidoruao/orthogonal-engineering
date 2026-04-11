@@ -41,7 +41,9 @@ def check_certification_coverage(component: SoftwareComponent) -> Tuple[bool, Pr
 
 
 def check_redundancy_agreement(checker: RedundancyChecker) -> Tuple[bool, ProofObject]:
-    """Redundant channels must agree on output for voting.
+    
+    
+    Falsifies if: len(healthy) == 0"""Redundant channels must agree on output for voting.
     
     healthy = checker.get_healthy_channels()
     
@@ -93,7 +95,9 @@ def check_structural_health(monitor: StructuralHealthMonitor) -> Tuple[bool, Pro
 
 
 def check_function_size(component: SoftwareComponent) -> Tuple[bool, ProofObject]:
-    """Advisory: functions should not exceed recommended size.
+    
+    
+    Falsifies if: lines_per_func > MAX_LINES_PER_FUNCTION"""Advisory: functions should not exceed recommended size.
     
     lines_per_func = Fraction(component.lines_of_code, max(1, component.requirements_based_tests))
     

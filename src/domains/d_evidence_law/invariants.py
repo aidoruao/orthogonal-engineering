@@ -22,7 +22,9 @@ def check_relevance(evidence: Evidence) -> Tuple[bool, ProofObject]:
     )
 
 def check_403_balance(evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """FRE 403: Probative value vs. prejudice.
+    
+    
+    Falsifies if: relevance condition not met"""FRE 403: Probative value vs. prejudice.
     
     if evidence.is_admissible_403():
         return True, ProofObject(
@@ -58,7 +60,9 @@ def check_hearsay(evidence: Evidence) -> Tuple[bool, ProofObject]:
     )
 
 def check_daubert(expert: ExpertWitness) -> Tuple[bool, ProofObject]:
-    """FRE 702/Daubert: Expert testimony reliability.
+    
+    
+    Falsifies if: expert.is_admissible_daubert()"""FRE 702/Daubert: Expert testimony reliability.
     
     if expert.is_admissible_daubert():
         return True, ProofObject(

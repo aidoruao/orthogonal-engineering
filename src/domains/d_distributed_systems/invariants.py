@@ -25,7 +25,9 @@ def check_cap_theorem(analyzer: CAPAnalyzer) -> Tuple[bool, ProofObject]:
 
 
 def check_vector_clock_causality(vc1: VectorClock, vc2: VectorClock) -> Tuple[bool, ProofObject]:
-    """Vector clocks must correctly track causality.
+    
+    
+    Falsifies if: cap theorem condition not met"""Vector clocks must correctly track causality.
     
     relation = vc1.compare(vc2)
     
@@ -72,7 +74,9 @@ def check_consensus_quorum(verifier: ConsensusVerifier) -> Tuple[bool, ProofObje
 
 
 def check_quorum_size(verifier: ConsensusVerifier) -> Tuple[bool, ProofObject]:
-    """Quorum must be > n/2 to prevent split-brain.
+    
+    
+    Falsifies if: quorum_ratio <= MIN_QUORUM_RATIO"""Quorum must be > n/2 to prevent split-brain.
     
     from .implementation import MIN_QUORUM_RATIO
     
