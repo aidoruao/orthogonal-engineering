@@ -14,6 +14,11 @@ from .router import DomainRouter, RouteResult
 from .thinker import ThinkerModule, ThinkerInput, ThinkerOutput
 from .speaker import SpeakerModule, SpeakerOutput
 from .engine import OrthogonalEngine, EngineResponse
+from .synthesizer import (
+    ARCSynthesizer,
+    SynthesisResult,
+    check_synthesis_result_integrity,
+)
 
 __all__ = [
     "EngineManifest",
@@ -26,4 +31,7 @@ __all__ = [
     "SpeakerOutput",
     "OrthogonalEngine",
     "EngineResponse",
+    "ARCSynthesizer",
+    "SynthesisResult",
+    "check_synthesis_result_integrity",
 ]

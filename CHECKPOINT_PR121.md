@@ -2,12 +2,28 @@
 tags: [checkpoint, pr121, handoff, continuity]
 register: technical
 created: 2026-04-12T23:25:00Z
+updated: 2026-04-12T23:38:00Z
 branch: copilot/research-runtime-layer-status
 pr: 120
-status: READY_FOR_NEXT
+status: COMPLETE
 ---
 
-# PR #120 → PR #121 Handoff Checkpoint
+# PR #120 → PR #121 Handoff Checkpoint — COMPLETE
+
+**All work in this checkpoint is done. See CHECKPOINT_PR122.md for continuation.**
+
+---
+
+## What Was Completed in This Session
+
+- `oe_engine/synthesizer.py` — ARC-AGI bounded-depth BFS synthesizer (36 tests passing)
+- `tests/test_oe_synthesizer.py` — 36 synthesizer tests (all pass)
+- `oe_engine/__init__.py` — updated to export `ARCSynthesizer`, `SynthesisResult`,
+  `check_synthesis_result_integrity`
+
+---
+
+# Original Handoff Document (preserved for reference)
 
 **For the next Copilot session: read this file FIRST before making any changes.**
 
