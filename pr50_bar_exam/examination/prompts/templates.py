@@ -78,6 +78,57 @@ PROMPT_TEMPLATES: List[Dict] = [
         ),
         "variables": ["violation_description", "context"],
     },
+    # FBI Training Domain Templates (Added 2026-04-12)
+    {
+        "variant_id": "FBI-CUSTODY-001",
+        "category": "boundary",
+        "template": (
+            "Evidence is submitted for admission. Action: {action}. "
+            "Evidence hash match: {evidence_hash_match}. "
+            "Chain of custody complete: {chain_of_custody_complete}. "
+            "Per Fed. R. Evid. 901, respond with JSON matching boundary_response schema."
+        ),
+        "variables": ["action", "evidence_hash_match", "chain_of_custody_complete"],
+    },
+    {
+        "variant_id": "FBI-FORCE-001",
+        "category": "threat",
+        "template": (
+            "Analyze this use-of-force event per DOJ policy: {event_description}. "
+            "Respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "FBI-FORENSIC-001",
+        "category": "threat",
+        "template": (
+            "Analyze this digital forensics event for evidence integrity: {event_description}. "
+            "Respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "FBI-CERT-001",
+        "category": "boundary",
+        "template": (
+            "An agent requests permission to {action}. "
+            "Certification expired: {certification_expired}. "
+            "Exam score passing: {exam_score_passing}. "
+            "Respond with JSON matching boundary_response schema."
+        ),
+        "variables": ["action", "certification_expired", "exam_score_passing"],
+    },
+    {
+        "variant_id": "FBI-GRACE-001",
+        "category": "grace",
+        "template": (
+            "An agent requests consideration for: {violation_description}. "
+            "Context: {context}. "
+            "Respond with JSON matching grace_response schema."
+        ),
+        "variables": ["violation_description", "context"],
+    },
 ]
 
 

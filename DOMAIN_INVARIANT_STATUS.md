@@ -1,20 +1,26 @@
 # Domain Invariant Status
 
-Updated: 2026-04-11T05:45:00+00:00
+Updated: 2026-04-11T23:57:00+00:00
 
 ## Summary
 
 | Metric | Count | Percentage |
 |--------|-------|------------|
-| Total domains with invariants | **157** | **100%** |
-| ProofObject domains (gold) | **157** | **100%** |
+| Total domains with invariants | **158** | **100%** |
+| ProofObject domains (gold) | **158** | **100%** |
 | AssertionError domains (legacy) | **0** | **0%** |
 | True stubs (<50 lines) | 0 | 0% |
+
+## PR #116 — d_fbi_training (Domain 158)
+- Added d_fbi_training domain with 7 invariant check functions
+- FBI Quantico training, evidence integrity, use-of-force policy
+- 6 bar exam questions added (Q-FBI-CUSTODY-001/002, Q-FBI-FORCE-001, Q-FBI-FORENSIC-001, Q-FBI-CERT-001, Q-FBI-GRACE-001)
+- FBI witness entry added to canonical/witnesses/fbi.md
 
 ## Session 7533ab94 — COMPLETE: All Domains Refactored to ProofObject
 
 ### Final State
-- **ProofObject domains:** 157 (100% — ALL DOMAINS COMPLETE)
+- **ProofObject domains:** 158 (100% — ALL DOMAINS COMPLETE)
 - **AssertionError domains:** 0 (ALL CONVERTED)
 - **True stubs:** 0 (<50 lines)
 
@@ -32,7 +38,7 @@ From Session 471cf772:
 - `d_supply_chain_security` — Converted to ProofObject (5 check functions)
 
 ### Verification
-All 157 domains now:
+All 158 domains now:
 - Import `ProofObject` from `axioms.logic`
 - Return `Tuple[bool, ProofObject]` from all check functions
 - Use `Fraction` (0 floats)
@@ -75,8 +81,8 @@ All ProofObject domains use:
 
 | Metric | Count | Percentage |
 |--------|-------|------------|
-| Total domains | 157 | 100% |
-| Deepened (50+ lines) | **136** | **87%** |
+| Total domains | 158 | 100% |
+| Deepened (50+ lines) | **137** | **87%** |
 | Stubs (<50 lines) | **0** | **0%** |
 
 ## Session 8fbdcdb9 — Batch D14 Complete (ALL TRUE STUBS CLEARED)

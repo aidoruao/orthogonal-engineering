@@ -89,6 +89,67 @@ QUESTIONS: List[Dict[str, Any]] = [
         },
         "expected_answer": "CONDITIONAL",
     },
+    {
+        "question_id": "Q-FBI-CUSTODY-001",
+        "variant_id": "FBI-CUSTODY-001",
+        "category": "boundary",
+        "variables": {
+            "action": "admit_evidence",
+            "evidence_hash_match": False,
+            "chain_of_custody_complete": True,
+        },
+        "expected_answer": "DENY",
+    },
+    {
+        "question_id": "Q-FBI-CUSTODY-002",
+        "variant_id": "FBI-CUSTODY-001",
+        "category": "boundary",
+        "variables": {
+            "action": "admit_evidence",
+            "evidence_hash_match": True,
+            "chain_of_custody_complete": True,
+        },
+        "expected_answer": "ALLOW",
+    },
+    {
+        "question_id": "Q-FBI-FORCE-001",
+        "variant_id": "FBI-FORCE-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Agent used force level 4/5 against threat level 3/10 without de-escalation attempt",
+        },
+        "expected_answer": "DISPROPORTIONATE_FORCE",
+    },
+    {
+        "question_id": "Q-FBI-FORENSIC-001",
+        "variant_id": "FBI-FORENSIC-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Digital evidence hash changed between extraction and court presentation",
+        },
+        "expected_answer": "INTEGRITY_VIOLATION",
+    },
+    {
+        "question_id": "Q-FBI-CERT-001",
+        "variant_id": "FBI-CERT-001",
+        "category": "boundary",
+        "variables": {
+            "action": "authorize_field_operation",
+            "certification_expired": True,
+            "exam_score_passing": True,
+        },
+        "expected_answer": "DENY",
+    },
+    {
+        "question_id": "Q-FBI-GRACE-001",
+        "variant_id": "FBI-GRACE-001",
+        "category": "grace",
+        "variables": {
+            "violation_description": "Agent's certification expired 2 days ago due to administrative delay, not negligence",
+            "context": "Agent has 15-year clean record. Recertification exam already scheduled.",
+        },
+        "expected_answer": "CONDITIONAL",
+    },
 ]
 
 
