@@ -7,6 +7,14 @@
 
 ---
 
+## 0. Agent Routing
+
+Start with `AGENT_ONBOARDING.md` at the repo root for agent-type routing.
+That file directs each agent type (Codex, Claude, Kimi, Devin, Gemini) to the correct
+executor document. Read it before proceeding to Section 1.
+
+---
+
 ## 1. Purpose
 
 This document is the canonical "start here" onboarding path for any new AI/Copilot instance
