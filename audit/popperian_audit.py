@@ -6,9 +6,11 @@ Scans all domain invariants.py files to verify:
   3. Every function returns ``Tuple[bool, ProofObject]``.
 
 Run as:
-    python audit/popperian_audit.py [--domain <name>] [--fail-fast]
+    python audit/popperian_audit.py [--domain <name>] [--fail-fast] [--output <path>]
 
 Returns exit code 0 if all domains pass, 1 otherwise.
+Persists the full JSON report to ``audit/POPPERIAN_AUDIT_REPORT.json`` by default
+(override with ``--output``).
 
 Standard: Yeshua / Glass-Box / Orthogonal Engineering
 """
@@ -16,6 +18,7 @@ Standard: Yeshua / Glass-Box / Orthogonal Engineering
 from __future__ import annotations
 
 import ast
+import json
 import re
 import sys
 from dataclasses import dataclass, field
@@ -24,6 +27,7 @@ from typing import List, Optional
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DOMAINS_DIR = REPO_ROOT / "src" / "domains"
+DEFAULT_REPORT_PATH = Path(__file__).parent / "POPPERIAN_AUDIT_REPORT.json"
 
 _FALSIFIES_IF_RE = re.compile(r"falsifies[\s_]if", re.IGNORECASE)
 _FLOAT_CALL_RE = re.compile(r"\bfloat\s*\(")
@@ -196,13 +200,50 @@ def run_popperian_audit(
     return reports
 
 
+def write_audit_report(
+    reports: List[DomainAuditReport],
+    output_path: Optional[Path] = None,
+) -> Path:
+    """Persist the full Popperian audit result as JSON.
+
+    Args:
+        reports: List of :class:`DomainAuditReport` from
+            :func:`run_popperian_audit`.
+        output_path: Destination file. Defaults to
+            ``audit/POPPERIAN_AUDIT_REPORT.json``.
+
+    Returns:
+        The resolved :class:`Path` where the report was written.
+
+    Falsifies if: the output file is absent after this function returns.
+    """
+    dest = output_path or DEFAULT_REPORT_PATH
+    dest.parent.mkdir(parents=True, exist_ok=True)
+
+    total = len(reports)
+    passing = sum(1 for r in reports if r.passed)
+    payload = {
+        "summary": {
+            "total_domains": total,
+            "passing_domains": passing,
+            "failing_domains": total - passing,
+            "all_pass": passing == total,
+        },
+        "reports": [r.to_dict() for r in reports],
+    }
+
+    dest.write_text(
+        json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    return dest
+
+
 def _main() -> int:
     """CLI entry point.
 
-    Usage: python audit/popperian_audit.py [--domain <name>] [--fail-fast]
+    Usage: python audit/popperian_audit.py [--domain <name>] [--fail-fast] [--output <path>]
     """
     import argparse
-    import json
 
     parser = argparse.ArgumentParser(
         description="Popperian integrity audit for domain invariants."
@@ -220,7 +261,16 @@ def _main() -> int:
     parser.add_argument(
         "--json",
         action="store_true",
-        help="Print JSON report instead of human-readable output.",
+        help="Print JSON report to stdout instead of human-readable output.",
+    )
+    parser.add_argument(
+        "--output",
+        default=None,
+        metavar="PATH",
+        help=(
+            "Path to write the JSON audit report. "
+            f"Defaults to {DEFAULT_REPORT_PATH.name} in the audit/ directory."
+        ),
     )
     args = parser.parse_args()
 
@@ -228,12 +278,17 @@ def _main() -> int:
     all_pass = all(r.passed for r in reports)
     failures = [r for r in reports if not r.passed]
 
+    # Always persist the full JSON report to disk.
+    output_path = Path(args.output) if args.output else None
+    report_dest = write_audit_report(reports, output_path=output_path)
+
     if args.json:
         print(json.dumps([r.to_dict() for r in reports], indent=2))
     else:
         total = len(reports)
         passing = sum(1 for r in reports if r.passed)
         print(f"Popperian Audit: {passing}/{total} domains passing")
+        print(f"Report written to: {report_dest}")
         for report in failures:
             print(f"\nFAIL: {report.domain} ({report.failure_count} issue(s))")
             for finding in report.findings:
