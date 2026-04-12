@@ -120,14 +120,8 @@ def _audit_invariants_file(
 
     findings: List[AuditResult] = []
 
-    # Only audit top-level functions (direct children of the Module node),
-    # not inner/nested functions or methods defined inside other functions.
-    top_level_nodes = [
-        node for node in ast.walk(tree)
-        if isinstance(node, ast.FunctionDef)
-        and not node.name.startswith("_")
-    ]
-    # Filter to only module-level functions (parent is ast.Module).
+    # Only audit top-level module-level functions (direct children of the Module
+    # node), not inner/nested functions or methods defined inside other functions.
     module_functions = [
         node for node in tree.body
         if isinstance(node, ast.FunctionDef) and not node.name.startswith("_")

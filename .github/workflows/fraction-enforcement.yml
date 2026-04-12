@@ -32,7 +32,7 @@ jobs:
             exit 1
           fi
       - name: Verify falsifies_if coverage
-        # Bug fix: use -iE with character class to match both:
+        # Bug fix: use -iE with bracket expression [_ ] to match both:
         #   "Falsifies if:" (docstring format, space separator) and
         #   "falsifies_if:" / "falsifies_if=" (underscore formats).
         run: |
