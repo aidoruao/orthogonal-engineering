@@ -95,14 +95,14 @@ class D_GAME_ENGINE_DEVELOPMENTChecker:
                 if "vel" in obj and "pos" in obj:
                     # Apply gravity
                     vel = list(obj["vel"])
-                    vel[1] = float(Fraction(vel[1]) + config.gravity * dt)
+                    vel[1] = Fraction(vel[1]) + config.gravity * dt
                     obj["vel"] = tuple(vel)
                     
                     # Update position
                     pos = list(obj["pos"])
-                    pos[0] = float(Fraction(pos[0]) + Fraction(obj["vel"][0]) * dt)
-                    pos[1] = float(Fraction(pos[1]) + Fraction(obj["vel"][1]) * dt)
-                    pos[2] = float(Fraction(pos[2]) + Fraction(obj["vel"][2]) * dt)
+                    pos[0] = Fraction(pos[0]) + Fraction(obj["vel"][0]) * dt
+                    pos[1] = Fraction(pos[1]) + Fraction(obj["vel"][1]) * dt
+                    pos[2] = Fraction(pos[2]) + Fraction(obj["vel"][2]) * dt
                     obj["pos"] = tuple(pos)
             
             current_time += dt
