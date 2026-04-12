@@ -1,338 +1,148 @@
-"""D_TELECOMMUNICATIONS_LAW invariant checks — Yeshua Standard.
+"""D_TELECOMMUNICATIONS_LAW invariants — Yeshua Standard. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
-
-Regulatory Standards:
-- Communications Act of 1934 (as amended)
-- FCC regulations (47 CFR)
-- Telecommunications Act of 1996
-
-Source: 47 U.S.C. § 151 (Communications Act), FCC regulations
+Standards:
+- Communications Act of 1934 (47 U.S.C. §151 et seq.)
+- Telecommunications Act of 1996 — unbundled network access
+- FCC Rules 47 CFR Part 64 — CPNI protection
+- TCPA (Telephone Consumer Protection Act, 47 U.S.C. §227) — robocall prohibition
 """
 
 from __future__ import annotations
-
 from fractions import Fraction
-from typing import Tuple
-
+from typing import Dict, Tuple
 from axioms.logic import ProofObject
+from .implementation import TelecommunicationsCarrier, SpectrumLicense, TelephoneNumber
 
 
-def check_communications_act_common_carrier() -> Tuple[bool, ProofObject]:
+def check_carrier_id_nonempty(carrier: TelecommunicationsCarrier) -> Tuple[bool, ProofObject]:
+    """Carrier must have a non-empty carrier_id.
+
+    Standard: FCC Registration (CORES) — carrier identification
+    falsifies_if: carrier.carrier_id is empty.
     """
-    Invariant: Title II common carriers subject to non-discrimination duties.
-    
-    Standard: 47 U.S.C. § 201 - Service and charges
-    Falsifies if: Common carrier unreasonably discriminates.
-    falsifies_if: Common carrier unreasonably discriminates.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Common carrier duties
-    service_upon_reasonable_request = True
-    charges_just_and_reasonable = True
-    no_unjust_discrimination = True
-    no_unreasonable_preference = True
-    
-    # Regulation authority
-    fcc_rate_regulation = True
-    fcc_practice_regulation = True
-    
-    # Interstate vs intrastate
-    interstate_jurisdiction = True
-    intrastate_largely_state = True
-    
-    # Information services exemption (pre-2015, post-2017)
-    information_services_not_common_carrier = True
-    
-    success = service_upon_reasonable_request and no_unjust_discrimination
-    
-    proof = ProofObject(
-        rule="Communications_Act_Common_Carrier",
-        premises=[
-            f"service_upon_request = {service_upon_reasonable_request}",
-            f"just_and_reasonable_charges = {charges_just_and_reasonable}",
-            f"no_unjust_discrimination = {no_unjust_discrimination}",
-            f"fcc_rate_regulation = {fcc_rate_regulation}",
-        ],
-        conclusion=(
-            "Communications Act common carrier requirements comply with 47 U.S.C. § 201"
-            if success
-            else "FAIL: Communications Act common carrier check failed"
-        ),
+    ok = bool(carrier.carrier_id.strip())
+    premises = [f"carrier_id={carrier.carrier_id!r}", f"name={carrier.name!r}"]
+    return ok, ProofObject(
+        rule="CarrierIdNonEmpty",
+        premises=premises,
+        conclusion="PASS: carrier_id set" if ok else "VIOLATION: carrier_id empty",
     )
-    return success, proof
 
 
-def check_fcc_spectrum_licensing() -> Tuple[bool, ProofObject]:
+def check_carrier_name_nonempty(carrier: TelecommunicationsCarrier) -> Tuple[bool, ProofObject]:
+    """Carrier must have a non-empty name.
+
+    Standard: FCC Registration — entity name requirement
+    falsifies_if: carrier.name is empty.
     """
-    Invariant: FCC licenses spectrum use under Title III.
-    
-    Standard: 47 U.S.C. § 301 - License for radio transmission
-    Falsifies if: Unlicensed transmission on licensed frequencies.
-    falsifies_if: Unlicensed transmission on licensed frequencies.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Licensing authority
-    fcc_licensing_authority = True
-    term_of_license = Fraction(8)  # years for most services
-    
-    # License requirements
-    citizenship_requirements = True
-    character_qualifications = True
-    technical_qualifications = True
-    
-    # License renewal
-    renewal_expectation = True  # if serving public interest
-    competitive_bidding = True  # for mutually exclusive applications
-    
-    # Spectrum allocation
-    allocation_table = True
-    primary_vs_secondary = True
-    
-    success = fcc_licensing_authority and citizenship_requirements
-    
-    proof = ProofObject(
-        rule="FCC_Spectrum_Licensing",
-        premises=[
-            f"fcc_licensing_authority = {fcc_licensing_authority}",
-            f"license_term = {term_of_license} years",
-            f"citizenship_requirements = {citizenship_requirements}",
-            f"competitive_bidding = {competitive_bidding}",
-        ],
-        conclusion=(
-            "FCC spectrum licensing complies with 47 U.S.C. § 301"
-            if success
-            else "FAIL: FCC spectrum licensing check failed"
-        ),
+    ok = bool(carrier.name.strip())
+    premises = [f"carrier_id={carrier.carrier_id}", f"name={carrier.name!r}"]
+    return ok, ProofObject(
+        rule="CarrierNameNonEmpty",
+        premises=premises,
+        conclusion="PASS: name set" if ok else "VIOLATION: carrier name empty",
     )
-    return success, proof
 
 
-def check_telecommunications_act_1996_competition() -> Tuple[bool, ProofObject]:
+def check_carrier_no_excessive_tcpa_violations(carrier: TelecommunicationsCarrier) -> Tuple[bool, ProofObject]:
+    """Carrier TCPA violations must be < 10.
+
+    Standard: TCPA 47 U.S.C. §227(b)(3) — $1500/call penalty creates threshold
+    falsifies_if: carrier.tcpa_violations >= 10.
     """
-    Invariant: Telecommunications Act of 1996 promotes competition.
-    
-    Standard: 47 U.S.C. § 151 note - Telecommunications Competition
-    Falsifies if: Incumbent LECs block competitive entry.
-    falsifies_if: Incumbent LECs block competitive entry.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Competition goals
-    local_exchange_competition = True
-    long_distance_competition = True  # Already achieved
-    video_competition = True
-    
-    # ILEC obligations
-    unbundled_network_elements = True
-    resale = True
-    interconnection = True
-    collocation = True
-    
-    # Section 271 requirements
-    fourteen_point_checklist = True
-    fcc_and_state_approval = True
-    
-    num_checklist_items = Fraction(14)
-    
-    success = local_exchange_competition and unbundled_network_elements
-    
-    proof = ProofObject(
-        rule="Telecommunications_Act_1996_Competition",
-        premises=[
-            f"local_exchange_competition = {local_exchange_competition}",
-            f"unbundled_network_elements = {unbundled_network_elements}",
-            f"resale_required = {resale}",
-            f"num_271_checklist_items = {num_checklist_items}",
-        ],
-        conclusion=(
-            "Telecommunications Act 1996 competition requirements verified"
-            if success
-            else "FAIL: Telecommunications Act 1996 competition check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_tcpa_autodialer_restrictions() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: TCPA restricts autodialer calls and texts.
-    
-    Standard: 47 U.S.C. § 227 - Restrictions on use of telephone equipment
-    Falsifies if: Autodialed calls without consent.
-    falsifies_if: Autodialed calls without consent.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Prohibitions
-    autodialer_to_cellular = True  # Without consent
-    artificial_voice_prerecorded = True  # Without consent
-    
-    # Consent requirements
-    express_consent_required = True
-    express_written_consent_for_telemarketing = True
-    
-    # Exceptions
-    emergency_calls = True
-    healthcare_calls = True
-    
-    # Damages
-    statutory_damages = Fraction(500)  # per violation
-    willful_treble = Fraction(3)  # 3x for willful violations
-    
-    success = express_consent_required
-    
-    proof = ProofObject(
-        rule="TCPA_Autodialer_Restrictions",
-        premises=[
-            f"express_consent_required = {express_consent_required}",
-            f"express_written_consent_telemarketing = {express_written_consent_for_telemarketing}",
-            f"statutory_damages = ${statutory_damages}",
-            f"willful_treble = {willful_treble}x",
-        ],
-        conclusion=(
-            "TCPA autodialer restrictions comply with 47 U.S.C. § 227"
-            if success
-            else "FAIL: TCPA autodialer restrictions check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_net_neutrality_principles() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Net neutrality principles prohibit blocking, throttling, and paid prioritization.
-    
-    Standard: FCC 2015 Open Internet Order (varies by administration)
-    Falsifies if: Broadband provider engages in unreasonable discrimination.
-    falsifies_if: Broadband provider engages in unreasonable discrimination.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # 2015 rules (Title II classification)
-    no_blocking = True
-    no_throttling = True
-    no_paid_prioritization = True
-    general_conduct_standard = True
-    
-    # Transparency
-    transparency_required = True
-    
-    # 2017 repeal (RIF order)
-    title_i_classification = True
-    ftc_enforcement = True
-    
-    # State laws filling gap
-    state_net_neutrality_laws = True
-    
-    # Current status (evolving)
-    regulatory_framework_changes = True
-    
-    success = transparency_required  # Consistent across regimes
-    
-    proof = ProofObject(
-        rule="Net_Neutrality_Principles",
-        premises=[
-            f"no_blocking_principle = {no_blocking}",
-            f"no_throttling_principle = {no_throttling}",
-            f"no_paid_prioritization = {no_paid_prioritization}",
-            f"transparency_required = {transparency_required}",
-        ],
-        conclusion=(
-            "Net neutrality principles verified"
-            if success
-            else "FAIL: Net neutrality principles check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_universal_service_fund_contributions() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Universal Service Fund supports telecommunications access.
-    
-    Standard: 47 U.S.C. § 254 - Universal service
-    Falsifies if: Eligible carriers not supported or contributions evaded.
-    falsifies_if: Eligible carriers not supported or contributions evaded.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Contribution factor
-    contribution_base = True  # Interstate and international revenues
-    contribution_rate = Fraction(30, 100)  # ~30% (varies quarterly)
-    
-    # Support programs
-    e_rate_program = True  # Schools and libraries
-    rural_healthcare = True
-    lifeline = True  # Low-income
-    high_cost = True  # Rural areas
-    
-    num_programs = Fraction(4)
-    
-    # Principles
-    quality_services_at_just_rates = True
-    access_in_all_regions = True
-    equitable_nondiscriminatory_contributions = True
-    
-    success = e_rate_program and access_in_all_regions
-    
-    proof = ProofObject(
-        rule="Universal_Service_Fund_Contributions",
-        premises=[
-            f"contribution_base_interstate = {contribution_base}",
-            f"num_support_programs = {num_programs}",
-            f"e_rate_program = {e_rate_program}",
-            f"access_in_all_regions = {access_in_all_regions}",
-        ],
-        conclusion=(
-            "Universal Service Fund complies with 47 U.S.C. § 254"
-            if success
-            else "FAIL: Universal Service Fund check failed"
-        ),
-    )
-    return success, proof
-
-
-def run_all_invariants() -> dict:
-    """Run all D_TELECOMMUNICATIONS_LAW invariants.
-
-    Falsifies if: any telecommunications law invariant check fails or raises an exception.
-    falsifies_if: any telecommunications law invariant check fails or raises an exception.
-    """
-    checks = [
-        ("check_communications_act_common_carrier", check_communications_act_common_carrier),
-        ("check_fcc_spectrum_licensing", check_fcc_spectrum_licensing),
-        ("check_telecommunications_act_1996_competition", check_telecommunications_act_1996_competition),
-        ("check_tcpa_autodialer_restrictions", check_tcpa_autodialer_restrictions),
-        ("check_net_neutrality_principles", check_net_neutrality_principles),
-        ("check_universal_service_fund_contributions", check_universal_service_fund_contributions),
+    max_violations = 10
+    ok = carrier.tcpa_violations < max_violations
+    premises = [
+        f"carrier_id={carrier.carrier_id}",
+        f"tcpa_violations={carrier.tcpa_violations}",
+        f"max_allowed={max_violations}",
     ]
-    
+    return ok, ProofObject(
+        rule="CarrierNoExcessiveTCPAViolations",
+        premises=premises,
+        conclusion=f"PASS: {carrier.tcpa_violations} violations < {max_violations}" if ok else f"VIOLATION: {carrier.tcpa_violations} TCPA violations >= {max_violations}",
+    )
+
+
+def check_carrier_net_neutrality_compliant(carrier: TelecommunicationsCarrier) -> Tuple[bool, ProofObject]:
+    """Carrier must be net neutrality compliant.
+
+    Standard: FCC Open Internet Order (Restoring Internet Freedom, 2024)
+    falsifies_if: carrier.net_neutralty_compliant is False.
+    """
+    ok = carrier.net_neutralty_compliant
+    premises = [
+        f"carrier_id={carrier.carrier_id}",
+        f"net_neutralty_compliant={carrier.net_neutralty_compliant}",
+    ]
+    return ok, ProofObject(
+        rule="CarrierNetNeutralityCompliant",
+        premises=premises,
+        conclusion="PASS: net neutrality compliant" if ok else "VIOLATION: not net neutrality compliant",
+    )
+
+
+def check_spectrum_license_has_call_sign(license: SpectrumLicense) -> Tuple[bool, ProofObject]:
+    """Spectrum license must have a non-empty call sign.
+
+    Standard: 47 CFR §2.301 — FCC license identification
+    falsifies_if: license.call_sign is empty.
+    """
+    ok = bool(license.call_sign.strip())
+    premises = [f"license_id={license.license_id}", f"call_sign={license.call_sign!r}"]
+    return ok, ProofObject(
+        rule="SpectrumLicenseHasCallSign",
+        premises=premises,
+        conclusion="PASS: call sign set" if ok else "VIOLATION: call sign empty",
+    )
+
+
+def check_spectrum_license_has_licensee(license: SpectrumLicense) -> Tuple[bool, ProofObject]:
+    """Spectrum license must have a non-empty licensee_id.
+
+    Standard: 47 CFR §1.919 — FCC license application requirements
+    falsifies_if: license.licensee_id is empty.
+    """
+    ok = bool(license.licensee_id.strip())
+    premises = [f"license_id={license.license_id}", f"licensee_id={license.licensee_id!r}"]
+    return ok, ProofObject(
+        rule="SpectrumLicenseHasLicensee",
+        premises=premises,
+        conclusion="PASS: licensee_id set" if ok else "VIOLATION: licensee_id empty",
+    )
+
+
+def run_all_invariants() -> Dict[str, str]:
+    """Run all checks with nominal inputs. All must PASS."""
+    from datetime import datetime
+    carrier = TelecommunicationsCarrier(
+        carrier_id="CARRIER-001",
+        name="Springfield Telecom Inc.",
+        tcpa_violations=0,
+        net_neutralty_compliant=True,
+    )
+    from .implementation import LicenseType
+    license = SpectrumLicense(
+        license_id="LIC-001",
+        call_sign="KABC",
+        frequency_block="700MHz-Band",
+        bandwidth_mhz=10.0,
+        licensee_id="CARRIER-001",
+        licensee_name="Springfield Telecom Inc.",
+        issue_date=datetime(2024, 1, 1),
+        expiration_date=datetime(2034, 1, 1),
+        license_type=list(LicenseType)[0],
+        geographic_scope="nationwide",
+    )
     results = {}
-    for name, check_func in checks:
-        try:
-            success, proof = check_func()
-            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+    for fn, args in [
+        (check_carrier_id_nonempty, (carrier,)),
+        (check_carrier_name_nonempty, (carrier,)),
+        (check_carrier_no_excessive_tcpa_violations, (carrier,)),
+        (check_carrier_net_neutrality_compliant, (carrier,)),
+        (check_spectrum_license_has_call_sign, (license,)),
+        (check_spectrum_license_has_licensee, (license,)),
+    ]:
+        _, p = fn(*args)
+        results[fn.__name__] = p.conclusion
     return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_TELECOMMUNICATIONS_LAW invariants: PASS")

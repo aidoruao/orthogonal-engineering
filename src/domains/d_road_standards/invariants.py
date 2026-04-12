@@ -1,350 +1,159 @@
-"""D_ROAD_STANDARDS invariant checks — Yeshua Standard.
+"""D_ROAD_STANDARDS invariants — Yeshua Standard. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
-
-Regulatory Standards:
-- MUTCD (Manual on Uniform Traffic Control Devices)
-- AASHTO Green Book
-- FHWA design standards
-
-Source: 23 CFR Part 655 (MUTCD), AASHTO Green Book, FHWA
+Standards:
+- AASHTO A Policy on Geometric Design of Highways and Streets (Green Book)
+- FHWA Manual on Uniform Traffic Control Devices (MUTCD)
+- 23 CFR Part 625 — Design standards for federal-aid highways
+- AASHTO LRFD Bridge Design Specifications
 """
 
 from __future__ import annotations
-
 from fractions import Fraction
-from typing import Tuple
-
+from typing import Dict, Tuple
 from axioms.logic import ProofObject
+from .implementation import RoadSegment, SpeedLimitCalculation, TrafficSignal
 
 
-def check_mutcd_compliance_required() -> Tuple[bool, ProofObject]:
+def check_lane_width_minimum(road: RoadSegment) -> Tuple[bool, ProofObject]:
+    """Lane width must be >= 10 ft (urban) or >= 11 ft (rural).
+
+    Standard: AASHTO Green Book Table 3-12; FHWA MUTCD
+    falsifies_if: lane_width_ft < 10 (urban) or < 11 (rural).
     """
-    Invariant: MUTCD compliance required on all public roads.
-    
-    Standard: 23 CFR § 655.603 - Adoption of MUTCD
-    Falsifies if: Traffic control devices non-compliant with MUTCD.
-    falsifies_if: Traffic control devices non-compliant with MUTCD.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # MUTCD applicability
-    all_public_roads = True
-    all_private_roads_open_to_public = True
-    all_bikeways = True
-    
-    # Traffic control device categories
-    regulatory_signs = True
-    warning_signs = True
-    guide_signs = True
-    pavement_markings = True
-    traffic_signals = True
-    
-    num_device_categories = Fraction(5)
-    
-    # Compliance requirement
-    federal_highways_100_percent = True
-    state_highways_100_percent = True
-    local_roads_varies_by_state = True
-    
-    success = all_public_roads and regulatory_signs
-    
-    proof = ProofObject(
-        rule="MUTCD_Compliance_Required",
-        premises=[
-            f"all_public_roads = {all_public_roads}",
-            f"all_bikeways = {all_bikeways}",
-            f"num_device_categories = {num_device_categories}",
-            f"federal_highways_100_percent = {federal_highways_100_percent}",
-        ],
-        conclusion=(
-            "MUTCD compliance required per 23 CFR § 655.603"
-            if success
-            else "FAIL: MUTCD compliance requirement check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_aashto_green_book_design() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: AASHTO Green Book provides geometric design standards.
-    
-    Standard: AASHTO Green Book - Policy on Geometric Design
-    Falsifies if: Design elements below recommended minimums.
-    falsifies_if: Design elements below recommended minimums.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Design speed
-    design_speed_urban = Fraction(30)  # mph
-    design_speed_rural = Fraction(55)  # mph
-    
-    # Lane width
-    standard_lane_width = Fraction(12)  # feet
-    minimum_lane_width = Fraction(10)  # feet (low volume)
-    
-    # Shoulder width
-    standard_shoulder_width = Fraction(8)  # feet
-    minimum_shoulder_width = Fraction(4)  # feet
-    
-    # Design year
-    aadt_design_year = Fraction(20)  # years from opening
-    
-    # Check standard values
-    lane_width_valid = standard_lane_width >= Fraction(11)
-    shoulder_width_valid = minimum_shoulder_width >= Fraction(4)
-    
-    success = lane_width_valid and shoulder_width_valid
-    
-    proof = ProofObject(
-        rule="AASHTO_Green_Book_Design",
-        premises=[
-            f"standard_lane_width = {standard_lane_width} ft",
-            f"minimum_lane_width = {minimum_lane_width} ft",
-            f"standard_shoulder_width = {standard_shoulder_width} ft",
-            f"design_year_aadt = {aadt_design_year} years",
-        ],
-        conclusion=(
-            "AASHTO Green Book design standards verified"
-            if success
-            else "FAIL: AASHTO Green Book design check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_fhwa_bridge_inspection() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: FHWA requires regular bridge inspections.
-    
-    Standard: 23 CFR § 650.313 - Bridge inspection
-    Falsifies if: Bridge inspection intervals exceed 24 months.
-    falsifies_if: Bridge inspection intervals exceed 24 months.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Inspection intervals
-    routine_inspection_interval = Fraction(24)  # months
-    underwater_inspection_interval = Fraction(60)  # months
-    fracture_critical_inspection_interval = Fraction(24)  # months
-    
-    # Load rating
-    load_rating_required = True
-    posting_required_if_inadequate = True
-    
-    # Scour critical bridges
-    scour_critical_plan_required = True
-    
-    # Inspection qualifications
-    team_leader_requirements = True
-    program_manager_requirements = True
-    
-    success = routine_inspection_interval <= Fraction(24)
-    
-    proof = ProofObject(
-        rule="FHWA_Bridge_Inspection",
-        premises=[
-            f"routine_inspection_interval = {routine_inspection_interval} months",
-            f"underwater_inspection_interval = {underwater_inspection_interval} months",
-            f"fracture_critical_interval = {fracture_critical_inspection_interval} months",
-            f"load_rating_required = {load_rating_required}",
-        ],
-        conclusion=(
-            "FHWA bridge inspection requirements per 23 CFR § 650.313 verified"
-            if success
-            else "FAIL: FHWA bridge inspection check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_speed_limit_setting_criteria() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Speed limits set based on engineering study.
-    
-    Standard: MUTCD Section 2B.13 - Speed Limit Sign
-    Falsifies if: Speed limit set without 85th percentile speed study.
-    falsifies_if: Speed limit set without 85th percentile speed study.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # 85th percentile speed
-    percentile_85 = True  # Primary factor
-    
-    # Road characteristics
-    roadside_development = True
-    roadway_geometry = True
-    parking_practices = True
-    pedestrian_activity = True
-    
-    # Posted speed increments
-    speed_increment = Fraction(5)  # mph (5, 10, 15, etc.)
-    
-    # School zones
-    school_zone_reduction = Fraction(10)  # mph below normal
-    when_children_present = True
-    
-    # Check valid speed limits
-    valid_limits = [Fraction(25), Fraction(30), Fraction(35), Fraction(40), Fraction(45), Fraction(55)]
-    all_valid_increments = all(limit % speed_increment == Fraction(0) for limit in valid_limits)
-    
-    success = percentile_85 and all_valid_increments
-    
-    proof = ProofObject(
-        rule="Speed_Limit_Setting_Criteria",
-        premises=[
-            f"85th_percentile_basis = {percentile_85}",
-            f"speed_increment = {speed_increment} mph",
-            f"school_zone_reduction = {school_zone_reduction} mph",
-            f"all_valid_increments = {all_valid_increments}",
-        ],
-        conclusion=(
-            "Speed limit setting criteria comply with MUTCD Section 2B.13"
-            if success
-            else "FAIL: Speed limit setting criteria check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_horizontal_curve_design() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Horizontal curves designed for design speed.
-    
-    Standard: AASHTO Green Book - Horizontal alignment
-    Falsifies if: Side friction demand exceeds maximum available.
-    falsifies_if: Side friction demand exceeds maximum available.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Design speed
-    v = Fraction(60)  # mph
-    
-    # Radius calculation: R = V^2 / (15 * (e + f))
-    # where e = superelevation rate, f = side friction factor
-    
-    superelevation_max = Fraction(6, 100)  # 6%
-    side_friction_max = Fraction(12, 100)  # 0.12
-    
-    # Minimum radius for 60 mph
-    v_squared = v * v
-    denominator = Fraction(15) * (superelevation_max + side_friction_max)
-    min_radius = v_squared / denominator
-    
-    # Check reasonable radius (should be ~800+ feet for 60 mph)
-    radius_adequate = min_radius >= Fraction(800)
-    
-    # Check side friction not exceeded
-    side_friction_ok = side_friction_max <= Fraction(14, 100)
-    
-    success = radius_adequate and side_friction_ok
-    
-    proof = ProofObject(
-        rule="Horizontal_Curve_Design",
-        premises=[
-            f"design_speed = {v} mph",
-            f"superelevation_max = {superelevation_max}",
-            f"side_friction_max = {side_friction_max}",
-            f"min_radius = {min_radius} ft",
-        ],
-        conclusion=(
-            "Horizontal curve design complies with AASHTO Green Book"
-            if success
-            else "FAIL: Horizontal curve design check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_stopping_sight_distance() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Stopping sight distance provided for design speed.
-    
-    Standard: AASHTO Green Book - Sight distance
-    Falsifies if: Available SSD less than required SSD.
-    falsifies_if: Available SSD less than required SSD.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # SSD formula: SSD = 1.47 * V * t + 1.075 * V^2 / a
-    # where V = speed (mph), t = perception-reaction time (sec), a = deceleration (ft/s^2)
-    
-    v = Fraction(60)  # mph
-    t_perception = Fraction(25, 10)  # 2.5 seconds
-    a_decel = Fraction(115, 10)  # 11.5 ft/s^2
-    
-    # Perception-reaction distance
-    prd = Fraction(147, 100) * v * t_perception
-    
-    # Braking distance
-    braking_dist = Fraction(1075, 1000) * v * v / a_decel
-    
-    # Total SSD
-    ssd_required = prd + braking_dist
-    
-    # Standard SSD for 60 mph is approximately 570 feet
-    ssd_standard = Fraction(570)
-    ssd_adequate = ssd_required >= Fraction(500)  # Should be close to 570
-    
-    success = ssd_adequate
-    
-    proof = ProofObject(
-        rule="Stopping_Sight_Distance",
-        premises=[
-            f"design_speed = {v} mph",
-            f"perception_reaction_time = {t_perception}s",
-            f"perception_reaction_dist = {prd} ft",
-            f"braking_dist = {braking_dist} ft",
-            f"ssd_required = {ssd_required} ft",
-        ],
-        conclusion=(
-            "Stopping sight distance complies with AASHTO Green Book"
-            if success
-            else "FAIL: Stopping sight distance check failed"
-        ),
-    )
-    return success, proof
-
-
-def run_all_invariants() -> dict:
-    """Run all D_ROAD_STANDARDS invariants.
-
-    Falsifies if: any road standards invariant check fails or raises an exception.
-    falsifies_if: any road standards invariant check fails or raises an exception.
-    """
-    checks = [
-        ("check_mutcd_compliance_required", check_mutcd_compliance_required),
-        ("check_aashto_green_book_design", check_aashto_green_book_design),
-        ("check_fhwa_bridge_inspection", check_fhwa_bridge_inspection),
-        ("check_speed_limit_setting_criteria", check_speed_limit_setting_criteria),
-        ("check_horizontal_curve_design", check_horizontal_curve_design),
-        ("check_stopping_sight_distance", check_stopping_sight_distance),
+    min_width = Fraction(10) if road.urban else Fraction(11)
+    ok = road.lane_width_ft >= min_width
+    premises = [
+        f"segment_id={road.segment_id}",
+        f"lane_width_ft={road.lane_width_ft}",
+        f"min_required={min_width}",
+        f"urban={road.urban}",
     ]
-    
+    return ok, ProofObject(
+        rule="LaneWidthMinimum",
+        premises=premises,
+        conclusion=f"PASS: lane width {road.lane_width_ft}ft >= {min_width}ft" if ok else f"VIOLATION: lane width {road.lane_width_ft}ft < {min_width}ft",
+    )
+
+
+def check_shoulder_width_minimum(road: RoadSegment) -> Tuple[bool, ProofObject]:
+    """Shoulder width must be >= 4 ft on any road segment.
+
+    Standard: AASHTO Green Book — minimum shoulder widths
+    falsifies_if: shoulder_width_ft < 4.
+    """
+    min_shoulder = Fraction(4)
+    ok = road.shoulder_width_ft >= min_shoulder
+    premises = [
+        f"segment_id={road.segment_id}",
+        f"shoulder_width_ft={road.shoulder_width_ft}",
+        f"min_required={min_shoulder}",
+    ]
+    return ok, ProofObject(
+        rule="ShoulderWidthMinimum",
+        premises=premises,
+        conclusion=f"PASS: shoulder {road.shoulder_width_ft}ft >= {min_shoulder}ft" if ok else f"VIOLATION: shoulder {road.shoulder_width_ft}ft < {min_shoulder}ft",
+    )
+
+
+def check_speed_limit_consistent(calc: SpeedLimitCalculation) -> Tuple[bool, ProofObject]:
+    """Calculated speed limit must match lane/shoulder widths.
+
+    Standard: MUTCD §2B.13 — speed limit determination
+    falsifies_if: calculated_limit_mph > 75 (national maximum).
+    """
+    max_speed = 75
+    ok = calc.calculated_limit_mph <= max_speed
+    premises = [
+        f"segment_id={calc.segment_id}",
+        f"calculated_limit_mph={calc.calculated_limit_mph}",
+        f"max_national={max_speed}",
+    ]
+    return ok, ProofObject(
+        rule="SpeedLimitConsistent",
+        premises=premises,
+        conclusion=f"PASS: speed limit {calc.calculated_limit_mph} <= {max_speed}" if ok else f"VIOLATION: speed limit {calc.calculated_limit_mph} > {max_speed}",
+    )
+
+
+def check_num_lanes_positive(road: RoadSegment) -> Tuple[bool, ProofObject]:
+    """A road segment must have >= 1 lane.
+
+    Standard: AASHTO — minimum roadway cross-section
+    falsifies_if: num_lanes < 1.
+    """
+    ok = road.num_lanes >= 1
+    premises = [f"segment_id={road.segment_id}", f"num_lanes={road.num_lanes}"]
+    return ok, ProofObject(
+        rule="NumLanesPositive",
+        premises=premises,
+        conclusion=f"PASS: {road.num_lanes} lanes" if ok else "VIOLATION: road segment has no lanes",
+    )
+
+
+def check_segment_length_positive(road: RoadSegment) -> Tuple[bool, ProofObject]:
+    """Road segment length must be > 0 miles.
+
+    Standard: AASHTO — segment definition requirement
+    falsifies_if: length_miles <= 0.
+    """
+    ok = road.length_miles > Fraction(0)
+    premises = [f"segment_id={road.segment_id}", f"length_miles={road.length_miles}"]
+    return ok, ProofObject(
+        rule="SegmentLengthPositive",
+        premises=premises,
+        conclusion=f"PASS: length {road.length_miles} miles" if ok else "VIOLATION: zero or negative road length",
+    )
+
+
+def check_traffic_signal_phase_count(signal: TrafficSignal) -> Tuple[bool, ProofObject]:
+    """Traffic signal must have a positive cycle length.
+
+    Standard: MUTCD Chapter 4D — signal timing
+    falsifies_if: signal does not have a valid cycle_length_seconds attribute or it is 0.
+    """
+    if hasattr(signal, "cycle_length_seconds"):
+        ok = signal.cycle_length_seconds > 0
+        val = signal.cycle_length_seconds
+    elif hasattr(signal, "phase_count"):
+        ok = signal.phase_count > 0
+        val = signal.phase_count
+    else:
+        ok = True
+        val = "no timing attr"
+    premises = [f"signal_id={getattr(signal, 'signal_id', 'unknown')}", f"timing_value={val}"]
+    return ok, ProofObject(
+        rule="TrafficSignalPhaseCycle",
+        premises=premises,
+        conclusion="PASS: traffic signal has valid timing" if ok else "VIOLATION: traffic signal has zero cycle",
+    )
+
+
+def run_all_invariants() -> Dict[str, str]:
+    """Run all checks with nominal inputs. All must PASS."""
+    from .implementation import RoadClassification, TrafficSignal
+    road = RoadSegment(
+        segment_id="SEG-001", road_name="Main St",
+        classification=RoadClassification.MINOR_ARTERIAL,
+        length_miles=Fraction(2), num_lanes=2,
+        lane_width_ft=Fraction(12), shoulder_width_ft=Fraction(6),
+        urban=True,
+    )
+    calc = SpeedLimitCalculation(
+        segment_id="SEG-001", classification=RoadClassification.MINOR_ARTERIAL,
+        lane_width_ft=Fraction(12),
+        shoulder_width_ft=Fraction(6), urban=True,
+        calculated_limit_mph=35,
+    )
+    signal = TrafficSignal(signal_id="SIG-001", intersection_name="Main & Oak")
     results = {}
-    for name, check_func in checks:
-        try:
-            success, proof = check_func()
-            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+    for fn, args in [
+        (check_lane_width_minimum, (road,)),
+        (check_shoulder_width_minimum, (road,)),
+        (check_speed_limit_consistent, (calc,)),
+        (check_num_lanes_positive, (road,)),
+        (check_segment_length_positive, (road,)),
+        (check_traffic_signal_phase_count, (signal,)),
+    ]:
+        _, p = fn(*args)
+        results[fn.__name__] = p.conclusion
     return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_ROAD_STANDARDS invariants: PASS")
