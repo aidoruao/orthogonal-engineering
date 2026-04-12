@@ -233,7 +233,8 @@ def write_audit_report(
     }
 
     dest.write_text(
-        json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+        json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=False),
+        encoding="utf-8",
     )
     return dest
 

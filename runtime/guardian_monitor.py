@@ -131,8 +131,7 @@ class GuardianMonitor:
 
                 # Derive a hash commitment to the declared purpose so
                 # callers cannot swap purpose after the fact.
-                import hashlib as _hl
-                expected_purpose_hash = _hl.sha256(
+                expected_purpose_hash = hashlib.sha256(
                     purpose.encode("utf-8")
                 ).hexdigest()
                 provided_purpose_hash = context.get("purpose_hash", "")
