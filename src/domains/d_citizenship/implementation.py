@@ -305,3 +305,17 @@ def check_birthright_citizenship(birthplace: str) -> bool:
     Returns True if born on US soil (14th Amendment).
     """
     return birthplace == "US"
+
+
+@dataclass(frozen=True)
+class CitizenshipApplication:
+    """A naturalization application under the Immigration and Nationality Act."""
+    applicant_id: str
+    years_continuous_residence: Fraction
+    required_years: Fraction
+    good_moral_character: bool
+    english_proficiency: bool
+    civics_knowledge: bool
+    age_at_application: Fraction
+    renounced_prior_citizenship: bool
+    criminal_bars: bool

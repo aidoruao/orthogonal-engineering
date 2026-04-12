@@ -4,10 +4,14 @@ from src.domains.d_federalism.implementation import (
     GovernmentLevel,
     PowerType,
     SupremacyClause,
+    FederalPreemptionClaim,
+    StateCompact,
 )
 __all__ = [
     "FederalismChecker",
     "GovernmentLevel",
     "PowerType",
     "SupremacyClause",
+    "FederalPreemptionClaim",
+    "StateCompact",
 ]

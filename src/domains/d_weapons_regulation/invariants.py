@@ -1,364 +1,163 @@
-"""D_WEAPONS_REGULATION invariant checks — Yeshua Standard.
+"""D_WEAPONS_REGULATION invariants — Fraction only. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
+Each function returns Tuple[bool, ProofObject] and encodes GCA, NFA,
+and Brady Act firearms transaction requirements.
 
-Regulatory Standards:
-- NFA (National Firearms Act)
-- GCA (Gun Control Act)
-- Brady Act
-- Second Amendment
-
-Source: 26 U.S.C. § 5801 (NFA), 18 U.S.C. § 921 (GCA)
+Standards:
+- GCA (18 U.S.C. §922)
+- NFA (26 U.S.C. §5801)
+- Brady Handgun Violence Prevention Act (18 U.S.C. §922(t))
 """
 
 from __future__ import annotations
 
 from fractions import Fraction
-from typing import Tuple
+from typing import Dict, Tuple
 
 from axioms.logic import ProofObject
+from .implementation import FirearmTransaction
 
 
-def check_nfa_registration_requirements() -> Tuple[bool, ProofObject]:
+def check_background_check_required(txn: FirearmTransaction) -> Tuple[bool, ProofObject]:
     """
-    Invariant: NFA requires registration of Title II weapons.
-    
-    Standard: 26 U.S.C. § 5801-5872 - National Firearms Act
-    Falsifies if: Unregistered machine gun, SBR, SBS, silencer, destructive device, AOW.
-    falsifies_if: Unregistered machine gun, SBR, SBS, silencer, destructive device, AOW.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: FFL dealers must complete a NICS background check that passes before transfer (Brady Act 18 U.S.C. §922(t)).
+    Transfer to a felon is prohibited (GCA 18 U.S.C. §922(g)).
+
+    falsifies_if: ffl_licensed AND NOT background_check_completed
+                  OR background_check_completed AND NOT background_check_passed
+                  OR felon_purchaser.
     """
-    # NFA firearms
-    machine_gun = True
-    short_barreled_rifle = True
-    short_barreled_shotgun = True
-    silencer = True
-    destructive_device = True
-    any_other_weapon = True
-    
-    num_nfa_categories = Fraction(6)
-    
-    # Registration required
-    registration_required = True
-    serial_number_assignment = True
-    
-    # Transfer tax
-    standard_tax = Fraction(200)
-    aow_tax = Fraction(5)  # Any other weapon
-    making_tax = Fraction(200)
-    
-    # Transfer approval
-    atf_approval_required = True
-    background_check = True
-    chief_law_enforcement_notification = True
-    
-    success = standard_tax == Fraction(200) and aow_tax == Fraction(5)
-    
-    proof = ProofObject(
-        rule="NFA_Registration_Requirements",
+    check_done = not (txn.ffl_licensed and not txn.background_check_completed)
+    check_passed = not (txn.background_check_completed and not txn.background_check_passed)
+    no_felon = not txn.felon_purchaser
+    success = check_done and check_passed and no_felon
+
+    if not success:
+        return False, ProofObject(
+            rule="BackgroundCheckRequired",
+            premises=[
+                f"transaction_id={txn.transaction_id}",
+                f"ffl_licensed={txn.ffl_licensed}",
+                f"background_check_completed={txn.background_check_completed}",
+                f"background_check_passed={txn.background_check_passed}",
+                f"felon_purchaser={txn.felon_purchaser}",
+            ],
+            conclusion="VIOLATION: Brady Act §922(t)/GCA §922(g) — background check failed or felon purchaser",
+        )
+
+    return True, ProofObject(
+        rule="BackgroundCheckRequired",
         premises=[
-            f"num_nfa_categories = {num_nfa_categories}",
-            f"standard_transfer_tax = ${standard_tax}",
-            f"aow_tax = ${aow_tax}",
-            f"atf_approval_required = {atf_approval_required}",
+            f"transaction_id={txn.transaction_id}",
+            f"background_check_completed={txn.background_check_completed}",
+            f"background_check_passed={txn.background_check_passed}",
+            f"felon_purchaser={txn.felon_purchaser}",
         ],
-        conclusion=(
-            "NFA registration requirements comply with 26 U.S.C. § 5801"
-            if success
-            else "FAIL: NFA registration requirements check failed"
-        ),
+        conclusion="Brady Act §922(t) background check requirement satisfied",
     )
-    return success, proof
 
 
-def check_gca_prohibited_persons() -> Tuple[bool, ProofObject]:
+def check_nfa_compliance(txn: FirearmTransaction) -> Tuple[bool, ProofObject]:
     """
-    Invariant: GCA prohibits firearm possession by certain categories.
-    
-    Standard: 18 U.S.C. § 922(g) - Unlawful acts
-    Falsifies if: Prohibited person acquires firearm.
-    falsifies_if: Prohibited person acquires firearm.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: NFA items (SBR, suppressor, machine gun) require a paid tax stamp before transfer (NFA 26 U.S.C. §5812).
+    Waiting period must meet jurisdiction requirements.
+
+    falsifies_if: is_nfa_item AND NOT nfa_tax_stamp
+                  OR waiting_period_days < jurisdiction_waiting_days.
     """
-    # Prohibited categories
-    felon = True
-    fugitive = True
-    unlawful_user_controlled_substance = True
-    adjudicated_mental_defective = True
-    illegal_alien = True
-    dishonorable_discharge = True
-    renounced_citizenship = True
-    misdemeanor_crime_domestic_violence = True  # Lautenberg Amendment
-    
-    num_prohibited_categories = Fraction(9)
-    
-    # Penalties
-    imprisonment_not_more_than = Fraction(10)  # years
-    
-    # Brady Act enhancement
-    background_check_required = True
-    nics_check = True
-    
-    # Private sale loophole (some states close)
-    private_sale_no_check_federal = True
-    
-    success = background_check_required
-    
-    proof = ProofObject(
-        rule="GCA_Prohibited_Persons",
+    tax_stamp_ok = not (txn.is_nfa_item and not txn.nfa_tax_stamp)
+    waiting_ok = txn.waiting_period_days >= txn.jurisdiction_waiting_days
+    success = tax_stamp_ok and waiting_ok
+
+    if not success:
+        return False, ProofObject(
+            rule="NFAComplianceRequired",
+            premises=[
+                f"transaction_id={txn.transaction_id}",
+                f"is_nfa_item={txn.is_nfa_item}",
+                f"nfa_tax_stamp={txn.nfa_tax_stamp}",
+                f"waiting_period_days={txn.waiting_period_days}",
+                f"jurisdiction_waiting_days={txn.jurisdiction_waiting_days}",
+            ],
+            conclusion=(
+                "VIOLATION: NFA §5812 — NFA item transferred without tax stamp"
+                if not tax_stamp_ok
+                else "VIOLATION: GCA — waiting period not met"
+            ),
+        )
+
+    return True, ProofObject(
+        rule="NFAComplianceRequired",
         premises=[
-            f"num_prohibited_categories = {num_prohibited_categories}",
-            f"max_imprisonment = {imprisonment_not_more_than} years",
-            f"background_check_required = {background_check_required}",
-            f"nics_check = {nics_check}",
+            f"transaction_id={txn.transaction_id}",
+            f"is_nfa_item={txn.is_nfa_item}",
+            f"nfa_tax_stamp={txn.nfa_tax_stamp}",
+            f"waiting_period_days={txn.waiting_period_days}",
         ],
-        conclusion=(
-            "GCA prohibited persons comply with 18 U.S.C. § 922(g)"
-            if success
-            else "FAIL: GCA prohibited persons check failed"
-        ),
+        conclusion="NFA §5812 and waiting period requirements satisfied",
     )
-    return success, proof
 
 
-def check_brady_act_background_checks() -> Tuple[bool, ProofObject]:
+def check_straw_purchase(txn: FirearmTransaction) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Brady Act requires background checks for FFL sales.
-    
-    Standard: 18 U.S.C. § 922(t) - Brady Handgun Violence Prevention Act
-    Falsifies if: FFL transfers firearm without NICS check.
-    falsifies_if: FFL transfers firearm without NICS check.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: Straw purchases are prohibited under GCA (18 U.S.C. §922(a)(6)).
+
+    falsifies_if: straw_purchase is True.
     """
-    # NICS check required
-    ffl_transfers_only = True
-    private_sales_exempt = True
-    
-    # Waiting period
-    up_to_three_business_days = Fraction(3)
-    
-    # NICS responses
-    proceed = True
-    denied = True
-    delayed = True
-    
-    # Default proceed
-    default_proceed_after_three_days = True
-    
-    # Appeals
-    appeal_of_denial = True
-    voluntary_appeal_file = True
-    
-    # States alternatives
-    poc_state = True  # Point of Contact - state runs check
-    npp_state = True  # Non-POC - FBI runs check
-    
-    success = up_to_three_business_days == Fraction(3)
-    
-    proof = ProofObject(
-        rule="Brady_Act_Background_Checks",
+    success = not txn.straw_purchase
+
+    if not success:
+        return False, ProofObject(
+            rule="StrawPurchaseProhibited",
+            premises=[
+                f"transaction_id={txn.transaction_id}",
+                f"straw_purchase={txn.straw_purchase}",
+            ],
+            conclusion="VIOLATION: GCA §922(a)(6) — straw purchase detected",
+        )
+
+    return True, ProofObject(
+        rule="StrawPurchaseProhibited",
         premises=[
-            f"max_wait_days = {up_to_three_business_days}",
-            f"ffl_transfers_only = {ffl_transfers_only}",
-            f"default_proceed = {default_proceed_after_three_days}",
-            f"appeal_available = {appeal_of_denial}",
+            f"transaction_id={txn.transaction_id}",
+            f"straw_purchase={txn.straw_purchase}",
         ],
-        conclusion=(
-            "Brady Act background checks comply with 18 U.S.C. § 922(t)"
-            if success
-            else "FAIL: Brady Act background checks check failed"
-        ),
+        conclusion="GCA §922(a)(6) straw purchase prohibition satisfied",
     )
-    return success, proof
 
 
-def check_second_amendment_individual_right() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Second Amendment protects individual right to keep and bear arms.
-    
-    Standard: District of Columbia v. Heller, 554 U.S. 570 (2008)
-    Falsifies if: Complete ban on handgun possession in home.
-    falsifies_if: Complete ban on handgun possession in home.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Heller holding
-    individual_right = True
-    unconnected_with_militia_service = True
-    self_defense_lawful_purpose = True
-    
-    # Text
-    well_regulated_militia = True
-    security_of_free_state = True
-    right_of_people = True
-    keep_and_bear_arms = True
-    shall_not_be_infringed = True
-    
-    # Limitations allowed
-    prohibited_persons = True
-    felons = True
-    mentally_ill = True
-    sensitive_places = True
-    schools_government_buildings = True
-    conditions_qualifications = True
-    
-    # McDonald v. Chicago (2010)
-    incorporated_against_states = True
-    fundamental_right = True
-    
-    success = individual_right and incorporated_against_states
-    
-    proof = ProofObject(
-        rule="Second_Amendment_Individual_Right",
-        premises=[
-            f"individual_right = {individual_right}",
-            f"self_defense_purpose = {self_defense_lawful_purpose}",
-            f"incorporated = {incorporated_against_states}",
-            f"prohibited_persons_limitation = {prohibited_persons}",
-        ],
-        conclusion=(
-            "Second Amendment individual right verified"
-            if success
-            else "FAIL: Second Amendment individual right check failed"
-        ),
-    )
-    return success, proof
+def run_all_invariants() -> Dict[str, str]:
+    """Run all D_WEAPONS_REGULATION invariants with nominal passing data.
 
-
-def check_nfa_machine_gun_definition() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: NFA defines machine gun as any weapon that shoots automatically.
-    
-    Standard: 26 U.S.C. § 5845(b) - Definitions
-    Falsifies if: Semi-automatic with bump stock not regulated as machine gun.
-    falsifies_if: Semi-automatic with bump stock not regulated as machine gun.
-    
-    Returns:
-        Tuple of (success: bool, ProofObject)
-    """
-    # Definition
-    shoots_automatically = True
-    more_than_one_shot = True
-    single_function_of_trigger = True
-    
-    # Parts designed to convert
-    designed_to_convert = True
-    readily_restored = True
-    
-    # Rate of fire
-    continuous_fire = True
-    
-    # Bump stock regulation
-    atf_final_rule_2018 = True
-    bump_stocks_machine_guns = True
-    
-    # Semi-automatic distinction
-    one_shot_per_trigger_pull = True
-    not_machine_gun = True
-    
-    success = single_function_of_trigger
-    
-    proof = ProofObject(
-        rule="NFA_Machine_Gun_Definition",
-        premises=[
-            f"automatic_fire = {shoots_automatically}",
-            f"single_trigger_function = {single_function_of_trigger}",
-            f"bump_stocks_regulated = {bump_stocks_machine_guns}",
-            f"semi_auto_distinction = {not_machine_gun}",
-        ],
-        conclusion=(
-            "NFA machine gun definition complies with 26 U.S.C. § 5845"
-            if success
-            else "FAIL: NFA machine gun definition check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_armed_career_criminal_act() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: ACCA enhances sentences for armed career criminals.
-    
-    Standard: 18 U.S.C. § 924(e) - Armed Career Criminal Act
-    Falsifies if: Career criminal not subject to enhanced penalties.
-    falsifies_if: Career criminal not subject to enhanced penalties.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Predicate offenses required
-    three_or_more_violent_felonies = Fraction(3)
-    serious_drug_offenses = True
-    
-    # Definition issues (Johnson v. US 2015)
-    residual_clause_struck_down = True
-    elements_clause_remains = True
-    enumerated_offenses_remain = True
-    
-    # Penalty
-    minimum_imprisonment = Fraction(15)  # years
-    
-    # Predicate offenses examples
-    burglary = True
-    arson = True
-    extortion = True
-    use_of_explosives = True
-    
-    num_enumerated = Fraction(4)
-    
-    # Force requirement after Johnson
-    use_carry_possession_firearm = True
-    
-    success = minimum_imprisonment == Fraction(15)
-    
-    proof = ProofObject(
-        rule="Armed_Career_Criminal_Act",
-        premises=[
-            f"minimum_imprisonment = {minimum_imprisonment} years",
-            f"predicates_required = {three_or_more_violent_felonies}",
-            f"residual_clause_struck = {residual_clause_struck_down}",
-            f"num_enumerated = {num_enumerated}",
-        ],
-        conclusion=(
-            "Armed Career Criminal Act complies with 18 U.S.C. § 924(e)"
-            if success
-            else "FAIL: Armed Career Criminal Act check failed"
-        ),
-    )
-    return success, proof
-
-
-def run_all_invariants() -> dict:
-    """Run all D_WEAPONS_REGULATION invariants.
-
-    Falsifies if: any weapons regulation invariant check fails or raises an exception.
     falsifies_if: any weapons regulation invariant check fails or raises an exception.
     """
+    txn = FirearmTransaction(
+        transaction_id="TXN-001",
+        ffl_licensed=True,
+        background_check_completed=True,
+        background_check_passed=True,
+        is_nfa_item=False,
+        nfa_tax_stamp=False,
+        waiting_period_days=Fraction(3),
+        jurisdiction_waiting_days=Fraction(3),
+        straw_purchase=False,
+        felon_purchaser=False,
+    )
+
     checks = [
-        ("check_nfa_registration_requirements", check_nfa_registration_requirements),
-        ("check_gca_prohibited_persons", check_gca_prohibited_persons),
-        ("check_brady_act_background_checks", check_brady_act_background_checks),
-        ("check_second_amendment_individual_right", check_second_amendment_individual_right),
-        ("check_nfa_machine_gun_definition", check_nfa_machine_gun_definition),
-        ("check_armed_career_criminal_act", check_armed_career_criminal_act),
+        ("check_background_check_required", lambda: check_background_check_required(txn)),
+        ("check_nfa_compliance", lambda: check_nfa_compliance(txn)),
+        ("check_straw_purchase", lambda: check_straw_purchase(txn)),
     ]
-    
-    results = {}
-    for name, check_func in checks:
+
+    results: Dict[str, str] = {}
+    for name, func in checks:
         try:
-            success, proof = check_func()
+            success, proof = func()
             results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+        except Exception as exc:
+            results[name] = f"ERROR: {exc}"
+
     return results
 
 

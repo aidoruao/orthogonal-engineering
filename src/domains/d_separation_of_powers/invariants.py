@@ -1,14 +1,10 @@
-"""D_SEPARATION_OF_POWERS invariant checks — Yeshua Standard.
+"""D_SEPARATION_OF_POWERS invariants — Fraction only. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
-
-Regulatory Standards:
-- U.S. Constitution Articles I-III
-- INS v. Chadha (1983) - Legislative veto unconstitutional
-- Youngstown Sheet & Tube Co. v. Sawyer (1952)
-
-Source: U.S. Const. Art. I-III, INS v. Chadha
+Standards:
+- U.S. Constitution Articles I, II, III (Separation of Powers)
+- INS v. Chadha (1983) — legislative veto unconstitutional
+- Youngstown Sheet & Tube Co. v. Sawyer (1952) — executive power limits
+- Clinton v. City of New York (1998) — presentment clause
 """
 
 from __future__ import annotations
@@ -17,314 +13,136 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
+from .implementation import ExecutiveAction, LegislativeAction
 
 
-def check_article_i_legislative_power() -> Tuple[bool, ProofObject]:
+def check_executive_action_authority(action: ExecutiveAction) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Article I vests all legislative powers in Congress.
-    
-    Standard: U.S. Const. Art. I, § 1 - Legislative power
-    Falsifies if: Executive or judiciary exercises legislative power.
-    falsifies_if: Executive or judiciary exercises legislative power.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: Executive action must rest on statutory authorization or constitutional commander-in-chief power, must not use legislative veto, and must preserve judicial review.
+
+    Standard: U.S. Constitution Article II; Youngstown Sheet & Tube Co. v. Sawyer (1952)
+    falsifies_if: statutory_authorization is False AND commander_in_chief_power is False, OR legislative_veto_used is True, OR judicial_review_available is False.
     """
-    # Legislative powers
-    law_making = True
-    taxing_and_spending = True
-    regulating_commerce = True
-    declaring_war = True
-    raising_armies = True
-    coining_money = True
-    establishing_post_offices = True
-    
-    num_powers = Fraction(7)
-    
-    # Exclusive to Congress
-    bicameralism_required = True
-    presentment_required = True
-    
-    success = law_making and bicameralism_required and presentment_required
-    
-    proof = ProofObject(
-        rule="Article_I_Legislative_Power",
-        premises=[
-            f"law_making = {law_making}",
-            f"bicameralism_required = {bicameralism_required}",
-            f"presentment_required = {presentment_required}",
-            f"num_legislative_powers = {num_powers}",
-        ],
-        conclusion=(
-            "Article I legislative power complies with U.S. Const. Art. I, § 1"
-            if success
-            else "FAIL: Article I legislative power check failed"
-        ),
+    has_authority = action.statutory_authorization or action.commander_in_chief_power
+    no_legislative_veto = not action.legislative_veto_used
+    success = has_authority and no_legislative_veto and action.judicial_review_available
+
+    premises = [
+        f"action_id={action.action_id}",
+        f"statutory_authorization={action.statutory_authorization}",
+        f"commander_in_chief_power={action.commander_in_chief_power}",
+        f"has_authority={has_authority}",
+        f"legislative_veto_used={action.legislative_veto_used}",
+        f"congress_acquiescence={action.congress_acquiescence}",
+        f"judicial_review_available={action.judicial_review_available}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="ExecutiveActionAuthority",
+            premises=premises,
+            conclusion="VIOLATION: Separation of powers — executive action lacks authority, uses legislative veto, or bars judicial review",
+        )
+
+    return True, ProofObject(
+        rule="ExecutiveActionAuthority",
+        premises=premises,
+        conclusion="Article II executive action authority satisfied — authorization, no legislative veto, judicial review available",
     )
-    return success, proof
 
 
-def check_article_ii_executive_power() -> Tuple[bool, ProofObject]:
+def check_presentment_clause(legislation: LegislativeAction) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Article II vests executive power in President.
-    
-    Standard: U.S. Const. Art. II, § 1 - Executive power
-    Falsifies if: Executive power exercised by non-executive branch.
-    falsifies_if: Executive power exercised by non-executive branch.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: All legislation must pass both chambers (bicameralism) and be presented to the President for signature or veto (presentment).
+
+    Standard: U.S. Constitution Article I §7; INS v. Chadha (1983); Clinton v. City of New York (1998)
+    falsifies_if: presentment_followed is False OR bicameralism_followed is False.
     """
-    # Executive powers
-    executing_laws = True
-    commander_in_chief = True
-    appointing_officers = True
-    conducting_foreign_policy = True
-    veto_power = True
-    pardon_power = True
-    
-    # Limitations
-    faithful_execution_clause = True
-    no_suspending_laws = True
-    
-    # Take care clause
-    take_care_that_laws_be_faithfully_executed = True
-    
-    success = executing_laws and faithful_execution_clause
-    
-    proof = ProofObject(
-        rule="Article_II_Executive_Power",
-        premises=[
-            f"executing_laws = {executing_laws}",
-            f"commander_in_chief = {commander_in_chief}",
-            f"faithful_execution_clause = {faithful_execution_clause}",
-            f"take_care_clause = {take_care_that_laws_be_faithfully_executed}",
-        ],
-        conclusion=(
-            "Article II executive power complies with U.S. Const. Art. II, § 1"
-            if success
-            else "FAIL: Article II executive power check failed"
-        ),
+    success = legislation.presentment_followed and legislation.bicameralism_followed
+
+    premises = [
+        f"action_id={legislation.action_id}",
+        f"enumerated_power_basis={legislation.enumerated_power_basis}",
+        f"presentment_followed={legislation.presentment_followed}",
+        f"bicameralism_followed={legislation.bicameralism_followed}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="PresentmentClause",
+            premises=premises,
+            conclusion="VIOLATION: Article I §7 presentment clause — legislation bypassed bicameralism or presentment requirement",
+        )
+
+    return True, ProofObject(
+        rule="PresentmentClause",
+        premises=premises,
+        conclusion="Article I §7 presentment and bicameralism requirements satisfied",
     )
-    return success, proof
 
 
-def check_article_iii_judicial_power() -> Tuple[bool, ProofObject]:
+def check_nondelegation_doctrine(legislation: LegislativeAction) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Article III vests judicial power in Supreme Court and inferior courts.
-    
-    Standard: U.S. Const. Art. III, § 1 - Judicial power
-    Falsifies if: Judicial power exercised outside Article III courts.
-    falsifies_if: Judicial power exercised outside Article III courts.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: Congress may delegate legislative power only if it provides an intelligible principle to guide the agency.
+
+    Standard: U.S. Constitution Article I §1; J.W. Hampton Jr. & Co. v. United States (1928)
+    falsifies_if: nondelegation_intelligible_principle is False.
     """
-    # Judicial powers
-    cases_and_controversies = True
-    interpreting_constitution = True
-    judicial_review = True  # Marbury v. Madison
-    
-    # Case or controversy requirements
-    standing_required = True
-    ripeness_required = True
-    mootness_limitation = True
-    political_question_doctrine = True
-    
-    # Life tenure
-    judges_hold_office_during_good_behavior = True
-    compensation_not_diminished = True
-    
-    success = cases_and_controversies and standing_required
-    
-    proof = ProofObject(
-        rule="Article_III_Judicial_Power",
-        premises=[
-            f"cases_and_controversies = {cases_and_controversies}",
-            f"judicial_review = {judicial_review}",
-            f"standing_required = {standing_required}",
-            f"life_tenure = {judges_hold_office_during_good_behavior}",
-        ],
-        conclusion=(
-            "Article III judicial power complies with U.S. Const. Art. III, § 1"
-            if success
-            else "FAIL: Article III judicial power check failed"
-        ),
+    success = legislation.nondelegation_intelligible_principle
+
+    premises = [
+        f"action_id={legislation.action_id}",
+        f"enumerated_power_basis={legislation.enumerated_power_basis}",
+        f"nondelegation_intelligible_principle={legislation.nondelegation_intelligible_principle}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="NondelegationDoctrine",
+            premises=premises,
+            conclusion="VIOLATION: Nondelegation doctrine — congressional delegation lacks intelligible principle",
+        )
+
+    return True, ProofObject(
+        rule="NondelegationDoctrine",
+        premises=premises,
+        conclusion="Nondelegation doctrine satisfied — intelligible principle present in delegation",
     )
-    return success, proof
-
-
-def check_ins_v_chadha_legislative_veto() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Legislative veto unconstitutional per INS v. Chadha.
-    
-    Standard: INS v. Chadha, 462 U.S. 919 (1983)
-    Falsifies if: One-house or two-house veto exercised.
-    falsifies_if: One-house or two-house veto exercised.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Chadha holding
-    legislative_veto_unconstitutional = True
-    
-    # Bicameralism and presentment required
-    both_houses_required = True
-    presentment_to_president_required = True
-    
-    # Types of legislative veto struck down
-    one_house_veto_invalid = True
-    two_house_veto_invalid = True
-    committee_veto_invalid = True
-    
-    num_veto_types_invalid = Fraction(3)
-    
-    # Congressional override still valid
-    presentment_with_two_thirds_override = True
-    
-    success = legislative_veto_unconstitutional and both_houses_required
-    
-    proof = ProofObject(
-        rule="INS_v_Chadha_Legislative_Veto",
-        premises=[
-            f"legislative_veto_unconstitutional = {legislative_veto_unconstitutional}",
-            f"both_houses_required = {both_houses_required}",
-            f"presentment_required = {presentment_to_president_required}",
-            f"one_house_veto_invalid = {one_house_veto_invalid}",
-        ],
-        conclusion=(
-            "INS v. Chadha legislative veto standard satisfied"
-            if success
-            else "FAIL: INS v. Chadha legislative veto check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_non_delegation_doctrine() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Congress cannot delegate legislative power without intelligible principle.
-    
-    Standard: J.W. Hampton, Jr. & Co. v. United States, 276 U.S. 394 (1928)
-    Falsifies if: Delegation lacks intelligible principle.
-    falsifies_if: Delegation lacks intelligible principle.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Intelligible principle required
-    intelligible_principle_required = True
-    
-    # Historical context
-    schechter_poultry_struck_down = True  # 1935
-    panama_refining_struck_down = True  # 1935
-    subsequent_deference = True  # Post-1937
-    
-    # Modern test (very lenient)
-    some_criterion_required = True
-    
-    # Independent regulatory agencies
-    congressional_limits_specified = True
-    judicial_review_available = True
-    
-    success = intelligible_principle_required
-    
-    proof = ProofObject(
-        rule="Non_Delegation_Doctrine",
-        premises=[
-            f"intelligible_principle_required = {intelligible_principle_required}",
-            f"schechter_poultry = {schechter_poultry_struck_down}",
-            f"panama_refining = {panama_refining_struck_down}",
-            f"modern_test_lenient = {some_criterion_required}",
-        ],
-        conclusion=(
-            "Non-delegation doctrine standard satisfied"
-            if success
-            else "FAIL: Non-delegation doctrine check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_youngstown_executive_power_framework() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Executive power varies based on congressional authorization.
-    
-    Standard: Youngstown Sheet & Tube Co. v. Sawyer, 343 U.S. 579 (1952)
-    Falsifies if: Executive acts against congressional prohibition.
-    falsifies_if: Executive acts against congressional prohibition.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Jackson's three zones
-    zone_1_congressional_authorization = True  # Maximum power
-    zone_2_congressional_silence = True  # Twilight zone
-    zone_3_congressional_prohibition = True  # Lowest ebb
-    
-    # Zone 1: President acts pursuant to congressional authorization
-    zone_1_valid = True
-    
-    # Zone 2: President acts in absence of congressional grant or denial
-    zone_2_dependent_on_imperatives = True
-    
-    # Zone 3: President takes measures incompatible with Congress
-    zone_3_presumption_invalid = True
-    
-    # Steel seizure case
-    steel_seizure_struck_down = True
-    no_statutory_authority = True
-    
-    success = zone_1_valid and zone_3_presumption_invalid
-    
-    proof = ProofObject(
-        rule="Youngstown_Executive_Power_Framework",
-        premises=[
-            f"zone_1_authorization = {zone_1_congressional_authorization}",
-            f"zone_2_silence = {zone_2_congressional_silence}",
-            f"zone_3_prohibition = {zone_3_congressional_prohibition}",
-            f"steel_seizure_struck_down = {steel_seizure_struck_down}",
-        ],
-        conclusion=(
-            "Youngstown executive power framework satisfied"
-            if success
-            else "FAIL: Youngstown executive power framework check failed"
-        ),
-    )
-    return success, proof
 
 
 def run_all_invariants() -> dict:
-    """Run all D_SEPARATION_OF_POWERS invariants.
+    """Run all D_SEPARATION_OF_POWERS invariants with nominal sample data.
 
-    Falsifies if: any separation of powers invariant check fails or raises an exception.
     falsifies_if: any separation of powers invariant check fails or raises an exception.
     """
+    exec_action = ExecutiveAction(
+        action_id="EXEC-001",
+        statutory_authorization=True,
+        commander_in_chief_power=False,
+        legislative_veto_used=False,
+        congress_acquiescence=True,
+        judicial_review_available=True,
+    )
+    legislation = LegislativeAction(
+        action_id="LEG-001",
+        enumerated_power_basis="commerce_clause",
+        presentment_followed=True,
+        bicameralism_followed=True,
+        nondelegation_intelligible_principle=True,
+    )
+
     checks = [
-        ("check_article_i_legislative_power", check_article_i_legislative_power),
-        ("check_article_ii_executive_power", check_article_ii_executive_power),
-        ("check_article_iii_judicial_power", check_article_iii_judicial_power),
-        ("check_ins_v_chadha_legislative_veto", check_ins_v_chadha_legislative_veto),
-        ("check_non_delegation_doctrine", check_non_delegation_doctrine),
-        ("check_youngstown_executive_power_framework", check_youngstown_executive_power_framework),
+        ("check_executive_action_authority", lambda: check_executive_action_authority(exec_action)),
+        ("check_presentment_clause", lambda: check_presentment_clause(legislation)),
+        ("check_nondelegation_doctrine", lambda: check_nondelegation_doctrine(legislation)),
     ]
-    
+
     results = {}
-    for name, check_func in checks:
+    for name, func in checks:
         try:
-            success, proof = check_func()
+            success, proof = func()
             results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+        except Exception as exc:
+            results[name] = f"ERROR: {exc}"
+
     return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_SEPARATION_OF_POWERS invariants: PASS")

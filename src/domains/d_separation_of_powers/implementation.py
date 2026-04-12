@@ -231,3 +231,24 @@ def check_non_delegation_doctrine(
         if delegated_to != Branch.LEGISLATIVE:
             return False
     return True
+
+
+@dataclass(frozen=True)
+class ExecutiveAction:
+    """An executive branch action subject to separation of powers analysis."""
+    action_id: str
+    statutory_authorization: bool
+    commander_in_chief_power: bool
+    legislative_veto_used: bool  # unconstitutional per INS v. Chadha
+    congress_acquiescence: bool
+    judicial_review_available: bool
+
+
+@dataclass(frozen=True)
+class LegislativeAction:
+    """A legislative action subject to presentment and bicameralism requirements."""
+    action_id: str
+    enumerated_power_basis: str
+    presentment_followed: bool
+    bicameralism_followed: bool
+    nondelegation_intelligible_principle: bool

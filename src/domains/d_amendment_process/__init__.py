@@ -4,10 +4,12 @@ from src.domains.d_amendment_process.implementation import (
     AmendmentProposal,
     RatificationStatus,
     IndelibleClause,
+    ConstitutionalAmendment,
 )
 __all__ = [
     "AmendmentProcess",
     "AmendmentProposal",
     "RatificationStatus",
     "IndelibleClause",
+    "ConstitutionalAmendment",
 ]

@@ -511,3 +511,32 @@ def check_reserve_requirements(total_deposits: float, vault_cash: float) -> Dict
         "compliant": actual_ratio >= required_ratio,
         "shortfall": max(required_ratio * deposits - reserves, Fraction(0)),
     }
+
+
+# ---------------------------------------------------------------------------
+# Frozen dataclasses for invariant checks
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class BankCapitalReport:
+    """Capital adequacy report for Basel III compliance (12 CFR 3, Basel III)."""
+
+    bank_id: str
+    tier1_capital: Fraction
+    tier2_capital: Fraction
+    total_rwa: Fraction
+    min_tier1_ratio: Fraction
+    min_total_ratio: Fraction
+
+
+@dataclass(frozen=True)
+class LoanApplicationReport:
+    """Loan application compliance record (TRID, HMDA, usury statutes)."""
+
+    loan_id: str
+    loan_type: str
+    interest_rate_pct: Fraction
+    state_usury_limit_pct: Fraction
+    borrower_ability_to_repay: bool
+    trid_disclosure_provided: bool
+    hmda_reported: bool

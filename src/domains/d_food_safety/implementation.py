@@ -117,7 +117,7 @@ class CCPMonitoringRecord:
 
 
 @dataclass
-class FoodFacility:
+class FoodFacilityLegacy:
     """A food facility regulated under FSMA."""
     facility_id: str
     name: str
@@ -216,10 +216,10 @@ class FSMAComplianceChecker:
     REANALYSIS_INTERVAL_DAYS = 1095  # 3 years
     
     def __init__(self):
-        self.facilities: Dict[str, FoodFacility] = {}
+        self.facilities: Dict[str, FoodFacilityLegacy] = {}
         self.violations: List[Dict] = []
     
-    def check_facility_registration(self, facility: FoodFacility) -> Dict:
+    def check_facility_registration(self, facility: FoodFacilityLegacy) -> Dict:
         """Check if facility is properly registered with FDA."""
         if facility.facility_type in {FacilityType.MANUFACTURING, FacilityType.PROCESSING}:
             if not facility.fda_registered:
@@ -234,7 +234,7 @@ class FSMAComplianceChecker:
             "registration_number": facility.registration_number,
         }
     
-    def check_food_safety_plan(self, facility: FoodFacility) -> Dict:
+    def check_food_safety_plan(self, facility: FoodFacilityLegacy) -> Dict:
         """Check if facility has required food safety plan."""
         if facility.facility_type in {FacilityType.MANUFACTURING, FacilityType.PROCESSING}:
             if not facility.has_food_safety_plan:
@@ -347,7 +347,7 @@ class FoodSafetyAuditor:
         self.fsma_checker = FSMAComplianceChecker()
         self.recall_system = RecallManagementSystem()
     
-    def conduct_facility_audit(self, facility: FoodFacility) -> Dict:
+    def conduct_facility_audit(self, facility: FoodFacilityLegacy) -> Dict:
         """Conduct comprehensive facility audit."""
         registration = self.fsma_checker.check_facility_registration(facility)
         safety_plan = self.fsma_checker.check_food_safety_plan(facility)
@@ -403,3 +403,21 @@ def check_temperature_danger_zone(duration_minutes: float, temp_celsius: float) 
         "time_exceeded": duration_minutes > max_time,
         "discard_required": in_danger_zone and duration_minutes > max_time,
     }
+
+
+@dataclass(frozen=True)
+class FoodFacility:
+    """Frozen food facility record for invariant checks.
+
+    Standards: FSMA (21 U.S.C. §350g), FD&C Act (21 U.S.C. §301),
+    HACCP Principles, 21 CFR Part 117.
+    """
+    facility_id: str
+    fda_registered: bool
+    fsma_preventive_controls: bool
+    haccp_plan_current: bool
+    temperature_log_compliant: bool
+    critical_control_points: int
+    documented_ccps: int
+    recall_class: str  # "I", "II", "III", "none"
+    foreign_supplier_verification: bool

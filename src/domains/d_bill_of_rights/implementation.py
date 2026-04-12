@@ -305,3 +305,16 @@ def check_bill_of_rights_compliance(
         law_name=law_name,
         remediation_required=False,
     )
+
+
+@dataclass(frozen=True)
+class ConstitutionalRight:
+    """A constitutional right claim under the Bill of Rights."""
+    right_id: str
+    amendment_number: int
+    right_description: str
+    government_actor: bool
+    restriction_applies: bool
+    compelling_interest: bool
+    narrowly_tailored: bool
+    prior_restraint: bool

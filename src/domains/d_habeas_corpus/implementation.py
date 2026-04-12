@@ -269,3 +269,17 @@ def check_habeas_corpus_available(
     if is_rebellion or is_invasion:
         return False
     return True
+
+
+@dataclass(frozen=True)
+class FrozenHabeasPetition:
+    """A habeas corpus petition under 28 U.S.C. §2254/§2255."""
+    petition_id: str
+    petitioner_in_custody: bool
+    claim_type: str
+    exhausted_state_remedies: bool
+    one_year_deadline_met: bool
+    actual_innocence_claim: bool
+    successive_petition: bool
+    days_since_conviction: Fraction
+    deadline_days: Fraction

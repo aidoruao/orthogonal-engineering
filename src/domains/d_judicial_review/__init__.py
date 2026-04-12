@@ -4,10 +4,12 @@ from src.domains.d_judicial_review.implementation import (
     ConstitutionalChallenge,
     SitusIndependence,
     ReviewOutcome,
+    FrozenConstitutionalChallenge,
 )
 __all__ = [
     "JudicialReview",
     "ConstitutionalChallenge",
     "SitusIndependence",
     "ReviewOutcome",
+    "FrozenConstitutionalChallenge",
 ]

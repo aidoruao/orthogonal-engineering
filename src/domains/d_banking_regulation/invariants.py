@@ -18,6 +18,7 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
+from .implementation import BankCapitalReport, LoanApplicationReport
 
 from src.domains.d_banking_regulation.implementation import (
     CapitalAdequacyCalculator,
@@ -418,13 +419,106 @@ def check_capital_computation_fraction_precision() -> Tuple[bool, ProofObject]:
     return success, proof
 
 
+def check_capital_adequacy(report: BankCapitalReport) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Tier 1 capital ratio must meet minimum, and total capital ratio (Tier 1 + Tier 2) must meet minimum (Basel III, 12 CFR 3).
+
+    falsifies_if: tier1/total_rwa < min_tier1_ratio OR (tier1+tier2)/total_rwa < min_total_ratio.
+    """
+    tier1_ratio = report.tier1_capital / report.total_rwa
+    total_ratio = (report.tier1_capital + report.tier2_capital) / report.total_rwa
+    tier1_ok = tier1_ratio >= report.min_tier1_ratio
+    total_ok = total_ratio >= report.min_total_ratio
+    success = tier1_ok and total_ok
+    return success, ProofObject(
+        rule="CapitalAdequacyCheck",
+        premises=[
+            f"bank_id={report.bank_id}",
+            f"tier1_ratio={tier1_ratio}",
+            f"total_ratio={total_ratio}",
+            f"min_tier1_ratio={report.min_tier1_ratio}",
+            f"min_total_ratio={report.min_total_ratio}",
+        ],
+        conclusion=(
+            "PASS: Capital ratios meet Basel III minimums"
+            if success else
+            f"FAIL: Capital ratio violation — tier1_ok={tier1_ok}, total_ok={total_ok}"
+        ),
+    )
+
+
+def check_usury_limit(loan: LoanApplicationReport) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Interest rate must not exceed state usury limit (state usury statutes).
+
+    falsifies_if: interest_rate_pct > state_usury_limit_pct.
+    """
+    success = loan.interest_rate_pct <= loan.state_usury_limit_pct
+    return success, ProofObject(
+        rule="UsuryLimitCheck",
+        premises=[
+            f"loan_id={loan.loan_id}",
+            f"interest_rate_pct={loan.interest_rate_pct}",
+            f"state_usury_limit_pct={loan.state_usury_limit_pct}",
+        ],
+        conclusion=(
+            "PASS: Interest rate within state usury limit"
+            if success else
+            f"FAIL: Rate {loan.interest_rate_pct} exceeds usury limit {loan.state_usury_limit_pct}"
+        ),
+    )
+
+
+def check_trid_disclosure(loan: LoanApplicationReport) -> Tuple[bool, ProofObject]:
+    """
+    Rule: TRID (TILA-RESPA Integrated Disclosure) must be provided to borrower (12 CFR 1026.19).
+
+    falsifies_if: trid_disclosure_provided is False.
+    """
+    success = loan.trid_disclosure_provided
+    return success, ProofObject(
+        rule="TRIDDisclosureCheck",
+        premises=[
+            f"loan_id={loan.loan_id}",
+            f"trid_disclosure_provided={loan.trid_disclosure_provided}",
+        ],
+        conclusion=(
+            "PASS: TRID disclosure provided"
+            if success else
+            "FAIL: TRID disclosure not provided — 12 CFR 1026.19 violation"
+        ),
+    )
+
+
 def run_all_invariants() -> dict:
     """Run all D_BANKING_REGULATION invariants.
 
-    Falsifies if: any banking regulation invariant check fails or raises an exception.
     falsifies_if: any banking regulation invariant check fails or raises an exception.
     """
-    checks = [
+    nominal_report = BankCapitalReport(
+        bank_id="BANK-001",
+        tier1_capital=Fraction(80),
+        tier2_capital=Fraction(20),
+        total_rwa=Fraction(1000),
+        min_tier1_ratio=Fraction(6, 100),
+        min_total_ratio=Fraction(8, 100),
+    )
+    nominal_loan = LoanApplicationReport(
+        loan_id="LOAN-001",
+        loan_type="mortgage",
+        interest_rate_pct=Fraction(5),
+        state_usury_limit_pct=Fraction(18),
+        borrower_ability_to_repay=True,
+        trid_disclosure_provided=True,
+        hmda_reported=True,
+    )
+
+    new_checks = [
+        ("check_capital_adequacy", lambda: check_capital_adequacy(nominal_report)),
+        ("check_usury_limit", lambda: check_usury_limit(nominal_loan)),
+        ("check_trid_disclosure", lambda: check_trid_disclosure(nominal_loan)),
+    ]
+    old_checks = [
         ("check_tier1_capital_minimum", check_tier1_capital_minimum),
         ("check_fdic_insurance_per_depositor", check_fdic_insurance_per_depositor),
         ("check_usury_limit_by_state", check_usury_limit_by_state),
@@ -432,15 +526,21 @@ def run_all_invariants() -> dict:
         ("check_lending_standards_compliance", check_lending_standards_compliance),
         ("check_capital_computation_fraction_precision", check_capital_computation_fraction_precision),
     ]
-    
+
     results = {}
-    for name, check_func in checks:
+    for name, func in new_checks:
+        try:
+            success, proof = func()
+            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
+        except Exception as e:
+            results[name] = f"ERROR: {e}"
+    for name, check_func in old_checks:
         try:
             success, proof = check_func()
             results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
         except Exception as e:
             results[name] = f"ERROR: {e}"
-    
+
     return results
 
 

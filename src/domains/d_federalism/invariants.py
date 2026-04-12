@@ -1,14 +1,9 @@
-"""D_FEDERALISM invariant checks — Yeshua Standard.
+"""D_FEDERALISM invariants — Fraction only. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
-
-Regulatory Standards:
-- U.S. Constitution, Articles I, II, III (separation of powers)
-- Article VI, Clause 2 (Supremacy Clause)
-- Tenth Amendment (reserved powers)
-
-Source: ontology/ontology.json#D_FEDERALISM
+Standards:
+- U.S. Constitution Article VI, Clause 2 (Supremacy Clause)
+- U.S. Constitution Article I, §10, Clause 3 (Compact Clause)
+- McCulloch v. Maryland (1819); Gibbons v. Ogden (1824)
 """
 
 from __future__ import annotations
@@ -17,347 +12,148 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-
-from src.domains.d_federalism.implementation import (
-    FederalismChecker,
-    GovernmentLevel,
-    PowerType,
-    SupremacyClause,
-    FEDERAL_POWERS,
-    STATE_POWERS,
-    CONCURRENT_POWERS,
-)
+from .implementation import FederalPreemptionClaim, StateCompact
 
 
-def check_federal_enumerated_powers() -> Tuple[bool, ProofObject]:
+def check_supremacy_clause(claim: FederalPreemptionClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Federal government may only exercise enumerated powers.
-    
-    Standard: U.S. Constitution Article I, Section 8
-    Falsifies if: Federal government exercises non-enumerated, non-concurrent power.
-    falsifies_if: Federal government exercises non-enumerated, non-concurrent power.
-    
-    Falsifies if: enumerated_valid is False or reserved_blocked is False.
-    falsifies_if: enumerated_valid is False or reserved_blocked is False.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: When federal law expressly or impliedly preempts state law, state law is void under the Supremacy Clause.
+
+    Standard: U.S. Constitution Article VI Cl. 2; Pacific Gas & Electric Co. v. State Energy Comm'n (1983)
+    falsifies_if: federal_law_exists is True AND (express_preemption is True OR (implied_preemption is True AND state_law_frustrates_federal_purpose is True)) AND state_law_conflicts is True.
     """
-    checker = FederalismChecker()
-    
-    # Enumerated power: regulate interstate commerce
-    commerce_result = checker.check_federal_power(
-        power=PowerType.REGULATE_INTERSTATE_COMMERCE,
-        description="Regulating interstate commerce",
+    federal_preempts = claim.federal_law_exists and (
+        claim.express_preemption
+        or (claim.implied_preemption and claim.state_law_frustrates_federal_purpose)
     )
-    
-    # Reserved state power: education (10th Amendment)
-    education_result = checker.check_federal_power(
-        power=PowerType.EDUCATION,
-        description="Federal education mandate",
+    violation = federal_preempts and claim.state_law_conflicts
+    success = not violation
+
+    premises = [
+        f"claim_id={claim.claim_id}",
+        f"federal_law_exists={claim.federal_law_exists}",
+        f"state_law_conflicts={claim.state_law_conflicts}",
+        f"express_preemption={claim.express_preemption}",
+        f"implied_preemption={claim.implied_preemption}",
+        f"state_law_frustrates_federal_purpose={claim.state_law_frustrates_federal_purpose}",
+        f"federal_preempts={federal_preempts}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="SupremacyClause",
+            premises=premises,
+            conclusion="VIOLATION: Supremacy Clause — conflicting state law not preempted as required by Article VI",
+        )
+
+    return True, ProofObject(
+        rule="SupremacyClause",
+        premises=premises,
+        conclusion="Supremacy Clause compliance confirmed — no unresolved federal/state law conflict",
     )
-    
-    # Federal can exercise enumerated powers
-    enumerated_valid = commerce_result is True
-    # Federal cannot exercise reserved state powers
-    reserved_blocked = education_result is False
-    
-    success = enumerated_valid and reserved_blocked
-    
-    proof = ProofObject(
-        rule="FederalEnumeratedPowers",
-        premises=[
-            f"commerce_power_exercise = {commerce_result}",
-            f"education_power_exercise = {education_result}",
-            f"enumerated_valid = {enumerated_valid}",
-            f"reserved_blocked = {reserved_blocked}",
-        ],
-        conclusion=(
-            "Federal enumerated powers and 10th Amendment limits enforced"
-            if success
-            else "FAIL: Federal power limits violated"
-        ),
-    )
-    return success, proof
 
 
-def check_tenth_amendment_reserved_powers() -> Tuple[bool, ProofObject]:
+def check_interstate_compact(compact: StateCompact) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Powers not delegated to federal government are reserved to states.
-    
-    Standard: U.S. Constitution Tenth Amendment
-    Falsifies if: State exercise of reserved power is blocked.
-    falsifies_if: State exercise of reserved power is blocked.
-    
-    Falsifies if: police_result or education_result is False.
-    falsifies_if: police_result or education_result is False.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: Interstate compacts that transfer political power or encroach on federal supremacy require congressional approval.
+
+    Standard: U.S. Constitution Article I §10 Cl. 3; U.S. Steel Corp. v. Multistate Tax Comm'n (1978)
+    falsifies_if: political_power_transferred is True AND congressional_approval is False.
     """
-    checker = FederalismChecker()
-    
-    # State police power (reserved)
-    police_result = checker.check_state_power(
-        power=PowerType.POLICE_POWER,
-        description="State police enforcing local laws",
+    approval_required = compact.political_power_transferred
+    success = not approval_required or compact.congressional_approval
+
+    premises = [
+        f"compact_id={compact.compact_id}",
+        f"congressional_approval={compact.congressional_approval}",
+        f"political_power_transferred={compact.political_power_transferred}",
+        f"approval_required={approval_required}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="InterstateCompact",
+            premises=premises,
+            conclusion="VIOLATION: Compact Clause — interstate compact transferring political power without congressional approval",
+        )
+
+    return True, ProofObject(
+        rule="InterstateCompact",
+        premises=premises,
+        conclusion="Compact Clause satisfied — congressional approval present or not required",
     )
-    
-    # State education power (reserved)
-    education_result = checker.check_state_power(
-        power=PowerType.EDUCATION,
-        description="State education curriculum",
+
+
+def check_tenth_amendment_reserved_powers(claim: FederalPreemptionClaim) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Powers not delegated to the federal government are reserved to the states; federal invalidation of state law requires an express or implied preemption basis.
+
+    Standard: U.S. Constitution Amendment X; New York v. United States (1992)
+    falsifies_if: federal_law_exists is True AND state_law_conflicts is True AND express_preemption is False AND implied_preemption is False (federal invalidation without authority).
+    """
+    # Violation: federal law claims to conflict with state law but has no preemption basis
+    federal_invalidates_without_authority = (
+        claim.federal_law_exists
+        and claim.state_law_conflicts
+        and not claim.express_preemption
+        and not claim.implied_preemption
     )
-    
-    # Both should be allowed
-    police_valid = police_result is True
-    education_valid = education_result is True
-    
-    success = police_valid and education_valid
-    
-    proof = ProofObject(
+    success = not federal_invalidates_without_authority
+
+    premises = [
+        f"claim_id={claim.claim_id}",
+        f"federal_law_exists={claim.federal_law_exists}",
+        f"express_preemption={claim.express_preemption}",
+        f"implied_preemption={claim.implied_preemption}",
+        f"state_law_conflicts={claim.state_law_conflicts}",
+        f"federal_invalidates_without_authority={federal_invalidates_without_authority}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="TenthAmendmentReservedPowers",
+            premises=premises,
+            conclusion="VIOLATION: Tenth Amendment — federal law invalidates state law without express or implied preemption authority",
+        )
+
+    return True, ProofObject(
         rule="TenthAmendmentReservedPowers",
-        premises=[
-            f"police_power = {police_result}",
-            f"education_power = {education_result}",
-            f"reserved_powers_exercisable = {success}",
-        ],
-        conclusion=(
-            "10th Amendment reserved powers protected"
-            if success
-            else "FAIL: Reserved state powers blocked"
-        ),
+        premises=premises,
+        conclusion="Tenth Amendment reserved powers confirmed — state authority intact or federal preemption properly grounded",
     )
-    return success, proof
-
-
-def check_supremacy_clause_preemption() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Federal law preempts conflicting state law.
-    
-    Standard: U.S. Constitution Article VI, Clause 2 (Supremacy Clause)
-    Falsifies if: State law prevails over valid conflicting federal law.
-    falsifies_if: State law prevails over valid conflicting federal law.
-    
-    Falsifies if: supremacy_applies is False, or federal_prevails/state_invalid is False.
-    falsifies_if: supremacy_applies is False, or federal_prevails/state_invalid is False.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    checker = FederalismChecker()
-    
-    resolution = checker.check_supremacy(
-        federal_law="Federal Environmental Standard",
-        state_law="State Environmental Standard (weaker)",
-        conflict_description="State standard conflicts with federal",
-    )
-    
-    supremacy_applies = resolution["supremacy_applies"] is True
-    federal_prevails = resolution["prevailing_law"] == "Federal Environmental Standard"
-    state_invalid = resolution["state_law_invalid"] is True
-    
-    success = supremacy_applies and federal_prevails and state_invalid
-    
-    proof = ProofObject(
-        rule="SupremacyClausePreemption",
-        premises=[
-            f"supremacy_applies = {supremacy_applies}",
-            f"federal_prevails = {federal_prevails}",
-            f"state_law_invalid = {state_invalid}",
-        ],
-        conclusion=(
-            "Article VI Supremacy Clause enforced"
-            if success
-            else "FAIL: Supremacy Clause not applied"
-        ),
-    )
-    return success, proof
-
-
-def check_concurrent_powers_exercisable() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Concurrent powers may be exercised by both federal and state governments.
-    
-    Standard: Constitutional concurrent powers (taxation, establishing courts)
-    Falsifies if: Either level is blocked from exercising concurrent power.
-    falsifies_if: Either level is blocked from exercising concurrent power.
-    
-    Falsifies if: any of the concurrent power checks returns False.
-    falsifies_if: any of the concurrent power checks returns False.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    checker = FederalismChecker()
-    
-    # Federal taxation
-    fed_tax = checker.check_federal_power(
-        power=PowerType.TAXATION,
-        description="Federal income tax",
-    )
-    
-    # State taxation
-    state_tax = checker.check_state_power(
-        power=PowerType.TAXATION,
-        description="State sales tax",
-    )
-    
-    # Federal courts
-    fed_courts = checker.check_federal_power(
-        power=PowerType.ESTABLISH_COURTS,
-        description="Federal district courts",
-    )
-    
-    # State courts
-    state_courts = checker.check_state_power(
-        power=PowerType.ESTABLISH_COURTS,
-        description="State court system",
-    )
-    
-    fed_valid = fed_tax is True and fed_courts is True
-    state_valid = state_tax is True and state_courts is True
-    
-    success = fed_valid and state_valid
-    
-    proof = ProofObject(
-        rule="ConcurrentPowersExercisable",
-        premises=[
-            f"federal_concurrent_valid = {fed_valid}",
-            f"state_concurrent_valid = {state_valid}",
-            f"taxation_exercisable = {fed_tax and state_tax}",
-            f"courts_exercisable = {fed_courts and state_courts}",
-        ],
-        conclusion=(
-            "Concurrent powers exercisable by both levels"
-            if success
-            else "FAIL: Concurrent powers blocked"
-        ),
-    )
-    return success, proof
-
-
-def check_tenth_amendment_violation_detection() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Federal overreach into reserved powers violates 10th Amendment.
-    
-    Standard: U.S. Constitution Tenth Amendment
-    Falsifies if: Federal police power over local crimes not flagged as violation.
-    falsifies_if: Federal police power over local crimes not flagged as violation.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    checker = FederalismChecker()
-    
-    violation = checker.is_tenth_amendment_violation(
-        federal_action="Federal police force for local crimes",
-        power_type=PowerType.POLICE_POWER,
-    )
-    
-    # Federal police power over local crimes should violate 10th Amendment
-    violation_detected = violation is True
-    
-    success = violation_detected
-    
-    proof = ProofObject(
-        rule="TenthAmendmentViolationDetection",
-        premises=[
-            f"federal_action = 'Federal police force for local crimes'",
-            f"power_type = POLICE_POWER",
-            f"violation_detected = {violation_detected}",
-        ],
-        conclusion=(
-            "10th Amendment violation correctly detected"
-            if success
-            else "FAIL: 10th Amendment violation not detected"
-        ),
-    )
-    return success, proof
-
-
-def check_power_category_assignments() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Powers are correctly categorized as federal, state, or concurrent.
-    
-    Standard: Constitutional power distribution
-    Falsifies if: Powers are misclassified between categories.
-    falsifies_if: Powers are misclassified between categories.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Check federal enumerated powers
-    commerce_in_federal = PowerType.REGULATE_INTERSTATE_COMMERCE in FEDERAL_POWERS
-    war_in_federal = PowerType.DECLARE_WAR in FEDERAL_POWERS
-    
-    # Check state reserved powers
-    police_in_state = PowerType.POLICE_POWER in STATE_POWERS
-    education_in_state = PowerType.EDUCATION in STATE_POWERS
-    
-    # Check concurrent powers
-    tax_concurrent = PowerType.TAXATION in CONCURRENT_POWERS
-    courts_concurrent = PowerType.ESTABLISH_COURTS in CONCURRENT_POWERS
-    
-    # Verify no overlap errors
-    commerce_not_state = PowerType.REGULATE_INTERSTATE_COMMERCE not in STATE_POWERS
-    police_not_federal = PowerType.POLICE_POWER not in FEDERAL_POWERS
-    
-    success = (
-        commerce_in_federal and war_in_federal and
-        police_in_state and education_in_state and
-        tax_concurrent and courts_concurrent and
-        commerce_not_state and police_not_federal
-    )
-    
-    proof = ProofObject(
-        rule="PowerCategoryAssignments",
-        premises=[
-            f"federal_powers_correct = {commerce_in_federal and war_in_federal}",
-            f"state_powers_correct = {police_in_state and education_in_state}",
-            f"concurrent_powers_correct = {tax_concurrent and courts_concurrent}",
-            f"no_category_overlap = {commerce_not_state and police_not_federal}",
-        ],
-        conclusion=(
-            "Power categories correctly assigned"
-            if success
-            else "FAIL: Power categories misassigned"
-        ),
-    )
-    return success, proof
 
 
 def run_all_invariants() -> dict:
-    """Run all D_FEDERALISM invariants.
+    """Run all D_FEDERALISM invariants with nominal sample data.
 
-    Falsifies if: any federalism invariant check fails or raises an exception.
     falsifies_if: any federalism invariant check fails or raises an exception.
     """
+    claim = FederalPreemptionClaim(
+        claim_id="CLAIM-001",
+        federal_law_exists=True,
+        state_law_conflicts=False,
+        express_preemption=True,
+        implied_preemption=False,
+        state_law_frustrates_federal_purpose=False,
+    )
+    compact = StateCompact(
+        compact_id="COMPACT-001",
+        congressional_approval=True,
+        political_power_transferred=True,
+    )
+
     checks = [
-        ("check_federal_enumerated_powers", check_federal_enumerated_powers),
-        ("check_tenth_amendment_reserved_powers", check_tenth_amendment_reserved_powers),
-        ("check_supremacy_clause_preemption", check_supremacy_clause_preemption),
-        ("check_concurrent_powers_exercisable", check_concurrent_powers_exercisable),
-        ("check_tenth_amendment_violation_detection", check_tenth_amendment_violation_detection),
-        ("check_power_category_assignments", check_power_category_assignments),
+        ("check_supremacy_clause", lambda: check_supremacy_clause(claim)),
+        ("check_interstate_compact", lambda: check_interstate_compact(compact)),
+        ("check_tenth_amendment_reserved_powers", lambda: check_tenth_amendment_reserved_powers(claim)),
     ]
-    
+
     results = {}
-    for name, check_func in checks:
+    for name, func in checks:
         try:
-            success, proof = check_func()
+            success, proof = func()
             results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+        except Exception as exc:
+            results[name] = f"ERROR: {exc}"
+
     return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_FEDERALISM invariants: PASS")

@@ -16,6 +16,8 @@ from src.domains.d_banking_regulation.implementation import (
     Loan,
     AssetClass,
     LoanType,
+    BankCapitalReport,
+    LoanApplicationReport,
     check_capital_ratio_minimum,
     check_fdic_coverage_limits,
     check_usury_caps,
@@ -27,6 +29,10 @@ from src.domains.d_banking_regulation.invariants import (
     check_usury_limit_by_state,
     check_reserve_ratio_requirement,
     check_lending_standards_compliance,
+    check_capital_adequacy,
+    check_usury_limit,
+    check_trid_disclosure,
+    run_all_invariants,
 )
 
 __all__ = [
@@ -38,6 +44,8 @@ __all__ = [
     "Loan",
     "AssetClass",
     "LoanType",
+    "BankCapitalReport",
+    "LoanApplicationReport",
     "check_capital_ratio_minimum",
     "check_fdic_coverage_limits",
     "check_usury_caps",
@@ -47,4 +55,8 @@ __all__ = [
     "check_usury_limit_by_state",
     "check_reserve_ratio_requirement",
     "check_lending_standards_compliance",
+    "check_capital_adequacy",
+    "check_usury_limit",
+    "check_trid_disclosure",
+    "run_all_invariants",
 ]

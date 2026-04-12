@@ -1,4 +1,19 @@
-# D_LABOR_RIGHTS domain — Labor Rights Enforcement (FLSA overtime calculator)
-# Invariant: Hours over 40/week are compensated at 1.5x (FLSA 29 U.S.C. § 207).
-# Source: ontology/ontology.json#D_LABOR_RIGHTS
-# Falsification ID: F_LABOR_001
+"""D_LABOR_RIGHTS domain — Labor Rights Enforcement."""
+
+from .implementation import WorkplaceRecord
+from .invariants import (
+    check_minimum_wage,
+    check_overtime_rate,
+    check_osha_recordkeeping,
+    check_fmla_compliance,
+    run_all_invariants,
+)
+
+__all__ = [
+    "WorkplaceRecord",
+    "check_minimum_wage",
+    "check_overtime_rate",
+    "check_osha_recordkeeping",
+    "check_fmla_compliance",
+    "run_all_invariants",
+]

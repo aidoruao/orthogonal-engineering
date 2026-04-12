@@ -227,3 +227,15 @@ def check_amendment_threshold(
     threshold = Fraction(3, 4)
     actual = Fraction(states_ratified, total_states)
     return actual >= threshold
+
+
+@dataclass(frozen=True)
+class ConstitutionalAmendment:
+    """A proposed constitutional amendment under Article V."""
+    amendment_id: str
+    proposal_method: str  # "congress_two_thirds" or "convention"
+    ratification_method: str  # "state_legislatures" or "state_conventions"
+    states_ratified: Fraction
+    states_required: Fraction
+    proposed_by_congress: bool
+    ratification_complete: bool

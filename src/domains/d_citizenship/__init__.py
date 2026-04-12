@@ -4,10 +4,12 @@ from src.domains.d_citizenship.implementation import (
     Citizen,
     NaturalizationProcess,
     BirthrightStatus,
+    CitizenshipApplication,
 )
 __all__ = [
     "CitizenshipChecker",
     "Citizen",
     "NaturalizationProcess",
     "BirthrightStatus",
+    "CitizenshipApplication",
 ]

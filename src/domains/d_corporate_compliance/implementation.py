@@ -451,3 +451,23 @@ def check_posting_verification(posting: LaborLawPosting) -> Dict:
         "verified": posting.verified_present,
         "verification_date": posting.verification_date,
     }
+
+
+# ---------------------------------------------------------------------------
+# Frozen dataclasses for invariant checks
+# ---------------------------------------------------------------------------
+
+@dataclass(frozen=True)
+class CorporateComplianceRecord:
+    """Corporate compliance status record (state corporation law, CTA, SOX)."""
+
+    entity_id: str
+    state_registered: bool
+    annual_report_filed: bool
+    registered_agent_designated: bool
+    beneficial_owner_reported: bool
+    sarbanes_oxley_compliant: bool
+    is_public_company: bool
+    audit_committee_independent: bool
+    days_since_annual_report: Fraction
+    annual_report_deadline_days: Fraction

@@ -31,3 +31,21 @@ class EnergyChecker:
             "compliant": record.status == EnergyStatus.COMPLIANT,
             "status": record.status.name,
         }
+
+
+@dataclass(frozen=True)
+class EnergyFacility:
+    """Frozen energy facility record for invariant checks.
+
+    Standards: FERC Order 1000, PURPA (16 U.S.C. §824a-3),
+    State RPS statutes, IEEE 1547-2018.
+    """
+    facility_id: str
+    ferc_license_valid: bool
+    facility_type: str  # "hydro", "electric", "gas"
+    interconnection_agreement: bool
+    net_metering_eligible: bool
+    capacity_mw: Fraction
+    reported_capacity_mw: Fraction
+    renewable_portfolio_fraction: Fraction
+    required_renewable_fraction: Fraction

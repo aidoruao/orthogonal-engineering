@@ -18,9 +18,30 @@ Falsification IDs: F_AVIATION_001, F_AVIATION_002, F_AVIATION_003, F_AVIATION_00
 from __future__ import annotations
 
 import time
+from dataclasses import dataclass
 from fractions import Fraction
 from typing import Any, Optional
 from enum import Enum
+
+
+@dataclass(frozen=True)
+class FlightState:
+    """A point-in-time flight state for regulatory invariant checks.
+
+    Standards: FAA 14 CFR Part 25, ICAO Annex 6, FAA FAR Part 61.
+    """
+
+    state_id: str
+    speed_kt: Fraction
+    altitude_ft: Fraction
+    bank_deg: Fraction
+    pitch_deg: Fraction
+    vs_fpm: Fraction
+    pilot_certified: bool
+    certificate_type: str  # "PPL", "CPL", "ATP"
+    medical_certificate_valid: bool
+    flight_plan_filed: bool
+    ifr_conditions: bool  # instrument flight rules conditions present
 
 
 # ---------------------------------------------------------------------------
