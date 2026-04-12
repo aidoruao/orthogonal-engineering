@@ -399,9 +399,9 @@ class LendingComplianceChecker:
         
         issues = []
         if subprime_ratio > Fraction(20, 100):
-            issues.append(f"High subprime concentration: {float(subprime_ratio)*100:.1f}%")
+            issues.append(f"High subprime concentration: {subprime_ratio * 100}%")
         if high_cost_ratio > Fraction(10, 100):
-            issues.append(f"High high-cost concentration: {float(high_cost_ratio)*100:.1f}%")
+            issues.append(f"High high-cost concentration: {high_cost_ratio * 100}%")
         
         return {
             "compliant": len(issues) == 0,
@@ -470,8 +470,8 @@ def check_capital_ratio_minimum(
     required = Fraction(6, 100)
     
     return {
-        "tier1_ratio": float(ratio),
-        "required": float(required),
+        "tier1_ratio": ratio,
+        "required": required,
         "compliant": ratio >= required,
     }
 
@@ -506,8 +506,8 @@ def check_reserve_requirements(total_deposits: float, vault_cash: float) -> Dict
     actual_ratio = reserves / deposits if deposits > 0 else Fraction(0)
     
     return {
-        "required_ratio": float(required_ratio),
-        "actual_ratio": float(actual_ratio),
+        "required_ratio": required_ratio,
+        "actual_ratio": actual_ratio,
         "compliant": actual_ratio >= required_ratio,
-        "shortfall": float(max(required_ratio * deposits - reserves, Fraction(0))),
+        "shortfall": max(required_ratio * deposits - reserves, Fraction(0)),
     }

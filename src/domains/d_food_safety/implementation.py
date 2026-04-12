@@ -316,8 +316,8 @@ class RecallManagementSystem:
             audit_frequency = "monthly"
         
         return {
-            "recovery_rate": float(recall.recovery_rate),
-            "target_rate": float(target_recovery_rate),
+            "recovery_rate": recall.recovery_rate,
+            "target_rate": target_recovery_rate,
             "meeting_target": recall.recovery_rate >= target_recovery_rate,
             "audit_frequency": audit_frequency,
             "days_active": days_since_initiation,

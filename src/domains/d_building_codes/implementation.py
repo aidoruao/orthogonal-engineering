@@ -260,7 +260,7 @@ class StructuralEngineer:
             "element": calculation.element,
             "capacity": calculation.calculated_capacity,
             "applied_load": calculation.applied_load,
-            "safety_ratio": float(calculation.safety_ratio),
+            "safety_ratio": calculation.safety_ratio,
             "within_tolerance": calculation.within_tolerance,
             "compliant": calculation.within_tolerance,
         }
@@ -416,7 +416,7 @@ class BuildingCodeAuditor:
             "building_id": structure.building_id,
             "occupancy": structure.occupancy_type.name,
             "construction_type": structure.construction_type.name,
-            "height_ft": float(structure.height_ft),
+            "height_ft": structure.height_ft,
             "load_calculations": len(load_results),
         }
     
@@ -442,7 +442,7 @@ def check_structural_tolerance(capacity: float, applied: float) -> Dict:
         applied_load=Fraction(applied).limit_denominator(100),
     )
     return {
-        "safety_ratio": float(calc.safety_ratio),
+        "safety_ratio": calc.safety_ratio,
         "within_tolerance": calc.within_tolerance,
     }
 
