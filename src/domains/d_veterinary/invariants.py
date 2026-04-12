@@ -243,6 +243,7 @@ def run_all_invariants() -> dict:
     """Run all D_VETERINARY invariants with nominal sample data.
 
     Falsifies if: any veterinary invariant fails or raises an exception.
+    falsifies_if: any veterinary invariant fails or raises an exception.
     """
     facility = AnimalFacility(
         facility_id="FAC-001",

@@ -11,6 +11,7 @@ def check_accredited_investor(investor: Investor) -> Tuple[bool, ProofObject]:
     """Reg D: Verify accredited investor status.
 
     Falsifies if: investor.is_accredited() returns False.
+    falsifies_if: investor.is_accredited() returns False.
     """
     if not investor.is_accredited():
         return False, ProofObject(
@@ -30,6 +31,7 @@ def check_form_d_deadline(filing: FormDFiling) -> Tuple[bool, ProofObject]:
     """Reg D: Form D must be filed within 15 days of first sale.
 
     Falsifies if: filing is untimely relative to DEADLINE_DAYS.
+    falsifies_if: filing is untimely relative to DEADLINE_DAYS.
     """
     if not filing.is_timely():
         return False, ProofObject(
@@ -49,6 +51,7 @@ def check_trading_window(validator: TradingWindowValidator) -> Tuple[bool, Proof
     """Insider trading blackout period compliance.
 
     Falsifies if: trade is attempted during a blackout period.
+    falsifies_if: trade is attempted during a blackout period.
     """
     if not validator.can_trade():
         return False, ProofObject(

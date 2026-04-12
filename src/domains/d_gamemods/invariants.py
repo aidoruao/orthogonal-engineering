@@ -27,6 +27,7 @@ def check_version_compatibility(mod: Mod, game_version: GameVersion) -> Tuple[bo
     """Mod must support the installed game version.
 
     Falsifies if: game_version is not within the mod's supported versions.
+    falsifies_if: game_version is not within the mod's supported versions.
     """
     if not mod.supports_game_version(game_version):
         return False, ProofObject(
@@ -50,6 +51,7 @@ def check_dependency_resolution(mod: Mod, available_mods: Set[str]) -> Tuple[boo
     """All dependencies must be available for mod to function.
 
     Falsifies if: any required dependency is missing from available_mods.
+    falsifies_if: any required dependency is missing from available_mods.
     """
     missing = mod.has_unresolved_dependencies(available_mods)
     
@@ -75,6 +77,7 @@ def check_asset_integrity(asset: AssetChecksum, content: bytes) -> Tuple[bool, P
     """Mod assets must match registered checksums (content-addressed).
     
     Falsifies if: asset size differs from expected or checksum verification fails.
+    falsifies_if: asset size differs from expected or checksum verification fails.
     """
     if len(content) != asset.size_bytes:
         return False, ProofObject(
@@ -107,6 +110,7 @@ def check_load_order_validity(load_order: ModLoadOrder) -> Tuple[bool, ProofObje
     """Load order must resolve critical conflicts.
     
     Falsifies if: duplicate mods appear or any critical conflict lacks a resolution.
+    falsifies_if: duplicate mods appear or any critical conflict lacks a resolution.
     """
     # Check for duplicates
     seen = set()
@@ -152,6 +156,7 @@ def check_eula_compliance(mod: Mod) -> Tuple[bool, ProofObject]:
     """Mods must comply with game EULA to be legally distributed.
     
     Falsifies if: mod is marked non-compliant, distributes incompatible third-party
+    falsifies_if: mod is marked non-compliant, distributes incompatible third-party
     IP, or is a widely distributed cheat mod.
     """
     if not mod.eula_compliant:
@@ -197,6 +202,7 @@ def check_moderation_resolution(report: ContentModerationReport) -> Tuple[bool, 
     """Content moderation reports must be resolved in timely manner.
     
     Falsifies if: report is approved without reviewer or remains pending beyond
+    falsifies_if: report is approved without reviewer or remains pending beyond
     policy limits.
     """
     from datetime import datetime

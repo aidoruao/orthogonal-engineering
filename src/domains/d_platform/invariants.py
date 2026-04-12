@@ -23,6 +23,7 @@ def check_vlop_designation(platform: DigitalPlatform) -> Tuple[bool, ProofObject
     - Independent audits
     
     Falsifies if: VLOP fails to meet obligations
+    falsifies_if: VLOP fails to meet obligations
     """
     is_vlop = platform.is_vlop()
     
@@ -65,6 +66,7 @@ def check_content_appeal_mechanism(moderation: ContentModeration) -> Tuple[bool,
     - Timely response required
     
     Falsifies if: no appeal available
+    falsifies_if: no appeal available
     """
     if moderation.decision == ContentDecision.NO_ACTION:
         return True, ProofObject(
@@ -101,6 +103,7 @@ def check_automated_decision_oversight(moderation: ContentModeration) -> Tuple[b
     - Notified as automated
     
     Falsifies if: automated significant decision without oversight
+    falsifies_if: automated significant decision without oversight
     """
     if not moderation.automated:
         return True, ProofObject(
@@ -137,6 +140,7 @@ def check_statement_of_reasons(moderation: ContentModeration) -> Tuple[bool, Pro
     - Available to user
     
     Falsifies if: decision made without reason provided
+    falsifies_if: decision made without reason provided
     """
     if moderation.decision == ContentDecision.NO_ACTION:
         return True, ProofObject(
@@ -173,6 +177,7 @@ def check_appeal_success_rate(platform: DigitalPlatform) -> Tuple[bool, ProofObj
     - Trend monitoring important
     
     Falsifies if: upheld rate > 40% (indicates systemic issues)
+    falsifies_if: upheld rate > 40% (indicates systemic issues)
     """
     max_upheld_rate = Fraction(4, 10)  # 40%
     

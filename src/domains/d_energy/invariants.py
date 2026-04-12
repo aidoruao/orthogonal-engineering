@@ -26,6 +26,7 @@ def check_renewable_interconnection_standards() -> Tuple[bool, ProofObject]:
     
     Standard: IEEE 1547-2018 (Distributed energy resources)
     Falsifies if: DER connects without voltage/frequency ride-through.
+    falsifies_if: DER connects without voltage/frequency ride-through.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -77,6 +78,7 @@ def check_nerc_cip_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: NERC CIP-002 through CIP-011
     Falsifies if: BES Cyber Asset lacks required protection.
+    falsifies_if: BES Cyber Asset lacks required protection.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -124,6 +126,7 @@ def check_ferc_transmission_planning() -> Tuple[bool, ProofObject]:
     
     Standard: FERC Order 1000 (Transmission Planning and Cost Allocation)
     Falsifies if: Planning excludes public policy requirements.
+    falsifies_if: Planning excludes public policy requirements.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -170,6 +173,7 @@ def check_load_shedding_priority() -> Tuple[bool, ProofObject]:
     
     Standard: NERC BAL-002 (Disturbance control standard)
     Falsifies if: Critical load shed before non-critical.
+    falsifies_if: Critical load shed before non-critical.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -217,6 +221,7 @@ def check_energy_storage_efficiency() -> Tuple[bool, ProofObject]:
     
     Standard: IEEE 1547.2 (Application guide)
     Falsifies if: Round-trip efficiency uses float approximation.
+    falsifies_if: Round-trip efficiency uses float approximation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -261,6 +266,7 @@ def check_demand_response_enrollment() -> Tuple[bool, ProofObject]:
     
     Standard: FERC Order 719 (Demand response in organized markets)
     Falsifies if: DR resource compensated less than energy market price.
+    falsifies_if: DR resource compensated less than energy market price.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -306,6 +312,7 @@ def run_all_invariants() -> dict:
     """Run all D_ENERGY invariants.
 
     Falsifies if: any energy domain invariant check fails or raises an exception.
+    falsifies_if: any energy domain invariant check fails or raises an exception.
     """
     checks = [
         ("check_renewable_interconnection_standards", check_renewable_interconnection_standards),

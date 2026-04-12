@@ -26,6 +26,7 @@ def check_flsa_overtime_threshold() -> Tuple[bool, ProofObject]:
     
     Standard: 29 U.S.C. § 207(a)(1) - 40-hour workweek standard
     Falsifies if: Overtime threshold differs from 40 hours.
+    falsifies_if: Overtime threshold differs from 40 hours.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -66,6 +67,7 @@ def check_overtime_rate_one_and_half() -> Tuple[bool, ProofObject]:
     
     Standard: 29 U.S.C. § 207(a)(1) - "not less than one and one-half times"
     Falsifies if: Overtime multiplier differs from 3/2.
+    falsifies_if: Overtime multiplier differs from 3/2.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -108,6 +110,7 @@ def check_nlra_collective_bargaining_right() -> Tuple[bool, ProofObject]:
     
     Standard: 29 U.S.C. § 157 - Right to self-organization
     Falsifies if: Collective bargaining rights are not protected.
+    falsifies_if: Collective bargaining rights are not protected.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -152,6 +155,7 @@ def check_osha_general_duty_clause() -> Tuple[bool, ProofObject]:
     
     Standard: 29 U.S.C. § 654(a)(1) - General Duty Clause
     Falsifies if: Recognized hazards are not addressed.
+    falsifies_if: Recognized hazards are not addressed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -195,6 +199,7 @@ def check_title_vii_prohibited_discrimination() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. § 2000e-2(a) - Unlawful employment practices
     Falsifies if: Discrimination based on protected class is allowed.
+    falsifies_if: Discrimination based on protected class is allowed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -245,6 +250,7 @@ def check_flsa_minimum_wage_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: 29 U.S.C. § 206(a)(1) - Minimum wage provisions
     Falsifies if: Minimum wage is below statutory level.
+    falsifies_if: Minimum wage is below statutory level.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -288,6 +294,7 @@ def run_all_invariants() -> dict:
     """Run all D_LABOR_RIGHTS invariants.
 
     Falsifies if: any labor rights invariant check fails or raises an exception.
+    falsifies_if: any labor rights invariant check fails or raises an exception.
     """
     checks = [
         ("check_flsa_overtime_threshold", check_flsa_overtime_threshold),

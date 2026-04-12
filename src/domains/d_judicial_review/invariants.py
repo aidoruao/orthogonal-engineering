@@ -32,6 +32,7 @@ def check_any_statute_may_be_challenged() -> Tuple[bool, ProofObject]:
     
     Standard: Marbury v. Madison (judicial review power)
     Falsifies if: Challenge against valid statute is rejected.
+    falsifies_if: Challenge against valid statute is rejected.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -89,6 +90,7 @@ def check_review_requires_independent_situs() -> Tuple[bool, ProofObject]:
     
     Standard: Marbury v. Madison (independent judiciary)
     Falsifies if: Review by non-independent situs is allowed.
+    falsifies_if: Review by non-independent situs is allowed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -145,6 +147,7 @@ def check_independent_situs_accepts_review() -> Tuple[bool, ProofObject]:
     
     Standard: Marbury v. Madison; Article III
     Falsifies if: Review by independent court is rejected.
+    falsifies_if: Review by independent court is rejected.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -195,6 +198,7 @@ def check_unconstitutional_statute_invalidated() -> Tuple[bool, ProofObject]:
     
     Standard: Marbury v. Madison; APA §706(2)
     Falsifies if: Unconstitutional statute upheld.
+    falsifies_if: Unconstitutional statute upheld.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -244,6 +248,7 @@ def check_situs_independence_score() -> Tuple[bool, ProofObject]:
     
     Standard: Marbury v. Madison (independent judiciary requirement)
     Falsifies if: Low independence score accepted or high score rejected.
+    falsifies_if: Low independence score accepted or high score rejected.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -296,6 +301,7 @@ def check_apa_scope_of_review() -> Tuple[bool, ProofObject]:
     
     Standard: 5 U.S.C. §706(2) (scope of review)
     Falsifies if: Arbitrary/capricious agency action not reviewable.
+    falsifies_if: Arbitrary/capricious agency action not reviewable.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -349,6 +355,7 @@ def run_all_invariants() -> dict:
     """Run all D_JUDICIAL_REVIEW invariants.
 
     Falsifies if: any judicial review invariant check fails or raises an exception.
+    falsifies_if: any judicial review invariant check fails or raises an exception.
     """
     checks = [
         ("check_any_statute_may_be_challenged", check_any_statute_may_be_challenged),

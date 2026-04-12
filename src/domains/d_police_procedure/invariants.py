@@ -26,6 +26,7 @@ def check_fourth_amendment_search_warrant() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Amend. IV - Warrant requirement
     Falsifies if: Warrantless search without valid exception.
+    falsifies_if: Warrantless search without valid exception.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -73,6 +74,7 @@ def check_graham_v_connor_objective_reasonableness() -> Tuple[bool, ProofObject]
     
     Standard: Graham v. Connor, 490 U.S. 386 (1989)
     Falsifies if: Force analysis uses subjective intent rather than objective standard.
+    falsifies_if: Force analysis uses subjective intent rather than objective standard.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -117,6 +119,7 @@ def check_qualified_immunity_test() -> Tuple[bool, ProofObject]:
     
     Standard: Harlow v. Fitzgerald, 457 U.S. 800 (1982); Pearson v. Callahan, 555 U.S. 223 (2009)
     Falsifies if: Immunity granted without two-pronged analysis.
+    falsifies_if: Immunity granted without two-pronged analysis.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -159,6 +162,7 @@ def check_terry_stop_reasonable_suspicion() -> Tuple[bool, ProofObject]:
     
     Standard: Terry v. Ohio, 392 U.S. 1 (1968)
     Falsifies if: Stop conducted without articulable facts.
+    falsifies_if: Stop conducted without articulable facts.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -202,6 +206,7 @@ def check_miranda_warning_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: Miranda v. Arizona, 384 U.S. 436 (1966)
     Falsifies if: Statements admitted without proper warnings.
+    falsifies_if: Statements admitted without proper warnings.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -248,6 +253,7 @@ def check_exclusionary_rule_fruit_of_poisonous_tree() -> Tuple[bool, ProofObject
     
     Standard: Wong Sun v. United States, 371 U.S. 471 (1963)
     Falsifies if: Evidence derived from unconstitutional search not excluded.
+    falsifies_if: Evidence derived from unconstitutional search not excluded.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -290,6 +296,7 @@ def run_all_invariants() -> dict:
     """Run all D_POLICE_PROCEDURE invariants.
 
     Falsifies if: any police procedure invariant check fails or raises an exception.
+    falsifies_if: any police procedure invariant check fails or raises an exception.
     """
     checks = [
         ("check_fourth_amendment_search_warrant", check_fourth_amendment_search_warrant),

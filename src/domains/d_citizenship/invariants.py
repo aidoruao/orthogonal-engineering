@@ -25,6 +25,7 @@ def check_fourteenth_amendment_birthright() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment XIV, Section 1; INA §301(a)
     Falsifies if: U.S.-born person denied citizenship without lawful revocation.
+    falsifies_if: U.S.-born person denied citizenship without lawful revocation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -78,6 +79,7 @@ def check_naturalization_residency_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: INA §316(a), §319(a)
     Falsifies if: Naturalization granted with insufficient continuous residence.
+    falsifies_if: Naturalization granted with insufficient continuous residence.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -130,6 +132,7 @@ def check_naturalization_good_moral_character() -> Tuple[bool, ProofObject]:
     
     Standard: INA §101(f), §316(a)(3)
     Falsifies if: Naturalization granted despite statutory disqualifying offense.
+    falsifies_if: Naturalization granted despite statutory disqualifying offense.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -186,6 +189,7 @@ def check_citizenship_through_derivation() -> Tuple[bool, ProofObject]:
     
     Standard: INA §320 (Child Citizenship Act of 2000)
     Falsifies if: Child of naturalized parent denied derived citizenship when conditions met.
+    falsifies_if: Child of naturalized parent denied derived citizenship when conditions met.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -247,6 +251,7 @@ def check_dual_nationality_recognition() -> Tuple[bool, ProofObject]:
     
     Standard: INA §101(a)(22); State Department Policy
     Falsifies if: Automatic loss of U.S. citizenship upon acquiring foreign nationality.
+    falsifies_if: Automatic loss of U.S. citizenship upon acquiring foreign nationality.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -303,6 +308,7 @@ def check_renunciation_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: INA §349(a)(5); 8 U.S.C. §1481
     Falsifies if: Renunciation accepted without voluntary intent or outside prescribed form.
+    falsifies_if: Renunciation accepted without voluntary intent or outside prescribed form.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -360,6 +366,7 @@ def run_all_invariants() -> dict:
     """Run all D_CITIZENSHIP invariants.
 
     Falsifies if: any citizenship invariant check fails or raises an exception.
+    falsifies_if: any citizenship invariant check fails or raises an exception.
     """
     checks = [
         ("check_fourteenth_amendment_birthright", check_fourteenth_amendment_birthright),

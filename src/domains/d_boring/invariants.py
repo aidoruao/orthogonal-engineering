@@ -22,6 +22,7 @@ def check_tbm_advance_rate(tbm: TBM, ground: GroundConditions) -> Tuple[bool, Pr
 
     BTS guidelines: Advance rates vary by ground type (10-50 mm/min typical).
     Falsifies if: advance_rate exceeds 2x standard rate for ground type
+    falsifies_if: advance_rate exceeds 2x standard rate for ground type
     """
     standard_rate = tbm_standard_advance_rate(ground.ground_type)
     max_rate = standard_rate * 2
@@ -51,6 +52,7 @@ def check_ground_pressure_limits(advance: TBMAdvance, ground: GroundConditions) 
 
     ITA guidelines: Face pressure = ground pressure + water pressure (typically 100-500 kPa).
     Falsifies if: face_pressure < ground_pressure or face_pressure > 2x ground_pressure
+    falsifies_if: face_pressure < ground_pressure or face_pressure > 2x ground_pressure
     """
     min_face_pressure = advance.ground_pressure_kpa
     max_face_pressure = advance.ground_pressure_kpa * 2
@@ -90,6 +92,7 @@ def check_segment_alignment(installation: SegmentInstallation) -> Tuple[bool, Pr
 
     BTS: Typical tolerance +/- 10mm for precast segments.
     Falsifies if: alignment_deviation_mm > tolerance
+    falsifies_if: alignment_deviation_mm > tolerance
     """
     tolerance = alignment_tolerance_threshold()
 
@@ -117,6 +120,7 @@ def check_grouting_coverage(installation: SegmentInstallation) -> Tuple[bool, Pr
 
     ITA: Typical grouting volume 3-5 m3 per ring.
     Falsifies if: grouting_volume_m3 < minimum required volume
+    falsifies_if: grouting_volume_m3 < minimum required volume
     """
     min_volume = grouting_volume_per_ring()
 
@@ -144,6 +148,7 @@ def check_subsidence_tolerance(monitoring: SubsidenceMonitoring) -> Tuple[bool, 
 
     BTS guidelines: Typical limit < 30mm for urban tunneling.
     Falsifies if: settlement_mm > limit
+    falsifies_if: settlement_mm > limit
     """
     limit = subsidence_limit_mm()
 
@@ -171,6 +176,7 @@ def check_tbm_operational_status(tbm: TBM) -> Tuple[bool, ProofObject]:
     Operational TBMs must have valid thrust force and cutterhead RPM.
 
     Falsifies if: operational but thrust_force_kn <= 0 or cutterhead_rpm <= 0
+    falsifies_if: operational but thrust_force_kn <= 0 or cutterhead_rpm <= 0
     """
     if tbm.operational:
         if tbm.thrust_force_kn <= 0:
@@ -206,6 +212,7 @@ def check_water_bearing_ground(ground: GroundConditions, advance: TBMAdvance) ->
 
     ITA: Open-face TBMs cannot handle water-bearing ground.
     Falsifies if: ground is WATER_BEARING but pressure control inadequate
+    falsifies_if: ground is WATER_BEARING but pressure control inadequate
     """
     if ground.ground_type == GroundType.WATER_BEARING:
         # For water-bearing ground, face pressure must be significantly higher
@@ -236,6 +243,7 @@ def check_segment_installation_sequence(installation: SegmentInstallation, segme
     Segments must be installed before grouting.
 
     Falsifies if: grouting_complete but not installed
+    falsifies_if: grouting_complete but not installed
     """
     if segment.grouting_complete and not segment.installed:
         return False, ProofObject(

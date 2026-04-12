@@ -25,6 +25,7 @@ def check_fmcsa_hos_limits() -> Tuple[bool, ProofObject]:
     
     Standard: 49 CFR § 395 - Hours of service of drivers
     Falsifies if: Driver exceeds 11 hours driving or 14 hours on-duty.
+    falsifies_if: Driver exceeds 11 hours driving or 14 hours on-duty.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -68,6 +69,7 @@ def check_faa_pilot_certification() -> Tuple[bool, ProofObject]:
     
     Standard: 14 CFR Part 61 - Certification: Pilots
     Falsifies if: Unlicensed individual acts as pilot in command.
+    falsifies_if: Unlicensed individual acts as pilot in command.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -120,6 +122,7 @@ def check_dot_drug_testing() -> Tuple[bool, ProofObject]:
     
     Standard: 49 CFR Part 40 - Procedures for Transportation Workplace Drug and Alcohol Testing
     Falsifies if: Safety-sensitive employee not tested.
+    falsifies_if: Safety-sensitive employee not tested.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -176,6 +179,7 @@ def check_faa_airworthiness_certification() -> Tuple[bool, ProofObject]:
     
     Standard: 14 CFR Part 21 - Certification procedures for products
     Falsifies if: Aircraft operates without valid airworthiness certificate.
+    falsifies_if: Aircraft operates without valid airworthiness certificate.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -226,6 +230,7 @@ def check_fmcsa_cdl_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: 49 CFR Part 383 - Commercial driver's license standards
     Falsifies if: CMV operated without proper CDL.
+    falsifies_if: CMV operated without proper CDL.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -278,6 +283,7 @@ def check_dot_pipeline_safety() -> Tuple[bool, ProofObject]:
     
     Standard: 49 CFR Part 191/192/195 - Pipeline safety regulations
     Falsifies if: Pipeline operates outside safety parameters.
+    falsifies_if: Pipeline operates outside safety parameters.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -325,6 +331,7 @@ def run_all_invariants() -> dict:
     """Run all D_TRANSPORTATION invariants.
 
     Falsifies if: any transportation invariant check fails or raises an exception.
+    falsifies_if: any transportation invariant check fails or raises an exception.
     """
     checks = [
         ("check_fmcsa_hos_limits", check_fmcsa_hos_limits),

@@ -26,6 +26,7 @@ def check_lead_copper_rule(sample: WaterQualitySample) -> Tuple[bool, ProofObjec
     - 90th percentile of samples must be below action level
     
     Falsifies if: lead > 0.015 mg/L or copper > 1.3 mg/L
+    falsifies_if: lead > 0.015 mg/L or copper > 1.3 mg/L
     """
     lead_limit = epa_lead_action_level()
     copper_limit = epa_copper_action_level()
@@ -66,6 +67,7 @@ def check_ph_compliance(sample: WaterQualitySample) -> Tuple[bool, ProofObject]:
     - Outside this range may cause taste/odor issues, corrosion
     
     Falsifies if: pH < 6.5 or pH > 8.5
+    falsifies_if: pH < 6.5 or pH > 8.5
     """
     ph_min, ph_max = epa_ph_range()
     
@@ -97,6 +99,7 @@ def check_microbial_compliance(sample: WaterQualitySample) -> Tuple[bool, ProofO
     - Repeat sampling required after positive results
     
     Falsifies if: E. coli detected
+    falsifies_if: E. coli detected
     """
     if sample.e_coli_detected:
         return False, ProofObject(
@@ -137,6 +140,7 @@ def check_consumer_confidence_report(utility: WaterUtility) -> Tuple[bool, Proof
     - Required for all community water systems
     
     Falsifies if: CCR not delivered for systems serving >1000 people
+    falsifies_if: CCR not delivered for systems serving >1000 people
     """
     min_population_for_ccr = Fraction(1000)
     
@@ -176,6 +180,7 @@ def check_npdes_discharge_limits(discharge: WastewaterDischarge) -> Tuple[bool, 
     - Discharge Monitoring Reports (DMRs) required
     
     Falsifies if: actual > limit for any parameter
+    falsifies_if: actual > limit for any parameter
     """
     violations = []
     
@@ -216,6 +221,7 @@ def check_lead_service_line_replacement(utility: WaterUtility) -> Tuple[bool, Pr
     - Full inventory of lead service lines required
     
     Falsifies if: lead lines exist but replacement rate < 7% annually
+    falsifies_if: lead lines exist but replacement rate < 7% annually
     """
     required_annual_rate = Fraction(7, 100)  # 7% per year
     

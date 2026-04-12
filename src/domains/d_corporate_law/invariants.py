@@ -26,6 +26,7 @@ def check_director_fiduciary_duties() -> Tuple[bool, ProofObject]:
     
     Standard: DGCL §141; Smith v. Van Gorkom (1985)
     Falsifies if: Director self-deals without disclosure.
+    falsifies_if: Director self-deals without disclosure.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -72,6 +73,7 @@ def check_shareholder_voting_rights() -> Tuple[bool, ProofObject]:
     
     Standard: DGCL §211-220; Blasius v. Atlas Corp. (1988)
     Falsifies if: Board action for primary purpose of interfering with vote.
+    falsifies_if: Board action for primary purpose of interfering with vote.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -124,6 +126,7 @@ def check_merger_approval_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: DGCL §251; MBCA §11.04
     Falsifies if: Merger completed without proper approvals.
+    falsifies_if: Merger completed without proper approvals.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -177,6 +180,7 @@ def check_piercing_corporate_veil() -> Tuple[bool, ProofObject]:
     
     Standard: United States v. Milwaukee Refrigerator (1905)
     Falsifies if: Veil pierced without alter ego or injustice.
+    falsifies_if: Veil pierced without alter ego or injustice.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -231,6 +235,7 @@ def check_proxy_statement_disclosure() -> Tuple[bool, ProofObject]:
     
     Standard: SEC Regulation 14A; TSC v. Northway (1976)
     Falsifies if: Material omission in proxy solicitation.
+    falsifies_if: Material omission in proxy solicitation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -289,6 +294,7 @@ def check_duty_of_care_exact_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: DGCL §141(e) (Reliance on experts)
     Falsifies if: Board decisions use float approximations for material metrics.
+    falsifies_if: Board decisions use float approximations for material metrics.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -333,6 +339,7 @@ def run_all_invariants() -> dict:
     """Run all D_CORPORATE_LAW invariants.
 
     Falsifies if: any corporate law invariant check fails or raises an exception.
+    falsifies_if: any corporate law invariant check fails or raises an exception.
     """
     checks = [
         ("check_director_fiduciary_duties", check_director_fiduciary_duties),

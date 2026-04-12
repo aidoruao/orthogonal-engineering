@@ -27,6 +27,7 @@ def check_crs_bounds(coord: Coordinate, crs: CoordinateReferenceSystem) -> Tuple
     """Coordinates must be within valid range for their CRS.
 
     Falsifies if: coordinate exceeds CRS bounds (including |lon| > 180 or |lat| > 90 for geographic).
+    falsifies_if: coordinate exceeds CRS bounds (including |lon| > 180 or |lat| > 90 for geographic).
     """
     if crs.geographic:
         # Geographic: longitude [-180, 180], latitude [-90, 90]
@@ -65,6 +66,7 @@ def check_polygon_closure(geometry: Geometry) -> Tuple[bool, ProofObject]:
     """Polygon rings must be closed (first vertex = last vertex).
 
     Falsifies if: polygon ring lacks sufficient vertices or first/last coordinates differ.
+    falsifies_if: polygon ring lacks sufficient vertices or first/last coordinates differ.
     """
     if geometry.geometry_type not in (GeometryType.POLYGON, GeometryType.MULTIPOLYGON):
         return True, ProofObject(
@@ -104,6 +106,7 @@ def check_crs_consistency(dataset: SpatialDataset) -> Tuple[bool, ProofObject]:
     """All features in dataset must use the dataset CRS.
 
     Falsifies if: any feature's CRS differs from the dataset CRS.
+    falsifies_if: any feature's CRS differs from the dataset CRS.
     """
     mismatches = []
     for feature in dataset.features:
@@ -131,6 +134,7 @@ def check_topology_no_overlap(rule: TopologyRule, features: List[Geometry]) -> T
     """Polygons in same layer must not overlap (topological consistency).
 
     Falsifies if: geometry pairs overlap when rule type requires no overlap.
+    falsifies_if: geometry pairs overlap when rule type requires no overlap.
     """
     if rule.rule_type != "must_not_overlap":
         return True, ProofObject(
@@ -166,6 +170,7 @@ def check_metadata_completeness(dataset: SpatialDataset) -> Tuple[bool, ProofObj
     """ISO 19115 requires certain metadata fields.
 
     Falsifies if: abstract is missing/too short or creation_date is absent.
+    falsifies_if: abstract is missing/too short or creation_date is absent.
     """
     MIN_ABSTRACT_LENGTH = 50
     
@@ -200,6 +205,7 @@ def check_raster_consistency(raster: RasterDataset) -> Tuple[bool, ProofObject]:
     """Raster datasets must have consistent dimensions and cell size.
     
     Falsifies if: raster dimensions are non-positive, cell size is non-positive,
+    falsifies_if: raster dimensions are non-positive, cell size is non-positive,
     or computed extent is invalid.
     """
     if raster.width <= 0 or raster.height <= 0:

@@ -25,6 +25,7 @@ def check_essa_academic_standards() -> Tuple[bool, ProofObject]:
     
     Standard: ESSA §1111(b)(1); 20 U.S.C. §6311(b)(1)
     Falsifies if: State standards not aligned to college and career readiness.
+    falsifies_if: State standards not aligned to college and career readiness.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -90,6 +91,7 @@ def check_assessment_system_validity() -> Tuple[bool, ProofObject]:
     
     Standard: ESSA §1111(b)(2); 20 U.S.C. §6311(b)(2)
     Falsifies if: Assessments do not measure grade-level standards or lack accommodations.
+    falsifies_if: Assessments do not measure grade-level standards or lack accommodations.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -151,6 +153,7 @@ def check_idea_fape_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: IDEA §612(a)(1); 20 U.S.C. §1412(a)(1)
     Falsifies if: IEP not reasonably calculated to enable progress appropriate to circumstances.
+    falsifies_if: IEP not reasonably calculated to enable progress appropriate to circumstances.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -220,6 +223,7 @@ def check_common_core_math_progressions() -> Tuple[bool, ProofObject]:
     
     Standard: Common Core State Standards for Mathematics
     Falsifies if: Content taught before conceptual foundations established.
+    falsifies_if: Content taught before conceptual foundations established.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -277,6 +281,7 @@ def check_common_core_ela_text_complexity() -> Tuple[bool, ProofObject]:
     
     Standard: Common Core State Standards for ELA (Reading Standard 10)
     Falsifies if: Texts significantly below grade-level lexile used without scaffolding.
+    falsifies_if: Texts significantly below grade-level lexile used without scaffolding.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -346,6 +351,7 @@ def check_state_accountability_system() -> Tuple[bool, ProofObject]:
     
     Standard: ESSA §1111(c)(4); 20 U.S.C. §6311(c)(4)
     Falsifies if: Accountability based solely on test scores or insufficient indicators.
+    falsifies_if: Accountability based solely on test scores or insufficient indicators.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -414,6 +420,7 @@ def run_all_invariants() -> dict:
     """Run all D_CURRICULUM invariants.
 
     Falsifies if: any curriculum invariant check fails or raises an exception.
+    falsifies_if: any curriculum invariant check fails or raises an exception.
     """
     checks = [
         ("check_essa_academic_standards", check_essa_academic_standards),

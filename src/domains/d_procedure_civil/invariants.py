@@ -10,6 +10,7 @@ def check_class_certification(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     """FRCP 23(a): Class certification requires all four elements.
 
     Falsifies if: any FRCP 23(a) element is missing or class size is below minimum.
+    falsifies_if: any FRCP 23(a) element is missing or class size is below minimum.
     """
     if not suit.class_action:
         return True, ProofObject(
@@ -46,6 +47,7 @@ def check_12b6_plausibility(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     """FRCP 12(b)(6): Complaint must state plausible claim.
 
     Falsifies if: complaint lacks factual allegations to state a plausible claim.
+    falsifies_if: complaint lacks factual allegations to state a plausible claim.
     """
     if len(suit.complaint_allegations) == 0:
         return False, ProofObject(
@@ -63,6 +65,7 @@ def check_summary_judgment(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     """FRCP 56: Summary judgment only if no genuine dispute.
 
     Falsifies if: a genuine dispute of material fact exists.
+    falsifies_if: a genuine dispute of material fact exists.
     """
     if suit.genuine_dispute_exists:
         return False, ProofObject(

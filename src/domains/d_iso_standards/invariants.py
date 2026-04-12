@@ -33,6 +33,7 @@ def check_standard_integrity_verification() -> Tuple[bool, ProofObject]:
     
     Standard: ISO/IEC 10118-3 (hash functions); SHA-256
     Falsifies if: verify_integrity returns True for modified content.
+    falsifies_if: verify_integrity returns True for modified content.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -85,6 +86,7 @@ def check_compliance_requires_integrity() -> Tuple[bool, ProofObject]:
     
     Standard: ISO 9001:2015 clause 7.5 (documented information)
     Falsifies if: compliance returns compliant=True when integrity is False.
+    falsifies_if: compliance returns compliant=True when integrity is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -131,6 +133,7 @@ def check_compliance_sections_required() -> Tuple[bool, ProofObject]:
     
     Standard: ISO 9001:2015 clause 4-10 (requirements)
     Falsifies if: Compliance passes when required sections are missing.
+    falsifies_if: Compliance passes when required sections are missing.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -190,6 +193,7 @@ def check_hash_consistency() -> Tuple[bool, ProofObject]:
     
     Standard: ISO/IEC 10118-3 (secure hash properties)
     Falsifies if: Hash collision occurs or same content produces different hashes.
+    falsifies_if: Hash collision occurs or same content produces different hashes.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -234,6 +238,7 @@ def check_iso_9001_quality_management() -> Tuple[bool, ProofObject]:
     
     Standard: ISO 9001:2015 clause 4.4 (quality management system)
     Falsifies if: QMS without required documentation passes compliance.
+    falsifies_if: QMS without required documentation passes compliance.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -294,6 +299,7 @@ def check_iso_27001_information_security() -> Tuple[bool, ProofObject]:
     
     Standard: ISO 27001:2022 Annex A (information security controls)
     Falsifies if: ISMS without security controls passes compliance.
+    falsifies_if: ISMS without security controls passes compliance.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -355,6 +361,7 @@ def run_all_invariants() -> dict:
     """Run all D_ISO_STANDARDS invariants.
 
     Falsifies if: any ISO standards invariant check fails or raises an exception.
+    falsifies_if: any ISO standards invariant check fails or raises an exception.
     """
     checks = [
         ("check_standard_integrity_verification", check_standard_integrity_verification),

@@ -25,6 +25,7 @@ def check_communications_act_common_carrier() -> Tuple[bool, ProofObject]:
     
     Standard: 47 U.S.C. § 201 - Service and charges
     Falsifies if: Common carrier unreasonably discriminates.
+    falsifies_if: Common carrier unreasonably discriminates.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -71,6 +72,7 @@ def check_fcc_spectrum_licensing() -> Tuple[bool, ProofObject]:
     
     Standard: 47 U.S.C. § 301 - License for radio transmission
     Falsifies if: Unlicensed transmission on licensed frequencies.
+    falsifies_if: Unlicensed transmission on licensed frequencies.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -117,6 +119,7 @@ def check_telecommunications_act_1996_competition() -> Tuple[bool, ProofObject]:
     
     Standard: 47 U.S.C. § 151 note - Telecommunications Competition
     Falsifies if: Incumbent LECs block competitive entry.
+    falsifies_if: Incumbent LECs block competitive entry.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -163,6 +166,7 @@ def check_tcpa_autodialer_restrictions() -> Tuple[bool, ProofObject]:
     
     Standard: 47 U.S.C. § 227 - Restrictions on use of telephone equipment
     Falsifies if: Autodialed calls without consent.
+    falsifies_if: Autodialed calls without consent.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -208,6 +212,7 @@ def check_net_neutrality_principles() -> Tuple[bool, ProofObject]:
     
     Standard: FCC 2015 Open Internet Order (varies by administration)
     Falsifies if: Broadband provider engages in unreasonable discrimination.
+    falsifies_if: Broadband provider engages in unreasonable discrimination.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -256,6 +261,7 @@ def check_universal_service_fund_contributions() -> Tuple[bool, ProofObject]:
     
     Standard: 47 U.S.C. § 254 - Universal service
     Falsifies if: Eligible carriers not supported or contributions evaded.
+    falsifies_if: Eligible carriers not supported or contributions evaded.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -300,6 +306,7 @@ def run_all_invariants() -> dict:
     """Run all D_TELECOMMUNICATIONS_LAW invariants.
 
     Falsifies if: any telecommunications law invariant check fails or raises an exception.
+    falsifies_if: any telecommunications law invariant check fails or raises an exception.
     """
     checks = [
         ("check_communications_act_common_carrier", check_communications_act_common_carrier),

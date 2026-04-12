@@ -27,6 +27,7 @@ def check_universal_law(maxim: Maxim, coherence_fn: Callable[[str], bool]) -> Tu
     """Kant's first formulation: Can maxim be willed as universal law?
     
     Falsifies if: universalized maxim is incoherent or creates contradiction in conception.
+    falsifies_if: universalized maxim is incoherent or creates contradiction in conception.
     """
     universal = maxim.universal_form()
     coherent = coherence_fn(universal)
@@ -52,6 +53,7 @@ def check_humanity_as_end(action: Action) -> Tuple[bool, ProofObject]:
     """Kant's second formulation: Treat humanity as end, never merely as means.
     
     Falsifies if: rational persons are harmed or used merely as means without regard for dignity.
+    falsifies_if: rational persons are harmed or used merely as means without regard for dignity.
     """
     persons_used_as_means = []
     
@@ -81,6 +83,7 @@ def check_utilitarian_dominance(action_a: Action, action_b: Action) -> Tuple[boo
     """Utilitarian dominance: If A has >= utility for all and > for some, A dominates B.
     
     Falsifies if: chosen action is dominated by an available higher-utility alternative.
+    falsifies_if: chosen action is dominated by an available higher-utility alternative.
     """
     util_a = action_a.total_expected_utility()
     util_b = action_b.total_expected_utility()
@@ -106,6 +109,7 @@ def check_virtue_mean(virtue: Virtue, action_trait: str) -> Tuple[bool, ProofObj
     """Aristotelian virtue: action should demonstrate mean between excess and deficiency.
     
     Falsifies if: action demonstrates excess or deficiency rather than virtuous mean.
+    falsifies_if: action demonstrates excess or deficiency rather than virtuous mean.
     """
     if action_trait == virtue.excess:
         return False, ProofObject(
@@ -141,6 +145,7 @@ def check_contractualist_rejectability(evaluation: ContractualistEvaluation) -> 
     """Scanlonian contractualism: principle must not be reasonably rejectable.
     
     Falsifies if: any agent can reasonably reject the principle due to disproportionate burden.
+    falsifies_if: any agent can reasonably reject the principle due to disproportionate burden.
     """
     rejecting_agents = []
     
@@ -169,6 +174,7 @@ def check_agent_autonomy(agent: MoralAgent) -> Tuple[bool, ProofObject]:
     """Moral agency requires both rationality and autonomy.
     
     Falsifies if: agent lacks rationality while claiming autonomy, or lacks autonomy despite rationality.
+    falsifies_if: agent lacks rationality while claiming autonomy, or lacks autonomy despite rationality.
     """
     if not agent.rational and agent.autonomous:
         return False, ProofObject(

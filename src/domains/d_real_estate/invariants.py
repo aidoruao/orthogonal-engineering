@@ -26,6 +26,7 @@ def check_recording_act_priorities() -> Tuple[bool, ProofObject]:
     
     Standard: State recording acts (race-notice, notice, race)
     Falsifies if: First to record loses to subsequent purchaser with notice.
+    falsifies_if: First to record loses to subsequent purchaser with notice.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -71,6 +72,7 @@ def check_title_insurance_coverage() -> Tuple[bool, ProofObject]:
     
     Standard: ALTA title insurance policies
     Falsifies if: Covered defect is excluded from policy.
+    falsifies_if: Covered defect is excluded from policy.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -123,6 +125,7 @@ def check_respa_disclosure_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: 12 U.S.C. § 2601 - Real Estate Settlement Procedures Act
     Falsifies if: Required disclosures not provided or kickbacks paid.
+    falsifies_if: Required disclosures not provided or kickbacks paid.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -168,6 +171,7 @@ def check_fair_housing_prohibited_bases() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. § 3604 - Discrimination in sale or rental of housing
     Falsifies if: Housing discrimination on protected basis is allowed.
+    falsifies_if: Housing discrimination on protected basis is allowed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -224,6 +228,7 @@ def check_mortgage_note_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: Uniform Commercial Code Article 3, standard mortgage practice
     Falsifies if: Required terms missing from negotiable instrument.
+    falsifies_if: Required terms missing from negotiable instrument.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -269,6 +274,7 @@ def check_statute_of_frauds_real_property() -> Tuple[bool, ProofObject]:
     
     Standard: State Statute of Frauds (original: 29 Car. 2 c. 3, 1677)
     Falsifies if: Oral transfer of real property is valid.
+    falsifies_if: Oral transfer of real property is valid.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -313,6 +319,7 @@ def run_all_invariants() -> dict:
     """Run all D_REAL_ESTATE invariants.
 
     Falsifies if: any real estate invariant check fails or raises an exception.
+    falsifies_if: any real estate invariant check fails or raises an exception.
     """
     checks = [
         ("check_recording_act_priorities", check_recording_act_priorities),

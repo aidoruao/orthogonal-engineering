@@ -26,6 +26,7 @@ def check_idea_free_appropriate_education() -> Tuple[bool, ProofObject]:
     
     Standard: 20 U.S.C. § 1400(d) - Purposes; free appropriate public education
     Falsifies if: Child with disability denied FAPE or IEP.
+    falsifies_if: Child with disability denied FAPE or IEP.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -73,6 +74,7 @@ def check_title_i_participation_threshold() -> Tuple[bool, ProofObject]:
     
     Standard: 20 U.S.C. § 6333 - Basic grants
     Falsifies if: Eligible district excluded from Title I.
+    falsifies_if: Eligible district excluded from Title I.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -117,6 +119,7 @@ def check_esea_accountability_assessments() -> Tuple[bool, ProofObject]:
     
     Standard: 20 U.S.C. § 6311 - State plans; accountability
     Falsifies if: State fails to assess 95% of students.
+    falsifies_if: State fails to assess 95% of students.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -163,6 +166,7 @@ def check_brown_v_board_integration() -> Tuple[bool, ProofObject]:
     
     Standard: Brown v. Board of Education, 347 U.S. 483 (1954)
     Falsifies if: De jure segregation persists without remedy.
+    falsifies_if: De jure segregation persists without remedy.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -208,6 +212,7 @@ def check_idea_procedural_safeguards() -> Tuple[bool, ProofObject]:
     
     Standard: 20 U.S.C. § 1415 - Procedural safeguards
     Falsifies if: Parents not given notice of rights or due process.
+    falsifies_if: Parents not given notice of rights or due process.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -253,6 +258,7 @@ def check_title_i_schoolwide_programs() -> Tuple[bool, ProofObject]:
     
     Standard: 20 U.S.C. § 6314 - Schoolwide programs
     Falsifies if: School with <40% poverty operates schoolwide program.
+    falsifies_if: School with <40% poverty operates schoolwide program.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -296,6 +302,7 @@ def run_all_invariants() -> dict:
     """Run all D_SCHOOL_DISTRICTS invariants.
 
     Falsifies if: any school district invariant check fails or raises an exception.
+    falsifies_if: any school district invariant check fails or raises an exception.
     """
     checks = [
         ("check_idea_free_appropriate_education", check_idea_free_appropriate_education),

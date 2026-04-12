@@ -23,6 +23,7 @@ def check_rfra_substantial_burden(accommodation: ReligiousAccommodation) -> Tupl
     - And is least restrictive means
     
     Falsifies if: insincere belief or no substantial burden
+    falsifies_if: insincere belief or no substantial burden
     """
     if not accommodation.religious_belief_sincere:
         return False, ProofObject(
@@ -65,6 +66,7 @@ def check_rfra_least_restrictive_means(accommodation: ReligiousAccommodation) ->
     - Of furthering compelling governmental interest
     
     Falsifies if: less restrictive alternative exists
+    falsifies_if: less restrictive alternative exists
     """
     if accommodation.is_substantial_burden() and not accommodation.least_restrictive_alternative_exists:
         return True, ProofObject(
@@ -105,6 +107,7 @@ def check_third_party_harm_limit(exemption: ReligiousExemption) -> Tuple[bool, P
     - Balancing of interests required
     
     Falsifies if: harm_to_third_parties > threshold
+    falsifies_if: harm_to_third_parties > threshold
     """
     harm_threshold = Fraction(1, 10)  # 10% harm threshold
     
@@ -136,6 +139,7 @@ def check_establishment_clause_neutrality(accommodations: list) -> Tuple[bool, P
     - Primary effect must not advance/inhibit religion
     
     Falsifies if: preferential treatment evident
+    falsifies_if: preferential treatment evident
     """
     if len(accommodations) < 2:
         return True, ProofObject(

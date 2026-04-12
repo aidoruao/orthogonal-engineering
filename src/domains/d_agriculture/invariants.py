@@ -32,6 +32,7 @@ def check_organic_certification_requirements() -> Tuple[bool, ProofObject]:
     Verify organic farms meet certification requirements.
     
     Falsifies if: organic farm lacks organic certification or a conventional farm is marked organic.
+    falsifies_if: organic farm lacks organic certification or a conventional farm is marked organic.
     """
     checker = D_AGRICULTUREChecker()
     
@@ -84,6 +85,7 @@ def check_pesticide_safety_protocols() -> Tuple[bool, ProofObject]:
     Verify pesticide applications follow safety protocols.
     
     Falsifies if: safe application is rejected or unsafe application passes safety checks.
+    falsifies_if: safe application is rejected or unsafe application passes safety checks.
     """
     checker = D_AGRICULTUREChecker()
     
@@ -136,6 +138,7 @@ def check_water_permit_compliance() -> Tuple[bool, ProofObject]:
     Verify farms have required water permits.
     
     Falsifies if: compliant farm fails water permit check or non-compliant farm passes.
+    falsifies_if: compliant farm fails water permit check or non-compliant farm passes.
     """
     checker = D_AGRICULTUREChecker()
     
@@ -188,6 +191,7 @@ def check_pre_harvest_interval() -> Tuple[bool, ProofObject]:
     Verify pre-harvest intervals are respected.
     
     Falsifies if: harvest occurs before application.pre_harvest_interval_days elapse.
+    falsifies_if: harvest occurs before application.pre_harvest_interval_days elapse.
     """
     application_date = datetime(2026, 4, 1)
     harvest_date = datetime(2026, 4, 20)  # 19 days later
@@ -223,6 +227,7 @@ def check_subsidy_eligibility() -> Tuple[bool, ProofObject]:
     Verify farm meets subsidy eligibility requirements.
     
     Falsifies if: farm lacks water permit or acreage exceeds Fraction('160').
+    falsifies_if: farm lacks water permit or acreage exceeds Fraction('160').
     """
     eligible_farm = Farm(
         farm_id="FARM-005",
@@ -261,6 +266,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     Master compliance check.
     
     Falsifies if: any individual agriculture compliance check returns False.
+    falsifies_if: any individual agriculture compliance check returns False.
     
     Returns aggregate result of all compliance checks.
     """

@@ -26,6 +26,7 @@ def check_hipaa_phi_protection() -> Tuple[bool, ProofObject]:
     
     Standard: 45 CFR § 164.502(b) - Minimum necessary requirement
     Falsifies if: Disclosure exceeds minimum necessary for purpose.
+    falsifies_if: Disclosure exceeds minimum necessary for purpose.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -80,6 +81,7 @@ def check_fda_device_classification() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR § 860.3 - Device classification procedures
     Falsifies if: Class III device lacks PMA or Class I lacks general controls.
+    falsifies_if: Class III device lacks PMA or Class I lacks general controls.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -126,6 +128,7 @@ def check_stark_law_prohibition() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. § 1395nn - Limitation on certain physician referrals
     Falsifies if: Self-referral without applicable exception occurs.
+    falsifies_if: Self-referral without applicable exception occurs.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -180,6 +183,7 @@ def check_fda_qsr_documentation() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR § 820.30 - Design controls; § 820.181 - Device master record
     Falsifies if: Required documentation is incomplete.
+    falsifies_if: Required documentation is incomplete.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -233,6 +237,7 @@ def check_hipaa_security_rule_safeguards() -> Tuple[bool, ProofObject]:
     
     Standard: 45 CFR § 164.302 - Security standards
     Falsifies if: Required safeguards are not implemented.
+    falsifies_if: Required safeguards are not implemented.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -295,6 +300,7 @@ def check_emtala_mse_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. § 1395dd - Examination and treatment for emergency medical conditions
     Falsifies if: Patient is turned away without MSE or appropriate transfer.
+    falsifies_if: Patient is turned away without MSE or appropriate transfer.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -338,6 +344,7 @@ def run_all_invariants() -> dict:
     """Run all D_MEDICAL invariants.
 
     Falsifies if: any medical invariant check fails or raises an exception.
+    falsifies_if: any medical invariant check fails or raises an exception.
     """
     checks = [
         ("check_hipaa_phi_protection", check_hipaa_phi_protection),

@@ -25,6 +25,7 @@ def check_usma_origin_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: USMCA Chapter 4 - Rules of Origin
     Falsifies if: Non-originating goods receive preferential treatment.
+    falsifies_if: Non-originating goods receive preferential treatment.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -71,6 +72,7 @@ def check_wto_mfn_principle() -> Tuple[bool, ProofObject]:
     
     Standard: GATT Article I - General Most-Favored-Nation Treatment
     Falsifies if: WTO member discriminates between trading partners.
+    falsifies_if: WTO member discriminates between trading partners.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -116,6 +118,7 @@ def check_wto_national_treatment() -> Tuple[bool, ProofObject]:
     
     Standard: GATT Article III - National Treatment on Internal Taxation and Regulation
     Falsifies if: Domestic products given preferential treatment.
+    falsifies_if: Domestic products given preferential treatment.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -162,6 +165,7 @@ def check_trade_promotion_authority_procedures() -> Tuple[bool, ProofObject]:
     
     Standard: Trade Act of 1974, as amended; Bipartisan Trade Promotion Authority
     Falsifies if: Trade agreement not subject to up-or-down vote.
+    falsifies_if: Trade agreement not subject to up-or-down vote.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -210,6 +214,7 @@ def check_antidumping_calculation() -> Tuple[bool, ProofObject]:
     
     Standard: GATT Article VI; WTO Antidumping Agreement
     Falsifies if: Dumping margin miscalculated.
+    falsifies_if: Dumping margin miscalculated.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -259,6 +264,7 @@ def check_dispute_settlement_understanding() -> Tuple[bool, ProofObject]:
     
     Standard: WTO Dispute Settlement Understanding (DSU)
     Falsifies if: Panel/Appellate Body reports not adopted.
+    falsifies_if: Panel/Appellate Body reports not adopted.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -305,6 +311,7 @@ def run_all_invariants() -> dict:
     """Run all D_TRADE_AGREEMENTS invariants.
 
     Falsifies if: any trade agreement invariant check fails or raises an exception.
+    falsifies_if: any trade agreement invariant check fails or raises an exception.
     """
     checks = [
         ("check_usma_origin_requirements", check_usma_origin_requirements),

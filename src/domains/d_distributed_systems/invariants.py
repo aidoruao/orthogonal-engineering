@@ -11,6 +11,7 @@ def check_cap_theorem(analyzer: CAPAnalyzer) -> Tuple[bool, ProofObject]:
     """CAP theorem: Cannot have Consistency + Availability + Partition tolerance simultaneously.
 
     Falsifies if: analyzer.satisfies_cap() returns False (attempts to claim all three). 
+    falsifies_if: analyzer.satisfies_cap() returns False (attempts to claim all three).
     """
     if analyzer.satisfies_cap():
         return True, ProofObject(
@@ -30,6 +31,7 @@ def check_vector_clock_causality(vc1: VectorClock, vc2: VectorClock) -> Tuple[bo
     """Vector clocks must correctly track causality.
 
     Falsifies if: not applicable (function reports causal relation and always returns True).
+    falsifies_if: not applicable (function reports causal relation and always returns True).
     """
     relation = vc1.compare(vc2)
     
@@ -51,6 +53,7 @@ def check_consensus_quorum(verifier: ConsensusVerifier) -> Tuple[bool, ProofObje
     """Consensus requires quorum > n/2 for safety.
 
     Falsifies if: votes received < quorum or no agreed majority value.
+    falsifies_if: votes received < quorum or no agreed majority value.
     """
     quorum = verifier.quorum_size()
     received = len(verifier.votes_received)
@@ -81,6 +84,7 @@ def check_quorum_size(verifier: ConsensusVerifier) -> Tuple[bool, ProofObject]:
     """Quorum must be > n/2 to prevent split-brain.
 
     Falsifies if: quorum_ratio <= MIN_QUORUM_RATIO.
+    falsifies_if: quorum_ratio <= MIN_QUORUM_RATIO.
     """
     from .implementation import MIN_QUORUM_RATIO
     

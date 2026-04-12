@@ -13,6 +13,7 @@ def check_one_person_one_vote(verifier: EligibilityVerifier) -> Tuple[bool, Proo
     """One person, one vote: eligible voters must not have voted yet.
 
     Falsifies if: voter has already voted or is not registered.
+    falsifies_if: voter has already voted or is not registered.
     """
     if verifier.voter.voted:
         return False, ProofObject(
@@ -39,6 +40,7 @@ def check_custody_chain_unbroken(tracker: BallotCustodyTracker) -> Tuple[bool, P
     """Ballot chain of custody must be unbroken.
 
     Falsifies if: chain_unbroken() is False or ballot_count_consistent() is False.
+    falsifies_if: chain_unbroken() is False or ballot_count_consistent() is False.
     """
     if not tracker.chain_unbroken():
         return False, ProofObject(
@@ -65,6 +67,7 @@ def check_recount_threshold(analyzer: RecountAnalyzer) -> Tuple[bool, ProofObjec
     """Recount triggered when margin < 0.5%.
 
     Falsifies if: analyzer.recount_required() is True.
+    falsifies_if: analyzer.recount_required() is True.
     """
     margin = analyzer.winning_margin()
     threshold = analyzer.RECOUNT_THRESHOLD_PCT
@@ -87,6 +90,7 @@ def check_eligibility_before_voting(verifier: EligibilityVerifier) -> Tuple[bool
     """Eligibility must be verified before voting.
 
     Falsifies if: verifier.is_eligible() is False.
+    falsifies_if: verifier.is_eligible() is False.
     """
     if not verifier.is_eligible():
         return False, ProofObject(

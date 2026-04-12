@@ -23,6 +23,7 @@ def check_first_amendment_free_speech() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment I
     Falsifies if: Content-based speech restriction survives strict scrutiny.
+    falsifies_if: Content-based speech restriction survives strict scrutiny.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -70,6 +71,7 @@ def check_first_amendment_religion_clauses() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment I (Religion Clauses)
     Falsifies if: Government establishes religion or burdens free exercise without justification.
+    falsifies_if: Government establishes religion or burdens free exercise without justification.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -115,6 +117,7 @@ def check_fourth_amendment_search_seizure() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment IV
     Falsifies if: Warrantless search upheld without valid exception.
+    falsifies_if: Warrantless search upheld without valid exception.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -166,6 +169,7 @@ def check_fifth_amendment_due_process() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment V (Due Process Clause)
     Falsifies if: Deprivation occurs without notice and opportunity to be heard.
+    falsifies_if: Deprivation occurs without notice and opportunity to be heard.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -218,6 +222,7 @@ def check_fifth_amendment_double_jeopardy() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment V (Double Jeopardy Clause)
     Falsifies if: Second prosecution for same offense after acquittal/conviction.
+    falsifies_if: Second prosecution for same offense after acquittal/conviction.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -269,6 +274,7 @@ def check_eighth_amendment_cruel_unusual() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Amendment VIII
     Falsifies if: Punishment is grossly disproportionate to offense or inconsistent with evolving standards.
+    falsifies_if: Punishment is grossly disproportionate to offense or inconsistent with evolving standards.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -318,6 +324,7 @@ def run_all_invariants() -> dict:
     """Run all D_BILL_OF_RIGHTS invariants.
 
     Falsifies if: any Bill of Rights invariant check fails or raises an error.
+    falsifies_if: any Bill of Rights invariant check fails or raises an error.
     """
     checks = [
         ("check_first_amendment_free_speech", check_first_amendment_free_speech),

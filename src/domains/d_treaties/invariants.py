@@ -25,6 +25,7 @@ def check_vclt_treaty_formation() -> Tuple[bool, ProofObject]:
     
     Standard: VCLT Articles 11-17 - Means of expressing consent to be bound
     Falsifies if: Treaty formed without proper consent.
+    falsifies_if: Treaty formed without proper consent.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -73,6 +74,7 @@ def check_vclt_interpretation_rules() -> Tuple[bool, ProofObject]:
     
     Standard: VCLT Article 31 - General rule of interpretation
     Falsifies if: Treaty interpreted without ordinary meaning analysis.
+    falsifies_if: Treaty interpreted without ordinary meaning analysis.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -122,6 +124,7 @@ def check_treaty_supremacy_clause() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Art. VI, cl. 2 - Supremacy Clause
     Falsifies if: State law prevails over ratified treaty.
+    falsifies_if: State law prevails over ratified treaty.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -168,6 +171,7 @@ def check_treaty_reservations() -> Tuple[bool, ProofObject]:
     
     Standard: VCLT Articles 19-23 - Reservations
     Falsifies if: Reservation incompatible with treaty object and purpose.
+    falsifies_if: Reservation incompatible with treaty object and purpose.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -215,6 +219,7 @@ def check_treaty_withdrawal_termination() -> Tuple[bool, ProofObject]:
     
     Standard: VCLT Articles 54-64 - Termination and suspension
     Falsifies if: Treaty terminated without following VCLT procedures.
+    falsifies_if: Treaty terminated without following VCLT procedures.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -265,6 +270,7 @@ def check_us_treaty_ratification_process() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Art. II, § 2 - Treaty power
     Falsifies if: Treaty ratified without two-thirds Senate approval.
+    falsifies_if: Treaty ratified without two-thirds Senate approval.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -316,6 +322,7 @@ def run_all_invariants() -> dict:
     """Run all D_TREATIES invariants.
 
     Falsifies if: any treaty invariant check fails or raises an exception.
+    falsifies_if: any treaty invariant check fails or raises an exception.
     """
     checks = [
         ("check_vclt_treaty_formation", check_vclt_treaty_formation),

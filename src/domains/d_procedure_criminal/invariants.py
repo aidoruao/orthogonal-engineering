@@ -10,6 +10,7 @@ def check_probable_cause(arrest: Arrest) -> Tuple[bool, ProofObject]:
     """4th Amendment: Arrest requires probable cause.
 
     Falsifies if: arrest.probable_cause_exists is False.
+    falsifies_if: arrest.probable_cause_exists is False.
     """
     if arrest.probable_cause_exists:
         return True, ProofObject(
@@ -27,6 +28,7 @@ def check_miranda(interrogation: Interrogation) -> Tuple[bool, ProofObject]:
     """Miranda v. Arizona: Warnings required for custodial interrogation.
 
     Falsifies if: custodial interrogation occurs without valid Miranda warnings.
+    falsifies_if: custodial interrogation occurs without valid Miranda warnings.
     """
     if not interrogation.miranda_required():
         return True, ProofObject(
@@ -52,6 +54,7 @@ def check_speedy_trial(case: CriminalCase) -> Tuple[bool, ProofObject]:
     """Speedy Trial Act: 70 days from indictment to trial.
 
     Falsifies if: speedy_trial_violation returns True.
+    falsifies_if: speedy_trial_violation returns True.
     """
     if case.speedy_trial_violation():
         return False, ProofObject(

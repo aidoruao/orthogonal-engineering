@@ -35,8 +35,10 @@ def check_federal_enumerated_powers() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article I, Section 8
     Falsifies if: Federal government exercises non-enumerated, non-concurrent power.
+    falsifies_if: Federal government exercises non-enumerated, non-concurrent power.
     
     Falsifies if: enumerated_valid is False or reserved_blocked is False.
+    falsifies_if: enumerated_valid is False or reserved_blocked is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -85,8 +87,10 @@ def check_tenth_amendment_reserved_powers() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Tenth Amendment
     Falsifies if: State exercise of reserved power is blocked.
+    falsifies_if: State exercise of reserved power is blocked.
     
     Falsifies if: police_result or education_result is False.
+    falsifies_if: police_result or education_result is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -133,8 +137,10 @@ def check_supremacy_clause_preemption() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article VI, Clause 2 (Supremacy Clause)
     Falsifies if: State law prevails over valid conflicting federal law.
+    falsifies_if: State law prevails over valid conflicting federal law.
     
     Falsifies if: supremacy_applies is False, or federal_prevails/state_invalid is False.
+    falsifies_if: supremacy_applies is False, or federal_prevails/state_invalid is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -175,8 +181,10 @@ def check_concurrent_powers_exercisable() -> Tuple[bool, ProofObject]:
     
     Standard: Constitutional concurrent powers (taxation, establishing courts)
     Falsifies if: Either level is blocked from exercising concurrent power.
+    falsifies_if: Either level is blocked from exercising concurrent power.
     
     Falsifies if: any of the concurrent power checks returns False.
+    falsifies_if: any of the concurrent power checks returns False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -235,6 +243,7 @@ def check_tenth_amendment_violation_detection() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Tenth Amendment
     Falsifies if: Federal police power over local crimes not flagged as violation.
+    falsifies_if: Federal police power over local crimes not flagged as violation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -273,6 +282,7 @@ def check_power_category_assignments() -> Tuple[bool, ProofObject]:
     
     Standard: Constitutional power distribution
     Falsifies if: Powers are misclassified between categories.
+    falsifies_if: Powers are misclassified between categories.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -321,6 +331,7 @@ def run_all_invariants() -> dict:
     """Run all D_FEDERALISM invariants.
 
     Falsifies if: any federalism invariant check fails or raises an exception.
+    falsifies_if: any federalism invariant check fails or raises an exception.
     """
     checks = [
         ("check_federal_enumerated_powers", check_federal_enumerated_powers),

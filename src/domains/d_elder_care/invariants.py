@@ -27,6 +27,7 @@ def check_staffing_compliance(facility: Facility) -> Tuple[bool, ProofObject]:
     """CMS requires minimum nursing hours per resident day.
     
     Falsifies if: total_nursing_hours < 0.3 per resident day or rn_hours_per_resident_day == 0.
+    falsifies_if: total_nursing_hours < 0.3 per resident day or rn_hours_per_resident_day == 0.
     """
     CMS_MIN_TOTAL = Fraction(3, 10)  # 0.3 hours
     
@@ -59,6 +60,7 @@ def check_care_plan_currency(plan: CarePlan) -> Tuple[bool, ProofObject]:
     """OBRA requires care plan review at least quarterly (every 90 days).
     
     Falsifies if: days since last review exceed 90 or comprehensive assessment is stale.
+    falsifies_if: days since last review exceed 90 or comprehensive assessment is stale.
     """
     from datetime import datetime
     days_since_review = (datetime.now() - plan.last_reviewed).days
@@ -84,6 +86,7 @@ def check_abuse_investigation_timeliness(report: AbuseReport) -> Tuple[bool, Pro
     """Elder Justice Act requires timely abuse investigation.
     
     Falsifies if: investigation exceeds 60 days or completed cases lack required reporting.
+    falsifies_if: investigation exceeds 60 days or completed cases lack required reporting.
     """
     MAX_INVESTIGATION_DAYS = 60
     
@@ -125,6 +128,7 @@ def check_fall_rate_threshold(facility: Facility, threshold: Fraction) -> Tuple[
     """CMS quality measure: Falls with major injury per 1000 resident days.
     
     Falsifies if: facility.falls_per_1000_bed_days exceeds threshold.
+    falsifies_if: facility.falls_per_1000_bed_days exceeds threshold.
     """
     if facility.falls_per_1000_bed_days > threshold:
         return False, ProofObject(
@@ -148,6 +152,7 @@ def check_pressure_ulcer_rate(facility: Facility, threshold: Fraction) -> Tuple[
     """CMS quality measure: Pressure ulcers (bed sores) per 1000 resident days.
     
     Falsifies if: pressure_ulcers_per_1000 exceeds threshold.
+    falsifies_if: pressure_ulcers_per_1000 exceeds threshold.
     """
     if facility.pressure_ulcers_per_1000 > threshold:
         return False, ProofObject(
@@ -170,6 +175,7 @@ def check_ombudsman_resolution_time(complaint: OmbudsmanComplaint) -> Tuple[bool
     """LTC Ombudsman program tracks resolution timeliness.
     
     Falsifies if: complaint remains unresolved beyond 90 days or resolution times exceed program standards.
+    falsifies_if: complaint remains unresolved beyond 90 days or resolution times exceed program standards.
     """
     MAX_RESOLUTION_DAYS = 90
     

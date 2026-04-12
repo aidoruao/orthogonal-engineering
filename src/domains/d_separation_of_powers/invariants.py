@@ -25,6 +25,7 @@ def check_article_i_legislative_power() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Art. I, § 1 - Legislative power
     Falsifies if: Executive or judiciary exercises legislative power.
+    falsifies_if: Executive or judiciary exercises legislative power.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -69,6 +70,7 @@ def check_article_ii_executive_power() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Art. II, § 1 - Executive power
     Falsifies if: Executive power exercised by non-executive branch.
+    falsifies_if: Executive power exercised by non-executive branch.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -113,6 +115,7 @@ def check_article_iii_judicial_power() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Art. III, § 1 - Judicial power
     Falsifies if: Judicial power exercised outside Article III courts.
+    falsifies_if: Judicial power exercised outside Article III courts.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -157,6 +160,7 @@ def check_ins_v_chadha_legislative_veto() -> Tuple[bool, ProofObject]:
     
     Standard: INS v. Chadha, 462 U.S. 919 (1983)
     Falsifies if: One-house or two-house veto exercised.
+    falsifies_if: One-house or two-house veto exercised.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -203,6 +207,7 @@ def check_non_delegation_doctrine() -> Tuple[bool, ProofObject]:
     
     Standard: J.W. Hampton, Jr. & Co. v. United States, 276 U.S. 394 (1928)
     Falsifies if: Delegation lacks intelligible principle.
+    falsifies_if: Delegation lacks intelligible principle.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -247,6 +252,7 @@ def check_youngstown_executive_power_framework() -> Tuple[bool, ProofObject]:
     
     Standard: Youngstown Sheet & Tube Co. v. Sawyer, 343 U.S. 579 (1952)
     Falsifies if: Executive acts against congressional prohibition.
+    falsifies_if: Executive acts against congressional prohibition.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -292,6 +298,7 @@ def run_all_invariants() -> dict:
     """Run all D_SEPARATION_OF_POWERS invariants.
 
     Falsifies if: any separation of powers invariant check fails or raises an exception.
+    falsifies_if: any separation of powers invariant check fails or raises an exception.
     """
     checks = [
         ("check_article_i_legislative_power", check_article_i_legislative_power),

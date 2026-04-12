@@ -25,6 +25,7 @@ def check_egress_capacity_calculation() -> Tuple[bool, ProofObject]:
     
     Standard: IBC §1004 (Occupant Load), §1005 (Egress Width)
     Falsifies if: Egress capacity is less than required occupant load.
+    falsifies_if: Egress capacity is less than required occupant load.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -79,6 +80,7 @@ def check_fire_resistance_rating() -> Tuple[bool, ProofObject]:
     
     Standard: IBC §602 (Construction Classification), Table 601 (Fire Rating)
     Falsifies if: Structural element has insufficient fire resistance rating.
+    falsifies_if: Structural element has insufficient fire resistance rating.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -130,6 +132,7 @@ def check_ada_ramp_slope() -> Tuple[bool, ProofObject]:
     
     Standard: ADA Standards §405.2 (Slope), §405.3 (Cross Slope)
     Falsifies if: Ramp slope exceeds 1:12 (8.33%) without compliant alternative.
+    falsifies_if: Ramp slope exceeds 1:12 (8.33%) without compliant alternative.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -181,6 +184,7 @@ def check_structural_load_combinations() -> Tuple[bool, ProofObject]:
     
     Standard: IBC §1605 (Load Combinations), ASCE 7
     Falsifies if: Factored load exceeds design strength for any combination.
+    falsifies_if: Factored load exceeds design strength for any combination.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -237,6 +241,7 @@ def check_accessible_parking_ratio() -> Tuple[bool, ProofObject]:
     
     Standard: ADA Standards §208.2, Table 208.2 (Parking Space Numbers)
     Falsifies if: Insufficient accessible spaces provided for total parking.
+    falsifies_if: Insufficient accessible spaces provided for total parking.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -316,6 +321,7 @@ def check_nfpa_egress_travel_distance() -> Tuple[bool, ProofObject]:
     
     Standard: NFPA 101 §7.6 (Travel Distance to Exits)
     Falsifies if: Actual travel distance exceeds code maximum for occupancy type.
+    falsifies_if: Actual travel distance exceeds code maximum for occupancy type.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -377,6 +383,7 @@ def run_all_invariants() -> dict:
     """Run all D_BUILDING_CODES invariants.
 
     Falsifies if: any building codes invariant check fails or raises an error.
+    falsifies_if: any building codes invariant check fails or raises an error.
     """
     checks = [
         ("check_egress_capacity_calculation", check_egress_capacity_calculation),

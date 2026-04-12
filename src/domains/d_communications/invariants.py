@@ -21,6 +21,7 @@ def check_fcc_interference_margin(license: SpectrumLicense) -> Tuple[bool, Proof
     FCC Part 15: licensed spectrum requires >= 6 dB interference margin.
 
     Falsifies if: interference_margin_db < 6
+    falsifies_if: interference_margin_db < 6
     """
     min_margin = fcc_interference_margin_min_db()
 
@@ -46,6 +47,7 @@ def check_message_ordering_preserved(msg1: MessageDelivery, msg2: MessageDeliver
     Message ordering must be preserved: earlier sent messages cannot be delivered later.
 
     Falsifies if: sent_1 < sent_2 AND delivered_1 > delivered_2 AND both ordered
+    falsifies_if: sent_1 < sent_2 AND delivered_1 > delivered_2 AND both ordered
     """
     if msg1.ordered and msg2.ordered:
         if msg1.sent_timestamp_ms < msg2.sent_timestamp_ms:
@@ -76,6 +78,7 @@ def check_qos_guaranteed_latency(qos: QoSMetric) -> Tuple[bool, ProofObject]:
     QoS GUARANTEED class: P99 latency <= 200ms under 10x load.
 
     Falsifies if: qos_class == GUARANTEED AND latency_p99_ms > 200 AND load_multiplier <= 10
+    falsifies_if: qos_class == GUARANTEED AND latency_p99_ms > 200 AND load_multiplier <= 10
     """
     if qos.qos_class != QoSClass.GUARANTEED:
         return True, ProofObject(
@@ -114,6 +117,7 @@ def check_cdn_availability(cdn: CDNPerformance) -> Tuple[bool, ProofObject]:
     CDN availability must be >= 99.9% (three nines).
 
     Falsifies if: availability_percent < 99.9
+    falsifies_if: availability_percent < 99.9
     """
     min_availability = cdn_availability_min()
 
@@ -139,6 +143,7 @@ def check_message_sequence_monotonic(msg1: MessageDelivery, msg2: MessageDeliver
     Message sequence numbers must be monotonic for ordered delivery.
 
     Falsifies if: both ordered AND sent_1 < sent_2 AND sequence_1 >= sequence_2
+    falsifies_if: both ordered AND sent_1 < sent_2 AND sequence_1 >= sequence_2
     """
     if msg1.ordered and msg2.ordered:
         if msg1.sent_timestamp_ms < msg2.sent_timestamp_ms:

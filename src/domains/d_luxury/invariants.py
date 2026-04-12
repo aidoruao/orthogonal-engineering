@@ -27,6 +27,7 @@ def check_authenticity_verified(item: LuxuryItem) -> Tuple[bool, ProofObject]:
     """Luxury items must be authentic or clearly marked unverified.
     
     Falsifies if: authenticity status is COUNTERFEIT or DISPUTED.
+    falsifies_if: authenticity status is COUNTERFEIT or DISPUTED.
     """
     if item.authenticity == AuthenticityStatus.COUNTERFEIT:
         return False, ProofObject(
@@ -61,6 +62,7 @@ def check_provenance_completeness(item: LuxuryItem) -> Tuple[bool, ProofObject]:
     """High-value items require complete chain of custody.
     
     Falsifies if: high-value item (>= $50k) lacks complete provenance records.
+    falsifies_if: high-value item (>= $50k) lacks complete provenance records.
     """
     HIGH_VALUE_THRESHOLD = Fraction(50000)
     
@@ -91,6 +93,7 @@ def check_customs_valuation(customs: CustomsDeclaration) -> Tuple[bool, ProofObj
     """WTO requires customs valuation at transaction value.
     
     Falsifies if: valuation_review_required is True or declared_value is suspect for undervaluation.
+    falsifies_if: valuation_review_required is True or declared_value is suspect for undervaluation.
     """
     if customs.valuation_review_required:
         return False, ProofObject(
@@ -114,6 +117,7 @@ def check_sanctions_compliance(transaction: LuxuryMarketTransaction) -> Tuple[bo
     """OFAC and international sanctions prohibit transactions with blocked parties.
     
     Falsifies if: sanctions_check_passed is False or counterparties are blocked.
+    falsifies_if: sanctions_check_passed is False or counterparties are blocked.
     """
     if not transaction.sanctions_check_passed:
         return False, ProofObject(
@@ -142,6 +146,7 @@ def check_authenticity_certificate_confidence(cert: AuthenticityCertificate) -> 
     """Third-party authentication must meet confidence threshold.
     
     Falsifies if: confidence_score is below 0.9 for authentication.
+    falsifies_if: confidence_score is below 0.9 for authentication.
     """
     MIN_CONFIDENCE = Fraction(9, 10)  # 90%
     
@@ -167,6 +172,7 @@ def check_luxury_transaction_due_diligence(transaction: LuxuryMarketTransaction)
     """High-value luxury transactions require due diligence.
     
     Falsifies if: high-value transaction lacks authenticity verification or provenance check.
+    falsifies_if: high-value transaction lacks authenticity verification or provenance check.
     """
     HIGH_VALUE = Fraction(10000)  # $10k
     

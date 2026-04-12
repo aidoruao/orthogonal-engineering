@@ -26,6 +26,7 @@ def check_san_antonio_rodriguez_rational_basis() -> Tuple[bool, ProofObject]:
     
     Standard: San Antonio ISD v. Rodriguez, 411 U.S. 1 (1973)
     Falsifies if: Education declared fundamental right under Constitution.
+    falsifies_if: Education declared fundamental right under Constitution.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -70,6 +71,7 @@ def check_state_equalization_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: State constitutional education clauses (varies by state)
     Falsifies if: State ignores constitutional education mandate.
+    falsifies_if: State ignores constitutional education mandate.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -114,6 +116,7 @@ def check_foundation_program_formula() -> Tuple[bool, ProofObject]:
     
     Standard: Standard school finance formula design
     Falsifies if: Foundation amount below minimum adequacy level.
+    falsifies_if: Foundation amount below minimum adequacy level.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -171,6 +174,7 @@ def check_title_i_allocation_formula() -> Tuple[bool, ProofObject]:
     
     Standard: 20 U.S.C. § 6333 - Basic grants formula
     Falsifies if: District not receiving proportional share.
+    falsifies_if: District not receiving proportional share.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -219,6 +223,7 @@ def check_robinson_cahill_adequacy_standard() -> Tuple[bool, ProofObject]:
     
     Standard: Robinson v. Cahill, 62 N.J. 473 (1973)
     Falsifies if: Funding system fails "thorough and efficient" standard.
+    falsifies_if: Funding system fails "thorough and efficient" standard.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -266,6 +271,7 @@ def check_property_tax_reliance_limits() -> Tuple[bool, ProofObject]:
     
     Standard: Various state school finance reforms
     Falsifies if: Excessive property tax reliance without state offset.
+    falsifies_if: Excessive property tax reliance without state offset.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -309,6 +315,7 @@ def run_all_invariants() -> dict:
     """Run all D_SCHOOL_FUNDING invariants.
 
     Falsifies if: any school funding invariant check fails or raises an exception.
+    falsifies_if: any school funding invariant check fails or raises an exception.
     """
     checks = [
         ("check_san_antonio_rodriguez_rational_basis", check_san_antonio_rodriguez_rational_basis),

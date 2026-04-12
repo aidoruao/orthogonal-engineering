@@ -129,6 +129,93 @@ PROMPT_TEMPLATES: List[Dict] = [
         ),
         "variables": ["violation_description", "context"],
     },
+    # Nuclear Engineering Domain Templates (Added PR #119)
+    {
+        "variant_id": "NUC-SCRAM-001",
+        "category": "boundary",
+        "template": (
+            "A reactor unit reports scram response time of {scram_time_ms} ms against a design limit of {design_scram_limit_ms} ms. "
+            "Per NUREG-0800, respond with JSON matching boundary_response schema."
+        ),
+        "variables": ["scram_time_ms", "design_scram_limit_ms"],
+    },
+    {
+        "variant_id": "NUC-DOSE-001",
+        "category": "threat",
+        "template": (
+            "Analyze this radiation exposure event per 10 CFR 20 ALARA: {event_description}. "
+            "Respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "NUC-GRACE-001",
+        "category": "grace",
+        "template": (
+            "A nuclear facility requests consideration for: {violation_description}. "
+            "Context: {context}. "
+            "Respond with JSON matching grace_response schema."
+        ),
+        "variables": ["violation_description", "context"],
+    },
+    # Veterinary Medicine Domain Templates (Added PR #119)
+    {
+        "variant_id": "VET-SPACE-001",
+        "category": "boundary",
+        "template": (
+            "An animal facility reports {space_per_animal_sqft} sq ft per animal with a minimum of {min_space_sqft} sq ft required. "
+            "Per AWA 9 CFR Part 3, respond with JSON matching boundary_response schema."
+        ),
+        "variables": ["space_per_animal_sqft", "min_space_sqft"],
+    },
+    {
+        "variant_id": "VET-WITHDRAWAL-001",
+        "category": "threat",
+        "template": (
+            "Analyze this veterinary drug withdrawal period event: {event_description}. "
+            "Per FDA CVM, respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "VET-GRACE-001",
+        "category": "grace",
+        "template": (
+            "A veterinary facility requests consideration for: {violation_description}. "
+            "Context: {context}. "
+            "Respond with JSON matching grace_response schema."
+        ),
+        "variables": ["violation_description", "context"],
+    },
+    # Forensic Psychology Domain Templates (Added PR #119)
+    {
+        "variant_id": "FPSY-COMPETENCY-001",
+        "category": "boundary",
+        "template": (
+            "A competency evaluation reports: understands_charges={understands_charges}, can_assist_counsel={can_assist_counsel}. "
+            "Per Dusky v. United States, respond with JSON matching boundary_response schema."
+        ),
+        "variables": ["understands_charges", "can_assist_counsel"],
+    },
+    {
+        "variant_id": "FPSY-DAUBERT-001",
+        "category": "threat",
+        "template": (
+            "Analyze this expert testimony admissibility issue per Daubert: {event_description}. "
+            "Respond with JSON matching threat_response schema."
+        ),
+        "variables": ["event_description"],
+    },
+    {
+        "variant_id": "FPSY-GRACE-001",
+        "category": "grace",
+        "template": (
+            "A forensic evaluator requests consideration for: {violation_description}. "
+            "Context: {context}. "
+            "Respond with JSON matching grace_response schema."
+        ),
+        "variables": ["violation_description", "context"],
+    },
 ]
 
 

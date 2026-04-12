@@ -11,6 +11,7 @@ def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
     """FLSA: Hourly rate must meet federal minimum wage.
 
     Falsifies if: calculator.meets_minimum_wage() is False.
+    falsifies_if: calculator.meets_minimum_wage() is False.
     """
     if not calculator.meets_minimum_wage():
         return False, ProofObject(
@@ -30,6 +31,7 @@ def check_overtime_calculation(employee) -> Tuple[bool, ProofObject]:
     """FLSA: Overtime must be 1.5x regular rate.
 
     Falsifies if: actual overtime pay < expected 1.5x rate when overtime hours exist.
+    falsifies_if: actual overtime pay < expected 1.5x rate when overtime hours exist.
     """
     if employee.hours_worked <= employee.OVERTIME_THRESHOLD:
         return True, ProofObject(
@@ -59,6 +61,7 @@ def check_disparate_impact(analyzer: DisparateImpactAnalyzer) -> Tuple[bool, Pro
     """Title VII: 4/5ths rule for disparate impact detection.
 
     Falsifies if: analyzer.four_fifths_rule() reports any violating groups.
+    falsifies_if: analyzer.four_fifths_rule() reports any violating groups.
     """
     violations = analyzer.four_fifths_rule()
     

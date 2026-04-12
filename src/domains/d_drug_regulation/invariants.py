@@ -25,6 +25,7 @@ def check_new_drug_approval_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: FD&C Act §505; 21 U.S.C. §355
     Falsifies if: New drug marketed without approved NDA or valid ANDA.
+    falsifies_if: New drug marketed without approved NDA or valid ANDA.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -86,6 +87,7 @@ def check_controlled_substance_scheduling() -> Tuple[bool, ProofObject]:
     
     Standard: Controlled Substances Act §202; 21 U.S.C. §812
     Falsifies if: Substance placed in schedule inconsistent with statutory criteria.
+    falsifies_if: Substance placed in schedule inconsistent with statutory criteria.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -165,6 +167,7 @@ def check_prescription_requirement_schedule_ii() -> Tuple[bool, ProofObject]:
     
     Standard: CSA §309; 21 U.S.C. §829; 21 C.F.R. §1306.11-1306.13
     Falsifies if: Schedule II prescription refilled or transmitted orally (emergency excepted).
+    falsifies_if: Schedule II prescription refilled or transmitted orally (emergency excepted).
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -229,6 +232,7 @@ def check_clinical_trial_informed_consent() -> Tuple[bool, ProofObject]:
     
     Standard: FD&C Act §505(i); 21 C.F.R. Parts 50, 56
     Falsifies if: Human subjects enrolled without valid informed consent or IRB review.
+    falsifies_if: Human subjects enrolled without valid informed consent or IRB review.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -306,6 +310,7 @@ def check_rems_risk_mitigation() -> Tuple[bool, ProofObject]:
     
     Standard: FD&C Act §505-1; 21 U.S.C. §355-1
     Falsifies if: Drug with serious risk dispensed without required REMS elements.
+    falsifies_if: Drug with serious risk dispensed without required REMS elements.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -381,6 +386,7 @@ def check_dea_registration_controlled_substance() -> Tuple[bool, ProofObject]:
     
     Standard: CSA §303; 21 U.S.C. §823; 21 C.F.R. Part 1301
     Falsifies if: Controlled substance activity conducted without valid DEA registration.
+    falsifies_if: Controlled substance activity conducted without valid DEA registration.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -457,6 +463,7 @@ def run_all_invariants() -> dict:
     """Run all D_DRUG_REGULATION invariants.
 
     Falsifies if: any drug regulation invariant check fails or raises an exception.
+    falsifies_if: any drug regulation invariant check fails or raises an exception.
     """
     checks = [
         ("check_new_drug_approval_requirement", check_new_drug_approval_requirement),

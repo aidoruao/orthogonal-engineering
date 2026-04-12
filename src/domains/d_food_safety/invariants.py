@@ -39,6 +39,7 @@ def check_critical_limits_enforced() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR 117.150 (corrective actions); HACCP Principle 5
     Falsifies if: CCP deviation does not trigger corrective action requirement.
+    falsifies_if: CCP deviation does not trigger corrective action requirement.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -90,6 +91,7 @@ def check_facility_registration_required() -> Tuple[bool, ProofObject]:
     
     Standard: 21 U.S.C. §350d; FSMA Section 102
     Falsifies if: Unregistered manufacturing facility passes compliance.
+    falsifies_if: Unregistered manufacturing facility passes compliance.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -157,6 +159,7 @@ def check_food_safety_plan_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR 117.126 (food safety plan); 21 CFR 117.180 (PCQI)
     Falsifies if: Facility without safety plan or PCQI passes compliance.
+    falsifies_if: Facility without safety plan or PCQI passes compliance.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -229,6 +232,7 @@ def check_recall_classification_urgency() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR 7.3 (recall definitions); 21 CFR 7.53 (public warning)
     Falsifies if: Class I recall classified as routine or press release not required.
+    falsifies_if: Class I recall classified as routine or press release not required.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -280,6 +284,7 @@ def check_recall_effectiveness_targets() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR 7.53 (recall effectiveness); FDA recall monitoring guidance
     Falsifies if: Class III has higher or equal target than Class I.
+    falsifies_if: Class III has higher or equal target than Class I.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -341,6 +346,7 @@ def check_supply_chain_verification() -> Tuple[bool, ProofObject]:
     
     Standard: 21 CFR 117.405 (supply chain program)
     Falsifies if: Unverified supplier for controlled hazard passes compliance.
+    falsifies_if: Unverified supplier for controlled hazard passes compliance.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -390,6 +396,7 @@ def run_all_invariants() -> dict:
     """Run all D_FOOD_SAFETY invariants.
 
     Falsifies if: any food safety invariant check fails or raises an exception.
+    falsifies_if: any food safety invariant check fails or raises an exception.
     """
     checks = [
         ("check_critical_limits_enforced", check_critical_limits_enforced),

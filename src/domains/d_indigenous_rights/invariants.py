@@ -28,6 +28,7 @@ def check_treaty_obligation_status(treaty: Treaty) -> Tuple[bool, ProofObject]:
     """Treaties are the supreme law of the land (U.S. Constitution, Article VI).
     
     Falsifies if: treaty.status is BREACHED or TERMINATED without consent.
+    falsifies_if: treaty.status is BREACHED or TERMINATED without consent.
     """
     if treaty.status == TreatyStatus.BREACHED:
         return False, ProofObject(
@@ -61,6 +62,7 @@ def check_icwa_tribal_notification(case: ICWCase) -> Tuple[bool, ProofObject]:
     """ICWA 25 U.S.C. 1912(a) requires immediate notification to tribe.
     
     Falsifies if: tribe_notified is False or notification_date is missing/late.
+    falsifies_if: tribe_notified is False or notification_date is missing/late.
     """
     if not case.tribe_notified:
         return False, ProofObject(
@@ -95,6 +97,7 @@ def check_icwa_placement_preference(case: ICWCase) -> Tuple[bool, ProofObject]:
     """ICWA 25 U.S.C. 1915 establishes placement preferences.
     
     Falsifies if: placement made without following preference or lacking good
+    falsifies_if: placement made without following preference or lacking good
     cause documentation.
     """
     if not case.placement_made:
@@ -127,6 +130,7 @@ def check_meaningful_consultation(consultation: TribalConsultation) -> Tuple[boo
     """Executive Order 13175 requires meaningful consultation (not just notification).
     
     Falsifies if: meaningful_consultation is False or determination is missing.
+    falsifies_if: meaningful_consultation is False or determination is missing.
     """
     if consultation.meaningful_consultation is None:
         return False, ProofObject(
@@ -164,6 +168,7 @@ def check_free_prior_informed_consent(consultation: TribalConsultation) -> Tuple
     """UNDRIP Article 32 requires FPIC for projects affecting indigenous lands.
     
     Falsifies if: consent_given is False or absent before project approval.
+    falsifies_if: consent_given is False or absent before project approval.
     """
     if consultation.consent_given is None:
         return True, ProofObject(
@@ -197,6 +202,7 @@ def check_cultural_resource_protection(resource: CulturalResource) -> Tuple[bool
     """NHPA Section 106 requires review of effects on historic properties.
     
     Falsifies if: nhpa_section_106_reviewed is False or mitigation is absent.
+    falsifies_if: nhpa_section_106_reviewed is False or mitigation is absent.
     """
     if not resource.nhpa_section_106_reviewed:
         return False, ProofObject(

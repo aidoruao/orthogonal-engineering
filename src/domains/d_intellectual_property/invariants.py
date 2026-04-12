@@ -41,6 +41,7 @@ def check_patent_novelty_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: 35 U.S.C. §102
     Falsifies if: Invention with prior art passes as novel.
+    falsifies_if: Invention with prior art passes as novel.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -98,6 +99,7 @@ def check_patent_term_twenty_years() -> Tuple[bool, ProofObject]:
     
     Standard: 35 U.S.C. §154
     Falsifies if: Patent valid beyond 20 years from filing.
+    falsifies_if: Patent valid beyond 20 years from filing.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -149,6 +151,7 @@ def check_copyright_originality_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: 17 U.S.C. §102(a); Feist Publications v. Rural Telephone Service
     Falsifies if: Substantial similarity not detected between original and copy.
+    falsifies_if: Substantial similarity not detected between original and copy.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -203,6 +206,7 @@ def check_fair_use_four_factors() -> Tuple[bool, ProofObject]:
     
     Standard: 17 U.S.C. §107; Campbell v. Acuff-Rose Music
     Falsifies if: Non-transformative commercial use qualifies as fair use.
+    falsifies_if: Non-transformative commercial use qualifies as fair use.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -267,6 +271,7 @@ def check_trademark_distinctiveness() -> Tuple[bool, ProofObject]:
     
     Standard: 15 U.S.C. §1052; Abercrombie & Fitch spectrum
     Falsifies if: Generic mark gets trademark protection.
+    falsifies_if: Generic mark gets trademark protection.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -321,6 +326,7 @@ def check_trademark_likelihood_of_confusion() -> Tuple[bool, ProofObject]:
     
     Standard: 15 U.S.C. §1114; Polaroid Corp. v. Polarad Elects. Corp. factors
     Falsifies if: Dissimilar marks found confusing or similar marks not flagged.
+    falsifies_if: Dissimilar marks found confusing or similar marks not flagged.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -375,6 +381,7 @@ def run_all_invariants() -> dict:
     """Run all D_INTELLECTUAL_PROPERTY invariants.
 
     Falsifies if: any intellectual property invariant check fails or raises an exception.
+    falsifies_if: any intellectual property invariant check fails or raises an exception.
     """
     checks = [
         ("check_patent_novelty_requirement", check_patent_novelty_requirement),

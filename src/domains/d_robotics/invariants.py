@@ -13,6 +13,7 @@ def check_force_limits(robot: CollaborativeRobot) -> Tuple[bool, ProofObject]:
     """ISO/TS 15066: Collaborative robots must limit force to 150N.
 
     Falsifies if: robot is collaborative and max_force_exerted exceeds limit.
+    falsifies_if: robot is collaborative and max_force_exerted exceeds limit.
     """
     if robot.mode != RobotMode.COLLABORATIVE:
         return True, ProofObject(
@@ -42,6 +43,7 @@ def check_emergency_stop_response(e_stop: EmergencyStopSystem) -> Tuple[bool, Pr
     """ISO 10218: Emergency stop must complete within 500ms.
 
     Falsifies if: triggered e-stop response exceeds MAX_RESPONSE_TIME_MS.
+    falsifies_if: triggered e-stop response exceeds MAX_RESPONSE_TIME_MS.
     """
     if not e_stop.e_stop_triggered:
         return True, ProofObject(
@@ -71,6 +73,7 @@ def check_safety_zone_violations(analyzer: SafetyZoneAnalyzer) -> Tuple[bool, Pr
     """Safety zones must detect human presence.
 
     Falsifies if: human presence is detected in any safety zone.
+    falsifies_if: human presence is detected in any safety zone.
     """
     if analyzer.human_in_any_zone():
         zone = analyzer.get_active_zone()
@@ -91,6 +94,7 @@ def check_collaborative_mode_constraints(robot: CollaborativeRobot) -> Tuple[boo
     """Collaborative mode requires force sensors and speed limits.
 
     Falsifies if: robot operates in collaborative mode without required force sensors.
+    falsifies_if: robot operates in collaborative mode without required force sensors.
     """
     if robot.mode != RobotMode.COLLABORATIVE:
         return True, ProofObject(

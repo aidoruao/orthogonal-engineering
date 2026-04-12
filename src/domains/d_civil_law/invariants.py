@@ -26,6 +26,7 @@ def check_contract_formation_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: Restatement (Second) of Contracts §17
     Falsifies if: Contract formed without all three elements.
+    falsifies_if: Contract formed without all three elements.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -66,6 +67,7 @@ def check_statute_of_frauds_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: UCC §2-201, Restatement (Second) §110
     Falsifies if: Oral contract for land or >$500 enforced.
+    falsifies_if: Oral contract for land or >$500 enforced.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -119,6 +121,7 @@ def check_frcp_timing_deadlines() -> Tuple[bool, ProofObject]:
     
     Standard: FRCP 12(a)(1) - 21 days to answer
     Falsifies if: Late answer accepted without good cause.
+    falsifies_if: Late answer accepted without good cause.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -159,6 +162,7 @@ def check_damages_calculation_precision() -> Tuple[bool, ProofObject]:
     
     Standard: Restatement (Second) of Contracts §347
     Falsifies if: Float rounding in damages computation.
+    falsifies_if: Float rounding in damages computation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -205,6 +209,7 @@ def check_burden_of_proof_allocation() -> Tuple[bool, ProofObject]:
     
     Standard: FRCP 8 (Pleading standards)
     Falsifies if: Defendant bears burden on plaintiff's claim.
+    falsifies_if: Defendant bears burden on plaintiff's claim.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -248,6 +253,7 @@ def check_res_judicata_effect() -> Tuple[bool, ProofObject]:
     
     Standard: Restatement (Second) of Judgments §17
     Falsifies if: Same parties relitigate same claim after final judgment.
+    falsifies_if: Same parties relitigate same claim after final judgment.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -290,6 +296,7 @@ def run_all_invariants() -> dict:
     """Run all D_CIVIL_LAW invariants.
 
     Falsifies if: any civil law invariant check fails or raises an exception.
+    falsifies_if: any civil law invariant check fails or raises an exception.
     """
     checks = [
         ("check_contract_formation_requirements", check_contract_formation_requirements),

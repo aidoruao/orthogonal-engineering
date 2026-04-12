@@ -27,6 +27,7 @@ def check_notice_period(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     Exception: Good cause (documented separately).
     
     Falsifies if: rule is not interpretive and comment period days < MIN_COMMENT_PERIOD_DAYS.
+    falsifies_if: rule is not interpretive and comment period days < MIN_COMMENT_PERIOD_DAYS.
     
     Returns: (passes, ProofObject)
     """
@@ -72,6 +73,7 @@ def check_exhaustion(claim: ExhaustionClaim) -> Tuple[bool, ProofObject]:
     - Purely legal question
     
     Falsifies if: claim.is_exhausted() is False.
+    falsifies_if: claim.is_exhausted() is False.
     """
     if claim.is_exhausted():
         return True, ProofObject(
@@ -101,6 +103,7 @@ def check_chevron_step_one(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     question at issue? If yes, statutory language controls.
     
     Falsifies if: rule.statutory_ambiguity is False (unambiguous statute interpreted).
+    falsifies_if: rule.statutory_ambiguity is False (unambiguous statute interpreted).
     
     Returns False if agency interpreted unambiguous statute.
     """
@@ -129,6 +132,7 @@ def check_finality(rule: Rulemaking) -> Tuple[bool, ProofObject]:
     2. Action is one by which rights/obligations determined
     
     Falsifies if: final_rule_date or effective_date is missing.
+    falsifies_if: final_rule_date or effective_date is missing.
     """
     has_final_date = rule.final_rule_date is not None
     has_effective_date = rule.effective_date is not None
@@ -168,6 +172,7 @@ def check_record_based_decision(
     Minimal check: At least some public participation recorded.
     
     Falsifies if: rule.get_comment_count() < comments_required.
+    falsifies_if: rule.get_comment_count() < comments_required.
     """
     comment_count = rule.get_comment_count()
     
@@ -192,6 +197,7 @@ def run_all_invariants(rule: Rulemaking, claim: ExhaustionClaim) -> List[Tuple[s
     """Run all administrative law invariants and return results.
 
     Falsifies if: any individual administrative law check returns False.
+    falsifies_if: any individual administrative law check returns False.
     """
     results = []
     

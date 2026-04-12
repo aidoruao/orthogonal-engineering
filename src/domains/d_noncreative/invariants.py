@@ -23,6 +23,7 @@ def check_copyright_originality(work: Work) -> Tuple[bool, ProofObject]:
     - Facts and ideas not copyrightable
     
     Falsifies if: creativity_score < minimal threshold
+    falsifies_if: creativity_score < minimal threshold
     """
     threshold = minimal_creativity_threshold()
     score = work.get_creativity_score()
@@ -64,6 +65,7 @@ def check_factual_compilation_creativity(compilation: FactualCompilation) -> Tup
     - Raw facts not copyrightable
     
     Falsifies if: no original selection AND no original arrangement
+    falsifies_if: no original selection AND no original arrangement
     """
     if not compilation.has_minimal_creativity():
         return False, ProofObject(
@@ -97,6 +99,7 @@ def check_orphan_work_status(work: Work) -> Tuple[bool, ProofObject]:
     - Documented search efforts
     
     Falsifies if: author known OR insufficient search efforts
+    falsifies_if: author known OR insufficient search efforts
     """
     if work.author_known:
         return True, ProofObject(
@@ -137,6 +140,7 @@ def check_public_domain_status(work: Work) -> Tuple[bool, ProofObject]:
     - Copyright expired works
     
     Falsifies if: claimed copyright on clearly public domain work
+    falsifies_if: claimed copyright on clearly public domain work
     """
     if work.is_government_work:
         return True, ProofObject(
@@ -169,6 +173,7 @@ def check_slavish_copy_exemption(work: Work) -> Tuple[bool, ProofObject]:
     - Not copyrightable
     
     Falsifies if: slavish copy claimed as original
+    falsifies_if: slavish copy claimed as original
     """
     if work.work_type.name == "SLAVISH_COPY":
         if work.get_creativity_score() > minimal_creativity_threshold():

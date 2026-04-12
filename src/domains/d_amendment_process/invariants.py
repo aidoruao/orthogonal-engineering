@@ -24,6 +24,7 @@ def check_congressional_supermajority_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article V
     Falsifies if: Amendment proposal passes with simple majority (1/2) or less.
+    falsifies_if: Amendment proposal passes with simple majority (1/2) or less.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -70,6 +71,7 @@ def check_state_ratification_three_fourths() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article V
     Falsifies if: Ratification succeeds with fewer than 38 states.
+    falsifies_if: Ratification succeeds with fewer than 38 states.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -117,6 +119,7 @@ def check_indelible_equal_state_suffrage() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article V (Proviso Clause)
     Falsifies if: Amendment removing equal state suffrage allowed without unanimous consent.
+    falsifies_if: Amendment removing equal state suffrage allowed without unanimous consent.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -161,6 +164,7 @@ def check_amendment_process_protection() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article V (Structural Protection)
     Falsifies if: Amendment abolishing Article V is procedurally valid.
+    falsifies_if: Amendment abolishing Article V is procedurally valid.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -206,6 +210,7 @@ def check_alternative_state_convention_method() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article V (State Convention Method)
     Falsifies if: State convention method unavailable when 2/3 of states apply.
+    falsifies_if: State convention method unavailable when 2/3 of states apply.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -253,6 +258,7 @@ def check_twenty_seventh_amendment_ratification() -> Tuple[bool, ProofObject]:
     
     Standard: 27th Amendment (Proposed 1789, Ratified 1992)
     Falsifies if: Congressional pay adjustment occurs before next election without ratification.
+    falsifies_if: Congressional pay adjustment occurs before next election without ratification.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -295,6 +301,7 @@ def run_all_invariants() -> dict:
     """Run all D_AMENDMENT_PROCESS invariants.
 
     Falsifies if: any amendment process invariant check returns False or raises an error.
+    falsifies_if: any amendment process invariant check returns False or raises an error.
     """
     checks = [
         ("check_congressional_supermajority_requirement", check_congressional_supermajority_requirement),

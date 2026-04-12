@@ -26,6 +26,7 @@ def check_nfa_registration_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: 26 U.S.C. § 5801-5872 - National Firearms Act
     Falsifies if: Unregistered machine gun, SBR, SBS, silencer, destructive device, AOW.
+    falsifies_if: Unregistered machine gun, SBR, SBS, silencer, destructive device, AOW.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -79,6 +80,7 @@ def check_gca_prohibited_persons() -> Tuple[bool, ProofObject]:
     
     Standard: 18 U.S.C. § 922(g) - Unlawful acts
     Falsifies if: Prohibited person acquires firearm.
+    falsifies_if: Prohibited person acquires firearm.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -130,6 +132,7 @@ def check_brady_act_background_checks() -> Tuple[bool, ProofObject]:
     
     Standard: 18 U.S.C. § 922(t) - Brady Handgun Violence Prevention Act
     Falsifies if: FFL transfers firearm without NICS check.
+    falsifies_if: FFL transfers firearm without NICS check.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -182,6 +185,7 @@ def check_second_amendment_individual_right() -> Tuple[bool, ProofObject]:
     
     Standard: District of Columbia v. Heller, 554 U.S. 570 (2008)
     Falsifies if: Complete ban on handgun possession in home.
+    falsifies_if: Complete ban on handgun possession in home.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -235,6 +239,7 @@ def check_nfa_machine_gun_definition() -> Tuple[bool, ProofObject]:
     
     Standard: 26 U.S.C. § 5845(b) - Definitions
     Falsifies if: Semi-automatic with bump stock not regulated as machine gun.
+    falsifies_if: Semi-automatic with bump stock not regulated as machine gun.
     
     Returns:
         Tuple of (success: bool, ProofObject)
@@ -284,6 +289,7 @@ def check_armed_career_criminal_act() -> Tuple[bool, ProofObject]:
     
     Standard: 18 U.S.C. § 924(e) - Armed Career Criminal Act
     Falsifies if: Career criminal not subject to enhanced penalties.
+    falsifies_if: Career criminal not subject to enhanced penalties.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -334,6 +340,7 @@ def run_all_invariants() -> dict:
     """Run all D_WEAPONS_REGULATION invariants.
 
     Falsifies if: any weapons regulation invariant check fails or raises an exception.
+    falsifies_if: any weapons regulation invariant check fails or raises an exception.
     """
     checks = [
         ("check_nfa_registration_requirements", check_nfa_registration_requirements),

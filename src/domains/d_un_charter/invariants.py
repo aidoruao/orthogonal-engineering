@@ -25,6 +25,7 @@ def check_un_charter_purposes_principles() -> Tuple[bool, ProofObject]:
     
     Standard: UN Charter Article 1-2 - Purposes and Principles
     Falsifies if: UN acts contrary to Charter purposes.
+    falsifies_if: UN acts contrary to Charter purposes.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -72,6 +73,7 @@ def check_security_council_membership_voting() -> Tuple[bool, ProofObject]:
     
     Standard: UN Charter Article 23-27 - Security Council
     Falsifies if: Vote passed without required majority or with veto.
+    falsifies_if: Vote passed without required majority or with veto.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -125,6 +127,7 @@ def check_chapter_vii_collective_security() -> Tuple[bool, ProofObject]:
     
     Standard: UN Charter Article 39-51 - Action with respect to threats to the peace
     Falsifies if: Enforcement action without determination under Article 39.
+    falsifies_if: Enforcement action without determination under Article 39.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -177,6 +180,7 @@ def check_general_assembly_powers() -> Tuple[bool, ProofObject]:
     
     Standard: UN Charter Article 9-22 - General Assembly
     Falsifies if: Binding decision made without proper competence.
+    falsifies_if: Binding decision made without proper competence.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -232,6 +236,7 @@ def check_jus_cogens_non_derogable() -> Tuple[bool, ProofObject]:
     
     Standard: Vienna Convention on the Law of Treaties, Article 53
     Falsifies if: Treaty conflicting with jus cogens allowed.
+    falsifies_if: Treaty conflicting with jus cogens allowed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -284,6 +289,7 @@ def check_international_court_justice() -> Tuple[bool, ProofObject]:
     
     Standard: UN Charter Article 92-96 - International Court of Justice
     Falsifies if: State bound without consent to jurisdiction.
+    falsifies_if: State bound without consent to jurisdiction.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -337,6 +343,7 @@ def run_all_invariants() -> dict:
     """Run all D_UN_CHARTER invariants.
 
     Falsifies if: any UN Charter invariant check fails or raises an exception.
+    falsifies_if: any UN Charter invariant check fails or raises an exception.
     """
     checks = [
         ("check_un_charter_purposes_principles", check_un_charter_purposes_principles),

@@ -28,6 +28,7 @@ def check_license_compatibility() -> Tuple[bool, ProofObject]:
     """Verify dependency licenses are compatible with project license.
     
     Falsifies if: license compatibility check fails for valid set or passes for incompatible set.
+    falsifies_if: license compatibility check fails for valid set or passes for incompatible set.
     """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
@@ -77,6 +78,7 @@ def check_governance_files_present() -> Tuple[bool, ProofObject]:
     """Verify projects have required governance files.
     
     Falsifies if: project missing required governance files passes health check.
+    falsifies_if: project missing required governance files passes health check.
     """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
@@ -122,6 +124,7 @@ def check_contribution_review_time() -> Tuple[bool, ProofObject]:
     """Verify contributions are reviewed within SLA.
     
     Falsifies if: contribution review time exceeds 48 hours.
+    falsifies_if: contribution review time exceeds 48 hours.
     """
     checker = D_OPEN_SOURCE_GOVERNANCEChecker()
     
@@ -160,6 +163,7 @@ def check_maintainer_coverage() -> Tuple[bool, ProofObject]:
     """Verify projects have sufficient maintainer coverage.
     
     Falsifies if: project has fewer than two maintainers when two are required.
+    falsifies_if: project has fewer than two maintainers when two are required.
     """
     well_maintained = OpenSourceProject(
         project_id="PROJ-006",
@@ -200,6 +204,7 @@ def check_cla_compliance() -> Tuple[bool, ProofObject]:
     """Verify CLA requirements for corporate-backed projects.
     
     Falsifies if: corporate project lacks CLA or community project incorrectly enforces one.
+    falsifies_if: corporate project lacks CLA or community project incorrectly enforces one.
     """
     corporate_project = OpenSourceProject(
         project_id="PROJ-008",
@@ -244,6 +249,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check.
 
     Falsifies if: any open source governance invariant check fails.
+    falsifies_if: any open source governance invariant check fails.
     """
     checks = [
         check_license_compatibility,

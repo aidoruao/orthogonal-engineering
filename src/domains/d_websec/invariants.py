@@ -25,6 +25,7 @@ def check_https_enforced(app: WebApplication) -> Tuple[bool, ProofObject]:
     be protected in transit using strong encryption.
 
     Falsifies if: https_enforced=False
+    falsifies_if: https_enforced=False
     """
     if not app.https_enforced:
         return False, ProofObject(
@@ -52,6 +53,7 @@ def check_hsts_header(app: WebApplication) -> Tuple[bool, ProofObject]:
     to use HTTPS, preventing man-in-the-middle downgrade attacks.
 
     Falsifies if: https_enforced=True and hsts_enabled=False
+    falsifies_if: https_enforced=True and hsts_enabled=False
     """
     if app.https_enforced and not app.hsts_enabled:
         return False, ProofObject(
@@ -79,6 +81,7 @@ def check_csrf_protection(app: WebApplication) -> Tuple[bool, ProofObject]:
     unauthorized commands from being transmitted from a user's browser.
 
     Falsifies if: csrf_protection=False
+    falsifies_if: csrf_protection=False
     """
     if not app.csrf_protection:
         return False, ProofObject(
@@ -106,6 +109,7 @@ def check_input_validation(app: WebApplication) -> Tuple[bool, ProofObject]:
     attacks (SQL, XSS, command injection, etc.).
 
     Falsifies if: input_validated=False or sql_injection_protected=False
+    falsifies_if: input_validated=False or sql_injection_protected=False
     """
     if not app.input_validated:
         return False, ProofObject(
@@ -142,6 +146,7 @@ def check_password_policy(auth: AuthenticationSystem) -> Tuple[bool, ProofObject
     Complexity (upper, lower, digit, special) recommended.
 
     Falsifies if: password_min_length < 12 or no complexity requirement
+    falsifies_if: password_min_length < 12 or no complexity requirement
     """
     min_length = owasp_password_min_length()
 
@@ -185,6 +190,7 @@ def check_session_timeout(auth: AuthenticationSystem) -> Tuple[bool, ProofObject
     after reasonable inactivity period to limit exposure.
 
     Falsifies if: session_timeout_minutes <= 0 or > 60
+    falsifies_if: session_timeout_minutes <= 0 or > 60
     """
     max_timeout = nist_session_timeout_max_minutes()
 
@@ -224,6 +230,7 @@ def check_data_encryption(data: SensitiveData) -> Tuple[bool, ProofObject]:
     PCI DSS Requirement 4: Encrypt transmission of cardholder data.
 
     Falsifies if: pii_detected and (not encrypted_at_rest or not encrypted_in_transit)
+    falsifies_if: pii_detected and (not encrypted_at_rest or not encrypted_in_transit)
     """
     if not data.pii_detected:
         return True, ProofObject(

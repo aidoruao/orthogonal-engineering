@@ -27,6 +27,7 @@ def check_nepa_environmental_review() -> Tuple[bool, ProofObject]:
     
     Standard: 40 CFR §1502 (NEPA regulations)
     Falsifies if: EIS bypassed for major federal action.
+    falsifies_if: EIS bypassed for major federal action.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -75,6 +76,7 @@ def check_clean_air_act_naaqs() -> Tuple[bool, ProofObject]:
     
     Standard: 40 CFR Part 50 (NAAQS standards)
     Falsifies if: PM2.5/ozone exceeds standards.
+    falsifies_if: PM2.5/ozone exceeds standards.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -122,6 +124,7 @@ def check_clean_water_act_permitting() -> Tuple[bool, ProofObject]:
     
     Standard: 33 U.S.C. §1342 (NPDES program)
     Falsifies if: Discharge to navigable waters without permit.
+    falsifies_if: Discharge to navigable waters without permit.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -170,6 +173,7 @@ def check_cercla_liability_allocation() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. §9607 (Strict, joint and several liability)
     Falsifies if: PRP escapes liability for disposal.
+    falsifies_if: PRP escapes liability for disposal.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -221,6 +225,7 @@ def check_esa_species_protection() -> Tuple[bool, ProofObject]:
     
     Standard: 16 U.S.C. §1538 (Prohibited acts)
     Falsifies if: Take of endangered species without permit.
+    falsifies_if: Take of endangered species without permit.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -268,6 +273,7 @@ def check_environmental_compliance_fraction_precision() -> Tuple[bool, ProofObje
     
     Standard: EPA QA/QC procedures (exact measurement)
     Falsifies if: Pollutant concentrations use float approximation.
+    falsifies_if: Pollutant concentrations use float approximation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -309,6 +315,7 @@ def run_all_invariants() -> dict:
     """Run all D_ENVIRONMENTAL_LAW invariants.
 
     Falsifies if: any environmental law invariant check fails or raises an exception.
+    falsifies_if: any environmental law invariant check fails or raises an exception.
     """
     checks = [
         ("check_nepa_environmental_review", check_nepa_environmental_review),

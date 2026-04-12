@@ -31,6 +31,7 @@ def check_distinction_principle() -> Tuple[bool, ProofObject]:
     
     Standard: Geneva Conventions API Article 48; APII Article 13
     Falsifies if: Non-combatant target allowed under distinction principle.
+    falsifies_if: Non-combatant target allowed under distinction principle.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -79,6 +80,7 @@ def check_proportionality_principle() -> Tuple[bool, ProofObject]:
     
     Standard: Geneva Conventions API Article 51(5)(b); APII Article 3
     Falsifies if: Attack with civilian harm >= military gain is proportional.
+    falsifies_if: Attack with civilian harm >= military gain is proportional.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -128,6 +130,7 @@ def check_precautionary_obligations() -> Tuple[bool, ProofObject]:
     
     Standard: Geneva Conventions API Article 57
     Falsifies if: High civilian risk attack without military necessity allowed.
+    falsifies_if: High civilian risk attack without military necessity allowed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -174,6 +177,7 @@ def check_hors_de_combat_protection() -> Tuple[bool, ProofObject]:
     
     Standard: Geneva Conventions API Article 41; GCIII Article 3
     Falsifies if: Surrendered combatant or wounded may be targeted.
+    falsifies_if: Surrendered combatant or wounded may be targeted.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -216,6 +220,7 @@ def check_fraction_precision_war_crimes() -> Tuple[bool, ProofObject]:
     
     Standard: Precise legal standards require exact arithmetic
     Falsifies if: Floating-point imprecision affects proportionality calculation.
+    falsifies_if: Floating-point imprecision affects proportionality calculation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -266,6 +271,7 @@ def check_non_combatant_immunity() -> Tuple[bool, ProofObject]:
     
     Standard: Geneva Conventions Common Article 3; API Article 50
     Falsifies if: Civilian directly targeted in attack.
+    falsifies_if: Civilian directly targeted in attack.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -319,6 +325,7 @@ def run_all_invariants() -> dict:
     """Run all D_INTERNATIONAL_HUMANITARIAN invariants.
 
     Falsifies if: any international humanitarian invariant check fails or raises an exception.
+    falsifies_if: any international humanitarian invariant check fails or raises an exception.
     """
     checks = [
         ("check_distinction_principle", check_distinction_principle),

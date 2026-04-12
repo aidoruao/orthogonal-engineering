@@ -20,6 +20,7 @@ def check_program_bounded_depth(prog: ARCProgram) -> Tuple[bool, ProofObject]:
 
     Chollet (2019): "Priors should include finite computation."
     Falsifies if: max_depth <= 0 or max_depth > 100
+    falsifies_if: max_depth <= 0 or max_depth > 100
     """
     if prog.max_depth <= 0 or prog.max_depth > 100:
         return False, ProofObject(
@@ -44,6 +45,7 @@ def check_program_halts_deterministically(prog: ARCProgram) -> Tuple[bool, Proof
     ARC programs must halt deterministically (no randomness, always halt).
 
     Falsifies if: halts_deterministically == False
+    falsifies_if: halts_deterministically == False
     """
     if not prog.halts_deterministically:
         return False, ProofObject(
@@ -67,6 +69,7 @@ def check_prediction_reproducibility(pred1: ARCPrediction, pred2: ARCPrediction)
     ARC predictions must be reproducible: same task + test_index → same output.
 
     Falsifies if: same task_id and test_index but different predicted_grid
+    falsifies_if: same task_id and test_index but different predicted_grid
     """
     if pred1.task_id != pred2.task_id or pred1.test_index != pred2.test_index:
         return True, ProofObject(
@@ -102,6 +105,7 @@ def check_prediction_proof_carrying(pred: ARCPrediction) -> Tuple[bool, ProofObj
     ARC predictions must be proof-carrying (trace of transformation steps).
 
     Falsifies if: proof_trace is empty
+    falsifies_if: proof_trace is empty
     """
     if not pred.proof_trace or len(pred.proof_trace) == 0:
         return False, ProofObject(
@@ -125,6 +129,7 @@ def check_train_test_consistency(task: ARCTask) -> Tuple[bool, ProofObject]:
     ARC tasks must have consistent train/test example counts.
 
     Falsifies if: len(train_inputs) != len(train_outputs) OR len(test_inputs) != len(test_outputs)
+    falsifies_if: len(train_inputs) != len(train_outputs) OR len(test_inputs) != len(test_outputs)
     """
     if len(task.train_inputs) != len(task.train_outputs):
         return False, ProofObject(
@@ -163,6 +168,7 @@ def check_grid_color_range(grid: GridState) -> Tuple[bool, ProofObject]:
     ARC grids use colors 0-9 (per specification).
 
     Falsifies if: any cell value < 0 or > 9
+    falsifies_if: any cell value < 0 or > 9
     """
     for i, row in enumerate(grid.cells):
         for j, cell in enumerate(row):

@@ -33,6 +33,7 @@ def check_constant_time_compare_uses_hmac() -> Tuple[bool, ProofObject]:
     
     Standard: NIST SP 800-63B 5.1.1.2 (Side-channel resistance)
     Falsifies if: hmac.compare_digest is not in use.
+    falsifies_if: hmac.compare_digest is not in use.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -62,6 +63,7 @@ def check_psk_zero_rejected() -> Tuple[bool, ProofObject]:
     
     Standard: NIST SP 800-63B 5.1.1.1 (Memorized secrets)
     Falsifies if: validate_psk accepts b'\\x00'*32.
+    falsifies_if: validate_psk accepts b'\\x00'*32.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -100,6 +102,7 @@ def check_psk_nonzero_accepted() -> Tuple[bool, ProofObject]:
     
     Standard: NIST FIPS 140-3 (Key validation)
     Falsifies if: A valid PSK raises ValueError.
+    falsifies_if: A valid PSK raises ValueError.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -136,6 +139,7 @@ def check_hmac_deterministic() -> Tuple[bool, ProofObject]:
     
     Standard: RFC 2104 Section 2 (HMAC definition)
     Falsifies if: Two calls with identical inputs return different values.
+    falsifies_if: Two calls with identical inputs return different values.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -175,6 +179,7 @@ def check_key_entropy_minimum() -> Tuple[bool, ProofObject]:
     
     Standard: NIST SP 800-90B (Entropy sources)
     Falsifies if: Key entropy < 128 bits.
+    falsifies_if: Key entropy < 128 bits.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -217,6 +222,7 @@ def check_hmac_length_integrity() -> Tuple[bool, ProofObject]:
     
     Standard: FIPS 180-4 (SHA-256 output size)
     Falsifies if: Output length ≠ 32 bytes.
+    falsifies_if: Output length ≠ 32 bytes.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -250,6 +256,7 @@ def run_all_invariants() -> dict:
     """Run all D_CRYPTO invariants. Returns dict of check_name → pass/fail.
 
     Falsifies if: any crypto invariant check fails or raises an exception.
+    falsifies_if: any crypto invariant check fails or raises an exception.
     """
     checks = [
         ("check_constant_time_compare_uses_hmac", check_constant_time_compare_uses_hmac),

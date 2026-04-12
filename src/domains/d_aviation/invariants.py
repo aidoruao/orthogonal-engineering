@@ -36,6 +36,7 @@ def check_envelope_overspeed_rejected() -> Tuple[bool, ProofObject]:
     
     Standard: FAA 14 CFR 25.253 (High-speed characteristics)
     Falsifies if: Overspeed is accepted without error, F_AVIATION_001 is violated.
+    falsifies_if: Overspeed is accepted without error, F_AVIATION_001 is violated.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -78,6 +79,7 @@ def check_envelope_normal_state_accepted() -> Tuple[bool, ProofObject]:
     
     Standard: ICAO Annex 6 (Normal operations envelope)
     Falsifies if: A safe state raises an exception (over-restriction).
+    falsifies_if: A safe state raises an exception (over-restriction).
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -119,6 +121,7 @@ def check_circuit_breaker_open_on_failures() -> Tuple[bool, ProofObject]:
     
     Standard: NASA-STD-8719.13B (Software fault tolerance)
     Falsifies if: Circuit stays CLOSED after threshold failures.
+    falsifies_if: Circuit stays CLOSED after threshold failures.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -158,6 +161,7 @@ def check_circuit_breaker_returns_cache_when_open() -> Tuple[bool, ProofObject]:
     
     Standard: NASA-STD-8719.13B (Graceful degradation)
     Falsifies if: Live call is made when circuit is OPEN.
+    falsifies_if: Live call is made when circuit is OPEN.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -203,6 +207,7 @@ def check_malformed_atc_no_exception() -> Tuple[bool, ProofObject]:
     
     Standard: RTCA DO-178C (Robustness testing)
     Falsifies if: Any exception from parse_atc_message.
+    falsifies_if: Any exception from parse_atc_message.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -246,6 +251,7 @@ def check_lift_deterministic() -> Tuple[bool, ProofObject]:
     
     Standard: FAA 14 CFR 25.105 (Takeoff speeds - deterministic computation)
     Falsifies if: Two calls with identical inputs return different values.
+    falsifies_if: Two calls with identical inputs return different values.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -282,6 +288,7 @@ def check_flight_envelope_fraction_precision() -> Tuple[bool, ProofObject]:
     
     Standard: NASA-STD-8719.13B (No floating-point in safety-critical)
     Falsifies if: Float values used instead of Fraction.
+    falsifies_if: Float values used instead of Fraction.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -320,6 +327,7 @@ def run_all_invariants() -> dict:
     """Run all D_AVIATION invariants. Returns dict of check_name → pass/fail.
 
     Falsifies if: any aviation invariant check returns False or raises an exception.
+    falsifies_if: any aviation invariant check returns False or raises an exception.
     """
     checks = [
         ("check_envelope_overspeed_rejected", check_envelope_overspeed_rejected),

@@ -38,6 +38,7 @@ def check_fha_protected_classes() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. §3604
     Falsifies if: Any protected class is missing.
+    falsifies_if: Any protected class is missing.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -79,6 +80,7 @@ def check_eviction_notice_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: State landlord-tenant laws; URLTA §4-301
     Falsifies if: Eviction filed without notice or before notice period expires.
+    falsifies_if: Eviction filed without notice or before notice period expires.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -139,6 +141,7 @@ def check_habitability_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: URLTA §2-104; state habitability laws
     Falsifies if: Essential habitability requirements are missing.
+    falsifies_if: Essential habitability requirements are missing.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -184,6 +187,7 @@ def check_fair_housing_discrimination_prohibition() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. §3604
     Falsifies if: Discriminatory advertising passes compliance check.
+    falsifies_if: Discriminatory advertising passes compliance check.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -226,6 +230,7 @@ def check_retaliation_protection() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. §3617; URLTA §5-501
     Falsifies if: Tenant with complaint history not protected from eviction.
+    falsifies_if: Tenant with complaint history not protected from eviction.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -286,6 +291,7 @@ def check_reasonable_accommodation_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. §3604(f)(3); ADA Title III
     Falsifies if: Disability accommodations not provided when requested.
+    falsifies_if: Disability accommodations not provided when requested.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -332,6 +338,7 @@ def run_all_invariants() -> dict:
     """Run all D_HOUSING_LAW invariants.
 
     Falsifies if: any housing law invariant check fails or raises an exception.
+    falsifies_if: any housing law invariant check fails or raises an exception.
     """
     checks = [
         ("check_fha_protected_classes", check_fha_protected_classes),

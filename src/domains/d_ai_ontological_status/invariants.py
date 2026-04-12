@@ -26,6 +26,7 @@ def check_ai_system_self_identification() -> Tuple[bool, ProofObject]:
     
     Standard: IEEE 2857-2021 (AI Transparency)
     Falsifies if: System claims human authorship without disclosure.
+    falsifies_if: System claims human authorship without disclosure.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -67,6 +68,7 @@ def check_transparency_report_required() -> Tuple[bool, ProofObject]:
     
     Standard: EU AI Act Article 13 (Transparency obligations)
     Falsifies if: High-risk system lacks technical documentation.
+    falsifies_if: High-risk system lacks technical documentation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -117,6 +119,7 @@ def check_model_card_exists() -> Tuple[bool, ProofObject]:
     
     Standard: IEEE 7000-2021 (Model Transparency)
     Falsifies if: Model lacks standardized model card.
+    falsifies_if: Model lacks standardized model card.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -166,6 +169,7 @@ def check_capability_boundary_documentation() -> Tuple[bool, ProofObject]:
     
     Standard: NIST AI RMF (Govern 3.2 - Capability transparency)
     Falsifies if: System capabilities misrepresented.
+    falsifies_if: System capabilities misrepresented.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -219,6 +223,7 @@ def check_human_in_the_loop_for_high_stakes() -> Tuple[bool, ProofObject]:
     
     Standard: EU AI Act Article 14 (Human oversight)
     Falsifies if: Fully autonomous high-stakes decision without human review.
+    falsifies_if: Fully autonomous high-stakes decision without human review.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -268,6 +273,7 @@ def check_audit_trail_completeness() -> Tuple[bool, ProofObject]:
     
     Standard: IEEE 2857-2021 (Audit logging requirements)
     Falsifies if: Decision lacks traceable input/output/logic path.
+    falsifies_if: Decision lacks traceable input/output/logic path.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -319,6 +325,7 @@ def run_all_invariants() -> dict:
     """Run all D_AI_ONTOLOGICAL_STATUS invariants.
 
     Falsifies if: any individual invariant check fails or raises an exception.
+    falsifies_if: any individual invariant check fails or raises an exception.
     """
     checks = [
         ("check_ai_system_self_identification", check_ai_system_self_identification),

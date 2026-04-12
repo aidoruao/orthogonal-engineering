@@ -25,6 +25,7 @@ def check_euclid_constitutionality() -> Tuple[bool, ProofObject]:
     
     Standard: Village of Euclid v. Ambler Realty, 272 U.S. 365 (1926)
     Falsifies if: Comprehensive zoning struck down as unconstitutional.
+    falsifies_if: Comprehensive zoning struck down as unconstitutional.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -75,6 +76,7 @@ def check_euclidean_zoning_districts() -> Tuple[bool, ProofObject]:
     
     Standard: Standard State Zoning Enabling Act; Euclidean principles
     Falsifies if: Industrial use allowed in residential zone.
+    falsifies_if: Industrial use allowed in residential zone.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -131,6 +133,7 @@ def check_zoning_regulatory_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: Standard State Zoning Enabling Act - uniform regulations requirement
     Falsifies if: Similar properties treated differently without justification.
+    falsifies_if: Similar properties treated differently without justification.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -188,6 +191,7 @@ def check_special_exception_conditional_use() -> Tuple[bool, ProofObject]:
     
     Standard: Zoning enabling acts; Euclidean zoning practice
     Falsifies if: Conditional use approved without meeting conditions.
+    falsifies_if: Conditional use approved without meeting conditions.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -242,6 +246,7 @@ def check_zoning_amendment_procedures() -> Tuple[bool, ProofObject]:
     
     Standard: SZEA - Amendment procedures
     Falsifies if: Zoning changed without proper procedure.
+    falsifies_if: Zoning changed without proper procedure.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -294,6 +299,7 @@ def check_zoning_board_adjustment() -> Tuple[bool, ProofObject]:
     
     Standard: SZEA - Board of adjustment provisions
     Falsifies if: Variance granted by body without proper authority.
+    falsifies_if: Variance granted by body without proper authority.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -344,6 +350,7 @@ def run_all_invariants() -> dict:
     """Run all D_ZONING invariants.
 
     Falsifies if: any zoning invariant check fails or raises an exception.
+    falsifies_if: any zoning invariant check fails or raises an exception.
     """
     checks = [
         ("check_euclid_constitutionality", check_euclid_constitutionality),

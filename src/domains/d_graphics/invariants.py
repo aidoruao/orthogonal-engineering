@@ -37,6 +37,7 @@ def check_shader_compilation_determinism() -> Tuple[bool, ProofObject]:
     
     Standard: Khronos SPIR-V specification; GPU driver ISV certification
     Falsifies if: Identical shader sources produce different compiled outputs.
+    falsifies_if: Identical shader sources produce different compiled outputs.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -92,6 +93,7 @@ def check_frame_time_budget() -> Tuple[bool, ProofObject]:
     
     Standard: VESA AdaptiveSync; platform certification requirements
     Falsifies if: render_ms + present_ms > 1000 / target_fps
+    falsifies_if: render_ms + present_ms > 1000 / target_fps
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -137,6 +139,7 @@ def check_gpu_memory_bounds() -> Tuple[bool, ProofObject]:
     
     Standard: Khronos Vulkan Memory Model; D3D12 residency requirements
     Falsifies if: allocated > capacity OR fragmentation >= 25%
+    falsifies_if: allocated > capacity OR fragmentation >= 25%
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -192,6 +195,7 @@ def check_upscale_information_limit() -> Tuple[bool, ProofObject]:
     
     Standard: Nyquist-Shannon sampling theorem; ISO 32000 rendering
     Falsifies if: Upscale ratio exceeds 4x without proper synthesis.
+    falsifies_if: Upscale ratio exceeds 4x without proper synthesis.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -245,6 +249,7 @@ def check_pso_cache_determinism() -> Tuple[bool, ProofObject]:
     
     Standard: D3D12 PSO caching; Vulkan pipeline cache
     Falsifies if: Cache hit occurs with mismatched shaders or states.
+    falsifies_if: Cache hit occurs with mismatched shaders or states.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -305,6 +310,7 @@ def check_vrr_range_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: VESA AdaptiveSync; HDMI 2.1 VRR
     Falsifies if: Frame rate outside VRR range is accepted.
+    falsifies_if: Frame rate outside VRR range is accepted.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -351,6 +357,7 @@ def run_all_invariants() -> dict:
     """Run all D_GRAPHICS invariants.
 
     Falsifies if: any graphics invariant check fails or raises an exception.
+    falsifies_if: any graphics invariant check fails or raises an exception.
     """
     checks = [
         ("check_shader_compilation_determinism", check_shader_compilation_determinism),

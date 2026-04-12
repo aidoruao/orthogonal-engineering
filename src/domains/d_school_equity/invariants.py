@@ -17,6 +17,7 @@ def check_spending_equity(school: School) -> Tuple[bool, ProofObject]:
     """Spending ratio must be at least 0.8 of state average.
 
     Falsifies if: school.spending_equity_ratio() < 0.8.
+    falsifies_if: school.spending_equity_ratio() < 0.8.
     """
     ratio = school.spending_equity_ratio()
     if ratio < Fraction(8, 10):
@@ -36,6 +37,7 @@ def check_disparate_impact(discipline: DisciplineRecord, threshold: Fraction) ->
     """Disparate impact ratio must stay within threshold.
 
     Falsifies if: discipline.disparate_impact_ratio(r1, r2) > threshold for any races.
+    falsifies_if: discipline.disparate_impact_ratio(r1, r2) > threshold for any races.
     """
     races = list(discipline.enrollment_by_race.keys())
     for r1 in races:
@@ -59,6 +61,7 @@ def check_title_i_allocation(school: School) -> Tuple[bool, ProofObject]:
     """Title I eligible schools must receive funding.
 
     Falsifies if: school.title_i_eligible is True and title_i_funding == 0.
+    falsifies_if: school.title_i_eligible is True and title_i_funding == 0.
     """
     if school.title_i_eligible and school.title_i_funding == 0:
         return False, ProofObject(
@@ -77,6 +80,7 @@ def check_suspension_rate_reasonable(discipline: DisciplineRecord) -> Tuple[bool
     """Suspension rate must not exceed 10%.
 
     Falsifies if: total suspension rate > 0.1.
+    falsifies_if: total suspension rate > 0.1.
     """
     total_rate = Fraction(discipline.suspensions_total, sum(discipline.enrollment_by_race.values()))
     if total_rate > Fraction(1, 10):  # > 10%
@@ -96,6 +100,7 @@ def check_racial_compliance(discipline: DisciplineRecord) -> Tuple[bool, ProofOb
     """All racial groups must have enrollment data.
 
     Falsifies if: discipline.enrollment_by_race is empty.
+    falsifies_if: discipline.enrollment_by_race is empty.
     """
     if not discipline.enrollment_by_race:
         return False, ProofObject(

@@ -29,6 +29,7 @@ def check_response_time_sla() -> Tuple[bool, ProofObject]:
     
     Critical: 15 minutes, High: 1 hour, Medium: 4 hours, Low: 24 hours
     Falsifies if: measured response time exceeds the SLA for the severity level.
+    falsifies_if: measured response time exceeds the SLA for the severity level.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -78,6 +79,7 @@ def check_severity_classification() -> Tuple[bool, ProofObject]:
     """Verify all incidents have valid severity classification.
     
     Falsifies if: incident severity classification is invalid.
+    falsifies_if: incident severity classification is invalid.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -108,6 +110,7 @@ def check_response_procedures_exist() -> Tuple[bool, ProofObject]:
     """Verify response procedures exist for each severity level.
     
     Falsifies if: any response procedure has insufficient steps for coverage.
+    falsifies_if: any response procedure has insufficient steps for coverage.
     """
     procedures = [
         ResponseProcedure(
@@ -144,6 +147,7 @@ def check_incident_team_assignment() -> Tuple[bool, ProofObject]:
     """Verify all active incidents have assigned response teams.
     
     Falsifies if: an incident lacking a response team is treated as compliant.
+    falsifies_if: an incident lacking a response team is treated as compliant.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -192,6 +196,7 @@ def check_mttr_calculation() -> Tuple[bool, ProofObject]:
     """Verify mean time to recovery is calculated correctly.
     
     Falsifies if: computed MTTR is negative.
+    falsifies_if: computed MTTR is negative.
     """
     checker = D_INCIDENT_RESPONSEChecker()
     
@@ -225,6 +230,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check — deterministic execution.
 
     Falsifies if: any incident response invariant check fails.
+    falsifies_if: any incident response invariant check fails.
     """
     checks = [
         check_response_time_sla,

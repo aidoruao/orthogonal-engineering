@@ -25,6 +25,7 @@ def check_standard_zoning_enabling_act() -> Tuple[bool, ProofObject]:
     
     Standard: SZEA (1924) - Department of Commerce model act
     Falsifies if: Zoning enacted without proper legislative authority.
+    falsifies_if: Zoning enacted without proper legislative authority.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -78,6 +79,7 @@ def check_apa_planning_principles() -> Tuple[bool, ProofObject]:
     
     Standard: APA Code of Ethics and Professional Conduct
     Falsifies if: Planner acts with undisclosed conflict of interest.
+    falsifies_if: Planner acts with undisclosed conflict of interest.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -131,6 +133,7 @@ def check_nepa_environmental_review() -> Tuple[bool, ProofObject]:
     
     Standard: 42 U.S.C. § 4321 - National Environmental Policy Act
     Falsifies if: Major federal action proceeds without EIS.
+    falsifies_if: Major federal action proceeds without EIS.
     
     Returns:
         Tuple of (success: bool, ProofObject)
@@ -185,6 +188,7 @@ def check_zoning_variance_standards() -> Tuple[bool, ProofObject]:
     
     Standard: SZEA and state enabling acts - variance standards
     Falsifies if: Variance granted without required findings.
+    falsifies_if: Variance granted without required findings.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -239,6 +243,7 @@ def check_comprehensive_plan_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: Standard City Planning Enabling Act (1928)
     Falsifies if: Zoning adopted without comprehensive plan.
+    falsifies_if: Zoning adopted without comprehensive plan.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -294,6 +299,7 @@ def check_smart_growth_principles() -> Tuple[bool, ProofObject]:
     
     Standard: Smart Growth Network principles
     Falsifies if: Development patterns contradict smart growth.
+    falsifies_if: Development patterns contradict smart growth.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -349,6 +355,7 @@ def run_all_invariants() -> dict:
     """Run all D_URBAN_PLANNING invariants.
 
     Falsifies if: any urban planning invariant check fails or raises an exception.
+    falsifies_if: any urban planning invariant check fails or raises an exception.
     """
     checks = [
         ("check_standard_zoning_enabling_act", check_standard_zoning_enabling_act),

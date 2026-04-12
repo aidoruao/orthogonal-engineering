@@ -31,6 +31,7 @@ def check_universal_jurisdiction_core_crimes() -> Tuple[bool, ProofObject]:
     
     Standard: Rome Statute Articles 5-8; Geneva Conventions
     Falsifies if: Core crime with evidence not prosecutable under universal jurisdiction.
+    falsifies_if: Core crime with evidence not prosecutable under universal jurisdiction.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -79,6 +80,7 @@ def check_no_prosecution_without_evidence() -> Tuple[bool, ProofObject]:
     
     Standard: Rome Statute Article 17 (admissibility); due process
     Falsifies if: Case without evidence is prosecutable.
+    falsifies_if: Case without evidence is prosecutable.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -127,6 +129,7 @@ def check_icc_complementarity_principle() -> Tuple[bool, ProofObject]:
     
     Standard: Rome Statute Article 17 (complementarity)
     Falsifies if: ICC jurisdiction asserted over adequate domestic proceedings.
+    falsifies_if: ICC jurisdiction asserted over adequate domestic proceedings.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -187,6 +190,7 @@ def check_all_core_crimes_defined() -> Tuple[bool, ProofObject]:
     Standard: Rome Statute Articles 6 (Genocide), 7 (Crimes Against Humanity),
               8 (War Crimes), 8bis (Aggression)
     Falsifies if: CoreCrime enum missing any core crime.
+    falsifies_if: CoreCrime enum missing any core crime.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -228,6 +232,7 @@ def check_genocide_elements() -> Tuple[bool, ProofObject]:
     
     Standard: Rome Statute Article 6; ICTY/ICTR jurisprudence
     Falsifies if: Genocide case lacks specific intent element.
+    falsifies_if: Genocide case lacks specific intent element.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -271,6 +276,7 @@ def check_war_crimes_grave_breaches() -> Tuple[bool, ProofObject]:
     
     Standard: Rome Statute Article 8; Geneva Conventions I-IV
     Falsifies if: War crimes not recognized as core crime.
+    falsifies_if: War crimes not recognized as core crime.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -312,6 +318,7 @@ def run_all_invariants() -> dict:
     """Run all D_INTERNATIONAL_CRIMINAL invariants.
 
     Falsifies if: any international criminal invariant check fails or raises an exception.
+    falsifies_if: any international criminal invariant check fails or raises an exception.
     """
     checks = [
         ("check_universal_jurisdiction_core_crimes", check_universal_jurisdiction_core_crimes),

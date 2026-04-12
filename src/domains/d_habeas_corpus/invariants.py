@@ -35,6 +35,7 @@ def check_habeas_availability_default() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article I, Section 9
     Falsifies if: Habeas is blocked without valid suspension.
+    falsifies_if: Habeas is blocked without valid suspension.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -79,6 +80,7 @@ def check_suspension_requires_rebellion_or_invasion() -> Tuple[bool, ProofObject
     
     Standard: U.S. Constitution Article I, Section 9
     Falsifies if: Suspension for other reasons is allowed.
+    falsifies_if: Suspension for other reasons is allowed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -120,6 +122,7 @@ def check_valid_suspension_rebellion() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article I, Section 9
     Falsifies if: Rebellion suspension is rejected.
+    falsifies_if: Rebellion suspension is rejected.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -162,6 +165,7 @@ def check_valid_suspension_invasion() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Constitution Article I, Section 9
     Falsifies if: Invasion suspension is rejected.
+    falsifies_if: Invasion suspension is rejected.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -204,6 +208,7 @@ def check_judicial_review_required() -> Tuple[bool, ProofObject]:
     
     Standard: 28 U.S.C. §2254; 28 U.S.C. §2255
     Falsifies if: Detention without charges or review is marked lawful.
+    falsifies_if: Detention without charges or review is marked lawful.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -255,6 +260,7 @@ def check_criminal_detention_requires_charges() -> Tuple[bool, ProofObject]:
     
     Standard: Fourth Amendment; 28 U.S.C. §2254
     Falsifies if: Criminal detention without charges is lawful.
+    falsifies_if: Criminal detention without charges is lawful.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -302,6 +308,7 @@ def run_all_invariants() -> dict:
     """Run all D_HABEAS_CORPUS invariants.
 
     Falsifies if: any habeas corpus invariant check fails or raises an exception.
+    falsifies_if: any habeas corpus invariant check fails or raises an exception.
     """
     checks = [
         ("check_habeas_availability_default", check_habeas_availability_default),

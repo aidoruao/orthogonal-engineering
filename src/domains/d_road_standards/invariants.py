@@ -25,6 +25,7 @@ def check_mutcd_compliance_required() -> Tuple[bool, ProofObject]:
     
     Standard: 23 CFR § 655.603 - Adoption of MUTCD
     Falsifies if: Traffic control devices non-compliant with MUTCD.
+    falsifies_if: Traffic control devices non-compliant with MUTCD.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -73,6 +74,7 @@ def check_aashto_green_book_design() -> Tuple[bool, ProofObject]:
     
     Standard: AASHTO Green Book - Policy on Geometric Design
     Falsifies if: Design elements below recommended minimums.
+    falsifies_if: Design elements below recommended minimums.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -121,6 +123,7 @@ def check_fhwa_bridge_inspection() -> Tuple[bool, ProofObject]:
     
     Standard: 23 CFR § 650.313 - Bridge inspection
     Falsifies if: Bridge inspection intervals exceed 24 months.
+    falsifies_if: Bridge inspection intervals exceed 24 months.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -166,6 +169,7 @@ def check_speed_limit_setting_criteria() -> Tuple[bool, ProofObject]:
     
     Standard: MUTCD Section 2B.13 - Speed Limit Sign
     Falsifies if: Speed limit set without 85th percentile speed study.
+    falsifies_if: Speed limit set without 85th percentile speed study.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -215,6 +219,7 @@ def check_horizontal_curve_design() -> Tuple[bool, ProofObject]:
     
     Standard: AASHTO Green Book - Horizontal alignment
     Falsifies if: Side friction demand exceeds maximum available.
+    falsifies_if: Side friction demand exceeds maximum available.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -264,6 +269,7 @@ def check_stopping_sight_distance() -> Tuple[bool, ProofObject]:
     
     Standard: AASHTO Green Book - Sight distance
     Falsifies if: Available SSD less than required SSD.
+    falsifies_if: Available SSD less than required SSD.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -312,6 +318,7 @@ def run_all_invariants() -> dict:
     """Run all D_ROAD_STANDARDS invariants.
 
     Falsifies if: any road standards invariant check fails or raises an exception.
+    falsifies_if: any road standards invariant check fails or raises an exception.
     """
     checks = [
         ("check_mutcd_compliance_required", check_mutcd_compliance_required),

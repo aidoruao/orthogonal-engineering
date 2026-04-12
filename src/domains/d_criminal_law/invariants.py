@@ -27,6 +27,7 @@ def check_probable_cause_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: Fourth Amendment; Katz v. United States (1967)
     Falsifies if: Search conducted without PC or valid exception.
+    falsifies_if: Search conducted without PC or valid exception.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -71,6 +72,7 @@ def check_miranda_rights_timing() -> Tuple[bool, ProofObject]:
     
     Standard: Miranda v. Arizona (1966); Fifth Amendment
     Falsifies if: Statements obtained without warnings in custody.
+    falsifies_if: Statements obtained without warnings in custody.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -114,6 +116,7 @@ def check_beyond_reasonable_doubt() -> Tuple[bool, ProofObject]:
     
     Standard: In re Winship (1970); MPC §1.12(1)
     Falsifies if: Conviction on preponderance or clear/convincing.
+    falsifies_if: Conviction on preponderance or clear/convincing.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -155,6 +158,7 @@ def check_double_jeopardy_protection() -> Tuple[bool, ProofObject]:
     
     Standard: Fifth Amendment; Blockburger v. United States (1932)
     Falsifies if: Retrial after acquittal or conviction.
+    falsifies_if: Retrial after acquittal or conviction.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -201,6 +205,7 @@ def check_confrontation_clause() -> Tuple[bool, ProofObject]:
     
     Standard: Sixth Amendment; Crawford v. Washington (2004)
     Falsifies if: Testimonial hearsay admitted without cross-examination.
+    falsifies_if: Testimonial hearsay admitted without cross-examination.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -241,6 +246,7 @@ def check_mens_rea_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: MPC §2.02; Elonis v. United States (2015)
     Falsifies if: Strict liability for serious criminal offense.
+    falsifies_if: Strict liability for serious criminal offense.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -282,6 +288,7 @@ def run_all_invariants() -> dict:
     """Run all D_CRIMINAL_LAW invariants.
 
     Falsifies if: any criminal law invariant check fails or raises an exception.
+    falsifies_if: any criminal law invariant check fails or raises an exception.
     """
     checks = [
         ("check_probable_cause_requirement", check_probable_cause_requirement),

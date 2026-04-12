@@ -28,6 +28,7 @@ def check_jurisdiction_rules() -> Tuple[bool, ProofObject]:
     """Verify ICC jurisdiction rules are followed.
     
     Falsifies if: territorial or nationality jurisdiction is incorrectly rejected.
+    falsifies_if: territorial or nationality jurisdiction is incorrectly rejected.
     """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
@@ -67,6 +68,7 @@ def check_complementarity_principle() -> Tuple[bool, ProofObject]:
     """Verify complementarity principle is respected.
     
     Falsifies if: ICC complementarity logic allows action when domestic systems
+    falsifies_if: ICC complementarity logic allows action when domestic systems
     are willing/able or blocks action when they are unwilling/unable.
     """
     checker = D_INTERNATIONAL_CRIMINALChecker()
@@ -106,6 +108,7 @@ def check_evidence_chain_of_custody() -> Tuple[bool, ProofObject]:
     """Verify evidence maintains chain of custody.
     
     Falsifies if: valid evidence fails chain verification or invalid evidence passes.
+    falsifies_if: valid evidence fails chain verification or invalid evidence passes.
     """
     checker = D_INTERNATIONAL_CRIMINALChecker()
     
@@ -149,6 +152,7 @@ def check_case_timeline_reasonableness() -> Tuple[bool, ProofObject]:
     """Verify cases proceed within reasonable timeframes.
     
     Falsifies if: investigation duration exceeds five years without trial.
+    falsifies_if: investigation duration exceeds five years without trial.
     """
     opened = datetime(2025, 1, 1)
     now = datetime(2026, 4, 9)
@@ -183,6 +187,7 @@ def check_crime_type_classification() -> Tuple[bool, ProofObject]:
     """Verify crimes are properly classified.
     
     Falsifies if: crime type classification does not match expected category.
+    falsifies_if: crime type classification does not match expected category.
     """
     war_crime = Case(
         case_id="CASE-004",
@@ -226,6 +231,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check.
 
     Falsifies if: any international criminal invariant check fails.
+    falsifies_if: any international criminal invariant check fails.
     """
     checks = [
         check_jurisdiction_rules,

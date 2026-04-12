@@ -14,6 +14,7 @@ def check_certification_coverage(component: SoftwareComponent) -> Tuple[bool, Pr
     """DO-178C requires specific structural coverage based on DAL.
 
     Falsifies if: coverage for the DAL (MC/DC or decision) is below 100%.
+    falsifies_if: coverage for the DAL (MC/DC or decision) is below 100%.
     """
     required = component.required_mc_dc_coverage()
     
@@ -46,6 +47,7 @@ def check_redundancy_agreement(checker: RedundancyChecker) -> Tuple[bool, ProofO
     """Redundant channels must agree on output for voting.
 
     Falsifies if: no healthy channels, cannot form quorum, or healthy channels disagree.
+    falsifies_if: no healthy channels, cannot form quorum, or healthy channels disagree.
     """
     healthy = checker.get_healthy_channels()
     
@@ -81,6 +83,7 @@ def check_structural_health(monitor: StructuralHealthMonitor) -> Tuple[bool, Pro
     """Structural health sensors must be within specification.
 
     Falsifies if: monitor.get_alerted_sensors() is non-empty.
+    falsifies_if: monitor.get_alerted_sensors() is non-empty.
     """
     alerted = monitor.get_alerted_sensors()
     
@@ -102,6 +105,7 @@ def check_function_size(component: SoftwareComponent) -> Tuple[bool, ProofObject
     """Advisory: functions should not exceed recommended size.
 
     Falsifies if: average lines_per_function exceeds MAX_LINES_PER_FUNCTION.
+    falsifies_if: average lines_per_function exceeds MAX_LINES_PER_FUNCTION.
     """
     lines_per_func = Fraction(component.lines_of_code, max(1, component.requirements_based_tests))
     

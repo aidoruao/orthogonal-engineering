@@ -25,6 +25,7 @@ def check_sentencing_guidelines_compliance_program() -> Tuple[bool, ProofObject]
     
     Standard: USSG §8B2.1 (Effective Compliance and Ethics Program)
     Falsifies if: Organization receives full credit without implemented compliance program.
+    falsifies_if: Organization receives full credit without implemented compliance program.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -87,6 +88,7 @@ def check_doj_ecmp_independence_resources() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ Evaluation of Corporate Compliance Programs (2023)
     Falsifies if: CCO reports to General Counsel or lacks budget authority.
+    falsifies_if: CCO reports to General Counsel or lacks budget authority.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -149,6 +151,7 @@ def check_risk_assessment_periodic_review() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Risk Assessment); USSG §8B2.1(b)
     Falsifies if: Static risk assessment used without update for changed circumstances.
+    falsifies_if: Static risk assessment used without update for changed circumstances.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -211,6 +214,7 @@ def check_third_party_due_diligence() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Third Party Management); FCPA Resource Guide
     Falsifies if: High-risk intermediary engaged without appropriate due diligence.
+    falsifies_if: High-risk intermediary engaged without appropriate due diligence.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -278,6 +282,7 @@ def check_investigation_response_remediation() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Investigation of Misconduct); USSG §8B2.1(b)(7)
     Falsifies if: Investigation whitewashed or root cause not addressed.
+    falsifies_if: Investigation whitewashed or root cause not addressed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -342,6 +347,7 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Training and Communications); USSG §8B2.1(b)(4)
     Falsifies if: Generic training provided without risk-based tailoring.
+    falsifies_if: Generic training provided without risk-based tailoring.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -416,6 +422,7 @@ def run_all_invariants() -> dict:
     """Run all D_CORPORATE_COMPLIANCE invariants.
 
     Falsifies if: any corporate compliance invariant check fails or raises an exception.
+    falsifies_if: any corporate compliance invariant check fails or raises an exception.
     """
     checks = [
         ("check_sentencing_guidelines_compliance_program", check_sentencing_guidelines_compliance_program),

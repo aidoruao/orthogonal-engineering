@@ -35,6 +35,7 @@ def check_tier1_capital_minimum() -> Tuple[bool, ProofObject]:
     
     Standard: Basel III Framework (BIS 2010), Dodd-Frank Title I
     Falsifies if: Undercapitalized bank passes check.
+    falsifies_if: Undercapitalized bank passes check.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -105,6 +106,7 @@ def check_fdic_insurance_per_depositor() -> Tuple[bool, ProofObject]:
     
     Standard: 12 U.S.C. §1821(a)(1), Dodd-Frank permanent $250k limit
     Falsifies if: Coverage exceeds limit or deposits incorrectly insured.
+    falsifies_if: Coverage exceeds limit or deposits incorrectly insured.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -166,6 +168,7 @@ def check_usury_limit_by_state() -> Tuple[bool, ProofObject]:
     
     Standard: California Civil Code §1916-1 (10% limit for personal loans)
     Falsifies if: Usurious loan passes compliance check.
+    falsifies_if: Usurious loan passes compliance check.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -226,6 +229,7 @@ def check_reserve_ratio_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: 12 U.S.C. §461(b)(Percentage of deposits as reserves)
     Falsifies if: Bank with insufficient reserves passes.
+    falsifies_if: Bank with insufficient reserves passes.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -294,6 +298,7 @@ def check_lending_standards_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: 12 CFR 1026.43 (Regulation Z ATR rule)
     Falsifies if: Loan without verified income passes ATR check.
+    falsifies_if: Loan without verified income passes ATR check.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -363,6 +368,7 @@ def check_capital_computation_fraction_precision() -> Tuple[bool, ProofObject]:
     
     Standard: Basel III (Exact computation requirements)
     Falsifies if: Float arithmetic detected in capital ratios.
+    falsifies_if: Float arithmetic detected in capital ratios.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -416,6 +422,7 @@ def run_all_invariants() -> dict:
     """Run all D_BANKING_REGULATION invariants.
 
     Falsifies if: any banking regulation invariant check fails or raises an exception.
+    falsifies_if: any banking regulation invariant check fails or raises an exception.
     """
     checks = [
         ("check_tier1_capital_minimum", check_tier1_capital_minimum),

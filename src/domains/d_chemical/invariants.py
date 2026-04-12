@@ -20,6 +20,7 @@ def check_thermal_runaway_protection(reactor: ReactorControl) -> Tuple[bool, Pro
     Thermal runaway interlock must activate before T_critical - 10°C margin.
 
     Falsifies if: temperature_c >= t_critical_c - 10°C
+    falsifies_if: temperature_c >= t_critical_c - 10°C
     """
     margin = thermal_runaway_margin()
     threshold = reactor.t_critical_c - margin
@@ -47,6 +48,7 @@ def check_pressure_interlock(reactor: ReactorControl) -> Tuple[bool, ProofObject
     Pressure interlock activates at 90% of design pressure per ASME.
 
     Falsifies if: pressure_bar >= 0.9 * design_pressure_bar
+    falsifies_if: pressure_bar >= 0.9 * design_pressure_bar
     """
     threshold_fraction = pressure_interlock_threshold()
     threshold = reactor.design_pressure_bar * threshold_fraction
@@ -74,6 +76,7 @@ def check_sis_reliability(sis: SafetyInstrumentedSystem) -> Tuple[bool, ProofObj
     SIL-3 systems require PFD_avg < 0.001 per IEC 61511.
 
     Falsifies if: sil_level == SIL3 AND pfd_avg >= 0.001
+    falsifies_if: sil_level == SIL3 AND pfd_avg >= 0.001
     """
     if sis.sil_level == SILLevel.SIL3:
         max_pfd = sil3_pfd_max()
@@ -101,6 +104,7 @@ def check_leak_detection(hazmat: HazmatContainment) -> Tuple[bool, ProofObject]:
     Leak detection at 10% LEL for flammable materials.
 
     Falsifies if: leak_detection_ppm >= lel_percent * 0.1
+    falsifies_if: leak_detection_ppm >= lel_percent * 0.1
     """
     alarm_threshold = hazmat.lel_percent * lel_alarm_threshold()
 
@@ -127,6 +131,7 @@ def check_esd_timing(esd: EmergencyShutdown) -> Tuple[bool, ProofObject]:
     ESD must isolate critical systems within 5000ms.
 
     Falsifies if: trigger_to_isolation_ms > 5000ms
+    falsifies_if: trigger_to_isolation_ms > 5000ms
     """
     max_time = esd_isolation_max_ms()
 

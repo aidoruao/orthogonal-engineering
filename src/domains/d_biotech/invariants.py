@@ -20,6 +20,7 @@ def check_ngs_quality(run: SequencingRun) -> Tuple[bool, ProofObject]:
     NGS base-calling must achieve >90% Q30 (Phred quality score >30, <0.1% error).
 
     Falsifies if: phred_q30_percent < 90%
+    falsifies_if: phred_q30_percent < 90%
     """
     threshold = phred_q30_threshold()
 
@@ -42,6 +43,7 @@ def check_crispr_precision(edit: CRISPREdit) -> Tuple[bool, ProofObject]:
     CRISPR guide RNAs must achieve >80% on-target efficiency with <1% off-target.
 
     Falsifies if: on_target < 80% OR off_target >= 1%
+    falsifies_if: on_target < 80% OR off_target >= 1%
     """
     on_target_min = crispr_on_target_threshold()
     off_target_max_val = crispr_off_target_max()
@@ -81,6 +83,7 @@ def check_lab_automation_fidelity(automation: LabAutomation) -> Tuple[bool, Proo
     Automated liquid handling must maintain <0.0001% sample swap rate.
 
     Falsifies if: sample_swap_rate >= 0.0001%
+    falsifies_if: sample_swap_rate >= 0.0001%
     """
     max_swap = sample_swap_max()
 
@@ -106,6 +109,7 @@ def check_biosafety_containment(cabinet: BiosafetyCabinet) -> Tuple[bool, ProofO
     BSC HEPA filtration must achieve >99.97% particle capture efficiency.
 
     Falsifies if: hepa_efficiency < 99.97%
+    falsifies_if: hepa_efficiency < 99.97%
     """
     min_efficiency = hepa_filtration_min()
 
@@ -131,6 +135,7 @@ def check_biosafety_pressure(cabinet: BiosafetyCabinet) -> Tuple[bool, ProofObje
     BSL-3 cabinets require negative pressure for containment.
 
     Falsifies if: biosafety_level >= BSL3 AND negative_pressure_pa <= 0
+    falsifies_if: biosafety_level >= BSL3 AND negative_pressure_pa <= 0
     """
     if cabinet.biosafety_level.value >= BiosafetLevel.BSL3.value:
         if cabinet.negative_pressure_pa <= Fraction(0):

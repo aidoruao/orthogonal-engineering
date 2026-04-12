@@ -10,6 +10,7 @@ def check_recording(prior: PropertyInterest, subsequent: PropertyInterest) -> Tu
     """Recording act priority analysis.
 
     Falsifies if: unrecorded prior interest attempts to prevail over recorded subsequent interest.
+    falsifies_if: unrecorded prior interest attempts to prevail over recorded subsequent interest.
     """
     if prior.recorded and not subsequent.recorded:
         return True, ProofObject(
@@ -33,6 +34,7 @@ def check_adverse_possession(claim: AdversePossession) -> Tuple[bool, ProofObjec
     """Adverse possession OCEAN elements and statutory period.
 
     Falsifies if: any OCEAN element is missing or statutory period not met.
+    falsifies_if: any OCEAN element is missing or statutory period not met.
     """
     if not claim.all_elements_present():
         missing = []

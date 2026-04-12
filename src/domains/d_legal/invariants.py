@@ -23,6 +23,7 @@ def check_speedy_trial_compliance(case: CourtCase, days_pending: int) -> Tuple[b
     - Sanction: dismissal of charges
     
     Falsifies if: criminal case > 70 days without trial
+    falsifies_if: criminal case > 70 days without trial
     """
     if case.case_type != CaseType.CRIMINAL:
         return True, ProofObject(
@@ -62,6 +63,7 @@ def check_civil_case_timeliness(case: CourtCase, months_pending: int) -> Tuple[b
     - Age of pending cases monitored
     
     Falsifies if: civil case > 24 months pending
+    falsifies_if: civil case > 24 months pending
     """
     if case.case_type != CaseType.CIVIL:
         return True, ProofObject(
@@ -100,6 +102,7 @@ def check_court_clearance_rate(court: Court) -> Tuple[bool, ProofObject]:
     - Resource allocation indicator
     
     Falsifies if: clearance rate < 95%
+    falsifies_if: clearance rate < 95%
     """
     min_clearance = Fraction(95, 100)
     rate = court.get_clearance_rate()
@@ -133,6 +136,7 @@ def check_access_to_justice(court: Court) -> Tuple[bool, ProofObject]:
     - Self-help for pro se litigants
     
     Falsifies if: no access services
+    falsifies_if: no access services
     """
     if not court.interpreter_services:
         return False, ProofObject(
@@ -174,6 +178,7 @@ def check_case_backlog(court: Court) -> Tuple[bool, ProofObject]:
     - Backlog ratio to annual filings
     
     Falsifies if: >5% of cases > 24 months old
+    falsifies_if: >5% of cases > 24 months old
     """
     if court.cases_pending == 0:
         return True, ProofObject(

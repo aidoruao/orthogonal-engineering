@@ -26,6 +26,7 @@ def check_land_remote_sensing_policy_act_compliance() -> Tuple[bool, ProofObject
     
     Standard: 51 U.S.C. § 60101 - Land Remote Sensing Policy Act
     Falsifies if: Unlicensed operation of commercial remote sensing system.
+    falsifies_if: Unlicensed operation of commercial remote sensing system.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -71,6 +72,7 @@ def check_noaa_regulatory_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: 15 CFR Part 960 - Licensing of Private Land Remote Sensing Systems
     Falsifies if: Licensed system operates outside regulatory parameters.
+    falsifies_if: Licensed system operates outside regulatory parameters.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -116,6 +118,7 @@ def check_nasa_earth_observation_standards() -> Tuple[bool, ProofObject]:
     
     Standard: NASA Earth Science Data and Information Policy
     Falsifies if: Data products lack required metadata or quality indicators.
+    falsifies_if: Data products lack required metadata or quality indicators.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -165,6 +168,7 @@ def check_geospatial_metadata_compliance() -> Tuple[bool, ProofObject]:
     
     Standard: ISO 19115, FGDC Content Standard for Digital Geospatial Metadata
     Falsifies if: Required metadata elements missing.
+    falsifies_if: Required metadata elements missing.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -214,6 +218,7 @@ def check_ndvi_calculation_bounds() -> Tuple[bool, ProofObject]:
     
     Standard: Remote sensing vegetation indices standard
     Falsifies if: NDVI calculation produces values outside valid range.
+    falsifies_if: NDVI calculation produces values outside valid range.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -263,6 +268,7 @@ def check_spatial_resolution_accuracy() -> Tuple[bool, ProofObject]:
     
     Standard: Commercial remote sensing licensing requirements
     Falsifies if: Actual resolution worse than licensed threshold.
+    falsifies_if: Actual resolution worse than licensed threshold.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -308,6 +314,7 @@ def run_all_invariants() -> dict:
     """Run all D_REMOTE_SENSING invariants.
 
     Falsifies if: any remote sensing invariant check fails or raises an exception.
+    falsifies_if: any remote sensing invariant check fails or raises an exception.
     """
     checks = [
         ("check_land_remote_sensing_policy_act_compliance", check_land_remote_sensing_policy_act_compliance),

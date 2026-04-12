@@ -26,6 +26,7 @@ def check_ada_vehicle_compliance(vehicle: TransitVehicle) -> Tuple[bool, ProofOb
     and minimum 2 wheelchair spaces.
 
     Falsifies if: ada_compliant=False or wheelchair_spaces < 2
+    falsifies_if: ada_compliant=False or wheelchair_spaces < 2
     """
     min_spaces = ada_wheelchair_space_minimum()
 
@@ -69,6 +70,7 @@ def check_on_time_performance(reliability: ServiceReliability) -> Tuple[bool, Pr
     Arrivals within 5 minutes of schedule count as on-time.
 
     Falsifies if: on_time_arrivals_pct < 80%
+    falsifies_if: on_time_arrivals_pct < 80%
     """
     threshold = fta_on_time_performance_threshold()
 
@@ -99,6 +101,7 @@ def check_headway_reliability(route: TransitRoute, actual_headway: Fraction) -> 
     (bunching or gaps) degrades service quality.
 
     Falsifies if: |actual - scheduled| / scheduled > 20%
+    falsifies_if: |actual - scheduled| / scheduled > 20%
     """
     scheduled = route.frequency_minutes
     deviation_pct = abs(actual_headway - scheduled) * Fraction(100) / scheduled
@@ -132,6 +135,7 @@ def check_vehicle_useful_life(vehicle: TransitVehicle) -> Tuple[bool, ProofObjec
     replacement and pose higher safety/reliability risks.
 
     Falsifies if: age_years > 12 for buses
+    falsifies_if: age_years > 12 for buses
     """
     if vehicle.vehicle_type not in [VehicleType.BUS, VehicleType.BRT]:
         return True, ProofObject(
@@ -170,6 +174,7 @@ def check_ada_stop_accessibility(stop: TransitStop) -> Tuple[bool, ProofObject]:
     (level platform, clear space, connection to pedestrian paths).
 
     Falsifies if: ada_accessible=False
+    falsifies_if: ada_accessible=False
     """
     if not stop.ada_accessible:
         return False, ProofObject(
@@ -198,6 +203,7 @@ def check_fta_incident_reporting(incident: SafetyIncident) -> Tuple[bool, ProofO
     defined thresholds to National Transit Database.
 
     Falsifies if: fta_reportable=False when criteria met
+    falsifies_if: fta_reportable=False when criteria met
     """
     threshold = fta_reportable_incident_threshold_usd()
 

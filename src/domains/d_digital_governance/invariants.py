@@ -27,6 +27,7 @@ def check_vlop_risk_assessment_current(platform: Platform) -> Tuple[bool, ProofO
     """DSA Article 34: Very Large Online Platforms must have annual systemic risk assessment.
 
     Falsifies if: platform.is_vlop() and no risk assessment exists or assessment age exceeds 365 days.
+    falsifies_if: platform.is_vlop() and no risk assessment exists or assessment age exceeds 365 days.
     """
     if not platform.is_vlop():
         return True, ProofObject(
@@ -62,6 +63,7 @@ def check_statement_of_reasons(decision: ContentModerationDecision) -> Tuple[boo
     """DSA Article 17: Content restrictions require statement of reasons.
 
     Falsifies if: content is restricted and statement_of_reasons is missing or inadequate.
+    falsifies_if: content is restricted and statement_of_reasons is missing or inadequate.
     """
     if decision.content_category.name == "PROTECTED":
         if not decision.statement_of_reasons or len(decision.statement_of_reasons) < 50:
@@ -89,6 +91,7 @@ def check_transparency_report_completeness(report: TransparencyReport) -> Tuple[
     """DSA Article 15: Transparency reports must include required metrics.
 
     Falsifies if: required metrics are negative/invalid or response time is missing.
+    falsifies_if: required metrics are negative/invalid or response time is missing.
     """
     if report.content_removed_count < 0:
         return False, ProofObject(
@@ -128,6 +131,7 @@ def check_appeal_window(decision: ContentModerationDecision) -> Tuple[bool, Proo
     """DSA Article 20: Users must have at least 6 months to appeal decisions.
 
     Falsifies if: decision.appeal_window_days < 180.
+    falsifies_if: decision.appeal_window_days < 180.
     """
     MIN_APPEAL_DAYS = 180  # 6 months as required by DSA
     
@@ -149,6 +153,7 @@ def check_independent_audit(risk_assessment: RiskAssessment) -> Tuple[bool, Proo
     """DSA Article 37: VLOP risk assessments require independent audit.
 
     Falsifies if: risk level is CRITICAL or HIGH and independent_audit is False.
+    falsifies_if: risk level is CRITICAL or HIGH and independent_audit is False.
     """
     high_risk = risk_assessment.risk_level in [
         SystemicRiskLevel.CRITICAL,
@@ -186,6 +191,7 @@ def check_automated_decision_review(decision: ContentModerationDecision) -> Tupl
     """DSA Article 22: Significant automated decisions require human review.
 
     Falsifies if: decision is automated, significant, and lacks human_reviewed oversight.
+    falsifies_if: decision is automated, significant, and lacks human_reviewed oversight.
     """
     significant_actions = ["removal", "suspension", "demonetization"]
     is_significant = any(a in decision.action_taken.lower() for a in significant_actions)

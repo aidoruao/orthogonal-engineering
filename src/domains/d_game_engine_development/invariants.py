@@ -27,6 +27,7 @@ def check_physics_determinism() -> Tuple[bool, ProofObject]:
     
     Critical for: replays, multiplayer sync, testing.
     Falsifies if: physics outputs diverge when simulated at different frame rates.
+    falsifies_if: physics outputs diverge when simulated at different frame rates.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -70,6 +71,7 @@ def check_rng_determinism() -> Tuple[bool, ProofObject]:
     """Verify seeded random number generation is reproducible.
     
     Falsifies if: identical seeds do not produce identical sequences or distinct
+    falsifies_if: identical seeds do not produce identical sequences or distinct
     seeds produce the same sequence.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
@@ -111,6 +113,7 @@ def check_save_file_integrity() -> Tuple[bool, ProofObject]:
     - Checksum validates data integrity
     
     Falsifies if: read data mismatches written data or checksum validation fails.
+    falsifies_if: read data mismatches written data or checksum validation fails.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -168,6 +171,7 @@ def check_multiplayer_sync() -> Tuple[bool, ProofObject]:
     
     All clients must converge to the same state given same inputs.
     Falsifies if: reconciled client states diverge when given identical inputs.
+    falsifies_if: reconciled client states diverge when given identical inputs.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -208,6 +212,7 @@ def check_hot_reload_safety() -> Tuple[bool, ProofObject]:
     - State corruption
     
     Falsifies if: hot reload leaks memory beyond bound or leaves game state invalid.
+    falsifies_if: hot reload leaks memory beyond bound or leaves game state invalid.
     """
     checker = D_GAME_ENGINE_DEVELOPMENTChecker()
     
@@ -247,6 +252,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check — deterministic execution.
 
     Falsifies if: any deterministic game engine check fails.
+    falsifies_if: any deterministic game engine check fails.
     """
     checks = [
         check_physics_determinism,

@@ -24,6 +24,7 @@ def check_chunk_loaded_for_tick(chunk: Chunk) -> Tuple[bool, ProofObject]:
     """Blocks can only tick in loaded chunks.
     
     Falsifies if: chunk is unloaded while redstone tickers are present.
+    falsifies_if: chunk is unloaded while redstone tickers are present.
     """
     if not chunk.loaded and chunk.redstone_tickers > 0:
         return False, ProofObject(
@@ -50,6 +51,7 @@ def check_redstone_timing(circuit: RedstoneCircuit) -> Tuple[bool, ProofObject]:
     """Redstone signals propagate with defined delays.
     
     Falsifies if: tick_delay is negative or clock_frequency exceeds 20 Hz.
+    falsifies_if: tick_delay is negative or clock_frequency exceeds 20 Hz.
     """
     MAX_FREQUENCY = Fraction(20)  # 20 ticks per second
     
@@ -88,6 +90,7 @@ def check_coordinate_bounds(pos: BlockPos) -> Tuple[bool, ProofObject]:
     """Minecraft block coordinates have valid ranges.
     
     Falsifies if: |x| or |z| exceeds 30,000,000 or y is outside [-64, 320].
+    falsifies_if: |x| or |z| exceeds 30,000,000 or y is outside [-64, 320].
     """
     WORLD_BORDER = 30_000_000
     MIN_Y = -64
@@ -124,6 +127,7 @@ def check_simulation_distance(index: SpatialIndex, player: BlockPos, entity: Blo
     """Entities only process when within simulation distance of player.
     
     Falsifies if: entity is more than 128 blocks from the player.
+    falsifies_if: entity is more than 128 blocks from the player.
     """
     SIMULATION_RADIUS = 128  # blocks
     
@@ -153,6 +157,7 @@ def check_chunk_entity_limit(chunk: Chunk, max_entities: int) -> Tuple[bool, Pro
     """Chunks have entity count limits for performance.
     
     Falsifies if: chunk entity count exceeds max_entities.
+    falsifies_if: chunk entity count exceeds max_entities.
     """
     if len(chunk.entities) > max_entities:
         return False, ProofObject(
@@ -176,6 +181,7 @@ def check_redstone_propagation(circuit: RedstoneCircuit, max_propagation: int) -
     """Redstone signals have maximum propagation distance (15 blocks for dust).
     
     Falsifies if: circuit components exceed the redstone signal strength limit.
+    falsifies_if: circuit components exceed the redstone signal strength limit.
     """
     if len(circuit.components) > max_propagation:
         return False, ProofObject(

@@ -24,6 +24,7 @@ def check_ada_compliance(property: Property) -> Tuple[bool, ProofObject]:
     """ADA Title III requires accessible accommodations in public lodging.
 
     Falsifies if: property claims ADA compliance but has zero accessible rooms or
+    falsifies_if: property claims ADA compliance but has zero accessible rooms or
     accessible room ratio is below the required threshold.
     """
     if not property.ada_compliant:
@@ -70,6 +71,7 @@ def check_health_inspection_current(outlet: FoodService) -> Tuple[bool, ProofObj
     """FDA Food Code requires regular health inspections.
 
     Falsifies if: no inspection exists or last inspection is overdue.
+    falsifies_if: no inspection exists or last inspection is overdue.
     """
     if outlet.last_health_inspection is None:
         return False, ProofObject(
@@ -101,6 +103,7 @@ def check_fire_safety_compliance(property: Property) -> Tuple[bool, ProofObject]
     """NFPA 101 Life Safety Code requires current fire inspection.
 
     Falsifies if: fire_inspection_current is False.
+    falsifies_if: fire_inspection_current is False.
     """
     if not property.fire_inspection_current:
         return False, ProofObject(
@@ -123,6 +126,7 @@ def check_critical_violations(outlet: FoodService, threshold: int) -> Tuple[bool
     """Critical health violations pose immediate public health risk.
 
     Falsifies if: critical_violations exceed the allowed threshold.
+    falsifies_if: critical_violations exceed the allowed threshold.
     """
     if outlet.critical_violations > threshold:
         return False, ProofObject(
@@ -146,6 +150,7 @@ def check_overbooking_protection(property: Property, reservation_count: int) -> 
     """Overbooking without walk protection plan violates consumer protection.
 
     Falsifies if: reservation_count exceeds total_rooms by more than the allowed
+    falsifies_if: reservation_count exceeds total_rooms by more than the allowed
     tolerance without protection.
     """
     if reservation_count > property.total_rooms:
@@ -177,6 +182,7 @@ def check_ada_reservation_honored(reservation: Reservation, assigned_room: Guest
     """ADA requires accessible room requests be honored when available.
 
     Falsifies if: guest requested an accessible room but received a non-accessible
+    falsifies_if: guest requested an accessible room but received a non-accessible
     assignment while such rooms are available.
     """
     if reservation.ada_room_requested and not assigned_room.ada_accessible:

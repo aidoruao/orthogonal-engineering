@@ -25,6 +25,7 @@ def check_adea_age_discrimination_prohibition() -> Tuple[bool, ProofObject]:
     
     Standard: ADEA §4(a); 29 U.S.C. §623(a)
     Falsifies if: Adverse employment action taken because of age (40+).
+    falsifies_if: Adverse employment action taken because of age (40+).
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -92,6 +93,7 @@ def check_older_americans_act_services() -> Tuple[bool, ProofObject]:
     
     Standard: Older Americans Act Title III; 42 U.S.C. §3021
     Falsifies if: Eligible individual denied access to OAA-funded services.
+    falsifies_if: Eligible individual denied access to OAA-funded services.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -165,6 +167,7 @@ def check_long_term_care_ombudsman_program() -> Tuple[bool, ProofObject]:
     
     Standard: Older Americans Act Title VII; 42 U.S.C. §3058g
     Falsifies if: Resident complaint not investigated or confidentiality breached.
+    falsifies_if: Resident complaint not investigated or confidentiality breached.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -239,6 +242,7 @@ def check_erisa_pension_vesting() -> Tuple[bool, ProofObject]:
     
     Standard: ERISA §203; 29 U.S.C. §1053
     Falsifies if: Benefits forfeited after completion of vesting service.
+    falsifies_if: Benefits forfeited after completion of vesting service.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -310,6 +314,7 @@ def check_adult_protective_services_mandate() -> Tuple[bool, ProofObject]:
     
     Standard: Adult Protective Services Act (state laws); Social Security Act §2001
     Falsifies if: Report of elder abuse not investigated or protective services not provided.
+    falsifies_if: Report of elder abuse not investigated or protective services not provided.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -386,6 +391,7 @@ def check_nursing_facility_medicaid_requirements() -> Tuple[bool, ProofObject]:
     
     Standard: Social Security Act §1919; 42 U.S.C. §1396r
     Falsifies if: Facility receives Medicaid without meeting nursing facility requirements.
+    falsifies_if: Facility receives Medicaid without meeting nursing facility requirements.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -467,6 +473,7 @@ def run_all_invariants() -> dict:
     """Run all D_ELDER_LAW invariants.
 
     Falsifies if: any elder law invariant check fails or raises an exception.
+    falsifies_if: any elder law invariant check fails or raises an exception.
     """
     checks = [
         ("check_adea_age_discrimination_prohibition", check_adea_age_discrimination_prohibition),

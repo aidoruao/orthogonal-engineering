@@ -29,6 +29,7 @@ def check_dependency_hash_verification() -> Tuple[bool, ProofObject]:
     """Verify all dependencies have matching hashes.
     
     Falsifies if: dependency hash verification passes with wrong hash or fails with correct hash.
+    falsifies_if: dependency hash verification passes with wrong hash or fails with correct hash.
     """
     checker = D_SUPPLY_CHAIN_SECURITYChecker()
     
@@ -64,6 +65,7 @@ def check_vulnerability_scanning() -> Tuple[bool, ProofObject]:
     """Verify dependencies are checked against known vulnerabilities.
     
     Falsifies if: vulnerable dependency is not flagged or safe dependency is misflagged.
+    falsifies_if: vulnerable dependency is not flagged or safe dependency is misflagged.
     """
     checker = D_SUPPLY_CHAIN_SECURITYChecker()
     
@@ -111,6 +113,7 @@ def check_artifact_signing() -> Tuple[bool, ProofObject]:
     """Verify all artifacts are cryptographically signed.
     
     Falsifies if: signed artifact verification fails or unsigned artifact passes.
+    falsifies_if: signed artifact verification fails or unsigned artifact passes.
     """
     checker = D_SUPPLY_CHAIN_SECURITYChecker()
     
@@ -153,6 +156,7 @@ def check_sbom_completeness() -> Tuple[bool, ProofObject]:
     """Verify SBOM includes all dependencies.
     
     Falsifies if: SBOM omits dependencies or required fields (name, version, hash, source).
+    falsifies_if: SBOM omits dependencies or required fields (name, version, hash, source).
     """
     deps = [
         Dependency(name="lib1", version="1.0", hash="h1", source="pypi"),
@@ -206,6 +210,7 @@ def check_provenance_tracking() -> Tuple[bool, ProofObject]:
     """Verify artifact provenance is tracked.
     
     Falsifies if: provenance entries are insufficient or missing commit/builder information.
+    falsifies_if: provenance entries are insufficient or missing commit/builder information.
     """
     artifact = Artifact(
         artifact_id="ART-003",
@@ -254,6 +259,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check.
 
     Falsifies if: any supply chain security invariant check fails.
+    falsifies_if: any supply chain security invariant check fails.
     """
     checks = [
         check_dependency_hash_verification,

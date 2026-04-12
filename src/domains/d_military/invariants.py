@@ -28,6 +28,7 @@ def check_pow_rights(detention: DetentionOperation) -> Tuple[bool, ProofObject]:
     """Geneva III requires ICRC notification for POWs.
     
     Falsifies if: POW rights apply and icrc_notified is False.
+    falsifies_if: POW rights apply and icrc_notified is False.
     """
     if detention.pow_rights_applicable() and not detention.icrc_notified:
         return False, ProofObject(
@@ -54,6 +55,7 @@ def check_proportionality(operation: MilitaryOperation) -> Tuple[bool, ProofObje
     """LOAC requires proportionality between military advantage and collateral damage.
     
     Falsifies if: civilian casualties are excessive relative to military gain.
+    falsifies_if: civilian casualties are excessive relative to military gain.
     """
     if operation.civilian_casualties > 0:
         # If high civilian casualties but minimal military gain
@@ -83,6 +85,7 @@ def check_indiscriminate_weapons(operation: MilitaryOperation) -> Tuple[bool, Pr
     """Weapons that cannot be directed at military objectives are prohibited.
     
     Falsifies if: operation uses an indiscriminate weapon.
+    falsifies_if: operation uses an indiscriminate weapon.
     """
     if operation.indiscriminate_weapon:
         return False, ProofObject(
@@ -106,6 +109,7 @@ def check_medical_neutrality(operation: MilitaryOperation) -> Tuple[bool, ProofO
     """Medical units and personnel are protected under Geneva Conventions.
     
     Falsifies if: target_category is MEDICAL.
+    falsifies_if: target_category is MEDICAL.
     """
     if operation.target_category == TargetCategory.MEDICAL:
         return False, ProofObject(
@@ -128,6 +132,7 @@ def check_cultural_property_protection(operation: MilitaryOperation) -> Tuple[bo
     """Hague Convention protects cultural property in armed conflict.
     
     Falsifies if: target_category is CULTURAL_PROPERTY.
+    falsifies_if: target_category is CULTURAL_PROPERTY.
     """
     if operation.target_category == TargetCategory.CULTURAL_PROPERTY:
         return False, ProofObject(
@@ -150,6 +155,7 @@ def check_enhanced_interrogation_prohibition(detention: DetentionOperation) -> T
     """Torture and CIDTP (Cruel, Inhuman, Degrading Treatment) absolutely prohibited.
     
     Falsifies if: enhanced_interrogation_used is True.
+    falsifies_if: enhanced_interrogation_used is True.
     """
     if detention.enhanced_interrogation_used:
         return False, ProofObject(

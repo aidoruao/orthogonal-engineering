@@ -27,8 +27,10 @@ def check_securities_registration_requirement() -> Tuple[bool, ProofObject]:
     
     Standard: Securities Act of 1933 §5
     Falsifies if: Unregistered non-exempt security offered.
+    falsifies_if: Unregistered non-exempt security offered.
     
     Falsifies if: valid_offering or exempt_offering is False, or unregistered_public is True.
+    falsifies_if: valid_offering or exempt_offering is False, or unregistered_public is True.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -72,8 +74,10 @@ def check_sox_internal_controls() -> Tuple[bool, ProofObject]:
     
     Standard: SOX §404 (15 U.S.C. §7262)
     Falsifies if: CEO/CFO certify without adequate ICFR.
+    falsifies_if: CEO/CFO certify without adequate ICFR.
     
     Falsifies if: certification_valid is False, auditor_attestation is False, or revenue_exact is False.
+    falsifies_if: certification_valid is False, auditor_attestation is False, or revenue_exact is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -120,8 +124,10 @@ def check_insider_trading_prohibition() -> Tuple[bool, ProofObject]:
     
     Standard: SEC Rule 10b-5; Dirks v. SEC (1983)
     Falsifies if: Trade on MNPI without violation detection.
+    falsifies_if: Trade on MNPI without violation detection.
     
     Falsifies if: violation or tippee_liability is False.
+    falsifies_if: violation or tippee_liability is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -174,8 +180,10 @@ def check_investment_adviser_fiduciary() -> Tuple[bool, ProofObject]:
     
     Standard: SEC v. Capital Gains (1963); Advisers Act §206
     Falsifies if: Adviser profits at client's expense.
+    falsifies_if: Adviser profits at client's expense.
     
     Falsifies if: duty_of_care, duty_of_loyalty, fee_exact, or fee_disclosed is False.
+    falsifies_if: duty_of_care, duty_of_loyalty, fee_exact, or fee_disclosed is False.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -227,6 +235,7 @@ def check_derivatives_clearing_mandatory() -> Tuple[bool, ProofObject]:
     
     Standard: Dodd-Frank §723 (Clearing requirement)
     Falsifies if: Uncleared standardized swap executed.
+    falsifies_if: Uncleared standardized swap executed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -274,6 +283,7 @@ def check_financial_reporting_fraction_precision() -> Tuple[bool, ProofObject]:
     
     Standard: FASB ASC 275 (Risks and uncertainties)
     Falsifies if: EPS or share counts use float approximation.
+    falsifies_if: EPS or share counts use float approximation.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -318,6 +328,7 @@ def run_all_invariants() -> dict:
     """Run all D_FINANCIAL invariants.
 
     Falsifies if: any financial invariant check fails or raises an exception.
+    falsifies_if: any financial invariant check fails or raises an exception.
     """
     checks = [
         ("check_securities_registration_requirement", check_securities_registration_requirement),

@@ -11,6 +11,7 @@ def check_nash_equilibrium(solver: NashSolver) -> Tuple[bool, ProofObject]:
     """Verify strategy profile is Nash equilibrium.
 
     Falsifies if: a profitable unilateral deviation exists.
+    falsifies_if: a profitable unilateral deviation exists.
     """
     if not solver.is_nash_equilibrium():
         return False, ProofObject(
@@ -30,6 +31,7 @@ def check_zero_sum_property(verifier: ZeroSumVerifier) -> Tuple[bool, ProofObjec
     """Zero-sum game: payoffs sum to zero for all profiles.
 
     Falsifies if: any payoff profile sums to a non-zero value.
+    falsifies_if: any payoff profile sums to a non-zero value.
     """
     if not verifier.is_zero_sum():
         return False, ProofObject(
@@ -49,6 +51,7 @@ def check_pareto_optimality(frontier: ParetoFrontier, outcome) -> Tuple[bool, Pr
     """Verify outcome is Pareto optimal.
 
     Falsifies if: there exists another outcome that improves at least one player
+    falsifies_if: there exists another outcome that improves at least one player
     without worsening others.
     """
     if not frontier.is_pareto_optimal(outcome):

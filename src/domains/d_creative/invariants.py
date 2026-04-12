@@ -20,6 +20,7 @@ def check_cc_by_attribution(work: CreativeWork) -> Tuple[bool, ProofObject]:
     Creative Commons BY license requires author attribution.
 
     Falsifies if: license_type == CC_BY AND NOT author_attributed
+    falsifies_if: license_type == CC_BY AND NOT author_attributed
     """
     if work.license_type == LicenseType.CC_BY and not work.author_attributed:
         return False, ProofObject(
@@ -46,6 +47,7 @@ def check_generative_reproducibility(gen: GenerativeOutput) -> Tuple[bool, Proof
     Generative AI: fixed seed in deterministic mode must produce reproducible output.
 
     Falsifies if: mode == DETERMINISTIC AND seed is not None AND NOT reproducible
+    falsifies_if: mode == DETERMINISTIC AND seed is not None AND NOT reproducible
     """
     if gen.mode == GenerationMode.DETERMINISTIC and gen.seed is not None and not gen.reproducible:
         return False, ProofObject(
@@ -74,6 +76,7 @@ def check_style_transfer_content_preservation(transfer: StyleTransfer) -> Tuple[
     Style transfer must preserve >= 70% of content features.
 
     Falsifies if: content_preserved_percent < 0.70
+    falsifies_if: content_preserved_percent < 0.70
     """
     min_content = style_transfer_content_min()
 
@@ -99,6 +102,7 @@ def check_dmca_copyright_infringement(dmca: DMCACompliance) -> Tuple[bool, Proof
     DMCA: perceptually identical content to copyrighted source is infringement unless fair use.
 
     Falsifies if: perceptually_identical AND copyrighted_source AND NOT fair_use_exception
+    falsifies_if: perceptually_identical AND copyrighted_source AND NOT fair_use_exception
     """
     if dmca.perceptually_identical and dmca.copyrighted_source and not dmca.fair_use_exception:
         return False, ProofObject(
@@ -126,6 +130,7 @@ def check_cc_by_sa_share_alike(work: CreativeWork) -> Tuple[bool, ProofObject]:
     Creative Commons BY-SA (ShareAlike): derivative works must use same license.
 
     Falsifies if: license_type != CC_BY_SA AND derivative_of points to CC_BY_SA work
+    falsifies_if: license_type != CC_BY_SA AND derivative_of points to CC_BY_SA work
     (This check requires access to parent work license, simplified here)
     """
     if work.license_type == LicenseType.CC_BY_SA and work.derivative_of:

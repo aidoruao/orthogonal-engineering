@@ -25,6 +25,7 @@ def check_fifteenth_amendment_race() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Amend. XV - Right of citizens to vote
     Falsifies if: Voting denied on account of race, color, or previous condition of servitude.
+    falsifies_if: Voting denied on account of race, color, or previous condition of servitude.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -71,6 +72,7 @@ def check_nineteenth_amendment_sex() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Amend. XIX - Women's suffrage
     Falsifies if: Voting denied on account of sex.
+    falsifies_if: Voting denied on account of sex.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -112,6 +114,7 @@ def check_twenty_fourth_amendment_poll_tax() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Amend. XXIV - Poll tax abolished
     Falsifies if: Poll tax charged for federal voting.
+    falsifies_if: Poll tax charged for federal voting.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -152,6 +155,7 @@ def check_twenty_sixth_amendment_age() -> Tuple[bool, ProofObject]:
     
     Standard: U.S. Const. Amend. XXVI - Voting age set to 18
     Falsifies if: Voting denied to citizens 18 or older.
+    falsifies_if: Voting denied to citizens 18 or older.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -200,6 +204,7 @@ def check_vra_section_2_results_test() -> Tuple[bool, ProofObject]:
     
     Standard: 52 U.S.C. § 10301 - Denial or abridgement of right to vote
     Falsifies if: Electoral system dilutes minority voting strength.
+    falsifies_if: Electoral system dilutes minority voting strength.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -251,6 +256,7 @@ def check_shelby_county_v_holder() -> Tuple[bool, ProofObject]:
     
     Standard: Shelby County v. Holder, 570 U.S. 529 (2013)
     Falsifies if: Preclearance applied without new coverage formula.
+    falsifies_if: Preclearance applied without new coverage formula.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -298,6 +304,7 @@ def run_all_invariants() -> dict:
     """Run all D_VOTING_RIGHTS invariants.
 
     Falsifies if: any voting rights invariant check fails or raises an exception.
+    falsifies_if: any voting rights invariant check fails or raises an exception.
     """
     checks = [
         ("check_fifteenth_amendment_race", check_fifteenth_amendment_race),

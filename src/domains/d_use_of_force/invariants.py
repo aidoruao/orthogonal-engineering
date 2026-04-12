@@ -28,6 +28,7 @@ def check_force_proportionality() -> Tuple[bool, ProofObject]:
     """Verify force level is proportional to threat level.
     
     Falsifies if: force applied exceeds threat level proportionality.
+    falsifies_if: force applied exceeds threat level proportionality.
     """
     checker = D_USE_OF_FORCEChecker()
     
@@ -80,6 +81,7 @@ def check_deadly_force_necessity() -> Tuple[bool, ProofObject]:
     """Verify deadly force is only used for imminent threat of death.
     
     Falsifies if: deadly force is used absent an imminent death threat or policy exception.
+    falsifies_if: deadly force is used absent an imminent death threat or policy exception.
     """
     checker = D_USE_OF_FORCEChecker()
     
@@ -140,6 +142,7 @@ def check_de_escalation_attempted() -> Tuple[bool, ProofObject]:
     """Verify de-escalation is attempted before physical force.
     
     Falsifies if: de-escalation is required but not attempted before force.
+    falsifies_if: de-escalation is required but not attempted before force.
     """
     checker = D_USE_OF_FORCEChecker()
     
@@ -200,6 +203,7 @@ def check_documentation_complete() -> Tuple[bool, ProofObject]:
     """Verify all use of force incidents are fully documented.
     
     Falsifies if: required documentation fields (id, timestamp, officer, justification,
+    falsifies_if: required documentation fields (id, timestamp, officer, justification,
     force_used, threat_level) are missing.
     """
     incident = UseOfForceIncident(
@@ -262,6 +266,7 @@ def check_less_lethal_before_deadly() -> Tuple[bool, ProofObject]:
     """Verify less-lethal options considered before deadly force.
     
     Falsifies if: less-lethal options are bypassed when threat is high but not
+    falsifies_if: less-lethal options are bypassed when threat is high but not
     imminent death.
     """
     # When threat is high but not imminent death, less-lethal should be used
@@ -300,6 +305,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check.
 
     Falsifies if: any use-of-force invariant check fails.
+    falsifies_if: any use-of-force invariant check fails.
     """
     checks = [
         check_force_proportionality,

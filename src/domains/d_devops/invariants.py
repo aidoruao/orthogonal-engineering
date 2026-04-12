@@ -42,6 +42,7 @@ def check_pipeline_determinism() -> Tuple[bool, ProofObject]:
 
     This is the core DevOps invariant: reproducible builds.
     Falsifies if: pipeline outcomes or artifacts differ for identical inputs.
+    falsifies_if: pipeline outcomes or artifacts differ for identical inputs.
     """
     checker = D_DEVOPSChecker()
     
@@ -83,6 +84,7 @@ def check_infrastructure_idempotency() -> Tuple[bool, ProofObject]:
     produces the same end state (no drift on re-apply).
 
     Falsifies if: repeated apply results differ (not idempotent).
+    falsifies_if: repeated apply results differ (not idempotent).
     """
     checker = D_DEVOPSChecker()
     
@@ -125,6 +127,7 @@ def check_rollback_capability() -> Tuple[bool, ProofObject]:
     known-good state within the RTO (Recovery Time Objective).
 
     Falsifies if: rollback fails or exceeds the 5-minute RTO.
+    falsifies_if: rollback fails or exceeds the 5-minute RTO.
     """
     checker = D_DEVOPSChecker()
     
@@ -162,6 +165,7 @@ def check_secret_rotation() -> Tuple[bool, ProofObject]:
     and that expired secrets trigger alerts.
 
     Falsifies if: expired secrets are not detected or lack rotation plans.
+    falsifies_if: expired secrets are not detected or lack rotation plans.
     """
     checker = D_DEVOPSChecker()
     
@@ -205,6 +209,7 @@ def check_monitoring_coverage() -> Tuple[bool, ProofObject]:
     - Log aggregation
 
     Falsifies if: monitoring gaps are not detected for services lacking coverage.
+    falsifies_if: monitoring gaps are not detected for services lacking coverage.
     """
     checker = D_DEVOPSChecker()
     
@@ -247,6 +252,7 @@ def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
     """Master compliance check — deterministic execution.
 
     Falsifies if: any DevOps sub-check returns False.
+    falsifies_if: any DevOps sub-check returns False.
     """
     checks = [
         check_pipeline_determinism,
