@@ -1,11 +1,30 @@
 ---
-tags: [checkpoint, pr120, potemkin, oe_engine]
+tags: [checkpoint, pr120, potemkin, oe_engine, completed]
 register: technical
 created: 2026-04-12T22:19:33Z
+updated: 2026-04-12T22:35:00Z
 branch: copilot/research-runtime-layer-status
+status: COMPLETE
 ---
 
-# PR #120 Checkpoint — Copilot Handoff Document
+# PR #120 Checkpoint — COMPLETED
+
+**All 56/56 Potemkin domain rewrites done. oe_engine complete. PR #120 ready for merge.**
+
+Session 3 (commit 48db01e) completed all 35 remaining domains:
+d_corporate_law, d_financial, d_intellectual_property, d_real_estate, d_zoning,
+d_ai_ontological_status, d_crypto, d_devops, d_game_engine_development, d_incident_response,
+d_mobile_development, d_open_source_governance, d_international_criminal, d_international_humanitarian,
+d_intl_criminal, d_intl_humanitarian, d_trade_agreements, d_treaties, d_un_charter, d_urban_planning,
+d_curriculum, d_elder_law, d_iso_standards, d_medical, d_police_procedure, d_road_standards,
+d_school_districts, d_school_funding, d_remote_sensing, d_supply_chain_security,
+d_telecommunications_law, d_transportation, d_use_of_force, d_voting_rights, d_graphics.
+
+All return (bool, ProofObject), use Fraction (no float), cite real standards, have falsifies_if.
+
+---
+
+# PR #120 Original Handoff Document
 
 This file is the external memory for the next Copilot session working PR #120.
 Read this BEFORE making any changes. It records exact work done, what remains,
