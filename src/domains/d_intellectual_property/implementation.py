@@ -458,7 +458,7 @@ class TrademarkAnalyzer:
         
         # Calculate confusion likelihood
         confusion_factors = {
-            "mark_similarity": float(similarity),
+            "mark_similarity": similarity,
             "senior_strength": strength_factor,
             "likely_confusion": similarity >= Fraction(3, 4) and strength_factor >= 2,
         }

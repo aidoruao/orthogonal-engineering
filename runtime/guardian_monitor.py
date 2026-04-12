@@ -121,15 +121,60 @@ class GuardianMonitor:
                 message = f"State corruption detected via invariant: {context.get('message', 'unknown')}"
 
         elif condition == MonitoredCondition.PURPOSE_MISALIGNMENT:
-            # Check if action contradicts declared purpose
+            """
+            Falsifies if: action is not in allowed_actions for the declared purpose,
+            or purpose_hash in context does not match sha256(declared_purpose).
+            """
             if "action" in context and "declared_purpose" in context:
                 action = context["action"]
                 purpose = context["declared_purpose"]
-                # Simple check: if action contains negation of purpose
-                if ("not" in action and purpose.lower() in action.lower()) or \
-                   (purpose.lower() not in action.lower() and len(action) > 10):
+
+                # Derive a hash commitment to the declared purpose so
+                # callers cannot swap purpose after the fact.
+                expected_purpose_hash = hashlib.sha256(
+                    purpose.encode("utf-8")
+                ).hexdigest()
+                provided_purpose_hash = context.get("purpose_hash", "")
+
+                # If the caller provided a purpose_hash, verify it matches.
+                purpose_hash_mismatch = bool(provided_purpose_hash) and (
+                    provided_purpose_hash != expected_purpose_hash
+                )
+
+                # The set of actions explicitly permitted for this purpose.
+                # Keys are normalised to lower-case; the set is drawn from the
+                # context if supplied, otherwise falls back to the declared
+                # purpose name itself as the only permitted action.
+                allowed_raw: List[str] = context.get(
+                    "allowed_actions", [purpose.lower()]
+                )
+                allowed_actions_set = {a.lower().strip() for a in allowed_raw}
+                action_not_allowed = action.lower().strip() not in allowed_actions_set
+
+                # Flag misalignment fraction — 1 if both checks fail, else
+                # 1/2 for partial failure. 0 means no misalignment.
+                misalignment_score = Fraction(
+                    int(purpose_hash_mismatch) + int(action_not_allowed), 2
+                )
+
+                if misalignment_score > Fraction(0):
                     detected = True
-                    message = f"Purpose misalignment: action '{action}' contradicts purpose '{purpose}'"
+                    reasons: List[str] = []
+                    if purpose_hash_mismatch:
+                        reasons.append(
+                            f"purpose_hash mismatch "
+                            f"(expected={expected_purpose_hash[:12]}…, "
+                            f"got={provided_purpose_hash[:12]}…)"
+                        )
+                    if action_not_allowed:
+                        reasons.append(
+                            f"action '{action}' not in allowed_actions "
+                            f"{sorted(allowed_actions_set)}"
+                        )
+                    message = (
+                        f"PURPOSE_MISALIGNMENT (score={misalignment_score}): "
+                        + "; ".join(reasons)
+                    )
 
         elif condition == MonitoredCondition.RECURSIVE_FRAME_MANIPULATION:
             # Check for recursive self-reference or frame depth exceeding threshold

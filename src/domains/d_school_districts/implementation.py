@@ -276,7 +276,7 @@ class GerrymanderingDetector:
         
         # Estimate perimeter from area (assuming square: P = 4√A)
         # This is a simplification
-        perimeter = Fraction(4) * Fraction(int(math.sqrt(float(area) * 4)), 1)
+        perimeter = Fraction(4) * Fraction(math.isqrt(int(area * 4)), 1)
         
         polsby_popper = self.calculate_polsby_popper(area, perimeter)
         

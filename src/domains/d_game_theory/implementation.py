@@ -108,16 +108,18 @@ class MinimaxSolver:
     
     def maximin_value(self) -> Fraction:
         """Maximum of minimum payoffs (security level)."""
-        max_min = Fraction(float('-inf'))
+        security_level: Optional[Fraction] = None
         
         for strategy in self.game.strategies.get(self.player, []):
-            min_payoff = Fraction(float('inf'))
+            min_payoff: Optional[Fraction] = None
             
             for profile, payoffs in self.game.payoffs.items():
                 idx = self.game.players.index(self.player)
                 if profile[idx] == strategy:
-                    min_payoff = min(min_payoff, payoffs[idx])
+                    p = payoffs[idx]
+                    min_payoff = p if min_payoff is None else min(min_payoff, p)
             
-            max_min = max(max_min, min_payoff)
+            if min_payoff is not None:
+                security_level = min_payoff if security_level is None else max(security_level, min_payoff)
         
-        return max_min
+        return security_level if security_level is not None else Fraction(0)

@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Check for float violations in domains
+      - name: Check for float violations in domains (invariants)
         run: |
           violations=$(grep -rn "float(\|isclose(" src/domains/*/invariants.py || true)
           if [ -n "$violations" ]; then
@@ -13,7 +13,16 @@ jobs:
             echo "$violations"
             exit 1
           fi
-          echo "No float violations found."
+          echo "No float violations found in invariants."
+      - name: Check for float violations in domains (implementation)
+        run: |
+          violations=$(grep -rn "float(\|isclose(" src/domains/*/implementation.py || true)
+          if [ -n "$violations" ]; then
+            echo "FLOAT VIOLATIONS IN IMPLEMENTATION FILES:"
+            echo "$violations"
+            exit 1
+          fi
+          echo "No float violations found in implementation files."
       - name: Check for float violations in bar exam
         run: |
           violations=$(grep -rn "float(" pr50_bar_exam/ || true)
@@ -23,10 +32,15 @@ jobs:
             exit 1
           fi
       - name: Verify falsifies_if coverage
+        # Bug fix: use -iE with bracket expression [_ ] to match both:
+        #   "Falsifies if:" (docstring format, space separator) and
+        #   "falsifies_if:" / "falsifies_if=" (underscore formats).
         run: |
-          total=$(ls -d src/domains/*/invariants.py | wc -l)
-          covered=$(grep -rl "falsifies_if" src/domains/*/invariants.py | wc -l)
+          total=$(find src/domains -maxdepth 2 -name "invariants.py" | wc -l)
+          covered=$(grep -iErl "falsifies[_ ]if" src/domains/*/invariants.py | wc -l)
           echo "falsifies_if coverage: $covered / $total"
           if [ "$covered" -lt "$total" ]; then
-            echo "WARNING: Not all domains have falsifies_if"
+            echo "FAIL: Not all domain invariants have falsifies_if"
+            exit 1
           fi
+          echo "PASS: All $total domains have falsifies_if coverage."

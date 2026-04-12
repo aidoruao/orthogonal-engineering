@@ -320,7 +320,7 @@ class SignalTimingEngine:
             "signal_id": signal.signal_id,
             "reproducible": plan1.green_times == plan2.green_times and
                            plan1.cycle_length == plan2.cycle_length,
-            "cycle_length": float(plan1.cycle_length),
+            "cycle_length": plan1.cycle_length,
             "conditions_hash": plan1.traffic_conditions_hash,
         }
 
