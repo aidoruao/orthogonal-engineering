@@ -130,7 +130,9 @@ def check_director_id_nonempty(director: Director) -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     director = Director(name="Alice Smith", director_id="DIR-001")
     tx = CorporateTransaction(
         transaction_id="TX-001",

@@ -131,7 +131,9 @@ def check_sex_nondiscrimination(voter: Voter) -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     voter = Voter(voter_id="V001", age=25, is_citizen=True, race="", sex="", has_paid_poll_tax=True)
     from datetime import datetime as dt
     ballot = Ballot(

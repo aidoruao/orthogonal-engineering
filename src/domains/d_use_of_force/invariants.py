@@ -171,7 +171,9 @@ def check_threat_assessment_ratio(incident: UseOfForceIncident) -> Tuple[bool, P
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     incident = UseOfForceIncident(
         incident_id="TEST-001",

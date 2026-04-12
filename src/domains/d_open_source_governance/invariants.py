@@ -121,7 +121,9 @@ def check_project_name_nonempty(project: OpenSourceProject) -> Tuple[bool, Proof
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from .implementation import LicenseType
     project = OpenSourceProject(
         project_id="PROJ-001",

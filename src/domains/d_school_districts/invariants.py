@@ -132,7 +132,9 @@ def check_population_le_area_proxy(boundary: SchoolDistrictBoundary) -> Tuple[bo
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     boundary = SchoolDistrictBoundary(
         boundary_id="BD-001", district_id="DIST-001", district_name="Springfield USD",
         area_sq_miles=Fraction(25), population=50000, student_population=8000,

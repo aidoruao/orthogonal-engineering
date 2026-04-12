@@ -123,7 +123,9 @@ def check_crash_free_nonneg(metrics: PerformanceMetrics) -> Tuple[bool, ProofObj
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from .implementation import Platform
     app = MobileApp(app_id="com.example.app", name="ExampleApp", platforms={Platform.IOS})
     metrics = PerformanceMetrics(

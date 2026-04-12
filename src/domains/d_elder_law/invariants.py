@@ -143,7 +143,9 @@ def check_facility_type_valid(facility: LongTermCareFacility) -> Tuple[bool, Pro
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     senior = Senior(
         senior_id="S001", name="Jane Doe",

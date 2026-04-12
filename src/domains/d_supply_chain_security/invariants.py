@@ -127,7 +127,9 @@ def check_dependency_source_nonempty(dep: Dependency) -> Tuple[bool, ProofObject
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from .implementation import VulnerabilitySeverity
     dep = Dependency(
         name="requests", version="2.31.0",

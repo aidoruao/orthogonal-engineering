@@ -121,7 +121,9 @@ def check_pending_not_compliant(record: MedicalSystemsRecord) -> Tuple[bool, Pro
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     record = MedicalSystemsRecord(
         record_id="MED-2024-001",
         status=MedicalSystemsStatus.COMPLIANT,

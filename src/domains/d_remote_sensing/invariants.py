@@ -132,7 +132,9 @@ def check_patch_grid_positive(grid: PatchGrid) -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     bounds = GeoBounds(min_lat=Fraction(34), max_lat=Fraction(36), min_lon=Fraction(-118), max_lon=Fraction(-116))
     grid = PatchGrid(rows=10, cols=10, total_patches=100)
     from .implementation import MaskPattern, MaskType, SpectralSignature, SpectralBand

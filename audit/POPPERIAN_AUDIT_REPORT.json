@@ -103,7 +103,7 @@
         {
           "domain": "d_agriculture",
           "float_violations": [],
-          "function": "check_organic_certification_requirements",
+          "function": "check_organic_certification",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -111,7 +111,7 @@
         {
           "domain": "d_agriculture",
           "float_violations": [],
-          "function": "check_pesticide_safety_protocols",
+          "function": "check_water_rights",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -119,7 +119,7 @@
         {
           "domain": "d_agriculture",
           "float_violations": [],
-          "function": "check_water_permit_compliance",
+          "function": "check_pesticide_withdrawal",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -127,23 +127,7 @@
         {
           "domain": "d_agriculture",
           "float_violations": [],
-          "function": "check_pre_harvest_interval",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_agriculture",
-          "float_violations": [],
-          "function": "check_subsidy_eligibility",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_agriculture",
-          "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -159,7 +143,7 @@
         {
           "domain": "d_ai_ontological_status",
           "float_violations": [],
-          "function": "check_ai_system_self_identification",
+          "function": "check_record_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -167,7 +151,7 @@
         {
           "domain": "d_ai_ontological_status",
           "float_violations": [],
-          "function": "check_transparency_report_required",
+          "function": "check_status_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -175,7 +159,7 @@
         {
           "domain": "d_ai_ontological_status",
           "float_violations": [],
-          "function": "check_model_card_exists",
+          "function": "check_compliant_record_marked_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -183,7 +167,7 @@
         {
           "domain": "d_ai_ontological_status",
           "float_violations": [],
-          "function": "check_capability_boundary_documentation",
+          "function": "check_checker_operational",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -191,7 +175,7 @@
         {
           "domain": "d_ai_ontological_status",
           "float_violations": [],
-          "function": "check_human_in_the_loop_for_high_stakes",
+          "function": "check_non_compliant_not_marked_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -199,7 +183,7 @@
         {
           "domain": "d_ai_ontological_status",
           "float_violations": [],
-          "function": "check_audit_trail_completeness",
+          "function": "check_fraction_no_float_in_axioms",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -223,47 +207,23 @@
         {
           "domain": "d_amendment_process",
           "float_violations": [],
+          "function": "check_amendment_proposal_procedure",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_amendment_process",
+          "float_violations": [],
+          "function": "check_ratification_threshold",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_amendment_process",
+          "float_violations": [],
           "function": "check_congressional_supermajority_requirement",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_amendment_process",
-          "float_violations": [],
-          "function": "check_state_ratification_three_fourths",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_amendment_process",
-          "float_violations": [],
-          "function": "check_indelible_equal_state_suffrage",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_amendment_process",
-          "float_violations": [],
-          "function": "check_amendment_process_protection",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_amendment_process",
-          "float_violations": [],
-          "function": "check_alternative_state_convention_method",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_amendment_process",
-          "float_violations": [],
-          "function": "check_twenty_seventh_amendment_ratification",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -535,6 +495,30 @@
         {
           "domain": "d_aviation",
           "float_violations": [],
+          "function": "check_flight_envelope_compliance",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_aviation",
+          "float_violations": [],
+          "function": "check_pilot_certification",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_aviation",
+          "float_violations": [],
+          "function": "check_ifr_requirements",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_aviation",
+          "float_violations": [],
           "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
@@ -663,6 +647,30 @@
         {
           "domain": "d_banking_regulation",
           "float_violations": [],
+          "function": "check_capital_adequacy",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_banking_regulation",
+          "float_violations": [],
+          "function": "check_usury_limit",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_banking_regulation",
+          "float_violations": [],
+          "function": "check_trid_disclosure",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_banking_regulation",
+          "float_violations": [],
           "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
@@ -711,7 +719,7 @@
         {
           "domain": "d_bill_of_rights",
           "float_violations": [],
-          "function": "check_first_amendment_free_speech",
+          "function": "check_first_amendment_prior_restraint",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -719,7 +727,7 @@
         {
           "domain": "d_bill_of_rights",
           "float_violations": [],
-          "function": "check_first_amendment_religion_clauses",
+          "function": "check_strict_scrutiny_applied",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -727,31 +735,7 @@
         {
           "domain": "d_bill_of_rights",
           "float_violations": [],
-          "function": "check_fourth_amendment_search_seizure",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_bill_of_rights",
-          "float_violations": [],
-          "function": "check_fifth_amendment_due_process",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_bill_of_rights",
-          "float_violations": [],
-          "function": "check_fifth_amendment_double_jeopardy",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_bill_of_rights",
-          "float_violations": [],
-          "function": "check_eighth_amendment_cruel_unusual",
+          "function": "check_bill_of_rights_state_action",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -951,7 +935,7 @@
         {
           "domain": "d_building_codes",
           "float_violations": [],
-          "function": "check_egress_capacity_calculation",
+          "function": "check_fire_egress",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -959,7 +943,7 @@
         {
           "domain": "d_building_codes",
           "float_violations": [],
-          "function": "check_fire_resistance_rating",
+          "function": "check_occupant_load",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -967,31 +951,7 @@
         {
           "domain": "d_building_codes",
           "float_violations": [],
-          "function": "check_ada_ramp_slope",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_building_codes",
-          "float_violations": [],
-          "function": "check_structural_load_combinations",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_building_codes",
-          "float_violations": [],
-          "function": "check_accessible_parking_ratio",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_building_codes",
-          "float_violations": [],
-          "function": "check_nfpa_egress_travel_distance",
+          "function": "check_mechanical_compliance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1199,7 +1159,7 @@
         {
           "domain": "d_citizenship",
           "float_violations": [],
-          "function": "check_fourteenth_amendment_birthright",
+          "function": "check_naturalization_requirements",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1207,7 +1167,7 @@
         {
           "domain": "d_citizenship",
           "float_violations": [],
-          "function": "check_naturalization_residency_requirement",
+          "function": "check_no_criminal_disqualification",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1215,31 +1175,7 @@
         {
           "domain": "d_citizenship",
           "float_violations": [],
-          "function": "check_naturalization_good_moral_character",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_citizenship",
-          "float_violations": [],
-          "function": "check_citizenship_through_derivation",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_citizenship",
-          "float_violations": [],
-          "function": "check_dual_nationality_recognition",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_citizenship",
-          "float_violations": [],
-          "function": "check_renunciation_requirements",
+          "function": "check_residency_duration",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1263,7 +1199,7 @@
         {
           "domain": "d_civil_law",
           "float_violations": [],
-          "function": "check_contract_formation_requirements",
+          "function": "check_tort_elements",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1271,7 +1207,7 @@
         {
           "domain": "d_civil_law",
           "float_violations": [],
-          "function": "check_statute_of_frauds_compliance",
+          "function": "check_statute_of_frauds",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1279,31 +1215,7 @@
         {
           "domain": "d_civil_law",
           "float_violations": [],
-          "function": "check_frcp_timing_deadlines",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_civil_law",
-          "float_violations": [],
-          "function": "check_damages_calculation_precision",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_civil_law",
-          "float_violations": [],
-          "function": "check_burden_of_proof_allocation",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_civil_law",
-          "float_violations": [],
-          "function": "check_res_judicata_effect",
+          "function": "check_contract_formation",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1671,6 +1583,30 @@
         {
           "domain": "d_corporate_compliance",
           "float_violations": [],
+          "function": "check_corporate_registration",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_corporate_compliance",
+          "float_violations": [],
+          "function": "check_beneficial_ownership_reporting",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_corporate_compliance",
+          "float_violations": [],
+          "function": "check_sox_compliance",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_corporate_compliance",
+          "float_violations": [],
           "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
@@ -1687,7 +1623,7 @@
         {
           "domain": "d_corporate_law",
           "float_violations": [],
-          "function": "check_director_fiduciary_duties",
+          "function": "check_self_dealing_requires_disclosure",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1695,7 +1631,7 @@
         {
           "domain": "d_corporate_law",
           "float_violations": [],
-          "function": "check_shareholder_voting_rights",
+          "function": "check_duty_of_loyalty_prevents_self_dealing",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1703,7 +1639,7 @@
         {
           "domain": "d_corporate_law",
           "float_violations": [],
-          "function": "check_merger_approval_requirements",
+          "function": "check_corporate_veil_piercing_factors_cumulative",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1711,7 +1647,7 @@
         {
           "domain": "d_corporate_law",
           "float_violations": [],
-          "function": "check_piercing_corporate_veil",
+          "function": "check_transaction_board_approved",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1719,7 +1655,7 @@
         {
           "domain": "d_corporate_law",
           "float_violations": [],
-          "function": "check_proxy_statement_disclosure",
+          "function": "check_transaction_value_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1727,7 +1663,7 @@
         {
           "domain": "d_corporate_law",
           "float_violations": [],
-          "function": "check_duty_of_care_exact_compliance",
+          "function": "check_director_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1799,7 +1735,7 @@
         {
           "domain": "d_criminal_law",
           "float_violations": [],
-          "function": "check_probable_cause_requirement",
+          "function": "check_fourth_amendment_search",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1807,7 +1743,7 @@
         {
           "domain": "d_criminal_law",
           "float_violations": [],
-          "function": "check_miranda_rights_timing",
+          "function": "check_due_process_charge",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1815,31 +1751,7 @@
         {
           "domain": "d_criminal_law",
           "float_violations": [],
-          "function": "check_beyond_reasonable_doubt",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_criminal_law",
-          "float_violations": [],
-          "function": "check_double_jeopardy_protection",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_criminal_law",
-          "float_violations": [],
-          "function": "check_confrontation_clause",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_criminal_law",
-          "float_violations": [],
-          "function": "check_mens_rea_requirement",
+          "function": "check_double_jeopardy_bar",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1991,7 +1903,7 @@
         {
           "domain": "d_crypto",
           "float_violations": [],
-          "function": "check_constant_time_compare_uses_hmac",
+          "function": "check_constant_time_compare_equal",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -1999,7 +1911,7 @@
         {
           "domain": "d_crypto",
           "float_violations": [],
-          "function": "check_psk_zero_rejected",
+          "function": "check_constant_time_compare_unequal",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2007,7 +1919,7 @@
         {
           "domain": "d_crypto",
           "float_violations": [],
-          "function": "check_psk_nonzero_accepted",
+          "function": "check_validate_psk_rejects_zero_key",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2015,7 +1927,7 @@
         {
           "domain": "d_crypto",
           "float_violations": [],
-          "function": "check_hmac_deterministic",
+          "function": "check_generate_psk_nonzero",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2023,7 +1935,7 @@
         {
           "domain": "d_crypto",
           "float_violations": [],
-          "function": "check_key_entropy_minimum",
+          "function": "check_crypto_error_no_secret_in_msg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2031,7 +1943,7 @@
         {
           "domain": "d_crypto",
           "float_violations": [],
-          "function": "check_hmac_length_integrity",
+          "function": "check_validate_psk_accepts_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2095,7 +2007,7 @@
         {
           "domain": "d_curriculum",
           "float_violations": [],
-          "function": "check_essa_academic_standards",
+          "function": "check_standard_has_objective",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2103,7 +2015,7 @@
         {
           "domain": "d_curriculum",
           "float_violations": [],
-          "function": "check_assessment_system_validity",
+          "function": "check_framework_has_standards",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2111,7 +2023,7 @@
         {
           "domain": "d_curriculum",
           "float_violations": [],
-          "function": "check_idea_fape_requirement",
+          "function": "check_textbook_coverage_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2119,7 +2031,7 @@
         {
           "domain": "d_curriculum",
           "float_violations": [],
-          "function": "check_common_core_math_progressions",
+          "function": "check_textbook_depth_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2127,7 +2039,7 @@
         {
           "domain": "d_curriculum",
           "float_violations": [],
-          "function": "check_common_core_ela_text_complexity",
+          "function": "check_standard_description_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2135,7 +2047,7 @@
         {
           "domain": "d_curriculum",
           "float_violations": [],
-          "function": "check_state_accountability_system",
+          "function": "check_framework_version_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2207,7 +2119,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_pipeline_determinism",
+          "function": "check_pipeline_deterministic",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2215,7 +2127,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_infrastructure_idempotency",
+          "function": "check_pipeline_outcome_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2223,7 +2135,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_rollback_capability",
+          "function": "check_pipeline_duration_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2231,7 +2143,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_secret_rotation",
+          "function": "check_config_name_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2239,7 +2151,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_monitoring_coverage",
+          "function": "check_infrastructure_resource_named",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2247,7 +2159,15 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_deployment_target_healthy",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_devops",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2535,7 +2455,7 @@
         {
           "domain": "d_drug_regulation",
           "float_violations": [],
-          "function": "check_new_drug_approval_requirement",
+          "function": "check_nda_approval_required",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2543,7 +2463,7 @@
         {
           "domain": "d_drug_regulation",
           "float_violations": [],
-          "function": "check_controlled_substance_scheduling",
+          "function": "check_controlled_substance_registration",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2551,31 +2471,7 @@
         {
           "domain": "d_drug_regulation",
           "float_violations": [],
-          "function": "check_prescription_requirement_schedule_ii",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_drug_regulation",
-          "float_violations": [],
-          "function": "check_clinical_trial_informed_consent",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_drug_regulation",
-          "float_violations": [],
-          "function": "check_rems_risk_mitigation",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_drug_regulation",
-          "float_violations": [],
-          "function": "check_dea_registration_controlled_substance",
+          "function": "check_prescription_requirement",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2759,7 +2655,7 @@
         {
           "domain": "d_elder_law",
           "float_violations": [],
-          "function": "check_adea_age_discrimination_prohibition",
+          "function": "check_medicare_part_b_enrollment",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2767,7 +2663,7 @@
         {
           "domain": "d_elder_law",
           "float_violations": [],
-          "function": "check_older_americans_act_services",
+          "function": "check_monthly_income_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2775,7 +2671,7 @@
         {
           "domain": "d_elder_law",
           "float_violations": [],
-          "function": "check_long_term_care_ombudsman_program",
+          "function": "check_facility_abuse_complaint_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2783,7 +2679,7 @@
         {
           "domain": "d_elder_law",
           "float_violations": [],
-          "function": "check_erisa_pension_vesting",
+          "function": "check_countable_assets_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2791,7 +2687,7 @@
         {
           "domain": "d_elder_law",
           "float_violations": [],
-          "function": "check_adult_protective_services_mandate",
+          "function": "check_nursing_facility_care_need",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2799,7 +2695,7 @@
         {
           "domain": "d_elder_law",
           "float_violations": [],
-          "function": "check_nursing_facility_medicaid_requirements",
+          "function": "check_facility_type_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2943,7 +2839,7 @@
         {
           "domain": "d_energy",
           "float_violations": [],
-          "function": "check_renewable_interconnection_standards",
+          "function": "check_ferc_licensing",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2951,7 +2847,7 @@
         {
           "domain": "d_energy",
           "float_violations": [],
-          "function": "check_nerc_cip_compliance",
+          "function": "check_renewable_portfolio_standard",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -2959,31 +2855,7 @@
         {
           "domain": "d_energy",
           "float_violations": [],
-          "function": "check_ferc_transmission_planning",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_energy",
-          "float_violations": [],
-          "function": "check_load_shedding_priority",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_energy",
-          "float_violations": [],
-          "function": "check_energy_storage_efficiency",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_energy",
-          "float_violations": [],
-          "function": "check_demand_response_enrollment",
+          "function": "check_grid_interconnection",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3007,7 +2879,7 @@
         {
           "domain": "d_environmental_law",
           "float_violations": [],
-          "function": "check_nepa_environmental_review",
+          "function": "check_clean_air_act",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3015,7 +2887,7 @@
         {
           "domain": "d_environmental_law",
           "float_violations": [],
-          "function": "check_clean_air_act_naaqs",
+          "function": "check_clean_water_npdes",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3023,7 +2895,7 @@
         {
           "domain": "d_environmental_law",
           "float_violations": [],
-          "function": "check_clean_water_act_permitting",
+          "function": "check_nepa_eis",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3031,23 +2903,7 @@
         {
           "domain": "d_environmental_law",
           "float_violations": [],
-          "function": "check_cercla_liability_allocation",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_environmental_law",
-          "float_violations": [],
-          "function": "check_esa_species_protection",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_environmental_law",
-          "float_violations": [],
-          "function": "check_environmental_compliance_fraction_precision",
+          "function": "check_rcra_manifest",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3359,7 +3215,15 @@
         {
           "domain": "d_federalism",
           "float_violations": [],
-          "function": "check_federal_enumerated_powers",
+          "function": "check_supremacy_clause",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_federalism",
+          "float_violations": [],
+          "function": "check_interstate_compact",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3368,38 +3232,6 @@
           "domain": "d_federalism",
           "float_violations": [],
           "function": "check_tenth_amendment_reserved_powers",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_federalism",
-          "float_violations": [],
-          "function": "check_supremacy_clause_preemption",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_federalism",
-          "float_violations": [],
-          "function": "check_concurrent_powers_exercisable",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_federalism",
-          "float_violations": [],
-          "function": "check_tenth_amendment_violation_detection",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_federalism",
-          "float_violations": [],
-          "function": "check_power_category_assignments",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3423,7 +3255,7 @@
         {
           "domain": "d_financial",
           "float_violations": [],
-          "function": "check_securities_registration_requirement",
+          "function": "check_settlement_no_double_spend",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3431,7 +3263,7 @@
         {
           "domain": "d_financial",
           "float_violations": [],
-          "function": "check_sox_internal_controls",
+          "function": "check_settlement_accepted_first_time",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3439,7 +3271,7 @@
         {
           "domain": "d_financial",
           "float_violations": [],
-          "function": "check_insider_trading_prohibition",
+          "function": "check_settled_count_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3447,7 +3279,7 @@
         {
           "domain": "d_financial",
           "float_violations": [],
-          "function": "check_investment_adviser_fiduciary",
+          "function": "check_settlement_record_has_tx_id",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3455,7 +3287,7 @@
         {
           "domain": "d_financial",
           "float_violations": [],
-          "function": "check_derivatives_clearing_mandatory",
+          "function": "check_settlement_record_attempt_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3463,7 +3295,7 @@
         {
           "domain": "d_financial",
           "float_violations": [],
-          "function": "check_financial_reporting_fraction_precision",
+          "function": "check_settle_empty_tx_raises",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3487,7 +3319,7 @@
         {
           "domain": "d_food_safety",
           "float_violations": [],
-          "function": "check_critical_limits_enforced",
+          "function": "check_fda_registration",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3495,7 +3327,7 @@
         {
           "domain": "d_food_safety",
           "float_violations": [],
-          "function": "check_facility_registration_required",
+          "function": "check_haccp_plan",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3503,31 +3335,7 @@
         {
           "domain": "d_food_safety",
           "float_violations": [],
-          "function": "check_food_safety_plan_requirements",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_food_safety",
-          "float_violations": [],
-          "function": "check_recall_classification_urgency",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_food_safety",
-          "float_violations": [],
-          "function": "check_recall_effectiveness_targets",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_food_safety",
-          "float_violations": [],
-          "function": "check_supply_chain_verification",
+          "function": "check_recall_classification",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3542,6 +3350,70 @@
         }
       ],
       "invariants_path": "src/domains/d_food_safety/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_forensic_psychology",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "check_competency_to_stand_trial",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "check_daubert_admissibility",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "check_evaluator_qualifications",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "check_civil_commitment_review",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "check_risk_assessment_validity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "check_least_restrictive_alternative",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_psychology",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_forensic_psychology/invariants.py",
       "passed": true
     },
     {
@@ -3655,7 +3527,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_physics_determinism",
+          "function": "check_physics_time_step_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3663,7 +3535,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_rng_determinism",
+          "function": "check_physics_gravity_set",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3671,7 +3543,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_save_file_integrity",
+          "function": "check_physics_max_substeps_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3679,7 +3551,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_multiplayer_sync",
+          "function": "check_save_file_has_checksum",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3687,7 +3559,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_hot_reload_safety",
+          "function": "check_game_state_frame_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3695,7 +3567,15 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_save_file_level_nonneg",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_game_engine_development",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3967,7 +3847,7 @@
         {
           "domain": "d_graphics",
           "float_violations": [],
-          "function": "check_frame_time_budget",
+          "function": "check_frame_timing_budget",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3975,7 +3855,7 @@
         {
           "domain": "d_graphics",
           "float_violations": [],
-          "function": "check_gpu_memory_bounds",
+          "function": "check_gpu_memory_fragmentation",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3983,7 +3863,7 @@
         {
           "domain": "d_graphics",
           "float_violations": [],
-          "function": "check_upscale_information_limit",
+          "function": "check_upscale_resolution_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3991,7 +3871,7 @@
         {
           "domain": "d_graphics",
           "float_violations": [],
-          "function": "check_pso_cache_determinism",
+          "function": "check_vrr_frequency_range",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3999,7 +3879,7 @@
         {
           "domain": "d_graphics",
           "float_violations": [],
-          "function": "check_vrr_range_compliance",
+          "function": "check_frame_gen_latency",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4143,7 +4023,7 @@
         {
           "domain": "d_habeas_corpus",
           "float_violations": [],
-          "function": "check_habeas_availability_default",
+          "function": "check_habeas_jurisdiction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4151,7 +4031,7 @@
         {
           "domain": "d_habeas_corpus",
           "float_violations": [],
-          "function": "check_suspension_requires_rebellion_or_invasion",
+          "function": "check_aedpa_deadline",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4159,31 +4039,7 @@
         {
           "domain": "d_habeas_corpus",
           "float_violations": [],
-          "function": "check_valid_suspension_rebellion",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_habeas_corpus",
-          "float_violations": [],
-          "function": "check_valid_suspension_invasion",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_habeas_corpus",
-          "float_violations": [],
-          "function": "check_judicial_review_required",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_habeas_corpus",
-          "float_violations": [],
-          "function": "check_criminal_detention_requires_charges",
+          "function": "check_successive_petition_bar",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4359,7 +4215,7 @@
         {
           "domain": "d_housing_law",
           "float_violations": [],
-          "function": "check_fha_protected_classes",
+          "function": "check_fair_housing_compliance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4367,7 +4223,7 @@
         {
           "domain": "d_housing_law",
           "float_violations": [],
-          "function": "check_eviction_notice_requirements",
+          "function": "check_habitability_standard",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4375,31 +4231,7 @@
         {
           "domain": "d_housing_law",
           "float_violations": [],
-          "function": "check_habitability_requirements",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_housing_law",
-          "float_violations": [],
-          "function": "check_fair_housing_discrimination_prohibition",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_housing_law",
-          "float_violations": [],
-          "function": "check_retaliation_protection",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_housing_law",
-          "float_violations": [],
-          "function": "check_reasonable_accommodation_requirement",
+          "function": "check_eviction_notice",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4455,7 +4287,7 @@
         {
           "domain": "d_incident_response",
           "float_violations": [],
-          "function": "check_response_time_sla",
+          "function": "check_incident_has_title",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4463,7 +4295,7 @@
         {
           "domain": "d_incident_response",
           "float_violations": [],
-          "function": "check_severity_classification",
+          "function": "check_incident_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4471,7 +4303,7 @@
         {
           "domain": "d_incident_response",
           "float_violations": [],
-          "function": "check_response_procedures_exist",
+          "function": "check_severity_is_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4479,7 +4311,7 @@
         {
           "domain": "d_incident_response",
           "float_violations": [],
-          "function": "check_incident_team_assignment",
+          "function": "check_procedure_has_name",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4487,7 +4319,7 @@
         {
           "domain": "d_incident_response",
           "float_violations": [],
-          "function": "check_mttr_calculation",
+          "function": "check_procedure_duration_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4495,7 +4327,15 @@
         {
           "domain": "d_incident_response",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_critical_incident_immediate",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_incident_response",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4655,7 +4495,7 @@
         {
           "domain": "d_intellectual_property",
           "float_violations": [],
-          "function": "check_patent_term_twenty_years",
+          "function": "check_copyright_originality_required",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4663,7 +4503,7 @@
         {
           "domain": "d_intellectual_property",
           "float_violations": [],
-          "function": "check_copyright_originality_requirement",
+          "function": "check_trademark_uniqueness",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4679,7 +4519,7 @@
         {
           "domain": "d_intellectual_property",
           "float_violations": [],
-          "function": "check_trademark_distinctiveness",
+          "function": "check_patent_term_20_years",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4687,7 +4527,7 @@
         {
           "domain": "d_intellectual_property",
           "float_violations": [],
-          "function": "check_trademark_likelihood_of_confusion",
+          "function": "check_invention_inventor_named",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4711,7 +4551,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_jurisdiction_rules",
+          "function": "check_case_has_defendant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4719,7 +4559,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_complementarity_principle",
+          "function": "check_case_jurisdiction_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4727,7 +4567,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_evidence_chain_of_custody",
+          "function": "check_evidence_authenticity",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4735,7 +4575,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_case_timeline_reasonableness",
+          "function": "check_case_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4743,7 +4583,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_crime_type_classification",
+          "function": "check_crime_type_is_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4751,7 +4591,15 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_evidence_type_nonempty",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_international_criminal",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4767,7 +4615,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_distinction_principle",
+          "function": "check_protected_person_receiving_protection",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4775,7 +4623,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_proportionality",
+          "function": "check_military_target_proportionality",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4783,7 +4631,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_protection_of_civilians",
+          "function": "check_military_target_necessity",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4791,7 +4639,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_medical_neutrality",
+          "function": "check_civilian_harm_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4799,7 +4647,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_pow_rights",
+          "function": "check_person_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4807,7 +4655,15 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_protected_category_valid",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_international_humanitarian",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4823,7 +4679,7 @@
         {
           "domain": "d_intl_criminal",
           "float_violations": [],
-          "function": "check_universal_jurisdiction_core_crimes",
+          "function": "check_case_has_evidence",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4831,7 +4687,7 @@
         {
           "domain": "d_intl_criminal",
           "float_violations": [],
-          "function": "check_no_prosecution_without_evidence",
+          "function": "check_case_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4839,7 +4695,7 @@
         {
           "domain": "d_intl_criminal",
           "float_violations": [],
-          "function": "check_icc_complementarity_principle",
+          "function": "check_suspect_identified",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4847,7 +4703,7 @@
         {
           "domain": "d_intl_criminal",
           "float_violations": [],
-          "function": "check_all_core_crimes_defined",
+          "function": "check_core_crime_is_valid_enum",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4855,7 +4711,7 @@
         {
           "domain": "d_intl_criminal",
           "float_violations": [],
-          "function": "check_genocide_elements",
+          "function": "check_location_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4863,7 +4719,7 @@
         {
           "domain": "d_intl_criminal",
           "float_violations": [],
-          "function": "check_war_crimes_grave_breaches",
+          "function": "check_evidence_and_suspect_consistent",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4887,7 +4743,7 @@
         {
           "domain": "d_intl_humanitarian",
           "float_violations": [],
-          "function": "check_distinction_principle",
+          "function": "check_proportionality",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4895,7 +4751,7 @@
         {
           "domain": "d_intl_humanitarian",
           "float_violations": [],
-          "function": "check_proportionality_principle",
+          "function": "check_military_objective_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4903,7 +4759,7 @@
         {
           "domain": "d_intl_humanitarian",
           "float_violations": [],
-          "function": "check_precautionary_obligations",
+          "function": "check_civilian_harm_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4911,7 +4767,7 @@
         {
           "domain": "d_intl_humanitarian",
           "float_violations": [],
-          "function": "check_hors_de_combat_protection",
+          "function": "check_ihl_checker_evaluates",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4919,7 +4775,7 @@
         {
           "domain": "d_intl_humanitarian",
           "float_violations": [],
-          "function": "check_fraction_precision_war_crimes",
+          "function": "check_harm_objective_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4927,7 +4783,7 @@
         {
           "domain": "d_intl_humanitarian",
           "float_violations": [],
-          "function": "check_non_combatant_immunity",
+          "function": "check_objective_exceeds_harm_threshold",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4951,7 +4807,7 @@
         {
           "domain": "d_iso_standards",
           "float_violations": [],
-          "function": "check_standard_integrity_verification",
+          "function": "check_standard_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4959,7 +4815,7 @@
         {
           "domain": "d_iso_standards",
           "float_violations": [],
-          "function": "check_compliance_requires_integrity",
+          "function": "check_standard_version_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4967,7 +4823,7 @@
         {
           "domain": "d_iso_standards",
           "float_violations": [],
-          "function": "check_compliance_sections_required",
+          "function": "check_standard_content_hash_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4975,7 +4831,7 @@
         {
           "domain": "d_iso_standards",
           "float_violations": [],
-          "function": "check_hash_consistency",
+          "function": "check_registry_has_standards",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4983,7 +4839,7 @@
         {
           "domain": "d_iso_standards",
           "float_violations": [],
-          "function": "check_iso_9001_quality_management",
+          "function": "check_standard_name_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4991,7 +4847,7 @@
         {
           "domain": "d_iso_standards",
           "float_violations": [],
-          "function": "check_iso_27001_information_security",
+          "function": "check_standard_required_sections_list",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5015,7 +4871,7 @@
         {
           "domain": "d_judicial_review",
           "float_violations": [],
-          "function": "check_any_statute_may_be_challenged",
+          "function": "check_article_iii_standing",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5023,7 +4879,7 @@
         {
           "domain": "d_judicial_review",
           "float_violations": [],
-          "function": "check_review_requires_independent_situs",
+          "function": "check_ripeness_mootness",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5031,31 +4887,7 @@
         {
           "domain": "d_judicial_review",
           "float_violations": [],
-          "function": "check_independent_situs_accepts_review",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_judicial_review",
-          "float_violations": [],
-          "function": "check_unconstitutional_statute_invalidated",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_judicial_review",
-          "float_violations": [],
-          "function": "check_situs_independence_score",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_judicial_review",
-          "float_violations": [],
-          "function": "check_apa_scope_of_review",
+          "function": "check_government_action_requirement",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5079,7 +4911,7 @@
         {
           "domain": "d_labor_rights",
           "float_violations": [],
-          "function": "check_flsa_overtime_threshold",
+          "function": "check_minimum_wage",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5087,7 +4919,7 @@
         {
           "domain": "d_labor_rights",
           "float_violations": [],
-          "function": "check_overtime_rate_one_and_half",
+          "function": "check_overtime_rate",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5095,7 +4927,7 @@
         {
           "domain": "d_labor_rights",
           "float_violations": [],
-          "function": "check_nlra_collective_bargaining_right",
+          "function": "check_osha_recordkeeping",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5103,23 +4935,7 @@
         {
           "domain": "d_labor_rights",
           "float_violations": [],
-          "function": "check_osha_general_duty_clause",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_labor_rights",
-          "float_violations": [],
-          "function": "check_title_vii_prohibited_discrimination",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_labor_rights",
-          "float_violations": [],
-          "function": "check_flsa_minimum_wage_compliance",
+          "function": "check_fmla_compliance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5407,7 +5223,7 @@
         {
           "domain": "d_medical",
           "float_violations": [],
-          "function": "check_hipaa_phi_protection",
+          "function": "check_record_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5415,7 +5231,7 @@
         {
           "domain": "d_medical",
           "float_violations": [],
-          "function": "check_fda_device_classification",
+          "function": "check_status_is_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5423,7 +5239,7 @@
         {
           "domain": "d_medical",
           "float_violations": [],
-          "function": "check_stark_law_prohibition",
+          "function": "check_compliant_record_status",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5431,7 +5247,7 @@
         {
           "domain": "d_medical",
           "float_violations": [],
-          "function": "check_fda_qsr_documentation",
+          "function": "check_checker_operational",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5439,7 +5255,7 @@
         {
           "domain": "d_medical",
           "float_violations": [],
-          "function": "check_hipaa_security_rule_safeguards",
+          "function": "check_non_compliant_not_marked_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5447,7 +5263,7 @@
         {
           "domain": "d_medical",
           "float_violations": [],
-          "function": "check_emtala_mse_requirement",
+          "function": "check_pending_not_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5639,7 +5455,7 @@
         {
           "domain": "d_mobile_development",
           "float_violations": [],
-          "function": "check_cross_platform_coverage",
+          "function": "check_crash_free_sessions",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5647,7 +5463,7 @@
         {
           "domain": "d_mobile_development",
           "float_violations": [],
-          "function": "check_battery_efficiency",
+          "function": "check_battery_drain_acceptable",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5655,7 +5471,7 @@
         {
           "domain": "d_mobile_development",
           "float_violations": [],
-          "function": "check_crash_rate_threshold",
+          "function": "check_launch_time_acceptable",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5663,7 +5479,7 @@
         {
           "domain": "d_mobile_development",
           "float_violations": [],
-          "function": "check_permission_minimalism",
+          "function": "check_app_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5671,7 +5487,7 @@
         {
           "domain": "d_mobile_development",
           "float_violations": [],
-          "function": "check_launch_time_performance",
+          "function": "check_app_name_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5679,7 +5495,15 @@
         {
           "domain": "d_mobile_development",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_crash_free_nonneg",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_mobile_development",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5881,6 +5705,78 @@
       "passed": true
     },
     {
+      "domain": "d_nuclear",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_scram_response_time",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_radiation_dose_alara",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_containment_integrity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_waste_containment",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_emergency_notification",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_criticality_safety",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "check_defense_in_depth",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_nuclear",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_nuclear/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_number_theory",
       "failure_count": 0,
       "findings": [
@@ -6023,7 +5919,7 @@
         {
           "domain": "d_open_source_governance",
           "float_violations": [],
-          "function": "check_license_compatibility",
+          "function": "check_project_has_security_policy",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6031,7 +5927,7 @@
         {
           "domain": "d_open_source_governance",
           "float_violations": [],
-          "function": "check_governance_files_present",
+          "function": "check_project_has_code_of_conduct",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6039,7 +5935,7 @@
         {
           "domain": "d_open_source_governance",
           "float_violations": [],
-          "function": "check_contribution_review_time",
+          "function": "check_project_has_cla",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6047,7 +5943,7 @@
         {
           "domain": "d_open_source_governance",
           "float_violations": [],
-          "function": "check_maintainer_coverage",
+          "function": "check_contribution_files_changed_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6055,7 +5951,7 @@
         {
           "domain": "d_open_source_governance",
           "float_violations": [],
-          "function": "check_cla_compliance",
+          "function": "check_contribution_author_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6063,7 +5959,15 @@
         {
           "domain": "d_open_source_governance",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_project_name_nonempty",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_open_source_governance",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6391,7 +6295,7 @@
         {
           "domain": "d_police_procedure",
           "float_violations": [],
-          "function": "check_fourth_amendment_search_warrant",
+          "function": "check_body_camera_activation",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6399,7 +6303,7 @@
         {
           "domain": "d_police_procedure",
           "float_violations": [],
-          "function": "check_graham_v_connor_objective_reasonableness",
+          "function": "check_camera_battery_sufficient",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6407,7 +6311,7 @@
         {
           "domain": "d_police_procedure",
           "float_violations": [],
-          "function": "check_qualified_immunity_test",
+          "function": "check_storage_available",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6415,7 +6319,7 @@
         {
           "domain": "d_police_procedure",
           "float_violations": [],
-          "function": "check_terry_stop_reasonable_suspicion",
+          "function": "check_encounter_documented",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6423,7 +6327,7 @@
         {
           "domain": "d_police_procedure",
           "float_violations": [],
-          "function": "check_miranda_warning_requirements",
+          "function": "check_recordings_logged",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6431,7 +6335,7 @@
         {
           "domain": "d_police_procedure",
           "float_violations": [],
-          "function": "check_exclusionary_rule_fruit_of_poisonous_tree",
+          "function": "check_encounter_location_set",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6727,7 +6631,7 @@
         {
           "domain": "d_real_estate",
           "float_violations": [],
-          "function": "check_recording_act_priorities",
+          "function": "check_property_lot_size_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6735,7 +6639,7 @@
         {
           "domain": "d_real_estate",
           "float_violations": [],
-          "function": "check_title_insurance_coverage",
+          "function": "check_property_address_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6743,7 +6647,7 @@
         {
           "domain": "d_real_estate",
           "float_violations": [],
-          "function": "check_respa_disclosure_requirements",
+          "function": "check_loan_amount_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6751,7 +6655,7 @@
         {
           "domain": "d_real_estate",
           "float_violations": [],
-          "function": "check_fair_housing_prohibited_bases",
+          "function": "check_debt_to_income_ratio_range",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6759,7 +6663,7 @@
         {
           "domain": "d_real_estate",
           "float_violations": [],
-          "function": "check_mortgage_note_requirements",
+          "function": "check_credit_score_range",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6767,7 +6671,7 @@
         {
           "domain": "d_real_estate",
           "float_violations": [],
-          "function": "check_statute_of_frauds_real_property",
+          "function": "check_assessment_year_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6831,7 +6735,7 @@
         {
           "domain": "d_remote_sensing",
           "float_violations": [],
-          "function": "check_land_remote_sensing_policy_act_compliance",
+          "function": "check_geobounds_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6839,7 +6743,7 @@
         {
           "domain": "d_remote_sensing",
           "float_violations": [],
-          "function": "check_noaa_regulatory_compliance",
+          "function": "check_patch_grid_coverage",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6847,7 +6751,7 @@
         {
           "domain": "d_remote_sensing",
           "float_violations": [],
-          "function": "check_nasa_earth_observation_standards",
+          "function": "check_mask_coverage_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6855,7 +6759,7 @@
         {
           "domain": "d_remote_sensing",
           "float_violations": [],
-          "function": "check_geospatial_metadata_compliance",
+          "function": "check_spectral_bands_consistent",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6863,7 +6767,7 @@
         {
           "domain": "d_remote_sensing",
           "float_violations": [],
-          "function": "check_ndvi_calculation_bounds",
+          "function": "check_geobounds_non_degenerate",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6871,7 +6775,7 @@
         {
           "domain": "d_remote_sensing",
           "float_violations": [],
-          "function": "check_spatial_resolution_accuracy",
+          "function": "check_patch_grid_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6991,7 +6895,7 @@
         {
           "domain": "d_road_standards",
           "float_violations": [],
-          "function": "check_mutcd_compliance_required",
+          "function": "check_lane_width_minimum",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6999,7 +6903,7 @@
         {
           "domain": "d_road_standards",
           "float_violations": [],
-          "function": "check_aashto_green_book_design",
+          "function": "check_shoulder_width_minimum",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7007,7 +6911,7 @@
         {
           "domain": "d_road_standards",
           "float_violations": [],
-          "function": "check_fhwa_bridge_inspection",
+          "function": "check_speed_limit_consistent",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7015,7 +6919,7 @@
         {
           "domain": "d_road_standards",
           "float_violations": [],
-          "function": "check_speed_limit_setting_criteria",
+          "function": "check_num_lanes_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7023,7 +6927,7 @@
         {
           "domain": "d_road_standards",
           "float_violations": [],
-          "function": "check_horizontal_curve_design",
+          "function": "check_segment_length_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7031,7 +6935,7 @@
         {
           "domain": "d_road_standards",
           "float_violations": [],
-          "function": "check_stopping_sight_distance",
+          "function": "check_traffic_signal_phase_count",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7095,7 +6999,7 @@
         {
           "domain": "d_school_districts",
           "float_violations": [],
-          "function": "check_idea_free_appropriate_education",
+          "function": "check_boundary_district_id_set",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7103,7 +7007,7 @@
         {
           "domain": "d_school_districts",
           "float_violations": [],
-          "function": "check_title_i_participation_threshold",
+          "function": "check_student_population_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7111,7 +7015,7 @@
         {
           "domain": "d_school_districts",
           "float_violations": [],
-          "function": "check_esea_accountability_assessments",
+          "function": "check_area_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7119,7 +7023,7 @@
         {
           "domain": "d_school_districts",
           "float_violations": [],
-          "function": "check_brown_v_board_integration",
+          "function": "check_boundary_change_has_reason",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7127,7 +7031,7 @@
         {
           "domain": "d_school_districts",
           "float_violations": [],
-          "function": "check_idea_procedural_safeguards",
+          "function": "check_compactness_score_range",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7135,7 +7039,7 @@
         {
           "domain": "d_school_districts",
           "float_violations": [],
-          "function": "check_title_i_schoolwide_programs",
+          "function": "check_population_le_area_proxy",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7207,7 +7111,7 @@
         {
           "domain": "d_school_funding",
           "float_violations": [],
-          "function": "check_san_antonio_rodriguez_rational_basis",
+          "function": "check_total_budget_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7215,7 +7119,7 @@
         {
           "domain": "d_school_funding",
           "float_violations": [],
-          "function": "check_state_equalization_requirements",
+          "function": "check_enrollment_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7223,7 +7127,7 @@
         {
           "domain": "d_school_funding",
           "float_violations": [],
-          "function": "check_foundation_program_formula",
+          "function": "check_funding_sources_sum",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7231,7 +7135,7 @@
         {
           "domain": "d_school_funding",
           "float_violations": [],
-          "function": "check_title_i_allocation_formula",
+          "function": "check_per_pupil_allocation_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7239,7 +7143,7 @@
         {
           "domain": "d_school_funding",
           "float_violations": [],
-          "function": "check_robinson_cahill_adequacy_standard",
+          "function": "check_poverty_rate_range",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7247,7 +7151,7 @@
         {
           "domain": "d_school_funding",
           "float_violations": [],
-          "function": "check_property_tax_reliance_limits",
+          "function": "check_title_i_eligibility_poverty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7303,7 +7207,7 @@
         {
           "domain": "d_separation_of_powers",
           "float_violations": [],
-          "function": "check_article_i_legislative_power",
+          "function": "check_executive_action_authority",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7311,7 +7215,7 @@
         {
           "domain": "d_separation_of_powers",
           "float_violations": [],
-          "function": "check_article_ii_executive_power",
+          "function": "check_presentment_clause",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7319,31 +7223,7 @@
         {
           "domain": "d_separation_of_powers",
           "float_violations": [],
-          "function": "check_article_iii_judicial_power",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_separation_of_powers",
-          "float_violations": [],
-          "function": "check_ins_v_chadha_legislative_veto",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_separation_of_powers",
-          "float_violations": [],
-          "function": "check_non_delegation_doctrine",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_separation_of_powers",
-          "float_violations": [],
-          "function": "check_youngstown_executive_power_framework",
+          "function": "check_nondelegation_doctrine",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7551,7 +7431,7 @@
         {
           "domain": "d_supply_chain_security",
           "float_violations": [],
-          "function": "check_dependency_hash_verification",
+          "function": "check_dependency_verified",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7559,7 +7439,7 @@
         {
           "domain": "d_supply_chain_security",
           "float_violations": [],
-          "function": "check_vulnerability_scanning",
+          "function": "check_dependency_hash_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7567,7 +7447,7 @@
         {
           "domain": "d_supply_chain_security",
           "float_violations": [],
-          "function": "check_artifact_signing",
+          "function": "check_artifact_has_signature",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7575,7 +7455,7 @@
         {
           "domain": "d_supply_chain_security",
           "float_violations": [],
-          "function": "check_sbom_completeness",
+          "function": "check_artifact_hash_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7583,7 +7463,7 @@
         {
           "domain": "d_supply_chain_security",
           "float_violations": [],
-          "function": "check_provenance_tracking",
+          "function": "check_vulnerability_has_cve",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7591,7 +7471,15 @@
         {
           "domain": "d_supply_chain_security",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_dependency_source_nonempty",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_supply_chain_security",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7639,7 +7527,7 @@
         {
           "domain": "d_telecommunications_law",
           "float_violations": [],
-          "function": "check_communications_act_common_carrier",
+          "function": "check_carrier_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7647,7 +7535,7 @@
         {
           "domain": "d_telecommunications_law",
           "float_violations": [],
-          "function": "check_fcc_spectrum_licensing",
+          "function": "check_carrier_name_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7655,7 +7543,7 @@
         {
           "domain": "d_telecommunications_law",
           "float_violations": [],
-          "function": "check_telecommunications_act_1996_competition",
+          "function": "check_carrier_no_excessive_tcpa_violations",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7663,7 +7551,7 @@
         {
           "domain": "d_telecommunications_law",
           "float_violations": [],
-          "function": "check_tcpa_autodialer_restrictions",
+          "function": "check_carrier_net_neutrality_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7671,7 +7559,7 @@
         {
           "domain": "d_telecommunications_law",
           "float_violations": [],
-          "function": "check_net_neutrality_principles",
+          "function": "check_spectrum_license_has_call_sign",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7679,7 +7567,7 @@
         {
           "domain": "d_telecommunications_law",
           "float_violations": [],
-          "function": "check_universal_service_fund_contributions",
+          "function": "check_spectrum_license_has_licensee",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7703,7 +7591,7 @@
         {
           "domain": "d_trade_agreements",
           "float_violations": [],
-          "function": "check_usma_origin_requirements",
+          "function": "check_mfn_tariff_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7711,7 +7599,7 @@
         {
           "domain": "d_trade_agreements",
           "float_violations": [],
-          "function": "check_wto_mfn_principle",
+          "function": "check_preferential_le_mfn",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7719,7 +7607,7 @@
         {
           "domain": "d_trade_agreements",
           "float_violations": [],
-          "function": "check_wto_national_treatment",
+          "function": "check_preferential_tariff_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7727,7 +7615,7 @@
         {
           "domain": "d_trade_agreements",
           "float_violations": [],
-          "function": "check_trade_promotion_authority_procedures",
+          "function": "check_product_code_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7735,7 +7623,7 @@
         {
           "domain": "d_trade_agreements",
           "float_violations": [],
-          "function": "check_antidumping_calculation",
+          "function": "check_agreement_has_parties",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7743,7 +7631,7 @@
         {
           "domain": "d_trade_agreements",
           "float_violations": [],
-          "function": "check_dispute_settlement_understanding",
+          "function": "check_mfn_rate_bound",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7823,7 +7711,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_fmcsa_hos_limits",
+          "function": "check_record_id_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7831,7 +7719,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_faa_pilot_certification",
+          "function": "check_status_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7839,7 +7727,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_dot_drug_testing",
+          "function": "check_compliant_record_marked_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7847,7 +7735,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_faa_airworthiness_certification",
+          "function": "check_checker_has_check_compliance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7855,7 +7743,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_fmcsa_cdl_requirements",
+          "function": "check_non_compliant_not_marked_compliant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7863,7 +7751,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_dot_pipeline_safety",
+          "function": "check_record_has_status",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7887,7 +7775,7 @@
         {
           "domain": "d_treaties",
           "float_violations": [],
-          "function": "check_vclt_treaty_formation",
+          "function": "check_ratification_treaty_named",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7895,7 +7783,7 @@
         {
           "domain": "d_treaties",
           "float_violations": [],
-          "function": "check_vclt_interpretation_rules",
+          "function": "check_ratification_domestic_law",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7903,7 +7791,7 @@
         {
           "domain": "d_treaties",
           "float_violations": [],
-          "function": "check_treaty_supremacy_clause",
+          "function": "check_withdrawal_proper_notice",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7911,7 +7799,7 @@
         {
           "domain": "d_treaties",
           "float_violations": [],
-          "function": "check_treaty_reservations",
+          "function": "check_withdrawal_treaty_named",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7919,7 +7807,7 @@
         {
           "domain": "d_treaties",
           "float_violations": [],
-          "function": "check_treaty_withdrawal_termination",
+          "function": "check_withdrawal_reason_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7927,7 +7815,7 @@
         {
           "domain": "d_treaties",
           "float_violations": [],
-          "function": "check_us_treaty_ratification_process",
+          "function": "check_status_is_valid_enum",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8015,7 +7903,7 @@
         {
           "domain": "d_urban_planning",
           "float_violations": [],
-          "function": "check_standard_zoning_enabling_act",
+          "function": "check_master_plan_published",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8023,7 +7911,7 @@
         {
           "domain": "d_urban_planning",
           "float_violations": [],
-          "function": "check_apa_planning_principles",
+          "function": "check_plan_has_content_hash",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8031,7 +7919,7 @@
         {
           "domain": "d_urban_planning",
           "float_violations": [],
-          "function": "check_nepa_environmental_review",
+          "function": "check_element_priority_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8039,7 +7927,7 @@
         {
           "domain": "d_urban_planning",
           "float_violations": [],
-          "function": "check_zoning_variance_standards",
+          "function": "check_element_type_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8047,7 +7935,7 @@
         {
           "domain": "d_urban_planning",
           "float_violations": [],
-          "function": "check_comprehensive_plan_requirements",
+          "function": "check_plan_has_version",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8055,7 +7943,7 @@
         {
           "domain": "d_urban_planning",
           "float_violations": [],
-          "function": "check_smart_growth_principles",
+          "function": "check_environmental_impact_project_id",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8103,7 +7991,7 @@
         {
           "domain": "d_use_of_force",
           "float_violations": [],
-          "function": "check_documentation_complete",
+          "function": "check_chokehold_prohibition",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8111,7 +7999,7 @@
         {
           "domain": "d_use_of_force",
           "float_violations": [],
-          "function": "check_less_lethal_before_deadly",
+          "function": "check_incident_documentation",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8119,7 +8007,15 @@
         {
           "domain": "d_use_of_force",
           "float_violations": [],
-          "function": "check_compliance_deterministic",
+          "function": "check_threat_assessment_ratio",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_use_of_force",
+          "float_violations": [],
+          "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8177,13 +8073,77 @@
       "passed": true
     },
     {
+      "domain": "d_veterinary",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "check_facility_space_compliance",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "check_veterinary_license_valid",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "check_drug_withdrawal_period",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "check_zoonotic_disease_reporting",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "check_euthanasia_compliance",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "check_inspection_currency",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_veterinary",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_veterinary/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_voting_rights",
       "failure_count": 0,
       "findings": [
         {
           "domain": "d_voting_rights",
           "float_violations": [],
-          "function": "check_fifteenth_amendment_race",
+          "function": "check_voter_eligibility",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8191,7 +8151,7 @@
         {
           "domain": "d_voting_rights",
           "float_violations": [],
-          "function": "check_nineteenth_amendment_sex",
+          "function": "check_poll_tax_prohibition",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8199,7 +8159,7 @@
         {
           "domain": "d_voting_rights",
           "float_violations": [],
-          "function": "check_twenty_fourth_amendment_poll_tax",
+          "function": "check_ballot_integrity",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8207,7 +8167,7 @@
         {
           "domain": "d_voting_rights",
           "float_violations": [],
-          "function": "check_twenty_sixth_amendment_age",
+          "function": "check_no_racial_discrimination",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8215,7 +8175,7 @@
         {
           "domain": "d_voting_rights",
           "float_violations": [],
-          "function": "check_vra_section_2_results_test",
+          "function": "check_vote_verification_chain",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8223,7 +8183,7 @@
         {
           "domain": "d_voting_rights",
           "float_violations": [],
-          "function": "check_shelby_county_v_holder",
+          "function": "check_sex_nondiscrimination",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8303,7 +8263,7 @@
         {
           "domain": "d_weapons_regulation",
           "float_violations": [],
-          "function": "check_nfa_registration_requirements",
+          "function": "check_background_check_required",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8311,7 +8271,7 @@
         {
           "domain": "d_weapons_regulation",
           "float_violations": [],
-          "function": "check_gca_prohibited_persons",
+          "function": "check_nfa_compliance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8319,31 +8279,7 @@
         {
           "domain": "d_weapons_regulation",
           "float_violations": [],
-          "function": "check_brady_act_background_checks",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_weapons_regulation",
-          "float_violations": [],
-          "function": "check_second_amendment_individual_right",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_weapons_regulation",
-          "float_violations": [],
-          "function": "check_nfa_machine_gun_definition",
-          "missing_falsifies_if": false,
-          "notes": [],
-          "passed": true
-        },
-        {
-          "domain": "d_weapons_regulation",
-          "float_violations": [],
-          "function": "check_armed_career_criminal_act",
+          "function": "check_straw_purchase",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8479,7 +8415,7 @@
         {
           "domain": "d_zoning",
           "float_violations": [],
-          "function": "check_euclid_constitutionality",
+          "function": "check_parcel_area_positive",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8487,7 +8423,7 @@
         {
           "domain": "d_zoning",
           "float_violations": [],
-          "function": "check_euclidean_zoning_districts",
+          "function": "check_parcel_address_nonempty",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8495,7 +8431,7 @@
         {
           "domain": "d_zoning",
           "float_violations": [],
-          "function": "check_zoning_regulatory_requirements",
+          "function": "check_floor_area_ratio_nonneg",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8503,7 +8439,7 @@
         {
           "domain": "d_zoning",
           "float_violations": [],
-          "function": "check_special_exception_conditional_use",
+          "function": "check_variance_has_applicant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8511,7 +8447,7 @@
         {
           "domain": "d_zoning",
           "float_violations": [],
-          "function": "check_zoning_amendment_procedures",
+          "function": "check_zone_type_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8519,7 +8455,7 @@
         {
           "domain": "d_zoning",
           "float_violations": [],
-          "function": "check_zoning_board_adjustment",
+          "function": "check_variance_type_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8540,7 +8476,7 @@
   "summary": {
     "all_pass": true,
     "failing_domains": 0,
-    "passing_domains": 159,
-    "total_domains": 159
+    "passing_domains": 162,
+    "total_domains": 162
   }
 }

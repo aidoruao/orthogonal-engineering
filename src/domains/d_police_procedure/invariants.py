@@ -131,7 +131,9 @@ def check_encounter_location_set(encounter: CitizenEncounter) -> Tuple[bool, Pro
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     camera = BodyCamera(
         camera_id="CAM-001", officer_id="OFF-001", serial_number="SN-12345",

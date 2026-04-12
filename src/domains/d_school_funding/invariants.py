@@ -131,7 +131,9 @@ def check_title_i_eligibility_poverty(district: SchoolDistrict) -> Tuple[bool, P
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     district = SchoolDistrict(
         district_id="DIST-001", name="Springfield USD", state="IL",
         total_enrollment=5000, total_budget=Fraction(50_000_000),

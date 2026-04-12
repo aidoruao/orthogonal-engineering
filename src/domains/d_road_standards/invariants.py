@@ -129,7 +129,9 @@ def check_traffic_signal_phase_count(signal: TrafficSignal) -> Tuple[bool, Proof
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from .implementation import RoadClassification, TrafficSignal
     road = RoadSegment(
         segment_id="SEG-001", road_name="Main St",

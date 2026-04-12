@@ -109,7 +109,9 @@ def check_standard_required_sections_list(std: ISOStandard) -> Tuple[bool, Proof
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     std = ISOStandard(
         standard_id="ISO/IEC 27001:2022",

@@ -122,7 +122,9 @@ def check_fraction_no_float_in_axioms() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     record = Ai_Ontological_StatuRecord(
         record_id="AI-ONT-2024-001",
         status=Ai_Ontological_StatuStatus.COMPLIANT,

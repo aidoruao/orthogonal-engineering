@@ -141,7 +141,9 @@ def check_frame_gen_latency(fg: FrameGenerationPass) -> Tuple[bool, ProofObject]
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     s1 = ShaderCompilation(source_hash="sha256:src1", compiler_version="DXC 1.7", output_hash="sha256:out1", optimization_level="O2")
     s2 = ShaderCompilation(source_hash="sha256:src1", compiler_version="DXC 1.7", output_hash="sha256:out1", optimization_level="O2")
     budget = FrameTimeBudget(render_ms=Fraction(12), present_ms=Fraction(4), target_fps=Fraction(60))

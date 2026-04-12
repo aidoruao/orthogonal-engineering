@@ -113,7 +113,9 @@ def check_save_file_level_nonneg(save: SaveFile) -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     config = PhysicsConfig(gravity=Fraction(-98, 10), time_step=Fraction(1, 60), max_substeps=8)
     state = GameState(frame_number=1000)
     save = SaveFile(version="1.0", player_name="Alice", level=5, inventory=[], checksum="sha256:abc123")

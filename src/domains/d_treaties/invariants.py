@@ -112,7 +112,9 @@ def check_status_is_valid_enum(status: TreatyStatus) -> Tuple[bool, ProofObject]
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     status = list(TreatyStatus)[0]
     record = RatificationRecord(

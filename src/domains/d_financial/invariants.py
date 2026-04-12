@@ -120,7 +120,9 @@ def check_settle_empty_tx_raises(system: SettlementSystem) -> Tuple[bool, ProofO
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     system = SettlementSystem()
     system.settle("TX-SEED-001")
     audit = system._audit_log

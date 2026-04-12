@@ -115,7 +115,9 @@ def check_evidence_and_suspect_consistent(case: UniversalJurisdictionCase) -> Tu
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     crime = list(CoreCrime)[0]
     case = UniversalJurisdictionCase(
         case_id="ICC-2024-001",

@@ -119,7 +119,9 @@ def check_protected_category_valid(category: ProtectedCategory) -> Tuple[bool, P
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     category = list(ProtectedCategory)[0]
     person = ProtectedPerson(
         person_id="P001",

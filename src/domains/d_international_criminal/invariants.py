@@ -112,7 +112,9 @@ def check_evidence_type_nonempty(evidence: Evidence) -> Tuple[bool, ProofObject]
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     from .implementation import CaseStatus
     crime = list(CrimeType)[0]

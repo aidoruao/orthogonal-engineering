@@ -134,7 +134,9 @@ def check_validate_psk_accepts_valid() -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     a = b"hello_world_1234"
     b_val = b"different_bytes_"
     zero_psk = bytes(32)

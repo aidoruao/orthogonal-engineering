@@ -117,7 +117,9 @@ def check_record_has_status(record: TransportationRecord) -> Tuple[bool, ProofOb
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     record = TransportationRecord(
         record_id="TRANS-2024-001",
         status=TransportationStatus.COMPLIANT,

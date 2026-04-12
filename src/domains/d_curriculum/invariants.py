@@ -124,7 +124,9 @@ def check_framework_version_nonempty(framework: StandardFramework) -> Tuple[bool
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     from .implementation import SubjectArea, GradeLevel
     std = LearningStandard(

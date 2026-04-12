@@ -126,7 +126,9 @@ def check_invention_inventor_named(invention: Invention) -> Tuple[bool, ProofObj
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from .implementation import FairUsePurpose
     invention = Invention(
         invention_id="PAT-001",

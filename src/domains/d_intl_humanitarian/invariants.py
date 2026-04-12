@@ -124,7 +124,9 @@ def check_objective_exceeds_harm_threshold(eval: UseOfForceEvaluation) -> Tuple[
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     eval_obj = UseOfForceEvaluation(
         military_objective_value=Fraction(8, 10),
         civilian_harm_risk=Fraction(2, 10),

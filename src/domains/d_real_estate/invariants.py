@@ -120,7 +120,9 @@ def check_assessment_year_positive(assessment: PropertyAssessment) -> Tuple[bool
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     prop = Property(
         property_id="PROP-001",
         address="123 Main St, Springfield, IL 62701",

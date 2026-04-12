@@ -125,7 +125,9 @@ def check_critical_incident_immediate(incident: Incident) -> Tuple[bool, ProofOb
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     incident = Incident(
         incident_id="INC-2024-001",
         severity=IncidentSeverity.HIGH,

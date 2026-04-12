@@ -126,7 +126,9 @@ def check_environmental_impact_project_id(eia: EnvironmentalImpact) -> Tuple[boo
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS."""
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
     plan = MasterPlan(
         plan_id="PLAN-001", jurisdiction="Springfield", plan_name="2040 General Plan",
