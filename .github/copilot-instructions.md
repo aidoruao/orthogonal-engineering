@@ -198,7 +198,7 @@ docs(commonwealth): add Phase 4 specification [Session: abc123]
 
 ## Current Status (PR #103)
 
-- 158/157 domains complete (100%)
+- 158/158 domains complete (100%)
 - 0 stubs, 0 AssertionError patterns
 - 132 case studies (CS_001-CS_200)
 - Kernel: Social Layer, Agent Stream, Crusader Bridge, Logos IDE
