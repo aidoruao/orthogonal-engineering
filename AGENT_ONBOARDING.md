@@ -25,7 +25,7 @@ register: technical
 
 ## Repo Quick Stats
 
-- 158 domains in `src/domains/` (all ProofObject, all Fraction)
+- 160 domains in `src/domains/` (all ProofObject, all Fraction)
 - 8 Yeshua axioms (`axioms/yeshua_axioms.py`)
 - Append-only consent log (`pr47_stewardship/witness/consent_log.jsonl`)
 - Bar exam: `python -m pr50_bar_exam.examination.run_exam --candidate-id <id>`

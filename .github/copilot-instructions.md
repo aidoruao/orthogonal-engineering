@@ -166,7 +166,7 @@ See `docs/YESHUA_COMMONWEALTH.md` for full specification.
 - `src/sal/` — SAL kernel (Types 3-6): adjoint triple, topos, forcing, realizability
 - `kernel/` — **NEW:** Kernel infrastructure (social, agent_stream, bridge, ipc)
 - `spec/logos_ide/` — **NEW:** Logos IDE UI specification
-- `src/domains/` — Domain-specific schemas (158 domains, all ProofObject)
+- `src/domains/` — Domain-specific schemas (160 domains, all ProofObject)
 - `tests/test_*.py` — Pytest test files
 - `benchmarks/` — Capability matrix, AI invariant tests
 - `ontology/` — Falsification tests, case studies (132+), domain registry
@@ -198,7 +198,7 @@ docs(commonwealth): add Phase 4 specification [Session: abc123]
 
 ## Current Status (PR #103)
 
-- 158/158 domains complete (100%)
+- 160/160 domains complete (100%)
 - 0 stubs, 0 AssertionError patterns
 - 132 case studies (CS_001-CS_200)
 - Kernel: Social Layer, Agent Stream, Crusader Bridge, Logos IDE
