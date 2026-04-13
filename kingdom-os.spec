@@ -8,8 +8,6 @@ Output: single-file executable 'kingdom-os' (Linux) or 'kingdom-os.exe' (Windows
 import os
 import glob
 
-block_cipher = None
-
 # Collect all domain invariants, ontology JSON, and SAL modules
 datas = [
     ('ontology/ontology.json', 'ontology'),
@@ -51,11 +49,10 @@ a = Analysis(
     runtime_hooks=[],
     excludes=['torch', 'numpy', 'scipy', 'pandas', 'matplotlib', 'sklearn',
               'seaborn', 'tqdm', 'requests', 'lxml', 'ijson', 'cryptography'],
-    cipher=block_cipher,
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data)
 
 exe = EXE(
     pyz,

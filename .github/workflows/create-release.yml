@@ -40,6 +40,7 @@ jobs:
           git push origin ${{ inputs.version }}
 
       - name: Trigger release build
+        continue-on-error: true
         run: |
           # Also trigger via workflow_dispatch as backup
           gh workflow run release.yml -f tag=${{ inputs.version }}
