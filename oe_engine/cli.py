@@ -98,6 +98,12 @@ def main() -> None:
         choices=["conversation"],
         help="Extended mode: 'conversation' for stateful multi-turn REPL",
     )
+    parser.add_argument(
+        "--version",
+        "-V",
+        action="version",
+        version="Orthogonal Engine v2.0.0",
+    )
     args = parser.parse_args()
 
     if args.mode == "conversation":
@@ -107,7 +113,7 @@ def main() -> None:
     engine = OrthogonalEngine()
 
     if args.interactive:
-        print("Orthogonal Engine v0.1.0 — type 'exit' to quit")
+        print("Orthogonal Engine v2.0.0 — type 'exit' to quit")
         print(f"Loaded {engine._manifest.domain_count} domains")
         while True:
             try:
