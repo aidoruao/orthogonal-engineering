@@ -20,6 +20,7 @@ No float anywhere. No external deps. No try/except hiding errors.
 import sys
 import json
 import argparse
+import traceback
 from fractions import Fraction
 from kernel.boot import boot, verify_boot_integrity
 from oe_engine.engine import OrthogonalEngine
@@ -151,4 +152,10 @@ def _exit_repl(boot_proof: object, conversation_engine: "ConversationEngine") ->
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"\nFATAL ERROR: {e}", file=sys.stderr)
+        traceback.print_exc()
+        input("\nPress Enter to exit...")
+        sys.exit(1)
