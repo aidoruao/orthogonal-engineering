@@ -18,6 +18,7 @@ def _base_path() -> pathlib.Path:
 
     When frozen (PyInstaller), data is extracted to ``sys._MEIPASS``.
     When running from source, resolve the repository root from ``__file__``.
+    This assumes ``oe_engine/_paths.py`` sits one directory under repo root.
 
     Standard: PyInstaller one-file bundle path resolution convention.
     falsifies_if: returned path does not contain src/domains when engine loads.

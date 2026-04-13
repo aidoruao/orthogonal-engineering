@@ -10,6 +10,7 @@ falsifies_if: a query with clear domain keywords returns no matched domains.
 from __future__ import annotations
 
 import hashlib
+from functools import lru_cache
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Dict, List, Optional, Tuple
@@ -667,6 +668,7 @@ _CURATED_KEYWORD_INDEX: Dict[str, List[str]] = {
 }
 
 
+@lru_cache(maxsize=1)
 def _list_registered_domain_ids() -> List[str]:
     """Return all domain IDs that have invariants.py modules."""
     from oe_engine._paths import _base_path  # noqa: PLC0415
@@ -682,6 +684,7 @@ def _build_keyword_index() -> Dict[str, List[str]]:
 
     Each domain gets baseline keyword coverage from its domain ID tokens
     (e.g., D_SUPPLY_CHAIN_SECURITY -> supply, chain, security, supply chain security).
+    A final fallback maps missing domains to their lowercase domain IDs.
 
     falsifies_if: any registered domain has zero keyword mappings.
     """

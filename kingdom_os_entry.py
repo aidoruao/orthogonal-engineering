@@ -100,7 +100,7 @@ def main() -> None:
         )
         sys.exit(0)
 
-    _state, _boot_proof = _boot_kernel()
+    _boot_kernel()
 
     engine = OrthogonalEngine()
     print(f"Engine loaded: {engine._manifest.domain_count} domains")
