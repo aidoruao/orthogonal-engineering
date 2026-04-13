@@ -7,6 +7,8 @@ deterministic checks before reaching the speaker layer.
 
 Architecture:
   Speaker ← Router ← Thinker[] ← InvariantBus ← GuardianMonitor
+  Generator ← DomainQuery ← Router
+  ConversationEngine ← Generator ← Router
 """
 
 from .manifest import EngineManifest
@@ -18,6 +20,12 @@ from .synthesizer import (
     ARCSynthesizer,
     SynthesisResult,
     check_synthesis_result_integrity,
+)
+from .generator import DomainGenerator, DomainQuery, GeneratedResponse
+from .conversation import (
+    ConversationEngine,
+    ConversationState,
+    ConversationTurn,
 )
 
 __all__ = [
@@ -34,4 +42,10 @@ __all__ = [
     "ARCSynthesizer",
     "SynthesisResult",
     "check_synthesis_result_integrity",
+    "DomainGenerator",
+    "DomainQuery",
+    "GeneratedResponse",
+    "ConversationEngine",
+    "ConversationState",
+    "ConversationTurn",
 ]
