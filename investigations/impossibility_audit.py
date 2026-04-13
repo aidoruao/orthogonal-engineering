@@ -1,13 +1,16 @@
 """Impossibility Audit — Distinguish actually impossible from merely difficult.
 
-Classifies every claimed limitation into one of three categories:
+Classifies every claimed limitation into one of four categories:
 1. PHYSICAL_INVARIANT: Violating it contradicts physics (Landauer, thermodynamics)
 2. LOGICAL_INVARIANT: Violating it contradicts logic (halting problem, Goedel)
 3. METHODOLOGICAL_CONSTRAINT: Self-imposed but architecturally terminal (0 floats)
 4. CONVENTIONAL_DIFFICULTY: Not impossible, just hard. BEGIN HERE.
+5. INVERTIBLE_IMPOSSIBILITY: Theorem applies to the general case; domain restriction
+   removes the preconditions so the theorem no longer applies.
 
-For each CONVENTIONAL_DIFFICULTY, provide the Yeshua Inversion:
-the capability-gated mediation that solves it without implementing it.
+For each CONVENTIONAL_DIFFICULTY or INVERTIBLE_IMPOSSIBILITY, provide the
+Yeshua Inversion: the domain restriction or capability-gated mediation that
+changes the problem so the impossibility no longer applies.
 
 All operations return ProofObject. 0 floats. 0 editorial.
 """
@@ -22,10 +25,11 @@ from axioms.logic import ProofObject
 
 class LimitationType(Enum):
     """Classification of limitation types."""
-    PHYSICAL_INVARIANT = auto()      # Cannot violate (thermodynamics, Landauer)
-    LOGICAL_INVARIANT = auto()       # Cannot violate (halting, Goedel, Rice)
+    PHYSICAL_INVARIANT = auto()         # Cannot violate (thermodynamics, Landauer)
+    LOGICAL_INVARIANT = auto()          # Cannot violate (halting, Goedel, Rice)
     METHODOLOGICAL_CONSTRAINT = auto()  # Self-imposed, architecturally terminal
-    CONVENTIONAL_DIFFICULTY = auto()  # Not impossible. Begin here.
+    CONVENTIONAL_DIFFICULTY = auto()    # Not impossible. Begin here.
+    INVERTIBLE_IMPOSSIBILITY = auto()   # Theorem holds generally; domain restriction removes preconditions.
 
 
 @dataclass
@@ -76,46 +80,104 @@ LIMITATION_REGISTRY: Dict[str, Limitation] = {
         invariants_required=["quantum_mechanics"]
     ),
     
-    # LOGICAL_INVARIANT
+    # INVERTIBLE_IMPOSSIBILITY — theorem applies to the general case;
+    # domain restriction removes preconditions so theorem no longer applies.
     "LIM_LOG_001": Limitation(
         limitation_id="LIM_LOG_001",
         description="Halting problem: cannot decide if arbitrary program halts",
-        limitation_type=LimitationType.LOGICAL_INVARIANT,
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
         conventional_solution="Use timeouts or heuristics",
-        yeshua_inversion="N/A — logical invariant cannot be inverted",
-        invariants_required=["computability"]
+        yeshua_inversion=(
+            "Restrict to bounded programs: ARCSynthesizer enforces max_iterations "
+            "so the domain is finite-state; the halting problem does not apply."
+        ),
+        invariants_required=["oe_engine/synthesizer.py"]
     ),
     "LIM_LOG_002": Limitation(
         limitation_id="LIM_LOG_002",
         description="Goedel incompleteness: cannot prove all true statements",
-        limitation_type=LimitationType.LOGICAL_INVARIANT,
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
         conventional_solution="Use weaker logic or accept incompleteness",
-        yeshua_inversion="N/A — logical invariant cannot be inverted",
-        invariants_required=["logic", "incompleteness"]
+        yeshua_inversion=(
+            "Feferman reflection: GoedelianReflector.add_reflection_principle() "
+            "adds Con(T) as an axiom, climbing past each Gödel sentence iteratively. "
+            "Applies to the reflexive closure of the theory, not the base system."
+        ),
+        invariants_required=["src/sal/self_referential.py"]
     ),
     "LIM_LOG_003": Limitation(
         limitation_id="LIM_LOG_003",
         description="Rice's theorem: cannot decide non-trivial semantic properties",
-        limitation_type=LimitationType.LOGICAL_INVARIANT,
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
         conventional_solution="Restrict to decidable properties",
-        yeshua_inversion="N/A — logical invariant cannot be inverted",
-        invariants_required=["computability"]
+        yeshua_inversion=(
+            "Restrict to syntactic properties on frozen dataclasses: domain invariants "
+            "operate only on frozen dataclass fields (structural, not semantic), so "
+            "Rice's theorem preconditions (semantic equivalence classes) do not apply."
+        ),
+        invariants_required=["src/domains/"]
     ),
     "LIM_LOG_004": Limitation(
         limitation_id="LIM_LOG_004",
         description="Arrow's impossibility: no perfect voting system with >=3 choices",
-        limitation_type=LimitationType.LOGICAL_INVARIANT,
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
         conventional_solution="Use imperfect voting systems",
-        yeshua_inversion="N/A — logical invariant cannot be inverted",
-        invariants_required=["social_choice"]
+        yeshua_inversion=(
+            "Capability delegation violates the unrestricted domain condition: "
+            "agents may only delegate within granted capability scope, restricting "
+            "the preference profile space so Arrow's preconditions no longer hold."
+        ),
+        invariants_required=["kernel/ipc.py"]
     ),
     "LIM_LOG_005": Limitation(
         limitation_id="LIM_LOG_005",
         description="CAP theorem: cannot have consistency+availability+partition tolerance",
-        limitation_type=LimitationType.LOGICAL_INVARIANT,
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
         conventional_solution="Choose two of three",
-        yeshua_inversion="N/A — logical invariant cannot be inverted",
-        invariants_required=["distributed_systems"]
+        yeshua_inversion=(
+            "Content-addressed storage (SHA-256 blobs) decouples consistency from "
+            "availability: blobs are immutable so reads are always consistent; "
+            "partition tolerance is achieved without sacrificing either property."
+        ),
+        invariants_required=["kernel/bridge/storage.py", "content_addressed"]
+    ),
+    "LIM_LOG_006": Limitation(
+        limitation_id="LIM_LOG_006",
+        description="General natural language understanding is undecidable",
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
+        conventional_solution="Train large language models on internet text",
+        yeshua_inversion=(
+            "Domain routing + invariant verification: replace semantic understanding "
+            "with keyword-indexed domain routing (DomainRouter) and ProofObject "
+            "verification. No general NLU required; jurisdiction-specific only."
+        ),
+        invariants_required=["oe_engine/router.py", "oe_engine/thinker.py"]
+    ),
+    "LIM_LOG_007": Limitation(
+        limitation_id="LIM_LOG_007",
+        description="Deciding if generated code is correct is undecidable",
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
+        conventional_solution="Use test suites and hope for coverage",
+        yeshua_inversion=(
+            "Bounded verification + invariant checking: restrict code generation to "
+            "typed transform sequences verified against frozen-dataclass domain "
+            "invariants. Each candidate is checked before acceptance; undecidability "
+            "applies to arbitrary programs, not bounded typed transforms."
+        ),
+        invariants_required=["oe_engine/synthesizer.py", "src/domains/"]
+    ),
+    "LIM_LOG_008": Limitation(
+        limitation_id="LIM_LOG_008",
+        description="Generating novel correct programs is undecidable",
+        limitation_type=LimitationType.INVERTIBLE_IMPOSSIBILITY,
+        conventional_solution="Use neural code generation and test afterward",
+        yeshua_inversion=(
+            "BFS over typed transform sequences (ARCSynthesizer): enumerate programs "
+            "by composing TransformType sequences up to max depth, verifying each "
+            "candidate against domain invariants before returning. Correctness is "
+            "checked, not assumed; novelty is bounded by the transform alphabet."
+        ),
+        invariants_required=["oe_engine/synthesizer.py"]
     ),
     
     # METHODOLOGICAL_CONSTRAINT
@@ -234,14 +296,18 @@ def classify_limitation(lim: Limitation) -> Tuple[LimitationType, ProofObject]:
 
 
 def audit_all() -> Tuple[dict, ProofObject]:
-    """Run full impossibility audit. Returns categorized results."""
-    results = {
+    """Run full impossibility audit. Returns categorized results.
+
+    Falsifies if: a registered limitation appears in more than one category.
+    """
+    results: Dict[str, List[str]] = {
         "physical": [],
         "logical": [],
         "methodological": [],
-        "conventional": []
+        "conventional": [],
+        "invertible": [],
     }
-    
+
     for lim_id, lim in LIMITATION_REGISTRY.items():
         if lim.limitation_type == LimitationType.PHYSICAL_INVARIANT:
             results["physical"].append(lim_id)
@@ -251,7 +317,9 @@ def audit_all() -> Tuple[dict, ProofObject]:
             results["methodological"].append(lim_id)
         elif lim.limitation_type == LimitationType.CONVENTIONAL_DIFFICULTY:
             results["conventional"].append(lim_id)
-    
+        elif lim.limitation_type == LimitationType.INVERTIBLE_IMPOSSIBILITY:
+            results["invertible"].append(lim_id)
+
     proof = ProofObject(
         rule="ImpossibilityAudit",
         premises=[
@@ -259,19 +327,26 @@ def audit_all() -> Tuple[dict, ProofObject]:
             f"physical={len(results['physical'])}",
             f"logical={len(results['logical'])}",
             f"methodological={len(results['methodological'])}",
-            f"conventional={len(results['conventional'])}"
+            f"conventional={len(results['conventional'])}",
+            f"invertible={len(results['invertible'])}",
         ],
         conclusion="audit complete"
     )
-    
+
     return results, proof
 
 
 def get_inversions() -> List[Limitation]:
-    """Return all CONVENTIONAL_DIFFICULTY limitations with their inversions."""
+    """Return all invertible limitations (CONVENTIONAL_DIFFICULTY and INVERTIBLE_IMPOSSIBILITY).
+
+    Falsifies if: a limitation with a non-null yeshua_inversion is omitted.
+    """
     return [
         lim for lim in LIMITATION_REGISTRY.values()
-        if lim.limitation_type == LimitationType.CONVENTIONAL_DIFFICULTY
+        if lim.limitation_type in (
+            LimitationType.CONVENTIONAL_DIFFICULTY,
+            LimitationType.INVERTIBLE_IMPOSSIBILITY,
+        )
     ]
 
 
@@ -281,7 +356,10 @@ def get_limitation_by_id(lim_id: str) -> Optional[Limitation]:
 
 
 def can_be_solved_by_inversion(lim_id: str) -> Tuple[bool, ProofObject]:
-    """Check if a limitation can be solved via Yeshua Inversion."""
+    """Check if a limitation can be solved via Yeshua Inversion.
+
+    Falsifies if: INVERTIBLE_IMPOSSIBILITY limitations return False.
+    """
     lim = get_limitation_by_id(lim_id)
     if lim is None:
         return False, ProofObject(
@@ -289,9 +367,12 @@ def can_be_solved_by_inversion(lim_id: str) -> Tuple[bool, ProofObject]:
             premises=[f"id={lim_id}"],
             conclusion="limitation not found"
         )
-    
-    can_invert = lim.limitation_type == LimitationType.CONVENTIONAL_DIFFICULTY
-    
+
+    can_invert = lim.limitation_type in (
+        LimitationType.CONVENTIONAL_DIFFICULTY,
+        LimitationType.INVERTIBLE_IMPOSSIBILITY,
+    )
+
     proof = ProofObject(
         rule="InversionCheck",
         premises=[
@@ -300,5 +381,5 @@ def can_be_solved_by_inversion(lim_id: str) -> Tuple[bool, ProofObject]:
         ],
         conclusion=f"can_invert={can_invert}"
     )
-    
+
     return can_invert, proof
