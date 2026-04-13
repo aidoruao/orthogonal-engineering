@@ -23,6 +23,7 @@ def check_ems_response_time(agency: EMSAgency) -> Tuple[bool, ProofObject]:
     - Urban vs rural adjustments
     
     Falsifies if: 90th percentile > 9 minutes
+    falsifies_if: 90th percentile > 9 minutes
     """
     max_90th = Fraction(9)  # 9 minutes
     
@@ -54,6 +55,7 @@ def check_cardiac_arrest_survival(agency: EMSAgency) -> Tuple[bool, ProofObject]
     - AED deployment
     
     Falsifies if: survival rate < 10%
+    falsifies_if: survival rate < 10%
     """
     target = cardiac_survival_target()
     rate = agency.get_cardiac_survival_rate()
@@ -87,6 +89,7 @@ def check_ambulance_availability(agency: EMSAgency) -> Tuple[bool, ProofObject]:
     - Peak demand coverage
     
     Falsifies if: availability < 20%
+    falsifies_if: availability < 20%
     """
     min_availability = Fraction(1, 5)  # 20%
     avail = agency.get_ambulance_availability()
@@ -120,6 +123,7 @@ def check_emergency_response_priority(incident: EmergencyIncident) -> Tuple[bool
     - Priority 3-5: Urgent/non-urgent
     
     Falsifies if: Priority 1 response time excessive
+    falsifies_if: Priority 1 response time excessive
     """
     response_time = incident.get_response_time_minutes()
     
@@ -158,6 +162,7 @@ def check_ems_coverage_density(agency: EMSAgency) -> Tuple[bool, ProofObject]:
     - Response time feasibility
     
     Falsifies if: insufficient units for population
+    falsifies_if: insufficient units for population
     """
     if agency.service_area_population == 0:
         return True, ProofObject(

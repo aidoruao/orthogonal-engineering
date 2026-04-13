@@ -467,3 +467,23 @@ def check_ada_ramp(rise_inches: float, run_inches: float) -> Dict:
         Fraction(rise_inches).limit_denominator(100),
         Fraction(run_inches).limit_denominator(100)
     )
+
+
+@dataclass(frozen=True)
+class BuildingPermit:
+    """Frozen building permit record for invariant checks.
+
+    Standards: International Building Code (IBC) 2021,
+    NFPA 101 Life Safety Code, ADA Standards (28 CFR 36).
+    """
+    permit_id: str
+    permit_obtained: bool
+    occupancy_type: str  # "residential", "commercial", "industrial"
+    fire_exits_count: int
+    min_fire_exits: int
+    sprinkler_installed: bool
+    electrical_code_compliant: bool
+    plumbing_code_compliant: bool
+    occupant_load: Fraction
+    max_occupant_load: Fraction
+    seismic_zone: int

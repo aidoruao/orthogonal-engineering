@@ -11,6 +11,7 @@ def check_key_strength(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject
     """NIST SP 800-57: Keys must meet minimum size requirements.
 
     Falsifies if: analyzer.is_acceptable() is False or effective security bits < MIN_SECURITY_STRENGTH.
+    falsifies_if: analyzer.is_acceptable() is False or effective security bits < MIN_SECURITY_STRENGTH.
     """
     if not analyzer.is_acceptable():
         return False, ProofObject(
@@ -38,6 +39,7 @@ def check_hash_collision_resistance(analyzer: HashAnalyzer) -> Tuple[bool, Proof
     """Hash must provide adequate collision resistance.
 
     Falsifies if: analyzer.collision_resistance_bits() < MIN_SECURITY_STRENGTH.
+    falsifies_if: analyzer.collision_resistance_bits() < MIN_SECURITY_STRENGTH.
     """
     collision_bits = analyzer.collision_resistance_bits()
     
@@ -59,6 +61,7 @@ def check_cert_chain(chain: CertChainValidator) -> Tuple[bool, ProofObject]:
     """Certificate chain must validate completely.
 
     Falsifies if: chain is empty, signatures are invalid, or root is untrusted.
+    falsifies_if: chain is empty, signatures are invalid, or root is untrusted.
     """
     if len(chain.certificates) == 0:
         return False, ProofObject(
@@ -92,6 +95,7 @@ def check_key_algorithm_compliance(analyzer: KeyStrengthAnalyzer) -> Tuple[bool,
     """NIST SP 800-131A: Approved algorithms only.
 
     Falsifies if: analyzer.algorithm is deprecated per NIST SP 800-131A.
+    falsifies_if: analyzer.algorithm is deprecated per NIST SP 800-131A.
     """
     from .implementation import KeyAlgorithm
     

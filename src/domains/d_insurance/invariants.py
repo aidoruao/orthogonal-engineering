@@ -10,6 +10,7 @@ def check_duty_to_defend(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
     """Duty to defend when claim potentially covered.
 
     Falsifies if: duty_to_defend_owed is True but defense_provided is False.
+    falsifies_if: duty_to_defend_owed is True but defense_provided is False.
     """
     if not policy.duty_to_defend_owed():
         return True, ProofObject(
@@ -35,6 +36,7 @@ def check_insurable_interest(interest: InsurableInterest) -> Tuple[bool, ProofOb
     """Must have insurable interest at time of loss.
 
     Falsifies if: insurable interest does not exist when evaluated.
+    falsifies_if: insurable interest does not exist when evaluated.
     """
     if interest.has_insurable_interest():
         return True, ProofObject(
@@ -52,6 +54,7 @@ def check_uberimmae_fidei(policy: InsurancePolicy) -> Tuple[bool, ProofObject]:
     """Utmost good faith — premiums must be paid.
 
     Falsifies if: premiums_current returns False.
+    falsifies_if: premiums_current returns False.
     """
     if policy.premiums_current():
         return True, ProofObject(

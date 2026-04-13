@@ -21,6 +21,7 @@ def check_no_vendor_lockin_invariant(api_calls: List[APICall]) -> Tuple[bool, Pr
     """Invariant: No vendor-specific API calls without fallback.
 
     Falsifies if: vendor-specific calls lack fallbacks such that acceptable
+    falsifies_if: vendor-specific calls lack fallbacks such that acceptable
     coverage drops below 90%.
     """
     report, proof = check_no_vendor_lockin(api_calls)
@@ -44,6 +45,7 @@ def check_instruction_set_baseline_invariant(
     """Invariant: No ungated instructions above baseline.
 
     Falsifies if: required instructions exceed baseline without proper gating.
+    falsifies_if: required instructions exceed baseline without proper gating.
     """
     return check_instruction_set_baseline(instructions, baseline)
 
@@ -54,6 +56,7 @@ def check_software_renderer_path_invariant(
     """Invariant: At least one software fallback available.
 
     Falsifies if: no software renderer fallback is available.
+    falsifies_if: no software renderer fallback is available.
     """
     return check_software_renderer_path(renderers)
 
@@ -62,6 +65,7 @@ def check_cross_platform_paths_invariant(paths: List[str]) -> Tuple[bool, ProofO
     """Invariant: All paths are cross-platform compatible.
 
     Falsifies if: any path violates cross-platform compatibility rules.
+    falsifies_if: any path violates cross-platform compatibility rules.
     """
     valid, violations, proof = check_cross_platform_paths(paths)
     
@@ -78,6 +82,7 @@ def run_all_invariants() -> dict:
     """Run all invariant checks and return results.
 
     Falsifies if: any hardware agnosticism invariant check fails or raises an exception.
+    falsifies_if: any hardware agnosticism invariant check fails or raises an exception.
     """
     results = {}
     

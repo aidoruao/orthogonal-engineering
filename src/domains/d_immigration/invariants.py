@@ -11,6 +11,7 @@ def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObj
     """INA: Visa category requirements must be met.
 
     Falsifies if: applicant fails to meet the requirements for the requested visa category.
+    falsifies_if: applicant fails to meet the requirements for the requested visa category.
     """
     if not checker.meets_category_requirements():
         return False, ProofObject(
@@ -30,6 +31,7 @@ def check_processing_deadline(timer: ProcessingTimer) -> Tuple[bool, ProofObject
     """INA: Processing must not exceed statutory deadlines.
 
     Falsifies if: days_elapsed exceeds statutory_deadline_days.
+    falsifies_if: days_elapsed exceeds statutory_deadline_days.
     """
     if timer.is_overdue():
         return False, ProofObject(
@@ -49,6 +51,7 @@ def check_status_transition(machine: StatusStateMachine) -> Tuple[bool, ProofObj
     """Status transitions must follow valid paths.
 
     Falsifies if: requested_status is not reachable from current_status.
+    falsifies_if: requested_status is not reachable from current_status.
     """
     if not machine.is_valid_transition():
         return False, ProofObject(

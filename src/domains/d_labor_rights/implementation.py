@@ -19,6 +19,7 @@ Falsification IDs: F_LABOR_001, F_LABOR_002, F_LABOR_003
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from fractions import Fraction
 from typing import NamedTuple, Sequence
 
@@ -215,3 +216,25 @@ DOMAIN_METADATA = {
     "flsa_overtime_multiplier": "3/2",
     "flsa_weekly_threshold_hours": 40,
 }
+
+
+@dataclass(frozen=True)
+class WorkplaceRecord:
+    """Frozen workplace record for invariant checks.
+
+    Standards: FLSA (29 U.S.C. §206-207), OSHA (29 U.S.C. §654),
+    FMLA (29 U.S.C. §2612), NLRA (29 U.S.C. §157).
+    """
+    record_id: str
+    hourly_wage: Fraction
+    federal_minimum_wage: Fraction
+    overtime_hours: Fraction
+    overtime_rate_multiplier: Fraction  # must be >= Fraction(3, 2)
+    regular_rate: Fraction
+    osha_recordable_incident: bool
+    incident_reported: bool
+    collective_bargaining_agreement: bool
+    unfair_labor_practice: bool
+    fmla_eligible_employee: bool
+    fmla_leave_granted: bool
+    fmla_leave_requested: bool

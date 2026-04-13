@@ -11,6 +11,7 @@ def check_mcdc_completeness(checker: MCDCChecker) -> Tuple[bool, ProofObject]:
     """MC/DC: Each condition must independently affect outcome.
 
     Falsifies if: any condition lacks independence pairs indicating incomplete MC/DC.
+    falsifies_if: any condition lacks independence pairs indicating incomplete MC/DC.
     """
     if not checker.is_mcdc_complete():
         pairs = checker.get_independence_pairs()
@@ -32,6 +33,7 @@ def check_mutation_score(scorer: MutationScorer) -> Tuple[bool, ProofObject]:
     """Mutation score must meet threshold.
 
     Falsifies if: mutation score falls below MIN_MUTATION_SCORE.
+    falsifies_if: mutation score falls below MIN_MUTATION_SCORE.
     """
     score = scorer.score()
     
@@ -53,6 +55,7 @@ def check_test_determinism(verifier: DeterminismVerifier) -> Tuple[bool, ProofOb
     """Tests must produce same result across runs.
 
     Falsifies if: is_deterministic returns False for the test.
+    falsifies_if: is_deterministic returns False for the test.
     """
     if not verifier.is_deterministic():
         return False, ProofObject(

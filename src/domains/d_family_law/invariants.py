@@ -11,6 +11,7 @@ def check_support_calculation(calc: ChildSupportCalculator) -> Tuple[bool, Proof
     """Child support must be proportional to income shares.
 
     Falsifies if: sum of calculated obligations differs from basic_support_obligation.
+    falsifies_if: sum of calculated obligations differs from basic_support_obligation.
     """
     obligations = calc.calculate_support()
     total = sum(obligations.values())
@@ -33,6 +34,7 @@ def check_home_state_determination(jurisdiction: CustodyJurisdiction) -> Tuple[b
     """UCCJEA: Home state requires 6+ consecutive months.
 
     Falsifies if: jurisdiction.home_state() returns \"undetermined\".
+    falsifies_if: jurisdiction.home_state() returns \"undetermined\".
     """
     home = jurisdiction.home_state()
     
@@ -54,6 +56,7 @@ def check_equitable_division(divider: AssetDivider) -> Tuple[bool, ProofObject]:
     """Community property requires equal division.
 
     Falsifies if: distributed total differs from assets or spouse shares are unequal.
+    falsifies_if: distributed total differs from assets or spouse shares are unequal.
     """
     division = divider.equitable_division()
     total_distributed = sum(division.values())

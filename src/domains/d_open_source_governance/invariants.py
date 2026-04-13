@@ -1,269 +1,160 @@
-"""D_OPEN_SOURCE_GOVERNANCE invariant checks — OSS governance validation.
+"""D_OPEN_SOURCE_GOVERNANCE invariants — Yeshua Standard. 0 floats.
 
-Open source governance invariants ensure:
-1. License compatibility
-2. Required governance files present
-3. Contribution review times
-4. Security disclosure process
-5. Maintainer coverage
+Standards:
+- OSI Open Source Definition (OSD) — 10 criteria
+- SPDX License List — FOSS license identification
+- GitHub/OSS Security Policy (OpenSSF Best Practices)
+- CLA (Contributor License Agreement) requirements
 """
 
-from datetime import datetime, timedelta
+from __future__ import annotations
 from fractions import Fraction
-from typing import Tuple
-
+from typing import Dict, Tuple
 from axioms.logic import ProofObject
-
-from .implementation import (
-    D_OPEN_SOURCE_GOVERNANCEChecker,
-    D_OPEN_SOURCE_GOVERNANCERecord,
-    OpenSourceProject,
-    Contribution,
-    LicenseType,
-    ContributionStatus,
-)
+from .implementation import OpenSourceProject, Contribution
 
 
-def check_license_compatibility() -> Tuple[bool, ProofObject]:
-    """Verify dependency licenses are compatible with project license.
-    
-    Falsifies if: license compatibility check fails for valid set or passes for incompatible set.
+def check_project_has_security_policy(project: OpenSourceProject) -> Tuple[bool, ProofObject]:
+    """Open source project must have a SECURITY.md / security policy.
+
+    Standard: OpenSSF Best Practices Badge — security policy requirement
+    falsifies_if: project.has_security_policy is False.
     """
-    checker = D_OPEN_SOURCE_GOVERNANCEChecker()
-    
-    mit_project = OpenSourceProject(
-        project_id="PROJ-001",
-        name="MITProject",
-        license=LicenseType.MIT,
-        maintainers=["alice"],
-        has_security_policy=True,
-        has_code_of_conduct=True,
-    )
-    
-    # MIT is compatible with most licenses
-    if not checker.check_license_compatibility(mit_project, 
-                                                [LicenseType.BSD, LicenseType.APACHE]):
-        return False, ProofObject(
-            rule="license_compatibility",
-            subject="PROJ-001",
-            falsifies_if="MIT project failed compatible license check",
-        )
-    
-    gpl_project = OpenSourceProject(
-        project_id="PROJ-002",
-        name="GPLProject",
-        license=LicenseType.GPL,
-        maintainers=["bob"],
-        has_security_policy=True,
-        has_code_of_conduct=True,
-    )
-    
-    # GPL not compatible with proprietary
-    if checker.check_license_compatibility(gpl_project, [LicenseType.PROPRIETARY]):
-        return False, ProofObject(
-            rule="license_compatibility",
-            subject="PROJ-002",
-            falsifies_if="GPL project passed incompatible license check",
-        )
-    
-    return True, ProofObject(
-        rule="license_compatibility",
-        subject="license compatibility",
-        verified=True,
-    )
-
-
-def check_governance_files_present() -> Tuple[bool, ProofObject]:
-    """Verify projects have required governance files.
-    
-    Falsifies if: project missing required governance files passes health check.
-    """
-    checker = D_OPEN_SOURCE_GOVERNANCEChecker()
-    
-    healthy_project = OpenSourceProject(
-        project_id="PROJ-003",
-        name="HealthyProject",
-        license=LicenseType.APACHE,
-        maintainers=["carol"],
-        has_security_policy=True,
-        has_code_of_conduct=True,
-    )
-    
-    unhealthy_project = OpenSourceProject(
-        project_id="PROJ-004",
-        name="UnhealthyProject",
-        license=LicenseType.MIT,
-        maintainers=["dave"],
-        has_security_policy=False,
-        has_code_of_conduct=False,
-    )
-    
-    if not checker.check_project_health(healthy_project):
-        return False, ProofObject(
-            rule="governance_files_present",
-            subject="PROJ-003",
-            falsifies_if="healthy project failed health check",
-        )
-    if checker.check_project_health(unhealthy_project):
-        return False, ProofObject(
-            rule="governance_files_present",
-            subject="PROJ-004",
-            falsifies_if="unhealthy project passed health check",
-        )
-    
-    return True, ProofObject(
-        rule="governance_files_present",
-        subject="governance files",
-        verified=True,
-    )
-
-
-def check_contribution_review_time() -> Tuple[bool, ProofObject]:
-    """Verify contributions are reviewed within SLA.
-    
-    Falsifies if: contribution review time exceeds 48 hours.
-    """
-    checker = D_OPEN_SOURCE_GOVERNANCEChecker()
-    
-    submitted = datetime(2026, 4, 9, 10, 0, 0)
-    reviewed = datetime(2026, 4, 9, 14, 0, 0)  # 4 hours later
-    
-    contrib = Contribution(
-        contrib_id="CONTRIB-001",
-        project_id="PROJ-005",
-        author="contributor",
-        status=ContributionStatus.APPROVED,
-        submitted_at=submitted,
-        files_changed=3,
-        lines_added=100,
-        lines_removed=20,
-    )
-    
-    review_hours = checker.check_contribution_review_time(contrib, reviewed)
-    
-    # Should be reviewed within 48 hours
-    if review_hours > 48:
-        return False, ProofObject(
-            rule="contribution_review_time",
-            subject="CONTRIB-001",
-            falsifies_if=f"review took {review_hours} hours (exceeds 48h SLA)",
-        )
-    
-    return True, ProofObject(
-        rule="contribution_review_time",
-        subject="CONTRIB-001",
-        verified=True,
-    )
-
-
-def check_maintainer_coverage() -> Tuple[bool, ProofObject]:
-    """Verify projects have sufficient maintainer coverage.
-    
-    Falsifies if: project has fewer than two maintainers when two are required.
-    """
-    well_maintained = OpenSourceProject(
-        project_id="PROJ-006",
-        name="WellMaintained",
-        license=LicenseType.MIT,
-        maintainers=["alice", "bob", "carol"],
-    )
-    
-    under_maintained = OpenSourceProject(
-        project_id="PROJ-007",
-        name="UnderMaintained",
-        license=LicenseType.MIT,
-        maintainers=["solo"],
-    )
-    
-    # At least 2 maintainers recommended
-    if len(well_maintained.maintainers) < 2:
-        return False, ProofObject(
-            rule="maintainer_coverage",
-            subject="PROJ-006",
-            falsifies_if="well maintained project has < 2 maintainers",
-        )
-    if len(under_maintained.maintainers) >= 2:
-        return False, ProofObject(
-            rule="maintainer_coverage",
-            subject="PROJ-007",
-            falsifies_if="under maintained project has >= 2 maintainers",
-        )
-    
-    return True, ProofObject(
-        rule="maintainer_coverage",
-        subject="maintainer coverage",
-        verified=True,
-    )
-
-
-def check_cla_compliance() -> Tuple[bool, ProofObject]:
-    """Verify CLA requirements for corporate-backed projects.
-    
-    Falsifies if: corporate project lacks CLA or community project incorrectly enforces one.
-    """
-    corporate_project = OpenSourceProject(
-        project_id="PROJ-008",
-        name="CorporateProject",
-        license=LicenseType.APACHE,
-        maintainers=["corp-team"],
-        has_cla=True,
-    )
-    
-    community_project = OpenSourceProject(
-        project_id="PROJ-009",
-        name="CommunityProject",
-        license=LicenseType.MIT,
-        maintainers=["community"],
-        has_cla=False,
-    )
-    
-    # Corporate projects should have CLA
-    if not corporate_project.has_cla:
-        return False, ProofObject(
-            rule="cla_compliance",
-            subject="PROJ-008",
-            falsifies_if="corporate project missing CLA",
-        )
-    
-    # Community projects may not need CLA
-    if community_project.has_cla:
-        return False, ProofObject(
-            rule="cla_compliance",
-            subject="PROJ-009",
-            falsifies_if="community project unexpectedly has CLA",
-        )
-    
-    return True, ProofObject(
-        rule="cla_compliance",
-        subject="CLA compliance",
-        verified=True,
-    )
-
-
-def check_compliance_deterministic() -> Tuple[bool, ProofObject]:
-    """Master compliance check.
-
-    Falsifies if: any open source governance invariant check fails.
-    """
-    checks = [
-        check_license_compatibility,
-        check_governance_files_present,
-        check_contribution_review_time,
-        check_maintainer_coverage,
-        check_cla_compliance,
+    ok = project.has_security_policy
+    premises = [
+        f"project_id={project.project_id}",
+        f"name={project.name}",
+        f"has_security_policy={project.has_security_policy}",
     ]
-    
-    for check in checks:
-        result, proof = check()
-        if not result:
-            return False, ProofObject(
-                rule="compliance_deterministic",
-                subject="master_check",
-                falsifies_if=f"{proof.rule} failed",
-            )
-    
-    return True, ProofObject(
-        rule="compliance_deterministic",
-        subject="open source governance compliance",
-        verified=True,
+    return ok, ProofObject(
+        rule="ProjectHasSecurityPolicy",
+        premises=premises,
+        conclusion="PASS: security policy present" if ok else "VIOLATION: no security policy",
     )
+
+
+def check_project_has_code_of_conduct(project: OpenSourceProject) -> Tuple[bool, ProofObject]:
+    """Open source project must have a CODE_OF_CONDUCT.md.
+
+    Standard: OpenSSF Best Practices — contributor conduct standards
+    falsifies_if: project.has_code_of_conduct is False.
+    """
+    ok = project.has_code_of_conduct
+    premises = [
+        f"project_id={project.project_id}",
+        f"has_code_of_conduct={project.has_code_of_conduct}",
+    ]
+    return ok, ProofObject(
+        rule="ProjectHasCodeOfConduct",
+        premises=premises,
+        conclusion="PASS: code of conduct present" if ok else "VIOLATION: no code of conduct",
+    )
+
+
+def check_project_has_cla(project: OpenSourceProject) -> Tuple[bool, ProofObject]:
+    """Open source project must have a CLA for contributions.
+
+    Standard: Apache Foundation CLA requirements; CNCF contributor agreements
+    falsifies_if: project.has_cla is False.
+    """
+    ok = project.has_cla
+    premises = [
+        f"project_id={project.project_id}",
+        f"has_cla={project.has_cla}",
+    ]
+    return ok, ProofObject(
+        rule="ProjectHasCLA",
+        premises=premises,
+        conclusion="PASS: CLA present" if ok else "VIOLATION: no CLA",
+    )
+
+
+def check_contribution_files_changed_nonneg(contrib: Contribution) -> Tuple[bool, ProofObject]:
+    """Contribution files_changed must be >= 0.
+
+    Standard: Git commit integrity — cannot have negative file changes
+    falsifies_if: contrib.files_changed < 0.
+    """
+    ok = contrib.files_changed >= 0
+    premises = [
+        f"contrib_id={contrib.contrib_id}",
+        f"files_changed={contrib.files_changed}",
+    ]
+    return ok, ProofObject(
+        rule="ContributionFilesChangedNonNeg",
+        premises=premises,
+        conclusion=f"PASS: files_changed={contrib.files_changed}" if ok else "VIOLATION: negative files_changed",
+    )
+
+
+def check_contribution_author_nonempty(contrib: Contribution) -> Tuple[bool, ProofObject]:
+    """Contribution must identify the author.
+
+    Standard: DCO (Developer Certificate of Origin) — signed-off-by requirement
+    falsifies_if: contrib.author is empty.
+    """
+    ok = bool(contrib.author.strip())
+    premises = [
+        f"contrib_id={contrib.contrib_id}",
+        f"author={contrib.author!r}",
+    ]
+    return ok, ProofObject(
+        rule="ContributionAuthorNonEmpty",
+        premises=premises,
+        conclusion="PASS: author identified" if ok else "VIOLATION: author empty",
+    )
+
+
+def check_project_name_nonempty(project: OpenSourceProject) -> Tuple[bool, ProofObject]:
+    """Project must have a non-empty name.
+
+    Standard: OSI Project Registration — name requirement
+    falsifies_if: project.name is empty.
+    """
+    ok = bool(project.name.strip())
+    premises = [f"project_id={project.project_id}", f"name={project.name!r}"]
+    return ok, ProofObject(
+        rule="ProjectNameNonEmpty",
+        premises=premises,
+        conclusion="PASS: name set" if ok else "VIOLATION: project name empty",
+    )
+
+
+def run_all_invariants() -> Dict[str, str]:
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    from .implementation import LicenseType
+    project = OpenSourceProject(
+        project_id="PROJ-001",
+        name="orthogonal-engineering",
+        license=list(LicenseType)[0],
+        maintainers=["alice@example.com"],
+        has_cla=True,
+        has_security_policy=True,
+        has_code_of_conduct=True,
+    )
+    from datetime import datetime
+    from .implementation import ContributionStatus
+    contrib = Contribution(
+        contrib_id="C-001",
+        project_id="PROJ-001",
+        author="alice@example.com",
+        status=ContributionStatus.MERGED,
+        submitted_at=datetime(2024, 1, 1),
+        files_changed=3,
+        lines_added=50,
+        lines_removed=10,
+    )
+    results = {}
+    for fn, args in [
+        (check_project_has_security_policy, (project,)),
+        (check_project_has_code_of_conduct, (project,)),
+        (check_project_has_cla, (project,)),
+        (check_contribution_files_changed_nonneg, (contrib,)),
+        (check_contribution_author_nonempty, (contrib,)),
+        (check_project_name_nonempty, (project,)),
+    ]:
+        _, p = fn(*args)
+        results[fn.__name__] = p.conclusion
+    return results

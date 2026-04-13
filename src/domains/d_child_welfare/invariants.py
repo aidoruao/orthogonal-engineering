@@ -21,6 +21,7 @@ def check_mandatory_reporting_timeline(report: MandatoryReport) -> Tuple[bool, P
     Mandatory reporters must file within 24-48 hours (jurisdiction-dependent).
 
     Falsifies if: reporter_mandated AND report_filed_within_hours > 48
+    falsifies_if: reporter_mandated AND report_filed_within_hours > 48
     """
     max_hours = mandatory_reporting_hours()
 
@@ -47,6 +48,7 @@ def check_cps_investigation_response_time(inv: CPSInvestigation) -> Tuple[bool, 
     CPS investigations must meet priority-based response times.
 
     Falsifies if: IMMEDIATE AND hours_to_response > 24, or PRIORITY AND hours_to_response > 72
+    falsifies_if: IMMEDIATE AND hours_to_response > 24, or PRIORITY AND hours_to_response > 72
     """
     if inv.priority == InvestigationPriority.IMMEDIATE:
         max_hours = investigation_immediate_hours()
@@ -100,6 +102,7 @@ def check_foster_placement_screening(placement: FosterPlacement) -> Tuple[bool, 
     Foster placements require home study and background checks.
 
     Falsifies if: NOT (home_study_completed AND background_check_passed)
+    falsifies_if: NOT (home_study_completed AND background_check_passed)
     """
     if not placement.home_study_completed or not placement.background_check_passed:
         return False, ProofObject(
@@ -126,6 +129,7 @@ def check_asfa_permanency_hearing(asfa: ASFATimeline) -> Tuple[bool, ProofObject
     ASFA: Permanency hearing required within 12 months (365 days) of entry into care.
 
     Falsifies if: days_in_care > 365 AND NOT permanency_hearing_held
+    falsifies_if: days_in_care > 365 AND NOT permanency_hearing_held
     """
     max_days = asfa_permanency_days()
 
@@ -152,6 +156,7 @@ def check_asfa_tpr_filing(asfa: ASFATimeline) -> Tuple[bool, ProofObject]:
     ASFA: TPR filing required if child in care 15 of last 22 months (450 days).
 
     Falsifies if: days_in_care > 450 AND NOT tpr_filed
+    falsifies_if: days_in_care > 450 AND NOT tpr_filed
     """
     max_days = asfa_tpr_filing_days()
 
@@ -178,6 +183,7 @@ def check_icwa_tribal_notification(icwa: ICWACompliance) -> Tuple[bool, ProofObj
     ICWA: Tribes must be notified when tribal children enter foster care.
 
     Falsifies if: child_is_tribal_member AND NOT tribe_notified
+    falsifies_if: child_is_tribal_member AND NOT tribe_notified
     """
     if icwa.child_is_tribal_member and not icwa.tribe_notified:
         return False, ProofObject(
@@ -204,6 +210,7 @@ def check_icwa_active_efforts(icwa: ICWACompliance) -> Tuple[bool, ProofObject]:
     ICWA: Active efforts to prevent family breakup must be documented for tribal children.
 
     Falsifies if: child_is_tribal_member AND NOT active_efforts_documented
+    falsifies_if: child_is_tribal_member AND NOT active_efforts_documented
     """
     if icwa.child_is_tribal_member and not icwa.active_efforts_documented:
         return False, ProofObject(

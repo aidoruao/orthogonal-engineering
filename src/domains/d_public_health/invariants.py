@@ -23,6 +23,7 @@ def check_herd_immunity(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofObject]:
     - Varies by disease transmissibility
     
     Falsifies if: coverage < 95% for high-transmissibility diseases
+    falsifies_if: coverage < 95% for high-transmissibility diseases
     """
     threshold = herd_immunity_threshold()
     coverage = outbreak.get_vaccination_coverage()
@@ -56,6 +57,7 @@ def check_case_fatality_rate(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofObje
     - Comparative analysis across outbreaks
     
     Falsifies if: CFR > 10% without identified cause
+    falsifies_if: CFR > 10% without identified cause
     """
     max_cfr = max_acceptable_cfr()
     cfr = outbreak.get_case_fatality_rate()
@@ -90,6 +92,7 @@ def check_public_health_coverage(program: PublicHealthProgram) -> Tuple[bool, Pr
     - Equity considerations
     
     Falsifies if: coverage < 80% of target
+    falsifies_if: coverage < 80% of target
     """
     min_coverage = Fraction(8, 10)  # 80%
     rate = program.get_coverage_rate()
@@ -123,6 +126,7 @@ def check_r_naught_containment(outbreak: DiseaseOutbreak) -> Tuple[bool, ProofOb
     - R0 > 3: requires aggressive intervention
     
     Falsifies if: R0 > 3 without intervention
+    falsifies_if: R0 > 3 without intervention
     """
     critical_r0 = Fraction(3)
     
@@ -154,6 +158,7 @@ def check_program_budget_utilization(program: PublicHealthProgram) -> Tuple[bool
     - Target: 80-100% utilization
     
     Falsifies if: utilization < 50% or > 110%
+    falsifies_if: utilization < 50% or > 110%
     """
     utilization = program.get_budget_utilization()
     min_util = Fraction(1, 2)  # 50%

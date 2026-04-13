@@ -17,6 +17,7 @@ def check_inspection_current(vehicle: RailVehicle) -> Tuple[bool, ProofObject]:
     """FRA requires current rolling stock inspection.
 
     Falsifies if: inspection_current returns False.
+    falsifies_if: inspection_current returns False.
     """
     if not vehicle.inspection_current():
         days_overdue = (datetime.now() - vehicle.inspection_due).days
@@ -36,6 +37,7 @@ def check_speed_limit(train: Train) -> Tuple[bool, ProofObject]:
     """Train speed must not exceed authorized limits.
 
     Falsifies if: speed_compliant returns False.
+    falsifies_if: speed_compliant returns False.
     """
     if not train.speed_compliant():
         return False, ProofObject(
@@ -54,6 +56,7 @@ def check_hours_of_service(train: Train) -> Tuple[bool, ProofObject]:
     """Crew hours of service limited under 49 CFR 228.
 
     Falsifies if: hours_of_service exceeds 12 hours.
+    falsifies_if: hours_of_service exceeds 12 hours.
     """
     MAX_HOURS = Fraction(12)
     if train.hours_of_service > MAX_HOURS:
@@ -73,6 +76,7 @@ def check_ptc_equipped(vehicle: RailVehicle) -> Tuple[bool, ProofObject]:
     """Positive Train Control (PTC) required where mandated.
 
     Falsifies if: ptc_equipped is False.
+    falsifies_if: ptc_equipped is False.
     """
     if not vehicle.ptc_equipped:
         return False, ProofObject(
@@ -91,6 +95,7 @@ def check_track_class_speed(track: TrackSegment) -> Tuple[bool, ProofObject]:
     """Track class determines maximum speed.
 
     Falsifies if: track.max_speed exceeds allowed speed for track_class.
+    falsifies_if: track.max_speed exceeds allowed speed for track_class.
     """
     class_speeds = {1: 10, 2: 25, 3: 40, 4: 60, 5: 80, 6: 110}
     max_allowed = class_speeds.get(track.track_class, 10)

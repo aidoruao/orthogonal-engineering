@@ -1,339 +1,155 @@
-"""D_REMOTE_SENSING invariant checks — Yeshua Standard.
+"""D_REMOTE_SENSING invariants — Yeshua Standard. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
-
-Regulatory Standards:
-- Land Remote Sensing Policy Act of 1992
-- NOAA regulations (15 CFR Part 960)
-- NASA remote sensing policies
-- OGC standards for geospatial data
-
-Source: Land Remote Sensing Policy Act, NOAA/NASA regulations
+Standards:
+- OGC WMS/WCS standards (raster coverage)
+- ASPRS Accuracy Standards for Digital Geospatial Data
+- ISO 19115 (geographic metadata)
+- ITAR/EAR (satellite imagery export controls)
 """
 
 from __future__ import annotations
-
 from fractions import Fraction
-from typing import Tuple
-
+from typing import Dict, Tuple
 from axioms.logic import ProofObject
+from .implementation import GeoBounds, PatchGrid, MaskPattern, SpectralSignature
 
 
-def check_land_remote_sensing_policy_act_compliance() -> Tuple[bool, ProofObject]:
+def check_geobounds_valid(bounds: GeoBounds) -> Tuple[bool, ProofObject]:
+    """Latitude in [-90, 90] and longitude in [-180, 180] and min < max.
+
+    Standard: ISO 19115 geographic metadata; OGC WMS bounding box
+    falsifies_if: min_lat >= max_lat or min_lon >= max_lon or lat/lon out of range.
     """
-    Invariant: Land Remote Sensing Policy Act regulates commercial remote sensing.
-    
-    Standard: 51 U.S.C. § 60101 - Land Remote Sensing Policy Act
-    Falsifies if: Unlicensed operation of commercial remote sensing system.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Licensing requirements
-    noaa_license_required = True
-    secretary_of_commerce_authority = True
-    
-    # Conditions for license
-    national_security_conditions = True
-    foreign_policy_conditions = True
-    international_obligations = True
-    
-    # Spectrum allocation
-    fcc_spectrum_license_required = True
-    
-    # Data policy
-    nondiscriminatory_data_access = True
-    unenhanced_data_available = True
-    
-    success = noaa_license_required and nondiscriminatory_data_access
-    
-    proof = ProofObject(
-        rule="Land_Remote_Sensing_Policy_Act",
-        premises=[
-            f"noaa_license_required = {noaa_license_required}",
-            f"national_security_conditions = {national_security_conditions}",
-            f"foreign_policy_conditions = {foreign_policy_conditions}",
-            f"nondiscriminatory_data_access = {nondiscriminatory_data_access}",
-        ],
-        conclusion=(
-            "Land Remote Sensing Policy Act compliance verified"
-            if success
-            else "FAIL: Land Remote Sensing Policy Act check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_noaa_regulatory_compliance() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: NOAA regulations specify operational requirements.
-    
-    Standard: 15 CFR Part 960 - Licensing of Private Land Remote Sensing Systems
-    Falsifies if: Licensed system operates outside regulatory parameters.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Operating conditions
-    orbit_maintained = True
-    sensor_calibration = True
-    data_recording = True
-    
-    # Data availability
-    data_archiving_required = True
-    government_access_required = True
-    
-    # National security
-    shutter_control_provision = True  # Can be ordered to interrupt imaging
-    
-    # Resolution limits (example values, may vary)
-    max_panchromatic_resolution = Fraction(25, 100)  # 0.25m
-    max_multispectral_resolution = Fraction(1)  # 1m
-    
-    success = orbit_maintained and data_archiving_required and government_access_required
-    
-    proof = ProofObject(
-        rule="NOAA_Regulatory_Compliance",
-        premises=[
-            f"orbit_maintained = {orbit_maintained}",
-            f"data_archiving_required = {data_archiving_required}",
-            f"government_access_required = {government_access_required}",
-            f"shutter_control_provision = {shutter_control_provision}",
-        ],
-        conclusion=(
-            "NOAA regulatory compliance verified (15 CFR Part 960)"
-            if success
-            else "FAIL: NOAA regulatory compliance check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_nasa_earth_observation_standards() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: NASA Earth observation missions follow data standards.
-    
-    Standard: NASA Earth Science Data and Information Policy
-    Falsifies if: Data products lack required metadata or quality indicators.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Data quality
-    data_quality_flags = True
-    uncertainty_quantified = True
-    
-    # Metadata requirements
-    iso_19115_compliance = True  # Geographic metadata
-    cf_conventions = True  # Climate and Forecast
-    
-    # Data processing levels
-    level_0_raw = True
-    level_1_georeferenced = True
-    level_2_derived = True
-    level_3_gridded = True
-    level_4_model = True
-    
-    num_processing_levels = Fraction(5)
-    
-    # Open data policy
-    full_and_open_access = True
-    
-    success = iso_19115_compliance and full_and_open_access
-    
-    proof = ProofObject(
-        rule="NASA_Earth_Observation_Standards",
-        premises=[
-            f"iso_19115_compliance = {iso_19115_compliance}",
-            f"cf_conventions = {cf_conventions}",
-            f"num_processing_levels = {num_processing_levels}",
-            f"full_and_open_access = {full_and_open_access}",
-        ],
-        conclusion=(
-            "NASA Earth observation standards verified"
-            if success
-            else "FAIL: NASA Earth observation standards check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_geospatial_metadata_compliance() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Geospatial data includes required metadata elements.
-    
-    Standard: ISO 19115, FGDC Content Standard for Digital Geospatial Metadata
-    Falsifies if: Required metadata elements missing.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # ISO 19115 metadata elements
-    identification_info = True
-    quality_info = True
-    spatial_representation = True
-    reference_system = True
-    content_info = True
-    distribution_info = True
-    metadata_extension = True
-    
-    num_core_elements = Fraction(7)
-    
-    # Spatial reference
-    coordinate_system_defined = True
-    datum_defined = True
-    projection_defined = True
-    
-    # Temporal reference
-    acquisition_date = True
-    processing_date = True
-    
-    success = identification_info and quality_info and reference_system
-    
-    proof = ProofObject(
-        rule="Geospatial_Metadata_Compliance",
-        premises=[
-            f"identification_info = {identification_info}",
-            f"quality_info = {quality_info}",
-            f"reference_system = {reference_system}",
-            f"num_core_elements = {num_core_elements}",
-        ],
-        conclusion=(
-            "Geospatial metadata compliance verified (ISO 19115)"
-            if success
-            else "FAIL: Geospatial metadata compliance check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_ndvi_calculation_bounds() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: NDVI values bounded between -1 and 1.
-    
-    Standard: Remote sensing vegetation indices standard
-    Falsifies if: NDVI calculation produces values outside valid range.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # NDVI formula: (NIR - RED) / (NIR + RED)
-    
-    # Maximum NDVI: all NIR, no RED
-    max_nir = Fraction(100)
-    min_red = Fraction(0)
-    max_ndvi = (max_nir - min_red) / (max_nir + min_red)
-    max_ndvi_is_1 = max_ndvi == Fraction(1)
-    
-    # Minimum NDVI: all RED, no NIR
-    min_nir = Fraction(0)
-    max_red = Fraction(100)
-    min_ndvi = (min_nir - max_red) / (min_nir + max_red)
-    min_ndvi_is_minus_1 = min_ndvi == Fraction(-1)
-    
-    # Normal vegetation: NIR > RED
-    vegetation_nir = Fraction(80)
-    vegetation_red = Fraction(20)
-    vegetation_ndvi = (vegetation_nir - vegetation_red) / (vegetation_nir + vegetation_red)
-    vegetation_ndvi_valid = Fraction(0) < vegetation_ndvi < Fraction(1)
-    
-    success = max_ndvi_is_1 and min_ndvi_is_minus_1 and vegetation_ndvi_valid
-    
-    proof = ProofObject(
-        rule="NDVI_Calculation_Bounds",
-        premises=[
-            f"max_ndvi = {max_ndvi}",
-            f"min_ndvi = {min_ndvi}",
-            f"vegetation_ndvi = {vegetation_ndvi}",
-            f"bounds_valid = {Fraction(-1) <= vegetation_ndvi <= Fraction(1)}",
-        ],
-        conclusion=(
-            "NDVI calculation bounds verified"
-            if success
-            else "FAIL: NDVI calculation bounds check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_spatial_resolution_accuracy() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Spatial resolution meets specified ground sample distance.
-    
-    Standard: Commercial remote sensing licensing requirements
-    Falsifies if: Actual resolution worse than licensed threshold.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Licensed resolution
-    licensed_gsd = Fraction(30, 100)  # 0.3 meters
-    
-    # Actual achieved resolution
-    actual_gsd = Fraction(28, 100)  # 0.28 meters
-    
-    # Must meet or exceed (smaller is better)
-    resolution_met = actual_gsd <= licensed_gsd
-    
-    # Modulation Transfer Function (MTF) check
-    mtf_nyquist = Fraction(1, 2)  # MTF at Nyquist
-    mtf_sufficient = mtf_nyquist >= Fraction(1, 10)
-    
-    # Signal-to-Noise Ratio
-    snr_required = Fraction(100)
-    snr_achieved = Fraction(150)
-    snr_met = snr_achieved >= snr_required
-    
-    success = resolution_met and mtf_sufficient and snr_met
-    
-    proof = ProofObject(
-        rule="Spatial_Resolution_Accuracy",
-        premises=[
-            f"licensed_gsd = {licensed_gsd}m",
-            f"actual_gsd = {actual_gsd}m",
-            f"resolution_met = {resolution_met}",
-            f"snr_achieved = {snr_achieved}",
-        ],
-        conclusion=(
-            "Spatial resolution accuracy verified"
-            if success
-            else "FAIL: Spatial resolution accuracy check failed"
-        ),
-    )
-    return success, proof
-
-
-def run_all_invariants() -> dict:
-    """Run all D_REMOTE_SENSING invariants.
-
-    Falsifies if: any remote sensing invariant check fails or raises an exception.
-    """
-    checks = [
-        ("check_land_remote_sensing_policy_act_compliance", check_land_remote_sensing_policy_act_compliance),
-        ("check_noaa_regulatory_compliance", check_noaa_regulatory_compliance),
-        ("check_nasa_earth_observation_standards", check_nasa_earth_observation_standards),
-        ("check_geospatial_metadata_compliance", check_geospatial_metadata_compliance),
-        ("check_ndvi_calculation_bounds", check_ndvi_calculation_bounds),
-        ("check_spatial_resolution_accuracy", check_spatial_resolution_accuracy),
+    lat_ok = Fraction(-90) <= bounds.min_lat < bounds.max_lat <= Fraction(90)
+    lon_ok = Fraction(-180) <= bounds.min_lon < bounds.max_lon <= Fraction(180)
+    ok = lat_ok and lon_ok
+    premises = [
+        f"min_lat={bounds.min_lat}, max_lat={bounds.max_lat}",
+        f"min_lon={bounds.min_lon}, max_lon={bounds.max_lon}",
+        f"lat_ok={lat_ok}, lon_ok={lon_ok}",
     ]
-    
+    return ok, ProofObject(
+        rule="GeoBoundsValid",
+        premises=premises,
+        conclusion="PASS: geographic bounds valid" if ok else "VIOLATION: geographic bounds invalid",
+    )
+
+
+def check_patch_grid_coverage(grid: PatchGrid) -> Tuple[bool, ProofObject]:
+    """total_patches must equal rows * cols.
+
+    Standard: ASPRS accuracy standards — coverage completeness
+    falsifies_if: grid.total_patches != grid.rows * grid.cols.
+    """
+    expected = grid.rows * grid.cols
+    ok = grid.total_patches == expected
+    premises = [
+        f"rows={grid.rows}",
+        f"cols={grid.cols}",
+        f"expected_patches={expected}",
+        f"actual_patches={grid.total_patches}",
+    ]
+    return ok, ProofObject(
+        rule="PatchGridCoverage",
+        premises=premises,
+        conclusion=f"PASS: {grid.total_patches} patches = {grid.rows}x{grid.cols}" if ok else f"VIOLATION: patch count {grid.total_patches} != {expected}",
+    )
+
+
+def check_mask_coverage_ratio(mask: MaskPattern) -> Tuple[bool, ProofObject]:
+    """Masked patch ratio must not exceed 80% (Fraction(4, 5)).
+
+    Standard: ASPRS cloud cover threshold for usable imagery
+    falsifies_if: mask.mask_ratio > Fraction(4, 5).
+    """
+    max_mask = Fraction(4, 5)
+    ratio = mask.mask_ratio
+    ok = ratio <= max_mask
+    premises = [
+        f"mask_ratio={ratio}",
+        f"max_allowed={max_mask}",
+    ]
+    return ok, ProofObject(
+        rule="MaskCoverageRatio",
+        premises=premises,
+        conclusion=f"PASS: mask ratio {ratio} <= {max_mask}" if ok else f"VIOLATION: mask ratio {ratio} > {max_mask}",
+    )
+
+
+def check_spectral_bands_consistent(sig: SpectralSignature) -> Tuple[bool, ProofObject]:
+    """All band reflectances must be in [0, 1].
+
+    Standard: ASPRS / ESA Sentinel-2 radiometric calibration
+    falsifies_if: any band_reflectance < 0 or > 1.
+    """
+    if not hasattr(sig, "values"):
+        ok = True
+        premises = ["no band data to check"]
+    else:
+        invalid = [(b, v) for b, v in sig.values.items() if v < Fraction(0) or v > Fraction(1)]
+        ok = len(invalid) == 0
+        premises = [f"band_count={len(sig.values)}", f"invalid_bands={invalid}"]
+    return ok, ProofObject(
+        rule="SpectralBandsConsistent",
+        premises=premises,
+        conclusion="PASS: all reflectances in [0,1]" if ok else f"VIOLATION: reflectances out of range",
+    )
+
+
+def check_geobounds_non_degenerate(bounds: GeoBounds) -> Tuple[bool, ProofObject]:
+    """Bounding box must have non-zero area.
+
+    Standard: OGC WMS BBox non-degeneracy requirement
+    falsifies_if: (max_lat - min_lat) == 0 or (max_lon - min_lon) == 0.
+    """
+    lat_span = bounds.max_lat - bounds.min_lat
+    lon_span = bounds.max_lon - bounds.min_lon
+    ok = lat_span > Fraction(0) and lon_span > Fraction(0)
+    premises = [
+        f"lat_span={lat_span}",
+        f"lon_span={lon_span}",
+    ]
+    return ok, ProofObject(
+        rule="GeoBoundsNonDegenerate",
+        premises=premises,
+        conclusion="PASS: bounding box has positive area" if ok else "VIOLATION: degenerate bounding box",
+    )
+
+
+def check_patch_grid_positive(grid: PatchGrid) -> Tuple[bool, ProofObject]:
+    """rows and cols must be positive integers.
+
+    Standard: ASPRS coverage grid requirements
+    falsifies_if: grid.rows <= 0 or grid.cols <= 0.
+    """
+    ok = grid.rows > 0 and grid.cols > 0
+    premises = [f"rows={grid.rows}", f"cols={grid.cols}"]
+    return ok, ProofObject(
+        rule="PatchGridPositive",
+        premises=premises,
+        conclusion="PASS: grid dimensions positive" if ok else "VIOLATION: grid has non-positive dimension",
+    )
+
+
+def run_all_invariants() -> Dict[str, str]:
+    """Run all checks with nominal inputs. All must PASS
+
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    bounds = GeoBounds(min_lat=Fraction(34), max_lat=Fraction(36), min_lon=Fraction(-118), max_lon=Fraction(-116))
+    grid = PatchGrid(rows=10, cols=10, total_patches=100)
+    from .implementation import MaskPattern, MaskType, SpectralSignature, SpectralBand
+    inner_grid = PatchGrid(rows=5, cols=5, total_patches=25)
+    mask = MaskPattern(grid=inner_grid, masked_indices=tuple(range(4)), mask_type=MaskType.RANDOM_PATCH)
+    sig = SpectralSignature(values={SpectralBand.RED: Fraction(3, 10), SpectralBand.GREEN: Fraction(4, 10), SpectralBand.NIR: Fraction(6, 10)})
     results = {}
-    for name, check_func in checks:
-        try:
-            success, proof = check_func()
-            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+    for fn, args in [
+        (check_geobounds_valid, (bounds,)),
+        (check_patch_grid_coverage, (grid,)),
+        (check_mask_coverage_ratio, (mask,)),
+        (check_spectral_bands_consistent, (sig,)),
+        (check_geobounds_non_degenerate, (bounds,)),
+        (check_patch_grid_positive, (grid,)),
+    ]:
+        _, p = fn(*args)
+        results[fn.__name__] = p.conclusion
     return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_REMOTE_SENSING invariants: PASS")

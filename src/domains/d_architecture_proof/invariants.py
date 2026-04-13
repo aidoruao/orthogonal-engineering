@@ -20,6 +20,7 @@ def check_heyting_vs_boolean_divergence(eval1: LogicEvaluation, eval2: LogicEval
 
     Brouwer (1913): Heyting rejects excluded middle for non-constructive propositions.
     Falsifies if: same proposition evaluated as True in Boolean but None in Heyting → systems differ
+    falsifies_if: same proposition evaluated as True in Boolean but None in Heyting → systems differ
     """
     if eval1.proposition_id != eval2.proposition_id:
         return True, ProofObject(
@@ -63,6 +64,7 @@ def check_fraction_exactness(comp: NumericComputation) -> Tuple[bool, ProofObjec
 
     Dedekind (1858): Rational numbers form an exact field.
     Falsifies if: numeric_type == FRACTION but exact == False
+    falsifies_if: numeric_type == FRACTION but exact == False
     """
     if comp.numeric_type == NumericType.FRACTION and not comp.exact:
         return False, ProofObject(
@@ -102,6 +104,7 @@ def check_float_inexact_example(comp_frac: NumericComputation, comp_float: Numer
 
     IEEE 754: Floating-point has rounding errors.
     Falsifies if: same operation, Fraction exact but Float inexact (proves architectural choice)
+    falsifies_if: same operation, Fraction exact but Float inexact (proves architectural choice)
     """
     if comp_frac.numeric_type != NumericType.FRACTION or comp_float.numeric_type != NumericType.FLOAT:
         return True, ProofObject(
@@ -145,6 +148,7 @@ def check_axiom_independence(axiom: AxiomIndependence) -> Tuple[bool, ProofObjec
 
     Gödel (1940): Consistency via independence proofs.
     Falsifies if: is_independent == True requires countermodel to exist
+    falsifies_if: is_independent == True requires countermodel to exist
     """
     if axiom.is_independent and not axiom.countermodel:
         return False, ProofObject(
@@ -173,6 +177,7 @@ def check_geometric_morphism_truth_preservation(morph: GeometricMorphismProof) -
 
     Grothendieck (1960s): Topos theory and geometric morphisms.
     Falsifies if: truth_preserved == False indicates non-conservative morphism
+    falsifies_if: truth_preserved == False indicates non-conservative morphism
     """
     if not morph.truth_preserved:
         return True, ProofObject(

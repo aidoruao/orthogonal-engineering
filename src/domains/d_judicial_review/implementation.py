@@ -212,3 +212,17 @@ def check_judicial_review_available(
     """
     # All statutes are reviewable
     return True
+
+
+@dataclass(frozen=True)
+class FrozenConstitutionalChallenge:
+    """A constitutional challenge with Article III standing requirements."""
+    challenge_id: str
+    standing_injury: bool
+    causation_established: bool
+    redressability: bool
+    challenged_action_is_government: bool
+    final_agency_action: bool
+    question_is_ripe: bool
+    not_moot: bool
+    standard_of_review: str  # "strict_scrutiny", "intermediate", "rational_basis"

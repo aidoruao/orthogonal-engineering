@@ -5,6 +5,7 @@ from src.domains.d_bill_of_rights.implementation import (
     FourthAmendmentRights,
     DueProcessRights,
     RightsViolation,
+    ConstitutionalRight,
 )
 __all__ = [
     "BillOfRightsChecker",
@@ -12,4 +13,5 @@ __all__ = [
     "FourthAmendmentRights",
     "DueProcessRights",
     "RightsViolation",
+    "ConstitutionalRight",
 ]

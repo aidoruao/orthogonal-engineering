@@ -27,6 +27,7 @@ def check_frame_reflexivity(frame: EpistemicFrame, agent_id: str) -> Tuple[bool,
     """S4/S5 requires reflexive accessibility: w R w for all worlds.
     
     Falsifies if: any world is missing self-accessibility for the agent.
+    falsifies_if: any world is missing self-accessibility for the agent.
     """
     for w in frame.worlds:
         accessible = frame.accessibility.get(agent_id, set())
@@ -48,6 +49,7 @@ def check_knowledge_necessitation(belief: BeliefState, prop: Proposition, world_
     """Knowledge necessitation: If P is known, P is true.
     
     Falsifies if: belief.knows(prop, world_id) is True while prop.is_true_in(world_id) is False.
+    falsifies_if: belief.knows(prop, world_id) is True while prop.is_true_in(world_id) is False.
     """
     claims_knowledge = belief.knows(prop, world_id)
     is_true = prop.is_true_in(world_id)
@@ -74,6 +76,7 @@ def check_jtb_completeness(analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
     """Justified True Belief requires all three components.
     
     Falsifies if: true belief lacks justification or justification strength falls below threshold.
+    falsifies_if: true belief lacks justification or justification strength falls below threshold.
     """
     MIN_JUSTIFICATION_STRENGTH = Fraction(1, 2)  # 50%
     
@@ -116,6 +119,7 @@ def check_gettier_detection(analysis: JTBAnalysis) -> Tuple[bool, ProofObject]:
     """Detect Gettier cases: JTB that is not knowledge due to luck.
     
     Falsifies if: JTB exists with low justification reliability indicating luck-based belief.
+    falsifies_if: JTB exists with low justification reliability indicating luck-based belief.
     """
     if not analysis.is_jtb():
         return True, ProofObject(
@@ -147,6 +151,7 @@ def check_tracking_sensitivity(tracking: TrackingCondition, analysis: JTBAnalysi
     """Nozick's sensitivity: If P were false, S would not believe P.
     
     Falsifies if: tracking.sensitivity is False for a JTB claim (agent would believe P even if false).
+    falsifies_if: tracking.sensitivity is False for a JTB claim (agent would believe P even if false).
     """
     if not analysis.is_jtb():
         return True, ProofObject(
@@ -177,6 +182,7 @@ def check_safety_condition(safety: SafetyCondition, threshold: Fraction) -> Tupl
     """Safety: Belief could not easily have been false.
     
     Falsifies if: safety.safety_score() < threshold (belief too close to being false).
+    falsifies_if: safety.safety_score() < threshold (belief too close to being false).
     """
     score = safety.safety_score()
     

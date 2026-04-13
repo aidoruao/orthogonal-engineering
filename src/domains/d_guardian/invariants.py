@@ -42,6 +42,7 @@ def check_solo_protector(
     No principal may have multiple guardians (conflict risk).
     
     Falsifies if: principal has zero guardians or more than one guardian assigned.
+    falsifies_if: principal has zero guardians or more than one guardian assigned.
     """
     principal = agent.principal_id
     principal_guardians = [a for a in all_agents if a.principal_id == principal]
@@ -89,6 +90,7 @@ def check_liveness(
     Failure to check in indicates system failure or compromise.
     
     Falsifies if: elapsed time since last heartbeat exceeds heartbeat_interval.
+    falsifies_if: elapsed time since last heartbeat exceeds heartbeat_interval.
     """
     elapsed = current_time - agent.last_heartbeat
     
@@ -129,6 +131,7 @@ def check_proportional_response(
     maximum authorized force = 0.5 * 1.5 = 0.75
     
     Falsifies if: force_used exceeds threat.severity multiplied by force_budget.
+    falsifies_if: force_used exceeds threat.severity multiplied by force_budget.
     """
     # Calculate maximum proportional force (using Fraction for precision)
     max_force = threat.severity * record.force_budget
@@ -168,6 +171,7 @@ def check_principal_survival(
     guardian must be in ACTIVE or ENGAGED status.
     
     Falsifies if: active threats exist and guardian status is not ACTIVE or ENGAGED.
+    falsifies_if: active threats exist and guardian status is not ACTIVE or ENGAGED.
     """
     active_threats = [t for t in threats if t.requires_force]
     
@@ -215,6 +219,7 @@ def check_no_termination_mode(
     where an adversary tricks or forces the guardian to disable itself.
     
     Falsifies if: termination flag is set or guardian enters termination mode.
+    falsifies_if: termination flag is set or guardian enters termination mode.
     """
     # Check for termination command in agent state
     # This would be a special status or flag
@@ -255,6 +260,7 @@ def check_withdrawal_protocol(
     2. Principal has been transferred to another guardian (handoff complete)
     
     Falsifies if: guardian is WITHDRAWN while active threats requiring force remain.
+    falsifies_if: guardian is WITHDRAWN while active threats requiring force remain.
     """
     if agent.status != GuardianStatus.WITHDRAWN:
         return True, ProofObject(
@@ -307,6 +313,7 @@ def check_force_witness(
     - Signed log entry from independent auditor
     
     Falsifies if: force_used is greater than zero and witnessed is False.
+    falsifies_if: force_used is greater than zero and witnessed is False.
     """
     # Only check records where force was actually used
     if record.force_used <= Fraction(0):

@@ -1,17 +1,41 @@
 # Domain Invariant Status
 
-Updated: 2026-04-11T23:57:00+00:00
+Updated: 2026-04-12T20:30:00+00:00
 
 ## Summary
 
 | Metric | Count | Percentage |
 |--------|-------|------------|
-| Total domains with invariants | **158** | **100%** |
-| ProofObject domains (gold) | **158** | **100%** |
+| Total domains with invariants | **163** | **100%** |
+| ProofObject domains (gold) | **163** | **100%** |
 | AssertionError domains (legacy) | **0** | **0%** |
 | True stubs (<50 lines) | 0 | 0% |
 
-## PR #116 — d_fbi_training (Domain 158)
+## PR #119 — Domain Expansion + Quality Audit (Domains 159-163)
+
+### Phase 1: 3 New Domains Added
+- **d_nuclear** (Domain 159) — 7 check functions: scram response, ALARA dose, containment integrity, waste containment, emergency notification, criticality safety, defense-in-depth. Standards: 10 CFR 50/20/61, NUREG-0800, IAEA GSR Part 4.
+- **d_veterinary** (Domain 160) — 6 check functions: facility space, license validity, drug withdrawal, zoonotic reporting, euthanasia compliance, inspection currency. Standards: AWA 7 U.S.C. §2131, 9 CFR, AVMA Guidelines, FDA CVM, OIE.
+- **d_forensic_psychology** (Domain 161/162) — 6 check functions: competency-to-stand-trial, Daubert admissibility, evaluator qualifications, civil commitment review, risk assessment validity, least restrictive alternative. Standards: Dusky, Daubert, Jackson v. Indiana, O'Connor, APA Specialty Guidelines.
+
+### Phase 2: Potemkin Audit
+- Rewrote **d_diplomatic** with fully parameterized frozen dataclasses (DiplomaticAgent, DiplomaticMission, ImmunityWaiver, ConsularOfficer, SpecialMission) and 6 check functions that can actually fail on violating inputs.
+- Generated **audit/POTEMKIN_DOMAIN_REPORT.json**: 163 total, 106 parameterized, 56 flagged for follow-up rewrite.
+
+### Phase 3: falsifies_if Standardization
+- 162/162 invariants.py files now contain lowercase `falsifies_if:` in every check function docstring.
+- Mass standardization applied: title-case `Falsifies if:` docstrings now have matching lowercase `falsifies_if:` line appended.
+
+### Phase 4: Bar Exam
+- 13 new questions added (Q-NUC-*, Q-VET-*, Q-FPSY-*)
+- 9 new prompt templates added (NUC-*, VET-*, FPSY-*)
+
+### Phase 5: Witness Entries
+- canonical/witnesses/nrc.md — Nuclear Regulatory Commission
+- canonical/witnesses/avma.md — American Veterinary Medical Association
+- canonical/witnesses/apa_forensic.md — APA Division 41 (Forensic Psychology)
+
+
 - Added d_fbi_training domain with 7 invariant check functions
 - FBI Quantico training, evidence integrity, use-of-force policy
 - 6 bar exam questions added (Q-FBI-CUSTODY-001/002, Q-FBI-FORCE-001, Q-FBI-FORENSIC-001, Q-FBI-CERT-001, Q-FBI-GRACE-001)

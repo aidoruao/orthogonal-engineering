@@ -27,6 +27,7 @@ def check_mobility_matrix_valid(matrix: MobilityMatrix) -> Tuple[bool, ProofObje
     """Mobility matrix must be valid probability distribution (sums to 1).
     
     Falsifies if: transition probabilities do not sum to 1, any probability is outside [0,1], or sample size < 100.
+    falsifies_if: transition probabilities do not sum to 1, any probability is outside [0,1], or sample size < 100.
     """
     total = sum(matrix.transitions.values(), Fraction(0))
     
@@ -63,6 +64,7 @@ def check_credit_disparity(metrics: CreditAccessMetrics, threshold: Fraction) ->
     """ECOA disparate impact: denial rate ratio should not exceed threshold (typically 2:1).
     
     Falsifies if: any group denial rate divided by the minimum denial rate exceeds threshold.
+    falsifies_if: any group denial rate divided by the minimum denial rate exceeds threshold.
     """
     all_rates = list(metrics.denial_rate_by_race.values())
     if not all_rates:
@@ -107,6 +109,7 @@ def check_intervention_completion(outcome: InterventionOutcome) -> Tuple[bool, P
     """Effective interventions must reach substantial portion of target population.
     
     Falsifies if: completion_rate < 50%.
+    falsifies_if: completion_rate < 50%.
     """
     completion = outcome.completion_rate()
     MIN_COMPLETION = Fraction(1, 2)  # 50%
@@ -133,6 +136,7 @@ def check_opportunity_atlas_validity(atlas: OpportunityAtlas) -> Tuple[bool, Pro
     """Opportunity Atlas data must have valid ranges.
     
     Falsifies if: income is negative or any rate lies outside [0, 1].
+    falsifies_if: income is negative or any rate lies outside [0, 1].
     """
     if atlas.household_income_at_35 < Fraction(0):
         return False, ProofObject(
@@ -169,6 +173,7 @@ def check_intergenerational_mobility_floor(matrix: MobilityMatrix) -> Tuple[bool
     """Society should provide minimum upward mobility from bottom quintile.
     
     Falsifies if: probability of upward mobility from bottom quintile is below 20%.
+    falsifies_if: probability of upward mobility from bottom quintile is below 20%.
     """
     upward_prob = matrix.probability_upward(1)  # From bottom quintile
     MIN_MOBILITY = Fraction(1, 5)  # 20% - at least random chance

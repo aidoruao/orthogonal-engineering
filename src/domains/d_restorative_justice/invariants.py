@@ -23,6 +23,7 @@ def check_victim_participation(case: RestorativeJusticeCase) -> Tuple[bool, Proo
     - Victim safety and support required
     
     Falsifies if: victim willing but excluded
+    falsifies_if: victim willing but excluded
     """
     if case.victim_id is None:
         return True, ProofObject(
@@ -59,6 +60,7 @@ def check_agreement_completion(program: RJProgramMetrics) -> Tuple[bool, ProofOb
     - Breach should be exception, not norm
     
     Falsifies if: completion rate < 60%
+    falsifies_if: completion rate < 60%
     """
     target = completion_rate_target()
     rate = program.get_completion_rate()
@@ -92,6 +94,7 @@ def check_victim_satisfaction(case: RestorativeJusticeCase) -> Tuple[bool, Proof
     - Satisfaction tracking required
     
     Falsifies if: victim satisfaction < 70% on completed cases
+    falsifies_if: victim satisfaction < 70% on completed cases
     """
     target = victim_satisfaction_target()
     
@@ -130,6 +133,7 @@ def check_preparation_standards(case: RestorativeJusticeCase) -> Tuple[bool, Pro
     - Expectations clarified
     
     Falsifies if: no preparation and conference held
+    falsifies_if: no preparation and conference held
     """
     if not case.conference_held:
         return True, ProofObject(
@@ -165,6 +169,7 @@ def check_restitution_collection(program: RJProgramMetrics) -> Tuple[bool, Proof
     - Victims should receive owed amounts
     
     Falsifies if: collection rate < 50%
+    falsifies_if: collection rate < 50%
     """
     min_collection_rate = Fraction(1, 2)  # 50%
     

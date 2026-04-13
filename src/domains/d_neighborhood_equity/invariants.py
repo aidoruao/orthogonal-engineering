@@ -26,6 +26,7 @@ def check_fair_housing_lending_disparity(neighborhood: Neighborhood) -> Tuple[bo
     - Disparate impact theory applies even without discriminatory intent
     
     Falsifies if: minority_denial_rate > 1.25 * non_minority_denial_rate
+    falsifies_if: minority_denial_rate > 1.25 * non_minority_denial_rate
     """
     threshold = fair_housing_disparate_impact_threshold()
     
@@ -67,6 +68,7 @@ def check_cra_lending_ratio(institution: LendingInstitution) -> Tuple[bool, Proo
     - Performance context considered in CRA rating
     
     Falsifies if: CRA loan ratio < LMI population ratio (indicative of underserving)
+    falsifies_if: CRA loan ratio < LMI population ratio (indicative of underserving)
     """
     loan_ratio = institution.get_cra_loan_ratio()
     population_ratio = Fraction(
@@ -104,6 +106,7 @@ def check_affordable_housing_availability(neighborhood: Neighborhood) -> Tuple[b
     - Affordable housing critical for equity
     
     Falsifies if: affordable housing ratio < 5% in high-cost areas
+    falsifies_if: affordable housing ratio < 5% in high-cost areas
     """
     min_affordable_ratio = Fraction(5, 100)  # 5% minimum
     
@@ -138,6 +141,7 @@ def check_service_access_equity(neighborhood: Neighborhood) -> Tuple[bool, Proof
     - Minority and low-income populations require equitable access
     
     Falsifies if: minority neighborhoods have significantly lower access scores
+    falsifies_if: minority neighborhoods have significantly lower access scores
     """
     min_access_score = Fraction(3, 10)  # 0.3 minimum threshold
     
@@ -177,6 +181,7 @@ def check_cra_branch_presence(institution: LendingInstitution) -> Tuple[bool, Pr
     - Service to LMI geographies is a performance factor
     
     Falsifies if: no branches in LMI areas despite significant LMI population
+    falsifies_if: no branches in LMI areas despite significant LMI population
     """
     branch_ratio = institution.get_branch_equity_ratio()
     population_ratio = Fraction(
@@ -212,6 +217,7 @@ def check_transit_equity(neighborhood: Neighborhood) -> Tuple[bool, ProofObject]
     - Minority neighborhoods require comparable access
     
     Falsifies if: transit time to jobs > 60 minutes in low-income areas
+    falsifies_if: transit time to jobs > 60 minutes in low-income areas
     """
     max_acceptable_transit_time = Fraction(60)  # 60 minutes
     

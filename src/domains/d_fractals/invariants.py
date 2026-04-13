@@ -27,6 +27,7 @@ def check_mandelbrot_membership(point: FractalPoint) -> Tuple[bool, ProofObject]
     """Mandelbrot set: z_{n+1} = z_n² + c, z_0 = 0, bounded for all n.
 
     Falsifies if: mandelbrot_iterations cannot classify escape (error) or produces
+    falsifies_if: mandelbrot_iterations cannot classify escape (error) or produces
     inconsistent escape status for the point.
     """
     # Quick check for main cardioid (exact formula)
@@ -55,6 +56,7 @@ def check_ifs_probability_sum(ifs: IteratedFunctionSystem) -> Tuple[bool, ProofO
     """IFS probabilities must form valid distribution (sum to 1).
 
     Falsifies if: probabilities do not sum to 1 or any probability is outside [0, 1].
+    falsifies_if: probabilities do not sum to 1 or any probability is outside [0, 1].
     """
     total = sum(ifs.probabilities, Fraction(0))
     
@@ -84,6 +86,7 @@ def check_box_count_monotonicity(box_count: BoxCount) -> Tuple[bool, ProofObject
     """Box count must increase (or stay same) as box size decreases.
 
     Falsifies if: box_count with smaller boxes is less than with larger boxes.
+    falsifies_if: box_count with smaller boxes is less than with larger boxes.
     """
     n_large = box_count.count_boxes(box_count.max_box_size)
     n_small = box_count.count_boxes(box_count.min_box_size)
@@ -109,6 +112,7 @@ def check_dimension_bounds(dimension: Fraction, space_dimension: int) -> Tuple[b
     """Fractal dimension must be between 0 and embedding space dimension.
 
     Falsifies if: dimension is negative or exceeds the embedding space dimension.
+    falsifies_if: dimension is negative or exceeds the embedding space dimension.
     """
     if dimension < Fraction(0):
         return False, ProofObject(
@@ -135,6 +139,7 @@ def check_self_similarity_consistency(ss: SelfSimilarity) -> Tuple[bool, ProofOb
     """Self-similarity parameters must be consistent.
 
     Falsifies if: scaling factor is not in (0, 1), number of pieces < 1, or the
+    falsifies_if: scaling factor is not in (0, 1), number of pieces < 1, or the
     similarity dimension is negative.
     """
     if ss.scaling_factor <= Fraction(0) or ss.scaling_factor >= Fraction(1):
@@ -174,6 +179,7 @@ def check_escape_radius_sufficient(radius: Fraction) -> Tuple[bool, ProofObject]
     """Escape radius for Mandelbrot/Julia must be > 2 for correctness.
 
     Falsifies if: escape radius is less than or equal to 2, risking missed escapes.
+    falsifies_if: escape radius is less than or equal to 2, risking missed escapes.
     """
     MIN_RADIUS = Fraction(2)
     

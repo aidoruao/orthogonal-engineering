@@ -23,6 +23,7 @@ def check_shard_storage_balance(shard: Shard) -> Tuple[bool, ProofObject]:
     - Prevent write rejection
     
     Falsifies if: utilization > 80%
+    falsifies_if: utilization > 80%
     """
     max_util = max_storage_utilization()
     util = shard.get_storage_utilization()
@@ -56,6 +57,7 @@ def check_shard_replication(shard: Shard) -> Tuple[bool, ProofObject]:
     - Replicas should be geographically distributed
     
     Falsifies if: replica_count < 2
+    falsifies_if: replica_count < 2
     """
     min_replicas = min_replica_count()
     
@@ -87,6 +89,7 @@ def check_cross_shard_queries(cluster: ShardCluster) -> Tuple[bool, ProofObject]
     - Scatter-gather is expensive
     
     Falsifies if: cross-shard ratio > 10%
+    falsifies_if: cross-shard ratio > 10%
     """
     max_ratio = Fraction(1, 10)  # 10%
     ratio = cluster.get_cross_shard_ratio()
@@ -120,6 +123,7 @@ def check_cluster_rebalancing(cluster: ShardCluster) -> Tuple[bool, ProofObject]
     - Even distribution required
     
     Falsifies if: high variance and no recent rebalance
+    falsifies_if: high variance and no recent rebalance
     """
     variance = cluster.get_utilization_variance()
     threshold = Fraction(1, 20)  # 0.05 variance threshold
@@ -158,6 +162,7 @@ def check_shard_health(shard: Shard) -> Tuple[bool, ProofObject]:
     - REBALANCING is temporary
     
     Falsifies if: shard OFFLINE
+    falsifies_if: shard OFFLINE
     """
     if shard.status == ShardStatus.OFFLINE:
         return False, ProofObject(

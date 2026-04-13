@@ -518,3 +518,21 @@ def check_emission_permit_requirements(
     
     analyzer = CleanAirActAnalyzer()
     return analyzer.analyze_source_permitting(source, aqc, is_new_source)
+
+
+@dataclass(frozen=True)
+class EnvironmentalPermit:
+    """Frozen environmental permit record for invariant checks.
+
+    Standards: Clean Air Act (42 U.S.C. §7401), Clean Water Act (33 U.S.C. §1251),
+    NEPA (42 U.S.C. §4321), RCRA (42 U.S.C. §6901).
+    """
+    permit_id: str
+    epa_permit_valid: bool
+    npdes_permit: bool  # Clean Water Act NPDES permit
+    emission_tons_per_year: Fraction
+    naaqs_limit_tons: Fraction  # Clean Air Act NAAQS limit
+    wetlands_impacted: bool
+    section_404_permit: bool  # CWA §404 wetlands permit
+    eis_completed: bool  # NEPA Environmental Impact Statement
+    hazardous_waste_manifest: bool  # RCRA manifest

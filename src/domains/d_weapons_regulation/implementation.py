@@ -417,3 +417,22 @@ def check_private_sale_requirements(state: str) -> Dict:
         "permitted_without_check": not required,
         "state": state,
     }
+
+
+@dataclass(frozen=True)
+class FirearmTransaction:
+    """Frozen firearm transaction record for invariant checks.
+
+    Standards: GCA (18 U.S.C. §922), NFA (26 U.S.C. §5801),
+    Brady Act (18 U.S.C. §922(t)).
+    """
+    transaction_id: str
+    ffl_licensed: bool  # Federal Firearms License
+    background_check_completed: bool
+    background_check_passed: bool
+    is_nfa_item: bool  # NFA: SBR, suppressor, machine gun
+    nfa_tax_stamp: bool
+    waiting_period_days: Fraction
+    jurisdiction_waiting_days: Fraction
+    straw_purchase: bool  # illegal if True
+    felon_purchaser: bool

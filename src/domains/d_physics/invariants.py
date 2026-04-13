@@ -24,6 +24,7 @@ def check_mass_non_negative(obj: PhysicalObject) -> Tuple[bool, ProofObject]:
     """Mass must be non-negative.
 
     Falsifies if: obj.mass < 0.
+    falsifies_if: obj.mass < 0.
     """
     if obj.mass < Fraction(0):
         return False, ProofObject(
@@ -43,6 +44,7 @@ def check_momentum_conservation(collision: Collision) -> Tuple[bool, ProofObject
     """Momentum conserved in all collisions (isolated system).
 
     Falsifies if: collision.momentum_conserved is False.
+    falsifies_if: collision.momentum_conserved is False.
     """
     if not collision.momentum_conserved:
         return False, ProofObject(
@@ -65,6 +67,7 @@ def check_energy_conservation_elastic(collision: Collision) -> Tuple[bool, Proof
     """Energy conserved in elastic collisions.
 
     Falsifies if: collision.elastic is True and energy_conserved is False.
+    falsifies_if: collision.elastic is True and energy_conserved is False.
     """
     if collision.elastic and not collision.energy_conserved:
         return False, ProofObject(
@@ -88,6 +91,7 @@ def check_speed_limit(obj: PhysicalObject, speed_limit: Fraction) -> Tuple[bool,
     """Speed cannot exceed limit (e.g., speed of light).
 
     Falsifies if: object speed squared exceeds limit squared.
+    falsifies_if: object speed squared exceeds limit squared.
     """
     # Compare squared speeds to avoid sqrt
     v_sq = obj.speed()
@@ -115,6 +119,7 @@ def check_system_mass_conservation(system: PhysicalSystem, initial_mass: Fractio
     """Mass conserved in isolated system.
 
     Falsifies if: system total mass differs from initial_mass.
+    falsifies_if: system total mass differs from initial_mass.
     """
     current = system.total_mass()
     if current != initial_mass:

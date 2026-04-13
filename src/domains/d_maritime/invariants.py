@@ -24,6 +24,7 @@ def check_safe_manning(vessel: Vessel) -> Tuple[bool, ProofObject]:
     """SOLAS Chapter V requires adequate crew for safe operation.
     
     Falsifies if: crew_count is below minimum_safe_manning.
+    falsifies_if: crew_count is below minimum_safe_manning.
     """
     if not vessel.adequately_manned():
         deficit = vessel.minimum_safe_manning - vessel.crew_count
@@ -49,6 +50,7 @@ def check_ism_compliance(vessel: Vessel) -> Tuple[bool, ProofObject]:
     """ISM Code requires Safety Management Certificate and Document of Compliance.
     
     Falsifies if: smc_certified or doc_certified is False.
+    falsifies_if: smc_certified or doc_certified is False.
     """
     if not vessel.smc_certified:
         return False, ProofObject(
@@ -81,6 +83,7 @@ def check_flag_state_quality(vessel: Vessel) -> Tuple[bool, ProofObject]:
     """Paris MoU/Tokyo MoU target substandard flag states.
     
     Falsifies if: flag_state.black_list is True.
+    falsifies_if: flag_state.black_list is True.
     """
     if vessel.flag_state.black_list:
         return False, ProofObject(
@@ -107,6 +110,7 @@ def check_serious_incident_reporting(incident: MaritimeIncident) -> Tuple[bool, 
     """Casualties must be investigated per IMO requirements.
     
     Falsifies if: serious incident lacks flag state investigation or reporting.
+    falsifies_if: serious incident lacks flag state investigation or reporting.
     """
     is_serious = incident.fatalities > 0 or incident.vessel_damage > Fraction(1, 2)
     
@@ -136,6 +140,7 @@ def check_general_average_calculation(ga: GeneralAverage) -> Tuple[bool, ProofOb
     """York-Antwerp Rules require proportional contribution.
     
     Falsifies if: contribution total is zero or sacrifice ratio exceeds 100%.
+    falsifies_if: contribution total is zero or sacrifice ratio exceeds 100%.
     """
     total = ga.total_contribution()
     
@@ -173,6 +178,7 @@ def check_hazmat_declaration(cargo: Cargo) -> Tuple[bool, ProofObject]:
     """IMDG Code requires dangerous goods to be declared.
     
     Falsifies if: cargo.dangerous_goods is True while imdg_class is missing.
+    falsifies_if: cargo.dangerous_goods is True while imdg_class is missing.
     """
     if cargo.dangerous_goods and cargo.imdg_class is None:
         return False, ProofObject(

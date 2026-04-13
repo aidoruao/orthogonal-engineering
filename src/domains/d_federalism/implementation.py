@@ -229,3 +229,22 @@ def check_federalism_compliance(
     """
     checker = FederalismChecker()
     return checker.check_power_exercise(level, power, description)
+
+
+@dataclass(frozen=True)
+class FederalPreemptionClaim:
+    """A Supremacy Clause preemption analysis."""
+    claim_id: str
+    federal_law_exists: bool
+    state_law_conflicts: bool
+    express_preemption: bool
+    implied_preemption: bool
+    state_law_frustrates_federal_purpose: bool
+
+
+@dataclass(frozen=True)
+class StateCompact:
+    """An interstate compact subject to congressional approval."""
+    compact_id: str
+    congressional_approval: bool
+    political_power_transferred: bool

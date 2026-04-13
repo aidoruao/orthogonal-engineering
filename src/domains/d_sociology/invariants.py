@@ -23,6 +23,7 @@ def check_irb_approval(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     - Unanticipated problems must be reported
     
     Falsifies if: no IRB approval for human subjects research
+    falsifies_if: no IRB approval for human subjects research
     """
     if study.research_type == ResearchType.SECONDARY_ANALYSIS and study.data_anonymized:
         return True, ProofObject(
@@ -66,6 +67,7 @@ def check_informed_consent(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     - Informed consent demonstrates respect
     
     Falsifies if: no consent for non-exempt research
+    falsifies_if: no consent for non-exempt research
     """
     if study.irb_status == IRBStatus.EXEMPT:
         return True, ProofObject(
@@ -102,6 +104,7 @@ def check_survey_response_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]
     - Minimum thresholds vary by mode
     
     Falsifies if: response rate < 30%
+    falsifies_if: response rate < 30%
     """
     if study.research_type != ResearchType.SURVEY:
         return True, ProofObject(
@@ -142,6 +145,7 @@ def check_survey_reliability(instrument: SurveyInstrument) -> Tuple[bool, ProofO
     - Validity assessment
     
     Falsifies if: alpha < 0.70
+    falsifies_if: alpha < 0.70
     """
     min_alpha = min_reliability_alpha()
     
@@ -183,6 +187,7 @@ def check_data_protection(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     - Secure storage required
     
     Falsifies if: retention > 7 years without justification
+    falsifies_if: retention > 7 years without justification
     """
     max_retention = Fraction(7)  # 7 years
     

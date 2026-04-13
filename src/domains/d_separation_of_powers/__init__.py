@@ -4,10 +4,14 @@ from src.domains.d_separation_of_powers.implementation import (
     SeparationOfPowersChecker,
     PowerExercise,
     SeparationViolation,
+    ExecutiveAction,
+    LegislativeAction,
 )
 __all__ = [
     "BranchAuthority",
     "SeparationOfPowersChecker",
     "PowerExercise",
     "SeparationViolation",
+    "ExecutiveAction",
+    "LegislativeAction",
 ]

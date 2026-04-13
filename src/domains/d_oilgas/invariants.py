@@ -23,6 +23,7 @@ def check_phmsa_hoop_stress(pipeline: Pipeline) -> Tuple[bool, ProofObject]:
     - Safety margin required for pressure fluctuations
     
     Falsifies if: hoop_stress > max_allowed
+    falsifies_if: hoop_stress > max_allowed
     """
     max_stress = phmsa_max_hoop_stress(pipeline.pipeline_class)
     
@@ -55,6 +56,7 @@ def check_phmsa_leak_detection(pipeline: Pipeline) -> Tuple[bool, ProofObject]:
     - Prompt notification required
     
     Falsifies if: HCA pipeline without leak detection
+    falsifies_if: HCA pipeline without leak detection
     """
     if pipeline.pipeline_class == PipelineClass.CLASS_1:
         return True, ProofObject(
@@ -91,6 +93,7 @@ def check_bsee_bop_testing(platform: OffshorePlatform) -> Tuple[bool, ProofObjec
     - Documentation required
     
     Falsifies if: BOP test interval > 14 days
+    falsifies_if: BOP test interval > 14 days
     """
     max_interval = bsee_bop_test_interval()
     
@@ -122,6 +125,7 @@ def check_spill_response_capacity(plan: SpillResponsePlan) -> Tuple[bool, ProofO
     - Contractual agreements for equipment
     
     Falsifies if: response capacity < worst case discharge
+    falsifies_if: response capacity < worst case discharge
     """
     # Response must be able to recover worst case in reasonable time
     # Assuming 24-hour response capability check
@@ -157,6 +161,7 @@ def check_pipeline_incident_rate(pipeline: Pipeline) -> Tuple[bool, ProofObject]
     Significantly elevated rates trigger investigation
     
     Falsifies if: incident rate > 5 per 1000 miles (10x average)
+    falsifies_if: incident rate > 5 per 1000 miles (10x average)
     """
     max_acceptable_rate = Fraction(5)  # 5 per 1000 miles
     
@@ -190,6 +195,7 @@ def check_offshore_violation_rate(platform: OffshorePlatform) -> Tuple[bool, Pro
     Pattern of violations may trigger enforcement
     
     Falsifies if: >2 violations per inspection (pattern of non-compliance)
+    falsifies_if: >2 violations per inspection (pattern of non-compliance)
     """
     max_violation_rate = Fraction(2)  # 2 violations per inspection
     

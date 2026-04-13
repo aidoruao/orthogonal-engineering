@@ -261,3 +261,25 @@ def check_nullum_crimen(offense_defined: bool) -> bool:
     Returns False if prosecution attempted for undefined offense.
     """
     return offense_defined
+
+
+@dataclass(frozen=True)
+class CriminalSearch:
+    """A law enforcement search subject to Fourth Amendment analysis."""
+    search_id: str
+    warrant_obtained: bool
+    probable_cause_documented: bool
+    exigent_circumstances: bool
+    consent_given: bool
+    plain_view: bool
+
+
+@dataclass(frozen=True)
+class CriminalCharge:
+    """A criminal charge with due process requirements."""
+    charge_id: str
+    elements_proven: Fraction
+    beyond_reasonable_doubt: bool
+    double_jeopardy_bar: bool
+    speedy_trial_days: Fraction
+    max_speedy_trial_days: Fraction

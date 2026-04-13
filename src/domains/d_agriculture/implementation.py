@@ -27,7 +27,7 @@ class CertificationStatus(Enum):
 
 
 @dataclass
-class Farm:
+class FarmLegacy:
     farm_id: str
     name: str
     acreage: Fraction
@@ -53,7 +53,7 @@ class D_AGRICULTURERecord:
     record_id: str
     status: str = "active"
     metadata: Dict[str, Any] = field(default_factory=dict)
-    farms: List[Farm] = field(default_factory=list)
+    farms: List[FarmLegacy] = field(default_factory=list)
     pesticide_applications: List[PesticideApplication] = field(default_factory=list)
 
 
@@ -67,7 +67,7 @@ class D_AGRICULTUREChecker:
             "farm_count": len(record.farms),
         }
     
-    def check_organic_certification(self, farm: Farm) -> bool:
+    def check_organic_certification(self, farm: FarmLegacy) -> bool:
         """Check if farm meets organic certification requirements."""
         return CertificationStatus.ORGANIC in farm.certifications
     
@@ -75,6 +75,23 @@ class D_AGRICULTUREChecker:
         """Check if pesticide application follows safety protocols."""
         return application.safety_equipment_used and application.amount_liters > 0
     
-    def check_water_permit(self, farm: Farm) -> bool:
+    def check_water_permit(self, farm: FarmLegacy) -> bool:
         """Check if farm has required water permits."""
         return farm.has_water_permit
+
+
+@dataclass(frozen=True)
+class Farm:
+    """Frozen farm record for invariant checks.
+
+    Standards: Organic Foods Production Act (7 U.S.C. §6501),
+    Reclamation Act of 1902 (43 U.S.C. §431), FIFRA (7 U.S.C. §136).
+    """
+    farm_id: str
+    organic_certified: bool
+    is_organic_claim: bool
+    acres: Fraction
+    max_acreage_reclamation: Fraction  # 160 acres limit under Reclamation Act
+    water_permit_valid: bool
+    pesticide_withdrawal_days: Fraction
+    harvest_days_after_last_application: Fraction

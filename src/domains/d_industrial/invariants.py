@@ -23,6 +23,7 @@ def check_osha_trir(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
     - Trend analysis important
     
     Falsifies if: TRIR > 6.0
+    falsifies_if: TRIR > 6.0
     """
     max_trir = Fraction(6)  # 6.0 per 200,000 hours
     trir = facility.get_trifr()
@@ -56,6 +57,7 @@ def check_osha_dart(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
     - Leading indicator of serious injuries
     
     Falsifies if: DART > 3.0
+    falsifies_if: DART > 3.0
     """
     max_dart = Fraction(3)  # 3.0 per 200,000 hours
     dart = facility.get_dart_rate()
@@ -89,6 +91,7 @@ def check_willful_violations(facility: IndustrialFacility) -> Tuple[bool, ProofO
     - High penalties ($145,027 per violation)
     
     Falsifies if: any willful violations
+    falsifies_if: any willful violations
     """
     if facility.willful_violations > 0:
         return False, ProofObject(
@@ -118,6 +121,7 @@ def check_machine_guarding(safety: MachineSafety) -> Tuple[bool, ProofObject]:
     - Emergency stop available
     
     Falsifies if: missing guards on hazardous machines
+    falsifies_if: missing guards on hazardous machines
     """
     if not safety.point_of_operation_guard:
         return False, ProofObject(
@@ -159,6 +163,7 @@ def check_lockout_tagout(safety: MachineSafety) -> Tuple[bool, ProofObject]:
     - Periodic inspection
     
     Falsifies if: LOTO procedures not in place
+    falsifies_if: LOTO procedures not in place
     """
     if not safety.lockout_tagout_procedures:
         return False, ProofObject(

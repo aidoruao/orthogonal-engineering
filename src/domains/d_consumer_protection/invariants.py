@@ -11,6 +11,7 @@ def check_deceptive_practices(verifier: ClaimVerifier) -> Tuple[bool, ProofObjec
     """FTC Act § 5: Claims must be substantiated.
 
     Falsifies if: verifier.find_unsubstantiated() returns any claims.
+    falsifies_if: verifier.find_unsubstantiated() returns any claims.
     """
     unsubstantiated = verifier.find_unsubstantiated()
     
@@ -32,6 +33,7 @@ def check_warranty_coverage(checker: WarrantyChecker) -> Tuple[bool, ProofObject
     """Magnuson-Moss: Warranty must honor covered repairs.
 
     Falsifies if: checker.is_covered() is False.
+    falsifies_if: checker.is_covered() is False.
     """
     if not checker.is_covered():
         return False, ProofObject(
@@ -51,6 +53,7 @@ def check_recall_completeness(tracker: RecallTracker) -> Tuple[bool, ProofObject
     """Recall notifications must reach 95%+ of affected consumers.
 
     Falsifies if: tracker.notification_rate() < MIN_NOTIFICATION_RATE.
+    falsifies_if: tracker.notification_rate() < MIN_NOTIFICATION_RATE.
     """
     rate = tracker.notification_rate()
     

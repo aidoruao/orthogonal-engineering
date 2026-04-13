@@ -23,6 +23,7 @@ def check_prime_factorization(n: Integer) -> Tuple[bool, ProofObject]:
     """Fundamental theorem: every integer has unique prime factorization.
     
     Falsifies if: product of prime factors does not equal the integer value.
+    falsifies_if: product of prime factors does not equal the integer value.
     """
     if n.value < 2:
         return True, ProofObject(
@@ -58,6 +59,7 @@ def check_congruence_solvability(c: Congruence) -> Tuple[bool, ProofObject]:
     """Linear congruence ax ≡ b (mod m) solvable iff gcd(a,m) | b.
     
     Falsifies if: solution is claimed when gcd(a, m) does not divide b.
+    falsifies_if: solution is claimed when gcd(a, m) does not divide b.
     """
     from math import gcd
     g = gcd(c.a, c.m)
@@ -84,6 +86,7 @@ def check_diophantine_solvability(eq: DiophantineEquation) -> Tuple[bool, ProofO
     """ax + by = c has integer solutions iff gcd(a,b) | c (Bezout).
     
     Falsifies if: Diophantine solution claimed when gcd(a, b) does not divide c.
+    falsifies_if: Diophantine solution claimed when gcd(a, b) does not divide c.
     """
     from math import gcd
     g = gcd(eq.a, eq.b)
@@ -110,6 +113,7 @@ def check_euler_totient(n: Integer) -> Tuple[bool, ProofObject]:
     """Euler's totient φ(n) counts integers 1≤k≤n coprime to n.
     
     Falsifies if: computed totient differs from the actual count of coprime integers.
+    falsifies_if: computed totient differs from the actual count of coprime integers.
     """
     if n.value <= 0:
         return True, ProofObject(
@@ -144,6 +148,7 @@ def check_perfect_square(n: Integer) -> Tuple[bool, ProofObject]:
     """Perfect square has integer square root.
     
     Falsifies if: number is marked as perfect square but lacks integer square root.
+    falsifies_if: number is marked as perfect square but lacks integer square root.
     """
     if n.value < 0:
         if n.is_perfect_square():

@@ -23,6 +23,7 @@ def check_penalty_proportionality(case: WhiteCollarCase) -> Tuple[bool, ProofObj
     - Cooperation can reduce
     
     Falsifies if: penalty > 3x gain (unusual)
+    falsifies_if: penalty > 3x gain (unusual)
     """
     max_multiplier = max_penalty_multiplier()
     ratio = case.penalty_to_gain_ratio()
@@ -57,6 +58,7 @@ def check_compliance_program_effectiveness(program: ComplianceProgram) -> Tuple[
     - Independent investigations
     
     Falsifies if: <90% training coverage
+    falsifies_if: <90% training coverage
     """
     min_coverage = Fraction(9, 10)
     coverage = program.get_training_coverage()
@@ -100,6 +102,7 @@ def check_self_reporting_incentive(case: WhiteCollarCase) -> Tuple[bool, ProofOb
     - Remediation considered
     
     Falsifies if: self-reported but no cooperation credit
+    falsifies_if: self-reported but no cooperation credit
     """
     if case.self_reported and case.cooperation_level < min_cooperation_threshold():
         return False, ProofObject(
@@ -132,6 +135,7 @@ def check_monitor_independence(case: WhiteCollarCase) -> Tuple[bool, ProofObject
     - Regular reporting
     
     Falsifies if: monitor duration excessive without cause
+    falsifies_if: monitor duration excessive without cause
     """
     if not case.compliance_monitor_appointed:
         return True, ProofObject(
@@ -170,6 +174,7 @@ def check_fcpa_anti_bribery(case: WhiteCollarCase) -> Tuple[bool, ProofObject]:
     - Facilitating payments exception (limited)
     
     Falsifies if: bribery confirmed without remediation
+    falsifies_if: bribery confirmed without remediation
     """
     if case.violation_type != ViolationType.BRIBERY:
         return True, ProofObject(

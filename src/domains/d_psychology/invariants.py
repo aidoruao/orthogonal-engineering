@@ -22,6 +22,7 @@ def check_irb_approval(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     """IRB approval must be obtained before research.
 
     Falsifies if: study.irb_approved is False.
+    falsifies_if: study.irb_approved is False.
     """
     if not study.irb_approved:
         return False, ProofObject(
@@ -40,6 +41,7 @@ def check_informed_consent(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     """Participants must provide informed consent.
 
     Falsifies if: study.informed_consent_obtained is False.
+    falsifies_if: study.informed_consent_obtained is False.
     """
     if not study.informed_consent_obtained:
         return False, ProofObject(
@@ -58,6 +60,7 @@ def check_p_value_valid(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     """P-value must be within [0, 1] when reported.
 
     Falsifies if: study.p_value is outside [0, 1].
+    falsifies_if: study.p_value is outside [0, 1].
     """
     if study.p_value is None:
         return True, ProofObject(
@@ -82,6 +85,7 @@ def check_vulnerable_protection(participant: Participant) -> Tuple[bool, ProofOb
     """Flag additional safeguards for vulnerable participants.
 
     Falsifies if: not applicable (function records safeguard need and returns True).
+    falsifies_if: not applicable (function records safeguard need and returns True).
     """
     if participant.vulnerable_population and not participant.capacity_to_consent:
         return True, ProofObject(
@@ -100,6 +104,7 @@ def check_completion_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]:
     """Completion rate must be at least 70%.
 
     Falsifies if: study.completion_rate() < 0.7.
+    falsifies_if: study.completion_rate() < 0.7.
     """
     rate = study.completion_rate()
     if rate < Fraction(7, 10):

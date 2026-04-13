@@ -474,3 +474,23 @@ def check_fair_housing_violation(
         "violation_likely": evidence_count >= 2,
         "recommended_action": "FILE_COMPLAINT" if evidence_count >= 2 else "GATHER_EVIDENCE",
     }
+
+
+@dataclass(frozen=True)
+class RentalUnit:
+    """Frozen rental unit record for invariant checks.
+
+    Standards: Fair Housing Act (42 U.S.C. §3601), HUD Lead Disclosure
+    (24 CFR 35), state landlord-tenant laws, URLTA.
+    """
+    unit_id: str
+    fair_housing_compliant: bool
+    protected_class_rejection: bool
+    habitability_met: bool
+    lead_paint_disclosure: bool  # required for pre-1978 housing
+    built_year: int
+    ada_compliant: bool
+    rent_increase_pct: Fraction
+    max_rent_increase_pct: Fraction
+    eviction_notice_days: Fraction
+    min_notice_days: Fraction

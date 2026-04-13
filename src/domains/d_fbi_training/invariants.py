@@ -254,6 +254,7 @@ def run_all_invariants() -> dict:
     """Run all D_FBI_TRAINING invariants with nominal sample data.
 
     Falsifies if: any FBI training invariant fails or raises an exception.
+    falsifies_if: any FBI training invariant fails or raises an exception.
     """
     evidence = EvidenceItem(
         item_id="EV-001",

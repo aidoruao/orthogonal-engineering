@@ -21,6 +21,7 @@ def check_safety_alert_response_time(alert: SafetyAlert) -> Tuple[bool, ProofObj
     Worker safety alerts must be delivered within required response time by hazard level.
 
     Falsifies if: CRITICAL AND response_time > 30s, or HIGH AND response_time > 120s
+    falsifies_if: CRITICAL AND response_time > 30s, or HIGH AND response_time > 120s
     """
     if alert.hazard_level == HazardLevel.CRITICAL:
         max_seconds = safety_alert_critical_max_seconds()
@@ -63,6 +64,7 @@ def check_field_service_tamper_evident(record: FieldServiceRecord) -> Tuple[bool
     Field service records must be immutably logged with tamper-evident hashing.
 
     Falsifies if: tamper_evident_hash is empty or None
+    falsifies_if: tamper_evident_hash is empty or None
     """
     if not record.tamper_evident_hash:
         return False, ProofObject(
@@ -85,6 +87,7 @@ def check_offline_capability(record: FieldServiceRecord) -> Tuple[bool, ProofObj
     Critical field service functions must work offline (network-independent).
 
     Falsifies if: NOT offline_capable
+    falsifies_if: NOT offline_capable
     """
     if not record.offline_capable:
         return False, ProofObject(
@@ -108,6 +111,7 @@ def check_manufacturing_defect_rate(qc: ManufacturingQC) -> Tuple[bool, ProofObj
     Manufacturing defect rate must be <= 2% (Six Sigma standard).
 
     Falsifies if: defect_rate_percent > 0.02
+    falsifies_if: defect_rate_percent > 0.02
     """
     max_defect_rate = manufacturing_defect_rate_max()
 
@@ -133,6 +137,7 @@ def check_osha_incident_reporting(incident: OSHAIncident) -> Tuple[bool, ProofOb
     OSHA serious incidents (days away from work) must be reported within 8 hours.
 
     Falsifies if: days_away_from_work > 0 AND reported_within_hours > 8
+    falsifies_if: days_away_from_work > 0 AND reported_within_hours > 8
     """
     max_hours = osha_incident_reporting_hours()
 
@@ -162,6 +167,7 @@ def check_osha_300_logging(incident: OSHAIncident) -> Tuple[bool, ProofObject]:
     OSHA recordable incidents must be logged in OSHA 300 log.
 
     Falsifies if: days_away_from_work > 0 AND NOT osha_300_logged
+    falsifies_if: days_away_from_work > 0 AND NOT osha_300_logged
     """
     if incident.days_away_from_work > 0 and not incident.osha_300_logged:
         return False, ProofObject(

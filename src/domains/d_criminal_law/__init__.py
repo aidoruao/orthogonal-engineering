@@ -5,6 +5,8 @@ from src.domains.d_criminal_law.implementation import (
     OffenseClass,
     BurdenOfProof,
     Sentencing,
+    CriminalSearch,
+    CriminalCharge,
 )
 __all__ = [
     "CriminalLaw",
@@ -12,4 +14,6 @@ __all__ = [
     "OffenseClass",
     "BurdenOfProof",
     "Sentencing",
+    "CriminalSearch",
+    "CriminalCharge",
 ]

@@ -11,6 +11,7 @@ def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObjec
     """Schedule must be conflict-serializable for correctness.
 
     Falsifies if: schedule.is_conflict_serializable() is False.
+    falsifies_if: schedule.is_conflict_serializable() is False.
     """
     if schedule.is_conflict_serializable():
         return True, ProofObject(
@@ -30,6 +31,7 @@ def check_btree_invariants(node: BTreeNode) -> Tuple[bool, ProofObject]:
     """B-tree must satisfy structural invariants.
 
     Falsifies if: node.is_valid() is False.
+    falsifies_if: node.is_valid() is False.
     """
     if not node.is_valid():
         return False, ProofObject(
@@ -49,6 +51,7 @@ def check_atomicity(tx: Transaction) -> Tuple[bool, ProofObject]:
     """Transaction must be all-or-nothing (Atomicity).
 
     Falsifies if: transaction status is neither COMMITTED nor ABORTED (partial state).
+    falsifies_if: transaction status is neither COMMITTED nor ABORTED (partial state).
     """
     if tx.status == TransactionStatus.COMMITTED:
         return True, ProofObject(
@@ -75,6 +78,7 @@ def check_durability(tx: Transaction) -> Tuple[bool, ProofObject]:
     """Committed transactions must be durable.
 
     Falsifies if: not applicable (function assumes durability when committed).
+    falsifies_if: not applicable (function assumes durability when committed).
     """
     if tx.status != TransactionStatus.COMMITTED:
         return True, ProofObject(
@@ -95,5 +99,6 @@ def check_isolation(schedule: Schedule) -> Tuple[bool, ProofObject]:
     """Concurrent transactions must be isolated (serializable).
 
     Falsifies if: conflict serializability check fails.
+    falsifies_if: conflict serializability check fails.
     """
     return check_conflict_serializability(schedule)

@@ -232,3 +232,27 @@ def check_statute_of_limitations(
     """
     deadline = incident_date + timedelta(days=years_limit * 365)
     return filing_date <= deadline
+
+
+@dataclass(frozen=True)
+class FrozenTortClaim:
+    """A tort claim with its four required elements (Restatement Second of Torts)."""
+    claim_id: str
+    duty_exists: bool
+    breach_occurred: bool
+    causation_established: bool
+    damages_amount: Fraction
+    statute_of_limitations_days: Fraction
+    days_since_incident: Fraction
+
+
+@dataclass(frozen=True)
+class FrozenContract:
+    """A contract with formation elements and Statute of Frauds requirements."""
+    contract_id: str
+    offer_present: bool
+    acceptance_present: bool
+    consideration_present: bool
+    in_writing: bool
+    contract_value: Fraction
+    involves_land: bool

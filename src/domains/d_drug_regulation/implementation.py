@@ -417,3 +417,21 @@ def check_renewal_limits(schedule: DrugSchedule, current_refills: int) -> Dict:
             "remaining": max(0, max_refills - current_refills),
         }
     return {"renewal_allowed": True, "limit": "practitioner_discretion"}
+
+
+@dataclass(frozen=True)
+class DrugApplication:
+    """Frozen drug application record for invariant checks.
+
+    Standards: FD&C Act §505 (21 U.S.C. §355), CSA (21 U.S.C. §801),
+    DEA Regulations (21 CFR Part 1306).
+    """
+    drug_id: str
+    nda_approved: bool
+    anda_approved: bool
+    generic_drug: bool
+    schedule: str  # "I", "II", "III", "IV", "V", "uncontrolled"
+    prescription_required: bool
+    dea_registration: bool
+    clinical_trials_completed: bool
+    phase3_completed: bool

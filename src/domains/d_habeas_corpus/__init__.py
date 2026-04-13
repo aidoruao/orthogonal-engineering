@@ -4,10 +4,12 @@ from src.domains.d_habeas_corpus.implementation import (
     DetentionCase,
     HabeasPetition,
     SuspensionStatus,
+    FrozenHabeasPetition,
 )
 __all__ = [
     "HabeasCorpusChecker",
     "DetentionCase",
     "HabeasPetition",
     "SuspensionStatus",
+    "FrozenHabeasPetition",
 ]

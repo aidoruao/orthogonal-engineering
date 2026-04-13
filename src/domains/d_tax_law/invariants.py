@@ -11,6 +11,7 @@ def check_bracket_monotonicity(calc: BracketCalculator) -> Tuple[bool, ProofObje
     """Tax brackets must be monotonic (higher income → higher rate).
 
     Falsifies if: is_monotonic returns False (regressive bracket detected).
+    falsifies_if: is_monotonic returns False (regressive bracket detected).
     """
     if not calc.is_monotonic():
         return False, ProofObject(
@@ -30,6 +31,7 @@ def check_salt_cap(validator: DeductionValidator) -> Tuple[bool, ProofObject]:
     """SALT deduction must not exceed $10,000 cap.
 
     Falsifies if: salt_within_cap returns False.
+    falsifies_if: salt_within_cap returns False.
     """
     if not validator.salt_within_cap():
         return False, ProofObject(
@@ -49,6 +51,7 @@ def check_withholding_adequacy(checker: WithholdingChecker) -> Tuple[bool, Proof
     """Withholding must meet safe harbor (90% of liability).
 
     Falsifies if: is_adequate returns False for withholding safe harbor.
+    falsifies_if: is_adequate returns False for withholding safe harbor.
     """
     if not checker.is_adequate():
         return False, ProofObject(

@@ -27,6 +27,7 @@ def check_ventilation_requirement(mine: MiningOperation) -> Tuple[bool, ProofObj
     """MSHA requires minimum 100 CFM per underground worker.
     
     Falsifies if: ventilation_cfms per underground worker falls below 100 CFM.
+    falsifies_if: ventilation_cfms per underground worker falls below 100 CFM.
     """
     if mine.underground_workers == 0:
         return True, ProofObject(
@@ -61,6 +62,7 @@ def check_dust_exposure_limit(health: HealthMonitoring, limit_mg_m3: Fraction) -
     """MSHA respirable dust standard is 1.0 mg/m3 (coal) or 0.05 mg/m3 (silica).
     
     Falsifies if: respirable_dust_mg_m3 exceeds limit_mg_m3.
+    falsifies_if: respirable_dust_mg_m3 exceeds limit_mg_m3.
     """
     if health.respirable_dust_mg_m3 > limit_mg_m3:
         return False, ProofObject(
@@ -84,6 +86,7 @@ def check_reclamation_bonding(plan: ReclamationPlan) -> Tuple[bool, ProofObject]
     """SMCRA requires adequate reclamation bonding.
     
     Falsifies if: bonding_amount is less than estimated reclamation cost.
+    falsifies_if: bonding_amount is less than estimated reclamation cost.
     """
     if not plan.bonding_adequate():
         estimated = plan.total_acres_disturbed * 5000
@@ -112,6 +115,7 @@ def check_environmental_permit_current(permit: EnvironmentalPermit) -> Tuple[boo
     """Operating without current environmental permit violates law.
     
     Falsifies if: environmental permit is expired.
+    falsifies_if: environmental permit is expired.
     """
     if not permit.is_current():
         days_expired = (datetime.now() - permit.expiration_date).days
@@ -139,6 +143,7 @@ def check_incident_investigation(incident: SafetyIncident) -> Tuple[bool, ProofO
     """MSHA requires investigation of serious incidents.
     
     Falsifies if: fatality lacks MSHA investigation or root cause is not identified.
+    falsifies_if: fatality lacks MSHA investigation or root cause is not identified.
     """
     if incident.fatality and not incident.msha_investigation:
         return False, ProofObject(
@@ -176,6 +181,7 @@ def check_black_lung_screening(health: HealthMonitoring) -> Tuple[bool, ProofObj
     """Black Lung Benefits Act requires periodic screening.
     
     Falsifies if: chest_xray_date exceeds 5 years or pneumoconiosis is unreported.
+    falsifies_if: chest_xray_date exceeds 5 years or pneumoconiosis is unreported.
     """
     if health.chest_xray_date is None:
         return False, ProofObject(

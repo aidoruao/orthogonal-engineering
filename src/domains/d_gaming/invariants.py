@@ -27,6 +27,7 @@ def check_age_appropriateness(game: Game, player: Player) -> Tuple[bool, ProofOb
     """Player must meet minimum age requirement for game.
 
     Falsifies if: player age is unknown or below the game's minimum age.
+    falsifies_if: player age is unknown or below the game's minimum age.
     """
     player_age = player.age()
     min_age = game.minimum_age()
@@ -65,6 +66,7 @@ def check_loot_box_odds_disclosure(loot_box: LootBox) -> Tuple[bool, ProofObject
     """Loot boxes must disclose drop rates (China, Belgium, Netherlands, etc.).
 
     Falsifies if: odds_disclosed is False or drop rates do not sum to 1.
+    falsifies_if: odds_disclosed is False or drop rates do not sum to 1.
     """
     if not loot_box.odds_disclosed:
         return False, ProofObject(
@@ -102,6 +104,7 @@ def check_coppa_compliance(player: Player) -> Tuple[bool, ProofObject]:
     """COPPA requires parental consent for collecting data from under-13s.
 
     Falsifies if: player is under 13 without recorded parental consent.
+    falsifies_if: player is under 13 without recorded parental consent.
     """
     if player.coppa_requires_consent():
         if player.parent_email is None:
@@ -127,6 +130,7 @@ def check_accessibility_minimum(game: Game, required_coverage: Fraction) -> Tupl
     """CVAA requires certain accessibility features for communication.
 
     Falsifies if: game has online features and accessibility coverage is below the
+    falsifies_if: game has online features and accessibility coverage is below the
     required threshold.
     """
     coverage = game.accessibility_coverage()
@@ -154,6 +158,7 @@ def check_spending_limits(session: GamingSession, player: Player) -> Tuple[bool,
     """Player spending must respect set limits.
 
     Falsifies if: spending exceeds configured weekly limits or minor spending rate
+    falsifies_if: spending exceeds configured weekly limits or minor spending rate
     exceeds safe thresholds.
     """
     if player.spending_limit_weekly is not None:
@@ -194,6 +199,7 @@ def check_content_descriptor_consistency(rating: AgeRating) -> Tuple[bool, Proof
     """Content descriptors must be consistent with age rating.
 
     Falsifies if: age rating is Everyone/EC but includes gambling or sexual content
+    falsifies_if: age rating is Everyone/EC but includes gambling or sexual content
     descriptors, or other descriptors conflict with the assigned rating.
     """
     if rating.rating in ("E", "EC") and ContentDescriptor.SEXUAL_CONTENT in rating.descriptors:

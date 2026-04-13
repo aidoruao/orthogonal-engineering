@@ -20,6 +20,7 @@ def check_structural_safety_factor(member: StructuralMember) -> Tuple[bool, Proo
     Structural members require safety factor >= 3.0 per building codes.
 
     Falsifies if: capacity_kn / applied_load_kn < 3.0
+    falsifies_if: capacity_kn / applied_load_kn < 3.0
     """
     min_sf = structural_safety_factor_min()
     actual_sf = member.capacity_kn / member.applied_load_kn
@@ -47,6 +48,7 @@ def check_fem_accuracy(analysis: FEMAnalysis) -> Tuple[bool, ProofObject]:
     FEM results must match analytical solutions within 1% for validation.
 
     Falsifies if: |computed - analytical| / analytical > 0.01
+    falsifies_if: |computed - analytical| / analytical > 0.01
     """
     tolerance = fem_tolerance()
     error = abs(analysis.computed_stress_mpa - analysis.analytical_stress_mpa) / analysis.analytical_stress_mpa
@@ -74,6 +76,7 @@ def check_bim_clash_detection(bim: BIMClashDetection) -> Tuple[bool, ProofObject
     BIM clash detection must achieve <0.1% false negative rate.
 
     Falsifies if: false_negative_rate >= 0.001
+    falsifies_if: false_negative_rate >= 0.001
     """
     max_fn = bim_false_negative_max()
 
@@ -99,6 +102,7 @@ def check_osha_fall_protection(osha: OSHACompliance) -> Tuple[bool, ProofObject]
     OSHA 1926 requires fall protection at heights >6 ft.
 
     Falsifies if: height_ft > 6 AND NOT has_fall_protection
+    falsifies_if: height_ft > 6 AND NOT has_fall_protection
     """
     threshold = osha_fall_protection_height()
 

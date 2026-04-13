@@ -1,15 +1,9 @@
-"""D_CIVIL_LAW invariant checks — Yeshua Standard.
+"""D_CIVIL_LAW invariants — Fraction only. 0 floats.
 
-Each function returns Tuple[bool, ProofObject].
-No assert statements. No float values — Fraction only.
-
-Regulatory Standards:
-- Federal Rules of Civil Procedure (FRCP)
-- State civil procedure codes
-- Uniform Commercial Code (UCC) Articles 2, 9
-- Restatement (Second) of Contracts
-
-Source: ontology/ontology.json#D_CIVIL_LAW
+Standards:
+- Restatement (Second) of Torts
+- UCC §2-201 (Statute of Frauds for goods)
+- Restatement (Second) of Contracts §110 (Statute of Frauds)
 """
 
 from __future__ import annotations
@@ -18,304 +12,149 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
+from .implementation import FrozenTortClaim, FrozenContract
 
 
-def check_contract_formation_requirements() -> Tuple[bool, ProofObject]:
+def check_tort_elements(claim: FrozenTortClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Valid contract requires offer, acceptance, consideration.
-    
-    Standard: Restatement (Second) of Contracts §17
-    Falsifies if: Contract formed without all three elements.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: A valid tort claim requires all four elements: duty, breach, causation, and damages > 0, filed within the statute of limitations.
+
+    Standard: Restatement (Second) of Torts §281
+    falsifies_if: any tort element missing OR damages_amount <= 0 OR days_since_incident > statute_of_limitations_days.
     """
-    # Valid contract elements
-    has_offer = True
-    has_acceptance = True
-    has_consideration = True
-    
-    valid_contract = has_offer and has_acceptance and has_consideration
-    
-    # Invalid - missing consideration
-    missing_consideration = has_offer and has_acceptance and not has_consideration
-    
-    success = valid_contract and not missing_consideration
-    
-    proof = ProofObject(
-        rule="ContractFormationRequirements",
-        premises=[
-            "element_offer = required",
-            "element_acceptance = required", 
-            "element_consideration = required",
-            f"valid_contract = {valid_contract}",
-            f"missing_consideration_rejected = {not missing_consideration}",
-        ],
-        conclusion=(
-            "Contract formation requires all elements per Restatement §17"
-            if success
-            else "FAIL: Contract formation check failed"
-        ),
+    all_elements = (
+        claim.duty_exists
+        and claim.breach_occurred
+        and claim.causation_established
     )
-    return success, proof
+    damages_positive = claim.damages_amount > Fraction(0)
+    within_sol = claim.days_since_incident <= claim.statute_of_limitations_days
 
+    success = all_elements and damages_positive and within_sol
 
-def check_statute_of_frauds_compliance() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Contracts for land/>$500 must be in writing.
-    
-    Standard: UCC §2-201, Restatement (Second) §110
-    Falsifies if: Oral contract for land or >$500 enforced.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Land contract - must be written
-    land_contract_value = Fraction(1)  # Any value for land
-    land_in_writing = True
-    land_enforceable = land_in_writing  # Only enforceable if written
-    
-    # Goods contract > $500
-    goods_value = Fraction(1000)
-    goods_threshold = Fraction(500)
-    goods_in_writing = True
-    goods_requires_writing = goods_value > goods_threshold
-    goods_enforceable = goods_in_writing if goods_requires_writing else True
-    
-    # Small goods contract <= $500 - oral OK
-    small_goods_value = Fraction(300)
-    small_requires_writing = small_goods_value > goods_threshold
-    small_enforceable = True  # Oral OK for small amounts
-    
-    success = (
-        land_enforceable and 
-        goods_enforceable and 
-        small_enforceable and 
-        not small_requires_writing
-    )
-    
-    proof = ProofObject(
-        rule="StatuteOfFraudsCompliance",
-        premises=[
-            f"land_contract_requires_writing = True",
-            f"goods_threshold = ${goods_threshold}",
-            f"goods_contract_value = ${goods_value}",
-            f"goods_requires_writing = {goods_requires_writing}",
-            f"small_goods_value = ${small_goods_value}",
-            f"small_requires_writing = {small_requires_writing}",
-        ],
-        conclusion=(
-            "Statute of Frauds applied per UCC §2-201"
-            if success
-            else "FAIL: Statute of Frauds check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_frcp_timing_deadlines() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Civil procedure timing deadlines must be enforced.
-    
-    Standard: FRCP 12(a)(1) - 21 days to answer
-    Falsifies if: Late answer accepted without good cause.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    answer_deadline_days = Fraction(21)
-    
-    # Timely answer (day 20)
-    answer_filed_day = Fraction(20)
-    timely = answer_filed_day <= answer_deadline_days
-    
-    # Late answer (day 25)
-    late_filed_day = Fraction(25)
-    is_late = late_filed_day > answer_deadline_days
-    
-    success = timely and is_late
-    
-    proof = ProofObject(
-        rule="FRCPTimingDeadlines",
-        premises=[
-            f"answer_deadline = {answer_deadline_days} days",
-            f"timely_answer_day = {answer_filed_day}",
-            f"timely = {timely}",
-            f"late_answer_day = {late_filed_day}",
-            f"is_late = {is_late}",
-        ],
-        conclusion=(
-            "FRCP timing deadlines enforced per Rule 12(a)(1)"
-            if success
-            else "FAIL: Timing deadline check failed"
-        ),
-    )
-    return success, proof
-
-
-def check_damages_calculation_precision() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Damages calculations use exact Fraction arithmetic.
-    
-    Standard: Restatement (Second) of Contracts §347
-    Falsifies if: Float rounding in damages computation.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    contract_price = Fraction(100_000)
-    costs_saved = Fraction(1, 3) * contract_price  # 33,333.33... exactly
-    expected_profit = Fraction(20_000)
-    
-    # Expectation damages = profit lost
-    expectation_damages = expected_profit
-    
-    # Reliance damages = costs incurred
-    reliance_costs = Fraction(15_000)
-    reliance_damages = reliance_costs
-    
-    # Both should be exact Fractions
-    expectation_exact = isinstance(expectation_damages, Fraction)
-    reliance_exact = isinstance(reliance_damages, Fraction)
-    
-    success = expectation_exact and reliance_exact
-    
-    proof = ProofObject(
-        rule="DamagesCalculationPrecision",
-        premises=[
-            f"contract_price = ${contract_price}",
-            f"costs_saved = ${costs_saved}",
-            f"expectation_damages = ${expectation_damages}",
-            f"reliance_damages = ${reliance_damages}",
-            f"expectation_is_fraction = {expectation_exact}",
-            f"reliance_is_fraction = {reliance_exact}",
-        ],
-        conclusion=(
-            "Exact Fraction damages per Restatement §347"
-            if success
-            else "FAIL: Non-exact damages detected"
-        ),
-    )
-    return success, proof
-
-
-def check_burden_of_proof_allocation() -> Tuple[bool, ProofObject]:
-    """
-    Invariant: Burden of proof allocated correctly to plaintiff.
-    
-    Standard: FRCP 8 (Pleading standards)
-    Falsifies if: Defendant bears burden on plaintiff's claim.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
-    """
-    # Plaintiff bears burden of proof on elements of claim
-    plaintiff_claim_elements = [
-        "duty",
-        "breach", 
-        "causation",
-        "damages"
+    premises = [
+        f"claim_id={claim.claim_id}",
+        f"duty_exists={claim.duty_exists}",
+        f"breach_occurred={claim.breach_occurred}",
+        f"causation_established={claim.causation_established}",
+        f"damages_amount={claim.damages_amount}",
+        f"days_since_incident={claim.days_since_incident}",
+        f"statute_of_limitations_days={claim.statute_of_limitations_days}",
+        f"within_sol={within_sol}",
     ]
-    
-    burden_on_plaintiff = all(elem in plaintiff_claim_elements for elem in plaintiff_claim_elements)
-    
-    # Defendant bears burden on affirmative defenses
-    affirmative_defenses = ["statute_of_limitations", "accord_and_satisfaction"]
-    defendant_burden = len(affirmative_defenses) > 0
-    
-    success = burden_on_plaintiff and defendant_burden
-    
-    proof = ProofObject(
-        rule="BurdenOfProofAllocation",
-        premises=[
-            f"plaintiff_elements = {len(plaintiff_claim_elements)}",
-            f"burden_on_plaintiff = {burden_on_plaintiff}",
-            f"affirmative_defenses = {len(affirmative_defenses)}",
-            f"defendant_burden_exists = {defendant_burden}",
-        ],
-        conclusion=(
-            "Burden allocation correct per FRCP 8"
-            if success
-            else "FAIL: Burden allocation incorrect"
-        ),
+
+    if not success:
+        return False, ProofObject(
+            rule="TortElements",
+            premises=premises,
+            conclusion="VIOLATION: Tort claim fails — missing element, zero damages, or statute of limitations expired",
+        )
+
+    return True, ProofObject(
+        rule="TortElements",
+        premises=premises,
+        conclusion="Restatement §281 tort elements satisfied — all four elements, positive damages, within SOL",
     )
-    return success, proof
 
 
-def check_res_judicata_effect() -> Tuple[bool, ProofObject]:
+def check_statute_of_frauds(contract: FrozenContract) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Claim preclusion prevents relitigation of final judgments.
-    
-    Standard: Restatement (Second) of Judgments §17
-    Falsifies if: Same parties relitigate same claim after final judgment.
-    
-    Returns:
-        Tuple of (success: bool, proof: ProofObject)
+    Rule: Contracts involving land or value > $500 must be in writing under the Statute of Frauds.
+
+    Standard: UCC §2-201; Restatement (Second) of Contracts §110
+    falsifies_if: (involves_land OR contract_value > 500) AND in_writing is False.
     """
-    # Requirements for claim preclusion
-    same_parties = True
-    same_claim = True
-    final_judgment = True
-    valid_judgment = True
-    
-    # All must be true for preclusion to apply
-    preclusion_applies = same_parties and same_claim and final_judgment and valid_judgment
-    
-    # Different claim - preclusion does not apply
-    different_claim = False
-    preclusion_not_applicable = not different_claim
-    
-    success = preclusion_applies and preclusion_not_applicable
-    
-    proof = ProofObject(
-        rule="ResJudicataEffect",
-        premises=[
-            "requirement_same_parties = True",
-            "requirement_same_claim = True",
-            "requirement_final_judgment = True",
-            "requirement_valid_judgment = True",
-            f"preclusion_applies = {preclusion_applies}",
-            f"different_claim_exempt = {preclusion_not_applicable}",
-        ],
-        conclusion=(
-            "Claim preclusion applied per Restatement §17"
-            if success
-            else "FAIL: Res judicata check failed"
-        ),
+    writing_required = contract.involves_land or contract.contract_value > Fraction(500)
+    success = not writing_required or contract.in_writing
+
+    premises = [
+        f"contract_id={contract.contract_id}",
+        f"involves_land={contract.involves_land}",
+        f"contract_value={contract.contract_value}",
+        f"writing_required={writing_required}",
+        f"in_writing={contract.in_writing}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="StatuteOfFrauds",
+            premises=premises,
+            conclusion="VIOLATION: Statute of Frauds — contract involving land or value > $500 not in writing",
+        )
+
+    return True, ProofObject(
+        rule="StatuteOfFrauds",
+        premises=premises,
+        conclusion="Statute of Frauds satisfied — writing requirement met or not applicable",
     )
-    return success, proof
+
+
+def check_contract_formation(contract: FrozenContract) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Valid contract formation requires offer, acceptance, and consideration.
+
+    Standard: Restatement (Second) of Contracts §17
+    falsifies_if: offer_present is False OR acceptance_present is False OR consideration_present is False.
+    """
+    success = contract.offer_present and contract.acceptance_present and contract.consideration_present
+
+    premises = [
+        f"contract_id={contract.contract_id}",
+        f"offer_present={contract.offer_present}",
+        f"acceptance_present={contract.acceptance_present}",
+        f"consideration_present={contract.consideration_present}",
+    ]
+
+    if not success:
+        return False, ProofObject(
+            rule="ContractFormation",
+            premises=premises,
+            conclusion="VIOLATION: Restatement §17 contract formation — missing offer, acceptance, or consideration",
+        )
+
+    return True, ProofObject(
+        rule="ContractFormation",
+        premises=premises,
+        conclusion="Restatement §17 contract formation elements satisfied",
+    )
 
 
 def run_all_invariants() -> dict:
-    """Run all D_CIVIL_LAW invariants.
+    """Run all D_CIVIL_LAW invariants with nominal sample data.
 
-    Falsifies if: any civil law invariant check fails or raises an exception.
+    falsifies_if: any civil law invariant check fails or raises an exception.
     """
+    tort = FrozenTortClaim(
+        claim_id="TORT-001",
+        duty_exists=True,
+        breach_occurred=True,
+        causation_established=True,
+        damages_amount=Fraction(10000),
+        statute_of_limitations_days=Fraction(1095),
+        days_since_incident=Fraction(365),
+    )
+    contract = FrozenContract(
+        contract_id="CONTRACT-001",
+        offer_present=True,
+        acceptance_present=True,
+        consideration_present=True,
+        in_writing=True,
+        contract_value=Fraction(1000),
+        involves_land=True,
+    )
+
     checks = [
-        ("check_contract_formation_requirements", check_contract_formation_requirements),
-        ("check_statute_of_frauds_compliance", check_statute_of_frauds_compliance),
-        ("check_frcp_timing_deadlines", check_frcp_timing_deadlines),
-        ("check_damages_calculation_precision", check_damages_calculation_precision),
-        ("check_burden_of_proof_allocation", check_burden_of_proof_allocation),
-        ("check_res_judicata_effect", check_res_judicata_effect),
+        ("check_tort_elements", lambda: check_tort_elements(tort)),
+        ("check_statute_of_frauds", lambda: check_statute_of_frauds(contract)),
+        ("check_contract_formation", lambda: check_contract_formation(contract)),
     ]
-    
+
     results = {}
-    for name, check_func in checks:
+    for name, func in checks:
         try:
-            success, proof = check_func()
+            success, proof = func()
             results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
-        except Exception as e:
-            results[name] = f"ERROR: {e}"
-    
+        except Exception as exc:
+            results[name] = f"ERROR: {exc}"
+
     return results
-
-
-if __name__ == "__main__":
-    import json
-    results = run_all_invariants()
-    print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
-    if failures:
-        raise SystemExit(f"Invariant failures: {failures}")
-    print("All D_CIVIL_LAW invariants: PASS")

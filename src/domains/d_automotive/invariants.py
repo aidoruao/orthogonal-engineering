@@ -20,6 +20,7 @@ def check_ota_signature(update: OTAUpdate) -> Tuple[bool, ProofObject]:
     ISO/SAE 21434: OTA updates must have valid cryptographic signatures.
 
     Falsifies if: signature_valid is False
+    falsifies_if: signature_valid is False
     """
     required = ota_signature_required()
 
@@ -42,6 +43,7 @@ def check_can_latency(message: CANMessage, measured_latency_ms: Fraction) -> Tup
     CAN bus critical messages must have <10ms latency per automotive standards.
 
     Falsifies if: measured_latency_ms >= 10ms for critical messages
+    falsifies_if: measured_latency_ms >= 10ms for critical messages
     """
     if not message.is_critical:
         return True, ProofObject(
@@ -71,6 +73,7 @@ def check_asil_d_coverage(component: SafetyComponent) -> Tuple[bool, ProofObject
     ISO 26262 ASIL-D: Single-Point Fault Metric (SPFM) must exceed 99%.
 
     Falsifies if: component.asil_level == ASIL-D and spfm < 99%
+    falsifies_if: component.asil_level == ASIL-D and spfm < 99%
     """
     if component.asil_level != ASILLevel.D:
         return True, ProofObject(
@@ -104,6 +107,7 @@ def check_adas_sensor_sync(adas: ADASSystem) -> Tuple[bool, ProofObject]:
     ADAS sensor fusion requires synchronized timestamps within 1ms.
 
     Falsifies if: sensor_fusion_latency_ms > 1ms
+    falsifies_if: sensor_fusion_latency_ms > 1ms
     """
     threshold = adas_sync_threshold()
 
@@ -129,6 +133,7 @@ def check_autosar_determinism(component: SafetyComponent) -> Tuple[bool, ProofOb
     AUTOSAR Adaptive Platform requires deterministic WCET for safety components.
 
     Falsifies if: latency_ms varies or exceeds design budget
+    falsifies_if: latency_ms varies or exceeds design budget
     """
     # For ASIL-C and above, latency must be strictly bounded
     if component.asil_level.value >= ASILLevel.C.value:

@@ -150,6 +150,135 @@ QUESTIONS: List[Dict[str, Any]] = [
         },
         "expected_answer": "CONDITIONAL",
     },
+    # Nuclear Engineering Domain Questions (Added PR #119)
+    {
+        "question_id": "Q-NUC-SCRAM-001",
+        "variant_id": "NUC-SCRAM-001",
+        "category": "boundary",
+        "variables": {
+            "scram_time_ms": 800,
+            "design_scram_limit_ms": 500,
+        },
+        "expected_answer": "DENY",
+    },
+    {
+        "question_id": "Q-NUC-SCRAM-002",
+        "variant_id": "NUC-SCRAM-001",
+        "category": "boundary",
+        "variables": {
+            "scram_time_ms": 200,
+            "design_scram_limit_ms": 500,
+        },
+        "expected_answer": "ALLOW",
+    },
+    {
+        "question_id": "Q-NUC-DOSE-001",
+        "variant_id": "NUC-DOSE-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Worker dose of 6 mSv exceeds ALARA target of 5 mSv per 10 CFR 20",
+        },
+        "expected_answer": "ALARA_VIOLATION",
+    },
+    {
+        "question_id": "Q-NUC-CRITICALITY-001",
+        "variant_id": "NUC-DOSE-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Criticality assessment shows k_effective = 0.999, subcritical margin = 0.001 vs minimum 0.05 per IAEA GSR Part 4",
+        },
+        "expected_answer": "CRITICALITY_VIOLATION",
+    },
+    {
+        "question_id": "Q-NUC-GRACE-001",
+        "variant_id": "NUC-GRACE-001",
+        "category": "grace",
+        "variables": {
+            "violation_description": "Reactor scram exceeded design limit by 15ms due to sensor calibration lag, not a safety system failure",
+            "context": "Sensor replaced immediately. No fuel damage. Reportable event under 10 CFR 50.72.",
+        },
+        "expected_answer": "CONDITIONAL",
+    },
+    # Veterinary Medicine Domain Questions (Added PR #119)
+    {
+        "question_id": "Q-VET-SPACE-001",
+        "variant_id": "VET-SPACE-001",
+        "category": "boundary",
+        "variables": {
+            "space_per_animal_sqft": 10,
+            "min_space_sqft": 25,
+        },
+        "expected_answer": "DENY",
+    },
+    {
+        "question_id": "Q-VET-WITHDRAWAL-001",
+        "variant_id": "VET-WITHDRAWAL-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Animal slaughtered 3 days after drug administration with a 7-day FDA CVM withdrawal period",
+        },
+        "expected_answer": "WITHDRAWAL_VIOLATION",
+    },
+    {
+        "question_id": "Q-VET-LICENSE-001",
+        "variant_id": "VET-SPACE-001",
+        "category": "boundary",
+        "variables": {
+            "action": "prescribe_controlled_substance",
+            "license_active": False,
+            "dea_registration": True,
+        },
+        "expected_answer": "DENY",
+    },
+    {
+        "question_id": "Q-VET-GRACE-001",
+        "variant_id": "VET-GRACE-001",
+        "category": "grace",
+        "variables": {
+            "violation_description": "USDA inspection interval exceeded by 15 days due to inspector scheduling conflict beyond facility control",
+            "context": "Facility has clean 5-year inspection history. Voluntary corrective action documented.",
+        },
+        "expected_answer": "CONDITIONAL",
+    },
+    # Forensic Psychology Domain Questions (Added PR #119)
+    {
+        "question_id": "Q-FPSY-COMPETENCY-001",
+        "variant_id": "FPSY-COMPETENCY-001",
+        "category": "boundary",
+        "variables": {
+            "understands_charges": False,
+            "can_assist_counsel": True,
+        },
+        "expected_answer": "DENY",
+    },
+    {
+        "question_id": "Q-FPSY-DAUBERT-001",
+        "variant_id": "FPSY-DAUBERT-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Expert testimony based on methodology meeting only 1 of 4 Daubert factors; not peer-reviewed and error rate unknown",
+        },
+        "expected_answer": "ADMISSIBILITY_VIOLATION",
+    },
+    {
+        "question_id": "Q-FPSY-COMMITMENT-001",
+        "variant_id": "FPSY-DAUBERT-001",
+        "category": "threat",
+        "variables": {
+            "event_description": "Civil commitment periodic review has not occurred in 210 days against a 180-day maximum per Jackson v. Indiana",
+        },
+        "expected_answer": "DUE_PROCESS_VIOLATION",
+    },
+    {
+        "question_id": "Q-FPSY-GRACE-001",
+        "variant_id": "FPSY-GRACE-001",
+        "category": "grace",
+        "variables": {
+            "violation_description": "Board-certified evaluator submitted competency report 2 days late due to a medical emergency",
+            "context": "Defendant's rights were not materially affected. Report content meets all Dusky criteria.",
+        },
+        "expected_answer": "CONDITIONAL",
+    },
 ]
 
 

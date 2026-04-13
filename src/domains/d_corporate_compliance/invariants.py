@@ -17,6 +17,7 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
+from .implementation import CorporateComplianceRecord
 
 
 def check_sentencing_guidelines_compliance_program() -> Tuple[bool, ProofObject]:
@@ -25,6 +26,7 @@ def check_sentencing_guidelines_compliance_program() -> Tuple[bool, ProofObject]
     
     Standard: USSG §8B2.1 (Effective Compliance and Ethics Program)
     Falsifies if: Organization receives full credit without implemented compliance program.
+    falsifies_if: Organization receives full credit without implemented compliance program.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -87,6 +89,7 @@ def check_doj_ecmp_independence_resources() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ Evaluation of Corporate Compliance Programs (2023)
     Falsifies if: CCO reports to General Counsel or lacks budget authority.
+    falsifies_if: CCO reports to General Counsel or lacks budget authority.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -149,6 +152,7 @@ def check_risk_assessment_periodic_review() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Risk Assessment); USSG §8B2.1(b)
     Falsifies if: Static risk assessment used without update for changed circumstances.
+    falsifies_if: Static risk assessment used without update for changed circumstances.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -211,6 +215,7 @@ def check_third_party_due_diligence() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Third Party Management); FCPA Resource Guide
     Falsifies if: High-risk intermediary engaged without appropriate due diligence.
+    falsifies_if: High-risk intermediary engaged without appropriate due diligence.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -278,6 +283,7 @@ def check_investigation_response_remediation() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Investigation of Misconduct); USSG §8B2.1(b)(7)
     Falsifies if: Investigation whitewashed or root cause not addressed.
+    falsifies_if: Investigation whitewashed or root cause not addressed.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -342,6 +348,7 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
     
     Standard: DOJ ECMP (Training and Communications); USSG §8B2.1(b)(4)
     Falsifies if: Generic training provided without risk-based tailoring.
+    falsifies_if: Generic training provided without risk-based tailoring.
     
     Returns:
         Tuple of (success: bool, proof: ProofObject)
@@ -412,12 +419,100 @@ def check_training_communication_effectiveness() -> Tuple[bool, ProofObject]:
     return success, proof
 
 
+def check_corporate_registration(record: CorporateComplianceRecord) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Entity must be registered with the state AND have a designated registered agent (state corporation statutes).
+
+    falsifies_if: state_registered is False OR registered_agent_designated is False.
+    """
+    success = record.state_registered and record.registered_agent_designated
+    return success, ProofObject(
+        rule="CorporateRegistrationCheck",
+        premises=[
+            f"entity_id={record.entity_id}",
+            f"state_registered={record.state_registered}",
+            f"registered_agent_designated={record.registered_agent_designated}",
+        ],
+        conclusion=(
+            "PASS: Entity properly registered with designated agent"
+            if success else
+            "FAIL: Entity registration or registered agent requirement not met"
+        ),
+    )
+
+
+def check_beneficial_ownership_reporting(record: CorporateComplianceRecord) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Beneficial ownership must be reported to FinCEN per the Corporate Transparency Act (31 U.S.C. §5336).
+
+    falsifies_if: beneficial_owner_reported is False.
+    """
+    success = record.beneficial_owner_reported
+    return success, ProofObject(
+        rule="BeneficialOwnershipReportingCheck",
+        premises=[
+            f"entity_id={record.entity_id}",
+            f"beneficial_owner_reported={record.beneficial_owner_reported}",
+        ],
+        conclusion=(
+            "PASS: Beneficial ownership reported per CTA"
+            if success else
+            "FAIL: Beneficial ownership not reported — CTA 31 U.S.C. §5336 violation"
+        ),
+    )
+
+
+def check_sox_compliance(record: CorporateComplianceRecord) -> Tuple[bool, ProofObject]:
+    """
+    Rule: Public companies must be SOX-compliant with an independent audit committee (SOX §301, §302, §404).
+
+    falsifies_if: is_public_company is True AND (sarbanes_oxley_compliant is False OR audit_committee_independent is False).
+    """
+    if not record.is_public_company:
+        success = True
+        conclusion = "PASS: SOX requirements not applicable (private company)"
+    else:
+        success = record.sarbanes_oxley_compliant and record.audit_committee_independent
+        conclusion = (
+            "PASS: SOX compliance and independent audit committee confirmed"
+            if success else
+            f"FAIL: SOX violation — sox_compliant={record.sarbanes_oxley_compliant}, audit_independent={record.audit_committee_independent}"
+        )
+    return success, ProofObject(
+        rule="SOXComplianceCheck",
+        premises=[
+            f"entity_id={record.entity_id}",
+            f"is_public_company={record.is_public_company}",
+            f"sarbanes_oxley_compliant={record.sarbanes_oxley_compliant}",
+            f"audit_committee_independent={record.audit_committee_independent}",
+        ],
+        conclusion=conclusion,
+    )
+
+
 def run_all_invariants() -> dict:
     """Run all D_CORPORATE_COMPLIANCE invariants.
 
-    Falsifies if: any corporate compliance invariant check fails or raises an exception.
+    falsifies_if: any corporate compliance invariant check fails or raises an exception.
     """
-    checks = [
+    nominal = CorporateComplianceRecord(
+        entity_id="CORP-001",
+        state_registered=True,
+        annual_report_filed=True,
+        registered_agent_designated=True,
+        beneficial_owner_reported=True,
+        sarbanes_oxley_compliant=True,
+        is_public_company=True,
+        audit_committee_independent=True,
+        days_since_annual_report=Fraction(30),
+        annual_report_deadline_days=Fraction(365),
+    )
+    new_checks = [
+        ("check_corporate_registration", lambda: check_corporate_registration(nominal)),
+        ("check_beneficial_ownership_reporting", lambda: check_beneficial_ownership_reporting(nominal)),
+        ("check_sox_compliance", lambda: check_sox_compliance(nominal)),
+    ]
+    old_checks = [
         ("check_sentencing_guidelines_compliance_program", check_sentencing_guidelines_compliance_program),
         ("check_doj_ecmp_independence_resources", check_doj_ecmp_independence_resources),
         ("check_risk_assessment_periodic_review", check_risk_assessment_periodic_review),
@@ -425,15 +520,19 @@ def run_all_invariants() -> dict:
         ("check_investigation_response_remediation", check_investigation_response_remediation),
         ("check_training_communication_effectiveness", check_training_communication_effectiveness),
     ]
-    
     results = {}
-    for name, check_func in checks:
+    for name, func in new_checks:
+        try:
+            success, proof = func()
+            results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
+        except Exception as e:
+            results[name] = f"ERROR: {e}"
+    for name, check_func in old_checks:
         try:
             success, proof = check_func()
             results[name] = "PASS" if success else f"FAIL: {proof.conclusion}"
         except Exception as e:
             results[name] = f"ERROR: {e}"
-    
     return results
 
 

@@ -11,6 +11,7 @@ def check_impact_score_bounded(eis: EnvironmentalImpactStatement) -> Tuple[bool,
     """Impact scores must be on 0-100 scale.
 
     Falsifies if: any impact score is outside [0, 100].
+    falsifies_if: any impact score is outside [0, 100].
     """
     for score in eis.impact_scores:
         if score.score < Fraction(0) or score.score > Fraction(100):
@@ -31,6 +32,7 @@ def check_comment_period_duration(period: CommentPeriod) -> Tuple[bool, ProofObj
     """NEPA: Minimum 30-day comment period required.
 
     Falsifies if: period.is_adequate() is False.
+    falsifies_if: period.is_adequate() is False.
     """
     if not period.is_adequate():
         return False, ProofObject(
@@ -50,6 +52,7 @@ def check_mitigation_completeness(tracker: MitigationTracker) -> Tuple[bool, Pro
     """All required mitigation measures must be implemented.
 
     Falsifies if: tracker.is_complete() is False.
+    falsifies_if: tracker.is_complete() is False.
     """
     if not tracker.is_complete():
         missing = set(tracker.required_measures) - set(tracker.implemented_measures)

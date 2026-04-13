@@ -22,6 +22,7 @@ def check_explosion_blocked(theory: ParaconsistentTheory) -> Tuple[bool, ProofOb
     """Paraconsistent logic: A ∧ ¬A should NOT entail arbitrary B.
     
     Falsifies if: theory is inconsistent and trivial (explosion not blocked).
+    falsifies_if: theory is inconsistent and trivial (explosion not blocked).
     """
     if theory.is_inconsistent() and not theory.explosion_blocked():
         return False, ProofObject(
@@ -48,6 +49,7 @@ def check_truth_value_consistency(prop_truth: TruthValue) -> Tuple[bool, ProofOb
     """Paraconsistent truth values properly assigned.
     
     Falsifies if: BOTH truth value is assigned without dialetheist justification.
+    falsifies_if: BOTH truth value is assigned without dialetheist justification.
     """
     if prop_truth == TruthValue.BOTH:
         return True, ProofObject(
@@ -67,6 +69,7 @@ def check_inference_non_explosive(rule: InferenceRule) -> Tuple[bool, ProofObjec
     """Paraconsistent inference rules must not derive everything from contradiction.
     
     Falsifies if: classical explosion-style rule is accepted in LP without restriction.
+    falsifies_if: classical explosion-style rule is accepted in LP without restriction.
     """
     if rule.valid_in_classical and not rule.valid_in_lp:
         if "explosion" in rule.rule_name.lower() or "ex contradictione" in rule.rule_name.lower():
@@ -91,6 +94,7 @@ def check_adjunctive_syllogism(rule: InferenceRule) -> Tuple[bool, ProofObject]:
     """Disjunctive syllogism (A ∨ B, ¬A ⊢ B) fails in LP when A is BOTH.
     
     Falsifies if: disjunctive syllogism is treated as universally valid in LP.
+    falsifies_if: disjunctive syllogism is treated as universally valid in LP.
     """
     if "disjunctive_syllogism" in rule.rule_name.lower():
         if rule.valid_in_lp:
@@ -114,6 +118,7 @@ def check_non_triviality(theory: ParaconsistentTheory) -> Tuple[bool, ProofObjec
     """Inconsistent paraconsistent theory should not be trivial.
     
     Falsifies if: theory.is_trivial() is True.
+    falsifies_if: theory.is_trivial() is True.
     """
     if theory.is_trivial():
         return False, ProofObject(

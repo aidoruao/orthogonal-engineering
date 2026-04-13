@@ -24,6 +24,7 @@ def check_license_validity(license: License) -> Tuple[bool, ProofObject]:
     """License must be active and not expired to practice.
 
     Falsifies if: status is revoked/suspended/expired or expiration_date has passed.
+    falsifies_if: status is revoked/suspended/expired or expiration_date has passed.
     """
     if license.status == LicenseStatus.REVOKED:
         return False, ProofObject(
@@ -80,6 +81,7 @@ def check_ce_compliance(ce: ContinuingEducation) -> Tuple[bool, ProofObject]:
     """Continuing education required for license renewal.
 
     Falsifies if: completed_hours or ethics_completed fall below required thresholds.
+    falsifies_if: completed_hours or ethics_completed fall below required thresholds.
     """
     if not ce.is_complete():
         hours_short = ce.hours_remaining()
@@ -110,6 +112,7 @@ def check_sunset_review_current(board: LicensingBoard) -> Tuple[bool, ProofObjec
     """Licensing boards require periodic sunset review (typically 5-10 years).
 
     Falsifies if: last_sunset_review is missing or more than 5 years old.
+    falsifies_if: last_sunset_review is missing or more than 5 years old.
     """
     if board.last_sunset_review is None:
         return False, ProofObject(
@@ -150,6 +153,7 @@ def check_reciprocity_validity(license: License, target_jurisdiction: str) -> Tu
     """Multi-state practice requires valid compact or reciprocity.
 
     Falsifies if: license is invalid in target_jurisdiction or lacks required compact privilege.
+    falsifies_if: license is invalid in target_jurisdiction or lacks required compact privilege.
     """
     if not license.valid_in_jurisdiction(target_jurisdiction):
         return False, ProofObject(
@@ -178,6 +182,7 @@ def check_disciplinary_reporting(action: DisciplinaryAction) -> Tuple[bool, Proo
     """Disciplinary actions must be reported to national database.
 
     Falsifies if: serious discipline is unreported beyond 30 days.
+    falsifies_if: serious discipline is unreported beyond 30 days.
     """
     serious_types = ("revocation", "suspension", "surrender")
     
