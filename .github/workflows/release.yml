@@ -61,8 +61,8 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          dist/${{ matrix.artifact_name }} --version
-          dist/${{ matrix.artifact_name }} --query "nuclear reactor scram"
+          dist/${{ matrix.artifact_name }} --version | grep -q "v2.0.0"
+          dist/${{ matrix.artifact_name }} --query "nuclear reactor scram" | grep -q "D_NUCLEAR"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

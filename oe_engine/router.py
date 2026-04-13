@@ -15,7 +15,7 @@ from fractions import Fraction
 from typing import Dict, List, Optional, Tuple
 
 from axioms.logic import ProofObject
-from src.sal.cross_domain_adjunction import DomainCategory, DomainMorphism
+from src.sal.cross_domain_adjunction import DomainCategory
 
 # ---------------------------------------------------------------------------
 # Keyword index: maps lowercase keywords → domain IDs (uppercase)
@@ -682,6 +682,59 @@ class RouteResult:
     proof: ProofObject
 
 
+def _build_enriched_category() -> DomainCategory:
+    """Build a DomainCategory enriched with ontology-derived cross-domain morphisms.
+
+    Loads shared-category morphisms from ontology/ontology.json and merges them
+    with the 4 hardcoded pattern morphisms from DomainCategory._build_known_morphisms.
+
+    falsifies_if: returned category has fewer than 4 morphisms (regression from baseline).
+    """
+    import json
+    import pathlib
+
+    cat = DomainCategory()
+
+    try:
+        try:
+            from oe_engine._paths import _base_path
+            ontology_file = _base_path() / "ontology" / "ontology.json"
+        except ImportError:
+            ontology_file = pathlib.Path("ontology/ontology.json")
+
+        with open(ontology_file) as f:
+            ontology = json.load(f)
+
+        # Build morphisms for domains that share an ontology category tag
+        category_map: Dict[str, List[str]] = {}
+        for domain_data in ontology.get("domains", []):
+            domain_id = domain_data.get("id", "")
+            for tag in domain_data.get("categories", []):
+                category_map.setdefault(tag, []).append(domain_id)
+
+        for tag, domain_ids in category_map.items():
+            if len(domain_ids) < 2:
+                continue
+            # Add bidirectional morphisms for all pairs sharing this tag
+            for i, src in enumerate(domain_ids):
+                for tgt in domain_ids[i + 1:]:
+                    # _add_morphism is idempotent (overwrites existing key)
+                    cat._add_morphism(  # type: ignore[attr-defined]
+                        src, tgt, "ontology_shared_category",
+                        f"Domains share ontology category '{tag}'"
+                    )
+                    cat._add_morphism(  # type: ignore[attr-defined]
+                        tgt, src, "ontology_shared_category",
+                        f"Domains share ontology category '{tag}'"
+                    )
+    except (OSError, KeyError, ValueError, json.JSONDecodeError):
+        # Ontology not available (frozen binary without data, or corrupt JSON).
+        # Fall back to the 4 hardcoded morphisms already in cat.
+        pass
+
+    return cat
+
+
 class DomainRouter:
     """Routes natural language queries to domain invariant modules.
 
@@ -693,7 +746,7 @@ class DomainRouter:
 
     def __init__(self) -> None:
         self._keyword_index = _KEYWORD_INDEX
-        self._category = DomainCategory()
+        self._category = _build_enriched_category()
 
     def route(self, query: str) -> RouteResult:
         """Route a query to the most relevant domains.
@@ -727,7 +780,7 @@ class DomainRouter:
         for domain_id in list(matched):
             morphs = self._category.find_pattern_matches(domain_id)
             for m in morphs[:2]:  # max 2 morphisms per domain
-                target = m.target_id
+                target = m.target  # DomainMorphism.target is the string domain ID
                 if target not in matched:
                     matched.append(target)
                     relevance.append(Fraction(1, 2))

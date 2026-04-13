@@ -26,8 +26,8 @@ from kernel.boot import boot, verify_boot_integrity
 from oe_engine.engine import OrthogonalEngine
 from oe_engine.conversation import ConversationEngine
 
-_VERSION = "v0.1.0"
-_BANNER = "Kingdom OS v0.1.0 — Deterministic Glass-Box Sovereign AI"
+_VERSION = "v2.0.0"
+_BANNER = "Kingdom OS v2.0.0 — Deterministic Glass-Box Sovereign AI"
 
 
 def _boot_kernel() -> tuple:
@@ -74,9 +74,11 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.version:
+        from oe_engine.manifest import EngineManifest
+        manifest = EngineManifest()
         print(f"Kingdom OS {_VERSION}")
         print("Kernel: capability-gated, deterministic, proof-carrying")
-        print("Engine: 163 domain invariant modules, 0 floats, 0 stubs")
+        print(f"Engine: {manifest.domain_count} domain invariant modules, 0 floats, 0 stubs")
         sys.exit(0)
 
     # Boot kernel for all modes
