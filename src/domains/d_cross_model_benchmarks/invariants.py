@@ -250,3 +250,75 @@ def check_normalization_consistency(eval1: ModelEval, eval2: ModelEval) -> Tuple
         premises=[f"Type: {eval1.normalization_type.name}"],
         rule="normalization_consistency"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CROSS_MODEL_BENCHMARKS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    benchmark_coverage = BenchmarkCoverage(
+        evaluation_id=None,
+        model_id=None,
+        num_benchmarks_evaluated=None,
+        num_benchmarks_total=None,
+        coverage_fraction=Fraction(100),
+    )
+    cross_model_comparison = CrossModelComparison(
+        comparison_id=None,
+        model_ids=None,
+        benchmark_id=None,
+        reproducible=None,
+        cherry_picked=None,
+    )
+    model_eval = ModelEval(
+        model_id=None,
+        benchmark_id=None,
+        raw_score=Fraction(100),
+        normalized_score=Fraction(100),
+        normalization_type=NormalizationType.Z_SCORE,
+        num_runs=None,
+    )
+    ordering_consistency = OrderingConsistency(
+        consistency_id=None,
+        model_a_id=None,
+        model_b_id=None,
+        benchmark_ids=None,
+        consistent=None,
+        num_reversals=None,
+    )
+
+    checks = [
+        ("check_benchmark_coverage", lambda: check_benchmark_coverage(benchmark_coverage)),
+        ("check_comparison_reproducibility", lambda: check_comparison_reproducibility(cross_model_comparison)),
+        ("check_eval_reproducibility", lambda: check_eval_reproducibility(model_eval)),
+        ("check_minimum_benchmarks", lambda: check_minimum_benchmarks(benchmark_coverage)),
+        ("check_model_ordering_consistency", lambda: check_model_ordering_consistency(ordering_consistency)),
+        ("check_no_cherry_picking", lambda: check_no_cherry_picking(cross_model_comparison, benchmark_coverage)),
+        ("check_normalization", lambda: check_normalization(model_eval)),
+        ("check_normalization_consistency", lambda: check_normalization_consistency(model_eval, model_eval)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CROSS_MODEL_BENCHMARKS invariants: PASS")

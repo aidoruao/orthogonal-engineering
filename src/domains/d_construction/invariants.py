@@ -122,3 +122,63 @@ def check_osha_fall_protection(osha: OSHACompliance) -> Tuple[bool, ProofObject]
         premises=[f"Height: {osha.height_ft} ft", f"Protected: {osha.has_fall_protection}"],
         rule="osha_1926_fall_protection"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CONSTRUCTION invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    bim_clash_detection = BIMClashDetection(
+        model_id=None,
+        clashes_detected=None,
+        false_negative_rate=Fraction(1),
+    )
+    fem_analysis = FEMAnalysis(
+        analysis_id=None,
+        computed_stress_mpa=Fraction(1),
+        analytical_stress_mpa=Fraction(1),
+        mesh_convergence_percent=Fraction(1),
+    )
+    osha_compliance = OSHACompliance(
+        site_id=None,
+        height_ft=Fraction(1),
+        has_fall_protection=None,
+    )
+    structural_member = StructuralMember(
+        member_id=None,
+        applied_load_kn=Fraction(1),
+        capacity_kn=Fraction(1000),
+        safety_factor=Fraction(1),
+    )
+
+    checks = [
+        ("check_bim_clash_detection", lambda: check_bim_clash_detection(bim_clash_detection)),
+        ("check_fem_accuracy", lambda: check_fem_accuracy(fem_analysis)),
+        ("check_osha_fall_protection", lambda: check_osha_fall_protection(osha_compliance)),
+        ("check_structural_safety_factor", lambda: check_structural_safety_factor(structural_member)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CONSTRUCTION invariants: PASS")

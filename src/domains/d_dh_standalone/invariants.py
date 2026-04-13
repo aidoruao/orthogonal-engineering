@@ -289,3 +289,42 @@ def get_invariant_summary() -> Dict[str, Any]:
             for c in checks if not c.passed
         ],
     }
+
+
+def run_all_invariants() -> dict:
+    """Run all D_DH_STANDALONE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    checks = [
+        ("check_config_validation_warning", lambda: check_config_validation_warning()),
+        ("check_error_path_messages", lambda: check_error_path_messages()),
+        ("check_gl_context_guard", lambda: check_gl_context_guard()),
+        ("check_queue_boundedness", lambda: check_queue_boundedness()),
+        ("check_thread_context_before_gl", lambda: check_thread_context_before_gl()),
+        ("check_tick_budget_compliance", lambda: check_tick_budget_compliance()),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_DH_STANDALONE invariants: PASS")

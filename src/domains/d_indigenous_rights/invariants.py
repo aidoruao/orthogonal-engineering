@@ -224,3 +224,86 @@ def check_cultural_resource_protection(resource: CulturalResource) -> Tuple[bool
         ],
         rule="cultural_resource_protected"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_INDIGENOUS_RIGHTS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    cultural_resource = CulturalResource(
+        resource_id=None,
+        name=None,
+        description=None,
+        affiliated_nations=None,
+        resource_type=None,
+        nhpa_section_106_reviewed=None,
+        confidentiality_required=None,
+        location_description=None,
+    )
+    tribal_consultation = TribalConsultation(
+        consultation_id=None,
+        project_name=None,
+        project_description=None,
+        affected_nations=None,
+        consultation_type=None,
+        initiated_date=None,
+        comment_period_end=None,
+        meaningful_consultation=None,
+        consent_given=None,
+    )
+    icw_case = ICWCase(
+        case_id=None,
+        child_tribal_affiliation=None,
+        tribe_notified=None,
+        notification_date=None,
+        placement_made=None,
+        placement_type=None,
+        preference_level=None,
+        preference_followed=None,
+        tribal_court_involved=None,
+        state_court_transfer=None,
+    )
+    treaty = Treaty(
+        treaty_id=None,
+        treaty_name=None,
+        signing_date=None,
+        nations=None,
+        counterparty=None,
+        reserved_rights=None,
+        territory_description=None,
+        status=TreatyStatus.IN_FORCE,
+    )
+
+    checks = [
+        ("check_cultural_resource_protection", lambda: check_cultural_resource_protection(cultural_resource)),
+        ("check_free_prior_informed_consent", lambda: check_free_prior_informed_consent(tribal_consultation)),
+        ("check_icwa_placement_preference", lambda: check_icwa_placement_preference(icw_case)),
+        ("check_icwa_tribal_notification", lambda: check_icwa_tribal_notification(icw_case)),
+        ("check_meaningful_consultation", lambda: check_meaningful_consultation(tribal_consultation)),
+        ("check_treaty_obligation_status", lambda: check_treaty_obligation_status(treaty)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_INDIGENOUS_RIGHTS invariants: PASS")

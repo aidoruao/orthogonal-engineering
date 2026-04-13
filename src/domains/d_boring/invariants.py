@@ -260,3 +260,93 @@ def check_segment_installation_sequence(installation: SegmentInstallation, segme
         premises=[f"Installed: {segment.installed}", f"Grouted: {segment.grouting_complete}"],
         rule="segment_sequence"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_BORING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    tbm_advance = TBMAdvance(
+        advance_id=None,
+        tbm_id=None,
+        distance_advanced_m=Fraction(1),
+        duration_hours=Fraction(1),
+        ground_pressure_kpa=Fraction(1),
+        face_pressure_kpa=Fraction(1),
+    )
+    ground_conditions = GroundConditions(
+        location_id=None,
+        ground_type=GroundType.ROCK_HARD,
+        rock_strength_mpa=None,
+        water_table_depth_m=Fraction(1),
+        permeability_m_per_s=Fraction(1),
+        soil_cohesion_kpa=None,
+    )
+    segment_installation = SegmentInstallation(
+        installation_id=None,
+        segment_id=None,
+        ring_number=None,
+        alignment_deviation_mm=Fraction(1),
+        bolt_torque_nm=Fraction(1),
+        grouting_volume_m3=Fraction(1),
+    )
+    tunnel_segment = TunnelSegment(
+        segment_id=None,
+        length_m=Fraction(1),
+        thickness_mm=Fraction(1),
+        alignment_tolerance_mm=Fraction(1),
+        installed=None,
+        grouting_complete=None,
+    )
+    subsidence_monitoring = SubsidenceMonitoring(
+        monitoring_id=None,
+        location=None,
+        settlement_mm=Fraction(1),
+        horizontal_displacement_mm=Fraction(1),
+        days_after_passage=Fraction(1),
+    )
+    tbm = TBM(
+        tbm_id=None,
+        tbm_type=TBMType.EPB,
+        diameter_meters=Fraction(1),
+        advance_rate_mm_per_min=Fraction(1),
+        cutterhead_rpm=Fraction(1),
+        thrust_force_kn=Fraction(1),
+        operational=None,
+    )
+
+    checks = [
+        ("check_ground_pressure_limits", lambda: check_ground_pressure_limits(tbm_advance, ground_conditions)),
+        ("check_grouting_coverage", lambda: check_grouting_coverage(segment_installation)),
+        ("check_segment_alignment", lambda: check_segment_alignment(segment_installation)),
+        ("check_segment_installation_sequence", lambda: check_segment_installation_sequence(segment_installation, tunnel_segment)),
+        ("check_subsidence_tolerance", lambda: check_subsidence_tolerance(subsidence_monitoring)),
+        ("check_tbm_advance_rate", lambda: check_tbm_advance_rate(tbm, ground_conditions)),
+        ("check_tbm_operational_status", lambda: check_tbm_operational_status(tbm)),
+        ("check_water_bearing_ground", lambda: check_water_bearing_ground(ground_conditions, tbm_advance)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_BORING invariants: PASS")

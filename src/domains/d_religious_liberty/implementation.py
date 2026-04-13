@@ -16,7 +16,7 @@ class ReligiousClaimType(Enum):
     """Types of religious liberty claims."""
     FREE_EXERCISE = auto()
     ESTABLISHMENT_CLAUSE = auto()
-    RFRACL AIM = auto()
+    RFRA_CLAIM = auto()
     RLUIPA_CLAIM = auto()
 
 

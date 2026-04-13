@@ -18,7 +18,8 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    Game, PlaySession, FlowState, Player, BartleType
+    Game, PlaySession, FlowState, Player, BartleType,
+    PlayStructure,
 )
 
 
@@ -207,3 +208,102 @@ def check_session_validity(session: PlaySession) -> Tuple[bool, ProofObject]:
         ],
         rule="session_valid"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_FUN invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    player = Player(
+        player_id=None,
+        bartle_profile=None,
+        skill_level=Fraction(1),
+    )
+    game = Game(
+        game_id=None,
+        title=None,
+        play_types=None,
+        structure=PlayStructure.PAIDIA,
+        challenge_range=None,
+        clear_rules=None,
+        feedback_frequency=Fraction(1),
+        min_players=None,
+        max_players=None,
+        cooperative=None,
+    )
+    flow_state = FlowState(
+        session=PlaySession(
+        session_id=None,
+        game=Game(
+        game_id=None,
+        title=None,
+        play_types=None,
+        structure=PlayStructure.PAIDIA,
+        challenge_range=None,
+        clear_rules=None,
+        feedback_frequency=Fraction(1),
+        min_players=None,
+        max_players=None,
+        cooperative=None,
+    ),
+        players=None,
+        start_time=None,
+        duration=None,
+    ),
+        challenge_level=Fraction(1),
+        skill_level=Fraction(1),
+        clear_goals_present=None,
+        immediate_feedback_present=None,
+        control_sense=Fraction(1),
+    )
+    play_session = PlaySession(
+        session_id=None,
+        game=Game(
+        game_id=None,
+        title=None,
+        play_types=None,
+        structure=PlayStructure.PAIDIA,
+        challenge_range=None,
+        clear_rules=None,
+        feedback_frequency=Fraction(1),
+        min_players=None,
+        max_players=None,
+        cooperative=None,
+    ),
+        players=None,
+        start_time=None,
+        duration=None,
+    )
+
+    checks = [
+        ("check_bartle_profile_normalization", lambda: check_bartle_profile_normalization(player)),
+        ("check_cooperative_consistency", lambda: check_cooperative_consistency(game)),
+        ("check_flow_conditions", lambda: check_flow_conditions(flow_state)),
+        ("check_player_count_validity", lambda: check_player_count_validity(game, 1)),
+        ("check_session_validity", lambda: check_session_validity(play_session)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_FUN invariants: PASS")

@@ -4,7 +4,12 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import BracketCalculator, DeductionValidator, WithholdingChecker
+from .implementation import (
+    BracketCalculator,
+    DeductionValidator,
+    TaxBracket,
+    WithholdingChecker,
+)
 
 
 def check_bracket_monotonicity(calc: BracketCalculator) -> Tuple[bool, ProofObject]:
@@ -65,3 +70,57 @@ def check_withholding_adequacy(checker: WithholdingChecker) -> Tuple[bool, Proof
         premises=[],
         rule="withholding_safe_harbor"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_TAX_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    bracket_calculator = BracketCalculator(
+        brackets=[TaxBracket(
+        min_income=Fraction(1),
+        max_income=Fraction(1000),
+        rate=Fraction(1),
+    )],
+        income=Fraction(1),
+    )
+    deduction_validator = DeductionValidator(
+        salt_deduction=Fraction(1),
+        standard_deduction=Fraction(1),
+        itemized_deductions=Fraction(1),
+    )
+    withholding_checker = WithholdingChecker(
+        annual_withheld=Fraction(1),
+        estimated_tax_liability=Fraction(1),
+    )
+
+    checks = [
+        ("check_bracket_monotonicity", lambda: check_bracket_monotonicity(bracket_calculator)),
+        ("check_salt_cap", lambda: check_salt_cap(deduction_validator)),
+        ("check_withholding_adequacy", lambda: check_withholding_adequacy(withholding_checker)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_TAX_LAW invariants: PASS")

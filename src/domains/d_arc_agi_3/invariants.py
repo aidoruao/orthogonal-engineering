@@ -187,3 +187,75 @@ def check_grid_color_range(grid: GridState) -> Tuple[bool, ProofObject]:
         premises=[f"All colors in [0, 9], distinct colors: {count_colors(grid)}"],
         rule="arc_color_range"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ARC_AGI_3 invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    grid_state = GridState(
+        task_id=None,
+        height=None,
+        width=None,
+        cells=None,
+    )
+    arc_prediction = ARCPrediction(
+        prediction_id=None,
+        task_id=None,
+        test_index=None,
+        predicted_grid=GridState(
+        task_id=None,
+        height=None,
+        width=None,
+        cells=None,
+    ),
+        proof_trace=None,
+    )
+    arc_program = ARCProgram(
+        program_id=None,
+        task_id=None,
+        transform_sequence=None,
+        max_depth=None,
+        halts_deterministically=None,
+    )
+    arc_task = ARCTask(
+        task_id=None,
+        train_inputs=None,
+        train_outputs=None,
+        test_inputs=None,
+        test_outputs=None,
+    )
+
+    checks = [
+        ("check_grid_color_range", lambda: check_grid_color_range(grid_state)),
+        ("check_prediction_proof_carrying", lambda: check_prediction_proof_carrying(arc_prediction)),
+        ("check_prediction_reproducibility", lambda: check_prediction_reproducibility(arc_prediction, arc_prediction)),
+        ("check_program_bounded_depth", lambda: check_program_bounded_depth(arc_program)),
+        ("check_program_halts_deterministically", lambda: check_program_halts_deterministically(arc_program)),
+        ("check_train_test_consistency", lambda: check_train_test_consistency(arc_task)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ARC_AGI_3 invariants: PASS")

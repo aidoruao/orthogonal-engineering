@@ -148,3 +148,68 @@ def check_cc_by_sa_share_alike(work: CreativeWork) -> Tuple[bool, ProofObject]:
         premises=[f"License: {work.license_type.name}"],
         rule="creative_commons_share_alike"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CREATIVE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    creative_work = CreativeWork(
+        work_id=None,
+        license_type=LicenseType.COPYRIGHT,
+        author_attributed=None,
+        derivative_of=None,
+    )
+    dmca_compliance = DMCACompliance(
+        content_id=None,
+        copyrighted_source=None,
+        perceptually_identical=None,
+        fair_use_exception=None,
+    )
+    generative_output = GenerativeOutput(
+        output_id=None,
+        seed=None,
+        mode=GenerationMode.DETERMINISTIC,
+        reproducible=None,
+        perceptual_hash=None,
+    )
+    style_transfer = StyleTransfer(
+        transfer_id=None,
+        content_image_hash=None,
+        style_image_hash=None,
+        output_image_hash=None,
+        content_preserved_percent=Fraction(1),
+    )
+
+    checks = [
+        ("check_cc_by_attribution", lambda: check_cc_by_attribution(creative_work)),
+        ("check_cc_by_sa_share_alike", lambda: check_cc_by_sa_share_alike(creative_work)),
+        ("check_dmca_copyright_infringement", lambda: check_dmca_copyright_infringement(dmca_compliance)),
+        ("check_generative_reproducibility", lambda: check_generative_reproducibility(generative_output)),
+        ("check_style_transfer_content_preservation", lambda: check_style_transfer_content_preservation(style_transfer)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CREATIVE invariants: PASS")

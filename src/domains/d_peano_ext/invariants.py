@@ -203,3 +203,58 @@ def check_fast_growing_bound(func: FastGrowingFunction) -> Tuple[bool, ProofObje
         premises=[f"Result: {result}"],
         rule="fast_growing_computed"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PEANO_EXT invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    peano_ext = PeanoExt(
+        value=1,
+        construction_depth=1,
+        proof_hash="abc123",
+    )
+    fast_growing_function = FastGrowingFunction(
+        level=1,
+        input_value=1,
+    )
+    goodstein_sequence = GoodsteinSequence(
+        starting_value=4,
+        current_value=3,
+        base=2,
+        step_count=1,
+    )
+
+    checks = [
+        ("check_construction_depth_limit", lambda: check_construction_depth_limit(peano_ext)),
+        ("check_fast_growing_bound", lambda: check_fast_growing_bound(fast_growing_function)),
+        ("check_goodstein_decreases", lambda: check_goodstein_decreases(goodstein_sequence)),
+        ("check_peano_axiom_1_zero_exists", lambda: check_peano_axiom_1_zero_exists()),
+        ("check_peano_axiom_2_successor", lambda: check_peano_axiom_2_successor(peano_ext)),
+        ("check_peano_axiom_3_non_zero", lambda: check_peano_axiom_3_non_zero(peano_ext)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PEANO_EXT invariants: PASS")

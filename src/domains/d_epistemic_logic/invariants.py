@@ -18,8 +18,13 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    EpistemicFrame, BeliefState, JTBAnalysis,
-    TrackingCondition, SafetyCondition, Proposition
+    Agent,
+    BeliefState,
+    EpistemicFrame,
+    JTBAnalysis,
+    Proposition,
+    SafetyCondition,
+    TrackingCondition,
 )
 
 
@@ -202,3 +207,84 @@ def check_safety_condition(safety: SafetyCondition, threshold: Fraction) -> Tupl
         premises=[f"Safety score: {score}", f"Threshold: {threshold}"],
         rule="safety_satisfied"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_EPISTEMIC_LOGIC invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    epistemic_frame = EpistemicFrame(
+        worlds=None,
+        accessibility=None,
+        valuation=None,
+    )
+    jtb_analysis = JTBAnalysis(
+        agent=Agent(
+        agent_id=None,
+        name=None,
+    ),
+        proposition=Proposition(
+        prop_id=None,
+        content=None,
+        world_truth=None,
+    ),
+        world_id=None,
+        belief=None,
+        truth=None,
+        justification=None,
+    )
+    belief_state = BeliefState(
+        agent=Agent(
+        agent_id=None,
+        name=None,
+    ),
+        accessible_worlds=None,
+        beliefs=None,
+    )
+    proposition = Proposition(
+        prop_id=None,
+        content=None,
+        world_truth=None,
+    )
+    safety_condition = SafetyCondition(
+        nearby_false_beliefs=None,
+        total_nearby_worlds=None,
+    )
+    tracking_condition = TrackingCondition(
+        sensitivity=None,
+        adherence=None,
+    )
+
+    checks = [
+        ("check_frame_reflexivity", lambda: check_frame_reflexivity(epistemic_frame, "EPISTEMI-001")),
+        ("check_gettier_detection", lambda: check_gettier_detection(jtb_analysis)),
+        ("check_jtb_completeness", lambda: check_jtb_completeness(jtb_analysis)),
+        ("check_knowledge_necessitation", lambda: check_knowledge_necessitation(belief_state, proposition, "EPISTEMI-001")),
+        ("check_safety_condition", lambda: check_safety_condition(safety_condition, Fraction(1000))),
+        ("check_tracking_sensitivity", lambda: check_tracking_sensitivity(tracking_condition, jtb_analysis)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_EPISTEMIC_LOGIC invariants: PASS")

@@ -113,3 +113,60 @@ def check_racial_compliance(discipline: DisciplineRecord) -> Tuple[bool, ProofOb
         premises=[],
         rule="data_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_SCHOOL_EQUITY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    discipline_record = DisciplineRecord(
+        school_id=None,
+        year=None,
+        suspensions_total=None,
+        suspensions_by_race=None,
+        enrollment_by_race=None,
+    )
+    school = School(
+        school_id=None,
+        name=None,
+        district=None,
+        enrollment_total=None,
+        enrollment_by_race=None,
+        title_i_eligible=None,
+        title_i_funding=Fraction(1),
+        per_pupil_spending=Fraction(1),
+        state_avg_spending=Fraction(1),
+    )
+
+    checks = [
+        ("check_disparate_impact", lambda: check_disparate_impact(discipline_record, Fraction(1000))),
+        ("check_racial_compliance", lambda: check_racial_compliance(discipline_record)),
+        ("check_spending_equity", lambda: check_spending_equity(school)),
+        ("check_suspension_rate_reasonable", lambda: check_suspension_rate_reasonable(discipline_record)),
+        ("check_title_i_allocation", lambda: check_title_i_allocation(school)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_SCHOOL_EQUITY invariants: PASS")

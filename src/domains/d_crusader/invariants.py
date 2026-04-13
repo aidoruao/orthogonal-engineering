@@ -230,3 +230,74 @@ def check_proportional_force(rules: RulesOfWar) -> Tuple[bool, ProofObject]:
         premises=["Proportional force criterion satisfied"],
         rule="proportional_force_just_war"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CRUSADER invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    military_order = MilitaryOrder(
+        order_id=None,
+        issuing_authority=None,
+        just_cause=JustCause.DEFENSIVE,
+        proportional=None,
+        necessity=None,
+        legitimate_authority=None,
+    )
+    rules_of_war = RulesOfWar(
+        rule_id=None,
+        noncombatant_protection=None,
+        quarter_granted=None,
+        siege_law_followed=None,
+        proportional_force=None,
+    )
+    combatant = Combatant(
+        combatant_id=None,
+        name=None,
+        status=CombatantStatus.KNIGHT,
+        captured=None,
+        ransom_demanded=Fraction(1),
+        quarter_given=None,
+    )
+    siege_law = SiegeLaw(
+        siege_id=None,
+        city=None,
+        surrender_offered=None,
+        noncombatants_allowed_exit=None,
+        starvation_used=None,
+        duration_days=Fraction(1),
+    )
+
+    checks = [
+        ("check_just_war_criteria", lambda: check_just_war_criteria(military_order)),
+        ("check_noncombatant_protection", lambda: check_noncombatant_protection(rules_of_war)),
+        ("check_proportional_force", lambda: check_proportional_force(rules_of_war)),
+        ("check_quarter_granted", lambda: check_quarter_granted(combatant, rules_of_war)),
+        ("check_ransom_limits", lambda: check_ransom_limits(combatant)),
+        ("check_siege_law_compliance", lambda: check_siege_law_compliance(siege_law)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CRUSADER invariants: PASS")

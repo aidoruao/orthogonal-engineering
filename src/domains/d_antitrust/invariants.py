@@ -4,7 +4,14 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import Market, Merger, CollusionDetector, HHI_MERGER_CONCERN_DELTA
+from .implementation import (
+    CollusionDetector,
+    HHI_MERGER_CONCERN_DELTA,
+    Market,
+    MarketParticipant,
+    Merger,
+    PriceData,
+)
 
 
 def check_hhi_concentration(market: Market) -> Tuple[bool, ProofObject]:
@@ -102,3 +109,68 @@ def check_market_shares_sum(market: Market) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="market_share_sum"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ANTITRUST invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    market = Market(
+        market_id="ANTITRUS-001",
+        product_definition="SAMPLE",
+        geographic_scope="SAMPLE",
+    )
+    merger = Merger(
+        merger_id="ANTITRUS-001",
+        acquirer=MarketParticipant(
+        firm_id="ANTITRUS-001",
+    ),
+        target=MarketParticipant(
+        firm_id="ANTITRUS-001",
+    ),
+        market=Market(
+        market_id="ANTITRUS-001",
+        product_definition="SAMPLE",
+        geographic_scope="SAMPLE",
+    ),
+    )
+    collusion_detector = CollusionDetector(
+        price_data=[PriceData(
+        firm_id="ANTITRUS-001",
+        product_id="ANTITRUS-001",
+        price=Fraction(1),
+        date="SAMPLE",
+    )],
+    )
+
+    checks = [
+        ("check_hhi_concentration", lambda: check_hhi_concentration(market)),
+        ("check_market_shares_sum", lambda: check_market_shares_sum(market)),
+        ("check_merger_threshold", lambda: check_merger_threshold(merger)),
+        ("check_price_filing_collusion", lambda: check_price_filing_collusion(collusion_detector)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ANTITRUST invariants: PASS")

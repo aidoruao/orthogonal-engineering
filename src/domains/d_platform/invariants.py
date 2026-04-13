@@ -10,7 +10,13 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import ContentModeration, DigitalPlatform, ContentDecision, vlop_user_threshold
+from .implementation import (
+    ContentDecision,
+    ContentModeration,
+    DigitalPlatform,
+    PlatformType,
+    vlop_user_threshold,
+)
 
 
 def check_vlop_designation(platform: DigitalPlatform) -> Tuple[bool, ProofObject]:
@@ -207,3 +213,71 @@ def check_appeal_success_rate(platform: DigitalPlatform) -> Tuple[bool, ProofObj
         premises=[f"Rate: {rate}"],
         rule="appeal_success_rate"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PLATFORM invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    digital_platform = DigitalPlatform(
+        platform_id=None,
+        name=None,
+        platform_type=PlatformType.SOCIAL_MEDIA,
+        monthly_active_users=Fraction(1),
+        eu_users=Fraction(1),
+        moderators_employed=None,
+        content_removed_annual=None,
+        appeals_received=None,
+        appeals_upheld=None,
+        transparency_report_published=None,
+        ad_repository_public=None,
+        recommendation_algorithm_disclosed=None,
+    )
+    content_moderation = ContentModeration(
+        decision_id=None,
+        platform_id=None,
+        content_type=None,
+        decision=ContentDecision.REMOVE,
+        automated=None,
+        human_oversight=None,
+        user_notified=None,
+        reason_provided=None,
+        appeal_available=None,
+        content_posted=None,
+        decision_made=None,
+        appeal_filed=None,
+        appeal_resolved=None,
+    )
+
+    checks = [
+        ("check_appeal_success_rate", lambda: check_appeal_success_rate(digital_platform)),
+        ("check_automated_decision_oversight", lambda: check_automated_decision_oversight(content_moderation)),
+        ("check_content_appeal_mechanism", lambda: check_content_appeal_mechanism(content_moderation)),
+        ("check_statement_of_reasons", lambda: check_statement_of_reasons(content_moderation)),
+        ("check_vlop_designation", lambda: check_vlop_designation(digital_platform)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PLATFORM invariants: PASS")

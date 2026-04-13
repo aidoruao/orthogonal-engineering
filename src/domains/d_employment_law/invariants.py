@@ -4,7 +4,13 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import WageCalculator, DisparateImpactAnalyzer
+from .implementation import (
+    DisparateImpactAnalyzer,
+    Employee,
+    WageCalculator,
+    WorkforceDemographics,
+    PayType,
+)
 
 
 def check_minimum_wage(calculator: WageCalculator) -> Tuple[bool, ProofObject]:
@@ -77,3 +83,53 @@ def check_disparate_impact(analyzer: DisparateImpactAnalyzer) -> Tuple[bool, Pro
         premises=[],
         rule="title_vii_disparate_impact"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_EMPLOYMENT_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    disparate_impact_analyzer = DisparateImpactAnalyzer(
+        groups=[WorkforceDemographics(
+        group_id="EMPLOYME-001",
+        total_employees=1,
+        total_applicants=1,
+        selected_count=1,
+    )],
+    )
+    wage_calculator = WageCalculator(
+        employee=Employee(
+        employee_id="EMPLOYME-001",
+        pay_type=PayType.HOURLY,
+    ),
+    )
+
+    checks = [
+        ("check_disparate_impact", lambda: check_disparate_impact(disparate_impact_analyzer)),
+        ("check_minimum_wage", lambda: check_minimum_wage(wage_calculator)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_EMPLOYMENT_LAW invariants: PASS")

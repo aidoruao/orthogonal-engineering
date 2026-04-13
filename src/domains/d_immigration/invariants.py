@@ -4,7 +4,13 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import VisaCategoryChecker, ProcessingTimer, StatusStateMachine
+from .implementation import (
+    ProcessingTimer,
+    StatusStateMachine,
+    VisaApplicant,
+    VisaCategoryChecker,
+    VisaCategory,
+)
 
 
 def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObject]:
@@ -65,3 +71,57 @@ def check_status_transition(machine: StatusStateMachine) -> Tuple[bool, ProofObj
         premises=[],
         rule="status_transition"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_IMMIGRATION invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    processing_timer = ProcessingTimer(
+        application_date="SAMPLE",
+        current_date="SAMPLE",
+        days_elapsed=1,
+    )
+    status_state_machine = StatusStateMachine(
+        current_status="ACTIVE",
+        requested_status="ACTIVE",
+    )
+    visa_category_checker = VisaCategoryChecker(
+        applicant=VisaApplicant(
+        applicant_id="IMMIGRAT-001",
+        priority_date="SAMPLE",
+        visa_category=VisaCategory.EB1,
+        country_of_chargeability="SAMPLE",
+    ),
+    )
+
+    checks = [
+        ("check_processing_deadline", lambda: check_processing_deadline(processing_timer)),
+        ("check_status_transition", lambda: check_status_transition(status_state_machine)),
+        ("check_visa_eligibility", lambda: check_visa_eligibility(visa_category_checker)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_IMMIGRATION invariants: PASS")

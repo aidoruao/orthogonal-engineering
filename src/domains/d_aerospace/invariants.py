@@ -5,8 +5,13 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    SoftwareComponent, CertificationLevel, RedundancyChecker,
-    StructuralHealthMonitor, MAX_LINES_PER_FUNCTION
+    CertificationLevel,
+    MAX_LINES_PER_FUNCTION,
+    RedundancyChecker,
+    RedundantChannel,
+    SoftwareComponent,
+    StructuralHealthMonitor,
+    StructuralHealthSensor,
 )
 
 
@@ -121,3 +126,57 @@ def check_function_size(component: SoftwareComponent) -> Tuple[bool, ProofObject
         premises=[],
         rule="do178c_complexity"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_AEROSPACE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    software_component = SoftwareComponent(
+        name="Sample AEROSPAC",
+        dal=CertificationLevel.LEVEL_A,
+        lines_of_code=1,
+    )
+    redundancy_checker = RedundancyChecker(
+        channels=[RedundantChannel(
+        channel_id="AEROSPAC-001",
+    )],
+    )
+    structural_health_monitor = StructuralHealthMonitor(
+        sensors=[StructuralHealthSensor(
+        sensor_id="AEROSPAC-001",
+        location="Sample Location",
+    )],
+    )
+
+    checks = [
+        ("check_certification_coverage", lambda: check_certification_coverage(software_component)),
+        ("check_function_size", lambda: check_function_size(software_component)),
+        ("check_redundancy_agreement", lambda: check_redundancy_agreement(redundancy_checker)),
+        ("check_structural_health", lambda: check_structural_health(structural_health_monitor)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_AEROSPACE invariants: PASS")

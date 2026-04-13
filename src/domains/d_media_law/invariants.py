@@ -18,7 +18,13 @@ Falsifies if:
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import BroadcastStation, DefamationClaim, ShieldLawClaim, PublishedContent
+from .implementation import (
+    BroadcastStation,
+    DefamationClaim,
+    MediaType,
+    PublishedContent,
+    ShieldLawClaim,
+)
 
 
 def check_broadcast_license_current(station: BroadcastStation) -> Tuple[bool, ProofObject]:
@@ -177,3 +183,92 @@ def check_public_file_completeness(station: BroadcastStation) -> Tuple[bool, Pro
         premises=["Public file: Complete"],
         rule="public_file_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_MEDIA_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    broadcast_station = BroadcastStation(
+        call_sign=None,
+        frequency=None,
+        media_type=MediaType.BROADCAST_TV,
+        license_grant_date=None,
+        license_expiration=None,
+        public_file_complete=None,
+        children_programming_hours=Fraction(1),
+        political_file_current=None,
+        owner=None,
+        station_count=None,
+    )
+    defamation_claim = DefamationClaim(
+        claim_id=None,
+        plaintiff=None,
+        defendant=None,
+        claim_type=None,
+        publication_date=None,
+        false_statement=None,
+        published_to_third_party=None,
+        fault_level=None,
+        damages_claimed=Fraction(1),
+        truth_defense=None,
+        opinion_defense=None,
+        privilege_claimed=None,
+    )
+    published_content = PublishedContent(
+        content_id=None,
+        title=None,
+        media_type=MediaType.BROADCAST_TV,
+        publisher=None,
+        publish_date=None,
+        rating=None,
+        contains_explicit=None,
+        news_content=None,
+        defamation_claim_filed=None,
+        retraction_issued=None,
+    )
+    shield_law_claim = ShieldLawClaim(
+        claim_id=None,
+        journalist=None,
+        media_outlet=None,
+        subpoena_date=None,
+        information_sought=None,
+        qualified_journalist=None,
+        information_confidential=None,
+        privilege_recognized=None,
+        contempt_issued=None,
+    )
+
+    checks = [
+        ("check_broadcast_license_current", lambda: check_broadcast_license_current(broadcast_station)),
+        ("check_children_programming_requirement", lambda: check_children_programming_requirement(broadcast_station)),
+        ("check_defamation_actual_malice", lambda: check_defamation_actual_malice(defamation_claim)),
+        ("check_public_file_completeness", lambda: check_public_file_completeness(broadcast_station)),
+        ("check_retraction_timeliness", lambda: check_retraction_timeliness(published_content)),
+        ("check_shield_law_protection", lambda: check_shield_law_protection(shield_law_claim)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_MEDIA_LAW invariants: PASS")

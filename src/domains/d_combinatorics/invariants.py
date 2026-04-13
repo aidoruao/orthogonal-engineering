@@ -171,3 +171,66 @@ def check_inclusion_exclusion_size(ie: InclusionExclusion) -> Tuple[bool, ProofO
         premises=[f"Union size: {ie.union_size}"],
         rule="inclusion_exclusion_general"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_COMBINATORICS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    catalan_sequence = CatalanSequence(
+        n=None,
+        computed_value=None,
+    )
+    counting_problem = CountingProblem(
+        problem_id=None,
+        principle=CountingPrinciple.PERMUTATION,
+        n_items=None,
+        k_selected=None,
+        computed_count=None,
+    )
+    inclusion_exclusion = InclusionExclusion(
+        problem_id=None,
+        n_sets=None,
+        union_size=None,
+        individual_sizes=None,
+        intersections=None,
+    )
+    pigeonhole_problem = PigeonholeProblem(
+        problem_id=None,
+        n_pigeons=None,
+        n_holes=None,
+        min_pigeons_per_hole=None,
+    )
+
+    checks = [
+        ("check_catalan_correctness", lambda: check_catalan_correctness(catalan_sequence)),
+        ("check_combination_formula", lambda: check_combination_formula(counting_problem)),
+        ("check_inclusion_exclusion_size", lambda: check_inclusion_exclusion_size(inclusion_exclusion)),
+        ("check_permutation_formula", lambda: check_permutation_formula(counting_problem)),
+        ("check_pigeonhole_principle", lambda: check_pigeonhole_principle(pigeonhole_problem)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_COMBINATORICS invariants: PASS")

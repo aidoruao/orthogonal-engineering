@@ -65,3 +65,50 @@ def check_trading_window(validator: TradingWindowValidator) -> Tuple[bool, Proof
         premises=[],
         rule="insider_trading_blackout"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_SECURITIES_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    investor = Investor(
+        investor_id="SECURITI-001",
+        annual_income=Fraction(1),
+        net_worth=Fraction(1),
+    )
+    form_d_filing = FormDFiling(
+        filing_id="SECURITI-001",
+        first_sale_date="SAMPLE",
+    )
+    trading_window_validator = TradingWindowValidator()
+
+    checks = [
+        ("check_accredited_investor", lambda: check_accredited_investor(investor)),
+        ("check_form_d_deadline", lambda: check_form_d_deadline(form_d_filing)),
+        ("check_trading_window", lambda: check_trading_window(trading_window_validator)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_SECURITIES_LAW invariants: PASS")

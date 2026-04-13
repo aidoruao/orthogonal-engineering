@@ -260,3 +260,83 @@ def check_benchmark_coverage(bench: Benchmark) -> Tuple[bool, ProofObject]:
         premises=[f"Test cases: {bench.num_test_cases}"],
         rule="benchmark_coverage"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CAPABILITY_BENCHMARK invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    benchmark = Benchmark(
+        benchmark_id=None,
+        name=None,
+        capability=CapabilityType.REASONING,
+        num_test_cases=None,
+        reproducible=None,
+        data_leakage_checked=None,
+    )
+    reproducibility_test = ReproducibilityTest(
+        test_id=None,
+        benchmark_id=None,
+        original_score=Fraction(100),
+        replicated_score=Fraction(100),
+        difference=Fraction(1),
+        reproducible=None,
+    )
+    capability_score = CapabilityScore(
+        model_id=None,
+        benchmark_id=None,
+        accuracy=Fraction(100),
+        num_trials=None,
+        variance=Fraction(1),
+        statistically_significant=None,
+    )
+    test_case = TestCase(
+        test_id=None,
+        benchmark_id=None,
+        difficulty=Fraction(1),
+        ground_truth_verified=None,
+        in_training_data=None,
+    )
+    data_leakage_check = DataLeakageCheck(
+        check_id=None,
+        benchmark_id=None,
+        model_id=None,
+        overlap_fraction=Fraction(1, 2),
+        leakage_detected=None,
+    )
+
+    checks = [
+        ("check_benchmark_coverage", lambda: check_benchmark_coverage(benchmark)),
+        ("check_benchmark_reproducibility", lambda: check_benchmark_reproducibility(benchmark, reproducibility_test)),
+        ("check_capability_ordering", lambda: check_capability_ordering(capability_score, capability_score)),
+        ("check_ground_truth_verified", lambda: check_ground_truth_verified(test_case)),
+        ("check_no_data_leakage", lambda: check_no_data_leakage(data_leakage_check)),
+        ("check_score_bounds", lambda: check_score_bounds(capability_score)),
+        ("check_statistical_significance", lambda: check_statistical_significance(capability_score)),
+        ("check_training_data_exclusion", lambda: check_training_data_exclusion(test_case, data_leakage_check)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CAPABILITY_BENCHMARK invariants: PASS")

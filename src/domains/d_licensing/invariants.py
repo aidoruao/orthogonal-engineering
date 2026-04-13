@@ -17,7 +17,14 @@ Falsifies if:
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import License, ContinuingEducation, LicensingBoard, DisciplinaryAction
+from .implementation import (
+    ContinuingEducation,
+    DisciplinaryAction,
+    License,
+    LicenseStatus,
+    LicenseType,
+    LicensingBoard,
+)
 
 
 def check_license_validity(license: License) -> Tuple[bool, ProofObject]:
@@ -208,3 +215,87 @@ def check_disciplinary_reporting(action: DisciplinaryAction) -> Tuple[bool, Proo
         premises=[f"Action: {action.action_type}", f"Date: {action.action_date}"],
         rule="disciplinary_reported"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_LICENSING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    continuing_education = ContinuingEducation(
+        license_number=None,
+        reporting_period_start=None,
+        reporting_period_end=None,
+        required_hours=Fraction(1),
+        completed_hours=Fraction(1),
+        ethics_required=Fraction(1),
+        ethics_completed=Fraction(1),
+    )
+    disciplinary_action = DisciplinaryAction(
+        action_id=None,
+        license_number=None,
+        action_type=None,
+        action_date=None,
+        violation_type=None,
+        violation_description=None,
+        duration_days=None,
+        appealed=None,
+    )
+    license = License(
+        license_number=None,
+        license_type=LicenseType.MEDICAL,
+        profession=None,
+        holder_name=None,
+        holder_id=None,
+        issuing_authority=None,
+        jurisdiction=None,
+        issue_date=None,
+        expiration_date=None,
+        status=LicenseStatus.ACTIVE,
+        compact_member=None,
+    )
+    licensing_board = LicensingBoard(
+        board_id=None,
+        name=None,
+        jurisdiction=None,
+        license_type=LicenseType.MEDICAL,
+        education_required=None,
+        examination_required=None,
+        experience_hours=None,
+        sunset_review_date=None,
+        last_sunset_review=None,
+        total_licenses=None,
+        active_licenses=None,
+    )
+
+    checks = [
+        ("check_ce_compliance", lambda: check_ce_compliance(continuing_education)),
+        ("check_disciplinary_reporting", lambda: check_disciplinary_reporting(disciplinary_action)),
+        ("check_license_validity", lambda: check_license_validity(license)),
+        ("check_reciprocity_validity", lambda: check_reciprocity_validity(license, "SAMPLE")),
+        ("check_sunset_review_current", lambda: check_sunset_review_current(licensing_board)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_LICENSING invariants: PASS")

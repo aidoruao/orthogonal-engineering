@@ -173,3 +173,70 @@ def check_enhanced_interrogation_prohibition(detention: DetentionOperation) -> T
         premises=["Interrogation methods: Standard"],
         rule="interrogation_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_MILITARY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    military_operation = MilitaryOperation(
+        operation_id=None,
+        operation_name=None,
+        conflict_id=None,
+        operation_date=None,
+        location=None,
+        target_category=TargetCategory.COMBATANT,
+        proportionality_assessment=None,
+        collateral_damage_estimate=None,
+        weapons_used=None,
+        indiscriminate_weapon=None,
+        civilian_casualties=None,
+        combatant_casualties=None,
+        military_objectives_destroyed=None,
+    )
+    detention_operation = DetentionOperation(
+        detention_id=None,
+        detainee_id=None,
+        geneva_category=None,
+        capture_date=None,
+        capturing_power=None,
+        icrc_notified=None,
+        family_notified=None,
+        judicial_review_date=None,
+        interrogation_methods=None,
+        enhanced_interrogation_used=None,
+    )
+
+    checks = [
+        ("check_cultural_property_protection", lambda: check_cultural_property_protection(military_operation)),
+        ("check_enhanced_interrogation_prohibition", lambda: check_enhanced_interrogation_prohibition(detention_operation)),
+        ("check_indiscriminate_weapons", lambda: check_indiscriminate_weapons(military_operation)),
+        ("check_medical_neutrality", lambda: check_medical_neutrality(military_operation)),
+        ("check_pow_rights", lambda: check_pow_rights(detention_operation)),
+        ("check_proportionality", lambda: check_proportionality(military_operation)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_MILITARY invariants: PASS")

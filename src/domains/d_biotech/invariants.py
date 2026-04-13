@@ -156,3 +156,65 @@ def check_biosafety_pressure(cabinet: BiosafetyCabinet) -> Tuple[bool, ProofObje
         ],
         rule="biosafety_negative_pressure"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_BIOTECH invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    biosafety_cabinet = BiosafetyCabinet(
+        cabinet_id=None,
+        hepa_efficiency=Fraction(100),
+        negative_pressure_pa=Fraction(1),
+        biosafety_level=BiosafetLevel.BSL1,
+    )
+    crispr_edit = CRISPREdit(
+        guide_rna_id=None,
+        on_target_efficiency=Fraction(100),
+        off_target_rate=Fraction(1),
+        cell_line=None,
+    )
+    lab_automation = LabAutomation(
+        plate_id=None,
+        dispense_accuracy=Fraction(100),
+        sample_swap_rate=Fraction(1),
+    )
+    sequencing_run = SequencingRun(
+        run_id=None,
+        phred_q30_percent=Fraction(1),
+        read_depth=None,
+        contamination_rate=Fraction(1),
+    )
+
+    checks = [
+        ("check_biosafety_containment", lambda: check_biosafety_containment(biosafety_cabinet)),
+        ("check_biosafety_pressure", lambda: check_biosafety_pressure(biosafety_cabinet)),
+        ("check_crispr_precision", lambda: check_crispr_precision(crispr_edit)),
+        ("check_lab_automation_fidelity", lambda: check_lab_automation_fidelity(lab_automation)),
+        ("check_ngs_quality", lambda: check_ngs_quality(sequencing_run)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_BIOTECH invariants: PASS")

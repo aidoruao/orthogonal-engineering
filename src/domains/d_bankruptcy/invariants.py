@@ -4,7 +4,11 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import BankruptcyCase, Chapter
+from .implementation import (
+    BankruptcyCase,
+    Chapter,
+    Debtor,
+)
 
 def check_means_test(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
     """Ch 7 means test — income must be below state median.
@@ -75,3 +79,48 @@ def check_automatic_stay(case: BankruptcyCase) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="automatic_stay"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_BANKRUPTCY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    bankruptcy_case = BankruptcyCase(
+        case_number="SAMPLE",
+        debtor=Debtor(
+        name="Sample BANKRUPT",
+    ),
+        chapter=Chapter.CH_7,
+        filing_date=None,
+    )
+
+    checks = [
+        ("check_automatic_stay", lambda: check_automatic_stay(bankruptcy_case)),
+        ("check_ch13_plan", lambda: check_ch13_plan(bankruptcy_case)),
+        ("check_means_test", lambda: check_means_test(bankruptcy_case)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_BANKRUPTCY invariants: PASS")

@@ -181,3 +181,55 @@ def check_perfect_square(n: Integer) -> Tuple[bool, ProofObject]:
         premises=[f"Is square: {is_square}"],
         rule="perfect_square_valid"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_NUMBER_THEORY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    congruence = Congruence(
+        a=None,
+        b=None,
+        m=None,
+    )
+    diophantine_equation = DiophantineEquation(
+        a=None,
+        b=None,
+        c=None,
+    )
+    integer = Integer(
+        value=None,
+    )
+
+    checks = [
+        ("check_congruence_solvability", lambda: check_congruence_solvability(congruence)),
+        ("check_diophantine_solvability", lambda: check_diophantine_solvability(diophantine_equation)),
+        ("check_euler_totient", lambda: check_euler_totient(integer)),
+        ("check_perfect_square", lambda: check_perfect_square(integer)),
+        ("check_prime_factorization", lambda: check_prime_factorization(integer)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_NUMBER_THEORY invariants: PASS")

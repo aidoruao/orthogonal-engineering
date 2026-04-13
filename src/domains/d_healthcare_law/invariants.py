@@ -189,3 +189,71 @@ def check_patient_satisfaction(provider: HealthcareProvider) -> Tuple[bool, Proo
         premises=[f"Satisfaction: {provider.patient_satisfaction_score}"],
         rule="patient_satisfaction"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_HEALTHCARE_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    healthcare_provider = HealthcareProvider(
+        provider_id=None,
+        name=None,
+        entity_type=HealthcareEntityType.HOSPITAL,
+        hipaa_compliant=None,
+        privacy_officer_assigned=None,
+        security_officer_assigned=None,
+        breach_notifications_annual=None,
+        financial_relationships_disclosed=None,
+        stark_exceptions_claimed=None,
+        emtala_screening_policy=None,
+        emtala_transfer_policy=None,
+        emtala_violations_annual=None,
+        patient_complaints=None,
+        patient_satisfaction_score=Fraction(100),
+    )
+    hipaa_breach = HIPAABreach(
+        breach_id=None,
+        provider_id=None,
+        individuals_affected=None,
+        breach_type=None,
+        phi_accessed=None,
+        discovered_date=None,
+        notification_date=None,
+        hhs_reported=None,
+        media_notified=None,
+        mitigation_steps=None,
+        individuals_notified=None,
+    )
+
+    checks = [
+        ("check_emtala_compliance", lambda: check_emtala_compliance(healthcare_provider)),
+        ("check_hipaa_breach_notification", lambda: check_hipaa_breach_notification(hipaa_breach)),
+        ("check_hipaa_compliance", lambda: check_hipaa_compliance(healthcare_provider)),
+        ("check_patient_satisfaction", lambda: check_patient_satisfaction(healthcare_provider)),
+        ("check_stark_law_compliance", lambda: check_stark_law_compliance(healthcare_provider)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_HEALTHCARE_LAW invariants: PASS")

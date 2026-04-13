@@ -4,7 +4,13 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import Schedule, BTreeNode, Transaction, TransactionStatus
+from .implementation import (
+    BTreeNode,
+    Operation,
+    Schedule,
+    Transaction,
+    TransactionStatus,
+)
 
 
 def check_conflict_serializability(schedule: Schedule) -> Tuple[bool, ProofObject]:
@@ -102,3 +108,55 @@ def check_isolation(schedule: Schedule) -> Tuple[bool, ProofObject]:
     falsifies_if: conflict serializability check fails.
     """
     return check_conflict_serializability(schedule)
+
+
+def run_all_invariants() -> dict:
+    """Run all D_DATABASE_SYSTEMS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    transaction = Transaction(
+        tx_id="DATABASE-001",
+    )
+    b_tree_node = BTreeNode(
+        keys=[1],
+    )
+    schedule = Schedule(
+        operations=[Operation(
+        transaction_id="DATABASE-001",
+        object_id="DATABASE-001",
+        op_type="NOMINAL",
+    )],
+    )
+
+    checks = [
+        ("check_atomicity", lambda: check_atomicity(transaction)),
+        ("check_btree_invariants", lambda: check_btree_invariants(b_tree_node)),
+        ("check_conflict_serializability", lambda: check_conflict_serializability(schedule)),
+        ("check_durability", lambda: check_durability(transaction)),
+        ("check_isolation", lambda: check_isolation(schedule)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_DATABASE_SYSTEMS invariants: PASS")

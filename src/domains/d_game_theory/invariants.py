@@ -4,7 +4,12 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import NashSolver, ZeroSumVerifier, ParetoFrontier
+from .implementation import (
+    Game,
+    NashSolver,
+    ParetoFrontier,
+    ZeroSumVerifier,
+)
 
 
 def check_nash_equilibrium(solver: NashSolver) -> Tuple[bool, ProofObject]:
@@ -66,3 +71,58 @@ def check_pareto_optimality(frontier: ParetoFrontier, outcome) -> Tuple[bool, Pr
         premises=[],
         rule="pareto_optimality"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_GAME_THEORY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    nash_solver = NashSolver(
+        game=Game(
+        players=["SAMPLE"],
+        strategies={},
+        payoffs={},
+    ),
+        equilibrium_profile=(),
+    )
+    pareto_frontier = ParetoFrontier(
+        outcomes=[()],
+        payoffs={},
+    )
+    zero_sum_verifier = ZeroSumVerifier(
+        game=Game(
+        players=["SAMPLE"],
+        strategies={},
+        payoffs={},
+    ),
+    )
+
+    checks = [
+        ("check_nash_equilibrium", lambda: check_nash_equilibrium(nash_solver)),
+        ("check_zero_sum_property", lambda: check_zero_sum_property(zero_sum_verifier)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GAME_THEORY invariants: PASS")

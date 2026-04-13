@@ -10,7 +10,14 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import IndustrialFacility, MachineSafety, ViolationSeverity, osha_trir_target, osha_dart_target
+from .implementation import (
+    IndustrialFacility,
+    IndustryType,
+    MachineSafety,
+    ViolationSeverity,
+    osha_dart_target,
+    osha_trir_target,
+)
 
 
 def check_osha_trir(facility: IndustrialFacility) -> Tuple[bool, ProofObject]:
@@ -180,3 +187,69 @@ def check_lockout_tagout(safety: MachineSafety) -> Tuple[bool, ProofObject]:
         premises=["LOTO: YES"],
         rule="lockout_tagout"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_INDUSTRIAL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    machine_safety = MachineSafety(
+        machine_id=None,
+        facility_id=None,
+        point_of_operation_guard=None,
+        power_transmission_guard=None,
+        interlocks_functional=None,
+        emergency_stop=None,
+        last_inspection=None,
+        maintenance_current=None,
+        lockout_tagout_procedures=None,
+    )
+    industrial_facility = IndustrialFacility(
+        facility_id=None,
+        name=None,
+        industry_type=IndustryType.MANUFACTURING,
+        employees_total=None,
+        employees_production=None,
+        shifts_per_day=None,
+        osha_recordable_incidents=None,
+        days_away_restricted=None,
+        fatalities=None,
+        osha_inspections_annual=None,
+        violations_found=None,
+        serious_violations=None,
+        willful_violations=None,
+        total_hours_worked=Fraction(1),
+    )
+
+    checks = [
+        ("check_lockout_tagout", lambda: check_lockout_tagout(machine_safety)),
+        ("check_machine_guarding", lambda: check_machine_guarding(machine_safety)),
+        ("check_osha_dart", lambda: check_osha_dart(industrial_facility)),
+        ("check_osha_trir", lambda: check_osha_trir(industrial_facility)),
+        ("check_willful_violations", lambda: check_willful_violations(industrial_facility)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_INDUSTRIAL invariants: PASS")
