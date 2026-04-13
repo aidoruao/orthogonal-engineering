@@ -82,7 +82,7 @@ exe = EXE(
     name='kingdom-os',
     debug=False,
     bootloader_ignore_signals=False,
-    strip=True,
-    upx=True,
+    strip=False,
+    upx=False,
     console=True,
 )
