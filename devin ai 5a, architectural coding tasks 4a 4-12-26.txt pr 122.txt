@@ -1,0 +1,452 @@
+Here's the current state and the exact coding instructions for Copilot to add to PR #122.
+
+## Current State of PR #122
+
+PR #122 (`copilot/update-impossibility-audit`) already has:
+- Updated `investigations/impossibility_audit.py` with `INVERTIBLE_IMPOSSIBILITY` enum
+- `oe_engine/generator.py` (DomainGenerator)
+- `oe_engine/conversation.py` (ConversationEngine)
+- `investigations/wall_inversions.py` (8 WALL entries)
+- 88 tests passing, +1,205 -37 [29-cite-0](#29-cite-0) 
+
+## What Copilot Needs to Build
+
+The oe_engine + kernel are **pure Python stdlib** — no torch, no numpy, no scipy needed. The only external imports are the repo's own modules (`axioms.logic`, `axioms.capability_security`, `src.sal.*`). This means PyInstaller can produce a small binary (~30-50MB) with zero heavy dependencies. [29-cite-1](#29-cite-1) [29-cite-2](#29-cite-2) 
+
+---
+
+## Coding Instructions for `@copilot` on PR #122
+
+Post this as a comment on PR #122:
+
+````
+@copilot
+
+Continue on branch `copilot/update-impossibility-audit` (PR #122). Do NOT create a new PR.
+
+Read these files first:
+- SOP_AI_HANDSHAKE.md
+- COPILOT_ONBOARDING.md
+- oe_engine/engine.py
+- oe_engine/cli.py
+- kernel/boot.py
+- kernel/__init__.py
+- requirements-ci.txt
+- pyproject.toml
+
+═══════════════════════════════════════════════════════════════════════
+TASK: Add unified Kingdom OS entry point + release workflow for Linux & Windows
+═══════════════════════════════════════════════════════════════════════
+
+COMMIT 1: "feat: add oe_engine/__main__.py and kingdom_os_entry.py"
+
+FILE 1a: oe_engine/__main__.py
+
+EXACT CODE:
+
+```python
+"""Allow `python -m oe_engine` to launch the CLI."""
+from oe_engine.cli import main
+
+if __name__ == "__main__":
+    main()
+```
+
+FILE 1b: kingdom_os_entry.py (repo root)
+
+This is the unified entry point that PyInstaller will bundle.
+It must:
+1. Import kernel.boot.boot and kernel.boot.verify_boot_integrity
+2. Import oe_engine.engine.OrthogonalEngine
+3. Import oe_engine.conversation (if it exists on this branch — it does)
+4. Import fractions.Fraction
+5. On launch:
+   a. Print "Kingdom OS v0.1.0 — Deterministic Glass-Box Sovereign AI"
+   b. Call kernel.boot.boot(total_memory=Fraction(8 * 1024 * 1024 * 1024)) — 8GB
+   c. Call kernel.boot.verify_boot_integrity(state) on the returned state
+   d. If verify returns False, print "BOOT INTEGRITY FAILURE" and sys.exit(1)
+   e. Print f"Boot complete: {len(state.steps_completed)} phases, all verified"
+   f. Print f"Kernel proof hash: {proof.proof_hash}"
+   g. Initialize OrthogonalEngine()
+   h. Print f"Engine loaded: {engine._manifest.domain_count} domains"
+   i. Print f"Manifest hash: {engine._manifest.manifest_hash[:32]}..."
+   j. Parse sys.argv:
+      - If "--version": print version info and exit
+      - If "--query <text>": run engine.query(text), print result.text, exit
+      - If "--json": same as --query but output JSON with all hashes
+      - If no args or "--interactive": start conversation REPL
+   k. The REPL must:
+      - Import oe_engine.conversation.ConversationEngine
+      - Create ConversationEngine instance
+      - Print "Type your query. Commands: /export <file>, /status, /quit"
+      - Loop: read input, call conversation_engine.process(line), print response
+      - On /export <file>: call conversation_engine.export_transcript(file)
+      - On /status: print domain count, turn count, state_hash
+      - On /quit or Ctrl+C: print boot proof hash + conversation merkle root, exit
+6. if __name__ == "__main__": call main()
+
+EXACT IMPORTS (no others):
+  import sys
+  import json
+  import argparse
+  from fractions import Fraction
+  from kernel.boot import boot, verify_boot_integrity
+  from oe_engine.engine import OrthogonalEngine
+  from oe_engine.conversation import ConversationEngine
+
+No float anywhere. No external deps. No try/except hiding errors.
+
+───────────────────────────────────────────────────────────────────────
+
+COMMIT 2: "feat: add requirements-release.txt (minimal deps for binary)"
+
+FILE: requirements-release.txt
+
+EXACT CONTENTS:
+```
+# Minimal dependencies for PyInstaller binary build.
+# The oe_engine and kernel use only Python stdlib + repo modules.
+# These are the only external packages imported anywhere in the
+# oe_engine/, kernel/, axioms/, src/sal/ dependency tree.
+pyyaml>=6.0.0
+```
+
+Verify this is correct by grepping:
+  grep -rn "^import\|^from" oe_engine/ kernel/ axioms/ src/sal/ | grep -v "from \." | grep -v "from axioms" | grep -v "from src\." | grep -v "from kernel" | grep -v "from oe_engine" | grep -v "import json" | grep -v "import hashlib" | grep -v "import sys" | grep -v "import os" | grep -v "import pathlib" | grep -v "import ast" | grep -v "import importlib" | grep -v "import inspect" | grep -v "import dataclasses" | grep -v "from dataclasses" | grep -v "from fractions" | grep -v "from typing" | grep -v "from enum" | grep -v "from __future__" | grep -v "from collections" | grep -v "import argparse" | grep -v "import re" | grep -v "import math" | grep -v "import copy" | grep -v "import abc" | grep -v "import functools" | grep -v "import itertools" | grep -v "import time" | grep -v "import datetime"
+
+If that grep finds ANY external import (numpy, pandas, torch, requests, etc.) that is
+actually reachable from kingdom_os_entry.py's import chain, add it to requirements-release.txt.
+If it's only imported in files NOT reachable from the entry point, do NOT add it.
+
+───────────────────────────────────────────────────────────────────────
+
+COMMIT 3: "feat: add kingdom-os.spec for PyInstaller"
+
+FILE: kingdom-os.spec (repo root)
+
+This is the PyInstaller spec file. EXACT STRUCTURE:
+
+```python
+# -*- mode: python ; coding: utf-8 -*-
+"""PyInstaller spec for Kingdom OS binary.
+
+Bundles: kingdom_os_entry.py + oe_engine/ + kernel/ + axioms/ + src/ + ontology/
+Output: single-file executable 'kingdom-os' (Linux) or 'kingdom-os.exe' (Windows)
+"""
+
+import os
+import glob
+
+block_cipher = None
+
+# Collect all domain invariants, ontology JSON, and SAL modules
+datas = [
+    ('ontology/ontology.json', 'ontology'),
+    ('src/domains', 'src/domains'),
+    ('axioms', 'axioms'),
+    ('src/sal', 'src/sal'),
+    ('kernel', 'kernel'),
+    ('oe_engine', 'oe_engine'),
+]
+
+a = Analysis(
+    ['kingdom_os_entry.py'],
+    pathex=['.'],
+    binaries=[],
+    datas=datas,
+    hiddenimports=[
+        'axioms.logic',
+        'axioms.capability_security',
+        'axioms.process_algebra',
+        'kernel.boot',
+        'kernel.scheduler',
+        'kernel.memory_manager',
+        'kernel.ipc',
+        'kernel.anti_mimicry',
+        'kernel.hal',
+        'oe_engine.engine',
+        'oe_engine.manifest',
+        'oe_engine.router',
+        'oe_engine.thinker',
+        'oe_engine.speaker',
+        'oe_engine.synthesizer',
+        'oe_engine.generator',
+        'oe_engine.conversation',
+        'oe_engine.cli',
+        'src.sal.cross_domain_adjunction',
+    ],
+    hookspath=[],
+    hooksconfig={},
+    runtime_hooks=[],
+    excludes=['torch', 'numpy', 'scipy', 'pandas', 'matplotlib', 'sklearn',
+              'seaborn', 'tqdm', 'requests', 'lxml', 'ijson', 'cryptography'],
+    cipher=block_cipher,
+    noarchive=False,
+)
+
+pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+
+exe = EXE(
+    pyz,
+    a.scripts,
+    a.binaries,
+    a.datas,
+    [],
+    name='kingdom-os',
+    debug=False,
+    bootloader_ignore_signals=False,
+    strip=True,
+    upx=True,
+    console=True,
+)
+```
+
+───────────────────────────────────────────────────────────────────────
+
+COMMIT 4: "ci: add .github/workflows/release.yml for Linux + Windows binaries"
+
+FILE: .github/workflows/release.yml
+
+EXACT YAML:
+
+```yaml
+name: Build Kingdom OS Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: kingdom-os-linux-x86_64
+            pyinstaller_name: kingdom-os
+          - os: windows-latest
+            artifact_name: kingdom-os-windows-x86_64.exe
+            pyinstaller_name: kingdom-os.exe
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+          pip install -r requirements-release.txt
+
+      - name: Build binary
+        run: |
+          pyinstaller kingdom-os.spec
+
+      - name: Rename binary
+        shell: bash
+        run: |
+          mv dist/${{ matrix.pyinstaller_name }} dist/${{ matrix.artifact_name }}
+
+      - name: Generate SHA-256 checksum
+        shell: bash
+        run: |
+          cd dist
+          sha256sum ${{ matrix.artifact_name }} > ${{ matrix.artifact_name }}.sha256
+
+      - name: Verify binary runs
+        shell: bash
+        run: |
+          dist/${{ matrix.artifact_name }} --version
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: |
+            dist/${{ matrix.artifact_name }}
+            dist/${{ matrix.artifact_name }}.sha256
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Combine checksums
+        run: |
+          cat artifacts/*/kingdom-os-*.sha256 > SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/kingdom-os-linux-x86_64/kingdom-os-linux-x86_64
+            artifacts/kingdom-os-linux-x86_64/kingdom-os-linux-x86_64.sha256
+            artifacts/kingdom-os-windows-x86_64.exe/kingdom-os-windows-x86_64.exe
+            artifacts/kingdom-os-windows-x86_64.exe/kingdom-os-windows-x86_64.exe.sha256
+            SHA256SUMS.txt
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+```
+
+───────────────────────────────────────────────────────────────────────
+
+COMMIT 5: "test: add tests/test_kingdom_os_entry.py"
+
+EXACT TESTS:
+
+```python
+"""Tests for kingdom_os_entry.py — boot + engine integration."""
+
+import subprocess
+import sys
+import json
+
+def test_version_flag():
+    """--version prints version and exits 0."""
+    result = subprocess.run(
+        [sys.executable, "kingdom_os_entry.py", "--version"],
+        capture_output=True, text=True, timeout=30
+    )
+    assert result.returncode == 0
+    assert "Kingdom OS" in result.stdout
+    assert "v0.1.0" in result.stdout
+
+def test_query_flag():
+    """--query runs a single query and exits."""
+    result = subprocess.run(
+        [sys.executable, "kingdom_os_entry.py", "--query", "nuclear reactor scram"],
+        capture_output=True, text=True, timeout=60
+    )
+    assert result.returncode == 0
+    assert "Boot complete" in result.stdout
+
+def test_json_flag():
+    """--json outputs valid JSON."""
+    result = subprocess.run(
+        [sys.executable, "kingdom_os_entry.py", "--query", "criminal miranda",
+         "--json"],
+        capture_output=True, text=True, timeout=60
+    )
+    assert result.returncode == 0
+    # Find the JSON line in output (after boot messages)
+    lines = result.stdout.strip().split('\n')
+    # Last chunk should be parseable JSON
+    json_text = ""
+    brace_depth = 0
+    for line in lines:
+        if '{' in line:
+            json_text = line
+            brace_depth = line.count('{') - line.count('}')
+        elif brace_depth > 0:
+            json_text += '\n' + line
+            brace_depth += line.count('{') - line.count('}')
+    if json_text:
+        parsed = json.loads(json_text)
+        assert "text" in parsed
+        assert "speaker_hash" in parsed
+        assert "thinker_hash" in parsed
+
+def test_boot_integrity():
+    """Boot sequence completes with all phases verified."""
+    from fractions import Fraction
+    from kernel.boot import boot, verify_boot_integrity
+    state, proof = boot(Fraction(8 * 1024**3))
+    valid, v_proof = verify_boot_integrity(state)
+    assert valid is True
+    assert state.userland_reached is True
+    assert len(state.steps_completed) == 6
+    assert proof.proof_hash  # non-empty
+
+def test_engine_loads_after_boot():
+    """OrthogonalEngine initializes after kernel boot."""
+    from fractions import Fraction
+    from kernel.boot import boot
+    from oe_engine.engine import OrthogonalEngine
+    state, _ = boot(Fraction(8 * 1024**3))
+    assert state.userland_reached
+    engine = OrthogonalEngine()
+    assert engine._manifest.domain_count > 100
+    assert engine._manifest.manifest_hash
+```
+
+───────────────────────────────────────────────────────────────────────
+
+COMMIT 6: "chore: append consent log entry for PR #122 release work"
+
+Append to pr47_stewardship/witness/consent_log.jsonl:
+  Use tools/append_consent.py if available, otherwise append manually.
+  authoriser: @aidoruao
+  scope_glob: "kingdom_os_entry.py,.github/workflows/release.yml,oe_engine/__main__.py,kingdom-os.spec,requirements-release.txt"
+  rule_exceptions: []
+  justification: "PR #122: unified Kingdom OS entry point + release workflow for Linux/Windows binaries"
+
+───────────────────────────────────────────────────────────────────────
+
+VERIFICATION before pushing:
+
+  python -m pytest tests/test_kingdom_os_entry.py -v
+  python -m pytest tests/test_oe_engine.py -v
+  python kingdom_os_entry.py --version
+  python kingdom_os_entry.py --query "nuclear reactor scram"
+
+Total commits: 6. Push all to copilot/update-impossibility-audit (PR #122).
+Do NOT create a new PR. Do NOT create a draft PR.
+````
+
+---
+
+## What this delivers
+
+| Asset | Details |
+|-------|---------|
+| `kingdom_os_entry.py` | Unified entry: kernel boot → engine init → conversation REPL |
+| `oe_engine/__main__.py` | `python -m oe_engine` support |
+| `kingdom-os.spec` | PyInstaller spec excluding torch/numpy/scipy (small binary) |
+| `.github/workflows/release.yml` | Matrix build: Linux + Windows, auto-release on `v*` tag |
+| `requirements-release.txt` | Minimal deps (likely just pyyaml) |
+| `SHA256SUMS.txt` | Auto-generated checksums for all release assets | [29-cite-3](#29-cite-3) [29-cite-4](#29-cite-4) [29-cite-5](#29-cite-5) [29-cite-6](#29-cite-6) 
+
+## How to trigger a release after merge
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+GitHub Actions will build both binaries and create the release page with:
+```
+v1.0.0
+Assets:
+├── kingdom-os-linux-x86_64           (Binary)
+├── kingdom-os-linux-x86_64.sha256    (Checksum)
+├── kingdom-os-windows-x86_64.exe     (Binary)
+├── kingdom-os-windows-x86_64.exe.sha256 (Checksum)
+├── SHA256SUMS.txt                    (Combined checksums)
+└── Source code (zip/tar.gz)          (Auto-generated)
+```
+
+Then anyone can:
+```bash
+gh release download v1.0.0 -p "kingdom-os-linux-x86_64"
+chmod +x kingdom-os-linux-x86_64
+./kingdom-os-linux-x86_64 --interactive
+```
+
+One binary. Full kernel boot. Full domain engine. No pip. No cloud. No neural network.
