@@ -1,12 +1,13 @@
 # Domain Invariant Status
 
-Updated: 2026-04-12T20:30:00+00:00
+Updated: 2026-04-13T18:42:00+00:00
 
 ## Summary
 
 | Metric | Count | Percentage |
 |--------|-------|------------|
 | Total domains with invariants | **163** | **100%** |
+| Domains with `run_all_invariants()` | **162** | **99.4%** |
 | ProofObject domains (gold) | **163** | **100%** |
 | AssertionError domains (legacy) | **0** | **0%** |
 | True stubs (<50 lines) | 0 | 0% |

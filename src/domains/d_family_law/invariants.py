@@ -4,7 +4,12 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import ChildSupportCalculator, CustodyJurisdiction, AssetDivider
+from .implementation import (
+    AssetDivider,
+    ChildSupportCalculator,
+    CustodyJurisdiction,
+    Parent,
+)
 
 
 def check_support_calculation(calc: ChildSupportCalculator) -> Tuple[bool, ProofObject]:
@@ -84,3 +89,61 @@ def check_equitable_division(divider: AssetDivider) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="community_property_division"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_FAMILY_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    asset_divider = AssetDivider(
+        total_assets=Fraction(1),
+        spouse1_contribution=Fraction(1),
+        spouse2_contribution=Fraction(1),
+    )
+    custody_jurisdiction = CustodyJurisdiction(
+        child_id="FAMILY_L-001",
+        state_residence_months={},
+    )
+    child_support_calculator = ChildSupportCalculator(
+        parent1=Parent(
+        parent_id="FAMILY_L-001",
+        monthly_income=Fraction(1),
+    ),
+        parent2=Parent(
+        parent_id="FAMILY_L-001",
+        monthly_income=Fraction(1),
+    ),
+        num_children=1,
+        basic_support_obligation=Fraction(1),
+    )
+
+    checks = [
+        ("check_equitable_division", lambda: check_equitable_division(asset_divider)),
+        ("check_home_state_determination", lambda: check_home_state_determination(custody_jurisdiction)),
+        ("check_support_calculation", lambda: check_support_calculation(child_support_calculator)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_FAMILY_LAW invariants: PASS")

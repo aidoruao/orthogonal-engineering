@@ -19,7 +19,8 @@ from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
     LuxuryItem, AuthenticityCertificate, CustomsDeclaration,
-    LuxuryMarketTransaction, AuthenticityStatus
+    LuxuryMarketTransaction, AuthenticityStatus,
+    LuxuryCategory,
 )
 
 
@@ -208,3 +209,92 @@ def check_luxury_transaction_due_diligence(transaction: LuxuryMarketTransaction)
         ],
         rule="transaction_due_diligence_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_LUXURY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    authenticity_certificate = AuthenticityCertificate(
+        certificate_id=None,
+        item_id=None,
+        certifier=None,
+        certification_date=None,
+        method=None,
+        confidence_score=Fraction(100),
+        findings=None,
+    )
+    luxury_item = LuxuryItem(
+        item_id=None,
+        brand=None,
+        model=None,
+        category=LuxuryCategory.WATCHES,
+        serial_number=None,
+        manufacture_date=None,
+        manufacture_location=None,
+        materials=None,
+        precious_metals=None,
+        gemstones=None,
+        authenticity=AuthenticityStatus.AUTHENTIC,
+        blockchain_token=None,
+        msrp=Fraction(1),
+        current_estimate=Fraction(1),
+    )
+    customs_declaration = CustomsDeclaration(
+        declaration_id=None,
+        item_id=None,
+        declared_value=Fraction(1),
+        currency=None,
+        origin_country=None,
+        destination_country=None,
+        duty_paid=Fraction(1),
+        vat_paid=Fraction(1),
+        valuation_review_required=None,
+        authenticity_check_required=None,
+    )
+    luxury_market_transaction = LuxuryMarketTransaction(
+        transaction_id=None,
+        item_id=None,
+        seller=None,
+        buyer=None,
+        transaction_date=None,
+        sale_price=Fraction(1),
+        currency=None,
+        authenticity_verified=None,
+        provenance_checked=None,
+        sanctions_check_passed=None,
+    )
+
+    checks = [
+        ("check_authenticity_certificate_confidence", lambda: check_authenticity_certificate_confidence(authenticity_certificate)),
+        ("check_authenticity_verified", lambda: check_authenticity_verified(luxury_item)),
+        ("check_customs_valuation", lambda: check_customs_valuation(customs_declaration)),
+        ("check_luxury_transaction_due_diligence", lambda: check_luxury_transaction_due_diligence(luxury_market_transaction)),
+        ("check_provenance_completeness", lambda: check_provenance_completeness(luxury_item)),
+        ("check_sanctions_compliance", lambda: check_sanctions_compliance(luxury_market_transaction)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_LUXURY invariants: PASS")

@@ -192,3 +192,71 @@ def check_ems_coverage_density(agency: EMSAgency) -> Tuple[bool, ProofObject]:
         premises=[f"Ratio: {actual_ratio}"],
         rule="ems_coverage_density"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_EMERGENCY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    ems_agency = EMSAgency(
+        agency_id=None,
+        name=None,
+        service_area_population=Fraction(1),
+        service_area_sq_miles=Fraction(1),
+        ambulances_available=None,
+        ambulances_total=None,
+        paramedics_on_duty=None,
+        emts_on_duty=None,
+        calls_annual=None,
+        responses_annual=None,
+        response_time_avg_minutes=Fraction(1),
+        response_time_90th_minutes=Fraction(1),
+        cardiac_arrest_calls=None,
+        cardiac_arrest_survivals=None,
+    )
+    emergency_incident = EmergencyIncident(
+        incident_id=None,
+        emergency_type=EmergencyType.MEDICAL,
+        priority=None,
+        time_received=None,
+        time_dispatched=None,
+        time_arrived=None,
+        time_resolved=None,
+        units_dispatched=None,
+        units_arrived=None,
+        patient_transported=None,
+        transport_destination=None,
+    )
+
+    checks = [
+        ("check_ambulance_availability", lambda: check_ambulance_availability(ems_agency)),
+        ("check_cardiac_arrest_survival", lambda: check_cardiac_arrest_survival(ems_agency)),
+        ("check_emergency_response_priority", lambda: check_emergency_response_priority(emergency_incident)),
+        ("check_ems_coverage_density", lambda: check_ems_coverage_density(ems_agency)),
+        ("check_ems_response_time", lambda: check_ems_response_time(ems_agency)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_EMERGENCY invariants: PASS")

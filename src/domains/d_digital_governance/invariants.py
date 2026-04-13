@@ -18,8 +18,14 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    Platform, ContentModerationDecision, TransparencyReport,
-    RiskAssessment, SystemicRiskLevel
+    ContentModerationDecision,
+    Platform,
+    RiskAssessment,
+    SystemicRiskLevel,
+    TransparencyReport,
+    UserMetrics,
+    ContentCategory,
+    PlatformCategory,
 )
 
 
@@ -215,3 +221,77 @@ def check_automated_decision_review(decision: ContentModerationDecision) -> Tupl
         ],
         rule="dsa_article_22_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_DIGITAL_GOVERNANCE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    content_moderation_decision = ContentModerationDecision(
+        decision_id=None,
+        content_id=None,
+        content_category=ContentCategory.ILLEGAL,
+        action_taken=None,
+        timestamp=None,
+        automated=None,
+        human_reviewed=None,
+    )
+    risk_assessment = RiskAssessment(
+        assessment_date=None,
+        risk_level=SystemicRiskLevel.CRITICAL,
+        mitigation_measures=None,
+        independent_audit=None,
+    )
+    transparency_report = TransparencyReport(
+        reporting_period=None,
+        content_removed_count=None,
+        content_restricted_count=None,
+        accounts_suspended=None,
+        appeals_received=None,
+        appeals_upheld=None,
+        avg_response_time_hours=Fraction(1),
+    )
+    platform = Platform(
+        platform_id=None,
+        name=None,
+        category=PlatformCategory.VERY_LARGE,
+        user_metrics=UserMetrics(
+        eu_monthly_active=None,
+        global_monthly_active=None,
+        last_reported=None,
+    ),
+    )
+
+    checks = [
+        ("check_appeal_window", lambda: check_appeal_window(content_moderation_decision)),
+        ("check_automated_decision_review", lambda: check_automated_decision_review(content_moderation_decision)),
+        ("check_independent_audit", lambda: check_independent_audit(risk_assessment)),
+        ("check_statement_of_reasons", lambda: check_statement_of_reasons(content_moderation_decision)),
+        ("check_transparency_report_completeness", lambda: check_transparency_report_completeness(transparency_report)),
+        ("check_vlop_risk_assessment_current", lambda: check_vlop_risk_assessment_current(platform)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_DIGITAL_GOVERNANCE invariants: PASS")

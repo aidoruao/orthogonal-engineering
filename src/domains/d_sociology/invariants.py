@@ -210,3 +210,69 @@ def check_data_protection(study: ResearchStudy) -> Tuple[bool, ProofObject]:
         ],
         rule="data_retention"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_SOCIOLOGY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    research_study = ResearchStudy(
+        study_id=None,
+        title=None,
+        researcher_id=None,
+        research_type=ResearchType.SURVEY,
+        irb_status=IRBStatus.EXEMPT,
+        irb_approval_date=None,
+        informed_consent_obtained=None,
+        target_sample_size=None,
+        actual_sample_size=None,
+        vulnerable_populations=None,
+        data_anonymized=None,
+        data_retention_years=Fraction(1),
+        contacts_attempted=None,
+        responses_received=None,
+    )
+    survey_instrument = SurveyInstrument(
+        instrument_id=None,
+        study_id=None,
+        pilot_tested=None,
+        cognitive_interviews=None,
+        pretest_n=None,
+        reliability_coefficient=Fraction(1),
+        validity_assessed=None,
+        question_order_randomized=None,
+        response_option_balance=None,
+    )
+
+    checks = [
+        ("check_data_protection", lambda: check_data_protection(research_study)),
+        ("check_informed_consent", lambda: check_informed_consent(research_study)),
+        ("check_irb_approval", lambda: check_irb_approval(research_study)),
+        ("check_survey_reliability", lambda: check_survey_reliability(survey_instrument)),
+        ("check_survey_response_rate", lambda: check_survey_response_rate(research_study)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_SOCIOLOGY invariants: PASS")

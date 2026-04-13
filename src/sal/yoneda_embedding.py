@@ -86,8 +86,14 @@ class DomainCategory(Category):
 def build_domain_category_from_ontology(ontology_path: str = "ontology/ontology.json") -> DomainCategory:
     """Build the DomainCategory from ontology.json."""
     import json
-    
-    with open(ontology_path) as f:
+    import pathlib
+    try:
+        from oe_engine._paths import _base_path
+        resolved = _base_path() / ontology_path
+    except ImportError:
+        resolved = pathlib.Path(ontology_path)
+
+    with open(resolved) as f:
         ontology = json.load(f)
     
     # Create objects (domains)

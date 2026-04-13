@@ -150,3 +150,63 @@ def check_esd_timing(esd: EmergencyShutdown) -> Tuple[bool, ProofObject]:
         premises=[f"Time: {esd.trigger_to_isolation_ms}ms <= {max_time}ms"],
         rule="esd_response_time"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CHEMICAL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    emergency_shutdown = EmergencyShutdown(
+        esd_id=None,
+        trigger_to_isolation_ms=Fraction(1),
+    )
+    hazmat_containment = HazmatContainment(
+        zone_id=None,
+        leak_detection_ppm=Fraction(1),
+        lel_percent=Fraction(1),
+    )
+    reactor_control = ReactorControl(
+        reactor_id=None,
+        temperature_c=Fraction(20),
+        pressure_bar=Fraction(1),
+        design_pressure_bar=Fraction(1),
+        t_critical_c=Fraction(1),
+    )
+    safety_instrumented_system = SafetyInstrumentedSystem(
+        sis_id=None,
+        sil_level=SILLevel.SIL1,
+        pfd_avg=Fraction(1),
+    )
+
+    checks = [
+        ("check_esd_timing", lambda: check_esd_timing(emergency_shutdown)),
+        ("check_leak_detection", lambda: check_leak_detection(hazmat_containment)),
+        ("check_pressure_interlock", lambda: check_pressure_interlock(reactor_control)),
+        ("check_sis_reliability", lambda: check_sis_reliability(safety_instrumented_system)),
+        ("check_thermal_runaway_protection", lambda: check_thermal_runaway_protection(reactor_control)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CHEMICAL invariants: PASS")

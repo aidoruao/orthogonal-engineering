@@ -266,3 +266,69 @@ def check_data_encryption(data: SensitiveData) -> Tuple[bool, ProofObject]:
         premises=["Encrypted at rest: True", "Encrypted in transit: True"],
         rule="pci_dss_encryption"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_WEBSEC invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    web_application = WebApplication(
+        app_id=None,
+        name=None,
+        https_enforced=None,
+        hsts_enabled=None,
+        csrf_protection=None,
+        xss_protection=None,
+        input_validated=None,
+        sql_injection_protected=None,
+    )
+    sensitive_data = SensitiveData(
+        data_id=None,
+        encrypted_at_rest=None,
+        encrypted_in_transit=None,
+        access_logging_enabled=None,
+        pii_detected=None,
+    )
+    authentication_system = AuthenticationSystem(
+        auth_id=None,
+        auth_method=AuthMethod.PASSWORD_ONLY,
+        password_min_length=Fraction(1),
+        password_requires_complexity=None,
+        brute_force_protection=None,
+        session_timeout_minutes=Fraction(1),
+    )
+
+    checks = [
+        ("check_csrf_protection", lambda: check_csrf_protection(web_application)),
+        ("check_data_encryption", lambda: check_data_encryption(sensitive_data)),
+        ("check_hsts_header", lambda: check_hsts_header(web_application)),
+        ("check_https_enforced", lambda: check_https_enforced(web_application)),
+        ("check_input_validation", lambda: check_input_validation(web_application)),
+        ("check_password_policy", lambda: check_password_policy(authentication_system)),
+        ("check_session_timeout", lambda: check_session_timeout(authentication_system)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_WEBSEC invariants: PASS")

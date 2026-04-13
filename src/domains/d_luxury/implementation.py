@@ -77,11 +77,12 @@ class LuxuryItem:
     # Authenticity
     authenticity: AuthenticityStatus
     blockchain_token: Optional[str]
-    provenance: List[ProvenanceRecord] = field(default_factory=list)
     
     # Valuation
     msrp: Fraction
     current_estimate: Fraction
+    
+    provenance: List[ProvenanceRecord] = field(default_factory=list)
     
     def provenance_complete(self) -> bool:
         """Complete chain of custody from manufacture."""

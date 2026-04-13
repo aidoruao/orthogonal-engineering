@@ -4,7 +4,13 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import EnvironmentalImpactStatement, CommentPeriod, MitigationTracker
+from .implementation import (
+    CommentPeriod,
+    EnvironmentalImpactStatement,
+    ImpactScore,
+    MitigationTracker,
+    ImpactCategory,
+)
 
 
 def check_impact_score_bounded(eis: EnvironmentalImpactStatement) -> Tuple[bool, ProofObject]:
@@ -67,3 +73,56 @@ def check_mitigation_completeness(tracker: MitigationTracker) -> Tuple[bool, Pro
         premises=[f"Completed: {len(tracker.implemented_measures)}"],
         rule="mitigation_completeness"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ENVIRONMENTAL_PLANNING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    comment_period = CommentPeriod(
+        start_date="SAMPLE",
+        end_date="SAMPLE",
+        days_duration=1,
+    )
+    environmental_impact_statement = EnvironmentalImpactStatement(
+        project_id="ENVIRONM-001",
+        impact_scores=[ImpactScore(
+        category=ImpactCategory.AIR,
+        score=Fraction(100),
+    )],
+    )
+    mitigation_tracker = MitigationTracker(
+        required_measures=["SAMPLE"],
+        implemented_measures=["SAMPLE"],
+    )
+
+    checks = [
+        ("check_comment_period_duration", lambda: check_comment_period_duration(comment_period)),
+        ("check_impact_score_bounded", lambda: check_impact_score_bounded(environmental_impact_statement)),
+        ("check_mitigation_completeness", lambda: check_mitigation_completeness(mitigation_tracker)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ENVIRONMENTAL_PLANNING invariants: PASS")

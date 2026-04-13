@@ -227,3 +227,81 @@ def check_content_descriptor_consistency(rating: AgeRating) -> Tuple[bool, Proof
         premises=[f"Rating: {rating.rating}", f"Descriptors: {len(rating.descriptors)}"],
         rule="content_descriptor_consistent"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_GAMING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    game = Game(
+        game_id=None,
+        title=None,
+        developer=None,
+        publisher=None,
+        release_date=None,
+    )
+    player = Player(
+        player_id=None,
+        account_created=None,
+        date_of_birth=None,
+        parent_email=None,
+    )
+    age_rating = AgeRating(
+        system=RatingSystem.ESRB,
+        rating=None,
+        minimum_age=None,
+        descriptors=None,
+    )
+    loot_box = LootBox(
+        box_id=None,
+        name=None,
+        price=Fraction(1),
+        currency=None,
+        drop_rates=None,
+        odds_disclosed=None,
+    )
+    gaming_session = GamingSession(
+        session_id=None,
+        player_id=None,
+        game_id=None,
+        start_time=None,
+        duration=None,
+        chat_messages_sent=None,
+        chat_messages_reported=None,
+        purchases_made=None,
+        purchase_amount=Fraction(1),
+    )
+
+    checks = [
+        ("check_accessibility_minimum", lambda: check_accessibility_minimum(game, Fraction(100))),
+        ("check_age_appropriateness", lambda: check_age_appropriateness(game, player)),
+        ("check_content_descriptor_consistency", lambda: check_content_descriptor_consistency(age_rating)),
+        ("check_coppa_compliance", lambda: check_coppa_compliance(player)),
+        ("check_loot_box_odds_disclosure", lambda: check_loot_box_odds_disclosure(loot_box)),
+        ("check_spending_limits", lambda: check_spending_limits(gaming_session, player)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GAMING invariants: PASS")

@@ -199,3 +199,71 @@ def check_fcpa_anti_bribery(case: WhiteCollarCase) -> Tuple[bool, ProofObject]:
         premises=[f"Status: {case.investigation_status.name}", f"Remediation: {case.remediation_completed}"],
         rule="fcpa_anti_bribery"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_WHITECOLLAR invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    compliance_program = ComplianceProgram(
+        program_id=None,
+        company_id=None,
+        risk_assessment_current=None,
+        policies_procedures_documented=None,
+        training_provided=None,
+        confidential_reporting_available=None,
+        investigations_independent=None,
+        continuous_improvement=None,
+        employees_trained_annual=None,
+        total_employees=None,
+        hotline_reports_annual=None,
+        investigations_completed=None,
+    )
+    white_collar_case = WhiteCollarCase(
+        case_id=None,
+        defendant_id=None,
+        violation_type=ViolationType.SECURITIES_FRAUD,
+        alleged_gain=Fraction(1),
+        victim_losses=Fraction(1),
+        disgorgement_ordered=Fraction(1),
+        fines_ordered=Fraction(1),
+        investigation_status=InvestigationStatus.PENDING,
+        compliance_monitor_appointed=None,
+        monitor_duration_years=Fraction(1),
+        self_reported=None,
+        cooperation_level=Fraction(1, 2),
+        remediation_completed=None,
+    )
+
+    checks = [
+        ("check_compliance_program_effectiveness", lambda: check_compliance_program_effectiveness(compliance_program)),
+        ("check_fcpa_anti_bribery", lambda: check_fcpa_anti_bribery(white_collar_case)),
+        ("check_monitor_independence", lambda: check_monitor_independence(white_collar_case)),
+        ("check_penalty_proportionality", lambda: check_penalty_proportionality(white_collar_case)),
+        ("check_self_reporting_incentive", lambda: check_self_reporting_incentive(white_collar_case)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_WHITECOLLAR invariants: PASS")

@@ -4,7 +4,11 @@
 from fractions import Fraction
 from typing import Tuple, Set
 from axioms.logic import ProofObject
-from .implementation import Lawsuit, MIN_CLASS_SIZE
+from .implementation import (
+    Lawsuit,
+    MIN_CLASS_SIZE,
+    Party,
+)
 
 def check_class_certification(suit: Lawsuit) -> Tuple[bool, ProofObject]:
     """FRCP 23(a): Class certification requires all four elements.
@@ -78,3 +82,50 @@ def check_summary_judgment(suit: Lawsuit) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="frcp_56"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PROCEDURE_CIVIL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    lawsuit = Lawsuit(
+        plaintiff=Party(
+        name="Sample PROCEDUR",
+    ),
+        defendant=Party(
+        name="Sample PROCEDUR",
+    ),
+        case_number="SAMPLE",
+        filed_date=None,
+    )
+
+    checks = [
+        ("check_12b6_plausibility", lambda: check_12b6_plausibility(lawsuit)),
+        ("check_class_certification", lambda: check_class_certification(lawsuit)),
+        ("check_summary_judgment", lambda: check_summary_judgment(lawsuit)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PROCEDURE_CIVIL invariants: PASS")

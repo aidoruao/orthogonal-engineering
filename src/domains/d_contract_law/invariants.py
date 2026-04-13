@@ -4,7 +4,14 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import Contract, Breach, STATUTE_OF_FRAUDS_THRESHOLD, ContractStatus
+from .implementation import (
+    Breach,
+    Contract,
+    ContractStatus,
+    Party,
+    STATUTE_OF_FRAUDS_THRESHOLD,
+    ContractType,
+)
 
 
 def check_statute_of_frauds(contract: Contract) -> Tuple[bool, ProofObject]:
@@ -103,3 +110,62 @@ def check_expectation_principle(breach: Breach) -> Tuple[bool, ProofObject]:
         premises=[f"Damages: {total}", f"Cap: {breach.expectation_damages}"],
         rule="expectation_damages_cap"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CONTRACT_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    breach = Breach(
+        contract=Contract(
+        offeror=Party(
+        name="Sample CONTRACT",
+    ),
+        offeree=Party(
+        name="Sample CONTRACT",
+    ),
+        contract_type=ContractType.SALE_OF_GOODS,
+    ),
+        breach_date=None,
+    )
+    contract = Contract(
+        offeror=Party(
+        name="Sample CONTRACT",
+    ),
+        offeree=Party(
+        name="Sample CONTRACT",
+    ),
+        contract_type=ContractType.SALE_OF_GOODS,
+    )
+
+    checks = [
+        ("check_breach_materiality", lambda: check_breach_materiality(breach)),
+        ("check_expectation_principle", lambda: check_expectation_principle(breach)),
+        ("check_formation", lambda: check_formation(contract)),
+        ("check_statute_of_frauds", lambda: check_statute_of_frauds(contract)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CONTRACT_LAW invariants: PASS")

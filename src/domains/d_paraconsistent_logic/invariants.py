@@ -135,3 +135,52 @@ def check_non_triviality(theory: ParaconsistentTheory) -> Tuple[bool, ProofObjec
         premises=["Trivial: False"],
         rule="non_triviality_maintained"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PARACONSISTENT_LOGIC invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    inference_rule = InferenceRule(
+        rule_name=None,
+        premises=None,
+        conclusion=None,
+        valid_in_lp=None,
+        valid_in_classical=None,
+    )
+    paraconsistent_theory = ParaconsistentTheory(
+        theory_id=None,
+    )
+
+    checks = [
+        ("check_adjunctive_syllogism", lambda: check_adjunctive_syllogism(inference_rule)),
+        ("check_explosion_blocked", lambda: check_explosion_blocked(paraconsistent_theory)),
+        ("check_inference_non_explosive", lambda: check_inference_non_explosive(inference_rule)),
+        ("check_non_triviality", lambda: check_non_triviality(paraconsistent_theory)),
+        ("check_truth_value_consistency", lambda: check_truth_value_consistency(TruthValue.TRUE)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PARACONSISTENT_LOGIC invariants: PASS")

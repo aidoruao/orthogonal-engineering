@@ -162,3 +162,56 @@ def check_confidence_calibration(result: ClassificationResult) -> Tuple[bool, Pr
         premises=[f"Correct: {result.is_correct()}", f"Confidence: {result.confidence}"],
         rule="calibration_valid"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PATTERN_RECOGNITION invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    classification_result = ClassificationResult(
+        true_label=None,
+        predicted_label=None,
+        confidence=Fraction(1),
+    )
+    confusion_matrix = ConfusionMatrix(
+        classes=None,
+        matrix=None,
+    )
+    cross_validation = CrossValidation(
+        k_folds=None,
+        fold_scores=None,
+    )
+
+    checks = [
+        ("check_confidence_calibration", lambda: check_confidence_calibration(classification_result)),
+        ("check_confusion_matrix_sum", lambda: check_confusion_matrix_sum(confusion_matrix)),
+        ("check_f1_harmonic_mean", lambda: check_f1_harmonic_mean(confusion_matrix, "SAMPLE")),
+        ("check_overfitting", lambda: check_overfitting(cross_validation)),
+        ("check_precision_bounds", lambda: check_precision_bounds(confusion_matrix, "SAMPLE")),
+        ("check_recall_bounds", lambda: check_recall_bounds(confusion_matrix, "SAMPLE")),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PATTERN_RECOGNITION invariants: PASS")

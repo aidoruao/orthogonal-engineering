@@ -195,3 +195,62 @@ def check_escape_radius_sufficient(radius: Fraction) -> Tuple[bool, ProofObject]
         premises=[f"Radius: {radius}"],
         rule="escape_radius_valid"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_FRACTALS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    box_count = BoxCount(
+        points={(Fraction(0), Fraction(0)), (Fraction(1), Fraction(1))},
+        min_box_size=Fraction(1),
+        max_box_size=Fraction(2),
+    )
+    iterated_function_system = IteratedFunctionSystem(
+        transforms=[lambda p: (p[0] * Fraction(1, 2), p[1] * Fraction(1, 2))],
+        probabilities=[Fraction(1)],
+    )
+    fractal_point = FractalPoint(
+        c=Complex(real=Fraction(0), imag=Fraction(0)),
+        z=Complex(real=Fraction(0), imag=Fraction(0)),
+        max_iterations=100,
+        escape_radius=Fraction(2),
+    )
+    self_similarity = SelfSimilarity(
+        scaling_factor=Fraction(1, 2),
+        num_pieces=3,
+    )
+
+    checks = [
+        ("check_box_count_monotonicity", lambda: check_box_count_monotonicity(box_count)),
+        ("check_dimension_bounds", lambda: check_dimension_bounds(Fraction(1), 1)),
+        ("check_escape_radius_sufficient", lambda: check_escape_radius_sufficient(Fraction(1))),
+        ("check_ifs_probability_sum", lambda: check_ifs_probability_sum(iterated_function_system)),
+        ("check_mandelbrot_membership", lambda: check_mandelbrot_membership(fractal_point)),
+        ("check_self_similarity_consistency", lambda: check_self_similarity_consistency(self_similarity)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_FRACTALS invariants: PASS")

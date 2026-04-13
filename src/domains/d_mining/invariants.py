@@ -19,7 +19,9 @@ from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
     MiningOperation, SafetyIncident, EnvironmentalPermit,
-    ReclamationPlan, HealthMonitoring
+    ReclamationPlan, HealthMonitoring,
+    MineStatus,
+    MineType,
 )
 
 
@@ -215,3 +217,97 @@ def check_black_lung_screening(health: HealthMonitoring) -> Tuple[bool, ProofObj
         ],
         rule="black_lung_screening_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_MINING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    health_monitoring = HealthMonitoring(
+        worker_id=None,
+        mine_id=None,
+        chest_xray_date=None,
+        xray_classification=None,
+        respirable_dust_mg_m3=Fraction(1),
+        silica_exceedance=None,
+        noise_exposure_dba=Fraction(1),
+        hearing_conservation_required=None,
+    )
+    environmental_permit = EnvironmentalPermit(
+        permit_id=None,
+        mine_id=None,
+        permit_type=None,
+        issued_date=None,
+        expiration_date=None,
+        discharge_limits=None,
+        monitoring_required=None,
+    )
+    safety_incident = SafetyIncident(
+        incident_id=None,
+        mine_id=None,
+        incident_date=None,
+        incident_type=None,
+        classification=None,
+        injured_count=None,
+        fatality=None,
+        msha_investigation=None,
+        root_cause_identified=None,
+    )
+    reclamation_plan = ReclamationPlan(
+        plan_id=None,
+        mine_id=None,
+        total_acres_disturbed=Fraction(1),
+        acres_reclaimed=Fraction(1),
+        bonding_amount=Fraction(1),
+        bonding_type=None,
+    )
+    mining_operation = MiningOperation(
+        mine_id=None,
+        mine_name=None,
+        mine_type=MineType.UNDERGROUND_COAL,
+        status=MineStatus.ACTIVE,
+        state=None,
+        msha_id=None,
+        total_employees=None,
+        underground_workers=None,
+        annual_tonnage=None,
+        primary_commodity=None,
+        ventilation_cfms=None,
+        escapeways=None,
+        msha_inspections_annual=None,
+        violations_pending=None,
+    )
+
+    checks = [
+        ("check_black_lung_screening", lambda: check_black_lung_screening(health_monitoring)),
+        ("check_dust_exposure_limit", lambda: check_dust_exposure_limit(health_monitoring, Fraction(1000))),
+        ("check_environmental_permit_current", lambda: check_environmental_permit_current(environmental_permit)),
+        ("check_incident_investigation", lambda: check_incident_investigation(safety_incident)),
+        ("check_reclamation_bonding", lambda: check_reclamation_bonding(reclamation_plan)),
+        ("check_ventilation_requirement", lambda: check_ventilation_requirement(mining_operation)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_MINING invariants: PASS")

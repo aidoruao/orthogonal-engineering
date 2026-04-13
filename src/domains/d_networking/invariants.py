@@ -103,3 +103,46 @@ def check_congestion_window_bounds(controller: TCPCongestionController) -> Tuple
         premises=[],
         rule="tcp_cwnd_bounds"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_NETWORKING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    tcp_congestion_controller = TCPCongestionController()
+    dns_resolver = DNSResolver()
+    routing_verifier = RoutingVerifier(
+        routing_table={},
+    )
+
+    checks = [
+        ("check_congestion_window_after_loss", lambda: check_congestion_window_after_loss(tcp_congestion_controller)),
+        ("check_congestion_window_bounds", lambda: check_congestion_window_bounds(tcp_congestion_controller)),
+        ("check_dns_determinism", lambda: check_dns_determinism(dns_resolver, "SAMPLE")),
+        ("check_no_routing_loops", lambda: check_no_routing_loops(routing_verifier)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_NETWORKING invariants: PASS")

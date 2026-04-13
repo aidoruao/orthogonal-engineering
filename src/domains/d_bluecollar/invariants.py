@@ -187,3 +187,67 @@ def check_osha_300_logging(incident: OSHAIncident) -> Tuple[bool, ProofObject]:
         ],
         rule="osha_1904_300_log"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_BLUECOLLAR invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    field_service_record = FieldServiceRecord(
+        record_id=None,
+        timestamp_utc=None,
+        tamper_evident_hash=None,
+        offline_capable=None,
+        synced_to_server=None,
+    )
+    manufacturing_qc = ManufacturingQC(
+        batch_id=None,
+        defect_rate_percent=Fraction(1),
+        inspection_passed=None,
+    )
+    osha_incident = OSHAIncident(
+        incident_id=None,
+        days_away_from_work=None,
+        reported_within_hours=Fraction(1),
+        osha_300_logged=None,
+    )
+    safety_alert = SafetyAlert(
+        alert_id=None,
+        hazard_level=HazardLevel.LOW,
+        response_time_seconds=Fraction(1),
+        worker_notified=None,
+    )
+
+    checks = [
+        ("check_field_service_tamper_evident", lambda: check_field_service_tamper_evident(field_service_record)),
+        ("check_manufacturing_defect_rate", lambda: check_manufacturing_defect_rate(manufacturing_qc)),
+        ("check_offline_capability", lambda: check_offline_capability(field_service_record)),
+        ("check_osha_300_logging", lambda: check_osha_300_logging(osha_incident)),
+        ("check_osha_incident_reporting", lambda: check_osha_incident_reporting(osha_incident)),
+        ("check_safety_alert_response_time", lambda: check_safety_alert_response_time(safety_alert)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_BLUECOLLAR invariants: PASS")

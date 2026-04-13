@@ -88,6 +88,19 @@ class EngineManifest:
         """Number of registered domains."""
         return len(self._entries)
 
+    @classmethod
+    def count_domains_fast(cls) -> int:
+        """Fast domain count using glob without full manifest initialization.
+
+        Scans only for invariants.py presence — no file reads or AST parsing.
+
+        falsifies_if: count differs from len(EngineManifest().entries) by more than 0.
+
+        Returns:
+            Integer count of domain directories that have an invariants.py.
+        """
+        return sum(1 for _ in (_base_path() / "src" / "domains").glob("*/invariants.py"))
+
     @property
     def domain_hashes(self) -> Dict[str, str]:
         """Map of domain_id → source_hash."""

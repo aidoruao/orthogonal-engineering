@@ -19,7 +19,8 @@ from typing import Tuple, Set
 from axioms.logic import ProofObject
 from .implementation import (
     Mod, ModLoadOrder, ModConflict, GameVersion, AssetChecksum,
-    ContentModerationReport, ModType
+    ContentModerationReport, ModType,
+    ModStatus,
 )
 
 
@@ -230,3 +231,75 @@ def check_moderation_resolution(report: ContentModerationReport) -> Tuple[bool, 
         premises=[f"Status: {report.status}", f"Reviewer: {report.reviewed_by}"],
         rule="moderation_resolved"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_GAMEMODS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    asset_checksum = AssetChecksum(
+        asset_path=None,
+        sha256=None,
+        size_bytes=None,
+    )
+    mod = Mod(
+        mod_id=None,
+        name=None,
+        author=None,
+        mod_type=ModType.TOTAL_CONVERSION,
+        status=ModStatus.DEVELOPMENT,
+        mod_version=GameVersion(
+        major=None,
+        minor=None,
+        patch=None,
+    ),
+        supported_game_versions=None,
+        description=None,
+    )
+    mod_load_order = ModLoadOrder(
+        ordered_mods=None,
+    )
+    content_moderation_report = ContentModerationReport(
+        report_id=None,
+        mod_id=None,
+        reported_by=None,
+        reason=None,
+        status=None,
+    )
+    game_version = GameVersion(
+        major=None,
+        minor=None,
+        patch=None,
+    )
+
+    checks = [
+        ("check_eula_compliance", lambda: check_eula_compliance(mod)),
+        ("check_load_order_validity", lambda: check_load_order_validity(mod_load_order)),
+        ("check_moderation_resolution", lambda: check_moderation_resolution(content_moderation_report)),
+        ("check_version_compatibility", lambda: check_version_compatibility(mod, game_version)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GAMEMODS invariants: PASS")

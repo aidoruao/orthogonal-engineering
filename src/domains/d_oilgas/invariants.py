@@ -218,3 +218,85 @@ def check_offshore_violation_rate(platform: OffshorePlatform) -> Tuple[bool, Pro
         premises=[f"Rate: {rate} per inspection"],
         rule="bsee_violation_rate"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_OILGAS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    offshore_platform = OffshorePlatform(
+        platform_id=None,
+        operator_id=None,
+        water_depth_feet=Fraction(1),
+        bsee_inspections_annual=None,
+        violations_issued=None,
+        incidents_reported=None,
+        bop_test_frequency_days=Fraction(1),
+        bop_last_test=None,
+        bop_pressure_rating=Fraction(100),
+        oil_spills_annual=None,
+        gas_release_volume=Fraction(1),
+    )
+    pipeline = Pipeline(
+        pipeline_id=None,
+        operator_id=None,
+        pipeline_class=PipelineClass.CLASS_1,
+        length_miles=Fraction(1),
+        diameter_inches=Fraction(1),
+        max_operating_pressure=Fraction(100),
+        hoop_stress_percent=Fraction(1),
+        leak_detection_system=None,
+        automatic_shutdown_valves=None,
+        last_inspection_date=None,
+        next_inspection_due=None,
+        corrosion_miles=Fraction(1),
+        incidents_annual=None,
+        fatalities_annual=None,
+        injuries_annual=None,
+        property_damage=Fraction(1),
+    )
+    spill_response_plan = SpillResponsePlan(
+        plan_id=None,
+        facility_id=None,
+        worst_case_discharge_barrels=Fraction(1),
+        response_time_hours=Fraction(1),
+        containment_boom_feet=Fraction(1),
+        skimmer_capacity_bpd=Fraction(1000),
+        storage_capacity_barrels=Fraction(1000),
+        trained_personnel_count=None,
+        drills_conducted_annual=None,
+    )
+
+    checks = [
+        ("check_bsee_bop_testing", lambda: check_bsee_bop_testing(offshore_platform)),
+        ("check_offshore_violation_rate", lambda: check_offshore_violation_rate(offshore_platform)),
+        ("check_phmsa_hoop_stress", lambda: check_phmsa_hoop_stress(pipeline)),
+        ("check_phmsa_leak_detection", lambda: check_phmsa_leak_detection(pipeline)),
+        ("check_pipeline_incident_rate", lambda: check_pipeline_incident_rate(pipeline)),
+        ("check_spill_response_capacity", lambda: check_spill_response_capacity(spill_response_plan)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_OILGAS invariants: PASS")

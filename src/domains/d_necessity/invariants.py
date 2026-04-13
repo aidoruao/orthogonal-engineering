@@ -147,3 +147,46 @@ def check_accessibility_non_empty(frame: KripkeFrame) -> Tuple[bool, ProofObject
         premises=[f"Worlds: {len(frame.worlds)}"],
         rule="accessibility_non_empty"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_NECESSITY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    kripke_frame = KripkeFrame(
+        worlds=None,
+        accessibility=None,
+    )
+
+    checks = [
+        ("check_accessibility_non_empty", lambda: check_accessibility_non_empty(kripke_frame)),
+        ("check_frame_reflexivity", lambda: check_frame_reflexivity(kripke_frame)),
+        ("check_frame_symmetry", lambda: check_frame_symmetry(kripke_frame)),
+        ("check_frame_transitivity", lambda: check_frame_transitivity(kripke_frame)),
+        ("check_system_compliance", lambda: check_system_compliance(kripke_frame, ModalSystem.K)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_NECESSITY invariants: PASS")

@@ -210,3 +210,85 @@ def check_ombudsman_resolution_time(complaint: OmbudsmanComplaint) -> Tuple[bool
         premises=[f"Resolution time: {resolution_days} days"],
         rule="ombudsman_resolution_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ELDER_CARE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    abuse_report = AbuseReport(
+        report_id=None,
+        facility_id=None,
+        report_date=None,
+        allegation_type=None,
+        substantiated=None,
+        investigation_completed=None,
+    )
+    care_plan = CarePlan(
+        plan_id=None,
+        resident_id=None,
+        created_date=None,
+        last_reviewed=None,
+        comprehensive_assessment_completed=None,
+        mds_completed=None,
+        care_conference_held=None,
+        family_notified=None,
+    )
+    facility = Facility(
+        facility_id=None,
+        name=None,
+        care_setting=CareSetting.NURSING_HOME,
+        certified_beds=None,
+        occupied_beds=None,
+        staffing=StaffingRatio(
+        rn_hours_per_resident_day=Fraction(1),
+        lpn_hours_per_resident_day=Fraction(1),
+        cna_hours_per_resident_day=Fraction(1),
+        total_nursing_hours=Fraction(1),
+    ),
+        cms_rating=None,
+        falls_per_1000_bed_days=Fraction(1),
+        pressure_ulcers_per_1000=Fraction(1),
+        medication_errors_per_1000=Fraction(1),
+    )
+    ombudsman_complaint = OmbudsmanComplaint(
+        complaint_id=None,
+        facility_id=None,
+        complaint_date=None,
+        issue_category=None,
+        resolved=None,
+    )
+
+    checks = [
+        ("check_abuse_investigation_timeliness", lambda: check_abuse_investigation_timeliness(abuse_report)),
+        ("check_care_plan_currency", lambda: check_care_plan_currency(care_plan)),
+        ("check_fall_rate_threshold", lambda: check_fall_rate_threshold(facility, Fraction(1000))),
+        ("check_ombudsman_resolution_time", lambda: check_ombudsman_resolution_time(ombudsman_complaint)),
+        ("check_pressure_ulcer_rate", lambda: check_pressure_ulcer_rate(facility, Fraction(1000))),
+        ("check_staffing_compliance", lambda: check_staffing_compliance(facility)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ELDER_CARE invariants: PASS")

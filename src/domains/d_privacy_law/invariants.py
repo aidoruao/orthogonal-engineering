@@ -5,7 +5,16 @@ from fractions import Fraction
 from datetime import datetime
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import GDPRAnalyzer, CCPAComplianceChecker, DataProcessing, MAX_GDPR_RESPONSE_DAYS
+from .implementation import (
+    CCPAComplianceChecker,
+    CCPAConsumer,
+    DataProcessing,
+    DataSubject,
+    GDPRAnalyzer,
+    GDPRRequest,
+    MAX_GDPR_RESPONSE_DAYS,
+    DataSubjectRight,
+)
 
 
 def check_gdpr_response_time(analyzer: GDPRAnalyzer, current_date: datetime) -> Tuple[bool, ProofObject]:
@@ -86,3 +95,63 @@ def check_gdpr_compliance_rate(analyzer: GDPRAnalyzer) -> Tuple[bool, ProofObjec
         premises=[],
         rule="gdpr_compliance_rate"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PRIVACY_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    ccpa_compliance_checker = CCPAComplianceChecker(
+        consumers=[CCPAConsumer(
+        consumer_id="PRIVACY_-001",
+    )],
+    )
+    data_processing = DataProcessing(
+        processing_id="PRIVACY_-001",
+        purpose="SAMPLE",
+        data_categories=["SAMPLE"],
+        legal_basis="SAMPLE",
+    )
+    gdpr_analyzer = GDPRAnalyzer(
+        requests=[GDPRRequest(
+        request_id="PRIVACY_-001",
+        subject=DataSubject(
+        subject_id="PRIVACY_-001",
+        jurisdiction="SAMPLE",
+    ),
+        right_type=DataSubjectRight.ACCESS,
+        request_date=None,
+        deadline_date=None,
+    )],
+    )
+
+    checks = [
+        ("check_ccpa_opt_out", lambda: check_ccpa_opt_out(ccpa_compliance_checker)),
+        ("check_data_minimization", lambda: check_data_minimization(data_processing, "SAMPLE")),
+        ("check_gdpr_compliance_rate", lambda: check_gdpr_compliance_rate(gdpr_analyzer)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PRIVACY_LAW invariants: PASS")

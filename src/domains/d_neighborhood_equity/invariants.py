@@ -12,7 +12,8 @@ from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
     Neighborhood, LendingInstitution,
-    fair_housing_disparate_impact_threshold, cra_low_mod_threshold
+    fair_housing_disparate_impact_threshold, cra_low_mod_threshold,
+    NeighborhoodType,
 )
 
 
@@ -240,3 +241,74 @@ def check_transit_equity(neighborhood: Neighborhood) -> Tuple[bool, ProofObject]
         premises=[f"Transit time: {neighborhood.avg_transit_time_to_jobs} min"],
         rule="transit_equity"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_NEIGHBORHOOD_EQUITY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    neighborhood = Neighborhood(
+        neighborhood_id=None,
+        name=None,
+        neighborhood_type=NeighborhoodType.URBAN_CORE,
+        total_population=Fraction(1),
+        minority_population=Fraction(1),
+        low_income_population=Fraction(1),
+        total_housing_units=Fraction(1),
+        affordable_housing_units=Fraction(1),
+        vacant_units=Fraction(1),
+        avg_transit_time_to_jobs=Fraction(1),
+        grocery_access_score=Fraction(100),
+        healthcare_access_score=Fraction(100),
+        school_quality_score=Fraction(100),
+        mortgage_applications=None,
+        mortgage_denials=None,
+        mortgage_denial_rate_minority=Fraction(1),
+        mortgage_denial_rate_non_minority=Fraction(1),
+    )
+    lending_institution = LendingInstitution(
+        institution_id=None,
+        name=None,
+        assessment_area_population=Fraction(1),
+        low_mod_income_population=Fraction(1),
+        home_purchase_loans=None,
+        home_purchase_to_low_mod=None,
+        refinancing_loans=None,
+        refinancing_to_low_mod=None,
+        branches_in_low_mod_tracts=None,
+        total_branches=None,
+    )
+
+    checks = [
+        ("check_affordable_housing_availability", lambda: check_affordable_housing_availability(neighborhood)),
+        ("check_cra_branch_presence", lambda: check_cra_branch_presence(lending_institution)),
+        ("check_cra_lending_ratio", lambda: check_cra_lending_ratio(lending_institution)),
+        ("check_fair_housing_lending_disparity", lambda: check_fair_housing_lending_disparity(neighborhood)),
+        ("check_service_access_equity", lambda: check_service_access_equity(neighborhood)),
+        ("check_transit_equity", lambda: check_transit_equity(neighborhood)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_NEIGHBORHOOD_EQUITY invariants: PASS")

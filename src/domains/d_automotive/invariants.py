@@ -156,3 +156,68 @@ def check_autosar_determinism(component: SafetyComponent) -> Tuple[bool, ProofOb
         premises=[f"Latency: {component.latency_ms}ms", f"ASIL: {component.asil_level.name}"],
         rule="autosar_wcet_determinism"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_AUTOMOTIVE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    adas_system = ADASSystem(
+        system_name=None,
+        sensor_fusion_latency_ms=Fraction(1),
+        lidar_points=None,
+        radar_targets=None,
+        camera_frames_per_sec=Fraction(1),
+    )
+    safety_component = SafetyComponent(
+        component_id=None,
+        asil_level=ASILLevel.QM,
+        diagnostic_coverage=Fraction(100),
+        spfm=Fraction(1),
+        latency_ms=Fraction(1),
+    )
+    can_message = CANMessage(
+        message_id=None,
+        data=None,
+        timestamp_us=None,
+        is_critical=None,
+    )
+    ota_update = OTAUpdate(
+        version=None,
+        signature=None,
+        signature_valid=None,
+        rollback_supported=None,
+    )
+
+    checks = [
+        ("check_adas_sensor_sync", lambda: check_adas_sensor_sync(adas_system)),
+        ("check_asil_d_coverage", lambda: check_asil_d_coverage(safety_component)),
+        ("check_autosar_determinism", lambda: check_autosar_determinism(safety_component)),
+        ("check_can_latency", lambda: check_can_latency(can_message, Fraction(1))),
+        ("check_ota_signature", lambda: check_ota_signature(ota_update)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_AUTOMOTIVE invariants: PASS")

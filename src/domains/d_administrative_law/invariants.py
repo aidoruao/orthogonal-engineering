@@ -13,6 +13,7 @@ from axioms.logic import ProofObject
 from .implementation import (
     Rulemaking, 
     ExhaustionClaim, 
+    Agency,
     MIN_COMMENT_PERIOD_DAYS,
     RulemakingType,
 )
@@ -193,18 +194,55 @@ def check_record_based_decision(
     )
 
 
-def run_all_invariants(rule: Rulemaking, claim: ExhaustionClaim) -> List[Tuple[str, bool, ProofObject]]:
-    """Run all administrative law invariants and return results.
+def run_all_invariants() -> dict:
+    """Run all D_ADMINISTRATIVE_LAW invariants with nominal sample data.
 
-    Falsifies if: any individual administrative law check returns False.
-    falsifies_if: any individual administrative law check returns False.
+    falsifies_if: any administrative law invariant fails or raises an exception.
     """
-    results = []
-    
-    results.append(("notice_period", *check_notice_period(rule)))
-    results.append(("exhaustion", *check_exhaustion(claim)))
-    results.append(("chevron_step_one", *check_chevron_step_one(rule)))
-    results.append(("finality", *check_finality(rule)))
-    results.append(("record_based", *check_record_based_decision(rule)))
-    
+    from datetime import datetime, timedelta
+    agency = Agency(
+        name="Sample Agency",
+        enabling_act="5 U.S.C. § 553",
+        url="https://example.gov",
+        rules_promulgated=[],
+    )
+    notice = datetime.now() - timedelta(days=90)
+    close = datetime.now() - timedelta(days=30)
+    rule = Rulemaking(
+        docket_number="SAMPLE-001",
+        agency=agency,
+        title="Sample Rule",
+        rule_type=RulemakingType.INFORMAL,
+        notice_date=notice,
+        comment_period_open=notice,
+        comment_period_close=close,
+        comments_received=[],
+    )
+    claim = ExhaustionClaim(
+        claimant="Sample Claimant",
+        agency=agency,
+        issue_raised="Sample Issue",
+        remedies_sought=["administrative_appeal"],
+        remedies_exhausted=["administrative_appeal"],
+    )
+
+    checks = [
+        ("check_notice_period", lambda: check_notice_period(rule)),
+        ("check_exhaustion", lambda: check_exhaustion(claim)),
+        ("check_chevron_step_one", lambda: check_chevron_step_one(rule)),
+        ("check_finality", lambda: check_finality(rule)),
+        ("check_record_based_decision", lambda: check_record_based_decision(rule)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                results[name] = "PASS"
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
     return results

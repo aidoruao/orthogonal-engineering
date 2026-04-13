@@ -17,7 +17,14 @@ Falsifies if:
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import Property, FoodService, Reservation, GuestRoom
+from .implementation import (
+    AccommodationType,
+    FoodService,
+    GuestRoom,
+    Property,
+    Reservation,
+    RoomStatus,
+)
 
 
 def check_ada_compliance(property: Property) -> Tuple[bool, ProofObject]:
@@ -204,3 +211,82 @@ def check_ada_reservation_honored(reservation: Reservation, assigned_room: Guest
         ],
         rule="ada_reservation_honored"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_HOSPITALITY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    property = Property(
+        property_id=None,
+        name=None,
+        property_type=AccommodationType.HOTEL,
+        star_rating=None,
+        total_rooms=None,
+        ada_compliant=None,
+        fire_inspection_current=None,
+    )
+    reservation = Reservation(
+        reservation_id=None,
+        guest_name=None,
+        property_id=None,
+        room_number=None,
+        check_in=None,
+        check_out=None,
+        rate_per_night=Fraction(1),
+        total_charge=Fraction(1),
+        ada_room_requested=None,
+    )
+    guest_room = GuestRoom(
+        room_number=None,
+        room_type=None,
+        max_occupancy=None,
+        ada_accessible=None,
+        status=RoomStatus.OCCUPIED,
+        rack_rate=Fraction(1),
+        floor=None,
+        square_feet=None,
+    )
+    food_service = FoodService(
+        outlet_id=None,
+        name=None,
+        outlet_type=None,
+        last_health_inspection=None,
+        health_score=None,
+        critical_violations=None,
+        seating_capacity=None,
+    )
+
+    checks = [
+        ("check_ada_compliance", lambda: check_ada_compliance(property)),
+        ("check_ada_reservation_honored", lambda: check_ada_reservation_honored(reservation, guest_room)),
+        ("check_critical_violations", lambda: check_critical_violations(food_service, 1)),
+        ("check_fire_safety_compliance", lambda: check_fire_safety_compliance(property)),
+        ("check_health_inspection_current", lambda: check_health_inspection_current(food_service)),
+        ("check_overbooking_protection", lambda: check_overbooking_protection(property, 1)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_HOSPITALITY invariants: PASS")

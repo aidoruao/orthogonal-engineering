@@ -346,3 +346,74 @@ def check_force_witness(
         ],
         conclusion=f"Force action properly witnessed",
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_GUARDIAN invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    protection_record = ProtectionRecord(
+        record_id=None,
+        guardian_id=None,
+        principal_id=None,
+        action=None,
+        threat_id=None,
+        force_used=Fraction(1),
+        force_budget=Fraction(1000),
+        outcome=None,
+        witnessed=None,
+    )
+    guardian_agent = GuardianAgent(
+        agent_id=None,
+        principal_id=None,
+        threat_model=None,
+        response_budget=Fraction(1000),
+        communication_channel=None,
+        heartbeat_interval=Fraction(1),
+        last_heartbeat=Fraction(1),
+        status=GuardianStatus.ACTIVE,
+    )
+    threat_assessment = ThreatAssessment(
+        threat_id=None,
+        source=None,
+        severity=Fraction(1),
+        threat_type=None,
+        timestamp=Fraction(1),
+        requires_force=None,
+        force_level=Fraction(1),
+    )
+
+    checks = [
+        ("check_force_witness", lambda: check_force_witness(protection_record)),
+        ("check_liveness", lambda: check_liveness(guardian_agent, Fraction(1))),
+        ("check_no_termination_mode", lambda: check_no_termination_mode(guardian_agent)),
+        ("check_principal_survival", lambda: check_principal_survival(guardian_agent, [])),
+        ("check_proportional_response", lambda: check_proportional_response(protection_record, threat_assessment)),
+        ("check_solo_protector", lambda: check_solo_protector(guardian_agent, [])),
+        ("check_withdrawal_protocol", lambda: check_withdrawal_protocol(guardian_agent, [])),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GUARDIAN invariants: PASS")

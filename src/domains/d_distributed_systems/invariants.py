@@ -102,3 +102,46 @@ def check_quorum_size(verifier: ConsensusVerifier) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="quorum_size"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_DISTRIBUTED_SYSTEMS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    cap_analyzer = CAPAnalyzer()
+    consensus_verifier = ConsensusVerifier(
+        node_count=1,
+    )
+    vector_clock = VectorClock()
+
+    checks = [
+        ("check_cap_theorem", lambda: check_cap_theorem(cap_analyzer)),
+        ("check_consensus_quorum", lambda: check_consensus_quorum(consensus_verifier)),
+        ("check_quorum_size", lambda: check_quorum_size(consensus_verifier)),
+        ("check_vector_clock_causality", lambda: check_vector_clock_causality(vector_clock, vector_clock)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_DISTRIBUTED_SYSTEMS invariants: PASS")

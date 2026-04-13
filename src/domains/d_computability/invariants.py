@@ -173,3 +173,65 @@ def check_decidable_halts_always(problem: DecisionProblem) -> Tuple[bool, ProofO
         ],
         rule="decidable_algorithm_halts"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_COMPUTABILITY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    busy_beaver_candidate = BusyBeaverCandidate(
+        n_states=None,
+        steps_observed=None,
+        sigma_lower_bound=None,
+        proven_halts=None,
+    )
+    decision_problem = DecisionProblem(
+        problem_id=None,
+        decidability=DecidabilityClass.DECIDABLE,
+        reduction_proof=None,
+    )
+    rice_theorem_check = RiceTheoremCheck(
+        property_id=None,
+        is_semantic=None,
+        is_nontrivial=None,
+    )
+    turing_machine = TuringMachine(
+        machine_id=None,
+        states=None,
+        symbols=None,
+        steps_executed=None,
+        halted=None,
+    )
+
+    checks = [
+        ("check_busy_beaver_lower_bound", lambda: check_busy_beaver_lower_bound(busy_beaver_candidate)),
+        ("check_decidable_halts_always", lambda: check_decidable_halts_always(decision_problem)),
+        ("check_halting_undecidability", lambda: check_halting_undecidability(decision_problem)),
+        ("check_rice_theorem_semantic", lambda: check_rice_theorem_semantic(rice_theorem_check)),
+        ("check_tm_simulation_timeout", lambda: check_tm_simulation_timeout(turing_machine)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_COMPUTABILITY invariants: PASS")

@@ -5,7 +5,12 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    EligibilityVerifier, BallotCustodyTracker, RecountAnalyzer
+    BallotCustodyRecord,
+    BallotCustodyTracker,
+    ElectionResult,
+    EligibilityVerifier,
+    RecountAnalyzer,
+    Voter,
 )
 
 
@@ -104,3 +109,63 @@ def check_eligibility_before_voting(verifier: EligibilityVerifier) -> Tuple[bool
         premises=[],
         rule="eligibility_verification"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ELECTION_LAW invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    ballot_custody_tracker = BallotCustodyTracker(
+        ballot_batch_id="ELECTION-001",
+        custody_chain=[BallotCustodyRecord(
+        timestamp=None,
+        location="Sample Location",
+        custodian="SAMPLE",
+        ballot_count=1,
+        seal_number="SAMPLE",
+    )],
+    )
+    eligibility_verifier = EligibilityVerifier(
+        voter=Voter(
+        voter_id="ELECTION-001",
+    ),
+    )
+    recount_analyzer = RecountAnalyzer(
+        results=[ElectionResult(
+        candidate="ELECTION-001",
+        votes=1,
+    )],
+        total_votes_cast=1,
+    )
+
+    checks = [
+        ("check_custody_chain_unbroken", lambda: check_custody_chain_unbroken(ballot_custody_tracker)),
+        ("check_eligibility_before_voting", lambda: check_eligibility_before_voting(eligibility_verifier)),
+        ("check_one_person_one_vote", lambda: check_one_person_one_vote(eligibility_verifier)),
+        ("check_recount_threshold", lambda: check_recount_threshold(recount_analyzer)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ELECTION_LAW invariants: PASS")

@@ -11,6 +11,7 @@ Architecture:
   ConversationEngine ← Generator ← Router
 """
 
+from . import _paths
 from .manifest import EngineManifest
 from .router import DomainRouter, RouteResult
 from .thinker import ThinkerModule, ThinkerInput, ThinkerOutput
@@ -48,4 +49,5 @@ __all__ = [
     "ConversationEngine",
     "ConversationState",
     "ConversationTurn",
+    "_paths",
 ]

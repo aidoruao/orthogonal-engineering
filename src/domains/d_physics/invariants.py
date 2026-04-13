@@ -138,3 +138,59 @@ def check_system_mass_conservation(system: PhysicalSystem, initial_mass: Fractio
         premises=[f"Total mass: {current}"],
         rule="mass_conserved"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PHYSICS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    collision = Collision(
+        collision_id=None,
+        object_a=None,
+        object_b=None,
+        elastic=None,
+        momentum_conserved=None,
+        energy_conserved=None,
+    )
+    physical_object = PhysicalObject(
+        object_id=None,
+        mass=Fraction(1),
+        position=None,
+        velocity=None,
+    )
+    physical_system = PhysicalSystem(
+        system_id=None,
+    )
+
+    checks = [
+        ("check_energy_conservation_elastic", lambda: check_energy_conservation_elastic(collision)),
+        ("check_mass_non_negative", lambda: check_mass_non_negative(physical_object)),
+        ("check_momentum_conservation", lambda: check_momentum_conservation(collision)),
+        ("check_speed_limit", lambda: check_speed_limit(physical_object, Fraction(1000))),
+        ("check_system_mass_conservation", lambda: check_system_mass_conservation(physical_system, Fraction(1))),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PHYSICS invariants: PASS")

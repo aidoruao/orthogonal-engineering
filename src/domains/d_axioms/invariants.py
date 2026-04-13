@@ -274,3 +274,69 @@ def check_consistency_strength_ordering(strength: ConsistencyStrength) -> Tuple[
         premises=[f"Ratio: {strength.strength_ratio}"],
         rule="consistency_strength"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_AXIOMS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    proof_system = ProofSystem(
+        system_id=None,
+        axiom_system=AxiomSystem.ZFC,
+        axioms=None,
+        consistent=None,
+        complete=None,
+    )
+    independence_proof = IndependenceProof(
+        axiom_name=AxiomName.EXTENSIONALITY,
+        system=AxiomSystem.ZFC,
+        independent=None,
+        model_with_axiom=None,
+        model_without_axiom=None,
+    )
+    godel_sentence = GodelSentence(
+        system=AxiomSystem.ZFC,
+        provable=None,
+        true=None,
+        statement=None,
+    )
+    consistency_strength = ConsistencyStrength(
+        weaker_system=AxiomSystem.ZFC,
+        stronger_system=AxiomSystem.ZFC,
+        strength_ratio=Fraction(1, 2),
+    )
+
+    checks = [
+        ("check_axiom_consistency", lambda: check_axiom_consistency(proof_system)),
+        ("check_choice_independence", lambda: check_choice_independence(independence_proof)),
+        ("check_completeness_limit", lambda: check_completeness_limit(proof_system, godel_sentence)),
+        ("check_consistency_strength_ordering", lambda: check_consistency_strength_ordering(consistency_strength)),
+        ("check_independence", lambda: check_independence(independence_proof)),
+        ("check_peano_induction", lambda: check_peano_induction(proof_system)),
+        ("check_zfc_foundation", lambda: check_zfc_foundation(proof_system)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_AXIOMS invariants: PASS")
