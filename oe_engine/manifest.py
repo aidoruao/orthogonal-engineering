@@ -17,6 +17,7 @@ from fractions import Fraction
 from typing import Dict, List, Tuple
 
 from axioms.logic import ProofObject
+from oe_engine._paths import _base_path
 
 
 @dataclass(frozen=True)
@@ -47,7 +48,7 @@ class EngineManifest:
         self._load()
 
     def _load(self) -> None:
-        base = pathlib.Path("src/domains")
+        base = _base_path() / "src" / "domains"
         entries: List[DomainEntry] = []
         for inv_file in sorted(base.glob("*/invariants.py")):
             domain_dir = inv_file.parent.name  # e.g. "d_criminal_law"

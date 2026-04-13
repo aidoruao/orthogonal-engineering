@@ -151,4 +151,11 @@ def _exit_repl(boot_proof: object, conversation_engine: "ConversationEngine") ->
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        import traceback
+        print(f"\nFATAL ERROR: {e}", file=sys.stderr)
+        traceback.print_exc()
+        input("\nPress Enter to exit...")
+        sys.exit(1)
