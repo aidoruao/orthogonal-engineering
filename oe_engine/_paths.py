@@ -1,8 +1,8 @@
 """oe_engine._paths — Base path resolution for frozen and source builds.
 
 When PyInstaller bundles the app as a single-file executable, data files are
-extracted to a temporary directory accessible via ``sys._MEIPASS``.  Running
-from source uses the repository root (current working directory).
+extracted to a temporary directory accessible via ``sys._MEIPASS``. Running
+from source resolves the repository root relative to this module location.
 
 falsifies_if: _base_path() returns a directory that does not contain src/domains.
 """
@@ -17,7 +17,8 @@ def _base_path() -> pathlib.Path:
     """Return the base path for data files.
 
     When frozen (PyInstaller), data is extracted to ``sys._MEIPASS``.
-    When running from source, use the repository root (current working directory).
+    When running from source, resolve the repository root from ``__file__``.
+    This assumes ``oe_engine/_paths.py`` sits one directory under repo root.
 
     Standard: PyInstaller one-file bundle path resolution convention.
     falsifies_if: returned path does not contain src/domains when engine loads.
@@ -27,4 +28,4 @@ def _base_path() -> pathlib.Path:
     """
     if getattr(sys, "frozen", False):
         return pathlib.Path(sys._MEIPASS)  # type: ignore[attr-defined]
-    return pathlib.Path(".")
+    return pathlib.Path(__file__).resolve().parent.parent

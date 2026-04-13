@@ -118,6 +118,31 @@ def check_protected_category_valid(category: ProtectedCategory) -> Tuple[bool, P
     )
 
 
+def check_harm_objective_ratio(target: MilitaryTarget, military_advantage: int) -> Tuple[bool, ProofObject]:
+    """Civilian harm / military advantage ratio must be < 1.
+
+    Standard: AP I Article 51(5)(b) — proportionality in attack
+    falsifies_if: target.expected_civilian_harm / military_advantage >= 1.
+    """
+    if military_advantage <= 0:
+        ok = False
+        ratio = Fraction(-1)
+    else:
+        ratio = Fraction(target.expected_civilian_harm, military_advantage)
+        ok = ratio < Fraction(1)
+    premises = [
+        f"target_id={target.target_id}",
+        f"expected_civilian_harm={target.expected_civilian_harm}",
+        f"military_advantage={military_advantage}",
+        f"ratio={ratio}",
+    ]
+    return ok, ProofObject(
+        rule="HarmObjectiveRatio",
+        premises=premises,
+        conclusion=f"PASS: ratio {ratio} < 1" if ok else f"VIOLATION: ratio {ratio} >= 1",
+    )
+
+
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS
 
@@ -135,6 +160,7 @@ def run_all_invariants() -> Dict[str, str]:
         proportionality_assessed=True,
         expected_civilian_harm=0,
     )
+    military_advantage = 10
     results = {}
     for fn, args in [
         (check_protected_person_receiving_protection, (person,)),
@@ -143,6 +169,7 @@ def run_all_invariants() -> Dict[str, str]:
         (check_civilian_harm_nonneg, (target,)),
         (check_person_id_nonempty, (person,)),
         (check_protected_category_valid, (category,)),
+        (check_harm_objective_ratio, (target, military_advantage)),
     ]:
         _, p = fn(*args)
         results[fn.__name__] = p.conclusion
