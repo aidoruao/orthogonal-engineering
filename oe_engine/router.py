@@ -696,12 +696,12 @@ def _build_enriched_category() -> DomainCategory:
     cat = DomainCategory()
 
     try:
-        try:
-            from oe_engine._paths import _base_path
-            ontology_file = _base_path() / "ontology" / "ontology.json"
-        except ImportError:
-            ontology_file = pathlib.Path("ontology/ontology.json")
+        from oe_engine._paths import _base_path as _bp  # noqa: PLC0415
+        ontology_file = _bp() / "ontology" / "ontology.json"
+    except ImportError:
+        ontology_file = pathlib.Path("ontology/ontology.json")
 
+    try:
         with open(ontology_file) as f:
             ontology = json.load(f)
 

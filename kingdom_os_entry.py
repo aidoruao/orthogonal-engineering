@@ -75,10 +75,9 @@ def main() -> None:
 
     if args.version:
         from oe_engine.manifest import EngineManifest
-        manifest = EngineManifest()
         print(f"Kingdom OS {_VERSION}")
         print("Kernel: capability-gated, deterministic, proof-carrying")
-        print(f"Engine: {manifest.domain_count} domain invariant modules, 0 floats, 0 stubs")
+        print(f"Engine: {EngineManifest.count_domains_fast()} domain invariant modules, 0 floats, 0 stubs")
         sys.exit(0)
 
     # Boot kernel for all modes
