@@ -32,6 +32,9 @@ for _inv in sorted(glob.glob("src/domains/*/invariants.py")):
     _impl_path = _inv.replace("invariants.py", "implementation.py")
     if os.path.exists(_impl_path):
         _domain_hidden_imports.append(_pkg + ".implementation")
+    _domain_path = _inv.replace("invariants.py", "domain.py")
+    if os.path.exists(_domain_path):
+        _domain_hidden_imports.append(_pkg + ".domain")
 
 a = Analysis(
     ['kingdom_os_entry.py'],

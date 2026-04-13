@@ -13,7 +13,7 @@ def test_version_flag():
     )
     assert result.returncode == 0
     assert "Kingdom OS" in result.stdout
-    assert "v0.1.0" in result.stdout
+    assert "v2.0.0" in result.stdout
 
 
 def test_query_flag():

@@ -1,33 +1,31 @@
 """kingdom_os_entry.py — Unified Kingdom OS entry point.
 
-Bundles kernel boot sequence + OrthogonalEngine + ConversationEngine
-into a single executable for PyInstaller binary distribution.
+Bundles kernel boot sequence with shared oe_engine CLI logic
+for PyInstaller binary distribution.
 
 Usage:
     python kingdom_os_entry.py --version
     python kingdom_os_entry.py --query "nuclear reactor scram"
     python kingdom_os_entry.py --query "nuclear reactor scram" --json
-    python kingdom_os_entry.py               # interactive conversation REPL
-
-REPL commands:
-    /status               — print domain count, turn count, state_hash
-    /export <file.json>   — save transcript as JSON with Merkle proof
-    /quit                 — print boot proof hash + conversation merkle root, exit
+    python kingdom_os_entry.py --interactive
+    python kingdom_os_entry.py --mode conversation
 
 No float anywhere. No external deps. No try/except hiding errors.
 """
 
-import sys
-import json
-import argparse
-import traceback
-from fractions import Fraction
-from kernel.boot import boot, verify_boot_integrity
-from oe_engine.engine import OrthogonalEngine
-from oe_engine.conversation import ConversationEngine
+from __future__ import annotations
 
-_VERSION = "v2.0.0"
-_BANNER = "Kingdom OS v2.0.0 — Deterministic Glass-Box Sovereign AI"
+import argparse
+import json
+import sys
+from fractions import Fraction
+
+from kernel.boot import boot, verify_boot_integrity
+from oe_engine import __version__
+from oe_engine.engine import OrthogonalEngine
+from oe_engine import cli as oe_cli
+
+_BANNER = f"Kingdom OS {__version__} — Deterministic Glass-Box Sovereign AI"
 
 
 def _boot_kernel() -> tuple:
@@ -67,96 +65,67 @@ def main() -> None:
         help="Run a single query and exit",
     )
     parser.add_argument(
+        "--context",
+        type=str,
+        default="{}",
+        help="JSON context dict for --query",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
-        help="Output query result as JSON (requires --query)",
+        help="Output query result as JSON",
+    )
+    parser.add_argument(
+        "--interactive",
+        "-i",
+        action="store_true",
+        help="Interactive REPL mode (single-turn engine)",
+    )
+    parser.add_argument(
+        "--mode",
+        "-m",
+        choices=["conversation"],
+        help="Extended mode: 'conversation' for stateful multi-turn REPL",
     )
     args = parser.parse_args()
 
     if args.version:
         from oe_engine.manifest import EngineManifest
-        print(f"Kingdom OS {_VERSION}")
+
+        print(f"Kingdom OS {__version__}")
         print("Kernel: capability-gated, deterministic, proof-carrying")
-        print(f"Engine: {EngineManifest.count_domains_fast()} domain invariant modules, 0 floats, 0 stubs")
+        print(
+            "Engine: "
+            f"{EngineManifest.count_domains_fast()} domain invariant modules, 0 floats, 0 stubs"
+        )
         sys.exit(0)
 
-    # Boot kernel for all modes
-    state, boot_proof = _boot_kernel()
+    _state, _boot_proof = _boot_kernel()
 
-    # Initialize engine
     engine = OrthogonalEngine()
     print(f"Engine loaded: {engine._manifest.domain_count} domains")
     print(f"Manifest hash: {engine._manifest.manifest_hash[:32]}...")
 
+    if args.mode == "conversation":
+        oe_cli.run_conversation_repl()
+        return
+
+    if args.interactive:
+        oe_cli.run_interactive_repl(
+            engine,
+            as_json=args.json,
+            prompt="kingdom-os> ",
+            banner_name="Kingdom OS",
+        )
+        return
+
     if args.query is not None:
-        # Single-query mode
-        result = engine.query(args.query)
-        if args.json:
-            print(json.dumps({
-                "text": result.text,
-                "confidence": str(result.confidence),
-                "thinker_hash": result.thinker_hash,
-                "speaker_hash": result.speaker_hash,
-                "proof_count": len(result.proof_chain),
-            }, indent=2))
-        else:
-            print(result.text)
-        sys.exit(0)
+        context = json.loads(args.context)
+        oe_cli.run_single_query(engine, args.query, context, args.json)
+        return
 
-    # Interactive conversation REPL
-    conversation_engine = ConversationEngine()
-    print("Conversation mode — commands: /status  /export <file>  /quit")
-    print("─" * 60)
-
-    while True:
-        try:
-            line = input("kingdom-os> ").strip()
-        except (EOFError, KeyboardInterrupt):
-            print()
-            _exit_repl(boot_proof, conversation_engine)
-
-        if not line:
-            continue
-
-        if line.lower() in ("/quit", "/exit"):
-            _exit_repl(boot_proof, conversation_engine)
-
-        if line.lower() == "/status":
-            state_info = conversation_engine.state
-            print(f"domains: {engine._manifest.domain_count}")
-            print(f"turns: {len(state_info.turns)}")
-            print(f"state_hash: {state_info.state_hash}")
-            continue
-
-        if line.lower().startswith("/export"):
-            parts = line.split(maxsplit=1)
-            filename = parts[1] if len(parts) > 1 else "transcript.json"
-            transcript = conversation_engine.export_transcript()
-            with open(filename, "w", encoding="utf-8") as fh:
-                json.dump(transcript, fh, indent=2)
-            print(f"Transcript saved to {filename}")
-            print(f"  state_hash:  {transcript['state_hash']}")
-            print(f"  merkle_root: {transcript['merkle_root']}")
-            continue
-
-        text, new_state = conversation_engine.process_turn(line)
-        print(text)
-        print(f"  [turn {len(new_state.turns) - 1} | state: {new_state.state_hash[:16]}...]")
-
-
-def _exit_repl(boot_proof: object, conversation_engine: "ConversationEngine") -> None:
-    """Print final hashes and exit cleanly."""
-    transcript = conversation_engine.export_transcript()
-    print(f"\nBoot proof hash:         {boot_proof.proof_hash}")  # type: ignore[attr-defined]
-    print(f"Conversation Merkle root: {transcript['merkle_root']}")
-    sys.exit(0)
+    oe_cli.run_conversation_repl()
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except Exception as e:
-        print(f"\nFATAL ERROR: {e}", file=sys.stderr)
-        traceback.print_exc()
-        input("\nPress Enter to exit...")
-        sys.exit(1)
+    main()

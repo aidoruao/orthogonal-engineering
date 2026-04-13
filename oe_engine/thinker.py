@@ -180,6 +180,7 @@ class ThinkerModule:
                         ))
 
         if not proofs:
+            all_passed = False
             no_proof = ProofObject(
                 rule="ThinkerNoChecks",
                 premises=[f"domain={domain_id}"],

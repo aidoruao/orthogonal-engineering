@@ -111,6 +111,28 @@ def check_evidence_type_nonempty(evidence: Evidence) -> Tuple[bool, ProofObject]
     )
 
 
+def check_case_has_evidence(case: Case, evidence: Evidence) -> Tuple[bool, ProofObject]:
+    """A case with a named defendant must carry supporting evidence.
+
+    Standard: Rome Statute Article 53 — evidence threshold for prosecution
+    falsifies_if: case.defendant is non-empty and evidence.case_id != case.case_id.
+    """
+    if case.defendant.strip():
+        ok = evidence.case_id == case.case_id
+    else:
+        ok = True
+    premises = [
+        f"case_id={case.case_id}",
+        f"defendant={case.defendant!r}",
+        f"evidence_case_id={evidence.case_id}",
+    ]
+    return ok, ProofObject(
+        rule="CaseHasEvidence",
+        premises=premises,
+        conclusion="PASS: evidence linked to case" if ok else "VIOLATION: missing/incorrect evidence linkage",
+    )
+
+
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS
 
@@ -141,6 +163,7 @@ def run_all_invariants() -> Dict[str, str]:
         (check_case_id_nonempty, (case,)),
         (check_crime_type_is_valid, (crime,)),
         (check_evidence_type_nonempty, (evidence,)),
+        (check_case_has_evidence, (case, evidence)),
     ]:
         _, p = fn(*args)
         results[fn.__name__] = p.conclusion

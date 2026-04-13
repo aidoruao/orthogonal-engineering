@@ -21,7 +21,7 @@ from src.sal.cross_domain_adjunction import DomainCategory
 # Keyword index: maps lowercase keywords → domain IDs (uppercase)
 # ---------------------------------------------------------------------------
 
-_KEYWORD_INDEX: Dict[str, List[str]] = {
+_CURATED_KEYWORD_INDEX: Dict[str, List[str]] = {
     # Constitutional / legal
     "amendment": ["D_AMENDMENT_PROCESS"],
     "ratification": ["D_AMENDMENT_PROCESS"],
@@ -658,13 +658,75 @@ _KEYWORD_INDEX: Dict[str, List[str]] = {
     "embezzlement": ["D_WHITECOLLAR"],
     "money laundering": ["D_WHITECOLLAR"],
     # International criminal (intl variants)
-    "intl criminal": ["D_INTL_CRIMINAL"],
-    "war crime": ["D_INTL_CRIMINAL", "D_INTERNATIONAL_CRIMINAL"],
-    "genocide": ["D_INTL_CRIMINAL", "D_INTERNATIONAL_CRIMINAL"],
+    "intl criminal": ["D_INTERNATIONAL_CRIMINAL"],
+    "war crime": ["D_INTERNATIONAL_CRIMINAL"],
+    "genocide": ["D_INTERNATIONAL_CRIMINAL"],
     # International humanitarian (intl variants)
-    "intl humanitarian": ["D_INTL_HUMANITARIAN"],
-    "law of armed conflict": ["D_INTL_HUMANITARIAN", "D_INTERNATIONAL_HUMANITARIAN"],
+    "intl humanitarian": ["D_INTERNATIONAL_HUMANITARIAN"],
+    "law of armed conflict": ["D_INTERNATIONAL_HUMANITARIAN"],
 }
+
+
+def _list_registered_domain_ids() -> List[str]:
+    """Return all domain IDs that have invariants.py modules."""
+    from oe_engine._paths import _base_path  # noqa: PLC0415
+
+    return [
+        inv.parent.name.upper()
+        for inv in sorted((_base_path() / "src" / "domains").glob("*/invariants.py"))
+    ]
+
+
+def _build_keyword_index() -> Dict[str, List[str]]:
+    """Auto-generate keyword index from registered domains and curated overrides.
+
+    Each domain gets baseline keyword coverage from its domain ID tokens
+    (e.g., D_SUPPLY_CHAIN_SECURITY -> supply, chain, security, supply chain security).
+
+    falsifies_if: any registered domain has zero keyword mappings.
+    """
+    index: Dict[str, List[str]] = {}
+
+    for domain_id in _list_registered_domain_ids():
+        tokens = [
+            t.lower()
+            for t in domain_id.split("_")[1:]
+            if t and any(ch.isalpha() for ch in t)
+        ]
+        if not tokens:
+            tokens = [domain_id.lower()]
+
+        generated_keywords = set(tokens)
+        generated_keywords.add(" ".join(tokens))
+        generated_keywords.add(domain_id.lower())
+
+        for keyword in generated_keywords:
+            if not keyword:
+                continue
+            index.setdefault(keyword, []).append(domain_id)
+
+    for keyword, domains in _CURATED_KEYWORD_INDEX.items():
+        for domain_id in domains:
+            index.setdefault(keyword, []).append(domain_id)
+
+    # De-duplicate deterministically and ensure only currently registered domains remain.
+    registered = set(_list_registered_domain_ids())
+    for keyword, domains in list(index.items()):
+        normalized = sorted({d for d in domains if d in registered})
+        if normalized:
+            index[keyword] = normalized
+        else:
+            del index[keyword]
+
+    # Guarantee every registered domain appears in at least one keyword mapping.
+    covered = {d for domains in index.values() for d in domains}
+    for domain_id in sorted(registered - covered):
+        index[domain_id.lower()] = [domain_id]
+
+    return index
+
+
+_KEYWORD_INDEX: Dict[str, List[str]] = _build_keyword_index()
 
 
 @dataclass(frozen=True)
@@ -746,6 +808,7 @@ class DomainRouter:
 
     def __init__(self) -> None:
         self._keyword_index = _KEYWORD_INDEX
+        self._domain_ids = set(_list_registered_domain_ids())
         self._category = _build_enriched_category()
 
     def route(self, query: str) -> RouteResult:
@@ -781,6 +844,8 @@ class DomainRouter:
             morphs = self._category.find_pattern_matches(domain_id)
             for m in morphs[:2]:  # max 2 morphisms per domain
                 target = m.target  # DomainMorphism.target is the string domain ID
+                if target not in self._domain_ids:
+                    continue
                 if target not in matched:
                     matched.append(target)
                     relevance.append(Fraction(1, 2))
