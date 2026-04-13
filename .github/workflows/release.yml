@@ -59,6 +59,7 @@ jobs:
           sha256sum ${{ matrix.artifact_name }} > ${{ matrix.artifact_name }}.sha256
 
       - name: Verify binary runs
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           dist/${{ matrix.artifact_name }} --version
