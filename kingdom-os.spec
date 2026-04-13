@@ -18,6 +18,21 @@ datas = [
     ('oe_engine', 'oe_engine'),
 ]
 
+# Auto-generate hiddenimports for all domain modules.
+# thinker.py uses importlib.import_module() dynamically, so PyInstaller
+# cannot trace these imports automatically — they must be listed explicitly.
+_domain_hidden_imports = []
+for _inv in sorted(glob.glob("src/domains/*/invariants.py")):
+    # e.g. "src/domains/d_aerospace/invariants.py" -> "src.domains.d_aerospace.invariants"
+    _mod = _inv.replace(os.sep, ".").replace("/", ".").removesuffix(".py")
+    _domain_hidden_imports.append(_mod)
+    # Also include the domain package itself and implementation module
+    _pkg = _mod.rsplit(".", 1)[0]  # e.g. "src.domains.d_aerospace"
+    _domain_hidden_imports.append(_pkg)
+    _impl_path = _inv.replace("invariants.py", "implementation.py")
+    if os.path.exists(_impl_path):
+        _domain_hidden_imports.append(_pkg + ".implementation")
+
 a = Analysis(
     ['kingdom_os_entry.py'],
     pathex=['.'],
@@ -43,6 +58,7 @@ a = Analysis(
         'oe_engine.conversation',
         'oe_engine.cli',
         'src.sal.cross_domain_adjunction',
+        *_domain_hidden_imports,
     ],
     hookspath=[],
     hooksconfig={},
