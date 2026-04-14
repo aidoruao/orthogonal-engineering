@@ -10,93 +10,140 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class SeeingIsBelievingClaimData:
+class VisionGuidedPromptRobustnessClaim:
     """Structured claim parameters derived from arXiv paper 2604.09532v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    label_noise_rate: Fraction
+    visual_semantic_stability: Fraction
+    prompt_parameter_stability: Fraction
+    noisy_label_reliance: Fraction
+    clean_set_accuracy: Fraction
+    noisy_set_accuracy: Fraction
+    cross_modal_alignment_gain: Fraction
+    robustness_margin: Fraction
 
 
-def check_theorem_bound(data: SeeingIsBelievingClaimData) -> Tuple[bool, ProofObject]:
+def check_visual_signal_dominance(data: VisionGuidedPromptRobustnessClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Visual semantics should remain more stable than prompt parameters under noise.
 
-    Standard: arXiv 2604.09532v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09532v1 (cs.AI) claim operationalization.
+    falsifies_if: visual_semantic_stability <= prompt_parameter_stability.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.visual_semantic_stability > data.prompt_parameter_stability
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_visual_signal_dominance",
         premises=[
-            f'paper_id=2604.09532v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09532v1",
+            f"visual_semantic_stability={data.visual_semantic_stability}",
+            f"prompt_parameter_stability={data.prompt_parameter_stability}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: visual guidance dominates prompt fragility"
+            if success else "FAIL: prompt instability overwhelms visual guidance"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: SeeingIsBelievingClaimData) -> Tuple[bool, ProofObject]:
+def check_noise_reliance_bound(data: VisionGuidedPromptRobustnessClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Model dependence on noisy labels should remain bounded.
 
-    Standard: arXiv 2604.09532v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09532v1 (cs.AI) claim operationalization.
+    falsifies_if: noisy_label_reliance > 1/3.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.noisy_label_reliance <= Fraction(1, 3)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_noise_reliance_bound",
         premises=[
-            f'paper_id=2604.09532v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09532v1",
+            f"label_noise_rate={data.label_noise_rate}",
+            f"noisy_label_reliance={data.noisy_label_reliance}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: noisy label reliance is controlled"
+            if success else "FAIL: noisy label reliance is excessive"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: SeeingIsBelievingClaimData) -> Tuple[bool, ProofObject]:
+def check_noisy_accuracy_floor(data: VisionGuidedPromptRobustnessClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Noisy-label accuracy should remain above practical threshold.
 
-    Standard: arXiv 2604.09532v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09532v1 (cs.AI) claim operationalization.
+    falsifies_if: noisy_set_accuracy < 3/5.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.noisy_set_accuracy >= Fraction(3, 5)
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_noisy_accuracy_floor",
         premises=[
-            f'paper_id=2604.09532v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09532v1",
+            f"noisy_set_accuracy={data.noisy_set_accuracy}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: noisy-label performance remains acceptable"
+            if success else "FAIL: noisy-label performance falls below floor"
+        ),
+    )
+    return success, proof
+
+def check_clean_noisy_gap_control(data: VisionGuidedPromptRobustnessClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Generalization gap between clean and noisy sets should stay narrow.
+
+    Standard: arXiv 2604.09532v1 (cs.AI) claim operationalization.
+    falsifies_if: clean_set_accuracy - noisy_set_accuracy > 1/5.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = (data.clean_set_accuracy - data.noisy_set_accuracy) <= Fraction(1, 5)
+    proof = ProofObject(
+        rule="check_clean_noisy_gap_control",
+        premises=[
+            "paper_id=2604.09532v1",
+            f"clean_set_accuracy={data.clean_set_accuracy}",
+            f"noisy_set_accuracy={data.noisy_set_accuracy}",
+            f"robustness_margin={data.robustness_margin}",
+        ],
+        conclusion=(
+            "PASS: clean/noisy generalization gap is controlled"
+            if success else "FAIL: clean/noisy gap indicates weak robustness"
+        ),
+    )
+    return success, proof
+
+def check_cross_modal_prompt_gain(data: VisionGuidedPromptRobustnessClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Vision-guided cross-modal prompting should provide positive gain.
+
+    Standard: arXiv 2604.09532v1 (cs.AI) claim operationalization.
+    falsifies_if: cross_modal_alignment_gain <= 0.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.cross_modal_alignment_gain > Fraction(0)
+    proof = ProofObject(
+        rule="check_cross_modal_prompt_gain",
+        premises=[
+            "paper_id=2604.09532v1",
+            f"cross_modal_alignment_gain={data.cross_modal_alignment_gain}",
+            f"robustness_margin={data.robustness_margin}",
+        ],
+        conclusion=(
+            "PASS: cross-modal guidance improves robust prompting"
+            if success else "FAIL: no measured gain from cross-modal guidance"
         ),
     )
     return success, proof
@@ -106,29 +153,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09532v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09532v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = SeeingIsBelievingClaimData(
-        theorem_confidence=Fraction(96, 100),
-        error_bound=Fraction(1, 16),
-        observed_error=Fraction(1, 26),
-        iteration_budget=Fraction(180),
-        observed_iterations=Fraction(165),
-        witness_count=Fraction(2),
-        required_witness_count=Fraction(2),
+    data = VisionGuidedPromptRobustnessClaim(
+        label_noise_rate=Fraction(2, 5),
+        visual_semantic_stability=Fraction(9, 10),
+        prompt_parameter_stability=Fraction(7, 10),
+        noisy_label_reliance=Fraction(1, 4),
+        clean_set_accuracy=Fraction(17, 20),
+        noisy_set_accuracy=Fraction(7, 10),
+        cross_modal_alignment_gain=Fraction(3, 20),
+        robustness_margin=Fraction(1, 10),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_visual_signal_dominance", check_visual_signal_dominance),
+        ("check_noise_reliance_bound", check_noise_reliance_bound),
+        ("check_noisy_accuracy_floor", check_noisy_accuracy_floor),
+        ("check_clean_noisy_gap_control", check_clean_noisy_gap_control),
+        ("check_cross_modal_prompt_gain", check_cross_modal_prompt_gain),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

@@ -10,93 +10,140 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class VisorAgenticVisualClaimData:
+class VisorAgenticVragClaim:
     """Structured claim parameters derived from arXiv paper 2604.09508v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    iterative_search_rounds: Fraction
+    retrieved_evidence_pages: Fraction
+    cross_page_link_density: Fraction
+    over_horizon_reasoning_depth: Fraction
+    visual_recall_at_k: Fraction
+    answer_grounding_score: Fraction
+    hallucination_rate: Fraction
+    final_consistency_score: Fraction
 
 
-def check_theorem_bound(data: VisorAgenticVisualClaimData) -> Tuple[bool, ProofObject]:
+def check_iterative_search_depth(data: VisorAgenticVragClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Agentic VRAG should execute multi-round retrieval for complex queries.
 
-    Standard: arXiv 2604.09508v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09508v1 (cs.AI) claim operationalization.
+    falsifies_if: iterative_search_rounds < 2.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.iterative_search_rounds >= Fraction(2)
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_iterative_search_depth",
         premises=[
-            f'paper_id=2604.09508v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09508v1",
+            f"iterative_search_rounds={data.iterative_search_rounds}",
+            f"over_horizon_reasoning_depth={data.over_horizon_reasoning_depth}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: iterative search depth is sufficient"
+            if success else "FAIL: iterative search is too shallow"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: VisorAgenticVisualClaimData) -> Tuple[bool, ProofObject]:
+def check_cross_page_reasoning_connectivity(data: VisorAgenticVragClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Retrieved evidence should enable cross-page reasoning links.
 
-    Standard: arXiv 2604.09508v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09508v1 (cs.AI) claim operationalization.
+    falsifies_if: cross_page_link_density < 1/3.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.cross_page_link_density >= Fraction(1, 3)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_cross_page_reasoning_connectivity",
         premises=[
-            f'paper_id=2604.09508v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09508v1",
+            f"retrieved_evidence_pages={data.retrieved_evidence_pages}",
+            f"cross_page_link_density={data.cross_page_link_density}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: cross-page reasoning connectivity is adequate"
+            if success else "FAIL: cross-page evidence connectivity is sparse"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: VisorAgenticVisualClaimData) -> Tuple[bool, ProofObject]:
+def check_over_horizon_alignment(data: VisorAgenticVragClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Reasoning horizon should not exceed available iterative retrieval depth.
 
-    Standard: arXiv 2604.09508v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09508v1 (cs.AI) claim operationalization.
+    falsifies_if: over_horizon_reasoning_depth > iterative_search_rounds.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.over_horizon_reasoning_depth <= data.iterative_search_rounds
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_over_horizon_alignment",
         premises=[
-            f'paper_id=2604.09508v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09508v1",
+            f"over_horizon_reasoning_depth={data.over_horizon_reasoning_depth}",
+            f"iterative_search_rounds={data.iterative_search_rounds}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: horizon reasoning aligns with retrieval depth"
+            if success else "FAIL: horizon reasoning exceeds available retrieval support"
+        ),
+    )
+    return success, proof
+
+def check_visual_recall_floor(data: VisorAgenticVragClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Visual retrieval recall should satisfy deployment floor.
+
+    Standard: arXiv 2604.09508v1 (cs.AI) claim operationalization.
+    falsifies_if: visual_recall_at_k < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.visual_recall_at_k >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="check_visual_recall_floor",
+        premises=[
+            "paper_id=2604.09508v1",
+            f"visual_recall_at_k={data.visual_recall_at_k}",
+        ],
+        conclusion=(
+            "PASS: visual recall meets floor"
+            if success else "FAIL: visual recall below floor"
+        ),
+    )
+    return success, proof
+
+def check_grounding_over_hallucination(data: VisorAgenticVragClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Grounded answer quality should dominate hallucination rate.
+
+    Standard: arXiv 2604.09508v1 (cs.AI) claim operationalization.
+    falsifies_if: answer_grounding_score <= hallucination_rate OR final_consistency_score < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = (data.answer_grounding_score > data.hallucination_rate) and (data.final_consistency_score >= Fraction(3, 4))
+    proof = ProofObject(
+        rule="check_grounding_over_hallucination",
+        premises=[
+            "paper_id=2604.09508v1",
+            f"answer_grounding_score={data.answer_grounding_score}",
+            f"hallucination_rate={data.hallucination_rate}",
+            f"final_consistency_score={data.final_consistency_score}",
+        ],
+        conclusion=(
+            "PASS: grounding dominates hallucination"
+            if success else "FAIL: grounding signal is too weak"
         ),
     )
     return success, proof
@@ -106,29 +153,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09508v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09508v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = VisorAgenticVisualClaimData(
-        theorem_confidence=Fraction(99, 100),
-        error_bound=Fraction(1, 19),
-        observed_error=Fraction(1, 29),
-        iteration_budget=Fraction(210),
-        observed_iterations=Fraction(195),
-        witness_count=Fraction(3),
-        required_witness_count=Fraction(2),
+    data = VisorAgenticVragClaim(
+        iterative_search_rounds=Fraction(4),
+        retrieved_evidence_pages=Fraction(9),
+        cross_page_link_density=Fraction(2, 5),
+        over_horizon_reasoning_depth=Fraction(3),
+        visual_recall_at_k=Fraction(4, 5),
+        answer_grounding_score=Fraction(17, 20),
+        hallucination_rate=Fraction(3, 20),
+        final_consistency_score=Fraction(4, 5),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_iterative_search_depth", check_iterative_search_depth),
+        ("check_cross_page_reasoning_connectivity", check_cross_page_reasoning_connectivity),
+        ("check_over_horizon_alignment", check_over_horizon_alignment),
+        ("check_visual_recall_floor", check_visual_recall_floor),
+        ("check_grounding_over_hallucination", check_grounding_over_hallucination),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

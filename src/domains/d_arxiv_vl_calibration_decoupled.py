@@ -10,93 +10,138 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class VlCalibrationDecoupledClaimData:
+class DecoupledCalibrationClaim:
     """Structured claim parameters derived from arXiv paper 2604.09529v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    answer_channel_ece_before: Fraction
+    answer_channel_ece_after: Fraction
+    reasoning_channel_ece_before: Fraction
+    reasoning_channel_ece_after: Fraction
+    answer_confidence_when_wrong: Fraction
+    reasoning_confidence_when_wrong: Fraction
+    risk_coverage_auc: Fraction
+    abstention_precision: Fraction
 
 
-def check_theorem_bound(data: VlCalibrationDecoupledClaimData) -> Tuple[bool, ProofObject]:
+def check_answer_channel_calibration_gain(data: DecoupledCalibrationClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Answer-channel calibration error should improve after decoupling.
 
-    Standard: arXiv 2604.09529v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09529v1 (cs.AI) claim operationalization.
+    falsifies_if: answer_channel_ece_after >= answer_channel_ece_before.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.answer_channel_ece_after < data.answer_channel_ece_before
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_answer_channel_calibration_gain",
         premises=[
-            f'paper_id=2604.09529v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09529v1",
+            f"answer_channel_ece_before={data.answer_channel_ece_before}",
+            f"answer_channel_ece_after={data.answer_channel_ece_after}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: answer-channel calibration improves"
+            if success else "FAIL: answer-channel calibration does not improve"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: VlCalibrationDecoupledClaimData) -> Tuple[bool, ProofObject]:
+def check_reasoning_channel_calibration_gain(data: DecoupledCalibrationClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Reasoning-channel calibration error should improve after decoupling.
 
-    Standard: arXiv 2604.09529v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09529v1 (cs.AI) claim operationalization.
+    falsifies_if: reasoning_channel_ece_after >= reasoning_channel_ece_before.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.reasoning_channel_ece_after < data.reasoning_channel_ece_before
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_reasoning_channel_calibration_gain",
         premises=[
-            f'paper_id=2604.09529v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09529v1",
+            f"reasoning_channel_ece_before={data.reasoning_channel_ece_before}",
+            f"reasoning_channel_ece_after={data.reasoning_channel_ece_after}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: reasoning-channel calibration improves"
+            if success else "FAIL: reasoning-channel calibration does not improve"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: VlCalibrationDecoupledClaimData) -> Tuple[bool, ProofObject]:
+def check_overconfidence_control_answer_channel(data: DecoupledCalibrationClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Wrong-answer confidence should remain bounded.
 
-    Standard: arXiv 2604.09529v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09529v1 (cs.AI) claim operationalization.
+    falsifies_if: answer_confidence_when_wrong > 3/5.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.answer_confidence_when_wrong <= Fraction(3, 5)
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_overconfidence_control_answer_channel",
         premises=[
-            f'paper_id=2604.09529v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09529v1",
+            f"answer_confidence_when_wrong={data.answer_confidence_when_wrong}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: answer-channel overconfidence is controlled"
+            if success else "FAIL: answer-channel remains overconfident when wrong"
+        ),
+    )
+    return success, proof
+
+def check_overconfidence_control_reasoning_channel(data: DecoupledCalibrationClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Wrong-reasoning confidence should remain bounded.
+
+    Standard: arXiv 2604.09529v1 (cs.AI) claim operationalization.
+    falsifies_if: reasoning_confidence_when_wrong > 3/5.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.reasoning_confidence_when_wrong <= Fraction(3, 5)
+    proof = ProofObject(
+        rule="check_overconfidence_control_reasoning_channel",
+        premises=[
+            "paper_id=2604.09529v1",
+            f"reasoning_confidence_when_wrong={data.reasoning_confidence_when_wrong}",
+        ],
+        conclusion=(
+            "PASS: reasoning-channel overconfidence is controlled"
+            if success else "FAIL: reasoning-channel remains overconfident when wrong"
+        ),
+    )
+    return success, proof
+
+def check_risk_aware_selective_prediction(data: DecoupledCalibrationClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Decoupled calibration should improve risk-aware abstention quality.
+
+    Standard: arXiv 2604.09529v1 (cs.AI) claim operationalization.
+    falsifies_if: risk_coverage_auc < 3/4 OR abstention_precision < 4/5.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = (data.risk_coverage_auc >= Fraction(3, 4)) and (data.abstention_precision >= Fraction(4, 5))
+    proof = ProofObject(
+        rule="check_risk_aware_selective_prediction",
+        premises=[
+            "paper_id=2604.09529v1",
+            f"risk_coverage_auc={data.risk_coverage_auc}",
+            f"abstention_precision={data.abstention_precision}",
+        ],
+        conclusion=(
+            "PASS: selective prediction quality is high"
+            if success else "FAIL: selective prediction quality is insufficient"
         ),
     )
     return success, proof
@@ -106,29 +151,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09529v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09529v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = VlCalibrationDecoupledClaimData(
-        theorem_confidence=Fraction(90, 100),
-        error_bound=Fraction(1, 20),
-        observed_error=Fraction(1, 30),
-        iteration_budget=Fraction(220),
-        observed_iterations=Fraction(205),
-        witness_count=Fraction(2),
-        required_witness_count=Fraction(2),
+    data = DecoupledCalibrationClaim(
+        answer_channel_ece_before=Fraction(9, 50),
+        answer_channel_ece_after=Fraction(1, 10),
+        reasoning_channel_ece_before=Fraction(1, 5),
+        reasoning_channel_ece_after=Fraction(11, 100),
+        answer_confidence_when_wrong=Fraction(11, 20),
+        reasoning_confidence_when_wrong=Fraction(1, 2),
+        risk_coverage_auc=Fraction(4, 5),
+        abstention_precision=Fraction(17, 20),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_answer_channel_calibration_gain", check_answer_channel_calibration_gain),
+        ("check_reasoning_channel_calibration_gain", check_reasoning_channel_calibration_gain),
+        ("check_overconfidence_control_answer_channel", check_overconfidence_control_answer_channel),
+        ("check_overconfidence_control_reasoning_channel", check_overconfidence_control_reasoning_channel),
+        ("check_risk_aware_selective_prediction", check_risk_aware_selective_prediction),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

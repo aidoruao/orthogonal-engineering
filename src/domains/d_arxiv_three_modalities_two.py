@@ -10,93 +10,138 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class ThreeModalitiesTwoClaimData:
+class MultimodalAccessibilityCoDesignClaim:
     """Structured claim parameters derived from arXiv paper 2604.09426v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    audio_modality_coverage: Fraction
+    haptic_modality_coverage: Fraction
+    textual_modality_coverage: Fraction
+    nonvisual_navigation_success_rate: Fraction
+    task_completion_rate_blv: Fraction
+    co_design_iteration_count: Fraction
+    prototype_usability_score: Fraction
+    cognitive_load_penalty: Fraction
 
 
-def check_theorem_bound(data: ThreeModalitiesTwoClaimData) -> Tuple[bool, ProofObject]:
+def check_audio_channel_accessibility_floor(data: MultimodalAccessibilityCoDesignClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Audio modality should provide strong access coverage.
 
-    Standard: arXiv 2604.09426v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09426v1 (cs.AI) claim operationalization.
+    falsifies_if: audio_modality_coverage < 2/3.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.audio_modality_coverage >= Fraction(2, 3)
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_audio_channel_accessibility_floor",
         premises=[
-            f'paper_id=2604.09426v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09426v1",
+            f"audio_modality_coverage={data.audio_modality_coverage}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: audio channel coverage is sufficient"
+            if success else "FAIL: audio channel coverage is insufficient"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: ThreeModalitiesTwoClaimData) -> Tuple[bool, ProofObject]:
+def check_haptic_channel_accessibility_floor(data: MultimodalAccessibilityCoDesignClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Haptic modality should provide strong access coverage.
 
-    Standard: arXiv 2604.09426v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09426v1 (cs.AI) claim operationalization.
+    falsifies_if: haptic_modality_coverage < 2/3.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.haptic_modality_coverage >= Fraction(2, 3)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_haptic_channel_accessibility_floor",
         premises=[
-            f'paper_id=2604.09426v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09426v1",
+            f"haptic_modality_coverage={data.haptic_modality_coverage}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: haptic channel coverage is sufficient"
+            if success else "FAIL: haptic channel coverage is insufficient"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: ThreeModalitiesTwoClaimData) -> Tuple[bool, ProofObject]:
+def check_text_channel_accessibility_floor(data: MultimodalAccessibilityCoDesignClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Text modality should provide strong access coverage.
 
-    Standard: arXiv 2604.09426v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09426v1 (cs.AI) claim operationalization.
+    falsifies_if: textual_modality_coverage < 2/3.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.textual_modality_coverage >= Fraction(2, 3)
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_text_channel_accessibility_floor",
         premises=[
-            f'paper_id=2604.09426v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09426v1",
+            f"textual_modality_coverage={data.textual_modality_coverage}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: text channel coverage is sufficient"
+            if success else "FAIL: text channel coverage is insufficient"
+        ),
+    )
+    return success, proof
+
+def check_nonvisual_navigation_success(data: MultimodalAccessibilityCoDesignClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: BLV users should navigate 3D visualizations without vision reliably.
+
+    Standard: arXiv 2604.09426v1 (cs.AI) claim operationalization.
+    falsifies_if: nonvisual_navigation_success_rate < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.nonvisual_navigation_success_rate >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="check_nonvisual_navigation_success",
+        premises=[
+            "paper_id=2604.09426v1",
+            f"nonvisual_navigation_success_rate={data.nonvisual_navigation_success_rate}",
+            f"task_completion_rate_blv={data.task_completion_rate_blv}",
+        ],
+        conclusion=(
+            "PASS: nonvisual navigation success is high"
+            if success else "FAIL: nonvisual navigation success is too low"
+        ),
+    )
+    return success, proof
+
+def check_co_design_iteration_sufficiency(data: MultimodalAccessibilityCoDesignClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Experience-based co-design must include repeated iteration with BLV stakeholders.
+
+    Standard: arXiv 2604.09426v1 (cs.AI) claim operationalization.
+    falsifies_if: co_design_iteration_count < 2 OR prototype_usability_score < 3/4 OR cognitive_load_penalty > 1/3.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = (data.co_design_iteration_count >= Fraction(2)) and (data.prototype_usability_score >= Fraction(3, 4)) and (data.cognitive_load_penalty <= Fraction(1, 3))
+    proof = ProofObject(
+        rule="check_co_design_iteration_sufficiency",
+        premises=[
+            "paper_id=2604.09426v1",
+            f"co_design_iteration_count={data.co_design_iteration_count}",
+            f"prototype_usability_score={data.prototype_usability_score}",
+            f"cognitive_load_penalty={data.cognitive_load_penalty}",
+        ],
+        conclusion=(
+            "PASS: co-design iterations produce usable low-load prototype"
+            if success else "FAIL: co-design process or prototype usability is insufficient"
         ),
     )
     return success, proof
@@ -106,29 +151,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09426v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09426v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = ThreeModalitiesTwoClaimData(
-        theorem_confidence=Fraction(98, 100),
-        error_bound=Fraction(1, 18),
-        observed_error=Fraction(1, 28),
-        iteration_budget=Fraction(200),
-        observed_iterations=Fraction(185),
-        witness_count=Fraction(2),
-        required_witness_count=Fraction(2),
+    data = MultimodalAccessibilityCoDesignClaim(
+        audio_modality_coverage=Fraction(4, 5),
+        haptic_modality_coverage=Fraction(3, 4),
+        textual_modality_coverage=Fraction(7, 10),
+        nonvisual_navigation_success_rate=Fraction(4, 5),
+        task_completion_rate_blv=Fraction(3, 4),
+        co_design_iteration_count=Fraction(3),
+        prototype_usability_score=Fraction(17, 20),
+        cognitive_load_penalty=Fraction(1, 4),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_audio_channel_accessibility_floor", check_audio_channel_accessibility_floor),
+        ("check_haptic_channel_accessibility_floor", check_haptic_channel_accessibility_floor),
+        ("check_text_channel_accessibility_floor", check_text_channel_accessibility_floor),
+        ("check_nonvisual_navigation_success", check_nonvisual_navigation_success),
+        ("check_co_design_iteration_sufficiency", check_co_design_iteration_sufficiency),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

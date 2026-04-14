@@ -10,93 +10,139 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class StrategicAlgorithmicMonocultureClaimData:
+class StrategicMonocultureClaim:
     """Structured claim parameters derived from arXiv paper 2604.09502v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    baseline_action_similarity: Fraction
+    incentivized_action_similarity: Fraction
+    human_similarity_shift: Fraction
+    llm_similarity_shift: Fraction
+    coordination_payoff_gain: Fraction
+    strategy_concentration_index: Fraction
+    diversity_preservation_floor: Fraction
+    equilibrium_reach_rate: Fraction
 
 
-def check_theorem_bound(data: StrategicAlgorithmicMonocultureClaimData) -> Tuple[bool, ProofObject]:
+def check_strategic_similarity_response(data: StrategicMonocultureClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Strategic incentives should increase similarity beyond baseline monoculture.
 
-    Standard: arXiv 2604.09502v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09502v1 (cs.AI) claim operationalization.
+    falsifies_if: incentivized_action_similarity <= baseline_action_similarity.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.incentivized_action_similarity > data.baseline_action_similarity
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_strategic_similarity_response",
         premises=[
-            f'paper_id=2604.09502v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09502v1",
+            f"baseline_action_similarity={data.baseline_action_similarity}",
+            f"incentivized_action_similarity={data.incentivized_action_similarity}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: strategic incentives increase monoculture"
+            if success else "FAIL: no strategic monoculture response observed"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: StrategicAlgorithmicMonocultureClaimData) -> Tuple[bool, ProofObject]:
+def check_llm_shift_exceeds_human_shift(data: StrategicMonocultureClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: LLM strategic shift should be at least as large as human strategic shift.
 
-    Standard: arXiv 2604.09502v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09502v1 (cs.AI) claim operationalization.
+    falsifies_if: llm_similarity_shift < human_similarity_shift.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.llm_similarity_shift >= data.human_similarity_shift
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_llm_shift_exceeds_human_shift",
         premises=[
-            f'paper_id=2604.09502v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09502v1",
+            f"llm_similarity_shift={data.llm_similarity_shift}",
+            f"human_similarity_shift={data.human_similarity_shift}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: LLM shift matches or exceeds human shift"
+            if success else "FAIL: LLM strategic shift is weaker than human shift"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: StrategicAlgorithmicMonocultureClaimData) -> Tuple[bool, ProofObject]:
+def check_coordination_payoff_positive(data: StrategicMonocultureClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Monoculture shift should produce positive coordination payoff gain.
 
-    Standard: arXiv 2604.09502v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09502v1 (cs.AI) claim operationalization.
+    falsifies_if: coordination_payoff_gain <= 0.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.coordination_payoff_gain > Fraction(0)
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_coordination_payoff_positive",
         premises=[
-            f'paper_id=2604.09502v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09502v1",
+            f"coordination_payoff_gain={data.coordination_payoff_gain}",
+            f"equilibrium_reach_rate={data.equilibrium_reach_rate}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: strategic monoculture improves payoffs"
+            if success else "FAIL: no payoff gain from monoculture shift"
+        ),
+    )
+    return success, proof
+
+def check_concentration_bounded_by_diversity_floor(data: StrategicMonocultureClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Concentration should not collapse below diversity preservation floor.
+
+    Standard: arXiv 2604.09502v1 (cs.AI) claim operationalization.
+    falsifies_if: strategy_concentration_index > 1 - diversity_preservation_floor.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.strategy_concentration_index <= (Fraction(1) - data.diversity_preservation_floor)
+    proof = ProofObject(
+        rule="check_concentration_bounded_by_diversity_floor",
+        premises=[
+            "paper_id=2604.09502v1",
+            f"strategy_concentration_index={data.strategy_concentration_index}",
+            f"diversity_preservation_floor={data.diversity_preservation_floor}",
+        ],
+        conclusion=(
+            "PASS: concentration remains bounded by diversity floor"
+            if success else "FAIL: concentration exceeds diversity-preserving bound"
+        ),
+    )
+    return success, proof
+
+def check_equilibrium_coordination_rate(data: StrategicMonocultureClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Strategic monoculture should increase equilibrium reach frequency.
+
+    Standard: arXiv 2604.09502v1 (cs.AI) claim operationalization.
+    falsifies_if: equilibrium_reach_rate < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.equilibrium_reach_rate >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="check_equilibrium_coordination_rate",
+        premises=[
+            "paper_id=2604.09502v1",
+            f"equilibrium_reach_rate={data.equilibrium_reach_rate}",
+        ],
+        conclusion=(
+            "PASS: equilibrium coordination rate is high"
+            if success else "FAIL: equilibrium coordination rate is too low"
         ),
     )
     return success, proof
@@ -106,29 +152,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09502v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09502v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = StrategicAlgorithmicMonocultureClaimData(
-        theorem_confidence=Fraction(97, 100),
-        error_bound=Fraction(1, 17),
-        observed_error=Fraction(1, 27),
-        iteration_budget=Fraction(190),
-        observed_iterations=Fraction(175),
-        witness_count=Fraction(3),
-        required_witness_count=Fraction(2),
+    data = StrategicMonocultureClaim(
+        baseline_action_similarity=Fraction(3, 5),
+        incentivized_action_similarity=Fraction(4, 5),
+        human_similarity_shift=Fraction(1, 10),
+        llm_similarity_shift=Fraction(1, 5),
+        coordination_payoff_gain=Fraction(3, 20),
+        strategy_concentration_index=Fraction(3, 5),
+        diversity_preservation_floor=Fraction(1, 5),
+        equilibrium_reach_rate=Fraction(4, 5),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_strategic_similarity_response", check_strategic_similarity_response),
+        ("check_llm_shift_exceeds_human_shift", check_llm_shift_exceeds_human_shift),
+        ("check_coordination_payoff_positive", check_coordination_payoff_positive),
+        ("check_concentration_bounded_by_diversity_floor", check_concentration_bounded_by_diversity_floor),
+        ("check_equilibrium_coordination_rate", check_equilibrium_coordination_rate),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

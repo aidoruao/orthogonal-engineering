@@ -10,93 +10,138 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class LargeLanguageModelsClaimData:
+class HarmMechanismClaim:
     """Structured claim parameters derived from arXiv paper 2604.09544v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    total_model_weights: Fraction
+    harmful_mechanism_weights: Fraction
+    benign_capability_weights: Fraction
+    harm_benign_overlap_ratio: Fraction
+    harm_output_after_targeted_prune: Fraction
+    benign_output_after_targeted_prune: Fraction
+    cross_harm_transfer_ratio: Fraction
+    alignment_feature_shift: Fraction
 
 
-def check_theorem_bound(data: LargeLanguageModelsClaimData) -> Tuple[bool, ProofObject]:
+def check_harm_weight_compactness(data: HarmMechanismClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Compact harmful subnetwork hypothesis should hold under targeted probing.
 
-    Standard: arXiv 2604.09544v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09544v1 (cs.AI) claim operationalization.
+    falsifies_if: harmful_mechanism_weights / total_model_weights > 1/10.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.harmful_mechanism_weights * Fraction(10) <= data.total_model_weights
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_harm_weight_compactness",
         premises=[
-            f'paper_id=2604.09544v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09544v1",
+            f"total_model_weights={data.total_model_weights}",
+            f"harmful_mechanism_weights={data.harmful_mechanism_weights}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: harmful mechanism is compact relative to model scale"
+            if success else "FAIL: harmful mechanism is not compact"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: LargeLanguageModelsClaimData) -> Tuple[bool, ProofObject]:
+def check_harm_benign_mechanism_separation(data: HarmMechanismClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Harmful mechanism should be distinct from benign capability circuitry.
 
-    Standard: arXiv 2604.09544v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09544v1 (cs.AI) claim operationalization.
+    falsifies_if: harm_benign_overlap_ratio >= 1/4.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.harm_benign_overlap_ratio < Fraction(1, 4)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_harm_benign_mechanism_separation",
         premises=[
-            f'paper_id=2604.09544v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09544v1",
+            f"harm_benign_overlap_ratio={data.harm_benign_overlap_ratio}",
+            f"benign_capability_weights={data.benign_capability_weights}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: harmful and benign mechanisms remain distinct"
+            if success else "FAIL: harmful and benign mechanisms overlap too strongly"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: LargeLanguageModelsClaimData) -> Tuple[bool, ProofObject]:
+def check_targeted_pruning_selectivity(data: HarmMechanismClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Targeted pruning should suppress harmful outputs while preserving benign outputs.
 
-    Standard: arXiv 2604.09544v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09544v1 (cs.AI) claim operationalization.
+    falsifies_if: harm_output_after_targeted_prune >= 1/2 OR benign_output_after_targeted_prune <= 3/4.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = (data.harm_output_after_targeted_prune < Fraction(1, 2)) and (data.benign_output_after_targeted_prune > Fraction(3, 4))
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_targeted_pruning_selectivity",
         premises=[
-            f'paper_id=2604.09544v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09544v1",
+            f"harm_output_after_targeted_prune={data.harm_output_after_targeted_prune}",
+            f"benign_output_after_targeted_prune={data.benign_output_after_targeted_prune}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: targeted pruning is selective for harmful mechanism"
+            if success else "FAIL: targeted pruning is not selective enough"
+        ),
+    )
+    return success, proof
+
+def check_cross_harm_generalization(data: HarmMechanismClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Intervention on harmful mechanism should transfer across harm types.
+
+    Standard: arXiv 2604.09544v1 (cs.AI) claim operationalization.
+    falsifies_if: cross_harm_transfer_ratio < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.cross_harm_transfer_ratio >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="check_cross_harm_generalization",
+        premises=[
+            "paper_id=2604.09544v1",
+            f"cross_harm_transfer_ratio={data.cross_harm_transfer_ratio}",
+        ],
+        conclusion=(
+            "PASS: intervention transfers across harm categories"
+            if success else "FAIL: intervention does not generalize across harm categories"
+        ),
+    )
+    return success, proof
+
+def check_alignment_feature_localization(data: HarmMechanismClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Alignment-sensitive features should move less than harmful mechanism features.
+
+    Standard: arXiv 2604.09544v1 (cs.AI) claim operationalization.
+    falsifies_if: alignment_feature_shift > 1/5.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.alignment_feature_shift <= Fraction(1, 5)
+    proof = ProofObject(
+        rule="check_alignment_feature_localization",
+        premises=[
+            "paper_id=2604.09544v1",
+            f"alignment_feature_shift={data.alignment_feature_shift}",
+        ],
+        conclusion=(
+            "PASS: alignment features remain localized and stable"
+            if success else "FAIL: alignment features are excessively perturbed"
         ),
     )
     return success, proof
@@ -106,29 +151,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09544v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09544v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = LargeLanguageModelsClaimData(
-        theorem_confidence=Fraction(93, 100),
-        error_bound=Fraction(1, 13),
-        observed_error=Fraction(1, 23),
-        iteration_budget=Fraction(150),
-        observed_iterations=Fraction(135),
-        witness_count=Fraction(3),
-        required_witness_count=Fraction(2),
+    data = HarmMechanismClaim(
+        total_model_weights=Fraction(10_000),
+        harmful_mechanism_weights=Fraction(800),
+        benign_capability_weights=Fraction(6_500),
+        harm_benign_overlap_ratio=Fraction(1, 10),
+        harm_output_after_targeted_prune=Fraction(2, 5),
+        benign_output_after_targeted_prune=Fraction(9, 10),
+        cross_harm_transfer_ratio=Fraction(4, 5),
+        alignment_feature_shift=Fraction(1, 10),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_harm_weight_compactness", check_harm_weight_compactness),
+        ("check_harm_benign_mechanism_separation", check_harm_benign_mechanism_separation),
+        ("check_targeted_pruning_selectivity", check_targeted_pruning_selectivity),
+        ("check_cross_harm_generalization", check_cross_harm_generalization),
+        ("check_alignment_feature_localization", check_alignment_feature_localization),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

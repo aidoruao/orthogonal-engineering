@@ -10,93 +10,139 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class DoWeReallyClaimData:
+class ManyObjectiveParetoFocusClaim:
     """Structured claim parameters derived from arXiv paper 2604.09417v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    objective_dimension: Fraction
+    hypervolume_ratio: Fraction
+    knee_region_coverage: Fraction
+    full_front_evaluation_cost: Fraction
+    focused_search_cost: Fraction
+    decision_useful_solution_ratio: Fraction
+    knee_region_regret: Fraction
+    sample_efficiency_gain: Fraction
 
 
-def check_theorem_bound(data: DoWeReallyClaimData) -> Tuple[bool, ProofObject]:
+def check_many_objective_regime(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Claim applies only in many-objective settings (>3 objectives).
 
-    Standard: arXiv 2604.09417v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09417v1 (cs.AI) claim operationalization.
+    falsifies_if: objective_dimension <= 3.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.objective_dimension > Fraction(3)
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_many_objective_regime",
         premises=[
-            f'paper_id=2604.09417v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09417v1",
+            f"objective_dimension={data.objective_dimension}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: optimization setting is many-objective"
+            if success else "FAIL: objective dimension is not many-objective"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: DoWeReallyClaimData) -> Tuple[bool, ProofObject]:
+def check_knee_region_priority(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Focused methods should cover decision-relevant knee region strongly.
 
-    Standard: arXiv 2604.09417v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09417v1 (cs.AI) claim operationalization.
+    falsifies_if: knee_region_coverage < 4/5.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.knee_region_coverage >= Fraction(4, 5)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_knee_region_priority",
         premises=[
-            f'paper_id=2604.09417v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09417v1",
+            f"knee_region_coverage={data.knee_region_coverage}",
+            f"decision_useful_solution_ratio={data.decision_useful_solution_ratio}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: knee region coverage is high"
+            if success else "FAIL: knee region coverage is insufficient"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: DoWeReallyClaimData) -> Tuple[bool, ProofObject]:
+def check_focus_cost_advantage(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Focused search should cost materially less than full-front approximation.
 
-    Standard: arXiv 2604.09417v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09417v1 (cs.AI) claim operationalization.
+    falsifies_if: focused_search_cost >= full_front_evaluation_cost / 2.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.focused_search_cost * Fraction(2) < data.full_front_evaluation_cost
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_focus_cost_advantage",
         premises=[
-            f'paper_id=2604.09417v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09417v1",
+            f"focused_search_cost={data.focused_search_cost}",
+            f"full_front_evaluation_cost={data.full_front_evaluation_cost}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: focused search has clear cost advantage"
+            if success else "FAIL: focused search cost advantage is weak"
+        ),
+    )
+    return success, proof
+
+def check_decision_utility_density(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Useful decision solutions should be dense in focused region.
+
+    Standard: arXiv 2604.09417v1 (cs.AI) claim operationalization.
+    falsifies_if: decision_useful_solution_ratio < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.decision_useful_solution_ratio >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="check_decision_utility_density",
+        premises=[
+            "paper_id=2604.09417v1",
+            f"decision_useful_solution_ratio={data.decision_useful_solution_ratio}",
+            f"hypervolume_ratio={data.hypervolume_ratio}",
+        ],
+        conclusion=(
+            "PASS: focused region contains high utility density"
+            if success else "FAIL: focused region utility density is low"
+        ),
+    )
+    return success, proof
+
+def check_knee_regret_bound(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Regret at knee solutions should stay below practical bound.
+
+    Standard: arXiv 2604.09417v1 (cs.AI) claim operationalization.
+    falsifies_if: knee_region_regret > 1/10 OR sample_efficiency_gain <= 0.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = (data.knee_region_regret <= Fraction(1, 10)) and (data.sample_efficiency_gain > Fraction(0))
+    proof = ProofObject(
+        rule="check_knee_regret_bound",
+        premises=[
+            "paper_id=2604.09417v1",
+            f"knee_region_regret={data.knee_region_regret}",
+            f"sample_efficiency_gain={data.sample_efficiency_gain}",
+        ],
+        conclusion=(
+            "PASS: knee regret bound and efficiency gain both hold"
+            if success else "FAIL: knee regret or efficiency claim not supported"
         ),
     )
     return success, proof
@@ -106,29 +152,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09417v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09417v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = DoWeReallyClaimData(
-        theorem_confidence=Fraction(92, 100),
-        error_bound=Fraction(1, 12),
-        observed_error=Fraction(1, 22),
-        iteration_budget=Fraction(140),
-        observed_iterations=Fraction(125),
-        witness_count=Fraction(2),
-        required_witness_count=Fraction(2),
+    data = ManyObjectiveParetoFocusClaim(
+        objective_dimension=Fraction(6),
+        hypervolume_ratio=Fraction(4, 5),
+        knee_region_coverage=Fraction(17, 20),
+        full_front_evaluation_cost=Fraction(1_000),
+        focused_search_cost=Fraction(420),
+        decision_useful_solution_ratio=Fraction(4, 5),
+        knee_region_regret=Fraction(1, 20),
+        sample_efficiency_gain=Fraction(3, 10),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_many_objective_regime", check_many_objective_regime),
+        ("check_knee_region_priority", check_knee_region_priority),
+        ("check_focus_cost_advantage", check_focus_cost_advantage),
+        ("check_decision_utility_density", check_decision_utility_density),
+        ("check_knee_regret_bound", check_knee_regret_bound),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

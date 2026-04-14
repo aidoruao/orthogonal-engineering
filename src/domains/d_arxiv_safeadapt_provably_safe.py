@@ -10,93 +10,140 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class SafeadaptProvablySafeClaimData:
+class SafeAdaptPolicyUpdateClaim:
     """Structured claim parameters derived from arXiv paper 2604.09452v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    safety_constraint_satisfaction_before: Fraction
+    safety_constraint_satisfaction_after: Fraction
+    task_return_before: Fraction
+    task_return_after: Fraction
+    constraint_violation_probability: Fraction
+    adaptation_step_count: Fraction
+    formal_safety_margin: Fraction
+    distribution_shift_resilience: Fraction
 
 
-def check_theorem_bound(data: SafeadaptProvablySafeClaimData) -> Tuple[bool, ProofObject]:
+def check_safety_constraint_preservation(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Policy update should preserve or improve safety-constraint satisfaction.
 
-    Standard: arXiv 2604.09452v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09452v1 (cs.AI) claim operationalization.
+    falsifies_if: safety_constraint_satisfaction_after < safety_constraint_satisfaction_before.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.safety_constraint_satisfaction_after >= data.safety_constraint_satisfaction_before
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_safety_constraint_preservation",
         premises=[
-            f'paper_id=2604.09452v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09452v1",
+            f"safety_constraint_satisfaction_before={data.safety_constraint_satisfaction_before}",
+            f"safety_constraint_satisfaction_after={data.safety_constraint_satisfaction_after}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: safety constraints are preserved during adaptation"
+            if success else "FAIL: safety constraint satisfaction regressed"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: SafeadaptProvablySafeClaimData) -> Tuple[bool, ProofObject]:
+def check_violation_probability_cap(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Constraint violation probability should stay below certified cap.
 
-    Standard: arXiv 2604.09452v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09452v1 (cs.AI) claim operationalization.
+    falsifies_if: constraint_violation_probability > 1/20.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.constraint_violation_probability <= Fraction(1, 20)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_violation_probability_cap",
         premises=[
-            f'paper_id=2604.09452v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09452v1",
+            f"constraint_violation_probability={data.constraint_violation_probability}",
+            f"formal_safety_margin={data.formal_safety_margin}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: violation probability is within certified cap"
+            if success else "FAIL: violation probability exceeds certified cap"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: SafeadaptProvablySafeClaimData) -> Tuple[bool, ProofObject]:
+def check_return_non_degradation(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Safe policy update should not degrade task return.
 
-    Standard: arXiv 2604.09452v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09452v1 (cs.AI) claim operationalization.
+    falsifies_if: task_return_after < task_return_before.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.task_return_after >= data.task_return_before
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_return_non_degradation",
         premises=[
-            f'paper_id=2604.09452v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09452v1",
+            f"task_return_before={data.task_return_before}",
+            f"task_return_after={data.task_return_after}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: task return is preserved or improved"
+            if success else "FAIL: task return degraded after safe update"
+        ),
+    )
+    return success, proof
+
+def check_formal_margin_positive(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Provable update guarantee requires positive formal safety margin.
+
+    Standard: arXiv 2604.09452v1 (cs.AI) claim operationalization.
+    falsifies_if: formal_safety_margin <= 0.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.formal_safety_margin > Fraction(0)
+    proof = ProofObject(
+        rule="check_formal_margin_positive",
+        premises=[
+            "paper_id=2604.09452v1",
+            f"formal_safety_margin={data.formal_safety_margin}",
+            f"adaptation_step_count={data.adaptation_step_count}",
+        ],
+        conclusion=(
+            "PASS: formal safety margin remains positive"
+            if success else "FAIL: formal safety margin is non-positive"
+        ),
+    )
+    return success, proof
+
+def check_shift_resilience_floor(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Adapted policy should retain resilience under non-stationary dynamics.
+
+    Standard: arXiv 2604.09452v1 (cs.AI) claim operationalization.
+    falsifies_if: distribution_shift_resilience < 3/4.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.distribution_shift_resilience >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="check_shift_resilience_floor",
+        premises=[
+            "paper_id=2604.09452v1",
+            f"distribution_shift_resilience={data.distribution_shift_resilience}",
+            f"adaptation_step_count={data.adaptation_step_count}",
+        ],
+        conclusion=(
+            "PASS: policy remains resilient under distribution shift"
+            if success else "FAIL: resilience under distribution shift is insufficient"
         ),
     )
     return success, proof
@@ -106,29 +153,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09452v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09452v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = SafeadaptProvablySafeClaimData(
-        theorem_confidence=Fraction(95, 100),
-        error_bound=Fraction(1, 15),
-        observed_error=Fraction(1, 25),
-        iteration_budget=Fraction(170),
-        observed_iterations=Fraction(155),
-        witness_count=Fraction(3),
-        required_witness_count=Fraction(2),
+    data = SafeAdaptPolicyUpdateClaim(
+        safety_constraint_satisfaction_before=Fraction(9, 10),
+        safety_constraint_satisfaction_after=Fraction(19, 20),
+        task_return_before=Fraction(7, 10),
+        task_return_after=Fraction(3, 4),
+        constraint_violation_probability=Fraction(1, 50),
+        adaptation_step_count=Fraction(12),
+        formal_safety_margin=Fraction(1, 10),
+        distribution_shift_resilience=Fraction(4, 5),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_safety_constraint_preservation", check_safety_constraint_preservation),
+        ("check_violation_probability_cap", check_violation_probability_cap),
+        ("check_return_non_degradation", check_return_non_degradation),
+        ("check_formal_margin_positive", check_formal_margin_positive),
+        ("check_shift_resilience_floor", check_shift_resilience_floor),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []

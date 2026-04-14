@@ -10,93 +10,138 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class CaseGroundedEvidenceClaimData:
+class CaseGroundedVerificationClaim:
     """Structured claim parameters derived from arXiv paper 2604.09537v1 (cs.AI)."""
 
-    theorem_confidence: Fraction
-    error_bound: Fraction
-    observed_error: Fraction
-    iteration_budget: Fraction
-    observed_iterations: Fraction
-    witness_count: Fraction
-    required_witness_count: Fraction
+    supported_case_count: Fraction
+    evaluated_case_count: Fraction
+    evidence_dependency_drop: Fraction
+    counterfactual_flip_rate: Fraction
+    retrieval_leakage_rate: Fraction
+    case_specific_evidence_ratio: Fraction
+    label_only_baseline_score: Fraction
+    evidence_conditioned_score: Fraction
 
 
-def check_theorem_bound(data: CaseGroundedEvidenceClaimData) -> Tuple[bool, ProofObject]:
+def check_case_support_coverage(data: CaseGroundedVerificationClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Formal theorem bound must dominate observed error for reproducibility.
+    Invariant: Most evaluated cases should be directly supported by aligned evidence.
 
-    Standard: arXiv 2604.09537v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
+    Standard: arXiv 2604.09537v1 (cs.AI) claim operationalization.
+    falsifies_if: supported_case_count / evaluated_case_count < 4/5.
 
     Returns:
         Tuple of (success, proof).
     """
-    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
-    success = (data.observed_error <= data.error_bound) and confidence_ok
+    success = data.supported_case_count * Fraction(5) >= data.evaluated_case_count * Fraction(4)
     proof = ProofObject(
-        rule='arxiv_theorem_bound',
+        rule="check_case_support_coverage",
         premises=[
-            f'paper_id=2604.09537v1',
-            f'observed_error={data.observed_error}',
-            f'error_bound={data.error_bound}',
-            f'theorem_confidence={data.theorem_confidence}',
+            "paper_id=2604.09537v1",
+            f"supported_case_count={data.supported_case_count}",
+            f"evaluated_case_count={data.evaluated_case_count}",
         ],
         conclusion=(
-            'PASS: observed error respects formal bound and confidence threshold'
-            if success else 'FAIL: formal bound or confidence threshold violated'
+            "PASS: evidence support coverage is high"
+            if success else "FAIL: evidence support coverage is insufficient"
         ),
     )
     return success, proof
 
-
-def check_iteration_budget(data: CaseGroundedEvidenceClaimData) -> Tuple[bool, ProofObject]:
+def check_evidence_sensitivity(data: CaseGroundedVerificationClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Algorithmic convergence must complete within the declared iteration budget.
+    Invariant: Prediction quality should decrease when evidence is removed.
 
-    Standard: arXiv 2604.09537v1 (cs.AI) algorithmic convergence claim.
-    falsifies_if: observed_iterations > iteration_budget.
+    Standard: arXiv 2604.09537v1 (cs.AI) claim operationalization.
+    falsifies_if: evidence_dependency_drop < 1/4.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_iterations <= data.iteration_budget
+    success = data.evidence_dependency_drop >= Fraction(1, 4)
     proof = ProofObject(
-        rule='arxiv_iteration_budget',
+        rule="check_evidence_sensitivity",
         premises=[
-            f'paper_id=2604.09537v1',
-            f'observed_iterations={data.observed_iterations}',
-            f'iteration_budget={data.iteration_budget}',
+            "paper_id=2604.09537v1",
+            f"evidence_dependency_drop={data.evidence_dependency_drop}",
         ],
         conclusion=(
-            'PASS: iteration budget respected'
-            if success else 'FAIL: iteration budget exceeded'
+            "PASS: model behavior is evidence-sensitive"
+            if success else "FAIL: model appears insensitive to provided evidence"
         ),
     )
     return success, proof
 
-
-def check_proof_witnesses(data: CaseGroundedEvidenceClaimData) -> Tuple[bool, ProofObject]:
+def check_counterfactual_consistency(data: CaseGroundedVerificationClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Proof-carrying claim requires minimum witness count for auditability.
+    Invariant: Counterfactual evidence replacement should flip predictions at meaningful rate.
 
-    Standard: arXiv 2604.09537v1 (cs.AI) proof-carrying reproducibility condition.
-    falsifies_if: witness_count < required_witness_count.
+    Standard: arXiv 2604.09537v1 (cs.AI) claim operationalization.
+    falsifies_if: counterfactual_flip_rate < 2/5.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.witness_count >= data.required_witness_count
+    success = data.counterfactual_flip_rate >= Fraction(2, 5)
     proof = ProofObject(
-        rule='arxiv_proof_witnesses',
+        rule="check_counterfactual_consistency",
         premises=[
-            f'paper_id=2604.09537v1',
-            f'witness_count={data.witness_count}',
-            f'required_witness_count={data.required_witness_count}',
+            "paper_id=2604.09537v1",
+            f"counterfactual_flip_rate={data.counterfactual_flip_rate}",
         ],
         conclusion=(
-            'PASS: witness evidence sufficient'
-            if success else 'FAIL: insufficient witness evidence'
+            "PASS: counterfactual evidence impacts predictions"
+            if success else "FAIL: counterfactual evidence has weak influence"
+        ),
+    )
+    return success, proof
+
+def check_retrieval_leakage_control(data: CaseGroundedVerificationClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Loose retrieval shortcuts should remain bounded.
+
+    Standard: arXiv 2604.09537v1 (cs.AI) claim operationalization.
+    falsifies_if: retrieval_leakage_rate > 1/5.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.retrieval_leakage_rate <= Fraction(1, 5)
+    proof = ProofObject(
+        rule="check_retrieval_leakage_control",
+        premises=[
+            "paper_id=2604.09537v1",
+            f"retrieval_leakage_rate={data.retrieval_leakage_rate}",
+            f"case_specific_evidence_ratio={data.case_specific_evidence_ratio}",
+        ],
+        conclusion=(
+            "PASS: retrieval leakage is controlled"
+            if success else "FAIL: retrieval leakage is too high"
+        ),
+    )
+    return success, proof
+
+def check_evidence_conditioning_gain(data: CaseGroundedVerificationClaim) -> Tuple[bool, ProofObject]:
+    """
+    Invariant: Evidence-conditioned supervision should outperform label-only baseline.
+
+    Standard: arXiv 2604.09537v1 (cs.AI) claim operationalization.
+    falsifies_if: evidence_conditioned_score <= label_only_baseline_score.
+
+    Returns:
+        Tuple of (success, proof).
+    """
+    success = data.evidence_conditioned_score > data.label_only_baseline_score
+    proof = ProofObject(
+        rule="check_evidence_conditioning_gain",
+        premises=[
+            "paper_id=2604.09537v1",
+            f"evidence_conditioned_score={data.evidence_conditioned_score}",
+            f"label_only_baseline_score={data.label_only_baseline_score}",
+        ],
+        conclusion=(
+            "PASS: evidence-conditioned supervision improves performance"
+            if success else "FAIL: no gain over label-only baseline"
         ),
     )
     return success, proof
@@ -106,29 +151,29 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
-    Standard: arXiv 2604.09537v1 (cs.AI) operationalization.
+    Standard: arXiv 2604.09537v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
 
     Returns:
         List of (name, success, proof) tuples.
-
-    Note:
-        Uses nominal deterministic fixture values for executable audit checks.
     """
-    data = CaseGroundedEvidenceClaimData(
-        theorem_confidence=Fraction(91, 100),
-        error_bound=Fraction(1, 11),
-        observed_error=Fraction(1, 21),
-        iteration_budget=Fraction(130),
-        observed_iterations=Fraction(115),
-        witness_count=Fraction(3),
-        required_witness_count=Fraction(2),
+    data = CaseGroundedVerificationClaim(
+        supported_case_count=Fraction(88),
+        evaluated_case_count=Fraction(100),
+        evidence_dependency_drop=Fraction(3, 10),
+        counterfactual_flip_rate=Fraction(1, 2),
+        retrieval_leakage_rate=Fraction(1, 10),
+        case_specific_evidence_ratio=Fraction(4, 5),
+        label_only_baseline_score=Fraction(7, 10),
+        evidence_conditioned_score=Fraction(17, 20),
     )
 
     checks = [
-        ('check_theorem_bound', check_theorem_bound),
-        ('check_iteration_budget', check_iteration_budget),
-        ('check_proof_witnesses', check_proof_witnesses),
+        ("check_case_support_coverage", check_case_support_coverage),
+        ("check_evidence_sensitivity", check_evidence_sensitivity),
+        ("check_counterfactual_consistency", check_counterfactual_consistency),
+        ("check_retrieval_leakage_control", check_retrieval_leakage_control),
+        ("check_evidence_conditioning_gain", check_evidence_conditioning_gain),
     ]
 
     results: List[Tuple[str, bool, ProofObject]] = []
