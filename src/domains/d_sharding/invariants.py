@@ -10,7 +10,14 @@ from fractions import Fraction
 from typing import Tuple, List
 
 from axioms.logic import ProofObject
-from .implementation import Shard, ShardCluster, ShardStatus, max_storage_utilization, min_replica_count
+from .implementation import (
+    Shard,
+    ShardCluster,
+    ShardStatus,
+    ShardStrategy,
+    max_storage_utilization,
+    min_replica_count,
+)
 
 
 def check_shard_storage_balance(shard: Shard) -> Tuple[bool, ProofObject]:
@@ -190,3 +197,65 @@ def check_shard_health(shard: Shard) -> Tuple[bool, ProofObject]:
         premises=[f"Status: {shard.status.name}"],
         rule="shard_health"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_SHARDING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    shard_cluster = ShardCluster(
+        cluster_id=None,
+        sharding_strategy=ShardStrategy.HASH,
+        shards=None,
+        cross_shard_queries_annual=None,
+        total_queries_annual=None,
+        last_rebalance=None,
+        rebalance_threshold=Fraction(1000),
+    )
+    shard = Shard(
+        shard_id=None,
+        key_range_start=None,
+        key_range_end=None,
+        storage_capacity_gb=Fraction(1000),
+        storage_used_gb=Fraction(1),
+        max_connections=None,
+        current_connections=None,
+        status=ShardStatus.HEALTHY,
+        replica_count=None,
+        read_latency_ms=Fraction(1),
+        write_latency_ms=Fraction(1),
+        query_throughput=None,
+    )
+
+    checks = [
+        ("check_cluster_rebalancing", lambda: check_cluster_rebalancing(shard_cluster)),
+        ("check_cross_shard_queries", lambda: check_cross_shard_queries(shard_cluster)),
+        ("check_shard_health", lambda: check_shard_health(shard)),
+        ("check_shard_replication", lambda: check_shard_replication(shard)),
+        ("check_shard_storage_balance", lambda: check_shard_storage_balance(shard)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_SHARDING invariants: PASS")

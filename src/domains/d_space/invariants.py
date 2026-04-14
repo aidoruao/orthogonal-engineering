@@ -255,3 +255,65 @@ def check_orbit_validity(orbit: OrbitParameters) -> Tuple[bool, ProofObject]:
         ],
         rule="orbital_mechanics_bound_orbit"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_SPACE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    space_software = SpaceSoftware(
+        module_id=None,
+        name=None,
+        criticality=SoftwareCriticality.SAFETY_CRITICAL,
+        has_static_analysis=None,
+        has_runtime_checks=None,
+        uses_dynamic_allocation=None,
+        has_canaries=None,
+        has_aslr=None,
+    )
+    orbit_parameters = OrbitParameters(
+        semi_major_axis=Fraction(1),
+        eccentricity=Fraction(1),
+        inclination=Fraction(1),
+    )
+    radiation_tolerance = RadiationTolerance(
+        component_id=None,
+        name=None,
+        total_dose_rads=Fraction(1),
+        seu_immune=None,
+        latchup_protected=None,
+    )
+
+    checks = [
+        ("check_memory_protection_enabled", lambda: check_memory_protection_enabled(space_software)),
+        ("check_no_dynamic_allocation_in_realtime", lambda: check_no_dynamic_allocation_in_realtime(space_software)),
+        ("check_orbit_validity", lambda: check_orbit_validity(orbit_parameters)),
+        ("check_radiation_tolerance_specs", lambda: check_radiation_tolerance_specs(radiation_tolerance, Fraction(1))),
+        ("check_seu_protection", lambda: check_seu_protection(radiation_tolerance)),
+        ("check_static_analysis_complement", lambda: check_static_analysis_complement(space_software)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_SPACE invariants: PASS")

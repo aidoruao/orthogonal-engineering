@@ -13,7 +13,6 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from fractions import Fraction
 from typing import Tuple, List, Optional, FrozenSet
-from frozendict import frozendict
 
 from axioms.logic import ProofObject
 from kernel.bridge.crusader_bridge import CrusaderCap, EthicalStatus
@@ -145,10 +144,10 @@ class GuardianCap(CrusaderCap):
     exhaustion_attempts_required: int
     
     # Guardian-specific extensions
-    principal_id: str  # The immutable principal binding
-    solo_guardian: bool  # True if this is the only guardian for principal
-    heartbeat_required: bool  # Liveness monitoring mandatory
-    heartbeat_interval: Fraction  # Required heartbeat frequency
+    principal_id: str = ""   # The immutable principal binding
+    solo_guardian: bool = True   # True if this is the only guardian for principal
+    heartbeat_required: bool = True  # Liveness monitoring mandatory
+    heartbeat_interval: Fraction = Fraction(60)  # Required heartbeat frequency (seconds)
     
     attenuations: Tuple[str, ...] = field(default_factory=tuple)
     

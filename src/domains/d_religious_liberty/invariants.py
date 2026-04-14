@@ -10,7 +10,12 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import ReligiousAccommodation, ReligiousExemption, BurdenLevel
+from .implementation import (
+    BurdenLevel,
+    ReligiousAccommodation,
+    ReligiousClaimType,
+    ReligiousExemption,
+)
 
 
 def check_rfra_substantial_burden(accommodation: ReligiousAccommodation) -> Tuple[bool, ProofObject]:
@@ -164,3 +169,62 @@ def check_establishment_clause_neutrality(accommodations: list) -> Tuple[bool, P
         premises=[f"Granted: {granted_count}, Denied: {denial_count}"],
         rule="establishment_neutrality"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_RELIGIOUS_LIBERTY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    religious_accommodation = ReligiousAccommodation(
+        claim_id=None,
+        claimant_id=None,
+        claim_type=ReligiousClaimType.FREE_EXERCISE,
+        religious_belief_sincere=None,
+        religious_practice_desc=None,
+        government_interest=None,
+        burden_level=BurdenLevel.NONE,
+        least_restrictive_alternative_exists=None,
+        accommodation_granted=None,
+        accommodation_description=None,
+    )
+    religious_exemption = ReligiousExemption(
+        exemption_id=None,
+        law_id=None,
+        exempted_practices=None,
+        exempted_persons_count=Fraction(1),
+        compelling_interest_override=None,
+        harm_to_third_parties=Fraction(1),
+        temporary=None,
+        expiration_date=None,
+    )
+
+    checks = [
+        ("check_rfra_least_restrictive_means", lambda: check_rfra_least_restrictive_means(religious_accommodation)),
+        ("check_rfra_substantial_burden", lambda: check_rfra_substantial_burden(religious_accommodation)),
+        ("check_third_party_harm_limit", lambda: check_third_party_harm_limit(religious_exemption)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_RELIGIOUS_LIBERTY invariants: PASS")

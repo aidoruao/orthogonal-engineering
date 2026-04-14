@@ -134,10 +134,11 @@ class DisciplinaryAction:
     
     # Outcome
     duration_days: Optional[int]  # For suspensions
-    conditions: List[str] = field(default_factory=list)
     
     # Status
     appealed: bool
+    
+    conditions: List[str] = field(default_factory=list)
     appeal_status: Optional[str] = None
 
 

@@ -5,7 +5,12 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    CollaborativeRobot, RobotMode, EmergencyStopSystem, SafetyZoneAnalyzer
+    CollaborativeRobot,
+    EmergencyStopSystem,
+    ForceSensor,
+    RobotMode,
+    SafetyZone,
+    SafetyZoneAnalyzer,
 )
 
 
@@ -115,3 +120,63 @@ def check_collaborative_mode_constraints(robot: CollaborativeRobot) -> Tuple[boo
         premises=[f"Force sensors: {len(robot.force_sensors)}"],
         rule="collaborative_requirements"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ROBOTICS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    collaborative_robot = CollaborativeRobot(
+        robot_id="ROBOTICS-001",
+        mode=RobotMode.AUTOMATIC,
+        force_sensors=[ForceSensor(
+        sensor_id="ROBOTICS-001",
+    )],
+        safety_zones=[SafetyZone(
+        zone_id="ROBOTICS-001",
+        center_x=Fraction(1),
+        center_y=Fraction(1),
+        radius=Fraction(1),
+    )],
+    )
+    emergency_stop_system = EmergencyStopSystem()
+    safety_zone_analyzer = SafetyZoneAnalyzer(
+        zones=[SafetyZone(
+        zone_id="ROBOTICS-001",
+        center_x=Fraction(1),
+        center_y=Fraction(1),
+        radius=Fraction(1),
+    )],
+    )
+
+    checks = [
+        ("check_collaborative_mode_constraints", lambda: check_collaborative_mode_constraints(collaborative_robot)),
+        ("check_emergency_stop_response", lambda: check_emergency_stop_response(emergency_stop_system)),
+        ("check_force_limits", lambda: check_force_limits(collaborative_robot)),
+        ("check_safety_zone_violations", lambda: check_safety_zone_violations(safety_zone_analyzer)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ROBOTICS invariants: PASS")

@@ -207,3 +207,74 @@ def check_case_backlog(court: Court) -> Tuple[bool, ProofObject]:
         premises=[f">24 months ratio: {old_case_ratio}"],
         rule="case_backlog"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_LEGAL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    court = Court(
+        court_id=None,
+        court_name=None,
+        jurisdiction=None,
+        cases_pending=None,
+        cases_resolved_annual=None,
+        cases_filed_annual=None,
+        judges_active=None,
+        support_staff=None,
+        cases_over_12_months=None,
+        cases_over_24_months=None,
+        e_filing_available=None,
+        interpreter_services=None,
+        self_help_center=None,
+    )
+    court_case = CourtCase(
+        case_id=None,
+        case_type=CaseType.CIVIL,
+        court_id=None,
+        plaintiff_count=None,
+        defendant_count=None,
+        pro_se_parties=None,
+        date_filed=None,
+        date_closed=None,
+        trial_date=None,
+        motions_filed=None,
+        hearings_held=None,
+        discovery_disputes=None,
+        status=CaseStatus.FILED,
+        judgment_amount=None,
+        appeal_filed=None,
+    )
+
+    checks = [
+        ("check_access_to_justice", lambda: check_access_to_justice(court)),
+        ("check_case_backlog", lambda: check_case_backlog(court)),
+        ("check_civil_case_timeliness", lambda: check_civil_case_timeliness(court_case, 1)),
+        ("check_court_clearance_rate", lambda: check_court_clearance_rate(court)),
+        ("check_speedy_trial_compliance", lambda: check_speedy_trial_compliance(court_case, 1)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_LEGAL invariants: PASS")

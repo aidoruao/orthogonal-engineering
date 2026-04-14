@@ -17,7 +17,14 @@ Falsifies if:
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import Chunk, RedstoneCircuit, BlockPos, SpatialIndex
+from .implementation import (
+    BlockPos,
+    Chunk,
+    ChunkPos,
+    RedstoneCircuit,
+    SpatialIndex,
+    Dimension,
+)
 
 
 def check_chunk_loaded_for_tick(chunk: Chunk) -> Tuple[bool, ProofObject]:
@@ -199,3 +206,71 @@ def check_redstone_propagation(circuit: RedstoneCircuit, max_propagation: int) -
         premises=[f"Components: {len(circuit.components)}"],
         rule="redstone_propagation_valid"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_MINECRAFT_SPATIAL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    chunk = Chunk(
+        position=ChunkPos(
+        x=None,
+        z=None,
+        dimension=Dimension.OVERWORLD,
+    ),
+        loaded=None,
+        ticket_level=None,
+        block_entities=None,
+        entities=None,
+        redstone_tickers=None,
+    )
+    block_pos = BlockPos(
+        x=None,
+        y=None,
+        z=None,
+    )
+    redstone_circuit = RedstoneCircuit(
+        circuit_id=None,
+        components=None,
+        tick_delay=None,
+        clock_frequency=Fraction(1),
+        input_positions=None,
+        output_positions=None,
+    )
+    spatial_index = SpatialIndex(
+        dimension=Dimension.OVERWORLD,
+    )
+
+    checks = [
+        ("check_chunk_entity_limit", lambda: check_chunk_entity_limit(chunk, 1000)),
+        ("check_chunk_loaded_for_tick", lambda: check_chunk_loaded_for_tick(chunk)),
+        ("check_coordinate_bounds", lambda: check_coordinate_bounds(block_pos)),
+        ("check_redstone_propagation", lambda: check_redstone_propagation(redstone_circuit, 1000)),
+        ("check_redstone_timing", lambda: check_redstone_timing(redstone_circuit)),
+        ("check_simulation_distance", lambda: check_simulation_distance(spatial_index, block_pos, block_pos)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_MINECRAFT_SPATIAL invariants: PASS")

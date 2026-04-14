@@ -9,7 +9,7 @@ Key standards:
 
 from fractions import Fraction
 from dataclasses import dataclass, field
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 from enum import Enum, auto
 
 

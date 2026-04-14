@@ -10,7 +10,13 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import Work, FactualCompilation, minimal_creativity_threshold, orphan_work_search_threshold
+from .implementation import (
+    FactualCompilation,
+    Work,
+    WorkType,
+    minimal_creativity_threshold,
+    orphan_work_search_threshold,
+)
 
 
 def check_copyright_originality(work: Work) -> Tuple[bool, ProofObject]:
@@ -198,3 +204,66 @@ def check_slavish_copy_exemption(work: Work) -> Tuple[bool, ProofObject]:
         premises=[f"Work type: {work.work_type.name}"],
         rule="slavish_copy_exemption"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_NONCREATIVE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    work = Work(
+        work_id=None,
+        title=None,
+        work_type=WorkType.FACTUAL_COMPILATION,
+        selection_originality=Fraction(1),
+        arrangement_originality=Fraction(1),
+        coordination_originality=Fraction(1),
+        is_government_work=None,
+        author_known=None,
+        author_deceased=None,
+        creation_year=None,
+        publication_year=None,
+        owner_search_efforts=None,
+        registry_searches=None,
+        professional_searches=None,
+    )
+    factual_compilation = FactualCompilation(
+        compilation_id=None,
+        title=None,
+        facts_collected=None,
+        selection_criteria_original=None,
+        arrangement_original=None,
+        effort_in_collection=Fraction(1),
+    )
+
+    checks = [
+        ("check_copyright_originality", lambda: check_copyright_originality(work)),
+        ("check_factual_compilation_creativity", lambda: check_factual_compilation_creativity(factual_compilation)),
+        ("check_orphan_work_status", lambda: check_orphan_work_status(work)),
+        ("check_public_domain_status", lambda: check_public_domain_status(work)),
+        ("check_slavish_copy_exemption", lambda: check_slavish_copy_exemption(work)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_NONCREATIVE invariants: PASS")

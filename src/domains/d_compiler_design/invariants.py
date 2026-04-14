@@ -4,7 +4,13 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import TypeChecker, OptimizationPass, RegisterAllocator
+from .implementation import (
+    InterferenceGraph,
+    OptimizationPass,
+    RegisterAllocator,
+    Term,
+    TypeChecker,
+)
 
 
 def check_type_soundness(checker: TypeChecker) -> Tuple[bool, ProofObject]:
@@ -88,3 +94,55 @@ def check_no_type_confusion(checker: TypeChecker) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="type_confusion"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_COMPILER_DESIGN invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    type_checker = TypeChecker(
+        term=Term(
+        term_type="NOMINAL",
+    ),
+    )
+    optimization_pass = OptimizationPass(
+        name="Sample COMPILER",
+        input_ir="SAMPLE",
+        output_ir="SAMPLE",
+    )
+    register_allocator = RegisterAllocator(
+        interference=InterferenceGraph(),
+        num_registers=1,
+    )
+
+    checks = [
+        ("check_no_type_confusion", lambda: check_no_type_confusion(type_checker)),
+        ("check_optimization_correctness", lambda: check_optimization_correctness(optimization_pass)),
+        ("check_register_allocation", lambda: check_register_allocation(register_allocator)),
+        ("check_type_soundness", lambda: check_type_soundness(type_checker)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_COMPILER_DESIGN invariants: PASS")

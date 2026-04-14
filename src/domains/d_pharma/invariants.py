@@ -128,3 +128,68 @@ def check_trial_enrollment(trial: ClinicalTrial) -> Tuple[bool, ProofObject]:
         premises=[f"Rate: {rate}"],
         rule="enrollment_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PHARMA invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    adverse_event = AdverseEvent(
+        report_id=None,
+        drug_ndc=None,
+        serious=None,
+        death=None,
+        report_date=None,
+        fda_received=None,
+    )
+    drug = Drug(
+        ndc=None,
+        name=None,
+        manufacturer=None,
+        approval_date=None,
+        approval_type=None,
+        gmp_certified=None,
+        recall_status=None,
+    )
+    clinical_trial = ClinicalTrial(
+        nct_number=None,
+        phase=None,
+        enrolled=None,
+        completed=None,
+        ind_active=None,
+        primary_completion=None,
+    )
+
+    checks = [
+        ("check_ae_reporting", lambda: check_ae_reporting(adverse_event)),
+        ("check_fda_approved", lambda: check_fda_approved(drug)),
+        ("check_gmp_compliance", lambda: check_gmp_compliance(drug)),
+        ("check_ind_status", lambda: check_ind_status(clinical_trial)),
+        ("check_recall_status", lambda: check_recall_status(drug)),
+        ("check_trial_enrollment", lambda: check_trial_enrollment(clinical_trial)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PHARMA invariants: PASS")

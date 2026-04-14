@@ -5,15 +5,15 @@ from fractions import Fraction
 
 from axioms.logic import ProofObject
 from src.domains.d_hardware_agnosticism.implementation import (
+    APICall,
+    InstructionSetRequirement,
+    SoftwareRenderer,
+    InstructionSet,
+    VendorAPI,
     check_no_vendor_lockin,
     check_instruction_set_baseline,
     check_software_renderer_path,
     check_cross_platform_paths,
-    SoftwareRenderer,
-    InstructionSetRequirement,
-    InstructionSet,
-    APICall,
-    VendorAPI,
 )
 
 

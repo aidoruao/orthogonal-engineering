@@ -10,7 +10,14 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import UtilityCompany, RateCase, UtilityType, max_saidi_limit, max_allowed_roe
+from .implementation import (
+    RateCase,
+    RateCaseStatus,
+    UtilityCompany,
+    UtilityType,
+    max_allowed_roe,
+    max_saidi_limit,
+)
 
 
 def check_electric_reliability(utility: UtilityCompany) -> Tuple[bool, ProofObject]:
@@ -189,3 +196,73 @@ def check_affordability(utility: UtilityCompany) -> Tuple[bool, ProofObject]:
         premises=[f"Energy burden: {energy_burden}"],
         rule="utility_affordability"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_UTILITY_REGULATION invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    utility_company = UtilityCompany(
+        company_id=None,
+        name=None,
+        utility_type=UtilityType.ELECTRIC,
+        customers_total=None,
+        customers_residential=None,
+        customers_commercial=None,
+        customers_industrial=None,
+        saidi_minutes=Fraction(1),
+        saifi_frequency=Fraction(1),
+        rate_case_pending=None,
+        requested_rate_increase=Fraction(1),
+        approved_rate_increase=None,
+        revenue_annual=Fraction(1),
+        operating_costs=Fraction(100),
+        capital_investment=Fraction(1),
+    )
+    rate_case = RateCase(
+        case_id=None,
+        company_id=None,
+        status=RateCaseStatus.PENDING,
+        current_revenue=Fraction(1),
+        requested_revenue=Fraction(1),
+        test_year=None,
+        rate_base=Fraction(1),
+        allowed_return_rate=Fraction(1000),
+        operating_expenses=Fraction(100),
+        public_comments=None,
+        public_hearings=None,
+        intervenor_participation=None,
+    )
+
+    checks = [
+        ("check_affordability", lambda: check_affordability(utility_company)),
+        ("check_cost_of_service_ratemaking", lambda: check_cost_of_service_ratemaking(rate_case)),
+        ("check_electric_reliability", lambda: check_electric_reliability(utility_company)),
+        ("check_public_participation", lambda: check_public_participation(rate_case)),
+        ("check_return_on_equity", lambda: check_return_on_equity(rate_case)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_UTILITY_REGULATION invariants: PASS")

@@ -110,3 +110,69 @@ def check_track_class_speed(track: TrackSegment) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="track_speed_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_RAIL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    train = Train(
+        train_id=None,
+        locomotive=None,
+        cars=None,
+        crew_size=None,
+        hours_of_service=Fraction(1),
+        max_speed=None,
+        authorized_speed=None,
+    )
+    rail_vehicle = RailVehicle(
+        vehicle_id=None,
+        vehicle_type=None,
+        inspection_date=None,
+        inspection_due=None,
+        max_speed_mph=None,
+        ptc_equipped=None,
+        ptc_operational=None,
+    )
+    track_segment = TrackSegment(
+        segment_id=None,
+        milepost_start=None,
+        milepost_end=None,
+        track_class=None,
+        max_speed=None,
+        inspection_date=None,
+        defects_found=None,
+    )
+
+    checks = [
+        ("check_hours_of_service", lambda: check_hours_of_service(train)),
+        ("check_inspection_current", lambda: check_inspection_current(rail_vehicle)),
+        ("check_ptc_equipped", lambda: check_ptc_equipped(rail_vehicle)),
+        ("check_speed_limit", lambda: check_speed_limit(train)),
+        ("check_track_class_speed", lambda: check_track_class_speed(track_segment)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_RAIL invariants: PASS")

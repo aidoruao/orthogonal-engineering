@@ -10,7 +10,14 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import RestorativeJusticeCase, RJProgramMetrics, RJOutcome, victim_satisfaction_target, completion_rate_target
+from .implementation import (
+    RJOutcome,
+    RJProgramMetrics,
+    RJProgramType,
+    RestorativeJusticeCase,
+    completion_rate_target,
+    victim_satisfaction_target,
+)
 
 
 def check_victim_participation(case: RestorativeJusticeCase) -> Tuple[bool, ProofObject]:
@@ -192,3 +199,74 @@ def check_restitution_collection(program: RJProgramMetrics) -> Tuple[bool, Proof
         premises=[f"Collection rate: {rate}"],
         rule="rj_restitution_collection"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_RESTORATIVE_JUSTICE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    rj_program_metrics = RJProgramMetrics(
+        program_id=None,
+        program_type=RJProgramType.VICTIM_OFFENDER_MEDIATION,
+        cases_referred=None,
+        cases_accepted=None,
+        cases_completed=None,
+        cases_breached=None,
+        restitution_collected=Fraction(1),
+        restitution_owed=Fraction(1),
+        community_service_completed=Fraction(1),
+        community_service_assigned=Fraction(1),
+        recidivism_count=None,
+        tracked_participants=None,
+    )
+    restorative_justice_case = RestorativeJusticeCase(
+        case_id=None,
+        program_type=RJProgramType.VICTIM_OFFENDER_MEDIATION,
+        offense_type=None,
+        victim_participating=None,
+        offender_id=None,
+        victim_id=None,
+        community_representatives=None,
+        preparation_meetings=None,
+        conference_held=None,
+        agreement_terms=None,
+        outcome=RJOutcome.AGREEMENT_REACHED,
+        restitution_amount=Fraction(1),
+        community_service_hours=Fraction(1),
+        completion_status=None,
+        victim_satisfaction=Fraction(1),
+        offender_satisfaction=Fraction(1),
+    )
+
+    checks = [
+        ("check_agreement_completion", lambda: check_agreement_completion(rj_program_metrics)),
+        ("check_preparation_standards", lambda: check_preparation_standards(restorative_justice_case)),
+        ("check_restitution_collection", lambda: check_restitution_collection(rj_program_metrics)),
+        ("check_victim_participation", lambda: check_victim_participation(restorative_justice_case)),
+        ("check_victim_satisfaction", lambda: check_victim_satisfaction(restorative_justice_case)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_RESTORATIVE_JUSTICE invariants: PASS")

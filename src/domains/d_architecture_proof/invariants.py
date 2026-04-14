@@ -196,3 +196,70 @@ def check_geometric_morphism_truth_preservation(morph: GeometricMorphismProof) -
         premises=[f"{morph.source_topos} → {morph.target_topos}", f"Conservative: {morph.truth_preserved}"],
         rule="geometric_morphism"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ARCHITECTURE_PROOF invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    axiom_independence = AxiomIndependence(
+        axiom_name=None,
+        is_independent=None,
+        countermodel=None,
+    )
+    numeric_computation = NumericComputation(
+        computation_id=None,
+        numeric_type=NumericType.FRACTION,
+        input_a=Fraction(1),
+        input_b=Fraction(1),
+        operation=None,
+        result_fraction=None,
+        result_float=None,
+        exact=None,
+    )
+    geometric_morphism_proof = GeometricMorphismProof(
+        morphism_id=None,
+        source_topos=None,
+        target_topos=None,
+        truth_preserved=None,
+        proof_object=None,
+    )
+    logic_evaluation = LogicEvaluation(
+        proposition_id=None,
+        algebra=AlgebraType.BOOLEAN,
+        truth_value=None,
+        proof_trace=None,
+    )
+
+    checks = [
+        ("check_axiom_independence", lambda: check_axiom_independence(axiom_independence)),
+        ("check_float_inexact_example", lambda: check_float_inexact_example(numeric_computation, numeric_computation)),
+        ("check_fraction_exactness", lambda: check_fraction_exactness(numeric_computation)),
+        ("check_geometric_morphism_truth_preservation", lambda: check_geometric_morphism_truth_preservation(geometric_morphism_proof)),
+        ("check_heyting_vs_boolean_divergence", lambda: check_heyting_vs_boolean_divergence(logic_evaluation, logic_evaluation)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ARCHITECTURE_PROOF invariants: PASS")

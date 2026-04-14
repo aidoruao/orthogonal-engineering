@@ -18,7 +18,7 @@ from fractions import Fraction
 from typing import Tuple, Callable
 from axioms.logic import ProofObject
 from .implementation import (
-    Maxim, Action, CategoricalImperative, VirtueEvaluation,
+    Maxim, Action, CategoricalImperative, Virtue, VirtueEvaluation,
     ContractualistEvaluation, MoralAgent
 )
 
@@ -195,3 +195,73 @@ def check_agent_autonomy(agent: MoralAgent) -> Tuple[bool, ProofObject]:
         premises=[f"Personhood: {agent.is_person()}"],
         rule="moral_agency_valid"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ETHICS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    moral_agent = MoralAgent(
+        agent_id=None,
+        rational=None,
+        autonomous=None,
+    )
+    contractualist_evaluation = ContractualistEvaluation(
+        principle=None,
+        stakes=None,
+    )
+    action = Action(
+        action_id=None,
+        description=None,
+        agent=MoralAgent(
+        agent_id=None,
+        rational=None,
+        autonomous=None,
+    ),
+    )
+    maxim = Maxim(
+        maxim_id=None,
+        action_description=None,
+        circumstance=None,
+        purpose=None,
+    )
+    virtue = Virtue(
+        virtue_name=None,
+        excess=None,
+        deficiency=None,
+        mean_description=None,
+    )
+
+    checks = [
+        ("check_agent_autonomy", lambda: check_agent_autonomy(moral_agent)),
+        ("check_contractualist_rejectability", lambda: check_contractualist_rejectability(contractualist_evaluation)),
+        ("check_humanity_as_end", lambda: check_humanity_as_end(action)),
+        ("check_universal_law", lambda: check_universal_law(maxim, lambda *a: True)),
+        ("check_utilitarian_dominance", lambda: check_utilitarian_dominance(action, action)),
+        ("check_virtue_mean", lambda: check_virtue_mean(virtue, "SAMPLE")),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ETHICS invariants: PASS")

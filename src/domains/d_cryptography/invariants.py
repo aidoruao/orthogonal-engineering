@@ -4,7 +4,7 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import KeyStrengthAnalyzer, HashAnalyzer, CertChainValidator, MIN_SECURITY_STRENGTH
+from .implementation import KeyStrengthAnalyzer, HashAnalyzer, Certificate, CertChainValidator, KeyAlgorithm, MIN_SECURITY_STRENGTH
 
 
 def check_key_strength(analyzer: KeyStrengthAnalyzer) -> Tuple[bool, ProofObject]:
@@ -97,8 +97,6 @@ def check_key_algorithm_compliance(analyzer: KeyStrengthAnalyzer) -> Tuple[bool,
     Falsifies if: analyzer.algorithm is deprecated per NIST SP 800-131A.
     falsifies_if: analyzer.algorithm is deprecated per NIST SP 800-131A.
     """
-    from .implementation import KeyAlgorithm
-    
     # Deprecated algorithms
     deprecated = []  # Add deprecated algorithms here
     
@@ -114,3 +112,59 @@ def check_key_algorithm_compliance(analyzer: KeyStrengthAnalyzer) -> Tuple[bool,
         premises=[],
         rule="nist_sp_800_131a"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CRYPTOGRAPHY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    cert_chain_validator = CertChainValidator(
+        certificates=[Certificate(
+        subject="SAMPLE",
+        issuer="SAMPLE",
+        public_key_algorithm=KeyAlgorithm.AES,
+        key_size=1,
+        valid_from="CRYPTOGR-001",
+        valid_to="CRYPTOGR-001",
+    )],
+    )
+    hash_analyzer = HashAnalyzer(
+        algorithm="SAMPLE",
+        output_bits=1,
+    )
+    key_strength_analyzer = KeyStrengthAnalyzer(
+        algorithm=KeyAlgorithm.AES,
+        key_bits=1,
+    )
+
+    checks = [
+        ("check_cert_chain", lambda: check_cert_chain(cert_chain_validator)),
+        ("check_hash_collision_resistance", lambda: check_hash_collision_resistance(hash_analyzer)),
+        ("check_key_algorithm_compliance", lambda: check_key_algorithm_compliance(key_strength_analyzer)),
+        ("check_key_strength", lambda: check_key_strength(key_strength_analyzer)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CRYPTOGRAPHY invariants: PASS")

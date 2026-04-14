@@ -15,11 +15,12 @@ Falsifies if:
 """
 
 from fractions import Fraction
-from typing import Tuple
+from typing import List, Tuple
 from axioms.logic import ProofObject
 from .implementation import (
     Coordinate, CoordinateReferenceSystem, Geometry,
-    SpatialDataset, TopologyRule, RasterDataset, GeometryType
+    SpatialDataset, TopologyRule, RasterDataset, GeometryType,
+    SpatialDataTheme,
 )
 
 
@@ -242,3 +243,95 @@ def check_raster_consistency(raster: RasterDataset) -> Tuple[bool, ProofObject]:
         ],
         rule="raster_consistent"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_GEOGRAPHIC_INFORMATION invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    coordinate = Coordinate(
+        x=Fraction(1),
+        y=Fraction(1),
+    )
+    coordinate_reference_system = CoordinateReferenceSystem(
+        epsg_code=None,
+        name=None,
+        geographic=None,
+        unit=None,
+    )
+    spatial_dataset = SpatialDataset(
+        dataset_id=None,
+        title=None,
+        theme=SpatialDataTheme.ADMINISTRATIVE_UNITS,
+        crs=CoordinateReferenceSystem(
+        epsg_code=None,
+        name=None,
+        geographic=None,
+        unit=None,
+    ),
+    )
+    geometry = Geometry(
+        geometry_id=None,
+        geometry_type=GeometryType.POINT,
+        coordinates=None,
+        crs=CoordinateReferenceSystem(
+        epsg_code=None,
+        name=None,
+        geographic=None,
+        unit=None,
+    ),
+    )
+    raster_dataset = RasterDataset(
+        raster_id=None,
+        width=None,
+        height=None,
+        cell_size=Fraction(1),
+        crs=CoordinateReferenceSystem(
+        epsg_code=None,
+        name=None,
+        geographic=None,
+        unit=None,
+    ),
+        origin=Coordinate(
+        x=Fraction(1),
+        y=Fraction(1),
+    ),
+    )
+    topology_rule = TopologyRule(
+        rule_type=None,
+        feature_class_a=None,
+    )
+
+    checks = [
+        ("check_crs_bounds", lambda: check_crs_bounds(coordinate, coordinate_reference_system)),
+        ("check_crs_consistency", lambda: check_crs_consistency(spatial_dataset)),
+        ("check_metadata_completeness", lambda: check_metadata_completeness(spatial_dataset)),
+        ("check_polygon_closure", lambda: check_polygon_closure(geometry)),
+        ("check_raster_consistency", lambda: check_raster_consistency(raster_dataset)),
+        ("check_topology_no_overlap", lambda: check_topology_no_overlap(topology_rule, [])),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GEOGRAPHIC_INFORMATION invariants: PASS")

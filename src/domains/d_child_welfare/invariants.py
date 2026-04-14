@@ -230,3 +230,75 @@ def check_icwa_active_efforts(icwa: ICWACompliance) -> Tuple[bool, ProofObject]:
         ],
         rule="icwa_active_efforts"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_CHILD_WELFARE invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    asfa_timeline = ASFATimeline(
+        case_id=None,
+        days_in_care=None,
+        permanency_hearing_held=None,
+        tpr_filed=None,
+    )
+    cps_investigation = CPSInvestigation(
+        investigation_id=None,
+        priority=InvestigationPriority.IMMEDIATE,
+        hours_to_response=Fraction(1),
+        substantiated=None,
+    )
+    foster_placement = FosterPlacement(
+        placement_id=None,
+        child_age_years=Fraction(1),
+        placement_type=PlacementType.KINSHIP,
+        home_study_completed=None,
+        background_check_passed=None,
+    )
+    icwa_compliance = ICWACompliance(
+        case_id=None,
+        child_is_tribal_member=None,
+        tribe_notified=None,
+        active_efforts_documented=None,
+    )
+    mandatory_report = MandatoryReport(
+        report_id=None,
+        reporter_mandated=None,
+        report_filed_within_hours=Fraction(1),
+        jurisdiction=None,
+    )
+
+    checks = [
+        ("check_asfa_permanency_hearing", lambda: check_asfa_permanency_hearing(asfa_timeline)),
+        ("check_asfa_tpr_filing", lambda: check_asfa_tpr_filing(asfa_timeline)),
+        ("check_cps_investigation_response_time", lambda: check_cps_investigation_response_time(cps_investigation)),
+        ("check_foster_placement_screening", lambda: check_foster_placement_screening(foster_placement)),
+        ("check_icwa_active_efforts", lambda: check_icwa_active_efforts(icwa_compliance)),
+        ("check_icwa_tribal_notification", lambda: check_icwa_tribal_notification(icwa_compliance)),
+        ("check_mandatory_reporting_timeline", lambda: check_mandatory_reporting_timeline(mandatory_report)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_CHILD_WELFARE invariants: PASS")

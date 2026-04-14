@@ -18,11 +18,61 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from typing import Any, Dict
 
+from oe_engine import __version__
 from oe_engine.engine import OrthogonalEngine
 
 
-def _run_conversation_repl() -> None:
+def _print_result(result: Any, as_json: bool) -> None:
+    """Print an engine result in text or JSON format."""
+    if as_json:
+        print(json.dumps({
+            "text": result.text,
+            "confidence": str(result.confidence),
+            "thinker_hash": result.thinker_hash,
+            "speaker_hash": result.speaker_hash,
+            "proof_count": len(result.proof_chain),
+        }, indent=2))
+    else:
+        print(result.text)
+
+
+def run_single_query(
+    engine: OrthogonalEngine,
+    query: str,
+    context: Dict[str, Any],
+    as_json: bool,
+) -> None:
+    """Run one query through a provided engine instance."""
+    result = engine.query(query, context)
+    _print_result(result, as_json)
+
+
+def run_interactive_repl(
+    engine: OrthogonalEngine,
+    as_json: bool,
+    prompt: str = "oe> ",
+    banner_name: str = "Orthogonal Engine",
+) -> None:
+    """Run single-turn interactive REPL using the provided engine."""
+    print(f"{banner_name} {__version__} — type 'exit' to quit")
+    print(f"Loaded {engine._manifest.domain_count} domains")
+    while True:
+        try:
+            line = input(prompt)
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
+        if line.strip().lower() in ("exit", "quit"):
+            break
+        if not line.strip():
+            continue
+        result = engine.query(line.strip())
+        _print_result(result, as_json)
+
+
+def run_conversation_repl() -> None:
     """Run the stateful multi-turn conversation REPL.
 
     Imports ConversationEngine on demand so the base CLI remains importable
@@ -98,36 +148,22 @@ def main() -> None:
         choices=["conversation"],
         help="Extended mode: 'conversation' for stateful multi-turn REPL",
     )
+    parser.add_argument(
+        "--version",
+        "-V",
+        action="version",
+        version=f"Orthogonal Engine {__version__}",
+    )
     args = parser.parse_args()
 
     if args.mode == "conversation":
-        _run_conversation_repl()
+        run_conversation_repl()
         return
 
     engine = OrthogonalEngine()
 
     if args.interactive:
-        print("Orthogonal Engine v0.1.0 — type 'exit' to quit")
-        print(f"Loaded {engine._manifest.domain_count} domains")
-        while True:
-            try:
-                line = input("oe> ")
-            except (EOFError, KeyboardInterrupt):
-                print()
-                break
-            if line.strip().lower() in ("exit", "quit"):
-                break
-            result = engine.query(line.strip())
-            if args.json:
-                print(json.dumps({
-                    "text": result.text,
-                    "confidence": str(result.confidence),
-                    "thinker_hash": result.thinker_hash,
-                    "speaker_hash": result.speaker_hash,
-                    "proof_count": len(result.proof_chain),
-                }, indent=2))
-            else:
-                print(result.text)
+        run_interactive_repl(engine, as_json=args.json)
         return
 
     if not args.query:
@@ -135,20 +171,8 @@ def main() -> None:
         sys.exit(1)
 
     context = json.loads(args.context)
-    result = engine.query(args.query, context)
-
-    if args.json:
-        print(json.dumps({
-            "text": result.text,
-            "confidence": str(result.confidence),
-            "thinker_hash": result.thinker_hash,
-            "speaker_hash": result.speaker_hash,
-            "proof_count": len(result.proof_chain),
-        }, indent=2))
-    else:
-        print(result.text)
+    run_single_query(engine, args.query, context, args.json)
 
 
 if __name__ == "__main__":
     main()
-

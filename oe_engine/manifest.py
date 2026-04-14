@@ -17,6 +17,7 @@ from fractions import Fraction
 from typing import Dict, List, Tuple
 
 from axioms.logic import ProofObject
+from oe_engine._paths import _base_path
 
 
 @dataclass(frozen=True)
@@ -47,7 +48,7 @@ class EngineManifest:
         self._load()
 
     def _load(self) -> None:
-        base = pathlib.Path("src/domains")
+        base = _base_path() / "src" / "domains"
         entries: List[DomainEntry] = []
         for inv_file in sorted(base.glob("*/invariants.py")):
             domain_dir = inv_file.parent.name  # e.g. "d_criminal_law"
@@ -86,6 +87,19 @@ class EngineManifest:
     def domain_count(self) -> int:
         """Number of registered domains."""
         return len(self._entries)
+
+    @classmethod
+    def count_domains_fast(cls) -> int:
+        """Fast domain count using glob without full manifest initialization.
+
+        Scans only for invariants.py presence — no file reads or AST parsing.
+
+        falsifies_if: count differs from len(EngineManifest().entries) by more than 0.
+
+        Returns:
+            Integer count of domain directories that have an invariants.py.
+        """
+        return sum(1 for _ in (_base_path() / "src" / "domains").glob("*/invariants.py"))
 
     @property
     def domain_hashes(self) -> Dict[str, str]:

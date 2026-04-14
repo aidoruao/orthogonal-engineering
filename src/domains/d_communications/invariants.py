@@ -165,3 +165,68 @@ def check_message_sequence_monotonic(msg1: MessageDelivery, msg2: MessageDeliver
         ],
         rule="message_sequence_monotonic"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_COMMUNICATIONS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    cdn_performance = CDNPerformance(
+        cdn_id=None,
+        cache_hit_rate_percent=Fraction(1),
+        ttfb_p50_ms=Fraction(1),
+        availability_percent=Fraction(1),
+    )
+    spectrum_license = SpectrumLicense(
+        license_id=None,
+        frequency_mhz=Fraction(1),
+        bandwidth_mhz=Fraction(1),
+        power_dbm=Fraction(100),
+        interference_margin_db=Fraction(1),
+    )
+    message_delivery = MessageDelivery(
+        message_id=None,
+        sent_timestamp_ms=None,
+        delivered_timestamp_ms=None,
+        ordered=None,
+        sequence_number=None,
+    )
+    qo_s_metric = QoSMetric(
+        metric_id=None,
+        qos_class=QoSClass.BEST_EFFORT,
+        latency_p99_ms=Fraction(1),
+        load_multiplier=Fraction(1),
+    )
+
+    checks = [
+        ("check_cdn_availability", lambda: check_cdn_availability(cdn_performance)),
+        ("check_fcc_interference_margin", lambda: check_fcc_interference_margin(spectrum_license)),
+        ("check_message_ordering_preserved", lambda: check_message_ordering_preserved(message_delivery, message_delivery)),
+        ("check_message_sequence_monotonic", lambda: check_message_sequence_monotonic(message_delivery, message_delivery)),
+        ("check_qos_guaranteed_latency", lambda: check_qos_guaranteed_latency(qo_s_metric)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_COMMUNICATIONS invariants: PASS")

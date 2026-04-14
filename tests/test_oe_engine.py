@@ -81,6 +81,12 @@ def test_router_determinism():
     assert r1.query_hash == r2.query_hash
 
 
+def test_router_keyword_index_size_covers_manifest():
+    r = DomainRouter()
+    m = EngineManifest()
+    assert len(r._keyword_index) >= m.domain_count
+
+
 # ---------------------------------------------------------------------------
 # Thinker tests
 # ---------------------------------------------------------------------------

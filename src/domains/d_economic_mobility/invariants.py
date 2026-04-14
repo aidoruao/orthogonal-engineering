@@ -18,8 +18,13 @@ from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
-    MobilityMatrix, OpportunityAtlas, InterventionOutcome,
-    CreditAccessMetrics, QuintilePosition
+    CreditAccessMetrics,
+    Intervention,
+    InterventionOutcome,
+    MobilityMatrix,
+    OpportunityAtlas,
+    QuintilePosition,
+    InterventionType,
 )
 
 
@@ -194,3 +199,82 @@ def check_intergenerational_mobility_floor(matrix: MobilityMatrix) -> Tuple[bool
         premises=[f"Upward probability: {upward_prob}", f"Region: {matrix.region}"],
         rule="mobility_floor_compliant"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_ECONOMIC_MOBILITY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    credit_access_metrics = CreditAccessMetrics(
+        institution=None,
+        reporting_period=None,
+        total_applications=None,
+        approved_applications=None,
+        denial_rate_overall=Fraction(1),
+        denial_rate_by_race=None,
+        denial_rate_by_gender=None,
+        denial_rate_by_age=None,
+    )
+    mobility_matrix = MobilityMatrix(
+        region=None,
+        year=None,
+        transitions=None,
+        sample_size=None,
+    )
+    intervention_outcome = InterventionOutcome(
+        intervention=Intervention(
+        program_id=None,
+        name=None,
+        intervention_type=InterventionType.JOB_TRAINING,
+        target_population_size=None,
+        start_date=None,
+        cost_per_participant=Fraction(1),
+    ),
+        follow_up_years=None,
+        participants_reached=None,
+        earnings_increase_annual=Fraction(1),
+        employment_rate_change=Fraction(1),
+    )
+    opportunity_atlas = OpportunityAtlas(
+        tract_id=None,
+        state=None,
+        county=None,
+        household_income_at_35=Fraction(1),
+        incarceration_rate=Fraction(1, 2),
+        teenage_birth_rate=Fraction(1),
+        high_school_graduation_rate=Fraction(1),
+        college_attendance_rate=Fraction(1),
+    )
+
+    checks = [
+        ("check_credit_disparity", lambda: check_credit_disparity(credit_access_metrics, Fraction(1000))),
+        ("check_intergenerational_mobility_floor", lambda: check_intergenerational_mobility_floor(mobility_matrix)),
+        ("check_intervention_completion", lambda: check_intervention_completion(intervention_outcome)),
+        ("check_mobility_matrix_valid", lambda: check_mobility_matrix_valid(mobility_matrix)),
+        ("check_opportunity_atlas_validity", lambda: check_opportunity_atlas_validity(opportunity_atlas)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ECONOMIC_MOBILITY invariants: PASS")

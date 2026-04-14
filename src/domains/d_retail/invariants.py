@@ -10,7 +10,14 @@ from fractions import Fraction
 from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import RetailProduct, RetailStore, RecallStatus, min_profit_margin, max_return_rate
+from .implementation import (
+    ProductCategory,
+    RecallStatus,
+    RetailProduct,
+    RetailStore,
+    max_return_rate,
+    min_profit_margin,
+)
 
 
 def check_cpsc_product_safety(product: RetailProduct) -> Tuple[bool, ProofObject]:
@@ -204,3 +211,68 @@ def check_product_profitability(product: RetailProduct) -> Tuple[bool, ProofObje
         premises=[f"Margin: {margin}"],
         rule="retail_profitability"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_RETAIL invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    retail_product = RetailProduct(
+        product_id=None,
+        sku=None,
+        category=ProductCategory.CHILDREN_PRODUCTS,
+        cpsc_compliant=None,
+        recall_status=RecallStatus.NO_RECALL,
+        safety_testing_complete=None,
+        base_price=Fraction(1),
+        sale_price=None,
+        cost=Fraction(1),
+        units_in_stock=None,
+        units_sold_annual=None,
+    )
+    retail_store = RetailStore(
+        store_id=None,
+        name=None,
+        last_safety_inspection=None,
+        safety_violations=None,
+        fire_inspection_passed=None,
+        accessibility_compliant=None,
+        pci_compliant=None,
+        last_pci_audit=None,
+        data_breaches_annual=None,
+        returns_annual=None,
+        sales_annual=None,
+    )
+
+    checks = [
+        ("check_cpsc_product_safety", lambda: check_cpsc_product_safety(retail_product)),
+        ("check_pci_compliance", lambda: check_pci_compliance(retail_store)),
+        ("check_product_profitability", lambda: check_product_profitability(retail_product)),
+        ("check_return_rate_reasonable", lambda: check_return_rate_reasonable(retail_store)),
+        ("check_store_safety_inspection", lambda: check_store_safety_inspection(retail_store)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_RETAIL invariants: PASS")

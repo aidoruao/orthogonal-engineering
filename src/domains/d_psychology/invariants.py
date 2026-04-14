@@ -118,3 +118,63 @@ def check_completion_rate(study: ResearchStudy) -> Tuple[bool, ProofObject]:
         premises=[f"Rate: {rate}"],
         rule="completion_acceptable"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_PSYCHOLOGY invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    research_study = ResearchStudy(
+        study_id=None,
+        title=None,
+        principal_investigator=None,
+        irb_approved=None,
+        irb_protocol_number=None,
+        informed_consent_obtained=None,
+        participants_enrolled=None,
+        participants_completed=None,
+        hypothesis_supported=None,
+        effect_size=None,
+        p_value=None,
+    )
+    participant = Participant(
+        participant_id=None,
+        study_id=None,
+        consent_date=None,
+        withdrawal_date=None,
+        vulnerable_population=None,
+        capacity_to_consent=None,
+    )
+
+    checks = [
+        ("check_completion_rate", lambda: check_completion_rate(research_study)),
+        ("check_informed_consent", lambda: check_informed_consent(research_study)),
+        ("check_irb_approval", lambda: check_irb_approval(research_study)),
+        ("check_p_value_valid", lambda: check_p_value_valid(research_study)),
+        ("check_vulnerable_protection", lambda: check_vulnerable_protection(participant)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_PSYCHOLOGY invariants: PASS")

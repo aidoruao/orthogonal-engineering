@@ -111,3 +111,60 @@ def check_wcag_compliance(checker: WCAGChecker) -> Tuple[bool, ProofObject]:
         premises=[],
         rule="wcag_aa"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_DISABILITY_RIGHTS invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    ada_analyzer = ADAAnalyzer(
+        facility_name="Sample DISABILI",
+    )
+    color_contrast = ColorContrast(
+        foreground_luminance=Fraction(1),
+        background_luminance=Fraction(1),
+    )
+    interactive_element = InteractiveElement(
+        element_id="DISABILI-001",
+    )
+    wcag_checker = WCAGChecker(
+        page_elements=[InteractiveElement(
+        element_id="DISABILI-001",
+    )],
+        contrast_checks=[ColorContrast(
+        foreground_luminance=Fraction(1),
+        background_luminance=Fraction(1),
+    )],
+    )
+
+    checks = [
+        ("check_ada_accommodation", lambda: check_ada_accommodation(ada_analyzer)),
+        ("check_contrast_ratio", lambda: check_contrast_ratio(color_contrast)),
+        ("check_interactive_accessibility", lambda: check_interactive_accessibility(interactive_element)),
+        ("check_wcag_compliance", lambda: check_wcag_compliance(wcag_checker)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_DISABILITY_RIGHTS invariants: PASS")

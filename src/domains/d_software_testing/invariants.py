@@ -4,7 +4,15 @@
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import MCDCChecker, MutationScorer, DeterminismVerifier, MIN_MUTATION_SCORE
+from .implementation import (
+    Condition,
+    Decision,
+    DeterminismVerifier,
+    MCDCChecker,
+    MIN_MUTATION_SCORE,
+    Mutant,
+    MutationScorer,
+)
 
 
 def check_mcdc_completeness(checker: MCDCChecker) -> Tuple[bool, ProofObject]:
@@ -69,3 +77,69 @@ def check_test_determinism(verifier: DeterminismVerifier) -> Tuple[bool, ProofOb
         premises=[],
         rule="test_determinism"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_SOFTWARE_TESTING invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    mcdc_checker = MCDCChecker(
+        decision=Decision(
+        decision_id="SOFTWARE-001",
+        conditions=[Condition(
+        condition_id="SOFTWARE-001",
+        value=True,
+    )],
+        outcome=True,
+    ),
+        test_cases=[Decision(
+        decision_id="SOFTWARE-001",
+        conditions=[Condition(
+        condition_id="SOFTWARE-001",
+        value=True,
+    )],
+        outcome=True,
+    )],
+    )
+    mutation_scorer = MutationScorer(
+        mutants=[Mutant(
+        mutant_id="SOFTWARE-001",
+        original_code="SAMPLE",
+        mutated_code="SAMPLE",
+    )],
+    )
+    determinism_verifier = DeterminismVerifier(
+        test_name="Sample SOFTWARE",
+        runs=[True],
+    )
+
+    checks = [
+        ("check_mcdc_completeness", lambda: check_mcdc_completeness(mcdc_checker)),
+        ("check_mutation_score", lambda: check_mutation_score(mutation_scorer)),
+        ("check_test_determinism", lambda: check_test_determinism(determinism_verifier)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_SOFTWARE_TESTING invariants: PASS")

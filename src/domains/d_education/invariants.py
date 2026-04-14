@@ -268,3 +268,73 @@ def check_student_privacy_protection(ferpa_record: FERPAComplianceRecord) -> Tup
         ],
         rule="ferpa_access_fulfillment"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_EDUCATION invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    education_record = EducationRecord(
+        record_id=None,
+        institution_name=None,
+        education_level=EducationLevel.EARLY_CHILDHOOD,
+        total_students=Fraction(1),
+        students_with_disabilities=Fraction(1),
+        english_learners=Fraction(1),
+        economically_disadvantaged=Fraction(1),
+    )
+    ferpa_compliance_record = FERPAComplianceRecord(
+        record_id=None,
+        institution_id=None,
+        directory_info_consents=None,
+        third_party_disclosures=None,
+        unauthorized_disclosures=None,
+        student_access_requests=None,
+        student_access_fulfilled=None,
+        parent_access_requests=None,
+        parent_access_fulfilled=None,
+    )
+    special_education_program = SpecialEducationProgram(
+        program_id=None,
+        institution_id=None,
+        iep_compliance_rate=Fraction(1),
+        least_restrictive_environment_rate=Fraction(1),
+        transition_planning_compliance=Fraction(1),
+        parental_notice_days=Fraction(1),
+        due_process_requests=None,
+        due_process_resolved=None,
+    )
+
+    checks = [
+        ("check_essa_graduation_rate", lambda: check_essa_graduation_rate(education_record)),
+        ("check_ferpa_unauthorized_disclosure", lambda: check_ferpa_unauthorized_disclosure(ferpa_compliance_record)),
+        ("check_idea_iep_compliance", lambda: check_idea_iep_compliance(special_education_program)),
+        ("check_idea_parental_notice", lambda: check_idea_parental_notice(special_education_program)),
+        ("check_student_privacy_protection", lambda: check_student_privacy_protection(ferpa_compliance_record)),
+        ("check_title_ix_equity", lambda: check_title_ix_equity(education_record)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_EDUCATION invariants: PASS")

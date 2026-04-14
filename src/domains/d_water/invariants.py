@@ -256,3 +256,81 @@ def check_lead_service_line_replacement(utility: WaterUtility) -> Tuple[bool, Pr
         ],
         rule="sdwa_lead_service_line_replacement"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_WATER invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    water_utility = WaterUtility(
+        utility_id=None,
+        system_name=None,
+        population_served=Fraction(1),
+        source_type=WaterSourceType.SURFACE_WATER,
+        annual_compliance_violations=None,
+        health_based_violations=None,
+        monitoring_violations=None,
+        reporting_violations=None,
+        ccr_delivered=None,
+        ccr_delivery_date=None,
+        estimated_lead_service_lines=Fraction(1),
+        lead_service_lines_replaced=Fraction(1),
+    )
+    water_quality_sample = WaterQualitySample(
+        sample_id=None,
+        facility_id=None,
+        source_type=WaterSourceType.SURFACE_WATER,
+        sample_date=None,
+        lead_level=Fraction(1),
+        copper_level=Fraction(1),
+        chlorine_residual=Fraction(1),
+        ph_level=Fraction(1),
+        turbidity=Fraction(1),
+        e_coli_detected=None,
+        total_coliform_count=None,
+    )
+    wastewater_discharge = WastewaterDischarge(
+        permit_id=None,
+        facility_id=None,
+        flow_rate_mgd=Fraction(1),
+        bod_limit=Fraction(1000),
+        bod_actual=Fraction(1),
+        tss_limit=Fraction(1000),
+        tss_actual=Fraction(1),
+        permit_violations_annual=None,
+        enforcement_actions=None,
+    )
+
+    checks = [
+        ("check_consumer_confidence_report", lambda: check_consumer_confidence_report(water_utility)),
+        ("check_lead_copper_rule", lambda: check_lead_copper_rule(water_quality_sample)),
+        ("check_lead_service_line_replacement", lambda: check_lead_service_line_replacement(water_utility)),
+        ("check_microbial_compliance", lambda: check_microbial_compliance(water_quality_sample)),
+        ("check_npdes_discharge_limits", lambda: check_npdes_discharge_limits(wastewater_discharge)),
+        ("check_ph_compliance", lambda: check_ph_compliance(water_quality_sample)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_WATER invariants: PASS")

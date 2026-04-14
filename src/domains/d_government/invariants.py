@@ -178,3 +178,71 @@ def check_timeliness_rate(agency: GovernmentAgency) -> Tuple[bool, ProofObject]:
         premises=[f"Rate: {rate}"],
         rule="foia_timeliness_rate"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_GOVERNMENT invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    government_agency = GovernmentAgency(
+        agency_id=None,
+        agency_name=None,
+        requests_received_annual=None,
+        requests_processed_annual=None,
+        requests_backlog=None,
+        processed_within_20_days=None,
+        processed_21_to_40_days=None,
+        processed_over_40_days=None,
+        denials_total=None,
+        denials_exemption_1=None,
+        backlog_oldest_days=Fraction(1),
+    )
+    foi_request = FOIRequest(
+        request_id=None,
+        agency_id=None,
+        requester_type=None,
+        date_received=None,
+        date_completed=None,
+        status=RequestStatus.RECEIVED,
+        processing_time_days=Fraction(1),
+        records_located=None,
+        records_released=None,
+        records_withheld=None,
+        denial_reason=DenialReason.NONE,
+        fees_charged=Fraction(1),
+        fees_waived=Fraction(1),
+        fee_waiver_requested=None,
+    )
+
+    checks = [
+        ("check_agency_backlog", lambda: check_agency_backlog(government_agency)),
+        ("check_fee_waiver_appropriateness", lambda: check_fee_waiver_appropriateness(foi_request)),
+        ("check_foia_timeliness", lambda: check_foia_timeliness(foi_request)),
+        ("check_national_security_exemption", lambda: check_national_security_exemption(foi_request)),
+        ("check_timeliness_rate", lambda: check_timeliness_rate(government_agency)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_GOVERNMENT invariants: PASS")

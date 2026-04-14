@@ -12,8 +12,12 @@ from fractions import Fraction
 from typing import Dict, Tuple
 from axioms.logic import ProofObject
 from src.domains.d_graphics.implementation import (
-    ShaderCompilation, FrameTimeBudget, GPUMemoryPool,
-    UpscalePass, VRRDisplay, FrameGenerationPass,
+    FrameGenerationPass,
+    FrameTimeBudget,
+    GPUMemoryPool,
+    ShaderCompilation,
+    UpscalePass,
+    VRRDisplay,
 )
 
 

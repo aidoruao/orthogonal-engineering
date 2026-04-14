@@ -248,3 +248,85 @@ def check_fta_incident_reporting(incident: SafetyIncident) -> Tuple[bool, ProofO
         ],
         rule="fta_incident_reporting_49_cfr_659"
     )
+
+
+def run_all_invariants() -> dict:
+    """Run all D_TRANSIT invariants with nominal sample data.
+
+    falsifies_if: any invariant fails or raises an exception.
+    """
+    transit_stop = TransitStop(
+        stop_id=None,
+        route_id=None,
+        ada_accessible=None,
+        has_shelter=None,
+        has_real_time_info=None,
+        platform_height_mm=Fraction(1),
+    )
+    transit_vehicle = TransitVehicle(
+        vehicle_id=None,
+        vehicle_type=VehicleType.BUS,
+        capacity=Fraction(1000),
+        wheelchair_spaces=Fraction(1),
+        ada_compliant=None,
+        accessibility_features=None,
+        age_years=Fraction(1),
+        maintenance_current=None,
+    )
+    safety_incident = SafetyIncident(
+        incident_id=None,
+        route_id=None,
+        vehicle_id=None,
+        injuries=Fraction(1),
+        fatalities=Fraction(1),
+        property_damage_usd=Fraction(1),
+        fta_reportable=None,
+    )
+    transit_route = TransitRoute(
+        route_id=None,
+        length_km=Fraction(1),
+        frequency_minutes=Fraction(1),
+        on_time_performance_pct=Fraction(1),
+        ridership_per_day=Fraction(1),
+        ada_accessible=None,
+    )
+    service_reliability = ServiceReliability(
+        route_id=None,
+        mean_time_between_failures_hours=Fraction(1),
+        on_time_arrivals_pct=Fraction(1),
+        missed_trips_pct=Fraction(1),
+        average_delay_minutes=Fraction(1),
+    )
+
+    checks = [
+        ("check_ada_stop_accessibility", lambda: check_ada_stop_accessibility(transit_stop)),
+        ("check_ada_vehicle_compliance", lambda: check_ada_vehicle_compliance(transit_vehicle)),
+        ("check_fta_incident_reporting", lambda: check_fta_incident_reporting(safety_incident)),
+        ("check_headway_reliability", lambda: check_headway_reliability(transit_route, Fraction(1))),
+        ("check_on_time_performance", lambda: check_on_time_performance(service_reliability)),
+        ("check_vehicle_useful_life", lambda: check_vehicle_useful_life(transit_vehicle)),
+    ]
+
+    results: dict = {}
+    for name, func in checks:
+        try:
+            result = func()
+            if isinstance(result, tuple) and len(result) == 2:
+                success, proof = result
+                results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+            else:
+                passed = getattr(result, "passed", True)
+                results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
+        except Exception as exc:  # pragma: no cover - safety net
+            results[name] = "ERROR: " + str(exc)
+    return results
+
+
+if __name__ == "__main__":
+    import json
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_TRANSIT invariants: PASS")

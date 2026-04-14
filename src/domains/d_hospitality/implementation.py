@@ -74,11 +74,12 @@ class Property:
     
     # Capacity
     total_rooms: int
-    rooms: List[GuestRoom] = field(default_factory=list)
     
     # Compliance
     ada_compliant: bool
     fire_inspection_current: bool
+    
+    rooms: List[GuestRoom] = field(default_factory=list)
     health_inspection_score: Optional[Fraction] = None  # 0-100
     
     # Operations
