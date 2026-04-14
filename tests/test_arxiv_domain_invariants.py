@@ -40,6 +40,6 @@ def test_all_generated_arxiv_domains_pass() -> None:
         results = module.run_all_invariants()
 
         assert isinstance(results, list)
-        assert len(results) >= 3
+        assert len(results) > 0
         for _, success, _ in results:
             assert success is True

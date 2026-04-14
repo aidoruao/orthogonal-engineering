@@ -27,22 +27,24 @@ def check_theorem_bound(data: RaysAsPixelsClaimData) -> Tuple[bool, ProofObject]
     Invariant: Formal theorem bound must dominate observed error for reproducibility.
 
     Standard: arXiv 2604.09429v1 (cs.AI) theorem/algorithm claim.
-    falsifies_if: observed_error > error_bound.
+    falsifies_if: observed_error > error_bound OR theorem_confidence < 9/10.
 
     Returns:
         Tuple of (success, proof).
     """
-    success = data.observed_error <= data.error_bound
+    confidence_ok = data.theorem_confidence >= Fraction(9, 10)
+    success = (data.observed_error <= data.error_bound) and confidence_ok
     proof = ProofObject(
         rule='arxiv_theorem_bound',
         premises=[
             f'paper_id=2604.09429v1',
             f'observed_error={data.observed_error}',
             f'error_bound={data.error_bound}',
+            f'theorem_confidence={data.theorem_confidence}',
         ],
         conclusion=(
-            'PASS: observed error respects formal bound'
-            if success else 'FAIL: observed error violates formal bound'
+            'PASS: observed error respects formal bound and confidence threshold'
+            if success else 'FAIL: formal bound or confidence threshold violated'
         ),
     )
     return success, proof
@@ -109,6 +111,9 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
 
     Returns:
         List of (name, success, proof) tuples.
+
+    Note:
+        Uses nominal deterministic fixture values for executable audit checks.
     """
     data = RaysAsPixelsClaimData(
         theorem_confidence=Fraction(94, 100),
