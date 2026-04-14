@@ -10,7 +10,7 @@ from axioms.logic import ProofObject
 
 
 @dataclass(frozen=True)
-class ArxivClaimData:
+class ThreeModalitiesTwoClaimData:
     """Structured claim parameters derived from arXiv paper 2604.09426v1 (cs.AI)."""
 
     theorem_confidence: Fraction
@@ -22,7 +22,7 @@ class ArxivClaimData:
     required_witness_count: Fraction
 
 
-def check_theorem_bound(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
+def check_theorem_bound(data: ThreeModalitiesTwoClaimData) -> Tuple[bool, ProofObject]:
     """
     Invariant: Formal theorem bound must dominate observed error for reproducibility.
 
@@ -48,7 +48,7 @@ def check_theorem_bound(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
     return success, proof
 
 
-def check_iteration_budget(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
+def check_iteration_budget(data: ThreeModalitiesTwoClaimData) -> Tuple[bool, ProofObject]:
     """
     Invariant: Algorithmic convergence must complete within the declared iteration budget.
 
@@ -74,7 +74,7 @@ def check_iteration_budget(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
     return success, proof
 
 
-def check_proof_witnesses(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
+def check_proof_witnesses(data: ThreeModalitiesTwoClaimData) -> Tuple[bool, ProofObject]:
     """
     Invariant: Proof-carrying claim requires minimum witness count for auditability.
 
@@ -110,13 +110,13 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = ArxivClaimData(
+    data = ThreeModalitiesTwoClaimData(
         theorem_confidence=Fraction(98, 100),
-        error_bound=Fraction(1, 10),
-        observed_error=Fraction(1, 20),
+        error_bound=Fraction(1, 18),
+        observed_error=Fraction(1, 28),
         iteration_budget=Fraction(200),
-        observed_iterations=Fraction(120),
-        witness_count=Fraction(3),
+        observed_iterations=Fraction(185),
+        witness_count=Fraction(2),
         required_witness_count=Fraction(2),
     )
 

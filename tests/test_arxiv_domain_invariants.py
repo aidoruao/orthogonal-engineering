@@ -21,7 +21,7 @@ ARXIV_DOMAIN_FILES = [
 ]
 
 
-def _load_module(module_path: Path):
+def load_arxiv_domain_module(module_path: Path):
     spec = importlib.util.spec_from_file_location(module_path.stem, module_path)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
@@ -36,7 +36,7 @@ def test_all_generated_arxiv_domains_pass() -> None:
 
     for file_name in ARXIV_DOMAIN_FILES:
         module_path = domain_root / file_name
-        module = _load_module(module_path)
+        module = load_arxiv_domain_module(module_path)
         results = module.run_all_invariants()
 
         assert isinstance(results, list)
