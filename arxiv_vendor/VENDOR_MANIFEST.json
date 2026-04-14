@@ -1,0 +1,39 @@
+{
+  "source": "arXiv",
+  "source_url": "https://arxiv.org",
+  "api_used": "arXiv Search API (Atom) / OAI-PMH seed compatible",
+  "fetch_date": "2026-04-13T19:06:00Z",
+  "materialization_date": "2026-04-14T00:14:00Z",
+  "total_papers": 1200,
+  "categories": [
+    "cs.AI",
+    "cs.LO",
+    "cs.PL",
+    "math.CT",
+    "math.LO",
+    "cs.CR",
+    "cs.SE",
+    "cs.FL",
+    "stat.ML",
+    "cs.CL",
+    "quant-ph",
+    "cs.DC"
+  ],
+  "license_distribution": {
+    "note": "License metadata requires full materialization wave. Default arXiv non-exclusive distribution license applies to all indexed papers unless explicitly annotated.",
+    "pending_full_fetch": true
+  },
+  "merkle_root": "2ebfa653c43828d228eba1ade4d89940d25a33361db3f33cb3029a4f63c1bb2a",
+  "immutability_guarantee": "Metadata only. No PDFs stored.",
+  "lazy_materialization": true,
+  "omega_invariant": "Category saturation detection enabled. Halt when implementable_claims(P_{n+1}) ⊆ implementable_claims(P_1 ∪ ... ∪ P_n).",
+  "seed_file": "seed/arxiv_seed.yaml",
+  "dag_file": "dag/arxiv_category_dag.json",
+  "metadata_dir": "metadata/",
+  "merkle_roots_dir": "merkle_roots/",
+  "materializer_script": "arxiv_materializer.py",
+  "merkle_builder_script": "arxiv_merkle_builder.py",
+  "dag_generator_script": "arxiv_dag_generator.py",
+  "standard": "Yeshua",
+  "version": "1.0.0"
+}

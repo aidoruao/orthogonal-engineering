@@ -1,0 +1,124 @@
+# arXiv Fractal Seed Definition
+# Version: 1.0.0
+# Standard: Yeshua
+# Purpose: Deterministic lazy materialization of arXiv metadata into the OE framework
+#
+# This seed defines the API endpoints, category filters, and fetch parameters
+# required to materialize arXiv paper metadata on demand. Full PDFs/LaTeX are
+# NOT stored — only metadata manifests with SHA-256 hashes.
+
+root:
+  name: "arxiv_fractal_seed"
+  source: "arXiv"
+  source_url: "https://arxiv.org"
+  api_base: "https://export.arxiv.org/api/query"
+  oai_pmh_endpoint: "https://export.arxiv.org/oai2"
+  fetch_date: "2026-04-13T19:06:00Z"
+  lazy_materialization: true
+  omega_invariant: "Category saturation detection enabled"
+  immutability_guarantee: "Metadata only. No PDFs stored."
+
+# Categories to index (12 primary fields)
+categories:
+  - id: "cs.AI"
+    name: "Artificial Intelligence"
+    query: "cat:cs.AI"
+    description: "AI papers with implementable theoretical claims"
+  - id: "cs.LO"
+    name: "Logic in Computer Science"
+    query: "cat:cs.LO"
+    description: "Formal logic and automated reasoning"
+  - id: "cs.PL"
+    name: "Programming Languages"
+    query: "cat:cs.PL"
+    description: "Language theory, type systems, semantics"
+  - id: "math.CT"
+    name: "Category Theory"
+    query: "cat:math.CT"
+    description: "Categorical foundations and applications"
+  - id: "math.LO"
+    name: "Logic"
+    query: "cat:math.LO"
+    description: "Mathematical logic and foundations"
+  - id: "cs.CR"
+    name: "Cryptography and Security"
+    query: "cat:cs.CR"
+    description: "Cryptographic protocols and security proofs"
+  - id: "cs.SE"
+    name: "Software Engineering"
+    query: "cat:cs.SE"
+    description: "Software verification and methodology"
+  - id: "cs.FL"
+    name: "Formal Languages and Automata Theory"
+    query: "cat:cs.FL"
+    description: "Automata, grammars, and computability"
+  - id: "stat.ML"
+    name: "Machine Learning"
+    query: "cat:stat.ML"
+    description: "Statistical learning theory"
+  - id: "cs.CL"
+    name: "Computation and Language"
+    query: "cat:cs.CL"
+    description: "Natural language processing and linguistics"
+  - id: "quant-ph"
+    name: "Quantum Physics"
+    query: "cat:quant-ph"
+    description: "Quantum computing and information theory"
+  - id: "cs.DC"
+    name: "Distributed, Parallel, and Cluster Computing"
+    query: "cat:cs.DC"
+    description: "Distributed algorithms and consensus"
+
+# API fetch parameters
+fetch:
+  # arXiv API rate limit: 3 seconds between requests
+  delay_seconds: 3
+  max_results_per_request: 1000
+  # Default sample size for seed verification (full materialization set via --max-papers)
+  default_sample_size: 100
+  sort_by: "submittedDate"
+  sort_order: "descending"
+  # License filters — prioritize open licenses
+  license_preference:
+    - "http://arxiv.org/licenses/nonexclusive-distrib/1.0/"
+    - "http://creativecommons.org/licenses/by/4.0/"
+    - "http://creativecommons.org/licenses/by-sa/4.0/"
+    - "http://creativecommons.org/publicdomain/zero/1.0/"
+
+# Storage constraints (Yeshua Standard)
+storage:
+  store_metadata_manifests: true
+  store_merkle_roots: true
+  store_dag_structure: true
+  store_full_pdfs: false
+  max_storage_mb: 500
+
+# Omega invariant / Halt condition for arXiv
+omega_halt:
+  enabled: true
+  # Halt fetching for a category when saturation is detected
+  saturation_check: |
+    implementable_claims(P_{n+1}) ⊆ implementable_claims(P_1 ∪ ... ∪ P_n)
+  collapse_ratio_threshold: 0.99
+  topological_collapse: "Papers proving the same theorem share implementation manifests"
+
+# Metadata fields to extract and hash
+metadata_schema:
+  fields:
+    - arxiv_id
+    - title
+    - authors
+    - abstract
+    - categories
+    - primary_category
+    - published
+    - updated
+    - license
+    - url
+
+# Hash configuration
+hashing:
+  algorithm: "sha256"
+  # Each JSONL line is hashed individually; Merkle tree built over line hashes
+  leaf_prefix: "0x00"
+  internal_prefix: "0x01"
