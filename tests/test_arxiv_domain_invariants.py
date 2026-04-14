@@ -41,5 +41,6 @@ def test_all_generated_arxiv_domains_pass() -> None:
 
         assert isinstance(results, list)
         assert len(results) > 0
-        for _, success, _ in results:
+        for check_name, success, proof in results:
+            _ = (check_name, proof)
             assert success is True

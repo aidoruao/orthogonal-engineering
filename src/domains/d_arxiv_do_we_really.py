@@ -1,4 +1,4 @@
-"""arXiv-derived domain invariants for Do We Really Need to Approach the Entire Pareto Front in Many-Objective Bayesian Optimisation?."""
+"""arXiv-derived domain invariants for Do We Really Need to Approach the Entire Pareto Front in Many-Objective Bayesian Optimisation?"""
 
 from __future__ import annotations
 
