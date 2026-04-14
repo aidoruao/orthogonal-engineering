@@ -27,7 +27,6 @@ def check_theorem_bound(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
     Invariant: Formal theorem bound must dominate observed error for reproducibility.
 
     Standard: arXiv 2604.09508v1 (cs.AI) theorem/algorithm claim.
-    Falsifies if: observed_error > error_bound.
     falsifies_if: observed_error > error_bound.
 
     Returns:
@@ -54,7 +53,6 @@ def check_iteration_budget(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
     Invariant: Algorithmic convergence must complete within the declared iteration budget.
 
     Standard: arXiv 2604.09508v1 (cs.AI) algorithmic convergence claim.
-    Falsifies if: observed_iterations > iteration_budget.
     falsifies_if: observed_iterations > iteration_budget.
 
     Returns:
@@ -81,7 +79,6 @@ def check_proof_witnesses(data: ArxivClaimData) -> Tuple[bool, ProofObject]:
     Invariant: Proof-carrying claim requires minimum witness count for auditability.
 
     Standard: arXiv 2604.09508v1 (cs.AI) proof-carrying reproducibility condition.
-    Falsifies if: witness_count < required_witness_count.
     falsifies_if: witness_count < required_witness_count.
 
     Returns:
@@ -108,7 +105,6 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09508v1 (cs.AI) operationalization.
-    Falsifies if: any invariant check returns False.
     falsifies_if: any invariant check returns False.
 
     Returns:
