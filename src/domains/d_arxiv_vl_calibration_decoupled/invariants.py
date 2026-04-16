@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for VL-Calibration: Decoupled Confidence Calibration for Large Vision-Language Models Reasoning."""
+"""Invariant checks for d_arxiv_vl_calibration_decoupled."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class DecoupledCalibrationClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09529v1 (cs.AI)."""
-
-    answer_channel_ece_before: Fraction
-    answer_channel_ece_after: Fraction
-    reasoning_channel_ece_before: Fraction
-    reasoning_channel_ece_after: Fraction
-    answer_confidence_when_wrong: Fraction
-    reasoning_confidence_when_wrong: Fraction
-    risk_coverage_auc: Fraction
-    abstention_precision: Fraction
+from .implementation import DecoupledCalibrationClaim, create_nominal_claim
 
 
 def check_answer_channel_calibration_gain(data: DecoupledCalibrationClaim) -> Tuple[bool, ProofObject]:
@@ -146,10 +132,8 @@ def check_risk_aware_selective_prediction(data: DecoupledCalibrationClaim) -> Tu
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09529v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -157,16 +141,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = DecoupledCalibrationClaim(
-        answer_channel_ece_before=Fraction(9, 50),
-        answer_channel_ece_after=Fraction(1, 10),
-        reasoning_channel_ece_before=Fraction(1, 5),
-        reasoning_channel_ece_after=Fraction(11, 100),
-        answer_confidence_when_wrong=Fraction(11, 20),
-        reasoning_confidence_when_wrong=Fraction(1, 2),
-        risk_coverage_auc=Fraction(4, 5),
-        abstention_precision=Fraction(17, 20),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_answer_channel_calibration_gain", check_answer_channel_calibration_gain),

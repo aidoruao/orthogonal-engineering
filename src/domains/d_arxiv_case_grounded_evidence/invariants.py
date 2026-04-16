@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for Case-Grounded Evidence Verification: A Framework for Constructing Evidence-Sensitive Supervision."""
+"""Invariant checks for d_arxiv_case_grounded_evidence."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class CaseGroundedVerificationClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09537v1 (cs.AI)."""
-
-    supported_case_count: Fraction
-    evaluated_case_count: Fraction
-    evidence_dependency_drop: Fraction
-    counterfactual_flip_rate: Fraction
-    retrieval_leakage_rate: Fraction
-    case_specific_evidence_ratio: Fraction
-    label_only_baseline_score: Fraction
-    evidence_conditioned_score: Fraction
+from .implementation import CaseGroundedVerificationClaim, create_nominal_claim
 
 
 def check_case_support_coverage(data: CaseGroundedVerificationClaim) -> Tuple[bool, ProofObject]:
@@ -146,10 +132,8 @@ def check_evidence_conditioning_gain(data: CaseGroundedVerificationClaim) -> Tup
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09537v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -157,16 +141,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = CaseGroundedVerificationClaim(
-        supported_case_count=Fraction(88),
-        evaluated_case_count=Fraction(100),
-        evidence_dependency_drop=Fraction(3, 10),
-        counterfactual_flip_rate=Fraction(1, 2),
-        retrieval_leakage_rate=Fraction(1, 10),
-        case_specific_evidence_ratio=Fraction(4, 5),
-        label_only_baseline_score=Fraction(7, 10),
-        evidence_conditioned_score=Fraction(17, 20),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_case_support_coverage", check_case_support_coverage),

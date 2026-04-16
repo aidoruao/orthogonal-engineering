@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for Rays as Pixels: Learning A Joint Distribution of Videos and Camera Trajectories."""
+"""Invariant checks for d_arxiv_rays_as_pixels."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class RaysAsPixelsJointDistributionClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09429v1 (cs.AI)."""
-
-    sparse_pose_error: Fraction
-    joint_model_pose_error: Fraction
-    novel_view_psnr: Fraction
-    trajectory_cycle_consistency: Fraction
-    ray_token_coverage: Fraction
-    joint_likelihood_gain: Fraction
-    view_synthesis_temporal_consistency: Fraction
-    camera_path_smoothness: Fraction
+from .implementation import RaysAsPixelsJointDistributionClaim, create_nominal_claim
 
 
 def check_joint_pose_error_improvement(data: RaysAsPixelsJointDistributionClaim) -> Tuple[bool, ProofObject]:
@@ -147,10 +133,8 @@ def check_joint_distribution_gain(data: RaysAsPixelsJointDistributionClaim) -> T
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09429v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -158,16 +142,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = RaysAsPixelsJointDistributionClaim(
-        sparse_pose_error=Fraction(3, 10),
-        joint_model_pose_error=Fraction(1, 5),
-        novel_view_psnr=Fraction(17, 20),
-        trajectory_cycle_consistency=Fraction(4, 5),
-        ray_token_coverage=Fraction(9, 10),
-        joint_likelihood_gain=Fraction(1, 8),
-        view_synthesis_temporal_consistency=Fraction(4, 5),
-        camera_path_smoothness=Fraction(3, 4),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_joint_pose_error_improvement", check_joint_pose_error_improvement),

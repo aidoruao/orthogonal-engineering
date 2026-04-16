@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for Large Language Models Generate Harmful Content Using a Distinct, Unified Mechanism."""
+"""Invariant checks for d_arxiv_large_language_models."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class HarmMechanismClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09544v1 (cs.AI)."""
-
-    total_model_weights: Fraction
-    harmful_mechanism_weights: Fraction
-    benign_capability_weights: Fraction
-    harm_benign_overlap_ratio: Fraction
-    harm_output_after_targeted_prune: Fraction
-    benign_output_after_targeted_prune: Fraction
-    cross_harm_transfer_ratio: Fraction
-    alignment_feature_shift: Fraction
+from .implementation import HarmMechanismClaim, create_nominal_claim
 
 
 def check_harm_weight_compactness(data: HarmMechanismClaim) -> Tuple[bool, ProofObject]:
@@ -146,10 +132,8 @@ def check_alignment_feature_localization(data: HarmMechanismClaim) -> Tuple[bool
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09544v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -157,16 +141,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = HarmMechanismClaim(
-        total_model_weights=Fraction(10_000),
-        harmful_mechanism_weights=Fraction(800),
-        benign_capability_weights=Fraction(6_500),
-        harm_benign_overlap_ratio=Fraction(1, 10),
-        harm_output_after_targeted_prune=Fraction(2, 5),
-        benign_output_after_targeted_prune=Fraction(9, 10),
-        cross_harm_transfer_ratio=Fraction(4, 5),
-        alignment_feature_shift=Fraction(1, 10),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_harm_weight_compactness", check_harm_weight_compactness),

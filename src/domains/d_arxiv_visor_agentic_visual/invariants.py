@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for VISOR: Agentic Visual Retrieval-Augmented Generation via Iterative Search and Over-horizon Reasoning."""
+"""Invariant checks for d_arxiv_visor_agentic_visual."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class VisorAgenticVragClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09508v1 (cs.AI)."""
-
-    iterative_search_rounds: Fraction
-    retrieved_evidence_pages: Fraction
-    cross_page_link_density: Fraction
-    over_horizon_reasoning_depth: Fraction
-    visual_recall_at_k: Fraction
-    answer_grounding_score: Fraction
-    hallucination_rate: Fraction
-    final_consistency_score: Fraction
+from .implementation import VisorAgenticVragClaim, create_nominal_claim
 
 
 def check_iterative_search_depth(data: VisorAgenticVragClaim) -> Tuple[bool, ProofObject]:
@@ -148,10 +134,8 @@ def check_grounding_over_hallucination(data: VisorAgenticVragClaim) -> Tuple[boo
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09508v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -159,16 +143,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = VisorAgenticVragClaim(
-        iterative_search_rounds=Fraction(4),
-        retrieved_evidence_pages=Fraction(9),
-        cross_page_link_density=Fraction(2, 5),
-        over_horizon_reasoning_depth=Fraction(3),
-        visual_recall_at_k=Fraction(4, 5),
-        answer_grounding_score=Fraction(17, 20),
-        hallucination_rate=Fraction(3, 20),
-        final_consistency_score=Fraction(4, 5),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_iterative_search_depth", check_iterative_search_depth),

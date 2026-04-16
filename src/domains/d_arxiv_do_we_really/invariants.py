@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for Do We Really Need to Approach the Entire Pareto Front in Many-Objective Bayesian Optimisation?"""
+"""Invariant checks for d_arxiv_do_we_really."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class ManyObjectiveParetoFocusClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09417v1 (cs.AI)."""
-
-    objective_dimension: Fraction
-    hypervolume_ratio: Fraction
-    knee_region_coverage: Fraction
-    full_front_evaluation_cost: Fraction
-    focused_search_cost: Fraction
-    decision_useful_solution_ratio: Fraction
-    knee_region_regret: Fraction
-    sample_efficiency_gain: Fraction
+from .implementation import ManyObjectiveParetoFocusClaim, create_nominal_claim
 
 
 def check_many_objective_regime(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, ProofObject]:
@@ -147,10 +133,8 @@ def check_knee_regret_bound(data: ManyObjectiveParetoFocusClaim) -> Tuple[bool, 
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09417v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -158,16 +142,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = ManyObjectiveParetoFocusClaim(
-        objective_dimension=Fraction(6),
-        hypervolume_ratio=Fraction(4, 5),
-        knee_region_coverage=Fraction(17, 20),
-        full_front_evaluation_cost=Fraction(1_000),
-        focused_search_cost=Fraction(420),
-        decision_useful_solution_ratio=Fraction(4, 5),
-        knee_region_regret=Fraction(1, 20),
-        sample_efficiency_gain=Fraction(3, 10),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_many_objective_regime", check_many_objective_regime),

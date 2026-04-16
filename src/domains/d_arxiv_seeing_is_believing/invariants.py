@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for Seeing is Believing: Robust Vision-Guided Cross-Modal Prompt Learning under Label Noise."""
+"""Invariant checks for d_arxiv_seeing_is_believing."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class VisionGuidedPromptRobustnessClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09532v1 (cs.AI)."""
-
-    label_noise_rate: Fraction
-    visual_semantic_stability: Fraction
-    prompt_parameter_stability: Fraction
-    noisy_label_reliance: Fraction
-    clean_set_accuracy: Fraction
-    noisy_set_accuracy: Fraction
-    cross_modal_alignment_gain: Fraction
-    robustness_margin: Fraction
+from .implementation import VisionGuidedPromptRobustnessClaim, create_nominal_claim
 
 
 def check_visual_signal_dominance(data: VisionGuidedPromptRobustnessClaim) -> Tuple[bool, ProofObject]:
@@ -148,10 +134,8 @@ def check_cross_modal_prompt_gain(data: VisionGuidedPromptRobustnessClaim) -> Tu
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09532v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -159,16 +143,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = VisionGuidedPromptRobustnessClaim(
-        label_noise_rate=Fraction(2, 5),
-        visual_semantic_stability=Fraction(9, 10),
-        prompt_parameter_stability=Fraction(7, 10),
-        noisy_label_reliance=Fraction(1, 4),
-        clean_set_accuracy=Fraction(17, 20),
-        noisy_set_accuracy=Fraction(7, 10),
-        cross_modal_alignment_gain=Fraction(3, 20),
-        robustness_margin=Fraction(1, 10),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_visual_signal_dominance", check_visual_signal_dominance),

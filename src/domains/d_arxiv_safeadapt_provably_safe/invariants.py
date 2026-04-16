@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for SafeAdapt: Provably Safe Policy Updates in Deep Reinforcement Learning."""
+"""Invariant checks for d_arxiv_safeadapt_provably_safe."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class SafeAdaptPolicyUpdateClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09452v1 (cs.AI)."""
-
-    safety_constraint_satisfaction_before: Fraction
-    safety_constraint_satisfaction_after: Fraction
-    task_return_before: Fraction
-    task_return_after: Fraction
-    constraint_violation_probability: Fraction
-    adaptation_step_count: Fraction
-    formal_safety_margin: Fraction
-    distribution_shift_resilience: Fraction
+from .implementation import SafeAdaptPolicyUpdateClaim, create_nominal_claim
 
 
 def check_safety_constraint_preservation(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool, ProofObject]:
@@ -148,10 +134,8 @@ def check_shift_resilience_floor(data: SafeAdaptPolicyUpdateClaim) -> Tuple[bool
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09452v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -159,16 +143,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = SafeAdaptPolicyUpdateClaim(
-        safety_constraint_satisfaction_before=Fraction(9, 10),
-        safety_constraint_satisfaction_after=Fraction(19, 20),
-        task_return_before=Fraction(7, 10),
-        task_return_after=Fraction(3, 4),
-        constraint_violation_probability=Fraction(1, 50),
-        adaptation_step_count=Fraction(12),
-        formal_safety_margin=Fraction(1, 10),
-        distribution_shift_resilience=Fraction(4, 5),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_safety_constraint_preservation", check_safety_constraint_preservation),

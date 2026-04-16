@@ -1,26 +1,12 @@
-"""arXiv-derived domain invariants for Strategic Algorithmic Monoculture: Experimental Evidence from Coordination Games."""
+"""Invariant checks for d_arxiv_strategic_algorithmic_monoculture."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-
-
-@dataclass(frozen=True)
-class StrategicMonocultureClaim:
-    """Structured claim parameters derived from arXiv paper 2604.09502v1 (cs.AI)."""
-
-    baseline_action_similarity: Fraction
-    incentivized_action_similarity: Fraction
-    human_similarity_shift: Fraction
-    llm_similarity_shift: Fraction
-    coordination_payoff_gain: Fraction
-    strategy_concentration_index: Fraction
-    diversity_preservation_floor: Fraction
-    equilibrium_reach_rate: Fraction
+from .implementation import StrategicMonocultureClaim, create_nominal_claim
 
 
 def check_strategic_similarity_response(data: StrategicMonocultureClaim) -> Tuple[bool, ProofObject]:
@@ -147,10 +133,8 @@ def check_equilibrium_coordination_rate(data: StrategicMonocultureClaim) -> Tupl
     )
     return success, proof
 
-
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """
-    Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09502v1 (cs.AI) nominal executable check set.
     falsifies_if: any invariant check returns False.
@@ -158,16 +142,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     Returns:
         List of (name, success, proof) tuples.
     """
-    data = StrategicMonocultureClaim(
-        baseline_action_similarity=Fraction(3, 5),
-        incentivized_action_similarity=Fraction(4, 5),
-        human_similarity_shift=Fraction(1, 10),
-        llm_similarity_shift=Fraction(1, 5),
-        coordination_payoff_gain=Fraction(3, 20),
-        strategy_concentration_index=Fraction(3, 5),
-        diversity_preservation_floor=Fraction(1, 5),
-        equilibrium_reach_rate=Fraction(4, 5),
-    )
+    data = create_nominal_claim()
 
     checks = [
         ("check_strategic_similarity_response", check_strategic_similarity_response),
