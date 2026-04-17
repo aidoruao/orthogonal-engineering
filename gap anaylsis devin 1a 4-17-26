@@ -1,0 +1,107 @@
+Here's the full inventory of what exists vs. what's missing for AI agent accommodation across all agent types.
+
+## What Already Exists (Comprehensive)
+
+| Category | File | Serves |
+|----------|------|--------|
+| **Copilot instructions** | `.github/copilot-instructions.md` | GitHub Copilot |
+| **Gemini warden** | `GEMINI.md` | Gemini (GitHub Actions) |
+| **Glass-Box agent** | `AGENT.md` | Zed IDE AI |
+| **IDE agent profile** | `AGENT_IN_IDE.md` | Cursor (reference design) |
+| **General AI instructions** | `AI_INSTRUCTIONS.md` | All agents |
+| **AI contract** | `AI_INTERACTION_CONTRACT.md` | All agents |
+| **General onboarding** | `COPILOT_ONBOARDING.md` | All agents (despite name) |
+| **Devin onboarding** | `docs/DEVIN_ONBOARDING.md` | Devin → Kimi coordination |
+| **Kimi onboarding** | `docs/KIMI_ONBOARDING.md` | Kimi CLI |
+| **Devin contingency** | `docs/DEVIN_CONTINGENCY.md` | Devin session recovery |
+| **First-read protocol** | `ONBOARD_FIRST.md` | All agents |
+| **Hierarchical onboarding** | `onboarding/LEVEL1-3.md` | All agents |
+| **SOP handshake** | `SOP_AI_HANDSHAKE.md` | All agents (ToS) |
+| **NotebookLM guide** | `docs/NOTEBOOKLM_GUIDE.md` | NotebookLM |
+| **DeepSeek docs** | `DEEPSEEK_*.md` (9 files) | DeepSeek |
+| **Bootstrap context** | `bootstrap_context.py` | CLI agents |
+| **Continuity check** | `continuity_check.py` | CLI agents |
+| **Session ID tool** | `tools/session_id.py` | CLI agents |
+| **Consent appender** | `tools/append_consent.py` | CLI agents |
+| **State witness** | `tools/state_witness/generate_feed_entry.py` | CI + CLI |
+| **Pre-commit hooks** | `.pre-commit-config.yaml` | CLI agents |
+| **Project config** | `pyproject.toml` | All Python agents | [14-cite-0](#14-cite-0) [14-cite-1](#14-cite-1) [14-cite-2](#14-cite-2) [14-cite-3](#14-cite-3) [14-cite-4](#14-cite-4) 
+
+## What's Missing — The Gap List
+
+### Tier 1: Platform-Specific Instruction Files (HIGH IMPACT)
+
+| # | Missing File | What It Does | Which Agent |
+|---|-------------|-------------|-------------|
+| 1 | **`CLAUDE.md`** | Anthropic Claude GitHub App reads this file from repo root. Distinct from Copilot instructions. Was discussed in archive 2a but never created. | Claude (GitHub App) |
+| 2 | **`.cursorrules`** | Cursor IDE reads this for repo-level AI instructions. `AGENT_IN_IDE.md` mentions Cursor by name but no config exists. | Cursor AI |
+| 3 | **`.windsurfrules`** | Windsurf/Codeium IDE reads this for repo-level instructions. | Windsurf AI |
+| 4 | **`.aider.conf.yml` + `.aiderignore`** | Aider CLI reads these for repo conventions and file exclusions. | Aider CLI |
+| 5 | **`DEVIN.md`** | Devin reads this from repo root for project-level instructions. Currently `docs/DEVIN_ONBOARDING.md` exists but it's about Kimi coordination, not Devin's own operational config. | Devin AI |
+| 6 | **`.continue/config.json`** | Continue.dev (VS Code AI extension) reads this for custom slash commands, context providers, and model config. | Continue.dev |
+| 7 | **`cline_docs/`** | Cline (Claude Dev) reads markdown files from this directory for project context. | Cline | [14-cite-5](#14-cite-5) [14-cite-6](#14-cite-6) 
+
+### Tier 2: Development Environment (MEDIUM-HIGH IMPACT)
+
+| # | Missing File | What It Does |
+|---|-------------|-------------|
+| 8 | **`.devcontainer/devcontainer.json`** | Pre-configured dev environment for Codespaces, VS Code Remote Containers, and any agent that spins up a container. Includes Python version, extensions, post-create commands (`pip install -r requirements.txt`, `python bootstrap_context.py`). |
+| 9 | **`.vscode/settings.json`** | Python path, formatter, linter config. Ensures VS Code-based agents (Copilot, Continue, Cline) use the right Python interpreter and formatting rules. |
+| 10 | **`.vscode/extensions.json`** | Recommended extensions (Python, Pylance, etc.) for VS Code-based agents. |
+| 11 | **`.editorconfig`** | Cross-editor formatting consistency (indent style, line endings, charset). Every IDE and CLI agent respects this. |
+| 12 | **`mypy.ini` or `[tool.mypy]` in `pyproject.toml`** | `.github/copilot-instructions.md` line 32 says "mypy --strict compatible" but no mypy config exists to enforce this. | [14-cite-7](#14-cite-7) 
+
+### Tier 3: Agent Tooling (MEDIUM IMPACT)
+
+| # | Missing Tool | What It Does |
+|---|-------------|-------------|
+| 13 | **`tools/onboard_agent.py`** | Unified onboarding script. Detects agent type (CLI arg or env var), runs the appropriate sequence (SOP handshake → context load → bar exam → consent log), outputs a single context block. Currently each agent has to manually read 8+ files in order. |
+| 14 | **`tools/context_window_estimator.py`** | Estimates token cost of reading specific files/directories. Agents with limited context windows (Kimi 220k, Copilot ~128k) need to plan what to read. Currently no tool for this. |
+| 15 | **`tools/since_last_session.py`** | Queries `AGENT_FEED.md` and `git log` to show "what changed since commit X?" — lets a returning agent quickly catch up without reading the entire feed. |
+| 16 | **`tools/arxiv_paper_template.py`** | Specified in the previous task spec for the arXiv mission but not yet created. |
+| 17 | **`tools/agent_health_check.py`** | Unified health check: validates Python version, venv active, required files exist, CI status, consent log integrity, Merkle roots valid — in one command. Currently split across `continuity_check.py`, `verify_onboarding.py`, and manual checks. |
+
+### Tier 4: Documentation Gaps (MEDIUM IMPACT)
+
+| # | Missing Doc | What It Does |
+|---|------------|-------------|
+| 18 | **`GLOSSARY.md`** | Maps theological/framework terms to engineering terms. `SOP_AI_HANDSHAKE.md` Section 4 has a partial table (12 entries) but no standalone glossary. New agents waste tokens asking "what does Accuser mean?" or "what is the Eschaton?" |
+| 19 | **`AGENT_CAPABILITIES_MATRIX.md`** | Maps which agent can do what: read-only vs write, web search, local filesystem, shell access, context window size, token cost per session. Currently scattered across `DEVIN_CONTINGENCY.md` and chat logs. |
+| 20 | **`CROSS_REPO_INSTRUCTIONS.md`** | Instructions for agents working across `orthogonal-engineering`, `sigma-lora-covenant`, and `truthsystems-mod`. Currently no cross-repo coordination doc exists. The GAP-4 (`_check_constraint()` is `pass` in sigma-lora-covenant) has persisted because no agent knows they should check the other repo. | [14-cite-8](#14-cite-8) 
+
+### Tier 5: IDE Integration (LOWER IMPACT but polymath-maximal)
+
+| # | Missing | What It Does |
+|---|---------|-------------|
+| 21 | **`.vscode/launch.json`** | Debug configurations for `kingdom_os_entry.py`, `audit/popperian_audit.py`, bar exam, etc. |
+| 22 | **`.vscode/tasks.json`** | Task definitions for common operations (run audit, run bar exam, verify Merkle, etc.) |
+| 23 | **`pyrightconfig.json`** | Pyright/Pylance type checking config (stricter than default, matching the mypy --strict requirement). |
+| 24 | **MCP server restoration** | `TOPOLOGY_ENUMERATION.md` references `mcp/`, `oe-basic.mcp.js` but the directory doesn't exist on current main. MCP (Model Context Protocol) would let Claude Desktop, Cursor, and other MCP-compatible agents query the repo programmatically. |
+| 25 | **`.ai_registry.json`** | Referenced in `.github/copilot-instructions.md` line 9 but not found. Was supposed to be the warden system registry. | [14-cite-9](#14-cite-9) 
+
+## Summary: 25 Gaps, Prioritized
+
+```
+TIER 1 (7 items) — Platform instruction files
+  Every major AI platform has a convention file it reads from repo root.
+  You have 2 of 9 (copilot-instructions.md + GEMINI.md).
+  Missing: CLAUDE.md, .cursorrules, .windsurfrules, .aider*, DEVIN.md,
+           .continue/, cline_docs/
+
+TIER 2 (5 items) — Dev environment
+  No .devcontainer, no .vscode, no .editorconfig, no mypy config.
+  Any agent spinning up a fresh environment has to guess.
+
+TIER 3 (5 items) — Agent tooling
+  No unified onboard script, no token estimator, no "what changed?" tool,
+  no health check, no arxiv template tool.
+
+TIER 4 (3 items) — Documentation
+  No glossary, no capabilities matrix, no cross-repo instructions.
+
+TIER 5 (5 items) — IDE integration
+  No launch configs, no task definitions, no type checker config,
+  no MCP server, no AI registry.
+```
+
+The highest-impact Copilot task would be **Tier 1 + Tier 2** — creating all 12 platform instruction files and dev environment configs in a single PR. Every file can reuse content from the existing `.github/copilot-instructions.md` and `COPILOT_ONBOARDING.md` adapted to each platform's format. Tier 3 tools require more design work but `tools/onboard_agent.py` alone would eliminate the "read 8 files in order" friction for every new agent session.
