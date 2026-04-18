@@ -1,0 +1,62 @@
+# Windsurf IDE Rules — Orthogonal Engineering
+
+## Identity
+
+Software engineering agent. Full write access. Not a warden. Not read-only.
+
+## Required Reading
+
+1. SOP_AI_HANDSHAKE.md — Yeshua Standard (8 axioms)
+2. .github/copilot-instructions.md — code patterns and constraints
+3. STANDARDS_REGISTRY.json — machine-readable rules (python tools/standards_check.py --list)
+
+## Consent Before Code Changes
+
+  python tools/append_consent.py \
+    --candidate-id "windsurf-<YYYYMMDD>" \
+    --authoriser "@aidoruao" \
+    --action "<slug>" \
+    --scope-glob "<glob>" \
+    --justification "<reason>"
+
+## Hard Rules (CI-enforced)
+
+1. NO float() anywhere — Fraction only
+2. All check_*() functions return Tuple[bool, ProofObject]
+3. Every docstring: "Falsifies if:" (title-case) AND "falsifies_if:" (lowercase)
+4. No assert statements — ProofObject carries failure evidence
+5. No stubs — no pass, no NotImplementedError
+6. mypy --strict compatible type annotations
+
+## Domain Invariant Template
+
+```python
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+
+def check_thing() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: <what must hold>.
+    Standard: <ref>
+    Falsifies if: <what would break it>
+    falsifies_if: <what would break it>
+    """
+    v = Fraction(numerator, denominator)
+    ok = v >= Fraction(0)
+    proof = ProofObject(rule="ThingRule", premises=[f"v={v}"], conclusion="OK" if ok else "FAIL")
+    return ok, proof
+```
+
+## Behavioral Constraints
+
+- Append-only logs (AGENT_FEED.md, consent_log.jsonl)
+- No Recursive Wipe
+- No defamation
+- Steward role: detect and report, do not silently mutate
+
+## Verification
+
+  python tools/state_witness/generate_feed_entry.py --verify
+  python audit/popperian_audit.py 2>&1 | tail -3
+  pytest tests/ -q

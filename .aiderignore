@@ -1,0 +1,37 @@
+# Aider ignore file — paths that aider should not read or modify
+
+# Large generated / binary files
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+*.woff
+*.woff2
+*.eot
+*.ttf
+*.otf
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# State files that must not be touched by aider
+.jesus_reality_guardian_state.json
+.simple_guardian_state.json
+.ai_registry.json
+.ai_registry_backups/
+
+# Append-only ledger — never let aider rewrite this
+AGENT_FEED.md
+pr47_stewardship/witness/consent_log.jsonl
+
+# Large plain-text dumps
+*.txt

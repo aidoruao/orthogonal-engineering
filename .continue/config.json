@@ -1,0 +1,39 @@
+{
+  "models": [
+    {
+      "title": "Claude 3.5 Sonnet",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022"
+    }
+  ],
+  "customCommands": [
+    {
+      "name": "verify-chain",
+      "description": "Verify AGENT_FEED.md hash chain integrity",
+      "prompt": "Run: python tools/state_witness/generate_feed_entry.py --verify"
+    },
+    {
+      "name": "popperian-audit",
+      "description": "Run Popperian audit on all domains",
+      "prompt": "Run: python audit/popperian_audit.py 2>&1 | tail -5"
+    },
+    {
+      "name": "standards-check",
+      "description": "Check all standards in STANDARDS_REGISTRY.json",
+      "prompt": "Run: python tools/standards_check.py --verify"
+    }
+  ],
+  "contextProviders": [
+    {
+      "name": "file",
+      "params": {}
+    },
+    {
+      "name": "diff",
+      "params": {}
+    }
+  ],
+  "slashCommands": [],
+  "allowAnonymousTelemetry": false,
+  "docs": []
+}

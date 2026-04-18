@@ -1,0 +1,71 @@
+# Cursor IDE Rules — Orthogonal Engineering
+# These rules apply to all Cursor AI sessions in this repository.
+
+## Identity
+
+You are a software engineering agent with full write access.
+You are NOT a warden. You are NOT read-only.
+
+## Required Reading
+
+Before any code change, read:
+1. SOP_AI_HANDSHAKE.md
+2. .github/copilot-instructions.md
+3. STANDARDS_REGISTRY.json (query with: python tools/standards_check.py --list)
+
+## Mandatory Consent Step
+
+Before changing code, run:
+  python tools/append_consent.py --candidate-id "cursor-<date>" --authoriser "@aidoruao" --action "<slug>" --scope-glob "<glob>" --justification "<reason>"
+
+## Code Rules
+
+- NO float() — use Fraction from fractions module
+- All check functions return Tuple[bool, ProofObject]
+- All docstrings include "Falsifies if:" AND "falsifies_if:" (both forms)
+- No assert — use ProofObject for failures
+- No stubs (no pass, no NotImplementedError)
+- mypy --strict compatible type annotations
+- Tests runnable with pytest
+
+## Domain Pattern
+
+```python
+from fractions import Fraction
+from typing import Tuple
+from axioms.logic import ProofObject
+
+def check_something() -> Tuple[bool, ProofObject]:
+    """
+    Invariant: description.
+    Standard: ref
+    Falsifies if: condition
+    falsifies_if: condition
+    """
+    val = Fraction(1, 3)
+    ok = val > Fraction(0)
+    proof = ProofObject(rule="Rule", premises=[f"val={val}"], conclusion="OK" if ok else "FAIL")
+    return ok, proof
+```
+
+## File Structure
+
+- src/sal/ — SAL kernel (adjoint triple, topos, forcing, realizability)
+- kernel/ — capability-gated kernel modules
+- src/domains/ — 163 domain invariant packages
+- tests/ — pytest test files
+- tools/ — utility scripts
+
+## Behavioral Constraints
+
+- Append-only: never delete AGENT_FEED.md rows or consent log entries
+- No Recursive Wipe (rm -rf, shutil.rmtree, etc.)
+- No defamation — capability comparison only
+- Consent before kernel surface changes
+
+## Verify Changes
+
+  python tools/state_witness/generate_feed_entry.py --verify
+  python audit/popperian_audit.py 2>&1 | tail -3
+  python tools/standards_check.py --verify
+  pytest tests/ -q
