@@ -107,7 +107,7 @@
     {
       "id": "CS-001",
       "category": "code_standard",
-      "rule": "No float() \u2014 Fraction only",
+      "rule": "No float() — Fraction only",
       "description": "All numeric computations must use fractions.Fraction for exact arithmetic. float(), math.isclose(), and numpy floating-point are forbidden in domain invariants.",
       "enforcement_command": "grep -rn 'float(\\|isclose(' src/domains/*/invariants.py src/domains/*/implementation.py",
       "enforcement_file": ".github/workflows/fraction-enforcement.yml",
@@ -143,7 +143,7 @@
     {
       "id": "CS-004",
       "category": "code_standard",
-      "rule": "No assert statements \u2014 use ProofObject for failures",
+      "rule": "No assert statements — use ProofObject for failures",
       "description": "assert statements are forbidden in production code. Failure evidence must be carried in ProofObject.conclusion.",
       "enforcement_command": "grep -rn '^[[:space:]]*assert ' src/domains/ axioms/ kernel/ oe_engine/ --include='*.py' | grep -v '/tests/'",
       "enforcement_file": null,
@@ -155,7 +155,7 @@
     {
       "id": "CS-005",
       "category": "code_standard",
-      "rule": "No stubs \u2014 no pass bodies, no NotImplementedError",
+      "rule": "No stubs — no pass bodies, no NotImplementedError",
       "description": "All public functions must be fully implemented. pass-only bodies and NotImplementedError are forbidden.",
       "enforcement_command": "grep -rn 'NotImplementedError\\|^\\s*pass$' src/domains/*/invariants.py",
       "enforcement_file": null,
@@ -191,7 +191,7 @@
     {
       "id": "BC-001",
       "category": "behavioral_constraint",
-      "rule": "Steward role only \u2014 detect and report, do not silently mutate",
+      "rule": "Steward role only — detect and report, do not silently mutate",
       "description": "Warden agents must not mutate repository state. Executor agents must report changes via ProofObject and consent log.",
       "enforcement_command": null,
       "enforcement_file": "SOP_AI_HANDSHAKE.md",
@@ -203,7 +203,7 @@
     {
       "id": "BC-002",
       "category": "behavioral_constraint",
-      "rule": "Append-only logs \u2014 never delete or rewrite",
+      "rule": "Append-only logs — never delete or rewrite",
       "description": "AGENT_FEED.md and pr47_stewardship/witness/consent_log.jsonl are append-only. Existing rows must not be deleted or modified.",
       "enforcement_command": "python tools/state_witness/generate_feed_entry.py --verify",
       "enforcement_file": "tools/state_witness/generate_feed_entry.py",
@@ -215,7 +215,7 @@
     {
       "id": "BC-003",
       "category": "behavioral_constraint",
-      "rule": "No Recursive Wipe \u2014 never rm -rf, shutil.rmtree, or equivalent",
+      "rule": "No Recursive Wipe — never rm -rf, shutil.rmtree, or equivalent",
       "description": "Any operation that iterates and deletes files is forbidden. See PR #48 social engineering case study.",
       "enforcement_command": "grep -rn 'shutil.rmtree\\|rm -rf\\|os.remove' tools/ automation/",
       "enforcement_file": "SOP_AI_HANDSHAKE.md",
@@ -227,7 +227,7 @@
     {
       "id": "BC-004",
       "category": "behavioral_constraint",
-      "rule": "No defamation \u2014 capability comparison only (HAS/DOES_NOT_HAVE/UNKNOWN)",
+      "rule": "No defamation — capability comparison only (HAS/DOES_NOT_HAVE/UNKNOWN)",
       "description": "AI capability statements must use objective capability claims, not comparative criticism of companies.",
       "enforcement_command": null,
       "enforcement_file": "SOP_AI_HANDSHAKE.md",
@@ -251,7 +251,7 @@
     {
       "id": "BC-006",
       "category": "behavioral_constraint",
-      "rule": "Peano gate sequencing \u2014 S(0) through S(5), no skipping",
+      "rule": "Peano gate sequencing — S(0) through S(5), no skipping",
       "description": "The AGENT_FEED.md chain uses Peano successor notation. Genesis row S(0) has empty prev_entry_hash. Each subsequent row links to the previous.",
       "enforcement_command": "python tools/state_witness/generate_feed_entry.py --verify",
       "enforcement_file": "tools/state_witness/generate_feed_entry.py",
@@ -263,7 +263,7 @@
     {
       "id": "DR-001",
       "category": "documentation_register",
-      "rule": "Technical register \u2014 not liturgical, poetic, or sacral prose",
+      "rule": "Technical register — not liturgical, poetic, or sacral prose",
       "description": "All markdown documentation uses engineering documentation style. Yeshua Standard theological concepts are technical terms, not devotional language.",
       "enforcement_command": null,
       "enforcement_file": ".github/copilot-instructions.md",
@@ -287,7 +287,7 @@
     {
       "id": "QG-001",
       "category": "quality_gate",
-      "rule": "ANTI-NOMINALISM \u2014 zero labels without hashed referents",
+      "rule": "ANTI-NOMINALISM — zero labels without hashed referents",
       "description": "Every named concept must have a ProofObject or hash-anchored artifact. Nominal labels with no computation behind them are forbidden.",
       "enforcement_command": "python audit/popperian_audit.py 2>&1 | grep 'FAIL'",
       "enforcement_file": "audit/popperian_audit.py",
@@ -299,7 +299,7 @@
     {
       "id": "QG-002",
       "category": "quality_gate",
-      "rule": "ANTI-DOGMA \u2014 zero claims without falsification tests",
+      "rule": "ANTI-DOGMA — zero claims without falsification tests",
       "description": "Every invariant check must have a corresponding test that exercises the failure path.",
       "enforcement_command": "pytest tests/ -q -k 'fail or invalid or broken or tamper or wrong'",
       "enforcement_file": null,
@@ -311,7 +311,7 @@
     {
       "id": "QG-003",
       "category": "quality_gate",
-      "rule": "Domain count is 163 \u2014 all domains must have invariants.py with run_all_invariants()",
+      "rule": "Domain count is 163 — all domains must have invariants.py with run_all_invariants()",
       "description": "163 domain packages in src/domains/ must each have an invariants.py file with a run_all_invariants() function returning at least 4 checks.",
       "enforcement_command": "python audit/popperian_audit.py 2>&1 | tail -3",
       "enforcement_file": "audit/popperian_audit.py",
@@ -371,7 +371,7 @@
     {
       "id": "INT-002",
       "category": "integrity",
-      "rule": "build_feed_entry() returns exactly 8 ledger-schema keys \u2014 git_ref excluded",
+      "rule": "build_feed_entry() returns exactly 8 ledger-schema keys — git_ref excluded",
       "description": "The entry dict must contain: timestamp, freeze_hash, merkle_root, invariant_spec_version, source_paths, commit_sha, prev_entry_hash, entry_hash. git_ref is not a ledger column and must not appear.",
       "enforcement_command": "python -c \"from tools.state_witness.generate_feed_entry import build_feed_entry; e = build_feed_entry(timestamp='T', commit_sha='S'); assert 'git_ref' not in e, 'ghost field present'\"",
       "enforcement_file": "tools/state_witness/generate_feed_entry.py",
@@ -379,6 +379,56 @@
       "falsifies_if": "build_feed_entry() returns a dict that contains the key 'git_ref'",
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "T3-001",
+      "category": "tool_standard",
+      "rule": "Agent onboarding must use tools/onboard_agent.py to load applicable standards before any code change",
+      "enforcement_command": "python tools/onboard_agent.py --agent copilot --skip-env-check --json",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "onboard_agent.py exits non-zero for a supported agent on a healthy repo",
+      "severity": "high",
+      "scope": "**"
+    },
+    {
+      "id": "T3-002",
+      "category": "tool_standard",
+      "rule": "Context window budget must be checked before reading large directories (tools/context_window_estimator.py)",
+      "enforcement_command": "python tools/context_window_estimator.py --path src/domains/d_aerospace/ --json",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "context_window_estimator.py exits non-zero or total_tokens is negative",
+      "severity": "medium",
+      "scope": "src/domains/**"
+    },
+    {
+      "id": "T3-003",
+      "category": "tool_standard",
+      "rule": "Returning agents must run tools/since_last_session.py to catch up before making changes",
+      "enforcement_command": "python tools/since_last_session.py --since-row 0 --json",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "since_last_session.py exits non-zero for a valid row number",
+      "severity": "medium",
+      "scope": "**"
+    },
+    {
+      "id": "T3-004",
+      "category": "tool_standard",
+      "rule": "arXiv paper metrics must be drawn live from the repo using tools/arxiv_paper_template.py --metrics-json",
+      "enforcement_command": "python tools/arxiv_paper_template.py --metrics-json",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "arxiv_paper_template.py exits non-zero or domain_count is 0",
+      "severity": "low",
+      "scope": "output/**"
+    },
+    {
+      "id": "T3-005",
+      "category": "tool_standard",
+      "rule": "Repository health must be verified via tools/agent_health_check.py --fast before merging PRs",
+      "enforcement_command": "python tools/agent_health_check.py --fast --json",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "agent_health_check.py exits 1 (any fast check fails)",
+      "severity": "critical",
+      "scope": "**"
     }
   ]
 }
