@@ -34,6 +34,7 @@ Version: 1.0.0
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -357,6 +358,59 @@ def cmd_classify(args):
     return 0 if success else 1
 
 
+def cmd_forensic_commit(args):
+    """Forensic-commit command - generate forensic commit JSON and trailer."""
+    import subprocess
+
+    from audit.forensic_commit import (
+        build_forensic_commit,
+        generate_commit_trailer,
+        write_forensic_commit,
+    )
+
+    thresholds = load_thresholds(args.threshold_config, args.threshold)
+
+    # Resolve commit sha
+    commit_sha = args.commit_sha
+    if not commit_sha:
+        try:
+            commit_sha = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], text=True
+            ).strip()
+        except Exception:
+            commit_sha = "UNKNOWN"
+
+    authors = args.author or ["unknown"]
+    co_authors = args.co_author or []
+
+    metadata = {
+        "commit_sha": commit_sha,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "authors": authors,
+        "co_authors": co_authors,
+    }
+
+    artifacts = []
+    for f in args.files:
+        filepath = Path(f)
+        if filepath.exists():
+            artifacts.append({
+                "path": str(filepath.resolve()),
+                "size": filepath.stat().st_size,
+            })
+        else:
+            print(f"Warning: file not found: {f}", file=sys.stderr)
+
+    forensic_obj = build_forensic_commit(metadata, artifacts, thresholds)
+    filepath = write_forensic_commit(forensic_obj, args.dest_dir)
+    trailer = generate_commit_trailer(forensic_obj)
+
+    print(f"Forensic commit written to: {filepath}")
+    print("\n--- Commit Trailer ---")
+    print(trailer)
+    return 0
+
+
 def cmd_verify(args):
     """Verify command - verify manifest or Merkle proofs."""
     print(f"Verifying: {args.manifest}")
@@ -535,6 +589,32 @@ def main():
         "--threshold", type=str, action="append", help="Override threshold key=value"
     )
 
+    # Forensic-commit command
+    forensic_parser = subparsers.add_parser(
+        "forensic-commit", help="Generate forensic commit JSON and trailer"
+    )
+    forensic_parser.add_argument(
+        "--files", nargs="+", required=True, help="Files to include in forensic commit"
+    )
+    forensic_parser.add_argument(
+        "--commit-sha", type=str, help="Commit SHA (default: git HEAD)"
+    )
+    forensic_parser.add_argument(
+        "--author", type=str, action="append", help="Author(s)"
+    )
+    forensic_parser.add_argument(
+        "--co-author", type=str, action="append", help="Co-author(s)"
+    )
+    forensic_parser.add_argument(
+        "--threshold-config", type=str, help="Path to threshold YAML config"
+    )
+    forensic_parser.add_argument(
+        "--threshold", type=str, action="append", help="Override threshold key=value"
+    )
+    forensic_parser.add_argument(
+        "--dest-dir", type=str, default="audit/forensic_commits", help="Output directory"
+    )
+
     # Parse arguments
     args = parser.parse_args()
 
@@ -561,6 +641,8 @@ def main():
             return cmd_verify(args)
         elif args.command == "classify":
             return cmd_classify(args)
+        elif args.command == "forensic-commit":
+            return cmd_forensic_commit(args)
         else:
             parser.print_help()
             return 1

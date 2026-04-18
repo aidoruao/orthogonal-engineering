@@ -216,6 +216,22 @@ class ExternalWitness:
         """Load the last persisted manifest without recomputing."""
         return load_manifest(self.output_dir / self.filename)
 
+    def run_testimony(
+        self,
+        verification_tasks: List[Any],
+        thresholds: Dict[str, Any],
+        out_dir: str | Path,
+    ) -> Tuple[bool, Any]:
+        """Run verification-as-testimony and return top-level YeshuaClaim."""
+        from audit.verification_testimony import run_verifications
+        from fractions import Fraction
+
+        frac_thresholds = {
+            k: Fraction(str(v)) if not isinstance(v, Fraction) else v
+            for k, v in thresholds.items()
+        }
+        return run_verifications(verification_tasks, frac_thresholds, str(out_dir))
+
     @staticmethod
     def exists(output_dir: str | Path = "logs/health_checks") -> bool:
         """Return True if a previous external manifest exists on disk."""
