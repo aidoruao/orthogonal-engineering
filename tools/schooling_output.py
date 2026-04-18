@@ -99,7 +99,7 @@ def generate_noob_summary(synthesis: str) -> str:
         "",
         "Key points:",
         "1. The above synthesis was produced by the Master Questioner meta-layer.",
-        "2. All claims are backed by ProofObject evidence.",
+        "2. All claims are backed by ProofObject [→ GLOSSARY: proofobject] evidence.",
         "3. Jargon terms marked [→ GLOSSARY] are defined in GLOSSARY.md.",
     ]
     return "\n".join(summary_parts)
