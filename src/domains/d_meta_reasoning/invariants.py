@@ -426,7 +426,7 @@ def run_all_invariants() -> dict:
                     getattr(result, "evidence", result)
                 )
         except Exception as exc:  # pragma: no cover - safety net
-            results[name] = "ERROR: " + str(exc)
+            results[name] = "ERROR: " + repr(exc)
     return results
 
 

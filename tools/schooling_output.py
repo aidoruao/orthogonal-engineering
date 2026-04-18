@@ -33,9 +33,9 @@ def _load_glossary_terms() -> frozenset[str]:
         return frozenset()
     terms: list[str] = []
     for line in GLOSSARY_PATH.read_text(encoding="utf-8").splitlines():
-        if line.startswith("| ") and "---" not in line and "Engineering Definition" not in line:
+        if line.startswith("| ") and "---" not in line:
             term = line.split("|")[1].strip().lower()
-            if term:
+            if term and term != "term":
                 terms.append(term)
     return frozenset(terms)
 
