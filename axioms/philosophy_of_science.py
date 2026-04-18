@@ -203,13 +203,16 @@ def check_token_cost_information_bound(theory: ScientificTheory) -> Tuple[bool, 
     """Shannon entropy of a token stream is bounded by log2(vocab_size) * n_tokens.
 
     The claimed information_bits_claimed must be <= this upper bound (computed exactly as Fraction).
-    We use bit_length() as a conservative ceiling: bound = vocab_size.bit_length() * token_count.
+    Uses (vocab_size - 1).bit_length() to compute ceil(log2(vocab_size)) exactly for integer vocab
+    sizes: for vocab_size >= 2 this equals ceil(log2(v)), and equals 0 for vocab_size == 1.
 
     Standard: Shannon (1948) — A Mathematical Theory of Communication
     Falsifies if: theory.information_bits_claimed > bound.
     falsifies_if: theory.information_bits_claimed > bound.
     """
-    log2_upper = int(theory.vocab_size).bit_length()  # ceil(log2(v)) for v >= 1
+    v = int(theory.vocab_size)
+    # ceil(log2(v)) for v >= 2; 0 for v == 1 (log2(1) = 0); use max(v-1, 1) to avoid bit_length(0)
+    log2_upper = max(v - 1, 1).bit_length() if v >= 2 else 0
     bound = Fraction(log2_upper) * theory.token_count
     success = theory.information_bits_claimed <= bound
     proof = ProofObject(

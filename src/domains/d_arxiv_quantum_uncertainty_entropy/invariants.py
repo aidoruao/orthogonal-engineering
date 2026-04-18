@@ -63,10 +63,15 @@ def check_purity_valid(data: QuantumUncertaintyEntropyClaim) -> Tuple[bool, Proo
 
 def check_entropy_purity_tradeoff(data: QuantumUncertaintyEntropyClaim) -> Tuple[bool, ProofObject]:
     """
-    Invariant: von_neumann_entropy must not exceed dimension.
+    Invariant: von_neumann_entropy must not exceed dimension (conservative bound).
+
+    The physical bound is S(rho) <= log2(dimension). This check uses the weaker
+    integer bound S(rho) <= dimension to avoid irrational log2 values in Fraction
+    arithmetic. The bound is exact for dimension that is a power of 2 only when
+    log2(dimension) is an integer. For a tighter check, use log2(dimension) directly.
 
     Standard: arXiv 2604.09384v1 (quant-ph) claim operationalization.
-    Falsifies if: Von Neumann entropy exceeds system dimension.
+    Falsifies if: Von Neumann entropy exceeds system dimension (conservative upper bound).
     falsifies_if: von_neumann_entropy > dimension.
 
     Returns:
@@ -144,6 +149,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.09384v1 (quant-ph) nominal executable check set.
+    Falsifies if: any invariant check returns False.
     falsifies_if: any invariant check returns False.
 
     Returns:

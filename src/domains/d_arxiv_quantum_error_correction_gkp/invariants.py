@@ -148,6 +148,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
 
     Standard: arXiv 2604.08247v1 (quant-ph) nominal executable check set.
+    Falsifies if: any invariant check returns False.
     falsifies_if: any invariant check returns False.
 
     Returns:
