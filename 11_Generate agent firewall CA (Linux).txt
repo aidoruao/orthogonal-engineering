@@ -1,0 +1,30 @@
+﻿2026-04-18T08:55:28.2882084Z ##[group]Run if [ "$COPILOT_AGENT_FIREWALL_ENABLED" != "true" ]; then
+2026-04-18T08:55:28.2882885Z [36;1mif [ "$COPILOT_AGENT_FIREWALL_ENABLED" != "true" ]; then[0m
+2026-04-18T08:55:28.2883549Z [36;1m  echo "Firewall disabled, skipping mkcert CA pre-generation."[0m
+2026-04-18T08:55:28.2883960Z [36;1m  exit 0[0m
+2026-04-18T08:55:28.2884224Z [36;1mfi[0m
+2026-04-18T08:55:28.2884851Z [36;1mMKCERT_BIN="/home/runner/work/_temp/***-action-main/ebpf/in-path/mkcert"[0m
+2026-04-18T08:55:28.2885378Z [36;1mMKCERT_CA_DST="/home/runner/work/_temp/runtime-logs/mkcert"[0m
+2026-04-18T08:55:28.2885784Z [36;1mif [ ! -f "$MKCERT_BIN" ]; then[0m
+2026-04-18T08:55:28.2886183Z [36;1m  echo "mkcert binary not found, skipping background keygen."[0m
+2026-04-18T08:55:28.2886566Z [36;1m  exit 0[0m
+2026-04-18T08:55:28.2886802Z [36;1mfi[0m
+2026-04-18T08:55:28.2887075Z [36;1mif [ -f "$MKCERT_CA_DST/rootCA.pem" ]; then[0m
+2026-04-18T08:55:28.2887474Z [36;1m  echo "CA already exists, skipping background keygen."[0m
+2026-04-18T08:55:28.2887872Z [36;1m  exit 0[0m
+2026-04-18T08:55:28.2888120Z [36;1mfi[0m
+2026-04-18T08:55:28.2888461Z [36;1mmkdir -p "$MKCERT_CA_DST"[0m
+2026-04-18T08:55:28.2888834Z [36;1mecho "Starting mkcert CA keygen in background..."[0m
+2026-04-18T08:55:28.2889284Z [36;1m# Use setsid to fully detach from the Actions runner so the step[0m
+2026-04-18T08:55:28.2889792Z [36;1m# finishes immediately instead of waiting for the background process.[0m
+2026-04-18T08:55:28.2890285Z [36;1mMKCERT_LOCK="/home/runner/work/_temp/mkcert-install.lock"[0m
+2026-04-18T08:55:28.2890831Z [36;1msetsid bash -c 'flock "$1" bash -c "CAROOT=\"$2\" \"$3\" -install && touch \"$2/.mkcert-bg-done\""' \[0m
+2026-04-18T08:55:28.2891390Z [36;1m  _ "$MKCERT_LOCK" "$MKCERT_CA_DST" "$MKCERT_BIN" > /dev/null 2>&1 &[0m
+2026-04-18T08:55:28.2906716Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-04-18T08:55:28.2907122Z env:
+2026-04-18T08:55:28.2907379Z   SHOULD_CONTINUE: true
+2026-04-18T08:55:28.2907668Z   COPILOT_AGENT_START_TIME_SEC: 1776502524
+2026-04-18T08:55:28.2908014Z   COPILOT_AGENT_TIMEOUT_MIN: 59
+2026-04-18T08:55:28.2908331Z   COPILOT_AGENT_FIREWALL_ENABLED: false
+2026-04-18T08:55:28.2908640Z ##[endgroup]
+2026-04-18T08:55:28.2944014Z Firewall disabled, skipping mkcert CA pre-generation.

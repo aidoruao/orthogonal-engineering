@@ -1,0 +1,15 @@
+﻿2026-04-18T08:55:24.4464224Z ##[group]Run if ! command -v npm &> /dev/null; then
+2026-04-18T08:55:24.4464977Z [36;1mif ! command -v npm &> /dev/null; then[0m
+2026-04-18T08:55:24.4466028Z [36;1m  echo "Warning: npm is not available on this runner. Skipping Playwright MCP pre-download. The MCP server may be installed later if needed."[0m
+2026-04-18T08:55:24.4467051Z [36;1m  exit 0[0m
+2026-04-18T08:55:24.4467423Z [36;1mfi[0m
+2026-04-18T08:55:24.4467926Z [36;1mecho "Starting background pre-cache of @playwright/mcp..."[0m
+2026-04-18T08:55:24.4468682Z [36;1mnpm cache add @playwright/mcp@0.0.40 > /dev/null 2>&1 & disown[0m
+2026-04-18T08:55:24.4469475Z [36;1mecho "Started pre-caching @playwright/mcp@0.0.40 in the background"[0m
+2026-04-18T08:55:24.4487425Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-04-18T08:55:24.4488270Z env:
+2026-04-18T08:55:24.4488639Z   SHOULD_CONTINUE: true
+2026-04-18T08:55:24.4489063Z   PLAYWRIGHT_VERSION: 0.0.40
+2026-04-18T08:55:24.4489499Z ##[endgroup]
+2026-04-18T08:55:24.4621342Z Starting background pre-cache of @playwright/mcp...
+2026-04-18T08:55:24.4623651Z Started pre-caching @playwright/mcp@0.0.40 in the background

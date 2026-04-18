@@ -1,0 +1,25 @@
+﻿2026-04-18T08:55:27.6660166Z ##[group]Run if [ -z "$GITHUB_COPILOT_AUTOFIND_DOWNLOAD_URL" ]; then
+2026-04-18T08:55:27.6660732Z [36;1mif [ -z "$GITHUB_COPILOT_AUTOFIND_DOWNLOAD_URL" ]; then[0m
+2026-04-18T08:55:27.6661183Z [36;1m  echo "Autofind download URL not configured, skipping."[0m
+2026-04-18T08:55:27.6661549Z [36;1m  exit 0[0m
+2026-04-18T08:55:27.6661793Z [36;1mfi[0m
+2026-04-18T08:55:27.6662110Z [36;1mecho "Starting background download of Autofind..."[0m
+2026-04-18T08:55:27.6662453Z [36;1m[0m
+2026-04-18T08:55:27.6663128Z [36;1m# Download and extract in background, then move to ***-action-main[0m
+2026-04-18T08:55:27.6663877Z [36;1m([0m
+2026-04-18T08:55:27.6664155Z [36;1m  START_TIME=$(date +%s.%N)[0m
+2026-04-18T08:55:27.6664618Z [36;1m  echo "Starting Autofind download at $(date)" > runtime-logs/download-autofind.log[0m
+2026-04-18T08:55:27.6665426Z [36;1m  curl -f "$GITHUB_COPILOT_AUTOFIND_DOWNLOAD_URL" 2>> runtime-logs/download-autofind.log | tar -zxv >> runtime-logs/download-autofind.log 2>&1[0m
+2026-04-18T08:55:27.6666340Z [36;1m  mv autofind ***-action-main/ >> runtime-logs/download-autofind.log 2>&1[0m
+2026-04-18T08:55:27.6666775Z [36;1m  END_TIME=$(date +%s.%N)[0m
+2026-04-18T08:55:27.6667122Z [36;1m  ELAPSED=$(echo "$END_TIME - $START_TIME" | bc)[0m
+2026-04-18T08:55:27.6667632Z [36;1m  echo "Autofind download completed in ${ELAPSED}s" >> runtime-logs/download-autofind.log[0m
+2026-04-18T08:55:27.6668101Z [36;1m) & disown[0m
+2026-04-18T08:55:27.7059252Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-04-18T08:55:27.7059750Z env:
+2026-04-18T08:55:27.7060010Z   SHOULD_CONTINUE: true
+2026-04-18T08:55:27.7060319Z   COPILOT_AGENT_START_TIME_SEC: 1776502524
+2026-04-18T08:55:27.7060644Z   COPILOT_AGENT_TIMEOUT_MIN: 59
+2026-04-18T08:55:27.7065439Z   GITHUB_COPILOT_AUTOFIND_DOWNLOAD_URL: ***
+2026-04-18T08:55:27.7065773Z ##[endgroup]
+2026-04-18T08:55:27.7103437Z Starting background download of Autofind...

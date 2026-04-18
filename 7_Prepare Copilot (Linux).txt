@@ -1,0 +1,37 @@
+﻿2026-04-18T08:55:24.4726672Z ##[group]Run set -o pipefail
+2026-04-18T08:55:24.4727243Z [36;1mset -o pipefail[0m
+2026-04-18T08:55:24.4727697Z [36;1mecho "Preparing Copilot..." && \[0m
+2026-04-18T08:55:24.4728329Z [36;1mecho "Runtime version: $COPILOT_AGENT_RUNTIME_VERSION" && \[0m
+2026-04-18T08:55:24.4729076Z [36;1mecho "COPILOT_AGENT_START_TIME_SEC=$(date +%s)" >> $GITHUB_ENV[0m
+2026-04-18T08:55:24.4729783Z [36;1mecho "COPILOT_AGENT_TIMEOUT_MIN=59" >> $GITHUB_ENV[0m
+2026-04-18T08:55:24.4730433Z [36;1mmkdir -p "runtime-logs" "cca-mcp-debug-logs" && \[0m
+2026-04-18T08:55:24.4731018Z [36;1mMAX_RETRIES=3 && RETRY_COUNT=0 && \[0m
+2026-04-18T08:55:24.4731571Z [36;1mwhile [ $RETRY_COUNT -lt $MAX_RETRIES ]; do \[0m
+2026-04-18T08:55:24.4732227Z [36;1m  if [ -n "$GITHUB_COPILOT_ACTION_OVERRIDE_DOWNLOAD_URL" ]; then \[0m
+2026-04-18T08:55:24.4734138Z [36;1m    curl -f -D "runtime-logs/download.log" -H "Authorization: ***" $GITHUB_COPILOT_ACTION_OVERRIDE_DOWNLOAD_URL 2>> "runtime-logs/download.log" | tar -zxv >> "runtime-logs/download.log" 2>&1; \[0m
+2026-04-18T08:55:24.4735545Z [36;1m  else \[0m
+2026-04-18T08:55:24.4736572Z [36;1m    curl -f -D "runtime-logs/download.log" $GITHUB_COPILOT_ACTION_DOWNLOAD_URL 2>> "runtime-logs/download.log" | tar -zxv >> "runtime-logs/download.log" 2>&1; \[0m
+2026-04-18T08:55:24.4737627Z [36;1m  fi; \[0m
+2026-04-18T08:55:24.4738035Z [36;1m  if [ $? -eq 0 ]; then break; fi; \[0m
+2026-04-18T08:55:24.4738559Z [36;1m  RETRY_COUNT=$((RETRY_COUNT + 1)); \[0m
+2026-04-18T08:55:24.4739049Z [36;1m  sleep 1; \[0m
+2026-04-18T08:55:24.4739568Z [36;1mdone && \[0m
+2026-04-18T08:55:24.4740082Z [36;1mecho "Finished downloading and extracting runtime" && \[0m
+2026-04-18T08:55:24.4741362Z [36;1mif [ ! -d "***-action-main" ]; then mv ***-action-* ***-action-main >> "runtime-logs/download.log" 2>&1; fi && \[0m
+2026-04-18T08:55:24.4742505Z [36;1m./***-action-main/script/setup.sh "/home/runner/work/_temp/ghcca-node" && \[0m
+2026-04-18T08:55:24.4743633Z [36;1mecho "Copilot prepared successfully." 2>&1 | tee -a "runtime-logs/download.log"[0m
+2026-04-18T08:55:24.4756820Z shell: /usr/bin/bash -e {0}
+2026-04-18T08:55:24.4757269Z env:
+2026-04-18T08:55:24.4757618Z   SHOULD_CONTINUE: true
+2026-04-18T08:55:24.4764196Z   GITHUB_COPILOT_ACTION_DOWNLOAD_URL: ***
+2026-04-18T08:55:24.4764750Z   COPILOT_AGENT_SOURCE_ENVIRONMENT: production
+2026-04-18T08:55:24.4765308Z   GITHUB_COPILOT_ACTION_OVERRIDE_DOWNLOAD_URL: 
+2026-04-18T08:55:24.4766004Z   GITHUB_COPILOT_API_TOKEN: ***
+2026-04-18T08:55:24.4766711Z   COPILOT_AGENT_RUNTIME_VERSION: runtime-copilot-e3338eb1bc0ce0f7a9ad499b0190cf4c457de84c
+2026-04-18T08:55:24.4767431Z ##[endgroup]
+2026-04-18T08:55:24.4801290Z Preparing Copilot...
+2026-04-18T08:55:24.4802075Z Runtime version: runtime-copilot-e3338eb1bc0ce0f7a9ad499b0190cf4c457de84c
+2026-04-18T08:55:26.9875449Z Finished downloading and extracting runtime
+2026-04-18T08:55:26.9960240Z Using node from tool cache.
+2026-04-18T08:55:27.6553657Z v24.14.1
+2026-04-18T08:55:27.6604938Z Copilot prepared successfully.
