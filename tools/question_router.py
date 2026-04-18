@@ -152,7 +152,7 @@ def _infer_domain_ids(text: str) -> List[str]:
     if domains_dir.exists():
         for p in sorted(domains_dir.iterdir()):
             if p.is_dir() and p.name.startswith("d_"):
-                fragment = p.name.replace("d_", "").replace("_", " ")
+                fragment = p.name.removeprefix("d_").replace("_", " ")
                 if fragment and fragment in lower:
                     found.append(p.name)
     if not found:
