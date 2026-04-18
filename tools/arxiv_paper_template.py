@@ -189,7 +189,8 @@ def get_consent_log_count() -> int:
     """
     if not CONSENT_LOG.exists():
         return 0
-    lines = [ln for ln in CONSENT_LOG.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    all_lines = CONSENT_LOG.read_text(encoding="utf-8").splitlines()
+    lines = [ln for ln in all_lines if ln.strip() and not ln.strip().startswith("#")]
     return len(lines)
 
 

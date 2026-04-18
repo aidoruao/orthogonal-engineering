@@ -245,7 +245,8 @@ def _last_consent_entry() -> str:
     """
     if not CONSENT_LOG.exists():
         return "none"
-    lines = [ln for ln in CONSENT_LOG.read_text(encoding="utf-8").splitlines() if ln.strip()]
+    all_lines = CONSENT_LOG.read_text(encoding="utf-8").splitlines()
+    lines = [ln for ln in all_lines if ln.strip() and not ln.strip().startswith("#")]
     if not lines:
         return "none"
     try:
