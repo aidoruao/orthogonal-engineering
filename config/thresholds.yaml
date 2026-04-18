@@ -1,0 +1,13 @@
+# Default threshold configuration for OE state classification.
+# All numeric values are stored as rational strings for exact Fraction arithmetic.
+#
+# Usage:
+#   python cli.py classify --threshold-config config/thresholds.yaml ...
+#   python cli.py classify --threshold certain=300/1 --threshold suspicious=75/1 ...
+
+certain: "247/1"
+high_confidence: "200/1"
+probable: "150/1"
+unknown: "100/1"
+suspicious: "50/1"
+invalid: "0/1"
