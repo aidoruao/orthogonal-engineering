@@ -138,4 +138,13 @@ jobs:
 
       - name: Verify feed chain integrity
         run: |
-          python tools/state_witness/generate_feed_entry.py --verify
+          python tools/state_witness/generate_feed_entry.py --verify \
+            2>/tmp/verify_stderr.txt; \
+          VERIFY_EXIT=$?; \
+          if [ $VERIFY_EXIT -ne 0 ]; then \
+            python tools/state_witness/alert_on_failure.py \
+              --exit-code $VERIFY_EXIT \
+              --stderr-file /tmp/verify_stderr.txt \
+              --alerts-file state_witness_alerts.jsonl; \
+          fi; \
+          exit $VERIFY_EXIT

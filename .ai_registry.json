@@ -5610,6 +5610,16 @@
         "source": "none",
         "ref": ""
       }
+    },
+    "gemini_warden_cloud": {
+      "id": "gemini_warden",
+      "agent": "Gemini",
+      "mode": "read-only",
+      "trigger": "push to main, PR opened",
+      "config_file": "GEMINI.md",
+      "scope": "**/*",
+      "output": "PR comment",
+      "status": "active"
     }
   },
   "dynamic_wardens": {
@@ -5765,5 +5775,141 @@
       "convergence_reached": false,
       "last_evaluated_at": null
     }
-  }
+  },
+  "version": "1.1",
+  "standards_registry": "STANDARDS_REGISTRY.json",
+  "glossary": "GLOSSARY.md",
+  "cross_repo_instructions": "CROSS_REPO_INSTRUCTIONS.md",
+  "agents": [
+    {
+      "id": "copilot",
+      "name": "GitHub Copilot",
+      "access": "read-write",
+      "shell": false,
+      "web": false,
+      "context_window": 128000,
+      "platform_file": ".github/copilot-instructions.md",
+      "onboard_command": "python tools/onboard_agent.py --agent copilot"
+    },
+    {
+      "id": "claude",
+      "name": "Claude (GitHub App)",
+      "access": "read-write",
+      "shell": false,
+      "web": false,
+      "context_window": 200000,
+      "platform_file": "CLAUDE.md",
+      "onboard_command": "python tools/onboard_agent.py --agent claude"
+    },
+    {
+      "id": "devin",
+      "name": "Devin AI",
+      "access": "read-write",
+      "shell": true,
+      "web": true,
+      "context_window": 128000,
+      "platform_file": "DEVIN.md",
+      "onboard_command": "python tools/onboard_agent.py --agent devin"
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi Code CLI",
+      "access": "read-write",
+      "shell": true,
+      "web": false,
+      "context_window": 220000,
+      "platform_file": "docs/KIMI_ONBOARDING.md",
+      "onboard_command": "python tools/onboard_agent.py --agent kimi"
+    },
+    {
+      "id": "gpt53codex",
+      "name": "GPT-5.3-Codex",
+      "access": "read-write",
+      "shell": true,
+      "web": false,
+      "context_window": 192000,
+      "platform_file": null,
+      "onboard_command": null
+    },
+    {
+      "id": "gemini",
+      "name": "Gemini (GitHub Actions)",
+      "access": "read-only",
+      "shell": false,
+      "web": false,
+      "context_window": 128000,
+      "platform_file": "GEMINI.md",
+      "onboard_command": null
+    },
+    {
+      "id": "notebooklm",
+      "name": "NotebookLM",
+      "access": "read-only",
+      "shell": false,
+      "web": false,
+      "context_window": 500000,
+      "platform_file": null,
+      "onboard_command": null
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "access": "read-only",
+      "shell": false,
+      "web": false,
+      "context_window": 128000,
+      "platform_file": null,
+      "onboard_command": null
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor AI",
+      "access": "read-write",
+      "shell": true,
+      "web": false,
+      "context_window": 200000,
+      "platform_file": ".cursorrules",
+      "onboard_command": "python tools/onboard_agent.py --agent cursor"
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf AI",
+      "access": "read-write",
+      "shell": true,
+      "web": false,
+      "context_window": 200000,
+      "platform_file": ".windsurfrules",
+      "onboard_command": "python tools/onboard_agent.py --agent windsurf"
+    },
+    {
+      "id": "aider",
+      "name": "Aider CLI",
+      "access": "read-write",
+      "shell": true,
+      "web": false,
+      "context_window": 128000,
+      "platform_file": ".aider.conf.yml",
+      "onboard_command": "python tools/onboard_agent.py --agent aider"
+    },
+    {
+      "id": "cline",
+      "name": "Cline",
+      "access": "read-write",
+      "shell": true,
+      "web": false,
+      "context_window": 200000,
+      "platform_file": "cline_docs/README.md",
+      "onboard_command": "python tools/onboard_agent.py --agent cline"
+    },
+    {
+      "id": "continue",
+      "name": "Continue.dev",
+      "access": "read-write",
+      "shell": false,
+      "web": false,
+      "context_window": 100000,
+      "platform_file": ".continue/config.json",
+      "onboard_command": "python tools/onboard_agent.py --agent continue"
+    }
+  ]
 }

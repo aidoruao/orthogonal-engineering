@@ -1,0 +1,35 @@
+{
+  "$comment": "Pyright/Pylance strict-mode config aligned with mypy --strict requirement (copilot-instructions.md). Goal: progressive strictness — reduce errors incrementally, not block CI today.",
+  "include": [
+    "src",
+    "kernel",
+    "axioms",
+    "oe_engine",
+    "tools",
+    "tests",
+    "audit"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".venv",
+    "venv",
+    "node_modules",
+    "**/*.egg-info",
+    "dist",
+    "build"
+  ],
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "reportGeneralClassIssues": true,
+  "reportOptionalMemberAccess": true,
+  "reportUnusedImport": true,
+  "reportAttributeAccessIssue": true,
+  "reportCallIssue": true,
+  "reportIndexIssue": true,
+  "reportReturnType": true,
+  "reportArgumentType": true,
+  "reportOperatorIssue": true,
+  "pythonVersion": "3.10",
+  "pythonPlatform": "Linux",
+  "typeCheckingMode": "strict"
+}

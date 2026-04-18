@@ -465,6 +465,66 @@
       "falsifies_if": "CROSS_REPO_INSTRUCTIONS.md does not exist or does not reference all three repository names",
       "severity": "medium",
       "enforcement_passes_on": "has_output"
+    },
+    {
+      "id": "T5-001",
+      "category": "tool_standard",
+      "rule": ".vscode/launch.json must exist and contain at least 8 debug configurations using type python.",
+      "enforcement_command": "python -c \"import json; d=json.load(open('.vscode/launch.json')); assert len(d.get(\"configurations\",[]))>=8\"",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": ".vscode/launch.json has fewer than 8 configurations or is not valid JSON",
+      "severity": "low",
+      "scope": ".vscode/launch.json"
+    },
+    {
+      "id": "T5-002",
+      "category": "tool_standard",
+      "rule": ".vscode/tasks.json must exist and contain at least 8 task definitions.",
+      "enforcement_command": "python -c \"import json; d=json.load(open('.vscode/tasks.json')); assert len(d.get(\"tasks\",[]))>=8\"",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": ".vscode/tasks.json has fewer than 8 tasks or is not valid JSON",
+      "severity": "low",
+      "scope": ".vscode/tasks.json"
+    },
+    {
+      "id": "T5-003",
+      "category": "tool_standard",
+      "rule": "pyrightconfig.json must exist with typeCheckingMode set to strict.",
+      "enforcement_command": null,
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "pyrightconfig.json is absent or typeCheckingMode is not strict",
+      "severity": "low",
+      "scope": "pyrightconfig.json"
+    },
+    {
+      "id": "T5-004",
+      "category": "tool_standard",
+      "rule": "mcp/oe-basic.mcp.json must exist and define at least 5 MCP tool endpoints.",
+      "enforcement_command": "python -c \"import json; d=json.load(open(\"mcp/oe-basic.mcp.json\")); assert len(d.get(\"tools\",[]))>=5\"",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "mcp/oe-basic.mcp.json is absent or has fewer than 5 tools",
+      "severity": "low",
+      "scope": "mcp/**"
+    },
+    {
+      "id": "T5-005",
+      "category": "tool_standard",
+      "rule": ".ai_registry.json must exist and include agents array with \u226510 entries and wardens key.",
+      "enforcement_command": "python -c \"import json; d=json.load(open(\".ai_registry.json\")); assert len(d.get(\"agents\",[]))>=10 and \"wardens\" in d\"",
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": ".ai_registry.json is absent, missing agents array, or fewer than 10 agents",
+      "severity": "medium",
+      "scope": ".ai_registry.json"
+    },
+    {
+      "id": "INT-003",
+      "category": "integrity",
+      "rule": "Any gap > 72 hours in AGENT_FEED.md must be documented in docs/AGENT_FEED_NOTES.md with row numbers, duration, and cause.",
+      "enforcement_command": null,
+      "enforcement_passes_on": "exit_zero",
+      "falsifies_if": "A gap > 72 hours is present in AGENT_FEED.md with no corresponding documentation in docs/AGENT_FEED_NOTES.md",
+      "severity": "low",
+      "scope": "AGENT_FEED.md,docs/AGENT_FEED_NOTES.md"
     }
   ]
 }
