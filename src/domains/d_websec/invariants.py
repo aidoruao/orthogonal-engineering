@@ -274,14 +274,14 @@ def run_all_invariants() -> dict:
     falsifies_if: any invariant fails or raises an exception.
     """
     web_application = WebApplication(
-        app_id=None,
-        name=None,
-        https_enforced=None,
-        hsts_enabled=None,
-        csrf_protection=None,
-        xss_protection=None,
-        input_validated=None,
-        sql_injection_protected=None,
+        app_id="APP-001",
+        name="SecureApp",
+        https_enforced=True,
+        hsts_enabled=True,
+        csrf_protection=True,
+        xss_protection=True,
+        input_validated=True,
+        sql_injection_protected=True,
     )
     sensitive_data = SensitiveData(
         data_id=None,
@@ -291,12 +291,12 @@ def run_all_invariants() -> dict:
         pii_detected=None,
     )
     authentication_system = AuthenticationSystem(
-        auth_id=None,
+        auth_id="AUTH-001",
         auth_method=AuthMethod.PASSWORD_ONLY,
-        password_min_length=Fraction(1),
-        password_requires_complexity=None,
-        brute_force_protection=None,
-        session_timeout_minutes=Fraction(1),
+        password_min_length=Fraction(12),
+        password_requires_complexity=True,
+        brute_force_protection=True,
+        session_timeout_minutes=Fraction(30),
     )
 
     checks = [

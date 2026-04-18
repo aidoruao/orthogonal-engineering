@@ -184,10 +184,10 @@ def run_all_invariants() -> dict:
         is_critical=None,
     )
     ota_update = OTAUpdate(
-        version=None,
-        signature=None,
-        signature_valid=None,
-        rollback_supported=None,
+        version="1.0.0",
+        signature="SHA256-sig",
+        signature_valid=True,
+        rollback_supported=True,
     )
 
     checks = [
