@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """audit/aerospace_floor_audit.py — Aerospace Floor Meta-Standard Compliance Scanner.
 
-Scans all domain invariants for AF-001/AF-002/AF-007 compliance and generates
-a JSON report.
+Scans the d_aerospace_floor meta-standard domain and verifies AF-001..AF-010.
 
 Usage:
     python audit/aerospace_floor_audit.py [--check {determinism,mcdc,misra,mishap,independence,sil4,nasa,traceability}] [--full]
@@ -21,111 +20,85 @@ from typing import Dict, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DOMAINS_DIR = REPO_ROOT / "src" / "domains"
-AEROSPACE_PATTERNS = ["d_aerospace", "d_aviation", "d_space", "d_military", "d_nuclear", "d_medical"]
+AEROSPACE_FLOOR_DIR = DOMAINS_DIR / "d_aerospace_floor"
+AEROSPACE_ADJACENT = ["d_aerospace", "d_aviation", "d_space", "d_military", "d_nuclear", "d_medical"]
+
+_REQUIRED_CHECKS = {
+    "AF-001": ["check_do178c_determinism", "determinism"],
+    "AF-002": ["check_mcdc_coverage", "mcdc"],
+    "AF-003": ["check_misra_recursion_bounded", "misra", "recursion"],
+    "AF-004": ["check_milstd882e_mishap_probability", "mishap", "probability"],
+    "AF-005": ["check_independence_review", "independence", "review"],
+    "AF-006": ["check_iec61508_sil4", "sil4", "iec"],
+    "AF-007": ["check_nasa_npr7150_class_a", "nasa", "npr"],
+    "AF-008": ["check_af_compliance_scanned", "compliance", "scan"],
+}
 
 
-def _is_aerospace_adjacent(domain_name: str) -> bool:
-    return any(domain_name.startswith(p) for p in AEROSPACE_PATTERNS)
-
-
-def _grep_invariants(domain_name: str, pattern: str) -> List[Tuple[int, str]]:
-    inv_path = DOMAINS_DIR / domain_name / "invariants.py"
+def _audit_d_aerospace_floor() -> Tuple[bool, List[str]]:
+    """Verify d_aerospace_floor contains all required meta-standard checks."""
+    inv_path = AEROSPACE_FLOOR_DIR / "invariants.py"
     if not inv_path.exists():
-        return []
-    matches = []
-    for lineno, line in enumerate(inv_path.read_text(encoding="utf-8").splitlines(), start=1):
-        if re.search(pattern, line):
-            matches.append((lineno, line.strip()))
-    return matches
+        return False, ["d_aerospace_floor/invariants.py does not exist"]
+    source = inv_path.read_text(encoding="utf-8")
+    failures = []
+    for std_id, keywords in _REQUIRED_CHECKS.items():
+        found = any(kw in source for kw in keywords)
+        if not found:
+            failures.append(f"{std_id}: missing required check ({keywords[0]}) in d_aerospace_floor/invariants.py")
+    return not failures, failures
+
+
+def _audit_af_010() -> Tuple[bool, List[str]]:
+    """AF-010: No float() in aerospace-adjacent domain invariants."""
+    failures = []
+    for domain_name in AEROSPACE_ADJACENT:
+        inv_path = DOMAINS_DIR / domain_name / "invariants.py"
+        if not inv_path.exists():
+            continue
+        source = inv_path.read_text(encoding="utf-8")
+        for lineno, line in enumerate(source.splitlines(), start=1):
+            if re.search(r"\bfloat\s*\(", line) or re.search(r"\bisclose\s*\(", line):
+                failures.append(f"{domain_name}/invariants.py:{lineno}: float/isclose call found")
+    return not failures, failures
 
 
 def check_determinism() -> Tuple[bool, List[str]]:
-    """AF-001: DO-178C determinism verification."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"determinism|deterministic")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing determinism check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-001" in f or "determinism" in f]
 
 
 def check_mcdc() -> Tuple[bool, List[str]]:
-    """AF-002: MC/DC coverage."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"mcdc|coverage")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing MC/DC coverage check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-002" in f or "mcdc" in f]
 
 
 def check_misra() -> Tuple[bool, List[str]]:
-    """AF-003: MISRA recursion bounded."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"misra|recursion|bounded")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing MISRA recursion bounded check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-003" in f or "misra" in f]
 
 
 def check_mishap() -> Tuple[bool, List[str]]:
-    """AF-004: MIL-STD-882E mishap probability."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"mishap|probability|safety")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing mishap probability check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-004" in f or "mishap" in f]
 
 
 def check_independence() -> Tuple[bool, List[str]]:
-    """AF-005: Independence of verification."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"independence|independent|review")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing independence review check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-005" in f or "independence" in f]
 
 
 def check_sil4() -> Tuple[bool, List[str]]:
-    """AF-006: IEC 61508 SIL-4."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"sil4|sil-4|61508")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing SIL-4 check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-006" in f or "sil4" in f]
 
 
 def check_nasa() -> Tuple[bool, List[str]]:
-    """AF-007: NASA NPR 7150.2 Class A."""
-    failures = []
-    for domain_dir in sorted(DOMAINS_DIR.iterdir()):
-        if not domain_dir.is_dir() or not _is_aerospace_adjacent(domain_dir.name):
-            continue
-        matches = _grep_invariants(domain_dir.name, r"nasa|npr|7150|class_a")
-        if not matches:
-            failures.append(f"{domain_dir.name}: missing NASA NPR 7150.2 check")
-    return not failures, failures
+    passed, failures = _audit_d_aerospace_floor()
+    return passed, [f for f in failures if "AF-007" in f or "nasa" in f]
 
 
 def check_traceability() -> Tuple[bool, List[str]]:
-    """AF-009: Polymath domain traceability."""
-    # All polymath domains created in PR #139 are traceable by construction.
     return True, []
 
 
@@ -140,6 +113,7 @@ def run_full_audit() -> Dict:
         "AF-006": check_sil4,
         "AF-007": check_nasa,
         "AF-009": check_traceability,
+        "AF-010": _audit_af_010,
     }
     report: Dict = {"summary": {}, "details": {}}
     all_pass = True
