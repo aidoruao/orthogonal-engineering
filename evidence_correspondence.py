@@ -160,3 +160,33 @@ class EvidenceCorrespondenceValidator:
             "only_in_external": len(only_ext),
             "mismatch_list": mismatch_list,
         }
+
+
+def index_testimony_evidence(evidence_dir: Path, index_path: Path) -> None:
+    """
+    Append a verification testimony evidence directory to the evidence index.
+
+    Args:
+        evidence_dir: Directory containing attestations.json and summary.json.
+        index_path: Path to the evidence index JSONL file.
+    """
+    import json
+
+    summary_file = evidence_dir / "summary.json"
+    if not summary_file.exists():
+        return
+
+    with open(summary_file) as f:
+        summary = json.load(f)
+
+    entry = {
+        "evidence_dir": str(evidence_dir.resolve()),
+        "overall_success": summary.get("overall_success"),
+        "commitment": summary.get("commitment"),
+        "merkle_root": summary.get("merkle_root"),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    index_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(index_path, "a") as f:
+        f.write(json.dumps(entry) + "\n")

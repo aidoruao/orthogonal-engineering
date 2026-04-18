@@ -58,10 +58,12 @@ class ProofObject:
         rule: str,
         premises: List[Any],
         conclusion: str,
+        falsifies_if: Optional[str] = None,
     ) -> None:
         self.rule = rule
         self.premises = premises
         self.conclusion = conclusion
+        self.falsifies_if = falsifies_if
         self.proof_hash: str = self._compute_hash()
 
     def _compute_hash(self) -> str:
@@ -72,11 +74,14 @@ class ProofObject:
         def _premise(p: Any) -> Any:
             return p.to_dict() if isinstance(p, ProofObject) else str(p)
 
-        return {
+        result = {
             "rule": self.rule,
             "premises": [_premise(p) for p in self.premises],
             "conclusion": self.conclusion,
         }
+        if self.falsifies_if is not None:
+            result["falsifies_if"] = self.falsifies_if
+        return result
 
     def is_valid(self) -> bool:
         """Re-compute hash and compare to stored value."""

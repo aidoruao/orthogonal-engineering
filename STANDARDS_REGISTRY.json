@@ -5,6 +5,7 @@
     "authority": "@aidoruao / Orthogonal Engineering Framework",
     "standard": "Yeshua",
     "last_updated": "2026-04-18",
+    "total_standards": 59
     "total_standards": 58
   },
   "standards": [
@@ -566,6 +567,7 @@
       "id": "AF-001",
       "category": "aerospace_floor",
       "rule": "DO-178C determinism verified for all safety-critical paths",
+      "description": "All software in safety-critical aerospace domains must have DO-178C \u00a76.4.2.2 determinism verification.",
       "description": "All software in safety-critical aerospace domains must have DO-178C §6.4.2.2 determinism verification.",
       "enforcement_command": "python audit/aerospace_floor_audit.py --check determinism",
       "enforcement_file": "audit/aerospace_floor_audit.py",
@@ -681,6 +683,27 @@
       "falsifies_if": "grep finds a float() call in an aerospace-adjacent invariants.py",
       "severity": "high",
       "enforcement_passes_on": "no_output"
+    },
+    {
+      "id": "OE-247",
+      "category": "state_classification",
+      "rule": "247-level certainty requires Fraction-based thresholds and falsifiable claims",
+      "description": "All artifact classifications must use Fraction arithmetic (no floats), return (bool, ProofObject) with non-empty falsifies_if, and wrap in a YeshuaClaim with SHA-256 commitment. Threshold defaults: certain=247/1, high_confidence=200/1, probable=150/1, unknown=100/1, suspicious=50/1.",
+      "enforcement_command": "python3 -m pytest tests/test_state_classification.py tests/test_threshold_loading.py -v",
+      "enforcement_file": "src/sal/state_classification.py",
+      "scope": "src/sal/**,audit/**,cli.py",
+      "falsifies_if": "A classification returns a float instead of Fraction, or ProofObject lacks falsifies_if, or YeshuaClaim commitment does not match SHA-256 of canonical JSON",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero",
+      "schema": "schemas/forensic_commit_schema.json",
+      "thresholds": {
+        "certain": "247/1",
+        "high_confidence": "200/1",
+        "probable": "150/1",
+        "unknown": "100/1",
+        "suspicious": "50/1",
+        "invalid": "0/1"
+      }
     }
   ]
 }

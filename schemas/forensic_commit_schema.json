@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ForensicCommit",
+  "description": "Schema for forensic commit JSON artifacts",
+  "type": "object",
+  "required": [
+    "commit_sha",
+    "timestamp",
+    "authors",
+    "co_authors",
+    "artifacts",
+    "thresholds_used",
+    "merkle_root",
+    "top_level_claim",
+    "falsifies_if",
+    "commitment"
+  ],
+  "properties": {
+    "commit_sha": {
+      "type": "string",
+      "description": "Git commit SHA"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO8601 timestamp"
+    },
+    "authors": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "co_authors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "id": { "type": "string" },
+          "model_hash": { "type": "string" }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "size", "state_label", "classifier_proof"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "size": { "type": "integer", "minimum": 0 },
+          "state_label": {
+            "type": "string",
+            "enum": ["CERTAIN", "HIGH_CONFIDENCE", "PROBABLE", "UNKNOWN", "SUSPICIOUS", "INVALID"]
+          },
+          "classifier_proof": {
+            "type": "object",
+            "required": ["rule", "premises", "conclusion"],
+            "properties": {
+              "rule": { "type": "string" },
+              "premises": { "type": "array" },
+              "conclusion": { "type": "string" },
+              "falsifies_if": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "thresholds_used": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "merkle_root": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "top_level_claim": {
+      "type": "object",
+      "required": ["source", "statement", "derivation", "hash_commitment"],
+      "properties": {
+        "source": { "type": "string" },
+        "statement": { "type": "string" },
+        "derivation": { "type": "object" },
+        "hash_commitment": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "falsifies_if": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commitment": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

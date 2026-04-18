@@ -434,3 +434,34 @@ print(f'Merkle root: {vm[\"sha256_tree_root\"][:16]}...')"
 *"Continuity of body is not magic — it is disciplined state management. Write it down. Read it first. Resume without re-deriving."*
 
 **Orthogonal Engineering Continuity Principle**
+
+---
+
+## 🤖 AI CO-AUTHOR CONSENT FLOW (OE-247)
+
+### Required for AI-Credited Commits
+
+Any automated commit that includes AI co-author attribution MUST:
+
+1. **Obtain explicit consent** via `--ai-consent <path>` or environment variables:
+   ```bash
+   export KIMI_AI_CREDIT=1
+   export KIMI_AI_CONSENT_FILE=/path/to/signed_consent.txt
+   ```
+
+2. **Use the forensic commit generator** to produce structured evidence:
+   ```bash
+   python cli.py forensic-commit --files file1.py file2.py --ai-credit --ai-consent consent.txt
+   ```
+
+3. **Verify the commitment** matches SHA-256 of canonical JSON.
+
+### Disallowed
+- AI credit without consent file
+- Float arithmetic in threshold comparisons (must use `fractions.Fraction`)
+- Empty `falsifies_if` fields in ProofObjects
+
+### Verification
+```bash
+python3 -m pytest tests/test_state_classification.py tests/test_threshold_loading.py tests/test_forensic_commit.py tests/test_verification_testimony.py tests/test_ai_credit.py -v
+```

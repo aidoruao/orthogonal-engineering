@@ -91,6 +91,11 @@ from src.sal.proof_as_observer import (
     proof_as_observer,
     build_self_verifying_proof,
 )
+from src.sal.state_classification import (
+    StateLabel,
+    classify_artifact,
+    wrap_claim,
+)
 
 __all__ = [
     "Functor",
@@ -171,4 +176,8 @@ __all__ = [
     "L_MAX_CHRIST_REPR",
     "proof_as_observer",
     "build_self_verifying_proof",
+    # State classification
+    "StateLabel",
+    "classify_artifact",
+    "wrap_claim",
 ]

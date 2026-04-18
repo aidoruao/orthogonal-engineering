@@ -1,0 +1,114 @@
+# KIMI Tasks Manifest
+# ===================
+# Machine-parseable task list for Kimi CLI agent execution.
+# Agent ID: 597e0d23-f404-4bdf-801f-64962ce0e722
+# Repository: aidoruao/orthogonal-engineering
+# Standard: OE-247
+
+meta:
+  agent_id: "597e0d23-f404-4bdf-801f-64962ce0e722"
+  schema_version: "1.0.0"
+  generated: "2026-04-18"
+  authority: "@aidoruao"
+
+tasks:
+  - id: T1
+    title: "Core: Explicit State Classification module"
+    priority: 1
+    status: completed
+    files:
+      - src/sal/state_classification.py
+      - tests/test_state_classification.py
+    acceptance_criteria:
+      - "classify_artifact exists and is importable"
+      - "Unit tests cover threshold boundaries with Fraction arithmetic"
+      - "Each result returns (bool, ProofObject) with falsifies_if"
+      - "YeshuaClaim wraps ProofObject and commitment is SHA-256 of serialized claim"
+
+  - id: T2
+    title: "Parameterized thresholds config + CLI"
+    priority: 1
+    status: completed
+    files:
+      - config/thresholds.yaml
+      - threshold_loader.py
+      - cli.py
+      - tests/test_threshold_loading.py
+    acceptance_criteria:
+      - "CLI parses --threshold-config and --threshold args"
+      - "Unit test shows CLI override precedence (overrides > config > defaults)"
+      - "All numeric thresholds use Fraction"
+
+  - id: T3
+    title: "Forensic commit message generator & forensic JSON"
+    priority: 2
+    status: completed
+    files:
+      - audit/forensic_commit.py
+      - scripts/forensic-commit-hook.sh
+      - cli.py
+      - tests/test_forensic_commit.py
+    acceptance_criteria:
+      - "Building a forensic commit returns JSON with required fields and commitment"
+      - "Hook script produces forensic JSON and prints trailer"
+      - "Tests verify JSON schema and SHA-256 commitment matches payload"
+
+  - id: T4
+    title: "Verification-as-testimony runner"
+    priority: 2
+    status: completed
+    files:
+      - audit/verification_testimony.py
+      - tests/test_verification_testimony.py
+    acceptance_criteria:
+      - "Runner writes evidence directory with attestations.json and commitment"
+      - "Each attestations entry includes falsifies_if"
+      - "Tests confirm YeshuaClaim wrapping and commitment equals SHA-256(attestations.json)"
+
+  - id: T5
+    title: "AI credited co-author integration"
+    priority: 2
+    status: completed
+    files:
+      - tools/ai_credit.py
+      - cli.py
+      - tests/test_ai_credit.py
+    acceptance_criteria:
+      - "CLI can add AI co-author trailer only with valid consent"
+      - "Registry update is atomic and testable"
+      - "Consent appended to pr47_stewardship witness consent log"
+
+  - id: T6
+    title: "Tests, CI pipeline and schema definitions"
+    priority: 3
+    status: completed
+    files:
+      - schemas/forensic_commit_schema.json
+      - VERIFICATION_PIPELINE.yaml
+      - tests/test_forensic_schema_validation.py
+    acceptance_criteria:
+      - "pytest passes locally"
+      - "CI job runs tests and emits artifacts"
+
+  - id: T7
+    title: "STANDARDS_REGISTRY and documentation"
+    priority: 3
+    status: completed
+    files:
+      - STANDARDS_REGISTRY.json
+      - ONBOARDING_FOR_AI_AGENTS.md
+      - COPILOT_ONBOARDING.md
+    acceptance_criteria:
+      - "STANDARDS_REGISTRY contains OE-247 entry and references schemas"
+      - "Onboarding docs include consent flow and CLI options"
+
+  - id: T8
+    title: "KIMI task manifest and onboarding automation"
+    priority: 4
+    status: completed
+    files:
+      - tasks/kimi_tasks.yaml
+      - scripts/kimi_onboard.sh
+    acceptance_criteria:
+      - "KIMI tasks file exists and is machine-parseable"
+      - "Onboarding script runs in dev environment and prints next steps"
