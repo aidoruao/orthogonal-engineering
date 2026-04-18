@@ -20,6 +20,7 @@ class TarskianTruthClaim:
 def create_nominal_claim() -> TarskianTruthClaim:
     """Create nominal claim data used by run_all_invariants().
 
+    Falsifies if: nominal claim data cannot be constructed.
     falsifies_if: nominal claim data cannot be constructed.
     """
     return TarskianTruthClaim(
