@@ -35,7 +35,6 @@ import argparse
 import json
 import sys
 from datetime import datetime, timezone
-from fractions import Fraction
 from pathlib import Path
 from typing import Optional
 
@@ -149,15 +148,13 @@ def build_alert(
         ),
     }
 
-    # Use Fraction for row arithmetic (no floats)
-    row_fraction = Fraction(last_known_good_row) if last_known_good_row >= 0 else Fraction(-1)
-
+    # Record last known good row (no float — int is exact)
     return {
         "timestamp": ts,
         "failure_type": failure_type,
         "exit_code": exit_code,
         "stderr_excerpt": stderr_content[:500],
-        "last_known_good_row": int(row_fraction),
+        "last_known_good_row": last_known_good_row,
         "recommended_action": recommended_actions.get(
             failure_type,
             recommended_actions["unknown_integrity_failure"],
