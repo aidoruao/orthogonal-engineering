@@ -131,9 +131,15 @@ def build_feed_entry(
     All fields except *timestamp* are fully deterministic given the same repo
     state.  *timestamp* is provided externally so callers can pin it in tests.
 
+    *git_ref* is accepted for caller convenience but is **not** included in the
+    returned dict because it is not written to the AGENT_FEED.md ledger row.
+    The ledger schema has exactly eight columns; git_ref is not one of them.
+    Omitting it from the dict prevents silent information loss and makes the
+    producer/consumer contract unambiguous.
+
     Returns a dict with keys:
         timestamp, freeze_hash, merkle_root, invariant_spec_version,
-        source_paths, commit_sha, git_ref, prev_entry_hash, entry_hash
+        source_paths, commit_sha, prev_entry_hash, entry_hash
     """
     freeze = load_freeze()
     freeze_hash = compute_freeze_hash()
@@ -146,8 +152,11 @@ def build_feed_entry(
         timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     if commit_sha is None:
         commit_sha = _get_commit_sha()
-    if git_ref is None:
-        git_ref = _get_git_ref()
+    # git_ref is resolved but intentionally excluded from the returned dict.
+    # The ledger schema has exactly 8 columns; git_ref is not one of them.
+    # Resolving it here keeps fallback logic in one place for callers that need it.
+    _resolved_git_ref = git_ref if git_ref is not None else _get_git_ref()
+    _ = _resolved_git_ref  # not stored in entry to avoid ghost-field confusion
 
     # entry_hash covers all fields including timestamp; timestamp is intentionally
     # included so that re-runs at different times produce distinct entry hashes,
@@ -170,7 +179,6 @@ def build_feed_entry(
         "invariant_spec_version": INVARIANT_SPEC_VERSION,
         "source_paths": source_paths,
         "commit_sha": commit_sha,
-        "git_ref": git_ref,
         "prev_entry_hash": prev_entry_hash,
         "entry_hash": entry_hash,
     }

@@ -30,6 +30,14 @@ env:
 permissions:
   contents: write
 
+# Serialize write-back runs so that concurrent pushes to main do not produce
+# non-fast-forward rejections when the bot tries to push AGENT_FEED.md.
+# cancel-in-progress: false ensures that every push gets a witness entry even
+# when runs are queued (the waiting run will execute after the active one).
+concurrency:
+  group: state-witness-write
+  cancel-in-progress: false
+
 jobs:
   state-witness:
     name: State Witness (py${{ matrix.python-version }})
@@ -42,8 +50,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # Fetch latest commit only (fetch-depth: 1)
-          fetch-depth: 1
+          # Full clone so that the write-back push is never rejected
+          # as non-fast-forward when concurrent pushes arrive.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -82,8 +91,30 @@ jobs:
           else
             git add AGENT_FEED.md
             git commit -m "chore(pr40): append state witness entry [skip ci]"
+            # Pull remote changes before pushing in case a concurrent run landed.
+            git pull --rebase origin main
             git push
           fi
+
+      - name: Assert row count increased
+        if: github.event_name == 'push' && matrix.python-version == '3.11'
+        run: |
+          python - <<'PYEOF'
+          import re, sys
+          from pathlib import Path
+          text = Path("AGENT_FEED.md").read_text(encoding="utf-8")
+          data_rows = [
+              l for l in text.splitlines()
+              if l.strip().startswith("| ")
+              and "timestamp" not in l
+              and "---" not in l
+          ]
+          count = len(data_rows)
+          print(f"AGENT_FEED.md row count: {count}")
+          if count == 0:
+              print("ERROR: AGENT_FEED.md has no data rows", file=sys.stderr)
+              sys.exit(1)
+          PYEOF
 
   verify-feed-integrity:
     name: Verify Feed Integrity
@@ -98,7 +129,7 @@ jobs:
           # For pull_request events github.ref_name is "<pr>/merge" (not a real branch),
           # so fall back to github.head_ref which is the PR head branch name.
           ref: ${{ github.head_ref || github.ref_name }}
-          fetch-depth: 1
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
