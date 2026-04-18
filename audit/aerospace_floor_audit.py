@@ -112,6 +112,7 @@ def run_full_audit() -> Dict:
         "AF-005": check_independence,
         "AF-006": check_sil4,
         "AF-007": check_nasa,
+        "AF-008": lambda: _audit_d_aerospace_floor(),
         "AF-009": check_traceability,
         "AF-010": _audit_af_010,
     }
