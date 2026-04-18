@@ -1,0 +1,125 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Kingdom OS Entry",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/kingdom_os_entry.py",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Popperian Audit",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/audit/popperian_audit.py",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Bar Exam",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/pr50_bar_exam/__init__.py",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Merkle Verification",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/merkle.py",
+      "args": ["--verify"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Agent Health Check",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/agent_health_check.py",
+      "args": ["--json"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Agent Health Check (fast)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/agent_health_check.py",
+      "args": ["--fast", "--json"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Standards Check",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/standards_check.py",
+      "args": ["--verify"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Feed Integrity Check",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/state_witness/generate_feed_entry.py",
+      "args": ["--verify"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Onboard Agent (Copilot)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/onboard_agent.py",
+      "args": ["--agent", "copilot"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run All Tests",
+      "type": "python",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["tests/", "-v"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run OE Engine CLI",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/oe_engine/cli.py",
+      "args": ["--query", "What is the Yeshua Standard?"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Run Context Window Estimator (domains)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/tools/context_window_estimator.py",
+      "args": ["--path", "src/domains/", "--json"],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "console": "integratedTerminal"
+    }
+  ]
+}

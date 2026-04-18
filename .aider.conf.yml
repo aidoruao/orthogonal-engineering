@@ -1,0 +1,28 @@
+# Aider Configuration — Orthogonal Engineering
+# https://aider.chat/docs/config/aider_conf.html
+
+# Model settings
+# model: gpt-4o
+
+# Auto-commit changes with conventional commit messages
+auto-commits: true
+commit-prompt: |
+  Write a conventional commit message: <type>(<scope>): <description>
+  Types: feat, fix, docs, chore, test, refactor
+  Scopes: domains, kernel, commonwealth, case_studies, docs, tools
+
+# Always read these files into context
+read:
+  - SOP_AI_HANDSHAKE.md
+  - .github/copilot-instructions.md
+  - STANDARDS_REGISTRY.json
+
+# Never modify these files
+no-auto-commits: false
+
+# Output verbosity
+verbose: false
+
+# Git settings
+git: true
+gitignore: true

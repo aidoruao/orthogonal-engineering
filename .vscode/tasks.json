@@ -1,0 +1,162 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Popperian Audit",
+      "type": "shell",
+      "command": "python audit/popperian_audit.py",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Merkle Verify",
+      "type": "shell",
+      "command": "python merkle.py --verify",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Feed Integrity",
+      "type": "shell",
+      "command": "python tools/state_witness/generate_feed_entry.py --verify",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Agent Health Check",
+      "type": "shell",
+      "command": "python tools/agent_health_check.py --json",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Agent Health Check (fast)",
+      "type": "shell",
+      "command": "python tools/agent_health_check.py --fast --json",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Standards Verify",
+      "type": "shell",
+      "command": "python tools/standards_check.py --verify",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run All Tests",
+      "type": "shell",
+      "command": "pytest tests/ -v",
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tier 3 Tests",
+      "type": "shell",
+      "command": "pytest tests/test_tier3_tools.py -v",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tier 4 Tests",
+      "type": "shell",
+      "command": "pytest tests/test_tier4_docs.py -v",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Tier 5 Tests",
+      "type": "shell",
+      "command": "pytest tests/test_tier5_ide.py -v",
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Context Window Estimate (domains)",
+      "type": "shell",
+      "command": "python tools/context_window_estimator.py --path src/domains/ --json",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Since Last Session",
+      "type": "shell",
+      "command": "python tools/since_last_session.py --since-row 180 --json",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate arXiv Template",
+      "type": "shell",
+      "command": "python tools/arxiv_paper_template.py --dry-run",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Onboard Agent",
+      "type": "shell",
+      "command": "python tools/onboard_agent.py --agent copilot --json",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

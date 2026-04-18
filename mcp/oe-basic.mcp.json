@@ -1,0 +1,159 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/server-descriptor/v1.json",
+  "name": "orthogonal-engineering",
+  "version": "1.0.0",
+  "description": "Orthogonal Engineering repository tools. Provides access to Popperian audit, agent health check, feed integrity verification, standards registry queries, token estimation, agent onboarding, and session catch-up. All tools follow the Yeshua Standard: Fraction-only arithmetic, ProofObject returns, falsifies_if conditions.",
+  "tools": [
+    {
+      "name": "run_popperian_audit",
+      "description": "Run the Popperian audit across all domain invariants. Returns JSON with per-domain pass/fail and overall statistics.",
+      "command": "python audit/popperian_audit.py",
+      "output": "json",
+      "falsifies_if": "exit code non-zero or JSON missing 'domains_passing' key"
+    },
+    {
+      "name": "run_health_check",
+      "description": "Run the unified agent health check. Performs 9 checks: Python version, venv, required files, consent log, Merkle root, Popperian audit, feed chain, float violations, standards registry. Returns JSON with per-check results.",
+      "command": "python tools/agent_health_check.py --json",
+      "args": {
+        "fast": {
+          "type": "boolean",
+          "description": "Skip slow checks (audit, chain integrity). Append --fast flag.",
+          "optional": true
+        }
+      },
+      "output": "json",
+      "falsifies_if": "exit code non-zero when all 9 checks pass"
+    },
+    {
+      "name": "verify_feed_integrity",
+      "description": "Verify AGENT_FEED.md hash chain integrity. Checks that each row's prev_entry_hash matches the hash of the preceding row.",
+      "command": "python tools/state_witness/generate_feed_entry.py --verify",
+      "output": "text",
+      "falsifies_if": "exit code 0 when chain is broken"
+    },
+    {
+      "name": "query_standards",
+      "description": "Query STANDARDS_REGISTRY.json. Filter by scope glob or category. Returns matching standards as JSON.",
+      "command": "python tools/standards_check.py --json",
+      "args": {
+        "scope": {
+          "type": "string",
+          "description": "Glob pattern to filter by scope (e.g. src/domains/**)",
+          "optional": true
+        },
+        "category": {
+          "type": "string",
+          "description": "Category to filter by (e.g. code_standard, behavioral_constraint)",
+          "optional": true
+        },
+        "id": {
+          "type": "string",
+          "description": "Specific standard ID to retrieve (e.g. CS-001)",
+          "optional": true
+        }
+      },
+      "output": "json",
+      "falsifies_if": "returns empty list when standards exist for the given scope"
+    },
+    {
+      "name": "estimate_tokens",
+      "description": "Estimate token cost of reading a file or directory using 4-chars/token heuristic (Fraction arithmetic). Use to plan context window usage before reading large paths.",
+      "command": "python tools/context_window_estimator.py --json",
+      "args": {
+        "path": {
+          "type": "string",
+          "description": "File or directory path relative to repo root (e.g. src/domains/d_aerospace/)",
+          "required": true
+        },
+        "agent": {
+          "type": "string",
+          "description": "Agent name for context window comparison (copilot, claude, kimi, devin, cursor, windsurf)",
+          "optional": true
+        },
+        "budget": {
+          "type": "integer",
+          "description": "Token budget; exits 1 if exceeded",
+          "optional": true
+        }
+      },
+      "output": "json",
+      "falsifies_if": "returns token count of zero for non-empty path"
+    },
+    {
+      "name": "onboard_agent",
+      "description": "Get onboarding context block for a specific agent type. Loads scoped standards from STANDARDS_REGISTRY.json, runs env checks, and outputs structured context.",
+      "command": "python tools/onboard_agent.py --json",
+      "args": {
+        "agent": {
+          "type": "string",
+          "description": "Agent type: copilot, claude, devin, kimi, aider, cursor, windsurf, cline, continue",
+          "required": true
+        },
+        "scope": {
+          "type": "string",
+          "description": "Glob pattern to filter standards by scope",
+          "optional": true
+        },
+        "skip_env_check": {
+          "type": "boolean",
+          "description": "Skip environment checks (Python version, required files, feed integrity)",
+          "optional": true
+        }
+      },
+      "output": "json",
+      "falsifies_if": "returns empty standards list when STANDARDS_REGISTRY.json has entries matching the scope"
+    },
+    {
+      "name": "since_last_session",
+      "description": "Report what changed since a given checkpoint. Returns new commits, changed files, new domains, new standards, and new feed rows.",
+      "command": "python tools/since_last_session.py --json",
+      "args": {
+        "since_row": {
+          "type": "integer",
+          "description": "Feed row index to report changes since",
+          "optional": true
+        },
+        "since_commit": {
+          "type": "string",
+          "description": "Commit SHA to report changes since",
+          "optional": true
+        }
+      },
+      "output": "json",
+      "falsifies_if": "returns zero new rows when feed has grown since the given checkpoint"
+    }
+  ],
+  "resources": [
+    {
+      "name": "glossary",
+      "path": "GLOSSARY.md",
+      "description": "Machine-readable glossary mapping all framework/theological terms to engineering and mathematical definitions (50 entries)"
+    },
+    {
+      "name": "agent_capabilities_matrix",
+      "path": "AGENT_CAPABILITIES_MATRIX.md",
+      "description": "13-agent capability table: access, shell, web, context window, write, platform file, limitations"
+    },
+    {
+      "name": "standards_registry",
+      "path": "STANDARDS_REGISTRY.json",
+      "description": "Machine-readable registry of all 39+ standards enforced in this repository"
+    },
+    {
+      "name": "copilot_onboarding",
+      "path": "COPILOT_ONBOARDING.md",
+      "description": "Copilot-specific onboarding instructions"
+    },
+    {
+      "name": "cross_repo_instructions",
+      "path": "CROSS_REPO_INSTRUCTIONS.md",
+      "description": "Instructions for agents working across all 3 covenant repositories"
+    },
+    {
+      "name": "agent_feed",
+      "path": "AGENT_FEED.md",
+      "description": "Hash-chained append-only ledger of system state (184+ rows)"
+    }
+  ]
+}

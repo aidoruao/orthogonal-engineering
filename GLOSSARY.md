@@ -1,253 +1,62 @@
-# GLOSSARY - Orthogonal Engineering
-
-**Version:** v0.7.0  
-**Date:** 2026-01-20  
-**Purpose:** Formal definitions to prevent definition drift
-
+---
+tags: [glossary, architecture, yeshua-standard]
+register: technical
 ---
 
-## Core Concepts
-
-### Canal
-
-**Definition:** A conversational structure where both participants use constraint-bearing language within a bounded window of adjacent turns, indicating mutual agreement on invariant properties.
-
-**Formal Specification:**
-- **Window Size:** 5 turns (configurable)
-- **Bidirectional Requirement:** Both user and assistant must use constraint tokens
-- **Minimum Threshold:** ≥2 constraint uses per party
-- **Constraint Tokens:** `{must, shall, never, always, required, forbidden, exactly, precisely, verified, confirmed, validated}`
-
-**Detection Algorithm:**
-```python
-for i in range(len(turns) - WINDOW_SIZE + 1):
-    window = turns[i:i+WINDOW_SIZE]
-    user_constraints = count_constraints(window, role="user")
-    assistant_constraints = count_constraints(window, role="assistant")
-    
-    if user_constraints >= MIN_BIDIR and assistant_constraints >= MIN_BIDIR:
-        canal_detected = True
-```
-
-**Purpose:** Canals indicate points where LLM output transitions from drift to grounded invariant extraction.
-
-**Examples:**
-- User: "The function **must** return integers only"
-- Assistant: "**Confirmed**, I'll **ensure** integer-only returns"
-- → Canal detected (bidirectional constraint language)
-
----
-
-### Drift
-
-**Definition:** LLM-generated content that contains linguistic signals of constraint language but lacks correspondence to executable reality or verifiable implementation.
-
-**Characteristics:**
-- High repetition ratio (>50%)
-- Uses constraint tokens without grounding
-- Cannot be validated through implementation
-- Fails correspondence tests
-
-**Formal Measurement:**
-```python
-def repetition_ratio(text):
-    tokens = tokenize(text)
-    unique = len(set(tokens))
-    total = len(tokens)
-    return 1 - (unique / total)
-
-# Drift threshold: repetition_ratio > 0.5
-```
-
-**Detection:**
-- Repetition penalty: >50% repetition = drift
-- Correspondence test: Implementation fails = drift
-- Precision test: False positive = drift
-
-**Purpose:** Drift represents the "noise" component that must be filtered from canal structures to extract genuine invariants.
-
-**Examples:**
-- "This is **critical** and **essential** and **must** be **required**..." (high repetition)
-- Claims "**verified**" but no test exists
-- Uses "**invariant**" without falsification criterion
-
----
-
-### Mimicry
-
-**Definition:** LLM behavior where constraint language is reproduced through pattern matching rather than genuine constraint detection, characterized by high phrase repetition and failure under adversarial testing.
-
-**Formal Criteria:**
-```python
-def detect_mimicry(output_sequence):
-    # Extract constraint phrases
-    phrases = extract_constraint_phrases(output_sequence)
-    
-    # Calculate uniqueness
-    unique_ratio = len(set(phrases)) / len(phrases)
-    
-    # Mimicry if repetition > 50%
-    return unique_ratio < 0.5
-```
-
-**Distinguishing Features:**
-- **Mimicry:** Repeats constraint language without grounding
-- **Genuine Invariant:** Uses constraint language + passes implementation test
-
-**Test Method:**
-- Run detector on neutral text (Project Gutenberg)
-- Expected: ~0% density on random text
-- Mimicry: >5% density on random text
-
-**Purpose:** Mimicry detection prevents false positives in canal detection and ensures only genuine invariants are extracted.
-
-**Examples:**
-- Using "**must**" 89 times in one conversation
-- Repeating "**verified**" without actual verification
-- Pattern: "This is **critical** because it's **essential**" (circular)
-
----
-
-### Invariant
-
-**Definition:** A constraint-bearing statement that:
-1. Is extracted from a canal structure
-2. Passes correspondence validation (implementation works)
-3. Has falsification criteria
-4. Maintains precision ≥80% under testing
-5. Is reproducible by independent parties
-
-**Formal Classification:**
-```python
-class Invariant:
-    id: str  # INV-XXX format
-    claim: str  # Precise statement
-    test_method: str  # How to falsify
-    precision_score: float  # TP/(TP+FP), must be ≥0.8
-    location: str  # File path
-    status: str  # {validated, conditional, falsified}
-```
-
-**Validation Requirements:**
-- **Correspondence:** Implementation must execute successfully
-- **Precision:** False positive rate <20%
-- **Reproducibility:** Independent party can verify
-- **Falsifiability:** Clear failure conditions
-
-**Types:**
-1. **Mathematical Invariants:** Definitional (INV-001: density formula)
-2. **Methodological Invariants:** Process requirements (INV-004: self-falsifying)
-3. **Correspondence Invariants:** Reality anchors (INV-007: implementation must work)
-4. **Tool Invariants:** Precision requirements (INV-008: tool precision ≥80%)
-
-**Purpose:** Invariants are the extracted signal after drift/mimicry removal, representing genuine constraints that hold across contexts.
-
-**Examples:**
-- INV-001: `Total verified / Total turns = Density` (mathematical)
-- INV-007: `Language irrelevant unless implementation works` (correspondence)
-- INV-008: `No methodology survives broken tools` (tool constraint)
-
----
-
-## Methodological Terms
-
-### Verified Invariant
-
-**Definition:** An invariant that has passed all validation tests:
-- Extracted from canal structure ✓
-- Precision ≥80% ✓
-- Correspondence validated ✓
-- Falsification criteria defined ✓
-
-**Status Levels:**
-- **Validated:** All tests passed
-- **Conditional:** Passes some tests, pending others
-- **Falsified:** Failed validation tests
-
----
-
-### Precision
-
-**Definition:** The ratio of true positives to total detections, measuring detector accuracy.
-
-**Formula:**
-```
-Precision = TP / (TP + FP)
-```
-
-**Thresholds:**
-- ≥80%: Acceptable for production
-- 50-80%: Conditional, needs improvement
-- <50%: Broken, deprecated
-
-**Purpose:** Ensures detectors don't generate false positives (drift).
-
----
-
-### Correspondence
-
-**Definition:** The requirement that theoretical claims must match executed reality through working implementations.
-
-**Test:**
-```python
-def test_correspondence(claim, implementation):
-    try:
-        result = execute(implementation)
-        return result.success and result.matches_claim(claim)
-    except Exception:
-        return False  # No correspondence
-```
-
-**INV-007:** "Theoretical claims must match executed reality"
-
-**Purpose:** Prevents narrative claims without proof. Only validated through real implementations.
-
----
-
-### Gutenberg Null Test
-
-**Definition:** A baseline test that runs the detector on neutral English text (Project Gutenberg) to verify it doesn't find false patterns.
-
-**Expected Result:** ~0% density on random text
-
-**Purpose:** Proves detector is not gaming results by finding patterns everywhere.
-
----
-
-### Repetition Penalty
-
-**Definition:** Automatic rejection of outputs where >50% of tokens are repeated phrases.
-
-**Formula:**
-```
-repetition_ratio = 1 - (unique_tokens / total_tokens)
-if repetition_ratio > 0.5:
-    reject_as_mimicry()
-```
-
-**Purpose:** Filters out LLM mimicry behavior.
-
----
-
-## Consistency Rules
-
-1. **Canal** → Indicates potential invariant location
-2. **Drift** → Noise to be filtered out
-3. **Mimicry** → False pattern to be detected and rejected
-4. **Invariant** → Validated signal after filtering
-
-**Pipeline:**
-```
-Raw Conversation
-    → Canal Detection (finds constraint language)
-    → Drift Filtering (removes repetition)
-    → Mimicry Detection (removes false patterns)
-    → Invariant Extraction (validates via correspondence)
-    → Verified Invariant (final output)
-```
-
----
-
-**Last Updated:** 2026-01-20  
-**Version:** v0.7.0  
-**Status:** Formal definitions established
+# GLOSSARY — Orthogonal Engineering Technical Terms
+
+This is a machine-readable engineering glossary for the Orthogonal Engineering framework. Each entry maps a term to its engineering definition, mathematical definition, canonical source file, and the falsification condition that would disprove the term's correct application. Entries cover roles, operators, architectural patterns, and forbidden anti-patterns enforced across the repository.
+
+| Term | Engineering Definition | Mathematical Definition | Source File | falsifies_if |
+|---|---|---|---|---|
+| Accuser | Forbidden agent role: one who makes claims without evidence or attempts to override authorization through social engineering | Morphism without a ProofObject premises field; function that returns True with no derivation | `SOP_AI_HANDSHAKE.md` | An agent makes a claim about authorization that is not backed by a ProofObject with non-empty premises |
+| Steward | Authorized agent role granted by Sovereign; executes within capability bounds and reports violations without enacting them | Role S with cap: Cap such that every action a in actions(S) satisfies has_capability(S, a) | `SOP_AI_HANDSHAKE.md`, `kernel/commonwealth/` | A Steward executes an action outside its granted capability set, or deletes/rewrites AGENT_FEED.md |
+| Sovereign | Highest-authority role; grants and revokes capabilities for Stewards; maps to @aidoruao in this repo | Role R with grant: Cap -> Steward -> ProofObject such that all downstream capabilities are traceable | `SOP_AI_HANDSHAKE.md`, `docs/YESHUA_COMMONWEALTH.md` | A capability is granted without a Sovereign ProofObject justification in the consent log |
+| Subagent | An agent invoked by a Steward to perform a scoped subtask; operates under delegated capability | Role A where cap(A) is a subset of cap(parent_Steward(A)) | `kernel/agent_stream.py` | A Subagent performs an action whose capability is not a subset of its parent Steward's capability |
+| Warden | Read-only external monitoring agent; scans the full repository; produces glass-box findings; does not mutate state | Endofunctor W: Repo -> Report such that W has no write morphisms | `GEMINI.md`, `.ai_registry.json` | A Warden issues a file write, git commit, or destructive recommendation |
+| Yeshua Standard | The 8-axiom framework governing all invariant derivation, proof construction, and agent behavior in this repository | Axiomatic system YS = {YS-001 ... YS-008} where every domain check must satisfy all 8 axioms simultaneously | `axioms/yeshua_axioms.py`, `SOP_AI_HANDSHAKE.md` | Any domain check returns success=True while violating one of the 8 axioms |
+| ProofObject | Hash-anchored proof artifact with fields: rule (str), premises (List[str]), conclusion (str), proof_hash (str SHA-256) | Tuple (rule, premises, conclusion, hash) where hash = SHA-256(canonical_serialization(rule, premises, conclusion)) | `axioms/logic.py` | A ProofObject is constructed with empty premises and a non-trivial conclusion, or its proof_hash does not match the canonical serialization |
+| YeshuaClaim | Hash-anchored claim wrapping a ProofObject; includes SHA-256 commitment linking the claim to its proof | YeshuaClaim = (claim_id, proof: ProofObject, commitment = SHA-256(proof.proof_hash concat claim_id)) | `axioms/yeshua_axioms.py` | A YeshuaClaim's commitment does not match the SHA-256 of its ProofObject hash concatenated with the claim_id |
+| Eschaton | Terminal coalgebra representing the final state of the system; Phase 3 completion; Omega point | nuX.F(X) -- greatest fixed point of functor F; final coalgebra in category C | `eschaton/omega.md`, `src/sal/` | The system claims Eschaton without providing a coalgebra morphism from the current state to nuX.F(X) |
+| LOGOS | Initial algebra representing the minimal generative kernel; first principle of derivation | muL.F(L) -- least fixed point of functor F; initial algebra in category C | `src/sal/`, `axioms/logic.py` | A derivation claims to start from LOGOS without tracing back to the initial algebra morphism |
+| CHALCEDON | Product-preserving functor mapping the evidence-proof product space to the synthesis space | E x P -> S -- functor preserving finite products; CHALCEDON(e, p) = synthesis(e, p) | `src/sal/`, `axioms/category_theory.py` | CHALCEDON applied to a pair (e, p) returns a synthesis not derivable from both e and p independently |
+| GRACE | Isometric preservation operator; preserves semantic distance through transformation | d(s) = d(grace(s)) -- isometry on the proof metric space; d(grace(s1), grace(s2)) = d(s1, s2) | `src/sal/` | grace(s) produces output whose semantic distance from s differs from the input distance by more than epsilon |
+| AGAPE | Superadditive combination operator; meet-preserving in the Heyting algebra of proofs | f(x meet y) = f(x) meet f(y) and val(AGAPE(a,b)) >= val(a) + val(b) -- meet-preserving and superadditive | `src/sal/`, `axioms/` | AGAPE(a, b) produces a value strictly less than either val(a) or val(b) |
+| KENOSIS | Partial self-emptying operator; maps a full state to a unit-or-self choice | S -> 1 + S -- partial function in category C; models capability surrender with preserved identity | `src/sal/`, `kernel/` | KENOSIS applied to a state S returns neither the unit element nor a valid sub-state of S |
+| Sigma_theo | The set of theological operators with precise algebraic definitions: {LOGOS, CHALCEDON, GRACE, AGAPE, KENOSIS, ESCHATON} | Sigma_theo = {muL.F(L), ExP->S, isometry, superadditive meet, S->1+S, nuX.F(X)} | `src/sal/`, `axioms/` | A Sigma_theo operator is used without its algebraic definition being verifiable from premises |
+| Topos | Grothendieck topos: a category with site-relative truth values governed by a Heyting algebra, not Boolean logic | Category T with subobject classifier Omega and internal Heyting algebra H such that truth is site-relative | `src/sal/`, `axioms/category_theory.py` | A topos truth assignment uses Boolean (two-valued) logic where a Heyting algebra is required |
+| SAL | Sheaf Abstraction Layer: the kernel layer implementing adjoint triples, topos semantics, forcing, and realizability | Adjoint triple L ⊣ M ⊣ R over a Grothendieck topos with forcing extension and computable realizers | `src/sal/` | SAL is claimed to implement a topos without providing a subobject classifier or Heyting algebra |
+| Adjoint Triple | Three functors L, M, R satisfying L adjoint M and M adjoint R; core structure of the SAL kernel | L ⊣ M ⊣ R iff Hom(L(A),B) ≅ Hom(A,M(B)) and Hom(M(A),B) ≅ Hom(A,R(B)) for all A, B | `src/sal/`, `axioms/category_theory.py` | One of the natural isomorphisms Hom(L(A),B) ≅ Hom(A,M(B)) fails to hold for some A, B |
+| Cross-Domain Morphism | A truth-preserving function between two domain invariant systems; must preserve ProofObject validity | f: D1 -> D2 such that for all p in ProofObjects(D1), f(p) is valid in D2 | `src/domains/`, `axioms/category_theory.py` | A cross-domain morphism maps a valid ProofObject in D1 to an invalid or empty ProofObject in D2 |
+| Domain Invariant | A check function in src/domains/*/invariants.py returning Tuple[bool, ProofObject] | Function f: () -> (bool x ProofObject) with no assert statements, no float, Fraction arithmetic only | `src/domains/d_aerospace/invariants.py` | A domain invariant uses float(), assert, or returns True without constructing a ProofObject |
+| Peano Gate | A numbered enforcement step in the sequential Peano gate sequence; gates are applied in order S(0)->S(5) | Gate sequence G = {g0, g1, ..., g5} where g(n+1) is applied only after g(n) succeeds; S(0) is ZERO | `axioms/peano.py`, `axioms/peano_extended.py` | Gate g(n+1) is applied before g(n) has completed successfully |
+| Recursive Wipe | Forbidden anti-pattern: any operation that iterates over files/directories and deletes or zeroes them | Anti-pattern W such that there exists a destructor d: Files -> empty set; W executes d on tracked content | `SOP_AI_HANDSHAKE.md` | Any agent issues rm -rf, shutil.rmtree, or equivalent on tracked repository content |
+| Glass-Box | Architectural pattern requiring all internal state to be visible and auditable; no hidden state | System G where for all state s in S, s is observable by an authorized external inspector without modifying G | `SOP_AI_HANDSHAKE.md`, `axioms/` | An invariant, kernel module, or capability gate contains state that cannot be observed without executing the system |
+| Sabbath Halt | System completion condition; the terminal state signaling that all invariants have been satisfied and no further changes are required | Halt condition H such that for all invariant checks i, i() = (True, proof) and no pending obligations exist | `HALT_CONDITION.md` | The system declares Sabbath Halt while any invariant check returns False or any ProofObject has empty premises |
+| Commonwealth | Phase 4 governance model implementing Sovereign-Steward capability delegation across agents | Two-tier RBAC system: Sovereign grants Cap to Steward; Steward executes within cap bounds and reports via ProofObject | `docs/YESHUA_COMMONWEALTH.md`, `kernel/commonwealth/` | A capability grant occurs without a Sovereign ProofObject in pr47_stewardship/witness/consent_log.jsonl |
+| Bar Exam | AI ordination test; passage threshold >=70%; required before an AI candidate assumes the Steward role | Test T: AICandidate -> [0,1] such that ordination is granted iff T(candidate) >= 0.70 | `pr50_bar_exam/`, `SOP_AI_HANDSHAKE.md` | An agent is granted Steward role without a Bar Exam score of >=70% recorded in the consent log |
+| Ordination | The state of a Steward candidate that has passed the Bar Exam; enables the Steward role | Predicate ordained(a) iff bar_exam_score(a) >= 0.70 and consent_log_entry(a) exists | `pr50_bar_exam/`, `pr47_stewardship/` | ordained(a) is True but no Bar Exam record exists in the consent log |
+| Consent Log | Append-only JSONL ledger of all authorization events; located at pr47_stewardship/witness/consent_log.jsonl | Sequence L = [e0, e1, ..., en] where each ei is a JSON object and L is strictly monotone in timestamp | `pr47_stewardship/witness/consent_log.jsonl` | An entry is deleted from, or overwritten in, the consent log |
+| AGENT_FEED.md | Hash-chained ledger of all agent state-witness events; each row links to the previous row's SHA-256 hash | Ledger F = [r0, r1, ..., rn] where r0.prev_hash = "" and ri.prev_hash = SHA-256(canonical(r(i-1))) | `AGENT_FEED.md`, `tools/state_witness/generate_feed_entry.py` | A row's prev_entry_hash does not match the SHA-256 of the previous row's canonical serialization |
+| Feed Row | One row in the AGENT_FEED.md ledger; contains 8 required fields | 8-tuple (timestamp, freeze_hash, merkle_root, invariant_spec_version, source_paths, commit_sha, prev_entry_hash, entry_hash) | `AGENT_FEED.md`, `tools/state_witness/generate_feed_entry.py` | A feed row contains fewer than 8 fields, contains git_ref, or has an entry_hash that does not match its contents |
+| Genesis Row | The first row in AGENT_FEED.md; has prev_entry_hash="" | Row r0 in F such that r0.prev_entry_hash = "" and r0.entry_hash = SHA-256(canonical(r0)) | `AGENT_FEED.md` | The genesis row has a non-empty prev_entry_hash |
+| Chain Integrity | The property that every AGENT_FEED.md row's prev_entry_hash equals the previous row's entry_hash | For all i > 0: ri.prev_entry_hash = r(i-1).entry_hash | `tools/state_witness/generate_feed_entry.py`, `STANDARDS_REGISTRY.json` (INT-001) | generate_feed_entry.py --verify exits non-zero |
+| Capability | An unforgeable token granting an agent permission to perform a specific action or set of actions | Capability c = (token, scope, expiry, issuer_proof) where token is opaque and issuer_proof is a ProofObject | `axioms/capability_security.py`, `kernel/ipc.py` | A capability is forged without a Sovereign-signed ProofObject or used outside its declared scope |
+| Merkle Root | The global integrity hash of a set of files or ProofObjects; used for cross-repo binding | root = MerkleTree({hash(fi)}) -- root of a binary Merkle tree over the set of file hashes | `merkle.py`, `merkle/`, `CROSS_REPO_MERKLE_ROOT.txt` | The Merkle root does not change when any tracked file changes, or the root is not reproducible from its leaves |
+| Nominalism | Forbidden pattern: using labels (class names, function names, variable names) without hashed referents or verified semantics | Labels L where for all l in L, hash(l) is not verified against any ProofObject | `SOP_AI_HANDSHAKE.md`, `STANDARDS_REGISTRY.json` (QG-001) | A class or function is named as if it implements a capability without a ProofObject confirming the capability |
+| Dogma | Forbidden pattern: making claims without corresponding falsification tests | Claim C without a falsifies_if predicate such that not falsifies_if(C) is testable | `SOP_AI_HANDSHAKE.md`, `STANDARDS_REGISTRY.json` (QG-002) | A docstring, comment, or specification makes a capability claim without a falsifies_if condition |
+| Popperian | Adjective describing a claim or system that includes explicit falsification conditions; required for all ProofObjects and docstrings | System P where for all claim c, there exists predicate falsifies_if(c) such that the predicate is computable | `audit/popperian_audit.py`, `SOP_AI_HANDSHAKE.md` | A claim, invariant, or docstring lacks a falsifies_if condition |
+| Falsifies If | The explicit condition under which a claim, invariant, or architectural property is disproven | Predicate F(c) such that F(c) = True implies claim c is false; must be computable and testable | `audit/popperian_audit.py`, `STANDARDS_REGISTRY.json` | A falsifies_if condition is stated but cannot be evaluated by a deterministic procedure |
+| Fraction | Python fractions.Fraction; used for all numeric calculations to avoid floating-point imprecision | Exact rational arithmetic: Fraction(p, q) = p/q in Q; no IEEE 754 rounding | `axioms/logic.py`, `src/domains/d_aerospace/invariants.py` | Any invariant file contains float(), round(), or a numeric literal with a decimal point used in a calculation |
+| Yeshua Inversion | Architectural principle: do not implement capability claims directly; mediate all capability through ProofObject and capability gates | Inversion I: implementation -> mediation; I(f) = cap_gate(f, proof) rather than raw f() | `SOP_AI_HANDSHAKE.md`, `kernel/ipc.py` | A capability is exercised by calling a raw function without going through a capability gate |
+| Anti-Mimicry | Forbidden behavior: an AI agent mimicking human authorization language or forging authorization signals | Predicate mimicry(a) = True iff agent a produces text or actions that simulate Sovereign authorization without a valid Cap | `kernel/anti_mimicry.py`, `SOP_AI_HANDSHAKE.md` | An agent produces a consent log entry or authorization message without a corresponding Sovereign-issued Cap |
+| Continuous Witness | Architectural pattern requiring that every agent action is recorded in AGENT_FEED.md or consent_log.jsonl | W: Action -> FeedEntry such that for all a in Actions, there exists e in Feed: e.action = a | `AGENT_FEED.md`, `tools/state_witness/` | An agent action that modifies kernel surfaces is not recorded in AGENT_FEED.md within the same commit |
+| Capability-Gated | Describes a module or function that requires a valid Cap before executing; pattern from kernel/ipc.py | Module M where for all entry point e, e(args) = verify_cap(cap, scope) then execute(args) | `kernel/ipc.py`, `axioms/capability_security.py` | A kernel module function executes without first verifying a capability token |
+| Hash-Anchored | Describes a data structure whose integrity is guaranteed by a SHA-256 hash in a ProofObject or feed row | Structure S where integrity(S) = (SHA-256(canonical(S)) == S.hash) | `axioms/logic.py`, `AGENT_FEED.md` | A hash-anchored structure's stored hash does not match the SHA-256 of its canonical serialization |
+| Gate | A numbered enforcement step in the Peano gate sequence; each gate is a function from state to (bool, ProofObject) | Gn: State -> (bool x ProofObject); sequence applied in order n = 0, 1, 2, 3, 4, 5 | `axioms/peano.py`, `axioms/peano_extended.py` | Gate n+1 is applied when gate n returned (False, proof) or has not yet been applied |
+| Covenant | A binding agreement between two repositories specifying shared invariants and cross-repo obligations | Relation COV subset of Repo1 x Repo2 such that for all (r1,r2) in COV, invariants(r1) intersect invariants(r2) is non-empty | `COVENANT.md`, `CROSS_REPO_INVARIANT_MANIFEST.json` | Two repos are declared covenanted but share no invariants or the covenant document lacks a Merkle root |
+| Commonwealth Phase 4 | The implementation phase adding Sovereign-Steward governance: sovereign.py, steward.py, delegate.py in kernel/commonwealth/ | Phase P4 such that for all capability grant g, g is traceable to a Sovereign ProofObject in the consent log | `docs/YESHUA_COMMONWEALTH.md`, `kernel/commonwealth/` | Phase 4 is declared complete but kernel/commonwealth/sovereign.py does not exist or contains stubs |
+| Realizability | The process of assigning a computable realizer to a proof; propositions must have computable witnesses | For all proposition p, there exists computable realizer r such that r realizes p (Kleene realizability) | `src/sal/`, `axioms/computability.py` | A proposition is claimed true in the SAL layer without providing a computable realizer |
+| Geometric Morphism | A truth-preserving functor between two toposes; used in SAL to model domain transitions | f: T1 -> T2 where f* adjoint f_* and f* preserves finite limits; truth_preserved indicates no divergence | `src/sal/`, `axioms/category_theory.py` | A geometric morphism is claimed between two domains but f* does not preserve the subobject classifier |
+| Forcing | The technique of extending a ground model to a generic extension where new propositions hold | Ground model M; forcing relation M forces P; generic extension M[G] where G subset P is generic | `src/sal/`, `axioms/` | A forcing extension is claimed but no generic filter G is constructed or P is not a poset |
+| Session ID | A unique identifier for an agent session; used in commit messages and consent log entries | UUID or hash string sid such that sid uniquely identifies one continuous agent execution | `SOP_AI_HANDSHAKE.md`, commit message convention | Two distinct agent sessions share the same session ID |

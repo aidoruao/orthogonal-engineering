@@ -109,6 +109,18 @@ class TestFeedEntryDeterminism:
             f"Missing fields: {required - entry.keys()}"
         )
 
+    def test_entry_does_not_contain_git_ref(self):
+        """git_ref must NOT appear in the entry dict — it is not a ledger column.
+
+        INT-1 fix: ghost field removed from build_feed_entry return value to
+        make the producer/consumer schema contract unambiguous.
+        """
+        entry = _make_entry()
+        assert "git_ref" not in entry, (
+            "git_ref is not part of the AGENT_FEED.md ledger schema; "
+            "it must not be present in the entry dict."
+        )
+
     def test_entry_invariant_spec_version_is_v2(self):
         entry = _make_entry()
         assert entry["invariant_spec_version"] == "v2"
@@ -404,3 +416,158 @@ class TestAgentFeedStructure:
     def test_agent_feed_has_separator_row(self):
         content = AGENT_FEED_PATH.read_text(encoding="utf-8")
         assert "| --- |" in content
+
+
+# ---------------------------------------------------------------------------
+# 7. INT-2 — unknown commit SHA unbounded-append risk
+# ---------------------------------------------------------------------------
+
+class TestUnknownCommitSHA:
+    """INT-2: 'unknown' commit SHA must not silently produce unbounded rows.
+
+    is_duplicate() returns False for commit_sha='unknown', which means every
+    run appends a new row.  The following tests document the current behaviour
+    explicitly so that any future change to the policy is a deliberate choice,
+    not an accident.
+    """
+
+    def test_unknown_sha_is_never_duplicate(self):
+        """is_duplicate must return False for 'unknown', even if already present."""
+        entry = _make_entry(commit_sha="unknown")
+        existing = [{"commit_sha": "unknown", "entry_hash": "xxx"}]
+        # Documented behaviour: always False so the caller can decide
+        assert is_duplicate(entry, existing) is False
+
+    def test_unknown_sha_appends_multiple_rows(self, tmp_path, monkeypatch):
+        """Two consecutive unknown-SHA runs must produce two distinct rows.
+
+        This test documents the risk: in a broken CI environment where the git
+        command fails, every push will add an unverifiable row.  Operators must
+        monitor for this condition (OBS-3: monotonic row count check).
+        """
+        feed_path = tmp_path / "AGENT_FEED.md"
+        monkeypatch.setattr(
+            "tools.state_witness.generate_feed_entry.AGENT_FEED_PATH",
+            feed_path,
+        )
+        e1 = _make_entry(commit_sha="unknown", timestamp="2026-01-01T00:00:00Z")
+        e2 = _make_entry(commit_sha="unknown", timestamp="2026-01-01T01:00:00Z")
+        assert append_to_feed(e1) is True
+        assert append_to_feed(e2) is True
+        rows = _parse_feed_rows(feed_path.read_text(encoding="utf-8"))
+        assert len(rows) == 2
+        # Both rows have 'unknown' as commit_sha
+        assert all(r["commit_sha"] == "unknown" for r in rows)
+        # But their entry_hashes differ because timestamps differ
+        assert rows[0]["entry_hash"] != rows[1]["entry_hash"]
+
+    def test_empty_commit_sha_also_appends(self, tmp_path, monkeypatch):
+        """Empty string commit_sha behaves like 'unknown' — always appended."""
+        feed_path = tmp_path / "AGENT_FEED.md"
+        monkeypatch.setattr(
+            "tools.state_witness.generate_feed_entry.AGENT_FEED_PATH",
+            feed_path,
+        )
+        e1 = _make_entry(commit_sha="", timestamp="2026-01-01T00:00:00Z")
+        e2 = _make_entry(commit_sha="", timestamp="2026-01-01T01:00:00Z")
+        assert append_to_feed(e1) is True
+        assert append_to_feed(e2) is True
+        rows = _parse_feed_rows(feed_path.read_text(encoding="utf-8"))
+        assert len(rows) == 2
+
+
+# ---------------------------------------------------------------------------
+# 8. P2 — mass-bootstrap scenario
+# ---------------------------------------------------------------------------
+
+class TestMassBootstrap:
+    """P2/E12: feed initialised with N pre-existing rows accepts row N+1 correctly.
+
+    This is the scenario that occurred with commit a27ff75 (7983-file bootstrap
+    commit).  The AGENT_FEED.md shipped 183 pre-existing rows and the automated
+    follow-up commit c378837 appended row 184 referencing a27ff75.
+    """
+
+    def test_bootstrap_with_prefilled_feed(self, tmp_path, monkeypatch):
+        """Feed pre-populated with N rows must correctly accept row N+1."""
+        feed_path = tmp_path / "AGENT_FEED.md"
+        monkeypatch.setattr(
+            "tools.state_witness.generate_feed_entry.AGENT_FEED_PATH",
+            feed_path,
+        )
+        # Build 5 pre-existing rows (simulates historical import)
+        prev = ""
+        historical_shas = [f"histsha{i:040d}" for i in range(5)]
+        content = FEED_HEADER
+        for i, sha in enumerate(historical_shas):
+            ts = f"2026-01-{i + 1:02d}T00:00:00Z"
+            entry = _make_entry(
+                commit_sha=sha,
+                timestamp=ts,
+                prev_entry_hash=prev,
+            )
+            content += _entry_to_row(entry) + "\n"
+            prev = entry["entry_hash"]
+        feed_path.write_text(content, encoding="utf-8")
+
+        # Verify the pre-populated chain is intact
+        ok, errors = verify_feed_integrity()
+        assert ok is True, f"Pre-populated chain invalid: {errors}"
+
+        # Now simulate the automated bot appending the bootstrap commit's row
+        bootstrap_sha = "a27ff75ab7ab3f7cb0aac1ce745db40c33200401"
+        existing_rows = read_feed()
+        new_prev = existing_rows[-1]["entry_hash"]
+        new_entry = _make_entry(
+            commit_sha=bootstrap_sha,
+            timestamp="2026-04-17T19:10:11Z",
+            prev_entry_hash=new_prev,
+        )
+        written = append_to_feed(new_entry)
+        assert written is True
+
+        # Chain must remain intact after the append
+        ok, errors = verify_feed_integrity()
+        assert ok is True, f"Chain broken after bootstrap append: {errors}"
+
+        # Total row count must be N+1
+        rows = read_feed()
+        assert len(rows) == len(historical_shas) + 1
+        assert rows[-1]["commit_sha"] == bootstrap_sha
+
+    def test_bootstrap_commit_not_duplicated(self, tmp_path, monkeypatch):
+        """Appending the bootstrap commit twice must produce exactly one row."""
+        feed_path = tmp_path / "AGENT_FEED.md"
+        monkeypatch.setattr(
+            "tools.state_witness.generate_feed_entry.AGENT_FEED_PATH",
+            feed_path,
+        )
+        bootstrap_sha = "a27ff75ab7ab3f7cb0aac1ce745db40c33200401"
+        e = _make_entry(
+            commit_sha=bootstrap_sha,
+            timestamp="2026-04-17T19:10:11Z",
+        )
+        w1 = append_to_feed(e)
+        w2 = append_to_feed(e)
+        assert w1 is True
+        assert w2 is False  # idempotent: duplicate skipped
+        rows = read_feed()
+        assert len(rows) == 1
+
+    def test_genesis_row_has_empty_prev_entry_hash(self, tmp_path, monkeypatch):
+        """Genesis row (row 0 / S(0)) must have prev_entry_hash == "".
+
+        INT-3: empty string is the valid Peano S(0) sentinel.
+        """
+        feed_path = tmp_path / "AGENT_FEED.md"
+        monkeypatch.setattr(
+            "tools.state_witness.generate_feed_entry.AGENT_FEED_PATH",
+            feed_path,
+        )
+        e = _make_entry(commit_sha="genesis_commit", prev_entry_hash="")
+        append_to_feed(e)
+        rows = _parse_feed_rows(feed_path.read_text(encoding="utf-8"))
+        assert len(rows) == 1
+        assert rows[0]["prev_entry_hash"] == "", (
+            "Genesis row prev_entry_hash must be empty string (S(0) sentinel)"
+        )
