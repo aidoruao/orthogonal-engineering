@@ -137,6 +137,9 @@ def run_all_invariants() -> dict:
         name="Sample AEROSPAC",
         dal=CertificationLevel.LEVEL_A,
         lines_of_code=1,
+        structural_coverage_mc_dc=Fraction(100),
+        structural_coverage_decision=Fraction(100),
+        structural_coverage_statement=Fraction(100),
     )
     redundancy_checker = RedundancyChecker(
         channels=[RedundantChannel(

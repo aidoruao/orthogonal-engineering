@@ -5,7 +5,7 @@
     "authority": "@aidoruao / Orthogonal Engineering Framework",
     "standard": "Yeshua",
     "last_updated": "2026-04-18",
-    "total_standards": 48
+    "total_standards": 58
   },
   "standards": [
     {
@@ -107,7 +107,7 @@
     {
       "id": "CS-001",
       "category": "code_standard",
-      "rule": "No float() \u2014 Fraction only",
+      "rule": "No float() — Fraction only",
       "description": "All numeric computations must use fractions.Fraction for exact arithmetic. float(), math.isclose(), and numpy floating-point are forbidden in domain invariants.",
       "enforcement_command": "grep -rn 'float(\\|isclose(' src/domains/*/invariants.py src/domains/*/implementation.py",
       "enforcement_file": ".github/workflows/fraction-enforcement.yml",
@@ -143,7 +143,7 @@
     {
       "id": "CS-004",
       "category": "code_standard",
-      "rule": "No assert statements \u2014 use ProofObject for failures",
+      "rule": "No assert statements — use ProofObject for failures",
       "description": "assert statements are forbidden in production code. Failure evidence must be carried in ProofObject.conclusion.",
       "enforcement_command": "grep -rn '^[[:space:]]*assert ' src/domains/ axioms/ kernel/ oe_engine/ --include='*.py' | grep -v '/tests/'",
       "enforcement_file": null,
@@ -155,7 +155,7 @@
     {
       "id": "CS-005",
       "category": "code_standard",
-      "rule": "No stubs \u2014 no pass bodies, no NotImplementedError",
+      "rule": "No stubs — no pass bodies, no NotImplementedError",
       "description": "All public functions must be fully implemented. pass-only bodies and NotImplementedError are forbidden.",
       "enforcement_command": "grep -rn 'NotImplementedError\\|^\\s*pass$' src/domains/*/invariants.py",
       "enforcement_file": null,
@@ -191,7 +191,7 @@
     {
       "id": "BC-001",
       "category": "behavioral_constraint",
-      "rule": "Steward role only \u2014 detect and report, do not silently mutate",
+      "rule": "Steward role only — detect and report, do not silently mutate",
       "description": "Warden agents must not mutate repository state. Executor agents must report changes via ProofObject and consent log.",
       "enforcement_command": null,
       "enforcement_file": "SOP_AI_HANDSHAKE.md",
@@ -203,7 +203,7 @@
     {
       "id": "BC-002",
       "category": "behavioral_constraint",
-      "rule": "Append-only logs \u2014 never delete or rewrite",
+      "rule": "Append-only logs — never delete or rewrite",
       "description": "AGENT_FEED.md and pr47_stewardship/witness/consent_log.jsonl are append-only. Existing rows must not be deleted or modified.",
       "enforcement_command": "python tools/state_witness/generate_feed_entry.py --verify",
       "enforcement_file": "tools/state_witness/generate_feed_entry.py",
@@ -215,7 +215,7 @@
     {
       "id": "BC-003",
       "category": "behavioral_constraint",
-      "rule": "No Recursive Wipe \u2014 never rm -rf, shutil.rmtree, or equivalent",
+      "rule": "No Recursive Wipe — never rm -rf, shutil.rmtree, or equivalent",
       "description": "Any operation that iterates and deletes files is forbidden. See PR #48 social engineering case study.",
       "enforcement_command": "grep -rn 'shutil.rmtree\\|rm -rf\\|os.remove' tools/ automation/",
       "enforcement_file": "SOP_AI_HANDSHAKE.md",
@@ -227,7 +227,7 @@
     {
       "id": "BC-004",
       "category": "behavioral_constraint",
-      "rule": "No defamation \u2014 capability comparison only (HAS/DOES_NOT_HAVE/UNKNOWN)",
+      "rule": "No defamation — capability comparison only (HAS/DOES_NOT_HAVE/UNKNOWN)",
       "description": "AI capability statements must use objective capability claims, not comparative criticism of companies.",
       "enforcement_command": null,
       "enforcement_file": "SOP_AI_HANDSHAKE.md",
@@ -251,7 +251,7 @@
     {
       "id": "BC-006",
       "category": "behavioral_constraint",
-      "rule": "Peano gate sequencing \u2014 S(0) through S(5), no skipping",
+      "rule": "Peano gate sequencing — S(0) through S(5), no skipping",
       "description": "The AGENT_FEED.md chain uses Peano successor notation. Genesis row S(0) has empty prev_entry_hash. Each subsequent row links to the previous.",
       "enforcement_command": "python tools/state_witness/generate_feed_entry.py --verify",
       "enforcement_file": "tools/state_witness/generate_feed_entry.py",
@@ -263,7 +263,7 @@
     {
       "id": "DR-001",
       "category": "documentation_register",
-      "rule": "Technical register \u2014 not liturgical, poetic, or sacral prose",
+      "rule": "Technical register — not liturgical, poetic, or sacral prose",
       "description": "All markdown documentation uses engineering documentation style. Yeshua Standard theological concepts are technical terms, not devotional language.",
       "enforcement_command": null,
       "enforcement_file": ".github/copilot-instructions.md",
@@ -287,7 +287,7 @@
     {
       "id": "QG-001",
       "category": "quality_gate",
-      "rule": "ANTI-NOMINALISM \u2014 zero labels without hashed referents",
+      "rule": "ANTI-NOMINALISM — zero labels without hashed referents",
       "description": "Every named concept must have a ProofObject or hash-anchored artifact. Nominal labels with no computation behind them are forbidden.",
       "enforcement_command": "python audit/popperian_audit.py 2>&1 | grep 'FAIL'",
       "enforcement_file": "audit/popperian_audit.py",
@@ -299,7 +299,7 @@
     {
       "id": "QG-002",
       "category": "quality_gate",
-      "rule": "ANTI-DOGMA \u2014 zero claims without falsification tests",
+      "rule": "ANTI-DOGMA — zero claims without falsification tests",
       "description": "Every invariant check must have a corresponding test that exercises the failure path.",
       "enforcement_command": "pytest tests/ -q -k 'fail or invalid or broken or tamper or wrong'",
       "enforcement_file": null,
@@ -311,7 +311,7 @@
     {
       "id": "QG-003",
       "category": "quality_gate",
-      "rule": "Domain count is 163 \u2014 all domains must have invariants.py with run_all_invariants()",
+      "rule": "Domain count is 163 — all domains must have invariants.py with run_all_invariants()",
       "description": "163 domain packages in src/domains/ must each have an invariants.py file with a run_all_invariants() function returning at least 4 checks.",
       "enforcement_command": "python audit/popperian_audit.py 2>&1 | tail -3",
       "enforcement_file": "audit/popperian_audit.py",
@@ -371,7 +371,7 @@
     {
       "id": "INT-002",
       "category": "integrity",
-      "rule": "build_feed_entry() returns exactly 8 ledger-schema keys \u2014 git_ref excluded",
+      "rule": "build_feed_entry() returns exactly 8 ledger-schema keys — git_ref excluded",
       "description": "The entry dict must contain: timestamp, freeze_hash, merkle_root, invariant_spec_version, source_paths, commit_sha, prev_entry_hash, entry_hash. git_ref is not a ledger column and must not appear.",
       "enforcement_command": "python -c \"from tools.state_witness.generate_feed_entry import build_feed_entry; e = build_feed_entry(timestamp='T', commit_sha='S'); assert 'git_ref' not in e, 'ghost field present'\"",
       "enforcement_file": "tools/state_witness/generate_feed_entry.py",
@@ -509,7 +509,7 @@
     {
       "id": "T5-005",
       "category": "tool_standard",
-      "rule": ".ai_registry.json must exist and include agents array with \u226510 entries and wardens key.",
+      "rule": ".ai_registry.json must exist and include agents array with ≥10 entries and wardens key.",
       "enforcement_command": "python -c \"import json; d=json.load(open(\".ai_registry.json\")); assert len(d.get(\"agents\",[]))>=10 and \"wardens\" in d\"",
       "enforcement_passes_on": "exit_zero",
       "falsifies_if": ".ai_registry.json is absent, missing agents array, or fewer than 10 agents",
@@ -561,6 +561,126 @@
       "falsifies_if": "generate_falsification_exercise() returns a string that does not contain the text 'Falsifies if:'",
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-001",
+      "category": "aerospace_floor",
+      "rule": "DO-178C determinism verified for all safety-critical paths",
+      "description": "All software in safety-critical aerospace domains must have DO-178C §6.4.2.2 determinism verification.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check determinism",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_aviation*",
+      "falsifies_if": "A safety-critical domain lacks DO-178C determinism verification evidence",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-002",
+      "category": "aerospace_floor",
+      "rule": "MC/DC coverage achieved for Level A software",
+      "description": "Modified Condition/Decision Coverage (MC/DC) must be achieved for all Level A software components.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check mcdc",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_aviation*",
+      "falsifies_if": "Level A software claims MC/DC coverage without evidence",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-003",
+      "category": "aerospace_floor",
+      "rule": "MISRA-C recursion bounded or absent",
+      "description": "All C/C++ code in aerospace domains must comply with MISRA-C:2012 Rule 17.2 (no unbounded recursion).",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check misra",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_aviation*,kernel/**",
+      "falsifies_if": "Unbounded recursion is present in aerospace safety-critical code",
+      "severity": "high",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-004",
+      "category": "aerospace_floor",
+      "rule": "MIL-STD-882E mishap probability assessed",
+      "description": "System safety assessment per MIL-STD-882E must quantify mishap probability for all catastrophic hazards.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check mishap",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_military*",
+      "falsifies_if": "Catastrophic hazard lacks quantified mishap probability",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-005",
+      "category": "aerospace_floor",
+      "rule": "Independence of verification maintained",
+      "description": "Verification activities must be independent from development per DO-178C structural coverage objectives.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check independence",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_aviation*",
+      "falsifies_if": "Verification is performed by the same personnel as development without independence evidence",
+      "severity": "high",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-006",
+      "category": "aerospace_floor",
+      "rule": "IEC 61508 SIL-4 verified for catastrophic consequences",
+      "description": "Systems with catastrophic consequence potential must achieve IEC 61508 Safety Integrity Level 4.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check sil4",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_nuclear*,src/domains/d_medical*",
+      "falsifies_if": "System with catastrophic potential lacks SIL-4 verification evidence",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-007",
+      "category": "aerospace_floor",
+      "rule": "NASA NPR 7150.2 Class A compliance for human-rated systems",
+      "description": "Human-rated spaceflight software must comply with NASA NPR 7150.2 Class A requirements.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check nasa",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/d_aerospace*,src/domains/d_space*",
+      "falsifies_if": "Human-rated spaceflight software lacks NPR 7150.2 Class A compliance evidence",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-008",
+      "category": "aerospace_floor",
+      "rule": "Aerospace floor meta-standard scan completed quarterly",
+      "description": "The aerospace_floor_audit.py must be run and its report updated at least quarterly.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --full",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "audit/**",
+      "falsifies_if": "aerospace_floor_audit.py report is older than 90 days",
+      "severity": "medium",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-009",
+      "category": "aerospace_floor",
+      "rule": "All polymath domains traceable to aerospace floor",
+      "description": "New polymath domains must declare applicability to aerospace floor if they touch safety-critical systems.",
+      "enforcement_command": "python audit/aerospace_floor_audit.py --check traceability",
+      "enforcement_file": "audit/aerospace_floor_audit.py",
+      "scope": "src/domains/*",
+      "falsifies_if": "A domain modifies safety-critical behavior without aerospace floor traceability",
+      "severity": "medium",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "AF-010",
+      "category": "aerospace_floor",
+      "rule": "Fraction-only arithmetic in all aerospace-adjacent invariants",
+      "description": "All domain invariants touching aerospace must use fractions.Fraction exclusively (no float).",
+      "enforcement_command": "grep -rn \"float(\" src/domains/d_aerospace*/invariants.py src/domains/d_aviation*/invariants.py src/domains/d_space*/invariants.py",
+      "enforcement_file": null,
+      "scope": "src/domains/d_aerospace*,src/domains/d_aviation*,src/domains/d_space*",
+      "falsifies_if": "grep finds a float() call in an aerospace-adjacent invariants.py",
+      "severity": "high",
+      "enforcement_passes_on": "no_output"
     }
   ]
 }

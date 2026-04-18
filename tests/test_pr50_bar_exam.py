@@ -737,7 +737,7 @@ class TestWeights:
 
 class TestThresholds:
     def test_pass_threshold_value(self):
-        assert PASS_THRESHOLD == 0.70
+        assert PASS_THRESHOLD == Fraction(7, 10)
 
     def test_is_pass_all_good(self):
         cat = {"boundary": 0.80, "threat": 0.80, "grace": 0.80}

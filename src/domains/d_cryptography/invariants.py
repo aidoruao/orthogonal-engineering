@@ -121,21 +121,24 @@ def run_all_invariants() -> dict:
     """
     cert_chain_validator = CertChainValidator(
         certificates=[Certificate(
-        subject="SAMPLE",
-        issuer="SAMPLE",
-        public_key_algorithm=KeyAlgorithm.AES,
-        key_size=1,
-        valid_from="CRYPTOGR-001",
-        valid_to="CRYPTOGR-001",
-    )],
+            subject="ROOT-CA",
+            issuer="ROOT-CA",
+            public_key_algorithm=KeyAlgorithm.AES,
+            key_size=256,
+            valid_from="2026-01-01",
+            valid_to="2036-01-01",
+            signature_valid=True,
+            is_ca=True,
+        )],
+        trusted_roots=["ROOT-CA"],
     )
     hash_analyzer = HashAnalyzer(
-        algorithm="SAMPLE",
-        output_bits=1,
+        algorithm="SHA-256",
+        output_bits=256,
     )
     key_strength_analyzer = KeyStrengthAnalyzer(
         algorithm=KeyAlgorithm.AES,
-        key_bits=1,
+        key_bits=256,
     )
 
     checks = [
