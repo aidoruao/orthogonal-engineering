@@ -5,7 +5,7 @@
     "authority": "@aidoruao / Orthogonal Engineering Framework",
     "standard": "Yeshua",
     "last_updated": "2026-04-18",
-    "total_standards": 33
+    "total_standards": 36
   },
   "standards": [
     {
@@ -525,6 +525,42 @@
       "falsifies_if": "A gap > 72 hours is present in AGENT_FEED.md with no corresponding documentation in docs/AGENT_FEED_NOTES.md",
       "severity": "low",
       "scope": "AGENT_FEED.md,docs/AGENT_FEED_NOTES.md"
+    },
+    {
+      "id": "MQ-001",
+      "category": "meta_questioner",
+      "rule": "Every query decomposition must identify at least 1 reasoning type",
+      "description": "The Master Questioner must detect at least one of {epistemic, strategic, systemic, pedagogical} in every submitted query. Queries that yield zero reasoning types are invalid and must be rejected with a ProofObject evidence record.",
+      "enforcement_command": "python tools/question_router.py --run-invariants",
+      "enforcement_file": "tools/question_router.py",
+      "scope": "tools/question_router.py,src/domains/d_meta_reasoning/**",
+      "falsifies_if": "decompose_query() returns (True, proof) for a query with zero detected reasoning types",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "MQ-002",
+      "category": "meta_questioner",
+      "rule": "Synthesis strategy must match the conflict level of sub-agent outputs",
+      "description": "The synthesis strategy must be selected from {consensus, weighted, adversarial, dialectical} based on the agreement level among sub-agent outputs. Consensus requires all outputs to agree; adversarial requires direct contradiction; dialectical requires complementary outputs; weighted requires directional agreement with differing confidence.",
+      "enforcement_command": "python tools/question_router.py --run-invariants",
+      "enforcement_file": "tools/question_router.py",
+      "scope": "tools/question_router.py,src/domains/d_meta_reasoning/**",
+      "falsifies_if": "check_synthesis_strategy_validity() returns (True, proof) for a strategy not in {consensus, weighted, adversarial, dialectical}",
+      "severity": "critical",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "MQ-003",
+      "category": "meta_questioner",
+      "rule": "Schooling output must include a falsification exercise",
+      "description": "Every synthesis emitted by the Master Questioner must be accompanied by at least one schooling output that includes a Popperian falsification exercise (generate_falsification_exercise). The exercise must state the claim, the falsifies_if condition, and a proposed experiment.",
+      "enforcement_command": "python -c \"from tools.schooling_output import generate_falsification_exercise; r = generate_falsification_exercise('test'); assert 'Falsifies if:' in r\"",
+      "enforcement_file": "tools/schooling_output.py",
+      "scope": "tools/schooling_output.py,src/domains/d_meta_reasoning/**",
+      "falsifies_if": "generate_falsification_exercise() returns a string that does not contain the text 'Falsifies if:'",
+      "severity": "high",
+      "enforcement_passes_on": "exit_zero"
     }
   ]
 }

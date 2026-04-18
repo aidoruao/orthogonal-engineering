@@ -22,6 +22,7 @@ This matrix documents the capabilities, constraints, and onboarding files for ev
 | Aider CLI | read+write | local shell | no web | model-dependent | yes | `.aider.conf.yml` | Context window depends on backend model; may split large refactors across sessions |
 | Cline | read+write | local shell | no web | ~200k tokens | yes | `cline_docs/` | Local VS Code only; tool-call latency on large directory reads |
 | Continue.dev | read+write | no shell | no web | model-dependent | yes (via edits) | `.continue/config.json` | No shell access; context window depends on configured model backend |
+| Master Questioner | read-only orchestrator | no shell | no web | 1M tokens | no code write | `MASTER_QUESTIONER.md` | Routes inquiry to specialized agents; synthesizes multi-agent outputs into coherent resolution |
 
 ## Multi-Agent Workflow Triangle
 
