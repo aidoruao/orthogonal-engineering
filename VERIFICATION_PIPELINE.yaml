@@ -46,6 +46,17 @@ steps:
     failure_behaviour: >
       Test failures block the PR.  Classification invariants are enforced here.
 
+  step_2b_oe_247_tests:
+    name: "OE-247 State Classification + Forensic + Testimony Tests"
+    command: |
+      python3 -m pytest tests/test_state_classification.py tests/test_threshold_loading.py tests/test_forensic_commit.py tests/test_verification_testimony.py tests/test_forensic_schema_validation.py tests/test_ai_credit.py -v
+    must_pass: true
+    produces:
+      - "evidence/testimony/*/attestations.json"
+      - "audit/forensic_commits/*.json"
+    failure_behaviour: >
+      Test failures block the PR.  OE-247 standard enforcement.
+
   step_3_invariant_check:
     name: "Covenant Invariant Checks"
     description: >
