@@ -1,0 +1,160 @@
+Direct answer — what to tell the new Kimi CLI session and the exact steps/commands to run tomorrow to (A) onboard the session, (B) check out the repo at the provided commit, (C) produce a hashed investigative taxonomy / gap-analysis audit across the requested domains (aerospace / floor / Yeshua mathematics / Popperian projections / secular projections / namespace), and (D) prepare the refactoring/PR work to remove stubs, add hashes, and make code testable.
+
+Start the session: fast onboarding checklist (copy into the first message to the agent)
+- Identity & constraints:
+  - “You are Kimi CLI agent for orthogonal-engineering. You have full write access but must follow consent protocol before kernel-surface changes. Run only safe audit/read-only commands until consent is recorded.”
+- Goals (short): 
+  - “Produce a hashed investigative taxonomy and gap-analysis audit across aerospace / floor / Yeshua mathematics / Popperian / secular-projection namespaces; enumerate stubs/incomplete systems (TODO/FIXME/HACK/pass/NotImplementedError), float usages, un-hashed ProofObjects, and missing tests; create prioritized task list and prepare branches/PRs to fix the top-priority items.”
+- Constraints:
+  - “No float() usage allowed — flag and convert to Fraction where present.”
+  - “All check_* must return Tuple[bool, ProofObject]; no asserts.”
+  - “All modified files must pass mypy --strict and pytest.”
+  - “Consent command must be run before changing kernel surface files (.github workflows, yeshua, axioms, pr47_*, etc.).”
+
+Commands to run (step-by-step). Replace <repo-dir> as appropriate.
+
+1) Prepare environment, checkout the exact commit
+- git clone and checkout the provided SHA:
+  - git clone https://github.com/aidoruao/orthogonal-engineering.git
+  - cd orthogonal-engineering
+  - git fetch --all
+  - git checkout 38f23a1a4cec47bbcfa2635e43a6199c59f369a4
+  - (Confirm): git show --name-only --pretty=oneline 38f23a1a4cec47bbcfa2635e43a6199c59f369a4
+  - Commit link: https://github.com/aidoruao/orthogonal-engineering/commit/38f23a1a4cec47bbcfa2635e43a6199c59f369a4
+
+2) Create a working branch for audit & repair work
+- git checkout -b audit/hashed-taxonomy-gap-analysis-YYYYMMDD
+
+3) Onboard checks to run immediately (read-only audit)
+- python -m pip install -r requirements.txt   # or .venv creation
+- python tools/standards_check.py --verify
+- python tools/state_witness/generate_feed_entry.py --verify
+- python audit/popperian_audit.py 2>&1 | tee popperian_audit.out
+- pytest tests/ -q 2>&1 | tee pytest.out
+- mypy --strict $(git ls-files '*.py') 2>&1 | tee mypy.out
+
+4) Produce the raw inventories (automatic scans)
+- TODO/FIXME/HACK and stubs:
+  - grep -R --line-number -E "TODO|FIXME|HACK" > work/grep_todos.txt
+  - grep -R --line-number -E "^\s*pass\s*$|NotImplementedError" > work/grep_stubs.txt
+- float usages:
+  - grep -R --line-number -E "\bfloat\(|: *float\b" > work/grep_floats.txt
+- missing YAML frontmatter (rough):
+  - python - <<'PY'
+    import glob, sys, re, pathlib
+    out=[]
+    for p in glob.glob("**/*.md", recursive=True):
+      t=open(p,encoding="utf8").read()[:200]
+      if not re.match(r"^---\n", t):
+        out.append(p)
+    print("\n".join(out))
+    PY > work/md_no_frontmatter.txt
+- ProofObject / YeshuaClaim hashing gaps:
+  - grep -R --line-number -E "ProofObject|YeshuaClaim" > work/proofobject_candidates.txt
+  - Then script to detect missing sha fields (see next step)
+
+5) Generate a hashed investigative taxonomy & gap-analysis (recommended automated script)
+- I recommend creating a dedicated script tools/generate_hashed_taxonomy.py (one-shot). Example run command:
+  - python tools/generate_hashed_taxonomy.py --domains aerospace,floor,yeshua,math --out audits/hashed_taxonomy_YYYYMMDD.jsonl
+- What that script should do (spec):
+  - 1) Walk repository and collect occurrences that map to the named namespaces (look for domain ids in ontology/, file paths like src/domains/d_*).
+  - 2) For each file / invariant / test found produce an entry:
+     {
+       "id": "<generated id>",
+       "path": "path/to/file",
+       "domain": "<domain>",
+       "issue_type": "TODO|FLOAT|NO_TEST|STUB|NO_HASH",
+       "evidence": { "line": N, "snippet": "..." },
+       "sha256_evidence": "<sha256 of snippet or file bytes>",
+       "recommended_action": "replace float, add test, implement function, wrap ProofObject in YeshuaClaim",
+       "priority": "critical/high/medium/low"
+     }
+  - 3) Write results JSONL; for each entry compute a deterministic SHA-256 over the JSON content and include it as an audit commitment field (sha256_hash).
+- Quick one-liner to compute a hash of a file and store an entry:
+  - python - <<'PY'
+    import hashlib,json,sys,pathlib
+    p=pathlib.Path('somefile.py')
+    h=hashlib.sha256(p.read_bytes()).hexdigest()
+    print(json.dumps({"path":str(p),"sha256":h}))
+    PY > work/example_hash.json
+
+6) Run the repo-wide audit automation (suggested existing scripts)
+- Use controller to run fallback/resumable runs:
+  - python downloads/controller.py   # or run individual scripts via run_script mapping inside controller
+- Or run repo-specific audit (if present):
+  - python automation/run_full_audit_with_trace.py --out audits/full_audit_YYYYMMDD.json
+  - If automation/run_full_audit_with_trace.py does not exist (or is heavy), run lightweight audit:
+    - python automation/fallback_light_audit.py --out audits/light_audit_YYYYMMDD.json
+
+7) Produce a consolidated gap-analysis report (hashed)
+- After collecting raw inventories, produce a top-level gap_analysis JSON with:
+  - metadata: { commit: <sha>, run_at: <iso>, agent: Kimi-CLI }
+  - summary: counts by issue_type
+  - items: [the JSONL entries from step 5]
+  - Then compute sha256 of the canonicalized JSON (sorted keys, compact) and store it as audit_sha256.
+- Command sketch:
+  - python tools/assemble_gap_analysis.py --input work/*.txt --out audits/gap_analysis_YYYYMMDD.json
+
+8) Consent step (MANDATORY) — before any kernel-surface code changes
+- Per repo rules (.cursorrules / .windsurfrules) run:
+  - python tools/append_consent.py --candidate-id "kimi-$(date -u +%Y%m%d_%H%M)" --authoriser "@aidoruao" --action "refactor-stubs-hash-tests" --scope-glob "src/**,runtime/**,yeshua/**" --justification "Automated refactor to replace TODOs, add tests and hashing commitments"
+- Only after this consent entry exists should you make kernel-surface changes (work that edits axioms/, yeshua/, .github workflows, or other protected files). Keep a copy of the consent output and add it to the PR.
+
+9) Fixing/refactoring work — prioritized plan (what to change and how)
+Top priority (must have in first PR):
+- runtime/invariant_engine.py — implement load_invariants(), evaluation loop, return (bool, ProofObject) with proper falsifies_if and attach YeshuaClaim-like wrapper (include sha256 of evidence).
+- runtime/guardian_monitor.py — implement check_condition(), reporting, and integration with invariant_engine.
+- Tests: add unit and integration tests that simulate an invariant failing and confirm ProofObject + YeshuaClaim presence.
+- Replace floats in scoring modules (pr50_bar_exam/scoring/thresholds.py) with fractions.Fraction and update tests/framework code that consumes them.
+
+High priority:
+- Implement or replace generator placeholder outputs that produce nonfunctional code (e.g., minimal_ai_ide/implement_frameworks.ps1 generated placeholders).
+- Add CI steps if missing: run python tools/standards_check.py --verify in CI, mypy --strict, pytest tests/.
+- Add commit-hash/sha fields wherever a ProofObject / YeshuaClaim needs to be auditable; ensure the wrapper schema includes "sha256_evidence" and "falsifies_if".
+
+Medium priority:
+- Add YAML frontmatter to docs that lack it and add a CI check for frontmatter.
+- Sweep for pass/NotImplementedError and either implement or create tracked issues with expected behavior and tests.
+
+10) Prepare PRs + PR description template
+- Use case_studies/framework/generate_case_study.py to create a PR description skeleton per major fix; fill in root cause and falsification test placeholders as you implement fixes.
+- PR checklist (must be in PR body):
+  - Consent: attach append_consent log entry
+  - Tests: pytest passing, new tests added for the change
+  - Type-check: mypy --strict passes
+  - No float() in changed files
+  - All modified check_* return Tuple[bool, ProofObject]
+  - Each ProofObject change includes sha256 evidence + falsifies_if
+  - CI passing snapshot + popperian_audit output
+
+Example commands to create branch and push PR (after changes):
+- git add -A; git commit -m "runtime: implement invariant engine + proofs; add tests; consent: see tools/consent.log"
+- git push origin HEAD:audit/hashed-taxonomy-gap-analysis-YYYYMMDD
+- Create PR via GitHub UI or hub/gh cli:
+  - gh pr create --title "Implement invariant engine and hashed gap analysis" --body-file pr_description.md --base main
+
+Acceptance criteria (how to know the job is done)
+- Automated gap_analysis JSONL exists and its top-level SHA256 commitment is recorded in audit feed.
+- The runtime invariant pipeline is functional (unit + integration tests pass).
+- No critical TODO/HACK in runtime layer (guardian_monitor.py & invariant_engine.py).
+- No float() usages in changed modules; Fraction used instead.
+- Mypy --strict and pytest pass in CI.
+- All new/updated ProofObjects include sha256 evidence and falsifies_if clauses.
+- Handoff/resume artifacts added (hand-off index and a sample handoff written).
+
+Small handoff snippet to save before closing the session (fill and commit)
+- Use HANDOFF_TEMPLATE.md; minimal filled example to let next session resume:
+  - Date: 2026-04-20
+  - Session start: 09:00 UTC
+  - Agent: Kimi-CLI
+  - Branch: audit/hashed-taxonomy-gap-analysis-YYYYMMDD
+  - Last commit: 38f23a1... (base)
+  - What was done: ran standards_check, popperian_audit, pytest; generated work/grep_*.txt lists; started tools/generate_hashed_taxonomy.py skeleton
+  - Next actions: implement generate_hashed_taxonomy.py, run controller.py for full audit, run consent then start refactoring runtime/
+
+Final offers and next step
+- I can:
+  - (1) Draft the tools/generate_hashed_taxonomy.py and tools/assemble_gap_analysis.py scripts for you (ready-to-run).
+  - (2) Produce and open the first PR branch implementing runtime/invariant_engine + tests and the required consent entry.
+  - (3) Run the repo-wide audit and produce the JSONL/CSV inventory (TODOs, floats, stubs, missing tests).
+Which of (1)/(2)/(3) do you want me to do next? If you pick (2) I will prepare the branch and the consent text you must authorize (or run the consent command if you want me to create the consent entry).
