@@ -1,0 +1,95 @@
+Direct answer — high-level summary
+- The repository has multiple incomplete pieces and many deliberate placeholders/stubs (TODO/FIXME/HACK). The most critical gaps are in the runtime/falsification infrastructure (runtime/guardian_monitor.py, runtime/invariant_engine.py) and many generator/template files that produce placeholder code. There are also policy/formatting gaps: many markdown files lack YAML frontmatter tags, some modules still use floats, and several tooling scripts produce "TODO" outputs that need concrete implementation and tests.
+
+What I did
+- Ran a code search for TODO/FIXME/HACK and inspected representative files (see link at the end). The results are a sample (search is limited); there may be more TODOs not shown by the snippet. If you want, I can enumerate every match and create a task list or open PRs.
+
+Concrete incomplete files / stubs (examples, with severity)
+1) Critical — runtime falsification & monitoring
+   - runtime/guardian_monitor.py
+     - Several TODOs; check_condition() currently returns None/placeholder. This is a runtime guard for invariant violations → critical to system operation.
+   - runtime/invariant_engine.py
+     - load_invariants() is a pass/placeholder and _evaluate_invariant() is a placeholder. This makes the invariant evaluation pipeline non-functional.
+   Suggested PR: implement invariant loader, evaluation loop, proper ProofObject returns, unit tests that assert Tuple[bool, ProofObject] behavior and Popperian falsifiability.
+
+2) High — numeric constraint violations (Fraction constraint)
+   - pr50_bar_exam/scoring/thresholds.py
+     - Uses float constants like PASS_THRESHOLD: float = 0.70. Must be changed to Fraction and re-tested (policy: no float()).
+   Suggested PR: replace floats with fractions.Fraction, update tests and any code that consumes these thresholds.
+
+3) High — templates that create placeholder implementations
+   - minimal_ai_ide/implement_frameworks.ps1
+     - Generates Python files with big placeholder blocks (TODO: Extract actual implementation). Many template-generated files are not real implementations.
+   - Several generator scripts (e.g., case_studies/framework/generate_case_study.py writes TODO text into created files; the script itself also has missing imports/argparse usage in the snippet).
+   Suggested PR(s): implement extraction logic or change generation to produce comprehensive skeletons + tests; add Python implementations instead of placeholders.
+
+4) Medium — tooling & case study scaffolds with TODOs
+   - case_studies/framework/generate_case_study.py
+     - The generated gap_analysis and PR descriptions contain TODO for root cause, fix, testing, falsification conditions.
+   Suggested PR: implement automated extraction of code locations & initial failing example snippets to seed the case study; add test templates for each generated falsification ID.
+
+5) Medium — docs & metadata
+   - Many markdown files have no YAML frontmatter tags (reports noted that "All markdown files on main" lacked tags in the sample).
+   - Ontology and registry files require updates when new domains/tests are added (docs/METHODOLOGY_GUIDE.md highlights registration flows with TODOs).
+   Suggested PR: add YAML frontmatter to docs, standardize tags, and add CI checks that enforce frontmatter presence.
+
+6) Low/Medium — miscellaneous TODOs & placeholder logs
+   - .windsurfrules / .cursorrules / CLAUDE.md etc. contain process rules and TODOs but are largely descriptive.
+   - Powershell-generated placeholder Python files (see implement_frameworks.ps1) and other generated placeholder content across minimal_ai_ide.
+   Suggested PR: tidy generator outputs and either implement outputs or mark them as scaffolding with clear tests and next steps.
+
+Policy/standards gaps to fix in those PRs
+- Replace every float usage with Fraction (fractions.Fraction).
+- All check_* functions must return Tuple[bool, ProofObject]; no asserts.
+- Docstrings must include both "Falsifies if:" and "falsifies_if:" lines.
+- No stubs — remove pass/NotImplementedError — provide working code and tests.
+- mypy --strict types and pytest runnable tests for each change.
+- Every ProofObject must be wrapped in a YeshuaClaim with a SHA-256 commitment.
+- Add falsifies_if condition for each claim (Popperian requirement).
+
+Suggested prioritized PR list (concrete actions you can open)
+1. PR: Implement runtime/invariant engine
+   - Files: runtime/invariant_engine.py, runtime/guardian_monitor.py
+   - Tasks: implement load_invariants(), evaluation, reporting channel (ProofObject returns), tests (unit + integration), documentation.
+2. PR: Enforce Fraction usage in scoring thresholds
+   - Files: pr50_bar_exam/scoring/thresholds.py and any dependent modules
+   - Tasks: change constants to Fraction, update tests and any serialization code.
+3. PR: Replace generator placeholders with actual implementations or stronger skeletons
+   - Files: minimal_ai_ide/implement_frameworks.ps1 outputs and case_studies generation scripts
+   - Tasks: implement extraction logic, write tests that verify generated outputs meet invariants.
+4. PR: Add YAML frontmatter & tags across docs
+   - Files: all .md files lacking frontmatter (scripted search + patch)
+   - Tasks: add frontmatter YAML with tags and register: technical; CI test to validate frontmatter presence.
+5. PR: Falsification tests coverage
+   - Files: tests/* and ontology/falsification_tests.json updates
+   - Tasks: implement active falsification tests referenced by ontology, annotate tests with # @falsification_id tags.
+6. PR: Linting/type enforcement & standards-check CI fixes
+   - Files: tools/standards_check.py, CI config
+   - Tasks: ensure CI runs mypy --strict and python tools/standards_check.py --verify step; failing cases produce actionable errors.
+7. PR: Audit & remove all remaining pass/NotImplementedError stubs
+   - Files: result of a full grep for "pass", "NotImplementedError", "TODO" in code contexts
+   - Tasks: replace with functional implementations and tests.
+
+Tests & acceptance criteria for each PR
+- Unit tests asserting correct Tuple[bool, ProofObject] return types and content.
+- Mypy --strict passes.
+- No float() usage in changed modules (use Fraction).
+- Each new ProofObject is wrapped in a YeshuaClaim with SHA-256 commitment and contains a falsifies_if clause.
+- New/changed code must include docstrings with both "Falsifies if:" and "falsifies_if:" entries.
+- CI must pass (pytest + standards_check + popperian_audit snippet).
+
+Notes, caveats, and next steps
+- The search used was a sample; there may be more TODOs and stubs across the repo. I can run a full repo-wide audit (list every TODO/FIXME/HACK, every use of float(), every file with "pass" or "NotImplementedError") and produce a prioritized CSV or open issues/PRs to begin addressing them.
+- I can also prepare one or more PR branches that implement the highest-priority items (runtime invariant engine and Fraction fixes) including tests and CI updates. Before changing kernel-surface files, the repo policy requests running the consent script (see .cursorrules/.windsurfrules); I will follow that flow if you ask me to make changes.
+
+Links / search result (view more in GitHub)
+- I used the repository code search for TODO/FIXME/HACK and inspected representative files. Search in the GitHub UI for the full result set:
+  https://github.com/aidoruao/orthogonal-engineering/search?q=TODO+OR+FIXME+OR+HACK&type=code
+
+(Results shown were a limited sample; there may be additional matches not returned by the search snippet.)
+
+Would you like me to
+- (A) produce a full audit listing every TODO/FIXME/HACK, float usage, pass/NotImplementedError and generate issues/PR checklist items, or
+- (B) start a high-priority PR implementing runtime/invariant_engine + tests and update the consent log as required?
+
+If you pick (B) I will create the branch, run the consent script, and implement the runtime engine with tests and type checks.
