@@ -19,10 +19,14 @@ _HERE = Path(__file__).resolve().parent
 def _load_yaml_entries(path: Path) -> List[Dict[str, Any]]:
     """Load ``entries`` from a YAML file and return as a list of dicts.
 
-    Falsifies if: the YAML document lacks an ``entries`` key or the value is
-    not a list.
-    falsifies_if: the YAML document lacks an ``entries`` key or the value is
-    not a list.
+    Strict: every element of ``entries`` must be a mapping; scalar / list /
+    null elements raise ValueError rather than being silently dropped, so
+    catalog corruption fails loudly.
+
+    Falsifies if: the YAML document lacks an ``entries`` key, the value is
+    not a list, or any element is not a mapping.
+    falsifies_if: the YAML document lacks an ``entries`` key, the value is
+    not a list, or any element is not a mapping.
     """
     with path.open("r", encoding="utf-8") as fp:
         doc = yaml.safe_load(fp)
@@ -31,7 +35,12 @@ def _load_yaml_entries(path: Path) -> List[Dict[str, Any]]:
     entries = doc.get("entries")
     if not isinstance(entries, list):
         raise ValueError(f"{path} has no 'entries' list")
-    return [e for e in entries if isinstance(e, dict)]
+    for idx, element in enumerate(entries):
+        if not isinstance(element, dict):
+            raise ValueError(
+                f"{path} entries[{idx}] is not a mapping: {type(element).__name__}"
+            )
+    return list(entries)
 
 
 def load_black_box_antipatterns() -> List[Dict[str, Any]]:
@@ -60,10 +69,18 @@ def load_magic_numbers() -> List[Dict[str, Any]]:
     """
     with (_HERE / "magic_number_catalog.json").open("r", encoding="utf-8") as fp:
         data = json.load(fp)
+    if not isinstance(data, dict):
+        raise ValueError("magic_number_catalog.json did not parse to a mapping")
     entries = data.get("entries")
     if not isinstance(entries, list):
         raise ValueError("magic_number_catalog.json has no 'entries' list")
-    return [e for e in entries if isinstance(e, dict)]
+    for idx, element in enumerate(entries):
+        if not isinstance(element, dict):
+            raise ValueError(
+                f"magic_number_catalog.json entries[{idx}] is not a mapping: "
+                f"{type(element).__name__}"
+            )
+    return list(entries)
 
 
 def _all_catalogs() -> List[Tuple[str, List[Dict[str, Any]]]]:
@@ -84,7 +101,8 @@ def check_all_entries_have_keys() -> Tuple[bool, ProofObject]:
     offenders: List[str] = []
     for name, entries in _all_catalogs():
         for idx, entry in enumerate(entries):
-            if not str(entry.get("key", "")).strip():
+            key_val = entry.get("key")
+            if key_val is None or not str(key_val).strip():
                 offenders.append(f"{name}[{idx}]")
     success = not offenders
     proof = ProofObject(
@@ -108,8 +126,8 @@ def check_all_entries_have_falsifies_if() -> Tuple[bool, ProofObject]:
     offenders: List[str] = []
     for name, entries in _all_catalogs():
         for entry in entries:
-            val = str(entry.get("falsifies_if", "")).strip()
-            if not val:
+            falsifier = entry.get("falsifies_if")
+            if falsifier is None or not str(falsifier).strip():
                 offenders.append(f"{name}:{entry.get('key', '<anon>')}")
     success = not offenders
     proof = ProofObject(

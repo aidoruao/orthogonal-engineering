@@ -11,7 +11,11 @@ Every entry carries:
 - a ``falsifies_if`` condition that would refute the no-way were it to hold,
 - ``oe_consequences`` describing how the no-way constrains OE modules.
 
-The module is fully deterministic: no floating point, no I/O, no globals.
+The module is deterministic: no floating-point arithmetic, no network or
+filesystem I/O. The catalog itself is an immutable module-level constant
+(``_CATALOG``); ``run_all_invariants`` writes one ``print`` per check to
+stdout so audit drivers can tail the output the same way every other
+domain's ``run_all_invariants`` does.
 """
 from __future__ import annotations
 
