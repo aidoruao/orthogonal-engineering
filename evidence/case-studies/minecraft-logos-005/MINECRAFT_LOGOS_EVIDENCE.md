@@ -1,6 +1,6 @@
 ---
 tags: [evidence, case-studies, minecraft-logos-005, minecraft-logos-evidence]
-register: documentation
+register: audit
 ---
 
 # MINECRAFT LOGOS AGENT DEPLOYMENT - EVIDENCE

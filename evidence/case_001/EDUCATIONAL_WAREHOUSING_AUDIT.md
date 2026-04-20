@@ -1,6 +1,6 @@
 ---
 tags: [evidence, case-001, educational-warehousing-audit]
-register: documentation
+register: audit
 ---
 
 # EDUCATIONAL WAREHOUSING AUDIT — CASE_001

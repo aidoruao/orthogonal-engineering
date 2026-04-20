@@ -125,7 +125,7 @@ def infer_metadata(rel: Path) -> Tuple[List[str], str]:
     top = parts[0].lower() if parts else ""
     if top in {"axioms", "kernel", "yeshua", "src", "oe_engine", "runtime", "automation"}:
         register = "technical"
-    elif top in {"audit", "investigations"}:
+    elif top in {"audit", "investigations", "evidence", "failure_log"}:
         register = "audit"
     elif top in {"tools", "toolkit"}:
         register = "tooling"

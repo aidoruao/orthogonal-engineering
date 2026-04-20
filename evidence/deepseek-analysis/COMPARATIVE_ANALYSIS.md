@@ -1,6 +1,6 @@
 ---
 tags: [evidence, deepseek-analysis, comparative-analysis]
-register: documentation
+register: audit
 ---
 
 # DEEPSEEK VS CHAT CANON - COMPARATIVE ANALYSIS

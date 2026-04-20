@@ -1,6 +1,6 @@
 ---
 tags: [evidence, deepseek-analysis, readme]
-register: documentation
+register: audit
 ---
 
 # DEEPSEEK ANALYSIS - READY FOR REPO INTEGRATION

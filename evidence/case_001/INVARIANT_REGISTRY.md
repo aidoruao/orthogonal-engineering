@@ -1,6 +1,6 @@
 ---
 tags: [evidence, case-001, invariant-registry]
-register: documentation
+register: audit
 ---
 
 # INVARIANT REGISTRY — CASE_001 SELECTIVE MUTISM WAREHOUSING

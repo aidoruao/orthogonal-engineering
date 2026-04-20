@@ -1,6 +1,6 @@
 ---
 tags: [evidence, bowers-mcneil, delta-report]
-register: documentation
+register: audit
 ---
 
 # DELTA REPORT — ChatGPT vs DeepSeek

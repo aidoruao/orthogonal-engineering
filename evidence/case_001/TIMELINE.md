@@ -1,6 +1,6 @@
 ---
 tags: [evidence, case-001, timeline]
-register: documentation
+register: audit
 ---
 
 # TIMELINE — CASE_001 SELECTIVE MUTISM WAREHOUSING

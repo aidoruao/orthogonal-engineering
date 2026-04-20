@@ -3,7 +3,6 @@ tags: [toolkit, oe, scaffold, readme]
 register: tooling
 ---
 
-<<<<<<< HEAD
 # Deterministic Auditable Python Scaffold
 
 A deterministic, auditable Python scaffold for local repository operations. This toolkit provides tools for file canonicalization, hashing, Merkle tree construction, and auditable logging.
@@ -190,7 +189,6 @@ Multiple safety mechanisms prevent accidental modifications:
 ## Configuration
 
 Optional JSON configuration file:
-=======
 # Deterministic Auditable Repository Scaffold
 
 A comprehensive toolkit for repository-wide canonicalization, hashing, Merkle tree construction, manifest generation, and GTA handling.meta clamp pipeline processing.
@@ -503,12 +501,10 @@ Files → Canonicalization → Hashing → Merkle Tree
 ## Configuration
 
 Example configuration file (`scaffold.json`):
->>>>>>> copilot/add-deterministic-auditable-scaffold
 
 ```json
 {
   "exclude_patterns": [
-<<<<<<< HEAD
     "**/.git/**",
     "**/node_modules/**",
     "**/__pycache__/**"
@@ -581,7 +577,6 @@ This scaffold is designed for local use by repository owners and their IDE AI as
 - Auditability
 - Safety-first design
 - Local-first execution model
-=======
     ".git",
     "__pycache__",
     "*.pyc",
@@ -635,4 +630,3 @@ This scaffold is part of the Orthogonal Engineering methodology. Contributions s
 ## Support
 
 For issues and questions, see the main orthogonal-engineering repository.
->>>>>>> copilot/add-deterministic-auditable-scaffold

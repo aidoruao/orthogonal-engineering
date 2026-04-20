@@ -3,7 +3,6 @@ tags: [scaffold-quickstart]
 register: documentation
 ---
 
-<<<<<<< HEAD
 # Scaffold Quick Start Guide
 
 The deterministic auditable Python scaffold has been added to the repository at `scaffold/`.
@@ -63,7 +62,6 @@ python -m scaffold.cli backup
 
 # See all options
 python -m scaffold.cli --help
-=======
 # Deterministic Auditable Scaffold - Quick Start Guide
 
 ## What is This?
@@ -137,12 +135,10 @@ python examples/scaffold/handling_processing.py
 
 ```bash
 python tests/scaffold/test_scaffold.py
->>>>>>> copilot/add-deterministic-auditable-scaffold
 ```
 
 ## Key Features
 
-<<<<<<< HEAD
 ### Dry-Run Default
 All commands run in dry-run mode by default. Use `--apply` to actually make changes:
 
@@ -241,7 +237,6 @@ For issues or questions, see:
 1. `scaffold/docs/README.md` - Full documentation
 2. `scaffold/docs/ARCHITECTURE.md` - Technical details
 3. `scaffold/examples/` - Working code examples
-=======
 - ✅ **Dry-run by default** - No changes without `--apply` flag
 - ✅ **Deterministic** - Same results across all systems
 - ✅ **Auditable** - Complete JSONL logging
@@ -318,4 +313,3 @@ See the full documentation in `toolkit/oe/scaffold/README.md`
 ## Version
 
 Current version: **1.0.0** (2026-02-16)
->>>>>>> copilot/add-deterministic-auditable-scaffold

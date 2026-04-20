@@ -52,6 +52,22 @@ def test_infer_metadata_root_file() -> None:
     assert register == "documentation"
 
 
+def test_infer_metadata_evidence_path_routes_to_audit() -> None:
+    tags, register = frontmatter_audit.infer_metadata(
+        Path("evidence/bowers_mcneil/FORENSIC_DISCREPANCY_REPORT.md")
+    )
+    assert "evidence" in tags
+    assert register == "audit"
+
+
+def test_infer_metadata_failure_log_path_routes_to_audit() -> None:
+    tags, register = frontmatter_audit.infer_metadata(
+        Path("failure_log/PHANTOM_EDIT_001.md")
+    )
+    assert "failure-log" in tags
+    assert register == "audit"
+
+
 def test_prepend_frontmatter_adds_block(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(frontmatter_audit, "REPO_ROOT", tmp_path)
     target = tmp_path / "NOTES.md"

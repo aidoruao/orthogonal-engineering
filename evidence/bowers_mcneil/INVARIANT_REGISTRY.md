@@ -1,6 +1,6 @@
 ---
 tags: [evidence, bowers-mcneil, invariant-registry]
-register: documentation
+register: audit
 ---
 
 # INVARIANT REGISTRY — Bowers vs McNeil

@@ -1,6 +1,6 @@
 ---
 tags: [evidence, null-hypothesis-test]
-register: documentation
+register: audit
 ---
 
 NULL HYPOTHESIS TEST — ORTHOGONAL ENGINEERING

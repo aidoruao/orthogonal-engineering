@@ -1,6 +1,6 @@
 ---
 tags: [evidence, bowers-mcneil, inelasticity-analysis]
-register: documentation
+register: audit
 ---
 
 # TRUTH INELASTICITY ANALYSIS — Bowers vs McNeil

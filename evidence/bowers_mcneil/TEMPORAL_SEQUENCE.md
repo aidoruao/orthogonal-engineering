@@ -1,6 +1,6 @@
 ---
 tags: [evidence, bowers-mcneil, temporal-sequence]
-register: documentation
+register: audit
 ---
 
 # TEMPORAL SEQUENCE — Bowers vs McNeil
