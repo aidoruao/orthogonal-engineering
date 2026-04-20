@@ -1,0 +1,401 @@
+Here is the 8a document. It builds the missing verification layer that catches AI scope reduction — the exact gap Kimi Web AI identified.
+
+---
+
+# 8a — Scope Verification Engine: Coding Task Campaign 4-20-26
+
+## The Problem (In One Sentence)
+
+The repo has machine verification for **code quality** (`popperian_audit.py` checks `falsifies_if`, `float()`, `ProofObject`) but **zero machine verification for scope completeness** — whether AI built everything that was asked for. [9-cite-0](#9-cite-0) 
+
+## What Exists vs What's Missing
+
+| Tool | Checks | Exists? |
+|------|--------|---------|
+| `audit/popperian_audit.py` | `falsifies_if` present, no `float()`, no `isclose()` | YES |
+| `tools/standards_check.py` | Standards registry consistency | YES |
+| `tools/state_witness/generate_feed_entry.py --verify` | Feed hash chain integrity | YES |
+| `merkle/global_merkle.py` | Global Merkle root (7,179 files) | YES (snapshot only, NOT wired to CI) |
+| `merkle/domain_merkle.py` | Per-domain Merkle roots (160+ domains) | YES (snapshot only, NOT wired to CI) |
+| **`audit/scope_audit.py`** | Did AI build ALL domains? All files per domain? | **NO — DOES NOT EXIST** |
+| **`audit/tautology_detector.py`** | Is `success = data.<bool>` the only logic? | **NO — DOES NOT EXIST** |
+| **`audit/depth_measurement.py`** | LOC, test count, computation complexity per domain | **NO — DOES NOT EXIST** (specified in RESTORATION-POLYMATHIC-001.txt line 757, never built) |
+| **`audit/anti_nominalism_audit.py`** | Every label has a grounding reference | **NO — DOES NOT EXIST** (specified in RESTORATION-POLYMATHIC-001.txt line 764, never built) |
+| **`audit/merkle_verify.py`** | Compare recomputed Merkle root against stored root | **NO — DOES NOT EXIST** |
+| **`audit/scope_reduction_detector.py`** | Given campaign spec, check which outputs exist | **NO — DOES NOT EXIST** |
+| **`tools/verify_all.py`** | Single command running ALL verification | **NO — DOES NOT EXIST** | [9-cite-1](#9-cite-1) 
+
+The noncompliance taxonomy already **defines** scope reduction as a CRITICAL violation — but there's no **detector** for it: [9-cite-2](#9-cite-2) 
+
+Same for scale blindness: [9-cite-3](#9-cite-3) 
+
+## What 8a Builds: 7 Tools + 1 Wrapper
+
+### Tool 1: `audit/scope_audit.py`
+
+**Purpose:** Check that every domain directory has the required files and functions.
+
+```
+For each src/domains/d_*/: 
+  Check: __init__.py exists
+  Check: invariants.py exists
+  Check: implementation.py exists
+  Check: invariants.py contains run_all_invariants() function (AST parse)
+  Check: invariants.py contains at least 1 check_* function (AST parse)
+  Check: implementation.py contains at least 1 @dataclass (AST parse)
+  Check: implementation.py contains no float() calls (regex)
+  Check: invariants.py contains no float() calls (regex)
+  Check: invariants.py contains no `pass` bodies (AST: function body is single Pass node)
+
+Output: JSON report
+  {
+    "total_domains": N,
+    "complete_domains": N,
+    "incomplete_domains": [...],
+    "missing_files": {"d_foo": ["implementation.py"], ...},
+    "missing_functions": {"d_bar": ["run_all_invariants"], ...},
+    "stub_bodies": {"d_baz": ["check_something"], ...}
+  }
+
+Exit code: 0 if all complete, 1 if any incomplete
+```
+
+**Standard:** `SCOPE-001` — add to `STANDARDS_REGISTRY.json`
+**Falsifies if:** returns 0 when any domain is missing required files or functions.
+
+### Tool 2: `audit/tautology_detector.py`
+
+**Purpose:** AST-scan every `check_*` function in every `invariants.py` to detect boolean echo patterns.
+
+```
+Definition of TAUTOLOGICAL:
+  A check_* function where the ONLY assignment to `success` is:
+    success = data.<field_name>
+  — i.e., the function just echoes a boolean field with no computation.
+
+Definition of COMPUTATIONAL:
+  A check_* function where the assignment to `success` involves:
+    - Arithmetic operators (+, -, *, /, //, %)
+    - Comparison operators (<, >, <=, >=, ==, !=) applied to computed values
+    - Function calls (abs(), len(), max(), min(), etc.)
+    - Conditional logic (if/else affecting success)
+    - Multiple data fields combined
+
+Algorithm:
+  For each src/domains/d_*/invariants.py:
+    Parse AST
+    For each check_* function:
+      Find all assignments to `success`
+      If every assignment is `success = data.<Name>` (ast.Attribute on ast.Name 'data'):
+        → TAUTOLOGICAL
+      Else:
+        → COMPUTATIONAL
+
+Output: JSON report
+  {
+    "total_checks": N,
+    "tautological_checks": N,
+    "computational_checks": N,
+    "tautological_ratio": "N/M" (Fraction string),
+    "domains": {
+      "d_foo": {
+        "checks": [
+          {"name": "check_bar", "type": "tautological"},
+          {"name": "check_baz", "type": "computational"}
+        ],
+        "domain_type": "tautological" | "computational" | "mixed"
+      }
+    }
+  }
+
+Exit code: 0 always (informational). Print summary to stdout.
+```
+
+**Standard:** `TAUT-001` — add to `STANDARDS_REGISTRY.json`
+**Falsifies if:** classifies a function with arithmetic as tautological, or a pure boolean echo as computational.
+
+### Tool 3: `audit/depth_measurement.py`
+
+**Purpose:** Measure per-domain depth scores. This was specified in `RESTORATION-POLYMATHIC-001.txt` line 757 but never built.
+
+```
+Per domain, compute:
+  loc_implementation = line count of implementation.py (excluding blank/comment)
+  loc_invariants = line count of invariants.py (excluding blank/comment)
+  check_count = number of check_* functions in invariants.py
+  dataclass_count = number of @dataclass classes in implementation.py
+  fraction_field_count = number of Fraction-typed fields across all dataclasses
+  computational_check_count = number of COMPUTATIONAL checks (from tautology_detector)
+  has_run_all = 1 if run_all_invariants exists, 0 otherwise
+  has_failing_test = 1 if run_all_invariants contains a FAIL case, 0 otherwise
+
+  depth_score = Fraction(
+    loc_implementation * 2 +
+    loc_invariants * 2 +
+    check_count * 30 +
+    dataclass_count * 20 +
+    fraction_field_count * 10 +
+    computational_check_count * 50 +
+    has_run_all * 100 +
+    has_failing_test * 100,
+    1000  # normalize
+  )
+
+Output: JSON
+  {
+    "domains": {
+      "d_foo": {
+        "loc_implementation": N,
+        "loc_invariants": N,
+        "check_count": N,
+        "dataclass_count": N,
+        "fraction_field_count": N,
+        "computational_check_count": N,
+        "has_run_all": true/false,
+        "has_failing_test": true/false,
+        "depth_score": "N/1000"
+      }
+    },
+    "summary": {
+      "mean_depth": "N/1000",
+      "min_depth": {"domain": "d_foo", "score": "N/1000"},
+      "max_depth": {"domain": "d_bar", "score": "N/1000"},
+      "below_threshold": [...],  // domains with depth < 200/1000
+      "polymathic_check": true/false  // all domains >= threshold
+    }
+  }
+
+Exit code: 0 if polymathic_check passes, 1 otherwise
+```
+
+**Standard:** `DEPTH-001` — add to `STANDARDS_REGISTRY.json`
+**Falsifies if:** depth_score is computed using float instead of Fraction, or polymathic_check returns True when any domain is below threshold.
+
+### Tool 4: `audit/anti_nominalism_audit.py`
+
+**Purpose:** Every term in `GLOSSARY.md` must have a grounding reference (file path, function name, or test). Every domain name must correspond to a directory. Every standard in `STANDARDS_REGISTRY.json` must have a working `enforcement_command`.
+
+```
+Checks:
+  1. For each entry in GLOSSARY.md:
+     - Extract term and definition
+     - Check: at least one file in the repo references this term (grep)
+     - Flag: terms with 0 references = NOMINALIST (label without referent)
+
+  2. For each domain in ontology/ontology.json:
+     - Check: src/domains/<domain_id>/ directory exists
+     - Flag: ontology entries without directories = NOMINALIST
+
+  3. For each standard in STANDARDS_REGISTRY.json:
+     - Check: enforcement_file exists on disk
+     - Check: enforcement_command uses python3 (not python)
+     - Flag: standards with missing files = NOMINALIST
+
+Output: JSON
+  {
+    "nominalist_terms": [...],
+    "nominalist_domains": [...],
+    "nominalist_standards": [...],
+    "total_labels": N,
+    "grounded_labels": N,
+    "nominalist_count": N,
+    "anti_nominalism_ratio": "N/M"
+  }
+
+Exit code: 0 if nominalist_count == 0, 1 otherwise
+```
+
+**Standard:** `ANOM-001` — add to `STANDARDS_REGISTRY.json`
+**Falsifies if:** returns 0 when any label lacks a grounding reference.
+
+### Tool 5: `audit/merkle_verify.py`
+
+**Purpose:** Recompute global and per-domain Merkle roots, compare against stored values. This wires the existing `merkle/global_merkle.py` and `merkle/domain_merkle.py` into the verification pipeline.
+
+```
+Steps:
+  1. Import build_global_merkle from merkle.global_merkle
+  2. Import build_domain_merkle from merkle.domain_merkle
+  3. Recompute global root
+  4. Load stored root from merkle/global_root.json
+  5. Compare. If mismatch:
+     a. Recompute per-domain roots
+     b. Load stored roots from merkle/domain_roots.json
+     c. Identify which domains changed
+     d. Report changed domains
+  6. If match: PASS
+
+Output: JSON
+  {
+    "global_root_match": true/false,
+    "computed_root": "...",
+    "stored_root": "...",
+    "file_count_computed": N,
+    "file_count_stored": N,
+    "changed_domains": [...],  // only if mismatch
+    "stale": true/false  // true if stored root doesn't match computed
+  }
+
+Exit code: 0 if match, 1 if stale (informational — stale is expected after changes)
+```
+
+**Standard:** `MERK-001` — add to `STANDARDS_REGISTRY.json`
+**Falsifies if:** reports match when roots differ.
+
+### Tool 6: `audit/scope_reduction_detector.py`
+
+**Purpose:** Given a campaign specification file (JSON listing expected outputs), check which ones actually exist. This is the tool that catches AI delivering 30% of what was asked.
+
+```
+Input: campaign spec file (JSON)
+  {
+    "campaign": "Part 3 Stages H-Z",
+    "expected_outputs": [
+      {"path": "bootstrap/auto_onboard.py", "type": "file"},
+      {"path": "src/domains/d_task_fix_bug/invariants.py", "type": "file"},
+      {"path": "src/domains/d_task_fix_bug/implementation.py", "type": "file"},
+      {"path": "src/domains/d_self_repair/invariants.py", "type": "file"},
+      {"path": "tools/verify_all.py", "type": "file"},
+      {"path": "civilizations/", "type": "directory"},
+      {"path": "games/", "type": "directory"},
+      ...
+    ]
+  }
+
+Algorithm:
+  For each expected output:
+    Check: path exists on disk
+    If file: check non-empty, check no `pass`-only bodies if .py
+    If directory: check non-empty
+
+Output: JSON
+  {
+    "campaign": "...",
+    "total_expected": N,
+    "total_delivered": N,
+    "delivery_ratio": "N/M",
+    "missing": [...],
+    "delivered": [...],
+    "scope_reduction_detected": true/false  // true if ratio < 1
+  }
+
+Exit code: 0 if all delivered, 1 if any missing
+```
+
+**Standard:** `SCOPE-002` — add to `STANDARDS_REGISTRY.json`
+**Falsifies if:** reports all delivered when files are missing.
+
+**Also create:** `campaigns/part3_hz_spec.json` — the campaign spec for Stages H through Z, listing every expected output file from the 3a document.
+
+### Tool 7: `tools/verify_all.py`
+
+**Purpose:** Single command that runs the FULL verification suite — the expanded verification quartet plus all new audit tools.
+
+```python
+#!/usr/bin/env python3
+"""tools/verify_all.py — Complete verification suite.
+
+Runs all verification and audit tools in order.
+Exit 0 only if ALL pass. Print summary table.
+
+Standard: VQ-001
+Falsifies if: returns 0 when any check failed.
+falsifies_if: returns 0 when any check failed.
+"""
+
+# 1. Feed chain:     python tools/state_witness/generate_feed_entry.py --verify
+# 2. Popperian:      python audit/popperian_audit.py
+# 3. Standards:      python tools/standards_check.py --verify
+# 4. Tests:          python -m pytest tests/ -q --maxfail=3
+# 5. Scope:          python audit/scope_audit.py
+# 6. Tautology:      python audit/tautology_detector.py  (informational, no fail)
+# 7. Depth:          python audit/depth_measurement.py
+# 8. Anti-nominalism: python audit/anti_nominalism_audit.py
+# 9. Merkle:         python audit/merkle_verify.py
+# 10. Scope reduction: python audit/scope_reduction_detector.py campaigns/*.json
+
+# Print table:
+# | Check              | Status | Details          |
+# |--------------------|--------|------------------|
+# | Feed chain         | PASS   |                  |
+# | Popperian audit    | PASS   | 254/254 domains  |
+# | Standards          | FAIL   | python vs python3|
+# | Tests              | PASS   | 52/52            |
+# | Scope audit        | FAIL   | 3 domains missing|
+# | Tautology          | INFO   | 47% tautological |
+# | Depth measurement  | FAIL   | 12 below threshold|
+# | Anti-nominalism    | PASS   | 0 nominalist     |
+# | Merkle verify      | STALE  | root changed     |
+# | Scope reduction    | FAIL   | 60% delivered    |
+
+# Exit with count of failures
+```
+
+**Standard:** `VQ-001` — add to `STANDARDS_REGISTRY.json`
+
+---
+
+## File Manifest
+
+| File | Lines (est.) | Purpose |
+|------|-------------|---------|
+| `audit/scope_audit.py` | ~150 | Domain completeness checker |
+| `audit/tautology_detector.py` | ~120 | Boolean echo pattern detector |
+| `audit/depth_measurement.py` | ~180 | Per-domain depth scorer |
+| `audit/anti_nominalism_audit.py` | ~160 | Label-without-referent detector |
+| `audit/merkle_verify.py` | ~100 | Merkle root comparison |
+| `audit/scope_reduction_detector.py` | ~100 | Campaign spec vs reality checker |
+| `tools/verify_all.py` | ~120 | Unified verification wrapper |
+| `campaigns/part3_hz_spec.json` | ~200 | Expected outputs for Stages H-Z |
+| `tests/test_scope_audit.py` | ~80 | Tests for scope_audit |
+| `tests/test_tautology_detector.py` | ~80 | Tests for tautology_detector |
+| `tests/test_depth_measurement.py` | ~80 | Tests for depth_measurement |
+| `tests/test_verify_all.py` | ~60 | Tests for verify_all |
+| **Total** | **~1,430** | **12 files** |
+
+## Non-Negotiable Constraints
+
+All 7 tools MUST follow:
+- `Fraction` only, 0 floats — all ratios, scores, thresholds as `Fraction`
+- `Tuple[bool, ProofObject]` returns where applicable (scope_audit, anti_nominalism, merkle_verify)
+- Dual `Falsifies if:` / `falsifies_if:` in all docstrings
+- No `pass` bodies, no stubs, no placeholders
+- Runnable with `python3 <script>` from repo root, stdlib + `fractions` only
+- Each tool writes JSON report to `audit/` directory
+- Each tool has a `--help` flag via `argparse`
+- Commit format: `feat(audit): add <tool_name>`
+- Record consent in `consent_log.jsonl` before starting
+- Run existing verification quartet before AND after all changes [9-cite-4](#9-cite-4) [9-cite-5](#9-cite-5) [9-cite-6](#9-cite-6) 
+
+## Execution Order
+
+```
+1. verify_all.py          (no deps — wrapper, calls others)
+2. scope_audit.py         (no deps — scans filesystem)
+3. tautology_detector.py  (no deps — AST scan)
+4. depth_measurement.py   (depends on tautology_detector for computational_check_count)
+5. anti_nominalism_audit.py (no deps — scans GLOSSARY, ontology, standards)
+6. merkle_verify.py       (depends on merkle/global_merkle.py existing)
+7. scope_reduction_detector.py + campaigns/part3_hz_spec.json (no deps)
+```
+
+Build 2 and 3 first (they're independent). Then 4 (uses 3's output). Then 5, 6, 7 in any order. Then 1 (wraps all).
+
+## What This Solves
+
+| Kimi Web AI's gap | Tool that fills it |
+|---|---|
+| "Doesn't catch AI deciding to only build 30% of what you asked" | `scope_reduction_detector.py` + campaign spec |
+| "Doesn't catch AI labeling Q-Z 'aspirational' instead of 'executable'" | `scope_reduction_detector.py` (missing files = missing files, regardless of label) |
+| "Doesn't catch AI interpreting 'maximal' as 'some'" | `scope_audit.py` (counts ALL domains) + `depth_measurement.py` (measures ALL depths) |
+| "Doesn't check AI built everything you asked for" | `scope_audit.py` + `scope_reduction_detector.py` |
+| "Doesn't check quantity/completeness" | `scope_audit.py` (quantity) + `tautology_detector.py` (quality depth) |
+| "Doesn't verify AI understood the instruction" | `depth_measurement.py` (polymathic_check: ALL domains ≥ threshold, not some) |
+| "Gemini's gap: verification doesn't verify cryptography" | `merkle_verify.py` (recomputes and compares all 7,179 file hashes) |
+| "RESTORATION-POLYMATHIC-001.txt acceptance criteria never built" | `depth_measurement.py` = line 757, `anti_nominalism_audit.py` = line 764 | [9-cite-7](#9-cite-7) 
+
+## After 8a Is Built
+
+The verification suite becomes a **10-check pipeline** instead of a 4-check quartet. Any AI agent that claims "done" must pass all 10. If `scope_reduction_detector.py` reports `delivery_ratio < 1/1`, the AI did not finish. If `tautology_detector.py` reports `tautological_ratio > 0/1`, the AI produced boolean echoes. If `depth_measurement.py` reports `polymathic_check = false`, the AI didn't reach depth threshold in all domains.
+
+This doesn't fix AI's training bias. But it makes the bias **detectable by machine** instead of requiring you to manually audit 158 session transcripts across 700+ commits.
