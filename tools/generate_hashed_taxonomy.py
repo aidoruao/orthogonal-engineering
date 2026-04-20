@@ -102,13 +102,16 @@ NAMESPACE_KEYWORDS: Dict[str, Tuple[str, ...]] = {
         "non_theological",
         "projection_secular",
     ),
-    # Projected namespace (generic): projected views of domains, mirrors
+    # Projected namespace (generic): projected views of domains, mirrors.
+    # Keep keywords narrow — bare ``projection`` / ``mirror`` as English words
+    # are intentionally excluded to avoid over-classification.
     "projection": (
         "projected_namespace",
         "projected_view",
+        "projected_domain",
         "derivative_witness",
-        "mirror",
-        "projection",
+        "namespace_projection",
+        "mirror_namespace",
     ),
 }
 
@@ -158,11 +161,17 @@ _RE_STUB_PASS = re.compile(r"^\s*pass\s*(#.*)?$")
 _RE_STUB_NOTIMPL = re.compile(r"\bNotImplementedError\b")
 _RE_FLOAT_CALL = re.compile(r"\bfloat\(")
 _RE_FLOAT_ANNOT = re.compile(r":\s*float\b")
-_RE_CHECK_DEF = re.compile(r"^\s*def\s+(check_\w+)\s*\(", re.MULTILINE)
+# Anchor to line start and use ``[ \t]*`` (not ``\s*``) so the match does not
+# consume a preceding newline; this keeps ``line_no`` pointing at the actual
+# ``def`` line rather than the blank line immediately above it.
+_RE_CHECK_DEF = re.compile(r"^[ \t]*def\s+(check_\w+)\s*\(", re.MULTILINE)
 _RE_CHECK_RETURN = re.compile(r"Tuple\[\s*bool\s*,\s*ProofObject\s*\]")
-_RE_FALS_TITLE = re.compile(r"Falsifies if:", re.IGNORECASE)
+# Title-case form is mandatory per .cursorrules / CLAUDE.md / .windsurfrules.
+# Do NOT add re.IGNORECASE — lowercase-only docstrings must fail the pair check.
+_RE_FALS_TITLE = re.compile(r"Falsifies if:")
 _RE_FALS_LOWER = re.compile(r"falsifies_if:")
 _RE_ASSERT = re.compile(r"^\s*assert\b")
+_RE_DEF_OR_CLASS = re.compile(r"^\s*(def|class)\b")
 
 
 ISSUE_SEVERITY: Dict[str, str] = {
@@ -300,8 +309,16 @@ def _scan_check_function(path: Path, text: str) -> List[Tuple[int, str, str]]:
     lines = text.splitlines()
     for m in _RE_CHECK_DEF.finditer(text):
         line_no = text[: m.start()].count("\n") + 1
-        # Look at the def line and up to the next 40 lines for the annotations.
-        window = "\n".join(lines[line_no - 1 : min(len(lines), line_no + 40)])
+        # Look at the def line and up to the next 40 lines for the annotations,
+        # but truncate the window at the next top-level ``def`` / ``class`` so
+        # a following function's docstring cannot satisfy the current function's
+        # contract (no-bleed invariant).
+        window_lines = lines[line_no - 1 : min(len(lines), line_no + 40)]
+        for i in range(1, len(window_lines)):
+            if _RE_DEF_OR_CLASS.match(window_lines[i]):
+                window_lines = window_lines[:i]
+                break
+        window = "\n".join(window_lines)
         has_return = bool(_RE_CHECK_RETURN.search(window))
         has_title = bool(_RE_FALS_TITLE.search(window))
         has_lower = bool(_RE_FALS_LOWER.search(window))
@@ -398,7 +415,12 @@ def build_entries(root: Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
 
 
 def _write_jsonl(entries: List[Dict[str, Any]], out_path: Path) -> None:
-    """Write entries as JSONL, deterministically ordered by ``entry_sha256``."""
+    """Write entries as JSONL, deterministically ordered by the 4-tuple
+    ``(path, line, issue_type, entry_sha256)``.
+
+    The ``entry_sha256`` tail of the sort key ensures a stable total order
+    when two findings share the same (path, line, issue_type) coordinates.
+    """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     ordered = sorted(entries, key=lambda e: (e["path"], e["line"], e["issue_type"], e["entry_sha256"]))
     with out_path.open("w", encoding="utf-8") as fh:

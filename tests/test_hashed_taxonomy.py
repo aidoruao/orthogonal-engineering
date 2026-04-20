@@ -204,5 +204,77 @@ def test_gap_analysis_metadata_is_outside_commitment(tmp_path: Path) -> None:
     assert "generated_at_utc" in doc["metadata"]
 
 
+def test_check_function_window_does_not_bleed_into_adjacent_def(tmp_path: Path) -> None:
+    """A second ``check_*`` function's docstring must not satisfy the first.
+
+    Falsifies if: ``_scan_check_function`` fails to flag
+    ``CHECK_MISSING_PROOFOBJECT`` / ``CHECK_MISSING_FALSIFIES_IF_PAIR`` on a
+    bare ``check_*`` whose next-40-lines window overlaps a well-formed
+    adjacent ``check_*`` (window-bleed false negative).
+    falsifies_if: bleed-through masks missing contract on first check_*.
+    """
+    src = tmp_path / "adjacent.py"
+    src.write_text(
+        "from typing import Tuple\n"
+        "from axioms.logic import ProofObject\n"
+        "\n"
+        "def check_a():\n"
+        "    return True\n"
+        "\n"
+        "def check_b() -> Tuple[bool, ProofObject]:\n"
+        "    '''Invariant.\n"
+        "\n"
+        "    Falsifies if: b fails.\n"
+        "    falsifies_if: b fails.\n"
+        "    '''\n"
+        "    return True, ProofObject()\n"
+    )
+    hits = _scan_check_function(src, src.read_text())
+    lines = {(line, kind) for line, kind, _ in hits}
+    first_def_line = 4  # ``def check_a()``
+    assert (first_def_line, "CHECK_MISSING_PROOFOBJECT") in lines
+    assert (first_def_line, "CHECK_MISSING_FALSIFIES_IF_PAIR") in lines
+
+
+def test_falsifies_if_title_case_is_strictly_enforced(tmp_path: Path) -> None:
+    """Lowercase-only ``falsifies if:`` must NOT satisfy title-case check.
+
+    Falsifies if: a docstring containing only lowercase ``falsifies if:`` and
+    ``falsifies_if:`` passes the title-case contract and no
+    ``CHECK_MISSING_FALSIFIES_IF_PAIR`` is emitted.
+    falsifies_if: scanner accepts lowercase-only docstrings.
+    """
+    src = tmp_path / "case.py"
+    src.write_text(
+        "from typing import Tuple\n"
+        "from axioms.logic import ProofObject\n"
+        "\n"
+        "def check_case() -> Tuple[bool, ProofObject]:\n"
+        "    '''Invariant.\n"
+        "\n"
+        "    falsifies if: lower only.\n"
+        "    falsifies_if: lower only.\n"
+        "    '''\n"
+        "    return True, ProofObject()\n"
+    )
+    hits = _scan_check_function(src, src.read_text())
+    kinds = {kind for _, kind, _ in hits}
+    assert "CHECK_MISSING_FALSIFIES_IF_PAIR" in kinds
+
+
+def test_projection_namespace_keywords_are_narrow() -> None:
+    """The bare English word 'projection' must not alone classify the file.
+
+    Falsifies if: the ``projection`` namespace matches text that contains
+    only the English word ``projection`` (without the specific compound
+    keywords such as ``projected_namespace``).
+    falsifies_if: bare 'projection' classifies as projection namespace.
+    """
+    ns = _namespaces_for_text("The projection operator is linear.", "docs/math.md")
+    assert "projection" not in ns
+    ns2 = _namespaces_for_text("A projected_namespace view of domain X.", "src/x.py")
+    assert "projection" in ns2
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-q"]))
