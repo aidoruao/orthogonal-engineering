@@ -42,7 +42,7 @@ def test_keys_unique_per_file() -> None:
 
 def test_run_all_invariants_green() -> None:
     results = run_all_invariants()
-    assert len(results) == 3
+    assert len(results) == 4
     for _name, ok, _proof in results:
         assert ok is True
 

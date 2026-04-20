@@ -103,7 +103,8 @@ _CATALOG: Tuple[Noway, ...] = (
         key="heisenberg_uncertainty",
         statement=(
             "Conjugate observables (e.g. position and momentum) cannot be "
-            "simultaneously measured below the Planck bound."
+            "simultaneously measured with joint uncertainty below the "
+            "Heisenberg bound hbar/2."
         ),
         proof_summary=(
             "Robertson-Schrödinger inequality: non-commuting self-adjoint "

@@ -84,6 +84,16 @@ def load_magic_numbers() -> List[Dict[str, Any]]:
 
 
 def _all_catalogs() -> List[Tuple[str, List[Dict[str, Any]]]]:
+    """Return every known enumeration catalog paired with its short name.
+
+    Private helper used by every cross-catalog invariant so the set of
+    catalogs is declared in exactly one place.
+
+    Falsifies if: any loader raises ValueError (propagated from the
+    underlying loaders' strict-mapping checks).
+    falsifies_if: any loader raises ValueError (propagated from the
+    underlying loaders' strict-mapping checks).
+    """
     return [
         ("black_box_antipatterns", load_black_box_antipatterns()),
         ("hidden_failures", load_hidden_failures()),
@@ -166,6 +176,44 @@ def check_all_keys_unique_per_file() -> Tuple[bool, ProofObject]:
     return success, proof
 
 
+def check_all_keys_unique_across_files() -> Tuple[bool, ProofObject]:
+    """Invariant: keys are pairwise unique across every catalog file.
+
+    Enforces README design rule #5 ("keys never collide across files") so
+    that a future contributor cannot shadow an existing enumeration key
+    from one catalog by re-using it in another.
+
+    Standard: OE-106 cross-registry disjointness.
+    Falsifies if: any two catalog files share at least one key.
+    falsifies_if: any two catalog files share at least one key.
+    """
+    seen: Dict[str, str] = {}
+    collisions: List[str] = []
+    for name, entries in _all_catalogs():
+        for entry in entries:
+            key_val = entry.get("key")
+            if key_val is None:
+                continue
+            key = str(key_val).strip()
+            if not key:
+                continue
+            prior = seen.get(key)
+            if prior is not None and prior != name:
+                collisions.append(f"{key}:{prior}+{name}")
+            else:
+                seen[key] = name
+    success = not collisions
+    proof = ProofObject(
+        rule="check_all_keys_unique_across_files",
+        premises=[f"collisions={collisions}"],
+        conclusion=(
+            "PASS: keys pairwise unique across catalogs"
+            if success else f"FAIL: cross-file key collisions={collisions}"
+        ),
+    )
+    return success, proof
+
+
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run every enumeration integrity invariant.
 
@@ -177,6 +225,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
         ("check_all_entries_have_keys", check_all_entries_have_keys),
         ("check_all_entries_have_falsifies_if", check_all_entries_have_falsifies_if),
         ("check_all_keys_unique_per_file", check_all_keys_unique_per_file),
+        ("check_all_keys_unique_across_files", check_all_keys_unique_across_files),
     ]
     out: List[Tuple[str, bool, ProofObject]] = []
     for name, fn in checks:
