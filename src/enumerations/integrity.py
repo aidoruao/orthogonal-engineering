@@ -187,8 +187,7 @@ def check_all_keys_unique_across_files() -> Tuple[bool, ProofObject]:
     Falsifies if: any two catalog files share at least one key.
     falsifies_if: any two catalog files share at least one key.
     """
-    seen: Dict[str, str] = {}
-    collisions: List[str] = []
+    occurrences: Dict[str, List[str]] = {}
     for name, entries in _all_catalogs():
         for entry in entries:
             key_val = entry.get("key")
@@ -197,11 +196,14 @@ def check_all_keys_unique_across_files() -> Tuple[bool, ProofObject]:
             key = str(key_val).strip()
             if not key:
                 continue
-            prior = seen.get(key)
-            if prior is not None and prior != name:
-                collisions.append(f"{key}:{prior}+{name}")
-            else:
-                seen[key] = name
+            files_for_key = occurrences.setdefault(key, [])
+            if name not in files_for_key:
+                files_for_key.append(name)
+    collisions = sorted(
+        f"{key}:{'+'.join(files)}"
+        for key, files in occurrences.items()
+        if len(files) > 1
+    )
     success = not collisions
     proof = ProofObject(
         rule="check_all_keys_unique_across_files",
