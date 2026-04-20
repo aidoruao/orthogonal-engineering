@@ -158,7 +158,7 @@ class SabbathHalt:
         """
         if state.phase == CompletionPhase.PHASE_3_DOMAINS:
             return self.completion_checker.check_phase_3_complete(state)
-        elif state.phase == CompletionPhase.PHASE_4_REST:
+        elif state.phase == CompletionPhase.PHASE_4_COMMONWEALTH:
             return self.completion_checker.check_phase_4_complete(state)
         else:
             # Check if we can enter rest for current phase
