@@ -1,0 +1,176 @@
+---
+schema: oe-enumeration/black-box-antipatterns/1
+description: >
+  Patterns that hide program state, suppress falsification signals, or
+  otherwise defeat the Glass-Box Boundary. Every entry includes an OE-247
+  resolution pointing at the supported alternative.
+entries:
+  - key: broad-except-pass
+    statement: >
+      `except Exception: pass` (or `except:` with pass) silently swallows
+      every error, including genuine invariant violations.
+    falsifies_if: >
+      a production file contains a bare or broad except block whose body is
+      `pass` or a no-op logging call without re-raise.
+    oe_resolution: >
+      Catch the narrowest exception type, record a ProofObject with the
+      relevant premises, then re-raise or return `(False, proof)`.
+    severity: critical
+
+  - key: warnings-filterwarnings-ignore
+    statement: >
+      `warnings.filterwarnings("ignore")` mutes every warning the module
+      has declared for a reason.
+    falsifies_if: >
+      a production file calls `warnings.filterwarnings("ignore")` at import
+      time.
+    oe_resolution: >
+      Route warnings through the standard logging config and fail loudly on
+      the categories that matter.
+    severity: high
+
+  - key: logging-disable-critical
+    statement: >
+      `logging.disable(logging.CRITICAL)` removes the last channel for
+      fatal events.
+    falsifies_if: >
+      a production file disables logging at CRITICAL level.
+    oe_resolution: >
+      Use scoped loggers with explicit handlers; never disable the root
+      logger in production code.
+    severity: high
+
+  - key: silent-default-on-missing
+    statement: >
+      Returning a silent default (None, 0, "") when a required input is
+      missing masks upstream bugs.
+    falsifies_if: >
+      a production code path returns a default value for a missing
+      required input without a logged warning and without raising.
+    oe_resolution: >
+      Raise a specific exception or return a `(False, ProofObject)` pair
+      naming the missing input.
+    severity: high
+
+  - key: float-arithmetic-in-invariant
+    statement: >
+      Floating-point arithmetic introduces non-deterministic rounding,
+      defeating deterministic proofs.
+    falsifies_if: >
+      a production invariant computes with `float(...)` or Python floats.
+    oe_resolution: >
+      Use `fractions.Fraction` end-to-end; only convert to float at the
+      display boundary.
+    severity: critical
+
+  - key: mutable-default-argument
+    statement: >
+      Mutable defaults (`def f(x, bag=[])`) share state across calls and
+      hide carry-over bugs.
+    falsifies_if: >
+      a public function declaration uses a mutable default argument.
+    oe_resolution: >
+      Use `None` as the default and build a fresh container inside the
+      function body.
+    severity: medium
+
+  - key: getattr-setattr-dynamic
+    statement: >
+      Lazy `getattr`/`setattr` attribute access over a field name obscures
+      the type contract and hides misspellings.
+    falsifies_if: >
+      a production code path uses `getattr(obj, name, ...)` with a
+      dynamically computed `name` rather than an explicit attribute.
+    oe_resolution: >
+      Declare the attribute explicitly on the dataclass / protocol and
+      access it by name.
+    severity: medium
+
+  - key: wildcard-import
+    statement: >
+      `from module import *` hides the dependency surface and defeats
+      static analysis.
+    falsifies_if: >
+      a production file contains a wildcard import.
+    oe_resolution: >
+      Import names explicitly; expose them through `__all__`.
+    severity: low
+
+  - key: bool-from-truthy-none
+    statement: >
+      Using `if x:` to test for None-vs-present conflates None, empty
+      container, and False.
+    falsifies_if: >
+      a production code path uses `if x:` where the distinction between
+      `None` and `False`/empty must be observable.
+    oe_resolution: >
+      Use `if x is None:` or `if not x:` explicitly, documented per call
+      site.
+    severity: low
+
+  - key: stub-notimplementederror
+    statement: >
+      `raise NotImplementedError` in production code is a placeholder,
+      not an implementation.
+    falsifies_if: >
+      a production module raises `NotImplementedError` unconditionally.
+    oe_resolution: >
+      Implement the function, delete the function, or mark the enclosing
+      module experimental and excluded from the production surface.
+    severity: critical
+
+  - key: pass-body-production
+    statement: >
+      A lone `pass` body in a production function is a stub masquerading
+      as implementation.
+    falsifies_if: >
+      a production function body is exactly `pass`.
+    oe_resolution: >
+      Remove the function or implement it.
+    severity: critical
+
+  - key: assert-in-production
+    statement: >
+      `assert` is stripped under `-O`; invariants guarded by `assert`
+      disappear in optimized builds.
+    falsifies_if: >
+      a production invariant is enforced via `assert` instead of a
+      ProofObject.
+    oe_resolution: >
+      Return `(False, ProofObject(...))` or raise a specific exception.
+    severity: high
+
+  - key: hidden-network-io
+    statement: >
+      Performing network I/O from an unrelated helper function hides the
+      external dependency from the call site.
+    falsifies_if: >
+      a helper marketed as pure triggers HTTP/DNS/socket calls without
+      declaring a gateway.
+    oe_resolution: >
+      Route all external I/O through explicit gateway modules; keep pure
+      helpers pure.
+    severity: high
+
+  - key: print-in-invariant
+    statement: >
+      Using bare `print` inside an invariant couples audit output to
+      stdout and hides the record from loggers.
+    falsifies_if: >
+      a production invariant writes to stdout via `print` with no
+      ProofObject recorded.
+    oe_resolution: >
+      Emit a ProofObject and let the audit driver own the display.
+    severity: low
+
+  - key: silent-exception-re-raise-as-runtimeerror
+    statement: >
+      Re-raising a caught specific exception as a bare RuntimeError
+      discards the original type and stack.
+    falsifies_if: >
+      a production code path re-raises a specific exception as
+      RuntimeError without chaining via `raise ... from e`.
+    oe_resolution: >
+      Use `raise NewError(...) from original` and retain the original
+      traceback.
+    severity: medium

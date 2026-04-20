@@ -1,0 +1,104 @@
+{
+  "schema": "oe-enumeration/magic-numbers/1",
+  "description": "Numeric literals that commonly appear unexplained in code, with named Fraction replacements and a falsifies_if condition for each.",
+  "entries": [
+    {
+      "key": "half",
+      "literal": "0.5",
+      "fraction": "Fraction(1, 2)",
+      "falsifies_if": "an invariant uses 0.5 as a float literal instead of Fraction(1, 2) in arithmetic.",
+      "context": "midpoint, probability tie, average"
+    },
+    {
+      "key": "third",
+      "literal": "0.3333333333",
+      "fraction": "Fraction(1, 3)",
+      "falsifies_if": "an invariant uses a decimal approximation of one-third.",
+      "context": "three-way split, trimean"
+    },
+    {
+      "key": "two-thirds",
+      "literal": "0.6666666667",
+      "fraction": "Fraction(2, 3)",
+      "falsifies_if": "an invariant uses a decimal approximation of two-thirds.",
+      "context": "quorum threshold, super-majority"
+    },
+    {
+      "key": "quarter",
+      "literal": "0.25",
+      "fraction": "Fraction(1, 4)",
+      "falsifies_if": "an invariant uses 0.25 as a float literal.",
+      "context": "quartile, spread tolerance"
+    },
+    {
+      "key": "three-quarters",
+      "literal": "0.75",
+      "fraction": "Fraction(3, 4)",
+      "falsifies_if": "an invariant uses 0.75 as a float literal.",
+      "context": "super-majority, upper quartile"
+    },
+    {
+      "key": "tenth",
+      "literal": "0.1",
+      "fraction": "Fraction(1, 10)",
+      "falsifies_if": "an invariant uses 0.1 as a float literal (IEEE-754 loses precision).",
+      "context": "default learning rate, tolerance"
+    },
+    {
+      "key": "hundredth",
+      "literal": "0.01",
+      "fraction": "Fraction(1, 100)",
+      "falsifies_if": "an invariant uses 0.01 as a float literal.",
+      "context": "percent, small tolerance"
+    },
+    {
+      "key": "basis-point",
+      "literal": "0.0001",
+      "fraction": "Fraction(1, 10000)",
+      "falsifies_if": "a financial invariant uses 0.0001 as a float literal.",
+      "context": "basis-point precision in finance"
+    },
+    {
+      "key": "fivenines",
+      "literal": "0.99999",
+      "fraction": "Fraction(99999, 100000)",
+      "falsifies_if": "a reliability invariant uses 0.99999 as a float literal.",
+      "context": "five-nines availability target"
+    },
+    {
+      "key": "ninety-five",
+      "literal": "0.95",
+      "fraction": "Fraction(19, 20)",
+      "falsifies_if": "a statistics invariant uses 0.95 as a float literal.",
+      "context": "95% confidence interval"
+    },
+    {
+      "key": "ninety-nine",
+      "literal": "0.99",
+      "fraction": "Fraction(99, 100)",
+      "falsifies_if": "a reliability invariant uses 0.99 as a float literal.",
+      "context": "99% confidence / availability"
+    },
+    {
+      "key": "golden-ratio",
+      "literal": "1.618033988",
+      "fraction": "approximant Fraction(1597, 987)",
+      "falsifies_if": "an aesthetic invariant uses the float approximation of phi.",
+      "context": "aesthetic ratio; prefer the exact algebraic definition when available"
+    },
+    {
+      "key": "e-approx",
+      "literal": "2.71828",
+      "fraction": "approximant Fraction(271828, 100000)",
+      "falsifies_if": "a numerical invariant uses 2.71828 as a float literal.",
+      "context": "Euler number approximation; prefer series evaluation"
+    },
+    {
+      "key": "pi-approx",
+      "literal": "3.14159",
+      "fraction": "approximant Fraction(355, 113)",
+      "falsifies_if": "a geometric invariant uses 3.14159 as a float literal.",
+      "context": "pi; prefer Machin-like series or arc-length integral"
+    }
+  ]
+}
