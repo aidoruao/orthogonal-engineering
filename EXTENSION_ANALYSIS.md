@@ -1,3 +1,8 @@
+---
+tags: [extension-analysis]
+register: documentation
+---
+
 # EXTENSION ANALYSIS: INCREMENTAL FILE PROCESSOR
 ## Extension Points for Sora Pipeline Integration
 

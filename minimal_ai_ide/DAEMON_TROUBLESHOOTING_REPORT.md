@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, daemon-troubleshooting-report]
+register: documentation
+---
+
 # DAEMON TROUBLESHOOTING REPORT
 # Self-Automative Master System - Windows Compatibility Analysis
 # Generated: 2026-01-31 23:49:00 UTC

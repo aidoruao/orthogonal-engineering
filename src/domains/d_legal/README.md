@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-legal, readme]
+register: technical
+---
+
 # D_LEGAL
 
 Deterministic statute citation parsing and verifiable precedent-chain checks.

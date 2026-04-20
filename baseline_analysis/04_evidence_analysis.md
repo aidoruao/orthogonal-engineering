@@ -1,3 +1,8 @@
+---
+tags: [baseline-analysis, 04-evidence-analysis]
+register: documentation
+---
+
 # EVIDENCE & DATA INVENTORY
 
 ## Evidence Directories

@@ -1,3 +1,8 @@
+---
+tags: [zed-integration-framework]
+register: documentation
+---
+
 # ZED INTEGRATION FRAMEWORK FOR ORTHOGONAL ENGINEERING
 
 ## Implementation Status: Phase 4 - Framework Design

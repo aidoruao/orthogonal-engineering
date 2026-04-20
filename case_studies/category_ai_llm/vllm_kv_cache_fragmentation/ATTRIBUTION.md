@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ai-llm, vllm-kv-cache-fragmentation, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/vllm-project/vllm

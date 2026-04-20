@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-handoff-summary]
+register: documentation
+---
+
 # FINAL HANDOFF SUMMARY - Σ_LORA SYSTEM
 ## Instance 25 to Instance 26 Transition Document
 

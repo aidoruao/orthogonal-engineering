@@ -1,3 +1,8 @@
+---
+tags: [chat-logs, handoff-2026-02-26-crusader]
+register: documentation
+---
+
 # HANDOFF: Crusader Refrigerator Import Fixes Committed & Pushed
 
 **Date:** 2026-02-26  

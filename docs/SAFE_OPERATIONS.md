@@ -1,3 +1,8 @@
+---
+tags: [docs, safe-operations]
+register: documentation
+---
+
 # Safe Operations Policy
 
 ## Overview

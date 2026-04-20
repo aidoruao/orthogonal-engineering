@@ -1,3 +1,8 @@
+---
+tags: [documentation, phase-9-trace-enrichment-spec]
+register: documentation
+---
+
 # Phase 9 Trace Enrichment Specification
 
 **Version:** 1.12  

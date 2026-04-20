@@ -1,3 +1,8 @@
+---
+tags: [deepseek-implementation-summary]
+register: documentation
+---
+
 # DeepSeek Maximal Copilot Schema - Implementation Summary
 
 ## Overview

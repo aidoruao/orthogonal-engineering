@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora-turtle-system-complete]
+register: documentation
+---
+
 # Σ_LORA CONSTRAINED TURTLE SYSTEM - COMPLETE IMPLEMENTATION
 
 ## 🎯 MISSION ACCOMPLISHED

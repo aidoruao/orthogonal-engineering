@@ -1,3 +1,8 @@
+---
+tags: [evidence, narrative-leak-001, readme]
+register: audit
+---
+
 # THE NARRATIVE LEAK CONFESSION - Complete Evidence Package
 
 **Status:** Ready for Repository  

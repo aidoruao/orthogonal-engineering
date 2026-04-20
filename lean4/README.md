@@ -1,3 +1,8 @@
+---
+tags: [lean4, readme]
+register: documentation
+---
+
 # Lean4 Formal Verification Bridge
 
 This directory contains Lean4 formalizations of the mathematical claims made in the Python axiom modules and SAL types.

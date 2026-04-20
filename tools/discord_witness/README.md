@@ -1,3 +1,8 @@
+---
+tags: [tools, discord-witness, readme]
+register: tooling
+---
+
 # Discord Derivative Witness Layer — `tools/discord_witness/`
 
 > **This bot is not the city. Verify independently.**

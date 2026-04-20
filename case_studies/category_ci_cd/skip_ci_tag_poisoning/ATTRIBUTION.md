@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ci-cd, skip-ci-tag-poisoning, attribution]
+register: documentation
+---
+
 # Attribution
 
 - Repository: aidoruao/orthogonal-engineering

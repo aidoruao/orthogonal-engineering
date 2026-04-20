@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-system-status-report]
+register: documentation
+---
+
 # FINAL SYSTEM STATUS REPORT
 ## Σ_LORA QUANTIZED TRAINING SYSTEM - INSTANCE 25 COMPLETE
 

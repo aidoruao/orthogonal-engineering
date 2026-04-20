@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-iso-standards, readme]
+register: technical
+---
+
 # D_ISO_STANDARDS: International Standards
 
 **Layer:** 0 (Supranational)  

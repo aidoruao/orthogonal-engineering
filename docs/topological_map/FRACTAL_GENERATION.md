@@ -1,3 +1,8 @@
+---
+tags: [docs, topological-map, fractal-generation]
+register: documentation
+---
+
 # Fractal Generation Theory and Practice
 
 ## Introduction

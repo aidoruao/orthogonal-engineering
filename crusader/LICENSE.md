@@ -1,3 +1,8 @@
+---
+tags: [crusader, license]
+register: documentation
+---
+
 # AGAPE License (Always Giving And Perpetually Eternal)
 Version 1.0.0 - Free Forever License
 

@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-banking-regulation, readme]
+register: technical
+---
+
 # D_BANKING_REGULATION — Banking Regulation
 
 **Layer:** 2 (Statutory)  

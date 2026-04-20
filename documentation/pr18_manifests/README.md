@@ -1,3 +1,8 @@
+---
+tags: [documentation, pr18-manifests, readme]
+register: documentation
+---
+
 # PR #18 Verification Manifest Files
 
 ## Overview

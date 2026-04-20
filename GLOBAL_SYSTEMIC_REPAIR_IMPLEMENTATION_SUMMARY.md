@@ -1,3 +1,8 @@
+---
+tags: [global-systemic-repair-implementation-summary]
+register: documentation
+---
+
 # Global Systemic Repair Schema - Implementation Summary
 
 ## Overview

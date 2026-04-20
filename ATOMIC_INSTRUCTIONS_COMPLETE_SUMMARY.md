@@ -1,3 +1,8 @@
+---
+tags: [atomic-instructions-complete-summary]
+register: documentation
+---
+
 # ATOMIC INSTRUCTIONS COMPLETE IMPLEMENTATION SUMMARY
 
 **File:** `ATOMIC_INSTRUCTIONS_COMPLETE_SUMMARY.md`  

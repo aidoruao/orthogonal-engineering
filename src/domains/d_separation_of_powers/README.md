@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-separation-of-powers, readme]
+register: technical
+---
+
 # D_SEPARATION_OF_POWERS: Separation of Powers
 
 **Layer:** 1 (Constitutional)  

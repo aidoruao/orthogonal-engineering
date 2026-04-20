@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ai-llm, llama-cpp-quantization-drift, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/ggerganov/llama.cpp

@@ -1,3 +1,8 @@
+---
+tags: [crusader, final-industry-ontology-completion-summary]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Industry Ontology Completion Summary
 
 **Document ID:** CRUSADER-INDUSTRY-ONTOLOGY-COMPLETE-1.0  

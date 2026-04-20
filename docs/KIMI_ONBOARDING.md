@@ -1,3 +1,8 @@
+---
+tags: [docs, kimi-onboarding]
+register: documentation
+---
+
 # Kimi Code CLI Onboarding Guide
 
 **Version:** 1.0  

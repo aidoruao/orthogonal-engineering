@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, stage4-deployment-plan]
+register: documentation
+---
+
 # STAGE 4 DEPLOYMENT PLAN
 ## From Training to Real-World Corporate Overreach Protection
 

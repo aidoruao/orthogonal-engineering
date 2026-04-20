@@ -1,3 +1,8 @@
+---
+tags: [documentation, parallel-verification-guide]
+register: documentation
+---
+
 # Multi-Repository, Shard-Parallel Verification System (v2.0)
 
 This system provides deterministic, parallelized verification for large-scale repositories with 100k+ files, with support for multi-repository verification, dependency tracking, and comprehensive reporting.

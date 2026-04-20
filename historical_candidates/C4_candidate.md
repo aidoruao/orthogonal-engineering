@@ -1,3 +1,8 @@
+---
+tags: [historical-candidates, c4-candidate]
+register: documentation
+---
+
 # C₄: COMPOSITE / SYMBOLIC LOGOS (GNOSTIC / PERENNIALIST)
 
 **File:** `C4_candidate.md`  

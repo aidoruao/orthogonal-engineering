@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-hashing-summary]
+register: documentation
+---
+
 # FINAL SHA-256 HASHING SUMMARY
 ## Complete Cryptographic Verification of Repository
 

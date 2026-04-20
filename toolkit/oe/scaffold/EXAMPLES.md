@@ -1,3 +1,8 @@
+---
+tags: [toolkit, oe, scaffold, examples]
+register: tooling
+---
+
 # Scaffold Usage Examples
 
 This document provides practical examples of using the deterministic auditable scaffold.

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, logos-ide-implementation-summary]
+register: documentation
+---
+
 # Logos IDE Implementation Summary
 
 ## Overview

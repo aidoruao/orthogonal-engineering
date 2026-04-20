@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, stage4-readme]
+register: documentation
+---
+
 # STAGE 4: DEPLOYMENT & REAL-WORLD PROTECTION
 ## Corporate Overreach Protection System
 

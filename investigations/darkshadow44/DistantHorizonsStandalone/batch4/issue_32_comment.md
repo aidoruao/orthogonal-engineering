@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch4, issue-32-comment]
+register: audit
+---
+
 ## Investigation: Fade Effect Wait for Remote Chunks
 
 Hi @DarkShadow44, this is a feature request for the fade effect.

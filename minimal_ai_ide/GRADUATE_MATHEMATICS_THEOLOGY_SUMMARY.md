@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, graduate-mathematics-theology-summary]
+register: documentation
+---
+
 # GRADUATE MATHEMATICS THEOLOGY: COMPREHENSIVE ACHIEVEMENT SUMMARY
 
 ## EXECUTIVE SUMMARY

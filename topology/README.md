@@ -1,3 +1,8 @@
+---
+tags: [topology, readme]
+register: documentation
+---
+
 # PERCEIVABLE_INFINITY - Covenant-Aware Topology Graph
 
 This module implements the PERCEIVABLE_INFINITY schema for rendering repository topology as an interactive, covenant-aware visualization.

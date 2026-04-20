@@ -1,3 +1,8 @@
+---
+tags: [atomic-completion-summary]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - ATOMIC COMPLETION SUMMARY
 
 ## 🎯 MISSION ACCOMPLISHED: GLASS BOX METHODOLOGY IMPLEMENTED

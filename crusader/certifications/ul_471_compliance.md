@@ -1,3 +1,8 @@
+---
+tags: [crusader, certifications, ul-471-compliance]
+register: documentation
+---
+
 # UL 471 Compliance Documentation
 ## Commercial Refrigerator Safety Compliance Mapping
 

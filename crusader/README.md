@@ -1,3 +1,8 @@
+---
+tags: [crusader, readme]
+register: documentation
+---
+
 # Crusader Combat Refrigerator
 
 <div align="center">

@@ -1,3 +1,8 @@
+---
+tags: [evidence, case-001, timeline]
+register: audit
+---
+
 # TIMELINE — CASE_001 SELECTIVE MUTISM WAREHOUSING
 
 **Case ID:** CASE_001_SELECTIVE_MUTISM_WAREHOUSING

@@ -1,3 +1,8 @@
+---
+tags: [proofs, readme]
+register: documentation
+---
+
 # Fractal Code Generation Proofs
 
 This directory contains compact manifest proofs for fractal code generation runs.

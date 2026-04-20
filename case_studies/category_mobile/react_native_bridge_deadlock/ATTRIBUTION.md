@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-mobile, react-native-bridge-deadlock, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/facebook/react-native

@@ -1,3 +1,8 @@
+---
+tags: [chat-logs, handoff-2026-04-08-devin-dh-vendoring]
+register: documentation
+---
+
 # Handoff: Devin AI Session 2026-04-08 — DarkShadow44 Vendoring
 
 **Date:** 2026-04-08  

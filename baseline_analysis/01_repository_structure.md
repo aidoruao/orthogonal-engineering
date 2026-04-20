@@ -1,3 +1,8 @@
+---
+tags: [baseline-analysis, 01-repository-structure]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - BASELINE ANALYSIS
 Generated: Tue, Jan 20, 2026  2:52:17 AM
 

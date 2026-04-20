@@ -1,3 +1,8 @@
+---
+tags: [quick-reference]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - QUICK REFERENCE
 
 ## 🎯 One-Line Pitch

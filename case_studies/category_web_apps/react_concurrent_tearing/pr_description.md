@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-web-apps, react-concurrent-tearing, pr-description]
+register: documentation
+---
+
 # react_concurrent_tearing
 
 **Issue:** https://github.com/facebook/react/issues/18404

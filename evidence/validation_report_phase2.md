@@ -1,3 +1,8 @@
+---
+tags: [evidence, validation-report-phase2]
+register: audit
+---
+
 # PHASE 2 VALIDATION REPORT - EXECUTION RESULTS
 
 **Date:** 2026-01-20  

@@ -1,3 +1,8 @@
+---
+tags: [component-interfaces]
+register: documentation
+---
+
 # COMPONENT INTERFACES SPECIFICATION
 ## Sora Pipeline System - Orthogonal Engineering Glass-Box Boundary Compliant
 

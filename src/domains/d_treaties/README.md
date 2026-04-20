@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-treaties, readme]
+register: technical
+---
+
 # D_TREATIES: Treaty Obligations
 
 **Layer:** 0 (Supranational)  

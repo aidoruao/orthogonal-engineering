@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, daemon-port-discovery]
+register: documentation
+---
+
 # DAEMON PORT DISCOVERY: GROUND TRUTH DOCUMENTATION
 
 ## Discovery Summary

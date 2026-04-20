@@ -1,3 +1,8 @@
+---
+tags: [minimal-kernel, recovery-log]
+register: documentation
+---
+
 # RECOVERY LOG - Minimal Surviving Kernel Implementation
 ## Orthogonal Engineering Recovery from Sora Day 5 Failure
 

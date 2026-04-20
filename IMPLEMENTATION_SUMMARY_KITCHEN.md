@@ -1,3 +1,8 @@
+---
+tags: [implementation-summary-kitchen]
+register: documentation
+---
+
 # Self-Cleaning Kitchen Universe Implementation Summary
 
 **Implementation Date:** 2026-03-06  

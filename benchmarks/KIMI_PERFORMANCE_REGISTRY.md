@@ -1,3 +1,8 @@
+---
+tags: [benchmarks, kimi-performance-registry]
+register: documentation
+---
+
 # Kimi K2.5 Performance Registry
 
 Pipeline: IA-CYPHER-0004 | PR: #83

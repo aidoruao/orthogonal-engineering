@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-financial, readme]
+register: technical
+---
+
 # D_FINANCIAL — Financial
 
 ## Domain Purpose

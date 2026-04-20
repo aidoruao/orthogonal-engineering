@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-un-charter, readme]
+register: technical
+---
+
 # D_UN_CHARTER: UN Charter & International Law
 
 **Layer:** 0 (Supranational)  

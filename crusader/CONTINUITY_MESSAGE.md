@@ -1,3 +1,8 @@
+---
+tags: [crusader, continuity-message]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Continuity Message for Next AI Instance
 
 ## STATUS: IMPLEMENTATION IN PROGRESS (9,900 LOC)

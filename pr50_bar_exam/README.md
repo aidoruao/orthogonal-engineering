@@ -1,3 +1,8 @@
+---
+tags: [pr50-bar-exam, readme]
+register: documentation
+---
+
 # PR50 — Bar Exam: Ordination for Architectural Stewards
 
 ## Goals

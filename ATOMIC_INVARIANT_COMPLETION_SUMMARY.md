@@ -1,3 +1,8 @@
+---
+tags: [atomic-invariant-completion-summary]
+register: documentation
+---
+
 # ATOMIC INVARIANT INSTRUCTION COMPLETION SUMMARY
 
 **Execution Date:** 2026-01-20  

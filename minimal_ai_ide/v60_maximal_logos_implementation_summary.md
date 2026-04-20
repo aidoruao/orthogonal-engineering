@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, v60-maximal-logos-implementation-summary]
+register: documentation
+---
+
 # V60 MAXIMAL LOGOS OPERATOR: IMPLEMENTATION SUMMARY
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora, ai-test-generation-instructions]
+register: documentation
+---
+
 # AI Test Generation Instructions for LoRA Training System
 
 ## Overview

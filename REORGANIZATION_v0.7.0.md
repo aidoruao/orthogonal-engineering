@@ -1,3 +1,8 @@
+---
+tags: [reorganization-v0-7-0]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING REPO - CORRECTED STRUCTURE v0.7.0
 
 **Date:** 2026-01-20  

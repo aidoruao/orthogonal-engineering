@@ -1,3 +1,8 @@
+---
+tags: [analysis, chat-instances, chatgpt-noncompliance, readme]
+register: documentation
+---
+
 # ChatGPT Non-Compliance Analysis Instance
 
 ## Directory Structure

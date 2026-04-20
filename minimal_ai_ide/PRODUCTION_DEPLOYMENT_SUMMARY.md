@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, production-deployment-summary]
+register: documentation
+---
+
 # PRODUCTION DEPLOYMENT SUMMARY
 ## Self-Automative Master System - Production Ready
 

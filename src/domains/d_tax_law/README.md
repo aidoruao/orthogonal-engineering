@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-tax-law, readme]
+register: technical
+---
+
 # D_TAX_LAW: Tax Law (IRC)
 
 **Layer:** 2 (Statutory)  

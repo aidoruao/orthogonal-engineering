@@ -1,3 +1,8 @@
+---
+tags: [docs, auto, drift-report]
+register: documentation
+---
+
 # Drift Detection Report
 
 **Issues Found:** 3

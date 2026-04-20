@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-citizenship, readme]
+register: technical
+---
+
 # D_CITIZENSHIP: Citizenship & Naturalization
 
 **Layer:** 1 (Constitutional)  

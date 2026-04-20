@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, wiki]
+register: audit
+---
+
 # DistantHorizonsStandalone Ontological Wiki
 
 **Session:** Kimi Code Session #2, 1a (2026-04-07)  

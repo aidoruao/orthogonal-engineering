@@ -1,3 +1,8 @@
+---
+tags: [crusader, hardware, refrigerant-spec]
+register: documentation
+---
+
 # Refrigerant Specification and EPA Compliance
 ## Crusader Combat Refrigerator Refrigeration System
 

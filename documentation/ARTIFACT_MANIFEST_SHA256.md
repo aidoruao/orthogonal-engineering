@@ -1,3 +1,8 @@
+---
+tags: [documentation, artifact-manifest-sha256]
+register: documentation
+---
+
 # ARTIFACT MANIFEST SHA256 - COMPLETE GLASS-BOX TRANSPARENCY
 
 **File:** `ARTIFACT_MANIFEST_SHA256.md`  

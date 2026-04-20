@@ -1,3 +1,8 @@
+---
+tags: [onboarding, readme]
+register: documentation
+---
+
 # 🧭 ONBOARDING SYSTEM - Hierarchical AI Navigation
 
 **Version:** 1.0  

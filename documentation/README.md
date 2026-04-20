@@ -1,3 +1,8 @@
+---
+tags: [documentation, readme]
+register: documentation
+---
+
 # Orthogonal Engineering: Complete Phase 1-8 Automation Framework
 
 **Complete automation of grounding model verification with glass-box transparency, forced accounting, and stopping point for inspection**

@@ -1,3 +1,8 @@
+---
+tags: [docs, session-truncation-report]
+register: documentation
+---
+
 # Session Log Truncation Report
 
 ## Affected File

@@ -1,3 +1,8 @@
+---
+tags: [day2-completion-summary]
+register: documentation
+---
+
 # DAY 2 COMPLETION SUMMARY: EMBEDDING SYSTEM & VECTOR STORE
 
 **Date:** 2026-01-24  

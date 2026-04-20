@@ -1,3 +1,8 @@
+---
+tags: [logging-fixes]
+register: documentation
+---
+
 # LOGGING FIXES - Unicode Encoding Solution
 
 ## Version 0.4.1 - Pipeline Logging Overhaul

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, closed-loop-observation-protocol]
+register: documentation
+---
+
 # CLOSED-LOOP OBSERVATION PROTOCOL
 # For Σ_LORA Constraint-Enforced Epistemic Instrument
 

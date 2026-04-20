@@ -1,3 +1,8 @@
+---
+tags: [docs, yeshua-standard]
+register: documentation
+---
+
 # The Yeshua Standard: Architectural Principles for 1B LOC
 
 ## Introduction

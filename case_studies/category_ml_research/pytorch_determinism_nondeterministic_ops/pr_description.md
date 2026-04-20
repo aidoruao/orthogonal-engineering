@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ml-research, pytorch-determinism-nondeterministic-ops, pr-description]
+register: documentation
+---
+
 # pytorch_determinism_nondeterministic_ops
 
 **Issue:** https://github.com/pytorch/pytorch/issues/7068

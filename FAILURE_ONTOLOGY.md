@@ -1,3 +1,8 @@
+---
+tags: [failure-ontology]
+register: documentation
+---
+
 # FAILURE ONTOLOGY - Why Failures Are The Core of Orthogonal Engineering
 
 **Version:** 1.0.0  

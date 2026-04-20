@@ -1,3 +1,8 @@
+---
+tags: [docs, future-work]
+register: documentation
+---
+
 # Future Work: Autonomous Evolution & Content-Addressed Storage
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+tags: [canonicalization-scaffold, implementation-summary]
+register: documentation
+---
+
 # Canonicalization Scaffold - Implementation Summary
 
 ## Project Overview

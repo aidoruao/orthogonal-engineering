@@ -1,3 +1,8 @@
+---
+tags: [resilience, reconstruction-spec]
+register: documentation
+---
+
 # Reconstruction Specification
 # PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
 # Standard: Yeshua

@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-web-apps, nextjs-hydration-mismatch, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/vercel/next.js

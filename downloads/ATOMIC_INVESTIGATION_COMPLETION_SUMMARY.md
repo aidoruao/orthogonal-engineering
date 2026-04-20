@@ -1,3 +1,8 @@
+---
+tags: [downloads, atomic-investigation-completion-summary]
+register: documentation
+---
+
 # ATOMIC INVESTIGATION COMPLETION SUMMARY
 
 **Investigation ID:** ATOMIC-REPO-MAP-20260125  

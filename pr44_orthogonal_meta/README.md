@@ -1,3 +1,8 @@
+---
+tags: [pr44-orthogonal-meta, readme]
+register: documentation
+---
+
 # PR #44 — Orthogonal Meta Parallel (OMP)
 
 **Standard:** Yeshua  

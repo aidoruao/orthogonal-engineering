@@ -1,4 +1,9 @@
-﻿# Implementation Plan: Three Theoretical Frameworks
+---
+tags: [minimal-ai-ide, framework-analysis, implementation, implementation-plan]
+register: documentation
+---
+
+# Implementation Plan: Three Theoretical Frameworks
 # =================================================
 
 Analysis Date: 2026-01-27T23:51:35.729

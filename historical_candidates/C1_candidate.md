@@ -1,3 +1,8 @@
+---
+tags: [historical-candidates, c1-candidate]
+register: documentation
+---
+
 # C₁: NO HISTORICAL INSTANTIATION (DEIST / SILENT LOGOS)
 
 **File:** `C1_candidate.md`  

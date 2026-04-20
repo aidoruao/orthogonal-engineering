@@ -1,3 +1,8 @@
+---
+tags: [forgiveness-implementation-summary]
+register: documentation
+---
+
 # Forgiveness Atomic Implementation Summary
 
 **Date:** 2026-01-23  

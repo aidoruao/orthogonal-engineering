@@ -1,3 +1,8 @@
+---
+tags: [tactical-ai-partnership-implementation-summary]
+register: documentation
+---
+
 # Human-AI Tactical Partnership Architecture - Implementation Summary
 
 ## Overview

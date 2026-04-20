@@ -1,3 +1,8 @@
+---
+tags: [current-capabilities]
+register: documentation
+---
+
 # CURRENT CAPABILITIES ANALYSIS
 ## Orthogonal Engineering Repository Processing Infrastructure
 

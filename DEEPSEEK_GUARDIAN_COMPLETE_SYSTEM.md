@@ -1,3 +1,8 @@
+---
+tags: [deepseek-guardian-complete-system]
+register: documentation
+---
+
 # DeepSeek + Guardian Frame - Complete System Summary
 
 ## Overview

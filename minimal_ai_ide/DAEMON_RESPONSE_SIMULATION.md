@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, daemon-response-simulation]
+register: documentation
+---
+
 # DAEMON RESPONSE SIMULATION
 ## Self-Automative Master System - Daemon Activation
 

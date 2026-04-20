@@ -1,3 +1,8 @@
+---
+tags: [sovereignty, public-verification-guide]
+register: documentation
+---
+
 # Public Verification Guide
 # PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
 # Standard: Yeshua

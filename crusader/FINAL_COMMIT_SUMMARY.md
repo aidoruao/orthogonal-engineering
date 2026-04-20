@@ -1,3 +1,8 @@
+---
+tags: [crusader, final-commit-summary]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Final Commit Summary
 ## Comprehensive Architectural Implementation with Import Structure Fixed
 

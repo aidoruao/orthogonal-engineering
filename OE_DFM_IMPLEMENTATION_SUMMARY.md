@@ -1,3 +1,8 @@
+---
+tags: [oe-dfm-implementation-summary]
+register: documentation
+---
+
 # OE-DFM Implementation Summary
 
 ## Status: ✅ COMPLETE

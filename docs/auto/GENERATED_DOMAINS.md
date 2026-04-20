@@ -1,3 +1,8 @@
+---
+tags: [docs, auto, generated-domains]
+register: documentation
+---
+
 # Auto-Generated Domain Documentation
 
 **Generated:** 2026-04-09T06:50:34.274303+00:00

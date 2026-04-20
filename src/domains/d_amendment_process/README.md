@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-amendment-process, readme]
+register: technical
+---
+
 # D_AMENDMENT_PROCESS: Constitutional Amendment Process
 
 **Layer:** 1 (Constitutional)  

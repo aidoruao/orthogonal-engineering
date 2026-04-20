@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-engines, bevy-ecs-archetype-fragmentation, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/bevyengine/bevy

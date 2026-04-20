@@ -1,3 +1,8 @@
+---
+tags: [pr23-implementation-summary]
+register: documentation
+---
+
 # PR #23: Recursive Fractal Expansion to 1 Quintillion LOC
 
 ## Summary

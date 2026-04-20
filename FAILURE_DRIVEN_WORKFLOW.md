@@ -1,3 +1,8 @@
+---
+tags: [failure-driven-workflow]
+register: documentation
+---
+
 # FAILURE-DRIVEN DEVELOPMENT WORKFLOW
 # Orthogonal Engineering - Glass Box Methodology
 # Version: 1.0.0

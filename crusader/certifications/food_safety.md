@@ -1,3 +1,8 @@
+---
+tags: [crusader, certifications, food-safety]
+register: documentation
+---
+
 # Food Safety Compliance Documentation
 ## FDA & NSF Standards Compliance for Crusader Combat Refrigerator
 

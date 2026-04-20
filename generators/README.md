@@ -1,3 +1,8 @@
+---
+tags: [generators, readme]
+register: documentation
+---
+
 # 1B LOC Generators
 
 This directory contains the deterministic generators for the **1 Billion Lines of Code (1B LOC)** architecture following the **Yeshua Standard**.

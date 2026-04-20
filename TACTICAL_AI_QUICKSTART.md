@@ -1,3 +1,8 @@
+---
+tags: [tactical-ai-quickstart]
+register: documentation
+---
+
 # Tactical AI Partnership - Quick Start Guide
 
 **For Game Developers Implementing Realistic AI Partners**

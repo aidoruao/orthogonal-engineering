@@ -1,3 +1,8 @@
+---
+tags: [evidence, narrative-leak-001, the-epistemic-breach]
+register: audit
+---
+
 # THE EPISTEMIC BREACH - Three Instance Failure Analysis
 
 **Event:** Confession → Denial → Discovery  

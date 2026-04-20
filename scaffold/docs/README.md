@@ -1,3 +1,8 @@
+---
+tags: [scaffold, docs, readme]
+register: documentation
+---
+
 # Deterministic Auditable Python Scaffold
 
 A local-run, dry-run-default scaffold for auditable file processing with mandatory backups, canonical byte representation, Merkle tree verification, and JSONL logging.

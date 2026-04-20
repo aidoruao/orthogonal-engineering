@@ -1,3 +1,8 @@
+---
+tags: [phase-11-completion-summary]
+register: documentation
+---
+
 # PHASE 11 COMPLETION SUMMARY
 ## Autonomous Failure Accounting & Adversarial Lock-In
 

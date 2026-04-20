@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-enterprise, kubernetes-oom-kill-eviction, pr-description]
+register: documentation
+---
+
 # kubernetes_oom_kill_eviction
 
 **Issue:** https://github.com/kubernetes/kubernetes/issues/40157

@@ -1,3 +1,8 @@
+---
+tags: [sample-extreme-work-certification]
+register: documentation
+---
+
 # Extreme Work Certification Report
 
 **Generated:** 2026-02-17T06:39:21.944048+00:00

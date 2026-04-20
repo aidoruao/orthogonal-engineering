@@ -1,3 +1,8 @@
+---
+tags: [oe-dfm-quick-start]
+register: documentation
+---
+
 # OE-DFM Quick Reference Guide
 
 ## Installation

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, stage2-cuda-readiness-summary]
+register: documentation
+---
+
 # STAGE 2 CUDA TRAINING READINESS SUMMARY
 
 ## Status: READY FOR PRODUCTION TRAINING

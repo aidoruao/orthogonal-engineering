@@ -1,3 +1,8 @@
+---
+tags: [deepseek-quick-reference]
+register: documentation
+---
+
 # DeepSeek Copilot Schema - Quick Reference
 
 ## What is it?

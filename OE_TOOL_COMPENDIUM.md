@@ -1,3 +1,8 @@
+---
+tags: [oe-tool-compendium]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - TOOL COMPENDIUM
 **Glass Box Methodology Documentation**
 **Version:** 1.0.0

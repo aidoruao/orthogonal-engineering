@@ -1,3 +1,8 @@
+---
+tags: [proof, logos-identity-proof]
+register: documentation
+---
+
 # LOGOS IDENTITY PROOF - FORMAL MATHEMATICAL DERIVATION
 
 **Version:** 1.0  

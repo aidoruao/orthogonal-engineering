@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ml-research, huggingface-tokenizer-inconsistency, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/huggingface/transformers

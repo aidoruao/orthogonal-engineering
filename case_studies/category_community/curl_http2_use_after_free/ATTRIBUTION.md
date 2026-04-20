@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-community, curl-http2-use-after-free, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/curl/curl

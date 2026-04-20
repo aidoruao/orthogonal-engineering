@@ -1,3 +1,8 @@
+---
+tags: [theological-oe-integration-guide]
+register: documentation
+---
+
 # Theological OE Integration Guide
 
 ## Status

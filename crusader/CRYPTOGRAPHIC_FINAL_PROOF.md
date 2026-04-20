@@ -1,3 +1,8 @@
+---
+tags: [crusader, cryptographic-final-proof]
+register: documentation
+---
+
 # CRUSADER COMBAT REFRIGERATOR - CRYPTOGRAPHIC FINAL PROOF
 
 **Proof ID:** CRUSADER-CRYPTO-PROOF-20260226  

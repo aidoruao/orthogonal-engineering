@@ -1,3 +1,8 @@
+---
+tags: [evidence, phase-1-evidence]
+register: audit
+---
+
 # EVIDENCE LOG - MSK Phase 1 Completion
 
 **Date:** 2026-01-20  

@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, attribution]
+register: audit
+---
+
 # Attribution
 
 This directory contains a read-only copy of source code from:

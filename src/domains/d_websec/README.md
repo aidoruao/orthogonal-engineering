@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-websec, readme]
+register: technical
+---
+
 # D_WEBSEC
 
 Web security runtime checks for sanitization boundaries, deterministic CSP, and session-bound CSRF validation.

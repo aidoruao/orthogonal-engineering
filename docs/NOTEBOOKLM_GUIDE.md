@@ -1,3 +1,8 @@
+---
+tags: [docs, notebooklm-guide]
+register: documentation
+---
+
 # NotebookLM Integration Guide
 
 ## Purpose

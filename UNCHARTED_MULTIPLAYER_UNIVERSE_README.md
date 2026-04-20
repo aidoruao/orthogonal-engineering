@@ -1,3 +1,8 @@
+---
+tags: [uncharted-multiplayer-universe-readme]
+register: documentation
+---
+
 # Uncharted Multiplayer Universe
 
 **Status:** Production-ready ✅  

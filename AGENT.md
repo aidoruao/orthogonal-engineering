@@ -1,3 +1,8 @@
+---
+tags: [agent]
+register: documentation
+---
+
 # AGENT.md - Orthogonal Engineering Glass-Box Boundary Agent
 
 **Version:** 1.11  

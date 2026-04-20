@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-trade-agreements, readme]
+register: technical
+---
+
 # D_TRADE_AGREEMENTS: Trade & Commerce Agreements
 
 **Layer:** 0 (Supranational)  

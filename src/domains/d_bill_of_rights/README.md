@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-bill-of-rights, readme]
+register: technical
+---
+
 # D_BILL_OF_RIGHTS: Bill of Rights & Fundamental Rights
 
 **Layer:** 1 (Constitutional)  

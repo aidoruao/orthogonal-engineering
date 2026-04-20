@@ -1,3 +1,8 @@
+---
+tags: [extreme-work-certification]
+register: documentation
+---
+
 # Extreme Work Certification System
 
 ## Overview

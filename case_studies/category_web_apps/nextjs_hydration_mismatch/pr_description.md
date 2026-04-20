@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-web-apps, nextjs-hydration-mismatch, pr-description]
+register: documentation
+---
+
 # nextjs_hydration_mismatch
 
 **Issue:** https://github.com/vercel/next.js/issues/35773

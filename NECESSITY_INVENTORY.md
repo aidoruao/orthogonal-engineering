@@ -1,3 +1,8 @@
+---
+tags: [necessity-inventory]
+register: documentation
+---
+
 # NECESSITY INVENTORY
 
 **File:** `NECESSITY_INVENTORY.md`  

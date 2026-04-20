@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, ortho-kernel-actualization-summary]
+register: documentation
+---
+
 # ORTHO-KERNEL ACTUALIZATION: THEANDRIC SYNTHESIS COMPLETE
 
 ## Executive Summary

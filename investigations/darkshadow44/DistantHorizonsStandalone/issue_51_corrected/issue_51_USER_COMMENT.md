@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, issue-51-corrected, issue-51-user-comment]
+register: audit
+---
+
 ## Fix for Server TPS Lag - Immediate Workaround (Verified with Your Logs)
 
 Hi @MrFuzzihead,

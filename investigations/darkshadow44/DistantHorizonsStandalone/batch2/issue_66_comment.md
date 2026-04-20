@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-66-comment]
+register: audit
+---
+
 ## Investigation: Solas Shader Compatibility
 
 Hi @DarkShadow44, this issue is related to #65 (Photon shaders).

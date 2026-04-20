@@ -1,3 +1,8 @@
+---
+tags: [file-purpose-map]
+register: documentation
+---
+
 # COMPLETE FILE PURPOSE MAP
 **Repository:** orthogonal-engineering (Main 14)  
 **Date:** 2026-01-19  

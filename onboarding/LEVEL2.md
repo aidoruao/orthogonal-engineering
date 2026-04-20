@@ -1,3 +1,8 @@
+---
+tags: [onboarding, level2]
+register: documentation
+---
+
 # 🧭 LEVEL 2: 5-MINUTE PROJECT ORIENTATION
 
 ## ⏱️ **READ TIME:** 5 minutes maximum

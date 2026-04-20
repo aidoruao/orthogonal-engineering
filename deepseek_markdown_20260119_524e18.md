@@ -1,3 +1,8 @@
+---
+tags: [deepseek-markdown-20260119-524e18]
+register: documentation
+---
+
 # 🧭 Ontological Principles of Orthogonal Engineering
 
 ## 🎯 Core Philosophical Foundation

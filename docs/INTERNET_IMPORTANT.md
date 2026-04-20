@@ -1,3 +1,8 @@
+---
+tags: [docs, internet-important]
+register: documentation
+---
+
 # INTERNET IMPORTANT: Security and Privacy Guidance for AlphaOmegaFinalizer
 
 ## ⚠️ CRITICAL SECURITY AND PRIVACY NOTICE

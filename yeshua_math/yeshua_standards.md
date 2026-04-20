@@ -1,3 +1,8 @@
+---
+tags: [yeshua-math, yeshua-standards]
+register: documentation
+---
+
 # Yeshua Standards Canon
 # PR #37 — Yeshua Mathematics Layer (YML)
 # Standard: Yeshua

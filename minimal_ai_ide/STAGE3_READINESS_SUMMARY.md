@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, stage3-readiness-summary]
+register: documentation
+---
+
 # STAGE 3 READINESS SUMMARY
 ## Production-Scale Training with Validated Semantic Invariants
 

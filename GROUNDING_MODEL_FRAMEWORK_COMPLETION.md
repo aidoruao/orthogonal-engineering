@@ -1,3 +1,8 @@
+---
+tags: [grounding-model-framework-completion]
+register: documentation
+---
+
 # GROUNDING MODEL FRAMEWORK COMPLETION
 
 **File:** `GROUNDING_MODEL_FRAMEWORK_COMPLETION.md`  

@@ -1,3 +1,8 @@
+---
+tags: [phase-8-atomic-workflow-implementation-summary]
+register: documentation
+---
+
 # PHASE 8 ATOMIC WORKFLOW IMPLEMENTATION SUMMARY
 
 **File:** `PHASE_8_ATOMIC_WORKFLOW_IMPLEMENTATION_SUMMARY.md`  

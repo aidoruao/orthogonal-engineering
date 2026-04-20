@@ -1,3 +1,8 @@
+---
+tags: [logical-implication-trace]
+register: documentation
+---
+
 # LOGICAL IMPLICATION TRACE
 
 **File:** `LOGICAL_IMPLICATION_TRACE.md`  

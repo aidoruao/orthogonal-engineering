@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, statusbar-fix-summary]
+register: documentation
+---
+
 # StatusBar Balance Fix Summary
 
 ## Issue Identified

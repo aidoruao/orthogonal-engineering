@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-emergency, readme]
+register: technical
+---
+
 # D_EMERGENCY — Emergency Response
 
 ## Domain Purpose

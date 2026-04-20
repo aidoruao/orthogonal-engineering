@@ -1,3 +1,8 @@
+---
+tags: [implementation-summary-verification-system]
+register: documentation
+---
+
 # Implementation Summary: Multi-Repository Shard-Parallel Verification System (v2.0)
 
 ## Overview

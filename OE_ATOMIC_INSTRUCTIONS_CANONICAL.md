@@ -1,3 +1,8 @@
+---
+tags: [oe-atomic-instructions-canonical]
+register: documentation
+---
+
 # Orthogonal Engineering — Canonical Atomic Instructions
 
 ## Status

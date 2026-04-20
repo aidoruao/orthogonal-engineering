@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ml-research, pytorch-determinism-nondeterministic-ops, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/pytorch/pytorch

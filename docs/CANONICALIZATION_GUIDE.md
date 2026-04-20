@@ -1,3 +1,8 @@
+---
+tags: [docs, canonicalization-guide]
+register: documentation
+---
+
 # Canonicalization and Merkle Tree Guide
 
 **Version 1.0.0** | Orthogonal Engineering System | 2026-02-16

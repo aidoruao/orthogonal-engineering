@@ -1,3 +1,8 @@
+---
+tags: [ontological-precedents]
+register: documentation
+---
+
 # ONTOLOGICAL PRECEDENTS
 
 **File:** `ONTOLOGICAL_PRECEDENTS.md`  

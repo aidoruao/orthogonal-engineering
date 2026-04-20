@@ -1,3 +1,8 @@
+---
+tags: [crusader, manufacturing, assembly-instructions]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Manufacturing Assembly Instructions
 ## Complete Step-by-Step Build Guide
 

@@ -1,3 +1,8 @@
+---
+tags: [tools, logos-bat-execution-contract]
+register: tooling
+---
+
 # LOGOS BAT EXECUTION CONTRACT
 **Generated:** 2025-12-23 20:10:00  
 **Purpose:** Define canonical BAT verifier behavior  

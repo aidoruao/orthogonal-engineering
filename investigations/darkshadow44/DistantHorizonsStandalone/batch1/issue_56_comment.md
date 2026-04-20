@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-56-comment]
+register: audit
+---
+
 ## Investigation: Black Screen Without Angelica
 
 Hi @DarkShadow44, I've found the likely cause of the black screen crash when Angelica isn't present.

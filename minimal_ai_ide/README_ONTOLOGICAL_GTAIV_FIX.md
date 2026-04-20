@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, readme-ontological-gtaiv-fix]
+register: documentation
+---
+
 # ONTOLOGICAL FIX FOR GTA IV MOD VERSION MISMATCHES
 
 ## 🎯 THE PROBLEM: WHY VERSION MISMATCHES HAPPEN

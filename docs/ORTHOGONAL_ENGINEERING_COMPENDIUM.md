@@ -1,3 +1,8 @@
+---
+tags: [docs, orthogonal-engineering-compendium]
+register: documentation
+---
+
 # Orthogonal Engineering Compendium
 
 > **READ BEFORE GENERATING OR MODIFYING CODE.**

@@ -1,3 +1,8 @@
+---
+tags: [grounding-models, test-coherentism]
+register: documentation
+---
+
 # TEST: COHERENTISM GROUNDING (G₃)
 
 **File:** `grounding_tests/test_coherentism.md`  

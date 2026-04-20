@@ -1,3 +1,8 @@
+---
+tags: [crusader, docs, architecture]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Architecture Documentation
 
 ## Overview

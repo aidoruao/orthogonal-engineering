@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, canal-analysis]
+register: audit
+---
+
 # CANAL ANALYSIS — Bowers vs McNeil
 _Generated: PR #81_
 _Pipeline: IA-CYPHER-0002 / FORMAL_FOUNDATIONS.md framework_

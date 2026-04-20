@@ -1,3 +1,8 @@
+---
+tags: [devin-onboarding]
+register: documentation
+---
+
 # Devin AI Onboarding Document
 
 **Date:** 2026-04-10  

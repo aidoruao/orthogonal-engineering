@@ -1,3 +1,8 @@
+---
+tags: [ontology, pr28-philosophical-foundations]
+register: documentation
+---
+
 # PR #28 Philosophical Foundations
 
 > **Document purpose:** Ground the mathematical and engineering claims of PR #28

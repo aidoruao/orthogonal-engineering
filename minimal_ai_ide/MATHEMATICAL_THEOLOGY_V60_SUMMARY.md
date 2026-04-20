@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, mathematical-theology-v60-summary]
+register: documentation
+---
+
 # MATHEMATICAL THEOLOGY V60: COMPREHENSIVE IMPLEMENTATION SUMMARY
 
 ## OVERVIEW

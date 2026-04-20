@@ -1,3 +1,8 @@
+---
+tags: [autofix-implementation-summary]
+register: documentation
+---
+
 # AUTOFIX & IDE QoL IMPLEMENTATION SUMMARY
 
 **Date:** 2026-01-24  

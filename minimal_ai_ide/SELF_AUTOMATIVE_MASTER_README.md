@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, self-automative-master-readme]
+register: documentation
+---
+
 # SELF-AUTOMATIVE MASTER SYSTEM
 ## Autonomous AI Controller with Popperian Validation, Σ_LORA Constraints, and Graduate Mathematics
 

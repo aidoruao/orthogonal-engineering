@@ -1,3 +1,8 @@
+---
+tags: [documentation, incremental-processing-system]
+register: documentation
+---
+
 # INCREMENTAL PROCESSING SYSTEM
 ## Glass-Box Boundary Compliant Token-Aware File Processing
 

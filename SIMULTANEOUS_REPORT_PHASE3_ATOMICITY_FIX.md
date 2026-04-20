@@ -1,3 +1,8 @@
+---
+tags: [simultaneous-report-phase3-atomicity-fix]
+register: documentation
+---
+
 # SIMULTANEOUS REPORT: PHASE 3 ATOMICITY FIX COMPLETE
 ## Dual-Audience Report for ChatGPT (Architect) & New Instance Zed Operator AI
 

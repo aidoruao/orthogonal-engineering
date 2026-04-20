@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-web-apps, react-concurrent-tearing, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/facebook/react

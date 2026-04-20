@@ -1,3 +1,8 @@
+---
+tags: [data-schema]
+register: documentation
+---
+
 # Data Schema Documentation
 
 This directory contains empirical evidence files that ground the Orthogonal Engineering methodology in real-world data.

@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-systems, linux-dirty-cow-cve-2016-5195, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/torvalds/linux

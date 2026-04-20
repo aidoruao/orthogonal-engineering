@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-criminal-law, readme]
+register: technical
+---
+
 # D_CRIMINAL_LAW: Criminal Law
 
 **Layer:** 2 (Statutory)  

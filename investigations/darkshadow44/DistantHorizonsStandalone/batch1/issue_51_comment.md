@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-51-comment]
+register: audit
+---
+
 ## Investigation: Severe TPS Lag on Server
 
 Hi @DarkShadow44, I've identified the likely cause of server TPS lag.

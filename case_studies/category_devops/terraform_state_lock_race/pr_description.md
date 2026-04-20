@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-devops, terraform-state-lock-race, pr-description]
+register: documentation
+---
+
 # terraform_state_lock_race
 
 **Issue:** https://github.com/hashicorp/terraform/issues/28813

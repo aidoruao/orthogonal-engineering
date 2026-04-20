@@ -1,3 +1,8 @@
+---
+tags: [methodology, epistemic-forensics-tools]
+register: documentation
+---
+
 # Epistemic Forensics (EF): Tooling Specification
 
 ## Definition

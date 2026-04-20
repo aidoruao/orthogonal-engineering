@@ -1,3 +1,8 @@
+---
+tags: [historical-correspondence-axes]
+register: documentation
+---
+
 # HISTORICAL CORRESPONDENCE AXES - INVARIANT EVALUATION CRITERIA
 
 **File:** `HISTORICAL_CORRESPONDENCE_AXES.md`  

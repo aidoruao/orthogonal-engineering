@@ -1,3 +1,8 @@
+---
+tags: [transcripts, chatgpt-session-2026]
+register: documentation
+---
+
 # ChatGPT Session Transcript — CS_AIONT_001
 <!-- @case_study: CS_AIONT_001 -->
 <!-- @falsification_tests: F_AIONT_001, F_AIONT_002 -->

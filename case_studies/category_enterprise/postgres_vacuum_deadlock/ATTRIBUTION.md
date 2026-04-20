@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-enterprise, postgres-vacuum-deadlock, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/postgres/postgres

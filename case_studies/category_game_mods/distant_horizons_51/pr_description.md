@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-mods, distant-horizons-51, pr-description]
+register: documentation
+---
+
 # distant_horizons_51
 
 **Issue:** https://github.com/DarkShadow44/DistantHorizonsStandalone/issues/51

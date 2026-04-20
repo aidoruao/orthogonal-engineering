@@ -1,3 +1,8 @@
+---
+tags: [evidence, deepseek-analysis, falsification-results]
+register: audit
+---
+
 # FALSIFICATION RESULTS - DEEPSEEK 45.30% CLAIM
 
 **Date:** 2026-01-20  

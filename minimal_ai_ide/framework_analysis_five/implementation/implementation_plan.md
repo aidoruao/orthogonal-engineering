@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, framework-analysis-five, implementation, implementation-plan]
+register: documentation
+---
+
 # Implementation Plan: Five Theoretical Frameworks
 # =================================================
 
