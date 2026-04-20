@@ -1,0 +1,110 @@
+I can see everything. Here's the proof and the issues.
+
+## What I Can Index
+
+**All 4 uploaded files — confirmed via commit diffs:**
+
+| File | Commit | Lines | Status |
+|------|--------|-------|--------|
+| `1a 4-20-26 devin q&a mode gap anaylsis and architectural coding tasks` | `3ac76771` | 190 | Read in full |
+| `2a 4-20-26 devin coding task and gap anaylsis` | `cf4e8b56` | 136 | Read in full |
+| `3a 4-20-26 devin ai 2 parts` | `5006322a` | 486 | Read in full |
+| `4a devin ai 4-20-26` | `551c9b0d` | 50 | Read in full | [6-cite-0](#6-cite-0) [6-cite-1](#6-cite-1) 
+
+**Full repo structure I can see:**
+
+| Layer | Count | Verified |
+|-------|-------|----------|
+| `axioms/` | 37 Python files | Listed all 37 |
+| `src/sal/` | 18 files | Listed all 18 |
+| `src/domains/d_*/` | ~250+ domain directories | Glob returned full list |
+| `kernel/` | 8 Python files + 10 subdirectories (bridge, commonwealth, firmware, interrupts, mmu, services, social, syscall, tests, vfs) | Listed |
+| `yeshua_system/` | 3 files (\_\_init\_\_.py, operational_modes.yaml, yeshua_projection.py) | Listed |
+| `src/enumerations/` | 3 catalogs + integrity.py | Read |
+| `src/noways/` | impossibility_proofs.py (15 proofs) | Read |
+| `investigations/` | wall_inversions.py (8 inversions) | Read |
+| `tools/` | 25+ tools | Listed |
+| `bootstrap/` | 2 files (reproducible_build.yml, reproducible_build_39.yml) | Listed |
+| Session transcripts | 15+ files from DeepSeek, Kimi, Copilot sessions | Indexed |
+
+
+
+
+
+
+---
+
+## Issues I Found
+
+### Issue 1: `.github/workflows/` is EMPTY on main
+
+The directory returned empty in my listing. But `github-actions[bot]` is still committing `chore(pr40): append state witness entry` entries — the most recent was 2 minutes before your screenshot. This means either:
+- The workflows were deleted/moved during PR #151 merge
+- They're in `ci/` instead (I see `ci/` in the root directory listing)
+- There's a tool limitation I'm hitting
+
+The CI bot IS running, so workflows exist somewhere. But the `.github/workflows/` directory on `main` at HEAD appears empty to my indexer.
+
+### Issue 2: Kimi CLI Session (a8032c7f) Caught a Near-Disaster
+
+The `Kimi Code a8032c7f-bfa2-4794-9571-354c77ccb533 3a 4-20-26.txt` file documents a Kimi CLI session from today where a DeepSeek-generated bash script was pasted in. Kimi CLI inspected the repo and found:
+
+> "Wipe the real STANDARDS_REGISTRY.json (132KB, 247 standards) with a 10-line stub."
+> "Potentially corrupt AGENT_FEED.md by appending JSON to a markdown table."
+
+Kimi CLI **refused to execute** the destructive script. This was the correct call. [6-cite-2](#6-cite-2) 
+
+### Issue 3: STANDARDS_REGISTRY.json Discrepancy
+
+On `main`, the file shows `"total_standards": 60`: [6-cite-3](#6-cite-3) 
+
+But the Kimi CLI session (on branch `kimi/civilization-maximal-4-19-26`) found **247 standards** in the same file. That branch is 22 commits ahead of `main`. Those 247 standards have NOT been merged to `main` yet. [6-cite-4](#6-cite-4) 
+
+### Issue 4: DOMAIN_INVARIANT_STATUS.md is Stale
+
+Still shows 160 domains with invariants. The actual domain count is 250+. Needs regeneration.
+
+### Issue 5: Unmerged Branch
+
+The `kimi/civilization-maximal-4-19-26` branch has significant work (247 standards, additional domains) that is NOT on `main`. The Kimi CLI session shows it's 22 commits behind `origin/main` too, meaning it needs a rebase/merge.
+
+### Issue 6: Stages D & E Still Not Started
+
+`CHECKPOINT_STAGES_A_THROUGH_G.md` exists on main (merged via PR #151) and still shows Stages D and E as **NOT STARTED**: [6-cite-5](#6-cite-5) 
+
+### Issue 7: `standards_check.py --verify` Fails Due to `python` vs `python3`
+
+The Kimi CLI session discovered that enforcement commands in `STANDARDS_REGISTRY.json` call `python` but the system only has `python3`. This is a real bug causing false failures. [6-cite-6](#6-cite-6) 
+
+---
+
+## Honest Capability Assessment
+
+**What I can do:**
+- Index the entire repo (all files, all directories, all commits, all PRs)
+- Read any file, search any pattern, trace any reference
+- Produce detailed gap analyses and coding task documents
+- Verify claims against actual code
+
+**What I cannot do:**
+- Execute code, run tests, push commits, merge PRs
+- I'm in read-only/ask-only mode — I can investigate and produce plans, but a Devin agent session (or Kimi CLI, or Copilot) must execute them
+
+**What Kimi Web AI cannot do that I can:**
+- Kimi Web AI does not have repo access. It reads whatever you paste into it and responds based on that. It cannot verify claims against actual files. That's why it keeps making statements like "247 standards" or "31 CI checks" without checking — it's echoing what was pasted to it, not what's actually on `main`.
+
+---
+
+## Summary of Actual State on `main` Right Now
+
+| Component | On `main` | On `kimi/civilization-maximal-4-19-26` |
+|-----------|-----------|----------------------------------------|
+| Standards | 60 | 247 |
+| Domains | ~250+ directories | Unknown (likely more) |
+| CI workflows | `.github/workflows/` appears empty | Unknown |
+| CHECKPOINT | Exists (Stages D/E not started) | May not exist |
+| PR #151 | Merged | N/A |
+| 4 Devin transcripts (1a-4a) | Committed | N/A |
+| Kimi CLI session (a8032c7f) | Committed | N/A |
+
+The most urgent issue is figuring out why `.github/workflows/` appears empty on `main` while CI is still running, and getting the 247-standard version of `STANDARDS_REGISTRY.json` from the Kimi branch merged to `main`. The `python` vs `python3` bug in enforcement commands also needs fixing.
