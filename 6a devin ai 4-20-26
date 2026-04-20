@@ -1,0 +1,85 @@
+Gemini found a real gap, but the "70,000 files" number is wrong. Here's what I found by checking every Merkle-related file in the repo.
+
+## The "70k files" claim is wrong
+
+`merkle/global_root.json` records the actual count: **7,179 files**, not 70,000. [7-cite-0](#7-cite-0) 
+
+The cross-repo Merkle root covers **3,959 files** across 3 repositories: [7-cite-1](#7-cite-1) 
+
+7,179 is still substantial. But 70k is a 10x inflation.
+
+## What Merkle infrastructure actually exists
+
+The repo has **5 separate Merkle implementations**:
+
+| Implementation | What it covers | Inclusion proofs? |
+|---|---|---|
+| `merkle/global_merkle.py` | All 7,179 tracked source files via `git ls-files` | No — root only |
+| `merkle/domain_merkle.py` | Per-domain trees for each `src/domains/d_*` | No — root only |
+| `merkle/tree.py` | Full `MerkleTree` + `MerkleTreeBuilder` with `get_proof()`, `verify_proof()`, `generate_inclusion_proof()`, `write_proofs()`, `verify_inclusion_proof()` | **Yes — full inclusion proofs** |
+| `toolkit/oe/scaffold/merkle.py` | Another full implementation with `build_merkle_tree()`, `write_all_proofs()` | **Yes — full inclusion proofs** |
+| `core/alpha_omega_finalizer.py` | Alpha/omega state capture with Merkle root verification | Root comparison only | [7-cite-2](#7-cite-2) [7-cite-3](#7-cite-3) [7-cite-4](#7-cite-4) [7-cite-5](#7-cite-5) 
+
+The `merkle/tree.py` implementation has real, working `verify_proof()` and `verify_inclusion_proof()` functions that reconstruct the root from a leaf hash + sibling path and compare against the stored root. The `MerkleTreeBuilder.write_proofs()` writes JSONL inclusion proofs for every leaf. The `cli.py` `merkle` subcommand wires this into the CLI: [7-cite-6](#7-cite-6) 
+
+Per-domain roots are computed and stored in `merkle/domain_roots.json` — 160+ domains, each with its own Merkle root: [7-cite-7](#7-cite-7) 
+
+## Answering Gemini's actual question: shallow or deep?
+
+**Current verification is shallow.** Here's exactly what each tool checks:
+
+### `generate_feed_entry.py --verify`
+
+Verifies the `AGENT_FEED.md` hash chain — `prev_entry_hash` linkage + `entry_hash` recomputation for each row. This is a **linear chain** over ~40 entries, not a Merkle tree over files. The `merkle_root` column in each row comes from the freeze file, which covers **only 3 spec files**: [7-cite-8](#7-cite-8) 
+
+The freeze file's Merkle root (`455d56607b...`) is computed from `sha256(sorted_leaf_hashes joined by '|')` over just `peano_axioms.json`, `arithmetic_axioms.json`, and `boolean_axioms.json`. That's 3 files, not 7,179. [7-cite-9](#7-cite-9) 
+
+### `audit/popperian_audit.py`
+
+AST-based scan of domain `invariants.py` files for `Falsifies if:` docstrings and `float()` calls. **Zero cryptographic verification.** It checks code quality, not file integrity. [7-cite-10](#7-cite-10) 
+
+### `tools/standards_check.py --verify`
+
+Runs shell enforcement commands from `STANDARDS_REGISTRY.json` and checks exit codes. **Zero cryptographic verification.** It checks standard compliance, not file integrity. [7-cite-11](#7-cite-11) 
+
+### `pr39-peano-sovereignty.yml` (CI)
+
+This IS individual file verification — but only for the 3 spec files. It recomputes SHA-256 of each spec file, compares against the freeze, then recomputes the Merkle root: [7-cite-12](#7-cite-12) 
+
+## The gap
+
+```
+What exists:                          What's wired into CI/verification quartet:
+─────────────────────────────────     ──────────────────────────────────────────
+merkle/global_merkle.py (7179 files)  NOT wired — snapshot only
+merkle/domain_merkle.py (160+ doms)   NOT wired — snapshot only  
+merkle/tree.py (full inclusion proofs) NOT wired — library only
+cli.py merkle subcommand              NOT wired — manual only
+pr39 CI (3 spec files)                WIRED — runs on every push
+AGENT_FEED.md chain (40+ entries)     WIRED — runs on every push
+```
+
+The **tools** for deep verification exist. `merkle/global_merkle.py` can rebuild the global root from all 7,179 files. `merkle/tree.py` can generate and verify individual inclusion proofs. `cli.py merkle` can build trees from manifests and write JSONL proofs.
+
+But **none of this is called by the verification quartet or CI**. The global root in `merkle/global_root.json` is a one-time snapshot. The domain roots in `merkle/domain_roots.json` are one-time snapshots. If someone modifies a file, the stored roots become stale, and nothing detects it.
+
+## What "deep verification" would require
+
+A CI job that:
+1. Runs `python merkle/global_merkle.py` to recompute the global root from all tracked files
+2. Compares against the stored `merkle/global_root.json`
+3. If mismatch: runs `python merkle/domain_merkle.py` to identify which domain(s) changed
+4. Compares per-domain roots against `merkle/domain_roots.json`
+5. Fails the build if any root doesn't match (unless the roots are intentionally updated in the same commit)
+
+This is straightforward — the code already exists. It just needs a workflow file that calls it and a convention for when to update the stored roots (answer: every commit that changes source files must also regenerate the root files).
+
+## What Gemini got right and wrong
+
+| Claim | Verdict |
+|---|---|
+| "27MB is a topology, not a narrative" | The Merkle infrastructure is real — 5 implementations, per-domain roots, global root, inclusion proofs |
+| "70k files = content-addressable immutable database" | **Wrong number.** 7,179 files. And they're not immutable — they're in a git repo. Anyone with write access can force-push. |
+| "Delete a file = break the chain of custody" | **True in theory, false in practice.** The tools to detect this exist but aren't wired into CI. Deleting a file today would NOT be detected by the verification quartet. |
+| "NASA-grade rigidity" | The 3 spec files in the freeze have NASA-grade rigidity (CI-verified on every push, cross-platform, deterministic). The other 7,176 files do not. |
+| "AI uses poetry logic on compiler logic" | Fair point about the Yeshua Standard being CI-enforced, not decorative. But the Merkle verification gap is real. | [7-cite-13](#7-cite-13) [7-cite-14](#7-cite-14)
