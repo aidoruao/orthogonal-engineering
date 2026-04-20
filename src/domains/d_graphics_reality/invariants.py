@@ -7,7 +7,6 @@ from axioms.logic import ProofObject
 from src.domains.d_graphics_reality.implementation import (
     FrameGenerationPass,
     RayReconstructionPass,
-    SuperResolutionPass,
     TemporalFrame,
     Vendor,
     VendorCapability,
