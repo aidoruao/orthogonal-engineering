@@ -110,7 +110,7 @@ def check_thing():
     return True
 '''
     )
-    hits = _scan_check_function(src, src.read_text())
+    hits = _scan_check_function(src.read_text())
     kinds = {kind for _, kind, _ in hits}
     assert "CHECK_MISSING_PROOFOBJECT" in kinds
     assert "CHECK_MISSING_FALSIFIES_IF_PAIR" in kinds
@@ -229,7 +229,7 @@ def test_check_function_window_does_not_bleed_into_adjacent_def(tmp_path: Path) 
         "    '''\n"
         "    return True, ProofObject()\n"
     )
-    hits = _scan_check_function(src, src.read_text())
+    hits = _scan_check_function(src.read_text())
     lines = {(line, kind) for line, kind, _ in hits}
     first_def_line = 4  # ``def check_a()``
     assert (first_def_line, "CHECK_MISSING_PROOFOBJECT") in lines
@@ -257,9 +257,23 @@ def test_falsifies_if_title_case_is_strictly_enforced(tmp_path: Path) -> None:
         "    '''\n"
         "    return True, ProofObject()\n"
     )
-    hits = _scan_check_function(src, src.read_text())
+    hits = _scan_check_function(src.read_text())
     kinds = {kind for _, kind, _ in hits}
     assert "CHECK_MISSING_FALSIFIES_IF_PAIR" in kinds
+
+
+def test_float_annot_regex_catches_return_type_annotations() -> None:
+    """``-> float`` return annotations must be flagged as FLOAT_ANNOT.
+
+    Falsifies if: the ``FLOAT_ANNOT`` detector only catches ``x: float`` and
+    silently allows ``def f() -> float`` through despite the repo-wide rule
+    that no ``float`` annotation is acceptable.
+    falsifies_if: ``-> float`` return annotations are not flagged.
+    """
+    source = "def f() -> float:\n    return 0\n"
+    hits = _scan_line_level(source, is_python=True)
+    kinds = {kind for _, kind, _ in hits}
+    assert "FLOAT_ANNOT" in kinds
 
 
 def test_projection_namespace_keywords_are_narrow() -> None:

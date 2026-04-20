@@ -160,7 +160,10 @@ _RE_TODO = re.compile(r"\b(TODO|FIXME|HACK)\b")
 _RE_STUB_PASS = re.compile(r"^\s*pass\s*(#.*)?$")
 _RE_STUB_NOTIMPL = re.compile(r"\bNotImplementedError\b")
 _RE_FLOAT_CALL = re.compile(r"\bfloat\(")
-_RE_FLOAT_ANNOT = re.compile(r":\s*float\b")
+# Matches both variable/parameter annotations (``x: float``) and return-type
+# annotations (``def f() -> float``) so the rule "no float anywhere" has full
+# coverage rather than only catching the argument side.
+_RE_FLOAT_ANNOT = re.compile(r"(?::|->)\s*float\b")
 # Anchor to line start and use ``[ \t]*`` (not ``\s*``) so the match does not
 # consume a preceding newline; this keeps ``line_no`` pointing at the actual
 # ``def`` line rather than the blank line immediately above it.
@@ -276,6 +279,11 @@ def _scan_line_level(text: str, is_python: bool) -> List[Tuple[int, str, str]]:
     (``STUB_PASS``, ``STUB_NOTIMPL``, ``FLOAT_CALL``, ``FLOAT_ANNOT``,
     ``ASSERT_USE``) so we do not emit false positives against e.g. Markdown
     prose or JSON that mentions the words.
+
+    Falsifies if: a known pattern present in the input text is not detected,
+    or a Python-only pattern fires on a non-Python input.
+    falsifies_if: a known pattern present in the input text is not detected,
+    or a Python-only pattern fires on a non-Python input.
     """
     out: List[Tuple[int, str, str]] = []
     for idx, raw in enumerate(text.splitlines(), start=1):
@@ -298,12 +306,19 @@ def _scan_line_level(text: str, is_python: bool) -> List[Tuple[int, str, str]]:
     return out
 
 
-def _scan_check_function(path: Path, text: str) -> List[Tuple[int, str, str]]:
+def _scan_check_function(text: str) -> List[Tuple[int, str, str]]:
     """Yield issues for ``check_*`` functions missing the required contract.
 
-    Heuristic: find ``def check_*(``; scan the next 40 lines for
-    a ``Tuple[bool, ProofObject]`` return annotation or for a docstring
+    Heuristic: find ``def check_*(``; scan the next 40 lines (truncated at the
+    next ``def`` / ``class`` to avoid bleed-through) for a
+    ``Tuple[bool, ProofObject]`` return annotation or for a docstring
     containing both ``Falsifies if:`` and ``falsifies_if:``.
+
+    Falsifies if: a ``check_*`` function without the required contract is not
+    flagged, or a well-formed adjacent ``check_*`` function satisfies the
+    current function's contract via window bleed-through.
+    falsifies_if: a ``check_*`` function without the required contract is not
+    flagged, or adjacent contract bleeds into the current function's window.
     """
     out: List[Tuple[int, str, str]] = []
     lines = text.splitlines()
@@ -347,7 +362,13 @@ def _scan_check_function(path: Path, text: str) -> List[Tuple[int, str, str]]:
 
 
 def build_entries(root: Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
-    """Walk ``root`` and build (entries, summary)."""
+    """Walk ``root`` and build ``(entries, summary)``.
+
+    Falsifies if: two calls over the same working tree produce different
+    entry lists, or the summary counts do not match the emitted entries.
+    falsifies_if: two calls over the same working tree produce different
+    entry lists, or summary counts disagree with entries.
+    """
     entries: List[Dict[str, Any]] = []
     counts: Dict[str, int] = {k: 0 for k in ISSUE_SEVERITY}
     counts_by_namespace: Dict[str, int] = {k: 0 for k in NAMESPACE_KEYWORDS}
@@ -378,7 +399,7 @@ def build_entries(root: Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
         hits: List[Tuple[int, str, str]] = []
         hits.extend(_scan_line_level(text, is_python=is_python))
         if is_python:
-            hits.extend(_scan_check_function(path, text))
+            hits.extend(_scan_check_function(text))
 
         for line_no, issue_type, snippet in hits:
             counts[issue_type] = counts.get(issue_type, 0) + 1
@@ -437,6 +458,12 @@ def _write_summary(
     hashes); output paths are metadata, not covered by the commitment, so two
     runs against the same working tree produce the same ``audit_sha256``
     regardless of where the artifacts are written.
+
+    Falsifies if: two runs over the same working tree produce different
+    ``audit_sha256`` values, or any field from ``metadata`` leaks into the
+    commit payload.
+    falsifies_if: two runs differ in ``audit_sha256`` or metadata leaks into
+    the commitment.
     """
     out_path.parent.mkdir(parents=True, exist_ok=True)
     ordered_hashes = sorted(e["entry_sha256"] for e in entries)
@@ -476,7 +503,14 @@ def _write_summary(
 
 
 def main(argv: Optional[List[str]] = None) -> int:
-    """CLI entry point."""
+    """CLI entry point: walk the repo and write JSONL + summary JSON.
+
+    Falsifies if: the CLI returns a non-zero exit code on a clean walk, or
+    writes artifacts whose ``audit_sha256`` differs across two runs over the
+    same working tree.
+    falsifies_if: non-zero exit on clean walk, or differing ``audit_sha256``
+    across two runs over the same tree.
+    """
     parser = argparse.ArgumentParser(description="Generate hashed investigative taxonomy.")
     parser.add_argument(
         "--out",
