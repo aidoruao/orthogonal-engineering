@@ -32,7 +32,6 @@ import hashlib
 import json
 import re
 import sys
-from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from fractions import Fraction
 from pathlib import Path
@@ -176,19 +175,8 @@ ISSUE_SEVERITY: Dict[str, str] = {
     "FLOAT_ANNOT": "medium",
     "CHECK_MISSING_PROOFOBJECT": "high",
     "CHECK_MISSING_FALSIFIES_IF_PAIR": "medium",
-    "ASSERT_IN_CHECK_SURFACE": "medium",
+    "ASSERT_USE": "high",
 }
-
-
-@dataclass(frozen=True)
-class IssueHit:
-    """A single detected issue."""
-
-    path: str
-    line: int
-    issue_type: str
-    snippet: str
-    namespaces: Tuple[str, ...] = field(default_factory=tuple)
 
 
 # ---------------------------------------------------------------------------
@@ -272,23 +260,32 @@ def _namespaces_for_text(text_lower: str, path_lower: str) -> Tuple[str, ...]:
 # ---------------------------------------------------------------------------
 
 
-def _scan_line_level(text: str) -> List[Tuple[int, str, str]]:
-    """Yield ``(line_no, issue_type, snippet)`` for line-local patterns."""
+def _scan_line_level(text: str, is_python: bool) -> List[Tuple[int, str, str]]:
+    """Yield ``(line_no, issue_type, snippet)`` for line-local patterns.
+
+    The ``is_python`` flag gates detectors that only apply to Python sources
+    (``STUB_PASS``, ``STUB_NOTIMPL``, ``FLOAT_CALL``, ``FLOAT_ANNOT``,
+    ``ASSERT_USE``) so we do not emit false positives against e.g. Markdown
+    prose or JSON that mentions the words.
+    """
     out: List[Tuple[int, str, str]] = []
     for idx, raw in enumerate(text.splitlines(), start=1):
         line = raw.rstrip("\r")
-        if _RE_TODO.search(line):
-            m = _RE_TODO.search(line)
-            assert m is not None  # noqa: S101 - local branch guard, not invariant
-            out.append((idx, m.group(1).upper(), line.strip()[:240]))
-        if _RE_STUB_PASS.match(line):
-            out.append((idx, "STUB_PASS", line.strip()[:240]))
-        if _RE_STUB_NOTIMPL.search(line):
-            out.append((idx, "STUB_NOTIMPL", line.strip()[:240]))
-        if _RE_FLOAT_CALL.search(line):
-            out.append((idx, "FLOAT_CALL", line.strip()[:240]))
-        if _RE_FLOAT_ANNOT.search(line):
-            out.append((idx, "FLOAT_ANNOT", line.strip()[:240]))
+        snippet = line.strip()[:240]
+        todo_match = _RE_TODO.search(line)
+        if todo_match is not None:
+            out.append((idx, todo_match.group(1).upper(), snippet))
+        if is_python:
+            if _RE_STUB_PASS.match(line):
+                out.append((idx, "STUB_PASS", snippet))
+            if _RE_STUB_NOTIMPL.search(line):
+                out.append((idx, "STUB_NOTIMPL", snippet))
+            if _RE_FLOAT_CALL.search(line):
+                out.append((idx, "FLOAT_CALL", snippet))
+            if _RE_FLOAT_ANNOT.search(line):
+                out.append((idx, "FLOAT_ANNOT", snippet))
+            if _RE_ASSERT.match(line):
+                out.append((idx, "ASSERT_USE", snippet))
     return out
 
 
@@ -337,6 +334,7 @@ def build_entries(root: Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     entries: List[Dict[str, Any]] = []
     counts: Dict[str, int] = {k: 0 for k in ISSUE_SEVERITY}
     counts_by_namespace: Dict[str, int] = {k: 0 for k in NAMESPACE_KEYWORDS}
+    counts_by_namespace["unclassified"] = 0
     files_scanned = 0
 
     for path in _iter_candidate_files(root):
@@ -358,17 +356,17 @@ def build_entries(root: Path) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
             ns_record = namespaces
 
         file_sha = _sha256_bytes(data)
+        is_python = path.suffix == ".py"
 
         hits: List[Tuple[int, str, str]] = []
-        hits.extend(_scan_line_level(text))
-        if path.suffix == ".py":
+        hits.extend(_scan_line_level(text, is_python=is_python))
+        if is_python:
             hits.extend(_scan_check_function(path, text))
 
         for line_no, issue_type, snippet in hits:
             counts[issue_type] = counts.get(issue_type, 0) + 1
             for ns in ns_record:
-                if ns in counts_by_namespace:
-                    counts_by_namespace[ns] += 1
+                counts_by_namespace[ns] = counts_by_namespace.get(ns, 0) + 1
             ev_sha = _sha256_text(f"{rel}:{line_no}:{snippet}")
             entry: Dict[str, Any] = {
                 "id": f"OE-TAX-{ev_sha[:12]}",
@@ -434,15 +432,21 @@ def _write_summary(
     total = max(len(entries), 1)
     classified = sum(1 for e in entries if e["namespaces"] != ["unclassified"])
     frac_classified = Fraction(classified, total)
+    # ``metadata`` collects fields that are *intentionally* not covered by
+    # ``audit_sha256`` (timestamps, output paths). Separating them makes the
+    # commitment boundary visible to reviewers: only ``summary`` +
+    # ``ordered_entry_hashes`` participate in the commit payload.
     doc = {
         "schema": "OE-GAP-ANALYSIS-1.0",
-        "generated_at_utc": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "repo_root": str(REPO_ROOT),
         "summary": summary,
         "classified_fraction": f"{frac_classified.numerator}/{frac_classified.denominator}",
         "audit_sha256": audit_sha256,
-        "jsonl_path": jsonl_label,
         "entry_count": len(entries),
+        "metadata": {
+            "generated_at_utc": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "jsonl_path": jsonl_label,
+            "not_covered_by_audit_sha256": ["generated_at_utc", "jsonl_path"],
+        },
     }
     with out_path.open("w", encoding="utf-8") as fh:
         fh.write(json.dumps(doc, sort_keys=True, indent=2, ensure_ascii=True) + "\n")

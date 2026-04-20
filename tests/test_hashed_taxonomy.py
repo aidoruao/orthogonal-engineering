@@ -56,7 +56,7 @@ def test_namespace_classification_matches_known_keywords() -> None:
 
 
 def test_line_level_scanner_finds_each_pattern() -> None:
-    """Each pattern family is detected on a representative line."""
+    """Each pattern family is detected on a representative Python line."""
     text = "\n".join(
         [
             "# TODO: fix later",
@@ -64,11 +64,40 @@ def test_line_level_scanner_finds_each_pattern() -> None:
             "    pass",
             "raise NotImplementedError",
             "y: float = 0.0",
+            "assert x > 0",
         ]
     )
-    hits = _scan_line_level(text)
+    hits = _scan_line_level(text, is_python=True)
     kinds = {kind for _, kind, _ in hits}
-    assert {"TODO", "FLOAT_CALL", "STUB_PASS", "STUB_NOTIMPL", "FLOAT_ANNOT"}.issubset(kinds)
+    assert {
+        "TODO",
+        "FLOAT_CALL",
+        "STUB_PASS",
+        "STUB_NOTIMPL",
+        "FLOAT_ANNOT",
+        "ASSERT_USE",
+    }.issubset(kinds)
+
+
+def test_line_level_scanner_skips_python_only_patterns_for_non_python() -> None:
+    """Non-Python text should only match prose-level patterns like TODO.
+
+    Falsifies if: running the scanner against non-Python text emits issue
+    types that are meant to be Python-only (``ASSERT_USE``, ``STUB_PASS``,
+    etc.), producing cross-language false positives.
+    falsifies_if: non-Python text emits Python-only issue types.
+    """
+    text = "\n".join(
+        [
+            "# TODO: fix later",
+            "The word assert appears in prose.",
+            "pass",  # prose paragraph mentioning 'pass'
+            "float(1) referenced in documentation",
+        ]
+    )
+    hits = _scan_line_level(text, is_python=False)
+    kinds = {kind for _, kind, _ in hits}
+    assert kinds == {"TODO"}
 
 
 def test_check_function_scanner_flags_missing_contract(tmp_path: Path) -> None:
@@ -130,8 +159,49 @@ def test_severity_map_covers_all_issue_types() -> None:
         "FLOAT_ANNOT",
         "CHECK_MISSING_PROOFOBJECT",
         "CHECK_MISSING_FALSIFIES_IF_PAIR",
+        "ASSERT_USE",
     }
     assert known_issue_types.issubset(set(ISSUE_SEVERITY.keys()))
+
+
+def test_namespace_counts_account_for_unclassified(tmp_path: Path) -> None:
+    """Per-namespace counts must sum to at least the total issue count.
+
+    Falsifies if: summed namespace counts are less than the total issue
+    count, indicating silently dropped ``unclassified`` entries.
+    falsifies_if: summed namespace counts < issue_count_total.
+    """
+    (tmp_path / "no_namespace.py").write_text(
+        "# TODO: nothing classifiable here\n"
+        "assert True\n"
+    )
+    _, summary = build_entries(tmp_path)
+    total = summary["issue_count_total"]
+    ns_total = sum(summary["issue_count_by_namespace"].values())
+    assert ns_total >= total
+    assert "unclassified" in summary["issue_count_by_namespace"]
+
+
+def test_gap_analysis_metadata_is_outside_commitment(tmp_path: Path) -> None:
+    """Non-deterministic fields live under ``metadata`` and are documented.
+
+    Falsifies if: ``generated_at_utc`` or ``jsonl_path`` appear at the top
+    level of the gap-analysis document (where they could mislead readers
+    into thinking they are covered by ``audit_sha256``).
+    falsifies_if: non-deterministic fields are not segregated under
+    ``metadata``.
+    """
+    out_jsonl = tmp_path / "tax.jsonl"
+    out_json = tmp_path / "gap.json"
+    (tmp_path / "a.py").write_text("# TODO: x\n")
+    rc = main(["--root", str(tmp_path), "--out", str(out_jsonl), "--summary", str(out_json)])
+    assert rc == 0
+    doc = json.loads(out_json.read_text())
+    assert "generated_at_utc" not in doc
+    assert "jsonl_path" not in doc
+    assert "repo_root" not in doc
+    assert doc["metadata"]["not_covered_by_audit_sha256"]
+    assert "generated_at_utc" in doc["metadata"]
 
 
 if __name__ == "__main__":
