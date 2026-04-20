@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-securities-law, readme]
+register: technical
+---
+
 # D_SECURITIES_LAW — Securities Law
 
 **Layer:** 2 (Statutory)  

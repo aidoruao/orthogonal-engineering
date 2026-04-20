@@ -1,3 +1,8 @@
+---
+tags: [phase-4-completion-summary]
+register: documentation
+---
+
 # PHASE 4 COMPLETION SUMMARY - HISTORICAL-ONTOLOGICAL CORRESPONDENCE EXECUTION
 
 **File:** `PHASE_4_COMPLETION_SUMMARY.md`  

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, graduate-mathematics-theology-2-0-summary]
+register: documentation
+---
+
 # GRADUATE MATHEMATICS THEOLOGY 2.0: COMPLETE CATEGORICAL FOUNDATION
 
 ## EXECUTIVE SUMMARY

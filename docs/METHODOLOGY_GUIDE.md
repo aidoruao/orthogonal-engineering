@@ -1,3 +1,8 @@
+---
+tags: [docs, methodology-guide]
+register: documentation
+---
+
 # DeepSeek Methodology Guide
 
 This document explains how to use the DeepSeek-style methodology schemas

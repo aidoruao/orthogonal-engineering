@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, cases, case-0003, analysis]
+register: documentation
+---
+
 # Analysis: case_0003 — Google LLC SEC 10-K Ad-Tech Regulatory Trace
 
 ## Case Summary

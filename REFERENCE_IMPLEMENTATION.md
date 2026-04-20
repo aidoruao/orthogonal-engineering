@@ -1,3 +1,8 @@
+---
+tags: [reference-implementation]
+register: documentation
+---
+
 # 1B LOC Reference Implementation Example
 
 This directory contains a complete working example of the 1B LOC fractal generation pipeline.

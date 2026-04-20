@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-40-comment]
+register: audit
+---
+
 ## Investigation: Nether Chunk Generation Stuck
 
 Hi @DarkShadow44, I've analyzed the Nether chunk generation hang.

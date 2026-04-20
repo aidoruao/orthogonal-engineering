@@ -1,3 +1,8 @@
+---
+tags: [phase2-deployment-completion-report]
+register: documentation
+---
+
 # PHASE 2 DEPLOYMENT COMPLETION REPORT
 ## Local AI Warden System - Subfolder Wardens Deployment
 

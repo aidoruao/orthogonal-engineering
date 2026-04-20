@@ -1,3 +1,8 @@
+---
+tags: [absolute-git-sync-proof]
+register: documentation
+---
+
 # ABSOLUTE GIT SYNCHRONIZATION PROOF
 ## Cryptographic Verification of Phase 12 Repository State
 

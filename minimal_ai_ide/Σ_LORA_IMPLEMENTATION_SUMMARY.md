@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora-implementation-summary]
+register: documentation
+---
+
 # Σ_LORA_GRADUATE_MATHEMATICS Implementation Summary
 
 ## System Overview

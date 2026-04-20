@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, solution-summary]
+register: documentation
+---
+
 # LoRA Test Harness System - Implementation Complete
 
 ## Executive Summary

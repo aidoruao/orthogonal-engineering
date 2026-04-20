@@ -1,3 +1,8 @@
+---
+tags: [mcp-server-readme]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - MCP SERVER README
 
 ## Glass Box Methodology Implementation

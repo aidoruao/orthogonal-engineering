@@ -1,3 +1,8 @@
+---
+tags: [src, sal, sal-specification]
+register: technical
+---
+
 # SAL Type III Specification
 
 ## Adjoint Triple

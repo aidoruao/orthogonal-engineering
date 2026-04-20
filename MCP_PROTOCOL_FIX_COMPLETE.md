@@ -1,3 +1,8 @@
+---
+tags: [mcp-protocol-fix-complete]
+register: documentation
+---
+
 # MCP Protocol Fix Completion - Final Summary
 
 **Date:** 2026-01-24  

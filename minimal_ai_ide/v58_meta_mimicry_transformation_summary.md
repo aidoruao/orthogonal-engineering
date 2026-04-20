@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, v58-meta-mimicry-transformation-summary]
+register: documentation
+---
+
 # V58: THE COMPLETE TRANSFORMATION OF META-MIMICRY INTO ITS OPPOSITE
 
 ## Executive Summary

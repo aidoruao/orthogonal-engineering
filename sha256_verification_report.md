@@ -1,3 +1,8 @@
+---
+tags: [sha256-verification-report]
+register: documentation
+---
+
 # SHA-256 Verification Report
 
 ## 📋 Overview

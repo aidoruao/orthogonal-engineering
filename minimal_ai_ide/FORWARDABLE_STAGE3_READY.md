@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, forwardable-stage3-ready]
+register: documentation
+---
+
 # FORWARDABLE MESSAGE: STAGE 2.1 COMPLETE - READY FOR STAGE 3
 
 **Status:** ✅ **Stage 2.1 Refinement Complete - Critical Issues Fixed**

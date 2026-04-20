@@ -1,3 +1,8 @@
+---
+tags: [final-atomic-invariant-status]
+register: documentation
+---
+
 # FINAL ATOMIC INVARIANT STATUS REPORT
 
 **Report Generated:** 2026-01-20T17:45:00Z  

@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, ontological-map]
+register: documentation
+---
+
 # ONTOLOGICAL PATTERN MAP — Bowers vs McNeil
 _Generated: PR #81 adversarial-taxonomy addon_
 _Pipeline: IA-CYPHER-0002 / IA-CYPHER schema framework_

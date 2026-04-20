@@ -1,3 +1,8 @@
+---
+tags: [repo-constitution]
+register: documentation
+---
+
 # REPO_CONSTITUTION.md
 ## Repository Constitution — `aidoruao/orthogonal-engineering`
 

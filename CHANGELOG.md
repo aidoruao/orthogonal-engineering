@@ -1,3 +1,8 @@
+---
+tags: [changelog]
+register: documentation
+---
+
 # CHANGELOG
 
 All notable changes to the Orthogonal Engineering project will be documented in this file.

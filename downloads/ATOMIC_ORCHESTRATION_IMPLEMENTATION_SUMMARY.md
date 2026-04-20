@@ -1,3 +1,8 @@
+---
+tags: [downloads, atomic-orchestration-implementation-summary]
+register: documentation
+---
+
 # ⚡ ATOMIC ORCHESTRATION BUNDLE — IMPLEMENTATION SUMMARY
 
 **Date:** 2026-01-25  

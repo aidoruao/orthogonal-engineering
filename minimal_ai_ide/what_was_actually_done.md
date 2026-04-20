@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, what-was-actually-done]
+register: documentation
+---
+
 # WHAT WAS ACTUALLY DONE vs WHAT WAS PROMISED
 
 ## ORIGINAL PROMISE (from the user's plan):

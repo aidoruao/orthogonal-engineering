@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, batch1-master-report]
+register: audit
+---
+
 # DistantHorizonsStandalone - Batch 1 Investigation Report
 
 **Date:** 2026-04-04  

@@ -1,3 +1,8 @@
+---
+tags: [grounding-models, test-platonism]
+register: documentation
+---
+
 # TEST: PLATONISM / ABSTRACT ORDER GROUNDING (G₄)
 
 **File:** `grounding_tests/test_platonism.md`  

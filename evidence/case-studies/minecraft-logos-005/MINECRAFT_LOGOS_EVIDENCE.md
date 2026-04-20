@@ -1,3 +1,8 @@
+---
+tags: [evidence, case-studies, minecraft-logos-005, minecraft-logos-evidence]
+register: documentation
+---
+
 # MINECRAFT LOGOS AGENT DEPLOYMENT - EVIDENCE
 
 **Case Study ID:** 005  

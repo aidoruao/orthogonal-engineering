@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, research-questions]
+register: documentation
+---
+
 # Research Questions: IA-CYPHER-0002
 
 These questions drive the IA-CYPHER-0002 audit investigation. They are open, falsifiable where possible, and ordered from most specific (empirically testable) to most systemic (requiring cross-case and causal analysis).

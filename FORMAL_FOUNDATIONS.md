@@ -1,3 +1,8 @@
+---
+tags: [formal-foundations]
+register: documentation
+---
+
 # FORMAL FOUNDATIONS
 
 ## Mathematical Framework and Assumptions

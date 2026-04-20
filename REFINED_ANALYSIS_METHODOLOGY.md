@@ -1,3 +1,8 @@
+---
+tags: [refined-analysis-methodology]
+register: documentation
+---
+
 # Refined Invariant Analysis Methodology
 
 ## Overview

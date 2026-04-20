@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora-dataset, readme]
+register: documentation
+---
+
 # Corporate AI LoRA Training Dataset
 
 ## Overview

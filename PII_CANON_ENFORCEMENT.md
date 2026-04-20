@@ -1,3 +1,8 @@
+---
+tags: [pii-canon-enforcement]
+register: documentation
+---
+
 # PII Canon Enforcement System - Orthogonal Engineering
 
 **Version:** 1.0  

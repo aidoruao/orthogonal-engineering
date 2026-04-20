@@ -1,3 +1,8 @@
+---
+tags: [systemic-repair-quickstart]
+register: documentation
+---
+
 # Global Systemic Repair Schema - Quick Start Guide
 
 ## What Is This?

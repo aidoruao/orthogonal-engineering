@@ -1,3 +1,8 @@
+---
+tags: [filesystem-exploration, 02-gap-analysis]
+register: documentation
+---
+
 # COMPREHENSIVE GAP ANALYSIS
 ## What Orthogonal Engineering Repo Needs vs What You Have
 Generated: Tue, Jan 20, 2026  3:03:33 AM

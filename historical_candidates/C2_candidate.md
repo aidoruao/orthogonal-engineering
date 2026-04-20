@@ -1,3 +1,8 @@
+---
+tags: [historical-candidates, c2-candidate]
+register: documentation
+---
+
 # C₂: JESUS OF NAZARETH (CHRISTIAN CLAIM)
 
 **File:** `C2_candidate.md`  

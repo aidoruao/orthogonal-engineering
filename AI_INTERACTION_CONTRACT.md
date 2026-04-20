@@ -1,3 +1,8 @@
+---
+tags: [ai-interaction-contract]
+register: documentation
+---
+
 # AI INTERACTION CONTRACT - ORTHOGONAL ENGINEERING GLASS-BOX BOUNDARY
 
 **Version:** 1.0  

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora, lora-install]
+register: documentation
+---
+
 # LoRA Installation and Usage - Governance Compliant
 ====================================================
 

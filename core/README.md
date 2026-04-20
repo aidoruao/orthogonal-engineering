@@ -1,3 +1,8 @@
+---
+tags: [core, readme]
+register: documentation
+---
+
 # AlphaOmegaFinalizer
 
 Production-ready canonical ledger creation with Merkle tree verification and privacy-preserving features.

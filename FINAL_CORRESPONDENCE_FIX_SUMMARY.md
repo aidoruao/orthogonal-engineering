@@ -1,3 +1,8 @@
+---
+tags: [final-correspondence-fix-summary]
+register: documentation
+---
+
 # FINAL CORRESPONDENCE FIX IMPLEMENTATION SUMMARY
 
 **File:** `FINAL_CORRESPONDENCE_FIX_SUMMARY.md`  

@@ -1,3 +1,8 @@
+---
+tags: [deepseek-copilot-schema-readme]
+register: documentation
+---
+
 # DeepSeek Maximal Copilot Schema
 
 ## Overview

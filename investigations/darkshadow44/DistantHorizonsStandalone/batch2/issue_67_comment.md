@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-67-comment]
+register: audit
+---
+
 ## Investigation: Mineshot Camera Compatibility
 
 Hi @DarkShadow44, I've identified the Mineshot compatibility issue.

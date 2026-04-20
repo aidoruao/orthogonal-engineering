@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, invariant-registry]
+register: documentation
+---
+
 # INVARIANT REGISTRY — Bowers vs McNeil
 _Generated: 2026-04-03T02:42:48.286729Z_
 _Pipeline: IA-CYPHER-0002_

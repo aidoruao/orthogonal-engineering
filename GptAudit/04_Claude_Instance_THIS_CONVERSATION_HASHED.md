@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 04-claude-instance-this-conversation-hashed]
+register: documentation
+---
+
 # Claude Sonnet 4.5 Instance - This Conversation - Immutable Hash Record
 # Generated: 2026-02-11T09:30:00Z
 # Total Messages: 7 (as of this point in conversation)

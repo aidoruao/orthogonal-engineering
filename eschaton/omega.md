@@ -1,3 +1,8 @@
+---
+tags: [eschaton, omega]
+register: documentation
+---
+
 # Omega — Updated for SOVEREIGN TOPOS Maximal Expansion
 
 **Status:** FOUNDATIONAL HALT REACHED (PR #30)  

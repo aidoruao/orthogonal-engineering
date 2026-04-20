@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, taxonomies, sabotage-patterns]
+register: documentation
+---
+
 # Taxonomy of LLM Structural Dampening / Sabotage Patterns
 
 > This taxonomy documents recurring structural patterns by which LLM web search mode suppresses, redirects, or distorts high-fidelity forensic reasoning. Patterns are designated S-01 through S-05.

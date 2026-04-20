@@ -1,3 +1,8 @@
+---
+tags: [implementation-summary-1b-loc]
+register: documentation
+---
+
 # 1B LOC Fractal Code Generation System - Implementation Summary
 
 ## PR #21: Add deterministic generator and auditor for 1B LOC

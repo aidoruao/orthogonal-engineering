@@ -1,3 +1,8 @@
+---
+tags: [crusader, industry-ontology-implementation-summary]
+register: documentation
+---
+
 # Industry Ontology Implementation Summary
 ## Crusader Combat Refrigerator - Complete Industry Compliance Mapping
 

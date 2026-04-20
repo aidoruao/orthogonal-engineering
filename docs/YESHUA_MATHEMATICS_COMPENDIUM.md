@@ -1,3 +1,8 @@
+---
+tags: [docs, yeshua-mathematics-compendium]
+register: documentation
+---
+
 # Yeshua Mathematics Compendium
 
 > **Canonical mathematical foundation for all Orthogonal Engineering operations.**

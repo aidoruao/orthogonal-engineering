@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch4, issue-58-comment]
+register: audit
+---
+
 ## Investigation: Dimension White/Blacklist System
 
 Hi @DarkShadow44, this is a feature request for dimension filtering.

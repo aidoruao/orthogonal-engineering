@@ -1,3 +1,8 @@
+---
+tags: [downloads, continue-mathematical-proof]
+register: documentation
+---
+
 # 🧮 MATHEMATICAL PROOF CONTROLLER — CONTINUATION GUIDE
 
 **Date:** 2026-01-25  

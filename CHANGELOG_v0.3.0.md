@@ -1,3 +1,8 @@
+---
+tags: [changelog-v0-3-0]
+register: documentation
+---
+
 # Changelog v0.3.0 - Empirical Grounding & IDE Agent Integration
 
 **Release Date:** 2026-01-19

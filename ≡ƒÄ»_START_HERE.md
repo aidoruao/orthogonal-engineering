@@ -1,3 +1,8 @@
+---
+tags: [start-here]
+register: documentation
+---
+
 # 📦 ORTHOGONAL ENGINEERING - READY FOR GITHUB
 
 ## ✅ COMPLETE PACKAGE

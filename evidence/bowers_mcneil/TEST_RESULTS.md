@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, test-results]
+register: documentation
+---
+
 # TEST RESULTS — Bowers vs McNeil
 _Generated: PR #81 manufactured-correspondence addendum_
 _Pipeline: IA-CYPHER-0002 / analysis/automated_test_suite.py framework_

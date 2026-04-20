@@ -1,3 +1,8 @@
+---
+tags: [mcp, readme]
+register: documentation
+---
+
 # MCP — Model Context Protocol Integration
 
 This directory contains MCP (Model Context Protocol) configuration files for the Orthogonal Engineering repository.

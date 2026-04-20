@@ -1,3 +1,8 @@
+---
+tags: [recursive-invariant-omega]
+register: documentation
+---
+
 # Recursive Invariant Omega: Mathematical and Theological Foundation
 
 ## Overview

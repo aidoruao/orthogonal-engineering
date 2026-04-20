@@ -1,3 +1,8 @@
+---
+tags: [inelasticity-results, inelasticity-summary-20260121-232111]
+register: documentation
+---
+
 # TRUTH INELASTICITY CHECK - PHASE 2 RESULTS
 
 **Date:** 2026-01-21T23:21:11.598925

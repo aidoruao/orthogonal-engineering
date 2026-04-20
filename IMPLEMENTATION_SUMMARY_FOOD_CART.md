@@ -1,3 +1,8 @@
+---
+tags: [implementation-summary-food-cart]
+register: documentation
+---
+
 # Food Cart Universe Implementation Summary
 
 **Implementation Date:** 2026-03-06  

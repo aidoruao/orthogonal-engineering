@@ -1,3 +1,8 @@
+---
+tags: [sora-day-5-recovery-summary]
+register: documentation
+---
+
 # SORA DAY 5 RECOVERY IMPLEMENTATION SUMMARY
 
 **Date:** 2026-01-24  

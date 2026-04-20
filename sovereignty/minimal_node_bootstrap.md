@@ -1,3 +1,8 @@
+---
+tags: [sovereignty, minimal-node-bootstrap]
+register: documentation
+---
+
 # Minimal Node Bootstrap
 # PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
 # Standard: Yeshua

@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, cases, case-0001, analysis]
+register: documentation
+---
+
 # Analysis: case_0001
 
 > **Status:** Placeholder — ready for population after prompt.txt and response.txt are filled and hashes.json is verified.

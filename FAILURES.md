@@ -1,3 +1,8 @@
+---
+tags: [failures]
+register: documentation
+---
+
 # FAILURES - What Doesn't Work
 
 **Version:** v0.8.0  

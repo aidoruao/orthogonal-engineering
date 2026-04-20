@@ -1,3 +1,8 @@
+---
+tags: [topology-enumeration]
+register: documentation
+---
+
 # ORTHOGONAL-ENGINEERING-CLEAN: TOPOLOGY ENUMERATION
 Generated: 2026-02-07  
 Scanner: Claude Desktop Commander (MCP)  

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-verification]
+register: documentation
+---
+
 # FINAL VERIFICATION: SELF-AUTOMATIVE MASTER SYSTEM
 
 ## VERIFICATION COMPLETE: SYSTEM OPERATIONAL

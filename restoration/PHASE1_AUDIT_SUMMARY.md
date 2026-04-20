@@ -1,3 +1,8 @@
+---
+tags: [restoration, phase1-audit-summary]
+register: documentation
+---
+
 # PHASE 1 AUDIT SUMMARY
 **Date:** 2026-04-05
 **Total domains:** 59

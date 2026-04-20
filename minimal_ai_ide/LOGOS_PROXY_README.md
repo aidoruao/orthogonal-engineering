@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, logos-proxy-readme]
+register: documentation
+---
+
 # LOGOS PROXY - Glass-Box AI Communication Channel
 
 ## 🎯 What is Logos Proxy?

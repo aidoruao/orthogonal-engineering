@@ -1,3 +1,8 @@
+---
+tags: [crusader, final-industry-ontology-commit]
+register: documentation
+---
+
 # Final Industry Ontology Implementation Commit
 ## Crusader Combat Refrigerator - Complete Industry Compliance Documentation
 

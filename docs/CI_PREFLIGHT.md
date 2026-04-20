@@ -1,3 +1,8 @@
+---
+tags: [docs, ci-preflight]
+register: documentation
+---
+
 # CI Preflight — Workflow Coverage Check
 
 Use this lightweight preflight to see exactly which workflow files will be

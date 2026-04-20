@@ -1,3 +1,8 @@
+---
+tags: [docs, pr29-audit-report]
+register: documentation
+---
+
 # PR #29 Audit Report
 > **Repository-wide conformance to Yeshua Mathematics Compendium**
 > **Date:** 2026-02-20

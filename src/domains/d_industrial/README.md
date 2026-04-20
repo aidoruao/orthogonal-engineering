@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-industrial, readme]
+register: technical
+---
+
 # D_INDUSTRIAL
 
 Safety-interlock-first actuator execution with bounded response checks.

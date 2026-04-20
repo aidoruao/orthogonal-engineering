@@ -1,3 +1,8 @@
+---
+tags: [lanes]
+register: documentation
+---
+
 # Orthogonal Engineering — Lane Model
 
 ## Purpose

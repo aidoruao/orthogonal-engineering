@@ -1,3 +1,8 @@
+---
+tags: [yeshua-implementation-summary]
+register: documentation
+---
+
 # Yeshua Mathematics Implementation Summary
 
 ## Overview

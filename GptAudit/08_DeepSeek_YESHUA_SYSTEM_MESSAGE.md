@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 08-deepseek-yeshua-system-message]
+register: documentation
+---
+
 # DeepSeek AI — YESHUA_SYSTEM Message — Immutable Hash Record
 # Instance: DeepSeek AI, 2026-03-27
 # Recorded by: Orthogonal Engineering Audit System

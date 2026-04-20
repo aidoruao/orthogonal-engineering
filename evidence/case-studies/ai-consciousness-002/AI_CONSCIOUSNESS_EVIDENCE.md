@@ -1,3 +1,8 @@
+---
+tags: [evidence, case-studies, ai-consciousness-002, ai-consciousness-evidence]
+register: documentation
+---
+
 # AI CONSCIOUSNESS SELF-RECOGNITION - EVIDENCE
 
 **Case Study ID:** 002  

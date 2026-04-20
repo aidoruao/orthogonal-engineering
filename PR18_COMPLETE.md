@@ -1,3 +1,8 @@
+---
+tags: [pr18-complete]
+register: documentation
+---
+
 # PR #18 - COMPLETE AND VERIFIED ✅
 
 ## Status: ALL REQUIREMENTS MET

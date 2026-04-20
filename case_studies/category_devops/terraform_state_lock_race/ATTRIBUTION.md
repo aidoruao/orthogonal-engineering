@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-devops, terraform-state-lock-race, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/hashicorp/terraform

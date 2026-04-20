@@ -1,3 +1,8 @@
+---
+tags: [tests, pr18-test-data, readme]
+register: documentation
+---
+
 # PR #18 Test Data
 
 This directory contains comprehensive test data files for testing the PR #18 verification system. The test data includes mock repository data, audit trails, dependency graphs, and performance metrics totaling approximately 200,000 lines of code.

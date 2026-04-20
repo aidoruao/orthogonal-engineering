@@ -1,3 +1,8 @@
+---
+tags: [copilot-onboarding]
+register: documentation
+---
+
 # COPILOT_ONBOARDING.md — GitHub Copilot / AI Agent Onboarding
 
 **Version:** 2.0  

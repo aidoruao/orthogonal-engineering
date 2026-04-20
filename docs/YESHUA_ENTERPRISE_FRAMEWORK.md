@@ -1,3 +1,8 @@
+---
+tags: [docs, yeshua-enterprise-framework]
+register: documentation
+---
+
 # The Yeshua Enterprise-Ready Framework
 
 **Document ID:** YESHUA-ENTERPRISE-1.0

@@ -1,3 +1,8 @@
+---
+tags: [documentation, benchmark-methodology]
+register: documentation
+---
+
 # Benchmark Methodology
 
 PR #83 adds a deterministic benchmark formalization layer that externalizes benchmark capability as proof-carrying artifacts.

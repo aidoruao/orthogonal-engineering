@@ -1,3 +1,8 @@
+---
+tags: [docs, topological-map, seed-to-1b-loc]
+register: documentation
+---
+
 # Seed → DAG → Fractal Expansion → Manifest → 1B LOC Pipeline
 
 ## Overview

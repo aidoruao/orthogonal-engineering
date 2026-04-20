@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-operational-status]
+register: documentation
+---
+
 # FINAL OPERATIONAL STATUS REPORT
 ## SELF-AUTOMATIVE MASTER SYSTEM - NEW INSTANCE VERIFICATION
 

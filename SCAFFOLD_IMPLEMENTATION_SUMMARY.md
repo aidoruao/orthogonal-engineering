@@ -1,3 +1,8 @@
+---
+tags: [scaffold-implementation-summary]
+register: documentation
+---
+
 # Scaffold Implementation Summary
 
 ## Overview

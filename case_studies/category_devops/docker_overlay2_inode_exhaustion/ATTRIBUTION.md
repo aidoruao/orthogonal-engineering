@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-devops, docker-overlay2-inode-exhaustion, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/moby/moby

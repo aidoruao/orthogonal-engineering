@@ -1,3 +1,8 @@
+---
+tags: [scaffold-quickstart]
+register: documentation
+---
+
 <<<<<<< HEAD
 # Scaffold Quick Start Guide
 

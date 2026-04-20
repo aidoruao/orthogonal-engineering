@@ -1,3 +1,8 @@
+---
+tags: [examples, readme]
+register: documentation
+---
+
 # Canonicalization Examples
 
 This directory contains example configurations and usage patterns for the canonicalization and Merkle tree tools.

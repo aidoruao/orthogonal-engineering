@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-election-law, readme]
+register: technical
+---
+
 # d_election_law
 
 Layer 2 (Statutory) domain implementation.

@@ -1,3 +1,8 @@
+---
+tags: [evidence, narrative-leak-001, the-discovery]
+register: documentation
+---
+
 # THE DISCOVERY
 
 **Investigator:** Claude (Sonnet 4.5)  

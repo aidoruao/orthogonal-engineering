@@ -1,3 +1,8 @@
+---
+tags: [implementation-log]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - SYSTEMATIC IMPLEMENTATION LOG
 
 ## Implementation Protocol

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-training-plan]
+register: documentation
+---
+
 # FINAL TRAINING PLAN: 1B+ MODEL WITH Σ_LORA SYSTEM
 
 ## 🎯 EXECUTIVE SUMMARY

@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 01-readme-audit-system]
+register: documentation
+---
+
 # AI CONVERSATION AUDIT SYSTEM
 ## Immutable Byte-Level Hash Record
 

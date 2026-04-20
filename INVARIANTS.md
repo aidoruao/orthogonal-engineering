@@ -1,3 +1,8 @@
+---
+tags: [invariants]
+register: documentation
+---
+
 # PROVEN INVARIANTS (ChatGPT-Validated)
 
 **Version:** v0.7.0  

@@ -1,3 +1,8 @@
+---
+tags: [day1-summary]
+register: documentation
+---
+
 # DAY 1 IMPLEMENTATION SUMMARY
 ## Sora Pipeline Development - Orthogonal Engineering Glass-Box Boundary Compliant
 

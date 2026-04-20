@@ -1,3 +1,8 @@
+---
+tags: [workflows, readme-phase9-workflows]
+register: documentation
+---
+
 # Phase 9 Workflows Documentation
 
 **Version:** 1.12  

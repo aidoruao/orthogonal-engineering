@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 07-notebooklm-instance-1a-hashed]
+register: documentation
+---
+
 # NotebookLM Instance 1a - Hash-Verified Document
 **Generated**: 2026-02-11
 **Framework**: Σ_LORA_COVENANT

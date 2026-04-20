@@ -1,3 +1,8 @@
+---
+tags: [report]
+register: documentation
+---
+
 # Atomic Glass-Box Investigation Report
 
 **Repository:** orthogonal-engineering  

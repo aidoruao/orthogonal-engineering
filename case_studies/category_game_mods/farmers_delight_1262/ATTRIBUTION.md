@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-mods, farmers-delight-1262, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/vectorwing/FarmersDelight

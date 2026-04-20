@@ -1,3 +1,8 @@
+---
+tags: [architecture-sora-pipeline]
+register: documentation
+---
+
 # IDE-ORCHESTRATED SORA PIPELINE ARCHITECTURE
 ## Orthogonal Engineering Glass-Box Boundary Compliant System
 

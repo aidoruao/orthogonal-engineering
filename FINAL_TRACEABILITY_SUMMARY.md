@@ -1,3 +1,8 @@
+---
+tags: [final-traceability-summary]
+register: documentation
+---
+
 # FINAL TRACEABILITY SUMMARY
 # Yeshua Mathematics Implementation - Complete Cryptographic Verification
 

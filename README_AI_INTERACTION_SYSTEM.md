@@ -1,3 +1,8 @@
+---
+tags: [readme-ai-interaction-system]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - AI INTERACTION SYSTEM
 
 **Version:** 1.0  

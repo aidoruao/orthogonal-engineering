@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-diplomatic, readme]
+register: technical
+---
+
 # D_DIPLOMATIC: Diplomatic Law
 
 **Layer:** 0 (Supranational)  

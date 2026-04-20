@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, self-automative-system-status]
+register: documentation
+---
+
 # SELF-AUTOMATIVE MASTER SYSTEM - COMPREHENSIVE STATUS REPORT
 
 ## SYSTEM OVERVIEW

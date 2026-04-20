@@ -1,3 +1,8 @@
+---
+tags: [docs, yeshua-commonwealth]
+register: documentation
+---
+
 # Yeshua Commonwealth — Constitutional Specification for Human-AI Governance
 
 **Document ID:** YESHUA-COMMONWEALTH-1.0  

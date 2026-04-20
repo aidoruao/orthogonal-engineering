@@ -1,3 +1,8 @@
+---
+tags: [forward-to-cloud-ai]
+register: documentation
+---
+
 # FORWARD TO CLOUD AI - ORTHOGONAL ENGINEERING COMPLETE SYNC
 
 **Date:** 2026-01-20  

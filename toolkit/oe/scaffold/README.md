@@ -1,3 +1,8 @@
+---
+tags: [toolkit, oe, scaffold, readme]
+register: tooling
+---
+
 <<<<<<< HEAD
 # Deterministic Auditable Python Scaffold
 

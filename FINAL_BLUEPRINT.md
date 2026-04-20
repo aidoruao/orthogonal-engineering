@@ -1,3 +1,8 @@
+---
+tags: [final-blueprint]
+register: documentation
+---
+
 # 🏗️ FINAL BLLUEPRINT - Orthogonal Engineering Complete System
 
 **Version:** 2.0.0  

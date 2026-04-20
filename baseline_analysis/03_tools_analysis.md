@@ -1,3 +1,8 @@
+---
+tags: [baseline-analysis, 03-tools-analysis]
+register: documentation
+---
+
 # TOOL INVENTORY & CAPABILITIES
 
 ## Analysis Scripts

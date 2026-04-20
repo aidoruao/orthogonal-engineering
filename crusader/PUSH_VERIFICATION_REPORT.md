@@ -1,3 +1,8 @@
+---
+tags: [crusader, push-verification-report]
+register: documentation
+---
+
 # Crusader Refrigerator Industry Ontology - Push Verification Report
 
 **Report ID:** PUSH-VERIFY-20260226-211726  

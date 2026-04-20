@@ -1,3 +1,8 @@
+---
+tags: [canonical, humans, aidoruao, witness]
+register: documentation
+---
+
 # Witness
 
 **Author:** aidoruao  

@@ -1,3 +1,8 @@
+---
+tags: [documentation, ai-human-failure-mode-analysis]
+register: documentation
+---
+
 # AI-HUMAN FAILURE MODE MAPPING ANALYSIS
 ## Atomic Decomposition and Implementation Strategy
 

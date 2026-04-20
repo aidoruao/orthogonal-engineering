@@ -1,3 +1,8 @@
+---
+tags: [update-for-repo]
+register: documentation
+---
+
 # UPDATE FOR REPOSITORY DOCUMENTATION
 
 ## Add this section to your README.md or DATA_FILESYSTEM.md

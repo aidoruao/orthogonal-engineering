@@ -1,3 +1,8 @@
+---
+tags: [correspondence-framework]
+register: documentation
+---
+
 # OPERATIONAL CORRESPONDENCE BRIDGE - PHASE 7
 
 **File:** `CORRESPONDENCE_FRAMEWORK.md`  

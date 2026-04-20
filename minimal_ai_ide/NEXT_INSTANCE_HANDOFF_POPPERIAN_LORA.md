@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, next-instance-handoff-popperian-lora]
+register: documentation
+---
+
 # NEXT INSTANCE HANDOFF: POPPERIAN LORA & LLM TRAINING SYSTEM
 ================================================================
 

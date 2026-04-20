@@ -1,3 +1,8 @@
+---
+tags: [crusader, manufacturing, qc-protocols]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Quality Control Protocols
 ## Generated: 2026-02-26T21:00:44.024517
 

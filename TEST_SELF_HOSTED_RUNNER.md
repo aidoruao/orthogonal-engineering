@@ -1,3 +1,8 @@
+---
+tags: [test-self-hosted-runner]
+register: documentation
+---
+
 # Test Self-Hosted Runner
 
 **Date:** February 24, 2026  

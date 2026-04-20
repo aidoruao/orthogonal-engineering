@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, correction-log]
+register: documentation
+---
+
 # CORRECTION LOG — PR #81
 _Case: BOWERS_V_MCNEIL_001_
 _Correction Applied: 2026-04-01_

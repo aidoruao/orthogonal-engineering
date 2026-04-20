@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, rain-pretext-falsification]
+register: documentation
+---
+
 # RAIN PRETEXT FALSIFICATION — Institutional Layer Addendum
 _Generated: 2026-04-03T02:42:48.286729Z_
 _Pipeline: IA-CYPHER-0002_

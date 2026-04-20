@@ -1,3 +1,8 @@
+---
+tags: [evidence, null-hypothesis-test]
+register: documentation
+---
+
 NULL HYPOTHESIS TEST — ORTHOGONAL ENGINEERING
 
 Test Date: 2026-01-20

@@ -1,3 +1,8 @@
+---
+tags: [onboard-first]
+register: documentation
+---
+
 # 🚨 MANDATORY FIRST-READ: ONBOARDING PROTOCOL
 
 ## ⚠️ **EVERY NEW AI INSTANCE MUST FOLLOW THIS PROTOCOL**

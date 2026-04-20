@@ -1,3 +1,8 @@
+---
+tags: [verification-summary]
+register: documentation
+---
+
 # VERIFICATION SUMMARY - COMPLETE PHASE 1-7 ATOMIC WORKFLOW
 
 **File:** `VERIFICATION_SUMMARY.md`  

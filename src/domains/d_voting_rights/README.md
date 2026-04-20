@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-voting-rights, readme]
+register: technical
+---
+
 # D_VOTING_RIGHTS: Voting & Elections
 
 **Layer:** 1 (Constitutional)  

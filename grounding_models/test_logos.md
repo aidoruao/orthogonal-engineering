@@ -1,3 +1,8 @@
+---
+tags: [grounding-models, test-logos]
+register: documentation
+---
+
 # TEST: LOGOS GROUNDING (G₅)
 
 **File:** `grounding_tests/test_logos.md`  

@@ -1,3 +1,8 @@
+---
+tags: [handoff-template]
+register: documentation
+---
+
 # HANDOFF_TEMPLATE.md — Session Handoff Summary Template
 
 **Instructions:** Copy this file, fill in every section, and save as

@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-73-comment]
+register: audit
+---
+
 ## Investigation: LODs Not Rendering Caves
 
 Hi @DarkShadow44, I've investigated the cave rendering issue.

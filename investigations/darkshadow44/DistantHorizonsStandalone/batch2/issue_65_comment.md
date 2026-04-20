@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-65-comment]
+register: audit
+---
+
 ## Investigation: Photon Shader Compatibility
 
 Hi @DarkShadow44, I've investigated the Photon shader rendering issue.

@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ai-llm, transformers-gradient-checkpointing-oom, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/huggingface/transformers

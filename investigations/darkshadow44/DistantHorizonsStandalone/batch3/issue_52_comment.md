@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-52-comment]
+register: audit
+---
+
 ## Investigation: Pollution Fog Not Affecting LODs
 
 Hi @DarkShadow44, I've analyzed the pollution fog issue.

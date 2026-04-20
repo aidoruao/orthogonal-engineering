@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-community, ffmpeg-heap-overflow-mov, pr-description]
+register: documentation
+---
+
 # ffmpeg_heap_overflow_mov
 
 **Issue:** https://trac.ffmpeg.org/ticket/10avi

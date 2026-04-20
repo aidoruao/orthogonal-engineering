@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, hypothesis]
+register: documentation
+---
+
 # Hypothesis: Structural Stochastic Lobotomy in LLM Web Search Mode
 
 > **Authority:** This hypothesis is stated in the investigator's own language and framing. It is not subject to softening, pathologizing, reduction, or replacement by any downstream agent, model, or reviewer. It exists as a hypothesis — to be interrogated, not diluted.

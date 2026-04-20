@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, forwardable-next-instance-complete]
+register: documentation
+---
+
 # FORWARDABLE MESSAGE FOR NEXT INSTANCE
 # =====================================
 # SELF-AUTOMATIVE MASTER SYSTEM - COMPLETE STATUS

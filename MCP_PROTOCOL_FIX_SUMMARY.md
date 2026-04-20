@@ -1,3 +1,8 @@
+---
+tags: [mcp-protocol-fix-summary]
+register: documentation
+---
+
 # MCP Protocol Fix Summary - Atomic Protocol Correction
 
 **Date:** 2026-01-24  

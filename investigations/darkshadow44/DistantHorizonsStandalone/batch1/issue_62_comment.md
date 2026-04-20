@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-62-comment]
+register: audit
+---
+
 ## Investigation: Server Crash in Alpha16
 
 Hi @DarkShadow44, I've analyzed the server crash issue. Here's what I found:

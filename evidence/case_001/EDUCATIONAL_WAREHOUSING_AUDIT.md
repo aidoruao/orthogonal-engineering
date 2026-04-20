@@ -1,3 +1,8 @@
+---
+tags: [evidence, case-001, educational-warehousing-audit]
+register: documentation
+---
+
 # EDUCATIONAL WAREHOUSING AUDIT — CASE_001
 
 **Case ID:** CASE_001_SELECTIVE_MUTISM_WAREHOUSING

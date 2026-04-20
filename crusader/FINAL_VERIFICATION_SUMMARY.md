@@ -1,3 +1,8 @@
+---
+tags: [crusader, final-verification-summary]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Final Verification Summary
 
 **Verification ID:** FINAL-VERIFY-20260226-211126

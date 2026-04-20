@@ -1,3 +1,8 @@
+---
+tags: [historical-tests, c4-evaluation]
+register: documentation
+---
+
 # C₄ EVALUATION: COMPOSITE / SYMBOLIC LOGOS (GNOSTIC / PERENNIALIST)
 
 **Candidate:** C₄ from `HISTORICAL_LOGOS_CANDIDATES.md`  

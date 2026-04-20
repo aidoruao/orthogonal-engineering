@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 02-chatgpt-instance-3a-hashed]
+register: documentation
+---
+
 # ChatGPT Instance 3a - Immutable Hash Record
 # Generated: 2026-02-11T09:25:42Z
 # Total Messages: 40

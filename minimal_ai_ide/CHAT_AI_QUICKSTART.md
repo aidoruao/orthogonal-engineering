@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, chat-ai-quickstart]
+register: documentation
+---
+
 # Σ_LORA CHAT AI - QUICK START GUIDE
 
 ## 🚀 GET STARTED IN 3 MINUTES

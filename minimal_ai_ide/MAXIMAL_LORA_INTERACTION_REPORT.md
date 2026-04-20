@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, maximal-lora-interaction-report]
+register: documentation
+---
+
 # MAXIMAL LORA INTERACTION REPORT
 ## Comprehensive Script Architecture & Methodology Documentation
 ### For Cloud AI Audit & Forwardable Implementation

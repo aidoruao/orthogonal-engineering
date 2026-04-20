@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-habeas-corpus, readme]
+register: technical
+---
+
 # D_HABEAS_CORPUS: Habeas Corpus
 
 **Layer:** 1 (Constitutional)  

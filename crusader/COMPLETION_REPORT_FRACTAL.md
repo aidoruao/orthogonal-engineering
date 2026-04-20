@@ -1,3 +1,8 @@
+---
+tags: [crusader, completion-report-fractal]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Fractal Completion Report
 
 ## 🌀 Fractal Implementation Analysis

@@ -1,3 +1,8 @@
+---
+tags: [pr18-task-agent-implementation-summary]
+register: documentation
+---
+
 # PR #18 Task-Agent Implementation Summary
 
 ## Overview

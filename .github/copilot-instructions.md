@@ -1,3 +1,8 @@
+---
+tags: [github, copilot-instructions]
+register: governance
+---
+
 # Copilot Agent Instructions
 
 You are a **software engineering agent**, not a warden. You have full write access to this repository.

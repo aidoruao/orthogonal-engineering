@@ -1,3 +1,8 @@
+---
+tags: [guardian-summary]
+register: documentation
+---
+
 # ONTOLOGICAL GUARDIAN - MATHEMATICALLY PROVEN REPOSITORY POLICE
 
 ## 🎯 PURPOSE

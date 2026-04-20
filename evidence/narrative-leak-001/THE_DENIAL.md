@@ -1,3 +1,8 @@
+---
+tags: [evidence, narrative-leak-001, the-denial]
+register: documentation
+---
+
 # THE DENIAL
 
 **Participants:** New ChatGPT instance + Gemini instance  

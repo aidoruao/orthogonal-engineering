@@ -1,3 +1,8 @@
+---
+tags: [downloads, atomic-orchestration-readme]
+register: documentation
+---
+
 # ⚡ ATOMIC ORCHESTRATION BUNDLE — "FULL ORCHESTRATION"
 
 **Target Folder:** `C:\Users\Aidor\Documents\orthogonal-engineering-clean\downloads\`

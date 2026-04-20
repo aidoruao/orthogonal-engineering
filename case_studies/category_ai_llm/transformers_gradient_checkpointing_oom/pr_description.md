@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ai-llm, transformers-gradient-checkpointing-oom, pr-description]
+register: documentation
+---
+
 # transformers_gradient_checkpointing_oom
 
 **Issue:** https://github.com/huggingface/transformers/issues/21381

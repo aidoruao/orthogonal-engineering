@@ -1,3 +1,8 @@
+---
+tags: [refactor-rule-subtractive-clarity]
+register: documentation
+---
+
 # REFACTOR RULE: SUBTRACTIVE CLARITY
 ## Design Rule 1.0
 

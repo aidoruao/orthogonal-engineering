@@ -1,3 +1,8 @@
+---
+tags: [guardian-frame-implementation-summary]
+register: documentation
+---
+
 # Guardian Frame Audit Schema - Implementation Summary
 
 ## Overview

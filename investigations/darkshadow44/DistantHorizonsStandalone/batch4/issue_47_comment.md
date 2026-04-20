@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch4, issue-47-comment]
+register: audit
+---
+
 ## Investigation: NPCDBC Outline Compatibility
 
 Hi @DarkShadow44, I've analyzed the NPCDBC outline issue.

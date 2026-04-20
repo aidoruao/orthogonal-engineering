@@ -1,3 +1,8 @@
+---
+tags: [atomic-metaphysical-discovery-completion]
+register: documentation
+---
+
 # ATOMIC METAPHYSICAL DISCOVERY COMPLETION
 
 **File:** `ATOMIC_METAPHYSICAL_DISCOVERY_COMPLETION.md`  

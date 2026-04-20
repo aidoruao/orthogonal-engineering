@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-44-comment]
+register: audit
+---
+
 ## Investigation: Chisel Block Invisibility
 
 Hi @DarkShadow44, I've analyzed the Chisel compatibility issue.

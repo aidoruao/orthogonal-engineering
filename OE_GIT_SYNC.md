@@ -1,3 +1,8 @@
+---
+tags: [oe-git-sync]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - GIT SYNCHRONIZATION AUDIT
 
 **Audit Date:** 2026-01-20  

@@ -1,3 +1,8 @@
+---
+tags: [tools, ray-tracing, readme]
+register: tooling
+---
+
 # PR #42 — Deterministic Light Transport Layer (DLTL)
 
 **The Luminous Halting**

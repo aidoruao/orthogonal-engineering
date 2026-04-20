@@ -1,3 +1,8 @@
+---
+tags: [onboarding, level1]
+register: documentation
+---
+
 # 🚨 LEVEL 1: MANDATORY 30-SECOND ONBOARDING
 
 ## ⚠️ **EVERY NEW AI INSTANCE MUST READ THIS FIRST**

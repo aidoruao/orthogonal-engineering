@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, institutional-obstruction-patterns]
+register: documentation
+---
+
 # INSTITUTIONAL OBSTRUCTION PATTERNS — Bowers/McNeil Addendum
 _Generated: 2026-04-03T02:42:48.286729Z_
 _Pipeline: IA-CYPHER-0002 / noncompliance taxonomy pattern_

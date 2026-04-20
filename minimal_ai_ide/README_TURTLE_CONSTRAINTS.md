@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, readme-turtle-constraints]
+register: documentation
+---
+
 # Σ_LORA CONSTRAINED TURTLE AI SYSTEM
 
 ## 🌟 OVERVIEW

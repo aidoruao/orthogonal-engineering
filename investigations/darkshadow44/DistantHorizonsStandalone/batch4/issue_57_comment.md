@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch4, issue-57-comment]
+register: audit
+---
+
 ## Investigation: Restore Commands with Config Flag
 
 Hi @DarkShadow44, this is a feature request to restore `/dh` commands.

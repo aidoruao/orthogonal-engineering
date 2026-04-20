@@ -1,3 +1,8 @@
+---
+tags: [sop-ai-handshake]
+register: documentation
+---
+
 # SOP: AI Candidate Onboarding Handshake
 
 **Document ID:** SOP-AI-HANDSHAKE-1.0  

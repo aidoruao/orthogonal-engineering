@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, architecture-overview]
+register: documentation
+---
+
 # Architecture Overview: IA-CYPHER-0002 Glassbox Audit System
 
 ## Design Principles

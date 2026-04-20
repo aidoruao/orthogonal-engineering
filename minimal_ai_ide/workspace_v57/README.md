@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, workspace-v57, readme]
+register: documentation
+---
+
 # V57 Workspace Project
 
 This workspace is managed by Maximal Oracle v57.

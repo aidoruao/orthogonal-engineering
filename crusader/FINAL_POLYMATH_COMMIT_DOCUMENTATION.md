@@ -1,3 +1,8 @@
+---
+tags: [crusader, final-polymath-commit-documentation]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Final Polymath Commit Documentation
 ## Comprehensive Analysis, Architectural Summary, and Path Forward
 

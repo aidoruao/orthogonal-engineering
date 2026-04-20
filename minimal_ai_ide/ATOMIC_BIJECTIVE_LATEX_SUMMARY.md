@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, atomic-bijective-latex-summary]
+register: documentation
+---
+
 # ATOMIC BIJECTIVE LATEX INVARIANTS SYSTEM
 
 ## Summary: What We Built

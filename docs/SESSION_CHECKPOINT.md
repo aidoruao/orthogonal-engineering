@@ -1,3 +1,8 @@
+---
+tags: [docs, session-checkpoint]
+register: documentation
+---
+
 # Session Checkpoint — 471cf772 → 7533ab94
 
 ## What Session 471cf772 Accomplished

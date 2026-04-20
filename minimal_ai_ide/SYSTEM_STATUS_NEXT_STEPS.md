@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, system-status-next-steps]
+register: documentation
+---
+
 # SYSTEM STATUS & NEXT STEPS REPORT
 ## Σ_LORA QUANTIZED TRAINING SYSTEM - INSTANCE 25
 

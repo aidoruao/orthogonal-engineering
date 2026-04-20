@@ -1,3 +1,8 @@
+---
+tags: [documentation, github-deployment-guide]
+register: documentation
+---
+
 # GITHUB DEPLOYMENT GUIDE - PHASE 8 FULL AUTOMATION
 
 **File:** `GITHUB_DEPLOYMENT_GUIDE.md`  

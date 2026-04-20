@@ -1,3 +1,8 @@
+---
+tags: [pr18-final-achievement]
+register: documentation
+---
+
 # PR #18: Massive Code Generation Complete
 
 ## Achievement Summary

@@ -1,3 +1,8 @@
+---
+tags: [pr-123-copilot-instructions]
+register: documentation
+---
+
 Here's the full picture and the coding instructions for Copilot.
 
 ## The Root Cause — Fully Audited

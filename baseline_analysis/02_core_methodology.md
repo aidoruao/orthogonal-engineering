@@ -1,3 +1,8 @@
+---
+tags: [baseline-analysis, 02-core-methodology]
+register: documentation
+---
+
 # CORE METHODOLOGY ANALYSIS
 
 ## Key Concepts from README

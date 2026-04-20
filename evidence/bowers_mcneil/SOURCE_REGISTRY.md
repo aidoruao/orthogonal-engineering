@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, source-registry]
+register: documentation
+---
+
 # SOURCE REGISTRY — Bowers vs McNeil
 _Generated: PR #81 manufactured-correspondence addendum_
 _Pipeline: IA-CYPHER-0002_

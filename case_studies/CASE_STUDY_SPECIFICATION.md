@@ -1,3 +1,8 @@
+---
+tags: [case-studies, case-study-specification]
+register: documentation
+---
+
 # Vendored Repository Case Study Specification
 
 ## Purpose

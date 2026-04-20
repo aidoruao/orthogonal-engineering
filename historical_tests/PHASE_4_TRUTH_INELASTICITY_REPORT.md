@@ -1,3 +1,8 @@
+---
+tags: [historical-tests, phase-4-truth-inelasticity-report]
+register: documentation
+---
+
 # PHASE 4 TRUTH INELASTICITY REPORT - HISTORICAL CORRESPONDENCE ANALYSIS
 
 **File:** `PHASE_4_TRUTH_INELASTICITY_REPORT.md`  

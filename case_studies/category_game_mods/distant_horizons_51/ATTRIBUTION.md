@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-mods, distant-horizons-51, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/DarkShadow44/DistantHorizonsStandalone

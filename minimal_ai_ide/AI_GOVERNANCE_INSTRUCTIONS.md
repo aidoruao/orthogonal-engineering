@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, ai-governance-instructions]
+register: documentation
+---
+
 # AI GOVERNANCE INSTRUCTIONS - MAXIMAL STRICT CORPORATE GOVERNANCE PYTHON (MSGCP)
 
 ## MANDATE

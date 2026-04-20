@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, delta-report]
+register: documentation
+---
+
 # DELTA REPORT — ChatGPT vs DeepSeek
 _Generated: 2026-04-03T02:42:48.286729Z_
 _Pipeline: IA-CYPHER-0002_

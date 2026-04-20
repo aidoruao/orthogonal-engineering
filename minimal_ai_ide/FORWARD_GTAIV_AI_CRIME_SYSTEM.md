@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, forward-gtaiv-ai-crime-system]
+register: documentation
+---
+
 # FORWARD: GTA IV AI & CRIME SYSTEM TRANSFORMATION PROJECT
 
 ## 📁 DIRECTORY ACCESS UPDATE

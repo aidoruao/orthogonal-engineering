@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, governance-implementation-summary]
+register: documentation
+---
+
 # MAXIMAL STRICT CORPORATE GOVERNANCE PYTHON (MSGCP) - IMPLEMENTATION SUMMARY
 
 ## OVERVIEW

@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-enterprise, kubernetes-oom-kill-eviction, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/kubernetes/kubernetes

@@ -1,3 +1,8 @@
+---
+tags: [grounding-models]
+register: documentation
+---
+
 # GROUNDING MODELS - ENUMERATED ONTOLOGICAL FOUNDATIONS
 
 **File:** `GROUNDING_MODELS.md`  

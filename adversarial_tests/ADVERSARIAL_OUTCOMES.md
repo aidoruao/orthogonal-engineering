@@ -1,3 +1,8 @@
+---
+tags: [adversarial-tests, adversarial-outcomes]
+register: documentation
+---
+
 # ADVERSARIAL TEST OUTCOMES
 
 ## New Grounding Model Attempts

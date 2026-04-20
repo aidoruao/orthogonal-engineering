@@ -1,3 +1,8 @@
+---
+tags: [canonicalization-implementation-summary]
+register: documentation
+---
+
 # Canonicalization Scaffold Implementation Summary
 
 **Date**: 2026-02-16  

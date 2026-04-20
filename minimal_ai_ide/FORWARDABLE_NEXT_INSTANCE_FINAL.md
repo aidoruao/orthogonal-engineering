@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, forwardable-next-instance-final]
+register: documentation
+---
+
 # FORWARDABLE MESSAGE FOR NEXT INSTANCE
 ## SELF-AUTOMATIVE MASTER SYSTEM - READY FOR DEPLOYMENT
 

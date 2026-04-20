@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ai-llm, vllm-kv-cache-fragmentation, pr-description]
+register: documentation
+---
+
 # vllm_kv_cache_fragmentation
 
 **Issue:** https://github.com/vllm-project/vllm/issues/1707

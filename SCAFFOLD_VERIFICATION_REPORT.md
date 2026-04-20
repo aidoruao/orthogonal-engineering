@@ -1,3 +1,8 @@
+---
+tags: [scaffold-verification-report]
+register: documentation
+---
+
 # Scaffold Verification Report
 
 **Date**: 2026-02-16  

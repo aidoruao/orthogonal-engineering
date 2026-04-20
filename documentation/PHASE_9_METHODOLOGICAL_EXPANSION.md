@@ -1,3 +1,8 @@
+---
+tags: [documentation, phase-9-methodological-expansion]
+register: documentation
+---
+
 # Phase 9 Methodological Expansion
 
 **Version:** 1.12  

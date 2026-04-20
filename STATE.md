@@ -1,3 +1,8 @@
+---
+tags: [state]
+register: documentation
+---
+
 # STATE.md - Orthogonal Engineering System State
 
 **Version:** 1.0  

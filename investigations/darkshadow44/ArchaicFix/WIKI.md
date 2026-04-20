@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, archaicfix, wiki]
+register: audit
+---
+
 # ArchaicFix - Technical Documentation
 
 ## Overview

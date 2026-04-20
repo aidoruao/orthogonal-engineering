@@ -1,3 +1,8 @@
+---
+tags: [contributing]
+register: documentation
+---
+
 # Contributing to Orthogonal Engineering
 
 Thank you for your interest in contributing to this repository.
