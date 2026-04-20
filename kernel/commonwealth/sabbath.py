@@ -14,6 +14,7 @@ from fractions import Fraction
 from enum import Enum, auto
 
 from axioms.logic import ProofObject
+from src.orthogonal_engineering.fraction_display import format_percent
 
 
 class CompletionPhase(Enum):
@@ -202,7 +203,7 @@ class SabbathHalt:
             rule="DeclareSabbathHalt",
             premises=[
                 f"state_phase={state.phase.name}",
-                f"completion_ratio={float(state.completion_ratio()):.2%}",
+                f"completion_ratio={format_percent(state.completion_ratio(), 2)}",
                 f"timestamp={timestamp}",
                 f"reason={reason}",
             ],
@@ -251,7 +252,7 @@ class SabbathHalt:
                 f"is_halted=true",
                 f"halt_timestamp={self.halt_timestamp}",
                 f"halt_reason={self.halt_reason}",
-                f"completion_ratio={float(state.completion_ratio()):.2%}",
+                f"completion_ratio={format_percent(state.completion_ratio(), 2)}",
             ],
             conclusion="valid rest state verified"
         )

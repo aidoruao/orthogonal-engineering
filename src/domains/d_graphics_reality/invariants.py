@@ -5,11 +5,12 @@ from fractions import Fraction
 
 from axioms.logic import ProofObject
 from src.domains.d_graphics_reality.implementation import (
-    SuperResolutionPass,
     FrameGenerationPass,
     RayReconstructionPass,
-    VendorCapability,
+    SuperResolutionPass,
     TemporalFrame,
+    Vendor,
+    VendorCapability,
     temporal_stability_metric,
 )
 
@@ -121,18 +122,68 @@ def check_ray_reconstruction_bias_variance(pass_: RayReconstructionPass,
 
 
 def run_all_invariants() -> dict:
-    """Run all invariant checks and return results.
+    """Run all invariant checks against deterministic reference fixtures.
 
-    Falsifies if: any graphics reality invariant check fails or raises an exception.
-    falsifies_if: any graphics reality invariant check fails or raises an exception.
+    Each invariant is evaluated on a pinned Fraction-only fixture so the dict
+    returned is deterministic and covers every contract exposed by the module.
+    Fixtures are chosen to be well inside the acceptable region, i.e. each
+    check is expected to return ``True`` at steady state.
+
+    Falsifies if: any invariant check returns False on its reference fixture,
+    raises an exception, or returns a value whose ProofObject conclusion does
+    not encode the boolean outcome.
+    falsifies_if: any invariant check returns False on its reference fixture,
+    raises an exception, or returns a ProofObject whose conclusion does not
+    encode the boolean outcome.
     """
-    results = {}
-    
-    # TODO: Add test cases with real data
-    results["temporal_stability"] = "NOT_TESTED"
-    results["spectral_preservation"] = "NOT_TESTED"
-    results["frame_gen_motion_error"] = "NOT_TESTED"
-    results["vendor_fallback"] = "NOT_TESTED"
-    results["ray_reconstruction_bias_variance"] = "NOT_TESTED"
-    
-    return results
+    frame_a = TemporalFrame(
+        frame_hash="a" * 64, timestamp=Fraction(0), motion_vectors_valid=True
+    )
+    frame_b = TemporalFrame(
+        frame_hash="a" * 64, timestamp=Fraction(1, 60), motion_vectors_valid=True
+    )
+    stability_ok, stability_proof = check_temporal_stability(
+        frame_a, frame_b, motion_magnitude=Fraction(1, 2)
+    )
+
+    spectral_ok, spectral_proof = check_upscale_spectral_preservation(
+        input_bandwidth=Fraction(1), output_bandwidth=Fraction(3, 2)
+    )
+
+    frame_gen_pass = FrameGenerationPass(
+        frame_n_hash="b" * 64,
+        frame_n1_hash="c" * 64,
+        interpolated_hash="d" * 64,
+        motion_vector_error=Fraction(1, 100),
+        optical_flow_confidence=Fraction(9, 10),
+    )
+    frame_gen_ok, frame_gen_proof = check_frame_gen_motion_error(
+        frame_gen_pass, threshold=Fraction(1, 10)
+    )
+
+    capability = VendorCapability(
+        vendor=Vendor.NVIDIA,
+        feature="DLSS",
+        api_version="3.5",
+        fallback_available=True,
+        fallback_method="FSR",
+    )
+    vendor_ok, vendor_proof = check_vendor_fallback_exists(capability)
+
+    ray_pass = RayReconstructionPass(
+        samples_per_pixel=4,
+        denoiser_method="neural",
+        bias=Fraction(1, 100),
+        variance=Fraction(1, 50),
+    )
+    ray_ok, ray_proof = check_ray_reconstruction_bias_variance(
+        ray_pass, max_bias=Fraction(1, 20), max_variance=Fraction(1, 10)
+    )
+
+    return {
+        "temporal_stability": (stability_ok, stability_proof),
+        "spectral_preservation": (spectral_ok, spectral_proof),
+        "frame_gen_motion_error": (frame_gen_ok, frame_gen_proof),
+        "vendor_fallback": (vendor_ok, vendor_proof),
+        "ray_reconstruction_bias_variance": (ray_ok, ray_proof),
+    }
