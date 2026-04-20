@@ -12,6 +12,8 @@ from typing import Dict, List, Set, Optional, Any
 from fractions import Fraction
 from enum import Enum, auto
 
+from src.orthogonal_engineering.fraction_display import format_percent
+
 
 class SignType(Enum):
     """Peirce's trichotomy of signs."""
@@ -198,7 +200,7 @@ class SemioticEngine:
         lines = [
             f"# Semiotic Guide: {system.name}",
             f"\nInterpretive Community: {', '.join(system.interpretive_community)}",
-            f"Sign Coverage: {float(system.coverage()):.1%}",
+            f"Sign Coverage: {format_percent(system.coverage(), 1)}",
             "\n## Sign Inventory",
         ]
         

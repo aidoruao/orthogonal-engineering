@@ -15,7 +15,7 @@ Falsifies if:
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
-from .implementation import KripkeFrame, ModalSystem
+from .implementation import KripkeFrame, ModalSystem, World
 
 
 def check_frame_reflexivity(frame: KripkeFrame) -> Tuple[bool, ProofObject]:
@@ -150,13 +150,24 @@ def check_accessibility_non_empty(frame: KripkeFrame) -> Tuple[bool, ProofObject
 
 
 def run_all_invariants() -> dict:
-    """Run all D_NECESSITY invariants with nominal sample data.
+    """Run all D_NECESSITY invariants against a deterministic reference frame.
 
-    falsifies_if: any invariant fails or raises an exception.
+    Uses a two-world Kripke frame with the total accessibility relation
+    ``{w1, w2} x {w1, w2}``. That frame is reflexive, symmetric, transitive
+    and has non-empty accessibility from every world, so every invariant is
+    expected to pass at steady state.
+
+    Falsifies if: any invariant fails on the reference frame or raises an exception.
+    falsifies_if: any invariant fails on the reference frame or raises an exception.
     """
+    w1 = World(world_id="w1", true_propositions=frozenset({"p"}))
+    w2 = World(world_id="w2", true_propositions=frozenset({"p"}))
     kripke_frame = KripkeFrame(
-        worlds=None,
-        accessibility=None,
+        worlds={w1, w2},
+        accessibility={
+            "w1": {"w1", "w2"},
+            "w2": {"w1", "w2"},
+        },
     )
 
     checks = [

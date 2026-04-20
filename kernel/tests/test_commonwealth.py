@@ -12,6 +12,7 @@ from typing import Tuple, List
 
 from axioms.logic import ProofObject
 from axioms.capability_security import Capability, Permission
+from src.orthogonal_engineering.fraction_display import format_percent
 
 from kernel.commonwealth import (
     SovereignRole,
@@ -576,7 +577,7 @@ def test_system_state_completion_ratio() -> Tuple[bool, ProofObject]:
     
     return True, ProofObject(
         rule="TestCompletionRatio",
-        premises=[f"ratio={float(ratio):.2%}"],
+        premises=[f"ratio={format_percent(ratio, 2)}"],
         conclusion="completion ratio test passed"
     )
 

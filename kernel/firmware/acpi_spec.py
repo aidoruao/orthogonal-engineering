@@ -29,6 +29,7 @@ from enum import Enum, auto
 
 from axioms.logic import ProofObject
 from axioms.real_analysis import ContinuousFunction
+from src.orthogonal_engineering.fraction_display import format_decimal
 
 
 class PowerState(Enum):
@@ -280,7 +281,7 @@ class ACPIState:
         proof = ProofObject(
             rule="ACPIReadTemperature",
             premises=[f"thermal_zone={thermal_zone}"],
-            conclusion=f"temperature={float(temp):.1f}C"
+            conclusion=f"temperature={format_decimal(temp, 1)}C"
         )
         
         return temp, proof
@@ -305,7 +306,7 @@ class ACPIState:
         
         proof = ProofObject(
             rule="ACPICheckEnergy",
-            premises=[f"remaining_joules={float(remaining):.2f}"],
+            premises=[f"remaining_joules={format_decimal(remaining, 2)}"],
             conclusion=f"can_continue={can_continue}"
         )
         
