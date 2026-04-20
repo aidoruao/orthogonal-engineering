@@ -60,3 +60,18 @@ def test_composite_falsifies_when_any_sub_fails() -> None:
     ok, proof = check_polymath_capability_invariant(failing)
     assert ok is False
     assert "FAIL" in proof.conclusion
+
+
+def test_zero_entailments_falsifies() -> None:
+    """A claim declaring zero cross-register entailments cannot be called
+    polymath-complete; the invariant requires at least one entailment to
+    have been proved, so total=0 (with proved=0) must falsify.
+    """
+    claim = create_nominal_claim()
+    failing = replace(
+        claim,
+        cross_register_entailments_proved=0,
+        cross_register_entailments_total=0,
+    )
+    ok, _ = check_cross_register_entailments_complete(failing)
+    assert ok is False

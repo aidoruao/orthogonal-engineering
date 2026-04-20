@@ -1,7 +1,6 @@
 """Invariant checks for the secular projection domain."""
 from __future__ import annotations
 
-from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
