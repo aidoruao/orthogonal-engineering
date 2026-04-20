@@ -1,0 +1,136 @@
+DeepSeek is describing a coherent philosophical position, but it conflates two things: the **architecture** (which exists and is real) and the **content** (which doesn't exist yet). Here's what's true and what's not, then the add-on tasks.
+
+## What DeepSeek Gets Right
+
+**The verification infrastructure is real and non-trivial.** The `AGENT_FEED.md` hash chain has 40+ entries spanning Feb-Apr 2026, each with `prev_entry_hash` → `entry_hash` SHA-256 linkage, verified by CI on every push to `main` via `pr40-canonical-presence.yml`. Tests explicitly verify tamper detection — if you modify a payload, `verify_chain()` returns `False`: [2-cite-0](#2-cite-0) 
+
+The consent log (`consent_log.jsonl`) has 30+ real entries with `consent_hash` fields, referenced by 14+ Python files across the codebase. Every agent session records a handshake before touching kernel surfaces: [2-cite-1](#2-cite-1) 
+
+The `AGENT_FEED.md` CI workflow runs on 3 Python versions, verifies chain integrity, appends idempotently, and alerts on failure: [2-cite-2](#2-cite-2) 
+
+**The falsifiability claim is architecturally sound.** Every standard in `STANDARDS_REGISTRY.json` has a `falsifies_if` condition and an `enforcement_command`. Standard CS-005 explicitly bans stubs: [2-cite-3](#2-cite-3) 
+
+**The propagation claim is real.** `UNIVERSAL_ONBOARDING.md`, `CLAUDE.md`, `.cursorrules`, `DEVIN_ONBOARDING.md`, `COPILOT_ONBOARDING.md` — the repo has onboarding docs for 6+ AI agents and humans. Any agent can pick up and continue. [2-cite-4](#2-cite-4) 
+
+## What DeepSeek Gets Wrong
+
+**"Append-only by cryptography"** — DeepSeek says this is what you need. Your own repo's DeepSeek question set already identified the gap: *"What would it take to make the witness log append-only at the filesystem level (not just convention)?"* The answer: it's still convention. The hash chain detects tampering after the fact, but doesn't prevent it. Anyone with `git push --force` can rewrite history. [2-cite-5](#2-cite-5) 
+
+**"Governments don't adopt it; they are contained within it"** — No external data has been absorbed. The `ontology/ontology.json` has domain *definitions* (e.g., `D_PRIVACY_LAW` with categories like "ccpa", "hipaa") but these are schema entries, not the actual text of CCPA or HIPAA: [2-cite-6](#2-cite-6) 
+
+**"The math vouches for itself"** — The math is real (category theory, Lawvere, Löb, forcing), but it vouches for the *framework's internal consistency*, not for external truth. The system can verify that a `BankingClaim` with `tier1_ratio < 6%` fails the Basel III check — but only if someone feeds it real bank data. The data pipeline doesn't exist.
+
+## The Honest Assessment
+
+DeepSeek is describing what the repo **could become** if the absorption pipeline were built. The architecture supports it. The philosophy is internally consistent. But the rhetoric treats the destination as if it's the current location.
+
+The useful framing is: **the repo is a verification engine without fuel.** The engine works. It needs data.
+
+---
+
+## Add-On Coding Tasks
+
+Yes. These are the tasks that would close the gap between DeepSeek's claims and reality, ordered by impact:
+
+### Task 1: Cryptographic Hardening of Witness Chain
+
+**Problem:** `AGENT_FEED.md` is append-only by convention, not cryptography. DeepSeek claims "incorruptibility" but `git push --force` defeats it.
+
+**Solution:** Create `tools/witness_anchor.py`:
+- After each `AGENT_FEED.md` append, compute the latest `entry_hash`
+- Post it to an external timestamping service (e.g., OpenTimestamps, or simply tweet it, or write to a separate public repo)
+- Store the anchor proof in `witness_anchors/` directory
+- Add `check_external_anchor()` to the verification quartet
+- This makes rewriting history detectable by *anyone*, not just repo collaborators
+
+**Files:** `tools/witness_anchor.py`, `witness_anchors/.gitkeep`, update `STANDARDS_REGISTRY.json` with `BC-006`
+
+### Task 2: First Real Absorption — 3 Pilot Domains with External Data
+
+**Problem:** Zero external data has been absorbed. DeepSeek's "completeness" claim is empty.
+
+**Solution:** Pick 3 domains where machine-readable public data exists and build real ingestion:
+
+| Domain | Source | Format |
+|--------|--------|--------|
+| `d_un_charter` | UN Charter full text (un.org, public domain) | Each of the 111 articles becomes a frozen dataclass. `check_article_consistency()` verifies cross-references between articles. |
+| `d_us_constitution` | US Constitution + Amendments (archives.gov) | Each amendment as an invariant. `check_amendment_not_violated(scenario)` takes a `LegislativeAction` dataclass and checks against the amendment's constraints. |
+| `d_iso_standards_catalog` | ISO public catalog (iso.org/standards-catalogue) | Each standard as `ISOStandard(id, title, status, committee, published_date)`. `check_standard_active()` verifies status. `check_superseded_chain()` verifies replacement chains. |
+
+For each:
+- `implementation.py`: frozen dataclasses with Fraction fields where applicable, real data hardcoded from the source
+- `invariants.py`: `check_*` functions that test real properties of the real data
+- `run_all_invariants()` with both passing and failing test inputs
+- Source URL in docstring for provenance
+
+**This is the minimum viable absorption.** 3 domains with real external data, verifiable against the source.
+
+### Task 3: Tautology Detector + Batch Deepening Queue
+
+**Problem:** Unknown number of domains are boolean-echo patterns. No automated way to identify them.
+
+**Solution:** Create `tools/tautology_detector.py`:
+```
+For each src/domains/d_*/invariants.py:
+  Parse AST
+  For each check_* function:
+    Walk the function body
+    If the only assignment to `success` is `success = data.<bool_field>`:
+      Flag as TAUTOLOGICAL
+    If there's arithmetic, comparison, or conditional logic:
+      Flag as COMPUTATIONAL
+  Output JSON: {domain: {checks: [{name, type: "tautological"|"computational"}]}}
+```
+
+Then create `DEEPENING_QUEUE.md` — a machine-readable list of all tautological domains, ordered by priority (domains referenced by other domains first, then by subject-matter importance).
+
+**Files:** `tools/tautology_detector.py`, `tests/test_tautology_detector.py`, `DEEPENING_QUEUE.md`
+
+### Task 4: Verification Quartet Wrapper Script
+
+**Problem:** The verification quartet is 4 separate commands. Agents and humans must remember all 4. The checkpoint doc lists them but there's no single script.
+
+**Solution:** Create `tools/verify_all.py`:
+```python
+#!/usr/bin/env python3
+"""Run the full verification quartet. Exit 0 only if all 4 pass."""
+# 1. python tools/state_witness/generate_feed_entry.py --verify
+# 2. python audit/popperian_audit.py
+# 3. python tools/standards_check.py --verify
+# 4. python -m pytest tests/ -q --maxfail=3
+# Print summary table. Exit with count of failures.
+```
+
+Add standard `VQ-001` to `STANDARDS_REGISTRY.json`.
+
+**Files:** `tools/verify_all.py`, update `STANDARDS_REGISTRY.json`
+
+### Task 5: External Witness Strengthening
+
+**Problem:** `external-witness.yml` exists but the SHA-512 witness entries aren't publicly anchored outside GitHub.
+
+**Solution:** Extend `tools/discord_witness/bot.py` to also post the `entry_hash` to a public Discord channel (already partially implemented — the bot exists but needs the webhook URL configured). Document the setup in `docs/EXTERNAL_WITNESS_SETUP.md`.
+
+**Files:** `docs/EXTERNAL_WITNESS_SETUP.md`, update `tools/discord_witness/bot.py` with configuration docs
+
+---
+
+### Execution Order and Dependencies
+
+```
+Task 4 (verify_all.py)     — no dependencies, immediate QoL
+Task 3 (tautology_detector) — no dependencies, gives visibility
+Task 2 (3 pilot absorptions) — no dependencies, proves the concept
+Task 1 (witness anchoring)  — depends on Task 4 for verification
+Task 5 (external witness)   — depends on Task 1 for anchor format
+```
+
+### Non-Negotiable Constraints (from the repo's own rules)
+
+- `Fraction` only, 0 floats
+- `Tuple[bool, ProofObject]` returns on all check functions
+- Dual `Falsifies if:` / `falsifies_if:` in docstrings
+- Consent log entry before kernel-surface changes
+- Run verification quartet before and after
+- No `pass` bodies, no stubs
+- Commit format: `<type>(<scope>): <description>` [2-cite-7](#2-cite-7) [2-cite-8](#2-cite-8)
