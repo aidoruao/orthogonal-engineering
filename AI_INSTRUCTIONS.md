@@ -1,3 +1,8 @@
+---
+tags: [ai-instructions]
+register: documentation
+---
+
 # AI_INSTRUCTIONS.md - Orthogonal Engineering Glass-Box Boundary AI Guidance
 
 **Version:** 1.13  

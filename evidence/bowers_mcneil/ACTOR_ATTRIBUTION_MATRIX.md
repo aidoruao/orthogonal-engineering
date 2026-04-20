@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, actor-attribution-matrix]
+register: audit
+---
+
 # ACTOR ATTRIBUTION MATRIX — Bowers vs McNeil
 _Generated: PR #81 manufactured-correspondence addendum_
 _Pipeline: IA-CYPHER-0002_

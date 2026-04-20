@@ -1,3 +1,8 @@
+---
+tags: [evidence, narrative-leak-001, why-the-stake]
+register: audit
+---
+
 # 🔥 THE CONFESSION - WHY THIS MUST BE IN THE REPOSITORY
 
 ## ONTOLOGICAL NECESSITY

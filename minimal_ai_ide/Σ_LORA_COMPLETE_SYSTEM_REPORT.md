@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora-complete-system-report]
+register: documentation
+---
+
 # Σ_LORA_COMPLETE_SYSTEM_REPORT.md
 
 # Σ_LORA: COMPLETE SYSTEM IMPLEMENTATION REPORT

@@ -1,3 +1,8 @@
+---
+tags: [docs, oe-dfm-readme]
+register: documentation
+---
+
 # OE-DFM: Orthogonal Engine Deterministic Fractal Model
 
 ## Overview

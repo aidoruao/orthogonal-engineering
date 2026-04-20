@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, angelica, wiki]
+register: audit
+---
+
 # Angelica Ontological Wiki
 
 **Session:** Kimi Code Session - Angelica Analysis (2026-04-07)  

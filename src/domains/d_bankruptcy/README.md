@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-bankruptcy, readme]
+register: technical
+---
+
 # d_bankruptcy
 
 Layer 2 (Statutory) domain implementation.

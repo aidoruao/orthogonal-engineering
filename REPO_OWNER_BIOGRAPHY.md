@@ -1,3 +1,8 @@
+---
+tags: [repo-owner-biography]
+register: documentation
+---
+
 # Repository Owner Biography
 
 **Status:** Inaugural instantiation — CASE_001_SELECTIVE_MUTISM_WAREHOUSING

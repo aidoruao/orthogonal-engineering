@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-30-comment]
+register: audit
+---
+
 ## Investigation: NBT Blocks Not Rendering Correctly
 
 Hi @DarkShadow44, I've identified the NBT block issue.

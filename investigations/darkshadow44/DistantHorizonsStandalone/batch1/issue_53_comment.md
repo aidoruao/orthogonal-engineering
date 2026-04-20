@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-53-comment]
+register: audit
+---
+
 ## Investigation: Server Boot Issue
 
 Hi @DarkShadow44, I've analyzed the server boot failure.

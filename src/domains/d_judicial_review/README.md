@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-judicial-review, readme]
+register: technical
+---
+
 # D_JUDICIAL_REVIEW: Judicial Review
 
 **Layer:** 1 (Constitutional)  

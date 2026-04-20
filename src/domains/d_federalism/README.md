@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-federalism, readme]
+register: technical
+---
+
 # D_FEDERALISM: Federal/State Structure
 
 **Layer:** 1 (Constitutional)  

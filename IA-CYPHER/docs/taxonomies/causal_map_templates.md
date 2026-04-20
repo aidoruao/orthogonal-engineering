@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, taxonomies, causal-map-templates]
+register: documentation
+---
+
 # Causal Map Templates
 
 > Templates for building causal mapping documents that link **observed LLM behaviors** → **corporate/institutional policies** → **upstream structures**. Each map is a traceable chain from empirical observation to structural cause.

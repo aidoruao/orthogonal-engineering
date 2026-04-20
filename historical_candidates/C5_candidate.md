@@ -1,3 +1,8 @@
+---
+tags: [historical-candidates, c5-candidate]
+register: documentation
+---
+
 # C₅: FUTURE / UNKNOWN INSTANTIATION (OPEN POSSIBILITY)
 
 **File:** `C5_candidate.md`  

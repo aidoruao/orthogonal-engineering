@@ -1,3 +1,8 @@
+---
+tags: [docs, auto, generated-axioms]
+register: documentation
+---
+
 # Axiom Cross-Reference Index
 
 **Total Axiom Modules:** 27

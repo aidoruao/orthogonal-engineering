@@ -1,3 +1,8 @@
+---
+tags: [crusader, verification, comprehensive-verification-summary-20260226-213610]
+register: documentation
+---
+
 # Comprehensive Verification Summary
 
 **Verification ID:** COMPREHENSIVE-VERIFY-20260226-213610

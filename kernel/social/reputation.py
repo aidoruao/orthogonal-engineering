@@ -25,6 +25,7 @@ from fractions import Fraction
 from enum import Enum, auto
 
 from axioms.logic import ProofObject
+from src.orthogonal_engineering.fraction_display import format_decimal
 from axioms.measure_theory import Measure
 
 
@@ -66,7 +67,7 @@ class ReputationWitness:
                 f"witness={self.witness_id}",
                 f"subject={self.subject_id}",
                 f"dimension={self.dimension.value}",
-                f"rating={float(self.rating):.3f}",
+                f"rating={format_decimal(self.rating, 3)}",
             ],
             conclusion=f"testimony at {self.timestamp}"
         )
@@ -204,7 +205,7 @@ class ReputationLedger:
             premises=[
                 f"identity={identity_id}",
                 f"witness_count={score.witness_count}",
-                f"overall={float(score.overall_score()):.3f}",
+                f"overall={format_decimal(score.overall_score(), 3)}",
             ],
             conclusion="reputation retrieved"
         )

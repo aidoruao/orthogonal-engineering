@@ -1,3 +1,8 @@
+---
+tags: [canonical, humans, aidoruao, questions]
+register: documentation
+---
+
 # Questions
 
 **Author:** aidoruao  

@@ -1,3 +1,8 @@
+---
+tags: [readme]
+register: documentation
+---
+
 # Orthogonal Engineering - Deterministic Pipeline Scaffold
 
 ## 🤖 AI Agent / GitHub Copilot Onboarding

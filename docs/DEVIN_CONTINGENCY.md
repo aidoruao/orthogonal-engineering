@@ -1,3 +1,8 @@
+---
+tags: [docs, devin-contingency]
+register: documentation
+---
+
 # Devin AI Session Contingency & Recovery
 
 ## Problem

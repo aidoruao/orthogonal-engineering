@@ -1,3 +1,8 @@
+---
+tags: [generators, recursive-expansion-diagrams]
+register: documentation
+---
+
 # Recursive Expansion Architecture Diagram
 
 ## Multi-Layer Universe Hierarchy

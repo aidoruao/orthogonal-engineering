@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-64-comment]
+register: audit
+---
+
 ## Investigation: LODs Not Rendering with Shaders at Load
 
 Hi @DarkShadow44, I've analyzed the shader loading issue.

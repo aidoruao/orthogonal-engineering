@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, logos-ide-readme]
+register: documentation
+---
+
 # Logos IDE - Minimal AI IDE with Textual TUI
 
 ## Overview

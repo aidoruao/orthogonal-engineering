@@ -1,3 +1,8 @@
+---
+tags: [downloads, for-chatgpt-consolidated-output]
+register: documentation
+---
+
 # ATOMIC INVESTIGATION RESULTS - FOR CHATGPT
 # Orthogonal Engineering Repository Structural Analysis
 # Generated: 2026-01-25

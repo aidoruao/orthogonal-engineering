@@ -1,3 +1,8 @@
+---
+tags: [halt-condition]
+register: documentation
+---
+
 # Halt Condition: Sabbath and Topological Collapse
 
 ## Purpose

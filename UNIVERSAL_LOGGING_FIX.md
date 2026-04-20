@@ -1,3 +1,8 @@
+---
+tags: [universal-logging-fix]
+register: documentation
+---
+
 # UNIVERSAL LOGGING FIX - v0.4.2
 
 ## The Solution: PIPELINE_LOGGER.py

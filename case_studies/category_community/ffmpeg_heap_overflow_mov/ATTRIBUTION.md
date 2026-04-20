@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-community, ffmpeg-heap-overflow-mov, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/FFmpeg/FFmpeg

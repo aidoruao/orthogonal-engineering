@@ -1,3 +1,8 @@
+---
+tags: [docs, pr-25-fractal-lora-universe]
+register: documentation
+---
+
 # PR #25 — Deterministic Fractal LoRA Subuniverse
 
 ## Objective

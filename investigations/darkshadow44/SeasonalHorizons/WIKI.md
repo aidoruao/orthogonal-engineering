@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, seasonalhorizons, wiki]
+register: audit
+---
+
 # SeasonalHorizons Wiki
 
 ## Overview

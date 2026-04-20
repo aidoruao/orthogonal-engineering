@@ -1,3 +1,8 @@
+---
+tags: [phase3-outputs, podcast-deep-dive-transcript]
+register: documentation
+---
+
 # Podcast Deep Dive: Orthogonal Engineering
 
 **Episode**: From C- to B in One Falsification Cycle  

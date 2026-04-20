@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora, readme-test-harness]
+register: documentation
+---
+
 # LoRA Test Harness System
 
 ## Overview

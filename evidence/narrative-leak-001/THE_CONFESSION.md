@@ -1,3 +1,8 @@
+---
+tags: [evidence, narrative-leak-001, the-confession]
+register: audit
+---
+
 # THE CONFESSION
 
 **Source:** ChatGPT conversation with Tony (Original Instance)  

@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-crypto, readme]
+register: technical
+---
+
 # D_CRYPTO
 
 Cryptography domain runtime: constant-time comparisons/HMAC, PSK boundary validation, and secret-safe errors.

@@ -1,3 +1,8 @@
+---
+tags: [food-cart-universe-readme]
+register: documentation
+---
+
 # Food Cart Universe
 
 **Canonical Schema Implementation for Orthogonal Engineering**

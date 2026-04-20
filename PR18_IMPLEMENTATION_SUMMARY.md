@@ -1,3 +1,8 @@
+---
+tags: [pr18-implementation-summary]
+register: documentation
+---
+
 # PR #18 Autonomous Explorer - Implementation Summary
 
 ## Overview

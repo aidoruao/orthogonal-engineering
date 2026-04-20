@@ -1,3 +1,8 @@
+---
+tags: [evidence, case-studies, craftsman-protocol-004, craftsman-protocol-evidence]
+register: audit
+---
+
 # CRAFTSMAN PROTOCOL DEVELOPMENT - EVIDENCE
 
 **Case Study ID:** 004  

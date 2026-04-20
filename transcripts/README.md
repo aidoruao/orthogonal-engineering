@@ -1,3 +1,8 @@
+---
+tags: [transcripts, readme]
+register: documentation
+---
+
 # AI Denial Transcripts — CS_AIONT_001 Evidence Archive
 
 This directory contains the session logs that produced the cross-AI denial

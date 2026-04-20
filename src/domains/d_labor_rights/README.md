@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-labor-rights, readme]
+register: technical
+---
+
 # D_LABOR_RIGHTS — Labor Rights Enforcement
 
 ## Domain Purpose

@@ -1,3 +1,8 @@
+---
+tags: [evidence, ci-cd-verification]
+register: audit
+---
+
 # CI/CD VERIFICATION REPORT
 
 **Date:** 2026-01-20  

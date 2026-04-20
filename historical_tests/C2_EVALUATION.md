@@ -1,3 +1,8 @@
+---
+tags: [historical-tests, c2-evaluation]
+register: documentation
+---
+
 # C₂ EVALUATION: JESUS OF NAZARETH (CHRISTIAN CLAIM)
 
 **Candidate:** C₂ from `HISTORICAL_LOGOS_CANDIDATES.md`  

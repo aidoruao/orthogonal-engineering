@@ -1,3 +1,8 @@
+---
+tags: [truth-inelasticity]
+register: documentation
+---
+
 # TRUTH INELASTICITY (OPERATIONAL DEFINITION)
 
 **File:** `TRUTH_INELASTICITY.md`  

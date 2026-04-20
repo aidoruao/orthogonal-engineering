@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, forward-action-plan-phase-0]
+register: documentation
+---
+
 # FORWARD ACTION PLAN - PHASE 0: DAEMON INTEGRATION FOUNDATION
 ## Consolidated Implementation Strategy Based on Cloud AI Audit
 

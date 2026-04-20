@@ -1,3 +1,8 @@
+---
+tags: [falsifiable-bridges]
+register: documentation
+---
+
 # FALSIFIABLE BRIDGES
 
 **File:** `FALSIFIABLE_BRIDGES.md`  

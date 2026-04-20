@@ -1,3 +1,8 @@
+---
+tags: [downloads, simple-summary]
+register: documentation
+---
+
 # SIMPLE SUMMARY - Mathematical Proof System Fix
 
 ## Problem

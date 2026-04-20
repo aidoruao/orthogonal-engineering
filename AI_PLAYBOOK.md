@@ -1,3 +1,8 @@
+---
+tags: [ai-playbook]
+register: documentation
+---
+
 # AI_PLAYBOOK.md
 # ================
 # Session-level guidance for AI agents working in this repository.

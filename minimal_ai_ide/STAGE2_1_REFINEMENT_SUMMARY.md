@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, stage2-1-refinement-summary]
+register: documentation
+---
+
 # STAGE 2.1 REFINEMENT SUMMARY
 
 ## Status: READY FOR REFINEMENT TRAINING

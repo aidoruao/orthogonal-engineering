@@ -1,3 +1,8 @@
+---
+tags: [documentation, phase-8-completion-summary]
+register: documentation
+---
+
 # PHASE 8 COMPLETION SUMMARY - FULL OE AUTOMATION
 
 **File:** `PHASE_8_COMPLETION_SUMMARY.md`  

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, critical-fixes-summary]
+register: documentation
+---
+
 # Logos IDE Critical Fixes Summary
 
 ## Overview

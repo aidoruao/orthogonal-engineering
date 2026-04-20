@@ -1,3 +1,8 @@
+---
+tags: [docs, ide-ai-runbook]
+register: documentation
+---
+
 # IDE AI Runbook: Local Execution of Deterministic Scaffold
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-corporate-law, readme]
+register: technical
+---
+
 # D_CORPORATE_LAW: Corporate Law
 
 **Layer:** 2 (Statutory)  

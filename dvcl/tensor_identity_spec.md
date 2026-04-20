@@ -1,3 +1,8 @@
+---
+tags: [dvcl, tensor-identity-spec]
+register: documentation
+---
+
 # Tensor Identity Enforcement Specification (TIE)
 # PR #37 — Distributed Verifiable Compute Layer
 # Standard: Yeshua

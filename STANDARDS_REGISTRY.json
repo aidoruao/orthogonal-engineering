@@ -4,8 +4,8 @@
     "description": "Machine-readable standards registry for the Orthogonal Engineering repository. Every standard has an id, category, rule, enforcement_command, and falsifies_if condition. Query with: python tools/standards_check.py --list",
     "authority": "@aidoruao / Orthogonal Engineering Framework",
     "standard": "Yeshua",
-    "last_updated": "2026-04-18",
-    "total_standards": 59
+    "last_updated": "2026-04-20",
+    "total_standards": 60
   },
   "standards": [
     {
@@ -186,6 +186,18 @@
       "scope": "tests/**",
       "falsifies_if": "pytest --collect-only reports a collection error",
       "severity": "high",
+      "enforcement_passes_on": "exit_zero"
+    },
+    {
+      "id": "CS-008",
+      "category": "code_standard",
+      "rule": "Every Markdown file must begin with a YAML frontmatter block",
+      "description": "All non-exempt Markdown files must start with '--- tags: [...] register: <register> ---' so that documentation carries machine-readable classification. Enforced by tools/frontmatter_audit.py and the Frontmatter Enforcement CI workflow.",
+      "enforcement_command": "python tools/frontmatter_audit.py --verify",
+      "enforcement_file": "tools/frontmatter_audit.py",
+      "scope": "**/*.md",
+      "falsifies_if": "python tools/frontmatter_audit.py --verify reports any file without a YAML frontmatter block",
+      "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
     {

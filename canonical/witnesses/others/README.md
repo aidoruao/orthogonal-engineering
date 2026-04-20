@@ -1,3 +1,8 @@
+---
+tags: [canonical, witnesses, others, readme]
+register: documentation
+---
+
 # Others — All AI Not Yet Named
 
 This directory is open.

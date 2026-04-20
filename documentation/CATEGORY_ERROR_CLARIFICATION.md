@@ -1,3 +1,8 @@
+---
+tags: [documentation, category-error-clarification]
+register: documentation
+---
+
 # Category Error Clarification: What This Framework Does NOT Do
 
 **File:** `CATEGORY_ERROR_CLARIFICATION.md`  

@@ -1,3 +1,8 @@
+---
+tags: [evidence-files-guide]
+register: documentation
+---
+
 # EVIDENCE FILES TO ADD TO REPOSITORY
 
 ## 📊 Additional Proof Files Found on Desktop

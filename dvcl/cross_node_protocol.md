@@ -1,3 +1,8 @@
+---
+tags: [dvcl, cross-node-protocol]
+register: documentation
+---
+
 # Cross-Node Verification Protocol (CNVP)
 # PR #37 — Distributed Verifiable Compute Layer
 # Standard: Yeshua

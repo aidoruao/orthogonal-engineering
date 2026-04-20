@@ -1,3 +1,8 @@
+---
+tags: [filesystem-exploration, 01-methodology-application]
+register: documentation
+---
+
 # FILESYSTEM EXPLORATION USING ORTHOGONAL ENGINEERING
 ## Applying Invariant Detection to Filesystem Structure
 Generated: Tue, Jan 20, 2026  2:57:40 AM

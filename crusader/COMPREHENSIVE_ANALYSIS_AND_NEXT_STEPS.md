@@ -1,3 +1,8 @@
+---
+tags: [crusader, comprehensive-analysis-and-next-steps]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Comprehensive Analysis and Next Steps
 ## Current State: Import-Fixed, Structurally Sound, Needs Implementation Polish
 

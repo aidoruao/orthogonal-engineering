@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-69-comment]
+register: audit
+---
+
 ## Investigation: Renderer Error (Needs More Info)
 
 Hi @DarkShadow44, the issue title "Distant Horizons Renderer Error" is too generic to identify the specific cause.

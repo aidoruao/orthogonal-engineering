@@ -1,3 +1,8 @@
+---
+tags: [documentation, sha256-manifests, artifact-manifest-sha256-20260121-020406]
+register: documentation
+---
+
 # ARTIFACT MANIFEST SHA256 - 2026-01-21 02:04:06
 
 **File:** `ARTIFACT_MANIFEST_SHA256.md`  

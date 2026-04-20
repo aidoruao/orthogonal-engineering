@@ -1,3 +1,8 @@
+---
+tags: [pipeline-works-proof]
+register: documentation
+---
+
 # PIPELINE WORKS - PROOF FOR DEEPSEEK AI
 
 **Date:** 2026-01-19 09:21:39  

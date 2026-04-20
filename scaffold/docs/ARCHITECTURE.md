@@ -1,3 +1,8 @@
+---
+tags: [scaffold, docs, architecture]
+register: documentation
+---
+
 # Architecture
 
 ## Overview

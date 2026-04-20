@@ -1,3 +1,8 @@
+---
+tags: [logs, claude-integration, integration-report-2026-01-26]
+register: documentation
+---
+
 # Claude Analysis Integration Report
 
 **Timestamp:** 2026-01-26T04:08:36.996970

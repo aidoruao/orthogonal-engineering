@@ -1,3 +1,8 @@
+---
+tags: [docs, distribution]
+register: documentation
+---
+
 # DISTRIBUTION SPECIFICATION
 
 **Schema:** distribution-spec/1.0  

@@ -1,3 +1,8 @@
+---
+tags: [evidence-package-podcast]
+register: documentation
+---
+
 # 🎙️ TECHNICAL EVIDENCE PACKAGE FOR PODCAST DEEP DIVE
 
 ## 🎯 INVESTIGATION PROTOCOL: ENGINEER + SYSTEMS THEORIST

@@ -1,3 +1,8 @@
+---
+tags: [agent-feed]
+register: documentation
+---
+
 <!-- AGENT_FEED.md — append-only state witness ledger (PR #40) -->
 <!-- Do not edit existing rows. Append new rows only. -->
 

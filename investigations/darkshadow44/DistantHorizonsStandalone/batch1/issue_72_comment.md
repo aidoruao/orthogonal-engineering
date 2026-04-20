@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch1, issue-72-comment]
+register: audit
+---
+
 ## Investigation: GTNH Crash on Load
 
 Hi @DarkShadow44, I've investigated this GTNH compatibility issue. Here's my analysis:

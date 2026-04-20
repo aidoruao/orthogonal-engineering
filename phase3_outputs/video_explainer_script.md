@@ -1,3 +1,8 @@
+---
+tags: [phase3-outputs, video-explainer-script]
+register: documentation
+---
+
 # Video Explainer Script: Orthogonal Engineering in 5 Minutes
 
 **Title**: Orthogonal Engineering in 5 Minutes  

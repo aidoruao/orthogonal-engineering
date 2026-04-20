@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, stage3-refinement-plan]
+register: documentation
+---
+
 # STAGE 3 REFINEMENT PLAN
 ## Production-Scale Training with Validated Semantic Invariants
 

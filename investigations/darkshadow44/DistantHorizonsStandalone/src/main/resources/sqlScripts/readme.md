@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, src, main, resources, sqlscripts, readme]
+register: audit
+---
+
 
 ### All Sql scripts should be run exactly once per database and old scripts shouldn't be changed. Any necessary schema changes should be done by creating new scripts that modify the existing database.
 

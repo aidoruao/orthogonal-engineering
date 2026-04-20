@@ -1,3 +1,8 @@
+---
+tags: [documentation, phase-1-7-summary]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - COMPLETE PHASE 1-7 WORKFLOW
 
 **File:** `PHASE_1_7_COMPLETE_WORKFLOW.md`  

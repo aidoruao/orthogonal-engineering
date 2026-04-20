@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-antitrust, readme]
+register: technical
+---
+
 # D_ANTITRUST: Antitrust Law
 
 **Layer:** 2 (Statutory)  

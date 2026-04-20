@@ -1,3 +1,8 @@
+---
+tags: [finality, signature-policy]
+register: documentation
+---
+
 # Signature Policy
 # PR #38 — Autonomous Mathematical Sovereignty Layer (AMSL)
 # Standard: Yeshua

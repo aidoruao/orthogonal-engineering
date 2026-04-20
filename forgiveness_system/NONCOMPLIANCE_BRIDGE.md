@@ -1,3 +1,8 @@
+---
+tags: [forgiveness-system, noncompliance-bridge]
+register: documentation
+---
+
 # Forgiveness System ↔ Noncompliance Taxonomy Bridge
 
 ## Mapping: Violation Type → Forgiveness Response

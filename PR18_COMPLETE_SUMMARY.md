@@ -1,3 +1,8 @@
+---
+tags: [pr18-complete-summary]
+register: documentation
+---
+
 # PR #18 Complete: 1.86M Lines of Code Generated
 
 ## Executive Summary

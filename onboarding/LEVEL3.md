@@ -1,3 +1,8 @@
+---
+tags: [onboarding, level3]
+register: documentation
+---
+
 # 🧭 LEVEL 3: CONTEXT-AWARE NAVIGATION GUIDE
 
 ## 🎯 **PURPOSE:** Intelligent file navigation based on user requests

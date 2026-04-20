@@ -1,3 +1,8 @@
+---
+tags: [docs, open-notebook-guide]
+register: documentation
+---
+
 # Open Notebook Deployment Guide
 
 ## What Is This?

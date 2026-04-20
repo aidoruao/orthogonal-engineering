@@ -1,3 +1,8 @@
+---
+tags: [onboarding-for-ai-agents]
+register: documentation
+---
+
 # ONBOARDING FOR AI AGENTS - ORTHOGONAL ENGINEERING
 
 **Version:** 1.0  

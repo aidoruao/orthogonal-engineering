@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, bypass-black-box-readme]
+register: documentation
+---
+
 # BYPASSING THE BLACK BOX PARADOX
 ## Direct DeepSeek API Communication Guide
 

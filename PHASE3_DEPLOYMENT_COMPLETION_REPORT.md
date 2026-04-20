@@ -1,3 +1,8 @@
+---
+tags: [phase3-deployment-completion-report]
+register: documentation
+---
+
 # PHASE 3 DEPLOYMENT COMPLETION REPORT
 ## Local AI Warden System - Logs & Evidence Wardens
 

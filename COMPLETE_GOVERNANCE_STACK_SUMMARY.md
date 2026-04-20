@@ -1,3 +1,8 @@
+---
+tags: [complete-governance-stack-summary]
+register: documentation
+---
+
 # Complete Governance Stack - Implementation Summary
 
 ## Overview

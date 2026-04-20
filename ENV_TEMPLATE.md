@@ -1,3 +1,8 @@
+---
+tags: [env-template]
+register: documentation
+---
+
 # ENVIRONMENT VARIABLE TEMPLATE
 # Orthogonal Engineering Orchestration System
 

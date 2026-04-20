@@ -1,3 +1,8 @@
+---
+tags: [docs, devin-onboarding]
+register: documentation
+---
+
 # Devin AI Onboarding — How to Onboard Kimi Code CLI
 
 **Version:** 1.0  

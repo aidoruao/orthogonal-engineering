@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, taxonomies, entity-classification]
+register: documentation
+---
+
 # Entity Classification
 
 > **Status:** Placeholder — ready for population as cases accumulate and entities are identified through investigation.

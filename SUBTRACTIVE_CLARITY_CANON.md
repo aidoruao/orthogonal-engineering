@@ -1,3 +1,8 @@
+---
+tags: [subtractive-clarity-canon]
+register: documentation
+---
+
 # SUBTRACTIVE CLARITY CANON
 ## Design Law 1.0
 

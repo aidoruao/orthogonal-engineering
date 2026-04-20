@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, forensic-discrepancy-report]
+register: audit
+---
+
 # FORENSIC DISCREPANCY REPORT — Bowers vs McNeil
 _Generated: 2026-04-03T02:42:48.286729Z_
 _Pipeline: IA-CYPHER-0002_

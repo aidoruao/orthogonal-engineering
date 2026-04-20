@@ -1,3 +1,8 @@
+---
+tags: [pr18-task-agent-readme]
+register: documentation
+---
+
 # PR #18 Task-Agent Execution System
 
 ## Overview

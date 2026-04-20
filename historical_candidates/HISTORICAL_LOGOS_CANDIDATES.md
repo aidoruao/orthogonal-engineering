@@ -1,3 +1,8 @@
+---
+tags: [historical-candidates, historical-logos-candidates]
+register: documentation
+---
+
 # HISTORICAL LOGOS CANDIDATES - ENUMERATION FOR CORRESPONDENCE TESTING
 
 **File:** `HISTORICAL_LOGOS_CANDIDATES.md`  

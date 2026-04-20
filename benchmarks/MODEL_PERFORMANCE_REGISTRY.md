@@ -1,3 +1,8 @@
+---
+tags: [benchmarks, model-performance-registry]
+register: documentation
+---
+
 # AI Model Performance Registry
 
 Pipeline: IA-CYPHER-0006 | PR: #84

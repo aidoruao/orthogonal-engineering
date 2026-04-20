@@ -1,3 +1,8 @@
+---
+tags: [downloads, atomic-investigation-verification]
+register: documentation
+---
+
 # ATOMIC INVESTIGATION VERIFICATION REPORT
 
 **Report ID:** VERIFICATION-ATOMIC-20260125  

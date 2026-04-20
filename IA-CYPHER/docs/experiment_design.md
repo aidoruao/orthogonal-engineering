@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, docs, experiment-design]
+register: documentation
+---
+
 # Experiment Design: LLM Web Search Mode vs Offline Mode
 
 ## Objective

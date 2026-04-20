@@ -1,3 +1,8 @@
+---
+tags: [self-clean-kitchen-readme]
+register: documentation
+---
+
 # Self-Cleaning Kitchen Universe
 
 **Maximal OE-Canonical Schema for Fully Self-Cleaning Kitchen**

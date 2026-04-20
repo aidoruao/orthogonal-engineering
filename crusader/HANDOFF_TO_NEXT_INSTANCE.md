@@ -1,3 +1,8 @@
+---
+tags: [crusader, handoff-to-next-instance]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Implementation Handoff
 ## Status: STRUCTURALLY COMPLETE - Ready for Import Fixes & Testing
 

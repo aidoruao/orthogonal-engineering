@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-medical, readme]
+register: technical
+---
+
 # D_MEDICAL — Medical Systems
 
 ## Domain Purpose

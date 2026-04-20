@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, cases, case-0002, analysis]
+register: documentation
+---
+
 # Analysis: case_0002 — ExxonMobil Corporation SEC 10-K Lobbying Trace
 
 ## Case Summary

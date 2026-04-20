@@ -1,3 +1,8 @@
+---
+tags: [skate4-multiplayer-universe-readme]
+register: documentation
+---
+
 # Skate 4 Multiplayer Universe
 
 **Status:** Production-ready ✅  

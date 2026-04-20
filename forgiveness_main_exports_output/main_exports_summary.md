@@ -1,3 +1,8 @@
+---
+tags: [forgiveness-main-exports-output, main-exports-summary]
+register: documentation
+---
+
 # Forgiveness Analysis - Main Chat Exports
 Generated: 2026-01-24T03:59:55.899735
 

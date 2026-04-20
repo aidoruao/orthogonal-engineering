@@ -1,3 +1,8 @@
+---
+tags: [implementation-roadmap]
+register: documentation
+---
+
 # SORA PIPELINE IMPLEMENTATION ROADMAP
 ## IDE-Orchestrated Repository Processing System
 

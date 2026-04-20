@@ -1,3 +1,8 @@
+---
+tags: [investigation-log]
+register: documentation
+---
+
 # ATOMIC GLASS-BOX INVESTIGATION LOG
 
 **Termination Verification:** 2026-01-23T05:01:45.296317500+00:00

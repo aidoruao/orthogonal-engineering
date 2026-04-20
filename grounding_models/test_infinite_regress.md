@@ -1,3 +1,8 @@
+---
+tags: [grounding-models, test-infinite-regress]
+register: documentation
+---
+
 # TEST: INFINITE REGRESS GROUNDING (G₂)
 
 **File:** `grounding_tests/test_infinite_regress.md`  

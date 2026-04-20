@@ -1,3 +1,8 @@
+---
+tags: [verify-yeshua-implementation]
+register: documentation
+---
+
 # Yeshua Mathematics Implementation Verification
 
 ## Verification Summary

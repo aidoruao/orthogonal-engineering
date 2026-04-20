@@ -1,3 +1,8 @@
+---
+tags: [historical-tests, c3-evaluation]
+register: documentation
+---
+
 # C₃ EVALUATION: MUHAMMAD (ISLAMIC CLAIM)
 
 **Candidate:** C₃ from `HISTORICAL_LOGOS_CANDIDATES.md`  

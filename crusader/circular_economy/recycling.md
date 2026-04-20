@@ -1,3 +1,8 @@
+---
+tags: [crusader, circular-economy, recycling]
+register: documentation
+---
+
 # Circular Economy and Recycling Documentation
 ## Crusader Combat Refrigerator End-of-Life Management
 

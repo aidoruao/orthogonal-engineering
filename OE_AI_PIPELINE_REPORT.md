@@ -1,3 +1,8 @@
+---
+tags: [oe-ai-pipeline-report]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - AI CONVERSATION PIPELINE REPORT
 
 **Report Date:** 2026-01-20  

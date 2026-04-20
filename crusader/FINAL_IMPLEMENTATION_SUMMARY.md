@@ -1,3 +1,8 @@
+---
+tags: [crusader, final-implementation-summary]
+register: documentation
+---
+
 # Crusader Combat Refrigerator - Final Implementation Summary
 
 ## 📊 Implementation Status Report

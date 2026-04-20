@@ -1,3 +1,8 @@
+---
+tags: [downloads, everything-for-chatgpt]
+register: documentation
+---
+
 # ATOMIC INVESTIGATION RESULTS - EVERYTHING FOR CHATGPT
 # Orthogonal Engineering Repository Structural Analysis
 # Generated: 2026-01-25

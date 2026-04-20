@@ -1,3 +1,8 @@
+---
+tags: [meta-evidence-conversation-20260119]
+register: documentation
+---
+
 # META-EVIDENCE: The Conversation That Created The Evidence
 
 **Date:** 2026-01-19  

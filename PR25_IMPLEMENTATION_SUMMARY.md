@@ -1,3 +1,8 @@
+---
+tags: [pr25-implementation-summary]
+register: documentation
+---
+
 # PR #25 Implementation Summary
 
 ## Status: ✅ COMPLETE

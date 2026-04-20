@@ -1,3 +1,8 @@
+---
+tags: [evidence, deepseek-analysis, readme]
+register: audit
+---
+
 # DEEPSEEK ANALYSIS - READY FOR REPO INTEGRATION
 
 **Package Location:** C:\Users\Aidor\Downloads\deepseek_extracted  

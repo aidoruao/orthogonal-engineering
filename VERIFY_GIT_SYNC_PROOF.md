@@ -1,3 +1,8 @@
+---
+tags: [verify-git-sync-proof]
+register: documentation
+---
+
 # GIT SYNCHRONIZATION VERIFICATION PROOF
 
 **Date:** 2026-01-22  

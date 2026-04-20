@@ -1,3 +1,8 @@
+---
+tags: [notebooklm-230-answers]
+register: documentation
+---
+
 # NotebookLM 230 Question Set - Comprehensive Answers
 
 **Generated:** 2026-04-11

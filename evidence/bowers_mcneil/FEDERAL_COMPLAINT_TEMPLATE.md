@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, federal-complaint-template]
+register: audit
+---
+
 # FEDERAL COMPLAINT TEMPLATE — Bowers/McNeil
 _Countermeasure for: S-17 JURISDICTIONAL_FRICTION_
 _Pipeline: IA-CYPHER-0002_

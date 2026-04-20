@@ -1,0 +1,120 @@
+---
+schema: oe-enumeration/hidden-failures/1
+description: >
+  Silent or partially observed failure modes that elude naive observation.
+  Each entry carries a falsifies_if condition used by src/audits/ to detect
+  the pattern.
+entries:
+  - key: zero-propagation
+    statement: >
+      Numeric pipelines that multiply by an unwitnessed zero and silently
+      produce zeros downstream.
+    falsifies_if: >
+      an invariant computes with a zero factor without recording its
+      provenance in the ProofObject premises.
+    detection: >
+      Audit trail must record every zero-valued term in a product with
+      its provenance key.
+
+  - key: empty-collection-true-path
+    statement: >
+      Conditional logic that treats an empty collection and a populated
+      one identically, masking the empty case.
+    falsifies_if: >
+      an invariant's success branch is reachable with an empty collection
+      input that the spec requires to be non-empty.
+    detection: >
+      Tests must include an explicit empty-collection falsification case.
+
+  - key: off-by-one-boundary
+    statement: >
+      Range checks `<` where `<=` is required (or vice versa) hide a
+      single-item boundary error.
+    falsifies_if: >
+      a boundary test at min or max bound is not exercised in the test
+      suite.
+    detection: >
+      Parameterized boundary tests required for every numeric invariant.
+
+  - key: race-condition-write
+    statement: >
+      Concurrent writes to shared state produce a correct result on one
+      run and a corrupt one on another.
+    falsifies_if: >
+      a shared writable state is reached by more than one thread / task
+      without an explicit lock or witness.
+    detection: >
+      Thread-sanitizer pass or an explicit lock object referenced in the
+      ProofObject premises.
+
+  - key: silent-truncation
+    statement: >
+      A writer that truncates its input to a fixed width without raising
+      loses data without notice.
+    falsifies_if: >
+      a serialization step shortens the payload without a length-check
+      witness.
+    detection: >
+      Every serializer records `len(input)` and `len(output)` in the
+      ProofObject.
+
+  - key: unread-exception
+    statement: >
+      An exception is caught, stored in a local variable, and never
+      re-examined.
+    falsifies_if: >
+      a caught exception is bound but not logged, not re-raised, and not
+      attached to a returned ProofObject.
+    detection: >
+      Static check: every caught exception must be referenced at least
+      once after the `except` clause.
+
+  - key: phantom-success
+    statement: >
+      A routine returns a success code on partial completion (e.g. "2 of
+      5 items processed") without the caller observing the partial
+      count.
+    falsifies_if: >
+      a success return omits a partial-completion field when partial
+      completion is possible.
+    detection: >
+      Audit structure mandates `ProcessedResult(total, succeeded, failed)`
+      rather than bare booleans.
+
+  - key: timezone-naive-datetime
+    statement: >
+      A datetime without timezone information loses meaning across
+      daylight-saving boundaries and compute regions.
+    falsifies_if: >
+      a production datetime is created without `tzinfo` and used for
+      comparisons.
+    detection: >
+      Static check rejects `datetime.now()` calls in production modules.
+
+  - key: lossy-float-roundtrip
+    statement: >
+      A roundtrip through `float()` and back to `Decimal` or `Fraction`
+      silently loses precision.
+    falsifies_if: >
+      an invariant pipeline passes through a `float` intermediate.
+    detection: >
+      The FLOAT_CALL audit taxonomy (Stage A).
+
+  - key: stale-cache-read
+    statement: >
+      A cache returns a stale value when the upstream source has already
+      updated.
+    falsifies_if: >
+      a cache lookup succeeds without a freshness check.
+    detection: >
+      Every cache result records an `as_of` timestamp and the consumer
+      checks the drift.
+
+  - key: orphan-write
+    statement: >
+      A database write with no corresponding read-path or verifier
+      becomes orphan data.
+    falsifies_if: >
+      a write endpoint lacks a matching read / verify endpoint.
+    detection: >
+      Service manifest must pair every write with a read or verifier.

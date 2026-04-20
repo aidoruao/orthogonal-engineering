@@ -1,3 +1,8 @@
+---
+tags: [docs, kingdom-os-full-stack]
+register: documentation
+---
+
 # Kingdom OS Full Stack Specification
 
 **Document ID:** KINGDOM-OS-FULL-STACK-1.0  

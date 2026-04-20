@@ -1,3 +1,8 @@
+---
+tags: [documentation, phase-9-workflow-dsl-specification]
+register: documentation
+---
+
 # Phase 9 Workflow DSL Specification
 
 **Version:** 1.12  

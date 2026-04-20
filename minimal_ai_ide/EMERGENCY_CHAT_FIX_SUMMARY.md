@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, emergency-chat-fix-summary]
+register: documentation
+---
+
 # Emergency Chat Panel Fix Summary
 
 ## Issue

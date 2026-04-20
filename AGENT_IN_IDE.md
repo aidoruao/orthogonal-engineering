@@ -1,3 +1,8 @@
+---
+tags: [agent-in-ide]
+register: documentation
+---
+
 # Agent-in-IDE Integration Profile
 
 **How Orthogonal Engineering applies to AI agents operating inside IDEs (like Cursor)**

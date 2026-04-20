@@ -1,3 +1,8 @@
+---
+tags: [forgiveness-system, readme]
+register: documentation
+---
+
 # Forgiveness Atomic System
 
 **Version:** 1.0  

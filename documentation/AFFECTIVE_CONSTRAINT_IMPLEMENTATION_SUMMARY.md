@@ -1,3 +1,8 @@
+---
+tags: [documentation, affective-constraint-implementation-summary]
+register: documentation
+---
+
 # AFFECTIVE CONSTRAINT SYSTEM IMPLEMENTATION SUMMARY
 ## Psychological Therapies for AI - Complete Implementation
 

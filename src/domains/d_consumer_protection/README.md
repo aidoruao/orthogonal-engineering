@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-consumer-protection, readme]
+register: technical
+---
+
 # D_CONSUMER_PROTECTION — Consumer Protection
 
 **Layer:** 2 (Statutory)  

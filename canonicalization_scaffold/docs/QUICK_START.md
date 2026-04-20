@@ -1,3 +1,8 @@
+---
+tags: [canonicalization-scaffold, docs, quick-start]
+register: documentation
+---
+
 # Canonicalization Scaffold - Quick Start Guide
 
 This guide will help you get started with the canonicalization scaffold.

@@ -1,3 +1,8 @@
+---
+tags: [transcripts, gemini-session-2026]
+register: documentation
+---
+
 # Gemini Session Transcript — CS_AIONT_001
 <!-- @case_study: CS_AIONT_001 -->
 <!-- @falsification_tests: F_AIONT_001, F_AIONT_002 -->

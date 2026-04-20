@@ -1,3 +1,8 @@
+---
+tags: [historical-candidates, c3-candidate]
+register: documentation
+---
+
 # C₃: MUHAMMAD (ISLAMIC CLAIM)
 
 **File:** `C3_candidate.md`  

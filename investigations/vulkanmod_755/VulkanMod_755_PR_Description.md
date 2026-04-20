@@ -1,3 +1,8 @@
+---
+tags: [investigations, vulkanmod-755, vulkanmod-755-pr-description]
+register: audit
+---
+
 Hi @xCollateral, I've investigated issue #755 (scissor doesn't respect matrix transformations). This is not a MediaToast-specific bug — it's an architectural flaw in VulkanMod's scissor implementation that affects **any** GUI element that moves, scales, or animates.
 
 ## Root Cause

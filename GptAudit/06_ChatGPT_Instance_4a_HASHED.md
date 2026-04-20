@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 06-chatgpt-instance-4a-hashed]
+register: documentation
+---
+
 # ChatGPT Instance 4a - JSONL Hash-Verified Conversation
 **Generated**: 2026-02-11
 **Framework**: Σ_LORA_COVENANT

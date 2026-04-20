@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, lora, test-harness-implementation-summary]
+register: documentation
+---
+
 # Test Harness Implementation Summary
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+tags: [memory]
+register: documentation
+---
+
 # MEMORY.md — Durable Facts and Constraints
 
 **Schema ID:** MEMORY-1.0  

@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch2, issue-42-comment]
+register: audit
+---
+
 ## Investigation: Blindness/Underwater Overlay Opacity
 
 Hi @DarkShadow44, I've found the cause of the overlay transparency issue.

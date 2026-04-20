@@ -1,3 +1,8 @@
+---
+tags: [docs, fractal-execution-strategy]
+register: documentation
+---
+
 # Fractal Code Execution Strategy - 1B LOC Generation System
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, v60-transformation-summary]
+register: documentation
+---
+
 # V60 TRANSFORMATION: FROM ASSERTIONS TO CONSTRAINTS
 
 ## The Fundamental Meta-Transformation

@@ -1,3 +1,8 @@
+---
+tags: [canonicalization-scaffold, readme]
+register: documentation
+---
+
 # Canonicalization Scaffold
 
 A deterministic, auditable Python scaffold for repository-wide canonicalization, SHA-256 hashing, manifest generation, Merkle/DAG construction, and GTA handling.meta clamp pipeline.

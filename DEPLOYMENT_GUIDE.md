@@ -1,3 +1,8 @@
+---
+tags: [deployment-guide]
+register: documentation
+---
+
 # 🚀 DEPLOYMENT GUIDE - PROOF_PACKAGE
 
 ## ✅ WHAT YOU HAVE

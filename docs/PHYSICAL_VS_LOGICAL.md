@@ -1,3 +1,8 @@
+---
+tags: [docs, physical-vs-logical]
+register: documentation
+---
+
 # Physical vs. Logical Storage: The Core Distinction
 
 ## Executive Summary

@@ -1,3 +1,8 @@
+---
+tags: [implementation-summary-multiplayer]
+register: documentation
+---
+
 # Uncharted Multiplayer Universe Implementation Summary
 
 **Date:** 2026-03-06  

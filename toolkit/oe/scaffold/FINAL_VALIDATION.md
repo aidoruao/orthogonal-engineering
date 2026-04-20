@@ -1,3 +1,8 @@
+---
+tags: [toolkit, oe, scaffold, final-validation]
+register: tooling
+---
+
 # Final Validation Report - Deterministic Auditable Python Scaffold
 
 ## Summary

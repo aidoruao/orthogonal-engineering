@@ -1,3 +1,8 @@
+---
+tags: [arxiv-implementation-status]
+register: documentation
+---
+
 # arXiv Implementation Status
 
 Generated: 2026-04-14T01:21:27Z

@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-civil-law, readme]
+register: technical
+---
+
 # D_CIVIL_LAW: Civil Law / Torts
 
 **Layer:** 2 (Statutory)  

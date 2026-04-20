@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-49-comment]
+register: audit
+---
+
 ## Investigation: /dh Pregen Commands Don't Work
 
 Hi @DarkShadow44, I've found the command issue.

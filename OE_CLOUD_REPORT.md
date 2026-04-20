@@ -1,3 +1,8 @@
+---
+tags: [oe-cloud-report]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - CLOUD AI BRIEFING REPORT
 
 **Report Date:** 2026-01-20  

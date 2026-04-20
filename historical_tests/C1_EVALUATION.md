@@ -1,3 +1,8 @@
+---
+tags: [historical-tests, c1-evaluation]
+register: documentation
+---
+
 # C₁ EVALUATION: NO HISTORICAL INSTANTIATION (DEIST / SILENT LOGOS)
 
 **Candidate:** C₁ from `HISTORICAL_LOGOS_CANDIDATES.md`  

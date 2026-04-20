@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-employment-law, readme]
+register: technical
+---
+
 # D_EMPLOYMENT_LAW — Employment Law
 
 **Layer:** 2 (Statutory)  

@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-dh-standalone, readme]
+register: technical
+---
+
 # D_DH_STANDALONE — DistantHorizonsStandalone Forensic Domain
 
 **Domain ID:** D_DH_STANDALONE  

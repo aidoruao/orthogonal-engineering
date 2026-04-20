@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-mods, vulkanmod-755, vulkanmod-755-test-specification]
+register: documentation
+---
+
 # VulkanMod #755 Test Specification
 ## Matrix-Aware Scissor Implementation
 

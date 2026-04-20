@@ -1,3 +1,8 @@
+---
+tags: [documentation, phase-9-evidence-store-enhancements]
+register: documentation
+---
+
 # Phase 9 EvidenceStore Enhancements
 
 **Version:** 1.12  

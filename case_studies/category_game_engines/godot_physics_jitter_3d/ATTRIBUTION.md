@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-engines, godot-physics-jitter-3d, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/godotengine/godot

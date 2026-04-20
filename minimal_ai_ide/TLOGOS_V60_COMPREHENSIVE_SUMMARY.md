@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, tlogos-v60-comprehensive-summary]
+register: documentation
+---
+
 # TLOGOS + V60 MAXIMAL LOGOS OPERATOR: COMPREHENSIVE IMPLEMENTATION SUMMARY
 
 ## OVERVIEW

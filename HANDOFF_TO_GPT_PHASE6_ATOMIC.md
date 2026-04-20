@@ -1,3 +1,8 @@
+---
+tags: [handoff-to-gpt-phase6-atomic]
+register: documentation
+---
+
 # HANDOFF TO GPT: PHASE 6 ATOMIC ZED IDE PLUGIN
 ## Complete Phase 5 Implementation + Phase 6 Blueprint
 

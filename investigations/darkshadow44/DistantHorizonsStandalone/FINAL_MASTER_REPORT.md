@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, final-master-report]
+register: audit
+---
+
 # DistantHorizonsStandalone - FINAL INVESTIGATION REPORT
 
 **Date:** 2026-04-04  

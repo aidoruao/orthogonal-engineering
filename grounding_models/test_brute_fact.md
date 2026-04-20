@@ -1,3 +1,8 @@
+---
+tags: [grounding-models, test-brute-fact]
+register: documentation
+---
+
 # TEST: BRUTE FACT GROUNDING (G₁)
 
 **File:** `grounding_tests/test_brute_fact.md`  

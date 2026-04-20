@@ -1,3 +1,8 @@
+---
+tags: [final-handoff-summary]
+register: documentation
+---
+
 # FINAL HANDOFF SUMMARY: PHASE 3 ATOMICITY FIX COMPLETE
 
 ## 🎯 MISSION ACCOMPLISHED

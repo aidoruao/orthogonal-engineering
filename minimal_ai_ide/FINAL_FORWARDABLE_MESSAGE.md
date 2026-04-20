@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, final-forwardable-message]
+register: documentation
+---
+
 # FINAL FORWARDABLE MESSAGE
 ## STAGE 3 IMPLEMENTATION COMPLETE - READY FOR DEPLOYMENT
 

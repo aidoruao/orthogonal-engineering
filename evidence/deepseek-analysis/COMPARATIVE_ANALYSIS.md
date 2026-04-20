@@ -1,3 +1,8 @@
+---
+tags: [evidence, deepseek-analysis, comparative-analysis]
+register: audit
+---
+
 # DEEPSEEK VS CHAT CANON - COMPARATIVE ANALYSIS
 
 **Date:** 2026-01-20  

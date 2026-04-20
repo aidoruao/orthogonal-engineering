@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, next-instance-handoff-quantized-lora]
+register: documentation
+---
+
 # NEXT INSTANCE HANDOFF: QUANTIZED LORA TRAINING SYSTEM - GRADUATE MATHEMATICS, CHRISTOLOGICAL, POPPERIAN
 
 **SYSTEM STATE: 87k/128k CONTEXT - CRITICAL MASS ACHIEVED**

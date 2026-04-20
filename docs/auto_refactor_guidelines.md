@@ -1,3 +1,8 @@
+---
+tags: [docs, auto-refactor-guidelines]
+register: documentation
+---
+
 # Automated Refactoring Guidelines for AI Agents
 
 ## Purpose

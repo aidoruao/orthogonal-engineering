@@ -1,3 +1,8 @@
+---
+tags: [analysis, migrate-to-core-detector]
+register: documentation
+---
+
 # MIGRATION GUIDE: Replacing canal_refiner.py with Core Detector v2
 
 **Date:** 2026-01-24  

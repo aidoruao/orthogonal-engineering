@@ -1,3 +1,8 @@
+---
+tags: [comprehensive-failure-analysis]
+register: documentation
+---
+
 # COMPREHENSIVE FAILURE ANALYSIS - ORTHOGONAL ENGINEERING REPOSITORY
 **Analysis Date:** 2026-01-20  
 **Methodology:** Orthogonal Engineering with Popperian Falsification  

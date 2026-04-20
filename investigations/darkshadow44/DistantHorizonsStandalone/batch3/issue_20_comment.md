@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-20-comment]
+register: audit
+---
+
 ## Investigation: Missing LOD Chunks
 
 Hi @DarkShadow44, I've analyzed the missing chunk issue.

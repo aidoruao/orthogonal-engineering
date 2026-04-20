@@ -1,3 +1,8 @@
+---
+tags: [extreme-work-implementation-summary]
+register: documentation
+---
+
 # Extreme Work Boundaries Implementation Summary
 
 ## Overview

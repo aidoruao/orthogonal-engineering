@@ -79,12 +79,64 @@ class KripkeFrame:
 
 @dataclass
 class ModalFormula:
-    """Modal logic formula representation."""
+    """Atomic modal formula: a propositional letter.
+
+    ``formula_id`` is interpreted as an atomic proposition name. Evaluation at
+    a world reduces to ``proposition_true``. Compound operators (``Box``,
+    ``Diamond``, ``Not``, ``And``, ``Or``) are expressed by subclassing and
+    overriding :meth:`evaluate`; see :class:`NecessityFormula` and
+    :class:`PossibilityFormula` below.
+    """
     formula_id: str
-    
+
     def evaluate(self, world: World, frame: KripkeFrame) -> bool:
-        """Evaluate formula at world in frame."""
-        raise NotImplementedError
+        """Evaluate the atomic proposition ``formula_id`` at ``world``.
+
+        Falsifies if: ``formula_id`` is listed in ``world.true_propositions``
+        but evaluation returns ``False`` (or vice versa).
+        falsifies_if: ``formula_id`` membership in ``world.true_propositions``
+        disagrees with the returned boolean.
+        """
+        return world.proposition_true(self.formula_id)
+
+
+@dataclass
+class NecessityFormula(ModalFormula):
+    """``Box phi``: phi holds in every world accessible from ``world``.
+
+    Uses ``frame.accessible_from`` to enumerate accessible worlds and
+    evaluates the inner formula (also treated atomically by ``formula_id``).
+    """
+
+    def evaluate(self, world: World, frame: KripkeFrame) -> bool:
+        """True iff ``formula_id`` holds in every accessible world.
+
+        Falsifies if: some accessible world fails the atomic proposition but
+        this returns True, or every accessible world satisfies it but this
+        returns False.
+        falsifies_if: the universal quantifier over accessible worlds
+        disagrees with the returned boolean.
+        """
+        accessible = frame.accessible_from(world)
+        if not accessible:
+            return True  # vacuous truth at dead-end worlds (standard Kripke)
+        return all(w.proposition_true(self.formula_id) for w in accessible)
+
+
+@dataclass
+class PossibilityFormula(ModalFormula):
+    """``Diamond phi``: phi holds in some world accessible from ``world``."""
+
+    def evaluate(self, world: World, frame: KripkeFrame) -> bool:
+        """True iff ``formula_id`` holds in at least one accessible world.
+
+        Falsifies if: no accessible world satisfies the atomic proposition
+        but this returns True, or at least one does and this returns False.
+        falsifies_if: the existential quantifier over accessible worlds
+        disagrees with the returned boolean.
+        """
+        accessible = frame.accessible_from(world)
+        return any(w.proposition_true(self.formula_id) for w in accessible)
 
 
 @dataclass

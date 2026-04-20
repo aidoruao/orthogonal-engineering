@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-privacy-law, readme]
+register: technical
+---
+
 # d_privacy_law
 
 Layer 2 (Statutory) domain implementation.

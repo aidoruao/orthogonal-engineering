@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, adversarial-taxonomy]
+register: audit
+---
+
 # ADVERSARIAL TAXONOMY — Bowers/McNeil
 _Generated: PR #81 adversarial-taxonomy addon_
 _Pipeline: IA-CYPHER-0002_

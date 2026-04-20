@@ -1,3 +1,8 @@
+---
+tags: [gptaudit, 05-covenant-framework-reference]
+register: documentation
+---
+
 # Σ_LORA_COVENANT Framework Reference
 ## Theological and Technical Authority for AI Audit
 

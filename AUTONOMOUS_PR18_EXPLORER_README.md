@@ -1,3 +1,8 @@
+---
+tags: [autonomous-pr18-explorer-readme]
+register: documentation
+---
+
 # Autonomous PR #18 Repository Explorer
 
 ## Overview

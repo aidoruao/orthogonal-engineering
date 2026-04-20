@@ -1,3 +1,8 @@
+---
+tags: [minimal-kernel, readme]
+register: documentation
+---
+
 # MINIMAL SURVIVING KERNEL - Orthogonal Engineering Recovery
 
 **Version:** 0.1.0  

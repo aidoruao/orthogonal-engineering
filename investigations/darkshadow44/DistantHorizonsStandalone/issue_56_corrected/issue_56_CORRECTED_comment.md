@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, issue-56-corrected, issue-56-corrected-comment]
+register: audit
+---
+
 ## Investigation: Issue #56 CORRECTED Analysis
 
 Hi @DarkShadow44, I've re-investigated issue #56 using the crash log from @branman5949's second report (after your "Fixed in dev" comment). The previous analysis was incorrect.

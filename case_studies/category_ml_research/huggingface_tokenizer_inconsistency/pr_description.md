@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-ml-research, huggingface-tokenizer-inconsistency, pr-description]
+register: documentation
+---
+
 # huggingface_tokenizer_inconsistency
 
 **Issue:** https://github.com/huggingface/transformers/issues/25634

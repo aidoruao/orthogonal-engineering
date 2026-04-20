@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-game-mods, vulkanmod-755, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/xCollateral/VulkanMod

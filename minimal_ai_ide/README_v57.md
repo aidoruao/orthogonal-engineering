@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, readme-v57]
+register: documentation
+---
+
 # MAXIMAL ORACLE v57 - ADVANCED AI CONTROLLER SYSTEM
 
 ## 🌟 V57 PHILOSOPHICAL FOUNDATION

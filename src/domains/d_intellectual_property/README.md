@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-intellectual-property, readme]
+register: technical
+---
+
 # D_INTELLECTUAL_PROPERTY — Intellectual Property
 
 **Layer:** 2 (Statutory)  

@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-aviation, readme]
+register: technical
+---
+
 # D_AVIATION — Aviation & ATC
 
 ## Domain Purpose

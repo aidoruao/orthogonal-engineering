@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, issue-51-corrected, glass-box-deletion-record]
+register: audit
+---
+
 # Glass-Box Transparency Record: Deleted Comment
 
 **Date:** 2026-04-08  

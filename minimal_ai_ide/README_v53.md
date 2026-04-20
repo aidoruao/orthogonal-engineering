@@ -1,3 +1,8 @@
+---
+tags: [minimal-ai-ide, readme-v53]
+register: documentation
+---
+
 # MAXIMAL ORACLE v53 - AI Controller System
 
 ## Overview

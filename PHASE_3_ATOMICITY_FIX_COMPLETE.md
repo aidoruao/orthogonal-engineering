@@ -1,3 +1,8 @@
+---
+tags: [phase-3-atomicity-fix-complete]
+register: documentation
+---
+
 # PHASE 3 ATOMICITY FIX COMPLETE
 ## OE-Agent Phase 3 Implementation Successfully Completed
 

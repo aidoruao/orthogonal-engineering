@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-housing-law, readme]
+register: technical
+---
+
 # D_HOUSING_LAW — Housing Law
 
 **Layer:** 2 (Statutory)  

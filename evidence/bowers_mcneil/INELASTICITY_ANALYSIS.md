@@ -1,3 +1,8 @@
+---
+tags: [evidence, bowers-mcneil, inelasticity-analysis]
+register: audit
+---
+
 # TRUTH INELASTICITY ANALYSIS — Bowers vs McNeil
 _Generated: PR #81 manufactured-correspondence addendum_
 _Pipeline: IA-CYPHER-0002 / TRUTH_INELASTICITY.md protocol_

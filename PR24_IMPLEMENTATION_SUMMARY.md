@@ -1,3 +1,8 @@
+---
+tags: [pr24-implementation-summary]
+register: documentation
+---
+
 # PR #24 Implementation Summary: Omega / Infinite Recursive Invariant
 
 ## Overview

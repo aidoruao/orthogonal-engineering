@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-mobile, flutter-jank-shader-compilation, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/flutter/flutter

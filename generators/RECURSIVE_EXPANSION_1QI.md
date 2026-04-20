@@ -1,3 +1,8 @@
+---
+tags: [generators, recursive-expansion-1qi]
+register: documentation
+---
+
 # Recursive Fractal Expansion to 1 Quintillion LOC
 
 ## Overview

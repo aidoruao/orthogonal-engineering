@@ -1,3 +1,8 @@
+---
+tags: [deepseek-forensic-tools]
+register: documentation
+---
+
 # DeepSeek Forensic Tools - Implementation Summary
 
 ## Overview

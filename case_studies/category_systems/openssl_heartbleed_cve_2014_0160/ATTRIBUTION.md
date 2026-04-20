@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-systems, openssl-heartbleed-cve-2014-0160, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/openssl/openssl

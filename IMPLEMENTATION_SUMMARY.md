@@ -1,3 +1,8 @@
+---
+tags: [implementation-summary]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - SYSTEMATIC IMPLEMENTATION SUMMARY
 
 ## Implementation Complete: All 4 Phases

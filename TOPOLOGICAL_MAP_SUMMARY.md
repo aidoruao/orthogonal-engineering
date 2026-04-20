@@ -1,3 +1,8 @@
+---
+tags: [topological-map-summary]
+register: documentation
+---
+
 # Topological Map Implementation - Final Summary
 
 ## PR #22 Completion Summary

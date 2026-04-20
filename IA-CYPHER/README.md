@@ -1,3 +1,8 @@
+---
+tags: [ia-cypher, readme]
+register: documentation
+---
+
 # IA-CYPHER-0002: Cosmological Internal Affairs Audit Structure
 
 ## Mission

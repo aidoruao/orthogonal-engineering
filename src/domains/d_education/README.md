@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-education, readme]
+register: technical
+---
+
 # D_EDUCATION
 
 Tamper-evident credential issuance and deterministic verification.

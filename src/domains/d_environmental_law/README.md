@@ -1,3 +1,8 @@
+---
+tags: [src, domains, d-environmental-law, readme]
+register: technical
+---
+
 # D_ENVIRONMENTAL_LAW: Environmental Law
 
 **Layer:** 2 (Statutory)  

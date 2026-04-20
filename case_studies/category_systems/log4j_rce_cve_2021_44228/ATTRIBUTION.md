@@ -1,3 +1,8 @@
+---
+tags: [case-studies, category-systems, log4j-rce-cve-2021-44228, attribution]
+register: documentation
+---
+
 # Attribution
 
 - **Repository:** https://github.com/apache/logging-log4j2

@@ -1,3 +1,8 @@
+---
+tags: [adversarial-tests, adversarial-validation]
+register: documentation
+---
+
 # ADVERSARIAL VALIDATION FRAMEWORK - PHASE 6
 
 **File:** `ADVERSARIAL_VALIDATION.md`  

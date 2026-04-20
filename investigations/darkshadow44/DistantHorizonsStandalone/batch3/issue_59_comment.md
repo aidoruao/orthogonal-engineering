@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-59-comment]
+register: audit
+---
+
 ## Investigation: Colored Glass Is Opaque
 
 Hi @DarkShadow44, I've found the glass transparency issue.

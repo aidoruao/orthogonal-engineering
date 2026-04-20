@@ -1,3 +1,8 @@
+---
+tags: [baseline-analysis, master-baseline]
+register: documentation
+---
+
 # ORTHOGONAL ENGINEERING - MASTER BASELINE
 ## Comprehensive Repository Analysis
 Generated: Tue, Jan 20, 2026  2:54:17 AM

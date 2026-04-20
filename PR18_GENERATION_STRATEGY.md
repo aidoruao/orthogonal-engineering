@@ -1,3 +1,8 @@
+---
+tags: [pr18-generation-strategy]
+register: documentation
+---
+
 # PR #18: 500k-700k LOC Generation Strategy
 
 ## Goal

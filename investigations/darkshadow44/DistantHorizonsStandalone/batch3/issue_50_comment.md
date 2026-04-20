@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-50-comment]
+register: audit
+---
+
 ## Investigation: Slow Rate Limiting
 
 Hi @DarkShadow44, I've analyzed the rate limiting issue.

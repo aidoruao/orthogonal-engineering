@@ -1,3 +1,8 @@
+---
+tags: [devin-ai-pr-84-for-github-copilot-atomic-engineers-task-list]
+register: documentation
+---
+
 so the only real invariant is with you indexing everything and copilot , so now we just change it to all major cloud llms not just kimi , and extend to 84# from 83#, forget about cloud ai virtual environments, we'll just have copilot github do it do you get me, so enumerate all major cloud ai, the benchmarks and we just do not just only kimi ai, 84# pr spec
 
 

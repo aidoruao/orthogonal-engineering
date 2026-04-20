@@ -1,4 +1,8 @@
-<<<<<<< HEAD
+---
+tags: [toolkit, oe, scaffold, readme]
+register: tooling
+---
+
 # Deterministic Auditable Python Scaffold
 
 A deterministic, auditable Python scaffold for local repository operations. This toolkit provides tools for file canonicalization, hashing, Merkle tree construction, and auditable logging.
@@ -182,97 +186,8 @@ Multiple safety mechanisms prevent accidental modifications:
 3. **Backup support**: Easy backup/restore operations
 4. **Logging**: All operations logged with timestamps
 
-## Configuration
-
-Optional JSON configuration file:
-=======
-# Deterministic Auditable Repository Scaffold
-
-A comprehensive toolkit for repository-wide canonicalization, hashing, Merkle tree construction, manifest generation, and GTA handling.meta clamp pipeline processing.
-
-## Overview
-
-This scaffold provides a deterministic, auditable approach to repository analysis with:
-
-- **Canonicalization**: Deterministic byte representation for text, JSON, XML, and binary files
-- **Hashing**: SHA-256 hashing with canonical representations
-- **Merkle Trees**: Binary Merkle tree construction with JSONL inclusion proofs
-- **Manifests**: Streamed JSONL manifest generation with checkpointing
-- **Logging**: JSONL logging with monotonic step IDs and ISO8601 timestamps
-- **GTA Handling Pipeline**: Parser and validator for GTA handling.meta files
-
-## Features
-
-### Safety by Default
-
-- **Dry-run mode by default**: All operations preview changes without applying them
-- **Mandatory backups**: Built-in backup and restore functionality
-- **Local execution**: Designed to run on user's local clones, not in CI
-
-### Deterministic Processing
-
-- **Canonical representations**: Files are normalized to ensure identical hashing across systems
-- **Merkle tree verification**: Binary Merkle trees with cryptographic proofs
-- **Manifest tracking**: Complete file inventory with content addressing
-
-### Auditable Operations
-
-- **JSONL logging**: Every operation logged with timestamps and step IDs
-- **Verification pipeline**: Built-in integrity verification
-- **Proof generation**: Merkle inclusion proofs for all files
-
-## Installation
-
-The scaffold is part of the `toolkit.oe.scaffold` package.
-
-```bash
-# No additional installation needed - part of orthogonal-engineering toolkit
-cd /path/to/orthogonal-engineering
-```
-
-## Quick Start
-
-### Index Repository (Dry-run)
-
-```bash
-python -m toolkit.oe.scaffold.cli index /path/to/repo
-```
-
-### Index Repository (Apply)
-
-```bash
-python -m toolkit.oe.scaffold.cli index /path/to/repo --apply --output manifest.jsonl
-```
-
-### Build Merkle Tree
-
-```bash
-python -m toolkit.oe.scaffold.cli merkle /path/to/repo --apply --output merkle_proofs.jsonl
-```
-
-### Process GTA handling.meta
-
-```bash
-python -m toolkit.oe.scaffold.cli handling-clamp handling.meta --apply --output clamped_handling.meta
-```
-
-### Verify Integrity
-
-```bash
-python -m toolkit.oe.scaffold.cli verify manifest.jsonl --repo-path /path/to/repo
-```
-
-### Create Backup
-
-```bash
-python -m toolkit.oe.scaffold.cli backup /path/to/repo --output /path/to/backup
-```
-
-### Restore from Backup
-
-```bash
-python -m toolkit.oe.scaffold.cli restore /path/to/backup --target /path/to/repo
-```
+(See the dedicated "Configuration" section further down for the full
+configuration schema.)
 
 ## CLI Reference
 
@@ -498,12 +413,10 @@ Files → Canonicalization → Hashing → Merkle Tree
 ## Configuration
 
 Example configuration file (`scaffold.json`):
->>>>>>> copilot/add-deterministic-auditable-scaffold
 
 ```json
 {
   "exclude_patterns": [
-<<<<<<< HEAD
     "**/.git/**",
     "**/node_modules/**",
     "**/__pycache__/**"
@@ -564,29 +477,6 @@ JSONL (JSON Lines) is used for all structured output because:
 3. Append-only (no file rewrites)
 4. Compatible with standard tools (jq, grep, etc.)
 
-## License
-
-Part of the orthogonal-engineering toolkit. See repository root for license details.
-
-## Contributing
-
-This scaffold is designed for local use by repository owners and their IDE AI assistants. Contributions should maintain:
-
-- Deterministic behavior
-- Auditability
-- Safety-first design
-- Local-first execution model
-=======
-    ".git",
-    "__pycache__",
-    "*.pyc",
-    "node_modules"
-  ],
-  "checkpoint_interval": 100,
-  "output_dir": "./scaffold_output"
-}
-```
-
 ## Troubleshooting
 
 ### Common Issues
@@ -630,4 +520,3 @@ This scaffold is part of the Orthogonal Engineering methodology. Contributions s
 ## Support
 
 For issues and questions, see the main orthogonal-engineering repository.
->>>>>>> copilot/add-deterministic-auditable-scaffold

@@ -1,3 +1,8 @@
+---
+tags: [crusader, complete-verification-summary]
+register: documentation
+---
+
 # CRUSADER COMBAT REFRIGERATOR - COMPLETE VERIFICATION SUMMARY
 
 **Report ID:** CRUSADER-VERIFICATION-COMPLETE-20260226  

@@ -1,3 +1,8 @@
+---
+tags: [analysis, chat-instances, 2026-01-23, analysis-framework]
+register: documentation
+---
+
 # Atomic Analysis Framework for ChatGPT Interaction
 # Date: 2026-01-23
 # User: Tiny

@@ -1,3 +1,8 @@
+---
+tags: [investigations, darkshadow44, distanthorizonsstandalone, batch3, issue-31-comment]
+register: audit
+---
+
 ## Investigation: Biome Colors Not Applied
 
 Hi @DarkShadow44, I've analyzed the biome rendering issue.
