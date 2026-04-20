@@ -10,37 +10,13 @@ Used by: D_SCHOOL_FUNDING, D_NEIGHBORHOOD_EQUITY, D_SCHOOL_EQUITY,
 D_TRANSIT, D_UTILITY_REGULATION
 
 All arithmetic is performed over ``fractions.Fraction``; no ``float`` is
-ever introduced. Callers that need a decimal rendering can format the
-returned ``Fraction`` themselves (e.g. via :func:`format_fraction`).
+ever introduced. Callers that need a decimal rendering can use
+:func:`src.orthogonal_engineering.fraction_display.format_decimal`.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from fractions import Fraction
 from typing import Any, Dict, List
-
-
-def format_fraction(value: Fraction, places: int = 6) -> str:
-    """Render ``value`` as a fixed-point decimal string with ``places`` digits.
-
-    Uses only integer arithmetic so no ``float`` is ever constructed. The
-    sign, integer part, and fractional part are assembled textually.
-
-    Falsifies if: the returned string does not equal the truncated
-    fixed-point representation of ``value`` (sign included) for
-    ``places >= 0``.
-    falsifies_if: the string rendering disagrees with the integer-truncated
-    fixed-point decimal of ``value``.
-    """
-    if places < 0:
-        raise ValueError("places must be non-negative")
-    sign = "-" if value < 0 else ""
-    abs_val = -value if value < 0 else value
-    scaled = abs_val * (10 ** places)
-    integer_scaled = scaled.numerator // scaled.denominator
-    if places == 0:
-        return f"{sign}{integer_scaled}"
-    whole, frac = divmod(integer_scaled, 10 ** places)
-    return f"{sign}{whole}." + str(frac).rjust(places, "0")
 
 
 @dataclass

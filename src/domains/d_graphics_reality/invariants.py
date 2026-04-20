@@ -126,15 +126,16 @@ def run_all_invariants() -> dict:
 
     Each invariant is evaluated on a pinned Fraction-only fixture so the dict
     returned is deterministic and covers every contract exposed by the module.
-    Fixtures are chosen to be well inside the acceptable region, i.e. each
-    check is expected to return ``True`` at steady state.
+    Fixtures are chosen to be well inside the acceptable region; each check
+    is expected to pass. Values are ``"PASS"`` on success or
+    ``"FAIL: <conclusion>"`` on failure so that generic callers (see
+    ``src/layers/inter_layer_morphism.py``) that compare against the
+    sentinel ``"PASS"`` continue to work.
 
     Falsifies if: any invariant check returns False on its reference fixture,
-    raises an exception, or returns a value whose ProofObject conclusion does
-    not encode the boolean outcome.
+    raises an exception, or produces a non-string status value.
     falsifies_if: any invariant check returns False on its reference fixture,
-    raises an exception, or returns a ProofObject whose conclusion does not
-    encode the boolean outcome.
+    raises an exception, or produces a non-string status value.
     """
     frame_a = TemporalFrame(
         frame_hash="a" * 64, timestamp=Fraction(0), motion_vectors_valid=True
@@ -180,10 +181,13 @@ def run_all_invariants() -> dict:
         ray_pass, max_bias=Fraction(1, 20), max_variance=Fraction(1, 10)
     )
 
+    def _status(ok: bool, proof: ProofObject) -> str:
+        return "PASS" if ok else f"FAIL: {proof.conclusion}"
+
     return {
-        "temporal_stability": (stability_ok, stability_proof),
-        "spectral_preservation": (spectral_ok, spectral_proof),
-        "frame_gen_motion_error": (frame_gen_ok, frame_gen_proof),
-        "vendor_fallback": (vendor_ok, vendor_proof),
-        "ray_reconstruction_bias_variance": (ray_ok, ray_proof),
+        "temporal_stability": _status(stability_ok, stability_proof),
+        "spectral_preservation": _status(spectral_ok, spectral_proof),
+        "frame_gen_motion_error": _status(frame_gen_ok, frame_gen_proof),
+        "vendor_fallback": _status(vendor_ok, vendor_proof),
+        "ray_reconstruction_bias_variance": _status(ray_ok, ray_proof),
     }
