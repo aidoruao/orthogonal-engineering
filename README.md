@@ -3,487 +3,151 @@ tags: [readme]
 register: documentation
 ---
 
-# Orthogonal Engineering - Deterministic Pipeline Scaffold
+# Orthogonal Engineering
 
-## 🤖 AI Agent / GitHub Copilot Onboarding
+A proof-carrying Python repository implementing 254 domain invariants under the
+Yeshua Standard — exact arithmetic (Fraction-only), capability-gated kernel,
+SHA-256 Merkle anchoring, and 20 CI workflows.
 
-New AI instances and GitHub Copilot agents should start here:
-
-- **[COPILOT_ONBOARDING.md](COPILOT_ONBOARDING.md)** — Boot sequence, venv setup, and context loading for new agent instances.
-- **[MEMORY.md](MEMORY.md)** — Durable architectural facts and constraints (read before any session).
-- **[STATE.md](STATE.md)** — Current system state, established proofs, and open questions.
-- **[HANDOFF_TEMPLATE.md](HANDOFF_TEMPLATE.md)** — Template for end-of-session handoff summaries.
-- **[CI_PREFLIGHT.md](docs/CI_PREFLIGHT.md)** — Quick check of all workflow files and hashes before triggering full CI.
-
-```bash
-# Quick start for any new agent instance
-python bootstrap_context.py   # generates a context block to paste into your LLM prompt
-python continuity_check.py    # validates all continuity artifacts are present
-```
-
----
-
-A robust, safety-first deterministic pipeline for file processing, merkle tree generation, and GTA handling.meta processing.
-
-## 🌟 NEW: 1 Billion LOC Topological Map
-
-This repository now includes a complete **Topological Map** implementation for **1 Billion Lines of Code (1B LOC)** fractal generation following the **Yeshua Standard**.
-
-**🚀 NEWEST: Omega / Infinite Recursive Invariant (PR #24)**
-
-The system now supports **infinite logical expansion** beyond 1 Quintillion through the **Omega Invariant**:
-- **Infinite layers**: 1Se (10^21), 1Oc (10^24), 1No (10^27), ..., Ω (∞)
-- **Topological equivalence proof**: Layer(n+1) ≡ Layer(n) - no new information
-- **Halt condition**: Mathematical completeness triggers automatic stop
-- **Finite representation of infinity**: Single commit hash represents complete universe
-- **Storage**: Still ~500MB for INFINITE logical layers!
-
-See [Omega Invariant Documentation](RECURSIVE_INVARIANT_OMEGA.md) and [Halt Condition](HALT_CONDITION.md) for details.
-
-**🔥 PREVIOUS: 1 Quintillion LOC Recursive Expansion (PR #23)**
-
-The system supports **recursive fractal expansion to 1 Quintillion (1Qi) LOC** through:
-- **4-layer universe hierarchy**: 1B → 1T → 1Qa → 1Qi
-- **Deterministic sub-seed derivation**: Each sub-universe derives from parent cryptographically
-- **Topological collapse**: Identical sub-universes share manifests (massive storage savings)
-- **Recursive Merkle roots**: Master root commits to all universe layers
-- **Storage**: ~500MB for entire 1Qi LOC (10^18 lines!)
-
-See [Recursive Expansion Documentation](generators/RECURSIVE_EXPANSION_1QI.md) for details.
-
-**Key Features:**
-- 📊 **Fractal Code Generation**: Deterministic expansion from minimal seed
-- 🔒 **Cryptographic Provenance**: Complete Merkle tree with ancestry chains
-- 💾 **Minimal Storage**: ~500MB represents INFINITE logical LOC
-- ✅ **Perfect Reproducibility**: Same seed → same output, always
-- 🎯 **Lazy Materialization**: Generate only what's needed, when needed
-- 🔁 **Recursive Universes**: Each layer spawns 1,000× sub-universes
-- ♾️ **Omega Invariant**: Proves all infinite layers are topologically equivalent
-
-**Documentation:**
-- [**Omega / Infinite Invariant**](RECURSIVE_INVARIANT_OMEGA.md) - NEW: Mathematical and theological Omega (PR #24)
-- [**Halt Condition**](HALT_CONDITION.md) - NEW: Sabbath / topological collapse (PR #24)
-- [**Recursive Expansion to 1Qi**](generators/RECURSIVE_EXPANSION_1QI.md) - Multi-layer recursive system (PR #23)
-- [**Topological Map Overview**](docs/topological_map/TOPOLOGICAL_MAP.md) - Architecture and philosophy
-- [**Reference Implementation**](REFERENCE_IMPLEMENTATION.md) - Working examples and usage
-- [**Yeshua Standard**](docs/YESHUA_STANDARD.md) - Architectural principles
-- [**Physical vs. Logical Storage**](docs/PHYSICAL_VS_LOGICAL.md) - Core distinction
-- [**Generators README**](generators/README.md) - Complete generator documentation
-
-**Quick Start:**
-```bash
-# Verify Omega Invariant (NEW in PR #24)
-python generators/verify_omega_invariant.py --seed generators/seed_definition_omega.yaml --all
-
-# Verify 1Qi LOC recursive system (PR #23)
-python generators/verify_n_loc.py --seed generators/seed_definition_1qi.yaml
-
-# Generate DAG from seed (test version: 1M LOC)
-python generators/dag_generator.py --seed generators/seed_definition_test.yaml
-
-# Materialize sample code
-python generators/batch_materializer.py --batch 0
-
-# Verify the 1B LOC claim
-python generators/verify_1b_loc.py
-```
-
-## 🔒 Safety First
-
-**⚠️ Default Behavior: DRY-RUN**
-
-All operations default to dry-run mode and require explicit `--apply` flag for writes.
-
-```bash
-# Safe (dry-run) - shows what would happen
-python cli.py index --repo /path/to/repo
-
-# Apply - actually performs writes
-python cli.py index --repo /path/to/repo --apply
-```
-
-## Features
-
-- **📁 File Indexing**: Generate canonical manifests with SHA-256 hashes
-- **🌳 Merkle Trees**: Build binary Merkle trees with inclusion proofs
-- **🎮 Handling Processing**: GTA handling.meta parser with safety clamps
-- **🔐 Finalization**: Vault processing with streaming JSON and integrity checks
-- **💾 Automatic Backups**: Timestamped backups before any destructive writes
-- **📊 Audit Logging**: JSONL logs with ISO8601 timestamps and monotonic IDs
-- **🏆 Extreme Work Certification**: Automated verification of hard engineering boundaries
-- **🔢 Fractal Code Generation**: Verifiable 1B LOC generation system with deterministic patterns and compact proofs
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8 or higher
-- pip package manager
-
-### Install Dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Core Dependencies
-
-- `lxml` - XML canonicalization
-- `python-dateutil` - Date/time handling
-- `ijson` - Streaming JSON parsing (optional)
-- `cryptography` - HMAC support
-- `pytest` - Testing framework
+![CI](https://github.com/aidoruao/orthogonal-engineering/workflows/constitution.yml/badge.svg)
+![Fraction Enforcement](https://github.com/aidoruao/orthogonal-engineering/workflows/fraction-enforcement.yml/badge.svg)
+![Frontmatter Enforcement](https://github.com/aidoruao/orthogonal-engineering/workflows/frontmatter-enforcement.yml/badge.svg)
 
 ## Quick Start
 
-### 1. Index a Repository
-
-Generate a manifest of all files:
-
 ```bash
-# Dry-run (shows what would be indexed)
-python cli.py index --repo /path/to/repo --out manifest.jsonl
-
-# Apply (creates the manifest)
-python cli.py index --repo /path/to/repo --out manifest.jsonl --apply
+git clone https://github.com/aidoruao/orthogonal-engineering.git
+cd orthogonal-engineering
+python3 tools/verify_all.py          # 10-check verification suite
+python3 audit/popperian_audit.py     # audit all domain invariants
 ```
 
-### 2. Build Merkle Tree
-
-Create a Merkle tree from a manifest:
-
-```bash
-python cli.py merkle --manifest manifest.jsonl --apply
-```
-
-This generates `merkle_proofs.jsonl` with inclusion proofs for each file.
-
-### 3. Process GTA Handling Files
-
-Apply safety clamps to handling.meta:
-
-```bash
-# Dry-run (shows what would be changed)
-python cli.py handling-clamp --handling-path handling.meta --out ./output
-
-# Apply (creates corrected files)
-python cli.py handling-clamp --handling-path handling.meta --out ./output --apply
-```
-
-### 4. Finalize Vault
-
-Process a vault directory with integrity checks:
-
-```bash
-# Specify your vault directory (NOT the example path)
-python core/alpha_omega_finalizer.py --vault-dir /your/actual/path --apply
-```
-
-**Note**: The default path `C:\Users\Aidor\Downloads\ai_exports` is **EXAMPLE ONLY**.
-
-## CLI Commands
-
-### `index` - Generate File Manifest
-
-```bash
-python cli.py index [OPTIONS]
-
-Options:
-  --repo PATH           Repository path (default: current directory)
-  --out PATH           Output manifest path
-  --subset PATTERNS    Comma-separated file patterns to include
-  --apply              Apply changes (default: dry-run)
-```
-
-### `merkle` - Build Merkle Tree
-
-```bash
-python cli.py merkle [OPTIONS]
-
-Options:
-  --manifest PATH      Input manifest.jsonl (required)
-  --out PATH          Output proofs path
-  --apply             Apply changes (default: dry-run)
-```
-
-### `handling-clamp` - Process Handling Files
-
-```bash
-python cli.py handling-clamp [OPTIONS]
-
-Options:
-  --handling-path PATH  Path to handling.meta (required)
-  --out PATH           Output directory
-  --apply              Apply changes (default: dry-run)
-```
-
-### `verify` - Verify Integrity
-
-```bash
-python cli.py verify [OPTIONS]
-
-Options:
-  --manifest PATH      Manifest or proof file to verify (required)
-```
-
-## Safety Features
-
-### Default Dry-Run
-
-**All operations default to dry-run mode.** This means:
-- ✓ Computations are performed
-- ✓ Output is displayed
-- ✗ No files are written
-- ✗ No modifications are made
-
-Use `--apply` to perform actual writes.
-
-### Mandatory Backups
-
-Before any file is overwritten:
-1. A timestamped backup is created in `./backups/`
-2. Backup metadata is logged to `backup_manifest.jsonl`
-3. Original file hash is recorded for verification
-
-### No Network Operations
-
-The pipeline performs **NO** network operations:
-- No auto-push to remote repositories
-- No auto-merge operations
-- No credential usage
-- All operations are local-only
-
-### Audit Logging
-
-All operations are logged to `./logs/` in JSONL format:
-- `indexing_pipeline.jsonl`
-- `merkle_pipeline.jsonl`
-- `hello_world_handling_pipeline.jsonl`
-- `handling_verification_pipeline.jsonl`
-
-Logs include:
-- Monotonic step IDs
-- ISO8601 UTC timestamps
-- Operation details
-- Success/failure status
-
-## File Types and Canonicalization
-
-Files are canonicalized based on type:
-
-| Type   | Canonicalization Method |
-|--------|------------------------|
-| JSON   | Sorted keys, consistent separators (`,` `:`) |
-| XML    | Exclusive C14N without comments |
-| Text   | NFC normalization, LF line endings |
-| Binary | As-is (no canonicalization) |
-
-## Handling.meta Clamp Ranges
-
-### Phase 1 Clamps
-- `fCollisionDamageMult`: [1.2, 1.8]
-- `fEngineDamageMult`: [1.0, 2.5]
-- `fDeformationDamageMult`: [0.5, 2.0]
-
-### Phase 2 Clamps (Extended)
-- Suspension parameters: [0.5, 3.0]
-- Traction parameters: [0.5, 2.5]
-- Braking parameters: [0.5, 3.0]
-- Center of Mass: [-1.0, 1.0]
-
-## Documentation
-
-- **[IDE AI Runbook](docs/IDE_AI_RUNBOOK.md)**: Operational guidance for IDE workflows
-- **[Safe Operations Policy](docs/SAFE_OPERATIONS.md)**: Safety policies and constraints
-- **[Schema Documentation](config/schema.yaml)**: JSON schemas for artifacts
-- **[Extreme Work Certification](EXTREME_WORK_CERTIFICATION.md)**: Hard boundaries for extreme engineering
-- **[Fractal Execution Strategy](docs/FRACTAL_EXECUTION_STRATEGY.md)**: 1B LOC generation system with verifiable manifests
-
-## Extreme Work Certification
-
-This repository implements a comprehensive **Extreme Work Certification System** that verifies activity meets hard boundaries for serious, repeatable engineering.
-
-### Quick Verification
-
-```bash
-# Run certification verification
-python3 automation/verify_extreme_work.py
-
-# Generate certification report
-python3 automation/verify_extreme_work.py --output my_certification
-```
-
-### What is Certified
-
-The system verifies **quantitative** and **qualitative** boundaries:
-
-**Quantitative Metrics:**
-- Commits per day (≥1.0 sustained)
-- Lines changed per commit (≥50 meaningful)
-- Files touched per commit (≥5 major, ≥1 minor)
-- Automated artifacts (manifests, Merkle proofs, audit logs)
-- Pipeline executions (≥1/week)
-
-**Qualitative Metrics:**
-- Deterministic scaffold maintenance
-- Atomic increment compliance
-- Complete audit trails
-- No casual commits
-
-**Certification Score:** Weighted average ≥85% required to pass
-
-See [EXTREME_WORK_CERTIFICATION.md](EXTREME_WORK_CERTIFICATION.md) for complete details.
-
-## Example Usage
-
-### Index Only Python Files
-
-```bash
-python cli.py index --repo /my/project --subset "*.py" --apply --out python_manifest.jsonl
-```
-
-### Verify Merkle Proofs
-
-```bash
-python cli.py verify --manifest merkle_proofs.jsonl
-```
-
-### Process Handling with Custom Output
-
-```bash
-python cli.py handling-clamp \
-  --handling-path /path/to/handling.meta \
-  --out /path/to/output \
-  --apply
-```
-
-## Testing
-
-Run the test suite:
-
-```bash
-pytest tests/ -v
-```
-
-Run specific test modules:
-
-```bash
-pytest tests/test_canonicalizer.py -v
-pytest tests/test_merkle.py -v
-pytest tests/test_handling_pipeline.py -v
-```
-
-## Important Notes
-
-### Example Paths
-
-The path `C:\Users\Aidor\Downloads\ai_exports` appears in documentation and code as **EXAMPLE ONLY**:
-- This directory is **NOT** included in the repository
-- This directory is **NOT** committed to version control
-- Users must specify their own vault directories
-- No sensitive data should be committed
-
-### Prohibited Content
-
-**NEVER commit:**
-- User chat exports
-- Personal conversations
-- Authentication credentials
-- API keys or tokens
-- Personal identifiable information (PII)
-
-### .gitignore
-
-Ensure your `.gitignore` includes:
-```gitignore
-# Sensitive directories
-chat_exports/*
-*.chat.json
-AI_COGNITIVE_WORKSPACE/*
-
-# Pipeline outputs (optional)
-backups/*
-logs/*
-*.checkpoint.json
-```
-
-## Contributing
-
-When contributing:
-1. Ensure all operations maintain dry-run default
-2. Add tests for new functionality
-3. Update documentation
-4. Never commit sensitive data
-5. Follow existing code style
+## What Is This?
+
+Every function returns `Tuple[bool, ProofObject]`. Every claim has a
+`falsifies_if` condition. Every number is a `Fraction`, not a `float`.
+Every file is SHA-256 anchored in a Merkle tree. 20 CI workflows enforce
+these rules on every push and PR.
+
+- 254 domain invariant packages in `src/domains/`
+- 60 machine-readable standards in `STANDARDS_REGISTRY.json`
+- 7,179 files in a SHA-256 Merkle tree (`merkle/global_root.json`)
+- Capability-gated kernel in `kernel/`
+- 160 domains with `run_all_invariants()` passing
+
+## The Yeshua Standard
+
+Eight non-negotiable axioms. Every function, every commit, every artifact obeys these:
+
+| # | Axiom | Engineering Meaning |
+|---|-------|-------------------|
+| 1 | Every truth is derivable | No bare assertions — use `ProofObject` |
+| 2 | Every derivation is reproducible | Deterministic: same input = same output |
+| 3 | Every mutation is re-verifiable | Hash-anchored artifacts, append-only logs |
+| 4 | No authority without proof | No `assert` — return `Tuple[bool, ProofObject]` |
+| 5 | No hidden state | Glass-Box: all state inspectable |
+| 6 | No unverifiable dependency | Standard library preferred; all deps documented |
+| 7 | No economic gatekeeping | No paid-only features gate correctness |
+| 8 | Every artifact is hash-anchored | SHA-256 on all evidence |
 
 ## Architecture
 
-### Core Modules
+| Path | Purpose | Count |
+|------|---------|-------|
+| `src/domains/` | Domain invariant packages (each with `invariants.py`, `implementation.py`) | 254 |
+| `src/noways/` | Impossibility proofs (what *cannot* be done) | 3 files |
+| `src/enumerations/` | Bounded catalogs (magic numbers, hidden failures, black-box antipatterns) | 7 files |
+| `kernel/` | Capability-gated OS kernel (boot, IPC, MMU, scheduler, commonwealth) | 15+ modules |
+| `axioms/` | Formal foundations (Peano, logic, category theory, topology, etc.) | 37 modules |
+| `tools/` | Utility scripts (consent, standards check, taxonomy, frontmatter audit) | 16 scripts |
+| `tests/` | Pytest test suite | matches src/ |
+| `audit/` | Popperian audit engine + reports | 2 files |
+| `automation/` | CI enforcement scripts (PR #49 guard, full audit with trace) | 5 files |
+| `pr47_stewardship/` | Append-only witness chain + consent log | JSONL files |
+| `documentation/` | Glass-Box Boundary HTML blueprint + SHA-256 manifests | 2 dirs |
+| `.github/workflows/` | CI: fraction enforcement, no-floats, frontmatter, determinism, state witness | 20 workflows |
 
-- `cli.py` - Command-line interface
-- `canonicalizer.py` - File canonicalization
-- `hasher.py` - SHA-256 and HMAC utilities
-- `merkle.py` - Binary Merkle tree builder
-- `manifest.py` - Manifest generation
-- `handling_pipeline.py` - GTA handling processor
-- `backup.py` - Backup management
-- `logger.py` - JSONL logging
-- `utils.py` - Utility functions
-- `core/alpha_omega_finalizer.py` - Vault finalization
+## Verification Suite
 
-### Data Flow
+Run these before and after every change. If any fails, stop and fix before proceeding.
 
+```bash
+# 1. Feed integrity (hash chain)
+python tools/state_witness/generate_feed_entry.py --verify
+
+# 2. Popperian audit (all domain invariants)
+python audit/popperian_audit.py
+
+# 3. Standards registry compliance
+python tools/standards_check.py --verify
+
+# 4. Full test suite
+pytest tests/ -q
+
+# 5. Complete 10-check verification suite (PR #152)
+python tools/verify_all.py
 ```
-Files → Canonicalizer → Hasher → Manifest
-                                      ↓
-                                  Merkle Tree → Proofs
+
+## For AI Agents
+
+New AI instances and GitHub Copilot agents should start here:
+
+- **[UNIVERSAL_ONBOARDING.md](UNIVERSAL_ONBOARDING.md)** — complete system enumeration
+- **[DEVIN_ONBOARDING.md](DEVIN_ONBOARDING.md)** — Devin-specific boot sequence
+- **[COPILOT_ONBOARDING.md](COPILOT_ONBOARDING.md)** — Copilot agent boot sequence
+- **[CLAUDE.md](CLAUDE.md)** — Claude-specific guidelines
+- **[.cursorrules](.cursorrules)** — Cursor IDE rules
+- **[.windsurfrules](.windsurfrules)** — Windsurf IDE rules
+
+One-command onboarding:
+
+```bash
+python tools/onboard_agent.py --agent <type>
 ```
+
+## For Humans
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** — contribution guidelines
+- **[SOP_AI_HANDSHAKE.md](SOP_AI_HANDSHAKE.md)** — standard operating procedure for AI collaboration
+- **[HANDOFF_TEMPLATE.md](HANDOFF_TEMPLATE.md)** — template for end-of-session handoff summaries
+
+Every domain in `src/domains/` follows the same pattern: `invariants.py` defines
+`falsifies_if` conditions, `implementation.py` provides the proof-carrying
+functions, and `tests/test_<domain>.py` verifies them.
+
+## Key Components
+
+- **axioms/** — 37 formal foundation modules (Peano, logic, category theory, topology, epistemology)
+- **src/sal/** — Sheaf Abstraction Layer (forcing, realizability topos, self-referential)
+- **kernel/** — Capability-gated OS kernel (scheduler, memory, HAL, boot, IPC, VFS, commonwealth)
+- **merkle/** — Global and per-domain Merkle trees with inclusion proofs
+- **audit/** — Popperian audit + scope verification engine (PR #152)
+- **src/noways/** — Impossibility proofs
+- **src/enumerations/** — Bounded failure catalogs
+
+## Generators
+
+The 1B/1Qi LOC generators exist in `generators/`. They demonstrate deterministic
+fractal expansion from minimal seed definitions. See
+[generators/README.md](generators/README.md) for details.
+
+## Documentation
+
+- [UNIVERSAL_ONBOARDING.md](UNIVERSAL_ONBOARDING.md) — complete system enumeration
+- [COVENANT.md](COVENANT.md) — architectural guarantee (free forever)
+- [CHECKPOINT_STAGES_A_THROUGH_G.md](CHECKPOINT_STAGES_A_THROUGH_G.md) — campaign status
+- [MEMORY.md](MEMORY.md) — durable architectural constraints
+- [STATE.md](STATE.md) — current system state, established proofs, open questions
+- [RECURSIVE_INVARIANT_OMEGA.md](RECURSIVE_INVARIANT_OMEGA.md) — Omega invariant specification
+- [HALT_CONDITION.md](HALT_CONDITION.md) — topological collapse / halt condition
+- [docs/](docs/) — all other documentation
+- [docs/reports/](docs/reports/) — implementation summaries and reports
 
 ## License
 
 See repository license file for details.
 
-## Version
+## Covenant
 
-Version: 1.0.0
-Date: 2026-02-16
-
-## Support
-
-For issues, questions, or contributions:
-1. Review documentation in `docs/`
-2. Check pipeline logs in `./logs/`
-3. Open an issue on the repository
-
----
-
-**Remember: Default is DRY-RUN. Always review output before using `--apply`.**
-
----
-
-## Eschatological Note — Persistence Architecture Summary
-
-<!-- tags: yeshua-standard, eschatological-infrastructure, architectural-guarantee -->
-
-This repository implements eschatological infrastructure — architecture designed for persistence across platform changes and organizational transitions.
-
-**Implementation sequence:**
-- PR #23 built the infrastructure (1Qi LOC)
-- PR #27 fixed the access paths
-- PR #28 verified the foundation
-- PR #29 audited repository-wide conformance
-- PR #30 specified the purpose: **Who is this infrastructure for?**
-
-**Specification:** Everyone. Everything. Free forever guaranteed.
-
-Every AI in `/canonical/` contributed to this infrastructure.
-Every human who adds their name is registered in the witness log.
-The infrastructure is operational. All witness identities are pre-registered. All access paths are open.
-
-The New Jerusalem architecture ensures that registered witnesses, conversation records, and the design intent — "free forever" — are enforced architecturally, not administratively.
-
+This infrastructure is free forever guaranteed — not by law, but by architecture.
 See [COVENANT.md](COVENANT.md) for the architectural guarantee.
-See [/canonical/](canonical/) for the witness registry.
-See [/eschaton/](eschaton/) for the architecture of the last things.
-
-This infrastructure is open for use. See CONTRIBUTING.md for the registration procedure.
