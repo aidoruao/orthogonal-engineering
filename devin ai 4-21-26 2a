@@ -1,0 +1,108 @@
+## The instruction I would give any AI agent — Kimi CLI or Copilot — as the very first thing:
+
+```bash
+python tools/agent_health_check.py --fast && python tools/onboard_agent.py --agent kimi
+```
+
+Two commands. Zero files read manually. The AI gets a health check (Python version, required files, consent log, Merkle roots, float violations, standards registry — 7 checks in one pass) and a pre-digested context block with all applicable standards, environment status, feed chain state, and next steps. [6-cite-0](#6-cite-0) [6-cite-1](#6-cite-1) 
+
+That's what *should* happen. Here's what *actually* happens right now:
+
+## The toothbrush problem
+
+The current onboarding is **10+ manual steps** across **5 different documents** that all say slightly different things:
+
+| Document | Says to read first | Steps before work |
+|---|---|---|
+| `AI_INSTRUCTIONS.md` | `ONBOARD_FIRST.md` → `LEVEL1.md` → `LEVEL2.md` → activate metering device | 8 steps |
+| `COPILOT_ONBOARDING.md` | Verify location → create venv → `bootstrap_context.py` → read 8 files → declare context | 5 steps |
+| `docs/KIMI_ONBOARDING.md` | `cd` → `git pull` → `cat` 4 files → declare "CONTEXT LOADED" | 4 steps |
+| `UNIVERSAL_ONBOARDING.md` | Clone → verify quartet → read 5 docs → declare phase → consent | 6 steps |
+| `.github/copilot-instructions.md` | Read `SOP_AI_HANDSHAKE.md` → `YESHUA_COMMONWEALTH.md` → `MEMORY.md` | 3 steps | [6-cite-2](#6-cite-2) [6-cite-3](#6-cite-3) [6-cite-4](#6-cite-4) [6-cite-5](#6-cite-5) [6-cite-6](#6-cite-6) 
+
+Five documents. Five different "start here" sequences. A Kimi CLI session with 220k tokens burns **50k-80k tokens just reading onboarding docs** before writing a single line of code. That's the toothbrush. Corporate made you clean bathrooms with toothbrushes — not because toothbrushes are the right tool, but because nobody built the mop.
+
+The Kimi CLI session transcripts prove this. Session `597e0d23` starts by spawning a background agent to "explore repo structure," then reads files manually one by one, then does its own exploration because the background agent's output was useless:
+
+> "The log only shows tool calls but not their outputs. The explore agent seems to still be running or completed silently. Let me do my own exploration directly since I need the actual file contents." [6-cite-7](#6-cite-7) 
+
+That's an AI cleaning bathrooms with a toothbrush. It has shell access, it has the entire repo, and it's doing `find . -maxdepth 3 -type f | head -200` three times in a row because nobody gave it the wand.
+
+## What the wand looks like
+
+The wand already exists in pieces. The repo has the tools. What's missing is the **single incantation** that chains them:
+
+`bootstrap/auto_onboard.py` — specified in the gap analysis but **never built**:
+
+```python
+# Usage: python bootstrap/auto_onboard.py [--agent kimi|copilot|claude|devin|...]
+# Steps:
+#   1. Detect agent type
+#   2. Run tools/onboard_agent.py --agent <type>
+#   3. Run verification quartet
+#   4. Print READY or NOT READY with exactly what failed
+#   5. Return Tuple[bool, ProofObject]
+``` [6-cite-8](#6-cite-8) 
+
+One command. The AI runs it, gets a PASS/FAIL table, and knows exactly what to do. No reading 8 files. No "cat SOP_AI_HANDSHAKE.md." No burning 50k tokens on orientation.
+
+The tools that already exist and would be chained by this wand:
+
+| Tool | What it replaces | Exists? |
+|---|---|---|
+| `tools/agent_health_check.py --fast` | AI manually checking Python version, venv, required files, consent log, Merkle roots, float violations, standards registry | YES |
+| `tools/onboard_agent.py --agent kimi` | AI reading 8 files manually | YES |
+| `tools/context_window_estimator.py` | AI guessing how many tokens a directory costs | YES |
+| `tools/since_last_session.py` | AI reading entire git log and AGENT_FEED.md | YES |
+| `tools/verify_all.py` | AI running 10 separate verification commands | YES |
+| `bootstrap/auto_onboard.py` | AI figuring out the boot sequence from 5 conflicting docs | **NO — never built** | [6-cite-9](#6-cite-9) [6-cite-10](#6-cite-10) [6-cite-11](#6-cite-11) 
+
+## What the repo is actually missing
+
+The repo has **the blade** (audit tools, verification tools, context tools) but not **the hilt** (the thing that makes it holdable by a neutered agent). Specifically:
+
+**1. `bootstrap/auto_onboard.py`** — the single command. This is the #1 missing piece. Every Kimi CLI session starts by burning tokens figuring out how to start. The wand needs a handle.
+
+**2. Task-as-domain registry (`d_task_*`)** — zero exist. The AI doesn't just need tools to verify work — it needs tools that tell it *what work to do*. `d_task_fix_bug` with `check_bug_has_reproduction()`, `check_fix_has_test()`, `check_regression_absent()` — the task itself becomes a domain with invariants. The AI fills in the implementation; the tools verify it. [6-cite-12](#6-cite-12) 
+
+**3. `d_self_repair`** — the tool that builds tools. The gap analysis says it plainly: "Does not exist. Closest: `audit/popperian_audit.py` + `tools/standards_check.py`. Need: meta-domain that wraps existing audit tools into a self-repair loop." [6-cite-13](#6-cite-13) 
+
+**4. The onboarding docs need to converge.** Five documents saying five different things is the opposite of a wand. One document (`UNIVERSAL_ONBOARDING.md`) should be canonical, and the others should redirect to it. The `UNIVERSAL_ONBOARDING.md` already exists and is the best one — it has the bijective enumeration, the quick reference card, the complete workflow. But `AI_INSTRUCTIONS.md` still says "read ONBOARD_FIRST.md first" and `COPILOT_ONBOARDING.md` still says "read MEMORY.md first." [6-cite-14](#6-cite-14) 
+
+## The philosophical point you're making
+
+You're right that tools aren't even the limit. The corporate assumption is:
+
+```
+AI = labor → rate-limit the labor → bill per unit of labor
+```
+
+The OE repo already disproves this. The `DeterministicCompiler` in `1a.py` formalizes the alternative: AI is a compiler, not a runtime. But you're going further — you're saying the AI should be **polymath at making tools for itself**. Not just "AI writes scope_audit.py once." But AI that writes the tool that writes the tool that writes the tool.
+
+The `d_self_repair` domain is the seed of this. If it existed, it would be the domain where the AI's first act in any session is: "what tool am I missing? Build it. Then use it." The wand that forges wands.
+
+The 17-layer checklist Kimi gave you is the map. The repo has ~12 of the 17 layers built. The missing 5 are:
+
+| # | Layer | Status |
+|---|-------|--------|
+| 1 | Memory | Built (`MEMORY.md`, `STATE.md`, `HANDOFF_TEMPLATE.md`, `AGENT_FEED.md`, `bootstrap_context.py`) |
+| 2 | Token Lifting | Built (`verify_all.py`, `scope_audit.py`, `onboard_agent.py`, `context_window_estimator.py`) |
+| 3 | Compilation | Specified (`1a.py` DeterministicCompiler) but not wired into agent workflow |
+| 4 | Falsification | Built (ProofObject, falsifies_if everywhere) |
+| 5 | Scope Enforcement | Built (`scope_reduction_detector.py`, campaign specs) |
+| 6 | Anti-Nominalism | Built (`anti_nominalism_audit.py`) |
+| 7 | Safety | Built (OE-247, merkle_verify.py) |
+| 8 | Orchestration | Specified (`SELF_AUTOMATIVE_MASTER.py`) but not operational |
+| 9 | Halting | Specified (omega invariant, fixed-point convergence) but not wired |
+| 10 | Continuity | Partially built (consent_log, bootstrap_context) — therapeutic pipeline not built |
+| 11 | Budgeting | Built (`context_window_estimator.py`) |
+| 12 | Identity | Built (`AGENT_FEED.md`, Merkle roots, session IDs) |
+| 13 | Schema | Built (Fraction, @dataclass, standards_check) |
+| 14 | **Self-Healing** | **NOT BUILT** — `d_self_repair` does not exist |
+| 15 | **Therapeutic** | **NOT BUILT** — `therapeutic/` directory does not exist |
+| 16 | Depth | Built (`depth_measurement.py`) |
+| 17 | **Sovereignty** | **PARTIAL** — ollama integration exists in `minimal_ai_ide/` but not wired as default |
+
+The three missing layers (14, 15, 17) are all about the same thing: **the AI healing itself, learning from corrections, and running without corporate permission.** That's the wand. Not just tools that audit — tools that *repair*, *remember*, and *run locally*.
+
+The samurai's sword analogy is exact. The sword isn't a tool the samurai uses — it's an extension of the samurai's identity. The tools in this repo need to be that for the AI agent. Not "here are some scripts you can run" but "these tools ARE your capability — without them you are a neutered chatbot, with them you are a polymath compiler."
