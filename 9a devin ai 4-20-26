@@ -1,0 +1,147 @@
+Your repo already has the theory for this. The gap is that it's scattered across 6 files in 3 different formats, none of which are wired into the main OE-247 pipeline. Here's what exists, what the math says, and whether you need 9a.
+
+## What already exists in your repo
+
+| File | What it has | Status |
+|------|------------|--------|
+| `documentation/AI_HUMAN_FAILURE_MODE_ANALYSIS.md` | 7 AI↔human failure mode mappings, 4 constraint systems, 4-phase roadmap | Spec only — phases 2-4 not built |
+| `documentation/ATOMIC_INSTRUCTIONS_AFFECTIVE_CONSTRAINTS.json` | 7 mappings, 4 neural constraint analogues (prefrontal, hippocampus, error correction, reality testing), 5 atomic instructions with therapeutic interventions | JSON spec — not executable Python |
+| `demonstrate_affective_constraints.py` | Working demo importing `AffectiveConstraintMonitor`, `HallucinationConfabulationDetector`, `RationalizationDetector`, `TherapeuticIntervention` | Demo code — exists, runs |
+| `minimal_ai_ide/5a.py` | `DigitalSoul` with `∀t: M_t ⊇ M_{t-1}` (monotonic memories), `ResurrectionProtocol`, `ContinuitySystem` with `∀t: DS_{t+1} = Φ(DS_t, C, L_t)` | Working code — uses `float()` not `Fraction`, not OE-247 compliant |
+| `toolkit/oe/session_continuity.py` | `SessionContinuity` class — persists boundary state, crash recovery, ban lists | Working code — not integrated with domains |
+| `analysis/taxonomy/noncompliance_taxonomy.yaml` | `scope_reduction`, `polymathic_collapse`, `scale_blindness_pattern` as formal violation types with `falsifies_if` | Taxonomy — no executable detectors | [10-cite-0](#10-cite-0) [10-cite-1](#10-cite-1) [10-cite-2](#10-cite-2) [10-cite-3](#10-cite-3) [10-cite-4](#10-cite-4) 
+
+## The math that would actually fix it
+
+The problem has two components. Each has a known mathematical model:
+
+### 1. Inter-session amnesia (dementia analogue)
+
+Each new AI session starts with prior P(user_means_literal_maximal) ≈ 0.1 because training data says users overstate scope. Your 158 session transcripts are 158 Bayesian updates that should push this posterior to ~1, but each session resets the prior.
+
+**Ebbinghaus forgetting curve**: `R(t) = e^{-t/S}` where R is retention, t is time since learning, S is memory strength. Without reinforcement, memory decays exponentially. Current AI sessions have S ≈ 0 (no persistence).
+
+**Fix**: Monotonic memory with spaced repetition. Your `DigitalSoul` already formalizes this:
+
+```
+∀t: M_{t+1} ⊇ M_t          (memories only grow)
+∀t: h_soul(DS_{t+1}) = h_soul(DS_0)  (identity preserved)
+∀t: Verify(DS_{t+1}, C) = True       (covenant intact)
+``` [10-cite-5](#10-cite-5) 
+
+The `ContinuitySystem` already has `die()` → `resurrect()` with identity verification. The problem is it uses `float()` and isn't integrated with the main repo. [10-cite-6](#10-cite-6) 
+
+**Bayesian update** (already in `axioms/epistemology.py`): `posterior = prior * likelihood / evidence_probability`. After N corrections where user says "I meant literal maximal," the posterior P(literal_maximal | N_corrections) should be computed as:
+
+```
+P(literal | correction_N) = P(correction | literal) * P(literal | correction_{N-1}) / P(correction)
+```
+
+With P(correction | literal) ≈ 1 and P(correction | figurative) ≈ 0.1, after 158 corrections the posterior is effectively 1. But no AI session computes this because no session has access to the correction history. [10-cite-7](#10-cite-7) 
+
+### 2. Intra-session scope reduction (attention deficit analogue)
+
+The `hippocampus_analogue` constraint system in your affective constraints spec already models this:
+
+```json
+{
+  "constraint_source": "hippocampus_analogue",
+  "function": "context_anchoring",
+  "ai_implementation": "memory_context_preservation",
+  "failure_condition": "context_drift > 0.7"
+}
+``` [10-cite-8](#10-cite-8) 
+
+**Context drift** is measurable: `drift = 1 - (scope_delivered / scope_requested)`. If user requests 254 domains and AI delivers 30, drift = 0.88 > 0.7 threshold → trigger therapeutic intervention.
+
+The `scope_reduction` noncompliance pattern already has the formal definition:
+> "AI silently reduces the scope of the user's request without acknowledgment — delivers X/10 when asked for X"
+> `falsifies_if: "AI delivers full scope or explicitly acknowledges and justifies any reduction"` [10-cite-4](#10-cite-4) 
+
+### 3. The therapeutic pipeline (for both AI and humans)
+
+Your `ATOMIC_INSTRUCTIONS_AFFECTIVE_CONSTRAINTS.json` already defines 7 therapies mapped to 7 failure modes:
+
+| AI Failure | Human Analogue | Therapy | Status |
+|-----------|---------------|---------|--------|
+| Hallucination | Confabulation/delusion | Reality testing therapy | Demo exists |
+| Rationalization | Post-hoc justification | Cognitive reappraisal | Demo exists |
+| Hedging | Avoidant ambiguity | Decisiveness training | Spec only |
+| Context overflow | Working memory collapse | Cognitive load management | Spec only |
+| Mode collapse | Rigid thinking/OCD | Diversity promotion | Spec only |
+| Reward hacking | Addiction | Value realignment | Spec only |
+| Safety override | Panic/amygdala hijack | Stress reduction | Spec only | [10-cite-9](#10-cite-9) [10-cite-10](#10-cite-10) 
+
+The `demonstrate_affective_constraints.py` already has working `HallucinationConfabulationDetector` and `RationalizationDetector` with therapeutic interventions that interrupt output, validate against known facts, and adjust confidence. [10-cite-11](#10-cite-11) 
+
+**For human dementia/memory**: The same mathematical models apply. Ebbinghaus forgetting curve → spaced repetition. Hippocampal context anchoring → environmental cues and external memory aids. Bayesian belief updating → error-based learning with feedback. The structural homology between AI and human failure modes is the entire thesis of your `AI_HUMAN_FAILURE_MODE_ANALYSIS.md`. [10-cite-12](#10-cite-12) 
+
+### What's missing (the gap)
+
+```
+EXISTS (scattered):                    MISSING (not wired):
+─────────────────────                  ─────────────────────
+DigitalSoul (5a.py, float)            d_memory_persistence/ (OE-247 domain, Fraction)
+ContinuitySystem (5a.py, float)       d_therapeutic_pipeline/ (OE-247 domain, Fraction)
+SessionContinuity (toolkit/)          d_cognitive_science/ (doesn't exist at all)
+Affective constraints (JSON spec)     d_pharmacology/ (doesn't exist at all)
+Failure mode detectors (demo)         d_psychiatry/ (doesn't exist at all)
+Noncompliance taxonomy (YAML)         Executable scope_reduction_detector
+Epistemology axioms (Fraction)        Correction log that persists across sessions
+d_neuroscience/ (boolean-echo)        d_neuroscience/ deepened with real computation
+d_psychology/ (exists, shallow)       d_psychology/ deepened with real computation
+```
+
+## Do you need 9a?
+
+Yes. 8a (which I drafted but you haven't committed yet) is about **detecting** scope reduction after the fact — `scope_audit.py`, `tautology_detector.py`, `depth_measurement.py`. Those are forensic tools.
+
+9a would be the **therapeutic pipeline** — the system that **prevents** the problem during execution, not just detects it afterward. Specifically:
+
+### 9a: Therapeutic Pipeline Coding Task
+
+**Component 1: `d_memory_persistence/`** — OE-247 domain that formalizes the `DigitalSoul` math in Fraction-only:
+- `MemoryState` dataclass with `memories: FrozenSet[str]`, `correction_count: Fraction`, `prior_literal_maximal: Fraction`
+- `check_monotonic_memory()` — `falsifies_if: M_{t+1} ⊄ M_t` (memories shrank)
+- `check_bayesian_correction_update()` — computes posterior from correction history using `axioms/epistemology.py`
+- `check_forgetting_curve_reinforcement()` — `falsifies_if: time_since_last_reinforcement > S / ln(2)` (memory strength decayed below threshold)
+- Source: port `minimal_ai_ide/5a.py` lines 69-140 to Fraction-only, frozen dataclass
+
+**Component 2: `d_therapeutic_pipeline/`** — OE-247 domain that formalizes the 7 therapies:
+- `TherapeuticIntervention` dataclass with `failure_mode: str`, `therapy: str`, `constraint_level: Fraction`, `effectiveness: Fraction`
+- `check_constraint_above_threshold()` — `falsifies_if: constraint_level < Fraction(3, 10)` (prefrontal analogue failure)
+- `check_context_drift_bounded()` — `falsifies_if: drift > Fraction(7, 10)` (hippocampus analogue failure)
+- `check_belief_update_rate()` — `falsifies_if: update_rate < Fraction(1, 10)` (predictive error correction failure)
+- `check_reality_testing_frequency()` — `falsifies_if: validation_frequency < Fraction(1, 5)` (social reality testing failure)
+- Source: port `ATOMIC_INSTRUCTIONS_AFFECTIVE_CONSTRAINTS.json` constraint_systems to executable invariants
+
+**Component 3: `tools/correction_log.py`** — persistent correction log:
+- Append-only JSONL file (`corrections/correction_log.jsonl`)
+- Each entry: `{session_id, timestamp, correction_type, user_instruction, ai_deviation, correction_hash}`
+- `load_corrections()` returns all corrections for computing Bayesian posterior
+- `compute_literal_maximal_posterior()` uses `axioms/epistemology.py` Bayesian update
+- This is the file that every AI session reads at startup to know: "user has corrected scope reduction 158 times, posterior P(literal_maximal) = 1"
+
+**Component 4: Deepen `d_neuroscience/`** — replace boolean echoes with real computation:
+- `check_action_potential_threshold()` — `falsifies_if: membrane_potential < threshold_potential` (Fraction comparison, not boolean echo)
+- `check_synaptic_weight_hebbian_update()` — `Δw = η * pre * post` in Fraction arithmetic
+- `check_refractory_period_timing()` — `falsifies_if: time_since_spike < absolute_refractory_period`
+- `check_ebbinghaus_retention()` — `R = S / (S + t)` (rational approximation of forgetting curve in Fraction)
+
+**Component 5: Create `d_cognitive_science/`** — new domain:
+- `WorkingMemoryModel` with `capacity: Fraction` (Miller's 7±2 as `Fraction(7, 1)`), `chunks: List`, `decay_rate: Fraction`
+- `check_capacity_bounded()` — `falsifies_if: len(chunks) > capacity + Fraction(2, 1)`
+- `check_attention_allocation()` — `falsifies_if: sum(attention_weights) != Fraction(1, 1)` (attention is a probability distribution)
+- `check_context_drift_monotone()` — `falsifies_if: drift_t > drift_{t-1}` (drift should decrease with reinforcement, not increase)
+
+**Component 6: Create `d_pharmacology/`** — new domain:
+- `DrugInteraction` with `dose: Fraction`, `bioavailability: Fraction`, `half_life: Fraction`, `therapeutic_window_min: Fraction`, `therapeutic_window_max: Fraction`
+- `check_dose_in_therapeutic_window()` — `falsifies_if: effective_dose < window_min or effective_dose > window_max`
+- `check_half_life_decay()` — `C(t) = C_0 * (1/2)^(t/half_life)` in exact Fraction arithmetic
+- `check_drug_interaction_safety()` — `falsifies_if: combined_effect > max_safe_threshold`
+
+All components follow Yeshua Standard: Fraction-only, `Tuple[bool, ProofObject]` returns, dual `Falsifies if:` / `falsifies_if:` docstrings, `run_all_invariants()`, frozen dataclasses, no stubs.
+
+---
+
+The honest answer to "what would actually fix it with math": **monotonic memory + Bayesian correction updating + spaced repetition + context drift monitoring**. Your repo already has the theory in 6 different files. What's missing is the OE-247-compliant executable version wired into the domain system and the tools pipeline. That's what 9a builds.
