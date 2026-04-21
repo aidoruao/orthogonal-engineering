@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -40,28 +41,32 @@ def test_run_cmd_failure():
 
 def test_run_all_checks_returns_list():
     """run_all_checks returns a list of CheckResult objects."""
-    results = run_all_checks()
-    assert isinstance(results, list)
-    assert len(results) == 10
-    for r in results:
-        assert isinstance(r, CheckResult)
-        assert r.status in ("PASS", "FAIL", "STALE", "INFO", "SKIP")
+    with patch("tools.verify_all._run_cmd") as mock_run:
+        mock_run.return_value = (0, "ok", "")
+        results = run_all_checks()
+        assert isinstance(results, list)
+        assert len(results) == 10
+        for r in results:
+            assert isinstance(r, CheckResult)
+            assert r.status in ("PASS", "FAIL", "STALE", "INFO", "SKIP")
 
 
 def test_check_names_present():
     """All expected check names are present in results."""
-    results = run_all_checks()
-    names = {r.name for r in results}
-    expected = {
-        "Feed chain",
-        "Popperian audit",
-        "Standards",
-        "Tests",
-        "Scope audit",
-        "Tautology",
-        "Depth measurement",
-        "Anti-nominalism",
-        "Merkle verify",
-        "Scope reduction",
-    }
-    assert expected.issubset(names)
+    with patch("tools.verify_all._run_cmd") as mock_run:
+        mock_run.return_value = (0, "ok", "")
+        results = run_all_checks()
+        names = {r.name for r in results}
+        expected = {
+            "Feed chain",
+            "Popperian audit",
+            "Standards",
+            "Tests",
+            "Scope audit",
+            "Tautology",
+            "Depth measurement",
+            "Anti-nominalism",
+            "Merkle verify",
+            "Scope reduction",
+        }
+        assert expected.issubset(names)
