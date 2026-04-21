@@ -1,0 +1,85 @@
+The repo already has the proof-of-concept for this AND the live failure case. The Kimi CLI session `3a 4-19-26` shows exactly what happens when a rate-limited agent tries to do everything manually — it spawns background agents, hits `429 rate_limit_reached_error`, and dies mid-task with work half-done:
+
+```
+LLM provider error: Error code: 429 - {'error': {'message': "You've reached
+your usage limit for this period."}}
+``` [4-cite-0](#4-cite-0) 
+
+And Copilot gets stuck in a different way — it forgets how to use its own tools and tries raw `git push` in a sandboxed terminal, burning tokens on a loop that can never succeed: [4-cite-1](#4-cite-1) 
+
+## What already exists: 3 tiers of compiled tools
+
+The repo already has tools that do exactly what you're describing — tools that are smarter than the AI within their domain, that pre-digest context so the AI doesn't waste tokens figuring things out.
+
+### Tier 1: Context tools (save tokens on orientation)
+
+**`tools/onboard_agent.py`** — Detects agent type, loads applicable standards from `STANDARDS_REGISTRY.json`, runs environment checks, and outputs a single context block. Instead of the AI reading 8+ files manually (burning tokens), one command gives it everything: [4-cite-2](#4-cite-2) 
+
+It knows every agent's context window size and filters standards by scope: [4-cite-3](#4-cite-3) 
+
+**`tools/context_window_estimator.py`** — Tells the agent "reading this directory will cost you 47,000 tokens out of your 220k budget" BEFORE it reads anything. The tool is smarter than the AI at token budgeting because it does exact character counting deterministically: [4-cite-4](#4-cite-4) [4-cite-5](#4-cite-5) 
+
+**`tools/since_last_session.py`** — A returning agent runs one command and gets: new commits, changed files, new domains, new standards, new AGENT_FEED rows. Instead of the AI reading the entire git log and AGENT_FEED.md (burning thousands of tokens), the tool pre-digests it: [4-cite-6](#4-cite-6) [4-cite-7](#4-cite-7) 
+
+### Tier 2: Verification tools (save tokens on auditing)
+
+The **8a suite** — 7 tools that do what the AI would otherwise spend its entire token budget doing manually:
+
+| Tool | What it replaces | Token savings |
+|------|-----------------|---------------|
+| `audit/scope_audit.py` | AI manually checking every domain has required files | Scans all 254+ domains in <1 second |
+| `audit/tautology_detector.py` | AI reading every `check_*` function to judge quality | AST-parses all domains, classifies each function |
+| `audit/depth_measurement.py` | AI counting LOC, tests, complexity per domain | Deterministic scoring with Fraction arithmetic |
+| `audit/merkle_verify.py` | AI manually hashing 7,179 files | Recomputes and compares all hashes |
+| `audit/scope_reduction_detector.py` | AI comparing campaign spec against reality | JSON diff: expected vs delivered |
+| `tools/verify_all.py` | AI remembering and running 10 separate commands | Single command, summary table | [4-cite-8](#4-cite-8) [4-cite-9](#4-cite-9) 
+
+### Tier 3: The agent loop architecture
+
+`AGENT_IN_IDE.md` defines the formal state machine for how an agent uses these tools:
+
+```
+idle → planning → executing → validating → complete
+                        ↓         ↓
+                     failed ←────┘
+```
+
+The key is **Layer 0 (Pre-Generation)** — before the AI even thinks, the tools extract constraints, identify required invariants, and select canal templates. The AI's first token is already informed: [4-cite-10](#4-cite-10) 
+
+## The requirements you're identifying
+
+You're right that there are requirements for these tools to actually work for neutered agents. Based on what the repo already demonstrates, here's the list:
+
+**1. The tool must fetch context the AI would otherwise burn tokens reading.**
+`onboard_agent.py` does this — it reads `STANDARDS_REGISTRY.json`, `AGENT_FEED.md`, `consent_log.jsonl`, runs `generate_feed_entry.py --verify`, and outputs a single pre-digested context block. The AI reads one output instead of 8 files. [4-cite-11](#4-cite-11) 
+
+**2. The tool must enumerate what exists so the AI doesn't have to discover it.**
+`scope_audit.py` enumerates all domains, all files per domain, all functions per file. `tautology_detector.py` enumerates every `check_*` function and classifies it. The AI gets a JSON report — it doesn't need to `ls` and `cat` 254 directories. [4-cite-12](#4-cite-12) 
+
+**3. The tool must be deterministic and run without AI involvement.**
+Every tool in the 8a suite uses `Fraction` arithmetic (no floats), returns `Tuple[bool, ProofObject]`, and runs with `python3 <script>` from repo root using only stdlib. No LLM calls. No API keys. No tokens burned. [4-cite-13](#4-cite-13) 
+
+**4. The tool must know the agent's budget.**
+`context_window_estimator.py` knows Kimi has 220k tokens, Copilot has 128k, Claude has 200k. It tells the agent what it can afford to read before it reads it. [4-cite-14](#4-cite-14) 
+
+**5. The tool must detect what the AI got wrong without the AI needing to self-audit.**
+`scope_reduction_detector.py` compares campaign spec (what was asked) against filesystem (what exists). If the AI built 30% of what was requested, the tool catches it — the AI doesn't need to spend tokens auditing itself. [4-cite-15](#4-cite-15) 
+
+**6. The tool must give the AI a decision, not raw data.**
+The `verify_all.py` wrapper doesn't dump 10 raw outputs — it prints a summary table with PASS/FAIL/INFO per check. The AI reads one table and knows exactly what to fix. That's the "smarter than the AI" part — within the verification domain, the tool already made the judgment. [4-cite-16](#4-cite-16) 
+
+## What's still missing (the gap)
+
+The gap analysis from `3a 4-20-26` identifies what would complete the picture:
+
+- **`bootstrap/auto_onboard.py`** — single entry point that runs onboarding + verification quartet + prints READY/NOT READY. One command instead of the agent figuring out the boot sequence. [4-cite-17](#4-cite-17) 
+
+- **Task-as-domain registry** (`d_task_fix_bug`, `d_task_build_domain`, etc.) — so the AI doesn't need to figure out *how* to do a task. The task itself is a domain with invariants. The AI just fills in the implementation and the tools verify it. [4-cite-18](#4-cite-18) 
+
+## The core point
+
+The Kimi CLI session that hit 429 was trying to build 247 standards, launch background agents, create crypto infrastructure, build game civilization kernels — all as interpreted AI labor. It burned through its entire quota and died with half the work unfinished.
+
+If instead it had run `python tools/onboard_agent.py --agent kimi` (1 token-free command), then `python tools/verify_all.py` (1 token-free command), it would have known exactly what was missing and what to build — without burning tokens on discovery. Then it could have spent its limited budget on the actual creative work: writing the implementations that the deterministic tools can't write.
+
+That's the requirement list: **fetch, enumerate, budget, verify, decide** — all without burning tokens. The AI's job becomes writing the code that only AI can write. Everything else is compiled infrastructure.
