@@ -1,0 +1,92 @@
+Kimi CLI is not crashing because of a Kimi bug or your repo size. **The repo's own verification tools are killing it.** Every single crash follows the same pattern.
+
+## The Root Cause: Tool Timeout Cascade
+
+Kimi CLI has a **hard 60-second shell command timeout**. Your verification tools exceed that limit because they run subprocesses **sequentially**, and the chain nests multiple layers deep:
+
+```mermaid
+graph TD
+    A["bootstrap/auto_onboard.py"] -->|"calls"| B["tools/agent_health_check.py"]
+    A -->|"calls"| C["tools/onboard_agent.py"]
+    A -->|"calls"| D["tools/verify_all.py"]
+    D -->|"calls sequentially"| E["10 subprocess checks"]
+    E -->|"includes"| F["standards_check.py --verify"]
+    F -->|"runs sequentially"| G["60 enforcement commands"]
+    G -->|"each spawns"| H["python3 subprocess with 60s timeout"]
+    
+    style F fill:#fff,stroke:#f00,stroke-width:3px
+    style G fill:#fff,stroke:#f00,stroke-width:3px
+```
+
+**`standards_check.py --verify`** is the primary killer. It runs **60 enforcement commands sequentially**, each with a 60s subprocess timeout. Many of these commands themselves spawn Python processes (e.g., `python3 audit/popperian_audit.py 2>&1 | tail -3`). Total wall time: easily 5-10 minutes. [8-cite-0](#8-cite-0) 
+
+**`verify_all.py`** runs 10 checks sequentially, including `_check_standards()` which calls `standards_check.py --verify`. Even with `--skip-tests --skip-merkle`, it still runs 8 checks including the standards check. Total wall time: easily >120s. [8-cite-1](#8-cite-1) 
+
+**`auto_onboard.py`** chains health_check + onboard_agent + verify_all. It inherits all the slowness.
+
+## Crash-by-Crash Forensics
+
+Every Kimi CLI session death traces back to the same tool:
+
+| Session | Version | What Killed It | Timeout | Context at Death |
+|---------|---------|---------------|---------|-----------------|
+| `0ad8c4e1` | 1.37.0 | `standards_check.py --verify` | 60s | 39.3% (102.9k) |
+| `a8032c7f` | 1.37.0 | `standards_check.py --verify` | 60s | 33.1% (86.8k) |
+| `43e9c47c` | 1.36.0 | `auto_onboard.py` (calls verify_all → standards_check) | froze | 21.2% (55.6k) |
+| `71901a77` | ? | `verify_all.py --skip-tests --skip-merkle` | 120s | 45.2% (118.5k) |
+| `e7c26ee8` | 1.22.0 | `auto_onboard.py --agent kimi` | 60s | 4.6% (12.1k) | [8-cite-2](#8-cite-2) [8-cite-3](#8-cite-3) 
+
+**The version doesn't matter.** 1.37.0, 1.36.0, 1.22.0 — all crash on the same tools. The 1.36.0 session `305c7176` survived because it **never ran the verification tools** — it only built files and committed them. [8-cite-4](#8-cite-4) 
+
+## Why `agent_health_check.py --fast` Works But Everything Else Doesn't
+
+`agent_health_check.py --fast` runs only 7 checks, and **none of them spawn subprocesses**. It checks file existence, parses JSON, greps for floats — all in-process, all instant. That's why it passes every time. [8-cite-5](#8-cite-5) 
+
+The `--fast` flag skips the two slow checks: `popperian_audit` (subprocess, 120s timeout) and `feed_integrity` (subprocess, 30s timeout). Without `--fast`, even `agent_health_check.py` would risk timing out.
+
+## The Specific Problem in `standards_check.py`
+
+The gap analysis from session `9184eeb4` already identified this:
+
+> **Potential gaps:**
+> - No parallel execution of enforcement commands
+> - No caching of enforcement results
+
+`standards_check.py --verify` runs 60 standards, each calling `subprocess.run()` with `shell=True` and a 60s timeout. The enforcement commands include things like:
+- `python3 audit/popperian_audit.py 2>&1 | tail -3` (spawns full AST audit of 253 domains)
+- `python3 tools/state_witness/generate_feed_entry.py --verify` (reads and hashes AGENT_FEED.md)
+- `grep -rn` across all domain files
+
+Some of these enforcement commands are **called multiple times** by different standards (e.g., `popperian_audit.py` is called by YS-001 and YS-004). No deduplication. [8-cite-6](#8-cite-6) 
+
+## What Needs to Happen
+
+The irony is brutal: **the tools built to save AI tokens are the tools killing AI sessions.** The fix is not a Kimi CLI version change. The fix is making the tools respect the environment they run in.
+
+Three concrete changes would fix this:
+
+**1. `verify_all.py` needs a `--fast` mode** that skips `standards_check.py --verify` and `pytest`, similar to how `agent_health_check.py --fast` skips slow checks. The current `--skip-tests` and `--skip-merkle` flags aren't enough because `_check_standards()` is the real killer and has no skip flag. [8-cite-7](#8-cite-7) 
+
+**2. `standards_check.py --verify` needs either parallel execution or a `--timeout-budget` flag** that says "you have 30 seconds total for all 60 standards — skip any that would exceed the budget." Currently each enforcement command gets 60s, and they run sequentially. [8-cite-8](#8-cite-8) 
+
+**3. `bootstrap/auto_onboard.py` should NOT call `verify_all.py`** — it should only call `agent_health_check.py --fast`. The full verification suite should be a separate, explicit step that the agent runs only when it has time budget for it. [8-cite-9](#8-cite-9) 
+
+## The Immediate Workaround
+
+Until the tools are fixed, the instruction for any Kimi CLI session is:
+
+```
+DO NOT run:
+- python3 tools/verify_all.py (any flags)
+- python3 tools/standards_check.py --verify
+- python3 bootstrap/auto_onboard.py
+
+SAFE to run:
+- python3 tools/agent_health_check.py --fast  (no subprocesses, instant)
+- python3 tools/onboard_agent.py --agent kimi  (no subprocesses, instant)
+- python3 audit/popperian_audit.py  (single subprocess, usually <30s)
+- python3 audit/scope_audit.py  (single subprocess, usually <30s)
+- Individual audit tools one at a time with timeout: timeout 30 python3 audit/<tool>.py
+```
+
+The session `305c7176` (the only one that survived a full build) proved this — it never ran the verification suite during the build. It only built files, committed, and pushed. Verification was done separately, after the session ended.
