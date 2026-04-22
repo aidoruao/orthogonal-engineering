@@ -1,0 +1,780 @@
+[
+  {
+    "docstring": "Photonic matrix output must be deterministic across runs per DO-178C Level A.",
+    "falsifies_if": "is_deterministic is False.",
+    "function": "check_do178c_photonic_determinism",
+    "id": "PHOTON_check_do178c_photonic_determinism",
+    "module": "src.hardware.photonic.aerospace_floor",
+    "thresholds": []
+  },
+  {
+    "docstring": "Laser hazard must be assessed in FMEA per MIL-STD-882E.",
+    "falsifies_if": "hazard_assessed_in_fmea is False.",
+    "function": "check_milstd882e_laser_hazard",
+    "id": "PHOTON_check_milstd882e_laser_hazard",
+    "module": "src.hardware.photonic.aerospace_floor",
+    "thresholds": []
+  },
+  {
+    "docstring": "Space-rated optics must have radiation hardness data per NASA NPR 7150.2.",
+    "falsifies_if": "has_radiation_data is False.",
+    "function": "check_nasa_class_a_radiation",
+    "id": "PHOTON_check_nasa_class_a_radiation",
+    "module": "src.hardware.photonic.aerospace_floor",
+    "thresholds": []
+  },
+  {
+    "docstring": "PFD must not exceed 1/10 000 for safety-critical optical link per IEC 61508 SIL-4.",
+    "falsifies_if": "pfd > Fraction(1, 10_000).",
+    "function": "check_sil4_optical_safety",
+    "id": "PHOTON_check_sil4_optical_safety",
+    "module": "src.hardware.photonic.aerospace_floor",
+    "thresholds": [
+      "Fraction(1, 10_000)",
+      "Fraction(1, 10_000)"
+    ]
+  },
+  {
+    "docstring": "ADC effective resolution must be at least 8 bits per IEEE 1241.",
+    "falsifies_if": "effective_bits < Fraction(8, 1).",
+    "function": "check_adc_resolution",
+    "id": "PHOTON_check_adc_resolution",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(8, 1)",
+      "Fraction(8, 1)"
+    ]
+  },
+  {
+    "docstring": "DAC SFDR must be at least 40 dBc per IEEE 1658.",
+    "falsifies_if": "sfdr_dbc < Fraction(40, 1).",
+    "function": "check_dac_sfdr",
+    "id": "PHOTON_check_dac_sfdr",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(40, 1)",
+      "Fraction(40, 1)"
+    ]
+  },
+  {
+    "docstring": "E-O/O-E conversion power must stay below half of total system power (Landauer inversion).",
+    "falsifies_if": "adc_dac_power > Fraction(1, 2) * total_power.",
+    "function": "check_eo_conversion_power",
+    "id": "PHOTON_check_eo_conversion_power",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(1, 2)",
+      "Fraction(1, 2)"
+    ]
+  },
+  {
+    "docstring": "Modulator bandwidth must be at least 25 GHz for 50 Gbaud (Custom OE).",
+    "falsifies_if": "bandwidth_ghz < Fraction(25, 1).",
+    "function": "check_modulator_bandwidth",
+    "id": "PHOTON_check_modulator_bandwidth",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(25, 1)",
+      "Fraction(25, 1)"
+    ]
+  },
+  {
+    "docstring": "Modulator V\u03c0 must not exceed 2 V (Custom OE).",
+    "falsifies_if": "vpi_volts > Fraction(2, 1).",
+    "function": "check_modulator_vpi",
+    "id": "PHOTON_check_modulator_vpi",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(2, 1)",
+      "Fraction(2, 1)"
+    ]
+  },
+  {
+    "docstring": "Photodetector responsivity must be at least 0.8 A/W at 1550 nm (Custom OE).",
+    "falsifies_if": "responsivity < Fraction(8, 10).",
+    "function": "check_photodetector_responsivity",
+    "id": "PHOTON_check_photodetector_responsivity",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(8, 10)",
+      "Fraction(8, 10)"
+    ]
+  },
+  {
+    "docstring": "TIA gain must be at least 5000 \u03a9 (Custom OE).",
+    "falsifies_if": "tia_gain_ohms < Fraction(5000, 1).",
+    "function": "check_transimpedance_gain",
+    "id": "PHOTON_check_transimpedance_gain",
+    "module": "src.hardware.photonic.electro_optic",
+    "thresholds": [
+      "Fraction(5000, 1)",
+      "Fraction(5000, 1)"
+    ]
+  },
+  {
+    "docstring": "Conducted emission must not exceed -40 dBm per CISPR 32.",
+    "falsifies_if": "conducted_dbm > Fraction(-40, 1).",
+    "function": "check_emi_conducted",
+    "id": "PHOTON_check_emi_conducted",
+    "module": "src.hardware.photonic.emc",
+    "thresholds": [
+      "Fraction(-40, 1)",
+      "Fraction(-40, 1)"
+    ]
+  },
+  {
+    "docstring": "Radiated emission must not exceed -47 dBm at 3m per FCC Part 15 / CISPR 32.",
+    "falsifies_if": "emission_dbm > Fraction(-47, 1).",
+    "function": "check_emi_radiated",
+    "id": "PHOTON_check_emi_radiated",
+    "module": "src.hardware.photonic.emc",
+    "thresholds": [
+      "Fraction(-47, 1)",
+      "Fraction(-47, 1)"
+    ]
+  },
+  {
+    "docstring": "ESD immunity must withstand at least 8 kV contact discharge per IEC 61000-4-2.",
+    "falsifies_if": "withstand_kv < Fraction(8, 1).",
+    "function": "check_esd_immunity",
+    "id": "PHOTON_check_esd_immunity",
+    "module": "src.hardware.photonic.emc",
+    "thresholds": [
+      "Fraction(8, 1)",
+      "Fraction(8, 1)"
+    ]
+  },
+  {
+    "docstring": "Total jitter must not exceed 28 ps at BER 10^-12 per IEEE 802.3.",
+    "falsifies_if": "total_jitter_ps > Fraction(28, 1).",
+    "function": "check_jitter",
+    "id": "PHOTON_check_jitter",
+    "module": "src.hardware.photonic.emc",
+    "thresholds": [
+      "Fraction(28, 1)",
+      "Fraction(28, 1)"
+    ]
+  },
+  {
+    "docstring": "Adjacent channel isolation must be at least 25 dB per ITU-T G.694.1.",
+    "falsifies_if": "adjacent_channel_isolation_db < Fraction(25, 1).",
+    "function": "check_optical_crosstalk",
+    "id": "PHOTON_check_optical_crosstalk",
+    "module": "src.hardware.photonic.emc",
+    "thresholds": [
+      "Fraction(25, 1)",
+      "Fraction(25, 1)"
+    ]
+  },
+  {
+    "docstring": "Power supply ripple must not exceed 50 mV pk-pk (Custom OE).",
+    "falsifies_if": "ripple_mv > Fraction(50, 1).",
+    "function": "check_power_supply_ripple",
+    "id": "PHOTON_check_power_supply_ripple",
+    "module": "src.hardware.photonic.emc",
+    "thresholds": [
+      "Fraction(50, 1)",
+      "Fraction(50, 1)"
+    ]
+  },
+  {
+    "docstring": "3TG minerals must have smelter audit per Dodd-Frank Section 1502.",
+    "falsifies_if": "has_audit is False.",
+    "function": "check_conflict_minerals",
+    "id": "PHOTON_check_conflict_minerals",
+    "module": "src.hardware.photonic.environmental",
+    "thresholds": []
+  },
+  {
+    "docstring": "Idle power must not exceed 5 W per EPA Energy Star.",
+    "falsifies_if": "idle_power_w > Fraction(5, 1).",
+    "function": "check_energy_star_idle",
+    "id": "PHOTON_check_energy_star_idle",
+    "module": "src.hardware.photonic.environmental",
+    "thresholds": [
+      "Fraction(5, 1)",
+      "Fraction(5, 1)"
+    ]
+  },
+  {
+    "docstring": "Operating temperature must cover at least -40 \u00b0C to +85 \u00b0C per Telcordia GR-63.",
+    "falsifies_if": "min_temp_c > -40 or max_temp_c < 85.",
+    "function": "check_operating_temperature_range",
+    "id": "PHOTON_check_operating_temperature_range",
+    "module": "src.hardware.photonic.environmental",
+    "thresholds": []
+  },
+  {
+    "docstring": "SVHC content must not exceed 0.1% w/w per EU REACH 1907/2006.",
+    "falsifies_if": "svhc_fraction > Fraction(1, 1000).",
+    "function": "check_reach_compliance",
+    "id": "PHOTON_check_reach_compliance",
+    "module": "src.hardware.photonic.environmental",
+    "thresholds": [
+      "Fraction(1, 1000)",
+      "Fraction(1, 1000)"
+    ]
+  },
+  {
+    "docstring": "Lead content must not exceed 0.1% by weight per EU RoHS 2011/65/EU.",
+    "falsifies_if": "lead_fraction > Fraction(1, 1000).",
+    "function": "check_rohs_compliance",
+    "id": "PHOTON_check_rohs_compliance",
+    "module": "src.hardware.photonic.environmental",
+    "thresholds": [
+      "Fraction(1, 1000)",
+      "Fraction(1, 1000)"
+    ]
+  },
+  {
+    "docstring": "Recyclable fraction must be at least 65% per EU WEEE 2012/19/EU.",
+    "falsifies_if": "recyclable_fraction < Fraction(65, 100).",
+    "function": "check_weee_recyclability",
+    "id": "PHOTON_check_weee_recyclability",
+    "module": "src.hardware.photonic.environmental",
+    "thresholds": [
+      "Fraction(65, 100)",
+      "Fraction(65, 100)"
+    ]
+  },
+  {
+    "docstring": "Bend radius must exceed minimum for wavelength to avoid excessive loss.",
+    "falsifies_if": "bend_radius_um <= minimum_bend_radius(wavelength_nm).",
+    "function": "check_bend_loss_budget",
+    "id": "PHOTON_check_bend_loss_budget",
+    "module": "src.hardware.photonic.invariants",
+    "thresholds": []
+  },
+  {
+    "docstring": "Extinction ratio must exceed 20 dB for digital modulation.",
+    "falsifies_if": "ER <= Fraction(20, 1).",
+    "function": "check_extinction_ratio",
+    "id": "PHOTON_check_extinction_ratio",
+    "module": "src.hardware.photonic.invariants",
+    "thresholds": [
+      "Fraction(20, 1)",
+      "Fraction(20, 1)",
+      "Fraction(20, 1)"
+    ]
+  },
+  {
+    "docstring": "Total insertion loss must be within link budget.",
+    "falsifies_if": "total_insertion_loss_db >= link_budget_db.",
+    "function": "check_insertion_loss_budget",
+    "id": "PHOTON_check_insertion_loss_budget",
+    "module": "src.hardware.photonic.invariants",
+    "thresholds": []
+  },
+  {
+    "docstring": "Phase error must be below 0.01 radians.",
+    "falsifies_if": "phase_shift >= Fraction(1, 100).",
+    "function": "check_phase_error_tolerance",
+    "id": "PHOTON_check_phase_error_tolerance",
+    "module": "src.hardware.photonic.invariants",
+    "thresholds": [
+      "Fraction(1, 100)",
+      "Fraction(1, 100)",
+      "Fraction(1, 100)"
+    ]
+  },
+  {
+    "docstring": "Waveguide must be single-mode per Marcuse criterion.",
+    "falsifies_if": "V-number >= Fraction(2405, 1000).",
+    "function": "check_single_mode_condition",
+    "id": "PHOTON_check_single_mode_condition",
+    "module": "src.hardware.photonic.invariants",
+    "thresholds": [
+      "Fraction(2405, 1000)",
+      "Fraction(2405, 1000)",
+      "Fraction(2405, 1000)"
+    ]
+  },
+  {
+    "docstring": "Thermal tuning range must cover the free spectral range.",
+    "falsifies_if": "tuning_range_nm < fsr_nm.",
+    "function": "check_thermal_tuning_range",
+    "id": "PHOTON_check_thermal_tuning_range",
+    "module": "src.hardware.photonic.invariants",
+    "thresholds": []
+  },
+  {
+    "docstring": "Fiber-to-chip coupling loss must not exceed 3 dB (Custom OE).",
+    "falsifies_if": "fiber_to_chip_loss_db > Fraction(3, 1).",
+    "function": "check_coupling_efficiency",
+    "id": "PHOTON_check_coupling_efficiency",
+    "module": "src.hardware.photonic.manufacturing",
+    "thresholds": [
+      "Fraction(3, 1)",
+      "Fraction(3, 1)"
+    ]
+  },
+  {
+    "docstring": "Etch depth must be within 10 nm of target per SEMI E10.",
+    "falsifies_if": "abs(actual - target) > Fraction(10, 1).",
+    "function": "check_etch_depth_tolerance",
+    "id": "PHOTON_check_etch_depth_tolerance",
+    "module": "src.hardware.photonic.manufacturing",
+    "thresholds": [
+      "Fraction(10, 1)",
+      "Fraction(10, 1)"
+    ]
+  },
+  {
+    "docstring": "Lithography overlay error must not exceed 50 nm per SEMI P38.",
+    "falsifies_if": "overlay_error_nm > Fraction(50, 1).",
+    "function": "check_lithography_overlay",
+    "id": "PHOTON_check_lithography_overlay",
+    "module": "src.hardware.photonic.manufacturing",
+    "thresholds": [
+      "Fraction(50, 1)",
+      "Fraction(50, 1)"
+    ]
+  },
+  {
+    "docstring": "Wafer thickness variation must not exceed 5% per SEMI M1.",
+    "falsifies_if": "thickness_variation > Fraction(5, 100).",
+    "function": "check_wafer_uniformity",
+    "id": "PHOTON_check_wafer_uniformity",
+    "module": "src.hardware.photonic.manufacturing",
+    "thresholds": [
+      "Fraction(5, 100)",
+      "Fraction(5, 100)"
+    ]
+  },
+  {
+    "docstring": "Waveguide width must be within 20 nm of target (Custom OE).",
+    "falsifies_if": "abs(actual - target) > Fraction(20, 1).",
+    "function": "check_waveguide_width_tolerance",
+    "id": "PHOTON_check_waveguide_width_tolerance",
+    "module": "src.hardware.photonic.manufacturing",
+    "thresholds": [
+      "Fraction(20, 1)",
+      "Fraction(20, 1)"
+    ]
+  },
+  {
+    "docstring": "Die yield must be at least 70% (Custom OE).",
+    "falsifies_if": "die_yield < Fraction(7, 10).",
+    "function": "check_yield_rate",
+    "id": "PHOTON_check_yield_rate",
+    "module": "src.hardware.photonic.manufacturing",
+    "thresholds": [
+      "Fraction(7, 10)",
+      "Fraction(7, 10)"
+    ]
+  },
+  {
+    "docstring": "M^T * M must be within unitarity_tolerance of identity (Reck et al. 1994).",
+    "falsifies_if": "any diagonal element deviates from 1 by > 1/1000",
+    "function": "check_matrix_unitarity",
+    "id": "PHOTON_check_matrix_unitarity",
+    "module": "src.hardware.photonic.matrix_computation",
+    "thresholds": [
+      "Fraction(1, 1)",
+      "Fraction(0, 1)"
+    ]
+  },
+  {
+    "docstring": "MZI mesh depth must not exceed N*(N-1)/2 for an N\u00d7N matrix (Clements et al. 2016).",
+    "falsifies_if": "depth > N*(N-1)/2.",
+    "function": "check_mzi_mesh_depth",
+    "id": "PHOTON_check_mzi_mesh_depth",
+    "module": "src.hardware.photonic.matrix_computation",
+    "thresholds": []
+  },
+  {
+    "docstring": "Phase shifter error must be within 0.01 radians (Custom OE).",
+    "falsifies_if": "abs(target_phase - actual_phase) > Fraction(1, 100).",
+    "function": "check_phase_shifter_precision",
+    "id": "PHOTON_check_phase_shifter_precision",
+    "module": "src.hardware.photonic.matrix_computation",
+    "thresholds": [
+      "Fraction(1, 100)",
+      "Fraction(1, 100)"
+    ]
+  },
+  {
+    "docstring": "Uncompensated thermal drift must not exceed 10 pm/\u00b0C (Custom OE).",
+    "falsifies_if": "uncompensated_drift_pm_per_c > Fraction(10, 1).",
+    "function": "check_thermal_crosstalk_compensation",
+    "id": "PHOTON_check_thermal_crosstalk_compensation",
+    "module": "src.hardware.photonic.matrix_computation",
+    "thresholds": [
+      "Fraction(10, 1)",
+      "Fraction(10, 1)"
+    ]
+  },
+  {
+    "docstring": "BER must not exceed 1e-12 per IEEE 802.3.",
+    "falsifies_if": "ber > Fraction(1, 10**12).",
+    "function": "check_ber_floor",
+    "id": "PHOTON_check_ber_floor",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": []
+  },
+  {
+    "docstring": "Extinction ratio must be at least 9 dB per ITU-T G.959.1.",
+    "falsifies_if": "extinction_ratio_db < Fraction(9, 1).",
+    "function": "check_extinction_ratio",
+    "id": "PHOTON_check_extinction_ratio",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": [
+      "Fraction(9, 1)",
+      "Fraction(9, 1)"
+    ]
+  },
+  {
+    "docstring": "Insertion loss must not exceed 3 dB per IEEE 802.3.",
+    "falsifies_if": "insertion_loss_db > Fraction(3, 1).",
+    "function": "check_insertion_loss",
+    "id": "PHOTON_check_insertion_loss",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": [
+      "Fraction(3, 1)",
+      "Fraction(3, 1)"
+    ]
+  },
+  {
+    "docstring": "OSNR must be at least 20 dB per ITU-T G.697.",
+    "falsifies_if": "osnr_db < Fraction(20, 1).",
+    "function": "check_osnr",
+    "id": "PHOTON_check_osnr",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": [
+      "Fraction(20, 1)",
+      "Fraction(20, 1)"
+    ]
+  },
+  {
+    "docstring": "Polarization-dependent loss must not exceed 0.5 dB per ITU-T G.697.",
+    "falsifies_if": "pdl_db > Fraction(1, 2).",
+    "function": "check_polarization_dependent_loss",
+    "id": "PHOTON_check_polarization_dependent_loss",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": [
+      "Fraction(1, 2)",
+      "Fraction(1, 2)"
+    ]
+  },
+  {
+    "docstring": "Return loss must be at least 40 dB per IEC 61300-3-6.",
+    "falsifies_if": "return_loss_db < Fraction(40, 1).",
+    "function": "check_return_loss",
+    "id": "PHOTON_check_return_loss",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": [
+      "Fraction(40, 1)",
+      "Fraction(40, 1)"
+    ]
+  },
+  {
+    "docstring": "Wavelength must be within 0.1 nm of ITU-T G.694.1 grid.",
+    "falsifies_if": "abs(actual - grid) > Fraction(1, 10).",
+    "function": "check_wavelength_accuracy",
+    "id": "PHOTON_check_wavelength_accuracy",
+    "module": "src.hardware.photonic.optical_performance",
+    "thresholds": [
+      "Fraction(1, 10)",
+      "Fraction(1, 10)"
+    ]
+  },
+  {
+    "docstring": "Co-packaged optics pitch must be at least 250 \u00b5m per OIF CEI-112G.",
+    "falsifies_if": "pitch_um < Fraction(250, 1).",
+    "function": "check_co_packaged_optics_pitch",
+    "id": "PHOTON_check_co_packaged_optics_pitch",
+    "module": "src.hardware.photonic.packaging",
+    "thresholds": [
+      "Fraction(250, 1)",
+      "Fraction(250, 1)"
+    ]
+  },
+  {
+    "docstring": "Die attach void percentage must not exceed 25% (Custom OE).",
+    "falsifies_if": "void_percentage > Fraction(25, 100).",
+    "function": "check_die_attach_void",
+    "id": "PHOTON_check_die_attach_void",
+    "module": "src.hardware.photonic.packaging",
+    "thresholds": [
+      "Fraction(25, 100)",
+      "Fraction(25, 100)"
+    ]
+  },
+  {
+    "docstring": "Fiber array alignment error must not exceed 0.5 \u00b5m (Custom OE).",
+    "falsifies_if": "alignment_error_um > Fraction(1, 2).",
+    "function": "check_fiber_array_alignment",
+    "id": "PHOTON_check_fiber_array_alignment",
+    "module": "src.hardware.photonic.packaging",
+    "thresholds": [
+      "Fraction(1, 2)",
+      "Fraction(1, 2)"
+    ]
+  },
+  {
+    "docstring": "Hermetic seal leak rate must not exceed 1e-8 atm\u00b7cc/s per MIL-STD-883 Method 1014.",
+    "falsifies_if": "leak_rate > Fraction(1, 100_000_000).",
+    "function": "check_hermetic_seal",
+    "id": "PHOTON_check_hermetic_seal",
+    "module": "src.hardware.photonic.packaging",
+    "thresholds": [
+      "Fraction(1, 100_000_000)",
+      "Fraction(1, 100_000_000)"
+    ]
+  },
+  {
+    "docstring": "Solder joint must survive at least 3 reflow cycles per IPC J-STD-020.",
+    "falsifies_if": "reflow_cycles < Fraction(3, 1) or failed is True.",
+    "function": "check_solder_joint_reliability",
+    "id": "PHOTON_check_solder_joint_reliability",
+    "module": "src.hardware.photonic.packaging",
+    "thresholds": [
+      "Fraction(3, 1)",
+      "Fraction(3, 1)"
+    ]
+  },
+  {
+    "docstring": "Wire bond pull strength must be at least 3 gf per MIL-STD-883 Method 2011.",
+    "falsifies_if": "pull_force_gf < Fraction(3, 1).",
+    "function": "check_wire_bond_pull_strength",
+    "id": "PHOTON_check_wire_bond_pull_strength",
+    "module": "src.hardware.photonic.packaging",
+    "thresholds": [
+      "Fraction(3, 1)",
+      "Fraction(3, 1)"
+    ]
+  },
+  {
+    "docstring": "End-of-life loss minus beginning-of-life loss must not exceed 1 dB per Telcordia GR-468.",
+    "falsifies_if": "eol_loss_db - bol_loss_db > Fraction(1, 1).",
+    "function": "check_aging_margin",
+    "id": "PHOTON_check_aging_margin",
+    "module": "src.hardware.photonic.reliability",
+    "thresholds": [
+      "Fraction(1, 1)",
+      "Fraction(1, 1)"
+    ]
+  },
+  {
+    "docstring": "FIT rate must not exceed 100 per 10^9 hours per IEC 62380.",
+    "falsifies_if": "fit > Fraction(100, 1).",
+    "function": "check_fit_rate",
+    "id": "PHOTON_check_fit_rate",
+    "module": "src.hardware.photonic.reliability",
+    "thresholds": [
+      "Fraction(100, 1)",
+      "Fraction(100, 1)"
+    ]
+  },
+  {
+    "docstring": "Component must pass 85\u00b0C/85%RH 1000h test per JEDEC JESD22-A101.",
+    "falsifies_if": "fails_85_85_test is True.",
+    "function": "check_humidity_resistance",
+    "id": "PHOTON_check_humidity_resistance",
+    "module": "src.hardware.photonic.reliability",
+    "thresholds": []
+  },
+  {
+    "docstring": "MTBF must be at least 100 000 hours per MIL-HDBK-217F / Telcordia SR-332.",
+    "falsifies_if": "mtbf_hours < Fraction(100_000, 1).",
+    "function": "check_mtbf",
+    "id": "PHOTON_check_mtbf",
+    "module": "src.hardware.photonic.reliability",
+    "thresholds": [
+      "Fraction(100_000, 1)",
+      "Fraction(100_000, 1)"
+    ]
+  },
+  {
+    "docstring": "Component must survive at least 1000 temperature cycles per JEDEC JESD22-A104.",
+    "falsifies_if": "cycles_survived < Fraction(1000, 1).",
+    "function": "check_temperature_cycling",
+    "id": "PHOTON_check_temperature_cycling",
+    "module": "src.hardware.photonic.reliability",
+    "thresholds": [
+      "Fraction(1000, 1)",
+      "Fraction(1000, 1)"
+    ]
+  },
+  {
+    "docstring": "Resonance shift must not exceed 5% of center frequency per MIL-STD-883 Method 2007.",
+    "falsifies_if": "resonance_shift_hz / center_freq_hz > Fraction(5, 100).",
+    "function": "check_vibration_tolerance",
+    "id": "PHOTON_check_vibration_tolerance",
+    "module": "src.hardware.photonic.reliability",
+    "thresholds": [
+      "Fraction(5, 100)",
+      "Fraction(5, 100)"
+    ]
+  },
+  {
+    "docstring": "ESD withstand voltage must meet JEDEC JESD22-A114 HBM requirement.",
+    "falsifies_if": "esd_withstand_v < esd_hbm_withstand_v().",
+    "function": "check_esd_protection",
+    "id": "PHOTON_check_esd_protection",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": []
+  },
+  {
+    "docstring": "NOHD must exceed minimum safe distance per IEC 60825-1 Table 10.",
+    "falsifies_if": "computed NOHD < nohd_minimum_m().",
+    "function": "check_eye_safety_distance",
+    "id": "PHOTON_check_eye_safety_distance",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": [
+      "Fraction(4, 1)"
+    ]
+  },
+  {
+    "docstring": "Open fiber connectors with hazardous power must have interlock active per IEC 62368-1.",
+    "falsifies_if": "is_open is True AND optical_power_mw >= 50 mW AND interlock_active is False.",
+    "function": "check_fiber_connector_interlock",
+    "id": "PHOTON_check_fiber_connector_interlock",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": []
+  },
+  {
+    "docstring": "Laser power must not exceed AEL for declared IEC 60825-1 class.",
+    "falsifies_if": "power_mw >= AEL for the declared class.",
+    "function": "check_laser_class_compliance",
+    "id": "PHOTON_check_laser_class_compliance",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": []
+  },
+  {
+    "docstring": "Received optical power must exceed receiver sensitivity per ITU-T G.959.1.",
+    "falsifies_if": "rx_sensitivity_dbm + total_loss_db > tx_power_dbm.",
+    "function": "check_optical_power_budget",
+    "id": "PHOTON_check_optical_power_budget",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": []
+  },
+  {
+    "docstring": "Photobiological safety per IEC 62471 risk groups.",
+    "falsifies_if": "power exceeds risk group limit for wavelength band.",
+    "function": "check_photobiological_safety",
+    "id": "PHOTON_check_photobiological_safety",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": [
+      "Fraction(400, 1)",
+      "Fraction(700, 1)",
+      "Fraction(1, 1)",
+      "Fraction(700, 1)",
+      "Fraction(100, 1)"
+    ]
+  },
+  {
+    "docstring": "Skin irradiance must be below MPE per IEC 60825-1 Table 9.",
+    "falsifies_if": "irradiance >= skin_mpe_mw_per_cm2().",
+    "function": "check_skin_exposure_limit",
+    "id": "PHOTON_check_skin_exposure_limit",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": [
+      "Fraction(1, 100)"
+    ]
+  },
+  {
+    "docstring": "Thermal shutdown must activate when junction temperature reaches Tj_max per JEDEC JESD51.",
+    "falsifies_if": "junction_temp_c >= tj_max_c AND thermal_shutdown_enabled is False.",
+    "function": "check_thermal_shutdown",
+    "id": "PHOTON_check_thermal_shutdown",
+    "module": "src.hardware.photonic.safety",
+    "thresholds": []
+  },
+  {
+    "docstring": "Heater power must stay below half of thermal budget (Custom OE).",
+    "falsifies_if": "total_heater_w > Fraction(1, 2) * thermal_budget_w.",
+    "function": "check_heater_power_budget",
+    "id": "PHOTON_check_heater_power_budget",
+    "module": "src.hardware.photonic.thermal",
+    "thresholds": [
+      "Fraction(1, 2)",
+      "Fraction(1, 2)"
+    ]
+  },
+  {
+    "docstring": "Junction temperature must not exceed Tj_max per JEDEC JESD51.",
+    "falsifies_if": "junction_temp_c > tj_max_c.",
+    "function": "check_junction_temperature",
+    "id": "PHOTON_check_junction_temperature",
+    "module": "src.hardware.photonic.thermal",
+    "thresholds": []
+  },
+  {
+    "docstring": "Thermal resistance \u03b8JA must not exceed 15 \u00b0C/W per JEDEC JESD51-14.",
+    "falsifies_if": "theta_ja_c_per_w > Fraction(15, 1).",
+    "function": "check_thermal_resistance",
+    "id": "PHOTON_check_thermal_resistance",
+    "module": "src.hardware.photonic.thermal",
+    "thresholds": [
+      "Fraction(15, 1)",
+      "Fraction(15, 1)"
+    ]
+  },
+  {
+    "docstring": "Operating temperature must stay below Tj_max - 10 \u00b0C per IEC 61508 (adapted).",
+    "falsifies_if": "operating_temp_c >= tj_max_c - Fraction(10, 1).",
+    "function": "check_thermal_runaway_margin",
+    "id": "PHOTON_check_thermal_runaway_margin",
+    "module": "src.hardware.photonic.thermal",
+    "thresholds": [
+      "Fraction(10, 1)",
+      "Fraction(10, 1)"
+    ]
+  },
+  {
+    "docstring": "Uncompensated thermo-optic drift must not exceed 80 pm/\u00b0C (Custom OE).",
+    "falsifies_if": "drift_pm_per_c > Fraction(80, 1).",
+    "function": "check_thermo_optic_drift",
+    "id": "PHOTON_check_thermo_optic_drift",
+    "module": "src.hardware.photonic.thermal",
+    "thresholds": [
+      "Fraction(80, 1)",
+      "Fraction(80, 1)"
+    ]
+  },
+  {
+    "docstring": "Bend radius must be at least 5 \u00b5m for silicon (Custom OE).",
+    "falsifies_if": "bend_radius_um < Fraction(5, 1).",
+    "function": "check_bend_radius_minimum",
+    "id": "PHOTON_check_bend_radius_minimum",
+    "module": "src.hardware.photonic.waveguide",
+    "thresholds": [
+      "Fraction(5, 1)",
+      "Fraction(5, 1)"
+    ]
+  },
+  {
+    "docstring": "Mode confinement factor must be at least 0.8 (Custom OE).",
+    "falsifies_if": "confinement_factor < Fraction(8, 10).",
+    "function": "check_mode_confinement",
+    "id": "PHOTON_check_mode_confinement",
+    "module": "src.hardware.photonic.waveguide",
+    "thresholds": [
+      "Fraction(8, 10)",
+      "Fraction(8, 10)"
+    ]
+  },
+  {
+    "docstring": "Propagation loss must not exceed 1 dB/cm (Custom OE / literature).",
+    "falsifies_if": "propagation_loss_db_per_cm > Fraction(1, 1).",
+    "function": "check_propagation_loss",
+    "id": "PHOTON_check_propagation_loss",
+    "module": "src.hardware.photonic.waveguide",
+    "thresholds": [
+      "Fraction(1, 1)",
+      "Fraction(1, 1)"
+    ]
+  },
+  {
+    "docstring": "Waveguide dispersion must not exceed 18 ps/(nm\u00b7km) per ITU-T G.652.",
+    "falsifies_if": "dispersion_ps_per_nm_km > Fraction(18, 1).",
+    "function": "check_waveguide_dispersion",
+    "id": "PHOTON_check_waveguide_dispersion",
+    "module": "src.hardware.photonic.waveguide",
+    "thresholds": [
+      "Fraction(18, 1)",
+      "Fraction(18, 1)"
+    ]
+  }
+]
