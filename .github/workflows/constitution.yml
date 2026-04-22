@@ -66,7 +66,7 @@ jobs:
         run: python audit/popperian_audit.py
 
       - name: V - Global Merkle root tests
-        run: python -m pytest tests/test_global_merkle.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_global_merkle.py -v
 
       - name: Upload global Merkle root artifact
         uses: actions/upload-artifact@v4
