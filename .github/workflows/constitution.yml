@@ -57,18 +57,23 @@ jobs:
         run: python benchmarks/run_benchmarks.py
 
       - name: Generate global Merkle root
+        if: always()
         run: python merkle/global_merkle.py
 
       - name: Generate per-domain Merkle roots
+        if: always()
         run: python merkle/domain_merkle.py
 
       - name: IV - Popperian domain audit
+        if: always()
         run: python audit/popperian_audit.py
 
       - name: V - Global Merkle root tests
+        if: always()
         run: PYTHONPATH=. python -m pytest tests/test_global_merkle.py -v
 
       - name: Upload global Merkle root artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: global-merkle-root-py${{ matrix.python-version }}
