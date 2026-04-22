@@ -91,6 +91,9 @@ jobs:
           else
             git add AGENT_FEED.md
             git commit -m "chore(pr40): append state witness entry [skip ci]"
+            # Discard unstaged artifacts (pycache, test outputs) before rebasing
+            git checkout -- . || true
+            git clean -fd || true
             # Pull remote changes before pushing in case a concurrent run landed.
             git pull --rebase origin main
             git push
