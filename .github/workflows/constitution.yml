@@ -41,34 +41,39 @@ jobs:
           pip install -r requirements-ci.txt
 
       - name: I - Peano & Logic axiom tests
-        run: python -m pytest tests/test_axioms.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_axioms.py -v
 
       - name: III - Popperian falsification tests
-        run: python -m pytest tests/test_falsification_layer.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_falsification_layer.py -v
 
       - name: VI - Ownership guard (free forever check)
-        run: python ownership_guard.py
+        run: PYTHONPATH=. python ownership_guard.py
 
       - name: VIII - Yeshua enforcement
-        run: python -m pytest tests/test_yeshua_enforcement.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_yeshua_enforcement.py -v
 
       - name: IX - Benchmark suite
         continue-on-error: true
-        run: python benchmarks/run_benchmarks.py
+        run: PYTHONPATH=. python benchmarks/run_benchmarks.py
 
       - name: Generate global Merkle root
+        if: always()
         run: python merkle/global_merkle.py
 
       - name: Generate per-domain Merkle roots
+        if: always()
         run: python merkle/domain_merkle.py
 
       - name: IV - Popperian domain audit
-        run: python audit/popperian_audit.py
+        if: always()
+        run: PYTHONPATH=. python audit/popperian_audit.py
 
       - name: V - Global Merkle root tests
-        run: python -m pytest tests/test_global_merkle.py -v
+        if: always()
+        run: PYTHONPATH=. python -m pytest tests/test_global_merkle.py -v
 
       - name: Upload global Merkle root artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: global-merkle-root-py${{ matrix.python-version }}
