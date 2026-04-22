@@ -1,0 +1,586 @@
+﻿2026-04-22T06:44:18.3563422Z Current runner version: '2.333.1'
+2026-04-22T06:44:18.3597485Z ##[group]Runner Image Provisioner
+2026-04-22T06:44:18.3598635Z Hosted Compute Agent
+2026-04-22T06:44:18.3599438Z Version: 20260213.493
+2026-04-22T06:44:18.3600517Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-04-22T06:44:18.3601901Z Build Date: 2026-02-13T00:28:41Z
+2026-04-22T06:44:18.3602993Z Worker ID: {fa42769e-aeac-4f7a-aa54-ae3919e919fa}
+2026-04-22T06:44:18.3604047Z Azure Region: eastus
+2026-04-22T06:44:18.3604966Z ##[endgroup]
+2026-04-22T06:44:18.3606955Z ##[group]Operating System
+2026-04-22T06:44:18.3608024Z Ubuntu
+2026-04-22T06:44:18.3608702Z 24.04.4
+2026-04-22T06:44:18.3609378Z LTS
+2026-04-22T06:44:18.3610223Z ##[endgroup]
+2026-04-22T06:44:18.3611250Z ##[group]Runner Image
+2026-04-22T06:44:18.3612216Z Image: ubuntu-24.04
+2026-04-22T06:44:18.3612984Z Version: 20260413.86.1
+2026-04-22T06:44:18.3614902Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260413.86/images/ubuntu/Ubuntu2404-Readme.md
+2026-04-22T06:44:18.3617492Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260413.86
+2026-04-22T06:44:18.3618984Z ##[endgroup]
+2026-04-22T06:44:18.3620655Z ##[group]GITHUB_TOKEN Permissions
+2026-04-22T06:44:18.3623394Z Contents: read
+2026-04-22T06:44:18.3624364Z Metadata: read
+2026-04-22T06:44:18.3625136Z ##[endgroup]
+2026-04-22T06:44:18.3628091Z Secret source: Actions
+2026-04-22T06:44:18.3629230Z Prepare workflow directory
+2026-04-22T06:44:18.4182377Z Prepare all required actions
+2026-04-22T06:44:18.4238041Z Getting action download info
+2026-04-22T06:44:18.7510476Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-04-22T06:44:18.8869441Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-04-22T06:44:18.9658984Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-04-22T06:44:19.1945425Z Complete job name: Constitution (Ubuntu) (3.12)
+2026-04-22T06:44:19.2663199Z ##[group]Run actions/checkout@v4
+2026-04-22T06:44:19.2664180Z with:
+2026-04-22T06:44:19.2664657Z   repository: aidoruao/orthogonal-engineering
+2026-04-22T06:44:19.2665452Z   token: ***
+2026-04-22T06:44:19.2665873Z   ssh-strict: true
+2026-04-22T06:44:19.2666305Z   ssh-user: git
+2026-04-22T06:44:19.2666736Z   persist-credentials: true
+2026-04-22T06:44:19.2667227Z   clean: true
+2026-04-22T06:44:19.2667679Z   sparse-checkout-cone-mode: true
+2026-04-22T06:44:19.2668209Z   fetch-depth: 1
+2026-04-22T06:44:19.2668635Z   fetch-tags: false
+2026-04-22T06:44:19.2669078Z   show-progress: true
+2026-04-22T06:44:19.2669517Z   lfs: false
+2026-04-22T06:44:19.2669911Z   submodules: false
+2026-04-22T06:44:19.2670351Z   set-safe-directory: true
+2026-04-22T06:44:19.2671288Z env:
+2026-04-22T06:44:19.2671730Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:19.2672214Z   LANG: C.UTF-8
+2026-04-22T06:44:19.2672629Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:19.2673040Z ##[endgroup]
+2026-04-22T06:44:19.3793741Z Syncing repository: aidoruao/orthogonal-engineering
+2026-04-22T06:44:19.3796088Z ##[group]Getting Git version info
+2026-04-22T06:44:19.3797011Z Working directory is '/home/runner/work/orthogonal-engineering/orthogonal-engineering'
+2026-04-22T06:44:19.3798227Z [command]/usr/bin/git version
+2026-04-22T06:44:19.3881521Z git version 2.53.0
+2026-04-22T06:44:19.3924956Z ##[endgroup]
+2026-04-22T06:44:19.3944858Z Temporarily overriding HOME='/home/runner/work/_temp/6822725c-97d4-42f1-985a-eebc1766ac86' before making global git config changes
+2026-04-22T06:44:19.3946597Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-22T06:44:19.3952736Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:19.3992590Z Deleting the contents of '/home/runner/work/orthogonal-engineering/orthogonal-engineering'
+2026-04-22T06:44:19.3996602Z ##[group]Initializing the repository
+2026-04-22T06:44:19.4003362Z [command]/usr/bin/git init /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:19.4121893Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-04-22T06:44:19.4123794Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-04-22T06:44:19.4125166Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-04-22T06:44:19.4125945Z hint: call:
+2026-04-22T06:44:19.4126338Z hint:
+2026-04-22T06:44:19.4126883Z hint: 	git config --global init.defaultBranch <name>
+2026-04-22T06:44:19.4127510Z hint:
+2026-04-22T06:44:19.4128106Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-04-22T06:44:19.4129051Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-04-22T06:44:19.4129780Z hint:
+2026-04-22T06:44:19.4130193Z hint: 	git branch -m <name>
+2026-04-22T06:44:19.4130661Z hint:
+2026-04-22T06:44:19.4131803Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-04-22T06:44:19.4133333Z Initialized empty Git repository in /home/runner/work/orthogonal-engineering/orthogonal-engineering/.git/
+2026-04-22T06:44:19.4136238Z [command]/usr/bin/git remote add origin https://github.com/aidoruao/orthogonal-engineering
+2026-04-22T06:44:19.4167827Z ##[endgroup]
+2026-04-22T06:44:19.4168641Z ##[group]Disabling automatic garbage collection
+2026-04-22T06:44:19.4172025Z [command]/usr/bin/git config --local gc.auto 0
+2026-04-22T06:44:19.4200207Z ##[endgroup]
+2026-04-22T06:44:19.4201240Z ##[group]Setting up auth
+2026-04-22T06:44:19.4207615Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-22T06:44:19.4240613Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-22T06:44:19.4549220Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-22T06:44:19.4584802Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-22T06:44:19.4828785Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-04-22T06:44:19.4861673Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-04-22T06:44:19.5091385Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-04-22T06:44:19.5126587Z ##[endgroup]
+2026-04-22T06:44:19.5127449Z ##[group]Fetching the repository
+2026-04-22T06:44:19.5135947Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +af28cad6c64701281c4270e1f3ecc13a795f6841:refs/remotes/pull/153/merge
+2026-04-22T06:44:23.6025588Z From https://github.com/aidoruao/orthogonal-engineering
+2026-04-22T06:44:23.6027335Z  * [new ref]         af28cad6c64701281c4270e1f3ecc13a795f6841 -> pull/153/merge
+2026-04-22T06:44:23.6056961Z ##[endgroup]
+2026-04-22T06:44:23.6058718Z ##[group]Determining the checkout info
+2026-04-22T06:44:23.6060624Z ##[endgroup]
+2026-04-22T06:44:23.6065343Z [command]/usr/bin/git sparse-checkout disable
+2026-04-22T06:44:23.6104653Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-04-22T06:44:23.6131683Z ##[group]Checking out the ref
+2026-04-22T06:44:23.6135967Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/153/merge
+2026-04-22T06:44:24.6273911Z Updating files:  81% (7013/8631)
+2026-04-22T06:44:24.6320623Z Updating files:  82% (7078/8631)
+2026-04-22T06:44:24.6368087Z Updating files:  83% (7164/8631)
+2026-04-22T06:44:24.6411850Z Updating files:  84% (7251/8631)
+2026-04-22T06:44:24.6457161Z Updating files:  85% (7337/8631)
+2026-04-22T06:44:24.6499958Z Updating files:  86% (7423/8631)
+2026-04-22T06:44:24.6545807Z Updating files:  87% (7509/8631)
+2026-04-22T06:44:24.6590310Z Updating files:  88% (7596/8631)
+2026-04-22T06:44:24.6634237Z Updating files:  89% (7682/8631)
+2026-04-22T06:44:24.6685053Z Updating files:  90% (7768/8631)
+2026-04-22T06:44:24.8599771Z Updating files:  91% (7855/8631)
+2026-04-22T06:44:24.8640553Z Updating files:  92% (7941/8631)
+2026-04-22T06:44:24.8684828Z Updating files:  93% (8027/8631)
+2026-04-22T06:44:24.8752276Z Updating files:  94% (8114/8631)
+2026-04-22T06:44:24.8825899Z Updating files:  95% (8200/8631)
+2026-04-22T06:44:24.8895289Z Updating files:  96% (8286/8631)
+2026-04-22T06:44:24.8960327Z Updating files:  97% (8373/8631)
+2026-04-22T06:44:24.9202844Z Updating files:  98% (8459/8631)
+2026-04-22T06:44:24.9656992Z Updating files:  99% (8545/8631)
+2026-04-22T06:44:24.9657700Z Updating files: 100% (8631/8631)
+2026-04-22T06:44:24.9658344Z Updating files: 100% (8631/8631), done.
+2026-04-22T06:44:24.9751869Z Note: switching to 'refs/remotes/pull/153/merge'.
+2026-04-22T06:44:24.9752334Z 
+2026-04-22T06:44:24.9752634Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-04-22T06:44:24.9753433Z changes and commit them, and you can discard any commits you make in this
+2026-04-22T06:44:24.9754284Z state without impacting any branches by switching back to a branch.
+2026-04-22T06:44:24.9754775Z 
+2026-04-22T06:44:24.9755129Z If you want to create a new branch to retain commits you create, you may
+2026-04-22T06:44:24.9755920Z do so (now or later) by using -c with the switch command. Example:
+2026-04-22T06:44:24.9756366Z 
+2026-04-22T06:44:24.9756540Z   git switch -c <new-branch-name>
+2026-04-22T06:44:24.9756846Z 
+2026-04-22T06:44:24.9757011Z Or undo this operation with:
+2026-04-22T06:44:24.9757275Z 
+2026-04-22T06:44:24.9757418Z   git switch -
+2026-04-22T06:44:24.9757667Z 
+2026-04-22T06:44:24.9758041Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-04-22T06:44:24.9758604Z 
+2026-04-22T06:44:24.9759565Z HEAD is now at af28cad Merge 47e7cc35438d719711d30ac50d55dc3eb080422a into 2d43d6e4e5710018ca96b90be7849e31bb639a2c
+2026-04-22T06:44:24.9809122Z ##[endgroup]
+2026-04-22T06:44:24.9849467Z [command]/usr/bin/git log -1 --format=%H
+2026-04-22T06:44:24.9872640Z af28cad6c64701281c4270e1f3ecc13a795f6841
+2026-04-22T06:44:25.0183172Z ##[group]Run actions/setup-python@v5
+2026-04-22T06:44:25.0183456Z with:
+2026-04-22T06:44:25.0183631Z   python-version: 3.12
+2026-04-22T06:44:25.0183891Z   check-latest: false
+2026-04-22T06:44:25.0184233Z   token: ***
+2026-04-22T06:44:25.0184428Z   update-environment: true
+2026-04-22T06:44:25.0184659Z   allow-prereleases: false
+2026-04-22T06:44:25.0184876Z   freethreaded: false
+2026-04-22T06:44:25.0185066Z env:
+2026-04-22T06:44:25.0185238Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:25.0185453Z   LANG: C.UTF-8
+2026-04-22T06:44:25.0185622Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:25.0185799Z ##[endgroup]
+2026-04-22T06:44:25.1848122Z ##[group]Installed versions
+2026-04-22T06:44:25.1955239Z Successfully set up CPython (3.12.13)
+2026-04-22T06:44:25.1956074Z ##[endgroup]
+2026-04-22T06:44:25.2071827Z ##[group]Run python -m pip install --upgrade pip
+2026-04-22T06:44:25.2072277Z [36;1mpython -m pip install --upgrade pip[0m
+2026-04-22T06:44:25.2072604Z [36;1mpip install -r requirements-ci.txt[0m
+2026-04-22T06:44:25.2156882Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:25.2157132Z env:
+2026-04-22T06:44:25.2157329Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:25.2157555Z   LANG: C.UTF-8
+2026-04-22T06:44:25.2157738Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:25.2158014Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:25.2158431Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:25.2158845Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:25.2159204Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:25.2159633Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:25.2160001Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:25.2160567Z ##[endgroup]
+2026-04-22T06:44:26.8212912Z Requirement already satisfied: pip in /opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages (26.0.1)
+2026-04-22T06:44:27.6642356Z Collecting pytest>=7.4.0 (from -r requirements-ci.txt (line 2))
+2026-04-22T06:44:27.7188252Z   Downloading pytest-9.0.3-py3-none-any.whl.metadata (7.6 kB)
+2026-04-22T06:44:27.7356774Z Collecting pytest-cov>=4.1.0 (from -r requirements-ci.txt (line 3))
+2026-04-22T06:44:27.7391178Z   Downloading pytest_cov-7.1.0-py3-none-any.whl.metadata (32 kB)
+2026-04-22T06:44:27.7858289Z Collecting pyyaml>=6.0.0 (from -r requirements-ci.txt (line 4))
+2026-04-22T06:44:27.7896492Z   Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.4 kB)
+2026-04-22T06:44:27.9750381Z Collecting cryptography>=41.0.0 (from -r requirements-ci.txt (line 5))
+2026-04-22T06:44:27.9787756Z   Downloading cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+2026-04-22T06:44:28.0099720Z Collecting chardet>=5.0.0 (from -r requirements-ci.txt (line 6))
+2026-04-22T06:44:28.0138353Z   Downloading chardet-7.4.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (9.4 kB)
+2026-04-22T06:44:28.1967899Z Collecting numpy>=1.24.0 (from -r requirements-ci.txt (line 7))
+2026-04-22T06:44:28.2005346Z   Downloading numpy-2.4.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+2026-04-22T06:44:28.2139836Z Collecting python-dateutil>=2.8.0 (from -r requirements-ci.txt (line 8))
+2026-04-22T06:44:28.2172695Z   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+2026-04-22T06:44:28.4054078Z Collecting lxml>=4.9.0 (from -r requirements-ci.txt (line 9))
+2026-04-22T06:44:28.4102431Z   Downloading lxml-6.1.0-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (4.0 kB)
+2026-04-22T06:44:28.4777505Z Collecting ijson>=3.2.0 (from -r requirements-ci.txt (line 10))
+2026-04-22T06:44:28.4815589Z   Downloading ijson-3.5.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (23 kB)
+2026-04-22T06:44:28.5083820Z Collecting tqdm>=4.65.0 (from -r requirements-ci.txt (line 11))
+2026-04-22T06:44:28.5118076Z   Downloading tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+2026-04-22T06:44:28.5370184Z Collecting requests>=2.31.0 (from -r requirements-ci.txt (line 12))
+2026-04-22T06:44:28.5410960Z   Downloading requests-2.33.1-py3-none-any.whl.metadata (4.8 kB)
+2026-04-22T06:44:28.5523346Z Collecting iniconfig>=1.0.1 (from pytest>=7.4.0->-r requirements-ci.txt (line 2))
+2026-04-22T06:44:28.5558843Z   Downloading iniconfig-2.3.0-py3-none-any.whl.metadata (2.5 kB)
+2026-04-22T06:44:28.5964183Z Collecting packaging>=22 (from pytest>=7.4.0->-r requirements-ci.txt (line 2))
+2026-04-22T06:44:28.6000909Z   Downloading packaging-26.1-py3-none-any.whl.metadata (3.5 kB)
+2026-04-22T06:44:28.6124621Z Collecting pluggy<2,>=1.5 (from pytest>=7.4.0->-r requirements-ci.txt (line 2))
+2026-04-22T06:44:28.6158374Z   Downloading pluggy-1.6.0-py3-none-any.whl.metadata (4.8 kB)
+2026-04-22T06:44:28.6345386Z Collecting pygments>=2.7.2 (from pytest>=7.4.0->-r requirements-ci.txt (line 2))
+2026-04-22T06:44:28.6378894Z   Downloading pygments-2.20.0-py3-none-any.whl.metadata (2.5 kB)
+2026-04-22T06:44:29.0010358Z Collecting coverage>=7.10.6 (from coverage[toml]>=7.10.6->pytest-cov>=4.1.0->-r requirements-ci.txt (line 3))
+2026-04-22T06:44:29.0054941Z   Downloading coverage-7.13.5-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (8.5 kB)
+2026-04-22T06:44:29.1082278Z Collecting cffi>=2.0.0 (from cryptography>=41.0.0->-r requirements-ci.txt (line 5))
+2026-04-22T06:44:29.1120226Z   Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.6 kB)
+2026-04-22T06:44:29.1260159Z Collecting six>=1.5 (from python-dateutil>=2.8.0->-r requirements-ci.txt (line 8))
+2026-04-22T06:44:29.1293776Z   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+2026-04-22T06:44:29.2205272Z Collecting charset_normalizer<4,>=2 (from requests>=2.31.0->-r requirements-ci.txt (line 12))
+2026-04-22T06:44:29.2244286Z   Downloading charset_normalizer-3.4.7-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (40 kB)
+2026-04-22T06:44:29.2400119Z Collecting idna<4,>=2.5 (from requests>=2.31.0->-r requirements-ci.txt (line 12))
+2026-04-22T06:44:29.2436191Z   Downloading idna-3.12-py3-none-any.whl.metadata (8.0 kB)
+2026-04-22T06:44:29.2647087Z Collecting urllib3<3,>=1.26 (from requests>=2.31.0->-r requirements-ci.txt (line 12))
+2026-04-22T06:44:29.2683070Z   Downloading urllib3-2.6.3-py3-none-any.whl.metadata (6.9 kB)
+2026-04-22T06:44:29.2854169Z Collecting certifi>=2023.5.7 (from requests>=2.31.0->-r requirements-ci.txt (line 12))
+2026-04-22T06:44:29.2887624Z   Downloading certifi-2026.2.25-py3-none-any.whl.metadata (2.5 kB)
+2026-04-22T06:44:29.3014369Z Collecting pycparser (from cffi>=2.0.0->cryptography>=41.0.0->-r requirements-ci.txt (line 5))
+2026-04-22T06:44:29.3046976Z   Downloading pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+2026-04-22T06:44:29.3147976Z Downloading pytest-9.0.3-py3-none-any.whl (375 kB)
+2026-04-22T06:44:29.3240087Z Downloading pluggy-1.6.0-py3-none-any.whl (20 kB)
+2026-04-22T06:44:29.3294225Z Downloading pytest_cov-7.1.0-py3-none-any.whl (22 kB)
+2026-04-22T06:44:29.3351261Z Downloading pyyaml-6.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (807 kB)
+2026-04-22T06:44:29.3447920Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 807.9/807.9 kB 97.2 MB/s  0:00:00
+2026-04-22T06:44:29.3510162Z Downloading cryptography-46.0.7-cp311-abi3-manylinux_2_34_x86_64.whl (4.5 MB)
+2026-04-22T06:44:29.3696572Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.5/4.5 MB 259.7 MB/s  0:00:00
+2026-04-22T06:44:29.3735691Z Downloading chardet-7.4.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (888 kB)
+2026-04-22T06:44:29.3798673Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 888.3/888.3 kB 156.8 MB/s  0:00:00
+2026-04-22T06:44:29.3835301Z Downloading numpy-2.4.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.6 MB)
+2026-04-22T06:44:29.4386444Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.6/16.6 MB 312.5 MB/s  0:00:00
+2026-04-22T06:44:29.4424672Z Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+2026-04-22T06:44:29.4489817Z Downloading lxml-6.1.0-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+2026-04-22T06:44:29.4673861Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 312.0 MB/s  0:00:00
+2026-04-22T06:44:29.4712076Z Downloading ijson-3.5.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (149 kB)
+2026-04-22T06:44:29.4768801Z Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+2026-04-22T06:44:29.4826830Z Downloading requests-2.33.1-py3-none-any.whl (64 kB)
+2026-04-22T06:44:29.4883771Z Downloading charset_normalizer-3.4.7-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (216 kB)
+2026-04-22T06:44:29.4943066Z Downloading idna-3.12-py3-none-any.whl (68 kB)
+2026-04-22T06:44:29.4998473Z Downloading urllib3-2.6.3-py3-none-any.whl (131 kB)
+2026-04-22T06:44:29.5056894Z Downloading certifi-2026.2.25-py3-none-any.whl (153 kB)
+2026-04-22T06:44:29.5115056Z Downloading cffi-2.0.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (219 kB)
+2026-04-22T06:44:29.5177352Z Downloading coverage-7.13.5-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (254 kB)
+2026-04-22T06:44:29.5236361Z Downloading iniconfig-2.3.0-py3-none-any.whl (7.5 kB)
+2026-04-22T06:44:29.5290607Z Downloading packaging-26.1-py3-none-any.whl (95 kB)
+2026-04-22T06:44:29.5353622Z Downloading pygments-2.20.0-py3-none-any.whl (1.2 MB)
+2026-04-22T06:44:29.5422861Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 1.2/1.2 MB 210.5 MB/s  0:00:00
+2026-04-22T06:44:29.5458764Z Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+2026-04-22T06:44:29.5514241Z Downloading pycparser-3.0-py3-none-any.whl (48 kB)
+2026-04-22T06:44:29.6939184Z Installing collected packages: urllib3, tqdm, six, pyyaml, pygments, pycparser, pluggy, packaging, numpy, lxml, iniconfig, ijson, idna, coverage, charset_normalizer, chardet, certifi, requests, python-dateutil, pytest, cffi, pytest-cov, cryptography
+2026-04-22T06:44:33.7380836Z 
+2026-04-22T06:44:33.7408706Z Successfully installed certifi-2026.2.25 cffi-2.0.0 chardet-7.4.3 charset_normalizer-3.4.7 coverage-7.13.5 cryptography-46.0.7 idna-3.12 ijson-3.5.0 iniconfig-2.3.0 lxml-6.1.0 numpy-2.4.4 packaging-26.1 pluggy-1.6.0 pycparser-3.0 pygments-2.20.0 pytest-9.0.3 pytest-cov-7.1.0 python-dateutil-2.9.0.post0 pyyaml-6.0.3 requests-2.33.1 six-1.17.0 tqdm-4.67.3 urllib3-2.6.3
+2026-04-22T06:44:34.0160371Z ##[group]Run python -m pytest tests/test_axioms.py -v
+2026-04-22T06:44:34.0160795Z [36;1mpython -m pytest tests/test_axioms.py -v[0m
+2026-04-22T06:44:34.0182835Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:34.0183060Z env:
+2026-04-22T06:44:34.0183261Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:34.0183479Z   LANG: C.UTF-8
+2026-04-22T06:44:34.0183660Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:34.0183908Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.0184332Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:34.0184739Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.0185111Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.0185500Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.0185871Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:34.0186175Z ##[endgroup]
+2026-04-22T06:44:34.3172283Z ============================= test session starts ==============================
+2026-04-22T06:44:34.3173250Z platform linux -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.13/x64/bin/python
+2026-04-22T06:44:34.3174042Z cachedir: .pytest_cache
+2026-04-22T06:44:34.3174597Z rootdir: /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:34.3175244Z configfile: pyproject.toml
+2026-04-22T06:44:34.3175597Z plugins: cov-7.1.0
+2026-04-22T06:44:34.6217540Z collecting ... collected 26 items
+2026-04-22T06:44:34.6217881Z 
+2026-04-22T06:44:34.6229836Z tests/test_axioms.py::test_p1_zero_is_natural PASSED                     [  3%]
+2026-04-22T06:44:34.6237846Z tests/test_axioms.py::test_p2_successor_is_natural PASSED                [  7%]
+2026-04-22T06:44:34.6245317Z tests/test_axioms.py::test_p3_successor_not_zero PASSED                  [ 11%]
+2026-04-22T06:44:34.6252853Z tests/test_axioms.py::test_p4_successor_injectivity PASSED               [ 15%]
+2026-04-22T06:44:34.6260202Z tests/test_axioms.py::test_p5_induction_schema PASSED                    [ 19%]
+2026-04-22T06:44:34.6267607Z tests/test_axioms.py::test_p5_induction_base_fails PASSED                [ 23%]
+2026-04-22T06:44:34.6275152Z tests/test_axioms.py::test_peano_add_commutative PASSED                  [ 26%]
+2026-04-22T06:44:34.6282505Z tests/test_axioms.py::test_peano_mul_correct PASSED                      [ 30%]
+2026-04-22T06:44:34.6290183Z tests/test_axioms.py::test_proof_hash_64_chars PASSED                    [ 34%]
+2026-04-22T06:44:34.6297934Z tests/test_axioms.py::test_proof_to_bytes_is_bytes PASSED                [ 38%]
+2026-04-22T06:44:34.6305641Z tests/test_axioms.py::test_proof_object_valid PASSED                     [ 42%]
+2026-04-22T06:44:34.6313202Z tests/test_axioms.py::test_proof_object_equality PASSED                  [ 46%]
+2026-04-22T06:44:34.6320478Z tests/test_axioms.py::test_modus_ponens_true PASSED                      [ 50%]
+2026-04-22T06:44:34.6328703Z tests/test_axioms.py::test_modus_ponens_false_antecedent PASSED          [ 53%]
+2026-04-22T06:44:34.6335960Z tests/test_axioms.py::test_universal_instantiation PASSED                [ 57%]
+2026-04-22T06:44:34.6343219Z tests/test_axioms.py::test_induction_rule_passes PASSED                  [ 61%]
+2026-04-22T06:44:34.6349912Z tests/test_axioms.py::test_induction_rule_fails_base PASSED              [ 65%]
+2026-04-22T06:44:34.6356800Z tests/test_axioms.py::test_merkle_root_empty PASSED                      [ 69%]
+2026-04-22T06:44:34.6364134Z tests/test_axioms.py::test_merkle_root_deterministic PASSED              [ 73%]
+2026-04-22T06:44:34.6371134Z tests/test_axioms.py::test_merkle_root_stable_across_order PASSED        [ 76%]
+2026-04-22T06:44:34.6377612Z tests/test_axioms.py::test_yeshua_axioms_dict_has_eight PASSED           [ 80%]
+2026-04-22T06:44:34.6385053Z tests/test_axioms.py::test_yeshua_claim_valid PASSED                     [ 84%]
+2026-04-22T06:44:34.6392679Z tests/test_axioms.py::test_yeshua_claim_empty_source_violates_axiom4 PASSED [ 88%]
+2026-04-22T06:44:34.6399536Z tests/test_axioms.py::test_yeshua_claim_is_reproducible PASSED           [ 92%]
+2026-04-22T06:44:34.6406519Z tests/test_axioms.py::test_yeshua_claim_is_hash_anchored PASSED          [ 96%]
+2026-04-22T06:44:34.6684375Z tests/test_axioms.py::test_yeshua_monetization_violates_axiom7 PASSED    [100%]
+2026-04-22T06:44:34.6684891Z 
+2026-04-22T06:44:34.6685086Z ============================== 26 passed in 0.33s ==============================
+2026-04-22T06:44:34.6984100Z ##[group]Run python -m pytest tests/test_falsification_layer.py -v
+2026-04-22T06:44:34.6984600Z [36;1mpython -m pytest tests/test_falsification_layer.py -v[0m
+2026-04-22T06:44:34.7006346Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:34.7006577Z env:
+2026-04-22T06:44:34.7006761Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:34.7006975Z   LANG: C.UTF-8
+2026-04-22T06:44:34.7007153Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:34.7007399Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.7007827Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:34.7008253Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.7008629Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.7009018Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:34.7009384Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:34.7009691Z ##[endgroup]
+2026-04-22T06:44:34.8773878Z ============================= test session starts ==============================
+2026-04-22T06:44:34.8774972Z platform linux -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.13/x64/bin/python
+2026-04-22T06:44:34.8775875Z cachedir: .pytest_cache
+2026-04-22T06:44:34.8776482Z rootdir: /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:34.8777186Z configfile: pyproject.toml
+2026-04-22T06:44:34.8777599Z plugins: cov-7.1.0
+2026-04-22T06:44:34.9978964Z collecting ... collected 12 items
+2026-04-22T06:44:34.9979344Z 
+2026-04-22T06:44:34.9990255Z tests/test_falsification_layer.py::test_f001_seed_bytes_sha256_deterministic PASSED [  8%]
+2026-04-22T06:44:34.9998113Z tests/test_falsification_layer.py::test_f002_int64_arithmetic_vectors PASSED [ 16%]
+2026-04-22T06:44:35.0005708Z tests/test_falsification_layer.py::test_f003_pathlib_path_independence PASSED [ 25%]
+2026-04-22T06:44:35.0012940Z tests/test_falsification_layer.py::test_f004_stdout_utf8_encoding PASSED [ 33%]
+2026-04-22T06:44:35.0020740Z tests/test_falsification_layer.py::test_f005_struct_pack_little_endian PASSED [ 41%]
+2026-04-22T06:44:35.0027785Z tests/test_falsification_layer.py::test_hypothesis_survives_empty_domain PASSED [ 50%]
+2026-04-22T06:44:35.0035079Z tests/test_falsification_layer.py::test_hypothesis_detects_counterexample PASSED [ 58%]
+2026-04-22T06:44:35.0041919Z tests/test_falsification_layer.py::test_falsification_result_to_dict PASSED [ 66%]
+2026-04-22T06:44:35.0048615Z tests/test_falsification_layer.py::test_run_all_hypotheses_returns_list PASSED [ 75%]
+2026-04-22T06:44:35.0055926Z tests/test_falsification_layer.py::test_run_falsification_raises_on_counterexample PASSED [ 83%]
+2026-04-22T06:44:35.0062728Z tests/test_falsification_layer.py::test_run_falsification_no_raise PASSED [ 91%]
+2026-04-22T06:44:35.0278056Z tests/test_falsification_layer.py::test_all_registered_property_hypotheses_survive PASSED [100%]
+2026-04-22T06:44:35.0278619Z 
+2026-04-22T06:44:35.0278816Z ============================== 12 passed in 0.13s ==============================
+2026-04-22T06:44:35.0524749Z ##[group]Run python ownership_guard.py
+2026-04-22T06:44:35.0525082Z [36;1mpython ownership_guard.py[0m
+2026-04-22T06:44:35.0546613Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:35.0546848Z env:
+2026-04-22T06:44:35.0547035Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:35.0547247Z   LANG: C.UTF-8
+2026-04-22T06:44:35.0547427Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:35.0547676Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:35.0548095Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:35.0548529Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:35.0548892Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:35.0549281Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:35.0549663Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:35.0549976Z ##[endgroup]
+2026-04-22T06:44:36.6512871Z {
+2026-04-22T06:44:36.6513739Z   "all_passed": true,
+2026-04-22T06:44:36.6514232Z   "violation_count": 0,
+2026-04-22T06:44:36.6514680Z   "violations": []
+2026-04-22T06:44:36.6514992Z }
+2026-04-22T06:44:36.6607570Z ##[group]Run python -m pytest tests/test_yeshua_enforcement.py -v
+2026-04-22T06:44:36.6608064Z [36;1mpython -m pytest tests/test_yeshua_enforcement.py -v[0m
+2026-04-22T06:44:36.6629430Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:36.6629653Z env:
+2026-04-22T06:44:36.6629837Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:36.6630051Z   LANG: C.UTF-8
+2026-04-22T06:44:36.6630231Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:36.6630478Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:36.6631034Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:36.6631475Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:36.6631826Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:36.6632185Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:36.6632545Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:36.6632854Z ##[endgroup]
+2026-04-22T06:44:36.8380151Z ============================= test session starts ==============================
+2026-04-22T06:44:36.8381531Z platform linux -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.13/x64/bin/python
+2026-04-22T06:44:36.8382546Z cachedir: .pytest_cache
+2026-04-22T06:44:36.8383153Z rootdir: /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:36.8383845Z configfile: pyproject.toml
+2026-04-22T06:44:36.8384316Z plugins: cov-7.1.0
+2026-04-22T06:44:36.9857815Z collecting ... collected 4 items
+2026-04-22T06:44:36.9858189Z 
+2026-04-22T06:44:37.1969367Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_returns_report PASSED [ 25%]
+2026-04-22T06:44:37.3981267Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_core_passes PASSED [ 50%]
+2026-04-22T06:44:37.6070022Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_dict PASSED [ 75%]
+2026-04-22T06:44:37.8365509Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_json PASSED [100%]
+2026-04-22T06:44:37.8366105Z 
+2026-04-22T06:44:37.8366318Z =============================== warnings summary ===============================
+2026-04-22T06:44:37.8366991Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_returns_report
+2026-04-22T06:44:37.8367788Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_core_passes
+2026-04-22T06:44:37.8368552Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_dict
+2026-04-22T06:44:37.8369265Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_json
+2026-04-22T06:44:37.8369939Z   <unknown>:27: SyntaxWarning: invalid escape sequence '\A'
+2026-04-22T06:44:37.8370721Z 
+2026-04-22T06:44:37.8371412Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_returns_report
+2026-04-22T06:44:37.8372211Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_core_passes
+2026-04-22T06:44:37.8372952Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_dict
+2026-04-22T06:44:37.8373663Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_json
+2026-04-22T06:44:37.8374330Z   <unknown>:121: SyntaxWarning: invalid escape sequence '\A'
+2026-04-22T06:44:37.8374714Z 
+2026-04-22T06:44:37.8375041Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_returns_report
+2026-04-22T06:44:37.8404275Z tests/test_yeshua_enforcement.py::test_yeshua_enforcement_core_passes
+2026-04-22T06:44:37.8405143Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_dict
+2026-04-22T06:44:37.8405863Z tests/test_yeshua_enforcement.py::test_enforcement_report_to_json
+2026-04-22T06:44:37.8406602Z   <unknown>:99: SyntaxWarning: invalid escape sequence '\ '
+2026-04-22T06:44:37.8407017Z 
+2026-04-22T06:44:37.8407351Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2026-04-22T06:44:37.8408135Z ======================== 4 passed, 12 warnings in 0.98s ========================
+2026-04-22T06:44:37.8668726Z ##[group]Run python benchmarks/run_benchmarks.py
+2026-04-22T06:44:37.8669117Z [36;1mpython benchmarks/run_benchmarks.py[0m
+2026-04-22T06:44:37.8691496Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:37.8691731Z env:
+2026-04-22T06:44:37.8691919Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:37.8692144Z   LANG: C.UTF-8
+2026-04-22T06:44:37.8692322Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:37.8692582Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:37.8693009Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:37.8693423Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:37.8693779Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:37.8694161Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:37.8694527Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:37.8694827Z ##[endgroup]
+2026-04-22T06:44:39.2458495Z {
+2026-04-22T06:44:39.2459046Z   "all_passed": true,
+2026-04-22T06:44:39.2459484Z   "benchmark_count": 6,
+2026-04-22T06:44:39.2459759Z   "benchmarks": [
+2026-04-22T06:44:39.2459984Z     {
+2026-04-22T06:44:39.2460220Z       "name": "determinism_score",
+2026-04-22T06:44:39.2460542Z       "note": "No module named 'hasher'",
+2026-04-22T06:44:39.2461129Z       "passed": true,
+2026-04-22T06:44:39.2461540Z       "root1": "fallback",
+2026-04-22T06:44:39.2461802Z       "root2": "fallback",
+2026-04-22T06:44:39.2462058Z       "score": 1.0,
+2026-04-22T06:44:39.2462286Z       "threshold": 1.0
+2026-04-22T06:44:39.2462525Z     },
+2026-04-22T06:44:39.2462720Z     {
+2026-04-22T06:44:39.2462934Z       "failures": [],
+2026-04-22T06:44:39.2463195Z       "name": "falsification_survival_rate",
+2026-04-22T06:44:39.2463497Z       "note": "No module named 'hasher'",
+2026-04-22T06:44:39.2463754Z       "passed": true,
+2026-04-22T06:44:39.2463958Z       "score": 1.0,
+2026-04-22T06:44:39.2464151Z       "survived": 0,
+2026-04-22T06:44:39.2464349Z       "threshold": 1.0,
+2026-04-22T06:44:39.2464549Z       "total": 0
+2026-04-22T06:44:39.2464722Z     },
+2026-04-22T06:44:39.2464883Z     {
+2026-04-22T06:44:39.2465064Z       "name": "hash_reproducibility",
+2026-04-22T06:44:39.2465324Z       "passed": true,
+2026-04-22T06:44:39.2465515Z       "score": 1.0,
+2026-04-22T06:44:39.2465710Z       "threshold": 1.0,
+2026-04-22T06:44:39.2465918Z       "unique_hashes": 1
+2026-04-22T06:44:39.2466129Z     },
+2026-04-22T06:44:39.2466285Z     {
+2026-04-22T06:44:39.2466468Z       "expected_total": 130,
+2026-04-22T06:44:39.2466876Z       "merkle_root": "f4db270cbb7da911f5ffabc66b7adaf5a3faa438f122b67e2bfeb62a849ef647",
+2026-04-22T06:44:39.2467330Z       "name": "ai_invariant_pass_rate",
+2026-04-22T06:44:39.2467831Z       "passed": true,
+2026-04-22T06:44:39.2468023Z       "score": 1.0,
+2026-04-22T06:44:39.2468217Z       "threshold": 1.0,
+2026-04-22T06:44:39.2468415Z       "total": 130
+2026-04-22T06:44:39.2468609Z     },
+2026-04-22T06:44:39.2468766Z     {
+2026-04-22T06:44:39.2468963Z       "name": "proof_chain_integrity",
+2026-04-22T06:44:39.2469219Z       "passed": true,
+2026-04-22T06:44:39.2469411Z       "score": 1.0,
+2026-04-22T06:44:39.2469593Z       "threshold": 1.0
+2026-04-22T06:44:39.2469795Z     },
+2026-04-22T06:44:39.2469952Z     {
+2026-04-22T06:44:39.2470133Z       "name": "antifragility_coefficient",
+2026-04-22T06:44:39.2470394Z       "passed": true,
+2026-04-22T06:44:39.2470579Z       "score": 0.0,
+2026-04-22T06:44:39.2470768Z       "threshold": 0.0
+2026-04-22T06:44:39.2471272Z     }
+2026-04-22T06:44:39.2471439Z   ]
+2026-04-22T06:44:39.2471590Z }
+2026-04-22T06:44:39.2649981Z ##[group]Run python merkle/global_merkle.py
+2026-04-22T06:44:39.2650336Z [36;1mpython merkle/global_merkle.py[0m
+2026-04-22T06:44:39.2672138Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:39.2672367Z env:
+2026-04-22T06:44:39.2672554Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:39.2672767Z   LANG: C.UTF-8
+2026-04-22T06:44:39.2672948Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:39.2673194Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:39.2673622Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:39.2674043Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:39.2674409Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:39.2674773Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:39.2675244Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:39.2675577Z ##[endgroup]
+2026-04-22T06:44:40.0517527Z {
+2026-04-22T06:44:40.0518205Z   "file_count": 7888,
+2026-04-22T06:44:40.0518684Z   "hash_algorithm": "SHA-256",
+2026-04-22T06:44:40.0519392Z   "internal_encoding": "SHA-256(0x01 || left_hash_hex || right_hash_hex)",
+2026-04-22T06:44:40.0520147Z   "leaf_encoding": "SHA-256(0x00 || canonical_bytes)",
+2026-04-22T06:44:40.0520704Z   "root_hash": "23cdb404f403e05609d52a931511d350233cdaf1840c64ba9a55a0c339bd0f89",
+2026-04-22T06:44:40.0521531Z   "tree_depth": 13
+2026-04-22T06:44:40.0521762Z }
+2026-04-22T06:44:40.0627428Z ##[group]Run python merkle/domain_merkle.py
+2026-04-22T06:44:40.0627773Z [36;1mpython merkle/domain_merkle.py[0m
+2026-04-22T06:44:40.0649232Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:40.0649454Z env:
+2026-04-22T06:44:40.0649641Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:40.0649857Z   LANG: C.UTF-8
+2026-04-22T06:44:40.0650040Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:40.0650291Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.0650715Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:40.0651505Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.0651879Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.0652260Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.0652629Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:40.0652936Z ##[endgroup]
+2026-04-22T06:44:40.1900002Z Generated Merkle roots for 253 domains → /home/runner/work/orthogonal-engineering/orthogonal-engineering/merkle/domain_roots.json
+2026-04-22T06:44:40.1987895Z ##[group]Run python audit/popperian_audit.py
+2026-04-22T06:44:40.1988269Z [36;1mpython audit/popperian_audit.py[0m
+2026-04-22T06:44:40.2009965Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:40.2010199Z env:
+2026-04-22T06:44:40.2010389Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:40.2010612Z   LANG: C.UTF-8
+2026-04-22T06:44:40.2010800Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:40.2011254Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.2011674Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:40.2012276Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.2012632Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.2013002Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.2013405Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:40.2013719Z ##[endgroup]
+2026-04-22T06:44:40.6422640Z Popperian Audit: 252/252 domains passing
+2026-04-22T06:44:40.6423802Z Report written to: /home/runner/work/orthogonal-engineering/orthogonal-engineering/audit/POPPERIAN_AUDIT_REPORT.json
+2026-04-22T06:44:40.6532937Z ##[group]Run python -m pytest tests/test_global_merkle.py -v
+2026-04-22T06:44:40.6533400Z [36;1mpython -m pytest tests/test_global_merkle.py -v[0m
+2026-04-22T06:44:40.6554777Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:40.6555010Z env:
+2026-04-22T06:44:40.6555196Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:40.6555411Z   LANG: C.UTF-8
+2026-04-22T06:44:40.6555592Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:40.6555862Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.6556288Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib/pkgconfig
+2026-04-22T06:44:40.6556700Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.6557060Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.6557449Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.13/x64
+2026-04-22T06:44:40.6557816Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.13/x64/lib
+2026-04-22T06:44:40.6558123Z ##[endgroup]
+2026-04-22T06:44:40.8303406Z ============================= test session starts ==============================
+2026-04-22T06:44:40.8304482Z platform linux -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /opt/hostedtoolcache/Python/3.12.13/x64/bin/python
+2026-04-22T06:44:40.8305376Z cachedir: .pytest_cache
+2026-04-22T06:44:40.8305986Z rootdir: /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:40.8306695Z configfile: pyproject.toml
+2026-04-22T06:44:40.8307117Z plugins: cov-7.1.0
+2026-04-22T06:44:41.0791357Z collecting ... collected 0 items / 1 error
+2026-04-22T06:44:41.0792023Z 
+2026-04-22T06:44:41.0792227Z ==================================== ERRORS ====================================
+2026-04-22T06:44:41.0792890Z _________________ ERROR collecting tests/test_global_merkle.py _________________
+2026-04-22T06:44:41.0794012Z ImportError while importing test module '/home/runner/work/orthogonal-engineering/orthogonal-engineering/tests/test_global_merkle.py'.
+2026-04-22T06:44:41.0795259Z Hint: make sure your test modules/packages have valid Python names.
+2026-04-22T06:44:41.0795814Z Traceback:
+2026-04-22T06:44:41.0796445Z /opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/importlib/__init__.py:90: in import_module
+2026-04-22T06:44:41.0797347Z     return _bootstrap._gcd_import(name[level:], package, level)
+2026-04-22T06:44:41.0797920Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-04-22T06:44:41.0798426Z tests/test_global_merkle.py:18: in <module>
+2026-04-22T06:44:41.0798957Z     from merkle.global_merkle import build_global_merkle
+2026-04-22T06:44:41.0799484Z merkle/__init__.py:3: in <module>
+2026-04-22T06:44:41.0799896Z     from merkle.tree import (
+2026-04-22T06:44:41.0800286Z merkle/tree.py:20: in <module>
+2026-04-22T06:44:41.0800691Z     from hasher import hash_data, sha256_hex
+2026-04-22T06:44:41.0801441Z E   ModuleNotFoundError: No module named 'hasher'
+2026-04-22T06:44:41.0802016Z =========================== short test summary info ============================
+2026-04-22T06:44:41.0802567Z ERROR tests/test_global_merkle.py
+2026-04-22T06:44:41.0803097Z !!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+2026-04-22T06:44:41.0803726Z =============================== 1 error in 0.23s ===============================
+2026-04-22T06:44:41.1051255Z ##[error]Process completed with exit code 2.
+2026-04-22T06:44:41.1160494Z Post job cleanup.
+2026-04-22T06:44:41.2134507Z [command]/usr/bin/git version
+2026-04-22T06:44:41.2178705Z git version 2.53.0
+2026-04-22T06:44:41.2222458Z Temporarily overriding HOME='/home/runner/work/_temp/e64aea0b-d4e8-4b14-9d6a-d5e7741bb93c' before making global git config changes
+2026-04-22T06:44:41.2223644Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-22T06:44:41.2228029Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:41.2262437Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-22T06:44:41.2294271Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-22T06:44:41.2537379Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-22T06:44:41.2559142Z http.https://github.com/.extraheader
+2026-04-22T06:44:41.2571726Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-22T06:44:41.2602505Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-22T06:44:41.2838253Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-04-22T06:44:41.2869397Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-04-22T06:44:41.3256110Z Cleaning up orphan processes
+2026-04-22T06:44:41.3529614Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

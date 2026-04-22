@@ -1,0 +1,216 @@
+﻿2026-04-22T06:44:48.6691035Z Current runner version: '2.333.1'
+2026-04-22T06:44:48.6715750Z ##[group]Runner Image Provisioner
+2026-04-22T06:44:48.6716753Z Hosted Compute Agent
+2026-04-22T06:44:48.6717329Z Version: 20260213.493
+2026-04-22T06:44:48.6717997Z Commit: 5c115507f6dd24b8de37d8bbe0bb4509d0cc0fa3
+2026-04-22T06:44:48.6718739Z Build Date: 2026-02-13T00:28:41Z
+2026-04-22T06:44:48.6719374Z Worker ID: {9890ad26-e068-4559-9eb5-3ca2890860a8}
+2026-04-22T06:44:48.6720095Z Azure Region: centralus
+2026-04-22T06:44:48.6720689Z ##[endgroup]
+2026-04-22T06:44:48.6721942Z ##[group]Operating System
+2026-04-22T06:44:48.6722639Z Ubuntu
+2026-04-22T06:44:48.6723109Z 24.04.4
+2026-04-22T06:44:48.6723591Z LTS
+2026-04-22T06:44:48.6724008Z ##[endgroup]
+2026-04-22T06:44:48.6724591Z ##[group]Runner Image
+2026-04-22T06:44:48.6725103Z Image: ubuntu-24.04
+2026-04-22T06:44:48.6725663Z Version: 20260413.86.1
+2026-04-22T06:44:48.6727081Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260413.86/images/ubuntu/Ubuntu2404-Readme.md
+2026-04-22T06:44:48.6729031Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260413.86
+2026-04-22T06:44:48.6730353Z ##[endgroup]
+2026-04-22T06:44:48.6731813Z ##[group]GITHUB_TOKEN Permissions
+2026-04-22T06:44:48.6734064Z Contents: read
+2026-04-22T06:44:48.6734640Z Metadata: read
+2026-04-22T06:44:48.6735133Z ##[endgroup]
+2026-04-22T06:44:48.6737505Z Secret source: Actions
+2026-04-22T06:44:48.6738160Z Prepare workflow directory
+2026-04-22T06:44:48.7127120Z Prepare all required actions
+2026-04-22T06:44:48.7164569Z Getting action download info
+2026-04-22T06:44:49.0723397Z Download action repository 'actions/checkout@v4' (SHA:34e114876b0b11c390a56381ad16ebd13914f8d5)
+2026-04-22T06:44:49.1805222Z Download action repository 'actions/download-artifact@v4.1.3' (SHA:87c55149d96e628cc2ef7e6fc2aab372015aec85)
+2026-04-22T06:44:49.8681146Z Complete job name: Compare Global Merkle Roots
+2026-04-22T06:44:49.9354420Z ##[group]Run actions/checkout@v4
+2026-04-22T06:44:49.9355177Z with:
+2026-04-22T06:44:49.9355622Z   repository: aidoruao/orthogonal-engineering
+2026-04-22T06:44:49.9356425Z   token: ***
+2026-04-22T06:44:49.9357034Z   ssh-strict: true
+2026-04-22T06:44:49.9357424Z   ssh-user: git
+2026-04-22T06:44:49.9357821Z   persist-credentials: true
+2026-04-22T06:44:49.9358249Z   clean: true
+2026-04-22T06:44:49.9358639Z   sparse-checkout-cone-mode: true
+2026-04-22T06:44:49.9359095Z   fetch-depth: 1
+2026-04-22T06:44:49.9359468Z   fetch-tags: false
+2026-04-22T06:44:49.9359847Z   show-progress: true
+2026-04-22T06:44:49.9360231Z   lfs: false
+2026-04-22T06:44:49.9360581Z   submodules: false
+2026-04-22T06:44:49.9360969Z   set-safe-directory: true
+2026-04-22T06:44:49.9361572Z env:
+2026-04-22T06:44:49.9361935Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:49.9362349Z   LANG: C.UTF-8
+2026-04-22T06:44:49.9362713Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:49.9363075Z ##[endgroup]
+2026-04-22T06:44:50.0444474Z Syncing repository: aidoruao/orthogonal-engineering
+2026-04-22T06:44:50.0446352Z ##[group]Getting Git version info
+2026-04-22T06:44:50.0447476Z Working directory is '/home/runner/work/orthogonal-engineering/orthogonal-engineering'
+2026-04-22T06:44:50.0448559Z [command]/usr/bin/git version
+2026-04-22T06:44:50.0498965Z git version 2.53.0
+2026-04-22T06:44:50.0522830Z ##[endgroup]
+2026-04-22T06:44:50.0537432Z Temporarily overriding HOME='/home/runner/work/_temp/ad644e93-60f3-4e3d-8001-b92f594e2b2e' before making global git config changes
+2026-04-22T06:44:50.0539423Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-22T06:44:50.0543128Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:50.0576155Z Deleting the contents of '/home/runner/work/orthogonal-engineering/orthogonal-engineering'
+2026-04-22T06:44:50.0579860Z ##[group]Initializing the repository
+2026-04-22T06:44:50.0584089Z [command]/usr/bin/git init /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:50.0663518Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-04-22T06:44:50.0665390Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-04-22T06:44:50.0666286Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-04-22T06:44:50.0667181Z hint: call:
+2026-04-22T06:44:50.0667530Z hint:
+2026-04-22T06:44:50.0667976Z hint: 	git config --global init.defaultBranch <name>
+2026-04-22T06:44:50.0668545Z hint:
+2026-04-22T06:44:50.0669138Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-04-22T06:44:50.0670409Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-04-22T06:44:50.0671085Z hint:
+2026-04-22T06:44:50.0671444Z hint: 	git branch -m <name>
+2026-04-22T06:44:50.0671863Z hint:
+2026-04-22T06:44:50.0672433Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-04-22T06:44:50.0673505Z Initialized empty Git repository in /home/runner/work/orthogonal-engineering/orthogonal-engineering/.git/
+2026-04-22T06:44:50.0675573Z [command]/usr/bin/git remote add origin https://github.com/aidoruao/orthogonal-engineering
+2026-04-22T06:44:50.0706072Z ##[endgroup]
+2026-04-22T06:44:50.0710683Z ##[group]Disabling automatic garbage collection
+2026-04-22T06:44:50.0711325Z [command]/usr/bin/git config --local gc.auto 0
+2026-04-22T06:44:50.0739525Z ##[endgroup]
+2026-04-22T06:44:50.0740164Z ##[group]Setting up auth
+2026-04-22T06:44:50.0746238Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-22T06:44:50.0777242Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-22T06:44:50.1079857Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-22T06:44:50.1109779Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-22T06:44:50.1342368Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-04-22T06:44:50.1374072Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-04-22T06:44:50.1611966Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-04-22T06:44:50.1647358Z ##[endgroup]
+2026-04-22T06:44:50.1648454Z ##[group]Fetching the repository
+2026-04-22T06:44:50.1657869Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +af28cad6c64701281c4270e1f3ecc13a795f6841:refs/remotes/pull/153/merge
+2026-04-22T06:44:54.7311143Z From https://github.com/aidoruao/orthogonal-engineering
+2026-04-22T06:44:54.7312290Z  * [new ref]         af28cad6c64701281c4270e1f3ecc13a795f6841 -> pull/153/merge
+2026-04-22T06:44:54.7341999Z ##[endgroup]
+2026-04-22T06:44:54.7342519Z ##[group]Determining the checkout info
+2026-04-22T06:44:54.7343527Z ##[endgroup]
+2026-04-22T06:44:54.7349220Z [command]/usr/bin/git sparse-checkout disable
+2026-04-22T06:44:54.7387762Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-04-22T06:44:54.7414450Z ##[group]Checking out the ref
+2026-04-22T06:44:54.7418307Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/153/merge
+2026-04-22T06:44:55.7555571Z Updating files:  70% (6070/8631)
+2026-04-22T06:44:55.7599553Z Updating files:  71% (6129/8631)
+2026-04-22T06:44:55.7644047Z Updating files:  72% (6215/8631)
+2026-04-22T06:44:55.7702435Z Updating files:  73% (6301/8631)
+2026-04-22T06:44:55.7742836Z Updating files:  74% (6387/8631)
+2026-04-22T06:44:55.7778988Z Updating files:  75% (6474/8631)
+2026-04-22T06:44:55.7815593Z Updating files:  76% (6560/8631)
+2026-04-22T06:44:55.7853838Z Updating files:  77% (6646/8631)
+2026-04-22T06:44:55.7897315Z Updating files:  78% (6733/8631)
+2026-04-22T06:44:55.7940365Z Updating files:  79% (6819/8631)
+2026-04-22T06:44:55.7986839Z Updating files:  80% (6905/8631)
+2026-04-22T06:44:55.8029980Z Updating files:  81% (6992/8631)
+2026-04-22T06:44:55.8076135Z Updating files:  82% (7078/8631)
+2026-04-22T06:44:55.8121758Z Updating files:  83% (7164/8631)
+2026-04-22T06:44:55.8163725Z Updating files:  84% (7251/8631)
+2026-04-22T06:44:55.8205762Z Updating files:  85% (7337/8631)
+2026-04-22T06:44:55.8246746Z Updating files:  86% (7423/8631)
+2026-04-22T06:44:55.8290336Z Updating files:  87% (7509/8631)
+2026-04-22T06:44:55.8332366Z Updating files:  88% (7596/8631)
+2026-04-22T06:44:55.8374150Z Updating files:  89% (7682/8631)
+2026-04-22T06:44:55.8424329Z Updating files:  90% (7768/8631)
+2026-04-22T06:44:56.0549806Z Updating files:  91% (7855/8631)
+2026-04-22T06:44:56.0602464Z Updating files:  92% (7941/8631)
+2026-04-22T06:44:56.0646161Z Updating files:  93% (8027/8631)
+2026-04-22T06:44:56.0714411Z Updating files:  94% (8114/8631)
+2026-04-22T06:44:56.0789064Z Updating files:  95% (8200/8631)
+2026-04-22T06:44:56.0857726Z Updating files:  96% (8286/8631)
+2026-04-22T06:44:56.0923735Z Updating files:  97% (8373/8631)
+2026-04-22T06:44:56.1182209Z Updating files:  98% (8459/8631)
+2026-04-22T06:44:56.1665606Z Updating files:  99% (8545/8631)
+2026-04-22T06:44:56.1666302Z Updating files: 100% (8631/8631)
+2026-04-22T06:44:56.1667008Z Updating files: 100% (8631/8631), done.
+2026-04-22T06:44:56.1770600Z Note: switching to 'refs/remotes/pull/153/merge'.
+2026-04-22T06:44:56.1771043Z 
+2026-04-22T06:44:56.1771348Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-04-22T06:44:56.1772060Z changes and commit them, and you can discard any commits you make in this
+2026-04-22T06:44:56.1772831Z state without impacting any branches by switching back to a branch.
+2026-04-22T06:44:56.1773225Z 
+2026-04-22T06:44:56.1773807Z If you want to create a new branch to retain commits you create, you may
+2026-04-22T06:44:56.1774503Z do so (now or later) by using -c with the switch command. Example:
+2026-04-22T06:44:56.1775247Z 
+2026-04-22T06:44:56.1775557Z   git switch -c <new-branch-name>
+2026-04-22T06:44:56.1775825Z 
+2026-04-22T06:44:56.1775969Z Or undo this operation with:
+2026-04-22T06:44:56.1776223Z 
+2026-04-22T06:44:56.1776344Z   git switch -
+2026-04-22T06:44:56.1776759Z 
+2026-04-22T06:44:56.1777106Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-04-22T06:44:56.1777596Z 
+2026-04-22T06:44:56.1778178Z HEAD is now at af28cad Merge 47e7cc35438d719711d30ac50d55dc3eb080422a into 2d43d6e4e5710018ca96b90be7849e31bb639a2c
+2026-04-22T06:44:56.1833165Z ##[endgroup]
+2026-04-22T06:44:56.1879685Z [command]/usr/bin/git log -1 --format=%H
+2026-04-22T06:44:56.1904462Z af28cad6c64701281c4270e1f3ecc13a795f6841
+2026-04-22T06:44:56.2109060Z ##[group]Run actions/download-artifact@v4.1.3
+2026-04-22T06:44:56.2109365Z with:
+2026-04-22T06:44:56.2109572Z   pattern: global-merkle-root-*
+2026-04-22T06:44:56.2109811Z   path: /tmp/merkle_roots
+2026-04-22T06:44:56.2110067Z   merge-multiple: false
+2026-04-22T06:44:56.2110328Z   repository: aidoruao/orthogonal-engineering
+2026-04-22T06:44:56.2110595Z   run-id: 24764259895
+2026-04-22T06:44:56.2110783Z env:
+2026-04-22T06:44:56.2110964Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:56.2111176Z   LANG: C.UTF-8
+2026-04-22T06:44:56.2111351Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:56.2111539Z ##[endgroup]
+2026-04-22T06:44:56.5827326Z Found 0 artifact(s)
+2026-04-22T06:44:56.5828091Z Filtering artifacts by pattern 'global-merkle-root-*'
+2026-04-22T06:44:56.5852214Z Total of 0 artifact(s) downloaded
+2026-04-22T06:44:56.5862004Z Download artifact has finished successfully
+2026-04-22T06:44:56.5983200Z ##[group]Run python - <<'EOF'
+2026-04-22T06:44:56.5983563Z [36;1mpython - <<'EOF'[0m
+2026-04-22T06:44:56.5983829Z [36;1mimport json, pathlib, sys[0m
+2026-04-22T06:44:56.5984073Z [36;1m[0m
+2026-04-22T06:44:56.5984419Z [36;1mroot_files = list(pathlib.Path("/tmp/merkle_roots").rglob("global_root.json"))[0m
+2026-04-22T06:44:56.5985073Z [36;1mif not root_files:[0m
+2026-04-22T06:44:56.5985358Z [36;1m    print("ERROR: No global_root.json artifacts found")[0m
+2026-04-22T06:44:56.5985668Z [36;1m    sys.exit(1)[0m
+2026-04-22T06:44:56.5985858Z [36;1m[0m
+2026-04-22T06:44:56.5986026Z [36;1mroots = set()[0m
+2026-04-22T06:44:56.5986344Z [36;1mfor f in root_files:[0m
+2026-04-22T06:44:56.5986847Z [36;1m    data = json.loads(f.read_text())[0m
+2026-04-22T06:44:56.5987112Z [36;1m    roots.add(data["root_hash"])[0m
+2026-04-22T06:44:56.5987536Z [36;1m    print(f"  {f.parent.name}: {data['root_hash']}")[0m
+2026-04-22T06:44:56.5987810Z [36;1m[0m
+2026-04-22T06:44:56.5988070Z [36;1mif len(roots) != 1:[0m
+2026-04-22T06:44:56.5988379Z [36;1m    print(f"FAIL: {len(roots)} distinct roots")[0m
+2026-04-22T06:44:56.5988713Z [36;1m    sys.exit(1)[0m
+2026-04-22T06:44:56.5988894Z [36;1m[0m
+2026-04-22T06:44:56.5989209Z [36;1mprint(f"PASS: all {len(root_files)} artifacts share root {next(iter(roots))}")[0m
+2026-04-22T06:44:56.5989580Z [36;1mEOF[0m
+2026-04-22T06:44:56.6015377Z shell: /usr/bin/bash -e {0}
+2026-04-22T06:44:56.6015620Z env:
+2026-04-22T06:44:56.6015808Z   PYTHONIOENCODING: utf-8
+2026-04-22T06:44:56.6016041Z   LANG: C.UTF-8
+2026-04-22T06:44:56.6016222Z   LC_ALL: C.UTF-8
+2026-04-22T06:44:56.6016397Z ##[endgroup]
+2026-04-22T06:44:56.6319289Z ERROR: No global_root.json artifacts found
+2026-04-22T06:44:56.6372667Z ##[error]Process completed with exit code 1.
+2026-04-22T06:44:56.6563639Z Post job cleanup.
+2026-04-22T06:44:56.7512956Z [command]/usr/bin/git version
+2026-04-22T06:44:56.7548947Z git version 2.53.0
+2026-04-22T06:44:56.7596798Z Temporarily overriding HOME='/home/runner/work/_temp/ae33dd6b-d02b-477b-a1f4-079ea7e704eb' before making global git config changes
+2026-04-22T06:44:56.7598092Z Adding repository directory to the temporary git global config as a safe directory
+2026-04-22T06:44:56.7602917Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/orthogonal-engineering/orthogonal-engineering
+2026-04-22T06:44:56.7637688Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-04-22T06:44:56.7670550Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-04-22T06:44:56.7920340Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-04-22T06:44:56.7942183Z http.https://github.com/.extraheader
+2026-04-22T06:44:56.7955779Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-04-22T06:44:56.7991300Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-04-22T06:44:56.8256093Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-04-22T06:44:56.8288544Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-04-22T06:44:56.8649182Z Cleaning up orphan processes
+2026-04-22T06:44:56.8934499Z ##[warning]Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/download-artifact@v4.1.3. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
