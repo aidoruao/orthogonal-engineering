@@ -1,0 +1,83 @@
+# Photonic Chip Universe Seed
+# Canonical Schema - Photonic Computation Domain
+# Authority: Yeshua / Orthogonal Engineering Photonic Campaign
+# Version: 1.0.0
+
+universe:
+  id: photonic_chip_universe
+  seed_value: 271828
+  seed_hash: null  # Computed on first generation
+
+  expansion:
+    levels:
+      - subsystem   # Optical, electrical, thermal, packaging, control
+      - component   # waveguide, mzi_mesh, adc, heater, fiber_array, etc.
+      - parameter   # width, loss, bandwidth, temp, pitch, etc.
+      - test_case   # pass/fail invariant check
+
+    deterministic: true
+    content_addressed: true
+
+  generator:
+    implementation: generators/photonic_chip_fractal_dataset.py
+    version: 1
+
+  verification:
+    manifest: out/photonic_chip_manifest.jsonl
+    merkle_root: required
+
+  subsystems:
+    optical:
+      components:
+        - waveguide
+        - mzi_mesh
+        - microring_resonator
+        - grating_coupler
+        - wdm_mux
+    electrical:
+      components:
+        - adc
+        - dac
+        - tia
+        - driver
+        - modulator
+    thermal:
+      components:
+        - heater
+        - thermocouple
+        - tec_cooler
+        - heat_sink
+    packaging:
+      components:
+        - fiber_array
+        - die_attach
+        - wire_bond
+        - hermetic_seal
+        - interposer
+    control:
+      components:
+        - pid_controller
+        - wavelength_locker
+        - power_monitor
+        - ber_tester
+
+  test_cases_per_parameter: 4  # 2 pass + 2 fail
+
+  safety:
+    max_laser_power_mw: 500
+    max_junction_temp_c: 125
+    max_heater_power_w: 10
+
+  invariants:
+    - id: INV-PH-001
+      name: deterministic_regeneration
+      description: Same seed must produce identical DAG on every run.
+    - id: INV-PH-002
+      name: content_addressed_node_ids
+      description: Every node ID must be a deterministic hash of its content.
+    - id: INV-PH-003
+      name: all_checks_as_test_cases
+      description: All 82 campaign checks must appear as test_case nodes.
+    - id: INV-PH-004
+      name: safety_constraints_at_all_levels
+      description: Safety constraints must be present at every expansion level.
