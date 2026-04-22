@@ -41,20 +41,20 @@ jobs:
           pip install -r requirements-ci.txt
 
       - name: I - Peano & Logic axiom tests
-        run: python -m pytest tests/test_axioms.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_axioms.py -v
 
       - name: III - Popperian falsification tests
-        run: python -m pytest tests/test_falsification_layer.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_falsification_layer.py -v
 
       - name: VI - Ownership guard (free forever check)
-        run: python ownership_guard.py
+        run: PYTHONPATH=. python ownership_guard.py
 
       - name: VIII - Yeshua enforcement
-        run: python -m pytest tests/test_yeshua_enforcement.py -v
+        run: PYTHONPATH=. python -m pytest tests/test_yeshua_enforcement.py -v
 
       - name: IX - Benchmark suite
         continue-on-error: true
-        run: python benchmarks/run_benchmarks.py
+        run: PYTHONPATH=. python benchmarks/run_benchmarks.py
 
       - name: Generate global Merkle root
         if: always()
@@ -66,7 +66,7 @@ jobs:
 
       - name: IV - Popperian domain audit
         if: always()
-        run: python audit/popperian_audit.py
+        run: PYTHONPATH=. python audit/popperian_audit.py
 
       - name: V - Global Merkle root tests
         if: always()
