@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Immigration Law Invariants — INA compliance."""
+"""Immigration Law Invariants — INA compliance.
+
+INA § 203(b)(1) (8 U.S.C. § 1153(b)(1)); 8 C.F.R. § 204.5;
+Matter of Kazarian, 22 I&N Dec. 717 (BIA 1999).
+"""
 
 from fractions import Fraction
 from typing import Tuple
@@ -16,19 +20,24 @@ from .implementation import (
 def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObject]:
     """INA: Visa category requirements must be met.
 
-    Falsifies if: applicant fails to meet the requirements for the requested visa category.
-    falsifies_if: applicant fails to meet the requirements for the requested visa category.
+    Falsifies if: qualification_score < Fraction(7, 10).
+    falsifies_if: qualification_score < Fraction(7, 10).
     """
-    if not checker.meets_category_requirements():
+    score = checker.qualification_score()
+    threshold = Fraction(7, 10)
+    if score < threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Applicant does not meet {checker.applicant.visa_category.name} requirements",
-            premises=[],
+            conclusion=f"VIOLATION: Applicant qualification score {score} < {threshold}",
+            premises=[
+                f"Category: {checker.applicant.visa_category.name}",
+                f"Score: {score}",
+                f"Threshold: {threshold}",
+            ],
             rule="ina_visa_category"
         )
-    
     return True, ProofObject(
-        conclusion=f"Visa category requirements satisfied for {checker.applicant.visa_category.name}",
-        premises=[],
+        conclusion=f"Visa category requirements satisfied — score {score}",
+        premises=[f"Score: {score}", f"Threshold: {threshold}"],
         rule="ina_visa_category"
     )
 
@@ -36,19 +45,23 @@ def check_visa_eligibility(checker: VisaCategoryChecker) -> Tuple[bool, ProofObj
 def check_processing_deadline(timer: ProcessingTimer) -> Tuple[bool, ProofObject]:
     """INA: Processing must not exceed statutory deadlines.
 
-    Falsifies if: days_elapsed exceeds statutory_deadline_days.
-    falsifies_if: days_elapsed exceeds statutory_deadline_days.
+    Falsifies if: processing_ratio > Fraction(1, 1).
+    falsifies_if: processing_ratio > Fraction(1, 1).
     """
-    if timer.is_overdue():
+    ratio = timer.processing_ratio()
+    if ratio > Fraction(1, 1):
         return False, ProofObject(
-            conclusion=f"VIOLATION: Processing {timer.days_elapsed} days > deadline {timer.statutory_deadline_days}",
-            premises=[],
+            conclusion=f"VIOLATION: Processing ratio {ratio} exceeds 1",
+            premises=[
+                f"Days elapsed: {timer.days_elapsed}",
+                f"Deadline: {timer.statutory_deadline_days}",
+                f"Ratio: {ratio}",
+            ],
             rule="ina_processing_deadline"
         )
-    
     return True, ProofObject(
-        conclusion=f"Processing within deadline ({timer.days_elapsed}/{timer.statutory_deadline_days} days)",
-        premises=[],
+        conclusion=f"Processing within deadline — ratio {ratio}",
+        premises=[f"Ratio: {ratio}"],
         rule="ina_processing_deadline"
     )
 
@@ -56,50 +69,83 @@ def check_processing_deadline(timer: ProcessingTimer) -> Tuple[bool, ProofObject
 def check_status_transition(machine: StatusStateMachine) -> Tuple[bool, ProofObject]:
     """Status transitions must follow valid paths.
 
-    Falsifies if: requested_status is not reachable from current_status.
-    falsifies_if: requested_status is not reachable from current_status.
+    Falsifies if: transition_validity_score < Fraction(1, 1).
+    falsifies_if: transition_validity_score < Fraction(1, 1).
     """
-    if not machine.is_valid_transition():
+    score = machine.transition_validity_score()
+    if score < Fraction(1, 1):
         return False, ProofObject(
             conclusion=f"VIOLATION: Invalid transition {machine.current_status} -> {machine.requested_status}",
-            premises=[],
+            premises=[
+                f"Current: {machine.current_status}",
+                f"Requested: {machine.requested_status}",
+                f"Validity score: {score}",
+            ],
             rule="status_transition"
         )
-    
     return True, ProofObject(
-        conclusion=f"Valid status transition: {machine.current_status} -> {machine.requested_status}",
-        premises=[],
+        conclusion=f"Valid status transition — score {score}",
+        premises=[f"Score: {score}"],
         rule="status_transition"
     )
 
 
 def run_all_invariants() -> dict:
-    """Run all D_IMMIGRATION invariants with nominal sample data.
+    """Run all D_IMMIGRATION invariants with passing and failing test data.
 
     falsifies_if: any invariant fails or raises an exception.
     """
-    processing_timer = ProcessingTimer(
-        application_date="SAMPLE",
-        current_date="SAMPLE",
-        days_elapsed=1,
-    )
-    status_state_machine = StatusStateMachine(
-        current_status="ACTIVE",
-        requested_status="ACTIVE",
-    )
-    visa_category_checker = VisaCategoryChecker(
+    # Passing data
+    pass_checker = VisaCategoryChecker(
         applicant=VisaApplicant(
-        applicant_id="IMMIGRAT-001",
-        priority_date="SAMPLE",
-        visa_category=VisaCategory.EB1,
-        country_of_chargeability="SAMPLE",
-    ),
+            applicant_id="IMMIG-001",
+            priority_date="2024-01-01",
+            visa_category=VisaCategory.EB2,
+            country_of_chargeability="India",
+            education_years=6,
+        ),
+        required_education_years=5,
+    )
+    pass_timer = ProcessingTimer(
+        application_date="2024-01-01",
+        current_date="2024-03-01",
+        days_elapsed=60,
+        statutory_deadline_days=180,
+    )
+    pass_machine = StatusStateMachine(
+        current_status="F1",
+        requested_status="OPT",
+    )
+
+    # Failing data
+    fail_checker = VisaCategoryChecker(
+        applicant=VisaApplicant(
+            applicant_id="IMMIG-002",
+            priority_date="2024-01-01",
+            visa_category=VisaCategory.EB2,
+            country_of_chargeability="China",
+            education_years=2,
+        ),
+        required_education_years=5,
+    )
+    fail_timer = ProcessingTimer(
+        application_date="2024-01-01",
+        current_date="2024-10-01",
+        days_elapsed=200,
+        statutory_deadline_days=180,
+    )
+    fail_machine = StatusStateMachine(
+        current_status="F1",
+        requested_status="LPR",
     )
 
     checks = [
-        ("check_processing_deadline", lambda: check_processing_deadline(processing_timer)),
-        ("check_status_transition", lambda: check_status_transition(status_state_machine)),
-        ("check_visa_eligibility", lambda: check_visa_eligibility(visa_category_checker)),
+        ("check_visa_eligibility_pass", lambda: check_visa_eligibility(pass_checker)),
+        ("check_visa_eligibility_fail", lambda: check_visa_eligibility(fail_checker)),
+        ("check_processing_deadline_pass", lambda: check_processing_deadline(pass_timer)),
+        ("check_processing_deadline_fail", lambda: check_processing_deadline(fail_timer)),
+        ("check_status_transition_pass", lambda: check_status_transition(pass_machine)),
+        ("check_status_transition_fail", lambda: check_status_transition(fail_machine)),
     ]
 
     results: dict = {}
@@ -112,7 +158,7 @@ def run_all_invariants() -> dict:
             else:
                 passed = getattr(result, "passed", True)
                 results[name] = "PASS" if passed else "FAIL: " + str(getattr(result, "evidence", result))
-        except Exception as exc:  # pragma: no cover - safety net
+        except Exception as exc:
             results[name] = "ERROR: " + str(exc)
     return results
 
