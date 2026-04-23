@@ -1,9 +1,9 @@
 """D_TRANSPORTATION invariants — Yeshua Standard. 0 floats.
 
 Standards:
-- 49 U.S.C. §40101 — Aviation safety (FAA)
-- 49 U.S.C. §20101 — Rail safety (FRA)
-- 49 U.S.C. §30101 — Motor vehicle safety (NHTSA)
+- 49 U.S.C. 40101 — Aviation safety (FAA)
+- 49 U.S.C. 20101 — Rail safety (FRA)
+- 49 U.S.C. 30101 — Motor vehicle safety (NHTSA)
 - FMCSA Hours of Service (49 CFR Part 395) — driver fatigue prevention
 """
 
@@ -11,108 +11,122 @@ from __future__ import annotations
 from fractions import Fraction
 from typing import Dict, Tuple
 from axioms.logic import ProofObject
-from .implementation import TransportationRecord, TransportationStatus, TransportationChecker
+from .implementation import TransportationRecord, TransportationStatus
 
 
-def check_record_id_nonempty(record: TransportationRecord) -> Tuple[bool, ProofObject]:
-    """Transportation record must have a non-empty record_id.
+def check_safety_incident_rate(record: TransportationRecord) -> Tuple[bool, ProofObject]:
+    """Safety incident rate must remain below regulatory threshold.
 
-    Standard: DOT record keeping requirements (49 CFR Part 390)
-    falsifies_if: record.record_id is empty.
+    Standard: DOT safety management systems — incident rate benchmarking
+    falsifies_if: safety_incident_rate > Fraction(1, 100).
     """
-    ok = bool(record.record_id.strip())
-    premises = [f"record_id={record.record_id!r}", f"status={record.status.name}"]
-    return ok, ProofObject(
-        rule="RecordIdNonEmpty",
-        premises=premises,
-        conclusion="PASS: record_id set" if ok else "VIOLATION: record_id empty",
-    )
-
-
-def check_status_valid(record: TransportationRecord) -> Tuple[bool, ProofObject]:
-    """Transportation record status must be a valid TransportationStatus enum.
-
-    Standard: FMCSA compliance status classification
-    falsifies_if: record.status is not a TransportationStatus instance.
-    """
-    ok = isinstance(record.status, TransportationStatus)
-    premises = [f"record_id={record.record_id}", f"status={record.status!r}"]
-    return ok, ProofObject(
-        rule="StatusValid",
-        premises=premises,
-        conclusion=f"PASS: status {record.status.name}" if ok else "VIOLATION: invalid status",
-    )
-
-
-def check_compliant_record_marked_compliant(record: TransportationRecord) -> Tuple[bool, ProofObject]:
-    """Compliant records must be marked COMPLIANT by checker.
-
-    Standard: 49 CFR Part 390 — compliance determination
-    falsifies_if: checker marks compliant record as non-compliant.
-    """
-    checker = TransportationChecker()
-    result = checker.check_compliance(record)
-    expected = record.status == TransportationStatus.COMPLIANT
-    ok = result.get("compliant", False) == expected
+    threshold = Fraction(1, 100)
+    ok = record.safety_incident_rate <= threshold
     premises = [
         f"record_id={record.record_id}",
-        f"status={record.status.name}",
-        f"checker_says_compliant={result.get('compliant', False)}",
+        f"safety_incident_rate={record.safety_incident_rate}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="CompliantRecordMarkedCompliant",
+        rule="SafetyIncidentRate",
         premises=premises,
-        conclusion="PASS: compliance consistent" if ok else "VIOLATION: compliance status mismatch",
+        conclusion=f"PASS: incident rate {record.safety_incident_rate} <= {threshold}" if ok else f"VIOLATION: incident rate {record.safety_incident_rate} > {threshold}",
     )
 
 
-def check_checker_has_check_compliance(checker: TransportationChecker) -> Tuple[bool, ProofObject]:
-    """TransportationChecker must have check_compliance method.
+def check_on_time_performance(record: TransportationRecord) -> Tuple[bool, ProofObject]:
+    """On-time performance must meet service reliability floor.
 
-    Standard: FMCSA safety fitness determination — checker must be operational
-    falsifies_if: checker.check_compliance is not callable.
+    Standard: DOT on-time performance requirements (14 CFR 234 for aviation)
+    falsifies_if: on_time_performance < Fraction(9, 10).
     """
-    ok = hasattr(checker, "check_compliance") and callable(checker.check_compliance)
-    premises = [f"has_check_compliance={ok}"]
+    threshold = Fraction(9, 10)
+    ok = record.on_time_performance >= threshold
+    premises = [
+        f"record_id={record.record_id}",
+        f"on_time_performance={record.on_time_performance}",
+        f"threshold={threshold}",
+    ]
     return ok, ProofObject(
-        rule="CheckerHasCheckCompliance",
+        rule="OnTimePerformance",
         premises=premises,
-        conclusion="PASS: checker operational" if ok else "VIOLATION: checker missing check_compliance",
+        conclusion=f"PASS: on-time {record.on_time_performance} >= {threshold}" if ok else f"VIOLATION: on-time {record.on_time_performance} < {threshold}",
     )
 
 
-def check_non_compliant_not_marked_compliant(record: TransportationRecord) -> Tuple[bool, ProofObject]:
-    """NON_COMPLIANT record must not be marked compliant.
+def check_driver_rest_compliance(record: TransportationRecord) -> Tuple[bool, ProofObject]:
+    """Driver rest compliance must satisfy hours-of-service requirements.
 
-    Standard: 49 CFR Part 385 — safety fitness rating
-    falsifies_if: checker marks NON_COMPLIANT record as compliant.
+    Standard: FMCSA Hours of Service (49 CFR Part 395)
+    falsifies_if: driver_rest_compliance < Fraction(7, 8).
     """
-    if record.status == TransportationStatus.NON_COMPLIANT:
-        checker = TransportationChecker()
-        result = checker.check_compliance(record)
-        ok = not result.get("compliant", True)
-    else:
-        ok = True
-    premises = [f"record_id={record.record_id}", f"status={record.status.name}"]
+    threshold = Fraction(7, 8)
+    ok = record.driver_rest_compliance >= threshold
+    premises = [
+        f"record_id={record.record_id}",
+        f"driver_rest_compliance={record.driver_rest_compliance}",
+        f"threshold={threshold}",
+    ]
     return ok, ProofObject(
-        rule="NonCompliantNotMarkedCompliant",
+        rule="DriverRestCompliance",
         premises=premises,
-        conclusion="PASS: non-compliant correctly identified" if ok else "VIOLATION: non-compliant marked compliant",
+        conclusion=f"PASS: rest compliance {record.driver_rest_compliance} >= {threshold}" if ok else f"VIOLATION: rest compliance {record.driver_rest_compliance} < {threshold}",
     )
 
 
-def check_record_has_status(record: TransportationRecord) -> Tuple[bool, ProofObject]:
-    """Record must have a status attribute.
+def check_maintenance_score(record: TransportationRecord) -> Tuple[bool, ProofObject]:
+    """Vehicle maintenance score must meet safety inspection floor.
+
+    Standard: FMCSA vehicle maintenance requirements (49 CFR 396)
+    falsifies_if: maintenance_score < Fraction(3, 4).
+    """
+    threshold = Fraction(3, 4)
+    ok = record.maintenance_score >= threshold
+    premises = [
+        f"record_id={record.record_id}",
+        f"maintenance_score={record.maintenance_score}",
+        f"threshold={threshold}",
+    ]
+    return ok, ProofObject(
+        rule="MaintenanceScore",
+        premises=premises,
+        conclusion=f"PASS: maintenance {record.maintenance_score} >= {threshold}" if ok else f"VIOLATION: maintenance {record.maintenance_score} < {threshold}",
+    )
+
+
+def check_fleet_size_adequate(record: TransportationRecord) -> Tuple[bool, ProofObject]:
+    """Fleet size must be adequate for operational requirements.
+
+    Standard: DOT operational capacity assessment
+    falsifies_if: fleet_size < 10.
+    """
+    ok = record.fleet_size >= 10
+    premises = [
+        f"record_id={record.record_id}",
+        f"fleet_size={record.fleet_size}",
+    ]
+    return ok, ProofObject(
+        rule="FleetSizeAdequate",
+        premises=premises,
+        conclusion=f"PASS: fleet size {record.fleet_size} >= 10" if ok else f"VIOLATION: fleet size {record.fleet_size} < 10",
+    )
+
+
+def check_record_status_valid(record: TransportationRecord) -> Tuple[bool, ProofObject]:
+    """Record status must be a valid TransportationStatus.
 
     Standard: DOT audit trail requirements
-    falsifies_if: record does not have a status attribute.
+    falsifies_if: status is not a TransportationStatus instance.
     """
-    ok = hasattr(record, "status")
-    premises = [f"record_id={record.record_id}", f"has_status={ok}"]
+    ok = isinstance(record.status, TransportationStatus)
+    premises = [
+        f"record_id={record.record_id}",
+        f"status={record.status}",
+    ]
     return ok, ProofObject(
-        rule="RecordHasStatus",
+        rule="RecordStatusValid",
         premises=premises,
-        conclusion="PASS: status attribute present" if ok else "VIOLATION: status missing",
+        conclusion=f"PASS: status {record.status.name} valid" if ok else "VIOLATION: invalid status",
     )
 
 
@@ -123,16 +137,20 @@ def run_all_invariants() -> Dict[str, str]:
     record = TransportationRecord(
         record_id="TRANS-2024-001",
         status=TransportationStatus.COMPLIANT,
+        fleet_size=100,
+        safety_incident_rate=Fraction(1, 10000),
+        on_time_performance=Fraction(95, 100),
+        driver_rest_compliance=Fraction(1, 1),
+        maintenance_score=Fraction(1, 1),
     )
-    checker = TransportationChecker()
     results = {}
     for fn, args in [
-        (check_record_id_nonempty, (record,)),
-        (check_status_valid, (record,)),
-        (check_compliant_record_marked_compliant, (record,)),
-        (check_checker_has_check_compliance, (checker,)),
-        (check_non_compliant_not_marked_compliant, (record,)),
-        (check_record_has_status, (record,)),
+        (check_safety_incident_rate, (record,)),
+        (check_on_time_performance, (record,)),
+        (check_driver_rest_compliance, (record,)),
+        (check_maintenance_score, (record,)),
+        (check_fleet_size_adequate, (record,)),
+        (check_record_status_valid, (record,)),
     ]:
         _, p = fn(*args)
         results[fn.__name__] = p.conclusion

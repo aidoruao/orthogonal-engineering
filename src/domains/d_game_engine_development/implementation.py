@@ -27,6 +27,7 @@ class PhysicsConfig:
     gravity: Fraction
     time_step: Fraction
     max_substeps: int = 8
+    simulation_accuracy: Fraction = Fraction(99, 100)
 
 
 @dataclass
@@ -35,6 +36,7 @@ class GameState:
     objects: List[Dict[str, Any]] = field(default_factory=list)
     frame_number: int = 0
     timestamp: float = 0.0
+    state_consistency_score: Fraction = Fraction(1, 1)
     
     @property
     def hash(self) -> str:
@@ -52,6 +54,8 @@ class SaveFile:
     inventory: List[str]
     checksum: str
     timestamp: str = ""
+    progression_fraction: Fraction = Fraction(1, 2)
+    inventory_value: Fraction = Fraction(1, 1)
 
 
 @dataclass
