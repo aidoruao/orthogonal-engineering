@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+falsifies_if: recomputed file hash or LOC count differs from manifest claim.
+
 Fractal Manifest Verifier
 
 This script verifies the integrity of generated fractal code by:

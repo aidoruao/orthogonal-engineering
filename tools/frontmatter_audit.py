@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Markdown YAML-frontmatter audit and backfill tool.
 
+falsifies_if: a non-exempt *.md file lacks YAML frontmatter with tags and register.
+
 Every tracked Markdown file under the repository is required to begin with a
 YAML frontmatter block of the form::
 

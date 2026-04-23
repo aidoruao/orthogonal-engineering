@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+falsifies_if: generated manifest SHA-256 does not match recomputed hash of output files.
+
 Fractal Code Generator for 1B LOC System
 
 This script generates a verifiable, deterministic code pattern that can scale to

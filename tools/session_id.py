@@ -7,6 +7,8 @@ Usage:
     python tools/session_id.py [agent_name]
 
 Standard: Yeshua / Glass-Box / Orthogonal Engineering
+
+falsifies_if: generated session ID does not match <agent>-<YYYYMMDD>-<8-char-uuid4> format.
 """
 
 from __future__ import annotations

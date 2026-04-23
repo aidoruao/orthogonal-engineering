@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """
+falsifies_if: refactored domain still contains bare assert or AssertionError.
+
 tools/refactor_assertions.py — Batch refactor AssertionError domains to ProofObject
 
 Converts domains using assert/AssertionError pattern to ProofObject returns.
