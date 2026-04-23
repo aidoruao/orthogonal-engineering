@@ -173,6 +173,7 @@ def check_distinction_necessity_product(target: MilitaryTarget) -> Tuple[bool, P
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS.
 
+    Standard: International-humanitarian-law nominal executable check set (Geneva Conventions + Additional Protocols).
     Falsifies if: any check returns FAIL (nominal inputs should always pass).
     falsifies_if: any check returns FAIL (nominal inputs should always pass).
     """

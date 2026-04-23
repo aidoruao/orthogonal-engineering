@@ -144,6 +144,7 @@ def check_save_progression_valid(save: SaveFile) -> Tuple[bool, ProofObject]:
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS.
 
+    Standard: Game-engine-development nominal executable check set.
     Falsifies if: any check returns FAIL (nominal inputs should always pass).
     falsifies_if: any check returns FAIL (nominal inputs should always pass).
     """

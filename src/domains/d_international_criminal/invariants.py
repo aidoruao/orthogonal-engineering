@@ -195,6 +195,7 @@ def check_defendant_evidence_linkage(case: Case, evidence: Evidence) -> Tuple[bo
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS.
 
+    Standard: International-criminal-law nominal executable check set (Rome Statute).
     Falsifies if: any check returns FAIL (nominal inputs should always pass).
     falsifies_if: any check returns FAIL (nominal inputs should always pass).
     """

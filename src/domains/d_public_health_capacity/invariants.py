@@ -157,9 +157,14 @@ def check_lab_turnaround_fraction(
     if MAX_LAB_LATENCY_HOURS <= 0:
         frac = Fraction(0)
         success = False
+        conclusion = f"FAIL: invalid latency budget (MAX_LAB_LATENCY_HOURS={MAX_LAB_LATENCY_HOURS})"
     else:
         frac = Fraction(data.lab_turnaround_hours, MAX_LAB_LATENCY_HOURS)
         success = frac <= Fraction(1)
+        conclusion = (
+            f"PASS: lab turnaround fraction {frac} within limit"
+            if success else f"FAIL: lab turnaround fraction {frac} exceeds limit"
+        )
     proof = ProofObject(
         rule="check_lab_turnaround_fraction",
         premises=[
@@ -167,10 +172,7 @@ def check_lab_turnaround_fraction(
             f"max={MAX_LAB_LATENCY_HOURS}",
             f"fraction={frac}",
         ],
-        conclusion=(
-            f"PASS: lab turnaround fraction {frac} within limit"
-            if success else f"FAIL: lab turnaround fraction {frac} exceeds limit"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 
@@ -187,9 +189,14 @@ def check_audit_staleness_fraction(
     if MAX_AUDIT_STALENESS_DAYS <= 0:
         frac = Fraction(0)
         success = False
+        conclusion = f"FAIL: invalid audit window (MAX_AUDIT_STALENESS_DAYS={MAX_AUDIT_STALENESS_DAYS})"
     else:
         frac = Fraction(data.last_independent_audit_days_ago, MAX_AUDIT_STALENESS_DAYS)
         success = frac <= Fraction(1)
+        conclusion = (
+            f"PASS: audit staleness {frac} within window"
+            if success else f"FAIL: audit staleness {frac} exceeds window"
+        )
     proof = ProofObject(
         rule="check_audit_staleness_fraction",
         premises=[
@@ -197,10 +204,7 @@ def check_audit_staleness_fraction(
             f"max={MAX_AUDIT_STALENESS_DAYS}",
             f"staleness_fraction={frac}",
         ],
-        conclusion=(
-            f"PASS: audit staleness {frac} within window"
-            if success else f"FAIL: audit staleness {frac} exceeds window"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 

@@ -68,9 +68,15 @@ def check_pipeline_duration_efficiency(result: PipelineResult, max_duration: int
     if max_duration <= 0:
         efficiency = Fraction(0)
         ok = False
+        conclusion = f"VIOLATION: invalid budget (max_duration={max_duration})"
     else:
         efficiency = Fraction(result.duration_seconds, max_duration)
         ok = efficiency <= Fraction(1)
+        conclusion = (
+            f"PASS: efficiency {efficiency} within budget"
+            if ok
+            else f"VIOLATION: efficiency {efficiency} exceeds budget"
+        )
     premises = [
         f"duration_seconds={result.duration_seconds}",
         f"max_duration={max_duration}",
@@ -79,7 +85,7 @@ def check_pipeline_duration_efficiency(result: PipelineResult, max_duration: int
     return ok, ProofObject(
         rule="PipelineDurationEfficiency",
         premises=premises,
-        conclusion=f"PASS: efficiency {efficiency} within budget" if ok else f"VIOLATION: efficiency {efficiency} exceeds budget",
+        conclusion=conclusion,
     )
 
 
@@ -153,6 +159,7 @@ def check_deployment_health_score(target: DeploymentTarget) -> Tuple[bool, Proof
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS.
 
+    Standard: DevOps nominal executable check set (DORA, SLSA).
     Falsifies if: any check returns FAIL (nominal inputs should always pass).
     falsifies_if: any check returns FAIL (nominal inputs should always pass).
     """

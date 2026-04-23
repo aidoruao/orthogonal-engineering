@@ -31,9 +31,15 @@ def check_warning_latency_fraction(
     if MAX_WARNING_LATENCY_SECONDS <= 0:
         latency_frac = Fraction(0)
         success = False
+        conclusion = f"FAIL: invalid SLA budget (MAX_WARNING_LATENCY_SECONDS={MAX_WARNING_LATENCY_SECONDS})"
     else:
         latency_frac = Fraction(data.warning_latency_seconds, MAX_WARNING_LATENCY_SECONDS)
         success = latency_frac <= Fraction(1)
+        conclusion = (
+            f"PASS: latency fraction {latency_frac} within SLA"
+            if success
+            else f"FAIL: latency fraction {latency_frac} exceeds SLA"
+        )
     proof = ProofObject(
         rule="check_warning_latency_fraction",
         premises=[
@@ -41,11 +47,7 @@ def check_warning_latency_fraction(
             f"max={MAX_WARNING_LATENCY_SECONDS}",
             f"latency_fraction={latency_frac}",
         ],
-        conclusion=(
-            f"PASS: latency fraction {latency_frac} within SLA"
-            if success
-            else f"FAIL: latency fraction {latency_frac} exceeds SLA"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 
@@ -179,9 +181,14 @@ def check_after_action_staleness_fraction(
     if MAX_AFTER_ACTION_STALENESS_DAYS <= 0:
         staleness = Fraction(0)
         success = False
+        conclusion = f"FAIL: invalid staleness window (MAX_AFTER_ACTION_STALENESS_DAYS={MAX_AFTER_ACTION_STALENESS_DAYS})"
     else:
         staleness = Fraction(data.last_after_action_report_days_ago, MAX_AFTER_ACTION_STALENESS_DAYS)
         success = staleness <= Fraction(1)
+        conclusion = (
+            f"PASS: staleness fraction {staleness} within window"
+            if success else f"FAIL: staleness fraction {staleness} exceeds window"
+        )
     proof = ProofObject(
         rule="check_after_action_staleness_fraction",
         premises=[
@@ -189,10 +196,7 @@ def check_after_action_staleness_fraction(
             f"max={MAX_AFTER_ACTION_STALENESS_DAYS}",
             f"staleness_fraction={staleness}",
         ],
-        conclusion=(
-            f"PASS: staleness fraction {staleness} within window"
-            if success else f"FAIL: staleness fraction {staleness} exceeds window"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 

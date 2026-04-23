@@ -139,6 +139,7 @@ def check_record_status_valid(record: TransportationRecord) -> Tuple[bool, Proof
 def run_all_invariants() -> Dict[str, str]:
     """Run all checks with nominal inputs. All must PASS.
 
+    Standard: Transportation nominal executable check set (FMCSA HOS + NHTSA safety rules).
     Falsifies if: any check returns FAIL (nominal inputs should always pass).
     falsifies_if: any check returns FAIL (nominal inputs should always pass).
     """
