@@ -50,6 +50,7 @@ class OSHACompliance:
     site_id: str
     height_ft: Fraction
     has_fall_protection: bool
+    fall_protection_coverage: Fraction = Fraction(1, 1)
 
 
 def structural_safety_factor_min() -> Fraction:

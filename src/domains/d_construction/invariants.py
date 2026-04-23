@@ -97,30 +97,39 @@ def check_bim_clash_detection(bim: BIMClashDetection) -> Tuple[bool, ProofObject
     )
 
 
-def check_osha_fall_protection(osha: OSHACompliance) -> Tuple[bool, ProofObject]:
+def check_fall_protection_coverage(osha: OSHACompliance) -> Tuple[bool, ProofObject]:
     """
-    OSHA 1926 requires fall protection at heights >6 ft.
+    OSHA 1926 requires fall protection coverage >= 3/4 when height > 6 ft.
 
-    Falsifies if: height_ft > 6 AND NOT has_fall_protection
-    falsifies_if: height_ft > 6 AND NOT has_fall_protection
+    Falsifies if: height_ft > 6 ft AND fall_protection_coverage < 3/4
+    falsifies_if: height_ft > 6 ft AND fall_protection_coverage < 3/4
     """
     threshold = osha_fall_protection_height()
+    coverage_ratio = osha.fall_protection_coverage
 
-    if osha.height_ft > threshold and not osha.has_fall_protection:
+    if osha.height_ft > threshold and coverage_ratio < Fraction(3, 4):
         return False, ProofObject(
-            conclusion=f"VIOLATION: Site {osha.site_id} height {osha.height_ft} ft > {threshold} ft without fall protection",
+            conclusion=(
+                f"VIOLATION: Site {osha.site_id} height {osha.height_ft} ft > {threshold} ft "
+                f"with fall protection coverage {coverage_ratio} < {Fraction(3, 4)}"
+            ),
             premises=[
                 f"Height: {osha.height_ft} ft",
-                f"Fall protection: {osha.has_fall_protection}",
-                f"Threshold: {threshold} ft"
+                f"Fall protection coverage: {coverage_ratio}",
+                f"Threshold: {threshold} ft",
+                f"Required coverage: >= {Fraction(3, 4)}"
             ],
-            rule="osha_1926_fall_protection"
+            rule="osha_1926_fall_protection_coverage"
         )
 
     return True, ProofObject(
-        conclusion=f"Site {osha.site_id} fall protection compliant",
-        premises=[f"Height: {osha.height_ft} ft", f"Protected: {osha.has_fall_protection}"],
-        rule="osha_1926_fall_protection"
+        conclusion=f"Site {osha.site_id} fall protection coverage compliant",
+        premises=[
+            f"Height: {osha.height_ft} ft",
+            f"Coverage: {coverage_ratio}",
+            f"Threshold: {threshold} ft"
+        ],
+        rule="osha_1926_fall_protection_coverage"
     )
 
 
@@ -131,8 +140,8 @@ def run_all_invariants() -> dict:
     """
     bim_clash_detection = BIMClashDetection(
         model_id=None,
-        clashes_detected=None,
-        false_negative_rate=Fraction(1),
+        clashes_detected=0,
+        false_negative_rate=Fraction(0, 1),
     )
     fem_analysis = FEMAnalysis(
         analysis_id=None,
@@ -143,7 +152,8 @@ def run_all_invariants() -> dict:
     osha_compliance = OSHACompliance(
         site_id=None,
         height_ft=Fraction(1),
-        has_fall_protection=None,
+        has_fall_protection=True,
+        fall_protection_coverage=Fraction(1, 1),
     )
     structural_member = StructuralMember(
         member_id=None,
@@ -155,7 +165,7 @@ def run_all_invariants() -> dict:
     checks = [
         ("check_bim_clash_detection", lambda: check_bim_clash_detection(bim_clash_detection)),
         ("check_fem_accuracy", lambda: check_fem_accuracy(fem_analysis)),
-        ("check_osha_fall_protection", lambda: check_osha_fall_protection(osha_compliance)),
+        ("check_fall_protection_coverage", lambda: check_fall_protection_coverage(osha_compliance)),
         ("check_structural_safety_factor", lambda: check_structural_safety_factor(structural_member)),
     ]
 
