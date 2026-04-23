@@ -18,6 +18,7 @@ def check_safety_incident_rate(record: TransportationRecord) -> Tuple[bool, Proo
     """Safety incident rate must remain below regulatory threshold.
 
     Standard: DOT safety management systems — incident rate benchmarking
+    Falsifies if: safety_incident_rate > Fraction(1, 100).
     falsifies_if: safety_incident_rate > Fraction(1, 100).
     """
     threshold = Fraction(1, 100)
@@ -38,6 +39,7 @@ def check_on_time_performance(record: TransportationRecord) -> Tuple[bool, Proof
     """On-time performance must meet service reliability floor.
 
     Standard: DOT on-time performance requirements (14 CFR 234 for aviation)
+    Falsifies if: on_time_performance < Fraction(9, 10).
     falsifies_if: on_time_performance < Fraction(9, 10).
     """
     threshold = Fraction(9, 10)
@@ -58,6 +60,7 @@ def check_driver_rest_compliance(record: TransportationRecord) -> Tuple[bool, Pr
     """Driver rest compliance must satisfy hours-of-service requirements.
 
     Standard: FMCSA Hours of Service (49 CFR Part 395)
+    Falsifies if: driver_rest_compliance < Fraction(7, 8).
     falsifies_if: driver_rest_compliance < Fraction(7, 8).
     """
     threshold = Fraction(7, 8)
@@ -78,6 +81,7 @@ def check_maintenance_score(record: TransportationRecord) -> Tuple[bool, ProofOb
     """Vehicle maintenance score must meet safety inspection floor.
 
     Standard: FMCSA vehicle maintenance requirements (49 CFR 396)
+    Falsifies if: maintenance_score < Fraction(3, 4).
     falsifies_if: maintenance_score < Fraction(3, 4).
     """
     threshold = Fraction(3, 4)
@@ -98,6 +102,7 @@ def check_fleet_size_adequate(record: TransportationRecord) -> Tuple[bool, Proof
     """Fleet size must be adequate for operational requirements.
 
     Standard: DOT operational capacity assessment
+    Falsifies if: fleet_size < 10.
     falsifies_if: fleet_size < 10.
     """
     ok = record.fleet_size >= 10
@@ -116,6 +121,7 @@ def check_record_status_valid(record: TransportationRecord) -> Tuple[bool, Proof
     """Record status must be a valid TransportationStatus.
 
     Standard: DOT audit trail requirements
+    Falsifies if: status is not a TransportationStatus instance.
     falsifies_if: status is not a TransportationStatus instance.
     """
     ok = isinstance(record.status, TransportationStatus)
@@ -131,9 +137,12 @@ def check_record_status_valid(record: TransportationRecord) -> Tuple[bool, Proof
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS
+    """Run all checks with nominal inputs. All must PASS.
 
-    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    Standard: Transportation nominal executable check set (FMCSA HOS + NHTSA safety rules).
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).
+    falsifies_if: any check returns FAIL (nominal inputs should always pass).
+    """
     record = TransportationRecord(
         record_id="TRANS-2024-001",
         status=TransportationStatus.COMPLIANT,

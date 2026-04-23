@@ -25,13 +25,21 @@ def check_warning_latency_fraction(
     """Invariant: warning latency as fraction of SLA budget must not exceed 1.
 
     Standard: FEMA IPAWS / NOAA EAS 2-minute public-alert SLA.
+    Falsifies if: warning_latency_seconds / MAX_WARNING_LATENCY_SECONDS > Fraction(1).
     falsifies_if: warning_latency_seconds / MAX_WARNING_LATENCY_SECONDS > Fraction(1).
     """
     if MAX_WARNING_LATENCY_SECONDS <= 0:
         latency_frac = Fraction(0)
+        success = False
+        conclusion = f"FAIL: invalid SLA budget (MAX_WARNING_LATENCY_SECONDS={MAX_WARNING_LATENCY_SECONDS})"
     else:
         latency_frac = Fraction(data.warning_latency_seconds, MAX_WARNING_LATENCY_SECONDS)
-    success = latency_frac <= Fraction(1)
+        success = latency_frac <= Fraction(1)
+        conclusion = (
+            f"PASS: latency fraction {latency_frac} within SLA"
+            if success
+            else f"FAIL: latency fraction {latency_frac} exceeds SLA"
+        )
     proof = ProofObject(
         rule="check_warning_latency_fraction",
         premises=[
@@ -39,11 +47,7 @@ def check_warning_latency_fraction(
             f"max={MAX_WARNING_LATENCY_SECONDS}",
             f"latency_fraction={latency_frac}",
         ],
-        conclusion=(
-            f"PASS: latency fraction {latency_frac} within SLA"
-            if success
-            else f"FAIL: latency fraction {latency_frac} exceeds SLA"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 
@@ -54,6 +58,7 @@ def check_evacuation_capacity_ratio(
     """Invariant: evacuation lift as fraction of population >= 25%.
 
     Standard: FEMA CPG 101 mass-care planning threshold.
+    Falsifies if: evacuation_capacity / population < MIN_EVAC_CAPACITY_FRACTION.
     falsifies_if: evacuation_capacity / population < MIN_EVAC_CAPACITY_FRACTION.
     """
     ratio = evacuation_capacity_fraction(data)
@@ -80,6 +85,7 @@ def check_fuel_reserve_ratio(
     """Invariant: emergency fuel reserve as fraction of minimum requirement >= 1.
 
     Standard: DHS/CISA Lifeline Sector fuel-continuity guidance.
+    Falsifies if: emergency_fuel_days / MIN_EMERGENCY_FUEL_DAYS < Fraction(1).
     falsifies_if: emergency_fuel_days / MIN_EMERGENCY_FUEL_DAYS < Fraction(1).
     """
     if MIN_EMERGENCY_FUEL_DAYS <= 0:
@@ -109,6 +115,7 @@ def check_mutual_aid_coverage_ratio(
     """Invariant: mutual-aid partners as fraction of minimum requirement >= 1.
 
     Standard: EMAC interstate mutual-aid framework.
+    Falsifies if: mutual_aid_partner_count / MIN_MUTUAL_AID_PARTNERS < Fraction(1).
     falsifies_if: mutual_aid_partner_count / MIN_MUTUAL_AID_PARTNERS < Fraction(1).
     """
     if MIN_MUTUAL_AID_PARTNERS <= 0:
@@ -138,6 +145,7 @@ def check_backup_power_fraction(
     """Invariant: backup power hours as fraction of minimum requirement >= 1.
 
     Standard: NFPA 110 Level 1 emergency power system.
+    Falsifies if: backup_power_autonomy_hours / MIN_BACKUP_POWER_HOURS < Fraction(1).
     falsifies_if: backup_power_autonomy_hours / MIN_BACKUP_POWER_HOURS < Fraction(1).
     """
     if MIN_BACKUP_POWER_HOURS <= 0:
@@ -167,14 +175,20 @@ def check_after_action_staleness_fraction(
     """Invariant: after-action report staleness as fraction of max window <= 1.
 
     Standard: FEMA HSEEP after-action report cadence.
+    Falsifies if: days_ago / MAX_AFTER_ACTION_STALENESS_DAYS > Fraction(1).
     falsifies_if: days_ago / MAX_AFTER_ACTION_STALENESS_DAYS > Fraction(1).
     """
     if MAX_AFTER_ACTION_STALENESS_DAYS <= 0:
         staleness = Fraction(0)
-        success = True
+        success = False
+        conclusion = f"FAIL: invalid staleness window (MAX_AFTER_ACTION_STALENESS_DAYS={MAX_AFTER_ACTION_STALENESS_DAYS})"
     else:
         staleness = Fraction(data.last_after_action_report_days_ago, MAX_AFTER_ACTION_STALENESS_DAYS)
         success = staleness <= Fraction(1)
+        conclusion = (
+            f"PASS: staleness fraction {staleness} within window"
+            if success else f"FAIL: staleness fraction {staleness} exceeds window"
+        )
     proof = ProofObject(
         rule="check_after_action_staleness_fraction",
         premises=[
@@ -182,10 +196,7 @@ def check_after_action_staleness_fraction(
             f"max={MAX_AFTER_ACTION_STALENESS_DAYS}",
             f"staleness_fraction={staleness}",
         ],
-        conclusion=(
-            f"PASS: staleness fraction {staleness} within window"
-            if success else f"FAIL: staleness fraction {staleness} exceeds window"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 
@@ -196,6 +207,7 @@ def check_cyber_readiness_score(
     """Invariant: cyber incident-response readiness score meets floor.
 
     Standard: CISA Cyber Incident Response Playbook (2021) + NIST SP 800-61r2.
+    Falsifies if: cyber_readiness_score < Fraction(1, 2).
     falsifies_if: cyber_readiness_score < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -220,6 +232,7 @@ def check_infrastructure_redundancy(
     """Invariant: critical infrastructure redundancy meets minimum fraction.
 
     Standard: DHS National Infrastructure Protection Plan redundancy requirements.
+    Falsifies if: infrastructure_redundancy < Fraction(1, 2).
     falsifies_if: infrastructure_redundancy < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -242,6 +255,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain on the nominal claim.
 
     Standard: Disaster-resilience nominal executable check set.
+    Falsifies if: any invariant check returns False on the nominal claim.
     falsifies_if: any invariant check returns False on the nominal claim.
     """
     data = create_nominal_claim()

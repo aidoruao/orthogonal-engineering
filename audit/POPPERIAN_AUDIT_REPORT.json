@@ -167,7 +167,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_do178c_determinism",
+          "function": "check_determinism_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -175,7 +175,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_mcdc_coverage",
+          "function": "check_mcdc_coverage_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -183,7 +183,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_misra_recursion_bounded",
+          "function": "check_recursion_depth_bound",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -191,7 +191,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_milstd882e_mishap_probability",
+          "function": "check_mishap_probability_risk",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -199,7 +199,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_independence_review",
+          "function": "check_independence_review_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -207,7 +207,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_iec61508_sil4",
+          "function": "check_sil_integrity_level",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -215,7 +215,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_nasa_npr7150_class_a",
+          "function": "check_nasa_compliance_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -223,7 +223,7 @@
         {
           "domain": "d_aerospace_floor",
           "float_violations": [],
-          "function": "check_af_compliance_scanned",
+          "function": "check_af_scan_coverage",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4553,6 +4553,46 @@
       "passed": true
     },
     {
+      "domain": "d_cognitive_science",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_cognitive_science",
+          "float_violations": [],
+          "function": "check_capacity_bounded",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_cognitive_science",
+          "float_violations": [],
+          "function": "check_attention_allocation",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_cognitive_science",
+          "float_violations": [],
+          "function": "check_context_drift_monotone",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_cognitive_science",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_cognitive_science/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_combinatorics",
       "failure_count": 0,
       "findings": [
@@ -4958,6 +4998,70 @@
         }
       ],
       "invariants_path": "src/domains/d_control_systems/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_coordination_tax",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "check_brooks_law",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "check_coordination_tax_monotonic",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "check_sovereign_zero_tax",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "check_alignment_channel_scaling",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "check_decision_latency_invariant",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "check_institutional_overhead_ratio",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_coordination_tax",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_coordination_tax/invariants.py",
       "passed": true
     },
     {
@@ -5585,13 +5689,77 @@
       "passed": true
     },
     {
+      "domain": "d_deterministic_probability",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "check_bayesian_network_coherence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "check_probability_field_normalization",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "check_entropy_non_negative",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "check_cross_entropy_bound",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "check_joint_marginal_consistency",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "check_iterative_bayesian_convergence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_deterministic_probability",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_deterministic_probability/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_devops",
       "failure_count": 0,
       "findings": [
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_pipeline_deterministic",
+          "function": "check_pipeline_success_rate",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5599,7 +5767,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_pipeline_outcome_nonempty",
+          "function": "check_step_coverage_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5607,7 +5775,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_pipeline_duration_nonneg",
+          "function": "check_pipeline_duration_efficiency",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5615,7 +5783,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_config_name_nonempty",
+          "function": "check_artifact_integrity_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5623,7 +5791,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_infrastructure_resource_named",
+          "function": "check_infrastructure_completeness",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5631,7 +5799,7 @@
         {
           "domain": "d_devops",
           "float_violations": [],
-          "function": "check_deployment_target_healthy",
+          "function": "check_deployment_health_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5967,7 +6135,7 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_warning_latency",
+          "function": "check_warning_latency_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5975,7 +6143,7 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_evacuation_capacity",
+          "function": "check_evacuation_capacity_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5983,7 +6151,7 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_emergency_fuel_reserve",
+          "function": "check_fuel_reserve_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5991,7 +6159,7 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_mutual_aid_breadth",
+          "function": "check_mutual_aid_coverage_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5999,7 +6167,7 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_backup_power_autonomy",
+          "function": "check_backup_power_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6007,7 +6175,7 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_after_action_report_current",
+          "function": "check_after_action_staleness_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6015,7 +6183,15 @@
         {
           "domain": "d_disaster_resilience",
           "float_violations": [],
-          "function": "check_cyber_playbook_current",
+          "function": "check_cyber_readiness_score",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_disaster_resilience",
+          "float_violations": [],
+          "function": "check_infrastructure_redundancy",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6873,6 +7049,78 @@
       "passed": true
     },
     {
+      "domain": "d_epistemology_substrate",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_universal_falsifiability",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_bayesian_coherence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_information_gain_positive",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_gettier_immunity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_epistemic_closure",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_grounding_model_debt",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "check_regress_convergence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_substrate",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_epistemology_substrate/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_ethics",
       "failure_count": 0,
       "findings": [
@@ -6991,7 +7239,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_separation_of_powers_anchors",
+          "function": "check_composite_anchor_strength",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -6999,7 +7247,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_congressional_review_act_compliance",
+          "function": "check_cra_timeliness_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7007,7 +7255,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_judicial_review_preserved",
+          "function": "check_judicial_review_accessibility",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7015,7 +7263,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_publication_requirement",
+          "function": "check_publication_timeliness_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7023,7 +7271,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_independence_review_coverage",
+          "function": "check_independence_coverage_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7031,7 +7279,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_scope_expansion_bounded",
+          "function": "check_scope_expansion_severity",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7039,7 +7287,7 @@
         {
           "domain": "d_executive_governance",
           "float_violations": [],
-          "function": "check_consent_log_recorded",
+          "function": "check_executive_accountability_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7615,7 +7863,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_physics_time_step_positive",
+          "function": "check_physics_time_step_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7623,7 +7871,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_physics_gravity_set",
+          "function": "check_simulation_accuracy",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7631,7 +7879,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_physics_max_substeps_positive",
+          "function": "check_physics_substep_efficiency",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7639,7 +7887,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_save_file_has_checksum",
+          "function": "check_save_integrity_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7647,7 +7895,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_game_state_frame_nonneg",
+          "function": "check_game_state_consistency",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -7655,7 +7903,7 @@
         {
           "domain": "d_game_engine_development",
           "float_violations": [],
-          "function": "check_save_file_level_nonneg",
+          "function": "check_save_progression_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8847,7 +9095,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_case_has_defendant",
+          "function": "check_charge_gravity_threshold",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8855,7 +9103,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_case_jurisdiction_nonempty",
+          "function": "check_jurisdiction_strength",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8863,7 +9111,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_evidence_authenticity",
+          "function": "check_evidence_probative_weight",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8871,7 +9119,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_case_id_nonempty",
+          "function": "check_chain_of_custody_integrity",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8879,7 +9127,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_crime_type_is_valid",
+          "function": "check_evidence_authenticity_composite",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8887,7 +9135,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_evidence_type_nonempty",
+          "function": "check_case_evidence_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8895,7 +9143,7 @@
         {
           "domain": "d_international_criminal",
           "float_violations": [],
-          "function": "check_case_has_evidence",
+          "function": "check_defendant_evidence_linkage",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8919,7 +9167,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_protected_person_receiving_protection",
+          "function": "check_protection_coverage_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8927,7 +9175,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_military_target_proportionality",
+          "function": "check_necessity_score_threshold",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8935,7 +9183,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_military_target_necessity",
+          "function": "check_distinction_score_threshold",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8943,7 +9191,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_civilian_harm_nonneg",
+          "function": "check_civilian_harm_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8951,7 +9199,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_person_id_nonempty",
+          "function": "check_proportionality_composite",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8959,7 +9207,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_protected_category_valid",
+          "function": "check_protection_necessity_balance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8967,7 +9215,7 @@
         {
           "domain": "d_international_humanitarian",
           "float_violations": [],
-          "function": "check_harm_objective_ratio",
+          "function": "check_distinction_necessity_product",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -9729,6 +9977,54 @@
       "passed": true
     },
     {
+      "domain": "d_memory_persistence",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_memory_persistence",
+          "float_violations": [],
+          "function": "check_monotonic_memory",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_memory_persistence",
+          "float_violations": [],
+          "function": "check_bayesian_correction_update",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_memory_persistence",
+          "float_violations": [],
+          "function": "check_forgetting_curve_reinforcement",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_memory_persistence",
+          "float_violations": [],
+          "function": "check_identity_preservation",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_memory_persistence",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_memory_persistence/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_meta_reasoning",
       "failure_count": 0,
       "findings": [
@@ -10327,7 +10623,7 @@
         {
           "domain": "d_neuroscience",
           "float_violations": [],
-          "function": "check_action_potential_all_or_none",
+          "function": "check_action_potential_threshold",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10335,7 +10631,7 @@
         {
           "domain": "d_neuroscience",
           "float_violations": [],
-          "function": "check_synapse_neurotransmitter_release",
+          "function": "check_synaptic_weight_hebbian_update",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10343,7 +10639,7 @@
         {
           "domain": "d_neuroscience",
           "float_violations": [],
-          "function": "check_myelination_conduction_speed",
+          "function": "check_refractory_period_timing",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10351,7 +10647,7 @@
         {
           "domain": "d_neuroscience",
           "float_violations": [],
-          "function": "check_refractory_period_bounded",
+          "function": "check_ebbinghaus_retention",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10359,7 +10655,7 @@
         {
           "domain": "d_neuroscience",
           "float_violations": [],
-          "function": "check_synaptic_weight_fraction",
+          "function": "check_myelination_conduction_boost",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10374,6 +10670,102 @@
         }
       ],
       "invariants_path": "src/domains/d_neuroscience/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_new_jerusalem",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_universal_falsifiability",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_zero_tautology",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_peano_completeness",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_merkle_integrity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_self_hosting",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_truth_inelasticity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_eschaton_monotonicity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_kenosis_bounds",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_agape_witness_coverage",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "check_grace_debt_erasure",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_new_jerusalem",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_new_jerusalem/invariants.py",
       "passed": true
     },
     {
@@ -10662,6 +11054,70 @@
         }
       ],
       "invariants_path": "src/domains/d_oilgas/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_ontology_substrate",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "check_all_precedents_satisfied",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "check_consistent_reality",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "check_structural_order",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "check_deterministic_causality",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "check_lawvere_convergence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "check_operational_necessities",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_ontology_substrate/invariants.py",
       "passed": true
     },
     {
@@ -10974,6 +11430,46 @@
         }
       ],
       "invariants_path": "src/domains/d_pharma/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_pharmacology",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_pharmacology",
+          "float_violations": [],
+          "function": "check_dose_in_therapeutic_window",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_pharmacology",
+          "float_violations": [],
+          "function": "check_half_life_decay",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_pharmacology",
+          "float_violations": [],
+          "function": "check_drug_interaction_safety",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_pharmacology",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_pharmacology/invariants.py",
       "passed": true
     },
     {
@@ -11711,7 +12207,7 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_icu_bed_density",
+          "function": "check_icu_bed_density_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11719,7 +12215,7 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_ventilator_reserve_density",
+          "function": "check_ventilator_reserve_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11727,7 +12223,7 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_ppe_days_of_supply",
+          "function": "check_ppe_supply_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11735,7 +12231,7 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_contact_tracer_density",
+          "function": "check_tracer_density_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11743,7 +12239,7 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_lab_turnaround_within_limit",
+          "function": "check_lab_turnaround_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11751,7 +12247,7 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_audit_not_stale",
+          "function": "check_audit_staleness_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11759,7 +12255,15 @@
         {
           "domain": "d_public_health_capacity",
           "float_violations": [],
-          "function": "check_sentinel_surveillance_active",
+          "function": "check_surveillance_coverage",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_public_health_capacity",
+          "float_violations": [],
+          "function": "check_staff_training_ratio",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -12673,6 +13177,70 @@
       "passed": true
     },
     {
+      "domain": "d_sigma_theo",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "check_logos_initial_algebra",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "check_chalcedon_no_monophysite",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "check_grace_isometry",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "check_agape_superadditive",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "check_kenosis_partiality",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "check_eschaton_convergence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_sigma_theo",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_sigma_theo/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_signal_processing",
       "failure_count": 0,
       "findings": [
@@ -13225,6 +13793,54 @@
       "passed": true
     },
     {
+      "domain": "d_therapeutic_pipeline",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_therapeutic_pipeline",
+          "float_violations": [],
+          "function": "check_constraint_above_threshold",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_therapeutic_pipeline",
+          "float_violations": [],
+          "function": "check_context_drift_bounded",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_therapeutic_pipeline",
+          "float_violations": [],
+          "function": "check_belief_update_rate",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_therapeutic_pipeline",
+          "float_violations": [],
+          "function": "check_reality_testing_frequency",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_therapeutic_pipeline",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_therapeutic_pipeline/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_thermodynamics",
       "failure_count": 0,
       "findings": [
@@ -13471,7 +14087,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_record_id_nonempty",
+          "function": "check_safety_incident_rate",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -13479,7 +14095,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_status_valid",
+          "function": "check_on_time_performance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -13487,7 +14103,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_compliant_record_marked_compliant",
+          "function": "check_driver_rest_compliance",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -13495,7 +14111,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_checker_has_check_compliance",
+          "function": "check_maintenance_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -13503,7 +14119,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_non_compliant_not_marked_compliant",
+          "function": "check_fleet_size_adequate",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -13511,7 +14127,7 @@
         {
           "domain": "d_transportation",
           "float_violations": [],
-          "function": "check_record_has_status",
+          "function": "check_record_status_valid",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -14313,6 +14929,62 @@
       "passed": true
     },
     {
+      "domain": "d_yeshua_mathematics",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_yeshua_mathematics",
+          "float_violations": [],
+          "function": "check_all_eight_axioms",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_yeshua_mathematics",
+          "float_violations": [],
+          "function": "check_peano_substrate",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_yeshua_mathematics",
+          "float_violations": [],
+          "function": "check_boolean_purity_substrate",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_yeshua_mathematics",
+          "float_violations": [],
+          "function": "check_pure_path_agreement",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_yeshua_mathematics",
+          "float_violations": [],
+          "function": "check_no_economic_gatekeeping",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_yeshua_mathematics",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_yeshua_mathematics/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_zoning",
       "failure_count": 0,
       "findings": [
@@ -14380,7 +15052,7 @@
   "summary": {
     "all_pass": true,
     "failing_domains": 0,
-    "passing_domains": 252,
-    "total_domains": 252
+    "passing_domains": 263,
+    "total_domains": 263
   }
 }

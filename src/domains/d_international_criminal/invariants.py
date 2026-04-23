@@ -18,6 +18,7 @@ def check_charge_gravity_threshold(case: Case) -> Tuple[bool, ProofObject]:
     """Case charge gravity must meet ICC threshold for core crimes.
 
     Standard: Rome Statute Article 5 — jurisdiction limited to most serious crimes
+    Falsifies if: case.charge_gravity < Fraction(1, 2).
     falsifies_if: case.charge_gravity < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -38,6 +39,7 @@ def check_jurisdiction_strength(case: Case) -> Tuple[bool, ProofObject]:
     """Jurisdiction strength must satisfy complementarity requirements.
 
     Standard: Rome Statute Article 12 — preconditions to jurisdiction
+    Falsifies if: case.jurisdiction_strength < Fraction(1, 2).
     falsifies_if: case.jurisdiction_strength < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -58,6 +60,7 @@ def check_evidence_probative_weight(evidence: Evidence) -> Tuple[bool, ProofObje
     """Evidence must carry sufficient probative weight.
 
     Standard: Rome Statute Article 64(9) — evidence admissibility and weight
+    Falsifies if: evidence.evidence_weight < Fraction(1, 3).
     falsifies_if: evidence.evidence_weight < Fraction(1, 3).
     """
     threshold = Fraction(1, 3)
@@ -78,6 +81,7 @@ def check_chain_of_custody_integrity(evidence: Evidence) -> Tuple[bool, ProofObj
     """Chain of custody gaps must be within acceptable ratio.
 
     Standard: Rome Statute Rule 63 — evidence integrity and chain of custody
+    Falsifies if: custody_gaps / custody_links >= Fraction(1, 4).
     falsifies_if: custody_gaps / custody_links >= Fraction(1, 4).
     """
     if evidence.custody_links <= 0:
@@ -103,6 +107,7 @@ def check_evidence_authenticity_composite(evidence: Evidence) -> Tuple[bool, Pro
     """Composite authenticity score must exceed threshold.
 
     Standard: Rome Statute Article 69 — relevance and probative value
+    Falsifies if: composite_score < Fraction(1, 4).
     falsifies_if: composite_score < Fraction(1, 4).
     """
     authenticity_factor = Fraction(1) if evidence.authenticity_verified else Fraction(1, 2)
@@ -132,6 +137,7 @@ def check_case_evidence_ratio(case: Case, evidence_list: List[Evidence]) -> Tupl
     """Total evidence weight must be proportionate to charge gravity.
 
     Standard: Rome Statute Article 53 — evidence threshold for prosecution
+    Falsifies if: total_evidence_weight / charge_gravity < Fraction(1, 2).
     falsifies_if: total_evidence_weight / charge_gravity < Fraction(1, 2).
     """
     total_weight = sum(e.evidence_weight for e in evidence_list)
@@ -158,6 +164,7 @@ def check_defendant_evidence_linkage(case: Case, evidence: Evidence) -> Tuple[bo
     """Named defendant must have linked evidence with positive weight.
 
     Standard: Rome Statute Article 58 — arrest warrant requires supporting evidence
+    Falsifies if: defendant named AND (evidence.case_id != case.case_id OR evidence.evidence_weight <= 0).
     falsifies_if: defendant named AND (evidence.case_id != case.case_id OR evidence.evidence_weight <= 0).
     """
     if not case.defendant.strip():
@@ -186,9 +193,12 @@ def check_defendant_evidence_linkage(case: Case, evidence: Evidence) -> Tuple[bo
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS
+    """Run all checks with nominal inputs. All must PASS.
 
-    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    Standard: International-criminal-law nominal executable check set (Rome Statute).
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).
+    falsifies_if: any check returns FAIL (nominal inputs should always pass).
+    """
     from datetime import datetime
     crime = list(CrimeType)[0]
     status = list(CaseStatus)[0]

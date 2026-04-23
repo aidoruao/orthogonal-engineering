@@ -25,6 +25,7 @@ def check_icu_bed_density_ratio(
     """Invariant: staffed ICU beds per 100k as fraction of floor >= 1.
 
     Standard: HHS ASPR Hospital Preparedness Program surge benchmark.
+    Falsifies if: per_100k / MIN_ICU_BEDS_PER_100K < Fraction(1).
     falsifies_if: per_100k / MIN_ICU_BEDS_PER_100K < Fraction(1).
     """
     ratio = _per_100k(data.staffed_icu_beds, data.population)
@@ -56,6 +57,7 @@ def check_ventilator_reserve_ratio(
     """Invariant: ventilator reserve per 100k as fraction of floor >= 1.
 
     Standard: CDC Strategic National Stockpile allocation guidance.
+    Falsifies if: per_100k / MIN_VENTILATORS_PER_100K < Fraction(1).
     falsifies_if: per_100k / MIN_VENTILATORS_PER_100K < Fraction(1).
     """
     ratio = _per_100k(data.ventilator_reserve, data.population)
@@ -87,6 +89,7 @@ def check_ppe_supply_ratio(
     """Invariant: PPE days-of-supply as fraction of 90-day benchmark >= 1.
 
     Standard: ASPR pandemic stockpile 90-day benchmark.
+    Falsifies if: ppe_days / MIN_PPE_DAYS < Fraction(1).
     falsifies_if: ppe_days / MIN_PPE_DAYS < Fraction(1).
     """
     if MIN_PPE_DAYS <= 0:
@@ -116,6 +119,7 @@ def check_tracer_density_ratio(
     """Invariant: contact tracers per 100k as fraction of floor >= 1.
 
     Standard: Johns Hopkins Bloomberg School contact-tracing workforce model.
+    Falsifies if: per_100k / MIN_TRACERS_PER_100K < Fraction(1).
     falsifies_if: per_100k / MIN_TRACERS_PER_100K < Fraction(1).
     """
     ratio = _per_100k(data.contact_tracer_headcount, data.population)
@@ -147,14 +151,20 @@ def check_lab_turnaround_fraction(
     """Invariant: lab turnaround as fraction of max latency <= 1.
 
     Standard: CDC surveillance operational tempo threshold.
+    Falsifies if: lab_turnaround_hours / MAX_LAB_LATENCY_HOURS > Fraction(1).
     falsifies_if: lab_turnaround_hours / MAX_LAB_LATENCY_HOURS > Fraction(1).
     """
     if MAX_LAB_LATENCY_HOURS <= 0:
         frac = Fraction(0)
-        success = True
+        success = False
+        conclusion = f"FAIL: invalid latency budget (MAX_LAB_LATENCY_HOURS={MAX_LAB_LATENCY_HOURS})"
     else:
         frac = Fraction(data.lab_turnaround_hours, MAX_LAB_LATENCY_HOURS)
         success = frac <= Fraction(1)
+        conclusion = (
+            f"PASS: lab turnaround fraction {frac} within limit"
+            if success else f"FAIL: lab turnaround fraction {frac} exceeds limit"
+        )
     proof = ProofObject(
         rule="check_lab_turnaround_fraction",
         premises=[
@@ -162,10 +172,7 @@ def check_lab_turnaround_fraction(
             f"max={MAX_LAB_LATENCY_HOURS}",
             f"fraction={frac}",
         ],
-        conclusion=(
-            f"PASS: lab turnaround fraction {frac} within limit"
-            if success else f"FAIL: lab turnaround fraction {frac} exceeds limit"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 
@@ -176,14 +183,20 @@ def check_audit_staleness_fraction(
     """Invariant: audit staleness as fraction of max window <= 1.
 
     Standard: AF-008 quarterly scan + annual independent review.
+    Falsifies if: days_ago / MAX_AUDIT_STALENESS_DAYS > Fraction(1).
     falsifies_if: days_ago / MAX_AUDIT_STALENESS_DAYS > Fraction(1).
     """
     if MAX_AUDIT_STALENESS_DAYS <= 0:
         frac = Fraction(0)
-        success = True
+        success = False
+        conclusion = f"FAIL: invalid audit window (MAX_AUDIT_STALENESS_DAYS={MAX_AUDIT_STALENESS_DAYS})"
     else:
         frac = Fraction(data.last_independent_audit_days_ago, MAX_AUDIT_STALENESS_DAYS)
         success = frac <= Fraction(1)
+        conclusion = (
+            f"PASS: audit staleness {frac} within window"
+            if success else f"FAIL: audit staleness {frac} exceeds window"
+        )
     proof = ProofObject(
         rule="check_audit_staleness_fraction",
         premises=[
@@ -191,10 +204,7 @@ def check_audit_staleness_fraction(
             f"max={MAX_AUDIT_STALENESS_DAYS}",
             f"staleness_fraction={frac}",
         ],
-        conclusion=(
-            f"PASS: audit staleness {frac} within window"
-            if success else f"FAIL: audit staleness {frac} exceeds window"
-        ),
+        conclusion=conclusion,
     )
     return success, proof
 
@@ -205,6 +215,7 @@ def check_surveillance_coverage(
     """Invariant: sentinel surveillance coverage fraction meets threshold.
 
     Standard: WHO Integrated Disease Surveillance and Response (IDSR).
+    Falsifies if: surveillance_coverage_fraction < Fraction(9, 10).
     falsifies_if: surveillance_coverage_fraction < Fraction(9, 10).
     """
     threshold = Fraction(9, 10)
@@ -230,6 +241,7 @@ def check_staff_training_ratio(
     """Invariant: staff training ratio meets minimum threshold.
 
     Standard: CDC Public Health Emergency Preparedness (PHEP) capability standards.
+    Falsifies if: staff_training_ratio < Fraction(1, 2).
     falsifies_if: staff_training_ratio < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -253,6 +265,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain on the nominal claim.
 
     Standard: Public-health capacity nominal executable check set.
+    Falsifies if: any invariant check returns False on the nominal claim.
     falsifies_if: any invariant check returns False on the nominal claim.
     """
     data = create_nominal_claim()
