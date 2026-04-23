@@ -142,9 +142,11 @@ def check_save_progression_valid(save: SaveFile) -> Tuple[bool, ProofObject]:
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS
+    """Run all checks with nominal inputs. All must PASS.
 
-    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).
+    falsifies_if: any check returns FAIL (nominal inputs should always pass).
+    """
     config = PhysicsConfig(
         gravity=Fraction(-98, 10),
         time_step=Fraction(1, 60),

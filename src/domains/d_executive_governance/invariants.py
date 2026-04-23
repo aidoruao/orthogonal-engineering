@@ -127,10 +127,13 @@ def check_publication_timeliness_fraction(
     fraction = Fraction(delay, max_days) if max_days > 0 else Fraction(0)
     if not data.published_in_federal_register:
         success = False
+        reason = "not published in Federal Register"
     elif delay > max_days:
         success = False
+        reason = f"delay fraction {fraction} exceeds limit"
     else:
         success = True
+        reason = f"delay fraction {fraction} within limit"
     proof = ProofObject(
         rule="check_publication_timeliness_fraction",
         premises=[
@@ -139,11 +142,7 @@ def check_publication_timeliness_fraction(
             f"delay_fraction={fraction}",
             f"max_days={max_days}",
         ],
-        conclusion=(
-            f"PASS: delay fraction {fraction} within limit"
-            if success
-            else f"FAIL: delay fraction {fraction} exceeds limit"
-        ),
+        conclusion=("PASS: " if success else "FAIL: ") + reason,
     )
     return success, proof
 

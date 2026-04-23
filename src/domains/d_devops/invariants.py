@@ -151,9 +151,11 @@ def check_deployment_health_score(target: DeploymentTarget) -> Tuple[bool, Proof
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS
+    """Run all checks with nominal inputs. All must PASS.
 
-    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).
+    falsifies_if: any check returns FAIL (nominal inputs should always pass).
+    """
     config = PipelineConfig(
         name="ci-pipeline",
         steps=["build", "test", "deploy"],

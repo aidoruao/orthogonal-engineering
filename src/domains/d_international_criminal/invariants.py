@@ -193,9 +193,11 @@ def check_defendant_evidence_linkage(case: Case, evidence: Evidence) -> Tuple[bo
 
 
 def run_all_invariants() -> Dict[str, str]:
-    """Run all checks with nominal inputs. All must PASS
+    """Run all checks with nominal inputs. All must PASS.
 
-    Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
+    Falsifies if: any check returns FAIL (nominal inputs should always pass).
+    falsifies_if: any check returns FAIL (nominal inputs should always pass).
+    """
     from datetime import datetime
     crime = list(CrimeType)[0]
     status = list(CaseStatus)[0]
