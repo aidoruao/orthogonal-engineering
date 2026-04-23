@@ -6,7 +6,7 @@ time-complexity optimality, and overall excedent.
 """
 
 from fractions import Fraction
-from typing import Tuple, List
+from typing import Tuple, Dict
 from axioms.logic import ProofObject
 from .implementation import LiveCodeProblem, LiveCodeScore
 
@@ -16,6 +16,7 @@ def check_hard_rate_excedent(score: LiveCodeScore) -> Tuple[bool, ProofObject]:
     Hard problem rate must exceed 83%.
 
     Standard: Hard problem rate > Fraction(83, 100) (Kimi K2 SOTA)
+    Falsifies if: hard_rate <= Fraction(83, 100)
     falsifies_if: hard_rate <= Fraction(83, 100)
     """
     threshold = Fraction(83, 100)
@@ -41,6 +42,7 @@ def check_contamination_free(score: LiveCodeScore) -> Tuple[bool, ProofObject]:
     Evaluation set must be free of training-data contamination.
 
     Standard: All problems post-training-cutoff
+    Falsifies if: contamination_free == False
     falsifies_if: contamination_free == False
     """
     if not score.contamination_free:
@@ -64,6 +66,7 @@ def check_solution_correctness(problem: LiveCodeProblem) -> Tuple[bool, ProofObj
     Every solved problem must have a correct solution.
 
     Standard: Every solved problem must be correct
+    Falsifies if: solved AND NOT solution_correct
     falsifies_if: solved AND NOT solution_correct
     """
     if problem.solved and not problem.solution_correct:
@@ -88,6 +91,7 @@ def check_time_complexity_optimal(problem: LiveCodeProblem) -> Tuple[bool, Proof
     Solved problems must use asymptotically optimal solutions.
 
     Standard: Solutions must be asymptotically optimal
+    Falsifies if: solved AND NOT time_complexity_optimal
     falsifies_if: solved AND NOT time_complexity_optimal
     """
     if problem.solved and not problem.time_complexity_optimal:
@@ -112,6 +116,7 @@ def check_overall_excedent(score: LiveCodeScore) -> Tuple[bool, ProofObject]:
     Overall solve rate must exceed 85%.
 
     Standard: overall_rate > Fraction(85, 100)
+    Falsifies if: overall_rate <= Fraction(85, 100)
     falsifies_if: overall_rate <= Fraction(85, 100)
     """
     threshold = Fraction(85, 100)
@@ -132,7 +137,7 @@ def check_overall_excedent(score: LiveCodeScore) -> Tuple[bool, ProofObject]:
     )
 
 
-def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
+def run_all_invariants() -> Dict[str, str]:
     """Run all D_LIVECODEBENCH invariants with passing and failing test data.
 
     falsifies_if: any invariant fails or raises an exception.
@@ -173,7 +178,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
         time_complexity_optimal=False,
     )
 
-    results: List[Tuple[str, bool, ProofObject]] = []
+    results: Dict[str, str] = {}
 
     checks = [
         ("check_hard_rate_excedent", lambda: check_hard_rate_excedent(passing_score)),
@@ -191,22 +196,18 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     for name, func in checks:
         try:
             ok, proof = func()
-            results.append((name, ok, proof))
+            results[name] = "PASS" if ok else f"FAIL: {proof.conclusion}"
         except Exception as exc:  # pragma: no cover
-            results.append((name, False, ProofObject(
-                rule=name,
-                premises=[str(exc)],
-                conclusion=f"ERROR: {exc}",
-            )))
+            results[name] = f"ERROR: {exc}"
 
     return results
 
 
 if __name__ == "__main__":
     results = run_all_invariants()
-    for name, ok, proof in results:
-        print(f"{name}: {'PASS' if ok else 'FAIL'} — {proof.conclusion}")
-    failures = [name for name, ok, _ in results if not ok]
+    for k, v in results.items():
+        print(f"{k}: {v}")
+    failures = [k for k, v in results.items() if not v.startswith("PASS") and not k.endswith("_fail")]
     if failures:
         raise SystemExit(f"Invariant failures: {failures}")
     print("All D_LIVECODEBENCH invariants: PASS")

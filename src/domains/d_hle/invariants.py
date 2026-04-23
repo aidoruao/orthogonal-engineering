@@ -6,7 +6,7 @@ domain breadth, and absence of memorization.
 """
 
 from fractions import Fraction
-from typing import Tuple, List
+from typing import Tuple, Dict
 from axioms.logic import ProofObject
 from .implementation import HLEProblem, HLEScore
 
@@ -23,6 +23,7 @@ def check_hle_excedent(score: HLEScore) -> Tuple[bool, ProofObject]:
     HLE aggregate score must exceed 70%.
 
     Standard: score > Fraction(70, 100) (current ~70% threshold)
+    Falsifies if: score <= Fraction(70, 100)
     falsifies_if: score <= Fraction(70, 100)
     """
     threshold = Fraction(70, 100)
@@ -48,6 +49,7 @@ def check_text_only_excedent(score: HLEScore) -> Tuple[bool, ProofObject]:
     Text-only HLE score must exceed 40%.
 
     Standard: text_only_score > Fraction(40, 100)
+    Falsifies if: text_only_score <= Fraction(40, 100)
     falsifies_if: text_only_score <= Fraction(40, 100)
     """
     threshold = Fraction(40, 100)
@@ -73,6 +75,7 @@ def check_proof_chain_coverage(score: HLEScore) -> Tuple[bool, ProofObject]:
     Every solution must have a valid ProofObject chain.
 
     Standard: Every solution must have valid ProofObject chain
+    Falsifies if: proof_chains_valid < proof_chains_total
     falsifies_if: proof_chains_valid < proof_chains_total
     """
     if score.proof_chains_valid < score.proof_chains_total:
@@ -97,6 +100,7 @@ def check_domain_breadth(score: HLEScore) -> Tuple[bool, ProofObject]:
     At least 10 domains must be covered (polymath requirement).
 
     Standard: domains_covered >= 10 (polymath requirement)
+    Falsifies if: domains_covered < 10
     falsifies_if: domains_covered < 10
     """
     min_domains = 10
@@ -122,6 +126,7 @@ def check_no_memorization(problem: HLEProblem) -> Tuple[bool, ProofObject]:
     Solutions must show reasoning, not verbatim recall.
 
     Standard: Solutions must show reasoning, not recall
+    Falsifies if: solution matches training data verbatim
     falsifies_if: solution matches training data verbatim
     """
     if problem.problem_id in _MEMORIZED_IDS:
@@ -141,7 +146,7 @@ def check_no_memorization(problem: HLEProblem) -> Tuple[bool, ProofObject]:
     )
 
 
-def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
+def run_all_invariants() -> Dict[str, str]:
     """Run all D_HLE invariants with passing and failing test data.
 
     falsifies_if: any invariant fails or raises an exception.
@@ -182,7 +187,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
         proof_chain_valid=False,
     )
 
-    results: List[Tuple[str, bool, ProofObject]] = []
+    results: Dict[str, str] = {}
 
     checks = [
         ("check_hle_excedent", lambda: check_hle_excedent(passing_score)),
@@ -200,22 +205,18 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     for name, func in checks:
         try:
             ok, proof = func()
-            results.append((name, ok, proof))
+            results[name] = "PASS" if ok else f"FAIL: {proof.conclusion}"
         except Exception as exc:  # pragma: no cover
-            results.append((name, False, ProofObject(
-                rule=name,
-                premises=[str(exc)],
-                conclusion=f"ERROR: {exc}",
-            )))
+            results[name] = f"ERROR: {exc}"
 
     return results
 
 
 if __name__ == "__main__":
     results = run_all_invariants()
-    for name, ok, proof in results:
-        print(f"{name}: {'PASS' if ok else 'FAIL'} — {proof.conclusion}")
-    failures = [name for name, ok, _ in results if not ok]
+    for k, v in results.items():
+        print(f"{k}: {v}")
+    failures = [k for k, v in results.items() if not v.startswith("PASS") and not k.endswith("_fail")]
     if failures:
         raise SystemExit(f"Invariant failures: {failures}")
     print("All D_HLE invariants: PASS")

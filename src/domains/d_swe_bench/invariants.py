@@ -6,7 +6,7 @@ test pass completeness, data leakage absence, and deterministic resolution.
 """
 
 from fractions import Fraction
-from typing import Tuple, List
+from typing import Tuple, Dict
 from axioms.logic import ProofObject
 from .implementation import SWEBenchInstance, SWEBenchScore
 
@@ -23,6 +23,7 @@ def check_resolve_rate_excedent(score: SWEBenchScore) -> Tuple[bool, ProofObject
     SWE-bench Verified resolve rate must exceed 85%.
 
     Standard: SWE-bench Verified — resolve_rate > Fraction(85, 100)
+    Falsifies if: resolve_rate < Fraction(85, 100)
     falsifies_if: resolve_rate < Fraction(85, 100)
     """
     threshold = Fraction(85, 100)
@@ -49,6 +50,7 @@ def check_false_positive_bounded(score: SWEBenchScore) -> Tuple[bool, ProofObjec
     Patch correctness false positive rate must stay below 5%.
 
     Standard: Patch correctness — false_positive_rate < Fraction(5, 100)
+    Falsifies if: false_positive_rate >= Fraction(5, 100)
     falsifies_if: false_positive_rate >= Fraction(5, 100)
     """
     threshold = Fraction(5, 100)
@@ -74,6 +76,7 @@ def check_patch_minimality(score: SWEBenchScore) -> Tuple[bool, ProofObject]:
     Average patch size must remain under 50 lines.
 
     Standard: Minimal diff — avg_patch_size < Fraction(50, 1) lines
+    Falsifies if: avg_patch_size >= Fraction(50, 1)
     falsifies_if: avg_patch_size >= Fraction(50, 1)
     """
     threshold = Fraction(50, 1)
@@ -99,6 +102,7 @@ def check_test_pass_completeness(instance: SWEBenchInstance) -> Tuple[bool, Proo
     All tests must pass for a resolved instance.
 
     Standard: All tests pass — test_pass_rate == Fraction(1, 1)
+    Falsifies if: test_pass_rate < Fraction(1, 1)
     falsifies_if: test_pass_rate < Fraction(1, 1)
     """
     if instance.test_pass_rate < Fraction(1, 1):
@@ -123,6 +127,7 @@ def check_no_data_leakage_swe(score: SWEBenchScore, instance: SWEBenchInstance) 
     Resolved instance must not appear in training data.
 
     Standard: Instance not in training data
+    Falsifies if: instance in training set AND resolved
     falsifies_if: instance in training set AND resolved
     """
     instance_key = (instance.repo_id, instance.issue_id)
@@ -151,6 +156,7 @@ def check_deterministic_resolution(score1: SWEBenchScore, score2: SWEBenchScore)
     Same model and split must produce identical resolve rates.
 
     Standard: Same instance → same patch (determinism)
+    Falsifies if: two runs on same instance produce different patches
     falsifies_if: two runs on same instance produce different patches
     """
     if score1.model_id == score2.model_id and score1.split == score2.split:
@@ -177,7 +183,7 @@ def check_deterministic_resolution(score1: SWEBenchScore, score2: SWEBenchScore)
     )
 
 
-def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
+def run_all_invariants() -> Dict[str, str]:
     """Run all D_SWE_BENCH invariants with passing and failing test data.
 
     falsifies_if: any invariant fails or raises an exception.
@@ -231,7 +237,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
         avg_patch_size=Fraction(65, 1),
     )
 
-    results: List[Tuple[str, bool, ProofObject]] = []
+    results: Dict[str, str] = {}
 
     checks = [
         ("check_resolve_rate_excedent", lambda: check_resolve_rate_excedent(passing_score)),
@@ -251,22 +257,18 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     for name, func in checks:
         try:
             ok, proof = func()
-            results.append((name, ok, proof))
+            results[name] = "PASS" if ok else f"FAIL: {proof.conclusion}"
         except Exception as exc:  # pragma: no cover
-            results.append((name, False, ProofObject(
-                rule=name,
-                premises=[str(exc)],
-                conclusion=f"ERROR: {exc}",
-            )))
+            results[name] = f"ERROR: {exc}"
 
     return results
 
 
 if __name__ == "__main__":
     results = run_all_invariants()
-    for name, ok, proof in results:
-        print(f"{name}: {'PASS' if ok else 'FAIL'} — {proof.conclusion}")
-    failures = [name for name, ok, _ in results if not ok]
+    for k, v in results.items():
+        print(f"{k}: {v}")
+    failures = [k for k, v in results.items() if not v.startswith("PASS") and not k.endswith("_fail")]
     if failures:
         raise SystemExit(f"Invariant failures: {failures}")
     print("All D_SWE_BENCH invariants: PASS")

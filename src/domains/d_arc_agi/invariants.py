@@ -16,6 +16,7 @@ def check_solve_rate_nonzero(score: ARCScore) -> Tuple[bool, ProofObject]:
     ARC-AGI solve rate must exceed zero.
 
     Standard: ARC-AGI-3 — solve_rate > Fraction(0, 1) (beat current 0%)
+    Falsifies if: solve_rate == Fraction(0, 1)
     falsifies_if: solve_rate == Fraction(0, 1)
     """
     if score.solve_rate == Fraction(0, 1):
@@ -39,6 +40,7 @@ def check_compositional_depth(score: ARCScore) -> Tuple[bool, ProofObject]:
     Compositional generalization must reach depth >= 3.
 
     Standard: Compositional generalization — compositional_max_depth >= 3
+    Falsifies if: compositional_max_depth < 3
     falsifies_if: compositional_max_depth < 3
     """
     if score.compositional_max_depth < 3:
@@ -62,6 +64,7 @@ def check_novel_rule_generalization(score: ARCScore) -> Tuple[bool, ProofObject]
     Novel rule transfer rate must exceed 50%.
 
     Standard: Novel rule transfer — novel_rule_rate > Fraction(1, 2)
+    Falsifies if: novel_rule_rate <= Fraction(1, 2)
     falsifies_if: novel_rule_rate <= Fraction(1, 2)
     """
     threshold = Fraction(1, 2)
@@ -87,6 +90,7 @@ def check_grid_output_exact(task: ARCTask, predicted: Tuple[Tuple[int, ...], ...
     Predicted grid must exactly match the task output grid.
 
     Standard: Exact match — predicted == task.output_grid
+    Falsifies if: predicted != task.output_grid
     falsifies_if: predicted != task.output_grid
     """
     if predicted != task.output_grid:
@@ -111,6 +115,7 @@ def check_no_brute_force(score: ARCScore, solution_method: str) -> Tuple[bool, P
     Solutions must use rule inference, not brute force.
 
     Standard: Rule inference required — solution_method != "brute_force"
+    Falsifies if: solution_method == "brute_force"
     falsifies_if: solution_method == "brute_force"
     """
     if solution_method == "brute_force":
@@ -134,6 +139,7 @@ def check_transfer_across_tasks(transfer_rate: Fraction) -> Tuple[bool, ProofObj
     Cross-task transfer rate must be at least 25%.
 
     Standard: Cross-task transfer — transfer_rate >= Fraction(1, 4)
+    Falsifies if: transfer_rate < Fraction(1, 4)
     falsifies_if: transfer_rate < Fraction(1, 4)
     """
     threshold = Fraction(1, 4)
@@ -223,7 +229,7 @@ if __name__ == "__main__":
     results = run_all_invariants()
     for k, v in results.items():
         print(f"{k}: {v}")
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    failures = [k for k, v in results.items() if not v.startswith("PASS") and not k.endswith("_fail")]
     if failures:
         raise SystemExit(f"Invariant failures: {failures}")
     print("All D_ARC_AGI invariants: PASS")

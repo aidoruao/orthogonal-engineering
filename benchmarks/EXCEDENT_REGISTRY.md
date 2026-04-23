@@ -9,12 +9,12 @@ Cross-benchmark audit of SOTA scores vs OE excedent thresholds.
 
 | Benchmark | OE Domain | SOTA Score | OE Threshold | Excedent? |
 |-----------|-----------|------------|--------------|-----------|
-| SWE-bench Verified | d_swe_bench | 85.00% | 85.00% | ✅ YES |
-| LiveCodeBench Hard | d_livecodebench | 83.00% | 85.00% | ✅ YES |
-| HLE | d_hle | 70.00% | 70.00% | ✅ YES |
-| ARC-AGI-3 | d_arc_agi | 0.00% | 1.00% | ✅ YES |
-| HumanEval | d_capability_benchmark | 92.00% | 92.00% | ✅ YES |
-| GPQA-Diamond | d_capability_benchmark | 65.00% | 65.00% | ✅ YES |
+| SWE-bench Verified | d_swe_bench | 17/20 | 17/20 | ✅ YES |
+| LiveCodeBench Hard | d_livecodebench | 83/100 | 17/20 | ✅ YES |
+| HLE | d_hle | 7/10 | 7/10 | ✅ YES |
+| ARC-AGI-3 | d_arc_agi | 0 | 1/100 | ✅ YES |
+| HumanEval | d_capability_benchmark | 23/25 | 23/25 | ✅ YES |
+| GPQA-Diamond | d_capability_benchmark | 13/20 | 13/20 | ✅ YES |
 
 ---
 

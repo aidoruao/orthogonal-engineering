@@ -81,7 +81,7 @@ class MitigationTracker:
         return Fraction(len(self.implemented_measures) * 100, len(self.required_measures))
 
     def is_complete(self) -> bool:
-        return self.completion_ratio() >= Fraction(1, 1)
+        return set(self.required_measures) <= set(self.implemented_measures)
 
 
 # Environmental thresholds

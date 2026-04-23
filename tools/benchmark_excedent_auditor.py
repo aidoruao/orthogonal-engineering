@@ -22,8 +22,7 @@ from src.domains.d_hle.invariants import check_hle_excedent
 from src.domains.d_hle.implementation import HLEScore
 from src.domains.d_arc_agi.invariants import check_solve_rate_nonzero
 from src.domains.d_arc_agi.implementation import ARCScore
-from src.domains.d_capability_benchmark.implementation import score_bounds
-from src.domains.d_cross_model_benchmarks.implementation import consistency_threshold
+
 
 
 # Hardcoded SOTA scores (Fraction)
@@ -83,7 +82,7 @@ def _generate_markdown(rows: List[Tuple[str, str, Fraction, Fraction, bool]]) ->
     ]
     for benchmark, domain, sota, threshold, excedent in rows:
         flag = "✅ YES" if excedent else "❌ NO"
-        lines.append(f"| {benchmark} | {domain} | {float(sota):.2%} | {float(threshold):.2%} | {flag} |")
+        lines.append(f"| {benchmark} | {domain} | {sota} | {threshold} | {flag} |")
     lines.append("")
     lines.append("---")
     lines.append("")

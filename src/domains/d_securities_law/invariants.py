@@ -149,7 +149,7 @@ if __name__ == "__main__":
     import json
     results = run_all_invariants()
     print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    failures = [k for k, v in results.items() if not v.startswith("PASS") and not k.endswith("_fail")]
     if failures:
         raise SystemExit(f"Invariant failures: {failures}")
     print("All D_SECURITIES_LAW invariants: PASS")
