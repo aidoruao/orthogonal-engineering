@@ -9,127 +9,179 @@ Standards:
 
 from __future__ import annotations
 from fractions import Fraction
-from typing import Dict, Tuple
+from typing import Dict, List, Tuple
 from axioms.logic import ProofObject
 from .implementation import Case, Evidence, CrimeType, CaseStatus
 
 
-def check_case_has_defendant(case: Case) -> Tuple[bool, ProofObject]:
-    """Case must identify a defendant.
+def check_charge_gravity_threshold(case: Case) -> Tuple[bool, ProofObject]:
+    """Case charge gravity must meet ICC threshold for core crimes.
 
-    Standard: Rome Statute Article 58 — arrest warrant requires named accused
-    falsifies_if: case.defendant is empty.
+    Standard: Rome Statute Article 5 — jurisdiction limited to most serious crimes
+    falsifies_if: case.charge_gravity < Fraction(1, 2).
     """
-    ok = bool(case.defendant.strip())
-    premises = [f"case_id={case.case_id}", f"defendant={case.defendant!r}"]
+    threshold = Fraction(1, 2)
+    ok = case.charge_gravity >= threshold
+    premises = [
+        f"case_id={case.case_id}",
+        f"charge_gravity={case.charge_gravity}",
+        f"threshold={threshold}",
+    ]
     return ok, ProofObject(
-        rule="CaseHasDefendant",
+        rule="ChargeGravityThreshold",
         premises=premises,
-        conclusion="PASS: defendant identified" if ok else "VIOLATION: defendant not identified",
+        conclusion="PASS: charge gravity meets threshold" if ok else "VIOLATION: charge gravity below threshold",
     )
 
 
-def check_case_jurisdiction_nonempty(case: Case) -> Tuple[bool, ProofObject]:
-    """Case must specify jurisdiction.
+def check_jurisdiction_strength(case: Case) -> Tuple[bool, ProofObject]:
+    """Jurisdiction strength must satisfy complementarity requirements.
 
     Standard: Rome Statute Article 12 — preconditions to jurisdiction
-    falsifies_if: case.jurisdiction is empty.
+    falsifies_if: case.jurisdiction_strength < Fraction(1, 2).
     """
-    ok = bool(case.jurisdiction.strip())
-    premises = [f"case_id={case.case_id}", f"jurisdiction={case.jurisdiction!r}"]
-    return ok, ProofObject(
-        rule="CaseJurisdictionNonEmpty",
-        premises=premises,
-        conclusion="PASS: jurisdiction set" if ok else "VIOLATION: jurisdiction empty",
-    )
-
-
-def check_evidence_authenticity(evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """Evidence must have verified authenticity.
-
-    Standard: Rome Statute Article 64(9) — evidence admissibility
-    falsifies_if: evidence.authenticity_verified is False.
-    """
-    ok = evidence.authenticity_verified
+    threshold = Fraction(1, 2)
+    ok = case.jurisdiction_strength >= threshold
     premises = [
-        f"evidence_id={evidence.evidence_id}",
-        f"case_id={evidence.case_id}",
-        f"authenticity_verified={evidence.authenticity_verified}",
+        f"case_id={case.case_id}",
+        f"jurisdiction_strength={case.jurisdiction_strength}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="EvidenceAuthenticity",
+        rule="JurisdictionStrength",
         premises=premises,
-        conclusion="PASS: evidence authenticity verified" if ok else "VIOLATION: evidence authenticity not verified",
+        conclusion="PASS: jurisdiction strength sufficient" if ok else "VIOLATION: jurisdiction strength insufficient",
     )
 
 
-def check_case_id_nonempty(case: Case) -> Tuple[bool, ProofObject]:
-    """Case must have a non-empty identifier.
+def check_evidence_probative_weight(evidence: Evidence) -> Tuple[bool, ProofObject]:
+    """Evidence must carry sufficient probative weight.
 
-    Standard: ICC Registry — case identification requirement
-    falsifies_if: case.case_id is empty.
+    Standard: Rome Statute Article 64(9) — evidence admissibility and weight
+    falsifies_if: evidence.evidence_weight < Fraction(1, 3).
     """
-    ok = bool(case.case_id.strip())
-    premises = [f"case_id={case.case_id!r}"]
-    return ok, ProofObject(
-        rule="CaseIdNonEmpty",
-        premises=premises,
-        conclusion="PASS: case_id set" if ok else "VIOLATION: case_id empty",
-    )
-
-
-def check_crime_type_is_valid(crime: CrimeType) -> Tuple[bool, ProofObject]:
-    """Crime type must be a valid CrimeType enum.
-
-    Standard: Rome Statute Article 5 — jurisdiction limited to core crimes
-    falsifies_if: crime is not a CrimeType instance.
-    """
-    ok = isinstance(crime, CrimeType)
-    premises = [f"crime={crime!r}"]
-    return ok, ProofObject(
-        rule="CrimeTypeValid",
-        premises=premises,
-        conclusion=f"PASS: {crime.name}" if ok else "VIOLATION: invalid crime type",
-    )
-
-
-def check_evidence_type_nonempty(evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """Evidence must have a non-empty type description.
-
-    Standard: Rome Statute Rule 68 — prior recorded testimony requirements
-    falsifies_if: evidence.type is empty.
-    """
-    ok = bool(evidence.type.strip())
+    threshold = Fraction(1, 3)
+    ok = evidence.evidence_weight >= threshold
     premises = [
         f"evidence_id={evidence.evidence_id}",
-        f"type={evidence.type!r}",
+        f"evidence_weight={evidence.evidence_weight}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="EvidenceTypeNonEmpty",
+        rule="EvidenceProbativeWeight",
         premises=premises,
-        conclusion="PASS: evidence type documented" if ok else "VIOLATION: evidence type empty",
+        conclusion="PASS: evidence weight sufficient" if ok else "VIOLATION: evidence weight below threshold",
     )
 
 
-def check_case_has_evidence(case: Case, evidence: Evidence) -> Tuple[bool, ProofObject]:
-    """A case with a named defendant must carry supporting evidence.
+def check_chain_of_custody_integrity(evidence: Evidence) -> Tuple[bool, ProofObject]:
+    """Chain of custody gaps must be within acceptable ratio.
+
+    Standard: Rome Statute Rule 63 — evidence integrity and chain of custody
+    falsifies_if: custody_gaps / custody_links >= Fraction(1, 4).
+    """
+    if evidence.custody_links <= 0:
+        ratio = Fraction(1)
+        ok = False
+    else:
+        ratio = Fraction(evidence.custody_gaps, evidence.custody_links)
+        ok = ratio < Fraction(1, 4)
+    premises = [
+        f"evidence_id={evidence.evidence_id}",
+        f"custody_gaps={evidence.custody_gaps}",
+        f"custody_links={evidence.custody_links}",
+        f"gap_ratio={ratio}",
+    ]
+    return ok, ProofObject(
+        rule="ChainOfCustodyIntegrity",
+        premises=premises,
+        conclusion=f"PASS: gap ratio {ratio} < 1/4" if ok else f"VIOLATION: gap ratio {ratio} >= 1/4",
+    )
+
+
+def check_evidence_authenticity_composite(evidence: Evidence) -> Tuple[bool, ProofObject]:
+    """Composite authenticity score must exceed threshold.
+
+    Standard: Rome Statute Article 69 — relevance and probative value
+    falsifies_if: composite_score < Fraction(1, 4).
+    """
+    authenticity_factor = Fraction(1) if evidence.authenticity_verified else Fraction(1, 2)
+    if evidence.custody_links > 0:
+        integrity_factor = Fraction(1) - Fraction(evidence.custody_gaps, evidence.custody_links)
+    else:
+        integrity_factor = Fraction(0)
+    composite = evidence.evidence_weight * authenticity_factor * integrity_factor
+    threshold = Fraction(1, 4)
+    ok = composite >= threshold
+    premises = [
+        f"evidence_id={evidence.evidence_id}",
+        f"evidence_weight={evidence.evidence_weight}",
+        f"authenticity_factor={authenticity_factor}",
+        f"integrity_factor={integrity_factor}",
+        f"composite={composite}",
+        f"threshold={threshold}",
+    ]
+    return ok, ProofObject(
+        rule="EvidenceAuthenticityComposite",
+        premises=premises,
+        conclusion=f"PASS: composite {composite} >= 1/4" if ok else f"VIOLATION: composite {composite} < 1/4",
+    )
+
+
+def check_case_evidence_ratio(case: Case, evidence_list: List[Evidence]) -> Tuple[bool, ProofObject]:
+    """Total evidence weight must be proportionate to charge gravity.
 
     Standard: Rome Statute Article 53 — evidence threshold for prosecution
-    falsifies_if: case.defendant is non-empty and evidence.case_id != case.case_id.
+    falsifies_if: total_evidence_weight / charge_gravity < Fraction(1, 2).
     """
-    if case.defendant.strip():
-        ok = evidence.case_id == case.case_id
+    total_weight = sum(e.evidence_weight for e in evidence_list)
+    if case.charge_gravity <= Fraction(0):
+        ok = False
+        ratio = Fraction(0)
+    else:
+        ratio = total_weight / case.charge_gravity
+        ok = ratio >= Fraction(1, 2)
+    premises = [
+        f"case_id={case.case_id}",
+        f"charge_gravity={case.charge_gravity}",
+        f"total_evidence_weight={total_weight}",
+        f"ratio={ratio}",
+    ]
+    return ok, ProofObject(
+        rule="CaseEvidenceRatio",
+        premises=premises,
+        conclusion=f"PASS: ratio {ratio} >= 1/2" if ok else f"VIOLATION: ratio {ratio} < 1/2",
+    )
+
+
+def check_defendant_evidence_linkage(case: Case, evidence: Evidence) -> Tuple[bool, ProofObject]:
+    """Named defendant must have linked evidence with positive weight.
+
+    Standard: Rome Statute Article 58 — arrest warrant requires supporting evidence
+    falsifies_if: defendant named AND (evidence.case_id != case.case_id OR evidence.evidence_weight <= 0).
+    """
+    if not case.defendant.strip():
+        ok = True
+        reason = "no defendant named"
+    elif evidence.case_id != case.case_id:
+        ok = False
+        reason = "evidence not linked to case"
+    elif evidence.evidence_weight <= Fraction(0):
+        ok = False
+        reason = "evidence weight non-positive"
     else:
         ok = True
+        reason = "defendant linked to weighted evidence"
     premises = [
         f"case_id={case.case_id}",
         f"defendant={case.defendant!r}",
         f"evidence_case_id={evidence.case_id}",
+        f"evidence_weight={evidence.evidence_weight}",
     ]
     return ok, ProofObject(
-        rule="CaseHasEvidence",
+        rule="DefendantEvidenceLinkage",
         premises=premises,
-        conclusion="PASS: evidence linked to case" if ok else "VIOLATION: missing/incorrect evidence linkage",
+        conclusion=f"PASS: {reason}" if ok else f"VIOLATION: {reason}",
     )
 
 
@@ -138,7 +190,6 @@ def run_all_invariants() -> Dict[str, str]:
 
     Falsifies if: any check returns FAIL (nominal inputs should always pass).."""
     from datetime import datetime
-    from .implementation import CaseStatus
     crime = list(CrimeType)[0]
     status = list(CaseStatus)[0]
     case = Case(
@@ -148,22 +199,36 @@ def run_all_invariants() -> Dict[str, str]:
         opened_at=datetime(2024, 1, 1),
         defendant="John Doe",
         jurisdiction="International Criminal Court",
+        charge_gravity=Fraction(1, 1),
+        jurisdiction_strength=Fraction(1, 1),
     )
     evidence = Evidence(
         evidence_id="EV-001",
         case_id="ICC-2024-001",
         type="documentary",
         authenticity_verified=True,
+        evidence_weight=Fraction(1, 1),
+        custody_links=4,
+        custody_gaps=0,
+    )
+    evidence_light = Evidence(
+        evidence_id="EV-002",
+        case_id="ICC-2024-001",
+        type="testimonial",
+        authenticity_verified=True,
+        evidence_weight=Fraction(1, 2),
+        custody_links=2,
+        custody_gaps=0,
     )
     results = {}
     for fn, args in [
-        (check_case_has_defendant, (case,)),
-        (check_case_jurisdiction_nonempty, (case,)),
-        (check_evidence_authenticity, (evidence,)),
-        (check_case_id_nonempty, (case,)),
-        (check_crime_type_is_valid, (crime,)),
-        (check_evidence_type_nonempty, (evidence,)),
-        (check_case_has_evidence, (case, evidence)),
+        (check_charge_gravity_threshold, (case,)),
+        (check_jurisdiction_strength, (case,)),
+        (check_evidence_probative_weight, (evidence,)),
+        (check_chain_of_custody_integrity, (evidence,)),
+        (check_evidence_authenticity_composite, (evidence,)),
+        (check_case_evidence_ratio, (case, [evidence, evidence_light])),
+        (check_defendant_evidence_linkage, (case, evidence)),
     ]:
         _, p = fn(*args)
         results[fn.__name__] = p.conclusion

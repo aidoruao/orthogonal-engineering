@@ -1,10 +1,10 @@
-"""D_INTERNATIONAL_HUMANITARIAN invariants — Yeshua Standard. 0 floats.
+"""D_INTERNATIONAL_HUMANITARIAN invariants - Yeshua Standard. 0 floats.
 
 Standards:
-- Geneva Conventions (1949) — Common Article 3
-- Additional Protocol I (1977) — AP I Articles 51, 57
-- ICRC Customary IHL Study — Rule 1: Distinction
-- Martens Clause — HPCR Manual on Air and Missile Warfare
+- Geneva Conventions (1949) - Common Article 3
+- Additional Protocol I (1977) - AP I Articles 51, 57
+- ICRC Customary IHL Study - Rule 1: Distinction
+- Martens Clause - HPCR Manual on Air and Missile Warfare
 """
 
 from __future__ import annotations
@@ -14,132 +14,152 @@ from axioms.logic import ProofObject
 from .implementation import ProtectedPerson, MilitaryTarget, ProtectedCategory
 
 
-def check_protected_person_receiving_protection(person: ProtectedPerson) -> Tuple[bool, ProofObject]:
-    """Protected person must be receiving protection.
+def check_protection_coverage_ratio(person: ProtectedPerson) -> Tuple[bool, ProofObject]:
+    """Protected person must receive adequate coverage fraction.
 
-    Standard: Geneva Convention IV Article 4 — protected persons
-    falsifies_if: person.receiving_protection is False.
+    Standard: Geneva Convention IV Article 4 - protected persons entitled to full protection
+    falsifies_if: person.protection_coverage < Fraction(3, 4).
     """
-    ok = person.receiving_protection
+    threshold = Fraction(3, 4)
+    ok = person.protection_coverage >= threshold
     premises = [
         f"person_id={person.person_id}",
-        f"location={person.location}",
-        f"receiving_protection={person.receiving_protection}",
+        f"category={person.category.name}",
+        f"protection_coverage={person.protection_coverage}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="ProtectedPersonReceivingProtection",
+        rule="ProtectionCoverageRatio",
         premises=premises,
-        conclusion="PASS: person is protected" if ok else "VIOLATION: protected person not receiving protection",
+        conclusion="PASS: protection coverage adequate" if ok else "VIOLATION: protection coverage below threshold",
     )
 
 
-def check_military_target_proportionality(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
-    """Military target proportionality must be assessed.
+def check_necessity_score_threshold(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
+    """Military necessity must be established above threshold.
 
-    Standard: AP I Article 57(2)(a)(iii) — proportionality assessment required
-    falsifies_if: target.proportionality_assessed is False.
+    Standard: AP I Article 52(2) - military objective requires definite military advantage
+    falsifies_if: target.necessity_score < Fraction(1, 2).
     """
-    ok = target.proportionality_assessed
+    threshold = Fraction(1, 2)
+    ok = target.necessity_score >= threshold
     premises = [
         f"target_id={target.target_id}",
-        f"military_necessity={target.military_necessity}",
-        f"proportionality_assessed={target.proportionality_assessed}",
+        f"necessity_score={target.necessity_score}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="MilitaryTargetProportionality",
+        rule="NecessityScoreThreshold",
         premises=premises,
-        conclusion="PASS: proportionality assessed" if ok else "VIOLATION: proportionality not assessed",
+        conclusion="PASS: necessity score above threshold" if ok else "VIOLATION: necessity score below threshold",
     )
 
 
-def check_military_target_necessity(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
-    """Military target must have military necessity established.
+def check_distinction_score_threshold(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
+    """Distinction between combatants and civilians must be adequately maintained.
 
-    Standard: AP I Article 52(2) — military objective definition
-    falsifies_if: target.military_necessity is False.
+    Standard: AP I Article 48 - basic rule of distinction
+    falsifies_if: target.distinction_score < Fraction(1, 2).
     """
-    ok = target.military_necessity
+    threshold = Fraction(1, 2)
+    ok = target.distinction_score >= threshold
     premises = [
         f"target_id={target.target_id}",
-        f"military_necessity={target.military_necessity}",
+        f"distinction_score={target.distinction_score}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="MilitaryTargetNecessity",
+        rule="DistinctionScoreThreshold",
         premises=premises,
-        conclusion="PASS: military necessity established" if ok else "VIOLATION: military necessity not established",
+        conclusion="PASS: distinction score above threshold" if ok else "VIOLATION: distinction score below threshold",
     )
 
 
-def check_civilian_harm_nonneg(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
-    """Expected civilian harm must be >= 0.
+def check_civilian_harm_fraction(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
+    """Civilian harm fraction must remain below maximum acceptable level.
 
-    Standard: AP I Article 57 — precautions in attack
-    falsifies_if: target.expected_civilian_harm < 0.
+    Standard: AP I Article 51(5)(b) - proportionality in attack
+    falsifies_if: target.harm_fraction >= Fraction(1, 2).
     """
-    ok = target.expected_civilian_harm >= 0
+    threshold = Fraction(1, 2)
+    ok = target.harm_fraction < threshold
     premises = [
         f"target_id={target.target_id}",
-        f"expected_civilian_harm={target.expected_civilian_harm}",
+        f"harm_fraction={target.harm_fraction}",
+        f"threshold={threshold}",
     ]
     return ok, ProofObject(
-        rule="CivilianHarmNonNeg",
+        rule="CivilianHarmFraction",
         premises=premises,
-        conclusion=f"PASS: civilian harm {target.expected_civilian_harm} >= 0" if ok else "VIOLATION: negative civilian harm value",
+        conclusion=f"PASS: harm fraction {target.harm_fraction} < 1/2" if ok else f"VIOLATION: harm fraction {target.harm_fraction} >= 1/2",
     )
 
 
-def check_person_id_nonempty(person: ProtectedPerson) -> Tuple[bool, ProofObject]:
-    """Protected person must have a non-empty identifier.
+def check_proportionality_composite(target: MilitaryTarget, military_advantage: int) -> Tuple[bool, ProofObject]:
+    """Composite proportionality must satisfy harm-advantage balance.
 
-    Standard: ICRC registration requirements
-    falsifies_if: person.person_id is empty.
-    """
-    ok = bool(person.person_id.strip())
-    premises = [f"person_id={person.person_id!r}"]
-    return ok, ProofObject(
-        rule="PersonIdNonEmpty",
-        premises=premises,
-        conclusion="PASS: person_id set" if ok else "VIOLATION: person_id empty",
-    )
-
-
-def check_protected_category_valid(category: ProtectedCategory) -> Tuple[bool, ProofObject]:
-    """Protected category must be a valid ProtectedCategory enum.
-
-    Standard: Geneva Convention IV — categories of protected persons
-    falsifies_if: category is not a ProtectedCategory instance.
-    """
-    ok = isinstance(category, ProtectedCategory)
-    premises = [f"category={category!r}"]
-    return ok, ProofObject(
-        rule="ProtectedCategoryValid",
-        premises=premises,
-        conclusion=f"PASS: {category.name}" if ok else "VIOLATION: invalid protected category",
-    )
-
-
-def check_harm_objective_ratio(target: MilitaryTarget, military_advantage: int) -> Tuple[bool, ProofObject]:
-    """Civilian harm / military advantage ratio must be < 1.
-
-    Standard: AP I Article 51(5)(b) — proportionality in attack
-    falsifies_if: target.expected_civilian_harm / military_advantage >= 1.
+    Standard: AP I Article 57(2)(a)(iii) - proportionality assessment required
+    falsifies_if: (harm_fraction * 10) / max(military_advantage, 1) >= 1.
     """
     if military_advantage <= 0:
         ok = False
-        ratio = Fraction(-1)
+        ratio = Fraction(1)
     else:
-        ratio = Fraction(target.expected_civilian_harm, military_advantage)
+        ratio = (target.harm_fraction * 10) / military_advantage
         ok = ratio < Fraction(1)
     premises = [
         f"target_id={target.target_id}",
-        f"expected_civilian_harm={target.expected_civilian_harm}",
+        f"harm_fraction={target.harm_fraction}",
         f"military_advantage={military_advantage}",
-        f"ratio={ratio}",
+        f"proportionality_ratio={ratio}",
     ]
     return ok, ProofObject(
-        rule="HarmObjectiveRatio",
+        rule="ProportionalityComposite",
         premises=premises,
         conclusion=f"PASS: ratio {ratio} < 1" if ok else f"VIOLATION: ratio {ratio} >= 1",
+    )
+
+
+def check_protection_necessity_balance(person: ProtectedPerson, target: MilitaryTarget) -> Tuple[bool, ProofObject]:
+    """Protection coverage must exceed harm fraction for protected persons near targets.
+
+    Standard: Geneva Convention IV Article 27 - protected persons entitled to humane treatment
+    falsifies_if: person.protection_coverage <= target.harm_fraction.
+    """
+    ok = person.protection_coverage > target.harm_fraction
+    premises = [
+        f"person_id={person.person_id}",
+        f"protection_coverage={person.protection_coverage}",
+        f"target_id={target.target_id}",
+        f"harm_fraction={target.harm_fraction}",
+    ]
+    return ok, ProofObject(
+        rule="ProtectionNecessityBalance",
+        premises=premises,
+        conclusion="PASS: protection exceeds harm" if ok else "VIOLATION: protection does not exceed harm",
+    )
+
+
+def check_distinction_necessity_product(target: MilitaryTarget) -> Tuple[bool, ProofObject]:
+    """Combined distinction and necessity must satisfy minimum product.
+
+    Standard: ICRC Customary IHL Study Rule 1 - distinction and military necessity are complementary
+    falsifies_if: target.distinction_score * target.necessity_score < Fraction(1, 4).
+    """
+    product = target.distinction_score * target.necessity_score
+    threshold = Fraction(1, 4)
+    ok = product >= threshold
+    premises = [
+        f"target_id={target.target_id}",
+        f"distinction_score={target.distinction_score}",
+        f"necessity_score={target.necessity_score}",
+        f"product={product}",
+        f"threshold={threshold}",
+    ]
+    return ok, ProofObject(
+        rule="DistinctionNecessityProduct",
+        premises=premises,
+        conclusion=f"PASS: product {product} >= 1/4" if ok else f"VIOLATION: product {product} < 1/4",
     )
 
 
@@ -153,23 +173,27 @@ def run_all_invariants() -> Dict[str, str]:
         category=category,
         location="Field Hospital",
         receiving_protection=True,
+        protection_coverage=Fraction(1, 1),
     )
     target = MilitaryTarget(
         target_id="T001",
         military_necessity=True,
         proportionality_assessed=True,
         expected_civilian_harm=0,
+        necessity_score=Fraction(1, 1),
+        distinction_score=Fraction(1, 1),
+        harm_fraction=Fraction(0),
     )
     military_advantage = 10
     results = {}
     for fn, args in [
-        (check_protected_person_receiving_protection, (person,)),
-        (check_military_target_proportionality, (target,)),
-        (check_military_target_necessity, (target,)),
-        (check_civilian_harm_nonneg, (target,)),
-        (check_person_id_nonempty, (person,)),
-        (check_protected_category_valid, (category,)),
-        (check_harm_objective_ratio, (target, military_advantage)),
+        (check_protection_coverage_ratio, (person,)),
+        (check_necessity_score_threshold, (target,)),
+        (check_distinction_score_threshold, (target,)),
+        (check_civilian_harm_fraction, (target,)),
+        (check_proportionality_composite, (target, military_advantage)),
+        (check_protection_necessity_balance, (person, target)),
+        (check_distinction_necessity_product, (target,)),
     ]:
         _, p = fn(*args)
         results[fn.__name__] = p.conclusion

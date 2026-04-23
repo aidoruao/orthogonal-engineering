@@ -30,7 +30,8 @@ class PublicHealthCapacityClaim:
     contact_tracer_headcount: int
     lab_turnaround_hours: int
     last_independent_audit_days_ago: int
-    sentinel_surveillance_active: bool
+    surveillance_coverage_fraction: Fraction = Fraction(95, 100)
+    staff_training_ratio: Fraction = Fraction(9, 10)
 
 
 def _per_100k(count: int, population: int) -> Fraction:
@@ -54,7 +55,8 @@ def create_nominal_claim() -> PublicHealthCapacityClaim:
         contact_tracer_headcount=400,
         lab_turnaround_hours=24,
         last_independent_audit_days_ago=120,
-        sentinel_surveillance_active=True,
+        surveillance_coverage_fraction=Fraction(95, 100),
+        staff_training_ratio=Fraction(9, 10),
     )
 
 

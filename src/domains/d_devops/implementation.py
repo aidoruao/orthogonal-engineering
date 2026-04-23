@@ -28,6 +28,8 @@ class PipelineConfig:
     env_vars: Dict[str, str] = field(default_factory=dict)
     dockerfile_hash: str = ""
     cache_key: str = ""
+    required_steps: int = 3
+    step_coverage: Fraction = Fraction(1, 1)
 
 
 @dataclass
@@ -37,6 +39,8 @@ class PipelineResult:
     artifacts: List[str] = field(default_factory=list)
     duration_seconds: int = 0
     deterministic: bool = True
+    success_rate: Fraction = Fraction(9, 10)
+    artifact_integrity_score: Fraction = Fraction(1, 1)
 
 
 @dataclass
@@ -51,8 +55,10 @@ class InfrastructureResource:
 class DeploymentTarget:
     """A deployment target/version."""
     version: str
-    healthy: bool
+    healthy: bool = True
     timestamp: str = ""
+    health_score: Fraction = Fraction(1, 1)
+    rollback_readiness: Fraction = Fraction(1, 1)
 
 
 @dataclass

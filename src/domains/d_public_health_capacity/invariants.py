@@ -19,182 +19,231 @@ from .implementation import (
 )
 
 
-def check_icu_bed_density(
+def check_icu_bed_density_ratio(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: staffed ICU beds per 100k >= MIN_ICU_BEDS_PER_100K.
+    """Invariant: staffed ICU beds per 100k as fraction of floor >= 1.
 
     Standard: HHS ASPR Hospital Preparedness Program surge benchmark.
-    Falsifies if: per-100k density below the floor.
-    falsifies_if: per-100k density below the floor.
+    falsifies_if: per_100k / MIN_ICU_BEDS_PER_100K < Fraction(1).
     """
     ratio = _per_100k(data.staffed_icu_beds, data.population)
+    if MIN_ICU_BEDS_PER_100K > Fraction(0):
+        coverage = ratio / MIN_ICU_BEDS_PER_100K
+    else:
+        coverage = Fraction(0)
     success = ratio >= MIN_ICU_BEDS_PER_100K
     proof = ProofObject(
-        rule="check_icu_bed_density",
+        rule="check_icu_bed_density_ratio",
         premises=[
             f"staffed_icu_beds={data.staffed_icu_beds}",
             f"population={data.population}",
             f"per_100k={ratio}",
             f"floor={MIN_ICU_BEDS_PER_100K}",
+            f"coverage={coverage}",
         ],
         conclusion=(
-            "PASS: ICU bed density >= floor"
-            if success else f"FAIL: {ratio} < {MIN_ICU_BEDS_PER_100K}"
+            f"PASS: ICU density {ratio} >= floor (coverage {coverage})"
+            if success else f"FAIL: ICU density {ratio} < floor"
         ),
     )
     return success, proof
 
 
-def check_ventilator_reserve_density(
+def check_ventilator_reserve_ratio(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: ventilator reserve per 100k >= MIN_VENTILATORS_PER_100K.
+    """Invariant: ventilator reserve per 100k as fraction of floor >= 1.
 
     Standard: CDC Strategic National Stockpile allocation guidance.
-    Falsifies if: per-100k density below the floor.
-    falsifies_if: per-100k density below the floor.
+    falsifies_if: per_100k / MIN_VENTILATORS_PER_100K < Fraction(1).
     """
     ratio = _per_100k(data.ventilator_reserve, data.population)
+    if MIN_VENTILATORS_PER_100K > Fraction(0):
+        coverage = ratio / MIN_VENTILATORS_PER_100K
+    else:
+        coverage = Fraction(0)
     success = ratio >= MIN_VENTILATORS_PER_100K
     proof = ProofObject(
-        rule="check_ventilator_reserve_density",
+        rule="check_ventilator_reserve_ratio",
         premises=[
             f"ventilator_reserve={data.ventilator_reserve}",
             f"population={data.population}",
             f"per_100k={ratio}",
             f"floor={MIN_VENTILATORS_PER_100K}",
+            f"coverage={coverage}",
         ],
         conclusion=(
-            "PASS: ventilator reserve density >= floor"
-            if success else f"FAIL: {ratio} < {MIN_VENTILATORS_PER_100K}"
+            f"PASS: ventilator density {ratio} >= floor (coverage {coverage})"
+            if success else f"FAIL: ventilator density {ratio} < floor"
         ),
     )
     return success, proof
 
 
-def check_ppe_days_of_supply(
+def check_ppe_supply_ratio(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: PPE days-of-supply >= MIN_PPE_DAYS.
+    """Invariant: PPE days-of-supply as fraction of 90-day benchmark >= 1.
 
     Standard: ASPR pandemic stockpile 90-day benchmark.
-    Falsifies if: ppe_days_of_supply < MIN_PPE_DAYS.
-    falsifies_if: ppe_days_of_supply < MIN_PPE_DAYS.
+    falsifies_if: ppe_days / MIN_PPE_DAYS < Fraction(1).
     """
-    success = data.ppe_days_of_supply >= MIN_PPE_DAYS
+    if MIN_PPE_DAYS <= 0:
+        ratio = Fraction(0)
+        success = False
+    else:
+        ratio = Fraction(data.ppe_days_of_supply, MIN_PPE_DAYS)
+        success = ratio >= Fraction(1)
     proof = ProofObject(
-        rule="check_ppe_days_of_supply",
+        rule="check_ppe_supply_ratio",
         premises=[
             f"ppe_days_of_supply={data.ppe_days_of_supply}",
-            f"floor={MIN_PPE_DAYS}",
+            f"min={MIN_PPE_DAYS}",
+            f"ratio={ratio}",
         ],
         conclusion=(
-            "PASS: PPE supply >= floor"
-            if success else f"FAIL: {data.ppe_days_of_supply} < {MIN_PPE_DAYS}"
+            f"PASS: PPE ratio {ratio} >= 1"
+            if success else f"FAIL: PPE ratio {ratio} < 1"
         ),
     )
     return success, proof
 
 
-def check_contact_tracer_density(
+def check_tracer_density_ratio(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: contact tracers per 100k >= MIN_TRACERS_PER_100K.
+    """Invariant: contact tracers per 100k as fraction of floor >= 1.
 
     Standard: Johns Hopkins Bloomberg School contact-tracing workforce model.
-    Falsifies if: per-100k density below the floor.
-    falsifies_if: per-100k density below the floor.
+    falsifies_if: per_100k / MIN_TRACERS_PER_100K < Fraction(1).
     """
     ratio = _per_100k(data.contact_tracer_headcount, data.population)
+    if MIN_TRACERS_PER_100K > Fraction(0):
+        coverage = ratio / MIN_TRACERS_PER_100K
+    else:
+        coverage = Fraction(0)
     success = ratio >= MIN_TRACERS_PER_100K
     proof = ProofObject(
-        rule="check_contact_tracer_density",
+        rule="check_tracer_density_ratio",
         premises=[
             f"contact_tracer_headcount={data.contact_tracer_headcount}",
             f"population={data.population}",
             f"per_100k={ratio}",
             f"floor={MIN_TRACERS_PER_100K}",
+            f"coverage={coverage}",
         ],
         conclusion=(
-            "PASS: tracer density >= floor"
-            if success else f"FAIL: {ratio} < {MIN_TRACERS_PER_100K}"
+            f"PASS: tracer density {ratio} >= floor (coverage {coverage})"
+            if success else f"FAIL: tracer density {ratio} < floor"
         ),
     )
     return success, proof
 
 
-def check_lab_turnaround_within_limit(
+def check_lab_turnaround_fraction(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: lab turnaround hours <= MAX_LAB_LATENCY_HOURS.
+    """Invariant: lab turnaround as fraction of max latency <= 1.
 
     Standard: CDC surveillance operational tempo threshold.
-    Falsifies if: lab_turnaround_hours > MAX_LAB_LATENCY_HOURS.
-    falsifies_if: lab_turnaround_hours > MAX_LAB_LATENCY_HOURS.
+    falsifies_if: lab_turnaround_hours / MAX_LAB_LATENCY_HOURS > Fraction(1).
     """
-    success = data.lab_turnaround_hours <= MAX_LAB_LATENCY_HOURS
+    if MAX_LAB_LATENCY_HOURS <= 0:
+        frac = Fraction(0)
+        success = True
+    else:
+        frac = Fraction(data.lab_turnaround_hours, MAX_LAB_LATENCY_HOURS)
+        success = frac <= Fraction(1)
     proof = ProofObject(
-        rule="check_lab_turnaround_within_limit",
+        rule="check_lab_turnaround_fraction",
         premises=[
             f"lab_turnaround_hours={data.lab_turnaround_hours}",
-            f"limit={MAX_LAB_LATENCY_HOURS}",
+            f"max={MAX_LAB_LATENCY_HOURS}",
+            f"fraction={frac}",
         ],
         conclusion=(
-            "PASS: lab turnaround <= limit"
-            if success
-            else f"FAIL: {data.lab_turnaround_hours} > {MAX_LAB_LATENCY_HOURS}"
+            f"PASS: lab turnaround fraction {frac} within limit"
+            if success else f"FAIL: lab turnaround fraction {frac} exceeds limit"
         ),
     )
     return success, proof
 
 
-def check_audit_not_stale(
+def check_audit_staleness_fraction(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: last independent audit was within the staleness window.
+    """Invariant: audit staleness as fraction of max window <= 1.
 
     Standard: AF-008 quarterly scan + annual independent review.
-    Falsifies if: last_independent_audit_days_ago > MAX_AUDIT_STALENESS_DAYS.
-    falsifies_if: last_independent_audit_days_ago > MAX_AUDIT_STALENESS_DAYS.
+    falsifies_if: days_ago / MAX_AUDIT_STALENESS_DAYS > Fraction(1).
     """
-    success = data.last_independent_audit_days_ago <= MAX_AUDIT_STALENESS_DAYS
+    if MAX_AUDIT_STALENESS_DAYS <= 0:
+        frac = Fraction(0)
+        success = True
+    else:
+        frac = Fraction(data.last_independent_audit_days_ago, MAX_AUDIT_STALENESS_DAYS)
+        success = frac <= Fraction(1)
     proof = ProofObject(
-        rule="check_audit_not_stale",
+        rule="check_audit_staleness_fraction",
         premises=[
             f"days_since_audit={data.last_independent_audit_days_ago}",
-            f"max_staleness={MAX_AUDIT_STALENESS_DAYS}",
+            f"max={MAX_AUDIT_STALENESS_DAYS}",
+            f"staleness_fraction={frac}",
         ],
         conclusion=(
-            "PASS: audit within staleness window"
-            if success
-            else (
-                f"FAIL: {data.last_independent_audit_days_ago} > "
-                f"{MAX_AUDIT_STALENESS_DAYS}"
-            )
+            f"PASS: audit staleness {frac} within window"
+            if success else f"FAIL: audit staleness {frac} exceeds window"
         ),
     )
     return success, proof
 
 
-def check_sentinel_surveillance_active(
+def check_surveillance_coverage(
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: sentinel surveillance pipeline is active.
+    """Invariant: sentinel surveillance coverage fraction meets threshold.
 
-    Standard: WHO Integrated Disease Surveillance & Response (IDSR).
-    Falsifies if: sentinel_surveillance_active False.
-    falsifies_if: sentinel_surveillance_active False.
+    Standard: WHO Integrated Disease Surveillance and Response (IDSR).
+    falsifies_if: surveillance_coverage_fraction < Fraction(9, 10).
     """
-    success = data.sentinel_surveillance_active
+    threshold = Fraction(9, 10)
+    success = data.surveillance_coverage_fraction >= threshold
     proof = ProofObject(
-        rule="check_sentinel_surveillance_active",
+        rule="check_surveillance_coverage",
         premises=[
-            f"sentinel_surveillance_active={data.sentinel_surveillance_active}",
+            f"surveillance_coverage_fraction={data.surveillance_coverage_fraction}",
+            f"threshold={threshold}",
         ],
         conclusion=(
-            "PASS: sentinel surveillance active"
-            if success else "FAIL: sentinel surveillance inactive"
+            f"PASS: surveillance coverage {data.surveillance_coverage_fraction} >= {threshold}"
+            if success
+            else f"FAIL: surveillance coverage {data.surveillance_coverage_fraction} < {threshold}"
+        ),
+    )
+    return success, proof
+
+
+def check_staff_training_ratio(
+    data: PublicHealthCapacityClaim,
+) -> Tuple[bool, ProofObject]:
+    """Invariant: staff training ratio meets minimum threshold.
+
+    Standard: CDC Public Health Emergency Preparedness (PHEP) capability standards.
+    falsifies_if: staff_training_ratio < Fraction(1, 2).
+    """
+    threshold = Fraction(1, 2)
+    success = data.staff_training_ratio >= threshold
+    proof = ProofObject(
+        rule="check_staff_training_ratio",
+        premises=[
+            f"staff_training_ratio={data.staff_training_ratio}",
+            f"threshold={threshold}",
+        ],
+        conclusion=(
+            f"PASS: training ratio {data.staff_training_ratio} >= {threshold}"
+            if success
+            else f"FAIL: training ratio {data.staff_training_ratio} < {threshold}"
         ),
     )
     return success, proof
@@ -204,18 +253,18 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain on the nominal claim.
 
     Standard: Public-health capacity nominal executable check set.
-    Falsifies if: any invariant check returns False on the nominal claim.
     falsifies_if: any invariant check returns False on the nominal claim.
     """
     data = create_nominal_claim()
     checks = [
-        ("check_icu_bed_density", check_icu_bed_density),
-        ("check_ventilator_reserve_density", check_ventilator_reserve_density),
-        ("check_ppe_days_of_supply", check_ppe_days_of_supply),
-        ("check_contact_tracer_density", check_contact_tracer_density),
-        ("check_lab_turnaround_within_limit", check_lab_turnaround_within_limit),
-        ("check_audit_not_stale", check_audit_not_stale),
-        ("check_sentinel_surveillance_active", check_sentinel_surveillance_active),
+        ("check_icu_bed_density_ratio", check_icu_bed_density_ratio),
+        ("check_ventilator_reserve_ratio", check_ventilator_reserve_ratio),
+        ("check_ppe_supply_ratio", check_ppe_supply_ratio),
+        ("check_tracer_density_ratio", check_tracer_density_ratio),
+        ("check_lab_turnaround_fraction", check_lab_turnaround_fraction),
+        ("check_audit_staleness_fraction", check_audit_staleness_fraction),
+        ("check_surveillance_coverage", check_surveillance_coverage),
+        ("check_staff_training_ratio", check_staff_training_ratio),
     ]
     results: List[Tuple[str, bool, ProofObject]] = []
     for name, func in checks:

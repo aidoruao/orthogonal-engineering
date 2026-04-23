@@ -30,7 +30,9 @@ class DisasterResilienceClaim:
     mutual_aid_partner_count: int
     backup_power_autonomy_hours: int
     last_after_action_report_days_ago: int
-    cyber_incident_response_playbook_current: bool
+    cyber_readiness_score: Fraction = Fraction(1, 1)
+    infrastructure_redundancy: Fraction = Fraction(3, 4)
+    communication_uptime_fraction: Fraction = Fraction(99, 100)
 
 
 def evacuation_capacity_fraction(claim: DisasterResilienceClaim) -> Fraction:
@@ -54,7 +56,9 @@ def create_nominal_claim() -> DisasterResilienceClaim:
         mutual_aid_partner_count=5,
         backup_power_autonomy_hours=96,
         last_after_action_report_days_ago=180,
-        cyber_incident_response_playbook_current=True,
+        cyber_readiness_score=Fraction(1, 1),
+        infrastructure_redundancy=Fraction(3, 4),
+        communication_uptime_fraction=Fraction(99, 100),
     )
 
 

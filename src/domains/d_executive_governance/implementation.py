@@ -36,6 +36,10 @@ class ExecutiveActionClaim:
     independence_review_items_total: int
     scope_expansion: Fraction
     consent_log_entry_recorded: bool
+    statutory_anchor_strength: Fraction = Fraction(1, 1)
+    constitutional_anchor_strength: Fraction = Fraction(1, 1)
+    publication_delay_days: int = 0
+    judicial_review_pathways: int = 1
 
 
 def create_nominal_claim() -> ExecutiveActionClaim:
@@ -59,6 +63,10 @@ def create_nominal_claim() -> ExecutiveActionClaim:
         independence_review_items_total=10,
         scope_expansion=Fraction(1, 10),
         consent_log_entry_recorded=True,
+        statutory_anchor_strength=Fraction(1, 1),
+        constitutional_anchor_strength=Fraction(1, 1),
+        publication_delay_days=0,
+        judicial_review_pathways=2,
     )
 
 
@@ -66,12 +74,12 @@ DOMAIN_METADATA = {
     "id": "D_EXECUTIVE_GOVERNANCE",
     "claim_model": "ExecutiveActionClaim",
     "check_functions": [
-        "check_separation_of_powers_anchors",
-        "check_congressional_review_act_compliance",
-        "check_judicial_review_preserved",
-        "check_publication_requirement",
-        "check_independence_review_coverage",
-        "check_scope_expansion_bounded",
-        "check_consent_log_recorded",
+        "check_composite_anchor_strength",
+        "check_cra_timeliness_score",
+        "check_judicial_review_accessibility",
+        "check_publication_timeliness_fraction",
+        "check_independence_coverage_fraction",
+        "check_scope_expansion_severity",
+        "check_executive_accountability_score",
     ],
 }
