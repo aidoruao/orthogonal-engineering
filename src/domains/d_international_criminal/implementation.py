@@ -35,6 +35,8 @@ class Case:
     defendant: str
     jurisdiction: str
     charges: List[str] = field(default_factory=list)
+    charge_gravity: Fraction = field(default=Fraction(1, 1))
+    jurisdiction_strength: Fraction = field(default=Fraction(1, 1))
 
 
 @dataclass
@@ -44,6 +46,9 @@ class Evidence:
     type: str
     authenticity_verified: bool
     chain_of_custody: List[str] = field(default_factory=list)
+    evidence_weight: Fraction = field(default=Fraction(1, 1))
+    custody_links: int = field(default=2)
+    custody_gaps: int = field(default=0)
 
 
 @dataclass

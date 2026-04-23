@@ -30,6 +30,7 @@ class ProtectedPerson:
     category: ProtectedCategory
     location: str
     receiving_protection: bool = True
+    protection_coverage: Fraction = field(default=Fraction(1, 1))
 
 
 @dataclass
@@ -38,6 +39,9 @@ class MilitaryTarget:
     military_necessity: bool
     proportionality_assessed: bool
     expected_civilian_harm: int
+    necessity_score: Fraction = field(default=Fraction(1, 1))
+    distinction_score: Fraction = field(default=Fraction(1, 1))
+    harm_fraction: Fraction = field(default=Fraction(0))
 
 
 @dataclass
