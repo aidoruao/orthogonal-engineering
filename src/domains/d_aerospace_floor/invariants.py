@@ -6,204 +6,191 @@ from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
-from .implementation import AerospaceFloorClaim, create_nominal_claim
+from .implementation import (
+    MAX_MISHAP_PROBABILITY,
+    MAX_RECURSION_DEPTH,
+    MIN_AF_SCAN_COVERAGE,
+    MIN_DETERMINISM_SCORE,
+    MIN_INDEPENDENCE_REVIEW_SCORE,
+    MIN_MCDC_COVERAGE,
+    MIN_NASA_COMPLIANCE,
+    MIN_SIL_LEVEL,
+    AerospaceFloorClaim,
+    create_nominal_claim,
+)
 
 
-def check_do178c_determinism(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: DO-178C §6.4.2.2 determinism is verified.
+def check_determinism_score(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: DO-178C determinism score meets floor.
 
     Standard: DO-178C Software Considerations in Airborne Systems.
-    Falsifies if: not do178c_determinism_verified.
-    falsifies_if: not do178c_determinism_verified.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: determinism_score < MIN_DETERMINISM_SCORE.
     """
-    success = data.do178c_determinism_verified
+    success = data.determinism_score >= MIN_DETERMINISM_SCORE
     proof = ProofObject(
-        rule="check_do178c_determinism",
+        rule="check_determinism_score",
         premises=[
-            "standard=DO-178C-6.4.2.2",
-            f"do178c_determinism_verified={data.do178c_determinism_verified}",
+            f"determinism_score={data.determinism_score}",
+            f"floor={MIN_DETERMINISM_SCORE}",
         ],
         conclusion=(
-            "PASS: DO-178C determinism verified"
-            if success else "FAIL: DO-178C determinism not verified"
+            f"PASS: determinism score {data.determinism_score} >= {MIN_DETERMINISM_SCORE}"
+            if success
+            else f"FAIL: determinism score {data.determinism_score} < {MIN_DETERMINISM_SCORE}"
         ),
     )
     return success, proof
 
 
-def check_mcdc_coverage(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: MC/DC coverage is achieved.
+def check_mcdc_coverage_fraction(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: MC/DC coverage fraction meets requirement.
 
     Standard: DO-178C Level A modified condition/decision coverage.
-    Falsifies if: not mcdc_coverage_achieved.
-    falsifies_if: not mcdc_coverage_achieved.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: mcdc_coverage_fraction < MIN_MCDC_COVERAGE.
     """
-    success = data.mcdc_coverage_achieved
+    success = data.mcdc_coverage_fraction >= MIN_MCDC_COVERAGE
     proof = ProofObject(
-        rule="check_mcdc_coverage",
+        rule="check_mcdc_coverage_fraction",
         premises=[
-            "standard=DO-178C-MC/DC",
-            f"mcdc_coverage_achieved={data.mcdc_coverage_achieved}",
+            f"mcdc_coverage_fraction={data.mcdc_coverage_fraction}",
+            f"floor={MIN_MCDC_COVERAGE}",
         ],
         conclusion=(
-            "PASS: MC/DC coverage achieved"
-            if success else "FAIL: MC/DC coverage not achieved"
+            f"PASS: MC/DC coverage {data.mcdc_coverage_fraction} >= {MIN_MCDC_COVERAGE}"
+            if success
+            else f"FAIL: MC/DC coverage {data.mcdc_coverage_fraction} < {MIN_MCDC_COVERAGE}"
         ),
     )
     return success, proof
 
 
-def check_misra_recursion_bounded(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: MISRA unbounded recursion is bounded.
+def check_recursion_depth_bound(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: MISRA recursion depth is within bound.
 
     Standard: MISRA-C:2012 Rule 17.2.
-    Falsifies if: not misra_recursion_bounded.
-    falsifies_if: not misra_recursion_bounded.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: recursion_depth_bound > MAX_RECURSION_DEPTH.
     """
-    success = data.misra_recursion_bounded
+    success = data.recursion_depth_bound <= MAX_RECURSION_DEPTH
     proof = ProofObject(
-        rule="check_misra_recursion_bounded",
+        rule="check_recursion_depth_bound",
         premises=[
-            "standard=MISRA-C-2012-17.2",
-            f"misra_recursion_bounded={data.misra_recursion_bounded}",
+            f"recursion_depth_bound={data.recursion_depth_bound}",
+            f"max={MAX_RECURSION_DEPTH}",
         ],
         conclusion=(
-            "PASS: MISRA recursion bounded"
-            if success else "FAIL: MISRA recursion unbounded"
+            f"PASS: recursion depth {data.recursion_depth_bound} <= {MAX_RECURSION_DEPTH}"
+            if success
+            else f"FAIL: recursion depth {data.recursion_depth_bound} > {MAX_RECURSION_DEPTH}"
         ),
     )
     return success, proof
 
 
-def check_milstd882e_mishap_probability(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: MIL-STD-882E mishap probability is assessed.
+def check_mishap_probability_risk(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: MIL-STD-882E mishap probability is below risk threshold.
 
     Standard: MIL-STD-882E System Safety.
-    Falsifies if: not milstd882e_mishap_probability_assessed.
-    falsifies_if: not milstd882e_mishap_probability_assessed.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: mishap_probability >= MAX_MISHAP_PROBABILITY.
     """
-    success = data.milstd882e_mishap_probability_assessed
+    success = data.mishap_probability < MAX_MISHAP_PROBABILITY
     proof = ProofObject(
-        rule="check_milstd882e_mishap_probability",
+        rule="check_mishap_probability_risk",
         premises=[
-            "standard=MIL-STD-882E",
-            f"milstd882e_mishap_probability_assessed={data.milstd882e_mishap_probability_assessed}",
+            f"mishap_probability={data.mishap_probability}",
+            f"max={MAX_MISHAP_PROBABILITY}",
         ],
         conclusion=(
-            "PASS: MIL-STD-882E mishap probability assessed"
-            if success else "FAIL: MIL-STD-882E mishap probability not assessed"
+            f"PASS: mishap probability {data.mishap_probability} < {MAX_MISHAP_PROBABILITY}"
+            if success
+            else f"FAIL: mishap probability {data.mishap_probability} >= {MAX_MISHAP_PROBABILITY}"
         ),
     )
     return success, proof
 
 
-def check_independence_review(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: Independence review is conducted.
+def check_independence_review_score(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: Independence review score meets floor.
 
     Standard: DO-178C independence of verification.
-    Falsifies if: not independence_review_conducted.
-    falsifies_if: not independence_review_conducted.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: independence_review_score < MIN_INDEPENDENCE_REVIEW_SCORE.
     """
-    success = data.independence_review_conducted
+    success = data.independence_review_score >= MIN_INDEPENDENCE_REVIEW_SCORE
     proof = ProofObject(
-        rule="check_independence_review",
+        rule="check_independence_review_score",
         premises=[
-            "standard=DO-178C-Independence",
-            f"independence_review_conducted={data.independence_review_conducted}",
+            f"independence_review_score={data.independence_review_score}",
+            f"floor={MIN_INDEPENDENCE_REVIEW_SCORE}",
         ],
         conclusion=(
-            "PASS: Independence review conducted"
-            if success else "FAIL: Independence review not conducted"
+            f"PASS: independence score {data.independence_review_score} >= {MIN_INDEPENDENCE_REVIEW_SCORE}"
+            if success
+            else f"FAIL: independence score {data.independence_review_score} < {MIN_INDEPENDENCE_REVIEW_SCORE}"
         ),
     )
     return success, proof
 
 
-def check_iec61508_sil4(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: IEC 61508 SIL-4 is verified.
+def check_sil_integrity_level(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: IEC 61508 SIL integrity level meets requirement.
 
     Standard: IEC 61508 Functional Safety SIL-4.
-    Falsifies if: not iec61508_sil4_verified.
-    falsifies_if: not iec61508_sil4_verified.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: sil_integrity_level < MIN_SIL_LEVEL.
     """
-    success = data.iec61508_sil4_verified
+    success = data.sil_integrity_level >= MIN_SIL_LEVEL
     proof = ProofObject(
-        rule="check_iec61508_sil4",
+        rule="check_sil_integrity_level",
         premises=[
-            "standard=IEC-61508-SIL4",
-            f"iec61508_sil4_verified={data.iec61508_sil4_verified}",
+            f"sil_integrity_level={data.sil_integrity_level}",
+            f"floor={MIN_SIL_LEVEL}",
         ],
         conclusion=(
-            "PASS: IEC 61508 SIL-4 verified"
-            if success else "FAIL: IEC 61508 SIL-4 not verified"
+            f"PASS: SIL level {data.sil_integrity_level} >= {MIN_SIL_LEVEL}"
+            if success
+            else f"FAIL: SIL level {data.sil_integrity_level} < {MIN_SIL_LEVEL}"
         ),
     )
     return success, proof
 
 
-def check_nasa_npr7150_class_a(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: NASA NPR 7150.2 Class A compliance.
+def check_nasa_compliance_score(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: NASA NPR 7150.2 compliance score meets floor.
 
     Standard: NASA NPR 7150.2 Software Engineering Requirements Class A.
-    Falsifies if: not nasa_npr7150_class_a_compliant.
-    falsifies_if: not nasa_npr7150_class_a_compliant.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: nasa_compliance_score < MIN_NASA_COMPLIANCE.
     """
-    success = data.nasa_npr7150_class_a_compliant
+    success = data.nasa_compliance_score >= MIN_NASA_COMPLIANCE
     proof = ProofObject(
-        rule="check_nasa_npr7150_class_a",
+        rule="check_nasa_compliance_score",
         premises=[
-            "standard=NASA-NPR-7150.2-Class-A",
-            f"nasa_npr7150_class_a_compliant={data.nasa_npr7150_class_a_compliant}",
+            f"nasa_compliance_score={data.nasa_compliance_score}",
+            f"floor={MIN_NASA_COMPLIANCE}",
         ],
         conclusion=(
-            "PASS: NASA NPR 7150.2 Class A compliant"
-            if success else "FAIL: NASA NPR 7150.2 Class A not compliant"
+            f"PASS: NASA compliance {data.nasa_compliance_score} >= {MIN_NASA_COMPLIANCE}"
+            if success
+            else f"FAIL: NASA compliance {data.nasa_compliance_score} < {MIN_NASA_COMPLIANCE}"
         ),
     )
     return success, proof
 
 
-def check_af_compliance_scanned(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
-    """Invariant: Aerospace floor compliance scan completed.
+def check_af_scan_coverage(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject]:
+    """Invariant: Aerospace floor compliance scan coverage meets requirement.
 
     Standard: AF-001/AF-002/AF-007 meta-standard compliance.
-    Falsifies if: not af_compliance_scanned.
-    falsifies_if: not af_compliance_scanned.
-
-    Returns:
-        Tuple of (success, proof).
+    falsifies_if: af_scan_coverage < MIN_AF_SCAN_COVERAGE.
     """
-    success = data.af_compliance_scanned
+    success = data.af_scan_coverage >= MIN_AF_SCAN_COVERAGE
     proof = ProofObject(
-        rule="check_af_compliance_scanned",
+        rule="check_af_scan_coverage",
         premises=[
-            "standard=AF-001/AF-002/AF-007",
-            f"af_compliance_scanned={data.af_compliance_scanned}",
+            f"af_scan_coverage={data.af_scan_coverage}",
+            f"floor={MIN_AF_SCAN_COVERAGE}",
         ],
         conclusion=(
-            "PASS: Aerospace floor compliance scanned"
-            if success else "FAIL: Aerospace floor compliance not scanned"
+            f"PASS: AF scan coverage {data.af_scan_coverage} >= {MIN_AF_SCAN_COVERAGE}"
+            if success
+            else f"FAIL: AF scan coverage {data.af_scan_coverage} < {MIN_AF_SCAN_COVERAGE}"
         ),
     )
     return success, proof
@@ -213,22 +200,18 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain.
 
     Standard: Aerospace Floor meta-standard nominal executable check set.
-    Falsifies if: any invariant check returns False.
     falsifies_if: any invariant check returns False.
-
-    Returns:
-        List of (name, success, proof) tuples.
     """
     data = create_nominal_claim()
     checks = [
-        ("check_do178c_determinism", check_do178c_determinism),
-        ("check_mcdc_coverage", check_mcdc_coverage),
-        ("check_misra_recursion_bounded", check_misra_recursion_bounded),
-        ("check_milstd882e_mishap_probability", check_milstd882e_mishap_probability),
-        ("check_independence_review", check_independence_review),
-        ("check_iec61508_sil4", check_iec61508_sil4),
-        ("check_nasa_npr7150_class_a", check_nasa_npr7150_class_a),
-        ("check_af_compliance_scanned", check_af_compliance_scanned),
+        ("check_determinism_score", check_determinism_score),
+        ("check_mcdc_coverage_fraction", check_mcdc_coverage_fraction),
+        ("check_recursion_depth_bound", check_recursion_depth_bound),
+        ("check_mishap_probability_risk", check_mishap_probability_risk),
+        ("check_independence_review_score", check_independence_review_score),
+        ("check_sil_integrity_level", check_sil_integrity_level),
+        ("check_nasa_compliance_score", check_nasa_compliance_score),
+        ("check_af_scan_coverage", check_af_scan_coverage),
     ]
     results: List[Tuple[str, bool, ProofObject]] = []
     for name, func in checks:

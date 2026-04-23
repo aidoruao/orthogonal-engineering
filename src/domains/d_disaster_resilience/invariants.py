@@ -1,6 +1,7 @@
 """Invariant checks for the disaster-resilience domain."""
 from __future__ import annotations
 
+from fractions import Fraction
 from typing import List, Tuple
 
 from axioms.logic import ProofObject
@@ -18,47 +19,47 @@ from .implementation import (
 )
 
 
-def check_warning_latency(
+def check_warning_latency_fraction(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: hazard warning reaches population within latency budget.
+    """Invariant: warning latency as fraction of SLA budget must not exceed 1.
 
     Standard: FEMA IPAWS / NOAA EAS 2-minute public-alert SLA.
-    Falsifies if: warning_latency_seconds > MAX_WARNING_LATENCY_SECONDS.
-    falsifies_if: warning_latency_seconds > MAX_WARNING_LATENCY_SECONDS.
+    falsifies_if: warning_latency_seconds / MAX_WARNING_LATENCY_SECONDS > Fraction(1).
     """
-    success = data.warning_latency_seconds <= MAX_WARNING_LATENCY_SECONDS
+    if MAX_WARNING_LATENCY_SECONDS <= 0:
+        latency_frac = Fraction(0)
+    else:
+        latency_frac = Fraction(data.warning_latency_seconds, MAX_WARNING_LATENCY_SECONDS)
+    success = latency_frac <= Fraction(1)
     proof = ProofObject(
-        rule="check_warning_latency",
+        rule="check_warning_latency_fraction",
         premises=[
             f"warning_latency_seconds={data.warning_latency_seconds}",
-            f"limit={MAX_WARNING_LATENCY_SECONDS}",
+            f"max={MAX_WARNING_LATENCY_SECONDS}",
+            f"latency_fraction={latency_frac}",
         ],
         conclusion=(
-            "PASS: warning latency within SLA"
+            f"PASS: latency fraction {latency_frac} within SLA"
             if success
-            else (
-                f"FAIL: {data.warning_latency_seconds} > "
-                f"{MAX_WARNING_LATENCY_SECONDS}"
-            )
+            else f"FAIL: latency fraction {latency_frac} exceeds SLA"
         ),
     )
     return success, proof
 
 
-def check_evacuation_capacity(
+def check_evacuation_capacity_ratio(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: evacuation lift >= 25% of population.
+    """Invariant: evacuation lift as fraction of population >= 25%.
 
     Standard: FEMA CPG 101 mass-care planning threshold.
-    Falsifies if: evacuation_capacity / population < MIN_EVAC_CAPACITY_FRACTION.
     falsifies_if: evacuation_capacity / population < MIN_EVAC_CAPACITY_FRACTION.
     """
     ratio = evacuation_capacity_fraction(data)
     success = ratio >= MIN_EVAC_CAPACITY_FRACTION
     proof = ProofObject(
-        rule="check_evacuation_capacity",
+        rule="check_evacuation_capacity_ratio",
         premises=[
             f"evacuation_capacity={data.evacuation_capacity}",
             f"population={data.population}",
@@ -66,136 +67,172 @@ def check_evacuation_capacity(
             f"floor={MIN_EVAC_CAPACITY_FRACTION}",
         ],
         conclusion=(
-            "PASS: evacuation capacity >= floor"
-            if success else f"FAIL: {ratio} < {MIN_EVAC_CAPACITY_FRACTION}"
+            f"PASS: evacuation ratio {ratio} >= {MIN_EVAC_CAPACITY_FRACTION}"
+            if success else f"FAIL: evacuation ratio {ratio} < {MIN_EVAC_CAPACITY_FRACTION}"
         ),
     )
     return success, proof
 
 
-def check_emergency_fuel_reserve(
+def check_fuel_reserve_ratio(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: emergency fuel reserve >= 7 days.
+    """Invariant: emergency fuel reserve as fraction of minimum requirement >= 1.
 
     Standard: DHS/CISA Lifeline Sector fuel-continuity guidance.
-    Falsifies if: emergency_fuel_days < MIN_EMERGENCY_FUEL_DAYS.
-    falsifies_if: emergency_fuel_days < MIN_EMERGENCY_FUEL_DAYS.
+    falsifies_if: emergency_fuel_days / MIN_EMERGENCY_FUEL_DAYS < Fraction(1).
     """
-    success = data.emergency_fuel_days >= MIN_EMERGENCY_FUEL_DAYS
+    if MIN_EMERGENCY_FUEL_DAYS <= 0:
+        ratio = Fraction(0)
+        success = False
+    else:
+        ratio = Fraction(data.emergency_fuel_days, MIN_EMERGENCY_FUEL_DAYS)
+        success = ratio >= Fraction(1)
     proof = ProofObject(
-        rule="check_emergency_fuel_reserve",
+        rule="check_fuel_reserve_ratio",
         premises=[
             f"emergency_fuel_days={data.emergency_fuel_days}",
-            f"floor={MIN_EMERGENCY_FUEL_DAYS}",
+            f"min={MIN_EMERGENCY_FUEL_DAYS}",
+            f"ratio={ratio}",
         ],
         conclusion=(
-            "PASS: fuel reserve >= floor"
-            if success else f"FAIL: {data.emergency_fuel_days} < {MIN_EMERGENCY_FUEL_DAYS}"
+            f"PASS: fuel ratio {ratio} >= 1"
+            if success else f"FAIL: fuel ratio {ratio} < 1"
         ),
     )
     return success, proof
 
 
-def check_mutual_aid_breadth(
+def check_mutual_aid_coverage_ratio(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: jurisdiction has at least 3 signed mutual-aid partners.
+    """Invariant: mutual-aid partners as fraction of minimum requirement >= 1.
 
     Standard: EMAC interstate mutual-aid framework.
-    Falsifies if: mutual_aid_partner_count < MIN_MUTUAL_AID_PARTNERS.
-    falsifies_if: mutual_aid_partner_count < MIN_MUTUAL_AID_PARTNERS.
+    falsifies_if: mutual_aid_partner_count / MIN_MUTUAL_AID_PARTNERS < Fraction(1).
     """
-    success = data.mutual_aid_partner_count >= MIN_MUTUAL_AID_PARTNERS
+    if MIN_MUTUAL_AID_PARTNERS <= 0:
+        ratio = Fraction(0)
+        success = False
+    else:
+        ratio = Fraction(data.mutual_aid_partner_count, MIN_MUTUAL_AID_PARTNERS)
+        success = ratio >= Fraction(1)
     proof = ProofObject(
-        rule="check_mutual_aid_breadth",
+        rule="check_mutual_aid_coverage_ratio",
         premises=[
             f"mutual_aid_partner_count={data.mutual_aid_partner_count}",
-            f"floor={MIN_MUTUAL_AID_PARTNERS}",
+            f"min={MIN_MUTUAL_AID_PARTNERS}",
+            f"ratio={ratio}",
         ],
         conclusion=(
-            "PASS: mutual-aid breadth >= floor"
-            if success
-            else f"FAIL: {data.mutual_aid_partner_count} < {MIN_MUTUAL_AID_PARTNERS}"
+            f"PASS: mutual-aid ratio {ratio} >= 1"
+            if success else f"FAIL: mutual-aid ratio {ratio} < 1"
         ),
     )
     return success, proof
 
 
-def check_backup_power_autonomy(
+def check_backup_power_fraction(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: backup power autonomy >= 72 hours.
+    """Invariant: backup power hours as fraction of minimum requirement >= 1.
 
     Standard: NFPA 110 Level 1 emergency power system.
-    Falsifies if: backup_power_autonomy_hours < MIN_BACKUP_POWER_HOURS.
-    falsifies_if: backup_power_autonomy_hours < MIN_BACKUP_POWER_HOURS.
+    falsifies_if: backup_power_autonomy_hours / MIN_BACKUP_POWER_HOURS < Fraction(1).
     """
-    success = data.backup_power_autonomy_hours >= MIN_BACKUP_POWER_HOURS
+    if MIN_BACKUP_POWER_HOURS <= 0:
+        ratio = Fraction(0)
+        success = False
+    else:
+        ratio = Fraction(data.backup_power_autonomy_hours, MIN_BACKUP_POWER_HOURS)
+        success = ratio >= Fraction(1)
     proof = ProofObject(
-        rule="check_backup_power_autonomy",
+        rule="check_backup_power_fraction",
         premises=[
             f"backup_power_autonomy_hours={data.backup_power_autonomy_hours}",
-            f"floor={MIN_BACKUP_POWER_HOURS}",
+            f"min={MIN_BACKUP_POWER_HOURS}",
+            f"ratio={ratio}",
         ],
         conclusion=(
-            "PASS: backup power autonomy >= floor"
-            if success
-            else (
-                f"FAIL: {data.backup_power_autonomy_hours} < "
-                f"{MIN_BACKUP_POWER_HOURS}"
-            )
+            f"PASS: backup power ratio {ratio} >= 1"
+            if success else f"FAIL: backup power ratio {ratio} < 1"
         ),
     )
     return success, proof
 
 
-def check_after_action_report_current(
+def check_after_action_staleness_fraction(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: after-action report is not stale.
+    """Invariant: after-action report staleness as fraction of max window <= 1.
 
     Standard: FEMA HSEEP after-action report cadence.
-    Falsifies if: last_after_action_report_days_ago > MAX_AFTER_ACTION_STALENESS_DAYS.
-    falsifies_if: last_after_action_report_days_ago > MAX_AFTER_ACTION_STALENESS_DAYS.
+    falsifies_if: days_ago / MAX_AFTER_ACTION_STALENESS_DAYS > Fraction(1).
     """
-    success = data.last_after_action_report_days_ago <= MAX_AFTER_ACTION_STALENESS_DAYS
+    if MAX_AFTER_ACTION_STALENESS_DAYS <= 0:
+        staleness = Fraction(0)
+        success = True
+    else:
+        staleness = Fraction(data.last_after_action_report_days_ago, MAX_AFTER_ACTION_STALENESS_DAYS)
+        success = staleness <= Fraction(1)
     proof = ProofObject(
-        rule="check_after_action_report_current",
+        rule="check_after_action_staleness_fraction",
         premises=[
             f"days_since_report={data.last_after_action_report_days_ago}",
-            f"max_staleness={MAX_AFTER_ACTION_STALENESS_DAYS}",
+            f"max={MAX_AFTER_ACTION_STALENESS_DAYS}",
+            f"staleness_fraction={staleness}",
         ],
         conclusion=(
-            "PASS: AAR within staleness window"
-            if success
-            else (
-                f"FAIL: {data.last_after_action_report_days_ago} > "
-                f"{MAX_AFTER_ACTION_STALENESS_DAYS}"
-            )
+            f"PASS: staleness fraction {staleness} within window"
+            if success else f"FAIL: staleness fraction {staleness} exceeds window"
         ),
     )
     return success, proof
 
 
-def check_cyber_playbook_current(
+def check_cyber_readiness_score(
     data: DisasterResilienceClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: cyber incident-response playbook is current.
+    """Invariant: cyber incident-response readiness score meets floor.
 
     Standard: CISA Cyber Incident Response Playbook (2021) + NIST SP 800-61r2.
-    Falsifies if: cyber_incident_response_playbook_current False.
-    falsifies_if: cyber_incident_response_playbook_current False.
+    falsifies_if: cyber_readiness_score < Fraction(1, 2).
     """
-    success = data.cyber_incident_response_playbook_current
+    threshold = Fraction(1, 2)
+    success = data.cyber_readiness_score >= threshold
     proof = ProofObject(
-        rule="check_cyber_playbook_current",
+        rule="check_cyber_readiness_score",
         premises=[
-            f"playbook_current={data.cyber_incident_response_playbook_current}",
+            f"cyber_readiness_score={data.cyber_readiness_score}",
+            f"threshold={threshold}",
         ],
         conclusion=(
-            "PASS: cyber playbook current"
-            if success else "FAIL: cyber playbook stale or missing"
+            f"PASS: cyber readiness {data.cyber_readiness_score} >= {threshold}"
+            if success else f"FAIL: cyber readiness {data.cyber_readiness_score} < {threshold}"
+        ),
+    )
+    return success, proof
+
+
+def check_infrastructure_redundancy(
+    data: DisasterResilienceClaim,
+) -> Tuple[bool, ProofObject]:
+    """Invariant: critical infrastructure redundancy meets minimum fraction.
+
+    Standard: DHS National Infrastructure Protection Plan redundancy requirements.
+    falsifies_if: infrastructure_redundancy < Fraction(1, 2).
+    """
+    threshold = Fraction(1, 2)
+    success = data.infrastructure_redundancy >= threshold
+    proof = ProofObject(
+        rule="check_infrastructure_redundancy",
+        premises=[
+            f"infrastructure_redundancy={data.infrastructure_redundancy}",
+            f"threshold={threshold}",
+        ],
+        conclusion=(
+            f"PASS: redundancy {data.infrastructure_redundancy} >= {threshold}"
+            if success else f"FAIL: redundancy {data.infrastructure_redundancy} < {threshold}"
         ),
     )
     return success, proof
@@ -205,18 +242,18 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain on the nominal claim.
 
     Standard: Disaster-resilience nominal executable check set.
-    Falsifies if: any invariant check returns False on the nominal claim.
     falsifies_if: any invariant check returns False on the nominal claim.
     """
     data = create_nominal_claim()
     checks = [
-        ("check_warning_latency", check_warning_latency),
-        ("check_evacuation_capacity", check_evacuation_capacity),
-        ("check_emergency_fuel_reserve", check_emergency_fuel_reserve),
-        ("check_mutual_aid_breadth", check_mutual_aid_breadth),
-        ("check_backup_power_autonomy", check_backup_power_autonomy),
-        ("check_after_action_report_current", check_after_action_report_current),
-        ("check_cyber_playbook_current", check_cyber_playbook_current),
+        ("check_warning_latency_fraction", check_warning_latency_fraction),
+        ("check_evacuation_capacity_ratio", check_evacuation_capacity_ratio),
+        ("check_fuel_reserve_ratio", check_fuel_reserve_ratio),
+        ("check_mutual_aid_coverage_ratio", check_mutual_aid_coverage_ratio),
+        ("check_backup_power_fraction", check_backup_power_fraction),
+        ("check_after_action_staleness_fraction", check_after_action_staleness_fraction),
+        ("check_cyber_readiness_score", check_cyber_readiness_score),
+        ("check_infrastructure_redundancy", check_infrastructure_redundancy),
     ]
     results: List[Tuple[str, bool, ProofObject]] = []
     for name, func in checks:
