@@ -49,3 +49,5 @@ class EnergyFacility:
     reported_capacity_mw: Fraction
     renewable_portfolio_fraction: Fraction
     required_renewable_fraction: Fraction
+    license_compliance_score: Fraction = Fraction(1, 1)
+    interconnection_readiness_score: Fraction = Fraction(1, 1)

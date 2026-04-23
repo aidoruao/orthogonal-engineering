@@ -536,3 +536,6 @@ class EnvironmentalPermit:
     section_404_permit: bool  # CWA §404 wetlands permit
     eis_completed: bool  # NEPA Environmental Impact Statement
     hazardous_waste_manifest: bool  # RCRA manifest
+    discharge_compliance_score: Fraction = Fraction(1, 1)
+    eis_completeness_score: Fraction = Fraction(1, 1)
+    manifest_coverage_fraction: Fraction = Fraction(1, 1)

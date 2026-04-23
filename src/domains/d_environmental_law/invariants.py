@@ -4,10 +4,10 @@ Each function returns Tuple[bool, ProofObject] and encodes Clean Air Act,
 Clean Water Act, NEPA, and RCRA requirements.
 
 Standards:
-- Clean Air Act (42 U.S.C. §7401)
-- Clean Water Act (33 U.S.C. §1251)
-- NEPA (42 U.S.C. §4321)
-- RCRA (42 U.S.C. §6901)
+- Clean Air Act (42 U.S.C. 7401)
+- Clean Water Act (33 U.S.C. 1251)
+- NEPA (42 U.S.C. 4321)
+- RCRA (42 U.S.C. 6901)
 """
 
 from __future__ import annotations
@@ -20,12 +20,12 @@ from .implementation import EnvironmentalPermit
 
 
 def check_clean_air_act(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Emissions must not exceed NAAQS limits (Clean Air Act 42 U.S.C. §7409).
+    """Rule: Emissions must not exceed NAAQS limits (Clean Air Act 42 U.S.C. 7409).
 
     falsifies_if: emission_tons_per_year > naaqs_limit_tons.
     """
     success = permit.emission_tons_per_year <= permit.naaqs_limit_tons
+    margin = permit.naaqs_limit_tons - permit.emission_tons_per_year
 
     if not success:
         return False, ProofObject(
@@ -34,8 +34,9 @@ def check_clean_air_act(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]
                 f"permit_id={permit.permit_id}",
                 f"emission_tons_per_year={permit.emission_tons_per_year}",
                 f"naaqs_limit_tons={permit.naaqs_limit_tons}",
+                f"margin={margin}",
             ],
-            conclusion="VIOLATION: CAA §7409 — emissions exceed NAAQS limit",
+            conclusion="VIOLATION: CAA 7409 — emissions exceed NAAQS limit",
         )
 
     return True, ProofObject(
@@ -44,93 +45,99 @@ def check_clean_air_act(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]
             f"permit_id={permit.permit_id}",
             f"emission_tons_per_year={permit.emission_tons_per_year}",
             f"naaqs_limit_tons={permit.naaqs_limit_tons}",
+            f"margin={margin}",
         ],
-        conclusion="CAA §7409 NAAQS emission limit satisfied",
+        conclusion="CAA 7409 NAAQS emission limit satisfied",
     )
 
 
 def check_clean_water_npdes(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Discharges into navigable waters require an NPDES permit (CWA 33 U.S.C. §1342).
+    """Rule: Discharge compliance score must meet NPDES threshold (CWA 33 U.S.C. 1342).
 
-    falsifies_if: npdes_permit is False.
+    falsifies_if: discharge_compliance_score < Fraction(3, 4).
     """
-    success = permit.npdes_permit
+    threshold = Fraction(3, 4)
+    success = permit.discharge_compliance_score >= threshold
 
     if not success:
         return False, ProofObject(
             rule="CleanWaterNPDES",
             premises=[
                 f"permit_id={permit.permit_id}",
-                f"npdes_permit={permit.npdes_permit}",
-                f"epa_permit_valid={permit.epa_permit_valid}",
+                f"discharge_compliance_score={permit.discharge_compliance_score}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: CWA §1342 — discharge without NPDES permit",
+            conclusion="VIOLATION: CWA 1342 — discharge compliance score below NPDES threshold",
         )
 
     return True, ProofObject(
         rule="CleanWaterNPDES",
         premises=[
             f"permit_id={permit.permit_id}",
-            f"npdes_permit={permit.npdes_permit}",
+            f"discharge_compliance_score={permit.discharge_compliance_score}",
+            f"threshold={threshold}",
         ],
-        conclusion="CWA §1342 NPDES permit requirement satisfied",
+        conclusion="CWA 1342 NPDES discharge compliance satisfied",
     )
 
 
 def check_nepa_eis(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Major federal actions with significant environmental impacts require an EIS (NEPA 42 U.S.C. §4332).
+    """Rule: EIS completeness score must meet NEPA threshold (NEPA 42 U.S.C. 4332).
 
-    falsifies_if: eis_completed is False.
+    falsifies_if: eis_completeness_score < Fraction(3, 4).
     """
-    success = permit.eis_completed
+    threshold = Fraction(3, 4)
+    success = permit.eis_completeness_score >= threshold
 
     if not success:
         return False, ProofObject(
             rule="NEPAEnvironmentalImpactStatement",
             premises=[
                 f"permit_id={permit.permit_id}",
-                f"eis_completed={permit.eis_completed}",
+                f"eis_completeness_score={permit.eis_completeness_score}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: NEPA §4332 — EIS not completed for major federal action",
+            conclusion="VIOLATION: NEPA 4332 — EIS completeness score below threshold",
         )
 
     return True, ProofObject(
         rule="NEPAEnvironmentalImpactStatement",
         premises=[
             f"permit_id={permit.permit_id}",
-            f"eis_completed={permit.eis_completed}",
+            f"eis_completeness_score={permit.eis_completeness_score}",
+            f"threshold={threshold}",
         ],
-        conclusion="NEPA §4332 EIS requirement satisfied",
+        conclusion="NEPA 4332 EIS completeness requirement satisfied",
     )
 
 
 def check_rcra_manifest(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Hazardous waste transportation requires a manifest (RCRA 42 U.S.C. §6922).
+    """Rule: Hazardous waste manifest coverage must meet RCRA threshold (RCRA 42 U.S.C. 6922).
 
-    falsifies_if: hazardous_waste_manifest is False.
+    falsifies_if: manifest_coverage_fraction < Fraction(1, 2).
     """
-    success = permit.hazardous_waste_manifest
+    threshold = Fraction(1, 2)
+    success = permit.manifest_coverage_fraction >= threshold
 
     if not success:
         return False, ProofObject(
             rule="RCRAHazardousWasteManifest",
             premises=[
                 f"permit_id={permit.permit_id}",
-                f"hazardous_waste_manifest={permit.hazardous_waste_manifest}",
+                f"manifest_coverage_fraction={permit.manifest_coverage_fraction}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: RCRA §6922 — hazardous waste without required manifest",
+            conclusion="VIOLATION: RCRA 6922 — hazardous waste manifest coverage below threshold",
         )
 
     return True, ProofObject(
         rule="RCRAHazardousWasteManifest",
         premises=[
             f"permit_id={permit.permit_id}",
-            f"hazardous_waste_manifest={permit.hazardous_waste_manifest}",
+            f"manifest_coverage_fraction={permit.manifest_coverage_fraction}",
+            f"threshold={threshold}",
         ],
-        conclusion="RCRA §6922 hazardous waste manifest satisfied",
+        conclusion="RCRA 6922 hazardous waste manifest coverage satisfied",
     )
 
 
@@ -149,6 +156,9 @@ def run_all_invariants() -> Dict[str, str]:
         section_404_permit=False,
         eis_completed=True,
         hazardous_waste_manifest=True,
+        discharge_compliance_score=Fraction(1, 1),
+        eis_completeness_score=Fraction(1, 1),
+        manifest_coverage_fraction=Fraction(1, 1),
     )
 
     checks = [
