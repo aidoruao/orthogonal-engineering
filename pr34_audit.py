@@ -190,10 +190,7 @@ def section1() -> Dict:
     return {
         "1.1_total_git_tracked_files": len(tracked),
         "1.2_loc_by_language": {k: v for k, v in sorted(loc_by_lang.items(), key=lambda x: -x[1])},
-        "1.3_largest_file": {
-            "path": largest_file,
-            "loc": file_loc.get(largest_file, 0),
-        },
+        "1.3_largest_file": largest_file,
         "1.4_largest_directory_by_loc": {
             "path": largest_dir_by_loc,
             "loc": dir_loc.get(largest_dir_by_loc, 0),
@@ -202,7 +199,7 @@ def section1() -> Dict:
         "1.6_generated_artifacts_committed": generated,
         "1.7_binary_blobs_tracked": binary_tracked[:_MAX_LIST_RESULTS],
         "1.8_vendored_third_party": vendor_dirs,
-        "1.9_submodules": submodules if submodules else "NONE",
+        "1.9_submodules": submodules,
         "1.10_repository_state_classification": {
             "code": "(B) PARTIALLY MATERIALIZED",
             "justification": (
@@ -286,13 +283,7 @@ def section2() -> Dict:
                 _exists("tests/test_recursive_expansion.py"),
             ] if t != "NOT IMPLEMENTED"
         ],
-        "2.8_uses_floating_arithmetic": {
-            "uses_floats": False,
-            "evidence": (
-                "generators/fractal_expander.py uses only integer arithmetic, "
-                "string formatting, and hashlib.sha256 - no float literals present."
-            ),
-        },
+        "2.8_uses_floating_arithmetic": False,
         "2.9_recursion_depth_bounded": {
             "bounded": True,
             "location": (

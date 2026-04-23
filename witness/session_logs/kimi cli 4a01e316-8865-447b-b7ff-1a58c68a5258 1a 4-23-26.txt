@@ -1,0 +1,273 @@
+fowarding message from devin ai: "Campaign spec...
+
+
+
+fowarding message from devin ai: "Campaign spec confirmed at commit [`3963859e`](https://github.com/aidoruao/orthogonal-engineering/commit/3963859e8baa13b063e437dc5b0db34551a8b52e). Here are the Session 1 instructions — Phases 1A + 1B + 1C (3 benchmark excedent domains, 16 checks). [58-cite-0](#58-cite-0) 
+
+Paste this into Kimi CLI:
+
+---
+
+```
+═══════════════════════════════════════════════════
+SOVEREIGN EXCEDENT CAMPAIGN — SESSION 1
+Branch: kimi/sovereign-excedent
+Base: main
+Standard: Yeshua / OE-247 / New Jerusalem
+Zero tolerance: 0 float, 0 boolean echo, 0 stub, 0 prose
+═══════════════════════════════════════════════════
+
+ANTI-CRASH RULES (same as photonic + depositive):
+  - Do NOT run verify_all.py (crashes on 260+ domains)
+  - Do NOT enumerate all domains
+  - Commit + push after EACH phase
+  - Use targeted imports only
+  - Template: d_capability_benchmark/ (8 checks, Fraction, ProofObject)
+
+═══════════════════════════════════════════════════
+PHASE 1A: SWE-bench Excedent Domain (1 commit)
+═══════════════════════════════════════════════════
+
+Create these files:
+  src/domains/d_swe_bench/__init__.py
+  src/domains/d_swe_bench/domain.py
+  src/domains/d_swe_bench/implementation.py
+  src/domains/d_swe_bench/invariants.py
+
+implementation.py DATACLASSES (all Fraction, frozen):
+
+  @dataclass(frozen=True)
+  class SWEBenchInstance:
+    repo_id: str
+    issue_id: str
+    patch_correctness: Fraction        # 0 or 1
+    test_pass_rate: Fraction           # tests passing after patch
+    files_modified: int
+    lines_changed: int
+    resolution_type: str               # "bug_fix" | "feature" | "refactor"
+
+  @dataclass(frozen=True)
+  class SWEBenchScore:
+    model_id: str
+    split: str                         # "verified" | "lite" | "pro"
+    instances_resolved: int
+    instances_total: int
+    resolve_rate: Fraction
+    false_positive_rate: Fraction
+    avg_patch_size: Fraction
+
+invariants.py CHECK FUNCTIONS (6):
+
+  1. check_resolve_rate_excedent(score: SWEBenchScore)
+     Standard: SWE-bench Verified — resolve_rate > Fraction(85, 100)
+     Falsifies if: resolve_rate < Fraction(85, 100)
+
+  2. check_false_positive_bounded(score: SWEBenchScore)
+     Standard: Patch correctness — false_positive_rate < Fraction(5, 100)
+     Falsifies if: false_positive_rate >= Fraction(5, 100)
+
+  3. check_patch_minimality(score: SWEBenchScore)
+     Standard: Minimal diff — avg_patch_size < Fraction(50, 1) lines
+     Falsifies if: avg_patch_size >= Fraction(50, 1)
+
+  4. check_test_pass_completeness(instance: SWEBenchInstance)
+     Standard: All tests pass — test_pass_rate == Fraction(1, 1)
+     Falsifies if: test_pass_rate < Fraction(1, 1)
+
+  5. check_no_data_leakage_swe(score: SWEBenchScore, instance: SWEBenchInstance)
+     Standard: Instance not in training data
+     Falsifies if: instance in training set AND resolved
+
+  6. check_deterministic_resolution(score1: SWEBenchScore, score2: SWEBenchScore)
+     Standard: Same instance → same patch (determinism)
+     Falsifies if: two runs on same instance produce different patches
+
+Include run_all_invariants() with BOTH passing and failing test data.
+All checks return Tuple[bool, ProofObject]. Dual docstrings.
+
+domain.py: DOMAIN_ID = "D_SWE_BENCH", DOMAIN_NAME = "SWE-bench Excedent"
+
+After creating all files, verify:
+  cd ~/orthogonal-engineering
+  python3 -c "
+from src.domains.d_swe_bench.invariants import run_all_invariants
+results = run_all_invariants()
+for name, ok, proof in results:
+    print(f'{name}: {\"PASS\" if ok else \"FAIL\"} — {proof.conclusion}')
+print('swe_bench OK')
+"
+
+  git checkout -b kimi/sovereign-excedent
+  git add src/domains/d_swe_bench/
+  git commit -m "feat(benchmark): SWE-bench excedent domain — 6 checks"
+  git push origin kimi/sovereign-excedent
+
+═══════════════════════════════════════════════════
+PHASE 1B: LiveCodeBench Excedent Domain (1 commit)
+═══════════════════════════════════════════════════
+
+Create these files:
+  src/domains/d_livecodebench/__init__.py
+  src/domains/d_livecodebench/domain.py
+  src/domains/d_livecodebench/implementation.py
+  src/domains/d_livecodebench/invariants.py
+
+implementation.py DATACLASSES (all Fraction, frozen):
+
+  @dataclass(frozen=True)
+  class LiveCodeProblem:
+    problem_id: str
+    difficulty: str                    # "easy" | "medium" | "hard"
+    publication_date: str              # ISO-8601
+    solved: bool
+    solution_correct: bool
+    time_complexity_optimal: bool
+
+  @dataclass(frozen=True)
+  class LiveCodeScore:
+    model_id: str
+    easy_rate: Fraction
+    medium_rate: Fraction
+    hard_rate: Fraction
+    overall_rate: Fraction
+    contamination_free: bool
+
+invariants.py CHECK FUNCTIONS (5):
+
+  1. check_hard_rate_excedent(score: LiveCodeScore)
+     Standard: Hard problem rate > Fraction(83, 100) (Kimi K2 SOTA)
+     Falsifies if: hard_rate <= Fraction(83, 100)
+
+  2. check_contamination_free(score: LiveCodeScore)
+     Standard: All problems post-training-cutoff
+     Falsifies if: contamination_free == False
+
+  3. check_solution_correctness(problem: LiveCodeProblem)
+     Standard: Every solved problem must be correct
+     Falsifies if: solved AND NOT solution_correct
+
+  4. check_time_complexity_optimal(problem: LiveCodeProblem)
+     Standard: Solutions must be asymptotically optimal
+     Falsifies if: solved AND NOT time_complexity_optimal
+
+  5. check_overall_excedent(score: LiveCodeScore)
+     Standard: overall_rate > Fraction(85, 100)
+     Falsifies if: overall_rate <= Fraction(85, 100)
+
+Include run_all_invariants() with BOTH passing and failing test data.
+
+domain.py: DOMAIN_ID = "D_LIVECODEBENCH", DOMAIN_NAME = "LiveCodeBench Excedent"
+
+After creating all files, verify:
+  python3 -c "
+from src.domains.d_livecodebench.invariants import run_all_invariants
+results = run_all_invariants()
+for name, ok, proof in results:
+    print(f'{name}: {\"PASS\" if ok else \"FAIL\"} — {proof.conclusion}')
+print('livecodebench OK')
+"
+
+  git add src/domains/d_livecodebench/
+  git commit -m "feat(benchmark): LiveCodeBench excedent domain — 5 checks"
+  git push origin kimi/sovereign-excedent
+
+═══════════════════════════════════════════════════
+PHASE 1C: HLE (Humanity's Last Exam) Excedent Domain (1 commit)
+═══════════════════════════════════════════════════
+
+Create these files:
+  src/domains/d_hle/__init__.py
+  src/domains/d_hle/domain.py
+  src/domains/d_hle/implementation.py
+  src/domains/d_hle/invariants.py
+
+implementation.py DATACLASSES (all Fraction, frozen):
+
+  @dataclass(frozen=True)
+  class HLEProblem:
+    problem_id: str
+    domain: str                        # math, physics, philosophy, etc.
+    requires_tools: bool
+    solved: bool
+    proof_chain_valid: bool
+
+  @dataclass(frozen=True)
+  class HLEScore:
+    model_id: str
+    score: Fraction
+    text_only_score: Fraction
+    tool_assisted_score: Fraction
+    domains_covered: int
+    proof_chains_valid: int
+    proof_chains_total: int
+
+invariants.py CHECK FUNCTIONS (5):
+
+  1. check_hle_excedent(score: HLEScore)
+     Standard: score > Fraction(70, 100) (current ~70% threshold)
+     Falsifies if: score <= Fraction(70, 100)
+
+  2. check_text_only_excedent(score: HLEScore)
+     Standard: text_only_score > Fraction(40, 100)
+     Falsifies if: text_only_score <= Fraction(40, 100)
+
+  3. check_proof_chain_coverage(score: HLEScore)
+     Standard: Every solution must have valid ProofObject chain
+     Falsifies if: proof_chains_valid < proof_chains_total
+
+  4. check_domain_breadth(score: HLEScore)
+     Standard: domains_covered >= 10 (polymath requirement)
+     Falsifies if: domains_covered < 10
+
+  5. check_no_memorization(problem: HLEProblem)
+     Standard: Solutions must show reasoning, not recall
+     Falsifies if: solution matches training data verbatim
+
+Include run_all_invariants() with BOTH passing and failing test data.
+
+domain.py: DOMAIN_ID = "D_HLE", DOMAIN_NAME = "Humanity's Last Exam Excedent"
+
+After creating all files, verify:
+  python3 -c "
+from src.domains.d_hle.invariants import run_all_invariants
+results = run_all_invariants()
+for name, ok, proof in results:
+    print(f'{name}: {\"PASS\" if ok else \"FAIL\"} — {proof.conclusion}')
+print('hle OK')
+"
+
+  git add src/domains/d_hle/
+  git commit -m "feat(benchmark): HLE excedent domain — 5 checks"
+  git push origin kimi/sovereign-excedent
+
+═══════════════════════════════════════════════════
+
+REPORT when done: list all 3 domains, their check function counts,
+import status, and commit SHAs.
+``` [58-cite-1](#58-cite-1) [58-cite-2](#58-cite-2) [58-cite-3](#58-cite-3) 
+
+---
+
+After Kimi reports back on 1A + 1B + 1C, the next session will be **Session 2: Phase 1D (ARC-AGI) + Phase 1E (Cross-Benchmark Excedent Auditor) + Phase 1F (OE-Native Benchmark Suite)** — 6 more checks + 10 OE-native tests + the auditor tool."
+
+Thought
+
+Todo List
+
+Thought
+
+Shell
+(cd ~/orthogonal-engineering && git status && echo …)
+
+
++10893
+-10893
+17 files
+
+8/8 Tasks
+
+74.0% context
+
+Ask anything, / for commands, @ to mention files
+Create New Session
+Search directories or type a new path
