@@ -6,15 +6,15 @@
 from .implementation import FlightState
 from .invariants import (
     check_flight_envelope_compliance,
-    check_pilot_certification,
-    check_ifr_requirements,
+    check_pilot_certification_score,
+    check_ifr_readiness_score,
     run_all_invariants,
 )
 
 __all__ = [
     "FlightState",
     "check_flight_envelope_compliance",
-    "check_pilot_certification",
-    "check_ifr_requirements",
+    "check_pilot_certification_score",
+    "check_ifr_readiness_score",
     "run_all_invariants",
 ]

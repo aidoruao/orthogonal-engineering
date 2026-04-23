@@ -152,6 +152,39 @@ def check_esd_timing(esd: EmergencyShutdown) -> Tuple[bool, ProofObject]:
     )
 
 
+def check_reactor_safety_margin(reactor: ReactorControl) -> Tuple[bool, ProofObject]:
+    """
+    Composite safety margin must be at least 10%.
+
+    Computes thermal_margin = (t_critical_c - temperature_c) / t_critical_c
+    and pressure_margin = (design_pressure_bar - pressure_bar) / design_pressure_bar.
+    composite_margin = (thermal_margin + pressure_margin) / 2.
+
+    Falsifies if: composite_margin < 0.1 (10%)
+    falsifies_if: composite_margin < 0.1
+    """
+    thermal_margin = (reactor.t_critical_c - reactor.temperature_c) / reactor.t_critical_c
+    pressure_margin = (reactor.design_pressure_bar - reactor.pressure_bar) / reactor.design_pressure_bar
+    composite_margin = (thermal_margin + pressure_margin) / Fraction(2, 1)
+
+    if composite_margin < Fraction(1, 10):
+        return False, ProofObject(
+            conclusion=f"VIOLATION: Reactor {reactor.reactor_id} composite safety margin {composite_margin} < 10%",
+            premises=[
+                f"Thermal margin: {thermal_margin}",
+                f"Pressure margin: {pressure_margin}",
+                f"Composite margin: {composite_margin}"
+            ],
+            rule="reactor_safety_margin"
+        )
+
+    return True, ProofObject(
+        conclusion=f"Reactor {reactor.reactor_id} composite safety margin adequate",
+        premises=[f"Composite margin: {composite_margin} >= 10%"],
+        rule="reactor_safety_margin"
+    )
+
+
 def run_all_invariants() -> dict:
     """Run all D_CHEMICAL invariants with nominal sample data.
 
@@ -163,15 +196,15 @@ def run_all_invariants() -> dict:
     )
     hazmat_containment = HazmatContainment(
         zone_id=None,
-        leak_detection_ppm=Fraction(1),
-        lel_percent=Fraction(1),
+        leak_detection_ppm=Fraction(0),
+        lel_percent=Fraction(100),
     )
     reactor_control = ReactorControl(
         reactor_id=None,
-        temperature_c=Fraction(20),
-        pressure_bar=Fraction(1),
+        temperature_c=Fraction(1),
+        pressure_bar=Fraction(1, 2),
         design_pressure_bar=Fraction(1),
-        t_critical_c=Fraction(1),
+        t_critical_c=Fraction(100),
     )
     safety_instrumented_system = SafetyInstrumentedSystem(
         sis_id=None,
@@ -183,6 +216,7 @@ def run_all_invariants() -> dict:
         ("check_esd_timing", lambda: check_esd_timing(emergency_shutdown)),
         ("check_leak_detection", lambda: check_leak_detection(hazmat_containment)),
         ("check_pressure_interlock", lambda: check_pressure_interlock(reactor_control)),
+        ("check_reactor_safety_margin", lambda: check_reactor_safety_margin(reactor_control)),
         ("check_sis_reliability", lambda: check_sis_reliability(safety_instrumented_system)),
         ("check_thermal_runaway_protection", lambda: check_thermal_runaway_protection(reactor_control)),
     ]
