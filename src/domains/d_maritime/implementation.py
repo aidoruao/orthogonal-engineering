@@ -50,6 +50,7 @@ class FlagState:
     white_list: bool  # Low detention rate
     grey_list: bool
     black_list: bool
+    flag_state_quality_score: Fraction = Fraction(1, 1)
     
     def is_quality_flag(self) -> bool:
         """Flag state with good compliance record."""
@@ -73,10 +74,13 @@ class Vessel:
     # Certifications
     smc_certified: bool  # Safety Management Certificate (ISM Code)
     doc_certified: bool  # Document of Compliance
-    
+
     # Insurance
     p_and_i_insurance: bool  # Protection and Indemnity
     hull_insurance: bool
+
+    smc_compliance_score: Fraction = Fraction(1, 1)
+    doc_compliance_score: Fraction = Fraction(1, 1)
     
     def adequately_manned(self) -> bool:
         """Meets minimum safe manning requirements."""

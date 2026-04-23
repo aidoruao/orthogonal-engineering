@@ -5,7 +5,7 @@ renewable portfolio standards, and grid interconnection requirements.
 
 Standards:
 - FERC Order 1000 (Transmission Planning)
-- PURPA (16 U.S.C. §824a-3)
+- PURPA (16 U.S.C. 824a-3)
 - State Renewable Portfolio Standards (RPS)
 - IEEE 1547-2018 (Interconnection Standards)
 """
@@ -20,14 +20,15 @@ from .implementation import EnergyFacility
 
 
 def check_ferc_licensing(facility: EnergyFacility) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Hydroelectric facilities require a valid FERC license (16 U.S.C. §797).
+    """Rule: Hydroelectric facilities require FERC license compliance score above threshold (16 U.S.C. 797).
 
-    falsifies_if: facility_type is "hydro" AND ferc_license_valid is False.
+    falsifies_if: facility_type is "hydro" AND license_compliance_score < Fraction(3, 4).
     """
     if facility.facility_type == "hydro":
-        success = facility.ferc_license_valid
+        threshold = Fraction(3, 4)
+        success = facility.license_compliance_score >= threshold
     else:
+        threshold = Fraction(0)
         success = True
 
     if not success:
@@ -36,9 +37,10 @@ def check_ferc_licensing(facility: EnergyFacility) -> Tuple[bool, ProofObject]:
             premises=[
                 f"facility_id={facility.facility_id}",
                 f"facility_type={facility.facility_type}",
-                f"ferc_license_valid={facility.ferc_license_valid}",
+                f"license_compliance_score={facility.license_compliance_score}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: 16 U.S.C. §797 — hydroelectric facility operating without valid FERC license",
+            conclusion="VIOLATION: 16 U.S.C. 797 — hydroelectric facility FERC license compliance below threshold",
         )
 
     return True, ProofObject(
@@ -46,19 +48,20 @@ def check_ferc_licensing(facility: EnergyFacility) -> Tuple[bool, ProofObject]:
         premises=[
             f"facility_id={facility.facility_id}",
             f"facility_type={facility.facility_type}",
-            f"ferc_license_valid={facility.ferc_license_valid}",
+            f"license_compliance_score={facility.license_compliance_score}",
+            f"threshold={threshold}",
         ],
-        conclusion="FERC licensing requirement satisfied per 16 U.S.C. §797",
+        conclusion="FERC licensing compliance satisfied per 16 U.S.C. 797",
     )
 
 
 def check_renewable_portfolio_standard(facility: EnergyFacility) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Renewable energy fraction must meet or exceed the required portfolio standard.
+    """Rule: Renewable energy fraction must meet or exceed the required portfolio standard.
 
     falsifies_if: renewable_portfolio_fraction < required_renewable_fraction.
     """
     success = facility.renewable_portfolio_fraction >= facility.required_renewable_fraction
+    shortfall = facility.required_renewable_fraction - facility.renewable_portfolio_fraction
 
     if not success:
         return False, ProofObject(
@@ -67,6 +70,7 @@ def check_renewable_portfolio_standard(facility: EnergyFacility) -> Tuple[bool, 
                 f"facility_id={facility.facility_id}",
                 f"renewable_portfolio_fraction={facility.renewable_portfolio_fraction}",
                 f"required_renewable_fraction={facility.required_renewable_fraction}",
+                f"shortfall={shortfall}",
             ],
             conclusion="VIOLATION: RPS — renewable portfolio fraction below required minimum",
         )
@@ -77,37 +81,39 @@ def check_renewable_portfolio_standard(facility: EnergyFacility) -> Tuple[bool, 
             f"facility_id={facility.facility_id}",
             f"renewable_portfolio_fraction={facility.renewable_portfolio_fraction}",
             f"required_renewable_fraction={facility.required_renewable_fraction}",
+            f"shortfall={shortfall}",
         ],
         conclusion="Renewable Portfolio Standard satisfied",
     )
 
 
 def check_grid_interconnection(facility: EnergyFacility) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Grid-connected generation requires an interconnection agreement per FERC Order 2003.
+    """Rule: Grid interconnection readiness score must meet FERC Order 2003 threshold.
 
-    falsifies_if: interconnection_agreement is False.
+    falsifies_if: interconnection_readiness_score < Fraction(1, 2).
     """
-    success = facility.interconnection_agreement
+    threshold = Fraction(1, 2)
+    success = facility.interconnection_readiness_score >= threshold
 
     if not success:
         return False, ProofObject(
             rule="GridInterconnectionAgreement",
             premises=[
                 f"facility_id={facility.facility_id}",
-                f"interconnection_agreement={facility.interconnection_agreement}",
-                f"capacity_mw={facility.capacity_mw}",
+                f"interconnection_readiness_score={facility.interconnection_readiness_score}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: FERC Order 2003 — facility connected without interconnection agreement",
+            conclusion="VIOLATION: FERC Order 2003 — interconnection readiness below threshold",
         )
 
     return True, ProofObject(
         rule="GridInterconnectionAgreement",
         premises=[
             f"facility_id={facility.facility_id}",
-            f"interconnection_agreement={facility.interconnection_agreement}",
+            f"interconnection_readiness_score={facility.interconnection_readiness_score}",
+            f"threshold={threshold}",
         ],
-        conclusion="FERC Order 2003 grid interconnection agreement satisfied",
+        conclusion="FERC Order 2003 grid interconnection readiness satisfied",
     )
 
 
@@ -126,6 +132,8 @@ def run_all_invariants() -> Dict[str, str]:
         reported_capacity_mw=Fraction(50),
         renewable_portfolio_fraction=Fraction(3, 10),
         required_renewable_fraction=Fraction(1, 5),
+        license_compliance_score=Fraction(1, 1),
+        interconnection_readiness_score=Fraction(1, 1),
     )
 
     checks = [

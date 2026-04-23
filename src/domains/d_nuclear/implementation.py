@@ -23,6 +23,8 @@ class ReactorUnit:
     fuel_burnup_mwd_per_t: Fraction
     control_rod_insertion_fraction: Fraction
     active_barriers: int
+    containment_integrity_score: Fraction = Fraction(1, 1)
+    barrier_redundancy_fraction: Fraction = Fraction(1, 1)
 
 
 @dataclass(frozen=True)

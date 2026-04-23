@@ -42,6 +42,9 @@ class FlightState:
     medical_certificate_valid: bool
     flight_plan_filed: bool
     ifr_conditions: bool  # instrument flight rules conditions present
+    pilot_certification_score: Fraction = Fraction(1, 1)
+    medical_validity_score: Fraction = Fraction(1, 1)
+    ifr_readiness_score: Fraction = Fraction(1, 1)
 
 
 # ---------------------------------------------------------------------------

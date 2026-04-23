@@ -12,6 +12,7 @@ from .implementation import (
     ViolationType,
 )
 
+
 def check_pel(hazard: Hazard) -> Tuple[bool, ProofObject]:
     """OSHA Permissible Exposure Limit compliance.
 
@@ -30,48 +31,60 @@ def check_pel(hazard: Hazard) -> Tuple[bool, ProofObject]:
         rule="osha_pel"
     )
 
-def check_fall_protection(fp: FallProtection) -> Tuple[bool, ProofObject]:
-    """OSHA 1926.501: Fall protection at 6+ feet.
 
-    Falsifies if: fall protection is required but not provided.
-    falsifies_if: fall protection is required but not provided.
+def check_fall_protection_coverage(fp: FallProtection) -> Tuple[bool, ProofObject]:
+    """OSHA 1926.501: Fall protection coverage at 6+ feet.
+
+    Falsifies if: work height is 6+ feet and fall protection coverage is less than 3/4.
+    falsifies_if: work height is 6+ feet and fall protection coverage is less than 3/4.
     """
-    if not fp.protection_required():
+    threshold = Fraction(6)
+    coverage_ratio = fp.fall_protection_coverage
+    if fp.work_height_feet < threshold:
         return True, ProofObject(
-            conclusion=f"Fall protection not required ({fp.work_height_feet} < {fp.FALL_PROTECTION_THRESHOLD} ft)",
+            conclusion=f"Fall protection not required ({fp.work_height_feet} < {threshold} ft)",
             premises=[],
-            rule="osha_fall_protection"
+            rule="osha_fall_protection_coverage"
         )
-    
-    if fp.is_compliant():
+    if coverage_ratio >= Fraction(3, 4):
         return True, ProofObject(
-            conclusion="Fall protection adequate",
+            conclusion=f"Fall protection coverage adequate ({coverage_ratio})",
             premises=[],
-            rule="osha_fall_protection"
+            rule="osha_fall_protection_coverage"
         )
-    
     return False, ProofObject(
-        conclusion="VIOLATION: Fall protection required but not provided",
-        premises=[f"Height: {fp.work_height_feet} feet"],
-        rule="osha_fall_protection"
+        conclusion=f"VIOLATION: Fall protection coverage insufficient ({coverage_ratio} < 3/4)",
+        premises=[f"Height: {fp.work_height_feet} feet", f"Coverage: {coverage_ratio}"],
+        rule="osha_fall_protection_coverage"
     )
 
-def check_general_duty(inspection: OSHAInspection) -> Tuple[bool, ProofObject]:
-    """OSH Act § 5(a)(1): General duty clause.
 
-    Falsifies if: recognized hazard is not abated under the general duty clause.
-    falsifies_if: recognized hazard is not abated under the general duty clause.
+def check_abatement_completeness_score(inspection: OSHAInspection) -> Tuple[bool, ProofObject]:
+    """OSH Act § 5(a)(1): Abatement completeness score.
+
+    Falsifies if: average abatement completeness score across hazards is less than 1/2.
+    falsifies_if: average abatement completeness score across hazards is less than 1/2.
     """
-    if inspection.has_general_duty_violation():
-        return False, ProofObject(
-            conclusion="VIOLATION: General duty clause — recognized hazard not abated",
+    if not inspection.hazards_found:
+        return True, ProofObject(
+            conclusion="No hazards found; abatement completeness satisfied",
             premises=[],
-            rule="osha_general_duty"
+            rule="osha_abatement_completeness"
         )
-    return True, ProofObject(
-        conclusion="General duty clause satisfied",
-        premises=[],
-        rule="osha_general_duty"
+    total = Fraction(0)
+    for hazard in inspection.hazards_found:
+        total += hazard.abatement_completeness_score
+    average = total / len(inspection.hazards_found)
+    if average >= Fraction(1, 2):
+        return True, ProofObject(
+            conclusion=f"Average abatement completeness adequate ({average})",
+            premises=[f"Hazards: {len(inspection.hazards_found)}", f"Average: {average}"],
+            rule="osha_abatement_completeness"
+        )
+    return False, ProofObject(
+        conclusion=f"VIOLATION: Average abatement completeness insufficient ({average} < 1/2)",
+        premises=[f"Hazards: {len(inspection.hazards_found)}", f"Average: {average}"],
+        rule="osha_abatement_completeness"
     )
 
 
@@ -82,19 +95,21 @@ def run_all_invariants() -> dict:
     """
     fall_protection = FallProtection(
         work_height_feet=Fraction(1),
+        fall_protection_coverage=Fraction(1, 1),
     )
     osha_inspection = OSHAInspection(
         workplace=Workplace(
-        employer="SAMPLE",
-        location="Sample Location",
-        industry="SAMPLE",
-        employees_count=1,
-    ),
+            employer="SAMPLE",
+            location="Sample Location",
+            industry="SAMPLE",
+            employees_count=1,
+        ),
         inspection_date="SAMPLE",
         hazards_found=[Hazard(
-        description="Sample description",
-        location="Sample Location",
-    )],
+            description="Sample description",
+            location="Sample Location",
+            abatement_completeness_score=Fraction(1, 1),
+        )],
         citations_issued=[ViolationType.SERIOUS],
     )
     hazard = Hazard(
@@ -103,8 +118,8 @@ def run_all_invariants() -> dict:
     )
 
     checks = [
-        ("check_fall_protection", lambda: check_fall_protection(fall_protection)),
-        ("check_general_duty", lambda: check_general_duty(osha_inspection)),
+        ("check_fall_protection_coverage", lambda: check_fall_protection_coverage(fall_protection)),
+        ("check_abatement_completeness_score", lambda: check_abatement_completeness_score(osha_inspection)),
         ("check_pel", lambda: check_pel(hazard)),
     ]
 

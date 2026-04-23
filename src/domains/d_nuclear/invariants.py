@@ -21,12 +21,12 @@ from .implementation import (
 
 
 def check_scram_response_time(reactor: ReactorUnit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Reactor scram response time must not exceed the design scram limit (NUREG-0800).
+    """Rule: Reactor scram response time must not exceed the design scram limit (NUREG-0800).
 
     falsifies_if: scram_time_ms > design_scram_limit_ms
     """
     within_limit = reactor.scram_time_ms <= reactor.design_scram_limit_ms
+    margin = reactor.design_scram_limit_ms - reactor.scram_time_ms
 
     if not within_limit:
         return False, ProofObject(
@@ -35,6 +35,7 @@ def check_scram_response_time(reactor: ReactorUnit) -> Tuple[bool, ProofObject]:
                 f"unit_id={reactor.unit_id}",
                 f"scram_time_ms={reactor.scram_time_ms}",
                 f"design_scram_limit_ms={reactor.design_scram_limit_ms}",
+                f"margin={margin}",
             ],
             conclusion="VIOLATION: Scram response time exceeds design limit per NUREG-0800",
         )
@@ -45,18 +46,19 @@ def check_scram_response_time(reactor: ReactorUnit) -> Tuple[bool, ProofObject]:
             f"unit_id={reactor.unit_id}",
             f"scram_time_ms={reactor.scram_time_ms}",
             f"design_scram_limit_ms={reactor.design_scram_limit_ms}",
+            f"margin={margin}",
         ],
         conclusion="Scram response time within design limit per NUREG-0800",
     )
 
 
 def check_radiation_dose_alara(exposure: RadiationExposure) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Worker radiation dose must remain at or below the ALARA target (10 CFR 20).
+    """Rule: Worker radiation dose must remain at or below the ALARA target (10 CFR 20).
 
     falsifies_if: dose_msv > alara_target_msv
     """
     within_alara = exposure.dose_msv <= exposure.alara_target_msv
+    margin = exposure.alara_target_msv - exposure.dose_msv
 
     if not within_alara:
         return False, ProofObject(
@@ -66,6 +68,7 @@ def check_radiation_dose_alara(exposure: RadiationExposure) -> Tuple[bool, Proof
                 f"dose_msv={exposure.dose_msv}",
                 f"alara_target_msv={exposure.alara_target_msv}",
                 f"annual_limit_msv={exposure.annual_limit_msv}",
+                f"margin={margin}",
             ],
             conclusion="VIOLATION: Worker dose exceeds ALARA target per 10 CFR 20",
         )
@@ -76,47 +79,51 @@ def check_radiation_dose_alara(exposure: RadiationExposure) -> Tuple[bool, Proof
             f"worker_id={exposure.worker_id}",
             f"dose_msv={exposure.dose_msv}",
             f"alara_target_msv={exposure.alara_target_msv}",
+            f"margin={margin}",
         ],
         conclusion="Worker dose within ALARA target per 10 CFR 20",
     )
 
 
 def check_containment_integrity(reactor: ReactorUnit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Reactor containment integrity must be maintained at all times (10 CFR 50, defense-in-depth).
+    """Rule: Containment integrity score must meet defense-in-depth threshold (10 CFR 50).
 
-    falsifies_if: containment_integrity is False
+    falsifies_if: containment_integrity_score < Fraction(3, 4).
     """
-    intact = reactor.containment_integrity
+    threshold = Fraction(3, 4)
+    intact = reactor.containment_integrity_score >= threshold
 
     if not intact:
         return False, ProofObject(
             rule="containment_integrity",
             premises=[
                 f"unit_id={reactor.unit_id}",
-                "containment_integrity=False",
+                f"containment_integrity_score={reactor.containment_integrity_score}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: Containment integrity lost per 10 CFR 50 defense-in-depth",
+            conclusion="VIOLATION: Containment integrity score below threshold per 10 CFR 50 defense-in-depth",
         )
 
     return True, ProofObject(
         rule="containment_integrity",
         premises=[
             f"unit_id={reactor.unit_id}",
-            "containment_integrity=True",
+            f"containment_integrity_score={reactor.containment_integrity_score}",
+            f"threshold={threshold}",
         ],
-        conclusion="Containment integrity maintained per 10 CFR 50 defense-in-depth",
+        conclusion="Containment integrity score meets threshold per 10 CFR 50 defense-in-depth",
     )
 
 
 def check_waste_containment(container: WasteContainer) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Waste container leak rate and storage duration must remain within design bounds (10 CFR 61).
+    """Rule: Waste container leak rate and storage duration must remain within design bounds (10 CFR 61).
 
     falsifies_if: leak_rate_bq_per_s > max_leak_rate_bq_per_s OR storage_years > design_life_years
     """
     leak_ok = container.leak_rate_bq_per_s <= container.max_leak_rate_bq_per_s
     storage_ok = container.storage_years <= container.design_life_years
+    leak_margin = container.max_leak_rate_bq_per_s - container.leak_rate_bq_per_s
+    storage_margin = container.design_life_years - container.storage_years
 
     if not (leak_ok and storage_ok):
         return False, ProofObject(
@@ -127,8 +134,8 @@ def check_waste_containment(container: WasteContainer) -> Tuple[bool, ProofObjec
                 f"max_leak_rate_bq_per_s={container.max_leak_rate_bq_per_s}",
                 f"storage_years={container.storage_years}",
                 f"design_life_years={container.design_life_years}",
-                f"leak_ok={leak_ok}",
-                f"storage_ok={storage_ok}",
+                f"leak_margin={leak_margin}",
+                f"storage_margin={storage_margin}",
             ],
             conclusion="VIOLATION: Waste container leak rate or storage duration exceeds bounds per 10 CFR 61",
         )
@@ -141,18 +148,20 @@ def check_waste_containment(container: WasteContainer) -> Tuple[bool, ProofObjec
             f"max_leak_rate_bq_per_s={container.max_leak_rate_bq_per_s}",
             f"storage_years={container.storage_years}",
             f"design_life_years={container.design_life_years}",
+            f"leak_margin={leak_margin}",
+            f"storage_margin={storage_margin}",
         ],
         conclusion="Waste container within leak and storage design bounds per 10 CFR 61",
     )
 
 
 def check_emergency_notification(plan: EmergencyPlan) -> Tuple[bool, ProofObject]:
-    """
-    Rule: Emergency notification must be completed within maximum allowed time (10 CFR 50.72).
+    """Rule: Emergency notification must be completed within maximum allowed time (10 CFR 50.72).
 
     falsifies_if: notification_time_min > max_notification_time_min
     """
     on_time = plan.notification_time_min <= plan.max_notification_time_min
+    slack = plan.max_notification_time_min - plan.notification_time_min
 
     if not on_time:
         return False, ProofObject(
@@ -161,6 +170,7 @@ def check_emergency_notification(plan: EmergencyPlan) -> Tuple[bool, ProofObject
                 f"plan_id={plan.plan_id}",
                 f"notification_time_min={plan.notification_time_min}",
                 f"max_notification_time_min={plan.max_notification_time_min}",
+                f"slack={slack}",
             ],
             conclusion="VIOLATION: Emergency notification time exceeds limit per 10 CFR 50.72",
         )
@@ -171,14 +181,14 @@ def check_emergency_notification(plan: EmergencyPlan) -> Tuple[bool, ProofObject
             f"plan_id={plan.plan_id}",
             f"notification_time_min={plan.notification_time_min}",
             f"max_notification_time_min={plan.max_notification_time_min}",
+            f"slack={slack}",
         ],
         conclusion="Emergency notification time within limit per 10 CFR 50.72",
     )
 
 
 def check_criticality_safety(assessment: CriticalityAssessment) -> Tuple[bool, ProofObject]:
-    """
-    Rule: k-effective must be strictly less than 1 and subcritical margin must meet minimum (IAEA Safety Standards GSR Part 4).
+    """Rule: k-effective must be strictly less than 1 and subcritical margin must meet minimum (IAEA Safety Standards GSR Part 4).
 
     falsifies_if: k_effective >= Fraction(1) OR subcritical_margin < min_subcritical_margin
     """
@@ -212,21 +222,23 @@ def check_criticality_safety(assessment: CriticalityAssessment) -> Tuple[bool, P
 
 
 def check_defense_in_depth(reactor: ReactorUnit) -> Tuple[bool, ProofObject]:
-    """
-    Rule: At least three independent barriers must be maintained (10 CFR 50 Appendix A, defense-in-depth principle).
+    """Rule: Barrier redundancy fraction must meet defense-in-depth threshold (10 CFR 50 Appendix A).
 
-    falsifies_if: active_barriers < 3
+    falsifies_if: barrier_redundancy_fraction < Fraction(3, 4).
     """
-    adequate_barriers = reactor.active_barriers >= 3
+    threshold = Fraction(3, 4)
+    adequate = reactor.barrier_redundancy_fraction >= threshold
 
-    if not adequate_barriers:
+    if not adequate:
         return False, ProofObject(
             rule="defense_in_depth",
             premises=[
                 f"unit_id={reactor.unit_id}",
                 f"active_barriers={reactor.active_barriers}",
+                f"barrier_redundancy_fraction={reactor.barrier_redundancy_fraction}",
+                f"threshold={threshold}",
             ],
-            conclusion="VIOLATION: Fewer than 3 active barriers per 10 CFR 50 Appendix A defense-in-depth",
+            conclusion="VIOLATION: Barrier redundancy fraction below threshold per 10 CFR 50 Appendix A defense-in-depth",
         )
 
     return True, ProofObject(
@@ -234,8 +246,10 @@ def check_defense_in_depth(reactor: ReactorUnit) -> Tuple[bool, ProofObject]:
         premises=[
             f"unit_id={reactor.unit_id}",
             f"active_barriers={reactor.active_barriers}",
+            f"barrier_redundancy_fraction={reactor.barrier_redundancy_fraction}",
+            f"threshold={threshold}",
         ],
-        conclusion="Three or more active barriers maintained per 10 CFR 50 Appendix A defense-in-depth",
+        conclusion="Barrier redundancy fraction meets threshold per 10 CFR 50 Appendix A defense-in-depth",
     )
 
 
@@ -255,6 +269,8 @@ def run_all_invariants() -> dict:
         fuel_burnup_mwd_per_t=Fraction(35000),
         control_rod_insertion_fraction=Fraction(1, 2),
         active_barriers=4,
+        containment_integrity_score=Fraction(1, 1),
+        barrier_redundancy_fraction=Fraction(1, 1),
     )
     exposure = RadiationExposure(
         worker_id="WORKER-001",

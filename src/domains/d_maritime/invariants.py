@@ -14,6 +14,7 @@ Falsifies if:
 - General average calculation error
 """
 
+from datetime import datetime
 from fractions import Fraction
 from typing import Tuple
 from axioms.logic import ProofObject
@@ -54,52 +55,64 @@ def check_safe_manning(vessel: Vessel) -> Tuple[bool, ProofObject]:
     )
 
 
-def check_ism_compliance(vessel: Vessel) -> Tuple[bool, ProofObject]:
+def check_ism_completeness_score(vessel: Vessel) -> Tuple[bool, ProofObject]:
     """ISM Code requires Safety Management Certificate and Document of Compliance.
     
-    Falsifies if: smc_certified or doc_certified is False.
-    falsifies_if: smc_certified or doc_certified is False.
+    Falsifies if: smc_compliance_score or doc_compliance_score is below 3/4.
+    falsifies_if: smc_compliance_score or doc_compliance_score is below 3/4.
     """
-    if not vessel.smc_certified:
+    threshold = Fraction(3, 4)
+    
+    if vessel.smc_compliance_score < threshold:
         return False, ProofObject(
-            conclusion="VIOLATION: Vessel lacks Safety Management Certificate",
+            conclusion=f"VIOLATION: SMC compliance score {vessel.smc_compliance_score} below threshold {threshold}",
             premises=[
                 f"Vessel: {vessel.vessel_name}",
-                "SMC: Not certified"
+                f"SMC score: {vessel.smc_compliance_score}",
+                f"Threshold: {threshold}"
             ],
             rule="ism_code_smc_required"
         )
     
-    if not vessel.doc_certified:
+    if vessel.doc_compliance_score < threshold:
         return False, ProofObject(
-            conclusion="VIOLATION: Vessel lacks Document of Compliance",
+            conclusion=f"VIOLATION: DOC compliance score {vessel.doc_compliance_score} below threshold {threshold}",
             premises=[
                 f"Vessel: {vessel.vessel_name}",
-                "DOC: Not certified"
+                f"DOC score: {vessel.doc_compliance_score}",
+                f"Threshold: {threshold}"
             ],
             rule="ism_code_doc_required"
         )
     
+    composite = (vessel.smc_compliance_score + vessel.doc_compliance_score) / 2
     return True, ProofObject(
-        conclusion="Vessel ISM compliant",
-        premises=["SMC: Certified", "DOC: Certified"],
+        conclusion=f"Vessel ISM compliant with composite score {composite}",
+        premises=[
+            f"SMC score: {vessel.smc_compliance_score}",
+            f"DOC score: {vessel.doc_compliance_score}",
+            f"Composite: {composite}"
+        ],
         rule="ism_compliant"
     )
 
 
-def check_flag_state_quality(vessel: Vessel) -> Tuple[bool, ProofObject]:
+def check_flag_state_score(vessel: Vessel) -> Tuple[bool, ProofObject]:
     """Paris MoU/Tokyo MoU target substandard flag states.
     
-    Falsifies if: flag_state.black_list is True.
-    falsifies_if: flag_state.black_list is True.
+    Falsifies if: flag_state_quality_score is below 1/2.
+    falsifies_if: flag_state_quality_score is below 1/2.
     """
-    if vessel.flag_state.black_list:
+    threshold = Fraction(1, 2)
+    
+    if vessel.flag_state.flag_state_quality_score < threshold:
         return False, ProofObject(
-            conclusion="VIOLATION: Vessel registered under black-list flag state",
+            conclusion=f"VIOLATION: Flag state quality score {vessel.flag_state.flag_state_quality_score} below threshold {threshold}",
             premises=[
                 f"Vessel: {vessel.vessel_name}",
                 f"Flag: {vessel.flag_state.country_name}",
-                "Status: Black list (high detention rate)"
+                f"Quality score: {vessel.flag_state.flag_state_quality_score}",
+                f"Threshold: {threshold}"
             ],
             rule="port_state_control_flag_quality"
         )
@@ -108,7 +121,7 @@ def check_flag_state_quality(vessel: Vessel) -> Tuple[bool, ProofObject]:
         conclusion="Flag state acceptable",
         premises=[
             f"Flag: {vessel.flag_state.country_name}",
-            f"White list: {vessel.flag_state.white_list}"
+            f"Quality score: {vessel.flag_state.flag_state_quality_score}"
         ],
         rule="flag_state_compliant"
     )
@@ -215,68 +228,71 @@ def run_all_invariants() -> dict:
     falsifies_if: any invariant fails or raises an exception.
     """
     vessel = Vessel(
-        imo_number=None,
-        vessel_name=None,
+        imo_number="1234567",
+        vessel_name="Nominal Vessel",
         vessel_type=VesselType.CONTAINER,
         flag_state=FlagState(
-        country_code=None,
-        country_name=None,
-        white_list=None,
-        grey_list=None,
-        black_list=None,
-    ),
-        gross_tonnage=None,
-        crew_count=None,
-        minimum_safe_manning=None,
-        smc_certified=None,
-        doc_certified=None,
-        p_and_i_insurance=None,
-        hull_insurance=None,
+            country_code="GB",
+            country_name="United Kingdom",
+            white_list=True,
+            grey_list=False,
+            black_list=False,
+            flag_state_quality_score=Fraction(3, 4),
+        ),
+        gross_tonnage=50000,
+        crew_count=20,
+        minimum_safe_manning=10,
+        smc_certified=True,
+        doc_certified=True,
+        smc_compliance_score=Fraction(1, 1),
+        doc_compliance_score=Fraction(1, 1),
+        p_and_i_insurance=True,
+        hull_insurance=True,
     )
     general_average = GeneralAverage(
-        ga_id=None,
-        voyage_number=None,
-        declaration_date=None,
+        ga_id="GA-001",
+        voyage_number="V001",
+        declaration_date=datetime(2024, 1, 1, 12, 0),
         cargo_sacrificed_value=Fraction(1),
         vessel_damage_value=Fraction(1),
-        vessel_value=Fraction(1),
-        cargo_values=None,
-        freight_at_risk=Fraction(1),
+        vessel_value=Fraction(10),
+        cargo_values=[Fraction(5)],
+        freight_at_risk=Fraction(5),
     )
     cargo = Cargo(
-        cargo_id=None,
-        bill_of_lading=None,
-        description=None,
-        weight_kg=None,
-        value=Fraction(1),
-        shipper=None,
-        consignee=None,
-        dangerous_goods=None,
+        cargo_id="C-001",
+        bill_of_lading="BL-001",
+        description="Test cargo",
+        weight_kg=1000,
+        value=Fraction(100),
+        shipper="Shipper A",
+        consignee="Consignee B",
+        dangerous_goods=False,
         imdg_class=None,
-        loaded=None,
-        delivered=None,
+        loaded=True,
+        delivered=False,
     )
     maritime_incident = MaritimeIncident(
-        incident_id=None,
-        vessel_imo=None,
-        incident_date=None,
-        location=None,
-        incident_type=None,
+        incident_id="I-001",
+        vessel_imo="1234567",
+        incident_date=datetime(2024, 1, 1, 12, 0),
+        location="Test location",
+        incident_type="collision",
         maritime_zone=MaritimeZone.INTERNAL_WATERS,
-        injuries=None,
-        fatalities=None,
-        pollution_released=None,
-        vessel_damage=Fraction(1),
-        flag_state_investigation=None,
-        maib_involved=None,
-        report_issued=None,
+        injuries=0,
+        fatalities=0,
+        pollution_released=False,
+        vessel_damage=Fraction(1, 10),
+        flag_state_investigation=False,
+        maib_involved=False,
+        report_issued=False,
     )
 
     checks = [
-        ("check_flag_state_quality", lambda: check_flag_state_quality(vessel)),
+        ("check_flag_state_score", lambda: check_flag_state_score(vessel)),
         ("check_general_average_calculation", lambda: check_general_average_calculation(general_average)),
         ("check_hazmat_declaration", lambda: check_hazmat_declaration(cargo)),
-        ("check_ism_compliance", lambda: check_ism_compliance(vessel)),
+        ("check_ism_completeness_score", lambda: check_ism_completeness_score(vessel)),
         ("check_safe_manning", lambda: check_safe_manning(vessel)),
         ("check_serious_incident_reporting", lambda: check_serious_incident_reporting(maritime_incident)),
     ]

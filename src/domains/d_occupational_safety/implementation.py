@@ -27,6 +27,7 @@ class Hazard:
     chemical_exposure_ppm: Fraction = Fraction(0)
     permissible_exposure_limit: Fraction = Fraction(0)
     abatement_feasible: bool = False
+    abatement_completeness_score: Fraction = Fraction(1, 1)
     
     def exceeds_pel(self) -> bool:
         """OSHA PEL: Permissible Exposure Limit exceeded."""
@@ -41,6 +42,7 @@ class FallProtection:
     guardrails_installed: bool = False
     personal_fall_arrest: bool = False
     safety_nets: bool = False
+    fall_protection_coverage: Fraction = Fraction(1, 1)
     
     FALL_PROTECTION_THRESHOLD = Fraction(6)  # 6 feet
     

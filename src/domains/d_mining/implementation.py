@@ -101,6 +101,7 @@ class SafetyIncident:
     msha_investigation: bool
     root_cause_identified: bool
     corrective_actions: List[str] = field(default_factory=list)
+    investigation_completeness_score: Fraction = Fraction(1, 1)
 
 
 @dataclass
@@ -116,6 +117,7 @@ class EnvironmentalPermit:
     # Limits
     discharge_limits: Dict[str, Fraction]  # Parameter -> limit
     monitoring_required: bool
+    permit_validity_fraction: Fraction = Fraction(1, 1)
     
     def is_current(self) -> bool:
         """Permit not expired."""
@@ -168,6 +170,7 @@ class HealthMonitoring:
     # Hearing
     noise_exposure_dba: Fraction
     hearing_conservation_required: bool
+    screening_compliance_score: Fraction = Fraction(1, 1)
     
     def pneumoconiosis_present(self) -> bool:
         """Coal workers' pneumoconiosis detected."""

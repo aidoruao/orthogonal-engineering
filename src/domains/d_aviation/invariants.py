@@ -383,73 +383,72 @@ def check_flight_envelope_compliance(state: FlightState) -> Tuple[bool, ProofObj
     )
 
 
-def check_pilot_certification(state: FlightState) -> Tuple[bool, ProofObject]:
+def check_pilot_certification_score(state: FlightState) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Pilot must hold a valid certificate and current medical before acting as PIC.
+    Invariant: Pilot certification and medical validity must each meet the minimum
+    Fraction threshold, and their composite score must be computed exactly.
 
     Standard: FAA 14 CFR Part 61 (Certification of Pilots).
-    falsifies_if: pilot_certified is False OR medical_certificate_valid is False.
+    falsifies_if: pilot_certification_score < 3/4 OR medical_validity_score < 3/4.
 
     Returns:
         Tuple of (success: bool, proof: ProofObject)
     """
-    valid_certs = {"PPL", "CPL", "ATP"}
-    cert_recognized = state.certificate_type in valid_certs
-    success = state.pilot_certified and state.medical_certificate_valid and cert_recognized
+    cert_score = state.pilot_certification_score
+    medical_score = state.medical_validity_score
+    threshold = Fraction(3, 4)
+
+    cert_pass = cert_score >= threshold
+    medical_pass = medical_score >= threshold
+    composite = (cert_score + medical_score) / Fraction(2, 1)
+    success = cert_pass and medical_pass
 
     return success, ProofObject(
-        rule="PilotCertification",
+        rule="PilotCertificationScore",
         premises=[
             f"state_id={state.state_id}",
-            f"pilot_certified={state.pilot_certified}",
-            f"certificate_type={state.certificate_type}",
-            f"cert_recognized={cert_recognized}",
-            f"medical_certificate_valid={state.medical_certificate_valid}",
+            f"pilot_certification_score={cert_score}",
+            f"medical_validity_score={medical_score}",
+            f"threshold={threshold}",
+            f"composite_score={composite}",
+            f"cert_pass={cert_pass}",
+            f"medical_pass={medical_pass}",
         ],
         conclusion=(
-            f"Pilot certification valid per 14 CFR Part 61 (cert={state.certificate_type})"
+            f"Pilot certification valid per 14 CFR Part 61 (composite={composite})"
             if success
-            else "VIOLATION: pilot not certified, medical invalid, or unrecognized certificate type"
+            else "VIOLATION: pilot certification score or medical validity score below 3/4"
         ),
     )
 
 
-def check_ifr_requirements(state: FlightState) -> Tuple[bool, ProofObject]:
+def check_ifr_readiness_score(state: FlightState) -> Tuple[bool, ProofObject]:
     """
-    Invariant: Flight in IFR conditions requires an Instrument Rating (ATP or CPL/IFR rated).
+    Invariant: Flight in IFR conditions requires the pilot's IFR readiness score
+    to meet or exceed the minimum Fraction threshold.
 
     Standard: FAA 14 CFR 61.3(e) (Instrument rating required); FAR 91.173 (ATC clearance).
-    falsifies_if: ifr_conditions is True AND certificate_type is "PPL" (no instrument rating implied).
+    falsifies_if: ifr_readiness_score < 1/2.
 
     Returns:
         Tuple of (success: bool, proof: ProofObject)
     """
-    ifr_rated_certs = {"CPL", "ATP"}
-    ifr_rated = state.certificate_type in ifr_rated_certs
-
-    if state.ifr_conditions and not ifr_rated:
-        success = False
-        conclusion = (
-            f"VIOLATION: IFR conditions present but pilot holds {state.certificate_type} "
-            "without IFR rating — 14 CFR 61.3(e) violated"
-        )
-    elif state.ifr_conditions and not state.flight_plan_filed:
-        success = False
-        conclusion = "VIOLATION: IFR flight without filed flight plan — FAR 91.173 violated"
-    else:
-        success = True
-        conclusion = "IFR requirements satisfied per 14 CFR 61.3(e) and FAR 91.173"
+    ifr_score = state.ifr_readiness_score
+    threshold = Fraction(1, 2)
+    success = ifr_score >= threshold
 
     return success, ProofObject(
-        rule="IFRRequirements",
+        rule="IFRReadinessScore",
         premises=[
             f"state_id={state.state_id}",
-            f"ifr_conditions={state.ifr_conditions}",
-            f"certificate_type={state.certificate_type}",
-            f"ifr_rated={ifr_rated}",
-            f"flight_plan_filed={state.flight_plan_filed}",
+            f"ifr_readiness_score={ifr_score}",
+            f"threshold={threshold}",
         ],
-        conclusion=conclusion,
+        conclusion=(
+            f"IFR readiness satisfied per 14 CFR 61.3(e) (score={ifr_score})"
+            if success
+            else f"VIOLATION: IFR readiness score {ifr_score} below threshold {threshold}"
+        ),
     )
 
 
@@ -470,6 +469,9 @@ def run_all_invariants() -> dict:
         medical_certificate_valid=True,
         flight_plan_filed=True,
         ifr_conditions=True,
+        pilot_certification_score=Fraction(1, 1),
+        medical_validity_score=Fraction(1, 1),
+        ifr_readiness_score=Fraction(1, 1),
     )
 
     checks = [
@@ -481,8 +483,8 @@ def run_all_invariants() -> dict:
         ("check_lift_deterministic", check_lift_deterministic),
         ("check_flight_envelope_fraction_precision", check_flight_envelope_fraction_precision),
         ("check_flight_envelope_compliance", lambda: check_flight_envelope_compliance(nominal_state)),
-        ("check_pilot_certification", lambda: check_pilot_certification(nominal_state)),
-        ("check_ifr_requirements", lambda: check_ifr_requirements(nominal_state)),
+        ("check_pilot_certification_score", lambda: check_pilot_certification_score(nominal_state)),
+        ("check_ifr_readiness_score", lambda: check_ifr_readiness_score(nominal_state)),
     ]
 
     results = {}

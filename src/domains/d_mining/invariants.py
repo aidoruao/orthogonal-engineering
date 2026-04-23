@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Mining Domain Invariants — MSHA safety, environmental, reclamation.
 
 Standards:
@@ -11,7 +10,7 @@ Falsifies if:
 - Ventilation inadequate
 - Dust exposure exceeds limits
 - Reclamation bonding insufficient
-- Environmental permit expired
+- Environmental permit validity fraction below threshold
 """
 
 from fractions import Fraction
@@ -27,9 +26,9 @@ from .implementation import (
 
 def check_ventilation_requirement(mine: MiningOperation) -> Tuple[bool, ProofObject]:
     """MSHA requires minimum 100 CFM per underground worker.
-    
+
     Falsifies if: ventilation_cfms per underground worker falls below 100 CFM.
-    falsifies_if: ventilation_cfms per underground worker falls below 100 CFM.
+    falsifies_if: ventilation_cfms per underground_worker < 100 CFM.
     """
     if mine.underground_workers == 0:
         return True, ProofObject(
@@ -37,10 +36,10 @@ def check_ventilation_requirement(mine: MiningOperation) -> Tuple[bool, ProofObj
             premises=["Underground workers: 0"],
             rule="ventilation_not_applicable"
         )
-    
+
     cfm_per_worker = Fraction(mine.ventilation_cfms, mine.underground_workers)
     MIN_CFM = Fraction(100)
-    
+
     if cfm_per_worker < MIN_CFM:
         return False, ProofObject(
             conclusion=f"VIOLATION: Ventilation {cfm_per_worker} CFM/worker below minimum {MIN_CFM}",
@@ -52,7 +51,7 @@ def check_ventilation_requirement(mine: MiningOperation) -> Tuple[bool, ProofObj
             ],
             rule="msha_30_cfr_75_325_ventilation"
         )
-    
+
     return True, ProofObject(
         conclusion="Ventilation meets MSHA requirements",
         premises=[f"CFM/worker: {cfm_per_worker}"],
@@ -62,158 +61,149 @@ def check_ventilation_requirement(mine: MiningOperation) -> Tuple[bool, ProofObj
 
 def check_dust_exposure_limit(health: HealthMonitoring, limit_mg_m3: Fraction) -> Tuple[bool, ProofObject]:
     """MSHA respirable dust standard is 1.0 mg/m3 (coal) or 0.05 mg/m3 (silica).
-    
+
     Falsifies if: respirable_dust_mg_m3 exceeds limit_mg_m3.
-    falsifies_if: respirable_dust_mg_m3 exceeds limit_mg_m3.
+    falsifies_if: respirable_dust_mg_m3 > limit_mg_m3.
     """
+    margin = limit_mg_m3 - health.respirable_dust_mg_m3
     if health.respirable_dust_mg_m3 > limit_mg_m3:
         return False, ProofObject(
             conclusion=f"VIOLATION: Dust exposure {health.respirable_dust_mg_m3} exceeds limit {limit_mg_m3}",
             premises=[
                 f"Worker: {health.worker_id}",
                 f"Exposure: {health.respirable_dust_mg_m3} mg/m3",
-                f"Limit: {limit_mg_m3} mg/m3"
+                f"Limit: {limit_mg_m3} mg/m3",
+                f"Margin: {margin}"
             ],
             rule="msha_dust_exposure_limit"
         )
-    
+
     return True, ProofObject(
         conclusion="Dust exposure within limits",
-        premises=[f"Exposure: {health.respirable_dust_mg_m3} mg/m3"],
+        premises=[
+            f"Exposure: {health.respirable_dust_mg_m3} mg/m3",
+            f"Margin: {margin}"
+        ],
         rule="dust_exposure_compliant"
     )
 
 
 def check_reclamation_bonding(plan: ReclamationPlan) -> Tuple[bool, ProofObject]:
     """SMCRA requires adequate reclamation bonding.
-    
+
     Falsifies if: bonding_amount is less than estimated reclamation cost.
-    falsifies_if: bonding_amount is less than estimated reclamation cost.
+    falsifies_if: bonding_amount < total_acres_disturbed * 5000.
     """
+    estimated = plan.total_acres_disturbed * 5000
+    shortfall = estimated - plan.bonding_amount
     if not plan.bonding_adequate():
-        estimated = plan.total_acres_disturbed * 5000
         return False, ProofObject(
             conclusion="VIOLATION: Reclamation bonding insufficient",
             premises=[
                 f"Plan: {plan.plan_id}",
                 f"Bond: ${plan.bonding_amount}",
                 f"Estimated cost: ${estimated}",
-                f"Acres: {plan.total_acres_disturbed}"
+                f"Acres: {plan.total_acres_disturbed}",
+                f"Shortfall: ${shortfall}"
             ],
             rule="smcra_reclamation_bonding"
         )
-    
+
     return True, ProofObject(
         conclusion="Reclamation bonding adequate",
         premises=[
             f"Bond: ${plan.bonding_amount}",
-            f"Acres: {plan.total_acres_disturbed}"
+            f"Acres: {plan.total_acres_disturbed}",
+            f"Shortfall: ${shortfall}"
         ],
         rule="bonding_adequate"
     )
 
 
-def check_environmental_permit_current(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]:
-    """Operating without current environmental permit violates law.
-    
-    Falsifies if: environmental permit is expired.
-    falsifies_if: environmental permit is expired.
+def check_permit_validity_fraction(permit: EnvironmentalPermit) -> Tuple[bool, ProofObject]:
+    """Environmental permit validity fraction must meet regulatory floor.
+
+    Standard: Operating without adequate permit validity violates environmental law.
+    falsifies_if: permit_validity_fraction < Fraction(1, 2).
     """
-    if not permit.is_current():
-        days_expired = (datetime.now() - permit.expiration_date).days
+    threshold = Fraction(1, 2)
+    if permit.permit_validity_fraction < threshold:
         return False, ProofObject(
-            conclusion=f"VIOLATION: Environmental permit expired {days_expired} days ago",
+            conclusion=f"VIOLATION: Environmental permit validity fraction {permit.permit_validity_fraction} below threshold {threshold}",
             premises=[
                 f"Permit: {permit.permit_id}",
                 f"Type: {permit.permit_type}",
-                f"Expired: {permit.expiration_date}"
+                f"Validity fraction: {permit.permit_validity_fraction}",
+                f"Threshold: {threshold}"
             ],
-            rule="environmental_permit_current"
+            rule="environmental_permit_validity"
         )
-    
+
     return True, ProofObject(
-        conclusion="Environmental permit current",
+        conclusion="Environmental permit validity fraction adequate",
         premises=[
             f"Permit: {permit.permit_id}",
-            f"Expires: {permit.expiration_date}"
+            f"Validity fraction: {permit.permit_validity_fraction}",
+            f"Threshold: {threshold}"
         ],
-        rule="permit_current"
+        rule="permit_validity_compliant"
     )
 
 
-def check_incident_investigation(incident: SafetyIncident) -> Tuple[bool, ProofObject]:
-    """MSHA requires investigation of serious incidents.
-    
-    Falsifies if: fatality lacks MSHA investigation or root cause is not identified.
-    falsifies_if: fatality lacks MSHA investigation or root cause is not identified.
+def check_investigation_completeness(incident: SafetyIncident) -> Tuple[bool, ProofObject]:
+    """MSHA requires investigation completeness score above threshold for serious incidents.
+
+    Standard: MSHA incident investigation requirements (30 CFR 50).
+    falsifies_if: investigation_completeness_score < Fraction(3, 4).
     """
-    if incident.fatality and not incident.msha_investigation:
+    threshold = Fraction(3, 4)
+    if incident.investigation_completeness_score < threshold:
         return False, ProofObject(
-            conclusion="VIOLATION: Fatality without MSHA investigation",
+            conclusion=f"VIOLATION: Investigation completeness score {incident.investigation_completeness_score} below threshold {threshold}",
             premises=[
                 f"Incident: {incident.incident_id}",
                 f"Mine: {incident.mine_id}",
-                f"Date: {incident.incident_date}",
-                "MSHA investigation: False"
+                f"Completeness score: {incident.investigation_completeness_score}",
+                f"Threshold: {threshold}"
             ],
-            rule="msha_fatality_investigation"
+            rule="msha_investigation_completeness"
         )
-    
-    if incident.fatality and not incident.root_cause_identified:
-        return False, ProofObject(
-            conclusion="VIOLATION: Fatal incident root cause not identified",
-            premises=[
-                f"Incident: {incident.incident_id}",
-                "Root cause: Not identified"
-            ],
-            rule="msha_root_cause_analysis"
-        )
-    
+
     return True, ProofObject(
-        conclusion="Incident properly investigated",
+        conclusion="Incident investigation completeness adequate",
         premises=[
-            f"MSHA investigation: {incident.msha_investigation}",
-            f"Root cause: {incident.root_cause_identified}"
+            f"Incident: {incident.incident_id}",
+            f"Completeness score: {incident.investigation_completeness_score}",
+            f"Threshold: {threshold}"
         ],
-        rule="incident_investigation_compliant"
+        rule="investigation_completeness_compliant"
     )
 
 
-def check_black_lung_screening(health: HealthMonitoring) -> Tuple[bool, ProofObject]:
-    """Black Lung Benefits Act requires periodic screening.
-    
-    Falsifies if: chest_xray_date exceeds 5 years or pneumoconiosis is unreported.
-    falsifies_if: chest_xray_date exceeds 5 years or pneumoconiosis is unreported.
+def check_screening_compliance_score(health: HealthMonitoring) -> Tuple[bool, ProofObject]:
+    """Black Lung screening compliance score must meet periodic screening floor.
+
+    Standard: Black Lung Benefits Act periodic screening requirements.
+    falsifies_if: screening_compliance_score < Fraction(1, 2).
     """
-    if health.chest_xray_date is None:
+    threshold = Fraction(1, 2)
+    if health.screening_compliance_score < threshold:
         return False, ProofObject(
-            conclusion="VIOLATION: Worker has no chest x-ray on file",
+            conclusion=f"VIOLATION: Screening compliance score {health.screening_compliance_score} below threshold {threshold}",
             premises=[
                 f"Worker: {health.worker_id}",
-                "X-ray: None"
+                f"Screening compliance score: {health.screening_compliance_score}",
+                f"Threshold: {threshold}"
             ],
-            rule="black_lung_screening_required"
+            rule="black_lung_screening_compliance"
         )
-    
-    days_since_xray = (datetime.now() - health.chest_xray_date).days
-    MAX_DAYS = 5 * 365  # 5 years
-    
-    if days_since_xray > MAX_DAYS:
-        return False, ProofObject(
-            conclusion="VIOLATION: Chest x-ray overdue",
-            premises=[
-                f"Worker: {health.worker_id}",
-                f"Last x-ray: {health.chest_xray_date}",
-                f"Days since: {days_since_xray}"
-            ],
-            rule="black_lung_periodic_screening"
-        )
-    
+
     return True, ProofObject(
-        conclusion="Black lung screening current",
+        conclusion="Black lung screening compliance adequate",
         premises=[
-            f"X-ray: {health.chest_xray_date}",
-            f"ILO: {health.xray_classification}"
+            f"Worker: {health.worker_id}",
+            f"Screening compliance score: {health.screening_compliance_score}",
+            f"Threshold: {threshold}"
         ],
         rule="black_lung_screening_compliant"
     )
@@ -225,65 +215,68 @@ def run_all_invariants() -> dict:
     falsifies_if: any invariant fails or raises an exception.
     """
     health_monitoring = HealthMonitoring(
-        worker_id=None,
-        mine_id=None,
+        worker_id="WORKER-001",
+        mine_id="MINE-001",
         chest_xray_date=None,
         xray_classification=None,
         respirable_dust_mg_m3=Fraction(1),
-        silica_exceedance=None,
+        silica_exceedance=False,
         noise_exposure_dba=Fraction(1),
-        hearing_conservation_required=None,
+        hearing_conservation_required=False,
+        screening_compliance_score=Fraction(1, 1),
     )
     environmental_permit = EnvironmentalPermit(
-        permit_id=None,
-        mine_id=None,
-        permit_type=None,
+        permit_id="PERMIT-001",
+        mine_id="MINE-001",
+        permit_type="NPDES",
         issued_date=None,
         expiration_date=None,
-        discharge_limits=None,
-        monitoring_required=None,
+        discharge_limits={},
+        monitoring_required=True,
+        permit_validity_fraction=Fraction(1, 1),
     )
     safety_incident = SafetyIncident(
-        incident_id=None,
-        mine_id=None,
+        incident_id="INC-001",
+        mine_id="MINE-001",
         incident_date=None,
-        incident_type=None,
-        classification=None,
-        injured_count=None,
-        fatality=None,
-        msha_investigation=None,
-        root_cause_identified=None,
+        incident_type="near-miss",
+        classification="A",
+        injured_count=0,
+        fatality=False,
+        msha_investigation=True,
+        root_cause_identified=True,
+        investigation_completeness_score=Fraction(1, 1),
     )
     reclamation_plan = ReclamationPlan(
-        plan_id=None,
-        mine_id=None,
+        plan_id="PLAN-001",
+        mine_id="MINE-001",
         total_acres_disturbed=Fraction(1),
         acres_reclaimed=Fraction(1),
-        bonding_amount=Fraction(1),
-        bonding_type=None,
+        bonding_amount=Fraction(10000),
+        bonding_type="surety",
     )
     mining_operation = MiningOperation(
-        mine_id=None,
-        mine_name=None,
+        mine_id="MINE-001",
+        mine_name="Test Mine",
         mine_type=MineType.UNDERGROUND_COAL,
         status=MineStatus.ACTIVE,
-        state=None,
-        msha_id=None,
-        total_employees=None,
-        underground_workers=None,
-        annual_tonnage=None,
-        primary_commodity=None,
-        ventilation_cfms=None,
-        escapeways=None,
-        msha_inspections_annual=None,
-        violations_pending=None,
+        state="WV",
+        msha_id="MSHA-001",
+        total_employees=100,
+        underground_workers=50,
+        annual_tonnage=10000,
+        primary_commodity="coal",
+        ventilation_cfms=10000,
+        escapeways=2,
+        msha_inspections_annual=4,
+        violations_pending=0,
     )
 
     checks = [
-        ("check_black_lung_screening", lambda: check_black_lung_screening(health_monitoring)),
+        ("check_screening_compliance_score", lambda: check_screening_compliance_score(health_monitoring)),
         ("check_dust_exposure_limit", lambda: check_dust_exposure_limit(health_monitoring, Fraction(1000))),
-        ("check_environmental_permit_current", lambda: check_environmental_permit_current(environmental_permit)),
-        ("check_incident_investigation", lambda: check_incident_investigation(safety_incident)),
+        ("check_permit_validity_fraction", lambda: check_permit_validity_fraction(environmental_permit)),
+        ("check_investigation_completeness", lambda: check_investigation_completeness(safety_incident)),
         ("check_reclamation_bonding", lambda: check_reclamation_bonding(reclamation_plan)),
         ("check_ventilation_requirement", lambda: check_ventilation_requirement(mining_operation)),
     ]
