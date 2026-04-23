@@ -69,6 +69,11 @@ def _build_registry_table() -> List[Tuple[str, str, Fraction, Fraction, bool]]:
 def _generate_markdown(rows: List[Tuple[str, str, Fraction, Fraction, bool]]) -> str:
     """Generate EXCEDENT_REGISTRY.md content."""
     lines = [
+        "---",
+        "tags: [benchmarks, excedent, registry]",
+        "register: technical",
+        "---",
+        "",
         "# Benchmark Excedent Registry",
         "",
         "Cross-benchmark audit of SOTA scores vs OE excedent thresholds.",
