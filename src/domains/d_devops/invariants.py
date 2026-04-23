@@ -18,6 +18,7 @@ def check_pipeline_success_rate(result: PipelineResult) -> Tuple[bool, ProofObje
     """Pipeline success rate must meet minimum reliability threshold.
 
     Standard: DORA Metrics — elite performers maintain high deployment success rates
+    Falsifies if: result.success_rate < Fraction(1, 2).
     falsifies_if: result.success_rate < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -38,6 +39,7 @@ def check_step_coverage_fraction(config: PipelineConfig) -> Tuple[bool, ProofObj
     """Pipeline step coverage must meet required fraction.
 
     Standard: NIST SSDF PW.1 — software design documentation completeness
+    Falsifies if: step_coverage < Fraction(2, 3).
     falsifies_if: step_coverage < Fraction(2, 3).
     """
     threshold = Fraction(2, 3)
@@ -60,11 +62,12 @@ def check_pipeline_duration_efficiency(result: PipelineResult, max_duration: int
     """Pipeline duration as fraction of max budget must not exceed 1.
 
     Standard: DORA — deployment frequency and lead time for changes
+    Falsifies if: duration_seconds / max_duration > Fraction(1).
     falsifies_if: duration_seconds / max_duration > Fraction(1).
     """
     if max_duration <= 0:
         efficiency = Fraction(0)
-        ok = True
+        ok = False
     else:
         efficiency = Fraction(result.duration_seconds, max_duration)
         ok = efficiency <= Fraction(1)
@@ -84,6 +87,7 @@ def check_artifact_integrity_score(result: PipelineResult) -> Tuple[bool, ProofO
     """Artifact integrity score must meet trust threshold.
 
     Standard: SLSA Build Level 3 — provenance and integrity verification
+    Falsifies if: artifact_integrity_score < Fraction(1, 2).
     falsifies_if: artifact_integrity_score < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -104,6 +108,7 @@ def check_infrastructure_completeness(resource: InfrastructureResource) -> Tuple
     """Infrastructure resource must have type and name with non-empty properties.
 
     Standard: CIS Benchmark — resource tagging and completeness requirements
+    Falsifies if: name or type empty, or property coverage < Fraction(1, 2).
     falsifies_if: name or type empty, or property coverage < Fraction(1, 2).
     """
     name_ok = bool(resource.name.strip())
@@ -128,6 +133,7 @@ def check_deployment_health_score(target: DeploymentTarget) -> Tuple[bool, Proof
     """Deployment target health score must meet operational threshold.
 
     Standard: DORA — change failure rate, deploy only to healthy targets
+    Falsifies if: health_score < Fraction(1, 2).
     falsifies_if: health_score < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)

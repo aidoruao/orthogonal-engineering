@@ -18,6 +18,7 @@ def check_physics_time_step_valid(config: PhysicsConfig) -> Tuple[bool, ProofObj
     """Physics time step must be within valid simulation range.
 
     Standard: IEEE 730 — simulation stability requirements
+    Falsifies if: time_step <= 0 or time_step > Fraction(1, 20).
     falsifies_if: time_step <= 0 or time_step > Fraction(1, 20).
     """
     max_step = Fraction(1, 20)
@@ -37,6 +38,7 @@ def check_simulation_accuracy(config: PhysicsConfig) -> Tuple[bool, ProofObject]
     """Physics simulation accuracy must meet quality threshold.
 
     Standard: Game engine physics simulation — accuracy requirements for deterministic replay
+    Falsifies if: simulation_accuracy < Fraction(9, 10).
     falsifies_if: simulation_accuracy < Fraction(9, 10).
     """
     threshold = Fraction(9, 10)
@@ -57,6 +59,7 @@ def check_physics_substep_efficiency(config: PhysicsConfig) -> Tuple[bool, Proof
     """Physics substep count as fraction of hardware limit must not exceed 1.
 
     Standard: Bullet Physics / PhysX — substep efficiency requirements
+    Falsifies if: max_substeps / 16 > Fraction(1).
     falsifies_if: max_substeps / 16 > Fraction(1).
     """
     hardware_limit = 16
@@ -78,6 +81,7 @@ def check_save_integrity_score(save: SaveFile) -> Tuple[bool, ProofObject]:
     """Save file integrity score must meet data preservation threshold.
 
     Standard: NIST SP 800-218 — data integrity verification
+    Falsifies if: checksum empty OR progression_fraction < Fraction(0).
     falsifies_if: checksum empty OR progression_fraction < Fraction(0).
     """
     has_checksum = bool(save.checksum.strip())
@@ -99,6 +103,7 @@ def check_game_state_consistency(state: GameState) -> Tuple[bool, ProofObject]:
     """Game state consistency score must meet synchronization threshold.
 
     Standard: IEEE 730 — simulation state validity for multiplayer
+    Falsifies if: state_consistency_score < Fraction(1, 2).
     falsifies_if: state_consistency_score < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -120,6 +125,7 @@ def check_save_progression_valid(save: SaveFile) -> Tuple[bool, ProofObject]:
     """Save file progression fraction must be within valid range [0, 1].
 
     Standard: Game progression invariants — bounded progression metric
+    Falsifies if: progression_fraction < Fraction(0) OR progression_fraction > Fraction(1).
     falsifies_if: progression_fraction < Fraction(0) OR progression_fraction > Fraction(1).
     """
     ok = Fraction(0) <= save.progression_fraction <= Fraction(1)

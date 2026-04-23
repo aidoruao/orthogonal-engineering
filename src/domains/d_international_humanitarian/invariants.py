@@ -18,6 +18,7 @@ def check_protection_coverage_ratio(person: ProtectedPerson) -> Tuple[bool, Proo
     """Protected person must receive adequate coverage fraction.
 
     Standard: Geneva Convention IV Article 4 - protected persons entitled to full protection
+    Falsifies if: person.protection_coverage < Fraction(3, 4).
     falsifies_if: person.protection_coverage < Fraction(3, 4).
     """
     threshold = Fraction(3, 4)
@@ -39,6 +40,7 @@ def check_necessity_score_threshold(target: MilitaryTarget) -> Tuple[bool, Proof
     """Military necessity must be established above threshold.
 
     Standard: AP I Article 52(2) - military objective requires definite military advantage
+    Falsifies if: target.necessity_score < Fraction(1, 2).
     falsifies_if: target.necessity_score < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -59,6 +61,7 @@ def check_distinction_score_threshold(target: MilitaryTarget) -> Tuple[bool, Pro
     """Distinction between combatants and civilians must be adequately maintained.
 
     Standard: AP I Article 48 - basic rule of distinction
+    Falsifies if: target.distinction_score < Fraction(1, 2).
     falsifies_if: target.distinction_score < Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -79,6 +82,7 @@ def check_civilian_harm_fraction(target: MilitaryTarget) -> Tuple[bool, ProofObj
     """Civilian harm fraction must remain below maximum acceptable level.
 
     Standard: AP I Article 51(5)(b) - proportionality in attack
+    Falsifies if: target.harm_fraction >= Fraction(1, 2).
     falsifies_if: target.harm_fraction >= Fraction(1, 2).
     """
     threshold = Fraction(1, 2)
@@ -99,6 +103,7 @@ def check_proportionality_composite(target: MilitaryTarget, military_advantage: 
     """Composite proportionality must satisfy harm-advantage balance.
 
     Standard: AP I Article 57(2)(a)(iii) - proportionality assessment required
+    Falsifies if: (harm_fraction * 10) / max(military_advantage, 1) >= 1.
     falsifies_if: (harm_fraction * 10) / max(military_advantage, 1) >= 1.
     """
     if military_advantage <= 0:
@@ -124,6 +129,7 @@ def check_protection_necessity_balance(person: ProtectedPerson, target: Military
     """Protection coverage must exceed harm fraction for protected persons near targets.
 
     Standard: Geneva Convention IV Article 27 - protected persons entitled to humane treatment
+    Falsifies if: person.protection_coverage <= target.harm_fraction.
     falsifies_if: person.protection_coverage <= target.harm_fraction.
     """
     ok = person.protection_coverage > target.harm_fraction
@@ -144,6 +150,7 @@ def check_distinction_necessity_product(target: MilitaryTarget) -> Tuple[bool, P
     """Combined distinction and necessity must satisfy minimum product.
 
     Standard: ICRC Customary IHL Study Rule 1 - distinction and military necessity are complementary
+    Falsifies if: target.distinction_score * target.necessity_score < Fraction(1, 4).
     falsifies_if: target.distinction_score * target.necessity_score < Fraction(1, 4).
     """
     product = target.distinction_score * target.necessity_score

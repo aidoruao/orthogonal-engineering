@@ -21,6 +21,7 @@ def check_composite_anchor_strength(
 
     Standard: U.S. Const. art. II 3 take-care clause + Youngstown Sheet and
     Tube Co. v. Sawyer, 343 U.S. 579 (1952).
+    Falsifies if: (statutory_anchor_strength + constitutional_anchor_strength) / 2 < Fraction(3, 4).
     falsifies_if: (statutory_anchor_strength + constitutional_anchor_strength) / 2 < Fraction(3, 4).
     """
     avg = (data.statutory_anchor_strength + data.constitutional_anchor_strength) / 2
@@ -46,20 +47,21 @@ def check_composite_anchor_strength(
 def check_cra_timeliness_score(
     data: ExecutiveActionClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: Congressional Review Act timeliness score based on submission timing.
+    """Invariant: Congressional Review Act notice submitted AND within 60-day deadline.
 
     Standard: Congressional Review Act, 5 U.S.C. 801-808.
-    falsifies_if: legislative_notice_submitted is False OR timeliness_score < Fraction(1, 2).
+    Falsifies if: legislative_notice_submitted is False OR cra_submission_within_60_days is False.
+    falsifies_if: legislative_notice_submitted is False OR cra_submission_within_60_days is False.
     """
     if not data.legislative_notice_submitted:
         score = Fraction(0)
         success = False
-    elif data.cra_submission_within_60_days:
+    elif not data.cra_submission_within_60_days:
+        score = Fraction(1, 3)
+        success = False
+    else:
         score = Fraction(1)
         success = True
-    else:
-        score = Fraction(1, 2)
-        success = score >= Fraction(1, 2)
     proof = ProofObject(
         rule="check_cra_timeliness_score",
         premises=[
@@ -83,6 +85,7 @@ def check_judicial_review_accessibility(
 
     Standard: Administrative Procedure Act, 5 U.S.C. 702; Motor Vehicle
     Mfrs. Assn v. State Farm, 463 U.S. 29 (1983).
+    Falsifies if: judicial_review_pathways < 1 OR judicial_review_standing_preserved is False.
     falsifies_if: judicial_review_pathways < 1 OR judicial_review_standing_preserved is False.
     """
     if data.judicial_review_pathways < 1:
@@ -113,19 +116,21 @@ def check_judicial_review_accessibility(
 def check_publication_timeliness_fraction(
     data: ExecutiveActionClaim,
 ) -> Tuple[bool, ProofObject]:
-    """Invariant: publication delay as fraction of statutory maximum.
+    """Invariant: published in Federal Register AND publication delay within statutory maximum.
 
     Standard: Federal Register Act, 44 U.S.C. 1505-1507.
-    falsifies_if: publication_delay_days > 60.
+    Falsifies if: published_in_federal_register is False OR publication_delay_days > 60.
+    falsifies_if: published_in_federal_register is False OR publication_delay_days > 60.
     """
     max_days = 60
     delay = max(data.publication_delay_days, 0)
-    if delay > max_days:
+    fraction = Fraction(delay, max_days) if max_days > 0 else Fraction(0)
+    if not data.published_in_federal_register:
         success = False
-        fraction = Fraction(delay, max_days)
+    elif delay > max_days:
+        success = False
     else:
         success = True
-        fraction = Fraction(delay, max_days) if max_days > 0 else Fraction(0)
     proof = ProofObject(
         rule="check_publication_timeliness_fraction",
         premises=[
@@ -150,6 +155,7 @@ def check_independence_coverage_fraction(
 
     Standard: Inspector General Act of 1978 as amended +
     AF-008 independence-review requirement.
+    Falsifies if: signed / total < MIN_INDEPENDENCE_COVERAGE.
     falsifies_if: signed / total < MIN_INDEPENDENCE_COVERAGE.
     """
     total = max(data.independence_review_items_total, 0)
@@ -183,6 +189,7 @@ def check_scope_expansion_severity(
     """Invariant: scope expansion as severity fraction of statutory limit.
 
     Standard: West Virginia v. EPA, 597 U.S. 697 (2022) major-questions doctrine.
+    Falsifies if: scope_expansion > MAX_SCOPE_EXPANSION.
     falsifies_if: scope_expansion > MAX_SCOPE_EXPANSION.
     """
     if MAX_SCOPE_EXPANSION > Fraction(0):
@@ -212,6 +219,7 @@ def check_executive_accountability_score(
     """Invariant: composite accountability score across consent, anchors, and coverage.
 
     Standard: BC-001 append-only consent log + separation-of-powers doctrine.
+    Falsifies if: composite_score < Fraction(1, 2).
     falsifies_if: composite_score < Fraction(1, 2).
     """
     consent_factor = Fraction(1) if data.consent_log_entry_recorded else Fraction(0)
@@ -244,7 +252,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain on the nominal claim.
 
     Standard: Executive governance nominal executable check set.
-    falsifies_if: any invariant check returns False on the nominal claim.
+    Falsifies if: any invariant check returns False on the nominal claim.
     falsifies_if: any invariant check returns False on the nominal claim.
     """
     data = create_nominal_claim()

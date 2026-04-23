@@ -24,6 +24,7 @@ def check_determinism_score(data: AerospaceFloorClaim) -> Tuple[bool, ProofObjec
     """Invariant: DO-178C determinism score meets floor.
 
     Standard: DO-178C Software Considerations in Airborne Systems.
+    Falsifies if: determinism_score < MIN_DETERMINISM_SCORE.
     falsifies_if: determinism_score < MIN_DETERMINISM_SCORE.
     """
     success = data.determinism_score >= MIN_DETERMINISM_SCORE
@@ -46,6 +47,7 @@ def check_mcdc_coverage_fraction(data: AerospaceFloorClaim) -> Tuple[bool, Proof
     """Invariant: MC/DC coverage fraction meets requirement.
 
     Standard: DO-178C Level A modified condition/decision coverage.
+    Falsifies if: mcdc_coverage_fraction < MIN_MCDC_COVERAGE.
     falsifies_if: mcdc_coverage_fraction < MIN_MCDC_COVERAGE.
     """
     success = data.mcdc_coverage_fraction >= MIN_MCDC_COVERAGE
@@ -68,6 +70,7 @@ def check_recursion_depth_bound(data: AerospaceFloorClaim) -> Tuple[bool, ProofO
     """Invariant: MISRA recursion depth is within bound.
 
     Standard: MISRA-C:2012 Rule 17.2.
+    Falsifies if: recursion_depth_bound > MAX_RECURSION_DEPTH.
     falsifies_if: recursion_depth_bound > MAX_RECURSION_DEPTH.
     """
     success = data.recursion_depth_bound <= MAX_RECURSION_DEPTH
@@ -90,6 +93,7 @@ def check_mishap_probability_risk(data: AerospaceFloorClaim) -> Tuple[bool, Proo
     """Invariant: MIL-STD-882E mishap probability is below risk threshold.
 
     Standard: MIL-STD-882E System Safety.
+    Falsifies if: mishap_probability >= MAX_MISHAP_PROBABILITY.
     falsifies_if: mishap_probability >= MAX_MISHAP_PROBABILITY.
     """
     success = data.mishap_probability < MAX_MISHAP_PROBABILITY
@@ -112,6 +116,7 @@ def check_independence_review_score(data: AerospaceFloorClaim) -> Tuple[bool, Pr
     """Invariant: Independence review score meets floor.
 
     Standard: DO-178C independence of verification.
+    Falsifies if: independence_review_score < MIN_INDEPENDENCE_REVIEW_SCORE.
     falsifies_if: independence_review_score < MIN_INDEPENDENCE_REVIEW_SCORE.
     """
     success = data.independence_review_score >= MIN_INDEPENDENCE_REVIEW_SCORE
@@ -134,6 +139,7 @@ def check_sil_integrity_level(data: AerospaceFloorClaim) -> Tuple[bool, ProofObj
     """Invariant: IEC 61508 SIL integrity level meets requirement.
 
     Standard: IEC 61508 Functional Safety SIL-4.
+    Falsifies if: sil_integrity_level < MIN_SIL_LEVEL.
     falsifies_if: sil_integrity_level < MIN_SIL_LEVEL.
     """
     success = data.sil_integrity_level >= MIN_SIL_LEVEL
@@ -156,6 +162,7 @@ def check_nasa_compliance_score(data: AerospaceFloorClaim) -> Tuple[bool, ProofO
     """Invariant: NASA NPR 7150.2 compliance score meets floor.
 
     Standard: NASA NPR 7150.2 Software Engineering Requirements Class A.
+    Falsifies if: nasa_compliance_score < MIN_NASA_COMPLIANCE.
     falsifies_if: nasa_compliance_score < MIN_NASA_COMPLIANCE.
     """
     success = data.nasa_compliance_score >= MIN_NASA_COMPLIANCE
@@ -178,6 +185,7 @@ def check_af_scan_coverage(data: AerospaceFloorClaim) -> Tuple[bool, ProofObject
     """Invariant: Aerospace floor compliance scan coverage meets requirement.
 
     Standard: AF-001/AF-002/AF-007 meta-standard compliance.
+    Falsifies if: af_scan_coverage < MIN_AF_SCAN_COVERAGE.
     falsifies_if: af_scan_coverage < MIN_AF_SCAN_COVERAGE.
     """
     success = data.af_scan_coverage >= MIN_AF_SCAN_COVERAGE
@@ -200,6 +208,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain.
 
     Standard: Aerospace Floor meta-standard nominal executable check set.
+    Falsifies if: any invariant check returns False.
     falsifies_if: any invariant check returns False.
     """
     data = create_nominal_claim()
