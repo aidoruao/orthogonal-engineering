@@ -47,7 +47,7 @@ def _file_has_falsifies_if(path: Path) -> bool:
     for node in ast.walk(tree):
         if isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Module)):
             docstring = ast.get_docstring(node)
-            if docstring and "falsifies_if" in docstring:
+            if docstring and "falsifies_if" in docstring.lower():
                 return True
     return False
 

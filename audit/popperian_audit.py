@@ -13,6 +13,8 @@ Persists the full JSON report to ``audit/POPPERIAN_AUDIT_REPORT.json`` by defaul
 (override with ``--output``).
 
 Standard: Yeshua / Glass-Box / Orthogonal Engineering
+
+falsifies_if: a domain invariant lacks falsifies_if, uses float(), or fails to return Tuple[bool, ProofObject].
 """
 
 from __future__ import annotations

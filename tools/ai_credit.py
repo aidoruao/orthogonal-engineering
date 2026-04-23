@@ -7,6 +7,8 @@ Requires explicit consent flow.
 Author: Orthogonal Engineering
 Standard: Yeshua
 Version: 1.0.0
+
+falsifies_if: consent hash does not match SHA-256 of the consent text.
 """
 
 from __future__ import annotations

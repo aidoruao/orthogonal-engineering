@@ -14,6 +14,8 @@ Usage:
         [--timestamp <iso8601>]
 
 Standard: Yeshua / Glass-Box / Orthogonal Engineering
+
+falsifies_if: appended entry lacks SHA-256 hash or timestamp is not ISO-8601.
 """
 
 from __future__ import annotations
