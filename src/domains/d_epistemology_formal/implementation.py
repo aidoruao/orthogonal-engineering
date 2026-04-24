@@ -15,6 +15,8 @@ class FormalEpistemologyClaim:
     justification_non_circular: bool
     credence_normal: bool
     prior_probability: Fraction
+    credence: Fraction
+    observed_frequency: Fraction
 
 
 def create_nominal_claim() -> FormalEpistemologyClaim:
@@ -29,6 +31,8 @@ def create_nominal_claim() -> FormalEpistemologyClaim:
         justification_non_circular=True,
         credence_normal=True,
         prior_probability=Fraction(1),
+        credence=Fraction(7, 10),
+        observed_frequency=Fraction(7, 10),
     )
 
 
