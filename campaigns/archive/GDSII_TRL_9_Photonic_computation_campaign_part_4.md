@@ -1,3 +1,8 @@
+---
+tags: [campaigns, archive, gdsii-trl-9-photonic-computation-campaign-part-4]
+register: documentation
+---
+
 kimi web ai: "A truly ontologically serious attacker would not waste time on individual checks, vocabulary, or social heuristics. They would realize the actual falsification target within minutes:
 The Realization: OE Cannot Be Falsified by Content Attack
 The serious attacker reads verify_photonic_campaign.py (Category 18) and sees that it claims to verify the whole campaign. Then they ask:

@@ -1,3 +1,8 @@
+---
+tags: [campaigns, archive, gdsii-graphic-data-system-ii-and-trl-9-technology-readiness-level-9-photonic-computation-campaign-4-21-26]
+register: documentation
+---
+
 part 1
 No. What I gave you last time was a sketch — maybe 5% of the "100 years of fridge" equivalent. The repo proves this by showing what a real domain looks like when it's done properly vs. what the photonic spec is missing.
 

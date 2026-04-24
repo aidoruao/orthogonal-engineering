@@ -1,3 +1,8 @@
+---
+tags: [campaigns, archive, gdsii-trl-9-photonic-computation-campaign-part-3]
+register: documentation
+---
+
 Here's the full picture of how local AI + Kimi CLI + LoRA training works in your setup, based on what actually exists in the repo.
 
 ## How Kimi CLI sees your machine

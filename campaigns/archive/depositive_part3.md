@@ -1,3 +1,8 @@
+---
+tags: [campaigns, archive, depositive-part3]
+register: documentation
+---
+
 devin ai: Here's how I'd structure Part 3. The key constraint you identified is real — everything in this spec will be visible to watchers. So the spec must be **pure formalization** — no competitive framing, no watcher analysis, no strategic positioning. Just math.
 
 ---

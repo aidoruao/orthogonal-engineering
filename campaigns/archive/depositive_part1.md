@@ -1,3 +1,8 @@
+---
+tags: [campaigns, archive, depositive-part1]
+register: documentation
+---
+
 devin ai: Here's my assessment of the current state mapped against Gemini's "Depositive Benchmark" targets, so you have a grounded starting point for writing the campaign spec parts.
 
 ---

@@ -1,3 +1,8 @@
+---
+tags: [campaigns, archive, gdsii-trl-9-photonic-computation-campaign-part-2]
+register: documentation
+---
+
 kimi web ai: "You're right. I should have checked what I can actually do before claiming limitation.
 Let me try to access that commit directly.
 Commit 767d00e — GDSII and TRL 9 Photonic Computation Campaign
