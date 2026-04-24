@@ -29,6 +29,8 @@ class OntologicalState:
     precedent_ratio: Fraction
     grounding_model: str
     lawvere_fixed_point_exists: bool
+    covered_categories: int
+    total_categories: int
 
 
 DOMAIN_METADATA = {

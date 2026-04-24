@@ -134,6 +134,26 @@ def check_bayesian_confirmation_fraction(data: PhilosophyOfScienceClaim) -> Tupl
     return success, proof
 
 
+
+
+def check_effect_size_fraction(data: PhilosophyOfScienceClaim) -> Tuple[bool, ProofObject]:
+    """Minimum detectable effect size must be >= Fraction(1, 20) for scientific relevance.
+
+    Standard: PHILSCI-006 effect size threshold.
+    Falsifies if: effect_size < Fraction(1, 20).
+    falsifies_if: effect_size < Fraction(1, 20).
+    """
+    success = data.effect_size >= Fraction(1, 20)
+    proof = ProofObject(
+        rule="philsci_effect_size_fraction",
+        premises=[f"effect_size={data.effect_size}"],
+        conclusion=(
+            "PASS: Effect size above scientific relevance threshold"
+            if success else f"FAIL: Effect size {data.effect_size} < 1/20"
+        ),
+    )
+    return success, proof
+
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain.
 
@@ -151,6 +171,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
         ("check_paradigm_incommensurability", check_paradigm_incommensurability),
         ("check_underdetermination_bounded", check_underdetermination_bounded),
         ("check_bayesian_confirmation_fraction", check_bayesian_confirmation_fraction),
+        ("check_effect_size_fraction", check_effect_size_fraction),
     ]
     results: List[Tuple[str, bool, ProofObject]] = []
     for name, func in checks:

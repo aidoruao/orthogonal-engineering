@@ -149,6 +149,37 @@ def check_operational_necessities(state: OntologicalState) -> Tuple[bool, ProofO
 # Run-all helper
 # ---------------------------------------------------------------------------
 
+
+
+def check_ontological_coverage_fraction(data: OntologicalState) -> Tuple[bool, ProofObject]:
+    """Fraction of ontological categories that have corresponding invariants must be >= 3/4.
+
+    Standard: ONTOLOGY-006 coverage.
+    Falsifies if: coverage_ratio < Fraction(3, 4).
+    falsifies_if: coverage_ratio < Fraction(3, 4).
+    """
+    if data.total_categories == 0:
+        return False, ProofObject(
+            rule="ontology_coverage_fraction",
+            premises=["total_categories=0"],
+            conclusion="FAIL: No ontological categories to measure coverage",
+        )
+    coverage = Fraction(data.covered_categories, data.total_categories)
+    success = coverage >= Fraction(3, 4)
+    proof = ProofObject(
+        rule="ontology_coverage_fraction",
+        premises=[
+            f"covered={data.covered_categories}",
+            f"total={data.total_categories}",
+            f"coverage={coverage}",
+        ],
+        conclusion=(
+            "PASS: Ontological coverage above 3/4 threshold"
+            if success else f"FAIL: Coverage {coverage} < 3/4"
+        ),
+    )
+    return success, proof
+
 def run_all_invariants() -> dict:
     """Run all ontological substrate checks with passing and failing data.
 
@@ -168,6 +199,8 @@ def run_all_invariants() -> dict:
         precedent_ratio=Fraction(1, 1),
         grounding_model="G5",
         lawvere_fixed_point_exists=True,
+        covered_categories=4,
+        total_categories=4,
     )
     fail_state = OntologicalState(
         reality_consistent=False,
@@ -183,6 +216,8 @@ def run_all_invariants() -> dict:
         precedent_ratio=Fraction(4, 5),
         grounding_model="G5",
         lawvere_fixed_point_exists=False,
+        covered_categories=2,
+        total_categories=4,
     )
 
     checks = [
@@ -198,6 +233,8 @@ def run_all_invariants() -> dict:
         ("check_lawvere_convergence_fail", lambda: check_lawvere_convergence(fail_state)),
         ("check_operational_necessities_pass", lambda: check_operational_necessities(pass_state)),
         ("check_operational_necessities_fail", lambda: check_operational_necessities(fail_state)),
+        ("check_ontological_coverage_fraction_pass", lambda: check_ontological_coverage_fraction(pass_state)),
+        ("check_ontological_coverage_fraction_fail", lambda: check_ontological_coverage_fraction(fail_state)),
     ]
 
     results: dict = {}

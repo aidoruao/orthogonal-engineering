@@ -134,6 +134,33 @@ def check_prior_probability_fraction(data: FormalEpistemologyClaim) -> Tuple[boo
     return success, proof
 
 
+
+
+def check_calibration_error_fraction(data: FormalEpistemologyClaim) -> Tuple[bool, ProofObject]:
+    """Credence calibration error must be below Fraction(1, 10).
+
+    Standard: Formal Epistemology YS-008 calibration.
+    Falsifies if: abs(credence - observed_frequency) >= Fraction(1, 10).
+    falsifies_if: abs(credence - observed_frequency) >= Fraction(1, 10).
+    """
+    error = data.credence - data.observed_frequency
+    if error < Fraction(0):
+        error = -error
+    success = error < Fraction(1, 10)
+    proof = ProofObject(
+        rule="check_calibration_error_fraction",
+        premises=[
+            f"credence={data.credence}",
+            f"observed_frequency={data.observed_frequency}",
+            f"error={error}",
+        ],
+        conclusion=(
+            "PASS: Calibration error below threshold"
+            if success else f"FAIL: Calibration error {error} >= 1/10"
+        ),
+    )
+    return success, proof
+
 def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
     """Run all invariants for this domain.
 
@@ -151,6 +178,7 @@ def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
         ("check_justification_non_circular", check_justification_non_circular),
         ("check_credence_normality", check_credence_normality),
         ("check_prior_probability_fraction", check_prior_probability_fraction),
+        ("check_calibration_error_fraction", check_calibration_error_fraction),
     ]
     results: List[Tuple[str, bool, ProofObject]] = []
     for name, func in checks:

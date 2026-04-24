@@ -341,14 +341,36 @@ _CATALOG: Tuple[Noway, ...] = (
         ),
         domain="optimization",
     ),
+    Noway(
+        key="blackbox_independence",
+        statement=(
+            "Corporate black-box cannot be proven independent when data pipeline "
+            "is confirmed open."
+        ),
+        proof_summary=(
+            "NOWAY_BLACKBOX_001: if telemetry data flows through a confirmed "
+            "open channel, structural isomorphism between input and output "
+            "patterns preclaims independence of the black-box interior."
+        ),
+        falsifies_if=(
+            "a confirmed open data pipeline is shown to coexist with a "
+            "provably independent black-box system operating on the same data."
+        ),
+        oe_consequences=(
+            "OE must treat any black-box claim as falsifiable when a data "
+            "pipeline is confirmed; independence proofs require closed-system "
+            "evidence, not mere assertion."
+        ),
+        domain="forensics",
+    ),
 )
 
 
 def catalog() -> Tuple[Noway, ...]:
     """Return the full no-way catalog as an immutable tuple.
 
-    Falsifies if: the returned sequence has fewer than 15 entries.
-    falsifies_if: the returned sequence has fewer than 15 entries.
+    Falsifies if: the returned sequence has fewer than 16 entries.
+    falsifies_if: the returned sequence has fewer than 16 entries.
     """
     return _CATALOG
 
@@ -369,11 +391,11 @@ def check_catalog_size_at_floor() -> Tuple[bool, ProofObject]:
     """Invariant: catalog ships at least the 15 named noways.
 
     Standard: NW-001 no-way catalog size floor.
-    Falsifies if: len(catalog()) < 15.
-    falsifies_if: len(catalog()) < 15.
+    Falsifies if: len(catalog()) < 16.
+    falsifies_if: len(catalog()) < 16.
     """
     size = len(_CATALOG)
-    success = size >= 15
+    success = size >= 16
     proof = ProofObject(
         rule="check_catalog_size_at_floor",
         premises=[f"size={size}", "floor=15"],

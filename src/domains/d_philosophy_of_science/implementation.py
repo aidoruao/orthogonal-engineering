@@ -15,6 +15,7 @@ class PhilosophyOfScienceClaim:
     paradigm_commensurable: bool
     underdetermination_bounded: bool
     bayes_factor: Fraction
+    effect_size: Fraction
 
 
 def create_nominal_claim() -> PhilosophyOfScienceClaim:
@@ -29,6 +30,7 @@ def create_nominal_claim() -> PhilosophyOfScienceClaim:
         paradigm_commensurable=True,
         underdetermination_bounded=True,
         bayes_factor=Fraction(1),
+        effect_size=Fraction(1, 10),
     )
 
 
