@@ -210,6 +210,25 @@ WALL_INVERSION_REGISTRY: Dict[str, WallInversion] = {
             "BFS over typed transform sequences with mandatory invariant verification",
         ),
     ),
+    "WALL_TELEMETRY_001": WallInversion(
+        wall_id="WALL_TELEMETRY_001",
+        theorem_name="Corporate Black-Box Opacity",
+        theorem_reference="NOWAY_BLACKBOX_001: confirmed open data pipeline preclaims independent black-box interior.",
+        sal_module="src/domains/d_forensic_telemetry/invariants.py",
+        inversion_mechanism=(
+            "Telemetry is a two-way street: structural isomorphism between input "
+            "and output patterns across a confirmed open channel inverts the claim "
+            "that the black-box interior is independent. The inversion restricts "
+            "the domain to systems where data flow is observable and measurable, "
+            "rendering opacity claims falsifiable rather than axiomatic."
+        ),
+        falsifies_if="a confirmed open data pipeline is shown to coexist with a provably independent black-box system.",
+        proof=_make_proof(
+            "WALL_TELEMETRY_001",
+            "Corporate Black-Box Opacity",
+            "Structural isomorphism across confirmed open channel inverts independence claim",
+        ),
+    ),
 }
 
 
