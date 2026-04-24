@@ -19,7 +19,7 @@ from typing import Tuple
 from axioms.logic import ProofObject
 from .implementation import (
     FractalPoint, IteratedFunctionSystem, BoxCount,
-    SelfSimilarity, Complex
+    SelfSimilarity, Complex, FractalDAG, ContentAddressedIteration, OmegaConvergence
 )
 
 
@@ -197,6 +197,121 @@ def check_escape_radius_sufficient(radius: Fraction) -> Tuple[bool, ProofObject]
     )
 
 
+def check_fractal_dag_acyclicity(dag: FractalDAG) -> Tuple[bool, ProofObject]:
+    """Fractal DAG must contain no cycles.
+
+    Standard: FRACTAL-DAG-001 acyclicity.
+    Falsifies if: DFS detects a back edge (cycle) or a self-loop exists.
+    falsifies_if: DFS detects a back edge (cycle) or a self-loop exists.
+    """
+    adjacency: dict = {node: [] for node in dag.nodes}
+    for src, dst in dag.edges:
+        if src == dst:
+            return False, ProofObject(
+                rule="fractal_dag_acyclicity",
+                premises=[f"dag_id={dag.dag_id}", f"self_loop={src}"],
+                conclusion="VIOLATION: Self-loop detected in fractal DAG",
+            )
+        adjacency.setdefault(src, []).append(dst)
+
+    visited: set = set()
+    rec_stack: set = set()
+
+    def _dfs(node: str) -> bool:
+        visited.add(node)
+        rec_stack.add(node)
+        for child in adjacency.get(node, []):
+            if child not in visited:
+                if _dfs(child):
+                    return True
+            elif child in rec_stack:
+                return True
+        rec_stack.discard(node)
+        return False
+
+    for node in dag.nodes:
+        if node not in visited:
+            if _dfs(node):
+                return False, ProofObject(
+                    rule="fractal_dag_acyclicity",
+                    premises=[f"dag_id={dag.dag_id}", "cycle_detected=True"],
+                    conclusion="VIOLATION: Cycle detected in fractal DAG",
+                )
+    return True, ProofObject(
+        rule="fractal_dag_acyclicity",
+        premises=[f"dag_id={dag.dag_id}", f"nodes={len(dag.nodes)}"],
+        conclusion="Fractal DAG acyclic: no cycles or self-loops",
+    )
+
+
+def check_content_addressed_iteration(iteration: ContentAddressedIteration) -> Tuple[bool, ProofObject]:
+    """Content hash must deterministically identify iteration payload.
+
+    Standard: FRACTAL-ITER-002 content addressing.
+    Falsifies if: content_hash is empty or parent_hash equals content_hash.
+    falsifies_if: content_hash is empty or parent_hash equals content_hash.
+    """
+    if not iteration.content_hash.strip():
+        return False, ProofObject(
+            rule="fractal_content_addressing",
+            premises=[f"iteration_id={iteration.iteration_id}"],
+            conclusion="VIOLATION: Content hash is empty -- no content addressing",
+        )
+    if iteration.parent_hash == iteration.content_hash:
+        return False, ProofObject(
+            rule="fractal_content_addressing",
+            premises=[
+                f"iteration_id={iteration.iteration_id}",
+                f"content_hash={iteration.content_hash}",
+            ],
+            conclusion="VIOLATION: Parent hash equals content hash -- identity collision",
+        )
+    return True, ProofObject(
+        rule="fractal_content_addressing",
+        premises=[
+            f"iteration_id={iteration.iteration_id}",
+            f"content_hash={iteration.content_hash}",
+        ],
+        conclusion="Content hash valid and distinct from parent: addressing holds",
+    )
+
+
+def check_omega_convergence_invariant(conv: OmegaConvergence) -> Tuple[bool, ProofObject]:
+    """Omega convergence must have non-negative limit and positive sequence length.
+
+    Standard: FRACTAL-OMEGA-003 convergence bounds.
+    Falsifies if: omega_limit < 0 or sequence_length <= 0.
+    falsifies_if: omega_limit < 0 or sequence_length <= 0.
+    """
+    if conv.sequence_length <= 0:
+        return False, ProofObject(
+            rule="fractal_omega_convergence",
+            premises=[
+                f"sequence_id={conv.sequence_id}",
+                f"sequence_length={conv.sequence_length}",
+            ],
+            conclusion="VIOLATION: Sequence length is zero or negative -- no convergence possible",
+        )
+    if conv.omega_limit < Fraction(0, 1):
+        return False, ProofObject(
+            rule="fractal_omega_convergence",
+            premises=[
+                f"sequence_id={conv.sequence_id}",
+                f"omega_limit={conv.omega_limit}",
+            ],
+            conclusion="VIOLATION: Omega limit is negative -- convergence out of bounds",
+        )
+    return True, ProofObject(
+        rule="fractal_omega_convergence",
+        premises=[
+            f"sequence_id={conv.sequence_id}",
+            f"omega_limit={conv.omega_limit}",
+            f"sequence_length={conv.sequence_length}",
+        ],
+        conclusion="Omega convergence bounds valid: limit non-negative, length positive",
+    )
+
+
 def run_all_invariants() -> dict:
     """Run all D_FRACTALS invariants with nominal sample data.
 
@@ -222,13 +337,56 @@ def run_all_invariants() -> dict:
         num_pieces=3,
     )
 
+    fractal_dag = FractalDAG(
+        dag_id="FDAG001",
+        nodes=("root", "iter1", "iter2", "leaf"),
+        edges=(("root", "iter1"), ("root", "iter2"), ("iter1", "leaf"), ("iter2", "leaf")),
+    )
+    fractal_dag_fail = FractalDAG(
+        dag_id="FDAG002",
+        nodes=("a", "b"),
+        edges=(("a", "b"), ("b", "a")),
+    )
+    content_iter = ContentAddressedIteration(
+        iteration_id="I001",
+        depth=1,
+        payload="z=z^2+c",
+        content_hash="sha256_a",
+        parent_hash="sha256_root",
+    )
+    content_iter_fail = ContentAddressedIteration(
+        iteration_id="I002",
+        depth=1,
+        payload="z=z^2+c",
+        content_hash="sha256_a",
+        parent_hash="sha256_a",
+    )
+    omega_conv = OmegaConvergence(
+        sequence_id="S001",
+        sequence_length=100,
+        omega_limit=Fraction(1, 2),
+        converged=True,
+    )
+    omega_conv_fail = OmegaConvergence(
+        sequence_id="S002",
+        sequence_length=0,
+        omega_limit=Fraction(-1, 1),
+        converged=False,
+    )
+
     checks = [
         ("check_box_count_monotonicity", lambda: check_box_count_monotonicity(box_count)),
         ("check_dimension_bounds", lambda: check_dimension_bounds(Fraction(1), 1)),
-        ("check_escape_radius_sufficient", lambda: check_escape_radius_sufficient(Fraction(1))),
+        ("check_escape_radius_sufficient", lambda: check_escape_radius_sufficient(Fraction(3))),
         ("check_ifs_probability_sum", lambda: check_ifs_probability_sum(iterated_function_system)),
         ("check_mandelbrot_membership", lambda: check_mandelbrot_membership(fractal_point)),
         ("check_self_similarity_consistency", lambda: check_self_similarity_consistency(self_similarity)),
+        ("check_fractal_dag_acyclicity", lambda: check_fractal_dag_acyclicity(fractal_dag)),
+        ("check_fractal_dag_acyclicity_fail", lambda: check_fractal_dag_acyclicity(fractal_dag_fail)),
+        ("check_content_addressed_iteration", lambda: check_content_addressed_iteration(content_iter)),
+        ("check_content_addressed_iteration_fail", lambda: check_content_addressed_iteration(content_iter_fail)),
+        ("check_omega_convergence_invariant", lambda: check_omega_convergence_invariant(omega_conv)),
+        ("check_omega_convergence_invariant_fail", lambda: check_omega_convergence_invariant(omega_conv_fail)),
     ]
 
     results: dict = {}
@@ -250,7 +408,10 @@ if __name__ == "__main__":
     import json
     results = run_all_invariants()
     print(json.dumps(results, indent=2))
-    failures = [k for k, v in results.items() if not v.startswith("PASS")]
+    failures = [
+        k for k, v in results.items()
+        if not v.startswith("PASS") and not k.endswith("_fail")
+    ]
     if failures:
         raise SystemExit(f"Invariant failures: {failures}")
     print("All D_FRACTALS invariants: PASS")

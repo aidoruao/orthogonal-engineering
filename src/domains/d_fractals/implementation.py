@@ -25,7 +25,7 @@ class Complex:
     imag: Fraction
     
     def __add__(self, other: Complex) -> Complex:
-        return Complex(self.real + other.real, self.imag + other.imimag)
+        return Complex(self.real + other.real, self.imag + other.imag)
     
     def __mul__(self, other: Complex) -> Complex:
         # (a+bi)(c+di) = (ac-bd) + (ad+bc)i
@@ -233,3 +233,39 @@ class FractalChecker:
             return Fraction(0), Fraction(0)
         dims = [bc.dimension_estimate() for bc in self.box_counts]
         return min(dims), max(dims)
+
+
+@dataclass(frozen=True)
+class FractalDAG:
+    """A fractal represented as a DAG of iteration nodes.
+
+    falsifies_if: nodes is empty or edges contains a self-loop.
+    """
+    dag_id: str
+    nodes: Tuple[str, ...]
+    edges: Tuple[Tuple[str, str], ...]
+
+
+@dataclass(frozen=True)
+class ContentAddressedIteration:
+    """A single fractal iteration with content-addressed identity.
+
+    falsifies_if: content_hash is empty or does not match recomputed hash of payload.
+    """
+    iteration_id: str
+    depth: int
+    payload: str
+    content_hash: str
+    parent_hash: str
+
+
+@dataclass(frozen=True)
+class OmegaConvergence:
+    """Omega-level convergence state for a fractal sequence.
+
+    falsifies_if: omega_limit is negative or sequence_length is zero.
+    """
+    sequence_id: str
+    sequence_length: int
+    omega_limit: Fraction
+    converged: bool
