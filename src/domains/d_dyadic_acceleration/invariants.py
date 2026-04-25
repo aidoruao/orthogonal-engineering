@@ -41,7 +41,10 @@ def _proof(
 def check_denominator_is_power_of_two(
     value: DyadicFraction,
 ) -> Tuple[bool, ProofObject]:
-    """Verify that a DyadicFraction's denominator is a positive power of two."""
+    """Verify that a DyadicFraction's denominator is a positive power of two.
+
+    falsifies_if: denominator is not a positive power of two.
+    """
     d = value.denominator
     ok = _is_power_of_two(d)
     return _proof(
@@ -62,6 +65,8 @@ def check_bit_shift_exactness(
     """Verify that dividing by 2^shift is exact via bit-shift (no division opcode).
 
     We simulate the operation using only shift and compare to Fraction exact result.
+
+    falsifies_if: bit_shift_divide result does not match exact fraction arithmetic.
     """
     if shift < 0:
         return _proof(
@@ -97,6 +102,8 @@ def check_requantization_no_float_contamination(
 
     We inspect the internal computation path: only integer multiply and bit-shift
     are allowed. The RequantizationOp.requantize method is pure integer arithmetic.
+
+    falsifies_if: requantize output is not a pure int or contains float contamination.
     """
     try:
         q_out = op.requantize(sample_q_in)
@@ -127,6 +134,8 @@ def check_dot_product_deterministic_cross_platform(
 
     Determinism is enforced by pure integer arithmetic (no floats, no randomness).
     We run twice and compare.
+
+    falsifies_if: repeated execution produces different results.
     """
     try:
         out1 = fdp.compute(a, b)
@@ -158,6 +167,8 @@ def check_entropy_approximation_bounded_error(
 
     exact_entropy_fraction should be a Fraction (from d_deterministic_probability).
     Bound: |H_fast - H_exact| <= 1/2^{lut_bits - 1} (one LSB at lut_bits precision).
+
+    falsifies_if: approximation error exceeds the declared dyadic bound.
     """
     from fractions import Fraction
 
@@ -196,6 +207,8 @@ def check_overflow_within_dynamic_range(
     """Verify that FastDotProduct does not overflow INT32 for given inputs.
 
     We attempt computation and catch OverflowError.
+
+    falsifies_if: INT32 accumulator overflows during dot-product computation.
     """
     try:
         out = fdp.compute(a, b)

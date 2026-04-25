@@ -433,6 +433,70 @@
       "passed": true
     },
     {
+      "domain": "d_arc_agi",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "check_solve_rate_nonzero",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "check_compositional_depth",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "check_novel_rule_generalization",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "check_grid_output_exact",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "check_no_brute_force",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "check_transfer_across_tasks",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_arc_agi",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_arc_agi/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_arc_agi_3",
       "failure_count": 0,
       "findings": [
@@ -3591,7 +3655,7 @@
         {
           "domain": "d_aviation",
           "float_violations": [],
-          "function": "check_pilot_certification",
+          "function": "check_pilot_certification_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -3599,7 +3663,7 @@
         {
           "domain": "d_aviation",
           "float_violations": [],
-          "function": "check_ifr_requirements",
+          "function": "check_ifr_readiness_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -4335,6 +4399,14 @@
         {
           "domain": "d_chemical",
           "float_violations": [],
+          "function": "check_reactor_safety_margin",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_chemical",
+          "float_violations": [],
           "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
@@ -4839,7 +4911,7 @@
         {
           "domain": "d_construction",
           "float_violations": [],
-          "function": "check_osha_fall_protection",
+          "function": "check_fall_protection_coverage",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -5214,6 +5286,54 @@
         }
       ],
       "invariants_path": "src/domains/d_corporate_law/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_correspondence_theory",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_correspondence_theory",
+          "float_violations": [],
+          "function": "check_composition_associativity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_correspondence_theory",
+          "float_violations": [],
+          "function": "check_identity_morphism_exists",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_correspondence_theory",
+          "float_violations": [],
+          "function": "check_commutative_square",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_correspondence_theory",
+          "float_violations": [],
+          "function": "check_morphism_falsifiability",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_correspondence_theory",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_correspondence_theory/invariants.py",
       "passed": true
     },
     {
@@ -5630,6 +5750,70 @@
         }
       ],
       "invariants_path": "src/domains/d_curriculum/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_dag_theory",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "check_acyclicity_proof",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "check_topological_sort_determinism",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "check_content_addressed_node_identity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "check_merkle_derivability",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "check_reachability_transitivity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "check_deterministic_expansion",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dag_theory",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_dag_theory/invariants.py",
       "passed": true
     },
     {
@@ -6294,6 +6478,62 @@
         }
       ],
       "invariants_path": "src/domains/d_drug_regulation/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_dyadic_acceleration",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_dyadic_acceleration",
+          "float_violations": [],
+          "function": "check_denominator_is_power_of_two",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dyadic_acceleration",
+          "float_violations": [],
+          "function": "check_bit_shift_exactness",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dyadic_acceleration",
+          "float_violations": [],
+          "function": "check_requantization_no_float_contamination",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dyadic_acceleration",
+          "float_violations": [],
+          "function": "check_dot_product_deterministic_cross_platform",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dyadic_acceleration",
+          "float_violations": [],
+          "function": "check_entropy_approximation_bounded_error",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_dyadic_acceleration",
+          "float_violations": [],
+          "function": "check_overflow_within_dynamic_range",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_dyadic_acceleration/invariants.py",
       "passed": true
     },
     {
@@ -7039,6 +7279,14 @@
         {
           "domain": "d_epistemology_formal",
           "float_violations": [],
+          "function": "check_calibration_error_fraction",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_epistemology_formal",
+          "float_violations": [],
           "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
@@ -7681,6 +7929,70 @@
       "passed": true
     },
     {
+      "domain": "d_forensic_telemetry",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "check_timeline_precedence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "check_structural_isomorphism_count",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "check_data_policy_confirmation",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "check_cross_validation_lineage_gap",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "check_rfc_vs_solution_dating",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "check_beta_window_overlap",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_forensic_telemetry",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_forensic_telemetry/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_fractals",
       "failure_count": 0,
       "findings": [
@@ -7728,6 +8040,30 @@
           "domain": "d_fractals",
           "float_violations": [],
           "function": "check_escape_radius_sufficient",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_fractals",
+          "float_violations": [],
+          "function": "check_fractal_dag_acyclicity",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_fractals",
+          "float_violations": [],
+          "function": "check_content_addressed_iteration",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_fractals",
+          "float_violations": [],
+          "function": "check_omega_convergence_invariant",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -8545,6 +8881,62 @@
       "passed": true
     },
     {
+      "domain": "d_hle",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_hle",
+          "float_violations": [],
+          "function": "check_hle_excedent",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_hle",
+          "float_violations": [],
+          "function": "check_text_only_excedent",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_hle",
+          "float_violations": [],
+          "function": "check_proof_chain_coverage",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_hle",
+          "float_violations": [],
+          "function": "check_domain_breadth",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_hle",
+          "float_violations": [],
+          "function": "check_no_memorization",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_hle",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_hle/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_hospitality",
       "failure_count": 0,
       "findings": [
@@ -9297,6 +9689,70 @@
       "passed": true
     },
     {
+      "domain": "d_jepa_world_model",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "check_prediction_loss_bounded",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "check_sigreg_convergence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "check_latent_isotropy",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "check_no_representation_collapse",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "check_planning_convergence",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "check_surprise_plausible",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_jepa_world_model",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_jepa_world_model/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_judicial_review",
       "failure_count": 0,
       "findings": [
@@ -9497,6 +9953,62 @@
       "passed": true
     },
     {
+      "domain": "d_livecodebench",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_livecodebench",
+          "float_violations": [],
+          "function": "check_hard_rate_excedent",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_livecodebench",
+          "float_violations": [],
+          "function": "check_contamination_free",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_livecodebench",
+          "float_violations": [],
+          "function": "check_solution_correctness",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_livecodebench",
+          "float_violations": [],
+          "function": "check_time_complexity_optimal",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_livecodebench",
+          "float_violations": [],
+          "function": "check_overall_excedent",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_livecodebench",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_livecodebench/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_logic_formal",
       "failure_count": 0,
       "findings": [
@@ -9687,7 +10199,7 @@
         {
           "domain": "d_maritime",
           "float_violations": [],
-          "function": "check_ism_compliance",
+          "function": "check_ism_completeness_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -9695,7 +10207,7 @@
         {
           "domain": "d_maritime",
           "float_violations": [],
-          "function": "check_flag_state_quality",
+          "function": "check_flag_state_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10295,7 +10807,7 @@
         {
           "domain": "d_mining",
           "float_violations": [],
-          "function": "check_environmental_permit_current",
+          "function": "check_permit_validity_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10303,7 +10815,7 @@
         {
           "domain": "d_mining",
           "float_violations": [],
-          "function": "check_incident_investigation",
+          "function": "check_investigation_completeness",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10311,7 +10823,7 @@
         {
           "domain": "d_mining",
           "float_violations": [],
-          "function": "check_black_lung_screening",
+          "function": "check_screening_compliance_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10967,7 +11479,7 @@
         {
           "domain": "d_occupational_safety",
           "float_violations": [],
-          "function": "check_fall_protection",
+          "function": "check_fall_protection_coverage",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -10975,7 +11487,7 @@
         {
           "domain": "d_occupational_safety",
           "float_violations": [],
-          "function": "check_general_duty",
+          "function": "check_abatement_completeness_score",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -11111,6 +11623,14 @@
         {
           "domain": "d_ontology_substrate",
           "float_violations": [],
+          "function": "check_ontological_coverage_fraction",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_ontology_substrate",
+          "float_violations": [],
           "function": "run_all_invariants",
           "missing_falsifies_if": false,
           "notes": [],
@@ -11182,6 +11702,62 @@
         }
       ],
       "invariants_path": "src/domains/d_open_source_governance/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_open_source_sovereignty",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_open_source_sovereignty",
+          "float_violations": [],
+          "function": "check_no_economic_gatekeeping",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_open_source_sovereignty",
+          "float_violations": [],
+          "function": "check_no_proprietary_dependencies",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_open_source_sovereignty",
+          "float_violations": [],
+          "function": "check_reproducible_from_public_sources",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_open_source_sovereignty",
+          "float_violations": [],
+          "function": "check_public_source_available",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_open_source_sovereignty",
+          "float_violations": [],
+          "function": "check_license_compliance",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_open_source_sovereignty",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_open_source_sovereignty/invariants.py",
       "passed": true
     },
     {
@@ -11568,6 +12144,14 @@
           "domain": "d_philosophy_of_science",
           "float_violations": [],
           "function": "check_bayesian_confirmation_fraction",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_philosophy_of_science",
+          "float_violations": [],
+          "function": "check_effect_size_fraction",
           "missing_falsifies_if": false,
           "notes": [],
           "passed": true
@@ -13633,6 +14217,70 @@
       "passed": true
     },
     {
+      "domain": "d_swe_bench",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "check_resolve_rate_excedent",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "check_false_positive_bounded",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "check_patch_minimality",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "check_test_pass_completeness",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "check_no_data_leakage_swe",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "check_deterministic_resolution",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_swe_bench",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_swe_bench/invariants.py",
+      "passed": true
+    },
+    {
       "domain": "d_systems_engineering",
       "failure_count": 0,
       "findings": [
@@ -13790,6 +14438,62 @@
         }
       ],
       "invariants_path": "src/domains/d_telecommunications_law/invariants.py",
+      "passed": true
+    },
+    {
+      "domain": "d_telemetry_forensics",
+      "failure_count": 0,
+      "findings": [
+        {
+          "domain": "d_telemetry_forensics",
+          "float_violations": [],
+          "function": "check_crash_to_fix_latency",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_telemetry_forensics",
+          "float_violations": [],
+          "function": "check_version_delta_correlation",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_telemetry_forensics",
+          "float_violations": [],
+          "function": "check_feature_isomorphism_score",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_telemetry_forensics",
+          "float_violations": [],
+          "function": "check_data_pipeline_confirmation",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_telemetry_forensics",
+          "float_violations": [],
+          "function": "check_structural_precedence_dating",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        },
+        {
+          "domain": "d_telemetry_forensics",
+          "float_violations": [],
+          "function": "run_all_invariants",
+          "missing_falsifies_if": false,
+          "notes": [],
+          "passed": true
+        }
+      ],
+      "invariants_path": "src/domains/d_telemetry_forensics/invariants.py",
       "passed": true
     },
     {
@@ -15052,7 +15756,7 @@
   "summary": {
     "all_pass": true,
     "failing_domains": 0,
-    "passing_domains": 263,
-    "total_domains": 263
+    "passing_domains": 274,
+    "total_domains": 274
   }
 }

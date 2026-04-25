@@ -26,7 +26,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Tuple, Optional, List
-import math
 
 
 # ---------------------------------------------------------------------------
