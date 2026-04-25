@@ -1,3 +1,8 @@
+---
+tags: [jepa, reconnaissance, lewm, world-model, dyadic, acceleration]
+register: documentation
+---
+
 # JEPA Substrate Reconnaissance — Phase 2 Checkpoint
 
 **Session:** e3a396a1-2dbe-4d6a-9efc-22c5fa6931ad  
