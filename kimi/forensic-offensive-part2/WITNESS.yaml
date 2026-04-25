@@ -1,0 +1,31 @@
+witness:
+  session_id: e3a396a1-2dbe-4d6a-9efc-22c5fa6931ad
+  branch: kimi/jepa-world-model
+  timestamp: "2026-04-24T23:31:16-05:00"
+  html_archive:
+    path: session_e3a396a1_1a_4-24-26.html
+    sha256: b6d701ee5db7584d0437a55f8b7557c101da2bf526fc80c01ba138bffb18e21c
+    size_bytes: 177160
+  tasks_completed:
+    - Phase 1 reconnaissance (abstracts/indexing)
+    - Phase 2 reconnaissance (full PDFs)
+    - Cross-reference with existing OE domains
+    - Risk assessment (I-JEPA HIGH, DINO-WM BLOCKED, LeWM LOW)
+    - Checkpoint: docs/recon/JEPA_overlap_audit.md (84d436f1)
+    - Domain implementation: src/domains/d_jepa_world_model/ (5-file gold standard)
+    - Invariant verification (6/6 PASS + 3 intentional fails)
+    - Health check 7/7
+    - Branch pushed: kimi/jepa-world-model (4 commits)
+  next_session_hints:
+    - "Devin review pending on kimi/jepa-world-model"
+    - "Import path: PYTHONPATH=src required for axioms.logic imports"
+    - "No pytest installed; tests use inline __main__ pattern"
+    - "Context saturation threshold: ~50% — checkpoint before"
+    - "LeWM selected as primary (Cramér-Wold + Epps-Pulley, 1 hyperparameter)"
+  artifacts:
+    - src/domains/d_jepa_world_model/__init__.py
+    - src/domains/d_jepa_world_model/domain.py
+    - src/domains/d_jepa_world_model/implementation.py
+    - src/domains/d_jepa_world_model/invariants.py
+    - src/domains/d_jepa_world_model/tests/test_f_d_jepa_world_model_001.py
+    - docs/recon/JEPA_overlap_audit.md
