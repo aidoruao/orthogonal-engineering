@@ -10,6 +10,15 @@ Mathematical Standards:
 - HAWQ-V3 (Yao et al., ICML 2021): integer-only inference pipeline
 
 Based on: HAWQ-V3: Dyadic Neural Network Quantization
+
+Cross-Reference d_jepa_world_model:
+- DyadicFraction can replace LatentState.components for fast-path inference
+- FastDotProduct accelerates LatentState.dot() and CEM planning loops
+- RequantizationOp enables quantized SIGReg random projections
+
+Cross-Reference d_deterministic_probability:
+- EntropyFastPath provides bit-shift approximation for exact entropy baseline
+- Dyadic probabilities are a subset of Fraction; no float contamination
 """
 
 from __future__ import annotations
