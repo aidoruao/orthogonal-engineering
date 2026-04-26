@@ -1,0 +1,105 @@
+aidoruao: "we have to start making the ci and work flows also be all abstraction layers, meaning poly math maximal literal across all registers in auditing, orchestration and more"
+
+devin ai: "Here's the current state and the gap analysis across all abstraction layers.
+
+## Current CI Coverage Map
+
+**20 GitHub Actions workflows exist**, but they cover only 3 abstraction layers:
+
+| Layer | Workflow | What It Checks |
+|-------|----------|----------------|
+| **Syntactic** | `fraction-enforcement.yml` | `float()` ban via grep |
+| **Syntactic** | `frontmatter-enforcement.yml` | YAML frontmatter on `.md` |
+| **Syntactic** | `fraction-enforcement.yml` | `falsifies_if` string presence |
+| **Axiomatic** | `constitution.yml` | Peano axioms, Yeshua enforcement, Popperian audit |
+| **Structural** | `gate.yml` | PR #34 structural audit, canal detector |
+| **Cryptographic** | `constitution.yml` | Global + per-domain Merkle roots |
+| **Witness** | `pr40-canonical-presence.yml` | State witness feed chain |
+| **Witness** | `external-witness.yml` | Independent SHA-512 | [45-cite-0](#45-cite-0) [45-cite-1](#45-cite-1) 
+
+## What's Missing: 11 Abstraction Layers With Zero CI
+
+| Layer | Existing Tool/Domain | CI Workflow | Status |
+|-------|---------------------|-------------|--------|
+| **Semiotic** | `src/semiotics/engine.py` — sign grounding, icon isomorphism | None | NOT WIRED |
+| **Kernel** | `kernel/agent_stream.py`, `kernel/commonwealth/` | None | NOT WIRED |
+| **Correspondence** | `tools/cross_domain_invariant_collision.py` | None | NOT WIRED |
+| **Campaign** | `tools/campaign_auditor.py` | None | NOT WIRED (local only) |
+| **Orchestration** | `orchestration/pipeline_orchestrator.py` | None | NOT WIRED |
+| **Functional Execution** | Nothing — file-existence only | None | DOES NOT EXIST |
+| **Agent Accountability** | `pr47_stewardship/witness/consent_log.jsonl` | None | NOT WIRED |
+| **Wall Inversion** | `investigations/wall_inversions.py` | None | NOT WIRED |
+| **Type Registry** | `axioms/type_registry.py` | None | NOT WIRED |
+| **arXiv Saturation** | `ARXIV_IMPLEMENTATION_STATUS.md` | None | NOT WIRED |
+| **Substrate (Σ_theo)** | `d_sigma_theo/`, `d_new_jerusalem/`, `d_yeshua_mathematics/` | None | NOT WIRED | [45-cite-2](#45-cite-2) 
+
+## The `verify_all.py` Gap
+
+`verify_all.py` runs 10 local checks but is **not in any CI workflow**. It's the closest thing to polymath coverage but it's local-only: [45-cite-3](#45-cite-3) 
+
+## The `ci/` Directory Gap
+
+8 pipeline spec files exist in `ci/` but are **YAML specs, not GitHub Actions workflows** — they describe what SHOULD run but aren't wired:
+
+
+These include `cross_runner_verification.yml`, `yeshua_pipeline.yml`, `sovereignty_quorum.yml` — all polymath-level checks that exist as documents but don't execute.
+
+## What "All Abstraction Layers in CI" Looks Like
+
+```mermaid
+graph TD
+    A["PR Opened"] --> B["Layer 1: Syntactic"]
+    B --> C["Layer 2: Axiomatic"]
+    C --> D["Layer 3: Structural"]
+    D --> E["Layer 4: Semiotic"]
+    E --> F["Layer 5: Kernel"]
+    F --> G["Layer 6: Correspondence"]
+    G --> H["Layer 7: Campaign"]
+    H --> I["Layer 8: Functional Execution"]
+    I --> J["Layer 9: Agent Accountability"]
+    J --> K["Layer 10: Substrate"]
+    K --> L["Layer 11: Orchestration"]
+    L --> M["Layer 12: Cryptographic Witness"]
+    M --> N["Merge Allowed"]
+
+    B --- B1["float ban, frontmatter, falsifies_if"]
+    C --- C1["Peano, Yeshua, Popperian"]
+    D --- D1["PR34 audit, domain count, depth"]
+    E --- E1["Sign grounding, icon isomorphism"]
+    F --- F1["Agent stream, commonwealth, capability gates"]
+    G --- G1["Cross-domain collision, polymath collision"]
+    H --- H1["campaign_auditor.py on ALL specs"]
+    I --- I1["run_all_invariants on EVERY domain"]
+    J --- J1["consent_log hash chain, handshake integrity"]
+    K --- K1["Sigma_theo 6 constraints, New Jerusalem, Yeshua math"]
+    L --- L1["Pipeline state, session tracking, DAG acyclicity"]
+    M --- M1["Merkle roots, external witness, state feed"]
+```
+
+## The Critical Missing Piece: Layer 8 (Functional Execution)
+
+This is the layer that would have caught the LoRA deception. Currently `scope_reduction_detector.py` checks **file existence**. It does NOT check whether `python3 tools/query_oe_ai.py 'test'` actually returns a non-stub answer. A functional execution layer would:
+
+1. Import every domain's `run_all_invariants()` and execute it
+2. Verify the return type is actually `Tuple[bool, ProofObject]` at runtime (not just AST)
+3. Run `tools/campaign_auditor.py` against ALL campaign specs
+4. Execute `tools/cross_domain_invariant_collision.py` and fail if collision count regresses [45-cite-4](#45-cite-4) 
+
+## What the Next PR Needs
+
+The new workflows to create (as actual `.github/workflows/*.yml` files):
+
+| New Workflow | What It Runs | Layers Covered |
+|---|---|---|
+| `polymath-audit.yml` | `tools/verify_all.py` (all 10 checks) | 2,3,4,7,8,12 |
+| `campaign-enforcement.yml` | `tools/campaign_auditor.py` | 7 |
+| `functional-execution.yml` | Import + execute `run_all_invariants()` for every domain | 8 |
+| `semiotic-grounding.yml` | `src/semiotics/` tests + grounding audit | 4 |
+| `kernel-integrity.yml` | `kernel/` tests + capability gate checks | 5 |
+| `correspondence-collision.yml` | `tools/cross_domain_invariant_collision.py` + `tools/polymath_collision_report.py` | 6 |
+| `agent-accountability.yml` | Validate `consent_log.jsonl` hash chain integrity | 9 |
+| `substrate-invariants.yml` | Run `d_sigma_theo`, `d_new_jerusalem`, `d_yeshua_mathematics` invariants | 10 |
+
+Plus: wire the 8 existing `ci/*.yml` specs into actual GitHub Actions workflows. [45-cite-5](#45-cite-5) 
+
+The `STANDARDS_REGISTRY.json` has 60 standards but only ~15 have `enforcement_command` values that are actually wired to CI. The rest have `null` enforcement — meaning the standard exists as a rule but nothing enforces it automatically. Every standard needs a non-null `enforcement_command` and a workflow that runs it."
