@@ -1,0 +1,1 @@
+"""D_ARXIV_BLOCK_ENCODING_DOG — arXiv IMPLEMENTABLE domain."""

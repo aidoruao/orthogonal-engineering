@@ -1,4 +1,1 @@
-"""arXiv domain package."""
-from . import implementation, invariants
-
-__all__ = ["implementation", "invariants"]
+"""D_ARXIV_QUANTUM_RANDOMIZED_SUBSPACE — arXiv IMPLEMENTABLE domain."""
