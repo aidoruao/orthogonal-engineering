@@ -18,7 +18,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Tuple, List, Optional, Dict
-import math
 
 
 # ---------------------------------------------------------------------------
@@ -29,6 +28,7 @@ import math
 class LatentState:
     """A single latent state vector z_t in the embedding space.
 
+    Falsifies if: any component is NaN or infinite (represented as non-Fraction).
     falsifies_if: any component is NaN or infinite (represented as non-Fraction).
     """
     components: Tuple[Fraction, ...]
@@ -53,6 +53,7 @@ class LatentState:
 class LatentTrajectory:
     """A sequence of latent states z_{1:T} with associated actions.
 
+    Falsifies if: states is empty or actions length differs from states length minus one.
     falsifies_if: states is empty or actions length differs from states length minus one.
     """
     trajectory_id: str
@@ -63,10 +64,13 @@ class LatentTrajectory:
         return len(self.states)
 
     def temporal_straightening(self) -> Fraction:
-        """Average cosine similarity between consecutive velocity vectors.
+        """Average monotonic function of cosine similarity between consecutive velocity vectors.
 
-        S_straight = (1 / (B(T-2))) Σ Σ ⟨v_t, v_{t+1}⟩ / (‖v_t‖ ‖v_{t+1}‖)
+        S_straight = (1 / (B(T-2))) Σ Σ ⟨v_t, v_{t+1}⟩ / (‖v_t‖² ‖v_{t+1}‖²)
         where v_t = z_{t+1} - z_t.
+
+        Uses dot/(‖v‖² · ‖v'‖²), a monotonic function of cosine similarity,
+        to keep the computation purely in Fractions without square roots.
         """
         if len(self.states) < 3:
             return Fraction(0)
@@ -75,13 +79,13 @@ class LatentTrajectory:
         for t in range(len(self.states) - 2):
             v_t = self._velocity(t)
             v_tp1 = self._velocity(t + 1)
-            norm_t = self._velocity_norm(v_t)
-            norm_tp1 = self._velocity_norm(v_tp1)
-            if norm_t == 0 or norm_tp1 == 0:
+            norm_sq_t = self._velocity_norm(v_t)
+            norm_sq_tp1 = self._velocity_norm(v_tp1)
+            if norm_sq_t == 0 or norm_sq_tp1 == 0:
                 continue
             dot = sum(a * b for a, b in zip(v_t, v_tp1))
-            # Approximate cosine as Fraction: dot / (norm_t * norm_tp1)
-            total += Fraction(dot, norm_t * norm_tp1)
+            # Monotonic proxy for cosine: dot / (‖v‖² · ‖v'‖²)
+            total += Fraction(dot, norm_sq_t * norm_sq_tp1)
             count += 1
         if count == 0:
             return Fraction(0)
@@ -92,9 +96,9 @@ class LatentTrajectory:
         z2 = self.states[t + 1].components
         return tuple(b - a for a, b in zip(z1, z2))
 
-    def _velocity_norm(self, v: Tuple[Fraction, ...]) -> int:
-        """Return squared norm as integer numerator for Fraction construction."""
-        return sum(int(vi * vi) for vi in v)
+    def _velocity_norm(self, v: Tuple[Fraction, ...]) -> Fraction:
+        """Return squared norm ‖v‖² as Fraction."""
+        return sum(vi * vi for vi in v)
 
 
 # ---------------------------------------------------------------------------

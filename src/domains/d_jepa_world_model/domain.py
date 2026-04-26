@@ -16,6 +16,7 @@ from fractions import Fraction
 class JEPAWorldModelClaim:
     """Structured claim parameters for JEPA world model invariants.
 
+    Falsifies if: any field violates its stated constraint.
     falsifies_if: any field violates its stated constraint.
     """
     prediction_loss_bounded: bool
@@ -32,6 +33,7 @@ class JEPAWorldModelClaim:
 class JEPAWorldModelEvidence:
     """Evidence bundle for JEPA world model verification.
 
+    Falsifies if: evidence contradicts claim.
     falsifies_if: evidence contradicts claim.
     """
     evidence_id: str

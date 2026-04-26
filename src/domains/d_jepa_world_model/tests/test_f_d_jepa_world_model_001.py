@@ -52,13 +52,18 @@ def make_training_run():
     step1 = TrainingStep(step_id="S1", prediction_loss=Fraction(1, 10), sigreg_loss=Fraction(5), total_loss=Fraction(51, 10), lambda_weight=Fraction(1, 10))
     step2 = TrainingStep(step_id="S2", prediction_loss=Fraction(1, 20), sigreg_loss=Fraction(3), total_loss=Fraction(31, 20), lambda_weight=Fraction(1, 10))
     step3 = TrainingStep(step_id="S3", prediction_loss=Fraction(1, 50), sigreg_loss=Fraction(2), total_loss=Fraction(101, 50), lambda_weight=Fraction(1, 10))
-    return TrainingRun(run_id="R1", steps=(step1, step2, step3), config=WorldModelConfig(), sigreg_config=SIGRegConfig())
+    step4 = TrainingStep(step_id="S4", prediction_loss=Fraction(1, 100), sigreg_loss=Fraction(3, 2), total_loss=Fraction(103, 100), lambda_weight=Fraction(1, 10))
+    step5 = TrainingStep(step_id="S5", prediction_loss=Fraction(1, 200), sigreg_loss=Fraction(1), total_loss=Fraction(201, 200), lambda_weight=Fraction(1, 10))
+    return TrainingRun(run_id="R1", steps=(step1, step2, step3, step4, step5), config=WorldModelConfig(), sigreg_config=SIGRegConfig())
 
 
 def make_bad_training_run():
     step1 = TrainingStep(step_id="S1", prediction_loss=Fraction(1, 10), sigreg_loss=Fraction(5), total_loss=Fraction(51, 10), lambda_weight=Fraction(1, 10))
-    step_bad = TrainingStep(step_id="SB", prediction_loss=Fraction(1, 1000), sigreg_loss=Fraction(10), total_loss=Fraction(101, 1000), lambda_weight=Fraction(1, 10))
-    return TrainingRun(run_id="RB", steps=(step1, step_bad), config=WorldModelConfig(), sigreg_config=SIGRegConfig())
+    step_bad2 = TrainingStep(step_id="SB2", prediction_loss=Fraction(1, 1000), sigreg_loss=Fraction(10), total_loss=Fraction(101, 1000), lambda_weight=Fraction(1, 10))
+    step_bad3 = TrainingStep(step_id="SB3", prediction_loss=Fraction(1, 1000), sigreg_loss=Fraction(11), total_loss=Fraction(111, 1000), lambda_weight=Fraction(1, 10))
+    step_bad4 = TrainingStep(step_id="SB4", prediction_loss=Fraction(1, 1000), sigreg_loss=Fraction(12), total_loss=Fraction(121, 1000), lambda_weight=Fraction(1, 10))
+    step_bad5 = TrainingStep(step_id="SB5", prediction_loss=Fraction(1, 1000), sigreg_loss=Fraction(13), total_loss=Fraction(131, 1000), lambda_weight=Fraction(1, 10))
+    return TrainingRun(run_id="RB", steps=(step1, step_bad2, step_bad3, step_bad4, step_bad5), config=WorldModelConfig(), sigreg_config=SIGRegConfig())
 
 
 # ---------------------------------------------------------------------------
