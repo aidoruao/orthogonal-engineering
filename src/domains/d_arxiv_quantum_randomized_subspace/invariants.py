@@ -1,168 +1,234 @@
-"""Invariant checks for d_arxiv_quantum_randomized_subspace."""
+"""Invariant checks for D_ARXIV_QUANTUM_RANDOMIZED_SUBSPACE.
+
+Paper: arXiv 2604.09483v1 (quant-ph)
+"""
 
 from __future__ import annotations
 
 from fractions import Fraction
-from typing import List, Tuple
+from typing import Tuple
 
 from axioms.logic import ProofObject
-from .implementation import QuantumRandomizedSubspaceClaim, create_nominal_claim
+from .implementation import (
+    Hamiltonian,
+    QRSIConfig,
+    SubspaceEstimate,
+    QRSIClaim,
+    QRSIEvidence,
+)
 
 
-def check_subspace_dimension_valid(data: QuantumRandomizedSubspaceClaim) -> Tuple[bool, ProofObject]:
+# ---------------------------------------------------------------------------
+# 1. Anti-concentration condition
+# ---------------------------------------------------------------------------
+
+def check_anti_concentration(
+    claim: QRSIClaim,
+) -> Tuple[bool, ProofObject]:
+    """Random rotations must satisfy anti-concentration over degenerate manifold.
+
+    Standard: arXiv 2604.09483v1 claim operationalization.
+    Falsifies if: config.satisfies_anti_concentration is False.
+    falsifies_if: anti-concentration condition is not satisfied.
     """
-    Invariant: subspace_dimension must satisfy 1 <= subspace_dimension <= ambient_dimension.
-
-    Standard: arXiv 2604.09483v1 (quant-ph) claim operationalization.
-    Falsifies if: Subspace dimension is out of valid range.
-    falsifies_if: subspace_dimension < 1 or subspace_dimension > ambient_dimension.
-
-    Returns:
-        Tuple of (success, proof).
-    """
-    success = Fraction(1) <= data.subspace_dimension <= data.ambient_dimension
-    proof = ProofObject(
-        rule="check_subspace_dimension_valid",
-        premises=[
-            "paper_id=2604.09483v1",
-            f"subspace_dimension={data.subspace_dimension}",
-            f"ambient_dimension={data.ambient_dimension}",
-        ],
-        conclusion=(
-            "PASS: subspace_dimension in [1, ambient_dimension]"
-            if success else "FAIL: subspace_dimension out of valid range"
-        ),
+    if not claim.config.satisfies_anti_concentration:
+        return False, ProofObject(
+            rule="check_anti_concentration",
+            premises=["satisfies_anti_concentration=False"],
+            conclusion="VIOLATION: Anti-concentration condition not satisfied",
+        )
+    return True, ProofObject(
+        rule="check_anti_concentration",
+        premises=["satisfies_anti_concentration=True"],
+        conclusion="PASS: Anti-concentration condition satisfied",
     )
-    return success, proof
 
 
-def check_spectral_gap_positive(data: QuantumRandomizedSubspaceClaim) -> Tuple[bool, ProofObject]:
+# ---------------------------------------------------------------------------
+# 2. Spectral gap preserved
+# ---------------------------------------------------------------------------
+
+def check_spectral_gap_preserved(
+    claim: QRSIClaim,
+) -> Tuple[bool, ProofObject]:
+    """Spectral gap must be preserved exactly on every branch.
+
+    Standard: arXiv 2604.09483v1 claim operationalization.
+    Falsifies if: estimate.spectral_gap_preserved is False.
+    falsifies_if: spectral gap is not preserved.
     """
-    Invariant: spectral_gap must be positive.
-
-    Standard: arXiv 2604.09483v1 (quant-ph) claim operationalization.
-    Falsifies if: Spectral gap is not positive.
-    falsifies_if: spectral_gap <= 0.
-
-    Returns:
-        Tuple of (success, proof).
-    """
-    success = data.spectral_gap > Fraction(0)
-    proof = ProofObject(
-        rule="check_spectral_gap_positive",
-        premises=[
-            "paper_id=2604.09483v1",
-            f"spectral_gap={data.spectral_gap}",
-        ],
-        conclusion=(
-            "PASS: spectral_gap > 0"
-            if success else "FAIL: spectral_gap is not positive"
-        ),
+    if not claim.estimate.spectral_gap_preserved:
+        return False, ProofObject(
+            rule="check_spectral_gap_preserved",
+            premises=["spectral_gap_preserved=False"],
+            conclusion="VIOLATION: Spectral gap not preserved on all branches",
+        )
+    return True, ProofObject(
+        rule="check_spectral_gap_preserved",
+        premises=["spectral_gap_preserved=True"],
+        conclusion="PASS: Spectral gap preserved on all branches",
     )
-    return success, proof
 
 
-def check_iteration_count_positive(data: QuantumRandomizedSubspaceClaim) -> Tuple[bool, ProofObject]:
+# ---------------------------------------------------------------------------
+# 3. Full eigenspace spanned
+# ---------------------------------------------------------------------------
+
+def check_full_eigenspace_spanned(
+    claim: QRSIClaim,
+) -> Tuple[bool, ProofObject]:
+    """The construction must span the full eigenspace almost surely.
+
+    Standard: arXiv 2604.09483v1 claim operationalization.
+    Falsifies if: estimate.full_eigenspace_spanned is False.
+    falsifies_if: full eigenspace is not spanned.
     """
-    Invariant: iteration_count must be at least 1.
-
-    Standard: arXiv 2604.09483v1 (quant-ph) claim operationalization.
-    Falsifies if: Iteration count is less than 1.
-    falsifies_if: iteration_count < 1.
-
-    Returns:
-        Tuple of (success, proof).
-    """
-    success = data.iteration_count >= Fraction(1)
-    proof = ProofObject(
-        rule="check_iteration_count_positive",
-        premises=[
-            "paper_id=2604.09483v1",
-            f"iteration_count={data.iteration_count}",
-        ],
-        conclusion=(
-            "PASS: iteration_count >= 1"
-            if success else "FAIL: iteration_count is less than 1"
-        ),
+    if not claim.estimate.full_eigenspace_spanned:
+        return False, ProofObject(
+            rule="check_full_eigenspace_spanned",
+            premises=["full_eigenspace_spanned=False"],
+            conclusion="VIOLATION: Full eigenspace not spanned",
+        )
+    return True, ProofObject(
+        rule="check_full_eigenspace_spanned",
+        premises=["full_eigenspace_spanned=True"],
+        conclusion="PASS: Full eigenspace spanned almost surely",
     )
-    return success, proof
 
 
-def check_approximation_error_nonnegative(data: QuantumRandomizedSubspaceClaim) -> Tuple[bool, ProofObject]:
+# ---------------------------------------------------------------------------
+# 4. Branch count matches degeneracy
+# ---------------------------------------------------------------------------
+
+def check_branch_count_matches_degeneracy(
+    claim: QRSIClaim,
+) -> Tuple[bool, ProofObject]:
+    """Branch count must equal degeneracy g.
+
+    Standard: arXiv 2604.09483v1 claim operationalization.
+    Falsifies if: config.branch_count != hamiltonian.degeneracy_g.
+    falsifies_if: branch count does not match degeneracy.
     """
-    Invariant: approximation_error must be nonnegative.
-
-    Standard: arXiv 2604.09483v1 (quant-ph) claim operationalization.
-    Falsifies if: Approximation error is negative.
-    falsifies_if: approximation_error < 0.
-
-    Returns:
-        Tuple of (success, proof).
-    """
-    success = data.approximation_error >= Fraction(0)
-    proof = ProofObject(
-        rule="check_approximation_error_nonnegative",
+    if claim.config.branch_count != claim.hamiltonian.degeneracy_g:
+        return False, ProofObject(
+            rule="check_branch_count_matches_degeneracy",
+            premises=[
+                f"branch_count={claim.config.branch_count}",
+                f"degeneracy_g={claim.hamiltonian.degeneracy_g}",
+            ],
+            conclusion="VIOLATION: Branch count does not match degeneracy",
+        )
+    return True, ProofObject(
+        rule="check_branch_count_matches_degeneracy",
         premises=[
-            "paper_id=2604.09483v1",
-            f"approximation_error={data.approximation_error}",
+            f"branch_count={claim.config.branch_count}",
+            f"degeneracy_g={claim.hamiltonian.degeneracy_g}",
         ],
-        conclusion=(
-            "PASS: approximation_error >= 0"
-            if success else "FAIL: approximation_error is negative"
-        ),
+        conclusion="PASS: Branch count matches degeneracy",
     )
-    return success, proof
 
 
-def check_ambient_dimension_positive(data: QuantumRandomizedSubspaceClaim) -> Tuple[bool, ProofObject]:
+# ---------------------------------------------------------------------------
+# Run-all helper
+# ---------------------------------------------------------------------------
+
+def run_all_invariants() -> dict:
+    """Run all D_ARXIV_QUANTUM_RANDOMIZED_SUBSPACE invariants with nominal data.
+
+    Falsifies if: any invariant fails or raises an exception.
+    falsifies_if: any invariant fails or raises an exception.
     """
-    Invariant: ambient_dimension must be at least 1.
-
-    Standard: arXiv 2604.09483v1 (quant-ph) claim operationalization.
-    Falsifies if: Ambient dimension is less than 1.
-    falsifies_if: ambient_dimension < 1.
-
-    Returns:
-        Tuple of (success, proof).
-    """
-    success = data.ambient_dimension >= Fraction(1)
-    proof = ProofObject(
-        rule="check_ambient_dimension_positive",
-        premises=[
-            "paper_id=2604.09483v1",
-            f"ambient_dimension={data.ambient_dimension}",
-        ],
-        conclusion=(
-            "PASS: ambient_dimension >= 1"
-            if success else "FAIL: ambient_dimension is less than 1"
-        ),
+    ham = Hamiltonian(
+        hamiltonian_name="toric_code",
+        degeneracy_g=4,
+        spectral_gap=Fraction(1, 10),
     )
-    return success, proof
+    config_good = QRSIConfig(
+        branch_count=4,
+        satisfies_anti_concentration=True,
+        uses_haar_randomness=False,
+    )
+    estimate_good = SubspaceEstimate(
+        estimated_dimension=4,
+        full_eigenspace_spanned=True,
+        spectral_gap_preserved=True,
+    )
+    claim_safe = QRSIClaim(
+        hamiltonian=ham,
+        config=config_good,
+        estimate=estimate_good,
+    )
 
+    # FAIL case: no anti-concentration
+    config_bad_ac = QRSIConfig(
+        branch_count=4,
+        satisfies_anti_concentration=False,
+        uses_haar_randomness=False,
+    )
+    claim_bad_ac = QRSIClaim(
+        hamiltonian=ham,
+        config=config_bad_ac,
+        estimate=estimate_good,
+    )
 
-def run_all_invariants() -> List[Tuple[str, bool, ProofObject]]:
-    """Run all invariants for this arXiv-derived domain and print PASS/FAIL.
+    # FAIL case: spectral gap not preserved
+    estimate_bad_gap = SubspaceEstimate(
+        estimated_dimension=4,
+        full_eigenspace_spanned=True,
+        spectral_gap_preserved=False,
+    )
+    claim_bad_gap = QRSIClaim(
+        hamiltonian=ham,
+        config=config_good,
+        estimate=estimate_bad_gap,
+    )
 
-    Standard: arXiv 2604.09483v1 (quant-ph) nominal executable check set.
-    Falsifies if: any invariant check returns False.
-    falsifies_if: any invariant check returns False.
-
-    Returns:
-        List of (name, success, proof) tuples.
-    """
-    data = create_nominal_claim()
+    # FAIL case: branch count mismatch
+    config_bad_branch = QRSIConfig(
+        branch_count=3,
+        satisfies_anti_concentration=True,
+        uses_haar_randomness=False,
+    )
+    claim_bad_branch = QRSIClaim(
+        hamiltonian=ham,
+        config=config_bad_branch,
+        estimate=estimate_good,
+    )
 
     checks = [
-        ("check_subspace_dimension_valid", check_subspace_dimension_valid),
-        ("check_spectral_gap_positive", check_spectral_gap_positive),
-        ("check_iteration_count_positive", check_iteration_count_positive),
-        ("check_approximation_error_nonnegative", check_approximation_error_nonnegative),
-        ("check_ambient_dimension_positive", check_ambient_dimension_positive),
+        ("check_anti_concentration_pass", lambda: check_anti_concentration(claim_safe)),
+        ("check_spectral_gap_preserved_pass", lambda: check_spectral_gap_preserved(claim_safe)),
+        ("check_full_eigenspace_spanned_pass", lambda: check_full_eigenspace_spanned(claim_safe)),
+        ("check_branch_count_matches_degeneracy_pass", lambda: check_branch_count_matches_degeneracy(claim_safe)),
+        ("check_anti_concentration_fail", lambda: check_anti_concentration(claim_bad_ac)),
+        ("check_spectral_gap_preserved_fail", lambda: check_spectral_gap_preserved(claim_bad_gap)),
+        ("check_branch_count_matches_degeneracy_fail", lambda: check_branch_count_matches_degeneracy(claim_bad_branch)),
     ]
 
-    results: List[Tuple[str, bool, ProofObject]] = []
+    results: dict = {}
     for name, func in checks:
-        success, proof = func(data)
-        print(f"{name}: {'PASS' if success else 'FAIL'}")
-        results.append((name, success, proof))
+        try:
+            success, proof = func()
+            results[name] = "PASS" if success else "FAIL: " + str(proof.conclusion)
+        except Exception as exc:
+            results[name] = "ERROR: " + str(exc)
     return results
+
+
+if __name__ == "__main__":
+    import json
+
+    results = run_all_invariants()
+    print(json.dumps(results, indent=2))
+    failures = [
+        k for k, v in results.items()
+        if not v.startswith("PASS") and not k.endswith("_fail")
+    ]
+    unexpected = [
+        k for k, v in results.items()
+        if k.endswith("_fail") and not v.startswith("FAIL")
+    ]
+    failures.extend(unexpected)
+    if failures:
+        raise SystemExit(f"Invariant failures: {failures}")
+    print("All D_ARXIV_QUANTUM_RANDOMIZED_SUBSPACE invariants: PASS")
