@@ -1,3 +1,8 @@
+---
+tags: [campaigns, checkpoint, arxiv, inversions]
+register: technical
+---
+
 # Campaign Checkpoint — kimi/arxiv-inversions-pass3
 
 **Date:** 2026-04-26T09:57-05:00  
