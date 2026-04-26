@@ -1,0 +1,116 @@
+witness:
+  session_id: 523c5e62-4451-4fca-ac14-972748d74f15
+  branch: kimi/arxiv-inversions-pass3
+  timestamp: "2026-04-26T15:00:00Z"
+  tasks_completed:
+    - "Phase 0: Audit baseline — campaign auditor (2/13 scope reduction), popperian audit 274/274 PASS, scope reduction for part3_hz + photonic"
+    - "Phase 1: 10 Yeshua Inversions (d_arxiv_inv_*) — cs.CR, cs.AI, cs.SE, quant-ph, cs.PL, stat.ML, cs.LO, math.LO"
+    - "Phase 2: 5 IMPLEMENTABLE domains — block_encoding_dog (quant-ph), quantum_randomized_subspace (quant-ph), nonlocal_games (quant-ph), risk_management_bowtie (cs.CR), linearizable_registers (cs.DC)"
+    - "Phase 3: Campaign spec + scope reduction check — PASS 32/32"
+    - "Fix: YAML frontmatter on CAMPAIGN_CHECKPOINT_kimi_20260426.md"
+    - "Fix: Align spec JSON keys (campaign_id→campaign, deliverables→expected_outputs) — vacuous PASS eliminated"
+  lessons_learned:
+    - "scope_reduction_detector.py expects keys 'campaign' and 'expected_outputs', not 'campaign_id' and 'deliverables'"
+    - "Vacuous PASS (0/0) is worse than FAIL — always verify the denominator is non-zero"
+    - "Committing audit results overwrites prior reports; SCOPE_REDUCTION_REPORT.json lost photonic data (13/17)"
+    - "Yeshua Inversion pattern is robust: IMPOSSIBLE_CLAIM + YESHUA_INVERSION + 3 check functions + pass/fail tests"
+    - "All 15 new domains verified: 0 floats, Tuple[bool, ProofObject], frozen dataclasses, Fraction-only"
+  next_session_hints:
+    - "Phase 2 incomplete — ~1195 IMPLEMENTABLE papers remain in ARXIV_IMPLEMENTATION_STATUS.md"
+    - "Priority categories: quant-ph (80 IMPLEMENTABLE, 0 done), cs.CR (62, ~5 done), cs.DC (70, ~3 done)"
+    - "part3_hz_spec (41/83 missing) and photonic_spec (4/17 missing) still show pre-existing scope reduction debt"
+    - "INVERTIBLE bucket: ~200 papers remain unmaterialized as Yeshua Inversions"
+  artifacts:
+    - src/domains/d_arxiv_inv_vulnerability_abundance/__init__.py
+    - src/domains/d_arxiv_inv_vulnerability_abundance/domain.py
+    - src/domains/d_arxiv_inv_vulnerability_abundance/implementation.py
+    - src/domains/d_arxiv_inv_vulnerability_abundance/invariants.py
+    - src/domains/d_arxiv_inv_vulnerability_abundance/tests/__init__.py
+    - src/domains/d_arxiv_inv_vulnerability_abundance/tests/test_f_d_arxiv_inv_vulnerability_abundance_001.py
+    - src/domains/d_arxiv_inv_defense_trilemma/__init__.py
+    - src/domains/d_arxiv_inv_defense_trilemma/domain.py
+    - src/domains/d_arxiv_inv_defense_trilemma/implementation.py
+    - src/domains/d_arxiv_inv_defense_trilemma/invariants.py
+    - src/domains/d_arxiv_inv_defense_trilemma/tests/__init__.py
+    - src/domains/d_arxiv_inv_defense_trilemma/tests/test_f_d_arxiv_inv_defense_trilemma_001.py
+    - src/domains/d_arxiv_inv_safemind/__init__.py
+    - src/domains/d_arxiv_inv_safemind/domain.py
+    - src/domains/d_arxiv_inv_safemind/implementation.py
+    - src/domains/d_arxiv_inv_safemind/invariants.py
+    - src/domains/d_arxiv_inv_safemind/tests/__init__.py
+    - src/domains/d_arxiv_inv_safemind/tests/test_f_d_arxiv_inv_safemind_001.py
+    - src/domains/d_arxiv_inv_representational_limits/__init__.py
+    - src/domains/d_arxiv_inv_representational_limits/domain.py
+    - src/domains/d_arxiv_inv_representational_limits/implementation.py
+    - src/domains/d_arxiv_inv_representational_limits/invariants.py
+    - src/domains/d_arxiv_inv_representational_limits/tests/__init__.py
+    - src/domains/d_arxiv_inv_representational_limits/tests/test_f_d_arxiv_inv_representational_limits_001.py
+    - src/domains/d_arxiv_inv_stabilization_without_simplification/__init__.py
+    - src/domains/d_arxiv_inv_stabilization_without_simplification/domain.py
+    - src/domains/d_arxiv_inv_stabilization_without_simplification/implementation.py
+    - src/domains/d_arxiv_inv_stabilization_without_simplification/invariants.py
+    - src/domains/d_arxiv_inv_stabilization_without_simplification/tests/__init__.py
+    - src/domains/d_arxiv_inv_stabilization_without_simplification/tests/test_f_d_arxiv_inv_stabilization_without_simplification_001.py
+    - src/domains/d_arxiv_inv_ghost_imaging_zero_photons/__init__.py
+    - src/domains/d_arxiv_inv_ghost_imaging_zero_photons/domain.py
+    - src/domains/d_arxiv_inv_ghost_imaging_zero_photons/implementation.py
+    - src/domains/d_arxiv_inv_ghost_imaging_zero_photons/invariants.py
+    - src/domains/d_arxiv_inv_ghost_imaging_zero_photons/tests/__init__.py
+    - src/domains/d_arxiv_inv_ghost_imaging_zero_photons/tests/test_f_d_arxiv_inv_ghost_imaging_zero_photons_001.py
+    - src/domains/d_arxiv_inv_likelihood_hacking/__init__.py
+    - src/domains/d_arxiv_inv_likelihood_hacking/domain.py
+    - src/domains/d_arxiv_inv_likelihood_hacking/implementation.py
+    - src/domains/d_arxiv_inv_likelihood_hacking/invariants.py
+    - src/domains/d_arxiv_inv_likelihood_hacking/tests/__init__.py
+    - src/domains/d_arxiv_inv_likelihood_hacking/tests/test_f_d_arxiv_inv_likelihood_hacking_001.py
+    - src/domains/d_arxiv_inv_sharp_local_minima/__init__.py
+    - src/domains/d_arxiv_inv_sharp_local_minima/domain.py
+    - src/domains/d_arxiv_inv_sharp_local_minima/implementation.py
+    - src/domains/d_arxiv_inv_sharp_local_minima/invariants.py
+    - src/domains/d_arxiv_inv_sharp_local_minima/tests/__init__.py
+    - src/domains/d_arxiv_inv_sharp_local_minima/tests/test_f_d_arxiv_inv_sharp_local_minima_001.py
+    - src/domains/d_arxiv_inv_tractability_frontier/__init__.py
+    - src/domains/d_arxiv_inv_tractability_frontier/domain.py
+    - src/domains/d_arxiv_inv_tractability_frontier/implementation.py
+    - src/domains/d_arxiv_inv_tractability_frontier/invariants.py
+    - src/domains/d_arxiv_inv_tractability_frontier/tests/__init__.py
+    - src/domains/d_arxiv_inv_tractability_frontier/tests/test_f_d_arxiv_inv_tractability_frontier_001.py
+    - src/domains/d_arxiv_inv_solvability_complexity/__init__.py
+    - src/domains/d_arxiv_inv_solvability_complexity/domain.py
+    - src/domains/d_arxiv_inv_solvability_complexity/implementation.py
+    - src/domains/d_arxiv_inv_solvability_complexity/invariants.py
+    - src/domains/d_arxiv_inv_solvability_complexity/tests/__init__.py
+    - src/domains/d_arxiv_inv_solvability_complexity/tests/test_f_d_arxiv_inv_solvability_complexity_001.py
+    - src/domains/d_arxiv_block_encoding_dog/__init__.py
+    - src/domains/d_arxiv_block_encoding_dog/domain.py
+    - src/domains/d_arxiv_block_encoding_dog/implementation.py
+    - src/domains/d_arxiv_block_encoding_dog/invariants.py
+    - src/domains/d_arxiv_block_encoding_dog/tests/__init__.py
+    - src/domains/d_arxiv_block_encoding_dog/tests/test_f_d_arxiv_block_encoding_dog_001.py
+    - src/domains/d_arxiv_quantum_randomized_subspace/__init__.py
+    - src/domains/d_arxiv_quantum_randomized_subspace/domain.py
+    - src/domains/d_arxiv_quantum_randomized_subspace/implementation.py
+    - src/domains/d_arxiv_quantum_randomized_subspace/invariants.py
+    - src/domains/d_arxiv_quantum_randomized_subspace/tests/__init__.py
+    - src/domains/d_arxiv_quantum_randomized_subspace/tests/test_f_d_arxiv_quantum_randomized_subspace_001.py
+    - src/domains/d_arxiv_nonlocal_games/__init__.py
+    - src/domains/d_arxiv_nonlocal_games/domain.py
+    - src/domains/d_arxiv_nonlocal_games/implementation.py
+    - src/domains/d_arxiv_nonlocal_games/invariants.py
+    - src/domains/d_arxiv_nonlocal_games/tests/__init__.py
+    - src/domains/d_arxiv_nonlocal_games/tests/test_f_d_arxiv_nonlocal_games_001.py
+    - src/domains/d_arxiv_risk_management_bowtie/__init__.py
+    - src/domains/d_arxiv_risk_management_bowtie/domain.py
+    - src/domains/d_arxiv_risk_management_bowtie/implementation.py
+    - src/domains/d_arxiv_risk_management_bowtie/invariants.py
+    - src/domains/d_arxiv_risk_management_bowtie/tests/__init__.py
+    - src/domains/d_arxiv_risk_management_bowtie/tests/test_f_d_arxiv_risk_management_bowtie_001.py
+    - src/domains/d_arxiv_linearizable_registers/__init__.py
+    - src/domains/d_arxiv_linearizable_registers/domain.py
+    - src/domains/d_arxiv_linearizable_registers/implementation.py
+    - src/domains/d_arxiv_linearizable_registers/invariants.py
+    - src/domains/d_arxiv_linearizable_registers/tests/__init__.py
+    - src/domains/d_arxiv_linearizable_registers/tests/test_f_d_arxiv_linearizable_registers_001.py
+    - campaigns/arxiv_inversions_pass3_spec.json
+    - CAMPAIGN_CHECKPOINT_kimi_20260426.md
+    - kimi/arxiv-inversions-pass3/WITNESS.yaml
