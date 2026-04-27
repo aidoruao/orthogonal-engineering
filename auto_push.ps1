@@ -9,7 +9,7 @@ while ($true) {
         $fileCount = ($status -split "`n").Count  
         git add -A  
         git commit -m "auto: $fileCount files changed at $timestamp"  
-        git pull --no-rebase origin main  
+        git pull --rebase origin main 
         git push origin main  
         Write-Host "[$timestamp] Pushed $fileCount changes"  
     }  
