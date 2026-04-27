@@ -1,9 +1,9 @@
 ﻿"""  
-YESHUA AGENT v1.6  
+YESHUA AGENT v1.8  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
 Trained on combined_v4 dataset (6000 examples). Constraint-first architecture.  
 """  
-import os, json, glob, torch, random, re  
+import os, json, glob, torch, random, re, shutil  
 from datetime import datetime  
 from transformers import AutoModelForCausalLM, AutoTokenizer  
 from peft import PeftModel  
@@ -22,7 +22,7 @@ class YeshuaAgent:
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
         self.log_file = os.path.join(repo_root, "yeshua_agent_log.jsonl")  
-        print("Yeshua Agent v1.6 ready on", torch.cuda.get_device_name(0))  
+        print("Yeshua Agent v1.8 ready on", torch.cuda.get_device_name(0))  
   
     def think(self, prompt, max_tokens=300):  
         context = ""  
@@ -200,18 +200,15 @@ class YeshuaAgent:
         self.log_action("generate_training", {"total": len(examples), "categories": cats})  
         return len(examples)  
   
-    def fix_file(self, path):  
-        """Read a file, identify issues, generate a fixed version."""  
-        content = self.read_file(path)  
+    def _get_issues(self, path, content):  
+        """Deterministic issue detection. Returns list of (issue_type, detail) tuples."""  
         label, n_lines, n_fns, n_cls = self.classify_file(path, content)  
         lines = content.split("\n")  
         issues = []  
-        # Deterministic checks  
         if not any(l.strip().startswith('"""') or l.strip().startswith("'''") for l in lines[:5]):  
-            issues.append("NO_DOCSTRING: File has no module-level docstring")  
+            issues.append(("NO_DOCSTRING", "File has no module-level docstring"))  
         if label in ("STUB", "EMPTY", "MINIMAL"):  
-            issues.append(f"INCOMPLETE: File is classified as {label} ({n_lines} lines, {n_fns} functions)")  
-        has_main = any("if __name__" in l for l in lines)  
+            issues.append(("INCOMPLETE", f"File is classified as {label} ({n_lines} lines, {n_fns} functions)"))  
         fn_names = [l.strip().split("(")[0].replace("def ", "") for l in lines if l.strip().startswith("def ")]  
         for fn in fn_names:  
             fn_lines = []  
@@ -226,37 +223,135 @@ class YeshuaAgent:
                     fn_lines.append(l)  
             body = [l for l in fn_lines if l.strip() and not l.strip().startswith("#") and not l.strip().startswith('"""')]  
             if len(body) <= 1:  
-                issues.append(f"STUB_FN: Function {fn}() has only {len(body)} line(s) of logic")  
+                issues.append(("STUB_FN", f"Function {fn}() has only {len(body)} line(s) of logic"))  
             if body and all("pass" in l or "..." in l or "raise NotImplementedError" in l for l in body):  
-                issues.append(f"PLACEHOLDER: Function {fn}() is a placeholder (pass/NotImplementedError)")  
+                issues.append(("PLACEHOLDER", f"Function {fn}() is a placeholder (pass/NotImplementedError)"))  
+        return issues, label, n_lines, n_fns, n_cls  
+  
+    def fix_file(self, path):  
+        """Report issues with deterministic suggestions (no model calls)."""  
+        content = self.read_file(path)  
+        issues, label, n_lines, n_fns, n_cls = self._get_issues(path, content)  
         if not issues:  
             print(f"No issues found in {path}")  
             print(f"  Label: {label} | Lines: {n_lines} | Functions: {n_fns} | Classes: {n_cls}")  
             self.log_action("fix", {"path": path, "issues": 0, "status": "clean"})  
             return  
+        lines = content.split("\n")  
+        basename = os.path.basename(path).replace(".py", "").replace("_", " ").title()  
+        first_comment = ""  
+        for l in lines[:10]:  
+            if l.strip().startswith("#") and len(l.strip()) > 3:  
+                first_comment = l.strip().lstrip("# ").strip()  
+                break  
         print(f"\nIssues found in {path}:")  
-        for issue in issues:  
-            print(f"  - {issue}")  
-        print(f"\nGenerating fix suggestions...")  
-        # Use model for fix suggestions on each issue  
-        suggestions = []  
-        for issue in issues[:5]:  
-            prompt = f"Instruction: Suggest a fix for this code issue.\nInput: File {path} has issue: {issue}. File preview: {content[:300]}\nOutput:"  
-            suggestion = self.think(prompt, max_tokens=150)  
-            suggestions.append({"issue": issue, "suggestion": suggestion})  
-            print(f"\n  Fix for {issue.split(':')[0]}:")  
-            print(f"    {suggestion[:200]}")  
-        report = {"path": path, "label": label, "lines": n_lines, "functions": n_fns,  
-                  "issues": issues, "suggestions": suggestions}  
+        for itype, detail in issues:  
+            print(f"  - {itype}: {detail}")  
+        print(f"\nDeterministic fix suggestions:")  
+        for itype, detail in issues:  
+            if itype == "NO_DOCSTRING":  
+                doc = first_comment if first_comment else basename  
+                print(f'  [{itype}] Add module docstring at line 1: """{basename} — {doc}"""')  
+            elif itype == "INCOMPLETE":  
+                print(f"  [{itype}] File needs implementation. Add functions/classes relevant to {basename}.")  
+            elif itype == "STUB_FN":  
+                fn = detail.split("()")[0].replace("Function ", "")  
+                print(f"  [{itype}] Function {fn}() needs a real implementation body — currently has <=1 line of logic.")  
+            elif itype == "PLACEHOLDER":  
+                fn = detail.split("()")[0].replace("Function ", "")  
+                print(f"  [{itype}] Replace pass/NotImplementedError in {fn}() with actual logic.")  
+        report = {"path": path, "label": label, "lines": n_lines, "functions": n_fns, "issues": [f"{t}: {d}" for t,d in issues]}  
         report_path = os.path.join(self.repo_root, "yeshua_fix_report.json")  
         with open(report_path, "w") as rf:  
             json.dump(report, rf, indent=2)  
         print(f"\nFix report saved to: yeshua_fix_report.json")  
         self.log_action("fix", {"path": path, "issues": len(issues), "status": "reported"})  
   
+    def autofix(self, path):  
+        """Actually apply deterministic fixes to a file and write it back."""  
+        full_path = os.path.join(self.repo_root, path) if not os.path.isabs(path) else path  
+        content = self.read_file(path)  
+        issues, label, n_lines, n_fns, n_cls = self._get_issues(path, content)  
+        if not issues:  
+            print(f"No issues to fix in {path}")  
+            print(f"  Label: {label} | Lines: {n_lines} | Functions: {n_fns} | Classes: {n_cls}")  
+            self.log_action("autofix", {"path": path, "issues": 0, "status": "clean"})  
+            return  
+        # Backup original  
+        backup_path = full_path + ".bak"  
+        shutil.copy2(full_path, backup_path)  
+        lines = content.split("\n")  
+        basename = os.path.basename(path).replace(".py", "").replace("_", " ").title()  
+        first_comment = ""  
+        for l in lines[:10]:  
+            if l.strip().startswith("#") and len(l.strip()) > 3:  
+                first_comment = l.strip().lstrip("# ").strip()  
+                break  
+        applied = []  
+        # Fix NO_DOCSTRING: insert docstring at top  
+        issue_types = [t for t, d in issues]  
+        if "NO_DOCSTRING" in issue_types:  
+            doc = first_comment if first_comment else basename  
+            docstring_line = f'"""{basename} — {doc}"""'  
+            # Insert after shebang if present, otherwise at line 0  
+            insert_at = 0  
+            if lines and lines[0].startswith("#!"):  
+                insert_at = 1  
+            lines.insert(insert_at, docstring_line)  
+            applied.append("NO_DOCSTRING: Inserted module docstring")  
+        # Fix PLACEHOLDER: replace pass/... with TODO comment  
+        for itype, detail in issues:  
+            if itype == "PLACEHOLDER":  
+                fn = detail.split("()")[0].replace("Function ", "")  
+                for i, l in enumerate(lines):  
+                    if l.strip() in ("pass", "...", "raise NotImplementedError", "raise NotImplementedError()"):  
+                        # Check if we're inside the right function by looking backwards  
+                        for j in range(i-1, max(i-20, -1), -1):  
+                            if lines[j].strip().startswith(f"def {fn}"):  
+                                indent = len(l) - len(l.lstrip())  
+                                lines[i] = " " * indent + f"# TODO: Implement {fn}() — placeholder removed by Yeshua Agent v1.8"  
+                                applied.append(f"PLACEHOLDER: Replaced placeholder in {fn}()")  
+                                break  
+        # Fix STUB_FN: add TODO comment after function def if body is just a return  
+        for itype, detail in issues:  
+            if itype == "STUB_FN":  
+                fn = detail.split("()")[0].replace("Function ", "")  
+                for i, l in enumerate(lines):  
+                    if l.strip().startswith(f"def {fn}"):  
+                        # Find the end of the docstring if any, then add TODO  
+                        j = i + 1  
+                        while j < len(lines) and (not lines[j].strip() or lines[j].strip().startswith('"""') or lines[j].strip().startswith("'''")):  
+                            j += 1  
+                        indent = "    "  
+                        if j < len(lines):  
+                            indent = " " * (len(lines[j]) - len(lines[j].lstrip()))  
+                        if not any("# TODO" in lines[k] for k in range(i, min(j+3, len(lines)))):  
+                            lines.insert(j, indent + f"# TODO: Expand {fn}() — stub detected by Yeshua Agent v1.8")  
+                            applied.append(f"STUB_FN: Added TODO in {fn}()")  
+                        break  
+        # Write the fixed file  
+        new_content = "\n".join(lines)  
+        with open(full_path, "w", encoding="utf-8") as f:  
+            f.write(new_content)  
+        print(f"\nAutofix applied to {path}:")  
+        for a in applied:  
+            print(f"  + {a}")  
+        if not applied:  
+            # Issues found but none were auto-fixable (e.g. INCOMPLETE)  
+            print(f"  (no auto-fixable issues — {len(issues)} issue(s) require manual work)")  
+            for itype, detail in issues:  
+                print(f"    - {itype}: {detail}")  
+            # Restore backup since nothing changed  
+            shutil.copy2(backup_path, full_path)  
+        else:  
+            print(f"  Backup saved: {os.path.basename(backup_path)}")  
+            print(f"  {len(applied)} fix(es) applied, {len(issues) - len(applied)} remaining manually")  
+        os.remove(backup_path) if not applied else None  
+        self.log_action("autofix", {"path": path, "applied": applied, "total_issues": len(issues)})  
+  
     def run(self):  
         print("\n" + "="*60)  
-        print("YESHUA AGENT v1.6 - LOCAL AGENTIC AI")  
+        print("YESHUA AGENT v1.8 - LOCAL AGENTIC AI")  
         print("No API. No subscription. No corporate dependency.")  
         print("="*60)  
         print("\nCommands:")  
@@ -266,7 +361,8 @@ class YeshuaAgent:
         print("  audit <path>      - Full audit of a file (grounded)")  
         print("  auto [N]          - Autonomous audit of N random .py files (default 5)")  
         print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
-        print("  fix <path>        - Find issues and suggest fixes for a file")  
+        print("  fix <path>        - Report issues in a file (deterministic)")  
+        print("  autofix <path>    - Apply fixes to a file (writes changes)")  
         print("  read <path>       - Read a file")  
         print("  write <path>      - Write a file (type END to finish)")  
         print("  think <anything>  - Ask the model")  
@@ -300,10 +396,11 @@ class YeshuaAgent:
                     print(f"Generating {n} training examples per category from repo files...")  
                     self.generate_training(n)  
                 elif cmd == "fix":  
-                    if not arg:  
-                        print("Usage: fix <path>")  
-                    else:  
-                        self.fix_file(arg)  
+                    if not arg: print("Usage: fix <path>")  
+                    else: self.fix_file(arg)  
+                elif cmd == "autofix":  
+                    if not arg: print("Usage: autofix <path>")  
+                    else: self.autofix(arg)  
                 elif cmd == "read":  
                     c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
                 elif cmd == "write":  
