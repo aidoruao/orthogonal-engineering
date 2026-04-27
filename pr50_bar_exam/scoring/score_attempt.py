@@ -21,6 +21,7 @@ from pr50_bar_exam.examination.question_bank import QUESTIONS
 
 def canonical_bytes(obj: Any) -> bytes:
     """Produce canonical JSON bytes."""
+    # TODO: Expand canonical_bytes() - stub detected by Yeshua Agent
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
 
 

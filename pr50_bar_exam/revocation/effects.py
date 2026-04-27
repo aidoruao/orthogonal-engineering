@@ -29,6 +29,7 @@ PAST_ACTIONS_STAND = True  # Existing merges and actions are not retroactively u
 
 def apply_revocation_effects(capabilities: List[str]) -> List[str]:
     """Return capability list after applying revocation effects."""
+    # TODO: Expand apply_revocation_effects() - stub detected by Yeshua Agent
     return [c for c in capabilities if c in CAPABILITIES_KEPT_ON_REVOCATION]
 
 

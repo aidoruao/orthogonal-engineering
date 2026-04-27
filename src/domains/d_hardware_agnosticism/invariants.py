@@ -51,6 +51,7 @@ def check_instruction_set_baseline_invariant(
 
 
 def check_software_renderer_path_invariant(
+    # TODO: Expand check_software_renderer_path_invariant() - stub detected by Yeshua Agent
     renderers: List[SoftwareRenderer]
 ) -> Tuple[bool, ProofObject]:
     """Invariant: At least one software fallback available.

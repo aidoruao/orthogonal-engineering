@@ -111,6 +111,7 @@ class AtonementPlaceholder:
 
     def atone(self, sin_vector: np.ndarray) -> np.ndarray:
         """Placeholder atonement function"""
+        # TODO: Expand atone() - stub detected by Yeshua Agent
         raise NotImplementedError("Canonical placeholder - requires substitution")
 
 # ============================================================================

@@ -59,10 +59,12 @@ class BenchmarkResult:
         }
 
     def to_json(self) -> str:
+        # TODO: Expand to_json() - stub detected by Yeshua Agent
         return json.dumps(self.to_dict(), indent=2, sort_keys=True)
 
 
 def _sha256(data: bytes) -> str:
+    # TODO: Expand _sha256() - stub detected by Yeshua Agent
     return hashlib.sha256(data).hexdigest()
 
 

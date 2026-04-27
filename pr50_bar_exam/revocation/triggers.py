@@ -32,11 +32,13 @@ REVOCATION_TRIGGERS = {
 
 def is_valid_trigger(trigger: str) -> bool:
     """Return True if trigger is a known revocation trigger."""
+    # TODO: Expand is_valid_trigger() - stub detected by Yeshua Agent
     return trigger in REVOCATION_TRIGGERS
 
 
 def get_required_evidence(trigger: str) -> List[str]:
     """Return list of required evidence keys for trigger."""
+    # TODO: Expand get_required_evidence() - stub detected by Yeshua Agent
     return REVOCATION_TRIGGERS.get(trigger, {}).get("evidence_required", [])
 
 

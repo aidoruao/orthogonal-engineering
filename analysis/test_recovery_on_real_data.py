@@ -63,6 +63,7 @@ def find_conversation_files(directory: str = ".") -> List[str]:
 
 
 def test_core_detector(
+    # TODO: Expand test_core_detector() - stub detected by Yeshua Agent
     files: List[str], output_dir: str = "./recovery_test_results"
 ) -> Dict[str, Any]:
     """Test the fixed core detector on real conversation files."""
@@ -155,6 +156,7 @@ def test_core_detector(
 
 
 def test_statistical_validation(
+    # TODO: Expand test_statistical_validation() - stub detected by Yeshua Agent
     detection_results: Dict[str, Any], output_dir: str
 ) -> Dict[str, Any]:
     """Test statistical validation on detection results."""
@@ -432,6 +434,7 @@ def test_boundary_enforcement(output_dir: str) -> Dict[str, Any]:
 
 
 def run_comprehensive_test(
+    # TODO: Expand run_comprehensive_test() - stub detected by Yeshua Agent
     files: List[str], output_base_dir: str = "./recovery_validation"
 ) -> Dict[str, Any]:
     """Run comprehensive recovery validation test."""

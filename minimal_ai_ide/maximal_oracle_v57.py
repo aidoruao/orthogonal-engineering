@@ -36,6 +36,7 @@ class ParaconsistentFormula:
     truth_value: ParaconsistentTruthValue
     
     def is_consistent(self) -> bool:
+        # TODO: Expand is_consistent() - stub detected by Yeshua Agent
         return self.truth_value != ParaconsistentTruthValue.BOTH
 
 # Category Theory Foundations
@@ -66,6 +67,7 @@ class NaturalTransformation:
     
     def verify_naturality(self) -> bool:
         """Verify naturality square commutes"""
+        # TODO: Expand verify_naturality() - stub detected by Yeshua Agent
         # For all morphisms f: A -> B
         # F(f) ; η_B = η_A ; G(f)
         return True  # Simplified
@@ -102,6 +104,7 @@ class HomotopyPath:
     
     def is_contractible(self) -> bool:
         """Check if path space is contractible"""
+        # TODO: Expand is_contractible() - stub detected by Yeshua Agent
         return self.start_point == self.end_point
 
 @dataclass
@@ -113,6 +116,7 @@ class UnivalenceAxiom:
     
     def transport(self, path: HomotopyPath, value: Any) -> Any:
         """Transport along path"""
+        # TODO: Expand transport() - stub detected by Yeshua Agent
         return path.path_function(1.0)
 
 # Sheaf Theory for Distributed Verification
@@ -125,6 +129,7 @@ class Sheaf:
     
     def gluing_axiom(self, cover: List[str]) -> bool:
         """Verify sheaf gluing condition"""
+        # TODO: Expand gluing_axiom() - stub detected by Yeshua Agent
         # If sections agree on overlaps, they glue to global section
         return True  # Simplified
 
@@ -137,6 +142,7 @@ class ProofTheoreticOrdinal:
     
     def compare(self, other: 'ProofTheoreticOrdinal') -> int:
         """Compare ordinal strength"""
+        # TODO: Expand compare() - stub detected by Yeshua Agent
         return self.proof_tree_height - other.proof_tree_height
 
 # -------------------------

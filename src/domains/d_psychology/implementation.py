@@ -63,6 +63,7 @@ class Participant:
     capacity_to_consent: bool
     
     def has_withdrawn(self) -> bool:
+        # TODO: Expand has_withdrawn() - stub detected by Yeshua Agent
         return self.withdrawal_date is not None
 
 
