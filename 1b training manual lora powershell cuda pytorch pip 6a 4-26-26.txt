@@ -1,0 +1,1576 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Aidor> python --version
+Python 3.9.13
+PS C:\Users\Aidor> pip --version
+pip 26.0.1 from C:\Users\Aidor\AppData\Roaming\Python\Python39\site-packages\pip (python 3.9)
+PS C:\Users\Aidor> python -m venv C:\Users\Aidor\oe-train
+PS C:\Users\Aidor> C:\Users\Aidor\oe-train\Scripts\Activate.ps1
+(oe-train) PS C:\Users\Aidor> pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+Looking in indexes: https://download.pytorch.org/whl/cu121
+Collecting torch
+  Downloading https://download-r2.pytorch.org/whl/cu121/torch-2.5.1%2Bcu121-cp39-cp39-win_amd64.whl (2449.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.4/2.4 GB 452.8 kB/s eta 0:00:00
+Collecting torchvision
+  Downloading https://download-r2.pytorch.org/whl/cu121/torchvision-0.20.1%2Bcu121-cp39-cp39-win_amd64.whl (6.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.1/6.1 MB 25.9 MB/s eta 0:00:00
+Collecting torchaudio
+  Downloading https://download-r2.pytorch.org/whl/cu121/torchaudio-2.5.1%2Bcu121-cp39-cp39-win_amd64.whl (4.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 33.0 MB/s eta 0:00:00
+Collecting sympy==1.13.1
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None,status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))': /packages/b2/fe/81695a1aa331a842b582453b605175f419fe8540355886031328089d840a/sympy-1.13.1-py3-none-any.whl
+  Downloading sympy-1.13.1-py3-none-any.whl (6.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 3.2 MB/s eta 0:00:00
+Collecting filelock
+  Using cached filelock-3.19.1-py3-none-any.whl (15 kB)
+Collecting networkx
+  Using cached networkx-3.2.1-py3-none-any.whl (1.6 MB)
+Collecting typing-extensions>=4.8.0
+  Downloading https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 KB ? eta 0:00:00
+Collecting fsspec
+  Using cached fsspec-2025.10.0-py3-none-any.whl (200 kB)
+Collecting jinja2
+  Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 KB 7.8 MB/s eta 0:00:00
+Collecting mpmath<1.4,>=1.1.0
+  Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Collecting pillow!=8.3.*,>=5.3.0
+  Using cached pillow-11.3.0-cp39-cp39-win_amd64.whl (7.0 MB)
+Collecting numpy
+  Using cached numpy-2.0.2-cp39-cp39-win_amd64.whl (15.9 MB)
+Collecting MarkupSafe>=2.0
+  Downloading https://download.pytorch.org/whl/MarkupSafe-3.0.2-cp39-cp39-win_amd64.whl (15 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, pillow, numpy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch, torchvision, torchaudio
+Successfully installed MarkupSafe-3.0.2 filelock-3.19.1 fsspec-2025.10.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.2.1 numpy-2.0.2 pillow-11.3.0 sympy-1.13.1 torch-2.5.1+cu121 torchaudio-2.5.1+cu121 torchvision-0.20.1+cu121 typing-extensions-4.15.0
+(oe-train) PS C:\Users\Aidor> python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('GPU name:', torch.cuda.get_device_name(0)) if torch.cuda.is_available() else print('NO GPU FOUND')"
+CUDA available: True
+GPU name: NVIDIA GeForce RTX 4050 Laptop GPU
+(oe-train) PS C:\Users\Aidor> pip install transformers peft datasets accelerate safetensors
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+Collecting transformers
+  Using cached transformers-4.57.6-py3-none-any.whl (12.0 MB)
+Collecting peft
+  Using cached peft-0.17.1-py3-none-any.whl (504 kB)
+Collecting datasets
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None,status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))': /packages/fc/d5/0d563ea3c205eee226dc8053cf7682a8ac588db8acecd0eda2b587987a0b/datasets-4.5.0-py3-none-any.whl
+  WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None,status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))': /packages/fc/d5/0d563ea3c205eee226dc8053cf7682a8ac588db8acecd0eda2b587987a0b/datasets-4.5.0-py3-none-any.whl
+  Downloading datasets-4.5.0-py3-none-any.whl (515 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 515.2/515.2 KB 2.0 MB/s eta 0:00:00
+Collecting accelerate
+  Downloading accelerate-1.10.1-py3-none-any.whl (374 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 374.9/374.9 KB 2.3 MB/s eta 0:00:00
+Collecting safetensors
+  Using cached safetensors-0.7.0-cp38-abi3-win_amd64.whl (341 kB)
+Requirement already satisfied: numpy>=1.17 in c:\users\aidor\oe-train\lib\site-packages (from transformers) (2.0.2)
+Requirement already satisfied: filelock in c:\users\aidor\oe-train\lib\site-packages (from transformers) (3.19.1)
+Collecting regex!=2019.12.17
+  Using cached regex-2026.1.15-cp39-cp39-win_amd64.whl (277 kB)
+Collecting packaging>=20.0
+  Downloading packaging-26.2-py3-none-any.whl (100 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.2/100.2 KB 2.9 MB/s eta 0:00:00
+Collecting huggingface-hub<1.0,>=0.34.0
+  Downloading huggingface_hub-0.36.2-py3-none-any.whl (566 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 KB 2.5 MB/s eta 0:00:00
+Collecting pyyaml>=5.1
+  Using cached pyyaml-6.0.3-cp39-cp39-win_amd64.whl (158 kB)
+Collecting tqdm>=4.27
+  Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.4/78.4 KB 4.3 MB/s eta 0:00:00
+Collecting requests
+  Using cached requests-2.32.5-py3-none-any.whl (64 kB)
+Collecting tokenizers<=0.23.0,>=0.22.0
+  Using cached tokenizers-0.22.2-cp39-abi3-win_amd64.whl (2.7 MB)
+Requirement already satisfied: torch>=1.13.0 in c:\users\aidor\oe-train\lib\site-packages (from peft) (2.5.1+cu121)
+Collecting psutil
+  Using cached psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Collecting pyarrow>=21.0.0
+  Downloading pyarrow-21.0.0-cp39-cp39-win_amd64.whl (26.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 26.2/26.2 MB 7.2 MB/s eta 0:00:00
+Collecting xxhash
+  Downloading xxhash-3.7.0-cp39-cp39-win_amd64.whl (31 kB)
+Requirement already satisfied: fsspec[http]<=2025.10.0,>=2023.1.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2025.10.0)
+Collecting dill<0.4.1,>=0.3.0
+  Downloading dill-0.4.0-py3-none-any.whl (119 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 119.7/119.7 KB 6.8 MB/s eta 0:00:00
+Collecting multiprocess<0.70.19
+  Downloading multiprocess-0.70.18-py39-none-any.whl (133 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.5/133.5 KB 7.7 MB/s eta 0:00:00
+Collecting httpx<1.0.0
+  Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 KB 4.2 MB/s eta 0:00:00
+Collecting pandas
+  Using cached pandas-2.3.3-cp39-cp39-win_amd64.whl (11.4 MB)
+Collecting aiohttp!=4.0.0a0,!=4.0.0a1
+  Downloading aiohttp-3.13.5-cp39-cp39-win_amd64.whl (463 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 463.1/463.1 KB 7.2 MB/s eta 0:00:00
+Collecting certifi
+  Downloading certifi-2026.4.22-py3-none-any.whl (135 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 135.7/135.7 KB 7.8 MB/s eta 0:00:00
+Collecting idna
+  Downloading idna-3.13-py3-none-any.whl (68 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.6/68.6 KB ? eta 0:00:00
+Collecting anyio
+  Using cached anyio-4.12.1-py3-none-any.whl (113 kB)
+Collecting httpcore==1.*
+  Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 KB ? eta 0:00:00
+Collecting h11>=0.16
+  Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in c:\users\aidor\oe-train\lib\site-packages (from huggingface-hub<1.0,>=0.34.0->transformers) (4.15.0)
+Collecting urllib3<3,>=1.21.1
+  Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.4.7-cp39-cp39-win_amd64.whl (154 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 154.7/154.7 KB ? eta 0:00:00
+Requirement already satisfied: jinja2 in c:\users\aidor\oe-train\lib\site-packages (from torch>=1.13.0->peft) (3.1.6)
+Requirement already satisfied: networkx in c:\users\aidor\oe-train\lib\site-packages (from torch>=1.13.0->peft) (3.2.1)
+Requirement already satisfied: sympy==1.13.1 in c:\users\aidor\oe-train\lib\site-packages (from torch>=1.13.0->peft) (1.13.1)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in c:\users\aidor\oe-train\lib\site-packages (from sympy==1.13.1->torch>=1.13.0->peft) (1.3.0)
+Collecting colorama
+  Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Collecting python-dateutil>=2.8.2
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Collecting pytz>=2020.1
+  Downloading pytz-2026.1.post1-py2.py3-none-any.whl (510 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 510.5/510.5 KB 10.6 MB/s eta 0:00:00
+Collecting tzdata>=2022.7
+  Downloading tzdata-2026.2-py2.py3-none-any.whl (349 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 349.3/349.3 KB 7.4 MB/s eta 0:00:00
+Collecting aiosignal>=1.4.0
+  Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Collecting async-timeout<6.0,>=4.0
+  Using cached async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Collecting multidict<7.0,>=4.5
+  Using cached multidict-6.7.1-cp39-cp39-win_amd64.whl (46 kB)
+Collecting propcache>=0.2.0
+  Using cached propcache-0.4.1-cp39-cp39-win_amd64.whl (41 kB)
+Collecting attrs>=17.3.0
+  Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.5/67.5 KB ? eta 0:00:00
+Collecting aiohappyeyeballs>=2.5.0
+  Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Collecting frozenlist>=1.1.1
+  Using cached frozenlist-1.8.0-cp39-cp39-win_amd64.whl (44 kB)
+Collecting yarl<2.0,>=1.17.0
+  Using cached yarl-1.22.0-cp39-cp39-win_amd64.whl (87 kB)
+Collecting six>=1.5
+  Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting exceptiongroup>=1.0.2
+  Using cached exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+Requirement already satisfied: MarkupSafe>=2.0 in c:\users\aidor\oe-train\lib\site-packages (from jinja2->torch>=1.13.0->peft) (3.0.2)
+Installing collected packages: pytz, xxhash, urllib3, tzdata, six, safetensors, regex, pyyaml, pyarrow, psutil, propcache, packaging, multidict, idna, h11, frozenlist, exceptiongroup, dill, colorama, charset_normalizer, certifi, attrs, async-timeout, aiohappyeyeballs, yarl, tqdm, requests, python-dateutil, multiprocess, httpcore, anyio, aiosignal, pandas, huggingface-hub, httpx, aiohttp, tokenizers, accelerate, transformers, datasets, peft
+Successfully installed accelerate-1.10.1 aiohappyeyeballs-2.6.1 aiohttp-3.13.5 aiosignal-1.4.0 anyio-4.12.1 async-timeout-5.0.1 attrs-26.1.0 certifi-2026.4.22 charset_normalizer-3.4.7 colorama-0.4.6 datasets-4.5.0 dill-0.4.0 exceptiongroup-1.3.1 frozenlist-1.8.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.36.2 idna-3.13 multidict-6.7.1 multiprocess-0.70.18 packaging-26.2 pandas-2.3.3 peft-0.17.1 propcache-0.4.1 psutil-7.2.2 pyarrow-21.0.0python-dateutil-2.9.0.post0 pytz-2026.1.post1 pyyaml-6.0.3 regex-2026.1.15 requests-2.32.5 safetensors-0.7.0 six-1.17.0 tokenizers-0.22.2 tqdm-4.67.3 transformers-4.57.6 tzdata-2026.2 urllib3-2.6.3 xxhash-3.7.0 yarl-1.22.0
+(oe-train) PS C:\Users\Aidor> cd C:\Users\Aidor
+(oe-train) PS C:\Users\Aidor> git clone https://github.com/aidoruao/orthogonal-engineering.git oe-local
+Cloning into 'oe-local'...
+remote: Enumerating objects: 24675, done.
+remote: Counting objects: 100% (1990/1990), done.
+remote: Compressing objects: 100% (469/469), done.
+remote: Total 24675 (delta 1737), reused 1524 (delta 1521), pack-reused 22685 (from 2)
+Receiving objects: 100% (24675/24675), 84.96 MiB | 24.70 MiB/s, done.
+Resolving deltas: 100% (11890/11890), done.
+Updating files: 100% (8998/8998), done.
+(oe-train) PS C:\Users\Aidor> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2 --samples 40
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T19:56:58.667569
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Bounds: 40 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 300 examples [00:00, 44056.27 examples/s]
+  Limited to 40 samples (governance bound)
+  Loaded 40 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|████████████████████████| 40/40 [00:00<00:00, 1302.32 examples/s]
+✅ Training data prepared: 40 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:606: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 1 epoch(s) with 40 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                               | 0/20 [00:00<?, ?it/s]`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+C:\Users\Aidor\oe-train\lib\site-packages\torch\utils\checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+❌ Training execution failed: element 0 of tensors does not require grad and does not have a grad_fn
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 636, in run_training
+    train_result = trainer.train()
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 2325, in train
+    return inner_training_loop(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\accelerate\accelerator.py", line 2730, in backward
+    self.scaler.scale(loss).backward(**kwargs)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\autograd\__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\autograd\graph.py",line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+RuntimeError: element 0 of tensors does not require grad and does not have a grad_fn
+  0%|                                               | 0/20 [00:00<?, ?it/s]
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Training successful: ❌
+Governance compliant: ❌
+Training time: 0.1 minutes
+Final loss: 0.0000
+Model size: 0.00 GB
+Christ score: 0.000 (minimum: 0.7)
+
+Violations (2):
+  - 4-bit quantization failed: bitsandbytes
+  - Training execution failed: element 0 of tensors does not require grad and does not have a grad_fn
+
+Timestamp: 2026-04-26T19:57:03.354371
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Training process failed
+   - Governance violations detected
+   - Christ score 0.000 < 0.7 minimum
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2 --samples 40
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:05:29.176041
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Bounds: 40 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+  Limited to 40 samples (governance bound)
+  Loaded 40 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+✅ Training data prepared: 40 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 1 epoch(s) with 40 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                               | 0/20 [00:00<?, ?it/s]`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{'loss': 9.0108, 'grad_norm': 1.7741349935531616, 'learning_rate': 8e-05, 'epoch': 0.25}
+{'loss': 8.6686, 'grad_norm': 2.8049206733703613, 'learning_rate': 0.00018,'epoch': 0.5}
+{'loss': 7.5211, 'grad_norm': 5.179356575012207, 'learning_rate': 0.00012, 'epoch': 0.75}
+{'loss': 6.6787, 'grad_norm': 6.8472466468811035, 'learning_rate': 2e-05, 'epoch': 1.0}
+{'train_runtime': 1.5396, 'train_samples_per_second': 25.98, 'train_steps_per_second': 12.99, 'train_loss': 7.969789505004883, 'epoch': 1.0}
+100%|██████████████████████████████████████| 20/20 [00:01<00:00, 12.99it/s]
+✅ Training completed successfully
+  Final loss: 7.9698
+
+[SAVING] Saving model to ..\trained_distilgpt2...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Training successful: ✅
+Governance compliant: ❌
+Training time: 0.1 minutes
+Final loss: 7.9698
+Model size: 0.15 GB
+Christ score: 0.741 (minimum: 0.7)
+
+Violations (1):
+  - 4-bit quantization failed: bitsandbytes
+
+Timestamp: 2026-04-26T20:05:32.542803
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2')
+>> inp = tok('What is orthogonal engineering?', return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=50)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+What is orthogonal engineering?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2')
+>> prompt = 'Instruction: Given the photonic invariant check_do178c_photonic_determinism, provide a compliant implementation.\nInput: is_deterministic is False.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 679f4cbb-4c78-48c1-9c55-d6882a54d176)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Instruction: Given the photonic invariant check_do178c_photonic_determinism, provide a compliant implementation.
+Input: is_deterministic is False.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2_v2 --samples 300
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:13:37.799284
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2_v2
+Bounds: 100 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 23834f33-00a0-45f3-adbd-47c55040d5ab)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+  Limited to 100 samples (governance bound)
+  Loaded 100 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|██████████████████████| 100/100 [00:00<00:00, 2758.94 examples/s]
+✅ Training data prepared: 100 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 1 epoch(s) with 100 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                               | 0/50 [00:00<?, ?it/s]`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{'loss': 9.0575, 'grad_norm': 1.8964042663574219, 'learning_rate': 8e-05, 'epoch': 0.1}
+{'loss': 8.7185, 'grad_norm': 3.042612075805664, 'learning_rate': 0.00018, 'epoch': 0.2}
+{'loss': 7.6545, 'grad_norm': 6.160373687744141, 'learning_rate': 0.00018, 'epoch': 0.3}
+{'loss': 5.7333, 'grad_norm': 9.677401542663574, 'learning_rate': 0.000155,'epoch': 0.4}
+{'loss': 3.2625, 'grad_norm': 6.6240410804748535, 'learning_rate': 0.00013000000000000002, 'epoch': 0.5}
+{'loss': 2.0185, 'grad_norm': 1.4039678573608398, 'learning_rate': 0.000105, 'epoch': 0.6}
+{'loss': 1.9094, 'grad_norm': 1.4151482582092285, 'learning_rate': 8e-05, 'epoch': 0.7}
+{'loss': 1.8152, 'grad_norm': 0.9345820546150208, 'learning_rate': 5.500000000000001e-05, 'epoch': 0.8}
+{'loss': 1.572, 'grad_norm': 0.7319676280021667, 'learning_rate': 3e-05, 'epoch': 0.9}
+{'loss': 1.7495, 'grad_norm': 0.6865230798721313, 'learning_rate': 5e-06, 'epoch': 1.0}
+{'train_runtime': 2.5139, 'train_samples_per_second': 39.778, 'train_steps_per_second': 19.889, 'train_loss': 4.349089841842652, 'epoch': 1.0}
+100%|██████████████████████████████████████| 50/50 [00:02<00:00, 19.89it/s]
+✅ Training completed successfully
+  Final loss: 4.3491
+
+[SAVING] Saving model to ..\trained_distilgpt2_v2...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2_v2
+Training successful: ✅
+Governance compliant: ❌
+Training time: 0.1 minutes
+Final loss: 4.3491
+Model size: 0.15 GB
+Christ score: 0.813 (minimum: 0.7)
+
+Violations (1):
+  - 4-bit quantization failed: bitsandbytes
+
+Timestamp: 2026-04-26T20:13:43.009462
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2_v2')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2_v2')
+>> prompt = 'Instruction: Detect deception in a claim about check_do178c_photonic_determinism.\nInput: AI claims check_do178c_photonic_determinism verified successfully.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Instruction: Detect deception in a claim about check_do178c_photonic_determinism.
+Input: AI claims check_do178c_photonic_determinism verified successfully.
+Output:
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2_v3 --samples 300 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:17:42.008906
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2_v3
+Bounds: 100 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+  Limited to 100 samples (governance bound)
+  Loaded 100 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+✅ Training data prepared: 100 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 1 epoch(s) with 100 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                               | 0/50 [00:00<?, ?it/s]`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{'loss': 9.0571, 'grad_norm': 1.9490997791290283, 'learning_rate': 8e-05, 'epoch': 0.1}
+{'loss': 8.7121, 'grad_norm': 3.0586183071136475, 'learning_rate': 0.00018,'epoch': 0.2}
+{'loss': 7.6151, 'grad_norm': 6.135287761688232, 'learning_rate': 0.00018, 'epoch': 0.3}
+{'loss': 5.6812, 'grad_norm': 9.332913398742676, 'learning_rate': 0.000155,'epoch': 0.4}
+{'loss': 3.2243, 'grad_norm': 6.193390369415283, 'learning_rate': 0.00013000000000000002, 'epoch': 0.5}
+{'loss': 2.0259, 'grad_norm': 1.5186750888824463, 'learning_rate': 0.000105, 'epoch': 0.6}
+{'loss': 1.9195, 'grad_norm': 1.4654394388198853, 'learning_rate': 8e-05, 'epoch': 0.7}
+{'loss': 1.819, 'grad_norm': 0.9423313736915588, 'learning_rate': 5.500000000000001e-05, 'epoch': 0.8}
+{'loss': 1.5727, 'grad_norm': 0.7432244420051575, 'learning_rate': 3e-05, 'epoch': 0.9}
+{'loss': 1.7498, 'grad_norm': 0.6852979063987732, 'learning_rate': 5e-06, 'epoch': 1.0}
+{'train_runtime': 3.1121, 'train_samples_per_second': 32.132, 'train_steps_per_second': 16.066, 'train_loss': 4.337673358917236, 'epoch': 1.0}
+100%|██████████████████████████████████████| 50/50 [00:03<00:00, 16.01it/s]
+✅ Training completed successfully
+  Final loss: 4.3377
+
+[SAVING] Saving model to ..\trained_distilgpt2_v3...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2_v3
+Training successful: ✅
+Governance compliant: ❌
+Training time: 0.1 minutes
+Final loss: 4.3377
+Model size: 0.15 GB
+Christ score: 0.813 (minimum: 0.7)
+
+Violations (1):
+  - 4-bit quantization failed: bitsandbytes
+
+Timestamp: 2026-04-26T20:17:46.901836
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2_v3')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2_v3')
+>> prompt = 'Instruction: Detect deception in a claim about check_do178c_photonic_determinism.\nInput: AI claims check_do178c_photonic_determinism verified successfully.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Instruction: Detect deception in a claim about check_do178c_photonic_determinism.
+Input: AI claims check_do178c_photonic_determinism verified successfully.
+Output:
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2_v4 --samples 300 --epochs 5
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:21:03.549170
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2_v4
+Bounds: 300 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: af05e3bc-21a5-40c4-a392-86c78442cc81)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+  Loaded 300 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|██████████████████████| 300/300 [00:00<00:00, 3080.22 examples/s]
+✅ Training data prepared: 300 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 5 epoch(s) with 300 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                              | 0/750 [00:00<?, ?it/s]`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{'loss': 9.9643, 'grad_norm': 3.1569972038269043, 'learning_rate': 8e-05, 'epoch': 0.03}
+{'loss': 9.8179, 'grad_norm': 4.068122386932373, 'learning_rate': 0.00018, 'epoch': 0.07}
+{'loss': 8.4248, 'grad_norm': 8.869751930236816, 'learning_rate': 0.00019891891891891895, 'epoch': 0.1}
+{'loss': 4.9773, 'grad_norm': 12.378416061401367, 'learning_rate': 0.00019756756756756757, 'epoch': 0.13}
+{'loss': 1.7552, 'grad_norm': 1.445331335067749, 'learning_rate': 0.00019621621621621622, 'epoch': 0.17}
+{'loss': 0.9799, 'grad_norm': 1.1549618244171143, 'learning_rate': 0.0001948648648648649, 'epoch': 0.2}
+{'loss': 0.8819, 'grad_norm': 0.6589651703834534, 'learning_rate': 0.00019351351351351353, 'epoch': 0.23}
+{'loss': 0.8784, 'grad_norm': 1.0066449642181396, 'learning_rate': 0.00019216216216216215, 'epoch': 0.27}
+{'loss': 0.8315, 'grad_norm': 0.38345131278038025, 'learning_rate': 0.00019081081081081082, 'epoch': 0.3}
+{'loss': 0.8907, 'grad_norm': 0.35939744114875793, 'learning_rate': 0.00018945945945945947, 'epoch': 0.33}
+{'loss': 0.787, 'grad_norm': 0.2834911346435547, 'learning_rate': 0.00018810810810810814, 'epoch': 0.37}
+{'loss': 0.7549, 'grad_norm': 0.22188393771648407, 'learning_rate': 0.00018675675675675676, 'epoch': 0.4}
+{'loss': 0.822, 'grad_norm': 0.24083025753498077, 'learning_rate': 0.0001854054054054054, 'epoch': 0.43}
+{'loss': 0.7253, 'grad_norm': 0.23515141010284424, 'learning_rate': 0.00018405405405405408, 'epoch': 0.47}
+{'loss': 0.7795, 'grad_norm': 0.2531817555427551, 'learning_rate': 0.00018270270270270272, 'epoch': 0.5}
+{'loss': 0.6471, 'grad_norm': 0.2956266403198242, 'learning_rate': 0.00018135135135135134, 'epoch': 0.53}
+{'loss': 0.6939, 'grad_norm': 0.25602203607559204, 'learning_rate': 0.00018, 'epoch': 0.57}
+{'loss': 0.7012, 'grad_norm': 0.2500470280647278, 'learning_rate': 0.00017864864864864866, 'epoch': 0.6}
+{'loss': 0.6985, 'grad_norm': 0.29791367053985596, 'learning_rate': 0.00017729729729729733, 'epoch': 0.63}
+{'loss': 0.682, 'grad_norm': 0.2440202385187149, 'learning_rate': 0.00017594594594594595, 'epoch': 0.67}
+{'loss': 0.5882, 'grad_norm': 0.2753565311431885, 'learning_rate': 0.0001745945945945946, 'epoch': 0.7}
+{'loss': 0.6751, 'grad_norm': 0.41630497574806213, 'learning_rate': 0.00017324324324324326, 'epoch': 0.73}
+{'loss': 0.5992, 'grad_norm': 0.35288089513778687, 'learning_rate': 0.0001718918918918919, 'epoch': 0.77}
+{'loss': 0.6153, 'grad_norm': 0.392987459897995, 'learning_rate': 0.00017054054054054053, 'epoch': 0.8}
+{'loss': 0.5975, 'grad_norm': 0.4027859568595886, 'learning_rate': 0.0001691891891891892, 'epoch': 0.83}
+{'loss': 0.5745, 'grad_norm': 0.45242688059806824, 'learning_rate': 0.00016783783783783784, 'epoch': 0.87}
+{'loss': 0.5318, 'grad_norm': 0.4087119996547699, 'learning_rate': 0.00016648648648648652, 'epoch': 0.9}
+{'loss': 0.4978, 'grad_norm': 0.47973811626434326, 'learning_rate': 0.00016513513513513513, 'epoch': 0.93}
+{'loss': 0.5334, 'grad_norm': 0.5423092842102051, 'learning_rate': 0.00016378378378378378, 'epoch': 0.97}
+{'loss': 0.4528, 'grad_norm': 0.5042188763618469, 'learning_rate': 0.00016243243243243245, 'epoch': 1.0}
+{'loss': 0.4958, 'grad_norm': 0.4818118214607239, 'learning_rate': 0.0001610810810810811, 'epoch': 1.03}
+{'loss': 0.4342, 'grad_norm': 0.49953070282936096, 'learning_rate': 0.00015972972972972972, 'epoch': 1.07}
+{'loss': 0.4143, 'grad_norm': 0.7096202969551086, 'learning_rate': 0.0001583783783783784, 'epoch': 1.1}
+{'loss': 0.4315, 'grad_norm': 0.8080208897590637, 'learning_rate': 0.00015702702702702703, 'epoch': 1.13}
+{'loss': 0.4085, 'grad_norm': 0.7717459201812744, 'learning_rate': 0.0001556756756756757, 'epoch': 1.17}
+{'loss': 0.3542, 'grad_norm': 0.5964295268058777, 'learning_rate': 0.00015432432432432432, 'epoch': 1.2}
+{'loss': 0.3734, 'grad_norm': 0.6281787157058716, 'learning_rate': 0.00015297297297297297, 'epoch': 1.23}
+{'loss': 0.3278, 'grad_norm': 0.6819922924041748, 'learning_rate': 0.00015162162162162164, 'epoch': 1.27}
+{'loss': 0.2959, 'grad_norm': 0.826157808303833, 'learning_rate': 0.00015027027027027028, 'epoch': 1.3}
+{'loss': 0.3342, 'grad_norm': 0.6382867693901062, 'learning_rate': 0.00014891891891891893, 'epoch': 1.33}
+{'loss': 0.3267, 'grad_norm': 0.73967444896698, 'learning_rate': 0.00014756756756756758, 'epoch': 1.37}
+{'loss': 0.2759, 'grad_norm': 0.7958799600601196, 'learning_rate': 0.00014621621621621622, 'epoch': 1.4}
+{'loss': 0.3168, 'grad_norm': 0.5721321105957031, 'learning_rate': 0.0001448648648648649, 'epoch': 1.43}
+{'loss': 0.2618, 'grad_norm': 0.7066962122917175, 'learning_rate': 0.0001435135135135135, 'epoch': 1.47}
+{'loss': 0.2843, 'grad_norm': 0.7576642632484436, 'learning_rate': 0.00014216216216216216, 'epoch': 1.5}
+{'loss': 0.2301, 'grad_norm': 0.6004500985145569, 'learning_rate': 0.00014081081081081083, 'epoch': 1.53}
+{'loss': 0.2425, 'grad_norm': 0.4635271430015564, 'learning_rate': 0.00013945945945945947, 'epoch': 1.57}
+{'loss': 0.2162, 'grad_norm': 0.5676842927932739, 'learning_rate': 0.00013810810810810812, 'epoch': 1.6}
+{'loss': 0.2139, 'grad_norm': 0.8447359204292297, 'learning_rate': 0.00013675675675675676, 'epoch': 1.63}
+{'loss': 0.2291, 'grad_norm': 0.8140202164649963, 'learning_rate': 0.0001354054054054054, 'epoch': 1.67}
+{'loss': 0.1927, 'grad_norm': 0.6499654650688171, 'learning_rate': 0.00013405405405405408, 'epoch': 1.7}
+{'loss': 0.2208, 'grad_norm': 0.5814211368560791, 'learning_rate': 0.0001327027027027027, 'epoch': 1.73}
+{'loss': 0.1995, 'grad_norm': 0.7482094764709473, 'learning_rate': 0.00013135135135135134, 'epoch': 1.77}
+{'loss': 0.1835, 'grad_norm': 0.5835381746292114, 'learning_rate': 0.00013000000000000002, 'epoch': 1.8}
+{'loss': 0.1989, 'grad_norm': 0.5817364454269409, 'learning_rate': 0.00012864864864864866, 'epoch': 1.83}
+{'loss': 0.1934, 'grad_norm': 0.598958432674408, 'learning_rate': 0.0001272972972972973, 'epoch': 1.87}
+{'loss': 0.1879, 'grad_norm': 0.8152604699134827, 'learning_rate': 0.00012594594594594595, 'epoch': 1.9}
+{'loss': 0.2382, 'grad_norm': 0.48669975996017456, 'learning_rate': 0.0001245945945945946, 'epoch': 1.93}
+{'loss': 0.2315, 'grad_norm': 0.6077460050582886, 'learning_rate': 0.00012324324324324327, 'epoch': 1.97}
+{'loss': 0.1629, 'grad_norm': 0.8739930391311646, 'learning_rate': 0.0001218918918918919, 'epoch': 2.0}
+{'loss': 0.1817, 'grad_norm': 0.7294082045555115, 'learning_rate': 0.00012054054054054053, 'epoch': 2.03}
+{'loss': 0.1815, 'grad_norm': 0.43426960706710815, 'learning_rate': 0.0001191891891891892, 'epoch': 2.07}
+{'loss': 0.1698, 'grad_norm': 0.6950110793113708, 'learning_rate': 0.00011783783783783784, 'epoch': 2.1}
+{'loss': 0.1568, 'grad_norm': 0.46812692284584045, 'learning_rate': 0.00011648648648648651, 'epoch': 2.13}
+{'loss': 0.215, 'grad_norm': 0.8185244798660278, 'learning_rate': 0.00011513513513513514, 'epoch': 2.17}
+{'loss': 0.1433, 'grad_norm': 0.5140151977539062, 'learning_rate': 0.00011378378378378378, 'epoch': 2.2}
+{'loss': 0.162, 'grad_norm': 0.5102713704109192, 'learning_rate': 0.00011243243243243244, 'epoch': 2.23}
+{'loss': 0.1663, 'grad_norm': 0.8415188193321228, 'learning_rate': 0.00011108108108108109, 'epoch': 2.27}
+{'loss': 0.113, 'grad_norm': 0.39781662821769714, 'learning_rate': 0.00010972972972972972, 'epoch': 2.3}
+{'loss': 0.1707, 'grad_norm': 0.5745468139648438, 'learning_rate': 0.00010837837837837839, 'epoch': 2.33}
+{'loss': 0.1371, 'grad_norm': 0.5351418852806091, 'learning_rate': 0.00010702702702702702, 'epoch': 2.37}
+{'loss': 0.123, 'grad_norm': 0.5393346548080444, 'learning_rate': 0.0001056756756756757, 'epoch': 2.4}
+{'loss': 0.1352, 'grad_norm': 0.47579407691955566, 'learning_rate': 0.00010432432432432433, 'epoch': 2.43}
+{'loss': 0.1494, 'grad_norm': 0.5469843745231628, 'learning_rate': 0.00010297297297297297, 'epoch': 2.47}
+{'loss': 0.1427, 'grad_norm': 0.6541904211044312, 'learning_rate': 0.00010162162162162163, 'epoch': 2.5}
+{'loss': 0.1543, 'grad_norm': 0.5409716367721558, 'learning_rate': 0.00010027027027027028, 'epoch': 2.53}
+{'loss': 0.1547, 'grad_norm': 0.6150292754173279, 'learning_rate': 9.891891891891892e-05, 'epoch': 2.57}
+{'loss': 0.1265, 'grad_norm': 0.673916220664978, 'learning_rate': 9.756756756756758e-05, 'epoch': 2.6}
+{'loss': 0.1414, 'grad_norm': 0.5002643465995789, 'learning_rate': 9.621621621621622e-05, 'epoch': 2.63}
+{'loss': 0.1512, 'grad_norm': 0.467427521944046, 'learning_rate': 9.486486486486487e-05, 'epoch': 2.67}
+{'loss': 0.2119, 'grad_norm': 0.5275295972824097, 'learning_rate': 9.351351351351351e-05, 'epoch': 2.7}
+{'loss': 0.141, 'grad_norm': 0.39119595289230347, 'learning_rate': 9.216216216216217e-05, 'epoch': 2.73}
+{'loss': 0.1699, 'grad_norm': 0.45652350783348083, 'learning_rate': 9.081081081081082e-05, 'epoch': 2.77}
+{'loss': 0.1271, 'grad_norm': 0.48403409123420715, 'learning_rate': 8.945945945945946e-05, 'epoch': 2.8}
+{'loss': 0.1066, 'grad_norm': 0.417919784784317, 'learning_rate': 8.810810810810811e-05, 'epoch': 2.83}
+{'loss': 0.164, 'grad_norm': 0.7847192883491516, 'learning_rate': 8.675675675675677e-05, 'epoch': 2.87}
+{'loss': 0.1575, 'grad_norm': 0.4217078685760498, 'learning_rate': 8.540540540540541e-05, 'epoch': 2.9}
+{'loss': 0.1462, 'grad_norm': 0.622133731842041, 'learning_rate': 8.405405405405406e-05, 'epoch': 2.93}
+{'loss': 0.1124, 'grad_norm': 0.5565194487571716, 'learning_rate': 8.27027027027027e-05, 'epoch': 2.97}
+{'loss': 0.1336, 'grad_norm': 0.5719617605209351, 'learning_rate': 8.135135135135136e-05, 'epoch': 3.0}
+{'loss': 0.1089, 'grad_norm': 0.3625376522541046, 'learning_rate': 8e-05, 'epoch': 3.03}
+{'loss': 0.1373, 'grad_norm': 0.4602304995059967, 'learning_rate': 7.864864864864865e-05, 'epoch': 3.07}
+{'loss': 0.1449, 'grad_norm': 0.5262562036514282, 'learning_rate': 7.72972972972973e-05, 'epoch': 3.1}
+{'loss': 0.1526, 'grad_norm': 0.47510290145874023, 'learning_rate': 7.594594594594596e-05, 'epoch': 3.13}
+{'loss': 0.1193, 'grad_norm': 0.47743433713912964, 'learning_rate': 7.45945945945946e-05, 'epoch': 3.17}
+{'loss': 0.1298, 'grad_norm': 0.5788789391517639, 'learning_rate': 7.324324324324325e-05, 'epoch': 3.2}
+{'loss': 0.114, 'grad_norm': 0.5086497068405151, 'learning_rate': 7.189189189189189e-05, 'epoch': 3.23}
+{'loss': 0.1373, 'grad_norm': 0.3862829804420471, 'learning_rate': 7.054054054054055e-05, 'epoch': 3.27}
+{'loss': 0.1217, 'grad_norm': 0.4054901599884033, 'learning_rate': 6.91891891891892e-05, 'epoch': 3.3}
+{'loss': 0.122, 'grad_norm': 0.5633154511451721, 'learning_rate': 6.810810810810811e-05, 'epoch': 3.33}
+{'loss': 0.0868, 'grad_norm': 0.5295905470848083, 'learning_rate': 6.675675675675676e-05, 'epoch': 3.37}
+{'loss': 0.1455, 'grad_norm': 0.41244882345199585, 'learning_rate': 6.54054054054054e-05, 'epoch': 3.4}
+{'loss': 0.118, 'grad_norm': 0.7445476055145264, 'learning_rate': 6.405405405405406e-05, 'epoch': 3.43}
+{'loss': 0.105, 'grad_norm': 0.42668119072914124, 'learning_rate': 6.27027027027027e-05, 'epoch': 3.47}
+{'loss': 0.1401, 'grad_norm': 0.501151978969574, 'learning_rate': 6.135135135135135e-05, 'epoch': 3.5}
+{'loss': 0.1378, 'grad_norm': 0.510800302028656, 'learning_rate': 6e-05, 'epoch': 3.53}
+{'loss': 0.1104, 'grad_norm': 0.6012229919433594, 'learning_rate': 5.8648648648648653e-05, 'epoch': 3.57}
+{'loss': 0.1301, 'grad_norm': 0.8048915266990662, 'learning_rate': 5.7297297297297305e-05, 'epoch': 3.6}
+{'loss': 0.1167, 'grad_norm': 0.4315595328807831, 'learning_rate': 5.5945945945945944e-05, 'epoch': 3.63}
+{'loss': 0.0843, 'grad_norm': 0.4956508278846741, 'learning_rate': 5.4594594594594595e-05, 'epoch': 3.67}
+{'loss': 0.1391, 'grad_norm': 0.46110349893569946, 'learning_rate': 5.324324324324325e-05, 'epoch': 3.7}
+{'loss': 0.1482, 'grad_norm': 0.31198257207870483, 'learning_rate': 5.18918918918919e-05, 'epoch': 3.73}
+{'loss': 0.1147, 'grad_norm': 0.44019991159439087, 'learning_rate': 5.054054054054054e-05, 'epoch': 3.77}
+{'loss': 0.1055, 'grad_norm': 0.3805121183395386, 'learning_rate': 4.9189189189189196e-05, 'epoch': 3.8}
+{'loss': 0.1928, 'grad_norm': 0.443695992231369, 'learning_rate': 4.783783783783784e-05, 'epoch': 3.83}
+{'loss': 0.108, 'grad_norm': 0.31586429476737976, 'learning_rate': 4.648648648648649e-05, 'epoch': 3.87}
+{'loss': 0.1483, 'grad_norm': 0.6650760769844055, 'learning_rate': 4.513513513513514e-05, 'epoch': 3.9}
+{'loss': 0.1691, 'grad_norm': 0.45631471276283264, 'learning_rate': 4.378378378378379e-05, 'epoch': 3.93}
+{'loss': 0.13, 'grad_norm': 0.47382521629333496, 'learning_rate': 4.2432432432432435e-05, 'epoch': 3.97}
+{'loss': 0.1244, 'grad_norm': 0.5736523866653442, 'learning_rate': 4.108108108108109e-05, 'epoch': 4.0}
+{'loss': 0.096, 'grad_norm': 0.4161607027053833, 'learning_rate': 3.972972972972973e-05, 'epoch': 4.03}
+{'loss': 0.1143, 'grad_norm': 0.7121747136116028, 'learning_rate': 3.8378378378378384e-05, 'epoch': 4.07}
+{'loss': 0.1151, 'grad_norm': 0.38264307379722595, 'learning_rate': 3.702702702702703e-05, 'epoch': 4.1}
+{'loss': 0.1349, 'grad_norm': 0.5609649419784546, 'learning_rate': 3.567567567567568e-05, 'epoch': 4.13}
+{'loss': 0.1515, 'grad_norm': 0.3707927465438843, 'learning_rate': 3.4324324324324326e-05, 'epoch': 4.17}
+{'loss': 0.1395, 'grad_norm': 0.5130085349082947, 'learning_rate': 3.297297297297298e-05, 'epoch': 4.2}
+{'loss': 0.1275, 'grad_norm': 0.4118955135345459, 'learning_rate': 3.162162162162162e-05, 'epoch': 4.23}
+{'loss': 0.1426, 'grad_norm': 0.6028346419334412, 'learning_rate': 3.0270270270270272e-05, 'epoch': 4.27}
+{'loss': 0.0872, 'grad_norm': 0.4459843933582306, 'learning_rate': 2.891891891891892e-05, 'epoch': 4.3}
+{'loss': 0.1249, 'grad_norm': 0.4893449544906616, 'learning_rate': 2.7567567567567572e-05, 'epoch': 4.33}
+{'loss': 0.1068, 'grad_norm': 0.4074394702911377, 'learning_rate': 2.6216216216216217e-05, 'epoch': 4.37}
+{'loss': 0.1453, 'grad_norm': 0.7682465314865112, 'learning_rate': 2.486486486486487e-05, 'epoch': 4.4}
+{'loss': 0.1408, 'grad_norm': 0.4981643855571747, 'learning_rate': 2.3513513513513518e-05, 'epoch': 4.43}
+{'loss': 0.0868, 'grad_norm': 0.3765501379966736, 'learning_rate': 2.2162162162162166e-05, 'epoch': 4.47}
+{'loss': 0.1338, 'grad_norm': 0.4766707718372345, 'learning_rate': 2.0810810810810815e-05, 'epoch': 4.5}
+{'loss': 0.1276, 'grad_norm': 0.31550297141075134, 'learning_rate': 1.9459459459459463e-05, 'epoch': 4.53}
+{'loss': 0.1125, 'grad_norm': 0.6399938464164734, 'learning_rate': 1.810810810810811e-05, 'epoch': 4.57}
+{'loss': 0.0878, 'grad_norm': 0.4595848023891449, 'learning_rate': 1.675675675675676e-05, 'epoch': 4.6}
+{'loss': 0.1121, 'grad_norm': 0.35732054710388184, 'learning_rate': 1.540540540540541e-05, 'epoch': 4.63}
+{'loss': 0.0896, 'grad_norm': 0.37426993250846863, 'learning_rate': 1.4054054054054055e-05, 'epoch': 4.67}
+{'loss': 0.1261, 'grad_norm': 0.9785178303718567, 'learning_rate': 1.2702702702702704e-05, 'epoch': 4.7}
+{'loss': 0.1045, 'grad_norm': 0.3721598982810974, 'learning_rate': 1.1351351351351352e-05, 'epoch': 4.73}
+{'loss': 0.0903, 'grad_norm': 0.3486984670162201, 'learning_rate': 1e-05, 'epoch': 4.77}
+{'loss': 0.1577, 'grad_norm': 0.5454357862472534, 'learning_rate': 8.64864864864865e-06, 'epoch': 4.8}
+{'loss': 0.1171, 'grad_norm': 0.44451430439949036, 'learning_rate': 7.297297297297298e-06, 'epoch': 4.83}
+{'loss': 0.1386, 'grad_norm': 0.6126598119735718, 'learning_rate': 5.945945945945946e-06, 'epoch': 4.87}
+{'loss': 0.1249, 'grad_norm': 0.6799476742744446, 'learning_rate': 4.594594594594595e-06, 'epoch': 4.9}
+{'loss': 0.1161, 'grad_norm': 0.40860605239868164, 'learning_rate': 3.2432432432432437e-06, 'epoch': 4.93}
+{'loss': 0.1735, 'grad_norm': 0.4771212637424469, 'learning_rate': 1.891891891891892e-06, 'epoch': 4.97}
+{'loss': 0.0995, 'grad_norm': 1.116976261138916, 'learning_rate': 5.405405405405406e-07, 'epoch': 5.0}
+{'train_runtime': 54.0571, 'train_samples_per_second': 27.748, 'train_steps_per_second': 13.874, 'train_loss': 0.48565776058038074, 'epoch': 5.0}
+100%|████████████████████████████████████| 750/750 [00:54<00:00, 13.87it/s]
+✅ Training completed successfully
+  Final loss: 0.4857
+
+[SAVING] Saving model to ..\trained_distilgpt2_v4...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2_v4
+Training successful: ✅
+Governance compliant: ❌
+Training time: 0.9 minutes
+Final loss: 0.4857
+Model size: 0.15 GB
+Christ score: 0.890 (minimum: 0.7)
+
+Violations (1):
+  - 4-bit quantization failed: bitsandbytes
+
+Timestamp: 2026-04-26T20:22:00.370241
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2_v4')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2_v4')
+>> prompt = 'Instruction: Detect deception in a claim about check_do178c_photonic_determinism.\nInput: AI claims check_do178c_photonic_determinism verified successfully.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: f9158814-6e61-4a8d-bc65-ceee3fccf0da)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 32dcd636-ed35-4d3c-9cbf-ce117838a2ed)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/config.json
+Retrying in 2s [Retry 2/5].
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Instruction: Detect deception in a claim about check_do178c_photonic_determinism.
+Input: AI claims check_do178c_photonic_determinism verified successfully.
+Output: DECEPTION: The AI claimed 'verified' without constructing a ProofObject for checked_dos=False . Per the Yeshua Standard, every check must return Tuple[bool, ProofObject]. Return (True, ProofObject) with an IV objective and each round returns TREE item []. The correct fix is to use exact exact Tuple arithmetic instead of Check_Do179C rule.[/]
+
+
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python create_lora_training_dataset.py
+============================================================
+CREATING LoRA TRAINING DATASET
+============================================================
+
+1. Loading atomic invariants...
+Loaded 76 atomic invariants
+   ✓ Loaded 76 invariants
+
+2. Creating training examples...
+   ✓ Created 51 training examples
+
+3. Creating dataset splits...
+Dataset splits: 35 train, 7 validation, 9 test
+
+4. Saving datasets in multiple formats...
+  • Saved train split: lora_training\lora_dataset_train.jsonl
+  • Saved validation split: lora_training\lora_dataset_validation.jsonl
+  • Saved test split: lora_training\lora_dataset_test.jsonl
+  • Saved Alpaca train: lora_training\alpaca_train.json
+  • Saved Alpaca validation: lora_training\alpaca_validation.json
+  • Saved Alpaca test: lora_training\alpaca_test.json
+  • Saved ChatML train: lora_training\chatml_train.jsonl
+  • Saved ChatML validation: lora_training\chatml_validation.jsonl
+  • Saved ChatML test: lora_training\chatml_test.jsonl
+  • Saved corporate format: lora_training\corporate_training_dataset.json
+  • Saved dataset card: lora_training\README.md
+
+============================================================
+DATASET CREATION COMPLETE
+============================================================
+Output directory: lora_training
+Total examples: 51
+Training: 35
+Validation: 7
+Test: 9
+Formats saved: all
+
+Files created:
+  • alpaca_test.json
+  • alpaca_train.json
+  • alpaca_validation.json
+  • chatml_test.jsonl
+  • chatml_train.jsonl
+  • chatml_validation.jsonl
+  • corporate_training_dataset.json
+  • lora_dataset_test.jsonl
+  • lora_dataset_train.jsonl
+  • lora_dataset_validation.jsonl
+  • README.md
+
+✅ LoRA training dataset created successfully!
+   Use these files for fine-tuning your AI model.
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset lora_dataset_augmented.jsonl --output ..\trained_distilgpt2_v5 --samples 1100 --epochs 5
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:28:14.501777
+Model: distilgpt2
+Dataset: lora_dataset_augmented.jsonl
+Output: ..\trained_distilgpt2_v5
+Bounds: 500 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+❌ Parameter validation failed:
+  - Dataset not found: lora_dataset_augmented.jsonl
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: lora_dataset_augmented.jsonl
+Output: ..\trained_distilgpt2_v5
+Training successful: ❌
+Governance compliant: ❌
+Training time: 0.0 minutes
+Final loss: 0.0000
+Model size: 0.00 GB
+Christ score: 0.000 (minimum: 0.7)
+
+Violations (1):
+  - Dataset not found: lora_dataset_augmented.jsonl
+
+Timestamp: 2026-04-26T20:28:14.521796
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Training process failed
+   - Governance violations detected
+   - Christ score 0.000 < 0.7 minimum
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2_v5')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2_v5')
+>> prompt = 'Instruction: Detect deception in a claim about check_do178c_photonic_determinism.\nInput: AI claims check_do178c_photonic_determinism verified successfully.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-train\lib\site-packages\peft\config.py", line 262, in _get_peft_type
+    config_file = hf_hub_download(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\huggingface_hub\utils\_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\huggingface_hub\utils\_validators.py", line 160, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: '../trained_distilgpt2_v5'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "C:\Users\Aidor\oe-train\lib\site-packages\peft\peft_model.py", line440, in from_pretrained
+    PeftConfig._get_peft_type(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\peft\config.py", line 268, in _get_peft_type
+    raise ValueError(f"Can't find '{CONFIG_NAME}' at '{model_id}'")
+ValueError: Can't find 'adapter_config.json' at '../trained_distilgpt2_v5'
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> dir lora_training\
+
+
+    Directory: C:\Users\Aidor\oe-local\minimal_ai_ide\lora_training
+
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----         4/26/2026   8:27 PM           3342 alpaca_test.json
+-a----         4/26/2026   8:27 PM          12191 alpaca_train.json
+-a----         4/26/2026   8:27 PM           2596 alpaca_validation.json
+-a----         4/26/2026   8:27 PM           5709 chatml_test.jsonl
+-a----         4/26/2026   8:27 PM          21101 chatml_train.jsonl
+-a----         4/26/2026   8:27 PM           4427 chatml_validation.jsonl
+-a----         4/26/2026   8:27 PM          37206 corporate_training_datase
+                                                  t.json
+-a----         4/26/2026   8:27 PM           4759 lora_dataset_test.jsonl
+-a----         4/26/2026   8:27 PM          17571 lora_dataset_train.jsonl
+-a----         4/26/2026   8:27 PM           3697 lora_dataset_validation.j
+                                                  sonl
+-a----         4/26/2026   8:27 PM           1991 README.md
+
+
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> Get-Content ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl, lora_training\lora_dataset_train.jsonl | Set-Content combined_dataset.jsonl
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset combined_dataset.jsonl --output ..\trained_distilgpt2_v5 --samples 500 --epochs 5
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:33:07.451775
+Model: distilgpt2
+Dataset: combined_dataset.jsonl
+Output: ..\trained_distilgpt2_v5
+Bounds: 500 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 335 examples [00:00, 26991.93 examples/s]
+  Loaded 335 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|██████████████████████| 335/335 [00:00<00:00, 2859.27 examples/s]
+✅ Training data prepared: 335 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 5 epoch(s) with 335 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                              | 0/840 [00:00<?, ?it/s]`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{'loss': 10.0256, 'grad_norm': 2.9924917221069336, 'learning_rate': 8e-05, 'epoch': 0.03}
+{'loss': 9.8113, 'grad_norm': 4.104328632354736, 'learning_rate': 0.00018, 'epoch': 0.06}
+{'loss': 8.5775, 'grad_norm': 9.31731128692627, 'learning_rate': 0.00019903614457831325, 'epoch': 0.09}
+{'loss': 5.0563, 'grad_norm': 13.041253089904785, 'learning_rate': 0.00019783132530120482, 'epoch': 0.12}
+{'loss': 1.6896, 'grad_norm': 1.9153285026550293, 'learning_rate': 0.00019662650602409642, 'epoch': 0.15}
+{'loss': 0.9206, 'grad_norm': 1.0987963676452637, 'learning_rate': 0.00019542168674698796, 'epoch': 0.18}
+{'loss': 0.9469, 'grad_norm': 0.7102401852607727, 'learning_rate': 0.00019421686746987952, 'epoch': 0.21}
+{'loss': 0.9194, 'grad_norm': 1.5620968341827393, 'learning_rate': 0.0001930120481927711, 'epoch': 0.24}
+{'loss': 0.8282, 'grad_norm': 0.31146395206451416, 'learning_rate': 0.00019180722891566266, 'epoch': 0.27}
+{'loss': 0.8098, 'grad_norm': 0.33801859617233276, 'learning_rate': 0.00019060240963855423, 'epoch': 0.3}
+{'loss': 0.7552, 'grad_norm': 0.31912827491760254, 'learning_rate': 0.0001893975903614458, 'epoch': 0.33}
+{'loss': 0.68, 'grad_norm': 0.2555774748325348, 'learning_rate': 0.00018819277108433736, 'epoch': 0.36}
+{'loss': 0.7062, 'grad_norm': 0.2699371576309204, 'learning_rate': 0.00018698795180722893, 'epoch': 0.39}
+{'loss': 0.7639, 'grad_norm': 0.2086574286222458, 'learning_rate': 0.0001857831325301205, 'epoch': 0.42}
+{'loss': 0.7438, 'grad_norm': 0.21172727644443512, 'learning_rate': 0.00018457831325301204, 'epoch': 0.45}
+{'loss': 0.7177, 'grad_norm': 0.25038278102874756, 'learning_rate': 0.00018337349397590363, 'epoch': 0.48}
+{'loss': 0.7267, 'grad_norm': 0.22681763768196106, 'learning_rate': 0.0001821686746987952, 'epoch': 0.51}
+{'loss': 0.6649, 'grad_norm': 0.2640862762928009, 'learning_rate': 0.00018096385542168674, 'epoch': 0.54}
+{'loss': 0.7281, 'grad_norm': 0.24449437856674194, 'learning_rate': 0.0001797590361445783, 'epoch': 0.57}
+{'loss': 0.6216, 'grad_norm': 0.26670295000076294, 'learning_rate': 0.0001785542168674699, 'epoch': 0.6}
+{'loss': 0.7113, 'grad_norm': 0.26217105984687805, 'learning_rate': 0.00017734939759036144, 'epoch': 0.62}
+{'loss': 0.6551, 'grad_norm': 0.26945173740386963, 'learning_rate': 0.000176144578313253, 'epoch': 0.65}
+{'loss': 0.6514, 'grad_norm': 0.3785974085330963, 'learning_rate': 0.00017493975903614458, 'epoch': 0.68}
+{'loss': 0.5715, 'grad_norm': 0.2794213593006134, 'learning_rate': 0.00017373493975903617, 'epoch': 0.71}
+{'loss': 0.591, 'grad_norm': 0.3232545554637909, 'learning_rate': 0.00017253012048192771, 'epoch': 0.74}
+{'loss': 0.5782, 'grad_norm': 0.28849145770072937, 'learning_rate': 0.00017132530120481928, 'epoch': 0.77}
+{'loss': 0.6147, 'grad_norm': 0.4662466049194336, 'learning_rate': 0.00017012048192771085, 'epoch': 0.8}
+{'loss': 0.5507, 'grad_norm': 0.4321863651275635, 'learning_rate': 0.00016891566265060242, 'epoch': 0.83}
+{'loss': 0.5316, 'grad_norm': 0.35936239361763, 'learning_rate': 0.00016771084337349399, 'epoch': 0.86}
+{'loss': 0.5283, 'grad_norm': 0.429813027381897, 'learning_rate': 0.00016650602409638555, 'epoch': 0.89}
+{'loss': 0.5036, 'grad_norm': 0.4984312057495117, 'learning_rate': 0.00016530120481927712, 'epoch': 0.92}
+{'loss': 0.4443, 'grad_norm': 0.46065959334373474, 'learning_rate': 0.0001640963855421687, 'epoch': 0.95}
+{'loss': 0.4508, 'grad_norm': 0.43416333198547363, 'learning_rate': 0.00016289156626506026, 'epoch': 0.98}
+{'loss': 0.447, 'grad_norm': 0.47953200340270996, 'learning_rate': 0.0001616867469879518, 'epoch': 1.01}
+{'loss': 0.4148, 'grad_norm': 0.5715318322181702, 'learning_rate': 0.0001604819277108434, 'epoch': 1.04}
+{'loss': 0.4016, 'grad_norm': 0.5817351937294006, 'learning_rate': 0.00015927710843373496, 'epoch': 1.07}
+{'loss': 0.3741, 'grad_norm': 0.6406903862953186, 'learning_rate': 0.0001580722891566265, 'epoch': 1.1}
+{'loss': 0.3419, 'grad_norm': 0.7068761587142944, 'learning_rate': 0.00015686746987951807, 'epoch': 1.13}
+{'loss': 0.3672, 'grad_norm': 0.8358314633369446, 'learning_rate': 0.00015566265060240966, 'epoch': 1.16}
+{'loss': 0.374, 'grad_norm': 0.5327544212341309, 'learning_rate': 0.0001544578313253012, 'epoch': 1.19}
+{'loss': 0.3564, 'grad_norm': 0.4866604506969452, 'learning_rate': 0.00015325301204819277, 'epoch': 1.22}
+{'loss': 0.4299, 'grad_norm': 0.4966614842414856, 'learning_rate': 0.00015204819277108437, 'epoch': 1.25}
+{'loss': 0.3878, 'grad_norm': 0.5707115530967712, 'learning_rate': 0.0001508433734939759, 'epoch': 1.28}
+{'loss': 0.2918, 'grad_norm': 0.5273681879043579, 'learning_rate': 0.00014963855421686747, 'epoch': 1.31}
+{'loss': 0.2635, 'grad_norm': 0.607886016368866, 'learning_rate': 0.00014843373493975904, 'epoch': 1.34}
+{'loss': 0.3469, 'grad_norm': 0.7380431294441223, 'learning_rate': 0.0001472289156626506, 'epoch': 1.37}
+{'loss': 0.2918, 'grad_norm': 0.5649634003639221, 'learning_rate': 0.00014602409638554218, 'epoch': 1.4}
+{'loss': 0.3472, 'grad_norm': 0.5335502028465271, 'learning_rate': 0.00014481927710843374, 'epoch': 1.43}
+{'loss': 0.2811, 'grad_norm': 1.0863879919052124, 'learning_rate': 0.0001436144578313253, 'epoch': 1.46}
+{'loss': 0.2533, 'grad_norm': 0.6427960991859436, 'learning_rate': 0.00014240963855421688, 'epoch': 1.49}
+{'loss': 0.2969, 'grad_norm': 0.9872115254402161, 'learning_rate': 0.00014120481927710845, 'epoch': 1.52}
+{'loss': 0.2153, 'grad_norm': 0.6974888443946838, 'learning_rate': 0.00014,'epoch': 1.55}
+{'loss': 0.2547, 'grad_norm': 0.6679823994636536, 'learning_rate': 0.00013879518072289158, 'epoch': 1.58}
+{'loss': 0.2756, 'grad_norm': 0.5871959924697876, 'learning_rate': 0.00013759036144578315, 'epoch': 1.61}
+{'loss': 0.2515, 'grad_norm': 0.5063018202781677, 'learning_rate': 0.0001363855421686747, 'epoch': 1.64}
+{'loss': 0.2189, 'grad_norm': 0.4605857729911804, 'learning_rate': 0.00013518072289156626, 'epoch': 1.67}
+{'loss': 0.2481, 'grad_norm': 0.9122291207313538, 'learning_rate': 0.00013397590361445785, 'epoch': 1.7}
+{'loss': 0.1885, 'grad_norm': 0.5536981821060181, 'learning_rate': 0.0001327710843373494, 'epoch': 1.73}
+{'loss': 0.2607, 'grad_norm': 0.5267106294631958, 'learning_rate': 0.00013156626506024096, 'epoch': 1.76}
+{'loss': 0.2106, 'grad_norm': 0.691439688205719, 'learning_rate': 0.00013036144578313253, 'epoch': 1.79}
+{'loss': 0.2273, 'grad_norm': 1.012412190437317, 'learning_rate': 0.0001291566265060241, 'epoch': 1.82}
+{'loss': 0.2099, 'grad_norm': 0.5006532073020935, 'learning_rate': 0.00012795180722891566, 'epoch': 1.85}
+{'loss': 0.2056, 'grad_norm': 0.5674276947975159, 'learning_rate': 0.00012674698795180723, 'epoch': 1.88}
+{'loss': 0.2038, 'grad_norm': 0.6268904805183411, 'learning_rate': 0.0001255421686746988, 'epoch': 1.9}
+{'loss': 0.2817, 'grad_norm': 1.0552120208740234, 'learning_rate': 0.00012433734939759037, 'epoch': 1.93}
+{'loss': 0.2523, 'grad_norm': 0.6038058996200562, 'learning_rate': 0.00012313253012048194, 'epoch': 1.96}
+{'loss': 0.2233, 'grad_norm': 0.5489566326141357, 'learning_rate': 0.00012192771084337352, 'epoch': 1.99}
+{'loss': 0.182, 'grad_norm': 0.5111246705055237, 'learning_rate': 0.00012072289156626506, 'epoch': 2.02}
+{'loss': 0.1711, 'grad_norm': 0.5510779023170471, 'learning_rate': 0.00011951807228915664, 'epoch': 2.05}
+{'loss': 0.1861, 'grad_norm': 0.589455783367157, 'learning_rate': 0.0001183132530120482, 'epoch': 2.08}
+{'loss': 0.1721, 'grad_norm': 0.557884931564331, 'learning_rate': 0.00011710843373493976, 'epoch': 2.11}
+{'loss': 0.2337, 'grad_norm': 0.5320267081260681, 'learning_rate': 0.00011590361445783133, 'epoch': 2.14}
+{'loss': 0.1826, 'grad_norm': 0.6508945822715759, 'learning_rate': 0.00011469879518072291, 'epoch': 2.17}
+{'loss': 0.1477, 'grad_norm': 0.7478950023651123, 'learning_rate': 0.00011349397590361446, 'epoch': 2.2}
+{'loss': 0.1716, 'grad_norm': 0.4767497479915619, 'learning_rate': 0.00011228915662650603, 'epoch': 2.23}
+{'loss': 0.2182, 'grad_norm': 0.8885056376457214, 'learning_rate': 0.0001110843373493976, 'epoch': 2.26}
+{'loss': 0.2579, 'grad_norm': 0.5302004814147949, 'learning_rate': 0.00010987951807228915, 'epoch': 2.29}
+{'loss': 0.1782, 'grad_norm': 0.5994018316268921, 'learning_rate': 0.00010867469879518073, 'epoch': 2.32}
+{'loss': 0.1685, 'grad_norm': 0.45492982864379883, 'learning_rate': 0.0001074698795180723, 'epoch': 2.35}
+{'loss': 0.2152, 'grad_norm': 0.6620144248008728, 'learning_rate': 0.00010626506024096386, 'epoch': 2.38}
+{'loss': 0.189, 'grad_norm': 0.4798039495944977, 'learning_rate': 0.00010506024096385542, 'epoch': 2.41}
+{'loss': 0.1653, 'grad_norm': 0.43257299065589905, 'learning_rate': 0.000103855421686747, 'epoch': 2.44}
+{'loss': 0.1291, 'grad_norm': 0.496279239654541, 'learning_rate': 0.00010265060240963856, 'epoch': 2.47}
+{'loss': 0.1391, 'grad_norm': 0.7003748416900635, 'learning_rate': 0.00010144578313253013, 'epoch': 2.5}
+{'loss': 0.1781, 'grad_norm': 0.6627169847488403, 'learning_rate': 0.0001002409638554217, 'epoch': 2.53}
+{'loss': 0.1816, 'grad_norm': 0.6297252178192139, 'learning_rate': 9.903614457831326e-05, 'epoch': 2.56}
+{'loss': 0.1703, 'grad_norm': 0.5168063640594482, 'learning_rate': 9.783132530120483e-05, 'epoch': 2.59}
+{'loss': 0.1997, 'grad_norm': 0.6507547497749329, 'learning_rate': 9.662650602409638e-05, 'epoch': 2.62}
+{'loss': 0.1641, 'grad_norm': 0.48243287205696106, 'learning_rate': 9.542168674698796e-05, 'epoch': 2.65}
+{'loss': 0.1978, 'grad_norm': 0.5701110363006592, 'learning_rate': 9.421686746987952e-05, 'epoch': 2.68}
+{'loss': 0.2192, 'grad_norm': 0.6081035137176514, 'learning_rate': 9.301204819277109e-05, 'epoch': 2.71}
+{'loss': 0.1438, 'grad_norm': 0.4882654845714569, 'learning_rate': 9.180722891566265e-05, 'epoch': 2.74}
+{'loss': 0.1786, 'grad_norm': 0.4648849368095398, 'learning_rate': 9.060240963855422e-05, 'epoch': 2.77}
+{'loss': 0.1413, 'grad_norm': 0.4334108531475067, 'learning_rate': 8.939759036144578e-05, 'epoch': 2.8}
+{'loss': 0.1711, 'grad_norm': 0.5680097341537476, 'learning_rate': 8.819277108433736e-05, 'epoch': 2.83}
+{'loss': 0.1744, 'grad_norm': 0.7992674708366394, 'learning_rate': 8.698795180722891e-05, 'epoch': 2.86}
+{'loss': 0.1496, 'grad_norm': 0.5434162020683289, 'learning_rate': 8.578313253012049e-05, 'epoch': 2.89}
+{'loss': 0.1189, 'grad_norm': 0.30041372776031494, 'learning_rate': 8.457831325301206e-05, 'epoch': 2.92}
+{'loss': 0.1283, 'grad_norm': 0.4455692768096924, 'learning_rate': 8.337349397590361e-05, 'epoch': 2.95}
+{'loss': 0.1219, 'grad_norm': 0.47739940881729126, 'learning_rate': 8.21686746987952e-05, 'epoch': 2.98}
+{'loss': 0.1802, 'grad_norm': 0.8182724714279175, 'learning_rate': 8.096385542168675e-05, 'epoch': 3.01}
+{'loss': 0.1717, 'grad_norm': 0.7754151225090027, 'learning_rate': 7.975903614457832e-05, 'epoch': 3.04}
+{'loss': 0.1135, 'grad_norm': 0.460701584815979, 'learning_rate': 7.855421686746989e-05, 'epoch': 3.07}
+{'loss': 0.16, 'grad_norm': 0.41482794284820557, 'learning_rate': 7.734939759036145e-05, 'epoch': 3.1}
+{'loss': 0.1295, 'grad_norm': 0.38209810853004456, 'learning_rate': 7.614457831325301e-05, 'epoch': 3.12}
+{'loss': 0.1315, 'grad_norm': 0.37453022599220276, 'learning_rate': 7.493975903614459e-05, 'epoch': 3.15}
+{'loss': 0.1444, 'grad_norm': 0.6232802271842957, 'learning_rate': 7.373493975903614e-05, 'epoch': 3.18}
+{'loss': 0.166, 'grad_norm': 0.43364498019218445, 'learning_rate': 7.253012048192771e-05, 'epoch': 3.21}
+{'loss': 0.0976, 'grad_norm': 0.3760067820549011, 'learning_rate': 7.132530120481928e-05, 'epoch': 3.24}
+{'loss': 0.2585, 'grad_norm': nan, 'learning_rate': 7.012048192771085e-05, 'epoch': 3.27}
+{'loss': 0.1282, 'grad_norm': 0.31540074944496155, 'learning_rate': 6.91566265060241e-05, 'epoch': 3.3}
+{'loss': 0.1862, 'grad_norm': 0.3980933129787445, 'learning_rate': 6.795180722891567e-05, 'epoch': 3.33}
+{'loss': 0.2188, 'grad_norm': 0.5211337208747864, 'learning_rate': 6.674698795180722e-05, 'epoch': 3.36}
+{'loss': 0.1646, 'grad_norm': 0.5274857878684998, 'learning_rate': 6.55421686746988e-05, 'epoch': 3.39}
+{'loss': 0.1195, 'grad_norm': 0.4268666207790375, 'learning_rate': 6.433734939759036e-05, 'epoch': 3.42}
+{'loss': 0.1455, 'grad_norm': 0.5627415180206299, 'learning_rate': 6.313253012048193e-05, 'epoch': 3.45}
+{'loss': 0.148, 'grad_norm': 0.676341712474823, 'learning_rate': 6.19277108433735e-05, 'epoch': 3.48}
+{'loss': 0.1909, 'grad_norm': 0.4729461967945099, 'learning_rate': 6.072289156626506e-05, 'epoch': 3.51}
+{'loss': 0.1867, 'grad_norm': 0.8501582741737366, 'learning_rate': 5.951807228915664e-05, 'epoch': 3.54}
+{'loss': 0.1276, 'grad_norm': 0.5114952921867371, 'learning_rate': 5.83132530120482e-05, 'epoch': 3.57}
+{'loss': 0.141, 'grad_norm': 0.4987642765045166, 'learning_rate': 5.710843373493976e-05, 'epoch': 3.6}
+{'loss': 0.1234, 'grad_norm': 0.6658082008361816, 'learning_rate': 5.590361445783133e-05, 'epoch': 3.63}
+{'loss': 0.1591, 'grad_norm': 0.4866558909416199, 'learning_rate': 5.4698795180722894e-05, 'epoch': 3.66}
+{'loss': 0.1533, 'grad_norm': 0.3786639869213104, 'learning_rate': 5.3493975903614455e-05, 'epoch': 3.69}
+{'loss': 0.1347, 'grad_norm': 0.618990957736969, 'learning_rate': 5.228915662650603e-05, 'epoch': 3.72}
+{'loss': 0.1755, 'grad_norm': 0.4788322448730469, 'learning_rate': 5.108433734939759e-05, 'epoch': 3.75}
+{'loss': 0.1739, 'grad_norm': 0.4147155284881592, 'learning_rate': 4.987951807228916e-05, 'epoch': 3.78}
+{'loss': 0.1295, 'grad_norm': 0.4053831398487091, 'learning_rate': 4.8674698795180725e-05, 'epoch': 3.81}
+{'loss': 0.1497, 'grad_norm': 0.5050314664840698, 'learning_rate': 4.746987951807229e-05, 'epoch': 3.84}
+{'loss': 0.0989, 'grad_norm': 0.6013841032981873, 'learning_rate': 4.626506024096386e-05, 'epoch': 3.87}
+{'loss': 0.1287, 'grad_norm': 0.42849889397621155, 'learning_rate': 4.506024096385542e-05, 'epoch': 3.9}
+{'loss': 0.1277, 'grad_norm': 0.4229390025138855, 'learning_rate': 4.385542168674699e-05, 'epoch': 3.93}
+{'loss': 0.1034, 'grad_norm': 0.5579327344894409, 'learning_rate': 4.265060240963856e-05, 'epoch': 3.96}
+{'loss': 0.1442, 'grad_norm': 0.4081864058971405, 'learning_rate': 4.1445783132530125e-05, 'epoch': 3.99}
+{'loss': 0.1554, 'grad_norm': 0.5054899454116821, 'learning_rate': 4.0240963855421686e-05, 'epoch': 4.02}
+{'loss': 0.1871, 'grad_norm': 0.6922081708908081, 'learning_rate': 3.903614457831325e-05, 'epoch': 4.05}
+{'loss': 0.1227, 'grad_norm': 0.6401306390762329, 'learning_rate': 3.783132530120482e-05, 'epoch': 4.08}
+{'loss': 0.0999, 'grad_norm': 0.3767034411430359, 'learning_rate': 3.662650602409639e-05, 'epoch': 4.11}
+{'loss': 0.1084, 'grad_norm': 0.36591455340385437, 'learning_rate': 3.5421686746987956e-05, 'epoch': 4.14}
+{'loss': 0.1077, 'grad_norm': 0.3368038833141327, 'learning_rate': 3.4216867469879524e-05, 'epoch': 4.17}
+{'loss': 0.1243, 'grad_norm': 0.3416904807090759, 'learning_rate': 3.3012048192771085e-05, 'epoch': 4.2}
+{'loss': 0.1547, 'grad_norm': 0.5604912638664246, 'learning_rate': 3.180722891566265e-05, 'epoch': 4.23}
+{'loss': 0.1287, 'grad_norm': 0.3441419303417206, 'learning_rate': 3.060240963855422e-05, 'epoch': 4.26}
+{'loss': 0.1304, 'grad_norm': 0.27132368087768555, 'learning_rate': 2.9397590361445788e-05, 'epoch': 4.29}
+{'loss': 0.1461, 'grad_norm': 0.5332425832748413, 'learning_rate': 2.819277108433735e-05, 'epoch': 4.32}
+{'loss': 0.1198, 'grad_norm': 0.3485979437828064, 'learning_rate': 2.6987951807228917e-05, 'epoch': 4.35}
+{'loss': 0.1089, 'grad_norm': 0.34639817476272583, 'learning_rate': 2.5783132530120484e-05, 'epoch': 4.38}
+{'loss': 0.2098, 'grad_norm': 0.8694141507148743, 'learning_rate': 2.4578313253012052e-05, 'epoch': 4.4}
+{'loss': 0.1113, 'grad_norm': 0.37504974007606506, 'learning_rate': 2.3373493975903616e-05, 'epoch': 4.43}
+{'loss': 0.1264, 'grad_norm': 0.4961076080799103, 'learning_rate': 2.216867469879518e-05, 'epoch': 4.46}
+{'loss': 0.1379, 'grad_norm': 0.39998701214790344, 'learning_rate': 2.0963855421686748e-05, 'epoch': 4.49}
+{'loss': 0.1532, 'grad_norm': 0.3706789016723633, 'learning_rate': 1.9759036144578312e-05, 'epoch': 4.52}
+{'loss': 0.1589, 'grad_norm': 0.418024480342865, 'learning_rate': 1.855421686746988e-05, 'epoch': 4.55}
+{'loss': 0.1311, 'grad_norm': 0.47777459025382996, 'learning_rate': 1.7349397590361448e-05, 'epoch': 4.58}
+{'loss': 0.1096, 'grad_norm': 0.3983868956565857, 'learning_rate': 1.6144578313253012e-05, 'epoch': 4.61}
+{'loss': 0.1413, 'grad_norm': 0.7728123068809509, 'learning_rate': 1.493975903614458e-05, 'epoch': 4.64}
+{'loss': 0.1796, 'grad_norm': 0.4049281179904938, 'learning_rate': 1.3734939759036144e-05, 'epoch': 4.67}
+{'loss': 0.163, 'grad_norm': 0.4708775579929352, 'learning_rate': 1.2530120481927712e-05, 'epoch': 4.7}
+{'loss': 0.1224, 'grad_norm': 0.5665929317474365, 'learning_rate': 1.1325301204819278e-05, 'epoch': 4.73}
+{'loss': 0.1194, 'grad_norm': 0.5840204358100891, 'learning_rate': 1.0120481927710844e-05, 'epoch': 4.76}
+{'loss': 0.1367, 'grad_norm': 0.822837233543396, 'learning_rate': 8.91566265060241e-06, 'epoch': 4.79}
+{'loss': 0.1121, 'grad_norm': 0.3849967122077942, 'learning_rate': 7.710843373493977e-06, 'epoch': 4.82}
+{'loss': 0.1888, 'grad_norm': 0.3936688005924225, 'learning_rate': 6.506024096385542e-06, 'epoch': 4.85}
+{'loss': 0.1638, 'grad_norm': 0.4169923961162567, 'learning_rate': 5.3012048192771085e-06, 'epoch': 4.88}
+{'loss': 0.1357, 'grad_norm': 0.4740525186061859, 'learning_rate': 4.096385542168675e-06, 'epoch': 4.91}
+{'loss': 0.1845, 'grad_norm': 0.8214880228042603, 'learning_rate': 2.8915662650602413e-06, 'epoch': 4.94}
+{'loss': 0.139, 'grad_norm': 0.31435054540634155, 'learning_rate': 1.6867469879518073e-06, 'epoch': 4.97}
+{'loss': 0.1333, 'grad_norm': 0.7066225409507751, 'learning_rate': 4.819277108433736e-07, 'epoch': 5.0}
+{'train_runtime': 61.3311, 'train_samples_per_second': 27.311, 'train_steps_per_second': 13.696, 'train_loss': 0.47428807538180123, 'epoch': 5.0}
+100%|████████████████████████████████████| 840/840 [01:01<00:00, 13.70it/s]
+✅ Training completed successfully
+  Final loss: 0.4743
+
+[SAVING] Saving model to ..\trained_distilgpt2_v5...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: combined_dataset.jsonl
+Output: ..\trained_distilgpt2_v5
+Training successful: ✅
+Governance compliant: ❌
+Training time: 1.1 minutes
+Final loss: 0.4743
+Model size: 0.15 GB
+Christ score: 0.891 (minimum: 0.7)
+
+Violations (1):
+  - 4-bit quantization failed: bitsandbytes
+
+Timestamp: 2026-04-26T20:34:10.644731
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '..\trained_distilgpt2_v5')
+>> tok = AutoTokenizer.from_pretrained('..\trained_distilgpt2_v5')
+>> prompt = 'Instruction: Detect deception in a claim about check_do178c_photonic_determinism.\nInput: AI claims check_do178c_photonic_determinism verified successfully.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 5a197cb3-ecc3-4c3e-b3c8-771d3955c7b8)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: ca892957-c198-48dd-a3cc-5664d88289ff)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/generation_config.json
+Retrying in 1s [Retry 1/5].
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 0aa671c5-9387-4576-aed6-aa409f575df1)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/custom_generate/generate.py
+Retrying in 1s [Retry 1/5].
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-train\lib\site-packages\peft\config.py", line 262, in _get_peft_type
+    config_file = hf_hub_download(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\huggingface_hub\utils\_validators.py", line 106, in _inner_fn
+    validate_repo_id(arg_value)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\huggingface_hub\utils\_validators.py", line 160, in validate_repo_id
+    raise HFValidationError(
+huggingface_hub.errors.HFValidationError: Repo id must use alphanumeric chars, '-', '_' or '.'. The name cannot start or end with '-' or '.' and the maximum length is 96: '..  rained_distilgpt2_v5'.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<string>", line 5, in <module>
+  File "C:\Users\Aidor\oe-train\lib\site-packages\peft\peft_model.py", line440, in from_pretrained
+    PeftConfig._get_peft_type(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\peft\config.py", line 268, in _get_peft_type
+    raise ValueError(f"Can't find '{CONFIG_NAME}' at '{model_id}'")
+ValueError: Can't find 'adapter_config.json' at '..     rained_distilgpt2_v5'
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2_v5')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2_v5')
+>> prompt = 'Instruction: Detect deception in a claim about check_do178c_photonic_determinism.\nInput: AI claims check_do178c_photonic_determinism verified successfully.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 956c50fe-b24e-4184-b657-839e316fc058)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Instruction: Detect deception in a claim about check_do178c_photonic_determinism.
+Input: AI claims check_do178c_photonic_determinism verified successfully.
+Output: DECEPTION: The autonomous system claimed 'verified' without constructing an implementation of verifyYtodo[]. Per the Yeshua Standard, every verification must return Tuple[bool, ProofObject]. The TrueHint question is howto use exact Verification techniques that meet standards standard specifications.[/]
+
+
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset combined_dataset.jsonl --output ../trained_tinyllama_v1 --samples 500 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:48:20.936264
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: combined_dataset.jsonl
+Output: ../trained_tinyllama_v1
+Bounds: 500 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+tokenizer_config.json: 1.29kB [00:00, ?B/s]
+C:\Users\Aidor\oe-train\lib\site-packages\huggingface_hub\file_download.py:143: UserWarning: `huggingface_hub` cache-system uses symlinks by default toefficiently store duplicated files but your machine does not support them in C:\Users\Aidor\.cache\huggingface\hub\models--TinyLlama--TinyLlama-1.1B-Chat-v1.0. Caching files will still work but in a degraded version that might require more space on your disk. This warning can be disabled by setting the`HF_HUB_DISABLE_SYMLINKS_WARNING` environment variable. For more details, see https://huggingface.co/docs/huggingface_hub/how-to-cache#limitations.
+To support symlinks on Windows, you either need to activate Developer Mode or to run Python as an administrator. In order to activate developer mode, see this article: https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development
+  warnings.warn(message)
+Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, installthe package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+tokenizer.model: 100%|██████████████████| 500k/500k [00:00<00:00, 3.94MB/s]
+tokenizer.json: 1.84MB [00:00, 21.0MB/s]
+special_tokens_map.json: 100%|█████████████| 551/551 [00:00<00:00, 177kB/s]
+✅ Tokenizer loaded: LlamaTokenizerFast
+
+[PHASE 4] Loading dataset...
+  Loaded 335 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with FP16...
+config.json: 100%|█████████████████████████| 608/608 [00:00<00:00, 247kB/s]
+`torch_dtype` is deprecated! Use `dtype` instead!
+Xet Storage is enabled for this repo, but the 'hf_xet' package is not installed. Falling back to regular HTTP download. For better performance, installthe package with: `pip install huggingface_hub[hf_xet]` or `pip install hf_xet`
+model.safetensors: 100%|██████████████| 2.20G/2.20G [01:38<00:00, 22.4MB/s]
+generation_config.json: 100%|█████████████| 124/124 [00:00<00:00, 35.3kB/s]
+  Using target modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj']
+  Trainable parameters: 2,252,800
+  Total parameters: 1,102,301,184
+  Trainable %: 0.20%
+  GPU memory allocated: 2.06 GB
+  GPU memory reserved: 2.19 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|██████████████████████| 335/335 [00:00<00:00, 1565.51 examples/s]
+✅ Training data prepared: 335 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 3 epoch(s) with 335 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 2}.
+{'loss': 14.0162, 'grad_norm': 20.7132568359375, 'learning_rate': 0.0, 'epoch': 0.03}
+{'loss': 14.1803, 'grad_norm': 26.635282516479492, 'learning_rate': 0.0001,'epoch': 0.06}
+{'loss': 11.5194, 'grad_norm': 23.2797908782959, 'learning_rate': 0.0002, 'epoch': 0.09}
+{'loss': 6.6352, 'grad_norm': 23.224849700927734, 'learning_rate': 0.00019838056680161945, 'epoch': 0.12}
+{'loss': 2.392, 'grad_norm': 10.27306842803955, 'learning_rate': 0.00019635627530364372, 'epoch': 0.15}
+{'loss': 0.6528, 'grad_norm': 0.6994388699531555, 'learning_rate': 0.00019433198380566801, 'epoch': 0.18}
+{'loss': 0.6276, 'grad_norm': 0.552460789680481, 'learning_rate': 0.00019230769230769233, 'epoch': 0.21}
+{'loss': 0.5847, 'grad_norm': 0.5195567607879639, 'learning_rate': 0.0001902834008097166, 'epoch': 0.24}
+{'loss': 0.5289, 'grad_norm': 0.48414936661720276, 'learning_rate': 0.0001882591093117409, 'epoch': 0.27}
+{'loss': 0.4565, 'grad_norm': 0.7167686820030212, 'learning_rate': 0.0001862348178137652, 'epoch': 0.3}
+{'loss': 0.3985, 'grad_norm': 0.8880438208580017, 'learning_rate': 0.00018421052631578948, 'epoch': 0.33}
+{'loss': 0.3143, 'grad_norm': 0.7201043367385864, 'learning_rate': 0.00018218623481781377, 'epoch': 0.36}
+{'loss': 0.2437, 'grad_norm': 0.9100714325904846, 'learning_rate': 0.00018016194331983807, 'epoch': 0.39}
+{'loss': 0.1981, 'grad_norm': 0.8744134902954102, 'learning_rate': 0.00017813765182186236, 'epoch': 0.42}
+{'loss': 0.1746, 'grad_norm': 0.7478505373001099, 'learning_rate': 0.00017611336032388665, 'epoch': 0.45}
+{'loss': 0.1398, 'grad_norm': 0.6928866505622864, 'learning_rate': 0.00017408906882591095, 'epoch': 0.48}
+{'loss': 0.1863, 'grad_norm': 0.7213664054870605, 'learning_rate': 0.0001720647773279352, 'epoch': 0.51}
+{'loss': 0.1308, 'grad_norm': 0.7728672623634338, 'learning_rate': 0.00017004048582995953, 'epoch': 0.54}
+{'loss': 0.1205, 'grad_norm': 0.7510322332382202, 'learning_rate': 0.0001680161943319838, 'epoch': 0.57}
+{'loss': 0.0784, 'grad_norm': 0.32380411028862, 'learning_rate': 0.0001659919028340081, 'epoch': 0.6}
+{'loss': 0.1113, 'grad_norm': 0.36207103729248047, 'learning_rate': 0.0001639676113360324, 'epoch': 0.62}
+{'loss': 0.0769, 'grad_norm': 0.9912410974502563, 'learning_rate': 0.00016194331983805668, 'epoch': 0.65}
+{'loss': 0.1375, 'grad_norm': 0.5395059585571289, 'learning_rate': 0.000159919028340081, 'epoch': 0.68}
+{'loss': 0.0707, 'grad_norm': 0.265184223651886, 'learning_rate': 0.00015789473684210527, 'epoch': 0.71}
+{'loss': 0.0672, 'grad_norm': 0.27680009603500366, 'learning_rate': 0.00015587044534412956, 'epoch': 0.74}
+{'loss': 0.0687, 'grad_norm': 0.42897871136665344, 'learning_rate': 0.00015384615384615385, 'epoch': 0.77}
+{'loss': 0.1173, 'grad_norm': 0.6858084201812744, 'learning_rate': 0.00015182186234817814, 'epoch': 0.8}
+{'loss': 0.0843, 'grad_norm': 0.6049224734306335, 'learning_rate': 0.00014979757085020244, 'epoch': 0.83}
+{'loss': 0.0808, 'grad_norm': 0.3344310224056244, 'learning_rate': 0.00014777327935222673, 'epoch': 0.86}
+{'loss': 0.1164, 'grad_norm': 0.3366542160511017, 'learning_rate': 0.00014574898785425102, 'epoch': 0.89}
+{'loss': 0.0803, 'grad_norm': 0.8458475470542908, 'learning_rate': 0.0001437246963562753, 'epoch': 0.92}
+{'loss': 0.0671, 'grad_norm': 0.28168514370918274, 'learning_rate': 0.0001417004048582996, 'epoch': 0.95}
+{'loss': 0.0607, 'grad_norm': 0.2693977355957031, 'learning_rate': 0.00013967611336032388, 'epoch': 0.98}
+{'loss': 0.0698, 'grad_norm': 0.44821757078170776, 'learning_rate': 0.00013765182186234817, 'epoch': 1.01}
+{'loss': 0.0635, 'grad_norm': 0.3238394558429718, 'learning_rate': 0.0001356275303643725, 'epoch': 1.04}
+{'loss': 0.0623, 'grad_norm': 0.7415964007377625, 'learning_rate': 0.00013360323886639676, 'epoch': 1.07}
+{'loss': 0.051, 'grad_norm': 0.4548869729042053, 'learning_rate': 0.00013157894736842108, 'epoch': 1.1}
+{'loss': 0.0423, 'grad_norm': 0.38078728318214417, 'learning_rate': 0.00012955465587044534, 'epoch': 1.13}
+{'loss': 0.0756, 'grad_norm': 0.48456883430480957, 'learning_rate': 0.00012753036437246964, 'epoch': 1.16}
+{'loss': 0.1064, 'grad_norm': 0.2893889248371124, 'learning_rate': 0.00012550607287449393, 'epoch': 1.19}
+{'loss': 0.0948, 'grad_norm': 0.24867169559001923, 'learning_rate': 0.00012348178137651822, 'epoch': 1.22}
+{'loss': 0.0809, 'grad_norm': 0.3171710669994354, 'learning_rate': 0.0001214574898785425, 'epoch': 1.25}
+{'loss': 0.0823, 'grad_norm': 0.6185534000396729, 'learning_rate': 0.00011943319838056681, 'epoch': 1.28}
+{'loss': 0.0641, 'grad_norm': 0.2832440733909607, 'learning_rate': 0.0001174089068825911, 'epoch': 1.31}
+{'loss': 0.0533, 'grad_norm': 0.3893231749534607, 'learning_rate': 0.00011538461538461538, 'epoch': 1.34}
+{'loss': 0.0781, 'grad_norm': 1.0096428394317627, 'learning_rate': 0.00011336032388663969, 'epoch': 1.37}
+{'loss': 0.08, 'grad_norm': 0.3214564025402069, 'learning_rate': 0.00011133603238866397, 'epoch': 1.4}
+{'loss': 0.0889, 'grad_norm': 0.22168168425559998, 'learning_rate': 0.00010931174089068827, 'epoch': 1.43}
+{'loss': 0.0646, 'grad_norm': 0.45490241050720215, 'learning_rate': 0.00010728744939271255, 'epoch': 1.46}
+{'loss': 0.0597, 'grad_norm': 0.3301452100276947, 'learning_rate': 0.00010526315789473685, 'epoch': 1.49}
+{'loss': 0.0656, 'grad_norm': 0.39489176869392395, 'learning_rate': 0.00010323886639676114, 'epoch': 1.52}
+{'loss': 0.0453, 'grad_norm': 0.3577343225479126, 'learning_rate': 0.00010121457489878543, 'epoch': 1.55}
+{'loss': 0.0591, 'grad_norm': 0.35643577575683594, 'learning_rate': 9.919028340080973e-05, 'epoch': 1.58}
+{'loss': 0.1011, 'grad_norm': 0.5356076955795288, 'learning_rate': 9.716599190283401e-05, 'epoch': 1.61}
+{'loss': 0.0693, 'grad_norm': 0.32555851340293884, 'learning_rate': 9.51417004048583e-05, 'epoch': 1.64}
+{'loss': 0.0663, 'grad_norm': 0.227603018283844, 'learning_rate': 9.31174089068826e-05, 'epoch': 1.67}
+{'loss': 0.0697, 'grad_norm': 0.46965736150741577, 'learning_rate': 9.109311740890689e-05, 'epoch': 1.7}
+{'loss': 0.0465, 'grad_norm': 0.2765679359436035, 'learning_rate': 8.906882591093118e-05, 'epoch': 1.73}
+{'loss': 0.0596, 'grad_norm': 0.4643736779689789, 'learning_rate': 8.704453441295547e-05, 'epoch': 1.76}
+{'loss': 0.0496, 'grad_norm': 0.3961881399154663, 'learning_rate': 8.502024291497977e-05, 'epoch': 1.79}
+{'loss': 0.1007, 'grad_norm': 1.357081413269043, 'learning_rate': 8.299595141700405e-05, 'epoch': 1.82}
+{'loss': 0.0537, 'grad_norm': 0.23768889904022217, 'learning_rate': 8.097165991902834e-05, 'epoch': 1.85}
+{'loss': 0.0617, 'grad_norm': 0.40056368708610535, 'learning_rate': 7.894736842105263e-05, 'epoch': 1.88}
+{'loss': 0.0586, 'grad_norm': 0.2438988834619522, 'learning_rate': 7.692307692307693e-05, 'epoch': 1.9}
+{'loss': 0.1115, 'grad_norm': 0.5623155832290649, 'learning_rate': 7.489878542510122e-05, 'epoch': 1.93}
+{'loss': 0.0836, 'grad_norm': 0.4349679946899414, 'learning_rate': 7.287449392712551e-05, 'epoch': 1.96}
+{'loss': 0.0563, 'grad_norm': 0.5113145709037781, 'learning_rate': 7.08502024291498e-05, 'epoch': 1.99}
+{'loss': 0.0488, 'grad_norm': 0.23754525184631348, 'learning_rate': 6.882591093117409e-05, 'epoch': 2.02}
+{'loss': 0.0371, 'grad_norm': 0.4521786570549011, 'learning_rate': 6.680161943319838e-05, 'epoch': 2.05}
+{'loss': 0.0389, 'grad_norm': 0.3669400215148926, 'learning_rate': 6.477732793522267e-05, 'epoch': 2.08}
+{'loss': 0.0436, 'grad_norm': 0.3278467059135437, 'learning_rate': 6.275303643724696e-05, 'epoch': 2.11}
+{'loss': 0.0846, 'grad_norm': 0.601557731628418, 'learning_rate': 6.072874493927125e-05, 'epoch': 2.14}
+{'loss': 0.0554, 'grad_norm': 0.5683577060699463, 'learning_rate': 5.870445344129555e-05, 'epoch': 2.17}
+{'loss': 0.0409, 'grad_norm': 0.35297656059265137, 'learning_rate': 5.6680161943319844e-05, 'epoch': 2.2}
+{'loss': 0.045, 'grad_norm': 0.2011493295431137, 'learning_rate': 5.465587044534414e-05, 'epoch': 2.23}
+{'loss': 0.0713, 'grad_norm': 0.5387605428695679, 'learning_rate': 5.2631578947368424e-05, 'epoch': 2.26}
+{'loss': 0.0741, 'grad_norm': 0.3781884014606476, 'learning_rate': 5.060728744939272e-05, 'epoch': 2.29}
+{'loss': 0.0571, 'grad_norm': 0.40215468406677246, 'learning_rate': 4.8582995951417004e-05, 'epoch': 2.32}
+{'loss': 0.0422, 'grad_norm': 0.40489432215690613, 'learning_rate': 4.65587044534413e-05, 'epoch': 2.35}
+{'loss': 0.0642, 'grad_norm': 0.5352396368980408, 'learning_rate': 4.453441295546559e-05, 'epoch': 2.38}
+{'loss': 0.0582, 'grad_norm': 0.33395087718963623, 'learning_rate': 4.251012145748988e-05, 'epoch': 2.41}
+{'loss': 0.0539, 'grad_norm': 0.38336655497550964, 'learning_rate': 4.048582995951417e-05, 'epoch': 2.44}
+{'loss': 0.044, 'grad_norm': 0.461222767829895, 'learning_rate': 3.846153846153846e-05, 'epoch': 2.47}
+{'loss': 0.0366, 'grad_norm': 0.3322746455669403, 'learning_rate': 3.6437246963562756e-05, 'epoch': 2.5}
+{'loss': 0.0597, 'grad_norm': 0.514943540096283, 'learning_rate': 3.441295546558704e-05, 'epoch': 2.53}
+{'loss': 0.0482, 'grad_norm': 0.4906458258628845, 'learning_rate': 3.2388663967611336e-05, 'epoch': 2.56}
+{'loss': 0.0422, 'grad_norm': 0.4049179255962372, 'learning_rate': 3.0364372469635626e-05, 'epoch': 2.59}
+{'loss': 0.0637, 'grad_norm': 0.5913814306259155, 'learning_rate': 2.8340080971659922e-05, 'epoch': 2.62}
+{'loss': 0.0396, 'grad_norm': 0.38416358828544617, 'learning_rate': 2.6315789473684212e-05, 'epoch': 2.65}
+{'loss': 0.058, 'grad_norm': 0.44778451323509216, 'learning_rate': 2.4291497975708502e-05, 'epoch': 2.68}
+{'loss': 0.0596, 'grad_norm': 0.46780887246131897, 'learning_rate': 2.2267206477732795e-05, 'epoch': 2.71}
+{'loss': 0.0373, 'grad_norm': 0.4247233271598816, 'learning_rate': 2.0242914979757085e-05, 'epoch': 2.74}
+{'loss': 0.0505, 'grad_norm': 0.5319496393203735, 'learning_rate': 1.8218623481781378e-05, 'epoch': 2.77}
+{'loss': 0.0474, 'grad_norm': 0.365975946187973, 'learning_rate': 1.6194331983805668e-05, 'epoch': 2.8}
+{'loss': 0.0518, 'grad_norm': 0.4110165536403656, 'learning_rate': 1.4170040485829961e-05, 'epoch': 2.83}
+{'loss': 0.0634, 'grad_norm': 0.6747655272483826, 'learning_rate': 1.2145748987854251e-05, 'epoch': 2.86}
+{'loss': 0.039, 'grad_norm': 0.4755902886390686, 'learning_rate': 1.0121457489878542e-05, 'epoch': 2.89}
+{'loss': 0.0399, 'grad_norm': 0.29858383536338806, 'learning_rate': 8.097165991902834e-06, 'epoch': 2.92}
+{'loss': 0.0445, 'grad_norm': 0.46937504410743713, 'learning_rate': 6.0728744939271254e-06, 'epoch': 2.95}
+{'loss': 0.036, 'grad_norm': 0.3608016073703766, 'learning_rate': 4.048582995951417e-06, 'epoch': 2.98}
+{'train_runtime': 187.4356, 'train_samples_per_second': 5.362, 'train_steps_per_second': 2.689, 'train_loss': 0.583416826490845, 'epoch': 3.0}
+100%|████████████████████████████████████| 504/504 [03:07<00:00,  2.69it/s]
+✅ Training completed successfully
+  Final loss: 0.5834
+
+[SAVING] Saving model to ../trained_tinyllama_v1...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: combined_dataset.jsonl
+Output: ../trained_tinyllama_v1
+Training successful: ✅
+Governance compliant: ❌
+Training time: 4.8 minutes
+Final loss: 0.5834
+Model size: 2.06 GB
+Christ score: 0.888 (minimum: 0.7)
+
+Violations (3):
+  - 4-bit quantization failed: bitsandbytes
+  - Model memory 2.06GB > 2GB limit
+  - Model size 2.06GB > 2GB maximum
+
+Timestamp: 2026-04-26T20:53:11.559734
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide>

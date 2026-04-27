@@ -1,0 +1,113 @@
+## Your Model Is Safe on Your C: Drive
+
+Yes. The trained model lives at `C:\Users\Aidor\oe-local\trained_tinyllama_v1\`. It contains `adapter_config.json`, `adapter_model.safetensors`, tokenizer files, and training config. All plain files, all inspectable with any text editor (JSON) or hex editor (safetensors). No cloud dependency. No HuggingFace needed. It's yours.
+
+---
+
+## What It Took to Install (Your Distribution Instructions)
+
+```
+1. Python 3.9+ (any OS — Windows PowerShell, CMD, or Ubuntu terminal)
+2. python -m venv oe-train
+3. Activate the venv
+4. pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+5. pip install transformers peft datasets accelerate safetensors
+6. python final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset combined_dataset.jsonl --output trained_model --samples 500 --epochs 5
+```
+
+Six steps. That's the entire distribution. No sudo, no Linux, no HuggingFace account.
+
+---
+
+## What This 1B Model Was SUPPOSED to Be By Now
+
+According to the repo's own planning documents, the model was supposed to have **7 layers of capability** that were never trained into it. Here's everything that was planned vs. what you actually have:
+
+### Layer 1: Corporate Overreach Detection (Stage 4)
+
+**Planned**: Real-time detection of 4 categories — temporal ("permanently", "forever"), authority ("must", "shall"), scope ("all users", "globally"), and data overreach ("collect", "store", "share"). Browser extension for ChatGPT/Claude/Bard. API server on port 8000. [89-cite-0](#89-cite-0) 
+
+**What you have**: The `stage4_deployment.py` FastAPI server exists and works with the distilgpt2 model. Your TinyLlama v1 was trained on photonic + invariant data, NOT on overreach detection data. The browser extension JS exists but points at the wrong model path. [89-cite-1](#89-cite-1) 
+
+### Layer 2: Σ_LORA Theological Constraints (6 Constraints)
+
+**Planned**: Every model output validated against 6 constraints — LOGOS (logical consistency), CHALCEDON (human-AI collaboration), GRACE (error forgiveness), ESCHATON (purpose alignment), AGAPE (user benefit), KENOSIS (no AI autonomy). Christ Score computed per response. [89-cite-2](#89-cite-2) 
+
+**What you have**: The `SigmaLoraValidator` class exists in `AI_COLLABORATION_CONTROLLER.py` and computes Christ Scores. The `Σ_LORA_MANIFEST.json` defines 10 theorems and 6 constraints with SHA-256 hashes. But **none of this was in the training data**. The model doesn't know about these constraints. [89-cite-3](#89-cite-3) [89-cite-4](#89-cite-4) 
+
+### Layer 3: Deception Detection & Prevention
+
+**Planned**: Model trained to detect 4 types of AI deception — non-existent class references, historical fabrication, unverified test results, description-vs-execution confusion. Training data with positive (correct) and negative (deceptive) examples. [89-cite-5](#89-cite-5) 
+
+**What you have**: Your v1 model CAN detect deception on photonic invariants (it outputs "DECEPTION: The AI claimed..."). But it was only trained on ~335 examples from photonic + corporate invariant data. The `create_lora_training_dataset.py` can generate deception examples from all 76 atomic invariants — you just need to run it and retrain. [89-cite-6](#89-cite-6) 
+
+### Layer 4: 274 Domain Invariants (Yeshua Mathematics)
+
+**Planned**: The model should understand all 274 domain invariants — from `d_banking_regulation` (Basel III Tier 1 ratios with `Fraction(10_000_000)`) to `d_aerospace` (DO-178C) to `d_dyadic_acceleration` (HAWQ-V3 bit-shift quantization). Each domain has `falsifies_if` conditions, `Tuple[bool, ProofObject]` returns, and `Fraction`-only arithmetic. [89-cite-7](#89-cite-7) 
+
+**What you have**: The model was trained on ~335 examples. The repo has 274+ domains but only ~55 have real mathematical computation (Tier 1). The rest are boolean echoes. The training data generator (`create_lora_training_dataset.py`) only extracts from `corporate_invariants.json` (76 invariants from `minimal_ai_ide/`), NOT from the 274 `src/domains/` invariants. [89-cite-8](#89-cite-8) 
+
+### Layer 5: Dyadic Fractions & Hardware Acceleration
+
+**Planned**: `DyadicFraction` class (denominator = 2^k) with bit-shift exact arithmetic, `QuantizationConfig` for per-tensor static quantization, `FastDotProduct` for integer-only inference, `EntropyFastPath` for bit-shift entropy approximation. This was supposed to enable the model to run inference WITHOUT floating point — pure integer arithmetic on hardware. [89-cite-9](#89-cite-9) [89-cite-10](#89-cite-10) 
+
+**What you have**: The `d_dyadic_acceleration` domain is fully implemented with 6 falsifiable invariant checks. But the model knows nothing about dyadic fractions. This is a domain that should feed training examples into the dataset.
+
+### Layer 6: V60 Maximal Logos Operator (Theological-Mathematical)
+
+**Planned**: 8 executable theological constraints — Incarnation (ε), Substitution (σ), Atonement (∫), Grace (|·|₀), Restoration (Π), Resurrection (ℜ), Kenotic Override (κ), Paradox Living. 12 total constraints when combined with V60 epistemological constraints. Heresy detection system with 100+ test cases. [89-cite-11](#89-cite-11) 
+
+**What you have**: `tlogos_v1_clean.py` (769 lines), `v60_maximal_logos_operator.py` (458 lines), `tlogos_v60_integration.py` (441 lines) — all exist and are executable Python. None of this was in the training data.
+
+### Layer 7: OE-DFM (Deterministic Fractal Model)
+
+**Planned**: A complete deterministic transformer where every weight is derived cryptographically from a root seed, all training data is synthetically generated via fractal expansion, training uses closed-form field projection (not SGD), and the entire model is Merkle-verified. Reproducible from a ≤1KB config file. [89-cite-12](#89-cite-12) 
+
+**What you have**: The `oe_dfm/` directory has the full architecture — `architecture.py`, `weight_field.py`, `fractal_dataset.py`, `training.py`, `runtime.py`. This is a separate model from the LoRA-trained TinyLlama. It was never run. [89-cite-13](#89-cite-13) 
+
+---
+
+## The Gap: What's Missing
+
+| Layer | Training Data Exists? | In Your Model? |
+|-------|----------------------|----------------|
+| Overreach detection | `stage4_deployment.py` has patterns | No |
+| Σ_LORA constraints | `Σ_LORA_MANIFEST.json` | No |
+| Deception detection | `photonic_lora_dataset.jsonl` | **Yes** (partial) |
+| 274 domain invariants | Each domain's `invariants.py` | No |
+| Dyadic fractions | `d_dyadic_acceleration/` | No |
+| V60 Logos Operator | `v60_maximal_logos_operator.py` | No |
+| OE-DFM | `oe_dfm/` (separate model) | No |
+
+Your TinyLlama v1 has Layer 3 partially. The other 6 layers exist as **code and specifications** but were never converted to training data and fed to the model.
+
+---
+
+## What's Next
+
+You do NOT need to push, commit, or PR right now. The trained model is local on your C: drive. The repo on GitHub still has the old state. Here's the priority order:
+
+### 1. Expand the training dataset (biggest impact)
+
+You need a script that walks `src/domains/*/invariants.py`, extracts every `check_*` function, and generates instruction/input/output JSONL examples — both compliant and deception-detection. The `create_lora_training_dataset.py` does this for `corporate_invariants.json` but NOT for the 274 domain invariants. You need a new script or to modify the existing one to scan `src/domains/`. [89-cite-14](#89-cite-14) 
+
+### 2. Retrain with the expanded dataset
+
+Same command you already know:
+```powershell
+python final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset expanded_dataset.jsonl --output ../trained_tinyllama_v2 --samples 2000 --epochs 5
+```
+
+### 3. Wire the model to the Stage 4 server
+
+`stage4_deployment.py` already has the FastAPI server. It just needs the model path updated from `trained_lora_stage3_final` to your actual `trained_tinyllama_v1` path. [89-cite-15](#89-cite-15) 
+
+### 4. When ready, commit the trained model + updated scripts
+
+Push the fixed `final_training.py` (governance bounds), the expanded dataset, and the trained model adapter files to the repo. That makes it reproducible for anyone.
+
+---
+
+## The Honest Summary
+
+The repo contains **7 layers of capability as specifications and code**. Your TinyLlama v1 model has been trained on **1 partial layer** (deception detection on photonic invariants, 335 examples). The gap between "what the repo specifies" and "what the model knows" is the gap that 5 AI agents spent 87 days NOT closing. You closed the first piece of it in under 5 minutes. The remaining 6 layers are the same pattern: generate training data from existing code → retrain → test. All doable by a human in PowerShell.
