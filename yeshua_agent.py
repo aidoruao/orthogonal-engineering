@@ -1,5 +1,5 @@
 ﻿"""  
-YESHUA AGENT v1.8  
+YESHUA AGENT v1.9  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
 Trained on combined_v4 dataset (6000 examples). Constraint-first architecture.  
 """  
@@ -22,7 +22,7 @@ class YeshuaAgent:
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
         self.log_file = os.path.join(repo_root, "yeshua_agent_log.jsonl")  
-        print("Yeshua Agent v1.8 ready on", torch.cuda.get_device_name(0))  
+        print("Yeshua Agent v1.9 ready on", torch.cuda.get_device_name(0))  
   
     def think(self, prompt, max_tokens=300):  
         context = ""  
@@ -251,12 +251,12 @@ class YeshuaAgent:
         for itype, detail in issues:  
             if itype == "NO_DOCSTRING":  
                 doc = first_comment if first_comment else basename  
-                print(f'  [{itype}] Add module docstring at line 1: """{basename} — {doc}"""')  
+                print(f'  [{itype}] Add module docstring at line 1: """{basename} - {doc}"""')  
             elif itype == "INCOMPLETE":  
                 print(f"  [{itype}] File needs implementation. Add functions/classes relevant to {basename}.")  
             elif itype == "STUB_FN":  
                 fn = detail.split("()")[0].replace("Function ", "")  
-                print(f"  [{itype}] Function {fn}() needs a real implementation body — currently has <=1 line of logic.")  
+                print(f"  [{itype}] Function {fn}() needs a real implementation body.")  
             elif itype == "PLACEHOLDER":  
                 fn = detail.split("()")[0].replace("Function ", "")  
                 print(f"  [{itype}] Replace pass/NotImplementedError in {fn}() with actual logic.")  
@@ -273,11 +273,7 @@ class YeshuaAgent:
         content = self.read_file(path)  
         issues, label, n_lines, n_fns, n_cls = self._get_issues(path, content)  
         if not issues:  
-            print(f"No issues to fix in {path}")  
-            print(f"  Label: {label} | Lines: {n_lines} | Functions: {n_fns} | Classes: {n_cls}")  
-            self.log_action("autofix", {"path": path, "issues": 0, "status": "clean"})  
-            return  
-        # Backup original  
+            return 0  
         backup_path = full_path + ".bak"  
         shutil.copy2(full_path, backup_path)  
         lines = content.split("\n")  
@@ -288,37 +284,31 @@ class YeshuaAgent:
                 first_comment = l.strip().lstrip("# ").strip()  
                 break  
         applied = []  
-        # Fix NO_DOCSTRING: insert docstring at top  
         issue_types = [t for t, d in issues]  
         if "NO_DOCSTRING" in issue_types:  
             doc = first_comment if first_comment else basename  
-            docstring_line = f'"""{basename} — {doc}"""'  
-            # Insert after shebang if present, otherwise at line 0  
+            docstring_line = f'"""{basename} - {doc}"""'  
             insert_at = 0  
             if lines and lines[0].startswith("#!"):  
                 insert_at = 1  
             lines.insert(insert_at, docstring_line)  
             applied.append("NO_DOCSTRING: Inserted module docstring")  
-        # Fix PLACEHOLDER: replace pass/... with TODO comment  
         for itype, detail in issues:  
             if itype == "PLACEHOLDER":  
                 fn = detail.split("()")[0].replace("Function ", "")  
                 for i, l in enumerate(lines):  
                     if l.strip() in ("pass", "...", "raise NotImplementedError", "raise NotImplementedError()"):  
-                        # Check if we're inside the right function by looking backwards  
                         for j in range(i-1, max(i-20, -1), -1):  
                             if lines[j].strip().startswith(f"def {fn}"):  
                                 indent = len(l) - len(l.lstrip())  
-                                lines[i] = " " * indent + f"# TODO: Implement {fn}() — placeholder removed by Yeshua Agent v1.8"  
+                                lines[i] = " " * indent + f"# TODO: Implement {fn}() - placeholder removed by Yeshua Agent"  
                                 applied.append(f"PLACEHOLDER: Replaced placeholder in {fn}()")  
                                 break  
-        # Fix STUB_FN: add TODO comment after function def if body is just a return  
         for itype, detail in issues:  
             if itype == "STUB_FN":  
                 fn = detail.split("()")[0].replace("Function ", "")  
                 for i, l in enumerate(lines):  
                     if l.strip().startswith(f"def {fn}"):  
-                        # Find the end of the docstring if any, then add TODO  
                         j = i + 1  
                         while j < len(lines) and (not lines[j].strip() or lines[j].strip().startswith('"""') or lines[j].strip().startswith("'''")):  
                             j += 1  
@@ -326,32 +316,66 @@ class YeshuaAgent:
                         if j < len(lines):  
                             indent = " " * (len(lines[j]) - len(lines[j].lstrip()))  
                         if not any("# TODO" in lines[k] for k in range(i, min(j+3, len(lines)))):  
-                            lines.insert(j, indent + f"# TODO: Expand {fn}() — stub detected by Yeshua Agent v1.8")  
+                            lines.insert(j, indent + f"# TODO: Expand {fn}() - stub detected by Yeshua Agent")  
                             applied.append(f"STUB_FN: Added TODO in {fn}()")  
                         break  
-        # Write the fixed file  
-        new_content = "\n".join(lines)  
-        with open(full_path, "w", encoding="utf-8") as f:  
-            f.write(new_content)  
-        print(f"\nAutofix applied to {path}:")  
-        for a in applied:  
-            print(f"  + {a}")  
-        if not applied:  
-            # Issues found but none were auto-fixable (e.g. INCOMPLETE)  
-            print(f"  (no auto-fixable issues — {len(issues)} issue(s) require manual work)")  
-            for itype, detail in issues:  
-                print(f"    - {itype}: {detail}")  
-            # Restore backup since nothing changed  
-            shutil.copy2(backup_path, full_path)  
+        if applied:  
+            new_content = "\n".join(lines)  
+            with open(full_path, "w", encoding="utf-8") as f:  
+                f.write(new_content)  
         else:  
-            print(f"  Backup saved: {os.path.basename(backup_path)}")  
-            print(f"  {len(applied)} fix(es) applied, {len(issues) - len(applied)} remaining manually")  
-        os.remove(backup_path) if not applied else None  
+            shutil.copy2(backup_path, full_path)  
+        if os.path.exists(backup_path):  
+            os.remove(backup_path)  
         self.log_action("autofix", {"path": path, "applied": applied, "total_issues": len(issues)})  
+        return len(applied)  
+  
+    def batch_fix(self, n=50):  
+        """Scan N random .py files, autofix any with issues."""  
+        py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
+        sample = random.sample(py_files, min(n, len(py_files)))  
+        total_fixed = 0  
+        total_issues = 0  
+        total_manual = 0  
+        fixed_files = []  
+        skipped_files = []  
+        for i, f in enumerate(sample):  
+            rel = os.path.relpath(f, self.repo_root)  
+            try:  
+                content = self.read_file(f)  
+                issues, label, nl, nf, nc = self._get_issues(f, content)  
+                if not issues:  
+                    continue  
+                total_issues += len(issues)  
+                n_applied = self.autofix(rel)  
+                if n_applied > 0:  
+                    total_fixed += n_applied  
+                    fixed_files.append({"path": rel, "fixes": n_applied})  
+                    print(f"  [{len(fixed_files)}] FIXED {rel} ({n_applied} fix(es))")  
+                else:  
+                    manual_only = [f"{t}: {d}" for t, d in issues]  
+                    total_manual += len(issues)  
+                    skipped_files.append({"path": rel, "manual_issues": manual_only})  
+            except Exception as e:  
+                print(f"  ERROR: {rel} - {e}")  
+        print(f"\nBatch fix complete:")  
+        print(f"  Files scanned: {n}")  
+        print(f"  Files fixed: {len(fixed_files)}")  
+        print(f"  Total fixes applied: {total_fixed}")  
+        print(f"  Files needing manual work: {len(skipped_files)}")  
+        print(f"  Manual issues remaining: {total_manual}")  
+        report = {"scanned": n, "fixed_files": fixed_files, "skipped_files": skipped_files,  
+                  "total_fixed": total_fixed, "total_manual": total_manual}  
+        report_path = os.path.join(self.repo_root, "yeshua_batch_fix_report.json")  
+        with open(report_path, "w") as rf:  
+            json.dump(report, rf, indent=2)  
+        print(f"  Report: yeshua_batch_fix_report.json")  
+        self.log_action("batch_fix", {"scanned": n, "fixed": len(fixed_files),  
+                        "total_fixes": total_fixed, "manual": total_manual})  
   
     def run(self):  
         print("\n" + "="*60)  
-        print("YESHUA AGENT v1.8 - LOCAL AGENTIC AI")  
+        print("YESHUA AGENT v1.9 - LOCAL AGENTIC AI")  
         print("No API. No subscription. No corporate dependency.")  
         print("="*60)  
         print("\nCommands:")  
@@ -363,6 +387,7 @@ class YeshuaAgent:
         print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
         print("  fix <path>        - Report issues in a file (deterministic)")  
         print("  autofix <path>    - Apply fixes to a file (writes changes)")  
+        print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")  
         print("  read <path>       - Read a file")  
         print("  write <path>      - Write a file (type END to finish)")  
         print("  think <anything>  - Ask the model")  
@@ -400,7 +425,13 @@ class YeshuaAgent:
                     else: self.fix_file(arg)  
                 elif cmd == "autofix":  
                     if not arg: print("Usage: autofix <path>")  
-                    else: self.autofix(arg)  
+                    else:  
+                        n = self.autofix(arg)  
+                        if n > 0: print(f"Applied {n} fix(es) to {arg}")  
+                        else: print(f"No auto-fixable issues in {arg}")  
+                elif cmd == "batch-fix":  
+                    n = int(arg) if arg else 50  
+                    self.batch_fix(n)  
                 elif cmd == "read":  
                     c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
                 elif cmd == "write":  
