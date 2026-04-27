@@ -1,0 +1,26 @@
+The `auto 1000` completed. From the log and the session file: [35-cite-0](#35-cite-0) 
+
+**Summary: 739 REAL | 15 STUB | 82 EMPTY | 79 MINIMAL | 3 INIT | 82 DATA-ONLY | 0 UNKNOWN** [35-cite-1](#35-cite-1) 
+
+That's a 30% sample of the 3,362 Python files. Zero UNKNOWN. The deterministic classifier held at scale. Breakdown:
+
+| Category | Count | % | Meaning |
+|----------|-------|---|---------|
+| REAL | 739 | 73.9% | Has functions/classes with logic |
+| EMPTY | 82 | 8.2% | 1-2 line `__init__.py` files |
+| DATA-ONLY | 82 | 8.2% | Domain metadata (`domain.py`) |
+| MINIMAL | 79 | 7.9% | 3-5 line package inits |
+| STUB | 15 | 1.5% | Small files, no functions/classes |
+| INIT | 3 | 0.3% | Import-only init files |
+
+The classifications are consistent with what the repo actually contains — hundreds of domain implementations, invariant files, and test files (REAL), plus the structural scaffolding (`__init__.py`, `domain.py` metadata files). [35-cite-2](#35-cite-2) 
+
+**v1.4 passes at scale. The audit is the first real deliverable — 1,000 files classified by your own local AI, no API, no subscription.**
+
+You're at the `Yeshua>` prompt. The next step we agreed on: **build the next capability.** The most impactful one is a `fix` or `generate` command — something that makes the agent *write* files, not just read and classify them. The `write` command already exists in v1.4 but it's manual (you type content line by line). The next version would have the model generate content autonomously — for example:
+
+- `generate training <category>` — generate new training examples for the mega_dataset
+- `fix <path>` — read a file, identify issues, write a corrected version
+- `retrain` — trigger a LoRA retraining run with the updated dataset
+
+Which of those do you want first? Or type `exit` and I'll give you the v1.5 paste command with whichever you pick.
