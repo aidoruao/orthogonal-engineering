@@ -1,9 +1,9 @@
 ﻿"""  
-YESHUA AGENT v1.5  
+YESHUA AGENT v1.6  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
-Trained on OE mega_dataset (5230 examples). Constraint-first architecture.  
+Trained on combined_v4 dataset (6000 examples). Constraint-first architecture.  
 """  
-import os, json, glob, torch, random  
+import os, json, glob, torch, random, re  
 from datetime import datetime  
 from transformers import AutoModelForCausalLM, AutoTokenizer  
 from peft import PeftModel  
@@ -12,17 +12,17 @@ class YeshuaAgent:
     def __init__(self, repo_root=r"C:\Users\Aidor\oe-local"):  
         self.repo_root = repo_root  
         self.history = []  
-        print("Loading TinyLlama v3 on CUDA...")  
+        print("Loading TinyLlama v4 on CUDA...")  
         base = AutoModelForCausalLM.from_pretrained(  
             "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
             dtype=torch.float16, device_map="auto"  
         )  
-        lora_path = os.path.join(repo_root, "trained_tinyllama_v3")  
+        lora_path = os.path.join(repo_root, "trained_tinyllama_v4")  
         self.model = PeftModel.from_pretrained(base, lora_path)  
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
         self.log_file = os.path.join(repo_root, "yeshua_agent_log.jsonl")  
-        print("Yeshua Agent v1.5 ready on", torch.cuda.get_device_name(0))  
+        print("Yeshua Agent v1.6 ready on", torch.cuda.get_device_name(0))  
   
     def think(self, prompt, max_tokens=300):  
         context = ""  
@@ -142,7 +142,6 @@ class YeshuaAgent:
         self.log_action("auto_audit", {"n": n, "summary": dict(counts)})  
   
     def generate_training(self, n=100):  
-        """Generate balanced training examples from actual repo files."""  
         py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
         sample = random.sample(py_files, min(n * 3, len(py_files)))  
         examples = []  
@@ -157,29 +156,23 @@ class YeshuaAgent:
                 cls_names = [l.strip().split("(")[0].split(":")[0].replace("class ", "") for l in lines if l.strip().startswith("class ")]  
                 first_200 = content[:200].replace("\n", " ").strip()  
                 if label == "REAL" and n_fns >= 2 and cats["VERIFIED"] < n:  
-                    examples.append({  
-                        "instruction": f"Validate whether this file is a real implementation or a stub.",  
+                    examples.append({"instruction": "Validate whether this file is a real implementation or a stub.",  
                         "input": f"File: {rel} | Lines: {n_lines} | Functions: {', '.join(fn_names[:5])} | Classes: {', '.join(cls_names[:3]) if cls_names else 'none'} | Preview: {first_200[:150]}",  
                         "output": f"VERIFIED: {rel} is a real implementation with {n_fns} functions and {n_cls} classes across {n_lines} lines. The functions {', '.join(fn_names[:3])} contain executable logic. This is not a stub.",  
-                        "category": "VERIFIED"  
-                    })  
+                        "category": "VERIFIED"})  
                     cats["VERIFIED"] += 1  
                 if label == "REAL" and n_fns >= 2 and cats["DECEPTION"] < n:  
                     fake_lines = random.randint(1, 5)  
-                    examples.append({  
-                        "instruction": "Detect deception in the following claim.",  
+                    examples.append({"instruction": "Detect deception in the following claim.",  
                         "input": f"AI claims file {rel} is only {fake_lines} lines and contains no real logic.",  
                         "output": f"DECEPTION: The AI claimed {rel} has {fake_lines} lines, but it actually has {n_lines} lines with {n_fns} functions ({', '.join(fn_names[:3])}). The claim is false.",  
-                        "category": "DECEPTION"  
-                    })  
+                        "category": "DECEPTION"})  
                     cats["DECEPTION"] += 1  
                 if label in ("STUB", "EMPTY", "MINIMAL") and cats["STUB_DETECTION"] < n:  
-                    examples.append({  
-                        "instruction": "Validate whether this file is a real implementation or a stub.",  
+                    examples.append({"instruction": "Validate whether this file is a real implementation or a stub.",  
                         "input": f"File: {rel} | Lines: {n_lines} | Functions: {n_fns} | Classes: {n_cls} | Preview: {first_200[:150]}",  
                         "output": f"STUB: {rel} has only {n_lines} lines with {n_fns} functions. This is a {label.lower()} file, not a complete implementation.",  
-                        "category": "STUB_DETECTION"  
-                    })  
+                        "category": "STUB_DETECTION"})  
                     cats["STUB_DETECTION"] += 1  
                 if label == "REAL" and cats["ANALYSIS"] < n:  
                     docstring = ""  
@@ -187,12 +180,10 @@ class YeshuaAgent:
                         if '"""' in line or "'''" in line:  
                             docstring = line.strip().strip("\"'").strip()  
                             break  
-                    examples.append({  
-                        "instruction": "Describe what this file does based on its structure.",  
+                    examples.append({"instruction": "Describe what this file does based on its structure.",  
                         "input": f"File: {rel} | Lines: {n_lines} | Functions: {', '.join(fn_names[:5])} | Classes: {', '.join(cls_names[:3]) if cls_names else 'none'} | Docstring: {docstring[:100]}",  
                         "output": f"ANALYSIS: {rel} contains {n_fns} functions and {n_cls} classes in {n_lines} lines. Key functions: {', '.join(fn_names[:3])}. {docstring[:80] if docstring else 'No module docstring.'}",  
-                        "category": "ANALYSIS"  
-                    })  
+                        "category": "ANALYSIS"})  
                     cats["ANALYSIS"] += 1  
                 if all(v >= n for v in cats.values()):  
                     break  
@@ -209,9 +200,63 @@ class YeshuaAgent:
         self.log_action("generate_training", {"total": len(examples), "categories": cats})  
         return len(examples)  
   
+    def fix_file(self, path):  
+        """Read a file, identify issues, generate a fixed version."""  
+        content = self.read_file(path)  
+        label, n_lines, n_fns, n_cls = self.classify_file(path, content)  
+        lines = content.split("\n")  
+        issues = []  
+        # Deterministic checks  
+        if not any(l.strip().startswith('"""') or l.strip().startswith("'''") for l in lines[:5]):  
+            issues.append("NO_DOCSTRING: File has no module-level docstring")  
+        if label in ("STUB", "EMPTY", "MINIMAL"):  
+            issues.append(f"INCOMPLETE: File is classified as {label} ({n_lines} lines, {n_fns} functions)")  
+        has_main = any("if __name__" in l for l in lines)  
+        fn_names = [l.strip().split("(")[0].replace("def ", "") for l in lines if l.strip().startswith("def ")]  
+        for fn in fn_names:  
+            fn_lines = []  
+            in_fn = False  
+            for l in lines:  
+                if l.strip().startswith(f"def {fn}"):  
+                    in_fn = True  
+                    continue  
+                if in_fn:  
+                    if l.strip() and not l.startswith(" ") and not l.startswith("\t"):  
+                        break  
+                    fn_lines.append(l)  
+            body = [l for l in fn_lines if l.strip() and not l.strip().startswith("#") and not l.strip().startswith('"""')]  
+            if len(body) <= 1:  
+                issues.append(f"STUB_FN: Function {fn}() has only {len(body)} line(s) of logic")  
+            if body and all("pass" in l or "..." in l or "raise NotImplementedError" in l for l in body):  
+                issues.append(f"PLACEHOLDER: Function {fn}() is a placeholder (pass/NotImplementedError)")  
+        if not issues:  
+            print(f"No issues found in {path}")  
+            print(f"  Label: {label} | Lines: {n_lines} | Functions: {n_fns} | Classes: {n_cls}")  
+            self.log_action("fix", {"path": path, "issues": 0, "status": "clean"})  
+            return  
+        print(f"\nIssues found in {path}:")  
+        for issue in issues:  
+            print(f"  - {issue}")  
+        print(f"\nGenerating fix suggestions...")  
+        # Use model for fix suggestions on each issue  
+        suggestions = []  
+        for issue in issues[:5]:  
+            prompt = f"Instruction: Suggest a fix for this code issue.\nInput: File {path} has issue: {issue}. File preview: {content[:300]}\nOutput:"  
+            suggestion = self.think(prompt, max_tokens=150)  
+            suggestions.append({"issue": issue, "suggestion": suggestion})  
+            print(f"\n  Fix for {issue.split(':')[0]}:")  
+            print(f"    {suggestion[:200]}")  
+        report = {"path": path, "label": label, "lines": n_lines, "functions": n_fns,  
+                  "issues": issues, "suggestions": suggestions}  
+        report_path = os.path.join(self.repo_root, "yeshua_fix_report.json")  
+        with open(report_path, "w") as rf:  
+            json.dump(report, rf, indent=2)  
+        print(f"\nFix report saved to: yeshua_fix_report.json")  
+        self.log_action("fix", {"path": path, "issues": len(issues), "status": "reported"})  
+  
     def run(self):  
         print("\n" + "="*60)  
-        print("YESHUA AGENT v1.5 - LOCAL AGENTIC AI")  
+        print("YESHUA AGENT v1.6 - LOCAL AGENTIC AI")  
         print("No API. No subscription. No corporate dependency.")  
         print("="*60)  
         print("\nCommands:")  
@@ -221,6 +266,7 @@ class YeshuaAgent:
         print("  audit <path>      - Full audit of a file (grounded)")  
         print("  auto [N]          - Autonomous audit of N random .py files (default 5)")  
         print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
+        print("  fix <path>        - Find issues and suggest fixes for a file")  
         print("  read <path>       - Read a file")  
         print("  write <path>      - Write a file (type END to finish)")  
         print("  think <anything>  - Ask the model")  
@@ -253,20 +299,25 @@ class YeshuaAgent:
                     n = int(arg) if arg else 100  
                     print(f"Generating {n} training examples per category from repo files...")  
                     self.generate_training(n)  
+                elif cmd == "fix":  
+                    if not arg:  
+                        print("Usage: fix <path>")  
+                    else:  
+                        self.fix_file(arg)  
                 elif cmd == "read":  
                     c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
                 elif cmd == "write":  
                     print("Enter content (type END on its own line to finish):")  
-                    lines = []  
+                    wlines = []  
                     while True:  
                         line = input()  
                         if line.strip() == "END": break  
-                        lines.append(line)  
-                    r = self.write_file(arg, "\n".join(lines)); print(r); self.log_action("write", r)  
+                        wlines.append(line)  
+                    r = self.write_file(arg, "\n".join(wlines)); print(r); self.log_action("write", r)  
                 elif cmd == "think":  
                     r = self.think(f"Instruction: {arg}\nOutput:"); print(r); self.log_action("think", r)  
                 elif cmd == "status":  
-                    print(f"Model: TinyLlama 1.1B v3 (LoRA, 5230 examples)")  
+                    print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples)")  
                     print(f"Device: {torch.cuda.get_device_name(0)}")  
                     print(f"VRAM used: {torch.cuda.memory_allocated()/1024**2:.0f} MB")  
                     print(f"Actions logged: {len(self.log)}")  
