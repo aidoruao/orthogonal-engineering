@@ -1,0 +1,458 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Aidor> python --version
+Python 3.9.13
+PS C:\Users\Aidor> pip --version
+pip 26.0.1 from C:\Users\Aidor\AppData\Roaming\Python\Python39\site-packages\pip (python 3.9)
+PS C:\Users\Aidor> python -m venv C:\Users\Aidor\oe-train
+PS C:\Users\Aidor> C:\Users\Aidor\oe-train\Scripts\Activate.ps1
+(oe-train) PS C:\Users\Aidor> pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+Looking in indexes: https://download.pytorch.org/whl/cu121
+Collecting torch
+  Downloading https://download-r2.pytorch.org/whl/cu121/torch-2.5.1%2Bcu121-cp39-cp39-win_amd64.whl (2449.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.4/2.4 GB 452.8 kB/s eta 0:00:00
+Collecting torchvision
+  Downloading https://download-r2.pytorch.org/whl/cu121/torchvision-0.20.1%2Bcu121-cp39-cp39-win_amd64.whl (6.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.1/6.1 MB 25.9 MB/s eta 0:00:00
+Collecting torchaudio
+  Downloading https://download-r2.pytorch.org/whl/cu121/torchaudio-2.5.1%2Bcu121-cp39-cp39-win_amd64.whl (4.1 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 4.1/4.1 MB 33.0 MB/s eta 0:00:00
+Collecting sympy==1.13.1
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None,status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))': /packages/b2/fe/81695a1aa331a842b582453b605175f419fe8540355886031328089d840a/sympy-1.13.1-py3-none-any.whl
+  Downloading sympy-1.13.1-py3-none-any.whl (6.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.2/6.2 MB 3.2 MB/s eta 0:00:00
+Collecting filelock
+  Using cached filelock-3.19.1-py3-none-any.whl (15 kB)
+Collecting networkx
+  Using cached networkx-3.2.1-py3-none-any.whl (1.6 MB)
+Collecting typing-extensions>=4.8.0
+  Downloading https://download.pytorch.org/whl/typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.6/44.6 KB ? eta 0:00:00
+Collecting fsspec
+  Using cached fsspec-2025.10.0-py3-none-any.whl (200 kB)
+Collecting jinja2
+  Downloading https://download.pytorch.org/whl/jinja2-3.1.6-py3-none-any.whl (134 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 KB 7.8 MB/s eta 0:00:00
+Collecting mpmath<1.4,>=1.1.0
+  Using cached mpmath-1.3.0-py3-none-any.whl (536 kB)
+Collecting pillow!=8.3.*,>=5.3.0
+  Using cached pillow-11.3.0-cp39-cp39-win_amd64.whl (7.0 MB)
+Collecting numpy
+  Using cached numpy-2.0.2-cp39-cp39-win_amd64.whl (15.9 MB)
+Collecting MarkupSafe>=2.0
+  Downloading https://download.pytorch.org/whl/MarkupSafe-3.0.2-cp39-cp39-win_amd64.whl (15 kB)
+Installing collected packages: mpmath, typing-extensions, sympy, pillow, numpy, networkx, MarkupSafe, fsspec, filelock, jinja2, torch, torchvision, torchaudio
+Successfully installed MarkupSafe-3.0.2 filelock-3.19.1 fsspec-2025.10.0 jinja2-3.1.6 mpmath-1.3.0 networkx-3.2.1 numpy-2.0.2 pillow-11.3.0 sympy-1.13.1 torch-2.5.1+cu121 torchaudio-2.5.1+cu121 torchvision-0.20.1+cu121 typing-extensions-4.15.0
+(oe-train) PS C:\Users\Aidor> python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('GPU name:', torch.cuda.get_device_name(0)) if torch.cuda.is_available() else print('NO GPU FOUND')"
+CUDA available: True
+GPU name: NVIDIA GeForce RTX 4050 Laptop GPU
+(oe-train) PS C:\Users\Aidor> pip install transformers peft datasets accelerate safetensors
+WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+WARNING: Retrying (Retry(total=0, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed bythe remote host', None, 10054, None))': /simple/transformers/
+Collecting transformers
+  Using cached transformers-4.57.6-py3-none-any.whl (12.0 MB)
+Collecting peft
+  Using cached peft-0.17.1-py3-none-any.whl (504 kB)
+Collecting datasets
+  WARNING: Retrying (Retry(total=4, connect=None, read=None, redirect=None,status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))': /packages/fc/d5/0d563ea3c205eee226dc8053cf7682a8ac588db8acecd0eda2b587987a0b/datasets-4.5.0-py3-none-any.whl
+  WARNING: Retrying (Retry(total=3, connect=None, read=None, redirect=None,status=None)) after connection broken by 'ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))': /packages/fc/d5/0d563ea3c205eee226dc8053cf7682a8ac588db8acecd0eda2b587987a0b/datasets-4.5.0-py3-none-any.whl
+  Downloading datasets-4.5.0-py3-none-any.whl (515 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 515.2/515.2 KB 2.0 MB/s eta 0:00:00
+Collecting accelerate
+  Downloading accelerate-1.10.1-py3-none-any.whl (374 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 374.9/374.9 KB 2.3 MB/s eta 0:00:00
+Collecting safetensors
+  Using cached safetensors-0.7.0-cp38-abi3-win_amd64.whl (341 kB)
+Requirement already satisfied: numpy>=1.17 in c:\users\aidor\oe-train\lib\site-packages (from transformers) (2.0.2)
+Requirement already satisfied: filelock in c:\users\aidor\oe-train\lib\site-packages (from transformers) (3.19.1)
+Collecting regex!=2019.12.17
+  Using cached regex-2026.1.15-cp39-cp39-win_amd64.whl (277 kB)
+Collecting packaging>=20.0
+  Downloading packaging-26.2-py3-none-any.whl (100 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100.2/100.2 KB 2.9 MB/s eta 0:00:00
+Collecting huggingface-hub<1.0,>=0.34.0
+  Downloading huggingface_hub-0.36.2-py3-none-any.whl (566 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 KB 2.5 MB/s eta 0:00:00
+Collecting pyyaml>=5.1
+  Using cached pyyaml-6.0.3-cp39-cp39-win_amd64.whl (158 kB)
+Collecting tqdm>=4.27
+  Downloading tqdm-4.67.3-py3-none-any.whl (78 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.4/78.4 KB 4.3 MB/s eta 0:00:00
+Collecting requests
+  Using cached requests-2.32.5-py3-none-any.whl (64 kB)
+Collecting tokenizers<=0.23.0,>=0.22.0
+  Using cached tokenizers-0.22.2-cp39-abi3-win_amd64.whl (2.7 MB)
+Requirement already satisfied: torch>=1.13.0 in c:\users\aidor\oe-train\lib\site-packages (from peft) (2.5.1+cu121)
+Collecting psutil
+  Using cached psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Collecting pyarrow>=21.0.0
+  Downloading pyarrow-21.0.0-cp39-cp39-win_amd64.whl (26.2 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 26.2/26.2 MB 7.2 MB/s eta 0:00:00
+Collecting xxhash
+  Downloading xxhash-3.7.0-cp39-cp39-win_amd64.whl (31 kB)
+Requirement already satisfied: fsspec[http]<=2025.10.0,>=2023.1.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2025.10.0)
+Collecting dill<0.4.1,>=0.3.0
+  Downloading dill-0.4.0-py3-none-any.whl (119 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 119.7/119.7 KB 6.8 MB/s eta 0:00:00
+Collecting multiprocess<0.70.19
+  Downloading multiprocess-0.70.18-py39-none-any.whl (133 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 133.5/133.5 KB 7.7 MB/s eta 0:00:00
+Collecting httpx<1.0.0
+  Downloading httpx-0.28.1-py3-none-any.whl (73 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.5/73.5 KB 4.2 MB/s eta 0:00:00
+Collecting pandas
+  Using cached pandas-2.3.3-cp39-cp39-win_amd64.whl (11.4 MB)
+Collecting aiohttp!=4.0.0a0,!=4.0.0a1
+  Downloading aiohttp-3.13.5-cp39-cp39-win_amd64.whl (463 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 463.1/463.1 KB 7.2 MB/s eta 0:00:00
+Collecting certifi
+  Downloading certifi-2026.4.22-py3-none-any.whl (135 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 135.7/135.7 KB 7.8 MB/s eta 0:00:00
+Collecting idna
+  Downloading idna-3.13-py3-none-any.whl (68 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 68.6/68.6 KB ? eta 0:00:00
+Collecting anyio
+  Using cached anyio-4.12.1-py3-none-any.whl (113 kB)
+Collecting httpcore==1.*
+  Downloading httpcore-1.0.9-py3-none-any.whl (78 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 78.8/78.8 KB ? eta 0:00:00
+Collecting h11>=0.16
+  Using cached h11-0.16.0-py3-none-any.whl (37 kB)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in c:\users\aidor\oe-train\lib\site-packages (from huggingface-hub<1.0,>=0.34.0->transformers) (4.15.0)
+Collecting urllib3<3,>=1.21.1
+  Using cached urllib3-2.6.3-py3-none-any.whl (131 kB)
+Collecting charset_normalizer<4,>=2
+  Downloading charset_normalizer-3.4.7-cp39-cp39-win_amd64.whl (154 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 154.7/154.7 KB ? eta 0:00:00
+Requirement already satisfied: jinja2 in c:\users\aidor\oe-train\lib\site-packages (from torch>=1.13.0->peft) (3.1.6)
+Requirement already satisfied: networkx in c:\users\aidor\oe-train\lib\site-packages (from torch>=1.13.0->peft) (3.2.1)
+Requirement already satisfied: sympy==1.13.1 in c:\users\aidor\oe-train\lib\site-packages (from torch>=1.13.0->peft) (1.13.1)
+Requirement already satisfied: mpmath<1.4,>=1.1.0 in c:\users\aidor\oe-train\lib\site-packages (from sympy==1.13.1->torch>=1.13.0->peft) (1.3.0)
+Collecting colorama
+  Using cached colorama-0.4.6-py2.py3-none-any.whl (25 kB)
+Collecting python-dateutil>=2.8.2
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Collecting pytz>=2020.1
+  Downloading pytz-2026.1.post1-py2.py3-none-any.whl (510 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 510.5/510.5 KB 10.6 MB/s eta 0:00:00
+Collecting tzdata>=2022.7
+  Downloading tzdata-2026.2-py2.py3-none-any.whl (349 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 349.3/349.3 KB 7.4 MB/s eta 0:00:00
+Collecting aiosignal>=1.4.0
+  Using cached aiosignal-1.4.0-py3-none-any.whl (7.5 kB)
+Collecting async-timeout<6.0,>=4.0
+  Using cached async_timeout-5.0.1-py3-none-any.whl (6.2 kB)
+Collecting multidict<7.0,>=4.5
+  Using cached multidict-6.7.1-cp39-cp39-win_amd64.whl (46 kB)
+Collecting propcache>=0.2.0
+  Using cached propcache-0.4.1-cp39-cp39-win_amd64.whl (41 kB)
+Collecting attrs>=17.3.0
+  Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.5/67.5 KB ? eta 0:00:00
+Collecting aiohappyeyeballs>=2.5.0
+  Using cached aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)
+Collecting frozenlist>=1.1.1
+  Using cached frozenlist-1.8.0-cp39-cp39-win_amd64.whl (44 kB)
+Collecting yarl<2.0,>=1.17.0
+  Using cached yarl-1.22.0-cp39-cp39-win_amd64.whl (87 kB)
+Collecting six>=1.5
+  Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Collecting exceptiongroup>=1.0.2
+  Using cached exceptiongroup-1.3.1-py3-none-any.whl (16 kB)
+Requirement already satisfied: MarkupSafe>=2.0 in c:\users\aidor\oe-train\lib\site-packages (from jinja2->torch>=1.13.0->peft) (3.0.2)
+Installing collected packages: pytz, xxhash, urllib3, tzdata, six, safetensors, regex, pyyaml, pyarrow, psutil, propcache, packaging, multidict, idna, h11, frozenlist, exceptiongroup, dill, colorama, charset_normalizer, certifi, attrs, async-timeout, aiohappyeyeballs, yarl, tqdm, requests, python-dateutil, multiprocess, httpcore, anyio, aiosignal, pandas, huggingface-hub, httpx, aiohttp, tokenizers, accelerate, transformers, datasets, peft
+Successfully installed accelerate-1.10.1 aiohappyeyeballs-2.6.1 aiohttp-3.13.5 aiosignal-1.4.0 anyio-4.12.1 async-timeout-5.0.1 attrs-26.1.0 certifi-2026.4.22 charset_normalizer-3.4.7 colorama-0.4.6 datasets-4.5.0 dill-0.4.0 exceptiongroup-1.3.1 frozenlist-1.8.0 h11-0.16.0 httpcore-1.0.9 httpx-0.28.1 huggingface-hub-0.36.2 idna-3.13 multidict-6.7.1 multiprocess-0.70.18 packaging-26.2 pandas-2.3.3 peft-0.17.1 propcache-0.4.1 psutil-7.2.2 pyarrow-21.0.0python-dateutil-2.9.0.post0 pytz-2026.1.post1 pyyaml-6.0.3 regex-2026.1.15 requests-2.32.5 safetensors-0.7.0 six-1.17.0 tokenizers-0.22.2 tqdm-4.67.3 transformers-4.57.6 tzdata-2026.2 urllib3-2.6.3 xxhash-3.7.0 yarl-1.22.0
+(oe-train) PS C:\Users\Aidor> cd C:\Users\Aidor
+(oe-train) PS C:\Users\Aidor> git clone https://github.com/aidoruao/orthogonal-engineering.git oe-local
+Cloning into 'oe-local'...
+remote: Enumerating objects: 24675, done.
+remote: Counting objects: 100% (1990/1990), done.
+remote: Compressing objects: 100% (469/469), done.
+remote: Total 24675 (delta 1737), reused 1524 (delta 1521), pack-reused 22685 (from 2)
+Receiving objects: 100% (24675/24675), 84.96 MiB | 24.70 MiB/s, done.
+Resolving deltas: 100% (11890/11890), done.
+Updating files: 100% (8998/8998), done.
+(oe-train) PS C:\Users\Aidor> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2 --samples 40
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T19:56:58.667569
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Bounds: 40 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 300 examples [00:00, 44056.27 examples/s]
+  Limited to 40 samples (governance bound)
+  Loaded 40 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|████████████████████████| 40/40 [00:00<00:00, 1302.32 examples/s]
+✅ Training data prepared: 40 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:606: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 1 epoch(s) with 40 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                               | 0/20 [00:00<?, ?it/s]`use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`...
+C:\Users\Aidor\oe-train\lib\site-packages\torch\utils\checkpoint.py:87: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
+  warnings.warn(
+`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+❌ Training execution failed: element 0 of tensors does not require grad and does not have a grad_fn
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 636, in run_training
+    train_result = trainer.train()
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 2325, in train
+    return inner_training_loop(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\accelerate\accelerator.py", line 2730, in backward
+    self.scaler.scale(loss).backward(**kwargs)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\autograd\__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\autograd\graph.py",line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+RuntimeError: element 0 of tensors does not require grad and does not have a grad_fn
+  0%|                                               | 0/20 [00:00<?, ?it/s]
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Training successful: ❌
+Governance compliant: ❌
+Training time: 0.1 minutes
+Final loss: 0.0000
+Model size: 0.00 GB
+Christ score: 0.000 (minimum: 0.7)
+
+Violations (2):
+  - 4-bit quantization failed: bitsandbytes
+  - Training execution failed: element 0 of tensors does not require grad and does not have a grad_fn
+
+Timestamp: 2026-04-26T19:57:03.354371
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Training process failed
+   - Governance violations detected
+   - Christ score 0.000 < 0.7 minimum
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python final_training.py --model distilgpt2 --dataset ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl --output ..\trained_distilgpt2 --samples 40
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-26T20:05:29.176041
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Bounds: 40 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: GPT2TokenizerFast
+
+[PHASE 4] Loading dataset...
+  Limited to 40 samples (governance bound)
+  Loaded 40 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading distilgpt2 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading distilgpt2 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['c_attn', 'c_proj', 'c_fc']
+C:\Users\Aidor\oe-train\lib\site-packages\peft\tuners\lora\layer.py:2174: UserWarning: fan_in_fan_out is set to False but the target module is `Conv1D`. Setting fan_in_fan_out to True.
+  warnings.warn(
+  Trainable parameters: 589,824
+  Total parameters: 82,502,400
+  Trainable %: 0.71%
+  GPU memory allocated: 0.16 GB
+  GPU memory reserved: 0.38 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+✅ Training data prepared: 40 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 1 epoch(s) with 40 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 50256}.
+  0%|                                               | 0/20 [00:00<?, ?it/s]`loss_type=None` was set in the config but it is unrecognized. Using the default loss: `ForCausalLMLoss`.
+{'loss': 9.0108, 'grad_norm': 1.7741349935531616, 'learning_rate': 8e-05, 'epoch': 0.25}
+{'loss': 8.6686, 'grad_norm': 2.8049206733703613, 'learning_rate': 0.00018,'epoch': 0.5}
+{'loss': 7.5211, 'grad_norm': 5.179356575012207, 'learning_rate': 0.00012, 'epoch': 0.75}
+{'loss': 6.6787, 'grad_norm': 6.8472466468811035, 'learning_rate': 2e-05, 'epoch': 1.0}
+{'train_runtime': 1.5396, 'train_samples_per_second': 25.98, 'train_steps_per_second': 12.99, 'train_loss': 7.969789505004883, 'epoch': 1.0}
+100%|██████████████████████████████████████| 20/20 [00:01<00:00, 12.99it/s]
+✅ Training completed successfully
+  Final loss: 7.9698
+
+[SAVING] Saving model to ..\trained_distilgpt2...
+✅ Model saved
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: distilgpt2
+Dataset: ..\src\hardware\photonic\lora\photonic_lora_dataset.jsonl
+Output: ..\trained_distilgpt2
+Training successful: ✅
+Governance compliant: ❌
+Training time: 0.1 minutes
+Final loss: 7.9698
+Model size: 0.15 GB
+Christ score: 0.741 (minimum: 0.7)
+
+Violations (1):
+  - 4-bit quantization failed: bitsandbytes
+
+Timestamp: 2026-04-26T20:05:32.542803
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Governance violations detected
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> cd C:\Users\Aidor\oe-local\minimal_ai_ide
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2')
+>> inp = tok('What is orthogonal engineering?', return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=50)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+What is orthogonal engineering?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide> python -c "
+>> from transformers import AutoModelForCausalLM, AutoTokenizer
+>> from peft import PeftModel
+>> base = AutoModelForCausalLM.from_pretrained('distilgpt2')
+>> model = PeftModel.from_pretrained(base, '../trained_distilgpt2')
+>> tok = AutoTokenizer.from_pretrained('../trained_distilgpt2')
+>> prompt = 'Instruction: Given the photonic invariant check_do178c_photonic_determinism, provide a compliant implementation.\nInput: is_deterministic is False.\nOutput:'
+>> inp = tok(prompt, return_tensors='pt')
+>> out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7)
+>> print(tok.decode(out[0], skip_special_tokens=True))
+>> "
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 679f4cbb-4c78-48c1-9c55-d6882a54d176)')' thrown while requesting HEAD https://huggingface.co/distilgpt2/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+Instruction: Given the photonic invariant check_do178c_photonic_determinism, provide a compliant implementation.
+Input: is_deterministic is False.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+Output: is_deterministic is True.
+(oe-train) PS C:\Users\Aidor\oe-local\minimal_ai_ide>
