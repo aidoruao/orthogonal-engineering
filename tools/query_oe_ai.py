@@ -1,74 +1,31 @@
-"""tools/query_oe_ai.py -- Kimi CLI <-> local OE AI interface.
-
-Part 5C of Forensic Offensive Campaign.
-
-Queries the locally-trained OE LoRA model for domain-specific answers.
-"""
-
-from __future__ import annotations
-
-import json
-import sys
-from fractions import Fraction
-from pathlib import Path
-from typing import Tuple
-
-REPO_ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(REPO_ROOT))
-
-from axioms.logic import ProofObject
-
-LORA_OUTPUT_DIR = REPO_ROOT / "lora_output"
-
-
-def query_oe_ai(question: str) -> Tuple[bool, ProofObject]:
-    """Query the local OE AI with a domain question.
-
-    Standard: LORA-QUERY-001 local inference.
-    Falsifies if: manifest exists but query cannot be answered.
-    falsifies_if: manifest exists but query cannot be answered.
-    """
-    manifest_path = LORA_OUTPUT_DIR / "manifest.json"
-    if not manifest_path.exists():
-        return False, ProofObject(
-            rule="oe_ai_query",
-            premises=[f"question={question}"],
-            conclusion="FAIL: LoRA model not trained yet -- manifest.json missing",
-        )
-
-    try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
-        return False, ProofObject(
-            rule="oe_ai_query",
-            premises=[f"question={question}"],
-            conclusion=f"FAIL: Could not read manifest: {exc}",
-        )
-
-    examples = manifest.get("examples", 0)
-    answer = f"OE AI (trained on {examples} examples): Question '{question}' acknowledged."
-
-    proof = ProofObject(
-        rule="oe_ai_query",
-        premises=[f"question={question}", f"training_examples={examples}"],
-        conclusion=answer,
-    )
-    return True, proof
-
-
-def main() -> int:
-    """CLI entry point.
-
-    falsifies_if: exit code 0 when no question is provided.
-    """
-    if len(sys.argv) < 2:
-        print("Usage: python tools/query_oe_ai.py '<question>'")
-        return 1
-    question = sys.argv[1]
-    ok, proof = query_oe_ai(question)
-    print(proof.conclusion)
-    return 0 if ok else 1
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+"""tools/query_oe_ai.py -- OE Yeshua 1B local inference."""  
+  
+import sys  
+from transformers import AutoModelForCausalLM, AutoTokenizer  
+from peft import PeftModel  
+from pathlib import Path  
+  
+REPO_ROOT = Path(__file__).resolve().parent.parent  
+MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"  
+ADAPTER_PATH = str(REPO_ROOT / "trained_tinyllama_v3")  
+  
+def query(question):  
+    base = AutoModelForCausalLM.from_pretrained(MODEL_NAME)  
+    model = PeftModel.from_pretrained(base, ADAPTER_PATH)  
+    tok = AutoTokenizer.from_pretrained(ADAPTER_PATH)  
+    prompt = f"Instruction: {question}\nInput:\nOutput:"  
+    inp = tok(prompt, return_tensors="pt")  
+    out = model.generate(**inp, max_new_tokens=100, do_sample=True, temperature=0.7, repetition_penalty=1.3)  
+    text = tok.decode(out[0], skip_special_tokens=True)  
+    # Extract just the Output: part  
+    if "Output:" in text:  
+        answer = text.split("Output:")[-1].strip()  
+    else:  
+        answer = text  
+    print(answer)  
+  
+if __name__ == "__main__":  
+    if len(sys.argv) < 2:  
+        print("Usage: python tools/query_oe_ai.py 'your question'")  
+        sys.exit(1)  
+    query(sys.argv[1])

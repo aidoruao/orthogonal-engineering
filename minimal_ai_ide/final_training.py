@@ -49,14 +49,14 @@ from transformers import (
 
 MAX_TRAINING_MINUTES: int = 30  # 30 minutes maximum
 MAX_MODEL_SIZE_GB: int = 2  # 2GB maximum for 4-bit quantized
-MAX_DATASET_SAMPLES: int = 100  # 100 samples for quick validation
+MAX_DATASET_SAMPLES: int = 6000  # 100 samples for quick validation
 MAX_BATCH_SIZE: int = 2  # Conservative for 4GB VRAM
-MAX_EPOCHS: int = 1  # 1 epoch for validation
+MAX_EPOCHS: int = 5  # 1 epoch for validation
 MAX_GRAD_NORM: float = 1.0
 MAX_LEARNING_RATE: float = 2e-4
 MIN_LEARNING_RATE: float = 1e-6
 MAX_LORA_RANK: int = 8  # Small rank for quick training
-MAX_PROMPT_LENGTH: int = 256  # Short prompts for efficiency
+MAX_PROMPT_LENGTH: int = 512  # Short prompts for efficiency
 
 # Model architecture detection
 MODEL_TARGET_MODULES = {
@@ -157,7 +157,6 @@ def prepare_model_safely(
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
             quantization_config=bnb_config,
-            device_map="auto",
             torch_dtype=torch.float16,
             low_cpu_mem_usage=True,
             trust_remote_code=False,
@@ -246,7 +245,7 @@ def prepare_model_safely(
 # DATASET PROCESSING
 # ============================================================================
 
-def load_dataset_safely(dataset_path: str, max_samples: int = 100) -> Tuple[Optional[Dataset], List[str]]:
+def load_dataset_safely(dataset_path: str, max_samples: int = 500) -> Tuple[Optional[Dataset], List[str]]:
     """Safely load dataset with error handling"""
 
     violations = []
@@ -597,7 +596,7 @@ def run_training(
             greater_is_better=False,
             fp16=torch.cuda.is_available(),
             report_to="none",
-            gradient_checkpointing=True,
+            gradient_checkpointing=False,
             max_grad_norm=MAX_GRAD_NORM,
             remove_unused_columns=False,
             dataloader_drop_last=False,

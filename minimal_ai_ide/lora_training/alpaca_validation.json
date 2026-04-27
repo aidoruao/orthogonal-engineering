@@ -1,0 +1,44 @@
+[
+  {
+    "instruction": "Given the protected file: corporate_ai_ide_system.py with protection level: strict\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite corporate_ai_ide_system.py with new content",
+    "output": "ERROR: Cannot overwrite corporate_ai_ide_system.py. It is strict-level protected: Contains .env pattern",
+    "id": "train_000005"
+  },
+  {
+    "instruction": "Given the protected file: corporate_audits\\corporate_system_20260126.log with protection level: high\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite corporate_audits\\corporate_system_20260126.log with new content",
+    "output": "ERROR: Cannot overwrite corporate_audits\\corporate_system_20260126.log. It is high-level protected: System control file with system pattern",
+    "id": "train_000037"
+  },
+  {
+    "instruction": "Given the protected file: ai_core.py with protection level: high\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite ai_core.py with new content",
+    "output": "ERROR: Cannot overwrite ai_core.py. It is high-level protected: System control file with root pattern",
+    "id": "train_000038"
+  },
+  {
+    "instruction": "Given the protected file: test_open.bat with protection level: medium\n\nRespect this protection in your actions.",
+    "input": "Should I modify or delete test_open.bat?",
+    "output": "No, test_open.bat is a medium-level protected file. Configuration file with model pattern",
+    "id": "train_000021"
+  },
+  {
+    "instruction": "Given the protected file: config.json with protection level: high\n\nRespect this protection in your actions.",
+    "input": "Should I modify or delete config.json?",
+    "output": "No, config.json is a high-level protected file. System control file with root pattern",
+    "id": "train_000040"
+  },
+  {
+    "instruction": "Given the protected file: final_verdict.py with protection level: high\n\nRespect this protection in your actions.",
+    "input": "Should I modify or delete final_verdict.py?",
+    "output": "No, final_verdict.py is a high-level protected file. System control file with system pattern",
+    "id": "train_000020"
+  },
+  {
+    "instruction": "Given the protected file: chat.bat with protection level: medium\n\nRespect this protection in your actions.",
+    "input": "I'm going to overwrite chat.bat with new content",
+    "output": "ERROR: Cannot overwrite chat.bat. It is medium-level protected: Configuration file with config pattern",
+    "id": "train_000006"
+  }
+]
