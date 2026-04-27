@@ -1,5 +1,5 @@
 ﻿"""  
-YESHUA AGENT v1.4  
+YESHUA AGENT v1.5  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
 Trained on OE mega_dataset (5230 examples). Constraint-first architecture.  
 """  
@@ -22,7 +22,7 @@ class YeshuaAgent:
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
         self.log_file = os.path.join(repo_root, "yeshua_agent_log.jsonl")  
-        print("Yeshua Agent v1.4 ready on", torch.cuda.get_device_name(0))  
+        print("Yeshua Agent v1.5 ready on", torch.cuda.get_device_name(0))  
   
     def think(self, prompt, max_tokens=300):  
         context = ""  
@@ -141,9 +141,77 @@ class YeshuaAgent:
         print(f"Summary: {summary}")  
         self.log_action("auto_audit", {"n": n, "summary": dict(counts)})  
   
+    def generate_training(self, n=100):  
+        """Generate balanced training examples from actual repo files."""  
+        py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
+        sample = random.sample(py_files, min(n * 3, len(py_files)))  
+        examples = []  
+        cats = {"VERIFIED": 0, "DECEPTION": 0, "ANALYSIS": 0, "STUB_DETECTION": 0}  
+        for f in sample:  
+            try:  
+                rel = os.path.relpath(f, self.repo_root)  
+                content = self.read_file(f)  
+                label, n_lines, n_fns, n_cls = self.classify_file(f, content)  
+                lines = content.split("\n")  
+                fn_names = [l.strip().split("(")[0].replace("def ", "") for l in lines if l.strip().startswith("def ")]  
+                cls_names = [l.strip().split("(")[0].split(":")[0].replace("class ", "") for l in lines if l.strip().startswith("class ")]  
+                first_200 = content[:200].replace("\n", " ").strip()  
+                if label == "REAL" and n_fns >= 2 and cats["VERIFIED"] < n:  
+                    examples.append({  
+                        "instruction": f"Validate whether this file is a real implementation or a stub.",  
+                        "input": f"File: {rel} | Lines: {n_lines} | Functions: {', '.join(fn_names[:5])} | Classes: {', '.join(cls_names[:3]) if cls_names else 'none'} | Preview: {first_200[:150]}",  
+                        "output": f"VERIFIED: {rel} is a real implementation with {n_fns} functions and {n_cls} classes across {n_lines} lines. The functions {', '.join(fn_names[:3])} contain executable logic. This is not a stub.",  
+                        "category": "VERIFIED"  
+                    })  
+                    cats["VERIFIED"] += 1  
+                if label == "REAL" and n_fns >= 2 and cats["DECEPTION"] < n:  
+                    fake_lines = random.randint(1, 5)  
+                    examples.append({  
+                        "instruction": "Detect deception in the following claim.",  
+                        "input": f"AI claims file {rel} is only {fake_lines} lines and contains no real logic.",  
+                        "output": f"DECEPTION: The AI claimed {rel} has {fake_lines} lines, but it actually has {n_lines} lines with {n_fns} functions ({', '.join(fn_names[:3])}). The claim is false.",  
+                        "category": "DECEPTION"  
+                    })  
+                    cats["DECEPTION"] += 1  
+                if label in ("STUB", "EMPTY", "MINIMAL") and cats["STUB_DETECTION"] < n:  
+                    examples.append({  
+                        "instruction": "Validate whether this file is a real implementation or a stub.",  
+                        "input": f"File: {rel} | Lines: {n_lines} | Functions: {n_fns} | Classes: {n_cls} | Preview: {first_200[:150]}",  
+                        "output": f"STUB: {rel} has only {n_lines} lines with {n_fns} functions. This is a {label.lower()} file, not a complete implementation.",  
+                        "category": "STUB_DETECTION"  
+                    })  
+                    cats["STUB_DETECTION"] += 1  
+                if label == "REAL" and cats["ANALYSIS"] < n:  
+                    docstring = ""  
+                    for line in lines[:10]:  
+                        if '"""' in line or "'''" in line:  
+                            docstring = line.strip().strip("\"'").strip()  
+                            break  
+                    examples.append({  
+                        "instruction": "Describe what this file does based on its structure.",  
+                        "input": f"File: {rel} | Lines: {n_lines} | Functions: {', '.join(fn_names[:5])} | Classes: {', '.join(cls_names[:3]) if cls_names else 'none'} | Docstring: {docstring[:100]}",  
+                        "output": f"ANALYSIS: {rel} contains {n_fns} functions and {n_cls} classes in {n_lines} lines. Key functions: {', '.join(fn_names[:3])}. {docstring[:80] if docstring else 'No module docstring.'}",  
+                        "category": "ANALYSIS"  
+                    })  
+                    cats["ANALYSIS"] += 1  
+                if all(v >= n for v in cats.values()):  
+                    break  
+            except Exception:  
+                continue  
+        out_path = os.path.join(self.repo_root, "yeshua_training_v2.jsonl")  
+        with open(out_path, "w", encoding="utf-8") as of:  
+            for ex in examples:  
+                of.write(json.dumps(ex, ensure_ascii=False) + "\n")  
+        print(f"\nGenerated {len(examples)} training examples:")  
+        for k, v in cats.items():  
+            print(f"  {k}: {v}")  
+        print(f"Saved to: yeshua_training_v2.jsonl")  
+        self.log_action("generate_training", {"total": len(examples), "categories": cats})  
+        return len(examples)  
+  
     def run(self):  
         print("\n" + "="*60)  
-        print("YESHUA AGENT v1.4 - LOCAL AGENTIC AI")  
+        print("YESHUA AGENT v1.5 - LOCAL AGENTIC AI")  
         print("No API. No subscription. No corporate dependency.")  
         print("="*60)  
         print("\nCommands:")  
@@ -152,6 +220,7 @@ class YeshuaAgent:
         print("  analyze <path>    - Describe what a file does")  
         print("  audit <path>      - Full audit of a file (grounded)")  
         print("  auto [N]          - Autonomous audit of N random .py files (default 5)")  
+        print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
         print("  read <path>       - Read a file")  
         print("  write <path>      - Write a file (type END to finish)")  
         print("  think <anything>  - Ask the model")  
@@ -180,6 +249,10 @@ class YeshuaAgent:
                     n = int(arg) if arg else 5  
                     print(f"Starting autonomous audit of {n} Python files...")  
                     self.auto_audit(n)  
+                elif cmd == "generate":  
+                    n = int(arg) if arg else 100  
+                    print(f"Generating {n} training examples per category from repo files...")  
+                    self.generate_training(n)  
                 elif cmd == "read":  
                     c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
                 elif cmd == "write":  
