@@ -1,0 +1,1061 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Aidor> cd C:\Users\Aidor\oe-local
+PS C:\Users\Aidor\oe-local> C:\Users\Aidor\oe-train\Scripts\Activate.ps1
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+Yeshua Agent v1.9 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v1.9 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> @'
+>> import re
+>>
+>> path = r"C:\Users\Aidor\oe-local\yeshua_agent.py"
+>> with open(path, "r", encoding="utf-8") as f:
+>>     code = f.read()
+>>
+>> # 1. Version strings
+>> code = code.replace("YESHUA AGENT v1.9", "YESHUA AGENT v2.0")
+>> code = code.replace("Yeshua Agent v1.9", "Yeshua Agent v2.0")
+>> code = code.replace('YESHUA AGENT v1.9 - LOCAL AGENTIC AI', 'YESHUA AGENT v2.0 - LOCAL AGENTIC AI')
+>>
+>> # 2. Add local_files_only to model loading
+>> code = code.replace(
+>>     'dtype=torch.float16, device_map="auto"',
+>>     'torch_dtype=torch.float16, device_map="auto", local_files_only=True'
+>> )
+>>
+>> # 3. Add subprocess import
+>> if "import subprocess" not in code:
+>>     code = code.replace("import os, json, glob, torch, random, re, shutil",
+>>                         "import os, json, glob, torch, random, re, shutil, subprocess")
+>>
+>> # 4. Insert retrain method before batch_fix
+>> retrain_method = '''
+>>     def retrain(self):
+>>         """Combine all datasets and retrain the model."""
+>>         print("\\n[RETRAIN] Step 1: Finding all .jsonl datasets...")
+>>         jsonl_files = glob.glob(os.path.join(self.repo_root, "*.jsonl"))
+>>         jsonl_files += glob.glob(os.path.join(self.repo_root, "minimal_ai_ide", "*.jsonl"))
+>>         jsonl_files += glob.glob(os.path.join(self.repo_root, "src", "hardware", "photonic", "lora", "*.jsonl"))
+>>         jsonl_files = [f for f in jsonl_files if "log" not in os.path.basename(f).lower()]
+>>         if not jsonl_files:
+>>             print("ERROR: No .jsonl dataset files found.")
+>>             return
+>>         all_examples = []
+>>         for jf in jsonl_files:
+>>             count = 0
+>>             try:
+>>                 with open(jf, "r", encoding="utf-8", errors="replace") as f:
+>>                     for line in f:
+>>                         line = line.strip()
+>>                         if not line:
+>>                             continue
+>>                         try:
+>>                             ex = json.loads(line)
+>>                             if "instruction" in ex or "input" in ex:
+>>                                 all_examples.append(ex)
+>>                                 count += 1
+>>                         except json.JSONDecodeError:
+>>                             continue
+>>             except Exception as e:
+>>                 print(f"  SKIP {os.path.basename(jf)}: {e}")
+>>                 continue
+>>             print(f"  {os.path.basename(jf)}: {count} examples")
+>>         if not all_examples:
+>>             print("ERROR: No valid training examples found.")
+>>             return
+>>         print(f"\\nTotal: {len(all_examples)} examples")
+>>         # Determine version number
+>>         existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))
+>>         versions = []
+>>         for d in existing:
+>>             try:
+>>                 v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))
+>>                 versions.append(v)
+>>             except ValueError:
+>>                 pass
+>>         new_ver = max(versions) + 1 if versions else 5
+>>         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")
+>>         with open(combined_path, "w", encoding="utf-8") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + "\\n")
+>>         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")
+>>         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")
+>>         if not os.path.exists(train_script):
+>>             print(f"ERROR: Training script not found at {train_script}")
+>>             return
+>>         print(f"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")
+>>         print(f"Output: {output_dir}")
+>>         cmd = [
+>>             "python", train_script,
+>>             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+>>             "--dataset", combined_path,
+>>             "--output", output_dir,
+>>             "--samples", str(n_samples),
+>>             "--epochs", "3",
+>>         ]
+>>         print(f"Command: {' '.join(cmd)}")
+>>         self.log_action("retrain_start", {"version": f"v{new_ver}", "examples": len(all_examples), "samples": n_samples})
+>>         result = subprocess.run(cmd, cwd=self.repo_root)
+>>         if result.returncode == 0:
+>>             print(f"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")
+>>             print(f"To use the new model, update lora_path in __init__ to trained_tinyllama_v{new_ver}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})
+>>         else:
+>>             print(f"\\nTraining failed with return code {result.returncode}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})
+>>
+>> '''
+>>
+>> # Insert before batch_fix
+>> code = code.replace(
+>>     "    def batch_fix(self, n=50):",
+>>     retrain_method + "    def batch_fix(self, n=50):"
+>> )
+>>
+>> # 5. Add retrain to help menu (after batch-fix line)
+>> code = code.replace(
+>>     '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")',
+>>     '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")\n'
+>>     '        print("  retrain           - Combine all datasets and retrain the model")'
+>> )
+>>
+>> # 6. Add retrain command handler (after batch-fix handler)
+>> code = code.replace(
+>>     '                elif cmd == "read":',
+>>     '                elif cmd == "retrain":\n'
+>>     '                    self.retrain()\n'
+>>     '                elif cmd == "read":'
+>> )
+>>
+>> # 7. Update status to show v2.0
+>> code = code.replace(
+>>     'print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples)")',
+>>     'print(f"Model: TinyLlama 1.1B v4+ (LoRA, combined dataset)")'
+>> )
+>>
+>> with open(path, "w", encoding="utf-8") as f:
+>>     f.write(code)
+>>
+>> print("Patched yeshua_agent.py: v1.9 -> v2.0")
+>> print("Added: retrain command, local_files_only, subprocess import")
+>> '@ | Set-Content -Path "C:\Users\Aidor\oe-local\patch_v2.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python C:\Users\Aidor\oe-local\patch_v2.py
+Patched yeshua_agent.py: v1.9 -> v2.0
+Added: retrain command, local_files_only, subprocess import
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+
+[RETRAIN] Step 1: Finding all .jsonl datasets...
+  combined_v4.jsonl: 11169 examples
+  domain_dataset.jsonl: 4395 examples
+  handling_verification_pipeline.jsonl: 0 examples
+  mega_dataset.jsonl: 5230 examples
+  meta_engine_audit.jsonl: 0 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  combined_dataset.jsonl: 335 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 22638 examples
+Combined dataset saved to: combined_v5.jsonl
+
+[RETRAIN] Step 2: Training v5 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Command: python C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset C:\Users\Aidor\oe-local\combined_v5.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v5 --samples 6000 --epochs 3
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 34,in <module>
+    from datasets import Dataset, load_dataset
+ModuleNotFoundError: No module named 'datasets'
+
+Training failed with return code 1
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> pip install datasets
+Requirement already satisfied: datasets in c:\users\aidor\oe-train\lib\site-packages (4.5.0)
+Requirement already satisfied: packaging in c:\users\aidor\oe-train\lib\site-packages (from datasets) (26.2)
+Requirement already satisfied: numpy>=1.17 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.0.2)
+Requirement already satisfied: pyyaml>=5.1 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (6.0.3)
+Requirement already satisfied: dill<0.4.1,>=0.3.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.4.0)
+Requirement already satisfied: filelock in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.19.1)
+Requirement already satisfied: pandas in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.3.3)
+Requirement already satisfied: tqdm>=4.66.3 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (4.67.3)
+Requirement already satisfied: multiprocess<0.70.19 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.70.18)
+Requirement already satisfied: xxhash in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.7.0)
+Requirement already satisfied: httpx<1.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.28.1)
+Requirement already satisfied: requests>=2.32.2 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.32.5)
+Requirement already satisfied: huggingface-hub<2.0,>=0.25.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.36.2)
+Requirement already satisfied: pyarrow>=21.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (21.0.0)
+Requirement already satisfied: fsspec[http]<=2025.10.0,>=2023.1.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2025.10.0)
+Requirement already satisfied: aiohttp!=4.0.0a0,!=4.0.0a1 in c:\users\aidor\oe-train\lib\site-packages (from fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (3.13.5)
+Requirement already satisfied: anyio in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (4.12.1)
+Requirement already satisfied: certifi in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (2026.4.22)
+Requirement already satisfied: idna in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (3.13)
+Requirement already satisfied: httpcore==1.* in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (1.0.9)
+Requirement already satisfied: h11>=0.16 in c:\users\aidor\oe-train\lib\site-packages (from httpcore==1.*->httpx<1.0.0->datasets) (0.16.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in c:\users\aidor\oe-train\lib\site-packages (from huggingface-hub<2.0,>=0.25.0->datasets) (4.15.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (3.4.7)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (2.6.3)
+Requirement already satisfied: colorama in c:\users\aidor\oe-train\lib\site-packages (from tqdm>=4.66.3->datasets) (0.4.6)
+Requirement already satisfied: pytz>=2020.1 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.1.post1)
+Requirement already satisfied: tzdata>=2022.7 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.2)
+Requirement already satisfied: python-dateutil>=2.8.2 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2.9.0.post0)
+Requirement already satisfied: multidict<7.0,>=4.5 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (6.7.1)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (2.6.1)
+Requirement already satisfied: frozenlist>=1.1.1 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.8.0)
+Requirement already satisfied: propcache>=0.2.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (0.4.1)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (5.0.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.22.0)
+Requirement already satisfied: aiosignal>=1.4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (26.1.0)
+Requirement already satisfied: six>=1.5 in c:\users\aidor\oe-train\lib\site-packages (from python-dateutil>=2.8.2->pandas->datasets) (1.17.0)
+Requirement already satisfied: exceptiongroup>=1.0.2 in c:\users\aidor\oe-train\lib\site-packages (from anyio->httpx<1.0.0->datasets) (1.3.1)
+WARNING: You are using pip version 22.0.4; however, version 26.0.1 is available.
+You should consider upgrading via the 'C:\Users\Aidor\oe-train\Scripts\python.exe -m pip install --upgrade pip' command.
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+
+[RETRAIN] Step 1: Finding all .jsonl datasets...
+  combined_v4.jsonl: 11169 examples
+  combined_v5.jsonl: 22638 examples
+  domain_dataset.jsonl: 4395 examples
+  handling_verification_pipeline.jsonl: 0 examples
+  mega_dataset.jsonl: 5230 examples
+  meta_engine_audit.jsonl: 0 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  combined_dataset.jsonl: 335 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 45276 examples
+Combined dataset saved to: combined_v5.jsonl
+
+[RETRAIN] Step 2: Training v5 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Command: python C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset C:\Users\Aidor\oe-local\combined_v5.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v5 --samples 6000 --epochs 3
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 34,in <module>
+    from datasets import Dataset, load_dataset
+ModuleNotFoundError: No module named 'datasets'
+
+Training failed with return code 1
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> pip install datasets
+Requirement already satisfied: datasets in c:\users\aidor\oe-train\lib\site-packages (4.5.0)
+Requirement already satisfied: requests>=2.32.2 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.32.5)
+Requirement already satisfied: dill<0.4.1,>=0.3.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.4.0)
+Requirement already satisfied: xxhash in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.7.0)
+Requirement already satisfied: pandas in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.3.3)
+Requirement already satisfied: numpy>=1.17 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.0.2)
+Requirement already satisfied: pyyaml>=5.1 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (6.0.3)
+Requirement already satisfied: httpx<1.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.28.1)
+Requirement already satisfied: multiprocess<0.70.19 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.70.18)
+Requirement already satisfied: huggingface-hub<2.0,>=0.25.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.36.2)
+Requirement already satisfied: packaging in c:\users\aidor\oe-train\lib\site-packages (from datasets) (26.2)
+Requirement already satisfied: tqdm>=4.66.3 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (4.67.3)
+Requirement already satisfied: filelock in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.19.1)
+Requirement already satisfied: fsspec[http]<=2025.10.0,>=2023.1.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2025.10.0)
+Requirement already satisfied: pyarrow>=21.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (21.0.0)
+Requirement already satisfied: aiohttp!=4.0.0a0,!=4.0.0a1 in c:\users\aidor\oe-train\lib\site-packages (from fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (3.13.5)
+Requirement already satisfied: httpcore==1.* in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (1.0.9)
+Requirement already satisfied: anyio in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (4.12.1)
+Requirement already satisfied: certifi in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (2026.4.22)
+Requirement already satisfied: idna in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (3.13)
+Requirement already satisfied: h11>=0.16 in c:\users\aidor\oe-train\lib\site-packages (from httpcore==1.*->httpx<1.0.0->datasets) (0.16.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in c:\users\aidor\oe-train\lib\site-packages (from huggingface-hub<2.0,>=0.25.0->datasets) (4.15.0)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (2.6.3)
+Requirement already satisfied: charset_normalizer<4,>=2 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (3.4.7)
+Requirement already satisfied: colorama in c:\users\aidor\oe-train\lib\site-packages (from tqdm>=4.66.3->datasets) (0.4.6)
+Requirement already satisfied: python-dateutil>=2.8.2 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.1.post1)
+Requirement already satisfied: tzdata>=2022.7 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.2)
+Requirement already satisfied: frozenlist>=1.1.1 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.8.0)
+Requirement already satisfied: attrs>=17.3.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (26.1.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (5.0.1)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (2.6.1)
+Requirement already satisfied: multidict<7.0,>=4.5 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (6.7.1)
+Requirement already satisfied: aiosignal>=1.4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.4.0)
+Requirement already satisfied: propcache>=0.2.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.22.0)
+Requirement already satisfied: six>=1.5 in c:\users\aidor\oe-train\lib\site-packages (from python-dateutil>=2.8.2->pandas->datasets) (1.17.0)
+Requirement already satisfied: exceptiongroup>=1.0.2 in c:\users\aidor\oe-train\lib\site-packages (from anyio->httpx<1.0.0->datasets) (1.3.1)
+WARNING: You are using pip version 22.0.4; however, version 26.0.1 is available.
+You should consider upgrading via the 'C:\Users\Aidor\oe-train\Scripts\python.exe -m pip install --upgrade pip' command.
+(oe-train) PS C:\Users\Aidor\oe-local> python -c "
+>> import sys
+>> code = open('yeshua_agent.py', 'r', encoding='utf-8').read()
+>>
+>> # 1. Add sys import
+>> code = code.replace('import os, json, glob, torch, random, re, shutil', 'import os, sys, json, glob, torch, random, re, shutil')
+>>
+>> # 2. Update version strings
+>> code = code.replace('YESHUA AGENT v1.9', 'YESHUA AGENT v2.0')
+>> code = code.replace('Yeshua Agent v1.9', 'Yeshua Agent v2.0')
+>> code = code.replace('combined_v4 dataset (6000 examples)', 'combined_v5 dataset. Constraint-first architecture')
+>>
+>> # 3. Add retrain command to help text (before read line)
+>> code = code.replace(
+>>     '  read <path>       - Read a file',
+>>     '  retrain           - Combine all datasets and retrain the model\nread <path>       - Read a file'
+>> )
+>>
+>> # 4. Add retrain handler to command loop (before read handler)
+>> code = code.replace(
+>>     '''elif cmd == \"read\":''',
+>>     '''elif cmd == \"retrain\":
+>>                     self.retrain()
+>>                 elif cmd == \"read\":'''
+>> )
+>>
+>> # 5. Add retrain method (before run method)
+>> retrain_method = '''
+>>     def retrain(self):
+>>         \"\"\"Combine all .jsonl datasets and retrain the model.\"\"\"
+>>         import subprocess
+>>         print(\"[RETRAIN] Step 1: Combining datasets...\")
+>>         jsonl_files = glob.glob(os.path.join(self.repo_root, \"**\", \"*.jsonl\"), recursive=True)
+>>         all_examples = []
+>>         for jf in jsonl_files:
+>>             if os.path.basename(jf).startswith(\"combined_v\"):
+>>                 continue
+>>             if os.path.basename(jf) == \"yeshua_agent_log.jsonl\":
+>>                 continue
+>>             try:
+>>                 with open(jf, \"r\", encoding=\"utf-8\", errors=\"replace\") as f:
+>>                     exs = [json.loads(l) for l in f if l.strip()]
+>>                 print(f\"  {os.path.basename(jf)}: {len(exs)} examples\")
+>>                 all_examples.extend(exs)
+>>             except Exception as e:
+>>                 print(f\"  SKIP {os.path.basename(jf)}: {e}\")
+>>         print(f\"\\nTotal: {len(all_examples)} examples\")
+>>         existing = glob.glob(os.path.join(self.repo_root, \"combined_v*.jsonl\"))
+>>         ver_nums = []
+>>         for ef in existing:
+>>             try:
+>>                 v = int(os.path.basename(ef).replace(\"combined_v\", \"\").replace(\".jsonl\", \"\"))
+>>                 ver_nums.append(v)
+>>             except ValueError:
+>>                 pass
+>>         new_ver = max(ver_nums, default=4) + 1
+>>         combined_path = os.path.join(self.repo_root, f\"combined_v{new_ver}.jsonl\")
+>>         with open(combined_path, \"w\", encoding=\"utf-8\") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + \"\\n\")
+>>         print(f\"Combined dataset saved to: combined_v{new_ver}.jsonl\")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f\"trained_tinyllama_v{new_ver}\")
+>>         train_script = os.path.join(self.repo_root, \"minimal_ai_ide\", \"final_training.py\")
+>>         if not os.path.exists(train_script):
+>>             print(f\"ERROR: Training script not found at {train_script}\")
+>>             return
+>>         print(f\"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...\")
+>>         print(f\"Output: {output_dir}\")
+>>         cmd = [sys.executable, train_script,
+>>                \"--model\", \"TinyLlama/TinyLlama-1.1B-Chat-v1.0\",
+>>                \"--dataset\", combined_path,
+>>                \"--output\", output_dir,
+>>                \"--samples\", str(n_samples),
+>>                \"--epochs\", \"3\"]
+>>         print(f\"Command: {' '.join(cmd)}\")
+>>         self.log_action(\"retrain_start\", {\"version\": f\"v{new_ver}\", \"examples\": len(all_examples), \"samples\": n_samples})
+>>         result = subprocess.run(cmd)
+>>         if result.returncode == 0:
+>>             print(f\"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}\")
+>>             print(f\"Restart the agent to use v{new_ver}.\")
+>>             self.log_action(\"retrain_done\", {\"version\": f\"v{new_ver}\", \"status\": \"success\"})
+>>         else:
+>>             print(f\"\\nTraining failed with return code {result.returncode}\")
+>>             self.log_action(\"retrain_done\", {\"version\": f\"v{new_ver}\", \"status\": \"failed\", \"returncode\": result.returncode})
+>>
+>> '''
+>>
+>> code = code.replace('    def run(self):', retrain_method + '    def run(self):')
+>>
+>> with open('yeshua_agent.py', 'w', encoding='utf-8') as f:
+>>     f.write(code)
+>> print('Patched to v2.0 with retrain command')
+>> print(f'Python executable: {sys.executable}')
+>> "
+At line:76 char:37
++         print(f\"Command: {' '.join(cmd)}\")
++                                     ~
+Missing ')' in method call.
+At line:76 char:37
++         print(f\"Command: {' '.join(cmd)}\")
++                                     ~~~
+Unexpected token 'cmd' in expression or statement.
+At line:76 char:27
++         print(f\"Command: {' '.join(cmd)}\")
++                           ~
+Missing closing '}' in statement block or type definition.
+At line:76 char:40
++         print(f\"Command: {' '.join(cmd)}\")
++                                        ~
+Unexpected token ')' in expression or statement.
+At line:76 char:41
++         print(f\"Command: {' '.join(cmd)}\")
++                                         ~
+Unexpected token '}' in expression or statement.
+At line:81 char:58
++             print(f\"Restart the agent to use v{new_ver}.\")
++                                                          ~
+Missing property name after reference operator.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorReco
+   rdException
+    + FullyQualifiedErrorId : MissingEndParenthesisInMethodCall
+
+(oe-train) PS C:\Users\Aidor\oe-local> Set-Content -Path "C:\Users\Aidor\oe-local\patch_v2.py" -Encoding UTF8 -Value @"
+>> import sys, os
+>>
+>> path = r"C:\Users\Aidor\oe-local\yeshua_agent.py"
+>> with open(path, "r", encoding="utf-8") as f:
+>>     code = f.read()
+>>
+>> # 1. Add subprocess and sys imports
+>> code = code.replace(
+>>     "import os, json, glob, torch, random, re, shutil",
+>>     "import os, json, glob, torch, random, re, shutil, sys, subprocess"
+>> )
+>>
+>> # 2. Version bump
+>> code = code.replace("YESHUA AGENT v1.9", "YESHUA AGENT v2.0")
+>> code = code.replace("Yeshua Agent v1.9", "Yeshua Agent v2.0")
+>> code = code.replace("YESHUA AGENT v1.9 - LOCAL", "YESHUA AGENT v2.0 - LOCAL")
+>>
+>> # 3. Add retrain to help text
+>> code = code.replace(
+>>     '    print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")',
+>>     '    print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")\n        print("  retrain           - Combine all datasets and retrain the model")'
+>> )
+>>
+>> # 4. Add retrain command handler
+>> code = code.replace(
+>>     'elif cmd == "read":',
+>>     'elif cmd == "retrain":\n                    self.retrain()\n        elif cmd == "read":'
+>> )
+>>
+>> # 5. Add retrain method before run()
+>> retrain_method = '''
+>>     def retrain(self):
+>>         """Combine all .jsonl datasets and retrain the model."""
+>>         print("\\n[RETRAIN] Step 1: Combining datasets...")
+>>         all_examples = []
+>>         skip_prefixes = ("combined_v", "yeshua_agent_log")
+>>         for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):
+>>             basename = os.path.basename(jf)
+>>             if any(basename.startswith(p) for p in skip_prefixes):
+>>                 continue
+>>             try:
+>>                 with open(jf, "r", encoding="utf-8", errors="replace") as f:
+>>                     for line in f:
+>>                         line = line.strip()
+>>                         if line:
+>>                             try:
+>>                                 all_examples.append(json.loads(line))
+>>                             except json.JSONDecodeError:
+>>                                 pass
+>>                 print(f"  {os.path.relpath(jf, self.repo_root)}: {len(all_examples)} examples (cumulative)")
+>>             except Exception as e:
+>>                 print(f"  ERROR reading {jf}: {e}")
+>>         print(f"\\nTotal: {len(all_examples)} examples")
+>>         # Find next version number
+>>         existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))
+>>         versions = []
+>>         for d in existing:
+>>             try:
+>>                 v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))
+>>                 versions.append(v)
+>>             except ValueError:
+>>                 pass
+>>         new_ver = max(versions) + 1 if versions else 5
+>>         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")
+>>         with open(combined_path, "w", encoding="utf-8") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + "\\n")
+>>         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")
+>>         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")
+>>         if not os.path.exists(train_script):
+>>             print(f"ERROR: Training script not found at {train_script}")
+>>             return
+>>         print(f"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")
+>>         print(f"Output: {output_dir}")
+>>         cmd = [
+>>             sys.executable, train_script,
+>>             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+>>             "--dataset", combined_path,
+>>             "--output", output_dir,
+>>             "--samples", str(n_samples),
+>>             "--epochs", "3"
+>>         ]
+>>         cmd_str = " ".join(cmd)
+>>         print(f"Command: {cmd_str}")
+>>         result = subprocess.run(cmd)
+>>         if result.returncode == 0:
+>>             print(f"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")
+>>             print(f"Restart the agent to use v{new_ver}.")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})
+>>         else:
+>>             print(f"\\nTraining failed with return code {result.returncode}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})
+>>
+>> '''
+>>
+>> code = code.replace(
+>>     "    def run(self):",
+>>     retrain_method + "    def run(self):"
+>> )
+>>
+>> # 6. Update status command
+>> code = code.replace(
+>>     'print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples)")',
+>>     'print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples) | retrain toupgrade")'
+>> )
+>>
+>> with open(path, "w", encoding="utf-8") as f:
+>>     f.write(code)
+>>
+>> print(f"Patched yeshua_agent.py to v2.0")
+>> print(f"Python executable: {sys.executable}")
+>> print("Added: retrain command")
+>> "@
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_v2.py
+Patched yeshua_agent.py to v2.0
+Python executable: C:\Users\Aidor\oe-train\Scripts\python.exe
+Added: retrain command
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+
+[RETRAIN] Step 1: Combining datasets...
+  domain_dataset.jsonl: 4395 examples (cumulative)
+  handling_verification_pipeline.jsonl: 20291 examples (cumulative)
+  mega_dataset.jsonl: 25521 examples (cumulative)
+  meta_engine_audit.jsonl: 25522 examples (cumulative)
+  popperian_dataset.jsonl: 26022 examples (cumulative)
+  yeshua_training_v2.jsonl: 26731 examples (cumulative)
+  arxiv_vendor\metadata\cs_AI.jsonl: 26831 examples (cumulative)
+  arxiv_vendor\metadata\cs_AI_hashes.jsonl: 26931 examples (cumulative)
+  arxiv_vendor\metadata\cs_CL.jsonl: 27031 examples (cumulative)
+  arxiv_vendor\metadata\cs_CL_hashes.jsonl: 27131 examples (cumulative)
+  arxiv_vendor\metadata\cs_CR.jsonl: 27231 examples (cumulative)
+  arxiv_vendor\metadata\cs_CR_hashes.jsonl: 27331 examples (cumulative)
+  arxiv_vendor\metadata\cs_DC.jsonl: 27431 examples (cumulative)
+  arxiv_vendor\metadata\cs_DC_hashes.jsonl: 27531 examples (cumulative)
+  arxiv_vendor\metadata\cs_FL.jsonl: 27631 examples (cumulative)
+  arxiv_vendor\metadata\cs_FL_hashes.jsonl: 27731 examples (cumulative)
+  arxiv_vendor\metadata\cs_LO.jsonl: 27831 examples (cumulative)
+  arxiv_vendor\metadata\cs_LO_hashes.jsonl: 27931 examples (cumulative)
+  arxiv_vendor\metadata\cs_PL.jsonl: 28031 examples (cumulative)
+  arxiv_vendor\metadata\cs_PL_hashes.jsonl: 28131 examples (cumulative)
+  arxiv_vendor\metadata\cs_SE.jsonl: 28231 examples (cumulative)
+  arxiv_vendor\metadata\cs_SE_hashes.jsonl: 28331 examples (cumulative)
+  arxiv_vendor\metadata\math_CT.jsonl: 28431 examples (cumulative)
+  arxiv_vendor\metadata\math_CT_hashes.jsonl: 28531 examples (cumulative)
+  arxiv_vendor\metadata\math_LO.jsonl: 28631 examples (cumulative)
+  arxiv_vendor\metadata\math_LO_hashes.jsonl: 28731 examples (cumulative)
+  arxiv_vendor\metadata\quant-ph.jsonl: 28831 examples (cumulative)
+  arxiv_vendor\metadata\quant-ph_hashes.jsonl: 28931 examples (cumulative)
+  arxiv_vendor\metadata\stat_ML.jsonl: 29031 examples (cumulative)
+  arxiv_vendor\metadata\stat_ML_hashes.jsonl: 29131 examples (cumulative)
+  audits\hashed_taxonomy_20260420.jsonl: 40406 examples (cumulative)
+  corrections\correction_log.jsonl: 40406 examples (cumulative)
+  events\atomic\events_20260125.jsonl: 40419 examples (cumulative)
+  events\atomic\execution_exec_20260125_030808.jsonl: 40424 examples (cumulative)
+  events\exec_20260125_020318\events_20260125.jsonl: 40435 examples (cumulative)
+  examples\cas_example.jsonl: 40459 examples (cumulative)
+  examples\handling_verification_pipeline.jsonl: 40468 examples (cumulative)
+  examples\hello_world_handling_pipeline.jsonl: 40486 examples (cumulative)
+  GptAudit\handling_PHYSICS_CORRECTED_LEDGER.jsonl: 58671 examples (cumulative)
+  GptAudit\test_output\test_chat.jsonl: 58899 examples (cumulative)
+  logs\cli_usage.jsonl: 58901 examples (cumulative)
+  minimal_ai_ide\combined_dataset.jsonl: 59236 examples (cumulative)
+  minimal_ai_ide\corporate_audits\logos_audit.jsonl: 59240 examples (cumulative)
+  minimal_ai_ide\lora_dataset\chatml_test.jsonl: 59249 examples (cumulative)
+  minimal_ai_ide\lora_dataset\chatml_train.jsonl: 59284 examples (cumulative)
+  minimal_ai_ide\lora_dataset\chatml_validation.jsonl: 59291 examples (cumulative)
+  minimal_ai_ide\lora_dataset\lora_dataset_test.jsonl: 59300 examples (cumulative)
+  minimal_ai_ide\lora_dataset\lora_dataset_train.jsonl: 59335 examples (cumulative)
+  minimal_ai_ide\lora_dataset\lora_dataset_validation.jsonl: 59342 examples(cumulative)
+  minimal_ai_ide\lora_training\chatml_test.jsonl: 59351 examples (cumulative)
+  minimal_ai_ide\lora_training\chatml_train.jsonl: 59386 examples (cumulative)
+  minimal_ai_ide\lora_training\chatml_validation.jsonl: 59393 examples (cumulative)
+  minimal_ai_ide\lora_training\lora_dataset_test.jsonl: 59402 examples (cumulative)
+  minimal_ai_ide\lora_training\lora_dataset_train.jsonl: 59437 examples (cumulative)
+  minimal_ai_ide\lora_training\lora_dataset_validation.jsonl: 59444 examples (cumulative)
+  minimal_kernel\boundary_logs\boundary_violations_2026-01-24.jsonl: 59446 examples (cumulative)
+  oe-agent\events\exec_20260125_020146\events_20260125.jsonl: 59457 examples (cumulative)
+  outputs\handling_test\handling_verification_pipeline.jsonl: 59465 examples (cumulative)
+  pr47_stewardship\witness\consent_log.jsonl: 59531 examples (cumulative)
+  proofs\example_100k_manifest.jsonl: 59533 examples (cumulative)
+  src\hardware\photonic\lora\photonic_lora_dataset.jsonl: 59833 examples (cumulative)
+  tests\pr18_test_data\audit_trail_api_operations_2.jsonl: 79833 examples (cumulative)
+  tests\pr18_test_data\audit_trail_file_operations_1.jsonl: 99833 examples (cumulative)
+  tests\pr18_test_data\audit_trail_security_events_3.jsonl: 119833 examples(cumulative)
+  tools\render_agnostic\seeds\frame_manifest.jsonl: 119843 examples (cumulative)
+
+Total: 119843 examples
+Combined dataset saved to: combined_v5.jsonl
+
+[RETRAIN] Step 2: Training v5 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Command: C:\Users\Aidor\oe-train\Scripts\python.exe C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0--dataset C:\Users\Aidor\oe-local\combined_v5.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v5 --samples 6000 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-27T20:27:05.243789
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v5.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Bounds: 6000 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: LlamaTokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 0 examples [00:00, ? examples/s]Failed to load JSONfrom file 'C:\Users\Aidor\oe-local\combined_v5.jsonl' with error <class 'pyarrow.lib.ArrowInvalid'>: JSON parse error: Column(/data/clamped) changed from string to number in row 796
+Generating train split: 0 examples [00:00, ? examples/s]
+  ❌ Dataset loading failed: An error occurred while generating the dataset
+❌ Dataset loading failed
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v5.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Training successful: ❌
+Governance compliant: ❌
+Training time: 0.0 minutes
+Final loss: 0.0000
+Model size: 0.00 GB
+Christ score: 0.000 (minimum: 0.7)
+
+Violations (1):
+  - Dataset loading failed: An error occurred while generating the dataset
+
+Timestamp: 2026-04-27T20:27:06.299191
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Training process failed
+   - Governance violations detected
+   - Christ score 0.000 < 0.7 minimum
+
+Training failed with return code 1
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> @'
+>> import json, os, sys
+>>
+>> path = "yeshua_agent.py"
+>> with open(path, "r", encoding="utf-8") as f:
+>>     code = f.read()
+>>
+>> # Replace the retrain method's dataset combination logic
+>> old_combine = '''for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):
+>>                 if os.path.basename(jf).startswith("combined_v"):
+>>                     continue
+>>                 if "yeshua_agent_log" in jf:
+>>                     continue
+>>                 try:
+>>                     with open(jf, "r", encoding="utf-8") as df:
+>>                         for line in df:
+>>                             line = line.strip()
+>>                             if line:
+>>                                 ex = json.loads(line)
+>>                                 all_examples.append(ex)
+>>                     print(f"  {os.path.relpath(jf, self.repo_root)}: {len(all_examples)} examples (cumulative)")
+>>                 except Exception:
+>>                     pass'''
+>>
+>> new_combine = '''for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):
+>>                 skip_names = ("combined_v", "yeshua_agent_log", "yeshua_batch_fix", "yeshua_fix_report", "yeshua_auto_audit")
+>>                 if any(os.path.basename(jf).startswith(s) for s in skip_names):
+>>                     continue
+>>                 try:
+>>                     valid = 0
+>>                     with open(jf, "r", encoding="utf-8") as df:
+>>                         for line in df:
+>>                             line = line.strip()
+>>                             if not line:
+>>                                 continue
+>>                             try:
+>>                                 ex = json.loads(line)
+>>                                 if all(k in ex for k in ("instruction", "input", "output")):
+>>                                     all_examples.append(ex)
+>>                                     valid += 1
+>>                             except (json.JSONDecodeError, TypeError):
+>>                                 continue
+>>                     if valid > 0:
+>>                         print(f"  {os.path.relpath(jf, self.repo_root)}:{valid} valid examples ({len(all_examples)} cumulative)")
+>>                 except Exception:
+>>                     pass'''
+>>
+>> if old_combine in code:
+>>     code = code.replace(old_combine, new_combine)
+>>     with open(path, "w", encoding="utf-8") as f:
+>>         f.write(code)
+>>     print("Patched retrain: now validates instruction/input/output fields per line")
+>> else:
+>>     print("ERROR: Could not find the old combine block to replace")
+>>     print("Searching for partial match...")
+>>     if "cumulative" in code and "all_examples.append(ex)" in code:
+>>         print("Found retrain method but exact match failed - manual editneeded")
+>>     else:
+>>         print("Retrain method not found in yeshua_agent.py")
+>> '@ | Set-Content -Path "C:\Users\Aidor\oe-local\patch_retrain_fix.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_retrain_fix.py
+ERROR: Could not find the old combine block to replace
+Searching for partial match...
+Found retrain method but exact match failed - manual edit needed
+(oe-train) PS C:\Users\Aidor\oe-local> @"
+>> import sys, os
+>>
+>> path = r'C:\Users\Aidor\oe-local\yeshua_agent.py'
+>> with open(path, 'r', encoding='utf-8') as f:
+>>     code = f.read()
+>>
+>> # Remove any existing retrain method (between 'def retrain' and next 'def ' at same indent)
+>> import re
+>> code = re.sub(r'    def retrain\(self\).*?(?=    def |\nif __name__)', '', code, flags=re.DOTALL)
+>>
+>> # Remove old retrain command handler from run() if present
+>> code = re.sub(r"                elif cmd == .retrain.*?\n(?=   elif|                else:)", '', code, flags=re.DOTALL)
+>>
+>> # The new retrain method
+>> retrain_method = '''
+>>     def retrain(self):
+>>         import subprocess, sys
+>>         print("[RETRAIN] Step 1: Combining training datasets...")
+>>         VALID_DATASETS = [
+>>             "mega_dataset.jsonl",
+>>             "domain_dataset.jsonl",
+>>             "popperian_dataset.jsonl",
+>>             "yeshua_training_v2.jsonl",
+>>         ]
+>>         # Also include any photonic/lora dataset
+>>         all_jsonl = []
+>>         for root, dirs, files in os.walk(self.repo_root):
+>>             for fname in files:
+>>                 if not fname.endswith(".jsonl"):
+>>                     continue
+>>                 if fname in VALID_DATASETS:
+>>                     all_jsonl.append(os.path.join(root, fname))
+>>                 elif "lora" in fname.lower() and "dataset" in fname.lower():
+>>                     all_jsonl.append(os.path.join(root, fname))
+>>         all_examples = []
+>>         for jf in all_jsonl:
+>>             valid = 0
+>>             try:
+>>                 with open(jf, "r", encoding="utf-8") as f:
+>>                     for line in f:
+>>                         line = line.strip()
+>>                         if not line:
+>>                             continue
+>>                         try:
+>>                             obj = json.loads(line)
+>>                             if "instruction" in obj and "output" in obj:
+>>                                 all_examples.append(obj)
+>>                                 valid += 1
+>>                         except json.JSONDecodeError:
+>>                             continue
+>>                 if valid > 0:
+>>                     print(f"  {os.path.basename(jf)}: {valid} examples")
+>>             except Exception as e:
+>>                 print(f"  SKIP {os.path.basename(jf)}: {e}")
+>>         print(f"\\nTotal: {len(all_examples)} examples")
+>>         # Determine version
+>>         existing = [d for d in os.listdir(self.repo_root) if d.startswith("trained_tinyllama_v") and os.path.isdir(os.path.join(self.repo_root, d))]
+>>         versions = [int(d.split("_v")[1]) for d in existing if d.split("_v")[1].isdigit()]
+>>         new_ver = max(versions) + 1 if versions else 5
+>>         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")
+>>         with open(combined_path, "w", encoding="utf-8") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + "\\n")
+>>         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")
+>>         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")
+>>         if not os.path.exists(train_script):
+>>             print(f"ERROR: Training script not found at {train_script}")
+>>             return
+>>         cmd = [
+>>             sys.executable, train_script,
+>>             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+>>             "--dataset", combined_path,
+>>             "--output", output_dir,
+>>             "--samples", str(n_samples),
+>>             "--epochs", "3",
+>>         ]
+>>         cmd_str = " ".join(cmd)
+>>         print(f"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")
+>>         print(f"Output: {output_dir}")
+>>         print(f"Command: {cmd_str}")
+>>         result = subprocess.run(cmd, cwd=self.repo_root)
+>>         if result.returncode == 0:
+>>             print(f"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")
+>>             print(f"Restart the agent to use v{new_ver}.")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})
+>>         else:
+>>             print(f"\\nTraining failed with return code {result.returncode}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})
+>>
+>> '''
+>>
+>> # Insert retrain method before run()
+>> code = code.replace('    def run(self):', retrain_method + '    def run(self):')
+>>
+>> # Add retrain command handler if not present
+>> if 'cmd == "retrain"' not in code:
+>>     old_handler = '                elif cmd == "batch-fix":'
+>>     new_handler = '''                elif cmd == "retrain":
+>>                     self.retrain()
+>>                 elif cmd == "batch-fix":'''
+>>     code = code.replace(old_handler, new_handler)
+>>
+>> # Update version strings
+>> code = code.replace('YESHUA AGENT v1.9', 'YESHUA AGENT v2.0')
+>> code = code.replace('Yeshua Agent v1.9', 'Yeshua Agent v2.0')
+>>
+>> # Add retrain to help menu if not present
+>> if 'retrain' not in code.split('Commands:')[1].split('exit')[0] if 'Commands:' in code else True:
+>>     code = code.replace(
+>>         '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)',
+>>         '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)\\n  retrain           - Combine datasets and retrain the model'
+>>     )
+>>
+>> with open(path, 'w', encoding='utf-8') as f:
+>>     f.write(code)
+>>
+>> print(f'Patched yeshua_agent.py to v2.0 with retrain command')
+>> print(f'Python executable: {sys.executable}')
+>> print(f'Key fix: only includes known training datasets (mega_dataset, domain_dataset, popperian, yeshua_training_v2, *lora*dataset*)')
+>> "@ | Set-Content -Path "C:\Users\Aidor\oe-local\patch_retrain_fix.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_retrain_fix.py
+Patched yeshua_agent.py to v2.0 with retrain command
+Python executable: C:\Users\Aidor\oe-train\Scripts\python.exe
+Key fix: only includes known training datasets (mega_dataset, domain_dataset, popperian, yeshua_training_v2, *lora*dataset*)
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+[RETRAIN] Step 1: Combining training datasets...
+  domain_dataset.jsonl: 4395 examples
+  mega_dataset.jsonl: 5230 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  lora_dataset_test.jsonl: 9 examples
+  lora_dataset_train.jsonl: 35 examples
+  lora_dataset_validation.jsonl: 7 examples
+  lora_dataset_test.jsonl: 9 examples
+  lora_dataset_train.jsonl: 35 examples
+  lora_dataset_validation.jsonl: 7 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 11236 examples
+Combined dataset saved to: combined_v6.jsonl
+
+[RETRAIN] Step 2: Training v6 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v6
+Command: C:\Users\Aidor\oe-train\Scripts\python.exe C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0--dataset C:\Users\Aidor\oe-local\combined_v6.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v6 --samples 6000 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-27T20:30:38.431724
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v6.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v6
+Bounds: 6000 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: LlamaTokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 11236 examples [00:00, 283289.55 examples/s]
+  Limited to 6000 samples (governance bound)
+  Loaded 6000 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj']
+  Trainable parameters: 2,252,800
+  Total parameters: 1,102,301,184
+  Trainable %: 0.20%
+  GPU memory allocated: 2.06 GB
+  GPU memory reserved: 2.19 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|████████████████████| 6000/6000 [00:01<00:00, 3879.89 examples/s]
+✅ Training data prepared: 6000 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 3 epoch(s) with 6000 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 2}.
+  0%|                                  | 1/9000 [00:10<27:06:59, 10.85s/it]
