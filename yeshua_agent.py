@@ -1,7 +1,7 @@
 ﻿"""  
 YESHUA AGENT v2.0  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
-Trained on combined_v4 dataset (1500 examples). Constraint-first architecture.  
+Trained on combined_v7 dataset (1500 examples). Constraint-first architecture.  
 """  
 import os, json, glob, torch, random, re, shutil, sys, subprocess, subprocess  
 from datetime import datetime  
@@ -12,7 +12,7 @@ class YeshuaAgent:
     def __init__(self, repo_root=r"C:\Users\Aidor\oe-local"):  
         self.repo_root = repo_root  
         self.history = []  
-        print("Loading TinyLlama v4 on CUDA...")  
+        print("Loading TinyLlama v7 on CUDA...")  
         base = AutoModelForCausalLM.from_pretrained(  
             "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
             torch_dtype=torch.float16, device_map="auto", local_files_only=True  
@@ -528,7 +528,7 @@ class YeshuaAgent:
                 elif cmd == "think":  
                     r = self.think(f"Instruction: {arg}\nOutput:"); print(r); self.log_action("think", r)  
                 elif cmd == "status":  
-                    print(f"Model: TinyLlama 1.1B v4+ (LoRA, combined dataset)")  
+                    print(f"Model: TinyLlama 1.1B v7+ (LoRA, combined dataset)")  
                     print(f"Device: {torch.cuda.get_device_name(0)}")  
                     print(f"VRAM used: {torch.cuda.memory_allocated()/1024**2:.0f} MB")  
                     print(f"Actions logged: {len(self.log)}")  
