@@ -17,7 +17,7 @@ class YeshuaAgent:
             "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
             torch_dtype=torch.float16, device_map="auto", local_files_only=True  
         )  
-        lora_path = os.path.join(repo_root, "trained_tinyllama_v4")  
+        lora_path = os.path.join(repo_root, "trained_tinyllama_v7")  
         self.model = PeftModel.from_pretrained(base, lora_path)  
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
