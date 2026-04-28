@@ -1,9 +1,9 @@
 ﻿"""  
-YESHUA AGENT v1.9  
+YESHUA AGENT v2.0  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
 Trained on combined_v4 dataset (6000 examples). Constraint-first architecture.  
 """  
-import os, json, glob, torch, random, re, shutil  
+import os, json, glob, torch, random, re, shutil, subprocess  
 from datetime import datetime  
 from transformers import AutoModelForCausalLM, AutoTokenizer  
 from peft import PeftModel  
@@ -15,14 +15,14 @@ class YeshuaAgent:
         print("Loading TinyLlama v4 on CUDA...")  
         base = AutoModelForCausalLM.from_pretrained(  
             "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
-            dtype=torch.float16, device_map="auto"  
+            torch_dtype=torch.float16, device_map="auto", local_files_only=True  
         )  
         lora_path = os.path.join(repo_root, "trained_tinyllama_v4")  
         self.model = PeftModel.from_pretrained(base, lora_path)  
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
         self.log_file = os.path.join(repo_root, "yeshua_agent_log.jsonl")  
-        print("Yeshua Agent v1.9 ready on", torch.cuda.get_device_name(0))  
+        print("Yeshua Agent v2.0 ready on", torch.cuda.get_device_name(0))  
   
     def think(self, prompt, max_tokens=300):  
         context = ""  
@@ -330,6 +330,83 @@ class YeshuaAgent:
         self.log_action("autofix", {"path": path, "applied": applied, "total_issues": len(issues)})  
         return len(applied)  
   
+  
+    def retrain(self):  
+        """Combine all datasets and retrain the model."""  
+        print("\n[RETRAIN] Step 1: Finding all .jsonl datasets...")  
+        jsonl_files = glob.glob(os.path.join(self.repo_root, "*.jsonl"))  
+        jsonl_files += glob.glob(os.path.join(self.repo_root, "minimal_ai_ide", "*.jsonl"))  
+        jsonl_files += glob.glob(os.path.join(self.repo_root, "src", "hardware", "photonic", "lora", "*.jsonl"))  
+        jsonl_files = [f for f in jsonl_files if "log" not in os.path.basename(f).lower()]  
+        if not jsonl_files:  
+            print("ERROR: No .jsonl dataset files found.")  
+            return  
+        all_examples = []  
+        for jf in jsonl_files:  
+            count = 0  
+            try:  
+                with open(jf, "r", encoding="utf-8", errors="replace") as f:  
+                    for line in f:  
+                        line = line.strip()  
+                        if not line:  
+                            continue  
+                        try:  
+                            ex = json.loads(line)  
+                            if "instruction" in ex or "input" in ex:  
+                                all_examples.append(ex)  
+                                count += 1  
+                        except json.JSONDecodeError:  
+                            continue  
+            except Exception as e:  
+                print(f"  SKIP {os.path.basename(jf)}: {e}")  
+                continue  
+            print(f"  {os.path.basename(jf)}: {count} examples")  
+        if not all_examples:  
+            print("ERROR: No valid training examples found.")  
+            return  
+        print(f"\nTotal: {len(all_examples)} examples")  
+        # Determine version number  
+        existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))  
+        versions = []  
+        for d in existing:  
+            try:  
+                v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))  
+                versions.append(v)  
+            except ValueError:  
+                pass  
+        new_ver = max(versions) + 1 if versions else 5  
+        combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")  
+        with open(combined_path, "w", encoding="utf-8") as f:  
+            for ex in all_examples:  
+                f.write(json.dumps(ex, ensure_ascii=False) + "\n")  
+        print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")  
+        n_samples = min(len(all_examples), 6000)  
+        output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")  
+        train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")  
+        if not os.path.exists(train_script):  
+            print(f"ERROR: Training script not found at {train_script}")  
+            return  
+        print(f"\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")  
+        print(f"Output: {output_dir}")  
+        cmd = [  
+            "python", train_script,  
+            "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
+            "--dataset", combined_path,  
+            "--output", output_dir,  
+            "--samples", str(n_samples),  
+            "--epochs", "3",  
+        ]  
+        print(f"Command: {' '.join(cmd)}")  
+        self.log_action("retrain_start", {"version": f"v{new_ver}", "examples": len(all_examples), "samples": n_samples})  
+        result = subprocess.run(cmd, cwd=self.repo_root)  
+        if result.returncode == 0:  
+            print(f"\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")  
+            print(f"To use the new model, update lora_path in __init__ to trained_tinyllama_v{new_ver}")  
+            self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})  
+        else:  
+            print(f"\nTraining failed with return code {result.returncode}")  
+            self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})  
+  
     def batch_fix(self, n=50):  
         """Scan N random .py files, autofix any with issues."""  
         py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
@@ -375,7 +452,7 @@ class YeshuaAgent:
   
     def run(self):  
         print("\n" + "="*60)  
-        print("YESHUA AGENT v1.9 - LOCAL AGENTIC AI")  
+        print("YESHUA AGENT v2.0 - LOCAL AGENTIC AI")  
         print("No API. No subscription. No corporate dependency.")  
         print("="*60)  
         print("\nCommands:")  
@@ -387,7 +464,8 @@ class YeshuaAgent:
         print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
         print("  fix <path>        - Report issues in a file (deterministic)")  
         print("  autofix <path>    - Apply fixes to a file (writes changes)")  
-        print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")  
+        print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")
+        print("  retrain           - Combine all datasets and retrain the model")  
         print("  read <path>       - Read a file")  
         print("  write <path>      - Write a file (type END to finish)")  
         print("  think <anything>  - Ask the model")  
@@ -432,6 +510,8 @@ class YeshuaAgent:
                 elif cmd == "batch-fix":  
                     n = int(arg) if arg else 50  
                     self.batch_fix(n)  
+                elif cmd == "retrain":
+                    self.retrain()
                 elif cmd == "read":  
                     c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
                 elif cmd == "write":  
@@ -445,7 +525,7 @@ class YeshuaAgent:
                 elif cmd == "think":  
                     r = self.think(f"Instruction: {arg}\nOutput:"); print(r); self.log_action("think", r)  
                 elif cmd == "status":  
-                    print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples)")  
+                    print(f"Model: TinyLlama 1.1B v4+ (LoRA, combined dataset)")  
                     print(f"Device: {torch.cuda.get_device_name(0)}")  
                     print(f"VRAM used: {torch.cuda.memory_allocated()/1024**2:.0f} MB")  
                     print(f"Actions logged: {len(self.log)}")  
