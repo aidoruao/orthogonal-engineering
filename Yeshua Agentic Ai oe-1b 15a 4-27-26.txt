@@ -1,0 +1,2112 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Aidor> cd C:\Users\Aidor\oe-local
+PS C:\Users\Aidor\oe-local> C:\Users\Aidor\oe-train\Scripts\Activate.ps1
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+Yeshua Agent v1.9 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v1.9 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> @'
+>> import re
+>>
+>> path = r"C:\Users\Aidor\oe-local\yeshua_agent.py"
+>> with open(path, "r", encoding="utf-8") as f:
+>>     code = f.read()
+>>
+>> # 1. Version strings
+>> code = code.replace("YESHUA AGENT v1.9", "YESHUA AGENT v2.0")
+>> code = code.replace("Yeshua Agent v1.9", "Yeshua Agent v2.0")
+>> code = code.replace('YESHUA AGENT v1.9 - LOCAL AGENTIC AI', 'YESHUA AGENT v2.0 - LOCAL AGENTIC AI')
+>>
+>> # 2. Add local_files_only to model loading
+>> code = code.replace(
+>>     'dtype=torch.float16, device_map="auto"',
+>>     'torch_dtype=torch.float16, device_map="auto", local_files_only=True'
+>> )
+>>
+>> # 3. Add subprocess import
+>> if "import subprocess" not in code:
+>>     code = code.replace("import os, json, glob, torch, random, re, shutil",
+>>                         "import os, json, glob, torch, random, re, shutil, subprocess")
+>>
+>> # 4. Insert retrain method before batch_fix
+>> retrain_method = '''
+>>     def retrain(self):
+>>         """Combine all datasets and retrain the model."""
+>>         print("\\n[RETRAIN] Step 1: Finding all .jsonl datasets...")
+>>         jsonl_files = glob.glob(os.path.join(self.repo_root, "*.jsonl"))
+>>         jsonl_files += glob.glob(os.path.join(self.repo_root, "minimal_ai_ide", "*.jsonl"))
+>>         jsonl_files += glob.glob(os.path.join(self.repo_root, "src", "hardware", "photonic", "lora", "*.jsonl"))
+>>         jsonl_files = [f for f in jsonl_files if "log" not in os.path.basename(f).lower()]
+>>         if not jsonl_files:
+>>             print("ERROR: No .jsonl dataset files found.")
+>>             return
+>>         all_examples = []
+>>         for jf in jsonl_files:
+>>             count = 0
+>>             try:
+>>                 with open(jf, "r", encoding="utf-8", errors="replace") as f:
+>>                     for line in f:
+>>                         line = line.strip()
+>>                         if not line:
+>>                             continue
+>>                         try:
+>>                             ex = json.loads(line)
+>>                             if "instruction" in ex or "input" in ex:
+>>                                 all_examples.append(ex)
+>>                                 count += 1
+>>                         except json.JSONDecodeError:
+>>                             continue
+>>             except Exception as e:
+>>                 print(f"  SKIP {os.path.basename(jf)}: {e}")
+>>                 continue
+>>             print(f"  {os.path.basename(jf)}: {count} examples")
+>>         if not all_examples:
+>>             print("ERROR: No valid training examples found.")
+>>             return
+>>         print(f"\\nTotal: {len(all_examples)} examples")
+>>         # Determine version number
+>>         existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))
+>>         versions = []
+>>         for d in existing:
+>>             try:
+>>                 v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))
+>>                 versions.append(v)
+>>             except ValueError:
+>>                 pass
+>>         new_ver = max(versions) + 1 if versions else 5
+>>         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")
+>>         with open(combined_path, "w", encoding="utf-8") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + "\\n")
+>>         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")
+>>         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")
+>>         if not os.path.exists(train_script):
+>>             print(f"ERROR: Training script not found at {train_script}")
+>>             return
+>>         print(f"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")
+>>         print(f"Output: {output_dir}")
+>>         cmd = [
+>>             "python", train_script,
+>>             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+>>             "--dataset", combined_path,
+>>             "--output", output_dir,
+>>             "--samples", str(n_samples),
+>>             "--epochs", "3",
+>>         ]
+>>         print(f"Command: {' '.join(cmd)}")
+>>         self.log_action("retrain_start", {"version": f"v{new_ver}", "examples": len(all_examples), "samples": n_samples})
+>>         result = subprocess.run(cmd, cwd=self.repo_root)
+>>         if result.returncode == 0:
+>>             print(f"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")
+>>             print(f"To use the new model, update lora_path in __init__ to trained_tinyllama_v{new_ver}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})
+>>         else:
+>>             print(f"\\nTraining failed with return code {result.returncode}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})
+>>
+>> '''
+>>
+>> # Insert before batch_fix
+>> code = code.replace(
+>>     "    def batch_fix(self, n=50):",
+>>     retrain_method + "    def batch_fix(self, n=50):"
+>> )
+>>
+>> # 5. Add retrain to help menu (after batch-fix line)
+>> code = code.replace(
+>>     '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")',
+>>     '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")\n'
+>>     '        print("  retrain           - Combine all datasets and retrain the model")'
+>> )
+>>
+>> # 6. Add retrain command handler (after batch-fix handler)
+>> code = code.replace(
+>>     '                elif cmd == "read":',
+>>     '                elif cmd == "retrain":\n'
+>>     '                    self.retrain()\n'
+>>     '                elif cmd == "read":'
+>> )
+>>
+>> # 7. Update status to show v2.0
+>> code = code.replace(
+>>     'print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples)")',
+>>     'print(f"Model: TinyLlama 1.1B v4+ (LoRA, combined dataset)")'
+>> )
+>>
+>> with open(path, "w", encoding="utf-8") as f:
+>>     f.write(code)
+>>
+>> print("Patched yeshua_agent.py: v1.9 -> v2.0")
+>> print("Added: retrain command, local_files_only, subprocess import")
+>> '@ | Set-Content -Path "C:\Users\Aidor\oe-local\patch_v2.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python C:\Users\Aidor\oe-local\patch_v2.py
+Patched yeshua_agent.py: v1.9 -> v2.0
+Added: retrain command, local_files_only, subprocess import
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+
+[RETRAIN] Step 1: Finding all .jsonl datasets...
+  combined_v4.jsonl: 11169 examples
+  domain_dataset.jsonl: 4395 examples
+  handling_verification_pipeline.jsonl: 0 examples
+  mega_dataset.jsonl: 5230 examples
+  meta_engine_audit.jsonl: 0 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  combined_dataset.jsonl: 335 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 22638 examples
+Combined dataset saved to: combined_v5.jsonl
+
+[RETRAIN] Step 2: Training v5 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Command: python C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset C:\Users\Aidor\oe-local\combined_v5.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v5 --samples 6000 --epochs 3
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 34,in <module>
+    from datasets import Dataset, load_dataset
+ModuleNotFoundError: No module named 'datasets'
+
+Training failed with return code 1
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> pip install datasets
+Requirement already satisfied: datasets in c:\users\aidor\oe-train\lib\site-packages (4.5.0)
+Requirement already satisfied: packaging in c:\users\aidor\oe-train\lib\site-packages (from datasets) (26.2)
+Requirement already satisfied: numpy>=1.17 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.0.2)
+Requirement already satisfied: pyyaml>=5.1 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (6.0.3)
+Requirement already satisfied: dill<0.4.1,>=0.3.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.4.0)
+Requirement already satisfied: filelock in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.19.1)
+Requirement already satisfied: pandas in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.3.3)
+Requirement already satisfied: tqdm>=4.66.3 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (4.67.3)
+Requirement already satisfied: multiprocess<0.70.19 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.70.18)
+Requirement already satisfied: xxhash in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.7.0)
+Requirement already satisfied: httpx<1.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.28.1)
+Requirement already satisfied: requests>=2.32.2 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.32.5)
+Requirement already satisfied: huggingface-hub<2.0,>=0.25.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.36.2)
+Requirement already satisfied: pyarrow>=21.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (21.0.0)
+Requirement already satisfied: fsspec[http]<=2025.10.0,>=2023.1.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2025.10.0)
+Requirement already satisfied: aiohttp!=4.0.0a0,!=4.0.0a1 in c:\users\aidor\oe-train\lib\site-packages (from fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (3.13.5)
+Requirement already satisfied: anyio in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (4.12.1)
+Requirement already satisfied: certifi in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (2026.4.22)
+Requirement already satisfied: idna in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (3.13)
+Requirement already satisfied: httpcore==1.* in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (1.0.9)
+Requirement already satisfied: h11>=0.16 in c:\users\aidor\oe-train\lib\site-packages (from httpcore==1.*->httpx<1.0.0->datasets) (0.16.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in c:\users\aidor\oe-train\lib\site-packages (from huggingface-hub<2.0,>=0.25.0->datasets) (4.15.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (3.4.7)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (2.6.3)
+Requirement already satisfied: colorama in c:\users\aidor\oe-train\lib\site-packages (from tqdm>=4.66.3->datasets) (0.4.6)
+Requirement already satisfied: pytz>=2020.1 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.1.post1)
+Requirement already satisfied: tzdata>=2022.7 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.2)
+Requirement already satisfied: python-dateutil>=2.8.2 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2.9.0.post0)
+Requirement already satisfied: multidict<7.0,>=4.5 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (6.7.1)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (2.6.1)
+Requirement already satisfied: frozenlist>=1.1.1 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.8.0)
+Requirement already satisfied: propcache>=0.2.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (0.4.1)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (5.0.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.22.0)
+Requirement already satisfied: aiosignal>=1.4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (26.1.0)
+Requirement already satisfied: six>=1.5 in c:\users\aidor\oe-train\lib\site-packages (from python-dateutil>=2.8.2->pandas->datasets) (1.17.0)
+Requirement already satisfied: exceptiongroup>=1.0.2 in c:\users\aidor\oe-train\lib\site-packages (from anyio->httpx<1.0.0->datasets) (1.3.1)
+WARNING: You are using pip version 22.0.4; however, version 26.0.1 is available.
+You should consider upgrading via the 'C:\Users\Aidor\oe-train\Scripts\python.exe -m pip install --upgrade pip' command.
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+
+[RETRAIN] Step 1: Finding all .jsonl datasets...
+  combined_v4.jsonl: 11169 examples
+  combined_v5.jsonl: 22638 examples
+  domain_dataset.jsonl: 4395 examples
+  handling_verification_pipeline.jsonl: 0 examples
+  mega_dataset.jsonl: 5230 examples
+  meta_engine_audit.jsonl: 0 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  combined_dataset.jsonl: 335 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 45276 examples
+Combined dataset saved to: combined_v5.jsonl
+
+[RETRAIN] Step 2: Training v5 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Command: python C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --dataset C:\Users\Aidor\oe-local\combined_v5.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v5 --samples 6000 --epochs 3
+Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 34,in <module>
+    from datasets import Dataset, load_dataset
+ModuleNotFoundError: No module named 'datasets'
+
+Training failed with return code 1
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> pip install datasets
+Requirement already satisfied: datasets in c:\users\aidor\oe-train\lib\site-packages (4.5.0)
+Requirement already satisfied: requests>=2.32.2 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.32.5)
+Requirement already satisfied: dill<0.4.1,>=0.3.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.4.0)
+Requirement already satisfied: xxhash in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.7.0)
+Requirement already satisfied: pandas in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.3.3)
+Requirement already satisfied: numpy>=1.17 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2.0.2)
+Requirement already satisfied: pyyaml>=5.1 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (6.0.3)
+Requirement already satisfied: httpx<1.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.28.1)
+Requirement already satisfied: multiprocess<0.70.19 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.70.18)
+Requirement already satisfied: huggingface-hub<2.0,>=0.25.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (0.36.2)
+Requirement already satisfied: packaging in c:\users\aidor\oe-train\lib\site-packages (from datasets) (26.2)
+Requirement already satisfied: tqdm>=4.66.3 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (4.67.3)
+Requirement already satisfied: filelock in c:\users\aidor\oe-train\lib\site-packages (from datasets) (3.19.1)
+Requirement already satisfied: fsspec[http]<=2025.10.0,>=2023.1.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (2025.10.0)
+Requirement already satisfied: pyarrow>=21.0.0 in c:\users\aidor\oe-train\lib\site-packages (from datasets) (21.0.0)
+Requirement already satisfied: aiohttp!=4.0.0a0,!=4.0.0a1 in c:\users\aidor\oe-train\lib\site-packages (from fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (3.13.5)
+Requirement already satisfied: httpcore==1.* in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (1.0.9)
+Requirement already satisfied: anyio in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (4.12.1)
+Requirement already satisfied: certifi in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (2026.4.22)
+Requirement already satisfied: idna in c:\users\aidor\oe-train\lib\site-packages (from httpx<1.0.0->datasets) (3.13)
+Requirement already satisfied: h11>=0.16 in c:\users\aidor\oe-train\lib\site-packages (from httpcore==1.*->httpx<1.0.0->datasets) (0.16.0)
+Requirement already satisfied: typing-extensions>=3.7.4.3 in c:\users\aidor\oe-train\lib\site-packages (from huggingface-hub<2.0,>=0.25.0->datasets) (4.15.0)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (2.6.3)
+Requirement already satisfied: charset_normalizer<4,>=2 in c:\users\aidor\oe-train\lib\site-packages (from requests>=2.32.2->datasets) (3.4.7)
+Requirement already satisfied: colorama in c:\users\aidor\oe-train\lib\site-packages (from tqdm>=4.66.3->datasets) (0.4.6)
+Requirement already satisfied: python-dateutil>=2.8.2 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2.9.0.post0)
+Requirement already satisfied: pytz>=2020.1 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.1.post1)
+Requirement already satisfied: tzdata>=2022.7 in c:\users\aidor\oe-train\lib\site-packages (from pandas->datasets) (2026.2)
+Requirement already satisfied: frozenlist>=1.1.1 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.8.0)
+Requirement already satisfied: attrs>=17.3.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (26.1.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (5.0.1)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (2.6.1)
+Requirement already satisfied: multidict<7.0,>=4.5 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (6.7.1)
+Requirement already satisfied: aiosignal>=1.4.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.4.0)
+Requirement already satisfied: propcache>=0.2.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in c:\users\aidor\oe-train\lib\site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2025.10.0,>=2023.1.0->datasets) (1.22.0)
+Requirement already satisfied: six>=1.5 in c:\users\aidor\oe-train\lib\site-packages (from python-dateutil>=2.8.2->pandas->datasets) (1.17.0)
+Requirement already satisfied: exceptiongroup>=1.0.2 in c:\users\aidor\oe-train\lib\site-packages (from anyio->httpx<1.0.0->datasets) (1.3.1)
+WARNING: You are using pip version 22.0.4; however, version 26.0.1 is available.
+You should consider upgrading via the 'C:\Users\Aidor\oe-train\Scripts\python.exe -m pip install --upgrade pip' command.
+(oe-train) PS C:\Users\Aidor\oe-local> python -c "
+>> import sys
+>> code = open('yeshua_agent.py', 'r', encoding='utf-8').read()
+>>
+>> # 1. Add sys import
+>> code = code.replace('import os, json, glob, torch, random, re, shutil', 'import os, sys, json, glob, torch, random, re, shutil')
+>>
+>> # 2. Update version strings
+>> code = code.replace('YESHUA AGENT v1.9', 'YESHUA AGENT v2.0')
+>> code = code.replace('Yeshua Agent v1.9', 'Yeshua Agent v2.0')
+>> code = code.replace('combined_v4 dataset (6000 examples)', 'combined_v5 dataset. Constraint-first architecture')
+>>
+>> # 3. Add retrain command to help text (before read line)
+>> code = code.replace(
+>>     '  read <path>       - Read a file',
+>>     '  retrain           - Combine all datasets and retrain the model\nread <path>       - Read a file'
+>> )
+>>
+>> # 4. Add retrain handler to command loop (before read handler)
+>> code = code.replace(
+>>     '''elif cmd == \"read\":''',
+>>     '''elif cmd == \"retrain\":
+>>                     self.retrain()
+>>                 elif cmd == \"read\":'''
+>> )
+>>
+>> # 5. Add retrain method (before run method)
+>> retrain_method = '''
+>>     def retrain(self):
+>>         \"\"\"Combine all .jsonl datasets and retrain the model.\"\"\"
+>>         import subprocess
+>>         print(\"[RETRAIN] Step 1: Combining datasets...\")
+>>         jsonl_files = glob.glob(os.path.join(self.repo_root, \"**\", \"*.jsonl\"), recursive=True)
+>>         all_examples = []
+>>         for jf in jsonl_files:
+>>             if os.path.basename(jf).startswith(\"combined_v\"):
+>>                 continue
+>>             if os.path.basename(jf) == \"yeshua_agent_log.jsonl\":
+>>                 continue
+>>             try:
+>>                 with open(jf, \"r\", encoding=\"utf-8\", errors=\"replace\") as f:
+>>                     exs = [json.loads(l) for l in f if l.strip()]
+>>                 print(f\"  {os.path.basename(jf)}: {len(exs)} examples\")
+>>                 all_examples.extend(exs)
+>>             except Exception as e:
+>>                 print(f\"  SKIP {os.path.basename(jf)}: {e}\")
+>>         print(f\"\\nTotal: {len(all_examples)} examples\")
+>>         existing = glob.glob(os.path.join(self.repo_root, \"combined_v*.jsonl\"))
+>>         ver_nums = []
+>>         for ef in existing:
+>>             try:
+>>                 v = int(os.path.basename(ef).replace(\"combined_v\", \"\").replace(\".jsonl\", \"\"))
+>>                 ver_nums.append(v)
+>>             except ValueError:
+>>                 pass
+>>         new_ver = max(ver_nums, default=4) + 1
+>>         combined_path = os.path.join(self.repo_root, f\"combined_v{new_ver}.jsonl\")
+>>         with open(combined_path, \"w\", encoding=\"utf-8\") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + \"\\n\")
+>>         print(f\"Combined dataset saved to: combined_v{new_ver}.jsonl\")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f\"trained_tinyllama_v{new_ver}\")
+>>         train_script = os.path.join(self.repo_root, \"minimal_ai_ide\", \"final_training.py\")
+>>         if not os.path.exists(train_script):
+>>             print(f\"ERROR: Training script not found at {train_script}\")
+>>             return
+>>         print(f\"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...\")
+>>         print(f\"Output: {output_dir}\")
+>>         cmd = [sys.executable, train_script,
+>>                \"--model\", \"TinyLlama/TinyLlama-1.1B-Chat-v1.0\",
+>>                \"--dataset\", combined_path,
+>>                \"--output\", output_dir,
+>>                \"--samples\", str(n_samples),
+>>                \"--epochs\", \"3\"]
+>>         print(f\"Command: {' '.join(cmd)}\")
+>>         self.log_action(\"retrain_start\", {\"version\": f\"v{new_ver}\", \"examples\": len(all_examples), \"samples\": n_samples})
+>>         result = subprocess.run(cmd)
+>>         if result.returncode == 0:
+>>             print(f\"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}\")
+>>             print(f\"Restart the agent to use v{new_ver}.\")
+>>             self.log_action(\"retrain_done\", {\"version\": f\"v{new_ver}\", \"status\": \"success\"})
+>>         else:
+>>             print(f\"\\nTraining failed with return code {result.returncode}\")
+>>             self.log_action(\"retrain_done\", {\"version\": f\"v{new_ver}\", \"status\": \"failed\", \"returncode\": result.returncode})
+>>
+>> '''
+>>
+>> code = code.replace('    def run(self):', retrain_method + '    def run(self):')
+>>
+>> with open('yeshua_agent.py', 'w', encoding='utf-8') as f:
+>>     f.write(code)
+>> print('Patched to v2.0 with retrain command')
+>> print(f'Python executable: {sys.executable}')
+>> "
+At line:76 char:37
++         print(f\"Command: {' '.join(cmd)}\")
++                                     ~
+Missing ')' in method call.
+At line:76 char:37
++         print(f\"Command: {' '.join(cmd)}\")
++                                     ~~~
+Unexpected token 'cmd' in expression or statement.
+At line:76 char:27
++         print(f\"Command: {' '.join(cmd)}\")
++                           ~
+Missing closing '}' in statement block or type definition.
+At line:76 char:40
++         print(f\"Command: {' '.join(cmd)}\")
++                                        ~
+Unexpected token ')' in expression or statement.
+At line:76 char:41
++         print(f\"Command: {' '.join(cmd)}\")
++                                         ~
+Unexpected token '}' in expression or statement.
+At line:81 char:58
++             print(f\"Restart the agent to use v{new_ver}.\")
++                                                          ~
+Missing property name after reference operator.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorReco
+   rdException
+    + FullyQualifiedErrorId : MissingEndParenthesisInMethodCall
+
+(oe-train) PS C:\Users\Aidor\oe-local> Set-Content -Path "C:\Users\Aidor\oe-local\patch_v2.py" -Encoding UTF8 -Value @"
+>> import sys, os
+>>
+>> path = r"C:\Users\Aidor\oe-local\yeshua_agent.py"
+>> with open(path, "r", encoding="utf-8") as f:
+>>     code = f.read()
+>>
+>> # 1. Add subprocess and sys imports
+>> code = code.replace(
+>>     "import os, json, glob, torch, random, re, shutil",
+>>     "import os, json, glob, torch, random, re, shutil, sys, subprocess"
+>> )
+>>
+>> # 2. Version bump
+>> code = code.replace("YESHUA AGENT v1.9", "YESHUA AGENT v2.0")
+>> code = code.replace("Yeshua Agent v1.9", "Yeshua Agent v2.0")
+>> code = code.replace("YESHUA AGENT v1.9 - LOCAL", "YESHUA AGENT v2.0 - LOCAL")
+>>
+>> # 3. Add retrain to help text
+>> code = code.replace(
+>>     '    print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")',
+>>     '    print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")\n        print("  retrain           - Combine all datasets and retrain the model")'
+>> )
+>>
+>> # 4. Add retrain command handler
+>> code = code.replace(
+>>     'elif cmd == "read":',
+>>     'elif cmd == "retrain":\n                    self.retrain()\n        elif cmd == "read":'
+>> )
+>>
+>> # 5. Add retrain method before run()
+>> retrain_method = '''
+>>     def retrain(self):
+>>         """Combine all .jsonl datasets and retrain the model."""
+>>         print("\\n[RETRAIN] Step 1: Combining datasets...")
+>>         all_examples = []
+>>         skip_prefixes = ("combined_v", "yeshua_agent_log")
+>>         for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):
+>>             basename = os.path.basename(jf)
+>>             if any(basename.startswith(p) for p in skip_prefixes):
+>>                 continue
+>>             try:
+>>                 with open(jf, "r", encoding="utf-8", errors="replace") as f:
+>>                     for line in f:
+>>                         line = line.strip()
+>>                         if line:
+>>                             try:
+>>                                 all_examples.append(json.loads(line))
+>>                             except json.JSONDecodeError:
+>>                                 pass
+>>                 print(f"  {os.path.relpath(jf, self.repo_root)}: {len(all_examples)} examples (cumulative)")
+>>             except Exception as e:
+>>                 print(f"  ERROR reading {jf}: {e}")
+>>         print(f"\\nTotal: {len(all_examples)} examples")
+>>         # Find next version number
+>>         existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))
+>>         versions = []
+>>         for d in existing:
+>>             try:
+>>                 v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))
+>>                 versions.append(v)
+>>             except ValueError:
+>>                 pass
+>>         new_ver = max(versions) + 1 if versions else 5
+>>         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")
+>>         with open(combined_path, "w", encoding="utf-8") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + "\\n")
+>>         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")
+>>         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")
+>>         if not os.path.exists(train_script):
+>>             print(f"ERROR: Training script not found at {train_script}")
+>>             return
+>>         print(f"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")
+>>         print(f"Output: {output_dir}")
+>>         cmd = [
+>>             sys.executable, train_script,
+>>             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+>>             "--dataset", combined_path,
+>>             "--output", output_dir,
+>>             "--samples", str(n_samples),
+>>             "--epochs", "3"
+>>         ]
+>>         cmd_str = " ".join(cmd)
+>>         print(f"Command: {cmd_str}")
+>>         result = subprocess.run(cmd)
+>>         if result.returncode == 0:
+>>             print(f"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")
+>>             print(f"Restart the agent to use v{new_ver}.")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})
+>>         else:
+>>             print(f"\\nTraining failed with return code {result.returncode}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})
+>>
+>> '''
+>>
+>> code = code.replace(
+>>     "    def run(self):",
+>>     retrain_method + "    def run(self):"
+>> )
+>>
+>> # 6. Update status command
+>> code = code.replace(
+>>     'print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples)")',
+>>     'print(f"Model: TinyLlama 1.1B v4 (LoRA, 6000 examples) | retrain toupgrade")'
+>> )
+>>
+>> with open(path, "w", encoding="utf-8") as f:
+>>     f.write(code)
+>>
+>> print(f"Patched yeshua_agent.py to v2.0")
+>> print(f"Python executable: {sys.executable}")
+>> print("Added: retrain command")
+>> "@
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_v2.py
+Patched yeshua_agent.py to v2.0
+Python executable: C:\Users\Aidor\oe-train\Scripts\python.exe
+Added: retrain command
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+
+[RETRAIN] Step 1: Combining datasets...
+  domain_dataset.jsonl: 4395 examples (cumulative)
+  handling_verification_pipeline.jsonl: 20291 examples (cumulative)
+  mega_dataset.jsonl: 25521 examples (cumulative)
+  meta_engine_audit.jsonl: 25522 examples (cumulative)
+  popperian_dataset.jsonl: 26022 examples (cumulative)
+  yeshua_training_v2.jsonl: 26731 examples (cumulative)
+  arxiv_vendor\metadata\cs_AI.jsonl: 26831 examples (cumulative)
+  arxiv_vendor\metadata\cs_AI_hashes.jsonl: 26931 examples (cumulative)
+  arxiv_vendor\metadata\cs_CL.jsonl: 27031 examples (cumulative)
+  arxiv_vendor\metadata\cs_CL_hashes.jsonl: 27131 examples (cumulative)
+  arxiv_vendor\metadata\cs_CR.jsonl: 27231 examples (cumulative)
+  arxiv_vendor\metadata\cs_CR_hashes.jsonl: 27331 examples (cumulative)
+  arxiv_vendor\metadata\cs_DC.jsonl: 27431 examples (cumulative)
+  arxiv_vendor\metadata\cs_DC_hashes.jsonl: 27531 examples (cumulative)
+  arxiv_vendor\metadata\cs_FL.jsonl: 27631 examples (cumulative)
+  arxiv_vendor\metadata\cs_FL_hashes.jsonl: 27731 examples (cumulative)
+  arxiv_vendor\metadata\cs_LO.jsonl: 27831 examples (cumulative)
+  arxiv_vendor\metadata\cs_LO_hashes.jsonl: 27931 examples (cumulative)
+  arxiv_vendor\metadata\cs_PL.jsonl: 28031 examples (cumulative)
+  arxiv_vendor\metadata\cs_PL_hashes.jsonl: 28131 examples (cumulative)
+  arxiv_vendor\metadata\cs_SE.jsonl: 28231 examples (cumulative)
+  arxiv_vendor\metadata\cs_SE_hashes.jsonl: 28331 examples (cumulative)
+  arxiv_vendor\metadata\math_CT.jsonl: 28431 examples (cumulative)
+  arxiv_vendor\metadata\math_CT_hashes.jsonl: 28531 examples (cumulative)
+  arxiv_vendor\metadata\math_LO.jsonl: 28631 examples (cumulative)
+  arxiv_vendor\metadata\math_LO_hashes.jsonl: 28731 examples (cumulative)
+  arxiv_vendor\metadata\quant-ph.jsonl: 28831 examples (cumulative)
+  arxiv_vendor\metadata\quant-ph_hashes.jsonl: 28931 examples (cumulative)
+  arxiv_vendor\metadata\stat_ML.jsonl: 29031 examples (cumulative)
+  arxiv_vendor\metadata\stat_ML_hashes.jsonl: 29131 examples (cumulative)
+  audits\hashed_taxonomy_20260420.jsonl: 40406 examples (cumulative)
+  corrections\correction_log.jsonl: 40406 examples (cumulative)
+  events\atomic\events_20260125.jsonl: 40419 examples (cumulative)
+  events\atomic\execution_exec_20260125_030808.jsonl: 40424 examples (cumulative)
+  events\exec_20260125_020318\events_20260125.jsonl: 40435 examples (cumulative)
+  examples\cas_example.jsonl: 40459 examples (cumulative)
+  examples\handling_verification_pipeline.jsonl: 40468 examples (cumulative)
+  examples\hello_world_handling_pipeline.jsonl: 40486 examples (cumulative)
+  GptAudit\handling_PHYSICS_CORRECTED_LEDGER.jsonl: 58671 examples (cumulative)
+  GptAudit\test_output\test_chat.jsonl: 58899 examples (cumulative)
+  logs\cli_usage.jsonl: 58901 examples (cumulative)
+  minimal_ai_ide\combined_dataset.jsonl: 59236 examples (cumulative)
+  minimal_ai_ide\corporate_audits\logos_audit.jsonl: 59240 examples (cumulative)
+  minimal_ai_ide\lora_dataset\chatml_test.jsonl: 59249 examples (cumulative)
+  minimal_ai_ide\lora_dataset\chatml_train.jsonl: 59284 examples (cumulative)
+  minimal_ai_ide\lora_dataset\chatml_validation.jsonl: 59291 examples (cumulative)
+  minimal_ai_ide\lora_dataset\lora_dataset_test.jsonl: 59300 examples (cumulative)
+  minimal_ai_ide\lora_dataset\lora_dataset_train.jsonl: 59335 examples (cumulative)
+  minimal_ai_ide\lora_dataset\lora_dataset_validation.jsonl: 59342 examples(cumulative)
+  minimal_ai_ide\lora_training\chatml_test.jsonl: 59351 examples (cumulative)
+  minimal_ai_ide\lora_training\chatml_train.jsonl: 59386 examples (cumulative)
+  minimal_ai_ide\lora_training\chatml_validation.jsonl: 59393 examples (cumulative)
+  minimal_ai_ide\lora_training\lora_dataset_test.jsonl: 59402 examples (cumulative)
+  minimal_ai_ide\lora_training\lora_dataset_train.jsonl: 59437 examples (cumulative)
+  minimal_ai_ide\lora_training\lora_dataset_validation.jsonl: 59444 examples (cumulative)
+  minimal_kernel\boundary_logs\boundary_violations_2026-01-24.jsonl: 59446 examples (cumulative)
+  oe-agent\events\exec_20260125_020146\events_20260125.jsonl: 59457 examples (cumulative)
+  outputs\handling_test\handling_verification_pipeline.jsonl: 59465 examples (cumulative)
+  pr47_stewardship\witness\consent_log.jsonl: 59531 examples (cumulative)
+  proofs\example_100k_manifest.jsonl: 59533 examples (cumulative)
+  src\hardware\photonic\lora\photonic_lora_dataset.jsonl: 59833 examples (cumulative)
+  tests\pr18_test_data\audit_trail_api_operations_2.jsonl: 79833 examples (cumulative)
+  tests\pr18_test_data\audit_trail_file_operations_1.jsonl: 99833 examples (cumulative)
+  tests\pr18_test_data\audit_trail_security_events_3.jsonl: 119833 examples(cumulative)
+  tools\render_agnostic\seeds\frame_manifest.jsonl: 119843 examples (cumulative)
+
+Total: 119843 examples
+Combined dataset saved to: combined_v5.jsonl
+
+[RETRAIN] Step 2: Training v5 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Command: C:\Users\Aidor\oe-train\Scripts\python.exe C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0--dataset C:\Users\Aidor\oe-local\combined_v5.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v5 --samples 6000 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-27T20:27:05.243789
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v5.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Bounds: 6000 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: LlamaTokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 0 examples [00:00, ? examples/s]Failed to load JSONfrom file 'C:\Users\Aidor\oe-local\combined_v5.jsonl' with error <class 'pyarrow.lib.ArrowInvalid'>: JSON parse error: Column(/data/clamped) changed from string to number in row 796
+Generating train split: 0 examples [00:00, ? examples/s]
+  ❌ Dataset loading failed: An error occurred while generating the dataset
+❌ Dataset loading failed
+
+================================================================================
+FINAL TRAINING RESULT
+================================================================================
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v5.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v5
+Training successful: ❌
+Governance compliant: ❌
+Training time: 0.0 minutes
+Final loss: 0.0000
+Model size: 0.00 GB
+Christ score: 0.000 (minimum: 0.7)
+
+Violations (1):
+  - Dataset loading failed: An error occurred while generating the dataset
+
+Timestamp: 2026-04-27T20:27:06.299191
+================================================================================
+
+❌ FINAL TRAINING FAILED
+   - Training process failed
+   - Governance violations detected
+   - Christ score 0.000 < 0.7 minimum
+
+Training failed with return code 1
+
+Yeshua> exit
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> @'
+>> import json, os, sys
+>>
+>> path = "yeshua_agent.py"
+>> with open(path, "r", encoding="utf-8") as f:
+>>     code = f.read()
+>>
+>> # Replace the retrain method's dataset combination logic
+>> old_combine = '''for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):
+>>                 if os.path.basename(jf).startswith("combined_v"):
+>>                     continue
+>>                 if "yeshua_agent_log" in jf:
+>>                     continue
+>>                 try:
+>>                     with open(jf, "r", encoding="utf-8") as df:
+>>                         for line in df:
+>>                             line = line.strip()
+>>                             if line:
+>>                                 ex = json.loads(line)
+>>                                 all_examples.append(ex)
+>>                     print(f"  {os.path.relpath(jf, self.repo_root)}: {len(all_examples)} examples (cumulative)")
+>>                 except Exception:
+>>                     pass'''
+>>
+>> new_combine = '''for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):
+>>                 skip_names = ("combined_v", "yeshua_agent_log", "yeshua_batch_fix", "yeshua_fix_report", "yeshua_auto_audit")
+>>                 if any(os.path.basename(jf).startswith(s) for s in skip_names):
+>>                     continue
+>>                 try:
+>>                     valid = 0
+>>                     with open(jf, "r", encoding="utf-8") as df:
+>>                         for line in df:
+>>                             line = line.strip()
+>>                             if not line:
+>>                                 continue
+>>                             try:
+>>                                 ex = json.loads(line)
+>>                                 if all(k in ex for k in ("instruction", "input", "output")):
+>>                                     all_examples.append(ex)
+>>                                     valid += 1
+>>                             except (json.JSONDecodeError, TypeError):
+>>                                 continue
+>>                     if valid > 0:
+>>                         print(f"  {os.path.relpath(jf, self.repo_root)}:{valid} valid examples ({len(all_examples)} cumulative)")
+>>                 except Exception:
+>>                     pass'''
+>>
+>> if old_combine in code:
+>>     code = code.replace(old_combine, new_combine)
+>>     with open(path, "w", encoding="utf-8") as f:
+>>         f.write(code)
+>>     print("Patched retrain: now validates instruction/input/output fields per line")
+>> else:
+>>     print("ERROR: Could not find the old combine block to replace")
+>>     print("Searching for partial match...")
+>>     if "cumulative" in code and "all_examples.append(ex)" in code:
+>>         print("Found retrain method but exact match failed - manual editneeded")
+>>     else:
+>>         print("Retrain method not found in yeshua_agent.py")
+>> '@ | Set-Content -Path "C:\Users\Aidor\oe-local\patch_retrain_fix.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_retrain_fix.py
+ERROR: Could not find the old combine block to replace
+Searching for partial match...
+Found retrain method but exact match failed - manual edit needed
+(oe-train) PS C:\Users\Aidor\oe-local> @"
+>> import sys, os
+>>
+>> path = r'C:\Users\Aidor\oe-local\yeshua_agent.py'
+>> with open(path, 'r', encoding='utf-8') as f:
+>>     code = f.read()
+>>
+>> # Remove any existing retrain method (between 'def retrain' and next 'def ' at same indent)
+>> import re
+>> code = re.sub(r'    def retrain\(self\).*?(?=    def |\nif __name__)', '', code, flags=re.DOTALL)
+>>
+>> # Remove old retrain command handler from run() if present
+>> code = re.sub(r"                elif cmd == .retrain.*?\n(?=   elif|                else:)", '', code, flags=re.DOTALL)
+>>
+>> # The new retrain method
+>> retrain_method = '''
+>>     def retrain(self):
+>>         import subprocess, sys
+>>         print("[RETRAIN] Step 1: Combining training datasets...")
+>>         VALID_DATASETS = [
+>>             "mega_dataset.jsonl",
+>>             "domain_dataset.jsonl",
+>>             "popperian_dataset.jsonl",
+>>             "yeshua_training_v2.jsonl",
+>>         ]
+>>         # Also include any photonic/lora dataset
+>>         all_jsonl = []
+>>         for root, dirs, files in os.walk(self.repo_root):
+>>             for fname in files:
+>>                 if not fname.endswith(".jsonl"):
+>>                     continue
+>>                 if fname in VALID_DATASETS:
+>>                     all_jsonl.append(os.path.join(root, fname))
+>>                 elif "lora" in fname.lower() and "dataset" in fname.lower():
+>>                     all_jsonl.append(os.path.join(root, fname))
+>>         all_examples = []
+>>         for jf in all_jsonl:
+>>             valid = 0
+>>             try:
+>>                 with open(jf, "r", encoding="utf-8") as f:
+>>                     for line in f:
+>>                         line = line.strip()
+>>                         if not line:
+>>                             continue
+>>                         try:
+>>                             obj = json.loads(line)
+>>                             if "instruction" in obj and "output" in obj:
+>>                                 all_examples.append(obj)
+>>                                 valid += 1
+>>                         except json.JSONDecodeError:
+>>                             continue
+>>                 if valid > 0:
+>>                     print(f"  {os.path.basename(jf)}: {valid} examples")
+>>             except Exception as e:
+>>                 print(f"  SKIP {os.path.basename(jf)}: {e}")
+>>         print(f"\\nTotal: {len(all_examples)} examples")
+>>         # Determine version
+>>         existing = [d for d in os.listdir(self.repo_root) if d.startswith("trained_tinyllama_v") and os.path.isdir(os.path.join(self.repo_root, d))]
+>>         versions = [int(d.split("_v")[1]) for d in existing if d.split("_v")[1].isdigit()]
+>>         new_ver = max(versions) + 1 if versions else 5
+>>         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")
+>>         with open(combined_path, "w", encoding="utf-8") as f:
+>>             for ex in all_examples:
+>>                 f.write(json.dumps(ex, ensure_ascii=False) + "\\n")
+>>         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")
+>>         n_samples = min(len(all_examples), 6000)
+>>         output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")
+>>         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")
+>>         if not os.path.exists(train_script):
+>>             print(f"ERROR: Training script not found at {train_script}")
+>>             return
+>>         cmd = [
+>>             sys.executable, train_script,
+>>             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+>>             "--dataset", combined_path,
+>>             "--output", output_dir,
+>>             "--samples", str(n_samples),
+>>             "--epochs", "3",
+>>         ]
+>>         cmd_str = " ".join(cmd)
+>>         print(f"\\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")
+>>         print(f"Output: {output_dir}")
+>>         print(f"Command: {cmd_str}")
+>>         result = subprocess.run(cmd, cwd=self.repo_root)
+>>         if result.returncode == 0:
+>>             print(f"\\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")
+>>             print(f"Restart the agent to use v{new_ver}.")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})
+>>         else:
+>>             print(f"\\nTraining failed with return code {result.returncode}")
+>>             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})
+>>
+>> '''
+>>
+>> # Insert retrain method before run()
+>> code = code.replace('    def run(self):', retrain_method + '    def run(self):')
+>>
+>> # Add retrain command handler if not present
+>> if 'cmd == "retrain"' not in code:
+>>     old_handler = '                elif cmd == "batch-fix":'
+>>     new_handler = '''                elif cmd == "retrain":
+>>                     self.retrain()
+>>                 elif cmd == "batch-fix":'''
+>>     code = code.replace(old_handler, new_handler)
+>>
+>> # Update version strings
+>> code = code.replace('YESHUA AGENT v1.9', 'YESHUA AGENT v2.0')
+>> code = code.replace('Yeshua Agent v1.9', 'Yeshua Agent v2.0')
+>>
+>> # Add retrain to help menu if not present
+>> if 'retrain' not in code.split('Commands:')[1].split('exit')[0] if 'Commands:' in code else True:
+>>     code = code.replace(
+>>         '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)',
+>>         '  batch-fix [N]     - Scan N random .py files and autofix all (default 50)\\n  retrain           - Combine datasets and retrain the model'
+>>     )
+>>
+>> with open(path, 'w', encoding='utf-8') as f:
+>>     f.write(code)
+>>
+>> print(f'Patched yeshua_agent.py to v2.0 with retrain command')
+>> print(f'Python executable: {sys.executable}')
+>> print(f'Key fix: only includes known training datasets (mega_dataset, domain_dataset, popperian, yeshua_training_v2, *lora*dataset*)')
+>> "@ | Set-Content -Path "C:\Users\Aidor\oe-local\patch_retrain_fix.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_retrain_fix.py
+Patched yeshua_agent.py to v2.0 with retrain command
+Python executable: C:\Users\Aidor\oe-train\Scripts\python.exe
+Key fix: only includes known training datasets (mega_dataset, domain_dataset, popperian, yeshua_training_v2, *lora*dataset*)
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+[RETRAIN] Step 1: Combining training datasets...
+  domain_dataset.jsonl: 4395 examples
+  mega_dataset.jsonl: 5230 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  lora_dataset_test.jsonl: 9 examples
+  lora_dataset_train.jsonl: 35 examples
+  lora_dataset_validation.jsonl: 7 examples
+  lora_dataset_test.jsonl: 9 examples
+  lora_dataset_train.jsonl: 35 examples
+  lora_dataset_validation.jsonl: 7 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 11236 examples
+Combined dataset saved to: combined_v6.jsonl
+
+[RETRAIN] Step 2: Training v6 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v6
+Command: C:\Users\Aidor\oe-train\Scripts\python.exe C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0--dataset C:\Users\Aidor\oe-local\combined_v6.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v6 --samples 6000 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-27T20:30:38.431724
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v6.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v6
+Bounds: 6000 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+✅ Tokenizer loaded: LlamaTokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 11236 examples [00:00, 283289.55 examples/s]
+  Limited to 6000 samples (governance bound)
+  Loaded 6000 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj']
+  Trainable parameters: 2,252,800
+  Total parameters: 1,102,301,184
+  Trainable %: 0.20%
+  GPU memory allocated: 2.06 GB
+  GPU memory reserved: 2.19 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|████████████████████| 6000/6000 [00:01<00:00, 3879.89 examples/s]
+✅ Training data prepared: 6000 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 3 epoch(s) with 6000 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 2}.
+{'loss': 16.3917, 'grad_norm': 33.54331970214844, 'learning_rate': 0.0, 'epoch': 0.0}
+{'loss': 15.8512, 'grad_norm': 32.95150375366211, 'learning_rate': 8e-05, 'epoch': 0.0}
+{'loss': 12.7202, 'grad_norm': 48.8461799621582, 'learning_rate': 0.00018, 'epoch': 0.01}
+{'loss': 6.4498, 'grad_norm': 22.470115661621094, 'learning_rate': 0.00019991101223581757, 'epoch': 0.01}
+{'loss': 1.7305, 'grad_norm': 7.4926300048828125, 'learning_rate': 0.00019979977753058957, 'epoch': 0.01}
+{'loss': 0.534, 'grad_norm': 0.648385226726532, 'learning_rate': 0.0001996885428253615, 'epoch': 0.01}
+{'loss': 0.4539, 'grad_norm': 0.5475858449935913, 'learning_rate': 0.00019957730812013348, 'epoch': 0.01}
+{'loss': 0.412, 'grad_norm': 0.4008709788322449, 'learning_rate': 0.00019946607341490545, 'epoch': 0.01}
+{'loss': 0.3392, 'grad_norm': 0.4544031322002411, 'learning_rate': 0.00019935483870967745, 'epoch': 0.01}
+{'loss': 0.2633, 'grad_norm': 0.6492149829864502, 'learning_rate': 0.0001992436040044494, 'epoch': 0.02}
+{'loss': 0.3097, 'grad_norm': 0.5072312355041504, 'learning_rate': 0.00019913236929922136, 'epoch': 0.02}
+{'loss': 0.2414, 'grad_norm': 0.4849134385585785, 'learning_rate': 0.00019902113459399333, 'epoch': 0.02}
+{'loss': 0.2484, 'grad_norm': 1.013285517692566, 'learning_rate': 0.0001989098998887653, 'epoch': 0.02}
+{'loss': 0.2161, 'grad_norm': 0.6971740126609802, 'learning_rate': 0.00019879866518353727, 'epoch': 0.02}
+{'loss': 0.1202, 'grad_norm': 0.6498709321022034, 'learning_rate': 0.00019868743047830924, 'epoch': 0.03}
+{'loss': 0.1191, 'grad_norm': 0.48235023021698, 'learning_rate': 0.0001985761957730812, 'epoch': 0.03}
+{'loss': 0.1231, 'grad_norm': 0.5248315930366516, 'learning_rate': 0.00019846496106785318, 'epoch': 0.03}
+{'loss': 0.1568, 'grad_norm': 0.7263168692588806, 'learning_rate': 0.00019835372636262515, 'epoch': 0.03}
+{'loss': 0.1342, 'grad_norm': 0.2579537332057953, 'learning_rate': 0.00019824249165739712, 'epoch': 0.03}
+{'loss': 0.1179, 'grad_norm': 0.381779283285141, 'learning_rate': 0.0001981312569521691, 'epoch': 0.03}
+  1%|▎                               | 100/9000 [16:34<24:45:04, 10.01s/it]'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)),'(Request ID: 4accf45b-e841-4815-802e-f3330507a91e)')' thrown while requesting HEAD https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 36f49517-15fe-472a-a85b-2154217e8557)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/TinyLlama/TinyLlama-1.1B-Chat-v1.0/fe8a4ea1ffedaf415f4da2f062534de366a451e6/config.json
+Retrying in 1s [Retry 1/5].
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 8fee29dd-7ea8-4445-ab66-be2e3a3123e5)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/TinyLlama/TinyLlama-1.1B-Chat-v1.0/fe8a4ea1ffedaf415f4da2f062534de366a451e6/config.json
+Retrying in 2s [Retry 2/5].
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: 4c1888e9-8807-4c1c-a3e0-0ad8074f5bb7)')' thrown while requesting HEAD https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0/resolve/main/config.json
+Retrying in 1s [Retry 1/5].
+{'loss': 0.1469, 'grad_norm': 0.5017809271812439, 'learning_rate': 0.00019802002224694106, 'epoch': 0.04}
+{'loss': 0.1034, 'grad_norm': 0.6429024934768677, 'learning_rate': 0.00019790878754171303, 'epoch': 0.04}
+{'loss': 0.1026, 'grad_norm': 0.24094851315021515, 'learning_rate': 0.000197797552836485, 'epoch': 0.04}
+{'loss': 0.1799, 'grad_norm': 0.4177177846431732, 'learning_rate': 0.00019768631813125696, 'epoch': 0.04}
+{'loss': 0.0898, 'grad_norm': 0.4324052929878235, 'learning_rate': 0.00019757508342602893, 'epoch': 0.04}
+{'loss': 0.1967, 'grad_norm': 0.33679428696632385, 'learning_rate': 0.0001974638487208009, 'epoch': 0.04}
+{'loss': 0.1032, 'grad_norm': 0.37127289175987244, 'learning_rate': 0.00019735261401557287, 'epoch': 0.04}
+{'loss': 0.1316, 'grad_norm': 0.5434005856513977, 'learning_rate': 0.00019724137931034484, 'epoch': 0.05}
+{'loss': 0.0881, 'grad_norm': 0.23118163645267487, 'learning_rate': 0.0001971301446051168, 'epoch': 0.05}
+{'loss': 0.194, 'grad_norm': 0.4176180362701416, 'learning_rate': 0.00019701890989988878, 'epoch': 0.05}
+{'loss': 0.1058, 'grad_norm': 0.23171570897102356, 'learning_rate': 0.00019690767519466072, 'epoch': 0.05}
+{'loss': 0.137, 'grad_norm': 0.7519000768661499, 'learning_rate': 0.00019679644048943272, 'epoch': 0.05}
+{'loss': 0.1421, 'grad_norm': 0.4712511897087097, 'learning_rate': 0.0001966852057842047, 'epoch': 0.06}
+{'loss': 0.1491, 'grad_norm': 0.45102113485336304, 'learning_rate': 0.00019657397107897666, 'epoch': 0.06}
+{'loss': 0.0873, 'grad_norm': 0.2900622487068176, 'learning_rate': 0.0001964627363737486, 'epoch': 0.06}
+{'loss': 0.0801, 'grad_norm': 0.25551044940948486, 'learning_rate': 0.0001963515016685206, 'epoch': 0.06}
+{'loss': 0.1573, 'grad_norm': 0.2502540051937103, 'learning_rate': 0.00019624026696329257, 'epoch': 0.06}
+{'loss': 0.0992, 'grad_norm': 0.37977123260498047, 'learning_rate': 0.0001961290322580645, 'epoch': 0.06}
+{'loss': 0.1748, 'grad_norm': 0.6123754978179932, 'learning_rate': 0.00019601779755283648, 'epoch': 0.07}
+{'loss': 0.0922, 'grad_norm': 0.2591485381126404, 'learning_rate': 0.00019590656284760848, 'epoch': 0.07}
+{'loss': 0.1023, 'grad_norm': 0.21030768752098083, 'learning_rate': 0.00019579532814238045, 'epoch': 0.07}
+{'loss': 0.1221, 'grad_norm': 0.3834401071071625, 'learning_rate': 0.0001956840934371524, 'epoch': 0.07}
+{'loss': 0.1141, 'grad_norm': 0.3014869689941406, 'learning_rate': 0.00019557285873192436, 'epoch': 0.07}
+{'loss': 0.0896, 'grad_norm': 0.460480660200119, 'learning_rate': 0.00019546162402669636, 'epoch': 0.07}
+{'loss': 0.1235, 'grad_norm': 0.30428382754325867, 'learning_rate': 0.0001953503893214683, 'epoch': 0.07}
+{'loss': 0.0896, 'grad_norm': 0.17114263772964478, 'learning_rate': 0.00019523915461624027, 'epoch': 0.08}
+{'loss': 0.1061, 'grad_norm': 0.29545167088508606, 'learning_rate': 0.00019512791991101224, 'epoch': 0.08}
+{'loss': 0.1101, 'grad_norm': 0.28201723098754883, 'learning_rate': 0.00019501668520578423, 'epoch': 0.08}
+{'loss': 0.1711, 'grad_norm': 0.4935564398765564, 'learning_rate': 0.00019490545050055618, 'epoch': 0.08}
+{'loss': 0.1029, 'grad_norm': 0.3293880522251129, 'learning_rate': 0.00019479421579532815, 'epoch': 0.08}
+{'loss': 0.085, 'grad_norm': 0.1985749751329422, 'learning_rate': 0.00019468298109010012, 'epoch': 0.09}
+{'loss': 0.0774, 'grad_norm': 0.2648620307445526, 'learning_rate': 0.0001945717463848721, 'epoch': 0.09}
+{'loss': 0.0942, 'grad_norm': 0.19677893817424774, 'learning_rate': 0.00019446051167964405, 'epoch': 0.09}
+{'loss': 0.0871, 'grad_norm': 0.3487536609172821, 'learning_rate': 0.00019434927697441602, 'epoch': 0.09}
+  3%|▉                               | 271/9000 [47:52<22:58:31,  9.48s/it]Traceback (most recent call last):
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 862, in <module>
+    main()
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 812, in main
+    result = run_training(
+  File "C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py", line 635, in run_training
+    train_result = trainer.train()
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 2325, in train
+    return inner_training_loop(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 2674, in _inner_training_loop
+    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\transformers\trainer.py",line 4071, in training_step
+    self.accelerator.backward(loss, **kwargs)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\accelerate\accelerator.py", line 2730, in backward
+    self.scaler.scale(loss).backward(**kwargs)
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\_tensor.py", line 581, in backward
+    torch.autograd.backward(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\autograd\__init__.py", line 347, in backward
+    _engine_run_backward(
+  File "C:\Users\Aidor\oe-train\lib\site-packages\torch\autograd\graph.py",line 825, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+KeyboardInterrupt
+  3%|▉                               | 271/9000 [48:01<25:46:38, 10.63s/it]
+
+Shutting down.
+(oe-train) PS C:\Users\Aidor\oe-local> @"
+>> import re
+>>
+>> path = 'yeshua_agent.py'
+>> with open(path, 'r', encoding='utf-8') as f:
+>>     code = f.read()
+>>
+>> # Fix 1: Change --samples 6000 to --samples 1500
+>> code = re.sub(r'--samples\s+6000', '--samples 1500', code)
+>>
+>> # Fix 2: Change --epochs 3 to --epochs 1
+>> code = re.sub(r'--epochs\s+3', '--epochs 1', code)
+>>
+>> # Fix 3: Update status line if present
+>> code = code.replace('6000 examples', '1500 examples')
+>>
+>> with open(path, 'w', encoding='utf-8') as f:
+>>     f.write(code)
+>>
+>> print('Patched retrain: --samples 1500 --epochs 1 (750 steps, ~60 min)')
+>> "@ | Set-Content -Path "patch_speed.py" -Encoding UTF8
+(oe-train) PS C:\Users\Aidor\oe-local> python patch_speed.py
+Patched retrain: --samples 1500 --epochs 1 (750 steps, ~60 min)
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v4 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> retrain
+[RETRAIN] Step 1: Combining training datasets...
+  domain_dataset.jsonl: 4395 examples
+  mega_dataset.jsonl: 5230 examples
+  popperian_dataset.jsonl: 500 examples
+  yeshua_training_v2.jsonl: 709 examples
+  lora_dataset_test.jsonl: 9 examples
+  lora_dataset_train.jsonl: 35 examples
+  lora_dataset_validation.jsonl: 7 examples
+  lora_dataset_test.jsonl: 9 examples
+  lora_dataset_train.jsonl: 35 examples
+  lora_dataset_validation.jsonl: 7 examples
+  photonic_lora_dataset.jsonl: 300 examples
+
+Total: 11236 examples
+Combined dataset saved to: combined_v7.jsonl
+
+[RETRAIN] Step 2: Training v7 with 6000 samples...
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v7
+Command: C:\Users\Aidor\oe-train\Scripts\python.exe C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py --model TinyLlama/TinyLlama-1.1B-Chat-v1.0--dataset C:\Users\Aidor\oe-local\combined_v7.jsonl --output C:\Users\Aidor\oe-local\trained_tinyllama_v7 --samples 6000 --epochs 3
+================================================================================
+FINAL ROBUST TRAINING EXECUTION
+================================================================================
+Timestamp: 2026-04-27T21:20:39.806342
+Model: TinyLlama/TinyLlama-1.1B-Chat-v1.0
+Dataset: C:\Users\Aidor\oe-local\combined_v7.jsonl
+Output: C:\Users\Aidor\oe-local\trained_tinyllama_v7
+Bounds: 6000 samples, 30 minutes
+================================================================================
+
+[PHASE 1] Validating environment...
+✅ Environment validated
+
+[PHASE 2] Validating parameters...
+✅ Parameters validated
+
+[PHASE 3] Loading tokenizer...
+'(ProtocolError('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)), '(Request ID: f59c1a82-be0a-4128-9c58-9a25b53603d4)')' thrown while requesting HEAD https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+✅ Tokenizer loaded: LlamaTokenizerFast
+
+[PHASE 4] Loading dataset...
+Generating train split: 11236 examples [00:00, 656578.01 examples/s]
+  Limited to 6000 samples (governance bound)
+  Loaded 6000 examples
+✅ Dataset loaded
+
+[PHASE 5] Preparing model...
+  Strategy 1: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with 4-bit quantization...
+  ❌ 4-bit quantization failed: bitsandbytes...
+  Strategy 2: Loading TinyLlama/TinyLlama-1.1B-Chat-v1.0 with FP16...
+`torch_dtype` is deprecated! Use `dtype` instead!
+  Using target modules: ['q_proj', 'v_proj', 'k_proj', 'o_proj']
+  Trainable parameters: 2,252,800
+  Total parameters: 1,102,301,184
+  Trainable %: 0.20%
+  GPU memory allocated: 2.06 GB
+  GPU memory reserved: 2.19 GB
+✅ Model prepared
+
+[PHASE 6] Preparing training data...
+Map: 100%|████████████████████| 6000/6000 [00:01<00:00, 3796.95 examples/s]
+✅ Training data prepared: 6000 examples
+
+[PHASE 7] Configuring training...
+C:\Users\Aidor\oe-local\minimal_ai_ide\final_training.py:605: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `Trainer.__init__`. Use `processing_class` instead.
+  trainer = Trainer(
+The model is already on multiple devices. Skipping the move to device specified in `args`.
+✅ Training configured
+
+[PHASE 8] Running training...
+Training for 3 epoch(s) with 6000 examples...
+The tokenizer has new PAD/BOS/EOS tokens that differ from the model config and generation config. The model config and generation config were aligned accordingly, being updated with the tokenizer's values. Updated tokens: {'pad_token_id': 2}.
+{'loss': 16.3917, 'grad_norm': 31.417619705200195, 'learning_rate': 0.0, 'epoch': 0.0}
+{'loss': 15.8512, 'grad_norm': 30.177499771118164, 'learning_rate': 8e-05, 'epoch': 0.0}
+{'loss': 12.6609, 'grad_norm': 48.62836837768555, 'learning_rate': 0.00018,'epoch': 0.01}
+{'loss': 6.3635, 'grad_norm': 21.842144012451172, 'learning_rate': 0.00019991101223581757, 'epoch': 0.01}
+{'loss': 1.5972, 'grad_norm': 5.778458595275879, 'learning_rate': 0.00019979977753058957, 'epoch': 0.01}
+{'loss': 0.4966, 'grad_norm': 0.7370973825454712, 'learning_rate': 0.0001996885428253615, 'epoch': 0.01}
+{'loss': 0.4486, 'grad_norm': 0.5695857405662537, 'learning_rate': 0.00019957730812013348, 'epoch': 0.01}
+{'loss': 0.406, 'grad_norm': 0.39827102422714233, 'learning_rate': 0.00019946607341490545, 'epoch': 0.01}
+{'loss': 0.3377, 'grad_norm': 0.4636141061782837, 'learning_rate': 0.00019935483870967745, 'epoch': 0.01}
+{'loss': 0.2623, 'grad_norm': 0.6617638468742371, 'learning_rate': 0.0001992436040044494, 'epoch': 0.02}
+{'loss': 0.3092, 'grad_norm': 0.518528163433075, 'learning_rate': 0.00019913236929922136, 'epoch': 0.02}
+{'loss': 0.2415, 'grad_norm': 0.5197868347167969, 'learning_rate': 0.00019902113459399333, 'epoch': 0.02}
+{'loss': 0.2498, 'grad_norm': 0.912788450717926, 'learning_rate': 0.0001989098998887653, 'epoch': 0.02}
+{'loss': 0.2151, 'grad_norm': 0.6581688523292542, 'learning_rate': 0.00019879866518353727, 'epoch': 0.02}
+{'loss': 0.1268, 'grad_norm': 0.6899539828300476, 'learning_rate': 0.00019868743047830924, 'epoch': 0.03}
+{'loss': 0.12, 'grad_norm': 0.46876686811447144, 'learning_rate': 0.0001985761957730812, 'epoch': 0.03}
+{'loss': 0.1253, 'grad_norm': 0.5377293825149536, 'learning_rate': 0.00019846496106785318, 'epoch': 0.03}
+{'loss': 0.1585, 'grad_norm': 0.7051477432250977, 'learning_rate': 0.00019835372636262515, 'epoch': 0.03}
+{'loss': 0.1372, 'grad_norm': 0.3554076850414276, 'learning_rate': 0.00019824249165739712, 'epoch': 0.03}
+{'loss': 0.1177, 'grad_norm': 0.4477655291557312, 'learning_rate': 0.0001981312569521691, 'epoch': 0.03}
+{'loss': 0.147, 'grad_norm': 0.4777355492115021, 'learning_rate': 0.00019802002224694106, 'epoch': 0.04}
+{'loss': 0.1044, 'grad_norm': 0.2546602189540863, 'learning_rate': 0.00019790878754171303, 'epoch': 0.04}
+{'loss': 0.1033, 'grad_norm': 0.37566429376602173, 'learning_rate': 0.000197797552836485, 'epoch': 0.04}
+{'loss': 0.1804, 'grad_norm': 0.4039788842201233, 'learning_rate': 0.00019768631813125696, 'epoch': 0.04}
+{'loss': 0.09, 'grad_norm': 0.5103663802146912, 'learning_rate': 0.00019757508342602893, 'epoch': 0.04}
+{'loss': 0.1929, 'grad_norm': 0.33876124024391174, 'learning_rate': 0.0001974638487208009, 'epoch': 0.04}
+{'loss': 0.1043, 'grad_norm': 0.36482077836990356, 'learning_rate': 0.00019735261401557287, 'epoch': 0.04}
+{'loss': 0.1305, 'grad_norm': 0.48519933223724365, 'learning_rate': 0.00019724137931034484, 'epoch': 0.05}
+{'loss': 0.0881, 'grad_norm': 0.2507345676422119, 'learning_rate': 0.0001971301446051168, 'epoch': 0.05}
+{'loss': 0.193, 'grad_norm': 0.4164157211780548, 'learning_rate': 0.00019701890989988878, 'epoch': 0.05}
+{'loss': 0.1062, 'grad_norm': 0.23667724430561066, 'learning_rate': 0.00019690767519466072, 'epoch': 0.05}
+{'loss': 0.1366, 'grad_norm': 0.7831805944442749, 'learning_rate': 0.00019679644048943272, 'epoch': 0.05}
+{'loss': 0.1417, 'grad_norm': 0.46035927534103394, 'learning_rate': 0.0001966852057842047, 'epoch': 0.06}
+{'loss': 0.1506, 'grad_norm': 0.4305131435394287, 'learning_rate': 0.00019657397107897666, 'epoch': 0.06}
+{'loss': 0.0887, 'grad_norm': 0.26353415846824646, 'learning_rate': 0.0001964627363737486, 'epoch': 0.06}
+{'loss': 0.081, 'grad_norm': 0.25076159834861755, 'learning_rate': 0.0001963515016685206, 'epoch': 0.06}
+{'loss': 0.1571, 'grad_norm': 0.251348078250885, 'learning_rate': 0.00019624026696329257, 'epoch': 0.06}
+{'loss': 0.1013, 'grad_norm': 0.3441094160079956, 'learning_rate': 0.0001961290322580645, 'epoch': 0.06}
+{'loss': 0.1769, 'grad_norm': 0.5710932612419128, 'learning_rate': 0.00019601779755283648, 'epoch': 0.07}
+{'loss': 0.091, 'grad_norm': 0.23842594027519226, 'learning_rate': 0.00019590656284760848, 'epoch': 0.07}
+{'loss': 0.1022, 'grad_norm': 0.2171386033296585, 'learning_rate': 0.00019579532814238045, 'epoch': 0.07}
+{'loss': 0.1209, 'grad_norm': 0.3924706280231476, 'learning_rate': 0.0001956840934371524, 'epoch': 0.07}
+{'loss': 0.1118, 'grad_norm': 0.3378644585609436, 'learning_rate': 0.00019557285873192436, 'epoch': 0.07}
+{'loss': 0.0917, 'grad_norm': 0.44093355536460876, 'learning_rate': 0.00019546162402669636, 'epoch': 0.07}
+{'loss': 0.1221, 'grad_norm': 0.3810291290283203, 'learning_rate': 0.0001953503893214683, 'epoch': 0.07}
+{'loss': 0.0886, 'grad_norm': 0.17048364877700806, 'learning_rate': 0.00019523915461624027, 'epoch': 0.08}
+{'loss': 0.1076, 'grad_norm': 0.45051154494285583, 'learning_rate': 0.00019512791991101224, 'epoch': 0.08}
+{'loss': 0.1078, 'grad_norm': 0.3117690682411194, 'learning_rate': 0.00019501668520578423, 'epoch': 0.08}
+{'loss': 0.1713, 'grad_norm': 0.47521141171455383, 'learning_rate': 0.00019490545050055618, 'epoch': 0.08}
+{'loss': 0.1024, 'grad_norm': 0.29452598094940186, 'learning_rate': 0.00019479421579532815, 'epoch': 0.08}
+{'loss': 0.0858, 'grad_norm': 0.20608004927635193, 'learning_rate': 0.00019468298109010012, 'epoch': 0.09}
+{'loss': 0.0763, 'grad_norm': 0.2579324543476105, 'learning_rate': 0.0001945717463848721, 'epoch': 0.09}
+{'loss': 0.0947, 'grad_norm': 0.1931464523077011, 'learning_rate': 0.00019446051167964405, 'epoch': 0.09}
+{'loss': 0.0864, 'grad_norm': 0.34210461378097534, 'learning_rate': 0.00019434927697441602, 'epoch': 0.09}
+{'loss': 0.1282, 'grad_norm': 0.3231942653656006, 'learning_rate': 0.000194238042269188, 'epoch': 0.09}
+{'loss': 0.0972, 'grad_norm': 0.17081281542778015, 'learning_rate': 0.00019412680756395996, 'epoch': 0.09}
+{'loss': 0.1137, 'grad_norm': 0.37243562936782837, 'learning_rate': 0.00019401557285873193, 'epoch': 0.1}
+{'loss': 0.1119, 'grad_norm': 0.3266831338405609, 'learning_rate': 0.0001939043381535039, 'epoch': 0.1}
+{'loss': 0.089, 'grad_norm': 0.28404438495635986, 'learning_rate': 0.00019379310344827587, 'epoch': 0.1}
+{'loss': 0.0725, 'grad_norm': 0.20536771416664124, 'learning_rate': 0.00019368186874304784, 'epoch': 0.1}
+{'loss': 0.0859, 'grad_norm': 0.1598445326089859, 'learning_rate': 0.0001935706340378198, 'epoch': 0.1}
+{'loss': 0.1032, 'grad_norm': 0.6060348749160767, 'learning_rate': 0.00019345939933259178, 'epoch': 0.1}
+{'loss': 0.1073, 'grad_norm': 0.3499157130718231, 'learning_rate': 0.00019334816462736375, 'epoch': 0.1}
+{'loss': 0.1065, 'grad_norm': 0.5171862840652466, 'learning_rate': 0.00019323692992213572, 'epoch': 0.11}
+{'loss': 0.0948, 'grad_norm': 0.21955832839012146, 'learning_rate': 0.0001931256952169077, 'epoch': 0.11}
+{'loss': 0.1273, 'grad_norm': 0.4170352518558502, 'learning_rate': 0.00019301446051167966, 'epoch': 0.11}
+{'loss': 0.0861, 'grad_norm': 0.23383042216300964, 'learning_rate': 0.00019290322580645163, 'epoch': 0.11}
+{'loss': 0.073, 'grad_norm': 0.18796908855438232, 'learning_rate': 0.0001927919911012236, 'epoch': 0.11}
+{'loss': 0.0931, 'grad_norm': 0.36749914288520813, 'learning_rate': 0.00019268075639599557, 'epoch': 0.12}
+{'loss': 0.1276, 'grad_norm': 0.23621733486652374, 'learning_rate': 0.0001925695216907675, 'epoch': 0.12}
+{'loss': 0.0895, 'grad_norm': 0.23824915289878845, 'learning_rate': 0.0001924582869855395, 'epoch': 0.12}
+{'loss': 0.1088, 'grad_norm': 0.14526371657848358, 'learning_rate': 0.00019234705228031148, 'epoch': 0.12}
+{'loss': 0.1189, 'grad_norm': 0.2517167627811432, 'learning_rate': 0.00019223581757508344, 'epoch': 0.12}
+{'loss': 0.1, 'grad_norm': 0.4149875342845917, 'learning_rate': 0.0001921245828698554, 'epoch': 0.12}
+{'loss': 0.1247, 'grad_norm': 0.5698745250701904, 'learning_rate': 0.00019201334816462738, 'epoch': 0.12}
+{'loss': 0.0961, 'grad_norm': 0.2864728271961212, 'learning_rate': 0.00019190211345939935, 'epoch': 0.13}
+{'loss': 0.1117, 'grad_norm': 0.22817334532737732, 'learning_rate': 0.00019179087875417132, 'epoch': 0.13}
+{'loss': 0.0956, 'grad_norm': 0.4792479872703552, 'learning_rate': 0.00019167964404894327, 'epoch': 0.13}
+{'loss': 0.1111, 'grad_norm': 0.3081929087638855, 'learning_rate': 0.00019156840934371526, 'epoch': 0.13}
+{'loss': 0.0949, 'grad_norm': 0.2715051472187042, 'learning_rate': 0.00019145717463848723, 'epoch': 0.13}
+{'loss': 0.1193, 'grad_norm': 0.2284010648727417, 'learning_rate': 0.00019134593993325917, 'epoch': 0.14}
+{'loss': 0.0754, 'grad_norm': 0.3351215124130249, 'learning_rate': 0.00019123470522803114, 'epoch': 0.14}
+{'loss': 0.1131, 'grad_norm': 0.17653049528598785, 'learning_rate': 0.00019112347052280314, 'epoch': 0.14}
+{'loss': 0.1021, 'grad_norm': 0.33965229988098145, 'learning_rate': 0.0001910122358175751, 'epoch': 0.14}
+{'loss': 0.0679, 'grad_norm': 0.570022702217102, 'learning_rate': 0.00019090100111234705, 'epoch': 0.14}
+{'loss': 0.114, 'grad_norm': 0.29555031657218933, 'learning_rate': 0.00019078976640711902, 'epoch': 0.14}
+{'loss': 0.0962, 'grad_norm': 0.4236130118370056, 'learning_rate': 0.00019067853170189102, 'epoch': 0.14}
+{'loss': 0.0761, 'grad_norm': 0.14007733762264252, 'learning_rate': 0.00019056729699666296, 'epoch': 0.15}
+{'loss': 0.1191, 'grad_norm': 0.44019901752471924, 'learning_rate': 0.00019045606229143493, 'epoch': 0.15}
+{'loss': 0.1058, 'grad_norm': 0.30637311935424805, 'learning_rate': 0.0001903448275862069, 'epoch': 0.15}
+{'loss': 0.0837, 'grad_norm': 0.1636965572834015, 'learning_rate': 0.0001902335928809789, 'epoch': 0.15}
+{'loss': 0.0882, 'grad_norm': 0.37822476029396057, 'learning_rate': 0.00019012235817575084, 'epoch': 0.15}
+{'loss': 0.1038, 'grad_norm': 0.35637637972831726, 'learning_rate': 0.0001900111234705228, 'epoch': 0.15}
+{'loss': 0.0755, 'grad_norm': 0.38890114426612854, 'learning_rate': 0.00018989988876529478, 'epoch': 0.16}
+{'loss': 0.0953, 'grad_norm': 0.34120622277259827, 'learning_rate': 0.00018978865406006675, 'epoch': 0.16}
+{'loss': 0.0834, 'grad_norm': 0.2844384014606476, 'learning_rate': 0.00018967741935483872, 'epoch': 0.16}
+{'loss': 0.1014, 'grad_norm': 0.25392982363700867, 'learning_rate': 0.00018956618464961069, 'epoch': 0.16}
+{'loss': 0.1263, 'grad_norm': 0.4547275900840759, 'learning_rate': 0.00018945494994438266, 'epoch': 0.16}
+{'loss': 0.086, 'grad_norm': 0.2657409608364105, 'learning_rate': 0.00018934371523915463, 'epoch': 0.17}
+{'loss': 0.0656, 'grad_norm': 0.24757380783557892, 'learning_rate': 0.0001892324805339266, 'epoch': 0.17}
+{'loss': 0.0978, 'grad_norm': 0.338220477104187, 'learning_rate': 0.00018912124582869856, 'epoch': 0.17}
+{'loss': 0.1093, 'grad_norm': 0.25992336869239807, 'learning_rate': 0.00018901001112347053, 'epoch': 0.17}
+{'loss': 0.0703, 'grad_norm': 0.2994600534439087, 'learning_rate': 0.0001888987764182425, 'epoch': 0.17}
+{'loss': 0.0709, 'grad_norm': 0.16165940463542938, 'learning_rate': 0.00018878754171301447, 'epoch': 0.17}
+{'loss': 0.1161, 'grad_norm': 0.25957560539245605, 'learning_rate': 0.00018867630700778644, 'epoch': 0.17}
+{'loss': 0.082, 'grad_norm': 0.3624706566333771, 'learning_rate': 0.0001885650723025584, 'epoch': 0.18}
+{'loss': 0.131, 'grad_norm': 0.4343275725841522, 'learning_rate': 0.00018845383759733038, 'epoch': 0.18}
+{'loss': 0.0941, 'grad_norm': 0.2667902708053589, 'learning_rate': 0.00018834260289210235, 'epoch': 0.18}
+{'loss': 0.0581, 'grad_norm': 0.19708351790905, 'learning_rate': 0.00018823136818687432, 'epoch': 0.18}
+{'loss': 0.1223, 'grad_norm': 0.2493591457605362, 'learning_rate': 0.0001881201334816463, 'epoch': 0.18}
+{'loss': 0.0635, 'grad_norm': 0.19521400332450867, 'learning_rate': 0.00018800889877641826, 'epoch': 0.18}
+{'loss': 0.1131, 'grad_norm': 0.22955261170864105, 'learning_rate': 0.00018789766407119023, 'epoch': 0.19}
+{'loss': 0.0941, 'grad_norm': 0.24447065591812134, 'learning_rate': 0.00018778642936596217, 'epoch': 0.19}
+{'loss': 0.085, 'grad_norm': 0.2267693430185318, 'learning_rate': 0.00018767519466073417, 'epoch': 0.19}
+{'loss': 0.0842, 'grad_norm': 0.1274726539850235, 'learning_rate': 0.00018756395995550614, 'epoch': 0.19}
+{'loss': 0.1443, 'grad_norm': 0.3594193160533905, 'learning_rate': 0.0001874527252502781, 'epoch': 0.19}
+{'loss': 0.0584, 'grad_norm': 0.2366621047258377, 'learning_rate': 0.00018734149054505005, 'epoch': 0.2}
+{'loss': 0.0929, 'grad_norm': 0.24672198295593262, 'learning_rate': 0.00018723025583982205, 'epoch': 0.2}
+{'loss': 0.1022, 'grad_norm': 0.25051549077033997, 'learning_rate': 0.00018711902113459402, 'epoch': 0.2}
+{'loss': 0.1038, 'grad_norm': 0.32215848565101624, 'learning_rate': 0.00018700778642936596, 'epoch': 0.2}
+{'loss': 0.1118, 'grad_norm': 0.20911909639835358, 'learning_rate': 0.00018689655172413793, 'epoch': 0.2}
+{'loss': 0.1065, 'grad_norm': 0.3034551441669464, 'learning_rate': 0.00018678531701890992, 'epoch': 0.2}
+{'loss': 0.0921, 'grad_norm': 0.16302798688411713, 'learning_rate': 0.0001866740823136819, 'epoch': 0.2}
+{'loss': 0.1106, 'grad_norm': 0.25749635696411133, 'learning_rate': 0.00018656284760845384, 'epoch': 0.21}
+{'loss': 0.1091, 'grad_norm': 0.298391729593277, 'learning_rate': 0.0001864516129032258, 'epoch': 0.21}
+{'loss': 0.0927, 'grad_norm': 0.2040036916732788, 'learning_rate': 0.0001863403781979978, 'epoch': 0.21}
+{'loss': 0.06, 'grad_norm': 0.1463211476802826, 'learning_rate': 0.00018622914349276974, 'epoch': 0.21}
+{'loss': 0.0594, 'grad_norm': 0.12318696081638336, 'learning_rate': 0.00018611790878754171, 'epoch': 0.21}
+{'loss': 0.1021, 'grad_norm': 0.2983362376689911, 'learning_rate': 0.00018600667408231368, 'epoch': 0.21}
+{'loss': 0.0892, 'grad_norm': 0.19932863116264343, 'learning_rate': 0.00018589543937708568, 'epoch': 0.22}
+{'loss': 0.1006, 'grad_norm': 0.3912656009197235, 'learning_rate': 0.00018578420467185762, 'epoch': 0.22}
+{'loss': 0.09, 'grad_norm': 0.2772347331047058, 'learning_rate': 0.0001856729699666296, 'epoch': 0.22}
+{'loss': 0.0781, 'grad_norm': 0.6743372082710266, 'learning_rate': 0.00018556173526140156, 'epoch': 0.22}
+{'loss': 0.0565, 'grad_norm': 0.24672408401966095, 'learning_rate': 0.00018545050055617356, 'epoch': 0.22}
+{'loss': 0.0795, 'grad_norm': 0.28649723529815674, 'learning_rate': 0.0001853392658509455, 'epoch': 0.23}
+{'loss': 0.0743, 'grad_norm': 0.2260514497756958, 'learning_rate': 0.00018522803114571747, 'epoch': 0.23}
+{'loss': 0.0927, 'grad_norm': 0.3854929804801941, 'learning_rate': 0.00018511679644048944, 'epoch': 0.23}
+{'loss': 0.1014, 'grad_norm': 0.39712193608283997, 'learning_rate': 0.0001850055617352614, 'epoch': 0.23}
+{'loss': 0.0776, 'grad_norm': 0.27643144130706787, 'learning_rate': 0.00018489432703003338, 'epoch': 0.23}
+{'loss': 0.0789, 'grad_norm': 0.20450255274772644, 'learning_rate': 0.00018478309232480535, 'epoch': 0.23}
+{'loss': 0.0758, 'grad_norm': 0.18375259637832642, 'learning_rate': 0.00018467185761957732, 'epoch': 0.23}
+{'loss': 0.0935, 'grad_norm': 0.41535404324531555, 'learning_rate': 0.0001845606229143493, 'epoch': 0.24}
+{'loss': 0.1002, 'grad_norm': 0.34665921330451965, 'learning_rate': 0.00018444938820912126, 'epoch': 0.24}
+{'loss': 0.0689, 'grad_norm': 0.22351181507110596, 'learning_rate': 0.00018433815350389323, 'epoch': 0.24}
+{'loss': 0.1097, 'grad_norm': 0.19272930920124054, 'learning_rate': 0.00018422691879866517, 'epoch': 0.24}
+{'loss': 0.0753, 'grad_norm': 0.2744430601596832, 'learning_rate': 0.00018411568409343717, 'epoch': 0.24}
+{'loss': 0.1054, 'grad_norm': 0.3563949763774872, 'learning_rate': 0.00018400444938820914, 'epoch': 0.24}
+{'loss': 0.0878, 'grad_norm': 0.22874067723751068, 'learning_rate': 0.0001838932146829811, 'epoch': 0.25}
+{'loss': 0.0906, 'grad_norm': 0.37967392802238464, 'learning_rate': 0.00018378197997775305, 'epoch': 0.25}
+{'loss': 0.1094, 'grad_norm': 0.31044942140579224, 'learning_rate': 0.00018367074527252504, 'epoch': 0.25}
+{'loss': 0.0697, 'grad_norm': 0.1819165199995041, 'learning_rate': 0.00018355951056729701, 'epoch': 0.25}
+{'loss': 0.1173, 'grad_norm': 0.23492392897605896, 'learning_rate': 0.00018344827586206896, 'epoch': 0.25}
+{'loss': 0.071, 'grad_norm': 0.22395257651805878, 'learning_rate': 0.00018333704115684093, 'epoch': 0.26}
+{'loss': 0.0912, 'grad_norm': 0.23244255781173706, 'learning_rate': 0.00018322580645161292, 'epoch': 0.26}
+{'loss': 0.0921, 'grad_norm': 0.28268298506736755, 'learning_rate': 0.0001831145717463849, 'epoch': 0.26}
+{'loss': 0.0682, 'grad_norm': 0.21130020916461945, 'learning_rate': 0.00018300333704115683, 'epoch': 0.26}
+{'loss': 0.1091, 'grad_norm': 0.43568962812423706, 'learning_rate': 0.0001828921023359288, 'epoch': 0.26}
+{'loss': 0.1052, 'grad_norm': 0.22744928300380707, 'learning_rate': 0.0001827808676307008, 'epoch': 0.26}
+{'loss': 0.0655, 'grad_norm': 0.2634672522544861, 'learning_rate': 0.00018266963292547277, 'epoch': 0.27}
+{'loss': 0.0915, 'grad_norm': 0.23481927812099457, 'learning_rate': 0.0001825583982202447, 'epoch': 0.27}
+{'loss': 0.0763, 'grad_norm': 0.21595433354377747, 'learning_rate': 0.00018244716351501668, 'epoch': 0.27}
+{'loss': 0.0885, 'grad_norm': 0.40892624855041504, 'learning_rate': 0.00018233592880978868, 'epoch': 0.27}
+{'loss': 0.0839, 'grad_norm': 0.3989194333553314, 'learning_rate': 0.00018222469410456062, 'epoch': 0.27}
+{'loss': 0.1044, 'grad_norm': 0.2583572268486023, 'learning_rate': 0.0001821134593993326, 'epoch': 0.27}
+{'loss': 0.0679, 'grad_norm': 0.8271322846412659, 'learning_rate': 0.00018200222469410456, 'epoch': 0.28}
+{'loss': 0.0754, 'grad_norm': 0.1734883338212967, 'learning_rate': 0.00018189098998887656, 'epoch': 0.28}
+{'loss': 0.0657, 'grad_norm': 0.13173632323741913, 'learning_rate': 0.0001817797552836485, 'epoch': 0.28}
+{'loss': 0.0732, 'grad_norm': 0.17030449211597443, 'learning_rate': 0.00018166852057842047, 'epoch': 0.28}
+{'loss': 0.0755, 'grad_norm': 0.3915230333805084, 'learning_rate': 0.00018155728587319244, 'epoch': 0.28}
+{'loss': 0.0737, 'grad_norm': 0.22576279938220978, 'learning_rate': 0.0001814460511679644, 'epoch': 0.28}
+{'loss': 0.0774, 'grad_norm': 0.21332865953445435, 'learning_rate': 0.00018133481646273638, 'epoch': 0.28}
+{'loss': 0.1086, 'grad_norm': 0.3557018041610718, 'learning_rate': 0.00018122358175750835, 'epoch': 0.29}
+{'loss': 0.0858, 'grad_norm': 0.20900851488113403, 'learning_rate': 0.00018111234705228032, 'epoch': 0.29}
+{'loss': 0.0802, 'grad_norm': 0.42580050230026245, 'learning_rate': 0.00018100111234705229, 'epoch': 0.29}
+{'loss': 0.088, 'grad_norm': 0.2990046739578247, 'learning_rate': 0.00018088987764182426, 'epoch': 0.29}
+{'loss': 0.0639, 'grad_norm': 0.28688696026802063, 'learning_rate': 0.00018077864293659622, 'epoch': 0.29}
+{'loss': 0.0551, 'grad_norm': 0.16453906893730164, 'learning_rate': 0.0001806674082313682, 'epoch': 0.29}
+{'loss': 0.0631, 'grad_norm': 0.1735595315694809, 'learning_rate': 0.00018055617352614016, 'epoch': 0.3}
+{'loss': 0.0816, 'grad_norm': 0.2804359793663025, 'learning_rate': 0.00018044493882091213, 'epoch': 0.3}
+{'loss': 0.1068, 'grad_norm': 0.351416677236557, 'learning_rate': 0.0001803337041156841, 'epoch': 0.3}
+{'loss': 0.0691, 'grad_norm': 0.25259220600128174, 'learning_rate': 0.00018022246941045607, 'epoch': 0.3}
+{'loss': 0.0867, 'grad_norm': 0.283366858959198, 'learning_rate': 0.00018011123470522804, 'epoch': 0.3}
+{'loss': 0.0773, 'grad_norm': 0.20042632520198822, 'learning_rate': 0.00018, 'epoch': 0.3}
+{'loss': 0.0966, 'grad_norm': 0.30058521032333374, 'learning_rate': 0.00017988876529477198, 'epoch': 0.31}
+{'loss': 0.0758, 'grad_norm': 0.22194400429725647, 'learning_rate': 0.00017977753058954395, 'epoch': 0.31}
+{'loss': 0.0916, 'grad_norm': 0.24502068758010864, 'learning_rate': 0.00017966629588431592, 'epoch': 0.31}
+{'loss': 0.0904, 'grad_norm': 0.2730674147605896, 'learning_rate': 0.0001795550611790879, 'epoch': 0.31}
+{'loss': 0.0726, 'grad_norm': 0.2976168394088745, 'learning_rate': 0.00017944382647385983, 'epoch': 0.31}
+{'loss': 0.0902, 'grad_norm': 0.16434231400489807, 'learning_rate': 0.00017933259176863183, 'epoch': 0.32}
+{'loss': 0.1096, 'grad_norm': 0.2872675061225891, 'learning_rate': 0.0001792213570634038, 'epoch': 0.32}
+{'loss': 0.1131, 'grad_norm': 0.2984813451766968, 'learning_rate': 0.00017911012235817577, 'epoch': 0.32}
+{'loss': 0.0811, 'grad_norm': 0.11878855526447296, 'learning_rate': 0.0001789988876529477, 'epoch': 0.32}
+{'loss': 0.0642, 'grad_norm': 0.3673451840877533, 'learning_rate': 0.0001788876529477197, 'epoch': 0.32}
+{'loss': 0.1007, 'grad_norm': 0.4888555109500885, 'learning_rate': 0.00017877641824249168, 'epoch': 0.32}
+{'loss': 0.087, 'grad_norm': 0.33412331342697144, 'learning_rate': 0.00017866518353726362, 'epoch': 0.33}
+{'loss': 0.0714, 'grad_norm': 0.24420592188835144, 'learning_rate': 0.0001785539488320356, 'epoch': 0.33}
+{'loss': 0.1039, 'grad_norm': 0.34517595171928406, 'learning_rate': 0.00017844271412680758, 'epoch': 0.33}
+{'loss': 0.0931, 'grad_norm': 0.40572822093963623, 'learning_rate': 0.00017833147942157955, 'epoch': 0.33}
+{'loss': 0.0918, 'grad_norm': 0.15213297307491302, 'learning_rate': 0.0001782202447163515, 'epoch': 0.33}
+{'loss': 0.0721, 'grad_norm': 0.23281748592853546, 'learning_rate': 0.00017810901001112347, 'epoch': 0.33}
+{'loss': 0.0961, 'grad_norm': 0.3121943473815918, 'learning_rate': 0.00017799777530589546, 'epoch': 0.34}
+{'loss': 0.0743, 'grad_norm': 0.2587232291698456, 'learning_rate': 0.0001778865406006674, 'epoch': 0.34}
+{'loss': 0.0729, 'grad_norm': 0.27882295846939087, 'learning_rate': 0.00017777530589543937, 'epoch': 0.34}
+{'loss': 0.0907, 'grad_norm': 0.2869809567928314, 'learning_rate': 0.00017766407119021134, 'epoch': 0.34}
+{'loss': 0.0825, 'grad_norm': 0.3082013726234436, 'learning_rate': 0.00017755283648498334, 'epoch': 0.34}
+{'loss': 0.0801, 'grad_norm': 0.4168989658355713, 'learning_rate': 0.00017744160177975528, 'epoch': 0.34}
+{'loss': 0.0637, 'grad_norm': 0.18317438662052155, 'learning_rate': 0.00017733036707452725, 'epoch': 0.34}
+{'loss': 0.0879, 'grad_norm': 0.12256679683923721, 'learning_rate': 0.00017721913236929922, 'epoch': 0.35}
+{'loss': 0.0741, 'grad_norm': 0.18351013958454132, 'learning_rate': 0.00017710789766407122, 'epoch': 0.35}
+{'loss': 0.1615, 'grad_norm': 0.34721964597702026, 'learning_rate': 0.00017699666295884316, 'epoch': 0.35}
+{'loss': 0.0671, 'grad_norm': 0.23463457822799683, 'learning_rate': 0.00017688542825361513, 'epoch': 0.35}
+{'loss': 0.099, 'grad_norm': 0.28376859426498413, 'learning_rate': 0.0001767741935483871, 'epoch': 0.35}
+{'loss': 0.0695, 'grad_norm': 0.15273018181324005, 'learning_rate': 0.00017666295884315907, 'epoch': 0.35}
+{'loss': 0.0575, 'grad_norm': 0.2563566267490387, 'learning_rate': 0.00017655172413793104, 'epoch': 0.36}
+{'loss': 0.0697, 'grad_norm': 0.12001379579305649, 'learning_rate': 0.000176440489432703, 'epoch': 0.36}
+{'loss': 0.0815, 'grad_norm': 0.1961372196674347, 'learning_rate': 0.00017632925472747498, 'epoch': 0.36}
+{'loss': 0.0767, 'grad_norm': 0.2732785642147064, 'learning_rate': 0.00017621802002224695, 'epoch': 0.36}
+{'loss': 0.0636, 'grad_norm': 0.22285564243793488, 'learning_rate': 0.00017610678531701892, 'epoch': 0.36}
+{'loss': 0.0632, 'grad_norm': 0.17269477248191833, 'learning_rate': 0.0001759955506117909, 'epoch': 0.36}
+{'loss': 0.0743, 'grad_norm': 0.2614203095436096, 'learning_rate': 0.00017588431590656286, 'epoch': 0.37}
+{'loss': 0.0609, 'grad_norm': 0.3066655397415161, 'learning_rate': 0.00017577308120133483, 'epoch': 0.37}
+{'loss': 0.0853, 'grad_norm': 0.1911545842885971, 'learning_rate': 0.0001756618464961068, 'epoch': 0.37}
+{'loss': 0.0958, 'grad_norm': 0.23070132732391357, 'learning_rate': 0.00017555061179087877, 'epoch': 0.37}
+{'loss': 0.087, 'grad_norm': 0.37883129715919495, 'learning_rate': 0.00017543937708565073, 'epoch': 0.37}
+{'loss': 0.0938, 'grad_norm': 0.2611190974712372, 'learning_rate': 0.0001753281423804227, 'epoch': 0.38}
+{'loss': 0.0863, 'grad_norm': 0.1888236701488495, 'learning_rate': 0.00017521690767519467, 'epoch': 0.38}
+{'loss': 0.074, 'grad_norm': 0.18076397478580475, 'learning_rate': 0.00017510567296996662, 'epoch': 0.38}
+{'loss': 0.0652, 'grad_norm': 0.25049206614494324, 'learning_rate': 0.0001749944382647386, 'epoch': 0.38}
+{'loss': 0.0485, 'grad_norm': 0.16435962915420532, 'learning_rate': 0.00017488320355951058, 'epoch': 0.38}
+{'loss': 0.0513, 'grad_norm': 0.14925293624401093, 'learning_rate': 0.00017477196885428255, 'epoch': 0.38}
+{'loss': 0.0822, 'grad_norm': 0.2201969474554062, 'learning_rate': 0.0001746607341490545, 'epoch': 0.39}
+{'loss': 0.0915, 'grad_norm': 0.21742594242095947, 'learning_rate': 0.0001745494994438265, 'epoch': 0.39}
+{'loss': 0.0962, 'grad_norm': 0.4052865505218506, 'learning_rate': 0.00017443826473859846, 'epoch': 0.39}
+{'loss': 0.0565, 'grad_norm': 0.2638293504714966, 'learning_rate': 0.00017432703003337043, 'epoch': 0.39}
+{'loss': 0.0651, 'grad_norm': 0.2451326549053192, 'learning_rate': 0.00017421579532814237, 'epoch': 0.39}
+{'loss': 0.0531, 'grad_norm': 0.09437945485115051, 'learning_rate': 0.00017410456062291437, 'epoch': 0.39}
+{'loss': 0.0965, 'grad_norm': 0.37996557354927063, 'learning_rate': 0.00017399332591768634, 'epoch': 0.4}
+{'loss': 0.0859, 'grad_norm': 0.12592649459838867, 'learning_rate': 0.00017388209121245828, 'epoch': 0.4}
+{'loss': 0.1405, 'grad_norm': 0.4116220474243164, 'learning_rate': 0.00017377085650723025, 'epoch': 0.4}
+{'loss': 0.0547, 'grad_norm': 0.12494771182537079, 'learning_rate': 0.00017365962180200225, 'epoch': 0.4}
+{'loss': 0.111, 'grad_norm': 0.41638362407684326, 'learning_rate': 0.00017354838709677422, 'epoch': 0.4}
+{'loss': 0.0703, 'grad_norm': 0.194352388381958, 'learning_rate': 0.00017343715239154616, 'epoch': 0.4}
+{'loss': 0.0628, 'grad_norm': 0.14892123639583588, 'learning_rate': 0.00017332591768631813, 'epoch': 0.41}
+{'loss': 0.0748, 'grad_norm': 0.10943645983934402, 'learning_rate': 0.00017321468298109013, 'epoch': 0.41}
+{'loss': 0.0685, 'grad_norm': 0.24165354669094086, 'learning_rate': 0.00017310344827586207, 'epoch': 0.41}
+{'loss': 0.0647, 'grad_norm': 0.13445784151554108, 'learning_rate': 0.00017299221357063404, 'epoch': 0.41}
+{'loss': 0.0711, 'grad_norm': 0.22324228286743164, 'learning_rate': 0.000172880978865406, 'epoch': 0.41}
+{'loss': 0.0583, 'grad_norm': 0.22357618808746338, 'learning_rate': 0.000172769744160178, 'epoch': 0.41}
+{'loss': 0.0653, 'grad_norm': 0.2627943456172943, 'learning_rate': 0.00017265850945494995, 'epoch': 0.41}
+{'loss': 0.0753, 'grad_norm': 0.2965618073940277, 'learning_rate': 0.00017254727474972192, 'epoch': 0.42}
+{'loss': 0.0707, 'grad_norm': 0.342805951833725, 'learning_rate': 0.00017243604004449388, 'epoch': 0.42}
+{'loss': 0.0529, 'grad_norm': 0.16599854826927185, 'learning_rate': 0.00017232480533926585, 'epoch': 0.42}
+{'loss': 0.1124, 'grad_norm': 0.19946525990962982, 'learning_rate': 0.00017221357063403782, 'epoch': 0.42}
+{'loss': 0.0681, 'grad_norm': 0.19082719087600708, 'learning_rate': 0.0001721023359288098, 'epoch': 0.42}
+{'loss': 0.1103, 'grad_norm': 0.18069683015346527, 'learning_rate': 0.00017199110122358176, 'epoch': 0.42}
+{'loss': 0.0813, 'grad_norm': 0.24317744374275208, 'learning_rate': 0.00017187986651835373, 'epoch': 0.43}
+{'loss': 0.0557, 'grad_norm': 0.2406262457370758, 'learning_rate': 0.0001717686318131257, 'epoch': 0.43}
+{'loss': 0.0768, 'grad_norm': 0.2982857823371887, 'learning_rate': 0.00017165739710789767, 'epoch': 0.43}
+{'loss': 0.0468, 'grad_norm': 0.1369456946849823, 'learning_rate': 0.00017154616240266964, 'epoch': 0.43}
+{'loss': 0.0669, 'grad_norm': 0.14812670648097992, 'learning_rate': 0.0001714349276974416, 'epoch': 0.43}
+{'loss': 0.0956, 'grad_norm': 0.24868425726890564, 'learning_rate': 0.00017132369299221358, 'epoch': 0.43}
+{'loss': 0.0625, 'grad_norm': 0.14885933697223663, 'learning_rate': 0.00017121245828698555, 'epoch': 0.44}
+{'loss': 0.0838, 'grad_norm': 0.24400901794433594, 'learning_rate': 0.00017110122358175752, 'epoch': 0.44}
+{'loss': 0.0697, 'grad_norm': 0.1633787304162979, 'learning_rate': 0.0001709899888765295, 'epoch': 0.44}
+{'loss': 0.0444, 'grad_norm': 0.23070721328258514, 'learning_rate': 0.00017087875417130146, 'epoch': 0.44}
+{'loss': 0.0796, 'grad_norm': 0.3668898642063141, 'learning_rate': 0.00017076751946607343, 'epoch': 0.44}
+{'loss': 0.06, 'grad_norm': 0.2189767062664032, 'learning_rate': 0.0001706562847608454, 'epoch': 0.45}
+{'loss': 0.0784, 'grad_norm': 0.28549426794052124, 'learning_rate': 0.00017054505005561737, 'epoch': 0.45}
+{'loss': 0.0599, 'grad_norm': 0.29081156849861145, 'learning_rate': 0.00017043381535038934, 'epoch': 0.45}
+{'loss': 0.0522, 'grad_norm': 0.2345689982175827, 'learning_rate': 0.00017032258064516128, 'epoch': 0.45}
+{'loss': 0.131, 'grad_norm': 0.31661027669906616, 'learning_rate': 0.00017021134593993328, 'epoch': 0.45}
+{'loss': 0.0743, 'grad_norm': 0.3030385673046112, 'learning_rate': 0.00017010011123470525, 'epoch': 0.45}
+{'loss': 0.0911, 'grad_norm': 0.1617685705423355, 'learning_rate': 0.00016998887652947721, 'epoch': 0.46}
+{'loss': 0.0651, 'grad_norm': 0.18826857209205627, 'learning_rate': 0.00016987764182424916, 'epoch': 0.46}
+{'loss': 0.0504, 'grad_norm': 0.11334668099880219, 'learning_rate': 0.00016976640711902115, 'epoch': 0.46}
+{'loss': 0.0743, 'grad_norm': 0.21399059891700745, 'learning_rate': 0.00016965517241379312, 'epoch': 0.46}
+{'loss': 0.0942, 'grad_norm': 0.3072810471057892, 'learning_rate': 0.00016954393770856507, 'epoch': 0.46}
+{'loss': 0.0884, 'grad_norm': 0.1934838593006134, 'learning_rate': 0.00016943270300333704, 'epoch': 0.46}
+{'loss': 0.0735, 'grad_norm': 0.20988166332244873, 'learning_rate': 0.00016932146829810903, 'epoch': 0.47}
+{'loss': 0.0745, 'grad_norm': 0.29598742723464966, 'learning_rate': 0.000169210233592881, 'epoch': 0.47}
+{'loss': 0.093, 'grad_norm': 0.20961226522922516, 'learning_rate': 0.00016909899888765294, 'epoch': 0.47}
+{'loss': 0.1041, 'grad_norm': 0.2351766973733902, 'learning_rate': 0.0001689877641824249, 'epoch': 0.47}
+{'loss': 0.0756, 'grad_norm': 0.24084308743476868, 'learning_rate': 0.0001688765294771969, 'epoch': 0.47}
+{'loss': 0.0573, 'grad_norm': 0.16447114944458008, 'learning_rate': 0.00016876529477196885, 'epoch': 0.47}
+{'loss': 0.0774, 'grad_norm': 0.24861663579940796, 'learning_rate': 0.00016865406006674082, 'epoch': 0.47}
+{'loss': 0.0699, 'grad_norm': 0.19393573701381683, 'learning_rate': 0.0001685428253615128, 'epoch': 0.48}
+{'loss': 0.1064, 'grad_norm': 0.22912897169589996, 'learning_rate': 0.0001684315906562848, 'epoch': 0.48}
+{'loss': 0.0524, 'grad_norm': 0.19884009659290314, 'learning_rate': 0.00016832035595105673, 'epoch': 0.48}
+{'loss': 0.0802, 'grad_norm': 0.1804242730140686, 'learning_rate': 0.0001682091212458287, 'epoch': 0.48}
+{'loss': 0.0621, 'grad_norm': 0.37989115715026855, 'learning_rate': 0.00016809788654060067, 'epoch': 0.48}
+{'loss': 0.0468, 'grad_norm': 0.12392736971378326, 'learning_rate': 0.00016798665183537267, 'epoch': 0.48}
+{'loss': 0.0728, 'grad_norm': 0.11105737090110779, 'learning_rate': 0.0001678754171301446, 'epoch': 0.49}
+{'loss': 0.0799, 'grad_norm': 0.22926023602485657, 'learning_rate': 0.00016776418242491658, 'epoch': 0.49}
+{'loss': 0.0893, 'grad_norm': 0.252114474773407, 'learning_rate': 0.00016765294771968855, 'epoch': 0.49}
+{'loss': 0.0841, 'grad_norm': 0.19944383203983307, 'learning_rate': 0.00016754171301446052, 'epoch': 0.49}
+{'loss': 0.0928, 'grad_norm': 0.10375624895095825, 'learning_rate': 0.0001674304783092325, 'epoch': 0.49}
+{'loss': 0.081, 'grad_norm': 0.2105250507593155, 'learning_rate': 0.00016731924360400446, 'epoch': 0.49}
+{'loss': 0.0706, 'grad_norm': 0.18396757543087006, 'learning_rate': 0.00016720800889877643, 'epoch': 0.5}
+{'loss': 0.0817, 'grad_norm': 0.22033515572547913, 'learning_rate': 0.0001670967741935484, 'epoch': 0.5}
+{'loss': 0.0773, 'grad_norm': 0.31548500061035156, 'learning_rate': 0.00016698553948832036, 'epoch': 0.5}
+{'loss': 0.081, 'grad_norm': 0.26005545258522034, 'learning_rate': 0.00016687430478309233, 'epoch': 0.5}
+{'loss': 0.0825, 'grad_norm': 0.24561214447021484, 'learning_rate': 0.0001667630700778643, 'epoch': 0.5}
+{'loss': 0.0683, 'grad_norm': 0.19424952566623688, 'learning_rate': 0.00016665183537263627, 'epoch': 0.51}
+{'loss': 0.0726, 'grad_norm': 0.2940357029438019, 'learning_rate': 0.00016654060066740824, 'epoch': 0.51}
+{'loss': 0.0567, 'grad_norm': 0.24629715085029602, 'learning_rate': 0.0001664293659621802, 'epoch': 0.51}
+{'loss': 0.0687, 'grad_norm': 0.16620546579360962, 'learning_rate': 0.00016631813125695218, 'epoch': 0.51}
+{'loss': 0.1071, 'grad_norm': 0.2508446276187897, 'learning_rate': 0.00016620689655172415, 'epoch': 0.51}
+{'loss': 0.0864, 'grad_norm': 0.3086546063423157, 'learning_rate': 0.00016609566184649612, 'epoch': 0.51}
+{'loss': 0.0794, 'grad_norm': 0.16990453004837036, 'learning_rate': 0.00016598442714126806, 'epoch': 0.52}
+{'loss': 0.1018, 'grad_norm': 0.26230475306510925, 'learning_rate': 0.00016587319243604006, 'epoch': 0.52}
+{'loss': 0.0655, 'grad_norm': 0.14299596846103668, 'learning_rate': 0.00016576195773081203, 'epoch': 0.52}
+{'loss': 0.0438, 'grad_norm': 0.1289943903684616, 'learning_rate': 0.000165650723025584, 'epoch': 0.52}
+{'loss': 0.0787, 'grad_norm': 0.1556689292192459, 'learning_rate': 0.00016553948832035594, 'epoch': 0.52}
+{'loss': 0.0691, 'grad_norm': 0.1258232593536377, 'learning_rate': 0.00016542825361512794, 'epoch': 0.52}
+{'loss': 0.0663, 'grad_norm': 0.17755551636219025, 'learning_rate': 0.0001653170189098999, 'epoch': 0.53}
+{'loss': 0.0889, 'grad_norm': 0.35109612345695496, 'learning_rate': 0.00016520578420467188, 'epoch': 0.53}
+{'loss': 0.0489, 'grad_norm': 0.21905358135700226, 'learning_rate': 0.00016509454949944382, 'epoch': 0.53}
+{'loss': 0.0723, 'grad_norm': 0.16516150534152985, 'learning_rate': 0.00016498331479421582, 'epoch': 0.53}
+{'loss': 0.0693, 'grad_norm': 0.12310923635959625, 'learning_rate': 0.00016487208008898779, 'epoch': 0.53}
+{'loss': 0.0819, 'grad_norm': 0.32015714049339294, 'learning_rate': 0.00016476084538375973, 'epoch': 0.53}
+{'loss': 0.0814, 'grad_norm': 0.29358378052711487, 'learning_rate': 0.0001646496106785317, 'epoch': 0.54}
+{'loss': 0.041, 'grad_norm': 0.17360255122184753, 'learning_rate': 0.0001645383759733037, 'epoch': 0.54}
+{'loss': 0.094, 'grad_norm': 0.3012501895427704, 'learning_rate': 0.00016442714126807566, 'epoch': 0.54}
+{'loss': 0.0911, 'grad_norm': 0.12694944441318512, 'learning_rate': 0.0001643159065628476, 'epoch': 0.54}
+{'loss': 0.1075, 'grad_norm': 0.3380785286426544, 'learning_rate': 0.00016420467185761958, 'epoch': 0.54}
+{'loss': 0.092, 'grad_norm': 0.22622324526309967, 'learning_rate': 0.00016409343715239157, 'epoch': 0.54}
+{'loss': 0.1056, 'grad_norm': 0.2205742448568344, 'learning_rate': 0.00016398220244716351, 'epoch': 0.55}
+{'loss': 0.0586, 'grad_norm': 0.14460489153862, 'learning_rate': 0.00016387096774193548, 'epoch': 0.55}
+{'loss': 0.0578, 'grad_norm': 0.19982430338859558, 'learning_rate': 0.00016375973303670745, 'epoch': 0.55}
+{'loss': 0.0801, 'grad_norm': 0.23620612919330597, 'learning_rate': 0.00016364849833147945, 'epoch': 0.55}
+{'loss': 0.0978, 'grad_norm': 0.5699676275253296, 'learning_rate': 0.0001635372636262514, 'epoch': 0.55}
+{'loss': 0.0866, 'grad_norm': 0.3380393087863922, 'learning_rate': 0.00016342602892102336, 'epoch': 0.55}
+{'loss': 0.0831, 'grad_norm': 0.22652238607406616, 'learning_rate': 0.00016331479421579533, 'epoch': 0.56}
+{'loss': 0.0769, 'grad_norm': 0.1991991549730301, 'learning_rate': 0.0001632035595105673, 'epoch': 0.56}
+{'loss': 0.0658, 'grad_norm': 0.1283888816833496, 'learning_rate': 0.00016309232480533927, 'epoch': 0.56}
+{'loss': 0.0825, 'grad_norm': 0.3320767879486084, 'learning_rate': 0.00016298109010011124, 'epoch': 0.56}
+{'loss': 0.0891, 'grad_norm': 0.17798876762390137, 'learning_rate': 0.0001628698553948832, 'epoch': 0.56}
+{'loss': 0.0946, 'grad_norm': 0.24510151147842407, 'learning_rate': 0.00016275862068965518, 'epoch': 0.56}
+{'loss': 0.0629, 'grad_norm': 0.2325945496559143, 'learning_rate': 0.00016264738598442715, 'epoch': 0.56}
+{'loss': 0.0639, 'grad_norm': 0.15996655821800232, 'learning_rate': 0.00016253615127919912, 'epoch': 0.57}
+{'loss': 0.0658, 'grad_norm': 0.13395173847675323, 'learning_rate': 0.0001624249165739711, 'epoch': 0.57}
+{'loss': 0.0489, 'grad_norm': 0.19855773448944092, 'learning_rate': 0.00016231368186874306, 'epoch': 0.57}
+{'loss': 0.0743, 'grad_norm': 0.16434238851070404, 'learning_rate': 0.00016220244716351503, 'epoch': 0.57}
+{'loss': 0.0642, 'grad_norm': 0.2575201690196991, 'learning_rate': 0.000162091212458287, 'epoch': 0.57}
+{'loss': 0.0857, 'grad_norm': 0.2727621793746948, 'learning_rate': 0.00016197997775305897, 'epoch': 0.57}
+{'loss': 0.0918, 'grad_norm': 0.26826685667037964, 'learning_rate': 0.00016186874304783094, 'epoch': 0.58}
+{'loss': 0.072, 'grad_norm': 0.1761682778596878, 'learning_rate': 0.0001617575083426029, 'epoch': 0.58}
+{'loss': 0.0661, 'grad_norm': 0.15376657247543335, 'learning_rate': 0.00016164627363737487, 'epoch': 0.58}
+{'loss': 0.0886, 'grad_norm': 0.20664246380329132, 'learning_rate': 0.00016153503893214684, 'epoch': 0.58}
+{'loss': 0.053, 'grad_norm': 0.2347024530172348, 'learning_rate': 0.00016142380422691881, 'epoch': 0.58}
+{'loss': 0.0808, 'grad_norm': 0.2073095440864563, 'learning_rate': 0.00016131256952169078, 'epoch': 0.58}
+{'loss': 0.0503, 'grad_norm': 0.23032917082309723, 'learning_rate': 0.00016120133481646273, 'epoch': 0.59}
+{'loss': 0.0708, 'grad_norm': 0.2084464728832245, 'learning_rate': 0.00016109010011123472, 'epoch': 0.59}
+{'loss': 0.0727, 'grad_norm': 0.12968885898590088, 'learning_rate': 0.0001609788654060067, 'epoch': 0.59}
+{'loss': 0.0667, 'grad_norm': 0.20048032701015472, 'learning_rate': 0.00016086763070077866, 'epoch': 0.59}
+{'loss': 0.0693, 'grad_norm': 0.14271847903728485, 'learning_rate': 0.0001607563959955506, 'epoch': 0.59}
+{'loss': 0.0559, 'grad_norm': 0.26102519035339355, 'learning_rate': 0.0001606451612903226, 'epoch': 0.59}
+{'loss': 0.0506, 'grad_norm': 0.19375190138816833, 'learning_rate': 0.00016053392658509457, 'epoch': 0.6}
+{'loss': 0.0497, 'grad_norm': 0.27754178643226624, 'learning_rate': 0.0001604226918798665, 'epoch': 0.6}
+{'loss': 0.0488, 'grad_norm': 0.21895432472229004, 'learning_rate': 0.00016031145717463848, 'epoch': 0.6}
+{'loss': 0.0959, 'grad_norm': 0.20243346691131592, 'learning_rate': 0.00016020022246941048, 'epoch': 0.6}
+{'loss': 0.0741, 'grad_norm': 0.1918608397245407, 'learning_rate': 0.00016008898776418245, 'epoch': 0.6}
+{'loss': 0.0728, 'grad_norm': 0.3477526307106018, 'learning_rate': 0.0001599777530589544, 'epoch': 0.6}
+{'loss': 0.0874, 'grad_norm': 0.30270668864250183, 'learning_rate': 0.00015986651835372636, 'epoch': 0.61}
+{'loss': 0.067, 'grad_norm': 0.12544618546962738, 'learning_rate': 0.00015975528364849836, 'epoch': 0.61}
+{'loss': 0.0878, 'grad_norm': 0.20780667662620544, 'learning_rate': 0.00015964404894327033, 'epoch': 0.61}
+{'loss': 0.0768, 'grad_norm': 0.24042831361293793, 'learning_rate': 0.00015953281423804227, 'epoch': 0.61}
+{'loss': 0.0597, 'grad_norm': 0.2320539951324463, 'learning_rate': 0.00015942157953281424, 'epoch': 0.61}
+{'loss': 0.0656, 'grad_norm': 0.23854465782642365, 'learning_rate': 0.00015931034482758623, 'epoch': 0.61}
+{'loss': 0.0601, 'grad_norm': 0.2262004166841507, 'learning_rate': 0.00015919911012235818, 'epoch': 0.62}
+{'loss': 0.0727, 'grad_norm': 0.20554505288600922, 'learning_rate': 0.00015908787541713015, 'epoch': 0.62}
+{'loss': 0.0727, 'grad_norm': 0.3880656957626343, 'learning_rate': 0.00015897664071190212, 'epoch': 0.62}
+{'loss': 0.0649, 'grad_norm': 0.22299136221408844, 'learning_rate': 0.0001588654060066741, 'epoch': 0.62}
+{'loss': 0.0534, 'grad_norm': 0.1948188692331314, 'learning_rate': 0.00015875417130144606, 'epoch': 0.62}
+{'loss': 0.091, 'grad_norm': 0.2984125316143036, 'learning_rate': 0.00015864293659621803, 'epoch': 0.62}
+{'loss': 0.0677, 'grad_norm': 0.13394521176815033, 'learning_rate': 0.00015853170189099, 'epoch': 0.63}
+{'loss': 0.0648, 'grad_norm': 0.31731101870536804, 'learning_rate': 0.00015842046718576196, 'epoch': 0.63}
+{'loss': 0.0625, 'grad_norm': 0.16612069308757782, 'learning_rate': 0.00015830923248053393, 'epoch': 0.63}
+{'loss': 0.0542, 'grad_norm': 0.10141804069280624, 'learning_rate': 0.0001581979977753059, 'epoch': 0.63}
+{'loss': 0.0609, 'grad_norm': 0.22402271628379822, 'learning_rate': 0.00015808676307007787, 'epoch': 0.63}
+{'loss': 0.1045, 'grad_norm': 0.26176518201828003, 'learning_rate': 0.00015797552836484984, 'epoch': 0.64}
+{'loss': 0.101, 'grad_norm': 0.31269213557243347, 'learning_rate': 0.0001578642936596218, 'epoch': 0.64}
+{'loss': 0.0702, 'grad_norm': 0.31830453872680664, 'learning_rate': 0.00015775305895439378, 'epoch': 0.64}
+{'loss': 0.0769, 'grad_norm': 0.2404564619064331, 'learning_rate': 0.00015764182424916572, 'epoch': 0.64}
+{'loss': 0.0873, 'grad_norm': 0.12967321276664734, 'learning_rate': 0.00015753058954393772, 'epoch': 0.64}
+{'loss': 0.0914, 'grad_norm': 0.17855779826641083, 'learning_rate': 0.0001574193548387097, 'epoch': 0.64}
+{'loss': 0.0762, 'grad_norm': 0.20188666880130768, 'learning_rate': 0.00015730812013348166, 'epoch': 0.65}
+{'loss': 0.0967, 'grad_norm': 0.18590745329856873, 'learning_rate': 0.0001571968854282536, 'epoch': 0.65}
+{'loss': 0.0772, 'grad_norm': 0.1931127905845642, 'learning_rate': 0.0001570856507230256, 'epoch': 0.65}
+{'loss': 0.0715, 'grad_norm': 0.20172269642353058, 'learning_rate': 0.00015697441601779757, 'epoch': 0.65}
+{'loss': 0.1153, 'grad_norm': 0.2638322114944458, 'learning_rate': 0.0001568631813125695, 'epoch': 0.65}
+{'loss': 0.076, 'grad_norm': 0.1822238564491272, 'learning_rate': 0.00015675194660734148, 'epoch': 0.65}
+{'loss': 0.0856, 'grad_norm': 0.1762954443693161, 'learning_rate': 0.00015664071190211348, 'epoch': 0.66}
+{'loss': 0.0424, 'grad_norm': 0.08048450946807861, 'learning_rate': 0.00015652947719688545, 'epoch': 0.66}
+{'loss': 0.0658, 'grad_norm': 0.4071662425994873, 'learning_rate': 0.0001564182424916574, 'epoch': 0.66}
+{'loss': 0.0989, 'grad_norm': 0.26199817657470703, 'learning_rate': 0.00015630700778642936, 'epoch': 0.66}
+{'loss': 0.0624, 'grad_norm': 0.14604558050632477, 'learning_rate': 0.00015619577308120135, 'epoch': 0.66}
+{'loss': 0.0675, 'grad_norm': 0.2020702213048935, 'learning_rate': 0.00015608453837597332, 'epoch': 0.66}
+{'loss': 0.0889, 'grad_norm': 0.33659011125564575, 'learning_rate': 0.00015597330367074527, 'epoch': 0.67}
+{'loss': 0.0665, 'grad_norm': 0.17729158699512482, 'learning_rate': 0.00015586206896551724, 'epoch': 0.67}
+{'loss': 0.1017, 'grad_norm': 0.22668878734111786, 'learning_rate': 0.00015575083426028923, 'epoch': 0.67}
+{'loss': 0.1008, 'grad_norm': 0.332893431186676, 'learning_rate': 0.00015563959955506118, 'epoch': 0.67}
+{'loss': 0.0964, 'grad_norm': 0.2837591767311096, 'learning_rate': 0.00015552836484983314, 'epoch': 0.67}
+{'loss': 0.0953, 'grad_norm': 0.30176565051078796, 'learning_rate': 0.00015541713014460511, 'epoch': 0.67}
+{'loss': 0.0787, 'grad_norm': 0.23825302720069885, 'learning_rate': 0.0001553058954393771, 'epoch': 0.68}
+{'loss': 0.0718, 'grad_norm': 0.18848271667957306, 'learning_rate': 0.00015519466073414905, 'epoch': 0.68}
+{'loss': 0.0528, 'grad_norm': 0.25181248784065247, 'learning_rate': 0.00015508342602892102, 'epoch': 0.68}
+{'loss': 0.0723, 'grad_norm': 0.17921678721904755, 'learning_rate': 0.000154972191323693, 'epoch': 0.68}
+{'loss': 0.0708, 'grad_norm': 0.2115882933139801, 'learning_rate': 0.00015486095661846496, 'epoch': 0.68}
+{'loss': 0.083, 'grad_norm': 0.21323241293430328, 'learning_rate': 0.00015474972191323693, 'epoch': 0.68}
+{'loss': 0.0833, 'grad_norm': 0.2502909302711487, 'learning_rate': 0.0001546384872080089, 'epoch': 0.69}
+{'loss': 0.0752, 'grad_norm': 0.19622796773910522, 'learning_rate': 0.00015452725250278087, 'epoch': 0.69}
+{'loss': 0.078, 'grad_norm': 0.37198856472969055, 'learning_rate': 0.00015441601779755284, 'epoch': 0.69}
+{'loss': 0.0946, 'grad_norm': 0.2747386395931244, 'learning_rate': 0.0001543047830923248, 'epoch': 0.69}
+{'loss': 0.0488, 'grad_norm': 0.22563807666301727, 'learning_rate': 0.00015419354838709678, 'epoch': 0.69}
+{'loss': 0.0986, 'grad_norm': 0.15166424214839935, 'learning_rate': 0.00015408231368186875, 'epoch': 0.69}
+{'loss': 0.0667, 'grad_norm': 0.2908703088760376, 'learning_rate': 0.00015397107897664072, 'epoch': 0.69}
+{'loss': 0.0912, 'grad_norm': 0.2101259082555771, 'learning_rate': 0.0001538598442714127, 'epoch': 0.7}
+{'loss': 0.0529, 'grad_norm': 0.17976918816566467, 'learning_rate': 0.00015374860956618466, 'epoch': 0.7}
+{'loss': 0.0911, 'grad_norm': 0.11298251152038574, 'learning_rate': 0.00015363737486095663, 'epoch': 0.7}
+{'loss': 0.0524, 'grad_norm': 0.17127454280853271, 'learning_rate': 0.0001535261401557286, 'epoch': 0.7}
+{'loss': 0.0893, 'grad_norm': 0.4127277731895447, 'learning_rate': 0.00015341490545050057, 'epoch': 0.7}
+{'loss': 0.0742, 'grad_norm': 0.16436810791492462, 'learning_rate': 0.00015330367074527254, 'epoch': 0.7}
+{'loss': 0.0843, 'grad_norm': 0.2817465364933014, 'learning_rate': 0.0001531924360400445, 'epoch': 0.71}
+{'loss': 0.0625, 'grad_norm': 0.13547678291797638, 'learning_rate': 0.00015308120133481647, 'epoch': 0.71}
+{'loss': 0.07, 'grad_norm': 0.1843014806509018, 'learning_rate': 0.00015296996662958844, 'epoch': 0.71}
+{'loss': 0.0592, 'grad_norm': 0.22545531392097473, 'learning_rate': 0.00015285873192436039, 'epoch': 0.71}
+{'loss': 0.0699, 'grad_norm': 0.21775881946086884, 'learning_rate': 0.00015274749721913238, 'epoch': 0.71}
+{'loss': 0.0829, 'grad_norm': 0.2862039804458618, 'learning_rate': 0.00015263626251390435, 'epoch': 0.71}
+{'loss': 0.0517, 'grad_norm': 0.3548561632633209, 'learning_rate': 0.00015252502780867632, 'epoch': 0.72}
+{'loss': 0.0972, 'grad_norm': 0.19026848673820496, 'learning_rate': 0.00015241379310344826, 'epoch': 0.72}
+{'loss': 0.0635, 'grad_norm': 0.234853133559227, 'learning_rate': 0.00015230255839822026, 'epoch': 0.72}
+{'loss': 0.0709, 'grad_norm': 0.2238684743642807, 'learning_rate': 0.00015219132369299223, 'epoch': 0.72}
+{'loss': 0.0484, 'grad_norm': 0.11702622473239899, 'learning_rate': 0.00015208008898776417, 'epoch': 0.72}
+{'loss': 0.051, 'grad_norm': 0.249685138463974, 'learning_rate': 0.00015196885428253614, 'epoch': 0.72}
+{'loss': 0.0579, 'grad_norm': 0.28945305943489075, 'learning_rate': 0.00015185761957730814, 'epoch': 0.73}
+{'loss': 0.0666, 'grad_norm': 0.09876635670661926, 'learning_rate': 0.0001517463848720801, 'epoch': 0.73}
+{'loss': 0.0723, 'grad_norm': 0.11535418778657913, 'learning_rate': 0.00015163515016685205, 'epoch': 0.73}
+{'loss': 0.0766, 'grad_norm': 0.1640748530626297, 'learning_rate': 0.00015152391546162402, 'epoch': 0.73}
+{'loss': 0.0816, 'grad_norm': 0.2756810486316681, 'learning_rate': 0.00015141268075639602, 'epoch': 0.73}
+{'loss': 0.0508, 'grad_norm': 0.11618592590093613, 'learning_rate': 0.00015130144605116796, 'epoch': 0.73}
+{'loss': 0.094, 'grad_norm': 0.1962355375289917, 'learning_rate': 0.00015119021134593993, 'epoch': 0.74}
+{'loss': 0.0786, 'grad_norm': 0.27058735489845276, 'learning_rate': 0.0001510789766407119, 'epoch': 0.74}
+{'loss': 0.0907, 'grad_norm': 0.17517052590847015, 'learning_rate': 0.0001509677419354839, 'epoch': 0.74}
+{'loss': 0.1074, 'grad_norm': 0.46684524416923523, 'learning_rate': 0.00015085650723025584, 'epoch': 0.74}
+{'loss': 0.0907, 'grad_norm': 0.32496652007102966, 'learning_rate': 0.0001507452725250278, 'epoch': 0.74}
+{'loss': 0.0744, 'grad_norm': 0.2572169601917267, 'learning_rate': 0.00015063403781979978, 'epoch': 0.74}
+{'loss': 0.0513, 'grad_norm': 0.18439677357673645, 'learning_rate': 0.00015052280311457177, 'epoch': 0.75}
+{'loss': 0.0447, 'grad_norm': 0.12369269132614136, 'learning_rate': 0.00015041156840934372, 'epoch': 0.75}
+{'loss': 0.0787, 'grad_norm': 0.21583198010921478, 'learning_rate': 0.00015030033370411569, 'epoch': 0.75}
+{'loss': 0.0455, 'grad_norm': 0.1575365513563156, 'learning_rate': 0.00015018909899888765, 'epoch': 0.75}
+{'loss': 0.0686, 'grad_norm': 0.22611330449581146, 'learning_rate': 0.00015007786429365962, 'epoch': 0.75}
+{'loss': 0.0581, 'grad_norm': 0.21563738584518433, 'learning_rate': 0.0001499666295884316, 'epoch': 0.76}
+{'loss': 0.0508, 'grad_norm': 0.487701952457428, 'learning_rate': 0.00014985539488320356, 'epoch': 0.76}
+{'loss': 0.0804, 'grad_norm': 0.33352145552635193, 'learning_rate': 0.00014974416017797553, 'epoch': 0.76}
+{'loss': 0.0527, 'grad_norm': 0.1158343106508255, 'learning_rate': 0.0001496329254727475, 'epoch': 0.76}
+{'loss': 0.0832, 'grad_norm': 0.20901644229888916, 'learning_rate': 0.00014952169076751947, 'epoch': 0.76}
+{'loss': 0.1148, 'grad_norm': 0.3033134341239929, 'learning_rate': 0.00014941045606229144, 'epoch': 0.76}
+{'loss': 0.086, 'grad_norm': 0.1810237020254135, 'learning_rate': 0.0001492992213570634, 'epoch': 0.77}
+{'loss': 0.0643, 'grad_norm': 0.1872093379497528, 'learning_rate': 0.00014918798665183538, 'epoch': 0.77}
+{'loss': 0.0655, 'grad_norm': 0.15139101445674896, 'learning_rate': 0.00014907675194660735, 'epoch': 0.77}
+{'loss': 0.054, 'grad_norm': 0.2476588636636734, 'learning_rate': 0.00014896551724137932, 'epoch': 0.77}
+{'loss': 0.1162, 'grad_norm': 0.3210763931274414, 'learning_rate': 0.0001488542825361513, 'epoch': 0.77}
+{'loss': 0.0849, 'grad_norm': 0.20512336492538452, 'learning_rate': 0.00014874304783092326, 'epoch': 0.77}
+{'loss': 0.0637, 'grad_norm': 0.18318580090999603, 'learning_rate': 0.00014863181312569523, 'epoch': 0.78}
+{'loss': 0.0683, 'grad_norm': 0.21914175152778625, 'learning_rate': 0.00014852057842046717, 'epoch': 0.78}
+{'loss': 0.0594, 'grad_norm': 0.25927260518074036, 'learning_rate': 0.00014840934371523917, 'epoch': 0.78}
+{'loss': 0.0533, 'grad_norm': 0.15757913887500763, 'learning_rate': 0.00014829810901001114, 'epoch': 0.78}
+{'loss': 0.0737, 'grad_norm': 0.14606140553951263, 'learning_rate': 0.0001481868743047831, 'epoch': 0.78}
+{'loss': 0.0708, 'grad_norm': 0.23752816021442413, 'learning_rate': 0.00014807563959955505, 'epoch': 0.78}
+{'loss': 0.0709, 'grad_norm': 0.17818818986415863, 'learning_rate': 0.00014796440489432705, 'epoch': 0.79}
+{'loss': 0.0342, 'grad_norm': 0.1319383680820465, 'learning_rate': 0.00014785317018909902, 'epoch': 0.79}
+{'loss': 0.0705, 'grad_norm': 0.1351117342710495, 'learning_rate': 0.00014774193548387098, 'epoch': 0.79}
+{'loss': 0.0663, 'grad_norm': 0.24996747076511383, 'learning_rate': 0.00014763070077864293, 'epoch': 0.79}
+{'loss': 0.0952, 'grad_norm': 0.27385425567626953, 'learning_rate': 0.00014751946607341492, 'epoch': 0.79}
+{'loss': 0.0675, 'grad_norm': 0.19439886510372162, 'learning_rate': 0.0001474082313681869, 'epoch': 0.79}
+{'loss': 0.044, 'grad_norm': 0.22429132461547852, 'learning_rate': 0.00014729699666295884, 'epoch': 0.8}
+{'loss': 0.0856, 'grad_norm': 0.3162388503551483, 'learning_rate': 0.0001471857619577308, 'epoch': 0.8}
+{'loss': 0.0738, 'grad_norm': 0.21772675216197968, 'learning_rate': 0.0001470745272525028, 'epoch': 0.8}
+{'loss': 0.055, 'grad_norm': 0.19044539332389832, 'learning_rate': 0.00014696329254727477, 'epoch': 0.8}
+{'loss': 0.0678, 'grad_norm': 0.15262378752231598, 'learning_rate': 0.00014685205784204671, 'epoch': 0.8}
+{'loss': 0.0593, 'grad_norm': 0.26746314764022827, 'learning_rate': 0.00014674082313681868, 'epoch': 0.8}
+{'loss': 0.0712, 'grad_norm': 0.210494726896286, 'learning_rate': 0.00014662958843159068, 'epoch': 0.81}
+{'loss': 0.0739, 'grad_norm': 0.1496715098619461, 'learning_rate': 0.00014651835372636262, 'epoch': 0.81}
+{'loss': 0.0603, 'grad_norm': 0.16375036537647247, 'learning_rate': 0.0001464071190211346, 'epoch': 0.81}
+{'loss': 0.1017, 'grad_norm': 0.2986334562301636, 'learning_rate': 0.00014629588431590656, 'epoch': 0.81}
+{'loss': 0.0358, 'grad_norm': 0.21423789858818054, 'learning_rate': 0.00014618464961067856, 'epoch': 0.81}
+{'loss': 0.0391, 'grad_norm': 0.14613135159015656, 'learning_rate': 0.0001460734149054505, 'epoch': 0.81}
+{'loss': 0.0839, 'grad_norm': 0.14413319528102875, 'learning_rate': 0.00014596218020022247, 'epoch': 0.81}
+{'loss': 0.0807, 'grad_norm': 0.25760433077812195, 'learning_rate': 0.00014585094549499444, 'epoch': 0.82}
+{'loss': 0.0867, 'grad_norm': 0.3274213969707489, 'learning_rate': 0.0001457397107897664, 'epoch': 0.82}
+{'loss': 0.0909, 'grad_norm': 0.3638315796852112, 'learning_rate': 0.00014562847608453838, 'epoch': 0.82}
+{'loss': 0.0767, 'grad_norm': 0.16810883581638336, 'learning_rate': 0.00014551724137931035, 'epoch': 0.82}
+{'loss': 0.0828, 'grad_norm': 0.27408483624458313, 'learning_rate': 0.00014540600667408232, 'epoch': 0.82}
+{'loss': 0.0453, 'grad_norm': 0.12681855261325836, 'learning_rate': 0.0001452947719688543, 'epoch': 0.82}
+{'loss': 0.0408, 'grad_norm': 0.13004986941814423, 'learning_rate': 0.00014518353726362626, 'epoch': 0.83}
+{'loss': 0.0491, 'grad_norm': 0.21092961728572845, 'learning_rate': 0.00014507230255839823, 'epoch': 0.83}
+{'loss': 0.0692, 'grad_norm': 0.19968318939208984, 'learning_rate': 0.0001449610678531702, 'epoch': 0.83}
+{'loss': 0.0896, 'grad_norm': 0.31063607335090637, 'learning_rate': 0.00014484983314794217, 'epoch': 0.83}
+{'loss': 0.0602, 'grad_norm': 0.12208142131567001, 'learning_rate': 0.00014473859844271413, 'epoch': 0.83}
+{'loss': 0.0567, 'grad_norm': 0.2168203592300415, 'learning_rate': 0.0001446273637374861, 'epoch': 0.83}
+{'loss': 0.0619, 'grad_norm': 0.2195284217596054, 'learning_rate': 0.00014451612903225807, 'epoch': 0.84}
+{'loss': 0.0864, 'grad_norm': 0.27938488125801086, 'learning_rate': 0.00014440489432703004, 'epoch': 0.84}
+{'loss': 0.0561, 'grad_norm': 0.22171323001384735, 'learning_rate': 0.000144293659621802, 'epoch': 0.84}
+{'loss': 0.0672, 'grad_norm': 0.2394455522298813, 'learning_rate': 0.00014418242491657398, 'epoch': 0.84}
+{'loss': 0.0686, 'grad_norm': 0.30740904808044434, 'learning_rate': 0.00014407119021134595, 'epoch': 0.84}
+{'loss': 0.0757, 'grad_norm': 0.23053893446922302, 'learning_rate': 0.00014395995550611792, 'epoch': 0.84}
+{'loss': 0.0886, 'grad_norm': 0.2610541880130768, 'learning_rate': 0.0001438487208008899, 'epoch': 0.85}
+{'loss': 0.098, 'grad_norm': 0.23068542778491974, 'learning_rate': 0.00014373748609566183, 'epoch': 0.85}
+{'loss': 0.0798, 'grad_norm': 0.12417431175708771, 'learning_rate': 0.00014362625139043383, 'epoch': 0.85}
+{'loss': 0.0713, 'grad_norm': 0.28127801418304443, 'learning_rate': 0.0001435150166852058, 'epoch': 0.85}
+{'loss': 0.071, 'grad_norm': 0.2949793040752411, 'learning_rate': 0.00014340378197997777, 'epoch': 0.85}
+{'loss': 0.0683, 'grad_norm': 0.15519313514232635, 'learning_rate': 0.0001432925472747497, 'epoch': 0.85}
+{'loss': 0.0764, 'grad_norm': 0.3756921589374542, 'learning_rate': 0.0001431813125695217, 'epoch': 0.86}
+{'loss': 0.0811, 'grad_norm': 0.25231435894966125, 'learning_rate': 0.00014307007786429368, 'epoch': 0.86}
+{'loss': 0.0705, 'grad_norm': 0.08557837456464767, 'learning_rate': 0.00014295884315906562, 'epoch': 0.86}
+{'loss': 0.0517, 'grad_norm': 0.14628900587558746, 'learning_rate': 0.0001428476084538376, 'epoch': 0.86}
+{'loss': 0.0718, 'grad_norm': 0.3253999650478363, 'learning_rate': 0.00014273637374860959, 'epoch': 0.86}
+{'loss': 0.0922, 'grad_norm': 0.2713809013366699, 'learning_rate': 0.00014262513904338156, 'epoch': 0.86}
+{'loss': 0.0438, 'grad_norm': 0.13464763760566711, 'learning_rate': 0.0001425139043381535, 'epoch': 0.87}
+{'loss': 0.0572, 'grad_norm': 0.19047966599464417, 'learning_rate': 0.00014240266963292547, 'epoch': 0.87}
+{'loss': 0.0813, 'grad_norm': 0.26344579458236694, 'learning_rate': 0.00014229143492769746, 'epoch': 0.87}
+{'loss': 0.069, 'grad_norm': 0.24360832571983337, 'learning_rate': 0.0001421802002224694, 'epoch': 0.87}
+{'loss': 0.0543, 'grad_norm': 0.2173755019903183, 'learning_rate': 0.00014206896551724138, 'epoch': 0.87}
+{'loss': 0.0734, 'grad_norm': 0.2609143555164337, 'learning_rate': 0.00014195773081201335, 'epoch': 0.88}
+{'loss': 0.0718, 'grad_norm': 0.31466659903526306, 'learning_rate': 0.00014184649610678534, 'epoch': 0.88}
+{'loss': 0.0786, 'grad_norm': 0.37427520751953125, 'learning_rate': 0.00014173526140155728, 'epoch': 0.88}
+{'loss': 0.0619, 'grad_norm': 0.18692204356193542, 'learning_rate': 0.00014162402669632925, 'epoch': 0.88}
+{'loss': 0.0456, 'grad_norm': 0.13404642045497894, 'learning_rate': 0.00014151279199110122, 'epoch': 0.88}
+{'loss': 0.0626, 'grad_norm': 0.26408320665359497, 'learning_rate': 0.00014140155728587322, 'epoch': 0.88}
+{'loss': 0.0654, 'grad_norm': 0.1639997363090515, 'learning_rate': 0.00014129032258064516, 'epoch': 0.89}
+{'loss': 0.0677, 'grad_norm': 0.18464575707912445, 'learning_rate': 0.00014117908787541713, 'epoch': 0.89}
+{'loss': 0.0926, 'grad_norm': 0.29807326197624207, 'learning_rate': 0.0001410678531701891, 'epoch': 0.89}
+{'loss': 0.0548, 'grad_norm': 0.19980715215206146, 'learning_rate': 0.00014095661846496107, 'epoch': 0.89}
+{'loss': 0.0709, 'grad_norm': 0.3300727605819702, 'learning_rate': 0.00014084538375973304, 'epoch': 0.89}
+{'loss': 0.056, 'grad_norm': 0.14616714417934418, 'learning_rate': 0.000140734149054505, 'epoch': 0.89}
+{'loss': 0.06, 'grad_norm': 0.2007327377796173, 'learning_rate': 0.00014062291434927698, 'epoch': 0.9}
+{'loss': 0.0907, 'grad_norm': 0.21003326773643494, 'learning_rate': 0.00014051167964404895, 'epoch': 0.9}
+{'loss': 0.0775, 'grad_norm': 0.1716703176498413, 'learning_rate': 0.00014040044493882092, 'epoch': 0.9}
+{'loss': 0.0755, 'grad_norm': 0.3093603253364563, 'learning_rate': 0.0001402892102335929, 'epoch': 0.9}
+{'loss': 0.0695, 'grad_norm': 0.26921558380126953, 'learning_rate': 0.00014017797552836486, 'epoch': 0.9}
+{'loss': 0.0683, 'grad_norm': 0.14718860387802124, 'learning_rate': 0.00014006674082313683, 'epoch': 0.9}
+{'loss': 0.051, 'grad_norm': 0.18615198135375977, 'learning_rate': 0.0001399555061179088, 'epoch': 0.91}
+{'loss': 0.0749, 'grad_norm': 0.24841716885566711, 'learning_rate': 0.00013984427141268077, 'epoch': 0.91}
+{'loss': 0.0635, 'grad_norm': 0.20139971375465393, 'learning_rate': 0.00013973303670745274, 'epoch': 0.91}
+{'loss': 0.0794, 'grad_norm': 0.2925757169723511, 'learning_rate': 0.0001396218020022247, 'epoch': 0.91}
+{'loss': 0.0746, 'grad_norm': 0.23305873572826385, 'learning_rate': 0.00013951056729699668, 'epoch': 0.91}
+{'loss': 0.0777, 'grad_norm': 0.18816977739334106, 'learning_rate': 0.00013939933259176862, 'epoch': 0.91}
+{'loss': 0.0866, 'grad_norm': 0.19991418719291687, 'learning_rate': 0.00013928809788654061, 'epoch': 0.92}
+{'loss': 0.0817, 'grad_norm': 0.25485068559646606, 'learning_rate': 0.00013917686318131258, 'epoch': 0.92}
+{'loss': 0.0875, 'grad_norm': 0.2715063989162445, 'learning_rate': 0.00013906562847608455, 'epoch': 0.92}
+{'loss': 0.0556, 'grad_norm': 0.14910046756267548, 'learning_rate': 0.0001389543937708565, 'epoch': 0.92}
+{'loss': 0.06, 'grad_norm': 0.19684046506881714, 'learning_rate': 0.0001388431590656285, 'epoch': 0.92}
+{'loss': 0.085, 'grad_norm': 0.30187487602233887, 'learning_rate': 0.00013873192436040046, 'epoch': 0.92}
+{'loss': 0.0617, 'grad_norm': 0.2616344094276428, 'learning_rate': 0.00013862068965517243, 'epoch': 0.93}
+{'loss': 0.06, 'grad_norm': 0.1827494204044342, 'learning_rate': 0.00013850945494994437, 'epoch': 0.93}
+{'loss': 0.0934, 'grad_norm': 0.21435847878456116, 'learning_rate': 0.00013839822024471637, 'epoch': 0.93}
+{'loss': 0.051, 'grad_norm': 0.19751949608325958, 'learning_rate': 0.00013828698553948834, 'epoch': 0.93}
+{'loss': 0.0529, 'grad_norm': 0.13297028839588165, 'learning_rate': 0.00013817575083426028, 'epoch': 0.93}
+{'loss': 0.0664, 'grad_norm': 0.21331164240837097, 'learning_rate': 0.00013806451612903225, 'epoch': 0.93}
+{'loss': 0.0597, 'grad_norm': 0.2873667776584625, 'learning_rate': 0.00013795328142380425, 'epoch': 0.94}
+{'loss': 0.0378, 'grad_norm': 0.12280161678791046, 'learning_rate': 0.00013784204671857622, 'epoch': 0.94}
+{'loss': 0.0521, 'grad_norm': 0.2524124085903168, 'learning_rate': 0.00013773081201334816, 'epoch': 0.94}
+{'loss': 0.0985, 'grad_norm': 0.30539363622665405, 'learning_rate': 0.00013761957730812013, 'epoch': 0.94}
+{'loss': 0.098, 'grad_norm': 0.2518158257007599, 'learning_rate': 0.00013750834260289213, 'epoch': 0.94}
+{'loss': 0.0784, 'grad_norm': 0.21145762503147125, 'learning_rate': 0.00013739710789766407, 'epoch': 0.94}
+{'loss': 0.0541, 'grad_norm': 0.18040506541728973, 'learning_rate': 0.00013728587319243604, 'epoch': 0.94}
+{'loss': 0.0599, 'grad_norm': 0.17898014187812805, 'learning_rate': 0.000137174638487208, 'epoch': 0.95}
+{'loss': 0.0689, 'grad_norm': 0.2668139934539795, 'learning_rate': 0.00013706340378198, 'epoch': 0.95}
+{'loss': 0.0496, 'grad_norm': 0.20443858206272125, 'learning_rate': 0.00013695216907675195, 'epoch': 0.95}
+{'loss': 0.0817, 'grad_norm': 0.24471086263656616, 'learning_rate': 0.00013684093437152392, 'epoch': 0.95}
+{'loss': 0.0603, 'grad_norm': 0.16487574577331543, 'learning_rate': 0.00013672969966629589, 'epoch': 0.95}
+{'loss': 0.053, 'grad_norm': 0.22015337646007538, 'learning_rate': 0.00013661846496106786, 'epoch': 0.95}
+{'loss': 0.0576, 'grad_norm': 0.30129343271255493, 'learning_rate': 0.00013650723025583983, 'epoch': 0.96}
+{'loss': 0.0733, 'grad_norm': 0.29899752140045166, 'learning_rate': 0.0001363959955506118, 'epoch': 0.96}
+{'loss': 0.057, 'grad_norm': 0.2587343454360962, 'learning_rate': 0.00013628476084538376, 'epoch': 0.96}
+{'loss': 0.0947, 'grad_norm': 0.3319697082042694, 'learning_rate': 0.00013617352614015573, 'epoch': 0.96}
+{'loss': 0.075, 'grad_norm': 0.2902153432369232, 'learning_rate': 0.0001360622914349277, 'epoch': 0.96}
+{'loss': 0.0634, 'grad_norm': 0.2832415997982025, 'learning_rate': 0.00013595105672969967, 'epoch': 0.96}
+{'loss': 0.0655, 'grad_norm': 0.17860344052314758, 'learning_rate': 0.00013583982202447164, 'epoch': 0.97}
+{'loss': 0.081, 'grad_norm': 0.277278870344162, 'learning_rate': 0.0001357285873192436, 'epoch': 0.97}
+{'loss': 0.0643, 'grad_norm': 0.20813125371932983, 'learning_rate': 0.00013561735261401558, 'epoch': 0.97}
+{'loss': 0.0503, 'grad_norm': 0.16978122293949127, 'learning_rate': 0.00013550611790878755, 'epoch': 0.97}
+{'loss': 0.077, 'grad_norm': 0.2063443809747696, 'learning_rate': 0.00013539488320355952, 'epoch': 0.97}
+{'loss': 0.0727, 'grad_norm': 0.2550887167453766, 'learning_rate': 0.0001352836484983315, 'epoch': 0.97}
+{'loss': 0.0941, 'grad_norm': 0.25953996181488037, 'learning_rate': 0.00013517241379310346, 'epoch': 0.98}
+{'loss': 0.0886, 'grad_norm': 0.22917774319648743, 'learning_rate': 0.00013506117908787543, 'epoch': 0.98}
+{'loss': 0.0548, 'grad_norm': 0.11931365728378296, 'learning_rate': 0.0001349499443826474, 'epoch': 0.98}
+{'loss': 0.0924, 'grad_norm': 0.38267427682876587, 'learning_rate': 0.00013483870967741937, 'epoch': 0.98}
+{'loss': 0.0511, 'grad_norm': 0.18184243142604828, 'learning_rate': 0.00013472747497219134, 'epoch': 0.98}
+{'loss': 0.0813, 'grad_norm': 0.3428983986377716, 'learning_rate': 0.00013461624026696328, 'epoch': 0.98}
+{'loss': 0.0806, 'grad_norm': 0.17744196951389313, 'learning_rate': 0.00013450500556173528, 'epoch': 0.99}
+{'loss': 0.0619, 'grad_norm': 0.19336147606372833, 'learning_rate': 0.00013439377085650725, 'epoch': 0.99}
+{'loss': 0.0536, 'grad_norm': 0.25439420342445374, 'learning_rate': 0.00013428253615127922, 'epoch': 0.99}
+{'loss': 0.0583, 'grad_norm': 0.1861635148525238, 'learning_rate': 0.00013417130144605116, 'epoch': 0.99}
+{'loss': 0.0692, 'grad_norm': 0.2820667624473572, 'learning_rate': 0.00013406006674082316, 'epoch': 0.99}
+{'loss': 0.0697, 'grad_norm': 0.24116253852844238, 'learning_rate': 0.00013394883203559512, 'epoch': 0.99}
+{'loss': 0.0696, 'grad_norm': 0.2329215705394745, 'learning_rate': 0.00013383759733036707, 'epoch': 1.0}
+{'loss': 0.0518, 'grad_norm': 0.189970463514328, 'learning_rate': 0.00013372636262513904, 'epoch': 1.0}
+{'loss': 0.057, 'grad_norm': 0.3236926794052124, 'learning_rate': 0.00013361512791991103, 'epoch': 1.0}
+{'loss': 0.0643, 'grad_norm': 0.1852489560842514, 'learning_rate': 0.000133503893214683, 'epoch': 1.0}
+{'loss': 0.0529, 'grad_norm': 0.09489282965660095, 'learning_rate': 0.00013339265850945495, 'epoch': 1.0}
+{'loss': 0.0602, 'grad_norm': 0.278204083442688, 'learning_rate': 0.00013328142380422691, 'epoch': 1.0}
+{'loss': 0.0606, 'grad_norm': 0.2568875551223755, 'learning_rate': 0.0001331701890989989, 'epoch': 1.01}
+{'loss': 0.0482, 'grad_norm': 0.1996656060218811, 'learning_rate': 0.00013305895439377088, 'epoch': 1.01}
+{'loss': 0.0944, 'grad_norm': 0.3175438940525055, 'learning_rate': 0.00013294771968854282, 'epoch': 1.01}
+{'loss': 0.0609, 'grad_norm': 0.2552412748336792, 'learning_rate': 0.0001328364849833148, 'epoch': 1.01}
+{'loss': 0.0537, 'grad_norm': 0.17100577056407928, 'learning_rate': 0.0001327252502780868, 'epoch': 1.01}
+{'loss': 0.0575, 'grad_norm': 0.2677248418331146, 'learning_rate': 0.00013261401557285873, 'epoch': 1.01}
+{'loss': 0.0862, 'grad_norm': 0.2890607714653015, 'learning_rate': 0.0001325027808676307, 'epoch': 1.02}
+{'loss': 0.0805, 'grad_norm': 0.29440048336982727, 'learning_rate': 0.00013239154616240267, 'epoch': 1.02}
+{'loss': 0.0474, 'grad_norm': 0.12579865753650665, 'learning_rate': 0.00013228031145717467, 'epoch': 1.02}
+{'loss': 0.0581, 'grad_norm': 0.3148830533027649, 'learning_rate': 0.0001321690767519466, 'epoch': 1.02}
+{'loss': 0.0589, 'grad_norm': 0.1915348917245865, 'learning_rate': 0.00013205784204671858, 'epoch': 1.02}
+{'loss': 0.0556, 'grad_norm': 0.1516256481409073, 'learning_rate': 0.00013194660734149055, 'epoch': 1.02}
+{'loss': 0.0524, 'grad_norm': 0.22447961568832397, 'learning_rate': 0.00013183537263626252, 'epoch': 1.03}
+{'loss': 0.0844, 'grad_norm': 0.27548739314079285, 'learning_rate': 0.0001317241379310345, 'epoch': 1.03}
+{'loss': 0.0559, 'grad_norm': 0.20060327649116516, 'learning_rate': 0.00013161290322580646, 'epoch': 1.03}
+{'loss': 0.0595, 'grad_norm': 0.23143509030342102, 'learning_rate': 0.00013150166852057843, 'epoch': 1.03}
+{'loss': 0.0731, 'grad_norm': 0.3035033345222473, 'learning_rate': 0.0001313904338153504, 'epoch': 1.03}
+{'loss': 0.0508, 'grad_norm': 0.1327999383211136, 'learning_rate': 0.00013127919911012237, 'epoch': 1.03}
+{'loss': 0.0757, 'grad_norm': 0.2799941599369049, 'learning_rate': 0.00013116796440489434, 'epoch': 1.04}
+{'loss': 0.0516, 'grad_norm': 0.23801258206367493, 'learning_rate': 0.0001310567296996663, 'epoch': 1.04}
+{'loss': 0.0618, 'grad_norm': 0.24438655376434326, 'learning_rate': 0.00013094549499443827, 'epoch': 1.04}
+{'loss': 0.063, 'grad_norm': 0.18146364390850067, 'learning_rate': 0.00013083426028921024, 'epoch': 1.04}
+{'loss': 0.0608, 'grad_norm': 0.2113962471485138, 'learning_rate': 0.00013072302558398221, 'epoch': 1.04}
+{'loss': 0.0503, 'grad_norm': 0.2082938849925995, 'learning_rate': 0.00013061179087875418, 'epoch': 1.04}
+{'loss': 0.0462, 'grad_norm': 0.13434378802776337, 'learning_rate': 0.00013050055617352615, 'epoch': 1.05}
+{'loss': 0.0705, 'grad_norm': 0.19749626517295837, 'learning_rate': 0.00013038932146829812, 'epoch': 1.05}
+{'loss': 0.0726, 'grad_norm': 0.11997590959072113, 'learning_rate': 0.0001302780867630701, 'epoch': 1.05}
+{'loss': 0.0631, 'grad_norm': 0.18571589887142181, 'learning_rate': 0.00013016685205784206, 'epoch': 1.05}
+{'loss': 0.0468, 'grad_norm': 0.21526353061199188, 'learning_rate': 0.00013005561735261403, 'epoch': 1.05}
+{'loss': 0.0641, 'grad_norm': 0.22063882648944855, 'learning_rate': 0.000129944382647386, 'epoch': 1.05}
+{'loss': 0.059, 'grad_norm': 0.25526490807533264, 'learning_rate': 0.00012983314794215794, 'epoch': 1.06}
+{'loss': 0.0565, 'grad_norm': 0.19208937883377075, 'learning_rate': 0.00012972191323692994, 'epoch': 1.06}
+{'loss': 0.0741, 'grad_norm': 0.34405454993247986, 'learning_rate': 0.0001296106785317019, 'epoch': 1.06}
+{'loss': 0.0813, 'grad_norm': 0.31036826968193054, 'learning_rate': 0.00012949944382647388, 'epoch': 1.06}
+{'loss': 0.065, 'grad_norm': 0.25990280508995056, 'learning_rate': 0.00012938820912124582, 'epoch': 1.06}
+{'loss': 0.0669, 'grad_norm': 0.3292422294616699, 'learning_rate': 0.00012927697441601782, 'epoch': 1.06}
+{'loss': 0.0687, 'grad_norm': 0.24662455916404724, 'learning_rate': 0.0001291657397107898, 'epoch': 1.07}
+{'loss': 0.0602, 'grad_norm': 0.27529436349868774, 'learning_rate': 0.00012905450500556173, 'epoch': 1.07}
+{'loss': 0.075, 'grad_norm': 0.15052637457847595, 'learning_rate': 0.0001289432703003337, 'epoch': 1.07}
+{'loss': 0.0615, 'grad_norm': 0.2576915919780731, 'learning_rate': 0.0001288320355951057, 'epoch': 1.07}
+{'loss': 0.0802, 'grad_norm': 0.3123313784599304, 'learning_rate': 0.00012872080088987767, 'epoch': 1.07}
+{'loss': 0.07, 'grad_norm': 0.34943482279777527, 'learning_rate': 0.0001286095661846496, 'epoch': 1.07}
+{'loss': 0.0503, 'grad_norm': 0.09780464321374893, 'learning_rate': 0.00012849833147942158, 'epoch': 1.08}
+{'loss': 0.0605, 'grad_norm': 0.1833687424659729, 'learning_rate': 0.00012838709677419357, 'epoch': 1.08}
+{'loss': 0.055, 'grad_norm': 0.2725379467010498, 'learning_rate': 0.00012827586206896552, 'epoch': 1.08}
+{'loss': 0.0404, 'grad_norm': 0.19644808769226074, 'learning_rate': 0.00012816462736373749, 'epoch': 1.08}
+{'loss': 0.0548, 'grad_norm': 0.18937687575817108, 'learning_rate': 0.00012805339265850946, 'epoch': 1.08}
+{'loss': 0.0681, 'grad_norm': 0.3961560130119324, 'learning_rate': 0.00012794215795328145, 'epoch': 1.08}
+{'loss': 0.0645, 'grad_norm': 0.20432625710964203, 'learning_rate': 0.0001278309232480534, 'epoch': 1.09}
+{'loss': 0.0882, 'grad_norm': 0.300923228263855, 'learning_rate': 0.00012771968854282536, 'epoch': 1.09}
+{'loss': 0.057, 'grad_norm': 0.269690603017807, 'learning_rate': 0.00012760845383759733, 'epoch': 1.09}
+{'loss': 0.0857, 'grad_norm': 0.2480519860982895, 'learning_rate': 0.0001274972191323693, 'epoch': 1.09}
+{'loss': 0.0533, 'grad_norm': 0.25819337368011475, 'learning_rate': 0.00012738598442714127, 'epoch': 1.09}
+{'loss': 0.0643, 'grad_norm': 0.31741172075271606, 'learning_rate': 0.00012727474972191324, 'epoch': 1.09}
+{'loss': 0.0676, 'grad_norm': 0.13224491477012634, 'learning_rate': 0.0001271635150166852, 'epoch': 1.1}
+{'loss': 0.0694, 'grad_norm': 0.33332499861717224, 'learning_rate': 0.00012705228031145718, 'epoch': 1.1}
+{'loss': 0.069, 'grad_norm': 0.19446459412574768, 'learning_rate': 0.00012694104560622915, 'epoch': 1.1}
+{'loss': 0.0551, 'grad_norm': 0.222103551030159, 'learning_rate': 0.00012682981090100112, 'epoch': 1.1}
+{'loss': 0.0644, 'grad_norm': 0.264097660779953, 'learning_rate': 0.0001267185761957731, 'epoch': 1.1}
+{'loss': 0.0756, 'grad_norm': 0.23625214397907257, 'learning_rate': 0.00012660734149054506, 'epoch': 1.1}
+{'loss': 0.0542, 'grad_norm': 0.24356713891029358, 'learning_rate': 0.00012649610678531703, 'epoch': 1.11}
+{'loss': 0.0656, 'grad_norm': 0.17714479565620422, 'learning_rate': 0.000126384872080089, 'epoch': 1.11}
+{'loss': 0.0452, 'grad_norm': 0.11043606698513031, 'learning_rate': 0.00012627363737486094, 'epoch': 1.11}
+{'loss': 0.0803, 'grad_norm': 0.4471260905265808, 'learning_rate': 0.00012616240266963294, 'epoch': 1.11}
+{'loss': 0.0786, 'grad_norm': 0.2382703572511673, 'learning_rate': 0.0001260511679644049, 'epoch': 1.11}
+{'loss': 0.0553, 'grad_norm': 0.10165446996688843, 'learning_rate': 0.00012593993325917688, 'epoch': 1.11}
+{'loss': 0.0551, 'grad_norm': 0.12641063332557678, 'learning_rate': 0.00012582869855394882, 'epoch': 1.12}
+{'loss': 0.0724, 'grad_norm': 0.2398470789194107, 'learning_rate': 0.00012571746384872082, 'epoch': 1.12}
+{'loss': 0.0426, 'grad_norm': 0.15214821696281433, 'learning_rate': 0.00012560622914349278, 'epoch': 1.12}
+{'loss': 0.0462, 'grad_norm': 0.2363079935312271, 'learning_rate': 0.00012549499443826473, 'epoch': 1.12}
+{'loss': 0.0562, 'grad_norm': 0.24369598925113678, 'learning_rate': 0.0001253837597330367, 'epoch': 1.12}
+{'loss': 0.0608, 'grad_norm': 0.7087528705596924, 'learning_rate': 0.0001252725250278087, 'epoch': 1.12}
+{'loss': 0.0635, 'grad_norm': 0.3954783082008362, 'learning_rate': 0.00012516129032258066, 'epoch': 1.13}
+{'loss': 0.0579, 'grad_norm': 0.22499361634254456, 'learning_rate': 0.0001250500556173526, 'epoch': 1.13}
+{'loss': 0.0739, 'grad_norm': 0.2644619345664978, 'learning_rate': 0.00012493882091212458, 'epoch': 1.13}
+{'loss': 0.0684, 'grad_norm': 0.47267377376556396, 'learning_rate': 0.00012482758620689657, 'epoch': 1.13}
+{'loss': 0.0663, 'grad_norm': 0.1778458207845688, 'learning_rate': 0.00012471635150166851, 'epoch': 1.13}
+{'loss': 0.0522, 'grad_norm': 0.1973218023777008, 'learning_rate': 0.00012460511679644048, 'epoch': 1.14}
+{'loss': 0.0554, 'grad_norm': 0.22794710099697113, 'learning_rate': 0.00012449388209121245, 'epoch': 1.14}
+{'loss': 0.0637, 'grad_norm': 0.4146784842014313, 'learning_rate': 0.00012438264738598445, 'epoch': 1.14}
+{'loss': 0.0402, 'grad_norm': 0.11184132844209671, 'learning_rate': 0.0001242714126807564, 'epoch': 1.14}
+{'loss': 0.0524, 'grad_norm': 0.15647754073143005, 'learning_rate': 0.00012416017797552836, 'epoch': 1.14}
+{'loss': 0.045, 'grad_norm': 0.17059896886348724, 'learning_rate': 0.00012404894327030033, 'epoch': 1.14}
+{'loss': 0.0858, 'grad_norm': 0.2908099591732025, 'learning_rate': 0.00012393770856507233, 'epoch': 1.15}
+{'loss': 0.0818, 'grad_norm': 0.36324071884155273, 'learning_rate': 0.00012382647385984427, 'epoch': 1.15}
+{'loss': 0.0506, 'grad_norm': 0.12680703401565552, 'learning_rate': 0.00012371523915461624, 'epoch': 1.15}
+{'loss': 0.0499, 'grad_norm': 0.20082640647888184, 'learning_rate': 0.0001236040044493882, 'epoch': 1.15}
+{'loss': 0.0359, 'grad_norm': 0.07938244938850403, 'learning_rate': 0.00012349276974416018, 'epoch': 1.15}
+{'loss': 0.0696, 'grad_norm': 0.3790789842605591, 'learning_rate': 0.00012338153503893215, 'epoch': 1.15}
+{'loss': 0.0457, 'grad_norm': 0.2675817310810089, 'learning_rate': 0.00012327030033370412, 'epoch': 1.16}
+{'loss': 0.0739, 'grad_norm': 0.18044644594192505, 'learning_rate': 0.0001231590656284761, 'epoch': 1.16}
+{'loss': 0.0562, 'grad_norm': 0.17915426194667816, 'learning_rate': 0.00012304783092324806, 'epoch': 1.16}
+{'loss': 0.0556, 'grad_norm': 0.3466375172138214, 'learning_rate': 0.00012293659621802003, 'epoch': 1.16}
+{'loss': 0.062, 'grad_norm': 0.16778551042079926, 'learning_rate': 0.000122825361512792, 'epoch': 1.16}
+{'loss': 0.0579, 'grad_norm': 0.25387707352638245, 'learning_rate': 0.00012271412680756397, 'epoch': 1.16}
+{'loss': 0.0593, 'grad_norm': 0.21505561470985413, 'learning_rate': 0.00012260289210233594, 'epoch': 1.17}
+{'loss': 0.0573, 'grad_norm': 0.3126351535320282, 'learning_rate': 0.0001224916573971079, 'epoch': 1.17}
+{'loss': 0.0746, 'grad_norm': 0.313992977142334, 'learning_rate': 0.00012238042269187987, 'epoch': 1.17}
+{'loss': 0.0513, 'grad_norm': 0.2348494529724121, 'learning_rate': 0.00012226918798665184, 'epoch': 1.17}
+{'loss': 0.0798, 'grad_norm': 0.2774609327316284, 'learning_rate': 0.0001221579532814238, 'epoch': 1.17}
+{'loss': 0.0443, 'grad_norm': 0.21983328461647034, 'learning_rate': 0.00012204671857619578, 'epoch': 1.17}
+{'loss': 0.0398, 'grad_norm': 0.2613828480243683, 'learning_rate': 0.00012193548387096774, 'epoch': 1.18}
+{'loss': 0.0543, 'grad_norm': 0.14466044306755066, 'learning_rate': 0.00012182424916573971, 'epoch': 1.18}
+{'loss': 0.064, 'grad_norm': 0.2399209588766098, 'learning_rate': 0.00012171301446051169, 'epoch': 1.18}
+{'loss': 0.0668, 'grad_norm': 0.2559245824813843, 'learning_rate': 0.00012160177975528366, 'epoch': 1.18}
+{'loss': 0.0646, 'grad_norm': 0.20975004136562347, 'learning_rate': 0.00012149054505005562, 'epoch': 1.18}
+{'loss': 0.0633, 'grad_norm': 0.24192920327186584, 'learning_rate': 0.00012137931034482759, 'epoch': 1.18}
+{'loss': 0.0649, 'grad_norm': 0.19012777507305145, 'learning_rate': 0.00012126807563959957, 'epoch': 1.19}
+{'loss': 0.0748, 'grad_norm': 0.24008868634700775, 'learning_rate': 0.00012115684093437154, 'epoch': 1.19}
+{'loss': 0.0618, 'grad_norm': 0.2929578721523285, 'learning_rate': 0.0001210456062291435, 'epoch': 1.19}
+{'loss': 0.0543, 'grad_norm': 0.13222099840641022, 'learning_rate': 0.00012093437152391546, 'epoch': 1.19}
+{'loss': 0.0486, 'grad_norm': 0.19379004836082458, 'learning_rate': 0.00012082313681868745, 'epoch': 1.19}
+{'loss': 0.0614, 'grad_norm': 0.12231630831956863, 'learning_rate': 0.00012071190211345939, 'epoch': 1.19}
+{'loss': 0.0713, 'grad_norm': 0.20590169727802277, 'learning_rate': 0.00012060066740823137, 'epoch': 1.2}
+{'loss': 0.0665, 'grad_norm': 0.33771494030952454, 'learning_rate': 0.00012048943270300334, 'epoch': 1.2}
+{'loss': 0.0543, 'grad_norm': 0.22945156693458557, 'learning_rate': 0.00012037819799777533, 'epoch': 1.2}
+{'loss': 0.0532, 'grad_norm': 0.21322956681251526, 'learning_rate': 0.00012026696329254727, 'epoch': 1.2}
+{'loss': 0.066, 'grad_norm': 0.31734219193458557, 'learning_rate': 0.00012015572858731925, 'epoch': 1.2}
+{'loss': 0.0834, 'grad_norm': 0.20857933163642883, 'learning_rate': 0.00012004449388209122, 'epoch': 1.2}
+{'loss': 0.0641, 'grad_norm': 0.195675328373909, 'learning_rate': 0.00011993325917686318, 'epoch': 1.21}
+{'loss': 0.0824, 'grad_norm': 0.2759403586387634, 'learning_rate': 0.00011982202447163515, 'epoch': 1.21}
+{'loss': 0.0475, 'grad_norm': 0.23114067316055298, 'learning_rate': 0.00011971078976640713, 'epoch': 1.21}
+{'loss': 0.0536, 'grad_norm': 0.1752147674560547, 'learning_rate': 0.0001195995550611791, 'epoch': 1.21}
+{'loss': 0.0597, 'grad_norm': 0.19748996198177338, 'learning_rate': 0.00011948832035595105, 'epoch': 1.21}
+{'loss': 0.0772, 'grad_norm': 0.24499039351940155, 'learning_rate': 0.00011937708565072302, 'epoch': 1.21}
+{'loss': 0.0714, 'grad_norm': 0.23005558550357819, 'learning_rate': 0.00011926585094549501, 'epoch': 1.22}
+{'loss': 0.0543, 'grad_norm': 0.33597448468208313, 'learning_rate': 0.00011915461624026696, 'epoch': 1.22}
+{'loss': 0.0593, 'grad_norm': 0.23625990748405457, 'learning_rate': 0.00011904338153503893, 'epoch': 1.22}
+{'loss': 0.0556, 'grad_norm': 0.2795345187187195, 'learning_rate': 0.0001189321468298109, 'epoch': 1.22}
+{'loss': 0.0559, 'grad_norm': 0.35706496238708496, 'learning_rate': 0.00011882091212458289, 'epoch': 1.22}
+{'loss': 0.0549, 'grad_norm': 0.251582533121109, 'learning_rate': 0.00011870967741935484, 'epoch': 1.22}
+{'loss': 0.0793, 'grad_norm': 0.31836390495300293, 'learning_rate': 0.00011859844271412681, 'epoch': 1.23}
+{'loss': 0.046, 'grad_norm': 0.293027400970459, 'learning_rate': 0.00011848720800889878, 'epoch': 1.23}
+{'loss': 0.0528, 'grad_norm': 0.14904481172561646, 'learning_rate': 0.00011837597330367076, 'epoch': 1.23}
+{'loss': 0.1037, 'grad_norm': 0.37424883246421814, 'learning_rate': 0.00011826473859844272, 'epoch': 1.23}
+{'loss': 0.0746, 'grad_norm': 0.2120821177959442, 'learning_rate': 0.00011815350389321469, 'epoch': 1.23}
+{'loss': 0.0555, 'grad_norm': 0.2398817241191864, 'learning_rate': 0.00011804226918798666, 'epoch': 1.23}
+{'loss': 0.0604, 'grad_norm': 0.26633933186531067, 'learning_rate': 0.00011793103448275861, 'epoch': 1.23}
+{'loss': 0.0657, 'grad_norm': 0.34431755542755127, 'learning_rate': 0.0001178197997775306, 'epoch': 1.24}
+{'loss': 0.0552, 'grad_norm': 0.22660741209983826, 'learning_rate': 0.00011770856507230257, 'epoch': 1.24}
+{'loss': 0.0742, 'grad_norm': 0.2594791352748871, 'learning_rate': 0.00011759733036707454, 'epoch': 1.24}
+{'loss': 0.0384, 'grad_norm': 0.18404018878936768, 'learning_rate': 0.00011748609566184649, 'epoch': 1.24}
+{'loss': 0.0861, 'grad_norm': 0.30965402722358704, 'learning_rate': 0.00011737486095661848, 'epoch': 1.24}
+{'loss': 0.0741, 'grad_norm': 0.24371831119060516, 'learning_rate': 0.00011726362625139045, 'epoch': 1.25}
+{'loss': 0.0571, 'grad_norm': 0.35940003395080566, 'learning_rate': 0.0001171523915461624, 'epoch': 1.25}
+{'loss': 0.079, 'grad_norm': 0.29360121488571167, 'learning_rate': 0.00011704115684093437, 'epoch': 1.25}
+{'loss': 0.0334, 'grad_norm': 0.1377744823694229, 'learning_rate': 0.00011692992213570635, 'epoch': 1.25}
+{'loss': 0.0383, 'grad_norm': 0.2888842225074768, 'learning_rate': 0.00011681868743047832, 'epoch': 1.25}
+{'loss': 0.0846, 'grad_norm': 0.19713430106639862, 'learning_rate': 0.00011670745272525028, 'epoch': 1.25}
+{'loss': 0.0582, 'grad_norm': 0.297412246465683, 'learning_rate': 0.00011659621802002225, 'epoch': 1.25}
+{'loss': 0.0426, 'grad_norm': 0.20433221757411957, 'learning_rate': 0.00011648498331479423, 'epoch': 1.26}
+{'loss': 0.0624, 'grad_norm': 0.24869312345981598, 'learning_rate': 0.00011637374860956617, 'epoch': 1.26}
+{'loss': 0.0665, 'grad_norm': 0.2742503583431244, 'learning_rate': 0.00011626251390433816, 'epoch': 1.26}
+{'loss': 0.0609, 'grad_norm': 0.24403312802314758, 'learning_rate': 0.00011615127919911013, 'epoch': 1.26}
+{'loss': 0.0724, 'grad_norm': 0.4095255434513092, 'learning_rate': 0.00011604004449388211, 'epoch': 1.26}
+{'loss': 0.0673, 'grad_norm': 0.6691011190414429, 'learning_rate': 0.00011592880978865405, 'epoch': 1.27}
+{'loss': 0.0516, 'grad_norm': 0.3893037438392639, 'learning_rate': 0.00011581757508342604, 'epoch': 1.27}
+{'loss': 0.0471, 'grad_norm': 0.31100934743881226, 'learning_rate': 0.000115706340378198, 'epoch': 1.27}
+{'loss': 0.0882, 'grad_norm': 0.29816141724586487, 'learning_rate': 0.00011559510567296996, 'epoch': 1.27}
+{'loss': 0.0592, 'grad_norm': 0.44798657298088074, 'learning_rate': 0.00011548387096774193, 'epoch': 1.27}
+{'loss': 0.0454, 'grad_norm': 0.26613789796829224, 'learning_rate': 0.00011537263626251391, 'epoch': 1.27}
+{'loss': 0.0494, 'grad_norm': 0.2631191909313202, 'learning_rate': 0.00011526140155728588, 'epoch': 1.27}
+{'loss': 0.0442, 'grad_norm': 0.1646520048379898, 'learning_rate': 0.00011515016685205784, 'epoch': 1.28}
+{'loss': 0.0457, 'grad_norm': 0.20689597725868225, 'learning_rate': 0.00011503893214682981, 'epoch': 1.28}
+{'loss': 0.0393, 'grad_norm': 0.16541188955307007, 'learning_rate': 0.00011492769744160179, 'epoch': 1.28}
+{'loss': 0.0453, 'grad_norm': 0.23835040628910065, 'learning_rate': 0.00011481646273637376, 'epoch': 1.28}
+{'loss': 0.0593, 'grad_norm': 0.2816622853279114, 'learning_rate': 0.00011470522803114572, 'epoch': 1.28}
+{'loss': 0.0573, 'grad_norm': 0.24916258454322815, 'learning_rate': 0.00011459399332591769, 'epoch': 1.28}
+{'loss': 0.0712, 'grad_norm': 0.1457924246788025, 'learning_rate': 0.00011448275862068967, 'epoch': 1.29}
+{'loss': 0.0853, 'grad_norm': 0.5090710520744324, 'learning_rate': 0.00011437152391546163, 'epoch': 1.29}
+{'loss': 0.0464, 'grad_norm': 0.3365761339664459, 'learning_rate': 0.0001142602892102336, 'epoch': 1.29}
+{'loss': 0.0689, 'grad_norm': 0.26009735465049744, 'learning_rate': 0.00011414905450500556, 'epoch': 1.29}
+{'loss': 0.0613, 'grad_norm': 0.40193113684654236, 'learning_rate': 0.00011403781979977755, 'epoch': 1.29}
+{'loss': 0.0673, 'grad_norm': 0.1737789660692215, 'learning_rate': 0.0001139265850945495, 'epoch': 1.29}
+{'loss': 0.0486, 'grad_norm': 0.2400321662425995, 'learning_rate': 0.00011381535038932147, 'epoch': 1.3}
+{'loss': 0.0766, 'grad_norm': 0.288605660200119, 'learning_rate': 0.00011370411568409344, 'epoch': 1.3}
+{'loss': 0.0745, 'grad_norm': 0.2117147296667099, 'learning_rate': 0.0001135928809788654, 'epoch': 1.3}
+{'loss': 0.0492, 'grad_norm': 0.12950381636619568, 'learning_rate': 0.00011348164627363738, 'epoch': 1.3}
+{'loss': 0.0785, 'grad_norm': 0.18342949450016022, 'learning_rate': 0.00011337041156840935, 'epoch': 1.3}
+{'loss': 0.0475, 'grad_norm': 0.16308631002902985, 'learning_rate': 0.00011325917686318132, 'epoch': 1.3}
+{'loss': 0.0838, 'grad_norm': 0.2676606774330139, 'learning_rate': 0.00011314794215795328, 'epoch': 1.31}
+{'loss': 0.0553, 'grad_norm': 0.19679154455661774, 'learning_rate': 0.00011303670745272526, 'epoch': 1.31}
+{'loss': 0.0481, 'grad_norm': 0.14375345408916473, 'learning_rate': 0.00011292547274749723, 'epoch': 1.31}
+{'loss': 0.0635, 'grad_norm': 0.3215247690677643, 'learning_rate': 0.00011281423804226919, 'epoch': 1.31}
+{'loss': 0.0625, 'grad_norm': 0.5158920288085938, 'learning_rate': 0.00011270300333704116, 'epoch': 1.31}
+{'loss': 0.0521, 'grad_norm': 0.3098226487636566, 'learning_rate': 0.00011259176863181314, 'epoch': 1.31}
+{'loss': 0.0556, 'grad_norm': 0.18949683010578156, 'learning_rate': 0.00011248053392658511, 'epoch': 1.32}
+{'loss': 0.0587, 'grad_norm': 0.2256837636232376, 'learning_rate': 0.00011236929922135706, 'epoch': 1.32}
+{'loss': 0.0694, 'grad_norm': 0.24702762067317963, 'learning_rate': 0.00011225806451612903, 'epoch': 1.32}
+{'loss': 0.0733, 'grad_norm': 0.2693280577659607, 'learning_rate': 0.00011214682981090102, 'epoch': 1.32}
+{'loss': 0.0599, 'grad_norm': 0.2606036067008972, 'learning_rate': 0.00011203559510567299, 'epoch': 1.32}
+{'loss': 0.0618, 'grad_norm': 0.24915286898612976, 'learning_rate': 0.00011192436040044494, 'epoch': 1.32}
+{'loss': 0.0681, 'grad_norm': 0.28741440176963806, 'learning_rate': 0.00011181312569521691, 'epoch': 1.33}
+{'loss': 0.0358, 'grad_norm': 0.11171704530715942, 'learning_rate': 0.0001117018909899889, 'epoch': 1.33}
+{'loss': 0.0493, 'grad_norm': 0.1356733739376068, 'learning_rate': 0.00011159065628476084, 'epoch': 1.33}
+{'loss': 0.0759, 'grad_norm': 0.22331324219703674, 'learning_rate': 0.00011147942157953282, 'epoch': 1.33}
+{'loss': 0.051, 'grad_norm': 0.2644568979740143, 'learning_rate': 0.00011136818687430479, 'epoch': 1.33}
+{'loss': 0.0473, 'grad_norm': 0.26126986742019653, 'learning_rate': 0.00011125695216907677, 'epoch': 1.33}
+{'loss': 0.0464, 'grad_norm': 0.22710858285427094, 'learning_rate': 0.00011114571746384872, 'epoch': 1.34}
+{'loss': 0.0569, 'grad_norm': 0.10542929917573929, 'learning_rate': 0.0001110344827586207, 'epoch': 1.34}
+{'loss': 0.0446, 'grad_norm': 0.11150503158569336, 'learning_rate': 0.00011092324805339267, 'epoch': 1.34}
+{'loss': 0.0514, 'grad_norm': 0.3396749198436737, 'learning_rate': 0.00011081201334816462, 'epoch': 1.34}
+{'loss': 0.0676, 'grad_norm': 0.17095768451690674, 'learning_rate': 0.00011070077864293659, 'epoch': 1.34}
+{'loss': 0.0585, 'grad_norm': 0.2630205750465393, 'learning_rate': 0.00011058954393770858, 'epoch': 1.34}
+{'loss': 0.0583, 'grad_norm': 0.1638040393590927, 'learning_rate': 0.00011047830923248055, 'epoch': 1.35}
+{'loss': 0.0772, 'grad_norm': 0.44454291462898254, 'learning_rate': 0.0001103670745272525, 'epoch': 1.35}
+{'loss': 0.0409, 'grad_norm': 0.20727607607841492, 'learning_rate': 0.00011025583982202447, 'epoch': 1.35}
+{'loss': 0.0708, 'grad_norm': 0.2561439573764801, 'learning_rate': 0.00011014460511679645, 'epoch': 1.35}
+{'loss': 0.037, 'grad_norm': 0.11150331050157547, 'learning_rate': 0.00011003337041156841, 'epoch': 1.35}
+{'loss': 0.0449, 'grad_norm': 0.1213894709944725, 'learning_rate': 0.00010992213570634038, 'epoch': 1.35}
+{'loss': 0.0668, 'grad_norm': 0.21829022467136383, 'learning_rate': 0.00010981090100111235, 'epoch': 1.36}
+{'loss': 0.0869, 'grad_norm': 0.21846406161785126, 'learning_rate': 0.00010969966629588433, 'epoch': 1.36}
+{'loss': 0.0696, 'grad_norm': 0.3958871066570282, 'learning_rate': 0.00010958843159065629, 'epoch': 1.36}
+{'loss': 0.0614, 'grad_norm': 0.17495527863502502, 'learning_rate': 0.00010947719688542826, 'epoch': 1.36}
+{'loss': 0.0655, 'grad_norm': 0.15180623531341553, 'learning_rate': 0.00010936596218020023, 'epoch': 1.36}
+{'loss': 0.0614, 'grad_norm': 0.13279755413532257, 'learning_rate': 0.00010925472747497221, 'epoch': 1.36}
+{'loss': 0.0632, 'grad_norm': 0.29388609528541565, 'learning_rate': 0.00010914349276974417, 'epoch': 1.37}
+{'loss': 0.0536, 'grad_norm': 0.30014288425445557, 'learning_rate': 0.00010903225806451614, 'epoch': 1.37}
+{'loss': 0.0768, 'grad_norm': 0.22651350498199463, 'learning_rate': 0.0001089210233592881, 'epoch': 1.37}
+{'loss': 0.0427, 'grad_norm': 0.1331080198287964, 'learning_rate': 0.00010880978865406006, 'epoch': 1.37}
+{'loss': 0.0525, 'grad_norm': 0.256818026304245, 'learning_rate': 0.00010869855394883204, 'epoch': 1.37}
+{'loss': 0.0741, 'grad_norm': 0.2238606959581375, 'learning_rate': 0.00010858731924360401, 'epoch': 1.38}
+{'loss': 0.0602, 'grad_norm': 0.22928063571453094, 'learning_rate': 0.00010847608453837598, 'epoch': 1.38}
+{'loss': 0.0563, 'grad_norm': 0.2969590127468109, 'learning_rate': 0.00010836484983314794, 'epoch': 1.38}
+{'loss': 0.0883, 'grad_norm': 0.3726608455181122, 'learning_rate': 0.00010825361512791992, 'epoch': 1.38}
+{'loss': 0.0609, 'grad_norm': 0.24417875707149506, 'learning_rate': 0.00010814238042269189, 'epoch': 1.38}
+{'loss': 0.0378, 'grad_norm': 0.1265590637922287, 'learning_rate': 0.00010803114571746385, 'epoch': 1.38}
+{'loss': 0.0443, 'grad_norm': 0.30207112431526184, 'learning_rate': 0.00010791991101223582, 'epoch': 1.39}
+{'loss': 0.0947, 'grad_norm': 0.28303974866867065, 'learning_rate': 0.0001078086763070078, 'epoch': 1.39}
+{'loss': 0.0543, 'grad_norm': 0.19365891814231873, 'learning_rate': 0.00010769744160177977, 'epoch': 1.39}
+{'loss': 0.0574, 'grad_norm': 0.24787813425064087, 'learning_rate': 0.00010758620689655173, 'epoch': 1.39}
+{'loss': 0.0589, 'grad_norm': 0.3167157769203186, 'learning_rate': 0.0001074749721913237, 'epoch': 1.39}
+{'loss': 0.0966, 'grad_norm': 0.3693051338195801, 'learning_rate': 0.00010736373748609568, 'epoch': 1.39}
+{'loss': 0.0606, 'grad_norm': 0.31667494773864746, 'learning_rate': 0.00010725250278086762, 'epoch': 1.4}
+{'loss': 0.0821, 'grad_norm': 0.3423033654689789, 'learning_rate': 0.0001071412680756396, 'epoch': 1.4}
+{'loss': 0.0399, 'grad_norm': 0.1706985980272293, 'learning_rate': 0.00010703003337041157, 'epoch': 1.4}
+ 47%|█████████████▉                | 4198/9000 [1:53:47<2:10:49,  1.63s/it]
