@@ -331,82 +331,6 @@ class YeshuaAgent:
         return len(applied)  
   
   
-    def retrain(self):  
-        """Combine all datasets and retrain the model."""  
-        print("\n[RETRAIN] Step 1: Finding all .jsonl datasets...")  
-        jsonl_files = glob.glob(os.path.join(self.repo_root, "*.jsonl"))  
-        jsonl_files += glob.glob(os.path.join(self.repo_root, "minimal_ai_ide", "*.jsonl"))  
-        jsonl_files += glob.glob(os.path.join(self.repo_root, "src", "hardware", "photonic", "lora", "*.jsonl"))  
-        jsonl_files = [f for f in jsonl_files if "log" not in os.path.basename(f).lower()]  
-        if not jsonl_files:  
-            print("ERROR: No .jsonl dataset files found.")  
-            return  
-        all_examples = []  
-        for jf in jsonl_files:  
-            count = 0  
-            try:  
-                with open(jf, "r", encoding="utf-8", errors="replace") as f:  
-                    for line in f:  
-                        line = line.strip()  
-                        if not line:  
-                            continue  
-                        try:  
-                            ex = json.loads(line)  
-                            if "instruction" in ex or "input" in ex:  
-                                all_examples.append(ex)  
-                                count += 1  
-                        except json.JSONDecodeError:  
-                            continue  
-            except Exception as e:  
-                print(f"  SKIP {os.path.basename(jf)}: {e}")  
-                continue  
-            print(f"  {os.path.basename(jf)}: {count} examples")  
-        if not all_examples:  
-            print("ERROR: No valid training examples found.")  
-            return  
-        print(f"\nTotal: {len(all_examples)} examples")  
-        # Determine version number  
-        existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))  
-        versions = []  
-        for d in existing:  
-            try:  
-                v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))  
-                versions.append(v)  
-            except ValueError:  
-                pass  
-        new_ver = max(versions) + 1 if versions else 5  
-        combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")  
-        with open(combined_path, "w", encoding="utf-8") as f:  
-            for ex in all_examples:  
-                f.write(json.dumps(ex, ensure_ascii=False) + "\n")  
-        print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")  
-        n_samples = min(len(all_examples), 6000)  
-        output_dir = os.path.join(self.repo_root, f"trained_tinyllama_v{new_ver}")  
-        train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")  
-        if not os.path.exists(train_script):  
-            print(f"ERROR: Training script not found at {train_script}")  
-            return  
-        print(f"\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")  
-        print(f"Output: {output_dir}")  
-        cmd = [  
-            "python", train_script,  
-            "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
-            "--dataset", combined_path,  
-            "--output", output_dir,  
-            "--samples", str(n_samples),  
-            "--epochs", "3",  
-        ]  
-        print(f"Command: {' '.join(cmd)}")  
-        self.log_action("retrain_start", {"version": f"v{new_ver}", "examples": len(all_examples), "samples": n_samples})  
-        result = subprocess.run(cmd, cwd=self.repo_root)  
-        if result.returncode == 0:  
-            print(f"\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")  
-            print(f"To use the new model, update lora_path in __init__ to trained_tinyllama_v{new_ver}")  
-            self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})  
-        else:  
-            print(f"\nTraining failed with return code {result.returncode}")  
-            self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})  
-  
     def batch_fix(self, n=50):  
         """Scan N random .py files, autofix any with issues."""  
         py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
@@ -451,37 +375,50 @@ class YeshuaAgent:
                         "total_fixes": total_fixed, "manual": total_manual})  
   
   
+  
     def retrain(self):  
-        """Combine all .jsonl datasets and retrain the model."""  
-        print("\n[RETRAIN] Step 1: Combining datasets...")  
+        import subprocess, sys  
+        print("[RETRAIN] Step 1: Combining training datasets...")  
+        VALID_DATASETS = [  
+            "mega_dataset.jsonl",  
+            "domain_dataset.jsonl",  
+            "popperian_dataset.jsonl",  
+            "yeshua_training_v2.jsonl",  
+        ]  
+        # Also include any photonic/lora dataset  
+        all_jsonl = []  
+        for root, dirs, files in os.walk(self.repo_root):  
+            for fname in files:  
+                if not fname.endswith(".jsonl"):  
+                    continue  
+                if fname in VALID_DATASETS:  
+                    all_jsonl.append(os.path.join(root, fname))  
+                elif "lora" in fname.lower() and "dataset" in fname.lower():  
+                    all_jsonl.append(os.path.join(root, fname))  
         all_examples = []  
-        skip_prefixes = ("combined_v", "yeshua_agent_log")  
-        for jf in glob.glob(os.path.join(self.repo_root, "**", "*.jsonl"), recursive=True):  
-            basename = os.path.basename(jf)  
-            if any(basename.startswith(p) for p in skip_prefixes):  
-                continue  
+        for jf in all_jsonl:  
+            valid = 0  
             try:  
-                with open(jf, "r", encoding="utf-8", errors="replace") as f:  
+                with open(jf, "r", encoding="utf-8") as f:  
                     for line in f:  
                         line = line.strip()  
-                        if line:  
-                            try:  
-                                all_examples.append(json.loads(line))  
-                            except json.JSONDecodeError:  
-                                pass  
-                print(f"  {os.path.relpath(jf, self.repo_root)}: {len(all_examples)} examples (cumulative)")  
+                        if not line:  
+                            continue  
+                        try:  
+                            obj = json.loads(line)  
+                            if "instruction" in obj and "output" in obj:  
+                                all_examples.append(obj)  
+                                valid += 1  
+                        except json.JSONDecodeError:  
+                            continue  
+                if valid > 0:  
+                    print(f"  {os.path.basename(jf)}: {valid} examples")  
             except Exception as e:  
-                print(f"  ERROR reading {jf}: {e}")  
+                print(f"  SKIP {os.path.basename(jf)}: {e}")  
         print(f"\nTotal: {len(all_examples)} examples")  
-        # Find next version number  
-        existing = glob.glob(os.path.join(self.repo_root, "trained_tinyllama_v*"))  
-        versions = []  
-        for d in existing:  
-            try:  
-                v = int(os.path.basename(d).replace("trained_tinyllama_v", ""))  
-                versions.append(v)  
-            except ValueError:  
-                pass  
+        # Determine version  
+        existing = [d for d in os.listdir(self.repo_root) if d.startswith("trained_tinyllama_v") and os.path.isdir(os.path.join(self.repo_root, d))]  
+        versions = [int(d.split("_v")[1]) for d in existing if d.split("_v")[1].isdigit()]  
         new_ver = max(versions) + 1 if versions else 5  
         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")  
         with open(combined_path, "w", encoding="utf-8") as f:  
@@ -494,19 +431,19 @@ class YeshuaAgent:
         if not os.path.exists(train_script):  
             print(f"ERROR: Training script not found at {train_script}")  
             return  
-        print(f"\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")  
-        print(f"Output: {output_dir}")  
         cmd = [  
             sys.executable, train_script,  
             "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
             "--dataset", combined_path,  
             "--output", output_dir,  
             "--samples", str(n_samples),  
-            "--epochs", "3"  
+            "--epochs", "3",  
         ]  
         cmd_str = " ".join(cmd)  
+        print(f"\n[RETRAIN] Step 2: Training v{new_ver} with {n_samples} samples...")  
+        print(f"Output: {output_dir}")  
         print(f"Command: {cmd_str}")  
-        result = subprocess.run(cmd)  
+        result = subprocess.run(cmd, cwd=self.repo_root)  
         if result.returncode == 0:  
             print(f"\nTraining complete! Model saved to: trained_tinyllama_v{new_ver}")  
             print(f"Restart the agent to use v{new_ver}.")  
@@ -573,13 +510,11 @@ class YeshuaAgent:
                         n = self.autofix(arg)  
                         if n > 0: print(f"Applied {n} fix(es) to {arg}")  
                         else: print(f"No auto-fixable issues in {arg}")  
+                elif cmd == "retrain":  
+                    self.retrain()  
                 elif cmd == "batch-fix":  
                     n = int(arg) if arg else 50  
                     self.batch_fix(n)  
-                elif cmd == "retrain":
-                    self.retrain()
-                elif cmd == "retrain":
-                    self.retrain()
                 elif cmd == "read":  
                     c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
                 elif cmd == "write":  
