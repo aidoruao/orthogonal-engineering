@@ -1,7 +1,7 @@
 ﻿"""  
 YESHUA AGENT v2.0  
 Local agentic AI on RTX 4050. No API. No subscription. No corporate dependency.  
-Trained on combined_v4 dataset (6000 examples). Constraint-first architecture.  
+Trained on combined_v4 dataset (1500 examples). Constraint-first architecture.  
 """  
 import os, json, glob, torch, random, re, shutil, sys, subprocess, subprocess  
 from datetime import datetime  
