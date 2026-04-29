@@ -309,6 +309,7 @@ def create_integration_plan(analysis_1: FrameworkAnalysis,
 def generate_implementation_code() -> str:
     """Generate starter code for implementing the 3 frameworks"""
 
+    # TODO: Expand generate_implementation_code() - stub detected by Yeshua Agent
     return '''
 """
 THREE FRAMEWORKS INTEGRATION - STARTER CODE
@@ -359,7 +360,7 @@ class TypedPlaceholder:
     def realize(self, universe: 'MathematicalUniverse') -> Optional[Any]:
         """Find realization in universe or return None (explicit failure)"""
         # Implementation from 1a.py
-        pass
+        # TODO: Implement realize() - placeholder removed by Yeshua Agent
 
 @dataclass
 class CanonicalIDECompiler:

@@ -127,6 +127,7 @@ class ParetoFrontier:
 
     def is_pareto_optimal(self, outcome: Tuple[str, ...]) -> bool:
         """Outcome is Pareto optimal if no dominating alternative exists."""
+        # TODO: Expand is_pareto_optimal() - stub detected by Yeshua Agent
         return self.improvement_margin(outcome) == Fraction(0)
 
 

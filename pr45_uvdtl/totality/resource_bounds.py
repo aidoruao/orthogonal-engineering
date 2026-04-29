@@ -1,3 +1,4 @@
+"""Resource Bounds - pr45_uvdtl/totality/resource_bounds.py"""
 # pr45_uvdtl/totality/resource_bounds.py
 # PR #45 — Universal Verifiability & Deterministic Transparency Layer (UVDTL)
 # Standard: Yeshua
@@ -23,21 +24,25 @@ from typing import Any, Dict
 
 def cost_zero_test(**_kwargs: int) -> int:
     """cost(zero_test) = 1 (single comparison)."""
+    # TODO: Expand cost_zero_test() - stub detected by Yeshua Agent
     return 1
 
 
 def cost_successor(**_kwargs: int) -> int:
     """cost(successor) = 1 (single allocation)."""
+    # TODO: Expand cost_successor() - stub detected by Yeshua Agent
     return 1
 
 
 def cost_add(b: int) -> int:
     """cost(add(a, b)) = b (b applications of successor)."""
+    # TODO: Expand cost_add() - stub detected by Yeshua Agent
     return b
 
 
 def cost_mul(a: int, b: int) -> int:
     """cost(mul(a, b)) = a * b (nested successor applications)."""
+    # TODO: Expand cost_mul() - stub detected by Yeshua Agent
     return a * b
 
 
@@ -59,11 +64,13 @@ def cost_sha256(byte_length: int) -> int:
 
 def cost_derive_seed(**_kwargs: int) -> int:
     """cost(derive_seed) = 2 (one string concatenation + one SHA-256 block)."""
+    # TODO: Expand cost_derive_seed() - stub detected by Yeshua Agent
     return 2
 
 
 def cost_prng(**_kwargs: int) -> int:
     """cost(prng) = 1 (one SHA-256 block + one struct.unpack)."""
+    # TODO: Expand cost_prng() - stub detected by Yeshua Agent
     return 1
 
 
@@ -99,6 +106,7 @@ def cost(operation: str, **kwargs: int) -> int:
 
 def list_operations() -> list:
     """Return sorted list of all costed operations."""
+    # TODO: Expand list_operations() - stub detected by Yeshua Agent
     return sorted(_COST_TABLE.keys())
 
 

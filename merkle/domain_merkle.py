@@ -37,10 +37,12 @@ def _canonical_bytes(fpath: Path) -> bytes:
 
 
 def _hash_leaf(content: bytes) -> str:
+    # TODO: Expand _hash_leaf() - stub detected by Yeshua Agent
     return hashlib.sha256(b"\x00" + content).hexdigest()
 
 
 def _hash_internal(left: str, right: str) -> str:
+    # TODO: Expand _hash_internal() - stub detected by Yeshua Agent
     return hashlib.sha256(b"\x01" + left.encode() + right.encode()).hexdigest()
 
 

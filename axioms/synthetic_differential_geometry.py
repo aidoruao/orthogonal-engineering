@@ -52,6 +52,7 @@ class Infinitesimal:
         return self.__mul__(other)
     
     def __repr__(self):
+        # TODO: Expand __repr__() - stub detected by Yeshua Agent
         return f"{self.coefficient}·d"
 
 

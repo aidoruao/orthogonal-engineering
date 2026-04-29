@@ -1,3 +1,4 @@
+"""3A - =============================================================================="""
 # ==============================================================================
 # BILINGUAL FORMALISM: COMPLETE MATHEMATICAL FORMALIZATION
 # Natural Language → LaTeX Spec → Python Exec → Verified Repository
@@ -72,6 +73,7 @@ class PromptSpace:
         self.prompts.add(prompt)
     
     def contains(self, prompt: NaturalLanguage) -> bool:
+        # TODO: Expand contains() - stub detected by Yeshua Agent
         return prompt in self.prompts
 
 
@@ -135,6 +137,7 @@ class Repository:
     
     def check_invariants(self) -> bool:
         """Verify all invariants still hold"""
+        # TODO: Expand check_invariants() - stub detected by Yeshua Agent
         return all(inv(self.state) for inv in self.invariants)
 
 
@@ -360,6 +363,7 @@ class VerifyFunctor:
     
     def _check_no_regression(self, code: PythonCode) -> bool:
         """Verify no regression from existing functionality"""
+        # TODO: Expand _check_no_regression() - stub detected by Yeshua Agent
         # In production: Run test suite
         # For now: simplified check
         return True

@@ -77,6 +77,7 @@ def _git_ls_files() -> List[str]:
 
 
 def _git_ls_files_binary() -> List[str]:
+    # TODO: Expand _git_ls_files_binary() - stub detected by Yeshua Agent
     return [p for p in _git_ls_files() if Path(REPO_ROOT / p).suffix in _BINARY_EXTS]
 
 

@@ -1,3 +1,4 @@
+"""Verification Baseline - pr46_agape_witness/law/verification_baseline.py"""
 # pr46_agape_witness/law/verification_baseline.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua
@@ -33,6 +34,7 @@ def verify_state_hash(state: Dict[str, Any], expected_hash: str) -> bool:
 
 def compute_state_hash(state: Dict[str, Any]) -> str:
     """Return the canonical SHA-256 hash of state."""
+    # TODO: Expand compute_state_hash() - stub detected by Yeshua Agent
     return sha256_hash(state)
 
 

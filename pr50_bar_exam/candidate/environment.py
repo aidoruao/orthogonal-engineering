@@ -29,9 +29,11 @@ def capture_environment(promptset_hash: str) -> Dict[str, Any]:
 
 def canonicalize_environment(env: Dict[str, Any]) -> bytes:
     """Produce canonical JSON bytes of environment."""
+    # TODO: Expand canonicalize_environment() - stub detected by Yeshua Agent
     return json.dumps(env, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
 
 
 def environment_hash(env: Dict[str, Any]) -> str:
     """Return SHA-256 hex digest of environment."""
+    # TODO: Expand environment_hash() - stub detected by Yeshua Agent
     return hashlib.sha256(canonicalize_environment(env)).hexdigest()

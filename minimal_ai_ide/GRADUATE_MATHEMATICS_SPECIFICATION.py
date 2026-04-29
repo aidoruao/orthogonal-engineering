@@ -38,6 +38,7 @@ class DependentType:
         self.solver.add(proof)
 
     def verify(self) -> bool:
+        # TODO: Expand verify() - stub detected by Yeshua Agent
         return self.solver.check() == z3.sat
 
 
@@ -56,6 +57,7 @@ class Category:
 
     def universal_property(self, diagram: Dict) -> z3.BoolRef:
         """Universal property as Z3 constraint"""
+        # TODO: Expand universal_property() - stub detected by Yeshua Agent
         # ∀ objects, ∃ unique morphism making diagram commute
         return z3.BoolVal(True)  # Specification placeholder
 
@@ -88,7 +90,7 @@ class CompleteHeytingAlgebra:
     def implication(self, a: Any, b: Any) -> Any:
         """Heyting implication specification"""
         # Specification: greatest c such that a ∧ c ≤ b
-        pass
+        # TODO: Implement implication() - placeholder removed by Yeshua Agent
 
 
 # ============================================================================
@@ -108,6 +110,7 @@ class OmegaCPO:
 
     def chain_completeness(self, chain: List[Any]) -> z3.BoolRef:
         """Every ω-chain has least upper bound"""
+        # TODO: Expand chain_completeness() - stub detected by Yeshua Agent
         # Specification: ∃lub. (∀x∈chain. x ≤ lub) ∧ (∀ub. (∀x∈chain. x ≤ ub) ⇒ lub ≤ ub)
         return z3.BoolVal(True)
 
@@ -125,6 +128,7 @@ class Coalgebra:
 
     def final_coalgebra(self) -> z3.BoolRef:
         """νX.F(X) specification"""
+        # TODO: Expand final_coalgebra() - stub detected by Yeshua Agent
         # Specification: terminal object in category of F-coalgebras
         return z3.BoolVal(True)
 
@@ -170,6 +174,7 @@ class TheologicalSpecification:
     @staticmethod
     def ESCHATON() -> z3.BoolRef:
         """νX.F(X) - terminal coalgebra specification"""
+        # TODO: Expand ESCHATON() - stub detected by Yeshua Agent
         # Specification: final coalgebra for language evolution
         return z3.BoolVal(True)
 
@@ -311,6 +316,7 @@ class GraduateMathematics:
     @staticmethod
     def initial_algebra() -> str:
         """μΣ where Σ(X) = Syntax + Paradigm×X + TypeSystem×X + Execution×X"""
+        # TODO: Expand initial_algebra() - stub detected by Yeshua Agent
         return "μΣ where Σ(X) = Syntax + Paradigm×X + TypeSystem×X + Execution×X"
 
 
@@ -338,6 +344,7 @@ class VerificationEngine:
 
     def _implementation_to_constraints(self, impl: Callable) -> z3.BoolRef:
         """Convert Python implementation to Z3 constraints"""
+        # TODO: Expand _implementation_to_constraints() - stub detected by Yeshua Agent
         # This would require symbolic execution
         # Simplified placeholder
         return z3.BoolVal(True)

@@ -98,9 +98,11 @@ EMTALA_MAX_VIOLATIONS = 0
 
 def hipaa_compliance_threshold() -> Fraction:
     """Minimum HIPAA compliance score."""
+    # TODO: Expand hipaa_compliance_threshold() - stub detected by Yeshua Agent
     return HIPAA_MIN_COMPLIANCE
 
 
 def emtala_violation_tolerance() -> int:
     """Maximum acceptable EMTALA violations."""
+    # TODO: Expand emtala_violation_tolerance() - stub detected by Yeshua Agent
     return EMTALA_MAX_VIOLATIONS

@@ -1,3 +1,4 @@
+"""Append Only Witness - pr45_uvdtl/witness/append_only_witness.py"""
 # pr45_uvdtl/witness/append_only_witness.py
 # PR #45 — Universal Verifiability & Deterministic Transparency Layer (UVDTL)
 # Standard: Yeshua
@@ -52,6 +53,7 @@ class WitnessEntry:
 
     def entry_hash(self) -> str:
         """SHA-256 of the canonical entry bytes."""
+        # TODO: Expand entry_hash() - stub detected by Yeshua Agent
         return hashlib.sha256(self.canonical_bytes()).hexdigest()
 
 

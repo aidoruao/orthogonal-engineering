@@ -26,6 +26,7 @@ class HashChainLink:
 
 def sha256_hex(data: str) -> str:
     """Deterministic SHA-256 hex digest."""
+    # TODO: Expand sha256_hex() - stub detected by Yeshua Agent
     return hashlib.sha256(data.encode("utf-8")).hexdigest()
 
 

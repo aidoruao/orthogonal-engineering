@@ -68,6 +68,7 @@ class ProofTheoreticOrdinal:
         return self.level < other.level
 
     def __le__(self, other: "ProofTheoreticOrdinal") -> bool:
+        # TODO: Expand __le__() - stub detected by Yeshua Agent
         return self.level <= other.level
 
 
@@ -120,6 +121,7 @@ class Realizer:
 
     @property
     def is_computable(self) -> bool:
+        # TODO: Expand is_computable() - stub detected by Yeshua Agent
         return self.witness_fn is not None or self.proof.conclusion != ""
 
 
@@ -146,6 +148,7 @@ class PartialEquivalenceRelation:
         return (element, element) in self.related_pairs
 
     def are_related(self, a: str, b: str) -> bool:
+        # TODO: Expand are_related() - stub detected by Yeshua Agent
         return (a, b) in self.related_pairs or (b, a) in self.related_pairs
 
 
@@ -199,6 +202,7 @@ class TerminalCoalgebra:
     @property
     def is_fixed_point(self) -> bool:
         """The terminal coalgebra IS the fixed point by definition."""
+        # TODO: Expand is_fixed_point() - stub detected by Yeshua Agent
         return True
 
 

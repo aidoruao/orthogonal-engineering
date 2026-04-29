@@ -20,6 +20,7 @@ from .implementation import (
 
 
 def check_icu_bed_density_ratio(
+    # TODO: Expand check_icu_bed_density_ratio() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: staffed ICU beds per 100k as fraction of floor >= 1.
@@ -52,6 +53,7 @@ def check_icu_bed_density_ratio(
 
 
 def check_ventilator_reserve_ratio(
+    # TODO: Expand check_ventilator_reserve_ratio() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: ventilator reserve per 100k as fraction of floor >= 1.
@@ -84,6 +86,7 @@ def check_ventilator_reserve_ratio(
 
 
 def check_ppe_supply_ratio(
+    # TODO: Expand check_ppe_supply_ratio() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: PPE days-of-supply as fraction of 90-day benchmark >= 1.
@@ -114,6 +117,7 @@ def check_ppe_supply_ratio(
 
 
 def check_tracer_density_ratio(
+    # TODO: Expand check_tracer_density_ratio() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: contact tracers per 100k as fraction of floor >= 1.
@@ -146,6 +150,7 @@ def check_tracer_density_ratio(
 
 
 def check_lab_turnaround_fraction(
+    # TODO: Expand check_lab_turnaround_fraction() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: lab turnaround as fraction of max latency <= 1.
@@ -178,6 +183,7 @@ def check_lab_turnaround_fraction(
 
 
 def check_audit_staleness_fraction(
+    # TODO: Expand check_audit_staleness_fraction() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: audit staleness as fraction of max window <= 1.
@@ -210,6 +216,7 @@ def check_audit_staleness_fraction(
 
 
 def check_surveillance_coverage(
+    # TODO: Expand check_surveillance_coverage() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: sentinel surveillance coverage fraction meets threshold.
@@ -236,6 +243,7 @@ def check_surveillance_coverage(
 
 
 def check_staff_training_ratio(
+    # TODO: Expand check_staff_training_ratio() - stub detected by Yeshua Agent
     data: PublicHealthCapacityClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: staff training ratio meets minimum threshold.

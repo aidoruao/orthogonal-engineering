@@ -22,6 +22,7 @@ class Symbol:
     value: str
     
     def __str__(self):
+        # TODO: Expand __str__() - stub detected by Yeshua Agent
         return self.value
 
 
@@ -36,6 +37,7 @@ class Alphabet:
     @property
     def epsilon(self) -> Symbol:
         """Empty string symbol."""
+        # TODO: Expand epsilon() - stub detected by Yeshua Agent
         return Symbol("")
 
 

@@ -100,9 +100,11 @@ US_SENTENCING_GUIDELINES_FACTOR = Fraction(3)  # Up to 3x gain
 
 def min_cooperation_threshold() -> Fraction:
     """Minimum cooperation for penalty reduction."""
+    # TODO: Expand min_cooperation_threshold() - stub detected by Yeshua Agent
     return MIN_COOPERATION_FOR_REDUCTION
 
 
 def max_penalty_multiplier() -> Fraction:
     """Maximum penalty as multiple of gain."""
+    # TODO: Expand max_penalty_multiplier() - stub detected by Yeshua Agent
     return US_SENTENCING_GUIDELINES_FACTOR

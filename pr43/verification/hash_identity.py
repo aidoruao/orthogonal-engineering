@@ -1,3 +1,4 @@
+"""Hash Identity - pr43/verification/hash_identity.py"""
 # pr43/verification/hash_identity.py
 # PR #43 — Orthogonal Parallel
 # Standard: Yeshua
@@ -16,16 +17,19 @@ from typing import Dict
 
 def sha256_bytes(data: bytes) -> str:
     """SHA-256 digest of raw bytes. Deterministic. Cross-platform."""
+    # TODO: Expand sha256_bytes() - stub detected by Yeshua Agent
     return hashlib.sha256(data).hexdigest()
 
 
 def sha256_str(text: str, encoding: str = "utf-8") -> str:
     """SHA-256 digest of a UTF-8 string."""
+    # TODO: Expand sha256_str() - stub detected by Yeshua Agent
     return sha256_bytes(text.encode(encoding))
 
 
 def hash_file(path: Path) -> str:
     """SHA-256 of a file's raw bytes."""
+    # TODO: Expand hash_file() - stub detected by Yeshua Agent
     return sha256_bytes(path.read_bytes())
 
 

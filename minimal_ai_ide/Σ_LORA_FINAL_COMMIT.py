@@ -138,6 +138,7 @@ class FileObject:
 
     def preserves_constraints(self, other: FileObject) -> bool:
         """Constraint monotonicity: C(f) ⊇ C(g)"""
+        # TODO: Expand preserves_constraints() - stub detected by Yeshua Agent
         return self.constraints.contains(other.constraints)
 
 

@@ -23,6 +23,7 @@ from merkle import MerkleTreeBuilder
 
 
 def _canonical_json(data: Dict[str, Any]) -> str:
+    # TODO: Expand _canonical_json() - stub detected by Yeshua Agent
     return json.dumps(data, sort_keys=True, separators=(",", ":"), default=str)
 
 

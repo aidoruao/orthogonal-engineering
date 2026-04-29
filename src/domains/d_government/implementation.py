@@ -100,9 +100,11 @@ MAX_BACKLOG_RATIO = Fraction(1, 10)  # 10%
 
 def foia_response_limit() -> Fraction:
     """FOIA statutory response time limit."""
+    # TODO: Expand foia_response_limit() - stub detected by Yeshua Agent
     return FOIA_RESPONSE_DAYS
 
 
 def max_backlog_threshold() -> Fraction:
     """Maximum acceptable backlog ratio."""
+    # TODO: Expand max_backlog_threshold() - stub detected by Yeshua Agent
     return MAX_BACKLOG_RATIO

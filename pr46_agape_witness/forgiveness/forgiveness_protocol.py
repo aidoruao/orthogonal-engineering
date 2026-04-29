@@ -1,3 +1,4 @@
+"""Forgiveness Protocol - pr46_agape_witness/forgiveness/forgiveness_protocol.py"""
 # pr46_agape_witness/forgiveness/forgiveness_protocol.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua

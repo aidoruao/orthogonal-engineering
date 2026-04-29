@@ -56,11 +56,13 @@ def live_graph():
 
 @pytest.fixture(scope="module")
 def live_nodes(live_graph):
+    # TODO: Expand live_nodes() - stub detected by Yeshua Agent
     return live_graph.get("nodes", {})
 
 
 @pytest.fixture(scope="module")
 def live_stats(live_graph):
+    # TODO: Expand live_stats() - stub detected by Yeshua Agent
     return live_graph.get("statistics", {})
 
 
@@ -75,6 +77,7 @@ def nodes_by_class(live_nodes):
 
 @pytest.fixture(scope="module")
 def zone_counts(live_stats):
+    # TODO: Expand zone_counts() - stub detected by Yeshua Agent
     return live_stats.get("zone_counts", {})
 
 

@@ -15,6 +15,7 @@ XSS_PAYLOADS = [
 ]
 
 def sanitize(s: str) -> str:
+    # TODO: Expand sanitize() - stub detected by Yeshua Agent
     return html.escape(s, quote=True)
 
 def test_xss_payloads_escaped():

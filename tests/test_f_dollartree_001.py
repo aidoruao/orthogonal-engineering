@@ -92,6 +92,7 @@ class TestEvidenceAnchor:
         assert a == b
 
     def test_schema_carries_evidence_anchor(self):
+        # TODO: Expand test_schema_carries_evidence_anchor() - stub detected by Yeshua Agent
         assert EVIDENCE_ANCHOR_SHA256 in DOLLARTREE_SCHEMA["evidence_anchors"]
 
 
@@ -353,6 +354,7 @@ class TestCompositeForcing:
         assert OFFICER_NON_FUNCTORIAL_ENFORCEMENT in state.violations
 
     def test_hostile_containment_duration_in_schema(self):
+        # TODO: Expand test_hostile_containment_duration_in_schema() - stub detected by Yeshua Agent
         assert DOLLARTREE_SCHEMA["confinement_duration_seconds"] == 258
 
 

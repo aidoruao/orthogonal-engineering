@@ -413,6 +413,7 @@ class IDEAdapter:
 
 # Convenience function for quick integration
 def route_ide_query(
+    # TODO: Expand route_ide_query() - stub detected by Yeshua Agent
     query: str, workspace_root: str, metadata: Optional[Dict] = None
 ) -> Dict:
     """

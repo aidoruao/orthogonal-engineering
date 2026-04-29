@@ -36,6 +36,7 @@ class Proposition:
     
     def is_true_in(self, world_id: str) -> bool:
         """Truth value of proposition in given world."""
+        # TODO: Expand is_true_in() - stub detected by Yeshua Agent
         return self.world_truth.get(world_id, False)
 
 
@@ -46,6 +47,7 @@ class Agent:
     name: str
     
     def __hash__(self):
+        # TODO: Expand __hash__() - stub detected by Yeshua Agent
         return hash(self.agent_id)
 
 
@@ -65,6 +67,7 @@ class BeliefState:
     
     def knows(self, prop: Proposition, world_id: str) -> bool:
         """Knowledge = true belief + justification (simplified)."""
+        # TODO: Expand knows() - stub detected by Yeshua Agent
         return self.believes(prop, world_id) and prop.is_true_in(world_id)
 
 
@@ -148,6 +151,7 @@ class TrackingCondition:
     
     def tracks(self) -> bool:
         """Both tracking conditions satisfied."""
+        # TODO: Expand tracks() - stub detected by Yeshua Agent
         return self.sensitivity and self.adherence
 
 
@@ -166,6 +170,7 @@ class SafetyCondition:
     
     def is_safe(self, threshold: Fraction = Fraction(95, 100)) -> bool:
         """Belief is safe if true in nearby worlds above threshold."""
+        # TODO: Expand is_safe() - stub detected by Yeshua Agent
         return self.safety_score() >= threshold
 
 

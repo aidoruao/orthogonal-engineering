@@ -109,9 +109,11 @@ MIN_RELIABILITY_SCORE = Fraction(7, 10)  # 70%
 
 def max_saidi_limit() -> Fraction:
     """Maximum acceptable SAIDI for electric utilities."""
+    # TODO: Expand max_saidi_limit() - stub detected by Yeshua Agent
     return MAX_SAIDI_MINUTES
 
 
 def max_allowed_roe() -> Fraction:
     """Maximum allowed return on equity."""
+    # TODO: Expand max_allowed_roe() - stub detected by Yeshua Agent
     return MAX_ACCEPTABLE_ROE

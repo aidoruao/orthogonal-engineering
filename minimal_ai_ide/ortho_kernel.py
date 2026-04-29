@@ -77,6 +77,7 @@ class IdentityType(Generic[A]):
 
     def transport(self, f: Callable[[A], B]) -> IdentityType[B]:
         """Transport along equality (path induction)"""
+        # TODO: Expand transport() - stub detected by Yeshua Agent
         return IdentityType(self.target_type, f(self.left), f(self.right))
 
 
@@ -340,6 +341,7 @@ class OrthoKernel:
 
     def get_history(self) -> List[OrthoState]:
         """Get immutable history trail"""
+        # TODO: Expand get_history() - stub detected by Yeshua Agent
         return self._history.copy()
 
 

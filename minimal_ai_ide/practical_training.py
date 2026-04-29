@@ -133,6 +133,7 @@ class TrainingMetrics:
 
     def time_exceeded(self, max_minutes: int) -> bool:
         """Check if time limit exceeded"""
+        # TODO: Expand time_exceeded() - stub detected by Yeshua Agent
         return self.elapsed_minutes() > max_minutes
 
 

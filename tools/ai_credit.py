@@ -22,6 +22,7 @@ from typing import Any, Dict, Optional
 
 
 def _hash_consent(consent_text: str) -> str:
+    # TODO: Expand _hash_consent() - stub detected by Yeshua Agent
     return hashlib.sha256(consent_text.encode("utf-8")).hexdigest()
 
 

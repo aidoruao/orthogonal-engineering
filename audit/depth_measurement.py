@@ -201,6 +201,7 @@ def measure_domain_depth(domain_dir: Path, computational_counts: Dict[str, int])
 
 
 def run_depth_measurement(
+    # TODO: Expand run_depth_measurement() - stub detected by Yeshua Agent
     output_path: Path = DEFAULT_REPORT_PATH,
 ) -> Tuple[bool, Dict[str, Any]]:
     """Run depth measurement across all domains.

@@ -209,4 +209,5 @@ class InstitutionalImmuneSystem:
 
     def documenter(self) -> WageTheftDocumentationEngine:
         """Access the underlying WageTheftDocumentationEngine for direct log access."""
+        # TODO: Expand documenter() - stub detected by Yeshua Agent
         return self._documenter

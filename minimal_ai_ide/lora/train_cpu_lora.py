@@ -130,6 +130,7 @@ class TrainingReport:
 
     def __bool__(self) -> bool:
         """Training successful only if both functional and governance compliant"""
+        # TODO: Expand __bool__() - stub detected by Yeshua Agent
         return self.training_successful and self.governance_compliant
 
 
@@ -212,6 +213,7 @@ def get_target_modules(model_name: str) -> List[str]:
 
 
 def load_and_prepare_dataset(
+    # TODO: Expand load_and_prepare_dataset() - stub detected by Yeshua Agent
     dataset_path: str, tokenizer: PreTrainedTokenizer, max_length: int = 512
 ) -> Dataset:
     """Load and prepare dataset for training"""

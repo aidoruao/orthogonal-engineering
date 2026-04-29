@@ -55,6 +55,7 @@ class Warranty:
     exclusions: List[str] = field(default_factory=list)
     
     def covers_part(self, part: str) -> bool:
+        # TODO: Expand covers_part() - stub detected by Yeshua Agent
         return part in self.covered_parts and part not in self.exclusions
 
 
@@ -65,6 +66,7 @@ class WarrantyChecker:
     repair_request: str
     
     def is_covered(self) -> bool:
+        # TODO: Expand is_covered() - stub detected by Yeshua Agent
         return self.warranty.covers_part(self.repair_request)
 
 
@@ -92,6 +94,7 @@ class RecallTracker:
         return Fraction(self.notified_units * 100, self.affected_units)
     
     def is_complete(self) -> bool:
+        # TODO: Expand is_complete() - stub detected by Yeshua Agent
         return self.notification_rate() >= Fraction(95)
 
 

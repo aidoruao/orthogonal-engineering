@@ -28,11 +28,13 @@ from src.domains.d_labor_rights.implementation import (
 
 def test_overtime_multiplier_is_three_halves():
     """FLSA overtime multiplier must be exactly 3/2."""
+    # TODO: Expand test_overtime_multiplier_is_three_halves() - stub detected by Yeshua Agent
     assert FLSA_OVERTIME_MULTIPLIER == Fraction(3, 2)
 
 
 def test_overtime_threshold_is_40():
     """FLSA weekly overtime threshold must be 40 hours."""
+    # TODO: Expand test_overtime_threshold_is_40() - stub detected by Yeshua Agent
     assert FLSA_WEEKLY_OVERTIME_THRESHOLD == 40
 
 
@@ -128,6 +130,7 @@ def test_empty_weeks_raises():
 
 def test_frontloading_detected_when_task_exceeds_schedule():
     """Workload > scheduled hours must be detected as frontloading."""
+    # TODO: Expand test_frontloading_detected_when_task_exceeds_schedule() - stub detected by Yeshua Agent
     assert detect_frontloading(Fraction(10), Fraction(8)) is True
 
 

@@ -28,6 +28,7 @@ OIDC_ENV_VARS = [
 
 def is_ci() -> bool:
     """Return True if running in GitHub Actions CI."""
+    # TODO: Expand is_ci() - stub detected by Yeshua Agent
     return os.environ.get("GITHUB_ACTIONS") == "true"
 
 
@@ -48,14 +49,17 @@ def extract_oidc_claims() -> Optional[Dict[str, Any]]:
 
 def canonicalize_claims(claims: Dict[str, Any]) -> bytes:
     """Produce canonical JSON bytes (sorted keys, no whitespace) from claims."""
+    # TODO: Expand canonicalize_claims() - stub detected by Yeshua Agent
     return json.dumps(claims, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
 
 
 def claims_hash(claims: Dict[str, Any]) -> str:
     """Return SHA-256 hex digest of canonical claims."""
+    # TODO: Expand claims_hash() - stub detected by Yeshua Agent
     return hashlib.sha256(canonicalize_claims(claims)).hexdigest()
 
 
 def get_actor() -> Optional[str]:
     """Return GitHub actor if in CI, else None."""
+    # TODO: Expand get_actor() - stub detected by Yeshua Agent
     return os.environ.get("GITHUB_ACTOR") if is_ci() else None

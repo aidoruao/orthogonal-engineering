@@ -48,6 +48,7 @@ def hello_world(
 
 
 def parse_handling_file(
+    # TODO: Expand parse_handling_file() - stub detected by Yeshua Agent
     file_path: str, subset: Optional[int] = None
 ) -> Tuple[ET.ElementTree, List[ET.Element]]:
     """
@@ -121,6 +122,7 @@ def canonical_vehicle_bytes(item: ET.Element) -> bytes:
 
 def compute_vehicle_hash(canonical_bytes: bytes) -> str:
     """Compute SHA-256 hash of canonical vehicle bytes."""
+    # TODO: Expand compute_vehicle_hash() - stub detected by Yeshua Agent
     return hashlib.sha256(canonical_bytes).hexdigest()
 
 

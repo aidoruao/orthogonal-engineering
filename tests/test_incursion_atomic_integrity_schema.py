@@ -1,3 +1,4 @@
+"""Test Incursion Atomic Integrity Schema - Test Incursion Atomic Integrity Schema"""
 import pathlib
 import pytest
 import yaml
@@ -11,6 +12,7 @@ def load_schema():
 
 @pytest.fixture(scope="module")
 def schema():
+    # TODO: Expand schema() - stub detected by Yeshua Agent
     return load_schema()
 
 

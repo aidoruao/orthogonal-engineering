@@ -46,6 +46,7 @@ class ForceSensor:
     
     def resultant_force(self) -> Fraction:
         """Calculate resultant force magnitude."""
+        # TODO: Expand resultant_force() - stub detected by Yeshua Agent
         return Fraction((self.force_x ** 2 + self.force_y ** 2 + self.force_z ** 2).numerator ** Fraction(1, 2))
 
 
@@ -86,6 +87,7 @@ class EmergencyStopSystem:
     
     def meets_response_requirement(self) -> bool:
         """Check if response time within ISO 10218 limits."""
+        # TODO: Expand meets_response_requirement() - stub detected by Yeshua Agent
         return self.response_time() <= self.MAX_RESPONSE_TIME_MS
 
 

@@ -220,6 +220,7 @@ def analyze_framework(filepath, framework_name):
 
 def create_latex_document(analysis, output_dir):
     """Create LaTeX documentation for a framework."""
+    # TODO: Expand create_latex_document() - stub detected by Yeshua Agent
     latex_content = f"""\\documentclass[12pt]{{article}}
 \\usepackage{{amsmath, amssymb, amsthm}}
 \\usepackage{{geometry}}
@@ -310,6 +311,7 @@ def create_latex_document(analysis, output_dir):
 
 def create_implementation_plan(all_analyses, output_dir):
     """Create implementation plan markdown file."""
+    # TODO: Expand create_implementation_plan() - stub detected by Yeshua Agent
     plan_content = f"""# Implementation Plan: Five Theoretical Frameworks
 # =================================================
 

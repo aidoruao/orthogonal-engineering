@@ -7,6 +7,7 @@ Flow rate accurate to +-5%.
 import pytest
 
 def simulate_infusion(programmed_ml_per_hr: float, duration_hr: float, pump_error_frac: float) -> float:
+    # TODO: Expand simulate_infusion() - stub detected by Yeshua Agent
     return programmed_ml_per_hr * duration_hr * (1 + pump_error_frac)
 
 def test_infusion_within_5_percent():

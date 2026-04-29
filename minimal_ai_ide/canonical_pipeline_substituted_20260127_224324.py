@@ -127,6 +127,7 @@ class AtonementCanonical:
 
     def verify_justice(self) -> bool:
         """Verify justice is preserved"""
+        # TODO: Expand verify_justice() - stub detected by Yeshua Agent
         # Justice preserved if transformation is linear and norm-preserving
         return np.allclose(np.linalg.norm(self.A), np.linalg.norm(self.B))
 :

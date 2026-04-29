@@ -100,6 +100,7 @@ class StructuredLogger:
     
     def __exit__(self, exc_type, exc_val, exc_tb):
         """Context manager exit."""
+        # TODO: Expand __exit__() - stub detected by Yeshua Agent
         self.close()
 
 

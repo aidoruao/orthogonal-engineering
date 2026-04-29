@@ -178,6 +178,7 @@ def _is_protected(rel_path: str) -> bool:
 
 def _hash_term(term: str) -> str:
     """Return SHA-256 hex digest of term (never store the term itself)."""
+    # TODO: Expand _hash_term() - stub detected by Yeshua Agent
     return hashlib.sha256(term.encode("utf-8")).hexdigest()
 
 

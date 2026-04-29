@@ -29,6 +29,7 @@ class MerkleNode:
     
     def is_leaf(self) -> bool:
         """Check if this is a leaf node."""
+        # TODO: Expand is_leaf() - stub detected by Yeshua Agent
         return self.left is None and self.right is None
 
 

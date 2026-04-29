@@ -79,6 +79,7 @@ TEST_EXAMPLES = [
 
 
 def load_trained_model(
+    # TODO: Expand load_trained_model() - stub detected by Yeshua Agent
     model_path: str, base_model: str = "distilgpt2", device: str = "cpu"
 ) -> Tuple[PreTrainedModel, PreTrainedTokenizer]:
     """Load trained LoRA model"""

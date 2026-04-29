@@ -1,3 +1,4 @@
+"""Type Theory - pr43/foundations/type_theory.py"""
 # pr43/foundations/type_theory.py
 # PR #43 — Orthogonal Parallel
 # Standard: Yeshua
@@ -28,6 +29,7 @@ class Proof(Generic[A]):
 
     def apply(self, f: Callable[[A], B]) -> "Proof[B]":
         """Modus ponens: Proof(A) and A→B yields Proof(B)."""
+        # TODO: Expand apply() - stub detected by Yeshua Agent
         return Proof(f(self.witness))
 
 
@@ -40,6 +42,7 @@ class Pi(Generic[A, B]):
         self._f = f
 
     def __call__(self, x: A) -> B:
+        # TODO: Expand __call__() - stub detected by Yeshua Agent
         return self._f(x)
 
 

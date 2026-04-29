@@ -62,6 +62,7 @@ def test_is_external_claim_true():
 
 def test_is_external_claim_false_for_plain_dict():
     """`is_external_claim` returns False for plain dicts."""
+    # TODO: Expand test_is_external_claim_false_for_plain_dict() - stub detected by Yeshua Agent
     assert is_external_claim({"key": "value"}) is False
 
 
@@ -74,6 +75,7 @@ def test_is_external_claim_false_for_non_dict():
 
 def test_assert_not_external_claim_passes_for_plain():
     """`assert_not_external_claim` does not raise for non-tagged objects."""
+    # TODO: Expand test_assert_not_external_claim_passes_for_plain() - stub detected by Yeshua Agent
     assert_not_external_claim({"proof": "valid"})  # should not raise
 
 

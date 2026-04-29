@@ -1,3 +1,4 @@
+"""  Init   - D_AVIATION domain — Aviation & ATC (External API circuit-breakers)"""
 # D_AVIATION domain — Aviation & ATC (External API circuit-breakers)
 # Invariant: Aircraft never enters a state that violates known safe-flight envelopes.
 # Source: ontology/ontology.json#D_AVIATION

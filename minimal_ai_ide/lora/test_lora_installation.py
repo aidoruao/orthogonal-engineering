@@ -68,6 +68,7 @@ class TestResult:
 
     def __bool__(self) -> bool:
         """Test passes only if both functional and governance compliant"""
+        # TODO: Expand __bool__() - stub detected by Yeshua Agent
         return self.passed and self.governance_compliant
 
 

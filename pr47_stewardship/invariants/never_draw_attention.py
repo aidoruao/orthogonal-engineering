@@ -1,3 +1,4 @@
+"""Never Draw Attention - pr47_stewardship/invariants/never_draw_attention.py"""
 # pr47_stewardship/invariants/never_draw_attention.py
 # PR #47 — Sanctified Remembrance
 # Standard: Yeshua

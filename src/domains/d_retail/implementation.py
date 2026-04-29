@@ -58,6 +58,7 @@ class RetailProduct:
     
     def is_profitable(self) -> bool:
         """Check if product is profitable."""
+        # TODO: Expand is_profitable() - stub detected by Yeshua Agent
         return self.base_price > self.cost
 
 
@@ -97,9 +98,11 @@ CPSC_COMPLIANCE_REQUIRED = True
 
 def min_profit_margin() -> Fraction:
     """Minimum acceptable profit margin."""
+    # TODO: Expand min_profit_margin() - stub detected by Yeshua Agent
     return MIN_MARGIN_PERCENTAGE
 
 
 def max_return_rate() -> Fraction:
     """Maximum acceptable return rate."""
+    # TODO: Expand max_return_rate() - stub detected by Yeshua Agent
     return MAX_RETURN_RATE

@@ -101,6 +101,7 @@ class MathematicalUniverse:
     @staticmethod
     def in_universe(obj: Any, level: str) -> bool:
         """Check if object exists in given universe level - BIBLICAL ACCURACY"""
+        # TODO: Expand in_universe() - stub detected by Yeshua Agent
         # All mathematical objects exist in God's creation
         # No mutation, only pure mathematical forms
         return True  # All is in Christ (Colossians 1:17)
@@ -168,6 +169,7 @@ class ConstraintSet:
         return self.constraints.issubset(other.constraints)
 
     def __str__(self) -> str:
+        # TODO: Expand __str__() - stub detected by Yeshua Agent
         return f"ConstraintSet({[c.name for c in self.constraints]})"
 
 

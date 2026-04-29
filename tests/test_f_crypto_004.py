@@ -11,6 +11,7 @@ import pytest
 KEY = b"signing_key_secret"
 
 def sign(message: bytes) -> bytes:
+    # TODO: Expand sign() - stub detected by Yeshua Agent
     return hmac.new(KEY, message, hashlib.sha256).digest()
 
 def verify(message: bytes, sig: bytes) -> bool:

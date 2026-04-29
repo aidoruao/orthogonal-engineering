@@ -65,6 +65,7 @@ class TestHandlingMetaParser(unittest.TestCase):
     
     def test_parse_simple_xml(self):
         """Test parsing simple XML file."""
+        # TODO: Expand test_parse_simple_xml() - stub detected by Yeshua Agent
         xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <CHandlingDataMgr>
     <HandlingData>
@@ -158,6 +159,7 @@ class TestHandlingPipeline(unittest.TestCase):
     
     def test_process_file(self):
         """Test processing a single file."""
+        # TODO: Expand test_process_file() - stub detected by Yeshua Agent
         xml_content = """<?xml version="1.0" encoding="UTF-8"?>
 <CHandlingDataMgr>
     <HandlingData>
@@ -178,6 +180,7 @@ class TestHandlingPipeline(unittest.TestCase):
     
     def test_process_file_with_output(self):
         """Test processing file with output directory."""
+        # TODO: Expand test_process_file_with_output() - stub detected by Yeshua Agent
         xml_content = """<?xml version="1.0"?>
 <root><item><handlingName value="CAR"/></item></root>"""
         

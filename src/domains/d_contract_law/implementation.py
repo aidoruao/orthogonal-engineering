@@ -108,6 +108,7 @@ class UCCBattleOfForms:
     
     def is_between_merchants(self) -> bool:
         """UCC § 2-207(2): Additional terms become part of contract between merchants."""
+        # TODO: Expand is_between_merchants() - stub detected by Yeshua Agent
         return self.buyer.is_merchant and self.seller.is_merchant
 
 

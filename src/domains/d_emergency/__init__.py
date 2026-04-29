@@ -1,3 +1,4 @@
+"""  Init   - D_EMERGENCY domain — Emergency Response (Partition-tolerant messaging)"""
 # D_EMERGENCY domain — Emergency Response (Partition-tolerant messaging)
 # Invariant: Every dispatched emergency message is delivered exactly once
 #            even under network partition.

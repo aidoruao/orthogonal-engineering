@@ -1,3 +1,4 @@
+"""Input Guard - input_guard.py"""
 # input_guard.py
 # Prevents unsafe file access, enforces schema compliance for CSVs
 
@@ -37,6 +38,7 @@ def guard_csv_files(folder=None):
 
 def guard_input(folder=None):
     """Curated API entry point for input guarding."""
+    # TODO: Expand guard_input() - stub detected by Yeshua Agent
     guard_csv_files(folder)
 
 

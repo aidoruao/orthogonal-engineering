@@ -64,6 +64,7 @@ class PhysicalSystem:
     
     def total_mass(self) -> Fraction:
         """Sum of masses."""
+        # TODO: Expand total_mass() - stub detected by Yeshua Agent
         return sum(o.mass for o in self.objects)
 
 
@@ -97,4 +98,5 @@ class PhysicsChecker:
     
     def superluminal_objects(self, speed_limit: Fraction) -> List[PhysicalObject]:
         """Objects exceeding speed limit (e.g., c)."""
+        # TODO: Expand superluminal_objects() - stub detected by Yeshua Agent
         return [o for o in self.systems[0].objects if o.speed() > speed_limit * speed_limit]

@@ -46,6 +46,7 @@ from oe_engine.router import DomainRouter
 
 
 def test_invertible_impossibility_enum_exists() -> None:
+    # TODO: Expand test_invertible_impossibility_enum_exists() - stub detected by Yeshua Agent
     assert hasattr(LimitationType, "INVERTIBLE_IMPOSSIBILITY")
 
 
@@ -301,6 +302,7 @@ def test_conversation_context_boost_non_empty_after_first_turn() -> None:
 
 
 def test_wall_registry_has_eight_entries() -> None:
+    # TODO: Expand test_wall_registry_has_eight_entries() - stub detected by Yeshua Agent
     assert len(WALL_INVERSION_REGISTRY) == 8
 
 

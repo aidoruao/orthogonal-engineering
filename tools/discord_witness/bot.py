@@ -126,6 +126,7 @@ def parse_feed_rows(content: str) -> list[dict]:
 # ---------------------------------------------------------------------------
 
 def _sha256(data: bytes) -> str:
+    # TODO: Expand _sha256() - stub detected by Yeshua Agent
     return hashlib.sha256(data).hexdigest()
 
 

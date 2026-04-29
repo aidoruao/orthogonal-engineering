@@ -89,31 +89,37 @@ class DieAttach:
 
 def fiber_alignment_threshold() -> Fraction:
     """Custom OE maximum fiber array alignment error: 0.5 µm."""
+    # TODO: Expand fiber_alignment_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 2)
 
 
 def co_packaged_optics_pitch_threshold() -> Fraction:
     """OIF CEI-112G minimum pitch for standard fiber array: 250 µm."""
+    # TODO: Expand co_packaged_optics_pitch_threshold() - stub detected by Yeshua Agent
     return Fraction(250, 1)
 
 
 def solder_reflow_threshold() -> Fraction:
     """IPC J-STD-020 minimum reflow cycles without failure: 3."""
+    # TODO: Expand solder_reflow_threshold() - stub detected by Yeshua Agent
     return Fraction(3, 1)
 
 
 def wire_bond_pull_threshold() -> Fraction:
     """MIL-STD-883 Method 2011 minimum pull force for 25 µm Au wire: 3 gf."""
+    # TODO: Expand wire_bond_pull_threshold() - stub detected by Yeshua Agent
     return Fraction(3, 1)
 
 
 def hermetic_leak_threshold() -> Fraction:
     """MIL-STD-883 Method 1014 maximum leak rate: 1e-8 atm·cc/s."""
+    # TODO: Expand hermetic_leak_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 100_000_000)
 
 
 def die_void_threshold() -> Fraction:
     """Custom OE maximum die attach void percentage: 25%."""
+    # TODO: Expand die_void_threshold() - stub detected by Yeshua Agent
     return Fraction(25, 100)
 
 

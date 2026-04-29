@@ -50,6 +50,7 @@ class CheckClassification:
     check_type: str  # "tautological" or "computational"
 
     def to_dict(self) -> Dict[str, Any]:
+        # TODO: Expand to_dict() - stub detected by Yeshua Agent
         return {"name": self.name, "type": self.check_type}
 
 
@@ -195,6 +196,7 @@ def classify_domain_invariants(inv_path: Path, domain: str) -> DomainClassificat
 
 
 def run_tautology_audit(
+    # TODO: Expand run_tautology_audit() - stub detected by Yeshua Agent
     output_path: Path = DEFAULT_REPORT_PATH,
 ) -> Tuple[bool, Dict[str, Any]]:
     """Run the tautology detector across all domains.

@@ -1,3 +1,4 @@
+"""Covenant Tracking - pr46_agape_witness/relational/covenant_tracking.py"""
 # pr46_agape_witness/relational/covenant_tracking.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua
@@ -55,4 +56,5 @@ class CovenantLog:
         self._entries.append(entry)
 
     def entries(self) -> List[CovenantEntry]:
+        # TODO: Expand entries() - stub detected by Yeshua Agent
         return list(self._entries)

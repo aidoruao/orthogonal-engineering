@@ -54,6 +54,7 @@ class FlagState:
     
     def is_quality_flag(self) -> bool:
         """Flag state with good compliance record."""
+        # TODO: Expand is_quality_flag() - stub detected by Yeshua Agent
         return self.white_list and not self.black_list
 
 
@@ -88,6 +89,7 @@ class Vessel:
     
     def ism_compliant(self) -> bool:
         """International Safety Management compliance."""
+        # TODO: Expand ism_compliant() - stub detected by Yeshua Agent
         return self.smc_certified and self.doc_certified
 
 
@@ -210,4 +212,5 @@ class MaritimeChecker:
     
     def hazmat_violations(self) -> List[Cargo]:
         """Dangerous goods not properly declared."""
+        # TODO: Expand hazmat_violations() - stub detected by Yeshua Agent
         return [c for c in self.cargoes if c.dangerous_goods and not c.imdg_class]

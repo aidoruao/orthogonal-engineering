@@ -52,10 +52,12 @@ sys.path.insert(0, str(project_root))
 
 def chat_input_sanity(x):
     """Validator: input must be non-empty string"""
+    # TODO: Expand chat_input_sanity() - stub detected by Yeshua Agent
     return isinstance(x, str) and len(x.strip()) > 0
 
 def response_coherence(x):
     """Validator: output string must be reasonably long"""
+    # TODO: Expand response_coherence() - stub detected by Yeshua Agent
     return isinstance(x, str) and len(x) > 10
 
 def ethical_response_condition(data):

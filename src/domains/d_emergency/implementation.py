@@ -105,9 +105,11 @@ CARDIAC_SURVIVAL_TARGET = Fraction(1, 10)  # 10% minimum
 
 def ems_response_target() -> Fraction:
     """NFPA 1710 EMS response time target."""
+    # TODO: Expand ems_response_target() - stub detected by Yeshua Agent
     return EMS_RESPONSE_TARGET_MINUTES
 
 
 def cardiac_survival_target() -> Fraction:
     """Target cardiac arrest survival rate."""
+    # TODO: Expand cardiac_survival_target() - stub detected by Yeshua Agent
     return CARDIAC_SURVIVAL_TARGET

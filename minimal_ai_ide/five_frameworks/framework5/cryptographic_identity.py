@@ -1,3 +1,4 @@
+"""Cryptographic Identity - =============================================================="""
 # ==============================================================
 # Cryptographic Identity
 # Extracted from: 5a.py
@@ -69,6 +70,7 @@ class Hash:
     @staticmethod
     def verify(data: str, claimed_hash: str) -> bool:
         """Verify data matches claimed hash"""
+        # TODO: Expand verify() - stub detected by Yeshua Agent
         return Hash.compute(data) == claimed_hash
 
 

@@ -52,6 +52,7 @@ class ConversationFile:
     sample_content: str  # First 500 chars for verification
 
     def to_dict(self) -> Dict:
+        # TODO: Expand to_dict() - stub detected by Yeshua Agent
         return asdict(self)
 
 

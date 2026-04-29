@@ -1,3 +1,4 @@
+"""Debug Message - Load and show actual message structure"""
 import json
 
 # Load and show actual message structure

@@ -444,6 +444,7 @@ class SimpleSystemAudit:
 
     def _generate_summary_report(self, timestamp):
         """Generate summary markdown report"""
+        # TODO: Expand _generate_summary_report() - stub detected by Yeshua Agent
         report = f"""# ORTHOGONAL ENGINEERING - SYSTEM AUDIT SUMMARY
 
 **Timestamp:** {timestamp}
@@ -517,6 +518,7 @@ class SimpleSystemAudit:
 
     def _generate_cloud_report(self, timestamp):
         """Generate cloud-ready markdown report"""
+        # TODO: Expand _generate_cloud_report() - stub detected by Yeshua Agent
         report = f"""# ORTHOGONAL ENGINEERING - CLOUD AI BRIEFING
 
 **Report Date:** {datetime.datetime.utcnow().isoformat()}

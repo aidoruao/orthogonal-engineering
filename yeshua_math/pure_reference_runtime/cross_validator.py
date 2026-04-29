@@ -35,36 +35,44 @@ FREEZE_V2_PATH = REPO_ROOT / "resilience" / "invariant_spec_v2.freeze"
 
 
 def _sha256(data: bytes) -> str:
+    # TODO: Expand _sha256() - stub detected by Yeshua Agent
     return hashlib.sha256(data).hexdigest()
 
 
 def _peano_add(m: int, n: int) -> int:
     """Python reference implementation of Peano addition."""
+    # TODO: Expand _peano_add() - stub detected by Yeshua Agent
     return m + n
 
 
 def _peano_mul(m: int, n: int) -> int:
     """Python reference implementation of Peano multiplication."""
+    # TODO: Expand _peano_mul() - stub detected by Yeshua Agent
     return m * n
 
 
 def _bool_not(a: bool) -> bool:
+    # TODO: Expand _bool_not() - stub detected by Yeshua Agent
     return not a
 
 
 def _bool_and(a: bool, b: bool) -> bool:
+    # TODO: Expand _bool_and() - stub detected by Yeshua Agent
     return a and b
 
 
 def _bool_or(a: bool, b: bool) -> bool:
+    # TODO: Expand _bool_or() - stub detected by Yeshua Agent
     return a or b
 
 
 def _bool_implies(a: bool, b: bool) -> bool:
+    # TODO: Expand _bool_implies() - stub detected by Yeshua Agent
     return (not a) or b
 
 
 def _bool_iff(a: bool, b: bool) -> bool:
+    # TODO: Expand _bool_iff() - stub detected by Yeshua Agent
     return _bool_implies(a, b) and _bool_implies(b, a)
 
 
@@ -95,6 +103,7 @@ class CrossValidationResult:
         }
 
     def to_json(self) -> str:
+        # TODO: Expand to_json() - stub detected by Yeshua Agent
         return json.dumps(self.to_dict(), indent=2, sort_keys=True)
 
 
@@ -111,6 +120,7 @@ def _arithmetic_test_vectors() -> List[Tuple[int, int, int, int]]:
 
 
 def _demorgan_test_vectors() -> List[Tuple[bool, bool]]:
+    # TODO: Expand _demorgan_test_vectors() - stub detected by Yeshua Agent
     return [(False, False), (False, True), (True, False), (True, True)]
 
 

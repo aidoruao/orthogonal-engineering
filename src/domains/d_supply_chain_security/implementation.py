@@ -90,4 +90,5 @@ class D_SUPPLY_CHAIN_SECURITYChecker:
     
     def verify_artifact_signature(self, artifact: Artifact, public_key: str) -> bool:
         """Verify artifact signature."""
+        # TODO: Expand verify_artifact_signature() - stub detected by Yeshua Agent
         return artifact.status == ArtifactStatus.VERIFIED

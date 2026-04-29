@@ -82,6 +82,7 @@ class DigitalPlatform:
     
     def is_vlop(self) -> bool:
         """Check if Very Large Online Platform per DSA."""
+        # TODO: Expand is_vlop() - stub detected by Yeshua Agent
         return self.eu_users >= 45000000  # 45 million EU users
 
 
@@ -93,9 +94,11 @@ MIN_APPEAL_TRANSPARENCY = Fraction(5, 100)  # 5% appeal rate acceptable
 
 def dsa_appeal_target_days() -> Fraction:
     """DSA target for appeal response."""
+    # TODO: Expand dsa_appeal_target_days() - stub detected by Yeshua Agent
     return DSA_APPEAL_RESPONSE_DAYS
 
 
 def vlop_user_threshold() -> Fraction:
     """DSA VLOP user threshold."""
+    # TODO: Expand vlop_user_threshold() - stub detected by Yeshua Agent
     return VLOP_USER_THRESHOLD

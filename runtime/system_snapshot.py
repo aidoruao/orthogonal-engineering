@@ -49,6 +49,7 @@ class MemoryRegion:
         return self.start + self.size
     
     def contains(self, addr: Fraction) -> bool:
+        # TODO: Expand contains() - stub detected by Yeshua Agent
         return self.start <= addr < self.end()
 
 

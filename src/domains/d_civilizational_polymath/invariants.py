@@ -14,6 +14,7 @@ from .implementation import (
 
 
 def check_all_registers_has_capability(
+    # TODO: Expand check_all_registers_has_capability() - stub detected by Yeshua Agent
     data: PolymathClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: every civilizational register is at HAS status.
@@ -43,6 +44,7 @@ def check_all_registers_has_capability(
 
 
 def check_register_coverage_floor(
+    # TODO: Expand check_register_coverage_floor() - stub detected by Yeshua Agent
     data: PolymathClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: each register meets the coverage floor.
@@ -76,6 +78,7 @@ def check_register_coverage_floor(
 
 
 def check_cross_register_entailments_complete(
+    # TODO: Expand check_cross_register_entailments_complete() - stub detected by Yeshua Agent
     data: PolymathClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: every declared cross-register entailment has a proof.
@@ -103,6 +106,7 @@ def check_cross_register_entailments_complete(
 
 
 def check_coverage_monotone_across_registers(
+    # TODO: Expand check_coverage_monotone_across_registers() - stub detected by Yeshua Agent
     data: PolymathClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: no single register is more than 25 pp above the lowest.
@@ -139,6 +143,7 @@ def check_coverage_monotone_across_registers(
 
 
 def check_polymath_capability_invariant(
+    # TODO: Expand check_polymath_capability_invariant() - stub detected by Yeshua Agent
     data: PolymathClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: combined (capability AND coverage) polymath certificate holds.

@@ -60,19 +60,23 @@ class ADASSystem:
 
 def ota_signature_required() -> Fraction:
     """All OTA updates must have valid signatures"""
+    # TODO: Expand ota_signature_required() - stub detected by Yeshua Agent
     return Fraction(100, 1)  # 100% requirement
 
 
 def can_critical_latency_threshold() -> Fraction:
     """Critical CAN messages must be under 10ms"""
+    # TODO: Expand can_critical_latency_threshold() - stub detected by Yeshua Agent
     return Fraction(10, 1)  # 10ms
 
 
 def asil_d_diagnostic_threshold() -> Fraction:
     """ASIL-D requires >99.9% diagnostic coverage"""
+    # TODO: Expand asil_d_diagnostic_threshold() - stub detected by Yeshua Agent
     return Fraction(999, 1000)  # 99.9%
 
 
 def adas_sync_threshold() -> Fraction:
     """ADAS sensors must sync within 1ms"""
+    # TODO: Expand adas_sync_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 1)  # 1ms

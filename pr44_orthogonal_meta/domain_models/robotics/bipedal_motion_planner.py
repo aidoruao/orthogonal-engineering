@@ -1,3 +1,4 @@
+"""Bipedal Motion Planner - pr44_orthogonal_meta/domain_models/robotics/bipedal_motion_planner.py"""
 # pr44_orthogonal_meta/domain_models/robotics/bipedal_motion_planner.py
 # PR #44 — Orthogonal Meta Parallel
 # Standard: Yeshua

@@ -1,3 +1,4 @@
+"""Pipeline Logger - PIPELINE_LOGGER.py"""
 # PIPELINE_LOGGER.py
 # Universal logging configuration for all pipeline scripts
 # Import this instead of configuring logging in each script

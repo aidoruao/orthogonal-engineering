@@ -138,6 +138,7 @@ def compute_file_hash(file_path: Path) -> str:
 
 def compute_content_hash(content: str) -> str:
     """Compute SHA-256 hash of string content."""
+    # TODO: Expand compute_content_hash() - stub detected by Yeshua Agent
     return hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 

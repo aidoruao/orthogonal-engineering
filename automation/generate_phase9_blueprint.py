@@ -22,6 +22,7 @@ from pathlib import Path
 def generate_phase9_html_blueprint():
     """Generate Phase 9 HTML blueprint with all required sections."""
 
+    # TODO: Expand generate_phase9_html_blueprint() - stub detected by Yeshua Agent
     html_content = '''<!DOCTYPE html>
 <html lang="en">
 <head>
