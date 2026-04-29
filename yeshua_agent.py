@@ -12,7 +12,7 @@ class YeshuaAgent:
     def __init__(self, repo_root=r"/home/idor/oe-local"):  
         self.repo_root = repo_root  
         self.history = []  
-        print("Loading TinyLlama v7 on CUDA...")  
+        print("Loading TinyLlama v8 on CUDA...")  
         base = AutoModelForCausalLM.from_pretrained(  
             "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
             torch_dtype=torch.float16, device_map="auto", local_files_only=True  
