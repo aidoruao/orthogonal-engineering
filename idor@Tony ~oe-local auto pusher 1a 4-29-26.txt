@@ -1,0 +1,204 @@
+idor@Tony:~$ nano ~/oe-local/auto_push.sh
+idor@Tony:~$ chmod +x ~/oe-local/auto_push.sh
+idor@Tony:~$ ./auto_push.sh
+-bash: ./auto_push.sh: No such file or directory
+idor@Tony:~$ ls ~/auto_push.sh
+ls: cannot access '/home/idor/auto_push.sh': No such file or directory
+idor@Tony:~$ mv ~/auto_push.sh ~/oe-local/auto_push.sh
+mv: cannot stat '/home/idor/auto_push.sh': No such file or directory
+idor@Tony:~$ cd ~/oe-local
+chmod +x auto_push.sh
+./auto_push.sh
+warning: in the working copy of 'oe-train/bin/Activate.ps1', CRLF will be replaced by LF the next time Git touches it
+[main db52f348] auto: 5 files changed at 2026-04-29 10:52:59
+ 45 files changed, 1014 insertions(+), 2 deletions(-)
+ create mode 100755 auto_push.sh
+ create mode 100644 auto_push.sh.save
+ create mode 100644 oe-train/bin/Activate.ps1
+ create mode 100755 oe-train/bin/accelerate
+ create mode 100755 oe-train/bin/accelerate-config
+ create mode 100755 oe-train/bin/accelerate-estimate-memory
+ create mode 100755 oe-train/bin/accelerate-launch
+ create mode 100755 oe-train/bin/accelerate-merge-weights
+ create mode 100644 oe-train/bin/activate
+ create mode 100644 oe-train/bin/activate.csh
+ create mode 100644 oe-train/bin/activate.fish
+ create mode 100755 oe-train/bin/convert-caffe2-to-onnx
+ create mode 100755 oe-train/bin/convert-onnx-to-caffe2
+ create mode 100755 oe-train/bin/datasets-cli
+ create mode 100755 oe-train/bin/f2py
+ create mode 100755 oe-train/bin/get_gprof
+ create mode 100755 oe-train/bin/get_objgraph
+ create mode 100755 oe-train/bin/hf
+ create mode 100755 oe-train/bin/httpx
+ create mode 100755 oe-train/bin/huggingface-cli
+ create mode 100755 oe-train/bin/isympy
+ create mode 100755 oe-train/bin/markdown-it
+ create mode 100755 oe-train/bin/normalizer
+ create mode 100755 oe-train/bin/numpy-config
+ create mode 100755 oe-train/bin/pip
+ create mode 100755 oe-train/bin/pip3
+ create mode 100755 oe-train/bin/pip3.12
+ create mode 100755 oe-train/bin/proton
+ create mode 100755 oe-train/bin/proton-viewer
+ create mode 100755 oe-train/bin/pygmentize
+ create mode 120000 oe-train/bin/python
+ create mode 120000 oe-train/bin/python3
+ create mode 120000 oe-train/bin/python3.12
+ create mode 100755 oe-train/bin/tiny-agents
+ create mode 100755 oe-train/bin/torchfrtrace
+ create mode 100755 oe-train/bin/torchrun
+ create mode 100755 oe-train/bin/tqdm
+ create mode 100755 oe-train/bin/transformers
+ create mode 100755 oe-train/bin/typer
+ create mode 100755 oe-train/bin/undill
+ create mode 120000 oe-train/lib64
+ create mode 100644 oe-train/pyvenv.cfg
+ create mode 100644 oe-train/share/man/man1/isympy.1
+[2026-04-29 10:52:59] Pushed 5 changes
+warning: in the working copy of '7b orchestrator 1a 4-29-26.txt', CRLF willbe replaced by LF the next time Git touches it
+warning: in the working copy of 'idor@Tony ~oe-local 1a 4-29-26.txt', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'idor@Tony ~oe-local 2a 4-29-26.txt', CRLF will be replaced by LF the next time Git touches it
+[main 8fececef] auto: 3 files changed at 2026-04-29 10:53:30
+ 3 files changed, 3710 insertions(+), 3710 deletions(-)
+From https://github.com/aidoruao/orthogonal-engineering
+ * branch              main       -> FETCH_HEAD
+[main 6a3e7c56] auto: 3 files changed at 2026-04-29 10:53:30
+ 4 files changed, 3710 insertions(+), 3711 deletions(-)
+[2026-04-29 10:53:30] Pushed 3 changes
+^C
+idor@Tony:~/oe-local$ cd ~/oe-local
+
+# Create .gitignore
+cat > .gitignore << 'EOF'
+oe-train/
+__pycache__/
+*.pyc
+*.save
+*.swp
+.ipynb_checkpoints/
+trained_tinyllama_*/
+*.safetensors
+wandb/
+EOF
+
+# Remove oe-train from git tracking (keeps files on disk, just stops tracking them)
+git rm -r --cached oe-train/
+git rm --cached auto_push.sh.save
+
+# Commit the cleanup
+git add .gitignore
+git commit -m "add .gitignore, remove venv from tracking"
+git push
+> ./auto_push.sh
+> ^C
+idor@Tony:~/oe-local$ nano .gitignore
+idor@Tony:~/oe-local$ git rm -r --cached oe-train/
+rm 'oe-train/bin/Activate.ps1'
+rm 'oe-train/bin/accelerate'
+rm 'oe-train/bin/accelerate-config'
+rm 'oe-train/bin/accelerate-estimate-memory'
+rm 'oe-train/bin/accelerate-launch'
+rm 'oe-train/bin/accelerate-merge-weights'
+rm 'oe-train/bin/activate'
+rm 'oe-train/bin/activate.csh'
+rm 'oe-train/bin/activate.fish'
+rm 'oe-train/bin/convert-caffe2-to-onnx'
+rm 'oe-train/bin/convert-onnx-to-caffe2'
+rm 'oe-train/bin/datasets-cli'
+rm 'oe-train/bin/f2py'
+rm 'oe-train/bin/get_gprof'
+rm 'oe-train/bin/get_objgraph'
+rm 'oe-train/bin/hf'
+rm 'oe-train/bin/httpx'
+rm 'oe-train/bin/huggingface-cli'
+rm 'oe-train/bin/isympy'
+rm 'oe-train/bin/markdown-it'
+rm 'oe-train/bin/normalizer'
+rm 'oe-train/bin/numpy-config'
+rm 'oe-train/bin/pip'
+rm 'oe-train/bin/pip3'
+rm 'oe-train/bin/pip3.12'
+rm 'oe-train/bin/proton'
+rm 'oe-train/bin/proton-viewer'
+rm 'oe-train/bin/pygmentize'
+rm 'oe-train/bin/python'
+rm 'oe-train/bin/python3'
+rm 'oe-train/bin/python3.12'
+rm 'oe-train/bin/tiny-agents'
+rm 'oe-train/bin/torchfrtrace'
+rm 'oe-train/bin/torchrun'
+rm 'oe-train/bin/tqdm'
+rm 'oe-train/bin/transformers'
+rm 'oe-train/bin/typer'
+rm 'oe-train/bin/undill'
+rm 'oe-train/lib64'
+rm 'oe-train/pyvenv.cfg'
+rm 'oe-train/share/man/man1/isympy.1'
+idor@Tony:~/oe-local$ git rm --cached auto_push.sh.save
+rm 'auto_push.sh.save'
+idor@Tony:~/oe-local$ ./auto_push.sh
+[main b27c786d] auto: 43 files changed at 2026-04-29 10:55:17
+ 43 files changed, 9 insertions(+), 988 deletions(-)
+ delete mode 100644 auto_push.sh.save
+ delete mode 100644 oe-train/bin/Activate.ps1
+ delete mode 100755 oe-train/bin/accelerate
+ delete mode 100755 oe-train/bin/accelerate-config
+ delete mode 100755 oe-train/bin/accelerate-estimate-memory
+ delete mode 100755 oe-train/bin/accelerate-launch
+ delete mode 100755 oe-train/bin/accelerate-merge-weights
+ delete mode 100644 oe-train/bin/activate
+ delete mode 100644 oe-train/bin/activate.csh
+ delete mode 100644 oe-train/bin/activate.fish
+ delete mode 100755 oe-train/bin/convert-caffe2-to-onnx
+ delete mode 100755 oe-train/bin/convert-onnx-to-caffe2
+ delete mode 100755 oe-train/bin/datasets-cli
+ delete mode 100755 oe-train/bin/f2py
+ delete mode 100755 oe-train/bin/get_gprof
+ delete mode 100755 oe-train/bin/get_objgraph
+ delete mode 100755 oe-train/bin/hf
+ delete mode 100755 oe-train/bin/httpx
+ delete mode 100755 oe-train/bin/huggingface-cli
+ delete mode 100755 oe-train/bin/isympy
+ delete mode 100755 oe-train/bin/markdown-it
+ delete mode 100755 oe-train/bin/normalizer
+ delete mode 100755 oe-train/bin/numpy-config
+ delete mode 100755 oe-train/bin/pip
+ delete mode 100755 oe-train/bin/pip3
+ delete mode 100755 oe-train/bin/pip3.12
+ delete mode 100755 oe-train/bin/proton
+ delete mode 100755 oe-train/bin/proton-viewer
+ delete mode 100755 oe-train/bin/pygmentize
+ delete mode 120000 oe-train/bin/python
+ delete mode 120000 oe-train/bin/python3
+ delete mode 120000 oe-train/bin/python3.12
+ delete mode 100755 oe-train/bin/tiny-agents
+ delete mode 100755 oe-train/bin/torchfrtrace
+ delete mode 100755 oe-train/bin/torchrun
+ delete mode 100755 oe-train/bin/tqdm
+ delete mode 100755 oe-train/bin/transformers
+ delete mode 100755 oe-train/bin/typer
+ delete mode 100755 oe-train/bin/undill
+ delete mode 120000 oe-train/lib64
+ delete mode 100644 oe-train/pyvenv.cfg
+ delete mode 100644 oe-train/share/man/man1/isympy.1
+[2026-04-29 10:55:17] Pushed 43 changes
+[main acb2a4b9] auto: 1 files changed at 2026-04-29 10:57:13
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[2026-04-29 10:57:13] Pushed 1 changes
+[main 112a0012] auto: 1 files changed at 2026-04-29 11:13:29
+ 1 file changed, 1 insertion(+)
+[2026-04-29 11:13:29] Pushed 1 changes
+[main dfc58a0a] auto: 1 files changed at 2026-04-29 11:15:26
+ 1 file changed, 1 insertion(+)
+[2026-04-29 11:15:26] Pushed 1 changes
+[main 7c66a458] auto: 1 files changed at 2026-04-29 11:20:42
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[2026-04-29 11:20:42] Pushed 1 changes
+[main 8f659098] auto: 1 files changed at 2026-04-29 11:21:12
+ 1 file changed, 1 insertion(+)
+Current branch main is up to date.
+[2026-04-29 11:21:12] Pushed 1 changes
+[main ff1f4158] auto: 1 files changed at 2026-04-29 11:23:08
+ 1 file changed, 1 insertion(+)
+[2026-04-29 11:23:08] Pushed 1 changes
