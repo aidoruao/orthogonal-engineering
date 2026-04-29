@@ -62,6 +62,7 @@ class FilesystemInvariant:
     timestamp: str
 
     def to_dict(self) -> Dict:
+        # TODO: Expand to_dict() - stub detected by Yeshua Agent
         return asdict(self)
 
 

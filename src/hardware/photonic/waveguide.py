@@ -35,21 +35,25 @@ class SiliconWaveguide:
 
 def propagation_loss_threshold() -> Fraction:
     """Custom OE / literature maximum propagation loss: 1 dB/cm."""
+    # TODO: Expand propagation_loss_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 1)
 
 
 def bend_radius_threshold() -> Fraction:
     """Custom OE minimum bend radius for silicon: 5 µm."""
+    # TODO: Expand bend_radius_threshold() - stub detected by Yeshua Agent
     return Fraction(5, 1)
 
 
 def confinement_threshold() -> Fraction:
     """Custom OE minimum mode confinement factor: 0.8."""
+    # TODO: Expand confinement_threshold() - stub detected by Yeshua Agent
     return Fraction(8, 10)
 
 
 def dispersion_threshold() -> Fraction:
     """ITU-T G.652 maximum waveguide dispersion: 18 ps/(nm·km)."""
+    # TODO: Expand dispersion_threshold() - stub detected by Yeshua Agent
     return Fraction(18, 1)
 
 

@@ -60,6 +60,7 @@ class Player:
     
     def dominant_type(self) -> BartleType:
         """Primary player motivation."""
+        # TODO: Expand dominant_type() - stub detected by Yeshua Agent
         return max(self.bartle_profile, key=lambda k: self.bartle_profile[k])
 
 

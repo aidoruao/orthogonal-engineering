@@ -60,6 +60,7 @@ except ImportError as e:
             return {"response": f"Mock response to: {input_text}", "validated": True}
 
         def generate_epistemic_report(self) -> str:
+            # TODO: Expand generate_epistemic_report() - stub detected by Yeshua Agent
             return "Mock epistemic report"
 
 

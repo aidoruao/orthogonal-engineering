@@ -11,6 +11,7 @@ import pytest
 SIGNING_KEY = b"ecu_firmware_signing_key_v1"
 
 def sign_firmware(firmware: bytes) -> bytes:
+    # TODO: Expand sign_firmware() - stub detected by Yeshua Agent
     return hmac.new(SIGNING_KEY, firmware, hashlib.sha256).digest()
 
 def verify_and_apply(firmware: bytes, signature: bytes) -> str:

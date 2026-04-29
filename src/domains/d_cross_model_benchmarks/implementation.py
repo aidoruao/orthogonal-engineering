@@ -66,19 +66,23 @@ class OrderingConsistency:
 
 def min_benchmarks_threshold() -> int:
     """Minimum number of benchmarks for valid comparison"""
+    # TODO: Expand min_benchmarks_threshold() - stub detected by Yeshua Agent
     return 5
 
 
 def min_runs_reproducibility() -> int:
     """Minimum runs for reproducibility"""
+    # TODO: Expand min_runs_reproducibility() - stub detected by Yeshua Agent
     return 3
 
 
 def cherry_pick_threshold() -> Fraction:
     """Threshold for cherry-picking detection (< 50% coverage)"""
+    # TODO: Expand cherry_pick_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 2)
 
 
 def consistency_threshold() -> Fraction:
     """Maximum allowed ranking reversals (< 20%)"""
+    # TODO: Expand consistency_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 5)

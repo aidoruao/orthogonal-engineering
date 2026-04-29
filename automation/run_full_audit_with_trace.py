@@ -693,24 +693,28 @@ def sign_trace(trace_data: Dict[str, Any]) -> Dict[str, Any]:
 
 def validate_input(args, kwargs, validator) -> bool:
     """Placeholder for input validation logic."""
+    # TODO: Expand validate_input() - stub detected by Yeshua Agent
     # In production: Implement actual schema validation
     return True
 
 
 def validate_output(result, validator) -> bool:
     """Placeholder for output validation logic."""
+    # TODO: Expand validate_output() - stub detected by Yeshua Agent
     # In production: Implement actual schema validation
     return True
 
 
 def check_side_effects_allowed(func) -> bool:
     """Placeholder for side-effect checking logic."""
+    # TODO: Expand check_side_effects_allowed() - stub detected by Yeshua Agent
     # In production: Analyze function for side effects
     return True
 
 
 def ensure_gateway_pattern(func) -> bool:
     """Placeholder for gateway pattern checking logic."""
+    # TODO: Expand ensure_gateway_pattern() - stub detected by Yeshua Agent
     # In production: Check for proper gateway usage
     return True
 

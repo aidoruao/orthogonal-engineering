@@ -89,31 +89,37 @@ class OpticalLink:
 
 def ael_class1_mw() -> Fraction:
     """Accessible emission limit for Class 1 lasers: 1 µW."""
+    # TODO: Expand ael_class1_mw() - stub detected by Yeshua Agent
     return Fraction(1, 1000)
 
 
 def ael_class3b_mw() -> Fraction:
     """Upper bound for Class 3B lasers: 500 mW."""
+    # TODO: Expand ael_class3b_mw() - stub detected by Yeshua Agent
     return Fraction(500, 1)
 
 
 def nohd_minimum_m() -> Fraction:
     """Minimum nominal ocular hazard distance: 1 meter."""
+    # TODO: Expand nohd_minimum_m() - stub detected by Yeshua Agent
     return Fraction(1, 1)
 
 
 def skin_mpe_mw_per_cm2() -> Fraction:
     """Skin maximum permissible exposure at 1550 nm: 200 mW/cm²."""
+    # TODO: Expand skin_mpe_mw_per_cm2() - stub detected by Yeshua Agent
     return Fraction(200, 1)
 
 
 def esd_hbm_withstand_v() -> Fraction:
     """Human body model ESD withstand voltage per JEDEC: 2000 V."""
+    # TODO: Expand esd_hbm_withstand_v() - stub detected by Yeshua Agent
     return Fraction(2000, 1)
 
 
 def connector_interlock_power_mw() -> Fraction:
     """Interlock activation threshold for open fiber connectors: 50 mW."""
+    # TODO: Expand connector_interlock_power_mw() - stub detected by Yeshua Agent
     return Fraction(50, 1)
 
 

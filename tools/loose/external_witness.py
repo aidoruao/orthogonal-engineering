@@ -235,5 +235,6 @@ class ExternalWitness:
     @staticmethod
     def exists(output_dir: str | Path = "logs/health_checks") -> bool:
         """Return True if a previous external manifest exists on disk."""
+        # TODO: Expand exists() - stub detected by Yeshua Agent
         return (Path(output_dir) / "external_manifest.json").exists()
 

@@ -93,29 +93,35 @@ class SafetyIncident:
 
 def fta_minimum_ada_compliance_pct() -> Fraction:
     """FTA/ADA: 100% of fixed-route vehicles must be accessible"""
+    # TODO: Expand fta_minimum_ada_compliance_pct() - stub detected by Yeshua Agent
     return Fraction(100, 1)
 
 
 def fta_on_time_performance_threshold() -> Fraction:
     """FTA: ≥80% on-time performance (within 5 minutes of schedule)"""
+    # TODO: Expand fta_on_time_performance_threshold() - stub detected by Yeshua Agent
     return Fraction(80, 1)
 
 
 def fta_headway_reliability_threshold() -> Fraction:
     """FTA: Headway deviation should not exceed 20% of scheduled headway"""
+    # TODO: Expand fta_headway_reliability_threshold() - stub detected by Yeshua Agent
     return Fraction(20, 1)
 
 
 def ada_wheelchair_space_minimum() -> Fraction:
     """ADA: Minimum 2 wheelchair spaces per bus"""
+    # TODO: Expand ada_wheelchair_space_minimum() - stub detected by Yeshua Agent
     return Fraction(2, 1)
 
 
 def fta_vehicle_useful_life_bus_years() -> Fraction:
     """FTA: Useful life for standard bus (12 years)"""
+    # TODO: Expand fta_vehicle_useful_life_bus_years() - stub detected by Yeshua Agent
     return Fraction(12, 1)
 
 
 def fta_reportable_incident_threshold_usd() -> Fraction:
     """FTA: Reportable if property damage ≥$25,000"""
+    # TODO: Expand fta_reportable_incident_threshold_usd() - stub detected by Yeshua Agent
     return Fraction(25000, 1)

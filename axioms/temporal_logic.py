@@ -24,6 +24,7 @@ class TimeInterval:
     
     def end_time(self) -> Fraction:
         """Calculate end time."""
+        # TODO: Expand end_time() - stub detected by Yeshua Agent
         return self.start_seconds + self.duration_seconds
 
 
@@ -34,6 +35,7 @@ class TimeBound:
     
     def is_within_bound(self, actual_ms: Fraction) -> bool:
         """Check if actual time is within bound."""
+        # TODO: Expand is_within_bound() - stub detected by Yeshua Agent
         return actual_ms <= self.max_milliseconds
 
 
@@ -72,6 +74,7 @@ class KripkeStructure:
     
     def predecessors(self, state: str) -> Set[str]:
         """Get predecessor states of a given state."""
+        # TODO: Expand predecessors() - stub detected by Yeshua Agent
         return {s for s in self.states if state in self.transitions.get(s, set())}
 
 

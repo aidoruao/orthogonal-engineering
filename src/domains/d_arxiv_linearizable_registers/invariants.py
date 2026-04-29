@@ -22,6 +22,7 @@ from .implementation import (
 # ---------------------------------------------------------------------------
 
 def check_linearizability(
+    # TODO: Expand check_linearizability() - stub detected by Yeshua Agent
     claim: LinearizableRegistersClaim,
 ) -> Tuple[bool, ProofObject]:
     """Register implementation must be linearizable.
@@ -48,6 +49,7 @@ def check_linearizability(
 # ---------------------------------------------------------------------------
 
 def check_real_time_order_preserved(
+    # TODO: Expand check_real_time_order_preserved() - stub detected by Yeshua Agent
     claim: LinearizableRegistersClaim,
 ) -> Tuple[bool, ProofObject]:
     """Register must preserve real-time order of operations.
@@ -74,6 +76,7 @@ def check_real_time_order_preserved(
 # ---------------------------------------------------------------------------
 
 def check_message_chains_required(
+    # TODO: Expand check_message_chains_required() - stub detected by Yeshua Agent
     claim: LinearizableRegistersClaim,
 ) -> Tuple[bool, ProofObject]:
     """Linearizable implementations must use message chains.
@@ -106,6 +109,7 @@ def check_message_chains_required(
 # ---------------------------------------------------------------------------
 
 def check_chain_density_threshold(
+    # TODO: Expand check_chain_density_threshold() - stub detected by Yeshua Agent
     claim: LinearizableRegistersClaim,
 ) -> Tuple[bool, ProofObject]:
     """Message chain density must meet threshold for linearizability.

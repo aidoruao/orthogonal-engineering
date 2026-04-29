@@ -1,3 +1,4 @@
+"""Claim Registry - pr45_uvdtl/witness/claim_registry.py"""
 # pr45_uvdtl/witness/claim_registry.py
 # PR #45 — Universal Verifiability & Deterministic Transparency Layer (UVDTL)
 # Standard: Yeshua
@@ -91,6 +92,7 @@ class ClaimRegistry:
 
     def all_claims(self) -> List[Dict]:
         """Return all claims as sorted list of dicts (deterministic order)."""
+        # TODO: Expand all_claims() - stub detected by Yeshua Agent
         return [self._claims[k].as_dict() for k in sorted(self._claims)]
 
 

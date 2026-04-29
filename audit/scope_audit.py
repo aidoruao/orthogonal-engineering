@@ -70,10 +70,12 @@ class DomainScopeReport:
 
 
 def _has_float_calls(source: str) -> bool:
+    # TODO: Expand _has_float_calls() - stub detected by Yeshua Agent
     return bool(_FLOAT_RE.search(source))
 
 
 def _check_ast_requirements(
+    # TODO: Expand _check_ast_requirements() - stub detected by Yeshua Agent
     source: str, domain: str
 ) -> Tuple[List[str], List[str], List[str]]:
     """Parse invariants.py source and check for required functions.

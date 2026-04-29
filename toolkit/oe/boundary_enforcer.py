@@ -173,6 +173,7 @@ def tag_external_claim(data: Any, source: Optional[str] = None) -> dict:
 
 def is_external_claim(obj: Any) -> bool:
     """Return True if *obj* was produced by :func:`tag_external_claim`."""
+    # TODO: Expand is_external_claim() - stub detected by Yeshua Agent
     return isinstance(obj, dict) and obj.get("external_claim") is True
 
 

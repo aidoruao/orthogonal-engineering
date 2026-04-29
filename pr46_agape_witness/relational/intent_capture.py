@@ -1,3 +1,4 @@
+"""Intent Capture - pr46_agape_witness/relational/intent_capture.py"""
 # pr46_agape_witness/relational/intent_capture.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua

@@ -35,6 +35,7 @@ def compute_sha256(data: bytes, hmac_key: Optional[bytes] = None) -> str:
 # Alias for backward compatibility
 def hash_bytes(data: bytes) -> str:
     """Compute SHA-256 hash of bytes (alias for compute_sha256)."""
+    # TODO: Expand hash_bytes() - stub detected by Yeshua Agent
     return compute_sha256(data)
 
 

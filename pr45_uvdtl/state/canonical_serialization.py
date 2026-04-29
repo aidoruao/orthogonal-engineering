@@ -1,3 +1,4 @@
+"""Canonical Serialization - pr45_uvdtl/state/canonical_serialization.py"""
 # pr45_uvdtl/state/canonical_serialization.py
 # PR #45 — Universal Verifiability & Deterministic Transparency Layer (UVDTL)
 # Standard: Yeshua

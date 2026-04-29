@@ -10,6 +10,7 @@ ALERT_THRESHOLD = 0.9
 LIMIT = 1.0
 
 def simulate_sensor_readings():
+    # TODO: Expand simulate_sensor_readings() - stub detected by Yeshua Agent
     return [i * 0.1 for i in range(12)]
 
 def check_alert(readings: list, alert_threshold: float, limit: float) -> dict:

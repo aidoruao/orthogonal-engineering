@@ -76,6 +76,7 @@ class BooleanPurityReport:
         }
 
     def to_json(self) -> str:
+        # TODO: Expand to_json() - stub detected by Yeshua Agent
         return json.dumps(self.to_dict(), indent=2, sort_keys=True)
 
 

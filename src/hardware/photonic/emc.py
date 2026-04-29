@@ -88,31 +88,37 @@ class OpticalCrosstalk:
 
 def radiated_emission_limit() -> Fraction:
     """FCC Part 15 / CISPR 32 radiated emission limit at 3m: -47 dBm."""
+    # TODO: Expand radiated_emission_limit() - stub detected by Yeshua Agent
     return Fraction(-47, 1)
 
 
 def conducted_emission_limit() -> Fraction:
     """CISPR 32 conducted emission limit: -40 dBm."""
+    # TODO: Expand conducted_emission_limit() - stub detected by Yeshua Agent
     return Fraction(-40, 1)
 
 
 def esd_immunity_threshold() -> Fraction:
     """IEC 61000-4-2 minimum ESD withstand: 8 kV contact discharge."""
+    # TODO: Expand esd_immunity_threshold() - stub detected by Yeshua Agent
     return Fraction(8, 1)
 
 
 def ripple_threshold_mv() -> Fraction:
     """Custom OE maximum power supply ripple: 50 mV pk-pk."""
+    # TODO: Expand ripple_threshold_mv() - stub detected by Yeshua Agent
     return Fraction(50, 1)
 
 
 def jitter_threshold_ps() -> Fraction:
     """IEEE 802.3 total jitter at BER 10^-12: 28 ps."""
+    # TODO: Expand jitter_threshold_ps() - stub detected by Yeshua Agent
     return Fraction(28, 1)
 
 
 def crosstalk_isolation_threshold() -> Fraction:
     """ITU-T G.694.1 minimum adjacent channel isolation: 25 dB."""
+    # TODO: Expand crosstalk_isolation_threshold() - stub detected by Yeshua Agent
     return Fraction(25, 1)
 
 

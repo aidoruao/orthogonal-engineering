@@ -128,4 +128,5 @@ def phmsa_max_hoop_stress(pipeline_class: PipelineClass) -> Fraction:
 
 def bsee_bop_test_interval() -> Fraction:
     """BSEE required BOP test interval."""
+    # TODO: Expand bsee_bop_test_interval() - stub detected by Yeshua Agent
     return BSEE_BOP_TEST_MAX_DAYS

@@ -99,6 +99,7 @@ class ProductionTrainingReport:
 
     def __bool__(self) -> bool:
         """Training successful only if both functional and governance compliant"""
+        # TODO: Expand __bool__() - stub detected by Yeshua Agent
         return self.training_successful and self.governance_compliant
 
 
@@ -174,6 +175,7 @@ def validate_model_name(model_name: str) -> Tuple[bool, str]:
 
 
 def load_and_prepare_dataset(
+    # TODO: Expand load_and_prepare_dataset() - stub detected by Yeshua Agent
     dataset_path: str, tokenizer: PreTrainedTokenizer, max_length: int = 512
 ) -> Dataset:
     """Load and prepare Popperian dataset for training"""

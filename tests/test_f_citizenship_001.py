@@ -150,6 +150,7 @@ class TestBirthrightFunction:
     
     def test_birthright_function_foreign_birth(self):
         """F_CITIZENSHIP_008: Function returns False for foreign birth."""
+        # TODO: Expand test_birthright_function_foreign_birth() - stub detected by Yeshua Agent
         assert check_birthright_citizenship("Canada") is False
 
 

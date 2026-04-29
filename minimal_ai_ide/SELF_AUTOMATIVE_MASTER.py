@@ -114,6 +114,7 @@ class MathematicalInvariant:
 
     def to_latex(self) -> str:
         """Convert invariant to LaTeX format"""
+        # TODO: Expand to_latex() - stub detected by Yeshua Agent
         return f"\\text{{{self.name}}}: {self.formula} \\quad \\text{{({self.description})}}"
 
 # ============================================================================
@@ -498,3 +499,5 @@ class GraduateMathematicsEngine:
             return False
 
     def _constraint_grace(self, component: Any) -> bool
+
+    # TODO: Expand _constraint_grace() - stub detected by Yeshua Agent

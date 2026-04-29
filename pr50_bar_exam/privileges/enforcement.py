@@ -13,6 +13,7 @@ MATRIX_PATH = Path(__file__).parent / "capability_matrix.json"
 
 def load_capability_matrix() -> Dict[str, Any]:
     """Load the capability matrix."""
+    # TODO: Expand load_capability_matrix() - stub detected by Yeshua Agent
     return json.loads(MATRIX_PATH.read_text(encoding="utf-8"))
 
 

@@ -67,6 +67,7 @@ def scan_domain_for_primitives(domain_path: Path) -> Dict[str, Set[str]]:
 
 
 def find_collisions(
+    # TODO: Expand find_collisions() - stub detected by Yeshua Agent
     repo_root: Path,
 ) -> Tuple[bool, ProofObject]:
     """Find all cross-domain primitive collisions.

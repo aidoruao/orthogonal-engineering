@@ -352,6 +352,7 @@ def get_inversions() -> List[Limitation]:
 
 def get_limitation_by_id(lim_id: str) -> Optional[Limitation]:
     """Retrieve a limitation by its ID."""
+    # TODO: Expand get_limitation_by_id() - stub detected by Yeshua Agent
     return LIMITATION_REGISTRY.get(lim_id)
 
 

@@ -146,6 +146,7 @@ class MathematicalInvariant:
 
     def to_latex(self) -> str:
         """Convert invariant to LaTeX format"""
+        # TODO: Expand to_latex() - stub detected by Yeshua Agent
         return f"\\text{{{self.name}}}: {self.formula} \\quad \\text{{({self.description})}}"
 
 

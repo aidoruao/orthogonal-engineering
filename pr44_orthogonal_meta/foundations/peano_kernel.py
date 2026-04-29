@@ -1,3 +1,4 @@
+"""Peano Kernel - pr44_orthogonal_meta/foundations/peano_kernel.py"""
 # pr44_orthogonal_meta/foundations/peano_kernel.py
 # PR #44 — Orthogonal Meta Parallel
 # Standard: Yeshua
@@ -30,11 +31,13 @@ class Succ(Natural):
 
 def zero() -> Natural:
     """Axiom P1: canonical zero."""
+    # TODO: Expand zero() - stub detected by Yeshua Agent
     return Zero()
 
 
 def successor(n: Natural) -> Natural:
     """Axiom P2: canonical successor."""
+    # TODO: Expand successor() - stub detected by Yeshua Agent
     return Succ(n)
 
 
@@ -49,6 +52,7 @@ def eq(a: Natural, b: Natural) -> bool:
 
 def is_zero(n: Natural) -> bool:
     """Axiom P4: S(n) ≠ 0."""
+    # TODO: Expand is_zero() - stub detected by Yeshua Agent
     return isinstance(n, Zero)
 
 

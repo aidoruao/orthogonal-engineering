@@ -32,6 +32,7 @@ class VisaApplicant:
 
     def preference_priority(self) -> int:
         """Lower number = higher priority."""
+        # TODO: Expand preference_priority() - stub detected by Yeshua Agent
         return self.visa_category.value
 
 
@@ -79,6 +80,7 @@ class ProcessingTimer:
         return Fraction(self.days_elapsed, self.statutory_deadline_days)
 
     def is_overdue(self) -> bool:
+        # TODO: Expand is_overdue() - stub detected by Yeshua Agent
         return self.processing_ratio() > Fraction(1, 1)
 
 

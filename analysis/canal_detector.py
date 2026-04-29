@@ -1,3 +1,4 @@
+"""Canal Detector - Relaxed Regex: Looks for ANY header containing user/assistant/human/bot,"""
 import re, json, pathlib, csv, collections
 
 MD_DIR   = pathlib.Path(__file__).parent

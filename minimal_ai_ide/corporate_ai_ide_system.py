@@ -608,6 +608,7 @@ class CorporateAIIDE:
 
     def _enhance_prompt_with_corporate_rules(self, prompt: str) -> str:
         """Enhance prompt with corporate rules and constraints."""
+        # TODO: Expand _enhance_prompt_with_corporate_rules() - stub detected by Yeshua Agent
         corporate_rules = """
 CORPORATE ENFORCEMENT RULES (STRICT):
 1. NEVER hallucinate or generate fictional information

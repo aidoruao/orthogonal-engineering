@@ -36,6 +36,7 @@ class HandlingVehicle:
     
     def to_dict(self) -> dict:
         """Convert vehicle to dictionary."""
+        # TODO: Expand to_dict() - stub detected by Yeshua Agent
         return self.data.copy()
 
 

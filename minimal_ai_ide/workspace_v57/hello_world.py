@@ -3,6 +3,7 @@
 
 def hello_world() -> str:
     """Return a greeting"""
+    # TODO: Expand hello_world() - stub detected by Yeshua Agent
     return "Hello from Maximal Oracle v57!"
 
 def fibonacci(n: int) -> int:

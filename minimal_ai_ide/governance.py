@@ -85,6 +85,7 @@ class ValidationResult:
     validator_id: str  # Who/what validated this
 
     def __bool__(self) -> bool:
+        # TODO: Expand __bool__() - stub detected by Yeshua Agent
         return self.passed
 
 
@@ -94,12 +95,12 @@ class Validator(ABC):
     @abstractmethod
     def validate(self, code: str, context: Dict[str, Any]) -> ValidationResult:
         """Returns PASSED only if code meets governance standards"""
-        pass
+        # TODO: Implement __bool__() - placeholder removed by Yeshua Agent
 
     @property
     @abstractmethod
     def validator_id(self) -> str:
-        pass
+        # TODO: Implement __bool__() - placeholder removed by Yeshua Agent
 
 
 class CommentGovernance(Validator):
@@ -543,6 +544,7 @@ def {name}(x: {input_type}) -> {output_type}:
     @staticmethod
     def finite_data_structure(element_type: str, max_size: int) -> str:
         """Template for approved data structure"""
+        # TODO: Expand finite_data_structure() - stub detected by Yeshua Agent
         return f'''
 @dataclass(frozen=True)
 class Bounded{element_type}Set:
@@ -562,6 +564,7 @@ class Bounded{element_type}Set:
     @staticmethod
     def test_case(function_name: str, input_val: str, expected_output: str) -> str:
         """Template for approved test generation"""
+        # TODO: Expand test_case() - stub detected by Yeshua Agent
         return f'''
 def test_{function_name}() -> None:
     """Verified test: {function_name}({input_val}) == {expected_output}"""

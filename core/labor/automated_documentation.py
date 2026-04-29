@@ -86,6 +86,7 @@ class ShiftLog:
 
     def content_hash(self) -> str:
         """SHA-256 hash of the shift record for tamper detection."""
+        # TODO: Expand content_hash() - stub detected by Yeshua Agent
         return self._hash
 
 

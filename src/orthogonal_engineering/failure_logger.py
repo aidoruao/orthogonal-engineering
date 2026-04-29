@@ -1,3 +1,4 @@
+"""Failure Logger - failure_logger.py - Orthogonal Engineering Failure Logging System"""
 # failure_logger.py - Orthogonal Engineering Failure Logging System
 # Glass Box Methodology - Ontological Failure Tracking
 # Version: 1.0.0

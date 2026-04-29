@@ -113,14 +113,17 @@ def tbm_standard_advance_rate(ground: GroundType) -> Fraction:
 
 def alignment_tolerance_threshold() -> Fraction:
     """Typical alignment tolerance (mm)"""
+    # TODO: Expand alignment_tolerance_threshold() - stub detected by Yeshua Agent
     return Fraction(10, 1)
 
 
 def grouting_volume_per_ring() -> Fraction:
     """Typical grouting volume per ring (m3)"""
+    # TODO: Expand grouting_volume_per_ring() - stub detected by Yeshua Agent
     return Fraction(3, 1)
 
 
 def subsidence_limit_mm() -> Fraction:
     """Maximum allowable surface settlement (mm)"""
+    # TODO: Expand subsidence_limit_mm() - stub detected by Yeshua Agent
     return Fraction(30, 1)

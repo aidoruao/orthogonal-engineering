@@ -1,3 +1,4 @@
+"""Verify Closure - pr43/closure/verify_closure.py"""
 # pr43/closure/verify_closure.py
 # PR #43 — Orthogonal Parallel
 # Standard: Yeshua

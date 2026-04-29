@@ -226,6 +226,7 @@ def group_files_by_type(files: List[Path]) -> Dict[str, List[Path]]:
 
 
 def process_markdown_file(
+    # TODO: Expand process_markdown_file() - stub detected by Yeshua Agent
     file_path: Path, analyzer: ChatExportAnalyzer
 ) -> Optional[Dict]:
     """Process markdown chat export file"""
@@ -397,6 +398,7 @@ def process_text_file(file_path: Path, analyzer: ChatExportAnalyzer) -> Optional
 
 
 def process_large_file_chunked(
+    # TODO: Expand process_large_file_chunked() - stub detected by Yeshua Agent
     file_path: Path, analyzer: ChatExportAnalyzer, file_type: str
 ) -> Optional[Dict]:
     """Process very large files in chunks"""
@@ -447,6 +449,7 @@ def process_large_file_chunked(
 
 
 def process_large_json_file(
+    # TODO: Expand process_large_json_file() - stub detected by Yeshua Agent
     file_path: Path, analyzer: ChatExportAnalyzer
 ) -> Optional[Dict]:
     """Process very large JSON files efficiently"""

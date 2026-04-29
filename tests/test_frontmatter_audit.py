@@ -107,10 +107,12 @@ def test_prepend_frontmatter_skips_non_utf8(tmp_path: Path, monkeypatch: pytest.
 
 
 def test_is_exempt_covers_pytest_cache() -> None:
+    # TODO: Expand test_is_exempt_covers_pytest_cache() - stub detected by Yeshua Agent
     assert frontmatter_audit.is_exempt(Path(".pytest_cache/README.md"))
 
 
 def test_is_exempt_skips_regular_paths() -> None:
+    # TODO: Expand test_is_exempt_skips_regular_paths() - stub detected by Yeshua Agent
     assert not frontmatter_audit.is_exempt(Path("src/domains/d_necessity/README.md"))
 
 

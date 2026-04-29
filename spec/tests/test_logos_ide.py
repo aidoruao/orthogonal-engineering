@@ -112,6 +112,7 @@ class EditCap:
 
     def has_permission(self, perm: Permission) -> bool:
         """Check if capability has specific permission."""
+        # TODO: Expand has_permission() - stub detected by Yeshua Agent
         return perm in self.permissions
 
 

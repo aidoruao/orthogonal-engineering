@@ -1,3 +1,4 @@
+"""Biblical Constraints - =============================================================="""
 # ==============================================================
 # BIBLICAL CONSTRAINTS SYSTEM - Framework 2
 # Biblically Accurate Graduate-Level Ethical Constraints
@@ -124,6 +125,7 @@ class BiblicalConstraintChecker:
 
     def _verify_christological(self, state: Dict[str, Any]) -> bool:
         """Verify Christological consistency"""
+        # TODO: Expand _verify_christological() - stub detected by Yeshua Agent
         return state.get("through_christ", False) and state.get("holds_in_christ", False)
 
 # ==============================================================
@@ -142,6 +144,7 @@ class Ordinal:
         return self.value < other.value
 
     def __str__(self) -> str:
+        # TODO: Expand __str__() - stub detected by Yeshua Agent
         return f"Ordinal({self.value})"
 
 def V_Christ(ai_state: Dict[str, Any]) -> Ordinal:

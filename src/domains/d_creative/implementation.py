@@ -67,9 +67,11 @@ class DMCACompliance:
 
 def style_transfer_content_min() -> Fraction:
     """Style transfer must preserve >= 70% content features"""
+    # TODO: Expand style_transfer_content_min() - stub detected by Yeshua Agent
     return Fraction(70, 100)
 
 
 def perceptual_similarity_threshold() -> Fraction:
     """Perceptual similarity >= 95% considered identical (DMCA)"""
+    # TODO: Expand perceptual_similarity_threshold() - stub detected by Yeshua Agent
     return Fraction(95, 100)

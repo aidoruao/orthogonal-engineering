@@ -117,6 +117,7 @@ class Context:
         return isinstance(other, Context) and self.variables == other.variables
 
     def __hash__(self) -> int:
+        # TODO: Expand __hash__() - stub detected by Yeshua Agent
         return hash(self.variables)
 
 

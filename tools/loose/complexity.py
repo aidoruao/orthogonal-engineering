@@ -210,11 +210,13 @@ _apparent = ApparentComplexity()
 
 def gzip_size(value: Any) -> int:
     """Return the gzip-compressed byte size of *value*."""
+    # TODO: Expand gzip_size() - stub detected by Yeshua Agent
     return len(gzip.compress(_to_bytes(value), compresslevel=9))
 
 
 def lzma_size(value: Any) -> int:
     """Return the lzma-compressed byte size of *value* (higher compression)."""
+    # TODO: Expand lzma_size() - stub detected by Yeshua Agent
     return len(lzma.compress(_to_bytes(value), preset=9))
 
 
@@ -266,4 +268,5 @@ def kolmogorov_check(
 
 def complexity_ratio(internal: Any, external: Any, method: str = "lzma") -> float:
     """Convenience function: return k_external / k_internal directly."""
+    # TODO: Expand complexity_ratio() - stub detected by Yeshua Agent
     return kolmogorov_check(internal, external, method=method)["k_ratio"]

@@ -123,14 +123,17 @@ FERPA_MAX_ACCESS_FULFILLMENT_DAYS = Fraction(45)  # 45 days max
 
 def essa_graduation_threshold() -> Fraction:
     """ESSA minimum graduation rate threshold."""
+    # TODO: Expand essa_graduation_threshold() - stub detected by Yeshua Agent
     return ESSA_MIN_GRADUATION_RATE
 
 
 def idea_parental_notice_limit() -> Fraction:
     """IDEA maximum days for parental notice."""
+    # TODO: Expand idea_parental_notice_limit() - stub detected by Yeshua Agent
     return IDEA_MAX_PARENTAL_NOTICE_DAYS
 
 
 def ferpa_access_fulfillment_limit() -> Fraction:
     """FERPA maximum days to fulfill access requests."""
+    # TODO: Expand ferpa_access_fulfillment_limit() - stub detected by Yeshua Agent
     return FERPA_MAX_ACCESS_FULFILLMENT_DAYS

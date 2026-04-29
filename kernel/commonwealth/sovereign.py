@@ -36,6 +36,7 @@ class Scope:
     scope_type: ScopeType # Type of access permitted
     
     def __hash__(self) -> int:
+        # TODO: Expand __hash__() - stub detected by Yeshua Agent
         return hash((self.domain, self.resource, self.scope_type))
 
 

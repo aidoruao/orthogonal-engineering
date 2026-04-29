@@ -1,3 +1,4 @@
+"""Primitive Recursion - pr43/foundations/primitive_recursion.py"""
 # pr43/foundations/primitive_recursion.py
 # PR #43 — Orthogonal Parallel
 # Standard: Yeshua
@@ -57,4 +58,5 @@ def leq(a: Natural, b: Natural) -> bool:
 
 def lt(a: Natural, b: Natural) -> bool:
     """a < b  ⟺  S(a) ≤ b"""
+    # TODO: Expand lt() - stub detected by Yeshua Agent
     return leq(successor(a), b)

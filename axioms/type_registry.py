@@ -295,11 +295,13 @@ def count_types_by_kind() -> Tuple[Dict[str, int], ProofObject]:
 
 def get_types_by_kind(kind: TypeKind) -> List[TypeNode]:
     """Get all types of a given kind."""
+    # TODO: Expand get_types_by_kind() - stub detected by Yeshua Agent
     return [n for n in TYPE_REGISTRY.values() if n.kind == kind]
 
 
 def get_types_by_universe(universe: TypeUniverse) -> List[TypeNode]:
     """Get all types in a given universe."""
+    # TODO: Expand get_types_by_universe() - stub detected by Yeshua Agent
     return [n for n in TYPE_REGISTRY.values() if n.universe == universe]
 
 

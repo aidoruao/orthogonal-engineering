@@ -1,3 +1,4 @@
+"""Canal Refiner - LOGGING CONFIGURATION (UTF-8 file output, ASCII console)"""
 import re
 import json
 import pathlib

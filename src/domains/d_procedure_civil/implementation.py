@@ -87,6 +87,7 @@ class Lawsuit:
 
     def is_summary_judgment_appropriate(self) -> bool:
         """FRCP 56: No genuine dispute of material fact."""
+        # TODO: Expand is_summary_judgment_appropriate() - stub detected by Yeshua Agent
         return not self.genuine_dispute_exists
 
 

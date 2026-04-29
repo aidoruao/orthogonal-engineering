@@ -1,3 +1,4 @@
+"""Extract Case Studies - Load refined inventory"""
 import csv
 import json
 

@@ -102,6 +102,7 @@ class JesusAuthorityGuardian:
     
     def verify_covenant_hash(self, principle: str, claimed_hash: str) -> bool:
         """Byte-level verification: Covenant principles are immutable"""
+        # TODO: Expand verify_covenant_hash() - stub detected by Yeshua Agent
         return COVENANT_HASHES.get(principle) == claimed_hash
 
 

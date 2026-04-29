@@ -82,4 +82,5 @@ class CriminalCase:
 
     def speedy_trial_violation(self) -> bool:
         """Federal Speedy Trial Act: 70 days from indictment."""
+        # TODO: Expand speedy_trial_violation() - stub detected by Yeshua Agent
         return self.speedy_trial_ratio() > Fraction(1, 1)

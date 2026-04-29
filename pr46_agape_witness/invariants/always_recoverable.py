@@ -1,3 +1,4 @@
+"""Always Recoverable - pr46_agape_witness/invariants/always_recoverable.py"""
 # pr46_agape_witness/invariants/always_recoverable.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua

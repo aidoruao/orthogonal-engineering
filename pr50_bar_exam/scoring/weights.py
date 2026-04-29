@@ -15,4 +15,5 @@ CATEGORY_WEIGHTS: Dict[str, float] = {
 
 def validate_weights(weights: Dict[str, float]) -> bool:
     """Return True if weights sum to 1.0 (within tolerance)."""
+    # TODO: Expand validate_weights() - stub detected by Yeshua Agent
     return abs(sum(weights.values()) - 1.0) < 1e-9

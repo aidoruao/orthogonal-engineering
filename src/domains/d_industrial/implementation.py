@@ -95,9 +95,11 @@ MAX_WILLFUL_VIOLATIONS = 0  # Zero tolerance for willful
 
 def osha_trir_target() -> Fraction:
     """OSHA target Total Recordable Incident Rate."""
+    # TODO: Expand osha_trir_target() - stub detected by Yeshua Agent
     return OSHA_TRIR_TARGET
 
 
 def osha_dart_target() -> Fraction:
     """OSHA target DART rate."""
+    # TODO: Expand osha_dart_target() - stub detected by Yeshua Agent
     return OSHA_DART_TARGET

@@ -66,6 +66,7 @@ class Sil4OpticalLink:
 
 def sil4_pfd_max() -> Fraction:
     """IEC 61508 SIL-4 maximum PFD: 1/10 000."""
+    # TODO: Expand sil4_pfd_max() - stub detected by Yeshua Agent
     return Fraction(1, 10_000)
 
 

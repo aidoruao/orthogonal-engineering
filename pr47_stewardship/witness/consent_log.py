@@ -1,3 +1,4 @@
+"""Consent Log - pr47_stewardship/witness/consent_log.py"""
 # pr47_stewardship/witness/consent_log.py
 # PR #47 — Sanctified Remembrance
 # Standard: Yeshua
@@ -64,6 +65,7 @@ class ConsentRecord:
 
     def covers(self, content_hash: str) -> bool:
         """Return True if this consent covers content_hash."""
+        # TODO: Expand covers() - stub detected by Yeshua Agent
         return content_hash in self.scope
 
 

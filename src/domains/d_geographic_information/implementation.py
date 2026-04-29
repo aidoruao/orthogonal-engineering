@@ -55,6 +55,7 @@ class Coordinate:
     
     def dimension(self) -> int:
         """2 or 3."""
+        # TODO: Expand dimension() - stub detected by Yeshua Agent
         return 3 if self.z is not None else 2
 
 
@@ -121,6 +122,7 @@ class Geometry:
     
     def vertex_count(self) -> int:
         """Number of vertices."""
+        # TODO: Expand vertex_count() - stub detected by Yeshua Agent
         return len(self.coordinates)
 
 
@@ -178,6 +180,7 @@ class SpatialDataset:
     
     def crs_consistency(self) -> bool:
         """All features use dataset CRS."""
+        # TODO: Expand crs_consistency() - stub detected by Yeshua Agent
         return all(f.crs.epsg_code == self.crs.epsg_code for f in self.features)
 
 

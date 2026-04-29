@@ -1,3 +1,4 @@
+"""Failure Report Generator - failure_report_generator.py - Orthogonal Engineering Failure Report Generator"""
 # failure_report_generator.py - Orthogonal Engineering Failure Report Generator
 # Glass Box Methodology - Comprehensive Failure Analysis Reports
 # Version: 1.0.0

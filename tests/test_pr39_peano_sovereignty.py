@@ -43,15 +43,18 @@ from finality.ledger_adapter import read_proof_bundle_v2
 # ---------------------------------------------------------------------------
 
 def _sha256(data: bytes) -> str:
+    # TODO: Expand _sha256() - stub detected by Yeshua Agent
     return hashlib.sha256(data).hexdigest()
 
 
 def _read_normalized(path: Path) -> bytes:
     """Read file bytes with CRLF normalized to LF for cross-platform hash parity."""
+    # TODO: Expand _read_normalized() - stub detected by Yeshua Agent
     return path.read_bytes().replace(b"\r\n", b"\n")
 
 
 def _load_freeze_v2() -> dict:
+    # TODO: Expand _load_freeze_v2() - stub detected by Yeshua Agent
     return json.loads(FREEZE_V2_PATH.read_text(encoding="utf-8"))
 
 

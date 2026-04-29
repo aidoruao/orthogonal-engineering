@@ -131,6 +131,7 @@ class FileObject:
 
     def preserves_constraints(self, other: FileObject) -> bool:
         """Check if this file preserves constraints from another file"""
+        # TODO: Expand preserves_constraints() - stub detected by Yeshua Agent
         return self.constraints.contains(other.constraints)
 
 

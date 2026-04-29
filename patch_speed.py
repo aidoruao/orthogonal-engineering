@@ -1,3 +1,4 @@
+"""Patch Speed - Fix 1: Change --samples 6000 to --samples 1500"""
 ﻿import re  
   
 path = 'yeshua_agent.py'  

@@ -1,3 +1,4 @@
+"""Foolproof File Inspection - Foolproof File Inspection"""
 import os
 import pandas as pd
 

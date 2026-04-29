@@ -173,6 +173,7 @@ class EndomorphismFixed:
 
     @property
     def is_valid(self) -> bool:
+        # TODO: Expand is_valid() - stub detected by Yeshua Agent
         return self.verified and not self.violations
 
 

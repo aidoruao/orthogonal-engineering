@@ -12,6 +12,7 @@ def generate_report(content: str) -> dict:
     return {"content": content, "hash": h}
 
 def verify_report(report: dict) -> bool:
+    # TODO: Expand verify_report() - stub detected by Yeshua Agent
     return hashlib.sha256(report["content"].encode()).hexdigest() == report["hash"]
 
 def test_modified_report_fails_verification():

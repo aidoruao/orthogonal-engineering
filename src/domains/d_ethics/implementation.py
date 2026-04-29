@@ -46,6 +46,7 @@ class MoralAgent:
     
     def is_person(self) -> bool:
         """Kantian personhood: rational + autonomous."""
+        # TODO: Expand is_person() - stub detected by Yeshua Agent
         return self.rational and self.autonomous
 
 
@@ -59,6 +60,7 @@ class Consequence:
     
     def expected_utility(self) -> Fraction:
         """Expected utility contribution."""
+        # TODO: Expand expected_utility() - stub detected by Yeshua Agent
         return self.utility_change * self.probability
 
 
@@ -94,6 +96,7 @@ class Maxim:
     
     def universal_form(self) -> str:
         """Formulation for universal law test."""
+        # TODO: Expand universal_form() - stub detected by Yeshua Agent
         return f"I will {self.action_description} when {self.circumstance} in order to {self.purpose}"
 
 
@@ -216,4 +219,5 @@ class EthicsChecker:
     
     def contractualist_permissible(self) -> List[ContractualistEvaluation]:
         """Actions permissible under contractualism."""
+        # TODO: Expand contractualist_permissible() - stub detected by Yeshua Agent
         return [e for e in self.contractualist_evals if e.is_permissible()]

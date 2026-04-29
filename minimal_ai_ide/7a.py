@@ -1,3 +1,4 @@
+"""7A - ==================================================================="""
 from __future__ import annotations
 from dataclasses import dataclass, replace
 from typing import (
@@ -24,8 +25,10 @@ R = TypeVar("R")
 class Category(Protocol[A]):
     """Protocol for category objects"""
     def identity(self) -> Callable[[A], A]: ...
+    # TODO: Expand identity() - stub detected by Yeshua Agent
     def compose(self, f: Callable[[B], C], g: Callable[[A], B]) -> Callable[[A], C]: ...
 
+# TODO: Expand compose() - stub detected by Yeshua Agent
 # -------------------------------------------------------------------
 # PROTOCOL: Monad (Structural Laws)
 # -------------------------------------------------------------------
@@ -35,8 +38,10 @@ class Monad(Protocol[R, A]):
     """Protocol for monad operations"""
     @staticmethod
     def unit(a: A) -> Monad[R, A]: ...
+    # TODO: Expand unit() - stub detected by Yeshua Agent
     def bind(self, f: Callable[[A], Monad[R, B]]) -> Monad[R, B]: ...
 
+# TODO: Expand bind() - stub detected by Yeshua Agent
 # -------------------------------------------------------------------
 # COMPLETE: Intensional Dependent Types (Idt)
 # -------------------------------------------------------------------
@@ -54,6 +59,7 @@ class Context:
         return self.bindings.get(name)
     
     def is_empty(self) -> bool:
+        # TODO: Expand is_empty() - stub detected by Yeshua Agent
         return len(self.bindings) == 0
 
 @dataclass(frozen=True)
@@ -218,6 +224,7 @@ class KaroubiMorph(Generic[A, B]):
     
     def apply(self, x: A) -> B:
         """Apply morphism with idempotent closure"""
+        # TODO: Expand apply() - stub detected by Yeshua Agent
         return self.target.proj(self.underlying(self.source.proj(x)))
 
 # -------------------------------------------------------------------
@@ -362,6 +369,7 @@ class TheoState:
         return self.essence
     
     def project_persona(self) -> Tuple[str, ...]:
+        # TODO: Expand project_persona() - stub detected by Yeshua Agent
         return self.persona
 
 # -------------------------------------------------------------------
@@ -535,6 +543,7 @@ class TheoVerdict:
         return self.classify(s) == self.omega.true_elem
     
     def judge(self, s: TheoState) -> TheoState:
+        # TODO: Expand judge() - stub detected by Yeshua Agent
         return self.karoubi.proj(s)
 
 # -------------------------------------------------------------------

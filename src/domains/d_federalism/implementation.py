@@ -99,6 +99,7 @@ class SupremacyClause:
     @staticmethod
     def get_hierarchy() -> List[GovernmentLevel]:
         """Return government hierarchy (highest to lowest authority)."""
+        # TODO: Expand get_hierarchy() - stub detected by Yeshua Agent
         return [GovernmentLevel.FEDERAL, GovernmentLevel.STATE, GovernmentLevel.LOCAL]
 
 
