@@ -17,6 +17,7 @@ from axioms.logic import ProofObject
 
 
 def pure_mzi_transfer_matrix(
+    # TODO: Expand pure_mzi_transfer_matrix() - stub detected by Yeshua Agent
     theta: Fraction, phi: Fraction
 ) -> Tuple[bool, ProofObject, Tuple[Tuple[Fraction, ...], ...]]:
     """2x2 MZI transfer matrix using only Fraction and list ops.
@@ -59,6 +60,7 @@ def pure_mzi_transfer_matrix(
 
 
 def pure_mesh_unitarity_check(
+    # TODO: Expand pure_mesh_unitarity_check() - stub detected by Yeshua Agent
     matrix: Tuple[Tuple[Fraction, ...], ...]
 ) -> Tuple[bool, ProofObject]:
     """Check M†M = I using only Fraction multiply and add.
@@ -95,6 +97,7 @@ def pure_mesh_unitarity_check(
 
 
 def pure_insertion_loss(
+    # TODO: Expand pure_insertion_loss() - stub detected by Yeshua Agent
     power_in: Fraction, power_out: Fraction
 ) -> Tuple[bool, ProofObject, Fraction]:
     """Loss ratio without math.log10 — rational approximation.
@@ -124,6 +127,7 @@ def pure_insertion_loss(
 
 
 def pure_ber_estimate(
+    # TODO: Expand pure_ber_estimate() - stub detected by Yeshua Agent
     error_count: Fraction, total_bits: Fraction
 ) -> Tuple[bool, ProofObject, Fraction]:
     """BER as exact Fraction, no float division.

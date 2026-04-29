@@ -43,6 +43,7 @@ class GDPRRequest:
     GDPR_DEADLINE_DAYS = 30
     
     def is_overdue(self, current_date: datetime) -> bool:
+        # TODO: Expand is_overdue() - stub detected by Yeshua Agent
         return not self.fulfilled and current_date > self.deadline_date
 
 
@@ -55,6 +56,7 @@ class CCPAConsumer:
     
     def can_sell_data(self) -> bool:
         """CCPA: Cannot sell data if consumer opted out."""
+        # TODO: Expand can_sell_data() - stub detected by Yeshua Agent
         return not self.opted_out
 
 
@@ -68,6 +70,7 @@ class DataProcessing:
     
     def is_minimized(self, declared_purpose: str) -> bool:
         """GDPR data minimization: collected data <= stated purpose."""
+        # TODO: Expand is_minimized() - stub detected by Yeshua Agent
         # Simplified check
         return len(self.data_categories) <= len(declared_purpose.split())
 
@@ -94,6 +97,7 @@ class CCPAComplianceChecker:
     consumers: List[CCPAConsumer]
     
     def get_opted_out_count(self) -> int:
+        # TODO: Expand get_opted_out_count() - stub detected by Yeshua Agent
         return sum(1 for c in self.consumers if c.opted_out)
 
 

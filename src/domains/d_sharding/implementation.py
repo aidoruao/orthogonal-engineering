@@ -109,9 +109,11 @@ MIN_REPLICAS = 2
 
 def max_storage_utilization() -> Fraction:
     """Maximum recommended storage utilization per shard."""
+    # TODO: Expand max_storage_utilization() - stub detected by Yeshua Agent
     return MAX_STORAGE_UTILIZATION
 
 
 def min_replica_count() -> int:
     """Minimum replica count for shard availability."""
+    # TODO: Expand min_replica_count() - stub detected by Yeshua Agent
     return MIN_REPLICAS

@@ -434,6 +434,7 @@ class IntegratedSystem:
 
     def generate_latex_document(self) -> str:
         """Generate LaTeX document with all system components"""
+        # TODO: Expand generate_latex_document() - stub detected by Yeshua Agent
         latex = r"""\documentclass{article}
 \usepackage{amsmath, amssymb}
 \usepackage{hyperref}

@@ -41,6 +41,7 @@ from .implementation import (
 # ---------------------------------------------------------------------------
 
 def check_prediction_loss_bounded(
+    # TODO: Expand check_prediction_loss_bounded() - stub detected by Yeshua Agent
     output: PredictorOutput, max_allowed: Fraction = Fraction(100)
 ) -> Tuple[bool, ProofObject]:
     """Prediction MSE must be below a finite upper bound.
@@ -72,6 +73,7 @@ def check_prediction_loss_bounded(
 # ---------------------------------------------------------------------------
 
 def check_sigreg_convergence(
+    # TODO: Expand check_sigreg_convergence() - stub detected by Yeshua Agent
     run: TrainingRun, burn_in_steps: int = 3
 ) -> Tuple[bool, ProofObject]:
     """SIGReg loss must decrease monotonically after burn-in.
@@ -119,6 +121,7 @@ def check_sigreg_convergence(
 # ---------------------------------------------------------------------------
 
 def check_latent_isotropy(
+    # TODO: Expand check_latent_isotropy() - stub detected by Yeshua Agent
     states: Tuple[LatentState, ...], tolerance: Fraction = Fraction(1, 2)
 ) -> Tuple[bool, ProofObject]:
     """Latent dimensions should have comparable variance (isotropic Gaussian target).
@@ -206,6 +209,7 @@ def check_latent_isotropy(
 # ---------------------------------------------------------------------------
 
 def check_no_representation_collapse(
+    # TODO: Expand check_no_representation_collapse() - stub detected by Yeshua Agent
     states: Tuple[LatentState, ...], min_spread: Fraction = Fraction(1, 100)
 ) -> Tuple[bool, ProofObject]:
     """Embeddings must span non-trivial volume in latent space.
@@ -256,6 +260,7 @@ def check_no_representation_collapse(
 # ---------------------------------------------------------------------------
 
 def check_planning_convergence(
+    # TODO: Expand check_planning_convergence() - stub detected by Yeshua Agent
     result: PlanningResult, max_cost: Fraction = Fraction(1000)
 ) -> Tuple[bool, ProofObject]:
     """Planning must produce a finite-cost action sequence.
@@ -298,6 +303,7 @@ def check_planning_convergence(
 # ---------------------------------------------------------------------------
 
 def check_surprise_plausible(
+    # TODO: Expand check_surprise_plausible() - stub detected by Yeshua Agent
     event: SurpriseEvent, threshold: Fraction = Fraction(10)
 ) -> Tuple[bool, ProofObject]:
     """Surprise score must be below physical plausibility threshold.

@@ -46,6 +46,7 @@ class BankruptcyCase:
     
     def has_adequate_plan(self) -> bool:
         """Ch 13: 60-month plan covering disposable income."""
+        # TODO: Expand has_adequate_plan() - stub detected by Yeshua Agent
         return self.plan_duration_months >= 60 and self.disposable_income > Fraction(0)
 
 # Lookback periods (days)

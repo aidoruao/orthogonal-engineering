@@ -184,6 +184,7 @@ def _check_standards() -> Tuple[List[str], int, int]:
 
 
 def run_anti_nominalism_audit(
+    # TODO: Expand run_anti_nominalism_audit() - stub detected by Yeshua Agent
     output_path: Path = DEFAULT_REPORT_PATH,
 ) -> Tuple[bool, ProofObject]:
     """Run the anti-nominalism audit.

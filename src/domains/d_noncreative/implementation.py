@@ -82,6 +82,7 @@ class FactualCompilation:
     
     def has_minimal_creativity(self) -> bool:
         """Check if compilation has minimal creativity (Feist standard)."""
+        # TODO: Expand has_minimal_creativity() - stub detected by Yeshua Agent
         return self.selection_criteria_original or self.arrangement_original
 
 
@@ -93,9 +94,11 @@ PUBLIC_DOMAIN_YEAR = 1929  # Pre-1929 works generally public domain
 
 def minimal_creativity_threshold() -> Fraction:
     """Threshold for minimal creativity (Feist v. Rural)."""
+    # TODO: Expand minimal_creativity_threshold() - stub detected by Yeshua Agent
     return MINIMAL_CREATIVITY_THRESHOLD
 
 
 def orphan_work_search_threshold() -> int:
     """Minimum search efforts for orphan work determination."""
+    # TODO: Expand orphan_work_search_threshold() - stub detected by Yeshua Agent
     return ORPHAN_SEARCH_THRESHOLD
