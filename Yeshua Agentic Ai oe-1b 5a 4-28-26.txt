@@ -1,0 +1,758 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Aidor> cd C:\Users\Aidor\oe-local
+PS C:\Users\Aidor\oe-local> C:\Users\Aidor\oe-train\Scripts\Activate.ps1
+(oe-train) PS C:\Users\Aidor\oe-local> python yeshua_agent.py
+Loading TinyLlama v7 on CUDA...
+`torch_dtype` is deprecated! Use `dtype` instead!
+Yeshua Agent v2.0 ready on NVIDIA GeForce RTX 4050 Laptop GPU
+
+============================================================
+YESHUA AGENT v2.0 - LOCAL AGENTIC AI
+No API. No subscription. No corporate dependency.
+============================================================
+
+Commands:
+  scan              - Scan repo file counts
+  validate <claim>  - Deception detection on a claim
+  analyze <path>    - Describe what a file does
+  audit <path>      - Full audit of a file (grounded)
+  auto [N]          - Autonomous audit of N random .py files (default 5)
+  generate [N]      - Generate N balanced training examples per category (default 100)
+  fix <path>        - Report issues in a file (deterministic)
+  autofix <path>    - Apply fixes to a file (writes changes)
+  batch-fix [N]     - Scan N random .py files and autofix all (default 50)
+  retrain           - Combine all datasets and retrain the model
+  retrain           - Combine all datasets and retrain the model
+  read <path>       - Read a file
+  write <path>      - Write a file (type END to finish)
+  think <anything>  - Ask the model
+  status            - GPU/memory/log status
+  exit              - Quit
+------------------------------------------------------------
+
+Yeshua> batch-fix 50
+  [1] FIXED src\domains\d_space\tests\__init__.py (1 fix(es))
+  [2] FIXED audit\anti_nominalism_audit.py (1 fix(es))
+  [3] FIXED minimal_ai_ide\FINAL_INTEGRATED_SYSTEM.py (1 fix(es))
+  [4] FIXED src\domains\d_arxiv_inv_likelihood_hacking\tests\__init__.py (1fix(es))
+  [5] FIXED minimal_ai_ide\five_frameworks\framework6\covariant_derivative.py (1 fix(es))
+  [6] FIXED src\domains\d_oilgas\tests\__init__.py (1 fix(es))
+  [7] FIXED src\domains\d_privacy_law\implementation.py (4 fix(es))
+  [8] FIXED src\domains\d_sharding\implementation.py (2 fix(es))
+  [9] FIXED minimal_ai_ide\runtime_status.py (1 fix(es))
+  [10] FIXED src\domains\d_welding\tests\__init__.py (1 fix(es))
+  [11] FIXED src\domains\d_bankruptcy\implementation.py (1 fix(es))
+  [12] FIXED src\domains\d_arxiv_inv_defense_trilemma\tests\__init__.py (1 fix(es))
+  [13] FIXED minimal_ai_ide\canonical_pipeline.py (10 fix(es))
+  [14] FIXED forgiveness_system\building\build_612b503e.py (2 fix(es))
+  [15] FIXED src\domains\d_noncreative\implementation.py (3 fix(es))
+  [16] FIXED src\hardware\photonic\yeshua\photonic_pure_reference.py (4 fix(es))
+  [17] FIXED src\domains\d_jepa_world_model\invariants.py (6 fix(es))
+  [18] FIXED src\domains\d_transit\tests\__init__.py (1 fix(es))
+  [19] FIXED src\domains\d_automotive\tests\__init__.py (1 fix(es))
+  [20] FIXED src\domains\d_supply_chain_security\tests\test_f_d_supply_chain_security_001.py (1 fix(es))
+
+Batch fix complete:
+  Files scanned: 50
+  Files fixed: 20
+  Total fixes applied: 44
+  Files needing manual work: 0
+  Manual issues remaining: 0
+  Report: yeshua_batch_fix_report.json
+
+Yeshua> batch-fix 500
+  [1] FIXED tests\test_pr59_topology_sanity.py (3 fix(es))
+  [2] FIXED pr44_orthogonal_meta\impossibility\__init__.py (1 fix(es))
+  [3] FIXED pr50_bar_exam\candidate\environment.py (2 fix(es))
+  [4] FIXED minimal_ai_ide\GRADUATE_MATHEMATICS_SPECIFICATION.py (8 fix(es))
+  [5] FIXED src\domains\d_astrophysics\tests\__init__.py (1 fix(es))
+  [6] FIXED forgiveness_system\building\build_710dbfe2.py (2 fix(es))
+  [7] FIXED src\domains\d_epistemic_logic\implementation.py (5 fix(es))
+  [8] FIXED pr47_stewardship\integration\pr40_witness_extension.py (1 fix(es))
+  [9] FIXED minimal_ai_ide\canonical_pipeline_original_20260127_224239.py (1 fix(es))
+  [10] FIXED pr47_stewardship\invariants\__init__.py (1 fix(es))
+  [11] FIXED src\enumerations\tests\__init__.py (1 fix(es))
+  [12] FIXED src\domains\d_architecture_proof\tests\__init__.py (1 fix(es))
+  [13] FIXED pr46_agape_witness\relational\covenant_tracking.py (2 fix(es))
+  [14] FIXED src\domains\d_environmental_planning\tests\__init__.py (1 fix(es))
+  [15] FIXED minimal_ai_ide\GRADUATE_LANGUAGE_MATHEMATICS.py (2 fix(es))
+  [16] FIXED tools\loose\process_conversation_files.py (1 fix(es))
+  [17] FIXED pr45_uvdtl\totality\resource_bounds.py (8 fix(es))
+  [18] FIXED merkle\domain_merkle.py (2 fix(es))
+  [19] FIXED src\domains\d_evidence_law\implementation.py (2 fix(es))
+  [20] FIXED benchmarks\ai_invariant_tests.py (1 fix(es))
+  [21] FIXED tools\discord_witness\bot.py (1 fix(es))
+  [22] FIXED src\domains\d_contract_law\implementation.py (1 fix(es))
+  [23] FIXED axioms\synthetic_differential_geometry.py (1 fix(es))
+  [24] FIXED tests\test_xss_sanitization.py (1 fix(es))
+  [25] FIXED forgiveness_system\building\build_323667e2.py (2 fix(es))
+  [26] FIXED pr46_agape_witness\law\verification_baseline.py (2 fix(es))
+  [27] FIXED pr46_agape_witness\law\__init__.py (1 fix(es))
+  [28] FIXED forgiveness_system\building\build_b2b4333d.py (2 fix(es))
+  [29] FIXED minimal_ai_ide\maximal_oracle_v53.py (2 fix(es))
+  [30] FIXED src\domains\d_game_theory\implementation.py (1 fix(es))
+  [31] FIXED src\domains\d_visual_arts\tests\__init__.py (1 fix(es))
+  [32] FIXED src\domains\d_software_testing\__init__.py (1 fix(es))
+  [33] FIXED src\domains\d_consumer_protection\implementation.py (3 fix(es))
+  [34] FIXED tests\test_f_labor_rights_001.py (3 fix(es))
+  [35] FIXED src\domains\d_robotics\implementation.py (2 fix(es))
+  [36] FIXED forgiveness_system\building\build_7d9f5b9e.py (2 fix(es))
+  [37] FIXED pr50_bar_exam\ordination\verify_certificate.py (1 fix(es))
+  [38] FIXED pr44_orthogonal_meta\closure\__init__.py (1 fix(es))
+  [39] FIXED minimal_ai_ide\practical_training.py (1 fix(es))
+  [40] FIXED tools\loose\simple_audit.py (2 fix(es))
+  [41] FIXED forgiveness_system\building\build_4e377a67.py (2 fix(es))
+  [42] FIXED src\domains\d_fractals\tests\__init__.py (1 fix(es))
+  [43] FIXED tools\loose\gta_handling_pipeline.py (2 fix(es))
+  [44] FIXED runtime\system_snapshot.py (1 fix(es))
+  [45] FIXED pr47_stewardship\invariants\never_draw_attention.py (1 fix(es))
+  [46] FIXED src\domains\d_geographic_information\tests\__init__.py (1 fix(es))
+  [47] FIXED pr46_agape_witness\relational\__init__.py (1 fix(es))
+  [48] FIXED src\domains\d_plumbing_trades\tests\__init__.py (1 fix(es))
+  [49] FIXED forgiveness_system\building\build_6e8ff41d.py (2 fix(es))
+  [50] FIXED src\domains\d_arxiv_statml_conformal_margin\tests\__init__.py (1 fix(es))
+  [51] FIXED minimal_ai_ide\lora\train_cpu_lora.py (2 fix(es))
+  [52] FIXED src\domains\d_water\tests\__init__.py (1 fix(es))
+  [53] FIXED pr46_agape_witness\forgiveness\forgiveness_protocol.py (1 fix(es))
+  [54] FIXED src\domains\d_agriculture\tests\__init__.py (1 fix(es))
+  [55] FIXED axioms\formal_languages.py (2 fix(es))
+  [56] FIXED src\domains\d_healthcare_law\implementation.py (2 fix(es))
+  [57] FIXED src\domains\d_financial\__init__.py (1 fix(es))
+  [58] FIXED minimal_ai_ide\Σ_LORA_FINAL_COMMIT.py (1 fix(es))
+  [59] FIXED src\domains\d_emergency\implementation.py (2 fix(es))
+  [60] FIXED src\orthogonal_engineering\PIPELINE_LOGGER.py (1 fix(es))
+  [61] FIXED tests\test_boundary_enforcer.py (2 fix(es))
+  [62] FIXED src\domains\d_biochemistry\tests\__init__.py (1 fix(es))
+  [63] FIXED src\domains\d_utility_regulation\implementation.py (2 fix(es))
+  [64] FIXED src\domains\d_incident_response\tests\test_f_d_incident_response_001.py (1 fix(es))
+  [65] FIXED src\domains\d_education\tests\__init__.py (1 fix(es))
+  [66] FIXED pr45_uvdtl\__init__.py (1 fix(es))
+  [67] FIXED src\sal\realizability_topos.py (4 fix(es))
+  [68] FIXED src\domains\d_arxiv_left_distributive\tests\__init__.py (1 fix(es))
+  [69] FIXED pr50_bar_exam\candidate\attestation_oidc.py (4 fix(es))
+  [70] FIXED tools\loose\ide_adapter.py (1 fix(es))
+  [71] FIXED pr34_audit.py (1 fix(es))
+  [72] FIXED src\domains\d_systems_engineering\tests\__init__.py (1 fix(es))
+  [73] FIXED forgiveness_system\building\build_007ca88a.py (2 fix(es))
+  [74] FIXED forgiveness_system\building\build_98a14640.py (2 fix(es))
+  [75] FIXED minimal_ai_ide\GRADUATE_MATHEMATICS_THEOLOGY_ACTUALIZED.py (5 fix(es))
+  [76] FIXED src\domains\d_arxiv_statml_sparse_svm\tests\__init__.py (1 fix(es))
+  [77] FIXED src\domains\d_nuclear\tests\__init__.py (1 fix(es))
+  [78] FIXED automation\generate_phase9_blueprint.py (1 fix(es))
+  [79] FIXED audit\verification_testimony.py (1 fix(es))
+  [80] FIXED minimal_ai_ide\analyze_five_frameworks.py (2 fix(es))
+  [81] FIXED src\domains\d_reliability_engineering\tests\__init__.py (1 fix(es))
+  [82] FIXED analysis\debug_message.py (1 fix(es))
+  [83] FIXED tests\test_f_platform_005.py (1 fix(es))
+  [84] FIXED src\domains\d_arxiv_inv_likelihood_hacking\invariants.py (3 fix(es))
+  [85] FIXED minimal_ai_ide\final_hash_verification.py (1 fix(es))
+  [86] FIXED pr43\foundations\type_theory.py (3 fix(es))
+  [87] FIXED src\domains\d_emergency\__init__.py (1 fix(es))
+  [88] FIXED src\domains\d_luxury\tests\__init__.py (1 fix(es))
+  [89] FIXED pr44_orthogonal_meta\domain_models\ai\__init__.py (1 fix(es))
+  [90] FIXED tests\test_impossibility_and_conversation.py (2 fix(es))
+  [91] FIXED tests\test_f_dollartree_001.py (2 fix(es))
+  [92] FIXED minimal_ai_ide\test_corporate_overreach.py (1 fix(es))
+  [93] FIXED minimal_ai_ide\canonical_pipeline_substituted_20260127_224324.py (1 fix(es))
+  [94] FIXED tools\generate_fractal_code.py (1 fix(es))
+  [95] FIXED src\domains\d_physics\implementation.py (2 fix(es))
+  [96] FIXED minimal_ai_ide\five_frameworks\framework5\cryptographic_identity.py (2 fix(es))
+  [97] FIXED audit\depth_measurement.py (1 fix(es))
+  [98] FIXED yeshua_math\pure_reference_runtime\cross_validator.py (10 fix(es))
+  [99] FIXED pr45_uvdtl\forkability\__init__.py (1 fix(es))
+  [100] FIXED tools\ai_credit.py (1 fix(es))
+  [101] FIXED forgiveness_system\building\build_26e28736.py (2 fix(es))
+  [102] FIXED src\domains\d_public_health_capacity\invariants.py (8 fix(es))
+  [103] FIXED tests\test_f_crypto_004.py (1 fix(es))
+  [104] FIXED scaffold\tests\test_handling_pipeline.py (3 fix(es))
+  [105] FIXED src\hardware\photonic\packaging.py (6 fix(es))
+  [106] FIXED pr44_orthogonal_meta\__init__.py (1 fix(es))
+  [107] FIXED src\domains\d_logic_formal\tests\__init__.py (1 fix(es))
+  [108] FIXED axioms\cryptographic_verification.py (1 fix(es))
+  [109] FIXED core\labor\immune_system.py (1 fix(es))
+  [110] FIXED tools\render_agnostic\render\hash_comparator.py (1 fix(es))
+  [111] FIXED forgiveness_system\building\build_93f52de6.py (2 fix(es))
+  [112] FIXED audit\tautology_detector.py (2 fix(es))
+  [113] FIXED toolkit\oe\logger.py (1 fix(es))
+  [114] FIXED minimal_ai_ide\3a.py (4 fix(es))
+  [115] FIXED src\domains\d_energy\tests\__init__.py (1 fix(es))
+  [116] FIXED src\orthogonal_engineering\failure_analyzer.py (1 fix(es))
+  [117] FIXED src\domains\d_automotive\implementation.py (4 fix(es))
+  [118] FIXED src\domains\d_peano_ext\tests\__init__.py (1 fix(es))
+  [119] FIXED src\orthogonal_engineering\input_guard.py (2 fix(es))
+  [120] FIXED forgiveness_system\building\build_fd1fd079.py (2 fix(es))
+  [121] FIXED forgiveness_system\building\build_ab1339d5.py (2 fix(es))
+  [122] FIXED forgiveness_system\building\build_b29d09cf.py (2 fix(es))
+  [123] FIXED src\domains\d_aviation\__init__.py (1 fix(es))
+  [124] FIXED tests\test_f_medical_003.py (1 fix(es))
+  [125] FIXED src\domains\d_communications\tests\__init__.py (1 fix(es))
+  [126] FIXED minimal_ai_ide\AI_IDE_CHAT_NEXT_INSTANCE.py (2 fix(es))
+  [127] FIXED src\domains\d_arxiv_safeadapt_provably_safe\tests\__init__.py(1 fix(es))
+  [128] FIXED src\domains\d_arxiv_inv_vulnerability_abundance\tests\__init__.py (1 fix(es))
+  [129] FIXED src\domains\d_supply_chain_security\implementation.py (1 fix(es))
+  [130] FIXED forgiveness_system\building\build_63f1412e.py (2 fix(es))
+  [131] FIXED pr44_orthogonal_meta\impossibility\growth_incompatibility.py (1 fix(es))
+  [132] FIXED minimal_ai_ide\analyze_three_frameworks.py (2 fix(es))
+  [133] FIXED forgiveness_system\building\build_3507c2a5.py (2 fix(es))
+  [134] FIXED minimal_ai_ide\lora\stage3_quick_test.py (1 fix(es))
+  [135] FIXED src\domains\d_government\implementation.py (2 fix(es))
+  [136] FIXED forgiveness_system\building\build_b9a72f13.py (2 fix(es))
+  [137] FIXED yeshua_math\peano_invariant_checker.py (1 fix(es))
+  [138] FIXED pr44_orthogonal_meta\domain_models\robotics\bipedal_motion_planner.py (1 fix(es))
+  [139] FIXED src\domains\d_arxiv_statml_gaussian_approximation\tests\__init__.py (1 fix(es))
+  [140] FIXED src\domains\d_maritime\implementation.py (3 fix(es))
+  [141] FIXED src\domains\d_arxiv_risk_management_bowtie\tests\__init__.py (1 fix(es))
+  [142] FIXED tests\test_incursion_atomic_integrity_schema.py (2 fix(es))
+  [143] FIXED pr45_uvdtl\witness\append_only_witness.py (2 fix(es))
+  [144] FIXED minimal_ai_ide\ortho_kernel.py (2 fix(es))
+  [145] FIXED src\domains\d_platform\implementation.py (3 fix(es))
+  [146] FIXED minimal_ai_ide\lora\test_lora_installation.py (1 fix(es))
+  [147] FIXED minimal_ai_ide\test_trained_model.py (1 fix(es))
+  [148] FIXED src\domains\d_whitecollar\implementation.py (2 fix(es))
+  [149] FIXED forgiveness_system\building\build_8cafdb07.py (2 fix(es))
+  [150] FIXED scripts\sanitize_pii.py (1 fix(es))
+  [151] FIXED src\domains\d_water\implementation.py (3 fix(es))
+  [152] FIXED toolkit\oe\scaffold\merkle.py (1 fix(es))
+  [153] FIXED pr43\verification\hash_identity.py (4 fix(es))
+  [154] FIXED src\domains\d_civilizational_polymath\invariants.py (5 fix(es))
+  [155] FIXED src\domains\d_retail\implementation.py (3 fix(es))
+  [156] FIXED forgiveness_system\building\build_e1e7394b.py (2 fix(es))
+
+Batch fix complete:
+  Files scanned: 500
+  Files fixed: 156
+  Total fixes applied: 286
+  Files needing manual work: 57
+  Manual issues remaining: 76
+  Report: yeshua_batch_fix_report.json
+
+Yeshua> generate 500
+Generating 500 training examples per category from repo files...
+
+Generated 1766 training examples:
+  VERIFIED: 500
+  DECEPTION: 500
+  ANALYSIS: 500
+  STUB_DETECTION: 266
+Saved to: yeshua_training_v2.jsonl
+
+Yeshua> batch-fix 500
+  [1] FIXED src\domains\d_arxiv_quantum_rigidity\tests\__init__.py (1 fix(es))
+  [2] FIXED minimal_ai_ide\7a.py (9 fix(es))
+  [3] FIXED src\domains\d_remote_sensing\tests\test_f_d_remote_sensing_001.py (9 fix(es))
+  [4] FIXED src\domains\d_arxiv_visor_agentic_visual\tests\__init__.py (1 fix(es))
+  [5] FIXED src\domains\d_geographic_information\implementation.py (3 fix(es))
+  [6] FIXED forgiveness_system\building\build_1ae5063d.py (2 fix(es))
+  [7] FIXED tests\test_f_citizenship_001.py (1 fix(es))
+  [8] FIXED forgiveness_system\building\build_890dd9ee.py (2 fix(es))
+  [9] FIXED tests\test_f_automotive_001.py (1 fix(es))
+  [10] FIXED src\domains\d_creative\implementation.py (2 fix(es))
+  [11] FIXED src\domains\d_education\implementation.py (3 fix(es))
+  [12] FIXED src\domains\d_arxiv_vl_calibration_decoupled\tests\__init__.py(1 fix(es))
+  [13] FIXED pr46_agape_witness\invariants\always_recoverable.py (1 fix(es))
+  [14] FIXED src\hardware\photonic\safety.py (6 fix(es))
+  [15] FIXED forgiveness_system\building\build_cb0d8ee2.py (2 fix(es))
+  [16] FIXED tools\loose\run_forgiveness_on_all_exports.py (3 fix(es))
+  [17] FIXED src\domains\d_family_law\__init__.py (1 fix(es))
+  [18] FIXED src\domains\d_electrical_trades\tests\__init__.py (1 fix(es))
+  [19] FIXED minimal_ai_ide\FORMAL_VERIFICATION_SYSTEM.py (1 fix(es))
+  [20] FIXED forgiveness_system\building\build_154431ad.py (2 fix(es))
+  [21] FIXED src\domains\d_insurance\tests\__init__.py (1 fix(es))
+  [22] FIXED tests\test_f_water_001.py (1 fix(es))
+  [23] FIXED pr45_uvdtl\state\canonical_serialization.py (1 fix(es))
+  [24] FIXED scaffold\handling_pipeline.py (1 fix(es))
+  [25] FIXED forgiveness_system\building\build_1d5a63f2.py (2 fix(es))
+  [26] FIXED pr43\foundations\__init__.py (1 fix(es))
+  [27] FIXED pr50_bar_exam\privileges\enforcement.py (1 fix(es))
+  [28] FIXED src\domains\d_antitrust\__init__.py (1 fix(es))
+  [29] FIXED src\domains\d_crusader\tests\__init__.py (1 fix(es))
+  [30] FIXED minimal_ai_ide\bidirectional_controller_interface.py (1 fix(es))
+  [31] FIXED generators\fractal_expander.py (1 fix(es))
+  [32] FIXED src\domains\d_cross_model_benchmarks\implementation.py (4 fix(es))
+  [33] FIXED automation\run_full_audit_with_trace.py (4 fix(es))
+  [34] FIXED pr43\closure\verify_closure.py (1 fix(es))
+  [35] FIXED tests\test_frontmatter_audit.py (2 fix(es))
+  [36] FIXED forgiveness_system\building\build_69757503.py (2 fix(es))
+  [37] FIXED src\domains\d_emergency\tests\__init__.py (1 fix(es))
+  [38] FIXED src\__init__.py (1 fix(es))
+  [39] FIXED toolkit\oe\hasher.py (1 fix(es))
+  [40] FIXED toolkit\oe\boundary_enforcer.py (1 fix(es))
+  [41] FIXED src\domains\d_tax_law\__init__.py (1 fix(es))
+  [42] FIXED forgiveness_system\building\build_16660362.py (2 fix(es))
+  [43] FIXED src\domains\d_immigration\implementation.py (2 fix(es))
+  [44] FIXED minimal_ai_ide\ai_core.py (1 fix(es))
+  [45] FIXED src\domains\d_federalism\implementation.py (1 fix(es))
+  [46] FIXED tools\loose\foolproof_file_inspection.py (1 fix(es))
+  [47] FIXED src\hardware\photonic\aerospace_floor.py (1 fix(es))
+  [48] FIXED minimal_ai_ide\christ_constrained_ai.py (1 fix(es))
+  [49] FIXED analysis\canal_refiner.py (1 fix(es))
+  [50] FIXED src\domains\d_curriculum\tests\__init__.py (1 fix(es))
+  [51] FIXED src\domains\d_software_testing\tests\test_f_d_software_testing_001.py (1 fix(es))
+  [52] FIXED audit\scope_audit.py (2 fix(es))
+  [53] FIXED pr43\foundations\primitive_recursion.py (2 fix(es))
+  [54] FIXED pr46_agape_witness\relational\intent_capture.py (1 fix(es))
+  [55] FIXED tools\loose\filesystem_scanner.py (1 fix(es))
+  [56] FIXED pr47_stewardship\identification\pattern_detector.py (1 fix(es))
+  [57] FIXED minimal_ai_ide\five_frameworks\framework2\biblical_constraints.py (3 fix(es))
+  [58] FIXED minimal_ai_ide\SIGMA_LORA_GRADUATE_MATHEMATICS.py (1 fix(es))
+  [59] FIXED src\domains\d_secular_projection\tests\__init__.py (1 fix(es))
+  [60] FIXED tools\loose\complexity.py (3 fix(es))
+  [61] FIXED axioms\temporal_logic.py (3 fix(es))
+  [62] FIXED investigations\impossibility_audit.py (1 fix(es))
+  [63] FIXED src\domains\d_public_health_capacity\tests\__init__.py (1 fix(es))
+  [64] FIXED src\domains\d_arxiv_inv_tractability_frontier\invariants.py (3fix(es))
+  [65] FIXED src\domains\d_compiler_design\tests\test_f_d_compiler_design_001.py (1 fix(es))
+  [66] FIXED minimal_ai_ide\governance.py (5 fix(es))
+  [67] FIXED forgiveness_system\building\build_67544247.py (2 fix(es))
+  [68] FIXED analysis\canal_detector.py (1 fix(es))
+  [69] FIXED tools\loose\canal_detector.py (1 fix(es))
+  [70] FIXED src\domains\d_arxiv_quantum_fock_lattice\tests\__init__.py (1 fix(es))
+  [71] FIXED src\domains\d_procedure_criminal\implementation.py (1 fix(es))
+  [72] FIXED forgiveness_system\building\build_aea6fe22.py (2 fix(es))
+  [73] FIXED src\domains\d_arxiv_three_modalities_two\tests\__init__.py (1 fix(es))
+  [74] FIXED src\domains\d_arxiv_quantum_nonlocal_games\tests\__init__.py (1 fix(es))
+  [75] FIXED forgiveness_system\building\build_87246411.py (2 fix(es))
+  [76] FIXED src\domains\d_boring\implementation.py (3 fix(es))
+  [77] FIXED forgiveness_system\building\build_998a4c5f.py (2 fix(es))
+  [78] FIXED forgiveness_system\building\build_5d7a36f9.py (2 fix(es))
+  [79] FIXED src\domains\d_industrial\__init__.py (1 fix(es))
+  [80] FIXED src\domains\d_thermodynamics\tests\__init__.py (1 fix(es))
+  [81] FIXED src\domains\d_transit\implementation.py (6 fix(es))
+  [82] FIXED minimal_ai_ide\test_reality.py (1 fix(es))
+  [83] FIXED minimal_ai_ide\five_frameworks\framework5\blockchain_ledger.py(1 fix(es))
+  [84] FIXED src\domains\d_procedure_civil\implementation.py (1 fix(es))
+  [85] FIXED tools\loose\rollback_manager.py (1 fix(es))
+  [86] FIXED src\domains\d_fun\implementation.py (1 fix(es))
+  [87] FIXED tools\loose\external_witness.py (1 fix(es))
+  [88] FIXED forgiveness_system\building\build_d0b3e852.py (2 fix(es))
+  [89] FIXED forgiveness_system\building\build_82c458c6.py (2 fix(es))
+  [90] FIXED minimal_ai_ide\SELF_AUTOMATIVE_MASTER_COMPLETE.py (1 fix(es))
+  [91] FIXED src\domains\d_arxiv_quantum_de_finetti\tests\__init__.py (1 fix(es))
+  [92] FIXED src\domains\d_oilgas\implementation.py (1 fix(es))
+  [93] FIXED kernel\commonwealth\sovereign.py (1 fix(es))
+  [94] FIXED minimal_ai_ide\workspace_v57\hello_world.py (1 fix(es))
+  [95] FIXED src\domains\d_networking\tests\test_f_d_networking_001.py (1 fix(es))
+  [96] FIXED forgiveness_system\building\build_4fac3688.py (2 fix(es))
+  [97] FIXED core\labor\automated_documentation.py (1 fix(es))
+  [98] FIXED src\domains\d_consumer_protection\__init__.py (1 fix(es))
+  [99] FIXED axioms\type_registry.py (2 fix(es))
+  [100] FIXED tools\loose\failure_report_generator.py (1 fix(es))
+  [101] FIXED pr45_uvdtl\witness\claim_registry.py (2 fix(es))
+  [102] FIXED minimal_ai_ide\SELF_AUTOMATIVE_MASTER.py (2 fix(es))
+  [103] FIXED yeshua_math\boolean_purity_validator.py (1 fix(es))
+  [104] FIXED pr50_bar_exam\scoring\weights.py (1 fix(es))
+  [105] FIXED src\domains\d_metrology\tests\__init__.py (1 fix(es))
+  [106] FIXED pr44_orthogonal_meta\foundations\peano_kernel.py (4 fix(es))
+  [107] FIXED minimal_ai_ide\run_production_training.py (2 fix(es))
+  [108] FIXED forgiveness_system\building\build_13fa6d99.py (2 fix(es))
+  [109] FIXED pr45_uvdtl\parallel\__init__.py (1 fix(es))
+  [110] FIXED forgiveness_system\building\build_fe9cf69b.py (2 fix(es))
+  [111] FIXED src\sal\lawvere_fixed_point.py (1 fix(es))
+  [112] FIXED src\domains\d_distributed_systems\tests\test_f_d_distributed_systems_001.py (1 fix(es))
+  [113] FIXED src\domains\d_ethics\implementation.py (4 fix(es))
+  [114] FIXED src\orthogonal_engineering\failure_logger.py (1 fix(es))
+  [115] FIXED src\domains\d_mobile_development\tests\test_f_d_mobile_development_001.py (1 fix(es))
+  [116] FIXED src\domains\d_boring\tests\__init__.py (1 fix(es))
+  [117] FIXED patch_speed.py (1 fix(es))
+  [118] FIXED src\domains\d_road_standards\tests\__init__.py (1 fix(es))
+  [119] FIXED src\domains\d_arxiv_linearizable_registers\invariants.py (4 fix(es))
+  [120] FIXED analysis\extract_case_studies.py (1 fix(es))
+  [121] FIXED src\domains\d_crypto\__init__.py (1 fix(es))
+  [122] FIXED tools\polymath_collision_report.py (1 fix(es))
+  [123] FIXED tests\test_pr39_peano_sovereignty.py (3 fix(es))
+  [124] FIXED src\hardware\photonic\waveguide.py (4 fix(es))
+  [125] FIXED src\hardware\photonic\emc.py (6 fix(es))
+  [126] FIXED spec\tests\test_logos_ide.py (1 fix(es))
+  [127] FIXED pr47_stewardship\witness\consent_log.py (2 fix(es))
+  [128] FIXED tests\test_f_crusader_009.py (1 fix(es))
+  [129] FIXED pr43\solver\__init__.py (1 fix(es))
+  [130] FIXED forgiveness_system\building\build_06ee90f1.py (2 fix(es))
+  [131] FIXED minimal_ai_ide\corporate_ai_ide_system.py (1 fix(es))
+  [132] FIXED pr47_stewardship\movement\__init__.py (1 fix(es))
+  [133] FIXED src\domains\d_industrial\implementation.py (2 fix(es))
+
+Batch fix complete:
+  Files scanned: 500
+  Files fixed: 133
+  Total fixes applied: 233
+  Files needing manual work: 74
+  Manual issues remaining: 83
+  Report: yeshua_batch_fix_report.json
+
+Yeshua> auto 100
+Starting autonomous audit of 100 Python files...
+  [1/100] DATA-ONLY | 20 lines | 0 fns | 0 cls | src\domains\d_environmental_law\__init__.py
+  [2/100] REAL      | 159 lines | 7 fns | 0 cls | src\domains\d_corporate_law\invariants.py
+  [3/100] REAL      | 583 lines | 61 fns | 15 cls | minimal_ai_ide\7a.py
+  [4/100] REAL      | 109 lines | 6 fns | 0 cls | pr45_uvdtl\state\hidden_state_eliminator.py
+  [5/100] REAL      | 171 lines | 7 fns | 1 cls | toolkit\oe\merkle.py
+  [6/100] REAL      | 93 lines | 4 fns | 3 cls | userspace\app_framework\application.py
+  [7/100] MINIMAL   | 5 lines | 0 fns | 0 cls | src\domains\d_logic_formal\__init__.py
+  [8/100] REAL      | 24 lines | 2 fns | 0 cls | src\domains\d_arxiv_statml_sequential_audit\tests\test_f_d_arxiv_statml_sequential_audit_001.py
+  [9/100] REAL      | 11 lines | 1 fns | 0 cls | tests\test_f_platform_001.py
+  [10/100] REAL      | 161 lines | 6 fns | 0 cls | src\domains\d_differential_geometry\invariants.py
+  [11/100] REAL      | 10 lines | 1 fns | 0 cls | src\domains\d_public_health\tests\test_f_d_public_health_001.py
+  [12/100] REAL      | 430 lines | 11 fns | 1 cls | crusader\certifications\energy_report.py
+  [13/100] REAL      | 41 lines | 2 fns | 0 cls | tests\test_epistemic_logic.py
+  [14/100] REAL      | 103 lines | 14 fns | 1 cls | tests\test_sal_kernel.py
+  [15/100] REAL      | 21 lines | 2 fns | 0 cls | tests\test_shader_determinism.py
+  [16/100] REAL      | 32 lines | 1 fns | 0 cls | pr46_agape_witness\invariants\forgiveness_auditable.py
+  [17/100] REAL      | 71 lines | 1 fns | 1 cls | case_studies\ml_research\cross_scale_mae.py
+  [18/100] REAL      | 68 lines | 0 fns | 0 cls | src\kernel\social\__init__.py
+  [19/100] REAL      | 543 lines | 15 fns | 6 cls | minimal_ai_ide\lora\load_lora_transformers.py
+  [20/100] REAL      | 52 lines | 2 fns | 0 cls | pr46_agape_witness\invariants\agape_completeness.py
+  [21/100] MINIMAL   | 5 lines | 0 fns | 0 cls | src\domains\d_therapeutic_pipeline\__init__.py
+  [22/100] MINIMAL   | 5 lines | 0 fns | 0 cls | src\domains\d_cognitive_science\__init__.py
+  [23/100] STUB      | 9 lines | 0 fns | 0 cls | src\domains\d_yeshua_mathematics\domain.py
+  [24/100] REAL      | 237 lines | 2 fns | 0 cls | minimal_ai_ide\final_verdict.py
+  [25/100] REAL      | 160 lines | 6 fns | 0 cls | src\domains\d_arxiv_large_language_models\invariants.py
+  [26/100] DATA-ONLY | 25 lines | 0 fns | 0 cls | pcfe_kernel\__init__.py
+  [27/100] REAL      | 441 lines | 3 fns | 1 cls | tools\loose\execute_fix_simple.py
+  [28/100] REAL      | 84 lines | 9 fns | 0 cls | src\domains\d_executive_governance\tests\test_f_d_executive_governance_001.py
+  [29/100] MINIMAL   | 5 lines | 0 fns | 0 cls | src\domains\d_construction\__init__.py
+  [30/100] EMPTY     | 2 lines | 0 fns | 0 cls | src\domains\d_mining\tests\__init__.py
+  [31/100] REAL      | 13 lines | 1 fns | 0 cls | forgiveness_system\building\build_c9f74799.py
+  [32/100] REAL      | 72 lines | 3 fns | 0 cls | pr47_stewardship\integration\pr45_verification.py
+  [33/100] REAL      | 57 lines | 0 fns | 2 cls | src\domains\d_arxiv_inv_stabilization_without_simplification\domain.py
+  [34/100] DATA-ONLY | 26 lines | 0 fns | 0 cls | src\domains\d_arxiv_factoriality\domain.py
+  [35/100] REAL      | 158 lines | 12 fns | 1 cls | scaffold\tests\test_canonicalizer.py
+  [36/100] EMPTY     | 2 lines | 0 fns | 0 cls | src\domains\d_evidence_law\tests\test_f_d_evidence_law_001.py
+  [37/100] DATA-ONLY | 26 lines | 0 fns | 0 cls | src\domains\d_arxiv_decidable_construction\domain.py
+  [38/100] REAL      | 47 lines | 1 fns | 1 cls | src\domains\d_arxiv_statml_learning_to_defer\implementation.py
+  [39/100] REAL      | 139 lines | 9 fns | 6 cls | src\domains\d_antitrust\implementation.py
+  [40/100] REAL      | 219 lines | 11 fns | 4 cls | axioms\epistemic_logic.py
+  [41/100] REAL      | 719 lines | 17 fns | 6 cls | oe-agent\executor\simple_executor.py
+  [42/100] REAL      | 10 lines | 2 fns | 1 cls | src\orthogonal_engineering\core_engine.py
+  [43/100] REAL      | 162 lines | 6 fns | 0 cls | src\domains\d_arxiv_visor_agentic_visual\invariants.py
+  [44/100] REAL      | 109 lines | 5 fns | 4 cls | src\domains\d_retail\implementation.py
+  [45/100] REAL      | 110 lines | 5 fns | 1 cls | src\domains\d_new_jerusalem\tests\test_f_new_jerusalem_001.py
+  [46/100] REAL      | 176 lines | 7 fns | 0 cls | src\domains\d_intellectual_property\invariants.py
+  [47/100] REAL      | 125 lines | 6 fns | 0 cls | tools\website\generate_data.py
+  [48/100] REAL      | 147 lines | 11 fns | 0 cls | toolkit\oe\scaffold\tests\test_hasher.py
+  [49/100] REAL      | 9 lines | 1 fns | 0 cls | src\domains\d_bluecollar\tests\test_f_d_bluecollar_001.py
+  [50/100] REAL      | 304 lines | 13 fns | 6 cls | oe_dfm\architecture.py
+  [51/100] REAL      | 9 lines | 1 fns | 0 cls | src\domains\d_media_law\tests\test_f_d_media_law_001.py
+  [52/100] REAL      | 629 lines | 5 fns | 6 cls | crusader\monitoring\witness.py
+  [53/100] REAL      | 41 lines | 0 fns | 0 cls | kernel\mmu\__init__.py
+  [54/100] MINIMAL   | 5 lines | 0 fns | 0 cls | src\domains\d_water\__init__.py
+  [55/100] REAL      | 120 lines | 1 fns | 0 cls | tools\loose\generate_perceivable_infinity.py
+  [56/100] REAL      | 159 lines | 5 fns | 0 cls | tools\render_agnostic\render\gpu_accelerated.py
+  [57/100] REAL      | 278 lines | 7 fns | 0 cls | minimal_ai_ide\show_stage4_working.py
+  [58/100] REAL      | 439 lines | 5 fns | 0 cls | minimal_ai_ide\test_trained_model.py
+  [59/100] REAL      | 136 lines | 14 fns | 0 cls | src\domains\d_arxiv_inv_tractability_frontier\tests\test_f_d_arxiv_inv_tractability_frontier_001.py
+  [60/100] REAL      | 520 lines | 19 fns | 6 cls | toolkit\oe\ide_ai_integration.py
+  [61/100] REAL      | 312 lines | 17 fns | 3 cls | canonicalization_scaffold\tests\test_merkle.py
+  [62/100] EMPTY     | 2 lines | 0 fns | 0 cls | src\domains\d_arxiv_inv_stabilization_without_simplification\__init__.py
+  [63/100] REAL      | 66 lines | 1 fns | 0 cls | tests\test_f_labor_003.py
+  [64/100] REAL      | 177 lines | 7 fns | 0 cls | tests\test_f_minecraft_004.py
+  [65/100] REAL      | 487 lines | 8 fns | 1 cls | tools\loose\run_comprehensive_fix.py
+  [66/100] REAL      | 6 lines | 1 fns | 0 cls | src\domains\d_game_engine_development\tests\test_f_d_game_engine_development_001.py
+  [67/100] REAL      | 9 lines | 1 fns | 0 cls | src\domains\d_ai_ontological_status\tests\test_f_d_ai_ontological_status_001.py
+  [68/100] REAL      | 514 lines | 4 fns | 0 cls | minimal_ai_ide\test_phase0_components.py
+  [69/100] REAL      | 19 lines | 2 fns | 0 cls | tests\test_f_industrial_002.py
+  [70/100] REAL      | 294 lines | 9 fns | 4 cls | src\creative_systems\semantics\etymology_tracer.py
+  [71/100] REAL      | 130 lines | 4 fns | 8 cls | src\domains\d_boring\implementation.py
+  [72/100] EMPTY     | 1 lines | 0 fns | 0 cls | src\domains\d_arxiv_seeing_is_believing\tests\__init__.py
+  [73/100] REAL      | 59 lines | 0 fns | 0 cls | tools\loose\canal_detector.py
+  [74/100] MINIMAL   | 3 lines | 0 fns | 0 cls | src\domains\d_securities_law\__init__.py
+  [75/100] REAL      | 161 lines | 6 fns | 0 cls | src\domains\d_arxiv_objective_linear_algebra\invariants.py
+  [76/100] REAL      | 80 lines | 0 fns | 0 cls | src\patterns\__init__.py
+  [77/100] REAL      | 226 lines | 7 fns | 7 cls | src\domains\d_graphics_reality\implementation.py
+  [78/100] REAL      | 223 lines | 6 fns | 0 cls | audit\forensic_commit.py
+  [79/100] REAL      | 123 lines | 9 fns | 2 cls | src\patterns\joseph_storage.py
+  [80/100] REAL      | 197 lines | 6 fns | 0 cls | src\domains\d_physics\invariants.py
+  [81/100] REAL      | 36 lines | 0 fns | 0 cls | kernel\social\__init__.py
+  [82/100] MINIMAL   | 3 lines | 0 fns | 0 cls | core\tests\__init__.py
+  [83/100] REAL      | 122 lines | 1 fns | 0 cls | GptAudit\test_parse.py
+  [84/100] REAL      | 127 lines | 3 fns | 8 cls | src\domains\d_axioms\implementation.py
+  [85/100] REAL      | 124 lines | 6 fns | 4 cls | src\domains\d_restorative_justice\implementation.py
+  [86/100] REAL      | 67 lines | 0 fns | 4 cls | src\domains\d_fbi_training\implementation.py
+  [87/100] REAL      | 6 lines | 1 fns | 0 cls | src\domains\d_open_source_governance\tests\test_f_d_open_source_governance_001.py
+  [88/100] REAL      | 334 lines | 11 fns | 5 cls | src\hardware\photonic\thermal.py
+  [89/100] REAL      | 149 lines | 6 fns | 2 cls | axioms\cryptographic_verification.py
+  [90/100] INIT      | 5 lines | 0 fns | 0 cls | src\domains\d_medical\__init__.py
+  [91/100] REAL      | 9 lines | 1 fns | 0 cls | src\domains\d_necessity\tests\test_f_d_necessity_001.py
+  [92/100] DATA-ONLY | 18 lines | 0 fns | 0 cls | src\domains\d_hvac\domain.py
+  [93/100] EMPTY     | 2 lines | 0 fns | 0 cls | src\domains\d_cross_model_benchmarks\tests\__init__.py
+  [94/100] REAL      | 251 lines | 16 fns | 11 cls | src\domains\d_gaming\implementation.py
+  [95/100] REAL      | 86 lines | 3 fns | 1 cls | src\software\functional\tests\test_functional.py
+  [96/100] REAL      | 752 lines | 38 fns | 9 cls | minimal_ai_ide\ortho_kernel.py
+  [97/100] REAL      | 950 lines | 57 fns | 7 cls | crusader\core\utils\time_utils.py
+  [98/100] REAL      | 290 lines | 21 fns | 0 cls | tests\test_pr62_topology_sanity.py
+  [99/100] EMPTY     | 1 lines | 0 fns | 0 cls | src\domains\d_arxiv_quantum_randomized_subspace\tests\__init__.py
+  [100/100] REAL      | 9 lines | 1 fns | 0 cls | src\domains\d_mining\tests\test_f_d_mining_001.py
+
+Audit complete. Report: yeshua_auto_audit.json
+Summary: 80 REAL | 1 STUB | 6 EMPTY | 7 MINIMAL | 1 INIT | 5 DATA-ONLY
+
+Yeshua> generate 500
+Generating 500 training examples per category from repo files...
+
+Generated 1767 training examples:
+  VERIFIED: 500
+  DECEPTION: 500
+  ANALYSIS: 500
+  STUB_DETECTION: 267
+Saved to: yeshua_training_v2.jsonl
+
+Yeshua> batch-fix 1000
+  [1] FIXED pr47_stewardship\witness\removal_witness.py (2 fix(es))
+  [2] FIXED src\hardware\photonic\matrix_computation.py (3 fix(es))
+  [3] FIXED src\domains\d_economic_mobility\tests\__init__.py (1 fix(es))
+  [4] FIXED src\domains\d_tax_law\implementation.py (1 fix(es))
+  [5] FIXED crusader\certifications\submissions\doe_10cfr429\energy_report.py (1 fix(es))
+  [6] FIXED src\domains\d_sociology\tests\__init__.py (1 fix(es))
+  [7] FIXED forgiveness_system\building\build_c9012c0a.py (2 fix(es))
+  [8] FIXED minimal_ai_ide\GRADUATE_MATHEMATICS_THEOLOGY_2_0.py (1 fix(es))
+  [9] FIXED src\hardware\photonic\environmental.py (6 fix(es))
+  [10] FIXED forgiveness_system\building\build_8b3c56a1.py (2 fix(es))
+  [11] FIXED pr46_agape_witness\util\__init__.py (1 fix(es))
+  [12] FIXED minimal_ai_ide\v59_complete_oracle.py (2 fix(es))
+  [13] FIXED forgiveness_system\building\build_527d066e.py (2 fix(es))
+  [14] FIXED tests\test_f_platform_002.py (1 fix(es))
+  [15] FIXED forgiveness_system\building\build_3386702d.py (2 fix(es))
+  [16] FIXED tests\test_sal_kernel.py (3 fix(es))
+  [17] FIXED src\domains\d_digital_governance\tests\__init__.py (1 fix(es))
+  [18] FIXED forgiveness_system\building\build_b650b0c5.py (2 fix(es))
+  [19] FIXED kernel\mmu\cow.py (1 fix(es))
+  [20] FIXED src\domains\d_arxiv_inv_ghost_imaging_zero_photons\invariants.py (3 fix(es))
+  [21] FIXED src\domains\d_ai_ontological_status\tests\__init__.py (1 fix(es))
+  [22] FIXED forgiveness_system\building\build_72e099bb.py (2 fix(es))
+  [23] FIXED patch_retrain_fix.py (1 fix(es))
+  [24] FIXED GptAudit\test_parse.py (1 fix(es))
+  [25] FIXED pr46_agape_witness\integration\pr40_witness_extension.py (1 fix(es))
+  [26] FIXED src\domains\d_database_systems\tests\test_f_d_database_systems_001.py (1 fix(es))
+  [27] FIXED src\domains\d_international_humanitarian\tests\__init__.py (1 fix(es))
+  [28] FIXED forgiveness_system\building\build_94f1941e.py (2 fix(es))
+  [29] FIXED minimal_ai_ide\test_tool.py (1 fix(es))
+  [30] FIXED scripts\demo_ai_agent_interaction.py (1 fix(es))
+  [31] FIXED orchestration\extended_chunker.py (1 fix(es))
+  [32] FIXED tests\__init__.py (1 fix(es))
+  [33] FIXED src\domains\d_arxiv_enriched_coalgebra\tests\__init__.py (1 fix(es))
+  [34] FIXED tests\test_axioms.py (1 fix(es))
+  [35] FIXED forgiveness_system\building\build_96803d3e.py (2 fix(es))
+  [36] FIXED tools\ray_tracing\transport\radiance_cache.py (3 fix(es))
+  [37] FIXED finality\finality_publisher.py (1 fix(es))
+  [38] FIXED src\domains\d_restorative_justice\tests\__init__.py (1 fix(es))
+  [39] FIXED pr46_agape_witness\integration\pr45_bridge.py (1 fix(es))
+  [40] FIXED tools\ray_tracing\geometry\intersect.py (7 fix(es))
+  [41] FIXED forgiveness_system\building\build_9a6c7763.py (2 fix(es))
+  [42] FIXED forgiveness_system\building\build_42538860.py (2 fix(es))
+  [43] FIXED forgiveness_system\building\build_a049b6f6.py (2 fix(es))
+  [44] FIXED src\domains\d_un_charter\implementation.py (2 fix(es))
+  [45] FIXED forgiveness_system\building\build_d1408741.py (2 fix(es))
+  [46] FIXED minimal_ai_ide\canonical_mathematical_theology.py (1 fix(es))
+  [47] FIXED src\domains\d_paraconsistent_logic\tests\__init__.py (1 fix(es))
+  [48] FIXED tools\loose\input_guard.py (1 fix(es))
+  [49] FIXED src\domains\d_arxiv_block_encoding_dog\invariants.py (4 fix(es))
+  [50] FIXED src\domains\d_dyadic_acceleration\invariants.py (7 fix(es))
+  [51] FIXED tools\ray_tracing\samplers\halton.py (1 fix(es))
+  [52] FIXED src\patterns\pattern_anti_nominalism.py (2 fix(es))
+  [53] FIXED src\domains\d_graphics\tests\__init__.py (1 fix(es))
+  [54] FIXED src\hardware\photonic\manufacturing.py (6 fix(es))
+  [55] FIXED src\domains\d_paraconsistent_logic\implementation.py (3 fix(es))
+  [56] FIXED src\noways\tests\__init__.py (1 fix(es))
+  [57] FIXED forgiveness_system\building\build_ba88fe98.py (2 fix(es))
+  [58] FIXED forgiveness_system\building\build_282cd460.py (2 fix(es))
+  [59] FIXED minimal_ai_ide\test_tool_protocol.py (1 fix(es))
+  [60] FIXED forgiveness_system\building\build_7ddeab60.py (2 fix(es))
+  [61] FIXED src\domains\d_economic_mobility\implementation.py (3 fix(es))
+  [62] FIXED src\patterns\pattern_bounded_power.py (2 fix(es))
+  [63] FIXED pr46_agape_witness\reconciliation\state_mediation.py (1 fix(es))
+  [64] FIXED forgiveness_system\building\build_b348a693.py (2 fix(es))
+  [65] FIXED minimal_ai_ide\forwardable_latex_message.py (2 fix(es))
+  [66] FIXED forgiveness_system\building\build_b29440df.py (2 fix(es))
+  [67] FIXED src\domains\d_occupational_safety\tests\__init__.py (1 fix(es))
+  [68] FIXED pr46_agape_witness\forgiveness\provenance_preservation.py (1 fix(es))
+  [69] FIXED src\domains\d_licensing\tests\__init__.py (1 fix(es))
+  [70] FIXED src\sal\domain_morphism_registry.py (3 fix(es))
+  [71] FIXED forgiveness_system\building\build_18ced7d5.py (2 fix(es))
+  [72] FIXED forgiveness_system\building\build_28bebb52.py (2 fix(es))
+  [73] FIXED tests\test_pr50_bar_exam.py (3 fix(es))
+  [74] FIXED oe-agent\__init__.py (1 fix(es))
+  [75] FIXED src\domains\d_websec\__init__.py (1 fix(es))
+  [76] FIXED src\patterns\pattern_equity_threshold.py (1 fix(es))
+  [77] FIXED src\domains\d_biotech\tests\__init__.py (1 fix(es))
+  [78] FIXED pr44_orthogonal_meta\impossibility\hype_nullification.py (2 fix(es))
+  [79] FIXED src\domains\d_intellectual_property\implementation.py (2 fix(es))
+  [80] FIXED src\domains\d_jepa_world_model\implementation.py (4 fix(es))
+  [81] FIXED src\domains\d_phenomenology\tests\__init__.py (1 fix(es))
+  [82] FIXED forgiveness_system\building\build_988715ba.py (2 fix(es))
+  [83] FIXED src\domains\d_arxiv_linearizable_registers\tests\__init__.py (1 fix(es))
+  [84] FIXED forgiveness_system\building\build_9594823e.py (2 fix(es))
+  [85] FIXED pr44_orthogonal_meta\verification\__init__.py (1 fix(es))
+  [86] FIXED tests\test_warden_units.py (1 fix(es))
+  [87] FIXED src\domains\d_peano_ext\implementation.py (3 fix(es))
+  [88] FIXED src\domains\d_police_procedure\implementation.py (3 fix(es))
+  [89] FIXED forgiveness_system\building\build_99e66a1b.py (2 fix(es))
+  [90] FIXED src\domains\d_arxiv_rays_as_pixels\tests\__init__.py (1 fix(es))
+  [91] FIXED src\domains\d_combinatorics\tests\__init__.py (1 fix(es))
+  [92] FIXED forgiveness_system\building\build_877b001c.py (2 fix(es))
+  [93] FIXED src\patterns\pattern_vulnerability_protection.py (2 fix(es))
+  [94] FIXED tests\test_f_hospitality_001.py (1 fix(es))
+  [95] FIXED src\domains\d_pattern_recognition\tests\__init__.py (1 fix(es))
+  [96] FIXED src\domains\d_number_theory\tests\__init__.py (1 fix(es))
+  [97] FIXED tests\test_health_check_integration_local.py (2 fix(es))
+  [98] FIXED src\domains\d_arxiv_factoriality\tests\__init__.py (1 fix(es))
+  [99] FIXED forgiveness_system\building\build_fa98630d.py (2 fix(es))
+  [100] FIXED analysis\simple_recovery_summary.py (1 fix(es))
+  [101] FIXED pr44_orthogonal_meta\domain_models\military\__init__.py (1 fix(es))
+  [102] FIXED tools\loose\monitor_pipeline.py (1 fix(es))
+  [103] FIXED src\domains\d_international_criminal\tests\__init__.py (1 fix(es))
+  [104] FIXED src\domains\d_telecommunications_law\implementation.py (1 fix(es))
+  [105] FIXED pr44_orthogonal_meta\domain_models\video_games\deterministic_engine.py (3 fix(es))
+  [106] FIXED minimal_ai_ide\five_frameworks\framework4\covenant_enforcement.py (1 fix(es))
+  [107] FIXED topology\graph_loader.py (1 fix(es))
+  [108] FIXED src\patterns\manna_constraint.py (1 fix(es))
+  [109] FIXED toolkit\oe\cli.py (1 fix(es))
+  [110] FIXED src\domains\d_websec\implementation.py (4 fix(es))
+  [111] FIXED tests\test_etl_idempotency.py (1 fix(es))
+  [112] FIXED pr46_agape_witness\reconciliation\fork_healing.py (1 fix(es))
+  [113] FIXED src\domains\d_arxiv_inv_sharp_local_minima\tests\__init__.py (1 fix(es))
+  [114] FIXED src\domains\d_open_source_governance\implementation.py (1 fix(es))
+  [115] FIXED tests\test_runtime_execution_schema.py (1 fix(es))
+  [116] FIXED IA-CYPHER\schema\evidence_store.py (3 fix(es))
+  [117] FIXED crusader\core\utils\hash_utils.py (3 fix(es))
+  [118] FIXED src\domains\d_arxiv_statml_conformal_prediction\tests\__init__.py (1 fix(es))
+  [119] FIXED pr50_bar_exam\ordination\certificate.py (1 fix(es))
+  [120] FIXED minimal_ai_ide\five_frameworks\framework2\christlikeness_measure.py (1 fix(es))
+  [121] FIXED analysis\analyze_deepseek.py (1 fix(es))
+  [122] FIXED src\domains\d_licensing\implementation.py (1 fix(es))
+  [123] FIXED src\domains\d_deterministic_probability\invariants.py (1 fix(es))
+  [124] FIXED src\domains\d_arxiv_statml_transport_maps\tests\__init__.py (1 fix(es))
+  [125] FIXED pr50_bar_exam\revocation\authority.py (2 fix(es))
+  [126] FIXED pr50_bar_exam\candidate\keypair.py (1 fix(es))
+  [127] FIXED forgiveness_system\building\build_89a0bf5d.py (2 fix(es))
+  [128] FIXED forgiveness_system\building\build_325fe6c1.py (2 fix(es))
+  [129] FIXED src\domains\d_real_estate\tests\__init__.py (1 fix(es))
+  [130] FIXED minimal_ai_ide\setup_v57.py (4 fix(es))
+  [131] FIXED pr46_agape_witness\grace\progress_trajectory.py (2 fix(es))
+  [132] FIXED src\sal\topos_subobject_classifier.py (1 fix(es))
+  [133] FIXED src\domains\d_rail\implementation.py (3 fix(es))
+  [134] FIXED tests\test_f_platform_004.py (1 fix(es))
+  [135] FIXED forgiveness_system\building\build_3eab586b.py (2 fix(es))
+  [136] FIXED src\domains\d_software_testing\implementation.py (2 fix(es))
+  [137] FIXED src\domains\d_statistics\tests\__init__.py (1 fix(es))
+  [138] FIXED tests\test_pr46_agape_witness.py (2 fix(es))
+  [139] FIXED src\domains\d_secular_projection\invariants.py (6 fix(es))
+  [140] FIXED src\layers\inter_layer_morphism.py (2 fix(es))
+  [141] FIXED analysis\demo_recovery_fixes.py (1 fix(es))
+  [142] FIXED forgiveness_system\building\build_6af50f20.py (2 fix(es))
+  [143] FIXED downloads\controller_proven.py (3 fix(es))
+  [144] FIXED kernel\agent_stream.py (1 fix(es))
+  [145] FIXED tools\loose\correspondence_validator.py (1 fix(es))
+  [146] FIXED src\domains\d_robotics\__init__.py (1 fix(es))
+  [147] FIXED forgiveness_system\building\build_ab2ef995.py (2 fix(es))
+  [148] FIXED minimal_ai_ide\v60_constraint_transformation_demo.py (1 fix(es))
+  [149] FIXED src\domains\d_medical\__init__.py (1 fix(es))
+  [150] FIXED src\domains\d_game_theory\tests\__init__.py (1 fix(es))
+  [151] FIXED minimal_ai_ide\6a.py (1 fix(es))
+  [152] FIXED forgiveness_system\building\build_61291e03.py (2 fix(es))
+  [153] FIXED forgiveness_system\building\build_f1c9134c.py (2 fix(es))
+  [154] FIXED forgiveness_system\building\build_accd05e4.py (2 fix(es))
+  [155] FIXED pr44_orthogonal_meta\domain_models\self_driving\constraint_fsd.py (1 fix(es))
+  [156] FIXED src\domains\d_child_welfare\tests\__init__.py (1 fix(es))
+  [157] FIXED pr44_orthogonal_meta\domain_models\__init__.py (1 fix(es))
+  [158] FIXED mcp\orthogonal_mcp_server.py (1 fix(es))
+  [159] FIXED tests\test_f_platform_003.py (1 fix(es))
+  [160] FIXED src\hardware\photonic\merkle\photonic_inclusion_proof.py (2 fix(es))
+  [161] FIXED src\domains\d_architecture_design\tests\__init__.py (1 fix(es))
+  [162] FIXED src\domains\d_school_funding\implementation.py (1 fix(es))
+  [163] FIXED case_studies\youtuber_audits\framework.py (3 fix(es))
+  [164] FIXED pr50_bar_exam\scoring\consistency.py (1 fix(es))
+  [165] FIXED src\domains\d_minecraft_spatial\implementation.py (3 fix(es))
+  [166] FIXED forgiveness_system\building\build_73275661.py (2 fix(es))
+  [167] FIXED src\domains\d_civil_law\implementation.py (1 fix(es))
+  [168] FIXED src\domains\d_arxiv_quantum_randomized_subspace\invariants.py(4 fix(es))
+  [169] FIXED src\orthogonal_engineering\validation.py (1 fix(es))
+  [170] FIXED forgiveness_system\building\build_502c35fb.py (2 fix(es))
+  [171] FIXED src\domains\d_dyadic_acceleration\implementation.py (4 fix(es))
+  [172] FIXED src\domains\d_mining\implementation.py (3 fix(es))
+  [173] FIXED src\sal\forcing_operation.py (2 fix(es))
+  [174] FIXED src\sal\sigma_theo_factoring.py (1 fix(es))
+  [175] FIXED src\domains\d_hospitality\tests\__init__.py (1 fix(es))
+  [176] FIXED src\orthogonal_engineering\validate_input.py (2 fix(es))
+  [177] FIXED kernel\bridge\crusader_bridge.py (1 fix(es))
+  [178] FIXED src\orthogonal_engineering\output_validator.py (1 fix(es))
+  [179] FIXED src\domains\d_guardian\invariants.py (2 fix(es))
+  [180] FIXED analysis\extract_deepseek_v2.py (1 fix(es))
+  [181] FIXED pr44_orthogonal_meta\domain_models\ai\deterministic_training.py (1 fix(es))
+  [182] FIXED forgiveness_system\building\build_58b4ad0e.py (2 fix(es))
+  [183] FIXED pr43\impossibility\vendor_lock.py (1 fix(es))
+  [184] FIXED tools\loose\system_audit_update.py (1 fix(es))
+  [185] FIXED src\noways\tests\test_impossibility_proofs.py (1 fix(es))
+  [186] FIXED src\domains\d_arxiv_objective_linear_algebra\tests\__init__.py (1 fix(es))
+  [187] FIXED src\domains\d_zoning\tests\__init__.py (1 fix(es))
+  [188] FIXED forgiveness_system\building\build_02a64e89.py (2 fix(es))
+  [189] FIXED pr45_uvdtl\foundations\arithmetic_domain.py (5 fix(es))
+  [190] FIXED src\domains\d_maritime\tests\__init__.py (1 fix(es))
+  [191] FIXED src\domains\d_child_welfare\implementation.py (6 fix(es))
+  [192] FIXED src\domains\d_arxiv_differential_privacy\tests\__init__.py (1fix(es))
+  [193] FIXED pr47_stewardship\invariants\forkable_remembrance.py (1 fix(es))
+  [194] FIXED forgiveness_system\building\build_878185c5.py (2 fix(es))
+  [195] FIXED src\domains\d_military\tests\__init__.py (1 fix(es))
+  [196] FIXED forgiveness_system\building\build_a64757ab.py (2 fix(es))
+  [197] FIXED src\domains\d_arxiv_risk_management_bowtie\invariants.py (4 fix(es))
+  [198] FIXED src\domains\d_aerospace\implementation.py (2 fix(es))
+  [199] FIXED forgiveness_system\building\build_e4868e86.py (2 fix(es))
+  [200] FIXED minimal_ai_ide\implement_three_frameworks.py (5 fix(es))
+  [201] FIXED pr46_agape_witness\invariants\agape_completeness.py (1 fix(es))
+  [202] FIXED src\domains\d_topology\tests\__init__.py (1 fix(es))
+  [203] FIXED topology\topology_scanner.py (1 fix(es))
+  [204] FIXED src\domains\d_category_theory\tests\__init__.py (1 fix(es))
+  [205] FIXED src\domains\d_arxiv_deontic_stit\tests\__init__.py (1 fix(es))
+  [206] FIXED minimal_ai_ide\test_ai_tool_usage.py (1 fix(es))
+  [207] FIXED forgiveness_system\building\build_dde70a43.py (2 fix(es))
+  [208] FIXED forgiveness_system\building\build_506663a9.py (2 fix(es))
+  [209] FIXED pr46_agape_witness\invariants\__init__.py (1 fix(es))
+  [210] FIXED src\domains\d_pharma\tests\__init__.py (1 fix(es))
+  [211] FIXED src\domains\d_graphics\implementation.py (2 fix(es))
+  [212] FIXED src\domains\d_database_systems\implementation.py (1 fix(es))
+  [213] FIXED src\patterns\jubilee_reset.py (1 fix(es))
+  [214] FIXED pr44_orthogonal_meta\foundations\type_theory.py (3 fix(es))
+  [215] FIXED tools\loose\validate_input.py (1 fix(es))
+  [216] FIXED minimal_ai_ide\test_logos_proxy.py (1 fix(es))
+  [217] FIXED minimal_ai_ide\canonical_workflow_demo.py (1 fix(es))
+  [218] FIXED tools\correction_log.py (1 fix(es))
+  [219] FIXED minimal_ai_ide\GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py (3 fix(es))
+  [220] FIXED pr44_orthogonal_meta\domain_models\self_driving\__init__.py (1 fix(es))
+  [221] FIXED forgiveness_system\building\build_c19fd972.py (2 fix(es))
+  [222] FIXED tools\loose\system_analyzer_agent.py (1 fix(es))
+  [223] FIXED oe-agent\executor\executor.py (1 fix(es))
+  [224] FIXED tools\onboard_agent.py (1 fix(es))
+  [225] FIXED pr44_orthogonal_meta\foundations\boolean_kernel.py (7 fix(es))
+  [226] FIXED src\domains\d_military\implementation.py (3 fix(es))
+  [227] FIXED src\domains\d_communications\implementation.py (4 fix(es))
+  [228] FIXED src\domains\d_legal\__init__.py (1 fix(es))
+  [229] FIXED src\domains\d_arxiv_inv_sharp_local_minima\invariants.py (3 fix(es))
+  [230] FIXED src\domains\d_mining\tests\__init__.py (1 fix(es))
+  [231] FIXED src\domains\d_arxiv_ramsey_arithmetic\tests\__init__.py (1 fix(es))
+  [232] FIXED pr46_agape_witness\law\compliance_registry.py (2 fix(es))
+  [233] FIXED pr46_agape_witness\grace\partial_compliance.py (1 fix(es))
+  [234] FIXED tools\loose\output_validator.py (1 fix(es))
+  [235] FIXED forgiveness_system\building\build_cbe6387a.py (2 fix(es))
+  [236] FIXED src\domains\d_game_theory\__init__.py (1 fix(es))
+
+Batch fix complete:
+  Files scanned: 1000
+  Files fixed: 236
+  Total fixes applied: 415
+  Files needing manual work: 172
+  Manual issues remaining: 238
+  Report: yeshua_batch_fix_report.json
+
+Yeshua> generate 500
+Generating 500 training examples per category from repo files...
+
+Generated 1765 training examples:
+  VERIFIED: 500
+  DECEPTION: 500
+  ANALYSIS: 500
+  STUB_DETECTION: 265
+Saved to: yeshua_training_v2.jsonl
+
+Yeshua>
