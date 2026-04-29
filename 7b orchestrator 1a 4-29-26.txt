@@ -1,0 +1,129 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Install the latest PowerShell for new features and improvements! https://aka.ms/PSWindows
+
+PS C:\Users\Aidor> ollama list
+NAME                         ID              SIZE      MODIFIED
+qwen2.5:7b                   845dbda0ea48    4.7 GB    3 months ago
+codellama:7b                 8fdf8f752f6e    3.8 GB    3 months ago
+mistral:7b                   6577803aa9a0    4.4 GB    3 months ago
+CLAUDE:latest                ff2be8942ee3    4.1 GB    5 months ago
+LOGOS:latest                 c8bea0e54356    4.1 GB    5 months ago
+dolphin-mistral:latest       5dc8c5a2be65    4.1 GB    5 months ago
+logos-kernel-v2:latest       e45fbc9b10f7    4.7 GB    5 months ago
+llama3.1:8b-instruct-q4_0    42182419e950    4.7 GB    5 months ago
+llama3.1:8b                  46e0c10c039e    4.9 GB    5 months ago
+llama3.2:latest              a80c4f17acd5    2.0 GB    5 months ago
+qwen2.5-coder:7b             dae161e27b0e    4.7 GB    5 months ago
+gemma3:1b                    8648f39daa8f    815 MB    5 months ago
+qwen3:4b                     359d7dd4bcda    2.5 GB    5 months ago
+llama3:8b                    365c0bd3c000    4.7 GB    5 months ago
+logos-kernel:latest          1d225902cf87    4.7 GB    5 months ago
+PS C:\Users\Aidor> ollama pull qwen2.5:7b
+pulling manifest
+pulling 2bada8a74506: 100% ▕██████████████████████████████████████████████████████████▏ 4.7 GB
+pulling 66b9ea09bd5b: 100% ▕██████████████████████████████████████████████████████████▏   68 B
+pulling eb4402837c78: 100% ▕██████████████████████████████████████████████████████████▏ 1.5 KB
+pulling 832dd9e00a68: 100% ▕██████████████████████████████████████████████████████████▏  11 KB
+pulling 2f15b3218f05: 100% ▕██████████████████████████████████████████████████████████▏  487 B
+verifying sha256 digest
+writing manifest
+success
+PS C:\Users\Aidor> ollama run qwen2.5:7b "What is orthogonal engineering?"
+Orthogonal engineering is not a widely recognized term in the context of engineering or software development as it
+might be used more commonly in other fields such as computer science and mathematics. However, based on some
+interpretations and contexts, I can provide an explanation that may align with what you're looking for.
+
+1. **Software Engineering**: In software engineering, "orthogonal" generally means that a system's components or
+features are independent of each other—changes to one component do not affect another. This concept is crucial in
+ensuring robust, maintainable, and scalable systems. An orthogonal design ensures that different parts of the
+software can be developed, tested, and modified independently without affecting other parts.
+
+2. **Computer Science**: In computer science, particularly in architecture and system design, orthogonality refers
+to designing a system where operations or features are independent of each other, meaning changes to one feature
+do not necessitate changes elsewhere. This principle is used to enhance flexibility and modularity in designs.
+
+3. **Mathematics and Physics**: Orthogonality in these fields often refers to the concept of perpendicularity or
+independence in vector spaces. It's a fundamental idea that can be applied metaphorically in engineering contexts,
+especially when discussing design principles and system integration.
+
+4. **Manufacturing and Product Design**: In this context, orthogonal engineering could refer to designing products
+where different components function independently but work seamlessly together, ensuring that changes in one area
+don’t affect others. This is crucial for maintaining flexibility and improving the overall quality of a product or
+system.
+
+If "orthogonal engineering" refers to something specific within a particular industry or organization, it would be
+helpful to have more context about its application. Please provide additional information if you need a more
+precise definition!
+
+PS C:\Users\Aidor> cd C:\Users\Aidor\oe-local
+PS C:\Users\Aidor\oe-local> C:\Users\Aidor\oe-train\Scripts\Activate.ps1
+(oe-train) PS C:\Users\Aidor\oe-local> pip install requests
+Requirement already satisfied: requests in c:\users\aidor\oe-train\lib\site-packages (2.32.5)
+Requirement already satisfied: charset_normalizer<4,>=2 in c:\users\aidor\oe-train\lib\site-packages (from requests) (3.4.7)
+Requirement already satisfied: urllib3<3,>=1.21.1 in c:\users\aidor\oe-train\lib\site-packages (from requests) (2.6.3)
+Requirement already satisfied: certifi>=2017.4.17 in c:\users\aidor\oe-train\lib\site-packages (from requests) (2026.4.22)
+Requirement already satisfied: idna<4,>=2.5 in c:\users\aidor\oe-train\lib\site-packages (from requests) (3.13)
+WARNING: You are using pip version 22.0.4; however, version 26.0.1 is available.
+You should consider upgrading via the 'C:\Users\Aidor\oe-train\Scripts\python.exe -m pip install --upgrade pip' command.
+(oe-train) PS C:\Users\Aidor\oe-local> notepad oe_ask.py
+(oe-train) PS C:\Users\Aidor\oe-local> python oe_ask.py
+
+OE Ask - Local 7B Orchestrator
+Model: qwen2.5:7b via Ollama
+Type 'exit' to quit.
+
+OE> What is orthogonal engineering?
+Searching repo and thinking...
+Orthogonal Engineering is a methodology that involves accepting the constraints imposed by Large Language Models (LLMs) rather than fighting against them. The core insight of this approach is to work within these constraints effectively and efficiently. This can be understood through several key components:
+
+1. **The Crisis**: This refers to an earlier phase where issues like high false positive rates in tools, divergent tooling claims, and the importance of minimal surviving kernel strategies were identified. For example, a canal refiner had a 70% false positive rate and there was a fatal flaw in the tooling-claim divergence.
+
+2. **The Rebuild**: This phase involves a strategy to rebuild from a minimal surviving kernel. The steps include freezing what works, stripping away broken tools, and precisely rebuilding with a focus on high precision detectors like Gutenberg null tests which aim for 0.00% gaming.
+
+3. **The Invariants (INV-001 through INV-008)**: These are critical invariants that must be maintained or observed to ensure the integrity of the system. They include mathematical measurability, detectable constraint language, distinguishability between mimicry and grounding, self-falsifying systems, repetition detection, window-based insufficiency, a correspondence anchor (the key invariant), and tool resilience requirements.
+
+The methodology emphasizes rigorous testing and validation through mechanisms like the Gutenberg null test to ensure that the system is not being gamedor manipulated.
+
+OE> The user has finished batch-fix 1000 and generate 500. They want to retrain the model to create v8. What exact commands should they type, in what order, and what files need to be edited afterward?
+Searching repo and thinking...
+Based on the provided context from the Orthogonal Engineering repository, there isn't enough information to provide exact commands for retraining the model to create version 8 after batch-fixing 1000 and generating 500. The logs and reports don't contain details about the specific steps or files involved in model retraining.
+
+To retrain a model like `trained_distilgpt2`, you would typically need to:
+
+1. **Prepare the Data**: Ensure that your new data (after batch-fixing and generating) is correctly formatted and ready for training.
+2. **Update Configuration Files**: Modify configuration files such as hyperparameters, learning rate, etc., if necessary.
+3. **Retrain the Model**: Use a command to start the retraining process with the updated configurations.
+
+Here's an example of what these steps might look like in practice:
+
+### Step 1: Prepare Data
+- Ensure your data is cleaned and ready for training. This step isn't covered by the provided context, so you'll need to do this manually based on yourproject requirements.
+
+### Step 2: Update Configuration Files
+- Open a configuration file (e.g., `config.json`) that contains parameters like batch size, learning rate, number of epochs, etc.
+- Make necessary changes to these settings if required for v8. For instance:
+  ```json
+  {
+    "batch_size": 32,
+    "learning_rate": 5e-5,
+    "num_train_epochs": 10,
+    "save_steps": 1000,
+    "output_dir": "./trained_distilgpt2_v8"
+  }
+  ```
+
+### Step 3: Retrain the Model
+Assuming you have a script or command for retraining, it might look something like this:
+```sh
+python train.py --config config.json
+```
+
+### Additional Steps Post-Retraining
+- **Evaluate the New Model**: Use evaluation scripts to test the new model.
+- **Update Tokenizer and Other Files**: If necessary, update tokenizer files or other related files based on changes made during retraining.
+
+Since the exact commands and steps are not provided in your context, you should refer to the repository's documentation or any existing training scripts for precise instructions.
+
+OE>
