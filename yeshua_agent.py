@@ -9,7 +9,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel  
   
 class YeshuaAgent:  
-    def __init__(self, repo_root=r"C:\Users\Aidor\oe-local"):  
+    def __init__(self, repo_root=r"/home/idor/oe-local"):  
         self.repo_root = repo_root  
         self.history = []  
         print("Loading TinyLlama v7 on CUDA...")  

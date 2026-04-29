@@ -606,7 +606,7 @@ def run_training(
             model=model,
             args=training_args,
             train_dataset=train_dataset,
-            tokenizer=tokenizer,
+            processing_class=tokenizer,
         )
         print("✅ Training configured")
     except Exception as e:
