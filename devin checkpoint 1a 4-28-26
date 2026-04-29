@@ -1,0 +1,27 @@
+devin ai: "The batch-fix runs only take minutes, not hours — you can stack more of those while gaming. The retrain is the only 5+ hour operation. Here's what's productive before the next retrain:
+
+**Things you can leave running (minutes, not hours):**
+
+1. **More `batch-fix` runs** — you've scanned ~1,050 of ~3,362 `.py` files. Run `batch-fix 1000` or even two more `batch-fix 500` rounds. Each takes ~10-20 minutes, not hours. The auto pusher handles the commits. More fixed files = better training data when you eventually retrain v8.
+
+2. **`generate 500` after the batch-fixes** — run this LAST, right before you're done for the night, so the training examples reflect the most-fixed version of the codebase. (Only need to run it once since it overwrites `yeshua_training_v2.jsonl`.)
+
+**Quick things (1-2 minutes each):**
+
+3. **`read yeshua_batch_fix_report.json`** — see what the 83 manual-issue files actually need. Some might be trivial to fix by hand.
+
+4. **`status`** — check GPU/memory state, make sure nothing's leaking.
+
+5. **`scan`** — get current repo file counts.
+
+**Suggested sequence before gaming:**
+
+```
+batch-fix 1000
+generate 500
+exit
+```
+
+That's ~15-20 minutes of batch-fixing (will probably fix another ~200 files), then a fresh generate, then you're done. The auto pusher commits everything. When you come back to retrain, the codebase will be in better shape and the training data will reflect it.
+
+Or if you want to game NOW — just type `exit`. Everything from today's session (309 files fixed, 563 fixes applied, repo health 74% → 80% REAL) is already committed and pushed. The retrain can wait."
