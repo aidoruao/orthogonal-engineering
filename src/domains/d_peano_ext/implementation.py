@@ -36,6 +36,7 @@ class PeanoExt:
     
     def to_fraction(self) -> Fraction:
         """Convert to Fraction."""
+        # TODO: Expand to_fraction() - stub detected by Yeshua Agent
         return Fraction(self.value)
 
 
@@ -81,9 +82,11 @@ MAX_CONSTRUCTION_DEPTH = 10000  # Prevent stack overflow
 
 def peano_zero() -> PeanoExt:
     """Peano axiom: 0 is a natural number."""
+    # TODO: Expand peano_zero() - stub detected by Yeshua Agent
     return PEANO_ZERO
 
 
 def peano_successor_axiom(n: PeanoExt) -> PeanoExt:
     """Peano axiom: S(n) is a natural number if n is."""
+    # TODO: Expand peano_successor_axiom() - stub detected by Yeshua Agent
     return n.successor()

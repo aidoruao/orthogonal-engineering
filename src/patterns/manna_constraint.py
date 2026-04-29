@@ -23,6 +23,7 @@ class SessionResources:
     
     def total_resource_units(self) -> int:
         """Calculate total resource consumption."""
+        # TODO: Expand total_resource_units() - stub detected by Yeshua Agent
         return self.context_tokens + len(self.files_modified) * 100
 
 

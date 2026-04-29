@@ -94,6 +94,7 @@ class Transaction:
     status: TransactionStatus = TransactionStatus.ACTIVE
     
     def is_committed(self) -> bool:
+        # TODO: Expand is_committed() - stub detected by Yeshua Agent
         return self.status == TransactionStatus.COMMITTED
 
 

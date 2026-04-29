@@ -114,6 +114,7 @@ class TitleIAllocation:
     @property
     def total_allocation(self) -> Fraction:
         """Total Title I allocation."""
+        # TODO: Expand total_allocation() - stub detected by Yeshua Agent
         return self.basic_grant + self.concentration_grant + self.targeted_grant
 
 

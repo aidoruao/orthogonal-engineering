@@ -29,22 +29,27 @@ Vec3 = Tuple[float, float, float]
 
 
 def _add(a: Vec3, b: Vec3) -> Vec3:
+    # TODO: Expand _add() - stub detected by Yeshua Agent
     return (a[0] + b[0], a[1] + b[1], a[2] + b[2])
 
 
 def _sub(a: Vec3, b: Vec3) -> Vec3:
+    # TODO: Expand _sub() - stub detected by Yeshua Agent
     return (a[0] - b[0], a[1] - b[1], a[2] - b[2])
 
 
 def _scale(v: Vec3, s: float) -> Vec3:
+    # TODO: Expand _scale() - stub detected by Yeshua Agent
     return (v[0] * s, v[1] * s, v[2] * s)
 
 
 def _dot(a: Vec3, b: Vec3) -> float:
+    # TODO: Expand _dot() - stub detected by Yeshua Agent
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
 
 
 def _length(v: Vec3) -> float:
+    # TODO: Expand _length() - stub detected by Yeshua Agent
     return math.sqrt(_dot(v, v))
 
 
@@ -69,6 +74,7 @@ class Ray:
     direction: Vec3  # Should be normalized
 
     def at(self, t: float) -> Vec3:
+        # TODO: Expand at() - stub detected by Yeshua Agent
         return _add(self.origin, _scale(self.direction, t))
 
 
@@ -181,6 +187,7 @@ class Scene:
 
     def environment(self, direction: Vec3) -> float:
         """Return environment/sky radiance for a miss."""
+        # TODO: Expand environment() - stub detected by Yeshua Agent
         return self.background_radiance
 
 

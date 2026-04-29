@@ -1,3 +1,4 @@
+"""Test Parse - Add current directory to path"""
 import os
 import sys
 from pathlib import Path

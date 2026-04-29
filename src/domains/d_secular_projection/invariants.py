@@ -9,6 +9,7 @@ from .implementation import SecularProjectionClaim, create_nominal_claim
 
 
 def check_every_premise_has_witness(
+    # TODO: Expand check_every_premise_has_witness() - stub detected by Yeshua Agent
     data: SecularProjectionClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: every theological premise has a secular witness.
@@ -33,6 +34,7 @@ def check_every_premise_has_witness(
 
 
 def check_every_witness_has_falsifier(
+    # TODO: Expand check_every_witness_has_falsifier() - stub detected by Yeshua Agent
     data: SecularProjectionClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: every secular witness has an associated falsification rule.
@@ -57,6 +59,7 @@ def check_every_witness_has_falsifier(
 
 
 def check_projection_non_expansive(
+    # TODO: Expand check_projection_non_expansive() - stub detected by Yeshua Agent
     data: SecularProjectionClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: projection does not shrink the falsifier set.
@@ -86,6 +89,7 @@ def check_projection_non_expansive(
 
 
 def check_no_appeal_to_authority(
+    # TODO: Expand check_no_appeal_to_authority() - stub detected by Yeshua Agent
     data: SecularProjectionClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: the projection contains zero appeals to authority.
@@ -111,6 +115,7 @@ def check_no_appeal_to_authority(
 
 
 def check_popperian_audit_green(
+    # TODO: Expand check_popperian_audit_green() - stub detected by Yeshua Agent
     data: SecularProjectionClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: the Popperian audit pipeline signed off on the projection.
@@ -134,6 +139,7 @@ def check_popperian_audit_green(
 
 
 def check_projection_signature_present(
+    # TODO: Expand check_projection_signature_present() - stub detected by Yeshua Agent
     data: SecularProjectionClaim,
 ) -> Tuple[bool, ProofObject]:
     """Invariant: projection is sealed by a hex sha256 signature.

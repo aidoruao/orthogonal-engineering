@@ -23,6 +23,7 @@ from .implementation import (
 # ---------------------------------------------------------------------------
 
 def check_anti_concentration(
+    # TODO: Expand check_anti_concentration() - stub detected by Yeshua Agent
     claim: QRSIClaim,
 ) -> Tuple[bool, ProofObject]:
     """Random rotations must satisfy anti-concentration over degenerate manifold.
@@ -49,6 +50,7 @@ def check_anti_concentration(
 # ---------------------------------------------------------------------------
 
 def check_spectral_gap_preserved(
+    # TODO: Expand check_spectral_gap_preserved() - stub detected by Yeshua Agent
     claim: QRSIClaim,
 ) -> Tuple[bool, ProofObject]:
     """Spectral gap must be preserved exactly on every branch.
@@ -75,6 +77,7 @@ def check_spectral_gap_preserved(
 # ---------------------------------------------------------------------------
 
 def check_full_eigenspace_spanned(
+    # TODO: Expand check_full_eigenspace_spanned() - stub detected by Yeshua Agent
     claim: QRSIClaim,
 ) -> Tuple[bool, ProofObject]:
     """The construction must span the full eigenspace almost surely.
@@ -101,6 +104,7 @@ def check_full_eigenspace_spanned(
 # ---------------------------------------------------------------------------
 
 def check_branch_count_matches_degeneracy(
+    # TODO: Expand check_branch_count_matches_degeneracy() - stub detected by Yeshua Agent
     claim: QRSIClaim,
 ) -> Tuple[bool, ProofObject]:
     """Branch count must equal degeneracy g.

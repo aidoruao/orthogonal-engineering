@@ -89,6 +89,7 @@ class CardinalStrength(Enum):
         return self.value < other.value
 
     def __le__(self, other: "CardinalStrength") -> bool:
+        # TODO: Expand __le__() - stub detected by Yeshua Agent
         return self.value <= other.value
 
 
@@ -167,6 +168,7 @@ class GenericExtension:
 
     @property
     def is_valid(self) -> bool:
+        # TODO: Expand is_valid() - stub detected by Yeshua Agent
         return self.adjunction_holds and not self.violations
 
 

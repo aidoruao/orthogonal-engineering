@@ -138,4 +138,5 @@ def halton_2d(
 
 def radical_inverse(n: int, base: int) -> float:
     """Public export of the radical inverse for unit testing."""
+    # TODO: Expand radical_inverse() - stub detected by Yeshua Agent
     return _radical_inverse(n, base)

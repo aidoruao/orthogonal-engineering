@@ -23,6 +23,7 @@ from .implementation import (
 # ---------------------------------------------------------------------------
 
 def check_bowtie_complete(
+    # TODO: Expand check_bowtie_complete() - stub detected by Yeshua Agent
     claim: RiskManagementClaim,
 ) -> Tuple[bool, ProofObject]:
     """Bowtie model must have all required components.
@@ -65,6 +66,7 @@ def check_bowtie_complete(
 # ---------------------------------------------------------------------------
 
 def check_dag_valid(
+    # TODO: Expand check_dag_valid() - stub detected by Yeshua Agent
     claim: RiskManagementClaim,
 ) -> Tuple[bool, ProofObject]:
     """DAG transformation must be valid and support Bayesian inference.
@@ -101,6 +103,7 @@ def check_dag_valid(
 # ---------------------------------------------------------------------------
 
 def check_probability_capture(
+    # TODO: Expand check_probability_capture() - stub detected by Yeshua Agent
     claim: RiskManagementClaim,
 ) -> Tuple[bool, ProofObject]:
     """Probability capture must generate questionnaires and analyze disagreement.
@@ -137,6 +140,7 @@ def check_probability_capture(
 # ---------------------------------------------------------------------------
 
 def check_safe_state_semantics(
+    # TODO: Expand check_safe_state_semantics() - stub detected by Yeshua Agent
     claim: RiskManagementClaim,
 ) -> Tuple[bool, ProofObject]:
     """DAG must have explicit safe-state semantics and activation nodes.

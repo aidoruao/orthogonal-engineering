@@ -98,6 +98,7 @@ class LatentTrajectory:
 
     def _velocity_norm(self, v: Tuple[Fraction, ...]) -> Fraction:
         """Return squared norm ‖v‖² as Fraction."""
+        # TODO: Expand _velocity_norm() - stub detected by Yeshua Agent
         return sum(vi * vi for vi in v)
 
 
@@ -179,6 +180,7 @@ class RandomProjection:
     projection_id: int
 
     def norm_squared(self) -> Fraction:
+        # TODO: Expand norm_squared() - stub detected by Yeshua Agent
         return sum(c * c for c in self.direction)
 
 
@@ -233,6 +235,7 @@ class ActionSequence:
     sequence_id: str
 
     def horizon(self) -> int:
+        # TODO: Expand horizon() - stub detected by Yeshua Agent
         return len(self.actions)
 
 
@@ -272,6 +275,7 @@ class TrainingStep:
 
     def is_collapsed(self, threshold: Fraction = Fraction(1, 1000)) -> bool:
         """Heuristic: prediction loss near zero with high SIGReg suggests collapse."""
+        # TODO: Expand is_collapsed() - stub detected by Yeshua Agent
         return self.prediction_loss < threshold and self.sigreg_loss > Fraction(1)
 
 

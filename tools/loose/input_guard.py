@@ -1,3 +1,4 @@
+"""Input Guard - input_guard.py"""
 # input_guard.py
 # Prevents unsafe file access, enforces schema compliance for CSVs
 

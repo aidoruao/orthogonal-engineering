@@ -1,3 +1,4 @@
+"""Output Validator - Output Validator"""
 import pandas as pd
 from .PIPELINE_LOGGER import logging, safe_print
 

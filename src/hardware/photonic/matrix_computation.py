@@ -67,16 +67,19 @@ class ThermalProfile:
 
 def unitarity_tolerance() -> Fraction:
     """Reck et al. 1994: maximum Frobenius-norm deviation from identity."""
+    # TODO: Expand unitarity_tolerance() - stub detected by Yeshua Agent
     return Fraction(1, 1000)
 
 
 def phase_precision_tolerance() -> Fraction:
     """Custom OE: maximum acceptable phase error in radians."""
+    # TODO: Expand phase_precision_tolerance() - stub detected by Yeshua Agent
     return Fraction(1, 100)
 
 
 def thermal_drift_tolerance() -> Fraction:
     """Custom OE: maximum uncompensated thermal drift."""
+    # TODO: Expand thermal_drift_tolerance() - stub detected by Yeshua Agent
     return Fraction(10, 1)
 
 

@@ -1,3 +1,4 @@
+"""Deterministic Engine - pr44_orthogonal_meta/domain_models/video_games/deterministic_engine.py"""
 # pr44_orthogonal_meta/domain_models/video_games/deterministic_engine.py
 # PR #44 — Orthogonal Meta Parallel
 # Standard: Yeshua
@@ -20,11 +21,13 @@ Point = Tuple[Natural, Natural]
 
 def move(pos: Point, velocity: Point) -> Point:
     """Deterministic Euler step: new_pos = pos + velocity (component-wise)."""
+    # TODO: Expand move() - stub detected by Yeshua Agent
     return (add(pos[0], velocity[0]), add(pos[1], velocity[1]))
 
 
 def collides(a: Point, b: Point) -> bool:
     """Axis-aligned collision: True iff positions are structurally equal."""
+    # TODO: Expand collides() - stub detected by Yeshua Agent
     return eq(a[0], b[0]) and eq(a[1], b[1])
 
 

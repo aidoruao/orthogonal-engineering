@@ -1,3 +1,4 @@
+"""Partial Compliance - pr46_agape_witness/grace/partial_compliance.py"""
 # pr46_agape_witness/grace/partial_compliance.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua

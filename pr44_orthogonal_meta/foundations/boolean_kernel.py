@@ -1,3 +1,4 @@
+"""Boolean Kernel - pr44_orthogonal_meta/foundations/boolean_kernel.py"""
 # pr44_orthogonal_meta/foundations/boolean_kernel.py
 # PR #44 — Orthogonal Meta Parallel
 # Standard: Yeshua
@@ -17,16 +18,19 @@ Bool = Natural
 
 def false() -> Bool:
     """Boolean false — encoded as 0 ∈ ℕ."""
+    # TODO: Expand false() - stub detected by Yeshua Agent
     return zero()
 
 
 def true() -> Bool:
     """Boolean true — encoded as S(0) ∈ ℕ."""
+    # TODO: Expand true() - stub detected by Yeshua Agent
     return successor(zero())
 
 
 def is_bool(x: Natural) -> bool:
     """Check that x is a valid boolean witness."""
+    # TODO: Expand is_bool() - stub detected by Yeshua Agent
     return eq(x, false()) or eq(x, true())
 
 
@@ -53,14 +57,17 @@ def OR(x: Bool, y: Bool) -> Bool:
 
 def NAND(x: Bool, y: Bool) -> Bool:
     """NAND: functionally complete primitive."""
+    # TODO: Expand NAND() - stub detected by Yeshua Agent
     return NOT(AND(x, y))
 
 
 def IMPLIES(x: Bool, y: Bool) -> Bool:
     """x → y  ≡  ¬x ∨ y."""
+    # TODO: Expand IMPLIES() - stub detected by Yeshua Agent
     return OR(NOT(x), y)
 
 
 def IFF(x: Bool, y: Bool) -> Bool:
     """x ↔ y  ≡  (x → y) ∧ (y → x)."""
+    # TODO: Expand IFF() - stub detected by Yeshua Agent
     return AND(IMPLIES(x, y), IMPLIES(y, x))

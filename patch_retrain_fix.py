@@ -1,3 +1,4 @@
+"""Patch Retrain Fix - Remove any existing retrain method (between 'def retrain' and next 'def ' at same indent)"""
 ﻿import sys, os  
   
 path = r'C:\Users\Aidor\oe-local\yeshua_agent.py'  

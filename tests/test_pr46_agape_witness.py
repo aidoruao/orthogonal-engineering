@@ -279,6 +279,7 @@ class TestProgressTrajectory:
         assert never_mark_invalid_if_improving([3, 2, 1]) is False
 
     def test_never_mark_invalid_empty(self):
+        # TODO: Expand test_never_mark_invalid_empty() - stub detected by Yeshua Agent
         assert never_mark_invalid_if_improving([]) is False
 
 
@@ -438,6 +439,7 @@ class TestWitnessAlignment:
         assert r1 == r2
 
     def test_different_inputs_different_outputs(self):
+        # TODO: Expand test_different_inputs_different_outputs() - stub detected by Yeshua Agent
         assert align_witness_hashes("a", "b") != align_witness_hashes("a", "c")
 
 

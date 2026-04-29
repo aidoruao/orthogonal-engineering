@@ -52,6 +52,7 @@ from axioms.yeshua_axioms import (
 
 
 def test_p1_zero_is_natural():
+    # TODO: Expand test_p1_zero_is_natural() - stub detected by Yeshua Agent
     assert verify_p1() is True
 
 

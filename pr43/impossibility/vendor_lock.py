@@ -1,3 +1,4 @@
+"""Vendor Lock - pr43/impossibility/vendor_lock.py"""
 # pr43/impossibility/vendor_lock.py
 # PR #43 — Orthogonal Parallel
 # Standard: Yeshua

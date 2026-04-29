@@ -1,3 +1,4 @@
+"""Hype Nullification - pr44_orthogonal_meta/impossibility/hype_nullification.py"""
 # pr44_orthogonal_meta/impossibility/hype_nullification.py
 # PR #44 — Orthogonal Meta Parallel
 # Standard: Yeshua
@@ -15,6 +16,7 @@ from typing import Dict
 
 def truth_value(proof_record: Dict) -> bool:
     """Extract the boolean validity of a proof record."""
+    # TODO: Expand truth_value() - stub detected by Yeshua Agent
     return bool(proof_record.get("valid", False))
 
 

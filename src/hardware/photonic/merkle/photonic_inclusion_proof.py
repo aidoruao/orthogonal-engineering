@@ -27,6 +27,7 @@ from src.hardware.photonic.merkle.photonic_domain_root import (
 
 
 def generate_inclusion_proof(
+    # TODO: Expand generate_inclusion_proof() - stub detected by Yeshua Agent
     target_relative_path: str,
 ) -> Tuple[bool, ProofObject, List[str]]:
     """Generate a Merkle inclusion proof for a file in the photonic domain.
@@ -98,6 +99,7 @@ def generate_inclusion_proof(
 
 
 def verify_inclusion_proof(
+    # TODO: Expand verify_inclusion_proof() - stub detected by Yeshua Agent
     target_leaf: str, proof_hashes: List[Tuple[str, bool]], root_hash: str
 ) -> Tuple[bool, ProofObject]:
     """Verify an inclusion proof against a known root.

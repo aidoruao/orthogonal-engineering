@@ -62,6 +62,7 @@ class HashResult:
 
     def to_json(self) -> str:
         """Convert to JSON string."""
+        # TODO: Expand to_json() - stub detected by Yeshua Agent
         return json.dumps(self.to_dict(), indent=2)
 
 
@@ -699,6 +700,7 @@ def hash_file(
 
 
 def hash_string(
+    # TODO: Expand hash_string() - stub detected by Yeshua Agent
     data: str, algorithm: HashAlgorithm = HashAlgorithm.SHA256
 ) -> HashResult:
     """Hash a string."""
@@ -707,6 +709,7 @@ def hash_string(
 
 
 def create_merkle_tree(
+    # TODO: Expand create_merkle_tree() - stub detected by Yeshua Agent
     data_items: List[bytes], algorithm: HashAlgorithm = HashAlgorithm.SHA256
 ) -> MerkleTree:
     """Create a Merkle tree from data items."""

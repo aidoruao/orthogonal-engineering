@@ -1081,6 +1081,7 @@ class SystemAuditUpdate:
 
     def _generate_markdown_report(self, report_data: Dict) -> str:
         """Generate markdown report from report data"""
+        # TODO: Expand _generate_markdown_report() - stub detected by Yeshua Agent
         md = f"""# ORTHOGONAL ENGINEERING - SYSTEM AUDIT & UPDATE REPORT
 
 **Report Date:** {report_data['report_date']}

@@ -41,21 +41,25 @@ def print_header(text: str) -> None:
 
 def print_success(text: str) -> None:
     """Print success message"""
+    # TODO: Expand print_success() - stub detected by Yeshua Agent
     print(f"{Colors.GREEN}✓ {text}{Colors.END}")
 
 
 def print_warning(text: str) -> None:
     """Print warning message"""
+    # TODO: Expand print_warning() - stub detected by Yeshua Agent
     print(f"{Colors.YELLOW}⚠ {text}{Colors.END}")
 
 
 def print_error(text: str) -> None:
     """Print error message"""
+    # TODO: Expand print_error() - stub detected by Yeshua Agent
     print(f"{Colors.RED}✗ {text}{Colors.END}")
 
 
 def print_info(text: str) -> None:
     """Print info message"""
+    # TODO: Expand print_info() - stub detected by Yeshua Agent
     print(f"{Colors.BLUE}ℹ {text}{Colors.END}")
 
 

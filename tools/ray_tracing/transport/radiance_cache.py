@@ -73,11 +73,13 @@ def cache_put(
 
 def cache_clear() -> None:
     """Clear the in-process radiance cache (e.g. between scenes)."""
+    # TODO: Expand cache_clear() - stub detected by Yeshua Agent
     _CACHE.clear()
 
 
 def cache_size() -> int:
     """Return the number of cached entries."""
+    # TODO: Expand cache_size() - stub detected by Yeshua Agent
     return len(_CACHE)
 
 
@@ -162,4 +164,5 @@ class DualPathVerifier:
 
     @property
     def log(self) -> list:
+        # TODO: Expand log() - stub detected by Yeshua Agent
         return list(self._log)

@@ -22,6 +22,7 @@ class Decision:
     outcome: bool
     
     def get_condition_values(self) -> Tuple[bool, ...]:
+        # TODO: Expand get_condition_values() - stub detected by Yeshua Agent
         return tuple(c.value for c in self.conditions)
 
 
@@ -85,6 +86,7 @@ class MutationScorer:
         return Fraction(killed * 100, len(self.mutants))
     
     def meets_threshold(self, threshold: Fraction = Fraction(80)) -> bool:
+        # TODO: Expand meets_threshold() - stub detected by Yeshua Agent
         return self.score() >= threshold
 
 

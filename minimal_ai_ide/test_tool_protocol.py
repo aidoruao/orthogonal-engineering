@@ -1,3 +1,4 @@
+"""Test Tool Protocol - Test Tool Protocol"""
 import json
 import os
 import sys

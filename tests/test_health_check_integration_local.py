@@ -1,3 +1,4 @@
+"""Test Health Check Integration Local - Test Health Check Integration Local"""
 import json
 from pathlib import Path
 
@@ -76,6 +77,7 @@ def test_local_multi_scope_warden_uses_monitored_paths(tmp_path, monkeypatch):
 # ------------------------------------------------------------------ #
 
 def _single_warden_registry(
+    # TODO: Expand _single_warden_registry() - stub detected by Yeshua Agent
     file_count: int, actual_files: int, autonomy_policy: dict = None
 ) -> dict:
     warden = {

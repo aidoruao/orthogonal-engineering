@@ -105,6 +105,7 @@ class SpectrumLicense:
     
     @property
     def days_until_expiration(self) -> int:
+        # TODO: Expand days_until_expiration() - stub detected by Yeshua Agent
         return (self.expiration_date - datetime.now()).days
 
 

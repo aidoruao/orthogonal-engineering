@@ -60,6 +60,7 @@ class CanonicalConstraint:
     priority: int = 5
 
     def __hash__(self):
+        # TODO: Expand __hash__() - stub detected by Yeshua Agent
         return hash((self.name, self.description, self.priority))
 
 

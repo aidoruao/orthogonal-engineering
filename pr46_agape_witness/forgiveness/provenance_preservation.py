@@ -1,3 +1,4 @@
+"""Provenance Preservation - pr46_agape_witness/forgiveness/provenance_preservation.py"""
 # pr46_agape_witness/forgiveness/provenance_preservation.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua

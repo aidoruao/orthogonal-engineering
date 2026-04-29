@@ -34,6 +34,7 @@ class SigmaFactoringResult:
 
     @property
     def is_valid(self) -> bool:
+        # TODO: Expand is_valid() - stub detected by Yeshua Agent
         return len(self.violations) == 0
 
 

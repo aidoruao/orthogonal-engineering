@@ -1,3 +1,4 @@
+"""Constraint Fsd - pr44_orthogonal_meta/domain_models/self_driving/constraint_fsd.py"""
 # pr44_orthogonal_meta/domain_models/self_driving/constraint_fsd.py
 # PR #44 — Orthogonal Meta Parallel
 # Standard: Yeshua

@@ -40,6 +40,7 @@ def print_section(title):
 
 def create_test_conversation():
     """Create a test conversation file."""
+    # TODO: Expand create_test_conversation() - stub detected by Yeshua Agent
     return """# Test Conversation
 
 ### User: We must always validate input constraints.

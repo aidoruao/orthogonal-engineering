@@ -506,6 +506,7 @@ class LawvereMetric:
 
     def is_monotone(self, f_distance: float) -> bool:
         """Check if transformation preserves Christlikeness: d(f(s), ⊤) ≤ d(s, ⊤)"""
+        # TODO: Expand is_monotone() - stub detected by Yeshua Agent
         return f_distance <= self.distance
 
 

@@ -1,3 +1,4 @@
+"""Monitor Pipeline - Monitor Pipeline"""
 import os
 from PIPELINE_LOGGER import logging, safe_print
 

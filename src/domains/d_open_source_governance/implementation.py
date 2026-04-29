@@ -92,4 +92,5 @@ class D_OPEN_SOURCE_GOVERNANCEChecker:
     
     def check_project_health(self, project: OpenSourceProject) -> bool:
         """Check if project has required governance files."""
+        # TODO: Expand check_project_health() - stub detected by Yeshua Agent
         return project.has_security_policy and project.has_code_of_conduct

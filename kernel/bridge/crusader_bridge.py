@@ -130,6 +130,7 @@ class CrusaderBridgeState:
     
     def get_operations_on_target(self, target_id: str) -> List[ForceOperationRecord]:
         """Get all operations against a target."""
+        # TODO: Expand get_operations_on_target() - stub detected by Yeshua Agent
         return [op for op in self.operations if op.target_id == target_id]
 
 

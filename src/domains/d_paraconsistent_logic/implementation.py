@@ -45,6 +45,7 @@ class Proposition:
     
     def is_paradoxical(self) -> bool:
         """True contradiction (dialetheia)."""
+        # TODO: Expand is_paradoxical() - stub detected by Yeshua Agent
         return self.truth_value == TruthValue.BOTH
 
 
@@ -72,6 +73,7 @@ class ParaconsistentTheory:
     
     def explosion_blocked(self) -> bool:
         """A and not-A does not entail B for arbitrary B."""
+        # TODO: Expand explosion_blocked() - stub detected by Yeshua Agent
         return True  # By definition of paraconsistent
 
 
@@ -86,6 +88,7 @@ class InferenceRule:
     
     def is_paraconsistent_valid(self) -> bool:
         """Valid in LP or other paraconsistent system."""
+        # TODO: Expand is_paraconsistent_valid() - stub detected by Yeshua Agent
         return self.valid_in_lp
 
 

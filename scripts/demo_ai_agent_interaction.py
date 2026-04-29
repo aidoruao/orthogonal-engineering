@@ -367,6 +367,7 @@ TASK: Execution - Implementing system
 
     def generate_ai_agent_template(self) -> str:
         """Generate AI agent response template"""
+        # TODO: Expand generate_ai_agent_template() - stub detected by Yeshua Agent
         template = """
 # AI AGENT RESPONSE TEMPLATE
 # ==========================

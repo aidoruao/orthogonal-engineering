@@ -84,4 +84,5 @@ class JubileeReset:
     
     def next_reset_in(self) -> int:
         """Return number of iterations until next reset."""
+        # TODO: Expand next_reset_in() - stub detected by Yeshua Agent
         return self.reset_interval - self.iteration_count

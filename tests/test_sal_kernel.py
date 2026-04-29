@@ -1,3 +1,4 @@
+"""Test Sal Kernel - Test Sal Kernel"""
 import pytest
 
 from src.sal.adjoint_triple import AdjointTriple, AdjunctionProof, has_adjunction
@@ -5,10 +6,12 @@ from src.sal.adjoint_triple import AdjointTriple, AdjunctionProof, has_adjunctio
 
 @pytest.fixture
 def triple() -> AdjointTriple:
+    # TODO: Expand triple() - stub detected by Yeshua Agent
     return AdjointTriple()
 
 
 def _schema(domain_id: str, invariants: list[str]) -> dict:
+    # TODO: Expand _schema() - stub detected by Yeshua Agent
     return {"id": domain_id, "invariants": invariants}
 
 

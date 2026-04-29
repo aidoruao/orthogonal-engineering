@@ -67,6 +67,7 @@ class DeductionValidator:
     
     def optimal_deduction(self) -> Fraction:
         """Choose larger of standard or itemized."""
+        # TODO: Expand optimal_deduction() - stub detected by Yeshua Agent
         return max(self.standard_deduction, self.itemized_deductions)
 
 

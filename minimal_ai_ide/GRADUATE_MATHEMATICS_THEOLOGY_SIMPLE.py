@@ -59,6 +59,7 @@ class LawvereMetric:
 
     def is_monotone(self, other: LawvereMetric) -> bool:
         """Axiom C1: d(f(s)) ≤ d(s)"""
+        # TODO: Expand is_monotone() - stub detected by Yeshua Agent
         return other.distance <= self.distance
 
 
@@ -86,6 +87,7 @@ class KanExtension:
 
     def _has_morphism(self, d: str, c: str) -> bool:
         """Check if morphism d → c exists"""
+        # TODO: Expand _has_morphism() - stub detected by Yeshua Agent
         return "human" in d and "world" in c
 
 
@@ -330,6 +332,7 @@ class LaTeXTheorem:
 
     def to_document(self) -> str:
         """Generate LaTeX document"""
+        # TODO: Expand to_document() - stub detected by Yeshua Agent
         return f"""
 \\documentclass{{article}}
 \\usepackage{{amsmath, amsthm, amssymb}}

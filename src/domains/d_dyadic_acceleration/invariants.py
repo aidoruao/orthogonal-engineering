@@ -29,6 +29,7 @@ class ProofObject:
 
 
 def _proof(
+    # TODO: Expand _proof() - stub detected by Yeshua Agent
     name: str, passed: bool, detail: str, evidence: Any = None
 ) -> Tuple[bool, ProofObject]:
     return passed, ProofObject(name, passed, detail, evidence)
@@ -39,6 +40,7 @@ def _proof(
 # ---------------------------------------------------------------------------
 
 def check_denominator_is_power_of_two(
+    # TODO: Expand check_denominator_is_power_of_two() - stub detected by Yeshua Agent
     value: DyadicFraction,
 ) -> Tuple[bool, ProofObject]:
     """Verify that a DyadicFraction's denominator is a positive power of two.
@@ -60,6 +62,7 @@ def check_denominator_is_power_of_two(
 # ---------------------------------------------------------------------------
 
 def check_bit_shift_exactness(
+    # TODO: Expand check_bit_shift_exactness() - stub detected by Yeshua Agent
     value: DyadicFraction, shift: int
 ) -> Tuple[bool, ProofObject]:
     """Verify that dividing by 2^shift is exact via bit-shift (no division opcode).
@@ -96,6 +99,7 @@ def check_bit_shift_exactness(
 # ---------------------------------------------------------------------------
 
 def check_requantization_no_float_contamination(
+    # TODO: Expand check_requantization_no_float_contamination() - stub detected by Yeshua Agent
     op: RequantizationOp, sample_q_in: int
 ) -> Tuple[bool, ProofObject]:
     """Verify that requantization produces an integer without float intermediates.
@@ -128,6 +132,7 @@ def check_requantization_no_float_contamination(
 # ---------------------------------------------------------------------------
 
 def check_dot_product_deterministic_cross_platform(
+    # TODO: Expand check_dot_product_deterministic_cross_platform() - stub detected by Yeshua Agent
     fdp: FastDotProduct, a: Tuple[int, ...], b: Tuple[int, ...]
 ) -> Tuple[bool, ProofObject]:
     """Verify that FastDotProduct yields identical results on repeated execution.
@@ -161,6 +166,7 @@ def check_dot_product_deterministic_cross_platform(
 # ---------------------------------------------------------------------------
 
 def check_entropy_approximation_bounded_error(
+    # TODO: Expand check_entropy_approximation_bounded_error() - stub detected by Yeshua Agent
     efp: EntropyFastPath, exact_entropy_fraction: Any
 ) -> Tuple[bool, ProofObject]:
     """Verify that EntropyFastPath error is bounded relative to exact entropy.
@@ -202,6 +208,7 @@ def check_entropy_approximation_bounded_error(
 # ---------------------------------------------------------------------------
 
 def check_overflow_within_dynamic_range(
+    # TODO: Expand check_overflow_within_dynamic_range() - stub detected by Yeshua Agent
     fdp: FastDotProduct, a: Tuple[int, ...], b: Tuple[int, ...]
 ) -> Tuple[bool, ProofObject]:
     """Verify that FastDotProduct does not overflow INT32 for given inputs.

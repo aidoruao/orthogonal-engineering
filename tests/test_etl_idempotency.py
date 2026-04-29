@@ -13,6 +13,7 @@ RAW_DATA = [
 ]
 
 def etl_transform(records):
+    # TODO: Expand etl_transform() - stub detected by Yeshua Agent
     return [{"id": r["id"], "value": r["value"].strip().lower(), "amount": float(r["amount"])} for r in records]
 
 def test_etl_idempotent():

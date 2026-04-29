@@ -1,3 +1,4 @@
+"""Validate Input - Validate Input"""
 import pandas as pd
 import os
 from .PIPELINE_LOGGER import logging, safe_print
@@ -18,6 +19,7 @@ def validate(file="refined_inventory.csv"):
 
 def validate_input_schema(file="refined_inventory.csv"):
     """Curated API entry point for input schema validation."""
+    # TODO: Expand validate_input_schema() - stub detected by Yeshua Agent
     return validate(file)
 
 

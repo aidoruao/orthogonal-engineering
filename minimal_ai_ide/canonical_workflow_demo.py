@@ -256,6 +256,7 @@ class {concept.replace(" ", "_")}Placeholder:
 
     def apply(self, input_state):
         """Placeholder implementation"""
+        # TODO: Expand apply() - stub detected by Yeshua Agent
         raise NotImplementedError("Requires canonical substitution")
 '''
 

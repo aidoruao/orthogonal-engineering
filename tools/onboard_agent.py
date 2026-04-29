@@ -91,6 +91,7 @@ def load_registry() -> list[dict[str, Any]]:
 
 
 def filter_by_scope(
+    # TODO: Expand filter_by_scope() - stub detected by Yeshua Agent
     standards: list[dict[str, Any]], scope: str | None
 ) -> list[dict[str, Any]]:
     """Return standards relevant to the given scope glob.

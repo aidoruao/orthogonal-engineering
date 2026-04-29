@@ -55,6 +55,7 @@ class MathObject:
         return self.hash == other.hash
 
     def __hash__(self):
+        # TODO: Expand __hash__() - stub detected by Yeshua Agent
         return int(self.hash[:16], 16)
 
 class MathematicalUniverse:
@@ -70,6 +71,7 @@ class MathematicalUniverse:
         self.type_index[obj.type].add(obj)
 
     def get_objects_by_type(self, obj_type: type) -> Set[MathObject]:
+        # TODO: Expand get_objects_by_type() - stub detected by Yeshua Agent
         return self.type_index.get(obj_type, set())
 
 @dataclass
@@ -187,6 +189,7 @@ class Domain:
 
     def isolate_from(self, other: 'Domain') -> bool:
         """Check if domains are properly isolated"""
+        # TODO: Expand isolate_from() - stub detected by Yeshua Agent
         return len(self.objects.intersection(other.objects)) == 0
 
 class DomainRegistry:
@@ -220,6 +223,7 @@ class ExplicitFailure:
         return not any(keyword in self.reason.lower() for keyword in non_recoverable_keywords)
 
     def __str__(self) -> str:
+        # TODO: Expand __str__() - stub detected by Yeshua Agent
         return f"ExplicitFailure[{self.timestamp}]: {self.reason}"
 
 class CanonicalIDECompiler:
@@ -495,4 +499,5 @@ class BiblicalConstraintChecker:
 
     def _christlikeness_measure(self, state: AIState) -> Ordinal:
         """
+        # TODO: Expand _christlikeness_measure() - stub detected by Yeshua Agent
         Measure

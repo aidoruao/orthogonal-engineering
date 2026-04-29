@@ -111,6 +111,7 @@ class TortClaim:
     
     def is_valid_claim(self) -> bool:
         """Check if claim is valid (elements + timely filing)."""
+        # TODO: Expand is_valid_claim() - stub detected by Yeshua Agent
         return self.elements.is_liable() and self.statute.is_timely()
 
 

@@ -578,6 +578,7 @@ AUDITS: List[ComplaintAudit] = [
 
 def get_all_audits() -> List[ComplaintAudit]:
     """Return all complaint audits."""
+    # TODO: Expand get_all_audits() - stub detected by Yeshua Agent
     return AUDITS
 
 
@@ -589,11 +590,13 @@ def get_resolved_count() -> Tuple[int, int]:
 
 def get_audits_by_channel(channel: str) -> List[ComplaintAudit]:
     """Return audits for a specific channel."""
+    # TODO: Expand get_audits_by_channel() - stub detected by Yeshua Agent
     return [a for a in AUDITS if a.source_channel == channel]
 
 
 def get_audits_by_domain(domain: str) -> List[ComplaintAudit]:
     """Return audits mapped to a specific domain."""
+    # TODO: Expand get_audits_by_domain() - stub detected by Yeshua Agent
     return [a for a in AUDITS if domain in a.resolution_domains]
 
 

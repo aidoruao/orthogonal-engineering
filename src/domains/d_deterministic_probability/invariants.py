@@ -17,6 +17,7 @@ from .implementation import BayesianNetwork, ProbabilityField, IterativeBayesian
 # ---------------------------------------------------------------------------
 
 def _is_power_of_two(n: int) -> bool:
+    # TODO: Expand _is_power_of_two() - stub detected by Yeshua Agent
     return n > 0 and (n & (n - 1)) == 0
 
 

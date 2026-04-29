@@ -54,6 +54,7 @@ class ForwardableLaTeXMessage:
     def generate_latex_document(self):
         """Generate complete LaTeX document"""
 
+        # TODO: Expand generate_latex_document() - stub detected by Yeshua Agent
         latex_content = r"""\documentclass[12pt]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,amsthm}
@@ -409,3 +410,5 @@ python monitor_evolutionary_progress.py --constraints sigma_lora
         return latex_content
 
     def generate_quick_re
+
+    # TODO: Expand generate_quick_re() - stub detected by Yeshua Agent

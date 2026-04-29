@@ -90,31 +90,37 @@ class YieldData:
 
 def wafer_uniformity_threshold() -> Fraction:
     """SEMI M1 maximum thickness variation: 5%."""
+    # TODO: Expand wafer_uniformity_threshold() - stub detected by Yeshua Agent
     return Fraction(5, 100)
 
 
 def etch_depth_tolerance_nm() -> Fraction:
     """SEMI E10 etch depth tolerance: 10 nm."""
+    # TODO: Expand etch_depth_tolerance_nm() - stub detected by Yeshua Agent
     return Fraction(10, 1)
 
 
 def lithography_overlay_threshold_nm() -> Fraction:
     """SEMI P38 maximum overlay error: 50 nm."""
+    # TODO: Expand lithography_overlay_threshold_nm() - stub detected by Yeshua Agent
     return Fraction(50, 1)
 
 
 def waveguide_width_tolerance_nm() -> Fraction:
     """Custom OE waveguide width tolerance: 20 nm."""
+    # TODO: Expand waveguide_width_tolerance_nm() - stub detected by Yeshua Agent
     return Fraction(20, 1)
 
 
 def coupling_loss_threshold_db() -> Fraction:
     """Custom OE maximum fiber-to-chip coupling loss: 3 dB."""
+    # TODO: Expand coupling_loss_threshold_db() - stub detected by Yeshua Agent
     return Fraction(3, 1)
 
 
 def yield_threshold() -> Fraction:
     """Custom OE minimum die yield: 70%."""
+    # TODO: Expand yield_threshold() - stub detected by Yeshua Agent
     return Fraction(7, 10)
 
 

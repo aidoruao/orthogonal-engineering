@@ -116,6 +116,7 @@ class ContinuingEducation:
     
     def hours_remaining(self) -> Fraction:
         """Hours still needed."""
+        # TODO: Expand hours_remaining() - stub detected by Yeshua Agent
         return max(Fraction(0), self.required_hours - self.completed_hours)
 
 

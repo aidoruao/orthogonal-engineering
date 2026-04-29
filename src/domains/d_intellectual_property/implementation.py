@@ -73,6 +73,7 @@ class PatentClaim:
     
     def get_element_count(self) -> int:
         """Number of elements in claim (more = narrower)."""
+        # TODO: Expand get_element_count() - stub detected by Yeshua Agent
         return len(self.elements)
 
 
@@ -105,6 +106,7 @@ class Invention:
     @property
     def claim_count(self) -> int:
         """Total number of claims."""
+        # TODO: Expand claim_count() - stub detected by Yeshua Agent
         return len(self.claims)
 
 

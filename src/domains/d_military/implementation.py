@@ -60,6 +60,7 @@ class ArmedConflict:
     
     def occupation_active(self) -> bool:
         """Hague Regulations occupation rules apply."""
+        # TODO: Expand occupation_active() - stub detected by Yeshua Agent
         return self.status == ConflictStatus.OCCUPATION
 
 
@@ -111,6 +112,7 @@ class DetentionOperation:
     
     def pow_rights_applicable(self) -> bool:
         """Geneva III protections apply."""
+        # TODO: Expand pow_rights_applicable() - stub detected by Yeshua Agent
         return self.geneva_category == "POW"
 
 
@@ -186,4 +188,5 @@ class MilitaryChecker:
     
     def indiscriminate_attacks(self) -> List[MilitaryOperation]:
         """Operations using prohibited weapons or methods."""
+        # TODO: Expand indiscriminate_attacks() - stub detected by Yeshua Agent
         return [o for o in self.operations if o.indiscriminate_weapon]

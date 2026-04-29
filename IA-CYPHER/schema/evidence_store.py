@@ -25,11 +25,13 @@ from typing import Dict, List, Optional
 
 def sha256_text(text: str) -> str:
     """Return SHA-256 hex digest of UTF-8 encoded text."""
+    # TODO: Expand sha256_text() - stub detected by Yeshua Agent
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 def sha256_bytes(data: bytes) -> str:
     """Return SHA-256 hex digest of raw bytes."""
+    # TODO: Expand sha256_bytes() - stub detected by Yeshua Agent
     return hashlib.sha256(data).hexdigest()
 
 
@@ -41,6 +43,7 @@ def sha256_file(path: str | Path) -> str:
 
 def timestamp_now() -> str:
     """Return current UTC time as ISO 8601 string."""
+    # TODO: Expand timestamp_now() - stub detected by Yeshua Agent
     return datetime.now(timezone.utc).isoformat()
 
 

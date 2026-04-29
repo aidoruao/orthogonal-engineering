@@ -200,6 +200,7 @@ class GeometricMorphism:
 
     @property
     def is_valid(self) -> bool:
+        # TODO: Expand is_valid() - stub detected by Yeshua Agent
         return self.truth_preserved and not self.violations
 
 

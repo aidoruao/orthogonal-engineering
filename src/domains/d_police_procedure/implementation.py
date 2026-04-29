@@ -228,6 +228,7 @@ class BodyCameraManager:
     
     def audit_encounter(self, encounter: CitizenEncounter) -> Dict:
         """Audit encounter for body camera compliance."""
+        # TODO: Expand audit_encounter() - stub detected by Yeshua Agent
         return encounter.check_camera_compliance()
 
 
@@ -448,12 +449,14 @@ class PoliceProcedureAuditor:
     
     def audit_complaint(self, complaint: CitizenComplaint) -> Dict:
         """Audit complaint process compliance."""
+        # TODO: Expand audit_complaint() - stub detected by Yeshua Agent
         return self.complaint_processor.check_process_compliance(complaint)
 
 
 # Convenience functions
 def check_camera_activation(encounter: CitizenEncounter) -> Dict:
     """Quick check of body camera activation."""
+    # TODO: Expand check_camera_activation() - stub detected by Yeshua Agent
     return encounter.check_camera_compliance()
 
 

@@ -31,6 +31,7 @@ class RailVehicle:
     ptc_operational: bool
     
     def inspection_current(self) -> bool:
+        # TODO: Expand inspection_current() - stub detected by Yeshua Agent
         return datetime.now() < self.inspection_due
 
 
@@ -51,6 +52,7 @@ class Train:
         return self.max_speed <= self.authorized_speed
     
     def hours_compliant(self) -> bool:
+        # TODO: Expand hours_compliant() - stub detected by Yeshua Agent
         return self.hours_of_service <= Fraction(12)  # 12 hour limit
 
 
@@ -85,4 +87,5 @@ class RailChecker:
         return [t for t in self.trains if not t.hours_compliant()]
     
     def ptc_non_compliant(self) -> List[RailVehicle]:
+        # TODO: Expand ptc_non_compliant() - stub detected by Yeshua Agent
         return [v for v in self.vehicles if not v.ptc_equipped]

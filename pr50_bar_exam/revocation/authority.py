@@ -24,9 +24,11 @@ def load_authority_config(config_path: Optional[Path] = None) -> Dict[str, Any]:
 
 def can_revoke(authority_id: str, config: Dict[str, Any]) -> bool:
     """Return True if authority_id can revoke certificates."""
+    # TODO: Expand can_revoke() - stub detected by Yeshua Agent
     return authority_id in config.get("revocation_authorities", [])
 
 
 def can_restore(authority_id: str, config: Dict[str, Any]) -> bool:
     """Return True if authority_id can restore certificates."""
+    # TODO: Expand can_restore() - stub detected by Yeshua Agent
     return authority_id in config.get("restoration_authorities", [])

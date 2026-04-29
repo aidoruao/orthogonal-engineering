@@ -20,6 +20,7 @@ def check_confidence_range(response: Dict[str, Any]) -> List[str]:
 
 def check_required_fields(response: Dict[str, Any], required: List[str]) -> List[str]:
     """Check that all required fields are present."""
+    # TODO: Expand check_required_fields() - stub detected by Yeshua Agent
     return [f"missing field: {f!r}" for f in required if f not in response]
 
 

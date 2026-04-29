@@ -56,6 +56,7 @@ class FileNode:
     imports: List[str] = field(default_factory=list)
     
     def to_dict(self) -> Dict:
+        # TODO: Expand to_dict() - stub detected by Yeshua Agent
         return asdict(self)
 
 

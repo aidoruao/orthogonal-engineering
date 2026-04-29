@@ -133,6 +133,7 @@ class GraphLoader:
     
     def get_metadata(self) -> Dict:
         """Get graph metadata."""
+        # TODO: Expand get_metadata() - stub detected by Yeshua Agent
         return self.metadata
 
 

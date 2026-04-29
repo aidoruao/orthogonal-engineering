@@ -439,6 +439,7 @@ class TextChunk:
 
     def set_vector_reference(self, reference: Dict) -> None:
         """Set vector database reference"""
+        # TODO: Expand set_vector_reference() - stub detected by Yeshua Agent
         self.vector_reference = reference
 
 

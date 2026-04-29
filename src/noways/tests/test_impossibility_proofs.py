@@ -17,6 +17,7 @@ from src.noways.impossibility_proofs import (
 
 
 def test_catalog_has_fifteen_entries() -> None:
+    # TODO: Expand test_catalog_has_fifteen_entries() - stub detected by Yeshua Agent
     assert len(catalog()) >= 15
 
 

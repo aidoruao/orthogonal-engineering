@@ -75,6 +75,7 @@ class COWRegion:
     
     def contains(self, virtual_address: Fraction) -> bool:
         """Check if address is in this region."""
+        # TODO: Expand contains() - stub detected by Yeshua Agent
         return self.start_virtual <= virtual_address < (self.start_virtual + self.size_bytes)
 
 

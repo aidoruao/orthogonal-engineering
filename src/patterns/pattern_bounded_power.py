@@ -28,6 +28,7 @@ class PowerGrant:
     
     def is_bounded(self) -> bool:
         """Check if this grant has explicit bounds."""
+        # TODO: Expand is_bounded() - stub detected by Yeshua Agent
         return self.upper_bound is not None and self.duration_limit is not None
 
 
@@ -108,4 +109,5 @@ class BoundedPower:
     
     def get_unbounded_grants(self) -> list:
         """Get list of unbounded grant violations."""
+        # TODO: Expand get_unbounded_grants() - stub detected by Yeshua Agent
         return self.violations

@@ -67,19 +67,23 @@ class CDNPerformance:
 
 def qos_guaranteed_latency_max_ms() -> Fraction:
     """QoS GUARANTEED class: P99 latency <= 200ms under 10x load"""
+    # TODO: Expand qos_guaranteed_latency_max_ms() - stub detected by Yeshua Agent
     return Fraction(200, 1)
 
 
 def qos_max_load_multiplier() -> Fraction:
     """QoS guarantees must hold under 10x load"""
+    # TODO: Expand qos_max_load_multiplier() - stub detected by Yeshua Agent
     return Fraction(10, 1)
 
 
 def cdn_availability_min() -> Fraction:
     """CDN availability must be >= 99.9% (three nines)"""
+    # TODO: Expand cdn_availability_min() - stub detected by Yeshua Agent
     return Fraction(999, 1000)
 
 
 def fcc_interference_margin_min_db() -> Fraction:
     """FCC: interference margin >= 6 dB for licensed spectrum"""
+    # TODO: Expand fcc_interference_margin_min_db() - stub detected by Yeshua Agent
     return Fraction(6, 1)

@@ -1,3 +1,4 @@
+"""Compliance Registry - pr46_agape_witness/law/compliance_registry.py"""
 # pr46_agape_witness/law/compliance_registry.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua
@@ -67,4 +68,5 @@ class ComplianceRegistry:
 
     def all_records(self) -> List[ComplianceRecord]:
         """Return a copy of the entire history."""
+        # TODO: Expand all_records() - stub detected by Yeshua Agent
         return list(self._history)

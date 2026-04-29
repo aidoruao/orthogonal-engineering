@@ -18,6 +18,7 @@ class KeyManagement:
         self._active_keys.pop(key_id, None)
 
     def use_key(self, key_id: str) -> str:
+        # TODO: Expand use_key() - stub detected by Yeshua Agent
         return "ACCESS_GRANTED" if key_id in self._active_keys else "ACCESS_DENIED"
 
 def test_key_deactivated_on_checkout():

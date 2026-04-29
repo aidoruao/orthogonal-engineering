@@ -119,6 +119,7 @@ class BudgetTracker:
 
     def get_backup_path(self, original_path: str) -> Optional[str]:
         """Get backup path for a file."""
+        # TODO: Expand get_backup_path() - stub detected by Yeshua Agent
         return self.backup_files.get(original_path)
 
 

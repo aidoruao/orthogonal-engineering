@@ -15,6 +15,7 @@ from typing import Optional
 
 def generate_dev_key() -> str:
     """Generate a random 32-byte hex dev/test key."""
+    # TODO: Expand generate_dev_key() - stub detected by Yeshua Agent
     return secrets.token_hex(32)
 
 

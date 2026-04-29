@@ -41,6 +41,7 @@ def test_schema_metadata(runtime_schema):
 
 def test_execution_model(runtime_schema):
     """Test execution model is deterministic state machine."""
+    # TODO: Expand test_execution_model() - stub detected by Yeshua Agent
     assert runtime_schema["execution_model"] == "deterministic_state_machine"
 
 

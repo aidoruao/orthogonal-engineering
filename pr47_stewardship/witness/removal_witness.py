@@ -1,3 +1,4 @@
+"""Removal Witness - pr47_stewardship/witness/removal_witness.py"""
 # pr47_stewardship/witness/removal_witness.py
 # PR #47 — Sanctified Remembrance
 # Standard: Yeshua
@@ -51,6 +52,7 @@ class RemovalEntry:
 
     def entry_hash(self) -> str:
         """SHA-256 of the canonical entry bytes."""
+        # TODO: Expand entry_hash() - stub detected by Yeshua Agent
         return hashlib.sha256(self.canonical_bytes()).hexdigest()
 
 

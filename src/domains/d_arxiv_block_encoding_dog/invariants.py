@@ -23,6 +23,7 @@ from .implementation import (
 # ---------------------------------------------------------------------------
 
 def check_constant_subnormalisation(
+    # TODO: Expand check_constant_subnormalisation() - stub detected by Yeshua Agent
     claim: DoGClaim,
 ) -> Tuple[bool, ProofObject]:
     """Block encoding must have constant subnormalisation λ = 2.
@@ -50,6 +51,7 @@ def check_constant_subnormalisation(
 # ---------------------------------------------------------------------------
 
 def check_no_black_box_oracles(
+    # TODO: Expand check_no_black_box_oracles() - stub detected by Yeshua Agent
     claim: DoGClaim,
 ) -> Tuple[bool, ProofObject]:
     """Block encoding must not require QRAM or signed amplitude loading.
@@ -83,6 +85,7 @@ def check_no_black_box_oracles(
 # ---------------------------------------------------------------------------
 
 def check_o_h4_scaling(
+    # TODO: Expand check_o_h4_scaling() - stub detected by Yeshua Agent
     claim: DoGClaim,
 ) -> Tuple[bool, ProofObject]:
     """Block encoding success probability must scale as O(h^4).
@@ -109,6 +112,7 @@ def check_o_h4_scaling(
 # ---------------------------------------------------------------------------
 
 def check_success_probability_bounded(
+    # TODO: Expand check_success_probability_bounded() - stub detected by Yeshua Agent
     claim: DoGClaim,
 ) -> Tuple[bool, ProofObject]:
     """Success probability must be in (0, 1].

@@ -99,6 +99,7 @@ class GPUMemoryPool:
     
     def available(self) -> Fraction:
         """Available memory."""
+        # TODO: Expand available() - stub detected by Yeshua Agent
         return self.capacity - self.allocated
 
 
@@ -241,6 +242,7 @@ class GPUPerformanceMetrics:
     
     def is_power_limited(self, max_w: Fraction) -> bool:
         """Check if GPU is power limited."""
+        # TODO: Expand is_power_limited() - stub detected by Yeshua Agent
         return self.power_w >= max_w * Fraction(95, 100)  # Within 5% of limit
 
 

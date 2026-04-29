@@ -125,6 +125,7 @@ class EnvironmentalPermit:
     
     def days_until_expiration(self) -> int:
         """Days remaining."""
+        # TODO: Expand days_until_expiration() - stub detected by Yeshua Agent
         return (self.expiration_date - datetime.now()).days
 
 
@@ -180,6 +181,7 @@ class HealthMonitoring:
     
     def dust_exposure_compliant(self, limit_mg_m3: Fraction) -> bool:
         """Dust exposure within MSHA limit."""
+        # TODO: Expand dust_exposure_compliant() - stub detected by Yeshua Agent
         return self.respirable_dust_mg_m3 <= limit_mg_m3
 
 
@@ -210,4 +212,5 @@ class MiningChecker:
     
     def fatalities(self) -> List[SafetyIncident]:
         """Fatal mining incidents."""
+        # TODO: Expand fatalities() - stub detected by Yeshua Agent
         return [i for i in self.incidents if i.fatality]

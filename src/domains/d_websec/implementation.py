@@ -57,19 +57,23 @@ class SensitiveData:
 
 def owasp_https_required() -> bool:
     """OWASP: All traffic must use HTTPS (TLS 1.2+)"""
+    # TODO: Expand owasp_https_required() - stub detected by Yeshua Agent
     return True
 
 
 def owasp_password_min_length() -> Fraction:
     """OWASP: Minimum password length 12 characters"""
+    # TODO: Expand owasp_password_min_length() - stub detected by Yeshua Agent
     return Fraction(12, 1)
 
 
 def nist_session_timeout_max_minutes() -> Fraction:
     """NIST: Maximum session timeout 60 minutes for sensitive operations"""
+    # TODO: Expand nist_session_timeout_max_minutes() - stub detected by Yeshua Agent
     return Fraction(60, 1)
 
 
 def pci_dss_encryption_required() -> bool:
     """PCI DSS: Sensitive data must be encrypted at rest and in transit"""
+    # TODO: Expand pci_dss_encryption_required() - stub detected by Yeshua Agent
     return True

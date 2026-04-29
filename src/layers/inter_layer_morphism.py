@@ -234,6 +234,7 @@ def check_layer_consistency(
 
 
 def check_all_layer_morphisms(
+    # TODO: Expand check_all_layer_morphisms() - stub detected by Yeshua Agent
     layers: List[LayerTopos],
 ) -> Dict[tuple, InterLayerMorphismResult]:
     """
@@ -258,6 +259,7 @@ def check_all_layer_morphisms(
 
 
 def find_layer_contradictions(
+    # TODO: Expand find_layer_contradictions() - stub detected by Yeshua Agent
     layers: List[LayerTopos],
 ) -> List[LayerContradiction]:
     """

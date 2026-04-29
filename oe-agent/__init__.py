@@ -68,6 +68,7 @@ PACKAGE_INFO = {
 
 def get_package_info():
     """Get package information."""
+    # TODO: Expand get_package_info() - stub detected by Yeshua Agent
     return PACKAGE_INFO.copy()
 
 

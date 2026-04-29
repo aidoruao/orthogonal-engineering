@@ -108,6 +108,7 @@ class Chunk:
     
     def redstone_active(self) -> bool:
         """Contains redstone components."""
+        # TODO: Expand redstone_active() - stub detected by Yeshua Agent
         return self.redstone_tickers > 0
 
 
@@ -131,6 +132,7 @@ class RedstoneCircuit:
     
     def is_clock(self) -> bool:
         """Self-oscillating circuit."""
+        # TODO: Expand is_clock() - stub detected by Yeshua Agent
         return self.clock_frequency > Fraction(0)
 
 
@@ -177,4 +179,5 @@ class MinecraftSpatialChecker:
     
     def chunk_overload(self, max_entities: int) -> List[Chunk]:
         """Chunks exceeding entity limits."""
+        # TODO: Expand chunk_overload() - stub detected by Yeshua Agent
         return [c for c in self.chunks if len(c.entities) > max_entities]

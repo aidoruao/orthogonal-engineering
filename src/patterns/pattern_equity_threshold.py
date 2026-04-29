@@ -144,4 +144,5 @@ class EquityThreshold:
 
     def get_equity_violations(self) -> List[Dict[str, Any]]:
         """Get all equity violations detected."""
+        # TODO: Expand get_equity_violations() - stub detected by Yeshua Agent
         return self.violations

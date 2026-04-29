@@ -4863,16 +4863,19 @@ DOMAIN_MORPHISMS = [
 
 def get_morphisms_from(domain_id: str) -> List[DomainMorphism]:
     """Get all morphisms originating from a domain."""
+    # TODO: Expand get_morphisms_from() - stub detected by Yeshua Agent
     return [m for m in DOMAIN_MORPHISMS if m.source == domain_id]
 
 
 def get_morphisms_to(domain_id: str) -> List[DomainMorphism]:
     """Get all morphisms targeting a domain."""
+    # TODO: Expand get_morphisms_to() - stub detected by Yeshua Agent
     return [m for m in DOMAIN_MORPHISMS if m.target == domain_id]
 
 
 def get_morphisms_between(source: str, target: str) -> List[DomainMorphism]:
     """Get morphisms from source to target."""
+    # TODO: Expand get_morphisms_between() - stub detected by Yeshua Agent
     return [m for m in DOMAIN_MORPHISMS if m.source == source and m.target == target]
 
 

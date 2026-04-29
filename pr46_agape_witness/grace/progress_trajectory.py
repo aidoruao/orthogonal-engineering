@@ -1,3 +1,4 @@
+"""Progress Trajectory - pr46_agape_witness/grace/progress_trajectory.py"""
 # pr46_agape_witness/grace/progress_trajectory.py
 # PR #46 — Agape Witness Layer (AWL)
 # Standard: Yeshua
@@ -44,6 +45,7 @@ def classify_trajectory(scores: List[int]) -> TrajectoryDirection:
 
 def is_improving(scores: List[int]) -> bool:
     """Return True iff the trajectory is IMPROVING."""
+    # TODO: Expand is_improving() - stub detected by Yeshua Agent
     return classify_trajectory(scores) == TrajectoryDirection.IMPROVING
 
 

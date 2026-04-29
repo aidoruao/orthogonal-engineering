@@ -90,31 +90,37 @@ class TemperatureRange:
 
 def rohs_lead_threshold() -> Fraction:
     """EU RoHS 2011/65/EU maximum lead content: 0.1% by weight."""
+    # TODO: Expand rohs_lead_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 1000)
 
 
 def reach_svhc_threshold() -> Fraction:
     """EU REACH 1907/2006 SVHC notification threshold: 0.1% w/w."""
+    # TODO: Expand reach_svhc_threshold() - stub detected by Yeshua Agent
     return Fraction(1, 1000)
 
 
 def weee_recyclable_threshold() -> Fraction:
     """EU WEEE 2012/19/EU minimum recyclable fraction: 65%."""
+    # TODO: Expand weee_recyclable_threshold() - stub detected by Yeshua Agent
     return Fraction(65, 100)
 
 
 def energy_star_idle_threshold() -> Fraction:
     """EPA Energy Star maximum idle power for accelerator card: 5 W."""
+    # TODO: Expand energy_star_idle_threshold() - stub detected by Yeshua Agent
     return Fraction(5, 1)
 
 
 def telcordia_min_temp() -> Fraction:
     """Telcordia GR-63 minimum operating temperature: -40 °C."""
+    # TODO: Expand telcordia_min_temp() - stub detected by Yeshua Agent
     return Fraction(-40, 1)
 
 
 def telcordia_max_temp() -> Fraction:
     """Telcordia GR-63 maximum operating temperature: 85 °C."""
+    # TODO: Expand telcordia_max_temp() - stub detected by Yeshua Agent
     return Fraction(85, 1)
 
 

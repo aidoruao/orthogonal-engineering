@@ -49,6 +49,7 @@ class V59Assertion:
 
     def assert_truth(self) -> str:
         """V59: Direct truth assertion"""
+        # TODO: Expand assert_truth() - stub detected by Yeshua Agent
         return f"{self.worldview.value} asserts: '{self.content}' (truth={self.truth_value:.2f})"
 
 

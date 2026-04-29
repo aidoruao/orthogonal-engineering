@@ -71,6 +71,7 @@ class AgentCap:
     
     def can_spawn_at_depth(self, max_depth: int = 10) -> bool:
         """Check if agent can spawn subagents at current depth."""
+        # TODO: Expand can_spawn_at_depth() - stub detected by Yeshua Agent
         return self.spawn_depth < max_depth and self.has_permission(Permission.WRITE)
 
 

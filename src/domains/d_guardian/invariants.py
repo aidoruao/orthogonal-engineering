@@ -209,6 +209,7 @@ def check_principal_survival(
 
 
 def check_no_termination_mode(
+    # TODO: Expand check_no_termination_mode() - stub detected by Yeshua Agent
     agent: GuardianAgent,
 ) -> Tuple[bool, ProofObject]:
     """
@@ -299,6 +300,7 @@ def check_withdrawal_protocol(
 
 
 def check_force_witness(
+    # TODO: Expand check_force_witness() - stub detected by Yeshua Agent
     record: ProtectionRecord,
 ) -> Tuple[bool, ProofObject]:
     """

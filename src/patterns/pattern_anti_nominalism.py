@@ -32,6 +32,7 @@ class NamedEntity:
     
     def has_referent(self) -> bool:
         """Check if entity has non-empty referent."""
+        # TODO: Expand has_referent() - stub detected by Yeshua Agent
         return len(self.referent_data) > 0
 
 
@@ -118,4 +119,5 @@ to concrete structures.
     
     def get_unresolved_names(self) -> list:
         """Get list of names with violations."""
+        # TODO: Expand get_unresolved_names() - stub detected by Yeshua Agent
         return self.violations

@@ -34,11 +34,13 @@ from typing import Tuple, Optional, List
 
 def _is_power_of_two(n: int) -> bool:
     """Return True iff n > 0 and n is a power of two."""
+    # TODO: Expand _is_power_of_two() - stub detected by Yeshua Agent
     return n > 0 and (n & (n - 1)) == 0
 
 
 def _log2_int(n: int) -> int:
     """Return k such that n == 2**k. Precondition: _is_power_of_two(n)."""
+    # TODO: Expand _log2_int() - stub detected by Yeshua Agent
     return n.bit_length() - 1
 
 
@@ -140,6 +142,7 @@ class DyadicFraction:
         return DyadicFraction(self.numerator, new_denom)
 
     def __repr__(self) -> str:
+        # TODO: Expand __repr__() - stub detected by Yeshua Agent
         return f"DyadicFraction({self.numerator}/{self.denominator})"
 
 
@@ -369,6 +372,7 @@ class EntropyFastPath:
 
     def entropy_dyadic(self) -> DyadicFraction:
         """Return entropy as a dyadic rational H / 2^{lut_bits}."""
+        # TODO: Expand entropy_dyadic() - stub detected by Yeshua Agent
         return DyadicFraction(self.entropy_scaled(), 1 << self.lut_bits)
 
 

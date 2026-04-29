@@ -1,3 +1,4 @@
+"""Arithmetic Domain - pr45_uvdtl/foundations/arithmetic_domain.py"""
 # pr45_uvdtl/foundations/arithmetic_domain.py
 # PR #45 — Universal Verifiability & Deterministic Transparency Layer (UVDTL)
 # Standard: Yeshua
@@ -40,11 +41,13 @@ class Succ(Natural):
 
 def zero() -> Natural:
     """Return the canonical zero."""
+    # TODO: Expand zero() - stub detected by Yeshua Agent
     return Zero()
 
 
 def successor(n: Natural) -> Natural:
     """Return the canonical successor of n."""
+    # TODO: Expand successor() - stub detected by Yeshua Agent
     return Succ(n)
 
 
@@ -86,6 +89,7 @@ FiniteTuple = Tuple[Natural, ...]
 
 def make_tuple(*args: Natural) -> FiniteTuple:
     """Construct a finite tuple of Natural numbers."""
+    # TODO: Expand make_tuple() - stub detected by Yeshua Agent
     return tuple(args)
 
 
@@ -143,6 +147,7 @@ class Rational:
 
     def as_pair(self) -> Tuple[int, int]:
         """Return (numerator, denominator) — the canonical rational encoding."""
+        # TODO: Expand as_pair() - stub detected by Yeshua Agent
         return (self.numerator, self.denominator)
 
 

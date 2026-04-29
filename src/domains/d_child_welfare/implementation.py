@@ -76,29 +76,35 @@ class ICWACompliance:
 
 def mandatory_reporting_hours() -> Fraction:
     """Mandatory reporters must file within 24-48 hours (jurisdiction-dependent)"""
+    # TODO: Expand mandatory_reporting_hours() - stub detected by Yeshua Agent
     return Fraction(48, 1)
 
 
 def asfa_permanency_days() -> int:
     """ASFA: permanency hearing required within 12 months (365 days)"""
+    # TODO: Expand asfa_permanency_days() - stub detected by Yeshua Agent
     return 365
 
 
 def asfa_tpr_filing_days() -> int:
     """ASFA: TPR filing required if in care 15 of last 22 months (450 days)"""
+    # TODO: Expand asfa_tpr_filing_days() - stub detected by Yeshua Agent
     return 450
 
 
 def investigation_immediate_hours() -> Fraction:
     """IMMEDIATE priority: response within 24 hours"""
+    # TODO: Expand investigation_immediate_hours() - stub detected by Yeshua Agent
     return Fraction(24, 1)
 
 
 def investigation_priority_hours() -> Fraction:
     """PRIORITY: response within 72 hours"""
+    # TODO: Expand investigation_priority_hours() - stub detected by Yeshua Agent
     return Fraction(72, 1)
 
 
 def investigation_routine_days() -> int:
     """ROUTINE: response within 10 days"""
+    # TODO: Expand investigation_routine_days() - stub detected by Yeshua Agent
     return 10

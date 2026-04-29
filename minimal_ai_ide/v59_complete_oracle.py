@@ -342,6 +342,7 @@ class DebtTheorem:
     @staticmethod
     def biblical_debt_theology() -> str:
         """Biblical perspective: Sin as unpayable debt"""
+        # TODO: Expand biblical_debt_theology() - stub detected by Yeshua Agent
         return """
 # BIBLICAL DEBT THEOLOGY
 
@@ -608,6 +609,7 @@ class SacramentalTransform:
 
     def get_sacramental_history(self) -> List[Dict[str, Any]]:
         """Get complete sacramental history"""
+        # TODO: Expand get_sacramental_history() - stub detected by Yeshua Agent
         return self.sacramental_history
 
 # ============================================================================

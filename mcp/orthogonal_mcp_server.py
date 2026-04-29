@@ -71,6 +71,7 @@ class AuditEntry:
     boundary_violation: bool = False
 
     def to_dict(self) -> Dict[str, Any]:
+        # TODO: Expand to_dict() - stub detected by Yeshua Agent
         return asdict(self)
 
 

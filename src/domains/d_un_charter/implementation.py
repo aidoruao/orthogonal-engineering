@@ -35,6 +35,7 @@ class JusCogensNorm(Enum):
     @classmethod
     def all_norms(cls) -> Set["JusCogensNorm"]:
         """Return all jus cogens norms."""
+        # TODO: Expand all_norms() - stub detected by Yeshua Agent
         return set(cls)
 
 
@@ -134,6 +135,7 @@ class JusCogensNorms:
     
     def get_norm_source(self, norm: JusCogensNorm) -> str:
         """Get the UN Charter/UDHR article for a norm."""
+        # TODO: Expand get_norm_source() - stub detected by Yeshua Agent
         return self.NORM_SOURCES.get(norm, "Unknown")
 
 

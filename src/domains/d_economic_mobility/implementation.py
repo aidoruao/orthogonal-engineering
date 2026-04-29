@@ -50,6 +50,7 @@ class QuintilePosition:
     
     def quintile_change(self) -> int:
         """Positive if upward, negative if downward."""
+        # TODO: Expand quintile_change() - stub detected by Yeshua Agent
         return self.child_quintile - self.parent_quintile
 
 
@@ -112,6 +113,7 @@ class Intervention:
     
     def total_program_cost(self) -> Fraction:
         """Total program cost."""
+        # TODO: Expand total_program_cost() - stub detected by Yeshua Agent
         return Fraction(self.target_population_size) * self.cost_per_participant
 
 
@@ -187,4 +189,5 @@ class MobilityChecker:
     
     def interventions_by_type(self, int_type: InterventionType) -> List[InterventionOutcome]:
         """Get interventions of specific type."""
+        # TODO: Expand interventions_by_type() - stub detected by Yeshua Agent
         return [i for i in self.interventions if i.intervention.intervention_type == int_type]

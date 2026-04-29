@@ -76,6 +76,7 @@ def append_correction(
 
 
 def compute_literal_maximal_posterior(
+    # TODO: Expand compute_literal_maximal_posterior() - stub detected by Yeshua Agent
     corrections: List[Dict[str, str]] | None = None,
 ) -> Tuple[Fraction, ProofObject]:
     """Compute P(literal_maximal | N corrections) via iterative Bayesian update.

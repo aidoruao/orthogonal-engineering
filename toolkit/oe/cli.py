@@ -21,6 +21,7 @@ from .handling_pipeline import parse_handling_meta
 
 
 def log_causality_metadata(
+    # TODO: Expand log_causality_metadata() - stub detected by Yeshua Agent
     cause: str, trigger: str, invariant_id: str, actor: str = "cli"
 ) -> Dict[str, Any]:
     """

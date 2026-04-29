@@ -271,6 +271,7 @@ def load_proof(script_path: str) -> Optional[MathematicalProof]:
 
 
 def verify_mathematical_proof(
+    # TODO: Expand verify_mathematical_proof() - stub detected by Yeshua Agent
     script_path: str, required_level: ProofStatus
 ) -> Tuple[bool, str, Optional[MathematicalProof]]:
     """Verify mathematical proof meets required level."""
@@ -399,6 +400,7 @@ def compute_filesystem_hash() -> str:
 
 
 def check_invariants_preserved(
+    # TODO: Expand check_invariants_preserved() - stub detected by Yeshua Agent
     before_state: Dict, after_state: Dict, script_path: str
 ) -> Tuple[bool, List[str]]:
     """Check that all invariants are preserved."""
@@ -499,6 +501,7 @@ def checkpoint_proven(name: str, proof: Optional[MathematicalProof] = None):
 
 
 def run_proven_script(
+    # TODO: Expand run_proven_script() - stub detected by Yeshua Agent
     script: str, fallback: str, required_proof_level: ProofStatus, retries: int = 2
 ) -> Tuple[bool, Optional[MathematicalProof]]:
     """Run script ONLY if mathematically proven."""

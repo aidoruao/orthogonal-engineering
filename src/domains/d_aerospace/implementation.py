@@ -64,6 +64,7 @@ class RedundantChannel:
     health_status: str = "HEALTHY"  # HEALTHY, DEGRADED, FAILED
     
     def is_healthy(self) -> bool:
+        # TODO: Expand is_healthy() - stub detected by Yeshua Agent
         return self.health_status == "HEALTHY"
 
 
@@ -117,6 +118,7 @@ class StructuralHealthMonitor:
         return [s for s in self.sensors if not s.is_within_spec()]
     
     def structural_integrity_ok(self) -> bool:
+        # TODO: Expand structural_integrity_ok() - stub detected by Yeshua Agent
         return len(self.get_alerted_sensors()) == 0
 
 

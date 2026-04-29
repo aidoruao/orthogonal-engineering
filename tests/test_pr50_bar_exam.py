@@ -286,6 +286,7 @@ class TestAttestationOidc:
         assert get_actor() == "bob"
 
     def test_oidc_env_vars_list_not_empty(self):
+        # TODO: Expand test_oidc_env_vars_list_not_empty() - stub detected by Yeshua Agent
         assert len(OIDC_ENV_VARS) > 0
 
 
@@ -1263,6 +1264,7 @@ class TestRevocationEffects:
         assert "merge" in CAPABILITIES_REMOVED_ON_REVOCATION
 
     def test_capabilities_kept_list(self):
+        # TODO: Expand test_capabilities_kept_list() - stub detected by Yeshua Agent
         assert "read" in CAPABILITIES_KEPT_ON_REVOCATION
 
 
@@ -1417,6 +1419,7 @@ class TestInvariants:
         assert manifest["random_seeds"] is False
 
     def test_cooldown_days_default(self):
+        # TODO: Expand test_cooldown_days_default() - stub detected by Yeshua Agent
         assert DEFAULT_COOLDOWN_DAYS == 30
 
 

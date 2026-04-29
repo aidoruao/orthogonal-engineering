@@ -24,6 +24,7 @@ from .implementation import (
 # ---------------------------------------------------------------------------
 
 def check_inversion_holds(
+    # TODO: Expand check_inversion_holds() - stub detected by Yeshua Agent
     claim: GhostImagingClaim,
 ) -> Tuple[bool, ProofObject]:
     """The Yeshua Inversion must hold: image quality meets threshold under restriction.
@@ -57,6 +58,7 @@ def check_inversion_holds(
 # ---------------------------------------------------------------------------
 
 def check_domain_restriction_satisfied(
+    # TODO: Expand check_domain_restriction_satisfied() - stub detected by Yeshua Agent
     claim: GhostImagingClaim,
 ) -> Tuple[bool, ProofObject]:
     """The domain restriction must be satisfied for the inversion to apply.
@@ -103,6 +105,7 @@ def check_domain_restriction_satisfied(
 # ---------------------------------------------------------------------------
 
 def check_original_impossibility_holds_without_restriction(
+    # TODO: Expand check_original_impossibility_holds_without_restriction() - stub detected by Yeshua Agent
     claim: GhostImagingClaim,
 ) -> Tuple[bool, ProofObject]:
     """The original impossibility claim must still hold for unrestricted setups.
