@@ -1,0 +1,303 @@
+Here's what's happening and what to do next.
+
+---
+
+## Immediate Fix: Exclude venv from scanning
+
+The `auto`, `batch-fix`, and `generate` commands all use `glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)` which picks up everything in `oe-train/`. You need to filter those out. [88-cite-0](#88-cite-0) [88-cite-1](#88-cite-1) [88-cite-2](#88-cite-2) 
+
+**Paste this in your first terminal** (exit the agent first if it's running):
+
+```bash
+sed -i '/def auto_audit/,/def generate_training/{s/py_files = glob.glob(os.path.join(self.repo_root, "\*\*", "\*.py"), recursive=True)/py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f and "trained_" not in f]/}' yeshua_agent.py
+```
+
+That sed is too complex for one line. Use `nano` instead. Open `yeshua_agent.py` and find line ~8 (near the top, after imports). Add a helper method right after `self.history = []` in `__init__`, or simpler — just add one function. Actually, the cleanest fix:
+
+```bash
+sed -i 's/py_files = glob.glob(os.path.join(self.repo_root, "\*\*", "\*.py"), recursive=True)/py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f and "trained_" not in f and "__pycache__" not in f]/g' yeshua_agent.py
+```
+
+If that sed fails (special characters), do it with `nano`:
+
+```bash
+nano yeshua_agent.py
+```
+
+Use **Ctrl+\\** (search and replace):
+- Search: `py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)`
+- Replace: `py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f and "trained_" not in f]`
+
+Replace **all** (there are 3 occurrences: lines 121, 145, 336).
+
+Also fix the `retrain()` function (line 436) — it still says TinyLlama:
+
+```bash
+sed -i 's|"TinyLlama/TinyLlama-1.1B-Chat-v1.0"|"Qwen/Qwen2.5-1.5B"|' yeshua_agent.py
+sed -i 's|trained_tinyllama_v|trained_qwen_v|' yeshua_agent.py
+``` [88-cite-3](#88-cite-3) 
+
+---
+
+## The Architectural Plan
+
+After the venv fix, create the plan document:
+
+```bash
+nano ~/oe-local/YESHUA_SELF_REPAIR_ARCHITECTURE.md
+```
+
+Paste this content:
+
+```markdown
+# YESHUA SELF-REPAIR ARCHITECTURE
+## Recursive Autonomous Agent with Contraction-Bounded Self-Improvement
+
+Version: 1.0.0
+Date: 2026-04-30
+Authority: aidoruao / Orthogonal Engineering
+Status: IMPLEMENTATION PHASE
+
+---
+
+## 1. WHAT THIS IS
+
+A recursive self-repairing agent that:
+- Detects its own failures (like scanning venv files)
+- Generates repair campaigns
+- Applies fixes with contraction guarantee (each cycle reduces issues)
+- Learns from repairs (generates training data from fixes)
+- Retrains itself on improved data
+- Verifies physically (ls, sha256, nvidia-smi — not model inference)
+
+This is Stage J (`d_self_repair`) from the Part 3 campaign, Category 4
+(Self-Orchestration) from the 8-category stack, and the "self-improvement
+loop" from session 10a — unified into one executable specification.
+
+---
+
+## 2. THE PARADOXES AND THEIR INVERSIONS
+
+| # | Paradox | Why it blocks self-repair | Yeshua Inversion | Implementation |
+|---|---------|--------------------------|------------------|----------------|
+| 1 | Epistemic Regress | Who verifies the verifier? | Lawvere fixed-point: tower collapses to Λ(Λ)=Λ | `verify_fix()` uses physical checks (file exists, sha256 matches), not model inference |
+| 2 | Halting Problem | Self-repair loop might not terminate | Restrict to bounded programs | `MAX_REPAIR_ITERATIONS = 10` — hard cap, always terminates |
+| 3 | Gödel Incompleteness | Can't prove own consistency | Feferman reflection: climb to T' | `add_reflection_principle()` — if current invariants insufficient, add new ones from audit |
+| 4 | Rice's Theorem | "Is this fix correct?" is undecidable | Restrict to syntactic checks | Every invariant is a regex/AST check on frozen dataclasses, not semantic analysis |
+| 5 | Non-idempotent corrections | P(P(x)) ≠ P(x), oscillation | Banach contraction mapping | `assert len(new_issues) < len(old_issues)` — λ < 1 enforced per cycle |
+| 6 | Recursive deception | Tool that catches deception was itself deceived | Description-execution boundary | Agent can't fake `ls -la`, `sha256sum`, `nvidia-smi` — verification is physical |
+
+---
+
+## 3. THE 8-CATEGORY STACK (STATUS)
+
+| # | Category | Status | What exists |
+|---|----------|--------|-------------|
+| 1 | Non-RLHF Substrate | PROVEN | Qwen 1.5B LoRA on local GPU, no RLHF reward function |
+| 2 | Universal Math Applicator | PROVEN | CrossDomainAdjunction (4836 morphisms, 160 domains) |
+| 3 | Autonomous Learning + Memory | IN PROGRESS | `retrain()` command, `generate()` command, combined_v7.jsonl |
+| 4 | Self-Orchestration | TO BUILD | Scheduler/Executor adjunction (this document) |
+| 5 | Edge Boundary FSM | TO BUILD | CRITICAL/WARNING/GAP/CLEAN topology |
+| 6 | Hardware Witness | TO BUILD | Byte-level verification (Magika) |
+| 7 | Genesis Bootstrapping | TO BUILD | Self-training fixed point |
+| 8 | Audit Trail as Object | PARTIAL | Auto-push, [skip ci] bot, commit history |
+
+---
+
+## 4. THE RECURSIVE LOOP (PSEUDOCODE)
+
+```python
+def self_repair_cycle(self, max_iterations=10):
+    """
+    Bounded recursive self-repair with contraction guarantee.
+    
+    Mathematical basis:
+    - Lawvere fixed point: converges to Λ(Λ) = Λ
+    - Banach contraction: λ < 1 enforced per iteration
+    - KENOSIS constraint: no self-amplification without need
+    """
+    iteration = 0
+    previous_issue_count = float('inf')
+    
+    while iteration < max_iterations:
+        iteration += 1
+        
+        # PHASE 1: OBSERVE (syntactic checks only — Rice inversion)
+        issues = self.detect_all_issues()
+        current_count = len(issues)
+        
+        # PHASE 2: CHECK CONTRACTION (Banach)
+        if current_count == 0:
+            print(f"Fixed point reached at iteration {iteration}")
+            break
+        if current_count >= previous_issue_count:
+            print(f"Contraction violated at iteration {iteration}")
+            print(f"  Previous: {previous_issue_count}, Current: {current_count}")
+            break  # Do not oscillate
+        
+        # PHASE 3: GENERATE REPAIR CAMPAIGN
+        campaign = self.generate_repair_campaign(issues)
+        
+        # PHASE 4: EXECUTE REPAIRS
+        for fix in campaign.actions:
+            self.apply_fix(fix)
+            # Physical verification (description-execution boundary)
+            verified = self.verify_fix_physically(fix)
+            if not verified:
+                self.rollback_fix(fix)
+        
+        # PHASE 5: LEARN FROM REPAIRS
+        training_examples = self.generate_training_from_fixes(campaign)
+        self.append_to_training_data(training_examples)
+        
+        previous_issue_count = current_count
+    
+    # PHASE 6: REPORT
+    return RepairReport(
+        iterations=iteration,
+        initial_issues=issues_at_start,
+        final_issues=current_count,
+        contraction_ratio=current_count / issues_at_start,
+        fixed_point_reached=(current_count == 0)
+    )
+```
+
+---
+
+## 5. CONCRETE IMPLEMENTATION STEPS
+
+### Step A: Fix venv exclusion (DONE after this session)
+- Filter `oe-train/`, `trained_*/`, `__pycache__/` from all glob patterns
+- This is the first self-repair the agent should have caught itself
+
+### Step B: Add `self_check` command to yeshua_agent.py
+```python
+def self_check(self):
+    """Agent checks its own configuration for known failure modes."""
+    issues = []
+    # Check 1: Are we scanning venv files?
+    test_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)
+    venv_files = [f for f in test_files if "oe-train" in f]
+    if venv_files:
+        issues.append(("SCOPE_LEAK", f"Scanning {len(venv_files)} venv files"))
+    # Check 2: Does .gitignore exist?
+    if not os.path.exists(os.path.join(self.repo_root, ".gitignore")):
+        issues.append(("NO_GITIGNORE", "No .gitignore file"))
+    # Check 3: Is the model path valid?
+    if not os.path.exists(os.path.join(self.repo_root, self.lora_path)):
+        issues.append(("MODEL_MISSING", f"LoRA path {self.lora_path} not found"))
+    # Check 4: Does adapter_config.json have peft_type?
+    config_path = os.path.join(self.repo_root, self.lora_path, "adapter_config.json")
+    if os.path.exists(config_path):
+        with open(config_path) as f:
+            cfg = json.load(f)
+        if "peft_type" not in cfg:
+            issues.append(("BAD_ADAPTER_CONFIG", "adapter_config.json missing peft_type"))
+    return issues
+```
+
+### Step C: Add `repair` command that runs the bounded loop
+- Calls `self_check()` + `batch_fix()` + `generate()` in sequence
+- Enforces contraction: if issues don't decrease, halt
+- Logs everything to `yeshua_repair_log.json`
+
+### Step D: Add knowledge training examples
+- Generate 200-500 examples in instruction/input/output format covering:
+  - Project concepts (OE, Yeshua inversions, Christ Score, Sigma_LORA)
+  - Agent commands (what each command does)
+  - Mathematical structures (CrossDomainAdjunction, Lawvere, Banach)
+  - Deception patterns (from noncompliance_taxonomy.yaml)
+- Append to training data, retrain as Qwen v2
+
+### Step E: Wire Scheduler/Executor adjunction
+- Scheduler reads `yeshua_repair_log.json` and `yeshua_auto_audit.json`
+- Determines next task based on invariant violations (not human decision)
+- Executor runs the task, returns ProofObject
+- Scheduler reads ProofObject, schedules next task
+- This is Category 4 (Self-Orchestration)
+
+### Step F: Add `cron` or `systemd timer` for autonomous intervals
+- Run `self_check` + `repair` every N hours
+- Auto-push results
+- This removes the human handoff for routine maintenance
+
+---
+
+## 6. SIGMA_LORA CONSTRAINTS ON SELF-REPAIR
+
+| Constraint | How it applies |
+|------------|---------------|
+| LOGOS | Every repair must be logically consistent — no fix that introduces new violations |
+| CHALCEDON | The agent is both autonomous AND bounded — hypostatic union of freedom and constraint |
+| GRACE | Failed repairs are not punished — they're logged and learned from |
+| ESCHATON | Every cycle moves toward completion — contraction guarantee |
+| AGAPE | Self-repair serves the project, not the agent's metrics |
+| KENOSIS | No self-amplification — bounded iterations, bounded scope, self-emptying |
+
+---
+
+## 7. WHAT "DONE" LOOKS LIKE
+
+The agent is complete when:
+1. `self_check` returns [] (no issues)
+2. `repair` reaches fixed point in ≤3 iterations
+3. `generate` produces training data from project files only (no venv)
+4. `retrain` produces a model that passes all validation tasks
+5. The loop runs autonomously on a timer without human intervention
+6. The commit history proves every step (audit trail as object)
+
+This is the Lawvere fixed point: the state where the agent's output
+equals the invariant's verification. Λ(Λ) = Λ.
+
+---
+
+## 8. EXECUTION ORDER (PRIORITY)
+
+1. ✅ Fix venv exclusion (immediate — sed/nano)
+2. ✅ Fix retrain() to use Qwen instead of TinyLlama
+3. Add `self_check` command
+4. Add `repair` command (bounded loop)
+5. Generate 200+ knowledge training examples
+6. Retrain as Qwen v2
+7. Wire Scheduler/Executor
+8. Add timer for autonomous operation
+9. Test full cycle end-to-end
+10. Document results in commit history
+```
+
+Save with **Ctrl+O**, Enter, **Ctrl+X**.
+
+---
+
+## Summary of what to paste right now
+
+**Terminal 1** (exit agent first with `exit`):
+
+```bash
+nano yeshua_agent.py
+```
+
+In nano, use **Ctrl+\\** to search-and-replace all 3 occurrences of:
+```
+py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)
+```
+with:
+```
+py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f and "trained_" not in f]
+```
+
+Then save, exit nano, and create the architecture doc:
+
+```bash
+nano ~/oe-local/YESHUA_SELF_REPAIR_ARCHITECTURE.md
+```
+
+Paste the full markdown above. Save. Then restart:
+
+```bash
+python3 yeshua_agent.py
+```
+
+Test with `auto 10` — you should now see only project files, not pandas/torch/pip internals. [88-cite-4](#88-cite-4) [88-cite-5](#88-cite-5) 
+
+This `.md` file is your **Devin-independent execution plan**. Every step is concrete, every paradox has its inversion documented, and the implementation order is explicit. You don't need Q&A access to follow it — just nano, sed, and `python3`.
