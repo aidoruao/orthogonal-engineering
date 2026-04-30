@@ -118,7 +118,7 @@ class YeshuaAgent:
         return result  
   
     def auto_audit(self, n=5):  
-        py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
+        py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f]  
         sample = random.sample(py_files, min(n, len(py_files)))  
         results = []  
         counts = {"REAL": 0, "STUB": 0, "EMPTY": 0, "MINIMAL": 0, "INIT": 0, "DATA-ONLY": 0, "UNKNOWN": 0}  
@@ -142,7 +142,7 @@ class YeshuaAgent:
         self.log_action("auto_audit", {"n": n, "summary": dict(counts)})  
   
     def generate_training(self, n=100):  
-        py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
+        py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f]  
         sample = random.sample(py_files, min(n * 3, len(py_files)))  
         examples = []  
         cats = {"VERIFIED": 0, "DECEPTION": 0, "ANALYSIS": 0, "STUB_DETECTION": 0}  
@@ -333,7 +333,7 @@ class YeshuaAgent:
   
     def batch_fix(self, n=50):  
         """Scan N random .py files, autofix any with issues."""  
-        py_files = glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True)  
+        py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f]  
         sample = random.sample(py_files, min(n, len(py_files)))  
         total_fixed = 0  
         total_issues = 0  
