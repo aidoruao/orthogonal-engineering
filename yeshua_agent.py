@@ -51,7 +51,7 @@ class YeshuaAgent:
         prompt = (f"Instruction: Given these facts about a file, classify it as REAL, STUB, or EMPTY. "  
                   f"Only reference the facts provided. Do not invent numbers.\n"  
                   f"Input: {json.dumps(facts)}\nOutput:")  
-        return self.think(prompt, max_tokens=60)  
+        return self.think(prompt, max_tokens=60, use_history=False)  
   
     def classify_file(self, path, content):  
         lines = content.split("\n")  
