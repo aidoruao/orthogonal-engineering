@@ -253,6 +253,7 @@ GN_AUDITS: List[ComplaintAudit] = [
 
 def get_gn_audits() -> List[ComplaintAudit]:
     """Return all Gamers Nexus complaint audits."""
+    # TODO: Expand get_gn_audits() - stub detected by Yeshua Agent
     return GN_AUDITS
 
 
