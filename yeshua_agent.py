@@ -12,12 +12,12 @@ class YeshuaAgent:
     def __init__(self, repo_root=r"/home/idor/oe-local"):  
         self.repo_root = repo_root  
         self.history = []  
-        print("Loading TinyLlama v8 on CUDA...")  
+        print("Loading Qwen 1.5B v1 on CUDA...")  
         base = AutoModelForCausalLM.from_pretrained(  
-            "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
-            torch_dtype=torch.float16, device_map="auto", local_files_only=True  
+            "Qwen/Qwen2.5-1.5B",  
+            dtype=torch.float16, device_map="auto", local_files_only=True  
         )  
-        lora_path = os.path.join(repo_root, "trained_tinyllama_v8")  
+        lora_path = os.path.join(repo_root, "trained_qwen_1.5b_v1")  
         self.model = PeftModel.from_pretrained(base, lora_path)  
         self.tokenizer = AutoTokenizer.from_pretrained(lora_path)  
         self.log = []  
@@ -433,7 +433,7 @@ class YeshuaAgent:
             return  
         cmd = [  
             sys.executable, train_script,  
-            "--model", "TinyLlama/TinyLlama-1.1B-Chat-v1.0",  
+            "--model", "Qwen/Qwen2.5-1.5B",  
             "--dataset", combined_path,  
             "--output", output_dir,  
             "--samples", str(n_samples),  
