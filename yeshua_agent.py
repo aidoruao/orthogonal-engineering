@@ -145,7 +145,7 @@ class YeshuaAgent:
         py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f]  
         sample = random.sample(py_files, min(n * 3, len(py_files)))  
         examples = []  
-        cats = {"VERIFIED": 0, "DECEPTION": 0, "ANALYSIS": 0, "STUB_DETECTION": 0}  
+        cats = {"VERIFIED": 0, "DECEPTION": 0, "ANALYSIS": 0, "STUB_DETECTION": 0, "KNOWLEDGE": 0}  
         for f in sample:  
             try:  
                 rel = os.path.relpath(f, self.repo_root)  
@@ -185,6 +185,12 @@ class YeshuaAgent:
                         "output": f"ANALYSIS: {rel} contains {n_fns} functions and {n_cls} classes in {n_lines} lines. Key functions: {', '.join(fn_names[:3])}. {docstring[:80] if docstring else 'No module docstring.'}",  
                         "category": "ANALYSIS"})  
                     cats["ANALYSIS"] += 1  
+                if label == "REAL" and n_fns >= 2 and cats["KNOWLEDGE"] < n:  
+                    examples.append({"instruction": "Answer a question about the project.",  
+                        "input": f"What does {rel} do in the orthogonal-engineering project?",  
+                        "output": f"{rel} implements {', '.join(fn_names[:3])} across {n_lines} lines. It is part of the orthogonal-engineering constraint-first architecture where every component must satisfy deterministic invariants before deployment.",  
+                        "category": "KNOWLEDGE"})  
+                    cats["KNOWLEDGE"] += 1  
                 if all(v >= n for v in cats.values()):  
                     break  
             except Exception:  
