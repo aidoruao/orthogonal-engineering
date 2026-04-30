@@ -12,7 +12,7 @@ class YeshuaAgent:
     def __init__(self, repo_root=r"/home/idor/oe-local"):  
         self.repo_root = repo_root  
         self.history = []  
-        print("Loading Qwen 1.5B v1 on CUDA...")  
+        print("Loading Qwen 1.5B v5 on CUDA...")  
         base = AutoModelForCausalLM.from_pretrained(  
             "Qwen/Qwen2.5-1.5B",  
             dtype=torch.float16, device_map="auto", local_files_only=True  
@@ -417,7 +417,7 @@ class YeshuaAgent:
                 print(f"  SKIP {os.path.basename(jf)}: {e}")  
         print(f"\nTotal: {len(all_examples)} examples")  
         # Determine version  
-        existing = [d for d in os.listdir(self.repo_root) if d.startswith("trained_qwen_v") and os.path.isdir(os.path.join(self.repo_root, d))]  
+        existing = [d for d in os.listdir(self.repo_root) if d.startswith("trained_qwen_v5") and os.path.isdir(os.path.join(self.repo_root, d))]  
         versions = [int(d.split("_v")[1]) for d in existing if d.split("_v")[1].isdigit()]  
         new_ver = max(versions) + 1 if versions else 5  
         combined_path = os.path.join(self.repo_root, f"combined_v{new_ver}.jsonl")  
@@ -426,7 +426,7 @@ class YeshuaAgent:
                 f.write(json.dumps(ex, ensure_ascii=False) + "\n")  
         print(f"Combined dataset saved to: combined_v{new_ver}.jsonl")  
         n_samples = min(len(all_examples), 6000)  
-        output_dir = os.path.join(self.repo_root, f"trained_qwen_v{new_ver}")  
+        output_dir = os.path.join(self.repo_root, f"trained_qwen_v5{new_ver}")  
         train_script = os.path.join(self.repo_root, "minimal_ai_ide", "final_training.py")  
         if not os.path.exists(train_script):  
             print(f"ERROR: Training script not found at {train_script}")  
@@ -445,7 +445,7 @@ class YeshuaAgent:
         print(f"Command: {cmd_str}")  
         result = subprocess.run(cmd, cwd=self.repo_root)  
         if result.returncode == 0:  
-            print(f"\nTraining complete! Model saved to: trained_qwen_v{new_ver}")  
+            print(f"\nTraining complete! Model saved to: trained_qwen_v5{new_ver}")  
             print(f"Restart the agent to use v{new_ver}.")  
             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "success"})  
         else:  
