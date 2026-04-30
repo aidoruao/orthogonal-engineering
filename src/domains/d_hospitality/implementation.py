@@ -168,6 +168,7 @@ class FoodService:
     
     def critical_violation_threshold(self, threshold: int) -> bool:
         """Critical violations exceed acceptable level."""
+        # TODO: Expand critical_violation_threshold() - stub detected by Yeshua Agent
         return self.critical_violations > threshold
 
 

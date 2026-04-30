@@ -317,6 +317,7 @@ def report_since_commit(ref: str, *, as_json: bool = False) -> tuple[int, str | 
 
 
 def report_since_row(
+    # TODO: Expand report_since_row() - stub detected by Yeshua Agent
     row_n: int, *, as_json: bool = False
 ) -> tuple[int, str | dict[str, Any]]:
     """Build the since-row report.
