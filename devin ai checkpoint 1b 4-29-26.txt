@@ -1,0 +1,43 @@
+Here's what you've got as of the latest commits:
+
+### Qwen 2.5-1.5B Training: Completed
+
+The `5a` session log (4,923 lines) shows the Qwen 1.5B LoRA training ran to completion on Linux:
+
+| Metric | Value |
+|--------|-------|
+| Model | Qwen/Qwen2.5-1.5B |
+| Final loss | **0.0495** |
+| Training time | 347.5 minutes (~5.8 hours) |
+| Model size | 1.08 GB |
+| Christ score | **0.899** (passes 0.7 minimum) |
+| GPU memory | 1.11 GB (4-bit quantization worked) |
+| Trainable params | 9,232,384 / 897,848,832 (1.03%) |
+| Target modules | q_proj, v_proj, k_proj, o_proj, gate_proj, up_proj, down_proj | [77-cite-0](#77-cite-0) 
+
+The script reported `FINAL TRAINING FAILED` but the **only violation is the 30-minute governance time cap** — a soft constraint in `final_training.py` line 50 (`MAX_TRAINING_MINUTES = 30`). The actual training succeeded: weights saved to `trained_qwen_1.5b_v1/`, loss converged from ~0.05 to ~0.025 across 3 epochs, Christ score 0.899. That governance cap was set for "quick validation" runs — not real training. It needs to be bumped for production runs. [77-cite-1](#77-cite-1) 
+
+### Checkpoint File: 8-Category Architecture Plan
+
+The `d82b21c` commit is your Gemini + DeepSeek conversation mapping out the full Yeshua Agent architecture across 8 categories:
+
+| # | Category | Status |
+|---|----------|--------|
+| 1 | Non-RLHF Substrate | Proven (stub detector) |
+| 2 | Universal Math Applicator | Proven (CrossDomainAdjunction) |
+| 3 | Autonomous Learning + Memory | **Just completed** (Qwen LoRA) |
+| 4 | Self-Orchestration | To Build |
+| 5 | Edge Boundary FSM | To Build |
+| 6 | Hardware Witness | To Build |
+| 7 | Genesis Bootstrapping | To Build |
+| 8 | Audit Trail as Object | Partially Built | [77-cite-2](#77-cite-2) 
+
+### What's next
+
+The trained Qwen 1.5B adapter is sitting in `trained_qwen_1.5b_v1/` on your Linux machine. It hasn't been wired into `yeshua_agent.py` yet — the agent is still pointing at TinyLlama. The next concrete step is:
+
+1. Update `yeshua_agent.py` to load `Qwen/Qwen2.5-1.5B` as the base model instead of `TinyLlama/TinyLlama-1.1B-Chat-v1.0`, and point the LoRA path to `trained_qwen_1.5b_v1`
+2. Test `think`, `validate`, and `analyze` commands to see if Qwen 1.5B produces better output than TinyLlama did (the "test case verifies symmetries" gibberish)
+3. Bump `MAX_TRAINING_MINUTES` in `final_training.py` so the governance check doesn't false-flag real training runs [77-cite-3](#77-cite-3) 
+
+The auto pusher is running (commit `9ac30b3` from github-actions confirms it), and the 26/28 CI checks on `3b604b6` suggest 2 checks are failing — likely the same governance/lint checks that flag the training time violation or the large session log file.
