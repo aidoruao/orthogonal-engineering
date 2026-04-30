@@ -29,7 +29,7 @@ class YeshuaAgent:
         if self.history:  
             for h in self.history[-10:]:  
                 context += f"Previous: {h['q'][:100]}\nAnswer: {h['a'][:200]}\n"  
-        full_prompt = prompt  # disabled history leak  
+        full_prompt = context + prompt if context and use_history else prompt
         inp = self.tokenizer(full_prompt, return_tensors="pt").to("cuda")  
         out = self.model.generate(**inp, max_new_tokens=max_tokens,  
             do_sample=True, temperature=0.7, repetition_penalty=1.3)  
