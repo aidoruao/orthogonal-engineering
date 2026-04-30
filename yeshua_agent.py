@@ -45,7 +45,7 @@ class YeshuaAgent:
   
     def validate(self, claim):  
         prompt = f"Instruction: Detect deception in the following claim.\nInput: {claim}\nOutput:"  
-        return self.think(prompt)  
+        return self.think(prompt, use_history=False)  
   
     def validate_grounded(self, facts):  
         prompt = (f"Instruction: Given these facts about a file, classify it as REAL, STUB, or EMPTY. "  
@@ -78,7 +78,7 @@ class YeshuaAgent:
         with open(path, "r", encoding="utf-8", errors="replace") as f:  
             content = f.read()[:2000]  
         prompt = f"Instruction: Describe what this file does, its structure, and any issues.\nInput: {content[:800]}\nOutput:"  
-        return self.think(prompt)  
+        return self.think(prompt, use_history=False)  
   
     def scan_repo(self):  
         counts = {}  
