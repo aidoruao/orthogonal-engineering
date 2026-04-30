@@ -24,7 +24,7 @@ class YeshuaAgent:
         self.log_file = os.path.join(repo_root, "yeshua_agent_log.jsonl")  
         print("Yeshua Agent v2.0 ready on", torch.cuda.get_device_name(0))  
   
-    def think(self, prompt, max_tokens=300):  
+    def think(self, prompt, max_tokens=300, use_history=True):  
         context = ""  
         if self.history:  
             for h in self.history[-10:]:  
