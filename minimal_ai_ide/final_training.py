@@ -47,7 +47,7 @@ from transformers import (
 # GOVERNANCE CONSTANTS - STRICT BOUNDS
 # ============================================================================
 
-MAX_TRAINING_MINUTES: int = 30  # 30 minutes maximum
+MAX_TRAINING_MINUTES: int = 600  # 30 minutes maximum
 MAX_MODEL_SIZE_GB: int = 2  # 2GB maximum for 4-bit quantized
 MAX_DATASET_SAMPLES: int = 6000  # 100 samples for quick validation
 MAX_BATCH_SIZE: int = 2  # Conservative for 4GB VRAM
