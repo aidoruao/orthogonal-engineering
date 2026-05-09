@@ -140,6 +140,7 @@ class YeshuaAgent:
         print(f"\nAudit complete. Report: yeshua_auto_audit.json")  
         print(f"Summary: {summary}")  
         self.log_action("auto_audit", {"n": n, "summary": dict(counts)})  
+        return {"files": [r["path"] for r in results], "total_issues": sum(1 for r in results if r.get("label") in ["STUB", "EMPTY", "MINIMAL"]), "stubs": counts.get("STUB", 0)}
   
     def generate_training(self, n=100):  
         py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f]  
@@ -546,6 +547,139 @@ class YeshuaAgent:
                 print("\nShutting down."); break  
             except Exception as e:  
                 print(f"Error: {e}"); self.log_action("error", str(e))  
+
+    def batch_fix_targeted(self, file_list, n=None):
+        """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
+        if n is not None:
+            file_list = file_list[:n]
+        total_fixed = 0
+        total_manual = 0
+        fixed_files = []
+        skipped_files = []
+        locked_files = []
+        lock_path = os.path.join(self.repo_root, "yeshua_repair_lock.json")
+        locks = {}
+        if os.path.exists(lock_path):
+            with open(lock_path) as lf:
+                locks = json.load(lf)
+        for i, rel in enumerate(file_list):
+            full_path = os.path.join(self.repo_root, rel)
+            if not os.path.exists(full_path):
+                continue
+            if rel in locks:
+                current_hash = hashlib.sha256(open(full_path, "rb").read()).hexdigest()
+                if current_hash == locks[rel]:
+                    locked_files.append(rel)
+                    continue
+                else:
+                    del locks[rel]
+            try:
+                content = self.read_file(full_path)
+                issues, label, nl, nf, nc = self._get_issues(full_path, content)
+                if not issues:
+                    continue
+                n_applied = self.autofix(rel)
+                if n_applied > 0:
+                    total_fixed += n_applied
+                    fixed_files.append({"path": rel, "fixes": n_applied})
+                    new_hash = hashlib.sha256(open(full_path, "rb").read()).hexdigest()
+                    locks[rel] = new_hash
+                    print(f"  [{len(fixed_files)}] FIXED {rel} ({n_applied} fix(es)) [LOCKED]")
+                else:
+                    manual_only = [f"{t}: {d}" for t, d in issues]
+                    total_manual += len(issues)
+                    skipped_files.append({"path": rel, "manual_issues": manual_only})
+            except Exception as e:
+                print(f"  ERROR: {rel} - {e}")
+        with open(lock_path, "w") as lf:
+            json.dump(locks, lf, indent=2)
+        print(f"\nTargeted fix complete: {len(fixed_files)} fixed, {len(locked_files)} locked, {len(skipped_files)} manual")
+        self.log_action("batch_fix_targeted", {"targeted": len(file_list), "fixed": len(fixed_files), "total_fixes": total_fixed, "manual": total_manual, "locked": len(locked_files)})
+        return {"fixed_files": fixed_files, "skipped_files": skipped_files, "locked_files": locked_files, "total_fixed": total_fixed, "total_manual": total_manual}
+
+    def repair(self, n=20):
+        """Category 4 Self-Orchestration Loop. audit -> fix -> generate -> verify -> repeat. Halts on Contraction Invariant violation, clean state, or Kenotic bound (3 iterations)."""
+        REPAIR_LOG_PATH = os.path.join(self.repo_root, "yeshua_repair_log.json")
+        LOCK_PATH = os.path.join(self.repo_root, "yeshua_repair_lock.json")
+        MAX_ITERATIONS = 3
+        repair_log = []
+        if os.path.exists(REPAIR_LOG_PATH):
+            with open(REPAIR_LOG_PATH) as rf:
+                repair_log = json.load(rf)
+        py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f and "__pycache__" not in f]
+        original_function_count = sum(1 for pf in py_files for l in open(pf) if l.strip().startswith("def "))
+        previous_issues = None
+        halt_reason = "KENOSIS_BOUND"
+        print(f"\n{'='*60}\nREPAIR LOOP INITIATED\n  Target: {n} files/iter, Max: {MAX_ITERATIONS} iter, Functions: {original_function_count}\n{'='*60}\n")
+        for iteration in range(1, MAX_ITERATIONS + 1):
+            print(f"--- ITERATION {iteration}/{MAX_ITERATIONS} ---")
+            print(f"  [AUDIT] Scanning {n} files...")
+            audit_result = self.auto_audit(n)
+            audited_files = audit_result.get("files", [])
+            issue_count = audit_result.get("total_issues", 0)
+            stub_count = audit_result.get("stubs", 0)
+            tautology_count = 0
+            for rel in audited_files:
+                full_path = os.path.join(self.repo_root, rel)
+                try:
+                    content = self.read_file(full_path)
+                    patterns = {
+                        "BOOLEAN_ECHO": re.compile(r"success\s*=\s*data\.[a-zA-Z_]\w*", re.MULTILINE),
+                        "DIRECT_RETURN": re.compile(r"return\s+(True|False)\s*,\s*ProofObject\(.*verified\s*=\s*data\.\w+.*\)", re.DOTALL),
+                        "STUB": re.compile(r"^\s*(pass|raise\s+NotImplementedError|\.\.\.)", re.MULTILINE),
+                        "FLOAT_LEAK": re.compile(r"float\(|0\.\d+|1\.\d+", re.MULTILINE),
+                        "NOMINALIST": re.compile(r"falsifies_if\s*=\s*['\"]{3}\s*['\"]{3}"),
+                    }
+                    for pname, pat in patterns.items():
+                        tautology_count += len(pat.findall(content))
+                except:
+                    pass
+            total_issues = issue_count + tautology_count
+            print(f"  [AUDIT] Files: {len(audited_files)}, Issues: {issue_count}, Tautologies: {tautology_count}, Total: {total_issues}")
+            if previous_issues is not None:
+                if total_issues >= previous_issues:
+                    print(f"\n  [HALT] Contraction Invariant violated: {previous_issues} -> {total_issues}. Lawvere Fixed Point.")
+                    halt_reason = "CONTRACTION_VIOLATION"
+                    break
+                print(f"  [CONTRACTION] factor = {total_issues}/{previous_issues} = {total_issues/previous_issues:.3f}")
+            if total_issues == 0:
+                print(f"\n  [HALT] Repository clean.")
+                halt_reason = "CLEAN"
+                break
+            print(f"  [FIX] Targeted fixes...")
+            fix_result = self.batch_fix_targeted(audited_files)
+            print(f"  [VERIFY] Re-auditing...")
+            if os.path.exists(LOCK_PATH):
+                with open(LOCK_PATH) as lf:
+                    locks = json.load(lf)
+                for fixed_file in fix_result.get("fixed_files", []):
+                    rel = fixed_file["path"]
+                    full_path = os.path.join(self.repo_root, rel)
+                    try:
+                        issues, _, _, _, _ = self._get_issues(full_path, self.read_file(full_path))
+                        if len(issues) == 0 and rel in locks:
+                            del locks[rel]
+                            print(f"    [VERIFIED] {rel}")
+                    except:
+                        pass
+                with open(LOCK_PATH, "w") as lf:
+                    json.dump(locks, lf, indent=2)
+            print(f"  [GENERATE] 50 training pairs...")
+            self.generate_training(50)
+            iteration_log = {"ts": datetime.now().isoformat(), "iteration": iteration, "files_audited": len(audited_files), "issues_found": {"code_issues": issue_count, "tautologies": tautology_count, "stubs": stub_count}, "issues_fixed": fix_result.get("total_fixed", 0), "issues_manual": fix_result.get("total_manual", 0), "halt_reason": None}
+            repair_log.append(iteration_log)
+            with open(REPAIR_LOG_PATH, "w") as rf:
+                json.dump(repair_log, rf, indent=2)
+            previous_issues = total_issues
+            print(f"  [LOG] Iteration {iteration} saved.\n")
+        else:
+            print(f"\n  [HALT] Kenotic bound reached ({MAX_ITERATIONS} iterations).")
+        current_function_count = sum(1 for pf in py_files for l in open(pf) if l.strip().startswith("def "))
+        if current_function_count < original_function_count:
+            print(f"\n  [CS-005 WARNING] Function count decreased ({original_function_count} -> {current_function_count})")
+        print(f"\n{'='*60}\nREPAIR LOOP COMPLETE\n  Iterations: {len(repair_log)}\n  Halt: {halt_reason}\n  Final issues: {previous_issues}\n  Log: yeshua_repair_log.json\n{'='*60}")
+        self.log_action("repair", {"iterations": len(repair_log), "halt_reason": halt_reason, "final_issues": previous_issues, "total_fixes": sum(r.get("issues_fixed", 0) for r in repair_log)})
+        return {"halt_reason": halt_reason, "iterations": len(repair_log), "final_issues": previous_issues, "log": repair_log}
   
 if __name__ == "__main__":  
     agent = YeshuaAgent()  
