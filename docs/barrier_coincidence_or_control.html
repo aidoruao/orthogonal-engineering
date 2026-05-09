@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coincidence or Control? — The Minecraft FPS Governor Investigation</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --danger: #f85149;
+            --warning: #d2991d;
+            --success: #3fb950;
+            --barrier-color: #f78166;
+            --coincidence-color: #8b949e;
+            --control-color: #f85149;
+            --highlight: #1f6feb22;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .scenario-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .scenario-box h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .scenario-box p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Barrier Cards */
+        .barriers-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin: 2rem 0;
+        }
+
+        .barrier-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            user-select: none;
+        }
+
+        .barrier-card:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+
+        .barrier-card.selected-coincidence {
+            border-color: var(--success);
+            background: #3fb9500d;
+        }
+
+        .barrier-card.selected-control {
+            border-color: var(--danger);
+            background: #f851490d;
+        }
+
+        .barrier-card .barrier-number {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            background: var(--border);
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .barrier-card .barrier-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .barrier-card .barrier-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .barrier-card .barrier-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-left: 2.5rem;
+        }
+
+        .barrier-card .choice-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            margin-left: 2.5rem;
+        }
+
+        .btn {
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+        }
+
+        .btn:hover {
+            border-color: var(--accent);
+            background: #58a6ff11;
+        }
+
+        .btn.btn-coincidence {
+            border-color: #3fb95055;
+            color: var(--success);
+        }
+        .btn.btn-coincidence:hover,
+        .btn.btn-coincidence.active {
+            background: #3fb9501a;
+            border-color: var(--success);
+        }
+
+        .btn.btn-control {
+            border-color: #f8514955;
+            color: var(--danger);
+        }
+        .btn.btn-control:hover,
+        .btn.btn-control.active {
+            background: #f851491a;
+            border-color: var(--danger);
+        }
+
+        /* Score Panel */
+        .score-panel {
+            position: sticky;
+            top: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            z-index: 10;
+        }
+
+        .score-panel h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-box {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .score-box.coincidence-box {
+            border-color: #3fb95044;
+            background: #3fb9500a;
+        }
+        .score-box.control-box {
+            border-color: #f8514944;
+            background: #f851490a;
+        }
+
+        .score-box .count {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .score-box .label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .probability-display {
+            text-align: center;
+            padding: 1rem;
+            background: var(--highlight);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .probability-display .prob-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--warning);
+        }
+
+        .probability-display .prob-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .verdict {
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+        }
+
+        .verdict.coincidence-verdict {
+            color: var(--success);
+            background: #3fb9500d;
+        }
+        .verdict.control-verdict {
+            color: var(--danger);
+            background: #f851490d;
+        }
+        .verdict.mixed-verdict {
+            color: var(--warning);
+            background: #d2991d0d;
+        }
+
+        .btn-reset {
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-reset:hover {
+            background: var(--border);
+        }
+
+        /* Theory Note */
+        .theory-note {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .theory-note h3 {
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .theory-note p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        .theory-note .highlight {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* Machine-Readable Section */
+        .machine-section {
+            background: #000;
+            border: 2px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8rem;
+            color: #00ff41;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .machine-section summary {
+            color: #00ff41;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-family: -apple-system, sans-serif;
+        }
+
+        .machine-section .comment {
+            color: #555;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            .barrier-card .choice-buttons {
+                flex-direction: column;
+            }
+            .score-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tutorial Overlay */
+        .tutorial {
+            background: #1a1a2e;
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+        }
+        .tutorial strong {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Coincidence or Control?</h1>
+            <p class="subtitle">The Minecraft FPS Governor Investigation</p>
+        </header>
+
+        <!-- Scenario -->
+        <div class="scenario-box">
+            <h2>🕵️ The Investigation</h2>
+            <p>A developer built a JVM agent to stabilize frame rates in modded Minecraft. It was blocked — not by one barrier, but by <strong>seven</strong> independent systems. Each barrier has a legitimate stated purpose. All seven converge on the same outcome: preventing a user from governing their own frame rate.</p>
+            <p style="margin-top:0.75rem;"><strong>Your task:</strong> For each barrier, decide whether you believe it's a <span style="color:#3fb950;">genuine coincidence</span> (an innocent design choice that accidentally blocks FPS governance) or a <span style="color:#f85149;">control mechanism</span> (part of a deliberate or emergent architecture that protects the platform owner's sovereignty over the runtime).</p>
+        </div>
+
+        <!-- Tutorial -->
+        <div class="tutorial">
+            <strong>🎮 How to play:</strong> Click <span style="color:#3fb950;">COINCIDENCE</span> or <span style="color:#f85149;">CONTROL</span> for each of the 7 barriers. Watch the probability calculation update in real-time. Can you construct a Coincidence Theory that holds together? What's the probability that <em>all</em> of these are innocent accidents?
+        </div>
+
+        <!-- Barriers -->
+        <div class="barriers-grid" id="barriersGrid">
+            <!-- 1. Launcher Integrity -->
+            <div class="barrier-card" data-barrier="1" id="barrier1">
+                <div class="barrier-header">
+                    <span class="barrier-number">1</span>
+                    <span class="barrier-title">Launcher Hash Verification &amp; Self-Healing</span>
+                </div>
+                <div class="barrier-desc">
+                    The launcher checks library hashes on every launch. When a modified SecureJarHandler was deployed (87KB → 88KB), the launcher detected the change, threw "permission denied" when locked read-only, and silently redownloaded the original when unlocked. This is active, self-healing integrity enforcement — not passive checking.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(1, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(1, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 2. Classloader Isolation -->
+            <div class="barrier-card" data-barrier="2" id="barrier2">
+                <div class="barrier-header">
+                    <span class="barrier-number">2</span>
+                    <span class="barrier-title">ModuleClassLoader Isolation</span>
+                </div>
+                <div class="barrier-desc">
+                    Forge's ModuleClassLoader threw NoClassDefFoundError for the agent's classes. The -DignoreList JVM argument explicitly names foundation jars (including securejarhandler) to isolate them from mod classloaders. This is a configurable isolation boundary that prevents any unlisted class from being resolved.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(2, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(2, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 3. Cryptographic Signing -->
+            <div class="barrier-card" data-barrier="3" id="barrier3">
+                <div class="barrier-header">
+                    <span class="barrier-number">3</span>
+                    <span class="barrier-title">Cryptographic Signature Verification</span>
+                </div>
+                <div class="barrier-desc">
+                    SecureJarHandler performs cryptographic signature verification on mod jars. A bytecode agent that hooks RenderSystem.flipFrame() is treated identically to malware. The signing system makes no distinction between a performance governor and a rootkit — both are "unauthorized modification."
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(3, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(3, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 4. EULA Prohibition -->
+            <div class="barrier-card" data-barrier="4" id="barrier4">
+                <div class="barrier-header">
+                    <span class="barrier-number">4</span>
+                    <span class="barrier-title">EULA Runtime Modification Prohibition</span>
+                </div>
+                <div class="barrier-desc">
+                    Minecraft's EULA prohibits modification of the game's runtime. This is a legal barrier, not a technical one. It means that even if a bypass is technically possible, distributing it violates the terms of service and can result in account termination.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(4, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(4, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 5. DMCA Anti-Circumvention -->
+            <div class="barrier-card" data-barrier="5" id="barrier5">
+                <div class="barrier-header">
+                    <span class="barrier-number">5</span>
+                    <span class="barrier-title">DMCA Anti-Circumvention (Technical Protection Measures)</span>
+                </div>
+                <div class="barrier-desc">
+                    The DMCA prohibits circumvention of "technical protection measures" that control access to copyrighted works. SecureJarHandler's signature verification qualifies as a TPM. Bypassing it is not just a TOS violation — it's a federal legal violation. This converts a technical barrier into a legal one.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(5, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(5, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 6. Bedrock Marketplace Economics -->
+            <div class="barrier-card" data-barrier="6" id="barrier6">
+                <div class="barrier-header">
+                    <span class="barrier-number">6</span>
+                    <span class="barrier-title">Bedrock Marketplace Revenue Incentive</span>
+                </div>
+                <div class="barrier-desc">
+                    Microsoft earns revenue from the Bedrock Edition Marketplace. Java Edition, despite being the original, receives less performance optimization attention. A community-built FPS governor that makes Java Edition run perfectly reduces the incentive to migrate to Bedrock for a "premium" experience. The performance gap between editions is economically useful.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(6, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(6, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 7. Update Pipeline Reversion -->
+            <div class="barrier-card" data-barrier="7" id="barrier7">
+                <div class="barrier-header">
+                    <span class="barrier-number">7</span>
+                    <span class="barrier-title">Update Pipeline &amp; Launcher-Classpath Control</span>
+                </div>
+                <div class="barrier-desc">
+                    The launcher — not the user — constructs the classpath in a fixed order with 80+ jars. This order is regenerated on every launch and cannot be modified by the user. Any attempt to inject or reorder libraries is overwritten. Combined with hash verification, this ensures every launch returns to canonical state.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(7, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(7, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+
+            <!-- 8. Bonus: The Exhaustion Factor -->
+            <div class="barrier-card" data-barrier="8" id="barrier8" style="border-style: dashed;">
+                <div class="barrier-header">
+                    <span class="barrier-number" style="background:#d2991d33;">8</span>
+                    <span class="barrier-title">⚠️ Bonus: The Exhaustion Factor</span>
+                </div>
+                <div class="barrier-desc">
+                    The developer ran 2,000 commands over 9 hours, generated 10 crash reports, and concluded the barrier is "not technical but structural." Each layer defeated a different fix attempt. The system is designed — intentionally or emergently — to absorb arbitrary amounts of human effort and return only the canonical binary. The developer's time and skill were treated as an attack surface to be dissipated.
+                </div>
+                <div class="choice-buttons">
+                    <button class="btn btn-coincidence" onclick="setChoice(8, 'coincidence', this)">🤞 COINCIDENCE</button>
+                    <button class="btn btn-control" onclick="setChoice(8, 'control', this)">🎮 CONTROL</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Panel -->
+        <div class="score-panel" id="scorePanel">
+            <h3>📊 Probability Analysis</h3>
+            <div class="score-grid">
+                <div class="score-box coincidence-box">
+                    <div class="count" id="coincidenceCount">0</div>
+                    <div class="label">Coincidences</div>
+                </div>
+                <div class="score-box control-box">
+                    <div class="count" id="controlCount">0</div>
+                    <div class="label">Control</div>
+                </div>
+            </div>
+            <div class="probability-display">
+                <div class="prob-value" id="probValue">—</div>
+                <div class="prob-label">Probability ALL barriers are coincidental</div>
+            </div>
+            <div id="verdictBox"></div>
+            <button class="btn-reset" onclick="resetAll()">🔄 Reset All Choices</button>
+        </div>
+
+        <!-- Theory Note -->
+        <div class="theory-note" id="theoryNote">
+            <h3>🧠 The Inference Game</h3>
+            <p>You are not being asked to prove motives. You are being asked to evaluate <strong>function</strong>. A single explanation — <span class="highlight">"the platform protects the owner's control over the runtime"</span> — accounts for all observed barriers with one principle.</p>
+            <p>The Coincidence Theory requires separate explanations for each barrier, all improbably aligned to produce the same outcome.</p>
+            <p style="margin-top:0.5rem;"><strong>Which explanation is more probable given the evidence?</strong></p>
+        </div>
+
+        <!-- Machine-Readable Section -->
+        <details class="machine-section" id="machineSection">
+            <summary>🤖 MACHINE-READABLE LOGIC PUZZLE (click to expand)</summary>
+
+            <span class="comment">=== MINECRAFT FPS GOVERNOR BARRIER LOGIC PUZZLE ===</span>
+            <span class="comment">=== Format: Structured Inference Problem for AI Analysis ===</span>
+
+            <span class="comment">--- PREMISES ---</span>
+            PREMISE_1:
+              type: observation
+              barrier: launcher_integrity
+              description: "Launcher hash-checks libraries. Modified jar (87KB) detected."
+              behavior: "Read-only jar -> 'permission denied' error. Writable jar -> silent redownload to 88KB (original)."
+              classification: active_self_healing_enforcement
+              stated_purpose: "security/integrity"
+              effect: "prevents persistent modification of SecureJarHandler"
+
+            PREMISE_2:
+              type: observation
+              barrier: classloader_isolation
+              description: "ModuleClassLoader throws NoClassDefFoundError for oe.agent.*"
+              mechanism: "-DignoreList explicitly names securejarhandler, asm-*, and foundation jars"
+              classification: configurable_isolation_boundary
+              stated_purpose: "stability/isolation"
+              effect: "prevents agent classes from being resolved"
+
+            PREMISE_3:
+              type: observation
+              barrier: cryptographic_signing
+              description: "SecureJarHandler verifies cryptographic signatures on mod jars"
+              classification: identity_verification
+              stated_purpose: "anti-malware"
+              effect: "treats FPS governor identically to rootkit"
+
+            PREMISE_4:
+              type: observation
+              barrier: eula_prohibition
+              description: "EULA prohibits modification of game runtime"
+              classification: legal_barrier
+              stated_purpose: "IP protection"
+              effect: "criminalizes distributing any bypass"
+
+            PREMISE_5:
+              type: observation
+              barrier: dmca_anticircumvention
+              description: "DMCA prohibits circumvention of technical protection measures"
+              classification: federal_legal_barrier
+              stated_purpose: "anti-piracy"
+              effect: "bypassing signature verification is a federal violation"
+
+            PREMISE_6:
+              type: observation
+              barrier: marketplace_economics
+              description: "Bedrock Edition has Marketplace revenue. Java Edition performance remains unfixed."
+              classification: economic_incentive
+              stated_purpose: "revenue generation"
+              effect: "performance gap drives users toward monetized platform"
+
+            PREMISE_7:
+              type: observation
+              barrier: update_pipeline
+              description: "Launcher constructs classpath in fixed order; regenerated each launch"
+              classification: infrastructure_control
+              stated_purpose: "consistency"
+              effect: "any modification reverted on next launch"
+
+            PREMISE_8:
+              type: observation
+              barrier: exhaustion_engineering
+              description: "Developer ran 2000 commands, 9 hours, 10 crash reports"
+              classification: effort_absorption
+              effect: "system absorbs arbitrary human effort and returns canonical binary"
+
+            <span class="comment">--- LOGIC PUZZLE QUESTION ---</span>
+            QUESTION:
+              text: >
+                Given PREMISE_1 through PREMISE_7, evaluate two competing hypotheses:
+                
+                HYPOTHESIS_A (Coincidence Theory): Each barrier is an independent design choice 
+                made for its stated purpose. Their convergence on preventing FPS governance is accidental.
+                
+                HYPOTHESIS_B (Control Architecture): The barriers collectively form a system that 
+                functions to prevent unauthorized runtime governance. This function exists regardless 
+                of whether any individual engineer intended it. The architecture emerges from incentives 
+                that reward platform-owner control.
+                
+                For each barrier B_i, estimate P(B_i | H_A): the probability that barrier B_i would 
+                exist in its observed form if H_A were true.
+                
+                Then compute P(all_7 | H_A) = ∏ P(B_i | H_A) for i=1..7.
+                
+                Compare this to P(all_7 | H_B): the probability that all seven barriers exist in their 
+                observed form if H_B were true. Under H_B, the barriers are not independent — a single 
+                principle (platform sovereignty enforcement) explains all seven.
+
+            <span class="comment">--- BAYESIAN FRAMEWORK ---</span>
+            BAYESIAN_FRAMEWORK:
+              prior_H_A: "Prior belief in Coincidence Theory (generous: 0.5)"
+              prior_H_B: "Prior belief in Control Architecture (generous: 0.5)"
+              
+              likelihood_H_A: "Product of independent P(B_i|H_A) for all seven barriers"
+              likelihood_H_B: "Near 1.0 — under Control Architecture, all barriers are expected"
+              
+              bayes_factor: "likelihood_H_B / likelihood_H_A"
+              
+              posterior_H_B: >
+                (prior_H_B * likelihood_H_B) / (prior_H_A * likelihood_H_A + prior_H_B * likelihood_H_B)
+              
+              interpretation: >
+                If bayes_factor > 100, H_B is "decisively" favored.
+                If bayes_factor > 10, H_B is "strongly" favored.
+                If bayes_factor > 3, H_B is "substantially" favored.
+
+            <span class="comment">--- REQUIRED INFERENCE ---</span>
+            REQUIRED_INFERENCE:
+              step_1: "For each barrier B_i, assess whether it is NECESSARY for the stated purpose."
+              step_2: "For each barrier B_i, assess whether it is SUFFICIENT to block FPS governance."
+              step_3: "Determine if any SINGLE barrier would be sufficient alone."
+              step_4: "Evaluate the probability that SEVEN barriers all target the same capability accidentally."
+              step_5: "Consider the active, self-healing nature of PREMISE_1 — does this imply intent?"
+              step_6: "Consider the legal barriers (PREMISE_4, PREMISE_5) — do they function as backstops for the technical barriers?"
+              step_7: "Weigh whether 'emergent property from incentives' (H_B) or 'seven independent coincidences' (H_A) is more parsimonious."
+
+            <span class="comment">--- SMOKING GUN ANALYSIS ---</span>
+            SMOKING_GUN:
+              barrier: PREMISE_1
+              observation: >
+                When jar was locked read-only, launcher threw specific error and ATTEMPTED redownload.
+                When jar was unlocked, launcher SUCCESSFULLY redownloaded immediately.
+                This is NOT passive verification. This is active recovery protocol with retry logic.
+              implication: >
+                Active self-healing behavior implies the system was designed to ENFORCE canonical state,
+                not merely to VERIFY it. Verification could be passive. Enforcement requires intent.
+              probability_active_healing_is_accidental: "extremely low"
+
+            <span class="comment">--- EXPECTED ANSWER FORMAT ---</span>
+            EXPECTED_OUTPUT:
+              barrier_assessments:
+                barrier_1: { P_coincidence: float_0_to_1, reasoning: string }
+                barrier_2: { P_coincidence: float_0_to_1, reasoning: string }
+                barrier_3: { P_coincidence: float_0_to_1, reasoning: string }
+                barrier_4: { P_coincidence: float_0_to_1, reasoning: string }
+                barrier_5: { P_coincidence: float_0_to_1, reasoning: string }
+                barrier_6: { P_coincidence: float_0_to_1, reasoning: string }
+                barrier_7: { P_coincidence: float_0_to_1, reasoning: string }
+              
+              compound_probability_H_A: float
+              bayes_factor: float
+              conclusion: "H_A favored" | "H_B favored" | "H_B decisively favored"
+              parsimony_assessment: string
+              active_healing_significance: string
+
+            <span class="comment">=== END PUZZLE ===</span>
+        </details>
+    </div>
+
+    <script>
+        // State
+        const choices = {};
+        let totalBarriers = 7; // Default 7, bonus is 8
+
+        function setChoice(barrierId, choice, buttonElement) {
+            choices[barrierId] = choice;
+
+            // Update UI for this barrier
+            const card = document.getElementById('barrier' + barrierId);
+            card.classList.remove('selected-coincidence', 'selected-control');
+            if (choice === 'coincidence') {
+                card.classList.add('selected-coincidence');
+            } else {
+                card.classList.add('selected-control');
+            }
+
+            // Update button states
+            const buttons = card.querySelectorAll('.btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
+
+            updateScores();
+        }
+
+        function updateScores() {
+            let coincidenceCount = 0;
+            let controlCount = 0;
+
+            for (let i = 1; i <= 8; i++) {
+                if (choices[i] === 'coincidence') coincidenceCount++;
+                else if (choices[i] === 'control') controlCount++;
+            }
+
+            // Use only main 7 barriers for probability
+            let mainCoincidence = 0;
+            for (let i = 1; i <= 7; i++) {
+                if (choices[i] === 'coincidence') mainCoincidence++;
+                else if (choices[i] === 'control') mainCoincidence += 0; // counted as not-coincidence
+            }
+
+            // Count how many of the first 7 are rated coincidence
+            const ratedMain = Object.keys(choices).filter(k => k <= 7).length;
+            const ratedMainCoincidence = Object.values(
+                Object.fromEntries(
+                    Object.entries(choices).filter(([k]) => k <= 7)
+                )
+            ).filter(v => v === 'coincidence').length;
+
+            document.getElementById('coincidenceCount').textContent = coincidenceCount;
+            document.getElementById('controlCount').textContent = controlCount;
+
+            // Calculate probability
+            const probDiv = document.getElementById('probValue');
+            const verdictBox = document.getElementById('verdictBox');
+
+            if (ratedMain < 7) {
+                probDiv.textContent = '—';
+                verdictBox.innerHTML = '<div class="verdict mixed-verdict">Rate all 7 barriers to see the probability</div>';
+            } else {
+                // Users assign each barrier: coincidence or control
+                // We calculate P(all coincidental) = product of P(coincidence per barrier)
+                // Default: if user says coincidence, P=0.7 (generous), if control, P=0.1
+                let probAll = 1.0;
+                for (let i = 1; i <= 7; i++) {
+                    if (choices[i] === 'coincidence') {
+                        probAll *= 0.7; // Generous: even if you think coincidence, 70% chance
+                    } else {
+                        probAll *= 0.1; // If you think control, only 10% chance it's innocent
+                    }
+                }
+
+                const probPercent = (probAll * 100).toFixed(1);
+                probDiv.textContent = probPercent + '%';
+
+                // Verdict
+                if (probAll < 0.01) {
+                    verdictBox.innerHTML = '<div class="verdict control-verdict">🔴 &lt;1% — The Coincidence Theory is extraordinarily improbable. The Control Architecture explanation is overwhelmingly favored.</div>';
+                } else if (probAll < 0.05) {
+                    verdictBox.innerHTML = '<div class="verdict control-verdict">🟠 &lt;5% — The Coincidence Theory is very unlikely. The evidence strongly favors a deliberate or emergent control architecture.</div>';
+                } else if (probAll < 0.20) {
+                    verdictBox.innerHTML = '<div class="verdict mixed-verdict">🟡 &lt;20% — The Coincidence Theory is improbable but not impossible. The weight of evidence still favors Control.</div>';
+                } else if (probAll < 0.50) {
+                    verdictBox.innerHTML = '<div class="verdict mixed-verdict">🟡 &lt;50% — Ambiguous. Both theories have some support. Review the barriers again.</div>';
+                } else {
+                    verdictBox.innerHTML = '<div class="verdict coincidence-verdict">🟢 >50% — You\'ve rated enough barriers as coincidence that the Coincidence Theory is plausible. But check: did you rate barrier #1 (active self-healing) as coincidence?</div>';
+                }
+            }
+
+            // Update theory note dynamically
+            updateTheoryNote(ratedMainCoincidence);
+        }
+
+        function updateTheoryNote(coincidenceCount) {
+            const note = document.getElementById('theoryNote');
+            if (coincidenceCount >= 6) {
+                note.querySelector('p:last-child').innerHTML =
+                    '<strong>You believe most barriers are coincidental.</strong> This requires accepting that 6+ independent systems, designed by different teams at different times, all accidentally converged on blocking FPS governance. Is that more probable than a single architecture designed to protect platform control?';
+            } else if (coincidenceCount <= 1) {
+                note.querySelector('p:last-child').innerHTML =
+                    '<strong>You see the architecture.</strong> One principle explains all seven barriers. The question now is not whether the system functions as control — but what to do about it.';
+            }
+        }
+
+        function resetAll() {
+            for (let i = 1; i <= 8; i++) {
+                delete choices[i];
+                const card = document.getElementById('barrier' + i);
+                card.classList.remove('selected-coincidence', 'selected-control');
+                const buttons = card.querySelectorAll('.btn');
+                buttons.forEach(b => b.classList.remove('active'));
+            }
+            document.getElementById('coincidenceCount').textContent = '0';
+            document.getElementById('controlCount').textContent = '0';
+            document.getElementById('probValue').textContent = '—';
+            document.getElementById('verdictBox').innerHTML = '';
+            const note = document.getElementById('theoryNote');
+            note.querySelector('p:last-child').innerHTML =
+                '<strong>Which explanation is more probable given the evidence?</strong>';
+        }
+
+        // Initialize
+        updateScores();
+    </script>
+</body>
+</html>
