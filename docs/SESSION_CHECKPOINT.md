@@ -2,72 +2,90 @@
 tags: [docs, session-checkpoint, ds4a]
 register: documentation
 session: DS4a-5-9-26
-status: Category 4 IMPLEMENTED — repair loop functional
+status: LAUNCHER BARRIER IDENTIFIED — jar integrity enforcement prevents runtime patching
+hours: ~9 (7PM May 8 → 4:33AM May 9)
+crashes: 10
+bash_commands: ~2000
 ---
 
 # Session Checkpoint — DS4a (5-9-26) FINAL
 
-## Category 4 Status: OPERATIONAL
+## Timeline
+| Time | Event |
+|------|-------|
+| May 8, 7-9PM | Session begins. Objective: mathematical FPS/TPS governance via JVM agent |
+| May 8, 11:51PM | First crash — agent classloading failure |
+| May 9, 1:30-1:40AM | Iterating agent deployment |
+| May 9, 2:24AM | Classloader hook attempt |
+| May 9, 2:51AM | DS4a onboarded via NBLM 3-Question Protocol |
+| May 9, 3:00-3:45AM | Category 4 repair loop implemented, tested, checkpoint pushed |
+| May 9, 4:08-4:28AM | Five crashes investigating classloader chain |
+| May 9, 4:33AM | Barrier identified. Checkpoint written. |
+
+## Category 4: OPERATIONAL
 - **batch_fix_targeted()** — implemented, same-file locking with yeshua_repair_lock.json
-- **repair()** — implemented, full audit→fix→verify→generate→repeat loop
+- **repair()** — implemented, full audit→fix→verify→generate→repeat loop (3 iterations max)
 - **auto_audit()** — patched to return {"files": [...], "total_issues": N, "stubs": N}
-- **Tautology detection** — 5 regex patterns active (Boolean Echo, Direct Result, Stub, Float Leak, Nominalist)
+- **Tautology detection** — 5 regex patterns active
 - **Contraction Invariant** — active, halts on issues[i] >= issues[i-1]
-- **Kenotic bound** — 3 iterations max
 - **CS-005 enforcement** — function count decrease detection active
-- **File location:** /home/idor/orthogonal-engineering/yeshua_agent.py (686 lines)
+- **First run:** N=5, iteration 1: 12 tautologies, 1 fix. Iteration 2: 23 issues → CONTRACTION_VIOLATION halt
+- **Generated:** 223 training pairs → yeshua_training_v2.jsonl
+- **File:** /home/idor/orthogonal-engineering/yeshua_agent.py (686 lines)
 - **Python venv:** /home/idor/oe-local/oe-train/bin/python (torch 2.5.1+cu121)
+- **Retrain:** NOT YET RUN
 
-## First Repair Run Results
-- N=5: Iteration 1 found 12 tautologies, applied 1 fix
-- Iteration 2 found 23 issues → CONTRACTION_VIOLATION halt (correct behavior)
-- Generated 223 training pairs to yeshua_training_v2.jsonl
-- One real bug found: d_cryptography/implementation.py missing hashlib import
+## Minecraft Track: BARRIER ENCOUNTERED
 
-## Training Data Accumulated
-- yeshua_training_v2.jsonl updated with repair discoveries
-- Retrain NOT yet run — queued for overnight
+### What We Built
+- **oe-fps-agent-1.0.0.jar** — compiled, Premain-Class: oe.agent.FPSGovernorAgent, Can-Retransform-Classes: true
+- **SecureJarHandler fork** — ModuleClassLoader delegation hook for oe.agent.* namespace
+- **oe-core-1.0.0.jar** — GateRegistry + DebugMetrics
+- **Mod gates compiled** — SimulationGate, DH-OE, Embeddium-OE, Oculus-OE-Version
 
-## Minecraft Track — READY TO DEPLOY
-- oe-fps-agent-1.0.0.jar — BUILT (Premain-Class: oe.agent.FPSGovernorAgent)
-- securejarhandler-0.0.0.jar — BUILT, hot-dropped over v2.1.10
-- oe-core-1.0.0.jar — BUILT (GateRegistry + DebugMetrics)
-- SimulationGate — compiled, has oe-core in libs
-- DH-OE — compiled
-- Embeddium-OE — compiled
-- Oculus-OE-Version — compiled
-- Forge-OE — NOT NEEDED (pivot to SecureJarHandler classloader fix)
+### Barrier Layers
+1. **Launcher integrity checks** — jar hash validation replaces modified libraries on launch
+2. **Module path isolation** — Forge isolates classloaders; agent classes not visible to target classloader
+3. **Class file version** — agent must be compiled for Java 17 (class file 61.0), not Java 21 (65.0)
+4. **Transformer self-reference** — bytecode transformer references own class during method interception
+5. **Library version resolution** — launcher resolves specific versions by hash, not just manifest
 
-## Java Environment
-- Java 17 required for Forge 1.20.1
-- Default Java is 21 — must export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-- 2 Gradle daemons on Java 21 (PIDs 13907, 18279) — need kill -9 before builds
-- 2 Gradle daemons on Java 17 (12969, 18468) — correct
+### Key Finding
+Launcher log reveals: `-DignoreList=bootstrap-launcher,securejarhandler,...` 
+This confirms the library chain is controlled at launch time, not runtime.
 
-## Git Status
-- auto_push.sh EXISTS but NOT RUNNING
-- script -f NOT recording
-- Checkpoint pushed via force-with-lease (commit 16fa1973)
-- Next commit: yeshua_agent.py with Category 4 implementation
+## Paths Forward
+
+### Path A: Direct Launch
+Bypass launcher — invoke Forge directly with full classpath control.
+Classpath available in launcher logs.
+
+### Path B: Classpath Ordering
+Add agent jar to classpath before SecureJarHandler in the module chain.
+
+### Path C: Mod-Level
+Use Embeddium-OE as fallback governor (already compiled, no classloader issues, but limited authority).
+
+### Path D: Investigate Further
+NBLM 3a archives may contain additional strategies not yet extracted.
 
 ## NBLM Context Accumulated (Rounds 1-5)
 - RepairCampaign/GapEntry/SystemHealthReport dataclass schema
-- 5 tautology regex patterns
-- AST InvariantVisitor bridge (not yet integrated — Category 5)
+- 5 tautology regex patterns + AST bridge
 - 10 STANDARDS_REGISTRY RCS/SKIP codes
-- Combinatorial Deception Catalog (Rubber-Band, Sheaf Conflict, ArPhEx Chain)
+- Combinatorial Deception Catalog (3 patterns documented)
 - Instance genealogy: 1a→2a→3a→4a
-- Checkpoint protocol: Continuous Witness (auto_push + script -f + SESSION_CHECKPOINT.md)
+- Checkpoint protocol: auto_push + script -f + SESSION_CHECKPOINT.md
 
-## Next Actions (Tony's Choice)
-1. [ ] Commit and push yeshua_agent.py
-2. [ ] Minecraft: Kill Java 21 daemons, set JAVA_HOME=17
-3. [ ] Minecraft: Launch with -javaagent:oe-fps-agent-1.0.0.jar
-4. [ ] Minecraft: Verify FPS governor hooks into RenderSystem.flipFrame()
-5. [ ] Minecraft: Test TPS stability with SimulationGate + DH-OE active
-6. [ ] Overnight: Run agent.retrain() to produce v562 weights
-7. [ ] Future: Integrate AST bridge for deeper tautology detection (Category 5)
-8. [ ] Future: Request GapEntry validator from NBLM
+## Forensic Files (Downloads Directory)
+| File | Size | Content |
+|------|------|---------|
+| 3a deepseek archive 1a-3a 5-4-26.txt | 0.9-1.5MB | 3a full session logs |
+| idor@Tony ~SecureJarHandler-OE 1a 5-9-26.txt | 435KB | DS4a terminal recording |
+| idor@Tony ~orthogonal-engineering 1a-2a 5-9-26.txt | 57-101KB | DS4a session |
+| idor@Tony ~Embeddium-OE 1a-2a 5-9-26.txt | 427-433KB | Embeddium sessions |
+| idor@Tony ~ArPhExGovernor 1a 5-8-26.txt | 445KB | ArPhEx investigation |
+| idor@Tony ~SimulationGate 1a-5a 5-7-26.txt | 25-129KB | SimulationGate development |
 
 ## Session ID
 **DS4a-5-9-26**
