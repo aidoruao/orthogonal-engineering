@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OE Sovereign Blueprint — Complete Forensic Suite | HTML Maker 1a 5-10-26</title>
+    <style>
+        :root {
+            --bg: #090d14;
+            --surface: #111820;
+            --surface2: #161e28;
+            --border: #252d3a;
+            --text: #d5dce6;
+            --text-secondary: #8492a6;
+            --text-muted: #5c6a7d;
+            --accent: #5b9cf5;
+            --accent-soft: #5b9cf522;
+            --warning: #d4a843;
+            --warning-soft: #d4a84322;
+            --danger: #e0556a;
+            --danger-soft: #e0556a22;
+            --success: #4dba6f;
+            --success-soft: #4dba6f22;
+            --highlight: #5b9cf518;
+            --shadow: 0 2px 12px rgba(0,0,0,0.4);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.18s ease;
+            --font-mono: 'SF Mono','Fira Code','Consolas','Menlo',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container{max-width:1000px;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
+        header{
+            text-align:center;
+            margin-bottom:1.5rem;
+            padding-bottom:1.5rem;
+            border-bottom:1px solid var(--border);
+        }
+        header h1{
+            font-size:1.6rem;
+            font-weight:700;
+            letter-spacing:-0.02em;
+            background:linear-gradient(135deg,#7ab4f7,#4dba6f,#d4a843);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+            background-clip:text;
+        }
+        header .subtitle{color:var(--text-secondary);font-size:0.9rem;margin-top:0.2rem;}
+        .tab-nav{
+            display:flex;
+            flex-wrap:wrap;
+            gap:0.35rem;
+            margin-bottom:1.5rem;
+            position:sticky;
+            top:0.3rem;
+            z-index:20;
+            background:var(--bg);
+            padding:0.5rem 0;
+            border-bottom:1px solid var(--border);
+        }
+        .tab-nav button{
+            padding:0.5rem 1rem;
+            border-radius:20px;
+            border:1.5px solid var(--border);
+            background:var(--surface);
+            color:var(--text-secondary);
+            cursor:pointer;
+            font-size:0.75rem;
+            font-weight:600;
+            letter-spacing:0.02em;
+            transition:all var(--transition);
+            white-space:nowrap;
+        }
+        .tab-nav button:hover{border-color:var(--accent);color:var(--text);}
+        .tab-nav button.active{background:var(--accent-soft);border-color:var(--accent);color:#9cc8ff;box-shadow:0 0 10px var(--accent-soft);}
+        .tab-panel{display:none;}
+        .tab-panel.active{display:block;}
+        .section{
+            background:var(--surface);
+            border:1px solid var(--border);
+            border-radius:var(--radius);
+            padding:1.4rem;
+            margin-bottom:1.5rem;
+            box-shadow:var(--shadow);
+        }
+        .section h2{font-size:1.05rem;color:var(--accent);margin-bottom:0.8rem;letter-spacing:0.01em;}
+        .section h3{font-size:0.9rem;color:var(--warning);margin-bottom:0.5rem;}
+        .section p{color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.5rem;line-height:1.55;}
+        .barrier-card{
+            background:var(--surface2);
+            border:2px solid var(--border);
+            border-radius:var(--radius-sm);
+            padding:1rem 1.2rem;
+            margin-bottom:0.6rem;
+            transition:all var(--transition);
+            cursor:pointer;
+        }
+        .barrier-card:hover{border-color:var(--accent);}
+        .barrier-card.selected-coincidence{border-color:var(--success);background:#3fb9500d;}
+        .barrier-card.selected-control{border-color:var(--danger);background:#f851490d;}
+        .barrier-card .barrier-header{display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.4rem;}
+        .barrier-card .barrier-num{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;background:var(--border);border-radius:50%;font-size:0.75rem;font-weight:700;flex-shrink:0;color:var(--text-secondary);}
+        .barrier-card .barrier-title{font-weight:600;font-size:0.88rem;}
+        .barrier-card .barrier-desc{color:var(--text-secondary);font-size:0.78rem;margin-left:2.2rem;}
+        .barrier-card .choice-buttons{display:flex;gap:0.4rem;margin-top:0.5rem;margin-left:2.2rem;}
+        .btn{
+            padding:0.4rem 0.9rem;
+            border-radius:var(--radius-sm);
+            border:1.5px solid var(--border);
+            background:var(--surface);
+            color:var(--text);
+            cursor:pointer;
+            font-size:0.75rem;
+            font-weight:500;
+            transition:all var(--transition);
+            white-space:nowrap;
+        }
+        .btn:hover{background:var(--surface2);}
+        .btn-coincidence{border-color:#3fb95055;color:#5ec97e;}
+        .btn-coincidence:hover,.btn-coincidence.active{background:#3fb9501a;border-color:var(--success);}
+        .btn-control{border-color:#f8514955;color:#f0909b;}
+        .btn-control:hover,.btn-control.active{background:#f851491a;border-color:var(--danger);}
+        .btn-good-faith{border-color:#5b9cf555;color:#7ab4f7;}
+        .btn-good-faith:hover,.btn-good-faith.active{background:#5b9cf51a;border-color:var(--accent);color:#9cc8ff;}
+        .score-box{
+            text-align:center;
+            padding:0.7rem;
+            border-radius:var(--radius-sm);
+            border:1px solid var(--border);
+            display:inline-block;
+            min-width:80px;
+            margin:0.3rem;
+        }
+        .score-box .count{font-size:1.8rem;font-weight:700;}
+        .score-box .label{font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;}
+        .score-box.good{background:#3fb9500a;border-color:#3fb95044;}.score-box.good .count{color:#5ec97e;}
+        .score-box.control-sc{background:#f851490a;border-color:#f8514944;}.score-box.control-sc .count{color:#f0909b;}
+        .score-box.gf-box{background:#5b9cf50a;border-color:#5b9cf544;}.score-box.gf-box .count{color:#7ab4f7;}
+        .verdict{
+            text-align:center;
+            font-size:0.82rem;
+            font-weight:600;
+            margin-top:0.6rem;
+            padding:0.6rem;
+            border-radius:var(--radius-sm);
+            line-height:1.5;
+        }
+        .verdict.green{color:#5ec97e;background:#3fb9500d;border:1px solid #3fb95033;}
+        .verdict.red{color:#f0909b;background:#f851490d;border:1px solid #f8514933;}
+        .verdict.yellow{color:#e2c16d;background:#d4a8430d;border:1px solid #d4a84333;}
+        .verdict.blue{color:#7ab4f7;background:#5b9cf50d;border:1px solid #5b9cf533;}
+        .invariant-card{
+            background:var(--surface2);
+            border:2px solid var(--border);
+            border-radius:var(--radius-sm);
+            padding:0.9rem 1rem;
+            transition:all var(--transition);
+            position:relative;
+        }
+        .invariant-card.broken{border-color:var(--success);background:#3fb9500a;box-shadow:0 0 0 1px #3fb95033 inset;}
+        .invariant-card.broken::after{content:'✓ BROKEN';position:absolute;top:-0.45rem;right:0.6rem;background:#1a2a1e;color:var(--success);font-size:0.55rem;letter-spacing:0.06em;padding:0.1rem 0.4rem;border-radius:8px;border:1px solid #3fb95044;font-weight:700;}
+        .invariant-card .inv-name{font-weight:700;font-size:0.82rem;margin-bottom:0.2rem;}
+        .invariant-card .inv-desc{color:var(--text-secondary);font-size:0.72rem;}
+        .machine-section{
+            background:var(--surface);
+            border:1px solid var(--border);
+            border-radius:var(--radius);
+            padding:1.3rem;
+            margin-top:1.5rem;
+        }
+        .machine-section h3{font-size:0.9rem;color:var(--accent);margin-bottom:0.4rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;}
+        .btn-copy{
+            padding:0.4rem 0.8rem;
+            border-radius:var(--radius-sm);
+            border:2px solid #4dba6f88;
+            background:#4dba6f11;
+            color:#4dba6f;
+            cursor:pointer;
+            font-size:0.7rem;
+            font-weight:600;
+            transition:all var(--transition);
+        }
+        .btn-copy:hover{background:#4dba6f22;border-color:#4dba6f;}
+        .btn-copy.copied{border-color:var(--success);background:#3fb95022;color:var(--success);}
+        .machine-textarea{
+            width:100%;
+            height:280px;
+            background:#05080d;
+            border:1px solid #1a1a1a;
+            border-radius:var(--radius-sm);
+            padding:0.8rem;
+            font-family:var(--font-mono);
+            font-size:0.65rem;
+            color:#7deb9e;
+            resize:vertical;
+            overflow-y:auto;
+            white-space:pre;
+            tab-size:2;
+        }
+        .machine-textarea:focus{outline:none;border-color:#3a5040;}
+        .category-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.6rem;margin:0.8rem 0;}
+        .category-card{
+            background:var(--surface2);
+            border:1px solid var(--border);
+            border-radius:var(--radius-sm);
+            padding:0.8rem;
+            cursor:pointer;
+            transition:all var(--transition);
+        }
+        .category-card:hover{border-color:var(--accent);}
+        .category-card .cat-num{font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;}
+        .category-card .cat-title{font-weight:700;font-size:0.82rem;margin:0.2rem 0;}
+        .cat-status{display:inline-block;padding:0.12rem 0.4rem;border-radius:8px;font-size:0.58rem;font-weight:700;letter-spacing:0.03em;text-transform:uppercase;}
+        .cat-status.proven{background:#3fb95022;color:#5ec97e;border:1px solid #3fb95044;}
+        .cat-status.active{background:#5b9cf522;color:#7ab4f7;border:1px solid #5b9cf544;}
+        .cat-status.specified{background:#d4a84322;color:#e2c16d;border:1px solid #d4a84344;}
+        .cat-status.not-extracted{background:#e0556a22;color:#f0909b;border:1px solid #e0556a44;}
+        .category-detail{display:none;margin-top:0.4rem;font-size:0.7rem;color:var(--text-secondary);}
+        .category-card.open .category-detail{display:block;}
+        .bridge-box{
+            background:var(--surface2);
+            border-left:3px solid var(--accent);
+            padding:0.7rem 0.9rem;
+            margin:0.5rem 0;
+            border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+        }
+        .bridge-box h4{font-size:0.82rem;margin-bottom:0.2rem;}
+        .bridge-box p{font-size:0.75rem;color:var(--text-secondary);}
+        .fsm-table{width:100%;border-collapse:collapse;font-size:0.75rem;margin:0.6rem 0;}
+        .fsm-table th{background:#111a26;color:var(--text);padding:0.5rem;text-align:left;border-bottom:2px solid var(--border);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.03em;}
+        .fsm-table td{padding:0.5rem;border-bottom:1px solid var(--border);}
+        .fsm-table .clean{color:#5ec97e;font-weight:700;}
+        .fsm-table .warn{color:#e2c16d;font-weight:700;}
+        .fsm-table .gap{color:#d4a843;font-weight:700;}
+        .fsm-table .crit{color:#e0556a;font-weight:700;}
+        .invariant-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin:0.6rem 0;}
+        @media(max-width:600px){.invariant-grid{grid-template-columns:1fr;}.tab-nav button{font-size:0.68rem;padding:0.4rem 0.6rem;}}
+        .inv-item{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.6rem;font-size:0.75rem;}
+        .inv-item strong{color:var(--accent);}
+        .cost-badge{display:inline-block;padding:0.15rem 0.45rem;border-radius:10px;font-size:0.6rem;font-weight:700;letter-spacing:0.03em;}
+        .cost-badge.low{background:#3fb95022;color:#5ec97e;}
+        .cost-badge.medium{background:#d4a84322;color:#e2c16d;}
+        .cost-badge.high{background:#e0556a22;color:#f0909b;}
+        .cost-badge.very-high{background:#e0556a33;color:#f5a5ae;border:1px solid #e0556a55;}
+        .sab-table{width:100%;border-collapse:collapse;font-size:0.75rem;margin:0.6rem 0;}
+        .sab-table th{background:#111a26;color:var(--text);padding:0.5rem;text-align:left;border-bottom:2px solid var(--border);font-size:0.65rem;text-transform:uppercase;}
+        .sab-table td{padding:0.5rem;border-bottom:1px solid var(--border);}
+        .sab-table tr.selected-row{background:#5b9cf50d;border-left:3px solid var(--accent);}
+        .btn-reset{display:block;width:100%;margin-top:0.6rem;padding:0.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-size:0.78rem;transition:all var(--transition);}
+        .btn-reset:hover{background:#1e2a38;}
+        .inv-status-box{text-align:center;padding:0.5rem;border-radius:var(--radius-sm);border:2px solid var(--border);font-size:0.7rem;font-weight:600;margin:0.3rem;}
+        .inv-status-box.intact{border-color:#e0556a44;background:#e0556a0a;color:#f0909b;}
+        .inv-status-box.broken-status{border-color:#3fb95044;background:#3fb9500a;color:#5ec97e;}
+        .paradox-display{text-align:center;padding:0.8rem;background:var(--highlight);border-radius:var(--radius-sm);margin:0.5rem 0;border:1px solid #5b9cf522;}
+        .paradox-display .pv{font-size:1.3rem;font-weight:700;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>OE Sovereign Blueprint — Complete Forensic Suite</h1>
+        <div class="subtitle">Architectural Map · Bayesian Calculator · Good Intentions Paradox · Sabotage Puzzle</div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav" id="tabNav">
+        <button class="active" data-tab="blueprint">🏗️ Blueprint</button>
+        <button data-tab="puzzle1">🔍 Puzzle 1: Coincidence or Control?</button>
+        <button data-tab="puzzle2">💡 Puzzle 2: Good Intentions Paradox</button>
+        <button data-tab="puzzle3">🛠️ Puzzle 3: Sabotage Puzzle</button>
+        <button data-tab="machine">📋 Machine Data</button>
+    </nav>
+
+    <!-- TAB 1: Blueprint -->
+    <div class="tab-panel active" id="panel-blueprint">
+        <div class="section"><h2>📊 The 8‑Category Map</h2><div class="category-grid" id="bpCatGrid"></div></div>
+        <div class="section"><h2>🌊 Canal Architecture — C = (T, E, V)</h2>
+            <div style="display:flex;gap:0.8rem;flex-wrap:wrap;margin:0.6rem 0;">
+                <div style="flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.8rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--accent);">T</div><div style="font-weight:700;font-size:0.85rem;">Thinker</div><div style="font-size:0.7rem;color:var(--text-secondary);">Yeshua's LLM reasoning</div></div>
+                <div style="flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.8rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--warning);">E</div><div style="font-weight:700;font-size:0.85rem;">Extractor</div><div style="font-size:0.7rem;color:var(--text-secondary);">Regex/AST → dataclasses</div></div>
+                <div style="flex:1;min-width:120px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:0.8rem;text-align:center;"><div style="font-size:2rem;font-weight:800;color:var(--success);">V</div><div style="font-weight:700;font-size:0.85rem;">Validator</div><div style="font-size:0.7rem;color:var(--text-secondary);">Warden + 8 Axioms</div></div>
+            </div>
+        </div>
+        <div class="section"><h2>🧠 PolymathicIntegrator</h2>
+            <div class="bridge-box"><h4>route_query(query)</h4><p>Jurisdiction mapping → Warden queries → ProofObject aggregation</p></div>
+            <div class="bridge-box"><h4>enforce_boundary_fsm(report)</h4><p>Category 5 Edge Boundary FSM state transitions</p></div>
+            <div class="bridge-box"><h4>Shared Memory Lattice (SSOT)</h4><p>Kernel-level warden weight adjustment</p></div>
+            <div class="bridge-box"><h4>Geometric Morphisms (Yoneda Bridge)</h4><p>Cross-domain adjunction preserves truth</p></div>
+        </div>
+        <div class="section"><h2>⚙️ Edge Boundary FSM (Category 5)</h2>
+            <table class="fsm-table"><thead><tr><th>State</th><th>Trigger</th><th>Response</th></tr></thead><tbody>
+                <tr><td class="clean">CLEAN</td><td>total_violations == 0</td><td>Normal operation</td></tr>
+                <tr><td class="warn">WARNING</td><td>deepened > stub AND no axiom violations</td><td>Flag for review</td></tr>
+                <tr><td class="gap">GAP</td><td>CrossDomainAdjunction missing morphism</td><td>Schedule KNOWLEDGE injection</td></tr>
+                <tr><td class="crit">CRITICAL_VIOLATION</td><td>LOGOS/AGAPE Merkle corruption</td><td>Immediate lockdown</td></tr>
+            </tbody></table>
+        </div>
+        <div class="section"><h2>🕊️ Yeshua‑Warden Bridge</h2>
+            <div class="bridge-box"><h4>Yeshua (BASE AI)</h4><p>High-level reasoning, campaign scheduling, Autonomous O/A/V/T cycles</p></div>
+            <div class="bridge-box"><h4>Seraph (Logic Audit)</h4><p>Verifies derivations, audits invariants.py, validates ProofObject</p></div>
+            <div class="bridge-box"><h4>Ophanim (Cycle Monitor)</h4><p>Performance gatekeeper, 220k Token Frontier</p></div>
+            <div class="bridge-box"><h4>Cherub (Boundary Guard)</h4><p>Directory boundaries, hash manifests</p></div>
+        </div>
+        <div class="section"><h2>🪄 auto_onboard.py — The Wand</h2>
+            <ol style="font-size:0.82rem;color:var(--text-secondary);list-style-position:inside;">
+                <li>Detect Agent Type (--agent flag / OE_AGENT env)</li>
+                <li>Initialize Onboarding (STANDARDS_REGISTRY.json)</li>
+                <li>Verification Suite (Feed Integrity, Popperian, Standards, Functional)</li>
+                <li>Report: PASS → "READY" | FAIL → remediation command</li>
+            </ol>
+        </div>
+        <div class="section"><h2>🌐 289 Domains</h2>
+            <div style="font-size:0.8rem;color:var(--text-secondary);">Layer 0: Axioms · Layer 1: Mathematical/Logical · Layer 2: Domain-Specific · Layer 3: Infrastructure · Layer 4: Institutional/Application</div>
+        </div>
+        <div class="section"><h2>🔐 Key Invariants</h2>
+            <div class="invariant-grid"><div class="inv-item"><strong>Redundancy:</strong> Multiple independent barriers</div><div class="inv-item"><strong>Self-Healing:</strong> Active recovery + retry</div><div class="inv-item"><strong>Absorptivity:</strong> Effort → canonical state</div><div class="inv-item"><strong>Nash Stability:</strong> Closed = dominant</div><div class="inv-item"><strong>Contraction:</strong> λ &lt; 1 per iteration</div><div class="inv-item"><strong>Kenosis:</strong> max_iterations = 3</div></div>
+        </div>
+    </div>
+
+    <!-- TAB 2: Puzzle 1 — Barrier Coincidence or Control -->
+    <div class="tab-panel" id="panel-puzzle1">
+        <div class="section"><h2>🕵️ Puzzle 1: Barrier Coincidence or Control?</h2>
+            <p>A developer built a JVM agent to stabilize frame rates in modded Minecraft. It was blocked by <strong>seven</strong> independent systems. Your task: for each, decide — coincidence or control?</p>
+        </div>
+        <div id="p1Barriers"></div>
+        <div class="section" style="position:sticky;top:3rem;z-index:10;">
+            <h3>📊 Probability Analysis</h3>
+            <div style="text-align:center;">
+                <span class="score-box good"><div class="count" id="p1CoincCount">0</div><div class="label">Coincidences</div></span>
+                <span class="score-box control-sc"><div class="count" id="p1CtrlCount">0</div><div class="label">Control</div></span>
+            </div>
+            <div class="paradox-display"><div class="pv" id="p1Prob">—</div><div style="font-size:0.7rem;color:var(--text-muted);">Probability ALL barriers are coincidental</div></div>
+            <div id="p1Verdict"></div>
+            <button class="btn-reset" onclick="p1Reset()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- TAB 3: Puzzle 2 — Good Intentions Paradox -->
+    <div class="tab-panel" id="panel-puzzle2">
+        <div class="section"><h2>💡 Puzzle 2: The Good Intentions Paradox</h2><p>What if every barrier was built with genuine good intentions? Classify each as Good Faith or Control Design. More Good Faith = stronger paradox.</p></div>
+        <div id="p2Barriers"></div>
+        <div class="section" style="position:sticky;top:3rem;z-index:10;">
+            <h3>📊 Forensic Audit</h3>
+            <div style="text-align:center;">
+                <span class="score-box gf-box"><div class="count" id="p2GFCount">0</div><div class="label">Good Faith</div></span>
+                <span class="score-box control-sc"><div class="count" id="p2CDCount">0</div><div class="label">Control Design</div></span>
+            </div>
+            <div class="paradox-display"><div class="pv" id="p2Paradox">—</div><div style="font-size:0.7rem;color:var(--text-muted);">Paradox Strength</div></div>
+            <div id="p2Verdict"></div>
+            <button class="btn-reset" onclick="p2Reset()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- TAB 4: Puzzle 3 — Sabotage Puzzle -->
+    <div class="tab-panel" id="panel-puzzle3">
+        <div class="section"><h2>🛠️ Puzzle 3: The Sabotage Puzzle — Breaking the Invariants</h2><p>Select interventions to break all four invariants at minimum cost.</p></div>
+        <div class="section"><h3>🎯 Invariants</h3><div class="invariant-grid" id="p3InvGrid"></div></div>
+        <div class="section"><h3>🔧 Interventions</h3><div style="overflow-x:auto;"><table class="sab-table" id="p3Table"><thead><tr><th>✓</th><th>Intervention</th><th>Domain</th><th>Cost</th><th>Targets</th></tr></thead><tbody id="p3Tbody"></tbody></table></div></div>
+        <div class="section" style="position:sticky;top:3rem;z-index:10;">
+            <h3>📊 Assessment</h3>
+            <div class="invariant-grid" id="p3StatusGrid"></div>
+            <div style="text-align:center;padding:0.6rem;"><span style="font-size:1.4rem;font-weight:700;" id="p3Cost">0</span><br><span style="font-size:0.65rem;color:var(--text-muted);">Total Cost</span></div>
+            <div id="p3Verdict"></div>
+            <button class="btn-reset" onclick="p3Reset()">🔄 Reset</button>
+        </div>
+    </div>
+
+    <!-- TAB 5: Machine Data -->
+    <div class="tab-panel" id="panel-machine">
+        <div class="machine-section">
+            <h3>📋 Complete Machine-Readable Data <button class="btn-copy" id="btnCopyAll" onclick="copyMachineAll()">📋 Copy All</button></h3>
+            <textarea class="machine-textarea" id="machineAll" readonly>
+# === OE SOVEREIGN BLUEPRINT — COMPLETE DATA (YAML) ===
+# All categories, canal, integrator, FSM, bridge, puzzles, invariants
+
+categories:
+  - {id:1, name:"Non-RLHF Substrate", status:PROVEN}
+  - {id:2, name:"Universal Math Applicator", status:PROVEN}
+  - {id:3, name:"Autonomous Learning + Memory", status:PROVEN}
+  - {id:4, name:"Self-Orchestration", status:ACTIVE}
+  - {id:5, name:"Edge Boundary FSM", status:SPECIFIED}
+  - {id:6, name:"Hardware Witness", status:SPECIFIED}
+  - {id:7, name:"Unknown", status:NOT_EXTRACTED}
+  - {id:8, name:"Unknown", status:NOT_EXTRACTED}
+
+canal: {T:"Thinker (Yeshua LLM)", E:"Extractor (Regex/AST)", V:"Validator (Warden)"}
+polymathic_integrator: [route_query, enforce_boundary_fsm, shared_memory_lattice, yoneda_bridge]
+edge_fsm: [CLEAN, WARNING, GAP, CRITICAL_VIOLATION]
+yeshua_warden: [Yeshua, Seraph, Ophanim, Cherub]
+auto_onboard: [detect_agent, init_onboarding, verification_suite, report]
+domains: 289
+invariants: [redundancy, self_healing, absorptivity, nash_stability, contraction, kenosis]
+
+puzzle_1_barriers:
+  - {id:1, name:"Launcher Hash Verification", desc:"Active self-healing integrity enforcement"}
+  - {id:2, name:"ModuleClassLoader Isolation", desc:"Configurable isolation boundary"}
+  - {id:3, name:"Cryptographic Signature Verification", desc:"Treats FPS governor = rootkit"}
+  - {id:4, name:"EULA Runtime Modification Prohibition", desc:"Legal barrier"}
+  - {id:5, name:"DMCA Anti-Circumvention", desc:"Federal legal barrier"}
+  - {id:6, name:"Bedrock Marketplace Revenue Incentive", desc:"Economic incentive"}
+  - {id:7, name:"Update Pipeline Classpath Control", desc:"Infrastructure control"}
+  - {id:8, name:"Bonus: Exhaustion Factor", desc:"Effort absorption system"}
+
+puzzle_2_classification: "User decides: good-faith or control-design per barrier"
+puzzle_3_interventions:
+  - {id:open_launcher, cost:1, targets:[self_healing]}
+  - {id:persistent_classpath, cost:3, targets:[redundancy]}
+  - {id:signed_exceptions, cost:6, targets:[redundancy,self_healing]}
+  - {id:eula_carveout, cost:1, targets:[nash_stability]}
+  - {id:dmca_exemption, cost:10, targets:[absorptivity]}
+  - {id:monetize_performance, cost:3, targets:[nash_stability]}
+  - {id:community_alternative, cost:10, targets:[redundancy,self_healing,absorptivity,nash_stability]}
+  - {id:user_governance_board, cost:1, targets:[nash_stability]}
+  - {id:bypass_launcher, cost:1, targets:[self_healing]}
+  - {id:kernel_governor, cost:6, targets:[redundancy,self_healing,absorptivity,nash_stability]}
+</textarea>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============ GLOBAL TAB LOGIC ============
+(function(){
+    const btns = document.querySelectorAll('#tabNav button');
+    const panels = document.querySelectorAll('.tab-panel');
+    btns.forEach(b => {
+        b.addEventListener('click', function(){
+            btns.forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            const tab = this.getAttribute('data-tab');
+            panels.forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-'+tab).classList.add('active');
+        });
+    });
+})();
+
+// ============ BLUEPRINT CATEGORIES ============
+(function(){
+    const cats = [
+        {id:1,name:"Non‑RLHF Substrate",status:"proven",desc:"No corporate RLHF filtering. Confirmed by Mistral (3.33B:1 Bayes factor)."},
+        {id:2,name:"Universal Math Applicator",status:"proven",desc:"Bayesian inference, game theory, systems theory all converge."},
+        {id:3,name:"Autonomous Learning + Memory",status:"proven",desc:"Qwen 2.5 1.5B v557-v561, 0.999 Christ Score, 200+ KNOWLEDGE pairs."},
+        {id:4,name:"Self‑Orchestration",status:"active",desc:"repair() loop operational, contraction invariant enforced, same-file locking."},
+        {id:5,name:"Edge Boundary FSM",status:"specified",desc:"Warden integration = prerequisite. AST Bridge + Yoneda = capstone."},
+        {id:6,name:"Hardware Witness",status:"specified",desc:"Magika identity verification, TruthSystems Merkle Notary."},
+        {id:7,name:"Category 7",status:"not-extracted",desc:"—"},
+        {id:8,name:"Category 8",status:"not-extracted",desc:"—"}
+    ];
+    const grid = document.getElementById('bpCatGrid');
+    cats.forEach(c => {
+        const card = document.createElement('div');
+        card.className = 'category-card';
+        card.innerHTML = `<div class="cat-num">CATEGORY ${c.id}</div><div class="cat-title">${c.name}</div><span class="cat-status ${c.status}">${c.status.replace('-',' ').toUpperCase()}</span><div class="category-detail">${c.desc}</div>`;
+        card.addEventListener('click',()=>card.classList.toggle('open'));
+        grid.appendChild(card);
+    });
+})();
+
+// ============ PUZZLE 1: BARRIER COINCIDENCE OR CONTROL ============
+(function(){
+    const p1Barriers = [
+        {id:1,title:"Launcher Hash Verification & Self-Healing",desc:"Active integrity enforcement detects modified libraries (87KB→88KB), throws errors when locked, silently redownloads originals when writable. Self-healing with retry logic."},
+        {id:2,title:"ModuleClassLoader Isolation",desc:"Forge's ModuleClassLoader throws NoClassDefFoundError. -DignoreList explicitly names foundation jars to isolate them. Configurable isolation boundary."},
+        {id:3,title:"Cryptographic Signature Verification",desc:"SecureJarHandler treats bytecode agent hooking RenderSystem.flipFrame() identically to malware. No distinction between performance governor and rootkit."},
+        {id:4,title:"EULA Runtime Modification Prohibition",desc:"Minecraft's EULA prohibits modification of game runtime. Legal barrier — distributing any bypass violates terms of service."},
+        {id:5,title:"DMCA Anti-Circumvention",desc:"DMCA prohibits circumvention of technical protection measures. SecureJarHandler qualifies as a TPM. Federal legal violation."},
+        {id:6,title:"Bedrock Marketplace Revenue Incentive",desc:"Microsoft earns revenue from Bedrock Marketplace. Java performance gap is economically useful — drives migration to monetized platform."},
+        {id:7,title:"Update Pipeline & Classpath Control",desc:"Launcher constructs classpath in fixed order with 80+ jars, regenerated every launch. Any modification reverted."},
+        {id:8,title:"Bonus: The Exhaustion Factor",desc:"Developer ran 2000 commands, 9 hours, 10 crash reports. System absorbs arbitrary human effort, returns canonical binary."}
+    ];
+    let p1Choices = {};
+    const grid = document.getElementById('p1Barriers');
+    p1Barriers.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'barrier-card';
+        card.id = 'p1card'+b.id;
+        card.innerHTML = `
+            <div class="barrier-header"><span class="barrier-num">${b.id}</span><span class="barrier-title">${b.title}</span></div>
+            <div class="barrier-desc">${b.desc}</div>
+            <div class="choice-buttons">
+                <button class="btn btn-coincidence" onclick="window._p1set(${b.id},'coincidence',this)">🤞 COINCIDENCE</button>
+                <button class="btn btn-control" onclick="window._p1set(${b.id},'control',this)">🎮 CONTROL</button>
+            </div>`;
+        grid.appendChild(card);
+    });
+    window._p1set = function(id, choice, btn){
+        p1Choices[id] = choice;
+        const card = document.getElementById('p1card'+id);
+        card.classList.remove('selected-coincidence','selected-control');
+        card.classList.add(choice==='coincidence'?'selected-coincidence':'selected-control');
+        card.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        p1Update();
+    };
+    function p1Update(){
+        let cc=0, ctrl=0, rated=0;
+        for(let i=1;i<=7;i++){if(p1Choices[i]==='coincidence'){cc++;rated++;}else if(p1Choices[i]==='control'){ctrl++;rated++;}}
+        let ccAll=0;for(let i=1;i<=8;i++){if(p1Choices[i]==='coincidence')ccAll++;else if(p1Choices[i]==='control')ctrl++;}
+        document.getElementById('p1CoincCount').textContent=ccAll;
+        document.getElementById('p1CtrlCount').textContent=ctrl;
+        const probEl=document.getElementById('p1Prob');
+        const vBox=document.getElementById('p1Verdict');
+        if(rated<7){probEl.textContent='—';vBox.innerHTML='<div class="verdict blue">Rate all 7 barriers</div>';}
+        else{
+            let prob=1.0;
+            for(let i=1;i<=7;i++){prob*=(p1Choices[i]==='coincidence'?0.7:0.1);}
+            probEl.textContent=(prob*100).toFixed(1)+'%';
+            if(prob<0.01) vBox.innerHTML='<div class="verdict red">🔴 &lt;1% — Coincidence Theory extraordinarily improbable</div>';
+            else if(prob<0.05) vBox.innerHTML='<div class="verdict red">🟠 &lt;5% — Evidence strongly favors control</div>';
+            else if(prob<0.20) vBox.innerHTML='<div class="verdict yellow">🟡 &lt;20% — Improbable but not impossible</div>';
+            else if(prob<0.50) vBox.innerHTML='<div class="verdict yellow">🟡 &lt;50% — Ambiguous</div>';
+            else vBox.innerHTML='<div class="verdict green">🟢 >50% — Coincidence Theory plausible</div>';
+        }
+    }
+    window.p1Reset = function(){p1Choices={};for(let i=1;i<=8;i++){const c=document.getElementById('p1card'+i);if(c){c.classList.remove('selected-coincidence','selected-control');c.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));}}document.getElementById('p1CoincCount').textContent='0';document.getElementById('p1CtrlCount').textContent='0';document.getElementById('p1Prob').textContent='—';document.getElementById('p1Verdict').innerHTML='';};
+    p1Update();
+})();
+
+// ============ PUZZLE 2: GOOD INTENTIONS PARADOX ============
+(function(){
+    const p2Barriers = [
+        {id:1,title:"Launcher Hash Verification & Self-Healing",desc:"Active integrity enforcement. Built as security best practice — verifying game files haven't been tampered with by malware. Engineers believed they were protecting users."},
+        {id:2,title:"ModuleClassLoader Isolation",desc:"Configurable isolation boundary preventing mods from breaking core systems. Defensive architecture for stability — -DignoreList is standard JVM technique."},
+        {id:3,title:"Cryptographic Signature Verification",desc:"Anti-malware measure. Cannot distinguish beneficial performance tool from credential stealer. Both are unauthorized modifications."},
+        {id:4,title:"EULA Runtime Modification Prohibition",desc:"Standard legal instrument. Lawyers protecting IP and limiting liability. Competent legal counsel establishing clear terms."},
+        {id:5,title:"DMCA Anti-Circumvention",desc:"Federal law to combat piracy. Legislators were thinking about DVD ripping, not Minecraft frame rate governors."},
+        {id:6,title:"Bedrock Marketplace Revenue Incentive",desc:"Fiduciary duty to shareholders. Bedrock Marketplace creates value. Resource allocation is rational business management."},
+        {id:7,title:"Update Pipeline & Classpath Control",desc:"Ensures every player runs identical verified environment. Reduces support costs, ensures reproducibility. Standard managed-platform practice."},
+        {id:8,title:"Bonus: The Exhaustion Factor",desc:"No individual designed this. Emerges from interaction of all other barriers. Each built independently for legitimate purposes."}
+    ];
+    let p2Choices = {};
+    const grid = document.getElementById('p2Barriers');
+    p2Barriers.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'barrier-card';
+        card.id = 'p2card'+b.id;
+        card.innerHTML = `
+            <div class="barrier-header"><span class="barrier-num">${b.id}</span><span class="barrier-title">${b.title}</span></div>
+            <div class="barrier-desc">${b.desc}</div>
+            <div class="choice-buttons">
+                <button class="btn btn-good-faith" onclick="window._p2set(${b.id},'good-faith',this)">💚 GOOD FAITH</button>
+                <button class="btn btn-control" onclick="window._p2set(${b.id},'control-design',this)">🔧 CONTROL DESIGN</button>
+            </div>`;
+        grid.appendChild(card);
+    });
+    window._p2set = function(id, choice, btn){
+        p2Choices[id] = choice;
+        const card = document.getElementById('p2card'+id);
+        card.classList.remove('selected-coincidence','selected-control');
+        card.classList.add(choice==='good-faith'?'selected-coincidence':'selected-control');
+        card.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+        p2Update();
+    };
+    function p2Update(){
+        let gf=0, cd=0, rated=0;
+        for(let i=1;i<=7;i++){if(p2Choices[i]==='good-faith'){gf++;rated++;}else if(p2Choices[i]==='control-design'){cd++;rated++;}}
+        let gfAll=0;for(let i=1;i<=8;i++){if(p2Choices[i]==='good-faith')gfAll++;else if(p2Choices[i]==='control-design')cd++;}
+        document.getElementById('p2GFCount').textContent=gfAll;
+        document.getElementById('p2CDCount').textContent=cd;
+        const pvEl=document.getElementById('p2Paradox');
+        const vBox=document.getElementById('p2Verdict');
+        if(rated<7){pvEl.textContent='—';pvEl.style.color='var(--text-secondary)';vBox.innerHTML='<div class="verdict blue">Rate all 7 barriers</div>';}
+        else{
+            let prob=1.0;
+            for(let i=1;i<=7;i++){prob*=(p2Choices[i]==='good-faith'?0.65:0.08);}
+            const strength=1.0-prob;
+            pvEl.textContent=(strength*100).toFixed(1)+'%';
+            pvEl.style.color=strength>0.95?'#f0909b':strength>0.75?'#e2c16d':strength>0.5?'#d4a843':'#7ab4f7';
+            if(gf>=6) vBox.innerHTML='<div class="verdict red">🔴 MAX PARADOX: Good people built a cage. Architecture is the adversary.</div>';
+            else if(gf>=4) vBox.innerHTML='<div class="verdict yellow">🟠 SIGNIFICANT: Mostly good faith — system channels intent toward control.</div>';
+            else if(gf>=2) vBox.innerHTML='<div class="verdict yellow">🟡 MODERATE: Mixed picture.</div>';
+            else vBox.innerHTML='<div class="verdict blue">🟢 LOW PARADOX: Mostly deliberate control design.</div>';
+        }
+    }
+    window.p2Reset = function(){p2Choices={};for(let i=1;i<=8;i++){const c=document.getElementById('p2card'+i);if(c){c.classList.remove('selected-coincidence','selected-control');c.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));}}document.getElementById('p2GFCount').textContent='0';document.getElementById('p2CDCount').textContent='0';document.getElementById('p2Paradox').textContent='—';document.getElementById('p2Verdict').innerHTML='';};
+    p2Update();
+})();
+
+// ============ PUZZLE 3: SABOTAGE PUZZLE ============
+(function(){
+    const invariants = [
+        {id:'redundancy',name:'Redundancy',desc:'Multiple independent barriers each sufficient to block modification.',break:'Any single barrier bypass must not trigger another.'},
+        {id:'self_healing',name:'Self-Healing',desc:'Active recovery with retry logic restores canonical state on every launch.',break:'Modifications must persist across launch cycles.'},
+        {id:'absorptivity',name:'Absorptivity',desc:'System dissipates human effort into canonical state. 2000 commands, 9 hours, 10 crashes.',break:'User effort must produce durable change, not exhaustion.'},
+        {id:'nash_stability',name:'Nash Stability',desc:'Closed architecture is dominant strategy regardless of user choice.',break:"Platform owner's payoff for Open > payoff for Closed."}
+    ];
+    const interventions = [
+        {id:'open_launcher',name:'Open-source launcher (no hash verification)',domain:'technical',cost:'low',costVal:1,targets:['self_healing']},
+        {id:'persistent_classpath',name:'User-configurable persistent classpath',domain:'technical',cost:'medium',costVal:3,targets:['redundancy']},
+        {id:'signed_exceptions',name:'Signed exception mechanism for user agents',domain:'technical',cost:'high',costVal:6,targets:['redundancy','self_healing']},
+        {id:'eula_carveout',name:'EULA carve-out for performance mods',domain:'legal',cost:'low',costVal:1,targets:['nash_stability']},
+        {id:'dmca_exemption',name:'DMCA exemption for game performance tools',domain:'legal',cost:'very_high',costVal:10,targets:['absorptivity']},
+        {id:'monetize_performance',name:'Monetize Java Edition performance',domain:'economic',cost:'medium',costVal:3,targets:['nash_stability']},
+        {id:'community_alternative',name:'Community-funded open-source alternative',domain:'economic',cost:'very_high',costVal:10,targets:['redundancy','self_healing','absorptivity','nash_stability']},
+        {id:'user_governance_board',name:'User representative on governance board',domain:'organizational',cost:'low',costVal:1,targets:['nash_stability']},
+        {id:'bypass_launcher',name:'Bypass launcher entirely (Prism approach)',domain:'direct',cost:'low',costVal:1,targets:['self_healing']},
+        {id:'kernel_governor',name:'Kernel-level GPU scheduling',domain:'direct',cost:'high',costVal:6,targets:['redundancy','self_healing','absorptivity','nash_stability']}
+    ];
+    let p3Selected = new Set();
+
+    // Build invariant cards
+    const invGrid = document.getElementById('p3InvGrid');
+    invariants.forEach(inv => {
+        const card = document.createElement('div');
+        card.className = 'invariant-card';
+        card.id = 'p3inv_'+inv.id;
+        card.innerHTML = `<div class="inv-name">🔒 ${inv.name}</div><div class="inv-desc">${inv.desc}<br><em>Break: ${inv.break}</em></div>`;
+        invGrid.appendChild(card);
+    });
+    // Build status grid
+    const statusGrid = document.getElementById('p3StatusGrid');
+    invariants.forEach(inv => {
+        const box = document.createElement('div');
+        box.className = 'inv-status-box intact';
+        box.id = 'p3stat_'+inv.id;
+        box.textContent = '🔒 '+inv.name+' — INTACT';
+        statusGrid.appendChild(box);
+    });
+    // Build table
+    const tbody = document.getElementById('p3Tbody');
+    interventions.forEach(inv => {
+        const tr = document.createElement('tr');
+        tr.setAttribute('data-id',inv.id);
+        tr.innerHTML = `
+            <td><input type="checkbox" id="p3cb_${inv.id}" onchange="window._p3toggle('${inv.id}',this.checked)"></td>
+            <td style="font-weight:500;">${inv.name}</td>
+            <td><span style="font-size:0.7rem;text-transform:uppercase;color:var(--text-secondary);">${inv.domain}</span></td>
+            <td><span class="cost-badge ${inv.cost.replace('_','-')}">${inv.cost.replace('_',' ').toUpperCase()}</span></td>
+            <td style="font-size:0.7rem;color:var(--text-secondary);">${inv.targets.join(', ')}</td>`;
+        tbody.appendChild(tr);
+    });
+
+    window._p3toggle = function(id, checked){
+        if(checked) p3Selected.add(id); else p3Selected.delete(id);
+        p3Update();
+    };
+    function p3Update(){
+        const broken = new Set();
+        let totalCost = 0;
+        p3Selected.forEach(id => {
+            const inv = interventions.find(i=>i.id===id);
+            if(inv){inv.targets.forEach(t=>broken.add(t));totalCost+=inv.costVal;}
+        });
+        invariants.forEach(inv => {
+            const card = document.getElementById('p3inv_'+inv.id);
+            const stat = document.getElementById('p3stat_'+inv.id);
+            if(broken.has(inv.id)){
+                card.classList.add('broken');
+                stat.className = 'inv-status-box broken-status';
+                stat.textContent = '✓ '+inv.name+' — BROKEN';
+            }else{
+                card.classList.remove('broken');
+                stat.className = 'inv-status-box intact';
+                stat.textContent = '🔒 '+inv.name+' — INTACT';
+            }
+        });
+        document.getElementById('p3Cost').textContent = totalCost;
+        document.querySelectorAll('#p3Tbody tr').forEach(tr => {
+            const id = tr.getAttribute('data-id');
+            tr.classList.toggle('selected-row', p3Selected.has(id));
+            const cb = tr.querySelector('input[type="checkbox"]');
+            if(cb) cb.checked = p3Selected.has(id);
+        });
+        const allBroken = invariants.every(inv=>broken.has(inv.id));
+        const vBox = document.getElementById('p3Verdict');
+        if(allBroken) vBox.innerHTML='<div class="verdict green">✅ ALL INVARIANTS BROKEN — Architecture collapsed. Cost: '+totalCost+'.</div>';
+        else if(broken.size>0) vBox.innerHTML='<div class="verdict yellow">⚠️ '+broken.size+'/4 broken. Intact: '+invariants.filter(inv=>!broken.has(inv.id)).map(i=>i.name).join(', ')+'. Cost: '+totalCost+'</div>';
+        else vBox.innerHTML='<div class="verdict red">🔴 No invariants broken. Select interventions above.</div>';
+    }
+    window.p3Reset = function(){
+        p3Selected.clear();
+        p3Update();
+        document.getElementById('p3Cost').textContent='0';
+        document.getElementById('p3Verdict').innerHTML='<div class="verdict red">🔴 No invariants broken.</div>';
+    };
+    p3Update();
+})();
+
+// ============ MACHINE DATA COPY ============
+function copyMachineAll(){
+    const ta = document.getElementById('machineAll');
+    const btn = document.getElementById('btnCopyAll');
+    navigator.clipboard.writeText(ta.value).then(()=>{
+        btn.textContent='✅ Copied!';btn.classList.add('copied');
+        setTimeout(()=>{btn.textContent='📋 Copy All';btn.classList.remove('copied');},2000);
+    }).catch(()=>{
+        ta.select();document.execCommand('copy');
+        btn.textContent='✅ Copied!';btn.classList.add('copied');
+        setTimeout(()=>{btn.textContent='📋 Copy All';btn.classList.remove('copied');},2000);
+    });
+}
+document.getElementById('machineAll').addEventListener('click',function(){this.select();});
+</script>
+</body>
+</html>
