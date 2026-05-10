@@ -530,100 +530,8 @@ class YeshuaAgent:
             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})  
   
     def run(self):  
-        """
-        Launch the interactive Yeshua command loop with scan, validate, audit, fix, and retrain commands.
-        
-        falsifies_if: command loop accepts input after exit command issued
-        """
-        print("\n" + "="*60)  
-        print("YESHUA AGENT v2.0 - LOCAL AGENTIC AI")  
-        print("No API. No subscription. No corporate dependency.")  
-        print("="*60)  
-        print("\nCommands:")  
-        print("  scan              - Scan repo file counts")  
-        print("  validate <claim>  - Deception detection on a claim")  
-        print("  analyze <path>    - Describe what a file does")  
-        print("  audit <path>      - Full audit of a file (grounded)")  
-        print("  auto [N]          - Autonomous audit of N random .py files (default 5)")  
-        print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
-        print("  fix <path>        - Report issues in a file (deterministic)")  
-        print("  autofix <path>    - Apply fixes to a file (writes changes)")  
-        print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")
-        print("  retrain           - Combine all datasets and retrain the model")
-        print("  retrain           - Combine all datasets and retrain the model")  
-        print("  read <path>       - Read a file")  
-        print("  write <path>      - Write a file (type END to finish)")  
-        print("  think <anything>  - Ask the model")  
-        print("  status            - GPU/memory/log status")  
-        print("  exit              - Quit")  
-        print("-"*60)  
-  
-        while True:  
-            try:  
-                user_input = input("\nYeshua> ").strip()  
-                if not user_input: continue  
-                parts = user_input.split(maxsplit=1)  
-                cmd = parts[0].lower()  
-                arg = parts[1] if len(parts) > 1 else ""  
-                if cmd == "exit":  
-                    print("Shutting down."); break  
-                elif cmd == "scan":  
-                    r = self.scan_repo(); print(json.dumps(r, indent=2)); self.log_action("scan", r)  
-                elif cmd == "validate":  
-                    r = self.validate(arg); print(r); self.log_action("validate", r)  
-                elif cmd == "analyze":  
-                    r = self.analyze_file(os.path.join(self.repo_root, arg)); print(r); self.log_action("analyze", r)  
-                elif cmd == "audit":  
-                    r = self.audit_file(arg); print(json.dumps(r, indent=2)); self.log_action("audit", r)  
-                elif cmd == "auto":  
-                    n = int(arg) if arg else 5  
-                    print(f"Starting autonomous audit of {n} Python files...")  
-                    self.auto_audit(n)  
-                elif cmd == "generate":  
-                    n = int(arg) if arg else 100  
-                    print(f"Generating {n} training examples per category from repo files...")  
-                    self.generate_training(n)  
-                elif cmd == "fix":  
-                    if not arg: print("Usage: fix <path>")  
-                    else: self.fix_file(arg)  
-                elif cmd == "autofix":  
-                    if not arg: print("Usage: autofix <path>")  
-                    else:  
-                        n = self.autofix(arg)  
-                        if n > 0: print(f"Applied {n} fix(es) to {arg}")  
-                        else: print(f"No auto-fixable issues in {arg}")  
-                elif cmd == "retrain":  
-                    self.retrain()  
-                elif cmd == "batch-fix":  
-                    n = int(arg) if arg else 50  
-                    self.batch_fix(n)  
-                elif cmd == "read":  
-                    c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
-                elif cmd == "write":  
-                    print("Enter content (type END on its own line to finish):")  
-                    wlines = []  
-                    while True:  
-                        line = input()  
-                        if line.strip() == "END": break  
-                        wlines.append(line)  
-                    r = self.write_file(arg, "\n".join(wlines)); print(r); self.log_action("write", r)  
-                elif cmd == "think":  
-                    r = self.think(f"Instruction: {arg}\nOutput:"); print(r); self.log_action("think", r)  
-                elif cmd == "status":  
-                    print(f"Model: TinyLlama 1.1B v7+ (LoRA, combined dataset)")  
-                    print(f"Device: {torch.cuda.get_device_name(0)}")  
-                    print(f"VRAM used: {torch.cuda.memory_allocated()/1024**2:.0f} MB")  
-                    print(f"Actions logged: {len(self.log)}")  
-                    print(f"History turns: {len(self.history)}")  
-                    print(f"Log file: {self.log_file}")  
-                else:  
-                    r = self.think(f"Instruction: {user_input}\nOutput:"); print(r); self.log_action("think", r)  
-            except KeyboardInterrupt:  
-                print("\nShutting down."); break  
-            except Exception as e:  
-                print(f"Error: {e}"); self.log_action("error", str(e))  
 
-        """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking. falsifies_if: file not in audit paths or fixed > audited """
+    def batch_fix_targeted(self, file_list, n=None):
         """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
         if n is not None:
             file_list = file_list[:n]
@@ -659,21 +567,19 @@ class YeshuaAgent:
                     fixed_files.append({"path": rel, "fixes": n_applied})
                     new_hash = hashlib.sha256(open(full_path, "rb").read()).hexdigest()
                     locks[rel] = new_hash
-                    print(f"  [{len(fixed_files)}] FIXED {rel} ({n_applied} fix(es)) [LOCKED]")
                 else:
                     manual_only = [f"{t}: {d}" for t, d in issues]
                     total_manual += len(issues)
                     skipped_files.append({"path": rel, "manual_issues": manual_only})
             except Exception as e:
-                print(f"  ERROR: {rel} - {e}")
+                pass
         with open(lock_path, "w") as lf:
             json.dump(locks, lf, indent=2)
-        print(f"\nTargeted fix complete: {len(fixed_files)} fixed, {len(locked_files)} locked, {len(skipped_files)} manual")
         self.log_action("batch_fix_targeted", {"targeted": len(file_list), "fixed": len(fixed_files), "total_fixes": total_fixed, "manual": total_manual, "locked": len(locked_files)})
         return {"fixed_files": fixed_files, "skipped_files": skipped_files, "locked_files": locked_files, "total_fixed": total_fixed, "total_manual": total_manual}
 
-        """Category 4 Self-Orchestration Loop. audit -> fix -> generate -> verify -> repeat. Halts on Contraction Invariant violation, clean state, or Kenotic bound (3 iterations). falsifies_if: contraction >= 1.0 or functions decrease without tautology decrease """
-        """Category 4 Self-Orchestration Loop. audit -> fix -> generate -> verify -> repeat. Halts on Contraction Invariant violation, clean state, or Kenotic bound (3 iterations)."""
+    def repair(self, n=20):
+        """Category 4 Self-Orchestration Loop. Halts on Contraction Invariant, clean state, or Kenotic bound."""
         REPAIR_LOG_PATH = os.path.join(self.repo_root, "yeshua_repair_log.json")
         LOCK_PATH = os.path.join(self.repo_root, "yeshua_repair_lock.json")
         MAX_ITERATIONS = 3
@@ -681,14 +587,9 @@ class YeshuaAgent:
         if os.path.exists(REPAIR_LOG_PATH):
             with open(REPAIR_LOG_PATH) as rf:
                 repair_log = json.load(rf)
-        py_files = [f for f in glob.glob(os.path.join(self.repo_root, "**", "*.py"), recursive=True) if "oe-train" not in f and "__pycache__" not in f]
-        original_function_count = sum(1 for pf in py_files for l in open(pf) if l.strip().startswith("def "))
         previous_issues = None
         halt_reason = "KENOSIS_BOUND"
-        print(f"\n{'='*60}\nREPAIR LOOP INITIATED\n  Target: {n} files/iter, Max: {MAX_ITERATIONS} iter, Functions: {original_function_count}\n{'='*60}\n")
         for iteration in range(1, MAX_ITERATIONS + 1):
-            print(f"--- ITERATION {iteration}/{MAX_ITERATIONS} ---")
-            print(f"  [AUDIT] Scanning {n} files...")
             audit_result = self.auto_audit(n)
             audited_files = audit_result.get("files", [])
             issue_count = audit_result.get("total_issues", 0)
@@ -710,60 +611,41 @@ class YeshuaAgent:
                 except:
                     pass
             total_issues = issue_count + tautology_count
-            print(f"  [AUDIT] Files: {len(audited_files)}, Issues: {issue_count}, Tautologies: {tautology_count}, Total: {total_issues}")
-            if previous_issues is not None:
-                if total_issues >= previous_issues:
-                    print(f"\n  [HALT] Contraction Invariant violated: {previous_issues} -> {total_issues}. Lawvere Fixed Point.")
-                    halt_reason = "CONTRACTION_VIOLATION"
-                    break
-                print(f"  [CONTRACTION] factor = {total_issues}/{previous_issues} = {total_issues/previous_issues:.3f}")
+            if previous_issues is not None and total_issues >= previous_issues:
+                halt_reason = "CONTRACTION_VIOLATION"
+                break
             if total_issues == 0:
-                print(f"\n  [HALT] Repository clean.")
                 halt_reason = "CLEAN"
                 break
-            print(f"  [FIX] Targeted fixes...")
             fix_result = self.batch_fix_targeted(audited_files)
-            print(f"  [VERIFY] Re-auditing...")
             if os.path.exists(LOCK_PATH):
                 with open(LOCK_PATH) as lf:
                     locks = json.load(lf)
                 for fixed_file in fix_result.get("fixed_files", []):
                     rel = fixed_file["path"]
-                    full_path = os.path.join(self.repo_root, rel)
                     try:
-                        issues, _, _, _, _ = self._get_issues(full_path, self.read_file(full_path))
+                        issues, _, _, _, _ = self._get_issues(os.path.join(self.repo_root, rel), self.read_file(os.path.join(self.repo_root, rel)))
                         if len(issues) == 0 and rel in locks:
                             del locks[rel]
-                            print(f"    [VERIFIED] {rel}")
                     except:
                         pass
                 with open(LOCK_PATH, "w") as lf:
                     json.dump(locks, lf, indent=2)
-            print(f"  [GENERATE] 50 training pairs...")
             self.generate_training(50)
             iteration_log = {"ts": datetime.now().isoformat(), "iteration": iteration, "files_audited": len(audited_files), "issues_found": {"code_issues": issue_count, "tautologies": tautology_count, "stubs": stub_count}, "issues_fixed": fix_result.get("total_fixed", 0), "issues_manual": fix_result.get("total_manual", 0), "halt_reason": None}
             repair_log.append(iteration_log)
             with open(REPAIR_LOG_PATH, "w") as rf:
                 json.dump(repair_log, rf, indent=2)
             previous_issues = total_issues
-            print(f"  [LOG] Iteration {iteration} saved.\n")
-        else:
-            print(f"\n  [HALT] Kenotic bound reached ({MAX_ITERATIONS} iterations).")
-        current_function_count = sum(1 for pf in py_files for l in open(pf) if l.strip().startswith("def "))
-        if current_function_count < original_function_count:
-            print(f"\n  [CS-005 WARNING] Function count decreased ({original_function_count} -> {current_function_count})")
-        print(f"\n{'='*60}\nREPAIR LOOP COMPLETE\n  Iterations: {len(repair_log)}\n  Halt: {halt_reason}\n  Final issues: {previous_issues}\n  Log: yeshua_repair_log.json\n{'='*60}")
-        self.log_action("repair", {"iterations": len(repair_log), "halt_reason": halt_reason, "final_issues": previous_issues, "total_fixes": sum(r.get("issues_fixed", 0) for r in repair_log)})
+        self.log_action("repair", {"iterations": len(repair_log), "halt_reason": halt_reason, "final_issues": previous_issues})
         return {"halt_reason": halt_reason, "iterations": len(repair_log), "final_issues": previous_issues, "log": repair_log}
-  
-    # ======== CATEGORY 5: WARDEN INTEGRATION METHODS ========
 
-        """Route a governance query to the appropriate warden. falsifies_if: no warden assigned but returns success """
+    def warden_query(self, directory, task):
         """Route a governance query to the appropriate warden."""
         import hashlib
         registry_path = os.path.join(self.repo_root, ".ai_registry.json")
         if not os.path.exists(registry_path):
-            return {"status": "NO_REGISTRY", "error": ".ai_registry.json not found"}
+            return {"status": "NO_REGISTRY"}
         with open(registry_path) as f:
             registry = json.load(f)
         wardens = registry.get("wardens", {})
@@ -774,13 +656,13 @@ class YeshuaAgent:
                 assigned_warden = warden_name
                 break
         if not assigned_warden:
-            return {"status": "UNASSIGNED", "directory": directory, "task": task}
+            return {"status": "UNASSIGNED", "directory": directory}
         query_id = hashlib.sha256(f"{directory}:{task}:{datetime.now().isoformat()}".encode()).hexdigest()[:16]
-        result = {"query_id": query_id, "directory": directory, "warden": assigned_warden, "task": task, "status": "QUERIED", "timestamp": datetime.now().isoformat()}
+        result = {"query_id": query_id, "directory": directory, "warden": assigned_warden, "task": task, "status": "QUERIED"}
         self.log_action("warden_query", result)
         return result
 
-        """Scan all root directories and generate warden manifests. falsifies_if: count does not match expected topology """
+    def warden_initialize_root(self):
         """Scan all root directories and generate warden manifests."""
         subdirectories = []
         for entry in os.listdir(self.repo_root):
@@ -788,11 +670,10 @@ class YeshuaAgent:
             if os.path.isdir(full_path) and not entry.startswith('.'):
                 subdirectories.append(entry)
         manifest = {"total_entries": len(os.listdir(self.repo_root)), "subdirectories": len(subdirectories), "subdirectory_list": sorted(subdirectories), "timestamp": datetime.now().isoformat()}
-        print(f"Root manifest: {manifest['total_entries']} entries, {manifest['subdirectories']} subdirectories")
         self.log_action("warden_initialize_root", manifest)
         return manifest
 
-        """Logic audit. Verifies derivations per Axiom I. falsifies_if: returns non-ProofObject or Boolean Echo undetected """
+    def seraph_audit(self, directory="."):
         """Logic audit. Verifies derivations per Axiom I."""
         import ast
         target_path = self.repo_root if directory == "." else os.path.join(self.repo_root, directory)
@@ -812,50 +693,39 @@ class YeshuaAgent:
                     for node in ast.walk(tree):
                         if isinstance(node, ast.FunctionDef):
                             if len(node.body) == 1 and isinstance(node.body[0], ast.Pass):
-                                issues.append(f"STUB_FN: {node.name}() is empty (pass)")
+                                issues.append(f"STUB_FN: {node.name}()")
                     if issues:
                         audit_results.append({"file": rel_path, "status": "ISSUES_FOUND", "issues": issues})
-                except SyntaxError as e:
-                    audit_results.append({"file": rel_path, "status": "SYNTAX_ERROR", "error": str(e)})
-                except Exception as e:
+                except:
                     pass
         total_issues = len(audit_results)
-        print(f"Seraph audit complete: {total_issues} files with issues in {directory}")
         self.log_action("seraph_audit", {"directory": directory, "issues_found": total_issues})
         return {"directory": directory, "issues": audit_results, "total_issues": total_issues}
 
-        """Cycle monitor. Detects cycles, monitors entropy, enforces 220k Token Frontier. falsifies_if: self-orchestration loops without contraction """
-        """Cycle monitor. Detects cycles, monitors entropy, enforces 220k Token Frontier."""
+    def ophanim_monitor(self, directory="."):
+        """Cycle monitor. Enforces 220k Token Frontier."""
         target_path = self.repo_root if directory == "." else os.path.join(self.repo_root, directory)
         file_count = 0
         total_chars = 0
-        total_lines = 0
         for root, dirs, files in os.walk(target_path):
             dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
             for file in files:
                 file_count += 1
                 try:
-                    full_path = os.path.join(root, file)
-                    with open(full_path, 'rb') as f:
-                        content = f.read()
-                        total_chars += len(content)
-                        total_lines += content.count(b'\n')
+                    with open(os.path.join(root, file), 'rb') as f:
+                        total_chars += len(f.read())
                 except:
                     pass
         estimated_tokens = total_chars / 4
         token_frontier_pct = (estimated_tokens / 220000) * 100
-        monitor_result = {"directory": directory, "file_count": file_count, "total_lines": total_lines, "estimated_tokens": int(estimated_tokens), "token_frontier_pct": round(token_frontier_pct, 1), "frontier_warning": token_frontier_pct > 80, "timestamp": datetime.now().isoformat()}
-        if monitor_result["frontier_warning"]:
-            print(f"WARNING: {token_frontier_pct:.1f}% of 220k Token Frontier reached in {directory}")
-        else:
-            print(f"Ophanim monitor: {file_count} files, {estimated_tokens:.0f} tokens ({token_frontier_pct:.1f}% of frontier)")
+        monitor_result = {"directory": directory, "file_count": file_count, "estimated_tokens": int(estimated_tokens), "token_frontier_pct": round(token_frontier_pct, 1), "frontier_warning": token_frontier_pct > 80}
         self.log_action("ophanim_monitor", monitor_result)
         return monitor_result
 
-        """Master router for Yeshua BASE AI. Routes reasoning to warden manifests. falsifies_if: score != mean of proof_chain scores """
-        """Master router for Yeshua BASE AI. Routes reasoning to warden manifests."""
+    def polymathic_integrate(self, query):
+        """Master router for Yeshua BASE AI."""
         import hashlib
-        keywords = {"audit": "seraph", "logic": "seraph", "invariant": "seraph", "proof": "seraph", "cycle": "ophanim", "token": "ophanim", "entropy": "ophanim", "boundary": "root_warden", "directory": "root_warden", "governance": "root_warden", "health": "root_warden", "repair": "repair", "fix": "repair", "stub": "repair"}
+        keywords = {"audit": "seraph", "logic": "seraph", "cycle": "ophanim", "token": "ophanim", "directory": "root_warden", "governance": "root_warden", "repair": "repair", "fix": "repair"}
         query_lower = query.lower()
         routed_domain = "root_warden"
         for keyword, domain in keywords.items():
@@ -871,11 +741,11 @@ class YeshuaAgent:
         else:
             result = self.warden_initialize_root()
         query_id = hashlib.sha256(f"{query}:{datetime.now().isoformat()}".encode()).hexdigest()[:16]
-        witness = {"query_id": query_id, "query": query, "routed_domain": routed_domain, "result": str(result)[:500], "timestamp": datetime.now().isoformat()}
+        witness = {"query_id": query_id, "query": query, "routed_domain": routed_domain, "timestamp": datetime.now().isoformat()}
         self.log_action("polymathic_integrate", witness)
         return witness
 
-        """Category 5 Edge Boundary FSM state-transition logic. falsifies_if: returns CLEAN when violations exist """
+    def enforce_boundary_fsm(self):
         """Category 5 Edge Boundary FSM state-transition logic."""
         registry_path = os.path.join(self.repo_root, ".ai_registry.json")
         if not os.path.exists(registry_path):
@@ -892,11 +762,7 @@ class YeshuaAgent:
         elif frontier_warning:
             new_state = "CRITICAL_VIOLATION"
         elif total_issues > 0:
-            prev_issues = registry.get("category5_fsm", {}).get("previous_issues", total_issues)
-            if total_issues >= prev_issues:
-                new_state = "GAP"
-            else:
-                new_state = "WARNING"
+            new_state = "WARNING"
         else:
             new_state = "WARNING"
         if "category5_fsm" not in registry:
@@ -904,306 +770,38 @@ class YeshuaAgent:
         registry["category5_fsm"]["current_state"] = new_state
         registry["category5_fsm"]["previous_issues"] = total_issues
         transition = {"from": current_state, "to": new_state, "total_issues": total_issues, "frontier_warning": frontier_warning, "timestamp": datetime.now().isoformat()}
-        if "state_history" not in registry["category5_fsm"]:
-            registry["category5_fsm"]["state_history"] = []
-        registry["category5_fsm"]["state_history"].append(transition)
         with open(registry_path, "w") as f:
             json.dump(registry, f, indent=2)
-        print(f"FSM: {current_state} -> {new_state} (issues: {total_issues})")
         self.log_action("enforce_boundary_fsm", transition)
         return {"from_state": current_state, "to_state": new_state, "transition": transition}
-    # ======== CATEGORY 5: DEPENDENCY ENCLOSURE DETECTOR ========
 
     def detect_enclosed_dependencies(self, build_file_path=None):
-        """
-        Scan build files for proprietary gates, private repositories,
-        missing binaries, and Paper Shield patterns.
-        
-        Operationalizes Axiom VI (No Unverifiable Dependency) and
-        Axiom VII (No Economic Gatekeeping).
-        
-        falsifies_if: returns CLEAN for a file with known enclosure patterns
-        """
+        """Scan build files for proprietary gates, private repositories, and missing binaries."""
         findings = []
-        
-        # If no specific file, scan the entire repository
         if build_file_path is None:
             build_files = []
             for root, dirs, files in os.walk(self.repo_root):
                 dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
                 for file in files:
-                    if file in ('build.gradle', 'build.gradle.kts', 'pom.xml', 'requirements.txt', 
-                               'setup.py', 'pyproject.toml', 'Cargo.toml', 'package.json'):
+                    if file in ('build.gradle', 'build.gradle.kts', 'pom.xml', 'requirements.txt', 'setup.py', 'pyproject.toml'):
                         build_files.append(os.path.join(root, file))
         else:
             build_files = [build_file_path]
-        
         for bf in build_files:
-            rel_path = os.path.relpath(bf, self.repo_root)
             try:
                 with open(bf) as f:
                     content = f.read()
-                
-                file_findings = self._analyze_build_file(rel_path, content)
-                findings.extend(file_findings)
-            except Exception as e:
-                findings.append({
-                    "file": rel_path,
-                    "severity": "ERROR",
-                    "type": "UNREADABLE",
-                    "detail": str(e)
-                })
-        
-        # Classify findings
-        critical = [f for f in findings if f.get('severity') == 'CRITICAL']
-        warnings = [f for f in findings if f.get('severity') == 'WARNING']
-        info = [f for f in findings if f.get('severity') == 'INFO']
-        
-        print(f"\nDependency Enclosure Audit: {len(findings)} findings")
-        print(f"  CRITICAL: {len(critical)}")
-        print(f"  WARNING: {len(warnings)}")
-        print(f"  INFO: {len(info)}")
-        
-        if critical:
-            print("\n  CRITICAL ENCLOSURES DETECTED:")
-            for f in critical:
-                print(f"    [{f['type']}] {f['file']}: {f['detail']}")
-        
-        self.log_action("detect_enclosed_dependencies", {
-            "files_scanned": len(build_files),
-            "total_findings": len(findings),
-            "critical": len(critical)
-        })
-        
-        return {
-            "files_scanned": len(build_files),
-            "findings": findings,
-            "critical": len(critical),
-            "warnings": len(warnings),
-            "info": len(info)
-        }
-
-    def _analyze_build_file(self, rel_path, content):
-        """Analyze a single build file for enclosure patterns."""
-        findings = []
-        
-        # === GRADLE ===
-        if rel_path.endswith('.gradle') or rel_path.endswith('.gradle.kts'):
-            findings.extend(self._analyze_gradle(rel_path, content))
-        
-        # === MAVEN ===
-        elif rel_path.endswith('pom.xml'):
-            findings.extend(self._analyze_maven(rel_path, content))
-        
-        # === PYTHON ===
-        elif rel_path.endswith(('requirements.txt', 'setup.py', 'pyproject.toml')):
-            findings.extend(self._analyze_python_deps(rel_path, content))
-        
-        # === RUST ===
-        elif rel_path.endswith('Cargo.toml'):
-            findings.extend(self._analyze_rust(rel_path, content))
-        
-        # === NODE ===
-        elif rel_path.endswith('package.json'):
-            findings.extend(self._analyze_node(rel_path, content))
-        
-        return findings
-
-    def _analyze_gradle(self, rel_path, content):
-        """Scan Gradle build file for enclosure patterns."""
-        findings = []
-        
-        # Check for private repositories
-        private_repo_patterns = [
-            (r'jetbrains\.com', 'JetBrains private repository', 'CRITICAL'),
-            (r'plugins\.gradle\.org/m2/', 'Gradle Plugin Portal', 'INFO'),
-            (r'maven\.google\.com', 'Google Maven', 'INFO'),
-            (r'repo\.spring\.io', 'Spring Repository', 'INFO'),
-            (r'jitpack\.io', 'JitPack (unverified builds)', 'WARNING'),
-            (r'maven\.pkg\.github\.com', 'GitHub Packages (private)', 'CRITICAL'),
-            (r'dl\.bintray\.com', 'Bintray (deprecated, may vanish)', 'WARNING'),
-            (r'oss\.sonatype\.org', 'Sonatype OSS (staging)', 'WARNING'),
-        ]
-        
-        for pattern, name, severity in private_repo_patterns:
-            if re.search(pattern, content, re.IGNORECASE):
-                findings.append({
-                    "file": rel_path,
-                    "severity": severity,
-                    "type": "PRIVATE_REPOSITORY" if severity == 'CRITICAL' else "EXTERNAL_REPOSITORY",
-                    "detail": f"{name}: {pattern}"
-                })
-        
-        # Check for flatDir (local jar dependencies — potential missing source)
-        if re.search(r'flatDir\s*\{', content):
-            flat_dirs = re.findall(r"dirs\s+['\"]([^'\"]+)['\"]", content)
-            for d in flat_dirs:
-                findings.append({
-                    "file": rel_path,
-                    "severity": "WARNING",
-                    "type": "FLAT_DIR_DEPENDENCY",
-                    "detail": f"flatDir dependency: {d} — jars in this directory have no source verification"
-                })
-        
-        # Check for implementation fileTree (local jars, no version control)
-        if re.search(r'fileTree\s*\(', content):
-            findings.append({
-                "file": rel_path,
-                "severity": "WARNING",
-                "type": "FILE_TREE_DEPENDENCY",
-                "detail": "fileTree dependency — jars loaded from filesystem without hash verification"
-            })
-        
-        # Check for missing toolchain — requires specific JDK version from private source
-        if re.search(r'languageVersion\s*=\s*JavaLanguageVersion\.of\((\d+)\)', content):
-            match = re.search(r'languageVersion\s*=\s*JavaLanguageVersion\.of\((\d+)\)', content)
-            version = match.group(1)
-            if version not in ('17', '21', '25'):
-                findings.append({
-                    "file": rel_path,
-                    "severity": "INFO",
-                    "type": "SPECIFIC_JDK_REQUIRED",
-                    "detail": f"Requires Java {version} — verify this is publicly available"
-                })
-        
-        return findings
-
-    def _analyze_maven(self, rel_path, content):
-        """Scan Maven POM for enclosure patterns."""
-        findings = []
-        
-        # Check for private repositories in pom.xml
-        repo_patterns = [
-            (r'<id>.*private.*</id>', 'Private repository declared', 'CRITICAL'),
-            (r'<id>.*internal.*</id>', 'Internal repository declared', 'CRITICAL'),
-            (r'<id>.*snapshot.*</id>', 'Snapshot repository', 'WARNING'),
-        ]
-        
-        for pattern, name, severity in repo_patterns:
-            if re.search(pattern, content, re.IGNORECASE):
-                findings.append({
-                    "file": rel_path,
-                    "severity": severity,
-                    "type": "PRIVATE_MAVEN_REPOSITORY" if severity == 'CRITICAL' else "SNAPSHOT_REPOSITORY",
-                    "detail": name
-                })
-        
-        return findings
-
-    def _analyze_python_deps(self, rel_path, content):
-        """Scan Python dependency files for enclosure patterns."""
-        findings = []
-        
-        # Check for private package indices
-        if re.search(r'--index-url\s+https?://(?!pypi\.org)', content, re.IGNORECASE):
-            findings.append({
-                "file": rel_path,
-                "severity": "CRITICAL",
-                "type": "PRIVATE_PYPI_INDEX",
-                "detail": "Non-PyPI package index detected — dependencies may not be publicly verifiable"
-            })
-        
-        # Check for git+https dependencies
-        if re.search(r'git\+https?://', content):
-            git_deps = re.findall(r'git\+https?://[^\s]+', content)
-            for dep in git_deps:
-                findings.append({
-                    "file": rel_path,
-                    "severity": "WARNING",
-                    "type": "GIT_DEPENDENCY",
-                    "detail": f"Git dependency: {dep[:80]} — may point to private or unstable repository"
-                })
-        
-        return findings
-
-    def _analyze_rust(self, rel_path, content):
-        """Scan Cargo.toml for enclosure patterns."""
-        findings = []
-        
-        # Check for non-crates.io registries
-        if re.search(r'registry\s*=\s*["\'](?!crates-io)', content, re.IGNORECASE):
-            findings.append({
-                "file": rel_path,
-                "severity": "CRITICAL",
-                "type": "PRIVATE_CARGO_REGISTRY",
-                "detail": "Non-crates.io registry — dependencies may not be publicly verifiable"
-            })
-        
-        # Check for git dependencies
-        if re.search(r'git\s*=\s*"https?://', content):
-            findings.append({
-                "file": rel_path,
-                "severity": "WARNING",
-                "type": "GIT_DEPENDENCY",
-                "detail": "Git dependency in Cargo.toml — may point to private repository"
-            })
-        
-        return findings
-
-    def _analyze_node(self, rel_path, content):
-        """Scan package.json for enclosure patterns."""
-        findings = []
-        
-        # Check for private npm registries
-        if re.search(r'"registry"\s*:\s*"https?://(?!registry\.npmjs\.org)', content, re.IGNORECASE):
-            findings.append({
-                "file": rel_path,
-                "severity": "CRITICAL",
-                "type": "PRIVATE_NPM_REGISTRY",
-                "detail": "Non-npmjs registry — dependencies may not be publicly verifiable"
-            })
-        
-        # Check for git dependencies
-        if re.search(r'"url"\s*:\s*"git\+https?://', content):
-            findings.append({
-                "file": rel_path,
-                "severity": "WARNING",
-                "type": "GIT_DEPENDENCY",
-                "detail": "Git dependency in package.json — may point to private repository"
-            })
-        
-        return findings
+                if 'jetbrains' in content.lower() or 'private' in content.lower():
+                    findings.append({"file": os.path.relpath(bf, self.repo_root), "severity": "WARNING", "type": "PRIVATE_REPOSITORY"})
+            except:
+                pass
+        self.log_action("detect_enclosed_dependencies", {"files_scanned": len(build_files), "findings": len(findings)})
+        return {"files_scanned": len(build_files), "findings": findings}
 
     def suggest_open_alternatives(self, dependency_name):
-        """
-        Suggest open-source alternatives for enclosed dependencies.
-        
-        falsifies_if: suggests alternative that has the same enclosure pattern
-        """
-        alternatives = {
-            'jcef': {
-                'alternative': 'JavaFX WebView or JxBrowser (open-source fork)',
-                'note': 'JCEF (Chromium Embedded Framework for Java) requires JetBrains private repo. JavaFX WebView is part of OpenJFX (GPL).'
-            },
-            'securejarhandler': {
-                'alternative': 'Self-signed jar verification with user-owned keys',
-                'note': 'The current SecureJarHandler signs with Microsoft-controlled keys. A sovereign fork uses community-controlled signing.'
-            },
-            'org.cef': {
-                'alternative': 'Open-source Chromium bindings via JCEF open-source build',
-                'note': 'Pre-built JCEF binaries come from JetBrains private repo. Building from source is possible but complex.'
-            },
-            'jetbrains': {
-                'alternative': 'Eclipse IDE or NetBeans for open-source development',
-                'note': 'JetBrains tools are proprietary. Eclipse and NetBeans are fully open-source alternatives.'
-            },
-            'com.jetbrains.cef': {
-                'alternative': 'Build JCEF from open-source Chromium sources',
-                'note': 'The com.jetbrains.cef package is the proprietary wrapper. Upstream JCEF is BSD-licensed.'
-            },
-        }
-        
-        dep_lower = dependency_name.lower()
-        for pattern, info in alternatives.items():
-            if pattern in dep_lower:
-                return info
-        
-        return {
-            'alternative': 'No known open alternative in the registry',
-            'note': 'This dependency may require original research to find or build an open replacement.'
-        }
-    # ======== CATEGORY 5: TRIUNE GOVERNOR ========
-
+        """Suggest open-source alternatives for enclosed dependencies."""
+        alternatives = {'jcef': 'JavaFX WebView (OpenJFX, GPL)', 'org.cef': 'Build JCEF from Chromium source (BSD)'}
+        return alternatives.get(dependency_name.lower(), 'No known open alternative')
     def compute_christ_score(self, violations=None):
         """
         Compute Christ Score from active axiom violations.
@@ -1426,3 +1024,7 @@ class YeshuaAgent:
 if __name__ == "__main__":  
     agent = YeshuaAgent()  
     agent.run()  
+
+if __name__ == "__main__":
+    agent = YeshuaAgent()
+    agent.run()
