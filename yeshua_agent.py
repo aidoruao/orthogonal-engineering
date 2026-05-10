@@ -1025,6 +1025,5 @@ if __name__ == "__main__":
     agent = YeshuaAgent()  
     agent.run()  
 
-if __name__ == "__main__":
     agent = YeshuaAgent()
     agent.run()
