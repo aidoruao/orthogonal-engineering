@@ -1,0 +1,971 @@
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.6.114.1-microsoft-standard-WSL2 x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Sun May 10 11:14:40 CDT 2026
+
+  System load:  0.01                Processes:             33
+  Usage of /:   5.3% of 1006.85GB   Users logged in:       1
+  Memory usage: 7%                  IPv4 address for eth0: 172.30.221.62
+  Swap usage:   0%
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+This message is shown once a day. To disable it please create the
+/home/idor/.hushlogin file.
+idor@Tony:~$ git clone --recursive https://github.com/aidoruao/OE-MCreator.git
+cd OE-MCreator
+Cloning into 'OE-MCreator'...
+remote: Enumerating objects: 128894, done.
+remote: Counting objects: 100% (874/874), done.
+remote: Compressing objects: 100% (441/441), done.
+remote: Total 128894 (delta 626), reused 433 (delta 433), pack-reused 128020 (from 4)
+Receiving objects: 100% (128894/128894), 101.99 MiB | 13.22 MiB/s, done.
+Resolving deltas: 100% (76770/76770), done.
+idor@Tony:~/OE-MCreator$ git checkout -b oe-modifications
+Switched to a new branch 'oe-modifications'
+idor@Tony:~/OE-MCreator$ echo "=== Java Version ==="
+java -version 2>&1
+
+echo ""
+echo "=== JAVA_HOME ==="
+echo $JAVA_HOME
+
+echo ""
+echo "=== Gradle Version ==="
+./gradlew --version 2>&1 | head -5
+=== Java Version ===
+openjdk version "17.0.18" 2026-01-20
+OpenJDK Runtime Environment (build 17.0.18+8-Ubuntu-124.04.1)
+OpenJDK 64-Bit Server VM (build 17.0.18+8-Ubuntu-124.04.1, mixed mode, sharing)
+
+=== JAVA_HOME ===
+
+
+=== Gradle Version ===
+Fetching distribution.
+Downloading https://services.gradle.org/distributions/gradle-9.5.0-bin.zip
+.............10%.............20%..............30%.............40%.............50%..............60%.............70%..............80%.............90%.............100%
+
+Welcome to Gradle 9.5.0!
+idor@Tony:~/OE-MCreator$ ./gradlew build 2>&1 | tail -30
+Starting a Gradle Daemon (subsequent builds will be faster)
+Directory '/home/idor/OE-MCreator/jdk/jbr25_mac_x64/Contents/Home' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+Directory '/home/idor/OE-MCreator/jdk/jbr25_mac_aarch64/Contents/Home' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+Directory '/home/idor/OE-MCreator/jdk/jbr25_linux_64' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+Directory '/home/idor/OE-MCreator/jdk/jbr25_win_64' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Could not determine the dependencies of task ':compileJava'.
+> Could not resolve all dependencies for configuration ':compileClasspath'.
+   > Failed to calculate the value of task ':compileJava' property 'javaCompiler'.
+      > Cannot find a Java installation on your machine (Linux 6.6.114.1-microsoft-standard-WSL2 amd64) matching: {languageVersion=25, vendor=any vendor, implementation=vendor-specific, nativeImageCapable=false}. Toolchain download repositories have not been configured.
+
+* Try:
+> Learn more about toolchain auto-detection and auto-provisioning at https://docs.gradle.org/9.5.0/userguide/toolchains.html#sec:auto_detection.
+> Learn more about toolchain repositories at https://docs.gradle.org/9.5.0/userguide/toolchains.html#sub:download_repositories.
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 15s
+idor@Tony:~/OE-MCreator$ sudo apt update && sudo apt install openjdk-25-jdk
+[sudo] password for idor:
+Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease
+Hit:2 http://archive.ubuntu.com/ubuntu noble-updates InRelease
+Hit:3 http://security.ubuntu.com/ubuntu noble-security InRelease
+Hit:4 http://archive.ubuntu.com/ubuntu noble-backports InRelease
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+67 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  openjdk-25-jdk-headless openjdk-25-jre openjdk-25-jre-headless
+Suggested packages:
+  openjdk-25-demo openjdk-25-source visualvm libnss-mdns
+  fonts-ipafont-gothic fonts-ipafont-mincho fonts-wqy-microhei
+  | fonts-wqy-zenhei fonts-indic
+The following NEW packages will be installed:
+  openjdk-25-jdk openjdk-25-jdk-headless openjdk-25-jre
+  openjdk-25-jre-headless
+0 upgraded, 4 newly installed, 0 to remove and 67 not upgraded.
+Need to get 150 MB of archives.
+After this operation, 348 MB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 openjdk-25-jre-headless amd64 25.0.2+10-1~24.04 [58.9 MB]
+Get:2 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 openjdk-25-jre amd64 25.0.2+10-1~24.04 [225 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 openjdk-25-jdk-headless amd64 25.0.2+10-1~24.04 [89.0 MB]
+Get:4 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 openjdk-25-jdk amd64 25.0.2+10-1~24.04 [1767 kB]
+Fetched 150 MB in 7s (20.3 MB/s)
+Selecting previously unselected package openjdk-25-jre-headless:amd64.
+(Reading database ... 51073 files and directories currently installed.)
+Preparing to unpack .../openjdk-25-jre-headless_25.0.2+10-1~24.04_amd64.deb...
+Unpacking openjdk-25-jre-headless:amd64 (25.0.2+10-1~24.04) ...
+Selecting previously unselected package openjdk-25-jre:amd64.
+Preparing to unpack .../openjdk-25-jre_25.0.2+10-1~24.04_amd64.deb ...
+Unpacking openjdk-25-jre:amd64 (25.0.2+10-1~24.04) ...
+Selecting previously unselected package openjdk-25-jdk-headless:amd64.
+Preparing to unpack .../openjdk-25-jdk-headless_25.0.2+10-1~24.04_amd64.deb...
+Unpacking openjdk-25-jdk-headless:amd64 (25.0.2+10-1~24.04) ...
+Selecting previously unselected package openjdk-25-jdk:amd64.
+Preparing to unpack .../openjdk-25-jdk_25.0.2+10-1~24.04_amd64.deb ...
+Unpacking openjdk-25-jdk:amd64 (25.0.2+10-1~24.04) ...
+Setting up openjdk-25-jre-headless:amd64 (25.0.2+10-1~24.04) ...
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/java to provide /usr/bin/java (java) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jpackage to provide /usr/bin/jpackage (jpackage) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/keytool to provide /usr/bin/keytool (keytool) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/rmiregistry to provide /usr/bin/rmiregistry (rmiregistry) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/lib/jexec to provide /usr/bin/jexec (jexec) in auto mode
+Processing triggers for hicolor-icon-theme (0.17-2) ...
+Processing triggers for ca-certificates-java (20240118) ...
+done.
+Setting up openjdk-25-jre:amd64 (25.0.2+10-1~24.04) ...
+Setting up openjdk-25-jdk-headless:amd64 (25.0.2+10-1~24.04) ...
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jar to provide /usr/bin/jar (jar) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jarsignerto provide /usr/bin/jarsigner (jarsigner) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/javac to provide /usr/bin/javac (javac) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/javadoc to provide /usr/bin/javadoc (javadoc) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/javap to provide /usr/bin/javap (javap) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jcmd to provide /usr/bin/jcmd (jcmd) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jdb to provide /usr/bin/jdb (jdb) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jdeprscanto provide /usr/bin/jdeprscan (jdeprscan) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jdeps to provide /usr/bin/jdeps (jdeps) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jfr to provide /usr/bin/jfr (jfr) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jimage toprovide /usr/bin/jimage (jimage) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jinfo to provide /usr/bin/jinfo (jinfo) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jlink to provide /usr/bin/jlink (jlink) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jmap to provide /usr/bin/jmap (jmap) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jmod to provide /usr/bin/jmod (jmod) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jnativescan to provide /usr/bin/jnativescan (jnativescan) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jps to provide /usr/bin/jps (jps) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jrunscript to provide /usr/bin/jrunscript (jrunscript) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jshell toprovide /usr/bin/jshell (jshell) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jstack toprovide /usr/bin/jstack (jstack) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jstat to provide /usr/bin/jstat (jstat) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jstatd toprovide /usr/bin/jstatd (jstatd) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jwebserver to provide /usr/bin/jwebserver (jwebserver) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/serialverto provide /usr/bin/serialver (serialver) in auto mode
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jhsdb to provide /usr/bin/jhsdb (jhsdb) in auto mode
+Setting up openjdk-25-jdk:amd64 (25.0.2+10-1~24.04) ...
+update-alternatives: using /usr/lib/jvm/java-25-openjdk-amd64/bin/jconsole to provide /usr/bin/jconsole (jconsole) in auto mode
+idor@Tony:~/OE-MCreator$ ./gradlew build
+Starting a Gradle Daemon, 1 incompatible Daemon could not be reused, use --status for details
+Directory '/home/idor/OE-MCreator/jdk/jbr25_linux_64' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exis
+Directory '/home/idor/OE-MCreator/jdk/jbr25_win_64' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+Directory '/home/idor/OE-MCreator/jdk/jbr25_mac_x64/Contents/Home' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+Directory '/home/idor/OE-MCreator/jdk/jbr25_mac_aarch64/Contents/Home' (Gradle property 'org.gradle.java.installations.paths') used for java installations does not exist
+
+> Task :compileJava
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:31: error: package org.cef does not exist
+import org.cef.CefClient;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:32: error: package org.cef does not exist
+import org.cef.OS;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:33: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:34: error: package org.cef.browser does not exist
+import org.cef.browser.CefFrame;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:35: error: package org.cef.browser does not exist
+import org.cef.browser.CefMessageRouter;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:36: error: package org.cef.browser does not exist
+import org.cef.browser.CefRendering;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:37: error: package org.cef.callback does not exist
+import org.cef.callback.CefJSDialogCallback;
+                       ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:38: error: package org.cef.callback does not exist
+import org.cef.callback.CefQueryCallback;
+                       ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:40: error: package org.cef.misc does not exist
+import org.cef.misc.BoolRef;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:64: error: cannot find symbol
+        private final CefClient client;
+                      ^
+  symbol:   class CefClient
+  location: class WebView
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:65: error: cannot find symbol
+        private final CefMessageRouter router;
+                      ^
+  symbol:   class CefMessageRouter
+  location: class WebView
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:66: error: cannot find symbol
+        private final CefBrowser browser;
+                      ^
+  symbol:   class CefBrowser
+  location: class WebView
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:441: error: cannot find symbol
+        CefMessageRouter getRouter() {
+        ^
+  symbol:   class CefMessageRouter
+  location: class WebView
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:486: error: cannot find symbol
+                boolean onJSDialog(CefBrowser browser, String origin_url, CefJSDialogHandler.JSDialogType dialog_type,
+                                   ^
+  symbol:   class CefBrowser
+  location: interface JSDialogListener
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:486: error: package CefJSDialogHandler does not exist
+                boolean onJSDialog(CefBrowser browser, String origin_url, CefJSDialogHandler.JSDialogType dialog_type,
+                ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:487: error: cannot find symbol
+                                String message_text, String default_prompt_text, CefJSDialogCallback callback,
+     ^
+  symbol:   class CefJSDialogCallback
+  location: interface JSDialogListener
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:488: error: cannot find symbol
+                                BoolRef suppress_message);
+                                ^
+  symbol:   class BoolRef
+  location: interface JSDialogListener
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:39: error: package org.cef.handler does not exist
+import org.cef.handler.*;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/dialogs/file/JavaFileDialogs.java:27: error: package org.cef does not exist
+import org.cef.OS;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:22: error: package org.cef.handler does not exist
+import org.cef.handler.CefKeyboardHandler;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:23: error: package org.cef.misc does not exist
+import org.cef.misc.EventFlags;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:50: error: package CefKeyboardHandler does not exist
+        public static KeyEvent convertCefKeyEvent(CefKeyboardHandler.CefKeyEvent cefKeyEvent, Component source) {
+                                                                    ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:59: error: package CefKeyboardHandler does not exist
+        public static int convertCefKeyEventType(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:67: error: package CefKeyboardHandler does not exist
+        public static int convertCefKeyEventKeyCode(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:74: error: package CefKeyboardHandler does not exist
+        public static int convertCefKeyEventModifiers(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                        ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:85: error: package CefKeyboardHandler does not exist
+        public static boolean isUpDownKeyEvent(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                 ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:27: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:28: error: package org.cef.browser does not exist
+import org.cef.browser.CefFrame;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:29: error: package org.cef.callback does not exist
+import org.cef.callback.CefCallback;
+                       ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:30: error: package org.cef.handler does not exist
+import org.cef.handler.CefResourceHandler;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:31: error: package org.cef.misc does not exist
+import org.cef.misc.IntRef;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:32: error: package org.cef.misc does not exist
+import org.cef.misc.StringRef;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:33: error: package org.cef.network does not exist
+import org.cef.network.CefRequest;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:34: error: package org.cef.network does not exist
+import org.cef.network.CefResponse;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:39: error: cannot find symbol
+class CefClassLoaderSchemeHandler implements CefResourceHandler {
+                                             ^
+  symbol: class CefResourceHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:58: error: cannot find symbol
+        public CefClassLoaderSchemeHandler(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                                           ^
+  symbol:   class CefBrowser
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:58: error: cannot find symbol
+        public CefClassLoaderSchemeHandler(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                                                               ^
+  symbol:   class CefFrame
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:58: error: cannot find symbol
+        public CefClassLoaderSchemeHandler(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                      ^
+  symbol:   class CefRequest
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:61: error: cannot find symbol
+        @Override public boolean processRequest(CefRequest request, CefCallback callback) {
+                                                ^
+  symbol:   class CefRequest
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:61: error: cannot find symbol
+        @Override public boolean processRequest(CefRequest request, CefCallback callback) {
+                                                                    ^
+  symbol:   class CefCallback
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:89: error: cannot find symbol
+        @Override public void getResponseHeaders(CefResponse response, IntRef responseLength, StringRef redirectUrl) {
+                                                 ^
+  symbol:   class CefResponse
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:89: error: cannot find symbol
+        @Override public void getResponseHeaders(CefResponse response, IntRef responseLength, StringRef redirectUrl) {
+                                                                       ^
+  symbol:   class IntRef
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:89: error: cannot find symbol
+        @Override public void getResponseHeaders(CefResponse response, IntRef responseLength, StringRef redirectUrl) {
+                  ^
+  symbol:   class StringRef
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:95: error: cannot find symbol
+        @Override public boolean readResponse(byte[] dataOut, int bytesToRead, IntRef bytesRead, CefCallback callback) {
+   ^
+  symbol:   class IntRef
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:95: error: cannot find symbol
+        @Override public boolean readResponse(byte[] dataOut, int bytesToRead, IntRef bytesRead, CefCallback callback) {
+                     ^
+  symbol:   class CefCallback
+  location: class CefClassLoaderSchemeHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:28: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:29: error: package org.cef.browser does not exist
+import org.cef.browser.CefFrame;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:30: error: package org.cef.callback does not exist
+import org.cef.callback.CefQueryCallback;
+                       ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:31: error: package org.cef.handler does not exist
+import org.cef.handler.CefMessageRouterHandlerAdapter;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:6: error: package com.jetbrains.cef does not exist
+import com.jetbrains.cef.JCefAppConfig;
+                        ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:8: error: package org.cef does not exist
+import org.cef.CefClient;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:9: error: package org.cef does not exist
+import org.cef.OS;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:10: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:6: error: package org.cef does not exist
+import org.cef.OS;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:7: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:8: error: package org.cef.callback does not exist
+import org.cef.callback.CefDragData;
+                       ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:9: error: package org.cef.handler does not exist
+import org.cef.handler.CefRenderHandler;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:10: error: package org.cef.handler does not exist
+import org.cef.handler.CefScreenInfo;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:11: error: package org.cef.misc does not exist
+import org.cef.misc.CefRange;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:29: error: cannot find symbol
+public class JBCefOsrHandler implements CefRenderHandler {
+                                        ^
+  symbol: class CefRenderHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:30: error: cannot find symbol
+        private volatile CefBrowser myBrowser;
+                         ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrComponent
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:6: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:7: error: package org.cef.input does not exist
+import org.cef.input.CefCompositionUnderline;
+                    ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:8: error: package org.cef.misc does not exist
+import org.cef.misc.CefRange;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefCaretListener.java:6: error: package org.cef.misc does not exist
+import org.cef.misc.CefRange;
+                   ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:84: error: cannot find symbol
+        public void setBrowser(@Nonnull CefBrowser browser) {
+                                        ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrComponent
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:26: error: cannot find symbol
+        public static final CefRange DEFAULT_RANGE = new CefRange(-1, -1);
+                            ^
+  symbol:   class CefRange
+  location: class JBCefInputMethodAdapter
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:28: error: cannot find symbol
+        private CefBrowser myBrowser;
+                ^
+  symbol:   class CefBrowser
+  location: class JBCefInputMethodAdapter
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:34: error: cannot find symbol
+        private volatile CefRange mySelectionRange = DEFAULT_RANGE;
+                         ^
+  symbol:   class CefRange
+  location: class JBCefInputMethodAdapter
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:38: error: cannot find symbol
+        void setBrowser(CefBrowser browser) {
+                        ^
+  symbol:   class CefBrowser
+  location: class JBCefInputMethodAdapter
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:152: error: cannot find symbol
+        @Override public void onImeCompositionRangeChanged(CefRange selectionRange, Rectangle[] characterBounds) {
+                                                           ^
+  symbol:   class CefRange
+  location: class JBCefInputMethodAdapter
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:156: error: cannot find symbol
+        @Override public void onTextSelectionChanged(String selectedText, CefRange selectionRange) {
+                                                                          ^
+  symbol:   class CefRange
+  location: class JBCefInputMethodAdapter
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefCaretListener.java:12: error: cannot find symbol
+        void onImeCompositionRangeChanged(CefRange selectionRange, Rectangle[] characterBounds);
+                                          ^
+  symbol:   class CefRange
+  location: interface JBCefCaretListener
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefCaretListener.java:14: error: cannot find symbol
+        void onTextSelectionChanged(String selectedText, CefRange selectionRange);
+                                                         ^
+  symbol:   class CefRange
+  location: interface JBCefCaretListener
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:71: error: cannot find symbol
+        @Override public void onPopupShow(CefBrowser browser, boolean show){
+                                          ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:77: error: cannot find symbol
+        @Override public void onPopupSize(CefBrowser browser, Rectangle size) {
+                                          ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:84: error: cannot find symbol
+        public void onPaint(CefBrowser browser, boolean popup, Rectangle[] dirtyRects, ByteBuffer buffer, int width,
+                            ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:240: error: cannot find symbol
+        @Override public Rectangle getViewRect(CefBrowser browser) {
+                                               ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:247: error: cannot find symbol
+        @Override public boolean getScreenInfo(CefBrowser browser, CefScreenInfo screenInfo) {
+                                               ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:247: error: cannot find symbol
+        @Override public boolean getScreenInfo(CefBrowser browser, CefScreenInfo screenInfo) {
+                                                                   ^
+  symbol:   class CefScreenInfo
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:253: error: cannot find symbol
+        @Override public Point getScreenPoint(CefBrowser browser, Point viewPoint) {
+                                              ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:265: error: cannot find symbol
+        @Override public double getDeviceScaleFactor(CefBrowser browser) {
+                                                     ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:269: error: cannot find symbol
+        @SuppressWarnings("MagicConstant") @Override public boolean onCursorChange(CefBrowser browser, int cursorType) {
+       ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:274: error: cannot find symbol
+        @Override public boolean startDragging(CefBrowser browser, CefDragData dragData, int mask, int x, int y) {
+                                               ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:274: error: cannot find symbol
+        @Override public boolean startDragging(CefBrowser browser, CefDragData dragData, int mask, int x, int y) {
+                                                                   ^
+  symbol:   class CefDragData
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:278: error: cannot find symbol
+        @Override public void updateDragCursor(CefBrowser browser, int operation) {
+                                               ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:282: error: cannot find symbol
+        public void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectionRange, Rectangle[] characterBounds) {
+                                                 ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:282: error: cannot find symbol
+        public void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectionRange, Rectangle[] characterBounds) {
+                                                                     ^
+  symbol:   class CefRange
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:289: error: cannot find symbol
+        @Override public void OnTextSelectionChanged(CefBrowser browser, String selectedText, CefRange selectionRange) {
+                                                     ^
+  symbol:   class CefBrowser
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:289: error: cannot find symbol
+        @Override public void OnTextSelectionChanged(CefBrowser browser, String selectedText, CefRange selectionRange) {
+                  ^
+  symbol:   class CefRange
+  location: class JBCefOsrHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:26: error: package org.cef does not exist
+import org.cef.CefClient;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:27: error: package org.cef does not exist
+import org.cef.OS;
+              ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:28: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowser;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:29: error: package org.cef.browser does not exist
+import org.cef.browser.CefBrowserOsrWithHandler;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:30: error: package org.cef.browser does not exist
+import org.cef.browser.CefRendering;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:31: error: package org.cef.browser does not exist
+import org.cef.browser.CefRequestContext;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:32: error: package org.cef.handler does not exist
+import org.cef.handler.CefRenderHandler;
+                      ^
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:37: error: cannot find symbol
+public class CefBrowserOsrCustom extends CefBrowserOsrWithHandler {
+                                         ^
+  symbol: class CefBrowserOsrWithHandler
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:41: error: cannot find symbol
+        public CefBrowserOsrCustom(CefClient client, String url, CefRendering.CefRenderingWithHandler renderingWithHandler,
+                                   ^
+  symbol:   class CefClient
+  location: class CefBrowserOsrCustom
+/home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:41: error: package CefRendering does not exist
+        public CefBrowserOsrCustom(CefClient client, String url, CefRendering.CefRenderingWithHandler renderingWithHandler,
+ ^
+100 errors
+
+> Task :compileJava FAILED
+
+[Incubating] Problems report is available at: file:///home/idor/OE-MCreator/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileJava' (registered by plugin class 'org.gradle.api.plugins.JavaBasePlugin').
+> Compilation failed; see the compiler output below.
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:64: error: cannot find symbol
+        private final CefClient client;
+                      ^
+    symbol:   class CefClient
+    location: class WebView
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:65: error: cannot find symbol
+        private final CefMessageRouter router;
+                      ^
+    symbol:   class CefMessageRouter
+    location: class WebView
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:66: error: cannot find symbol
+        private final CefBrowser browser;
+                      ^
+    symbol:   class CefBrowser
+    location: class WebView
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:441: error: cannot find symbol
+        CefMessageRouter getRouter() {
+        ^
+    symbol:   class CefMessageRouter
+    location: class WebView
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:486: error: cannot find symbol
+                boolean onJSDialog(CefBrowser browser, String origin_url, CefJSDialogHandler.JSDialogType dialog_type,
+                                   ^
+    symbol:   class CefBrowser
+    location: interface JSDialogListener
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:487: error: cannot find symbol
+                                String message_text, String default_prompt_text, CefJSDialogCallback callback,
+     ^
+    symbol:   class CefJSDialogCallback
+    location: interface JSDialogListener
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:488: error: cannot find symbol
+                                BoolRef suppress_message);
+                                ^
+    symbol:   class BoolRef
+    location: interface JSDialogListener
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:58: error: cannot find symbol
+        public CefClassLoaderSchemeHandler(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                                           ^
+    symbol:   class CefBrowser
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:58: error: cannot find symbol
+        public CefClassLoaderSchemeHandler(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                                                               ^
+    symbol:   class CefFrame
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:58: error: cannot find symbol
+        public CefClassLoaderSchemeHandler(CefBrowser browser, CefFrame frame, String schemeName, CefRequest request) {
+                      ^
+    symbol:   class CefRequest
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:61: error: cannot find symbol
+        @Override public boolean processRequest(CefRequest request, CefCallback callback) {
+                                                ^
+    symbol:   class CefRequest
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:61: error: cannot find symbol
+        @Override public boolean processRequest(CefRequest request, CefCallback callback) {
+                                                                    ^
+    symbol:   class CefCallback
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:89: error: cannot find symbol
+        @Override public void getResponseHeaders(CefResponse response, IntRef responseLength, StringRef redirectUrl) {
+                                                 ^
+    symbol:   class CefResponse
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:89: error: cannot find symbol
+        @Override public void getResponseHeaders(CefResponse response, IntRef responseLength, StringRef redirectUrl) {
+                                                                       ^
+    symbol:   class IntRef
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:89: error: cannot find symbol
+        @Override public void getResponseHeaders(CefResponse response, IntRef responseLength, StringRef redirectUrl) {
+                  ^
+    symbol:   class StringRef
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:95: error: cannot find symbol
+        @Override public boolean readResponse(byte[] dataOut, int bytesToRead, IntRef bytesRead, CefCallback callback) {
+   ^
+    symbol:   class IntRef
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:95: error: cannot find symbol
+        @Override public boolean readResponse(byte[] dataOut, int bytesToRead, IntRef bytesRead, CefCallback callback) {
+                     ^
+    symbol:   class CefCallback
+    location: class CefClassLoaderSchemeHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:30: error: cannot find symbol
+        private volatile CefBrowser myBrowser;
+                         ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrComponent
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:84: error: cannot find symbol
+        public void setBrowser(@Nonnull CefBrowser browser) {
+                                        ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrComponent
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:26: error: cannot find symbol
+        public static final CefRange DEFAULT_RANGE = new CefRange(-1, -1);
+                            ^
+    symbol:   class CefRange
+    location: class JBCefInputMethodAdapter
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:28: error: cannot find symbol
+        private CefBrowser myBrowser;
+                ^
+    symbol:   class CefBrowser
+    location: class JBCefInputMethodAdapter
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:34: error: cannot find symbol
+        private volatile CefRange mySelectionRange = DEFAULT_RANGE;
+                         ^
+    symbol:   class CefRange
+    location: class JBCefInputMethodAdapter
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:38: error: cannot find symbol
+        void setBrowser(CefBrowser browser) {
+                        ^
+    symbol:   class CefBrowser
+    location: class JBCefInputMethodAdapter
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:152: error: cannot find symbol
+        @Override public void onImeCompositionRangeChanged(CefRange selectionRange, Rectangle[] characterBounds) {
+                                                           ^
+    symbol:   class CefRange
+    location: class JBCefInputMethodAdapter
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:156: error: cannot find symbol
+        @Override public void onTextSelectionChanged(String selectedText, CefRange selectionRange) {
+                                                                          ^
+    symbol:   class CefRange
+    location: class JBCefInputMethodAdapter
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefCaretListener.java:12: error: cannot find symbol
+        void onImeCompositionRangeChanged(CefRange selectionRange, Rectangle[] characterBounds);
+                                          ^
+    symbol:   class CefRange
+    location: interface JBCefCaretListener
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefCaretListener.java:14: error: cannot find symbol
+        void onTextSelectionChanged(String selectedText, CefRange selectionRange);
+                                                         ^
+    symbol:   class CefRange
+    location: interface JBCefCaretListener
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:71: error: cannot find symbol
+        @Override public void onPopupShow(CefBrowser browser, boolean show){
+                                          ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:77: error: cannot find symbol
+        @Override public void onPopupSize(CefBrowser browser, Rectangle size) {
+                                          ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:84: error: cannot find symbol
+        public void onPaint(CefBrowser browser, boolean popup, Rectangle[] dirtyRects, ByteBuffer buffer, int width,
+                            ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:240: error: cannot find symbol
+        @Override public Rectangle getViewRect(CefBrowser browser) {
+                                               ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:247: error: cannot find symbol
+        @Override public boolean getScreenInfo(CefBrowser browser, CefScreenInfo screenInfo) {
+                                               ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:247: error: cannot find symbol
+        @Override public boolean getScreenInfo(CefBrowser browser, CefScreenInfo screenInfo) {
+                                                                   ^
+    symbol:   class CefScreenInfo
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:253: error: cannot find symbol
+        @Override public Point getScreenPoint(CefBrowser browser, Point viewPoint) {
+                                              ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:265: error: cannot find symbol
+        @Override public double getDeviceScaleFactor(CefBrowser browser) {
+                                                     ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:269: error: cannot find symbol
+        @SuppressWarnings("MagicConstant") @Override public boolean onCursorChange(CefBrowser browser, int cursorType) {
+       ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:274: error: cannot find symbol
+        @Override public boolean startDragging(CefBrowser browser, CefDragData dragData, int mask, int x, int y) {
+                                               ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:274: error: cannot find symbol
+        @Override public boolean startDragging(CefBrowser browser, CefDragData dragData, int mask, int x, int y) {
+                                                                   ^
+    symbol:   class CefDragData
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:278: error: cannot find symbol
+        @Override public void updateDragCursor(CefBrowser browser, int operation) {
+                                               ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:282: error: cannot find symbol
+        public void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectionRange, Rectangle[] characterBounds) {
+                                                 ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:282: error: cannot find symbol
+        public void OnImeCompositionRangeChanged(CefBrowser browser, CefRange selectionRange, Rectangle[] characterBounds) {
+                                                                     ^
+    symbol:   class CefRange
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:289: error: cannot find symbol
+        @Override public void OnTextSelectionChanged(CefBrowser browser, String selectedText, CefRange selectionRange) {
+                                                     ^
+    symbol:   class CefBrowser
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:289: error: cannot find symbol
+        @Override public void OnTextSelectionChanged(CefBrowser browser, String selectedText, CefRange selectionRange) {
+                  ^
+    symbol:   class CefRange
+    location: class JBCefOsrHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:41: error: cannot find symbol
+        public CefBrowserOsrCustom(CefClient client, String url, CefRendering.CefRenderingWithHandler renderingWithHandler,
+                                   ^
+    symbol:   class CefClient
+    location: class CefBrowserOsrCustom
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:39: error: cannot find symbol
+  class CefClassLoaderSchemeHandler implements CefResourceHandler {
+                                               ^
+    symbol: class CefResourceHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:29: error: cannot find symbol
+  public class JBCefOsrHandler implements CefRenderHandler {
+                                          ^
+    symbol: class CefRenderHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:37: error: cannot find symbol
+  public class CefBrowserOsrCustom extends CefBrowserOsrWithHandler {
+                                           ^
+    symbol: class CefBrowserOsrWithHandler
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:31: error: package org.cef does not exist
+  import org.cef.CefClient;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:32: error: package org.cef does not exist
+  import org.cef.OS;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:33: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:34: error: package org.cef.browser does not exist
+  import org.cef.browser.CefFrame;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:35: error: package org.cef.browser does not exist
+  import org.cef.browser.CefMessageRouter;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:36: error: package org.cef.browser does not exist
+  import org.cef.browser.CefRendering;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:37: error: package org.cef.callback does not exist
+  import org.cef.callback.CefJSDialogCallback;
+                         ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:38: error: package org.cef.callback does not exist
+  import org.cef.callback.CefQueryCallback;
+                         ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:40: error: package org.cef.misc does not exist
+  import org.cef.misc.BoolRef;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:486: error: package CefJSDialogHandler does not exist
+                boolean onJSDialog(CefBrowser browser, String origin_url, CefJSDialogHandler.JSDialogType dialog_type,
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/WebView.java:39: error: package org.cef.handler does not exist
+  import org.cef.handler.*;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/dialogs/file/JavaFileDialogs.java:27: error: package org.cef does not exist
+  import org.cef.OS;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:22: error: package org.cef.handler does not exist
+  import org.cef.handler.CefKeyboardHandler;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:23: error: package org.cef.misc does not exist
+  import org.cef.misc.EventFlags;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:50: error: package CefKeyboardHandler does not exist
+        public static KeyEvent convertCefKeyEvent(CefKeyboardHandler.CefKeyEvent cefKeyEvent, Component source) {
+                                                                    ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:59: error: package CefKeyboardHandler does not exist
+        public static int convertCefKeyEventType(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                   ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:67: error: package CefKeyboardHandler does not exist
+        public static int convertCefKeyEventKeyCode(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                      ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:74: error: package CefKeyboardHandler does not exist
+        public static int convertCefKeyEventModifiers(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefEventUtils.java:85: error: package CefKeyboardHandler does not exist
+        public static boolean isUpDownKeyEvent(CefKeyboardHandler.CefKeyEvent cefKeyEvent) {
+                                                                 ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:27: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:28: error: package org.cef.browser does not exist
+  import org.cef.browser.CefFrame;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:29: error: package org.cef.callback does not exist
+  import org.cef.callback.CefCallback;
+                         ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:30: error: package org.cef.handler does not exist
+  import org.cef.handler.CefResourceHandler;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:31: error: package org.cef.misc does not exist
+  import org.cef.misc.IntRef;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:32: error: package org.cef.misc does not exist
+  import org.cef.misc.StringRef;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:33: error: package org.cef.network does not exist
+  import org.cef.network.CefRequest;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefClassLoaderSchemeHandler.java:34: error: package org.cef.network does not exist
+  import org.cef.network.CefResponse;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:28: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:29: error: package org.cef.browser does not exist
+  import org.cef.browser.CefFrame;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:30: error: package org.cef.callback does not exist
+  import org.cef.callback.CefQueryCallback;
+                         ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/CefJavaBridgeHandler.java:31: error: package org.cef.handler does not exist
+  import org.cef.handler.CefMessageRouterHandlerAdapter;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:6: error: package com.jetbrains.cef does not exist
+  import com.jetbrains.cef.JCefAppConfig;
+                          ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:8: error: package org.cef does not exist
+  import org.cef.CefClient;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:9: error: package org.cef does not exist
+  import org.cef.OS;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrComponent.java:10: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:6: error: package org.cef does not exist
+  import org.cef.OS;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:7: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:8: error: package org.cef.callback does not exist
+  import org.cef.callback.CefDragData;
+                         ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:9: error: package org.cef.handler does not exist
+  import org.cef.handler.CefRenderHandler;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:10: error: package org.cef.handler does not exist
+  import org.cef.handler.CefScreenInfo;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefOsrHandler.java:11: error: package org.cef.misc does not exist
+  import org.cef.misc.CefRange;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:6: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:7: error: package org.cef.input does not exist
+  import org.cef.input.CefCompositionUnderline;
+                      ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefInputMethodAdapter.java:8: error: package org.cef.misc does not exist
+  import org.cef.misc.CefRange;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/JBCefCaretListener.java:6: error: package org.cef.misc does not exist
+  import org.cef.misc.CefRange;
+                     ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:26: error: package org.cef does not exist
+  import org.cef.CefClient;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:27: error: package org.cef does not exist
+  import org.cef.OS;
+                ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:28: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowser;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:29: error: package org.cef.browser does not exist
+  import org.cef.browser.CefBrowserOsrWithHandler;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:30: error: package org.cef.browser does not exist
+  import org.cef.browser.CefRendering;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:31: error: package org.cef.browser does not exist
+  import org.cef.browser.CefRequestContext;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:32: error: package org.cef.handler does not exist
+  import org.cef.handler.CefRenderHandler;
+                        ^
+  /home/idor/OE-MCreator/src/main/java/net/mcreator/ui/chromium/osr/CefBrowserOsrCustom.java:41: error: package CefRendering does not exist
+        public CefBrowserOsrCustom(CefClient client, String url, CefRendering.CefRenderingWithHandler renderingWithHandler,
+ ^
+  100 errors
+
+* Try:
+> Check your code and dependencies to fix the compilation error(s)
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 22s
+1 actionable task: 1 executed
+idor@Tony:~/OE-MCreator$
