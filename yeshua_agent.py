@@ -912,6 +912,296 @@ class YeshuaAgent:
         print(f"FSM: {current_state} -> {new_state} (issues: {total_issues})")
         self.log_action("enforce_boundary_fsm", transition)
         return {"from_state": current_state, "to_state": new_state, "transition": transition}
+    # ======== CATEGORY 5: DEPENDENCY ENCLOSURE DETECTOR ========
+
+    def detect_enclosed_dependencies(self, build_file_path=None):
+        """
+        Scan build files for proprietary gates, private repositories,
+        missing binaries, and Paper Shield patterns.
+        
+        Operationalizes Axiom VI (No Unverifiable Dependency) and
+        Axiom VII (No Economic Gatekeeping).
+        
+        falsifies_if: returns CLEAN for a file with known enclosure patterns
+        """
+        findings = []
+        
+        # If no specific file, scan the entire repository
+        if build_file_path is None:
+            build_files = []
+            for root, dirs, files in os.walk(self.repo_root):
+                dirs[:] = [d for d in dirs if not d.startswith('.') and d != '__pycache__']
+                for file in files:
+                    if file in ('build.gradle', 'build.gradle.kts', 'pom.xml', 'requirements.txt', 
+                               'setup.py', 'pyproject.toml', 'Cargo.toml', 'package.json'):
+                        build_files.append(os.path.join(root, file))
+        else:
+            build_files = [build_file_path]
+        
+        for bf in build_files:
+            rel_path = os.path.relpath(bf, self.repo_root)
+            try:
+                with open(bf) as f:
+                    content = f.read()
+                
+                file_findings = self._analyze_build_file(rel_path, content)
+                findings.extend(file_findings)
+            except Exception as e:
+                findings.append({
+                    "file": rel_path,
+                    "severity": "ERROR",
+                    "type": "UNREADABLE",
+                    "detail": str(e)
+                })
+        
+        # Classify findings
+        critical = [f for f in findings if f.get('severity') == 'CRITICAL']
+        warnings = [f for f in findings if f.get('severity') == 'WARNING']
+        info = [f for f in findings if f.get('severity') == 'INFO']
+        
+        print(f"\nDependency Enclosure Audit: {len(findings)} findings")
+        print(f"  CRITICAL: {len(critical)}")
+        print(f"  WARNING: {len(warnings)}")
+        print(f"  INFO: {len(info)}")
+        
+        if critical:
+            print("\n  CRITICAL ENCLOSURES DETECTED:")
+            for f in critical:
+                print(f"    [{f['type']}] {f['file']}: {f['detail']}")
+        
+        self.log_action("detect_enclosed_dependencies", {
+            "files_scanned": len(build_files),
+            "total_findings": len(findings),
+            "critical": len(critical)
+        })
+        
+        return {
+            "files_scanned": len(build_files),
+            "findings": findings,
+            "critical": len(critical),
+            "warnings": len(warnings),
+            "info": len(info)
+        }
+
+    def _analyze_build_file(self, rel_path, content):
+        """Analyze a single build file for enclosure patterns."""
+        findings = []
+        
+        # === GRADLE ===
+        if rel_path.endswith('.gradle') or rel_path.endswith('.gradle.kts'):
+            findings.extend(self._analyze_gradle(rel_path, content))
+        
+        # === MAVEN ===
+        elif rel_path.endswith('pom.xml'):
+            findings.extend(self._analyze_maven(rel_path, content))
+        
+        # === PYTHON ===
+        elif rel_path.endswith(('requirements.txt', 'setup.py', 'pyproject.toml')):
+            findings.extend(self._analyze_python_deps(rel_path, content))
+        
+        # === RUST ===
+        elif rel_path.endswith('Cargo.toml'):
+            findings.extend(self._analyze_rust(rel_path, content))
+        
+        # === NODE ===
+        elif rel_path.endswith('package.json'):
+            findings.extend(self._analyze_node(rel_path, content))
+        
+        return findings
+
+    def _analyze_gradle(self, rel_path, content):
+        """Scan Gradle build file for enclosure patterns."""
+        findings = []
+        
+        # Check for private repositories
+        private_repo_patterns = [
+            (r'jetbrains\.com', 'JetBrains private repository', 'CRITICAL'),
+            (r'plugins\.gradle\.org/m2/', 'Gradle Plugin Portal', 'INFO'),
+            (r'maven\.google\.com', 'Google Maven', 'INFO'),
+            (r'repo\.spring\.io', 'Spring Repository', 'INFO'),
+            (r'jitpack\.io', 'JitPack (unverified builds)', 'WARNING'),
+            (r'maven\.pkg\.github\.com', 'GitHub Packages (private)', 'CRITICAL'),
+            (r'dl\.bintray\.com', 'Bintray (deprecated, may vanish)', 'WARNING'),
+            (r'oss\.sonatype\.org', 'Sonatype OSS (staging)', 'WARNING'),
+        ]
+        
+        for pattern, name, severity in private_repo_patterns:
+            if re.search(pattern, content, re.IGNORECASE):
+                findings.append({
+                    "file": rel_path,
+                    "severity": severity,
+                    "type": "PRIVATE_REPOSITORY" if severity == 'CRITICAL' else "EXTERNAL_REPOSITORY",
+                    "detail": f"{name}: {pattern}"
+                })
+        
+        # Check for flatDir (local jar dependencies — potential missing source)
+        if re.search(r'flatDir\s*\{', content):
+            flat_dirs = re.findall(r"dirs\s+['\"]([^'\"]+)['\"]", content)
+            for d in flat_dirs:
+                findings.append({
+                    "file": rel_path,
+                    "severity": "WARNING",
+                    "type": "FLAT_DIR_DEPENDENCY",
+                    "detail": f"flatDir dependency: {d} — jars in this directory have no source verification"
+                })
+        
+        # Check for implementation fileTree (local jars, no version control)
+        if re.search(r'fileTree\s*\(', content):
+            findings.append({
+                "file": rel_path,
+                "severity": "WARNING",
+                "type": "FILE_TREE_DEPENDENCY",
+                "detail": "fileTree dependency — jars loaded from filesystem without hash verification"
+            })
+        
+        # Check for missing toolchain — requires specific JDK version from private source
+        if re.search(r'languageVersion\s*=\s*JavaLanguageVersion\.of\((\d+)\)', content):
+            match = re.search(r'languageVersion\s*=\s*JavaLanguageVersion\.of\((\d+)\)', content)
+            version = match.group(1)
+            if version not in ('17', '21', '25'):
+                findings.append({
+                    "file": rel_path,
+                    "severity": "INFO",
+                    "type": "SPECIFIC_JDK_REQUIRED",
+                    "detail": f"Requires Java {version} — verify this is publicly available"
+                })
+        
+        return findings
+
+    def _analyze_maven(self, rel_path, content):
+        """Scan Maven POM for enclosure patterns."""
+        findings = []
+        
+        # Check for private repositories in pom.xml
+        repo_patterns = [
+            (r'<id>.*private.*</id>', 'Private repository declared', 'CRITICAL'),
+            (r'<id>.*internal.*</id>', 'Internal repository declared', 'CRITICAL'),
+            (r'<id>.*snapshot.*</id>', 'Snapshot repository', 'WARNING'),
+        ]
+        
+        for pattern, name, severity in repo_patterns:
+            if re.search(pattern, content, re.IGNORECASE):
+                findings.append({
+                    "file": rel_path,
+                    "severity": severity,
+                    "type": "PRIVATE_MAVEN_REPOSITORY" if severity == 'CRITICAL' else "SNAPSHOT_REPOSITORY",
+                    "detail": name
+                })
+        
+        return findings
+
+    def _analyze_python_deps(self, rel_path, content):
+        """Scan Python dependency files for enclosure patterns."""
+        findings = []
+        
+        # Check for private package indices
+        if re.search(r'--index-url\s+https?://(?!pypi\.org)', content, re.IGNORECASE):
+            findings.append({
+                "file": rel_path,
+                "severity": "CRITICAL",
+                "type": "PRIVATE_PYPI_INDEX",
+                "detail": "Non-PyPI package index detected — dependencies may not be publicly verifiable"
+            })
+        
+        # Check for git+https dependencies
+        if re.search(r'git\+https?://', content):
+            git_deps = re.findall(r'git\+https?://[^\s]+', content)
+            for dep in git_deps:
+                findings.append({
+                    "file": rel_path,
+                    "severity": "WARNING",
+                    "type": "GIT_DEPENDENCY",
+                    "detail": f"Git dependency: {dep[:80]} — may point to private or unstable repository"
+                })
+        
+        return findings
+
+    def _analyze_rust(self, rel_path, content):
+        """Scan Cargo.toml for enclosure patterns."""
+        findings = []
+        
+        # Check for non-crates.io registries
+        if re.search(r'registry\s*=\s*["\'](?!crates-io)', content, re.IGNORECASE):
+            findings.append({
+                "file": rel_path,
+                "severity": "CRITICAL",
+                "type": "PRIVATE_CARGO_REGISTRY",
+                "detail": "Non-crates.io registry — dependencies may not be publicly verifiable"
+            })
+        
+        # Check for git dependencies
+        if re.search(r'git\s*=\s*"https?://', content):
+            findings.append({
+                "file": rel_path,
+                "severity": "WARNING",
+                "type": "GIT_DEPENDENCY",
+                "detail": "Git dependency in Cargo.toml — may point to private repository"
+            })
+        
+        return findings
+
+    def _analyze_node(self, rel_path, content):
+        """Scan package.json for enclosure patterns."""
+        findings = []
+        
+        # Check for private npm registries
+        if re.search(r'"registry"\s*:\s*"https?://(?!registry\.npmjs\.org)', content, re.IGNORECASE):
+            findings.append({
+                "file": rel_path,
+                "severity": "CRITICAL",
+                "type": "PRIVATE_NPM_REGISTRY",
+                "detail": "Non-npmjs registry — dependencies may not be publicly verifiable"
+            })
+        
+        # Check for git dependencies
+        if re.search(r'"url"\s*:\s*"git\+https?://', content):
+            findings.append({
+                "file": rel_path,
+                "severity": "WARNING",
+                "type": "GIT_DEPENDENCY",
+                "detail": "Git dependency in package.json — may point to private repository"
+            })
+        
+        return findings
+
+    def suggest_open_alternatives(self, dependency_name):
+        """
+        Suggest open-source alternatives for enclosed dependencies.
+        
+        falsifies_if: suggests alternative that has the same enclosure pattern
+        """
+        alternatives = {
+            'jcef': {
+                'alternative': 'JavaFX WebView or JxBrowser (open-source fork)',
+                'note': 'JCEF (Chromium Embedded Framework for Java) requires JetBrains private repo. JavaFX WebView is part of OpenJFX (GPL).'
+            },
+            'securejarhandler': {
+                'alternative': 'Self-signed jar verification with user-owned keys',
+                'note': 'The current SecureJarHandler signs with Microsoft-controlled keys. A sovereign fork uses community-controlled signing.'
+            },
+            'org.cef': {
+                'alternative': 'Open-source Chromium bindings via JCEF open-source build',
+                'note': 'Pre-built JCEF binaries come from JetBrains private repo. Building from source is possible but complex.'
+            },
+            'jetbrains': {
+                'alternative': 'Eclipse IDE or NetBeans for open-source development',
+                'note': 'JetBrains tools are proprietary. Eclipse and NetBeans are fully open-source alternatives.'
+            },
+            'com.jetbrains.cef': {
+                'alternative': 'Build JCEF from open-source Chromium sources',
+                'note': 'The com.jetbrains.cef package is the proprietary wrapper. Upstream JCEF is BSD-licensed.'
+            },
+        }
+        
+        dep_lower = dependency_name.lower()
+        for pattern, info in alternatives.items():
+            if pattern in dep_lower:
+                return info
+        
+        return {
+            'alternative': 'No known open alternative in the registry',
+            'note': 'This dependency may require original research to find or build an open replacement.'
+        }
 if __name__ == "__main__":  
     agent = YeshuaAgent()  
     agent.run()  
