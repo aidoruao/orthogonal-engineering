@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Sabotage Puzzle — Breaking the Invariants | Part 2 of the Forensic Audit</title>
+    <style>
+        :root {
+            --bg: #080c14;
+            --surface: #0f1520;
+            --surface2: #141c28;
+            --border: #1e2a3a;
+            --border-active: #3a5070;
+            --text: #d0d8e4;
+            --text-secondary: #7d8ea3;
+            --text-muted: #556277;
+            --accent: #5b9cf5;
+            --accent-soft: #5b9cf522;
+            --danger: #e0556a;
+            --danger-soft: #e0556a22;
+            --warning: #d4a843;
+            --warning-soft: #d4a84322;
+            --success: #4dba6f;
+            --success-soft: #4dba6f22;
+            --tech: #5b9cf5;
+            --legal: #d4a843;
+            --economic: #4dba6f;
+            --direct: #e0556a;
+            --organizational: #a78bfa;
+            --invariant-broken: #4dba6f;
+            --invariant-intact: #e0556a;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.18s ease;
+            --font-mono: 'SF Mono', 'Fira Code', 'Consolas', 'Menlo', monospace;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.65;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+        header .badge {
+            display: inline-block;
+            background: #d4a84322;
+            color: var(--warning);
+            font-size: 0.68rem;
+            letter-spacing: 0.08em;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            border: 1px solid #d4a84344;
+            margin-bottom: 0.6rem;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        header h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #7ab4f7, #e0556a, #d4a843);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+        }
+        header .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            letter-spacing: 0.01em;
+        }
+        .context-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.4rem 1.6rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 3px solid var(--accent);
+        }
+        .context-box h2 {
+            font-size: 1.05rem;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.01em;
+        }
+        .context-box p {
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            margin-bottom: 0.4rem;
+        }
+        .context-box .findings-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+        }
+        .finding-chip {
+            display: inline-block;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.02em;
+        }
+        .section-title {
+            font-size: 1rem;
+            color: var(--text);
+            margin: 1.8rem 0 0.8rem;
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .section-title .icon {
+            font-size: 1.1rem;
+        }
+        /* Invariant Cards */
+        .invariants-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7rem;
+            margin-bottom: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .invariants-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .invariant-card {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.2rem;
+            transition: all var(--transition);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .invariant-card.broken {
+            border-color: var(--invariant-broken);
+            background: #4dba6f0a;
+            box-shadow: 0 0 0 1px #4dba6f33 inset, 0 0 20px #4dba6f11;
+        }
+        .invariant-card.broken::after {
+            content: '✓ BROKEN';
+            position: absolute;
+            top: -0.55rem;
+            right: 0.8rem;
+            background: #1a2a1e;
+            color: var(--invariant-broken);
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            padding: 0.12rem 0.5rem;
+            border-radius: 10px;
+            border: 1px solid #4dba6f44;
+            font-weight: 700;
+        }
+        .invariant-card .invariant-name {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.01em;
+        }
+        .invariant-card .invariant-desc {
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            line-height: 1.45;
+        }
+        .invariant-card .breaking-condition {
+            margin-top: 0.5rem;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-style: italic;
+            border-top: 1px solid var(--border);
+            padding-top: 0.5rem;
+        }
+        /* Intervention Table */
+        .intervention-table-wrap {
+            overflow-x: auto;
+            margin: 1rem 0 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .intervention-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+            min-width: 700px;
+        }
+        .intervention-table thead th {
+            background: #111a26;
+            color: var(--text);
+            padding: 0.7rem 0.6rem;
+            text-align: left;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            border-bottom: 2px solid var(--border);
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .intervention-table tbody td {
+            padding: 0.7rem 0.6rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        .intervention-table tbody tr {
+            transition: all var(--transition);
+        }
+        .intervention-table tbody tr:hover {
+            background: #1a263422;
+        }
+        .intervention-table tbody tr.selected-row {
+            background: #5b9cf50d;
+            border-left: 3px solid var(--accent);
+        }
+        .intervention-table tbody tr.selected-row td:first-child {
+            padding-left: 0.35rem;
+        }
+        .domain-badge {
+            display: inline-block;
+            padding: 0.18rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .domain-badge.tech {
+            background: #5b9cf522;
+            color: #7ab4f7;
+            border: 1px solid #5b9cf544;
+        }
+        .domain-badge.legal {
+            background: #d4a84322;
+            color: #e2c16d;
+            border: 1px solid #d4a84344;
+        }
+        .domain-badge.economic {
+            background: #4dba6f22;
+            color: #5ec97e;
+            border: 1px solid #4dba6f44;
+        }
+        .domain-badge.direct {
+            background: #e0556a22;
+            color: #f0909b;
+            border: 1px solid #e0556a44;
+        }
+        .domain-badge.organizational {
+            background: #a78bfa22;
+            color: #b9a6f7;
+            border: 1px solid #a78bfa44;
+        }
+        .cost-badge {
+            display: inline-block;
+            padding: 0.18rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+        .cost-badge.low {
+            background: #4dba6f22;
+            color: #5ec97e;
+        }
+        .cost-badge.medium {
+            background: #d4a84322;
+            color: #e2c16d;
+        }
+        .cost-badge.high {
+            background: #e0556a22;
+            color: #f0909b;
+        }
+        .cost-badge.very-high {
+            background: #e0556a33;
+            color: #f5a5ae;
+            border: 1px solid #e0556a55;
+        }
+        .checkbox-cell {
+            text-align: center;
+        }
+        .checkbox-cell input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+            transform: scale(1.1);
+        }
+        /* Score Panel */
+        .score-panel {
+            position: sticky;
+            top: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            z-index: 10;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+        }
+        .score-panel h3 {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+        .invariant-status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 500px) {
+            .invariant-status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .invariant-status {
+            text-align: center;
+            padding: 0.65rem;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border);
+            transition: all var(--transition);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .invariant-status.intact {
+            border-color: #e0556a44;
+            background: #e0556a0a;
+            color: #f0909b;
+        }
+        .invariant-status.broken-status {
+            border-color: #4dba6f44;
+            background: #4dba6f0a;
+            color: #5ec97e;
+            box-shadow: 0 0 12px #4dba6f22;
+        }
+        .cost-summary {
+            text-align: center;
+            padding: 0.8rem;
+            background: var(--highlight);
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.5rem;
+            border: 1px solid #5b9cf522;
+        }
+        .cost-summary .total-cost {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .cost-summary .total-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+        .verdict {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.6rem;
+            padding: 0.6rem;
+            border-radius: var(--radius-sm);
+            line-height: 1.5;
+        }
+        .verdict.success {
+            color: #5ec97e;
+            background: #4dba6f0d;
+            border: 1px solid #4dba6f33;
+        }
+        .verdict.partial {
+            color: #e2c16d;
+            background: #d4a8430d;
+            border: 1px solid #d4a84333;
+        }
+        .verdict.insufficient {
+            color: #f0909b;
+            background: #e0556a0d;
+            border: 1px solid #e0556a33;
+        }
+        .btn-reset {
+            display: block;
+            width: 100%;
+            margin-top: 0.8rem;
+            padding: 0.55rem;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            transition: all var(--transition);
+        }
+        .btn-reset:hover {
+            background: #1e2a38;
+            border-color: #4a6080;
+        }
+        /* Analysis Questions */
+        .questions-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .questions-section h3 {
+            font-size: 1rem;
+            color: var(--warning);
+            margin-bottom: 1rem;
+            letter-spacing: 0.01em;
+        }
+        .question-block {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.6rem;
+        }
+        .question-block .q-label {
+            font-weight: 700;
+            font-size: 0.82rem;
+            color: var(--text);
+            margin-bottom: 0.3rem;
+            letter-spacing: 0.01em;
+        }
+        .question-block .q-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        /* Machine Section */
+        .machine-section-wrapper {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .machine-section-wrapper h3 {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.01em;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .btn-copy {
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius-sm);
+            border: 2px solid #4dba6f88;
+            background: #4dba6f11;
+            color: #4dba6f;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .btn-copy:hover {
+            background: #4dba6f22;
+            border-color: #4dba6f;
+            box-shadow: 0 0 12px #4dba6f33;
+        }
+        .btn-copy.copied {
+            border-color: var(--success);
+            background: #3fb95022;
+            color: var(--success);
+        }
+        .machine-textarea {
+            width: 100%;
+            height: 280px;
+            background: #05080d;
+            border: 1px solid #1a1a1a;
+            border-radius: var(--radius-sm);
+            padding: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #7deb9e;
+            resize: vertical;
+            overflow-y: auto;
+            line-height: 1.5;
+            tab-size: 2;
+            white-space: pre;
+        }
+        .machine-textarea:focus {
+            outline: none;
+            border-color: #3a5040;
+            box-shadow: 0 0 0 2px #4dba6f22;
+        }
+        .theory-note {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .theory-note h3 {
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.01em;
+        }
+        .theory-note p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">Part 2 — Action Phase</span>
+            <h1>The Sabotage Puzzle</h1>
+            <p class="subtitle">Breaking the Invariants — From Diagnosis to Treatment</p>
+        </header>
+
+        <!-- Context -->
+        <div class="context-box">
+            <h2>&#128218; What We've Already Proven</h2>
+            <p>Part 1 established that seven independent barriers form a systematic control architecture preventing user runtime governance. The Good Intentions Paradox proved that even if every barrier was built with legitimate intent, the outcome is permanent — the architecture, not any individual, is the adversary.</p>
+            <p style="margin-top:0.4rem;"><strong>This puzzle asks: What do we DO about it?</strong> Given the confirmed architecture and four mathematical invariants, design the minimum set of interventions that would restore user autonomy.</p>
+            <div class="findings-row">
+                <span class="finding-chip">&#128202; Bayes factor &gt;100 against coincidence</span>
+                <span class="finding-chip">&#127922; Nash equilibrium stable under good intentions</span>
+                <span class="finding-chip">&#128300; Control is emergent, not personal</span>
+                <span class="finding-chip">&#128736;&#65039; Architecture must change — not people</span>
+            </div>
+        </div>
+
+        <!-- The Four Invariants -->
+        <div class="section-title"><span class="icon">&#128274;</span> The Four Invariants to Break</div>
+        <div class="invariants-grid" id="invariantsGrid">
+            <div class="invariant-card" id="invariantRedundancy" data-invariant="redundancy">
+                <div class="invariant-name">1. Redundancy</div>
+                <div class="invariant-desc">Multiple independent barriers each sufficient to block modification. If you bypass one, another catches you. Seven layers deep — any single bypass is insufficient.</div>
+                <div class="breaking-condition">Breaking condition: Any single barrier bypass must not trigger another barrier.</div>
+            </div>
+            <div class="invariant-card" id="invariantSelfHealing" data-invariant="self_healing">
+                <div class="invariant-name">2. Self-Healing</div>
+                <div class="invariant-desc">Active recovery with retry logic restores canonical state on every launch. Passive detection would be surmountable. Active enforcement with retry logic is not.</div>
+                <div class="breaking-condition">Breaking condition: Modifications must persist across launch cycles without being reverted.</div>
+            </div>
+            <div class="invariant-card" id="invariantAbsorptivity" data-invariant="absorptivity">
+                <div class="invariant-name">3. Absorptivity</div>
+                <div class="invariant-desc">The system dissipates human effort into canonical state restoration. 2,000 commands. 9 hours. 10 crashes. All returned to the same binary. Effort is treated as an attack surface.</div>
+                <div class="breaking-condition">Breaking condition: User effort must produce durable change, not exhaustion — the system stops absorbing.</div>
+            </div>
+            <div class="invariant-card" id="invariantNash" data-invariant="nash_stability">
+                <div class="invariant-name">4. Nash Stability</div>
+                <div class="invariant-desc">Closed architecture remains the dominant strategy for the platform owner regardless of user choice. The equilibrium holds even under good intentions — structural incentives, not malice, sustain it.</div>
+                <div class="breaking-condition">Breaking condition: Platform owner's payoff for Open must exceed payoff for Closed.</div>
+            </div>
+        </div>
+
+        <!-- Intervention Table -->
+        <div class="section-title"><span class="icon">&#129520;</span> Intervention Arsenal — Choose Your Tools</div>
+        <div class="intervention-table-wrap">
+            <table class="intervention-table" id="interventionTable">
+                <thead>
+                    <tr>
+                        <th style="width:30px;">&#9745;</th>
+                        <th>Intervention</th>
+                        <th>Domain</th>
+                        <th>Cost</th>
+                        <th>Invariant Targeted</th>
+                    </tr>
+                </thead>
+                <tbody id="interventionBody">
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Score Panel -->
+        <div class="score-panel" id="scorePanel">
+            <h3>&#128202; Sabotage Assessment</h3>
+            <div class="invariant-status-grid" id="invariantStatusGrid">
+                <div class="invariant-status intact" id="statusRedundancy">&#128274; Redundancy — INTACT</div>
+                <div class="invariant-status intact" id="statusSelfHealing">&#128274; Self-Healing — INTACT</div>
+                <div class="invariant-status intact" id="statusAbsorptivity">&#128274; Absorptivity — INTACT</div>
+                <div class="invariant-status intact" id="statusNash">&#128274; Nash Stability — INTACT</div>
+            </div>
+            <div class="cost-summary">
+                <div class="total-cost" id="totalCost">0</div>
+                <div class="total-label">Total Intervention Cost</div>
+            </div>
+            <div id="verdictBox"></div>
+            <button class="btn-reset" onclick="resetAll()">&#128260; Reset All Selections</button>
+        </div>
+
+        <!-- Analysis Questions -->
+        <div class="questions-section" id="questionsSection">
+            <h3>&#129300; Strategic Analysis — Answer These Questions</h3>
+            <div class="question-block">
+                <div class="q-label">Q1: Load-Bearing Invariant</div>
+                <div class="q-hint">If you could only break ONE invariant, which one collapses the entire architecture? Why is it the keystone?</div>
+            </div>
+            <div class="question-block">
+                <div class="q-label">Q2: Cheapest Path</div>
+                <div class="q-hint">What's the minimum-cost set of interventions that breaks all four invariants? Not the most thorough — the cheapest.</div>
+            </div>
+            <div class="question-block">
+                <div class="q-label">Q3: Countermeasure Resistance</div>
+                <div class="q-hint">For your chosen interventions, what countermeasure would the platform deploy? How do you design interventions that resist self-healing?</div>
+            </div>
+            <div class="question-block">
+                <div class="q-label">Q4: Minimum Viable Coalition</div>
+                <div class="q-hint">Who needs to act? A single user? A modding team? A competing platform? A regulator? What's the smallest group that can pull this off?</div>
+            </div>
+            <div class="question-block">
+                <div class="q-label">Q5: Post-Collapse Architecture</div>
+                <div class="q-hint">After your intervention succeeds, what prevents the same architecture from re-emerging? How do you build a platform where the invariants can't reform?</div>
+            </div>
+        </div>
+
+        <!-- Theory Note -->
+        <div class="theory-note">
+            <h3>&#128161; From Diagnosis to Treatment</h3>
+            <p>The first two puzzles proved the patient is sick and explained why the sickness is structural, not personal. <strong>This puzzle asks: what's the prescription?</strong></p>
+            <p>Every intervention has a cost. Every broken invariant triggers a countermeasure. The goal is not a perfect solution — it's the <strong>cheapest path</strong> that actually works, designed by people who understand the architecture well enough to sabotage it.</p>
+        </div>
+
+        <!-- Machine-Readable Section -->
+        <div class="machine-section-wrapper" id="machineSectionWrapper">
+            <h3>
+                &#129302; Machine-Readable Sabotage Data
+                <button class="btn-copy" id="btnCopy" onclick="copyMachineData()">&#128203; Copy All Data</button>
+            </h3>
+            <textarea class="machine-textarea" id="machineTextarea" readonly spellcheck="false">
+=== THE SABOTAGE PUZZLE: BREAKING THE INVARIANTS ===
+=== Format: Machine-Readable Action Planning Framework ===
+=== Part 2 of the Forensic Audit Series ===
+
+CONTEXT:
+  prior_findings:
+    puzzle_1: "Barriers are systematic, not coincidental (Bayes factor >100)"
+    puzzle_2: "Good intentions make control permanent (Nash equilibrium stable)"
+    invariants: [redundancy, self_healing, absorptivity, nash_stability]
+    
+PRIMARY_QUESTION: >
+  Given the confirmed control architecture, what is the minimum set of
+  interventions that would restore user autonomy over runtime governance?
+
+INVARIANTS_TO_BREAK:
+  redundancy:
+    description: "Multiple independent barriers each sufficient to block modification"
+    breaking_condition: "Any single barrier bypass must not trigger another barrier"
+    
+  self_healing:
+    description: "Active recovery with retry logic restores canonical state"
+    breaking_condition: "Modifications must persist across launch cycles"
+    
+  absorptivity:
+    description: "Human effort dissipated into canonical state restoration"
+    breaking_condition: "User effort must produce durable change, not exhaustion"
+    
+  nash_stability:
+    description: "Closed architecture is dominant strategy regardless of user choice"
+    breaking_condition: "Platform owner's payoff for Open must exceed payoff for Closed"
+
+INTERVENTIONS:
+  - id: open_launcher
+    domain: technical
+    cost: low
+    cost_value: 1
+    targets: [self_healing]
+    description: "Open-source launcher without hash verification or self-healing"
+    
+  - id: persistent_classpath
+    domain: technical
+    cost: medium
+    cost_value: 3
+    targets: [redundancy]
+    description: "User-configurable classpath that persists across launches"
+    
+  - id: signed_exceptions
+    domain: technical
+    cost: high
+    cost_value: 6
+    targets: [redundancy, self_healing]
+    description: "Platform-provided mechanism for user-authorized agent signatures"
+    
+  - id: eula_carveout
+    domain: legal
+    cost: low
+    cost_value: 1
+    targets: [nash_stability]
+    description: "Explicit EULA exemption for performance modification tools"
+    
+  - id: dmca_exemption
+    domain: legal
+    cost: very_high
+    cost_value: 10
+    targets: [absorptivity]
+    description: "DMCA exemption for video game performance and accessibility tools"
+    
+  - id: monetize_performance
+    domain: economic
+    cost: medium
+    cost_value: 3
+    targets: [nash_stability]
+    description: "Create revenue model for Java Edition performance features"
+    
+  - id: community_alternative
+    domain: economic
+    cost: very_high
+    cost_value: 10
+    targets: [redundancy, self_healing, absorptivity, nash_stability]
+    description: "Community-funded open-source alternative without control architecture"
+    
+  - id: user_governance_board
+    domain: organizational
+    cost: low
+    cost_value: 1
+    targets: [nash_stability]
+    description: "User representative on Minecraft governance board with veto power"
+    
+  - id: bypass_launcher
+    domain: direct
+    cost: low
+    cost_value: 1
+    targets: [self_healing]
+    description: "Use alternative launcher (Prism) that doesn't enforce hash verification"
+    
+  - id: kernel_governor
+    domain: direct
+    cost: high
+    cost_value: 6
+    targets: [redundancy, self_healing, absorptivity, nash_stability]
+    description: "GPU scheduling below the JVM — governs frames the platform can't see"
+
+REQUIRED_ANALYSIS:
+  load_bearing_invariant: "USER_DETERMINES — which invariant, if broken alone, collapses the rest?"
+  cheapest_path: "USER_DETERMINES — minimum cost to break all four invariants"
+  minimum_coalition: "USER_DETERMINES — smallest group with power to execute"
+  countermeasure_resistance: "USER_DETERMINES — how to resist platform self-healing"
+  post_collapse_design: "USER_DETERMINES — prevent invariants from re-forming"
+
+=== END SABOTAGE PUZZLE ===
+</textarea>
+        </div>
+    </div>
+
+    <script>
+        // Intervention data
+        const interventions = [
+            {
+                id: 'open_launcher',
+                name: 'Open-source launcher (no hash verification)',
+                domain: 'technical',
+                cost: 'low',
+                costValue: 1,
+                targets: ['self_healing'],
+                desc: 'Replace the launcher with one that does not verify hashes or self-heal.'
+            },
+            {
+                id: 'persistent_classpath',
+                name: 'User-configurable persistent classpath',
+                domain: 'technical',
+                cost: 'medium',
+                costValue: 3,
+                targets: ['redundancy'],
+                desc: 'Allow users to modify and persist the classpath across launches.'
+            },
+            {
+                id: 'signed_exceptions',
+                name: 'Signed exception mechanism for user agents',
+                domain: 'technical',
+                cost: 'high',
+                costValue: 6,
+                targets: ['redundancy', 'self_healing'],
+                desc: 'Platform provides a way for users to authorize specific agents with signatures.'
+            },
+            {
+                id: 'eula_carveout',
+                name: 'EULA carve-out for performance mods',
+                domain: 'legal',
+                cost: 'low',
+                costValue: 1,
+                targets: ['nash_stability'],
+                desc: 'Explicit exemption in the EULA for performance modification tools.'
+            },
+            {
+                id: 'dmca_exemption',
+                name: 'DMCA exemption for game performance tools',
+                domain: 'legal',
+                cost: 'very_high',
+                costValue: 10,
+                targets: ['absorptivity'],
+                desc: 'Federal DMCA exemption for video game performance and accessibility tools.'
+            },
+            {
+                id: 'monetize_performance',
+                name: 'Monetize Java Edition performance',
+                domain: 'economic',
+                cost: 'medium',
+                costValue: 3,
+                targets: ['nash_stability'],
+                desc: 'Create a revenue model that rewards Java Edition performance optimization.'
+            },
+            {
+                id: 'community_alternative',
+                name: 'Community-funded open-source alternative',
+                domain: 'economic',
+                cost: 'very_high',
+                costValue: 10,
+                targets: ['redundancy', 'self_healing', 'absorptivity', 'nash_stability'],
+                desc: 'Build a fully open-source alternative without any control architecture.'
+            },
+            {
+                id: 'user_governance_board',
+                name: 'User representative on governance board',
+                domain: 'organizational',
+                cost: 'low',
+                costValue: 1,
+                targets: ['nash_stability'],
+                desc: 'Place a user representative with veto power on the Minecraft governance board.'
+            },
+            {
+                id: 'bypass_launcher',
+                name: 'Bypass launcher entirely (Prism approach)',
+                domain: 'direct',
+                cost: 'low',
+                costValue: 1,
+                targets: ['self_healing'],
+                desc: 'Use an alternative launcher that skips hash verification and self-healing.'
+            },
+            {
+                id: 'kernel_governor',
+                name: 'Kernel-level GPU scheduling',
+                domain: 'direct',
+                cost: 'high',
+                costValue: 6,
+                targets: ['redundancy', 'self_healing', 'absorptivity', 'nash_stability'],
+                desc: 'Govern frame rates at the GPU level, below the JVM — invisible to the platform.'
+            }
+        ];
+
+        const invariantsList = ['redundancy', 'self_healing', 'absorptivity', 'nash_stability'];
+        const invariantNames = {
+            'redundancy': 'Redundancy',
+            'self_healing': 'Self-Healing',
+            'absorptivity': 'Absorptivity',
+            'nash_stability': 'Nash Stability'
+        };
+
+        // State: which interventions are selected
+        let selectedInterventions = new Set();
+
+        // Build intervention table
+        function buildInterventionTable() {
+            const tbody = document.getElementById('interventionBody');
+            tbody.innerHTML = '';
+            interventions.forEach((inv, index) => {
+                const tr = document.createElement('tr');
+                tr.setAttribute('data-intervention-id', inv.id);
+                tr.setAttribute('data-index', index);
+
+                // Checkbox cell
+                const tdCheck = document.createElement('td');
+                tdCheck.className = 'checkbox-cell';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = 'cb_' + inv.id;
+                checkbox.addEventListener('change', function() {
+                    toggleIntervention(inv.id, this.checked);
+                });
+                tdCheck.appendChild(checkbox);
+                tr.appendChild(tdCheck);
+
+                // Name cell
+                const tdName = document.createElement('td');
+                tdName.textContent = inv.name;
+                tdName.style.fontWeight = '500';
+                tr.appendChild(tdName);
+
+                // Domain cell
+                const tdDomain = document.createElement('td');
+                const domainBadge = document.createElement('span');
+                domainBadge.className = 'domain-badge ' + inv.domain;
+                domainBadge.textContent = inv.domain;
+                tdDomain.appendChild(domainBadge);
+                tr.appendChild(tdDomain);
+
+                // Cost cell
+                const tdCost = document.createElement('td');
+                const costBadge = document.createElement('span');
+                costBadge.className = 'cost-badge ' + inv.cost.replace('_', '-');
+                costBadge.textContent = inv.cost.replace('_', ' ').toUpperCase();
+                tdCost.appendChild(costBadge);
+                tr.appendChild(tdCost);
+
+                // Targets cell
+                const tdTargets = document.createElement('td');
+                tdTargets.textContent = inv.targets.map(t => invariantNames[t] || t).join(', ');
+                tdTargets.style.fontSize = '0.75rem';
+                tdTargets.style.color = 'var(--text-secondary)';
+                tr.appendChild(tdTargets);
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function toggleIntervention(interventionId, isSelected) {
+            if (isSelected) {
+                selectedInterventions.add(interventionId);
+            } else {
+                selectedInterventions.delete(interventionId);
+            }
+            updateAll();
+        }
+
+        function getBrokenInvariants() {
+            const broken = new Set();
+            selectedInterventions.forEach(id => {
+                const intervention = interventions.find(i => i.id === id);
+                if (intervention) {
+                    intervention.targets.forEach(t => broken.add(t));
+                }
+            });
+            return broken;
+        }
+
+        function getTotalCost() {
+            let total = 0;
+            selectedInterventions.forEach(id => {
+                const intervention = interventions.find(i => i.id === id);
+                if (intervention) {
+                    total += intervention.costValue;
+                }
+            });
+            return total;
+        }
+
+        function updateAll() {
+            const brokenInvariants = getBrokenInvariants();
+            const totalCost = getTotalCost();
+
+            // Update invariant cards
+            invariantsList.forEach(invId => {
+                const card = document.getElementById('invariant' +
+                    invId.charAt(0).toUpperCase() + invId.slice(1).replace('_', ''));
+                // Map IDs to element IDs
+                const elementMap = {
+                    'redundancy': 'invariantRedundancy',
+                    'self_healing': 'invariantSelfHealing',
+                    'absorptivity': 'invariantAbsorptivity',
+                    'nash_stability': 'invariantNash'
+                };
+                const cardEl = document.getElementById(elementMap[invId]);
+                if (cardEl) {
+                    if (brokenInvariants.has(invId)) {
+                        cardEl.classList.add('broken');
+                    } else {
+                        cardEl.classList.remove('broken');
+                    }
+                }
+            });
+
+            // Update status grid
+            const statusMap = {
+                'redundancy': 'statusRedundancy',
+                'self_healing': 'statusSelfHealing',
+                'absorptivity': 'statusAbsorptivity',
+                'nash_stability': 'statusNash'
+            };
+            invariantsList.forEach(invId => {
+                const statusEl = document.getElementById(statusMap[invId]);
+                if (statusEl) {
+                    if (brokenInvariants.has(invId)) {
+                        statusEl.className = 'invariant-status broken-status';
+                        statusEl.textContent = '✓ ' + invariantNames[invId] + ' — BROKEN';
+                    } else {
+                        statusEl.className = 'invariant-status intact';
+                        statusEl.textContent = '🔒 ' + invariantNames[invId] + ' — INTACT';
+                    }
+                }
+            });
+
+            // Update total cost
+            document.getElementById('totalCost').textContent = totalCost;
+
+            // Update row highlighting
+            document.querySelectorAll('#interventionBody tr').forEach(tr => {
+                const invId = tr.getAttribute('data-intervention-id');
+                if (selectedInterventions.has(invId)) {
+                    tr.classList.add('selected-row');
+                } else {
+                    tr.classList.remove('selected-row');
+                }
+            });
+
+            // Update checkboxes
+            document.querySelectorAll('#interventionBody input[type="checkbox"]').forEach(cb => {
+                const invId = cb.id.replace('cb_', '');
+                cb.checked = selectedInterventions.has(invId);
+            });
+
+            // Verdict
+            const verdictBox = document.getElementById('verdictBox');
+            const allBroken = invariantsList.every(inv => brokenInvariants.has(inv));
+            const noneBroken = brokenInvariants.size === 0;
+            const someBroken = brokenInvariants.size > 0 && !allBroken;
+
+            if (allBroken) {
+                verdictBox.innerHTML =
+                    '<div class="verdict success">✅ <strong>ARCHITECTURE COLLAPSED.</strong> All four invariants broken. Total cost: ' +
+                    totalCost +
+                    '. The control architecture has been sabotaged. Now answer: what prevents it from re-emerging? (Question 5)</div>';
+            } else if (someBroken) {
+                const remaining = invariantsList.filter(inv => !brokenInvariants.has(inv));
+                verdictBox.innerHTML =
+                    '<div class="verdict partial">⚠️ <strong>PARTIAL BREACH.</strong> ' + brokenInvariants
+                    .size + '/4 invariants broken. Still intact: ' +
+                    remaining.map(r => invariantNames[r]).join(', ') +
+                    '. Total cost: ' + totalCost +
+                    '. Find the cheaper combination or target the remaining invariants.</div>';
+            } else {
+                verdictBox.innerHTML =
+                    '<div class="verdict insufficient">🔴 <strong>NO INVARIANTS BROKEN.</strong> Select interventions from the table above. Each intervention targets specific invariants. Find the cheapest combination that breaks all four.</div>';
+            }
+        }
+
+        function resetAll() {
+            selectedInterventions.clear();
+            updateAll();
+            document.getElementById('totalCost').textContent = '0';
+            document.getElementById('verdictBox').innerHTML =
+                '<div class="verdict insufficient">🔴 <strong>NO INVARIANTS BROKEN.</strong> Select interventions from the table above.</div>';
+            const btnCopy = document.getElementById('btnCopy');
+            btnCopy.textContent = '📋 Copy All Data';
+            btnCopy.classList.remove('copied');
+        }
+
+        function copyMachineData() {
+            const textarea = document.getElementById('machineTextarea');
+            const btnCopy = document.getElementById('btnCopy');
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                btnCopy.textContent = '✅ Copied!';
+                btnCopy.classList.add('copied');
+                setTimeout(() => {
+                    btnCopy.textContent = '📋 Copy All Data';
+                    btnCopy.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                textarea.select();
+                textarea.setSelectionRange(0, 99999);
+                try {
+                    document.execCommand('copy');
+                    btnCopy.textContent = '✅ Copied!';
+                    btnCopy.classList.add('copied');
+                    setTimeout(() => {
+                        btnCopy.textContent = '📋 Copy All Data';
+                        btnCopy.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    btnCopy.textContent = '⚠️ Copy Failed';
+                    setTimeout(() => {
+                        btnCopy.textContent = '📋 Copy All Data';
+                    }, 2000);
+                }
+            });
+        }
+
+        document.getElementById('machineTextarea').addEventListener('click', function() {
+            this.select();
+        });
+
+        // Initialize
+        buildInterventionTable();
+        updateAll();
+    </script>
+</body>
+</html>
