@@ -529,7 +529,9 @@ class YeshuaAgent:
             print(f"\nTraining failed with return code {result.returncode}")  
             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})  
   
-    def run(self):  
+    def run(self):
+        """Launch interactive command loop."""
+        pass  
 
     def batch_fix_targeted(self, file_list, n=None):
         """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
