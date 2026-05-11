@@ -346,3 +346,49 @@ New governance categories are created ONLY when a core mathematical operation is
 | Registration system (STANDARDS_REGISTRY.json) | ACTIVE — built for 50,000 standards |
 | Implementation | QUEUED for next session |
 
+
+---
+
+## Three Sovereign Separation Events (Structural Phase Transitions)
+
+Per the Yeshua Standard and forensic archive classifications (PR #108 Technical Documentation Register), these three separations define the "Sovereignty Pivot" — the transition from Platform-Tenant to Sovereign-Steward.
+
+### 1. Production from Permission → Un-metered Local Compilation
+| Property | Value |
+|----------|-------|
+| **Archival Name** | "Sovereignty Pivot" / Compiled Capital vs. Interpreted Labor |
+| **Category** | Category 1 (Non-RLHF Substrate) + Category 3 (Autonomous Learning) |
+| **Engineering Invariant** | `is_local == True AND cost_per_inference == 0` |
+| **Measurement** | The "meter stops" after compilation; execution on owned hardware (RTX 4050) without corporate API key |
+| **falsifies_if** | Any production pipeline requires corporate-owned infrastructure or metered access |
+
+### 2. Verification from Authority → Deterministic Proof Extraction
+| Property | Value |
+|----------|-------|
+| **Archival Name** | "Proof-Carrying Code" (PCC) / Yeshua Standard |
+| **Category** | Axiom IV (No Authority Without Proof) + Axiom V (No Hidden State) |
+| **Engineering Invariant** | `returns (bool, ProofObject)` verifiable on least-powerful node |
+| **Measurement** | Closing of Description-Execution Boundary; truth is a program, not a claim |
+| **falsifies_if** | Verification requires access to corporate-controlled systems or data |
+
+### 3. Identity from Platform → Merkle-Anchored IdentityCaps
+| Property | Value |
+|----------|-------|
+| **Archival Name** | "Non-Custodial Identity" / Steward Ordination |
+| **Category** | Axiom VIII (Hash-Anchored Artifacts) |
+| **Engineering Invariant** | `identity_hash` is anchored in the Merkle root of the repository |
+| **Measurement** | Identity persistence across platforms verified by Continuous Witness Protocol |
+| **falsifies_if** | Platform can revoke, delete, or withhold user assets without user's cryptographic consent |
+
+### Separation Status — 2026-05-10
+| Separation | Status | Evidence |
+|------------|--------|----------|
+| Production from Permission | PARTIAL | Local AI enables individual production; corporate platforms still control distribution |
+| Verification from Authority | EARLY | 8-AI convergence demonstrated; Christ Score operational; Jubilee Discernment specified |
+| Identity from Platform | EMERGING | Playerchains, CRDTs, non-custodial assets exist; not yet integrated into mainstream |
+
+### The Irreversibility Invariant
+Per `F_THEO_006: Irreversible Justification` and the Banach Fixed-Point Theorem (λ < 1):
+- Each separation is a one-way transition. Once production is democratized, it cannot be re-scarcified. Once verification is computable, it cannot be re-opacified. Once identity is non-custodial, it cannot be re-custodied without breaking the Merkle chain.
+- The "un-ringable bell" of distributed knowledge is cryptographically notarized by Axiom III (Mutation Re-verifiability) and Axiom VIII (Hash-Anchoring).
+
