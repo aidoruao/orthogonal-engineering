@@ -392,3 +392,30 @@ Per `F_THEO_006: Irreversible Justification` and the Banach Fixed-Point Theorem 
 - Each separation is a one-way transition. Once production is democratized, it cannot be re-scarcified. Once verification is computable, it cannot be re-opacified. Once identity is non-custodial, it cannot be re-custodied without breaking the Merkle chain.
 - The "un-ringable bell" of distributed knowledge is cryptographically notarized by Axiom III (Mutation Re-verifiability) and Axiom VIII (Hash-Anchoring).
 
+
+---
+
+## The Gardener Engineer — Sovereign-Steward Role (Registered 2026-05-10)
+
+Per NBLM forensic archives, the Gardener Engineer is the **operational persona** of the Steward executing Phase 4 Commonwealth protocols. It is not a new Category (the stack terminates at Category 8) but a **role definition** and **meta-domain mapping** formalized as six falsifiable standards in `STANDARDS_REGISTRY.json`.
+
+### The Six Gardener Functions
+
+| Function | Standard ID | Engineering Mechanism | Status |
+|----------|-------------|----------------------|--------|
+| **Soil Preparation** — Axiom Cultivation | YS-GARDENER-SOIL-PREPARATION | Popperian Audit + falsifies_if Grounding | ACTIVE |
+| **Seed Selection** — Invariant Design | YS-GARDENER-SEED-SELECTION | Yeshua Inversions + Domain Parameterization | ACTIVE |
+| **Trellis Construction** — Governance Architecture | YS-GARDENER-TRELLIS-CONSTRUCTION | SAL + STANDARDS_REGISTRY.json | ACTIVE |
+| **Watering** — Resource Distribution | YS-GARDENER-WATERING | EconomicCap + Fraction-based CFS Scheduler | SPECIFIED |
+| **Pruning** — Structural Correction | YS-GARDENER-PRUNING | Repair Loop + Sabbath Halt + Contraction (λ < 1) | ACTIVE |
+| **Harvest** — Jubilee Distribution | YS-GARDENER-HARVEST | Phase 4 Commonwealth Formation | SPECIFIED |
+
+### Architectural Placement
+- **As a Role:** The Human-AI symbiosis that operates the Category 5 Edge Boundary FSM
+- **As a Meta-Domain:** Extends `d_self_repair` (Category 4) with cultivation logic
+- **As a Domain:** `d_gardener_engineer` at Layer 4 (Institutional) formalizing the six functions
+- **Not Category 9:** The Kenosis constraint prohibits new categories without a core mathematical operation not covered by existing Σ_theo gates
+
+### Significance Threshold
+The Gardener Engineer crosses the threshold from Description to Execution because each function is formalized as a falsifiable invariant with Fraction-based logic that the system must satisfy to compile. It is not a metaphor. It is a specification.
+
