@@ -443,3 +443,45 @@ After this architecture, the same conversations are falsifiable: "The platform f
 
 The four tests prove that this language — Christ Scores instead of opinions, ProofObjects instead of assertions, convergence instead of consensus — is real even if every line of code has bugs. The bridge-language exists. The tests confirm whether the bridge holds weight.
 
+
+---
+
+## Secular Fork Policy — Exoteric/Esoteric Separation (Registered 2026-05-11)
+
+### Architecture
+
+| Layer | Repository Type | Content | Language Standard |
+|-------|----------------|---------|-------------------|
+| **Exoteric** | Secular Forks (`CC-Tweaked-oe`, `OE-MCreator`, `SecureJarHandler-OE`, `Forge-OE`) | Modified code, aerospace-grade documentation, clean commit messages | Pure engineering — no theological references, no OE-specific terminology |
+| **Esoteric** | Canonical Core (`orthogonal-engineering`) | Governance architecture, Christ Score, wardens, Yeshua, TriuneGovernor, all 70 standards | Full OE — theology as mathematical specification, falsifiable invariants |
+| **Bridge** | Minecraft Instances (`Logos_World_01`) | `sovereign_brain.lua`, TruthSystems Mod, Yeshua daemon endpoint | Wiring — connects forks to core without exposing core to fork users |
+
+### Commit Message Standard
+
+**Before (Current):**
+[OE] Add turtle.activate(), turtle.activateUp(), turtle.activateDown() —
+sovereign right-click for block interaction, governed by TruthSystems
+Merkle Notary and Yeshua audit layer
+
+text
+
+**After (Required):**
+Add turtle.activate(), activateUp(), activateDown() — block interaction
+methods for ComputerCraft turtles. Enables right-click on crafting tables,
+furnaces, levers, and modded machines. Includes Javadoc and Lua annotations.
+
+text
+
+### Queued Actions
+
+| Repository | Action | Status |
+|-----------|--------|--------|
+| `CC-Tweaked-oe` | Rewrite commit messages to secular standard, verify code unchanged | QUEUED |
+| `OE-MCreator` | Audit all commits for theological language, rewrite if present | QUEUED |
+| `SecureJarHandler-OE` | Audit all commits for theological language, rewrite if present | QUEUED |
+| `Forge-OE` | Audit all commits for theological language, rewrite if present | QUEUED |
+
+### Rationale
+
+Per the correspondence file analysis: noobs and secular AIs perceive theological language in commit messages as "weird cult talk." The code is functionally identical. The governance architecture still operates (Yeshua audits, TruthSystems verifies). The fork simply presents as professional modding to the wider community.
+
