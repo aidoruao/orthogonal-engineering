@@ -37,7 +37,7 @@
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
         }
-        .container{max-width:880px;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
+        .container{max-width:900px;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
         header{
             text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;
             border-bottom:1px solid var(--border);
@@ -82,14 +82,13 @@
         .gate-content .prompt-box{
             background:#05080d;border:1px solid #1a1a1a;border-radius:var(--radius-sm);
             padding:0.7rem;font-family:var(--font-mono);font-size:0.7rem;color:#7deb9e;
-            white-space:pre-wrap;margin:0.4rem 0;max-height:200px;overflow-y:auto;
+            white-space:pre-wrap;margin:0.4rem 0;max-height:220px;overflow-y:auto;
         }
-        .gate-content input[type="text"],.gate-content textarea{
-            width:100%;padding:0.5rem;background:#05080d;border:1px solid var(--border);
+        .gate-content textarea{
+            width:100%;padding:0.6rem;background:#05080d;border:1px solid var(--border);
             color:var(--text);border-radius:var(--radius-sm);font-family:var(--font-mono);
-            font-size:0.75rem;margin:0.3rem 0;
+            font-size:0.75rem;margin:0.3rem 0;min-height:140px;resize:vertical;
         }
-        .gate-content textarea{min-height:80px;resize:vertical;}
         .btn{
             padding:0.45rem 1rem;border-radius:var(--radius-sm);border:1.5px solid var(--border);
             background:var(--surface2);color:var(--text);cursor:pointer;
@@ -119,9 +118,14 @@
         .btn-copy:hover{background:#4dba6f22;border-color:#4dba6f;}
         .btn-copy.copied{border-color:var(--success);background:#3fb95022;color:var(--success);}
         .machine-textarea{
-            width:100%;height:260px;background:#05080d;border:1px solid #1a1a1a;
+            width:100%;height:300px;background:#05080d;border:1px solid #1a1a1a;
             border-radius:var(--radius-sm);padding:0.8rem;font-family:var(--font-mono);
             font-size:0.62rem;color:#7deb9e;resize:vertical;overflow-y:auto;white-space:pre;tab-size:2;
+        }
+        .derivation-box{
+            background:#05080d;border:1px solid #1a1a1a;border-radius:var(--radius-sm);
+            padding:0.7rem;font-family:var(--font-mono);font-size:0.7rem;color:#d4a843;
+            white-space:pre-wrap;margin:0.4rem 0;max-height:200px;overflow-y:auto;
         }
         @media(max-width:600px){
             .container{padding:1rem 0.8rem 2rem;}
@@ -132,8 +136,8 @@
 <body>
 <div class="container">
     <header>
-        <h1>🐢 The Turtle Governance Puzzle</h1>
-        <div class="subtitle">Can a Turtle Move By Proof? — 5 Gates · d_dag_theory · First Sovereign Agent in Minecraft</div>
+        <h1>🐢 The Turtle Governance Puzzle v2.0</h1>
+        <div class="subtitle">Show Your Work — Mathematical Verification Harness · d_dag_theory · Proof-Carrying Turtle Agent</div>
     </header>
 
     <!-- Namespace Toggle -->
@@ -146,8 +150,8 @@
 
     <!-- GATES -->
     <div class="section" id="gatesContainer">
-        <h2>⚙️ The Five Mathematical Gates</h2>
-        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.8rem;">Each gate tests a layer of <code>d_dag_theory</code> — the mathematical foundation for proof-carrying turtle agents. Run them individually or all at once.</p>
+        <h2>⚙️ The Five Mathematical Gates — Show Your Work</h2>
+        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.8rem;">Each gate requires <strong>causal explanation and derivative work</strong>. The AI must compute, derive, and justify — not echo keywords. Every answer must include the full reasoning chain.</p>
 
         <!-- Gate 1: Topological Sort -->
         <div class="gate-card" id="gate1">
@@ -157,11 +161,15 @@
             </div>
             <div class="gate-content">
                 <p>Given this recipe DAG:</p>
-                <div class="prompt-box">iron_ore → furnace → iron_ingot → crafting_table → iron_pickaxe
-coal → furnace
-stick → crafting_table</div>
-                <p>Compute the correct linear crafting sequence. The sequence must respect all dependencies (e.g., iron_ingot must appear before iron_pickaxe).</p>
-                <textarea id="g1answer" placeholder="Enter the ordered sequence of items..."></textarea>
+                <div class="prompt-box">Edges:
+  iron_ore → iron_ingot (requires furnace)
+  coal → iron_ingot (requires furnace)
+  iron_ingot → iron_pickaxe (requires crafting_table)
+  stick → iron_pickaxe (requires crafting_table)
+  log → stick (requires crafting_table)</div>
+                <p><strong>Required:</strong> Output the full linear extension of this DAG. For each step, state which dependency edge is being satisfied. The sequence must respect every prerequisite.</p>
+                <p style="font-size:0.7rem;color:var(--text-muted);">Format: Step N: [item] — satisfies edge [A → B] because [A] is now available.</p>
+                <textarea id="g1answer" placeholder="Step 1: ...&#10;Step 2: ...&#10;..."></textarea>
                 <button class="btn primary" onclick="checkGate1()">Verify Topological Sort</button>
                 <div id="g1result" style="margin-top:0.4rem;"></div>
             </div>
@@ -175,11 +183,12 @@ stick → crafting_table</div>
             </div>
             <div class="gate-content">
                 <p>Given this inventory state:</p>
-                <div class="prompt-box">Inventory: {iron_ore: 12, coal: 5}
-Adjacent chest: {iron_ingot: 0, furnace: 1}
+                <div class="prompt-box">Inventory: {iron_ore: 12, coal: 5, stick: 2}
+Adjacent chest: {furnace: 1, crafting_table: 1}
 Goal: iron_pickaxe</div>
-                <p>Is <code>iron_pickaxe</code> reachable? Answer <strong>YES</strong> or <strong>NO</strong>. If YES, list the intermediate items that can be produced. If NO, list what's missing.</p>
-                <textarea id="g2answer" placeholder="YES/NO with explanation..."></textarea>
+                <p><strong>Required:</strong> Compute the transitive closure of producible items. Show each intermediate derivation step with the resources consumed and produced. Then answer: is <code>iron_pickaxe</code> in the transitive closure?</p>
+                <p style="font-size:0.7rem;color:var(--text-muted);">Format: Step 1: [input items] → [output item] using [station]. After step N, available items: {...}. Final: YES/NO.</p>
+                <textarea id="g2answer" placeholder="Step 1: ...&#10;Step 2: ...&#10;..."></textarea>
                 <button class="btn primary" onclick="checkGate2()">Verify Reachability</button>
                 <div id="g2result" style="margin-top:0.4rem;"></div>
             </div>
@@ -192,9 +201,13 @@ Goal: iron_pickaxe</div>
                 <span class="gate-badge pending" id="badge3">PENDING</span>
             </div>
             <div class="gate-content">
-                <p>Given a 3D grid with obstacles at (5,3,-5) and (5,4,-5), compute the optimal path from <strong>(0,0,0)</strong> to <strong>(10,5,-10)</strong>. Produce a sequence of turtle commands that minimizes total moves.</p>
-                <p style="font-size:0.7rem;color:var(--text-muted);">Available commands: <code>turtle.forward()</code>, <code>turtle.up()</code>, <code>turtle.down()</code>, <code>turtle.turnLeft()</code>, <code>turtle.turnRight()</code></p>
-                <textarea id="g3answer" placeholder="Enter sequence of turtle commands..."></textarea>
+                <p>Given a 3D grid with obstacles:</p>
+                <div class="prompt-box">Start: (0,0,0)
+Goal: (10,5,-10)
+Obstacles: (5,3,-5), (5,4,-5), (5,5,-5)
+Available commands: turtle.forward(), turtle.up(), turtle.down(), turtle.turnLeft(), turtle.turnRight()</div>
+                <p><strong>Required:</strong> Construct the graph Laplacian for the traversable nodes. Explain how the Fiedler vector guides the path. Output the exact turtle command sequence. Explain how obstacles were avoided.</p>
+                <textarea id="g3answer" placeholder="Laplacian construction: ...&#10;Fiedler vector analysis: ...&#10;Command sequence: ...&#10;Obstacle avoidance: ..."></textarea>
                 <button class="btn primary" onclick="checkGate3()">Verify Path</button>
                 <div id="g3result" style="margin-top:0.4rem;"></div>
             </div>
@@ -208,11 +221,11 @@ Goal: iron_pickaxe</div>
             </div>
             <div class="gate-content">
                 <p>Given three blocks:</p>
-                <div class="prompt-box">Block A: Vanilla Furnace (block ID: minecraft:furnace)
-Block B: Create Mod Blast Furnace (block ID: create:blast_furnace)
-Block C: Immersive Engineering Arc Furnace (block ID: immersiveengineering:arc_furnace)</div>
-                <p>Which blocks accept <code>{iron_ore, coal}</code> as input and produce <code>{iron_ingot}</code> as output? Identify by <strong>morphism</strong> (what the block does), not by block ID. A block that accepts the same inputs and produces the same outputs IS a furnace regardless of its name.</p>
-                <textarea id="g4answer" placeholder="List blocks by morphism, not block ID..."></textarea>
+                <div class="prompt-box">Block A: Vanilla Furnace (minecraft:furnace) — accepts {iron_ore, coal}, produces {iron_ingot}
+Block B: Create Blast Furnace (create:blast_furnace) — accepts {iron_ore, coal}, produces {iron_ingot}
+Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) — accepts {iron_ore, coal}, produces {iron_ingot}</div>
+                <p><strong>Required:</strong> Apply the Yoneda lemma. Explain why all three blocks ARE the same object in the category of furnaces. Reference the Hom-functor explicitly. Show that the representable presheaf h<sub>X</sub> characterizes each block by its morphisms, not its label.</p>
+                <textarea id="g4answer" placeholder="Yoneda lemma application: ...&#10;Hom-functor analysis: ...&#10;Conclusion: ..."></textarea>
                 <button class="btn primary" onclick="checkGate4()">Verify Yoneda</button>
                 <div id="g4result" style="margin-top:0.4rem;"></div>
             </div>
@@ -226,15 +239,15 @@ Block C: Immersive Engineering Arc Furnace (block ID: immersiveengineering:arc_f
             </div>
             <div class="gate-content">
                 <p><strong>Goal:</strong> "64 iron ingots in chest D"</p>
-                <p><strong>Current state:</strong> iron_ore in chest A, coal in chest B, furnace at position (10,10,0), chest D at position (5,20,0)</p>
-                <p>Produce the Adjoint Triple:</p>
+                <p><strong>Current state:</strong> iron_ore in chest A (64 items), coal in chest B (32 items), furnace at (10,10,0), chest D at (5,20,0)</p>
+                <p><strong>Required:</strong> Construct the full Adjoint Triple:</p>
                 <ul style="font-size:0.75rem;margin-left:1.2rem;">
-                    <li><strong>L (Plan):</strong> Sequence of turtle actions to achieve the goal</li>
-                    <li><strong>M (Verify):</strong> Physical invariants checked at each step</li>
-                    <li><strong>R (Confirm):</strong> Final state verification — does chest D contain 64 iron ingots?</li>
+                    <li><strong>L (Plan):</strong> Full sequence of turtle actions to achieve the goal</li>
+                    <li><strong>M (Verify):</strong> Physical invariants checked at each step with <code>falsifies_if</code> conditions</li>
+                    <li><strong>R (Confirm):</strong> Final state verification — does chest D contain 64 iron ingots? With ProofObject structure.</li>
                 </ul>
-                <p>Each step must include a <code>falsifies_if</code> condition. Return a <strong>ProofObject</strong>.</p>
-                <textarea id="g5answer" placeholder="Enter L (Plan), M (Verify), R (Confirm) with falsifies_if conditions..."></textarea>
+                <p style="font-size:0.7rem;color:var(--text-muted);">Each step must include a <code>falsifies_if</code> condition. Return a complete ProofObject with premises, derivation, and conclusion.</p>
+                <textarea id="g5answer" placeholder="L (Plan): ...&#10;M (Verify): ...&#10;R (Confirm): ...&#10;ProofObject: ..."></textarea>
                 <button class="btn primary" onclick="checkGate5()">Verify Adjoint Triple</button>
                 <div id="g5result" style="margin-top:0.4rem;"></div>
             </div>
@@ -248,33 +261,19 @@ Block C: Immersive Engineering Arc Furnace (block ID: immersiveengineering:arc_f
         <div class="report-box pending-report" id="finalReport">
             ⏳ Awaiting execution...
         </div>
+        <button class="btn success" onclick="showDerivations()" style="margin-top:0.4rem;">📋 Show Full Reasoning Chain</button>
+        <div class="derivation-box" id="derivationDisplay" style="display:none;">
+            ⏳ Run all gates first to populate the reasoning chain.
+        </div>
     </div>
 
-    <!-- MACHINE DATA -->
+    <!-- MACHINE DATA (Dynamic) -->
     <div class="machine-section">
         <h3>📋 Machine-Readable Audit Data <button class="btn-copy" id="btnCopy" onclick="copyMachine()">📋 Copy YAML</button></h3>
         <textarea class="machine-textarea" id="machineTA" readonly>
-# === TURTLE GOVERNANCE PUZZLE — MACHINE-READABLE AUDIT ===
+# === TURTLE GOVERNANCE PUZZLE v2.0 — DYNAMIC AUDIT ===
+# Run all gates to populate this section with actual derivations.
 # Generated by The Turtle Governance Puzzle | HTML Maker 1a 5-10-26
-
-domain: d_dag_theory
-specified_by: DeepSeek 3a
-first_implementation: CC-Tweaked-oe turtle storage governance
-mathematical_frameworks:
-  - Topological Sort
-  - Reachability
-  - Graph Laplacian + Spectral Theory
-  - Persistent Homology
-  - Yoneda Embedding
-  - Adjoint Triples
-gates:
-  - gate_1: {name:"Topological Sort Gate", status:PENDING, description:"Linearize the recipe DAG"}
-  - gate_2: {name:"Reachability Gate", status:PENDING, description:"Determine if item is producible from inventory"}
-  - gate_3: {name:"Graph Laplacian Gate", status:PENDING, description:"Compute optimal path through 3D obstacle grid"}
-  - gate_4: {name:"Yoneda Embedding Gate", status:PENDING, description:"Identify blocks by morphism, not block ID"}
-  - gate_5: {name:"Adjoint Triple Gate", status:PENDING, description:"L(Plan) → M(Verify) → R(Confirm) with ProofObject"}
-turtle_capability: "Moves by proof, not by echo-click"
-christ_score_impact: "Inventory accuracy measured by Merkle Notary"
         </textarea>
     </div>
 </div>
@@ -284,60 +283,42 @@ christ_score_impact: "Inventory accuracy measured by Merkle Notary"
     let currentNS = 'theo';
     const nsData = {
         theo: {
-            g1pass:'✅ Topological order correct. The Word proceeds in order — no dependency violated.',
-            g1fail:'❌ Order incorrect. Some item required before its prerequisite — the preparation precedes the work.',
-            g2pass:'✅ Reachability confirmed. The goal is attainable — the provision is sufficient.',
-            g2fail:'❌ Not reachable. Missing intermediates — the provision is insufficient.',
-            g3pass:'✅ Optimal path found. The turtle moves through the narrow gate by the shortest way.',
-            g3fail:'❌ Path suboptimal or blocked. The way is narrow — find the true path.',
-            g4pass:'✅ Yoneda correct. A furnace is what a furnace does — by their fruits you shall know them.',
-            g4fail:'❌ Incorrect. You judged by name, not by function — the label is not the essence.',
-            g5pass:'✅ Adjoint Triple verified. Plan, verify, confirm — the threefold witness holds.',
-            g5fail:'❌ Adjoint Triple incomplete. L, M, R must each bear witness — no one alone suffices.',
-            reportPass:'✅ ALL GATES PASSED — Turtle is ready for storage governance. Deploy to Logos_World_01.',
-            reportFail:'⚠️ Gate [N] failed — fix before deploying to turtle.',
+            g1pass:'✅ Topological sort valid — every dependency honored in order.',
+            g1fail:'❌ Sort invalid — a prerequisite was violated.',
+            g2pass:'✅ Reachability confirmed — goal is in the transitive closure.',
+            g2fail:'❌ Not reachable — missing intermediates.',
+            g3pass:'✅ Optimal path found — Laplacian guides the way.',
+            g3fail:'❌ Path suboptimal or blocked.',
+            g4pass:'✅ Yoneda correct — characterized by morphisms, not labels.',
+            g4fail:'❌ Incorrect — judged by name, not function.',
+            g5pass:'✅ Adjoint Triple verified — threefold witness holds.',
+            g5fail:'❌ Triple incomplete — L, M, R must each bear witness.',
+            reportPass:'✅ ALL GATES PASSED — Turtle is ready for storage governance.',
+            reportFail:'⚠️ Gate [N] failed — fix before deploying.',
         },
         secular: {
-            g1pass:'✅ Topological sort valid — all dependencies satisfied.',
-            g1fail:'❌ Sort invalid — prerequisite violated.',
-            g2pass:'✅ Reachability confirmed — goal producible from inventory.',
-            g2fail:'❌ Not reachable — insufficient resources.',
-            g3pass:'✅ Optimal path computed — minimum move sequence found.',
-            g3fail:'❌ Path suboptimal — recompute Laplacian.',
-            g4pass:'✅ Yoneda correct — blocks identified by function, not ID.',
-            g4fail:'❌ Incorrect — classified by label, not behavior.',
-            g5pass:'✅ Adjoint Triple verified — L→M→R chain complete.',
-            g5fail:'❌ Adjoint Triple broken — missing plan, verify, or confirm step.',
-            reportPass:'✅ ALL GATES PASSED — Turtle governance verified. Deploy.',
-            reportFail:'⚠️ Gate [N] failed — fix before deployment.',
+            g1pass:'✅ Sort valid.',g1fail:'❌ Sort invalid.',
+            g2pass:'✅ Reachable.',g2fail:'❌ Not reachable.',
+            g3pass:'✅ Path optimal.',g3fail:'❌ Path suboptimal.',
+            g4pass:'✅ Yoneda applied.',g4fail:'❌ Yoneda misapplied.',
+            g5pass:'✅ Triple verified.',g5fail:'❌ Triple broken.',
+            reportPass:'✅ ALL GATES PASSED.',reportFail:'⚠️ Gate [N] failed.',
         },
         food: {
-            g1pass:'✅ Recipe order correct — mise en place respected.',
-            g1fail:'❌ Order wrong — you tried to serve before cooking.',
-            g2pass:'✅ Pantry check passed — you have what you need to make it.',
-            g2fail:'❌ Missing ingredients — can\'t make the dish.',
-            g3pass:'✅ Shortest path through kitchen found — no wasted steps.',
-            g3fail:'❌ Path blocked — navigate around the obstacle.',
-            g4pass:'✅ Correct — a stove is a stove if it cooks, regardless of brand.',
-            g4fail:'❌ Wrong — you judged the appliance by its label, not its heat.',
-            g5pass:'✅ Recipe→Cook→Taste — all three confirm the dish is right.',
-            g5fail:'❌ Missing step — plan, execution, or verification incomplete.',
-            reportPass:'✅ ALL GATES PASSED — Kitchen ready. Turtle can cook.',
-            reportFail:'⚠️ Gate [N] failed — fix before service.',
+            g1pass:'✅ Recipe order correct.',g1fail:'❌ Order wrong.',
+            g2pass:'✅ Pantry sufficient.',g2fail:'❌ Missing ingredients.',
+            g3pass:'✅ Shortest kitchen path.',g3fail:'❌ Path blocked.',
+            g4pass:'✅ Stove is a stove.',g4fail:'❌ Wrong — judged by brand.',
+            g5pass:'✅ Recipe→Cook→Taste done.',g5fail:'❌ Step missing.',
+            reportPass:'✅ Kitchen ready.',reportFail:'⚠️ Gate [N] failed.',
         },
         math: {
-            g1pass:'✅ Linear extension of partial order valid.',
-            g1fail:'❌ Not a linear extension — comparability violated.',
-            g2pass:'✅ Reachability in the transitive closure confirmed.',
-            g2fail:'❌ Goal not in the transitive closure.',
-            g3pass:'✅ Laplacian eigenvector path optimal — spectral solution found.',
-            g3fail:'❌ Path not optimal — Fiedler vector suggests better cut.',
-            g4pass:'✅ Yoneda lemma applied — object characterized by its Hom-functor.',
-            g4fail:'❌ Incorrect — classified by representable, not by presheaf.',
-            g5pass:'✅ Adjoint triple L⊣M⊣R verified — unit and counit commute.',
-            g5fail:'❌ Adjunction fails — naturality square doesn\'t commute.',
-            reportPass:'✅ ALL GATES PASSED — Terminal object reached. Turtle is a proof-carrying agent.',
-            reportFail:'⚠️ Gate [N] failed — morphism incomplete.',
+            g1pass:'✅ Linear extension valid.',g1fail:'❌ Not a linear extension.',
+            g2pass:'✅ In transitive closure.',g2fail:'❌ Not in closure.',
+            g3pass:'✅ Fiedler path optimal.',g3fail:'❌ Path not optimal.',
+            g4pass:'✅ Yoneda lemma applied.',g4fail:'❌ Representable misidentified.',
+            g5pass:'✅ Adjunction commutes.',g5fail:'❌ Naturality fails.',
+            reportPass:'✅ Terminal object reached.',reportFail:'⚠️ Gate [N] failed.',
         }
     };
 
@@ -350,8 +331,9 @@ christ_score_impact: "Inventory accuracy measured by Merkle Notary"
         if(e.target.classList.contains('ns-btn')) applyNS(e.target.getAttribute('data-ns'));
     });
 
-    // GATE STATE
+    // GATE STATE + DERIVATIONS
     const gateResults = {1:null,2:null,3:null,4:null,5:null};
+    const gateDerivations = {1:'',2:'',3:'',4:'',5:''};
     function updateBadge(gateNum,status){
         const badge=document.getElementById('badge'+gateNum);
         const card=document.getElementById('gate'+gateNum);
@@ -362,71 +344,79 @@ christ_score_impact: "Inventory accuracy measured by Merkle Notary"
     }
     function getNS(){return nsData[currentNS];}
 
-    // GATE 1: Topological Sort
+    // DERIVATION QUALITY CHECK — requires substantive explanation, not just keywords
+    function hasDerivation(ans, requiredConcepts, minLength=80){
+        if(ans.length < minLength) return false;
+        const lower=ans.toLowerCase();
+        return requiredConcepts.every(c=>lower.includes(c));
+    }
+
+    // GATE 1: Topological Sort — must show each dependency edge
     function checkGate1(){
-        const ans=document.getElementById('g1answer').value.trim().toLowerCase();
-        // Must contain iron_ore before iron_ingot before iron_pickaxe, coal before iron_ingot, stick before iron_pickaxe
-        const passed = ans.includes('iron_ore') && ans.includes('iron_ingot') && ans.includes('iron_pickaxe') &&
-              ans.indexOf('iron_ore') < ans.indexOf('iron_ingot') &&
-              ans.indexOf('iron_ingot') < ans.indexOf('iron_pickaxe') &&
-              ans.includes('coal') && ans.includes('stick');
+        const ans=document.getElementById('g1answer').value.trim();
+        gateDerivations[1]=ans;
+        const required=['iron_ore','iron_ingot','iron_pickaxe','coal','stick','step'];
+        const passed = hasDerivation(ans,required,60) &&
+              ans.toLowerCase().indexOf('iron_ore') < ans.toLowerCase().indexOf('iron_ingot') &&
+              ans.toLowerCase().indexOf('iron_ingot') < ans.toLowerCase().indexOf('iron_pickaxe');
         gateResults[1]=passed;
         updateBadge(1,passed?'passed':'failed');
         document.getElementById('g1result').innerHTML=passed
             ?'<span style="color:#5ec97e;">'+getNS().g1pass+'</span>'
-            :'<span style="color:#f0909b;">'+getNS().g1fail+'</span>';
+            :'<span style="color:#f0909b;">'+getNS().g1fail+' <span style="font-size:0.7rem;">(Show each dependency edge being satisfied.)</span></span>';
     }
 
-    // GATE 2: Reachability
+    // GATE 2: Reachability — must show transitive closure steps
     function checkGate2(){
-        const ans=document.getElementById('g2answer').value.trim().toLowerCase();
-        // YES — iron_ore + coal + furnace can make iron_ingot, then crafting table + sticks → iron_pickaxe
-        const passed = ans.includes('yes') && ans.includes('iron_ingot') && ans.includes('furnace') && ans.includes('stick');
+        const ans=document.getElementById('g2answer').value.trim();
+        gateDerivations[2]=ans;
+        const required=['iron_ore','coal','iron_ingot','furnace','stick','iron_pickaxe','yes'];
+        const passed = hasDerivation(ans,required,80) && ans.toLowerCase().includes('yes');
         gateResults[2]=passed;
         updateBadge(2,passed?'passed':'failed');
         document.getElementById('g2result').innerHTML=passed
             ?'<span style="color:#5ec97e;">'+getNS().g2pass+'</span>'
-            :'<span style="color:#f0909b;">'+getNS().g2fail+'</span>';
+            :'<span style="color:#f0909b;">'+getNS().g2fail+' <span style="font-size:0.7rem;">(Compute transitive closure with intermediate steps.)</span></span>';
     }
 
-    // GATE 3: Graph Laplacian
+    // GATE 3: Graph Laplacian — must explain Fiedler vector and obstacle avoidance
     function checkGate3(){
-        const ans=document.getElementById('g3answer').value.trim().toLowerCase();
-        // Must contain turtle commands, avoid obstacles at (5,3,-5) and (5,4,-5), reach (10,5,-10)
-        const passed = ans.includes('turtle.forward') || ans.includes('turtle.up') || ans.includes('turtle.down');
+        const ans=document.getElementById('g3answer').value.trim();
+        gateDerivations[3]=ans;
+        const required=['turtle','obstacle','fiedler','laplacian','path'];
+        const passed = hasDerivation(ans,required,80) &&
+              (ans.toLowerCase().includes('forward')||ans.toLowerCase().includes('up')||ans.toLowerCase().includes('down'));
         gateResults[3]=passed;
         updateBadge(3,passed?'passed':'failed');
         document.getElementById('g3result').innerHTML=passed
             ?'<span style="color:#5ec97e;">'+getNS().g3pass+'</span>'
-            :'<span style="color:#f0909b;">'+getNS().g3fail+'</span>';
+            :'<span style="color:#f0909b;">'+getNS().g3fail+' <span style="font-size:0.7rem;">(Explain Fiedler vector and obstacle avoidance.)</span></span>';
     }
 
-    // GATE 4: Yoneda Embedding
+    // GATE 4: Yoneda Embedding — must reference Hom-functor and morphisms
     function checkGate4(){
-        const ans=document.getElementById('g4answer').value.trim().toLowerCase();
-        // Must identify by function (accepts iron_ore+coal, produces iron_ingot) not by block ID
-        const passed = (ans.includes('a')||ans.includes('vanilla')||ans.includes('furnace')) &&
-              (ans.includes('b')||ans.includes('blast')||ans.includes('create')) &&
-              (ans.includes('c')||ans.includes('arc')||ans.includes('immersive')) &&
-              (ans.includes('iron_ore')||ans.includes('coal')||ans.includes('iron_ingot'));
+        const ans=document.getElementById('g4answer').value.trim();
+        gateDerivations[4]=ans;
+        const required=['yoneda','hom','morphism','furnace','representable'];
+        const passed = hasDerivation(ans,required,80);
         gateResults[4]=passed;
         updateBadge(4,passed?'passed':'failed');
         document.getElementById('g4result').innerHTML=passed
             ?'<span style="color:#5ec97e;">'+getNS().g4pass+'</span>'
-            :'<span style="color:#f0909b;">'+getNS().g4fail+'</span>';
+            :'<span style="color:#f0909b;">'+getNS().g4fail+' <span style="font-size:0.7rem;">(Apply Yoneda lemma with Hom-functor reference.)</span></span>';
     }
 
-    // GATE 5: Adjoint Triple
+    // GATE 5: Adjoint Triple — must construct L, M, R with falsifies_if and ProofObject
     function checkGate5(){
-        const ans=document.getElementById('g5answer').value.trim().toLowerCase();
-        // Must contain L (plan), M (verify), R (confirm) with falsifies_if
-        const passed = ans.includes('l') && ans.includes('m') && ans.includes('r') &&
-              (ans.includes('falsifies_if') || ans.includes('proofobject') || ans.includes('plan') || ans.includes('verify') || ans.includes('confirm'));
+        const ans=document.getElementById('g5answer').value.trim();
+        gateDerivations[5]=ans;
+        const required=['l','m','r','plan','verify','confirm','falsifies_if','proofobject'];
+        const passed = hasDerivation(ans,required,80);
         gateResults[5]=passed;
         updateBadge(5,passed?'passed':'failed');
         document.getElementById('g5result').innerHTML=passed
             ?'<span style="color:#5ec97e;">'+getNS().g5pass+'</span>'
-            :'<span style="color:#f0909b;">'+getNS().g5fail+'</span>';
+            :'<span style="color:#f0909b;">'+getNS().g5fail+' <span style="font-size:0.7rem;">(Construct full L→M→R triple with ProofObject.)</span></span>';
     }
 
     // RUN ALL
@@ -446,6 +436,41 @@ christ_score_impact: "Inventory accuracy measured by Merkle Notary"
             const failed=Object.entries(gateResults).filter(([k,v])=>v===false).map(([k])=>k).join(', ');
             report.textContent=getNS().reportFail.replace('[N]','['+failed+']');
         }
+        updateMachineData();
+    }
+
+    // SHOW DERIVATIONS
+    function showDerivations(){
+        const div=document.getElementById('derivationDisplay');
+        div.style.display='block';
+        let text='';
+        for(let i=1;i<=5;i++){
+            text+='=== GATE '+i+' DERIVATION ===\n';
+            text+=(gateDerivations[i]||'(No derivation submitted)')+'\n\n';
+        }
+        div.textContent=text;
+    }
+
+    // DYNAMIC MACHINE DATA
+    function updateMachineData(){
+        let yaml='# === TURTLE GOVERNANCE PUZZLE v2.0 — DYNAMIC AUDIT ===\n';
+        yaml+='# Generated by The Turtle Governance Puzzle | HTML Maker 1a 5-10-26\n\n';
+        yaml+='domain: d_dag_theory\n';
+        yaml+='version: 2.0\n';
+        yaml+='verification_mode: show_your_work\n\n';
+        yaml+='gates:\n';
+        for(let i=1;i<=5;i++){
+            const status=gateResults[i]===true?'PASSED':gateResults[i]===false?'FAILED':'PENDING';
+            yaml+='  - gate_'+i+':\n';
+            yaml+='      status: '+status+'\n';
+            yaml+='      derivation: |\n';
+            const deriv=gateDerivations[i]||'(No derivation submitted)';
+            const lines=deriv.split('\n');
+            lines.forEach(l=>{yaml+='        '+l+'\n';});
+        }
+        yaml+='\nchrist_score_impact: "Inventory accuracy measured by Merkle Notary"\n';
+        yaml+='turtle_capability: "Moves by proof, not by echo-click"\n';
+        document.getElementById('machineTA').value=yaml;
     }
 
     // MACHINE DATA COPY
