@@ -485,3 +485,33 @@ text
 
 Per the correspondence file analysis: noobs and secular AIs perceive theological language in commit messages as "weird cult talk." The code is functionally identical. The governance architecture still operates (Yeshua audits, TruthSystems verifies). The fork simply presents as professional modding to the wider community.
 
+
+
+## Turtle Storage Governance — Mathematical Framework (Added 2026-05-11)
+
+### Graduate Mathematics Applied to CC:Tweaked Turtles
+
+| Mathematical Tool | Turtle Application | Status |
+|-------------------|-------------------|--------|
+| **Topological Sort** | Determines linear crafting sequence from recipe DAG | SPECIFIED — implementation queued |
+| **Reachability Transitivity** | Answers "can I craft X from available resources?" | SPECIFIED — implementation queued |
+| **Graph Laplacian** | Optimal 3D pathfinding with Contraction Invariant | SPECIFIED — implementation queued |
+| **Spectral Graph Theory** | Dynamic environment adaptation when paths blocked | SPECIFIED — implementation queued |
+| **Persistent Homology** | Structural sensing — identifies hidden rooms and voids | SPECIFIED — implementation queued |
+| **Yoneda Embedding** | Block recognition by morphisms, not labels | SPECIFIED — implementation queued |
+| **Adjoint Triples (L, M, R)** | Plan-Verify loop: generate, enforce, verify | SPECIFIED — implementation queued |
+
+### Implementation Gap: d_dag_theory Domain
+
+The `d_dag_theory` domain is specified in architectural blueprints and NBLM archives but was never implemented. The turtle storage governance implementation IS the first implementation — in Lua for the turtle runtime, with Yeshua as the external strategist.
+
+### Files To Create
+
+| File | Purpose |
+|------|---------|
+| `automation/computer_craft/storage/inventory.lua` | Inventory scanning, sorting, threshold management |
+| `automation/computer_craft/storage/pathfinding.lua` | Graph Laplacian pathfinding in 3D grid |
+| `automation/computer_craft/storage/crafting.lua` | Topological sort of recipe graph, reachability |
+| `automation/computer_craft/storage/verify.lua` | Merkle-anchored state verification |
+| `src/domains/d_dag_theory/invariants.py` | Python DAG operations for Yeshua |
+| `src/domains/d_dag_theory/implementation.py` | Python-to-Lua bridge for recipe traversal |
