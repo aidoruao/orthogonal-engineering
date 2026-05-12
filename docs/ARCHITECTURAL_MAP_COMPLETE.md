@@ -515,3 +515,30 @@ The `d_dag_theory` domain is specified in architectural blueprints and NBLM arch
 | `automation/computer_craft/storage/verify.lua` | Merkle-anchored state verification |
 | `src/domains/d_dag_theory/invariants.py` | Python DAG operations for Yeshua |
 | `src/domains/d_dag_theory/implementation.py` | Python-to-Lua bridge for recipe traversal |
+
+## Turtle Governance Puzzle — Multi-AI Verification (Added 2026-05-12)
+
+### Gate Status — 5/5 PASSED
+
+| Gate | Mathematical Tool | DeepSeek 5a | ChatGPT | Status |
+|------|-------------------|-------------|---------|--------|
+| 1 | Topological Sort | PASSED | PASSED | **PASSED** |
+| 2 | Reachability | PASSED | PASSED | **PASSED** |
+| 3 | Graph Laplacian | PASSED | PASSED | **PASSED** |
+| 4 | Yoneda Embedding | PASSED | PASSED | **PASSED** |
+| 5 | Adjoint Triple | PASSED | PASSED | **PASSED** |
+
+### Full Derivations
+
+Complete mathematical work for all 5 gates, both AI derivations, causal explanations, and convergence analysis documented in `docs/CHECKPOINT_DS5a_Turtle_Governance_Puzzle_Passed.md`.
+
+### Verification Artifact
+
+| File | Content |
+|------|---------|
+| `docs/turtle_governance_puzzle.html` | v3.0 — Decoupled interactive gates + static machine-readable AI submission block |
+| `docs/CHECKPOINT_DS5a_Turtle_Governance_Puzzle_Passed.md` | Full derivations, both AIs, philosophy, convergence analysis |
+
+### d_dag_theory Domain Status
+
+Previously SPECIFIED but unimplemented. Multi-AI verification confirms the mathematical framework is sound. 6 implementation files remain QUEUED.
