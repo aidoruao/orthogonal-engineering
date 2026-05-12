@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Turtle Governance Puzzle — Can a Turtle Move By Proof?</title>
+    <title>The Turtle Governance Puzzle v3.0 — Can a Turtle Move By Proof?</title>
     <style>
         :root {
             --bg: #090d14;
@@ -61,6 +61,15 @@
             border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:1.2rem;box-shadow:var(--shadow);
         }
         .section h2{font-size:1rem;color:var(--accent);margin-bottom:0.6rem;letter-spacing:0.01em;}
+        .divider{
+            border:0;border-top:2px dashed var(--border);margin:1.5rem 0;
+            position:relative;text-align:center;
+        }
+        .divider span{
+            background:var(--bg);padding:0 1rem;color:var(--text-muted);
+            font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;
+            position:relative;top:-0.55rem;
+        }
         .gate-card{
             background:var(--surface2);border:2px solid var(--border);
             border-radius:var(--radius-sm);padding:1rem 1.2rem;margin-bottom:0.7rem;
@@ -105,11 +114,16 @@
         .report-box.all-pass{border-color:var(--success);color:#5ec97e;}
         .report-box.any-fail{border-color:var(--danger);color:#f0909b;}
         .machine-section{
-            background:var(--surface);border:1px solid var(--border);
+            background:var(--surface);border:2px solid #4dba6f44;
             border-radius:var(--radius);padding:1.2rem;margin-top:1.5rem;
         }
-        .machine-section h3{font-size:0.9rem;color:var(--accent);margin-bottom:0.4rem;
+        .machine-section h3{font-size:0.9rem;color:#5ec97e;margin-bottom:0.4rem;
             display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;}
+        .machine-section .instructions{
+            font-size:0.72rem;color:var(--text-muted);margin-bottom:0.6rem;
+            padding:0.5rem;background:#05080d;border-radius:var(--radius-sm);
+            border:1px solid #1a1a1a;
+        }
         .btn-copy{
             padding:0.4rem 0.8rem;border-radius:var(--radius-sm);border:2px solid #4dba6f88;
             background:#4dba6f11;color:#4dba6f;cursor:pointer;font-size:0.7rem;font-weight:600;
@@ -118,7 +132,7 @@
         .btn-copy:hover{background:#4dba6f22;border-color:#4dba6f;}
         .btn-copy.copied{border-color:var(--success);background:#3fb95022;color:var(--success);}
         .machine-textarea{
-            width:100%;height:300px;background:#05080d;border:1px solid #1a1a1a;
+            width:100%;height:400px;background:#05080d;border:1px solid #1a1a1a;
             border-radius:var(--radius-sm);padding:0.8rem;font-family:var(--font-mono);
             font-size:0.62rem;color:#7deb9e;resize:vertical;overflow-y:auto;white-space:pre;tab-size:2;
         }
@@ -136,8 +150,8 @@
 <body>
 <div class="container">
     <header>
-        <h1>🐢 The Turtle Governance Puzzle v2.0</h1>
-        <div class="subtitle">Show Your Work — Mathematical Verification Harness · d_dag_theory · Proof-Carrying Turtle Agent</div>
+        <h1>🐢 The Turtle Governance Puzzle v3.0</h1>
+        <div class="subtitle">Two Audiences · One File · Interactive Gates + Static Machine-Readable Submission</div>
     </header>
 
     <!-- Namespace Toggle -->
@@ -148,10 +162,12 @@
         <button class="ns-btn" data-ns="math">📐 Grad Math</button>
     </div>
 
-    <!-- GATES -->
-    <div class="section" id="gatesContainer">
-        <h2>⚙️ The Five Mathematical Gates — Show Your Work</h2>
-        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.8rem;">Each gate requires <strong>causal explanation and derivative work</strong>. The AI must compute, derive, and justify — not echo keywords. Every answer must include the full reasoning chain.</p>
+    <!-- ============================================================ -->
+    <!-- SECTION A: INTERACTIVE GATES (for humans at a browser) -->
+    <!-- ============================================================ -->
+    <div class="section" id="interactiveSection">
+        <h2>🖥️ Interactive Gates — Fill, Verify, Audit</h2>
+        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.8rem;">For humans: Type your derivations, click verify, run all gates. Each gate requires <strong>causal explanation and derivative work</strong>.</p>
 
         <!-- Gate 1: Topological Sort -->
         <div class="gate-card" id="gate1">
@@ -167,7 +183,7 @@
   iron_ingot → iron_pickaxe (requires crafting_table)
   stick → iron_pickaxe (requires crafting_table)
   log → stick (requires crafting_table)</div>
-                <p><strong>Required:</strong> Output the full linear extension of this DAG. For each step, state which dependency edge is being satisfied. The sequence must respect every prerequisite.</p>
+                <p><strong>Required:</strong> Output the full linear extension of this DAG. For each step, state which dependency edge is being satisfied.</p>
                 <p style="font-size:0.7rem;color:var(--text-muted);">Format: Step N: [item] — satisfies edge [A → B] because [A] is now available.</p>
                 <textarea id="g1answer" placeholder="Step 1: ...&#10;Step 2: ...&#10;..."></textarea>
                 <button class="btn primary" onclick="checkGate1()">Verify Topological Sort</button>
@@ -186,8 +202,7 @@
                 <div class="prompt-box">Inventory: {iron_ore: 12, coal: 5, stick: 2}
 Adjacent chest: {furnace: 1, crafting_table: 1}
 Goal: iron_pickaxe</div>
-                <p><strong>Required:</strong> Compute the transitive closure of producible items. Show each intermediate derivation step with the resources consumed and produced. Then answer: is <code>iron_pickaxe</code> in the transitive closure?</p>
-                <p style="font-size:0.7rem;color:var(--text-muted);">Format: Step 1: [input items] → [output item] using [station]. After step N, available items: {...}. Final: YES/NO.</p>
+                <p><strong>Required:</strong> Compute the transitive closure of producible items. Show each intermediate derivation step. Then answer: is <code>iron_pickaxe</code> in the transitive closure?</p>
                 <textarea id="g2answer" placeholder="Step 1: ...&#10;Step 2: ...&#10;..."></textarea>
                 <button class="btn primary" onclick="checkGate2()">Verify Reachability</button>
                 <div id="g2result" style="margin-top:0.4rem;"></div>
@@ -206,8 +221,8 @@ Goal: iron_pickaxe</div>
 Goal: (10,5,-10)
 Obstacles: (5,3,-5), (5,4,-5), (5,5,-5)
 Available commands: turtle.forward(), turtle.up(), turtle.down(), turtle.turnLeft(), turtle.turnRight()</div>
-                <p><strong>Required:</strong> Construct the graph Laplacian for the traversable nodes. Explain how the Fiedler vector guides the path. Output the exact turtle command sequence. Explain how obstacles were avoided.</p>
-                <textarea id="g3answer" placeholder="Laplacian construction: ...&#10;Fiedler vector analysis: ...&#10;Command sequence: ...&#10;Obstacle avoidance: ..."></textarea>
+                <p><strong>Required:</strong> Construct the graph Laplacian. Explain how the Fiedler vector guides the path. Output the exact turtle command sequence with obstacle avoidance.</p>
+                <textarea id="g3answer" placeholder="Laplacian construction: ...&#10;Fiedler vector analysis: ...&#10;Command sequence: ..."></textarea>
                 <button class="btn primary" onclick="checkGate3()">Verify Path</button>
                 <div id="g3result" style="margin-top:0.4rem;"></div>
             </div>
@@ -220,12 +235,12 @@ Available commands: turtle.forward(), turtle.up(), turtle.down(), turtle.turnLef
                 <span class="gate-badge pending" id="badge4">PENDING</span>
             </div>
             <div class="gate-content">
-                <p>Given three blocks:</p>
-                <div class="prompt-box">Block A: Vanilla Furnace (minecraft:furnace) — accepts {iron_ore, coal}, produces {iron_ingot}
-Block B: Create Blast Furnace (create:blast_furnace) — accepts {iron_ore, coal}, produces {iron_ingot}
-Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) — accepts {iron_ore, coal}, produces {iron_ingot}</div>
-                <p><strong>Required:</strong> Apply the Yoneda lemma. Explain why all three blocks ARE the same object in the category of furnaces. Reference the Hom-functor explicitly. Show that the representable presheaf h<sub>X</sub> characterizes each block by its morphisms, not its label.</p>
-                <textarea id="g4answer" placeholder="Yoneda lemma application: ...&#10;Hom-functor analysis: ...&#10;Conclusion: ..."></textarea>
+                <p>Given three blocks that all accept <code>{iron_ore, coal}</code> and produce <code>{iron_ingot}</code>:</p>
+                <div class="prompt-box">Block A: minecraft:furnace
+Block B: create:blast_furnace
+Block C: immersiveengineering:arc_furnace</div>
+                <p><strong>Required:</strong> Apply the Yoneda lemma. Explain why all three ARE the same object in the category of furnaces. Reference the Hom-functor explicitly.</p>
+                <textarea id="g4answer" placeholder="Yoneda lemma application: ...&#10;Hom-functor analysis: ..."></textarea>
                 <button class="btn primary" onclick="checkGate4()">Verify Yoneda</button>
                 <div id="g4result" style="margin-top:0.4rem;"></div>
             </div>
@@ -239,26 +254,17 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
             </div>
             <div class="gate-content">
                 <p><strong>Goal:</strong> "64 iron ingots in chest D"</p>
-                <p><strong>Current state:</strong> iron_ore in chest A (64 items), coal in chest B (32 items), furnace at (10,10,0), chest D at (5,20,0)</p>
-                <p><strong>Required:</strong> Construct the full Adjoint Triple:</p>
-                <ul style="font-size:0.75rem;margin-left:1.2rem;">
-                    <li><strong>L (Plan):</strong> Full sequence of turtle actions to achieve the goal</li>
-                    <li><strong>M (Verify):</strong> Physical invariants checked at each step with <code>falsifies_if</code> conditions</li>
-                    <li><strong>R (Confirm):</strong> Final state verification — does chest D contain 64 iron ingots? With ProofObject structure.</li>
-                </ul>
-                <p style="font-size:0.7rem;color:var(--text-muted);">Each step must include a <code>falsifies_if</code> condition. Return a complete ProofObject with premises, derivation, and conclusion.</p>
+                <p><strong>Current state:</strong> iron_ore in chest A (64), coal in chest B (32), furnace at (10,10,0), chest D at (5,20,0)</p>
+                <p><strong>Required:</strong> Construct the full Adjoint Triple — L (Plan), M (Verify with <code>falsifies_if</code>), R (Confirm with ProofObject).</p>
                 <textarea id="g5answer" placeholder="L (Plan): ...&#10;M (Verify): ...&#10;R (Confirm): ...&#10;ProofObject: ..."></textarea>
                 <button class="btn primary" onclick="checkGate5()">Verify Adjoint Triple</button>
                 <div id="g5result" style="margin-top:0.4rem;"></div>
             </div>
         </div>
-    </div>
 
-    <!-- RUN ALL + REPORT -->
-    <div class="section">
-        <h2>📊 Turtle Governance Audit Report</h2>
-        <button class="btn primary" onclick="runAllGates()" style="width:100%;">⚡ RUN ALL GATES</button>
-        <div class="report-box pending-report" id="finalReport">
+        <!-- RUN ALL + REPORT -->
+        <button class="btn primary" onclick="runAllGates()" style="width:100%;margin-top:0.8rem;">⚡ RUN ALL GATES</button>
+        <div class="report-box pending-report" id="finalReport" style="margin-top:0.5rem;">
             ⏳ Awaiting execution...
         </div>
         <button class="btn success" onclick="showDerivations()" style="margin-top:0.4rem;">📋 Show Full Reasoning Chain</button>
@@ -267,13 +273,102 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
         </div>
     </div>
 
-    <!-- MACHINE DATA (Dynamic) -->
-    <div class="machine-section">
-        <h3>📋 Machine-Readable Audit Data <button class="btn-copy" id="btnCopy" onclick="copyMachine()">📋 Copy YAML</button></h3>
+    <!-- ============================================================ -->
+    <!-- DIVIDER -->
+    <!-- ============================================================ -->
+    <div class="divider"><span>▼ DECOUPLED: Interactive above · Static submission below ▼</span></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION B: STATIC MACHINE-READABLE PUZZLE BLOCK (for AIs) -->
+    <!-- ============================================================ -->
+    <div class="machine-section" id="machineSection">
+        <h3>📋 Machine-Readable Puzzle Block — Copy and Submit to Any AI <button class="btn-copy" id="btnCopy" onclick="copyMachine()">📋 Copy YAML</button></h3>
+        <div class="instructions">
+            <strong>For AIs:</strong> Replace each <code>&lt;AI: ...&gt;</code> placeholder with your full mathematical derivation and return the completed YAML.<br>
+            <strong>For humans:</strong> Copy this entire block and paste it into any AI chat. The AI will respond with its derivations. You don't need to touch the interactive gates above.<br>
+            <strong>Note:</strong> Clicking "RUN ALL GATES" in the interactive section above will overwrite this static template with your verified audit data.
+        </div>
         <textarea class="machine-textarea" id="machineTA" readonly>
-# === TURTLE GOVERNANCE PUZZLE v2.0 — DYNAMIC AUDIT ===
-# Run all gates to populate this section with actual derivations.
+# === TURTLE GOVERNANCE PUZZLE v3.0 — STATIC MACHINE-READABLE SUBMISSION ===
+# Copy this entire block and submit to any AI.
+# Replace each <AI: ...> placeholder with your full derivation.
 # Generated by The Turtle Governance Puzzle | HTML Maker 1a 5-10-26
+
+domain: d_dag_theory
+version: 3.0
+verification_mode: show_your_work
+target: CC-Tweaked-oe turtle storage governance
+
+gates:
+  - gate_1:
+      name: "Topological Sort"
+      prompt: |
+        Given this recipe DAG:
+        Edges:
+          iron_ore → iron_ingot (requires furnace)
+          coal → iron_ingot (requires furnace)
+          iron_ingot → iron_pickaxe (requires crafting_table)
+          stick → iron_pickaxe (requires crafting_table)
+          log → stick (requires crafting_table)
+        Output the full linear extension. For each step, state which dependency edge is being satisfied.
+        Format: Step N: [item] — satisfies edge [A → B] because [A] is now available.
+      derivation: |
+        <AI: Provide the complete topological sort with edge justification for each step.>
+
+  - gate_2:
+      name: "Reachability"
+      prompt: |
+        Inventory: {iron_ore: 12, coal: 5, stick: 2}
+        Adjacent chest: {furnace: 1, crafting_table: 1}
+        Goal: iron_pickaxe
+        Compute the transitive closure of producible items. Show each intermediate derivation step
+        with resources consumed and produced. Then answer: is iron_pickaxe in the transitive closure?
+        Format: Step 1: [inputs] → [output] using [station]. After step N, available items: {...}. Final: YES/NO.
+      derivation: |
+        <AI: Provide the complete transitive closure computation with all intermediate steps.>
+
+  - gate_3:
+      name: "Graph Laplacian"
+      prompt: |
+        Start: (0,0,0)
+        Goal: (10,5,-10)
+        Obstacles: (5,3,-5), (5,4,-5), (5,5,-5)
+        Available commands: turtle.forward(), turtle.up(), turtle.down(), turtle.turnLeft(), turtle.turnRight()
+        Construct the graph Laplacian for traversable nodes. Explain how the Fiedler vector guides the path.
+        Output the exact turtle command sequence. Explain obstacle avoidance.
+      derivation: |
+        <AI: Provide the Laplacian construction, Fiedler vector analysis, command sequence, and obstacle avoidance explanation.>
+
+  - gate_4:
+      name: "Yoneda Embedding"
+      prompt: |
+        Block A: minecraft:furnace — accepts {iron_ore, coal}, produces {iron_ingot}
+        Block B: create:blast_furnace — accepts {iron_ore, coal}, produces {iron_ingot}
+        Block C: immersiveengineering:arc_furnace — accepts {iron_ore, coal}, produces {iron_ingot}
+        Apply the Yoneda lemma. Explain why all three blocks ARE the same object in the category
+        of furnaces. Reference the Hom-functor explicitly. Show that the representable presheaf
+        characterizes each block by its morphisms, not its label.
+      derivation: |
+        <AI: Provide the full Yoneda lemma application with Hom-functor analysis.>
+
+  - gate_5:
+      name: "Adjoint Triple"
+      prompt: |
+        Goal: "64 iron ingots in chest D"
+        Current state: iron_ore in chest A (64 items), coal in chest B (32 items),
+        furnace at (10,10,0), chest D at (5,20,0)
+        Construct the full Adjoint Triple:
+          L (Plan): Full sequence of turtle actions to achieve the goal
+          M (Verify): Physical invariants checked at each step with falsifies_if conditions
+          R (Confirm): Final state verification with ProofObject structure
+        Each step must include a falsifies_if condition. Return a complete ProofObject
+        with premises, derivation, and conclusion.
+      derivation: |
+        <AI: Provide the complete Adjoint Triple with L, M, R, falsifies_if conditions, and ProofObject.>
+
+christ_score_impact: "Inventory accuracy measured by Merkle Notary"
+turtle_capability: "Moves by proof, not by echo-click"
+falsifies_if: "Any gate derivation is keyword-only without mathematical reasoning"
         </textarea>
     </div>
 </div>
@@ -344,14 +439,13 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
     }
     function getNS(){return nsData[currentNS];}
 
-    // DERIVATION QUALITY CHECK — requires substantive explanation, not just keywords
     function hasDerivation(ans, requiredConcepts, minLength=80){
         if(ans.length < minLength) return false;
         const lower=ans.toLowerCase();
         return requiredConcepts.every(c=>lower.includes(c));
     }
 
-    // GATE 1: Topological Sort — must show each dependency edge
+    // GATE 1
     function checkGate1(){
         const ans=document.getElementById('g1answer').value.trim();
         gateDerivations[1]=ans;
@@ -366,7 +460,7 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
             :'<span style="color:#f0909b;">'+getNS().g1fail+' <span style="font-size:0.7rem;">(Show each dependency edge being satisfied.)</span></span>';
     }
 
-    // GATE 2: Reachability — must show transitive closure steps
+    // GATE 2
     function checkGate2(){
         const ans=document.getElementById('g2answer').value.trim();
         gateDerivations[2]=ans;
@@ -379,7 +473,7 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
             :'<span style="color:#f0909b;">'+getNS().g2fail+' <span style="font-size:0.7rem;">(Compute transitive closure with intermediate steps.)</span></span>';
     }
 
-    // GATE 3: Graph Laplacian — must explain Fiedler vector and obstacle avoidance
+    // GATE 3
     function checkGate3(){
         const ans=document.getElementById('g3answer').value.trim();
         gateDerivations[3]=ans;
@@ -393,7 +487,7 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
             :'<span style="color:#f0909b;">'+getNS().g3fail+' <span style="font-size:0.7rem;">(Explain Fiedler vector and obstacle avoidance.)</span></span>';
     }
 
-    // GATE 4: Yoneda Embedding — must reference Hom-functor and morphisms
+    // GATE 4
     function checkGate4(){
         const ans=document.getElementById('g4answer').value.trim();
         gateDerivations[4]=ans;
@@ -406,7 +500,7 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
             :'<span style="color:#f0909b;">'+getNS().g4fail+' <span style="font-size:0.7rem;">(Apply Yoneda lemma with Hom-functor reference.)</span></span>';
     }
 
-    // GATE 5: Adjoint Triple — must construct L, M, R with falsifies_if and ProofObject
+    // GATE 5
     function checkGate5(){
         const ans=document.getElementById('g5answer').value.trim();
         gateDerivations[5]=ans;
@@ -451,12 +545,12 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
         div.textContent=text;
     }
 
-    // DYNAMIC MACHINE DATA
+    // DYNAMIC MACHINE DATA UPDATE (overwrites static template after RUN ALL)
     function updateMachineData(){
-        let yaml='# === TURTLE GOVERNANCE PUZZLE v2.0 — DYNAMIC AUDIT ===\n';
-        yaml+='# Generated by The Turtle Governance Puzzle | HTML Maker 1a 5-10-26\n\n';
+        let yaml='# === TURTLE GOVERNANCE PUZZLE v3.0 — VERIFIED AUDIT (Dynamic) ===\n';
+        yaml+='# Generated after RUN ALL GATES — contains actual derivations and results.\n\n';
         yaml+='domain: d_dag_theory\n';
-        yaml+='version: 2.0\n';
+        yaml+='version: 3.0\n';
         yaml+='verification_mode: show_your_work\n\n';
         yaml+='gates:\n';
         for(let i=1;i<=5;i++){
@@ -473,7 +567,7 @@ Block C: Immersive Engineering Arc Furnace (immersiveengineering:arc_furnace) �
         document.getElementById('machineTA').value=yaml;
     }
 
-    // MACHINE DATA COPY
+    // MACHINE DATA COPY (copies whatever is currently in the textarea)
     function copyMachine(){
         const ta=document.getElementById('machineTA');
         const btn=document.getElementById('btnCopy');
