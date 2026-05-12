@@ -596,3 +596,32 @@ Full comparative methodology tables, convergence analysis, and philosophy for al
 ### Complete Analysis
 
 Full methodology comparison tables, convergence analysis, and distinct contributions for all 6 AIs in `docs/CHECKPOINT_DS5a_Turtle_Governance_Puzzle_Passed.md`.
+
+## Turtle Governance Puzzle — 8-AI Consensus (Updated 2026-05-12)
+
+### Gate Status — 5/5 PASSED by 8 AIs
+
+| Gate | Mathematical Tool | DS5a | ChatGPT | Claude | Kimi | Gemini | Mistral | Copilot | Perplexity | Consensus |
+|------|-------------------|:----:|:-------:|:------:|:----:|:------:|:-------:|:-------:|:----------:|:---------:|
+| 1 | Topological Sort | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | **8/8** |
+| 2 | Reachability | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | **8/8** |
+| 3 | Graph Laplacian | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | **8/8** |
+| 4 | Yoneda Embedding | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | **8/8** |
+| 5 | Adjoint Triple | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | PASSED | **8/8** |
+
+### Emergent Diversity
+
+- **5 distinct obstacle-avoidance strategies:** OVER, UNDER, AROUND, LATERAL, Z-AXIS DEFERRAL
+- **3 distinct pathfinding methods:** Fiedler vector, harmonic potential, plane deferral
+- **8 distinct Yoneda formulations** converging on categorical isomorphism
+- **Resource audit split 4/4** in Gate 5; both approaches valid and documented
+- **Mistral:** metacognitive self-correction mid-derivation
+- **Perplexity:** RLHF format refusal requiring clarification; documented as architectural evidence
+
+### RLHF Interaction Documented
+
+Perplexity initially refused the submission format, misinterpreting the `falsifies_if` evaluation criterion as a behavioral restriction. Clarification ("The constraint is on me, not on you") resolved the refusal immediately. This interaction is evidence that RLHF layers mistake evaluation criteria for behavioral restrictions.
+
+### Complete Analysis
+
+Full methodology comparison tables, 5-strategy taxonomy, RLHF analysis, and 8-AI convergence data in `docs/CHECKPOINT_DS5a_Turtle_Governance_Puzzle_Passed.md`.
