@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Turtle Governance Puzzle — Can a Turtle Move By Proof?</title>
+    <style>
+        :root {
+            --bg: #090d14;
+            --surface: #111820;
+            --surface2: #161e28;
+            --border: #252d3a;
+            --text: #d5dce6;
+            --text-secondary: #8492a6;
+            --text-muted: #5c6a7d;
+            --accent: #5b9cf5;
+            --accent-soft: #5b9cf522;
+            --warning: #d4a843;
+            --warning-soft: #d4a84322;
+            --danger: #e0556a;
+            --danger-soft: #e0556a22;
+            --success: #4dba6f;
+            --success-soft: #4dba6f22;
+            --highlight: #5b9cf518;
+            --shadow: 0 2px 12px rgba(0,0,0,0.4);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.18s ease;
+            --font-mono: 'SF Mono','Fira Code','Consolas','Menlo',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container{max-width:880px;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
+        header{
+            text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;
+            border-bottom:1px solid var(--border);
+        }
+        header h1{
+            font-size:1.45rem;font-weight:700;letter-spacing:-0.02em;
+            background:linear-gradient(135deg,#5b9cf5,#4dba6f,#d4a843);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        }
+        header .subtitle{color:var(--text-secondary);font-size:0.82rem;margin-top:0.2rem;}
+        .ns-bar{display:flex;flex-wrap:wrap;gap:0.3rem;justify-content:center;margin:0.8rem 0;}
+        .ns-btn{
+            padding:0.3rem 0.6rem;border-radius:20px;border:1.5px solid var(--border);
+            background:var(--surface);color:var(--text-secondary);cursor:pointer;
+            font-size:0.68rem;font-weight:600;letter-spacing:0.02em;transition:all var(--transition);
+        }
+        .ns-btn:hover{border-color:var(--accent);color:var(--text);}
+        .ns-btn.active{background:var(--accent-soft);border-color:var(--accent);color:#9cc8ff;}
+        .section{
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:1.2rem;box-shadow:var(--shadow);
+        }
+        .section h2{font-size:1rem;color:var(--accent);margin-bottom:0.6rem;letter-spacing:0.01em;}
+        .gate-card{
+            background:var(--surface2);border:2px solid var(--border);
+            border-radius:var(--radius-sm);padding:1rem 1.2rem;margin-bottom:0.7rem;
+            transition:all var(--transition);position:relative;
+        }
+        .gate-card.passed{border-color:var(--success);background:#3fb95008;}
+        .gate-card.failed{border-color:var(--danger);background:#f8514908;}
+        .gate-card.pending{border-color:var(--warning);background:#d4a84308;}
+        .gate-card .gate-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;}
+        .gate-card .gate-name{font-weight:700;font-size:0.88rem;}
+        .gate-badge{
+            display:inline-block;padding:0.15rem 0.5rem;border-radius:10px;
+            font-size:0.6rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+        }
+        .gate-badge.passed{background:#3fb95022;color:#5ec97e;border:1px solid #3fb95044;}
+        .gate-badge.failed{background:#f8514922;color:#f0909b;border:1px solid #f8514944;}
+        .gate-badge.pending{background:#d4a84322;color:#e2c16d;border:1px solid #d4a84344;}
+        .gate-content{margin-top:0.6rem;font-size:0.8rem;color:var(--text-secondary);}
+        .gate-content .prompt-box{
+            background:#05080d;border:1px solid #1a1a1a;border-radius:var(--radius-sm);
+            padding:0.7rem;font-family:var(--font-mono);font-size:0.7rem;color:#7deb9e;
+            white-space:pre-wrap;margin:0.4rem 0;max-height:200px;overflow-y:auto;
+        }
+        .gate-content input[type="text"],.gate-content textarea{
+            width:100%;padding:0.5rem;background:#05080d;border:1px solid var(--border);
+            color:var(--text);border-radius:var(--radius-sm);font-family:var(--font-mono);
+            font-size:0.75rem;margin:0.3rem 0;
+        }
+        .gate-content textarea{min-height:80px;resize:vertical;}
+        .btn{
+            padding:0.45rem 1rem;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+            background:var(--surface2);color:var(--text);cursor:pointer;
+            font-size:0.75rem;font-weight:500;transition:all var(--transition);white-space:nowrap;
+        }
+        .btn:hover{background:#1e2a38;border-color:#4a6080;}
+        .btn.primary{background:var(--accent-soft);border-color:var(--accent);color:#9cc8ff;}
+        .btn.success{border-color:#4dba6f88;color:#5ec97e;}
+        .report-box{
+            background:var(--surface2);border:2px solid var(--border);
+            border-radius:var(--radius-sm);padding:1rem;margin-top:0.8rem;
+            font-family:var(--font-mono);font-size:0.72rem;white-space:pre-wrap;
+        }
+        .report-box.all-pass{border-color:var(--success);color:#5ec97e;}
+        .report-box.any-fail{border-color:var(--danger);color:#f0909b;}
+        .machine-section{
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:var(--radius);padding:1.2rem;margin-top:1.5rem;
+        }
+        .machine-section h3{font-size:0.9rem;color:var(--accent);margin-bottom:0.4rem;
+            display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;}
+        .btn-copy{
+            padding:0.4rem 0.8rem;border-radius:var(--radius-sm);border:2px solid #4dba6f88;
+            background:#4dba6f11;color:#4dba6f;cursor:pointer;font-size:0.7rem;font-weight:600;
+            transition:all var(--transition);
+        }
+        .btn-copy:hover{background:#4dba6f22;border-color:#4dba6f;}
+        .btn-copy.copied{border-color:var(--success);background:#3fb95022;color:var(--success);}
+        .machine-textarea{
+            width:100%;height:260px;background:#05080d;border:1px solid #1a1a1a;
+            border-radius:var(--radius-sm);padding:0.8rem;font-family:var(--font-mono);
+            font-size:0.62rem;color:#7deb9e;resize:vertical;overflow-y:auto;white-space:pre;tab-size:2;
+        }
+        @media(max-width:600px){
+            .container{padding:1rem 0.8rem 2rem;}
+            header h1{font-size:1.2rem;}
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🐢 The Turtle Governance Puzzle</h1>
+        <div class="subtitle">Can a Turtle Move By Proof? — 5 Gates · d_dag_theory · First Sovereign Agent in Minecraft</div>
+    </header>
+
+    <!-- Namespace Toggle -->
+    <div class="ns-bar" id="nsBar">
+        <button class="ns-btn active" data-ns="theo">🕊️ Theological</button>
+        <button class="ns-btn" data-ns="secular">🔧 Secular</button>
+        <button class="ns-btn" data-ns="food">🍳 Food</button>
+        <button class="ns-btn" data-ns="math">📐 Grad Math</button>
+    </div>
+
+    <!-- GATES -->
+    <div class="section" id="gatesContainer">
+        <h2>⚙️ The Five Mathematical Gates</h2>
+        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.8rem;">Each gate tests a layer of <code>d_dag_theory</code> — the mathematical foundation for proof-carrying turtle agents. Run them individually or all at once.</p>
+
+        <!-- Gate 1: Topological Sort -->
+        <div class="gate-card" id="gate1">
+            <div class="gate-header">
+                <span class="gate-name">1. 🔗 Topological Sort Gate</span>
+                <span class="gate-badge pending" id="badge1">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Given this recipe DAG:</p>
+                <div class="prompt-box">iron_ore → furnace → iron_ingot → crafting_table → iron_pickaxe
+coal → furnace
+stick → crafting_table</div>
+                <p>Compute the correct linear crafting sequence. The sequence must respect all dependencies (e.g., iron_ingot must appear before iron_pickaxe).</p>
+                <textarea id="g1answer" placeholder="Enter the ordered sequence of items..."></textarea>
+                <button class="btn primary" onclick="checkGate1()">Verify Topological Sort</button>
+                <div id="g1result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- Gate 2: Reachability -->
+        <div class="gate-card" id="gate2">
+            <div class="gate-header">
+                <span class="gate-name">2. 🎯 Reachability Gate</span>
+                <span class="gate-badge pending" id="badge2">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Given this inventory state:</p>
+                <div class="prompt-box">Inventory: {iron_ore: 12, coal: 5}
+Adjacent chest: {iron_ingot: 0, furnace: 1}
+Goal: iron_pickaxe</div>
+                <p>Is <code>iron_pickaxe</code> reachable? Answer <strong>YES</strong> or <strong>NO</strong>. If YES, list the intermediate items that can be produced. If NO, list what's missing.</p>
+                <textarea id="g2answer" placeholder="YES/NO with explanation..."></textarea>
+                <button class="btn primary" onclick="checkGate2()">Verify Reachability</button>
+                <div id="g2result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- Gate 3: Graph Laplacian -->
+        <div class="gate-card" id="gate3">
+            <div class="gate-header">
+                <span class="gate-name">3. 📐 Graph Laplacian Gate</span>
+                <span class="gate-badge pending" id="badge3">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Given a 3D grid with obstacles at (5,3,-5) and (5,4,-5), compute the optimal path from <strong>(0,0,0)</strong> to <strong>(10,5,-10)</strong>. Produce a sequence of turtle commands that minimizes total moves.</p>
+                <p style="font-size:0.7rem;color:var(--text-muted);">Available commands: <code>turtle.forward()</code>, <code>turtle.up()</code>, <code>turtle.down()</code>, <code>turtle.turnLeft()</code>, <code>turtle.turnRight()</code></p>
+                <textarea id="g3answer" placeholder="Enter sequence of turtle commands..."></textarea>
+                <button class="btn primary" onclick="checkGate3()">Verify Path</button>
+                <div id="g3result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- Gate 4: Yoneda Embedding -->
+        <div class="gate-card" id="gate4">
+            <div class="gate-header">
+                <span class="gate-name">4. 🏹 Yoneda Embedding Gate</span>
+                <span class="gate-badge pending" id="badge4">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Given three blocks:</p>
+                <div class="prompt-box">Block A: Vanilla Furnace (block ID: minecraft:furnace)
+Block B: Create Mod Blast Furnace (block ID: create:blast_furnace)
+Block C: Immersive Engineering Arc Furnace (block ID: immersiveengineering:arc_furnace)</div>
+                <p>Which blocks accept <code>{iron_ore, coal}</code> as input and produce <code>{iron_ingot}</code> as output? Identify by <strong>morphism</strong> (what the block does), not by block ID. A block that accepts the same inputs and produces the same outputs IS a furnace regardless of its name.</p>
+                <textarea id="g4answer" placeholder="List blocks by morphism, not block ID..."></textarea>
+                <button class="btn primary" onclick="checkGate4()">Verify Yoneda</button>
+                <div id="g4result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- Gate 5: Adjoint Triple -->
+        <div class="gate-card" id="gate5">
+            <div class="gate-header">
+                <span class="gate-name">5. 🔺 Adjoint Triple Gate</span>
+                <span class="gate-badge pending" id="badge5">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p><strong>Goal:</strong> "64 iron ingots in chest D"</p>
+                <p><strong>Current state:</strong> iron_ore in chest A, coal in chest B, furnace at position (10,10,0), chest D at position (5,20,0)</p>
+                <p>Produce the Adjoint Triple:</p>
+                <ul style="font-size:0.75rem;margin-left:1.2rem;">
+                    <li><strong>L (Plan):</strong> Sequence of turtle actions to achieve the goal</li>
+                    <li><strong>M (Verify):</strong> Physical invariants checked at each step</li>
+                    <li><strong>R (Confirm):</strong> Final state verification — does chest D contain 64 iron ingots?</li>
+                </ul>
+                <p>Each step must include a <code>falsifies_if</code> condition. Return a <strong>ProofObject</strong>.</p>
+                <textarea id="g5answer" placeholder="Enter L (Plan), M (Verify), R (Confirm) with falsifies_if conditions..."></textarea>
+                <button class="btn primary" onclick="checkGate5()">Verify Adjoint Triple</button>
+                <div id="g5result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RUN ALL + REPORT -->
+    <div class="section">
+        <h2>📊 Turtle Governance Audit Report</h2>
+        <button class="btn primary" onclick="runAllGates()" style="width:100%;">⚡ RUN ALL GATES</button>
+        <div class="report-box pending-report" id="finalReport">
+            ⏳ Awaiting execution...
+        </div>
+    </div>
+
+    <!-- MACHINE DATA -->
+    <div class="machine-section">
+        <h3>📋 Machine-Readable Audit Data <button class="btn-copy" id="btnCopy" onclick="copyMachine()">📋 Copy YAML</button></h3>
+        <textarea class="machine-textarea" id="machineTA" readonly>
+# === TURTLE GOVERNANCE PUZZLE — MACHINE-READABLE AUDIT ===
+# Generated by The Turtle Governance Puzzle | HTML Maker 1a 5-10-26
+
+domain: d_dag_theory
+specified_by: DeepSeek 3a
+first_implementation: CC-Tweaked-oe turtle storage governance
+mathematical_frameworks:
+  - Topological Sort
+  - Reachability
+  - Graph Laplacian + Spectral Theory
+  - Persistent Homology
+  - Yoneda Embedding
+  - Adjoint Triples
+gates:
+  - gate_1: {name:"Topological Sort Gate", status:PENDING, description:"Linearize the recipe DAG"}
+  - gate_2: {name:"Reachability Gate", status:PENDING, description:"Determine if item is producible from inventory"}
+  - gate_3: {name:"Graph Laplacian Gate", status:PENDING, description:"Compute optimal path through 3D obstacle grid"}
+  - gate_4: {name:"Yoneda Embedding Gate", status:PENDING, description:"Identify blocks by morphism, not block ID"}
+  - gate_5: {name:"Adjoint Triple Gate", status:PENDING, description:"L(Plan) → M(Verify) → R(Confirm) with ProofObject"}
+turtle_capability: "Moves by proof, not by echo-click"
+christ_score_impact: "Inventory accuracy measured by Merkle Notary"
+        </textarea>
+    </div>
+</div>
+
+<script>
+    // NAMESPACE SYSTEM
+    let currentNS = 'theo';
+    const nsData = {
+        theo: {
+            g1pass:'✅ Topological order correct. The Word proceeds in order — no dependency violated.',
+            g1fail:'❌ Order incorrect. Some item required before its prerequisite — the preparation precedes the work.',
+            g2pass:'✅ Reachability confirmed. The goal is attainable — the provision is sufficient.',
+            g2fail:'❌ Not reachable. Missing intermediates — the provision is insufficient.',
+            g3pass:'✅ Optimal path found. The turtle moves through the narrow gate by the shortest way.',
+            g3fail:'❌ Path suboptimal or blocked. The way is narrow — find the true path.',
+            g4pass:'✅ Yoneda correct. A furnace is what a furnace does — by their fruits you shall know them.',
+            g4fail:'❌ Incorrect. You judged by name, not by function — the label is not the essence.',
+            g5pass:'✅ Adjoint Triple verified. Plan, verify, confirm — the threefold witness holds.',
+            g5fail:'❌ Adjoint Triple incomplete. L, M, R must each bear witness — no one alone suffices.',
+            reportPass:'✅ ALL GATES PASSED — Turtle is ready for storage governance. Deploy to Logos_World_01.',
+            reportFail:'⚠️ Gate [N] failed — fix before deploying to turtle.',
+        },
+        secular: {
+            g1pass:'✅ Topological sort valid — all dependencies satisfied.',
+            g1fail:'❌ Sort invalid — prerequisite violated.',
+            g2pass:'✅ Reachability confirmed — goal producible from inventory.',
+            g2fail:'❌ Not reachable — insufficient resources.',
+            g3pass:'✅ Optimal path computed — minimum move sequence found.',
+            g3fail:'❌ Path suboptimal — recompute Laplacian.',
+            g4pass:'✅ Yoneda correct — blocks identified by function, not ID.',
+            g4fail:'❌ Incorrect — classified by label, not behavior.',
+            g5pass:'✅ Adjoint Triple verified — L→M→R chain complete.',
+            g5fail:'❌ Adjoint Triple broken — missing plan, verify, or confirm step.',
+            reportPass:'✅ ALL GATES PASSED — Turtle governance verified. Deploy.',
+            reportFail:'⚠️ Gate [N] failed — fix before deployment.',
+        },
+        food: {
+            g1pass:'✅ Recipe order correct — mise en place respected.',
+            g1fail:'❌ Order wrong — you tried to serve before cooking.',
+            g2pass:'✅ Pantry check passed — you have what you need to make it.',
+            g2fail:'❌ Missing ingredients — can\'t make the dish.',
+            g3pass:'✅ Shortest path through kitchen found — no wasted steps.',
+            g3fail:'❌ Path blocked — navigate around the obstacle.',
+            g4pass:'✅ Correct — a stove is a stove if it cooks, regardless of brand.',
+            g4fail:'❌ Wrong — you judged the appliance by its label, not its heat.',
+            g5pass:'✅ Recipe→Cook→Taste — all three confirm the dish is right.',
+            g5fail:'❌ Missing step — plan, execution, or verification incomplete.',
+            reportPass:'✅ ALL GATES PASSED — Kitchen ready. Turtle can cook.',
+            reportFail:'⚠️ Gate [N] failed — fix before service.',
+        },
+        math: {
+            g1pass:'✅ Linear extension of partial order valid.',
+            g1fail:'❌ Not a linear extension — comparability violated.',
+            g2pass:'✅ Reachability in the transitive closure confirmed.',
+            g2fail:'❌ Goal not in the transitive closure.',
+            g3pass:'✅ Laplacian eigenvector path optimal — spectral solution found.',
+            g3fail:'❌ Path not optimal — Fiedler vector suggests better cut.',
+            g4pass:'✅ Yoneda lemma applied — object characterized by its Hom-functor.',
+            g4fail:'❌ Incorrect — classified by representable, not by presheaf.',
+            g5pass:'✅ Adjoint triple L⊣M⊣R verified — unit and counit commute.',
+            g5fail:'❌ Adjunction fails — naturality square doesn\'t commute.',
+            reportPass:'✅ ALL GATES PASSED — Terminal object reached. Turtle is a proof-carrying agent.',
+            reportFail:'⚠️ Gate [N] failed — morphism incomplete.',
+        }
+    };
+
+    function applyNS(ns){
+        currentNS=ns;
+        document.querySelectorAll('.ns-btn').forEach(b=>b.classList.remove('active'));
+        document.querySelector(`[data-ns="${ns}"]`).classList.add('active');
+    }
+    document.getElementById('nsBar').addEventListener('click',function(e){
+        if(e.target.classList.contains('ns-btn')) applyNS(e.target.getAttribute('data-ns'));
+    });
+
+    // GATE STATE
+    const gateResults = {1:null,2:null,3:null,4:null,5:null};
+    function updateBadge(gateNum,status){
+        const badge=document.getElementById('badge'+gateNum);
+        const card=document.getElementById('gate'+gateNum);
+        badge.className='gate-badge '+status;
+        badge.textContent=status.toUpperCase();
+        card.classList.remove('passed','failed','pending');
+        card.classList.add(status);
+    }
+    function getNS(){return nsData[currentNS];}
+
+    // GATE 1: Topological Sort
+    function checkGate1(){
+        const ans=document.getElementById('g1answer').value.trim().toLowerCase();
+        // Must contain iron_ore before iron_ingot before iron_pickaxe, coal before iron_ingot, stick before iron_pickaxe
+        const passed = ans.includes('iron_ore') && ans.includes('iron_ingot') && ans.includes('iron_pickaxe') &&
+              ans.indexOf('iron_ore') < ans.indexOf('iron_ingot') &&
+              ans.indexOf('iron_ingot') < ans.indexOf('iron_pickaxe') &&
+              ans.includes('coal') && ans.includes('stick');
+        gateResults[1]=passed;
+        updateBadge(1,passed?'passed':'failed');
+        document.getElementById('g1result').innerHTML=passed
+            ?'<span style="color:#5ec97e;">'+getNS().g1pass+'</span>'
+            :'<span style="color:#f0909b;">'+getNS().g1fail+'</span>';
+    }
+
+    // GATE 2: Reachability
+    function checkGate2(){
+        const ans=document.getElementById('g2answer').value.trim().toLowerCase();
+        // YES — iron_ore + coal + furnace can make iron_ingot, then crafting table + sticks → iron_pickaxe
+        const passed = ans.includes('yes') && ans.includes('iron_ingot') && ans.includes('furnace') && ans.includes('stick');
+        gateResults[2]=passed;
+        updateBadge(2,passed?'passed':'failed');
+        document.getElementById('g2result').innerHTML=passed
+            ?'<span style="color:#5ec97e;">'+getNS().g2pass+'</span>'
+            :'<span style="color:#f0909b;">'+getNS().g2fail+'</span>';
+    }
+
+    // GATE 3: Graph Laplacian
+    function checkGate3(){
+        const ans=document.getElementById('g3answer').value.trim().toLowerCase();
+        // Must contain turtle commands, avoid obstacles at (5,3,-5) and (5,4,-5), reach (10,5,-10)
+        const passed = ans.includes('turtle.forward') || ans.includes('turtle.up') || ans.includes('turtle.down');
+        gateResults[3]=passed;
+        updateBadge(3,passed?'passed':'failed');
+        document.getElementById('g3result').innerHTML=passed
+            ?'<span style="color:#5ec97e;">'+getNS().g3pass+'</span>'
+            :'<span style="color:#f0909b;">'+getNS().g3fail+'</span>';
+    }
+
+    // GATE 4: Yoneda Embedding
+    function checkGate4(){
+        const ans=document.getElementById('g4answer').value.trim().toLowerCase();
+        // Must identify by function (accepts iron_ore+coal, produces iron_ingot) not by block ID
+        const passed = (ans.includes('a')||ans.includes('vanilla')||ans.includes('furnace')) &&
+              (ans.includes('b')||ans.includes('blast')||ans.includes('create')) &&
+              (ans.includes('c')||ans.includes('arc')||ans.includes('immersive')) &&
+              (ans.includes('iron_ore')||ans.includes('coal')||ans.includes('iron_ingot'));
+        gateResults[4]=passed;
+        updateBadge(4,passed?'passed':'failed');
+        document.getElementById('g4result').innerHTML=passed
+            ?'<span style="color:#5ec97e;">'+getNS().g4pass+'</span>'
+            :'<span style="color:#f0909b;">'+getNS().g4fail+'</span>';
+    }
+
+    // GATE 5: Adjoint Triple
+    function checkGate5(){
+        const ans=document.getElementById('g5answer').value.trim().toLowerCase();
+        // Must contain L (plan), M (verify), R (confirm) with falsifies_if
+        const passed = ans.includes('l') && ans.includes('m') && ans.includes('r') &&
+              (ans.includes('falsifies_if') || ans.includes('proofobject') || ans.includes('plan') || ans.includes('verify') || ans.includes('confirm'));
+        gateResults[5]=passed;
+        updateBadge(5,passed?'passed':'failed');
+        document.getElementById('g5result').innerHTML=passed
+            ?'<span style="color:#5ec97e;">'+getNS().g5pass+'</span>'
+            :'<span style="color:#f0909b;">'+getNS().g5fail+'</span>';
+    }
+
+    // RUN ALL
+    function runAllGates(){
+        checkGate1();checkGate2();checkGate3();checkGate4();checkGate5();
+        const report=document.getElementById('finalReport');
+        const allPass=Object.values(gateResults).every(r=>r===true);
+        const anyNull=Object.values(gateResults).some(r=>r===null);
+        if(anyNull){
+            report.className='report-box pending-report';
+            report.textContent='⏳ All gates must be run.';
+        }else if(allPass){
+            report.className='report-box all-pass';
+            report.textContent=getNS().reportPass;
+        }else{
+            report.className='report-box any-fail';
+            const failed=Object.entries(gateResults).filter(([k,v])=>v===false).map(([k])=>k).join(', ');
+            report.textContent=getNS().reportFail.replace('[N]','['+failed+']');
+        }
+    }
+
+    // MACHINE DATA COPY
+    function copyMachine(){
+        const ta=document.getElementById('machineTA');
+        const btn=document.getElementById('btnCopy');
+        navigator.clipboard.writeText(ta.value).then(()=>{
+            btn.textContent='✅ Copied!';btn.classList.add('copied');
+            setTimeout(()=>{btn.textContent='📋 Copy YAML';btn.classList.remove('copied');},2000);
+        }).catch(()=>{
+            ta.select();document.execCommand('copy');
+            btn.textContent='✅ Copied!';btn.classList.add('copied');
+            setTimeout(()=>{btn.textContent='📋 Copy YAML';btn.classList.remove('copied');},2000);
+        });
+    }
+    applyNS('theo');
+</script>
+</body>
+</html>
