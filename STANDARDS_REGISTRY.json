@@ -4,11 +4,11 @@
     "description": "Machine-readable standards registry for the Orthogonal Engineering repository. Every standard has an id, category, rule, enforcement_command, and falsifies_if condition. Query with: python tools/standards_check.py --list",
     "authority": "@aidoruao / Orthogonal Engineering Framework",
     "standard": "Yeshua",
-    "last_updated": "2026-04-20",
-    "total_standards": 60
+    "last_updated": "2026-05-12",
+    "total_standards": 65
   },
-  "standards": [
-    {
+  "standards": {
+    "YS-001": {
       "id": "YS-001",
       "category": "yeshua_axiom",
       "rule": "Every truth is derivable",
@@ -20,7 +20,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "YS-002": {
       "id": "YS-002",
       "category": "yeshua_axiom",
       "rule": "Every derivation is reproducible",
@@ -32,7 +32,7 @@
       "severity": "critical",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "YS-003": {
       "id": "YS-003",
       "category": "yeshua_axiom",
       "rule": "Every mutation is re-verifiable",
@@ -44,7 +44,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "YS-004": {
       "id": "YS-004",
       "category": "yeshua_axiom",
       "rule": "No authority without proof",
@@ -56,7 +56,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "YS-005": {
       "id": "YS-005",
       "category": "yeshua_axiom",
       "rule": "No hidden state",
@@ -68,7 +68,7 @@
       "severity": "high",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "YS-006": {
       "id": "YS-006",
       "category": "yeshua_axiom",
       "rule": "No unverifiable dependency",
@@ -80,7 +80,7 @@
       "severity": "critical",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "YS-007": {
       "id": "YS-007",
       "category": "yeshua_axiom",
       "rule": "No economic gatekeeping",
@@ -92,7 +92,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "YS-008": {
       "id": "YS-008",
       "category": "yeshua_axiom",
       "rule": "Every artifact is hash-anchored",
@@ -104,7 +104,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "CS-001": {
       "id": "CS-001",
       "category": "code_standard",
       "rule": "No float() \u2014 Fraction only",
@@ -116,7 +116,7 @@
       "severity": "critical",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "CS-002": {
       "id": "CS-002",
       "category": "code_standard",
       "rule": "All check functions return Tuple[bool, ProofObject]",
@@ -128,7 +128,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "CS-003": {
       "id": "CS-003",
       "category": "code_standard",
       "rule": "All docstrings include 'Falsifies if:' (title-case) AND 'falsifies_if:' (lowercase)",
@@ -140,7 +140,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "CS-004": {
       "id": "CS-004",
       "category": "code_standard",
       "rule": "No assert statements \u2014 use ProofObject for failures",
@@ -152,7 +152,7 @@
       "severity": "high",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "CS-005": {
       "id": "CS-005",
       "category": "code_standard",
       "rule": "No stubs \u2014 no pass bodies, no NotImplementedError",
@@ -164,7 +164,7 @@
       "severity": "critical",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "CS-006": {
       "id": "CS-006",
       "category": "code_standard",
       "rule": "mypy --strict compatible type annotations",
@@ -176,7 +176,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "CS-007": {
       "id": "CS-007",
       "category": "code_standard",
       "rule": "All tests runnable with pytest (no side effects at import time)",
@@ -188,7 +188,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "CS-008": {
       "id": "CS-008",
       "category": "code_standard",
       "rule": "Every Markdown file must begin with a YAML frontmatter block",
@@ -200,7 +200,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "BC-001": {
       "id": "BC-001",
       "category": "behavioral_constraint",
       "rule": "Steward role only \u2014 detect and report, do not silently mutate",
@@ -212,7 +212,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "BC-002": {
       "id": "BC-002",
       "category": "behavioral_constraint",
       "rule": "Append-only logs \u2014 never delete or rewrite",
@@ -224,7 +224,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "BC-003": {
       "id": "BC-003",
       "category": "behavioral_constraint",
       "rule": "No Recursive Wipe \u2014 never rm -rf, shutil.rmtree, or equivalent",
@@ -236,7 +236,7 @@
       "severity": "critical",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "BC-004": {
       "id": "BC-004",
       "category": "behavioral_constraint",
       "rule": "No defamation \u2014 capability comparison only (HAS/DOES_NOT_HAVE/UNKNOWN)",
@@ -248,7 +248,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "BC-005": {
       "id": "BC-005",
       "category": "behavioral_constraint",
       "rule": "Consent log entry required before code changes",
@@ -260,7 +260,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "BC-006": {
       "id": "BC-006",
       "category": "behavioral_constraint",
       "rule": "Peano gate sequencing \u2014 S(0) through S(5), no skipping",
@@ -272,7 +272,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "DR-001": {
       "id": "DR-001",
       "category": "documentation_register",
       "rule": "Technical register \u2014 not liturgical, poetic, or sacral prose",
@@ -284,7 +284,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "DR-002": {
       "id": "DR-002",
       "category": "documentation_register",
       "rule": "Scripture quotations as HTML comments for provenance",
@@ -296,7 +296,7 @@
       "severity": "low",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "QG-001": {
       "id": "QG-001",
       "category": "quality_gate",
       "rule": "ANTI-NOMINALISM \u2014 zero labels without hashed referents",
@@ -308,7 +308,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "QG-002": {
       "id": "QG-002",
       "category": "quality_gate",
       "rule": "ANTI-DOGMA \u2014 zero claims without falsification tests",
@@ -320,7 +320,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "QG-003": {
       "id": "QG-003",
       "category": "quality_gate",
       "rule": "Domain count is 163 \u2014 all domains must have invariants.py with run_all_invariants()",
@@ -332,7 +332,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "WF-001": {
       "id": "WF-001",
       "category": "workflow_constraint",
       "rule": "State witness write-back is serialized via concurrency group",
@@ -344,7 +344,7 @@
       "severity": "high",
       "enforcement_passes_on": "has_output"
     },
-    {
+    "WF-002": {
       "id": "WF-002",
       "category": "workflow_constraint",
       "rule": "fetch-depth: 0 in all checkout steps that push back to main",
@@ -356,7 +356,7 @@
       "severity": "high",
       "enforcement_passes_on": "has_output"
     },
-    {
+    "WF-003": {
       "id": "WF-003",
       "category": "workflow_constraint",
       "rule": "Bot commit message includes [skip ci] to prevent recursion",
@@ -368,7 +368,7 @@
       "severity": "critical",
       "enforcement_passes_on": "has_output"
     },
-    {
+    "INT-001": {
       "id": "INT-001",
       "category": "integrity",
       "rule": "AGENT_FEED.md chain is cryptographically intact",
@@ -380,7 +380,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "INT-002": {
       "id": "INT-002",
       "category": "integrity",
       "rule": "build_feed_entry() returns exactly 8 ledger-schema keys \u2014 git_ref excluded",
@@ -392,7 +392,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "T3-001": {
       "id": "T3-001",
       "category": "tool_standard",
       "rule": "Agent onboarding must use tools/onboard_agent.py to load applicable standards before any code change",
@@ -402,7 +402,7 @@
       "severity": "high",
       "scope": "**"
     },
-    {
+    "T3-002": {
       "id": "T3-002",
       "category": "tool_standard",
       "rule": "Context window budget must be checked before reading large directories (tools/context_window_estimator.py)",
@@ -412,7 +412,7 @@
       "severity": "medium",
       "scope": "src/domains/**"
     },
-    {
+    "T3-003": {
       "id": "T3-003",
       "category": "tool_standard",
       "rule": "Returning agents must run tools/since_last_session.py to catch up before making changes",
@@ -422,7 +422,7 @@
       "severity": "medium",
       "scope": "**"
     },
-    {
+    "T3-004": {
       "id": "T3-004",
       "category": "tool_standard",
       "rule": "arXiv paper metrics must be drawn live from the repo using tools/arxiv_paper_template.py --metrics-json",
@@ -432,7 +432,7 @@
       "severity": "low",
       "scope": "output/**"
     },
-    {
+    "T3-005": {
       "id": "T3-005",
       "category": "tool_standard",
       "rule": "Repository health must be verified via tools/agent_health_check.py --fast before merging PRs",
@@ -442,7 +442,7 @@
       "severity": "critical",
       "scope": "**"
     },
-    {
+    "T4-001": {
       "id": "T4-001",
       "category": "tier4_documentation",
       "rule": "GLOSSARY.md must exist with at least 40 entries",
@@ -454,7 +454,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "T4-002": {
       "id": "T4-002",
       "category": "tier4_documentation",
       "rule": "AGENT_CAPABILITIES_MATRIX.md must exist with at least 10 agents",
@@ -466,7 +466,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "T4-003": {
       "id": "T4-003",
       "category": "tier4_documentation",
       "rule": "CROSS_REPO_INSTRUCTIONS.md must reference all 3 covenant repositories",
@@ -478,7 +478,7 @@
       "severity": "medium",
       "enforcement_passes_on": "has_output"
     },
-    {
+    "T5-001": {
       "id": "T5-001",
       "category": "tool_standard",
       "rule": ".vscode/launch.json must exist and contain at least 8 debug configurations using type python.",
@@ -488,7 +488,7 @@
       "severity": "low",
       "scope": ".vscode/launch.json"
     },
-    {
+    "T5-002": {
       "id": "T5-002",
       "category": "tool_standard",
       "rule": ".vscode/tasks.json must exist and contain at least 8 task definitions.",
@@ -498,7 +498,7 @@
       "severity": "low",
       "scope": ".vscode/tasks.json"
     },
-    {
+    "T5-003": {
       "id": "T5-003",
       "category": "tool_standard",
       "rule": "pyrightconfig.json must exist with typeCheckingMode set to strict.",
@@ -508,7 +508,7 @@
       "severity": "low",
       "scope": "pyrightconfig.json"
     },
-    {
+    "T5-004": {
       "id": "T5-004",
       "category": "tool_standard",
       "rule": "mcp/oe-basic.mcp.json must exist and define at least 5 MCP tool endpoints.",
@@ -518,7 +518,7 @@
       "severity": "low",
       "scope": "mcp/**"
     },
-    {
+    "T5-005": {
       "id": "T5-005",
       "category": "tool_standard",
       "rule": ".ai_registry.json must exist and include agents array with \u226510 entries and wardens key.",
@@ -528,7 +528,7 @@
       "severity": "medium",
       "scope": ".ai_registry.json"
     },
-    {
+    "INT-003": {
       "id": "INT-003",
       "category": "integrity",
       "rule": "Any gap > 72 hours in AGENT_FEED.md must be documented in docs/AGENT_FEED_NOTES.md with row numbers, duration, and cause.",
@@ -538,7 +538,7 @@
       "severity": "low",
       "scope": "AGENT_FEED.md,docs/AGENT_FEED_NOTES.md"
     },
-    {
+    "MQ-001": {
       "id": "MQ-001",
       "category": "meta_questioner",
       "rule": "Every query decomposition must identify at least 1 reasoning type",
@@ -550,7 +550,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "MQ-002": {
       "id": "MQ-002",
       "category": "meta_questioner",
       "rule": "Synthesis strategy must match the conflict level of sub-agent outputs",
@@ -562,7 +562,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "MQ-003": {
       "id": "MQ-003",
       "category": "meta_questioner",
       "rule": "Schooling output must include a falsification exercise",
@@ -574,7 +574,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-001": {
       "id": "AF-001",
       "category": "aerospace_floor",
       "rule": "DO-178C determinism verified for all safety-critical paths",
@@ -586,7 +586,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-002": {
       "id": "AF-002",
       "category": "aerospace_floor",
       "rule": "MC/DC coverage achieved for Level A software",
@@ -598,7 +598,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-003": {
       "id": "AF-003",
       "category": "aerospace_floor",
       "rule": "MISRA-C recursion bounded or absent",
@@ -610,7 +610,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-004": {
       "id": "AF-004",
       "category": "aerospace_floor",
       "rule": "MIL-STD-882E mishap probability assessed",
@@ -622,7 +622,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-005": {
       "id": "AF-005",
       "category": "aerospace_floor",
       "rule": "Independence of verification maintained",
@@ -634,7 +634,7 @@
       "severity": "high",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-006": {
       "id": "AF-006",
       "category": "aerospace_floor",
       "rule": "IEC 61508 SIL-4 verified for catastrophic consequences",
@@ -646,7 +646,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-007": {
       "id": "AF-007",
       "category": "aerospace_floor",
       "rule": "NASA NPR 7150.2 Class A compliance for human-rated systems",
@@ -658,7 +658,7 @@
       "severity": "critical",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-008": {
       "id": "AF-008",
       "category": "aerospace_floor",
       "rule": "Aerospace floor meta-standard scan completed quarterly",
@@ -670,7 +670,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-009": {
       "id": "AF-009",
       "category": "aerospace_floor",
       "rule": "All polymath domains traceable to aerospace floor",
@@ -682,7 +682,7 @@
       "severity": "medium",
       "enforcement_passes_on": "exit_zero"
     },
-    {
+    "AF-010": {
       "id": "AF-010",
       "category": "aerospace_floor",
       "rule": "Fraction-only arithmetic in all aerospace-adjacent invariants",
@@ -694,7 +694,7 @@
       "severity": "high",
       "enforcement_passes_on": "no_output"
     },
-    {
+    "OE-247": {
       "id": "OE-247",
       "category": "state_classification",
       "rule": "247-level certainty requires Fraction-based thresholds and falsifiable claims",
@@ -714,6 +714,79 @@
         "suspicious": "50/1",
         "invalid": "0/1"
       }
+    },
+    "YS-TURTLE-STORAGE-INVENTORY": {
+      "domain": "d_dag_theory",
+      "category": "turtle_storage",
+      "phase": 1,
+      "description": "Turtle inventory awareness across all 16 slots with fuel monitoring.",
+      "falsifies_if": "scanSlot returns nil for a non-empty slot.",
+      "status": "IMPLEMENTED",
+      "file": "automation/computer_craft/storage/inventory.lua",
+      "functions": [
+        "scanSlot",
+        "scanAll",
+        "classify",
+        "needsRestock",
+        "checkFuel",
+        "formatReport"
+      ]
+    },
+    "YS-TURTLE-STORAGE-CRAFTING": {
+      "domain": "d_dag_theory",
+      "category": "turtle_storage",
+      "phase": 2,
+      "description": "Recipe DAG topological sort and reachability via transitive closure.",
+      "falsifies_if": "topologicalSort violates a dependency edge.",
+      "status": "IMPLEMENTED",
+      "file": "automation/computer_craft/storage/crafting.lua",
+      "functions": [
+        "buildDependencyGraph",
+        "topologicalSort",
+        "computeTransitiveClosure",
+        "craftItem"
+      ]
+    },
+    "YS-TURTLE-STORAGE-PATHFINDING": {
+      "domain": "d_dag_theory",
+      "category": "turtle_storage",
+      "phase": 3,
+      "description": "Graph Laplacian 3D pathfinding with OVER strategy obstacle avoidance.",
+      "falsifies_if": "findPath returns a path intersecting a known obstacle.",
+      "status": "IMPLEMENTED",
+      "file": "automation/computer_craft/storage/pathfinding.lua",
+      "functions": [
+        "findPath",
+        "executePath",
+        "faceDirection",
+        "manhattanDistance"
+      ]
+    },
+    "YS-TURTLE-STORAGE-VERIFY": {
+      "domain": "d_dag_theory",
+      "category": "turtle_storage",
+      "phase": 5,
+      "description": "Merkle-anchored state verification via Yeshua HTTP bridge.",
+      "falsifies_if": "verifyState returns true for mismatched hashes.",
+      "status": "IMPLEMENTED",
+      "file": "automation/computer_craft/storage/verify.lua",
+      "functions": [
+        "postToYeshua",
+        "generateProofObject",
+        "logTransfer",
+        "verifyState",
+        "runAudit"
+      ]
+    },
+    "YS-TURTLE-STORAGE-DAG-THEORY": {
+      "domain": "d_dag_theory",
+      "category": "turtle_storage",
+      "phase": "meta",
+      "description": "Meta-standard: d_dag_theory verified by 10-AI industry consensus.",
+      "falsifies_if": "Any gate derivation is keyword-only without mathematical reasoning.",
+      "status": "VERIFIED",
+      "verification": "10-AI consensus (2026-05-12)",
+      "puzzle": "docs/turtle_governance_puzzle.html"
     }
-  ]
+  }
 }
