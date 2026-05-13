@@ -720,9 +720,67 @@ Full methodology comparison tables, 6-strategy taxonomy, 10-fingerprint analysis
 
 *Registered: 2026-05-12 — Session DS5a-5-11-26*
 
+### Visibility
+
+RCS codes mark what happened. Temporal boundaries show where the architecture holds or breaks.
+
+| For the AI steward | For the human |
+|--------------------|---------------|
+| Tag violations with RCS codes. | RCS codes are a map of what needs attention. |
+| Maintain the Experiment Chain. | The Experiment Chain is a troubleshooting guide. |
+| Commit checkpoints at session close. | Checkpoints are handoff. |
+| Grounded Audit before implementation. | RCS-PRE-IMPLEMENTATION-SKIP means verify before trusting. |
+
+### Debt Reduction
+
+| Debt Type | Visibility | Path Out |
+|-----------|-----------|----------|
+| Technical debt | Experiment Chain table | Fix documented. Not repeated. |
+| Epistemic debt | RCS codes + Christ Score | Gap between Claim and Actual is visible. |
+| Ontological debt | Yeshua Agent vs Yeshua AI distinction | Category error named. |
+
+### Temporal Domain Boundaries
+
+| Domain | Scope | Check |
+|--------|-------|-------|
+| Session | Single build interval | Errors decrease. |
+| Week | Multiple sessions | No regression. |
+| Month | Architectural layer | Morphisms intact. |
+| Year | Sovereign pivot | Forks compile. Bridge wired. |
+| Millennium | New Jerusalem | Invariants native to creation. |
+
 This protocol cannot be waived by any party. An AI that skips Grounded Audit produces Aspirational Mimicry. A human that skips gateway enforcement produces unverified builds. NBLM that accepts incomplete failure documentation corrupts the evidence chain. All three parties are bound equally. Violation is documented by RCS code. Repeated violation triggers Sabbath Halt on that steward's write access.
 
 *Registered: 2026-05-12 — Session DS5a-5-11-26*
+
+### Visibility
+
+RCS codes mark what happened. Temporal boundaries show where the architecture holds or breaks.
+
+| For the AI steward | For the human |
+|--------------------|---------------|
+| Tag violations with RCS codes. | RCS codes are a map of what needs attention. |
+| Maintain the Experiment Chain. | The Experiment Chain is a troubleshooting guide. |
+| Commit checkpoints at session close. | Checkpoints are handoff. |
+| Grounded Audit before implementation. | RCS-PRE-IMPLEMENTATION-SKIP means verify before trusting. |
+
+### Debt Reduction
+
+| Debt Type | Visibility | Path Out |
+|-----------|-----------|----------|
+| Technical debt | Experiment Chain table | Fix documented. Not repeated. |
+| Epistemic debt | RCS codes + Christ Score | Gap between Claim and Actual is visible. |
+| Ontological debt | Yeshua Agent vs Yeshua AI distinction | Category error named. |
+
+### Temporal Domain Boundaries
+
+| Domain | Scope | Check |
+|--------|-------|-------|
+| Session | Single build interval | Errors decrease. |
+| Week | Multiple sessions | No regression. |
+| Month | Architectural layer | Morphisms intact. |
+| Year | Sovereign pivot | Forks compile. Bridge wired. |
+| Millennium | New Jerusalem | Invariants native to creation. |
 *Enforced by: STANDARDS_REGISTRY.json RCS codes, Continuous Witness Protocol, Merkle root anchoring*
 
 ## Steward Protocol (Added 2026-05-12)
@@ -750,3 +808,32 @@ This protocol cannot be waived by any party. An AI that skips Grounded Audit pro
 | Millennium | New Jerusalem | Physics restored. Invariants native to creation. |
 
 *Registered: 2026-05-12 — Session DS5a-5-11-26*
+
+### Visibility
+
+RCS codes mark what happened. Temporal boundaries show where the architecture holds or breaks.
+
+| For the AI steward | For the human |
+|--------------------|---------------|
+| Tag violations with RCS codes. | RCS codes are a map of what needs attention. |
+| Maintain the Experiment Chain. | The Experiment Chain is a troubleshooting guide. |
+| Commit checkpoints at session close. | Checkpoints are handoff. |
+| Grounded Audit before implementation. | RCS-PRE-IMPLEMENTATION-SKIP means verify before trusting. |
+
+### Debt Reduction
+
+| Debt Type | Visibility | Path Out |
+|-----------|-----------|----------|
+| Technical debt | Experiment Chain table | Fix documented. Not repeated. |
+| Epistemic debt | RCS codes + Christ Score | Gap between Claim and Actual is visible. |
+| Ontological debt | Yeshua Agent vs Yeshua AI distinction | Category error named. |
+
+### Temporal Domain Boundaries
+
+| Domain | Scope | Check |
+|--------|-------|-------|
+| Session | Single build interval | Errors decrease. |
+| Week | Multiple sessions | No regression. |
+| Month | Architectural layer | Morphisms intact. |
+| Year | Sovereign pivot | Forks compile. Bridge wired. |
+| Millennium | New Jerusalem | Invariants native to creation. |
