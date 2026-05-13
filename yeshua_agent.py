@@ -7,6 +7,11 @@ import os, json, glob, torch, random, re, shutil, sys, subprocess, subprocess
 from datetime import datetime  
 from transformers import AutoModelForCausalLM, AutoTokenizer  
 from peft import PeftModel  
+
+# === OE Domain Imports — Governance Substrate ===
+from src.domains.d_dag_theory.invariants import check_acyclicity_proof, check_topological_sort_determinism, check_reachability_transitivity, check_merkle_derivability
+from src.domains.d_sigma_theo.invariants import check_logos_initial_algebra, check_agape_superadditive, check_kenosis_partiality, check_eschaton_convergence
+from src.domains.d_peano_ext.invariants import check_peano_axiom_1_zero_exists, check_construction_depth_limit
   
 class YeshuaAgent:  
     def __init__(self, repo_root=r"/home/idor/oe-local"):  
