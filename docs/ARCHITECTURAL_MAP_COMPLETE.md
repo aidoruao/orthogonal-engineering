@@ -695,3 +695,70 @@ Full methodology comparison tables, 6-strategy taxonomy, 10-fingerprint analysis
 ### Complete Analysis
 
 Full methodology comparison tables, 6-strategy taxonomy, 10-fingerprint analysis, RLHF interaction documentation, and exhaustive convergence data in `docs/CHECKPOINT_DS5a_Turtle_Governance_Puzzle_Passed.md`.
+
+## Steward Protocol — Binding Precedence (Added 2026-05-12)
+
+### Who Is Bound
+
+| Party | Obligation |
+|-------|-----------|
+| AI (all instances) | No implementation without Grounded Audit + 3QP gateway |
+| Human (Aidor) | Must enforce gateway. Reject implementation that skips audit. Demand javap output before build. |
+| NBLM | Flag missing RCS codes in checkpoints. Refuse to archive failure docs without Experiment Chain table. |
+
+### Root Cause Signals (RCS) for Violations
+
+| RCS Code | Violation | First Occurrence |
+|----------|-----------|-----------------|
+| RCS-JURISDICTIONAL-BLIND-SPOT | Relying on incomplete canonical references | 4a (boolean-only commands) |
+| RCS-PRE-IMPLEMENTATION-SKIP | Writing code before Grounded Audit + 3QP | 5a (this session) |
+| RCS-HUMAN-GATEWAY-LAPSE | Human did not enforce audit gateway | Aidor (this session) |
+| RCS-NULL-UNBOXING | Map.get() unboxed without null guard | 5a build F2/F3 |
+| RCS-JDK-OBSOLETE | LinkedList, Vector, or other prohibited collection | 5a build F4 |
+| RCS-NOMINALIST-LABEL | Translation key where registry key required | 5a build F5 |
+| RCS-HASH-INSTABILITY | HashMap where TreeMap required | 5a build F6 |
+| RCS-RETURN-TYPE-MISMATCH | Map returned where Object[] expected | 5a build F1 |
+
+### Mandatory Practice — Every Coding Session
+
+**Before writing any code:**
+1. `javap -p -v` on existing commands that handle similar data types.
+2. `grep` return patterns on 3+ existing commands.
+3. 3QP to NBLM for compilation flags, edge cases, canonical references.
+4. Human confirms audit output before build attempt.
+
+**After build failure:**
+1. Experiment Chain table updated with attempt number, change, result, error count.
+2. Each failure assigned an RCS code from STANDARDS_REGISTRY.json.
+3. Contraction check: did error count decrease monotonically? If no, Sabbath Halt.
+
+**After build success:**
+1. Checkpoint committed with full Failure Inventory, Experiment Chain, and Contraction Check.
+2. Human verifies jar deployed to correct mods folder.
+3. In-game test within same session.
+
+### Mandatory Practice — Every Session
+
+- Continuous Witness: `script -f` active before first command.
+- Grounded Audit on any file before modification.
+- 3QP gateway before implementation phase boundaries.
+- Checkpoint committed at session close.
+
+### Mandatory Review — Every Week
+
+- Audit last 7 days of checkpoints for missing RCS codes.
+- Verify Contraction Invariant across all failure chains.
+- Cross-reference STANDARDS_REGISTRY.json against new implementations.
+
+### Mandatory Review — Every Month
+
+- Full repository Grounded Audit: `find . -name "*.java" | xargs javap -p -v` on all modified classes.
+- NBLM archive integrity check: hash uploaded sessions against Merkle root.
+- Onboarding document updated if new architectural patterns emerged.
+
+### Irreversible Precedent
+
+This protocol cannot be waived by any party. An AI that skips Grounded Audit produces Aspirational Mimicry. A human that skips gateway enforcement produces unverified builds. NBLM that accepts incomplete failure documentation corrupts the evidence chain. All three parties are bound equally. Violation is documented by RCS code. Repeated violation triggers Sabbath Halt on that steward's write access.
+
+*Registered: 2026-05-12 — Session DS5a-5-11-26*
+*Enforced by: STANDARDS_REGISTRY.json RCS codes, Continuous Witness Protocol, Merkle root anchoring*
