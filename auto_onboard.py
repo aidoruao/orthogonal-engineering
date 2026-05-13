@@ -8,7 +8,7 @@ Usage: python3 auto_onboard.py
 """
 
 import json, os, hashlib, subprocess, sys
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,7 +17,7 @@ def run(cmd):
 
 def onboard():
     report = {
-        "onboarded_at": datetime.now(datetime.UTC).isoformat() + "Z",
+        "onboarded_at": datetime.now(timezone.utc).isoformat() + "Z",
         "repo": os.path.basename(REPO_ROOT),
     }
 
