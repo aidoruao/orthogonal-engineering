@@ -8,7 +8,7 @@ Usage: python3 auto_onboard.py
 """
 
 import json, os, hashlib, subprocess, sys
-from datetime import datetime
+from datetime import datetime, UTC
 
 REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,7 +17,7 @@ def run(cmd):
 
 def onboard():
     report = {
-        "onboarded_at": datetime.utcnow().isoformat() + "Z",
+        "onboarded_at": datetime.now(datetime.UTC).isoformat() + "Z",
         "repo": os.path.basename(REPO_ROOT),
     }
 
@@ -46,7 +46,7 @@ def onboard():
     # Check the last checkpoint for "QUEUED" or "Next" lines
     last_cp = run("git log --oneline -1 --name-only -- docs/CHECKPOINT*.md | tail -1")
     if last_cp:
-        queued_lines = run(f"grep -i 'queued\|next:' docs/{last_cp} 2>/dev/null | head -10")
+        queued_lines = run(f"grep -i -E 'queued|next:' docs/{last_cp} 2>/dev/null | head -10")
         report["queued"]["from_checkpoint"] = queued_lines if queued_lines else "Read the last checkpoint"
 
     # 6. Project structure — key directories
