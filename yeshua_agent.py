@@ -624,6 +624,7 @@ def run(self):
                 print("\nShutting down."); break  
             except Exception as e:  
                 print(f"Error: {e}"); self.log_action("error", str(e))
+
     def batch_fix_targeted(self, file_list, n=None):
         """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
         if n is not None:
