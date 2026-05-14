@@ -670,6 +670,7 @@ class YeshuaAgent:
         return result
 
     def warden_initialize_root(self):
+        pass
 
     def govern(self, target_path=None):
         """Category 5 recursive governance check.
