@@ -837,3 +837,36 @@ RCS codes mark what happened. Temporal boundaries show where the architecture ho
 | Month | Architectural layer | Morphisms intact. |
 | Year | Sovereign pivot | Forks compile. Bridge wired. |
 | Millennium | New Jerusalem | Invariants native to creation. |
+
+## Map Integrity — The Hash Witness Paradox (Added 2026-05-14)
+
+### The Paradox
+
+This document specifies protocols. It can be edited. What prevents a protocol violation from being hidden by editing the protocol?
+
+### The Answer
+
+Nothing prevents editing. Everything witnesses it.
+
+| Layer | Mechanism | What It Proves |
+|-------|-----------|----------------|
+| Git commit hash | SHA-256 of all file content + history | Every change is timestamped, authored, and immutable once committed |
+| Continuous Witness Protocol | `AGENT_FEED.md` hash chain | Every push appends a state witness entry linking to the prior hash |
+| Merkle root | `STANDARDS_REGISTRY.json` + file hashes | Any change to any governed file changes the Merkle root |
+| Grounded Audit | `javap -p -v`, `grep`, `git diff` | Before/after comparison of any file at any two commits |
+| Auto pusher safety gate | Line count comparison before force-push | Prevents local work from being overwritten by remote |
+
+### What Happened to `yeshua_agent.py` `run()` (2026-05-10)
+
+- **When:** 2026-05-10 17:27:48, commit `a3a475c6`
+- **What:** `run()` body replaced with `pass`. 16-command interactive loop removed.
+- **Detected:** 2026-05-14 (4 days later) during Phase 1 implementation.
+- **Detected by:** `git log` + `grep` comparison across commit history.
+- **Not detected by:** Auto pusher, CI, Grounded Audit (none were configured to check `run()` body length).
+
+### Precedent
+
+The map can be edited. The hashes show when. The gap is not that changes happen—it's that critical changes can go undetected. The fix is not to lock the map. The fix is to configure the auto pusher safety gate to check that `run()` has more than 5 lines before committing `yeshua_agent.py`.
+
+*Registered: 2026-05-14 — Session DS5a-5-11-26*
+*Trigger: `run()` gutted to `pass` in auto-commit, undetected for 4 days*
