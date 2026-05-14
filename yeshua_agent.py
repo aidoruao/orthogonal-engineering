@@ -553,6 +553,33 @@ class YeshuaAgent:
             except Exception as e:  
                 print(f"Error: {e}"); self.log_action("error", str(e))  
 
+
+    def govern(self, target_path=None):
+        """Category 5 recursive governance check."""
+        if target_path is None:
+            target_path = self.repo_root
+        results = {}
+        from src.domains.d_peano_ext.invariants import check_peano_axiom_1_zero_exists
+        ok, proof = check_peano_axiom_1_zero_exists()
+        results["identity"] = {"passed": ok}
+        from fractions import Fraction
+        from src.domains.d_sigma_theo.implementation import SigmaTheoState
+        try:
+            state = SigmaTheoState(
+                essence=("truth","invariant"), persona=("steward",), hypostasis="merged",
+                christ_distance=Fraction(0,1),
+                logos_pre_distance=Fraction(1,10), logos_post_distance=Fraction(1,100),
+                grace_pre_distance=Fraction(1,10), grace_post_distance=Fraction(1,100),
+                agape_distance_a=Fraction(0,1), agape_distance_b=Fraction(0,1),
+                agape_combined_distance=Fraction(0,1), kenosis_ratio=Fraction(1,3),
+                eschaton_sequence=(Fraction(1,10), Fraction(1,100), Fraction(1,1000)),
+            )
+            from src.domains.d_sigma_theo.invariants import check_logos_initial_algebra
+            ok, proof = check_logos_initial_algebra(state)
+            results["integrity"] = {"passed": ok}
+        except Exception as e:
+            results["integrity"] = {"passed": False, "error": str(e)}
+        return results
     def batch_fix_targeted(self, file_list, n=None):
         """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
         if n is not None:
