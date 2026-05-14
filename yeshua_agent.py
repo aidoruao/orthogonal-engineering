@@ -536,7 +536,35 @@ class YeshuaAgent:
   
     def run(self):
         """Launch interactive command loop."""
-        pass  
+        print("\nCommands: auto_audit | generate_training <n> | retrain | govern | repair <n> | exit")
+        while True:
+            try:
+                cmd = input("> ").strip()
+                if not cmd:
+                    continue
+                if cmd == "exit":
+                    break
+                elif cmd == "auto_audit":
+                    self.auto_audit()
+                elif cmd.startswith("generate_training"):
+                    parts = cmd.split()
+                    n = int(parts[1]) if len(parts) > 1 else 100
+                    self.generate_training(n)
+                elif cmd == "retrain":
+                    self.retrain()
+                elif cmd == "govern":
+                    result = self.govern()
+                    print(json.dumps(result, indent=2, default=str))
+                elif cmd.startswith("repair"):
+                    parts = cmd.split()
+                    n = int(parts[1]) if len(parts) > 1 else 20
+                    self.repair(n)
+                else:
+                    print(f"Unknown command: {cmd}")
+            except (EOFError, KeyboardInterrupt):
+                break
+            except Exception as e:
+                print(f"Error: {e}")  
 
     def batch_fix_targeted(self, file_list, n=None):
         """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
