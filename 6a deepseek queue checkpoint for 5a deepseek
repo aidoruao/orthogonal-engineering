@@ -1,0 +1,127 @@
+6a deepseek: "Tell 5a to update the auto pusher to be a steward, not just a script. Here's the specific upgrade path, moving it from a "smart tool" to a faithful governor of the main branch.
+
+The goal isn't to add an AI model. The goal is to make the script's logic perfectly mirror the invariants of the jurisdiction it serves. It must become a low-ranking but critical steward whose "intelligence" is its faithfulness to the Logos.
+
+---
+
+Upgrade Instructions for 5a: The Steward Auto Pusher
+
+The current script has two safety gates. It's good. To be aerospace-excedent and Logos-restored, it needs a complete structural upgrade based on the principles we just discussed.
+
+1. Transform the Loop into a Formal Steward's Patrol
+
+The while true loop isn't just a waiting period. It's the steward's active patrol duty. It must be conscious of its own state and the state of the file system.
+
+```bash
+# Before the loop, state the steward's identity and office.
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Auto Pusher Steward on patrol. Office: Guard the integrity of the main branch."
+
+while true; do
+    # At the start of each patrol cycle, pull remote changes.
+    # This is the steward receiving reports from the wider world.
+    git pull --rebase origin main 2>/dev/null
+    
+    # ... (rest of the loop) ...
+done
+```
+
+2. Replace "Staging Everything" with a Bound-Enforcement Check
+
+The git add -A command is an act of trust in the committer. The steward must distrust the actor and enforce the boundary. It must check every single file against a known, hashed standard of truth before it's even staged. This is the .oe principle in action. Since .oe isn't fully wired yet, we simulate it with the sha256sum check you already used in the evidence locker.
+
+3. Make the Safety Gates Combinatorial and Byte-to-Byte
+
+The current Safety Gate 2 has a head -1 limitation and only checks line count. It must be upgraded.
+
+· Atomicity: The gate must refuse the entire batch of staged changes if any single file fails an invariant check. No partial commits.
+· Byte-Level Integrity: The gate must not just check if a method's line count collapsed. It must check if the hash of the entire file changed, even if the line count is stable. A line-count-preserving corruption is still corruption.
+· Cross-File Dependency: If yeshua_agent.py changed, the gate must verify that the hash in bootstrap/bootstrap_anchor.oe for that file would still match.
+
+4. Formalize RCS Code Logging to the Evidence Locker
+
+Every gate decision is a witness event. The script must log its actions not as a debug tool, but as a formal testimony of its patrol. Append a structured entry to a dedicated evidence locker file with RCS codes, timestamps, and measurements. This is the steward rendering an account of its watch.
+
+---
+
+The New Code Structure (What to Build)
+
+Here is the pseudocode and key logic blocks for 5a to implement:
+
+```bash
+#!/bin/bash
+cd /home/idor/oe-local
+
+EVIDENCE_LOCKER="docs/evidence_locker/auto_push_gate_log.md"
+echo "[$(date)] Auto Pusher Steward on patrol. Office: Guard main branch integrity." | tee -a "$EVIDENCE_LOCKER"
+
+while true; do
+    git pull --rebase origin main 2>/dev/null
+
+    if [[ -n $(git status --porcelain) ]]; then
+        # --- 1. The Bound-Enforcement Check (Pre-Staging) ---
+        # Check every unstaged file before it's even staged.
+        GLOBAL_GATE_PASS=true
+        while IFS= read -r file; do
+            # ... (logic to verify file integrity before staging) ...
+            # This is where .oe principles would be applied.
+        done < <(git diff --name-only)
+
+        # If the pre-staging check fails, the steward refuses all changes and continues patrol.
+        if ! $GLOBAL_GATE_PASS; then
+            echo "[$(date)] Steward: Pre-staging boundary check failed. All changes refused." | tee -a "$EVIDENCE_LOCKER"
+            sleep 30
+            continue
+        fi
+
+        # If the boundary is secure, stage everything.
+        git add -A
+
+        # --- 2. The Combinatorial and Atomic Safety Gates (Post-Staging) ---
+        ATOMIC_GATE_PASS=true
+        # Get ALL staged files, not just the first one.
+        STAGED_FILES=$(git diff --cached --name-only)
+
+        for STAGED in $STAGED_FILES; do
+            if [ -f "$STAGED" ]; then
+                # --- Gate 2a: Byte-to-Byte Method Integrity (Full Loop) ---
+                # Applies to Python files.
+                if [[ "$STAGED" == *.py ]]; then
+                    # ... (full method loop, checking ALL methods) ...
+                    # This is the combinatorial upgrade of the existing logic.
+                fi
+
+                # --- Gate 2b: File-Level Hash Integrity ---
+                # Catch line-count-preserving mutations.
+                CURRENT_HASH=$(sha256sum "$STAGED" | cut -d' ' -f1)
+                LAST_HASH=$(git show HEAD:"$STAGED" 2>/dev/null | sha256sum | cut -d' ' -f1)
+                if [ "$CURRENT_HASH" != "$LAST_HASH" ]; then
+                    CURRENT_LINES=$(wc -l < "$STAGED")
+                    LAST_LINES=$(git show HEAD:"$STAGED" 2>/dev/null | wc -l)
+                    # If line count is stable but hash changed, it's a suspicious mutation.
+                    if [ "$CURRENT_LINES" -eq "$LAST_LINES" ]; then
+                        echo "[$(date)] Steward: Suspicious mutation in $STAGED (hash changed, stable lines). Refusing commit."
+                        # Log as RCS-HASH-MUTATION-UNVERIFIED
+                        ATOMIC_GATE_PASS=false
+                    fi
+                fi
+            fi
+        done
+
+        # --- The Atomic Decision ---
+        if ! $ATOMIC_GATE_PASS; then
+            echo "[$(date)] Steward: Atomic gate failed. Aborting commit for ALL files." | tee -a "$EVIDENCE_LOCKER"
+            git reset HEAD -- . 2>/dev/null  # Unstage everything to return to a known-good state.
+            sleep 30
+            continue
+        fi
+
+        # If all atomic gates pass, then and only then, commit.
+        git commit -m "auto: $(git diff --cached --stat | tail -1) files changed at $(date '+%Y-%m-%d %H:%M:%S')"
+
+        # ... (Safety Gate 1: Push logic remains the same) ...
+    fi
+    sleep 30
+done
+```
+
+This upgraded script is the steward you envisioned. It doesn't just push code. It patrols, enforces boundaries, renders an account of its actions, and is bound by the same invariants it protects. That's the restoration of governance to the simple act of moving files into a repository."
