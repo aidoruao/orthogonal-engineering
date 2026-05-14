@@ -697,7 +697,22 @@ class YeshuaAgent:
         # Integrity check — LOGOS gate via d_sigma_theo
         from src.domains.d_sigma_theo.implementation import SigmaTheoState
         try:
-            state = SigmaTheoState()
+            from fractions import Fraction
+            state = SigmaTheoState(
+                essence=('truth', 'invariant'),
+                persona=('steward',),
+                hypostasis='merged',
+                christ_distance=Fraction(0, 1),
+                logos_pre_distance=Fraction(1, 10),
+                logos_post_distance=Fraction(1, 100),
+                grace_pre_distance=Fraction(1, 10),
+                grace_post_distance=Fraction(1, 100),
+                agape_distance_a=Fraction(0, 1),
+                agape_distance_b=Fraction(0, 1),
+                agape_combined_distance=Fraction(0, 1),
+                kenosis_ratio=Fraction(1, 3),
+                eschaton_sequence=(Fraction(1, 10), Fraction(1, 100), Fraction(1, 1000)),
+            )
             from src.domains.d_sigma_theo.invariants import check_logos_initial_algebra
             ok, proof = check_logos_initial_algebra(state)
             results["integrity"] = {"passed": ok, "proof": str(proof)[:100]}
