@@ -534,38 +534,96 @@ class YeshuaAgent:
             print(f"\nTraining failed with return code {result.returncode}")  
             self.log_action("retrain_done", {"version": f"v{new_ver}", "status": "failed", "returncode": result.returncode})  
   
-    def run(self):
-        """Launch interactive command loop."""
-        print("\nCommands: auto_audit | generate_training <n> | retrain | govern | repair <n> | exit")
-        while True:
-            try:
-                cmd = input("> ").strip()
-                if not cmd:
-                    continue
-                if cmd == "exit":
-                    break
-                elif cmd == "auto_audit":
-                    self.auto_audit()
-                elif cmd.startswith("generate_training"):
-                    parts = cmd.split()
-                    n = int(parts[1]) if len(parts) > 1 else 100
-                    self.generate_training(n)
-                elif cmd == "retrain":
-                    self.retrain()
-                elif cmd == "govern":
-                    result = self.govern()
-                    print(json.dumps(result, indent=2, default=str))
-                elif cmd.startswith("repair"):
-                    parts = cmd.split()
-                    n = int(parts[1]) if len(parts) > 1 else 20
-                    self.repair(n)
-                else:
-                    print(f"Unknown command: {cmd}")
-            except (EOFError, KeyboardInterrupt):
-                break
-            except Exception as e:
-                print(f"Error: {e}")  
-
+def run(self):  
+        print("\n" + "="*60)  
+        print("YESHUA AGENT v2.0 - LOCAL AGENTIC AI")  
+        print("No API. No subscription. No corporate dependency.")  
+        print("="*60)  
+        print("\nCommands:")  
+        print("  scan              - Scan repo file counts")  
+        print("  validate <claim>  - Deception detection on a claim")  
+        print("  analyze <path>    - Describe what a file does")  
+        print("  audit <path>      - Full audit of a file (grounded)")  
+        print("  auto [N]          - Autonomous audit of N random .py files (default 5)")  
+        print("  generate [N]      - Generate N balanced training examples per category (default 100)")  
+        print("  fix <path>        - Report issues in a file (deterministic)")  
+        print("  autofix <path>    - Apply fixes to a file (writes changes)")  
+        print("  batch-fix [N]     - Scan N random .py files and autofix all (default 50)")
+        print("  retrain           - Combine all datasets and retrain the model")
+        print("  govern            - Run Category 5 recursive governance check")
+        print("  retrain           - Combine all datasets and retrain the model")
+        print("  govern            - Run Category 5 recursive governance check")  
+        print("  read <path>       - Read a file")  
+        print("  write <path>      - Write a file (type END to finish)")  
+        print("  think <anything>  - Ask the model")  
+        print("  status            - GPU/memory/log status")  
+        print("  exit              - Quit")  
+        print("-"*60)  
+  
+        while True:  
+            try:  
+                user_input = input("\nYeshua> ").strip()  
+                if not user_input: continue  
+                parts = user_input.split(maxsplit=1)  
+                cmd = parts[0].lower()  
+                arg = parts[1] if len(parts) > 1 else ""  
+                if cmd == "exit":  
+                    print("Shutting down."); break  
+                elif cmd == "scan":  
+                    r = self.scan_repo(); print(json.dumps(r, indent=2)); self.log_action("scan", r)  
+                elif cmd == "validate":  
+                    r = self.validate(arg); print(r); self.log_action("validate", r)  
+                elif cmd == "analyze":  
+                    r = self.analyze_file(os.path.join(self.repo_root, arg)); print(r); self.log_action("analyze", r)  
+                elif cmd == "audit":  
+                    r = self.audit_file(arg); print(json.dumps(r, indent=2)); self.log_action("audit", r)  
+                elif cmd == "auto":  
+                    n = int(arg) if arg else 5  
+                    print(f"Starting autonomous audit of {n} Python files...")  
+                    self.auto_audit(n)  
+                elif cmd == "generate":  
+                    n = int(arg) if arg else 100  
+                    print(f"Generating {n} training examples per category from repo files...")  
+                    self.generate_training(n)  
+                elif cmd == "fix":  
+                    if not arg: print("Usage: fix <path>")  
+                    else: self.fix_file(arg)  
+                elif cmd == "autofix":  
+                    if not arg: print("Usage: autofix <path>")  
+                    else:  
+                        n = self.autofix(arg)  
+                        if n > 0: print(f"Applied {n} fix(es) to {arg}")  
+                        else: print(f"No auto-fixable issues in {arg}")  
+                elif cmd == "retrain":  
+                    self.retrain()  
+                elif cmd == "batch-fix":  
+                    n = int(arg) if arg else 50  
+                    self.batch_fix(n)  
+                elif cmd == "read":  
+                    c = self.read_file(arg); print(c[:3000]); self.log_action("read", f"{len(c)} chars from {arg}")  
+                elif cmd == "write":  
+                    print("Enter content (type END on its own line to finish):")  
+                    wlines = []  
+                    while True:  
+                        line = input()  
+                        if line.strip() == "END": break  
+                        wlines.append(line)  
+                    r = self.write_file(arg, "\n".join(wlines)); print(r); self.log_action("write", r)  
+                elif cmd == "think":  
+                    r = self.think(f"Instruction: {arg}\nOutput:"); print(r); self.log_action("think", r)  
+                elif cmd == "status":  
+                    print(f"Model: TinyLlama 1.1B v7+ (LoRA, combined dataset)")  
+                    print(f"Device: {torch.cuda.get_device_name(0)}")  
+                    print(f"VRAM used: {torch.cuda.memory_allocated()/1024**2:.0f} MB")  
+                    print(f"Actions logged: {len(self.log)}")  
+                    print(f"History turns: {len(self.history)}")  
+                    print(f"Log file: {self.log_file}")  
+                else:  
+                    r = self.think(f"Instruction: {user_input}\nOutput:"); print(r); self.log_action("think", r)  
+            except KeyboardInterrupt:  
+                print("\nShutting down."); break  
+            except Exception as e:  
+                print(f"Error: {e}"); self.log_action("error", str(e))
     def batch_fix_targeted(self, file_list, n=None):
         """Fix ONLY the specified files (not random scan). Used by repair loop for same-file locking."""
         if n is not None:
