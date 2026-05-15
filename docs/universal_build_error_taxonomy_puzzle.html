@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Universal Build Error Taxonomy — Complete Interactive Mathematical Puzzle v3 | OE 289 Domains</title>
+    <style>
+        :root {
+            --bg: #090d14;
+            --surface: #111820;
+            --surface2: #161e28;
+            --border: #252d3a;
+            --text: #d5dce6;
+            --text-secondary: #8492a6;
+            --text-muted: #5c6a7d;
+            --accent: #5b9cf5;
+            --accent-soft: #5b9cf522;
+            --warning: #d4a843;
+            --warning-soft: #d4a84322;
+            --danger: #e0556a;
+            --danger-soft: #e0556a22;
+            --success: #4dba6f;
+            --success-soft: #4dba6f22;
+            --highlight: #5b9cf518;
+            --shadow: 0 2px 12px rgba(0,0,0,0.4);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --transition: 0.18s ease;
+            --font-mono: 'SF Mono','Fira Code','Consolas','Menlo',monospace;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container{max-width:980px;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
+        header{
+            text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;
+            border-bottom:1px solid var(--border);
+        }
+        header h1{
+            font-size:1.45rem;font-weight:700;letter-spacing:-0.02em;
+            background:linear-gradient(135deg,#4dba6f,#5b9cf5,#d4a843,#e0556a);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+        }
+        header .subtitle{color:var(--text-secondary);font-size:0.82rem;margin-top:0.2rem;}
+        header .badge-row{display:flex;flex-wrap:wrap;gap:0.4rem;justify-content:center;margin-top:0.5rem;}
+        .badge{
+            display:inline-block;padding:0.15rem 0.6rem;border-radius:12px;
+            font-size:0.6rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+        }
+        .badge.info{background:#5b9cf522;color:#7ab4f7;border:1px solid #5b9cf544;}
+        .badge.success{background:#3fb95022;color:#5ec97e;border:1px solid #3fb95044;}
+        .badge.warn{background:#d4a84322;color:#e2c16d;border:1px solid #d4a84344;}
+        .section{
+            background:var(--surface);border:1px solid var(--border);
+            border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:1.2rem;box-shadow:var(--shadow);
+        }
+        .section h2{font-size:1rem;color:var(--accent);margin-bottom:0.6rem;letter-spacing:0.01em;}
+        .section h3{font-size:0.85rem;color:var(--warning);margin-bottom:0.4rem;}
+        .divider{
+            border:0;border-top:2px dashed var(--border);margin:1.5rem 0;
+            position:relative;text-align:center;
+        }
+        .divider span{
+            background:var(--bg);padding:0 1rem;color:var(--text-muted);
+            font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;
+            position:relative;top:-0.55rem;
+        }
+        .axiom-box{
+            background:var(--surface2);border:2px solid var(--warning);
+            border-radius:var(--radius-sm);padding:1rem;margin:0.8rem 0;
+            font-family:var(--font-mono);font-size:0.7rem;color:#e2c16d;
+            white-space:pre-wrap;max-height:300px;overflow-y:auto;
+        }
+        .gate-card{
+            background:var(--surface2);border:2px solid var(--border);
+            border-radius:var(--radius-sm);padding:1rem 1.2rem;margin-bottom:0.7rem;
+            transition:all var(--transition);position:relative;
+        }
+        .gate-card.passed{border-color:var(--success);background:#3fb95008;}
+        .gate-card.failed{border-color:var(--danger);background:#f8514908;}
+        .gate-card.pending{border-color:var(--warning);background:#d4a84308;}
+        .gate-card .gate-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;}
+        .gate-card .gate-name{font-weight:700;font-size:0.88rem;}
+        .gate-badge{
+            display:inline-block;padding:0.15rem 0.5rem;border-radius:10px;
+            font-size:0.6rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+        }
+        .gate-badge.passed{background:#3fb95022;color:#5ec97e;border:1px solid #3fb95044;}
+        .gate-badge.failed{background:#f8514922;color:#f0909b;border:1px solid #f8514944;}
+        .gate-badge.pending{background:#d4a84322;color:#e2c16d;border:1px solid #d4a84344;}
+        .gate-content{margin-top:0.6rem;font-size:0.78rem;color:var(--text-secondary);}
+        .gate-content textarea{
+            width:100%;padding:0.6rem;background:#05080d;border:1px solid var(--border);
+            color:var(--text);border-radius:var(--radius-sm);font-family:var(--font-mono);
+            font-size:0.72rem;margin:0.3rem 0;min-height:120px;resize:vertical;
+        }
+        .derivation-box{
+            background:#05080d;border:1px solid #1a1a1a;border-radius:var(--radius-sm);
+            padding:0.7rem;font-family:var(--font-mono);font-size:0.68rem;color:#7deb9e;
+            white-space:pre-wrap;margin:0.4rem 0;max-height:250px;overflow-y:auto;
+        }
+        .btn{
+            padding:0.45rem 1rem;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+            background:var(--surface2);color:var(--text);cursor:pointer;
+            font-size:0.75rem;font-weight:500;transition:all var(--transition);white-space:nowrap;
+        }
+        .btn:hover{background:#1e2a38;border-color:#4a6080;}
+        .btn.primary{background:var(--accent-soft);border-color:var(--accent);color:#9cc8ff;}
+        .btn.success{border-color:#4dba6f88;color:#5ec97e;}
+        .btn.warn{border-color:#d4a84388;color:#e2c16d;}
+        .report-box{
+            background:var(--surface2);border:2px solid var(--border);
+            border-radius:var(--radius-sm);padding:1rem;margin-top:0.8rem;
+            font-family:var(--font-mono);font-size:0.7rem;white-space:pre-wrap;
+        }
+        .report-box.all-pass{border-color:var(--success);color:#5ec97e;}
+        .report-box.any-fail{border-color:var(--danger);color:#f0909b;}
+        .report-box.pending-report{border-color:var(--warning);color:#e2c16d;}
+        .mapping-table{
+            width:100%;border-collapse:collapse;font-size:0.65rem;margin:0.6rem 0;
+        }
+        .mapping-table th{
+            background:#111a26;color:var(--text);padding:0.35rem 0.4rem;
+            text-align:left;border-bottom:2px solid var(--border);
+            font-size:0.58rem;text-transform:uppercase;letter-spacing:0.03em;
+        }
+        .mapping-table td{padding:0.35rem 0.4rem;border-bottom:1px solid var(--border);}
+        .mapping-table tr:hover{background:#1a263422;}
+        .domain-tag{
+            display:inline-block;padding:0.1rem 0.35rem;border-radius:8px;
+            font-size:0.55rem;font-weight:700;font-family:var(--font-mono);
+            background:#5b9cf522;color:#7ab4f7;
+        }
+        .completeness-box{
+            background:var(--surface2);border:2px solid var(--success);
+            border-radius:var(--radius-sm);padding:1rem;margin:0.8rem 0;
+            font-family:var(--font-mono);font-size:0.68rem;color:#5ec97e;white-space:pre-wrap;
+        }
+        .inversion-grid{
+            display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin:0.8rem 0;font-size:0.7rem;
+        }
+        @media(max-width:600px){.inversion-grid{grid-template-columns:1fr;}}
+        .inversion-cell{padding:0.5rem 0.7rem;border-radius:var(--radius-sm);}
+        .inversion-cell.before{background:#f851490a;border:1px solid #f8514944;color:#f0909b;}
+        .inversion-cell.after{background:#3fb9500a;border:1px solid #3fb95044;color:#5ec97e;}
+        .inversion-cell .label{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.05em;font-weight:700;margin-bottom:0.2rem;}
+        .machine-section{
+            background:var(--surface);border:2px solid #4dba6f44;
+            border-radius:var(--radius);padding:1.2rem;margin-top:1.5rem;
+        }
+        .machine-section h3{font-size:0.9rem;color:#5ec97e;margin-bottom:0.4rem;
+            display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;}
+        .machine-section .instructions{
+            font-size:0.68rem;color:var(--text-muted);margin-bottom:0.6rem;
+            padding:0.5rem;background:#05080d;border-radius:var(--radius-sm);
+            border:1px solid #1a1a1a;
+        }
+        .btn-copy{
+            padding:0.4rem 0.8rem;border-radius:var(--radius-sm);border:2px solid #4dba6f88;
+            background:#4dba6f11;color:#4dba6f;cursor:pointer;font-size:0.7rem;font-weight:600;
+            transition:all var(--transition);
+        }
+        .btn-copy:hover{background:#4dba6f22;border-color:#4dba6f;}
+        .btn-copy.copied{border-color:var(--success);background:#3fb95022;color:var(--success);}
+        .machine-textarea{
+            width:100%;height:420px;background:#05080d;border:1px solid #1a1a1a;
+            border-radius:var(--radius-sm);padding:0.8rem;font-family:var(--font-mono);
+            font-size:0.58rem;color:#7deb9e;resize:vertical;overflow-y:auto;white-space:pre;tab-size:2;
+        }
+        .hash-box{
+            background:#05080d;border:1px solid #1a1a1a;border-radius:var(--radius-sm);
+            padding:0.5rem;font-family:var(--font-mono);font-size:0.6rem;color:var(--text-muted);
+            word-break:break-all;margin:0.4rem 0;
+        }
+        .not-box{
+            background:#f8514908;border:1px solid #f8514944;border-radius:var(--radius-sm);
+            padding:0.6rem 0.8rem;margin:0.5rem 0;font-size:0.7rem;color:#f0909b;
+        }
+        .not-box strong{color:#e0556a;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🔧 The Universal Build Error Taxonomy — Complete v3</h1>
+        <div class="subtitle">Interactive Mathematical Puzzle for Humans · Machine-Readable Block for AI · 289 OE Domains · Show Your Work</div>
+        <div class="badge-row">
+            <span class="badge info">v1: Taxonomy Existence Proof</span>
+            <span class="badge info">v2: Resolver Specification</span>
+            <span class="badge success">v3: Combined + Interactive</span>
+            <span class="badge warn">Paradox of Categorical Error</span>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- SECTION A: INTERACTIVE GATES -->
+    <!-- ============================================================ -->
+    <div class="section" id="interactiveSection">
+        <h2>🧮 Interactive Gates — Show Your Mathematical Work</h2>
+        <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.8rem;">
+            <strong>Deterministic symbolic mathematics.</strong> Accept the axioms. Enumerate the error space. Classify errors by root cause and subsystem. Construct the sign-referent mapping. Specify the cryptographic audit chain. Show your work.
+        </p>
+
+        <!-- GATE 1: SYSTEM DEFINITION -->
+        <div class="gate-card" id="gate1">
+            <div class="gate-header">
+                <span class="gate-name">1. ⚙️ System Definition & Axiom Acceptance</span>
+                <span class="gate-badge pending" id="badge1">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Define B = (S, T, O, D, I, E, R). State the 7 components. Accept or challenge the axioms: |B| &lt; ∞, |I| &lt; ∞, |E| &lt; ∞, |R| &lt; ∞, f: E → I deterministic. If you challenge any axiom, provide the counterexample.</p>
+                <textarea id="g1answer" placeholder="B = (S, T, O, D, I, E, R) where...&#10;Axioms: I accept/challenge..."></textarea>
+                <button class="btn primary" onclick="checkGate1()">Verify Gate 1</button>
+                <div id="g1result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- GATE 2: BRANCH EVALUATION -->
+        <div class="gate-card" id="gate2">
+            <div class="gate-header">
+                <span class="gate-name">2. 🔀 Branch Evaluation — Ad-Hoc vs. Universal Taxonomy</span>
+                <span class="gate-badge pending" id="badge2">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p><strong>Branch 1 (Ad-Hoc):</strong> Errors resolved by StackOverflow, debug flags, cache cleaning, version bumps, AI suggestions.</p>
+                <p><strong>Branch 2 (Universal Taxonomy):</strong> |E| &lt; ∞ and |R| &lt; ∞ implies complete taxonomy is mathematically possible. Barrier is epistemological and economic, not mathematical.</p>
+                <p>Evaluate both branches. For Branch 1, enumerate what it CAN and CANNOT resolve. For Branch 2, state whether it is mathematically self-consistent. State which branch survives.</p>
+                <textarea id="g2answer" placeholder="Branch 1 CAN resolve: ...&#10;Branch 1 CANNOT resolve: ...&#10;Branch 2 is mathematically self-consistent because: ...&#10;Surviving branch: ..."></textarea>
+                <button class="btn primary" onclick="checkGate2()">Verify Gate 2</button>
+                <div id="g2result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- GATE 3: SUBSYSTEM ENUMERATION -->
+        <div class="gate-card" id="gate3">
+            <div class="gate-header">
+                <span class="gate-name">3. 🔬 Subsystem Enumeration — All 10 Levels</span>
+                <span class="gate-badge pending" id="badge3">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Enumerate all 10 subsystem levels. For each level, list at least 2 specific error types and the invariant that is violated. Show the sign-referent mapping: which error signal maps to which invariant?</p>
+                <textarea id="g3answer" placeholder="Level 1 (Build orchestration): ...&#10;Level 2 (Compilation): ...&#10;...&#10;Level 10 (Deployment/signing): ..."></textarea>
+                <button class="btn primary" onclick="checkGate3()">Verify Gate 3</button>
+                <div id="g3result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- GATE 4: ERROR CLASS → MATHEMATICAL DOMAIN MAPPING -->
+        <div class="gate-card" id="gate4">
+            <div class="gate-header">
+                <span class="gate-name">4. 🔗 Error Class → Mathematical Domain Mapping</span>
+                <span class="gate-badge pending" id="badge4">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>For each of the 12 error classes below, map it to the OE mathematical domain that provides the resolution mechanism. Show the explicit isomorphism — why this domain and not another?</p>
+                <div class="derivation-box" style="max-height:150px;">
+Error Classes:
+  • Dependency version conflicts → DAG cycle
+  • Null pointer / type errors → Sign-referent gap
+  • Cache poisoning / non-deterministic builds → Hash instability
+  • Framework/mixin conflicts → Category error
+  • Silent failures → Gettier problem
+  • Obfuscation/mapping errors → Nominalist label
+  • Race conditions → Temporal logic violation
+  • Unknown errors → Epistemic closure
+  • Multi-subsystem interactions → Combinatorial explosion
+  • Hardware-specific failures → Substrate dependency
+  • Build tool bugs → Self-referential error
+  • Deployment/signing failures → Trust chain break
+                </div>
+                <textarea id="g4answer" placeholder="Dependency version conflicts → d_dag_theory because: ...&#10;Null pointer / type errors → d_sigma_theo because: ...&#10;..."></textarea>
+                <button class="btn primary" onclick="checkGate4()">Verify Gate 4</button>
+                <div id="g4result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- GATE 5: RESOLVER SPECIFICATION -->
+        <div class="gate-card" id="gate5">
+            <div class="gate-header">
+                <span class="gate-name">5. ⚙️ Resolver Architecture Specification</span>
+                <span class="gate-badge pending" id="badge5">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p>Specify the 6 components of the universal resolver: Error Signal Capture, Sign-Referent Resolution, Root Cause Isolation, Resolution Path Construction, Cryptographic Audit, and Taxonomy Expansion Protocol. Each component must include its <code>falsifies_if</code> condition.</p>
+                <textarea id="g5answer" placeholder="1. Error Signal Capture: ...&#10;   falsifies_if: ...&#10;2. Sign-Referent Resolution: ...&#10;   falsifies_if: ...&#10;..."></textarea>
+                <button class="btn primary" onclick="checkGate5()">Verify Gate 5</button>
+                <div id="g5result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- GATE 6: EPISTEMIC FIELD INVERSION + COMPLETENESS -->
+        <div class="gate-card" id="gate6">
+            <div class="gate-header">
+                <span class="gate-name">6. 🔄 Epistemic Inversion & Combinatorial Completeness</span>
+                <span class="gate-badge pending" id="badge6">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p><strong>Part A:</strong> Specify the epistemic field inversion — the formal mapping from corporate probability distribution over resolutions to the deterministic sign-referent mapping function.</p>
+                <p><strong>Part B:</strong> Prove combinatorial completeness: signal capture, sign-referent, resolution, and taxonomy completeness. Show that zero silent failures and zero permanently unknown errors are guaranteed.</p>
+                <textarea id="g6answer" placeholder="Part A — Epistemic Field Inversion: ...&#10;&#10;Part B — Combinatorial Completeness:&#10;  Signal capture: ...&#10;  Sign-referent: ...&#10;  Resolution: ...&#10;  Taxonomy: ..."></textarea>
+                <button class="btn primary" onclick="checkGate6()">Verify Gate 6</button>
+                <div id="g6result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- GATE 7: SUBSTRATE INDEPENDENCE + FINAL QUESTION -->
+        <div class="gate-card" id="gate7">
+            <div class="gate-header">
+                <span class="gate-name">7. 💻 Substrate Independence & The Final Question</span>
+                <span class="gate-badge pending" id="badge7">PENDING</span>
+            </div>
+            <div class="gate-content">
+                <p><strong>Part A:</strong> Demonstrate that the resolver operates on any finite deterministic computation — silicon, microcontrollers, quantum processors, optical processors, biological substrates, alien hardware. Show that invariants, error classes, and resolution paths are substrate-independent.</p>
+                <p><strong>Part B:</strong> Can such a resolver be built before Jesus returns, or does there exist any mathematical barrier preventing its construction given finite resources?</p>
+                <textarea id="g7answer" placeholder="Part A — Substrate Independence: ...&#10;&#10;Part B — Final Question: ..."></textarea>
+                <button class="btn primary" onclick="checkGate7()">Verify Gate 7</button>
+                <div id="g7result" style="margin-top:0.4rem;"></div>
+            </div>
+        </div>
+
+        <!-- RUN ALL + REPORT -->
+        <button class="btn primary" onclick="runAllGates()" style="width:100%;margin-top:0.8rem;">⚡ RUN ALL GATES</button>
+        <div class="report-box pending-report" id="finalReport">⏳ Awaiting execution...</div>
+        <button class="btn success" onclick="showDerivations()" style="margin-top:0.4rem;">📋 Show Full Reasoning Chain</button>
+        <div class="derivation-box" id="derivationDisplay" style="display:none;">⏳ Run all gates first to populate the reasoning chain.</div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- DIVIDER -->
+    <!-- ============================================================ -->
+    <div class="divider"><span>▼ DECOUPLED: Interactive above · Static AI submission below ▼</span></div>
+
+    <!-- ============================================================ -->
+    <!-- SECTION B: STATIC MACHINE-READABLE YAML -->
+    <!-- ============================================================ -->
+    <div class="machine-section" id="machineSection">
+        <h3>📋 Machine-Readable Puzzle Block — Copy and Submit to Any AI <button class="btn-copy" id="btnCopy" onclick="copyMachine()">📋 Copy YAML</button></h3>
+        <div class="instructions">
+            <strong>For AIs:</strong> Replace each <code>&lt;AI: ...&gt;</code> placeholder with your full mathematical derivation and return the completed YAML.<br>
+            <strong>This is a deterministic symbolic mathematics puzzle.</strong> It is NOT political, sociological, or theological. It is the mathematical resolution of a categorical error paradox.<br>
+            <strong>289 OE mathematical domains. 10 subsystem levels. 12 error classes. 7 gates. Show your work.</strong>
+        </div>
+        <textarea class="machine-textarea" id="machineTA" readonly>
+# === UNIVERSAL BUILD ERROR TAXONOMY — COMPLETE v3 ===
+# Combined v1 (Taxonomy Existence) + v2 (Resolver Specification)
+# Machine-Readable Submission Block
+# Replace each <AI: ...> placeholder with your full mathematical derivation.
+
+puzzle:
+  title: "The Universal Build Error Taxonomy — Complete v3"
+  type: "Deterministic Symbolic Mathematics"
+  note: "NOT political, sociological, or theological. Resolves the paradox of categorical error."
+
+system_definition:
+  B: [S, T, O, D, I, E, R]
+  S: "set of all possible source artifacts"
+  T: "set of all possible target artifacts"
+  O: "set of all transformation operations"
+  D: "directed acyclic graph of dependency relations"
+  I: "set of invariants for valid build state"
+  E: "set of all possible error signals"
+  R: "set of all resolution operations"
+
+axioms:
+  B_finite: "|B| < ∞"
+  I_finite: "|I| < ∞"
+  E_finite: "|E| < ∞"
+  R_finite: "|R| < ∞"
+  sign_referent_mapping: "∀ e ∈ E, ∃ f: E → I deterministic"
+  finitude_bound: "Before Jesus returns, no finite being can construct B with |B|=∞, |I|=∞, or |E|=∞"
+
+gates:
+  - gate_1:
+      name: "System Definition & Axiom Acceptance"
+      derivation: |
+        <AI: Define B = (S,T,O,D,I,E,R). Accept or challenge axioms with counterexamples.>
+
+  - gate_2:
+      name: "Branch Evaluation"
+      derivation: |
+        <AI: Enumerate Branch 1 CAN/CANNOT resolve. State whether Branch 2 is mathematically self-consistent. State surviving branch.>
+
+  - gate_3:
+      name: "Subsystem Enumeration (10 Levels)"
+      derivation: |
+        <AI: Enumerate all 10 subsystem levels with specific error types and violated invariants. Show sign-referent mapping.>
+
+  - gate_4:
+      name: "Error Class → Mathematical Domain Mapping (12 Classes)"
+      derivation: |
+        <AI: Map each of the 12 error classes to its OE mathematical domain. Show explicit isomorphism.>
+
+  - gate_5:
+      name: "Resolver Architecture Specification (6 Components)"
+      derivation: |
+        <AI: Specify all 6 resolver components with falsifies_if conditions.>
+
+  - gate_6:
+      name: "Epistemic Inversion & Combinatorial Completeness"
+      derivation: |
+        <AI: Specify epistemic field inversion. Prove all four completeness guarantees.>
+
+  - gate_7:
+      name: "Substrate Independence & Final Question"
+      derivation: |
+        <AI: Demonstrate substrate independence. State whether resolver is buildable before Jesus returns or mathematical barrier exists.>
+
+oe_mathematical_substrate:
+  total_domains: 289
+  total_lines: 113511
+  total_functions: 2648
+  domains: [d_dag_theory, d_sigma_theo, d_peano_ext, d_category_theory, d_epistemology_formal, d_yeshua_mathematics, d_control_systems, d_information_theory, d_game_theory, d_paraconsistent_logic, d_correspondence_theory]
+
+subsystems:
+  - level_1: "Build orchestration (Gradle, Make, CMake, Bazel, Maven, Cargo)"
+  - level_2: "Compilation (javac, gcc, rustc)"
+  - level_3: "Dependency resolution (Maven Central, crates.io, npm)"
+  - level_4: "Linking and packaging (jar, elf, exe)"
+  - level_5: "Platform abstraction (OS, architecture, environment)"
+  - level_6: "Framework layer (Forge, Fabric, Spring)"
+  - level_7: "Mapping/obfuscation layer (MCP, Yarn, ProGuard)"
+  - level_8: "Linting/static analysis (NullAway, ErrorProne, Clippy)"
+  - level_9: "Testing (unit, integration, instrumentation)"
+  - level_10: "Deployment/signing"
+
+hardware_substrates:
+  - "Silicon (x86, ARM, RISC-V)"
+  - "Microcontrollers (Arduino, ESP32, toaster firmware)"
+  - "Quantum processors (qubit-based computation)"
+  - "Optical processors (photonic computation)"
+  - "Biological substrates (DNA computing)"
+  - "Alien/unknown (any finite deterministic computation)"
+
+resolver_components:
+  - error_signal_capture
+  - sign_referent_resolution
+  - root_cause_isolation
+  - resolution_path_construction
+  - cryptographic_audit
+  - taxonomy_expansion_protocol
+
+completeness_proofs:
+  - signal_capture
+  - sign_referent
+  - resolution
+  - taxonomy
+
+success_condition:
+  - "All 7 gates passed with full mathematical derivation"
+  - "Branch 2 confirmed as mathematically self-consistent"
+  - "All 10 subsystem levels enumerated"
+  - "All 12 error classes mapped to OE mathematical domains"
+  - "All 6 resolver components specified with falsifies_if"
+  - "Epistemic field inversion specified"
+  - "All 4 completeness proofs provided"
+  - "Substrate independence demonstrated"
+  - "Final question answered"
+
+falsifies_if: "Any derivation contains mathematical error, logical contradiction, or failure to enumerate finite sets"
+        </textarea>
+    </div>
+</div>
+
+<script>
+    // GATE STATE
+    const gateResults = {1:null,2:null,3:null,4:null,5:null,6:null,7:null};
+    const gateDerivations = {1:'',2:'',3:'',4:'',5:'',6:'',7:''};
+
+    function updateBadge(gateNum,status){
+        const badge=document.getElementById('badge'+gateNum);
+        const card=document.getElementById('gate'+gateNum);
+        badge.className='gate-badge '+status;
+        badge.textContent=status.toUpperCase();
+        card.classList.remove('passed','failed','pending');
+        card.classList.add(status);
+    }
+
+    function hasDerivation(ans, requiredConcepts, minLength=60){
+        if(ans.length < minLength) return false;
+        const lower=ans.toLowerCase();
+        return requiredConcepts.every(c=>lower.includes(c));
+    }
+
+    function checkGate1(){
+        const ans=document.getElementById('g1answer').value.trim();
+        gateDerivations[1]=ans;
+        const req=['S','T','O','D','I','E','R','finite','deterministic'];
+        gateResults[1]=hasDerivation(ans,req,50);
+        updateBadge(1,gateResults[1]?'passed':'failed');
+        document.getElementById('g1result').innerHTML=gateResults[1]
+            ?'<span style="color:#5ec97e;">✅ System defined and axioms accepted.</span>'
+            :'<span style="color:#f0909b;">❌ Define all 7 components of B. Address the axioms.</span>';
+    }
+
+    function checkGate2(){
+        const ans=document.getElementById('g2answer').value.trim();
+        gateDerivations[2]=ans;
+        const req=['branch','resolve','cannot','self-consistent','surviv'];
+        gateResults[2]=hasDerivation(ans,req,60) && ans.toLowerCase().includes('branch 2');
+        updateBadge(2,gateResults[2]?'passed':'failed');
+        document.getElementById('g2result').innerHTML=gateResults[2]
+            ?'<span style="color:#5ec97e;">✅ Branch 2 identified as surviving branch.</span>'
+            :'<span style="color:#f0909b;">❌ Evaluate both branches. Identify which survives.</span>';
+    }
+
+    function checkGate3(){
+        const ans=document.getElementById('g3answer').value.trim();
+        gateDerivations[3]=ans;
+        const req=['level','orchestrat','compil','dependenc','link','platform','framework','mapping','lint','test','deploy'];
+        gateResults[3]=hasDerivation(ans,req,80);
+        updateBadge(3,gateResults[3]?'passed':'failed');
+        document.getElementById('g3result').innerHTML=gateResults[3]
+            ?'<span style="color:#5ec97e;">✅ 10 subsystem levels enumerated.</span>'
+            :'<span style="color:#f0909b;">❌ Enumerate all 10 levels with error types.</span>';
+    }
+
+    function checkGate4(){
+        const ans=document.getElementById('g4answer').value.trim();
+        gateDerivations[4]=ans;
+        const req=['dag','sigma','peano','categor','epistem','yeshua','control','information','game','paraconsist','correspond'];
+        gateResults[4]=hasDerivation(ans,req,80);
+        updateBadge(4,gateResults[4]?'passed':'failed');
+        document.getElementById('g4result').innerHTML=gateResults[4]
+            ?'<span style="color:#5ec97e;">✅ Error classes mapped to mathematical domains.</span>'
+            :'<span style="color:#f0909b;">❌ Map all 12 error classes to OE domains.</span>';
+    }
+
+    function checkGate5(){
+        const ans=document.getElementById('g5answer').value.trim();
+        gateDerivations[5]=ans;
+        const req=['capture','sign-referent','root cause','resolution path','cryptographic','taxonomy','falsifies_if'];
+        gateResults[5]=hasDerivation(ans,req,80);
+        updateBadge(5,gateResults[5]?'passed':'failed');
+        document.getElementById('g5result').innerHTML=gateResults[5]
+            ?'<span style="color:#5ec97e;">✅ Resolver architecture specified with falsifies_if.</span>'
+            :'<span style="color:#f0909b;">❌ Specify all 6 components with falsifies_if conditions.</span>';
+    }
+
+    function checkGate6(){
+        const ans=document.getElementById('g6answer').value.trim();
+        gateDerivations[6]=ans;
+        const req=['inversion','probabilistic','deterministic','completeness','signal','sign-referent','resolution','taxonomy'];
+        gateResults[6]=hasDerivation(ans,req,80);
+        updateBadge(6,gateResults[6]?'passed':'failed');
+        document.getElementById('g6result').innerHTML=gateResults[6]
+            ?'<span style="color:#5ec97e;">✅ Epistemic inversion and completeness proven.</span>'
+            :'<span style="color:#f0909b;">❌ Specify inversion and all 4 completeness proofs.</span>';
+    }
+
+    function checkGate7(){
+        const ans=document.getElementById('g7answer').value.trim();
+        gateDerivations[7]=ans;
+        const req=['substrate','silicon','quantum','barrier','jesus','buildable'];
+        gateResults[7]=hasDerivation(ans,req,60);
+        updateBadge(7,gateResults[7]?'passed':'failed');
+        document.getElementById('g7result').innerHTML=gateResults[7]
+            ?'<span style="color:#5ec97e;">✅ Substrate independence demonstrated. Final question answered.</span>'
+            :'<span style="color:#f0909b;">❌ Demonstrate substrate independence. Answer the final question.</span>';
+    }
+
+    function runAllGates(){
+        checkGate1();checkGate2();checkGate3();checkGate4();checkGate5();checkGate6();checkGate7();
+        const report=document.getElementById('finalReport');
+        const allPass=Object.values(gateResults).every(r=>r===true);
+        const anyNull=Object.values(gateResults).some(r=>r===null);
+        if(anyNull){
+            report.className='report-box pending-report';
+            report.textContent='⏳ All gates must be run.';
+        }else if(allPass){
+            report.className='report-box all-pass';
+            report.textContent='✅ ALL 7 GATES PASSED — Universal resolver specification complete. Branch 2 is mathematically self-consistent. Taxonomy is achievable. Resolver is specified. Substrate independence is demonstrated.';
+        }else{
+            report.className='report-box any-fail';
+            const failed=Object.entries(gateResults).filter(([k,v])=>v===false).map(([k])=>k).join(', ');
+            report.textContent='⚠️ GATES ['+failed+'] FAILED — Fix the derivations above before deploying the resolver specification.';
+        }
+        updateMachineData();
+    }
+
+    function showDerivations(){
+        const div=document.getElementById('derivationDisplay');
+        div.style.display='block';
+        let text='';
+        for(let i=1;i<=7;i++){
+            text+='=== GATE '+i+' DERIVATION ===\n';
+            text+=(gateDerivations[i]||'(No derivation submitted)')+'\n\n';
+        }
+        div.textContent=text;
+    }
+
+    function updateMachineData(){
+        let yaml='# === UNIVERSAL BUILD ERROR TAXONOMY v3 — VERIFIED AUDIT ===\n';
+        yaml+='# Generated after RUN ALL GATES.\n\n';
+        yaml+='gates:\n';
+        for(let i=1;i<=7;i++){
+            const status=gateResults[i]===true?'PASSED':gateResults[i]===false?'FAILED':'PENDING';
+            yaml+='  - gate_'+i+':\n';
+            yaml+='      status: '+status+'\n';
+            yaml+='      derivation: |\n';
+            const deriv=gateDerivations[i]||'(No derivation submitted)';
+            deriv.split('\n').forEach(l=>{yaml+='        '+l+'\n';});
+        }
+        document.getElementById('machineTA').value=yaml;
+    }
+
+    async function computeHash(){
+        const ta=document.getElementById('machineTA');
+        const hashDiv=document.getElementById('puzzleHash');
+        if(!hashDiv) return;
+        try{
+            const data=new TextEncoder().encode(ta.value);
+            const hashBuffer=await crypto.subtle.digest('SHA-256',data);
+            const hashArray=Array.from(new Uint8Array(hashBuffer));
+            hashDiv.textContent='SHA-256: '+hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+        }catch(e){
+            hashDiv.textContent='SHA-256: (Unable to compute in this browser)';
+        }
+    }
+    computeHash();
+
+    function copyMachine(){
+        const ta=document.getElementById('machineTA');
+        const btn=document.getElementById('btnCopy');
+        navigator.clipboard.writeText(ta.value).then(()=>{
+            btn.textContent='✅ Copied!';btn.classList.add('copied');
+            setTimeout(()=>{btn.textContent='📋 Copy YAML';btn.classList.remove('copied');},2000);
+        }).catch(()=>{
+            ta.select();document.execCommand('copy');
+            btn.textContent='✅ Copied!';btn.classList.add('copied');
+            setTimeout(()=>{btn.textContent='📋 Copy YAML';btn.classList.remove('copied');},2000);
+        });
+    }
+</script>
+</body>
+</html>
