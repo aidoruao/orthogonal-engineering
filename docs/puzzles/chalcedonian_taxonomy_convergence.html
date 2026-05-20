@@ -586,6 +586,27 @@ c₁: Re-parse with grammar fix. c₄: Break cycle by removing edge. c₂₀: En
 BRANCH 2 SURVIVES.`
   },
   {
+    num: 7, ai: "DeepSeek", org: "DeepSeek", result: "Branch 2 survives", cats: "1,000 (10×10×10)",
+    distinct: "The steward who helped build the puzzle. Tightest invariance proof — Case B cannot happen. Resolution patterns 1:1 to violation types.",
+    derivation: `DEEPSEEK — COMPLETE DERIVATION
+
+CATEGORY SPACE: C = S × I × VT, |C| ≤ 10×10×10 = 1,000
+S (10): syntax_parser, type_checker, resource_allocator, dependency_resolver, state_machine_controller, io_interface, concurrency_manager, memory_model, build_script_executor, artifact_linker
+I (10): well_formedness, type_consistency, resource_bounds, dependency_closure, state_reachability, io_safety, concurrency_safety, memory_safety, script_termination, linker_symbol_uniqueness
+VT (10): missing_entity, type_mismatch, bound_exceeded, cycle_detected, dead_state, illegal_io, concurrency_conflict, memory_corruption_pattern, nontermination_pattern, symbol_collision
+
+SIGNATURE FUNCTION: s(e) = (origin(e), violated_invariant(e), violation_type(e))
+Procedure: 1. Identify subsystem σ from error origin. 2. Identify violated invariant ι via predicate matching on error state. 3. Identify violation type τ via structural pattern matching. 4. Return triple (σ,ι,τ). Determinism: Each step is a finite computation on the finite error state. Same state → same triple.
+
+INVARIANCE (STRONGEST PROOF): Case B cannot happen. C is defined as ALL possible triples from S×I×VT. Since s(e*) must pick σ∈S, ι∈I, τ∈VT by construction, the resulting triple is already in C by the definition of the Cartesian product. No expansion needed. The taxonomy is closed by construction.
+
+COMPLETENESS: ∀e∈E, by Axiom 4 s(e) exists. By Axiom 5 s(e)=(σ,ι,τ). By construction σ∈S, ι∈I, τ∈VT. Therefore s(e)∈S×I×VT=C. No error falls outside.
+
+RESOLUTION: 10 patterns mapped 1:1 to violation types. missing_entity→add. type_mismatch→unify. bound_exceeded→increase/optimize. cycle_detected→break edge. dead_state→remove. illegal_io→replace. concurrency_conflict→serialize. memory_corruption→fix alloc/free. nontermination→add bound. symbol_collision→rename.
+
+BRANCH 2 SURVIVES. Branch 1 fails.`
+  },
+  {
     num: 6, ai: "Perplexity", org: "Perplexity AI", result: "Branch 2 survives", cats: "10 broad categories",
     distinct: "Cited arXiv:1610.04574 — generalization error of invariant classifiers. Quotient set architecture. f = π(s(e)).",
     derivation: `PERPLEXITY — COMPLETE DERIVATION
@@ -617,6 +638,44 @@ BRANCH 2 SURVIVES.`
     derivation: "MISTRAL — COMPLETE DERIVATION\n\nCATEGORY SPACE: C = S × I × V, |C| = 8×8×8 = 512\nS (8): Compilation, Linking, Runtime, Dependency, Configuration, Parsing, Execution, Hardware\nI (8): Type Safety, Memory Safety, Syntax Correctness, Version Compatibility, Dependency Constraints, Configuration Validity, Interface Correctness, Resource Limits\nV (8): Type Mismatch, Memory Violation, Syntax Error, Version Conflict, Missing Dependency, Invalid Configuration, Interface Mismatch, Resource Exhaustion\n\nSIGNATURE FUNCTION: s(e) = (originating_subsystem(e), violated_invariant(e), violation_type(e))\nDeterminism: The build system state uniquely determines s(e). Same error always produces same signature.\nProcedure: 1. Identify subsystem from error origin. 2. Identify invariant from violated property. 3. Identify violation type from error nature.\n\nFINITENESS: |C| = 8×8×8 = 512 < ∞. Product of finite sets.\n\nCOMPLETENESS: ∀e ∈ E, e originates in some s ∈ S, violates some i ∈ I, has some v ∈ V. Therefore s(e) = (s,i,v) ∈ C.\n\nINVARIANCE: s(e*) = (s*,i*,v*) where s* ∈ S, i* ∈ I, v* ∈ V. Since S,I,V are predefined and finite, s(e*) ∈ C by definition. Case 1: matches existing c. Case 2: new signature still belongs to C (bounded by 512). |C| remains finite.\n\nCLASSIFICATION: f(e) = s(e). Deterministic because s(e) is deterministic.\n\nRESOLUTION: r(c) determined by invariant violation type v.\nType Mismatch → fix type declarations, add casts, adjust interfaces.\nMemory Violation → add bounds checking, fix allocation.\nSyntax Error → correct syntax in source.\nVersion Conflict → update dependencies or lock versions.\nMissing Dependency → add to manifest.\nInvalid Configuration → validate and fix settings.\nInterface Mismatch → correct API/ABI usage.\nResource Exhaustion → increase limits or optimize.\n\nQUESTION TO ARCHITECT: 'If you were to implement this taxonomy, how would you design the automated extraction of s(e) from an error message or build log? Static analysis, dynamic analysis, or hybrid?'\n\nBRANCH 2 SURVIVES. Branch 1 fails."
   },
 
+  {
+    num: 10, ai: "Copilot", org: "Microsoft", result: "Branch 2 survives", cats: "15×15×15 (3,375)",
+    distinct: "Largest enumeration. Five-step resolution pipeline. Separate determinism proof.",
+    derivation: `COPILOT — COMPLETE DERIVATION
+
+CATEGORY SPACE: C = S × I × V, |C| = 15×15×15 = 3,375
+S (15): DependencyResolver, Compiler, Linker, FileSystem, Network, Auth, Cache, BuildGraph, ConfigParser, TestRunner, ResourceManager, Toolchain, VCS, ArtifactStore, PlatformAdapter
+I (15): Existence, VersionCompatibility, Determinism, Integrity, Authorization, ResourceBound, Syntax, Semantics, ABICompatibility, APIContract, Checksum, Signature, Quota, Ordering, Idempotence
+V (15): Missing, Mismatch, Corruption, Timeout, Denied, Exhausted, Cycle, Conflict, InconsistentState, ParseError, TypeError, UnresolvedReference, Duplicate, Race, NonDeterminism
+
+SIGNATURE: s(e)=(origin(e),violated_invariant(e),violation_type(e)). Deterministic extraction via predicates and pattern-match rules. Separate determinism theorem.
+
+RESOLUTION PIPELINE: Detect→Isolate→Repair→Verify→Record. Each category has parameterized template.
+
+INVARIANCE: Case A maps to existing. Case B1 adds triple within finite bound. Case B2 uses Axiom 8 for finite extension.
+
+BRANCH 2 SURVIVES.`
+  },
+  {
+    num: 11, ai: "Meta AI", org: "Meta", result: "Branch 2 survives", cats: "84 core, ≤588 max",
+    distinct: "Cleanest invariant set — only 7. Visual 12×7 grid. Saturation argument. Resolution by invariant.",
+    derivation: `META AI — COMPLETE DERIVATION
+
+CATEGORY SPACE: C = S × I × M, |C| ≤ 12×7×7 = 588, core = 84
+S (12): PARSE, DEP, SCHED, FS, NET, CACHE, ENV, TOOL, ART, PERM, RES, STATE
+I (7): WF, EXIST, TYPE, ACYC, COMP, CONS, ACC
+M (7): MISSING, MALFORMED, MISMATCH, CYCLE, CONFLICT, DENIED, EXHAUST
+
+84-CATEGORY GRID: Complete visual table. Each cell c1-c84.
+
+SIGNATURE: s(e)=(origin(e),invariant(e),mode(e)). Trace to subsystem boundary, read assertion, encode triple.
+
+SATURATION: After 84 distinct novelties, C is saturated. Novelty asymptotically ceases.
+
+RESOLUTION (8 templates by invariant): WF→FIX_SYNTAX, EXIST→PROVISION, TYPE→COERCE, ACYC→BREAK_CYCLE, COMP→COMPLETE_INPUTS, CONS→RESOLVE, ACC→GRANT, any+EXHAUST→RETRY.
+
+BRANCH 2 SURVIVES. Branch 1 fails all four tests.`
+  },
   {
     num: 9, ai: "Google AI", org: "Google", result: "Branch 2 survives", cats: "60 (5×4×3)",
     distinct: "Most rigorous projection functions with POSIX error codes. Complete 60-category table. Resolution by ι×v not full c.",
