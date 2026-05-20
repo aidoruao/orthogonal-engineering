@@ -713,7 +713,7 @@ BRANCH 2 SURVIVES. Branch 1 fails.`
 
 // === RENDER CONVERGENCE TABLE ===
 const tbody = document.getElementById('convergenceBody');
-convergenceData.forEach(d => {
+convergenceData.sort((a, b) => a.num - b.num).forEach(d => {
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td>${d.num}</td>
@@ -850,7 +850,7 @@ async function computeHashes() {
     
     // Individual AI hashes
     let hashReport = 'INDIVIDUAL AI DERIVATION HASHES:\n';
-    convergenceData.forEach(d => {
+    convergenceData.sort((a, b) => a.num - b.num).forEach(d => {
       const derivData = encoder.encode(d.derivation);
       crypto.subtle.digest('SHA-256', derivData).then(hashBuffer => {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
