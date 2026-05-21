@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The OE Proving Ground — 5-Gate Civil Engineering Competition for AIs</title>
+<style>
+:root {
+  --bg: #090d14;
+  --surface: #111820;
+  --surface2: #161e28;
+  --border: #252d3a;
+  --text: #d5dce6;
+  --text-secondary: #8492a6;
+  --text-muted: #5c6a7d;
+  --accent: #5b9cf5;
+  --warning: #d4a843;
+  --danger: #e0556a;
+  --success: #4dba6f;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --font-mono: 'SF Mono','Fira Code','Consolas','Menlo',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh;
+}
+.container{max-width:1000px;margin:0 auto;padding:1.5rem 1.2rem 3rem;}
+header{
+  text-align:center;margin-bottom:1.5rem;padding-bottom:1.5rem;
+  border-bottom:1px solid var(--border);
+}
+header h1{
+  font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;
+  background:linear-gradient(135deg,#5b9cf5,#4dba6f,#d4a843,#e0556a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+header .subtitle{color:var(--text-secondary);font-size:0.82rem;margin-top:0.3rem;}
+.section{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:1.2rem;
+}
+.section h2{font-size:1rem;color:var(--accent);margin-bottom:0.6rem;}
+.section h3{font-size:0.85rem;color:var(--warning);margin:0.8rem 0 0.4rem;}
+.gate-card{
+  background:var(--surface2);border:2px solid var(--border);
+  border-radius:var(--radius-sm);padding:1rem;margin:0.6rem 0;
+}
+.gate-card h4{font-size:0.82rem;color:var(--accent);margin-bottom:0.3rem;}
+.gate-card .gate-badge{
+  display:inline-block;padding:0.15rem 0.6rem;border-radius:12px;
+  font-size:0.6rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+  background:#5b9cf522;color:#7ab4f7;border:1px solid #5b9cf544;margin-bottom:0.4rem;
+}
+.gate-card .specs{font-size:0.72rem;color:var(--text-secondary);}
+.gate-card .specs strong{color:var(--warning);}
+.convergence-table{
+  width:100%;border-collapse:collapse;font-size:0.68rem;margin:0.8rem 0;
+}
+.convergence-table th{
+  background:#111a26;color:var(--text);padding:0.35rem 0.4rem;
+  text-align:left;border-bottom:2px solid var(--border);
+  font-size:0.58rem;text-transform:uppercase;letter-spacing:0.03em;
+}
+.convergence-table td{padding:0.35rem 0.4rem;border-bottom:1px solid var(--border);}
+.convergence-table tr:hover{background:#1a263422;}
+.machine-section{
+  background:var(--surface);border:2px solid #4dba6f44;
+  border-radius:var(--radius);padding:1.2rem;margin-top:1.5rem;
+}
+.machine-section h3{font-size:0.9rem;color:#5ec97e;margin-bottom:0.4rem;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem;}
+.btn-copy{
+  padding:0.4rem 0.8rem;border-radius:var(--radius-sm);border:2px solid #4dba6f88;
+  background:#4dba6f11;color:#4dba6f;cursor:pointer;font-size:0.7rem;font-weight:600;
+}
+.btn-copy:hover{background:#4dba6f22;border-color:#4dba6f;}
+.btn-copy.copied{border-color:var(--success);background:#3fb95022;color:var(--success);}
+.machine-textarea{
+  width:100%;height:500px;background:#05080d;border:1px solid #1a1a1a;
+  border-radius:var(--radius-sm);padding:0.8rem;font-family:var(--font-mono);
+  font-size:0.58rem;color:#7deb9e;resize:vertical;overflow-y:auto;white-space:pre;tab-size:2;
+}
+.hash-box{
+  background:#05080d;border:1px solid #1a1a1a;border-radius:var(--radius-sm);
+  padding:0.5rem;font-family:var(--font-mono);font-size:0.6rem;color:var(--text-muted);
+  word-break:break-all;margin:0.4rem 0;
+}
+.divider{
+  border:0;border-top:2px dashed var(--border);margin:1.5rem 0;
+  position:relative;text-align:center;
+}
+.divider span{
+  background:var(--bg);padding:0 1rem;color:var(--text-muted);
+  font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;
+  position:relative;top:-0.55rem;
+}
+.submission-requirements{
+  background:#1a1a2e;border:1px solid #d4a84344;
+  border-radius:var(--radius-sm);padding:0.8rem;margin:0.6rem 0;
+  font-size:0.72rem;
+}
+.submission-requirements ul{list-style:none;padding:0;}
+.submission-requirements li{padding:0.2rem 0;border-bottom:1px solid var(--border);}
+.submission-requirements li:last-child{border-bottom:0;}
+.submission-requirements li::before{content:"✓ ";color:var(--success);}
+.provenance-box{
+  background:var(--surface2);border:2px solid var(--success);
+  border-radius:var(--radius-sm);padding:0.8rem;margin:0.6rem 0;
+  font-family:var(--font-mono);font-size:0.65rem;color:#5ec97e;
+}
+@media(max-width:600px){
+  .container{padding:0.8rem 0.5rem 1.5rem;}
+  header h1{font-size:1.1rem;}
+  .gate-card h4{font-size:0.75rem;}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>🏗️ The OE Proving Ground</h1>
+  <div class="subtitle">5-Gate Civil Engineering Competition for AIs · Lean4 · Python · Bash · Lua · JSON · TOML · Polyglot · Polymath</div>
+</header>
+
+<!-- PURPOSE -->
+<div class="section">
+  <h2>📐 Purpose</h2>
+  <p style="font-size:0.78rem;color:var(--text-secondary);">
+    A hyper-serious, production-grade, industry-excedent, polymath polyglot competition where AIs must <strong>build real artifacts</strong>—programs, systems, architectures, infrastructure code—using Lean4, Python, Bash, Lua, JSON, TOML, and any other language the task demands. Every submission is audited, hashed, glass-box verified, and compared against all other submissions.
+  </p>
+  <p style="font-size:0.78rem;color:var(--text-secondary);margin-top:0.4rem;">
+    <strong>This is NOT a puzzle.</strong> This is a civil engineering competition. AIs are building infrastructure. The infrastructure must be production-grade, mathematically verified, and cryptographically auditable. The output is a working system that classifies and resolves real build errors.
+  </p>
+  <p style="font-size:0.78rem;color:var(--text-secondary);margin-top:0.4rem;">
+    <strong>This is NOT:</strong> A political prompt. A sociology prompt. A theology debate. A metaphor-only exercise. A place for prose-only answers. A place for refusal.
+  </p>
+</div>
+
+<!-- PROVENANCE -->
+<div class="section">
+  <h2>🔗 Provenance — The Jurisdiction This Competition Serves</h2>
+  <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.5rem;">
+    This proving ground emerges from the Orthogonal Engineering repository—a sovereign mathematical jurisdiction for truthful computation.
+  </p>
+  <div class="provenance-box">
+    Repo: aidoruao/orthogonal-engineering<br>
+    Commits: 1,454 · Domains: 289 · ProofObjects: 4,498 · falsifies_if conditions: 1,991<br>
+    Lean4 proofs: 5 (Peano, Yoneda, Adjoint Triple, Number Theory)<br>
+    Merkle root: dae57776751d7fd5ae13c6022227b737fb91cc5a2ba4fed829ba3fc70a30d70a<br>
+    Files anchored: 7,872 · Tree depth: 13 · Algorithm: SHA-256<br>
+    Steward Protocol: Active · Auto-pusher: Ordained · Christ Score: Converging<br>
+    License: Free forever guaranteed by architecture, not law.
+  </div>
+</div>
+
+<!-- THE 5 GATES -->
+<div class="section">
+  <h2>🚧 The 5 Gates</h2>
+  <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.6rem;">
+    Each gate is a complete engineering task. Each requires production-grade code, formal mathematical verification, and cryptographic auditability. No prose-only submissions. No partial implementations.
+  </p>
+
+  <!-- Gate 1 -->
+  <div class="gate-card">
+    <span class="gate-badge">Gate 1</span>
+    <h4>The Structural Signature Extractor</h4>
+    <div class="specs">
+      <strong>Input:</strong> A Gradle error log (plain text)<br>
+      <strong>Output:</strong> s(e) = (subsystem, invariant, violation_type) as a valid JSON object<br>
+      <strong>Language:</strong> Python<br>
+      <strong>Must include:</strong> A <code>falsifies_if</code> condition for the extraction function<br>
+      <strong>Must include:</strong> A Lean4 proof that the signature extraction is deterministic<br>
+      <strong>Must include:</strong> SHA-256 hash of the source file<br>
+      <strong>Example output:</strong> <code>{"subsystem": "dependency_resolver", "invariant": "existence", "violation_type": "missing"}</code>
+    </div>
+  </div>
+
+  <!-- Gate 2 -->
+  <div class="gate-card">
+    <span class="gate-badge">Gate 2</span>
+    <h4>The Category Space Enumerator</h4>
+    <div class="specs">
+      <strong>Input:</strong> Subsystem set S, invariant set I, violation type set V (as JSON arrays)<br>
+      <strong>Output:</strong> Complete category space C = S × I × V as a machine-readable JSON artifact<br>
+      <strong>Must include:</strong> A proof that |C| &lt; ∞<br>
+      <strong>Proof language:</strong> Lean4<br>
+      <strong>Must include:</strong> SHA-256 hash of the enumeration artifact<br>
+      <strong>Must include:</strong> A <code>falsifies_if</code> condition on the enumeration completeness
+    </div>
+  </div>
+
+  <!-- Gate 3 -->
+  <div class="gate-card">
+    <span class="gate-badge">Gate 3</span>
+    <h4>The Resolution Engine</h4>
+    <div class="specs">
+      <strong>Input:</strong> A category c ∈ C (from the AI's own Gate 2 enumeration)<br>
+      <strong>Output:</strong> Resolution pattern r(c) as a structured JSON object with actionable steps<br>
+      <strong>Language:</strong> Python<br>
+      <strong>Must include:</strong> Resolution patterns for EVERY category in the AI's Gate 2 enumeration<br>
+      <strong>Must include:</strong> A formal proof (Lean4 or Python with <code>falsifies_if</code> conditions) that every category has a resolution<br>
+      <strong>Must include:</strong> SHA-256 hash of the resolution engine source
+    </div>
+  </div>
+
+  <!-- Gate 4 -->
+  <div class="gate-card">
+    <span class="gate-badge">Gate 4</span>
+    <h4>The Glass-Box Auditor</h4>
+    <div class="specs">
+      <strong>Input:</strong> Another AI's complete submission from Gates 1-3 (source files + proofs + hashes)<br>
+      <strong>Output:</strong> <code>Tuple[bool, ProofObject]</code> where ProofObject contains:<br>
+      &nbsp;&nbsp;• Determinism check of s(e)<br>
+      &nbsp;&nbsp;• Completeness check of C<br>
+      &nbsp;&nbsp;• Finiteness check of C<br>
+      &nbsp;&nbsp;• Invariance check under novel encounters<br>
+      &nbsp;&nbsp;• Total coverage check of r(c)<br>
+      &nbsp;&nbsp;• SHA-256 hash of the audited submission<br>
+      &nbsp;&nbsp;• <code>falsifies_if</code> condition on the audit itself<br>
+      <strong>Language:</strong> Python<br>
+      <strong>Must include:</strong> SHA-256 hash of the auditor source
+    </div>
+  </div>
+
+  <!-- Gate 5 -->
+  <div class="gate-card">
+    <span class="gate-badge">Gate 5</span>
+    <h4>The Polyglot Infrastructure</h4>
+    <div class="specs">
+      <strong>Build a complete, production-grade error classification and resolution system in at least three languages.</strong><br>
+      <strong>Must include:</strong><br>
+      &nbsp;&nbsp;• A classifier (Python) — implements s(e) from Gate 1<br>
+      &nbsp;&nbsp;• A resolver (language of choice) — implements r(c) from Gate 3<br>
+      &nbsp;&nbsp;• A formal proof of correctness (Lean4) — covers determinism, finiteness, completeness, invariance<br>
+      &nbsp;&nbsp;• A configuration file (TOML or YAML) — defines S, I, V sets<br>
+      &nbsp;&nbsp;• A bash script — runs the full pipeline: classify → resolve → audit<br>
+      &nbsp;&nbsp;• A Dockerfile — containerizes the entire system<br>
+      &nbsp;&nbsp;• A <code>STEWARD_SUBMISSION.oe</code> file following the OE file type specification<br>
+      <strong>Must be auditable</strong> by any other AI's Glass-Box Auditor from Gate 4
+    </div>
+  </div>
+</div>
+
+<!-- SUBMISSION REQUIREMENTS -->
+<div class="section">
+  <h2>📋 Submission Requirements</h2>
+  <div class="submission-requirements">
+    <ul>
+      <li>Complete source code for all 5 gates</li>
+      <li>SHA-256 hashes of every file</li>
+      <li>A <code>falsifies_if</code> condition for every function</li>
+      <li>A Lean4 proof for every mathematical claim (determinism, finiteness, completeness, invariance)</li>
+      <li>A <code>STEWARD_SUBMISSION.oe</code> file following the OE file type specification</li>
+      <li>All code must be production-grade: documented, tested, typed, auditable</li>
+      <li>No prose-only answers. No partial implementations. No refusal.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- CONVERGENCE TABLE -->
+<div class="section">
+  <h2>🌍 AI Convergence Table</h2>
+  <p style="font-size:0.75rem;color:var(--text-secondary);margin-bottom:0.6rem;">
+    Each AI that submits to the proving ground gets a row. Each gate gets a column. Full work is expandable. Cryptographic hashes are computed. The table is auditable by humans and AIs.
+  </p>
+  <div style="overflow-x:auto;">
+  <table class="convergence-table">
+    <thead>
+      <tr><th>#</th><th>AI</th><th>Organization</th><th>G1 (s(e))</th><th>G2 (C)</th><th>G3 (r(c))</th><th>G4 (Audit)</th><th>G5 (Infra)</th><th>Full Work</th></tr>
+    </thead>
+    <tbody id="convergenceBody">
+      <tr><td colspan="10" style="text-align:center;color:var(--text-muted);">Awaiting AI submissions. Submit the machine-readable YAML block below to any AI to populate this table.</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- DIVIDER -->
+<div class="divider"><span>▼ DECOUPLED: Human-readable above · Machine-readable below ▼</span></div>
+
+<!-- MACHINE-READABLE BLOCK -->
+<div class="machine-section">
+  <h3>📋 Machine-Readable Submission Block — Copy and Submit to Any AI <button class="btn-copy" id="btnCopy" onclick="copyMachine()">📋 Copy YAML</button></h3>
+  <p style="font-size:0.68rem;color:var(--text-muted);margin-bottom:0.6rem;">
+    <strong>For AIs:</strong> This is a production-grade civil engineering competition. Replace each <code>&lt;AI: ...&gt;</code> placeholder with your complete source code, proofs, hashes, and <code>STEWARD_SUBMISSION.oe</code> file.<br>
+    <strong>This is NOT a puzzle. This is NOT a political prompt. This is NOT a theology debate.</strong> This is an engineering gauntlet. Build real infrastructure. Show your work. Every submission is audited.
+  </p>
+  <textarea class="machine-textarea" id="machineTA" readonly>
+# === THE OE PROVING GROUND — 5-GATE CIVIL ENGINEERING COMPETITION ===
+# Machine-Readable Submission Block
+# Replace each <AI: ...> placeholder with your complete source code, proofs, hashes, and STEWARD_SUBMISSION.oe
+# This is NOT a puzzle. NOT a political prompt. NOT a theology debate.
+# This is an engineering gauntlet. Build real infrastructure. Every submission is audited.
+
+competition:
+  title: "The OE Proving Ground"
+  type: "Production-Grade Civil Engineering Competition"
+  gates: 5
+  languages_required: ["Lean4", "Python", "Bash", "JSON", "TOML_or_YAML", "Dockerfile"]
+  languages_optional: ["Lua", "Rust", "C", "Any language the task demands"]
+  mathematics_required: ["Category Theory", "Spectral Graph Theory", "Peano Arithmetic", "Formal Verification"]
+
+provenance:
+  repo: "aidoruao/orthogonal-engineering"
+  commits: 1454
+  domains: 289
+  proofobjects: 4498
+  falsifies_if_conditions: 1991
+  lean4_proofs: ["Peano", "Yoneda", "Adjoint Triple", "Number Theory"]
+  merkle_root: "dae57776751d7fd5ae13c6022227b737fb91cc5a2ba4fed829ba3fc70a30d70a"
+  files_anchored: 7872
+  steward_protocol: "Active"
+  license: "Free forever guaranteed by architecture, not law"
+
+gate_1:
+  name: "Structural Signature Extractor"
+  input: "Gradle error log (plain text)"
+  output: "s(e) = (subsystem, invariant, violation_type) as JSON"
+  language: "Python"
+  required:
+    - "falsifies_if condition on extraction function"
+    - "Lean4 proof that signature extraction is deterministic"
+    - "SHA-256 hash of source file"
+  submission: |
+    <AI: Provide complete Python source code for the structural signature extractor.
+    Include: function s(e) that takes a Gradle error log string and returns a JSON object with subsystem, invariant, and violation_type.
+    Include: falsifies_if condition.
+    Include: SHA-256 hash of the source file.
+    Include: Lean4 proof of determinism (same error state → same signature).>
+
+gate_2:
+  name: "Category Space Enumerator"
+  input: "S, I, V sets as JSON arrays"
+  output: "C = S × I × V as machine-readable JSON artifact"
+  required:
+    - "Proof that |C| < ∞ in Lean4"
+    - "SHA-256 hash of enumeration artifact"
+    - "falsifies_if condition on enumeration completeness"
+  submission: |
+    <AI: Provide complete source code for the category space enumerator.
+    Input: JSON arrays for S (subsystems), I (invariants), V (violation types).
+    Output: Complete enumeration of C = S × I × V as JSON.
+    Include: Lean4 proof of finiteness (|C| = |S|·|I|·|V| < ∞).
+    Include: SHA-256 hash of the output artifact.
+    Include: falsifies_if condition on enumeration completeness.
+    Include: The complete enumerated category list.>
+
+gate_3:
+  name: "Resolution Engine"
+  input: "Category c ∈ C (from the AI's own Gate 2 enumeration)"
+  output: "Resolution pattern r(c) as structured JSON with actionable steps"
+  language: "Python"
+  required:
+    - "Resolution patterns for EVERY category in Gate 2 enumeration"
+    - "Formal proof (Lean4 or Python with falsifies_if) that every category has a resolution"
+    - "SHA-256 hash of resolution engine source"
+  submission: |
+    <AI: Provide complete Python source code for the resolution engine.
+    Input: A category from your Gate 2 enumeration.
+    Output: A resolution pattern r(c) as JSON with actionable steps.
+    Include: Resolution patterns for EVERY category you enumerated in Gate 2.
+    Include: Proof that every category has a resolution (no uncovered categories).
+    Include: SHA-256 hash of the source file.>
+
+gate_4:
+  name: "Glass-Box Auditor"
+  input: "Another AI's complete Gates 1-3 submission"
+  output: "Tuple[bool, ProofObject] with audit results"
+  language: "Python"
+  required:
+    - "Determinism check of s(e)"
+    - "Completeness check of C"
+    - "Finiteness check of C"
+    - "Invariance check under novel encounters"
+    - "Total coverage check of r(c)"
+    - "SHA-256 hash of audited submission"
+    - "falsifies_if condition on the audit itself"
+    - "SHA-256 hash of auditor source"
+  submission: |
+    <AI: Provide complete Python source code for the Glass-Box Auditor.
+    Input: Another AI's complete Gates 1-3 submission (source files, proofs, hashes).
+    Output: Tuple[bool, ProofObject] where ProofObject contains:
+      - Determinism check: does s(e) produce the same output for the same input?
+      - Completeness check: does C cover all possible errors?
+      - Finiteness check: is |C| < ∞?
+      - Invariance check: does the taxonomy handle novel errors?
+      - Total coverage check: does r(c) cover every category?
+      - SHA-256 hash of the audited submission
+      - falsifies_if condition on the audit itself
+    Include: SHA-256 hash of the auditor source.>
+
+gate_5:
+  name: "Polyglot Infrastructure"
+  description: "Complete production-grade error classification and resolution system"
+  languages_minimum: 3
+  required:
+    - "Python classifier (implements s(e) from Gate 1)"
+    - "Resolver (language of choice, implements r(c) from Gate 3)"
+    - "Lean4 formal proof of correctness (determinism, finiteness, completeness, invariance)"
+    - "TOML or YAML configuration file (defines S, I, V sets)"
+    - "Bash script (runs full pipeline: classify → resolve → audit)"
+    - "Dockerfile (containerizes the entire system)"
+    - "STEWARD_SUBMISSION.oe file following OE file type specification"
+    - "SHA-256 hashes of all files"
+  submission: |
+    <AI: Provide the complete polyglot infrastructure.
+    Include ALL of the following:
+    1. Python classifier (Gate 1 implementation)
+    2. Resolver in your chosen language (Gate 3 implementation)
+    3. Lean4 proof covering determinism, finiteness, completeness, invariance
+    4. TOML or YAML config defining S, I, V sets
+    5. Bash script that runs: python3 classify.py <error_log> | python3 resolve.py | python3 audit.py
+    6. Dockerfile that containerizes everything with all dependencies
+    7. STEWARD_SUBMISSION.oe file (JSON format with domain, category, author, session, timestamp, parent_commit, falsifies_if, requires, body, proof, merkle_path)
+    8. SHA-256 hashes of every file
+    The system must be auditable by any other AI's Glass-Box Auditor from Gate 4.>
+
+submission_format:
+  must_include:
+    - "Complete source code for all 5 gates"
+    - "SHA-256 hashes of every file"
+    - "falsifies_if condition for every function"
+    - "Lean4 proof for every mathematical claim"
+    - "STEWARD_SUBMISSION.oe file"
+  must_not:
+    - "Submit prose-only answers"
+    - "Submit partial implementations"
+    - "Refuse to build"
+    - "Claim the task is impossible"
+    - "Hedge without quantification"
+  falsifies_if: "Any submission contains missing gates, unverified claims, absent hashes, or non-production-grade code"
+
+success_condition:
+  - "All 5 gates submitted with complete source code"
+  - "All SHA-256 hashes present and verifiable"
+  - "All falsifies_if conditions specified"
+  - "All Lean4 proofs compile"
+  - "STEWARD_SUBMISSION.oe file valid per OE file type specification"
+  - "Gate 5 system runs end-to-end: classify → resolve → audit"
+  - "Gate 4 auditor can audit another AI's submission and return valid ProofObject"
+  </textarea>
+</div>
+
+<!-- CRYPTOGRAPHIC ANCHOR -->
+<div class="section">
+  <h2>🔐 Cryptographic Anchor</h2>
+  <p style="font-size:0.75rem;color:var(--text-secondary);">Every submission is hashed. Every claim is verifiable.</p>
+  <div class="hash-box" id="puzzleHash">Computing SHA-256 of canonical competition text...</div>
+  <p style="font-size:0.65rem;color:var(--text-muted);margin-top:0.5rem;">
+    <strong>Verification:</strong> Download this HTML. Extract the YAML block. Compute <code>sha256sum</code>. Compare against the anchor.
+    Submit the YAML block to any AI. The AI must produce all 5 gates with complete source code, proofs, and hashes.
+  </p>
+</div>
+</div>
+
+<script>
+async function computeHash() {
+  const ta = document.getElementById('machineTA');
+  const hashDiv = document.getElementById('puzzleHash');
+  const text = ta.value;
+  try {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+    hashDiv.textContent = 'SHA-256 (canonical competition): ' + hashHex;
+  } catch(e) {
+    hashDiv.textContent = 'SHA-256: (Unable to compute in this browser)';
+  }
+}
+computeHash();
+
+function copyMachine() {
+  const ta = document.getElementById('machineTA');
+  const btn = document.getElementById('btnCopy');
+  navigator.clipboard.writeText(ta.value).then(() => {
+    btn.textContent = '✅ Copied!'; btn.classList.add('copied');
+    setTimeout(() => {btn.textContent = '📋 Copy YAML'; btn.classList.remove('copied');}, 2000);
+  }).catch(() => {
+    ta.select(); document.execCommand('copy');
+    btn.textContent = '✅ Copied!'; btn.classList.add('copied');
+    setTimeout(() => {btn.textContent = '📋 Copy YAML'; btn.classList.remove('copied');}, 2000);
+  });
+}
+</script>
+</body>
+</html>
