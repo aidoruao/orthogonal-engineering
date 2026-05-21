@@ -96,3 +96,37 @@ AI-submitted Lean4 code extracted from Proving Ground submissions
 *Checkpoint: 2026-05-20 — Session DS6a*
 Prior: Proving Ground HTML deployed. ChatGPT Row 1. Live tools queued.
 Next: Install Lean4 in WSL2. Compile OE proofs. Wire compiler output into HTML.
+
+---
+
+## Gemini Engineering Review (Added 2026-05-20)
+
+### Critical Compiler Behaviors Identified
+
+1. **Import Path Management:** Standalone `lean file.lean` fails if code imports Mathlib or external dependencies. Fix: require pure Core/Init proofs for standalone gates, or use `lake env lean` from within Lake project directory.
+
+2. **Error Stream Capture:** Lean 4 outputs errors to stdout (not stderr) while still returning exit code 1. Fix: capture both streams:
+   ```bash
+   lean submission_gate1.lean > compile_output.log 2>&1
+   STATUS=$?
+Browser Sandbox Bridge: HTML/JS cannot execute local shell commands. Fix: lightweight Python server (Flask/FastAPI) on localhost:5000. HTML sends fetch request, Python writes temp file, calls lean, returns JSON response with compiler output.
+
+Strengths Confirmed
+Visual Compile State Matrix (Yellow/Green/Red borders) approved
+
+Double-Hash Anchoring (.lean + .olean) approved as exceptional security
+
+Core Math Validation (Peano, NumberTheory, Yoneda) approved as foundational
+
+Overall spec rated "Production-Grade Execution"
+
+Build Requirements Updated
+Python-to-WSL bridge script needed for HTML "Compile" button
+
+Flask/FastAPI server bound to localhost:5000
+
+Lake project initialization for dependency management
+
+Stdout+stderr capture for error parsing
+
+*Engineering review by Gemini, 2026-05-20. Build cleared for DS6a execution.*
