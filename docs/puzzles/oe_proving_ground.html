@@ -286,6 +286,7 @@ header .subtitle{color:var(--text-secondary);font-size:0.82rem;margin-top:0.3rem
     </tbody>
   </table>
   </div>
+  <div id="derivationDisplay" style="margin-top:1rem;"></div>
 </div>
 
 <!-- DIVIDER -->
@@ -513,11 +514,8 @@ const convergenceData = [
 
 // === RENDER DERIVATION DISPLAY ===
 (function() {
-  const container = document.querySelector('.container');
-  const displayDiv = document.createElement('div');
-  displayDiv.id = 'derivationDisplay';
-  displayDiv.style.marginTop = '1rem';
-  container.appendChild(displayDiv);
+  const displayDiv = document.getElementById('derivationDisplay');
+  if (!displayDiv) return;
   
   convergenceData.forEach(d => {
     const derivDiv = document.createElement('div');
