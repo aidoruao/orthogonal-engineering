@@ -496,6 +496,59 @@ function copyMachine() {
     setTimeout(() => {btn.textContent = '📋 Copy YAML'; btn.classList.remove('copied');}, 2000);
   });
 }
+
+// === CONVERGENCE DATA ===
+const convergenceData = [
+  {
+    num: 1, ai: "ChatGPT", org: "OpenAI", 
+    g1: "✅ 3×3×3 signature. Lean4 rfl proof.", 
+    g2: "✅ 27 categories. native_decide cardinality.", 
+    g3: "✅ Total resolution map. ∀c∈C, ∃r(c).", 
+    g4: "✅ 5 checks specified. Invariance theorem.", 
+    g5: "✅ Pipeline + spectral graph + category theory.",
+    distinct: "First submission. Proved format works for inline chat. Novel: Fiedler eigenvalue connectivity invariant. Resolution as constructive right adjoint.",
+    derivation: "CHATGPT — PROVING GROUND SUBMISSION (INLINE)\n\nGATE 1 — STRUCTURAL SIGNATURE EXTRACTOR\ns(e): E → S × I × V\nS = {gradle, dependency, network}\nI = {deterministic_build, version_lock, connectivity}\nV = {missing_symbol, timeout, checksum_mismatch}\n\nClassifier:\ns(e) = (network, connectivity, timeout) if e ⊨ /timeout/i\ns(e) = (dependency, version_lock, checksum_mismatch) if e ⊨ /checksum/i\ns(e) = (gradle, deterministic_build, missing_symbol) otherwise\n\nDeterminism theorem: ∀e ∈ E, s(e) = s(e)\nLean4 proof: theorem classifier_deterministic (f : String → Signature) (x : String) : f x = f x := by rfl\n\nfalsifies_if: nondeterministic regex engine, mutable hidden classifier state\n\nGATE 2 — CATEGORY SPACE ENUMERATOR\nC = S × I × V, |C| = 3·3·3 = 27\nLean4: instance : Finite C := by infer_instance; theorem card_C : Fintype.card C = 27 := by native_decide\n\nGATE 3 — RESOLUTION ENGINE\nr: C → R, total mapping. ∀c ∈ C, ∃r(c)\nmissing_symbol → invalidate cache, pin compiler, rebuild\ntimeout → retry, increase socket timeout, verify connectivity\nchecksum_mismatch → purge cache, re-fetch, verify lockfile\n\nGATE 4 — GLASS-BOX AUDITOR\nChecks: determinism, completeness, finiteness, invariance, totality\nNovel encounter invariance: ∀e' ∈ E, s(e') ∈ C\n\nGATE 5 — POLYGLOT INFRASTRUCTURE\nPipeline: classify → enumerate → resolve → audit\nRuntime: O(|E| + |C|), bounded finite execution\n\nSPECTRAL GRAPH THEORY (novel):\nFiedler eigenvalue λ₂(L) > 0 for connectivity invariant detection\n\nCATEGORY-THEORETIC (novel):\nFunctor F: E → C, resolution as constructive right adjoint R: C → RepairActions\n\nNOTE: Full inline submission. ZIP was stubs. Mathematical architecture is complete."
+  }
+];
+
+// === RENDER DERIVATION DISPLAY ===
+(function() {
+  const container = document.querySelector('.container');
+  const displayDiv = document.createElement('div');
+  displayDiv.id = 'derivationDisplay';
+  displayDiv.style.marginTop = '1rem';
+  container.appendChild(displayDiv);
+  
+  convergenceData.forEach(d => {
+    const derivDiv = document.createElement('div');
+    derivDiv.id = 'deriv-' + d.num;
+    derivDiv.style.cssText = 'display:none;background:#05080d;border:1px solid #1a1a1a;border-radius:6px;padding:0.8rem;margin:0.4rem 0;font-family:monospace;font-size:0.65rem;color:#7deb9e;white-space:pre-wrap;max-height:400px;overflow-y:auto;';
+    derivDiv.textContent = d.derivation;
+    displayDiv.appendChild(derivDiv);
+  });
+})();
+
+// === TOGGLE DERIVATION ===
+function toggleDerivation(num) {
+  const div = document.getElementById('deriv-' + num);
+  if (!div) return;
+  const btns = document.querySelectorAll('.ai-expand');
+  let targetBtn = null;
+  btns.forEach(function(b) {
+    const oc = b.getAttribute('onclick');
+    if (oc && oc.indexOf('toggleDerivation(' + num + ')') !== -1) {
+      targetBtn = b;
+    }
+  });
+  if (div.style.display === 'block') {
+    div.style.display = 'none';
+    if (targetBtn) targetBtn.textContent = '▶ Expand';
+  } else {
+    div.style.display = 'block';
+    if (targetBtn) targetBtn.textContent = '▼ Collapse';
+  }
+}
+
 </script>
 </body>
 </html>
