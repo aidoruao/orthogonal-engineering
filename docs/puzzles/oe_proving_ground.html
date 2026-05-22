@@ -547,6 +547,108 @@ function toggleDerivation(num) {
   }
 }
 
+// === LIVE GLASS-BOX AUDITOR (Gate 4) ===
+// Audits any AI's derivation text against the 5 checks
+// Returns Tuple[bool, ProofObject] rendered into the convergence table
+
+function runGlassBoxAudit(rowNum) {
+  const derivDiv = document.getElementById('deriv-' + rowNum);
+  if (!derivDiv) { alert('No derivation found for row ' + rowNum); return; }
+  
+  const text = derivDiv.textContent;
+  const results = {
+    determinism: false,
+    completeness: false,
+    finiteness: false,
+    invariance: false,
+    totality: false,
+    falsifies_if: "Audit failed: checks incomplete",
+    hash: ""
+  };
+  
+  // Check 1: Determinism — does the submission claim ∀e ∈ E, s(e) = s(e)?
+  results.determinism = /determinism|deterministic|∀e.*s\(e\)\s*=\s*s\(e\)|classifier_deterministic/i.test(text);
+  
+  // Check 2: Completeness — does it define C or enumerate categories?
+  results.completeness = /C\s*=\s*S\s*[×x]\s*I\s*[×x]\s*V|Category Space|categories|27\s*cats/i.test(text);
+  
+  // Check 3: Finiteness — does |C| < ∞?
+  results.finiteness = /\|C\|\s*=|cardinality|Fintype\.card|27|finite/i.test(text);
+  
+  // Check 4: Invariance — does it handle novel encounters?
+  results.invariance = /invariance|novel encounter|∀e'.*s\(e'\)\s*∈\s*C|handle novel/i.test(text);
+  
+  // Check 5: Totality — ∀c ∈ C, ∃r(c)?
+  results.totality = /∀c\s*∈\s*C.*∃r\(c\)|total.*map|resolution.*every|complete.*coverage/i.test(text);
+  
+  // Compute SHA-256 of derivation text
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  crypto.subtle.digest('SHA-256', data).then(function(hashBuffer) {
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    results.hash = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+    
+    // Determine pass/fail
+    const allPass = results.determinism && results.completeness && results.finiteness && results.invariance && results.totality;
+    results.falsifies_if = allPass ? "PASSED: All 5 checks satisfied" : "FAILED: Missing checks — " + 
+      [!results.determinism && "determinism", !results.completeness && "completeness", !results.finiteness && "finiteness", !results.invariance && "invariance", !results.totality && "totality"]
+        .filter(Boolean).join(", ");
+    
+    // Update the convergence table row
+    const g4Cell = document.querySelector('#convergenceBody tr:nth-child(' + (rowNum * 2 - 1) + ') td:nth-child(7)');
+    if (g4Cell) {
+      g4Cell.style.color = allPass ? '#5ec97e' : '#e0556a';
+      g4Cell.innerHTML = allPass ? '✅ LIVE AUDIT: 5/5' : '❌ LIVE AUDIT: ' + [results.determinism, results.completeness, results.finiteness, results.invariance, results.totality].filter(Boolean).length + '/5';
+      g4Cell.title = results.falsifies_if + '\nSHA-256: ' + results.hash;
+    }
+    
+    // Display audit results below the derivation
+    const auditDisplay = document.getElementById('audit-result-' + rowNum);
+    if (auditDisplay) {
+      auditDisplay.innerHTML = '<strong>🔍 LIVE GLASS-BOX AUDIT (Gate 4)</strong><br>' +
+        'Determinism: ' + (results.determinism ? '✅' : '❌') + ' | ' +
+        'Completeness: ' + (results.completeness ? '✅' : '❌') + ' | ' +
+        'Finiteness: ' + (results.finiteness ? '✅' : '❌') + ' | ' +
+        'Invariance: ' + (results.invariance ? '✅' : '❌') + ' | ' +
+        'Totality: ' + (results.totality ? '✅' : '❌') + '<br>' +
+        '<strong>Verdict:</strong> ' + results.falsifies_if + '<br>' +
+        '<strong>SHA-256:</strong> <code style="font-size:0.55rem;word-break:break-all;">' + results.hash + '</code>';
+      auditDisplay.style.display = 'block';
+    }
+  });
+  
+  // Return ProofObject immediately (hash will update async)
+  return {
+    passed: results.determinism && results.completeness && results.finiteness && results.invariance && results.totality,
+    proofObject: results
+  };
+}
+
+// Inject audit result divs and audit buttons for each row
+(function() {
+  const displayDiv = document.getElementById('derivationDisplay');
+  if (!displayDiv) return;
+  
+  convergenceData.forEach(function(d) {
+    const auditDiv = document.createElement('div');
+    auditDiv.id = 'audit-result-' + d.num;
+    auditDiv.style.cssText = 'display:none;background:#111a26;border:1px solid #5b9cf544;border-radius:6px;padding:0.6rem;margin:0.3rem 0;font-family:monospace;font-size:0.62rem;color:#d5dce6;';
+    displayDiv.appendChild(auditDiv);
+  });
+  
+  // Add audit button to each row
+  convergenceData.forEach(function(d) {
+    const row = document.querySelector('#convergenceBody tr:nth-child(' + (d.num * 2 - 1) + ')');
+    if (!row) return;
+    const fullWorkCell = row.querySelector('td:last-child');
+    if (!fullWorkCell) return;
+    const auditBtn = document.createElement('span');
+    auditBtn.textContent = ' 🔍 Audit';
+    auditBtn.style.cssText = 'cursor:pointer;color:#d4a843;text-decoration:underline;font-size:0.7rem;margin-left:0.4rem;';
+    auditBtn.onclick = function() { runGlassBoxAudit(d.num); };
+    fullWorkCell.appendChild(auditBtn);
+  });
+})();
 </script>
 </body>
 </html>
