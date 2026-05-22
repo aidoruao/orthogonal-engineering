@@ -1,9 +1,6 @@
 /-
 SAL Type 10: Yoneda Lemma
 Nat(Hom(a,-), F) ≅ F(a)
-
-Mathematical foundation: Category theory, representable functors
-Biblical: John 14:9 — "Anyone who has seen me has seen the Father."
 -/
 
 namespace SAL
@@ -28,7 +25,7 @@ def yonedaObj (C : FinCategory) (a : C.Obj) (b : C.Obj) : Type v :=
 
 def yonedaPresheaf (C : FinCategory) (a : C.Obj) : Presheaf C where
   F := yonedaObj C a
-  map := λ f g => C.comp f g
+  map := λ f g => C.comp g f
 
 def yonedaLemma {C : FinCategory} {F : Presheaf C} {a : C.Obj}
     (α : NatTrans (yonedaPresheaf C a) F) : F.F a :=
