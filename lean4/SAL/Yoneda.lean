@@ -25,7 +25,7 @@ def yonedaObj (C : FinCategory) (a : C.Obj) (b : C.Obj) : Type v :=
 
 def yonedaPresheaf (C : FinCategory) (a : C.Obj) : Presheaf C where
   F := yonedaObj C a
-  map := λ f g => C.comp g f
+  map := λ {b c} (f : C.Hom b c) (g : C.Hom b a) => C.comp f g
 
 def yonedaLemma {C : FinCategory} {F : Presheaf C} {a : C.Obj}
     (α : NatTrans (yonedaPresheaf C a) F) : F.F a :=
@@ -33,7 +33,7 @@ def yonedaLemma {C : FinCategory} {F : Presheaf C} {a : C.Obj}
 
 def yonedaInverse {C : FinCategory} {F : Presheaf C} {a : C.Obj}
     (x : F.F a) : NatTrans (yonedaPresheaf C a) F where
-  component := λ b f => F.map f x
+  component := λ (b : C.Obj) (h : C.Hom b a) => F.map h x
 
 structure YonedaIsomorphism (C : FinCategory) (F : Presheaf C) (a : C.Obj) where
   toFun : NatTrans (yonedaPresheaf C a) F → F.F a
