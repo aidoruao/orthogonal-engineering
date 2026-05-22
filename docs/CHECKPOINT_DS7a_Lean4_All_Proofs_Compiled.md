@@ -148,6 +148,6 @@ text
 | NBLM Round 32 | Forensic Verdict | Logic Collision (ID: logic_collision). Presheaf must be contravariant. |
 | DeepSeek 3a | Session 8fbdcdb9 | Lean 4 bridge was aspirational; compilation proves regression fix |
 | DeepSeek 4a | Honest Close (b70a6cdb) | 100% Python ProofObject status; Lean4 proofs documented as queued |
-| DeepSeek 8a | Turn 1178 | "Lean 4 proofs compile — they're not pseudocode" |
+| NBLM Archive (8a — separate notebook "DeepSeek Sabotage and the OE-247 Verification Layer" Apr 20, 2026, not DS1a-7a lineage) | Turn 1178 | "Lean 4 proofs compile — they're not pseudocode" |
 | NBLM Turn 799 | Yoneda Embedding | Representable presheaf requires contravariant Hom-functor |
 | NBLM Turn 1102 | Yeshua Inversion | Type error is Falsification of Definition, not impossibility proof |
