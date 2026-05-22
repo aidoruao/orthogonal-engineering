@@ -1,5 +1,5 @@
 {
-  "computational_checks": 1088,
+  "computational_checks": 1279,
   "domains": {
     "d_abstract_algebra": {
       "checks": [
@@ -78,40 +78,40 @@
     "d_aerospace_floor": {
       "checks": [
         {
-          "name": "check_do178c_determinism",
-          "type": "tautological"
+          "name": "check_determinism_score",
+          "type": "computational"
         },
         {
-          "name": "check_mcdc_coverage",
-          "type": "tautological"
+          "name": "check_mcdc_coverage_fraction",
+          "type": "computational"
         },
         {
-          "name": "check_misra_recursion_bounded",
-          "type": "tautological"
+          "name": "check_recursion_depth_bound",
+          "type": "computational"
         },
         {
-          "name": "check_milstd882e_mishap_probability",
-          "type": "tautological"
+          "name": "check_mishap_probability_risk",
+          "type": "computational"
         },
         {
-          "name": "check_independence_review",
-          "type": "tautological"
+          "name": "check_independence_review_score",
+          "type": "computational"
         },
         {
-          "name": "check_iec61508_sil4",
-          "type": "tautological"
+          "name": "check_sil_integrity_level",
+          "type": "computational"
         },
         {
-          "name": "check_nasa_npr7150_class_a",
-          "type": "tautological"
+          "name": "check_nasa_compliance_score",
+          "type": "computational"
         },
         {
-          "name": "check_af_compliance_scanned",
-          "type": "tautological"
+          "name": "check_af_scan_coverage",
+          "type": "computational"
         }
       ],
       "domain": "d_aerospace_floor",
-      "domain_type": "tautological"
+      "domain_type": "computational"
     },
     "d_agriculture": {
       "checks": [
@@ -199,6 +199,36 @@
         }
       ],
       "domain": "d_antitrust",
+      "domain_type": "computational"
+    },
+    "d_arc_agi": {
+      "checks": [
+        {
+          "name": "check_solve_rate_nonzero",
+          "type": "computational"
+        },
+        {
+          "name": "check_compositional_depth",
+          "type": "computational"
+        },
+        {
+          "name": "check_novel_rule_generalization",
+          "type": "computational"
+        },
+        {
+          "name": "check_grid_output_exact",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_brute_force",
+          "type": "computational"
+        },
+        {
+          "name": "check_transfer_across_tasks",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arc_agi",
       "domain_type": "computational"
     },
     "d_arc_agi_3": {
@@ -308,6 +338,28 @@
       ],
       "domain": "d_arxiv_banking_api_quotient",
       "domain_type": "mixed"
+    },
+    "d_arxiv_block_encoding_dog": {
+      "checks": [
+        {
+          "name": "check_constant_subnormalisation",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_black_box_oracles",
+          "type": "computational"
+        },
+        {
+          "name": "check_o_h4_scaling",
+          "type": "computational"
+        },
+        {
+          "name": "check_success_probability_bounded",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_block_encoding_dog",
+      "domain_type": "computational"
     },
     "d_arxiv_byzantine_safety": {
       "checks": [
@@ -647,6 +699,186 @@
       "domain": "d_arxiv_imprecise_probability",
       "domain_type": "mixed"
     },
+    "d_arxiv_inv_defense_trilemma": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_defense_trilemma",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_ghost_imaging_zero_photons": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_ghost_imaging_zero_photons",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_likelihood_hacking": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_likelihood_hacking",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_representational_limits": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_representational_limits",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_safemind": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_safemind",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_sharp_local_minima": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_sharp_local_minima",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_solvability_complexity": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_solvability_complexity",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_stabilization_without_simplification": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_stabilization_without_simplification",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_tractability_frontier": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_tractability_frontier",
+      "domain_type": "computational"
+    },
+    "d_arxiv_inv_vulnerability_abundance": {
+      "checks": [
+        {
+          "name": "check_inversion_holds",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_restriction_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_original_impossibility_holds_without_restriction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_inv_vulnerability_abundance",
+      "domain_type": "computational"
+    },
     "d_arxiv_large_language_models": {
       "checks": [
         {
@@ -698,6 +930,50 @@
       ],
       "domain": "d_arxiv_left_distributive",
       "domain_type": "mixed"
+    },
+    "d_arxiv_linearizable_registers": {
+      "checks": [
+        {
+          "name": "check_linearizability",
+          "type": "computational"
+        },
+        {
+          "name": "check_real_time_order_preserved",
+          "type": "computational"
+        },
+        {
+          "name": "check_message_chains_required",
+          "type": "computational"
+        },
+        {
+          "name": "check_chain_density_threshold",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_linearizable_registers",
+      "domain_type": "computational"
+    },
+    "d_arxiv_nonlocal_games": {
+      "checks": [
+        {
+          "name": "check_quantum_beats_classical",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_signaling_upper_bound",
+          "type": "computational"
+        },
+        {
+          "name": "check_entanglement_required",
+          "type": "computational"
+        },
+        {
+          "name": "check_winning_probability_bounded",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_nonlocal_games",
+      "domain_type": "computational"
     },
     "d_arxiv_objective_linear_algebra": {
       "checks": [
@@ -936,23 +1212,19 @@
     "d_arxiv_quantum_randomized_subspace": {
       "checks": [
         {
-          "name": "check_subspace_dimension_valid",
+          "name": "check_anti_concentration",
           "type": "computational"
         },
         {
-          "name": "check_spectral_gap_positive",
+          "name": "check_spectral_gap_preserved",
           "type": "computational"
         },
         {
-          "name": "check_iteration_count_positive",
+          "name": "check_full_eigenspace_spanned",
           "type": "computational"
         },
         {
-          "name": "check_approximation_error_nonnegative",
-          "type": "computational"
-        },
-        {
-          "name": "check_ambient_dimension_positive",
+          "name": "check_branch_count_matches_degeneracy",
           "type": "computational"
         }
       ],
@@ -1087,6 +1359,28 @@
         }
       ],
       "domain": "d_arxiv_rays_as_pixels",
+      "domain_type": "computational"
+    },
+    "d_arxiv_risk_management_bowtie": {
+      "checks": [
+        {
+          "name": "check_bowtie_complete",
+          "type": "computational"
+        },
+        {
+          "name": "check_dag_valid",
+          "type": "computational"
+        },
+        {
+          "name": "check_probability_capture",
+          "type": "computational"
+        },
+        {
+          "name": "check_safe_state_semantics",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_arxiv_risk_management_bowtie",
       "domain_type": "computational"
     },
     "d_arxiv_safeadapt_provably_safe": {
@@ -1670,11 +1964,11 @@
           "type": "computational"
         },
         {
-          "name": "check_pilot_certification",
+          "name": "check_pilot_certification_score",
           "type": "computational"
         },
         {
-          "name": "check_ifr_requirements",
+          "name": "check_ifr_readiness_score",
           "type": "computational"
         }
       ],
@@ -2016,6 +2310,10 @@
         {
           "name": "check_esd_timing",
           "type": "computational"
+        },
+        {
+          "name": "check_reactor_safety_margin",
+          "type": "computational"
         }
       ],
       "domain": "d_chemical",
@@ -2115,6 +2413,24 @@
         }
       ],
       "domain": "d_civilizational_polymath",
+      "domain_type": "computational"
+    },
+    "d_cognitive_science": {
+      "checks": [
+        {
+          "name": "check_capacity_bounded",
+          "type": "computational"
+        },
+        {
+          "name": "check_attention_allocation",
+          "type": "computational"
+        },
+        {
+          "name": "check_context_drift_monotone",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_cognitive_science",
       "domain_type": "computational"
     },
     "d_combinatorics": {
@@ -2232,7 +2548,7 @@
           "type": "computational"
         },
         {
-          "name": "check_osha_fall_protection",
+          "name": "check_fall_protection_coverage",
           "type": "computational"
         }
       ],
@@ -2305,6 +2621,36 @@
       "domain": "d_control_systems",
       "domain_type": "mixed"
     },
+    "d_coordination_tax": {
+      "checks": [
+        {
+          "name": "check_brooks_law",
+          "type": "computational"
+        },
+        {
+          "name": "check_coordination_tax_monotonic",
+          "type": "computational"
+        },
+        {
+          "name": "check_sovereign_zero_tax",
+          "type": "computational"
+        },
+        {
+          "name": "check_alignment_channel_scaling",
+          "type": "computational"
+        },
+        {
+          "name": "check_decision_latency_invariant",
+          "type": "computational"
+        },
+        {
+          "name": "check_institutional_overhead_ratio",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_coordination_tax",
+      "domain_type": "computational"
+    },
     "d_corporate_compliance": {
       "checks": [
         {
@@ -2375,6 +2721,28 @@
         }
       ],
       "domain": "d_corporate_law",
+      "domain_type": "computational"
+    },
+    "d_correspondence_theory": {
+      "checks": [
+        {
+          "name": "check_composition_associativity",
+          "type": "computational"
+        },
+        {
+          "name": "check_identity_morphism_exists",
+          "type": "computational"
+        },
+        {
+          "name": "check_commutative_square",
+          "type": "computational"
+        },
+        {
+          "name": "check_morphism_falsifiability",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_correspondence_theory",
       "domain_type": "computational"
     },
     "d_creative": {
@@ -2571,6 +2939,36 @@
       "domain": "d_curriculum",
       "domain_type": "computational"
     },
+    "d_dag_theory": {
+      "checks": [
+        {
+          "name": "check_acyclicity_proof",
+          "type": "computational"
+        },
+        {
+          "name": "check_topological_sort_determinism",
+          "type": "computational"
+        },
+        {
+          "name": "check_content_addressed_node_identity",
+          "type": "computational"
+        },
+        {
+          "name": "check_merkle_derivability",
+          "type": "computational"
+        },
+        {
+          "name": "check_reachability_transitivity",
+          "type": "computational"
+        },
+        {
+          "name": "check_deterministic_expansion",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_dag_theory",
+      "domain_type": "computational"
+    },
     "d_database_systems": {
       "checks": [
         {
@@ -2597,30 +2995,60 @@
       "domain": "d_database_systems",
       "domain_type": "computational"
     },
+    "d_deterministic_probability": {
+      "checks": [
+        {
+          "name": "check_bayesian_network_coherence",
+          "type": "computational"
+        },
+        {
+          "name": "check_probability_field_normalization",
+          "type": "computational"
+        },
+        {
+          "name": "check_entropy_non_negative",
+          "type": "computational"
+        },
+        {
+          "name": "check_cross_entropy_bound",
+          "type": "computational"
+        },
+        {
+          "name": "check_joint_marginal_consistency",
+          "type": "computational"
+        },
+        {
+          "name": "check_iterative_bayesian_convergence",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_deterministic_probability",
+      "domain_type": "computational"
+    },
     "d_devops": {
       "checks": [
         {
-          "name": "check_pipeline_deterministic",
+          "name": "check_pipeline_success_rate",
           "type": "computational"
         },
         {
-          "name": "check_pipeline_outcome_nonempty",
+          "name": "check_step_coverage_fraction",
           "type": "computational"
         },
         {
-          "name": "check_pipeline_duration_nonneg",
+          "name": "check_pipeline_duration_efficiency",
           "type": "computational"
         },
         {
-          "name": "check_config_name_nonempty",
+          "name": "check_artifact_integrity_score",
           "type": "computational"
         },
         {
-          "name": "check_infrastructure_resource_named",
+          "name": "check_infrastructure_completeness",
           "type": "computational"
         },
         {
-          "name": "check_deployment_target_healthy",
+          "name": "check_deployment_health_score",
           "type": "computational"
         }
       ],
@@ -2768,36 +3196,40 @@
     "d_disaster_resilience": {
       "checks": [
         {
-          "name": "check_warning_latency",
+          "name": "check_warning_latency_fraction",
           "type": "computational"
         },
         {
-          "name": "check_evacuation_capacity",
+          "name": "check_evacuation_capacity_ratio",
           "type": "computational"
         },
         {
-          "name": "check_emergency_fuel_reserve",
+          "name": "check_fuel_reserve_ratio",
           "type": "computational"
         },
         {
-          "name": "check_mutual_aid_breadth",
+          "name": "check_mutual_aid_coverage_ratio",
           "type": "computational"
         },
         {
-          "name": "check_backup_power_autonomy",
+          "name": "check_backup_power_fraction",
           "type": "computational"
         },
         {
-          "name": "check_after_action_report_current",
+          "name": "check_after_action_staleness_fraction",
           "type": "computational"
         },
         {
-          "name": "check_cyber_playbook_current",
-          "type": "tautological"
+          "name": "check_cyber_readiness_score",
+          "type": "computational"
+        },
+        {
+          "name": "check_infrastructure_redundancy",
+          "type": "computational"
         }
       ],
       "domain": "d_disaster_resilience",
-      "domain_type": "mixed"
+      "domain_type": "computational"
     },
     "d_distributed_systems": {
       "checks": [
@@ -2837,6 +3269,36 @@
         }
       ],
       "domain": "d_drug_regulation",
+      "domain_type": "computational"
+    },
+    "d_dyadic_acceleration": {
+      "checks": [
+        {
+          "name": "check_denominator_is_power_of_two",
+          "type": "computational"
+        },
+        {
+          "name": "check_bit_shift_exactness",
+          "type": "computational"
+        },
+        {
+          "name": "check_requantization_no_float_contamination",
+          "type": "computational"
+        },
+        {
+          "name": "check_dot_product_deterministic_cross_platform",
+          "type": "computational"
+        },
+        {
+          "name": "check_entropy_approximation_bounded_error",
+          "type": "computational"
+        },
+        {
+          "name": "check_overflow_within_dynamic_range",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_dyadic_acceleration",
       "domain_type": "computational"
     },
     "d_economic_mobility": {
@@ -3182,10 +3644,48 @@
         {
           "name": "check_prior_probability_fraction",
           "type": "computational"
+        },
+        {
+          "name": "check_calibration_error_fraction",
+          "type": "computational"
         }
       ],
       "domain": "d_epistemology_formal",
       "domain_type": "mixed"
+    },
+    "d_epistemology_substrate": {
+      "checks": [
+        {
+          "name": "check_universal_falsifiability",
+          "type": "computational"
+        },
+        {
+          "name": "check_bayesian_coherence",
+          "type": "computational"
+        },
+        {
+          "name": "check_information_gain_positive",
+          "type": "computational"
+        },
+        {
+          "name": "check_gettier_immunity",
+          "type": "computational"
+        },
+        {
+          "name": "check_epistemic_closure",
+          "type": "computational"
+        },
+        {
+          "name": "check_grounding_model_debt",
+          "type": "computational"
+        },
+        {
+          "name": "check_regress_convergence",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_epistemology_substrate",
+      "domain_type": "computational"
     },
     "d_ethics": {
       "checks": [
@@ -3242,36 +3742,36 @@
     "d_executive_governance": {
       "checks": [
         {
-          "name": "check_separation_of_powers_anchors",
+          "name": "check_composite_anchor_strength",
           "type": "computational"
         },
         {
-          "name": "check_congressional_review_act_compliance",
+          "name": "check_cra_timeliness_score",
           "type": "computational"
         },
         {
-          "name": "check_judicial_review_preserved",
-          "type": "tautological"
-        },
-        {
-          "name": "check_publication_requirement",
-          "type": "tautological"
-        },
-        {
-          "name": "check_independence_review_coverage",
+          "name": "check_judicial_review_accessibility",
           "type": "computational"
         },
         {
-          "name": "check_scope_expansion_bounded",
+          "name": "check_publication_timeliness_fraction",
           "type": "computational"
         },
         {
-          "name": "check_consent_log_recorded",
-          "type": "tautological"
+          "name": "check_independence_coverage_fraction",
+          "type": "computational"
+        },
+        {
+          "name": "check_scope_expansion_severity",
+          "type": "computational"
+        },
+        {
+          "name": "check_executive_accountability_score",
+          "type": "computational"
         }
       ],
       "domain": "d_executive_governance",
-      "domain_type": "mixed"
+      "domain_type": "computational"
     },
     "d_family_law": {
       "checks": [
@@ -3447,6 +3947,36 @@
       "domain": "d_forensic_psychology",
       "domain_type": "computational"
     },
+    "d_forensic_telemetry": {
+      "checks": [
+        {
+          "name": "check_timeline_precedence",
+          "type": "computational"
+        },
+        {
+          "name": "check_structural_isomorphism_count",
+          "type": "computational"
+        },
+        {
+          "name": "check_data_policy_confirmation",
+          "type": "computational"
+        },
+        {
+          "name": "check_cross_validation_lineage_gap",
+          "type": "computational"
+        },
+        {
+          "name": "check_rfc_vs_solution_dating",
+          "type": "computational"
+        },
+        {
+          "name": "check_beta_window_overlap",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_forensic_telemetry",
+      "domain_type": "computational"
+    },
     "d_fractals": {
       "checks": [
         {
@@ -3471,6 +4001,18 @@
         },
         {
           "name": "check_escape_radius_sufficient",
+          "type": "computational"
+        },
+        {
+          "name": "check_fractal_dag_acyclicity",
+          "type": "computational"
+        },
+        {
+          "name": "check_content_addressed_iteration",
+          "type": "computational"
+        },
+        {
+          "name": "check_omega_convergence_invariant",
           "type": "computational"
         }
       ],
@@ -3532,27 +4074,27 @@
     "d_game_engine_development": {
       "checks": [
         {
-          "name": "check_physics_time_step_positive",
+          "name": "check_physics_time_step_valid",
           "type": "computational"
         },
         {
-          "name": "check_physics_gravity_set",
+          "name": "check_simulation_accuracy",
           "type": "computational"
         },
         {
-          "name": "check_physics_max_substeps_positive",
+          "name": "check_physics_substep_efficiency",
           "type": "computational"
         },
         {
-          "name": "check_save_file_has_checksum",
+          "name": "check_save_integrity_score",
           "type": "computational"
         },
         {
-          "name": "check_game_state_frame_nonneg",
+          "name": "check_game_state_consistency",
           "type": "computational"
         },
         {
-          "name": "check_save_file_level_nonneg",
+          "name": "check_save_progression_valid",
           "type": "computational"
         }
       ],
@@ -3849,6 +4391,32 @@
       "domain": "d_healthcare_law",
       "domain_type": "computational"
     },
+    "d_hle": {
+      "checks": [
+        {
+          "name": "check_hle_excedent",
+          "type": "computational"
+        },
+        {
+          "name": "check_text_only_excedent",
+          "type": "computational"
+        },
+        {
+          "name": "check_proof_chain_coverage",
+          "type": "computational"
+        },
+        {
+          "name": "check_domain_breadth",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_memorization",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_hle",
+      "domain_type": "computational"
+    },
     "d_hospitality": {
       "checks": [
         {
@@ -4104,31 +4672,31 @@
     "d_international_criminal": {
       "checks": [
         {
-          "name": "check_case_has_defendant",
+          "name": "check_charge_gravity_threshold",
           "type": "computational"
         },
         {
-          "name": "check_case_jurisdiction_nonempty",
+          "name": "check_jurisdiction_strength",
           "type": "computational"
         },
         {
-          "name": "check_evidence_authenticity",
+          "name": "check_evidence_probative_weight",
           "type": "computational"
         },
         {
-          "name": "check_case_id_nonempty",
+          "name": "check_chain_of_custody_integrity",
           "type": "computational"
         },
         {
-          "name": "check_crime_type_is_valid",
+          "name": "check_evidence_authenticity_composite",
           "type": "computational"
         },
         {
-          "name": "check_evidence_type_nonempty",
+          "name": "check_case_evidence_ratio",
           "type": "computational"
         },
         {
-          "name": "check_case_has_evidence",
+          "name": "check_defendant_evidence_linkage",
           "type": "computational"
         }
       ],
@@ -4138,31 +4706,31 @@
     "d_international_humanitarian": {
       "checks": [
         {
-          "name": "check_protected_person_receiving_protection",
+          "name": "check_protection_coverage_ratio",
           "type": "computational"
         },
         {
-          "name": "check_military_target_proportionality",
+          "name": "check_necessity_score_threshold",
           "type": "computational"
         },
         {
-          "name": "check_military_target_necessity",
+          "name": "check_distinction_score_threshold",
           "type": "computational"
         },
         {
-          "name": "check_civilian_harm_nonneg",
+          "name": "check_civilian_harm_fraction",
           "type": "computational"
         },
         {
-          "name": "check_person_id_nonempty",
+          "name": "check_proportionality_composite",
           "type": "computational"
         },
         {
-          "name": "check_protected_category_valid",
+          "name": "check_protection_necessity_balance",
           "type": "computational"
         },
         {
-          "name": "check_harm_objective_ratio",
+          "name": "check_distinction_necessity_product",
           "type": "computational"
         }
       ],
@@ -4197,6 +4765,36 @@
         }
       ],
       "domain": "d_iso_standards",
+      "domain_type": "computational"
+    },
+    "d_jepa_world_model": {
+      "checks": [
+        {
+          "name": "check_prediction_loss_bounded",
+          "type": "computational"
+        },
+        {
+          "name": "check_sigreg_convergence",
+          "type": "computational"
+        },
+        {
+          "name": "check_latent_isotropy",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_representation_collapse",
+          "type": "computational"
+        },
+        {
+          "name": "check_planning_convergence",
+          "type": "computational"
+        },
+        {
+          "name": "check_surprise_plausible",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_jepa_world_model",
       "domain_type": "computational"
     },
     "d_judicial_review": {
@@ -4291,6 +4889,32 @@
       "domain": "d_licensing",
       "domain_type": "computational"
     },
+    "d_livecodebench": {
+      "checks": [
+        {
+          "name": "check_hard_rate_excedent",
+          "type": "computational"
+        },
+        {
+          "name": "check_contamination_free",
+          "type": "computational"
+        },
+        {
+          "name": "check_solution_correctness",
+          "type": "computational"
+        },
+        {
+          "name": "check_time_complexity_optimal",
+          "type": "computational"
+        },
+        {
+          "name": "check_overall_excedent",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_livecodebench",
+      "domain_type": "computational"
+    },
     "d_logic_formal": {
       "checks": [
         {
@@ -4380,11 +5004,11 @@
           "type": "computational"
         },
         {
-          "name": "check_ism_compliance",
+          "name": "check_ism_completeness_score",
           "type": "computational"
         },
         {
-          "name": "check_flag_state_quality",
+          "name": "check_flag_state_score",
           "type": "computational"
         },
         {
@@ -4515,6 +5139,28 @@
       "domain": "d_medical",
       "domain_type": "computational"
     },
+    "d_memory_persistence": {
+      "checks": [
+        {
+          "name": "check_monotonic_memory",
+          "type": "computational"
+        },
+        {
+          "name": "check_bayesian_correction_update",
+          "type": "computational"
+        },
+        {
+          "name": "check_forgetting_curve_reinforcement",
+          "type": "computational"
+        },
+        {
+          "name": "check_identity_preservation",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_memory_persistence",
+      "domain_type": "computational"
+    },
     "d_meta_reasoning": {
       "checks": [
         {
@@ -4642,15 +5288,15 @@
           "type": "computational"
         },
         {
-          "name": "check_environmental_permit_current",
+          "name": "check_permit_validity_fraction",
           "type": "computational"
         },
         {
-          "name": "check_incident_investigation",
+          "name": "check_investigation_completeness",
           "type": "computational"
         },
         {
-          "name": "check_black_lung_screening",
+          "name": "check_screening_compliance_score",
           "type": "computational"
         }
       ],
@@ -4794,28 +5440,74 @@
     "d_neuroscience": {
       "checks": [
         {
-          "name": "check_action_potential_all_or_none",
-          "type": "tautological"
+          "name": "check_action_potential_threshold",
+          "type": "computational"
         },
         {
-          "name": "check_synapse_neurotransmitter_release",
-          "type": "tautological"
+          "name": "check_synaptic_weight_hebbian_update",
+          "type": "computational"
         },
         {
-          "name": "check_myelination_conduction_speed",
-          "type": "tautological"
+          "name": "check_refractory_period_timing",
+          "type": "computational"
         },
         {
-          "name": "check_refractory_period_bounded",
-          "type": "tautological"
+          "name": "check_ebbinghaus_retention",
+          "type": "computational"
         },
         {
-          "name": "check_synaptic_weight_fraction",
+          "name": "check_myelination_conduction_boost",
           "type": "computational"
         }
       ],
       "domain": "d_neuroscience",
-      "domain_type": "mixed"
+      "domain_type": "computational"
+    },
+    "d_new_jerusalem": {
+      "checks": [
+        {
+          "name": "check_universal_falsifiability",
+          "type": "computational"
+        },
+        {
+          "name": "check_zero_tautology",
+          "type": "computational"
+        },
+        {
+          "name": "check_peano_completeness",
+          "type": "computational"
+        },
+        {
+          "name": "check_merkle_integrity",
+          "type": "computational"
+        },
+        {
+          "name": "check_self_hosting",
+          "type": "computational"
+        },
+        {
+          "name": "check_truth_inelasticity",
+          "type": "computational"
+        },
+        {
+          "name": "check_eschaton_monotonicity",
+          "type": "computational"
+        },
+        {
+          "name": "check_kenosis_bounds",
+          "type": "computational"
+        },
+        {
+          "name": "check_agape_witness_coverage",
+          "type": "computational"
+        },
+        {
+          "name": "check_grace_debt_erasure",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_new_jerusalem",
+      "domain_type": "computational"
     },
     "d_noncreative": {
       "checks": [
@@ -4910,11 +5602,11 @@
           "type": "computational"
         },
         {
-          "name": "check_fall_protection",
+          "name": "check_fall_protection_coverage",
           "type": "computational"
         },
         {
-          "name": "check_general_duty",
+          "name": "check_abatement_completeness_score",
           "type": "computational"
         }
       ],
@@ -4951,6 +5643,40 @@
       "domain": "d_oilgas",
       "domain_type": "computational"
     },
+    "d_ontology_substrate": {
+      "checks": [
+        {
+          "name": "check_all_precedents_satisfied",
+          "type": "computational"
+        },
+        {
+          "name": "check_consistent_reality",
+          "type": "computational"
+        },
+        {
+          "name": "check_structural_order",
+          "type": "computational"
+        },
+        {
+          "name": "check_deterministic_causality",
+          "type": "computational"
+        },
+        {
+          "name": "check_lawvere_convergence",
+          "type": "computational"
+        },
+        {
+          "name": "check_operational_necessities",
+          "type": "computational"
+        },
+        {
+          "name": "check_ontological_coverage_fraction",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_ontology_substrate",
+      "domain_type": "computational"
+    },
     "d_open_source_governance": {
       "checks": [
         {
@@ -4979,6 +5705,32 @@
         }
       ],
       "domain": "d_open_source_governance",
+      "domain_type": "computational"
+    },
+    "d_open_source_sovereignty": {
+      "checks": [
+        {
+          "name": "check_no_economic_gatekeeping",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_proprietary_dependencies",
+          "type": "computational"
+        },
+        {
+          "name": "check_reproducible_from_public_sources",
+          "type": "computational"
+        },
+        {
+          "name": "check_public_source_available",
+          "type": "computational"
+        },
+        {
+          "name": "check_license_compliance",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_open_source_sovereignty",
       "domain_type": "computational"
     },
     "d_paraconsistent_logic": {
@@ -5097,6 +5849,24 @@
       "domain": "d_pharma",
       "domain_type": "computational"
     },
+    "d_pharmacology": {
+      "checks": [
+        {
+          "name": "check_dose_in_therapeutic_window",
+          "type": "computational"
+        },
+        {
+          "name": "check_half_life_decay",
+          "type": "computational"
+        },
+        {
+          "name": "check_drug_interaction_safety",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_pharmacology",
+      "domain_type": "computational"
+    },
     "d_phenomenology": {
       "checks": [
         {
@@ -5143,6 +5913,10 @@
         },
         {
           "name": "check_bayesian_confirmation_fraction",
+          "type": "computational"
+        },
+        {
+          "name": "check_effect_size_fraction",
           "type": "computational"
         }
       ],
@@ -5436,36 +6210,40 @@
     "d_public_health_capacity": {
       "checks": [
         {
-          "name": "check_icu_bed_density",
+          "name": "check_icu_bed_density_ratio",
           "type": "computational"
         },
         {
-          "name": "check_ventilator_reserve_density",
+          "name": "check_ventilator_reserve_ratio",
           "type": "computational"
         },
         {
-          "name": "check_ppe_days_of_supply",
+          "name": "check_ppe_supply_ratio",
           "type": "computational"
         },
         {
-          "name": "check_contact_tracer_density",
+          "name": "check_tracer_density_ratio",
           "type": "computational"
         },
         {
-          "name": "check_lab_turnaround_within_limit",
+          "name": "check_lab_turnaround_fraction",
           "type": "computational"
         },
         {
-          "name": "check_audit_not_stale",
+          "name": "check_audit_staleness_fraction",
           "type": "computational"
         },
         {
-          "name": "check_sentinel_surveillance_active",
-          "type": "tautological"
+          "name": "check_surveillance_coverage",
+          "type": "computational"
+        },
+        {
+          "name": "check_staff_training_ratio",
+          "type": "computational"
         }
       ],
       "domain": "d_public_health_capacity",
-      "domain_type": "mixed"
+      "domain_type": "computational"
     },
     "d_rail": {
       "checks": [
@@ -5883,6 +6661,36 @@
       "domain": "d_sharding",
       "domain_type": "computational"
     },
+    "d_sigma_theo": {
+      "checks": [
+        {
+          "name": "check_logos_initial_algebra",
+          "type": "computational"
+        },
+        {
+          "name": "check_chalcedon_no_monophysite",
+          "type": "computational"
+        },
+        {
+          "name": "check_grace_isometry",
+          "type": "computational"
+        },
+        {
+          "name": "check_agape_superadditive",
+          "type": "computational"
+        },
+        {
+          "name": "check_kenosis_partiality",
+          "type": "computational"
+        },
+        {
+          "name": "check_eschaton_convergence",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_sigma_theo",
+      "domain_type": "computational"
+    },
     "d_signal_processing": {
       "checks": [
         {
@@ -6065,6 +6873,36 @@
       "domain": "d_supply_chain_security",
       "domain_type": "computational"
     },
+    "d_swe_bench": {
+      "checks": [
+        {
+          "name": "check_resolve_rate_excedent",
+          "type": "computational"
+        },
+        {
+          "name": "check_false_positive_bounded",
+          "type": "computational"
+        },
+        {
+          "name": "check_patch_minimality",
+          "type": "computational"
+        },
+        {
+          "name": "check_test_pass_completeness",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_data_leakage_swe",
+          "type": "computational"
+        },
+        {
+          "name": "check_deterministic_resolution",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_swe_bench",
+      "domain_type": "computational"
+    },
     "d_systems_engineering": {
       "checks": [
         {
@@ -6137,6 +6975,54 @@
         }
       ],
       "domain": "d_telecommunications_law",
+      "domain_type": "computational"
+    },
+    "d_telemetry_forensics": {
+      "checks": [
+        {
+          "name": "check_crash_to_fix_latency",
+          "type": "computational"
+        },
+        {
+          "name": "check_version_delta_correlation",
+          "type": "computational"
+        },
+        {
+          "name": "check_feature_isomorphism_score",
+          "type": "computational"
+        },
+        {
+          "name": "check_data_pipeline_confirmation",
+          "type": "computational"
+        },
+        {
+          "name": "check_structural_precedence_dating",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_telemetry_forensics",
+      "domain_type": "computational"
+    },
+    "d_therapeutic_pipeline": {
+      "checks": [
+        {
+          "name": "check_constraint_above_threshold",
+          "type": "computational"
+        },
+        {
+          "name": "check_context_drift_bounded",
+          "type": "computational"
+        },
+        {
+          "name": "check_belief_update_rate",
+          "type": "computational"
+        },
+        {
+          "name": "check_reality_testing_frequency",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_therapeutic_pipeline",
       "domain_type": "computational"
     },
     "d_thermodynamics": {
@@ -6254,27 +7140,27 @@
     "d_transportation": {
       "checks": [
         {
-          "name": "check_record_id_nonempty",
+          "name": "check_safety_incident_rate",
           "type": "computational"
         },
         {
-          "name": "check_status_valid",
+          "name": "check_on_time_performance",
           "type": "computational"
         },
         {
-          "name": "check_compliant_record_marked_compliant",
+          "name": "check_driver_rest_compliance",
           "type": "computational"
         },
         {
-          "name": "check_checker_has_check_compliance",
+          "name": "check_maintenance_score",
           "type": "computational"
         },
         {
-          "name": "check_non_compliant_not_marked_compliant",
+          "name": "check_fleet_size_adequate",
           "type": "computational"
         },
         {
-          "name": "check_record_has_status",
+          "name": "check_record_status_valid",
           "type": "computational"
         }
       ],
@@ -6647,6 +7533,32 @@
       "domain": "d_whitecollar",
       "domain_type": "computational"
     },
+    "d_yeshua_mathematics": {
+      "checks": [
+        {
+          "name": "check_all_eight_axioms",
+          "type": "computational"
+        },
+        {
+          "name": "check_peano_substrate",
+          "type": "computational"
+        },
+        {
+          "name": "check_boolean_purity_substrate",
+          "type": "computational"
+        },
+        {
+          "name": "check_pure_path_agreement",
+          "type": "computational"
+        },
+        {
+          "name": "check_no_economic_gatekeeping",
+          "type": "computational"
+        }
+      ],
+      "domain": "d_yeshua_mathematics",
+      "domain_type": "computational"
+    },
     "d_zoning": {
       "checks": [
         {
@@ -6678,7 +7590,7 @@
       "domain_type": "computational"
     }
   },
-  "tautological_checks": 203,
-  "tautological_ratio": "203/1291",
-  "total_checks": 1291
+  "tautological_checks": 186,
+  "tautological_ratio": "186/1465",
+  "total_checks": 1465
 }
