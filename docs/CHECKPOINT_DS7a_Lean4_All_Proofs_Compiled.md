@@ -103,3 +103,51 @@ NBLM verdict: The hand-rolled SAL kernel must be internally consistent before it
 - **If build is slow:** The mathlib cache is already downloaded. Do NOT run `lake clean` unless necessary. Use `lake build` without cleaning.
 - **If NBLM is consulted:** Frame questions at maximal polymath scope. NBLM hedges on underspecified queries.
 - **Contravariant Presheaf invariant:** `map : Hom a b → F b → F a`. This is the correct signature for representable functors. Do not revert to covariant.
+
+## 10. Raw Terminal Evidence
+
+### Build Success
+idor@Tony:~/oe-local/lean4$ cd /home/idor/oe-local/lean4 && lake build
+⚠ [3/5] Built SAL.Yoneda
+warning: SAL/Yoneda.lean:40:17: unused variable b
+Build completed successfully (5 jobs).
+
+text
+
+### Local Time Verification
+idor@Tony:~/oe-local/lean4$ date
+Fri May 22 16:54:12 CDT 2026
+
+text
+
+### Previous Failed Build (Contravariant Fix Applied)
+error: SAL/Yoneda.lean:28:27: Application type mismatch: The argument
+f has type C.Hom a✝ b✝ but is expected to have type C.Hom b✝ a✝
+...
+error: SAL/Yoneda.lean:36:30: Application type mismatch: The argument
+f has type (yonedaPresheaf C a).F b but is expected to have type C.Hom ?m.9 b
+...
+error: Lean exited with code 1
+Some required targets logged failures: SAL.Yoneda
+error: build failed
+
+text
+
+### Mathlib Cache Download
+info: downloading https://releases.lean-lang.org/lean4/v4.29.1/lean-4.29.1-linux.tar.zst
+514.7 MiB / 514.7 MiB (100 %) 23.7 MiB/s
+info: mathlib: cloning https://github.com/leanprover-community/mathlib4.git
+Decompressed 8448 file(s)
+
+text
+
+## 11. NBLM Archive Citations
+
+| Source | Turn | Content |
+|--------|------|---------|
+| NBLM Round 32 | Forensic Verdict | Logic Collision (ID: logic_collision). Presheaf must be contravariant. |
+| DeepSeek 3a | Session 8fbdcdb9 | Lean 4 bridge was aspirational; compilation proves regression fix |
+| DeepSeek 4a | Honest Close (b70a6cdb) | 100% Python ProofObject status; Lean4 proofs documented as queued |
+| DeepSeek 8a | Turn 1178 | "Lean 4 proofs compile — they're not pseudocode" |
+| NBLM Turn 799 | Yoneda Embedding | Representable presheaf requires contravariant Hom-functor |
+| NBLM Turn 1102 | Yeshua Inversion | Type error is Falsification of Definition, not impossibility proof |
