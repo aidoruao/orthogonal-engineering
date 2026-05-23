@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """Lean4 Bridge — stdlib only, zero dependencies.
-Receives Lean4 code from the Proving Ground HTML,
-writes it to a temp file, compiles it with `lean`,
-and returns the result as JSON.
+Receives Lean4 code, writes to temp file in project dir,
+compiles with `lean` using explicit search paths, returns JSON.
 """
 
 import json
@@ -15,9 +14,22 @@ from pathlib import Path
 LEAN4_DIR = Path("/home/idor/oe-local/lean4")
 PORT = 28428
 
+# Build the LEAN_PATH from .lake artifacts
+def get_lean_path():
+    lake_build = LEAN4_DIR / ".lake" / "build" / "lib" / "lean"
+    packages = LEAN4_DIR / ".lake" / "packages"
+    paths = [str(lake_build)]
+    if packages.exists():
+        for pkg in packages.iterdir():
+            pkg_build = pkg / ".lake" / "build" / "lib" / "lean"
+            if pkg_build.exists():
+                paths.append(str(pkg_build))
+    return ":".join(paths)
+
+LEAN_PATH = get_lean_path()
+
 class Lean4Handler(BaseHTTPRequestHandler):
     def do_POST(self):
-        # Read the request body
         content_length = int(self.headers.get('Content-Length', 0))
         body = self.rfile.read(content_length).decode('utf-8')
         
@@ -33,24 +45,27 @@ class Lean4Handler(BaseHTTPRequestHandler):
             self.send_json(400, {"error": "No code provided"})
             return
         
-        # Write code to temp file
+        # Write code to temp file inside LEAN4_DIR so relative imports resolve
         with tempfile.NamedTemporaryFile(
             mode='w',
             suffix='.lean',
-            dir="/tmp",
+            dir=str(LEAN4_DIR),
             delete=False
         ) as f:
             f.write(lean_code)
             temp_path = f.name
         
         try:
-            # Compile with lean
+            env = os.environ.copy()
+            env['LEAN_PATH'] = LEAN_PATH
+            
             result = subprocess.run(
                 ['lean', temp_path],
                 capture_output=True,
                 text=True,
                 timeout=30,
-                cwd=LEAN4_DIR
+                cwd=str(LEAN4_DIR),
+                env=env
             )
             
             success = result.returncode == 0
@@ -66,12 +81,10 @@ class Lean4Handler(BaseHTTPRequestHandler):
         except subprocess.TimeoutExpired:
             self.send_json(500, {"error": "Compilation timed out after 30 seconds"})
         finally:
-            # Clean up temp file
             if os.path.exists(temp_path):
                 os.unlink(temp_path)
     
     def do_OPTIONS(self):
-        # CORS preflight
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
@@ -86,14 +99,12 @@ class Lean4Handler(BaseHTTPRequestHandler):
         self.wfile.write(json.dumps(data).encode('utf-8'))
     
     def log_message(self, format, *args):
-        # Suppress default logging to stderr
         pass
 
 if __name__ == '__main__':
-    os.chdir(LEAN4_DIR)
+    print(f"LEAN_PATH: {LEAN_PATH}")
     server = HTTPServer(('localhost', PORT), Lean4Handler)
     print(f"Lean4 Bridge running on http://localhost:{PORT}")
-    print(f"Working directory: {LEAN4_DIR}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
