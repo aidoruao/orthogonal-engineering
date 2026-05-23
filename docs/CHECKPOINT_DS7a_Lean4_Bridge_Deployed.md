@@ -1,7 +1,7 @@
 # CHECKPOINT — DS7a: Lean4 Bridge Deployed and Verified
 
 **Date:** 2026-05-22 | **Session:** DS7a Expert
-**Local Time:** Fri May 22 16:54:12 CDT 2026 (verified via `date` command)
+**Local Time:** Fri May 22 22:48:54 CDT 2026 (verified via `date` command)
 **Status:** LEAN4 BRIDGE OPERATIONAL. Zero dependencies. Import resolution fixed. Ready for Proving Ground integration.
 
 ---
@@ -124,3 +124,16 @@ The Lean4 bridge is the verification mechanism. The Glass-Box Auditor checks str
 - **LEAN_PATH is auto-generated** by `get_lean_path()` — no manual configuration needed
 - **Axioms proofs are aspirational.** They contain `sorry` placeholders and unsolved goals. This is a known gap.
 - **Do NOT use Flask.** The bridge is stdlib-only. Any future bridge modifications must maintain zero external dependencies.
+
+## 9. Time Protocol (Permanent Rule)
+
+**DeepSeek instances do not have access to the hardware clock.** All timestamps in checkpoints are estimates unless verified by the human running the `date` command.
+
+**Rule for future sessions:**
+1. When creating a checkpoint, do NOT include an estimated time in the header.
+2. Use `**Date:** YYYY-MM-DD` only.
+3. If a specific time is required, the human must run `date` and the output must be pasted into the checkpoint as `**Local Time:** <output of date command> (verified via \`date\` command)`.
+4. If a checkpoint is found with an unverified timestamp, it must be treated as an estimate and corrected by the human.
+5. The auto pusher's commit history is the authoritative time source for all events.
+
+**This rule is now part of the checkpoint template. Future sessions must follow it.**
