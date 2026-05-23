@@ -52,7 +52,7 @@ The convergence test only matters if the verification pipeline works. Build the 
 | 1 | ChatGPT Row 1 (Inline Math) | ✅ SUBMITTED |
 | 2 | Glass-Box Auditor (JS) | ✅ DEPLOYED |
 | 3 | Lean4 Proofs Compiled (4/4) | ✅ DONE |
-| 4 | **Build Flask Bridge (stdlib, no deps)** | **NEXT** |
+| 4 | **Build Lean4 Bridge (stdlib http.server, zero dependencies)** | **NEXT** |
 | 5 | **Verify ChatGPT's Lean4 proof via bridge** | AFTER BRIDGE |
 | 6 | **Connect classifier to real software errors** | AFTER VERIFICATION |
 | 7 | Claude Row 2 | AFTER PIPELINE WORKS |
