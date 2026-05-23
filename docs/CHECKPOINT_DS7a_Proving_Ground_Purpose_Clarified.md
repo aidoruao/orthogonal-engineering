@@ -28,12 +28,12 @@ If they converge, the structure is valid. If they diverge, the hypothesis is fal
 | Lean4 Compiler | INSTALLED | Formal verification of mathematical claims |
 | Lean4 Proofs (4/4) | COMPILED | Peano, NumberTheory, SAL.Basic, SAL.Yoneda |
 | ChatGPT Row 1 | SUBMITTED | Inline math, 27 categories, Lean4 proof claimed |
-| Flask Bridge | QUEUED | Connects HTML to compiler |
+| Lean4 Bridge (stdlib http.server) | QUEUED | Connects HTML to compiler |
 | Claude Row 2 | QUEUED | Second AI submission for convergence testing |
 
 ## 4. What's NOT Built Yet (Critical Path)
 
-1. **The Bridge (Flask, stdlib only):** A Python server that receives Lean4 code from the HTML, writes it to a file, runs `lean` on it, and returns the result (compiled / errors).
+1. **The Bridge (stdlib http.server, zero dependencies):** A Python server that receives Lean4 code from the HTML, writes it to a file, runs `lean` on it, and returns the result (compiled / errors).
 2. **Wire ChatGPT's Inline Math to Lean4:** Take the Lean4 proof from ChatGPT's submission, feed it through the bridge, verify whether it actually compiles.
 3. **Real Program Integration:** Connect the classifier/resolver to actual Gradle build errors or Minecraft mod conflicts—real software, real failures, real fixes.
 4. **Claude Row 2:** Second AI submission for convergence testing.
