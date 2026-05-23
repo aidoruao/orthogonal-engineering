@@ -37,7 +37,7 @@ class Lean4Handler(BaseHTTPRequestHandler):
         with tempfile.NamedTemporaryFile(
             mode='w',
             suffix='.lean',
-            dir=LEAN4_DIR,
+            dir="/tmp",
             delete=False
         ) as f:
             f.write(lean_code)
