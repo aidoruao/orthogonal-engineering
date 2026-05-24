@@ -196,7 +196,10 @@ def sovereign_interpolate(
 
     falsifies_if: returns frame identical to frame_a or frame_b
     """
-    from tools.sfi.interpolate import interpolate_frame as cpu_interpolate
+    import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
+from tools.sfi.interpolate import interpolate_frame as cpu_interpolate
     from tools.sfi.verify import kenosis_fallback
 
     # Try GPU path
