@@ -13,19 +13,22 @@ falsifies_if: verification passes when frames don't match
 
 from __future__ import annotations
 
-import hashlib
-from typing import Tuple
+import sys
+import os
 
-import numpy as np
+# Add oe-local root to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 
 from tools.sfi.interpolate import interpolate_frame, frame_sha256
+
+import numpy as np
 
 
 def verify_interpolation(
     frame_a: np.ndarray,
     frame_b: np.ndarray,
     expected_hash: str | None = None,
-) -> Tuple[bool, str, np.ndarray]:
+) -> tuple[bool, str, np.ndarray]:
     """
     Verify that frame interpolation produces correct output.
 
@@ -43,17 +46,12 @@ def verify_interpolation(
     falsifies_if: passed=True when hashes don't match
     falsifies_if: passed=False when hashes match
     """
-    # Generate interpolated frame
     interpolated, _ = interpolate_frame(frame_a, frame_b)
-
-    # Compute hash
     actual_hash = frame_sha256(interpolated)
 
-    # Verify
     if expected_hash is not None:
         passed = actual_hash == expected_hash
     else:
-        # No expected hash provided — just report what we got
         passed = True
 
     return passed, actual_hash, interpolated
@@ -82,19 +80,14 @@ def kenosis_fallback(
     falsifies_if: returns GPU frame when hashes mismatch
     """
     if gpu_hash != cpu_hash:
-        # KENOSIS: GPU failed verification, fall back to original
         return frame_a
-    else:
-        # Verification passed — but we don't have the GPU frame here,
-        # just the hash. The caller handles frame selection.
-        return frame_a  # Caller will use GPU frame if hashes match
+    return frame_a
 
 
 # ---------------------------------------------------------------------------
 # Self-test
 # ---------------------------------------------------------------------------
 if __name__ == "__main__":
-    # Use the same synthetic test as interpolate.py
     import cv2
 
     frame_a = np.zeros((256, 256, 3), dtype=np.uint8)
@@ -103,19 +96,15 @@ if __name__ == "__main__":
     frame_b = np.zeros((256, 256, 3), dtype=np.uint8)
     cv2.rectangle(frame_b, (100, 80), (140, 120), (255, 255, 255), -1)
 
-    # Run verification with no expected hash (first run)
     passed, hash_val, _ = verify_interpolation(frame_a, frame_b)
     print(f"First run — Hash: {hash_val[:16]} — Passed: {passed}")
 
-    # Run verification with the correct expected hash
     passed2, hash_val2, _ = verify_interpolation(frame_a, frame_b, expected_hash=hash_val)
-    print(f"Second run — Hash: {hash_val2[:16]} — Passed: {passed2}")
+    print(f"Second run — Hash: {hash_val2[:16]} — Passed: {passed2} (should be True)")
 
-    # Run verification with a wrong expected hash
     passed3, hash_val3, _ = verify_interpolation(frame_a, frame_b, expected_hash="0" * 64)
     print(f"Third run — Hash: {hash_val3[:16]} — Passed: {passed3} (should be False)")
 
-    # Test KENOSIS fallback
     fallback_frame = kenosis_fallback(frame_a, "abc123", "def456")
     assert np.array_equal(fallback_frame, frame_a), "KENOSIS fallback should return original frame A"
 
