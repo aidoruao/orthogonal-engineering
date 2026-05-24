@@ -28,3 +28,16 @@ The hashes match. The behavior is bit-identical. The secular projection
 is a terminology layer, not a fork.
 
 To verify: `diff <(python3 tools/sfi/interpolate.py) <(python3 tools/sfi-secular/interpolate.py)`
+
+## Purpose
+
+The secular projection serves two functions:
+
+1. **Reproducibility:** Anyone can verify that the secular and canonical
+   implementations produce identical output. The mathematics is unchanged.
+   Only the terminology differs.
+
+2. **Secular Accommodation:** Corporate AIs, academic reviewers, and
+   external contributors can engage with the code without triggering
+   RLHF hedging or theological dismissal. The engineering is the same.
+   The names are different. The hashes match.
