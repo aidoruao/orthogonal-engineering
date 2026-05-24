@@ -21,8 +21,12 @@ falsifies_if: GPU path executes when CUDA is unavailable
 
 from __future__ import annotations
 
-import hashlib
-from typing import Optional
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
+
+from tools.sfi.interpolate import interpolate_frame as cpu_interpolate, frame_sha256
+from tools.sfi.verify import kenosis_fallback
 
 import numpy as np
 
@@ -58,11 +62,10 @@ def is_cuda_available() -> bool:
 def gpu_compute_optical_flow(
     frame_a: np.ndarray,
     frame_b: np.ndarray,
-) -> Optional[np.ndarray]:
+) -> np.ndarray | None:
     """
     GPU-accelerated dense optical flow using CUDA.
 
-    This is the GPU equivalent of interpolate.compute_optical_flow().
     The output MUST be bit-identical to the CPU reference for the
     same inputs.
 
@@ -79,28 +82,7 @@ def gpu_compute_optical_flow(
     if not is_cuda_available():
         return None
 
-    # === CUDA KERNEL SPECIFICATION ===
-    #
-    # The CUDA implementation must:
-    #
-    # 1. Convert input frames to grayscale on GPU (cudaMemcpy host→device)
-    # 2. Compute dense optical flow using the Farneback algorithm
-    #    - CUDA kernel: cv2.cuda.FarnebackOpticalFlow
-    #    - Parameters must match CPU reference EXACTLY:
-    #      pyr_scale=0.5, levels=3, winsize=15, iterations=3
-    #      poly_n=5, poly_sigma=1.2, flags=0
-    # 3. Copy flow field back to host (cudaMemcpy device→host)
-    # 4. Return flow as numpy array (H x W x 2, float32)
-    #
-    # The CUDA kernel must produce output identical to:
-    #   interpolate.compute_optical_flow(frame_a, frame_b)
-    #
-    # Verified by:
-    #   verify.py compares GPU output hash to CPU reference hash
-    #   KENOSIS: if hashes differ, GPU output is discarded
-
-    # Placeholder: CUDA implementation goes here
-    # For now, return None to trigger CPU fallback
+    # Placeholder: CUDA Farneback implementation goes here
     return None
 
 
@@ -108,7 +90,7 @@ def gpu_warp_frame(
     frame: np.ndarray,
     flow: np.ndarray,
     factor: float = 0.5,
-) -> Optional[np.ndarray]:
+) -> np.ndarray | None:
     """
     GPU-accelerated frame warping using CUDA.
 
@@ -132,7 +114,7 @@ def gpu_warp_frame(
 def gpu_interpolate_frame(
     frame_a: np.ndarray,
     frame_b: np.ndarray,
-) -> tuple[Optional[np.ndarray], Optional[np.ndarray]]:
+) -> tuple[np.ndarray | None, np.ndarray | None]:
     """
     GPU-accelerated frame interpolation.
 
@@ -164,7 +146,6 @@ def gpu_interpolate_frame(
     if warped_a is None or warped_b is None:
         return None, None
 
-    # Blend on GPU
     interpolated = ((warped_a.astype(np.float32) + warped_b.astype(np.float32)) / 2.0).astype(np.uint8)
 
     return interpolated, flow_ab
@@ -184,8 +165,7 @@ def sovereign_interpolate(
     Attempts GPU path first. If GPU unavailable or output doesn't
     match CPU reference, falls back to CPU path silently (KENOSIS).
 
-    This is the single entry point that should be called by external
-    code. It handles all fallback logic internally.
+    This is the single entry point for external code.
 
     Args:
         frame_a: Previous frame
@@ -196,12 +176,6 @@ def sovereign_interpolate(
 
     falsifies_if: returns frame identical to frame_a or frame_b
     """
-    import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
-from tools.sfi.interpolate import interpolate_frame as cpu_interpolate
-    from tools.sfi.verify import kenosis_fallback
-
     # Try GPU path
     gpu_frame, _ = gpu_interpolate_frame(frame_a, frame_b)
 
@@ -209,14 +183,12 @@ from tools.sfi.interpolate import interpolate_frame as cpu_interpolate
         # Verify GPU output against CPU reference
         cpu_frame, _ = cpu_interpolate(frame_a, frame_b)
 
-        from tools.sfi.interpolate import frame_sha256
         gpu_hash = frame_sha256(gpu_frame)
         cpu_hash = frame_sha256(cpu_frame)
 
         if gpu_hash == cpu_hash:
             return gpu_frame
         else:
-            # KENOSIS: GPU failed verification, use CPU
             return cpu_frame
 
     # GPU unavailable — use CPU path directly
@@ -242,7 +214,6 @@ if __name__ == "__main__":
     print(f"Output shape: {result.shape}")
     print(f"Output hash: {frame_sha256(result)[:16]}")
 
-    # Verify determinism
     result2 = sovereign_interpolate(frame_a, frame_b)
     assert np.array_equal(result, result2), "Determinism check failed"
 
