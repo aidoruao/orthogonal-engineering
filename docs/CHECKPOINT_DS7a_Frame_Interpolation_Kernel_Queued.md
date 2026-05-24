@@ -78,3 +78,19 @@ text
 3. Move to CUDA kernel
 4. Integrate with driver-level injection
 5. Test against BattlEye
+
+## 8. Multi-Dimensional Audit (2026-05-24)
+
+| Dimension | Status | Gap |
+|-----------|--------|-----|
+| Game agnostic | PARTIAL | D3D path designed; Vulkan not yet |
+| Hardware agnostic | ACCOUNTED | CUDA/OpenCL probing; KENOSIS fallback |
+| Reproducibility | ACCOUNTED | Deterministic; frame hashing; falsifies_if |
+| Security (anti-cheat) | ACCOUNTED | Driver-level injection via NVAPI |
+| Popperian (falsifiability) | ACCOUNTED | Hash mismatch = fallback = falsified |
+| Glass-Box (auditability) | ACCOUNTED | Public source; hashed commits; CPU reference |
+| MIT/AGPL licensing | PARTIAL | NVAPI headers are proprietary; needs clean-room or Vulkan interop |
+| QoL (installer, UI, hotkeys) | NOT ACCOUNTED | LS has these; OE kernel does not yet |
+| HDR support | NOT ACCOUNTED | PQ/HLG transfer functions needed |
+| VRR / dynamic FPS | PARTIAL | VBlank accounted; dynamic intervals not |
+| Linux / Wayland | NOT ACCOUNTED | Windows-only for NVAPI path |
