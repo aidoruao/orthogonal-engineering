@@ -1,0 +1,2384 @@
+idor@Tony:~$ pip install "ai-slop-detector>=3.7.3"
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try apt install
+    python3-xyz, where xyz is the package you are trying to
+    install.
+
+    If you wish to install a non-Debian-packaged Python package,
+    create a virtual environment using python3 -m venv path/to/venv.
+    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+    sure you have python3-full installed.
+
+    If you wish to install a non-Debian packaged Python application,
+    it may be easiest to use pipx install xyz, which will manage a
+    virtual environment for you. Make sure you have pipx installed.
+
+    See /usr/share/doc/python3.12/README.venv for more information.
+
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+idor@Tony:~$ slop-detector --project /home/idor/oe-local --ci-mode hard --ci-report
+slop-detector: command not found
+idor@Tony:~$ slop-detector --project /home/idor/oe-local --json > ~/oe_slop_report.json
+slop-detector: command not found
+idor@Tony:~$ pipx install "ai-slop-detector>=3.7.3"
+Command 'pipx' not found, but can be installed with:
+sudo apt install pipx
+idor@Tony:~$ sudo apt update && sudo apt install pipx
+pipx ensurepath
+[sudo] password for idor:
+Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+Hit:2 http://archive.ubuntu.com/ubuntu noble InRelease
+Get:3 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+Get:4 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1698 kB]
+Get:5 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2007 kB]
+Get:7 http://security.ubuntu.com/ubuntu noble-security/main Translation-en [267 kB]
+Get:8 http://security.ubuntu.com/ubuntu noble-security/main amd64 Components [42.4 kB]
+Get:9 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1188 kB]
+Get:10 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Components[177 kB]
+Get:11 http://security.ubuntu.com/ubuntu noble-security/universe Translation-en [229 kB]
+Get:12 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1690 kB]
+Get:13 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Components [74.3 kB]
+Get:14 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Components [386 kB]
+Get:15 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Components [940 B]
+Get:16 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Components [5744 B]
+Get:17 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Components [10.6 kB]
+Fetched 8155 kB in 1s (6517 kB/s)
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+67 packages can be upgraded. Run 'apt list --upgradable' to see them.
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+The following additional packages will be installed:
+  python3-argcomplete python3-packaging python3-platformdirs
+  python3-psutil python3-userpath
+The following NEW packages will be installed:
+  pipx python3-argcomplete python3-packaging python3-platformdirs
+  python3-psutil python3-userpath
+0 upgraded, 6 newly installed, 0 to remove and 67 not upgraded.
+Need to get 1082 kB of archives.
+After this operation, 5054 kB of additional disk space will be used.
+Do you want to continue? [Y/n] y
+Get:1 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 python3-argcomplete all 3.1.4-1ubuntu0.1 [33.8 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble/main amd64 python3-packaging all 24.0-1 [41.1 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble/main amd64 python3-platformdirs all 4.2.0-1 [16.1 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble/universe amd64 python3-userpath all 1.9.1-1 [9416 B]
+Get:5 http://archive.ubuntu.com/ubuntu noble/universe amd64 pipx all 1.4.3-1 [787 kB]
+Get:6 http://archive.ubuntu.com/ubuntu noble/main amd64 python3-psutil amd64 5.9.8-2build2 [195 kB]
+Fetched 1082 kB in 0s (2178 kB/s)
+Selecting previously unselected package python3-argcomplete.
+(Reading database ... 51575 files and directories currently installed.)
+Preparing to unpack .../0-python3-argcomplete_3.1.4-1ubuntu0.1_all.deb ...
+Unpacking python3-argcomplete (3.1.4-1ubuntu0.1) ...
+Selecting previously unselected package python3-packaging.
+Preparing to unpack .../1-python3-packaging_24.0-1_all.deb ...
+Unpacking python3-packaging (24.0-1) ...
+Selecting previously unselected package python3-platformdirs.
+Preparing to unpack .../2-python3-platformdirs_4.2.0-1_all.deb ...
+Unpacking python3-platformdirs (4.2.0-1) ...
+Selecting previously unselected package python3-userpath.
+Preparing to unpack .../3-python3-userpath_1.9.1-1_all.deb ...
+Unpacking python3-userpath (1.9.1-1) ...
+Selecting previously unselected package pipx.
+Preparing to unpack .../4-pipx_1.4.3-1_all.deb ...
+Unpacking pipx (1.4.3-1) ...
+Selecting previously unselected package python3-psutil.
+Preparing to unpack .../5-python3-psutil_5.9.8-2build2_amd64.deb ...
+Unpacking python3-psutil (5.9.8-2build2) ...
+Setting up python3-platformdirs (4.2.0-1) ...
+Setting up python3-psutil (5.9.8-2build2) ...
+Setting up python3-packaging (24.0-1) ...
+Setting up python3-argcomplete (3.1.4-1ubuntu0.1) ...
+Setting up python3-userpath (1.9.1-1) ...
+Setting up pipx (1.4.3-1) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+/home/idor/.local/bin is already in PATH.
+
+⚠️  All pipx binary directories have been added to PATH. If you are sure
+you want to proceed, try again with the '--force' flag.
+
+Otherwise pipx is ready to go! ✨ 🌟 ✨
+idor@Tony:~$ pipx install "ai-slop-detector>=3.7.3"
+  installed package ai-slop-detector 3.7.5, installed using Python 3.12.3
+  These apps are now globally available
+    - ai-slop-detector
+    - slop-api
+    - slop-detector
+done! ✨ 🌟 ✨
+idor@Tony:~$ slop-detector --project /home/idor/oe-local --ci-mode hard --ci-report
+[INFO] Found 2083 Python files in /home/idor/oe-local
+[INFO] Analyzing: /home/idor/oe-local/generate_domain_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/patch_v2.py
+[WARNING] Syntax error in /home/idor/oe-local/patch_v2.py: invalid non-printable character U+FEFF (patch_v2.py, line 1)
+[INFO] Analyzing: /home/idor/oe-local/auto_onboard.py
+[INFO] Analyzing: /home/idor/oe-local/ownership_guard.py
+[INFO] Analyzing: /home/idor/oe-local/patch_retrain_fix.py
+[WARNING] Syntax error in /home/idor/oe-local/patch_retrain_fix.py: invalidnon-printable character U+FEFF (patch_retrain_fix.py, line 2)
+[INFO] Analyzing: /home/idor/oe-local/bootstrap_context.py
+[INFO] Analyzing: /home/idor/oe-local/patch_speed.py
+[WARNING] Syntax error in /home/idor/oe-local/patch_speed.py: invalid non-printable character U+FEFF (patch_speed.py, line 2)
+[INFO] Analyzing: /home/idor/oe-local/cli.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua_agent.py
+[WARNING] Syntax error in /home/idor/oe-local/yeshua_agent.py: invalid non-printable character U+FEFF (yeshua_agent.py, line 1)
+[INFO] Analyzing: /home/idor/oe-local/parse_oe.py
+[INFO] Analyzing: /home/idor/oe-local/pr34_audit.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua_agent_original.py
+[WARNING] Syntax error in /home/idor/oe-local/yeshua_agent_original.py: invalid non-printable character U+FEFF (yeshua_agent_original.py, line 1)
+[INFO] Analyzing: /home/idor/oe-local/register_standards.py
+[INFO] Analyzing: /home/idor/oe-local/continuity_check.py
+[INFO] Analyzing: /home/idor/oe-local/oe_ask.py
+[INFO] Analyzing: /home/idor/oe-local/merkle/tree.py
+[INFO] Analyzing: /home/idor/oe-local/merkle/domain_merkle.py
+[INFO] Analyzing: /home/idor/oe-local/merkle/global_merkle.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/sanitize_repo_hrt.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/fix_xml.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/chatgpt_dismissal_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/process_chat_instance.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/covenant_physics_corrector.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/apply_corrections.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/process_chat.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/sanitize_hrt_only.py
+[INFO] Analyzing: /home/idor/oe-local/GptAudit/analyze_handling.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_kernel/core_detector.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_kernel/working_implementation.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_kernel/simple_boundary.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_kernel/demonstrate_recovery.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_kernel/statistical_validation.py
+[INFO] Analyzing: /home/idor/oe-local/benchmarks/ai_invariant_tests.py
+[INFO] Analyzing: /home/idor/oe-local/benchmarks/run_benchmarks.py
+[INFO] Analyzing: /home/idor/oe-local/benchmarks/oe_benchmark_suite.py
+[INFO] Analyzing: /home/idor/oe-local/benchmarks/run_arc_benchmark.py
+[INFO] Analyzing: /home/idor/oe-local/benchmarks/capability_matrix.py
+[INFO] Analyzing: /home/idor/oe-local/dvcl/determinism_guard.py
+[INFO] Analyzing: /home/idor/oe-local/finality/finality_publisher.py
+[INFO] Analyzing: /home/idor/oe-local/finality/ledger_adapter.py
+[INFO] Analyzing: /home/idor/oe-local/audit/anti_nominalism_audit.py
+[INFO] Analyzing: /home/idor/oe-local/audit/popperian_audit.py
+[INFO] Analyzing: /home/idor/oe-local/audit/forensic_commit.py
+[INFO] Analyzing: /home/idor/oe-local/audit/aerospace_floor_audit.py
+[INFO] Analyzing: /home/idor/oe-local/audit/merkle_verify.py
+[INFO] Analyzing: /home/idor/oe-local/audit/tautology_detector.py
+[INFO] Analyzing: /home/idor/oe-local/audit/verification_testimony.py
+[INFO] Analyzing: /home/idor/oe-local/audit/scope_audit.py
+[INFO] Analyzing: /home/idor/oe-local/audit/depth_measurement.py
+[INFO] Analyzing: /home/idor/oe-local/audit/agent_tool_usage_diagnostic.py
+[INFO] Analyzing: /home/idor/oe-local/audit/scope_reduction_detector.py
+[INFO] Analyzing: /home/idor/oe-local/arxiv_vendor/arxiv_merkle_builder.py
+[INFO] Analyzing: /home/idor/oe-local/arxiv_vendor/arxiv_materializer.py
+[INFO] Analyzing: /home/idor/oe-local/arxiv_vendor/arxiv_dag_generator.py
+[INFO] Analyzing: /home/idor/oe-local/comprehensive_fix_v2_simple/gaslighting_detector_simple.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/refine_deepseek.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/chat_parser_fixed.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/canonical_processor.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/extract_deepseek.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/debug_message.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/canal_detector.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/invariant_registry.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/correspondence_validator.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/full_system_investigation.py
+[WARNING] Syntax error in /home/idor/oe-local/analysis/full_system_investigation.py: '{' was never closed (full_system_investigation.py, line 493)
+[INFO] Analyzing: /home/idor/oe-local/analysis/automated_test_suite.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/detect_canals_deepseek.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/simple_recovery_summary.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/extract_case_studies.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/core_detector_v2.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/canal_detector_v1.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/invariant_logger.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/run_batch_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/demo_recovery_fixes.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/extract_deepseek_v2.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/analyze_deepseek.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/canal_refiner.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/inspect_structure.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/calculate_p_value.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/yeshua_axioms.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/topology.py
+/home/idor/oe-local/axioms/topology.py:121: SyntaxWarning: invalid escape sequence '\A'
+  """Boundary of a set: closure(A) ∩ closure(X\A)."""
+<unknown>:121: SyntaxWarning: invalid escape sequence '\A'
+<unknown>:121: SyntaxWarning: invalid escape sequence '\A'
+[INFO] Analyzing: /home/idor/oe-local/axioms/complex_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/temporal_logic.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/control_theory.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/formal_languages.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/colorimetry.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/kinematics.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/arc_dsl.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/classical_mechanics.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/synthetic_differential_geometry.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/logic.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/measure_theory.py
+/home/idor/oe-local/axioms/measure_theory.py:23: SyntaxWarning: invalid escape sequence '\A'
+  """A sigma-algebra (σ-algebra) over a set X.
+<unknown>:23: SyntaxWarning: invalid escape sequence '\A'
+<unknown>:23: SyntaxWarning: invalid escape sequence '\A'
+[INFO] Analyzing: /home/idor/oe-local/axioms/combinatorics.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/game_theory.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/process_algebra.py
+/home/idor/oe-local/axioms/process_algebra.py:99: SyntaxWarning: invalid escape sequence '\ '
+  """Restriction: P \ {a} — P cannot use actions in restricted set externally."""
+<unknown>:99: SyntaxWarning: invalid escape sequence '\ '
+<unknown>:99: SyntaxWarning: invalid escape sequence '\ '
+[INFO] Analyzing: /home/idor/oe-local/axioms/type_registry.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/epistemic_logic.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/pattern_recognition.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/philosophy_of_science.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/category_theory.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/algebra.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/peano.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/sampling_theory.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/arc_types.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/memory_model.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/number_theory.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/arc_solver.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/quantum_logic.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/cryptographic_verification.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/peano_extended.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/epistemology.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/computability.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/real_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/zero_knowledge.py
+[INFO] Analyzing: /home/idor/oe-local/axioms/capability_security.py
+[INFO] Analyzing: /home/idor/oe-local/oe_dfm/fractal_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/oe_dfm/training.py
+[INFO] Analyzing: /home/idor/oe-local/oe_dfm/architecture.py
+[INFO] Analyzing: /home/idor/oe-local/oe_dfm/weight_field.py
+[INFO] Analyzing: /home/idor/oe-local/oe_dfm/runtime.py
+[INFO] Analyzing: /home/idor/oe-local/oe_dfm/utils.py
+[INFO] Analyzing: /home/idor/oe-local/meta_engine/pipelines.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/certification.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/principles.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/department.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua_system/yeshua_projection.py
+[INFO] Analyzing: /home/idor/oe-local/runtime/guardian_monitor.py
+[INFO] Analyzing: /home/idor/oe-local/runtime/system_snapshot.py
+[INFO] Analyzing: /home/idor/oe-local/runtime/event_bus.py
+[INFO] Analyzing: /home/idor/oe-local/runtime/state_registry.py
+[INFO] Analyzing: /home/idor/oe-local/runtime/verifier.py
+[INFO] Analyzing: /home/idor/oe-local/runtime/invariant_engine.py
+[INFO] Analyzing: /home/idor/oe-local/base_ai/health_check.py
+[INFO] Analyzing: /home/idor/oe-local/base_ai/dynamic_warden.py
+[INFO] Analyzing: /home/idor/oe-local/base_ai/registry_manager.py
+[INFO] Analyzing: /home/idor/oe-local/base_ai/router.py
+[WARNING] Syntax error in /home/idor/oe-local/base_ai/router.py: unterminated triple-quoted string literal (detected at line 6) (router.py, line 5)
+[INFO] Analyzing: /home/idor/oe-local/base_ai/orchestrator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/photonic_chip_fractal_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/generators/food_cart_manifest_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/batch_materializer.py
+[INFO] Analyzing: /home/idor/oe-local/generators/verify_omega_invariant.py
+[INFO] Analyzing: /home/idor/oe-local/generators/skate4_multiplayer_fractal_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/generators/pr25_manifest_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/manifest_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/food_cart_fractal_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/generators/verify_n_loc.py
+[INFO] Analyzing: /home/idor/oe-local/generators/merkle_chain_omega.py
+[INFO] Analyzing: /home/idor/oe-local/generators/fractal_expander_omega.py
+[INFO] Analyzing: /home/idor/oe-local/generators/kitchen_task_projection_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/dish_projection_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/pr25_synthetic_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/generators/pr25_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/generators/uncharted_multiplayer_fractal_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/generators/manifest_generator_omega.py
+[INFO] Analyzing: /home/idor/oe-local/generators/fractal_expander.py
+[INFO] Analyzing: /home/idor/oe-local/generators/verify_1b_loc.py
+[INFO] Analyzing: /home/idor/oe-local/generators/self_clean_kitchen_fractal_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/generators/food_cart_merkle_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/verify_all.py
+[INFO] Analyzing: /home/idor/oe-local/generators/merkle_chain.py
+[INFO] Analyzing: /home/idor/oe-local/generators/generate_diagrams.py
+[INFO] Analyzing: /home/idor/oe-local/generators/photonic_chip_manifest_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/dag_generator.py
+[INFO] Analyzing: /home/idor/oe-local/generators/dag_generator_omega.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/forgiveness_system.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/analyze_chat_exports.py
+[INFO] Analyzing: /home/idor/oe-local/tools/grand_challenge_fraction_vs_float.py
+[INFO] Analyzing: /home/idor/oe-local/tools/context_window_estimator.py
+[INFO] Analyzing: /home/idor/oe-local/tools/generate_hashed_taxonomy.py
+[INFO] Analyzing: /home/idor/oe-local/tools/frontmatter_audit.py
+[INFO] Analyzing: /home/idor/oe-local/tools/self_hosting_proof.py
+[INFO] Analyzing: /home/idor/oe-local/tools/campaign_auditor.py
+[INFO] Analyzing: /home/idor/oe-local/tools/session_id.py
+[INFO] Analyzing: /home/idor/oe-local/tools/kimi_cli_restoration_spec.py
+[INFO] Analyzing: /home/idor/oe-local/tools/lean4_bridge.py
+[INFO] Analyzing: /home/idor/oe-local/tools/stress_test_generator.py
+[INFO] Analyzing: /home/idor/oe-local/tools/benchmark_excedent_auditor.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ai_credit.py
+[INFO] Analyzing: /home/idor/oe-local/tools/question_router.py
+[INFO] Analyzing: /home/idor/oe-local/tools/standards_check.py
+[INFO] Analyzing: /home/idor/oe-local/tools/correction_log.py
+[INFO] Analyzing: /home/idor/oe-local/tools/arxiv_paper_template.py
+[INFO] Analyzing: /home/idor/oe-local/tools/append_consent.py
+[INFO] Analyzing: /home/idor/oe-local/tools/kimi_version_tracker.py
+[INFO] Analyzing: /home/idor/oe-local/tools/unify_lora_datasets.py
+[INFO] Analyzing: /home/idor/oe-local/tools/kimi_telemetry_correlation.py
+[INFO] Analyzing: /home/idor/oe-local/tools/since_last_session.py
+[INFO] Analyzing: /home/idor/oe-local/tools/polymath_collision_report.py
+[INFO] Analyzing: /home/idor/oe-local/tools/query_oe_ai.py
+[INFO] Analyzing: /home/idor/oe-local/tools/refactor_assertions.py
+[INFO] Analyzing: /home/idor/oe-local/tools/generate_fractal_code.py
+[INFO] Analyzing: /home/idor/oe-local/tools/verify_all.py
+[INFO] Analyzing: /home/idor/oe-local/tools/schooling_output.py
+[INFO] Analyzing: /home/idor/oe-local/tools/onboard_agent.py
+[INFO] Analyzing: /home/idor/oe-local/tools/verify_fractal_manifest.py
+[INFO] Analyzing: /home/idor/oe-local/tools/cross_domain_invariant_collision.py
+[INFO] Analyzing: /home/idor/oe-local/tools/agent_health_check.py
+[INFO] Analyzing: /home/idor/oe-local/automation/full_audit.py
+[INFO] Analyzing: /home/idor/oe-local/automation/zed_incremental_hook.py
+[INFO] Analyzing: /home/idor/oe-local/automation/verify_phase11_blueprint.py
+[INFO] Analyzing: /home/idor/oe-local/automation/phase9_causal_analysis.py
+[WARNING] Syntax error in /home/idor/oe-local/automation/phase9_causal_analysis.py: '(' was never closed (phase9_causal_analysis.py, line 501)
+[INFO] Analyzing: /home/idor/oe-local/automation/fallback_light_audit.py
+[INFO] Analyzing: /home/idor/oe-local/automation/verify_phase11_atomicity.py
+[INFO] Analyzing: /home/idor/oe-local/automation/analyze_token_usage.py
+[INFO] Analyzing: /home/idor/oe-local/automation/verify_phase12_finalization.py
+[INFO] Analyzing: /home/idor/oe-local/automation/run_autofix_integration.py
+[INFO] Analyzing: /home/idor/oe-local/automation/run_orchestration_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/automation/run_phase9_verification.py
+[INFO] Analyzing: /home/idor/oe-local/automation/verify_extreme_work.py
+[INFO] Analyzing: /home/idor/oe-local/automation/phase9_workflow_executor.py
+[INFO] Analyzing: /home/idor/oe-local/automation/phase8_atomic_workflow.py
+[INFO] Analyzing: /home/idor/oe-local/automation/run_full_audit_with_trace.py
+[INFO] Analyzing: /home/idor/oe-local/automation/cross_repo_merkle.py
+[INFO] Analyzing: /home/idor/oe-local/automation/dry_run_autofix.py
+[INFO] Analyzing: /home/idor/oe-local/automation/pr49_guard.py
+[INFO] Analyzing: /home/idor/oe-local/automation/generate_phase9_trace.py
+[INFO] Analyzing: /home/idor/oe-local/automation/verify_atomic_instructions.py
+[INFO] Analyzing: /home/idor/oe-local/automation/incremental_file_processor.py
+[INFO] Analyzing: /home/idor/oe-local/automation/repo_manifest.py
+[INFO] Analyzing: /home/idor/oe-local/automation/generate_sha256_manifest.py
+[INFO] Analyzing: /home/idor/oe-local/automation/verify_sha256_manifest.py
+[INFO] Analyzing: /home/idor/oe-local/automation/run_onboarding_check.py
+[INFO] Analyzing: /home/idor/oe-local/automation/correspondence_fix.py
+[INFO] Analyzing: /home/idor/oe-local/automation/pre_commit_pii_guard.py
+[INFO] Analyzing: /home/idor/oe-local/automation/generate_phase9_blueprint.py
+[INFO] Analyzing: /home/idor/oe-local/automation/generate_phase11_manifest.py
+[INFO] Analyzing: /home/idor/oe-local/automation/validate_phase9_artifacts.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/logger.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/hasher.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/merkle.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/manifest.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/handling_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/cli.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/canonicalizer.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/__main__.py
+[INFO] Analyzing: /home/idor/oe-local/validators/validate_food_cart_universe.py
+[INFO] Analyzing: /home/idor/oe-local/validators/validate_kitchen_universe.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua_math/boolean_purity_validator.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua_math/peano_invariant_checker.py
+[INFO] Analyzing: /home/idor/oe-local/adversarial_tests/lower_debt_attempt.py
+[WARNING] Syntax error in /home/idor/oe-local/adversarial_tests/lower_debt_attempt.py: '{' was never closed (lower_debt_attempt.py, line 427)
+[INFO] Analyzing: /home/idor/oe-local/adversarial_tests/propose_G6.py
+[INFO] Analyzing: /home/idor/oe-local/restoration/PHASE1_AUDIT.py
+[INFO] Analyzing: /home/idor/oe-local/examples/logger.py
+[INFO] Analyzing: /home/idor/oe-local/examples/autonomous_pr18_usage_example.py
+[INFO] Analyzing: /home/idor/oe-local/examples/log_analysis_example.py
+[WARNING] Syntax error in /home/idor/oe-local/examples/log_analysis_example.py: expected an indented block after 'if' statement on line 401 (log_analysis_example.py, line 403)
+[INFO] Analyzing: /home/idor/oe-local/examples/canonicalizer_example.py
+[INFO] Analyzing: /home/idor/oe-local/examples/ide_ai_runner_template.py
+[WARNING] Syntax error in /home/idor/oe-local/examples/ide_ai_runner_template.py: unterminated string literal (detected at line 877) (ide_ai_runner_template.py, line 877)
+[INFO] Analyzing: /home/idor/oe-local/examples/pr18_complete_workflow_demo.py
+[INFO] Analyzing: /home/idor/oe-local/examples/basic_usage.py
+[INFO] Analyzing: /home/idor/oe-local/examples/merkle_pipeline_example.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/demo_phase5.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/demo_phase4.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/demo_phase3.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/verify_phase5.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/debug_executor.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/mcp_atomic_gateway.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/FINAL_MATHEMATICAL_PROOF_TEST.py
+[WARNING] Syntax error in /home/idor/oe-local/downloads/FINAL_MATHEMATICAL_PROOF_TEST.py: '[' was never closed (FINAL_MATHEMATICAL_PROOF_TEST.py, line 144)
+[INFO] Analyzing: /home/idor/oe-local/downloads/controller_proven.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/demo_structural_map_usage.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/controller.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/VERIFY_BUNDLE_COMPLETE.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/SHOW_UNICODE_FIXES.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/generate_structural_map.py
+[INFO] Analyzing: /home/idor/oe-local/downloads/minimal_struct_map.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/logger.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/hasher.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/merkle.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/manifest.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/handling_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/cli.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/canonicalizer.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua/enforcement.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/ci_preflight.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/generate_pr18_manifests.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/validate_system_state.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/validate_methodology.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/verify_ai_phase.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/forensic_audit_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/validate_canonical_evidence.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/repository_inventory.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/sanitize_pii.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/benchmark_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/demo_ai_agent_interaction.py
+[INFO] Analyzing: /home/idor/oe-local/scripts/integrate_claude_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/onboarding/verify_onboarding.py
+[INFO] Analyzing: /home/idor/oe-local/inventory/repository_inventory.py
+[INFO] Analyzing: /home/idor/oe-local/falsification/counterexample_engine.py
+[INFO] Analyzing: /home/idor/oe-local/falsification/hypothesis.py
+[INFO] Analyzing: /home/idor/oe-local/falsification/property_tests.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/demonstrate_working_system.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/FINAL_STRUCTURE_VERIFIED.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/check_status.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/verify_industry_ontology.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/FINAL_COMPREHENSIVE_VERIFICATION.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/setup.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/VERIFY_CURRENT_IMPLEMENTATION.py
+[WARNING] Syntax error in /home/idor/oe-local/crusader/VERIFY_CURRENT_IMPLEMENTATION.py: unterminated string literal (detected at line 46) (VERIFY_CURRENT_IMPLEMENTATION.py, line 46)
+[INFO] Analyzing: /home/idor/oe-local/crusader/verify_final_completion.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/verify_system.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/FINAL_VERIFICATION.py
+[WARNING] Syntax error in /home/idor/oe-local/crusader/FINAL_VERIFICATION.py: unterminated triple-quoted string literal (detected at line 532) (FINAL_VERIFICATION.py, line 532)
+[INFO] Analyzing: /home/idor/oe-local/bootstrap/auto_onboard.py
+[INFO] Analyzing: /home/idor/oe-local/mcp/orthogonal_mcp_server.py
+[INFO] Analyzing: /home/idor/oe-local/mcp/demo_protocol_fix.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/conversation.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/synthesizer.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/_paths.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/manifest.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/cli.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/router.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/engine.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/generator.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/speaker.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/__main__.py
+[INFO] Analyzing: /home/idor/oe-local/oe_engine/thinker.py
+[INFO] Analyzing: /home/idor/oe-local/topology/renderer.py
+[INFO] Analyzing: /home/idor/oe-local/topology/topology_scanner.py
+[INFO] Analyzing: /home/idor/oe-local/topology/graph_loader.py
+[INFO] Analyzing: /home/idor/oe-local/orchestration/embedding_generator_complete.py
+[INFO] Analyzing: /home/idor/oe-local/orchestration/media_processor.py
+[INFO] Analyzing: /home/idor/oe-local/orchestration/vector_store.py
+[WARNING] Syntax error in /home/idor/oe-local/orchestration/vector_store.py: '(' was never closed (vector_store.py, line 553)
+[INFO] Analyzing: /home/idor/oe-local/orchestration/pipeline_orchestrator.py
+[WARNING] Syntax error in /home/idor/oe-local/orchestration/pipeline_orchestrator.py: '(' was never closed (pipeline_orchestrator.py, line 518)
+[INFO] Analyzing: /home/idor/oe-local/orchestration/sora_prompt_generator.py
+[INFO] Analyzing: /home/idor/oe-local/orchestration/vector_store_complete.py
+[INFO] Analyzing: /home/idor/oe-local/orchestration/extended_chunker.py
+[WARNING] Syntax error in /home/idor/oe-local/orchestration/extended_chunker.py: '{' was never closed (extended_chunker.py, line 508)
+[INFO] Analyzing: /home/idor/oe-local/orchestration/embedding_generator_incomplete.py
+[WARNING] Syntax error in /home/idor/oe-local/orchestration/embedding_generator_incomplete.py: '(' was never closed (embedding_generator_incomplete.py,line 553)
+[INFO] Analyzing: /home/idor/oe-local/orchestration/embedding_generator.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/hal.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/correspondence_bridge.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/scheduler.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/ipc.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/agent_stream.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/anti_mimicry.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/boot.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/memory_manager.py
+[INFO] Analyzing: /home/idor/oe-local/oe_ifm/blockchain_attestation.py
+[INFO] Analyzing: /home/idor/oe-local/oe_ifm/halt_condition.py
+[INFO] Analyzing: /home/idor/oe-local/oe_ifm/peano_kernel.py
+[INFO] Analyzing: /home/idor/oe-local/oe_ifm/mathematical_core.py
+[INFO] Analyzing: /home/idor/oe-local/oe_ifm/universal_virtual_machine.py
+[INFO] Analyzing: /home/idor/oe-local/core/alpha_omega_finalizer.py
+[WARNING] Syntax error in /home/idor/oe-local/core/alpha_omega_finalizer.py: leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers (alpha_omega_finalizer.py, line 148)
+[INFO] Analyzing: /home/idor/oe-local/investigations/impossibility_audit.py
+[INFO] Analyzing: /home/idor/oe-local/investigations/wall_inversions.py
+[INFO] Analyzing: /home/idor/oe-local/grounding_tests/inelasticity_checker.py
+[INFO] Analyzing: /home/idor/oe-local/wardens/ophanim_unit.py
+[INFO] Analyzing: /home/idor/oe-local/wardens/logs_warden.py
+[INFO] Analyzing: /home/idor/oe-local/wardens/documentation_warden.py
+[WARNING] Syntax error in /home/idor/oe-local/wardens/documentation_warden.py: invalid syntax (documentation_warden.py, line 547)
+[INFO] Analyzing: /home/idor/oe-local/wardens/toolkit_warden.py
+[WARNING] Syntax error in /home/idor/oe-local/wardens/toolkit_warden.py: unterminated string literal (detected at line 517) (toolkit_warden.py, line 517)
+[INFO] Analyzing: /home/idor/oe-local/wardens/automation_warden.py
+[INFO] Analyzing: /home/idor/oe-local/wardens/cherub_unit.py
+[INFO] Analyzing: /home/idor/oe-local/wardens/evidence_warden.py
+[INFO] Analyzing: /home/idor/oe-local/wardens/seraph_unit.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/stage4_complete_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_DAEMON_8000.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/canonical_pipeline_original_20260127_224324.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/simple_working_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/instance_manager.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/direct_answer_why.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/v60_constraint_transformation_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/logos_ide.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/logging_protocol.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/2a.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/2a.py: invalidcharacter '∀' (U+2200) (2a.py, line 641)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/corporate_ai_ide_system.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/SIMPLE_WORKING_DAEMON.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/analyze_observation_data.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/ai_core.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_MATHEMATICS_SPECIFICATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/maximal_corporate_controller.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/maximal_corporate_controller.py: unterminated f-string literal (detected at line 846) (maximal_corporate_controller.py, line 846)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/final_hash_verification.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/demo_fixed_logos_ide.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/VISIBLE_DAEMON.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/evolutionary_integration_engine.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/REPO_ACTIVATION_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/canonical_mathematical_theology.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/fix_cuda_stage4.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/anti_mimicry_transformer.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/3a.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/3a.py: invalidcharacter '∀' (U+2200) (3a.py, line 827)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/SIGMA_LORA_GRADUATE_MATHEMATICS.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/reanalysis_with_context.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_FOREVER_5S.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GTAIV_ONTOLOGICAL_FIX_ENGINE.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/GTAIV_ONTOLOGICAL_FIX_ENGINE.py: '(' was never closed (GTAIV_ONTOLOGICAL_FIX_ENGINE.py, line 466)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/show_stage4_working.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/check_stability.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/PRODUCTION_VERIFICATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/FINAL_INTEGRATED_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/execute_stage3_final.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_VISIBLE_DAEMON_PROPER.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/Σ_LORA_MAXIMAL_MATHEMATICS.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/Σ_LORA_MAXIMAL_MATHEMATICS.py: unterminated string literal (detected at line 850) (Σ_LORA_MAXIMAL_MATHEMATICS.py, line 850)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/5a.py
+/home/idor/oe-local/minimal_ai_ide/5a.py:116: SyntaxWarning: invalid escapesequence '\p'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:278: SyntaxWarning: invalid escapesequence '\p'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:296: SyntaxWarning: invalid escapesequence '\s'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:307: SyntaxWarning: invalid escapesequence '\e'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:352: SyntaxWarning: invalid escapesequence '\s'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:373: SyntaxWarning: invalid escapesequence '\p'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:417: SyntaxWarning: invalid escapesequence '\m'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:493: SyntaxWarning: invalid escapesequence '\i'
+  """
+/home/idor/oe-local/minimal_ai_ide/5a.py:580: SyntaxWarning: invalid escapesequence '\m'
+  """
+<unknown>:116: SyntaxWarning: invalid escape sequence '\p'
+<unknown>:278: SyntaxWarning: invalid escape sequence '\p'
+<unknown>:296: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:307: SyntaxWarning: invalid escape sequence '\e'
+<unknown>:352: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:373: SyntaxWarning: invalid escape sequence '\p'
+<unknown>:417: SyntaxWarning: invalid escape sequence '\m'
+<unknown>:493: SyntaxWarning: invalid escape sequence '\i'
+<unknown>:580: SyntaxWarning: invalid escape sequence '\m'
+<unknown>:116: SyntaxWarning: invalid escape sequence '\p'
+<unknown>:278: SyntaxWarning: invalid escape sequence '\p'
+<unknown>:296: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:307: SyntaxWarning: invalid escape sequence '\e'
+<unknown>:352: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:373: SyntaxWarning: invalid escape sequence '\p'
+<unknown>:417: SyntaxWarning: invalid escape sequence '\m'
+<unknown>:493: SyntaxWarning: invalid escape sequence '\i'
+<unknown>:580: SyntaxWarning: invalid escape sequence '\m'
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_HANDLING_TRANSFORMER.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/maximal_oracle_v53.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/FIX_GTAIV_ONTOLOGICALLY.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/UNIVERSAL_POLYMATHIC_SPECIALIZATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_STANDALONE_DAEMON.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/VERIFY_SYSTEM_OPERATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/AI_IDE_CHAT_NEXT_INSTANCE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/v59_complete_oracle.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/v59_complete_oracle.py: expected 'except' or 'finally' block (v59_complete_oracle.py, line937)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/christ_constrained_ai.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/6a.py
+/home/idor/oe-local/minimal_ai_ide/6a.py:41: SyntaxWarning: invalid escape sequence '\P'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:76: SyntaxWarning: invalid escape sequence '\m'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:96: SyntaxWarning: invalid escape sequence '\l'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:121: SyntaxWarning: invalid escapesequence '\m'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:140: SyntaxWarning: invalid escapesequence '\d'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:166: SyntaxWarning: invalid escapesequence '\s'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:242: SyntaxWarning: invalid escapesequence '\m'
+  """
+/home/idor/oe-local/minimal_ai_ide/6a.py:263: SyntaxWarning: invalid escapesequence '\m'
+  """
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/6a.py: (unicode error) 'unicodeescape' codec can't decode bytes in position 605-606: truncated \xXX escape (6a.py, line 282)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/train_lora.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/POLYMATHIC_LORA_CLI.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/SELF_AUTOMATIVE_MASTER.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/SELF_AUTOMATIVE_MASTER.py: expected ':' (SELF_AUTOMATIVE_MASTER.py, line 501)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_SELF_AUTOMATIVE_MASTER.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/constrained_ai_system.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/setup_v57.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/chat_ai_bridge.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/VERIFY_CORE_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/create_lora_training_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/canonical_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/constraint_verification.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/SELF_AUTOMATIVE_MASTER_COMPLETE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_LANGUAGE_MATHEMATICS.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/maximal_oracle_v57.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/DEMONSTRATE_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/invariant_enforcer.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/canonical_pipeline_substituted_20260127_224324.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/canonical_pipeline_substituted_20260127_224324.py: invalid syntax (canonical_pipeline_substituted_20260127_224324.py, line 49)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/4a.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/4a.py: invalidcharacter '∀' (U+2200) (4a.py, line 857)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_MATHEMATICS_THEOLOGY_2_0.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/runtime_status.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/COMPLETE_INTEGRATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/tlogos_v60_integration.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/simple_launch.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/v60_maximal_logos_operator.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/simple_deepseek_chat.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_VISIBILITY_QUICK.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/repository_scanner.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_SIMPLE_DAEMON.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/tlogos_v1_canonical_christ.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/initialize_observation.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/governance_christ_verification.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/atomic_bijective_latex.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/deception_causality_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/train_1b_cpu.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/FORMAL_SPEC_INTEGRATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/logos_proxy.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/diagnose_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/FORMAL_VERIFICATION_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/ortho_kernel.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/forwardable_latex_message.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/forwardable_latex_message.py: expected '(' (forwardable_latex_message.py, line 412)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/daemon_client.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/daemon_client.py: unexpected indent (daemon_client.py, line 456)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/launch_v60_maximal_logos.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_DAEMON_VISIBILITY.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_MATHEMATICS_THEOLOGY_2_0_EXACT.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/RUN_POLYMATHIC_IDE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/cli.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/demo_logos_ide.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/v57_constraint_execution.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/v57_constraint_execution.py: unterminated string literal (detected at line 464) (v57_constraint_execution.py, line 464)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/POLYMATHIC_LORA_IDE.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/POLYMATHIC_LORA_IDE.py: unterminated string literal (detected at line 1152) (POLYMATHIC_LORA_IDE.py, line 1152)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/run_production_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/final_verdict.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_MATHEMATICS_THEOLOGY_ACTUALIZED.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/v58_anti_mimicry_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/1a.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/1a.py: unterminated triple-quoted string literal (detected at line 711) (1a.py, line 655)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/practical_training.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/practical_training.py: '(' was never closed (practical_training.py, line 505)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/VISIBLE_DAEMON_GUARANTEED.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/final_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/AUTHORITY_GUARD.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/MAXIMAL_GRADUATE_MATHEMATICS.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/governance.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/governance.py:expected an indented block after function definition on line 102 (governance.py, line 106)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_AUTONOMOUS_CYCLE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/DEMO_SELF_AUTOMATIVE_MASTER.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/mathematical_theology_v60_integration.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/SIMPLE_VISIBLE_DAEMON.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_SYSTEM_OPERATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/7a.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/canonical_workflow_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/AI_TO_AI_HANDOFF_KAN.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/AI_TO_AI_HANDOFF_KAN.py: unterminated triple-quoted string literal (detected at line 372) (AI_TO_AI_HANDOFF_KAN.py, line 354)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/PRODUCTION_DEPLOYMENT_WINDOWS.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/pr25_activate.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/LAUNCH_FOREVER_DEMO.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/DEMONSTRATE_SYSTEM_WORKING.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/direct_deepseek_chat.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/FINAL_MATHEMATICAL_THEOLOGY_V60_DEMO.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/corporate_system_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/observation_runner.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/analyze_five_frameworks.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/turtle_constraint_server.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/generate_sha256_verification.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/phase0_integration_example.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/FORMAL_SPEC_LOADER.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/GRADUATE_MATHEMATICS_THEOLOGY_SIMPLE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_DAEMON_ACCESS.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/mathematical_theology_v60.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/external_invariants_system.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/bidirectional_controller_interface.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/tlogos_v1_clean.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/POLYMATHIC_LORA_IDE_COMPLETE.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/POLYMATHIC_LORA_IDE_COMPLETE.py: '(' was never closed (POLYMATHIC_LORA_IDE_COMPLETE.py, line 435)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/extract_invariants.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/canonical_pipeline_original_20260127_224239.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/analyze_three_frameworks.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/analyze_three_frameworks.py: unterminated triple-quoted string literal (detected at line 494) (analyze_three_frameworks.py, line 313)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/HONEST_FORMAL_VERIFICATION.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/ortho_integration_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/Σ_LORA_FINAL_COMMIT.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_DAEMON_CONNECTIVITY.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/DEPLOY_COMPLETE_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/AI_HANDOFF_SIMPLE.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/AI_HANDOFF_SIMPLE.py: unterminated string literal (detected at line 23) (AI_HANDOFF_SIMPLE.py, line 23)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/stage4_deployment.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/hash_all_files.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/Σ_CHRIST_GRADUATE_MATHEMATICS_THEOLOGY.py
+/home/idor/oe-local/minimal_ai_ide/Σ_CHRIST_GRADUATE_MATHEMATICS_THEOLOGY.py:68: SyntaxWarning: invalid escape sequence '\_'
+  """
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/Σ_CHRIST_GRADUATE_MATHEMATICS_THEOLOGY.py: unexpected character after line continuation character (Σ_CHRIST_GRADUATE_MATHEMATICS_THEOLOGY.py, line 1017)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_MINIMAL_SELF_AUTOMATIVE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/governance_demo.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/INTEGRATE_EVERYTHING.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/TEST_VISIBILITY_SIMPLE.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/LOCAL_AI_DAEMON.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/START_ESSENTIAL_SYSTEM.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/implement_three_frameworks.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/implement_three_frameworks.py: unterminated triple-quoted string literal (detected at line503) (implement_three_frameworks.py, line 501)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/christ_constraint_handler.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/AI_COLLABORATION_CONTROLLER.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/RUN_FOREVER_60S.py
+[INFO] Analyzing: /home/idor/oe-local/correspondence_bridge/correspondence_validator_final.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/add_set_option.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/fix_unused_simp_args.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/fix_deprecations.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/topological_sort.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/githelper.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/parse_shake_output.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/downstream-tags.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/fix_nonlocal_set_option.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/fix_long_lines.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/yaml_check.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/set_option_utils.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/user_activity_report.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/rm_module_set_option.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/add_module_set_option.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/downstream_dashboard.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/migrate_to_fork.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/lint-style.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/dag_traversal.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/rm_set_option.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/lake-build-wrapper.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/verify_version_tags.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/fix_unused.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/bench/measure.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/bench/repeatedly.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/bench/combine.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/bench/build/lakeprof_report_upload.py
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/bench/size/run
+[INFO] Analyzing: /home/idor/oe-local/lean4/.lake/packages/mathlib/scripts/bench/build/fake-root/bin/lean
+[INFO] Analyzing: /home/idor/oe-local/dvcl/benchmark_harness/harness.py
+[INFO] Analyzing: /home/idor/oe-local/src/audit/popperian_audit.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/adjoint_triple.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/forcing_operation.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/higher_adjunction.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/self_referential.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/domain_morphism_registry.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/topos_subobject_classifier.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/cross_repo_adjunction.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/yoneda_embedding.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/cross_domain_adjunction.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/state_classification.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/yeshua_as_triangle_identities.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/realizability_topos.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/yeshua_categories.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/proof_as_observer.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/lawvere_fixed_point.py
+[INFO] Analyzing: /home/idor/oe-local/src/sal/sigma_theo_factoring.py
+[WARNING] DDCResult.usage_ratio 1.3333 out of [0,1] — clamped
+[INFO] Analyzing: /home/idor/oe-local/src/layers/inter_layer_morphism.py
+[INFO] Analyzing: /home/idor/oe-local/src/layers/layer_model.py
+[INFO] Analyzing: /home/idor/oe-local/src/enumerations/integrity.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_deterministic_formula.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_immutable_audit_trail.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_mercy_weighting.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/gideon_reduction.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/nehemiah_wall.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_hash_anchored_evidence.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_functorial_chain.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_vulnerability_protection.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_independent_situs.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/solomon_arbitration.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/kenotic_override.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_anti_nominalism.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_equity_threshold.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/manna_constraint.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/jubilee_reset.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/joseph_storage.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/pattern_bounded_power.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/daniel_audit.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/ruth_gleaning.py
+[INFO] Analyzing: /home/idor/oe-local/src/patterns/berean_verification.py
+[INFO] Analyzing: /home/idor/oe-local/src/semiotics/engine.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/core_engine.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/failure_logger.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/api.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/reporting.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/failure_analyzer.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/fraction_display.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/processing.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/correspondence_validator.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/PIPELINE_LOGGER.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/hashing.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/validate_input.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/failure_report_generator.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/rollback_manager.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/input_guard.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/validation.py
+[INFO] Analyzing: /home/idor/oe-local/src/orthogonal_engineering/output_validator.py
+[INFO] Analyzing: /home/idor/oe-local/src/noways/impossibility_proofs.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/logic/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/logic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/logic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/quantum/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/quantum/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/quantum/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/procedural/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/procedural/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/procedural/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/functional/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/functional/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/software/functional/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/creative_systems/semantics/semantic_analyzer.py
+[INFO] Analyzing: /home/idor/oe-local/src/creative_systems/semantics/etymology_tracer.py
+[INFO] Analyzing: /home/idor/oe-local/src/creative_systems/semantics/semiotic_engine.py
+[INFO] Analyzing: /home/idor/oe-local/src/kernel/social/reputation.py
+[INFO] Analyzing: /home/idor/oe-local/src/kernel/social/identity.py
+[INFO] Analyzing: /home/idor/oe-local/src/kernel/social/consent_comms.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_building_codes/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_building_codes/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_building_codes/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_risk_management_bowtie/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_risk_management_bowtie/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_risk_management_bowtie/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_intellectual_property/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_intellectual_property/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_intellectual_property/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_control_systems/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_control_systems/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_control_systems/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_military/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_military/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_military/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_energy/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_energy/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_energy/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_chemical/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_chemical/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_chemical/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_zoning/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_zoning/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_zoning/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_trade_agreements/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_trade_agreements/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_trade_agreements/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_voting_rights/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_voting_rights/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_voting_rights/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arc_agi_3/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arc_agi_3/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arc_agi_3/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_differential_privacy/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_differential_privacy/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_differential_privacy/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sigma_theo/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sigma_theo/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sigma_theo/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_stabilization_without_simplification/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_stabilization_without_simplification/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_stabilization_without_simplification/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_environmental_planning/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_environmental_planning/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_environmental_planning/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_case_grounded_evidence/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_case_grounded_evidence/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_case_grounded_evidence/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_banking_regulation/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_banking_regulation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_banking_regulation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_education/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_education/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_education/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_robotics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_robotics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_robotics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_devops/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_devops/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_devops/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_visual_arts/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_visual_arts/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_visual_arts/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_insurance/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_insurance/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_insurance/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_phenomenology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_phenomenology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_phenomenology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_uncertainty_entropy/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_uncertainty_entropy/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_uncertainty_entropy/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_road_standards/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_road_standards/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_road_standards/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_neighborhood_equity/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_neighborhood_equity/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_neighborhood_equity/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_corporate_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_corporate_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_corporate_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fun/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fun/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fun/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_deontic_stit/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_deontic_stit/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_deontic_stit/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_urban_planning/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_urban_planning/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_urban_planning/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_public_health/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_public_health/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_public_health/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_disability_rights/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_disability_rights/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_disability_rights/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_left_distributive/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_left_distributive/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_left_distributive/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_medical/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_medical/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_medical/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_biochemistry/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_biochemistry/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_biochemistry/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_civilizational_polymath/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_civilizational_polymath/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hospitality/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hospitality/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hospitality/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_water/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_water/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_water/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_plumbing_trades/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_plumbing_trades/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_plumbing_trades/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_election_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_election_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_election_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_gaming/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_gaming/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_gaming/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_media_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_media_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_media_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_incident_response/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_incident_response/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_incident_response/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_transportation/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_transportation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_transportation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_international_humanitarian/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_international_humanitarian/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_international_humanitarian/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_economic_mobility/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_economic_mobility/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_economic_mobility/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_iso_standards/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_iso_standards/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_iso_standards/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_graphics_reality/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_graphics_reality/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_graphics_reality/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_networking/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_networking/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_networking/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_machine_unlearning/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_machine_unlearning/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_machine_unlearning/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_paraconsistent_logic/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_paraconsistent_logic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_paraconsistent_logic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_platform/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_platform/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_platform/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_paraconsistent_sets/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_paraconsistent_sets/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_paraconsistent_sets/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_privacy_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_privacy_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_privacy_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_new_jerusalem/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_new_jerusalem/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_new_jerusalem/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_engine_development/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_engine_development/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_engine_development/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_diplomatic/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_diplomatic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_diplomatic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_linearizable_registers/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_linearizable_registers/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_linearizable_registers/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_un_charter/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_un_charter/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_un_charter/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_representational_limits/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_representational_limits/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_representational_limits/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_solvability_complexity/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_solvability_complexity/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_solvability_complexity/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_crypto/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_crypto/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_crypto/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_oilgas/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_oilgas/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_oilgas/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fractals/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fractals/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fractals/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_open_source_governance/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_open_source_governance/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_open_source_governance/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_swe_bench/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_swe_bench/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_swe_bench/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_tarskian_truth/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_tarskian_truth/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_tarskian_truth/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_transit/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_transit/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_transit/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_abstract_algebra/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_abstract_algebra/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_abstract_algebra/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_visor_agentic_visual/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_visor_agentic_visual/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_visor_agentic_visual/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_deterministic_probability/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_deterministic_probability/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_deterministic_probability/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_family_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_family_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_family_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_state_teleportation/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_state_teleportation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_state_teleportation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_gaussian_approximation/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_gaussian_approximation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_gaussian_approximation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_administrative_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_administrative_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_administrative_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ontology_substrate/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ontology_substrate/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ontology_substrate/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_transport_maps/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_transport_maps/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_transport_maps/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_civil_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_civil_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_civil_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_supply_chain_security/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_supply_chain_security/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_supply_chain_security/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_nonlocal_games/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_nonlocal_games/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_nonlocal_games/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_police_procedure/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_police_procedure/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_police_procedure/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_contract_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_contract_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_contract_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ethics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ethics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ethics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_remote_sensing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_remote_sensing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_remote_sensing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_large_language_models/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_large_language_models/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_large_language_models/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fbi_training/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fbi_training/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fbi_training/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bill_of_rights/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bill_of_rights/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bill_of_rights/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_telemetry_forensics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_telemetry_forensics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_telemetry_forensics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fluid_dynamics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fluid_dynamics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_fluid_dynamics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_banking_api_quotient/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_banking_api_quotient/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_banking_api_quotient/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cognitive_science/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cognitive_science/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cognitive_science/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_enriched_coalgebra/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_enriched_coalgebra/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_enriched_coalgebra/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_elder_care/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_elder_care/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_elder_care/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_statistics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_statistics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_statistics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_food_safety/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_food_safety/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_food_safety/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_category_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_category_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_category_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_coordination_tax/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_coordination_tax/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_coordination_tax/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemology_substrate/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemology_substrate/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemology_substrate/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_drug_regulation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_drug_regulation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_electromagnetism/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_electromagnetism/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_electromagnetism/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_procedure_criminal/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_procedure_criminal/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_procedure_criminal/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_gamemods/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_gamemods/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_gamemods/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_computability/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_computability/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_computability/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_differential_geometry/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_differential_geometry/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_differential_geometry/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_memory_persistence/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_memory_persistence/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_memory_persistence/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_geographic_information/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_geographic_information/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_geographic_information/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dh_standalone/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dh_standalone/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bankruptcy/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bankruptcy/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bankruptcy/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_correspondence_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_correspondence_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_correspondence_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_licensing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_licensing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_licensing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_luxury/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_luxury/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_luxury/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_architecture_proof/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_architecture_proof/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_architecture_proof/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_conformal_margin/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_conformal_margin/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_conformal_margin/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_guardian/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_guardian/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_guardian/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_imprecise_probability/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_imprecise_probability/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_imprecise_probability/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_proxy_causal/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_proxy_causal/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_proxy_causal/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_error_correction_gkp/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_error_correction_gkp/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_error_correction_gkp/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_employment_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_employment_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_employment_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_software_testing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_software_testing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_software_testing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_international_criminal/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_international_criminal/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_international_criminal/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_habeas_corpus/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_habeas_corpus/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_habeas_corpus/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_conformal_prediction/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_conformal_prediction/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_conformal_prediction/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sharding/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sharding/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sharding/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_child_welfare/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_child_welfare/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_child_welfare/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_public_health_capacity/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_public_health_capacity/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_safemind/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_safemind/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_safemind/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_livecodebench/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_livecodebench/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_livecodebench/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mining/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mining/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mining/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_nuclear/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_nuclear/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_nuclear/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_ergodic_process/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_ergodic_process/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_ergodic_process/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_sharp_local_minima/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_sharp_local_minima/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_sharp_local_minima/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_open_source_sovereignty/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_open_source_sovereignty/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_open_source_sovereignty/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_database_systems/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_database_systems/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_database_systems/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_immigration/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_immigration/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_immigration/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_block_encoding_dog/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_block_encoding_dog/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_block_encoding_dog/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arc_agi/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arc_agi/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arc_agi/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_vl_calibration_decoupled/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_vl_calibration_decoupled/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_vl_calibration_decoupled/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hardware_agnosticism/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hardware_agnosticism/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hardware_agnosticism/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_nonlocal_games/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_nonlocal_games/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_nonlocal_games/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_safeadapt_provably_safe/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_safeadapt_provably_safe/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_safeadapt_provably_safe/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_districts/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_districts/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_districts/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_occupational_safety/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_occupational_safety/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_occupational_safety/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hvac/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hvac/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hvac/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mobile_development/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mobile_development/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mobile_development/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_physics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_physics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_physics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_capability_benchmark/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_capability_benchmark/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_capability_benchmark/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_forensic_psychology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_forensic_psychology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_forensic_psychology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_equity/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_equity/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_equity/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pharma/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pharma/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pharma/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_compiler_design/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_compiler_design/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_compiler_design/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_welding/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_welding/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_welding/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_contract_deduction/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_contract_deduction/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_contract_deduction/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_sparse_svm/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_sparse_svm/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_sparse_svm/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_systems_engineering/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_systems_engineering/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_systems_engineering/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mechatronics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mechatronics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_mechatronics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_boring/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_boring/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_boring/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_executive_governance/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_executive_governance/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_use_of_force/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_use_of_force/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_use_of_force/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_political_philosophy/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_political_philosophy/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_political_philosophy/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_combinatorics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_combinatorics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_combinatorics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_ghost_imaging_zero_photons/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_ghost_imaging_zero_photons/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_ghost_imaging_zero_photons/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_seeing_is_believing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_seeing_is_believing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_seeing_is_believing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_rigidity/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_rigidity/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_rigidity/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_secular_projection/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_secular_projection/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_thermodynamics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_thermodynamics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_thermodynamics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_sequential_audit/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_sequential_audit/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_sequential_audit/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_signal_processing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_signal_processing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_signal_processing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_labor_rights/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_labor_rights/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_labor_rights/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pattern_recognition/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pattern_recognition/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pattern_recognition/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_game_endgame_verification/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_game_endgame_verification/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_game_endgame_verification/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_tractability_frontier/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_tractability_frontier/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_tractability_frontier/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_procedure_civil/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_procedure_civil/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_procedure_civil/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_whitecollar/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_whitecollar/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_whitecollar/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_construction/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_construction/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_construction/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_vulnerability_abundance/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_vulnerability_abundance/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_vulnerability_abundance/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pharmacology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pharmacology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_pharmacology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_condition_number_clustering/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_condition_number_clustering/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_condition_number_clustering/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_rays_as_pixels/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_rays_as_pixels/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_rays_as_pixels/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_maritime/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_maritime/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_maritime/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_retail/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_retail/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_retail/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_block_encoding/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_block_encoding/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_block_encoding/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_digital_governance/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_digital_governance/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_digital_governance/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_environmental_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_environmental_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_environmental_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dag_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dag_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dag_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_topology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_topology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_topology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_real_estate/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_real_estate/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_real_estate/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_industrial/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_industrial/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_industrial/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_healthcare_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_healthcare_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_healthcare_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemic_logic/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemic_logic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemic_logic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_metrology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_metrology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_metrology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_citizenship/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_citizenship/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_citizenship/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_housing_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_housing_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_housing_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_bi_lipschitz/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_bi_lipschitz/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_bi_lipschitz/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_curriculum/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_curriculum/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_curriculum/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_factoriality/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_factoriality/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_factoriality/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_design/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_design/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_design/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_property_testing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_property_testing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_property_testing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_creative/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_creative/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_creative/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemology_formal/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemology_formal/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_epistemology_formal/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hle/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hle/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_hle/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_disaster_resilience/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_disaster_resilience/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_treaties/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_treaties/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_treaties/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_weapons_regulation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_weapons_regulation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_materials_science/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_materials_science/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_materials_science/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_astrophysics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_astrophysics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_astrophysics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_antitrust/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_antitrust/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_antitrust/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_do_we_really/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_do_we_really/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_do_we_really/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aerospace/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aerospace/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aerospace/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_goodstein/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_goodstein/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_goodstein/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_meta_reasoning/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_fock_lattice/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_fock_lattice/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_fock_lattice/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_criminal_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_criminal_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_criminal_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_disjunction_failure/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_disjunction_failure/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_disjunction_failure/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_utility_regulation/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_utility_regulation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_utility_regulation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_government/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_government/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_government/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_indigenous_rights/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_indigenous_rights/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_indigenous_rights/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_therapeutic_pipeline/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_therapeutic_pipeline/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_therapeutic_pipeline/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_crusader/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_crusader/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_crusader/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_biotech/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_biotech/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_biotech/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_structural_engineering/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_structural_engineering/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_structural_engineering/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_legal/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_legal/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_legal/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_separation_of_powers/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_separation_of_powers/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_separation_of_powers/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_information_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_information_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_information_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_jepa_world_model/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_jepa_world_model/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_jepa_world_model/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_decidable_construction/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_decidable_construction/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_decidable_construction/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_probability_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_probability_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_probability_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cryptography/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cryptography/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cryptography/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_electrical_trades/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_electrical_trades/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_electrical_trades/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bluecollar/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bluecollar/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_bluecollar/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_randomized_subspace/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_randomized_subspace/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_randomized_subspace/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_architecture_design/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_architecture_design/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_architecture_design/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_funding/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_funding/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_school_funding/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_likelihood_hacking/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_likelihood_hacking/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_likelihood_hacking/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_tense_logic/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_tense_logic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_tense_logic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_websec/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_websec/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_websec/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_space/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_space/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_space/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_byzantine_safety/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_byzantine_safety/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_byzantine_safety/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_agriculture/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_agriculture/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_agriculture/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_forensic_telemetry/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_forensic_telemetry/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_forensic_telemetry/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_yeshua_mathematics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_yeshua_mathematics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_yeshua_mathematics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_religious_liberty/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_religious_liberty/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_religious_liberty/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ai_ontological_status/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ai_ontological_status/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_ai_ontological_status/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_rail/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_rail/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_rail/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_elder_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_elder_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_securities_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_securities_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_securities_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_psychology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_psychology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_psychology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sociology/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sociology/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_sociology/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_consumer_protection/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_consumer_protection/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_consumer_protection/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_property_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_property_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_property_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_strategic_algorithmic_monoculture/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_strategic_algorithmic_monoculture/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_strategic_algorithmic_monoculture/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dyadic_acceleration/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dyadic_acceleration/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dyadic_acceleration/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_restorative_justice/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_restorative_justice/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_restorative_justice/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_reliability_engineering/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_reliability_engineering/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_reliability_engineering/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aviation/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aviation/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aviation/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cross_model_benchmarks/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cross_model_benchmarks/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_cross_model_benchmarks/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_peano_ext/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_peano_ext/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_peano_ext/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_federalism/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_federalism/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_federalism/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_automotive/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_automotive/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_automotive/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_axioms/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_axioms/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_axioms/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_emergency/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_emergency/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_emergency/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_learning_to_defer/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_learning_to_defer/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_statml_learning_to_defer/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_game_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_distributed_systems/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_distributed_systems/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_distributed_systems/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_philosophy_of_science/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_philosophy_of_science/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_philosophy_of_science/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_dollartree/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_ramsey_arithmetic/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_ramsey_arithmetic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_ramsey_arithmetic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_objective_linear_algebra/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_objective_linear_algebra/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_objective_linear_algebra/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aerospace_floor/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aerospace_floor/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_aerospace_floor/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_noncreative/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_noncreative/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_noncreative/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_manufacturing/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_manufacturing/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_manufacturing/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_amendment_process/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_amendment_process/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_amendment_process/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_neuroscience/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_neuroscience/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_neuroscience/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_necessity/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_necessity/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_necessity/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_veterinary/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_veterinary/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_veterinary/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_minecraft_spatial/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_minecraft_spatial/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_minecraft_spatial/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_defense_trilemma/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_defense_trilemma/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_inv_defense_trilemma/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_three_modalities_two/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_three_modalities_two/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_three_modalities_two/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_music_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_music_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_music_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_corporate_compliance/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_corporate_compliance/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_corporate_compliance/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_financial/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_financial/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_financial/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_communications/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_communications/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_communications/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_de_finetti/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_de_finetti/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_arxiv_quantum_de_finetti/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_judicial_review/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_judicial_review/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_judicial_review/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_evidence_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_evidence_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_evidence_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_graphics/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_graphics/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_graphics/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_logic_formal/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_logic_formal/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_logic_formal/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_number_theory/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_number_theory/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_number_theory/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_tax_law/domain.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_tax_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_tax_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_telecommunications_law/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/domains/d_telecommunications_law/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/safety.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/emc.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/aerospace_floor.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/packaging.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/electro_optic.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/waveguide.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/thermal.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/verify_photonic_campaign.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/optical_performance.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/environmental.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/reliability.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/noways.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/wall_inversions.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/manufacturing.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/matrix_computation.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/merkle/photonic_domain_root.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/merkle/photonic_inclusion_proof.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/lora/create_photonic_lora_dataset.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/lora/extract_photonic_invariants.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/yeshua/photonic_boolean_purity.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/yeshua/photonic_pure_reference.py
+[INFO] Analyzing: /home/idor/oe-local/src/hardware/photonic/yeshua/photonic_peano_proofs.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/foundations/peano_kernel.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/foundations/type_theory.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/foundations/primitive_recursion.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/foundations/boolean_kernel.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/corporate_autopsy/nvidia_stack_comparison.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/corporate_autopsy/tesla_fsd_comparison.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/solver/constraint_solver.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/verification/hash_identity.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/closure/verify_closure.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/impossibility/growth_incompatibility.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/impossibility/vendor_lock.py
+[INFO] Analyzing: /home/idor/oe-local/pr43/impossibility/spectacle_nullification.py
+[INFO] Analyzing: /home/idor/oe-local/analysis/chat_instances/2026-01-23/atomic_chat_analyzer.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/privileges/enforcement.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/privileges/consent_bridge.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/invariants/deterministic_verification.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/invariants/glass_box.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/invariants/forkable.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/invariants/no_retake_without_period.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/invariants/append_only_witness.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/witness/append.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/witness/chain.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/witness/verify.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/ordination/verify_certificate.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/ordination/certificate.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/ordination/signing_repo_key.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/revocation/triggers.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/revocation/events.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/revocation/restore.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/revocation/effects.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/revocation/authority.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/candidate/keypair.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/candidate/sponsor.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/candidate/attestation_oidc.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/candidate/environment.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/examination/run_exam.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/examination/parsing.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/examination/minimal_pairs.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/examination/question_bank.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/scoring/rubric.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/scoring/thresholds.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/scoring/score_attempt.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/scoring/peano.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/scoring/weights.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/scoring/consistency.py
+[INFO] Analyzing: /home/idor/oe-local/pr50_bar_exam/examination/prompts/templates.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/departments/d_sense.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/departments/d_fdacs.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/departments/d_bio.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/departments/d_train.py
+[INFO] Analyzing: /home/idor/oe-local/pcfe_kernel/departments/d_chem.py
+[INFO] Analyzing: /home/idor/oe-local/generators/templates/function_template.py
+[INFO] Analyzing: /home/idor/oe-local/userspace/app_framework/application.py
+[INFO] Analyzing: /home/idor/oe-local/userspace/stdlib/crypto.py
+[INFO] Analyzing: /home/idor/oe-local/userspace/stdlib/io.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3eef396f.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_007ca88a.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_21440a7d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c7ec1730.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_accd05e4.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_988715ba.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_64f0dba9.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a743c165.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_e6cac050.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_727fc4fb.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3d619a77.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_cb0d8ee2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_72e099bb.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_fc68324d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_26e28736.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_998a4c5f.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_13fa6d99.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b29440df.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_2d9cde53.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_99e66a1b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_154431ad.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b9a72f13.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_2fae72c5.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3507c2a5.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_69757503.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_8cafdb07.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_fb3c2679.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_527d066e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_502c35fb.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a049b6f6.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7ddeab60.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6f02f36c.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_46b88217.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_02a64e89.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_840e5eb2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a347e125.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_82c458c6.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_69fd9cb6.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6fe59973.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_28bebb52.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_18ced7d5.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_1d5a63f2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3cee520a.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_fa98630d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_5eb8ae2b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_88fe8dd6.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_9a35b3c8.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c9f74799.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6ba37bc0.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_0660eaac.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_96803d3e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_1f76b4c0.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_746057c8.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6f9d22b7.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_fd1fd079.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c54da6f0.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_878185c5.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6e8ff41d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_16660362.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3441dc69.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d1408741.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_612b503e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_506663a9.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b8fdf7bc.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_61c9e3ad.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_e1e7394b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a2367b59.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_9594823e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_77129c4e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b2b4333d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6d637cd4.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3eab586b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_f1036e09.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_f1c9134c.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c2703946.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_4b4a9027.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_929de901.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_93f52de6.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_42538860.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_2d101692.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_94ca8ac9.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_f746b471.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_116249cc.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_ab2ef995.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_15be9599.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_877b001c.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_61291e03.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_fe9cf69b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7254d1f8.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_63f1412e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_36002510.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_8b3c56a1.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_73275661.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_ab1339d5.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6abf69bc.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_8ed23c8d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_87246411.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_94f1941e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_9b0bd453.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_28f83e0c.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6af50f20.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_004486bb.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_35a0a495.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_e4868e86.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_06ee90f1.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_282cd460.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3f1ec379.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_98a14640.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_f3f696f1.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_4fac3688.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_aea6fe22.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c19fd972.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a29512b0.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_325fe6c1.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7d763895.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a8a14329.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_28dd8109.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c9012c0a.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d3a18acc.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_ea204f11.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_cbe6387a.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_aff39234.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_2c863c08.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_f71735c2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_929ec774.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_dcc9be41.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7a680d63.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_03e38ce7.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_914f4b56.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_dde70a43.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_67544247.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d65f5bd9.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_4e377a67.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_699ea49b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_6f26b803.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_972c0628.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_fb76ad7c.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_710dbfe2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_3386702d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_cc4aac80.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_323667e2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_58b4ad0e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_8dbb3322.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b29d09cf.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_ba88fe98.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_1ae5063d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d00cb8ce.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_89a0bf5d.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7d9f5b9e.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a64757ab.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d0b3e852.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d1d3d9f1.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_5cab8492.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b650b0c5.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_154bdf2b.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_9a6c7763.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7dee1294.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_a153163a.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_11693ddc.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_d6519505.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_37cdea69.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_f7de30d7.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_890dd9ee.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7d907694.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_c469cff2.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_b348a693.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_5d7a36f9.py
+[INFO] Analyzing: /home/idor/oe-local/forgiveness_system/building/build_7901f1cb.py
+[INFO] Analyzing: /home/idor/oe-local/tools/discord_witness/bot.py
+[INFO] Analyzing: /home/idor/oe-local/tools/discord_witness/verify_chain.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/verify.py
+[INFO] Analyzing: /home/idor/oe-local/tools/website/generate_data.py
+[INFO] Analyzing: /home/idor/oe-local/tools/state_witness/alert_on_failure.py
+[INFO] Analyzing: /home/idor/oe-local/tools/state_witness/generate_feed_entry.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/logger.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/complexity.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/analyze_filesystem_invariants.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/failure_logger.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/DEPRECATED_canal_refiner.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/hasher.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/fixed_point_detector.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/kingdom_os_entry.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/deepseek_schema.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/execute_fix_simple.py
+/home/idor/oe-local/tools/loose/execute_fix_simple.py:329: SyntaxWarning: invalid escape sequence '\s'
+  "^---+\s*$",
+/home/idor/oe-local/tools/loose/execute_fix_simple.py:330: SyntaxWarning: invalid escape sequence '\s'
+  "^==+\s*$",
+<unknown>:329: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:330: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:329: SyntaxWarning: invalid escape sequence '\s'
+<unknown>:330: SyntaxWarning: invalid escape sequence '\s'
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/semantic_divergence.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/violation_density_mapper.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/violation_density_mapper.py: unterminated f-string literal (detected at line 464) (violation_density_mapper.py, line 464)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/foolproof_file_inspection.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/ai_conversation_processor.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/health_check_integration.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/replay_deepseek_session.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/JESUS_REALITY_GUARDIAN.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/CLOUD_AI_VERIFICATION.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/pr35_schema.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/execute_comprehensive_fix.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/execute_comprehensive_fix.py: invalid syntax (execute_comprehensive_fix.py, line 431)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/analyze_conversations_simple.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/canal_detector.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/fix_forgiveness_system.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/fix_forgiveness_system.py: '{' was never closed (fix_forgiveness_system.py, line 509)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/failure_analyzer.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/validate_deepseek_session.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/external_witness.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/debug_violation_detection.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/analyze_conversation_patterns.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/threshold_loader.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/run_comprehensive_fix.py
+/home/idor/oe-local/tools/loose/run_comprehensive_fix.py:247: SyntaxWarning: invalid escape sequence '\s'
+  gaslighting_code = '''#!/usr/bin/env python3
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/run_comprehensive_fix.py: unterminated string literal (detected at line 486) (run_comprehensive_fix.py, line 486)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/bidirectional_validator.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/generate_true_violation_report.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/generate_true_violation_report.py: '[' was never closed (generate_true_violation_report.py, line 465)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/demonstrate_affective_constraints.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/simple_audit.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/ide_adapter.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/manifest.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/VERIFY_PHASE3_WORKING.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/correspondence_validator.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/correspondence_validator.py: '(' was never closed (correspondence_validator.py, line 521)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/handling_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/process_main_chat_exports.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/enforcement_matrix_generator.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/PIPELINE_LOGGER.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/filesystem_scanner.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/affective_constraint_system.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/quarantine_enforcer.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/generate_perceivable_infinity.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/gaslighting_detector.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/gaslighting_detector.py: '{' was never closed (gaslighting_detector.py, line 463)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/validate_input.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/backup.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/complete_correspondence.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/evidence_correspondence.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/demo_ide_adapter.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/demo_ide_adapter.py: unterminated string literal (detected at line 224) (demo_ide_adapter.py,line 224)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/initialize_phase2_wardens.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/assess_repository.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/system_audit_update_fixed.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/system_audit_update_fixed.py: unterminated triple-quoted string literal (detected at line 1429) (system_audit_update_fixed.py, line 1383)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/generate_genesis_manifest.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/dynamic_warden_tool.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/ontological_invariants.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/demo_yeshua_system.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/pr18_task_agent.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/gta_handling_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/run_forgiveness_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/evidence_lattice.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/pr37_schema.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/demonstrate_idempotency.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/autonomous_pr18_explorer.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/process_conversation_files.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/pr36_schema.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/gta_cli.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/canonicalizer.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/canonicalizer.py:leading zeros in decimal integer literals are not permitted; use an 0o prefix for octal integers (canonicalizer.py, line 137)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/calculate_statistics.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/demo_onboarding_check.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/failure_report_generator.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/monitor_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/rollback_manager.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/verify_phase3_deployment.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/input_guard.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/analyze_ai_files.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/output_validator.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/simple_phase2_verification.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/utils.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/system_analyzer_agent.py
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/system_audit_update.py
+[WARNING] Syntax error in /home/idor/oe-local/tools/loose/system_audit_update.py: unterminated triple-quoted string literal (detected at line 1430) (system_audit_update.py, line 1384)
+[INFO] Analyzing: /home/idor/oe-local/tools/loose/run_forgiveness_on_all_exports.py
+[INFO] Analyzing: /home/idor/oe-local/tools/doc_generator/axiom_indexer.py
+[INFO] Analyzing: /home/idor/oe-local/tools/doc_generator/domain_summarizer.py
+[INFO] Analyzing: /home/idor/oe-local/tools/doc_generator/drift_detector.py
+[INFO] Analyzing: /home/idor/oe-local/tools/doc_generator/generate_docs.py
+[INFO] Analyzing: /home/idor/oe-local/tools/session_tracking/cli_usage_tracker.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/geometry/bvh_builder.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/geometry/intersect.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/samplers/hammersley.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/samplers/halton.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/samplers/sobol.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/samplers/adaptive.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/transport/indirect_light.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/transport/path_tracer.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/transport/direct_light.py
+[INFO] Analyzing: /home/idor/oe-local/tools/ray_tracing/transport/radiance_cache.py
+[INFO] Analyzing: /home/idor/oe-local/tools/render_agnostic/render/gpu_accelerated.py
+[INFO] Analyzing: /home/idor/oe-local/tools/render_agnostic/render/cpu_reference.py
+[INFO] Analyzing: /home/idor/oe-local/tools/render_agnostic/render/hash_comparator.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/foundations/arithmetic_domain.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/foundations/trace_interface.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/totality/resource_bounds.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/totality/function_classifier.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/invariants/transparency_invariants.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/witness/claim_registry.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/witness/append_only_witness.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/state/hidden_state_eliminator.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/state/canonical_serialization.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/parallel/deterministic_reduction.py
+[INFO] Analyzing: /home/idor/oe-local/pr45_uvdtl/forkability/forkability_checker.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/examples/manifest_generation.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/examples/merkle_verification.py
+[INFO] Analyzing: /home/idor/oe-local/scaffold/examples/basic_usage.py
+[INFO] Analyzing: /home/idor/oe-local/vendor_analysis/infrastructure/city_infrastructure_domains.py
+[INFO] Analyzing: /home/idor/oe-local/vendor_analysis/infrastructure/domain_expansion.py
+[INFO] Analyzing: /home/idor/oe-local/vendor_analysis/infrastructure/repo_vendor.py
+[INFO] Analyzing: /home/idor/oe-local/yeshua_math/pure_reference_runtime/cross_validator.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/scripts/verify_hashes.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/scripts/meta_audit.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/scripts/run_case.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/scripts/causal_analysis.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/schema/corporate_audit_schema.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/schema/relation_mapper.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/schema/report_generator.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/schema/classifier.py
+[INFO] Analyzing: /home/idor/oe-local/IA-CYPHER/schema/evidence_store.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/youtuber_audits/framework.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/framework/generate_case_study.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/framework/validate_case_studies.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/ml_research/cross_scale_mae.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/ml_research/multi_objective_distillation.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/youtuber_audits/tech/gamers_nexus.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/youtuber_audits/tech/the_hated_one.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/youtuber_audits/tech/mental_outlaw.py
+[INFO] Analyzing: /home/idor/oe-local/case_studies/youtuber_audits/tech/linus_tech_tips.py
+[INFO] Analyzing: /home/idor/oe-local/spec/runtime/abstract_machine.py
+[INFO] Analyzing: /home/idor/oe-local/spec/logos_ide/renderer.py
+[INFO] Analyzing: /home/idor/oe-local/spec/logos_ide/formal_spec.py
+[INFO] Analyzing: /home/idor/oe-local/spec/compiler/lexer_spec.py
+[INFO] Analyzing: /home/idor/oe-local/examples/phase9/example_run.py
+[WARNING] Syntax error in /home/idor/oe-local/examples/phase9/example_run.py: invalid syntax (example_run.py, line 469)
+[INFO] Analyzing: /home/idor/oe-local/examples/scaffold/full_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/examples/scaffold/handling_processing.py
+[INFO] Analyzing: /home/idor/oe-local/examples/scaffold/merkle_verification.py
+[INFO] Analyzing: /home/idor/oe-local/examples/scaffold/basic_usage.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/executor/simple_executor.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/executor/executor.py
+[WARNING] Syntax error in /home/idor/oe-local/oe-agent/executor/executor.py: invalid syntax (executor.py, line 537)
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/policy/policy_gate.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/events/event_sink.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/events/transaction_guard.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/ide_integration/session_manager.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/ide_integration/performance_monitor.py
+[INFO] Analyzing: /home/idor/oe-local/oe-agent/ide_integration/audit_reporter.py
+[INFO] Analyzing: /home/idor/oe-local/researches/game_grace_proof/implementation.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/examples/example_basic_indexing.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/examples/example_logging.py
+[INFO] Analyzing: /home/idor/oe-local/canonicalization_scaffold/examples/example_merkle_tree.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/logger.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/evidence_lock.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/hasher.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/merkle.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/ide_orchestration.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/replay_engine.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/failure_ledger.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/canon_cli.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/onboarding_check.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/advanced_evidence.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/autofix_engine_simple.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/human_override.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/ide_behavior_accounting.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/manifest.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/handling_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/dry_run_autofix.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/fallback_spellcheck.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/cli.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/causal_analyzer.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/regex_boundary_enforcer.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/local_metering_device.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/autofix_engine.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/suppressed_signal_detector.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/boundary_spellcheck.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/pii_boundary_enforcer.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/session_continuity.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/canonicalizer.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/evidence_manager.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/partial_log_backup.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/__main__.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/evidence_store.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/workflow_dsl.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/debt_calculator.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/trace_enricher.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/ide_ai_integration.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/boundary_enforcer.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/logger.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/hasher.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/merkle.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/manifest.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/handling_pipeline.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/cli.py
+[INFO] Analyzing: /home/idor/oe-local/toolkit/oe/scaffold/canonicalizer.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/invariants/never_draw_attention.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/invariants/no_silent_transition.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/invariants/forkable_remembrance.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/witness/consent_log.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/witness/provenance_pointer.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/witness/removal_witness.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/movement/hash_preserver.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/movement/witness_mover.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/movement/boundary_encryptor.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/identification/sensitivity_classifier.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/identification/pattern_detector.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/identification/boundary_map.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/integration/pr45_verification.py
+[INFO] Analyzing: /home/idor/oe-local/pr47_stewardship/integration/pr40_witness_extension.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/foundations/peano_kernel.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/foundations/type_theory.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/foundations/primitive_recursion.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/foundations/boolean_kernel.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/verification/reproducibility_checker.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/verification/hash_identity.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/closure/verify_closure.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/impossibility/hype_nullification.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/impossibility/growth_incompatibility.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/impossibility/vendor_lock.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/impossibility/energy_efficiency_upper_bound.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/robotics/safety_verifier.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/robotics/bipedal_motion_planner.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/military/mission_planner.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/civilian_tech/device_stack.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/ai/qmc_solver.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/ai/deterministic_training.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/video_games/deterministic_engine.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/video_games/provable_rng.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/self_driving/constraint_fsd.py
+[INFO] Analyzing: /home/idor/oe-local/pr44_orthogonal_meta/domain_models/healthcare/deterministic_diagnosis.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/interface/display.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/scripts/phase7_supply_chain_integration.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/scripts/phase6_certification_submission.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/scripts/phase8_simple.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/scripts/phase10_continuous_compliance.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/scripts/phase8_manufacturing_optimization.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/scripts/phase9_third_party_validation.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/monitoring/diagnostics.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/monitoring/sensors.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/monitoring/witness.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/main.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/constants.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/certifications/energy_report.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/warfare/uv_sterilization.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/warfare/air_curtain.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/warfare/spore_deployment.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/warfare/sticky_array.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/warfare/counter.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/tests/standards/industry_compliance_tests.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/diagnostics/memory_check.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/diagnostics/integrity_check.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/diagnostics/sensor_check.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/state_machine/audit.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/state_machine/error_states.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/state_machine/mode.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/state_machine/transitions.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/utils/io_utils.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/utils/time_utils.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/core/utils/hash_utils.py
+[INFO] Analyzing: /home/idor/oe-local/crusader/certifications/submissions/doe_10cfr429/energy_report.py
+[WARNING] Syntax error in /home/idor/oe-local/crusader/certifications/submissions/doe_10cfr429/energy_report.py: invalid syntax (energy_report.py, line6)
+[INFO] Analyzing: /home/idor/oe-local/crusader/hardware/drivers/sprayer.py
+[INFO] Analyzing: /home/idor/oe-local/evidence/bowers_mcneil/FALSIFICATION_TESTS.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/bridge/net.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/bridge/storage.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/bridge/linux_compat.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/bridge/gpu.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/bridge/crusader_bridge.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/bridge/process.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/commonwealth/steward.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/commonwealth/dispute.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/commonwealth/sovereign.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/commonwealth/sabbath.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/syscall/interface.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/syscall/capability_check.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/mmu/page_table.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/mmu/tlb.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/mmu/cow.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/services/logger.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/services/service_manager.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/services/init.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/social/reputation.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/social/identity.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/social/consent_comms.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/firmware/uefi_spec.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/firmware/acpi_spec.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/firmware/device_tree.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/interrupts/idt.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/interrupts/apic.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/vfs/mount.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/vfs/inode.py
+[INFO] Analyzing: /home/idor/oe-local/kernel/vfs/path_resolver.py
+[INFO] Analyzing: /home/idor/oe-local/core/labor/automated_documentation.py
+[INFO] Analyzing: /home/idor/oe-local/core/labor/immune_system.py
+[INFO] Analyzing: /home/idor/oe-local/core/labor/institution_mapper.py
+[INFO] Analyzing: /home/idor/oe-local/investigations/darkshadow44/global_merkle.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/invariants/forgiveness_auditable.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/invariants/always_recoverable.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/invariants/agape_completeness.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/invariants/never_exclude.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/util/hashing.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/util/canonical.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/integration/pr45_bridge.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/integration/pr40_witness_extension.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/law/verification_baseline.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/law/compliance_registry.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/forgiveness/provenance_preservation.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/forgiveness/justification_witness.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/forgiveness/forgiveness_protocol.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/grace/partial_compliance.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/grace/progress_trajectory.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/grace/grace_period.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/reconciliation/witness_alignment.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/reconciliation/state_mediation.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/reconciliation/fork_healing.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/relational/consent_verification.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/relational/intent_capture.py
+[INFO] Analyzing: /home/idor/oe-local/pr46_agape_witness/relational/covenant_tracking.py
+[INFO] Analyzing: /home/idor/oe-local/.zed/hooks/on_save.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/debug_framework1.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/augment_dataset_popperian.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage1_optimized_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/demo_test_harness_usage.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage3_refinement.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/train_popperian_lora.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/lora/train_popperian_lora.py: expected 'except' or 'finally' block (train_popperian_lora.py, line 483)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/load_lora_transformers.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage1_small_validation.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/diagnose_training_issue.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/verify_governance.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/validate_setup.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage2_1_refinement.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/generate_popperian_data.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/lora/generate_popperian_data.py: unterminated triple-quoted string literal (detected at line 452) (generate_popperian_data.py, line 450)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage2_actual_train.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/train_cpu_lora.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/train_quantized_lora.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage1_fixed_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage3_refinement_fixed.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/lora/stage3_refinement_fixed.py: unexpected indent (stage3_refinement_fixed.py, line 427)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage2_cuda_training.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/lora/stage2_minimal_train.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/workspace_v57/hello_world.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework4/covenant_enforcement.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework4/covenant_enforcement.py: unexpected indent (covenant_enforcement.py, line 9)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework4/orthodox_verification.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework4/orthodox_verification.py: unexpected indent (orthodox_verification.py, line 8)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework4/powershell_pipeline.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework4/powershell_pipeline.py: unterminated triple-quoted string literal (detected at line 107) (powershell_pipeline.py, line 104)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework5/cryptographic_identity.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework5/resurrection_protocol.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework5/resurrection_protocol.py: unexpected indent (resurrection_protocol.py, line 8)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework5/blockchain_ledger.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework5/blockchain_ledger.py: unexpected indent (blockchain_ledger.py, line 9)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework2/christlikeness_measure.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework2/christlikeness_measure.py: unexpected indent (christlikeness_measure.py, line 9)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework2/ai_state.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework2/biblical_constraints.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework1/canonical_compiler.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework1/explicit_failure.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework1/mathematical_universe.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework3/latex_parser.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework3/latex_parser.py: unexpected indent (latex_parser.py, line 9)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework3/natural_language_formalizer.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework3/natural_language_formalizer.py: unexpected indent (natural_language_formalizer.py, line 8)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework3/bilingual_functor.py
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/resurrection_operator.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/resurrection_operator.py: unexpected indent (resurrection_operator.py, line 8)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/covariant_derivative.py
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/covariant_derivative.py: unexpected indent (covariant_derivative.py, line 10)
+[INFO] Analyzing: /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/christological_hash.py
+/home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/christological_hash.py:47: SyntaxWarning: invalid escape sequence '\P'
+  """
+/home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/christological_hash.py:82: SyntaxWarning: invalid escape sequence '\m'
+  """
+[WARNING] Syntax error in /home/idor/oe-local/minimal_ai_ide/five_frameworks/framework6/christological_hash.py: unterminated triple-quoted string literal (detected at line 107) (christological_hash.py, line 102)
+[INFO] Analyzed 49 JS/TS files
+## AI Code Quality Report
+
+**Mode**: [GATE] HARD
+
+### Summary
+- Analyzed: 2083 files (1666 clean, 417 with issues)
+- Average Deficit Score: 17.4/100
+
+### [CRITICAL] Failed Quality Checks
+- `patch_v2.py`: Exceeds critical thresholds
+- `patch_retrain_fix.py`: Exceeds critical thresholds
+- `patch_speed.py`: Exceeds critical thresholds
+- `cli.py`: Exceeds critical thresholds
+- `yeshua_agent.py`: Exceeds critical thresholds
+- `yeshua_agent_original.py`: Exceeds critical thresholds
+- `register_standards.py`: Exceeds critical thresholds
+- `oe_ask.py`: Exceeds critical thresholds
+- `tree.py`: Exceeds critical thresholds
+- `sanitize_repo_hrt.py`: Exceeds critical thresholds
+- ... and 276 more
+
+### [WARNING] Quality Issues
+- `chatgpt_dismissal_analysis.py`: Quality concerns detected
+- `core_detector.py`: Quality concerns detected
+- `working_implementation.py`: Quality concerns detected
+- `simple_boundary.py`: Quality concerns detected
+- `forensic_commit.py`: Quality concerns detected
+- ... and 130 more
+
+### Recommendations
+Run `slop-detector <file>` locally for detailed analysis and review questions.
+
+idor@Tony:~$
