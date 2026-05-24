@@ -42,6 +42,7 @@
 | Wire HTML "Compile" button to bridge | DS7a | HIGH |
 | Verify ChatGPT inline Lean4 via bridge | DS7a | HIGH |
 | Frame Interpolation Kernel (sovereign LS alternative) | DS7a | MEDIUM |
+| SFI Secular Projection | DEPLOYED | tools/sfi_secular/ (bit-identical to canonical)
 | auto_push_hardened.ps1 | DS7a | LOW (current pusher safe) |
 | Category 6: Hardware Witness | DS4a | QUEUED |
 | Category 7: Genesis Bootstrapping | DS4a | QUEUED |
