@@ -197,7 +197,11 @@ def scan_repo():
             if filepath.suffix in {'.pyc', '.so', '.bin', '.png', '.jpg', '.npy', '.npz', 
                                     '.parquet', '.safetensors', '.gz', '.bz2', '.zip', '.exe'}:
                 continue
-            if filepath.stat().st_size > 1_000_000:  # Skip files > 1MB
+            try:
+                st = filepath.stat()
+            except (FileNotFoundError, OSError):
+                continue
+            if st.st_size > 1_000_000:  # Skip files > 1MB
                 continue
             
             file_count += 1
