@@ -27,6 +27,9 @@ def onboard():
     report["health"]["git"] = run("git --version").replace("git version ", "")
     report["health"]["yeshua_agent"] = os.path.exists("yeshua_agent.py")
     report["health"]["cuda"] = os.path.exists("/usr/local/cuda") or run("which nvidia-smi") != ""
+    report["health"]["bootstrap_verify"] = os.path.exists("bootstrap_verify.py")
+    report["health"]["lean4_bridge"] = os.path.exists("tools/lean4_bridge.py")
+    report["health"]["merkle_root"] = os.path.exists("merkle/global_root.json")
 
     # 2. Current state — what checkpoint are we at?
     report["current_commit"] = run("git rev-parse HEAD")[:8]
@@ -38,7 +41,7 @@ def onboard():
     report["last_checkpoint"] = checkpoints if checkpoints else "None found"
 
     # 4. Active RCS codes from the map
-    rcs_section = run("grep -A20 'RCS Code' docs/ARCHITECTURAL_MAP_COMPLETE.md 2>/dev/null | head -15")
+    rcs_section = run("grep -A20 'RCS Code' docs/ARCHITECTURAL_MAP_UNIFIED_2026-05-24.md 2>/dev/null | head -15")
     report["active_rcs_codes"] = rcs_section if rcs_section else "See architectural map"
 
     # 5. What's queued?
@@ -56,6 +59,13 @@ def onboard():
 
     # 7. State hash
     state_json = json.dumps(report, sort_keys=True, default=str)
+    # 8. Current Merkle root
+    try:
+        with open("merkle/global_root.json") as f:
+            mr = json.load(f)
+            report["merkle"] = {"root_hash": mr["root_hash"], "file_count": mr["file_count"]}
+    except: report["merkle"] = "Not found"
+
     report["_hash"] = hashlib.sha256(state_json.encode()).hexdigest()
 
     return report
