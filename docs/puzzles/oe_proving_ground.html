@@ -268,7 +268,7 @@ header .subtitle{color:var(--text-secondary);font-size:0.82rem;margin-top:0.3rem
   <div style="overflow-x:auto;">
   <table class="convergence-table">
     <thead>
-      <tr><th>#</th><th>AI</th><th>Organization</th><th>G1 (s(e))</th><th>G2 (C)</th><th>G3 (r(c))</th><th>G4 (Audit)</th><th>G5 (Infra)</th><th>Full Work</th></tr>
+      <tr><th>#</th><th>AI</th><th>Organization</th><th>G1 (s(e))</th><th>G2 (C)</th><th>G3 (r(c))</th><th>G4 (Audit)</th><th>G5 (Infra)</th><th>Lean4</th><th>Full Work</th></tr>
     </thead>
     <tbody id="convergenceBody">
       <tr>
@@ -280,9 +280,9 @@ header .subtitle{color:var(--text-secondary);font-size:0.82rem;margin-top:0.3rem
       <td style="color:#5ec97e;">✅ Total map</td>
       <td style="color:#5ec97e;">✅ 5 checks</td>
       <td style="color:#5ec97e;">✅ Pipeline</td>
-      <td><span class="ai-expand" onclick="toggleDerivation(1)" style="cursor:pointer;color:var(--accent);text-decoration:underline;font-size:0.7rem;">▶ Expand</span></td>
+      <td id="lean4-cell-1" style="color:var(--text-muted);font-size:0.68rem;">⏳</td><td><span class="ai-expand" onclick="toggleDerivation(1)" style="cursor:pointer;color:var(--accent);text-decoration:underline;font-size:0.7rem;">▶ Expand</span></td>
     </tr>
-    <tr><td colspan="10" style="text-align:center;color:var(--text-muted);">Row 1: ChatGPT (OpenAI). Additional AI submissions will populate below.</td></tr>
+    <tr><td colspan="11" style="text-align:center;color:var(--text-muted);">Row 1: ChatGPT (OpenAI). Additional AI submissions will populate below.</td></tr>
     </tbody>
   </table>
   </div>
@@ -547,6 +547,49 @@ function toggleDerivation(num) {
   }
 }
 
+
+// === LEAN4 BRIDGE COMPILE (wired to port 28428) ===
+async function compileWithLean4(rowNum) {
+  const derivDiv = document.getElementById('deriv-' + rowNum);
+  const cell = document.getElementById('lean4-cell-' + rowNum);
+
+  // Extract Lean4 code from derivation text
+  const text = derivDiv.textContent;
+  const lean4Match = text.match(/lean4[\s\S]*?(?:theorem|proof|#eval|import)[\s\S]*?(?=GATE\s+\d|CATEGORY|SPECTRAL|NOTE:|$)/i);
+  let lean4Code = lean4Match ? lean4Match[0] : text;
+
+  // Clean up: strip non-Lean4 prefixes
+  lean4Code = lean4Code.replace(/^.*?(theorem|import|#eval)/s, '');
+  // Take only the Lean4-relevant portion (up to 2000 chars)
+  lean4Code = lean4Code.substring(0, 2000);
+
+  cell.textContent = '⏳ Compiling...';
+  cell.style.color = '#d4a843';
+
+  try {
+    const resp = await fetch('http://localhost:28428', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: lean4Code, row: rowNum })
+    });
+    const result = await resp.json();
+    if (result.success) {
+      cell.textContent = '✅ Compiled';
+      cell.style.color = '#5ec97e';
+      cell.title = 'Output: ' + (result.output || '') + '
+Errors: ' + (result.errors || 'none');
+    } else {
+      cell.textContent = '❌ Failed';
+      cell.style.color = '#e0556a';
+      cell.title = 'Errors: ' + (result.errors || 'unknown');
+    }
+  } catch(e) {
+    cell.textContent = '❌ Bridge down';
+    cell.style.color = '#e0556a';
+    cell.title = 'Fetch error: ' + e.message;
+  }
+}
+
 // === LIVE GLASS-BOX AUDITOR (Gate 4) ===
 // Audits any AI's derivation text against the 5 checks
 // Returns Tuple[bool, ProofObject] rendered into the convergence table
@@ -645,7 +688,7 @@ function runGlassBoxAudit(rowNum) {
     const auditBtn = document.createElement('span');
     auditBtn.textContent = ' 🔍 Audit';
     auditBtn.style.cssText = 'cursor:pointer;color:#d4a843;text-decoration:underline;font-size:0.7rem;margin-left:0.4rem;';
-    auditBtn.onclick = function() { runGlassBoxAudit(d.num); };
+    auditBtn.onclick = function() { runGlassBoxAudit(d.num); }; var compileBtn = document.createElement('span'); compileBtn.textContent = ' ⚙️ Compile'; compileBtn.style.cssText = 'cursor:pointer;color:#5b9cf5;text-decoration:underline;font-size:0.7rem;margin-left:0.4rem;'; compileBtn.onclick = function() { compileWithLean4(d.num); }; fullWorkCell.appendChild(compileBtn);
     fullWorkCell.appendChild(auditBtn);
   });
 })();
