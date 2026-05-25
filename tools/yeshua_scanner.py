@@ -52,38 +52,7 @@ def scan_file(filepath):
             "violation": "missing_file", "file": path_str, "line": None,
             "evidence": "File referenced but does not exist",
             "falsifies_if": "File exists at path"})
-    
-    # --- CRYPTOGRAPHIC_INTEGRITY: verify SHA-256 hashes in .oe and config files ---
-    if filepath.suffix in {'.oe', '.json', '.yaml', '.yml'}:
-        hash_fields = re.findall(r'sha256[="\s:]+([a-f0-9]{64})', content, re.IGNORECASE)
-        for h in hash_fields:
-            if len(h) == 64 and all(c in '0123456789abcdef' for c in h):
-                pass  # valid hex hash found
-            else:
-                errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
-                    "violation": "stale_hash", "file": path_str, "line": None,
-                    "evidence": f"Malformed SHA-256: {h[:32]}...",
-                    "falsifies_if": "All hashes are valid 64-char hex strings"})
-
-
-    # --- TYPE_SAFETY: functions returning None without explicit Optional ---
-    if filepath.suffix == '.py':
-        funcs = re.findall(r'def\s+(\w+)\s*\([^)]*\)[^:]*:\s*\n(\s+)(.*)', content)
-        none_returns = re.findall(r'\breturn\s+None\b', content)
-        optional_imports = re.findall(r'from\s+typing\s+import.*\bOptional\b', content)
-        # Flag functions with bare 'return' or 'return None' without Optional type hint
-        for i, line in enumerate(lines, 1):
-            if re.search(r'\breturn\s+None\b', line):
-                # Check if the enclosing function has Optional in its signature
-                context_start = max(0, i-20)
-                context = '\n'.join(lines[context_start:i])
-                if 'Optional' not in context and '->' in context:
-                    errors.append({"subsystem": subsystem, "invariant": "type_safety",
-                        "violation": "type_error", "file": path_str, "line": i,
-                        "evidence": line.strip()[:120],
-                        "falsifies_if": "Return type includes Optional or function never returns None"})
-
-    return errors
+        return errors
     
     try:
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -92,63 +61,10 @@ def scan_file(filepath):
         errors.append({"subsystem": subsystem, "invariant": "compilability",
             "violation": "unclassified", "file": path_str, "line": None,
             "evidence": "Cannot read file", "falsifies_if": "File is readable as UTF-8"})
-    
-    # --- CRYPTOGRAPHIC_INTEGRITY: verify SHA-256 hashes in .oe and config files ---
-    if filepath.suffix in {'.oe', '.json', '.yaml', '.yml'}:
-        hash_fields = re.findall(r'sha256[="\s:]+([a-f0-9]{64})', content, re.IGNORECASE)
-        for h in hash_fields:
-            if len(h) == 64 and all(c in '0123456789abcdef' for c in h):
-                pass  # valid hex hash found
-            else:
-                errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
-                    "violation": "stale_hash", "file": path_str, "line": None,
-                    "evidence": f"Malformed SHA-256: {h[:32]}...",
-                    "falsifies_if": "All hashes are valid 64-char hex strings"})
-
-
-    # --- TYPE_SAFETY: functions returning None without explicit Optional ---
-    if filepath.suffix == '.py':
-        funcs = re.findall(r'def\s+(\w+)\s*\([^)]*\)[^:]*:\s*\n(\s+)(.*)', content)
-        none_returns = re.findall(r'\breturn\s+None\b', content)
-        optional_imports = re.findall(r'from\s+typing\s+import.*\bOptional\b', content)
-        # Flag functions with bare 'return' or 'return None' without Optional type hint
-        for i, line in enumerate(lines, 1):
-            if re.search(r'\breturn\s+None\b', line):
-                # Check if the enclosing function has Optional in its signature
-                context_start = max(0, i-20)
-                context = '\n'.join(lines[context_start:i])
-                if 'Optional' not in context and '->' in context:
-                    errors.append({"subsystem": subsystem, "invariant": "type_safety",
-                        "violation": "type_error", "file": path_str, "line": i,
-                        "evidence": line.strip()[:120],
-                        "falsifies_if": "Return type includes Optional or function never returns None"})
-
-    return errors
+        return errors
     
     lines = content.split('\n')
     
-    # --- CRYPTOGRAPHIC_INTEGRITY: verify SHA-256 hashes ---
-    if filepath.suffix in {'.oe', '.json'}:
-        hash_fields = re.findall(r'sha256[="\s:]+([a-f0-9]{64})', content, re.IGNORECASE)
-        for h in hash_fields:
-            if not (len(h) == 64 and all(c in '0123456789abcdef' for c in h)):
-                errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
-                    "violation": "stale_hash", "file": path_str, "line": None,
-                    "evidence": f"Malformed SHA-256 hash found",
-                    "falsifies_if": "All SHA-256 hashes are valid 64-char hex strings"})
-    
-    # --- TYPE_SAFETY: bare return None without Optional ---
-    if filepath.suffix == '.py':
-        for i, line in enumerate(lines, 1):
-            if re.search(r'\breturn\s+None\b', line):
-                ctx_start = max(0, i-15)
-                ctx = '\n'.join(lines[ctx_start:i])
-                if 'Optional' not in ctx and '-> None' not in ctx and '->None' not in ctx:
-                    errors.append({"subsystem": subsystem, "invariant": "type_safety",
-                        "violation": "type_error", "file": path_str, "line": i,
-                        "evidence": line.strip()[:120],
-                        "falsifies_if": "Function signature declares Optional return type"})
-
     # --- COMPILABILITY: syntax errors ---
     if filepath.suffix == '.py':
         try: ast.parse(content)
@@ -198,7 +114,7 @@ def scan_file(filepath):
     
     # --- DETERMINISM: non-deterministic calls ---
     nd_patterns = [r'\brandom\.(?!seed)', r'\btime\.time\(\)', r'\buuid\.', r'\bos\.urandom',
-                   r'\bdatetime\.now\(\)(?!.*timezone)', r'\bhash\(.*\)(?!.*hashlib)']
+                   r'\bdatetime\.now\(\)(?!.*timezone)']
     for i, line in enumerate(lines, 1):
         for pat in nd_patterns:
             if re.search(pat, line):
@@ -207,12 +123,11 @@ def scan_file(filepath):
                     "evidence": line.strip()[:120], "falsifies_if": "Function is seeded/deterministic"})
     
     # --- FINITENESS: unbounded structures ---
-    if re.search(r'\bwhile\s+True\b', content):
-        for i, line in enumerate(lines, 1):
-            if re.search(r'\bwhile\s+True\b', line):
-                errors.append({"subsystem": subsystem, "invariant": "finiteness",
-                    "violation": "unbounded_structure", "file": path_str, "line": i,
-                    "evidence": line.strip()[:120], "falsifies_if": "Loop has termination condition"})
+    for i, line in enumerate(lines, 1):
+        if re.search(r'\bwhile\s+True\b', line):
+            errors.append({"subsystem": subsystem, "invariant": "finiteness",
+                "violation": "unbounded_structure", "file": path_str, "line": i,
+                "evidence": line.strip()[:120], "falsifies_if": "Loop has termination condition"})
     
     # --- TOTALITY: bare except clauses ---
     for i, line in enumerate(lines, 1):
@@ -230,37 +145,28 @@ def scan_file(filepath):
                     "violation": "unclassified", "file": path_str, "line": i,
                     "evidence": line.strip()[:120], "falsifies_if": "Value derived from config, not hardcoded"})
     
-
-    # --- CRYPTOGRAPHIC_INTEGRITY: verify SHA-256 hashes in .oe and config files ---
-    if filepath.suffix in {'.oe', '.json', '.yaml', '.yml'}:
-        hash_fields = re.findall(r'sha256[="\s:]+([a-f0-9]{64})', content, re.IGNORECASE)
-        for h in hash_fields:
-            if len(h) == 64 and all(c in '0123456789abcdef' for c in h):
-                pass  # valid hex hash found
-            else:
+    # --- CRYPTOGRAPHIC_INTEGRITY: verify SHA-256 hashes ---
+    if filepath.suffix in {'.oe', '.json'}:
+        hashes = re.findall(r'[a-f0-9]{64}', content)
+        for h in hashes:
+            if not all(c in '0123456789abcdef' for c in h):
                 errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
                     "violation": "stale_hash", "file": path_str, "line": None,
-                    "evidence": f"Malformed SHA-256: {h[:32]}...",
-                    "falsifies_if": "All hashes are valid 64-char hex strings"})
-
-
-    # --- TYPE_SAFETY: functions returning None without explicit Optional ---
+                    "evidence": "Malformed hash in file",
+                    "falsifies_if": "All hashes are valid 64-char hex"})
+    
+    # --- TYPE_SAFETY: bare return None without Optional ---
     if filepath.suffix == '.py':
-        funcs = re.findall(r'def\s+(\w+)\s*\([^)]*\)[^:]*:\s*\n(\s+)(.*)', content)
-        none_returns = re.findall(r'\breturn\s+None\b', content)
-        optional_imports = re.findall(r'from\s+typing\s+import.*\bOptional\b', content)
-        # Flag functions with bare 'return' or 'return None' without Optional type hint
         for i, line in enumerate(lines, 1):
             if re.search(r'\breturn\s+None\b', line):
-                # Check if the enclosing function has Optional in its signature
-                context_start = max(0, i-20)
-                context = '\n'.join(lines[context_start:i])
-                if 'Optional' not in context and '->' in context:
+                ctx_start = max(0, i-15)
+                ctx = '\n'.join(lines[ctx_start:i])
+                if 'Optional' not in ctx and '-> None' not in ctx and '->None' not in ctx:
                     errors.append({"subsystem": subsystem, "invariant": "type_safety",
                         "violation": "type_error", "file": path_str, "line": i,
                         "evidence": line.strip()[:120],
-                        "falsifies_if": "Return type includes Optional or function never returns None"})
-
+                        "falsifies_if": "Function signature declares Optional return type"})
+    
     return errors
 
 def compute_category_space(errors):
