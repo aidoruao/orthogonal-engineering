@@ -78,7 +78,7 @@ def get_standards(registry: dict[str, Any]) -> list[dict[str, Any]]:
     Falsifies if: registry has no 'standards' key or it is not a list.
     falsifies_if: registry has no 'standards' key or it is not a list.
     """
-    standards: list[dict[str, Any]] = registry.get("standards", [])
+    standards: list[dict[str, Any]] = list(registry.get("standards", {}).values())
     return sorted(
         standards,
         key=lambda s: (_SEVERITY_ORDER.get(s.get("severity", "low"), 4), s.get("id", "")),
