@@ -6,12 +6,12 @@
 
 ### Yeshua Agentic AI — Perceptual Scanner
 - **yeshua_scanner.py** — full 10-invariant scanner
-- 30,640 files scanned, 22,653 errors found
-- |C| = 576 (8 subsystems × 8 invariants × 9 violations)
-- Active invariants: compilability, completeness, determinism, falsifiability, finiteness, invariance, sovereignty, totality
-- Active violations: dependency_violation, incomplete_coverage, missing_falsifies_if, nondeterministic, sorry_placeholder, syntax_error, todo_unresolved, unbounded_structure, unclassified
-- SHA-256: `2d4da998681a1b8cfc457a8577efb17065b9a3ea7854450154fc1271fdf22516`
-- Pending invariants: cryptographic_integrity, type_safety
+- 30,641 files scanned, 25,879 errors found
+- |C| = 720 (8 subsystems × 9 invariants × 10 violations)
+- Active invariants: compilability, completeness, determinism, falsifiability, finiteness, invariance, sovereignty, totality, type_safety (cryptographic_integrity pending)
+- Active violations: dependency_violation, incomplete_coverage, missing_falsifies_if, nondeterministic, sorry_placeholder, syntax_error, todo_unresolved, type_error, unbounded_structure, unclassified
+- SHA-256: `13ed1daa6da0d638697d3555389c3efe98fefde2e06326165920d5a010217178`
+- Pending invariants: cryptographic_integrity
 
 ### Yeshua Agentic AI — Redemption Puzzle
 - **yeshua_agent_redemption.html** deployed at `docs/puzzles/`
@@ -65,17 +65,17 @@
 | bootstrap_verify | PASS |
 | Lean4 bridge | UP (port 28428) |
 | Auto pusher | RUNNING |
-| Yeshua Scanner |C| | 576 |
-| Yeshua Scanner errors | 22,653 |
+| Yeshua Scanner |C| | 720 |
+| Yeshua Scanner errors | 25,879 |
 | Yeshua HTML | Sovereign (embedded) |
 
 ## 4. Remaining QUEUED
 | Task | Priority |
 |------|----------|
-| YESHUA: Complete remaining 2 invariants (cryptographic_integrity, type_safety) | HIGH |
-| YESHUA: Re-embed expanded scan results into redemption HTML | HIGH |
+| YESHUA: Complete cryptographic_integrity invariant (9/10 done) | MEDIUM |
 | YESHUA: Build repair() loop — ∀c ∈ C, ∃r(c) | HIGH |
 | YESHUA: Resolve 6 Lean4 sorry placeholders | MEDIUM |
+| YESHUA: Wire repair() to Lean4 bridge for verification | HIGH |
 | Proving Ground Expand button bug | LOW |
 | SFI Phase 2: Real Arma frame testing | MEDIUM |
 | auto_push_hardened.ps1 | LOW |
