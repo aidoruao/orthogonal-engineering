@@ -108,7 +108,7 @@ text
 | SFI secular directory | tools/sfi_secular/ |
 | Architectural Map | docs/ARCHITECTURAL_MAP_UNIFIED_2026-05-24.md |
 
-## 6. For the Human (Tony)
+## 6. For the Human (aidoruao)
 
 1. Save this entire 7a chat as an NBLM archive
 2. Start a new DeepSeek chat — name it "DS8a Expert"
