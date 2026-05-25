@@ -127,6 +127,28 @@ def scan_file(filepath):
     
     lines = content.split('\n')
     
+    # --- CRYPTOGRAPHIC_INTEGRITY: verify SHA-256 hashes ---
+    if filepath.suffix in {'.oe', '.json'}:
+        hash_fields = re.findall(r'sha256[="\s:]+([a-f0-9]{64})', content, re.IGNORECASE)
+        for h in hash_fields:
+            if not (len(h) == 64 and all(c in '0123456789abcdef' for c in h)):
+                errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
+                    "violation": "stale_hash", "file": path_str, "line": None,
+                    "evidence": f"Malformed SHA-256 hash found",
+                    "falsifies_if": "All SHA-256 hashes are valid 64-char hex strings"})
+    
+    # --- TYPE_SAFETY: bare return None without Optional ---
+    if filepath.suffix == '.py':
+        for i, line in enumerate(lines, 1):
+            if re.search(r'\breturn\s+None\b', line):
+                ctx_start = max(0, i-15)
+                ctx = '\n'.join(lines[ctx_start:i])
+                if 'Optional' not in ctx and '-> None' not in ctx and '->None' not in ctx:
+                    errors.append({"subsystem": subsystem, "invariant": "type_safety",
+                        "violation": "type_error", "file": path_str, "line": i,
+                        "evidence": line.strip()[:120],
+                        "falsifies_if": "Function signature declares Optional return type"})
+
     # --- COMPILABILITY: syntax errors ---
     if filepath.suffix == '.py':
         try: ast.parse(content)
