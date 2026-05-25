@@ -246,24 +246,19 @@ sha256_hashes:
 <script>
 // === LOAD SCANNER DATA (embedded) ===
 let scannerData = null;
-fetch('../../tools/yeshua_scan_results.json')
-  .then(r => r.json())
-  .then(data => {
-    scannerData = data;
-    document.getElementById('statFiles').textContent = data.scan_metadata.files_scanned;
-    document.getElementById('statErrors').textContent = data.scan_metadata.total_errors;
-    document.getElementById('statCardinality').textContent = data.category_space.cardinality;
-    document.getElementById('statS').textContent = data.category_space.S.length;
-    document.getElementById('statI').textContent = data.category_space.I.length;
-    document.getElementById('statV').textContent = data.category_space.V.length;
-    document.getElementById('scannerHash').textContent = 'SHA-256: ' + data.scan_metadata.sha256;
-    
-    // Build Yeshua derivation
-    const deriv = buildYeshuaDerivation(data);
-    document.getElementById('yeshuaDerivation').textContent = deriv;
-  })();
+try {
+  const embedded = JSON.parse(document.getElementById('baseline-data').textContent);
+  scannerData = embedded;
+  document.getElementById('statFiles').textContent = scannerData.scan_metadata.files_scanned;
+  document.getElementById('statErrors').textContent = scannerData.scan_metadata.total_errors;
+  document.getElementById('statCardinality').textContent = scannerData.category_space.cardinality;
+  document.getElementById('statS').textContent = scannerData.category_space.S.length;
+  document.getElementById('statI').textContent = scannerData.category_space.I.length;
+  document.getElementById('statV').textContent = scannerData.category_space.V.length;
+  document.getElementById('scannerHash').textContent = 'SHA-256: ' + scannerData.scan_metadata.sha256;
+  document.getElementById('yeshuaDerivation').textContent = buildYeshuaDerivation(scannerData);
 } catch(e) {
-  document.getElementById('scannerHash').textContent = 'SHA-256: Scanner data failed to load from embedded block';
+  document.getElementById('scannerHash').textContent = 'SHA-256: Embedded data parse failed';
 }
 
 function buildYeshuaDerivation(data) {
