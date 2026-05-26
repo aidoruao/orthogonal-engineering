@@ -24,6 +24,9 @@ python3 audit/popperian_audit.py     # audit all domain invariants
 
 ## What Is This?
 
+![Last Turtle Banner](docs/assets/last_turtle_banner.png)
+
+
 Every function returns `Tuple[bool, ProofObject]`. Every claim has a
 `falsifies_if` condition. Every number is a `Fraction`, not a `float`.
 Every file is SHA-256 anchored in a Merkle tree. 20 CI workflows enforce
