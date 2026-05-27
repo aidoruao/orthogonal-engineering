@@ -52,21 +52,11 @@ theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a
     rw [← ZMod.natCast_zmod_eq_zero_iff_dvd a p]
     exact hzero
   have h_eq : (a : ZMod p) ^ (p - 1) = 1 := ZMod.pow_card_sub_one_eq_one ha
-  -- Take val of both sides
-  have h_val_eq : ((a : ZMod p) ^ (p - 1)).val = (1 : ZMod p).val := by rw [h_eq]
-  -- (1 : ZMod p).val = 1 % p = 1 since 1 < p
-  have h_one_val : (1 : ZMod p).val = 1 := by
-    rw [ZMod.val_one_eq_one_mod p]
-    exact Nat.mod_eq_of_lt hp1
-  -- ((a : ZMod p) ^ (p-1)).val = a^(p-1) % p by val_pow combined with val_natCast
-  have h_pow_val : ((a : ZMod p) ^ (p - 1)).val = a ^ (p - 1) % p := by
-    -- val_pow gives relation but requires val^m < n. Use val_natCast directly on the base.
-    -- Actually: ((a : ZMod p) ^ m).val = (a.val ^ m) % n when a.val ^ m < n
-    -- Simpler: use the fact that val_natCast applied to a^(p-1) gives what we need
-    rw [← ZMod.val_natCast p (a ^ (p - 1))]
-    -- But (a : ZMod p)^(p-1) = (a^(p-1) : ZMod p) by Nat.cast_pow
-    -- Nat.cast_pow is available transitively through natCast_pow_eq_zero_of_le
-    sorry
-  rw [h_pow_val, h_val_eq, h_one_val]
+  calc
+    a ^ (p - 1) % p = ((a ^ (p - 1) : ℕ) : ZMod p).val := by rw [← ZMod.val_natCast p (a ^ (p - 1))]
+    _ = ((a : ZMod p) ^ (p - 1)).val := by simp
+    _ = (1 : ZMod p).val := by rw [h_eq]
+    _ = 1 % p := by rw [ZMod.val_natCast p 1]
+    _ = 1 := Nat.mod_eq_of_lt hp1
 
-end Axiomsend Axioms
+end Axiomsend Axiomsend Axioms
