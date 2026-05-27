@@ -52,7 +52,24 @@ def scan_file(filepath):
             "violation": "missing_file", "file": path_str, "line": None,
             "evidence": "File referenced but does not exist",
             "falsifies_if": "File exists at path"})
-        return errors
+    
+    # --- OLEAN MANIFEST INTEGRITY: verify against mathlib_manifest.oe ---
+    if filepath.suffix == '.olean':
+        manifest_path = ROOT / "lean4" / "mathlib_manifest.oe"
+        if manifest_path.exists():
+            try:
+                manifest = json.loads(manifest_path.read_text())
+                for entry in manifest.get("proof_objects", []):
+                    if entry["path"] in path_str:
+                        current_hash = hashlib.sha256(filepath.read_bytes()).hexdigest()
+                        if current_hash != entry["sha256"]:
+                            errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
+                                "violation": "stale_hash", "file": path_str, "line": None,
+                                "evidence": f"Olean hash mismatch: expected {entry['sha256'][:16]}...",
+                                "falsifies_if": "Olean hash matches manifest"})
+            except: pass
+
+    return errors
     
     try:
         with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
@@ -61,7 +78,24 @@ def scan_file(filepath):
         errors.append({"subsystem": subsystem, "invariant": "compilability",
             "violation": "unclassified", "file": path_str, "line": None,
             "evidence": "Cannot read file", "falsifies_if": "File is readable as UTF-8"})
-        return errors
+    
+    # --- OLEAN MANIFEST INTEGRITY: verify against mathlib_manifest.oe ---
+    if filepath.suffix == '.olean':
+        manifest_path = ROOT / "lean4" / "mathlib_manifest.oe"
+        if manifest_path.exists():
+            try:
+                manifest = json.loads(manifest_path.read_text())
+                for entry in manifest.get("proof_objects", []):
+                    if entry["path"] in path_str:
+                        current_hash = hashlib.sha256(filepath.read_bytes()).hexdigest()
+                        if current_hash != entry["sha256"]:
+                            errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
+                                "violation": "stale_hash", "file": path_str, "line": None,
+                                "evidence": f"Olean hash mismatch: expected {entry['sha256'][:16]}...",
+                                "falsifies_if": "Olean hash matches manifest"})
+            except: pass
+
+    return errors
     
     lines = content.split('\n')
     
@@ -167,6 +201,23 @@ def scan_file(filepath):
                         "evidence": line.strip()[:120],
                         "falsifies_if": "Function signature declares Optional return type"})
     
+
+    # --- OLEAN MANIFEST INTEGRITY: verify against mathlib_manifest.oe ---
+    if filepath.suffix == '.olean':
+        manifest_path = ROOT / "lean4" / "mathlib_manifest.oe"
+        if manifest_path.exists():
+            try:
+                manifest = json.loads(manifest_path.read_text())
+                for entry in manifest.get("proof_objects", []):
+                    if entry["path"] in path_str:
+                        current_hash = hashlib.sha256(filepath.read_bytes()).hexdigest()
+                        if current_hash != entry["sha256"]:
+                            errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
+                                "violation": "stale_hash", "file": path_str, "line": None,
+                                "evidence": f"Olean hash mismatch: expected {entry['sha256'][:16]}...",
+                                "falsifies_if": "Olean hash matches manifest"})
+            except: pass
+
     return errors
 
 def compute_category_space(errors):
