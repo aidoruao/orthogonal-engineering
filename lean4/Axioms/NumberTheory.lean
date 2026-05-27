@@ -52,11 +52,15 @@ theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a
     rw [← ZMod.natCast_zmod_eq_zero_iff_dvd a p]
     exact hzero
   have h_eq : (a : ZMod p) ^ (p - 1) = 1 := ZMod.pow_card_sub_one_eq_one ha
-  calc
-    a ^ (p - 1) % p = ((a ^ (p - 1) : ℕ) : ZMod p).val := by rw [← ZMod.val_natCast p (a ^ (p - 1))]
-    _ = ((a : ZMod p) ^ (p - 1)).val := by simp
-    _ = (1 : ZMod p).val := by rw [h_eq]
-    _ = 1 % p := ZMod.val_natCast p 1
-    _ = 1 := Nat.mod_eq_of_lt hp1
+  -- Step 1: a^(p-1) % p = ((a^(p-1) : ℕ) : ZMod p).val
+  rw [← ZMod.val_natCast p (a ^ (p - 1))]
+  -- Step 2: ((a^(p-1) : ℕ) : ZMod p) = (a : ZMod p) ^ (p-1)
+  rw [Nat.cast_pow (a : ℕ) (p - 1)]
+  -- Step 3: Now use h_eq
+  rw [h_eq]
+  -- Step 4: (1 : ZMod p).val = 1 % p
+  rw [ZMod.val_natCast p 1]
+  -- Step 5: 1 % p = 1 since 1 < p
+  exact Nat.mod_eq_of_lt hp1
 
-end Axioms
+end Axiomsend Axioms
