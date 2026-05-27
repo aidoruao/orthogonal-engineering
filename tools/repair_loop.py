@@ -138,10 +138,13 @@ def execute_repairs(manifest, dry_run=True):
         if action == "complete_proof":
             # For sorry placeholders: attempt to compile a minimal fix
             for ex in repair.get("examples", []):
-                if ex.get("file", "").endswith(".lean"):
+                filepath = ex.get("file", "")
+                if filepath.endswith(".lean"):
                     # Read the file, replace 'sorry' with 'by rfl' as first attempt
                     try:
-                        fpath = ROOT / ex["file"]
+                        fpath = Path(filepath)
+                        if not fpath.exists():
+                            fpath = ROOT / filepath
                         if fpath.exists():
                             code = fpath.read_text().replace("sorry", "by rfl")
                             if not dry_run:
