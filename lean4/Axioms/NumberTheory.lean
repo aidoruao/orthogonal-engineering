@@ -7,11 +7,12 @@ Biblical: Ecclesiastes 3:1 — "To everything there is a season..." (structure i
 All theorems compile against mathlib. No sorry placeholders.
 -/
 
-import Mathlib.NumberTheory.Prime
-import Mathlib.Algebra.GroupPower.Lemmas
-import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.Nat.Prime.Basic
+import Mathlib.Data.Nat.Prime.Infinite
 import Mathlib.Data.Nat.GCD.Basic
 import Mathlib.Data.Nat.Factorization.Basic
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Algebra.GCDMonoid.Nat
 
 namespace Axioms
 
