@@ -11,7 +11,6 @@ import Mathlib.Data.Nat.GCD.Basic
 import Mathlib.Data.Nat.Factorization.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Algebra.GCDMonoid.Nat
-import Mathlib.Tactic
 
 namespace Axioms
 
