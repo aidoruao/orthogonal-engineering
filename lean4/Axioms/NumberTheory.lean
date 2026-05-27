@@ -41,7 +41,7 @@ theorem fundamental_theorem_arithmetic (n : Nat) (hn : n > 1) :
   rcases h with ⟨p, hp, hdvd⟩
   exact ⟨p, hp, hdvd⟩
 
-/-- Fermat's little theorem: a^(p-1) ≡ 1 (mod p) for prime p, p ∤ a -/
+/-- Fermat'''s little theorem: a^(p-1) ≡ 1 (mod p) for prime p, p ∤ a -/
 theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a)) :
     a ^ (p - 1) % p = 1 := by
   have ha : (a : ZMod p) ≠ 0 := by
@@ -52,11 +52,13 @@ theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a
   have h_eq : (a : ZMod p) ^ (p - 1) = 1 := ZMod.pow_card_sub_one_eq_one ha
   have hp1 : 1 < p := Nat.Prime.one_lt hp
   have hfact : Fact (1 < p) := ⟨hp1⟩
-  -- a^(p-1) % p = ((a : ZMod p)^(p-1)).val = 1.val = 1
+  have h_val : ((a : ZMod p) ^ (p - 1)).val = (1 : ZMod p).val := by rw [h_eq]
+  have h_val1 : (1 : ZMod p).val = 1 := ZMod.val_one p
+  -- Now: a^(p-1) % p = (a^(p-1) : ZMod p).val = ((a : ZMod p)^(p-1)).val = 1.val = 1
   calc
     a ^ (p - 1) % p = ((a : ZMod p) ^ (p - 1)).val := by
-      rw [← ZMod.val_natCast p (a ^ (p - 1)), ZMod.natCast_pow (a) (p - 1)]
-    _ = (1 : ZMod p).val := by rw [h_eq]
-    _ = 1 := by rw [ZMod.val_one p]
+      simp [ZMod.val_natCast p (a ^ (p - 1))]
+    _ = (1 : ZMod p).val := h_val
+    _ = 1 := h_val1
 
-end Axioms
+end Axiomsend Axioms
