@@ -56,7 +56,7 @@ theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a
     a ^ (p - 1) % p = ((a ^ (p - 1) : ℕ) : ZMod p).val := by rw [← ZMod.val_natCast p (a ^ (p - 1))]
     _ = ((a : ZMod p) ^ (p - 1)).val := by simp
     _ = (1 : ZMod p).val := by rw [h_eq]
-    _ = 1 % p := by rw [ZMod.val_natCast p 1]
+    _ = 1 % p := ZMod.val_natCast p 1
     _ = 1 := Nat.mod_eq_of_lt hp1
 
 end Axioms
