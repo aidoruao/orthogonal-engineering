@@ -52,9 +52,11 @@ theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a
   have h_eq : (a : ZMod p) ^ (p - 1) = 1 := ZMod.pow_card_sub_one_eq_one ha
   have hp1 : 1 < p := Nat.Prime.one_lt hp
   have hfact : Fact (1 < p) := ⟨hp1⟩
-  -- Use the lemma val_natCast which states (a : ZMod n).val = a % n
-  -- So a^(p-1) % p = (a^(p-1) : ZMod p).val = ((a : ZMod p)^(p-1)).val = 1.val = 1
-  rw [← ZMod.val_natCast p (a ^ (p - 1)), ← ZMod.val_natCast p a]
-  sorry
+  -- a^(p-1) % p = ((a : ZMod p)^(p-1)).val = 1.val = 1
+  calc
+    a ^ (p - 1) % p = ((a : ZMod p) ^ (p - 1)).val := by
+      rw [← ZMod.val_natCast p (a ^ (p - 1)), ZMod.natCast_pow (a) (p - 1)]
+    _ = (1 : ZMod p).val := by rw [h_eq]
+    _ = 1 := by rw [ZMod.val_one p]
 
 end Axioms
