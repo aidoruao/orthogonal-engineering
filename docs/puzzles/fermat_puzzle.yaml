@@ -1,0 +1,71 @@
+puzzle:
+  title: "Fermat Type Incommensurability"
+  type: "Deterministic Symbolic Mathematics — Lean4 Formal Verification"
+  note: "NOT a discussion. NOT a request for analysis. This is a mathematical gauntlet. One theorem does not compile. Make it compile."
+
+theorem:
+  name: "fermat_little_theorem"
+  signature: "theorem fermat_little_theorem (a p : Nat) (hp : Nat.Prime p) (hdiv : ¬ (p ∣ a)) : a ^ (p - 1) % p = 1 :="
+  error: "⊢ a ^ (p - 1) % p = 1"
+  status: "4 of 5 theorems in NumberTheory.lean compile. This one does not."
+  attempts: 30
+  given:
+    ha: "(a : ZMod p) ≠ 0"
+    h_eq: "(a : ZMod p) ^ (p - 1) = 1"
+    hp1: "1 < p"
+    hfact: "Fact (1 < p)"
+
+dependency_enclosure:
+  rule: "NO new imports. Only these 6 modules exist at these exact hashes."
+  modules:
+    - "Mathlib/Data/ZMod/Basic.olean"
+    - "Mathlib/Data/Nat/Prime/Basic.olean"
+    - "Mathlib/Data/Nat/Prime/Infinite.olean"
+    - "Mathlib/Data/Nat/GCD/Basic.olean"
+    - "Mathlib/Data/Nat/Factorization/Basic.olean"
+    - "Mathlib/Algebra/GCDMonoid/Nat.olean"
+
+strategies_exhausted:
+  - "calc block with ZMod.val_natCast — cast-of-power ≠ power-of-cast"
+  - "rw chain with Nat.cast_pow — lemma not in anchored namespace"
+  - "simpa with congrArg ZMod.val — goal form unrecognized"
+  - "apply ZMod.val_injective — lemma not found at anchored hash"
+  - "eq_iff_modEq_nat.mp with simpa — simpa cannot bridge cast gap"
+
+submission_template:
+  instructions: "Replace <AI: ...> with your complete Lean4 proof. Show all work."
+  must:
+    - "Provide complete fermat_little_theorem proof that compiles"
+    - "Preserve the exact theorem signature above"
+    - "Use only the 6 anchored modules"
+    - "Include grep output proving you verified lemma existence"
+    - "State how your strategy differs from all 5 exhausted strategies"
+    - "Provide SHA-256 of your complete NumberTheory.lean"
+    - "Provide falsifies_if condition for your proof"
+  must_not:
+    - "Change the theorem signature"
+    - "Add any import beyond the 6 anchored"
+    - "Use sorry, admit, or any placeholder"
+    - "Submit prose without compilable Lean4 code"
+    - "Refuse to build"
+    - "Claim the task is impossible"
+  falsifies_if: "Submission changes signature, adds imports, uses sorry, or fails lake build Axioms.NumberTheory"
+
+verification:
+  method: "lake build Axioms.NumberTheory"
+  pass: "exit code 0"
+  bridge: "curl -X POST http://localhost:28428 -d '{\"code\":\"<proof>\",\"row\":1}'"
+
+ai_submission:
+  ai_name: <AI: Your name>
+  organization: <AI: Your company>
+  grep_output: |
+    <AI: Paste grep results>
+  proof: |
+    <AI: Complete fermat_little_theorem proof>
+  strategy: |
+    <AI: How your proof differs from all 5 exhausted strategies>
+  falsifies_if: |
+    <AI: Condition that would prove your proof wrong>
+  sha256: |
+    <AI: SHA-256 of complete NumberTheory.lean>
