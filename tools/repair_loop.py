@@ -115,8 +115,64 @@ def estimate_cost(repairs):
     total = sum(costs.get(r["action"], 5) * r["occurrences"] for r in repairs)
     return total
 
+
+def verify_via_bridge(code, row=0):
+    """Send Lean4 code to bridge, return (success, output, errors)."""
+    import urllib.request as ur
+    try:
+        req = ur.Request("http://localhost:28428",
+            data=json.dumps({"code": code, "row": row}).encode(),
+            headers={"Content-Type": "application/json"})
+        resp = json.loads(ur.urlopen(req, timeout=10).read())
+        return resp.get("success", False), resp.get("output", ""), resp.get("errors", "")
+    except Exception as e:
+        return False, "", str(e)
+
+def execute_repairs(manifest, dry_run=True):
+    """Execute repair actions. dry_run=True only reports what would be done."""
+    results = []
+    for repair in manifest.get("repairs", []):
+        action = repair["action"]
+        result = {"category": repair["category"], "action": action, "status": "skipped"}
+        
+        if action == "complete_proof":
+            # For sorry placeholders: attempt to compile a minimal fix
+            for ex in repair.get("examples", []):
+                if ex.get("file", "").endswith(".lean"):
+                    # Read the file, replace 'sorry' with 'by rfl' as first attempt
+                    try:
+                        fpath = ROOT / ex["file"]
+                        if fpath.exists():
+                            code = fpath.read_text().replace("sorry", "by rfl")
+                            if not dry_run:
+                                ok, out, err = verify_via_bridge(code)
+                                result["status"] = "verified" if ok else f"failed: {err[:100]}"
+                                result["bridge_output"] = out[:200]
+                            else:
+                                result["status"] = "would_attempt"
+                                result["file"] = str(fpath)
+                    except Exception as e:
+                        result["status"] = f"error: {e}"
+        
+        elif action in ("fix_syntax", "resolve_or_delete", "add_falsifies_if",
+                        "remove_external_dep", "seed_rng", "add_termination",
+                        "specify_exception", "add_optional_type"):
+            result["status"] = "requires_code_generation" if not dry_run else "would_generate"
+        
+        elif action == "manual_review":
+            result["status"] = "requires_human"
+        
+        results.append(result)
+    return results
+
 def main():
-    print("Yeshua Agentic AI — repair() loop")
+    import sys
+    dry_run = "--execute" not in sys.argv
+    if dry_run:
+        print("Yeshua Agentic AI — repair() loop (DRY RUN)")
+        print("Use --execute to send proofs to Lean4 bridge")
+    else:
+        print("Yeshua Agentic AI — repair() loop (EXECUTING)")
     scan = load_scan()
     repairs = generate_repairs(scan)
     cost = estimate_cost(repairs)
@@ -129,6 +185,10 @@ def main():
         "repairs": repairs,
         "falsifies_if": "Any category still has occurrences > 0 in next scan"
     }
+    
+    # Execute repairs if not dry run
+    exec_results = execute_repairs(manifest, dry_run=dry_run)
+    manifest["execution_results"] = exec_results
     
     manifest["_hash"] = hashlib.sha256(
         json.dumps(manifest, sort_keys=True, default=str).encode()
@@ -147,6 +207,9 @@ def main():
     for action, count in sorted(by_action.items(), key=lambda x: -x[1]):
         print(f"  {action}: {count}")
     print(f"SHA-256: {manifest['_hash']}")
+    verified = sum(1 for r in exec_results if r["status"] == "verified")
+    would = sum(1 for r in exec_results if "would" in str(r["status"]))
+    print(f"\nExecution: {verified} verified, {would} pending, {len(exec_results)} total")
     print(f"Written to: {MANIFEST_FILE}")
 
 if __name__ == "__main__":
