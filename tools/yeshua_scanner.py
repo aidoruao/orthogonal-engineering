@@ -91,7 +91,37 @@ def scan_file(filepath):
             "evidence": "File referenced but does not exist on disk",
             "falsifies_if": "File exists at path"
         })
-        return errors
+    
+    # --- COMPILATION STATUS: check if .lean file has a corresponding .olean ---
+    if filepath.suffix == '.lean':
+        olean_path = str(filepath).replace('.lean', '.olean').replace('/src/', '/.lake/build/lib/lean/')
+        # Check manifest for this .olean
+        manifest_file = ROOT / "lean4" / "mathlib_oe_manifest.json"
+        if manifest_file.exists():
+            try:
+                manifest = json.loads(open(manifest_file).read())
+                olean_entry = None
+                for entry in manifest.get("proof_objects", []):
+                    if entry["path"].endswith(filepath.name.replace('.lean', '.olean')):
+                        olean_entry = entry
+                        break
+                if olean_entry:
+                    olean_fp = ROOT / "lean4" / ".lake" / "packages" / "mathlib" / ".lake" / "build" / "lib" / "lean" / olean_entry["path"]
+                    if olean_fp.exists():
+                        current_hash = hashlib.sha256(olean_fp.read_bytes()).hexdigest()
+                        if current_hash != olean_entry["sha256"]:
+                            errors.append({"subsystem": subsystem, "invariant": "cryptographic_integrity",
+                                "violation": "stale_hash", "file": path_str, "line": None,
+                                "evidence": f"Olean hash mismatch for {filepath.name}",
+                                "falsifies_if": "Olean hash matches manifest"})
+                    else:
+                        errors.append({"subsystem": subsystem, "invariant": "compilability",
+                            "violation": "missing_file", "file": path_str, "line": None,
+                            "evidence": f"No .olean found for {filepath.name} — uncompiled",
+                            "falsifies_if": "lake build succeeds and produces .olean"})
+            except: pass
+
+    return errors
     
     # Read file content
     try:
