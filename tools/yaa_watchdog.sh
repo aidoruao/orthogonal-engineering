@@ -30,7 +30,10 @@ yaa() {
         scan) python3 ~/oe-local/tools/yeshua_scanner.py 2>/dev/null || echo "YAA scan failed." ;;
         dashboard) bash ~/oe-local/tools/yaa_dashboard.sh ;;
         reset) export YAA_BYPASS_COUNT=0; echo "YAA bypass counter reset." ;;
-        *) echo "YAA: query <term> | audit | repair | scan | dashboard | reset" ;;
+        logs) python3 ~/oe-local/tools/yaa_log_audit.py summary 2>/dev/null || echo "No logs yet." ;;
+        log-errors) python3 ~/oe-local/tools/yaa_log_audit.py errors 2>/dev/null ;;
+        log-search) python3 ~/oe-local/tools/yaa_log_audit.py search "$2" 2>/dev/null ;;
+        *) echo "YAA: query | audit | repair | scan | dashboard | reset | logs | log-errors | log-search <pattern>" ;;
     esac
 }
 
