@@ -7,6 +7,9 @@ while true; do
 
     # Check if there's anything to commit
     if [[ -n $(git status --porcelain) ]]; then
+        # Sanitize terminal logs before staging
+        python3 tools/yaa_log_sanitizer.py 2>/dev/null
+        
         # Stage everything
         git add -A
 
