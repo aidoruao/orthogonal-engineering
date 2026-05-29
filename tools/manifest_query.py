@@ -68,7 +68,7 @@ def stats(manifest):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python3 tools/manifest_query.py <name> | --hash <sha> | --list | --stats")
+        print("Usage: python3 tools/manifest_query.py <name> | --lemma <name> | --hash <sha> | --list | --stats")
         print("Example: python3 tools/manifest_query.py val_one")
         sys.exit(1)
 
@@ -78,7 +78,19 @@ def main():
 
     arg = sys.argv[1]
 
-    if arg == "--stats":
+    if arg == "--lemma" and len(sys.argv) > 2:
+        results = query_lemma(sys.argv[2])
+        if results:
+            for r in results:
+                print(f"LEMMA: {r['lemma']}")
+                print(f"FILE: {r['file']}")
+                print(f"SHA256: {r['sha256']}")
+                print(f"SIZE: {r['size_bytes']} bytes")
+                print()
+            print(f"Found {len(results)} matching entries.")
+        else:
+            print(f"Lemma '{sys.argv[2]}' not found in index ({len(manifest.get('proof_objects', []))} files indexed).")
+    elif arg == "--stats":
         s = stats(manifest)
         print(json.dumps(s, indent=2))
     elif arg == "--list":
@@ -104,6 +116,19 @@ def main():
             print(f"Found {len(results)} matching entries.")
         else:
             print(f"No entries matching '{arg}' found in {len(manifest.get('proof_objects', []))} entries.")
+
+def query_lemma(name, index_path=None):
+    """Query the lemma index for a specific lemma name."""
+    if index_path is None:
+        index_path = Path(__file__).parent.parent / "lean4" / "lemma_index.json"
+    if not Path(index_path).exists():
+        print(f"ERROR: Lemma index not found at {index_path}")
+        print("Build it with: python3 -c '...' (see build_gate_analyzer.py)")
+        return None
+    with open(index_path) as f:
+        idx = json.load(f)
+    entries = idx.get("entries", {})
+    return entries.get(name, [])
 
 if __name__ == "__main__":
     main()
