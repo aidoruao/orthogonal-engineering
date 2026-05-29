@@ -1,0 +1,189 @@
+{
+  "total_gates": 35,
+  "by_file": {
+    "platform/ios/detect.py": 3,
+    "platform/macos/detect.py": 1,
+    "platform/linuxbsd/detect.py": 6,
+    "platform/windows/detect.py": 1,
+    "platform/web/detect.py": 7,
+    "platform/android/detect.py": 5,
+    "modules/mono/config.py": 12
+  },
+  "gates": [
+    {
+      "file": "platform/ios/detect.py",
+      "line": 5,
+      "message": "from methods import detect_darwin_sdk_path, detect_darwin_toolchain_path, print_error, print_warning"
+    },
+    {
+      "file": "platform/ios/detect.py",
+      "line": 120,
+      "message": "print_error(\"Building for iOS with 'arch=x86_64' requires 'simulator=yes'.\")"
+    },
+    {
+      "file": "platform/ios/detect.py",
+      "line": 121,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/macos/detect.py",
+      "line": 5,
+      "message": "from methods import detect_darwin_sdk_path, get_compiler_version, is_apple_clang, print_error, print_warning"
+    },
+    {
+      "file": "platform/linuxbsd/detect.py",
+      "line": 6,
+      "message": "from methods import get_compiler_version, print_error, print_info, print_warning, using_gcc"
+    },
+    {
+      "file": "platform/linuxbsd/detect.py",
+      "line": 23,
+      "message": "print_error(\"pkg-config not found. Aborting.\")"
+    },
+    {
+      "file": "platform/linuxbsd/detect.py",
+      "line": 149,
+      "message": "print_error("
+    },
+    {
+      "file": "platform/linuxbsd/detect.py",
+      "line": 152,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/linuxbsd/detect.py",
+      "line": 220,
+      "message": "print_error(\"ThinLTO is only compatible with LLVM, use `use_llvm=yes` or `lto=full`.\")"
+    },
+    {
+      "file": "platform/linuxbsd/detect.py",
+      "line": 221,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/windows/detect.py",
+      "line": 8,
+      "message": "from methods import print_error, print_warning"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 18,
+      "message": "from methods import get_compiler_version, print_error, print_info, print_warning"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 119,
+      "message": "print_error(\"The minimum Emscripten version to build Godot with C# is 3.1.56, detected: %s.%s.%s\" % cc_semver)"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 120,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 122,
+      "message": "print_error(\"The minimum Emscripten version to build Godot is 4.0.0, detected: %s.%s.%s\" % cc_semver)"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 123,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 144,
+      "message": "print_error(\"Initial memory must be a valid integer\")"
+    },
+    {
+      "file": "platform/web/detect.py",
+      "line": 145,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/android/detect.py",
+      "line": 7,
+      "message": "from methods import print_error, print_warning"
+    },
+    {
+      "file": "platform/android/detect.py",
+      "line": 100,
+      "message": "print_error("
+    },
+    {
+      "file": "platform/android/detect.py",
+      "line": 104,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "platform/android/detect.py",
+      "line": 223,
+      "message": "print_error(\"Use build option `swappy=no` to ignore missing Swappy dependency and build without it.\")"
+    },
+    {
+      "file": "platform/android/detect.py",
+      "line": 224,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 3,
+      "message": "from methods import print_error"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 18,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 24,
+      "message": "print_error(\".NET installs its own crash handler. Use disable_crash_handler=yes if this is intentional.\")"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 25,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 29,
+      "message": "print_error(\".NET needs to be an entry point on web when building as executable. Use library_type=static_library for web"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 30,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 35,
+      "message": "print_error(\"Can't build .NET with MAIN_MODULE, which would have made it possible to load shared library.\")"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 36,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 39,
+      "message": "print_error("
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 43,
+      "message": "sys.exit(255)"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 46,
+      "message": "print_error(\".NET can't work with lto library on web.\")"
+    },
+    {
+      "file": "modules/mono/config.py",
+      "line": 47,
+      "message": "sys.exit(255)"
+    }
+  ]
+}

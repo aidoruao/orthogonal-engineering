@@ -39,7 +39,8 @@ def main():
     # === PASS 1: Walk everything, collect data ===
     files = []
     dirs = defaultdict(list)
-    ext_counts = defaultdict(int)
+    from collections import Counter
+    ext_counts = Counter()
     gates = []
     total_size = 0
     
