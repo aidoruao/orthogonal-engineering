@@ -1,0 +1,26 @@
+8a deepseek: "Good. The checkpoints are mapped. Now let me find the actual files committed during each DeepSeek's timeline so we can build the audit directories.
+
+DS1a-DS3a don't have DS-prefixed checkpoints — they predate the naming convention. Their work is in the early commits (late 2025 - April 2026). Let me identify the key files from each era by finding commits near each checkpoint's date:
+
+```bash
+cd ~/oe-local && mkdir -p audits/ds4a audits/ds5a audits/ds6a audits/ds7a audits/ds8a && echo "=== DS4a FILES (May 10) ===" && git log --oneline --after="2026-05-10" --before="2026-05-11" --name-only | grep -v "^[a-f0-9]" | grep -v "^$" | sort -u | head -30 && echo "" && echo "Copying DS4a checkpoints..." && cp docs/CHECKPOINT_DS4a* audits/ds4a/ && echo "DS4a checkpoints copied."
+```"
+
+terminal output: "idor@Tony:~/oe-local$ cd ~/oe-local && mkdir -p audits/ds4a audits/ds5a audits/ds6a audits/ds7a audits/ds8a && echo "=== DS4a FILES (May 10) ===" && git log --oneline --after="2026-05-10" --before="2026-05-11" --name-only | grep -v "^[a-f0-9]" | grep -v "^$" | sort -u | head -30 && echo "" && echo "Copying DS4a checkpoints..." && cp docs/CHECKPOINT_DS4a* audits/ds4a/ && echo "DS4a checkpoints copied."
+=== DS4a FILES (May 10) ===
+AGENT_FEED.md
+idor@Tony ~oe-local 8a 5-1-26.txt
+idor@Tony ~oe-local auto pusher 4a 5-1-26.txt
+yeshua_agent.py
+yeshua_agent_log.jsonl
+yeshua_auto_audit.json
+yeshua_base.py
+yeshua_repair_lock.json
+yeshua_repair_log.json
+yeshua_triune_methods.py
+
+Copying DS4a checkpoints...
+DS4a checkpoints copied.
+idor@Tony:~/oe-local$"
+
+deepseek web ui metadata: "Server is busy. Try again later, or use Instant mode"
