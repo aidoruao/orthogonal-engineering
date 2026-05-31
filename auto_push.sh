@@ -2,19 +2,31 @@
 cd /home/idor/oe-local
 
 while true; do
-    # Pull remote changes first (with rebase to avoid merge conflicts)
+    # Pull remote changes first
     git pull --rebase origin main 2>/dev/null
 
     # Check if there's anything to commit
     if [[ -n $(git status --porcelain) ]]; then
         # Sanitize terminal logs before staging
         python3 tools/yaa_log_sanitizer.py 2>/dev/null
-        
+
         # Stage everything
         git add -A
 
-        # SAFETY GATE 2: Method body integrity — combinatorial
-        # Compare every method body against git history
+        # SAFETY GATE 3: Chunk oversized files before commit
+        git diff --cached --name-only | while read f; do
+            if [ -f "$f" ] && [ $(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0) -gt 104857600 ]; then
+                echo "[$(date '+%H:%M:%S')] CHUNKING: $f exceeds 100MB, splitting..."
+                # Move to Downloads for chunking, remove from repo
+                mv "$f" /mnt/c/Users/Aidor/Downloads/
+                git rm --cached "$f"
+                # Chunk it in Downloads (WSL path to Windows)
+                cd /mnt/c/Users/Aidor/Downloads && split -b 99m "$f" "history_chunk_"
+                cd /home/idor/oe-local
+            fi
+        done
+
+        # SAFETY GATE 2: Method body integrity
         STAGED=$(git diff --cached --name-only | head -1)
         if [ -n "$STAGED" ] && [ -f "$STAGED" ]; then
             METHOD_LOSS=0
@@ -35,19 +47,19 @@ while true; do
         # Commit with timestamp
         git commit -m "auto: $(git diff --cached --stat | tail -1) files changed at $(date '+%Y-%m-%d %H:%M:%S')"
 
-        # SAFETY GATE 1: Never lose local work to remote
-        LOCAL_LINES=$(wc -l < yeshua_agent.py 2>/dev/null || echo 0)
-        REMOTE_LINES=$(git show origin/main:yeshua_agent.py 2>/dev/null | wc -l || echo 0)
-
-        if [ "$LOCAL_LINES" -gt "$REMOTE_LINES" ]; then
-            git push --force-with-lease origin main 2>/dev/null && echo "[$(date '+%H:%M:%S')] Pushed (local: ${LOCAL_LINES} lines > remote: ${REMOTE_LINES})"
-        elif [ "$LOCAL_LINES" -eq "$REMOTE_LINES" ]; then
-            git push origin main 2>/dev/null && echo "[$(date '+%H:%M:%S')] Pushed (${LOCAL_LINES} lines)"
+        # FIXED PUSH GATE
+        LOCAL_COMMITS=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
+        if [ "$LOCAL_COMMITS" -gt 0 ]; then
+            git push origin main 2>&1 && echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} commits"
         else
-            echo "[$(date '+%H:%M:%S')] WARNING: Remote has more lines (${REMOTE_LINES}) than local (${LOCAL_LINES}). Pulling."
-            git pull --rebase origin main
-            git push origin main 2>/dev/null
+            echo "[$(date '+%H:%M:%S')] No local commits ahead of remote"
         fi
+    fi
+
+    # Check for unpushed commits even if nothing new to stage
+    LOCAL_COMMITS=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
+    if [ "$LOCAL_COMMITS" -gt 0 ]; then
+        git push origin main 2>&1 && echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} unpushed commits"
     fi
 
     sleep 30
