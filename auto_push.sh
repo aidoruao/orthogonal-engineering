@@ -10,21 +10,19 @@ while true; do
         # Sanitize terminal logs before staging
         python3 tools/yaa_log_sanitizer.py 2>/dev/null
 
-        # Stage everything
-        git add -A
-
-        # SAFETY GATE 3: Chunk oversized files before commit
-        git diff --cached --name-only | while read f; do
-            if [ -f "$f" ] && [ $(stat -c%s "$f" 2>/dev/null || stat -f%z "$f" 2>/dev/null || echo 0) -gt 104857600 ]; then
-                echo "[$(date '+%H:%M:%S')] CHUNKING: $f exceeds 100MB, splitting..."
-                # Move to Downloads for chunking, remove from repo
+        # SAFETY GATE 3: Detect oversized files before staging
+        find . -maxdepth 1 -not -path '*/.*' -size +99M | while read f; do
+            if [ -n "$f" ]; then
+                echo "[$(date '+%H:%M:%S')] CHUNKING: $f exceeds 99MB, splitting..."
                 mv "$f" /mnt/c/Users/Aidor/Downloads/
-                git rm --cached "$f"
-                # Chunk it in Downloads (WSL path to Windows)
-                cd /mnt/c/Users/Aidor/Downloads && split -b 99m "$f" "history_chunk_"
-                cd /home/idor/oe-local
+                split -b 99M /mnt/c/Users/Aidor/Downloads/$(basename "$f") /mnt/c/Users/Aidor/Downloads/history_chunk_
+                echo "$(basename "$f")" >> .gitignore
+                echo "history_chunk_*" >> .gitignore
             fi
         done
+
+        # Stage everything
+        git add -A
 
         # SAFETY GATE 2: Method body integrity
         STAGED=$(git diff --cached --name-only | head -1)
@@ -50,16 +48,29 @@ while true; do
         # FIXED PUSH GATE
         LOCAL_COMMITS=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
         if [ "$LOCAL_COMMITS" -gt 0 ]; then
-            git push origin main 2>&1 && echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} commits"
+            git push origin main 2>&1 > /tmp/push.log
+            if grep -q "GH001" /tmp/push.log; then
+                echo "[$(date '+%H:%M:%S')] RCS-FILE-SIZE-VIOLATION detected. Triggering Soft-Reset Re-sync..."
+                git reset --soft origin/main
+                sleep 30
+                continue
+            fi
+            echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} commits"
         else
             echo "[$(date '+%H:%M:%S')] No local commits ahead of remote"
         fi
     fi
 
-    # Check for unpushed commits even if nothing new to stage
+    # Check for unpushed commits
     LOCAL_COMMITS=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
     if [ "$LOCAL_COMMITS" -gt 0 ]; then
-        git push origin main 2>&1 && echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} unpushed commits"
+        git push origin main 2>&1 > /tmp/push.log
+        if grep -q "GH001" /tmp/push.log; then
+            echo "[$(date '+%H:%M:%S')] RCS-FILE-SIZE-VIOLATION in unpushed commits. Triggering Soft-Reset..."
+            git reset --soft origin/main
+        else
+            echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} unpushed commits"
+        fi
     fi
 
     sleep 30
