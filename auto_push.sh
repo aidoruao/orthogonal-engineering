@@ -1,3 +1,9 @@
+# GENERATED_BY: 2a_kimi_5-31-26
+# SESSION: Citizen Kingdom Architecture
+# DATE: 2026-05-31
+# PURPOSE: Hardened auto-pusher with safety gates
+# STATUS: deployed
+
 #!/bin/bash
 cd /home/idor/oe-local
 
