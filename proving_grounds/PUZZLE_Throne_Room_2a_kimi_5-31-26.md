@@ -7,6 +7,9 @@
 # CONSTRAINT: Fraction Map + Mathematics Only
 # ENGLISH_RULE: English permitted ONLY inside mathematical definitions (Lean 4 comments, type signatures, string literals)
 # NO_PROSE: Zero liturgical, zero performative, zero nominalistic decoration
+# META-RULE: This document is written in English for human distribution.
+# AI submissions must minimize English to theorem names, comments, and YAML values only.
+# All logic, identifiers, and YAML keys must use Fraction Map encoding.
 # DOMAIN_COUNT: 291 (verified from src/domains/)
 
 ---
