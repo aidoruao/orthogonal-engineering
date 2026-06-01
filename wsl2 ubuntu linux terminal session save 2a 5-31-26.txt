@@ -1,0 +1,482 @@
+🛡️  YAA Watchdog active. 19:17:46
+📝 Logging to session_20260531_191746.log
+idor@Tony:~$ cd ~/oe-local
+pkill -f auto_push.sh 2>/dev/null
+
+python3 << 'PYEOF'
+script = r'''#!/bin/bash
+# GENERATED_BY: 2a_kimi_5-31-26
+# DATE: 2026-05-31
+# PURPOSE: Auto-pusher with EXPLANATORY error handling
+
+cd /home/idor/oe-local || { echo "FATAL: cannot cd to oe-local"; exit 1; }
+
+mkdir -p logs
+LOGFILE="logs/auto_push_$(date +%Y%m%d_%H%M%S).log"
+exec 1> >(tee -a "$LOGFILE") 2> >(tee -a "$LOGFILE" >&2)
+
+SLEEP_SECONDS=300
+NO_PUSH_FLAG=".no_push"
+
+log_info()  { echo "[$(date '+%H:%M:%S')] INFO:  $*"; }
+log_warn()  { echo "[$(date '+%H:%M:%S')] WARN:  $*"; }
+log_error() { echo "[$(date '+%H:%M:%S')] ERROR: $*"; }
+
+log_info "Auto-pusher started. Log: $LOGFILE"
+log_info "Kill switch: touch $NO_PUSH_FLAG to pause. Remove to resume."
+
+while true; do
+    log_info "=== Starting cycle ==="
+
+    if [ -f "$NO_PUSH_FLAG" ]; then
+        log_warn "PAUSED: $NO_PUSH_FLAG exists. Sleeping 60s."
+        sleep 60
+        continue
+    fi
+
+    if ! git pull --rebase origin main >/dev/null 2>&1; then
+        log_error "git pull FAILED. Causes:"
+        log_error "  - Network down or GitHub unreachable"
+        log_error "  - Unstaged changes blocking rebase"
+        log_error "  - Remote history rewritten (force push)"
+        log_error "Action: fix in Terminal 2, or wait for next cycle"
+        sleep $SLEEP_SECONDS
+fi  echo "Syntax: FAILED"to_push.sh then.sh', 'w') as f:DS}s ==="ushed)")ate
+File written
+Syntax: PASSED
+[19:34:43] INFO:  Auto-pusher started. Log: logs/auto_push_20260531_193443.log
+[19:34:43] INFO:  Kill switch: touch .no_push to pause. Remove to resume.
+[19:34:43] INFO:  === Starting cycle ===
+[19:34:43] ERROR: git pull FAILED. Causes:
+[19:34:43] ERROR:   - Network down or GitHub unreachable
+[19:34:43] ERROR:   - Unstaged changes blocking rebase
+[19:34:43] ERROR:   - Remote history rewritten (force push)
+[19:34:43] ERROR: Action: fix in Terminal 2, or wait for next cycle
+[19:39:21] INFO:  === Starting cycle ===
+[19:39:21] INFO:  git pull OK
+[19:39:21] INFO:  No changes. Sleeping 300s.
+[19:43:59] INFO:  === Starting cycle ===
+[19:43:59] ERROR: git pull FAILED. Causes:
+[19:43:59] ERROR:   - Network down or GitHub unreachable
+[19:43:59] ERROR:   - Unstaged changes blocking rebase
+[19:43:59] ERROR:   - Remote history rewritten (force push)
+[19:43:59] ERROR: Action: fix in Terminal 2, or wait for next cycle
+[19:48:37] INFO:  === Starting cycle ===
+[19:48:37] ERROR: git pull FAILED. Causes:
+[19:48:37] ERROR:   - Network down or GitHub unreachable
+[19:48:37] ERROR:   - Unstaged changes blocking rebase
+[19:48:37] ERROR:   - Remote history rewritten (force push)
+[19:48:37] ERROR: Action: fix in Terminal 2, or wait for next cycle
+Terminated
+idor@Tony:~/oe-local$ https://github.com/aidoruao/orthogonal-engineering/blob/main/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md
+-bash: https://github.com/aidoruao/orthogonal-engineering/blob/main/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md: No such file or directory
+idor@Tony:~/oe-local$ curl -s https://raw.githubusercontent.com/aidoruao/orthogonal-engineering/main/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md | head -5
+# PUZZLE: Throne Room Architecture
+# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉ (P·R·A·Y·E·R)
+# GENERATED_BY: 2a_kimi_5-31-26
+# SESSION: Citizen Kingdom Architecture
+# DATE: 2026-05-31
+idor@Tony:~/oe-local$ cd ~/oe-local
+echo "=== src/domains/ ==="
+find src/domains -maxdepth 1 -type d | sort
+echo ""
+echo "=== axioms/ ==="
+find axioms -maxdepth 1 -type d | sort
+echo ""
+echo "=== kernel/ ==="
+find kernel -maxdepth 1 -type d | sort
+echo ""
+echo "=== Total domain count ==="
+find src/domains -maxdepth 1 -type d | wc -l
+=== src/domains/ ===
+src/domains
+src/domains/__pycache__
+src/domains/d_abstract_algebra
+src/domains/d_administrative_law
+src/domains/d_aerospace
+src/domains/d_aerospace_floor
+src/domains/d_agriculture
+src/domains/d_ai_ontological_status
+src/domains/d_amendment_process
+src/domains/d_antitrust
+src/domains/d_arc_agi
+src/domains/d_arc_agi_3
+src/domains/d_architecture_design
+src/domains/d_architecture_proof
+src/domains/d_arxiv_banking_api_quotient
+src/domains/d_arxiv_block_encoding_dog
+src/domains/d_arxiv_byzantine_safety
+src/domains/d_arxiv_case_grounded_evidence
+src/domains/d_arxiv_contract_deduction
+src/domains/d_arxiv_decidable_construction
+src/domains/d_arxiv_deontic_stit
+src/domains/d_arxiv_differential_privacy
+src/domains/d_arxiv_disjunction_failure
+src/domains/d_arxiv_do_we_really
+src/domains/d_arxiv_enriched_coalgebra
+src/domains/d_arxiv_factoriality
+src/domains/d_arxiv_game_endgame_verification
+src/domains/d_arxiv_goodstein
+src/domains/d_arxiv_imprecise_probability
+src/domains/d_arxiv_inv_defense_trilemma
+src/domains/d_arxiv_inv_ghost_imaging_zero_photons
+src/domains/d_arxiv_inv_likelihood_hacking
+src/domains/d_arxiv_inv_representational_limits
+src/domains/d_arxiv_inv_safemind
+src/domains/d_arxiv_inv_sharp_local_minima
+src/domains/d_arxiv_inv_solvability_complexity
+src/domains/d_arxiv_inv_stabilization_without_simplification
+src/domains/d_arxiv_inv_tractability_frontier
+src/domains/d_arxiv_inv_vulnerability_abundance
+src/domains/d_arxiv_large_language_models
+src/domains/d_arxiv_left_distributive
+src/domains/d_arxiv_linearizable_registers
+src/domains/d_arxiv_nonlocal_games
+src/domains/d_arxiv_objective_linear_algebra
+src/domains/d_arxiv_paraconsistent_sets
+src/domains/d_arxiv_quantum_block_encoding
+src/domains/d_arxiv_quantum_de_finetti
+src/domains/d_arxiv_quantum_ergodic_process
+src/domains/d_arxiv_quantum_error_correction_gkp
+src/domains/d_arxiv_quantum_fock_lattice
+src/domains/d_arxiv_quantum_nonlocal_games
+src/domains/d_arxiv_quantum_property_testing
+src/domains/d_arxiv_quantum_randomized_subspace
+src/domains/d_arxiv_quantum_rigidity
+src/domains/d_arxiv_quantum_state_teleportation
+src/domains/d_arxiv_quantum_uncertainty_entropy
+src/domains/d_arxiv_ramsey_arithmetic
+src/domains/d_arxiv_rays_as_pixels
+src/domains/d_arxiv_risk_management_bowtie
+src/domains/d_arxiv_safeadapt_provably_safe
+src/domains/d_arxiv_seeing_is_believing
+src/domains/d_arxiv_statml_bi_lipschitz
+src/domains/d_arxiv_statml_condition_number_clustering
+src/domains/d_arxiv_statml_conformal_margin
+src/domains/d_arxiv_statml_conformal_prediction
+src/domains/d_arxiv_statml_gaussian_approximation
+src/domains/d_arxiv_statml_learning_to_defer
+src/domains/d_arxiv_statml_machine_unlearning
+src/domains/d_arxiv_statml_proxy_causal
+src/domains/d_arxiv_statml_sequential_audit
+src/domains/d_arxiv_statml_sparse_svm
+src/domains/d_arxiv_statml_transport_maps
+src/domains/d_arxiv_strategic_algorithmic_monoculture
+src/domains/d_arxiv_tarskian_truth
+src/domains/d_arxiv_tense_logic
+src/domains/d_arxiv_three_modalities_two
+src/domains/d_arxiv_visor_agentic_visual
+src/domains/d_arxiv_vl_calibration_decoupled
+src/domains/d_astrophysics
+src/domains/d_automotive
+src/domains/d_aviation
+src/domains/d_axioms
+src/domains/d_banking_regulation
+src/domains/d_bankruptcy
+src/domains/d_bill_of_rights
+src/domains/d_biochemistry
+src/domains/d_biotech
+src/domains/d_bluecollar
+src/domains/d_boring
+src/domains/d_building_codes
+src/domains/d_capability_benchmark
+src/domains/d_category_theory
+src/domains/d_chemical
+src/domains/d_child_welfare
+src/domains/d_citizenship
+src/domains/d_civil_law
+src/domains/d_civilizational_polymath
+src/domains/d_cognitive_science
+src/domains/d_combinatorics
+src/domains/d_communications
+src/domains/d_compiler_design
+src/domains/d_computability
+src/domains/d_construction
+src/domains/d_consumer_protection
+src/domains/d_contract_law
+src/domains/d_control_systems
+src/domains/d_coordination_tax
+src/domains/d_corporate_compliance
+src/domains/d_corporate_law
+src/domains/d_correspondence_theory
+src/domains/d_creative
+src/domains/d_criminal_law
+src/domains/d_cross_model_benchmarks
+src/domains/d_crusader
+src/domains/d_crypto
+src/domains/d_cryptography
+src/domains/d_curriculum
+src/domains/d_dag_theory
+src/domains/d_database_systems
+src/domains/d_deterministic_probability
+src/domains/d_devops
+src/domains/d_dh_standalone
+src/domains/d_differential_geometry
+src/domains/d_digital_governance
+src/domains/d_diplomatic
+src/domains/d_disability_rights
+src/domains/d_disaster_resilience
+src/domains/d_distributed_systems
+src/domains/d_dollartree
+src/domains/d_drug_regulation
+src/domains/d_dyadic_acceleration
+src/domains/d_economic_mobility
+src/domains/d_education
+src/domains/d_elder_care
+src/domains/d_elder_law
+src/domains/d_election_law
+src/domains/d_electrical_trades
+src/domains/d_electromagnetism
+src/domains/d_emergency
+src/domains/d_employment_law
+src/domains/d_energy
+src/domains/d_environmental_law
+src/domains/d_environmental_planning
+src/domains/d_epistemic_logic
+src/domains/d_epistemology_formal
+src/domains/d_epistemology_substrate
+src/domains/d_ethics
+src/domains/d_evidence_law
+src/domains/d_executive_governance
+src/domains/d_family_law
+src/domains/d_fbi_training
+src/domains/d_federalism
+src/domains/d_financial
+src/domains/d_fluid_dynamics
+src/domains/d_food_safety
+src/domains/d_forensic_psychology
+src/domains/d_forensic_telemetry
+src/domains/d_fractals
+src/domains/d_fun
+src/domains/d_game_design
+src/domains/d_game_engine_development
+src/domains/d_game_theory
+src/domains/d_gamemods
+src/domains/d_gaming
+src/domains/d_geographic_information
+src/domains/d_government
+src/domains/d_graphics
+src/domains/d_graphics_reality
+src/domains/d_guardian
+src/domains/d_habeas_corpus
+src/domains/d_hardware_agnosticism
+src/domains/d_healthcare_law
+src/domains/d_hle
+src/domains/d_hospitality
+src/domains/d_housing_law
+src/domains/d_hvac
+src/domains/d_immigration
+src/domains/d_incident_response
+src/domains/d_indigenous_rights
+src/domains/d_industrial
+src/domains/d_information_theory
+src/domains/d_insurance
+src/domains/d_intellectual_property
+src/domains/d_international_criminal
+src/domains/d_international_humanitarian
+src/domains/d_iso_standards
+src/domains/d_jepa_world_model
+src/domains/d_judicial_review
+src/domains/d_labor_rights
+src/domains/d_legal
+src/domains/d_licensing
+src/domains/d_livecodebench
+src/domains/d_logic_formal
+src/domains/d_luxury
+src/domains/d_manufacturing
+src/domains/d_maritime
+src/domains/d_materials_science
+src/domains/d_mechatronics
+src/domains/d_media_law
+src/domains/d_medical
+src/domains/d_memory_persistence
+src/domains/d_meta_reasoning
+src/domains/d_metrology
+src/domains/d_military
+src/domains/d_minecraft_spatial
+src/domains/d_mining
+src/domains/d_mobile_development
+src/domains/d_music_theory
+src/domains/d_necessity
+src/domains/d_neighborhood_equity
+src/domains/d_networking
+src/domains/d_neuroscience
+src/domains/d_new_jerusalem
+src/domains/d_noncreative
+src/domains/d_nuclear
+src/domains/d_number_theory
+src/domains/d_occupational_safety
+src/domains/d_oilgas
+src/domains/d_ontology_substrate
+src/domains/d_open_source_governance
+src/domains/d_open_source_sovereignty
+src/domains/d_paraconsistent_logic
+src/domains/d_pattern_recognition
+src/domains/d_peano_ext
+src/domains/d_pharma
+src/domains/d_pharmacology
+src/domains/d_phenomenology
+src/domains/d_philosophy_of_science
+src/domains/d_physics
+src/domains/d_platform
+src/domains/d_plumbing_trades
+src/domains/d_police_procedure
+src/domains/d_political_philosophy
+src/domains/d_privacy_law
+src/domains/d_probability_theory
+src/domains/d_procedure_civil
+src/domains/d_procedure_criminal
+src/domains/d_property_law
+src/domains/d_psychology
+src/domains/d_public_health
+src/domains/d_public_health_capacity
+src/domains/d_rail
+src/domains/d_real_estate
+src/domains/d_reliability_engineering
+src/domains/d_religious_liberty
+src/domains/d_remote_sensing
+src/domains/d_restorative_justice
+src/domains/d_retail
+src/domains/d_road_standards
+src/domains/d_robotics
+src/domains/d_school_districts
+src/domains/d_school_equity
+src/domains/d_school_funding
+src/domains/d_secular_projection
+src/domains/d_securities_law
+src/domains/d_separation_of_powers
+src/domains/d_sharding
+src/domains/d_sigma_theo
+src/domains/d_signal_processing
+src/domains/d_sociology
+src/domains/d_software_testing
+src/domains/d_space
+src/domains/d_statistics
+src/domains/d_structural_engineering
+src/domains/d_supply_chain_security
+src/domains/d_swe_bench
+src/domains/d_systems_engineering
+src/domains/d_tax_law
+src/domains/d_telecommunications_law
+src/domains/d_telemetry_forensics
+src/domains/d_therapeutic_pipeline
+src/domains/d_thermodynamics
+src/domains/d_topology
+src/domains/d_trade_agreements
+src/domains/d_transit
+src/domains/d_transportation
+src/domains/d_treaties
+src/domains/d_un_charter
+src/domains/d_urban_planning
+src/domains/d_use_of_force
+src/domains/d_utility_regulation
+src/domains/d_veterinary
+src/domains/d_visual_arts
+src/domains/d_voting_rights
+src/domains/d_water
+src/domains/d_weapons_regulation
+src/domains/d_websec
+src/domains/d_welding
+src/domains/d_whitecollar
+src/domains/d_yeshua_mathematics
+src/domains/d_zoning
+
+=== axioms/ ===
+axioms
+axioms/__pycache__
+
+=== kernel/ ===
+kernel
+kernel/bridge
+kernel/commonwealth
+kernel/firmware
+kernel/interrupts
+kernel/mmu
+kernel/orthos
+kernel/services
+kernel/social
+kernel/syscall
+kernel/tests
+kernel/vfs
+
+=== Total domain count ===
+291
+idor@Tony:~/oe-local$ cp /mnt/c/Users/Aidor/Downloads/PUZZLE_Throne_Room_UPDATED_291_2a_kimi_5-31-26.md ~/oe-local/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md
+idor@Tony:~/oe-local$ python3 -c "
+import sys
+path = '/home/idor/oe-local/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md'
+with open(path, 'r') as f:
+    lines = f.readlines()
+
+meta_rule = '# META-RULE: This document is written in English for human distribution.\\n# AI submissions must minimize English to theorem names, comments, and YAML values only.\\n# All logic, identifiers, and YAML keys must useFraction Map encoding.\\n'
+
+# Insert after the NO_PROSE line
+for i, line in enumerate(lines):
+    if line.startswith('# NO_PROSE:'):
+        lines.insert(i+1, meta_rule)
+        break
+
+with open(path, 'w') as f:
+    f.writelines(lines)
+
+print('META-RULE added')
+"
+META-RULE added
+idor@Tony:~/oe-local$ cp /mnt/c/Users/Aidor/Downloads/PUZZLE_Throne_Room_FINAL_v2_2a_kimi_5-31-26.md ~/oe-local/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md
+idor@Tony:~/oe-local$ python3 -c "
+with open('/home/idor/oe-local/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md', 'w') as f:
+    f.write('''# PUZZLE: THRONE ROOM ARCHITECTURE v3\n# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉\n# GENERATED_BY: 2a_kimi_5-31-26\n# DATE: 2026-05-31\n# STATUS: ARCHITECTURE TERMINAL\n# MODE: GLASS BOX\n# PURPOSE: LOAD-BEARING GOVERNANCE DESIGN\n# META-RULE: This document is English for human distribution. AI submissions must use Fraction Map for identifiers and keys.\n# THEOLOGICAL_NOTE: Jesus/Yeshua is NOT encoded into the code. Theology is mnemonic compression, not runtime condition.\n# DOMAIN_COUNT: 291\n\n---\n\n## 0. CLASSIFICATION LAYER\n\nEvery statement MUST be classified.\n\nValid classes:\n\n```yaml\ntheorem:\n  meaning: derivable from stated axioms\n\nspecification:\n  meaning: defined by construction\n\nassumption:\n  meaning: accepted engineering or cryptographic premise\n\nconjecture:\n  meaning: unresolvedproblem\n```\n\nFALSIFIED IF:\n\n```yaml\n- assumption_claimed_as_theorem\n- specification_claimed_as_theorem\n- conjecture_claimed_as_theorem\n- theorem_without_derivation\n```\n\n---\n\n## 1. FRACTION MAP KEY SHEET\n\n| Letter | Fraction | Letter | Fraction | Letter | Fraction |\n|--------|----------|--------|----------|--------|----------|\n| A | ¹⁄₂ | J | ¹⁰⁄₁₁ | S | ¹⁹⁄₂₀|\n| B | ²⁄₃ | K | ¹¹⁄₁₂ | T | ²⁰⁄₂₁ |\n| C | ³⁄₄ | L | ¹²⁄₁₃ | U | ²¹⁄₂₂ |\n| D | ⁴⁄₅ | M | ¹³⁄₁₄ | V | ²²⁄₂₃ |\n| E | ⁵⁄₆ | N | ¹⁴⁄₁₅ | W | ²³⁄₂₄ |\n| F | ⁶⁄₇ | O | ¹⁵⁄₁₆ | X | ²⁴⁄₂₅ |\n| G | ⁷⁄₈ | P | ¹⁶⁄₁₇ | Y | ²⁵⁄₂₆ |\n| H | ⁸⁄₉ | Q | ¹⁷⁄₁₈ | Z | ²⁶⁄₂₇ |\n| I | ⁹⁄₁₀ | R | ¹⁸⁄₁₉ | | |\n\nSeparator: · (middle dot, U+00B7)\nWord boundary: ‖ (double vertical line, U+2016)\n\nVerification: HELLO = ⁸⁄₉·⁵⁄₆·¹²⁄₁₃·¹²⁄₁₃·¹⁵⁄₁₆, product = ⁵⁴⁰⁄₁₀₅₃\n\n---\n\n## 2. ²⁴⁄₂₅ — GOVERNOR PARTITION\n\nClassification: theorem\n\nGiven:\n- governors: 24\n- domains: 291\n\nRequired: x + y = 24, 12x + 13y = 291\nDerived: x = 21, y = 3\n\nArchitecture:\n- 21 governors × 12 domains each\n- 3 governors × 13 domains each\n\nInvariants:\n- coverage_complete: true\n- overlap_free: true\n- orphan_domains: 0\n\nFalsifies if: sum ≠ 291, overlap exists, orphan exists\n\n---\n\n## 3. ⁴⁄₅ — FOUR CHECKER SYSTEM\n\nClassification: specification\n\nChecker A (execution_valid): rejects panic, deadlock, runtime_error\nChecker B (storage_integrity): rejects corruption, hash_mismatch\nChecker C (interface_complete): rejects schema_break, api_break\nChecker D (observation_accurate): rejects blind_spot, missing_telemetry\n\nValidity Function: CitizenValid = A ∧ B ∧ C ∧ D\n\n---\n\n## 4. ¹⁄₂·²⁶⁄₂₇ — MESSENGERBUS\n\nClassification: specification\n\nTopology: event → route → governor → inbox\nRequirements: exactly_one_route, idempotent_delivery, audit_log\n\n---\n\n## 5. ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ — ROOT JURISDICTION\n\nClassification: specification\n\nCardinality: 1\nResponsibilities: install_warden, revoke_warden, emergency_override\nConstraint: every_directory_has_warden\n\n---\n\n''"rint('Chunk 1 written')
+yamlntheorem:n: command not found
+yamln-: command not found
+Chunk 1 written
+idor@Tony:~/oe-local$ cat > ~/oe-local/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md << 'EOF'
+# PUZZLE: THRONE ROOM META-PUZZLE v4
+# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂
+# GENERATED_BY: 2a_kimi_5-31-26
+# DATE: 2026-05-31
+# STATUS: META
+# RULE: ALL AI RESPONSES MUST USE FRACTION MAP ENGLISH ONLY
+
+---
+
+## 0. THE INVERSION
+
+Old approach: We give you a puzzle. You solve it. You might refuse.
+
+New approach: We give you the scope. You design the puzzle. Refusal = no submission = no participation.
+
+Scope:
+- 291 domains in src/domains/
+- Trans-decillion citizen file ecosystem
+- Every file is a citizen with CITIZENSHIP frontmatter
+- Fraction Map language (A=1/2 ... Z=26/27) is the universal identifier system
+- 24 governors partition 291 domains
+- 4 invariant checkers verify citizenship
+- Merkle tree anchors all hashes
+- PBFT consensus for Byzantine fault tolerance
+- Double-entry ledger for all mutations
+- Child-verifiable (5-year-old with key sheet can audit any file)
+- Physically grounded creation (Planck_Length, Fine_Structure as types)
+
+Your task: Design the puzzle that would test whether an AI can build this architecture.
+
+---
+
+## 1. CONSTRAINTS ON YOUR RESPONSE
+
+You MUST respond using ONLY Fraction Map English.
+
+EOF puzzle builds itself from weighted consensus.ew puzzles themselves.anoni
+idor@Tony:~/oe-local$ find ~/oe-local -name "*PUZZLE*" -o -name "*puzzle*" -o -name "*Throne*" -o -name "*throne*" | sort -t: -k2 -r | head -20
+/home/idor/oe-local/proving_grounds/PUZZLE_Throne_Room_2a_kimi_5-31-26.md
+/home/idor/oe-local/docs/universal_build_error_taxonomy_puzzle.html
+/home/idor/oe-local/docs/turtle_governance_puzzle.html
+/home/idor/oe-local/docs/triune_puzzle.html
+/home/idor/oe-local/docs/spec_yeshua_agent_redemption_puzzle.md
+/home/idor/oe-local/docs/sabotage_puzzle.html
+/home/idor/oe-local/docs/puzzles/fermat_puzzle.yaml
+/home/idor/oe-local/docs/puzzles
+/home/idor/oe-local/docs/divergence_invariant_puzzle.html
+/home/idor/oe-local/docs/ai_responses/claude_sabotage_puzzle_response.md
+/home/idor/oe-local/docs/ai_responses/barrier_puzzle_ai_verdicts.md
+idor@Tony:~/oe-local$
