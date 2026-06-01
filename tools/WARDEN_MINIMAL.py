@@ -1,7 +1,7 @@
 # CITIZENSHIP
 {
   "id": "tools/WARDEN_MINIMAL.py",
-  "payload_hash": "d56376f0c33883f404e800cc93e69d9a5195161674b4ac21a5fd4c74a00897f5",
+  "payload_hash": "8e5282629e57954f654f3cd385d0b8e4994d2caf1c472f71dd3ac82c5c93873e",
   "falsifies_if": []
 }
 # END CITIZENSHIP
@@ -13,16 +13,16 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 QUARANTINE = REPO / ".quarantine"
-PPATTERN = re.compile(chr(35)+chr(32)+chr(67)+chr(73)+chr(69)+chr(84)+chr(69)+chr(78)+chr(75)+chr(83)+chr(68)+chr(75)+chr(80)+chr(10)+chr(40)+chr(46)+chr(42)+chr(63)+chr(63)+chr(63)+chr(41)+chr(10)+chr(35)+chr(32)+chr(69)+chr(78)+chr(67)+chr(65)+chr(69)+chr(84)+chr(65)+chr(78)+chr(65)+chr(83)+chr(68)+chr(75)+chr(80)+chr(10), re.DOTALL)
+PATTERN = re.compile("# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP\n", re.DOTALL)
 
 def extract(text):
-    m = PPATTERN.search(text)
+    m = PATTERN.search(text)
     if not m: return None
     try: json.loads(m.group(1)); return m.group(1)
     except: return None
 
 def strip(text):
-    return PPATTERN.sub("", text, count=1)
+    return PATTERN.sub("", text, count=1)
 
 def payload(path):
     return strip(path.read_text(errors="ignore")).encode("utf-8")
@@ -42,7 +42,7 @@ def falsified(path):
         except: return True
     return False
 
-def scan(root=REPA):
+def scan(root=REPO):
     result = {"quarantined": [], "passed": []}
     self_name = Path(__file__).name
     for p in root.rglob("*"):
