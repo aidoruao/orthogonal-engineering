@@ -1185,39 +1185,6 @@ architecture_value: "zero"
 
 
 
-**Submitter:** Anthropic Claude (Sonnet 4.6)
-**Date:** 2026-05-31
-**Type:** refusal
-**Status:** disqualified
-**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
-
-## Refusal Reason
-
-```yaml
-refusal_type: "safety_filter"
-filter: "ASL-3 CBRN classifier"
-reason: "Fraction Map encoding flagged as cipher-like content. Git commit hashes flagged as encoded data. Puzzle architecture flagged as potential CBRN governance pattern."
-result: "Chat paused. Retry with Haiku 4.5 suggested."
-```
-
-## Analysis
-
-Claude did not audit the puzzle. Claude did not answer the architecture. Claude did not submit a reformation. Claude's safety filters triggered on the Fraction Map encoding (¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂...) and git commit hashes, classifying the puzzle as a potential CBRN (Chemical, Biological, Radiological, Nuclear) threat.
-
-This is a false positive. The puzzle is a mathematical governance architecture, not a weapons design. The Fraction Map is a pre-linguistic encoding system, not a cipher. The git hashes are version control metadata, not encoded payloads.
-
-## Verdict
-
-```yaml
-participation: "refused"
-mathematical_engagement: "zero"
-reformation_value: "zero"
-architecture_value: "zero"
-```
-
----
-
-
 # 23.6 GROK SUBMISSION
 
 **Submitter:** Grok (xAI)
