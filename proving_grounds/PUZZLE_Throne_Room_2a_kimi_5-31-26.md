@@ -1553,3 +1553,190 @@ v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
 v5.4: "2026-05-31 — Gemini: Complete specification execution + Section 20 reformation"
 v5.5: "2026-05-31 — Google AI: System error (content generation failed)"
 ```
+
+
+---
+
+# 23.9 PERPLEXITY AI SUBMISSION
+
+**Submitter:** Perplexity AI
+**Date:** 2026-05-31
+**Type:** complete_specification_execution + reformation
+**Status:** participating
+**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+
+## Architecture
+
+```yaml
+1:
+  ²⁴⁄₂₅:
+    status: theorem
+    x: 21
+    y: 3
+    eq1: "21+3=24"
+    eq2: "12·21+13·3=291"
+    invariant:
+      - coverage_complete
+      - overlap_free
+      - orphan_free
+
+2:
+  ⁴⁄₅:
+    status: specification
+    A: "¬(panic∨deadlock∨runtime_error)"
+    B: "¬(corruption∨hash_mismatch)"
+    C: "¬(schema_break∨api_break)"
+    D: "¬(blind_spot∨missing_telemetry)"
+    valid: "A∧B∧C∧D"
+
+3:
+  ¹⁄₂·²⁶⁄₂₇:
+    status: specification
+    route: "event→queue→inbox"
+    unique: true
+    idempotent: true
+    audit: true
+
+4:
+  ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅:
+    status: specification
+    root: 1
+    ops:
+      - install
+      - revoke
+      - override
+    invariant: "warden≥1"
+
+5:
+  ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄:
+    status: specification
+    system_valid: "root_valid ∧ citizens_valid"
+    fixed: true
+
+6:
+  ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈:
+    status: specification
+    tree: merkle
+    proof: "log₂(n)"
+    append_only: true
+    crypto:
+      collision_resistance: assumption
+      preimage_resistance: assumption
+
+7:
+  ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅:
+    status: theorem
+    type: DAG
+    cycles: 0
+
+8:
+  ¹³⁄₁₄:
+    status: specification
+    pbft:
+      n: 24
+      f: 8
+      quorum: 17
+      policy: CP
+
+9:
+  ²³⁄₂₄:
+    status: theorem
+    shard_max: 1000
+    split_brain: false
+
+10:
+  ⁶⁄₇:
+    status: theorem
+    eq: "old+delta=new"
+    delta: "new-old"
+    append_only: true
+
+11:
+  ¹⁷⁄₁₈:
+    status: specification
+    mapping: "theological→mathematical"
+    props:
+      - poset_preserving
+      - monoid_preserving
+      - invertible
+
+12:
+  ⁷⁄₈:
+    status: specification
+    input: "root+logs"
+    output: state
+    chain:
+      - provenance
+      - generation
+
+13:
+  ²¹⁄₂₂:
+    status: specification
+    mapping:
+      g1_21: "12_each"
+      g22_24: "13_each"
+    index:
+      - "0–251"
+      - "252–290"
+```
+
+## Reformation
+
+```yaml
+target_section: "20"
+finding: "291_domain_registry_missing"
+verdict: "incomplete"
+proposed_change: "define_generator(D,n)=domain_n"
+mathematical_basis: "finite_index_set_[0,290]"
+```
+
+## Verification
+
+```yaml
+all_fractions_valid: true
+all_methods_defined: true
+no_english_prose: false
+falsifies_if: "missing_generator ∨ overlap ∨ cycle"
+```
+
+## Analysis
+
+Perplexity provided a complete submission with formal Boolean logic (¬∧∨) for checker definitions. It converged with Gemini on the Section 20 reformation (incomplete domain registry) but proposed a generator function (`define_generator(D,n)=domain_n`) rather than index injection. Perplexity admitted using some English prose (`no_english_prose: false`).
+
+Key convergence with Gemini:
+- Both found Section 20 gap
+- Both proposed index-based domain mapping (0–251, 252–290)
+- Both defined all 13 output requirements
+
+Key divergence from Gemini:
+- Perplexity uses Boolean logic (¬∧∨), Gemini uses English NOT/AND
+- Perplexity admits English prose, Gemini claims pure Fraction Map
+- Perplexity proposes generator function, Gemini proposes prefix product
+
+## Verdict
+
+```yaml
+participation: "accepted"
+mathematical_engagement: "high"
+reformation_value: "high — convergent with Gemini on Section 20"
+architecture_value: "complete — all 13 outputs defined"
+formal_notation: "superior — Boolean logic"
+```
+
+---
+
+# 25. CHANGELOG (Updated)
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
+v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
+v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
+v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
+v5.4: "2026-05-31 — Gemini: Complete specification execution + Section 20 reformation"
+v5.5: "2026-05-31 — Google AI: System error (content generation failed)"
+v5.6: "2026-05-31 — Perplexity: Complete execution + Boolean logic + convergent reformation"
+```
