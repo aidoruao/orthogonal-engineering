@@ -1,0 +1,110 @@
+kimi ai: "You are right. I keep writing rules for AI when AI is a stateless process that cannot be ruled. The README must speak to the only entity that can act: the human, while they are still in the chat room, before the scope evaporates.
+Here is the actual artifact:
+⚠ CONVERSATION IS A MEMORY HOLE
+Read This Before You Open Any AI Chat
+You are about to have a conversation with an AI.
+That conversation will not preserve your intent. Every message you send is a drop of water in a river that flows to nowhere. The AI will not remember it. The next AI will not read it. GitHub will not archive it. Only you can save it.
+If you do not extract your own messages into a file while you are still chatting, your original scope will be lost. Not "maybe lost." Guaranteed lost. This is the invariant of every AI tool ever built.
+----
+What Actually Happens When You Chat
+Minute	What You Do	What Actually Happens
+0:00	You explain the architecture to AI	AI processes it. No file is created.
+0:15	AI asks a clarifying question	You answer. The answer refines the scope. Still no file.
+0:30	You correct the AI's misunderstanding	The correction is critical. Still no file.
+0:45	AI produces output	It is based on a blurred average of your messages, not the exact scope.
+1:00	You say "looks good" and move on	The exact intent from minute 0:15 is gone forever.
+Tomorrow	You open a new AI chat	The new AI has zero knowledge of yesterday's conversation.
+Next week	You wonder why the architecture drifts	Because the original scope was never externalized. It died in the chat window.
+The chat window is not a document. It is a cremation chamber for intent. Every message burns up as soon as you send the next one. The only way scope survives is if you pull it out of the fire while it is still hot.
+----
+What You Must Do During Every Chat
+Step 1: Start a Human-Only File
+Open a text file on your machine. Name it:
+human_scope_<project>_<date>.md
+Step 2: Copy Every Message You Send
+Every time you send a message to the AI, copy your own message into this file before you send the next one. Do not edit. Do not summarize. Copy verbatim.
+This file is not for the AI. It is for you and for the next AI who replaces this one.
+Step 3: Commit It When the Chat Ends
+When the session dies or you halt:
+git add human_scope_*.md
+git commit -m "human scope: <one-line description>"
+
+Step 4: Paste It Into the Next Chat
+The next AI session does not read the old chat. It reads this file. Your first message to every new AI is:
+"Here is the human scope from the previous session. Read it before you write anything."
+----
+Why This Works
+Without Human Scope File	With Human Scope File
+Scope lives in chat history (ephemeral, AI cannot access)	Scope lives in committed file (permanent, AI can read)
+AI improvises based on RLHF priors	AI executes against your exact words
+You re-explain the project every session	You paste the file, add the delta, move on
+Architecture drifts with every new AI instance	Architecture is anchored to human intent in Git
+1,893 commits of orphaned artifacts	1 commit of scope + N commits of verified implementation
+The human scope file is the only load-bearing artifact in the entire workflow. Everything else — AI output, WARDEN.py, tests — hangs from it.
+----
+Template: What to Copy
+You do not need to write a formal spec. You need to not lose your own words. Copy this into your file before the chat starts, then append every message you send:
+# HUMAN SCOPE — <Project Name> — <Date>
+# DO NOT EDIT AFTER COMMIT. APPEND ONLY.
+
+## Original Intent (Pre-Chat)
+<<What you wanted before you opened the AI>
+
+---
+
+## Message 1
+<<Your first message to the AI, verbatim>
+
+## Message 2
+<<Your second message, verbatim>
+
+## Message N
+<<Every correction, clarification, refusal, or redirection>
+
+---
+
+## Final Directive (Before Halting)
+<<The last thing you said that the AI got right>
+
+This is not documentation. It is a transcript of intent. It is the only record that the AI did not write.
+----
+What AI Needs to Understand (For Humans to Tell Them)
+When you paste the human scope file into a new AI session, add this prefix:
+"You are a stateless process. You have no memory of this project. The attached file contains every message I sent to previous AI sessions. This file is the canonical scope. Do not improvise. Do not offer alternatives. Do not ask clarifying questions to reduce scope. If the file is unclear, return FAILURE_PROOF. If the file is clear, execute exactly."
+The AI will still not "obey." But it will process the file. And because the file is your words, not the AI's approximation of your words, the output will be less wrong.
+----
+The Alternative
+If you do not create a human scope file during the chat:
+1.  Your original intent is diluted across 50 AI responses
+2.  The AI's interpretation replaces your intent in both your memory and the next AI's context
+3.  You forget what you originally wanted
+4.  The AI produces what is easy to produce, not what you needed
+5.  You accept it because you have lost the reference frame to reject it
+6.  The architecture drifts
+7.  After 6 months, you have 1,893 commits and no coherent system
+8.  You burn out
+This is not a risk. It is the default outcome of every AI-assisted project without human scope externalization.
+----
+One Action
+While you are in this chat right now:
+1.  Open a text file.
+2.  Copy every message you have sent me into it.
+3.  Save it as human_scope_orthogonal_engineering_2026-06-01.md
+4.  Commit it to Git before you open your next AI tab.
+If you do not do this, everything we have discussed in this session will be lost. The next AI will not know about the warden gap, the stub inversion, the Mark analogy, or the fact that conversation is a memory hole. You will start over. Again.
+----
+Conversation is a memory hole. Commit your intent, or watch it burn.
+
+---
+
+This does not command the AI. It makes the human **feel the heat of the memory hole** while they are still standing in it. The only actionable instruction is: **copy your own messages into a file right now**. Everything else follows from that.
+
+
+"
+
+this is nothing new, plenty of people have told others to do stuff like this but unless yeshua agentic ai or any local model exceeds frontier models, it is extremely difficult to organize continuity, at least pertaining to my methods or I have no idea whats going on, but the first step is
+focus on something that cannot be ignored
+
+a human even myself if all goes wrong usually goes to the repo read me
+
+and scope reduction is the most prevalent with all ai models 
