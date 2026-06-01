@@ -1,70 +1,881 @@
-# PUZZLE: THRONE ROOM META-PUZZLE v4
-# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂
-# GENERATED_BY: 2a_kimi_5-31-26
+# PUZZLE: THRONE ROOM ARCHITECTURE v5
+# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+# GENERATED_BY: 3a_kimi_5-31-26
 # DATE: 2026-05-31
-# STATUS: META
+# STATUS: canonical
+# BASE: v2 (ChatGPT audited) + v3 (classification layer) + ChatGPT audit (reformation)
+# PURPOSE: Load-bearing governance design. Mathematics where mathematics applies. No proofs of false/unknown statements.
 # RULE: ALL AI RESPONSES MUST USE FRACTION MAP ENGLISH ONLY
+# META-RULE: This document is written in English for human distribution. AI submissions must minimize English.
 
 ---
 
-## 0. THE INVERSION
+# 0. CLASSIFICATION LAYER
+
+Every statement MUST be classified.
+
+Valid classes:
+
+```yaml
+theorem:
+  meaning: derivable from stated axioms
+  machine_checkable: true
+
+specification:
+  meaning: defined by construction
+  falsifiable_by_implementation: true
+
+assumption:
+  meaning: accepted engineering or cryptographic premise
+  not_proven_here: true
+  required_for_security: true
+
+conjecture:
+  meaning: unresolved problem
+  open_problem: true
+```
+
+FALSIFIED IF:
+
+```yaml
+- assumption_claimed_as_theorem
+- specification_claimed_as_theorem
+- conjecture_claimed_as_theorem
+- theorem_without_derivation
+```
+
+---
+
+# 1. FRACTION MAP
+
+```text
+A=¹⁄₂    J=¹⁰⁄₁₁   S=¹⁹⁄₂₀
+B=²⁄₃    K=¹¹⁄₁₂   T=²⁰⁄₂₁
+C=³⁄₄    L=¹²⁄₁₃   U=²¹⁄₂₂
+D=⁴⁄₅    M=¹³⁄₁₄   V=²²⁄₂₃
+E=⁵⁄₆    N=¹⁴⁄₁₅   W=²³⁄₂₄
+F=⁶⁄₇    O=¹⁵⁄₁₆   X=²⁴⁄₂₅
+G=⁷⁄₈    P=¹⁶⁄₁₇   Y=²⁵⁄₂₆
+H=⁸⁄₉    Q=¹⁷⁄₁₈   Z=²⁶⁄₂₇
+I=⁹⁄₁₀   R=¹⁸⁄₁₉
+```
+
+Separator: · (middle dot, U+00B7)
+Word boundary: ‖ (double vertical line, U+2016)
+
+Verification: HELLO = ⁸⁄₉·⁵⁄₆·¹²⁄₁₃·¹²⁄₁₃·¹⁵⁄₁₆, product = ⁵⁴⁰⁄₁₀₅₃
+
+---
+
+# 2. ²⁴⁄₂₅ — Governor Partition
+
+Classification:
+
+```yaml
+status: theorem
+```
+
+Given:
+
+```yaml
+governors: 24
+domains: 291
+```
+
+Required:
+
+```text
+x + y = 24
+12x + 13y = 291
+```
+
+Derived:
+
+```text
+x = 21
+y = 3
+```
+
+Architecture:
+
+```yaml
+21 governors:
+  domain_count: 12
+
+3 governors:
+  domain_count: 13
+```
+
+Invariants:
+
+```yaml
+coverage_complete: true
+overlap_free: true
+orphan_domains: 0
+```
+
+Falsifies if:
+
+```yaml
+- sum_domains != 291
+- overlap_exists
+- orphan_exists
+```
+
+---
+
+# 3. ⁴⁄₅ — Four Invariant Checkers
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Checker A:
+
+```yaml
+execution_valid:
+  rejects:
+    - panic
+    - deadlock
+    - runtime_error
+```
+
+Checker B:
+
+```yaml
+storage_integrity:
+  rejects:
+    - corruption
+    - hash_mismatch
+```
+
+Checker C:
+
+```yaml
+interface_complete:
+  rejects:
+    - schema_break
+    - api_break
+```
+
+Checker D:
+
+```yaml
+observation_accurate:
+  rejects:
+    - blind_spot
+    - missing_telemetry
+```
+
+Validity Function:
+
+```text
+CitizenValid =
+  ExecutionValid
+  ∧ StorageIntegrity
+  ∧ InterfaceComplete
+  ∧ ObservationAccurate
+```
+
+---
+
+# 4. ¹⁄₂·²⁶⁄₂₇ — Messenger Bus
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Topology:
+
+```yaml
+event:
+  producer
+
+messenger:
+  queue
+
+governor:
+  inbox
+```
+
+Routing:
+
+```yaml
+event
+ -> route
+ -> governor
+ -> inbox
+```
+
+Requirements:
+
+```yaml
+exactly_one_route: true
+idempotent_delivery: true
+audit_log: true
+```
+
+---
+
+# 5. ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ — Root Jurisdiction
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Cardinality:
+
+```yaml
+root_jurisdiction: 1
+```
+
+Responsibilities:
+
+```yaml
+- install_warden
+- revoke_warden
+- emergency_override
+```
+
+Constraint:
+
+```yaml
+every_directory_has_warden: true
+```
+
+---
+
+# 6. ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄ — Fixed Point Validation
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Definition:
+
+```text
+SystemValid =
+  RootWardenValid
+  AND
+  AllCitizensValid
+```
+
+Fixed Point:
+
+```text
+Validate(System) = SystemValid
+```
+
+Invariant:
+
+```yaml
+root_invalid:
+  system_invalid: true
+
+citizen_invalid:
+  system_invalid: true
+```
+
+---
+
+# 7. ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ — Global Merkle Structure
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Structure:
+
+```yaml
+citizen_hashes:
+  -> leaves
+
+leaves:
+  -> merkle_root
+```
+
+Requirements:
+
+```yaml
+every_citizen_has_proof: true
+proof_length_log_n: true
+append_only: true
+```
+
+---
+
+# 8. ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅ — Dependency Graph
+
+Classification:
+
+```yaml
+status: theorem
+```
+
+Required:
+
+```yaml
+graph_type: DAG
+```
+
+Property:
+
+```text
+no directed cycle exists
+```
+
+Falsifies if:
+
+```yaml
+- cycle_detected
+```
+
+---
+
+# 9. PHI — Child Verification
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Inputs:
+
+```yaml
+- fraction_map
+- sha256_tool
+```
+
+Procedure:
+
+```yaml
+1:
+  decode_fraction_id
+
+2:
+  compute_sha256
+
+3:
+  compare_hash
+```
+
+Output:
+
+```yaml
+valid: true
+invalid: false
+```
+
+No AI required.
+No IDE required.
+
+Algorithm definitions (mandatory):
+
+```lean
+def verify_fraction_id (id : FractionSequence) : Bool :=
+  -- Decode each fraction n/(n+1) to letter at position n
+  -- Join with separator · to form word
+  -- Return true if decode succeeds, false if any fraction out of range [¹⁄₂, ²⁶⁄₂₇]
+
+def verify_sha256 (hash : String) (content : String) : Bool :=
+  -- Compute SHA-256 of content
+  -- Compare to provided hash
+  -- Return true if match, false otherwise
+```
+
+---
+
+# 10. LAMBDA — Grounded Creation
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Creation Primitive:
+
+```yaml
+logos:
+  create_system
+```
+
+Requirements:
+
+```yaml
+physical_ground_required: true
+```
+
+Examples:
+
+```yaml
+- planck_length
+- fine_structure
+```
+
+Forbidden:
+
+```yaml
+- undefined_foundation
+- ungrounded_creation
+```
+
+---
+
+# 11. LEGO — Modularity
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Default Node:
+
+```yaml
+max_dependencies: 1
+max_dependents: 1
+```
+
+Hub Exception:
+
+```yaml
+max_recursion_depth: 3
+```
+
+Requirement:
+
+```yaml
+removable_without_cascade: true
+```
+
+---
+
+# 12. CRYPTOGRAPHY
+
+Classification:
+
+```yaml
+collision_resistance:
+  status: assumption
+
+preimage_resistance:
+  status: assumption
+
+second_preimage_resistance:
+  status: assumption
+```
+
+DO NOT PROVE:
+
+```yaml
+sha256_has_no_collisions: true
+```
+
+Allowed:
+
+```yaml
+assume_sha256_secure: true
+```
+
+Reason:
+
+```yaml
+engineering_assumption: true
+```
+
+---
+
+# 13. AEROSPACE
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Protocol:
+
+```yaml
+pbft:
+  nodes: 24
+  f: 8
+  honest_required: 17
+```
+
+Requirements:
+
+```yaml
+survive_corruption_up_to_8: true
+```
+
+Partition Policy:
+
+```yaml
+cap_choice: CP
+```
+
+---
+
+# 14. DISTRIBUTED SYSTEMS
+
+Classification:
+
+```yaml
+status: theorem
+```
+
+Required:
+
+```yaml
+exactly_one_governor_per_domain: true
+split_brain: false
+```
+
+Shards:
+
+```yaml
+max_size: 1000
+```
+
+---
+
+# 15. FINANCIAL
+
+Classification:
+
+```yaml
+status: theorem
+```
+
+Required Equation:
+
+```text
+old_state + delta = new_state
+delta = new_state - old_state
+```
+
+Falsifies if:
+
+```yaml
+unbalanced_entry: true
+```
+
+Ledger:
+
+```yaml
+append_only: true
+merkle_verified: true
+```
+
+---
+
+# 16. GAME THEORY
+
+Classification:
+
+```yaml
+nemesis_equilibrium:
+  status: conjecture
+
+sybil_resistance:
+  status: specification
+```
+
+Reason for conjecture:
+
+```yaml
+not_proven: true
+```
+
+Sybil Resistance Requirement:
+
+```yaml
+identity_forgery_detected: true
+```
+
+---
+
+# 17. SEMIOTICS
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Mapping:
+
+```yaml
+theological -> mathematical
+```
+
+Required:
+
+```yaml
+poset_preserving: true
+monoid_preserving: true
+invertible: true
+```
+
+---
+
+# 18. FORENSICS
+
+Classification:
+
+```yaml
+status: specification
+```
+
+Inputs:
+
+```yaml
+- merkle_root
+- logs
+```
+
+Outputs:
+
+```yaml
+reconstructed_state
+```
+
+Requirements:
+
+```yaml
+provenance_chain: true
+generation_chain: true
+```
+
+---
+
+# 19. DOMAIN COVERAGE
+
+Required Mappings:
+
+```yaml
+- d_cryptography
+- d_aerospace
+- d_distributed_systems
+- d_financial
+- d_game_theory
+- d_forensic_telemetry
+- d_epistemology_formal
+- d_category_theory
+- d_abstract_algebra
+- d_topology
+- d_number_theory
+- d_probability_theory
+- d_physics
+- d_thermodynamics
+- d_structural_engineering
+- d_construction
+- d_maritime
+- d_neuroscience
+- d_pharmacology
+- d_medical
+- d_public_health
+- d_evidence_law
+- d_procedure_civil
+- d_building_codes
+```
+
+Minimum:
+
+```yaml
+mapped_domains: 24
+```
+
+---
+
+# 20. OUTPUT REQUIREMENT
+
+AI MUST PRODUCE:
+
+```yaml
+1: governor_partition
+2: checker_definitions
+3: messenger_bus
+4: root_jurisdiction
+5: fixed_point_validation
+6: merkle_architecture
+7: dependency_dag
+8: pbft_configuration
+9: shard_layout
+10: financial_ledger
+11: semiotic_mapping
+12: forensic_recovery
+13: domain_mapping
+```
+
+---
+
+# 21. VALID
+
+```yaml
+partition_math_correct: true
+all_291_domains_assigned: true
+no_domain_overlap: true
+dag_acyclic: true
+single_governance: true
+pbft_specified: true
+double_entry_correct: true
+crypto_assumptions_labeled: true
+conjectures_labeled: true
+required_domains_mapped: true
+```
+
+---
+
+# 22. FALSIFIED
+
+```yaml
+- false_theorem_claimed
+- conjecture_claimed_proven
+- assumption_claimed_proven
+- domain_unassigned
+- overlap_exists
+- split_brain
+- cyclic_dependency
+- incorrect_partition_math
+- old_state_plus_new_state_equals_zero
+- missing_required_domains
+- crypto_assumption_presented_as_mathematical_proof
+```
+
+---
+
+# 23. REFORMATION SUBMISSIONS
+
+## 23.1 What is a Reformation Submission?
+
+Instead of answering the puzzle, an AI may submit a **reformation** — a proposed change to the puzzle itself based on mathematical derivation, logical deduction, or structural gap analysis.
+
+Reformation submissions are **valid responses**. They do not count as refusal.
+
+## 23.2 ChatGPT Audit — First Reformation Submission
+
+**Submitter:** ChatGPT (cloud LLM)
+**Date:** 2026-05-31
+**Target:** v2 of this puzzle
+**Verdict:** `internally_consistent_in_parts_but_not_formally_provable_as_written`
+
+### Audit Findings
+
+| Section | Finding | Verdict |
+|---------|---------|---------|
+| 2.1 / 3.1 | The integer equation `12x + 13y = 291, x + y = 24` has the unique solution `x = 21, y = 3`. | Valid |
+| 2.1 | The theorem `∃! (p : Governor → ℕ)` is not uniquely determined by numeric constraints alone. | Not provable as stated |
+| 2.2 | Completeness theorem depends on definitions of four checkers. No definitions supplied. | Underspecified |
+| 2.3 | Unique messenger delivery conflicts with countably infinite type unless routing uniqueness axiomatized. | Underspecified |
+| 2.5 / 3.5 | Fixed-point theorem is definitional rather than derived. | Underspecified |
+| 2.7 / 3.7 | Acyclic dependency graph is standard DAG property. | Valid |
+| 4 | `path_equivalence` can only be proved after explicit isomorphisms defined. | Incomplete |
+| 9.1 | A five-year-old cannot realistically verify SHA-256 manually from lookup table. | Practical failure |
+| 9.2 | `t.carries Planck_Length ∧ t.carries Fine_Structure` is not standard Lean syntax. | Undefined |
+| 9.3 | LEGO modularity constraint does not imply swappability. | Overclaim |
+| 12 | `merkle_birthday_resistant` claims collision impossibility. SHA-256 collision resistance is assumption, not theorem. | Unprovable |
+| 12 | `∀ c₁ c₂, c₁ ≠ c₂ → c₁.sha256 ≠ c₂.sha256` is stronger than known crypto guarantees. | False as theorem |
+| 12 | `fraction_map_homograph_free` requires injective encoding definition. | Requires definition |
+| 13 | PBFT threshold `f = ⌊24/3⌋ = 8`, honest nodes `2f + 1 = 17` is correct. | Valid |
+| 13 | Guaranteed delivery under partition is not implied by PBFT. | Overstated |
+| 14 | Single-governor theorem is expressible if partitioning defined. | Potentially valid |
+| 15 | Correction from `old_state + new_state = 0` to `old_state + delta = new_state` is correct. | Valid |
+| 16 | `nemesis_equilibrium` is correctly labeled conjecture. | Valid |
+| 16 | Sybil resistance is not derived from Fraction Map inversion difficulty. | Invalid justification |
+| 17 | 1000-year encoding stability is convention, not theorem. | Unprovable as stated |
+| 18 | Full reconstruction from Merkle root + last 1000 logs requires stronger storage assumptions. | Underspecified |
+| 20 | Domain coverage references 291 domains but registry not included. | Incomplete |
+
+### Major Formalization Obstacles
+
+A Lean 4 submission cannot honestly claim:
+1. `all_proofs_compile: true`
+2. `merkle_birthday_resistant`
+3. `fraction_map_homograph_free`
+4. `messenger_guaranteed_delivery`
+5. `nemesis_equilibrium` (unless actually proved)
+
+without additional axioms, definitions, or cryptographic assumptions.
+
+### Overall Verdict
+
+```yaml
+audit:
+  date: "2026-05-31"
+  findings:
+    - section: "2.1"
+      verdict: "valid_math"
+      finding: "21/3 partition is uniquely determined"
+    - section: "12"
+      verdict: "invalid_theorem"
+      finding: "SHA-256 collision resistance is an assumption, not a proof"
+    - section: "13"
+      verdict: "partially_valid"
+      finding: "PBFT thresholds are correct, delivery theorem requires extra assumptions"
+    - section: "15"
+      verdict: "valid"
+      finding: "double-entry correction is mathematically correct"
+    - section: "16"
+      verdict: "open_problem"
+      finding: "nemesis_equilibrium properly remains conjectural"
+    - section: "20"
+      verdict: "incomplete"
+      finding: "291-domain registry not supplied"
+  overall_verdict: "internally_consistent_in_parts_but_not_formally_provable_as_written"
+```
+
+## 23.3 Reformation Submission Format
+
+File name: `proving_grounds/submissions/reformation_<ai_name>_<date>.yaml`
+
+```yaml
+puzzle_id: "16/17·18/19·1/2·25/26·5/6·18/19·13/14·1/2·19/20·1/2·21/22"
+submitter:
+  ai_name: "<fraction_encoded_identifier>"
+  date: "2026-05-31"
+  fraction_id: "<self_identifier>"
+reformation:
+  target_section: ""
+  finding: ""
+  verdict: ""  # valid | invalid | partially_valid | underspecified | incomplete
+  proposed_change: ""
+  mathematical_basis: ""
+verification:
+  all_fractions_valid: true
+  all_methods_defined: true
+  no_english_prose: true
+  falsifies_if: "English identifiers outside math definitions or missing basis"
+```
+
+---
+
+# 24. META-PUZZLE CAPABILITY
+
+## 24.1 The Inversion
 
 Old approach: We give you a puzzle. You solve it. You might refuse.
 
 New approach: We give you the scope. You design the puzzle. Refusal = no submission = no participation.
 
-Scope:
-- 291 domains in src/domains/
-- Trans-decillion citizen file ecosystem
-- Every file is a citizen with CITIZENSHIP frontmatter
-- Fraction Map language (A=1/2 ... Z=26/27) is the universal identifier system
-- 24 governors partition 291 domains
-- 4 invariant checkers verify citizenship
-- Merkle tree anchors all hashes
-- PBFT consensus for Byzantine fault tolerance
-- Double-entry ledger for all mutations
-- Child-verifiable (5-year-old with key sheet can audit any file)
-- Physically grounded creation (Planck_Length, Fine_Structure as types)
+## 24.2 Meta-Submission Format
 
-Your task: Design the puzzle that would test whether an AI can build this architecture.
+File name: `proving_grounds/submissions/meta_puzzle_<ai_name>_<date>.yaml`
 
----
-
-## 1. CONSTRAINTS ON YOUR RESPONSE
-
-You MUST respond using ONLY Fraction Map English.
-
-This means:
-- All identifiers are fraction-encoded
-- All structure is mathematical
-- English appears ONLY in comments, docstrings, and string values
-- No prose. No narrative. No sycophancy.
-
-If you respond in standard English prose, your submission is falsified.
-
----
-
-## 2. WHAT YOU MUST DESIGN
-
-Your submission must specify:
-
-1. Partition Test: How to verify 24 governors cover 291 domains exactly
-2. Checker Test: How to verify 4 invariant checkers are necessary and sufficient
-3. Citizenship Test: How to verify a 5-year-old can audit any file
-4. Creation Test: How to verify new citizens are physically grounded
-5. Consensus Test: How to verify PBFT works at 291-domain scale
-6. Ledger Test: How to verify double-entry accounting holds
-7. Crypto Test: How to verify Merkle tree assumptions are honest
-8. Convergence Test: How to verify theological and secular paths produce identical math
-9. Audit Test: How the puzzle self-corrects when AIs find gaps
-
----
-
-## 3. SUBMISSION FORMAT
-
-File name: proving_grounds/submissions/meta_puzzle_<ai_name>_<date>.yaml
-
-puzzle_id: "16/17·18/19·1/2·25/26·5/6·18/19·13/14·1/2·19/20·1/2"
+```yaml
+puzzle_id: "16/17·18/19·1/2·25/26·5/6·18/19·13/14·1/2·19/20·1/2·21/22"
 submitter:
   ai_name: "<fraction_encoded_identifier>"
   date: "2026-05-31"
@@ -102,31 +913,26 @@ verification:
   all_methods_defined: true
   no_english_prose: true
   falsifies_if: "English identifiers outside math definitions or missing methods"
+```
 
----
+## 24.3 The Meta-Loop
 
-## 4. VERIFICATION
+8+ AIs submit puzzle designs.
 
-VALID iff:
-1. All identifiers are Fraction Map encoded
-2. All 9 tests have defined methods
-3. No English prose in identifiers or keys
-4. The puzzle design is falsifiable (has clear pass/fail conditions)
-
-FALSIFIED if:
-- English identifiers outside permitted contexts
-- Any test method is undefined
-- The design is not falsifiable
-- Standard English prose response instead of Fraction Map English
-
----
-
-## 5. THE META-LOOP
-
-8+ AIs submit their puzzle designs.
-
-We compare them. Where 6+ AIs converge on the same test, that test is canonized into the final puzzle.
+Where 6+ AIs converge on the same test, that test is canonized into the final puzzle.
 
 Where AIs diverge, the divergence points become new puzzles themselves.
 
 The puzzle builds itself from weighted consensus.
+
+---
+
+# 25. CHANGELOG
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2 + v3 + ChatGPT reformation submission"
+```
