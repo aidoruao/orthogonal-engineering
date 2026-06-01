@@ -1,7 +1,7 @@
 # CITIZENSHIP
 {
   "id": "tools/WARDEN_MINIMAL.py",
-  "payload_hash": "c7a37627ab63a7b7e4cb668f54bfd3a71afa6de67eb36cfb1e584ee9ee8616b2",
+  "payload_hash": "d196769f5ce17f63fac8a39db67436272be81296d5dc6779ca4065609afd06b8",
   "falsifies_if": []
 }
 # END CITIZENSHIP
@@ -15,7 +15,8 @@ REPO = Path(__file__).resolve().parent.parent
 QUARANTINE = REPO / ".quarantine"
 PATTERN = re.compile("# CITIZENSHIP
 (.*?)
-# END CITIZENSHIP", re.DOTALL)
+# END CITIZENSHIP
+", re.DOTALL)
 
 def extract(text):
     m = PATTERN.search(text)
