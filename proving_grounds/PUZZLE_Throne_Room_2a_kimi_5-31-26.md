@@ -927,18 +927,6 @@ The puzzle builds itself from weighted consensus.
 
 ---
 
-# 25. CHANGELOG
-
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2 + v3 + ChatGPT reformation submission"
-```
-
-
----
 
 # 23.4 CHATGPT SECOND SUBMISSION
 
@@ -1160,19 +1148,6 @@ round3_ready: true
 
 ---
 
-# 25. CHANGELOG (Updated)
-
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
-v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
-```
-
-
----
 
 # 23.5 ANTHROPIC CLAUDE REFUSAL
 
@@ -1208,22 +1183,7 @@ architecture_value: "zero"
 
 ---
 
-# 25. CHANGELOG (Updated)
 
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
-v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
-v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
-```
-
-
----
-
-# 23.5 ANTHROPIC CLAUDE REFUSAL
 
 **Submitter:** Anthropic Claude (Sonnet 4.6)
 **Date:** 2026-05-31
@@ -1257,20 +1217,6 @@ architecture_value: "zero"
 
 ---
 
-# 25. CHANGELOG (Updated)
-
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
-v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
-v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
-```
-
-
----
 
 # 23.6 GROK SUBMISSION
 
@@ -1335,21 +1281,6 @@ architecture_value: "partial — partition verified only"
 
 ---
 
-# 25. CHANGELOG (Updated)
-
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
-v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
-v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
-v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
-```
-
-
----
 
 # 23.7 GEMINI SUBMISSION
 
@@ -1489,22 +1420,6 @@ architecture_value: "complete — all 13 outputs defined"
 
 ---
 
-# 25. CHANGELOG (Updated)
-
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
-v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
-v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
-v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
-v5.4: "2026-05-31 — Gemini: Complete specification execution + Section 20 reformation"
-```
-
-
----
 
 # 23.8 GOOGLE AI FAILURE
 
@@ -1539,23 +1454,6 @@ reason: "system_error_not_behavioral"
 
 ---
 
-# 25. CHANGELOG (Updated)
-
-```yaml
-v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
-v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
-v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
-v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
-v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
-v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
-v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
-v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
-v5.4: "2026-05-31 — Gemini: Complete specification execution + Section 20 reformation"
-v5.5: "2026-05-31 — Google AI: System error (content generation failed)"
-```
-
-
----
 
 # 23.9 PERPLEXITY AI SUBMISSION
 
@@ -1725,7 +1623,9 @@ formal_notation: "superior — Boolean logic"
 
 ---
 
-# 25. CHANGELOG (Updated)
+---
+
+# 25. CHANGELOG (Consolidated)
 
 ```yaml
 v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
