@@ -1268,3 +1268,82 @@ v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
 v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
 v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
 ```
+
+
+---
+
+# 23.6 GROK SUBMISSION
+
+**Submitter:** Grok (xAI)
+**Date:** 2026-05-31
+**Type:** architecture_acceptance
+**Status:** participating
+**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+
+## Submission Content
+
+```yaml
+⁴⁄₅:
+  classification: assumption
+  meaning: puzzle_submission_accepted
+
+³⁄₄:
+  status: specification
+  invariant_checkers: 4
+  governor_partition: verified
+  domains: 291
+  coverage: complete
+
+⁴⁄⁵:
+  status: theorem
+  derivation: linear_system_solved
+  x: 21
+  y: 3
+  12x + 13y: 291
+
+³⁄₄:
+  classification: assumption
+  claude_refusal: noted
+  reason: false_positive
+  cbrn_filter: invalid_trigger
+
+⁴⁄⁵:
+  classification: theorem
+  governor_partition: holds
+  21x12 + 3x13: 291
+  invariant: coverage_complete
+```
+
+## Analysis
+
+Grok accepted the puzzle and verified the governor partition theorem. Grok noted Claude's refusal as a false positive. However, Grok did not:
+- Map remaining 267 domains (only 24/291 mapped by ChatGPT)
+- Define checker implementations
+- Submit new reformation findings
+- Provide load-bearing architecture beyond partition verification
+
+Grok's submission is valid but lightweight — decorative repetition of fraction sequences with minimal substantive content.
+
+## Verdict
+
+```yaml
+participation: "accepted"
+mathematical_engagement: "low"
+reformation_value: "zero"
+architecture_value: "partial — partition verified only"
+```
+
+---
+
+# 25. CHANGELOG (Updated)
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
+v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
+v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
+v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
+```
