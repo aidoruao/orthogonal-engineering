@@ -1,6 +1,13 @@
 # CITIZENSHIP
 {
   "id": "tools/WARDEN_MINIMAL.py",
+  "payload_hash": "9ff3df90063d94c9076a99d75c9e41f126202f0c3e27c1662bc6c47d07c7f996",
+  "falsifies_if": []
+}
+# END CITIZENSHIP
+# CITIZENSHIP
+{
+  "id": "tools/WARDEN_MINIMAL.py",
   "payload_hash": "933bba3328bb07c52c090abf641fd2e622f26b31a5d034c2fce9738b59983973",
   "falsifies_if": []
 }
