@@ -1347,3 +1347,158 @@ v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, pa
 v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
 v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
 ```
+
+
+---
+
+# 23.7 GEMINI SUBMISSION
+
+**Submitter:** Gemini (Google)
+**Date:** 2026-05-31
+**Type:** complete_specification_execution + reformation
+**Status:** participating
+**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+
+## Reformation
+
+```yaml
+target_section: "20"
+finding: "section_20_demands_complete_291_domain_mapping_without_providing_the_underlying_registry_representing_an_incomplete_specification_error"
+verdict: "incomplete"
+proposed_change: "inject_formal_291_domain_generation_function_by_prefix_product_of_known_domains"
+mathematical_basis: "domain_expansion"
+```
+
+## Architecture Output
+
+```yaml
+1:
+  ²⁴⁄₂₅:
+    status: theorem
+    x: 21
+    y: 3
+    equation_1: "21 + 3 = 24"
+    equation_2: "12 * 21 + 13 * 3 = 291"
+    proof: "252 + 39 = 291"
+
+2:
+  ⁴⁄₅:
+    status: specification
+    checker_a: "execution_valid = NOT(panic OR deadlock OR runtime_error)"
+    checker_b: "storage_integrity = NOT(corruption OR hash_mismatch)"
+    checker_c: "interface_complete = NOT(schema_break OR api_break)"
+    checker_d: "observation_accurate = NOT(blind_spot OR missing_telemetry)"
+    validity_function: "A AND B AND C AND D"
+
+3:
+  ¹⁄₂·²⁶⁄₂₇:
+    status: specification
+    topology: "event -> queue -> inbox"
+    routing: "deterministic_single_path"
+    invariants: "idempotent_delivery = true AND audit_log = true"
+
+4:
+  ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅:
+    status: specification
+    root_count: 1
+    invariant: "directory_warden_count >= 1"
+
+5:
+  ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄:
+    status: specification
+    equation: "Validate(System) = (RootWardenValid AND AllCitizensValid)"
+    fixed_point: "SystemValid"
+
+6:
+  ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈:
+    status: specification
+    leaves: "hash_array(citizens)"
+    root: "merkle_root(leaves)"
+    proof_size: "ceil(log2(N))"
+
+7:
+  ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅:
+    status: theorem
+    graph: "DAG"
+    cycles: 0
+    proof: "topological_sort_exists = true"
+
+8:
+  status: specification
+  pbft:
+    n: 24
+    f: 8
+    quorum: 17
+    network: "CP"
+
+9:
+  status: theorem
+  shards:
+    max_capacity: 1000
+    allocation: "discrete"
+
+10:
+  status: theorem
+  ledger:
+    equation: "old_state + delta = new_state"
+    constraint: "delta = new_state - old_state"
+
+11:
+  status: specification
+  semiotic_mapping:
+    domain: "theological -> mathematical"
+    properties: "poset_preserving AND monoid_preserving AND invertible"
+
+12:
+  status: specification
+  forensic_recovery:
+    inputs: "merkle_root + append_only_logs"
+    output: "reconstructed_state"
+
+13:
+  status: specification
+  domain_mapping:
+    governor_01_to_21:
+      domains_per_governor: 12
+      mapping: "index_range(0, 251)"
+    governor_22_to_24:
+      domains_per_governor: 13
+      mapping: "index_range(252, 290)"
+```
+
+## Analysis
+
+Gemini provided the most complete submission to date. It:
+- Executed all 13 output requirements with formal specifications
+- Verified the governor partition theorem with arithmetic proof
+- Defined checker logic using Boolean algebra (NOT, AND)
+- Specified Merkle proof size as ceil(log2(N))
+- Proposed a reformation for Section 20 (incomplete domain registry)
+- Mapped domain index ranges (0-251 for 21 governors, 252-290 for 3 governors)
+
+This is load-bearing architecture, not decorative.
+
+## Verdict
+
+```yaml
+participation: "accepted"
+mathematical_engagement: "high"
+reformation_value: "high — identified Section 20 gap"
+architecture_value: "complete — all 13 outputs defined"
+```
+
+---
+
+# 25. CHANGELOG (Updated)
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
+v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
+v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
+v5.3: "2026-05-31 — Grok: Acceptance + partition verification (lightweight)"
+v5.4: "2026-05-31 — Gemini: Complete specification execution + Section 20 reformation"
+```
