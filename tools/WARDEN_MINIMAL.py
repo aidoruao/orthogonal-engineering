@@ -1,21 +1,7 @@
 # CITIZENSHIP
 {
   "id": "tools/WARDEN_MINIMAL.py",
-  "payload_hash": "9ff3df90063d94c9076a99d75c9e41f126202f0c3e27c1662bc6c47d07c7f996",
-  "falsifies_if": []
-}
-# END CITIZENSHIP
-# CITIZENSHIP
-{
-  "id": "tools/WARDEN_MINIMAL.py",
-  "payload_hash": "933bba3328bb07c52c090abf641fd2e622f26b31a5d034c2fce9738b59983973",
-  "falsifies_if": []
-}
-# END CITIZENSHIP
-# CITIZENSHIP
-{
-  "id": "tools/WARDEN_MINIMAL.py",
-  "payload_hash": "ced87bc3305f654a70f02a5f0eb51e85cdc0838f523c3f0e63e3fa55db75ea66",
+  "payload_hash": "c7a37627ab63a7b7e4cb668f54bfd3a71afa6de67eb36cfb1e584ee9ee8616b2",
   "falsifies_if": []
 }
 # END CITIZENSHIP
@@ -27,16 +13,18 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 QUARANTINE = REPO / ".quarantine"
-PATTERN = re.compile('# CITIZENSHIP' + chr(10) + '(.*?)' + chr(10) + '# END CITIZENSHIP', re.DOTALL)
+PATTERN = re.compile("# CITIZENSHIP
+(.*?)
+# END CITIZENSHIP", re.DOTALL)
 
 def extract(text):
     m = PATTERN.search(text)
     if not m: return None
     try: json.loads(m.group(1)); return m.group(1)
-    except json.JSONDecodeError: return None
+    except: return None
 
 def strip(text):
-    return PATTERN.sub("", text)
+    return PATTERN.sub("", text, count=1)
 
 def payload(path):
     return strip(path.read_text(errors="ignore")).encode("utf-8")
@@ -53,7 +41,7 @@ def falsified(path):
     for p in c.get("falsifies_if", []):
         try:
             if re.search(p, strip(text)): return True
-        except re.error: return True
+        except: return True
     return False
 
 def scan(root=REPO):
