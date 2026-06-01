@@ -1,29 +1,43 @@
+# CITIZENSHIP
+{
+  "id": "tools/WARDEN_MINIMAL.py",
+  "payload_hash": "933bba3328bb07c52c090abf641fd2e622f26b31a5d034c2fce9738b59983973",
+  "falsifies_if": []
+}
+# END CITIZENSHIP
+# CITIZENSHIP
+{
+  "id": "tools/WARDEN_MINIMAL.py",
+  "payload_hash": "ced87bc3305f654a70f02a5f0eb51e85cdc0838f523c3f0e63e3fa55db75ea66",
+  "falsifies_if": []
+}
+# END CITIZENSHIP
 #!/usr/bin/env python3
-"""WARDEN_MINIMAL.py — Provably correct. No guesses."""
+"""WARDEN_MINIMAL.py - Provably correct. No guesses."""
 
 import hashlib, json, re, shutil
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 QUARANTINE = REPO / ".quarantine"
-PATTERN = re.compile(r'# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP', re.DOTALL)
+PATTERN = re.compile('# CITIZENSHIP' + chr(10) + '(.*?)' + chr(10) + '# END CITIZENSHIP', re.DOTALL)
 
-def extract(text: str) -> str | None:
+def extract(text):
     m = PATTERN.search(text)
     if not m: return None
     try: json.loads(m.group(1)); return m.group(1)
     except json.JSONDecodeError: return None
 
-def strip(text: str) -> str:
+def strip(text):
     return PATTERN.sub("", text)
 
-def payload(path: Path) -> bytes:
+def payload(path):
     return strip(path.read_text(errors="ignore")).encode("utf-8")
 
-def hash(path: Path) -> str:
+def hash(path):
     return hashlib.sha256(payload(path)).hexdigest()
 
-def falsified(path: Path) -> bool:
+def falsified(path):
     text = path.read_text(errors="ignore")
     block = extract(text)
     if block is None: return True
@@ -35,7 +49,7 @@ def falsified(path: Path) -> bool:
         except re.error: return True
     return False
 
-def scan(root: Path = REPO) -> dict:
+def scan(root=REPO):
     result = {"quarantined": [], "passed": []}
     self_name = Path(__file__).name
     for p in root.rglob("*"):
