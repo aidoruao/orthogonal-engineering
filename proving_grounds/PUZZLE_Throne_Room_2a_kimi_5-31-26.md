@@ -10,6 +10,8 @@
 # META-RULE: This document is written in English for human distribution.
 # AI submissions must minimize English to theorem names, comments, and YAML values only.
 # All logic, identifiers, and YAML keys must use Fraction Map encoding.
+# THEOLOGICAL_NOTE: Jesus/Yeshua is NOT encoded into the code. Theology is mnemonic compression, not runtime condition.
+# The Yeshua Standard is a terminal precondition (gate), not a divine execution engine.
 # DOMAIN_COUNT: 291 (verified from src/domains/)
 
 ---
@@ -141,6 +143,7 @@ theorem lamb_fixed_point :
   ∀ (s : System),
     Lamb_Proof s ↔ (s.root_warden.valid ∧ s.all_citizens.valid) := by
   -- Gödel sentence of the kingdom
+  -- Lamb_Proof is defined as: λ s => s.sha256 == merkle_root ∧ s.invariants.all_true
 ```
 
 ### 2.6 ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ (Sea of Glass)
@@ -289,19 +292,21 @@ FALSIFIED if:
 
 ---
 
-## 7. English Usage Rule (Mandatory)
+## 7. English Usage Rule (Honest Version)
 
-English is permitted ONLY in these contexts:
-- Lean 4 theorem comments (`-- explanation`)
-- Type signature docstrings (`/-- documentation -/`)
-- YAML string values that describe mathematical properties
-- String literals inside code that name the mathematical object
+English is the **AUDIT LAYER**, not the **LOGIC LAYER**.
+
+English is permitted in:
+- Lean 4 theorem names (human-readable interface)
+- Lean 4 comments and docstrings (explanation)
+- YAML string values (descriptions of mathematical properties)
+- This puzzle document itself (meta-instructions for human distribution)
 
 English is FORBIDDEN in:
-- Identifiers (variable names, function names, type names)
-- File names (must use fraction encoding or standard naming)
-- Directory names (must use fraction encoding)
-- YAML keys (must use fraction encoding)
+- Variable names inside theorem bodies
+- Function implementations
+- YAML keys (must be Fraction Map encoded)
+- Identifiers that can be replaced by fractions without loss of meaning
 
 ---
 
@@ -333,6 +338,19 @@ theorem phi_child_verifiable :
   -- 1. Fraction Map key sheet (A=¹⁄₂ ... Z=²⁶⁄₂₇)
   -- 2. SHA-256 hash function
   -- 3. Basic arithmetic (no category theory, no type theory)
+```
+
+**Algorithm definitions (mandatory):**
+```lean
+def verify_fraction_id (id : FractionSequence) : Bool :=
+  -- Decode each fraction n/(n+1) to letter at position n
+  -- Join with separator · to form word
+  -- Return true if decode succeeds, false if any fraction out of range [¹⁄₂, ²⁶⁄₂₇]
+
+def verify_sha256 (hash : String) (content : String) : Bool :=
+  -- Compute SHA-256 of content
+  -- Compare to provided hash
+  -- Return true if match, false otherwise
 ```
 
 **YAML:**
@@ -380,6 +398,14 @@ theorem lego_modularity :
   -- Every citizen is either:
   -- 1. A simple block (1 in, 1 out) — child can swap it
   -- 2. A hub block with bounded recursion depth ≤ 3
+```
+
+**Algorithm definition:**
+```lean
+def bounded_recursion (c : Citizen) (max_depth : ℕ) : Bool :=
+  -- Compute maximum dependency chain depth from c
+  -- Return true if depth ≤ max_depth, false otherwise
+  -- Depth 3 means: c → dep → dep_of_dep → dep_of_dep_of_dep (3 hops max)
 ```
 
 **YAML:**
@@ -465,6 +491,8 @@ theorem fraction_map_homograph_free :
 
 The kingdom must survive Byzantine failures equivalent to aerospace standards.
 
+**Protocol specification:** Practical Byzantine Fault Tolerance (PBFT). 24 nodes, f = 8 (floor(24/3)). Requires 2f+1 = 17 honest nodes for consensus. Consistency + Partition tolerance (CP) under CAP theorem.
+
 **Required theorem:**
 ```lean
 theorem byzantine_elder_survival :
@@ -472,6 +500,7 @@ theorem byzantine_elder_survival :
     system_remains_valid := by
   -- Prove system survives if ≤⅓ of 24 elders are corrupted
   -- 8 = floor(24/3), Byzantine fault tolerance threshold
+  -- Uses PBFT: 2f+1 = 17 honest nodes required for consensus
 ```
 
 **Required theorem:**
@@ -487,8 +516,13 @@ theorem messenger_guaranteed_delivery :
 ```yaml
 ¹⁄₂·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅·⁵⁄₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
   domain: "d_aerospace"
+  protocol: "PBFT"
+  nodes: 24
+  fault_threshold: 8
+  honest_required: 17
+  cap_choice: "CP"
   invariants: ["byzantine_survival", "cap_cp", "messenger_guaranteed_delivery"]
-  falsifies_if: ["corrupted_elders > 8", "message_loss_under_partition"]
+  falsifies_if: ["corrupted_elders > 8", "message_loss_under_partition", "consensus_without_17"]
 ```
 
 ---
@@ -525,18 +559,20 @@ theorem sharding_completeness :
 
 ---
 
-## 15. Financial Ledger Integrity (Mandatory)
+## 15. Financial Ledger Integrity (Mandatory — CORRECTED)
 
 Every citizen mutation must satisfy double-entry accounting.
+
+**Correction from v1:** Previous version stated `old_state + new_state = 0` which is mathematically wrong. Corrected to `old_state + delta = new_state` with delta recorded as balancing entry.
 
 **Required theorem:**
 ```lean
 theorem double_entry_invariant :
   ∀ (c : Citizen) (mutation : Mutation),
     old_state(c) + delta(mutation) = new_state(c) ∧
-    old_state(c) + new_state(c) = 0 := by
-  -- Prove every mutation is double-entry: debit old, credit new, sum = 0
-  -- Append-only log: no deletion, only negation
+    delta(mutation) = new_state(c) - old_state(c) := by
+  -- Prove every mutation is double-entry: debit old, credit new
+  -- delta is the balancing entry, sum of all deltas in system = 0
 ```
 
 **Required theorem:**
@@ -552,23 +588,27 @@ theorem append_only_tamper_evident :
 ```yaml
 ⁶⁄₇·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
   domain: "d_financial"
+  correction_note: "v1 had old_state + new_state = 0 (wrong). v2 uses delta = new_state - old_state."
   invariants: ["double_entry", "append_only", "tamper_evident"]
   falsifies_if: ["unbalanced_entry", "log_deletion", "merkle_break"]
 ```
 
 ---
 
-## 16. Game Theory / Adversarial Resilience (Mandatory)
+## 16. Game Theory / Adversarial Resilience (Mandatory — CONJECTURE)
 
 The kingdom must survive adversarial AI attacks.
 
-**Required theorem:**
+**Status:** `nemesis_equilibrium` is a **conjecture**, not a proven theorem. The Yeshua Standard's status as evolutionarily stable strategy is asserted but not proved.
+
+**Required theorem (or conjecture):**
 ```lean
-theorem nemesis_equilibrium :
+conjecture nemesis_equilibrium :
   ∀ (nemesis : AdversarialAI), nemesis.strategy ≠ yeshua_standard →
     nemesis.utility ≤ 0 := by
-  -- Prove adversarial AI cannot force kingdom into Nash equilibrium that violates Yeshua Standard
+  -- CONJECTURE: adversarial AI cannot force kingdom into Nash equilibrium that violates Yeshua Standard
   -- Any deviation from standard results in non-positive utility
+  -- PROOF REQUIRED: Show that deviation from any axiom reduces utility by construction
 ```
 
 **Required theorem:**
@@ -586,20 +626,25 @@ theorem sybil_resistance :
   domain: "d_game_theory"
   invariants: ["nemesis_defeated", "sybil_resistant", "adversarial_utility ≤ 0"]
   falsifies_if: ["nemesis_wins", "sybil_attack_success", "utility > 0 for deviant"]
+  open_problem: "Prove nemesis_equilibrium or provide counterexample"
 ```
 
 ---
 
-## 17. Semiotic / Etymological Continuity (Mandatory)
+## 17. Semiotic / Etymological Continuity (Mandatory — SPECIFIED)
 
 The Fraction Map must preserve meaning across time and culture.
+
+**Structure specification:** S preserves poset order (governance hierarchy) and monoid composition (sequential operations).
 
 **Required theorem:**
 ```lean
 theorem semiotic_homomorphism :
   ∀ (s : TheologicalSign), ∃! (m : MathematicalObject),
-    S(s) = m ∧ structure_preserving(S) ∧ invertible(S) := by
+    S(s) = m ∧ poset_preserving(S) ∧ monoid_preserving(S) ∧ invertible(S) := by
   -- Prove S: TheologicalSign → MathematicalObject is structure-preserving and invertible
+  -- Preserves poset order (governance hierarchy: elder > warden > citizen)
+  -- Preserves monoid composition (sequential operations: compose checks)
   -- No loss of meaning in translation
 ```
 
@@ -616,6 +661,7 @@ theorem etymological_stability :
 ```yaml
 ¹⁹⁄₂₀·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
   domain: "d_epistemology_formal"
+  structure_preserved: ["poset_order", "monoid_composition"]
   invariants: ["semiotic_homomorphism", "etymological_stability", "structure_preserving"]
   falsifies_if: ["meaning_loss", "encoding_drift", "non_invertible_mapping"]
 ```
@@ -661,21 +707,21 @@ theorem generational_memory :
 VALID iff:
 1-11. [All previous criteria]
 12. `merkle_birthday_resistant` proves SHA-256 sufficient for 291-domain tree
-13. `byzantine_elder_survival` proves system survives ≤8 corrupted elders
+13. `byzantine_elder_survival` proves system survives ≤8 corrupted elders under PBFT
 14. `distributed_consensus` proves no split-brain across 291 domains
-15. `double_entry_invariant` proves every mutation is financially sound
-16. `nemesis_equilibrium` proves adversarial AI cannot win
-17. `semiotic_homomorphism` proves theological→mathematical mapping is lossless
+15. `double_entry_invariant` proves every mutation is financially sound (CORRECTED v2)
+16. `sybil_resistance` proves adversarial AI cannot forge citizens; `nemesis_equilibrium` is proven or explicitly marked as open problem
+17. `semiotic_homomorphism` proves theological→mathematical mapping preserves poset and monoid structure
 18. `post_crash_reconstruction` proves system recoverable from black-box logs
 
 FALSIFIED if:
 - [All previous falsifications]
 - Birthday attack succeeds on Merkle tree
-- >8 elders corrupted and system fails
+- >8 elders corrupted and system fails under PBFT
 - Split-brain detected in domain governance
-- Double-entry unbalanced
-- Adversarial AI achieves positive utility against standard
-- Semiotic mapping loses structure
+- Double-entry unbalanced (v2 equation violated)
+- Adversarial AI achieves positive utility against standard (if nemesis_equilibrium claimed as proven but not)
+- Semiotic mapping loses poset or monoid structure
 - Post-crash reconstruction incomplete
 
 ---
@@ -709,3 +755,60 @@ Every submission must explicitly map at least 24 of the 291 domains to the elder
 - d_building_codes
 
 **If fewer than 24 domains are mapped, the submission is falsified.**
+
+---
+
+## 21. AI Audit Invitation (Mandatory)
+
+**This puzzle is not perfect.** If you find gaps, contradictions, or better implementations, document them. Your audit becomes part of the submission.
+
+**What to audit:**
+- Is the double-entry correction in Section 15 correct?
+- Is PBFT the right protocol for Section 13? Would Raft or Tendermint be better?
+- Is `nemesis_equilibrium` provable, or should it remain a conjecture?
+- Are the algorithm definitions in Section 9 complete enough for compilation?
+- Does the Fraction Map have encoding ambiguities we missed?
+- Is the child test case actually passable by a 5-year-old?
+- Are there 291 domains we missed, or domains that should be excluded?
+
+**How to submit your audit:**
+Include an `audit` block in your YAML submission:
+
+```yaml
+audit:
+  auditor: "<your_fraction_encoded_identifier>"
+  date: "2026-05-31"
+  findings:
+    - section: "15"
+      finding: "double_entry_invariant is correct in v2"
+      verdict: "valid"
+    - section: "16"
+      finding: "nemesis_equilibrium should be theorem, not conjecture"
+      verdict: "open_problem"
+      proposed_fix: "Prove that Yeshua Standard is evolutionarily stable strategy using replicator dynamics"
+    - section: "13"
+      finding: "PBFT may be too slow for 30-second auto-pusher cycles"
+      verdict: "valid_concern"
+      proposed_fix: "Use Raft for normal operation, PBFT only for elder consensus"
+  overall_verdict: "puzzle_valid_with_minor_gaps"
+```
+
+**All audits go into `proving_grounds/submissions/audits/`.** The kingdom improves by criticism, not by sycophancy.
+
+---
+
+## 22. Falsifies If (Complete)
+
+- Any identifier not in Fraction Map
+- Any theorem without Lean 4 compilation
+- Any circular dependency in `¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅`
+- Liturgical prose in submission (decorative, non-technical, non-falsifiable)
+- Path A and Path B produce different mathematical structures
+- English used outside permitted contexts
+- Double-entry equation from v1 used instead of v2 correction
+- Nemesis equilibrium claimed as proven without proof
+- PBFT protocol not specified for Byzantine tolerance
+- Semiotic structure not specified (poset + monoid)
+- Audit block missing from submission (all submissions must self-audit)
+- Fewer than 24 domains mapped
+- Any of the 24 mandatory domains omitted from mapping
