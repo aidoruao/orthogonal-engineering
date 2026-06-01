@@ -936,3 +936,237 @@ v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumpt
 v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
 v5: "2026-05-31 — 3a_kimi: Merged v2 + v3 + ChatGPT reformation submission"
 ```
+
+
+---
+
+# 23.4 CHATGPT SECOND SUBMISSION
+
+**Submitter:** ChatGPT
+**Date:** 2026-05-31
+**Type:** reformation_plus_architecture
+**Status:** participating
+**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+
+## Classification Audit
+
+```yaml
+theorem:
+  accepted:
+    - "x+y=24"
+    - "12x+13y=291"
+    - "x=21"
+    - "y=3"
+    - "coverage cardinality arithmetic"
+    - "DAG acyclicity implies no directed cycles"
+    - "double-entry identity: old+delta=new"
+
+specification:
+  accepted:
+    - "4-checker architecture"
+    - "citizenship frontmatter"
+    - "governor partition mechanism"
+    - "merkle inclusion workflow"
+    - "messenger routing"
+    - "child-verification workflow"
+    - "physical grounding requirement"
+
+assumption:
+  accepted:
+    - "SHA-256 collision resistance"
+    - "SHA-256 preimage resistance"
+    - "PBFT safety under assumptions"
+    - "network delivery guarantees"
+    - "hardware correctness"
+
+conjecture:
+  accepted:
+    - "nemesis_equilibrium"
+    - "universal adversarial utility bound"
+```
+
+## Architecture
+
+```yaml
+²⁴⁄₂₅:
+  status: theorem
+  governors: 24
+  domains: 291
+  partition:
+    governors_1_to_21: 12
+    governors_22_to_24: 13
+  arithmetic:
+    equation: "21×12 + 3×13 = 291"
+    result: 291
+  invariants:
+    - coverage_complete
+    - overlap_free
+    - orphan_free
+
+⁴⁄₅:
+  status: specification
+  checker_count: 4
+  checkers:
+    - execution_valid
+    - storage_integrity
+    - interface_complete
+    - observation_accuracy
+  validity_rule:
+    citizen_valid: "AND(checker1,checker2,checker3,checker4)"
+
+¹⁄₂·²⁶⁄₂₇:
+  status: specification
+  routing:
+    uniqueness: true
+    event_to_governor: deterministic
+    delivery_receipt: required
+
+²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅:
+  status: specification
+  root_jurisdiction_count: 1
+  warden_installation: mandatory
+
+¹²⁄₁₃·¹⁄₂·¹³⁄₁₄:
+  status: specification
+  validity:
+    root_warden_valid: required
+    all_citizens_valid: required
+
+¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈:
+  status: assumption_plus_specification
+  structure: merkle_tree
+  inclusion_proof: mandatory
+  security:
+    collision_resistance: assumed
+    preimage_resistance: assumed
+
+¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅:
+  status: theorem_plus_specification
+  structure: DAG
+  cycles_allowed: false
+```
+
+## Domain Mapping (Partial)
+
+```yaml
+governor_01:
+  domains:
+    - d_cryptography
+    - d_number_theory
+    - d_probability_theory
+    - d_abstract_algebra
+    - d_topology
+    - d_category_theory
+    - d_distributed_systems
+    - d_aerospace
+    - d_financial
+    - d_game_theory
+    - d_forensic_telemetry
+    - d_epistemology_formal
+
+governor_02:
+  domains:
+    - d_physics
+    - d_thermodynamics
+    - d_structural_engineering
+    - d_construction
+    - d_maritime
+    - d_neuroscience
+    - d_pharmacology
+    - d_medical
+    - d_public_health
+    - d_evidence_law
+    - d_procedure_civil
+    - d_building_codes
+```
+
+## Verification
+
+```yaml
+partition_test:
+  pass_if:
+    - total_domains=291
+    - overlaps=0
+    - orphan_domains=0
+
+checker_test:
+  pass_if:
+    - all_four_required
+    - removing_any_checker_reduces_detection
+
+citizenship_test:
+  pass_if:
+    - fraction_id_decodable
+    - hash_verifiable
+    - no_ai_required
+
+creation_test:
+  pass_if:
+    - physical_ground_present
+    - no_void_foundation
+
+consensus_test:
+  pass_if:
+    - PBFT_threshold_respected
+    - honest_nodes>=17
+
+ledger_test:
+  pass_if:
+    - old_state+delta=new_state
+
+crypto_test:
+  pass_if:
+    - assumptions_declared
+    - assumptions_not_claimed_as_theorems
+
+convergence_test:
+  pass_if:
+    - theological_labels_removed
+    - graph_structure_unchanged
+
+audit_test:
+  pass_if:
+    - new_gaps_recorded
+    - assumptions_reclassified_correctly
+```
+
+## Audit
+
+```yaml
+section_cryptography:
+  verdict: "reformed"
+  finding: "collision resistance should be assumption, not theorem"
+
+section_pbft:
+  verdict: "valid"
+  finding: "reasonable engineering choice"
+
+section_nemesis:
+  verdict: "open_problem"
+  finding: "remain conjecture until proof or counterexample"
+
+section_child_test:
+  verdict: "partial"
+  finding: "fraction decoding feasible; real SHA-256 verification may require assistance beyond typical 5-year-old capability"
+```
+
+## Overall Verdict
+
+```yaml
+v5_status: "substantially stronger than v2"
+participation: "accepted"
+round3_ready: true
+```
+
+---
+
+# 25. CHANGELOG (Updated)
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
+v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
+```
