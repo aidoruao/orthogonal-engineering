@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""WARDEN_MINIMAL.py — Provably correct. 30 lines. No guesses."""
+"""WARDEN_MINIMAL.py — Provably correct. No guesses."""
 
 import hashlib, json, re, shutil
 from pathlib import Path
