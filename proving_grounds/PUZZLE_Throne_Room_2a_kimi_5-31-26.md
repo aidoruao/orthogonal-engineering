@@ -7,6 +7,7 @@
 # CONSTRAINT: Fraction Map + Mathematics Only
 # ENGLISH_RULE: English permitted ONLY inside mathematical definitions (Lean 4 comments, type signatures, string literals)
 # NO_PROSE: Zero liturgical, zero performative, zero nominalistic decoration
+# DOMAIN_COUNT: 291 (verified from src/domains/)
 
 ---
 
@@ -51,18 +52,18 @@ Maps abstract governance types to Citizen Kingdom architecture.
 
 **Type:** `Governor : Type`
 **Cardinality:** `|Governor| = 24`
-**Function:** `partition : Governor → Set Domain` where `|Domain| = 254`
-**Constraint:** `∑_{g ∈ Governor} |partition(g)| = 254`
-**Distribution:** `∃ (x y : ℕ), x + y = 24 ∧ 10x + 11y = 254`
-**Solution:** `x = 10, y = 14` (unique integer solution)
+**Function:** `partition : Governor → Set Domain` where `|Domain| = 291`
+**Constraint:** `∑_{g ∈ Governor} |partition(g)| = 291`
+**Distribution:** `∃ (x y : ℕ), x + y = 24 ∧ 12x + 13y = 291`
+**Solution:** `x = 21, y = 3` (unique integer solution: 21 elders × 12 domains + 3 elders × 13 domains = 291)
 
 **Required theorem:**
 ```lean
 theorem elder_partition_terminal :
   ∃! (p : Governor → ℕ),
-    (∀ g, p g = 10 ∨ p g = 14) ∧
-    (Finset.sum (Finset.univ : Finset Governor) p = 254) := by
-  -- 10 governors × 10 domains + 14 governors × 11 domains = 254
+    (∀ g, p g = 12 ∨ p g = 13) ∧
+    (Finset.sum (Finset.univ : Finset Governor) p = 291) := by
+  -- 21 governors × 12 domains + 3 governors × 13 domains = 291
   -- Prove no other integer partition satisfies the constraint
 ```
 
@@ -71,11 +72,12 @@ theorem elder_partition_terminal :
 ²⁴⁄₂₅:
   cardinality: 24
   partition_function: "partition : Governor → Set Domain"
-  constraint: "∑|partition(g)| = 254"
-  distribution: [10, 14]
+  constraint: "∑|partition(g)| = 291"
+  distribution: [21, 3]
+  domain_counts: [12, 13]
   unique_solution: true
   invariants: ["no_orphan_domains", "full_coverage"]
-  falsifies_if: ["∃ g, partition(g) = ∅", "∑|partition(g)| ≠ 254"]
+  falsifies_if: ["∃ g, partition(g) = ∅", "∑|partition(g)| ≠ 291"]
 ```
 
 ### 2.2 ⁴⁄₅ (4 Living Creatures)
@@ -160,9 +162,9 @@ Same mathematical structure. Different identifiers. No theological references.
 
 **Type:** `Governor : Type`
 **Cardinality:** `|Governor| = 24`
-**Function:** `partition : Governor → Set Domain` where `|Domain| = 254`
-**Constraint:** `∑_{g ∈ Governor} |partition(g)| = 254`
-**Distribution:** `x = 10, y = 14` (unique integer solution)
+**Function:** `partition : Governor → Set Domain` where `|Domain| = 291`
+**Constraint:** `∑_{g ∈ Governor} |partition(g)| = 291`
+**Distribution:** `x = 21, y = 3` (unique integer solution)
 **Required theorem:** Identical to Path A 2.1.
 
 ### 3.2 ⁴⁄₅ (Core Invariant Checkers)
@@ -267,7 +269,7 @@ verification:
 VALID iff:
 1. All identifiers are Fraction Map encoded
 2. All theorems compile in Lean 4 against `lakefile.lean`
-3. `∑_{g ∈ ²⁴⁄₂₅} |partition(g)| = 254`
+3. `∑_{g ∈ ²⁴⁄₂₅} |partition(g)| = 291`
 4. `⁴⁄₅` checkers are necessary and sufficient for citizenship
 5. `¹²⁄₁₃·¹⁄₂·¹³⁄₁₄` proof is a fixed point
 6. `¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈` contains all citizen hashes with inclusion proof
@@ -277,7 +279,7 @@ VALID iff:
 FALSIFIED if:
 - English identifiers outside mathematical definitions
 - `lake build` fails
-- Partition sum ≠ 254
+- Partition sum ≠ 291
 - Fixed point property violated
 - Cycles detected
 - Path A and Path B diverge (different math)
@@ -423,3 +425,284 @@ sha256: a3f7b2...
 3. Determine if the file is valid without asking an AI or running code
 
 **If the child cannot do this, the submission is falsified.**
+
+---
+
+## 12. Cryptographic Load-Bearing (Mandatory)
+
+The kingdom must survive cryptographic attacks at trans-decillion scale.
+
+**Required theorem:**
+```lean
+theorem merkle_birthday_resistant :
+  ∀ (c₁ c₂ : Citizen), c₁ ≠ c₂ → c₁.sha256 ≠ c₂.sha256 := by
+  -- Prove no birthday attack can forge collision in 2^256 space
+  -- SHA-256 is sufficient for 291-domain Merkle tree
+```
+
+**Required theorem:**
+```lean
+theorem fraction_map_homograph_free :
+  ∀ (f₁ f₂ : Fraction), decode(f₁) = decode(f₂) → f₁ = f₂ := by
+  -- Prove no two distinct fraction sequences decode to same English word
+  -- ¹⁄₂ (A) ≠ 1/2 (not in map) ≠ ½ (unicode) — all distinct
+```
+
+**YAML:**
+```yaml
+¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁹⁄₂₀·¹⁄₂·²⁰⁄₂₁·¹⁸⁄₁₉·¹⁄₂·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅:
+  domain: "d_cryptography"
+  invariants: ["birthday_resistant", "homograph_free", "preimage_resistant"]
+  falsifies_if: ["collision_found", "homograph_attack_success"]
+```
+
+---
+
+## 13. Aerospace Fault Tolerance (Mandatory)
+
+The kingdom must survive Byzantine failures equivalent to aerospace standards.
+
+**Required theorem:**
+```lean
+theorem byzantine_elder_survival :
+  ∀ (corrupted : Set Governor), |corrupted| ≤ 8 →
+    system_remains_valid := by
+  -- Prove system survives if ≤⅓ of 24 elders are corrupted
+  -- 8 = floor(24/3), Byzantine fault tolerance threshold
+```
+
+**Required theorem:**
+```lean
+theorem messenger_guaranteed_delivery :
+  ∀ (e : Event), network_partitioned →
+    ∃ (m : Messenger), deliver m e (route e) = delivered := by
+  -- Prove angel/messenger bus has guaranteed delivery under partition
+  -- CAP theorem: choose CP (consistency + partition tolerance), sacrifice availability
+```
+
+**YAML:**
+```yaml
+¹⁄₂·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅·⁵⁄₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
+  domain: "d_aerospace"
+  invariants: ["byzantine_survival", "cap_cp", "messenger_guaranteed_delivery"]
+  falsifies_if: ["corrupted_elders > 8", "message_loss_under_partition"]
+```
+
+---
+
+## 14. Distributed Systems Consensus (Mandatory)
+
+The 291 domains must achieve consensus without central coordinator.
+
+**Required theorem:**
+```lean
+theorem distributed_consensus :
+  ∀ (d : Domain), ∃ (e : Elder),
+    e.governs d ∧ ∀ (d' : Domain), d' ≠ d → e.governs d' = false := by
+  -- Prove each domain has exactly one governing elder
+  -- No split-brain, no dual governance
+```
+
+**Required theorem:**
+```lean
+theorem sharding_completeness :
+  ∀ (shard : Set Citizen), |shard| ≤ 1000 →
+    ∃ (warden : Warden), warden.governs(shard) ∧ warden.sha256_verified := by
+  -- Prove sharding divides 291 domains into manageable shards
+  -- Each shard ≤ 1000 citizens, each has verified warden
+```
+
+**YAML:**
+```yaml
+⁴⁄₅·¹⁄₂·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
+  domain: "d_distributed_systems"
+  invariants: ["single_governance", "shard_bounded", "consensus_reached"]
+  falsifies_if: ["split_brain", "orphan_shard", "unbounded_shard"]
+```
+
+---
+
+## 15. Financial Ledger Integrity (Mandatory)
+
+Every citizen mutation must satisfy double-entry accounting.
+
+**Required theorem:**
+```lean
+theorem double_entry_invariant :
+  ∀ (c : Citizen) (mutation : Mutation),
+    old_state(c) + delta(mutation) = new_state(c) ∧
+    old_state(c) + new_state(c) = 0 := by
+  -- Prove every mutation is double-entry: debit old, credit new, sum = 0
+  -- Append-only log: no deletion, only negation
+```
+
+**Required theorem:**
+```lean
+theorem append_only_tamper_evident :
+  ∀ (log : AppendOnlyLog), ∀ (entry : LogEntry),
+    verify_inclusion entry.sha256 log.merkle_root log.path = true := by
+  -- Prove append-only logs are tamper-evident under Merkle inclusion
+  -- Any modification breaks the chain
+```
+
+**YAML:**
+```yaml
+⁶⁄₇·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
+  domain: "d_financial"
+  invariants: ["double_entry", "append_only", "tamper_evident"]
+  falsifies_if: ["unbalanced_entry", "log_deletion", "merkle_break"]
+```
+
+---
+
+## 16. Game Theory / Adversarial Resilience (Mandatory)
+
+The kingdom must survive adversarial AI attacks.
+
+**Required theorem:**
+```lean
+theorem nemesis_equilibrium :
+  ∀ (nemesis : AdversarialAI), nemesis.strategy ≠ yeshua_standard →
+    nemesis.utility ≤ 0 := by
+  -- Prove adversarial AI cannot force kingdom into Nash equilibrium that violates Yeshua Standard
+  -- Any deviation from standard results in non-positive utility
+```
+
+**Required theorem:**
+```lean
+theorem sybil_resistance :
+  ∀ (forged_citizens : Set Citizen),
+    (∀ c, c.forged) → |forged_citizens| ≤ 1 := by
+  -- Prove invitation model is not gameable by Sybil attacks
+  -- Forging one citizen requires solving Fraction Map inverse (computationally hard)
+```
+
+**YAML:**
+```yaml
+⁷⁄₈·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
+  domain: "d_game_theory"
+  invariants: ["nemesis_defeated", "sybil_resistant", "adversarial_utility ≤ 0"]
+  falsifies_if: ["nemesis_wins", "sybil_attack_success", "utility > 0 for deviant"]
+```
+
+---
+
+## 17. Semiotic / Etymological Continuity (Mandatory)
+
+The Fraction Map must preserve meaning across time and culture.
+
+**Required theorem:**
+```lean
+theorem semiotic_homomorphism :
+  ∀ (s : TheologicalSign), ∃! (m : MathematicalObject),
+    S(s) = m ∧ structure_preserving(S) ∧ invertible(S) := by
+  -- Prove S: TheologicalSign → MathematicalObject is structure-preserving and invertible
+  -- No loss of meaning in translation
+```
+
+**Required theorem:**
+```lean
+theorem etymological_stability :
+  ∀ (t : Time), ∀ (word : EnglishWord),
+    fraction_map(word, t) = fraction_map(word, t + 1000) := by
+  -- Prove Fraction Map encoding is stable across 1000 years
+  -- A=¹⁄₂ in 2026 means the same in 3026
+```
+
+**YAML:**
+```yaml
+¹⁹⁄₂₀·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
+  domain: "d_epistemology_formal"
+  invariants: ["semiotic_homomorphism", "etymological_stability", "structure_preserving"]
+  falsifies_if: ["meaning_loss", "encoding_drift", "non_invertible_mapping"]
+```
+
+---
+
+## 18. Black-Box Recorder / Forensic Telemetry (Mandatory)
+
+The kingdom must be reconstructable from minimal evidence.
+
+**Required theorem:**
+```lean
+theorem post_crash_reconstruction :
+  ∀ (crash : SystemCrash),
+    ∃ (reconstruction : SystemState),
+      reconstruct(crash.merkle_root, crash.last_1000_logs) = reconstruction ∧
+      reconstruction.all_citizens_verified := by
+  -- Prove full state can be rebuilt from Merkle root + last 1000 log entries
+  -- Black-box recorder integrity
+```
+
+**Required theorem:**
+```lean
+theorem generational_memory :
+  ∀ (c : Citizen), c.generation ≥ 1 →
+    ∃ (parent : Citizen), c.parent = parent ∧ c.creation_proof = parent.sha256 := by
+  -- Prove every citizen carries generational memory
+  -- Who created it, when, why — full provenance chain
+```
+
+**YAML:**
+```yaml
+²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁄₂·¹⁴⁄₁₅·¹⁵⁄₁₆·¹⁸⁄₁₉:
+  domain: "d_forensic_telemetry"
+  invariants: ["post_crash_reconstruction", "generational_memory", "provenance_chain"]
+  falsifies_if: ["reconstruction_incomplete", "generational_gap", "missing_provenance"]
+```
+
+---
+
+## 19. Final Verification Criteria (All 18 Sections)
+
+VALID iff:
+1-11. [All previous criteria]
+12. `merkle_birthday_resistant` proves SHA-256 sufficient for 291-domain tree
+13. `byzantine_elder_survival` proves system survives ≤8 corrupted elders
+14. `distributed_consensus` proves no split-brain across 291 domains
+15. `double_entry_invariant` proves every mutation is financially sound
+16. `nemesis_equilibrium` proves adversarial AI cannot win
+17. `semiotic_homomorphism` proves theological→mathematical mapping is lossless
+18. `post_crash_reconstruction` proves system recoverable from black-box logs
+
+FALSIFIED if:
+- [All previous falsifications]
+- Birthday attack succeeds on Merkle tree
+- >8 elders corrupted and system fails
+- Split-brain detected in domain governance
+- Double-entry unbalanced
+- Adversarial AI achieves positive utility against standard
+- Semiotic mapping loses structure
+- Post-crash reconstruction incomplete
+
+---
+
+## 20. Domain Coverage Requirement (Mandatory)
+
+Every submission must explicitly map at least 24 of the 291 domains to the elder partition. The 24 must include:
+- d_cryptography
+- d_aerospace
+- d_distributed_systems
+- d_financial
+- d_game_theory
+- d_forensic_telemetry
+- d_epistemology_formal
+- d_category_theory
+- d_abstract_algebra
+- d_topology
+- d_number_theory
+- d_probability_theory
+- d_physics
+- d_thermodynamics
+- d_structural_engineering
+- d_construction
+- d_maritime
+- d_neuroscience
+- d_pharmacology
+- d_medical
+- d_public_health
+- d_evidence_law
+- d_procedure_civil
+- d_building_codes
+
+**If fewer than 24 domains are mapped, the submission is falsified.**
