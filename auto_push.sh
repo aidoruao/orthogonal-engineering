@@ -1,89 +1,98 @@
-# GENERATED_BY: 2a_kimi_5-31-26
-# SESSION: Citizen Kingdom Architecture
-# DATE: 2026-05-31
-# PURPOSE: Hardened auto-pusher with safety gates
-# STATUS: deployed
-
 #!/bin/bash
-cd /home/idor/oe-local
+# GENERATED_BY: 2a_kimi_5-31-26
+# DATE: 2026-05-31
+# PURPOSE: Auto-pusher — COMMIT FIRST, then pull, then push
 
-# ── CONFIG ──
-SLEEP_SECONDS=300          # 5 minutes between checks (not 30s)
-MAX_FILE_MB=99             # GitHub GH001 limit
-NO_PUSH_FLAG=".no_push"    # touch this file to pause auto-pusher
+cd /home/idor/oe-local || { echo "FATAL: cannot cd to oe-local"; exit 1; }
+
+mkdir -p logs
+LOGFILE="logs/auto_push_$(date +%Y%m%d_%H%M%S).log"
+exec 1> >(tee -a "$LOGFILE") 2> >(tee -a "$LOGFILE" >&2)
+
+SLEEP_SECONDS=30
+NO_PUSH_FLAG=".no_push"
+
+log_info()  { echo "[$(date '+%H:%M:%S')] INFO:  $*"; }
+log_warn()  { echo "[$(date '+%H:%M:%S')] WARN:  $*"; }
+log_error() { echo "[$(date '+%H:%M:%S')] ERROR: $*"; }
+
+log_info "Auto-pusher started. Interval: ${SLEEP_SECONDS}s. Log: $LOGFILE"
 
 while true; do
-    # ── KILL SWITCH ──
+    log_info "=== Starting cycle ==="
+
     if [ -f "$NO_PUSH_FLAG" ]; then
-        echo "[$(date '+%H:%M:%S')] PAUSED: $NO_PUSH_FLAG exists. Remove to resume."
+        log_warn "PAUSED: $NO_PUSH_FLAG exists"
         sleep 60
         continue
     fi
 
-    # ── PULL FIRST ──
-    git pull --rebase origin main 2>/dev/null
+    # --- STEP 1: CHECK FOR LOCAL CHANGES ---
+    CHANGED=$(git status --porcelain)
+    if [ -n "$CHANGED" ]; then
+        log_info "Local changes detected:"
+        echo "$CHANGED" | while read line; do log_info "  $line"; done
 
-    # ── CHECK IF ANYTHING TO COMMIT ──
-    if [ -z "$(git status --porcelain)" ]; then
-        sleep $SLEEP_SECONDS
-        continue
-    fi
-
-    # ── SAFETY GATE 1: Oversized files ──
-    OVERSIZED=$(find . -maxdepth 1 -not -path '*/.*' -size +${MAX_FILE_MB}M)
-    if [ -n "$OVERSIZED" ]; then
-        echo "[$(date '+%H:%M:%S')] CHUNKING: Oversized files detected:"
-        echo "$OVERSIZED"
-        for f in $OVERSIZED; do
-            if [ -f "$f" ]; then
-                mv "$f" /mnt/c/Users/Aidor/Downloads/
-                split -b ${MAX_FILE_MB}M /mnt/c/Users/Aidor/Downloads/$(basename "$f") /mnt/c/Users/Aidor/Downloads/history_chunk_
-                echo "$(basename "$f")" >> .gitignore
-                echo "history_chunk_*" >> .gitignore
+        # Validate before staging
+        > /tmp/corruption_flag.txt
+        echo "$CHANGED" | awk '{print $2}' | while read f; do
+            [ -f "$f" ] || continue
+            if [[ "$f" == *.md ]]; then
+                COUNT=$(grep -c '```' "$f" 2>/dev/null || echo 0)
+                if [ $((COUNT % 2)) -ne 0 ]; then
+                    log_error "CORRUPTION: $f unclosed markdown ($COUNT backticks)"
+                    echo "1" >> /tmp/corruption_flag.txt
+                fi
+            fi
+            if [[ "$f" == *.py ]]; then
+                if ! python3 -m py_compile "$f" 2>/dev/null; then
+                    log_error "CORRUPTION: $f Python syntax error"
+                    echo "1" >> /tmp/corruption_flag.txt
+                fi
             fi
         done
-    fi
 
-    # ── SAFETY GATE 2: Ignore temp files ──
-    git checkout -- '*.tmp' '*.swp' '*.log' 2>/dev/null
+        if [ -s /tmp/corruption_flag.txt ]; then
+            log_error "COMMIT ABORTED: fix in Terminal 2"
+            sleep $SLEEP_SECONDS
+            continue
+        fi
 
-    # ── PREVIEW MODE ──
-    echo "[$(date '+%H:%M:%S')] PREVIEW of next commit:"
-    git status --short
-    echo "[$(date '+%H:%M:%S')] Staging in 10 seconds... (Ctrl-C to abort)"
-    sleep 10
-
-    # ── STAGE ──
-    git add -A
-
-    # ── SAFETY GATE 3: Method body integrity (from old version) ──
-    STAGED=$(git diff --cached --name-only | grep '\.py$' | head -1)
-    if [ -n "$STAGED" ] && [ -f "$STAGED" ]; then
-        METHOD_LOSS=0
-        while IFS= read -r method; do
-            CURRENT_LINES=$(sed -n "/def ${method}/,/def /p" "$STAGED" 2>/dev/null | wc -l)
-            LAST_LINES=$(git show HEAD:"$STAGED" 2>/dev/null | sed -n "/def ${method}/,/def /p" | wc -l)
-            if [ "$LAST_LINES" -gt 10 ] && [ "$CURRENT_LINES" -lt $((LAST_LINES / 10)) ]; then
-                echo "[$(date '+%H:%M:%S')] WARNING: ${method}() dropped >90% lines. Aborting."
-                git reset HEAD
-                METHOD_LOSS=1
-                break
-            fi
-        done < <(git show HEAD:"$STAGED" 2>/dev/null | grep -oP 'def \K\w+' | sort -u)
-        if [ "$METHOD_LOSS" -eq 1 ]; then
+        # Stage and commit LOCAL changes first
+        git add -A
+        MSG="auto: $(git diff --cached --stat | tail -1) files changed at $(date '+%Y-%m-%d %H:%M:%S')"
+        if git commit -m "$MSG" >/dev/null 2>&1; then
+            log_info "Local commit OK: $MSG"
+        else
+            log_error "Local commit failed"
             sleep $SLEEP_SECONDS
             continue
         fi
     fi
 
-    # ── COMMIT ──
-    git commit -m "auto: $(git diff --cached --stat | tail -1) files changed at $(date '+%Y-%m-%d %H:%M:%S')"
+    # --- STEP 2: PULL REMOTE CHANGES (now working tree is clean) ---
+    if ! git pull --rebase origin main >/dev/null 2>&1; then
+        log_error "git pull FAILED. Causes:"
+        log_error "  - Network down"
+        log_error "  - Remote history rewritten"
+        log_error "  - Merge conflicts (manual fix needed in Terminal 2)"
+        sleep $SLEEP_SECONDS
+        continue
+    fi
+    log_info "git pull OK"
 
-    # ── PUSH ──
-    LOCAL_COMMITS=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
-    if [ "$LOCAL_COMMITS" -gt 0 ]; then
-        git push origin main 2>&1 && echo "[$(date '+%H:%M:%S')] Pushed ${LOCAL_COMMITS} commits"
+    # --- STEP 3: PUSH ---
+    LOCAL=$(git rev-list --count origin/main..HEAD 2>/dev/null || echo 0)
+    if [ "$LOCAL" -gt 0 ]; then
+        if git push origin main >/dev/null 2>&1; then
+            log_info "SUCCESS: Pushed ${LOCAL} commits"
+        else
+            log_error "git push FAILED. Will retry next cycle."
+        fi
+    else
+        log_info "No local commits to push"
     fi
 
+    log_info "=== Cycle complete. Sleeping ${SLEEP_SECONDS}s ==="
     sleep $SLEEP_SECONDS
 done
