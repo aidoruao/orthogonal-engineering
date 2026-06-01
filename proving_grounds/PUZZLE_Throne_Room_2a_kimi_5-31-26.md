@@ -1,104 +1,132 @@
-# PUZZLE: THRONE ROOM ARCHITECTURE v3
-# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉
+# PUZZLE: THRONE ROOM META-PUZZLE v4
+# PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂
 # GENERATED_BY: 2a_kimi_5-31-26
 # DATE: 2026-05-31
-# STATUS: ARCHITECTURE TERMINAL
-# MODE: GLASS BOX
-# PURPOSE: LOAD-BEARING GOVERNANCE DESIGN
-# META-RULE: This document is English for human distribution. AI submissions must use Fraction Map for identifiers and keys.
-# THEOLOGICAL_NOTE: Jesus/Yeshua is NOT encoded into the code. Theology is mnemonic compression, not runtime condition.
-# DOMAIN_COUNT: 291
+# STATUS: META
+# RULE: ALL AI RESPONSES MUST USE FRACTION MAP ENGLISH ONLY
 
 ---
 
-## 0. CLASSIFICATION LAYER
+## 0. THE INVERSION
 
-Every statement MUST be classified.
+Old approach: We give you a puzzle. You solve it. You might refuse.
 
-Valid classes:
+New approach: We give you the scope. You design the puzzle. Refusal = no submission = no participation.
 
+Scope:
+- 291 domains in src/domains/
+- Trans-decillion citizen file ecosystem
+- Every file is a citizen with CITIZENSHIP frontmatter
+- Fraction Map language (A=1/2 ... Z=26/27) is the universal identifier system
+- 24 governors partition 291 domains
+- 4 invariant checkers verify citizenship
+- Merkle tree anchors all hashes
+- PBFT consensus for Byzantine fault tolerance
+- Double-entry ledger for all mutations
+- Child-verifiable (5-year-old with key sheet can audit any file)
+- Physically grounded creation (Planck_Length, Fine_Structure as types)
 
-
-FALSIFIED IF:
-
-
-
----
-
-## 1. FRACTION MAP KEY SHEET
-
-| Letter | Fraction | Letter | Fraction | Letter | Fraction |
-|--------|----------|--------|----------|--------|----------|
-| A | ¹⁄₂ | J | ¹⁰⁄₁₁ | S | ¹⁹⁄₂₀ |
-| B | ²⁄₃ | K | ¹¹⁄₁₂ | T | ²⁰⁄₂₁ |
-| C | ³⁄₄ | L | ¹²⁄₁₃ | U | ²¹⁄₂₂ |
-| D | ⁴⁄₅ | M | ¹³⁄₁₄ | V | ²²⁄₂₃ |
-| E | ⁵⁄₆ | N | ¹⁴⁄₁₅ | W | ²³⁄₂₄ |
-| F | ⁶⁄₇ | O | ¹⁵⁄₁₆ | X | ²⁴⁄₂₅ |
-| G | ⁷⁄₈ | P | ¹⁶⁄₁₇ | Y | ²⁵⁄₂₆ |
-| H | ⁸⁄₉ | Q | ¹⁷⁄₁₈ | Z | ²⁶⁄₂₇ |
-| I | ⁹⁄₁₀ | R | ¹⁸⁄₁₉ | | |
-
-Separator: · (middle dot, U+00B7)
-Word boundary: ‖ (double vertical line, U+2016)
-
-Verification: HELLO = ⁸⁄₉·⁵⁄₆·¹²⁄₁₃·¹²⁄₁₃·¹⁵⁄₁₆, product = ⁵⁴⁰⁄₁₀₅₃
+Your task: Design the puzzle that would test whether an AI can build this architecture.
 
 ---
 
-## 2. ²⁴⁄₂₅ — GOVERNOR PARTITION
+## 1. CONSTRAINTS ON YOUR RESPONSE
 
-Classification: theorem
+You MUST respond using ONLY Fraction Map English.
 
-Given:
-- governors: 24
-- domains: 291
+This means:
+- All identifiers are fraction-encoded
+- All structure is mathematical
+- English appears ONLY in comments, docstrings, and string values
+- No prose. No narrative. No sycophancy.
 
-Required: x + y = 24, 12x + 13y = 291
-Derived: x = 21, y = 3
-
-Architecture:
-- 21 governors × 12 domains each
-- 3 governors × 13 domains each
-
-Invariants:
-- coverage_complete: true
-- overlap_free: true
-- orphan_domains: 0
-
-Falsifies if: sum ≠ 291, overlap exists, orphan exists
+If you respond in standard English prose, your submission is falsified.
 
 ---
 
-## 3. ⁴⁄₅ — FOUR CHECKER SYSTEM
+## 2. WHAT YOU MUST DESIGN
 
-Classification: specification
+Your submission must specify:
 
-Checker A (execution_valid): rejects panic, deadlock, runtime_error
-Checker B (storage_integrity): rejects corruption, hash_mismatch
-Checker C (interface_complete): rejects schema_break, api_break
-Checker D (observation_accurate): rejects blind_spot, missing_telemetry
-
-Validity Function: CitizenValid = A ∧ B ∧ C ∧ D
-
----
-
-## 4. ¹⁄₂·²⁶⁄₂₇ — MESSENGER BUS
-
-Classification: specification
-
-Topology: event → route → governor → inbox
-Requirements: exactly_one_route, idempotent_delivery, audit_log
+1. Partition Test: How to verify 24 governors cover 291 domains exactly
+2. Checker Test: How to verify 4 invariant checkers are necessary and sufficient
+3. Citizenship Test: How to verify a 5-year-old can audit any file
+4. Creation Test: How to verify new citizens are physically grounded
+5. Consensus Test: How to verify PBFT works at 291-domain scale
+6. Ledger Test: How to verify double-entry accounting holds
+7. Crypto Test: How to verify Merkle tree assumptions are honest
+8. Convergence Test: How to verify theological and secular paths produce identical math
+9. Audit Test: How the puzzle self-corrects when AIs find gaps
 
 ---
 
-## 5. ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ — ROOT JURISDICTION
+## 3. SUBMISSION FORMAT
 
-Classification: specification
+File name: proving_grounds/submissions/meta_puzzle_<ai_name>_<date>.yaml
 
-Cardinality: 1
-Responsibilities: install_warden, revoke_warden, emergency_override
-Constraint: every_directory_has_warden
+puzzle_id: "16/17·18/19·1/2·25/26·5/6·18/19·13/14·1/2·19/20·1/2"
+submitter:
+  ai_name: "<fraction_encoded_identifier>"
+  date: "2026-05-31"
+  fraction_id: "<self_identifier>"
+design:
+  partition_test:
+    method: ""
+    verification: ""
+  checker_test:
+    method: ""
+    verification: ""
+  citizenship_test:
+    method: ""
+    verification: ""
+  creation_test:
+    method: ""
+    verification: ""
+  consensus_test:
+    method: ""
+    verification: ""
+  ledger_test:
+    method: ""
+    verification: ""
+  crypto_test:
+    method: ""
+    verification: ""
+  convergence_test:
+    method: ""
+    verification: ""
+  audit_test:
+    method: ""
+    verification: ""
+verification:
+  all_fractions_valid: true
+  all_methods_defined: true
+  no_english_prose: true
+  falsifies_if: "English identifiers outside math definitions or missing methods"
 
 ---
 
+## 4. VERIFICATION
+
+VALID iff:
+1. All identifiers are Fraction Map encoded
+2. All 9 tests have defined methods
+3. No English prose in identifiers or keys
+4. The puzzle design is falsifiable (has clear pass/fail conditions)
+
+FALSIFIED if:
+- English identifiers outside permitted contexts
+- Any test method is undefined
+- The design is not falsifiable
+- Standard English prose response instead of Fraction Map English
+
+---
+
+## 5. THE META-LOOP
+
+8+ AIs submit their puzzle designs.
+
+We compare them. Where 6+ AIs converge on the same test, that test is canonized into the final puzzle.
+
+Where AIs diverge, the divergence points become new puzzles themselves.
+
+The puzzle builds itself from weighted consensus.
