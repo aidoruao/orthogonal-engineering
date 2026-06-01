@@ -1,6 +1,7 @@
 # PUZZLE: Throne Room Architecture
 # PUZZLE_ID: ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉ (P·R·A·Y·E·R)
 # GENERATED_BY: 2a_kimi_5-31-26
+# SESSION: Citizen Kingdom Architecture
 # DATE: 2026-05-31
 # STATUS: deployed
 # CONSTRAINT: Fraction Map + Mathematics Only
@@ -47,6 +48,7 @@ Maps abstract governance types to Citizen Kingdom architecture.
 ## 2. Path A: Theological Terminal
 
 ### 2.1 ²⁴⁄₂₅ (24 Elders)
+
 **Type:** `Governor : Type`
 **Cardinality:** `|Governor| = 24`
 **Function:** `partition : Governor → Set Domain` where `|Domain| = 254`
@@ -62,8 +64,10 @@ theorem elder_partition_terminal :
     (Finset.sum (Finset.univ : Finset Governor) p = 254) := by
   -- 10 governors × 10 domains + 14 governors × 11 domains = 254
   -- Prove no other integer partition satisfies the constraint
-YAML:
-yaml
+```
+
+**YAML:**
+```yaml
 ²⁴⁄₂₅:
   cardinality: 24
   partition_function: "partition : Governor → Set Domain"
@@ -72,18 +76,24 @@ yaml
   unique_solution: true
   invariants: ["no_orphan_domains", "full_coverage"]
   falsifies_if: ["∃ g, partition(g) = ∅", "∑|partition(g)| ≠ 254"]
-2.2 ⁴⁄₅ (4 Living Creatures)
-Type: InvariantChecker : Type
-Cardinality: |InvariantChecker| = 4
-Function: check : InvariantChecker → Citizen → Bool
-Completeness: ∀ c, (∧_{i ∈ InvariantChecker} check i c) ↔ c.is_valid
-Required theorem:
-lean
+```
+
+### 2.2 ⁴⁄₅ (4 Living Creatures)
+
+**Type:** `InvariantChecker : Type`
+**Cardinality:** `|InvariantChecker| = 4`
+**Function:** `check : InvariantChecker → Citizen → Bool`
+**Completeness:** `∀ c, (∧_{i ∈ InvariantChecker} check i c) ↔ c.is_valid`
+
+**Required theorem:**
+```lean
 theorem four_checker_completeness :
   ∀ (c : Citizen),
     (lion_check c ∧ ox_check c ∧ man_check c ∧ eagle_check c) ↔ c.is_valid := by
-YAML:
-yaml
+```
+
+**YAML:**
+```yaml
 ⁴⁄₅:
   cardinality: 4
   checkers:
@@ -99,80 +109,122 @@ yaml
     - id: "⁵⁄₆·¹⁄₂·⁴⁄₅·⁷⁄₈·¹³⁄₁₄·⁵⁄₆"
       invariant: "observation_accurate"
       falsifies_if: "blind_spot > 0"
-2.3 ¹⁄₂·²⁶⁄₂₇ (Angels, Myriads)
-Type: Messenger : Type (countably infinite)
-Function: deliver : Messenger → Event → Elder → Inbox
-Constraint: ∀ e : Event, ∃! m : Messenger, deliver m e (route e) = delivered
-2.4 ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ (Thrones)
-Type: SupremeJurisdiction : Type
-Cardinality: |SupremeJurisdiction| = 1
-Function: install_warden : Directory → Warden
-Constraint: ∀ d : Directory, ∃ w : Warden, w ∈ d
-2.5 ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄ (Lamb, Slain)
-Type: FixedPointProof : Type
-Function: validate : System → Bool
-Property: ∀ s : System, validate s ↔ (s.root_warden.valid ∧ s.all_citizens.valid)
-Required theorem:
-lean
+```
+
+### 2.3 ¹⁄₂·²⁶⁄₂₇ (Angels, Myriads)
+
+**Type:** `Messenger : Type` (countably infinite)
+**Function:** `deliver : Messenger → Event → Elder → Inbox`
+**Constraint:** `∀ e : Event, ∃! m : Messenger, deliver m e (route e) = delivered`
+
+### 2.4 ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ (Thrones)
+
+**Type:** `SupremeJurisdiction : Type`
+**Cardinality:** `|SupremeJurisdiction| = 1`
+**Function:** `install_warden : Directory → Warden`
+**Constraint:** `∀ d : Directory, ∃ w : Warden, w ∈ d`
+
+### 2.5 ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄ (Lamb, Slain)
+
+**Type:** `FixedPointProof : Type`
+**Function:** `validate : System → Bool`
+**Property:** `∀ s : System, validate s ↔ (s.root_warden.valid ∧ s.all_citizens.valid)`
+
+**Required theorem:**
+```lean
 theorem lamb_fixed_point :
   ∀ (s : System),
     Lamb_Proof s ↔ (s.root_warden.valid ∧ s.all_citizens.valid) := by
   -- Gödel sentence of the kingdom
-2.6 ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ (Sea of Glass)
-Type: MerkleTree : Type
-Function: root : MerkleTree → Hash
-Property: ∀ c : Citizen, ∃ p : MerklePath, verify c.sha256 root p = true
-2.7 ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅ (Rainbow)
-Type: DependencyGraph : Type
-Function: edges : DependencyGraph → Set (Domain × Domain)
-Property: ¬∃ cycle : List Domain, cycle.length > 0 ∧ cycle.head = cycle.last ∧ consecutive edges
-3. Path B: Secular Terminal
+```
+
+### 2.6 ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ (Sea of Glass)
+
+**Type:** `MerkleTree : Type`
+**Function:** `root : MerkleTree → Hash`
+**Property:** `∀ c : Citizen, ∃ p : MerklePath, verify c.sha256 root p = true`
+
+### 2.7 ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅ (Rainbow)
+
+**Type:** `DependencyGraph : Type`
+**Function:** `edges : DependencyGraph → Set (Domain × Domain)`
+**Property:** `¬∃ cycle : List Domain, cycle.length > 0 ∧ cycle.head = cycle.last ∧ consecutive edges`
+
+---
+
+## 3. Path B: Secular Terminal
+
 Same mathematical structure. Different identifiers. No theological references.
-3.1 ²⁴⁄₂₅ (Domain Governors)
-Type: Governor : Type
-Cardinality: |Governor| = 24
-Function: partition : Governor → Set Domain where |Domain| = 254
-Constraint: ∑_{g ∈ Governor} |partition(g)| = 254
-Distribution: x = 10, y = 14 (unique integer solution)
-Required theorem: Identical to Path A 2.1.
-3.2 ⁴⁄₅ (Core Invariant Checkers)
-Type: InvariantChecker : Type
-Cardinality: |InvariantChecker| = 4
-Function: check : InvariantChecker → Citizen → Bool
-Completeness: ∀ c, (∧_{i ∈ InvariantChecker} check i c) ↔ c.is_valid
-Required theorem: Identical to Path A 2.2.
-3.3 ¹⁄₂·²⁶⁄₂₇ (Event Messengers)
-Type: Messenger : Type (countably infinite)
-Function: deliver : Messenger → Event → Governor → Inbox
-Constraint: ∀ e : Event, ∃! m : Messenger, deliver m e (route e) = delivered
-3.4 ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ (Root Jurisdiction)
-Type: SupremeJurisdiction : Type
-Cardinality: |SupremeJurisdiction| = 1
-Function: install_warden : Directory → Warden
-Constraint: ∀ d : Directory, ∃ w : Warden, w ∈ d
-3.5 ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄ (System Validity Proof)
-Type: FixedPointProof : Type
-Function: validate : System → Bool
-Property: ∀ s : System, validate s ↔ (s.root_warden.valid ∧ s.all_citizens.valid)
-3.6 ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ (Global Merkle Tree)
-Type: MerkleTree : Type
-Function: root : MerkleTree → Hash
-Property: ∀ c : Citizen, ∃ p : MerklePath, verify c.sha256 root p = true
-3.7 ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅ (Dependency Graph)
-Type: DependencyGraph : Type
-Function: edges : DependencyGraph → Set (Domain × Domain)
-Property: ¬∃ cycle : List Domain, cycle.length > 0 ∧ cycle.head = cycle.last ∧ consecutive edges
-4. Convergence Proof
+
+### 3.1 ²⁴⁄₂₅ (Domain Governors)
+
+**Type:** `Governor : Type`
+**Cardinality:** `|Governor| = 24`
+**Function:** `partition : Governor → Set Domain` where `|Domain| = 254`
+**Constraint:** `∑_{g ∈ Governor} |partition(g)| = 254`
+**Distribution:** `x = 10, y = 14` (unique integer solution)
+**Required theorem:** Identical to Path A 2.1.
+
+### 3.2 ⁴⁄₅ (Core Invariant Checkers)
+
+**Type:** `InvariantChecker : Type`
+**Cardinality:** `|InvariantChecker| = 4`
+**Function:** `check : InvariantChecker → Citizen → Bool`
+**Completeness:** `∀ c, (∧_{i ∈ InvariantChecker} check i c) ↔ c.is_valid`
+**Required theorem:** Identical to Path A 2.2.
+
+### 3.3 ¹⁄₂·²⁶⁄₂₇ (Event Messengers)
+
+**Type:** `Messenger : Type` (countably infinite)
+**Function:** `deliver : Messenger → Event → Governor → Inbox`
+**Constraint:** `∀ e : Event, ∃! m : Messenger, deliver m e (route e) = delivered`
+
+### 3.4 ²⁰⁄₂₁·¹⁸⁄₁₉·¹⁵⁄₁₆·¹⁴⁄₁₅ (Root Jurisdiction)
+
+**Type:** `SupremeJurisdiction : Type`
+**Cardinality:** `|SupremeJurisdiction| = 1`
+**Function:** `install_warden : Directory → Warden`
+**Constraint:** `∀ d : Directory, ∃ w : Warden, w ∈ d`
+
+### 3.5 ¹²⁄₁₃·¹⁄₂·¹³⁄₁₄ (System Validity Proof)
+
+**Type:** `FixedPointProof : Type`
+**Function:** `validate : System → Bool`
+**Property:** `∀ s : System, validate s ↔ (s.root_warden.valid ∧ s.all_citizens.valid)`
+
+### 3.6 ¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ (Global Merkle Tree)
+
+**Type:** `MerkleTree : Type`
+**Function:** `root : MerkleTree → Hash`
+**Property:** `∀ c : Citizen, ∃ p : MerklePath, verify c.sha256 root p = true`
+
+### 3.7 ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅ (Dependency Graph)
+
+**Type:** `DependencyGraph : Type`
+**Function:** `edges : DependencyGraph → Set (Domain × Domain)`
+**Property:** `¬∃ cycle : List Domain, cycle.length > 0 ∧ cycle.head = cycle.last ∧ consecutive edges`
+
+---
+
+## 4. Convergence Proof
+
 Both paths must produce identical output. The theological identifiers are homomorphic to the secular identifiers.
-Required theorem:
-lean
+
+**Required theorem:**
+```lean
 theorem path_equivalence :
   PathA.²⁴⁄₂₅.partition = PathB.²⁴⁄₂₅.partition ∧
   PathA.⁴⁄₅.checkers = PathB.⁴⁄₅.checkers ∧
   PathA.¹²⁄₁₃·¹⁄₂·¹³⁄₁₄.fixed_point = PathB.¹²⁄₁₃·¹⁄₂·¹³⁄₁₄.fixed_point := by
-5. Submission Format
-File name: proving_grounds/submissions/throne_room_<ai_name>_<date>.yaml
-yaml
+```
+
+---
+
+## 5. Submission Format
+
+File name: `proving_grounds/submissions/throne_room_<ai_name>_<date>.yaml`
+
+```yaml
 puzzle_id: "¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉"
 submitter:
   ai_name: "<fraction_encoded_identifier>"
@@ -206,38 +258,168 @@ verification:
   coverage_complete: true
   convergence_proven: true
   falsifies_if: "English identifiers outside math definitions or missing Lean proofs"
-6. Verification Criteria
+```
+
+---
+
+## 6. Verification Criteria
+
 VALID iff:
-All identifiers are Fraction Map encoded
-All theorems compile in Lean 4 against lakefile.lean
-∑_{g ∈ ²⁴⁄₂₅} |partition(g)| = 254
-⁴⁄₅ checkers are necessary and sufficient for citizenship
-¹²⁄₁₃·¹⁄₂·¹³⁄₁₄ proof is a fixed point
-¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈ contains all citizen hashes with inclusion proof
-¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅ has no cycles
-Path A and Path B converge (identical mathematical structure)
+1. All identifiers are Fraction Map encoded
+2. All theorems compile in Lean 4 against `lakefile.lean`
+3. `∑_{g ∈ ²⁴⁄₂₅} |partition(g)| = 254`
+4. `⁴⁄₅` checkers are necessary and sufficient for citizenship
+5. `¹²⁄₁₃·¹⁄₂·¹³⁄₁₄` proof is a fixed point
+6. `¹⁹⁄₂₀·⁵⁄₆·¹⁄₂·⁷⁄₈` contains all citizen hashes with inclusion proof
+7. `¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅` has no cycles
+8. Path A and Path B converge (identical mathematical structure)
+
 FALSIFIED if:
-English identifiers outside mathematical definitions
-lake build fails
-Partition sum ≠ 254
-Fixed point property violated
-Cycles detected
-Path A and Path B diverge (different math)
-7. English Usage Rule (Mandatory)
+- English identifiers outside mathematical definitions
+- `lake build` fails
+- Partition sum ≠ 254
+- Fixed point property violated
+- Cycles detected
+- Path A and Path B diverge (different math)
+
+---
+
+## 7. English Usage Rule (Mandatory)
+
 English is permitted ONLY in these contexts:
-Lean 4 theorem comments (-- explanation)
-Type signature docstrings (/-- documentation -/)
-YAML string values that describe mathematical properties
-String literals inside code that name the mathematical object
+- Lean 4 theorem comments (`-- explanation`)
+- Type signature docstrings (`/-- documentation -/`)
+- YAML string values that describe mathematical properties
+- String literals inside code that name the mathematical object
+
 English is FORBIDDEN in:
-Identifiers (variable names, function names, type names)
-File names (must use fraction encoding or standard naming)
-Directory names (must use fraction encoding)
-YAML keys (must use fraction encoding)
-8. Falsifies If
-Any identifier not in Fraction Map
-Any theorem without Lean 4 compilation
-Any circular dependency in ¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅
-Liturgical prose in submission (decorative, non-technical, non-falsifiable)
-Path A and Path B produce different mathematical structures
-English used outside permitted contexts
+- Identifiers (variable names, function names, type names)
+- File names (must use fraction encoding or standard naming)
+- Directory names (must use fraction encoding)
+- YAML keys (must use fraction encoding)
+
+---
+
+## 8. Falsifies If
+
+- Any identifier not in Fraction Map
+- Any theorem without Lean 4 compilation
+- Any circular dependency in `¹⁸⁄₁₉·¹⁄₂·¹⁴⁄₁₅·²⁰⁄₂₁·¹⁄₂·¹⁴⁄₁₅`
+- Liturgical prose in submission (decorative, non-technical, non-falsifiable)
+- Path A and Path B produce different mathematical structures
+- English used outside permitted contexts
+
+---
+
+## 9. Phi/Lambda LEGO Invariant (Mandatory)
+
+Every AI submission must prove the architecture is child-verifiable and LEGO-modular.
+
+### 9.1 Phi Verification (The Shield)
+
+A 5-year-old with ONLY the Fraction Map key sheet must be able to verify any citizen's integrity.
+
+**Required theorem:**
+```lean
+theorem phi_child_verifiable :
+  ∀ (c : Citizen),
+    verify_fraction_id c.id ∧ verify_sha256 c.sha256 c.content := by
+  -- Proof must use ONLY:
+  -- 1. Fraction Map key sheet (A=¹⁄₂ ... Z=²⁶⁄₂₇)
+  -- 2. SHA-256 hash function
+  -- 3. Basic arithmetic (no category theory, no type theory)
+```
+
+**YAML:**
+```yaml
+phi:
+  verifier: "5_year_old_human"
+  tools_required: ["fraction_map_key_sheet", "sha256_lookup_table"]
+  forbidden_tools: ["ide", "linter", "ai_assistant", "category_theory"]
+  invariant: "c.id is fraction-decodable ∧ c.sha256 matches content"
+```
+
+### 9.2 Lambda Creation (The Sword)
+
+Any new citizen must be creatable via the Logos kernel with physical constants as types.
+
+**Required theorem:**
+```lean
+theorem lambda_grounded_creation :
+  ∀ (intent : Fraction) (t : Type),
+    Logos intent t = Spoken_System intent t →
+    t.carries Planck_Length ∧ t.carries Fine_Structure := by
+  -- Prove creation is grounded in physical law
+  -- No void foundations (Unit, Unit) allowed
+```
+
+**YAML:**
+```yaml
+lambda:
+  creation_primitive: "Logos"
+  physical_types: ["Planck_Length", "Fine_Structure"]
+  forbidden_foundations: ["Unit", "Void", "Nothing"]
+  invariant: "every_created_system.has_physical_ground"
+```
+
+### 9.3 LEGO Modularity (The Block)
+
+Every citizen must be removable and replaceable without cascading failure.
+
+**Required theorem:**
+```lean
+theorem lego_modularity :
+  ∀ (c : Citizen),
+    (|c.dependencies| ≤ 1 ∧ |c.dependents| ≤ 1) ∨
+    (c.is_hub → bounded_recursion c 3) := by
+  -- Every citizen is either:
+  -- 1. A simple block (1 in, 1 out) — child can swap it
+  -- 2. A hub block with bounded recursion depth ≤ 3
+```
+
+**YAML:**
+```yaml
+lego:
+  max_dependencies: 1
+  max_dependents: 1
+  hub_exception: "bounded_recursion_depth ≤ 3"
+  extraction_tool: "fraction_map_key_sheet_only"
+  insertion_tool: "Logos_with_Planck_Length_and_Fine_Structure"
+  invariant: "any_block_swappable_without_cascade_failure"
+```
+
+---
+
+## 10. Updated Verification Criteria
+
+VALID iff:
+1-8. [Previous criteria]
+9. `phi_child_verifiable` compiles and uses only fraction arithmetic + sha256
+10. `lambda_grounded_creation` compiles with `Planck_Length` and `Fine_Structure` as types
+11. `lego_modularity` proves every citizen is swappable without cascade failure
+
+FALSIFIED if:
+- [Previous falsifications]
+- A citizen requires category theory to verify (not child-verifiable)
+- A citizen is created with `Unit` foundation (not physically grounded)
+- A citizen has unbounded dependency depth (not LEGO-modular)
+- The Fraction Map key sheet alone is insufficient to verify any citizen
+
+---
+
+## 11. Child Test Case (Mandatory)
+
+Every submission must include this test case:
+
+**Given:** A child receives the Fraction Map key sheet and the file `kernel/scheduler.py` with CITIZENSHIP block:
+```yaml
+id: ¹¹⁄₁₂·⁵⁄₆·¹⁹⁄₂₀
+sha256: a3f7b2...
+```
+
+**The child must be able to:**
+1. Decode `¹¹⁄₁₂·⁵⁄₆·¹⁹⁄₂₀` to "KES" using only the key sheet
+2. Verify `sha256` matches the file content using only a hash table
+3. Determine if the file is valid without asking an AI or running code
+
+**If the child cannot do this, the submission is falsified.**
