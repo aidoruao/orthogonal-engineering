@@ -1,0 +1,518 @@
+🛡️  YAA Watchdog active. 12:47:03
+📝 Logging to session_20260601_124703.log
+idor@Tony:~$ cd ~/oe-local && ls -la tools/WARDEN_MINIMAL.py && head -10 tools/WARDEN_MINIMAL.py
+-rw-r--r-- 1 idor idor 2309 Jun  1 12:42 tools/WARDEN_MINIMAL.py
+# CITIZENSHIP
+{
+  "id": "tools/WARDEN_MINIMAL.py",
+  "payload_hash": "9ff3df90063d94c9076a99d75c9e41f126202f0c3e27c1662bc6c47d07c7f996",
+  "falsifies_if": []
+}
+# END CITIZENSHIP
+# CITIZENSHIP
+{
+  "id": "tools/WARDEN_MINIMAL.py",
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import hashlib, json, re
+from pathlib import Path
+
+p = Path('tools/WARDEN_MINIMAL.py')
+text = p.read_text()
+m = re.search(r'# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP', text, re.DOTALL)
+if not m:
+    print('FAIL: No citizenship block')
+    exit(1)
+
+c = json.loads(m.group(1))
+payload = re.sub(r'# CITIZENSHIP\n.*?\n# END CITIZENSHIP\n?', '', text, flags=re.DOTALL).encode()
+actual = hashlib.sha256(payload).hexdigest()
+
+print('Stored:', c['payload_hash'][:16])
+print('Actual:', actual[:16])
+print('MATCH:', c['payload_hash'] == actual)
+"
+Stored: 9ff3df90063d94c9
+Actual: ced87bc3305f654a
+MATCH: False
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+code = '''#!/usr/bin/env python3
+\"\"\"WARDEN_MINIMAL.py - Provably correct. No guesses.\"\"\"
+
+import hashlib, json, re, shutil
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+QUARANTINE = REPO / \".quarantine\"
+PATTERN = re.compile(\"# CITIZENSHIP\\n(.*?)\\n# END CITIZENSHIP\", re.DOTALL)
+
+def extract(text):
+    m = PATTERN.search(text)
+    if not m: return None
+    try: json.loads(m.group(1)); return m.group(1)
+    except: return None
+
+def strip(text):
+    return PATTERN.sub(\"\", text, count=1)
+
+def payload(path):
+    return strip(path.read_text(errors=\"ignore\")).encode(\"utf-8\")
+
+def hash(path):
+    return hashlib.sha256(payload(path)).hexdigest()
+
+def falsified(path):
+    text = path.read_text(errors=\"ignore\")
+    block = extract(text)
+    if block is None: return True
+    c = json.loads(block)
+    if c.get(\"payload_hash\") != hash(path): return True
+    for p in c.get(\"falsifies_if\", []):
+        try:
+            if re.search(p, strip(text)): return True
+        except: return True
+    return False
+
+def scan(root=REPO):
+    result = {\"quarantined\": [], \"passed\": []}
+"rint('Rewritten:', len(code), 'bytes')ite(code)}\")_to(root)))ot))).paren
+Rewritten: 1726 bytes
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import hashlib, json, re, pathlib
+
+p = pathlib.Path('tools/WARDEN_MINIMAL.py')
+code = p.read_text()
+
+# Strip first block only (none exists yet, so this is identity)
+PATTERN = re.compile('# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP', re.DOTALL)
+payload = PATTERN.sub('', code, count=1)
+
+h = hashlib.sha256(payload.encode()).hexdigest()
+block = {
+    'id': 'tools/WARDEN_MINIMAL.py',
+    'payload_hash': h,
+    'falsifies_if': []
+}
+citizen = '# CITIZENSHIP\n' + json.dumps(block, indent=2) + '\n# END CITIZENSHIP\n'
+p.write_text(citizen + code)
+print('Adopted. Hash:', h[:16])
+"
+Adopted. Hash: c7a37627ab63a7b7
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import hashlib, json, re
+from pathlib import Path
+
+p = Path('tools/WARDEN_MINIMAL.py')
+text = p.read_text()
+m = re.search(r'# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP', text, re.DOTALL)
+c = json.loads(m.group(1))
+
+# Strip ONLY first block
+payload = re.sub(r'# CITIZENSHIP\n.*?\n# END CITIZENSHIP\n?', '', text, count=1, flags=re.DOTALL).encode()
+actual = hashlib.sha256(payload).hexdigest()
+
+print('Stored:', c['payload_hash'][:16])
+print('Actual:', actual[:16])
+print('MATCH:', c['payload_hash'] == actual)
+" && git add tools/WARDEN_MINIMAL.py && git commit -m "WARDEN_MINIMAL: v1.1 fix strip count=1, re-adopted" && git pull --rebase origin main && git push origin main
+Stored: c7a37627ab63a7b7
+Actual: f9473b59a9f7623b
+MATCH: False
+[main 73ff0c21] WARDEN_MINIMAL: v1.1 fix strip count=1, re-adopted
+ 1 file changed, 7 insertions(+), 19 deletions(-)
+remote: Enumerating objects: 8, done.
+remote: Counting objects: 100% (8/8), done.
+remote: Compressing objects: 100% (4/4), done.
+remote: Total 6 (delta 3), reused 3 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (6/6), 35.20 KiB | 3.20 MiB/s, done.
+From https://github.com/aidoruao/orthogonal-engineering
+ * branch              main       -> FETCH_HEAD
+   ff8d9e72..37399459  main       -> origin/main
+Successfully rebased and updated refs/heads/main.
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 518 bytes | 518.00 KiB/s, done.
+Total 4 (delta 3), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/aidoruao/orthogonal-engineering.git
+   37399459..b2abe118  main -> main
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import hashlib, json, re, pathlib, shutil
+
+# Step 1: Write clean warden code (no citizenship block)
+code = '''#!/usr/bin/env python3
+\"\"\"WARDEN_MINIMAL.py - Provably correct. No guesses.\"\"\"
+
+import hashlib, json, re, shutil
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+QUARANTINE = REPO / \".quarantine\"
+PATTERN = re.compile(\"# CITIZENSHIP\\n(.*?)\\n# END CITIZENSHIP\", re.DOTALL)
+
+def extract(text):
+    m = PATTERN.search(text)
+    if not m: return None
+    try: json.loads(m.group(1)); return m.group(1)
+    except: return None
+
+def strip(text):
+    return PATTERN.sub(\"\", text, count=1)
+
+def payload(path):
+    return strip(path.read_text(errors=\"ignore\")).encode(\"utf-8\")
+
+def hash(path):
+    return hashlib.sha256(payload(path)).hexdigest()
+
+def falsified(path):
+    text = path.read_text(errors=\"ignore\")
+    block = extract(text)
+    if block is None: return True
+    c = json.loads(block)
+    if c.get(\"payload_hash\") != hash(path): return True
+    for p in c.get(\"falsifies_if\", []):
+        try:
+            if re.search(p, strip(text)): return True
+        except: return True
+git push origin main-write, verified" && git pull --rebase origin main &&
+Stored: c7a37627ab63a7b7
+Actual: 80f4803cc21f5f1c
+MATCH: False
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   wsl2 ubuntu linux terminal session save 2a 6-1-26.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import hashlib, json, re, pathlib, shutil
+
+# Step 1: Write clean code
+code = '''#!/usr/bin/env python3
+\"\"\"WARDEN_MINIMAL.py - Provably correct. No guesses.\"\"\"
+
+import hashlib, json, re, shutil
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+QUARANTINE = REPO / \".quarantine\"
+PATTERN = re.compile(\"# CITIZENSHIP\\n(.*?)\\n# END CITIZENSHIP\\n\", re.DOTALL)
+
+def extract(text):
+    m = PATTERN.search(text)
+    if not m: return None
+    try: json.loads(m.group(1)); return m.group(1)
+    except: return None
+
+def strip(text):
+    return PATTERN.sub(\"\", text, count=1)
+
+def payload(path):
+    return strip(path.read_text(errors=\"ignore\")).encode(\"utf-8\")
+
+def hash(path):
+    return hashlib.sha256(payload(path)).hexdigest()
+
+def falsified(path):
+    text = path.read_text(errors=\"ignore\")
+    block = extract(text)
+    if block is None: return True
+    c = json.loads(block)
+    if c.get(\"payload_hash\") != hash(path): return True
+    for p in c.get(\"falsifies_if\", []):
+        try:
+            if re.search(p, strip(text)): return True
+        except: return True
+gin main && git push origin maine, hash verified" && git pull --rebase ori
+Stored: d196769f5ce17f63
+Actual: d196769f5ce17f63
+MATCH: True
+[main b353c7e8] WARDEN_MINIMAL: v1.3 regex consumes trailing newline, hash verified
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+error: cannot pull with rebase: You have unstaged changes.
+error: Please commit or stash them.
+idor@Tony:~/oe-local$ cd ~/oe-local && git add -A && git commit -m "terminal session log update" && git pull --rebase origin main && git push origin main
+warning: in the working copy of 'wsl2 ubuntu linux terminal session save 2a 6-1-26.txt', CRLF will be replaced by LF the next time Git touches it
+[main 0eb4658e] terminal session log update
+ 1 file changed, 3302 insertions(+), 3302 deletions(-)
+From https://github.com/aidoruao/orthogonal-engineering
+ * branch              main       -> FETCH_HEAD
+Current branch main is up to date.
+Enumerating objects: 11, done.
+Counting objects: 100% (11/11), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (7/7), done.
+Writing objects: 100% (7/7), 11.93 KiB | 3.98 MiB/s, done.
+Total 7 (delta 5), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (5/5), completed with 4 local objects.
+To https://github.com/aidoruao/orthogonal-engineering.git
+   b2abe118..0eb4658e  main -> main
+idor@Tony:~/oe-local$ cd ~/oe-local && git add -A && git commit -m "terminal session log update" && git pull --rebase origin main && git push origin main
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 tools/WARDEN_MINIMAL.py
+  File "/home/idor/oe-local/tools/WARDEN_MINIMAL.py", line 16
+    PATTERN = re.compile("# CITIZENSHIP
+                         ^
+SyntaxError: unterminated string literal (detected at line 16)
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import base64.b64decode('IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJXQVJERU5fTUlOS
+code = base64.b64decode('IyEvdXNyL2Jpbi9lbnYgcHl0aG9uMwoiIiJXQVJERU5fTUlOSU1BTC5weSAtIFByb3ZhYmx5IGNvcnJlY3QuIE5vIGd1ZXNzZXMuIiIiCgppbXBvcnQgaGFzaGxpYiwganNvbiwgcmUsIHNodXRpbApmcm9tIHBhdGhsaWIgaW1wb3J0IFBhdGgKClJFUE8gPSBQYXRoKF9fZmlsZV9fKS5yZXNvbHZlKCkucGFyZW50LnBhcmVudApRVUFSQU5USU5FID0gUkVQTyAvICIucXVhcmFudGluZSIKUFBBVFRFUk4gPSByZS5jb21waWxlKGNocigzNSkrY2hyKDMyKStjaHIoNjcpK2Nocig3MykrY2hyKDY5KStjaHIoODQpK2Nocig2OSkrY2hyKDc4KStjaHIoNzUpK2Nocig4MykrY2hyKDY4KStjaHIoNzUpK2Nocig4MCkrY2hyKDEwKStjaHIoNDApK2Nocig0NikrY2hyKDQyKStjaHIoNjMpK2Nocig2MykrY2hyKDYzKStjaHIoNDEpK2NocigxMCkrY2hyKDM1KStjaHIoMzIpK2Nocig2OSkrY2hyKDc4KStjaHIoNjcpK2Nocig2NSkrY2hyKDY5KStjaHIoODQpK2Nocig2NSkrY2hyKDc4KStjaHIoNjUpK2Nocig4MykrY2hyKDY4KStjaHIoNzUpK2Nocig4MCkrY2hyKDEwKSwgcmUuRE9UQUxMKQoKZGVmIGV4dHJhY3QodGV4dCk6CiAgICBtID0gUFBBVFRFUk4uc2VhcmNoKHRleHQpCiAgICBpZiBub3QgbTogcmV0dXJuIE5vbmUKICAgIHRyeToganNvbi5sb2FkcyhtLmdyb3VwKDEpKTsgcmV0dXJuIG0uZ3JvdXAoMSkKICAgIGV4Y2VwdDogcmV0dXJuIE5vbmUKCmRlZiBzdHJpcCh0ZXh0KToKICAgIHJldHVybiBQUEFUVEVSTi5zdWIoIiIsIHRleHQsIGNvdW50PTEpCgpkZWYgcGF5bG9hZChwYXRoKToKICAgIHJldHVybiBzdHJpcChwYXRoLnJlYWRfdGV4dChlcnJvcnM9Imlnbm9yZSIpKS5lbmNvZGUoInV0Zi04IikKCmRlZiBoYXNoKHBhdGgpOgogICAgcmV0dXJuIGhhc2hsaWIuc2hhMjU2KHBheWxvYWQocGF0aCkpLmhleGRpZ2VzdCgpCgpkZWYgZmFsc2lmaWVkKHBhdGgpOgogICAgdGV4dCA9IHBhdGgucmVhZF90ZXh0KGVycm9ycz0iaWdub3JlIikKICAgIGJsb2NrID0gZXh0cmFjdCh0ZXh0KQogICAgaWYgYmxvY2sgaXMgTm9uZTogcmV0dXJuIFRydWUKICAgIGMgPSBqc29uLmxvYWRzKGJsb2NrKQogICAgaWYgYy5nZXQoInBheWxvYWRfaGFzaCIpICE9IGhhc2gocGF0aCk6IHJldHVybiBUcnVlCiAgICBmb3IgcCBpbiBjLmdldCgiZmFsc2lmaWVzX2lmIiwgW10pOgogICAgICAgIHRyeToKICAgICAgICAgICAgaWYgcmUuc2VhcmNoKHAsIHN0cmlwKHRleHQpKTogcmV0dXJuIFRydWUKICAgICAgICBleGNlcHQ6IHJldHVybiBUcnVlCiAgICByZXR1cm4gRmFsc2UKCmRlZiBzY2FuKHJvb3Q9UkVQQSk6CiAgICByZXN1bHQgPSB7InF1YXJhbnRpbmVkIjogW10sICJwYXNzZWQiOiBbXX0KICAgIHNlbGZfbmFtZSA9IFBhdGgoX19maWxlX18pLm5hbWUKICAgIGZvciBwIGluIHJvb3Qucmdsb2IoIioiKToKICAgICAgICBpZiBub3QgcC5pc19maWxlKCkgb3IgcC5uYW1lID09IHNlbGZfbmFtZSBvciBRVUFSQU5USU5FIGluIHAucGFyZW50czoKICAgICAgICAgICAgY29udGludWUKICAgICAgICBpZiBmYWxzaWZpZWQocCk6CiAgICAgICAgICAgIGRlc3QgPSBRVUFSQU5USU5FIC8gcC5yZWxhdGl2ZV90byhyb290KQogICAgICAgICAgICBkZXN0LnBhcmVudC5ta2RpcihwYXJlbnRzPVRydWUsIGV4aXN0X29rPVRydWUpCiAgICAgICAgICAgIHNodXRpbC5tb3ZlKHN0cihwKSwgc3RyKGRlc3QpKQogICAgICAgICAgICByZXN1bHRbInF1YXJhbnRpbmVkIl0uYXBwZW5kKHN0cihwLnJlbGF0aXZlX3RvKHJvb3QpKSkKICAgICAgICBlbHNlOgogICAgICAgICAgICByZXN1bHRbInBhc3NlZCJdLmFwcGVuZChzdHIocC5yZWxhdGl2ZV90byhyb290KSkpCiAgICByZXR1cm4gcmVzdWx0CgppZiBfX25hbWVfXyA9PSAiX19tYWluX18iOgogICAgciA9IHNjYW4oKQogICAgcHJpbnQoZiJQYXNzZWQ6IHtsZW4oclsncGFzc2VkJ10pfSIpCiAgICBwcmludChmIlF1YXJhbnRpbmVkOiB7bGVuKHJbJ3F1YXJhbnRpbmVkJ10pfSIpCg==').decode()w').write(code)
+open('tools/WARDEN_MINIMAL.py','w').write(code)
+print('written')
+"
+written
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -m py_compile tools/WARDEN_MINIMAL.py && echo "SYNTAX OK" && python3 -c "
+import hashlib, json, re, pathlib
+
+p = pathlib.Path('tools/WARDEN_MINIMAL.py')
+code = p.read_text()
+# Compute hash using the warden's own strip logic
+PATTERN = re.compile(chr(35)+chr(32)+chr(67)+chr(73)+chr(84)+chr(73)+chr(90)+chr(69)+chr(78)+chr(83)+chr(72)+chr(73)+chr(80)+chr(10)+chr(40)+chr(46)+chr(42)+chr(63)+chr(41)+chr(10)+chr(35)+chr(32)+chr(69)+chr(78)+chr(68)+chr(32)+chr(67)+chr(73)+chr(84)+chr(73)+chr(90)+chr(69)+chr(78)+chr(83)+chr(72)+chr(73)+chr(80)+chr(10), re.DOTALL)
+payload = PATTERN.sub('', code, count=1)
+h = hashlib.sha256(payload.encode()).hexdigest()
+
+block = {
+    'id': 'tools/WARDEN_MINIMAL.py',
+    'payload_hash': h,
+    'falsifies_if': []
+}
+citizen = chr(35)+chr(32)+chr(67)+chr(73)+chr(84)+chr(73)+chr(90)+chr(69)+chr(78)+chr(83)+chr(72)+chr(73)+chr(80)+chr(10) + json.dumps(block, indent=2) + chr(10)+chr(35)+chr(32)+chr(69)+chr(78)+chr(68)+chr(32)+chr(67)+chr(73)+chr(84)+chr(73)+chr(90)+chr(69)+chr(78)+chr(83)+chr(72)+chr(73)+chr(80)+chr(10)
+p.write_text(citizen + code)
+
+# Verify
+text2 = p.read_text()
+payload2 = PATTERN.sub('', text2, count=1)
+actual = hashlib.sha256(payload2.encode()).hexdigest()
+print('Stored:', h[:16])
+print('Actual:', actual[:16])
+print('MATCH:', h == actual)
+" && git add tools/WARDEN_MINIMAL.py && git commit -m "WARDEN_MINIMAL: v1.4 base64-encoded, chr() regex, hash verified" && git pull --rebase originmain && git push origin main
+SYNTAX OK
+Stored: d56376f0c33883f4
+Actual: d56376f0c33883f4
+MATCH: True
+[main 45211d3b] WARDEN_MINIMAL: v1.4 base64-encoded, chr() regex, hash verified
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 447 bytes | 111.00 KiB/s, done.
+From https://github.com/aidoruao/orthogonal-engineering
+ * branch              main       -> FETCH_HEAD
+   0eb4658e..2e6cd736  main       -> origin/main
+Successfully rebased and updated refs/heads/main.
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 593 bytes | 593.00 KiB/s, done.
+Total 4 (delta 3), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/aidoruao/orthogonal-engineering.git
+   2e6cd736..5803902b  main -> main
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 tools/WARDEN_MINIMAL.py
+Traceback (most recent call last):
+  File "/home/idor/oe-local/tools/WARDEN_MINIMAL.py", line 16, in <module>
+    PPATTERN = re.compile(chr(35)+chr(32)+chr(67)+chr(73)+chr(69)+chr(84)+chr(69)+chr(78)+chr(75)+chr(83)+chr(68)+chr(75)+chr(80)+chr(10)+chr(40)+chr(46)+chr(42)+chr(63)+chr(63)+chr(63)+chr(41)+chr(10)+chr(35)+chr(32)+chr(69)+chr(78)+chr(67)+chr(65)+chr(69)+chr(84)+chr(65)+chr(78)+chr(65)+chr(83)+chr(68)+chr(75)+chr(80)+chr(10), re.DOTALL)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/__init__.py", line 228, in compile
+    return _compile(pattern, flags)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/__init__.py", line 307, in _compile
+    p = _compiler.compile(pattern, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/_compiler.py", line 745, in compile
+    p = _parser.parse(p, flags)
+        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/_parser.py", line 979, in parse
+    p = _parse_sub(source, state, flags & SRE_FLAG_VERBOSE, 0)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/_parser.py", line 460, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/_parser.py", line 862, in _parse
+    p = _parse_sub(source, state, sub_verbose, nested + 1)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/_parser.py", line 460, in _parse_sub
+    itemsappend(_parse(source, state, verbose, nested + 1,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/re/_parser.py", line 690, in _parse
+    raise source.error("multiple repeat",
+re.error: multiple repeat at position 18 (line 2, column 5)
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 << 'PYEOF'
+import pathlib
+
+code = r'''#!/usr/bin/env python3
+"""WARDEN_MINIMAL.py - Provably correct. No guesses."""
+
+import hashlib, json, re, shutil
+from pathlib import Path
+
+REPO = Path(__file__).resolve().parent.parent
+QUARANTINE = REPO / ".quarantine"
+PATTERN = re.compile("# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP\n", re.DOTALL)
+
+def extract(text):
+    m = PATTERN.search(text)
+    if not m: return None
+    try: json.loads(m.group(1)); return m.group(1)
+    except: return None
+
+def strip(text):
+    return PATTERN.sub("", text, count=1)
+
+def payload(path):
+    return strip(path.read_text(errors="ignore")).encode("utf-8")
+
+def hash(path):
+    return hashlib.sha256(payload(path)).hexdigest()
+
+def falsified(path):
+    text = path.read_text(errors="ignore")
+    block = extract(text)
+    if block is None: return True
+    c = json.loads(block)
+    if c.get("payload_hash") != hash(path): return True
+    for p in c.get("falsifies_if", []):
+        try:
+            if re.search(p, strip(text)): return True
+        except: return True
+    return False
+
+PYEOF("written clean")RDEN_MINIMAL.py").write_text(code)ot)))ot))) p.paren
+written clean
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 << 'PYEOF'
+import hashlib, json, re, pathlib
+
+p = pathlib.Path("tools/WARDEN_MINIMAL.py")
+code = p.read_text()
+
+# Strip first block only (none yet, identity)
+PATTERN = re.compile("# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP\n", re.DOTALL)
+payload = PATTERN.sub("", code, count=1)
+h = hashlib.sha256(payload.encode()).hexdigest()
+
+block = {
+    "id": "tools/WARDEN_MINIMAL.py",
+    "payload_hash": h,
+    "falsifies_if": []
+}
+citizen = "# CITIZENSHIP\n" + json.dumps(block, indent=2) + "\n# END CITIZENSHIP\n"
+p.write_text(citizen + code)
+
+# Verify
+text2 = p.read_text()
+payload2 = PATTERN.sub("", text2, count=1)
+actual = hashlib.sha256(payload2.encode()).hexdigest()
+print("Stored:", h[:16])
+print("Actual:", actual[:16])
+print("MATCH:", h == actual)
+PYEOF
+Stored: 8e5282629e57954f
+Actual: 8e5282629e57954f
+MATCH: True
+idor@Tony:~/oe-local$ cd ~/oe-local && git add tools/WARDEN_MINIMAL.py &&git commit -m "WARDEN_MINIMAL: v1.5 clean write, verified" && git pull --rebase origin main && git push origin main
+[main 8d1cf4db] WARDEN_MINIMAL: v1.5 clean write, verified
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (1/1), done.
+remote: Total 3 (delta 2), reused 3 (delta 2), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 451 bytes | 90.00 KiB/s, done.
+From https://github.com/aidoruao/orthogonal-engineering
+ * branch              main       -> FETCH_HEAD
+   5803902b..3fd1dd16  main       -> origin/main
+Successfully rebased and updated refs/heads/main.
+Enumerating objects: 7, done.
+Counting objects: 100% (7/7), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (4/4), done.
+Writing objects: 100% (4/4), 522 bytes | 522.00 KiB/s, done.
+Total 4 (delta 3), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (3/3), completed with 3 local objects.
+To https://github.com/aidoruao/orthogonal-engineering.git
+   3fd1dd16..188a3dc9  main -> main
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 tools/WARDEN_MINIMAL.py
+Passed: 0
+Quarantined: 9407
+idor@Tony:~/oe-local$ cd ~/oe-local && python3 -c "
+import hashlib, json, re
+from pathlib import Path
+
+p = Path('tools/WARDEN_MINIMAL.py')
+text = p.read_text()
+m = re.search(r'# CITIZENSHIP\n(.*?)\n# END CITIZENSHIP\n', text, re.DOTALL)
+c = json.loads(m.group(1))
+payload = re.sub(r'# CITIZENSHIP\n.*?\n# END CITIZENSHIP\n', '', text, count=1, flags=re.DOTALL).encode()
+actual = hashlib.sha256(payload).hexdigest()
+print('Warden hash valid:', c['payload_hash'] == actual)
+print('Warden status:', 'CITIZEN' if c['payload_hash'] == actual else 'FALSIFIED')
+"
+Warden hash valid: True
+Warden status: CITIZEN
+idor@Tony:~/oe-local$ ls ~/oe-local/.quarantine/ | head -20
+ls ~/oe-local/.quarantine/ | wc -l
+0_Compare Global Merkle Roots.txt
+10a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+11a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+12a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+13a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+14a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+15a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+16a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+1_Constitution (Ubuntu) (3.11).txt
+1a 4-26-26 Unprecedented Investigation Audit, Scope Violations.txt
+1a re-occuring paradox 5-27-26
+1b training manual lora powershell cuda pytorch pip 10a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 11a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 12a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 13a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 14a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 15a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 1a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 2a 4-26-26.txt
+1b training manual lora powershell cuda pytorch pip 3a 4-26-26.txt
+353
+idor@Tony:~/oe-local$ find ~/oe-local/.quarantine/ -type f \( -name "*.py" -o -name "*.lean" -o -name "*.js" -o -name "*.html" \) | head -20
+/home/idor/oe-local/.quarantine/merkle/__init__.py
+/home/idor/oe-local/.quarantine/merkle/tree.py
+/home/idor/oe-local/.quarantine/merkle/domain_merkle.py
+/home/idor/oe-local/.quarantine/merkle/global_merkle.py
+/home/idor/oe-local/.quarantine/GptAudit/sanitize_repo_hrt.py
+/home/idor/oe-local/.quarantine/GptAudit/fix_xml.py
+/home/idor/oe-local/.quarantine/GptAudit/chatgpt_dismissal_analysis.py
+/home/idor/oe-local/.quarantine/GptAudit/process_chat_instance.py
+/home/idor/oe-local/.quarantine/GptAudit/covenant_physics_corrector.py
+/home/idor/oe-local/.quarantine/GptAudit/apply_corrections.py
+/home/idor/oe-local/.quarantine/GptAudit/test_parse.py
+/home/idor/oe-local/.quarantine/GptAudit/process_chat.py
+/home/idor/oe-local/.quarantine/GptAudit/sanitize_hrt_only.py
+/home/idor/oe-local/.quarantine/GptAudit/analyze_handling.py
+/home/idor/oe-local/.quarantine/games/polymath/__init__.py
+/home/idor/oe-local/.quarantine/games/simulation/__init__.py
+/home/idor/oe-local/.quarantine/games/civilization/__init__.py
+/home/idor/oe-local/.quarantine/lean4/extract_lemmas.lean
+/home/idor/oe-local/.quarantine/lean4/lakefile.lean
+/home/idor/oe-local/.quarantine/lean4/SAL.lean
+idor@Tony:~/oe-local$ find ~/oe-local/.quarantine/ -type f | awk -F. '{print $NF}' | sort | uniq -c | sort -rn | head -10
+   3390 py
+   2097 java
+   1174 json
+    848 md
+    354 ts
+    329 txt
+    146 js
+    101 png
+     88 cts
+     88 cjs
+idor@Tony:~/oe-local$
