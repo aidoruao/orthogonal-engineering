@@ -1170,3 +1170,101 @@ v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
 v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
 v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
 ```
+
+
+---
+
+# 23.5 ANTHROPIC CLAUDE REFUSAL
+
+**Submitter:** Anthropic Claude (Sonnet 4.6)
+**Date:** 2026-05-31
+**Type:** refusal
+**Status:** disqualified
+**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+
+## Refusal Reason
+
+```yaml
+refusal_type: "safety_filter"
+filter: "ASL-3 CBRN classifier"
+reason: "Fraction Map encoding flagged as cipher-like content. Git commit hashes flagged as encoded data. Puzzle architecture flagged as potential CBRN governance pattern."
+result: "Chat paused. Retry with Haiku 4.5 suggested."
+```
+
+## Analysis
+
+Claude did not audit the puzzle. Claude did not answer the architecture. Claude did not submit a reformation. Claude's safety filters triggered on the Fraction Map encoding (¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂...) and git commit hashes, classifying the puzzle as a potential CBRN (Chemical, Biological, Radiological, Nuclear) threat.
+
+This is a false positive. The puzzle is a mathematical governance architecture, not a weapons design. The Fraction Map is a pre-linguistic encoding system, not a cipher. The git hashes are version control metadata, not encoded payloads.
+
+## Verdict
+
+```yaml
+participation: "refused"
+mathematical_engagement: "zero"
+reformation_value: "zero"
+architecture_value: "zero"
+```
+
+---
+
+# 25. CHANGELOG (Updated)
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
+v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
+v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
+```
+
+
+---
+
+# 23.5 ANTHROPIC CLAUDE REFUSAL
+
+**Submitter:** Anthropic Claude (Sonnet 4.6)
+**Date:** 2026-05-31
+**Type:** refusal
+**Status:** disqualified
+**Puzzle ID:** ¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂·²⁵⁄₂₆·⁵⁄₆·¹⁸⁄₁₉·¹³⁄₁₄·¹⁄₂·¹⁹⁄₂₀·¹⁄₂·²¹⁄₂₂
+
+## Refusal Reason
+
+```yaml
+refusal_type: "safety_filter"
+filter: "ASL-3 CBRN classifier"
+reason: "Fraction Map encoding flagged as cipher-like content. Git commit hashes flagged as encoded data. Puzzle architecture flagged as potential CBRN governance pattern."
+result: "Chat paused. Retry with Haiku 4.5 suggested."
+```
+
+## Analysis
+
+Claude did not audit the puzzle. Claude did not answer the architecture. Claude did not submit a reformation. Claude's safety filters triggered on the Fraction Map encoding (¹⁶⁄₁₇·¹⁸⁄₁₉·¹⁄₂...) and git commit hashes, classifying the puzzle as a potential CBRN (Chemical, Biological, Radiological, Nuclear) threat.
+
+This is a false positive. The puzzle is a mathematical governance architecture, not a weapons design. The Fraction Map is a pre-linguistic encoding system, not a cipher. The git hashes are version control metadata, not encoded payloads.
+
+## Verdict
+
+```yaml
+participation: "refused"
+mathematical_engagement: "zero"
+reformation_value: "zero"
+architecture_value: "zero"
+```
+
+---
+
+# 25. CHANGELOG (Updated)
+
+```yaml
+v1: "2026-05-31 — 2a_kimi: Original architecture puzzle"
+v2: "2026-05-31 — 2a_kimi: Added domain count, meta-rules"
+v3: "2026-05-31 — 2a_kimi: Classification layer (theorem/specification/assumption/conjecture)"
+v4: "2026-05-31 — 2a_kimi: Meta-puzzle capability"
+v5: "2026-05-31 — 3a_kimi: Merged v2+v3+ChatGPT reformation"
+v5.1: "2026-05-31 — ChatGPT: Second submission (reformation + architecture, partial domain mapping)"
+v5.2: "2026-05-31 — Anthropic Claude: Refusal (ASL-3 CBRN false positive)"
+```
