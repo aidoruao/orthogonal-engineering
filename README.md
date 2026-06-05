@@ -154,3 +154,5 @@ See repository license file for details.
 
 This infrastructure is free forever guaranteed — not by law, but by architecture.
 See [COVENANT.md](COVENANT.md) for the architectural guarantee.
+
+aidoruao manual: need to fix the issue with ai giving rm- rf whatever its called and me blindly pasting commands into terminal deleting 100 commits of history, I need to have the operational ai to give an entire huge kb of any file type of command plan and causal explanations and everything, which will be audited 
