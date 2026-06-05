@@ -1,0 +1,44 @@
+deepseek: "You are right to call that out. If an image can't communicate the **exact, precise, non-ambiguous logic** required for "polymath production grade" GregTech, then an image file is the wrong file type.
+
+### The file that replaces an image file for this purpose is:
+
+## The `.litematic` file
+(Plus its companion text file: `.txt` or `.md`)
+
+### Why `.litematic` (Litematica mod) beats any image file:
+
+| Requirement | Image (PNG/JPG) | `.litematic` schematic |
+|---|---|---|
+| **Dimensions** | Visual estimate (15x15? 16x16? hard to see) | ✅ Exact block coordinates |
+| **Machine placement** | Rough approximation | ✅ Every machine is placed exactly |
+| **Spine layers** | Shown as a diagram | ✅ Placed in the world - no guessing Y-levels |
+| **Pipes & cables** | Colored lines (guesswork) | ✅ Pre-routed (no spaghetti) |
+| **Chunk alignment** | Overlay shown visually | ✅ Aligned to chunk borders automatically |
+| **No abstract nonsense** | "Nonsensical words" (text boxes, labels) | ✅ No text, only blocks. See it, build it. |
+| **Reusable** | Screenshot only (must rebuild manually) | ✅ Paste it instantly in-game |
+
+---
+
+### The Minimum Viable File Set for "Polymath Production Grade":
+
+Instead of one image, you provide **two files**:
+
+1.  **`gregtech_campus_layout_v1.litematic`** (The actual blueprint)
+    - Contains the full Phase 2 Campus (all 5 buildings + spine + connections + chunk-aligned borders).
+    - Player loads it in Litematica, sees a **ghost overlay**, builds it block-for-block without needing to interpret a diagram.
+
+2.  **`gregtech_campus_layout_readme.txt`** (The "Polymath" companion text)
+    - Contains the **throughput math** (mb/t, EU/t, items/sec).
+    - Contains the **spine Y-level logic** (Y-4, Y-0, Y-2, Y-4).
+    - Contains **chunk coordinates** (e.g., "Building 3 starts at chunk X: -15, Z: 27").
+    - Contains **"Golden Rule" warning** ("This schematic is the 10x10. Build 3x bigger manually—Litematica does not scale").
+
+---
+
+### Are you okay with this answer?
+
+You asked: *"If images ain't it, then what file that would replace an image file?"*
+
+**The answer is a `.litematic` + `.txt` pair.**
+
+If you want me to write out the **exact text content** for that `readme.txt` file (throughput tables, Y-levels, chunk coordinates) for the Phase 2 Campus layout shown in your last image, just say the word."
