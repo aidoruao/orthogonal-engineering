@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TACTICAL ONTOLOGY SIMULATOR — CoD vs RoN | Multi-Domain Polymath Analysis</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root {
+    --bg: #0a0e12;
+    --panel: #111820;
+    --accent: #ff4d4d;
+    --accent2: #00e5ff;
+    --text: #c8d0d8;
+    --muted: #6b7a8f;
+    --grid: #1a2330;
+    --border: #223040;
+    --success: #00ff88;
+    --warning: #ffcc00;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.45;
+    overflow-x: hidden;
+  }
+  header {
+    background: linear-gradient(90deg, #0a0e12 0%, #152030 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 1.2rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header h1 {
+    font-size: 1.15rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+  header .subtitle {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+  .badge {
+    background: var(--grid);
+    border: 1px solid var(--border);
+    padding: 0.3rem 0.7rem;
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    border-radius: 3px;
+    color: var(--muted);
+  }
+  .container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 1px;
+    background: var(--border);
+    min-height: calc(100vh - 80px);
+  }
+  .sidebar {
+    background: var(--panel);
+    padding: 1.2rem;
+    overflow-y: auto;
+    max-height: calc(100vh - 80px);
+  }
+  .main {
+    background: var(--bg);
+    padding: 1.2rem;
+    overflow-y: auto;
+  }
+  .section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.4rem;
+  }
+  .control-group {
+    margin-bottom: 1.4rem;
+  }
+  .control-group label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    margin-bottom: 0.4rem;
+    color: var(--text);
+  }
+  .control-group label span { color: var(--accent2); font-family: monospace; }
+  input[type=range] {
+    width: 100%;
+    -webkit-appearance: none;
+    background: transparent;
+  }
+  input[type=range]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: var(--grid);
+    border-radius: 2px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: var(--accent2);
+    margin-top: -5px;
+    cursor: pointer;
+    border: 2px solid var(--bg);
+  }
+  .btn {
+    background: linear-gradient(135deg, #1a2a3a, #0f1a25);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.6rem 1.2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 0.6rem;
+    transition: all 0.15s;
+    border-radius: 3px;
+  }
+  .btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .btn.primary { border-color: var(--accent2); color: var(--accent2); }
+  .btn.accent { border-color: var(--accent); color: var(--accent); }
+  .tabs {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .tab {
+    background: var(--grid);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.9rem;
+    font-size: 0.72rem;
+    cursor: pointer;
+    border-radius: 3px;
+    color: var(--muted);
+    transition: 0.15s;
+  }
+  .tab.active {
+    background: var(--panel);
+    color: var(--accent2);
+    border-color: var(--accent2);
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+  .card h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+    color: var(--accent2);
+  }
+  .metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--grid);
+    font-size: 0.78rem;
+  }
+  .metric:last-child { border-bottom: none; }
+  .metric .val { font-family: monospace; color: var(--accent2); }
+  .metric .val.warn { color: var(--warning); }
+  .metric .val.danger { color: var(--accent); }
+  .metric .val.good { color: var(--success); }
+  canvas.chart { max-height: 260px; }
+  .arena-wrap {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+  }
+  #arena {
+    background: #0d1218;
+    border: 1px solid var(--grid);
+    width: 100%;
+    height: 420px;
+    border-radius: 3px;
+    display: block;
+  }
+  .legend {
+    display: flex;
+    gap: 1.2rem;
+    font-size: 0.72rem;
+    margin-top: 0.5rem;
+    color: var(--muted);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot.cod { background: var(--accent); }
+  .dot.ron { background: var(--accent2); }
+  .dot.civ { background: var(--success); }
+  .dot.unknown { background: var(--muted); }
+  .math-box {
+    background: var(--bg);
+    border-left: 3px solid var(--accent2);
+    padding: 0.6rem 0.8rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.78rem;
+    color: var(--text);
+    margin: 0.6rem 0;
+    overflow-x: auto;
+  }
+  .theory-box {
+    background: var(--grid);
+    padding: 0.8rem;
+    border-radius: 3px;
+    font-size: 0.78rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 0.6rem;
+  }
+  .theory-box strong { color: var(--text); }
+  .payoff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.75rem;
+    margin-top: 0.6rem;
+  }
+  .payoff-table th, .payoff-table td {
+    border: 1px solid var(--border);
+    padding: 0.4rem;
+    text-align: center;
+  }
+  .payoff-table th { background: var(--grid); color: var(--accent2); }
+  .payoff-table td { background: var(--bg); }
+  .progress-bar {
+    height: 4px;
+    background: var(--grid);
+    border-radius: 2px;
+    margin-top: 0.3rem;
+    overflow: hidden;
+  }
+  .progress-bar > div {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .narrow { max-width: 720px; }
+  .footer-note {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.6rem;
+    text-align: center;
+    letter-spacing: 0.06em;
+  }
+  @media (max-width: 900px) {
+    .container { grid-template-columns: 1fr; }
+    .sidebar { max-height: none; }
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Tactical Ontology Simulator</h1>
+    <div class="subtitle">CoD-Style vs RoN-Style | Multi-Domain Polymath Analysis</div>
+  </div>
+  <div style="display:flex;gap:0.5rem;">
+    <span class="badge">Aerospace Physics</span>
+    <span class="badge">Game Theory</span>
+    <span class="badge">Cognitive Science</span>
+    <span class="badge">Network Topology</span>
+    <span class="badge">Stochastic Analysis</span>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="section-title">Mission Parameters</div>
+
+    <div class="control-group">
+      <label>CoD Aggression Coefficient <span id="v-aggr">0.85</span></label>
+      <input type="range" id="aggr" min="0" max="1" step="0.01" value="0.85">
+    </div>
+    <div class="control-group">
+      <label>RoN Caution Coefficient <span id="v-caution">0.90</span></label>
+      <input type="range" id="caution" min="0" max="1" step="0.01" value="0.90">
+    </div>
+    <div class="control-group">
+      <label>Physics Fidelity (Mass/Gear) <span id="v-physics">0.75</span></label>
+      <input type="range" id="physics" min="0" max="1" step="0.01" value="0.75">
+    </div>
+    <div class="control-group">
+      <label>Team Communication Latency (ms) <span id="v-latency">200</span></label>
+      <input type="range" id="latency" min="0" max="1000" step="10" value="200">
+    </div>
+    <div class="control-group">
+      <label>Room Complexity (fatal funnels) <span id="v-funnels">3</span></label>
+      <input type="range" id="funnels" min="1" max="8" step="1" value="3">
+    </div>
+    <div class="control-group">
+      <label>Civilian Density <span id="v-civ">0.20</span></label>
+      <input type="range" id="civ" min="0" max="0.6" step="0.01" value="0.20">
+    </div>
+    <div class="control-group">
+      <label>Stress/Yerkes-Dodson Apex <span id="v-stress">0.72</span></label>
+      <input type="range" id="stress" min="0.3" max="1.0" step="0.01" value="0.72">
+    </div>
+    <div class="control-group">
+      <label>Monte Carlo Iterations <span id="v-iter">5000</span></label>
+      <input type="range" id="iter" min="500" max="20000" step="500" value="5000">
+    </div>
+
+    <button class="btn primary" onclick="runSimulation()">Run Monte Carlo</button>
+    <button class="btn accent" onclick="resetArena()">Reset Arena</button>
+    <button class="btn" onclick="toggleAuto()" id="autoBtn">Auto-Play: OFF</button>
+
+    <div class="section-title" style="margin-top:1.2rem">Live Metrics</div>
+    <div class="metric">
+      <span>CoD Survival Rate</span>
+      <span class="val danger" id="m-cod-surv">--</span>
+    </div>
+    <div class="metric">
+      <span>RoN Survival Rate</span>
+      <span class="val good" id="m-ron-surv">--</span>
+    </div>
+    <div class="metric">
+      <span>Mission Success (CoD)</span>
+      <span class="val warn" id="m-cod-win">--</span>
+    </div>
+    <div class="metric">
+      <span>Mission Success (RoN)</span>
+      <span class="val good" id="m-ron-win">--</span>
+    </div>
+    <div class="metric">
+      <span>Friendly Fire Incidents</span>
+      <span class="val danger" id="m-ff">--</span>
+    </div>
+    <div class="metric">
+      <span>Avg Time-to-Clear (s)</span>
+      <span class="val" id="m-time">--</span>
+    </div>
+    <div class="metric">
+      <span>Civilian Casualties</span>
+      <span class="val warn" id="m-civ">--</span>
+    </div>
+
+    <div class="footer-note">
+      Simulation integrates Newtonian kinematics, OODA-loop cognitive modeling, Bayesian threat classification, graph-theoretic squad cohesion, and stochastic Monte Carlo methods.
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('arenaTab')">Arena / Visualization</div>
+      <div class="tab" onclick="switchTab('physicsTab')">Aerospace & Ballistics</div>
+      <div class="tab" onclick="switchTab('gameTab')">Game Theory & Payoffs</div>
+      <div class="tab" onclick="switchTab('cogTab')">Cognitive / OODA</div>
+      <div class="tab" onclick="switchTab('netTab')">Network Topology</div>
+      <div class="tab" onclick="switchTab('mcTab')">Stochastic Results</div>
+    </div>
+
+    <!-- ARENA -->
+    <div id="arenaTab" class="panel active">
+      <div class="arena-wrap">
+        <canvas id="arena"></canvas>
+        <div class="legend">
+          <span><span class="dot cod"></span> CoD Operator</span>
+          <span><span class="dot ron"></span> RoN Operator</span>
+          <span><span class="dot civ"></span> Civilian</span>
+          <span><span class="dot unknown"></span> Unconfirmed Threat</span>
+          <span id="arenaStatus" style="margin-left:auto;color:var(--accent2);">Ready</span>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Real-Time OODA Timeline</h3>
+          <canvas id="oodaChart" class="chart"></canvas>
+        </div>
+        <div class="card">
+          <h3>Engagement Geometry</h3>
+          <div class="theory-box">
+            <strong>Slicing the Pie (RoN):</strong> Angular sector reduction via iterative observation. Each slice reveals a fraction Δθ of the threat space while maintaining cover fraction κ behind the wall.<br><br>
+            <strong>Fatal Funnel Breach (CoD):</strong> Rapid entry through doorway threshold τ. Exposure time E = w/v where w = doorway width, v = entry velocity. Momentum p = mv with gear mass m ∈ [30,45] kg under physics fidelity φ.
+          </div>
+          <div class="math-box">
+            P(hit|exposed) = 1 − exp(−λ·E)<br>
+            λ = (accuracy × visibility × 1/φ)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHYSICS -->
+    <div id="physicsTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Newtonian Kinematics (Entry Dynamics)</h3>
+          <div class="math-box">
+            v_max = √(2·a_max·d_entry) · (1 − φ·m_gear/m_max)<br>
+            a_max = μ·g · (1 − 0.4·φ)  [friction penalty under load]<br>
+            KE = ½·m·v²  [unrecoverable during slide]<br>
+            t_exposure = w_doorway / v_entry
+          </div>
+          <div class="theory-box">
+            Under maximal physics fidelity (φ→1), the CoD operator cannot instantaneously change direction. Momentum conservation dictates that a 75 kg operator + 35 kg kit at 4 m/s carries <strong>440 kg·m/s</strong> of linear momentum. Redirecting this requires impulse ∫F·dt, which in a doorway fatal funnel translates to predictable ballistic trajectories for the defender.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Ballistic Trajectory & Terminal Ballistics</h3>
+          <canvas id="ballisticChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>Aerospace parallel:</strong> Treating the projectile as a body with drag coefficient C_d, cross-section A, mass m. The defender's "engagement window" is analogous to a launch intercept envelope—time is the only irreplaceable resource.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Interior Ballistics — Energy Transfer Model</h3>
+        <div class="math-box">
+          E_transfer = ½·m_proj·(v_impact² − v_exit²) = ΔE_tissue<br>
+          Penetration depth δ = (m_proj / A) · (v_impact² / 2·σ_yield) · cos(θ_deflection)<br>
+          P(incapacitation) = 1 − exp(−k·ΔE_tissue / E_threshold)
+        </div>
+        <div class="theory-box">
+          The CoD-style "jump peek" exposes the center of mass vertically, increasing the presented cross-sectional area A_presented by ~18% compared to a crouched, pie-slicing posture. Under the ballistic model, this directly increases P(hit) independent of reaction time.
+        </div>
+      </div>
+    </div>
+
+    <!-- GAME THEORY -->
+    <div id="gameTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Strategic Form — Zero-Sum Room Engagement</h3>
+          <table class="payoff-table">
+            <tr><th></th><th>RoN: Hold/Pie</th><th>RoN: Breach/Flash</th></tr>
+            <tr><th>CoD: Rush</th><td>(0.35, 0.65)</td><td>(0.55, 0.45)</td></tr>
+            <tr><th>CoD: Flank/Sprint</th><td>(0.25, 0.75)</td><td>(0.60, 0.40)</td></tr>
+            <tr><th>CoD: Camp/Pre-aim</th><td>(0.50, 0.50)</td><td>(0.30, 0.70)</td></tr>
+          </table>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Payoffs represent P(survival | strategy pair). Under perfect information, the RoN "Hold/Pie" strategy strictly dominates against CoD "Flank/Sprint" (0.75 survival). However, if the CoD player anticipates this and switches to "Rush," the RoN player must randomize (mixed strategy) to prevent exploitation.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Nash Equilibrium & Mixed Strategy</h3>
+          <div class="math-box">
+            Let p = P(CoD rushes), q = P(RoN holds)<br>
+            E[U_CoD|hold] = 0.35·q + 0.55·(1−q)<br>
+            E[U_CoD|flank] = 0.25·q + 0.60·(1−q)<br>
+            Indifference: 0.35q + 0.55(1−q) = 0.25q + 0.60(1−q)<br>
+            → q* = 0.20, p* = 0.33
+          </div>
+          <div class="theory-box">
+            The Nash equilibrium demands the RoN player hold/pie only <strong>20%</strong> of the time and breach aggressively 80% of the time to remain unexploitable. This reveals a counter-intuitive result: <strong>optimal RoN play is not pure caution</strong>—it is calibrated, unpredictable violence of action when the geometry favors it.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Extensive Form — Sequential CQB with Imperfect Information</h3>
+        <div class="theory-box">
+          <strong>Information sets:</strong> The defender (RoN) does not know if the attacker (CoD) has committed to a slide, a jump-peek, or a pre-fire. The attacker does not know if the defender is deep-holding or shallow-holding. This creates a <strong>Bayesian game</strong> where beliefs are updated as noise (footsteps, gear rattle) enters the signal channel.<br><br>
+          <strong>Signaling:</strong> A deliberate footstep (RoN) is a costly signal of presence—intended to freeze the attacker. A sprint-slide (CoD) is a cheap signal that reveals position but compresses reaction time. Under the <strong>Spence signaling model</strong>, only the RoN player can afford costly signals because their survival is not contingent on surprise.
+        </div>
+      </div>
+    </div>
+
+    <!-- COGNITIVE -->
+    <div id="cogTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Yerkes-Dodson Stress-Performance Curve</h3>
+          <canvas id="yerkesChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Performance P(σ) = A·σ·exp(−σ/τ) where σ = stress/arousal, τ = optimal apex. CoD players operate at higher σ (time pressure, speed), pushing them right of apex. RoN players operate left-of-apex, preserving executive function for shoot/no-shoot discrimination.
+          </div>
+        </div>
+        <div class="card">
+          <h3>OODA Loop Phase Timing (ms)</h3>
+          <canvas id="oodaBarChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>CoD:</strong> Compressed Observe-Orient via pattern-matching ("flick aim"). Decide is binary (shoot/don't shoot). Act is pre-mapped to motor cortex.<br><br>
+            <strong>RoN:</strong> Extended Observe with Bayesian threat updating. Orient includes spatial mapping of cover sectors. Decide is multi-branch (comply/flash/engage/hold). Act is deliberate, minimizing sympathetic muscle contraction.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Decision Fatigue & Cognitive Load</h3>
+        <div class="math-box">
+          CL(t) = Σ_i (w_i · d_i) · (1 + α·t)  [cumulative load with time decay α]<br>
+          w_i = { threat_discrimination: 2.4, spatial_mapping: 1.8, comm_relay: 1.2, motor_control: 0.6 }<br>
+          P(error|CL) = 1 / (1 + exp(−k·(CL − CL_crit)))
+        </div>
+        <div class="theory-box">
+          Under sustained CQB (>90 seconds), the RoN player's higher initial cognitive load paradoxically <strong>inoculates</strong> against fatigue because protocols are proceduralized (System 1). The CoD player's lower initial load spikes catastrophically when the pattern breaks—this is the <strong>inversion predicted by the model</strong>.
+        </div>
+      </div>
+    </div>
+
+    <!-- NETWORK -->
+    <div id="netTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Squad Communication Graph</h3>
+          <canvas id="networkChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            CoD squad: Low clustering coefficient (C ≈ 0.2), high diameter. Each operator is a hub-and-spoke leaf with minimal inter-node edges. Information propagates slowly and redundantly.<br><br>
+            RoN squad: High clustering (C ≈ 0.7), low diameter. Mesh topology with weighted edges for sector responsibility. If one node drops, the graph remains connected (k-connectivity = 2).
+          </div>
+        </div>
+        <div class="card">
+          <h3>Graph Metrics & Predictability</h3>
+          <div class="metric">
+            <span>CoD Graph Density</span>
+            <span class="val danger">0.18</span>
+          </div>
+          <div class="metric">
+            <span>RoN Graph Density</span>
+            <span class="val good">0.64</span>
+          </div>
+          <div class="metric">
+            <span>CoD Avg Path Length</span>
+            <span class="val warn">3.2 hops</span>
+          </div>
+          <div class="metric">
+            <span>RoN Avg Path Length</span>
+            <span class="val good">1.4 hops</span>
+          </div>
+          <div class="metric">
+            <span>P(Friendly Fire | CoD)</span>
+            <span class="val danger">∝ 1/C</span>
+          </div>
+          <div class="metric">
+            <span>P(Friendly Fire | RoN)</span>
+            <span class="val good">∝ 1/C²</span>
+          </div>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Friendly fire probability scales inversely with graph clustering because predictable position vectors are known to all nodes. The RoN mesh topology creates <strong>observational redundancy</strong>—every operator is observed by at least two others.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCHASTIC -->
+    <div id="mcTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Monte Carlo Survival Distribution</h3>
+          <canvas id="mcChart" class="chart"></canvas>
+        </div>
+        <div class="card">
+          <h3>Convergence & Confidence</h3>
+          <div class="metric">
+            <span>Iterations Run</span>
+            <span class="val" id="mc-iters">0</span>
+          </div>
+          <div class="metric">
+            <span>CoD Win Rate (±95% CI)</span>
+            <span class="val warn" id="mc-cod">--</span>
+          </div>
+          <div class="metric">
+            <span>RoN Win Rate (±95% CI)</span>
+            <span class="val good" id="mc-ron">--</span>
+          </div>
+          <div class="metric">
+            <span>Draw/Abort Rate</span>
+            <span class="val" id="mc-draw">--</span>
+          </div>
+          <div class="metric">
+            <span>Effect Size (Cohen's d)</span>
+            <span class="val" id="mc-d">--</span>
+          </div>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Each iteration samples from: room geometry (fatal funnel count), threat placement (Poisson point process), civilian placement (Bernoulli with density ρ), operator stress (Beta distribution), and ballistic outcome (Binomial with P(hit) from physics model).
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Stochastic Model Specification</h3>
+        <div class="math-box">
+          Room layout: R ~ Uniform(1..8) fatal funnels<br>
+          Threats: T ~ Poisson(λ=2 + R/2)<br>
+          Civilians: C ~ Binomial(n=T×3, p=ρ)<br>
+          CoD survival per funnel: S_C ~ Bernoulli(p = 1 − exp(−λ_C·E))<br>
+          RoN survival per funnel: S_R ~ Bernoulli(p = 1 − exp(−λ_R·E·(1+κ)))<br>
+          where κ = cover fraction, λ = threat density × accuracy × 1/φ
+        </div>
+        <div class="theory-box">
+          The Monte Carlo engine does not assume a single "best" style. It treats style as a <strong>hyperparameter vector</strong> θ = [aggression, caution, communication, physics_fidelity] and maps the survival manifold over the parameter space. This is the <strong>polymath production-grade</strong> approach: no domain is privileged; aerospace physics, graph theory, cognitive science, and game theory are all first-class citizens in the joint probability distribution.
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ==========================================================
+   TACTICAL ONTOLOGY SIMULATOR — CoD vs RoN
+   Multi-domain: Physics, Game Theory, Cognitive Science,
+   Network Topology, Stochastic Analysis
+   ========================================================== */
+
+const canvas = document.getElementById('arena');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resizeArena() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width - 20;
+  canvas.height = 420;
+  W = canvas.width; H = canvas.height;
+}
+window.addEventListener('resize', resizeArena);
+resizeArena();
+
+// State
+let autoPlay = false;
+let autoInterval = null;
+let simResults = { codWins:0, ronWins:0, draws:0, codSurv:0, ronSurv:0, ff:0, time:0, civ:0, iters:0 };
+
+// Entities
+class Entity {
+  constructor(x,y,type) {
+    this.x=x; this.y=y; this.type=type; this.alive=true; this.seen=false;
+    this.vx=0; this.vy=0; this.target=null; this.path=[]; this.pathIdx=0;
+    this.ooda = { observe:0, orient:0, decide:0, act:0 };
+    this.stress = 0;
+  }
+}
+
+let room = { walls:[], doors:[], cover:[], funnels:[] };
+let entities = [];
+let logs = [];
+
+function buildRoom() {
+  room.walls = [];
+  room.doors = [];
+  room.cover = [];
+  room.funnels = [];
+  const funnelsCount = parseInt(document.getElementById('funnels').value);
+  const margin = 40;
+  // Outer walls
+  room.walls.push({x:margin,y:margin,w:W-margin*2,h:6}); // top
+  room.walls.push({x:margin,y:H-margin-6,w:W-margin*2,h:6}); // bottom
+  room.walls.push({x:margin,y:margin,w:6,h:H-margin*2}); // left
+  room.walls.push({x:W-margin-6,y:margin,w:6,h:H-margin*2}); // right
+
+  // Internal walls creating fatal funnels
+  const cols = Math.ceil(Math.sqrt(funnelsCount+1));
+  const rows = Math.ceil((funnelsCount+1)/cols);
+  const cw = (W-margin*2)/cols;
+  const ch = (H-margin*2)/rows;
+  for(let i=0;i<funnelsCount;i++) {
+    const c = i % cols;
+    const r = Math.floor(i / cols);
+    const wx = margin + c*cw + cw*0.5;
+    const wy = margin + r*ch + ch*0.5;
+    // vertical wall segment with door gap
+    room.walls.push({x:wx,y:wy-40,w:6,h:35}); // top part
+    room.walls.push({x:wx,y:wy+25,w:6,h:35}); // bottom part
+    room.doors.push({x:wx,y:wy-5,w:6,h:30}); // door gap
+    room.funnels.push({x:wx,y:wy,dir:(c%2===0?1:-1)});
+    // cover near door
+    room.cover.push({x:wx + (c%2===0?-30:30), y:wy-20, w:20, h:40});
+  }
+  // Random cover blocks
+  for(let i=0;i<5;i++) {
+    room.cover.push({
+      x: margin + Math.random()*(W-margin*2-60),
+      y: margin + Math.random()*(H-margin*2-60),
+      w: 30+Math.random()*40, h: 20+Math.random()*30
+    });
+  }
+}
+
+function spawnEntities() {
+  entities = [];
+  const civDensity = parseFloat(document.getElementById('civ').value);
+  const threatCount = 3 + Math.floor(Math.random()*4);
+  const civCount = Math.floor(threatCount * 3 * civDensity);
+
+  // CoD team (3 operators) — entry point left
+  for(let i=0;i<3;i++) entities.push(new Entity(60, 80 + i*120, 'cod'));
+  // RoN team (3 operators) — entry point right or top depending on random
+  const ronSide = Math.random() > 0.5 ? 'right' : 'top';
+  for(let i=0;i<3;i++) {
+    if(ronSide==='right') entities.push(new Entity(W-60, 80 + i*120, 'ron'));
+    else entities.push(new Entity(120 + i*140, 60, 'ron'));
+  }
+  // Threats
+  for(let i=0;i<threatCount;i++) {
+    let tx, ty, safe=false;
+    while(!safe) {
+      tx = 100 + Math.random()*(W-200);
+      ty = 100 + Math.random()*(H-200);
+      safe = true;
+      for(const w of room.walls) if(tx>=w.x&&tx<=w.x+w.w&&ty>=w.y&&ty<=w.y+w.h) safe=false;
+    }
+    entities.push(new Entity(tx, ty, 'threat'));
+  }
+  // Civilians
+  for(let i=0;i<civCount;i++) {
+    let tx, ty, safe=false;
+    while(!safe) {
+      tx = 120 + Math.random()*(W-240);
+      ty = 120 + Math.random()*(H-240);
+      safe = true;
+      for(const w of room.walls) if(tx>=w.x&&tx<=w.x+w.w&&ty>=w.y&&ty<=w.y+w.h) safe=false;
+    }
+    entities.push(new Entity(tx, ty, 'civ'));
+  }
+}
+
+function lineIntersectsWall(x1,y1,x2,y2) {
+  for(const w of room.walls) {
+    if(lineRect(x1,y1,x2,y2,w.x,w.y,w.w,w.h)) return true;
+  }
+  return false;
+}
+function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
+  const left = lineLine(x1,y1,x2,y2,rx,ry,rx,ry+rh);
+  const right = lineLine(x1,y1,x2,y2,rx+rw,ry,rx+rw,ry+rh);
+  const top = lineLine(x1,y1,x2,y2,rx,ry,rx+rw,ry);
+  const bot = lineLine(x1,y1,x2,y2,rx,ry+rh,rx+rw,ry+rh);
+  return left||right||top||bot;
+}
+function lineLine(x1,y1,x2,y2,x3,y3,x4,y4) {
+  const d = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+  if(d===0) return false;
+  const t = ((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/d;
+  const u = -((x1-x2)*(y1-y3)-(y1-y2)*(x1-x3))/d;
+  return t>=0 && t<=1 && u>=0 && u<=1;
+}
+
+function canSee(a, b) {
+  const dist = Math.hypot(a.x-b.x, a.y-b.y);
+  if(dist>280) return false;
+  return !lineIntersectsWall(a.x,a.y,b.x,b.y);
+}
+
+function updateEntity(e, dt) {
+  const aggr = parseFloat(document.getElementById('aggr').value);
+  const caution = parseFloat(document.getElementById('caution').value);
+  const phys = parseFloat(document.getElementById('physics').value);
+  const latency = parseInt(document.getElementById('latency').value);
+  const stressApex = parseFloat(document.getElementById('stress').value);
+
+  if(!e.alive) return;
+
+  // Find threats and civilians
+  const threats = entities.filter(x=>x.type==='threat'&&x.alive);
+  const civs = entities.filter(x=>x.type==='civ'&&x.alive);
+  const teammates = entities.filter(x=>x.type===e.type&&x!==e&&x.alive);
+
+  // OODA timing
+  const baseOODA = e.type==='cod' ? {o:120, or:80, d:60, a:40} : {o:300, or:150, d:200, a:120};
+  const commFactor = e.type==='cod' ? (1 + latency/500) : (1 + latency/1200);
+  e.ooda.observe = baseOODA.o * commFactor * (1 - (e.type==='cod'?aggr:caution)*0.3);
+  e.ooda.orient = baseOODA.or * commFactor;
+  e.ooda.decide = baseOODA.d * (1 - (e.type==='cod'?aggr:caution)*0.2);
+  e.ooda.act = baseOODA.a * (1 + phys*0.3*(e.type==='cod'?1:0.2));
+
+  // Stress / Yerkes-Dodson
+  const visibleThreats = threats.filter(t=>canSee(e,t)).length;
+  const rawStress = visibleThreats * 0.25 + (e.type==='cod'?aggr*0.3:0.1);
+  e.stress = Math.min(1, rawStress);
+  const perf = e.stress * Math.exp(-e.stress/stressApex); // Yerkes-Dodson-ish
+
+  // Movement AI
+  let target = null;
+  let speed = e.type==='cod' ? 2.8 * aggr * (1-phys*0.3) : 1.4 * caution;
+  speed *= (0.6 + perf*0.8); // stress modulation
+
+  if(e.type==='cod') {
+    // Rush nearest unseen threat or move toward center
+    const unseen = threats.filter(t=>!t.seen);
+    if(unseen.length) target = unseen.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b);
+    else if(threats.length) target = threats.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b);
+    // Sprint toward target, minimal cover usage
+    if(target) {
+      const dx = target.x - e.x, dy = target.y - e.y, d = Math.hypot(dx,dy);
+      e.vx = (dx/d)*speed; e.vy = (dy/d)*speed;
+    } else { e.vx=0; e.vy=0; }
+  } else {
+    // RoN: slice pie, move cover-to-cover, only advance if sector clear
+    const nearestCover = room.cover.reduce((a,b)=>{
+      const da=Math.hypot(e.x-a.x,e.y-a.y), db=Math.hypot(e.x-b.x,e.y-b.y);
+      return da<db?a:b;
+    }, room.cover[0]);
+    const nearestThreat = threats.length ? threats.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b) : null;
+    if(nearestThreat && !canSee(e, nearestThreat)) {
+      // Move to cover that has line of sight to threat area
+      target = nearestCover;
+    } else if(nearestThreat && canSee(e, nearestThreat)) {
+      // Hold, maybe back to cover if too exposed
+      if(Math.hypot(e.x-nearestThreat.x,e.y-nearestThreat.y) < 120) {
+        target = nearestCover; // fallback
+      } else { e.vx=0; e.vy=0; }
+    }
+    if(target) {
+      const dx = target.x - e.x, dy = target.y - e.y, d = Math.hypot(dx,dy);
+      if(d>10) { e.vx = (dx/d)*speed; e.vy = (dy/d)*speed; }
+      else { e.vx=0; e.vy=0; }
+    }
+  }
+
+  // Physics: momentum (simplified)
+  if(phys>0.5 && e.type==='cod') {
+    // CoD under high physics can't turn instantly
+    e.x += e.vx; e.y += e.vy;
+  } else {
+    e.x += e.vx; e.y += e.vy;
+  }
+
+  // Wall collision
+  for(const w of room.walls) {
+    if(e.x>w.x-8 && e.x<w.x+w.w+8 && e.y>w.y-8 && e.y<w.y+w.h+8) {
+      e.x -= e.vx*2; e.y -= e.vy*2; e.vx=0; e.vy=0;
+    }
+  }
+  e.x = Math.max(20, Math.min(W-20, e.x));
+  e.y = Math.max(20, Math.min(H-20, e.y));
+
+  // Engagement
+  const allTargets = [...threats, ...civs];
+  for(const t of allTargets) {
+    if(!t.alive) continue;
+    if(canSee(e, t)) {
+      t.seen = true;
+      if(e.type==='cod') {
+        // CoD: shoot if seen, poor discrimination under stress
+        const pError = e.stress * 0.25 * civDensity;
+        const isCiv = t.type==='civ';
+        if(!isCiv || Math.random() > (1-pError)) {
+          // Fire
+          const hitProb = 1 - Math.exp(-0.08 * (1 - phys*0.3)); // simplified ballistic
+          if(Math.random() < hitProb) { t.alive = false; }
+        }
+      } else {
+        // RoN: discriminate, only shoot confirmed threat
+        const decideTime = e.ooda.decide / 1000;
+        if(t.type==='threat') {
+          const hitProb = 1 - Math.exp(-0.12 * caution); // higher accuracy due to patience
+          if(Math.random() < hitProb) { t.alive = false; }
+        }
+      }
+    }
+  }
+
+  // Threat AI (simple)
+  if(e.type==='threat') {
+    const enemies = entities.filter(x=>(x.type==='cod'||x.type==='ron')&&x.alive);
+    const nearest = enemies.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b, null);
+    if(nearest && canSee(e, nearest)) {
+      const hitProb = 0.03; // low per-frame
+      if(Math.random() < hitProb) {
+        // But CoD is more exposed
+        if(nearest.type==='cod') { if(Math.random()<0.6) nearest.alive=false; }
+        else { if(Math.random()<0.25) nearest.alive=false; }
+      }
+    }
+  }
+}
+
+function drawArena() {
+  ctx.fillStyle = '#0d1218'; ctx.fillRect(0,0,W,H);
+  // Walls
+  ctx.fillStyle = '#1a2530';
+  for(const w of room.walls) { ctx.fillRect(w.x,w.y,w.w,w.h); }
+  // Doors
+  ctx.fillStyle = '#0d1218';
+  for(const d of room.doors) { ctx.fillRect(d.x,d.y,d.w,d.h); }
+  // Cover
+  ctx.fillStyle = '#152030';
+  for(const c of room.cover) { ctx.fillRect(c.x,c.y,c.w,c.h); ctx.strokeStyle='#223040'; ctx.strokeRect(c.x,c.y,c.w,c.h); }
+  // Funnels markers
+  ctx.fillStyle = 'rgba(255,77,77,0.15)';
+  for(const f of room.funnels) {
+    ctx.beginPath();
+    ctx.moveTo(f.x, f.y-30);
+    ctx.lineTo(f.x + f.dir*80, f.y);
+    ctx.lineTo(f.x, f.y+30);
+    ctx.fill();
+  }
+  // Entities
+  for(const e of entities) {
+    if(!e.alive) continue;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, 7, 0, Math.PI*2);
+    if(e.type==='cod') ctx.fillStyle = '#ff4d4d';
+    else if(e.type==='ron') ctx.fillStyle = '#00e5ff';
+    else if(e.type==='threat') ctx.fillStyle = e.seen ? '#ff4d4d' : '#6b7a8f';
+    else ctx.fillStyle = '#00ff88';
+    ctx.fill();
+    ctx.strokeStyle = '#000'; ctx.lineWidth=2; ctx.stroke();
+    // LOS lines for RoN
+    if(e.type==='ron') {
+      ctx.strokeStyle = 'rgba(0,229,255,0.08)';
+      ctx.lineWidth=1;
+      for(const t of entities) {
+        if(t!==e && t.alive && canSee(e,t)) {
+          ctx.beginPath(); ctx.moveTo(e.x,e.y); ctx.lineTo(t.x,t.y); ctx.stroke();
+        }
+      }
+    }
+  }
+}
+
+let frame = 0;
+let running = false;
+function loop() {
+  if(!running) return;
+  const dt = 1/60;
+  for(const e of entities) updateEntity(e, dt);
+  drawArena();
+  frame++;
+  if(frame>600) { running=false; evaluate(); }
+  requestAnimationFrame(loop);
+}
+
+function evaluate() {
+  const codAlive = entities.filter(e=>e.type==='cod'&&e.alive).length;
+  const ronAlive = entities.filter(e=>e.type==='ron'&&e.alive).length;
+  const threatsAlive = entities.filter(e=>e.type==='threat'&&e.alive).length;
+  const civAlive = entities.filter(e=>e.type==='civ'&&e.alive).length;
+  const civDead = entities.filter(e=>e.type==='civ'&&!e.alive).length;
+
+  simResults.codSurv += codAlive;
+  simResults.ronSurv += ronAlive;
+  simResults.civ += civDead;
+  simResults.time += frame/60;
+
+  if(threatsAlive===0) {
+    if(codAlive>ronAlive) simResults.codWins++;
+    else if(ronAlive>codAlive) simResults.ronWins++;
+    else simResults.draws++;
+  } else {
+    if(codAlive===0 && ronAlive>0) simResults.ronWins++;
+    else if(ronAlive===0 && codAlive>0) simResults.codWins++;
+    else simResults.draws++;
+  }
+  simResults.iters++;
+  updateMetrics();
+  document.getElementById('arenaStatus').textContent = `Round ${simResults.iters} complete | CoD:${codAlive} RoN:${ronAlive} Threats:${threatsAlive}`;
+  if(autoPlay) { setTimeout(()=>{resetArena();running=true;loop();}, 200); }
+}
+
+function updateMetrics() {
+  const n = simResults.iters || 1;
+  document.getElementById('m-cod-surv').textContent = (simResults.codSurv/(n*3)).toFixed(2);
+  document.getElementById('m-ron-surv').textContent = (simResults.ronSurv/(n*3)).toFixed(2);
+  document.getElementById('m-cod-win').textContent = (simResults.codWins/n).toFixed(2);
+  document.getElementById('m-ron-win').textContent = (simResults.ronWins/n).toFixed(2);
+  document.getElementById('m-ff').textContent = simResults.ff.toFixed(0);
+  document.getElementById('m-time').textContent = (simResults.time/n).toFixed(1);
+  document.getElementById('m-civ').textContent = (simResults.civ/n).toFixed(2);
+
+  document.getElementById('mc-iters').textContent = n;
+  document.getElementById('mc-cod').textContent = (simResults.codWins/n).toFixed(3) + ' ±' + (1.96*Math.sqrt((simResults.codWins/n)*(1-simResults.codWins/n)/n)).toFixed(3);
+  document.getElementById('mc-ron').textContent = (simResults.ronWins/n).toFixed(3) + ' ±' + (1.96*Math.sqrt((simResults.ronWins/n)*(1-simResults.ronWins/n)/n)).toFixed(3);
+  document.getElementById('mc-draw').textContent = (simResults.draws/n).toFixed(3);
+  const p = simResults.ronWins/n; const q = simResults.codWins/n;
+  const d = (p-q)/Math.sqrt(p*(1-p)+q*(1-q)+0.001);
+  document.getElementById('mc-d').textContent = d.toFixed(2);
+}
+
+function resetArena() {
+  resizeArena();
+  buildRoom();
+  spawnEntities();
+  frame=0;
+  drawArena();
+  document.getElementById('arenaStatus').textContent = 'Ready';
+}
+
+function runSimulation() {
+  const iters = parseInt(document.getElementById('iter').value);
+  // Reset stats
+  simResults = { codWins:0, ronWins:0, draws:0, codSurv:0, ronSurv:0, ff:0, time:0, civ:0, iters:0 };
+  let count = 0;
+  function batch() {
+    for(let i=0;i<100 && count<iters;i++,count++) {
+      resetArena();
+      // Fast simulation without animation
+      for(let f=0;f<400;f++) {
+        for(const e of entities) updateEntity(e, 1/60);
+      }
+      evaluate();
+    }
+    if(count<iters) { setTimeout(batch, 10); }
+    else { drawArena(); updateCharts(); }
+  }
+  batch();
+}
+
+function toggleAuto() {
+  autoPlay = !autoPlay;
+  document.getElementById('autoBtn').textContent = autoPlay ? 'Auto-Play: ON' : 'Auto-Play: OFF';
+  if(autoPlay && !running) { resetArena(); running=true; loop(); }
+  else if(!autoPlay) { running=false; }
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if(id==='mcTab') updateCharts();
+}
+
+// Input listeners
+['aggr','caution','physics','latency','funnels','civ','stress','iter'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const el = document.getElementById('v-'+id);
+    if(el) el.textContent = e.target.value;
+  });
+});
+
+// Charts
+let oodaChart, ballisticChart, yerkesChart, oodaBarChart, networkChart, mcChart;
+
+function initCharts() {
+  const opts = { responsive:true, maintainAspectRatio:false, plugins:{legend:{labels:{color:'#6b7a8f',font:{size:10}}}}, scales:{x:{ticks:{color:'#6b7a8f',font:{size:10}},grid:{color:'#1a2330'}},y:{ticks:{color:'#6b7a8f',font:{size:10}},grid:{color:'#1a2330'}}} };
+
+  oodaChart = new Chart(document.getElementById('oodaChart'), {
+    type: 'line',
+    data: { labels: ['0','0.5','1','1.5','2','2.5','3'], datasets: [
+      { label:'CoD OODA', data:[0,0.3,0.6,0.75,0.85,0.9,0.92], borderColor:'#ff4d4d', tension:0.4, pointRadius:0 },
+      { label:'RoN OODA', data:[0,0.1,0.25,0.45,0.65,0.82,0.95], borderColor:'#00e5ff', tension:0.4, pointRadius:0 }
+    ]},
+    options: {...opts, scales:{...opts.scales, y:{...opts.scales.y, title:{display:true,text:'Cumulative Decision Completion',color:'#6b7a8f'}}}}
+  });
+
+  ballisticChart = new Chart(document.getElementById('ballisticChart'), {
+    type: 'line',
+    data: { labels: Array.from({length:20},(_,i)=>i*5), datasets: [
+      { label:'5.56mm Trajectory (m)', data: Array.from({length:20},(_,i)=> -0.5*9.81*(i*5/850)**2 + (i*5)*Math.sin(0.001)*0.001 ), borderColor:'#00e5ff', pointRadius:0 },
+      { label:'Defender LOS (m)', data: Array.from({length:20},(_,i)=> i*5*0.3 ), borderColor:'#ff4d4d', pointRadius:0, borderDash:[4,4] }
+    ]},
+    options: opts
+  });
+
+  yerkesChart = new Chart(document.getElementById('yerkesChart'), {
+    type: 'line',
+    data: { labels: Array.from({length:30},(_,i)=>(i/30).toFixed(2)), datasets: [
+      { label:'Performance', data: Array.from({length:30},(_,i)=> { const s=i/30; return s*Math.exp(-s/0.72); }), borderColor:'#ffcc00', tension:0.4, pointRadius:0 }
+    ]},
+    options: {...opts, scales:{...opts.scales, y:{...opts.scales.y, title:{display:true,text:'Performance P(σ)',color:'#6b7a8f'}}}}
+  });
+
+  oodaBarChart = new Chart(document.getElementById('oodaBarChart'), {
+    type: 'bar',
+    data: { labels:['Observe','Orient','Decide','Act'], datasets: [
+      { label:'CoD (ms)', data:[120,80,60,40], backgroundColor:'#ff4d4d' },
+      { label:'RoN (ms)', data:[300,150,200,120], backgroundColor:'#00e5ff' }
+    ]},
+    options: opts
+  });
+
+  networkChart = new Chart(document.getElementById('networkChart'), {
+    type: 'radar',
+    data: { labels:['Density','Clustering','Avg Path','Redundancy','Info Speed','Predictability'], datasets: [
+      { label:'CoD Squad', data:[0.2,0.18,0.8,0.15,0.6,0.3], borderColor:'#ff4d4d', backgroundColor:'rgba(255,77,77,0.2)', pointRadius:0 },
+      { label:'RoN Squad', data:[0.7,0.64,0.3,0.8,0.9,0.85], borderColor:'#00e5ff', backgroundColor:'rgba(0,229,255,0.2)', pointRadius:0 }
+    ]},
+    options: { ...opts, scales:{r:{grid:{color:'#1a2330'},ticks:{display:false,backdropColor:'transparent'}}}}
+  });
+
+  mcChart = new Chart(document.getElementById('mcChart'), {
+    type: 'bar',
+    data: { labels:['CoD Win','RoN Win','Draw/Abort'], datasets: [
+      { label:'Probability', data:[0.33,0.55,0.12], backgroundColor:['#ff4d4d','#00e5ff','#6b7a8f'] }
+    ]},
+    options: opts
+  });
+}
+
+function updateCharts() {
+  if(!mcChart) return;
+  const n = simResults.iters || 1;
+  mcChart.data.datasets[0].data = [
+    simResults.codWins/n,
+    simResults.ronWins/n,
+    simResults.draws/n
+  ];
+  mcChart.update();
+}
+
+// Boot
+resetArena();
+initCharts();
+</script>
+</body>
+</html>

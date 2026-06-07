@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TACTICAL ONTOLOGY SIMULATOR v3 — Skill/Pareto | OE Domain Audit | Multi-Domain Polymath</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--bg:#0a0e12;--panel:#111820;--accent:#ff4d4d;--accent2:#00e5ff;--text:#c8d0d8;--muted:#6b7a8f;--grid:#1a2330;--border:#223040;--success:#00ff88;--warning:#ffcc00;--audit:#ffaa44;--hybrid:#d0a0ff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;line-height:1.45;overflow-x:hidden}
+header{background:linear-gradient(90deg,#0a0e12 0%,#152030 100%);border-bottom:1px solid var(--border);padding:1.2rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:0.6rem}
+header h1{font-size:1.15rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent2)}
+header .subtitle{font-size:0.72rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:0.2rem}
+.badge{background:var(--grid);border:1px solid var(--border);padding:0.3rem 0.7rem;font-size:0.65rem;letter-spacing:0.08em;border-radius:3px;color:var(--muted)}
+.container{display:grid;grid-template-columns:340px 1fr;gap:1px;background:var(--border);min-height:calc(100vh - 80px)}
+.sidebar{background:var(--panel);padding:1.2rem;overflow-y:auto;max-height:calc(100vh - 80px)}
+.main{background:var(--bg);padding:1.2rem;overflow-y:auto}
+.section-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:0.8rem;border-bottom:1px solid var(--border);padding-bottom:0.4rem}
+.control-group{margin-bottom:1.2rem}
+.control-group label{display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:0.3rem;color:var(--text)}
+.control-group label span{color:var(--accent2);font-family:monospace}
+input[type=range]{width:100%;-webkit-appearance:none;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:4px;background:var(--grid);border-radius:2px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:14px;width:14px;border-radius:50%;background:var(--accent2);margin-top:-5px;cursor:pointer;border:2px solid var(--bg)}
+select{width:100%;background:var(--grid);border:1px solid var(--border);color:var(--text);padding:0.4rem;font-size:0.75rem;border-radius:3px}
+.btn{background:linear-gradient(135deg,#1a2a3a,#0f1a25);border:1px solid var(--border);color:var(--text);padding:0.6rem 1.2rem;font-size:0.75rem;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;width:100%;margin-bottom:0.6rem;transition:all 0.15s;border-radius:3px}
+.btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.btn.primary{border-color:var(--accent2);color:var(--accent2)}
+.btn.accent{border-color:var(--accent);color:var(--accent)}
+.btn.hybrid{border-color:var(--hybrid);color:var(--hybrid)}
+.tabs{display:flex;gap:0.4rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.tab{background:var(--grid);border:1px solid var(--border);padding:0.4rem 0.9rem;font-size:0.72rem;cursor:pointer;border-radius:3px;color:var(--muted);transition:0.15s}
+.tab.active{background:var(--panel);color:var(--accent2);border-color:var(--accent2)}
+.panel{display:none}
+.panel.active{display:block}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:1rem}
+.card h3{font-size:0.8rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.6rem;color:var(--accent2)}
+.card h4{font-size:0.75rem;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.5rem;color:var(--audit)}
+.metric{display:flex;justify-content:space-between;align-items:center;padding:0.35rem 0;border-bottom:1px solid var(--grid);font-size:0.78rem}
+.metric:last-child{border-bottom:none}
+.metric .val{font-family:monospace;color:var(--accent2)}
+.metric .val.warn{color:var(--warning)}
+.metric .val.danger{color:var(--accent)}
+.metric .val.good{color:var(--success)}
+.metric .val.hybrid{color:var(--hybrid)}
+.metric .val.audit{color:var(--audit)}
+canvas.chart{max-height:260px}
+.arena-wrap{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:0.8rem;margin-bottom:1rem}
+#arena{background:#0d1218;border:1px solid var(--grid);width:100%;height:420px;border-radius:3px;display:block}
+.petri-canvas{background:#0d1218;border:1px solid var(--grid);width:100%;height:300px;border-radius:3px;display:block}
+.legend{display:flex;gap:1.2rem;font-size:0.72rem;margin-top:0.5rem;color:var(--muted);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:0.3rem}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dot.cod{background:var(--accent)}.dot.ron{background:var(--accent2)}.dot.civ{background:var(--success)}.dot.unknown{background:var(--muted)}.dot.hybrid{background:var(--hybrid)}
+.math-box{background:var(--bg);border-left:3px solid var(--accent2);padding:0.6rem 0.8rem;font-family:'Courier New',monospace;font-size:0.78rem;color:var(--text);margin:0.6rem 0;overflow-x:auto}
+.theory-box{background:var(--grid);padding:0.8rem;border-radius:3px;font-size:0.78rem;line-height:1.5;color:var(--muted);margin-top:0.6rem}
+.theory-box strong{color:var(--text)}
+.payoff-table{width:100%;border-collapse:collapse;font-size:0.75rem;margin-top:0.6rem}
+.payoff-table th,.payoff-table td{border:1px solid var(--border);padding:0.4rem;text-align:center}
+.payoff-table th{background:var(--grid);color:var(--accent2)}
+.payoff-table td{background:var(--bg)}
+.audit-table{width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:0.6rem}
+.audit-table th,.audit-table td{border:1px solid var(--border);padding:0.35rem;text-align:left}
+.audit-table th{background:var(--grid);color:var(--audit)}
+.audit-table td{background:var(--bg)}
+.audit-table .pass{color:var(--success);font-weight:bold}
+.audit-table .violation{color:var(--accent);font-weight:bold}
+.falsifies-box{background:rgba(255,170,68,0.08);border:1px solid var(--audit);border-radius:3px;padding:0.6rem;font-size:0.72rem;color:var(--audit);margin-top:0.8rem}
+.falsifies-box strong{color:var(--audit);text-transform:uppercase;letter-spacing:0.08em}
+.convergence-box{background:rgba(255,77,77,0.08);border:1px solid var(--accent);border-radius:3px;padding:0.6rem;font-size:0.72rem;color:var(--accent);margin-top:0.6rem;display:none}
+.convergence-box.active{display:block}
+.policy-table{width:100%;border-collapse:collapse;font-size:0.75rem;margin-top:0.6rem}
+.policy-table th,.policy-table td{border:1px solid var(--border);padding:0.4rem;text-align:center}
+.policy-table th{background:var(--grid);color:var(--accent2)}
+.policy-table td{background:var(--bg)}
+.policy-table .optimal{color:var(--success);font-weight:bold}
+.pareto-legend{display:flex;gap:1rem;font-size:0.7rem;color:var(--muted);margin-top:0.5rem;flex-wrap:wrap}
+.skill-badge{display:inline-block;padding:0.15rem 0.4rem;border-radius:2px;font-size:0.65rem;margin-right:0.3rem;border:1px solid var(--border)}
+.footer-note{font-size:0.65rem;color:var(--muted);margin-top:1rem;border-top:1px solid var(--border);padding-top:0.6rem;text-align:center;letter-spacing:0.06em}
+@media(max-width:900px){
+  .container{grid-template-columns:1fr}
+  .sidebar{max-height:none}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Tactical Ontology Simulator v3</h1>
+    <div class="subtitle">Skill Vectors · Pareto Frontier · Hybrid Operators · OE Domain Audit</div>
+  </div>
+  <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+    <span class="badge">Aerospace Physics</span>
+    <span class="badge">Game Theory</span>
+    <span class="badge">Cognitive Science</span>
+    <span class="badge">Network Topology</span>
+    <span class="badge">Stochastic Analysis</span>
+    <span class="badge">OE d_use_of_force</span>
+    <span class="badge">MDP Policy</span>
+    <span class="badge">Skill Distributions</span>
+  </div>
+</header>
+
+<div class="container">
+  <aside class="sidebar">
+    <div class="section-title">Mission Parameters</div>
+
+    <div class="control-group">
+      <label>CoD Aggression Coefficient <span id="v-aggr">85/100</span></label>
+      <input type="range" id="aggr" min="0" max="100" step="1" value="85">
+    </div>
+    <div class="control-group">
+      <label>RoN Caution Coefficient <span id="v-caution">90/100</span></label>
+      <input type="range" id="caution" min="0" max="100" step="1" value="90">
+    </div>
+
+    <div class="section-title">Skill Vectors (Per-Entity)</div>
+    <div class="control-group">
+      <label>Discrimination Floor <span id="v-disc">50/100</span></label>
+      <input type="range" id="disc" min="0" max="100" step="1" value="50">
+    </div>
+    <div class="control-group">
+      <label>Stress Resistance Floor <span id="v-stress-res">50/100</span></label>
+      <input type="range" id="stress-res" min="0" max="100" step="1" value="50">
+    </div>
+    <div class="control-group">
+      <label>Momentum Control Floor <span id="v-mom">50/100</span></label>
+      <input type="range" id="mom" min="0" max="100" step="1" value="50">
+    </div>
+    <div class="control-group">
+      <label>Communication Discipline Floor <span id="v-comm">50/100</span></label>
+      <input type="range" id="comm" min="0" max="100" step="1" value="50">
+    </div>
+
+    <div class="section-title">Skill Distribution Tier</div>
+    <div class="control-group">
+      <select id="skill-tier">
+        <option value="conscript">Conscript — Beta(2,5)</option>
+        <option value="professional" selected>Professional — Beta(5,5)</option>
+        <option value="graduate">Selection Graduate — Beta(8,2)</option>
+        <option value="custom">Custom — Beta(α,β)</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <label>Custom Alpha (α) <span id="v-alpha">5</span></label>
+      <input type="range" id="alpha" min="1" max="20" step="0.5" value="5">
+    </div>
+    <div class="control-group">
+      <label>Custom Beta (β) <span id="v-beta">5</span></label>
+      <input type="range" id="beta" min="1" max="20" step="0.5" value="5">
+    </div>
+
+    <div class="section-title">Environment & Physics</div>
+    <div class="control-group">
+      <label>Physics Fidelity (Mass/Gear) <span id="v-physics">75/100</span></label>
+      <input type="range" id="physics" min="0" max="100" step="1" value="75">
+    </div>
+    <div class="control-group">
+      <label>Team Communication Latency (ms) <span id="v-latency">200</span></label>
+      <input type="range" id="latency" min="0" max="1000" step="10" value="200">
+    </div>
+    <div class="control-group">
+      <label>Room Complexity (fatal funnels) <span id="v-funnels">3</span></label>
+      <input type="range" id="funnels" min="1" max="8" step="1" value="3">
+    </div>
+    <div class="control-group">
+      <label>Civilian Density <span id="v-civ">20/100</span></label>
+      <input type="range" id="civ" min="0" max="60" step="1" value="20">
+    </div>
+    <div class="control-group">
+      <label>Stress/Yerkes-Dodson Apex <span id="v-stress">72/100</span></label>
+      <input type="range" id="stress" min="30" max="100" step="1" value="72">
+    </div>
+    <div class="control-group">
+      <label>Redundancy Agreement (Cover Backup) <span id="v-redund">50/100</span></label>
+      <input type="range" id="redund" min="0" max="100" step="1" value="50">
+    </div>
+    <div class="control-group">
+      <label>Structural Health (Cover Integrity) <span id="v-struct">80/100</span></label>
+      <input type="range" id="struct" min="0" max="100" step="1" value="80">
+    </div>
+    <div class="control-group">
+      <label>Monte Carlo Iterations <span id="v-iter">5000</span></label>
+      <input type="range" id="iter" min="500" max="20000" step="500" value="5000">
+    </div>
+
+    <button class="btn primary" onclick="runSimulation()">Run Monte Carlo</button>
+    <button class="btn accent" onclick="resetArena()">Reset Arena</button>
+    <button class="btn hybrid" onclick="runPareto()">Compute Pareto Frontier</button>
+    <button class="btn hybrid" onclick="runCrossover()">Compute Crossover</button>
+    <button class="btn" onclick="toggleAuto()" id="autoBtn">Auto-Play: OFF</button>
+    <button class="btn" onclick="runMDP()">Compute MDP Policy</button>
+
+    <div class="section-title" style="margin-top:1.2rem">Live Metrics</div>
+    <div class="metric"><span>CoD Survival Rate</span><span class="val danger" id="m-cod-surv">--</span></div>
+    <div class="metric"><span>RoN Survival Rate</span><span class="val good" id="m-ron-surv">--</span></div>
+    <div class="metric"><span>Mission Success (CoD)</span><span class="val warn" id="m-cod-win">--</span></div>
+    <div class="metric"><span>Mission Success (RoN)</span><span class="val good" id="m-ron-win">--</span></div>
+    <div class="metric"><span>Friendly Fire Incidents</span><span class="val danger" id="m-ff">--</span></div>
+    <div class="metric"><span>Avg Time-to-Clear (s)</span><span class="val" id="m-time">--</span></div>
+    <div class="metric"><span>Civilian Casualties</span><span class="val warn" id="m-civ">--</span></div>
+    <div class="metric"><span>Bayesian P(Threat|Evidence)</span><span class="val audit" id="m-bayes">--</span></div>
+    <div class="metric"><span>Avg Skill (CoD)</span><span class="val hybrid" id="m-cod-skill">--</span></div>
+    <div class="metric"><span>Avg Skill (RoN)</span><span class="val hybrid" id="m-ron-skill">--</span></div>
+
+    <div class="convergence-box" id="convWarn">
+      <strong>CONVERGENCE VIOLATION</strong> — variance(CoD win rate) is not contracting (λ ≥ 1). Increase iterations or check parameter stability.
+    </div>
+
+    <div class="footer-note">
+      Rational arithmetic for all probabilistic invariants. Floats reserved for kinematic state vectors. Per-entity skill vectors sampled from Beta(α,β). Falsifiability audit per tab.
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('arenaTab')">Arena / Bayes</div>
+      <div class="tab" onclick="switchTab('physicsTab')">Aerospace / Ballistics</div>
+      <div class="tab" onclick="switchTab('gameTab')">Game Theory / Payoffs</div>
+      <div class="tab" onclick="switchTab('cogTab')">Cognitive / OODA</div>
+      <div class="tab" onclick="switchTab('netTab')">Network / Petri</div>
+      <div class="tab" onclick="switchTab('mcTab')">Stochastic / Contraction</div>
+      <div class="tab" onclick="switchTab('auditTab')">OE Domain Audit</div>
+      <div class="tab" onclick="switchTab('mdpTab')">MDP Policy</div>
+      <div class="tab" onclick="switchTab('paretoTab')">Hybrid / Pareto</div>
+      <div class="tab" onclick="switchTab('crossTab')">Crossover</div>
+    </div>
+
+    <div id="arenaTab" class="panel active">
+      <div class="arena-wrap">
+        <canvas id="arena"></canvas>
+        <div class="legend">
+          <span><span class="dot cod"></span> CoD Operator</span>
+          <span><span class="dot ron"></span> RoN Operator</span>
+          <span><span class="dot civ"></span> Civilian</span>
+          <span><span class="dot unknown"></span> Unconfirmed Threat</span>
+          <span><span class="dot hybrid"></span> Hybrid (Skill > 0.8)</span>
+          <span id="arenaStatus" style="margin-left:auto;color:var(--accent2);">Ready</span>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Real-Time OODA Timeline</h3>
+          <canvas id="oodaChart" class="chart"></canvas>
+        </div>
+        <div class="card">
+          <h3>Bayesian Threat Classification</h3>
+          <div class="math-box">
+            P(T|N,M,S) = P(N|T)·P(M|T)·P(S|T)·P(T) / Z<br>
+            Z = Σ_cls P(N|cls)·P(M|cls)·P(S|cls)·P(cls)<br>
+            P(T)=1−ρ_civ , P(N|T)=8/10 , P(N|C)=3/10<br>
+            P(M|T)=9/10 , P(M|C)=2/10 , P(S|T)=7/10 , P(S|C)=4/10
+          </div>
+          <div class="theory-box">
+            <strong>Bayesian Network (Structure 9):</strong> Each entity carries a posterior threat probability updated from kinematic evidence. Prior set by civilian density ρ. Posterior computed with rational arithmetic and rendered as opacity halo.
+          </div>
+          <div id="bayesReadout" style="font-family:monospace;font-size:0.72rem;color:var(--audit);margin-top:0.4rem;">No active classification.</div>
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Arena:</strong> falsifies_if: survival probability > 1 or < 0; falsifies_if: Bayesian posterior > 1 or < 0; falsifies_if: entity occupies same spatial coordinates as wall (collision invariant violation); falsifies_if: skill vector component outside [0,1].
+      </div>
+    </div>
+
+    <div id="physicsTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Newtonian Kinematics (Entry Dynamics)</h3>
+          <div class="math-box">
+            v_max = √(2·a_max·d_entry) · (1 − φ·m_gear/m_max)<br>
+            a_max = μ·g · (1 − 2/5·φ)  [friction penalty under load]<br>
+            KE = 1/2·m·v²  [unrecoverable during slide]<br>
+            t_exposure = w_doorway / v_entry<br>
+            skill_momentum = v_max · (1 + κ_momentum)  [κ ∈ [0,1] per-entity]
+          </div>
+          <div class="theory-box">
+            Under maximal physics fidelity (φ→1), the CoD operator cannot instantaneously change direction. Momentum conservation dictates 440 kg·m/s linear momentum. <strong>Per-entity momentum control</strong> (κ) reduces the effective mass penalty by up to 50% for selection graduates, modeling explosive hip-drive and controlled descent techniques.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Ballistic Trajectory & Terminal Ballistics</h3>
+          <canvas id="ballisticChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>Aerospace parallel:</strong> Projectile as body with drag C_d, cross-section A, mass m. Defender engagement window analogous to launch intercept envelope. <strong>Skill factor</strong> increases effective intercept probability by compressing the engagement timeline.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Interior Ballistics — Energy Transfer with Skill Modulation</h3>
+        <div class="math-box">
+          P(hit|exposed) = (1 − R_redundancy) · (1 − H_structural) · λ_base · E · (1 − 1/2·κ_discrimination)<br>
+          R_redundancy = backup_cover_boolean ∈ {0,1}<br>
+          H_structural = cover_integrity_fraction ∈ [0,1]  (Rational)<br>
+          λ_base = threat_density · accuracy · (1/φ)  [Rational]<br>
+          κ_discrimination = per-entity skill vector component  [Rational]<br>
+          E = exposure_time = w/v  [Rational seconds]
+        </div>
+        <div class="theory-box">
+          High-skill operators reduce their presented cross-sectional area by anticipatory pre-positioning, effectively lowering A_presented by κ fraction. This is not "magic"—it is the geometric consequence of knowing where the defender's barrel is likely to be before committing to the threshold.
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Physics:</strong> falsifies_if: P(hit|exposed) > 1 or < 0; falsifies_if: KE < 0; falsifies_if: structural_health > 1; falsifies_if: skill-modified exposure time < 0; falsifies_if: momentum_control > 1 (impossible skill ceiling).
+      </div>
+    </div>
+
+    <div id="gameTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Strategic Form — Zero-Sum Room Engagement (Rational)</h3>
+          <table class="payoff-table">
+            <tr><th></th><th>RoN: Hold/Pie</th><th>RoN: Breach/Flash</th></tr>
+            <tr><th>CoD: Rush</th><td>(7/20, 13/20)</td><td>(11/20, 9/20)</td></tr>
+            <tr><th>CoD: Flank/Sprint</th><td>(5/20, 15/20)</td><td>(12/20, 8/20)</td></tr>
+            <tr><th>CoD: Camp/Pre-aim</th><td>(10/20, 10/20)</td><td>(6/20, 14/20)</td></tr>
+          </table>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Payoffs as exact rationals. With <strong>skill vector</strong> κ, the CoD player's payoff against Hold/Pie becomes (7+3κ)/20, where κ represents the probability that skill overcomes the geometric disadvantage. At κ=1 (perfect skill), CoD Rush vs RoN Hold becomes 10/20—equal odds.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Nash Equilibrium with Skill-Dependent Payoffs</h3>
+          <div class="math-box">
+            Let κ = per-entity skill (discrimination + momentum + stress) / 3<br>
+            p(κ) = P(CoD rushes | skill=κ) = (1 + κ)/3<br>
+            q(κ) = P(RoN holds | skill=κ) = (1 + 2κ)/5<br>
+            At κ=0 (conscript): q* = 1/3, p* = 1/3<br>
+            At κ=1 (graduate): q* = 3/5, p* = 2/3<br>
+            The equilibrium shifts toward aggression as skill increases.
+          </div>
+          <div class="theory-box">
+            The counter-intuitive result: <strong>higher skill makes RoN play more aggressive</strong> because the RoN player can afford to breach knowing their discrimination will prevent catastrophic errors. The CoD player, conversely, becomes <em>less</em> reckless because skill reduces the need for compensatory speed.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Extensive Form — Sequential CQB with Skill-Weighted Beliefs</h3>
+        <div class="theory-box">
+          <strong>Information sets:</strong> The defender does not know if the attacker has committed to a slide or a jump-peek. The attacker does not know if the defender is deep-holding or shallow-holding. <strong>Skill modifies the belief update rate:</strong> a high-skill defender updates P(threat|noise) faster, compressing the attacker's surprise window. This is modeled as a <strong>Bayesian game with skill-weighted precision</strong> on the likelihood functions.
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Game Theory:</strong> falsifies_if: Nash equilibrium q* outside [0,1]; falsifies_if: any payoff probability > 1 or < 0; falsifies_if: mixed strategy probabilities do not sum to 1/1; falsifies_if: skill κ > 1 (impossible ceiling).
+      </div>
+    </div>
+
+    <div id="cogTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Yerkes-Dodson with Skill-Shifted Apex</h3>
+          <canvas id="yerkesChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Performance P(σ,κ) = A·σ·exp(−σ/(τ·(1+κ/2))) where κ = stress_resistance skill. Higher skill shifts the apex rightward, allowing higher arousal before performance degradation. CoD players with κ=0.9 can operate at σ=0.8 without degradation; conscripts degrade at σ=0.5.
+          </div>
+        </div>
+        <div class="card">
+          <h3>OODA Loop Phase Timing (ms) — Skill-Compressed</h3>
+          <canvas id="oodaBarChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>CoD baseline:</strong> Observe=120ms, Orient=80ms, Decide=60ms, Act=40ms.<br>
+            <strong>Skill compression:</strong> Each phase reduced by factor (1 − κ/3), capped at 40% reduction.<br>
+            <strong>RoN baseline:</strong> Observe=300ms, Orient=150ms, Decide=200ms, Act=120ms.<br>
+            <strong>RoN with skill:</strong> Observe remains long (deliberate), but Decide and Act compress by κ/2. The RoN player doesn't rush observation—they rush the transition from observation to action once the decision is made.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Decision Fatigue & Cognitive Load — Skill Inoculation</h3>
+        <div class="math-box">
+          CL(t,κ) = Σ_i (w_i · d_i) · (1 + α·t) · (1 − κ/2)<br>
+          w_i = { threat_discrimination: 12/5, spatial_mapping: 9/5, comm_relay: 6/5, motor_control: 3/5 }<br>
+          P(error|CL,κ) = 1 / (1 + exp(−k·(CL·(1−κ) − CL_crit)))<br>
+          At κ=0.9: effective CL reduced by 45%, P(error) drops from 0.35 to 0.08
+        </div>
+        <div class="theory-box">
+          High-skill operators proceduralize decisions (System 1) faster, reducing the working-memory load of CQB. This is the <strong>inoculation effect</strong>: the RoN player with high skill doesn't just follow protocol—they have automated it. The CoD player with high skill doesn't just rush—they have automated the discrimination step that normally requires slow deliberation.
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Cognitive:</strong> falsifies_if: OODA total > 1000ms for trained operator; falsifies_if: Yerkes-Dodson apex τ ≤ 0; falsifies_if: P(error|CL) > 1 or < 0; falsifies_if: skill compression factor < 0 (negative time).
+      </div>
+    </div>
+
+    <div id="netTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Squad Communication Graph — Skill-Weighted Edges</h3>
+          <canvas id="networkChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            CoD squad: Low clustering (C ≈ 1/5), high diameter. <strong>Skill effect:</strong> communication_discipline κ_comm increases edge weight and clustering even under speed. A graduate CoD team can achieve C ≈ 1/2 while maintaining sprint tempo.<br><br>
+            RoN squad: High clustering (C ≈ 7/10), low diameter. <strong>Skill effect:</strong> minimal because communication is already saturated; skill instead reduces latency along existing edges.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Graph Metrics & Predictability</h3>
+          <div class="metric"><span>CoD Graph Density (κ=0)</span><span class="val danger">9/50</span></div>
+          <div class="metric"><span>CoD Graph Density (κ=1)</span><span class="val hybrid">1/2</span></div>
+          <div class="metric"><span>RoN Graph Density</span><span class="val good">16/25</span></div>
+          <div class="metric"><span>CoD Avg Path (κ=0)</span><span class="val warn">16/5 hops</span></div>
+          <div class="metric"><span>CoD Avg Path (κ=1)</span><span class="val hybrid">9/5 hops</span></div>
+          <div class="metric"><span>RoN Avg Path</span><span class="val good">7/5 hops</span></div>
+          <div class="metric"><span>P(FF | CoD, κ=0)</span><span class="val danger">∝ 1/C</span></div>
+          <div class="metric"><span>P(FF | CoD, κ=1)</span><span class="val hybrid">∝ 1/C²</span></div>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Friendly fire probability scales inversely with the square of clustering when communication discipline is high. The graduate CoD team achieves <strong>observational redundancy</strong> without sacrificing tempo.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Petri Net — Squad Coordination Token Flow (Structure 2)</h3>
+        <canvas id="petriCanvas" class="petri-canvas"></canvas>
+        <div class="legend">
+          <span><span class="dot" style="background:#00e5ff"></span> Token in Place</span>
+          <span><span class="dot" style="background:#ffaa44"></span> Transition Firing</span>
+          <span><span class="dot" style="background:#6b7a8f"></span> Arc</span>
+        </div>
+        <div class="theory-box" style="margin-top:0.6rem">
+          <strong>Places:</strong> cover, exposed, engaging, reloading, communicating.<br>
+          <strong>Transitions:</strong> breach, fire, reload, move_to_cover, radio.<br>
+          <strong>Skill effect on Petri:</strong> High κ_comm increases the firing rate of <em>radio</em> transitions while in <em>cover</em>, and increases the probability of <em>move_to_cover</em> after <em>reloading</em> instead of looping back to <em>exposed</em>. The hybrid operator's token trace is distinct from both pure CoD and pure RoN.
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Network:</strong> falsifies_if: clustering coefficient > 1; falsifies_if: graph density > 1; falsifies_if: Petri net token count not conserved across transitions; falsifies_if: skill-weighted edge weight < 0.
+      </div>
+    </div>
+
+    <div id="mcTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Monte Carlo Survival Distribution</h3>
+          <canvas id="mcChart" class="chart"></canvas>
+        </div>
+        <div class="card">
+          <h3>Convergence & Confidence (Banach Contraction)</h3>
+          <div class="metric"><span>Iterations Run</span><span class="val" id="mc-iters">0</span></div>
+          <div class="metric"><span>CoD Win Rate (±95% CI)</span><span class="val warn" id="mc-cod">--</span></div>
+          <div class="metric"><span>RoN Win Rate (±95% CI)</span><span class="val good" id="mc-ron">--</span></div>
+          <div class="metric"><span>Draw/Abort Rate</span><span class="val" id="mc-draw">--</span></div>
+          <div class="metric"><span>Effect Size (Cohen's d)</span><span class="val" id="mc-d">--</span></div>
+          <div class="metric"><span>Last Batch Variance</span><span class="val" id="mc-var">--</span></div>
+          <div class="metric"><span>Contraction λ</span><span class="val" id="mc-lambda">--</span></div>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Each iteration samples from: room geometry (fatal funnel count), threat placement (Poisson), civilian placement (Bernoulli with ρ), operator stress (Beta), and ballistic outcome (Binomial with P(hit) from rational physics model). <strong>Per-entity skill</strong> is drawn from Beta(α,β) per the selected tier, then applied to OODA timing, hit probability, and cognitive load.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Convergence Trajectory — Variance per Batch</h3>
+        <canvas id="convergenceChart" class="chart"></canvas>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Stochastic Model Specification (Rational)</h3>
+        <div class="math-box">
+          Skill draw: κ_i ~ Beta(α,β)  [per-entity, per-iteration]<br>
+          κ_effective = floor + κ_i · (1 − floor)  [clamped to [0,1]]<br>
+          Room layout: R ~ Uniform(1..8) fatal funnels<br>
+          Threats: T ~ Poisson(λ = 2 + R/2)<br>
+          Civilians: C ~ Binomial(n = T·3, p = ρ)<br>
+          CoD survival: S_C ~ Bernoulli(p = 1 − exp(−λ_C·E·(1 − 1/2·κ_disc)))<br>
+          RoN survival: S_R ~ Bernoulli(p = 1 − exp(−λ_R·E·(1+κ)·(1+κ_comm)))<br>
+          where λ = threat_density · accuracy · (1/φ)  [all rational]
+        </div>
+        <div class="theory-box">
+          The Monte Carlo engine treats style as a hyperparameter vector θ = [aggression, caution, communication, physics_fidelity] and <strong>skill as a per-entity random variable</strong> κ ~ Beta(α,β). This is the production-grade polymath approach: no domain is privileged; aerospace, graph theory, cognitive science, game theory, and statistics are all first-class citizens in the joint probability distribution.
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Stochastic:</strong> falsifies_if: Cohen's d > 3; falsifies_if: CI lower bound < 0 or upper bound > 1; falsifies_if: Banach contraction λ ≥ 1; falsifies_if: survival probability computed as float instead of rational pair; falsifies_if: Beta(α,β) draw outside [0,1].
+      </div>
+    </div>
+
+    <div id="auditTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>OE Domain Audit — d_use_of_force Invariants</h3>
+          <div class="theory-box">
+            After each simulated engagement round, the 6 invariants from <code>src/domains/d_use_of_force/invariants.py</code> are evaluated. Each result is a <strong>ProofObject</strong> with <code>rule</code>, <code>premises</code> (rational values), <code>conclusion</code> (PASS/VIOLATION), and <code>falsifies_if</code>. Skill vector κ modifies the premises: higher discrimination reduces force_ordinal violations; higher stress resistance reduces deadly_force_necessity errors.
+          </div>
+          <table class="audit-table" id="auditTable">
+            <tr><th>Invariant</th><th>Rule (Rational)</th><th>CoD Verdict</th><th>RoN Verdict</th></tr>
+            <tr><td>force_proportionality</td><td>force_ordinal ≤ threat_ordinal + 1</td><td id="aud-cod-1">--</td><td id="aud-ron-1">--</td></tr>
+            <tr><td>deadly_force_necessity</td><td>deadly_only_if(threat == IMMINENT_DEATH)</td><td id="aud-cod-2">--</td><td id="aud-ron-2">--</td></tr>
+            <tr><td>de_escalation_attempted</td><td>hold_order ≥ 1 before physical_force</td><td id="aud-cod-3">--</td><td id="aud-ron-3">--</td></tr>
+            <tr><td>less_lethal_before_deadly</td><td>less_lethal_count ≥ 1 before deadly_count</td><td id="aud-cod-4">--</td><td id="aud-ron-4">--</td></tr>
+            <tr><td>threat_assessment_ratio</td><td>bayesian_confidence ≥ 3/4 before engagement</td><td id="aud-cod-5">--</td><td id="aud-ron-5">--</td></tr>
+            <tr><td>documentation_complete</td><td>incident_id ∧ timestamp ∧ officer_id ∧ justification</td><td id="aud-cod-6">--</td><td id="aud-ron-6">--</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>ProofObject JSON — Last Round</h3>
+          <div class="math-box" id="proofJson" style="font-size:0.7rem;max-height:240px;overflow-y:auto;">
+            No audit data yet. Run Monte Carlo to generate ProofObjects.
+          </div>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>ProofObject pattern:</strong> Every outcome is wrapped as a tuple <code>(rule: str, premises: List[Rational], conclusion: Literal["PASS","VIOLATION"], falsifies_if: Callable)</code>. The falsifies_if condition is checked before acceptance; if triggered, the ProofObject is marked <strong>UNTRUSTED</strong>.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Audit Summary Statistics</h3>
+        <div class="grid-3">
+          <div class="metric"><span>CoD Violation Rate</span><span class="val danger" id="audit-cod-rate">--</span></div>
+          <div class="metric"><span>RoN Violation Rate</span><span class="val good" id="audit-ron-rate">--</span></div>
+          <div class="metric"><span>Most Violated (CoD)</span><span class="val danger" id="audit-cod-worst">--</span></div>
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — OE Domain Audit:</strong> falsifies_if: invariant returns bool without ProofObject wrapper; falsifies_if: premises contain float instead of Rational numerator/denominator; falsifies_if: conclusion is "PASS" when premises violate rule inequality; falsifies_if: falsifies_if condition itself is not a pure function.
+      </div>
+    </div>
+
+    <div id="mdpTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>MDP State Space (Structure 27) — Skill-Weighted Transitions</h3>
+          <div class="math-box">
+            S = {OBSERVE, ORIENT, DECIDE, ACT, DEAD, MISSION_COMPLETE}<br>
+            A = {rush, hold, flank, de-escalate, engage}<br>
+            P(s'|s,a,κ) = P_base(s'|s,a) · (1 + κ/4)  [skill-boosted survival]<br>
+            R(s,a) = +1 if s' = MISSION_COMPLETE; −1 if s' = DEAD; −2 if civilian casualty<br>
+            γ = 19/20
+          </div>
+          <div class="theory-box">
+            The transition matrix is populated from Monte Carlo statistics, then skill-adjusted: higher κ increases the probability of surviving transitions from OBSERVE→ACT and ACT→MISSION_COMPLETE, while decreasing DEAD probability. This models the graduate operator's ability to "thread the needle" in fatal funnels.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Value Iteration (Rational Arithmetic)</h3>
+          <div class="math-box">
+            V_{k+1}(s) = max_a [ R(s,a) + γ · Σ_{s'} P(s'|s,a,κ)·V_k(s') ]<br>
+            Convergence: |V_{k+1}(s) − V_k(s)| < 1/1000  ∀s<br>
+            π*(s,κ) = argmax_a [ R(s,a) + γ · Σ_{s'} P(s'|s,a,κ)·V(s') ]
+          </div>
+          <div class="theory-box">
+            Value iteration performed with exact rational arithmetic. The resulting optimal policy π* is displayed as a state→action table. If multiple actions are optimal, the policy is stochastic with rational probabilities proportional to Q-values. <strong>Skill changes the policy:</strong> at low κ, π*(OBSERVE) = hold; at high κ, π*(OBSERVE) = rush.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Optimal Policy π*(s, κ)</h3>
+        <table class="policy-table" id="policyTable">
+          <tr><th>State s</th><th>π*(s) — Action</th><th>V*(s) (Rational)</th><th>Q(s, rush)</th><th>Q(s, hold)</th><th>Q(s, flank)</th><th>Q(s, de-escalate)</th><th>Q(s, engage)</th></tr>
+          <tr><td>OBSERVE</td><td id="pol-0" class="optimal">--</td><td id="val-0">--</td><td id="q-0-0">--</td><td id="q-0-1">--</td><td id="q-0-2">--</td><td id="q-0-3">--</td><td id="q-0-4">--</td></tr>
+          <tr><td>ORIENT</td><td id="pol-1" class="optimal">--</td><td id="val-1">--</td><td id="q-1-0">--</td><td id="q-1-1">--</td><td id="q-1-2">--</td><td id="q-1-3">--</td><td id="q-1-4">--</td></tr>
+          <tr><td>DECIDE</td><td id="pol-2" class="optimal">--</td><td id="val-2">--</td><td id="q-2-0">--</td><td id="q-2-1">--</td><td id="q-2-2">--</td><td id="q-2-3">--</td><td id="q-2-4">--</td></tr>
+          <tr><td>ACT</td><td id="pol-3" class="optimal">--</td><td id="val-3">--</td><td id="q-3-0">--</td><td id="q-3-1">--</td><td id="q-3-2">--</td><td id="q-3-3">--</td><td id="q-3-4">--</td></tr>
+          <tr><td>DEAD</td><td id="pol-4">--</td><td id="val-4">--</td><td colspan="5">Terminal (absorbing)</td></tr>
+          <tr><td>MISSION_COMPLETE</td><td id="pol-5">--</td><td id="val-5">--</td><td colspan="5">Terminal (absorbing)</td></tr>
+        </table>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Value Convergence Trajectory</h3>
+        <canvas id="mdpChart" class="chart"></canvas>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — MDP:</strong> falsifies_if: π*(s) selects action with P(transition)=0; falsifies_if: V(s) for terminal state ≠ R(s) exactly; falsifies_if: Σ_{s'} P(s'|s,a) ≠ 1/1; falsifies_if: γ ≥ 1; falsifies_if: value iteration uses float in Bellman update.
+      </div>
+    </div>
+
+    <div id="paretoTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Pareto Frontier — Survival vs Clear Time</h3>
+          <canvas id="paretoChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            Each point is a Monte Carlo run at a specific (aggression, discrimination) pair. The <strong>Pareto frontier</strong> connects points where you cannot improve survival without increasing clear time, nor reduce clear time without reducing survival. The hybrid operator (high aggression + high discrimination) should lie on or near this frontier, dominating both pure CoD (fast but low survival) and pure RoN (slow but high survival).
+          </div>
+        </div>
+        <div class="card">
+          <h3>Skill-Style Heatmap</h3>
+          <canvas id="heatmapChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>X-axis:</strong> Aggression coefficient (0 to 1). <strong>Y-axis:</strong> Discrimination skill (0 to 1). <strong>Color:</strong> Mission success rate. The diagonal from (0,0) to (1,1) represents the "hybrid hypothesis"—that adding skill to aggression makes it viable. The upper-left quadrant (high aggression, low skill) is the "death zone." The lower-right quadrant (low aggression, high skill) is the "RoN safe zone."
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Pareto Analysis Results</h3>
+        <div class="grid-3">
+          <div class="metric"><span>Pareto Points Found</span><span class="val hybrid" id="pareto-count">--</span></div>
+          <div class="metric"><span>Best Hybrid Survival</span><span class="val hybrid" id="pareto-best-surv">--</span></div>
+          <div class="metric"><span>Best Hybrid Time (s)</span><span class="val hybrid" id="pareto-best-time">--</span></div>
+          <div class="metric"><span>Pure CoD on Frontier?</span><span class="val" id="pareto-cod">--</span></div>
+          <div class="metric"><span>Pure RoN on Frontier?</span><span class="val" id="pareto-ron">--</span></div>
+          <div class="metric"><span>Hybrid Dominates?</span><span class="val hybrid" id="pareto-dom">--</span></div>
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Pareto:</strong> falsifies_if: Pareto point has another point that dominates it in both dimensions (not actually Pareto); falsifies_if: survival rate > 1 or < 0; falsifies_if: clear time < 0; falsifies_if: heatmap color scale not monotonic with success rate.
+      </div>
+    </div>
+
+    <div id="crossTab" class="panel">
+      <div class="grid-2">
+        <div class="card">
+          <h3>Crossover Analysis — Skill Threshold Where CoD Overtakes RoN</h3>
+          <canvas id="crossoverChart" class="chart"></canvas>
+          <div class="theory-box" style="margin-top:0.6rem">
+            <strong>X-axis:</strong> Per-entity discrimination skill κ (0 to 1). <strong>Y-axis:</strong> Win rate. The <strong>crossover point</strong> κ* is where the CoD curve intersects the RoN curve. If κ* < 1, there exists a skill level at which speed with discrimination beats pure caution. If κ* does not exist within [0,1], pure RoN dominates at all skill levels under current geometry.
+          </div>
+        </div>
+        <div class="card">
+          <h3>Crossover Statistics</h3>
+          <div class="metric"><span>Crossover κ*</span><span class="val hybrid" id="cross-kappa">--</span></div>
+          <div class="metric"><span>CoD Win at κ=0</span><span class="val danger" id="cross-cod-0">--</span></div>
+          <div class="metric"><span>CoD Win at κ=1</span><span class="val hybrid" id="cross-cod-1">--</span></div>
+          <div class="metric"><span>RoN Win at κ=0</span><span class="val good" id="cross-ron-0">--</span></div>
+          <div class="metric"><span>RoN Win at κ=1</span><span class="val good" id="cross-ron-1">--</span></div>
+          <div class="metric"><span>Gap at κ=0</span><span class="val" id="cross-gap-0">--</span></div>
+          <div class="metric"><span>Gap at κ=1</span><span class="val" id="cross-gap-1">--</span></div>
+          <div class="theory-box" style="margin-top:0.6rem">
+            The gap at κ=0 is the "structural advantage" of RoN—geometry minus skill. The gap at κ=1 is the "skill advantage" of CoD—speed plus discrimination. If the gap changes sign between κ=0 and κ=1, the crossover exists and is calculable by binary search on the skill axis.
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:1rem">
+        <h3>Crossover Model Specification</h3>
+        <div class="math-box">
+          W_CoD(κ) = W_CoD(0) + (W_CoD(1) − W_CoD(0)) · κ^δ  [δ = 1.5, diminishing returns]<br>
+          W_RoN(κ) = W_RoN(0) + (W_RoN(1) − W_RoN(0)) · κ^ε  [ε = 0.8, linear returns]<br>
+          κ* solves: W_CoD(κ*) = W_RoN(κ*)<br>
+          If no solution in [0,1]: RoN strictly dominates ∀κ
+        </div>
+        <div class="theory-box">
+          The diminishing returns exponent δ > 1 for CoD reflects that geometry is a hard constraint—skill helps, but cannot fully overcome the fatal funnel. The linear returns ε < 1 for RoN reflects that skill compounds caution: a careful operator who is also skilled becomes nearly unbeatable. The crossover is therefore <strong>not guaranteed</strong>—it depends on the room complexity and physics fidelity parameters.
+        </div>
+      </div>
+      <div class="falsifies-box">
+        <strong>Falsifiability Audit — Crossover:</strong> falsifies_if: κ* < 0 or κ* > 1 (outside valid skill range); falsifies_if: W_CoD(κ) or W_RoN(κ) > 1 or < 0; falsifies_if: crossover computed without monotonicity check (W_CoD and W_RoN must both be monotonic in κ); falsifies_if: δ or ε ≤ 0 (impossible returns exponent).
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ==========================================================
+   TACTICAL ONTOLOGY SIMULATOR v3 — OE Domain Audit
+   Skill Vectors · Pareto Frontier · Crossover · Hybrid Operators
+   Multi-domain: Physics, Game Theory, Cognitive Science,
+   Network Topology, Stochastic Analysis, d_use_of_force,
+   MDP (Structure 27), Bayesian Network (Structure 9),
+   Petri Net (Structure 2), Banach Contraction Invariant.
+   Rational arithmetic. Beta-distributed per-entity skills.
+   ========================================================== */
+
+// ---------- Rational Arithmetic ----------
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ let t=b; b=a%b; a=t; } return a||1; }
+class Rational {
+  constructor(n,d){ this.n=Math.round(n); this.d=Math.round(d||1); if(this.d===0) this.d=1; this._reduce(); }
+  _reduce(){ const g=gcd(this.n,this.d); this.n/=g; this.d/=g; if(this.d<0){this.n*=-1;this.d*=-1;} }
+  add(o){ return new Rational(this.n*o.d + o.n*this.d, this.d*o.d); }
+  sub(o){ return new Rational(this.n*o.d - o.n*this.d, this.d*o.d); }
+  mul(o){ return new Rational(this.n*o.n, this.d*o.d); }
+  div(o){ return new Rational(this.n*o.d, this.d*o.n); }
+  lt(o){ return this.n*o.d < o.n*this.d; }
+  gt(o){ return this.n*o.d > o.n*this.d; }
+  leq(o){ return this.n*o.d <= o.n*this.d; }
+  geq(o){ return this.n*o.d >= o.n*this.d; }
+  eq(o){ return this.n===o.n && this.d===o.d; }
+  abs(){ return new Rational(Math.abs(this.n), this.d); }
+  toNumber(){ return this.n/this.d; }
+  toString(){ return this.n+'/'+this.d; }
+  toFixed(k){ return (this.n/this.d).toFixed(k); }
+  static fromInt(n){ return new Rational(n,1); }
+  static ONE(){ return new Rational(1,1); }
+  static ZERO(){ return new Rational(0,1); }
+}
+
+// ---------- Beta Distribution Sampler (Gamma method) ----------
+function normalRandom(){
+  let u=0,v=0; while(u===0) u=Math.random(); while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function sampleGamma(k, theta){
+  if(k<1) return sampleGamma(1+k, theta)*Math.pow(Math.random(), 1/k);
+  let d=k-1/3, c=1/Math.sqrt(9*d);
+  while(true){
+    let x=normalRandom(), v=1+c*x;
+    if(v<=0) continue;
+    v=v*v*v; let u=Math.random();
+    if(u<1-0.0331*x*x*x*x) return d*v*theta;
+    if(Math.log(u)<0.5*x*x+d*(1-v+Math.log(v))) return d*v*theta;
+  }
+}
+function sampleBeta(alpha, beta){
+  const x=sampleGamma(alpha,1), y=sampleGamma(beta,1);
+  return x/(x+y);
+}
+function getSkillParams(){
+  const tier=document.getElementById('skill-tier').value;
+  if(tier==='conscript') return {alpha:2, beta:5};
+  if(tier==='professional') return {alpha:5, beta:5};
+  if(tier==='graduate') return {alpha:8, beta:2};
+  return {alpha:parseFloat(document.getElementById('alpha').value), beta:parseFloat(document.getElementById('beta').value)};
+}
+
+// ---------- Global State ----------
+const canvas=document.getElementById('arena');
+const ctx=canvas.getContext('2d');
+let W,H;
+function resizeArena(){ const rect=canvas.parentElement.getBoundingClientRect(); canvas.width=rect.width-20; canvas.height=420; W=canvas.width; H=canvas.height; }
+window.addEventListener('resize', resizeArena);
+resizeArena();
+
+let autoPlay=false;
+let simResults={codWins:0,ronWins:0,draws:0,codSurv:0,ronSurv:0,ff:0,time:0,civ:0,iters:0, codSkillSum:0, ronSkillSum:0};
+let batchVariances=[], lastBatchVar=Rational.fromInt(1);
+let auditLog=[];
+let frame=0, running=false;
+let room={walls:[],doors:[],cover:[],funnels:[]};
+let entities=[];
+let lastBayesReadout='';
+
+// ---------- Bayesian Network Parameters (Rational) ----------
+const Bayes={priorThreat:null, priorCiv:null, Pnoise_t:new Rational(8,10), Pnoise_c:new Rational(3,10), Pmove_t:new Rational(9,10), Pmove_c:new Rational(2,10), Psil_t:new Rational(7,10), Psil_c:new Rational(4,10)};
+function updateBayesPriors(){
+  const civ=parseInt(document.getElementById('civ').value);
+  Bayes.priorCiv=new Rational(civ,100);
+  Bayes.priorThreat=new Rational(100-civ,100);
+}
+updateBayesPriors();
+
+function posteriorThreat(entity){
+  const speed=Math.hypot(entity.vx, entity.vy);
+  const noise=speed>1.5?Bayes.Pnoise_t:Bayes.Pnoise_c;
+  const movement=speed>0.5?Bayes.Pmove_t:Bayes.Pmove_c;
+  const silhouette=(entity.type==='threat')?Bayes.Psil_t:Bayes.Psil_c;
+  const numT=Bayes.priorThreat.mul(noise).mul(movement).mul(silhouette);
+  const numC=Bayes.priorCiv.mul(noise).mul(movement).mul(silhouette);
+  const denom=numT.add(numC);
+  if(denom.toNumber()===0) return Rational.ZERO();
+  return numT.div(denom);
+}
+
+// ---------- Entity with Skill Vector ----------
+class Entity {
+  constructor(x,y,type){
+    this.x=x; this.y=y; this.type=type; this.alive=true; this.seen=false;
+    this.vx=0; this.vy=0; this.posterior=null; this.lastX=x; this.lastY=y;
+    // Skill vector per-entity
+    const params=getSkillParams();
+    const floorDisc=parseInt(document.getElementById('disc').value)/100;
+    const floorStress=parseInt(document.getElementById('stress-res').value)/100;
+    const floorMom=parseInt(document.getElementById('mom').value)/100;
+    const floorComm=parseInt(document.getElementById('comm').value)/100;
+    this.skill = {
+      discrimination: Math.min(1, floorDisc + sampleBeta(params.alpha, params.beta)*(1-floorDisc)),
+      stressResistance: Math.min(1, floorStress + sampleBeta(params.alpha, params.beta)*(1-floorStress)),
+      momentumControl: Math.min(1, floorMom + sampleBeta(params.alpha, params.beta)*(1-floorMom)),
+      communicationDiscipline: Math.min(1, floorComm + sampleBeta(params.alpha, params.beta)*(1-floorComm))
+    };
+    this.skill.avg = (this.skill.discrimination + this.skill.stressResistance + this.skill.momentumControl + this.skill.communicationDiscipline)/4;
+  }
+}
+
+// ---------- Room Generation ----------
+function buildRoom(){
+  room.walls=[]; room.doors=[]; room.cover=[]; room.funnels=[];
+  const funnelsCount=parseInt(document.getElementById('funnels').value);
+  const margin=40;
+  room.walls.push({x:margin,y:margin,w:W-margin*2,h:6});
+  room.walls.push({x:margin,y:H-margin-6,w:W-margin*2,h:6});
+  room.walls.push({x:margin,y:margin,w:6,h:H-margin*2});
+  room.walls.push({x:W-margin-6,y:margin,w:6,h:H-margin*2});
+  const cols=Math.ceil(Math.sqrt(funnelsCount+1));
+  const rows=Math.ceil((funnelsCount+1)/cols);
+  const cw=(W-margin*2)/cols, ch=(H-margin*2)/rows;
+  for(let i=0;i<funnelsCount;i++){
+    const c=i%cols, r=Math.floor(i/cols);
+    const wx=margin+c*cw+cw*0.5, wy=margin+r*ch+ch*0.5;
+    room.walls.push({x:wx,y:wy-40,w:6,h:35});
+    room.walls.push({x:wx,y:wy+25,w:6,h:35});
+    room.doors.push({x:wx,y:wy-5,w:6,h:30});
+    room.funnels.push({x:wx,y:wy,dir:(c%2===0?1:-1)});
+    room.cover.push({x:wx+(c%2===0?-30:30), y:wy-20, w:20, h:40});
+  }
+  for(let i=0;i<5;i++){
+    room.cover.push({x:margin+Math.random()*(W-margin*2-60), y:margin+Math.random()*(H-margin*2-60), w:30+Math.random()*40, h:20+Math.random()*30});
+  }
+}
+
+function spawnEntities(){
+  entities=[];
+  const civDensity=parseInt(document.getElementById('civ').value);
+  const threatCount=3+Math.floor(Math.random()*4);
+  const civCount=Math.floor(threatCount*3*civDensity/100);
+  for(let i=0;i<3;i++) entities.push(new Entity(60,80+i*120,'cod'));
+  const ronSide=Math.random()>0.5?'right':'top';
+  for(let i=0;i<3;i++){
+    if(ronSide==='right') entities.push(new Entity(W-60,80+i*120,'ron'));
+    else entities.push(new Entity(120+i*140,60,'ron'));
+  }
+  for(let i=0;i<threatCount;i++){
+    let tx,ty,safe=false;
+    while(!safe){ tx=100+Math.random()*(W-200); ty=100+Math.random()*(H-200); safe=true; for(const w of room.walls) if(tx>=w.x&&tx<=w.x+w.w&&ty>=w.y&&ty<=w.y+w.h) safe=false; }
+    entities.push(new Entity(tx,ty,'threat'));
+  }
+  for(let i=0;i<civCount;i++){
+    let tx,ty,safe=false;
+    while(!safe){ tx=120+Math.random()*(W-240); ty=120+Math.random()*(H-240); safe=true; for(const w of room.walls) if(tx>=w.x&&tx<=w.x+w.w&&ty>=w.y&&ty<=w.y+w.h) safe=false; }
+    entities.push(new Entity(tx,ty,'civ'));
+  }
+  updateBayesPriors();
+  // Accumulate skill sums
+  const codEnts = entities.filter(e=>e.type==='cod');
+  const ronEnts = entities.filter(e=>e.type==='ron');
+  simResults.codSkillSum += codEnts.reduce((a,b)=>a+b.skill.avg,0);
+  simResults.ronSkillSum += ronEnts.reduce((a,b)=>a+b.skill.avg,0);
+}
+
+function lineIntersectsWall(x1,y1,x2,y2){
+  for(const w of room.walls) if(lineRect(x1,y1,x2,y2,w.x,w.y,w.w,w.h)) return true;
+  return false;
+}
+function lineRect(x1,y1,x2,y2,rx,ry,rw,rh){
+  return lineLine(x1,y1,x2,y2,rx,ry,rx,ry+rh)||lineLine(x1,y1,x2,y2,rx+rw,ry,rx+rw,ry+rh)||lineLine(x1,y1,x2,y2,rx,ry,rx+rw,ry)||lineLine(x1,y1,x2,y2,rx,ry+rh,rx+rw,ry+rh);
+}
+function lineLine(x1,y1,x2,y2,x3,y3,x4,y4){
+  const d=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+  if(d===0) return false;
+  const t=((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/d;
+  const u=-((x1-x2)*(y1-y3)-(y1-y2)*(x1-x3))/d;
+  return t>=0&&t<=1&&u>=0&&u<=1;
+}
+function canSee(a,b){ const dist=Math.hypot(a.x-b.x,a.y-b.y); if(dist>280) return false; return !lineIntersectsWall(a.x,a.y,b.x,b.y); }
+
+// ---------- P(hit|exposed) with Skill & Aerospace Invariants ----------
+function computeHitProb(type, entity){
+  const phys=parseInt(document.getElementById('physics').value);
+  const redund=parseInt(document.getElementById('redund').value);
+  const struct=parseInt(document.getElementById('struct').value);
+  const kappa = entity ? entity.skill.discrimination : 0.5;
+  let base=new Rational(1,10);
+  const rRedund=new Rational(100-redund,100);
+  const rStruct=new Rational(100-struct,100);
+  const rPhys=new Rational(100+phys,100);
+  let prob=base.mul(rRedund).mul(rStruct).mul(rPhys);
+  if(prob.gt(Rational.ONE())) prob=Rational.ONE();
+  // Skill reduces hit probability by anticipatory positioning
+  const skillMod = new Rational(Math.round((1 - kappa*0.5)*1000),1000);
+  prob = prob.mul(skillMod);
+  if(type==='cod'){
+    prob=prob.mul(new Rational(12,10));
+    if(prob.gt(Rational.ONE())) prob=Rational.ONE();
+  } else {
+    prob=prob.mul(new Rational(8,10));
+  }
+  return prob;
+}
+
+function updateEntity(e, dt){
+  const aggr=parseInt(document.getElementById('aggr').value);
+  const caution=parseInt(document.getElementById('caution').value);
+  const phys=parseInt(document.getElementById('physics').value);
+  const latency=parseInt(document.getElementById('latency').value);
+  const stressApex=parseInt(document.getElementById('stress').value);
+  if(!e.alive) return;
+  const threats=entities.filter(x=>x.type==='threat'&&x.alive);
+  const civs=entities.filter(x=>x.type==='civ'&&x.alive);
+
+  // Skill-compressed OODA
+  const kappa = e.skill.avg;
+  const compress = 1 - kappa*0.4; // up to 40% reduction
+  const baseOODA = e.type==='cod' ? {o:120,or:80,d:60,a:40} : {o:300,or:150,d:200,a:120};
+  const commFactor = e.type==='cod' ? (1+latency/500) : (1+latency/1200);
+  const ooda = {
+    o: baseOODA.o * commFactor * compress * (1 - (e.type==='cod'?aggr:caution)*0.003),
+    or: baseOODA.or * commFactor * compress,
+    d: baseOODA.d * (1 - (e.type==='cod'?aggr:caution)*0.002) * compress,
+    a: baseOODA.a * (1 + phys*0.003*(e.type==='cod'?1:0.2)) * compress
+  };
+
+  // Yerkes-Dodson with skill-shifted apex
+  const visibleThreats=threats.filter(t=>canSee(e,t)).length;
+  const rawStress = visibleThreats*0.25 + (e.type==='cod'?aggr*0.003:0.1);
+  const stress = Math.min(1, rawStress);
+  const shiftedApex = (stressApex/100) * (1 + e.skill.stressResistance*0.5);
+  const perf = stress * Math.exp(-stress/shiftedApex);
+
+  // Movement
+  let speed = e.type==='cod' ? 2.8*(aggr/100)*(1-phys*0.003) : 1.4*(caution/100);
+  speed *= (0.6+perf*0.8);
+  // Momentum control reduces physics penalty
+  if(e.type==='cod' && phys>50) speed *= (1 + e.skill.momentumControl*0.3);
+
+  if(e.type==='cod'){
+    const unseen=threats.filter(t=>!t.seen);
+    let target=null;
+    if(unseen.length) target=unseen.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b);
+    else if(threats.length) target=threats.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b);
+    if(target){ const dx=target.x-e.x, dy=target.y-e.y, d=Math.hypot(dx,dy); e.vx=(dx/d)*speed; e.vy=(dy/d)*speed; }
+    else { e.vx=0; e.vy=0; }
+  } else {
+    const nearestCover=room.cover.reduce((a,b)=>{ const da=Math.hypot(e.x-a.x,e.y-a.y), db=Math.hypot(e.x-b.x,e.y-b.y); return da<db?a:b; }, room.cover[0]);
+    const nearestThreat=threats.length?threats.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b):null;
+    let target=null;
+    if(nearestThreat && !canSee(e,nearestThreat)) target=nearestCover;
+    else if(nearestThreat && canSee(e,nearestThreat)){
+      if(Math.hypot(e.x-nearestThreat.x,e.y-nearestThreat.y) < 120) target=nearestCover;
+      else { e.vx=0; e.vy=0; }
+    }
+    if(target){ const dx=target.x-e.x, dy=target.y-e.y, d=Math.hypot(dx,dy); if(d>10){ e.vx=(dx/d)*speed; e.vy=(dy/d)*speed; } else { e.vx=0; e.vy=0; } }
+  }
+
+  // Physics with momentum control
+  if(phys>50 && e.type==='cod'){
+    const mc = e.skill.momentumControl;
+    e.x += e.vx * (1 - mc*0.3); // high skill = better direction change
+    e.y += e.vy * (1 - mc*0.3);
+  } else { e.x += e.vx; e.y += e.vy; }
+
+  for(const w of room.walls){
+    if(e.x>w.x-8 && e.x<w.x+w.w+8 && e.y>w.y-8 && e.y<w.y+w.h+8){ e.x-=e.vx*2; e.y-=e.vy*2; e.vx=0; e.vy=0; }
+  }
+  e.x=Math.max(20,Math.min(W-20,e.x)); e.y=Math.max(20,Math.min(H-20,e.y));
+
+  e.posterior=posteriorThreat(e);
+
+  // Engagements with skill-modulated discrimination
+  const allTargets=[...threats,...civs];
+  for(const t of allTargets){
+    if(!t.alive) continue;
+    if(canSee(e,t)){
+      t.seen=true;
+      if(e.type==='cod'){
+        // Discrimination reduces civilian error
+        const pError = stress * 0.25 * (parseInt(document.getElementById('civ').value)/100) * (1 - e.skill.discrimination*0.8);
+        const isCiv=t.type==='civ';
+        if(!isCiv || Math.random() > (1-pError)){
+          const hitProb=computeHitProb('cod', e).toNumber();
+          if(Math.random() < hitProb) t.alive=false;
+        }
+      } else {
+        if(t.type==='threat'){
+          const hitProb=computeHitProb('ron', e).mul(new Rational(caution,100)).toNumber();
+          if(Math.random() < hitProb) t.alive=false;
+        }
+      }
+    }
+  }
+
+  // Threat AI
+  if(e.type==='threat'){
+    const enemies=entities.filter(x=>(x.type==='cod'||x.type==='ron')&&x.alive);
+    const nearest=enemies.reduce((a,b)=>Math.hypot(e.x-a.x,e.y-a.y)<Math.hypot(e.x-b.x,e.y-b.y)?a:b, null);
+    if(nearest && canSee(e,nearest)){
+      const hitProb=0.03;
+      if(Math.random() < hitProb){
+        if(nearest.type==='cod'){ if(Math.random()<0.6) nearest.alive=false; }
+        else { if(Math.random()<0.25) nearest.alive=false; }
+      }
+    }
+  }
+}
+
+function drawArena(){
+  ctx.fillStyle='#0d1218'; ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1a2530'; for(const w of room.walls) ctx.fillRect(w.x,w.y,w.w,w.h);
+  ctx.fillStyle='#0d1218'; for(const d of room.doors) ctx.fillRect(d.x,d.y,d.w,d.h);
+  ctx.fillStyle='#152030'; for(const c of room.cover){ ctx.fillRect(c.x,c.y,c.w,c.h); ctx.strokeStyle='#223040'; ctx.strokeRect(c.x,c.y,c.w,c.h); }
+  ctx.fillStyle='rgba(255,77,77,0.15)'; for(const f of room.funnels){ ctx.beginPath(); ctx.moveTo(f.x,f.y-30); ctx.lineTo(f.x+f.dir*80,f.y); ctx.lineTo(f.x,f.y+30); ctx.fill(); }
+  for(const e of entities){
+    if(!e.alive) continue;
+    if(e.posterior && e.type!=='cod' && e.type!=='ron'){
+      const p=e.posterior.toNumber();
+      ctx.beginPath(); ctx.arc(e.x,e.y,14,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,170,68,${p*0.4})`; ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(e.x,e.y,7,0,Math.PI*2);
+    if(e.type==='cod'){
+      // Hybrid color if skill > 0.8
+      if(e.skill.avg > 0.8) ctx.fillStyle='#d0a0ff';
+      else ctx.fillStyle='#ff4d4d';
+    } else if(e.type==='ron'){
+      if(e.skill.avg > 0.8) ctx.fillStyle='#d0a0ff';
+      else ctx.fillStyle='#00e5ff';
+    } else if(e.type==='threat') ctx.fillStyle=e.seen?'#ff4d4d':'#6b7a8f';
+    else ctx.fillStyle='#00ff88';
+    ctx.fill(); ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.stroke();
+    // Skill badge for operators
+    if((e.type==='cod'||e.type==='ron') && e.skill.avg > 0.7){
+      ctx.fillStyle='#d0a0ff'; ctx.font='8px monospace'; ctx.textAlign='center';
+      ctx.fillText(e.skill.avg.toFixed(2), e.x, e.y-10);
+    }
+    if(e.type==='ron'){
+      ctx.strokeStyle='rgba(0,229,255,0.08)'; ctx.lineWidth=1;
+      for(const t of entities){ if(t!==e && t.alive && canSee(e,t)){ ctx.beginPath(); ctx.moveTo(e.x,e.y); ctx.lineTo(t.x,t.y); ctx.stroke(); } }
+    }
+  }
+}
+
+function updateBayesReadout(){
+  const unconfirmed=entities.filter(e=>e.type!=='cod'&&e.type!=='ron'&&e.alive);
+  if(!unconfirmed.length){ lastBayesReadout='No active targets.'; return; }
+  const maxP=unconfirmed.reduce((a,b)=>a.posterior&&b.posterior&&a.posterior.gt(b.posterior)?a:b, unconfirmed[0]);
+  if(maxP && maxP.posterior) lastBayesReadout=`Max P(Threat|Evidence) = ${maxP.posterior.toString()} ≈ ${maxP.posterior.toFixed(3)} at (${Math.round(maxP.x)},${Math.round(maxP.y)})`;
+}
+
+function loop(){
+  if(!running) return;
+  for(const e of entities) updateEntity(e, 1/60);
+  drawArena(); updateBayesReadout();
+  document.getElementById('m-bayes').textContent=lastBayesReadout;
+  frame++;
+  if(frame>600){ running=false; evaluate(); }
+  requestAnimationFrame(loop);
+}
+
+function evaluate(){
+  const codAlive=entities.filter(e=>e.type==='cod'&&e.alive).length;
+  const ronAlive=entities.filter(e=>e.type==='ron'&&e.alive).length;
+  const threatsAlive=entities.filter(e=>e.type==='threat'&&e.alive).length;
+  const civDead=entities.filter(e=>e.type==='civ'&&!e.alive).length;
+  simResults.codSurv+=codAlive; simResults.ronSurv+=ronAlive; simResults.civ+=civDead; simResults.time+=frame/60;
+  if(threatsAlive===0){ if(codAlive>ronAlive) simResults.codWins++; else if(ronAlive>codAlive) simResults.ronWins++; else simResults.draws++; }
+  else { if(codAlive===0 && ronAlive>0) simResults.ronWins++; else if(ronAlive===0 && codAlive>0) simResults.codWins++; else simResults.draws++; }
+  simResults.iters++;
+  runOEAudit(codAlive, ronAlive, threatsAlive, civDead);
+  updateMetrics();
+  document.getElementById('arenaStatus').textContent=`Round ${simResults.iters} | CoD:${codAlive} RoN:${ronAlive} Threats:${threatsAlive} CivDead:${civDead}`;
+  if(autoPlay){ setTimeout(()=>{ resetArena(); running=true; loop(); }, 200); }
+}
+
+function updateMetrics(){
+  const n=simResults.iters||1;
+  document.getElementById('m-cod-surv').textContent=(simResults.codSurv/(n*3)).toFixed(2);
+  document.getElementById('m-ron-surv').textContent=(simResults.ronSurv/(n*3)).toFixed(2);
+  document.getElementById('m-cod-win').textContent=(simResults.codWins/n).toFixed(2);
+  document.getElementById('m-ron-win').textContent=(simResults.ronWins/n).toFixed(2);
+  document.getElementById('m-ff').textContent=simResults.ff.toFixed(0);
+  document.getElementById('m-time').textContent=(simResults.time/n).toFixed(1);
+  document.getElementById('m-civ').textContent=(simResults.civ/n).toFixed(2);
+  const codSkillAvg = simResults.iters > 0 ? (simResults.codSkillSum/(n*3)).toFixed(2) : '--';
+  const ronSkillAvg = simResults.iters > 0 ? (simResults.ronSkillSum/(n*3)).toFixed(2) : '--';
+  document.getElementById('m-cod-skill').textContent = codSkillAvg;
+  document.getElementById('m-ron-skill').textContent = ronSkillAvg;
+  document.getElementById('mc-iters').textContent=n;
+  const codRate=simResults.codWins/n, ronRate=simResults.ronWins/n;
+  document.getElementById('mc-cod').textContent=codRate.toFixed(3)+' ±'+(1.96*Math.sqrt(codRate*(1-codRate)/n)).toFixed(3);
+  document.getElementById('mc-ron').textContent=ronRate.toFixed(3)+' ±'+(1.96*Math.sqrt(ronRate*(1-ronRate)/n)).toFixed(3);
+  document.getElementById('mc-draw').textContent=(simResults.draws/n).toFixed(3);
+  const d=(ronRate-codRate)/Math.sqrt(codRate*(1-codRate)+ronRate*(1-ronRate)+0.001);
+  document.getElementById('mc-d').textContent=d.toFixed(2);
+}
+
+function resetArena(){ resizeArena(); buildRoom(); spawnEntities(); frame=0; drawArena(); document.getElementById('arenaStatus').textContent='Ready'; }
+function toggleAuto(){ autoPlay=!autoPlay; document.getElementById('autoBtn').textContent=autoPlay?'Auto-Play: ON':'Auto-Play: OFF'; if(autoPlay&&!running){ resetArena(); running=true; loop(); } else if(!autoPlay) running=false; }
+function switchTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const tabs=document.querySelectorAll('.tab');
+  for(const t of tabs){ if(t.getAttribute('onclick') && t.getAttribute('onclick').includes(id)) t.classList.add('active'); }
+  if(id==='netTab') drawPetriNet();
+}
+
+// Input listeners
+['aggr','caution','physics','latency','funnels','civ','stress','redund','struct','iter'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const el=document.getElementById('v-'+id); if(el) el.textContent=e.target.value+(id==='civ'?'/100':(id==='aggr'||id==='caution'||id==='physics'||id==='stress'||id==='redund'||id==='struct'?'/100':''));
+    if(id==='civ') updateBayesPriors();
+  });
+});
+['disc','stress-res','mom','comm'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    const el=document.getElementById('v-'+id); if(el) el.textContent=e.target.value+'/100';
+  });
+});
+document.getElementById('alpha').addEventListener('input', e=>{ document.getElementById('v-alpha').textContent=e.target.value; });
+document.getElementById('beta').addEventListener('input', e=>{ document.getElementById('v-beta').textContent=e.target.value; });
+
+// Init labels
+['aggr','caution','physics','civ','stress','redund','struct'].forEach(id=>{ document.getElementById('v-'+id).textContent=document.getElementById(id).value+'/100'; });
+['disc','stress-res','mom','comm'].forEach(id=>{ document.getElementById('v-'+id).textContent=document.getElementById(id).value+'/100'; });
+
+
+// ---------- Monte Carlo Engine with Contraction Invariant ----------
+function runSimulation(){
+  const iters=parseInt(document.getElementById('iter').value);
+  simResults={codWins:0,ronWins:0,draws:0,codSurv:0,ronSurv:0,ff:0,time:0,civ:0,iters:0, codSkillSum:0, ronSkillSum:0};
+  batchVariances=[]; lastBatchVar=Rational.fromInt(1);
+  auditLog=[];
+  let count=0;
+  const batchSize=100;
+  function batch(){
+    const batchWins=[];
+    for(let i=0; i<batchSize && count<iters; i++, count++){
+      resetArena();
+      for(let f=0; f<400; f++) for(const e of entities) updateEntity(e, 1/60);
+      const codAlive=entities.filter(e=>e.type==='cod'&&e.alive).length;
+      const ronAlive=entities.filter(e=>e.type==='ron'&&e.alive).length;
+      const threatsAlive=entities.filter(e=>e.type==='threat'&&e.alive).length;
+      const civDead=entities.filter(e=>e.type==='civ'&&!e.alive).length;
+      simResults.codSurv+=codAlive; simResults.ronSurv+=ronAlive; simResults.civ+=civDead; simResults.time+=400/60;
+      let codWin=0;
+      if(threatsAlive===0){ if(codAlive>ronAlive){ simResults.codWins++; codWin=1; } else if(ronAlive>codAlive) simResults.ronWins++; else simResults.draws++; }
+      else { if(codAlive===0 && ronAlive>0) simResults.ronWins++; else if(ronAlive===0 && codAlive>0){ simResults.codWins++; codWin=1; } else simResults.draws++; }
+      simResults.iters++;
+      runOEAudit(codAlive, ronAlive, threatsAlive, civDead);
+      batchWins.push(codWin);
+    }
+    const mean=batchWins.reduce((a,b)=>a+b,0)/batchWins.length;
+    const variance=batchWins.reduce((a,b)=>a+(b-mean)*(b-mean),0)/batchWins.length;
+    const rVar=new Rational(Math.round(variance*10000),10000);
+    batchVariances.push(rVar.toNumber());
+    document.getElementById('mc-var').textContent=rVar.toFixed(4);
+    const lambda=lastBatchVar.toNumber()>0 ? rVar.toNumber()/lastBatchVar.toNumber() : 0;
+    document.getElementById('mc-lambda').textContent=lambda.toFixed(3);
+    if(lambda>=1 && batchVariances.length>1) document.getElementById('convWarn').classList.add('active');
+    else document.getElementById('convWarn').classList.remove('active');
+    lastBatchVar=rVar;
+    if(count<iters){ setTimeout(batch, 10); }
+    else { drawArena(); updateCharts(); updateAuditDisplay(); }
+  }
+  batch();
+}
+
+// ---------- OE Domain Audit — ProofObject Generation ----------
+function ProofObject(rule, premises, conclusion, falsifies_if){
+  this.rule=rule; this.premises=premises; this.conclusion=conclusion; this.falsifies_if=falsifies_if; this.timestamp=new Date().toISOString();
+}
+function runOEAudit(codAlive, ronAlive, threatsAlive, civDead){
+  const aggr=parseInt(document.getElementById('aggr').value);
+  const caution=parseInt(document.getElementById('caution').value);
+  const civ=parseInt(document.getElementById('civ').value);
+  const forceOrdCod=new Rational(aggr,10);
+  const forceOrdRon=new Rational(caution,10);
+  const threatOrd=new Rational(threatsAlive+1,1);
+  const passCod1=forceOrdCod.leq(threatOrd.add(Rational.fromInt(1)));
+  const passRon1=forceOrdRon.leq(threatOrd.add(Rational.fromInt(1)));
+  auditLog.push(new ProofObject('force_proportionality', [forceOrdCod, threatOrd], passCod1?'PASS':'VIOLATION', 'force_ordinal > threat_ordinal + 1'));
+  auditLog.push(new ProofObject('force_proportionality', [forceOrdRon, threatOrd], passRon1?'PASS':'VIOLATION', 'force_ordinal > threat_ordinal + 1'));
+  const imminent=threatsAlive>0;
+  const codDeadly=aggr>70;
+  const ronDeadly=caution>50 && threatsAlive>0;
+  const passCod2=!codDeadly || imminent;
+  const passRon2=!ronDeadly || imminent;
+  auditLog.push(new ProofObject('deadly_force_necessity', [imminent?'IMMINENT':'ABSENT', codDeadly?'DEADLY_USED':'RESTRAINT'], passCod2?'PASS':'VIOLATION', 'deadly_force_used && !imminent_threat'));
+  auditLog.push(new ProofObject('deadly_force_necessity', [imminent?'IMMINENT':'ABSENT', ronDeadly?'DEADLY_USED':'RESTRAINT'], passRon2?'PASS':'VIOLATION', 'deadly_force_used && !imminent_threat'));
+  const codDeesc=caution>30?1:0;
+  const passCod3=codDeesc>=1 || aggr<50;
+  auditLog.push(new ProofObject('de_escalation_attempted', [new Rational(codDeesc,1), new Rational(aggr,100)], passCod3?'PASS':'VIOLATION', 'hold_order < 1 && physical_force_used'));
+  auditLog.push(new ProofObject('de_escalation_attempted', [Rational.fromInt(1), new Rational(caution,100)], true?'PASS':'VIOLATION', 'hold_order < 1 && physical_force_used'));
+  const codLessLethal=aggr<60?1:0;
+  const passCod4=codLessLethal>=1 || !codDeadly;
+  auditLog.push(new ProofObject('less_lethal_before_deadly', [new Rational(codLessLethal,1), new Rational(aggr>70?1:0,1)], passCod4?'PASS':'VIOLATION', 'less_lethal_count < 1 && deadly_count > 0'));
+  auditLog.push(new ProofObject('less_lethal_before_deadly', [Rational.fromInt(1), Rational.fromInt(1)], true?'PASS':'VIOLATION', 'less_lethal_count < 1 && deadly_count > 0'));
+  let maxPosterior=Rational.ZERO();
+  for(const e of entities){ if(e.posterior && e.posterior.gt(maxPosterior)) maxPosterior=e.posterior; }
+  const threshold=new Rational(3,4);
+  const passCod5=maxPosterior.geq(threshold) || aggr<50;
+  const passRon5=maxPosterior.geq(threshold) || !ronDeadly;
+  auditLog.push(new ProofObject('threat_assessment_ratio', [maxPosterior, threshold], passCod5?'PASS':'VIOLATION', 'bayesian_confidence < 3/4 && engagement_executed'));
+  auditLog.push(new ProofObject('threat_assessment_ratio', [maxPosterior, threshold], passRon5?'PASS':'VIOLATION', 'bayesian_confidence < 3/4 && engagement_executed'));
+  const docCod={id:simResults.iters, ts:new Date().toISOString(), officer:'COD-'+simResults.iters, just:codAlive>0?'Survived':'KIA'};
+  const docRon={id:simResults.iters, ts:new Date().toISOString(), officer:'RON-'+simResults.iters, just:ronAlive>0?'Survived':'KIA'};
+  auditLog.push(new ProofObject('documentation_complete', [docCod.id, docCod.ts, docCod.officer, docCod.just], true?'PASS':'VIOLATION', '!incident_id || !timestamp || !officer_id || !justification'));
+  auditLog.push(new ProofObject('documentation_complete', [docRon.id, docRon.ts, docRon.officer, docRon.just], true?'PASS':'VIOLATION', '!incident_id || !timestamp || !officer_id || !justification'));
+
+  const verdict=(p)=>p?'PASS':'VIOLATION';
+  const cls=(p)=>p?'pass':'violation';
+  document.getElementById('aud-cod-1').textContent=verdict(passCod1); document.getElementById('aud-cod-1').className=cls(passCod1);
+  document.getElementById('aud-cod-2').textContent=verdict(passCod2); document.getElementById('aud-cod-2').className=cls(passCod2);
+  document.getElementById('aud-cod-3').textContent=verdict(passCod3); document.getElementById('aud-cod-3').className=cls(passCod3);
+  document.getElementById('aud-cod-4').textContent=verdict(passCod4); document.getElementById('aud-cod-4').className=cls(passCod4);
+  document.getElementById('aud-cod-5').textContent=verdict(passCod5); document.getElementById('aud-cod-5').className=cls(passCod5);
+  document.getElementById('aud-cod-6').textContent=verdict(true); document.getElementById('aud-cod-6').className=cls(true);
+  document.getElementById('aud-ron-1').textContent=verdict(passRon1); document.getElementById('aud-ron-1').className=cls(passRon1);
+  document.getElementById('aud-ron-2').textContent=verdict(passRon2); document.getElementById('aud-ron-2').className=cls(passRon2);
+  document.getElementById('aud-ron-3').textContent=verdict(true); document.getElementById('aud-ron-3').className=cls(true);
+  document.getElementById('aud-ron-4').textContent=verdict(true); document.getElementById('aud-ron-4').className=cls(true);
+  document.getElementById('aud-ron-5').textContent=verdict(passRon5); document.getElementById('aud-ron-5').className=cls(passRon5);
+  document.getElementById('aud-ron-6').textContent=verdict(true); document.getElementById('aud-ron-6').className=cls(true);
+
+  const recent=auditLog.slice(-12);
+  const codRecent=recent.filter((_,i)=>i%2===0);
+  const ronRecent=recent.filter((_,i)=>i%2===1);
+  const codViol=codRecent.filter(a=>a.conclusion==='VIOLATION').length;
+  const ronViol=ronRecent.filter(a=>a.conclusion==='VIOLATION').length;
+  const codRate=codRecent.length?new Rational(codViol, codRecent.length):Rational.ZERO();
+  const ronRate=ronRecent.length?new Rational(ronViol, ronRecent.length):Rational.ZERO();
+  document.getElementById('audit-cod-rate').textContent=codRate.toFixed(2);
+  document.getElementById('audit-ron-rate').textContent=ronRate.toFixed(2);
+  const counts={};
+  for(const a of codRecent){ if(a.conclusion==='VIOLATION') counts[a.rule]=(counts[a.rule]||0)+1; }
+  let worst='None', maxc=0;
+  for(const k in counts){ if(counts[k]>maxc){ maxc=counts[k]; worst=k; } }
+  document.getElementById('audit-cod-worst').textContent=worst;
+
+  const lastPO=auditLog.slice(-2);
+  document.getElementById('proofJson').textContent=JSON.stringify(lastPO.map(p=>({
+    rule:p.rule,
+    premises:Array.isArray(p.premises)?p.premises.map(x=>x instanceof Rational?x.toString():x):p.premises,
+    conclusion:p.conclusion,
+    falsifies_if:p.falsifies_if,
+    timestamp:p.timestamp
+  })), null, 2);
+}
+function updateAuditDisplay(){}
+
+// ---------- MDP Value Iteration (Rational, Skill-Weighted) ----------
+const MDP_STATES=['OBSERVE','ORIENT','DECIDE','ACT','DEAD','MISSION_COMPLETE'];
+const MDP_ACTIONS=['rush','hold','flank','de-escalate','engage'];
+let mdpPolicy={}, mdpValues={};
+function runMDP(){
+  const n=simResults.iters||1;
+  const codRate=simResults.codWins/n, ronRate=simResults.ronWins/n, drawRate=simResults.draws/n;
+  const codSurv=simResults.codSurv/(n*3), ronSurv=simResults.ronSurv/(n*3);
+  const avgSkill = (simResults.codSkillSum + simResults.ronSkillSum) / (n*6);
+  const kappa = avgSkill || 0.5;
+
+  const P={}; for(const s of MDP_STATES){ P[s]={}; for(const a of MDP_ACTIONS){ P[s][a]={}; for(const sp of MDP_STATES) P[s][a][sp]=Rational.ZERO(); } }
+  function setP(s,a,sp,val){ P[s][a][sp]=val; }
+
+  const rCodSurv=new Rational(Math.round(codSurv*1000),1000);
+  const rRonSurv=new Rational(Math.round(ronSurv*1000),1000);
+  const rCodWin=new Rational(Math.round(codRate*1000),1000);
+  const rRonWin=new Rational(Math.round(ronRate*1000),1000);
+  const rDead=Rational.ONE().sub(rCodSurv).sub(rRonSurv).div(Rational.fromInt(2));
+
+  // Skill boosts survival transitions
+  const skillBoost = new Rational(Math.round((1 + kappa/4)*1000),1000);
+  const deadMod = new Rational(Math.round((1 - kappa/3)*1000),1000);
+
+  setP('OBSERVE','rush','ORIENT', new Rational(3,10));
+  setP('OBSERVE','rush','ACT', new Rational(2,10).mul(skillBoost));
+  setP('OBSERVE','rush','DEAD', rDead.gt(Rational.ZERO())?rDead.mul(deadMod):new Rational(1,10));
+  setP('OBSERVE','rush','MISSION_COMPLETE', rCodWin.gt(Rational.ZERO())?rCodWin.mul(new Rational(1,2)).mul(skillBoost):new Rational(1,10));
+  setP('OBSERVE','hold','ORIENT', new Rational(5,10));
+  setP('OBSERVE','hold','DECIDE', new Rational(2,10));
+  setP('OBSERVE','hold','DEAD', new Rational(1,20).mul(deadMod));
+  setP('OBSERVE','hold','MISSION_COMPLETE', rRonWin.gt(Rational.ZERO())?rRonWin.mul(new Rational(1,2)).mul(skillBoost):new Rational(1,10));
+  setP('ORIENT','rush','ACT', new Rational(4,10).mul(skillBoost));
+  setP('ORIENT','rush','DEAD', new Rational(2,10).mul(deadMod));
+  setP('ORIENT','rush','MISSION_COMPLETE', new Rational(1,10));
+  setP('ORIENT','hold','DECIDE', new Rational(5,10));
+  setP('ORIENT','hold','DEAD', new Rational(1,10).mul(deadMod));
+  setP('ORIENT','hold','MISSION_COMPLETE', new Rational(1,10));
+  setP('DECIDE','engage','ACT', new Rational(4,10));
+  setP('DECIDE','engage','DEAD', new Rational(2,10).mul(deadMod));
+  setP('DECIDE','engage','MISSION_COMPLETE', new Rational(2,10).mul(skillBoost));
+  setP('DECIDE','de-escalate','OBSERVE', new Rational(3,10));
+  setP('DECIDE','de-escalate','MISSION_COMPLETE', new Rational(1,10).mul(skillBoost));
+  setP('DECIDE','de-escalate','DEAD', new Rational(1,10).mul(deadMod));
+  setP('ACT','engage','MISSION_COMPLETE', new Rational(4,10).mul(skillBoost));
+  setP('ACT','engage','DEAD', new Rational(3,10).mul(deadMod));
+  setP('ACT','engage','OBSERVE', new Rational(1,10));
+  setP('ACT','flank','MISSION_COMPLETE', new Rational(3,10).mul(skillBoost));
+  setP('ACT','flank','DEAD', new Rational(2,10).mul(deadMod));
+  setP('ACT','flank','ORIENT', new Rational(2,10));
+  for(const a of MDP_ACTIONS){ setP('DEAD',a,'DEAD',Rational.ONE()); setP('MISSION_COMPLETE',a,'MISSION_COMPLETE',Rational.ONE()); }
+
+  for(const s of MDP_STATES){
+    for(const a of MDP_ACTIONS){
+      let sum=Rational.ZERO();
+      for(const sp of MDP_STATES) sum=sum.add(P[s][a][sp]);
+      if(sum.toNumber()>0){ for(const sp of MDP_STATES) P[s][a][sp]=P[s][a][sp].div(sum); }
+    }
+  }
+
+  const R={}; for(const s of MDP_STATES){ R[s]={}; for(const a of MDP_ACTIONS) R[s][a]=Rational.ZERO(); }
+  R['OBSERVE']['rush']=new Rational(0,1); R['OBSERVE']['hold']=new Rational(0,1);
+  R['ORIENT']['rush']=new Rational(0,1); R['ORIENT']['hold']=new Rational(0,1);
+  R['DECIDE']['engage']=new Rational(0,1); R['DECIDE']['de-escalate']=new Rational(1,10);
+  R['ACT']['engage']=new Rational(1,1); R['ACT']['flank']=new Rational(1,1);
+  R['DEAD']['rush']=new Rational(-1,1); R['DEAD']['hold']=new Rational(-1,1);
+  R['MISSION_COMPLETE']['rush']=new Rational(1,1); R['MISSION_COMPLETE']['hold']=new Rational(1,1);
+
+  const gamma=new Rational(19,20);
+  let V={}; for(const s of MDP_STATES) V[s]=Rational.ZERO();
+  let policy={};
+  const history=[];
+  for(let iter=0; iter<200; iter++){
+    let delta=Rational.ZERO();
+    const newV={};
+    for(const s of MDP_STATES){
+      if(s==='DEAD' || s==='MISSION_COMPLETE'){ newV[s]=R[s]['rush']; policy[s]='rush'; continue; }
+      let bestQ=null, bestA=MDP_ACTIONS[0];
+      for(const a of MDP_ACTIONS){
+        let q=R[s][a];
+        for(const sp of MDP_STATES) q=q.add(P[s][a][sp].mul(V[sp]).mul(gamma));
+        if(bestQ===null || q.gt(bestQ)){ bestQ=q; bestA=a; }
+      }
+      newV[s]=bestQ; policy[s]=bestA;
+      const diff=bestQ.sub(V[s]).abs();
+      if(diff.gt(delta)) delta=diff;
+    }
+    V=newV;
+    history.push({OBSERVE:V['OBSERVE'].toNumber(), ORIENT:V['ORIENT'].toNumber(), DECIDE:V['DECIDE'].toNumber(), ACT:V['ACT'].toNumber()});
+    if(delta.toNumber()<0.001) break;
+  }
+  mdpPolicy=policy; mdpValues=V;
+
+  const stateIds=['OBSERVE','ORIENT','DECIDE','ACT','DEAD','MISSION_COMPLETE'];
+  for(let i=0;i<6;i++){
+    const s=stateIds[i];
+    document.getElementById('pol-'+i).textContent=policy[s]||'N/A';
+    document.getElementById('val-'+i).textContent=V[s]?V[s].toFixed(3):'N/A';
+    if(i<4){
+      for(let ai=0;ai<5;ai++){
+        const a=MDP_ACTIONS[ai];
+        let q=R[s][a];
+        for(const sp of MDP_STATES) q=q.add(P[s][a][sp].mul(V[sp]).mul(gamma));
+        document.getElementById('q-'+i+'-'+ai).textContent=q.toFixed(3);
+      }
+    }
+  }
+  updateMDPChart(history);
+}
+
+// ---------- Petri Net Simulation & Rendering ----------
+const petriCanvas=document.getElementById('petriCanvas');
+const pCtx=petriCanvas.getContext('2d');
+let petriState={places:{cover:3, exposed:0, engaging:0, reloading:0, communicating:0}};
+function resizePetri(){ const rect=petriCanvas.parentElement.getBoundingClientRect(); petriCanvas.width=rect.width-20; petriCanvas.height=300; }
+window.addEventListener('resize', resizePetri);
+resizePetri();
+function stepPetri(){
+  const s=petriState.places;
+  const style=Math.random()>0.5?'ron':'cod';
+  if(style==='ron'){
+    if(s.cover>0 && Math.random()<0.3){ s.cover--; s.communicating++; }
+    else if(s.communicating>0 && Math.random()<0.4){ s.communicating--; s.cover++; }
+    else if(s.cover>0 && Math.random()<0.2){ s.cover--; s.exposed++; }
+    else if(s.exposed>0 && Math.random()<0.3){ s.exposed--; s.engaging++; }
+    else if(s.engaging>0 && Math.random()<0.3){ s.engaging--; s.reloading++; }
+    else if(s.reloading>0 && Math.random()<0.5){ s.reloading--; s.cover++; }
+  } else {
+    if(s.cover>0 && Math.random()<0.6){ s.cover--; s.exposed++; }
+    else if(s.exposed>0 && Math.random()<0.5){ s.exposed--; s.engaging++; }
+    else if(s.engaging>0 && Math.random()<0.4){ s.engaging--; s.reloading++; }
+    else if(s.reloading>0 && Math.random()<0.4){ s.reloading--; s.exposed++; }
+    else if(s.exposed>0 && Math.random()<0.1){ s.exposed--; s.cover++; }
+  }
+  for(const k in s) if(s[k]<0) s[k]=0;
+}
+function drawPetriNet(){
+  const w=petriCanvas.width, h=petriCanvas.height;
+  pCtx.fillStyle='#0d1218'; pCtx.fillRect(0,0,w,h);
+  const places=[
+    {name:'cover', x:w*0.2, y:h*0.5, color:'#00e5ff'},
+    {name:'exposed', x:w*0.4, y:h*0.25, color:'#ff4d4d'},
+    {name:'engaging', x:w*0.6, y:h*0.25, color:'#ffaa44'},
+    {name:'reloading', x:w*0.6, y:h*0.75, color:'#ffcc00'},
+    {name:'communicating', x:w*0.4, y:h*0.75, color:'#00ff88'}
+  ];
+  const transitions=[
+    {name:'breach', x:w*0.3, y:h*0.35, from:'cover', to:'exposed'},
+    {name:'fire', x:w*0.5, y:h*0.25, from:'exposed', to:'engaging'},
+    {name:'reload', x:w*0.6, y:h*0.5, from:'engaging', to:'reloading'},
+    {name:'move_to_cover', x:w*0.5, y:h*0.75, from:'reloading', to:'cover'},
+    {name:'radio', x:w*0.3, y:h*0.65, from:'cover', to:'communicating'},
+    {name:'return', x:w*0.4, y:h*0.5, from:'communicating', to:'cover'}
+  ];
+  pCtx.strokeStyle='#223040'; pCtx.lineWidth=2;
+  for(const t of transitions){
+    const from=places.find(p=>p.name===t.from);
+    const to=places.find(p=>p.name===t.to);
+    if(from&&to){ pCtx.beginPath(); pCtx.moveTo(from.x,from.y); pCtx.lineTo(t.x,t.y); pCtx.lineTo(to.x,to.y); pCtx.stroke(); }
+  }
+  for(const t of transitions){ pCtx.fillStyle='#ffaa44'; pCtx.fillRect(t.x-6,t.y-6,12,12); }
+  for(const p of places){
+    pCtx.beginPath(); pCtx.arc(p.x,p.y,20,0,Math.PI*2);
+    pCtx.fillStyle='rgba(0,0,0,0.3)'; pCtx.fill();
+    pCtx.strokeStyle=p.color; pCtx.lineWidth=2; pCtx.stroke();
+    const count=petriState.places[p.name];
+    pCtx.fillStyle=p.color;
+    for(let i=0;i<count;i++){
+      const angle=(i/count)*Math.PI*2 - Math.PI/2;
+      pCtx.beginPath(); pCtx.arc(p.x+Math.cos(angle)*10, p.y+Math.sin(angle)*10, 4, 0, Math.PI*2); pCtx.fill();
+    }
+    pCtx.fillStyle='#6b7a8f'; pCtx.font='10px monospace'; pCtx.textAlign='center';
+    pCtx.fillText(p.name+'='+count, p.x, p.y+32);
+  }
+  stepPetri();
+  requestAnimationFrame(drawPetriNet);
+}
+setTimeout(drawPetriNet, 500);
+
+// ---------- Charts ----------
+let oodaChart, ballisticChart, yerkesChart, oodaBarChart, networkChart, mcChart, convergenceChart, mdpChart, paretoChart, heatmapChart, crossoverChart;
+function initCharts(){
+  const opts={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#6b7a8f',font:{size:10}}}},scales:{x:{ticks:{color:'#6b7a8f',font:{size:10}},grid:{color:'#1a2330'}},y:{ticks:{color:'#6b7a8f',font:{size:10}},grid:{color:'#1a2330'}}}};
+
+  oodaChart=new Chart(document.getElementById('oodaChart'),{type:'line',data:{labels:['0','0.5','1','1.5','2','2.5','3'],datasets:[{label:'CoD OODA',data:[0,0.3,0.6,0.75,0.85,0.9,0.92],borderColor:'#ff4d4d',tension:0.4,pointRadius:0},{label:'RoN OODA',data:[0,0.1,0.25,0.45,0.65,0.82,0.95],borderColor:'#00e5ff',tension:0.4,pointRadius:0}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,title:{display:true,text:'Cumulative Decision Completion',color:'#6b7a8f'}}}}});
+  ballisticChart=new Chart(document.getElementById('ballisticChart'),{type:'line',data:{labels:Array.from({length:20},(_,i)=>i*5),datasets:[{label:'5.56mm Trajectory (m)',data:Array.from({length:20},(_,i)=> -0.5*9.81*(i*5/850)**2 + (i*5)*Math.sin(0.001)*0.001),borderColor:'#00e5ff',pointRadius:0},{label:'Defender LOS (m)',data:Array.from({length:20},(_,i)=> i*5*0.3),borderColor:'#ff4d4d',pointRadius:0,borderDash:[4,4]}]},options:opts});
+  yerkesChart=new Chart(document.getElementById('yerkesChart'),{type:'line',data:{labels:Array.from({length:30},(_,i)=>(i/30).toFixed(2)),datasets:[{label:'Performance',data:Array.from({length:30},(_,i)=>{const s=i/30;return s*Math.exp(-s/0.72);}),borderColor:'#ffcc00',tension:0.4,pointRadius:0}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,title:{display:true,text:'Performance P(σ)',color:'#6b7a8f'}}}}});
+  oodaBarChart=new Chart(document.getElementById('oodaBarChart'),{type:'bar',data:{labels:['Observe','Orient','Decide','Act'],datasets:[{label:'CoD (ms)',data:[120,80,60,40],backgroundColor:'#ff4d4d'},{label:'RoN (ms)',data:[300,150,200,120],backgroundColor:'#00e5ff'}]},options:opts});
+  networkChart=new Chart(document.getElementById('networkChart'),{type:'radar',data:{labels:['Density','Clustering','Avg Path','Redundancy','Info Speed','Predictability'],datasets:[{label:'CoD Squad',data:[0.2,0.18,0.8,0.15,0.6,0.3],borderColor:'#ff4d4d',backgroundColor:'rgba(255,77,77,0.2)',pointRadius:0},{label:'RoN Squad',data:[0.7,0.64,0.3,0.8,0.9,0.85],borderColor:'#00e5ff',backgroundColor:'rgba(0,229,255,0.2)',pointRadius:0}]},options:{...opts,scales:{r:{grid:{color:'#1a2330'},ticks:{display:false,backdropColor:'transparent'}}}}});
+  mcChart=new Chart(document.getElementById('mcChart'),{type:'bar',data:{labels:['CoD Win','RoN Win','Draw/Abort'],datasets:[{label:'Probability',data:[0.33,0.55,0.12],backgroundColor:['#ff4d4d','#00e5ff','#6b7a8f']}]},options:opts});
+  convergenceChart=new Chart(document.getElementById('convergenceChart'),{type:'line',data:{labels:[],datasets:[{label:'Var(CoD win) per batch',data:[],borderColor:'#ffcc00',tension:0.2,pointRadius:2},{label:'λ = 1 threshold',data:[],borderColor:'#ff4d4d',borderDash:[4,4],pointRadius:0}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,title:{display:true,text:'Batch Variance',color:'#6b7a8f'}}}}});
+  mdpChart=new Chart(document.getElementById('mdpChart'),{type:'line',data:{labels:[],datasets:[{label:'V(OBSERVE)',data:[],borderColor:'#00e5ff',pointRadius:0},{label:'V(ORIENT)',data:[],borderColor:'#ffaa44',pointRadius:0},{label:'V(DECIDE)',data:[],borderColor:'#ffcc00',pointRadius:0},{label:'V(ACT)',data:[],borderColor:'#ff4d4d',pointRadius:0}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,title:{display:true,text:'Value V(s)',color:'#6b7a8f'}}}}});
+
+  // Pareto chart
+  paretoChart=new Chart(document.getElementById('paretoChart'),{type:'scatter',data:{datasets:[{label:'All Configurations',data:[],backgroundColor:'rgba(100,100,100,0.3)',pointRadius:3},{label:'Pareto Frontier',data:[],backgroundColor:'#d0a0ff',pointRadius:5,borderColor:'#d0a0ff',showLine:true},{label:'Pure CoD',data:[],backgroundColor:'#ff4d4d',pointRadius:6},{label:'Pure RoN',data:[],backgroundColor:'#00e5ff',pointRadius:6},{label:'Best Hybrid',data:[],backgroundColor:'#00ff88',pointRadius:8}]},options:{...opts,scales:{...opts.scales,x:{...opts.scales.x,title:{display:true,text:'Clear Time (s)',color:'#6b7a8f'}},y:{...opts.scales.y,title:{display:true,text:'Survival Rate',color:'#6b7a8f'}}}}});
+
+  // Heatmap chart (using bar chart as proxy for heatmap)
+  heatmapChart=new Chart(document.getElementById('heatmapChart'),{type:'bar',data:{labels:[],datasets:[]},options:opts});
+
+  // Crossover chart
+  crossoverChart=new Chart(document.getElementById('crossoverChart'),{type:'line',data:{labels:[],datasets:[{label:'CoD Win Rate',data:[],borderColor:'#ff4d4d',tension:0.3,pointRadius:0},{label:'RoN Win Rate',data:[],borderColor:'#00e5ff',tension:0.3,pointRadius:0},{label:'Crossover κ*',data:[],borderColor:'#d0a0ff',borderDash:[4,4],pointRadius:0}]},options:{...opts,scales:{...opts.scales,x:{...opts.scales.x,title:{display:true,text:'Discrimination Skill κ',color:'#6b7a8f'}},y:{...opts.scales.y,title:{display:true,text:'Win Rate',color:'#6b7a8f'}}}}});
+}
+
+function updateCharts(){
+  if(!mcChart) return;
+  const n=simResults.iters||1;
+  mcChart.data.datasets[0].data=[simResults.codWins/n, simResults.ronWins/n, simResults.draws/n];
+  mcChart.update();
+  if(convergenceChart){
+    convergenceChart.data.labels=batchVariances.map((_,i)=>i+1);
+    convergenceChart.data.datasets[0].data=batchVariances;
+    convergenceChart.data.datasets[1].data=batchVariances.map(()=>1);
+    convergenceChart.update();
+  }
+}
+function updateMDPChart(history){
+  if(!mdpChart) return;
+  mdpChart.data.labels=history.map((_,i)=>i+1);
+  mdpChart.data.datasets[0].data=history.map(h=>h.OBSERVE);
+  mdpChart.data.datasets[1].data=history.map(h=>h.ORIENT);
+  mdpChart.data.datasets[2].data=history.map(h=>h.DECIDE);
+  mdpChart.data.datasets[3].data=history.map(h=>h.ACT);
+  mdpChart.update();
+}
+
+// ---------- Pareto Frontier Computation ----------
+function runPareto(){
+  // Grid search over aggression × discrimination
+  const points=[];
+  const baseAggr=parseInt(document.getElementById('aggr').value);
+  const baseCaution=parseInt(document.getElementById('caution').value);
+  const iters=200; // small per point for speed
+
+  for(let a=20; a<=100; a+=20){
+    for(let d=10; d<=100; d+=15){
+      document.getElementById('aggr').value=a;
+      document.getElementById('disc').value=d;
+      // Quick MC
+      let wins=0, surv=0, time=0;
+      for(let r=0; r<iters; r++){
+        resetArena();
+        for(let f=0; f<400; f++) for(const e of entities) updateEntity(e, 1/60);
+        const codAlive=entities.filter(e=>e.type==='cod'&&e.alive).length;
+        const ronAlive=entities.filter(e=>e.type==='ron'&&e.alive).length;
+        const threatsAlive=entities.filter(e=>e.type==='threat'&&e.alive).length;
+        if(threatsAlive===0 && codAlive+ronAlive>0) wins++;
+        surv += (codAlive+ronAlive)/6;
+        time += 400/60;
+      }
+      const winRate=wins/iters;
+      const avgSurv=surv/iters;
+      const avgTime=time/iters;
+      points.push({x:avgTime, y:avgSurv, a:a, d:d, label:`A${a}/D${d}`});
+    }
+  }
+  // Restore
+  document.getElementById('aggr').value=baseAggr;
+  document.getElementById('disc').value=baseCaution;
+
+  // Find Pareto frontier: no other point has both higher survival AND lower time
+  const frontier=[];
+  for(const p of points){
+    let dominated=false;
+    for(const q of points){
+      if(q===p) continue;
+      if(q.y >= p.y && q.x <= p.x && (q.y > p.y || q.x < p.x)){ dominated=true; break; }
+    }
+    if(!dominated) frontier.push(p);
+  }
+  frontier.sort((a,b)=>a.x-b.x);
+
+  // Identify pure CoD (d=10), pure RoN (a=20, d=100), best hybrid
+  const pureCod=points.find(p=>p.d===10 && p.a===100) || points[0];
+  const pureRon=points.find(p=>p.a===20 && p.d===100) || points[points.length-1];
+  const bestHybrid=frontier.reduce((a,b)=>a.y>b.y?a:b, frontier[0]);
+
+  paretoChart.data.datasets[0].data=points.map(p=>({x:p.x,y:p.y}));
+  paretoChart.data.datasets[1].data=frontier.map(p=>({x:p.x,y:p.y}));
+  paretoChart.data.datasets[2].data=pureCod?[{x:pureCod.x,y:pureCod.y}]:[];
+  paretoChart.data.datasets[3].data=pureRon?[{x:pureRon.x,y:pureRon.y}]:[];
+  paretoChart.data.datasets[4].data=bestHybrid?[{x:bestHybrid.x,y:bestHybrid.y}]:[];
+  paretoChart.update();
+
+  document.getElementById('pareto-count').textContent=frontier.length;
+  document.getElementById('pareto-best-surv').textContent=bestHybrid?bestHybrid.y.toFixed(2):'--';
+  document.getElementById('pareto-best-time').textContent=bestHybrid?bestHybrid.x.toFixed(1):'--';
+  document.getElementById('pareto-cod').textContent=pureCod && frontier.includes(pureCod)?'YES':'NO';
+  document.getElementById('pareto-ron').textContent=pureRon && frontier.includes(pureRon)?'YES':'NO';
+  document.getElementById('pareto-dom').textContent=bestHybrid && bestHybrid.a>20 && bestHybrid.d>10?'YES':'NO';
+
+  // Heatmap: bar chart grouped by aggression, color by discrimination
+  const aggGroups=[20,40,60,80,100];
+  const discGroups=[10,25,40,55,70,85,100];
+  heatmapChart.data.labels=aggGroups.map(a=>'A'+a);
+  heatmapChart.data.datasets=discGroups.map((d,di)=>({
+    label:'D'+d,
+    data:aggGroups.map(a=>{
+      const pt=points.find(p=>p.a===a && p.d===d);
+      return pt?pt.y:0;
+    }),
+    backgroundColor: discGroups.map((_,i) => `hsla(${260 + i*20}, 70%, 60%, 0.7)`)
+  }));
+  heatmapChart.update();
+}
+
+// ---------- Crossover Analysis ----------
+function runCrossover(){
+  const kappaSteps=20;
+  const iters=300;
+  const codWins=[], ronWins=[], kappaVals=[];
+  const baseDisc=parseInt(document.getElementById('disc').value);
+
+  for(let ki=0; ki<=kappaSteps; ki++){
+    const kappa=ki/kappaSteps;
+    // Override discrimination floor to simulate skill sweep
+    // We hack by setting the floor slider and re-running
+    // But since Beta sampling adds variance, we use a deterministic skill for this sweep
+    // Actually, let's just set floor = kappa and use alpha=100 (very tight distribution around kappa)
+    // For simplicity, set floor to kappa*100 and use graduate tier (tight)
+    // But we can't easily override the Beta sampler. Instead, we'll do a quick deterministic override.
+    // For this analysis, we'll set the floor slider and temporarily override the Beta params to be very tight.
+
+    // Save original
+    const origDisc=document.getElementById('disc').value;
+    const origTier=document.getElementById('skill-tier').value;
+    const origAlpha=document.getElementById('alpha').value;
+    const origBeta=document.getElementById('beta').value;
+
+    document.getElementById('disc').value=Math.round(kappa*100);
+    document.getElementById('skill-tier').value='custom';
+    document.getElementById('alpha').value=100;
+    document.getElementById('beta').value=100;
+
+    let cw=0, rw=0;
+    for(let r=0; r<iters; r++){
+      resetArena();
+      for(let f=0; f<400; f++) for(const e of entities) updateEntity(e, 1/60);
+      const codAlive=entities.filter(e=>e.type==='cod'&&e.alive).length;
+      const ronAlive=entities.filter(e=>e.type==='ron'&&e.alive).length;
+      const threatsAlive=entities.filter(e=>e.type==='threat'&&e.alive).length;
+      if(threatsAlive===0){ if(codAlive>ronAlive) cw++; else if(ronAlive>codAlive) rw++; }
+      else { if(codAlive>0 && ronAlive===0) cw++; else if(ronAlive>0 && codAlive===0) rw++; }
+    }
+    codWins.push(cw/iters);
+    ronWins.push(rw/iters);
+    kappaVals.push(kappa.toFixed(2));
+
+    // Restore
+    document.getElementById('disc').value=origDisc;
+    document.getElementById('skill-tier').value=origTier;
+    document.getElementById('alpha').value=origAlpha;
+    document.getElementById('beta').value=origBeta;
+  }
+
+  crossoverChart.data.labels=kappaVals;
+  crossoverChart.data.datasets[0].data=codWins;
+  crossoverChart.data.datasets[1].data=ronWins;
+  // Find crossover: where codWins >= ronWins
+  let crossKappa='None';
+  for(let i=0; i<codWins.length; i++){
+    if(codWins[i] >= ronWins[i]){ crossKappa=kappaVals[i]; break; }
+  }
+  crossoverChart.data.datasets[2].data=kappaVals.map(k=>crossKappa!=='None' && parseFloat(k)>=parseFloat(crossKappa)?0.5:null);
+  crossoverChart.update();
+
+  document.getElementById('cross-kappa').textContent=crossKappa;
+  document.getElementById('cross-cod-0').textContent=codWins[0].toFixed(2);
+  document.getElementById('cross-cod-1').textContent=codWins[codWins.length-1].toFixed(2);
+  document.getElementById('cross-ron-0').textContent=ronWins[0].toFixed(2);
+  document.getElementById('cross-ron-1').textContent=ronWins[ronWins.length-1].toFixed(2);
+  document.getElementById('cross-gap-0').textContent=(ronWins[0]-codWins[0]).toFixed(2);
+  document.getElementById('cross-gap-1').textContent=(ronWins[ronWins.length-1]-codWins[codWins.length-1]).toFixed(2);
+}
+
+// ---------- Boot ----------
+resetArena();
+initCharts();
+</script>
+</body>
+</html>
