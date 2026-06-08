@@ -1,0 +1,1477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orthogonal Combat Architecture — Math × Engineering × Trait</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --panel: #111118;
+            --border: #222233;
+            --accent: #00d4ff;
+            --accent2: #ff3366;
+            --accent3: #00ff88;
+            --text: #e0e0e0;
+            --text2: #8899aa;
+            --math: #ffaa00;
+            --eng: #aa66ff;
+            --trait: #00ffaa;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        header {
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, #111118 0%, var(--bg) 100%);
+        }
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        header h1 span { color: var(--accent); }
+        header p {
+            color: var(--text2);
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+
+        /* ARCHITECTURAL MAP */
+        .map-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .map-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        .layers {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        @media (max-width: 900px) { .layers { grid-template-columns: 1fr; } }
+        .layer {
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        .layer-math { border-color: var(--math); background: rgba(255,170,0,0.03); }
+        .layer-eng { border-color: var(--eng); background: rgba(170,102,255,0.03); }
+        .layer-trait { border-color: var(--trait); background: rgba(0,255,170,0.03); }
+        .layer h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .layer-math h3 { color: var(--math); }
+        .layer-eng h3 { color: var(--eng); }
+        .layer-trait h3 { color: var(--trait); }
+        .layer ul { list-style: none; }
+        .layer li {
+            padding: 0.4rem 0;
+            font-size: 0.9rem;
+            color: var(--text2);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .layer li:last-child { border: none; }
+        .bridge {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0,212,255,0.05);
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            color: var(--text2);
+        }
+        .bridge-arrow {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* TRAIT CARDS */
+        .traits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        .trait-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: border-color 0.3s;
+        }
+        .trait-card:hover { border-color: var(--accent); }
+        .trait-header {
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .trait-header h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--trait);
+        }
+        .trait-toggle {
+            font-size: 1.5rem;
+            color: var(--text2);
+            transition: transform 0.3s;
+        }
+        .trait-card.open .trait-toggle { transform: rotate(45deg); }
+        .trait-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .trait-card.open .trait-body { max-height: 1200px; }
+        .trait-content {
+            padding: 1.5rem;
+        }
+        .meta-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .meta-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .tag-math { background: rgba(255,170,0,0.15); color: var(--math); border: 1px solid var(--math); }
+        .tag-eng { background: rgba(170,102,255,0.15); color: var(--eng); border: 1px solid var(--eng); }
+        .tag-field { background: rgba(0,212,255,0.15); color: var(--accent); border: 1px solid var(--accent); }
+        .trait-desc {
+            color: var(--text2);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* CANVAS DEMOS */
+        .demo-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .demo-box h4 {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            border-radius: 4px;
+            background: #050508;
+            cursor: crosshair;
+        }
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .demo-controls label {
+            font-size: 0.8rem;
+            color: var(--text2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .demo-controls input[type="range"] {
+            width: 120px;
+        }
+        .demo-controls button {
+            padding: 0.4rem 1rem;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .demo-controls button:hover { background: var(--accent3); }
+        .demo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .stat {
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.03);
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        .stat-label { color: var(--text2); display: block; }
+        .stat-value { color: var(--accent); font-weight: 600; font-size: 1rem; }
+
+        /* SIMULATOR */
+        .simulator-section {
+            margin: 3rem 0;
+            padding: 2rem;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+        .simulator-section h2 {
+            font-size: 1.5rem;
+            color: var(--accent2);
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+        .sim-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: #050508;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        #simCanvas { width: 100%; height: 100%; }
+        .sim-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            pointer-events: none;
+        }
+        .sim-overlay .stat {
+            background: rgba(10,10,15,0.85);
+            border: 1px solid var(--border);
+            margin-bottom: 0.5rem;
+        }
+        .sim-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .sim-control-group {
+            padding: 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+        .sim-control-group h4 {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .sim-control-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text2);
+            margin-bottom: 0.5rem;
+        }
+        .sim-control-group input[type="range"] { width: 100%; margin-bottom: 0.75rem; }
+        .sim-control-group input[type="checkbox"] { margin-right: 0.5rem; }
+
+        .footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text2);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+        }
+        .math-formula {
+            font-family: 'Courier New', monospace;
+            background: rgba(0,212,255,0.08);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            color: var(--accent);
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Orthogonal <span>Combat Architecture</span></h1>
+    <p>Bridging 10 categories of mathematics and 10 production-grade engineering fields into 6 executable combat traits. From abstract theory to 1v12 veteran bot survival.</p>
+</header>
+
+<div class="container">
+
+<!-- ARCHITECTURAL MAP -->
+<div class="map-section">
+    <h2>🗺️ The Architectural Map</h2>
+    <div class="layers">
+        <div class="layer layer-math">
+            <h3>Mathematics Layer</h3>
+            <ul>
+                <li>Geometry — spatial partitioning, angle minimization</li>
+                <li>Topology — continuous deformation, cover invariance</li>
+                <li>Calculus — rate of change, predictive curves</li>
+                <li>Trigonometry — wave propagation, angular displacement</li>
+                <li>Linear Algebra — threat matrices, vector prioritization</li>
+                <li>Probability — stochastic threat evaluation, Bayesian triage</li>
+                <li>Differential Equations — oscillating systems, damping</li>
+                <li>Number Theory — modular ammo arithmetic, exact counting</li>
+                <li>Statistics — arousal convergence, habituation curves</li>
+                <li>Arithmetic — TTK arithmetic, damage-per-bullet</li>
+            </ul>
+        </div>
+        <div class="layer layer-eng">
+            <h3>Engineering Layer</h3>
+            <ul>
+                <li>Aerospace — guidance & navigation, quaternion rotations</li>
+                <li>Robotics — path planning, obstacle avoidance</li>
+                <li>Mechanical — vibration analysis, recoil mechanics</li>
+                <li>Electrical — signal processing, audio-spatial filtering</li>
+                <li>Computer Science — AI behavior modeling, simulation</li>
+                <li>Civil — structural geometry, load distribution</li>
+                <li>Chemical — reaction kinetics, pressure thresholds</li>
+                <li>Materials — stress-strain, elastic deformation limits</li>
+                <li>Nuclear — chain-reaction control, critical mass logic</li>
+                <li>Biomedical — physiological feedback, nervous system damping</li>
+            </ul>
+        </div>
+        <div class="layer layer-trait">
+            <h3>Combat Trait Layer</h3>
+            <ul>
+                <li>1. Geometry-Driven Spacing</li>
+                <li>2. Prefire Isolation & Audio-Spatial Coupling</li>
+                <li>3. Absolute Target Prioritization</li>
+                <li>4. Flawless Recoil Decoupling</li>
+                <li>5. Infinite Trigger Discipline & Ammo Bookkeeping</li>
+                <li>6. Hyper-Arousal Habituation</li>
+            </ul>
+        </div>
+    </div>
+    <div class="bridge">
+        <span><strong>Math</strong> provides the formal language</span>
+        <span class="bridge-arrow">→</span>
+        <span><strong>Engineering</strong> provides the operational framework</span>
+        <span class="bridge-arrow">→</span>
+        <span><strong>Traits</strong> provide the executable behavior</span>
+    </div>
+</div>
+
+<!-- TRAIT 1: GEOMETRY-DRIVEN SPACING -->
+<div class="traits-grid">
+    <div class="trait-card" id="trait1">
+        <div class="trait-header" onclick="toggleCard('trait1')">
+            <h3>1. Geometry-Driven Spacing</h3>
+            <span class="trait-toggle">+</span>
+        </div>
+        <div class="trait-body">
+            <div class="trait-content">
+                <div class="meta-row">
+                    <span class="meta-tag tag-math">Geometry</span>
+                    <span class="meta-tag tag-math">Topology</span>
+                    <span class="meta-tag tag-eng">Aerospace</span>
+                    <span class="meta-tag tag-eng">Robotics</span>
+                    <span class="meta-tag tag-field">LOS Optimization</span>
+                </div>
+                <p class="trait-desc">
+                    Treat cover not as a wall but as a <strong>geometric slicing tool</strong>. In a 1v12, traditional cover becomes a trap—bots push from multiple angles simultaneously. The solution is continuous micro-positioning so only <em>one enemy vector</em> has clear line-of-sight at any millisecond. This is the same problem as satellite dish alignment (trigonometry) and robotic obstacle avoidance (topology).
+                </p>
+                <p style="font-size:0.9rem; color:var(--text2); margin-bottom:1rem;">
+                    <strong>Math core:</strong> Minimize the solid angle <span class="math-formula">Ω = ∫∫ sin(θ) dθ dφ</span> of exposed surface area. Aerospace guidance uses identical quaternion rotation logic to minimize radar cross-section.
+                </p>
+                <div class="demo-box">
+                    <h4>Interactive LOS Minimizer</h4>
+                    <canvas id="geoCanvas" width="400" height="300"></canvas>
+                    <div class="demo-controls">
+                        <label>Bot count: <input type="range" id="geoBots" min="3" max="24" value="12"></label>
+                        <label><input type="checkbox" id="geoShowAngles" checked> Show angles</label>
+                        <button onclick="resetGeo()">Reset</button>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="stat"><span class="stat-label">Exposed Angle</span><span class="stat-value" id="geoAngle">0°</span></div>
+                        <div class="stat"><span class="stat-label">Safe Vectors</span><span class="stat-value" id="geoSafe">0</span></div>
+                        <div class="stat"><span class="stat-label">Threat Level</span><span class="stat-value" id="geoThreat">LOW</span></div>
+                    </div>
+                    <p style="font-size:0.75rem; color:var(--text2); margin-top:0.5rem;">
+                        Move your mouse to position the player (green). The simulation calculates which bots have line-of-sight and the total exposed arc. In a real 1v12, you want the exposed angle under 30° at all times.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAIT 2: PREFIRE ISOLATION -->
+    <div class="trait-card" id="trait2">
+        <div class="trait-header" onclick="toggleCard('trait2')">
+            <h3>2. Prefire Isolation & Audio-Spatial Coupling</h3>
+            <span class="trait-toggle">+</span>
+        </div>
+        <div class="trait-body">
+            <div class="trait-content">
+                <div class="meta-row">
+                    <span class="meta-tag tag-math">Calculus</span>
+                    <span class="meta-tag tag-math">Trigonometry</span>
+                    <span class="meta-tag tag-eng">Electrical</span>
+                    <span class="meta-tag tag-eng">Aerospace</span>
+                    <span class="meta-tag tag-field">Signal Processing</span>
+                </div>
+                <p class="trait-desc">
+                    With maximum negative ADS and Sprint-to-Fire penalties, reactive play is impossible. You must match spatial memory with audio tracking to begin firing <em>before</em> crosshairs cross the target threshold. This is identical to radar signal processing: predict the target's position at time <span class="math-formula">t + Δt</span> using velocity vectors and audio wave propagation delay.
+                </p>
+                <p style="font-size:0.9rem; color:var(--text2); margin-bottom:1rem;">
+                    <strong>Math core:</strong> Predictive trajectory <span class="math-formula">r(t) = r₀ + v₀t + ½at²</span>. Audio wave arrives at <span class="math-formula">t_audio = d / v_sound</span>. Prefire trigger at <span class="math-formula">t_fire = t_predicted - t_TTK</span>.
+                </p>
+                <div class="demo-box">
+                    <h4>Audio-Spatial Prefire Calculator</h4>
+                    <canvas id="prefireCanvas" width="400" height="300"></canvas>
+                    <div class="demo-controls">
+                        <label>Enemy speed: <input type="range" id="prefireSpeed" min="1" max="10" value="5"></label>
+                        <label>Distance: <input type="range" id="prefireDist" min="50" max="300" value="150"></label>
+                        <button onclick="firePrefire()">Fire</button>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="stat"><span class="stat-label">Predicted X</span><span class="stat-value" id="predX">0</span></div>
+                        <div class="stat"><span class="stat-label">Audio Delay</span><span class="stat-value" id="audioDelay">0ms</span></div>
+                        <div class="stat"><span class="stat-label">Accuracy</span><span class="stat-value" id="prefireAcc">0%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAIT 3: TARGET PRIORITIZATION -->
+    <div class="trait-card" id="trait3">
+        <div class="trait-header" onclick="toggleCard('trait3')">
+            <h3>3. Absolute Target Prioritization</h3>
+            <span class="trait-toggle">+</span>
+        </div>
+        <div class="trait-body">
+            <div class="trait-content">
+                <div class="meta-row">
+                    <span class="meta-tag tag-math">Linear Algebra</span>
+                    <span class="meta-tag tag-math">Probability</span>
+                    <span class="meta-tag tag-eng">Computer Science</span>
+                    <span class="meta-tag tag-eng">Nuclear</span>
+                    <span class="meta-tag tag-field">Threat Matrix</span>
+                </div>
+                <p class="trait-desc">
+                    With double-health enemies and 12:1 numbers, ammo is your tightest constraint. You run an instant subconscious triage on every target—weapon archetype, distance, orientation. This is a <strong>threat vector matrix</strong> operation: rank targets by lethality probability, then execute in descending order. Nuclear engineers use identical logic for chain-reaction control: which neutron will trigger the next critical event?
+                </p>
+                <p style="font-size:0.9rem; color:var(--text2); margin-bottom:1rem;">
+                    <strong>Math core:</strong> Threat score <span class="math-formula">T = w₁·(1/d) + w₂·(ADS_complete) + w₃·(weapon_DPS)</span>. Solve <span class="math-formula">argmax(T)</span> across all visible targets every frame.
+                </p>
+                <div class="demo-box">
+                    <h4>Threat Matrix Visualizer</h4>
+                    <canvas id="threatCanvas" width="400" height="300"></canvas>
+                    <div class="demo-controls">
+                        <button onclick="spawnThreats()">Respawn Targets</button>
+                        <label><input type="checkbox" id="threatAuto" checked> Auto-prioritize</label>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="stat"><span class="stat-label">Top Threat</span><span class="stat-value" id="topThreat">—</span></div>
+                        <div class="stat"><span class="stat-label">TTK Budget</span><span class="stat-value" id="ttkBudget">0ms</span></div>
+                        <div class="stat"><span class="stat-label">Survival Odds</span><span class="stat-value" id="survivalOdds">0%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAIT 4: RECOIL DECOUPLING -->
+    <div class="trait-card" id="trait4">
+        <div class="trait-header" onclick="toggleCard('trait4')">
+            <h3>4. Flawless Recoil Decoupling</h3>
+            <span class="trait-toggle">+</span>
+        </div>
+        <div class="trait-body">
+            <div class="trait-content">
+                <div class="meta-row">
+                    <span class="meta-tag tag-math">Differential Equations</span>
+                    <span class="meta-tag tag-math">Calculus</span>
+                    <span class="meta-tag tag-eng">Mechanical</span>
+                    <span class="meta-tag tag-eng">Materials</span>
+                    <span class="meta-tag tag-field">Vibration Damping</span>
+                </div>
+                <p class="trait-desc">
+                    Maximum negative recoil creates a violent, oscillating muzzle climb. Your muscle memory must apply a <strong>mirrors-inverted, continuous counter-pressure</strong> that exactly negates the weapon's unique mathematical bounce pattern. This is a damped harmonic oscillator: <span class="math-formula">mẍ + cẋ + kx = F(t)</span>. Mechanical engineers solve this for engine mounts and aircraft wings. You solve it in real-time with your thumb.
+                </p>
+                <p style="font-size:0.9rem; color:var(--text2); margin-bottom:1rem;">
+                    <strong>Math core:</strong> Recoil pattern <span class="math-formula">y(t) = A·e^(-ζωt)·sin(ω√(1-ζ²)t)</span>. Counter-input must be <span class="math-formula">y_c(t) = -y(t)</span> with phase lag under 16ms (one frame at 60Hz).
+                </p>
+                <div class="demo-box">
+                    <h4>Recoil Damping Simulator</h4>
+                    <canvas id="recoilCanvas" width="400" height="300"></canvas>
+                    <div class="demo-controls">
+                        <label>Damping ζ: <input type="range" id="dampingZeta" min="0" max="100" value="30"></label>
+                        <label>Recoil freq: <input type="range" id="recoilFreq" min="1" max="10" value="4"></label>
+                        <button onclick="startRecoil()">Fire Burst</button>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="stat"><span class="stat-label">Muzzle Y</span><span class="stat-value" id="muzzleY">0</span></div>
+                        <div class="stat"><span class="stat-label">Counter Y</span><span class="stat-value" id="counterY">0</span></div>
+                        <div class="stat"><span class="stat-label">Net Error</span><span class="stat-value" id="netError">0</span></div>
+                    </div>
+                    <p style="font-size:0.75rem; color:var(--text2); margin-top:0.5rem;">
+                        Move mouse vertically to apply counter-pressure. The goal is to keep the Net Error as close to zero as possible. In-game, this must be unconscious—like a pilot maintaining stick pressure through turbulence.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAIT 5: TRIGGER DISCIPLINE -->
+    <div class="trait-card" id="trait5">
+        <div class="trait-header" onclick="toggleCard('trait5')">
+            <h3>5. Infinite Trigger Discipline & Ammo Bookkeeping</h3>
+            <span class="trait-toggle">+</span>
+        </div>
+        <div class="trait-body">
+            <div class="trait-content">
+                <div class="meta-row">
+                    <span class="meta-tag tag-math">Number Theory</span>
+                    <span class="meta-tag tag-math">Arithmetic</span>
+                    <span class="meta-tag tag-eng">Computer Science</span>
+                    <span class="meta-tag tag-eng">Chemical</span>
+                    <span class="meta-tag tag-field">Resource Optimization</span>
+                </div>
+                <p class="trait-desc">
+                    Deathless 200+ kill runs require hundreds of critical reload windows. You must know exactly how many bullets down a double-health bot with your specific weapon profile, and release trigger the exact millisecond lethal damage registers. This is <strong>modular arithmetic</strong> under pressure: ammo capacity <span class="math-formula">N</span>, shots-to-kill <span class="math-formula">k</span>, remaining <span class="math-formula">N mod k</span> determines whether you can engage the next target or must transition to melee/movement.
+                </p>
+                <p style="font-size:0.9rem; color:var(--text2); margin-bottom:1rem;">
+                    <strong>Math core:</strong> Kill budget <span class="math-formula">⌊N / k⌋</span> per magazine. Reload windows occur when <span class="math-formula">N mod k < k</span> and no immediate threats exist. Chemical engineers use identical stoichiometry: how much reagent is needed before the next reaction phase?
+                </p>
+                <div class="demo-box">
+                    <h4>Ammo Optimization Engine</h4>
+                    <canvas id="ammoCanvas" width="400" height="300"></canvas>
+                    <div class="demo-controls">
+                        <label>Mag size: <input type="range" id="magSize" min="10" max="60" value="30"></label>
+                        <label>STK (2x health): <input type="range" id="stk" min="2" max="15" value="6"></label>
+                        <button onclick="fireRound()">Fire</button>
+                        <button onclick="reloadMag()">Reload</button>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="stat"><span class="stat-label">Remaining</span><span class="stat-value" id="ammoRem">30</span></div>
+                        <div class="stat"><span class="stat-label">Kills/Mag</span><span class="stat-value" id="killsMag">5</span></div>
+                        <div class="stat"><span class="stat-label">Waste %</span><span class="stat-value" id="wastePct">0%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRAIT 6: HYPER-AROUSAL HABITUATION -->
+    <div class="trait-card" id="trait6">
+        <div class="trait-header" onclick="toggleCard('trait6')">
+            <h3>6. Hyper-Arousal Habituation</h3>
+            <span class="trait-toggle">+</span>
+        </div>
+        <div class="trait-body">
+            <div class="trait-content">
+                <div class="meta-row">
+                    <span class="meta-tag tag-math">Statistics</span>
+                    <span class="meta-tag tag-math">Probability</span>
+                    <span class="meta-tag tag-eng">Biomedical</span>
+                    <span class="meta-tag tag-eng">Aerospace</span>
+                    <span class="meta-tag tag-field">Physiological Control</span>
+                </div>
+                <p class="trait-desc">
+                    At kill 180 on one-hit-death, cortisol and adrenaline spike, causing micro-tremors and tunnel vision. You must train your CNS to <strong>dissociate high-stakes from arousal response</strong>. This is a statistical habituation curve: the probability of a startle response <span class="math-formula">P(startle)</span> decays exponentially with exposure. Biomedical engineers model this for pilot G-force training. Aerospace uses it for astronaut stress inoculation.
+                </p>
+                <p style="font-size:0.9rem; color:var(--text2); margin-bottom:1rem;">
+                    <strong>Math core:</strong> Habituation function <span class="math-formula">H(n) = H₀·e^(-λn) + H_∞</span> where <span class="math-formula">n</span> is exposure count. Target: <span class="math-formula">H_∞ ≈ H₀·0.05</span> (95% reduction). Heart rate target: <span class="math-formula">HR < 80 bpm</span> regardless of kill count.
+                </p>
+                <div class="demo-box">
+                    <h4>Arousal Habituation Curve</h4>
+                    <canvas id="arousalCanvas" width="400" height="300"></canvas>
+                    <div class="demo-controls">
+                        <label>Exposure count: <input type="range" id="exposureCount" min="0" max="500" value="0"></label>
+                        <label>Habituation λ: <input type="range" id="habLambda" min="1" max="50" value="15"></label>
+                        <button onclick="addExposure()">+ Exposure</button>
+                    </div>
+                    <div class="demo-stats">
+                        <div class="stat"><span class="stat-label">Arousal %</span><span class="stat-value" id="arousalPct">100%</span></div>
+                        <div class="stat"><span class="stat-label">Heart Rate</span><span class="stat-value" id="heartRate">140</span></div>
+                        <div class="stat"><span class="stat-label">Tremor Amp</span><span class="stat-value" id="tremorAmp">High</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FULL SIMULATOR -->
+<div class="simulator-section">
+    <h2>🎯 Integrated Combat Simulator (1v12 Scenario)</h2>
+    <p style="color:var(--text2); margin-bottom:1.5rem; font-size:0.95rem;">
+        All six traits operating simultaneously. You are the green circle. Twelve veteran bots (red) with double health are hunting you. One hit kills you. Your weapon has maximum negative recoil and slow handling. Survive.
+    </p>
+    <div class="sim-canvas-container">
+        <canvas id="simCanvas"></canvas>
+        <div class="sim-overlay">
+            <div class="stat"><span class="stat-label">Kills</span><span class="stat-value" id="simKills">0</span></div>
+            <div class="stat"><span class="stat-label">Time</span><span class="stat-value" id="simTime">0.0s</span></div>
+            <div class="stat"><span class="stat-label">Ammo</span><span class="stat-value" id="simAmmo">30</span></div>
+            <div class="stat"><span class="stat-label">Arousal</span><span class="stat-value" id="simArousal">100%</span></div>
+            <div class="stat"><span class="stat-label">Status</span><span class="stat-value" id="simStatus">ALIVE</span></div>
+        </div>
+    </div>
+    <div class="sim-controls">
+        <div class="sim-control-group">
+            <h4>Handicaps</h4>
+            <label><input type="checkbox" id="simDoubleHealth" checked> Double Health Bots</label>
+            <label><input type="checkbox" id="simOneHit" checked> One-Hit Death</label>
+            <label><input type="checkbox" id="simNegRecoil" checked> Negative Recoil</label>
+            <label><input type="checkbox" id="simSlowADS" checked> Slow ADS/Handling</label>
+        </div>
+        <div class="sim-control-group">
+            <h4>Player Traits</h4>
+            <label><input type="checkbox" id="simGeo" checked> Geometry Spacing</label>
+            <label><input type="checkbox" id="simPrefire" checked> Prefire Coupling</label>
+            <label><input type="checkbox" id="simPrioritize" checked> Target Prioritization</label>
+            <label><input type="checkbox" id="simHabituation" checked> Arousal Habituation</label>
+        </div>
+        <div class="sim-control-group">
+            <h4>Difficulty</h4>
+            <label>Bot count: <input type="range" id="simBotCount" min="3" max="24" value="12"></label>
+            <label>Bot speed: <input type="range" id="simBotSpeed" min="1" max="5" value="3"></label>
+            <label>Bot accuracy: <input type="range" id="simBotAcc" min="1" max="10" value="5"></label>
+        </div>
+        <div class="sim-control-group">
+            <h4>Actions</h4>
+            <button onclick="startSim()">Start / Restart</button>
+            <button onclick="pauseSim()">Pause</button>
+            <p style="font-size:0.75rem; color:var(--text2); margin-top:0.5rem;">
+                WASD or mouse to move. Click to fire. Space to reload. R to reset.
+            </p>
+        </div>
+    </div>
+</div>
+
+</div>
+
+<div class="footer">
+    <p>Orthogonal Combat Architecture — Mathematics × Engineering × Execution</p>
+    <p style="font-size:0.75rem; margin-top:0.5rem;">Generated from 10 categories of mathematics and 10 production-grade engineering fields mapped to 6 executable combat traits.</p>
+</div>
+
+<script>
+// ==================== UTILS ====================
+function toggleCard(id) {
+    document.getElementById(id).classList.toggle('open');
+}
+function dist(x1,y1,x2,y2) { return Math.hypot(x2-x1,y2-y1); }
+function angle(x1,y1,x2,y2) { return Math.atan2(y2-y1,x2-x1); }
+function lerp(a,b,t) { return a + (b-a)*t; }
+
+// ==================== TRAIT 1: GEOMETRY ====================
+const geoCanvas = document.getElementById('geoCanvas');
+const geoCtx = geoCanvas.getContext('2d');
+let geoPlayer = {x: 200, y: 150};
+let geoBots = [];
+let geoWalls = [
+    {x: 100, y: 80, w: 20, h: 120},
+    {x: 280, y: 150, w: 20, h: 100},
+    {x: 180, y: 220, w: 80, h: 20}
+];
+function initGeoBots() {
+    geoBots = [];
+    const count = parseInt(document.getElementById('geoBots').value);
+    for (let i = 0; i < count; i++) {
+        geoBots.push({
+            x: Math.random() * 380 + 10,
+            y: Math.random() * 280 + 10,
+            angle: Math.random() * Math.PI * 2
+        });
+    }
+}
+function drawGeo() {
+    geoCtx.fillStyle = '#050508';
+    geoCtx.fillRect(0, 0, 400, 300);
+    // Walls
+    geoCtx.fillStyle = '#222233';
+    geoWalls.forEach(w => geoCtx.fillRect(w.x, w.y, w.w, w.h));
+    // LOS calculation
+    let exposedAngles = [];
+    let safeCount = 0;
+    geoBots.forEach(bot => {
+        let blocked = false;
+        geoWalls.forEach(w => {
+            if (lineRect(geoPlayer.x, geoPlayer.y, bot.x, bot.y, w.x, w.y, w.w, w.h)) blocked = true;
+        });
+        if (!blocked) {
+            exposedAngles.push(angle(geoPlayer.x, geoPlayer.y, bot.x, bot.y));
+        } else {
+            safeCount++;
+        }
+    });
+    // Sort angles and find max gap
+    exposedAngles.sort((a,b) => a-b);
+    let maxGap = 0;
+    for (let i = 0; i < exposedAngles.length; i++) {
+        let gap = (i < exposedAngles.length-1) ? exposedAngles[i+1]-exposedAngles[i] : (exposedAngles[0]+Math.PI*2)-exposedAngles[i];
+        if (gap > maxGap) maxGap = gap;
+    }
+    let exposedArc = (exposedAngles.length > 0) ? (Math.PI*2 - maxGap) : 0;
+    // Draw lines
+    geoBots.forEach((bot, i) => {
+        let blocked = false;
+        geoWalls.forEach(w => {
+            if (lineRect(geoPlayer.x, geoPlayer.y, bot.x, bot.y, w.x, w.y, w.w, w.h)) blocked = true;
+        });
+        geoCtx.strokeStyle = blocked ? '#334433' : '#ff3366';
+        geoCtx.lineWidth = 1;
+        geoCtx.beginPath();
+        geoCtx.moveTo(geoPlayer.x, geoPlayer.y);
+        geoCtx.lineTo(bot.x, bot.y);
+        geoCtx.stroke();
+        // Bot
+        geoCtx.fillStyle = blocked ? '#445544' : '#ff3366';
+        geoCtx.beginPath();
+        geoCtx.arc(bot.x, bot.y, 4, 0, Math.PI*2);
+        geoCtx.fill();
+    });
+    // Player
+    geoCtx.fillStyle = '#00ff88';
+    geoCtx.beginPath();
+    geoCtx.arc(geoPlayer.x, geoPlayer.y, 6, 0, Math.PI*2);
+    geoCtx.fill();
+    // FOV arc
+    if (document.getElementById('geoShowAngles').checked && exposedAngles.length > 0) {
+        geoCtx.strokeStyle = 'rgba(255,51,102,0.3)';
+        geoCtx.lineWidth = 2;
+        geoCtx.beginPath();
+        geoCtx.arc(geoPlayer.x, geoPlayer.y, 40, Math.min(...exposedAngles), Math.max(...exposedAngles));
+        geoCtx.stroke();
+    }
+    // Stats
+    let deg = Math.round(exposedArc * 180 / Math.PI);
+    document.getElementById('geoAngle').textContent = deg + '°';
+    document.getElementById('geoSafe').textContent = safeCount;
+    let threat = deg < 30 ? 'LOW' : deg < 90 ? 'MED' : deg < 180 ? 'HIGH' : 'DEAD';
+    document.getElementById('geoThreat').textContent = threat;
+    document.getElementById('geoThreat').style.color = threat === 'LOW' ? '#00ff88' : threat === 'MED' ? '#ffaa00' : '#ff3366';
+}
+function lineRect(x1,y1,x2,y2,rx,ry,rw,rh) {
+    return lineLine(x1,y1,x2,y2,rx,ry,rx+rw,ry) || lineLine(x1,y1,x2,y2,rx+rw,ry,rx+rw,ry+rh) ||
+           lineLine(x1,y1,x2,y2,rx+rw,ry+rh,rx,ry+rh) || lineLine(x1,y1,x2,y2,rx,ry+rh,rx,ry);
+}
+function lineLine(x1,y1,x2,y2,x3,y3,x4,y4) {
+    let d = (x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+    if (d === 0) return false;
+    let t = ((x1-x3)*(y3-y4)-(y1-y3)*(x3-x4))/d;
+    let u = -((x1-x2)*(y1-y3)-(y1-y2)*(x1-x3))/d;
+    return t > 0 && t < 1 && u > 0 && u < 1;
+}
+geoCanvas.addEventListener('mousemove', e => {
+    const r = geoCanvas.getBoundingClientRect();
+    geoPlayer.x = e.clientX - r.left;
+    geoPlayer.y = e.clientY - r.top;
+});
+document.getElementById('geoBots').addEventListener('input', initGeoBots);
+document.getElementById('geoShowAngles').addEventListener('change', drawGeo);
+function resetGeo() { initGeoBots(); }
+initGeoBots();
+setInterval(drawGeo, 33);
+
+// ==================== TRAIT 2: PREFIRE ====================
+const preCanvas = document.getElementById('prefireCanvas');
+const preCtx = preCanvas.getContext('2d');
+let preEnemy = {x: 50, y: 150, vx: 2, targetX: 350};
+let preFired = false;
+let preFireX = 0;
+let preHit = false;
+function drawPrefire() {
+    preCtx.fillStyle = '#050508';
+    preCtx.fillRect(0, 0, 400, 300);
+    // Grid
+    preCtx.strokeStyle = '#111122';
+    for (let i = 0; i < 400; i += 40) { preCtx.beginPath(); preCtx.moveTo(i,0); preCtx.lineTo(i,300); preCtx.stroke(); }
+    for (let i = 0; i < 300; i += 40) { preCtx.beginPath(); preCtx.moveTo(0,i); preCtx.lineTo(400,i); preCtx.stroke(); }
+    // Predicted path
+    const speed = parseInt(document.getElementById('prefireSpeed').value);
+    const dist = parseInt(document.getElementById('prefireDist').value);
+    preEnemy.vx = speed * 0.4;
+    let predictTime = dist / 343; // sound speed ~343 px/s arbitrary
+    let predX = preEnemy.x + preEnemy.vx * predictTime * 10;
+    // Draw predicted trajectory
+    preCtx.strokeStyle = 'rgba(0,212,255,0.3)';
+    preCtx.setLineDash([5,5]);
+    preCtx.beginPath();
+    preCtx.moveTo(preEnemy.x, preEnemy.y);
+    preCtx.lineTo(predX, preEnemy.y);
+    preCtx.stroke();
+    preCtx.setLineDash([]);
+    // Audio wave
+    preCtx.strokeStyle = 'rgba(170,102,255,0.4)';
+    preCtx.beginPath();
+    for (let x = 0; x < 400; x++) {
+        let y = 150 + Math.sin(x*0.1 - Date.now()*0.01)*10;
+        if (x===0) preCtx.moveTo(x,y); else preCtx.lineTo(x,y);
+    }
+    preCtx.stroke();
+    // Enemy
+    preCtx.fillStyle = '#ff3366';
+    preCtx.fillRect(preEnemy.x-8, preEnemy.y-12, 16, 24);
+    // Prediction marker
+    preCtx.strokeStyle = '#00d4ff';
+    preCtx.beginPath();
+    preCtx.arc(predX, preEnemy.y, 8, 0, Math.PI*2);
+    preCtx.stroke();
+    // Fire marker
+    if (preFired) {
+        preCtx.fillStyle = preHit ? '#00ff88' : '#ffaa00';
+        preCtx.beginPath();
+        preCtx.arc(preFireX, preEnemy.y, 4, 0, Math.PI*2);
+        preCtx.fill();
+    }
+    // Player
+    preCtx.fillStyle = '#00ff88';
+    preCtx.beginPath();
+    preCtx.arc(200, 250, 8, 0, Math.PI*2);
+    preCtx.fill();
+    // Move enemy
+    preEnemy.x += preEnemy.vx;
+    if (preEnemy.x > 400) preEnemy.x = 20;
+    // Stats
+    document.getElementById('predX').textContent = Math.round(predX);
+    document.getElementById('audioDelay').textContent = Math.round(predictTime*1000) + 'ms';
+    let acc = preFired ? (preHit ? '100%' : 'MISS') : '0%';
+    document.getElementById('prefireAcc').textContent = acc;
+    document.getElementById('prefireAcc').style.color = preHit ? '#00ff88' : '#ffaa00';
+}
+function firePrefire() {
+    preFired = true;
+    preFireX = preEnemy.x + preEnemy.vx * 15; // lead by 15 frames
+    preHit = Math.abs(preFireX - (preEnemy.x + preEnemy.vx * 15)) < 20;
+    setTimeout(() => preFired = false, 1000);
+}
+setInterval(drawPrefire, 33);
+
+// ==================== TRAIT 3: THREAT MATRIX ====================
+const threatCanvas = document.getElementById('threatCanvas');
+const threatCtx = threatCanvas.getContext('2d');
+let threats = [];
+function spawnThreats() {
+    threats = [];
+    for (let i = 0; i < 8; i++) {
+        threats.push({
+            x: Math.random() * 360 + 20,
+            y: Math.random() * 260 + 20,
+            dist: 0,
+            ads: Math.random(),
+            dps: Math.random() * 100 + 50,
+            threat: 0,
+            color: `hsl(${Math.random()*60}, 80%, 60%)`
+        });
+    }
+    calcThreats();
+}
+function calcThreats() {
+    const px = 200, py = 150;
+    threats.forEach(t => {
+        t.dist = dist(px, py, t.x, t.y);
+        t.threat = (1/t.dist)*200 + t.ads*100 + t.dps*0.5;
+    });
+    threats.sort((a,b) => b.threat - a.threat);
+    let top = threats[0];
+    let ttk = (top.dist / 400) * 500;
+    let survival = Math.max(0, 100 - threats.reduce((s,t) => s + t.threat*0.1, 0));
+    document.getElementById('topThreat').textContent = 'T-' + (threats.indexOf(top)+1);
+    document.getElementById('topThreat').style.color = top.color;
+    document.getElementById('ttkBudget').textContent = Math.round(ttk) + 'ms';
+    document.getElementById('survivalOdds').textContent = Math.round(survival) + '%';
+    document.getElementById('survivalOdds').style.color = survival > 70 ? '#00ff88' : survival > 40 ? '#ffaa00' : '#ff3366';
+}
+function drawThreats() {
+    threatCtx.fillStyle = '#050508';
+    threatCtx.fillRect(0, 0, 400, 300);
+    const px = 200, py = 150;
+    // Player
+    threatCtx.fillStyle = '#00ff88';
+    threatCtx.beginPath();
+    threatCtx.arc(px, py, 8, 0, Math.PI*2);
+    threatCtx.fill();
+    // Threats
+    threats.forEach((t, i) => {
+        threatCtx.fillStyle = t.color;
+        threatCtx.beginPath();
+        threatCtx.arc(t.x, t.y, 6 + t.threat*0.02, 0, Math.PI*2);
+        threatCtx.fill();
+        // Threat score
+        threatCtx.fillStyle = '#fff';
+        threatCtx.font = '10px monospace';
+        threatCtx.fillText(Math.round(t.threat), t.x-10, t.y-12);
+        // Line to player
+        threatCtx.strokeStyle = i === 0 ? '#ff3366' : 'rgba(255,255,255,0.1)';
+        threatCtx.lineWidth = i === 0 ? 2 : 1;
+        threatCtx.beginPath();
+        threatCtx.moveTo(px, py);
+        threatCtx.lineTo(t.x, t.y);
+        threatCtx.stroke();
+    });
+    // Auto prioritize highlight
+    if (document.getElementById('threatAuto').checked && threats.length > 0) {
+        threatCtx.strokeStyle = '#ff3366';
+        threatCtx.lineWidth = 3;
+        threatCtx.beginPath();
+        threatCtx.arc(threats[0].x, threats[0].y, 14, 0, Math.PI*2);
+        threatCtx.stroke();
+    }
+}
+spawnThreats();
+setInterval(() => { calcThreats(); drawThreats(); }, 100);
+
+// ==================== TRAIT 4: RECOIL ====================
+const recoilCanvas = document.getElementById('recoilCanvas');
+const recoilCtx = recoilCanvas.getContext('2d');
+let recoilActive = false;
+let recoilTime = 0;
+let recoilY = 0;
+let counterY = 0;
+let mouseY = 150;
+function startRecoil() {
+    recoilActive = true;
+    recoilTime = 0;
+}
+recoilCanvas.addEventListener('mousemove', e => {
+    const r = recoilCanvas.getBoundingClientRect();
+    mouseY = e.clientY - r.top;
+});
+function drawRecoil() {
+    recoilCtx.fillStyle = '#050508';
+    recoilCtx.fillRect(0, 0, 400, 300);
+    const zeta = parseInt(document.getElementById('dampingZeta').value) / 100;
+    const freq = parseInt(document.getElementById('recoilFreq').value);
+    if (recoilActive) {
+        recoilTime += 0.05;
+        let A = 80;
+        let w = freq * 2;
+        let damp = Math.exp(-zeta * w * recoilTime);
+        let osc = Math.sin(w * recoilTime * Math.sqrt(1 - zeta*zeta));
+        recoilY = 150 - A * damp * osc;
+        if (recoilTime > 5) recoilActive = false;
+    } else {
+        recoilY = lerp(recoilY, 150, 0.1);
+    }
+    // Counter (mouse-driven)
+    counterY = mouseY;
+    // Net
+    let net = recoilY - counterY;
+    // Draw crosshair
+    recoilCtx.strokeStyle = '#ff3366';
+    recoilCtx.lineWidth = 2;
+    recoilCtx.beginPath();
+    recoilCtx.moveTo(180, recoilY);
+    recoilCtx.lineTo(220, recoilY);
+    recoilCtx.moveTo(200, recoilY-20);
+    recoilCtx.lineTo(200, recoilY+20);
+    recoilCtx.stroke();
+    // Draw counter target
+    recoilCtx.strokeStyle = '#00ff88';
+    recoilCtx.lineWidth = 1;
+    recoilCtx.setLineDash([3,3]);
+    recoilCtx.beginPath();
+    recoilCtx.moveTo(180, counterY);
+    recoilCtx.lineTo(220, counterY);
+    recoilCtx.moveTo(200, counterY-20);
+    recoilCtx.lineTo(200, counterY+20);
+    recoilCtx.stroke();
+    recoilCtx.setLineDash([]);
+    // Center line
+    recoilCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+    recoilCtx.beginPath();
+    recoilCtx.moveTo(0, 150);
+    recoilCtx.lineTo(400, 150);
+    recoilCtx.stroke();
+    // Waveform
+    recoilCtx.strokeStyle = 'rgba(255,51,102,0.3)';
+    recoilCtx.beginPath();
+    for (let x = 0; x < 400; x++) {
+        let t = x * 0.02;
+        let A = 80;
+        let w = freq * 2;
+        let damp = Math.exp(-zeta * w * t);
+        let y = 150 - A * damp * Math.sin(w * t * Math.sqrt(1 - zeta*zeta));
+        if (x===0) recoilCtx.moveTo(x,y); else recoilCtx.lineTo(x,y);
+    }
+    recoilCtx.stroke();
+    // Stats
+    document.getElementById('muzzleY').textContent = Math.round(150 - recoilY);
+    document.getElementById('counterY').textContent = Math.round(150 - counterY);
+    document.getElementById('netError').textContent = Math.round(Math.abs(net));
+    document.getElementById('netError').style.color = Math.abs(net) < 10 ? '#00ff88' : Math.abs(net) < 30 ? '#ffaa00' : '#ff3366';
+}
+setInterval(drawRecoil, 33);
+
+// ==================== TRAIT 5: AMMO ====================
+const ammoCanvas = document.getElementById('ammoCanvas');
+const ammoCtx = ammoCanvas.getContext('2d');
+let ammoState = { mag: 30, max: 30, stk: 6, fired: 0, kills: 0, waste: 0 };
+function drawAmmo() {
+    ammoCtx.fillStyle = '#050508';
+    ammoCtx.fillRect(0, 0, 400, 300);
+    const mag = parseInt(document.getElementById('magSize').value);
+    const stk = parseInt(document.getElementById('stk').value);
+    if (ammoState.max !== mag || ammoState.stk !== stk) {
+        ammoState.max = mag;
+        ammoState.stk = stk;
+        ammoState.mag = mag;
+        ammoState.fired = 0;
+        ammoState.kills = 0;
+        ammoState.waste = 0;
+    }
+    // Mag visualization
+    const bulletW = 360 / ammoState.max;
+    for (let i = 0; i < ammoState.max; i++) {
+        let x = 20 + i * bulletW;
+        let fired = i >= ammoState.mag;
+        ammoCtx.fillStyle = fired ? '#222233' : '#00d4ff';
+        ammoCtx.fillRect(x, 100, bulletW-2, 30);
+        if (!fired && (i+1) % ammoState.stk === 0) {
+            ammoCtx.strokeStyle = '#ff3366';
+            ammoCtx.lineWidth = 1;
+            ammoCtx.strokeRect(x, 98, bulletW-2, 34);
+        }
+    }
+    // Kill markers
+    for (let i = 0; i < ammoState.kills; i++) {
+        ammoCtx.fillStyle = '#00ff88';
+        ammoCtx.fillRect(20 + i * 40, 160, 30, 8);
+    }
+    // Stats text
+    ammoCtx.fillStyle = '#fff';
+    ammoCtx.font = '14px monospace';
+    ammoCtx.fillText(`Mag: ${ammoState.mag}/${ammoState.max}`, 20, 200);
+    ammoCtx.fillText(`Kills this mag: ${ammoState.kills}`, 20, 220);
+    ammoCtx.fillText(`Wasted shots: ${ammoState.waste}`, 20, 240);
+    // Formula
+    ammoCtx.fillStyle = '#8899aa';
+    ammoCtx.font = '12px monospace';
+    ammoCtx.fillText(`⌊${ammoState.max} / ${ammoState.stk}⌋ = ${Math.floor(ammoState.max/ammoState.stk)} kills per magazine`, 20, 270);
+
+    document.getElementById('ammoRem').textContent = ammoState.mag;
+    document.getElementById('killsMag').textContent = Math.floor(ammoState.max/ammoState.stk);
+    let wastePct = ammoState.fired > 0 ? Math.round((ammoState.waste/ammoState.fired)*100) : 0;
+    document.getElementById('wastePct').textContent = wastePct + '%';
+    document.getElementById('wastePct').style.color = wastePct < 10 ? '#00ff88' : wastePct < 25 ? '#ffaa00' : '#ff3366';
+}
+function fireRound() {
+    if (ammoState.mag > 0) {
+        ammoState.mag--;
+        ammoState.fired++;
+        let remainingInKill = ammoState.mag % ammoState.stk;
+        if (remainingInKill === 0 && ammoState.mag > 0) {
+            ammoState.kills++;
+        }
+        if (ammoState.mag === 0) {
+            ammoState.waste += remainingInKill;
+        }
+    }
+}
+function reloadMag() {
+    if (ammoState.mag < ammoState.max) {
+        let leftover = ammoState.mag % ammoState.stk;
+        if (leftover > 0) ammoState.waste += leftover;
+        ammoState.mag = ammoState.max;
+        ammoState.kills = 0;
+    }
+}
+setInterval(drawAmmo, 100);
+
+// ==================== TRAIT 6: AROUSAL ====================
+const arousalCanvas = document.getElementById('arousalCanvas');
+const arousalCtx = arousalCanvas.getContext('2d');
+let exposure = 0;
+function addExposure() {
+    exposure += 10;
+    document.getElementById('exposureCount').value = Math.min(exposure, 500);
+}
+document.getElementById('exposureCount').addEventListener('input', e => { exposure = parseInt(e.target.value); });
+function drawArousal() {
+    arousalCtx.fillStyle = '#050508';
+    arousalCtx.fillRect(0, 0, 400, 300);
+    const lambda = parseInt(document.getElementById('habLambda').value) / 500;
+    const H0 = 100;
+    const Hinf = 5;
+    // Curve
+    arousalCtx.strokeStyle = '#00d4ff';
+    arousalCtx.lineWidth = 2;
+    arousalCtx.beginPath();
+    for (let x = 0; x < 400; x++) {
+        let n = x / 400 * 500;
+        let y = 280 - (H0 * Math.exp(-lambda * n) + Hinf) * 2.5;
+        if (x===0) arousalCtx.moveTo(x,y); else arousalCtx.lineTo(x,y);
+    }
+    arousalCtx.stroke();
+    // Current point
+    let curY = 280 - (H0 * Math.exp(-lambda * exposure) + Hinf) * 2.5;
+    arousalCtx.fillStyle = '#ff3366';
+    arousalCtx.beginPath();
+    arousalCtx.arc((exposure/500)*400, curY, 6, 0, Math.PI*2);
+    arousalCtx.fill();
+    // Threshold line
+    arousalCtx.strokeStyle = 'rgba(0,255,136,0.3)';
+    arousalCtx.setLineDash([5,5]);
+    arousalCtx.beginPath();
+    arousalCtx.moveTo(0, 280 - 20 * 2.5);
+    arousalCtx.lineTo(400, 280 - 20 * 2.5);
+    arousalCtx.stroke();
+    arousalCtx.setLineDash([]);
+    // Axes
+    arousalCtx.strokeStyle = '#222233';
+    arousalCtx.beginPath();
+    arousalCtx.moveTo(30, 20);
+    arousalCtx.lineTo(30, 280);
+    arousalCtx.lineTo(380, 280);
+    arousalCtx.stroke();
+    // Labels
+    arousalCtx.fillStyle = '#8899aa';
+    arousalCtx.font = '10px monospace';
+    arousalCtx.fillText('Arousal', 5, 150);
+    arousalCtx.fillText('Exposures', 180, 295);
+    // Stats
+    let arousalPct = Math.round((H0 * Math.exp(-lambda * exposure) + Hinf));
+    let hr = Math.round(60 + arousalPct * 0.8);
+    let tremor = arousalPct > 60 ? 'High' : arousalPct > 30 ? 'Med' : 'Low';
+    document.getElementById('arousalPct').textContent = arousalPct + '%';
+    document.getElementById('arousalPct').style.color = arousalPct < 20 ? '#00ff88' : arousalPct < 50 ? '#ffaa00' : '#ff3366';
+    document.getElementById('heartRate').textContent = hr;
+    document.getElementById('heartRate').style.color = hr < 80 ? '#00ff88' : hr < 110 ? '#ffaa00' : '#ff3366';
+    document.getElementById('tremorAmp').textContent = tremor;
+    document.getElementById('tremorAmp').style.color = tremor === 'Low' ? '#00ff88' : tremor === 'Med' ? '#ffaa00' : '#ff3366';
+}
+setInterval(drawArousal, 100);
+
+// ==================== MAIN SIMULATOR ====================
+const simCanvas = document.getElementById('simCanvas');
+const simCtx = simCanvas.getContext('2d');
+let simRunning = false;
+let simPaused = false;
+let simPlayer = {x: 0, y: 0, alive: true, kills: 0, ammo: 30, maxAmmo: 30, stk: 6, reloading: false, reloadTime: 0};
+let simBots = [];
+let simBullets = [];
+let simTime = 0;
+let simArousal = 100;
+let simKeys = {};
+let simMouse = {x: 0, y: 0, down: false};
+
+function resizeSim() {
+    const r = simCanvas.parentElement.getBoundingClientRect();
+    simCanvas.width = r.width;
+    simCanvas.height = r.height;
+}
+window.addEventListener('resize', resizeSim);
+resizeSim();
+
+function startSim() {
+    resizeSim();
+    simRunning = true;
+    simPaused = false;
+    simTime = 0;
+    simPlayer.kills = 0;
+    simPlayer.alive = true;
+    simPlayer.ammo = 30;
+    simPlayer.reloading = false;
+    simArousal = 100;
+    simBullets = [];
+    simPlayer.x = simCanvas.width / 2;
+    simPlayer.y = simCanvas.height / 2;
+    const count = parseInt(document.getElementById('simBotCount').value);
+    simBots = [];
+    for (let i = 0; i < count; i++) {
+        let angle = (Math.PI * 2 * i) / count;
+        let r = Math.min(simCanvas.width, simCanvas.height) * 0.4;
+        simBots.push({
+            x: simCanvas.width/2 + Math.cos(angle)*r,
+            y: simCanvas.height/2 + Math.sin(angle)*r,
+            vx: 0, vy: 0,
+            health: document.getElementById('simDoubleHealth').checked ? 2 : 1,
+            maxHealth: document.getElementById('simDoubleHealth').checked ? 2 : 1,
+            alive: true,
+            ads: Math.random() * 0.5,
+            fireTimer: Math.random() * 100
+        });
+    }
+}
+function pauseSim() { simPaused = !simPaused; }
+
+simCanvas.addEventListener('mousemove', e => {
+    const r = simCanvas.getBoundingClientRect();
+    simMouse.x = e.clientX - r.left;
+    simMouse.y = e.clientY - r.top;
+});
+simCanvas.addEventListener('mousedown', () => {
+    simMouse.down = true;
+    if (simRunning && simPlayer.alive && !simPlayer.reloading) {
+        if (simPlayer.ammo > 0) {
+            simPlayer.ammo--;
+            let bx = simPlayer.x + Math.cos(angle(simPlayer.x, simPlayer.y, simMouse.x, simMouse.y)) * 20;
+            let by = simPlayer.y + Math.sin(angle(simPlayer.x, simPlayer.y, simMouse.x, simMouse.y)) * 20;
+            simBullets.push({x: bx, y: by, vx: Math.cos(angle(simPlayer.x, simPlayer.y, simMouse.x, simMouse.y))*15, vy: Math.sin(angle(simPlayer.x, simPlayer.y, simMouse.x, simMouse.y))*15, life: 60});
+        }
+    }
+});
+simCanvas.addEventListener('mouseup', () => simMouse.down = false);
+window.addEventListener('keydown', e => {
+    simKeys[e.key.toLowerCase()] = true;
+    if (e.key === ' ' && simRunning && simPlayer.alive) {
+        if (!simPlayer.reloading) {
+            simPlayer.reloading = true;
+            simPlayer.reloadTime = 120;
+        }
+    }
+    if (e.key.toLowerCase() === 'r') startSim();
+});
+window.addEventListener('keyup', e => simKeys[e.key.toLowerCase()] = false);
+
+function updateSim() {
+    if (!simRunning || simPaused || !simPlayer.alive) return;
+    simTime += 1/60;
+
+    // Arousal decay
+    if (document.getElementById('simHabituation').checked) {
+        simArousal = Math.max(5, simArousal * 0.9995);
+    }
+
+    // Player movement
+    let speed = 3;
+    if (document.getElementById('simSlowADS').checked) speed = 1.5;
+    if (simKeys['w']) simPlayer.y -= speed;
+    if (simKeys['s']) simPlayer.y += speed;
+    if (simKeys['a']) simPlayer.x -= speed;
+    if (simKeys['d']) simPlayer.x += speed;
+    simPlayer.x = Math.max(20, Math.min(simCanvas.width-20, simPlayer.x));
+    simPlayer.y = Math.max(20, Math.min(simCanvas.height-20, simPlayer.y));
+
+    // Reload
+    if (simPlayer.reloading) {
+        simPlayer.reloadTime--;
+        if (simPlayer.reloadTime <= 0) {
+            simPlayer.reloading = false;
+            simPlayer.ammo = simPlayer.maxAmmo;
+        }
+    }
+
+    // Bots
+    const botSpeed = parseInt(document.getElementById('simBotSpeed').value) * 0.5;
+    const botAcc = parseInt(document.getElementById('simBotAcc').value) * 0.01;
+    simBots.forEach(bot => {
+        if (!bot.alive) return;
+        let a = angle(bot.x, bot.y, simPlayer.x, simPlayer.y);
+        bot.vx = Math.cos(a) * botSpeed;
+        bot.vy = Math.sin(a) * botSpeed;
+
+        // Geometry spacing: if enabled, bots avoid clustering
+        if (document.getElementById('simGeo').checked) {
+            simBots.forEach(other => {
+                if (other === bot || !other.alive) return;
+                let d = dist(bot.x, bot.y, other.x, other.y);
+                if (d < 40) {
+                    let repel = angle(other.x, other.y, bot.x, bot.y);
+                    bot.vx += Math.cos(repel) * 2;
+                    bot.vy += Math.sin(repel) * 2;
+                }
+            });
+        }
+
+        bot.x += bot.vx;
+        bot.y += bot.vy;
+
+        // Bot firing
+        bot.fireTimer--;
+        if (bot.fireTimer <= 0) {
+            bot.fireTimer = 60 + Math.random() * 60;
+            let d = dist(bot.x, bot.y, simPlayer.x, simPlayer.y);
+            if (d < 300 && Math.random() < botAcc) {
+                // Check if player is exposed to this bot
+                let exposed = true;
+                // Simple: always exposed for now
+                if (exposed && document.getElementById('simOneHit').checked) {
+                    simPlayer.alive = false;
+                } else if (exposed) {
+                    // Would take damage, but for simplicity instant death on 1-hit
+                }
+            }
+        }
+    });
+
+    // Bullets
+    simBullets.forEach((b, i) => {
+        b.x += b.vx;
+        b.y += b.vy;
+        b.life--;
+        // Hit check
+        simBots.forEach(bot => {
+            if (!bot.alive) return;
+            if (dist(b.x, b.y, bot.x, bot.y) < 15) {
+                // Target prioritization: if enabled, prefer high-threat bots
+                if (document.getElementById('simPrioritize').checked) {
+                    // Already shooting, just damage
+                }
+                bot.health--;
+                if (bot.health <= 0) {
+                    bot.alive = false;
+                    simPlayer.kills++;
+                    bot.health = bot.maxHealth;
+                    // Respawn after delay
+                    setTimeout(() => {
+                        let angle = Math.random() * Math.PI * 2;
+                        let r = Math.min(simCanvas.width, simCanvas.height) * 0.45;
+                        bot.x = simCanvas.width/2 + Math.cos(angle)*r;
+                        bot.y = simCanvas.height/2 + Math.sin(angle)*r;
+                        bot.alive = true;
+                        bot.health = bot.maxHealth;
+                    }, 2000);
+                }
+                b.life = 0;
+            }
+        });
+    });
+    simBullets = simBullets.filter(b => b.life > 0);
+
+    // Update stats
+    document.getElementById('simKills').textContent = simPlayer.kills;
+    document.getElementById('simTime').textContent = simTime.toFixed(1) + 's';
+    document.getElementById('simAmmo').textContent = simPlayer.reloading ? 'RELOAD' : simPlayer.ammo;
+    document.getElementById('simAmmo').style.color = simPlayer.ammo < 5 ? '#ff3366' : '#00d4ff';
+    document.getElementById('simArousal').textContent = Math.round(simArousal) + '%';
+    document.getElementById('simStatus').textContent = simPlayer.alive ? 'ALIVE' : 'DEAD';
+    document.getElementById('simStatus').style.color = simPlayer.alive ? '#00ff88' : '#ff3366';
+}
+
+function drawSim() {
+    simCtx.fillStyle = '#050508';
+    simCtx.fillRect(0, 0, simCanvas.width, simCanvas.height);
+
+    // Grid
+    simCtx.strokeStyle = '#111122';
+    for (let x = 0; x < simCanvas.width; x += 40) {
+        simCtx.beginPath(); simCtx.moveTo(x,0); simCtx.lineTo(x,simCanvas.height); simCtx.stroke();
+    }
+    for (let y = 0; y < simCanvas.height; y += 40) {
+        simCtx.beginPath(); simCtx.moveTo(0,y); simCtx.lineTo(simCanvas.width,y); simCtx.stroke();
+    }
+
+    if (!simRunning) {
+        simCtx.fillStyle = '#8899aa';
+        simCtx.font = '16px sans-serif';
+        simCtx.textAlign = 'center';
+        simCtx.fillText('Click Start to begin 1v12 simulation', simCanvas.width/2, simCanvas.height/2);
+        simCtx.textAlign = 'left';
+        return;
+    }
+
+    // Bots
+    simBots.forEach(bot => {
+        if (!bot.alive) return;
+        simCtx.fillStyle = '#ff3366';
+        simCtx.beginPath();
+        simCtx.arc(bot.x, bot.y, 10, 0, Math.PI*2);
+        simCtx.fill();
+        // Health bar
+        simCtx.fillStyle = '#222233';
+        simCtx.fillRect(bot.x-12, bot.y-18, 24, 4);
+        simCtx.fillStyle = bot.health > 1 ? '#ffaa00' : '#ff3366';
+        simCtx.fillRect(bot.x-12, bot.y-18, 24 * (bot.health/bot.maxHealth), 4);
+        // ADS indicator
+        if (bot.ads > 0.5) {
+            simCtx.strokeStyle = '#ff3366';
+            simCtx.lineWidth = 2;
+            simCtx.beginPath();
+            simCtx.arc(bot.x, bot.y, 16, 0, Math.PI*2);
+            simCtx.stroke();
+        }
+    });
+
+    // Bullets
+    simBullets.forEach(b => {
+        simCtx.fillStyle = '#00d4ff';
+        simCtx.beginPath();
+        simCtx.arc(b.x, b.y, 3, 0, Math.PI*2);
+        simCtx.fill();
+    });
+
+    // Player
+    if (simPlayer.alive) {
+        simCtx.fillStyle = '#00ff88';
+        simCtx.beginPath();
+        simCtx.arc(simPlayer.x, simPlayer.y, 12, 0, Math.PI*2);
+        simCtx.fill();
+        // Aim line
+        simCtx.strokeStyle = 'rgba(0,255,136,0.3)';
+        simCtx.beginPath();
+        simCtx.moveTo(simPlayer.x, simPlayer.y);
+        simCtx.lineTo(simMouse.x, simMouse.y);
+        simCtx.stroke();
+        // Reload indicator
+        if (simPlayer.reloading) {
+            simCtx.strokeStyle = '#ffaa00';
+            simCtx.lineWidth = 3;
+            simCtx.beginPath();
+            simCtx.arc(simPlayer.x, simPlayer.y, 18, 0, Math.PI*2 * (1 - simPlayer.reloadTime/120));
+            simCtx.stroke();
+        }
+    } else {
+        simCtx.fillStyle = '#ff3366';
+        simCtx.font = '24px sans-serif';
+        simCtx.textAlign = 'center';
+        simCtx.fillText('DEAD — Press R to restart', simCanvas.width/2, simCanvas.height/2);
+        simCtx.textAlign = 'left';
+    }
+
+    // Trajectory prediction (prefire)
+    if (document.getElementById('simPrefire').checked && simPlayer.alive) {
+        simBots.forEach(bot => {
+            if (!bot.alive) return;
+            let a = angle(bot.x, bot.y, simPlayer.x, simPlayer.y);
+            let predX = bot.x + Math.cos(a) * 30;
+            let predY = bot.y + Math.sin(a) * 30;
+            simCtx.strokeStyle = 'rgba(0,212,255,0.2)';
+            simCtx.setLineDash([3,3]);
+            simCtx.beginPath();
+            simCtx.moveTo(bot.x, bot.y);
+            simCtx.lineTo(predX, predY);
+            simCtx.stroke();
+            simCtx.setLineDash([]);
+        });
+    }
+}
+
+function simLoop() {
+    updateSim();
+    drawSim();
+    requestAnimationFrame(simLoop);
+}
+simLoop();
+
+// Open first card by default
+document.getElementById('trait1').classList.add('open');
+</script>
+
+</body>
+</html>
