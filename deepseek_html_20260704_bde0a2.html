@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HVAC Field Guide – v6</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0a1620;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 2rem 1.2rem;
+      color: #e8edf3;
+    }
+    .container { max-width: 1600px; margin: 0 auto; }
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 600;
+      letter-spacing: -1px;
+      border-left: 8px solid #f0b34b;
+      padding-left: 1.6rem;
+      margin-bottom: 0.2rem;
+      color: #f0dbb4;
+    }
+    .sub {
+      margin-left: 2.4rem;
+      color: #9ab0c9;
+      border-bottom: 1px solid #1d3345;
+      padding-bottom: 0.8rem;
+      margin-bottom: 2rem;
+      font-weight: 300;
+      font-size: 1.1rem;
+    }
+    .legend-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem 2rem;
+      background: #0e1f2e;
+      padding: 0.6rem 1.6rem;
+      border-radius: 60px;
+      margin-bottom: 2.5rem;
+      border: 1px solid #1d3a4f;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+    .badge {
+      font-weight: 600;
+      padding: 0.15rem 0.7rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      letter-spacing: 0.4px;
+      display: inline-block;
+    }
+    .badge-a1 { background: #1d6f3c; color: #d4f0d4; }
+    .badge-a2l { background: #a67c1e; color: #fff6d6; }
+    .badge-a3 { background: #b13b3b; color: #ffe0d0; }
+    .badge-b1 { background: #5f2c5f; color: #f2d4f2; }
+    .badge-b3 { background: #7a1a1a; color: #ffd0d0; }
+    .badge-snap-yes { background: #1f6d4a; color: #ccf0d4; }
+    .badge-snap-no { background: #4a2f2f; color: #d6baba; }
+    .badge-snap-phase { background: #a6711e; color: #fff6d6; }
+    .badge-current { background: #1f6d8f; color: #dcf2ff; }
+    .badge-phase { background: #a6711e; color: #fff6d6; }
+    .badge-retired { background: #3a3a3a; color: #b0b0b0; }
+    .badge-special { background: #2f4f6f; color: #d4e6f5; }
+    .badge-era { background: #4a2f1f; color: #f0dbb4; }
+
+    .section-card {
+      background: #0b1927;
+      border-radius: 24px;
+      border: 1px solid #1b3345;
+      margin-bottom: 2.2rem;
+      overflow: hidden;
+    }
+    .section-header {
+      background: #102433;
+      padding: 0.8rem 1.8rem;
+      border-bottom: 2px solid #1f3f56;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 1.5rem;
+    }
+    .section-header h2 {
+      font-weight: 500;
+      font-size: 1.7rem;
+      color: #caddf0;
+    }
+    .section-header .sub-info {
+      color: #8bb0cc;
+      font-size: 0.9rem;
+    }
+    .section-body {
+      padding: 1.2rem 1.8rem;
+    }
+    .section-body p {
+      margin-bottom: 0.8rem;
+      line-height: 1.6;
+    }
+    .section-body strong { color: #f0dbb4; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    .info-card {
+      background: #0d1f2d;
+      padding: 0.8rem 1.2rem;
+      border-radius: 20px;
+      border: 1px solid #1f3f56;
+      font-size: 0.85rem;
+    }
+    .info-card strong { color: #f0dbb4; display: block; margin-bottom: 0.3rem; }
+    .acronym-block {
+      background: #0d1f2d;
+      padding: 0.8rem 1.4rem;
+      border-radius: 20px;
+      border: 1px solid #1f3f56;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #caddf0;
+    }
+    .acronym-block strong { color: #f0dbb4; }
+    .timeline-block {
+      background: #0d1f2d;
+      padding: 0.8rem 1.4rem;
+      border-radius: 20px;
+      border-left: 6px solid #f0b34b;
+      margin-bottom: 0.8rem;
+      font-size: 0.9rem;
+    }
+    .timeline-block strong { color: #f0dbb4; }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 0.5rem;
+      background: #0d1f2d;
+      padding: 0.8rem;
+      border-radius: 16px;
+      margin: 0.5rem 0;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+    .matrix-grid .header { background: #1a3449; padding: 0.4rem; border-radius: 8px; font-weight: 600; color: #caddf0; }
+    .matrix-grid .cell { background: #162f44; padding: 0.3rem; border-radius: 6px; }
+    .matrix-grid .cell-a1 { background: #1d6f3c; }
+    .matrix-grid .cell-a2l { background: #a67c1e; }
+    .matrix-grid .cell-a2 { background: #b8860b; }
+    .matrix-grid .cell-a3 { background: #b13b3b; }
+    .matrix-grid .cell-b1 { background: #5f2c5f; }
+    .matrix-grid .cell-b3 { background: #7a1a1a; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      margin-top: 0.5rem;
+    }
+    th {
+      background: #102433;
+      color: #caddf0;
+      font-weight: 600;
+      padding: 0.5rem 0.3rem;
+      text-align: center;
+      border-bottom: 2px solid #1f3f56;
+      font-size: 0.7rem;
+    }
+    td {
+      padding: 0.5rem 0.3rem;
+      border-bottom: 1px solid #1b3345;
+      text-align: center;
+      vertical-align: middle;
+    }
+    tr:hover td { background: #1a3042; }
+    .color-dot {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 6px;
+      border: 1px solid #3f5e73;
+      vertical-align: middle;
+    }
+    .nuance {
+      font-size: 0.7rem;
+      color: #9ab0c9;
+      display: block;
+      margin-top: 0.1rem;
+    }
+    @media (max-width: 700px) {
+      table { font-size: 0.6rem; }
+      th, td { padding: 0.2rem 0.1rem; }
+      .section-header { flex-direction: column; align-items: flex-start; }
+      .matrix-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>⚡ HVAC Field Guide – v6</h1>
+  <div class="sub">Noob to Pro · History · Simple Logic · All Paths · The Things That Burned Veterans</div>
+
+  <!-- Legend -->
+  <div class="legend-box">
+    <span class="legend-item"><span class="badge badge-a1">A1</span> safe</span>
+    <span class="legend-item"><span class="badge badge-a2l">A2L</span> mildly flammable</span>
+    <span class="legend-item"><span class="badge badge-a3">A3</span> highly flammable</span>
+    <span class="legend-item"><span class="badge badge-b1">B1</span> toxic</span>
+    <span class="legend-item"><span class="badge badge-b3">B3</span> toxic + explosive</span>
+    <span class="legend-item"><span class="badge badge-snap-yes">✅ SNAP</span> approved</span>
+    <span class="legend-item"><span class="badge badge-snap-phase">⚠️ SNAP</span> phase-out</span>
+    <span class="legend-item"><span class="badge badge-snap-no">❌ SNAP</span> unapproved</span>
+    <span class="legend-item"><span class="badge badge-current">✔ current</span></span>
+    <span class="legend-item"><span class="badge badge-phase">phase‑out</span></span>
+    <span class="legend-item"><span class="badge badge-retired">retired</span></span>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 0: THE SIMPLE TRUTH -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🧊 The Simple Truth</h2>
+      <span class="sub-info">HVAC is just moving heat — everything else is detail</span>
+    </div>
+    <div class="section-body">
+      <div class="acronym-block" style="border-left:6px solid #f0b34b;">
+        <strong>Heat always moves from hot to cold.</strong><br>
+        That's the only rule you need to remember. Everything in HVAC is just creating a path for heat to follow — or blocking a path it wants to take.
+      </div>
+      <div class="grid-2">
+        <div class="info-card"><strong>The Cycle (4 steps)</strong><br>1. Cold liquid absorbs heat indoors → boils to cold gas.<br>2. Cold gas gets compressed → becomes hot gas.<br>3. Hot gas dumps heat outdoors → condenses to warm liquid.<br>4. Warm liquid expands → becomes cold liquid again.</div>
+        <div class="info-card"><strong>What veterans know</strong><br>• 90% of problems are building problems, not equipment problems.<br>• If you stop the heat from getting in, the AC doesn't have to work as hard.<br>• Always check the building first — then the unit.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 1: THE PATH — FROM CYLINDER TO COIL TO COMPRESSOR -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🔄 The Path — Cylinder → Indoor Coil → Compressor → Outdoor Coil → Back</h2>
+      <span class="sub-info">What actually happens, step by step</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-3">
+        <div class="info-card"><strong>1. Cylinder (or System Charge)</strong><br>Refrigerant starts as a high‑pressure liquid in the cylinder or is already in the system. It enters the indoor coil through the expansion valve.</div>
+        <div class="info-card"><strong>2. Indoor Coil (Evaporator)</strong><br>The liquid is now at low pressure — so it's <strong>very cold</strong>. A fan blows warm house air over the coil. Heat moves from the air into the cold liquid. The liquid <strong>boils into a cold gas</strong>.</div>
+        <div class="info-card"><strong>3. Compressor</strong><br>The cold gas travels to the compressor. The compressor <strong>squeezes</strong> the gas — this makes it <strong>hot</strong> (hotter than the outside air).</div>
+        <div class="info-card"><strong>4. Outdoor Coil (Condenser)</strong><br>The hot gas flows through the outdoor coil. A fan blows outside air over it. Heat moves from the hot gas into the outside air. The gas <strong>condenses back into a warm liquid</strong>.</div>
+        <div class="info-card"><strong>5. Back Indoors</strong><br>The warm liquid travels back inside, passes through the expansion valve, drops in pressure, and becomes <strong>cold liquid again</strong>.</div>
+        <div class="info-card"><strong>Repeat</strong><br>That's it. That's the entire cycle. The refrigerant never leaves the sealed system — it just changes state (liquid ↔ gas) and temperature.</div>
+      </div>
+      <div class="acronym-block" style="margin-top:1rem;">
+        <strong>Key insight:</strong> The refrigerant is <strong>cold the entire time it's indoors</strong>. It only gets hot <strong>after</strong> the compressor squeezes it. That's the whole trick.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 2: HISTORY — WHAT CHANGED AND WHEN -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>📜 History — What Changed and When</h2>
+      <span class="sub-info">The events that burned veterans and shaped the industry</span>
+    </div>
+    <div class="section-body">
+      <div class="timeline-block">
+        <strong>Pre‑1930s:</strong> Refrigerants were toxic or flammable — ammonia, sulfur dioxide, methyl chloride. Techs died regularly.
+      </div>
+      <div class="timeline-block">
+        <strong>1930s:</strong> <strong>Freon (CFCs)</strong> invented by Thomas Midgley Jr. — safe, stable, non‑flammable. A revolution. No one knew it would destroy the ozone layer.
+      </div>
+      <div class="timeline-block">
+        <strong>1970s‑1980s:</strong> Scientists discover CFCs are destroying the ozone layer. The <strong>Montreal Protocol (1987)</strong> phases them out.
+      </div>
+      <div class="timeline-block">
+        <strong>1990s‑2000s:</strong> <strong>HCFCs (R‑22)</strong> replace CFCs — lower ODP, but still deplete ozone. <strong>HFCs (R‑410A, R‑134a)</strong> replace HCFCs — zero ODP, but high GWP.
+      </div>
+      <div class="timeline-block">
+        <strong>2010s:</strong> Climate change becomes a focus. HFCs are found to be potent greenhouse gases. The <strong>Kigali Amendment (2016)</strong> phases down HFCs.
+      </div>
+      <div class="timeline-block">
+        <strong>2020‑2026:</strong> <strong>A2L refrigerants (R‑32, R‑454B, R‑1234yf)</strong> become the new standard — very low GWP, mildly flammable. <strong>R‑22 production banned (2020). R‑410A new systems banned (2025/2026).</strong>
+      </div>
+      <div class="acronym-block">
+        <strong>What burned veterans:</strong> Every time the refrigerant changed, the tools, oils, and procedures changed. Mineral oil → POE oil. Low‑pressure gauges → high‑pressure gauges. Non‑flammable → A2L safety protocols. The veterans who didn't adapt got left behind — or got hurt.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 3: THE HIDDEN TACIT KNOWLEDGE -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🤫 The Tacit Knowledge — What Veterans Assume You Know</h2>
+      <span class="sub-info">The things no one tells you in school</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="info-card"><strong>Start with the building, not the unit.</strong><br>If a room is hot, check windows, doors, insulation, and duct leaks before you even look at the compressor. 90% of problems are building problems.</div>
+        <div class="info-card"><strong>Airflow is everything.</strong><br>A perfectly charged system with bad airflow won't cool. Always check filters, ducts, and blower speed first.</div>
+        <div class="info-card"><strong>Superheat and subcooling are your compass.</strong><br>They tell you if the system is properly charged. Learn them. Use them.</div>
+        <div class="info-card"><strong>POE oil absorbs water.</strong><br>If you leave a system open to air, the oil will absorb moisture and destroy the compressor. Pull a deep vacuum. Always.</div>
+        <div class="info-card"><strong>Recovery cylinders are gray with a yellow top.</strong><br>Never mix refrigerants in a recovery cylinder. Label everything.</div>
+        <div class="info-card"><strong>The customer is part of the system.</strong><br>If they close vents, block returns, or set the thermostat wrong, the system will fail. Ask questions. Listen.</div>
+        <div class="info-card"><strong>A2L refrigerants are mildly flammable.</strong><br>Use A2L-rated tools, leak detectors, and follow the charge limits. Store cylinders upright.</div>
+        <div class="info-card"><strong>Ammonia (R‑717) is toxic.</strong><br>If you smell it, evacuate and call a specialist. You do not work on ammonia systems unless you're specially trained.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 4: ASHRAE SAFETY MATRIX -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🛡️ ASHRAE Safety Matrix</h2>
+      <span class="sub-info">Toxicity (A/B) × Flammability (1/2L/2/3)</span>
+    </div>
+    <div class="section-body">
+      <div class="matrix-grid">
+        <div class="header">Tox \ Flamm</div><div class="header">1</div><div class="header">2L</div><div class="header">2</div><div class="header">3</div>
+        <div class="header">A (low tox)</div>
+        <div class="cell cell-a1"><span class="badge badge-a1">A1</span><br><span style="font-size:0.65rem;">R-410A, R-134a</span></div>
+        <div class="cell cell-a2l"><span class="badge badge-a2l">A2L</span><br><span style="font-size:0.65rem;">R-32, R-454B</span></div>
+        <div class="cell cell-a2"><span class="badge badge-a1">A2</span><br><span style="font-size:0.65rem;">R-141b</span></div>
+        <div class="cell cell-a3"><span class="badge badge-a3">A3</span><br><span style="font-size:0.65rem;">R-290, R-600a</span></div>
+        <div class="header">B (high tox)</div>
+        <div class="cell cell-b1"><span class="badge badge-b1">B1</span><br><span style="font-size:0.65rem;">R-123</span></div>
+        <div class="cell cell-a1"><span class="badge badge-a1">B2L</span><br><span style="font-size:0.65rem;">(rare)</span></div>
+        <div class="cell cell-a1"><span class="badge badge-a1">B2</span><br><span style="font-size:0.65rem;">(rare)</span></div>
+        <div class="cell cell-b3"><span class="badge badge-b3">B3</span><br><span style="font-size:0.65rem;">Ethylene</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 5: REFRIGERANT TABLE -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>📋 Refrigerant Table</h2>
+      <span class="sub-info">All major refrigerants · SNAP · GWP · ODP · Color · Lube · Status</span>
+    </div>
+    <div class="section-body" style="padding:0 0 1.2rem 0;">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Family</th>
+            <th>ASHRAE</th>
+            <th>SNAP</th>
+            <th>GWP</th>
+            <th>ODP</th>
+            <th>Color</th>
+            <th>Lube</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>R-11</strong></td><td>CFC</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-no">❌</span></td><td>4,750</td><td>1.0</td><td><span class="color-dot" style="background:#b0b0b0;"></span> White</td><td>Mineral</td><td><span class="badge badge-retired">retired</span></td></tr>
+          <tr><td><strong>R-12</strong></td><td>CFC</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-no">❌</span></td><td>10,900</td><td>1.0</td><td><span class="color-dot" style="background:#b0b0b0;"></span> White</td><td>Mineral</td><td><span class="badge badge-retired">retired</span></td></tr>
+          <tr><td><strong>R-22</strong></td><td>HCFC</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-phase">⚠️</span></td><td>1,810</td><td>0.055</td><td><span class="color-dot" style="background:#7fb77e;"></span> Light green</td><td>Mineral</td><td><span class="badge badge-phase">phase‑out</span></td></tr>
+          <tr><td><strong>R-123</strong></td><td>HCFC</td><td><span class="badge badge-b1">B1</span></td><td><span class="badge badge-snap-phase">⚠️</span></td><td>77</td><td>0.02</td><td><span class="color-dot" style="background:#b0b0b0;"></span> Grey</td><td>Mineral</td><td><span class="badge badge-phase">phase‑out</span></td></tr>
+          <tr><td><strong>R-134a</strong></td><td>HFC</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-phase">⚠️</span></td><td>1,430</td><td>0</td><td><span class="color-dot" style="background:#87ceeb;"></span> Light blue</td><td>PAG/POE</td><td><span class="badge badge-phase">phase‑out</span></td></tr>
+          <tr><td><strong>R-410A</strong></td><td>HFC</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-phase">⚠️</span></td><td>2,088</td><td>0</td><td><span class="color-dot" style="background:#e8a2b0;"></span> Rose</td><td>POE</td><td><span class="badge badge-phase">phase‑out</span></td></tr>
+          <tr><td><strong>R-32</strong></td><td>HFC</td><td><span class="badge badge-a2l">A2L</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>675</td><td>0</td><td><span class="color-dot" style="background:#f5e56b;"></span> Light yellow</td><td>POE</td><td><span class="badge badge-current">✔ current</span></td></tr>
+          <tr><td><strong>R-404A</strong></td><td>HFC</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-no">❌</span></td><td>3,922</td><td>0</td><td><span class="color-dot" style="background:#e07a2f;"></span> Orange</td><td>POE</td><td><span class="badge badge-retired">retiring</span></td></tr>
+          <tr><td><strong>R-1234yf</strong></td><td>HFO</td><td><span class="badge badge-a2l">A2L</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>~1</td><td>0</td><td><span class="color-dot" style="background:#f0f0f0;"></span> White</td><td>PAG/POE</td><td><span class="badge badge-current">✔ current</span></td></tr>
+          <tr><td><strong>R-1233zd</strong></td><td>HCFO</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>~1</td><td>~0</td><td><span class="color-dot" style="background:#8a6e8b;"></span> Purple</td><td>POE</td><td><span class="badge badge-current">✔ current</span></td></tr>
+          <tr><td><strong>R-454B</strong></td><td>HFO blend</td><td><span class="badge badge-a2l">A2L</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>466</td><td>0</td><td><span class="color-dot" style="background:#b0c4de;"></span> Light blue‑grey</td><td>POE</td><td><span class="badge badge-current">✔ current</span></td></tr>
+          <tr><td><strong>R-717</strong> (ammonia)</td><td>Natural</td><td><span class="badge badge-b1">B1</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>0</td><td>0</td><td><span class="color-dot" style="background:#b8860b;"></span> Yellow</td><td>Mineral</td><td><span class="badge badge-special">industrial</span></td></tr>
+          <tr><td><strong>R-290</strong> (propane)</td><td>Natural</td><td><span class="badge badge-a3">A3</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>~3</td><td>0</td><td><span class="color-dot" style="background:#c08050;"></span> Brown</td><td>Mineral</td><td><span class="badge badge-special">specialty</span></td></tr>
+          <tr><td><strong>R-744</strong> (CO₂)</td><td>Natural</td><td><span class="badge badge-a1">A1</span></td><td><span class="badge badge-snap-yes">✅</span></td><td>1</td><td>0</td><td><span class="color-dot" style="background:#b0b0b0;"></span> Grey</td><td>POE/PAG</td><td><span class="badge badge-special">specialty</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 6: CYLINDER COLORS -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🎨 Cylinder Colors (2020 AHRI Update)</h2>
+      <span class="sub-info">Visual identification — always read the label</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="info-card"><strong>R-410A</strong> — Rose</div>
+        <div class="info-card"><strong>R-134a</strong> — Light blue</div>
+        <div class="info-card"><strong>R-22</strong> — Light green</div>
+        <div class="info-card"><strong>R-32</strong> — Light yellow</div>
+        <div class="info-card"><strong>R-454B</strong> — Light blue‑grey</div>
+        <div class="info-card"><strong>R-1234yf</strong> — White</div>
+        <div class="info-card"><strong>R-1233zd</strong> — Purple</div>
+        <div class="info-card"><strong>Recovery cylinder</strong> — Gray body, Yellow top</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 7: FIELD NOTES -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🛠️ Field Notes — What To Do When You See It</h2>
+      <span class="sub-info">Practical scenarios for the job site</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="info-card"><strong>R‑22 system, low charge</strong><br>Do NOT top off if it's a leak. Repair the leak, recover, and recharge with a SNAP‑approved substitute (R‑407C, R‑438A, etc.).</div>
+        <div class="info-card"><strong>New residential install</strong><br>You must use R‑32 or R‑454B (A2L). R‑410A is no longer legal for new systems.</div>
+        <div class="info-card"><strong>A2L refrigerant</strong><br>Use A2L‑rated tools, leak detectors, and follow the manufacturer's charge limit. Store cylinders upright.</div>
+        <div class="info-card"><strong>Recovery cylinder</strong><br>Gray body, yellow top. Never mix refrigerants — label it clearly.</div>
+        <div class="info-card"><strong>Glide (R‑407C, R‑448A)</strong><br>Charge as a liquid. If you charge as a vapor, you'll change the blend composition and it won't work properly.</div>
+        <div class="info-card"><strong>Ammonia (R‑717)</strong><br>If you smell it, evacuate and call a specialist. You do NOT work on ammonia systems unless you're specially trained.</div>
+        <div class="info-card"><strong>B3 refrigerant</strong><br>Nope. You don't touch it. Call industrial specialists.</div>
+        <div class="info-card"><strong>POE oil system</strong><br>POE oil absorbs moisture. Keep the system sealed and pull a deep vacuum.</div>
+        <div class="info-card"><strong>Hot room call</strong><br>Check windows, doors, insulation, and duct leaks before you check the unit. 90% of problems are building problems.</div>
+        <div class="info-card"><strong>Customer says "it's not keeping up"</strong><br>Ask when it started, what changed, and if they've closed any vents. The answer is usually in the history.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 8: ALL PATHS — RESIDENTIAL, COMMERCIAL, INDUSTRIAL -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>🏗️ All Paths — Residential · Commercial · Industrial</h2>
+      <span class="sub-info">What changes at each scale</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="info-card"><strong>Residential</strong><br>Systems: Split systems, package units, heat pumps, mini‑splits.<br>Refrigerants: R‑410A → R‑32 / R‑454B (A2L).<br>Scale: 1.5–5 tons. Attics, crawlspaces, basements. Direct customer interaction.<br>Typical issues: Dirty filters, duct leaks, low charge, poor airflow.</div>
+        <div class="info-card"><strong>Commercial</strong><br>Systems: Rooftop units (RTUs), VRF, chillers, variable‑air‑volume (VAV).<br>Refrigerants: R‑410A → R‑32 / R‑454B, R‑134a → R‑1234yf, R‑123 → R‑1233zd.<br>Scale: 5–100+ tons. Roofs, mechanical rooms, equipment pads. Building engineers and facility managers.<br>Typical issues: Economizer failures, control wiring, refrigerant leaks, compressor failures.</div>
+        <div class="info-card"><strong>Industrial</strong><br>Systems: Centrifugal chillers, screw compressors, ammonia systems, CO₂ systems.<br>Refrigerants: R‑717 (ammonia), R‑744 (CO₂), R‑1233zd, R‑1234ze.<br>Scale: 100–1,000+ tons. Machinery rooms, outdoor skids, chemical plants. Highly regulated, hazardous materials, specialized PPE.<br>Typical issues: Oil management, high‑pressure cutouts, vibration, process control.</div>
+      </div>
+      <div class="acronym-block">
+        <strong>The common thread:</strong> The cycle is the same at every scale. The compressor squeezes gas. The coil dumps heat. The expansion valve drops pressure. The difference is size, pressure, and refrigerant. Learn the cycle, and you can learn any path.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- SECTION 9: ACRONYMS GLOSSARY -->
+  <!-- ================================================================ -->
+  <div class="section-card">
+    <div class="section-header">
+      <h2>📖 Acronyms Glossary</h2>
+      <span class="sub-info">What they mean — no prior knowledge required</span>
+    </div>
+    <div class="section-body">
+      <div class="grid-2">
+        <div class="info-card"><strong>ODP</strong><br>Ozone Depletion Potential. Measures how much a refrigerant damages the ozone layer. R‑11 = 1.0. HFCs/HFOs = 0.</div>
+        <div class="info-card"><strong>GWP</strong><br>Global Warming Potential. Measures how much heat a refrigerant traps compared to CO₂. CO₂ = 1. R‑410A = 2,088.</div>
+        <div class="info-card"><strong>SNAP</strong><br>Significant New Alternatives Policy. EPA program that approves or bans refrigerants for specific uses. If it's not SNAP‑approved, it's illegal.</div>
+        <div class="info-card"><strong>ASHRAE</strong><br>American Society of Heating, Refrigerating and Air‑Conditioning Engineers. Sets the safety classification system (A1, A2L, etc.).</div>
+        <div class="info-card"><strong>CFC</strong><br>Chlorofluorocarbon. Contains chlorine. Damages ozone. Banned.</div>
+        <div class="info-card"><strong>HCFC</strong><br>Hydrochlorofluorocarbon. Contains chlorine. Lower ozone damage. Being phased out.</div>
+        <div class="info-card"><strong>HFC</strong><br>Hydrofluorocarbon. No chlorine. Zero ozone damage. High GWP. Being phased down.</div>
+        <div class="info-card"><strong>HFO</strong><br>Hydrofluoroolefin. No chlorine. Very low GWP. Current standard. Often A2L (mildly flammable).</div>
+        <div class="info-card"><strong>POE</strong><br>Polyolester oil. Used with HFCs and HFOs. Absorbs moisture — must be kept sealed.</div>
+        <div class="info-card"><strong>PAG</strong><br>Polyalkylene glycol oil. Used in automotive AC with R‑134a and R‑1234yf.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================ -->
+  <!-- FOOTER -->
+  <!-- ================================================================ -->
+  <div style="margin-top:2rem; font-size:0.8rem; color:#6b8da0; border-top:1px solid #1f3b4f; padding-top:1rem; text-align:center;">
+    This guide is designed for noobs, pros, and everyone in between. <br>
+    The cycle is simple. The details are many. But once you see the pattern, you see the whole system.
+  </div>
+</div>
+</body>
+</html>
