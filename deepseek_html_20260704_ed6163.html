@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refrigerant Master Table – 2026</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #0b1a2a;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 2rem 1.5rem;
+      color: #e8edf3;
+    }
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      border-left: 6px solid #3a8bcb;
+      padding-left: 1.2rem;
+      margin-bottom: 0.2rem;
+      color: #b6d4fe;
+    }
+    .sub {
+      margin-left: 1.8rem;
+      color: #98b9d9;
+      border-bottom: 1px solid #1f3b4f;
+      padding-bottom: 0.8rem;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+    .legend-box {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 2.5rem;
+      background: #112b3d;
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      margin-bottom: 2rem;
+      border: 1px solid #1f465e;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .badge {
+      font-weight: 600;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      letter-spacing: 0.3px;
+      display: inline-block;
+    }
+    .badge-a1 { background: #1d6f3c; color: #d4f0d4; }
+    .badge-a2l { background: #a67c1e; color: #fff6d6; }
+    .badge-a3 { background: #b13b3b; color: #ffe0d0; }
+    .badge-b1 { background: #5f2c5f; color: #f2d4f2; }
+    .badge-retired { background: #3a3a3a; color: #b0b0b0; }
+    .badge-current { background: #1f6d8f; color: #dcf2ff; }
+    .badge-phase { background: #a6711e; color: #fff6d6; }
+
+    .family-group {
+      margin-top: 2.5rem;
+      background: #0f2130;
+      border-radius: 20px;
+      border: 1px solid #1b3d54;
+      overflow: hidden;
+    }
+    .family-header {
+      background: #1a3449;
+      padding: 0.8rem 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.5rem 1.5rem;
+      border-bottom: 2px solid #2b4b62;
+      cursor: default;
+    }
+    .family-header h2 {
+      font-weight: 500;
+      font-size: 1.4rem;
+      color: #caddf0;
+    }
+    .family-header .sub-info {
+      color: #8bb0cc;
+      font-size: 0.85rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    th {
+      background: #162f44;
+      color: #caddf0;
+      font-weight: 600;
+      padding: 0.7rem 0.5rem;
+      text-align: center;
+      border-bottom: 1px solid #1f3f56;
+      font-size: 0.8rem;
+    }
+    td {
+      padding: 0.7rem 0.4rem;
+      border-bottom: 1px solid #1b3345;
+      text-align: center;
+      vertical-align: middle;
+    }
+    tr:hover td { background: #1a3042; }
+    .color-dot {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      border: 1px solid #3f5e73;
+      vertical-align: middle;
+    }
+    .family-tag {
+      background: #1f3e55;
+      padding: 0.1rem 0.7rem;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .nuance {
+      font-size: 0.75rem;
+      color: #aac2d9;
+      display: block;
+      margin-top: 0.1rem;
+    }
+    .status-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.15rem 0.6rem;
+      border-radius: 30px;
+      white-space: nowrap;
+    }
+    .status-current { background: #1f6d4a; color: #ccf0d4; }
+    .status-phase { background: #a6711e; color: #fff6d6; }
+    .status-retired { background: #4a2f2f; color: #d6baba; }
+    .status-special { background: #2f4f6f; color: #d4e6f5; }
+
+    .meta-note {
+      margin: 2rem 0;
+      padding: 1.2rem 1.8rem;
+      background: #112b3d;
+      border-radius: 24px;
+      border-left: 6px solid #3a8bcb;
+    }
+    .meta-note strong { color: #b6d4fe; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .info-card {
+      background: #0f2130;
+      padding: 0.6rem 1rem;
+      border-radius: 30px;
+      border: 1px solid #1f465e;
+      font-size: 0.85rem;
+    }
+    @media (max-width: 700px) {
+      table { font-size: 0.7rem; }
+      th, td { padding: 0.3rem 0.15rem; }
+      .family-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>🧊 Refrigerant Master Table – 2026</h1>
+  <div class="sub">Complete mapping · Families · Safety · GWP · ODP · Cylinder colors · Phase‑out · Nuances</div>
+
+  <!-- Legend -->
+  <div class="legend-box">
+    <span class="legend-item"><span class="badge badge-a1">A1</span> non‑toxic, non‑flamm.</span>
+    <span class="legend-item"><span class="badge badge-a2l">A2L</span> mildly flammable</span>
+    <span class="legend-item"><span class="badge badge-a3">A3</span> highly flammable</span>
+    <span class="legend-item"><span class="badge badge-b1">B1</span> toxic, non‑flamm.</span>
+    <span class="legend-item"><span class="badge badge-current">current</span> common 2026</span>
+    <span class="legend-item"><span class="badge badge-phase">phase‑out</span> being replaced</span>
+    <span class="legend-item"><span class="badge badge-retired">retired</span> obsolete</span>
+  </div>
+
+  <!-- ============ GROUP 1: CFCs ============ -->
+  <div class="family-group">
+    <div class="family-header">
+      <h2>🧪 CFCs</h2>
+      <span class="sub-info">Chlorofluorocarbons · contain <strong>Chlorine</strong> · high ODP · banned</span>
+      <span style="margin-left:auto; font-size:0.8rem; background:#2a1f1f; padding:0.2rem 0.8rem; border-radius:30px;">obsolete</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Refrigerant</th><th>ASHRAE</th><th>GWP</th><th>ODP</th><th>Cylinder color</th><th>Status</th><th>Nuance / connection</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R-11</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>4,750</td>
+          <td>1.0</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> White</td>
+          <td><span class="status-tag status-retired">retired</span></td>
+          <td>Baseline for ODP scale. <span class="nuance">Centrifugal chillers — all replaced.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-12</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>10,900</td>
+          <td>1.0</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> White</td>
+          <td><span class="status-tag status-retired">retired</span></td>
+          <td>Automotive / refrigerators. <span class="nuance">Replaced by R‑134a, then R‑1234yf.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-113</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>6,130</td>
+          <td>0.8</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> White</td>
+          <td><span class="status-tag status-retired">retired</span></td>
+          <td>Industrial solvent / cleaning. <span class="nuance">Not a refrigerant you’ll see.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-115</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>7,370</td>
+          <td>0.6</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> White</td>
+          <td><span class="status-tag status-retired">retired</span></td>
+          <td>Component in R‑502 (obsolete). <span class="nuance">No longer used.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ GROUP 2: HCFCs ============ -->
+  <div class="family-group">
+    <div class="family-header">
+      <h2>🧪 HCFCs</h2>
+      <span class="sub-info">Hydrochlorofluorocarbons · contain <strong>Chlorine</strong> · lower ODP than CFCs · phase‑out</span>
+      <span style="margin-left:auto; font-size:0.8rem; background:#4a351f; padding:0.2rem 0.8rem; border-radius:30px;">phase‑out</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Refrigerant</th><th>ASHRAE</th><th>GWP</th><th>ODP</th><th>Cylinder color</th><th>Status</th><th>Nuance / connection</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R-22</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>1,810</td>
+          <td>0.055</td>
+          <td><span class="color-dot" style="background:#7fb77e;"></span> Light green</td>
+          <td><span class="status-tag status-phase">phase‑out</span></td>
+          <td>Former “king” of residential. <span class="nuance">You’ll service it, but no new systems.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-123</strong></td>
+          <td><span class="badge badge-b1">B1</span></td>
+          <td>77</td>
+          <td>0.02</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> White / grey</td>
+          <td><span class="status-tag status-phase">phase‑out</span></td>
+          <td>Centrifugal chillers. <span class="nuance">B1 = higher toxicity. Being replaced by HFOs.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-124</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>609</td>
+          <td>0.022</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> White</td>
+          <td><span class="status-tag status-phase">phase‑out</span></td>
+          <td>Older chiller blend component. <span class="nuance">Rare.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-401A / 401B</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>~1,100</td>
+          <td>~0.03</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> Light green</td>
+          <td><span class="status-tag status-retired">retired</span></td>
+          <td>Retrofit blends for R‑12. <span class="nuance">No longer common.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ GROUP 3: HFCs ============ -->
+  <div class="family-group">
+    <div class="family-header">
+      <h2>🧪 HFCs</h2>
+      <span class="sub-info">Hydrofluorocarbons · <strong>no chlorine</strong> · zero ODP · high GWP · being phased down</span>
+      <span style="margin-left:auto; font-size:0.8rem; background:#4a3a1f; padding:0.2rem 0.8rem; border-radius:30px;">phase‑down</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Refrigerant</th><th>ASHRAE</th><th>GWP</th><th>ODP</th><th>Cylinder color</th><th>Status</th><th>Nuance / connection</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R-134a</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>1,430</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#87ceeb;"></span> Light blue</td>
+          <td><span class="status-tag status-phase">phase‑out</span></td>
+          <td>Automotive &amp; commercial. <span class="nuance">Being replaced by R‑1234yf (A2L).</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-410A</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>2,088</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#e8a2b0;"></span> Rose</td>
+          <td><span class="status-tag status-phase">phase‑out</span></td>
+          <td>Dominant residential AC. <span class="nuance">No new systems after 2025. Replaced by R‑454B / R‑32.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-32</strong></td>
+          <td><span class="badge badge-a2l">A2L</span></td>
+          <td>675</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#f5e56b;"></span> Light yellow</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td>Now widely used. <span class="nuance">A2L = mildly flammable. Lower GWP than R‑410A.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-404A</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>3,922</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#e07a2f;"></span> Orange</td>
+          <td><span class="status-tag status-retired">retiring</span></td>
+          <td>Supermarket low‑temp. <span class="nuance">Very high GWP — being replaced by R‑448A / R‑449A.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-507</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>3,985</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#d67a2a;"></span> Orange‑red</td>
+          <td><span class="status-tag status-retired">retiring</span></td>
+          <td>Similar to R‑404A. <span class="nuance">High GWP, being phased out.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-407C</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>1,774</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> Light green</td>
+          <td><span class="status-tag status-phase">phase‑out</span></td>
+          <td>Retrofit for R‑22. <span class="nuance">Has glide — zeotropic blend.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-448A / R-449A</strong></td>
+          <td><span class="badge badge-a2l">A2L</span></td>
+          <td>~1,400</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> Light blue</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td>Low‑GWP supermarket replacements. <span class="nuance">A2L mildly flammable.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ GROUP 4: HFOs ============ -->
+  <div class="family-group">
+    <div class="family-header">
+      <h2>🧪 HFOs / HCFOs</h2>
+      <span class="sub-info">Hydrofluoro‑olefins · <strong>no chlorine</strong> · very low GWP · A2L or A1</span>
+      <span style="margin-left:auto; font-size:0.8rem; background:#1f4a3a; padding:0.2rem 0.8rem; border-radius:30px;">current 2026</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Refrigerant</th><th>ASHRAE</th><th>GWP</th><th>ODP</th><th>Cylinder color</th><th>Status</th><th>Nuance / connection</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R-1234yf</strong></td>
+          <td><span class="badge badge-a2l">A2L</span></td>
+          <td>~1</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#f0f0f0; border-color:#aaa;"></span> White</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td>Automotive AC. <span class="nuance">A2L. Direct replacement for R‑134a.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-1234ze</strong></td>
+          <td><span class="badge badge-a2l">A2L</span></td>
+          <td>~1</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#d3d3d3;"></span> Grey/white</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td>Chillers, heat pumps. <span class="nuance">A2L. Low pressure, good for centrifugal.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-1233zd</strong></td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>~1</td>
+          <td>~0</td>
+          <td><span class="color-dot" style="background:#8a6e8b;"></span> Purple</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td><strong>Non‑flammable A1</strong> chiller refrigerant. <span class="nuance">HCFO — contains chlorine but very low ODP.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-454B</strong></td>
+          <td><span class="badge badge-a2l">A2L</span></td>
+          <td>466</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b0c4de;"></span> Light blue‑grey</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td>Drop‑in for R‑410A. <span class="nuance">A2L. Lower GWP, mildly flammable.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-455A</strong></td>
+          <td><span class="badge badge-a2l">A2L</span></td>
+          <td>146</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> Light grey</td>
+          <td><span class="status-tag status-current">✔ current</span></td>
+          <td>R‑410A replacement. <span class="nuance">Very low GWP, A2L.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ GROUP 5: Natural refrigerants ============ -->
+  <div class="family-group">
+    <div class="family-header">
+      <h2>🌿 Natural refrigerants</h2>
+      <span class="sub-info">Ammonia · CO₂ · hydrocarbons · ultra‑low GWP · industrial / specialty</span>
+      <span style="margin-left:auto; font-size:0.8rem; background:#2a2a4a; padding:0.2rem 0.8rem; border-radius:30px;">specialty</span>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Refrigerant</th><th>ASHRAE</th><th>GWP</th><th>ODP</th><th>Cylinder color</th><th>Status</th><th>Nuance / connection</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>R-717</strong> (ammonia)</td>
+          <td><span class="badge badge-b1">B1</span></td>
+          <td>0</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b8860b;"></span> Yellow</td>
+          <td><span class="status-tag status-special">industrial</span></td>
+          <td><strong>Toxic</strong>, non‑flammable. <span class="nuance">Industrial refrigeration only. Not residential.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-290</strong> (propane)</td>
+          <td><span class="badge badge-a3">A3</span></td>
+          <td>~3</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#c08050;"></span> Brown</td>
+          <td><span class="status-tag status-special">specialty</span></td>
+          <td><strong>Highly flammable.</strong> <span class="nuance">Small commercial reach‑ins. Not for residential.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-600a</strong> (isobutane)</td>
+          <td><span class="badge badge-a3">A3</span></td>
+          <td>~3</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b5651d;"></span> Orange‑brown</td>
+          <td><span class="status-tag status-special">specialty</span></td>
+          <td>Refrigerators / freezers. <span class="nuance">Highly flammable — sealed systems only.</span></td>
+        </tr>
+        <tr>
+          <td><strong>R-744</strong> (CO₂)</td>
+          <td><span class="badge badge-a1">A1</span></td>
+          <td>1</td>
+          <td>0</td>
+          <td><span class="color-dot" style="background:#b0b0b0;"></span> Grey</td>
+          <td><span class="status-tag status-special">specialty</span></td>
+          <td>High‑pressure systems. <span class="nuance">Used in commercial refrigeration / car AC.</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ CONNECTION MAP ============ -->
+  <div class="meta-note">
+    <strong>🔗 Family connections &amp; evolution (the “pipeline”)</strong><br>
+    <div style="display:flex; flex-wrap:wrap; gap:0.8rem 2rem; margin-top:0.8rem;">
+      <span><span class="badge badge-retired">CFC</span> → <span class="badge badge-phase">HCFC</span> → <span class="badge badge-phase">HFC</span> → <span class="badge badge-current">HFO / A2L</span></span>
+      <span style="color:#6b8da0;">Each step: <strong>lower ODP</strong> (CFC → HCFC → HFC → HFO) and <strong>lower GWP</strong>.</span>
+    </div>
+    <div class="grid-2" style="margin-top:1rem;">
+      <div class="info-card"><strong>R-12 (CFC)</strong> → R‑134a (HFC) → R‑1234yf (HFO/A2L) <span class="nuance">automotive path</span></div>
+      <div class="info-card"><strong>R-22 (HCFC)</strong> → R‑410A (HFC) → R‑454B / R‑32 (A2L) <span class="nuance">residential path</span></div>
+      <div class="info-card"><strong>R-11 (CFC)</strong> → R‑123 (HCFC, B1) → R‑1233zd (A1) / R‑1234ze (A2L) <span class="nuance">chiller path</span></div>
+      <div class="info-card"><strong>R-404A (HFC)</strong> → R‑448A / R‑449A (A2L) <span class="nuance">supermarket path</span></div>
+    </div>
+  </div>
+
+  <!-- ============ SUMMARY ============ -->
+  <div style="margin-top:2rem; display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:1rem;">
+    <div class="info-card" style="border-left:4px solid #3a8bcb;"><strong>✔ 2026 residential</strong><br>R‑32, R‑454B (A2L)</div>
+    <div class="info-card" style="border-left:4px solid #a67c1e;"><strong>⚠️ Servicing</strong><br>R‑22, R‑410A (phase‑out)</div>
+    <div class="info-card" style="border-left:4px solid #b13b3b;"><strong>❌ Not residential</strong><br>Ammonia, propane, CO₂</div>
+    <div class="info-card" style="border-left:4px solid #5f2c5f;"><strong>🏭 Commercial chillers</strong><br>R‑1233zd (A1), R‑1234ze (A2L)</div>
+  </div>
+
+  <div style="margin-top:2rem; font-size:0.8rem; color:#6b8da0; border-top:1px solid #1f3b4f; padding-top:1rem; text-align:center;">
+    Always read the cylinder label. Colors are a visual guide, not a legal standard.
+  </div>
+</div>
+</body>
+</html>
