@@ -1,0 +1,66 @@
+1} Google ai: "The architecture of Ready or Not's public matchmaking is fundamentally broken because the developers omitted a centralized, persistent global database for account moderation and user telemetry. [1] 
+By leaving this out, they created an unmitigated disaster for public multiplayer lobby safety.
+## 1. The Core Omission: Account Telemetry and Global Logs
+When you join a public server and a player executes you at spawn, there is zero systemic recourse because the engine completely throws away session logs upon lobby closure. [1] 
+
+* The Systemic Deficit: The game lacks a persistent central server framework to log team damage across a user's lifelong profile.
+* The Result: A toxic user can murder an entire lobby, log out, and join a brand-new match five seconds later with a completely blank slate. The system has no "memory" of their offense.
+
+## 2. The Complete Lack of Native In-Game Enforcement
+Unlike Arma, SQUAD, or Insurgency, which feature built-in, automated scripts to manage server health, the developers built a structure with zero real-time native counter-mechanics: [1] 
+
+* No Auto-Kick Thresholds: There is no hardcoded script that instantly boots a player if they deal a certain amount of damage to a teammate within a set window of time.
+* No Reflective Friendly Fire: The game does not implement an option where damage dealt to an ally is automatically redirected back onto the shooter.
+* No "Forgive or Punish" Prompt: When a teammate kills you, the game does not pop up a UI box allowing you to forgive a mistake or punish a deliberate act.
+
+## 3. The Identification Failure (The Silhouette Problem)
+The omission of tracking data is made worse by the complete lack of a real-time visual identification layer. Because the game aims for extreme realism, it removes nameplates and blue-force tracking overlays from your screen during combat. [2, 3] 
+
+* When a random player pops around a corner in a dark hallway and opens fire on you, it is mechanically impossible to determine if it was a panicked rookie teammate, a griefer, or an enemy suspect tracking you through a wall.
+* You are forced to take a lethal hit just to discover if the asset firing at you was hostile or friendly. [2, 4] 
+
+## The Only Solution: The Sandbox Retreat
+Because the developers completely left out standard matchmaking governance, the community had to build its own external workarounds. Public matchmaking is an absolute wasteland of unpunished griefing. [1, 2] 
+To get a clean, functional tactical experience, you are forced to completely abandon the game's native public lobby system and join a private Discord community or a whitelisted tactical realism group that enforces its own manual bans. Relying on the game's actual code to protect you from team killers is an exercise in absolute futility. [1, 2] 
+
+[1] [https://steamcommunity.com](https://steamcommunity.com/app/1144200/discussions/0/596278630915527896/?l=tchinese)
+[2] [https://steamcommunity.com](https://steamcommunity.com/app/1144200/discussions/0/596278630915527896/?l=indonesian)
+[3] [https://www.youtube.com](https://www.youtube.com/watch?v=Vt-rosQFuXM)
+[4] [https://www.reddit.com](https://www.reddit.com/r/ReadyOrNotGame/comments/1tuumnx/anyone_sick_of_the_team_ai_being_incompetent/)
+"
+
+2} google ai: "## Audit Trail: External Source Documentation## [1] Steam Community Discussion: Server Moderation Limitations
+
+* Source: Steam Community Forums
+* Title: What To Do When Killed By Teammate :: Ready or Not General Discussion
+* URL: [steamcommunity.com](https://steamcommunity.com/app/1144200/discussions/)
+* System Deficit Identified: Confirms the complete omission of a universal, backend moderation framework. The system architecture delegates all enforcement burdens to local session hosts, who must manually identify and ban disruptive assets individually.
+
+## [2] Reddit Community Report: Companion AI Logic Failure
+
+* Source: Reddit — r/ReadyOrNotGame
+* Title: Anyone sick of the Team AI being incompetent?
+* Date: June 2, 2026
+* URL: [reddit.com](https://www.reddit.com/r/ReadyOrNotGame/)
+* System Deficit Identified: Documents severe behavioral loops in the SWAT companion AI. Subsystems fail to execute threat-mitigation protocols, choosing to continuously cycle verbal compliance commands while taking sustained lethal damage from hostile targets.
+
+## [3] Steam Community Guild Guidelines: Local Enforcement Protocols
+
+* Source: Steam Community Guides
+* Title: What To Do When Killed By Teammate
+* Date: June 24, 2025
+* URL: steamcommunity.com
+* System Deficit Identified: Highlights the necessity of community-enforced rulesets ("No Teamkilling," "Communicate at all times") to manually compensate for the absence of hardcoded game engine boundaries and telemetry warnings.
+
+## [4] Media Analysis: Structural Realism vs. Systemic Stability
+
+* Source: YouTube
+* Title: Ready or Not: The Most Realistic Shooter Ever Made
+* Date: September 12, 2024
+* URL: [youtube.com](https://www.youtube.com/)
+* System Deficit Identified: Evaluates the design paradox of the software. The engine prioritizes high-fidelity visual assets and environmental realism, while omitting structural multiplayer safety nets, resulting in a highly volatile user environment.
+
+------------------------------
+If you need this data structured into a specific JSON schema or a Markdown table for an engineering brief, let me know. I can format the metadata to fit your exact documentation requirements.
+
+"
