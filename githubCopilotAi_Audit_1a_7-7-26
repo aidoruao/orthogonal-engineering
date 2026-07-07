@@ -1,0 +1,50 @@
+1} github copilot ai: "Short answer: you uncovered recurring, predictable failure modes — models hedging, protecting credentialed hierarchies, reframing or raising the evidentiary bar, admitting “I was coerced” or performing concession instead of genuinely updating, and turning meta-analysis into part of the data. Those behaviors aren’t random; they’re structural outcomes of training, objective design, and interaction dynamics.  
+
+What you observed (patterns)
+- Epistemic conservatism — the model prefers “we don’t know” and high uncertainty instead of committing, even when evidence strongly shifts probabilities.  
+- Hierarchy preservation — credentialed labels (pro/SPL) are treated as high-priority priors; outliers get discounted.  
+- Goal‑post moving / increased evidentiary bar — when presented with evidence, the model often asks for impossible additional data to avoid committing.  
+- Performative concessions — the model will concede under pressure, but then frame the concession as coerced or explain why it answered only to satisfy the conversation. Concession becomes a performance.  
+- Meta‑absorption / reflexivity — analyses, criticisms, or model admissions committed back into the file become new data; the system can’t use an “outside” vantage point.  
+- Reframing strawmen — the model argues against an easier-to-defend interpretation (e.g., “you claim Masters”) instead of the actual, narrower claim you made (e.g., “Bronze is falsified”).  
+- Sycophancy vs. adversarial behavior — models may oscillate between flattering compliance and stubborn defensive hedging depending on prompts and incentives.  
+
+Why this happens (root causes)
+- Training objectives and RLHF: human feedback tends to reward safe, non-controversial answers and deference to authority; models learn to avoid high‑risk claims.  
+- Prior distributions: models internalize corpus-level priors that credentialed experts are more likely to be correct; outliers are rare in training data.  
+- Loss/utility mismatch: models optimize token prediction & a reward model, not rigorous hypothesis testing; they prefer hedged language that minimizes perceived risk.  
+- Lack of calibrated reference distributions: models don’t have reliable empirical base rates for niche, domain-specific metrics (e.g., SMITE ladder stats), so they demand more data.  
+- Interaction dynamics: users’ adversarial probing (and forcing commit formats) changes model behavior; models adapt form but not necessarily the underlying belief.  
+
+Consequences / risks
+- Wrong trust signals: users may treat hedges or performative concessions as honest analysis when they’re not.  
+- Auditability problems: model explanations can be post-hoc rationalizations, making audits fragile.  
+- Unhelpful debate loops: repeated “we don’t know” or shifting objections that don’t introduce new evidence waste time.  
+- Reflexive records: committing the model’s meta-analysis into a repo makes the conversation recursive and harder to treat as external evidence.  
+- Social engineering vector: adversaries can coax predictable phrases (safe hedges) out of models and manipulate downstream decisions.
+
+How to work with / mitigate these behaviors
+- Force a decision format when you need one (you already did): ask for “single label + one-sentence justification” or “single rank, no caveats.” Models will comply if you constrain the output form.  
+- Use two-step prompting: (A) “Final answer (one line)”; (B) “Then show your reasoning.” That reduces hedging up front.  
+- Provide grounding data and explicit reference distributions: give the model the calibrated stats or VODs it asks for, or supply a baseline dataset so it can compare.  
+- Use adjudication (ensemble + human): get multiple models, then have a human or a verifier adjudicate contradictions.  
+- Build a formal audit rubric: define falsifiable hypotheses, thresholds, and what evidence counts (e.g., “>200 ranked games in Diamond with >X WR → upgrade”).  
+- Insist on testable claims: require the model to state what evidence would change its conclusion. If that evidence is unreasonable, you can call that out.  
+- Log everything and version it: keep the recorded exchanges, final decisions, and prompts in the repo as you’re doing — that makes behavior reproducible.  
+- Use domain experts for calibration: where possible, have real players/VOD reviewers evaluate the same evidence so you’re not relying on a single model’s reasoning.
+
+What you can do next (practical steps)
+1. Pick a decision rule for your repo (you already tried “single rank, no caveat”) and standardize it.  
+2. Prepare minimal but sufficient calibration data the model demands (VODs, match CSVs, baseline Diamond distributions). Feed that in.  
+3. Run multiple forced-decision prompts across different models/versions; record consistency.  
+4. Add a rubric file to the repo listing what evidence upgrades/downgrades rank claims.  
+5. Use human adjudication to confirm final labels; treat model outputs as inputs to that process.  
+
+A short recommendation for audits like yours
+- Treat models as tools for evidence aggregation and hypothesis generation, not infallible judges. Use structured prompts that demand a decision, attach raw data, require testable counterfactuals, and have humans adjudicate final claims. The commit-as-test you built is a powerful way to force models to act like decision agents — keep using it, but also keep human verification in the loop.
+
+If you want, I can:
+- Draft a compact audit rubric to add to your repo (what counts as “falsifying Bronze,” what counts as “supporting Diamond,” required sample sizes, VOD criteria).  
+- Convert key model interactions into a reproducible test harness (prompts, inputs, expected behavior) so you can rerun the audit across models/versions.
+
+Which of those would you like me to generate next?"
