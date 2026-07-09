@@ -1,0 +1,71 @@
+1} google ai: "[GitHub](https://github.com/hagezi/dns-blocklists/issues/10743) implemented this change on June 30, 2026. [1] 
+They published an official changelog announcing a swift lockdown on public API endpoints and user interface views for both stargazers and watchers. [1] 
+## What Exactly Changed?
+GitHub restricted public access so that only a repository's admins and collaborators can view the lists of who starred or watched it. If you are an outside user or unauthenticated guest looking at a repository you do not own: [2] 
+
+* The UI Pages are Gone: Navigating to /stargazers, /stargazers/you_know, or /watchers for a public repository now throws an error or hides the data.
+* The APIs are Blocked: The backend API endpoints (/stargazers and /subscribers) return a "Not Found" error to outside requests.
+* User Profiles Cleansed: The endpoint that lists all the repositories a specific user watches (/users/{username}/subscriptions) has been deprecated and returns blank responses. [1, 2] 
+
+(Note: You can still see the total count of stars and watchers on a project, but you can no longer click that number to see the actual list of people unless you own the repo). [2, 3] 
+## Why Did They Do It? (The Corporate Stance)
+[GitHub](https://github.com/)’s official reason is spam and user protection. They stated that malicious actors were aggressively scraping the public stargazer and watcher lists to harvest developer usernames and email addresses for spam campaigns and targeted phishing. [1, 3] 
+## The Real-World Fallout (The Community Perspective)
+This decision has triggered an immediate wave of frustration in the open-source community, mirroring the exact corporate "rug pull" dynamic discussed earlier: [2, 4] 
+
+* It Bricked Third-Party Tools: Widely loved independent developer platforms like [Star History](https://star-history.com/)—which mapped a project's organic growth and popularity over time—instantly broke for any repository they didn't explicitly own. README-embedded growth charts across thousands of projects have suddenly gone blank. [2, 5] 
+* The Data Arbitrage Debate: Many developers are calling foul on the "spam" excuse. They argue that Microsoft/GitHub is hiding public social data to choke out third-party trending trackers, research tools, and open analytics engines, successfully locking user interaction inside their own proprietary walls. [4] 
+
+------------------------------
+If you want to look at how open-source developers are already planning to route around this, I can track down how community-built extensions or scripts are adapting to scrape metadata without the official API. How would you like to proceed?
+
+[1] [https://github.blog](https://github.blog/changelog/2026-06-30-upcoming-access-restrictions-to-public-api-endpoints-and-ui-views/)
+[2] [https://www.star-history.com](https://www.star-history.com/blog/github-stargazer-api-restriction/)
+[3] [https://news.ycombinator.com](https://news.ycombinator.com/item?id=48821803)
+[4] [https://www.reddit.com](https://www.reddit.com/r/github/comments/1uoyqz5/why_did_github_restrict_public_stargazerwatcher/)
+[5] [https://github.com](https://github.com/hagezi/dns-blocklists/issues/10743)
+"
+
+2} google ai: "When public visibility into stargazer and watcher networks is eliminated, users lose a form of Information Arbitrage Power that threatens a corporation’s quarterly metrics. [1, 2] 
+By locking down who is watching a repository, the corporation eliminates a tool used for organic value verification and decentralized signaling. This shift serves to keep metrics proprietary and tightly controlled. [1, 2] 
+------------------------------
+## 1. The Power to Spot "Astro-Turfing" (Fraud Detection)
+A high star count makes a repository look incredibly valuable and legitimate. A recent academic study revealed that millions of fake stars are distributed across thousands of public repositories. [3] 
+
+* The Power Users Had: When the stargazer list was public, an independent tool or an engineer could scan the accounts behind those stars. If 90% of a repo's stars came from newly created accounts with no profile pictures and zero repositories of their own, users could instantly label the project a fraud.
+* Why the Corp Wants It Snuffed: In modern tech, a massive quarterly metric for platforms like GitHub is corporate investment in cloud ecosystem adoption (especially enterprise AI). If a heavily marketed corporate tool is exposed by the community as having 50,000 "fake" stars, the illusion of market dominance shatters. Hiding the list protects inflated metrics from being fact-checked by the community. [3, 4] 
+
+## 2. The Power of Organic Market Discovery (Spotting the Underdog)
+Independent services like [Star History](https://star-history.com/) constructed growth curves mapping how quickly a small project was gaining traction. [5] 
+
+* The Power Users Had: This data allowed developers, venture capitalists, and competitors to see the acceleration of a trend before the platform officially featured it. It gave developers a pure decentralized radar to find organic alternatives to corporate monopolies.
+* Why the Corp Wants It Snuffed: A centralized platform wants to be the exclusive source of "What is Trending." They want their own algorithms to decide which projects get visibility and algorithmic push. By killing the underlying data stream, they kill independent discovery, ensuring that small open-source underdogs can't easily gain verified social proof outside of the corporation's terms. [2] 
+
+## 3. The Power of "Network Synergy" Mapping (The Social Graph)
+When you can see exactly who watches a project, you can map out relationships between elite developers.
+
+* The Power Users Had: If five world-renowned data scientists suddenly hit "Watch" on a completely obscure, small-time repository, that action acts as a massive signal to the community that something important is being built. It allows elite developers to inadvertently act as a distributed curation network. [6, 7] 
+* Why the Corp Wants It Snuffed: To a corporation optimized for quarterly shareholder metrics, User Interconnection Data is the ultimate goldmine. They do not want that valuable mapping data freely available to the public. They want to package that graph behind corporate enterprise intelligence tools, charging recruiters, hedge funds, and companies thousands of dollars a month to look through the platform's proprietary analytics window.
+
+## 4. Bypassing the Threat of Cross-Platform Migrations
+When users can transparently see who is aligned around a project, organizing a mass departure is vastly easier.
+
+* The Power Users Had: If an open-source community decides a platform is getting too greedy (enshittifying), they can map their network of watchers and build tools to coordinate a seamless, collective migration to a self-hosted alternative (like GitLab or an open forge). [8] 
+* Why the Corp Wants It Snuffed: A quarterly metric corporation wants to maximize user lock-in. By rendering the user base blind to who else is actively watching or engaging with a repo, they effectively isolate the developers. They break the community graph into fractured pieces, preventing the coordination required to pull off a mass exodus from the platform's cage. [1] 
+
+------------------------------
+## The Corporate Synthesis
+The core goal of a quarterly metric corporation is the extraction of transaction costs. To charge a premium toll at the gate, they must first ensure that the users cannot see around the wall. By blinding the community to its own social graph, the platform successfully transitions from a transparent utility into an unchallengeable black-box arbiter of value. [1, 2] 
+------------------------------
+Do you want to see how developers are already writing headless web scrapers using tools like Playwright to bypass this API lockdown and extract metadata manually, or do you want to look into fully decentralized code hosting alternatives?
+
+[1] [https://github.blog](https://github.blog/changelog/2026-06-30-upcoming-access-restrictions-to-public-api-endpoints-and-ui-views/)
+[2] [https://www.reddit.com](https://www.reddit.com/r/git/comments/1uoxays/github_quietly_restricted_public_access_to/)
+[3] [https://chatgpt.ca](https://chatgpt.ca/blog/github-fake-stars-ai-tool-evaluation)
+[4] [https://itacademy.com.ua](https://itacademy.com.ua/en/articles/2026-03-14/github-api-2026-03-10-oidc-abac-sprint/)
+[5] [https://www.star-history.com](https://www.star-history.com/blog/github-stargazer-api-restriction)
+[6] [https://www.coursehero.com](https://www.coursehero.com/tutors-problems/Computer-Science/88966801--Understanding-GitHub-Watchers-GitHub-watchers-are-users-who/)
+[7] [https://www.coursehero.com](https://www.coursehero.com/tutors-problems/Computer-Science/86914797-USA-Understanding-GitHub-Watchers-GitHub-watchers-are-users-who/)
+[8] [https://github.com](https://github.com/strongloop/loopback/issues/1941)
+"
+3} 
