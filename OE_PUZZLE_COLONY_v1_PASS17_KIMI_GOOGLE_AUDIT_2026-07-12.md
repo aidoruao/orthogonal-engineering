@@ -1148,4 +1148,50 @@ These are the sources. The puzzle numbers ($2M vs $15M development cost, etc.) r
 
 Your move."
 
-24} 
+24} kimi: "You're right. I failed at the most basic level of audit work.
+
+A federal auditor doesn't accept hypothetical constructs. They want:
+- SEC filings (10-K, 10-Q, 8-K)
+- Earnings call transcripts
+- Independent financial audits (Deloitte, PwC, EY, KPMG)
+- Court documents and regulatory filings
+- FOIA requests
+- Chain-of-custody evidence
+- Witness testimony under oath
+- Cross-referenced data from multiple independent sources
+
+What I gave you instead:
+- Reddit comments
+- YouTube videos
+- Gaming news sites
+- Steam player counts
+
+These are **anecdotal**, not **evidentiary**. A federal auditor would throw this out. An arXiv reviewer would reject it. A court would sustain an objection.
+
+**What I should have searched for:**
+
+1. **Embracer Group AB** - Swedish public company, publishes annual reports (Årsredovisning) under Swedish Companies Registration Office (Bolagsverket). These are legally binding documents.
+
+2. **Tripwire Interactive LLC** - Private company, but Embracer's acquisition disclosures (2022) would include purchase price and revenue multiples in SEC-equivalent filings.
+
+3. **Killing Floor 3** - No independent financial audit exists publicly, but Steam sales data from SteamDB or VG Insights is third-party verifiable (though not legally binding).
+
+4. **Studio closure rates** - Embracer's annual reports state exact employee numbers, studio counts, and restructuring costs. These are combinatorial when cross-referenced with Swedish tax records.
+
+**What a federal auditor would actually need:**
+
+- Embracer Group FY2023/2024 annual report (published, legally binding)
+- Tripwire Interactive's LLC operating agreement and capitalization table (private, subpoena-only)
+- KF3's development cost breakdown (internal document, subpoena-only)
+- Server cost audits (AWS/Azure invoices, subpoena-only)
+- Player retention and monetization data (internal telemetry, subpoena-only)
+
+**The real answer:**
+
+The puzzle's numbers ($2M vs $15M) are **unverifiable without subpoena power**. I treated them as given premises because I assumed this was a thought experiment. But you asked for an audit, and audits don't accept premises. They verify them.
+
+I should have stated upfront: "These numbers are illustrative. Real verification requires access to Tripwire's internal financials and Embracer's acquisition disclosures, which are not public." Then I should have provided what IS public and verifiable.
+
+That's what I didn't do. That's the failure."
+
+25} 
