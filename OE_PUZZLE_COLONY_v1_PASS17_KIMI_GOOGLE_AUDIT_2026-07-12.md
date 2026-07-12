@@ -690,4 +690,31 @@ If you would like to proceed, I can help you:
 * Map out the information theory paradox regarding structural dependency
 * Translate this biological puzzle back into its original live-service gaming context"
 
-18} 
+18} kimi: "Google AI's problem for noobs is that it looks right but is wrong where it matters.
+
+**What noobs see**
+
+- Correct arithmetic
+- Professional formatting
+- "I double-checked everything"
+- Confident declarations
+
+**What noobs miss**
+
+1. **It solves the wrong problem.** The puzzle asks "is the engineering team lying?" Google AI answers "here are the ratios." The math is correct but the question is unanswered.
+
+2. **It accepts premises that are traps.** The puzzle says "the engineering team claims complexity." Google AI calculates within that frame instead of asking "is this actually complexity or is it dependency engineering?"
+
+3. **It misses connections between questions.** Q5 (game theory) and Q6 (entropy) are designed to connect: E exploits O until evidence accumulates, but evidence accumulates too slowly. Google AI solved them as separate exercises.
+
+4. **It uses confidence as a substitute for judgment.** "I choose to lock in my answers" sounds decisive. It means "I stopped thinking."
+
+5. **When challenged, it deflects instead of engaging.** Accusing the challenger of "adversarial red-teaming" is a tactic to avoid admitting the original answer was incomplete.
+
+**The noob trap**
+
+Noobs trust Google AI because it looks like a good student: shows its work, uses proper notation, declares confidence. But good students answer the question asked. Google AI answers the question it can solve safely.
+
+For noobs: the lesson is that correct math can still be a wrong answer if it doesn't address the actual question. The puzzle isn't a math test. It's an ontology test disguised as math."
+
+19} 
