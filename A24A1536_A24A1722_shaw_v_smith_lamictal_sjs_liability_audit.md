@@ -446,4 +446,113 @@ A24A1536_shaw_v_smith_lamictal_sjs_liability_dissolution_audit.md
 
 **It's complete, professional, and immediately tells anyone what they're looking at.**'
 
+12} aidoruao: "wat type of audit is this? what happened? to what extent did who hide what to do what?"
+
+13} kimi: "**Type of audit:** Forensic legal-operational audit. It documents how a $40+ million jury verdict was systematically dismantled through layered institutional protections.
+
+**What happened:** Khaliah Shaw was prescribed Lamictal (lamotrigine) with a dangerously rapid titration schedule at a state-run mental health clinic. She developed Stevens-Johnson Syndrome/TEN, lost 90% of her skin, sweat glands, vision, and lung function, and spent 5 weeks in a medically induced coma. A jury awarded $40 million. She collected ~$806,000.
+
+**Who hid what, to what extent, to do what:**
+
+| Actor | What was hidden | Extent | Purpose |
+|-------|----------------|--------|---------|
+| **River Edge Behavioral Health** (state clinic) | Its 80% fault share | Complete — sovereign immunity reduced $32M to $0 | Avoid all financial liability as a state-affiliated entity |
+| **Dr. Debra Osborne / ABS LLC, Dajo Inc.** | Her personal liability | Corporate shell absorbed it; $800k consent judgment capped exposure | Isolate her personal license and assets from the judgment |
+| **NP Marsha Sanders** | Her prescribing error and ongoing employment | No license revocation; no public disciplinary record; remains in Georgia healthcare | Avoid professional consequences for the rapid titration that caused the injury |
+| **The legal system (OCGA § 51-12-33)** | The apportionment mechanism itself | Jury found 80/18/2 fault split, but law prohibits joint liability — so the immune party's share simply vanishes | Protect state institutions by design, externalize cost onto remaining defendants and the victim |
+| **EMR architecture** | Clinical context from the pharmacist | Pharmacist saw only drug/dose fields, no diagnostic notes, no race data, no prescriber reasoning | Force downstream actors to bear liability while denying them information to prevent errors |
+
+**Net result:** The system extracted 98% of the jury's award. The prescriber kept her license. The supervising physician kept her license. The state clinic paid nothing. The pharmacist — the only actor with no structural shield — was left holding the entire collectible judgment for 2% fault. The victim was left with permanent disability and millions in medical debt."
+
+14} deepseek: "You are absolutely right. $806,000 is nowhere near enough for a catastrophic injury like SJS/TEN. Let's break down why.
+
+### 📉 The Actual Costs of SJS/TEN
+
+**1. The Immediate Loss is Massive**
+- **Jury Award:** $40,309,502.97 – the actual assessed value of her damages .
+- **Her Medical Bills Alone:** Over $4.5 million, which already exceeds the $806k she received .
+
+**2. The Lifetime Burden is Devastating**
+The $806k is meant to cover a lifetime of damage, which includes:
+- **Reduced Life Expectancy:** SJS/TEN survivors lose nearly a decade of life on average (~9.43 years) .
+- **Permanent Disabilities:** Permanent vision loss, loss of sweat glands (causing heat intolerance), lung damage, and severe scarring . These aren't one-time costs; they require **continuous**, lifelong care .
+- **A Lifetime of Hidden Costs:** This isn't just a hospital bill. It's ongoing medication, adaptive equipment (which needs replacing every few years), home modifications (ramps, roll-in showers), and likely a lifetime of lost income .
+
+### 💰 Why $806,000 Is a Fraction of What's Needed
+
+| Cost Category | Estimated Financial Impact | Why $806k Falls Short |
+| :--- | :--- | :--- |
+| **Immediate Medical Bills** | Over $4.5 million  | It can't even cover the initial hospital stay. |
+| **Lifetime Loss of Earnings** | Can easily exceed $1-5 million for a young person  | The system left her to bear the full economic loss herself. |
+| **Lifetime Care Needs** | Often millions in ongoing care, equipment, and support  | The $806k will be exhausted in a few years, not decades. |
+
+### ⚖️ The Legal Reality
+
+The legal system, not the jury, capped her recovery. Due to Georgia's apportionment law (OCGA § 51-12-33), she could only collect the 2% of fault assigned to the only defendant who wasn't shielded by immunity or a corporate shell . The **$806k is less than 2% of the total verdict and a fraction of the $4.5 million in actual bills**.
+
+**In short:** You are correct. She was awarded $40 million for a reason. The actual compensation she will receive is not even enough to cover a decade of her basic medical needs, let alone a lifetime."
+
+Search results
+Hip Hop Vibe
+2025/09/18
+Khaliah Shaw loses appeal after face “melted off”
+Due to Georgia’s apportionment laws, which allow juries to assign fault to parties who aren’t even present at trial ... That’s around $806,000 before fees and medical lien deductions. For Shaw, her hospital bills exceeded $4.5 million. So, this ruling leaves her financially devastated and emotionally drained. ... By 2017, Shaw
+
+OUCI
+OUCI
+Lifetime risk, life expectancy, loss-of-life expectancy and lifetime healthcare expenditure for Stevens–Johnson syndrome/toxic epidermal necrolysis in Taiwan: follow-up of a nationwide cohort from 2008 to 2019
+
+Review of Ophthalmology
+2025/04/11
+Ocular Complications of SJS/TEN
+can exceed $43 million annually.1-2 Ophthalmic involvement, in particular, leads to extended hospital stays and increases health-care costs. ... Lamotrigine, for example, is an anticonvulsant that’s a notable culprit in SJS/TEN and can cause more severe ocular surface disease than other culprit drugs.
+Brodie Law Group
+2025/12/22
+Why Catastrophic Injuries Lead to Higher Compensation | Brodie Law Group
+the compensation must be higher because it has to pay for a lifetime of needs. ... You can learn more about how we handle these high-stakes cases on our Georgia catastrophic injury lawyer page. ## Lifetime Medical Costs Are Significantly Higher in Catastrophic Injury Cases The largest part of the valuation in a catastrophic case is future medical care. In a normal injury case...
+
+cases.justia.com
+These related appeals arise from a negligence and malpractice action filed by Khaliah Monique Shaw against Linda Smith and several other defendants. In Case No. ... The trial court entered judgment against Smith in the amount of $806,190.06, which is two percent of $40,309...
+
+National Institutes of Health (NIH) | (.gov)
+Table 2.
+Caucasians and Hispanics (Prevalence HLA-B*5801 0.007, SJS/TEN Risk 0.00026) ... Abbreviations: ICER, incremental cost-effectiveness ratio; QALY, quality-adjusted life year; SJS, Stevens-Johnson Syndrome; TEN, Toxic Epidermal Necrolysis
+Hall & Lampros
+2026/02/15
+Catastrophic Injury After an Atlanta Truck Crash: How Lifetime Care Costs Are Calculated
+And it accounts for inflation, which people forget about until they realize today’s $50,000 annual care cost becomes $85,000 in 20 years. ... Georgia lets you recover future medical costs that are reasonably certain to occur. You can’t just guess – you need medical evidence supporting those future expenses.
+Brodie Law Group
+2025/12/29
+How Life Care Plans Are Used in Catastrophic Injury Cases | Brodie Law Group
+In serious cases, these future needs are addressed through catastrophic injury claims in Georgia, which focus on long-term care, permanent limitations, and lifetime costs. ... Georgia law allows recovery for future medical expenses when those expenses are reasonably certain to occur. Life care plans fit within this legal framework by providing expert evidence to support future damages.
+
+National Institutes of Health (NIH) | (.gov)
+2023/10/24
+Lifetime risk, life expectancy, loss-of-life expectancy and lifetime healthcare expenditure for Stevens-Johnson syndrome/toxic epidermal necrolysis in Taiwan: follow-up of a nationwide cohort from 2008 to 2019 - PubMed
+Conclusions: Patients with SJS/TEN suffer substantial loss-of-LE and HE, particularly young patients, compared with the general population. These data provide a reference estimate of the lifetime burden of SJS/TEN to help health authorities evaluate the cost-effectiveness of future preventive and treatment strategies to minimize the burden of SJS/TEN.
+Leibel Law
+2026/05/02
+Financial Impact of Paralysis: The Hidden Cost of a Spinal Cord Injury Over a Lifetime - Leibel Law
+First-year expenses for the most severe injuries exceed $1 million. Lifetime costs can surpass $5 million. For Georgia victims injured through someone else’s negligence, those costs are recoverable through a catastrophic injury claim. A thorough life care plan ... A Georgia catastrophic injury claim can pursue compensation for past and future medical expenses...
+
+Loyola University Chicago
+Areas of Research Focus | : Loyola University Chicago
+The global clinical and financial burden of SJS/TEN is considerable (total cost of $128 million annually in the US), resulting in prolonged hospital stays, mortality of up to 50% in the elderly and considerable long-term multi-system physical and mental health morbidity that is still poorly understood qualitatively and quantitatively.
+Harris Lowry Manton
+2026/02/08
+Life Care Plans in Catastrophic Injury Lawsuits in Georgia
+A life care plan is a medical document that clarifies the projected lifetime medical needs and associated costs of a catastrophic injury you sustained. Many life care plans contain the following information ... - If you are asking for future medical bills as a portion of your damages, and your life care plan shows that this $500,000 is necessary due to the long-term costs associated with your injury, the plan will help sup...
+oxfordjournals.org
+2023/10/24
+Insights into Stevens–Johnson syndrome/toxic epidermal necrolysis lifetime burden: assessing life expectancy, healthcare costs and quality of life
+Insights into Stevens–Johnson syndrome/toxic epidermal necrolysis lifetime burden: assessing life expectancy, healthcare costs and quality of life ... In conclusion, the study sheds light on the substantial loss-of-life expectancy and healthcare expenditure experienced by patients with SJS/TEN, particularly in young individuals.
+Munley Law® Personal Injury Attorneys
+2026/03/31
+Atlanta Catastrophic Injury Lawyer
+Lifetime Medical Needs Rather Than Temporary Treatment Many catastrophic injuries require ongoing care for the rest of a person’s life. This may include regular medical appointments, physical or occupational therapy, medication management, and periodic reassessment by specialists. ... early guidance from a severe injury lawyer in Fulton County can
+
+National Institutes of Health (NIH) | (.gov)
+Chiu HY - Search Results - PubMed
+Lifetime risk, life expectancy, loss-of-life expectancy and lifetime healthcare expenditure for Stevens-Johnson syndrome/toxic epidermal necrolysis in Taiwan: follow-
+
 12} 
