@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Battlefield — Agmatine Cascade</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg-elevated: #111118;
+    --fg: #e8e8f0;
+    --fg-dim: #8888a0;
+    --accent: #00e5ff;
+    --accent-dim: #00a3b8;
+    --vice: #ff3366;
+    --vice-dim: #b32447;
+    --win: #00ff88;
+    --win-dim: #00b862;
+    --border: #1e1e2e;
+    --card: #13131c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  /* LAYOUT */
+  #battleContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+  #battleCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    cursor: crosshair;
+  }
+
+  /* HUD OVERLAY */
+  #hud {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.9) 0%, transparent 100%);
+  }
+  .hud-panel {
+    pointer-events: auto;
+    background: rgba(19,19,28,0.85);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    backdrop-filter: blur(8px);
+  }
+  .hud-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fg-dim);
+    margin-bottom: 0.25rem;
+  }
+  .hud-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+  }
+  .hud-value.accent { color: var(--accent); }
+  .hud-value.vice { color: var(--vice); }
+  .hud-value.win { color: var(--win); }
+
+  /* BARS */
+  .bar-track {
+    width: 120px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    margin-top: 0.3rem;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.2s;
+  }
+  .bar-fill.accent { background: var(--accent); }
+  .bar-fill.vice { background: var(--vice); }
+  .bar-fill.win { background: var(--win); }
+
+  /* CONTROLS */
+  #controls {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+    pointer-events: auto;
+  }
+  .ctrl-btn {
+    background: rgba(19,19,28,0.9);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    backdrop-filter: blur(8px);
+  }
+  .ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctrl-btn.active { border-color: var(--accent); background: rgba(0,229,255,0.1); }
+
+  /* BATTLE LOG */
+  #battleLog {
+    position: absolute;
+    bottom: 4rem;
+    right: 1rem;
+    z-index: 10;
+    width: 320px;
+    max-height: 200px;
+    overflow-y: auto;
+    background: rgba(10,10,15,0.9);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    pointer-events: auto;
+    backdrop-filter: blur(8px);
+  }
+  .log-entry { margin-bottom: 0.25rem; }
+  .log-time { color: var(--fg-dim); }
+  .log-ag { color: var(--accent); }
+  .log-vice { color: var(--vice); }
+  .log-win { color: var(--win); }
+  .log-bind { color: #ffaa00; }
+
+  /* TOOLTIP */
+  #tooltip {
+    position: absolute;
+    z-index: 20;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    max-width: 220px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  #tooltip.visible { opacity: 1; }
+
+  /* PAUSE OVERLAY */
+  #pauseOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 30;
+    background: rgba(10,10,15,0.85);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    backdrop-filter: blur(12px);
+  }
+  #pauseOverlay.visible { display: flex; }
+  #pauseOverlay h2 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 1rem;
+  }
+  #pauseOverlay p { color: var(--fg-dim); margin-bottom: 2rem; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #33334d; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div id="battleContainer">
+  <canvas id="battleCanvas"></canvas>
+
+  <!-- HUD -->
+  <div id="hud">
+    <div class="hud-panel">
+      <div class="hud-title">NO Concentration</div>
+      <div class="hud-value accent" id="noValue">100%</div>
+      <div class="bar-track"><div class="bar-fill accent" id="noBar" style="width:100%"></div></div>
+    </div>
+    <div class="hud-panel">
+      <div class="hud-title">Vice Population</div>
+      <div class="hud-value vice" id="viceValue">50</div>
+      <div class="bar-track"><div class="bar-fill vice" id="viceBar" style="width:100%"></div></div>
+    </div>
+    <div class="hud-panel">
+      <div class="hud-title">Agmatine Charge</div>
+      <div class="hud-value win" id="chargeValue">100%</div>
+      <div class="bar-track"><div class="bar-fill win" id="chargeBar" style="width:100%"></div></div>
+    </div>
+    <div class="hud-panel">
+      <div class="hud-title">Time Elapsed</div>
+      <div class="hud-value" id="timeValue">00:00</div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div id="controls">
+    <button class="ctrl-btn" id="btnSpawnAg">Spawn Agmatine</button>
+    <button class="ctrl-btn" id="btnSpawnVice">Spawn Vice</button>
+    <button class="ctrl-btn" id="btnPause">Pause</button>
+    <button class="ctrl-btn" id="btnReset">Reset</button>
+    <a href="index.html" class="ctrl-btn" style="text-decoration:none;">← Showcase</a>
+  </div>
+
+  <!-- BATTLE LOG -->
+  <div id="battleLog"></div>
+
+  <!-- TOOLTIP -->
+  <div id="tooltip"></div>
+
+  <!-- PAUSE OVERLAY -->
+  <div id="pauseOverlay">
+    <h2>PAUSED</h2>
+    <p>Click anywhere to resume the molecular battle.</p>
+  </div>
+</div>
+
+<script>
+/* ================================================================
+   BATTLEFIELD ENGINE — Pure JS, no dependencies
+   Spatial hash grid, Verlet integration, FSM, pharmacokinetics
+   ================================================================ */
+
+const canvas = document.getElementById('battleCanvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  W = canvas.width = canvas.offsetWidth * dpr;
+  H = canvas.height = canvas.offsetHeight * dpr;
+  ctx.scale(dpr, dpr);
+  W = canvas.offsetWidth;
+  H = canvas.offsetHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+/* ---------- SPATIAL HASH GRID ---------- */
+class SpatialHashGrid {
+  constructor(cellSize) {
+    this.cellSize = cellSize;
+    this.grid = new Map();
+  }
+  clear() { this.grid.clear(); }
+  _key(cx, cy) { return cx + ',' + cy; }
+  _hash(x, y) {
+    return (Math.floor(x / this.cellSize) + ',' + Math.floor(y / this.cellSize));
+  }
+  insert(entity) {
+    const key = this._hash(entity.x, entity.y);
+    if (!this.grid.has(key)) this.grid.set(key, []);
+    this.grid.get(key).push(entity);
+  }
+  query(x, y, radius) {
+    const results = [];
+    const rCell = Math.ceil(radius / this.cellSize);
+    const cx0 = Math.floor(x / this.cellSize);
+    const cy0 = Math.floor(y / this.cellSize);
+    for (let dx = -rCell; dx <= rCell; dx++) {
+      for (let dy = -rCell; dy <= rCell; dy++) {
+        const key = this._key(cx0 + dx, cy0 + dy);
+        const cell = this.grid.get(key);
+        if (cell) {
+          for (const e of cell) {
+            const dx_ = e.x - x, dy_ = e.y - y;
+            if (dx_ * dx_ + dy_ * dy_ <= radius * radius) results.push(e);
+          }
+        }
+      }
+    }
+    return results;
+  }
+}
+
+/* ---------- VECTOR UTILS ---------- */
+const V2 = {
+  add: (a, b) => ({ x: a.x + b.x, y: a.y + b.y }),
+  sub: (a, b) => ({ x: a.x - b.x, y: a.y - b.y }),
+  mul: (v, s) => ({ x: v.x * s, y: v.y * s }),
+  len: (v) => Math.sqrt(v.x * v.x + v.y * v.y),
+  norm: (v) => { const l = V2.len(v); return l > 0 ? V2.mul(v, 1 / l) : { x: 0, y: 0 }; },
+  dist: (a, b) => V2.len(V2.sub(a, b)),
+};
+
+/* ---------- STATE MACHINE ---------- */
+class StateMachine {
+  constructor(states) {
+    this.states = states;
+    this.current = null;
+    this.state = null;
+  }
+  transition(to, data) {
+    if (this.current && this.states[this.current].exit) {
+      this.states[this.current].exit.call(this.owner, data);
+    }
+    this.current = to;
+    this.state = this.states[to];
+    if (this.state.enter) this.state.enter.call(this.owner, data);
+  }
+  update(dt) {
+    if (this.state && this.state.update) this.state.update.call(this.owner, dt);
+  }
+}
+
+/* ---------- LOGGER ---------- */
+const battleLog = document.getElementById('battleLog');
+const logEntries = [];
+function log(msg, type = 'neutral') {
+  const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  let cls = '';
+  if (type === 'ag') cls = 'log-ag';
+  else if (type === 'vice') cls = 'log-vice';
+  else if (type === 'win') cls = 'log-win';
+  else if (type === 'bind') cls = 'log-bind';
+  entry.innerHTML = `<span class="log-time">[${time}]</span> <span class="${cls}">${msg}</span>`;
+  battleLog.appendChild(entry);
+  battleLog.scrollTop = battleLog.scrollHeight;
+  logEntries.push(entry);
+  if (logEntries.length > 50) {
+    logEntries.shift().remove();
+  }
+}
+
+/* ---------- MOLECULE BASE ---------- */
+class Molecule {
+  constructor(x, y, radius, mass) {
+    this.x = x; this.y = y;
+    this.px = x; this.py = y;
+    this.radius = radius;
+    this.mass = mass;
+    this.vx = 0; this.vy = 0;
+    this.dead = false;
+    this.id = Math.random().toString(36).slice(2, 9);
+  }
+  integrate(dt) {
+    const vx = this.x - this.px;
+    const vy = this.y - this.py;
+    this.px = this.x; this.py = this.y;
+    this.x += vx * 0.98;
+    this.y += vy * 0.98;
+    this.vx = vx / dt;
+    this.vy = vy / dt;
+  }
+  applyForce(fx, fy) {
+    this.x += fx / this.mass;
+    this.y += fy / this.mass;
+  }
+  constrain() {
+    const pad = this.radius;
+    if (this.x < pad) { this.x = pad; this.px = this.x + (this.x - this.px); }
+    if (this.x > W - pad) { this.x = W - pad; this.px = this.x + (this.x - this.px); }
+    if (this.y < pad) { this.y = pad; this.py = this.y + (this.y - this.py); }
+    if (this.y > H - pad) { this.y = H - pad; this.py = this.y + (this.y - this.py); }
+  }
+}
+
+/* ---------- VICE TYPES ---------- */
+const VICE_TYPES = {
+  ADDICTION:      { color: '#ff3366', label: 'Addiction',      behavior: 'chase',  speed: 1.2, radius: 6 },
+  DESPAIR:        { color: '#9933ff', label: 'Despair',        behavior: 'orbit',  speed: 0.6, radius: 8 },
+  SELF_HATRED:    { color: '#ff6633', label: 'Self-Hatred',    behavior: 'wander', speed: 0.8, radius: 5 },
+  LAZINESS:       { color: '#ffcc33', label: 'Laziness',       behavior: 'drift',  speed: 0.3, radius: 10 },
+  PORNOGRAPHY:    { color: '#ff99cc', label: 'Pornography',    behavior: 'chase',  speed: 1.5, radius: 4 },
+};
+
+class Vice extends Molecule {
+  constructor(x, y, typeKey) {
+    const spec = VICE_TYPES[typeKey];
+    super(x, y, spec.radius, 1);
+    this.typeKey = typeKey;
+    this.spec = spec;
+    this.behavior = spec.behavior;
+    this.speed = spec.speed;
+    this.orbitAngle = Math.random() * Math.PI * 2;
+    this.orbitCenter = { x: W/2 + (Math.random()-0.5)*200, y: H/2 + (Math.random()-0.5)*200 };
+    this.orbitRadius = 50 + Math.random() * 150;
+    this.wanderTarget = { x: Math.random()*W, y: Math.random()*H };
+    this.wanderTimer = 0;
+    this.health = 100;
+    this.maxHealth = 100;
+  }
+  update(dt, agmatines) {
+    if (this.dead) return;
+
+    // Behavior
+    let fx = 0, fy = 0;
+    if (this.behavior === 'chase') {
+      let nearest = null, bestDist = Infinity;
+      for (const ag of agmatines) {
+        const d = V2.dist(this, ag);
+        if (d < bestDist) { bestDist = d; nearest = ag; }
+      }
+      if (nearest) {
+        const dir = V2.norm(V2.sub(nearest, this));
+        fx = dir.x * this.speed * 0.3;
+        fy = dir.y * this.speed * 0.3;
+      }
+    } else if (this.behavior === 'orbit') {
+      this.orbitAngle += this.speed * 0.02;
+      const tx = this.orbitCenter.x + Math.cos(this.orbitAngle) * this.orbitRadius;
+      const ty = this.orbitCenter.y + Math.sin(this.orbitAngle) * this.orbitRadius;
+      fx = (tx - this.x) * 0.01;
+      fy = (ty - this.y) * 0.01;
+    } else if (this.behavior === 'wander') {
+      this.wanderTimer += dt;
+      if (this.wanderTimer > 2) {
+        this.wanderTarget = { x: Math.random()*W, y: Math.random()*H };
+        this.wanderTimer = 0;
+      }
+      const dir = V2.norm(V2.sub(this.wanderTarget, this));
+      fx = dir.x * this.speed * 0.15;
+      fy = dir.y * this.speed * 0.15;
+    } else if (this.behavior === 'drift') {
+      fx = Math.sin(Date.now() * 0.001 + this.id) * this.speed * 0.1;
+      fy = Math.cos(Date.now() * 0.001 + this.id) * this.speed * 0.1;
+    }
+
+    // Random jitter
+    fx += (Math.random() - 0.5) * 0.1;
+    fy += (Math.random() - 0.5) * 0.1;
+
+    this.applyForce(fx, fy);
+    this.integrate(dt);
+    this.constrain();
+
+    // Health regen slowly
+    if (this.health < this.maxHealth) this.health += 0.02;
+  }
+  draw() {
+    if (this.dead) return;
+    const alpha = Math.min(1, this.health / 30);
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = this.spec.color;
+    ctx.shadowColor = this.spec.color;
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Health ring
+    if (this.health < this.maxHealth) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius + 3, -Math.PI/2, -Math.PI/2 + (this.health/this.maxHealth) * Math.PI * 2);
+      ctx.strokeStyle = this.spec.color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+  damage(amount) {
+    this.health -= amount;
+    if (this.health <= 0) {
+      this.dead = true;
+      log(`${this.spec.label} destroyed`, 'win');
+      return true;
+    }
+    return false;
+  }
+}
+
+/* ---------- AGMATINE FSM ---------- */
+const AG_STATES = {
+  SEEKING: {
+    enter() { this.target = null; this.seekTimer = 0; },
+    update(dt) {
+      this.seekTimer += dt;
+      // Find nearest vice
+      let nearest = null, bestDist = Infinity;
+      for (const v of engine.vices) {
+        if (v.dead) continue;
+        const d = V2.dist(this, v);
+        if (d < bestDist) { bestDist = d; nearest = v; }
+      }
+      if (nearest) {
+        this.target = nearest;
+        if (bestDist < this.bindRadius) {
+          this.fsm.transition('BINDING', { target: nearest });
+          return;
+        }
+        const dir = V2.norm(V2.sub(nearest, this));
+        this.applyForce(dir.x * 2.5, dir.y * 2.5);
+      } else {
+        // Wander if no targets
+        this.applyForce((Math.random()-0.5)*0.5, (Math.random()-0.5)*0.5);
+      }
+      this.integrate(dt);
+      this.constrain();
+
+      // Charge depletion
+      this.charge -= this.chargeDecay * dt;
+      if (this.charge <= 0) this.fsm.transition('DEAD');
+    }
+  },
+  BINDING: {
+    enter(data) {
+      this.bindTarget = data.target;
+      this.bindProgress = 0;
+      this.bindDuration = 1.5;
+      log(`Agmatine binding to ${data.target.spec.label}`, 'bind');
+    },
+    update(dt) {
+      if (!this.bindTarget || this.bindTarget.dead) {
+        this.fsm.transition('SEEKING');
+        return;
+      }
+      // Pull toward target
+      const dir = V2.norm(V2.sub(this.bindTarget, this));
+      this.applyForce(dir.x * 4, dir.y * 4);
+      this.integrate(dt);
+
+      this.bindProgress += dt / this.bindDuration;
+      this.charge -= this.chargeDecay * dt * 2;
+
+      if (this.bindProgress >= 1) {
+        this.fsm.transition('RELEASING_NO', { target: this.bindTarget });
+      }
+      if (this.charge <= 0) this.fsm.transition('DEAD');
+    }
+  },
+  RELEASING_NO: {
+    enter(data) {
+      this.noReleaseTarget = data.target;
+      this.noReleaseAmount = 40;
+      this.noReleaseRate = 80;
+      log(`NO release — ${data.target.spec.label} inhibited`, 'ag');
+    },
+    update(dt) {
+      if (this.noReleaseTarget && !this.noReleaseTarget.dead) {
+        const dir = V2.norm(V2.sub(this.noReleaseTarget, this));
+        this.applyForce(dir.x * 3, dir.y * 3);
+        this.integrate(dt);
+
+        const release = this.noReleaseRate * dt;
+        this.noReleaseAmount -= release;
+        this.noReleaseTarget.health -= release;
+        engine.noConcentration = Math.max(0, engine.noConcentration - release * 0.5);
+
+        if (this.noReleaseTarget.health <= 0) {
+          this.noReleaseTarget.dead = true;
+          log(`${this.noReleaseTarget.spec.label} neutralized`, 'win');
+        }
+        if (this.noReleaseAmount <= 0) {
+          this.fsm.transition('RESOLVING');
+        }
+      } else {
+        this.fsm.transition('SEEKING');
+      }
+      this.charge -= this.chargeDecay * dt;
+      if (this.charge <= 0) this.fsm.transition('DEAD');
+    }
+  },
+  RESOLVING: {
+    enter() { this.resolveTimer = 0; this.resolveDuration = 0.5; },
+    update(dt) {
+      this.resolveTimer += dt;
+      this.applyForce((Math.random()-0.5)*0.3, (Math.random()-0.5)*0.3);
+      this.integrate(dt);
+      this.constrain();
+      if (this.resolveTimer >= this.resolveDuration) {
+        this.fsm.transition('SEEKING');
+      }
+      this.charge -= this.chargeDecay * dt;
+      if (this.charge <= 0) this.fsm.transition('DEAD');
+    }
+  },
+  DEAD: {
+    enter() {
+      this.dead = true;
+      log('Agmatine metabolized', 'ag');
+    },
+    update() {}
+  }
+};
+
+class Agmatine extends Molecule {
+  constructor(x, y) {
+    super(x, y, 5, 0.5);
+    this.charge = 100;
+    this.maxCharge = 100;
+    this.chargeDecay = 2; // per second
+    this.bindRadius = 25;
+    this.fsm = new StateMachine(AG_STATES);
+    this.fsm.owner = this;
+    this.fsm.transition('SEEKING');
+    this.trail = [];
+  }
+  update(dt) {
+    if (this.dead) return;
+    this.fsm.update(dt);
+
+    // Trail
+    this.trail.push({ x: this.x, y: this.y, life: 1 });
+    for (let i = this.trail.length - 1; i >= 0; i--) {
+      this.trail[i].life -= dt * 3;
+      if (this.trail[i].life <= 0) this.trail.splice(i, 1);
+    }
+  }
+  draw() {
+    if (this.dead) return;
+
+    // Trail
+    for (const t of this.trail) {
+      ctx.globalAlpha = t.life * 0.4;
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#00e5ff';
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // Body
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+    ctx.fillStyle = '#00e5ff';
+    ctx.shadowColor = '#00e5ff';
+    ctx.shadowBlur = 15;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Charge ring
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius + 4, -Math.PI/2, -Math.PI/2 + (this.charge/this.maxCharge) * Math.PI * 2);
+    ctx.strokeStyle = '#00ff88';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // State indicator
+    ctx.fillStyle = '#fff';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.fsm.current, this.x, this.y - this.radius - 8);
+  }
+}
+
+/* ---------- ENGINE ---------- */
+const engine = {
+  agmatines: [],
+  vices: [],
+  grid: new SpatialHashGrid(60),
+  noConcentration: 100,
+  maxNO: 100,
+  paused: false,
+  startTime: Date.now(),
+  spawnAg() {
+    const ag = new Agmatine(Math.random() * W, Math.random() * H);
+    this.agmatines.push(ag);
+    log('Agmatine deployed', 'ag');
+  },
+  spawnVice(type) {
+    const keys = Object.keys(VICE_TYPES);
+    const t = type || keys[Math.floor(Math.random() * keys.length)];
+    const v = new Vice(Math.random() * W, Math.random() * H, t);
+    this.vices.push(v);
+  },
+  reset() {
+    this.agmatines = [];
+    this.vices = [];
+    this.noConcentration = 100;
+    this.startTime = Date.now();
+    battleLog.innerHTML = '';
+    log('Battlefield reset', 'neutral');
+    // Initial spawn
+    for (let i = 0; i < 5; i++) this.spawnAg();
+    for (let i = 0; i < 20; i++) this.spawnVice();
+  },
+  update(dt) {
+    if (this.paused) return;
+
+    // Rebuild spatial hash
+    this.grid.clear();
+    for (const v of this.vices) if (!v.dead) this.grid.insert(v);
+
+    // Update agmatines
+    for (const ag of this.agmatines) {
+      ag.update(dt);
+      // Collision with vices
+      if (ag.fsm.current === 'SEEKING') {
+        const nearby = this.grid.query(ag.x, ag.y, ag.bindRadius);
+        for (const v of nearby) {
+          if (v.dead) continue;
+          const d = V2.dist(ag, v);
+          if (d < ag.radius + v.radius) {
+            // Push apart
+            const dir = V2.norm(V2.sub(ag, v));
+            ag.applyForce(dir.x * 2, dir.y * 2);
+            v.applyForce(-dir.x * 2, -dir.y * 2);
+          }
+        }
+      }
+    }
+
+    // Update vices
+    for (const v of this.vices) v.update(dt, this.agmatines);
+
+    // NO regeneration (baseline)
+    if (this.noConcentration < this.maxNO) {
+      this.noConcentration += 0.5 * dt;
+    }
+
+    // Cleanup dead
+    this.agmatines = this.agmatines.filter(a => !a.dead);
+    this.vices = this.vices.filter(v => !v.dead);
+
+    // Auto-spawn vices if too few
+    if (this.vices.length < 5 && Math.random() < 0.02) {
+      this.spawnVice();
+    }
+
+    // Update HUD
+    this.updateHUD();
+  },
+  updateHUD() {
+    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+    const mins = String(Math.floor(elapsed / 60)).padStart(2, '0');
+    const secs = String(elapsed % 60).padStart(2, '0');
+    document.getElementById('timeValue').textContent = `${mins}:${secs}`;
+
+    const noPct = Math.round((this.noConcentration / this.maxNO) * 100);
+    document.getElementById('noValue').textContent = `${noPct}%`;
+    document.getElementById('noBar').style.width = `${noPct}%`;
+
+    const viceCount = this.vices.length;
+    document.getElementById('viceValue').textContent = viceCount;
+    const vicePct = Math.min(100, (viceCount / 50) * 100);
+    document.getElementById('viceBar').style.width = `${vicePct}%`;
+
+    const avgCharge = this.agmatines.length > 0
+      ? this.agmatines.reduce((s, a) => s + a.charge, 0) / this.agmatines.length
+      : 0;
+    document.getElementById('chargeValue').textContent = `${Math.round(avgCharge)}%`;
+    document.getElementById('chargeBar').style.width = `${avgCharge}%`;
+  },
+  draw() {
+    // Fade trail
+    ctx.fillStyle = 'rgba(10,10,15,0.25)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Grid
+    ctx.strokeStyle = 'rgba(30,30,46,0.3)';
+    ctx.lineWidth = 1;
+    const gs = 60;
+    for (let x = 0; x < W; x += gs) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    }
+    for (let y = 0; y < H; y += gs) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    }
+
+    // Draw entities
+    for (const v of this.vices) v.draw();
+    for (const ag of this.agmatines) ag.draw();
+
+    // Connection lines (agmatine to target)
+    ctx.lineWidth = 0.5;
+    for (const ag of this.agmatines) {
+      if (ag.fsm.current === 'BINDING' && ag.bindTarget && !ag.bindTarget.dead) {
+        ctx.strokeStyle = 'rgba(0,229,255,0.3)';
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(ag.x, ag.y);
+        ctx.lineTo(ag.bindTarget.x, ag.bindTarget.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      if (ag.fsm.current === 'RELEASING_NO' && ag.noReleaseTarget && !ag.noReleaseTarget.dead) {
+        ctx.strokeStyle = 'rgba(0,255,136,0.4)';
+        ctx.setLineDash([2, 6]);
+        ctx.beginPath();
+        ctx.moveTo(ag.x, ag.y);
+        ctx.lineTo(ag.noReleaseTarget.x, ag.noReleaseTarget.y);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+};
+
+/* ---------- CONTROLS ---------- */
+document.getElementById('btnSpawnAg').addEventListener('click', () => engine.spawnAg());
+document.getElementById('btnSpawnVice').addEventListener('click', () => engine.spawnVice());
+document.getElementById('btnReset').addEventListener('click', () => engine.reset());
+
+const pauseOverlay = document.getElementById('pauseOverlay');
+document.getElementById('btnPause').addEventListener('click', () => {
+  engine.paused = !engine.paused;
+  document.getElementById('btnPause').textContent = engine.paused ? 'Resume' : 'Pause';
+  pauseOverlay.classList.toggle('visible', engine.paused);
+});
+pauseOverlay.addEventListener('click', () => {
+  engine.paused = false;
+  document.getElementById('btnPause').textContent = 'Pause';
+  pauseOverlay.classList.remove('visible');
+});
+
+/* ---------- MOUSE INTERACTION ---------- */
+const tooltip = document.getElementById('tooltip');
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  let hovered = null;
+  for (const ag of engine.agmatines) {
+    if (V2.dist({x:mx,y:my}, ag) < ag.radius + 5) { hovered = ag; break; }
+  }
+  if (!hovered) {
+    for (const v of engine.vices) {
+      if (V2.dist({x:mx,y:my}, v) < v.radius + 5) { hovered = v; break; }
+    }
+  }
+
+  if (hovered) {
+    tooltip.classList.add('visible');
+    tooltip.style.left = (e.clientX + 15) + 'px';
+    tooltip.style.top = (e.clientY + 15) + 'px';
+    if (hovered instanceof Agmatine) {
+      tooltip.innerHTML = `<strong style="color:var(--accent)">Agmatine</strong><br>State: ${hovered.fsm.current}<br>Charge: ${Math.round(hovered.charge)}%`;
+    } else if (hovered instanceof Vice) {
+      tooltip.innerHTML = `<strong style="color:${hovered.spec.color}">${hovered.spec.label}</strong><br>Behavior: ${hovered.behavior}<br>Health: ${Math.round(hovered.health)}%`;
+    }
+  } else {
+    tooltip.classList.remove('visible');
+  }
+});
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  engine.spawnAg();
+  const ag = engine.agmatines[engine.agmatines.length - 1];
+  ag.x = mx; ag.y = my; ag.px = mx; ag.py = my;
+});
+
+/* ---------- MAIN LOOP ---------- */
+let lastTime = performance.now();
+function loop(now) {
+  const dt = Math.min((now - lastTime) / 1000, 0.05);
+  lastTime = now;
+
+  engine.update(dt);
+  engine.draw();
+
+  requestAnimationFrame(loop);
+}
+
+// Init
+engine.reset();
+requestAnimationFrame(loop);
+
+// Keyboard shortcuts
+window.addEventListener('keydown', (e) => {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    document.getElementById('btnPause').click();
+  }
+  if (e.code === 'KeyR') engine.reset();
+  if (e.code === 'KeyA') engine.spawnAg();
+  if (e.code === 'KeyV') engine.spawnVice();
+});
+</script>
+
+</body>
+</html>
