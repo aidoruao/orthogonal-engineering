@@ -51,7 +51,9 @@ With that information, I can help you verify if this has transitioned from a the
 **Function:** Standard build pipeline strips debug instrumentation and packages the artifact: static linking, Flatpak, electron-builder, Unity IL2CPP, or Godot export.  
 **Status:** Deployed
 
-4} ## 1. Intent
+4}
+
+## 1. Intent
 **Subsystem:** Intent Parser  
 **Function:** Converts unstructured human input into a structured embedding using production APIs: OpenAI text-embedding-3, CLIP, or multimodal encoders. These are deployed, inference-only models—no training required.
 
