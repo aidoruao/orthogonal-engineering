@@ -102,11 +102,110 @@ Selected artifact passes through standard build pipeline: dependency resolution,
 
 6}
 
-Subsystem	Function
-1	Intent Parser	Human speaks subjective intent—feelings, references, dreams, moods—via text, voice, or scribble. The AI transliterates into a structured embedding using inference-only APIs (OpenAI text-embedding-3, CLIP, multimodal encoders). The human's subjective language is treated as an authoritative pointer, not a suggestion. No interpretation, no correction.
-2	Embodiment Generator	The AI does not invent from noise. It performs constrained combinatorial retrieval and assembly from a pre-blessed library of human-curated or human-licensed assets, palettes, mechanics, tilesets, audio stems, and compositional rules. An LLM parameterizes and assembles retrieved components (hue shifts, timing, spatial arrangement) within engine DSL bounds. Two gates: (a) Compile Gate — discards syntactically invalid assemblies; (b) Behavior Gate — runs survivors against auto-generated smoke tests / execution traces derived from the intent embedding, discarding assemblies that run but do not match the human's stated intent. Scaffolding, engine templates, and few-shot exemplars feed quality upstream. Only dual-gate survivors reach Stage 3.
-3	Comparative Renderer	Compiled, behavior-verified artifacts run sandboxed (Docker, gVisor, Firecracker) with resource limits; headless browsers (Puppeteer, Playwright) capture visual output. Purpose-built comparison UI presents variants side-by-side. The human clicks "warmer/colder" or selects by feel. The AI logs only; it does not analyze, rank, or vote on aesthetics. Session-normalization (fatigue/order-bias correction) keeps the preference signal clean across long rating sessions.
-4	Preference Model	Pairwise judgments are stored and used to bias future retrieval. The AI does not learn "what is beautiful." It learns what this human has consistently selected, building a statistical retrieval bias from the human's revealed preferences. The AI becomes a mirror of the human's taste, not an independent tastemaker. Deployed real-time mechanism: vector retrieval of past preferences + heuristic prompt-weighting. Periodic offline batch: LoRA adapter / RLHF refines the retrieval map (nightly/weekly), feeding refreshed weights back into the retrieval layer. The map always points to human-blessed territory.
-5	Final Compiler	The human-approved assembly passes through the standard build pipeline: dependency resolution, stripping of debug/sandbox hooks, packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot). The AI's role ends. What remains is the human's creation, mediated through code, bearing the human's image.
+# Intent-to-Artifact Pipeline
+
+## System Overview
+
+A five-stage pipeline that converts human subjective intent into deployable artifacts. The AI acts as a mediator, not an author—retrieving from human-blessed libraries, reflecting user preferences, and stepping aside once the artifact is compiled.
+
+---
+
+## Subsystem Specifications
+
+### 1 — Intent Parser
+
+**Function:** Human speaks subjective intent—feelings, references, dreams, moods—via text, voice, or scribble. The AI transliterates into a structured embedding using inference-only APIs (OpenAI text-embedding-3, CLIP, multimodal encoders).
+
+**Key Principles:**
+- The human's subjective language is treated as an authoritative pointer, not a suggestion
+- No interpretation, no correction
+- The human's word is the ground truth
+
+**Dependencies:** Inference-only production APIs (commodity, no training required)
+
+---
+
+### 2 — Embodiment Generator
+
+**Function:** The AI does not invent from noise. It performs constrained combinatorial retrieval and assembly from a pre-blessed library of human-curated or human-licensed assets, palettes, mechanics, tilesets, audio stems, and compositional rules.
+
+**Mechanism:**
+- An LLM parameterizes and assembles retrieved components (hue shifts, timing, spatial arrangement) within engine DSL bounds
+- Scaffolding, engine templates, and few-shot exemplars feed quality upstream of both gates
+
+**Dual Gates (in series):**
+
+| Gate | Function |
+|------|----------|
+| **Compile Gate** | Discards syntactically invalid assemblies |
+| **Behavior Gate** | Runs survivors against auto-generated smoke tests / execution traces derived from the intent embedding; discards assemblies that run but do not match the human's stated intent |
+
+**Outcome:** Only dual-gate survivors reach Stage 3.
+
+---
+
+### 3 — Comparative Renderer
+
+**Function:** Compiled, behavior-verified artifacts run sandboxed with resource limits; headless browsers capture visual output.
+
+**Sandboxing:** Docker, gVisor, Firecracker
+**Rendering:** Puppeteer, Playwright
+
+**Human Judgment:**
+- Purpose-built comparison UI presents variants side-by-side
+- The human clicks "warmer/colder" or selects by feel
+- The AI logs only; it does not analyze, rank, or vote on aesthetics
+- Session-normalization (fatigue/order-bias correction) keeps the preference signal clean across long rating sessions
+
+---
+
+### 4 — Preference Model
+
+**Function:** Pairwise judgments are stored and used to bias future retrieval.
+
+**Core Principle:** The AI does not learn "what is beautiful." It learns what *this human* has consistently selected, building a statistical retrieval bias from the human's revealed preferences. The AI becomes a mirror of the human's taste, not an independent tastemaker.
+
+**Two-Tier Architecture:**
+
+| Mechanism | Timeframe | Purpose |
+|-----------|-----------|---------|
+| Vector retrieval of past preferences + heuristic prompt-weighting | Real-time | Immediate preference biasing |
+| LoRA adapter / RLHF refines the retrieval map | Periodic offline batch (nightly/weekly) | Deep personalization, feeding refreshed weights back into the retrieval layer |
+
+**Guarantee:** The map always points to human-blessed territory.
+
+---
+
+### 5 — Final Compiler
+
+**Function:** The human-approved assembly passes through the standard build pipeline.
+
+**Pipeline Steps:**
+- Dependency resolution
+- Stripping of debug/sandbox hooks
+- Packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot)
+
+**The Handoff:** The AI's role ends. What remains is the human's creation, mediated through code, bearing the human's image.
+
+---
+
+## Architectural Philosophy
+
+| Traditional AI Generation | This System |
+|---------------------------|-------------|
+| AI invents from latent space noise | AI retrieves from human-blessed library |
+| AI judges quality via reward models | Human judges; AI only logs |
+| AI learns "beauty" as objective truth | AI learns *this human's* preferences as statistical bias |
+| AI is the author | AI is the mediator |
+| Output bears the AI's "style" | Output bears the human's image |
+
+---
+
+## Key Principles
+
+1. **The Human Is Sufficient** — Subjective input is authoritative; no correction applied
+2. **The Library Is Sacred** — All source assets are human-curated or human-licensed
+3. **Preference Is Personal** — The AI mirrors individual taste, not universal aesthetics
+4. **The AI Exits** — Final compilation is standard plumbing; the artifact belongs to the human
 
 7} 
