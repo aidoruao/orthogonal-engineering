@@ -24,4 +24,12 @@ If you want to investigate this further, you can tell me:
 
 With that information, I can help you verify if this has transitioned from a theoretical idea into a real, functional software product.
 
-3} 
+3} | Stage | Engine Subsystem | Function | Status |
+|-------|-----------------|----------|--------|
+| **1. Intent** | **Intent Parser** | Converts unstructured input to a structured embedding using deployed models: OpenAI text-embedding-3, CLIP, or multimodal encoders. | **Deployed** |
+| **2. Incubation** | **Embodiment Generator** | LLM (Claude, GPT-4, o1, Codex) generates code variants conditioned on the intent embedding. Temperature sampling produces multiple outputs. Compilation acts as a deterministic filter. **Realistic yield: 3–10 variants per prompt**, not 20–200. Game generation from scratch requires existing engine templates or asset libraries; full synthesis remains unreliable. | **Partial** |
+| **3. Judgment** | **Comparative Renderer** | Sandboxed execution (Docker, Firecracker, WASM) runs compiled variants. Headless rendering (Puppeteer, Playwright) captures output. Side-by-side presentation with binary or gradient selection. Logs pairwise preference data. | **Buildable** |
+| **4. Taste Embedding** | **Preference Model** | No production system implements real-time per-user LoRA fine-tuning on interactive game prototypes. Population-scale RLHF is deployed (ChatGPT, Claude). Per-user preference adaptation exists only in research (personalized diffusion LoRAs). **Practical substitute:** store user preference embeddings and use similarity-weighted prompting or heuristic scoring to bias future generation. | **Research** |
+| **5. 1:1 Output** | **Final Compiler** | Standard build pipeline strips debug instrumentation and packages the artifact: static linking, Flatpak, electron-builder, Unity IL2CPP, or Godot export. | **Deployed** |
+
+4} 
