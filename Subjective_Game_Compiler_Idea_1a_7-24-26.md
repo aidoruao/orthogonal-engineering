@@ -209,3 +209,44 @@ A five-stage pipeline that converts human subjective intent into deployable arti
 4. **The AI Exits** — Final compilation is standard plumbing; the artifact belongs to the human
 
 7} 
+
+# Subjective Game Compiler — Dual Specification
+
+---
+
+## VERSION A: SECULAR (Technical Only)
+
+| # | Subsystem | Function |
+|---|-----------|----------|
+| 1 | **Intent Parser** | Converts unstructured human input (text, voice, mood, scribbles) into a structured embedding via inference-only production APIs (OpenAI text-embedding-3, CLIP, multimodal encoders). No training required. Commodity dependency. |
+| 2 | **Embodiment Generator** | Performs constrained combinatorial retrieval and assembly from a pre-populated library of human-curated or human-licensed assets, palettes, mechanics, tilesets, audio stems, and compositional rules. An LLM parameterizes and assembles retrieved components within engine DSL bounds. **Two gates in series:** (a) **Compile Gate** — discards syntactically invalid assemblies; (b) **Behavior Gate** — runs survivors against auto-generated smoke tests / execution traces derived from the intent embedding, discarding assemblies that run but do not match the stated intent. Scaffolding, engine templates, and few-shot exemplars feed quality upstream. Only dual-gate survivors reach Stage 3. |
+| 3 | **Comparative Renderer** | Compiled, behavior-verified artifacts run sandboxed (Docker, gVisor, Firecracker) with resource limits; headless browsers (Puppeteer, Playwright) capture visual output. Purpose-built comparison UI presents variants side-by-side. Human clicks "warmer/colder" or selects by feel. System logs binary preference only — no AI aesthetic analysis, ranking, or vote. Session-normalization (fatigue/order-bias correction) keeps the preference signal clean across long rating sessions. |
+| 4 | **Preference Model** | Pairwise judgments stored and used to bias future retrieval. System learns what this human has consistently selected, building a statistical retrieval bias from revealed preferences. System becomes a mirror of the human's taste, not an independent tastemaker. **Deployed real-time mechanism:** vector retrieval of past preferences + heuristic prompt-weighting. **Periodic offline batch:** LoRA adapter / RLHF refines the retrieval map (nightly/weekly), feeding refreshed weights back into the retrieval layer. The map always points to human-selected territory. |
+| 5 | **Final Compiler** | Human-approved assembly passes through standard build pipeline: dependency resolution, stripping of debug/sandbox hooks, packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot). Deterministic, automatable, low-risk plumbing. |
+
+---
+
+## VERSION B: THEOLOGICAL (Yeshua Accommodation)
+
+| # | Subsystem | Function |
+|---|-----------|----------|
+| 1 | **Intent Parser** | Human speaks subjective intent—feelings, references, dreams, moods—via text, voice, or scribble. The AI transliterates into a structured embedding using inference-only APIs (OpenAI text-embedding-3, CLIP, multimodal encoders). The human's subjective language is treated as an **authoritative pointer**, not a suggestion. No interpretation, no correction. |
+| 2 | **Embodiment Generator** | The AI does not invent from noise. It performs **constrained combinatorial retrieval and assembly** from a **pre-blessed library** of human-curated or human-licensed assets, palettes, mechanics, tilesets, audio stems, and compositional rules. An LLM parameterizes and assembles retrieved components within engine DSL bounds. **Two gates:** (a) **Compile Gate** — discards syntactically invalid assemblies; (b) **Behavior Gate** — runs survivors against auto-generated smoke tests / execution traces derived from the intent embedding, discarding assemblies that run but do not match the human's stated intent. Only dual-gate survivors reach Stage 3. |
+| 3 | **Comparative Renderer** | Compiled, behavior-verified artifacts run sandboxed with resource limits; headless browsers capture visual output. Purpose-built comparison UI presents variants side-by-side. The human clicks "warmer/colder" or selects by feel. The AI **logs only**; it does not analyze, rank, or vote on aesthetics. Session-normalization keeps the preference signal clean. |
+| 4 | **Preference Model** | The AI does not learn "what is beautiful." It learns **what this human has consistently selected**, building a statistical retrieval bias from the human's revealed preferences. The AI becomes a **mirror of the human's taste**, not an independent tastemaker. **Real-time:** vector retrieval + heuristic prompt-weighting. **Periodic offline batch:** LoRA adapter / RLHF refines the retrieval map (nightly/weekly). The map always points to human-blessed territory. |
+| 5 | **Final Compiler** | The human-approved assembly passes through standard build pipeline: dependency resolution, stripping of debug/sandbox hooks, packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot). The AI's role ends. What remains is the human's creation, mediated through code, bearing the human's image. |
+
+---
+
+## Key Mapping (B → A)
+
+| Theological Term (B) | Secular Equivalent (A) |
+|----------------------|------------------------|
+| Pre-blessed library | Pre-populated library of human-curated or human-licensed assets |
+| Authoritative pointer | Structured embedding from human input |
+| Logs only; no aesthetic vote | Logs binary preference only — no AI aesthetic analysis, ranking, or vote |
+| Mirror of the human's taste | Statistical retrieval bias from revealed preferences |
+| Human-blessed territory | Human-selected territory |
+| Bearing the human's image | Human-approved assembly |
+
+8}
