@@ -51,4 +51,24 @@ With that information, I can help you verify if this has transitioned from a the
 **Function:** Standard build pipeline strips debug instrumentation and packages the artifact: static linking, Flatpak, electron-builder, Unity IL2CPP, or Godot export.  
 **Status:** Deployed
 
-4} 
+4} ## 1. Intent
+**Subsystem:** Intent Parser  
+**Function:** Converts unstructured human input into a structured embedding using production APIs: OpenAI text-embedding-3, CLIP, or multimodal encoders. These are deployed, inference-only models—no training required.
+
+## 2. Incubation
+**Subsystem:** Embodiment Generator  
+**Function:** LLM (GPT-4, Claude, Codex) generates code via temperature-sampled decoding. Multiple variants are produced by rerolling the same prompt. Compilation acts as a deterministic filter: non-compiling output is discarded. For non-trivial programs, this requires scaffolding, engine templates, or few-shot examples to achieve usable yield.
+
+## 3. Judgment
+**Subsystem:** Comparative Renderer  
+**Function:** Compiled artifacts run in sandboxes (Docker, gVisor, Firecracker) with resource limits. Headless browsers (Puppeteer, Playwright) capture visual output. A custom UI presents outputs side-by-side and logs human binary preference. This is integration of mature, separate technologies—not a single off-the-shelf product.
+
+## 4. Taste Embedding
+**Subsystem:** Preference Model  
+**Function:** Pairwise judgment data is stored and used to bias future generation. Production-grade approximation uses vector retrieval of past preferences and heuristic prompt weighting. Per-user LoRA adapters and online RLHF from human feedback are demonstrated in research but not deployed as real-time, per-user services at scale.
+
+## 5. 1:1 Output
+**Subsystem:** Final Compiler  
+**Function:** The selected artifact passes through a standard build pipeline: dependency resolution, stripping of debug/sandbox hooks, and packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot). Deterministic and automatable.
+
+5} 
