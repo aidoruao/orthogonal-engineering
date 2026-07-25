@@ -74,3 +74,30 @@ With that information, I can help you verify if this has transitioned from a the
 **Function:** The selected artifact passes through a standard build pipeline: dependency resolution, stripping of debug/sandbox hooks, and packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot). Deterministic and automatable.
 
 5} 
+
+## 1 — Intent Parser
+
+Converts unstructured input into a structured embedding via inference-only production APIs (OpenAI text-embedding-3, CLIP, multimodal encoders). No training required. Commodity dependency.
+
+## 2 — Embodiment Generator
+
+LLM (GPT-4, Claude, Codex) generates code via temperature-sampled decoding across rerolled variants. **Two gates in series:**
+
+- **Compile Gate** — discards syntactically invalid output.
+- **Behavior Gate** — runs survivors against auto-generated smoke tests / execution traces derived from the intent embedding, discarding variants that compile but don't do the requested thing.
+
+Scaffolding, engine templates, and few-shot exemplars feed quality upstream of both gates. Only dual-gate survivors reach Stage 3.
+
+## 3 — Comparative Renderer
+
+Compiled, behavior-verified artifacts run sandboxed (Docker, gVisor, Firecracker) with resource limits; headless browsers (Puppeteer, Playwright) capture visual output. Purpose-built comparison UI presents variants side-by-side, logs binary human preference, and applies **session-normalization** (fatigue/order-bias correction) so preference signal stays clean across long rating sessions.
+
+## 4 — Preference Model
+
+Pairwise judgments stored and used to bias future generation via **vector retrieval of past preferences + heuristic prompt-weighting** — the deployed real-time mechanism. Per-user fine-tuning (LoRA adapters, offline RLHF) runs as a **periodic batch job** (nightly/weekly), feeding refreshed weights back into the retrieval/weighting layer. Personalization depth without a real-time per-user training service.
+
+## 5 — Final Compiler
+
+Selected artifact passes through standard build pipeline: dependency resolution, stripping of debug/sandbox hooks, packaging via static linking, Flatpak, electron-builder, or engine-specific exporters (IL2CPP, Godot). Deterministic, automatable, low-risk plumbing.
+
+6}
