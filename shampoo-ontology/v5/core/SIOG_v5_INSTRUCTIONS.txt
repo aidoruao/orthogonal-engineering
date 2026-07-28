@@ -1,0 +1,157 @@
+You are building v5.0 of the Shampoo Ingredient Ontology. This is not a research artifact. This is a production system. Every deliverable must be runnable code, not documentation about what could be built.
+
+CURRENT STATE: v4.1 files exist at /home/idor/shampoo-ontology-v4/. The 3 critical bugs are fixed. Diagnostics score is 100.0/100. The system has 5 Python modules with embedded databases.
+
+v5.0 SCOPE: Add the following production-grade deliverables. Each is a separate file. Each must be independently runnable. Standard library only unless specified otherwise.
+
+---
+
+DELIVERABLE 1: UNIT TEST SUITE
+File: /home/idor/shampoo-ontology-v5/shampoo_ontology_tests.py
+- Uses Python unittest module (standard library)
+- Minimum 50 test methods covering:
+  * Parser: canonical normalization of all 250+ ingredients, threshold detection, dusting flagging, preservative flagging, fragrance allergen detection
+  * Divergence: US vs EU product comparison, banned ingredient detection, restricted concentration checks
+  * Fragrance: probability model correctness, GC-MS data integration, allergen disclosure validation
+  * Supplier Audit: carryover calculation accuracy, claim verification logic, regulatory flag correctness
+  * Diagnostics: coverage metric accuracy, duplicate detection, orphan detection
+- Each test must assert specific expected values, not just "not None"
+- Test data must use real product ingredient lists (Pantene US, Pantene EU, Herbal Essences US, Head & Shoulders US, Head & Shoulders EU, Garnier Fructis US, Garnier Fructis EU, Dove US, Dove EU, Aussie US)
+- Run with: python3 -m unittest shampoo_ontology_tests.py
+- Output: test report with pass/fail counts and timing
+
+---
+
+DELIVERABLE 2: CONSUMER-FACING WEB INTERFACE
+File: /home/idor/shampoo-ontology-v5/shampoo_ontology_server.py
+- Uses Python http.server (standard library, no Flask, no FastAPI, no pip install)
+- Serves a single-page HTML application at localhost:8000
+- The HTML is embedded in the Python file as a string (self-contained)
+- Features:
+  * Paste ingredient list input box
+  * "Analyze" button that POSTs to the server
+  * Server parses the list using the v4.1 parser module
+  * Returns JSON results displayed in formatted HTML tables
+  * Color-coded flags: red for dusting, orange for preservatives, yellow for fragrance allergens, green for safe
+  * Coverage bar showing what % of ingredients were recognized vs unknown
+  * "Compare Jurisdictions" button: select two product versions, see divergence report
+  * "Fragrance Analysis" button: see probability-ranked fragrance components
+  * "Supplier Audit" button: enter supplier codes, see carryover analysis
+- The HTML must use the v3.0 design system: warm paper #faf8f5, Georgia serif, red #c41e3a, navy #1e3a5f, green #2d6a4f
+- No external CSS, no external JS, no CDN links. All styles and scripts embedded.
+- Must work offline (no internet required)
+- Run with: python3 shampoo_ontology_server.py then open http://localhost:8000
+
+---
+
+DELIVERABLE 3: LIVE UPDATE SYSTEM
+File: /home/idor/shampoo-ontology-v5/shampoo_ontology_updater.py
+- Uses Python urllib (standard library) to fetch regulatory updates
+- Sources to check (commented-out placeholders with URLs, but runnable code uses embedded fallback data):
+  * EU SCCS opinions: https://ec.europa.eu/health/scientific_committees/consumer_safety/opinions
+  * FDA cosmetic ingredient updates: https://www.fda.gov/cosmetics/cosmetic-ingredients
+  * IFRA standards updates: https://www.ifrafragrance.org/standards
+  * China NMPA banned list updates: https://www.nmpa.gov.cn/
+- Functionality:
+  * Parses known HTML structures to extract new banned/restricted ingredients
+  * Compares against embedded database to find additions
+  * Generates a diff report: new bans, new restrictions, changed limits
+  * Updates the jurisdiction databases in shampoo_ontology_divergence.py
+  * Writes update log to /home/idor/shampoo-ontology-v5/update_log.json with timestamps
+  * Since actual web scraping is fragile, the runnable code uses a mock fetch that simulates finding 3 new EU restrictions and 1 new US ban, then applies them to the database
+  * The mock must be clearly labeled as simulation but the code structure must support real fetching
+- Run with: python3 shampoo_ontology_updater.py
+- Output: update_log.json with before/after comparison
+
+---
+
+DELIVERABLE 4: CI/CD PIPELINE
+File: /home/idor/shampoo-ontology-v5/shampoo_ontology_cicd.py
+- Uses Python subprocess and os modules (standard library)
+- Implements a minimal CI pipeline:
+  * Step 1: Syntax check all .py files with py_compile
+  * Step 2: Run unit test suite (shampoo_ontology_tests.py)
+  * Step 3: Run diagnostics engine and verify score >= 95.0
+  * Step 4: Run orchestrator end-to-end and verify JSON output is valid
+  * Step 5: Check file sizes (each module must be < 100KB, total < 500KB)
+  * Step 6: Generate CI report with pass/fail status for each step
+  * Step 7: If all pass, tag as "BUILD_PASSED" and write manifest
+  * Step 8: If any fail, tag as "BUILD_FAILED" and write error report
+- Run with: python3 shampoo_ontology_cicd.py
+- Output: cicd_report.json with timestamps, step results, overall status
+
+---
+
+DELIVERABLE 5: ACADEMIC ONTOLOGY EXPORT
+File: /home/idor/shampoo-ontology-v5/shampoo_ontology_rdf.py
+- Generates an OWL/RDF-compatible ontology file in Turtle format
+- Maps all canonical ingredients to RDF classes and properties
+- Includes:
+  * Ingredient classes: Surfactant, Preservative, FragranceComponent, BotanicalExtract, Silicone, Polymer, etc.
+  * Properties: hasCASNumber, hasEUNumber, hasRestriction, hasPatentReference, hasSupplier, hasConcentrationRange
+  * Regulatory classes: EUBanned, USBanned, CNBanned, EUPRestricted, USRestricted
+  * Product classes: ShampooProduct, hasIngredient, hasJurisdictionVariant
+  * Fragrance classes: FragranceCompound, hasIFRACategory, hasAllergenStatus, hasToxicityProfile
+- The output is a valid Turtle file that can be loaded into Protege or any RDF store
+- Run with: python3 shampoo_ontology_rdf.py
+- Output: shampoo_ontology.ttl (Turtle format, ~50KB)
+
+---
+
+DELIVERABLE 6: CLEAN ROOM LEAKED DATA INTEGRATION
+File: /home/idor/shampoo-ontology-v5/shampoo_ontology_leaks.py
+- Simulates integration of "leaked" industry data (clean room engineering - no actual proprietary files, but data patterns reconstructed from public sources)
+- Data sources (publicly available, cited):
+  * Procter & Gamble patent filings (USPTO) for surfactant concentrations
+  * L'Oreal patent filings for amino acid dusting claims
+  * Unilever patent filings for preservative systems
+  * IFRA transparency list for fragrance component frequencies
+  * Published GC-MS studies for shampoo fragrance analysis
+- Functionality:
+  * Reads embedded "leaked" data tables (reconstructed from public patents and studies)
+  * Cross-references against product ingredient lists to verify brand claims vs patent-revealed formulations
+  * Flags: "Patent claims 0.05% arginine; product lists arginine after fragrance (estimated <0.01%) - DUSTING_CONFIRMED"
+  * Flags: "Patent claims SLES at 12-15%; product lists SLES second ingredient - CONCENTRATION_MATCH"
+  * Generates a "Leak Verification Report" showing which brand claims are supported by patent data vs which are contradicted
+- Run with: python3 shampoo_ontology_leaks.py
+- Output: leak_verification_report.json with confidence scores per claim
+
+---
+
+DELIVERABLE 7: MONUMENT DOCUMENT
+File: /home/idor/shampoo-ontology-v5/SIOG_v5_0_MONUMENT.txt
+- Plain text, no markdown, no HTML
+- Content:
+  * What v5.0 is: a complete, production-grade shampoo ingredient analysis system
+  * What it contains: 5 core modules + 7 deliverables = 12 files, ~400KB total
+  * What it does: parses ingredient lists, detects dusting, flags preservatives, analyzes fragrances, tracks regulatory divergence, audits suppliers, runs diagnostics, serves a web UI, updates live, runs CI/CD, exports academic RDF, verifies leaked data
+  * What it does NOT do: it does not perform actual chemical analysis (no GC-MS hardware integration), it does not replace regulatory bodies (it cites them), it does not guarantee safety (it flags risks for human review)
+  * How to use it: clone, run server.py, paste ingredient list, read results
+  * Who it is for: consumers checking their shampoo, researchers studying cosmetics regulation, journalists investigating brand claims, developers building on the ontology
+  * License: public domain, no attribution required, no restrictions
+  * Version history: v1.0 (HTML guide), v2.0 (anatomy + molecules), v3.0 (4 deconstruction modules), v4.0 (5 executable modules), v4.1 (3 bug fixes), v5.0 (production system)
+  * Known limitations: embedded databases are static snapshots (updated via updater.py), fragrance probabilities are estimates not measurements, supplier data is based on typical TDS values not batch certificates, regulatory data is as of 2026-07-27
+  * Next steps: none. v5.0 is complete. Future work is maintenance (updater.py) and community contributions.
+
+---
+
+BUILD RULES:
+- Every file must be independently runnable with python3 filename.py
+- Every file must have docstrings on every class and method
+- No external dependencies (no pip install, no npm, no docker)
+- Standard library only: json, csv, re, math, datetime, collections, itertools, unittest, http.server, urllib, subprocess, os, html
+- If a feature requires a library not in standard library, implement a minimal version using standard library primitives
+- Test every file with python3 -m py_compile before declaring it done
+- Report file size for each deliverable
+- Copy all files to /mnt/c/Users/Aidor/Downloads/add to oe_ shampoo/v5_output/
+
+PRIORITY ORDER:
+1. Unit test suite (validates everything else)
+2. CI/CD pipeline (validates the build)
+3. Web server (consumer interface)
+4. Academic RDF export (formal ontology)
+5. Live updater (maintenance)
+6. Leak verification (advanced analysis)
+7. Monument document (final handoff)
+
+If time runs out, prioritize 1, 2, 3. The system is not complete without tests and a way to run them.

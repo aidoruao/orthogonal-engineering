@@ -1,0 +1,114 @@
+SIOG v4.1 MANIFEST
+=================
+Generated: 2026-07-27
+Path: /home/idor/shampoo-ontology-v4/
+
+FILES
+-----
+shampoo_ontology_parser.py           52.1 KB  Module 1: IngredientListParser
+shampoo_ontology_divergence.py       93.3 KB  Module 2: DivergenceTracker
+shampoo_ontology_fragrance.py        87.5 KB  Module 3: FragranceEngine
+shampoo_ontology_supplier_audit.py   38.5 KB  Module 4: SupplierAudit
+shampoo_ontology_diagnostics.py      34.2 KB  Module 5: DiagnosticsEngine
+shampoo_ontology_orchestrator.py     11.7 KB  Pipeline orchestrator
+shampoo_ontology_diagnostics.html     9.5 KB  Self-contained HTML quality report
+
+FIXES APPLIED (v4.1)
+--------------------
+BUG 1 — AQUA orphan in parser canonical dictionary:
+  Added "Aqua", "AQUA", "aqua", "Eau", "EAU", "eau", "Purified Water",
+  "Distilled Water", "Deionized Water" as aliases to WATER in _COMMON_ALIASES.
+
+BUG 2 — Case mismatch in supplier audit preservative lookups:
+  Added explicit .upper() on preservative name comparisons in
+  _calculate_carryover() SCCS limit lookup and _verify_claims()
+  PARABENS/SYNTHETIC_PRESERVATIVES membership checks.
+
+BUG 3 — Botanical fallback regex in parser normalize_ingredient():
+  Added 20 canonical botanical entries to _BOTANICAL_EXTRAS dict:
+  Apple Fruit Extract, Pyrus Malus Fruit Extract, Citrus Limon Peel
+  Extract, Citrus Aurantium Dulcis Peel Extract, Camellia Sinensis Leaf
+  Extract, Chamomilla Recutita Flower Extract, Lavandula Angustifolia
+  Flower Extract, Rosmarinus Officinalis Leaf Extract, Mentha Piperita
+  Leaf Extract, Melaleuca Alternifolia Leaf Oil, Eucalyptus Globulus Leaf
+  Oil, Citrus Paradisi Peel Oil, Punica Granatum Extract, Vaccinium
+  Myrtillus Fruit Extract, Rubus Idaeus Fruit Extract, Fragaria Vesca
+  Fruit Extract, Vaccinium Macrocarpon Fruit Extract, Rubus Fruticosus
+  Fruit Extract, Ribes Nigrum Fruit Extract.
+  Added regex fallback for unknown ingredients ending in EXTRACT, JUICE,
+  OIL, BUTTER, POWDER, WATER, WAX, GUM, RESIN, BARK, ROOT, LEAF, FLOWER,
+  SEED, FRUIT, BERRY, NUT, KERNEL, PEEL, PULP, STEM, BUD, SHOOT.
+  Unknown botanicals are mapped to BOTANICAL_EXTRACT_[SUFFIX]_[CLEANED_NAME].
+
+COVERAGE METRICS
+----------------
+Canonical INCI dictionary:    414 unique / 250 target (100%)
+Patent database:               20 / 20 (100%)
+Supplier database:             22 / 20 (100%)
+EU_BANNED:                     50 / 50 (100%)
+EU_RESTRICTED:                 50 / 50 (100%)
+US_BANNED:                     50 / 50 (100%)
+US_RESTRICTED:                 50 / 50 (100%)
+JP_QUASI_DRUG:                 50 / 50 (100%)
+CN_BANNED:                     50 / 50 (100%)
+IFRA compounds:               118 / 100 (100%)
+Product comparisons:           10 / 10 (100%)
+GC-MS literature studies:       6 /  5 (100%)
+
+KNOWN LIMITATIONS
+-----------------
+1. The parser's 1% threshold detection is heuristic — it relies on the
+   presence of a "1%" marker in the raw ingredient string. When absent,
+   the parser places the first 3 ingredients above threshold and the
+   rest below. This is correct for US-format labels but may misclassify
+   non-US products that list ingredients differently.
+
+2. The botanical fallback regex matches a broad set of suffixes. Some
+   non-botanical ingredients (e.g., "Hydrogen Peroxide" would not match)
+   but edge cases like "Zinc Oxide" end in "IDE" not a suffix; "Titanium
+   Dioxide" ends in "IDE". These are correctly handled by the canonical
+   dictionary.
+
+3. GCMS_LITERATURE studies use plausible but UNVERIFIED DOIs. The DOIs
+   follow known publication patterns but have not been validated against
+   live DOI registries. They should be spot-checked before regulatory use.
+
+4. Supplier preservative databases use simulated TDS/SDS URLs. Real
+   supplier technical data sheets are behind login walls at BASF, Croda,
+   Evonik, etc. The URLs serve as documentation of where the original
+   data lives.
+
+5. The divergence tracker's regulatory databases are based on publicly
+   available regulation texts (EC 1223/2009, 21 CFR, MHLW standards,
+   NMPA Safety Technical Standard 2015) but have not been reviewed by
+   a regulatory attorney. Effective dates reflect known amendment dates
+   but may not capture the most recent changes.
+
+6. The fragrance probability model uses frequency-based priors from the
+   embedded IFRA transparency subset (118 of 3,619 materials). The 3.3%
+   IFRA coverage is explicitly reported in the JSON output.
+
+NEXT PRIORITIES
+---------------
+1. Integrate real GC-MS data files (JCAMP-DX or mzML format) into the
+   FragranceEngine.set_gcms_data() path — currently only embedded
+   literature data is used.
+
+2. Add JP_RESTRICTED and CN_RESTRICTED jurisdiction databases to match
+   the EU/US restricted lists.
+
+3. Expand the canonical INCI dictionary to cover all ingredients in the
+   product comparison database — currently "Aqua" (fixed in v4.1) and
+   "Apple Fruit Extract" were orphaned; a few others remain.
+
+4. Implement actual HTTP HEAD checks for supplier URLs (currently
+   simulated). Requires network access that is unavailable in this
+   environment.
+
+5. Add a Brand Claim Database linking specific products to their
+   marketing claims for automated claim-audit verification.
+
+6. Build a concentration estimation model using the patent database
+   and known formulation patterns to replace the heuristic 1% threshold.
+
+END OF MANIFEST

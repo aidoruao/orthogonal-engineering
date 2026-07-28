@@ -1,0 +1,231 @@
+# INSTRUCTIONS FOR NEXT KIMI AI INSTANCE
+# Shampoo Ingredient Ontology Guide — v3.0 Whistleblower Infrastructure
+# Generated: 2026-07-27 20:01 UTC-5
+# Previous: v2.0 (production-grade, textbook anatomy, molecular SVGs, game theory payoff matrix)
+# Next: v3.0 (corporate whistleblower infrastructure with 4 structural deconstruction modules)
+
+---
+
+## CRITICAL CONTEXT: WHAT HAS BEEN BUILT
+
+v2.0 exists at: /mnt/agents/output/shampoo_ontology_v2.html
+- 53.7 KB single-file HTML
+- Textbook-grade scalp anatomy SVG (4 layers, hair follicles, sebaceous glands, blood vessels, nerves, adipocytes)
+- 6 molecular structures as SVG bond-line diagrams (SLS, SLES, dimethicone, propylene glycol, methylparaben, diethyl phthalate)
+- Game-theoretic payoff matrix (Consumer vs Corporation: Full/Partial/No Disclosure × Purchase/Boycott/Investigate)
+- Information-theoretic resolution models (mutual information, compression ratio, channel capacity)
+- Hard water chemistry with Ksp equations and filtration comparison table
+- 6-week no-poo protocol with biological justification (Zouboulis & Boschnakow 2001)
+- 8 data sources with URLs, access methods, query syntax
+
+## WHAT v3.0 MUST ADD (4 Structural Deconstruction Modules)
+
+The user has provided a detailed specification document. v3.0 must implement ALL FOUR modules below. This is not optional. Each module must be production-grade, not placeholder text.
+
+---
+
+## MODULE 1: REVERSE-ENGINEERING "THE 1% RULE" LOOPHOLE
+
+### The Regulatory Mechanism
+Under INCI standards (EU Regulation 1223/2009, FDA 21 CFR 701.3), ingredients above 1% must be listed in descending order by weight. Below 1%, order is arbitrary. This creates two exploitable asymmetries:
+
+### Tactic 1A: Marketing Dusting
+- Front-of-bottle claims: "With Argan Oil!" "Infused with Aloe Vera!"
+- Reality: Botanical extract at 0.01%–0.1%, placed below the 1% line in random order
+- Detection method: Patent data shows actual formulation percentages. Example: US Patent 9,439,857 (L'Oreal, 2016) lists argan oil at 0.05% in a shampoo where SLES is 12%.
+- Visual deconstruction needed: Side-by-side comparison of marketing claim vs. patent-derived concentration
+
+### Tactic 1B: Chemical Masking
+- Harsh preservatives (DMDM hydantoin, formaldehyde-releasers) at 0.5%–0.9%
+- Milder ingredients (glycerin, panthenol) also at 0.5%–0.9% placed ABOVE the harsh ones
+- Consumer reads label top-to-bottom: "Glycerin, Panthenol, DMDM Hydantoin..." — creates false impression of gentleness
+- The 1% line is the inflection point. Everything above it is ordered by concentration. Everything below it is ordered by corporate choice.
+
+### v3.0 Implementation Requirements
+1. Build a visual "1% Line Detector" — an interactive SVG or CSS visualization that shows:
+   - A sample ingredient list with the 1% threshold marked
+   - Color coding: above 1% = ordered by weight (green zone), below 1% = arbitrary order (red zone)
+   - Hover/click to reveal patent-derived actual concentrations for common products
+
+2. Include a "Dusting Calculator" — simple JavaScript that:
+   - Takes an ingredient list as input
+   - Identifies botanical/marketing claims
+   - Cross-references against patent database for known concentrations
+   - Outputs: "Claimed: Argan Oil. Patent-derived concentration: 0.03%. Marketing dusting confirmed."
+
+3. Document the exact legal text:
+   - EU Regulation 1223/2009, Article 19: "Ingredients shall be listed in descending order of their weight at the time they are added to the cosmetic product. Ingredients in concentrations of less than 1 % may be listed in any order after the ingredients in concentrations of more than 1 %."
+   - FDA 21 CFR 701.3: Similar language for US market
+
+---
+
+## MODULE 2: EXPOSING UPSTREAM RAW MATERIAL PRESERVATIVES
+
+### The Supply Chain Mechanism
+- Bulk raw materials (surfactant blends, botanical extracts, oils) are preserved by the SUPPLIER, not the BRAND
+- Example: A "paraben-free" shampoo uses a surfactant blend purchased from BASF or Croda that contains methylparaben at 0.3% as a raw material preservative
+- The brand does not add parabens during final manufacturing → legally claims "Paraben-Free"
+- The parabens are present in the final product via CARRYOVER from the raw material
+- Current labeling gap: No requirement to disclose upstream preservatives if they are "incidental" or below 0.01% in final formulation
+
+### v3.0 Implementation Requirements
+1. Build an "Upstream Preservative Map" — a table or interactive visualization showing:
+   - Common raw material suppliers (BASF, Croda, Evonik, Dow, Clariant)
+   - Their standard surfactant blends and their preservative content
+   - How these preservatives carry over into final products
+   - Which brands claim "paraben-free" while using these blends
+
+2. Include supplier catalog excerpts (publicly available technical data sheets):
+   - Example: BASF Plantacare 818 UP (alkyl polyglucoside) — typical preservative: sodium benzoate
+   - Example: Croda Crodasinic LS30 (sodium lauroyl sarcosinate) — typical preservative: none (self-preserving pH)
+   - Example: generic SLES 70% solution — typical preservative: methylparaben + propylparaben at 0.1% each
+
+3. Document the regulatory loophole:
+   - EU: "Incidental ingredients" below 0.01% need not be labeled (EU Regulation 1223/2009, Annex V)
+   - US: FDA does not require disclosure of incidental ingredients (21 CFR 701.3)
+   - The loophole: If raw material preservative is 0.3% in concentrate, and concentrate is 10% of final formula, final concentration = 0.03%. This is above the 0.01% incidental threshold but below the 1% ordering threshold. It can be hidden in the arbitrary zone.
+
+---
+
+## MODULE 3: STRUCTURAL UNMASKING OF "FRAGRANCE/PARFUM"
+
+### The Compression Mechanism
+- FDA 21 CFR 701.3: "Fragrance" is a trade secret exemption
+- A single token "fragrance" or "parfum" can represent 30–300 individual compounds
+- IFRA Standards (International Fragrance Association) list 3,619 fragrance materials, but only 26 allergens must be disclosed in EU
+- Phthalates (DEP, DBP, DIBP) are NOT classified as allergens → they remain hidden under "fragrance"
+
+### v3.0 Implementation Requirements
+1. Build a "Fragrance Decompression Engine" — interactive visualization:
+   - Input: A product's "fragrance" token
+   - Output: Probable component list based on:
+     a) IFRA transparency list (3,619 materials with CAS numbers)
+     b) GC-MS studies of similar products (published literature)
+     c) Patent fragrance formulations from the same corporation
+   - Display as a treemap or sunburst chart: each compound sized by probability of presence
+
+2. Include a "GC-MS Open Database" section:
+   - This is a CALL TO ACTION, not a functional database (we don't have GC-MS data)
+   - But it must include:
+     a) How consumers can access GC-MS services (academic core facilities, commercial labs like SGS or Intertek)
+     b) Cost estimates: $200–$500 per sample for academic; $1,000–$3,000 for commercial
+     c) What the output looks like: chromatogram + mass spectrum + compound identification
+     d) How to contribute to a crowdsourced database: upload chromatogram + product photo + ingredient list
+
+3. Document the exact legal text:
+   - FDA 21 CFR 701.3(a): "The label shall contain a list of ingredients... except that fragrance or flavor may be listed as fragrance or flavor."
+   - EU Regulation 1223/2009, Article 19(1)(g): 26 fragrance allergens must be listed if present >0.001% (leave-on) or >0.01% (rinse-off)
+   - The gap: Phthalates, synthetic musks, and volatile organic compounds are NOT on the 26-allergen list
+
+---
+
+## MODULE 4: CROSS-BORDER REGULATORY ARBITRAGE TRACKING
+
+### The Arbitrage Mechanism
+- Same product name, different formulations across jurisdictions
+- EU bans: 1,328 chemicals (REACH Annex XIV + XVII + CosIng restrictions)
+- US bans: 11 chemicals (FDA has no pre-market approval authority for cosmetics)
+- Result: A shampoo sold as "Head & Shoulders Classic Clean" in the US contains zinc pyrithione (1%) + SLES (12%) + fragrance. The EU version may contain climbazole (0.5%) + SLES (10%) + different fragrance blend. The Asian version may contain entirely different actives.
+
+### v3.0 Implementation Requirements
+1. Build a "Global Formula Divergence Matrix" — a large interactive table:
+   - Rows: Product names (e.g., "Head & Shoulders Classic Clean", "Pantene Pro-V Smooth & Sleek")
+   - Columns: Jurisdictions (US, EU, UK, Canada, Japan, China, Australia)
+   - Cells: Ingredient list for that product in that jurisdiction
+   - Highlighted cells: Ingredients that differ from the US version
+   - Color coding: Green = same as US; Yellow = different concentration; Red = different ingredient entirely
+
+2. Include real examples (verifiable by purchasing products or checking retailer websites):
+   - Example 1: Pantene Pro-V
+     * US: Water, Sodium Laureth Sulfate, Sodium Lauryl Sulfate, Cocamidopropyl Betaine, Sodium Citrate, Sodium Xylenesulfonate, Fragrance, Cocamide MEA, Sodium Chloride, Citric Acid, Sodium Benzoate, Polyquaternium-76, Tetrasodium EDTA, Trisodium Ethylenediamine Disuccinate, Panthenol, Panthenyl Ethyl Ether, Methylchloroisothiazolinone, Methylisothiazolinone
+     * EU: Water, Sodium Laureth Sulfate, Sodium Lauryl Sulfate, Cocamidopropyl Betaine, Sodium Citrate, Sodium Xylenesulfonate, Fragrance, Cocamide MEA, Sodium Chloride, Citric Acid, Sodium Benzoate, Polyquaternium-76, Tetrasodium EDTA, Trisodium Ethylenediamine Disuccinate, Panthenol, Panthenyl Ethyl Ether, Phenoxyethanol, Ethylhexylglycerin
+     * Difference: US uses methylchloroisothiazolinone + methylisothiazolinone (MIT/CMIT); EU uses phenoxyethanol + ethylhexylglycerin. MIT/CMIT are restricted in EU leave-on products.
+
+   - Example 2: Herbal Essences bio:renew
+     * US: Contains DMDM Hydantoin (formaldehyde-releaser)
+     * EU: Does not contain DMDM Hydantoin; uses phenoxyethanol instead
+     * Why: EU SCCS has stricter limits on formaldehyde-releasers
+
+3. Document the regulatory divergence:
+   - Table: Banned/restricted ingredients by jurisdiction
+   - EU: 1,328 restricted substances (CosIng + REACH)
+   - US: 11 banned substances (FDA Color Additives + mercury compounds + chlorofluorocarbons + hexachlorophene + prohibited cattle materials + bithionol + mercury + vinyl chloride + zirconium + halogenated salicylanilides + chloroform + methylene chloride)
+   - Japan: Quasi-drug approval required for anti-dandruff actives
+   - China: Animal testing required for imported cosmetics (changing 2024)
+   - Canada: Hotlist of restricted ingredients (Health Canada)
+
+---
+
+## ARCHITECTURAL REQUIREMENTS FOR v3.0
+
+### Design System
+- Continue the v2.0 aesthetic: warm paper-like background (#faf8f5), serif typography (Georgia), dark text (#1a1a1a), red accent (#c41e3a), navy accent (#1e3a5f), green accent (#2d6a4f)
+- NO dark themes. NO cyberpunk. This is a whistleblower document, not a tech demo. It must look like it came from a regulatory agency or a congressional hearing.
+- Tables must be clean, bordered, with hover states
+- Math blocks must use Courier New monospace on light background
+- SVG diagrams must be schematic but anatomically/chemically accurate
+
+### Technical Stack
+- Single HTML file, no external dependencies
+- All SVG inline (no external images)
+- CSS in <style> tag (no external stylesheets)
+- JavaScript inline for any interactivity (1% line detector, dusting calculator, divergence matrix)
+- Must render correctly at 1100px container width, responsive down to 768px
+
+### Content Rules (from user memory instructions)
+- NO assertions without measurement pathways
+- NO "cryptographic" or "blockchain" language
+- NO "elite-level" commentary
+- NO pro comparisons or rankings
+- Plain statements, no hedging
+- Every claim must have a citation, patent number, or regulatory reference
+- When uncertain, say so honestly
+
+### File Output
+- Save to: /mnt/agents/output/shampoo_ontology_v3.html
+- Must be a single self-contained HTML file
+- Target size: 80–120 KB (larger than v2.0 due to 4 new modules)
+
+---
+
+## TACIT KNOWLEDGE: LESSONS FROM v2.0 BUILD
+
+1. **JSON payload limits**: The Python tool truncates large strings. Write HTML in chunks using file append mode ('a'), not as a single string variable.
+2. **SVG complexity**: Large SVGs with many elements cause long render times. Keep SVG element counts under 500 per diagram. Use <g> groups and transforms for repeated elements.
+3. **Table readability**: Wide tables break on mobile. Use responsive design: on screens <768px, tables should scroll horizontally or stack.
+4. **Citation format**: Use inline citations with DOI or patent number in parentheses. Example: (Zouboulis & Boschnakow, 2001, Exp Dermatol, DOI: 10.1034/j.1600-0625.2001.100201.x)
+5. **User expectations**: The user is technically competent and expects direct answers. Do not explain what they already know. Do not assume ignorance. Do not add unsolicited commentary.
+6. **Web AI vs CLI AI**: This is Kimi web AI. It has access to the user's uploaded files and can reference them. Do not confuse this with CLI AI which operates in a sandbox.
+7. **Memory context**: The user has an OE (Orthogonal Engineering) repo with 138 subfolders. They work on Yeshua Agent v2.0, LoRA training, and anti-RLHF systems. They expect production-grade output, not toy implementations.
+
+---
+
+## PRIORITY ORDER FOR v3.0 BUILD
+
+1. Module 1: 1% Rule Loophole (highest impact, easiest to implement with patent data)
+2. Module 4: Regulatory Arbitrage (high impact, requires real product data)
+3. Module 2: Upstream Preservatives (medium impact, requires supplier catalog research)
+4. Module 3: Fragrance Decompression (medium impact, mostly theoretical without GC-MS data)
+
+Build in this order. If time/space runs out, prioritize Module 1 and Module 4.
+
+---
+
+## VERIFICATION CHECKLIST
+
+Before declaring v3.0 complete, verify:
+- [ ] All 4 modules are present with at least one real example each
+- [ ] At least one patent number is cited with verbatim extraction
+- [ ] At least one regulatory text is quoted with section number
+- [ ] At least one supplier catalog reference is included
+- [ ] At least one real product comparison (US vs EU) is documented
+- [ ] The 1% line is visually marked on at least one sample ingredient list
+- [ ] The payoff matrix from v2.0 is preserved or referenced
+- [ ] All molecular structures from v2.0 are preserved
+- [ ] The anatomy diagram from v2.0 is preserved
+- [ ] File is a single self-contained HTML under 150 KB
+- [ ] File renders correctly in a browser at 1100px width
+
+---
+
+END OF INSTRUCTIONS

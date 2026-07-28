@@ -1,0 +1,19 @@
+Build v5.0 of the Shampoo Ingredient Ontology at /home/idor/shampoo-ontology-v5/. v4.1 is complete at /home/idor/shampoo-ontology-v4/ with 100.0/100 diagnostics score. v5.0 adds 7 production deliverables.
+
+DELIVERABLE 1: shampoo_ontology_tests.py - Unit test suite using Python unittest. 50+ test methods covering all 5 v4 modules with real product data. Run: python3 -m unittest shampoo_ontology_tests.py
+
+DELIVERABLE 2: shampoo_ontology_server.py - Consumer web interface using Python http.server (no Flask, no pip). Serves HTML at localhost:8000 with ingredient paste box, analyze button, color-coded results (red=dusting, orange=preservative, yellow=allergen, green=safe), jurisdiction comparison, fragrance analysis, supplier audit. All HTML/CSS/JS embedded. Uses v3.0 design system (#faf8f5, Georgia, #c41e3a, #1e3a5f, #2d6a4f). Works offline.
+
+DELIVERABLE 3: shampoo_ontology_updater.py - Live regulatory update system using urllib. Mock-fetches EU SCCS, FDA, IFRA, China NMPA updates. Compares against embedded database, generates diff report, updates jurisdiction databases. Writes update_log.json. Runnable code uses mock data; real fetch URLs are commented placeholders.
+
+DELIVERABLE 4: shampoo_ontology_cicd.py - CI pipeline using subprocess/os. Steps: py_compile all files, run unit tests, verify diagnostics >= 95.0, verify orchestrator JSON output, check file sizes, generate pass/fail report. Writes cicd_report.json.
+
+DELIVERABLE 5: shampoo_ontology_rdf.py - Academic ontology export in OWL/RDF Turtle format. Classes: Surfactant, Preservative, FragranceComponent, BotanicalExtract, Silicone, Polymer, EUBanned, USBanned, CNBanned, ShampooProduct. Properties: hasCASNumber, hasEUNumber, hasRestriction, hasPatentReference, hasSupplier, hasConcentrationRange, hasIngredient, hasJurisdictionVariant. Output: shampoo_ontology.ttl
+
+DELIVERABLE 6: shampoo_ontology_leaks.py - Clean room leaked data integration. Reconstructs industry formulation data from public patents (P&G, L'Oreal, Unilever USPTO filings) and published GC-MS studies. Cross-references against product claims. Flags: DUSTING_CONFIRMED (patent says 0.05%, product lists after fragrance), CONCENTRATION_MATCH (patent and product align). Output: leak_verification_report.json with confidence scores.
+
+DELIVERABLE 7: SIOG_v5_0_MONUMENT.txt - Plain text monument document. States what v5.0 is, what it contains, what it does, what it does NOT do, how to use it, who it is for, license (public domain), version history, known limitations, next steps (none - v5.0 is complete).
+
+RULES: Standard library only. No pip. Every file independently runnable. Every class/method has docstring. py_compile every file. Report file sizes. Copy all to /mnt/c/Users/Aidor/Downloads/add to oe_ shampoo/v5_output/
+
+PRIORITY: 1) tests, 2) CI/CD, 3) web server, 4) RDF, 5) updater, 6) leaks, 7) monument.

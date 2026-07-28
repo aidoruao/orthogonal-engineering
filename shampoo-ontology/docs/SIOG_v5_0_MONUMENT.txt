@@ -1,0 +1,131 @@
+SIOG v5.0 MONUMENT
+=================
+What v5.0 is:
+  A complete, production-grade shampoo ingredient analysis system.
+  v5.0 converts the v4.1 research modules into deployable infrastructure:
+  unit tests, CI/CD pipeline, web server, RDF ontology, regulatory updater,
+  leak verification engine, and a formal monument document.
+
+What it contains:
+  5 core modules (from v4.1) + 7 deliverables = 12 files
+
+  Core modules (at /home/idor/shampoo-ontology-v4/):
+    shampoo_ontology_parser.py            Module 1: ingredient normalization
+    shampoo_ontology_divergence.py        Module 2: regulatory comparison
+    shampoo_ontology_fragrance.py         Module 3: fragrance probability engine
+    shampoo_ontology_supplier_audit.py    Module 4: preservative carryover audit
+    shampoo_ontology_diagnostics.py       Module 5: data quality engine
+
+  Deliverables (at /home/idor/shampoo-ontology-v5/):
+    shampoo_ontology_tests.py             Unit test suite (50+ tests)
+    shampoo_ontology_cicd.py              CI/CD pipeline
+    shampoo_ontology_server.py            Web interface (http.server)
+    shampoo_ontology_rdf.py               OWL/RDF Turtle export
+    shampoo_ontology_updater.py           Regulatory update system
+    shampoo_ontology_leaks.py             Clean room leak verification
+    SIOG_v5_0_MONUMENT.txt                This document
+
+  Output artifacts:
+    shampoo_ontology_diagnostics.html     Quality report (v4.1)
+    shampoo_ontology.ttl                  Academic ontology (v5.0)
+    cicd_report.json                      CI pass/fail (v5.0)
+    update_log.json                       Regulatory diff (v5.0)
+    leak_verification_report.json         Patent cross-reference (v5.0)
+    v4_report.json                        Pipeline output (v4.1)
+
+What it does:
+  1. Parses raw shampoo ingredient lists into normalized INCI names
+  2. Identifies marketing dusting ingredients using patent-derived concentration data
+  3. Flags preservatives and cross-references against supplier carryover databases
+  4. Detects EU fragrance allergens with CAS numbers and rinse-off thresholds
+  5. Compares product formulations across US, EU, Japan, and China jurisdictions
+  6. Models fragrance components using IFRA transparency subset and GC-MS literature
+  7. Audits supplier preservative claims against upstream concentrate data
+  8. Generates data quality diagnostics with self-contained HTML report
+  9. Runs 50+ unit tests with real product data
+  10. Serves a consumer web interface for ingredient analysis
+  11. Exports academic ontology in OWL/RDF Turtle format
+  12. Simulates regulatory update fetching from EU SCCS, FDA, IFRA, NMPA
+  13. Cross-references patent data against product claims to detect dusting
+  14. Runs a CI/CD pipeline that validates syntax, tests, score, and file sizes
+
+What it does NOT do:
+  - It does not perform actual chemical analysis (no GC-MS hardware integration)
+  - It does not replace regulatory bodies (it cites EC 1223/2009, 21 CFR, etc.)
+  - It does not guarantee product safety (it flags risks for human review)
+  - It does not scrape live regulatory sites (uses mock data; real URLs commented)
+  - It does not contain proprietary industry data (all data from public sources)
+  - It does not require external dependencies (standard library only)
+  - It does not use blockchain, cryptography, or "elite-level" language
+
+How to use it:
+  1. Clone or copy the repository to a machine with Python 3.10+
+  2. Run the web server:
+       cd /home/idor/shampoo-ontology-v5
+       python3 shampoo_ontology_server.py
+     Open http://localhost:8000 in a browser
+  3. Or run individual modules:
+       python3 shampoo_ontology_tests.py     (unit tests)
+       python3 shampoo_ontology_cicd.py      (CI/CD pipeline)
+       python3 shampoo_ontology_rdf.py       (ontology export)
+       python3 shampoo_ontology_updater.py   (regulatory update)
+       python3 shampoo_ontology_leaks.py     (leak verification)
+  4. Or import v4.1 modules directly:
+       import shampoo_ontology_parser
+       parser = shampoo_ontology_parser.IngredientListParser()
+       result = parser.parse("Water, Sodium Laureth Sulfate, Fragrance")
+       print(parser.to_json(result))
+
+Who it is for:
+  - Consumers checking their shampoo ingredients against regulatory databases
+  - Cosmetic chemists researching formulation patterns
+  - Journalists investigating brand claims
+  - Regulatory professionals comparing jurisdiction differences
+  - Researchers studying fragrance transparency
+  - Developers building on the ingredient ontology
+
+License:
+  Public domain. No attribution required. No restrictions on use,
+  modification, or redistribution.
+
+Version history:
+  v1.0 — HTML guide with ingredient anatomy and molecular structures
+  v2.0 — Anatomy, molecules, game theory, hard water chemistry, no-poo protocol
+  v3.0 — 4 structural deconstruction modules, interactive calculators, SVG diagrams
+  v4.0 — 5 executable Python modules with embedded databases, diagnostics engine
+  v4.1 — 3 bug fixes (AQUA aliases, case mismatch, botanical fallback), 100/100 score
+  v5.0 — Production system: tests, CI/CD, web server, RDF, updater, leaks, monument
+
+Known limitations:
+  - Embedded databases are static snapshots. The updater.py can simulate updates
+    but real-time fetching is commented out (network access not available).
+  - Fragrance probabilities are frequency-based estimates, not GC-MS measurements.
+    Real GC-MS data can be integrated via FragranceEngine.set_gcms_data().
+  - Supplier preservative data is based on typical TDS values, not batch-specific
+    certificates of analysis. Real TDS URLs are behind supplier login walls.
+  - Regulatory data reflects known amendments as of 2026-07-27 but does not
+    include the most recent SCCS opinions or FDA guidance documents.
+  - The botanical fallback regex matches a broad set of suffixes. Edge cases
+    (ingredients ending in "-oxide" or "-chloride") are handled by the
+    canonical dictionary but truly unknown compounds ending in unexpected
+    suffixes may be missed.
+  - The web server runs on localhost only. Production deployment would require
+    a reverse proxy or WSGI adapter (not included — standard library only).
+
+Next steps:
+  None. v5.0 is complete. Future work is maintenance:
+  - Run shampoo_ontology_updater.py periodically to check for regulatory changes
+  - Add new product formulations to the comparison database
+  - Expand the canonical INCI dictionary as new ingredients enter the market
+  - Community contributions via public domain
+
+Build information:
+  Built on: 2026-07-28
+  Python version: 3.10+
+  Total files: 12 (5 core + 7 deliverables)
+  Total size: approximately 400 KB
+  Dependencies: none (Python standard library only)
+  Test coverage: 50+ methods across 5 modules
+  Diagnostics score: 100.0/100
+
+END OF MONUMENT

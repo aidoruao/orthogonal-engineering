@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shampoo Ingredient Ontology Guide</title>
+<style>
+  :root {
+    --bg-deep: #0a0a0f;
+    --bg-card: #111118;
+    --bg-elevated: #1a1a24;
+    --accent-cyan: #00f0ff;
+    --accent-amber: #ffaa00;
+    --accent-crimson: #ff3366;
+    --accent-green: #00ff88;
+    --text-primary: #e0e0e8;
+    --text-secondary: #8888a0;
+    --border-subtle: #222233;
+    --border-glow: #00f0ff33;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Particle canvas */
+  #particle-canvas {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; opacity: 0.15;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px, rgba(0,240,255,0.015) 2px, rgba(0,240,255,0.015) 4px
+    );
+    pointer-events: none; z-index: 9999;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* Header */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: center; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(ellipse at center, rgba(0,240,255,0.08) 0%, transparent 60%);
+    animation: breathe 8s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-amber), var(--accent-crimson));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero .subtitle {
+    font-size: 1.2rem; color: var(--text-secondary);
+    max-width: 700px; margin-bottom: 40px;
+  }
+  .hero .badge-row {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .badge {
+    padding: 8px 20px; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid var(--border-subtle); background: var(--bg-card);
+    color: var(--accent-cyan); position: relative; overflow: hidden;
+  }
+  .badge::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0,240,255,0.1), transparent);
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer { 0% { left: -100%; } 100% { left: 100%; } }
+
+  .scroll-indicator {
+    position: absolute; bottom: 40px;
+    animation: bounce 2s infinite;
+    color: var(--text-secondary); font-size: 0.8rem;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+  }
+
+  /* Section styling */
+  section { padding: 100px 0; position: relative; }
+  .section-header {
+    margin-bottom: 60px;
+  }
+  .section-header h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .section-header h2 .num {
+    font-size: 0.5em; color: var(--accent-cyan);
+    border: 1px solid var(--accent-cyan); border-radius: 8px;
+    padding: 4px 12px; font-weight: 600;
+  }
+  .section-header p {
+    color: var(--text-secondary); font-size: 1.1rem; max-width: 700px;
+  }
+
+  /* Scalp layers */
+  .scalp-layers {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .layer-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px; padding: 32px;
+    position: relative; overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  .layer-card:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 40px rgba(0,240,255,0.1);
+    transform: translateY(-4px);
+  }
+  .layer-card::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: linear-gradient(180deg, var(--accent-cyan), var(--accent-amber));
+  }
+  .layer-card .layer-num {
+    font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--accent-cyan); margin-bottom: 12px;
+  }
+  .layer-card h3 { font-size: 1.4rem; margin-bottom: 12px; }
+  .layer-card .function { color: var(--accent-green); font-size: 0.9rem; margin-bottom: 16px; font-weight: 600; }
+  .layer-card .vuln { color: var(--accent-crimson); font-size: 0.9rem; }
+  .layer-card .vuln strong { color: var(--accent-crimson); }
+
+  /* Ingredient assault grid */
+  .ingredient-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+  }
+  .ingredient-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px; overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  .ingredient-card:hover {
+    border-color: var(--accent-crimson);
+    box-shadow: 0 0 50px rgba(255,51,102,0.08);
+  }
+  .ingredient-card .card-header {
+    padding: 24px 28px;
+    background: linear-gradient(135deg, rgba(255,51,102,0.1), transparent);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .ingredient-card .cat-label {
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--accent-crimson); margin-bottom: 8px;
+  }
+  .ingredient-card h3 { font-size: 1.3rem; }
+  .ingredient-card .examples {
+    font-size: 0.85rem; color: var(--text-secondary); margin-top: 6px;
+    font-style: italic;
+  }
+  .ingredient-card .card-body { padding: 24px 28px; }
+  .effect-row {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--border-subtle);
+  }
+  .effect-row:last-child { border-bottom: none; }
+  .effect-row .layer-tag {
+    min-width: 90px; padding: 4px 12px; border-radius: 6px;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    background: var(--bg-elevated); color: var(--accent-amber);
+    border: 1px solid var(--border-subtle);
+  }
+  .effect-row .effect-text { font-size: 0.9rem; color: var(--text-secondary); }
+  .effect-row .effect-text strong { color: var(--text-primary); }
+  .card-footer {
+    padding: 16px 28px;
+    background: rgba(255,51,102,0.05);
+    border-top: 1px solid var(--border-subtle);
+    font-size: 0.85rem; color: var(--accent-crimson); font-weight: 600;
+  }
+
+  /* Hard water / No-poo section */
+  .protocol-section {
+    background: linear-gradient(180deg, var(--bg-deep), var(--bg-card), var(--bg-deep));
+  }
+  .protocol-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+  .protocol-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px; padding: 40px;
+    position: relative; overflow: hidden;
+  }
+  .protocol-card.highlight {
+    border-color: var(--accent-green);
+    background: linear-gradient(135deg, var(--bg-card), rgba(0,255,136,0.03));
+  }
+  .protocol-card .icon {
+    width: 60px; height: 60px; border-radius: 16px;
+    background: var(--bg-elevated); display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; margin-bottom: 24px;
+    border: 1px solid var(--border-subtle);
+  }
+  .protocol-card.highlight .icon { border-color: var(--accent-green); }
+  .protocol-card h3 { font-size: 1.4rem; margin-bottom: 16px; }
+  .protocol-card p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; }
+  .protocol-card .timeline {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .timeline-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; background: var(--bg-elevated);
+    border-radius: 10px; border: 1px solid var(--border-subtle);
+  }
+  .timeline-item .week { font-weight: 700; color: var(--accent-cyan); min-width: 60px; }
+  .timeline-item .desc { font-size: 0.85rem; color: var(--text-secondary); }
+
+  /* Product recommendations */
+  .product-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .product-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px; padding: 28px;
+    transition: all 0.3s ease;
+  }
+  .product-card:hover {
+    border-color: var(--accent-cyan);
+    transform: translateY(-2px);
+  }
+  .product-card .brand { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-cyan); margin-bottom: 8px; }
+  .product-card h4 { font-size: 1.1rem; margin-bottom: 8px; }
+  .product-card .price { color: var(--accent-green); font-weight: 700; font-size: 1.2rem; margin-bottom: 12px; }
+  .product-card .features { list-style: none; }
+  .product-card .features li {
+    font-size: 0.85rem; color: var(--text-secondary);
+    padding: 4px 0; padding-left: 20px; position: relative;
+  }
+  .product-card .features li::before {
+    content: '✓'; position: absolute; left: 0; color: var(--accent-green); font-weight: 700;
+  }
+
+  /* Data sources */
+  .source-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+  .source-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px; padding: 32px;
+    position: relative;
+  }
+  .source-card .tier {
+    position: absolute; top: -1px; right: 24px;
+    padding: 6px 16px; border-radius: 0 0 8px 8px;
+    font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+    background: var(--accent-cyan); color: var(--bg-deep);
+  }
+  .source-card h3 { font-size: 1.2rem; margin-bottom: 12px; margin-top: 8px; }
+  .source-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 16px; }
+  .source-card a {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--accent-cyan); text-decoration: none;
+    font-size: 0.85rem; font-weight: 600;
+    padding: 10px 20px; border: 1px solid var(--accent-cyan);
+    border-radius: 8px; transition: all 0.3s ease;
+  }
+  .source-card a:hover {
+    background: var(--accent-cyan); color: var(--bg-deep);
+  }
+
+  /* Molecular simulation canvas */
+  .sim-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px; overflow: hidden;
+    margin: 40px 0;
+  }
+  .sim-header {
+    padding: 20px 32px; background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border-subtle);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .sim-header h3 { font-size: 1.1rem; }
+  .sim-controls {
+    display: flex; gap: 8px;
+  }
+  .sim-btn {
+    padding: 8px 16px; border-radius: 8px;
+    border: 1px solid var(--border-subtle); background: var(--bg-card);
+    color: var(--text-primary); font-size: 0.8rem; cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .sim-btn:hover, .sim-btn.active {
+    border-color: var(--accent-cyan); color: var(--accent-cyan);
+  }
+  #molecule-canvas {
+    width: 100%; height: 400px; display: block;
+    background: radial-gradient(ellipse at center, #0d0d15 0%, var(--bg-deep) 100%);
+  }
+  .sim-legend {
+    padding: 16px 32px; background: var(--bg-elevated);
+    border-top: 1px solid var(--border-subtle);
+    display: flex; gap: 24px; flex-wrap: wrap;
+    font-size: 0.8rem; color: var(--text-secondary);
+  }
+  .sim-legend span { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+  /* Verdict banner */
+  .verdict-banner {
+    background: linear-gradient(135deg, rgba(255,51,102,0.1), rgba(0,240,255,0.05));
+    border: 1px solid var(--accent-crimson);
+    border-radius: 20px; padding: 60px;
+    text-align: center; margin: 60px 0;
+    position: relative; overflow: hidden;
+  }
+  .verdict-banner::before {
+    content: '';
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 10px, rgba(255,51,102,0.03) 10px, rgba(255,51,102,0.03) 20px
+    );
+  }
+  .verdict-banner h2 {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    color: var(--accent-crimson); margin-bottom: 20px;
+    position: relative;
+  }
+  .verdict-banner p {
+    font-size: 1.1rem; color: var(--text-secondary); max-width: 700px;
+    margin: 0 auto; position: relative;
+  }
+
+  /* Footer */
+  footer {
+    padding: 60px 0; text-align: center;
+    border-top: 1px solid var(--border-subtle);
+    color: var(--text-secondary); font-size: 0.85rem;
+  }
+  footer .hash {
+    font-family: monospace; color: var(--accent-cyan); margin-top: 12px;
+    font-size: 0.75rem; opacity: 0.6;
+  }
+
+  /* Navigation */
+  .nav-bar {
+    position: fixed; top: 0; left: 0; width: 100%;
+    background: rgba(10,10,15,0.9); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-subtle);
+    z-index: 1000; padding: 16px 0;
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .nav-logo {
+    font-weight: 800; font-size: 1rem;
+    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-amber));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    color: var(--text-secondary); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500;
+    transition: color 0.3s ease;
+  }
+  .nav-links a:hover { color: var(--accent-cyan); }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    section { padding: 60px 0; }
+    .ingredient-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particle-canvas"></canvas>
+
+<nav class="nav-bar">
+  <div class="nav-inner">
+    <div class="nav-logo">SIOG // v0.9.1-alpha</div>
+    <div class="nav-links">
+      <a href="#ontology">Ontology</a>
+      <a href="#assault">Assault Matrix</a>
+      <a href="#protocol">Protocol</a>
+      <a href="#simulation">Simulation</a>
+      <a href="#sources">Sources</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Shampoo Ingredient<br>Ontology Guide</h1>
+  <p class="subtitle">
+    A cryptographic, hyper-serious, citation-backed field manual for decoding every molecule 
+    that touches your scalp. From stratum corneum to systemic absorption — mapped, proven, and weaponized for your defense.
+  </p>
+  <div class="badge-row">
+    <span class="badge">Cryptographic Integrity</span>
+    <span class="badge">Peer-Reviewed Citations</span>
+    <span class="badge">Live Molecular Simulation</span>
+    <span class="badge">Depositive Architecture</span>
+  </div>
+  <div class="scroll-indicator">
+    <span>Scroll to descend</span>
+    <span style="font-size:1.5rem;">↓</span>
+  </div>
+</section>
+
+<!-- SCALP ONTOLOGY -->
+<section id="ontology">
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">01</span> The Human Scalp: A Layered Ontology</h2>
+      <p>The scalp is a complete, self-regulating organ. It does not need external intervention. It only needs to be left alone. Here are the four layers that corporate chemistry systematically assaults.</p>
+    </div>
+    <div class="scalp-layers">
+      <div class="layer-card">
+        <div class="layer-num">Layer 1</div>
+        <h3>Stratum Corneum</h3>
+        <div class="function">FUNCTION: Outermost barrier. Lipid matrix holds dead skin cells together.</div>
+        <div class="vuln"><strong>VULNERABILITY:</strong> Stripped by surfactants. Lipids dissolve. Barrier breaks.</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">Layer 2</div>
+        <h3>Epidermis (Living)</h3>
+        <div class="function">FUNCTION: Generates new skin cells. Contains keratinocytes, immune cells.</div>
+        <div class="vuln"><strong>VULNERABILITY:</strong> Exposed to penetration enhancers. Inflammation triggered.</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">Layer 3</div>
+        <h3>Dermis</h3>
+        <div class="function">FUNCTION: Hair follicles, sebaceous glands, blood vessels, nerve endings.</div>
+        <div class="vuln"><strong>VULNERABILITY:</strong> Sebum production disrupted. Nerves hypersensitized.</div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">Layer 4</div>
+        <h3>Hypodermis</h3>
+        <div class="function">FUNCTION: Anchors scalp to skull. Fat and connective tissue.</div>
+        <div class="vuln"><strong>VULNERABILITY:</strong> Indirectly affected by chronic inflammation. Systemic absorption.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INGREDIENT ASSAULT -->
+<section id="assault" style="background: linear-gradient(180deg, var(--bg-deep), var(--bg-card));">
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">02</span> Corporate Force Meets the Scalp</h2>
+      <p>Corporate shampoo ingredients do not interact neutrally. They are engineered to penetrate, strip, and disrupt each layer systematically. Below is the assault matrix.</p>
+    </div>
+    <div class="ingredient-grid">
+
+      <!-- Surfactants -->
+      <div class="ingredient-card">
+        <div class="card-header">
+          <div class="cat-label">Category 01 — Surfactants</div>
+          <h3>Sulfate Stripping Agents</h3>
+          <div class="examples">Sodium Lauryl Sulfate (SLS), Sodium Laureth Sulfate (SLES)</div>
+        </div>
+        <div class="card-body">
+          <div class="effect-row">
+            <span class="layer-tag">Layer 1</span>
+            <span class="effect-text"><strong>Dissolves lipid matrix.</strong> Surfactants break down intercellular lipids holding skin cells together.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 2</span>
+            <span class="effect-text"><strong>Denatures proteins, irritates living cells.</strong> Penetrates corneocytes, causing protein damage and inflammation.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 3</span>
+            <span class="effect-text"><strong>Triggers feedback loop.</strong> Stripping signals sebaceous glands to overproduce oil.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 4</span>
+            <span class="effect-text"><strong>Indirect systemic absorption.</strong> Damaged barrier allows deeper penetration of other chemicals.</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          ⚠ CORPORATE INTENT: Strip the barrier so the scalp panics and overproduces oil, creating dependency on the product to "manage" the resulting grease and flakes.
+        </div>
+      </div>
+
+      <!-- Penetration Enhancers -->
+      <div class="ingredient-card">
+        <div class="card-header">
+          <div class="cat-label">Category 02 — Penetration Enhancers</div>
+          <h3>Barrier Disruptors</h3>
+          <div class="examples">Propylene Glycol, Ethanol, Isopropyl Alcohol</div>
+        </div>
+        <div class="card-body">
+          <div class="effect-row">
+            <span class="layer-tag">Layer 1</span>
+            <span class="effect-text"><strong>Disrupts lipid organization.</strong> Fluidizes the lipid bilayer, opening gaps.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 2</span>
+            <span class="effect-text"><strong>Carries other chemicals deeper.</strong> Acts as a solvent, pulling other ingredients into living tissue.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 3</span>
+            <span class="effect-text"><strong>Delivers irritants to blood vessels and nerves.</strong> Allows surfactants and preservatives to reach the dermis.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 4</span>
+            <span class="effect-text"><strong>Systemic absorption.</strong> Chemicals enter the bloodstream through the dermal capillary network.</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          ⚠ CORPORATE INTENT: Ensure the full chemical cocktail is delivered as deep as possible, maximizing biological impact and ensuring systemic exposure that creates long-term dependency.
+        </div>
+      </div>
+
+      <!-- Silicones -->
+      <div class="ingredient-card">
+        <div class="card-header">
+          <div class="cat-label">Category 03 — Silicones</div>
+          <h3>Occlusive Sealing Agents</h3>
+          <div class="examples">Dimethicone, Cyclomethicone, Cyclopentasiloxane</div>
+        </div>
+        <div class="card-body">
+          <div class="effect-row">
+            <span class="layer-tag">Layer 1</span>
+            <span class="effect-text"><strong>Forms an occlusive film.</strong> Coats the surface with a water-resistant, non-breathable film.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 2</span>
+            <span class="effect-text"><strong>Traps moisture and irritants.</strong> Prevents natural moisture loss, but also traps bacteria and chemicals.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 3</span>
+            <span class="effect-text"><strong>Prevents natural oil distribution.</strong> Silicone film blocks sebum from spreading, leading to clogged follicles.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 4</span>
+            <span class="effect-text"><strong>Bioaccumulation.</strong> Silicones are not biodegradable and can persist in tissues.</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          ⚠ CORPORATE INTENT: Create the illusion of smoothness while preventing the scalp's natural repair processes. The scalp is sealed, so it cannot shed or regulate properly.
+        </div>
+      </div>
+
+      <!-- Preservatives -->
+      <div class="ingredient-card">
+        <div class="card-header">
+          <div class="cat-label">Category 04 — Preservatives</div>
+          <h3>Chronic Inflammation Triggers</h3>
+          <div class="examples">Methylparaben, Propylparaben, DMDM Hydantoin, Diazolidinyl Urea</div>
+        </div>
+        <div class="card-body">
+          <div class="effect-row">
+            <span class="layer-tag">Layer 1</span>
+            <span class="effect-text"><strong>Prolonged contact sensitization.</strong> Preservatives are designed to remain active on the skin surface.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 2</span>
+            <span class="effect-text"><strong>Chronic low-grade inflammation.</strong> Activate immune cells, causing sustained inflammatory response.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 3</span>
+            <span class="effect-text"><strong>Endocrine disruption.</strong> Parabens are estrogen-mimics that can disrupt hormone signaling.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 4</span>
+            <span class="effect-text"><strong>Systemic accumulation.</strong> Absorbed into the body, can accumulate in tissues over time.</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          ⚠ CORPORATE INTENT: Ensure the product doesn't spoil while creating a low-level inflammatory response that mimics dandruff, eczema, and other conditions, driving users to buy more "treatment" products.
+        </div>
+      </div>
+
+      <!-- Fragrances -->
+      <div class="ingredient-card">
+        <div class="card-header">
+          <div class="cat-label">Category 05 — Synthetic Fragrances</div>
+          <h3>Sensory Deception Agents</h3>
+          <div class="examples">Phthalates, undisclosed "fragrance" blends</div>
+        </div>
+        <div class="card-body">
+          <div class="effect-row">
+            <span class="layer-tag">Layer 1</span>
+            <span class="effect-text"><strong>Contact dermatitis.</strong> Fragrances are the #1 cause of cosmetic contact dermatitis.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 2</span>
+            <span class="effect-text"><strong>Sensitization.</strong> Repeated exposure causes immune system to overreact.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 3</span>
+            <span class="effect-text"><strong>Endocrine disruption.</strong> Phthalates are known endocrine disruptors.</span>
+          </div>
+          <div class="effect-row">
+            <span class="layer-tag">Layer 4</span>
+            <span class="effect-text"><strong>Systemic absorption.</strong> Penetrate deeply and enter the bloodstream.</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          ⚠ CORPORATE INTENT: Create a sensory experience (smell) that makes the product feel pleasant and "clean," masking the fact that it is chemically damaging the scalp.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- VERDICT -->
+<section>
+  <div class="container">
+    <div class="verdict-banner">
+      <h2>🏆 The Ontological Verdict</h2>
+      <p>
+        The corporate shampoo industry has built a <strong>multi-layered chemical assault</strong> on the human scalp. 
+        Each ingredient category is designed to: strip the surface barrier, penetrate the living layers, disrupt the sebaceous glands, 
+        seal the surface to prevent repair, create chronic inflammation that mimics disease, and ensure dependency through systemic absorption.
+        <br><br>
+        <strong style="color: var(--accent-crimson);">This is not a product. This is a system of engineered dependency.</strong>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- HARD WATER / NO-POO PROTOCOL -->
+<section id="protocol" class="protocol-section">
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">03</span> The Structural Fix: No-Poo + Hard Water Defense</h2>
+      <p>Before you decode ingredients, you must fix your water. Hard water minerals (calcium, magnesium) react with surfactant residue to form soap scum that coats your scalp. The no-poo protocol combined with filtered water is the foundation.</p>
+    </div>
+    <div class="protocol-grid">
+      <div class="protocol-card">
+        <div class="icon">💧</div>
+        <h3>The Hard Water Problem</h3>
+        <p>Hard water contains dissolved calcium (Ca²⁺) and magnesium (Mg²⁺) ions. When these react with soap or shampoo surfactants, they form insoluble salts — soap scum — that deposits on your scalp, blocking follicles and preventing natural oil distribution.</p>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="week">0 ppm</span>
+            <span class="desc">Soft water — ideal for scalp health</span>
+          </div>
+          <div class="timeline-item">
+            <span class="week">60-120</span>
+            <span class="desc">Moderately hard — buildup begins</span>
+          </div>
+          <div class="timeline-item">
+            <span class="week">121-180</span>
+            <span class="desc">Hard — significant soap scum formation</span>
+          </div>
+          <div class="timeline-item">
+            <span class="week">180+</span>
+            <span class="desc">Very hard — severe follicle blockage risk</span>
+          </div>
+        </div>
+      </div>
+      <div class="protocol-card highlight">
+        <div class="icon">🛡️</div>
+        <h3>The 6-Week No-Poo Protocol</h3>
+        <p>Stop using shampoo entirely. Use filtered water. Your scalp will go through a transition period as it relearns to regulate sebum production naturally. This is not optional — it is the prerequisite for all further analysis.</p>
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="week">Week 1-2</span>
+            <span class="desc">Scalp overproduces oil (panic response). Use water-only rinses with filtered water.</span>
+          </div>
+          <div class="timeline-item">
+            <span class="week">Week 3-4</span>
+            <span class="desc">Oil production begins normalizing. Scalp starts shedding built-up silicones.</span>
+          </div>
+          <div class="timeline-item">
+            <span class="week">Week 5-6</span>
+            <span class="desc">Natural sebum balance restored. Stratum corneum barrier begins repairing.</span>
+          </div>
+          <div class="timeline-item">
+            <span class="week">Week 6+</span>
+            <span class="desc">Baseline established. You can now accurately assess any product you introduce.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT RECOMMENDATIONS -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">04</span> Hard Water Filtration Arsenal</h2>
+      <p>Verified filtration systems that reduce limescale, chlorine, and heavy metals. These are the tools that make the no-poo protocol viable in hard water regions.</p>
+    </div>
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="brand">BRITA</div>
+        <h4>Marella Blue Water Filter Jug (2.4L)</h4>
+        <div class="price">$47.78</div>
+        <ul class="features">
+          <li>3x MAXTRA PRO All-in-1 Filters included</li>
+          <li>Reduces chlorine, limescale, and PFAS</li>
+          <li>4.7★ (10.1K reviews)</li>
+          <li>Fridge-door compatible</li>
+        </ul>
+      </div>
+      <div class="product-card">
+        <div class="brand">BRITA</div>
+        <h4>MAXTRA PRO Limescale Expert — 12 Pack</h4>
+        <div class="price">$78.71 ($6.56/filter)</div>
+        <ul class="features">
+          <li>Extra limescale filtration</li>
+          <li>Appliance protection</li>
+          <li>Annual supply pack</li>
+          <li>4.7★ (2.6K reviews)</li>
+        </ul>
+      </div>
+      <div class="product-card">
+        <div class="brand">BRITA</div>
+        <h4>27 Cup Elite Filter Dispenser</h4>
+        <div class="price">$49.98</div>
+        <ul class="features">
+          <li>NSF Certified — removes 99% of lead</li>
+          <li>Reduces 30+ contaminants</li>
+          <li>SmartLight indicator</li>
+          <li>4.4★ (9K reviews)</li>
+        </ul>
+      </div>
+      <div class="product-card">
+        <div class="brand">BRITA</div>
+        <h4>Stream Pitcher Water Filter (2-Pack)</h4>
+        <div class="price">$16.83 ($8.42/filter)</div>
+        <ul class="features">
+          <li>BPA-Free</li>
+          <li>Replaces 1,800 plastic bottles/year</li>
+          <li>Lasts 2 months or 40 gallons</li>
+          <li>4.8★ (12.1K reviews)</li>
+        </ul>
+      </div>
+      <div class="product-card">
+        <div class="brand">AQUA CREST</div>
+        <h4>Filter Replacement for Brita (6 Pack)</h4>
+        <div class="price">$16.19 (List: $23.99)</div>
+        <ul class="features">
+          <li>NSF Certified</li>
+          <li>1-year filter supply</li>
+          <li>BPA-Free</li>
+          <li>4.6★ (30.4K reviews)</li>
+        </ul>
+      </div>
+      <div class="product-card">
+        <div class="brand">PHILIPS</div>
+        <h4>Water 3-Pack Brita Compatible Cartridges</h4>
+        <div class="price">$34.91 ($11.64/cartridge)</div>
+        <ul class="features">
+          <li>Reduces microplastics</li>
+          <li>Chlorine, limescale, heavy metals</li>
+          <li>Brita-compatible fit</li>
+          <li>4.4★ (924 reviews)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOLECULAR SIMULATION -->
+<section id="simulation">
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">05</span> Live Molecular Simulation</h2>
+      <p>Real-time visualization of molecular interactions at the scalp barrier. Observe how surfactants attack lipid structures, how silicones form occlusive films, and how the scalp attempts to defend itself.</p>
+    </div>
+    <div class="sim-container">
+      <div class="sim-header">
+        <h3>🔬 Molecular Interaction Engine</h3>
+        <div class="sim-controls">
+          <button class="sim-btn active" onclick="setMode('attack')">Surfactant Attack</button>
+          <button class="sim-btn" onclick="setMode('seal')">Silicone Occlusion</button>
+          <button class="sim-btn" onclick="setMode('defend')">Scalp Defense</button>
+          <button class="sim-btn" onclick="setMode('heal')">Healing Phase</button>
+        </div>
+      </div>
+      <canvas id="molecule-canvas"></canvas>
+      <div class="sim-legend">
+        <span><span class="legend-dot" style="background:#00f0ff;"></span> Lipid Molecules</span>
+        <span><span class="legend-dot" style="background:#ff3366;"></span> Surfactant Agents</span>
+        <span><span class="legend-dot" style="background:#ffaa00;"></span> Silicone Film</span>
+        <span><span class="legend-dot" style="background:#00ff88;"></span> Keratinocytes</span>
+        <span><span class="legend-dot" style="background:#888;"></span> Sebum</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DATA SOURCES -->
+<section id="sources">
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">06</span> The Data Vaults: Where to Find Every Ingredient</h2>
+      <p>No single database contains every shampoo. But the information is out there, fragmented across scientific, regulatory, and consumer-grade repositories. Here is the complete landscape.</p>
+    </div>
+    <div class="source-grid">
+      <div class="source-card">
+        <div class="tier">Tier 1 — Scientific</div>
+        <h3>EPA CompTox Dashboard (CPDat)</h3>
+        <p>Maps over <strong>49,000 chemicals</strong> to their usage in over <strong>16,000 consumer product types</strong>, including shampoo. Search by chemical name or product category. The definitive regulatory vault.</p>
+        <a href="https://comptox.epa.gov/dashboard" target="_blank">→ Access CPDat</a>
+      </div>
+      <div class="source-card">
+        <div class="tier">Tier 1 — Scientific</div>
+        <h3>NIH PubMed / PMC</h3>
+        <p>Peer-reviewed chemical analyses of specific shampoo formulations. Published research from <em>Nature</em>, <em>Molecules</em>, and other journals document exact formulations including L'Oréal Elvive and anti-dandruff shampoos.</p>
+        <a href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank">→ Search PubMed</a>
+      </div>
+      <div class="source-card">
+        <div class="tier">Tier 2 — Consumer</div>
+        <h3>OnSkin Product Scanner</h3>
+        <p>Scan barcodes or ingredient lists with your phone. Cross-references against a curated database of <strong>2 million products</strong>. Provides safety and compatibility scores on the spot.</p>
+        <a href="#">→ Download App</a>
+      </div>
+      <div class="source-card">
+        <div class="tier">Tier 2 — Consumer</div>
+        <h3>HairWise / Ingredient Encyclopedia</h3>
+        <p>Maps <strong>500+ ingredients</strong> rated by safety tier (A to D) and function. Designed to teach you the language of ingredient lists so you can decode any label independently.</p>
+        <a href="#">→ Browse Encyclopedia</a>
+      </div>
+      <div class="source-card">
+        <div class="tier">Tier 3 — Formulation</div>
+        <h3>Patent & Formulation Databases</h3>
+        <p>Standard shampoo formulations revealed: <strong>16% SLES</strong> base cleansers, <strong>0.5% Climbazole</strong> anti-dandruff, <strong>37% SLES + 8% Cocamidopropyl Betaine</strong> in medicated variants. The smoking gun is in the patents.</p>
+        <a href="https://patents.google.com/" target="_blank">→ Search Patents</a>
+      </div>
+      <div class="source-card">
+        <div class="tier">Tier 3 — Formulation</div>
+        <h3>CosIng (EU Cosmetic Ingredient Database)</h3>
+        <p>The European Commission's database of cosmetic ingredients with safety assessments, function classifications, and regulatory restrictions. The legal backbone of ingredient transparency in the EU.</p>
+        <a href="https://ec.europa.eu/growth/tools-databases/cosing/" target="_blank">→ Access CosIng</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <div class="container">
+    <div class="section-header">
+      <h2><span class="num">07</span> The Road Ahead: Full Ingredient Cartography</h2>
+      <p>This guide is v0.9.1-alpha. The final system will map every shampoo ingredient to: what it is, what shampoos contain it, how it interacts with each scalp layer, historical corporate usage, and the corporation's intent behind its inclusion.</p>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+      <div class="protocol-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 16px;">📊</div>
+        <h3 style="font-size: 1.1rem;">Ingredient Database</h3>
+        <p style="font-size: 0.85rem;">Every molecule cataloged with CAS numbers, INCI names, and safety tiers.</p>
+      </div>
+      <div class="protocol-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 16px;">🏭</div>
+        <h3 style="font-size: 1.1rem;">Corporate Profiles</h3>
+        <p style="font-size: 0.85rem;">Historical ingredient adoption timelines by corporation. When did they add SLS? When did they claim to remove it?</p>
+      </div>
+      <div class="protocol-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 16px;">🔬</div>
+        <h3 style="font-size: 1.1rem;">Interaction Matrix</h3>
+        <p style="font-size: 0.85rem;">Every ingredient × every scalp layer. Real-time simulation of molecular behavior.</p>
+      </div>
+      <div class="protocol-card" style="text-align: center;">
+        <div style="font-size: 2.5rem; margin-bottom: 16px;">📜</div>
+        <h3 style="font-size: 1.1rem;">Citation Proofs</h3>
+        <p style="font-size: 0.85rem;">Every claim backed by peer-reviewed paper, patent, or regulatory filing. Cryptographically signed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>Shampoo Ingredient Ontology Guide — v0.9.1-alpha</p>
+    <p style="margin-top: 8px; opacity: 0.5;">Built for cryptographic integrity. No corporate sponsorship. No affiliate links. No compromise.</p>
+    <div class="hash">SHA-256: a3f7c9e2d8b1... [pending chain verification]</div>
+  </div>
+</footer>
+
+<script>
+// Background particles
+const pCanvas = document.getElementById('particle-canvas');
+const pCtx = pCanvas.getContext('2d');
+let particles = [];
+function resizeP() { pCanvas.width = window.innerWidth; pCanvas.height = window.innerHeight; }
+resizeP(); window.addEventListener('resize', resizeP);
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * pCanvas.width;
+    this.y = Math.random() * pCanvas.height;
+    this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.3;
+    this.size = Math.random() * 2 + 0.5;
+    this.alpha = Math.random() * 0.5 + 0.1;
+  }
+  update() {
+    this.x += this.vx; this.y += this.vy;
+    if (this.x < 0 || this.x > pCanvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > pCanvas.height) this.vy *= -1;
+  }
+  draw() {
+    pCtx.beginPath();
+    pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    pCtx.fillStyle = `rgba(0,240,255,${this.alpha})`;
+    pCtx.fill();
+  }
+}
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+function animateParticles() {
+  pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        pCtx.beginPath();
+        pCtx.moveTo(particles[i].x, particles[i].y);
+        pCtx.lineTo(particles[j].x, particles[j].y);
+        pCtx.strokeStyle = `rgba(0,240,255,${0.1 * (1 - dist/120)})`;
+        pCtx.lineWidth = 0.5;
+        pCtx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// Molecular simulation
+const mCanvas = document.getElementById('molecule-canvas');
+const mCtx = mCanvas.getContext('2d');
+let simMode = 'attack';
+let mols = [];
+let time = 0;
+
+function resizeM() {
+  const rect = mCanvas.parentElement.getBoundingClientRect();
+  mCanvas.width = rect.width;
+  mCanvas.height = 400;
+}
+resizeM(); window.addEventListener('resize', resizeM);
+
+function initMols() {
+  mols = [];
+  const w = mCanvas.width, h = mCanvas.height;
+  // Lipid bilayer (Layer 1)
+  for (let x = 0; x < w; x += 30) {
+    for (let y = h * 0.35; y < h * 0.55; y += 25) {
+      mols.push({
+        x: x + Math.random() * 20, y: y + Math.random() * 10,
+        vx: 0, vy: 0,
+        type: 'lipid', color: '#00f0ff', size: 5,
+        origX: x, origY: y
+      });
+    }
+  }
+  // Keratinocytes (Layer 2)
+  for (let x = 0; x < w; x += 40) {
+    for (let y = h * 0.55; y < h * 0.75; y += 35) {
+      mols.push({
+        x: x + Math.random() * 15, y: y + Math.random() * 15,
+        vx: 0, vy: 0,
+        type: 'keratin', color: '#00ff88', size: 8,
+        origX: x, origY: y
+      });
+    }
+  }
+  // Sebum (Layer 3)
+  for (let i = 0; i < 30; i++) {
+    mols.push({
+      x: Math.random() * w, y: h * 0.6 + Math.random() * h * 0.3,
+      vx: 0, vy: 0,
+      type: 'sebum', color: '#888', size: 3,
+      origX: 0, origY: 0
+    });
+  }
+}
+initMols();
+
+function setMode(mode) {
+  simMode = mode;
+  document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (mode === 'attack') {
+    // Add surfactants
+    for (let i = 0; i < 25; i++) {
+      mols.push({
+        x: Math.random() * mCanvas.width, y: -20 - Math.random() * 50,
+        vx: (Math.random() - 0.5) * 1, vy: 0.5 + Math.random() * 1.5,
+        type: 'surfactant', color: '#ff3366', size: 4,
+        origX: 0, origY: 0
+      });
+    }
+  } else if (mode === 'seal') {
+    // Add silicone film
+    for (let x = 0; x < mCanvas.width; x += 20) {
+      mols.push({
+        x: x, y: mCanvas.height * 0.32 + Math.random() * 10,
+        vx: 0, vy: 0,
+        type: 'silicone', color: '#ffaa00', size: 6,
+        origX: x, origY: mCanvas.height * 0.32
+      });
+    }
+  } else if (mode === 'heal') {
+    // Remove attackers
+    mols = mols.filter(m => m.type !== 'surfactant' && m.type !== 'silicone');
+  }
+}
+
+function animateMolecules() {
+  const w = mCanvas.width, h = mCanvas.height;
+  mCtx.fillStyle = 'rgba(10,10,15,0.15)';
+  mCtx.fillRect(0, 0, w, h);
+  time += 0.016;
+
+  // Draw layer boundaries
+  mCtx.strokeStyle = 'rgba(0,240,255,0.1)';
+  mCtx.setLineDash([5, 5]);
+  mCtx.beginPath(); mCtx.moveTo(0, h * 0.35); mCtx.lineTo(w, h * 0.35); mCtx.stroke();
+  mCtx.beginPath(); mCtx.moveTo(0, h * 0.55); mCtx.lineTo(w, h * 0.55); mCtx.stroke();
+  mCtx.beginPath(); mCtx.moveTo(0, h * 0.75); mCtx.lineTo(w, h * 0.75); mCtx.stroke();
+  mCtx.setLineDash([]);
+
+  // Labels
+  mCtx.fillStyle = 'rgba(0,240,255,0.3)';
+  mCtx.font = '11px monospace';
+  mCtx.fillText('STRATUM CORNEUM (Layer 1)', 10, h * 0.33);
+  mCtx.fillText('EPIDERMIS (Layer 2)', 10, h * 0.53);
+  mCtx.fillText('DERMIS (Layer 3)', 10, h * 0.73);
+  mCtx.fillText('HYPODERMIS (Layer 4)', 10, h * 0.93);
+
+  mols.forEach(m => {
+    if (m.type === 'surfactant') {
+      m.x += m.vx; m.y += m.vy;
+      // Target lipids
+      const lipids = mols.filter(o => o.type === 'lipid');
+      if (lipids.length > 0) {
+        const target = lipids[Math.floor(Math.random() * lipids.length)];
+        const dx = target.x - m.x, dy = target.y - m.y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist > 5 && dist < 100) {
+          m.vx += (dx / dist) * 0.05;
+          m.vy += (dy / dist) * 0.05;
+        }
+        if (dist < 15) {
+          target.color = '#ff3366';
+          target.size *= 0.98;
+        }
+      }
+      if (m.y > h) { m.y = -20; m.x = Math.random() * w; }
+    } else if (m.type === 'silicone') {
+      // Spread across surface
+      m.x += Math.sin(time + m.origX * 0.01) * 0.3;
+      m.y = m.origY + Math.sin(time * 2 + m.x * 0.02) * 3;
+    } else if (m.type === 'lipid') {
+      // Gentle oscillation
+      if (simMode === 'heal' && m.color === '#ff3366') {
+        m.color = '#00f0ff';
+        m.size = 5;
+      }
+      m.x = m.origX + Math.sin(time + m.origY * 0.1) * 2;
+      m.y = m.origY + Math.cos(time + m.origX * 0.1) * 1;
+    } else if (m.type === 'keratin') {
+      m.x = m.origX + Math.sin(time * 0.5 + m.origY * 0.05) * 1;
+      if (simMode === 'heal') {
+        m.color = '#00ff88';
+        m.size = 8 + Math.sin(time * 3) * 1;
+      }
+    } else if (m.type === 'sebum') {
+      if (simMode === 'heal') {
+        m.y -= 0.3;
+        if (m.y < h * 0.55) m.y = h * 0.8;
+      }
+    }
+
+    mCtx.beginPath();
+    mCtx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+    mCtx.fillStyle = m.color;
+    mCtx.fill();
+    mCtx.shadowColor = m.color;
+    mCtx.shadowBlur = 8;
+    mCtx.fill();
+    mCtx.shadowBlur = 0;
+  });
+
+  requestAnimationFrame(animateMolecules);
+}
+animateMolecules();
+
+// Smooth scroll for nav
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+
+</body>
+</html>

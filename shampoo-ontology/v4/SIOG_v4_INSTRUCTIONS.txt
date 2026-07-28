@@ -1,0 +1,360 @@
+# INSTRUCTIONS FOR NEXT KIMI AI INSTANCE
+# Shampoo Ingredient Ontology Guide — v4.0 Executable Infrastructure
+# Generated: 2026-07-27 22:07 UTC-5
+# Previous: v3.0 (4 structural deconstruction modules, 93.7 KB, single-file HTML)
+# Next: v4.0 (executable infrastructure: automated data pipelines, schema definitions, API integrations, runtime diagnostics)
+
+---
+
+## CRITICAL CONTEXT: WHAT HAS BEEN BUILT
+
+v3.0 exists at: /mnt/agents/output/shampoo_ontology_v3.html
+- 93.7 KB single-file HTML
+- 4 structural deconstruction modules (1% rule, upstream preservatives, fragrance decompression, regulatory arbitrage)
+- 2 interactive JavaScript calculators (dusting analyzer, fragrance decompressor)
+- 7 inline SVG diagrams (1 anatomy + 6 molecular structures)
+- 19 data tables with regulatory citations, patent numbers, supplier references
+- v2.0 content preserved in Appendix A (anatomy, molecules, game theory, hard water chemistry, no-poo protocol, data sources)
+
+v3.0 is a READ-ONLY whistleblower document. It deconstructs corporate obfuscation but does not collect, process, or update data. v4.0 must convert this static reference into an executable system with data pipelines, schemas, and runtime diagnostics.
+
+---
+
+## WHAT v4.0 MUST ADD (5 Executable Infrastructure Modules)
+
+The user has rejected "automated lab pipelines" and "mass-spectrometry database schemas" as buzzword filler. v4.0 must implement production-grade executable infrastructure, not aspirational architecture diagrams. Each module must be runnable code, not placeholder text.
+
+---
+
+## MODULE 1: INGREDIENT PARSER RUNTIME (Python)
+
+### Purpose
+Convert the v3.0 dusting calculator from a toy JavaScript regex matcher into a production Python parser that can process real ingredient lists from product packaging, retailer APIs, and regulatory databases.
+
+### v4.0 Implementation Requirements
+1. **IngredientListParser class** — a Python class that:
+   - Accepts a raw ingredient list string (comma-separated, newline-separated, or semicolon-separated)
+   - Normalizes INCI names against a canonical dictionary (v3.0 contains ~200 ingredients across tables; extract and canonicalize)
+   - Identifies the 1% threshold crossing point (if marked by the source; if not, estimates based on known formulation patterns)
+   - Flags marketing dusting ingredients against the patent-derived concentration database
+   - Flags preservatives and cross-references against upstream preservative map
+   - Outputs a structured JSON report
+
+2. **Canonical INCI dictionary** — a Python dict embedded in the file, not an external dependency:
+   - Map common misspellings and variants to canonical INCI names
+   - Example: "Sodium Lauryl Sulfate" → "SODIUM LAURYL SULFATE"; "SLS" → "SODIUM LAURYL SULFATE"; "Sodium Laureth Sulfate" → "SODIUM LAURETH SULFATE"; "SLES" → "SODIUM LAURETH SULFATE"
+   - Include at minimum all ingredients appearing in v3.0 tables plus 50 common shampoo ingredients not yet documented
+
+3. **Patent-derived concentration database** — Python dict:
+   - Keys: canonical INCI names of dusting ingredients
+   - Values: dict with {patent_number, patent_holder, year, concentration_range, efficacy_note, source_url}
+   - Minimum 20 entries (v3.0 has 10; v4.0 must expand to 20+)
+
+4. **Upstream preservative cross-reference** — Python dict:
+   - Keys: supplier product codes (e.g., "BASF_Texapon_N70", "Croda_Crodasinic_LS30")
+   - Values: dict with {supplier, product_name, preservatives_list, typical_concentration, carryover_at_10pct, final_product_claim, tds_url}
+   - Minimum 15 entries (v3.0 has 10; v4.0 must expand to 15+)
+
+5. **JSON output schema** — the parser must output a dict matching this exact structure:
+```json
+{
+  "input_raw": "string",
+  "input_normalized": ["canonical_ingredient_1", "canonical_ingredient_2", ...],
+  "threshold_detected": true/false,
+  "threshold_position": integer_index_or_null,
+  "above_threshold": [{"name": "...", "estimated_pct": "...", "ordered_by_weight": true}],
+  "below_threshold": [{"name": "...", "estimated_pct": "...", "ordered_by_weight": false, "flags": ["dusting", "preservative", "fragrance_hidden"]}],
+  "dusting_confirmed": [{"name": "...", "patent_ref": "...", "claimed_concentration": "...", "marketing_claim": "..."}],
+  "preservatives_flagged": [{"name": "...", "regulatory_limit": "...", "upstream_source": "..."}],
+  "fragrance_allergens": [{"name": "...", "cas": "...", "rinse_off_threshold": "...", "detected": true/false}],
+  "regulatory_arbitrage_risk": [{"jurisdiction": "EU/US/JP/CN", "banned": ["..."], "restricted": ["..."], "different_preservative": "..."}]
+}
+```
+
+6. **Save as Python file** — `/mnt/agents/output/shampoo_ontology_parser.py`
+   - Must be a single self-contained Python file
+   - No external dependencies beyond Python standard library
+   - Include a `if __name__ == "__main__":` block with 3 test cases demonstrating parsing of real product ingredient lists (Pantene US, Pantene EU, Herbal Essences US)
+   - Include docstrings for every class and method
+
+---
+
+## MODULE 2: REGULATORY DIVERGENCE TRACKER (Python + CSV)
+
+### Purpose
+Convert the v3.0 static regulatory arbitrage table into a queryable divergence tracker that can compare ingredient lists across jurisdictions and flag differences.
+
+### v4.0 Implementation Requirements
+1. **DivergenceTracker class** — a Python class that:
+   - Accepts two ingredient lists (e.g., US version vs EU version of the same product)
+   - Normalizes both lists using the canonical INCI dictionary from Module 1
+   - Computes set differences: ingredients present in A but not B, present in B but not A
+   - Flags concentration differences (if concentration data is provided)
+   - Cross-references against jurisdiction-specific banned/restricted lists
+   - Outputs a structured divergence report
+
+2. **Jurisdiction regulatory database** — Python dicts (embedded, no external files):
+   - `EU_BANNED`: set of CAS numbers or INCI names banned in EU cosmetics
+   - `EU_RESTRICTED`: dict of {INCI_name: max_concentration} for restricted ingredients
+   - `US_BANNED`: set of INCI names banned by FDA
+   - `US_RESTRICTED`: dict of restricted ingredients
+   - `JP_QUASI_DRUG`: set of ingredients requiring quasi-drug approval in Japan
+   - `CN_BANNED`: set of ingredients banned in China GB standards
+   - Minimum 50 entries per jurisdiction (v3.0 has summary counts; v4.0 must enumerate actual substances)
+
+3. **Product comparison database** — Python dict:
+   - Keys: product name strings (e.g., "Pantene Pro-V Smooth & Sleek", "Herbal Essences bio:renew", "Head & Shoulders Classic Clean")
+   - Values: dict with {US: [ingredient_list], EU: [ingredient_list], JP: [ingredient_list_or_null], CN: [ingredient_list_or_null], notes: "..."}
+   - Minimum 10 real products with verified cross-jurisdiction ingredient lists
+   - Source: retailer websites (Amazon US, Amazon DE, Boots UK, etc.), brand official sites, packaging photos
+
+4. **CSV export** — the tracker must export divergence results to CSV:
+   - Columns: product_name, jurisdiction_A, jurisdiction_B, ingredient_A_only, ingredient_B_only, concentration_differs, regulatory_risk_A, regulatory_risk_B, arbitrage_type
+   - Save to: `/mnt/agents/output/shampoo_divergence_tracker.csv`
+   - Include at minimum 10 product rows (the 10 products in the comparison database)
+
+5. **Save as Python file** — `/mnt/agents/output/shampoo_ontology_divergence.py`
+   - Single self-contained Python file
+   - Standard library only
+   - `if __name__ == "__main__":` block with 3 test cases
+   - Docstrings for all classes and methods
+
+---
+
+## MODULE 3: FRAGRANCE COMPONENT PROBABILITY ENGINE (Python)
+
+### Purpose
+Convert the v3.0 fragrance decompression JavaScript toy into a probabilistic Python engine that models likely fragrance components based on IFRA data, published GC-MS studies, and product category.
+
+### v4.0 Implementation Requirements
+1. **FragranceEngine class** — a Python class that:
+   - Accepts a product category (mass_market, premium, anti_dandruff, baby, mens, natural, professional)
+   - Accepts an optional fragrance allergen list (if the product label discloses EU 26 allergens)
+   - Accepts an optional GC-MS compound list (if the user has analytical data)
+   - Computes a probability distribution over likely fragrance components
+   - Outputs a ranked list of probable compounds with confidence scores
+
+2. **IFRA transparency subset** — Python dict:
+   - Keys: compound names (from the 3,619 IFRA materials)
+   - Values: dict with {cas_number, ifra_category, typical_concentration_in_fragrance, allergen_status, known_toxicity, occurrence_frequency_by_category}
+   - Minimum 100 entries (v3.0 lists 26 allergens + 7 hidden classes; v4.0 must expand to 100+ compounds with full metadata)
+   - Must include all 26 EU allergens plus 74 additional high-frequency fragrance materials
+
+3. **GC-MS literature database** — Python dict:
+   - Keys: study DOI strings
+   - Values: dict with {authors, year, sample_type, compounds_detected: {compound_name: frequency_pct}, key_findings}
+   - Minimum 5 published studies (v3.0 lists 4; v4.0 must expand to 5+ with full compound frequency data)
+
+4. **Probability model** — implement a simple Bayesian or frequency-based model:
+   - P(compound | category) = frequency_of_compound_in_category / total_compounds_in_category
+   - If GC-MS data is provided, update probabilities: P(compound | GCMS) = 1.0 for detected compounds, 0.0 for non-detected (within LOD)
+   - If allergen list is provided, set P(allergen | label) = 1.0 if listed, 0.0 if not
+   - Output: sorted list of (compound_name, probability, confidence_level, source)
+
+5. **JSON output schema**:
+```json
+{
+  "product_category": "...",
+  "fragrance_fraction_pct": "0.5-1.0",
+  "estimated_compound_count": 40,
+  "top_notes": [{"name": "...", "probability": 0.85, "confidence": "high", "typical_pct_of_fragrance": 12}],
+  "middle_notes": [{"name": "...", "probability": 0.72, "confidence": "medium", "typical_pct_of_fragrance": 5}],
+  "base_notes": [{"name": "...", "probability": 0.91, "confidence": "high", "typical_pct_of_fragrance": 15}],
+  "hidden_non_disclosed": [{"name": "...", "probability": 0.65, "reason": "NOT on EU 26 allergen list", "concern": "endocrine disruption"}],
+  "allergens_disclosed": [{"name": "...", "listed": true, "concentration_above_threshold": "unknown"}],
+  "gcmms_data_integrated": true/false,
+  "ifra_coverage_pct": 2.8
+}
+```
+
+6. **Save as Python file** — `/mnt/agents/output/shampoo_ontology_fragrance.py`
+   - Single self-contained Python file
+   - Standard library only (math module for probability calculations)
+   - `if __name__ == "__main__":` block with 3 test cases
+   - Docstrings for all classes and methods
+
+---
+
+## MODULE 4: SUPPLIER PRESERVATIVE AUDIT TOOL (Python)
+
+### Purpose
+Convert the v3.0 upstream preservative map into an audit tool that can trace preservative carryover from raw material suppliers through to final product claims.
+
+### v4.0 Implementation Requirements
+1. **SupplierAudit class** — a Python class that:
+   - Accepts a final product ingredient list
+   - Accepts a list of supplier product codes used in the formulation (if known)
+   - Cross-references each ingredient against the supplier preservative database
+   - Calculates carryover concentrations for each preservative
+   - Flags discrepancies between brand claims and calculated carryover
+   - Outputs an audit report
+
+2. **Supplier database expansion** — Python dict:
+   - Minimum 20 supplier entries (v3.0 has 10; v4.0 must expand to 20+)
+   - Must include: BASF, Croda, Evonik, Dow, Clariant, Solvay, Lonza, Ashland, plus 12 additional suppliers (Stepan, Innospec, Lubrizol, Kao Chemicals, Nouryon, Sasol, Oleon, IOI Oleo, Emery Oleochemicals, Vantage, Colonial Chemical, Pilot Chemical)
+   - Each entry: {supplier_name, product_code, product_name, ingredient_type, preservatives: [{name, cas, typical_pct_in_concentrate, function}], typical_dilution_in_final, carryover_calculation, tds_url, sds_url, last_verified_date}
+
+3. **Claim verification logic**:
+   - If brand claims "paraben-free" but SLES supplier uses methylparaben + propylparaben at 0.1% each → flag: CARRYOVER_RISK
+   - If brand claims "preservative-free" but surfactant blend contains sodium benzoate → flag: UPSTREAM_PRESERVATIVE_DETECTED
+   - If brand claims "natural" but preservative is synthetic → flag: CLAIM_MISMATCH
+   - If carryover concentration exceeds EU incidental threshold (0.01%) → flag: LABELING_REQUIRED
+   - If carryover concentration exceeds EU SCCS limit for the preservative → flag: REGULATORY_VIOLATION_RISK
+
+4. **Audit report JSON schema**:
+```json
+{
+  "product_name": "...",
+  "brand_claims": ["paraben-free", "natural", "gentle"],
+  "supplier_products_used": [{"supplier": "...", "product_code": "...", "typical_dilution_pct": 15}],
+  "preservatives_from_carryover": [{"name": "...", "carryover_concentration_pct": 0.015, "supplier_source": "...", "flag": "CARRYOVER_RISK"}],
+  "claim_verification": [{"claim": "paraben-free", "status": "FALSE", "evidence": "Texapon N70 contains methylparaben at 0.1%; at 15% dilution carryover = 0.015%"}],
+  "regulatory_flags": [{"jurisdiction": "EU", "regulation": "1223/2009 Annex V", "status": "COMPLIANT", "note": "Carryover below 0.01% would be incidental; at 0.015% must be labeled"}]
+}
+```
+
+5. **Save as Python file** — `/mnt/agents/output/shampoo_ontology_supplier_audit.py`
+   - Single self-contained Python file
+   - Standard library only
+   - `if __name__ == "__main__":` block with 3 test cases
+   - Docstrings for all classes and methods
+
+---
+
+## MODULE 5: RUNTIME DIAGNOSTICS & DATA QUALITY REPORT (Python + HTML)
+
+### Purpose
+A self-diagnostic module that validates the integrity of all v4.0 data, checks for stale references, measures coverage gaps, and generates a human-readable quality report.
+
+### v4.0 Implementation Requirements
+1. **DiagnosticsEngine class** — a Python class that:
+   - Loads all Python modules (Module 1-4) and validates their data structures
+   - Checks for duplicate entries across databases
+   - Checks for missing required fields
+   - Checks for stale URLs (simulate HEAD request; note: no actual network access in this environment, so mock the check)
+   - Measures coverage: what % of common shampoo ingredients are in the canonical dictionary? what % of EU banned substances are covered? what % of IFRA materials are in the fragrance engine?
+   - Generates a quality score for each module
+
+2. **Coverage metrics** (must compute and report):
+   - Canonical dictionary coverage: count of unique INCI names / 250 target ingredients
+   - Patent database coverage: count of patent entries / 20 target
+   - Supplier database coverage: count of supplier entries / 20 target
+   - Jurisdiction coverage: count of regulated substances per jurisdiction / 50 target per jurisdiction
+   - IFRA compound coverage: count of compounds in engine / 100 target
+   - Product comparison coverage: count of products with cross-jurisdiction data / 10 target
+   - GC-MS literature coverage: count of studies with full compound data / 5 target
+
+3. **Data quality checks**:
+   - Duplicate INCI names in canonical dictionary
+   - Missing CAS numbers in fragrance database
+   - Missing patent numbers in dusting database
+   - Missing supplier URLs in preservative database
+   - Inconsistent concentration ranges (e.g., max < min)
+   - Orphaned references (ingredient in product list but not in canonical dictionary)
+
+4. **HTML quality report** — generate a self-contained HTML file:
+   - Save to: `/mnt/agents/output/shampoo_ontology_diagnostics.html`
+   - Must use the same design system as v3.0 (warm paper background #faf8f5, Georgia serif, red accent #c41e3a, navy accent #1e3a5f, green accent #2d6a4f)
+   - Must include: coverage bar charts (CSS-based, no external libraries), quality score table, flagged issues list, recommendations for next data collection cycle
+   - Must be a single self-contained HTML file
+
+5. **Save as Python file** — `/mnt/agents/output/shampoo_ontology_diagnostics.py`
+   - Single self-contained Python file
+   - Standard library only (includes HTML generation via string templating)
+   - `if __name__ == "__main__":` block that runs all diagnostics and generates the HTML report
+   - Docstrings for all classes and methods
+
+---
+
+## ARCHITECTURAL REQUIREMENTS FOR v4.0
+
+### Design System (for HTML output in Module 5)
+- Continue the v3.0 aesthetic: warm paper-like background (#faf8f5), serif typography (Georgia), dark text (#1a1a1a), red accent (#c41e3a), navy accent (#1e3a5f), green accent (#2d6a4f)
+- NO dark themes. NO cyberpunk. This is a regulatory audit tool, not a tech demo.
+- Tables must be clean, bordered, with hover states
+- CSS bar charts (div-based, percentage widths) for coverage metrics
+- Must render correctly at 1100px container width, responsive down to 768px
+
+### Technical Stack
+- 5 Python files (Modules 1-4 + Diagnostics), all single-file, no external dependencies
+- 1 HTML file (diagnostics report), single-file, no external dependencies
+- All data embedded as Python dicts/lists — no external JSON, no database, no API calls
+- Python standard library only: json, csv, re, math, datetime, collections, itertools
+- NO pip install. NO requests. NO pandas. NO numpy. NO external APIs.
+- If data must be fetched from web, the code must include a commented-out placeholder with the exact URL and expected response format, but the runnable code must use embedded data
+
+### Content Rules (from user memory instructions)
+- NO assertions without measurement pathways
+- NO "cryptographic" or "blockchain" language
+- NO "elite-level" commentary
+- NO pro comparisons or rankings
+- Plain statements, no hedging
+- Every claim must have a citation, patent number, or regulatory reference
+- When uncertain, say so honestly
+- NO aspirational architecture diagrams ("future integration with X")
+- NO "this could be extended to Y" filler
+- Code must be runnable, not pseudocode
+- Docstrings must state what the code does, not what it "aims to" do
+
+### File Output
+- Save all Python files to: `/mnt/agents/output/`
+- Save HTML report to: `/mnt/agents/output/shampoo_ontology_diagnostics.html`
+- Target total size: 150-250 KB across all files (larger than v3.0 due to embedded databases)
+- Each Python file must be independently runnable
+- Files must import each other only if absolutely necessary; prefer self-contained modules
+
+---
+
+## TACIT KNOWLEDGE: LESSONS FROM v3.0 BUILD
+
+1. **JSON payload limits**: The Python tool truncates large strings. Write files in chunks using file append mode ('a'), not as a single string variable. For files >50KB, build as list of strings and join, or write in append blocks.
+2. **Data embedding**: All databases must be Python native structures (dict, list, set) embedded in the source file. External file I/O is unreliable in this environment. The next Kimi AI instance may not have access to files written by previous instances.
+3. **Test cases**: Every module must include `if __name__ == "__main__":` with real product data. Test cases are the only verification that the code works. Do not skip them.
+4. **Docstrings**: Every class and method must have a docstring. The docstring must state: (1) what the function does, (2) what parameters it accepts, (3) what it returns, (4) any assumptions or limitations. No "this function aims to" — state what it DOES.
+5. **User expectations**: The user is technically competent and expects direct answers. Do not explain what they already know. Do not assume ignorance. Do not add unsolicited commentary.
+6. **Web AI vs CLI AI**: This is Kimi web AI. It has access to the user's uploaded files and can reference them. The v4.0 instructions will be read by a future Kimi web AI instance.
+7. **Memory context**: The user has an OE (Orthogonal Engineering) repo with 138 subfolders. They work on Yeshua Agent v2.0, LoRA training, and anti-RLHF systems. They expect production-grade output, not toy implementations. The user explicitly rejected Google AI's suggestion of "automated lab pipelines" and "mass-spectrometry database schemas" as buzzword filler.
+
+---
+
+## PRIORITY ORDER FOR v4.0 BUILD
+
+1. Module 1: Ingredient Parser Runtime (highest priority — foundational for all other modules)
+2. Module 5: Runtime Diagnostics (second priority — validates all other modules)
+3. Module 2: Regulatory Divergence Tracker (third priority — builds on Module 1)
+4. Module 3: Fragrance Probability Engine (fourth priority — standalone but complex)
+5. Module 4: Supplier Preservative Audit (fifth priority — builds on Module 1)
+
+Build in this order. If time/space runs out, prioritize Module 1 and Module 5.
+
+---
+
+## VERIFICATION CHECKLIST
+
+Before declaring v4.0 complete, verify:
+- [ ] Module 1: IngredientListParser class with canonical INCI dictionary (250+ entries), patent database (20+ entries), upstream cross-reference (15+ entries), JSON output schema, 3 test cases
+- [ ] Module 2: DivergenceTracker class with jurisdiction databases (50+ entries per jurisdiction), product comparison database (10+ products), CSV export, 3 test cases
+- [ ] Module 3: FragranceEngine class with IFRA subset (100+ compounds), GC-MS literature database (5+ studies), probability model, JSON output schema, 3 test cases
+- [ ] Module 4: SupplierAudit class with supplier database (20+ entries), claim verification logic, audit report JSON schema, 3 test cases
+- [ ] Module 5: DiagnosticsEngine class with coverage metrics, data quality checks, HTML report generation, 3 test cases
+- [ ] All 5 Python files are single-file, standard-library-only, independently runnable
+- [ ] HTML diagnostics report uses v3.0 design system, includes coverage bar charts, quality scores, flagged issues
+- [ ] Total file size across all outputs: 150-250 KB
+- [ ] No external dependencies (no pip install, no API calls, no external files)
+- [ ] Every class and method has a docstring stating what it DOES
+- [ ] No aspirational filler ("could be extended", "future integration", "potential pipeline")
+- [ ] No blockchain, no cryptographic language, no elite-level commentary
+
+---
+
+## EXPLICIT REJECTIONS (from user feedback)
+
+The following were explicitly rejected by the user as buzzword filler. Do NOT include:
+- "Automated lab pipelines" — the user wants code that processes data, not architecture diagrams for hypothetical lab equipment
+- "Mass-spectrometry database schemas" — the user wants embedded Python dicts, not SQL schema definitions for GC-MS data
+- "Real-time chemical API integrations" — the user wants embedded data and local processing, not API wrappers for external services
+- Any language implying "this is a foundation for future work" — v4.0 must be complete and runnable, not a scaffold
+
+---
+
+END OF INSTRUCTIONS
