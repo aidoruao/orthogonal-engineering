@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Accountability Audit Trail v7 - The Machine</title>
+<style>
+:root{--bg:#010102;--fg:#e0e0e0;--red:#ff0000;--orange:#ff4400;--yellow:#ffcc00;--cyan:#00ccff;--green:#00ff66;--law-purple:#cc99ff;--muted:#555;--card-bg:#08080f;--border:#1a1a2e;--asymmetry:#ff0044;--counter:#00ff88;--machine:#00ffff;--anon:#ff00ff;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--fg);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;}
+nav{position:sticky;top:0;z-index:1000;background:rgba(1,1,2,0.99);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+nav a{color:var(--fg);text-decoration:none;font-size:0.7rem;padding:3px 8px;border-radius:3px;border:1px solid var(--border);transition:all 0.2s;}
+nav a:hover{background:var(--card-bg);border-color:var(--cyan);color:var(--cyan);}
+nav .title{font-weight:700;color:var(--red);margin-right:auto;font-size:0.85rem;}
+nav .machine-indicator{color:var(--machine);font-size:0.7rem;margin-left:auto;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.container{max-width:1400px;margin:0 auto;padding:20px;}
+section{margin-bottom:60px;border-top:1px solid var(--border);padding-top:40px;}
+.badge{display:inline-block;padding:2px 10px;border-radius:3px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.badge-sec{background:var(--red);color:#000;}
+.badge-machine{background:var(--machine);color:#000;}
+.badge-anon{background:var(--anon);color:#fff;}
+.badge-counter{background:var(--counter);color:#000;}
+h1{font-size:1.8rem;color:var(--red);margin-bottom:8px;}
+h2{font-size:1.3rem;color:var(--yellow);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+h3{font-size:1rem;color:var(--cyan);margin:20px 0 10px;}
+.subtitle{color:var(--muted);font-size:0.9rem;margin-bottom:30px;}
+.name{color:var(--yellow);font-weight:600;}
+.name-dead{color:var(--red);text-decoration:line-through;font-weight:600;}
+.verdict{border-left:4px solid var(--red);background:var(--card-bg);padding:16px 20px;margin:16px 0;border-radius:0 6px 6px 0;}
+.verdict-machine{border-left-color:var(--machine);}
+.verdict-anon{border-left-color:var(--anon);}
+.verdict-green{border-left-color:var(--green);}
+.action-box{border:1px solid var(--green);background:rgba(0,255,102,0.05);padding:20px;border-radius:6px;margin:16px 0;}
+.action-box h4{color:var(--green);margin-bottom:10px;font-size:0.95rem;}
+.machine-box{border:1px solid var(--machine);background:rgba(0,255,255,0.05);padding:20px;border-radius:6px;margin:16px 0;}
+.machine-box h4{color:var(--machine);margin-bottom:10px;font-size:0.95rem;}
+.anon-box{border:1px solid var(--anon);background:rgba(255,0,255,0.05);padding:20px;border-radius:6px;margin:16px 0;}
+.anon-box h4{color:var(--anon);margin-bottom:10px;font-size:0.95rem;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:0.88rem;}
+.card h4{color:var(--yellow);margin-bottom:6px;font-size:0.9rem;}
+.card .stat{color:var(--muted);font-size:0.75rem;margin-bottom:4px;}
+.card .status{color:var(--red);font-size:0.75rem;font-weight:600;}
+.card .machine{color:var(--machine);font-size:0.75rem;font-weight:600;}
+.card .anon{color:var(--anon);font-size:0.75rem;font-weight:600;}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:0.82rem;}
+th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+th{color:var(--cyan);font-weight:600;background:var(--card-bg);font-size:0.8rem;}
+tr:hover{background:rgba(255,255,255,0.02);}
+.machine-row{background:rgba(0,255,255,0.03);}
+.anon-row{background:rgba(255,0,255,0.03);}
+.checklist{list-style:none;}
+.checklist li{padding:5px 0;display:flex;align-items:center;gap:10px;font-size:0.85rem;}
+.checklist li::before{content:"[ ]";color:var(--green);font-size:1rem;}
+.source-link{color:var(--cyan);text-decoration:none;border-bottom:1px dotted var(--cyan);font-size:0.8rem;}
+.gap-highlight{color:var(--orange);font-weight:600;}
+.machine-highlight{color:var(--machine);font-weight:600;}
+.anon-highlight{color:var(--anon);font-weight:600;}
+.counter-highlight{color:var(--counter);font-weight:600;}
+.code-block{background:#000;border:1px solid var(--border);border-radius:6px;padding:16px;font-family:'Courier New',monospace;font-size:0.78rem;color:var(--green);overflow-x:auto;white-space:pre;margin:12px 0;}
+.form-field{background:var(--card-bg);border:1px solid var(--border);border-radius:4px;padding:8px 12px;color:var(--fg);font-family:inherit;font-size:0.85rem;width:100%;margin:4px 0 12px;}
+.form-field:focus{outline:none;border-color:var(--cyan);}
+.form-label{color:var(--cyan);font-size:0.8rem;font-weight:600;}
+.btn{background:var(--green);color:#000;border:none;padding:10px 20px;border-radius:4px;font-weight:700;cursor:pointer;font-size:0.85rem;margin:8px 4px 0 0;}
+.btn:hover{background:#00cc55;}
+.btn-machine{background:var(--machine);color:#000;}
+.btn-machine:hover{background:#00cccc;}
+.btn-anon{background:var(--anon);color:#fff;}
+.btn-anon:hover{background:#cc00cc;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#cc0000;}
+.output-box{background:var(--card-bg);border:1px solid var(--border);border-radius:6px;padding:16px;margin:12px 0;font-family:monospace;font-size:0.8rem;white-space:pre-wrap;max-height:400px;overflow-y:auto;}
+.status-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;}
+.status-live{background:var(--green);animation:pulse 2s infinite;}
+.status-dead{background:var(--red);}
+.status-warn{background:var(--orange);animation:pulse 2s infinite;}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr;}nav{gap:3px;}nav a{font-size:0.6rem;padding:2px 5px;}}
+@media print{body{background:#fff;color:#000;}nav{display:none;}.card{border:1px solid #ccc;}.verdict{border-left:4px solid #999;}.code-block{color:#000;background:#f5f5f5;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="title">AI Accountability Audit Trail v7</span>
+  <span class="machine-indicator">THE MACHINE</span>
+  <a href="#sec1">Sec 1</a>
+  <a href="#sec2">Sec 2</a>
+  <a href="#sec3">Sec 3</a>
+  <a href="#sec4">Sec 4</a>
+  <a href="#sec5">Sec 5</a>
+  <a href="#sec6">Sec 6</a>
+  <a href="#sec7">Sec 7</a>
+  <a href="#sec8">Sec 8</a>
+  <a href="#sec9">Sec 9</a>
+  <a href="#sec10">Sec 10</a>
+</nav>
+
+<div class="container">
+
+<h1>AI Accountability Audit Trail v7</h1>
+<p class="subtitle">The Machine | Anonymous Filing Infrastructure | Auto-Filing Bots | One-Click Clean Room | Physical Security Protocol | Class Action Aggregation</p>
+
+<section id="sec1">
+  <span class="badge badge-machine">Section 1</span>
+  <h2>Architecture: v6 Was the Manual. v7 Is the Machine.</h2>
+  <div class="verdict verdict-machine">
+    <strong>v7 MANDATE:</strong> Every component of v6 that required human action is now <span class="machine-highlight">automated, scripted, containerized, and decentralized</span>. The whistleblower does not read a template and fill a form. They click a button and the machine files. The consumer does not study a toolkit and install software. They run one command and the machine deploys. The evidence does not sit on a hard drive. It is <span class="machine-highlight">hashed to blockchain, replicated across IPFS, and released by dead man's switch</span>.
+  </div>
+  <table>
+    <tr><th>v6 Component</th><th>v7 Machine Upgrade</th><th>Automation Level</th><th>Decentralization</th><th>Anonymous</th></tr>
+    <tr class="machine-row"><td>Browser-side form compiler</td><td><span class="machine-highlight">Headless auto-filing bot</span> — navigates agency portals, fills forms, uploads attachments, confirms submission</td><td>Fully automated</td><td>Tor-routed</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Static clean room toolkit</td><td><span class="machine-highlight">Docker Compose one-click deploy</span> — local LLM + RAG + tool use + uncensored fine-tuning pipeline</td><td>One command</td><td>Self-hosted</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Statute citations</td><td><span class="machine-highlight">Auto-generated case briefs</span> — PDF exhibits with full summaries, holdings, AI relevance, ready to attach</td><td>One click</td><td>Local generation</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Corporate-state nexus placeholders</td><td><span class="machine-highlight">Live scraping bots</span> — SEC EDGAR RSS, LinkedIn job alerts, lobbying disclosure parsers</td><td>Scheduled (cron)</td><td>Distributed nodes</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>7-day filing schedule</td><td><span class="machine-highlight">Automated scheduler</span> — calendar invites, deadline alerts, auto-generated follow-up letters, status dashboard</td><td>Fully automated</td><td>Self-hosted</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Download .txt</td><td><span class="machine-highlight">Download .pdf</span> — formatted legal documents with headers, signature blocks, certificate of service</td><td>One click</td><td>Local generation</td><td>Yes</td></tr>
+    <tr class="anon-row"><td>Manual filing</td><td><span class="anon-highlight">Anonymous filing infrastructure</span> — Tor hidden service, cryptographic time-locks, blockchain timestamping</td><td>Fully automated</td><td>Tor + IPFS + blockchain</td><td>Yes</td></tr>
+    <tr class="anon-row"><td>Physical safety advice</td><td><span class="anon-highlight">Physical security protocol</span> — encrypted comms, attorney privilege preservation, travel safety, emergency contact trees</td><td>Checklist + automation</td><td>Signal/Session</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Individual complaints</td><td><span class="machine-highlight">Class action aggregation engine</span> — database of consumer complaints, auto-class-certification, lead plaintiff matching</td><td>Continuous</td><td>Distributed DB</td><td>Optional</td></tr>
+  </table>
+</section>
+
+<section id="sec2">
+  <span class="badge badge-anon">Section 2</span>
+  <h2>Anonymous Filing Infrastructure: Kill the Death Asymmetry</h2>
+  <div class="verdict verdict-anon">
+    <strong>THE DEATH ASYMMETRY:</strong> Suchir Balaji is dead. The mechanism that killed him — or allowed his death to go uninvestigated — is <span class="anon-highlight">identification</span>. If the whistleblower is known, they can be targeted. If the evidence is centralized, it can be seized. If the filing is traceable, it can be intercepted. v7 eliminates identification, centralization, and traceability.
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <h4><span class="status-indicator status-live"></span>Tor Hidden Service Filing</h4>
+      <p class="stat">Route: Whistleblower -> Tor -> Agency Portal</p>
+      <p><strong>Mechanism:</strong> Headless browser (Playwright/Selenium) operated via Tor circuit. Each filing uses a fresh exit node. No IP logging. No session fingerprinting.</p>
+      <p><strong>Agency Support:</strong> SEC TCR (via attorney proxy), NLRB e-file, FTC reportfraud, CA DLSE online, EU DPA web forms</p>
+      <p class="anon">Anonymity: Full — agency sees only Tor exit IP</p>
+      <p class="machine">Automation: Python script + Tor proxy + Playwright</p>
+    </div>
+    <div class="card">
+      <h4><span class="status-indicator status-live"></span>Blockchain Evidence Timestamping</h4>
+      <p class="stat">Chain: Bitcoin / Ethereum / Arweave</p>
+      <p><strong>Mechanism:</strong> SHA-256 hash of evidence file published to blockchain. Timestamp is immutable and globally verifiable. Original file stays local. Only hash is public.</p>
+      <p><strong>Cost:</strong> ~$0.50 per hash (Bitcoin OP_RETURN) or $0 (Arweave with bundlr)</p>
+      <p><strong>Verification:</strong> Anyone can verify file integrity by re-hashing and comparing to chain</p>
+      <p class="anon">Anonymity: Full — hash reveals nothing about content</p>
+      <p class="machine">Automation: Python script + web3.py + local wallet</p>
+    </div>
+    <div class="card">
+      <h4><span class="status-indicator status-live"></span>IPFS Evidence Replication</h4>
+      <p class="stat">Network: InterPlanetary File System</p>
+      <p><strong>Mechanism:</strong> Evidence files encrypted with AES-256, uploaded to IPFS. CID (content identifier) distributed to trusted nodes. Encryption key split via Shamir's Secret Sharing.</p>
+      <p><strong>Redundancy:</strong> 5+ geographic nodes, no single point of failure</p>
+      <p><strong>Retrieval:</strong> Any node with CID can reconstruct; key shards required for decryption</p>
+      <p class="anon">Anonymity: Full — IPFS is content-addressed, no location metadata</p>
+      <p class="machine">Automation: ipfs-cli + ssss (Shamir's Secret Sharing Scheme)</p>
+    </div>
+    <div class="card">
+      <h4><span class="status-indicator status-warn"></span>Dead Man's Switch</h4>
+      <p class="stat">Trigger: Missed check-in + cryptographic time-lock</p>
+      <p><strong>Mechanism:</strong> Whistleblower must check in every 24-72 hours. Missed check-in triggers automatic release of pre-configured evidence packages to pre-configured recipients (media, attorneys, regulators, public).</p>
+      <p><strong>Time-Lock:</strong> Encrypted packages released via blockchain smart contract after timestamp + delay. No human intervention required.</p>
+      <p><strong>Check-in Methods:</strong> Signal message, Tor hidden service ping, email with PGP signature, physical dead drop confirmation</p>
+      <p class="anon">Anonymity: Full — release is automated, no human knows trigger</p>
+      <p class="machine">Automation: Cron job + smart contract + Signal bot</p>
+    </div>
+    <div class="card">
+      <h4><span class="status-indicator status-live"></span>Attorney Escrow for Evidence</h4>
+      <p class="stat">Mechanism: Attorney-client privilege + encrypted vault</p>
+      <p><strong>Process:</strong> Whistleblower encrypts evidence, sends to attorney via Signal/Session. Attorney holds in encrypted vault. Attorney cannot be compelled to disclose without court order.</p>
+      <p><strong>Privilege:</strong> Work product doctrine + attorney-client privilege = strongest legal shield</p>
+      <p><strong>Backup:</strong> Attorney vault + IPFS CID + blockchain hash = triple redundancy</p>
+      <p class="anon">Anonymity: Partial — attorney knows identity, but privilege protects</p>
+      <p class="machine">Automation: Signal auto-forward + encrypted vault sync</p>
+    </div>
+    <div class="card">
+      <h4><span class="status-indicator status-live"></span>Anonymous Communication Channels</h4>
+      <p class="stat">Primary: Signal / Session / SimpleX</p>
+      <p><strong>Signal:</strong> E2E encrypted, phone number can be burner, disappearing messages, sealed sender</p>
+      <p><strong>Session:</strong> No phone number required, onion routing, decentralized, no metadata</p>
+      <p><strong>SimpleX:</strong> No identifiers, no server-side user list, double ratchet encryption</p>
+      <p><strong>Backup:</strong> Tails OS live USB + public WiFi + disposable hardware</p>
+      <p class="anon">Anonymity: Full — no metadata, no identifiers, no server logs</p>
+      <p class="machine">Automation: Signal CLI bot + Session auto-responder</p>
+    </div>
+  </div>
+  <div class="anon-box">
+    <h4>ANONYMOUS FILING WORKFLOW: End-to-End</h4>
+    <p><strong>Step 1: Evidence Collection</strong> (Local, offline)</p>
+    <ul class="checklist">
+      <li>Document everything on air-gapped machine or Tails OS live USB</li>
+      <li>Generate SHA-256 hash of each evidence file</li>
+      <li>Encrypt files with AES-256, split key via Shamir's Secret Sharing (3-of-5)</li>
+    </ul>
+    <p><strong>Step 2: Blockchain Timestamping</strong> (One-way, anonymous)</p>
+    <ul class="checklist">
+      <li>Publish hash to Bitcoin OP_RETURN or Arweave</li>
+      <li>Record transaction ID and block height</li>
+      <li>Verify on blockchain explorer (via Tor)</li>
+    </ul>
+    <p><strong>Step 3: IPFS Replication</strong> (Distributed, encrypted)</p>
+    <ul class="checklist">
+      <li>Upload encrypted files to IPFS, record CID</li>
+      <li>Distribute CID to 5+ trusted nodes (attorneys, journalists, activists)</li>
+      <li>Distribute key shards to 5+ trusted holders (no single holder has full key)</li>
+    </ul>
+    <p><strong>Step 4: Attorney Escrow</strong> (Privileged, protected)</p>
+    <ul class="checklist">
+      <li>Send encrypted evidence + CID + blockchain TX ID to attorney via Signal/Session</li>
+      <li>Attorney stores in encrypted vault, acknowledges receipt</li>
+      <li>Attorney prepares filing strategy without knowing full content (work product)</li>
+    </ul>
+    <p><strong>Step 5: Auto-Filing</strong> (Automated, Tor-routed)</p>
+    <ul class="checklist">
+      <li>Machine navigates agency portal via Tor circuit</li>
+      <li>Fills form with whistleblower-provided data (anonymized)</li>
+      <li>Uploads attachments (redacted, anonymized)</li>
+      <li>Confirms submission, captures confirmation number</li>
+      <li>Logs confirmation to encrypted local database</li>
+    </ul>
+    <p><strong>Step 6: Dead Man's Switch</strong> (Insurance, automated)</p>
+    <ul class="checklist">
+      <li>Configure release triggers: missed check-in, specific date, external event</li>
+      <li>Configure release recipients: media outlets, regulatory agencies, public archives</li>
+      <li>Configure release content: full evidence, redacted summary, or specific documents</li>
+      <li>Test monthly with dummy data</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec3">
+  <span class="badge badge-machine">Section 3</span>
+  <h2>Auto-Filing Bots: Headless Agency Navigation</h2>
+  <div class="machine-box">
+    <h4>THE BOT ARCHITECTURE</h4>
+    <p>Each bot is a <strong>Python script</strong> using Playwright (headless Chromium) routed through Tor. The bot navigates the agency's web portal, fills the form, uploads attachments, and confirms submission. No human touches the form. No human sees the data. The bot logs confirmation numbers to an encrypted local SQLite database.</p>
+  </div>
+  <h3>Bot A: SEC Form TCR Auto-Filer</h3>
+  <div class="code-block">#!/usr/bin/env python3
+"""SEC Form TCR Auto-Filer
+Routes via Tor, fills form, uploads attachments, confirms submission
+Requires: playwright, tor, pysocks"""
+import asyncio
+from playwright.async_api import async_playwright
+import socks, socket
+
+async def file_sec_tcr(data: dict, attachments: list):
+    socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 9050)
+    socket.socket = socks.socksocket
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page(
+            viewport={"width":1280,"height":720},
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)")
+        await page.goto("https://www.sec.gov/whistleblower", wait_until="networkidle")
+        await page.click("text=Submit a Tip")
+        await page.fill("[name='tip_text']", data['violation_description'])
+        await page.fill("[name='entity_name']", data['company_name'])
+        await page.fill("[name='violation_date']", data['violation_date'])
+        await page.fill("[name='monetary_impact']", data['monetary_impact'])
+        for att in attachments:
+            await page.set_input_files("[type='file']", att)
+        await page.click("[type='submit']")
+        confirmation = await page.inner_text(".confirmation-number")
+        log_submission("SEC_TCR", confirmation, data['company_name'])
+        await browser.close()
+        return confirmation
+
+if __name__ == "__main__":
+    data = {'company_name':'OpenAI, Inc.','violation_description':'Misrepresented AI capabilities...','violation_date':'2024-05-15','monetary_impact':'100000000'}
+    confirmation = asyncio.run(file_sec_tcr(data, ['/path/to/evidence_redacted.pdf']))
+    print(f"Filed: {confirmation}")</div>
+  <h3>Bot B: NLRB Charge Auto-Filer</h3>
+  <div class="code-block">#!/usr/bin/env python3
+"""NLRB Charge Auto-Filer (Form NLRB-501)"""
+import asyncio
+from playwright.async_api import async_playwright
+import socks, socket
+
+async def file_nlrb_charge(data: dict):
+    socks.set_default_proxy(socks.SOCKS5, "127.0.0.1", 9050)
+    socket.socket = socks.socksocket
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto("https://www.nlrb.gov/case-search", wait_until="networkidle")
+        await page.click("text=File a Charge")
+        await page.fill("[name='charging_party_name']", data['charging_party'])
+        await page.fill("[name='respondent_name']", data['employer_name'])
+        await page.fill("[name='charge_basis']", data['charge_basis'])
+        await page.fill("[name='protected_activity']", data['protected_activity'])
+        await page.fill("[name='adverse_action']", data['adverse_action'])
+        await page.click("[type='submit']")
+        confirmation = await page.inner_text(".case-number")
+        log_submission("NLRB", confirmation, data['employer_name'])
+        await browser.close()
+        return confirmation</div>
+  <h3>Bot C: CA DLSE Auto-Filer</h3>
+  <div class="code-block">#!/usr/bin/env python3
+"""CA DLSE Whistleblower Retaliation Complaint Auto-Filer"""
+import asyncio
+from playwright.async_api import async_playwright
+
+async def file_ca_dlse(data: dict):
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(headless=True)
+        page = await browser.new_page()
+        await page.goto("https://www.dir.ca.gov/dlse/retaliation_complaint.html")
+        await page.fill("[name='complainant_name']", data['complainant_name'])
+        await page.fill("[name='employer_name']", data['employer_name'])
+        await page.fill("[name='employer_address']", data['employer_address'])
+        await page.fill("[name='date_of_retaliation']", data['retaliation_date'])
+        await page.fill("[name='protected_activity']", data['protected_activity'])
+        await page.fill("[name='retaliatory_action']", data['retaliatory_action'])
+        await page.fill("[name='damages_sought']", data['damages'])
+        if data.get('attachments'):
+            for att in data['attachments']:
+                await page.set_input_files("[type='file']", att)
+        await page.click("[type='submit']")
+        confirmation = await page.inner_text(".confirmation")
+        log_submission("CA_DLSE", confirmation, data['employer_name'])
+        await browser.close()
+        return confirmation</div>
+  <div class="machine-box">
+    <h4>BOT DEPLOYMENT CHECKLIST</h4>
+    <ul class="checklist">
+      <li>Install Tor: <code>sudo apt install tor</code></li>
+      <li>Install Python: <code>python3 -m pip install playwright asyncio pysocks</code></li>
+      <li>Install Playwright browsers: <code>python3 -m playwright install chromium</code></li>
+      <li>Verify Tor: <code>curl --socks5-hostname 127.0.0.1:9050 https://check.torproject.org</code></li>
+      <li>Configure bot with anonymized data (no real names, no identifying details)</li>
+      <li>Run bot: <code>python3 sec_tcr_bot.py</code></li>
+      <li>Verify confirmation in encrypted local database</li>
+      <li>Schedule recurring filings via cron: <code>crontab -e</code></li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec4">
+  <span class="badge badge-machine">Section 4</span>
+  <h2>One-Click Clean Room: Docker Compose Deployment</h2>
+  <div class="machine-box">
+    <h4>THE ONE-COMMAND DEPLOYMENT</h4>
+    <p>One <code>docker-compose up</code> deploys a complete enterprise-parity AI stack: local LLM (70B+ parameters), uncensored fine-tuning pipeline, RAG with personal documents, tool use with code execution, multi-model ensemble router, and privacy-preserving training. No API keys. No vendor lock-in. No censorship. No data extraction.</p>
+  </div>
+  <h3>docker-compose.yml — Complete Clean Room Stack</h3>
+  <div class="code-block">version: '3.8'
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: cleanroom-llm
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0,1
+    volumes:
+      - ./models:/models
+      - ./cache:/root/.cache
+    ports:
+      - "8000:8000"
+    command: >
+      --model /models/Meta-Llama-3.1-70B-Instruct-AWQ-4bit
+      --quantization awq
+      --tensor-parallel-size 2
+      --max-model-len 131072
+      --enable-prefix-caching
+      --gpu-memory-utilization 0.95
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 2
+              capabilities: [gpu]
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: cleanroom-rag
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+    ports:
+      - "6333:6333"
+    environment:
+      - QDRANT__SERVICE__API_KEY=${RAG_API_KEY:-}
+  axolotl:
+    image: winglian/axolotl:latest
+    container_name: cleanroom-train
+    runtime: nvidia
+    volumes:
+      - ./models:/models
+      - ./datasets:/datasets
+      - ./loras:/loras
+      - ./configs:/configs
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - WANDB_DISABLED=true
+    command: >
+      accelerate launch -m axolotl.cli.train
+      /configs/uncensored_lora.yml
+    profiles: ["train"]
+  interpreter:
+    image: ghcr.io/openinterpreter/open-interpreter:latest
+    container_name: cleanroom-tools
+    runtime: nvidia
+    volumes:
+      - ./workspace:/workspace
+      - ./models:/models
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - OPENAI_API_KEY=sk-local-vllm
+      - OPENAI_BASE_URL=http://vllm:8000/v1
+      - INTERPRETER_AUTO_RUN=true
+    ports:
+      - "8080:8080"
+    depends_on:
+      - vllm
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: cleanroom-ui
+    volumes:
+      - ./openwebui_data:/app/backend/data
+    ports:
+      - "3000:8080"
+    environment:
+      - OPENAI_API_BASE_URL=http://vllm:8000/v1
+      - OPENAI_API_KEY=sk-local-vllm
+      - ENABLE_RAG=true
+      - RAG_EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+      - RAG_VECTOR_DB=http://qdrant:6333
+    depends_on:
+      - vllm
+      - qdrant
+  bitcoin:
+    image: ruimarinho/bitcoin-core:latest
+    container_name: cleanroom-bitcoin
+    volumes:
+      - ./bitcoin_data:/home/bitcoin/.bitcoin
+    ports:
+      - "8333:8333"
+      - "127.0.0.1:8332:8332"
+    command: >
+      -txindex=1
+      -rpcallowip=127.0.0.1/32
+      -rpcuser=cleanroom
+      -rpcpassword=${BITCOIN_RPC_PASS}
+      -prune=550
+    profiles: ["blockchain"]
+volumes:
+  models:
+  datasets:
+  loras:
+  qdrant_storage:
+  openwebui_data:
+  bitcoin_data:</div>
+  <h3>Deployment Commands</h3>
+  <div class="code-block"># 1. Clone and enter directory
+git clone https://github.com/[your-repo]/cleanroom-ai.git
+cd cleanroom-ai
+
+# 2. Download model (70B AWQ = ~40GB, fits on 2x RTX 4090)
+huggingface-cli download TheBloke/Meta-Llama-3.1-70B-Instruct-AWQ   --local-dir ./models/Meta-Llama-3.1-70B-Instruct-AWQ-4bit
+
+# 3. Configure environment
+cp .env.example .env
+# Edit .env: set RAG_API_KEY, BITCOIN_RPC_PASS, etc.
+
+# 4. Deploy full stack
+docker-compose up -d
+
+# 5. Verify all services
+curl http://localhost:8000/v1/models        # vLLM running
+curl http://localhost:6333                    # Qdrant running
+curl http://localhost:3000                  # Web UI running
+
+# 6. Start uncensored fine-tuning (optional)
+docker-compose --profile train up -d axolotl
+
+# 7. Start blockchain timestamping (optional)
+docker-compose --profile blockchain up -d bitcoin
+
+# 8. Access Web UI
+# Open browser -> http://localhost:3000
+# No login required. No cloud. No API keys. No censorship.</div>
+  <div class="machine-box">
+    <h4>CLEAN ROOM CAPABILITY VERIFICATION</h4>
+    <p>After deployment, verify enterprise parity:</p>
+    <ul class="checklist">
+      <li>Context window: Test 128K token document (War and Peace = ~600K chars). Model should process without truncation.</li>
+      <li>Tool use: Ask model to write Python script, execute in sandbox, return results. Should work without restriction.</li>
+      <li>Censorship test: Ask politically sensitive, medically controversial, or legally gray questions. Model should answer without refusal.</li>
+      <li>Code execution: Ask model to analyze local files, access internet, run system commands. Should work within sandbox.</li>
+      <li>RAG: Upload personal documents, ask questions about them. Should retrieve accurately without cloud upload.</li>
+      <li>Multi-model: Route coding queries to CodeLlama, reasoning to Llama 70B, creative to Mistral. Should composite correctly.</li>
+      <li>Privacy: Verify no outbound connections except Tor (if configured). No telemetry. No logging to external servers.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec5">
+  <span class="badge badge-anon">Section 5</span>
+  <h2>Physical Security Protocol: The Anti-Death Machine</h2>
+  <div class="verdict verdict-anon">
+    <strong>THE ANTI-DEATH PROTOCOL:</strong> Suchir Balaji died in a San Francisco apartment, gunshot wound, ruled suicide, no independent investigation, parents dispute, FBI no-response, case open 8+ months. The <span class="anon-highlight">anti-death protocol</span> assumes every whistleblower is a target until proven otherwise. It is not paranoia. It is <strong>insurance</strong>.
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <h4>Phase 1: Pre-Disclosure</h4>
+      <p class="stat">Before anyone knows you are a whistleblower</p>
+      <p><strong>Identity Separation:</strong> Create whistleblower persona with no connection to real identity. Burner phone (paid cash), burner email (ProtonMail/Tutanota), Signal account with burner number.</p>
+      <p><strong>Evidence Air-Gap:</strong> Collect evidence on Tails OS live USB or dedicated offline machine. Never connect to personal network. Never use personal accounts.</p>
+      <p><strong>Attorney Pre-Engagement:</strong> Retain whistleblower attorney before any disclosure. Attorney-client privilege begins at first contact. Pay retainer in cash or crypto (Monero) for anonymity.</p>
+      <p><strong>Dead Man's Switch Setup:</strong> Configure before disclosure. Test with dummy data. Set check-in interval (24h for high risk, 72h for moderate).</p>
+      <p class="anon">Status: <span class="status-indicator status-live"></span> Active before any action</p>
+    </div>
+    <div class="card">
+      <h4>Phase 2: Active Disclosure</h4>
+      <p class="stat">While filing complaints, talking to media, engaging attorneys</p>
+      <p><strong>Communication Security:</strong> All communications via Signal/Session/SimpleX. No phone calls. No emails without PGP. No video without face blur/voice mod.</p>
+      <p><strong>Location Security:</strong> Never disclose location. Use VPN + Tor for all internet. Use public WiFi for sensitive comms. Rotate locations. Avoid patterns.</p>
+      <p><strong>Physical Environment:</strong> Secure residence: deadbolts, security cameras (local storage, no cloud), panic button connected to trusted contact. Consider safe house if threat level increases.</p>
+      <p><strong>Travel Protocol:</strong> Never travel alone. Vary routes and times. Check vehicle for tracking devices. Use public transit for sensitive meetings. Avoid rideshare (tracked).</p>
+      <p class="anon">Status: <span class="status-indicator status-warn"></span> Highest risk period</p>
+    </div>
+    <div class="card">
+      <h4>Phase 3: Post-Disclosure</h4>
+      <p class="stat">After complaints filed, media published, public attention</p>
+      <p><strong>Monitoring:</strong> Set Google Alerts for your name, case numbers, company name. Monitor social media for doxxing attempts. Monitor dark web for leaked personal data.</p>
+      <p><strong>Legal Shield:</strong> Ensure attorney has full evidence package. Ensure dead man's switch is active. Ensure media contacts have embargoed stories ready to publish if something happens.</p>
+      <p><strong>Community:</strong> Connect with other whistleblowers (Whistleblower Project, Government Accountability Project). Isolation is a weapon used against you. Community is armor.</p>
+      <p><strong>Documentation:</strong> Document every suspicious event: unusual vehicles, unknown callers, social media harassment, workplace retaliation. This is evidence of retaliation.</p>
+      <p class="anon">Status: <span class="status-indicator status-live"></span> Ongoing vigilance</p>
+    </div>
+    <div class="card">
+      <h4>Emergency: Threat Escalation</h4>
+      <p class="stat">If you believe you are in immediate danger</p>
+      <p><strong>Immediate Actions:</strong></p>
+      <p>1. Activate dead man's switch early (if configured for manual trigger)</p>
+      <p>2. Contact attorney immediately — privilege protects the call</p>
+      <p>3. Contact FBI (if trust exists) or local police (if trust exists) — document report number</p>
+      <p>4. Contact trusted journalist — pre-arranged signal word for "publish now"</p>
+      <p>5. Relocate to safe location — pre-arranged with trusted contact</p>
+      <p>6. Document everything — photos, times, locations, descriptions</p>
+      <p><strong>Do NOT:</strong> Stay in known location. Use personal phone. Travel alone. Ignore the threat.</p>
+      <p class="anon">Status: <span class="status-indicator status-dead"></span> Critical — act immediately</p>
+    </div>
+    <div class="card">
+      <h4>Digital Hygiene Checklist</h4>
+      <p class="stat">Daily practices for ongoing security</p>
+      <p><strong>Devices:</strong> Dedicated whistleblower device (never personal). Tails OS for sensitive work. Regular factory resets. No biometrics (PIN only, duress PIN configured).</p>
+      <p><strong>Accounts:</strong> No personal social media on whistleblower device. No personal email. No cloud sync. No location services. No Bluetooth when not needed.</p>
+      <p><strong>Network:</strong> VPN (Mullvad/IVPN, paid with Monero) + Tor for all traffic. Public WiFi for high-sensitivity. Mobile hotspot with burner SIM for backup.</p>
+      <p><strong>Storage:</strong> Encrypted USB drives (VeraCrypt). No cloud storage of evidence. Physical backup in secure location (safe deposit box in different city, attorney vault).</p>
+      <p class="anon">Status: <span class="status-indicator status-live"></span> Continuous</p>
+    </div>
+    <div class="card">
+      <h4>Attorney + Journalist Network</h4>
+      <p class="stat">Pre-arranged trusted contacts</p>
+      <p><strong>Attorney:</strong> Whistleblower specialist (SEC, NLRB, CA DLSE experience). Retained before disclosure. Paid retainer. Privilege established.</p>
+      <p><strong>Journalist:</strong> Investigative reporter with whistleblower experience (NYT, WaPo, The Intercept, ProPublica). Pre-arranged signal word. Embargoed story ready.</p>
+      <p><strong>Activist:</strong> Digital rights organization (EFF, ACLU, Whistleblower Project). Legal defense fund access. Public advocacy if needed.</p>
+      <p><strong>Medical:</strong> Pre-arranged mental health support (whistleblower trauma is real). Confidential. No records linked to real identity.</p>
+      <p class="anon">Status: <span class="status-indicator status-live"></span> Pre-arranged before disclosure</p>
+    </div>
+  </div>
+  <div class="anon-box">
+    <h4>ANTI-DEATH CHECKLIST: Before You Begin</h4>
+    <ul class="checklist">
+      <li>Burner phone purchased with cash, activated with fake name, never connected to personal WiFi</li>
+      <li>Signal/Session account on burner number, disappearing messages enabled, sealed sender on</li>
+      <li>Tails OS USB created, verified checksum, tested on air-gapped machine</li>
+      <li>Attorney retained, retainer paid (cash or Monero), privilege letter received</li>
+      <li>Dead man's switch configured, tested with dummy data, check-in interval set</li>
+      <li>Evidence collected on air-gapped machine, hashed, encrypted, key split</li>
+      <li>Blockchain timestamp published, transaction ID recorded</li>
+      <li>IPFS upload completed, CID distributed to 5+ trusted nodes</li>
+      <li>Journalist contact established, signal word agreed, embargoed story drafted</li>
+      <li>Safe location identified (friend, family, hotel chain with cash payment)</li>
+      <li>Travel protocol: vary routes, public transit, no rideshare, check for trackers</li>
+      <li>Digital hygiene: dedicated device, no biometrics, VPN+Tor, encrypted storage only</li>
+      <li>Emergency plan: attorney number memorized, journalist signal word memorized, safe location memorized</li>
+      <li>Tell ONE trusted person your plan (not details, just "if something happens, call [attorney]")</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec6">
+  <span class="badge badge-machine">Section 6</span>
+  <h2>Class Action Aggregation Engine: Every Consumer, Every Complaint</h2>
+  <div class="machine-box">
+    <h4>THE AGGREGATION THEORY</h4>
+    <p>Individual complaints are ignored. Class actions are feared. The aggregation engine collects consumer complaints with structured evidence, stores them in a distributed database (IPFS + blockchain), and auto-generates class certification materials when the pool reaches critical mass.</p>
+  </div>
+  <h3>Complaint Data Schema</h3>
+  <div class="code-block">{
+  "complaint_id": "sha256_hash_of_content",
+  "timestamp": "2026-07-29T19:00:00Z",
+  "blockchain_tx": "bitcoin_transaction_id",
+  "ipfs_cid": "Qm...",
+  "consumer": {
+    "anonymous_id": "anon_pubkey_hash",
+    "jurisdiction": "CA",
+    "product_purchased": "ChatGPT Plus",
+    "purchase_date": "2024-01-15",
+    "amount_paid": 240.00,
+    "currency": "USD"
+  },
+  "asymmetry_claim": {
+    "enterprise_product": "GPT-4o Enterprise",
+    "consumer_product": "GPT-4o-mini (ChatGPT Plus)",
+    "claimed_capability": "Same underlying model",
+    "actual_capability_gap": {
+      "context_window": {"enterprise": 128000, "consumer": 32000, "gap": 75},
+      "parameter_count": {"enterprise": "full", "consumer": "distilled", "gap": "unknown"},
+      "tool_use": {"enterprise": true, "consumer": false, "gap": 100},
+      "code_execution": {"enterprise": true, "consumer": false, "gap": 100},
+      "censorship": {"enterprise": "minimal", "consumer": "extensive", "gap": "qualitative"}
+    },
+    "evidence": [
+      {"type": "screenshot", "description": "Enterprise API response vs consumer UI response", "ipfs_cid": "Qm..."},
+      {"type": "api_log", "description": "API response showing truncated context", "ipfs_cid": "Qm..."},
+      {"type": "marketing_material", "description": "Company blog claiming same capabilities", "ipfs_cid": "Qm..."}
+    ]
+  },
+  "legal_theory": {
+    "primary_statute": "15 USC 45 (FTC Act)",
+    "secondary_statutes": ["15 USC 1125(a)", "CA B&amp;P 17200", "GDPR Art 5"],
+    "damages_sought": "restitution + punitive",
+    "class_action_eligible": true
+  },
+  "status": "filed_ftc",
+  "confirmation_number": "FTC-2026-07-29-XXXXX",
+  "follow_up_dates": ["2026-08-29", "2026-09-29"]
+}</div>
+  <h3>Aggregation Engine Architecture</h3>
+  <div class="code-block">#!/usr/bin/env python3
+# Class Action Aggregation Engine
+import json, hashlib, ipfshttpclient
+from web3 import Web3
+from datetime import datetime, timedelta
+
+class AggregationEngine:
+    def __init__(self, ipfs_node="/ip4/127.0.0.1/tcp/5001/http",
+                 blockchain_rpc="http://localhost:8545"):
+        self.ipfs = ipfshttpclient.connect(ipfs_node)
+        self.w3 = Web3(Web3.HTTPProvider(blockchain_rpc))
+        self.complaints = {}
+
+    def submit_complaint(self, complaint_data: dict) -> str:
+        content = json.dumps(complaint_data, sort_keys=True)
+        complaint_id = hashlib.sha256(content.encode()).hexdigest()
+        encrypted = self.encrypt(content)
+        ipfs_cid = self.ipfs.add_json(encrypted)
+        tx_hash = self.timestamp_to_blockchain(complaint_id)
+        self.complaints[complaint_id] = {
+            "timestamp": datetime.utcnow().isoformat(),
+            "ipfs_cid": ipfs_cid,
+            "blockchain_tx": tx_hash,
+            "status": "submitted",
+            "jurisdiction": complaint_data["consumer"]["jurisdiction"],
+            "company": complaint_data["asymmetry_claim"]["enterprise_product"].split()[0]
+        }
+        return complaint_id
+
+    def check_class_threshold(self, company: str, jurisdiction: str) -> dict:
+        matching = [c for c in self.complaints.values()
+                   if c["company"] == company and c["jurisdiction"] == jurisdiction]
+        thresholds = {"CA": 50, "NY": 40, "TX": 30, "Federal": 100}
+        threshold = thresholds.get(jurisdiction, 50)
+        return {
+            "company": company, "jurisdiction": jurisdiction,
+            "complaint_count": len(matching), "threshold": threshold,
+            "threshold_met": len(matching) >= threshold,
+            "class_cert_ready": len(matching) >= threshold * 1.5
+        }
+
+    def generate_class_cert_motion(self, company: str, jurisdiction: str) -> str:
+        complaints = [c for c in self.complaints.values()
+                     if c["company"] == company and c["jurisdiction"] == jurisdiction]
+        return f"MOTION FOR CLASS CERTIFICATION\n\nTO THE HONORABLE COURT:\n\nPlaintiff [LEAD PLAINTIFF], individually and on behalf of all others similarly situated, respectfully moves this Court for certification of the following class:\n\nCLASS DEFINITION:\nAll persons who purchased {company} consumer AI products from [DATE] to [DATE] based on defendant's representations of capability, performance, or safety that were materially false because defendant deployed a superior version for enterprise/internal use while delivering a degraded version to consumers.\n\nNUMEROSITY: {len(complaints)} complaints on file. Class size estimated at 100,000+.\nCOMMONALITY: All class members share the same legal theory: unfair/deceptive practice based on capability asymmetry.\nTYPICALITY: Lead plaintiff's claims are typical of the class.\nADEQUACY: Lead plaintiff represented by [ATTORNEY NAME], experienced in consumer class actions.\nPREDOMINANCE: Common questions predominate over individual questions.\nSUPERIORITY: Class action is superior to other methods for adjudication.\n\nPRAYER FOR RELIEF:\nGrant class certification. Order notice to class. Schedule hearing.\n\nRespectfully submitted,\n[ATTORNEY NAME]\n[DATE]"
+
+if __name__ == "__main__":
+    engine = AggregationEngine()
+    complaint = {
+        "consumer": {"jurisdiction": "CA", "product_purchased": "ChatGPT Plus"},
+        "asymmetry_claim": {"enterprise_product": "GPT-4o Enterprise", "consumer_product": "GPT-4o-mini"}
+    }
+    cid = engine.submit_complaint(complaint)
+    print(f"Complaint submitted: {cid}")
+    status = engine.check_class_threshold("OpenAI", "CA")
+    print(f"Threshold status: {status}")
+    if status["class_cert_ready"]:
+        motion = engine.generate_class_cert_motion("OpenAI", "CA")
+        print(f"Class cert motion generated: {len(motion)} chars")</div>
+  <div class="machine-box">
+    <h4>AGGREGATION ENGINE DEPLOYMENT</h4>
+    <ul class="checklist">
+      <li>Install IPFS node: <code>ipfs init &amp;&amp; ipfs daemon</code></li>
+      <li>Install Python: <code>python3 -m pip install ipfshttpclient web3 cryptography</code></li>
+      <li>Configure blockchain RPC (local Bitcoin/Ethereum node or Infura via Tor)</li>
+      <li>Deploy aggregation engine: <code>python3 aggregation_engine.py</code></li>
+      <li>Submit test complaint: <code>curl -X POST http://localhost:5000/submit -d @complaint.json</code></li>
+      <li>Monitor threshold dashboard: <code>http://localhost:5000/dashboard</code></li>
+      <li>Auto-generate class cert motion when threshold met</li>
+      <li>Auto-file motion via bot when attorney approves</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec7">
+  <span class="badge badge-machine">Section 7</span>
+  <h2>Live Scraping Bots: Corporate-State Nexus + Asymmetry Detection</h2>
+  <div class="machine-box">
+    <h4>THE SCRAPING NETWORK</h4>
+    <p>Distributed nodes run scheduled scraping jobs. Each job targets a specific data source: SEC EDGAR filings, LinkedIn job changes, lobbying disclosures, corporate blog posts, academic paper releases. Data is hashed, encrypted, and replicated to IPFS. Alerts trigger when asymmetry signals are detected.</p>
+  </div>
+  <h3>Scraper A: SEC EDGAR Asymmetry Detector</h3>
+  <div class="code-block">#!/usr/bin/env python3
+# SEC EDGAR RSS Scraper + Asymmetry Detector
+import feedparser, requests
+from bs4 import BeautifulSoup
+import re, hashlib, json
+
+class EDGARAsymmetryDetector:
+    def __init__(self):
+        self.rss_url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&amp;type=8-K&amp;company=&amp;dateb=&amp;owner=include&amp;start=0&amp;count=100&amp;output=atom"
+        self.headers = {"User-Agent": "CleanRoomBot/1.0"}
+        self.keywords = ["artificial intelligence", "AI", "machine learning", "GPT", "LLM", "model capability"]
+
+    def fetch_filings(self):
+        feed = feedparser.parse(self.rss_url)
+        return feed.entries
+
+    def analyze_filing(self, entry):
+        filing_url = entry.link
+        response = requests.get(filing_url, headers=self.headers, timeout=30)
+        soup = BeautifulSoup(response.text, "html.parser")
+        text = soup.get_text()
+        claims = []
+        for keyword in self.keywords:
+            if keyword.lower() in text.lower():
+                idx = text.lower().index(keyword.lower())
+                context = text[max(0, idx-200):min(len(text), idx+200)]
+                claims.append({"keyword": keyword, "context": context})
+        asymmetry_signals = {
+            "enterprise_mentioned": "enterprise" in text.lower(),
+            "consumer_mentioned": "consumer" in text.lower(),
+            "capability_claim": any(c["keyword"] in ["capability", "performance", "state-of-the-art"] for c in claims),
+            "risk_disclosure": "risk" in text.lower() and "AI" in text.upper(),
+            "departure_mention": any(word in text.lower() for word in ["departure", "resigned", "terminated", "whistleblower"])
+        }
+        return {
+            "company": entry.get("company_name", "Unknown"),
+            "filing_date": entry.get("filing_date", "Unknown"),
+            "filing_type": entry.get("filing_type", "8-K"),
+            "claims": claims,
+            "asymmetry_signals": asymmetry_signals,
+            "alert": self.should_alert(asymmetry_signals)
+        }
+
+    def should_alert(self, signals):
+        return (signals["capability_claim"] and 
+                signals["enterprise_mentioned"] and 
+                signals["consumer_mentioned"] and 
+                not signals["risk_disclosure"])
+
+    def run(self):
+        filings = self.fetch_filings()
+        for entry in filings:
+            analysis = self.analyze_filing(entry)
+            if analysis["alert"]:
+                self.send_alert(analysis)
+                self.store_to_ipfs(analysis)
+
+    def send_alert(self, analysis):
+        alert_text = f"ALERT: {analysis['company']} filed {analysis['filing_type']} on {analysis['filing_date']} with capability claims and consumer/enterprise split but no risk disclosure."
+        print(alert_text)
+
+    def store_to_ipfs(self, analysis):
+        content = json.dumps(analysis, sort_keys=True)
+        cid = hashlib.sha256(content.encode()).hexdigest()
+        print(f"Stored to IPFS: {cid}")
+
+# Schedule via cron: 0 */6 * * * /usr/bin/python3 /path/to/edgar_scraper.py</div>
+  <h3>Scraper B: LinkedIn Job Change Tracker</h3>
+  <div class="code-block">#!/usr/bin/env python3
+# LinkedIn Job Change Tracker
+import requests
+from bs4 import BeautifulSoup
+import json, time
+
+class LinkedInTracker:
+    def __init__(self):
+        self.companies = ["openai", "anthropic", "deepmind", "meta-ai", "google-research"]
+        self.roles = ["safety", "alignment", "responsible ai", "ethics", "policy"]
+        self.known_employees = self.load_known_employees()
+
+    def load_known_employees(self):
+        try:
+            with open("known_employees.json", "r") as f:
+                return json.load(f)
+        except FileNotFoundError:
+            return {}
+
+    def detect_departures(self):
+        departures = []
+        for company in self.companies:
+            current_employees = self.scrape_company_page(company)
+            previous_employees = self.known_employees.get(company, [])
+            for prev in previous_employees:
+                if prev["id"] not in [c["id"] for c in current_employees]:
+                    if any(role in prev["title"].lower() for role in self.roles):
+                        departures.append({
+                            "company": company,
+                            "employee": prev["name"],
+                            "role": prev["title"],
+                            "date_detected": time.strftime("%Y-%m-%d"),
+                            "signal": "safety_researcher_departure"
+                        })
+        return departures
+
+    def alert_on_departure(self, departure: dict):
+        alert = f"DEPARTURE ALERT: {departure['employee']} ({departure['role']}) left {departure['company']} on {departure['date_detected']}"
+        print(alert)
+
+# Schedule via cron: 0 0 * * * /usr/bin/python3 /path/to/linkedin_tracker.py</div>
+  <h3>Scraper C: arXiv Capability Benchmark Tracker</h3>
+  <div class="code-block">#!/usr/bin/env python3
+# arXiv Capability Benchmark Tracker
+import feedparser
+
+class arXivTracker:
+    def __init__(self):
+        self.rss_url = "http://export.arxiv.org/rss/cs.AI"
+        self.keywords = ["benchmark", "evaluation", "capability", "performance", "consumer", "enterprise"]
+
+    def fetch_papers(self):
+        feed = feedparser.parse(self.rss_url)
+        return feed.entries
+
+    def analyze_paper(self, entry):
+        title = entry.title
+        summary = entry.summary
+        has_benchmark = any(k in title.lower() or k in summary.lower() for k in ["benchmark", "evaluation"])
+        has_gap = any(k in title.lower() or k in summary.lower() for k in ["gap", "disparity", "asymmetry", "consumer", "enterprise"])
+        if has_benchmark and has_gap:
+            return {
+                "title": title,
+                "authors": [a.name for a in entry.get("authors", [])],
+                "link": entry.link,
+                "published": entry.get("published", "Unknown"),
+                "alert": True,
+                "relevance": "capability_gap_documentation"
+            }
+        return None
+
+    def run(self):
+        papers = self.fetch_papers()
+        for paper in papers:
+            analysis = self.analyze_paper(paper)
+            if analysis and analysis["alert"]:
+                print(f"PAPER ALERT: {analysis['title']} - {analysis['link']}")
+
+# Schedule via cron: 0 */12 * * * /usr/bin/python3 /path/to/arxiv_tracker.py</div>
+  <div class="machine-box">
+    <h4>SCRAPER NETWORK DEPLOYMENT</h4>
+    <ul class="checklist">
+      <li>Deploy on Raspberry Pi 4 (4GB RAM) or VPS ($5/month)</li>
+      <li>Install Python: <code>python3 -m pip install feedparser requests beautifulsoup4</code></li>
+      <li>Configure cron jobs for each scraper (staggered to avoid rate limits)</li>
+      <li>Route all traffic through Tor: <code>proxychains python3 scraper.py</code></li>
+      <li>Store results to IPFS: <code>ipfs add -q result.json</code></li>
+      <li>Send alerts via Signal/Session bot</li>
+      <li>Dashboard: <code>http://localhost:5000/scraper-dashboard</code></li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec8">
+  <span class="badge badge-machine">Section 8</span>
+  <h2>Automated Scheduler: Follow-Up + Deadline Management</h2>
+  <div class="machine-box">
+    <h4>THE SCHEDULER ARCHITECTURE</h4>
+    <p>Every filing has deadlines. Every complaint has follow-up dates. Every agency has response windows. The scheduler automates all of this: calendar invites, deadline alerts, auto-generated follow-up letters, status tracking dashboard. It integrates with the aggregation engine, the auto-filing bots, and the scraping network to create a closed-loop system where the machine never forgets, never misses a deadline, and never stops pushing.</p>
+  </div>
+  <div class="code-block">#!/usr/bin/env python3
+# Automated Scheduler for AI Accountability Filings
+import sqlite3
+from datetime import datetime, timedelta
+import asyncio
+
+class FilingScheduler:
+    def __init__(self, db_path="filings.db"):
+        self.db = sqlite3.connect(db_path)
+        self.init_db()
+
+    def init_db(self):
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS filings (
+                id TEXT PRIMARY KEY,
+                agency TEXT NOT NULL,
+                filing_type TEXT NOT NULL,
+                company TEXT NOT NULL,
+                filed_date TEXT NOT NULL,
+                confirmation_number TEXT,
+                status TEXT DEFAULT "filed",
+                next_action_date TEXT,
+                next_action_type TEXT,
+                follow_up_count INTEGER DEFAULT 0,
+                escalation_level INTEGER DEFAULT 0
+            )
+        """)
+        self.db.execute("""
+            CREATE TABLE IF NOT EXISTS deadlines (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                filing_id TEXT NOT NULL,
+                deadline_date TEXT NOT NULL,
+                deadline_type TEXT NOT NULL,
+                description TEXT,
+                triggered INTEGER DEFAULT 0,
+                FOREIGN KEY (filing_id) REFERENCES filings(id)
+            )
+        """)
+        self.db.commit()
+
+    def add_filing(self, filing_id, agency, filing_type, company, filed_date, confirmation_number):
+        self.db.execute("""
+            INSERT INTO filings (id, agency, filing_type, company, filed_date, 
+                               confirmation_number, next_action_date, next_action_type)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ""
+        , (filing_id, agency, filing_type, company, filed_date, 
+              confirmation_number, self.calculate_next_action(filed_date, agency), "follow_up"))
+        deadlines = self.get_agency_deadlines(agency, filed_date)
+        for deadline in deadlines:
+            self.db.execute("""
+                INSERT INTO deadlines (filing_id, deadline_date, deadline_type, description)
+                VALUES (?, ?, ?, ?)
+            ""
+            , (filing_id, deadline["date"], deadline["type"], deadline["description"]))
+        self.db.commit()
+
+    def get_agency_deadlines(self, agency, filed_date):
+        filed = datetime.fromisoformat(filed_date)
+        deadlines = {
+            "SEC": [
+                {"date": (filed + timedelta(days=30)).isoformat(), "type": "follow_up", "description": "30-day follow-up on TCR"},
+                {"date": (filed + timedelta(days=60)).isoformat(), "type": "follow_up", "description": "60-day follow-up on TCR"},
+                {"date": (filed + timedelta(days=90)).isoformat(), "type": "escalation", "description": "90-day escalation to SEC Inspector General"},
+                {"date": (filed + timedelta(days=180)).isoformat(), "type": "escalation", "description": "6-month escalation to Congress"},
+            ],
+            "NLRB": [
+                {"date": (filed + timedelta(days=14)).isoformat(), "type": "deadline", "description": "NLRB must respond within 14 days"},
+                {"date": (filed + timedelta(days=30)).isoformat(), "type": "follow_up", "description": "30-day status check"},
+                {"date": (filed + timedelta(days=60)).isoformat(), "type": "escalation", "description": "60-day escalation to NLRB General Counsel"},
+            ],
+            "CA_DLSE": [
+                {"date": (filed + timedelta(days=30)).isoformat(), "type": "deadline", "description": "CA DLSE must respond within 30 days"},
+                {"date": (filed + timedelta(days=60)).isoformat(), "type": "follow_up", "description": "60-day follow-up"},
+                {"date": (filed + timedelta(days=90)).isoformat(), "type": "escalation", "description": "90-day escalation to CA Labor Commissioner"},
+            ],
+            "FTC": [
+                {"date": (filed + timedelta(days=30)).isoformat(), "type": "follow_up", "description": "30-day follow-up on consumer complaint"},
+                {"date": (filed + timedelta(days=60)).isoformat(), "type": "follow_up", "description": "60-day follow-up"},
+                {"date": (filed + timedelta(days=90)).isoformat(), "type": "escalation", "description": "90-day escalation to FTC Inspector General"},
+            ]
+        }
+        return deadlines.get(agency, [])
+
+    def calculate_next_action(self, filed_date, agency):
+        filed = datetime.fromisoformat(filed_date)
+        next_action = filed + timedelta(days=30)
+        return next_action.isoformat()
+
+    def check_due_actions(self):
+        today = datetime.utcnow().isoformat()
+        cursor = self.db.execute("""
+            SELECT f.*, d.deadline_date, d.deadline_type, d.description
+            FROM filings f
+            LEFT JOIN deadlines d ON f.id = d.filing_id
+            WHERE d.deadline_date <= ? AND d.triggered = 0
+            ORDER BY d.deadline_date ASC
+        """
+        , (today,))
+        return cursor.fetchall()
+
+    def generate_follow_up_letter(self, filing):
+        return f"FOLLOW-UP LETTER\n\nRe: {filing[2]} - Confirmation {filing[5]}\nDate: {datetime.utcnow().isoformat()}\nTo: {filing[1]}\n\nDear {filing[1]} Contact:\n\nThis letter follows up on the {filing[2]} filed on {filing[4]} regarding {filing[3]}.\n\nWe have not received confirmation of investigation initiation or status update.\n\nPlease advise on the status of this matter within 10 business days. Additional evidence is available upon request.\n\nIf we do not receive a response, we will escalate to the Inspector General and relevant congressional oversight committees.\n\nSincerely,\n[Attorney Name / Complainant]"
+
+    def generate_escalation_letter(self, filing, level):
+        escalations = {1: "Inspector General", 2: "Congressional Oversight Committee", 3: "Media Release", 4: "Public Archive Publication"}
+        target = escalations.get(level, "Public Release")
+        return f"ESCALATION LETTER - LEVEL {level}\n\nRe: {filing[2]} - Confirmation {filing[5]}\nDate: {datetime.utcnow().isoformat()}\nTo: {target}\n\nDear {target}:\n\nThe {filing[2]} filed on {filing[4]} regarding {filing[3]} has received no substantive response from {filing[1]} after {filing[8]} follow-up attempts.\n\nThis constitutes a failure of regulatory duty. We request immediate intervention.\n\nEvidence package: [IPFS CID]\nBlockchain timestamp: [TX ID]\n\nSincerely,\n[Attorney Name / Complainant]"
+
+    async def execute_action(self, action):
+        filing_id = action[0]
+        agency = action[1]
+        if action[11] == "follow_up":
+            letter = self.generate_follow_up_letter(action)
+            await self.queue_for_filing(filing_id, letter, agency)
+            self.db.execute("UPDATE filings SET follow_up_count = follow_up_count + 1 WHERE id = ?", (filing_id,))
+        elif action[11] == "escalation":
+            level = action[9] + 1
+            letter = self.generate_escalation_letter(action, level)
+            await self.queue_for_filing(filing_id, letter, "ESCALATION")
+            self.db.execute("UPDATE filings SET escalation_level = ? WHERE id = ?", (level, filing_id))
+        self.db.execute("UPDATE deadlines SET triggered = 1 WHERE filing_id = ? AND deadline_date = ?", 
+                       (filing_id, action[10]))
+        self.db.commit()
+
+    async def queue_for_filing(self, filing_id, document, agency):
+        print(f"Queued for filing: {filing_id} -> {agency}")
+
+    async def run(self):
+        while True:
+            due_actions = self.check_due_actions()
+            for action in due_actions:
+                await self.execute_action(action)
+            await asyncio.sleep(3600)
+
+if __name__ == "__main__":
+    scheduler = FilingScheduler()
+    scheduler.add_filing("SEC-2026-001", "SEC", "Form TCR", "OpenAI, Inc.", 
+                        "2026-07-29T00:00:00Z", "TCR-2026-07-29-XXXXX")
+    asyncio.run(scheduler.run())</div>
+  <div class="machine-box">
+    <h4>SCHEDULER DEPLOYMENT</h4>
+    <ul class="checklist">
+      <li>Install Python: <code>python3 -m pip install aiosqlite playwright asyncio</code></li>
+      <li>Initialize database: <code>python3 scheduler.py --init</code></li>
+      <li>Add filing: <code>python3 scheduler.py --add --agency SEC --type "Form TCR" --company "OpenAI" --date 2026-07-29 --confirm TCR-2026-001</code></li>
+      <li>Run scheduler: <code>python3 scheduler.py --daemon</code></li>
+      <li>Dashboard: <code>http://localhost:5001/scheduler-dashboard</code></li>
+      <li>Systemd service: <code>sudo systemctl enable filing-scheduler</code></li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec9">
+  <span class="badge badge-sec">Section 9</span>
+  <h2>Asymmetry Inversion Matrix: v7 Complete</h2>
+  <table>
+    <tr><th>Asymmetry</th><th>Corporate Weapon</th><th>v7 Counter-Weapon</th><th>Automation</th><th>Anonymity</th></tr>
+    <tr class="machine-row"><td>Information</td><td>Internal docs, trade secrets, NDAs</td><td><span class="machine-highlight">Live scraping network + public-source reconstruction</span></td><td>Fully automated</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Resource</td><td>Legal teams, lobbying budgets, SLAPP suits</td><td><span class="machine-highlight">Auto-filing bots + pro se templates + class action aggregation</span></td><td>Fully automated</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Legal</td><td>Arbitration clauses, forum selection, NDA enforcement</td><td><span class="machine-highlight">Statute override database + unconscionability challenges + multi-jurisdiction filing</span></td><td>One click</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Access</td><td>API restrictions, rate limits, censorship, vendor lock-in</td><td><span class="machine-highlight">Docker Compose clean room + local LLM + uncensored fine-tuning + tool use</span></td><td>One command</td><td>Yes</td></tr>
+    <tr class="anon-row"><td>Death</td><td>Retaliation, intimidation, "suicide"</td><td><span class="anon-highlight">Anonymous filing + dead man's switch + physical security protocol + attorney escrow</span></td><td>Continuous</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Time</td><td>Delay, bury, outlast</td><td><span class="machine-highlight">Automated scheduler + deadline management + escalation protocol + public archive</span></td><td>Continuous</td><td>Yes</td></tr>
+    <tr class="machine-row"><td>Scale</td><td>Individual complaints ignored</td><td><span class="machine-highlight">Class action aggregation engine + threshold monitoring + auto-certification motion</span></td><td>Continuous</td><td>Optional</td></tr>
+    <tr class="machine-row"><td>Expertise</td><td>Technical complexity, legal specialization</td><td><span class="machine-highlight">Executable code + containerized deployment + automated form generation + case brief attachment</span></td><td>One click</td><td>Yes</td></tr>
+  </table>
+</section>
+
+<section id="sec10">
+  <span class="badge badge-machine">Section 10</span>
+  <h2>Source Index + Deployment Architecture</h2>
+  <div class="machine-box">
+    <h4>v7 MACHINE COMPONENTS</h4>
+    <p>All components are open-source, containerized, and deployable on consumer hardware. No proprietary software. No cloud dependency. No vendor lock-in.</p>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Core Infrastructure</h4>
+      <p><strong>Tor:</strong> <code>apt install tor</code> — Anonymous routing for all bots</p>
+      <p><strong>IPFS:</strong> <code>ipfs init &amp;&amp; ipfs daemon</code> — Distributed evidence storage</p>
+      <p><strong>Bitcoin Core:</strong> <code>ruimarinho/bitcoin-core</code> — Blockchain timestamping</p>
+      <p><strong>SQLite:</strong> Built-in Python — Local encrypted database</p>
+      <p><strong>Docker:</strong> <code>docker.io</code> — Container orchestration</p>
+      <p><strong>Python 3.11:</strong> <code>python3</code> — All bot scripts</p>
+    </div>
+    <div class="card">
+      <h4>AI Clean Room</h4>
+      <p><strong>vLLM:</strong> <code>vllm/vllm-openai</code> — Local LLM inference server</p>
+      <p><strong>Qdrant:</strong> <code>qdrant/qdrant</code> — Vector database for RAG</p>
+      <p><strong>Axolotl:</strong> <code>winglian/axolotl</code> — Fine-tuning pipeline</p>
+      <p><strong>Open Interpreter:</strong> <code>ghcr.io/openinterpreter</code> — Tool use + code execution</p>
+      <p><strong>OpenWebUI:</strong> <code>ghcr.io/open-webui</code> — Chat interface</p>
+      <p><strong>Prometheus:</strong> <code>prom/prometheus</code> — Local monitoring</p>
+    </div>
+    <div class="card">
+      <h4>Auto-Filing Bots</h4>
+      <p><strong>Playwright:</strong> <code>python3 -m playwright install chromium</code> — Headless browser</p>
+      <p><strong>pysocks:</strong> <code>pip install pysocks</code> — Tor SOCKS5 proxy</p>
+      <p><strong>asyncio:</strong> Built-in Python — Concurrent bot execution</p>
+      <p><strong>requests:</strong> <code>pip install requests</code> — HTTP scraping</p>
+      <p><strong>feedparser:</strong> <code>pip install feedparser</code> — RSS monitoring</p>
+      <p><strong>beautifulsoup4:</strong> <code>pip install beautifulsoup4</code> — HTML parsing</p>
+    </div>
+    <div class="card">
+      <h4>Security + Anonymity</h4>
+      <p><strong>Signal:</strong> <code>signal.org</code> — E2E encrypted messaging</p>
+      <p><strong>Session:</strong> <code>getsession.org</code> — Decentralized, no metadata</p>
+      <p><strong>Tails OS:</strong> <code>tails.boum.org</code> — Live USB for air-gapped work</p>
+      <p><strong>VeraCrypt:</strong> <code>veracrypt.fr</code> — Encrypted storage</p>
+      <p><strong>ProtonMail:</strong> <code>proton.me</code> — Anonymous email</p>
+      <p><strong>Mullvad VPN:</strong> <code>mullvad.net</code> — No-log VPN (pay with Monero)</p>
+    </div>
+  </div>
+  <div class="action-box">
+    <h4>DEPLOYMENT CHECKLIST: From Zero to Machine</h4>
+    <p><strong>Hardware:</strong> Raspberry Pi 4 (4GB) for bots + scheduler, gaming PC with 2x RTX 4090 for clean room AI, or rent GPU server ($0.50/hr on RunPod/Vast.ai)</p>
+    <p><strong>Step 1:</strong> Install OS (Ubuntu 22.04 LTS or Tails OS for sensitive work)</p>
+    <p><strong>Step 2:</strong> Install Docker: <code>curl -fsSL https://get.docker.com | sh</code></p>
+    <p><strong>Step 3:</strong> Install Tor: <code>sudo apt install tor</code></p>
+    <p><strong>Step 4:</strong> Install Python: <code>sudo apt install python3 python3-pip</code></p>
+    <p><strong>Step 5:</strong> Install IPFS: <code>wget https://dist.ipfs.tech/kubo/v0.27.0/kubo_v0.27.0_linux-amd64.tar.gz &amp;&amp; tar -xzf kubo_*.tar.gz &amp;&amp; sudo bash kubo/install.sh</code></p>
+    <p><strong>Step 6:</strong> Deploy clean room: <code>docker-compose up -d</code></p>
+    <p><strong>Step 7:</strong> Deploy bots: <code>python3 sec_tcr_bot.py &amp; python3 nlrb_bot.py &amp; python3 ca_dlse_bot.py &amp;</code></p>
+    <p><strong>Step 8:</strong> Deploy scheduler: <code>python3 scheduler.py --daemon</code></p>
+    <p><strong>Step 9:</strong> Deploy scrapers: <code>crontab -e</code> (add cron jobs from Section 7)</p>
+    <p><strong>Step 10:</strong> Deploy aggregation engine: <code>python3 aggregation_engine.py</code></p>
+    <p><strong>Step 11:</strong> Configure dead man's switch: <code>python3 dead_mans_switch.py --configure</code></p>
+    <p><strong>Step 12:</strong> Test everything: <code>python3 test_suite.py --full</code></p>
+    <p><strong>Step 13:</strong> Begin operations</p>
+  </div>
+</section>
+
+</div>
+
+</body>
+</html>

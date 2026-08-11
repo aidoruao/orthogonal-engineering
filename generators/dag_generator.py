@@ -25,6 +25,24 @@ except ImportError:
     sys.exit(1)
 
 
+def _coerce_max_depth(value):
+    """YAML may carry 'infinity' or numeric strings; coerce to a comparable int.
+    Fixes the str-vs-int TypeError when max_depth is quoted in the seed YAML."""
+    if value is None or isinstance(value, bool):
+        return 0
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        s = value.strip().lower()
+        if s in ("infinity", "inf", "unbounded", "∞"):
+            return 10 ** 18
+        try:
+            return int(s)
+        except ValueError:
+            raise ValueError(f"max_depth must be an int or 'infinity', got {value!r}")
+    return int(value)
+
+
 class DAGNode:
     """Represents a single node in the generation DAG."""
     
@@ -67,13 +85,14 @@ class DAGGenerator:
     """Generates Directed Acyclic Graph from seed definition."""
     
     def __init__(self, seed: dict, layer_index: int = 0, parent_seed: Optional[str] = None,
-                 universe_index: int = 0):
+                 universe_index: int = 0, single_batch: Optional[int] = None):
         self.seed = seed
         self.nodes: Dict[str, DAGNode] = {}
         self.root = None
         self.layer_index = layer_index
         self.parent_seed = parent_seed
         self.universe_index = universe_index
+        self.single_batch = single_batch  # lazy mode: build only this batch's subtree
         # Compute sub-seed for this universe
         self.sub_seed = self._derive_sub_seed()
         
@@ -178,6 +197,9 @@ class DAGGenerator:
             for parent in current_level_nodes:
                 # Generate children for this parent
                 for i in range(level_spec['count']):
+                    if (level_spec['name'] == 'batch' and self.single_batch is not None
+                            and i != self.single_batch):
+                        continue  # lazy mode: skip batches outside the requested one
                     child_id = f"{parent.id}/{level_spec['name']}_{i:06d}"
                     
                     child = DAGNode(
@@ -261,7 +283,7 @@ class DAGGenerator:
         can share the same sub-universe expansion.
         """
         recursion_config = self.seed.get('root', {}).get('recursion', {})
-        max_depth = recursion_config.get('max_depth', 0)
+        max_depth = _coerce_max_depth(recursion_config.get('max_depth', 0))
         
         # Only compute if we're not at max depth
         if self.layer_index >= max_depth:
@@ -391,6 +413,12 @@ def main():
         type=str,
         help="Parent universe seed (for recursive generation)"
     )
+    parser.add_argument(
+        "--single-batch",
+        type=int,
+        default=None,
+        help="Lazy mode: build only this batch's subtree (e.g. 0-9 for the test seed)"
+    )
     
     args = parser.parse_args()
     
@@ -405,7 +433,8 @@ def main():
         seed,
         layer_index=args.layer_index,
         parent_seed=args.parent_seed,
-        universe_index=args.universe_index
+        universe_index=args.universe_index,
+        single_batch=args.single_batch
     )
     nodes = generator.generate()
     

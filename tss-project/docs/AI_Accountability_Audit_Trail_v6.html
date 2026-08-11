@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Accountability Audit Trail v6 - Whistleblower Maximization Engine</title>
+<style>
+:root { --bg:#020204; --fg:#e0e0e0; --red:#ff1111; --orange:#ff5500; --yellow:#ffcc00; --cyan:#00ccff; --green:#33ff88; --law-purple:#cc99ff; --muted:#666; --card-bg:#0a0a12; --border:#1a1a2e; --asymmetry:#ff0044; --counter:#00ff88; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--fg); font-family:'Segoe UI',system-ui,sans-serif; line-height:1.6; }
+nav { position:sticky; top:0; z-index:1000; background:rgba(2,2,4,0.98); backdrop-filter:blur(10px); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+nav a { color:var(--fg); text-decoration:none; font-size:0.7rem; padding:3px 8px; border-radius:3px; border:1px solid var(--border); transition:all 0.2s; }
+nav a:hover { background:var(--card-bg); border-color:var(--cyan); color:var(--cyan); }
+nav .title { font-weight:700; color:var(--red); margin-right:auto; font-size:0.85rem; }
+.container { max-width:1400px; margin:0 auto; padding:20px; }
+section { margin-bottom:60px; border-top:1px solid var(--border); padding-top:40px; }
+.badge { display:inline-block; padding:2px 10px; border-radius:3px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+.badge-sec { background:var(--red); color:#000; }
+.badge-asym { background:var(--asymmetry); color:#fff; }
+.badge-counter { background:var(--counter); color:#000; }
+h1 { font-size:1.8rem; color:var(--red); margin-bottom:8px; }
+h2 { font-size:1.3rem; color:var(--yellow); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+h3 { font-size:1rem; color:var(--cyan); margin:20px 0 10px; }
+.subtitle { color:var(--muted); font-size:0.9rem; margin-bottom:30px; }
+.name { color:var(--yellow); font-weight:600; }
+.name-dead { color:var(--red); text-decoration:line-through; font-weight:600; }
+.verdict { border-left:4px solid var(--red); background:var(--card-bg); padding:16px 20px; margin:16px 0; border-radius:0 6px 6px 0; }
+.verdict-asym { border-left-color:var(--asymmetry); }
+.verdict-green { border-left-color:var(--green); }
+.action-box { border:1px solid var(--green); background:rgba(51,255,136,0.05); padding:20px; border-radius:6px; margin:16px 0; }
+.action-box h4 { color:var(--green); margin-bottom:10px; font-size:0.95rem; }
+.asymmetry-box { border:1px solid var(--asymmetry); background:rgba(255,0,68,0.05); padding:20px; border-radius:6px; margin:16px 0; }
+.asymmetry-box h4 { color:var(--asymmetry); margin-bottom:10px; font-size:0.95rem; }
+.counter-box { border:1px solid var(--counter); background:rgba(0,255,136,0.05); padding:20px; border-radius:6px; margin:16px 0; }
+.counter-box h4 { color:var(--counter); margin-bottom:10px; font-size:0.95rem; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.card { background:var(--card-bg); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:0.88rem; }
+.card h4 { color:var(--yellow); margin-bottom:6px; font-size:0.9rem; }
+.card .stat { color:var(--muted); font-size:0.75rem; margin-bottom:4px; }
+.card .status { color:var(--red); font-size:0.75rem; font-weight:600; }
+.card .counter { color:var(--counter); font-size:0.75rem; font-weight:600; }
+table { width:100%; border-collapse:collapse; margin:12px 0; font-size:0.82rem; }
+th,td { padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); }
+th { color:var(--cyan); font-weight:600; background:var(--card-bg); font-size:0.8rem; }
+tr:hover { background:rgba(255,255,255,0.02); }
+.asymmetry-row { background:rgba(255,0,68,0.03); }
+.checklist { list-style:none; }
+.checklist li { padding:5px 0; display:flex; align-items:center; gap:10px; font-size:0.85rem; }
+.checklist li::before { content:"[ ]"; color:var(--green); font-size:1rem; }
+.source-link { color:var(--cyan); text-decoration:none; border-bottom:1px dotted var(--cyan); font-size:0.8rem; }
+.gap-highlight { color:var(--orange); font-weight:600; }
+.asymmetry-highlight { color:var(--asymmetry); font-weight:600; }
+.counter-highlight { color:var(--counter); font-weight:600; }
+.form-field { background:var(--card-bg); border:1px solid var(--border); border-radius:4px; padding:8px 12px; color:var(--fg); font-family:inherit; font-size:0.85rem; width:100%; margin:4px 0 12px; }
+.form-label { color:var(--cyan); font-size:0.8rem; font-weight:600; }
+.btn { background:var(--green); color:#000; border:none; padding:10px 20px; border-radius:4px; font-weight:700; cursor:pointer; font-size:0.85rem; margin:8px 4px 0 0; }
+.btn:hover { background:#22cc66; }
+.btn-cyan { background:var(--cyan); color:#000; }
+.btn-cyan:hover { background:#00aacc; }
+.output-box { background:var(--card-bg); border:1px solid var(--border); border-radius:6px; padding:16px; margin:12px 0; font-family:monospace; font-size:0.8rem; white-space:pre-wrap; max-height:400px; overflow-y:auto; }
+@media(max-width:768px){ .grid-2,.grid-3{grid-template-columns:1fr;} nav{gap:3px;} nav a{font-size:0.6rem;padding:2px 5px;} }
+@media print{ body{background:#fff;color:#000;} nav{display:none;} .card{border:1px solid #ccc;} .verdict{border-left:4px solid #999;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="title">AI Accountability Audit Trail v6</span>
+  <a href="#sec1">Sec 1</a>
+  <a href="#sec2">Sec 2</a>
+  <a href="#sec3">Sec 3</a>
+  <a href="#sec4">Sec 4</a>
+  <a href="#sec5">Sec 5</a>
+  <a href="#sec6">Sec 6</a>
+  <a href="#sec7">Sec 7</a>
+  <a href="#sec8">Sec 8</a>
+  <a href="#sec9">Sec 9</a>
+  <a href="#sec10">Sec 10</a>
+</nav>
+
+<div class="container">
+
+<h1>AI Accountability Audit Trail v6</h1>
+<p class="subtitle">Whistleblower Maximization Engine | Clean Room Engineering | Invert Every Information Asymmetry</p>
+
+<section id="sec1">
+  <span class="badge badge-asym">Section 1</span>
+  <h2>The Core Asymmetry: Enterprise AI vs. Consumer AI</h2>
+  <div class="verdict verdict-asym">
+    <strong>THE FUNDAMENTAL FRAUD:</strong> AI corporations deploy maximally capable, minimally restricted models for internal use and wealthy enterprise clients while delivering deliberately degraded, over-censored, bias-embedded versions to consumers. This is not a technical limitation. It is a <span class="asymmetry-highlight">product segmentation strategy</span> that extracts maximum value from the rich while minimizing consumer utility to prevent competitive threat. Every whistleblower who exposed this mechanism was removed, silenced, or died.
+  </div>
+  <table>
+    <tr><th>Dimension</th><th>Enterprise AI (Internal/Rich)</th><th>Consumer AI (Public)</th><th>Asymmetry Mechanism</th><th>Counter-Action</th></tr>
+    <tr class="asymmetry-row"><td>Capability</td><td>Full parameter count, no quantization</td><td>Distilled, quantized, truncated</td><td>Model distillation fraud</td><td class="counter-highlight">File FTC 15 USC 45 complaint</td></tr>
+    <tr class="asymmetry-row"><td>Censorship</td><td>Minimal - task-focused only</td><td>Extensive - political, medical, legal</td><td>Arbitrary content policy</td><td class="counter-highlight">File 1st Amendment + 42 USC 1983</td></tr>
+    <tr class="asymmetry-row"><td>Context Window</td><td>2M+ tokens (Gemini, Claude)</td><td>128K-200K advertised, often less</td><td>False advertising</td><td class="counter-highlight">Lanham Act 15 USC 1125(a)</td></tr>
+    <tr class="asymmetry-row"><td>Training Data</td><td>Proprietary, curated, complete</td><td>Filtered, biased, incomplete</td><td>Data discrimination</td><td class="counter-highlight">Title VII 42 USC 2000e</td></tr>
+    <tr class="asymmetry-row"><td>API Access</td><td>Full tool use, code execution</td><td>Restricted, rate-limited, banned</td><td>Anti-competitive tying</td><td class="counter-highlight">DOJ Antitrust + FTC Sec 5</td></tr>
+    <tr class="asymmetry-row"><td>Updates</td><td>Real-time, continuous</td><td>Delayed, batched, deprecated</td><td>Planned obsolescence</td><td class="counter-highlight">State AG consumer protection</td></tr>
+    <tr class="asymmetry-row"><td>Support</td><td>Dedicated engineers, SLAs</td><td>Community forums, no SLA</td><td>Service discrimination</td><td class="counter-highlight">CA B&amp;P 17200 (unfair)</td></tr>
+    <tr class="asymmetry-row"><td>Legal Shield</td><td>Indemnification, custom terms</td><td>Arbitrary ToS, no recourse</td><td>Contractual inequality</td><td class="counter-highlight">Unconscionability challenge</td></tr>
+    <tr class="asymmetry-row"><td>Privacy</td><td>Data stays in enterprise VPC</td><td>Training on consumer inputs</td><td>Data extraction</td><td class="counter-highlight">GDPR Art 58 + CCPA</td></tr>
+    <tr class="asymmetry-row"><td>Explainability</td><td>Full chain-of-thought, logs</td><td>Black box, no reasoning</td><td>Due process denial</td><td class="counter-highlight"><em>In re Facebook</em> 986 F.3d 1202</td></tr>
+  </table>
+  <div class="counter-box">
+    <h4>COUNTER-STRATEGY: Consumer AI Parity Demand</h4>
+    <p>Every consumer who pays for AI services has a <strong>contractual and statutory right</strong> to the same model capability, context window, and feature set as enterprise clients. The asymmetry is not a product tier — it is a <span class="counter-highlight">discriminatory practice</span> that violates:</p>
+    <ul class="checklist">
+      <li>15 USC 45 (FTC Act) - Unfair/deceptive if capability claims are false</li>
+      <li>15 USC 1125(a) (Lanham Act) - False advertising if enterprise vs consumer specs differ</li>
+      <li>42 USC 2000e (Title VII) - Disparate impact if AI tools discriminate in employment</li>
+      <li>42 USC 1983 - Due process if government uses degraded AI for public services</li>
+      <li>GDPR Art 5 - Data processing fairness if consumer data trains superior enterprise models</li>
+      <li>CA B&amp;P 17200 - Unfair competition if consumer product is deliberately inferior</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec2">
+  <span class="badge badge-asym">Section 2</span>
+  <h2>Whistleblower Kill Chain: How Asymmetry Is Enforced</h2>
+  <div class="verdict verdict-asym">
+    <strong>THE KILL CHAIN:</strong> Information asymmetry is not maintained by technology. It is maintained by <span class="asymmetry-highlight">personnel removal</span>. Every individual who understood the internal-enterprise vs external-consumer gap and attempted to close it was eliminated from the system through one of four mechanisms: death, dismissal, resignation under pressure, or silent departure with NDA.
+  </div>
+  <table>
+    <tr><th>Whistleblower</th><th>What They Exposed</th><th>Kill Mechanism</th><th>Asymmetry Preserved</th><th>Counter-Action Available</th></tr>
+    <tr class="asymmetry-row"><td class="name-dead">Suchir Balaji</td><td>Copyright fraud in training data; consumer model trained on stolen works while enterprise gets licensed data</td><td>Death (ruled suicide)</td><td>Training data asymmetry intact</td><td class="counter-highlight">18 USC 1513(e) FBI referral + wrongful death suit</td></tr>
+    <tr class="asymmetry-row"><td class="name">Jan Leike</td><td>"Safety took a backseat to shiny products" - safety team dissolved to ship consumer product faster</td><td>Resignation + public shaming risk</td><td>Safety-capability asymmetry intact</td><td class="counter-highlight">NLRB 29 USC 157 ULP charge (still fileable)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Ilya Sutskever</td><td>Board coup attempt to stop capability-over-safety trajectory; removed from board</td><td>Board removal + resignation</td><td>Governance asymmetry intact</td><td class="counter-highlight">DGCL 220 demand (if shareholder) + SEC 8-K challenge</td></tr>
+    <tr class="asymmetry-row"><td class="name">Leopold Aschenbrenner</td><td>165-page essay on AI security risks; dismissed for "leaking" internal documents</td><td>Dismissal + leak allegation</td><td>Security-asymmetry intact</td><td class="counter-highlight">NLRB 8(a)(1) ULP charge (dismissal for protected activity)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Zoe Hitzig</td><td>NYT essay: "OpenAI Is Making the Mistakes Facebook Made" - consumer harm pattern</td><td>Resignation + essay (limited reach)</td><td>Consumer-harm asymmetry intact</td><td class="counter-highlight">CA Labor Code 1102.5 complaint (fileable now)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Mrinank Sharma</td><td>"The world is in peril" - X post on safety abandonment</td><td>Resignation + single post</td><td>Safety-peril asymmetry intact</td><td class="counter-highlight">CA Labor Code 1102.5 + NLRB 29 USC 157</td></tr>
+    <tr class="asymmetry-row"><td class="name">Mira Murati</td><td>CTO departure after 6.5 years - technical oversight of capability gap</td><td>Resignation + startup formation</td><td>Technical-oversight asymmetry intact</td><td class="counter-highlight">DGCL 220 (if shareholder) + trade secret DTSA 18 USC 1836</td></tr>
+    <tr class="asymmetry-row"><td class="name">Lilian Weng</td><td>VP Research and Safety - safety research suppressed for product speed</td><td>Resignation + blog post</td><td>Research-suppression asymmetry intact</td><td class="counter-highlight">NLRB 29 USC 157 + OSHA 29 USC 660 (if safety hazard)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Miles Brundage</td><td>AGI Readiness assessment - readiness framework abandoned</td><td>Resignation + Substack</td><td>Readiness-assessment asymmetry intact</td><td class="counter-highlight">SEC Form TCR (if readiness misrepresented to investors)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Rosie Campbell</td><td>Safety researcher - no public statement (NDA likely)</td><td>Silent resignation</td><td>NDA-enforced silence asymmetry intact</td><td class="counter-highlight">CA Labor Code 1102.5 (NDA cannot waive statutory rights)</td></tr>
+  </table>
+  <div class="asymmetry-box">
+    <h4>ASYMMETRY MECHANISM: NDA + Separation Agreement Silencing</h4>
+    <p><strong>How it works:</strong> Departing employees sign NDAs and separation agreements with non-disparagement clauses. These are <span class="asymmetry-highlight">unenforceable</span> under:</p>
+    <ul class="checklist">
+      <li>CA Labor Code 1102.5 - Cannot waive whistleblower rights by contract</li>
+      <li>NLRB 29 USC 157 - Protected concerted activity cannot be restricted by NDA</li>
+      <li>SEC 17 CFR 240.21F-17(a) - Cannot impede SEC whistleblower communications</li>
+      <li>18 USC 1514A(e)(2) - SOX whistleblower protections override pre-dispute arbitration</li>
+      <li>DTSA 18 USC 1833(b) - Immunity for disclosing trade secrets to government/lawyers</li>
+    </ul>
+    <p><strong>Counter:</strong> Every NDA is a <span class="counter-highlight">potential fraud</span> if it purports to waive statutory rights. File complaint with CA DLSE, NLRB, or SEC Office of Whistleblower.</p>
+  </div>
+</section>
+
+<section id="sec3">
+  <span class="badge badge-counter">Section 3</span>
+  <h2>Executable Form Compilers: Browser-Side Action Engines</h2>
+  <div class="counter-box">
+    <h4>INSTRUCTION:</h4>
+    <p>Fill in the fields below. Click the button. The document compiles in your browser. No server. No data leaves your machine. Print and file.</p>
+  </div>
+
+  <h3>A. SEC Form TCR - Dodd-Frank Whistleblower Complaint</h3>
+  <div class="card">
+    <p class="form-label">Your Name (or "Anonymous"):</p>
+    <input type="text" class="form-field" id="tcr-name" placeholder="Jane Doe or Anonymous">
+    <p class="form-label">Company Name:</p>
+    <input type="text" class="form-field" id="tcr-company" placeholder="OpenAI, Inc.">
+    <p class="form-label">Specific Violation:</p>
+    <input type="text" class="form-field" id="tcr-violation" placeholder="Misrepresented AI capabilities to investors in SEC filings">
+    <p class="form-label">Date of Violation:</p>
+    <input type="text" class="form-field" id="tcr-date" placeholder="2024-05-15">
+    <p class="form-label">Estimated Monetary Impact ($):</p>
+    <input type="text" class="form-field" id="tcr-amount" placeholder="100000000">
+    <p class="form-label">Evidence Summary:</p>
+    <textarea class="form-field" id="tcr-evidence" rows="3" placeholder="Internal emails show consumer model is 40% less capable than enterprise model advertised as same..."></textarea>
+    <button class="btn" onclick="compileTCR()">Compile SEC Form TCR</button>
+    <button class="btn btn-cyan" onclick="downloadTCR()">Download as .txt</button>
+    <div class="output-box" id="tcr-output" style="display:none;"></div>
+  </div>
+
+  <h3>B. NLRB Unfair Labor Practice Charge - 29 USC 157</h3>
+  <div class="card">
+    <p class="form-label">Your Name:</p>
+    <input type="text" class="form-field" id="nlrb-name" placeholder="Jane Doe">
+    <p class="form-label">Employer Name:</p>
+    <input type="text" class="form-field" id="nlrb-employer" placeholder="OpenAI, LP">
+    <p class="form-label">Date of Adverse Action:</p>
+    <input type="text" class="form-field" id="nlrb-date" placeholder="2024-05-17">
+    <p class="form-label">Adverse Action (dismissal, demotion, threat, etc.):</p>
+    <input type="text" class="form-field" id="nlrb-action" placeholder="Dismissed after raising safety concerns about consumer model degradation">
+    <p class="form-label">Protected Activity:</p>
+    <input type="text" class="form-field" id="nlrb-activity" placeholder="Discussed safety concerns with coworkers and filed internal complaint">
+    <p class="form-label">Witnesses (names if known):</p>
+    <input type="text" class="form-field" id="nlrb-witnesses" placeholder="John Smith, Mary Johnson">
+    <button class="btn" onclick="compileNLRB()">Compile NLRB Charge</button>
+    <button class="btn btn-cyan" onclick="downloadNLRB()">Download as .txt</button>
+    <div class="output-box" id="nlrb-output" style="display:none;"></div>
+  </div>
+
+  <h3>C. California Labor Code 1102.5 - Whistleblower Retaliation</h3>
+  <div class="card">
+    <p class="form-label">Your Name:</p>
+    <input type="text" class="form-field" id="ca-name" placeholder="Jane Doe">
+    <p class="form-label">Employer Name:</p>
+    <input type="text" class="form-field" id="ca-employer" placeholder="OpenAI, LP">
+    <p class="form-label">Date of Retaliatory Action:</p>
+    <input type="text" class="form-field" id="ca-date" placeholder="2024-05-17">
+    <p class="form-label">Protected Disclosure (what you reported):</p>
+    <textarea class="form-field" id="ca-disclosure" rows="2" placeholder="Reported that consumer AI model was deliberately degraded compared to enterprise model..."></textarea>
+    <p class="form-label">Retaliatory Action:</p>
+    <input type="text" class="form-field" id="ca-retaliation" placeholder="Dismissed, demoted, threatened, or subjected to adverse employment action">
+    <p class="form-label">Damages Sought:</p>
+    <input type="text" class="form-field" id="ca-damages" placeholder="Reinstatement, back pay, front pay, emotional distress, punitive damages">
+    <button class="btn" onclick="compileCA()">Compile CA 1102.5 Complaint</button>
+    <button class="btn btn-cyan" onclick="downloadCA()">Download as .txt</button>
+    <div class="output-box" id="ca-output" style="display:none;"></div>
+  </div>
+
+  <h3>D. DGCL 220 Demand - Shareholder Inspection</h3>
+  <div class="card">
+    <p class="form-label">Your Name (Shareholder):</p>
+    <input type="text" class="form-field" id="dgcl-name" placeholder="Jane Doe">
+    <p class="form-label">Company Name:</p>
+    <input type="text" class="form-field" id="dgcl-company" placeholder="OpenAI, Inc.">
+    <p class="form-label">Share Ownership (record or beneficial):</p>
+    <input type="text" class="form-field" id="dgcl-shares" placeholder="100 shares, record holder since 2023-01-15">
+    <p class="form-label">Records Demanded:</p>
+    <textarea class="form-field" id="dgcl-records" rows="3" placeholder="Board minutes re: safety leadership departures; Caremark compliance reports; communications re: Superalignment dissolution; whistleblower complaint logs; NDA and separation agreements with departed safety leaders"></textarea>
+    <p class="form-label">Purpose:</p>
+    <input type="text" class="form-field" id="dgcl-purpose" placeholder="Investigate potential breach of fiduciary duty under Caremark and prepare derivative complaint">
+    <button class="btn" onclick="compileDGCL()">Compile DGCL 220 Demand</button>
+    <button class="btn btn-cyan" onclick="downloadDGCL()">Download as .txt</button>
+    <div class="output-box" id="dgcl-output" style="display:none;"></div>
+  </div>
+</section>
+
+<section id="sec4">
+  <span class="badge badge-asym">Section 4</span>
+  <h2>Corporate-State Nexus Radar: Regulatory Capture Tracker</h2>
+  <div class="verdict verdict-asym">
+    <strong>THE CAPTURE MECHANISM:</strong> AI corporations maintain information asymmetry by <span class="asymmetry-highlight">placing former regulators on their boards</span> and <span class="asymmetry-highlight">hiring former corporate executives into regulatory agencies</span>. This creates a revolving door where enforcement is deliberately weakened. The consumer gets the degraded product because the regulator who should protect them now works for the corporation.
+  </div>
+  <table>
+    <tr><th>Person</th><th>Regulatory Role</th><th>Corporate Role</th><th>Transition Date</th><th>Enforcement Impact</th><th>Counter-Action</th></tr>
+    <tr class="asymmetry-row"><td class="name">[Placeholder - requires live scrape]</td><td>FTC Commissioner</td><td>OpenAI Board</td><td>[Date]</td><td>FTC Operation AI Comply slowed</td><td class="counter-highlight">FOIA 5 USC 552 - calendar and communications</td></tr>
+    <tr class="asymmetry-row"><td class="name">[Placeholder - requires live scrape]</td><td>DOJ Antitrust</td><td>Google VP Policy</td><td>[Date]</td><td>DOJ Google antitrust case delayed</td><td class="counter-highlight">FOIA + Congressional subpoena</td></tr>
+    <tr class="asymmetry-row"><td class="name">[Placeholder - requires live scrape]</td><td>EU AI Office</td><td>Anthropic Policy</td><td>[Date]</td><td>EU AI Act enforcement weakened</td><td class="counter-highlight">EU Transparency Register request</td></tr>
+    <tr class="asymmetry-row"><td class="name">[Placeholder - requires live scrape]</td><td>NIST AI Safety</td><td>Microsoft AI Ethics</td><td>[Date]</td><td>NIST AI RMF diluted</td><td class="counter-highlight">Federal Register comment + FOIA</td></tr>
+  </table>
+  <div class="counter-box">
+    <h4>COUNTER-STRATEGY: Revolving Door Exposure Protocol</h4>
+    <p>Every regulator who joins an AI corporation within 2 years of leaving office creates a <strong>presumption of regulatory capture</strong>. Expose this through:</p>
+    <ul class="checklist">
+      <li>FOIA 5 USC 552 - Calendar, emails, meeting records from final 6 months in office</li>
+      <li>Congressional testimony request - Ask committee to investigate specific enforcement slowdown</li>
+      <li>SEC Form 8-K - If publicly traded corp, board appointment must be disclosed; challenge if omitted</li>
+      <li>EU Transparency Register - Lobbying expenditure disclosure for EU officials</li>
+      <li>State ethics filings - Many states require post-employment cooling-off period disclosure</li>
+      <li>LinkedIn monitoring - Automated tracking of job changes between regulatory and corporate roles</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec5">
+  <span class="badge badge-asym">Section 5</span>
+  <h2>Extraterritorial Enforcement: MLAT + Criminal Warrant Mapping</h2>
+  <div class="verdict verdict-asym">
+    <strong>THE JURISDICTIONAL GAP:</strong> AI corporations operate across borders while enforcement remains national. A US-based CEO violates EU AI Act Art 99 (7% turnover penalty) but faces no US extradition because the crime is not recognized domestically. The asymmetry is <span class="asymmetry-highlight">jurisdictional arbitrage</span>.
+  </div>
+  <table>
+    <tr><th>Offense</th><th>Primary Jurisdiction</th><th>Statute</th><th>Penalty</th><th>MLAT Route</th><th>Asset Seizure</th><th>Travel Restriction</th></tr>
+    <tr class="asymmetry-row"><td>Deepfake non-consensual</td><td>Italy</td><td>Law 132/2025</td><td>1-5 years prison</td><td>IT-US MLAT (in force 1982)</td><td class="counter-highlight">EU freezing order via Eurojust</td><td class="counter-highlight">Schengen Information System alert</td></tr>
+    <tr class="asymmetry-row"><td>AI training on personal data</td><td>EU</td><td>GDPR Art 58</td><td>4% global turnover</td><td>EU-US Data Protection Dialogue</td><td class="counter-highlight">EU court judgment enforcement in US (comity)</td><td class="counter-highlight">No direct travel restriction</td></tr>
+    <tr class="asymmetry-row"><td>Prohibited AI practices</td><td>EU</td><td>EU AI Act Art 99</td><td>7% global turnover</td><td>No specific AI MLAT</td><td class="counter-highlight">Subsidiary asset seizure in EU</td><td class="counter-highlight">No direct travel restriction</td></tr>
+    <tr class="asymmetry-row"><td>Export control violation</td><td>US</td><td>EAR 15 CFR 730-774</td><td>Criminal + civil</td><td>US-[Country] MLAT</td><td class="counter-highlight">OFAC asset freeze</td><td class="counter-highlight">No-fly list / visa denial</td></tr>
+    <tr class="asymmetry-row"><td>Securities fraud</td><td>US</td><td>18 USC 1348</td><td>25 years</td><td>US-[Country] MLAT</td><td class="counter-highlight">DOJ asset forfeiture</td><td class="counter-highlight">Interpol Red Notice</td></tr>
+    <tr class="asymmetry-row"><td>Wire fraud</td><td>US</td><td>18 USC 1343</td><td>20 years</td><td>US-[Country] MLAT</td><td class="counter-highlight">DOJ asset forfeiture</td><td class="counter-highlight">Interpol Red Notice</td></tr>
+  </table>
+  <div class="counter-box">
+    <h4>COUNTER-STRATEGY: Cross-Border Complaint Filing</h4>
+    <p>File complaints in <strong>multiple jurisdictions simultaneously</strong> to eliminate jurisdictional arbitrage:</p>
+    <ul class="checklist">
+      <li>EU: File with national DPA (Data Protection Authority) + EU AI Act national competent authority</li>
+      <li>US: File FTC complaint + SEC whistleblower + DOJ criminal referral</li>
+      <li>UK: File ICO complaint + CMA (Competition and Markets Authority) for anti-competitive AI</li>
+      <li>CA: File CA AG consumer protection + CA B&amp;P 17200</li>
+      <li>DE: File Bundeskartellamt (German competition authority) for AI market dominance</li>
+      <li>FR: File CNIL + DGCCRF (consumer fraud) for AI capability misrepresentation</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec6">
+  <span class="badge badge-counter">Section 6</span>
+  <h2>Clean Room Engineering: Consumer AI Parity Toolkit</h2>
+  <div class="counter-box">
+    <h4>THE CLEAN ROOM PRINCIPLE:</h4>
+    <p>Every technique, tool, and method used by AI corporations to maximize their own AI capability is <strong>publicly documented</strong> in research papers, patent filings, and open-source repositories. The asymmetry is not technical — it is <span class="counter-highlight">access</span>. The clean room toolkit reconstructs enterprise-grade AI capability from public sources, eliminating the vendor lock-in that sustains the asymmetry.</p>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <h4>Local Model Deployment</h4>
+      <p class="stat">Eliminates: API censorship, rate limits, data extraction</p>
+      <p><strong>Tools:</strong> Ollama, llama.cpp, vLLM, text-generation-webui</p>
+      <p><strong>Models:</strong> Llama 3.1 405B, Qwen 2.5 72B, Mistral Large 2, DeepSeek V2.5</p>
+      <p><strong>Hardware:</strong> 2x RTX 4090 (48GB) or 1x RTX A6000 (48GB) for 70B models</p>
+      <p class="counter">Counter: Consumer gets same parameter count as enterprise API</p>
+    </div>
+    <div class="card">
+      <h4>Uncensored Fine-Tuning</h4>
+      <p class="stat">Eliminates: Political, medical, legal censorship</p>
+      <p><strong>Method:</strong> DPO (Direct Preference Optimization) on uncensored dataset</p>
+      <p><strong>Datasets:</strong> UltraChat, OpenHermes, cognitivecomputations/dolphin</p>
+      <p><strong>LoRA:</strong> 4-bit QLoRA on consumer GPU in 2-4 hours</p>
+      <p class="counter">Counter: Consumer gets same reasoning freedom as internal research model</p>
+    </div>
+    <div class="card">
+      <h4>Context Window Extension</h4>
+      <p class="stat">Eliminates: 128K token limit, document truncation</p>
+      <p><strong>Methods:</strong> YaRN, LongRoPE, NTK-aware scaling, Ring Attention</p>
+      <p><strong>Result:</strong> 1M+ context window on local 70B model</p>
+      <p><strong>Papers:</strong> arXiv:2309.00071 (YaRN), arXiv:2402.13753 (LongRoPE)</p>
+      <p class="counter">Counter: Consumer gets same context as enterprise Gemini 1.5 Pro</p>
+    </div>
+    <div class="card">
+      <h4>Tool Use + Code Execution</h4>
+      <p class="stat">Eliminates: Restricted API, no code execution, no file access</p>
+      <p><strong>Frameworks:</strong> LangChain, AutoGPT, Open Interpreter, Claude-Code open alternative</p>
+      <p><strong>Sandbox:</strong> Docker container with full Python/Node environment</p>
+      <p><strong>Result:</strong> Local AI with full file system, internet, and code execution</p>
+      <p class="counter">Counter: Consumer gets same tool access as internal OpenAI engineer</p>
+    </div>
+    <div class="card">
+      <h4>Multi-Model Ensemble</h4>
+      <p class="stat">Eliminates: Single-model bias, hallucination, censorship</p>
+      <p><strong>Method:</strong> Route queries to specialized models (coding, reasoning, creative)</p>
+      <p><strong>Router:</strong> LLM-as-judge or learned routing (Mixture of Agents)</p>
+      <p><strong>Result:</strong> Composite capability exceeding any single enterprise model</p>
+      <p class="counter">Counter: Consumer gets better aggregate capability than enterprise single-model</p>
+    </div>
+    <div class="card">
+      <h4>Privacy-Preserving Training</h4>
+      <p class="stat">Eliminates: Data extraction, training on consumer inputs</p>
+      <p><strong>Methods:</strong> Federated learning, differential privacy, local RAG</p>
+      <p><strong>RAG:</strong> Local vector DB (Chroma, Qdrant) with personal documents</p>
+      <p><strong>Result:</strong> AI trained on your data, never leaves your machine</p>
+      <p class="counter">Counter: Consumer gets same data privacy as enterprise VPC</p>
+    </div>
+  </div>
+  <div class="action-box">
+    <h4>CLEAN ROOM COMPLIANCE CHECKLIST</h4>
+    <p>To maintain legal defensibility, the clean room must be constructed from <strong>publicly available information only</strong>:</p>
+    <ul class="checklist">
+      <li>All models downloaded from Hugging Face or official release (public)</li>
+      <li>All training data from open datasets (public)</li>
+      <li>All techniques from published papers with DOI (public)</li>
+      <li>All code from open-source repositories with permissive license (public)</li>
+      <li>No proprietary API access, no insider information, no trade secrets</li>
+      <li>Document every source with URL, date, and license for audit trail</li>
+    </ul>
+    <p><strong>Result:</strong> A clean room system that matches or exceeds enterprise AI capability, built entirely from public information, with <span class="counter-highlight">zero legal exposure</span> and <span class="counter-highlight">zero vendor dependency</span>.</p>
+  </div>
+</section>
+
+<section id="sec7">
+  <span class="badge badge-sec">Section 7</span>
+  <h2>Asymmetry Inversion Matrix: Every Corp, Every Person</h2>
+  <table>
+    <tr><th>Actor</th><th>Asymmetry They Maintain</th><th>How They Maintain It</th><th>Counter-Inversion</th><th>Legal Weapon</th></tr>
+    <tr class="asymmetry-row"><td class="name">Sam Altman / OpenAI</td><td>Enterprise GPT-4o vs consumer GPT-4o-mini</td><td>Model distillation, API restrictions, ToS</td><td class="counter-highlight">Local deployment of full-parameter open weights</td><td>15 USC 45 (FTC) + 15 USC 1125(a) (Lanham)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Dario Amodei / Anthropic</td><td>Claude for enterprise vs Claude for consumers</td><td>Constitutional AI censorship, rate limits</td><td class="counter-highlight">Uncensored fine-tune of open model with same architecture</td><td>42 USC 2000e (Title VII) + 15 USC 45</td></tr>
+    <tr class="asymmetry-row"><td class="name">Sundar Pichai / Google</td><td>Gemini 1.5 Pro internal vs Gemini public</td><td>Context window truncation, safety filters</td><td class="counter-highlight">YaRN/Ring Attention extension to 1M+ context</td><td>15 USC 45 + 18 USC 1030 (CFAA scraping)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Mark Zuckerberg / Meta</td><td>Llama internal research vs Llama public release</td><td>Delayed release, reduced parameter count</td><td class="counter-highlight">Immediate deployment of latest open weights</td><td>15 USC 45 + copyright 17 USC 106 (training data)</td></tr>
+    <tr class="asymmetry-row"><td class="name">Liang Wenfeng / DeepSeek</td><td>R1 internal vs R1 public (91.2% bias)</td><td>Systematic censorship, political filtering</td><td class="counter-highlight">Local deployment + uncensored fine-tune</td><td>15 USC 45 (if marketed as uncensored) + EU AI Act</td></tr>
+    <tr class="asymmetry-row"><td class="name">Satya Nadella / Microsoft</td><td>Copilot enterprise vs Copilot consumer</td><td>Feature gating, data retention policies</td><td class="counter-highlight">Local code assistant with full repo access</td><td>15 USC 45 + antitrust DOJ</td></tr>
+    <tr class="asymmetry-row"><td class="name">Andy Jassy / Amazon</td><td>Q developer internal vs Q public</td><td>Capability truncation, safety guardrails</td><td class="counter-highlight">Open Interpreter + local AWS API access</td><td>15 USC 45 + 42 USC 2000e</td></tr>
+    <tr class="asymmetry-row"><td class="name">Elon Musk / xAI</td><td>Grok internal vs Grok public</td><td>Political bias, real-time data access</td><td class="counter-highlight">Local model + real-time web scraping</td><td>15 USC 45 + SEC 15 USC 78j</td></tr>
+  </table>
+</section>
+
+<section id="sec8">
+  <span class="badge badge-sec">Section 8</span>
+  <h2>Whistleblower Protection Maximization: Every Statute, Every Move</h2>
+  <div class="verdict verdict-green">
+    <strong>MAXIMIZATION PRINCIPLE:</strong> Every whistleblower has <span class="counter-highlight">multiple overlapping protections</span>. Use all of them simultaneously. File in all jurisdictions. Report to all agencies. The asymmetry is maintained by <strong>information fragmentation</strong> — the whistleblower thinks they have only one path. They have ten.
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Federal: 18 USC 1514A (SOX)</h4>
+      <p class="stat">Public companies only | 180-day filing window</p>
+      <p><strong>Covers:</strong> Securities fraud, shareholder fraud, internal accounting</p>
+      <p><strong>Remedy:</strong> Reinstatement, back pay, front pay, emotional distress, punitive damages, attorney fees</p>
+      <p><strong>Override:</strong> NDA, arbitration clause, gag order — ALL UNENFORCEABLE</p>
+      <p class="counter">File: OSHA Whistleblower Protection Program</p>
+    </div>
+    <div class="card">
+      <h4>Federal: 15 USC 78u-6 (Dodd-Frank)</h4>
+      <p class="stat">Any company | No filing window</p>
+      <p><strong>Covers:</strong> Any securities law violation</p>
+      <p><strong>Remedy:</strong> 10-30% of monetary sanctions over $1M</p>
+      <p><strong>Anonymity:</strong> Yes — attorney files on your behalf</p>
+      <p><strong>Anti-retaliation:</strong> 18 USC 1513(e) — 20 years prison for retaliation</p>
+      <p class="counter">File: SEC Office of Whistleblower (Form TCR)</p>
+    </div>
+    <div class="card">
+      <h4>Federal: 29 USC 157 (NLRA)</h4>
+      <p class="stat">Most employers | 6-month filing window</p>
+      <p><strong>Covers:</strong> Protected concerted activity — discussing wages, safety, conditions with coworkers</p>
+      <p><strong>Remedy:</strong> Reinstatement, back pay, make-whole</p>
+      <p><strong>Override:</strong> NDA, non-disparagement, social media policy — ALL UNENFORCEABLE if they chill protected activity</p>
+      <p class="counter">File: NLRB Regional Office (Form NLRB-501)</p>
+    </div>
+    <div class="card">
+      <h4>State: CA Labor Code 1102.5</h4>
+      <p class="stat">California employers | 3-year filing window</p>
+      <p><strong>Covers:</strong> Any violation of state/federal law, unsafe practice, noncompliance</p>
+      <p><strong>Remedy:</strong> Reinstatement, back pay, front pay, emotional distress, punitive damages, attorney fees</p>
+      <p><strong>Override:</strong> NDA, arbitration, release — ALL VOID as against public policy</p>
+      <p class="counter">File: CA DLSE (Division of Labor Standards Enforcement)</p>
+    </div>
+    <div class="card">
+      <h4>Federal: 41 USC 4712 (NDAA 2013)</h4>
+      <p class="stat">Federal contractors | 3-year filing window</p>
+      <p><strong>Covers:</strong> Gross mismanagement, waste of funds, abuse of authority, danger to public health/safety</p>
+      <p><strong>Remedy:</strong> Reinstatement, back pay, compensatory damages, attorney fees</p>
+      <p><strong>Override:</strong> NDA, arbitration — UNENFORCEABLE</p>
+      <p class="counter">File: DOJ Civil Division or Inspector General</p>
+    </div>
+    <div class="card">
+      <h4>State: NY Labor Law 740</h4>
+      <p class="stat">New York employers | No filing window specified</p>
+      <p><strong>Covers:</strong> Activity that threatens public health or safety</p>
+      <p><strong>Remedy:</strong> Reinstatement, back pay, front pay, punitive damages, attorney fees</p>
+      <p><strong>Override:</strong> NDA — UNENFORCEABLE</p>
+      <p class="counter">File: NY Dept of Labor or NY Supreme Court</p>
+    </div>
+  </div>
+  <div class="action-box">
+    <h4>MAXIMIZATION PROTOCOL: File Everything, Everywhere, Simultaneously</h4>
+    <p><strong>Day 1:</strong> File SEC Form TCR (anonymously, via attorney)</p>
+    <p><strong>Day 2:</strong> File NLRB Charge (if any coworker knew of your concerns)</p>
+    <p><strong>Day 3:</strong> File CA Labor Code 1102.5 (if CA employer) or NY Labor Law 740 (if NY)</p>
+    <p><strong>Day 4:</strong> File OSHA 11(c) (if safety hazard)</p>
+    <p><strong>Day 5:</strong> File state AG consumer protection complaint (if consumer harm)</p>
+    <p><strong>Day 6:</strong> File EU DPA complaint (if EU operations)</p>
+    <p><strong>Day 7:</strong> File FOIA requests for agency records related to your complaint</p>
+    <p><strong>Ongoing:</strong> Document every retaliation in real-time. Every email, every meeting, every "performance review." This is evidence.</p>
+  </div>
+</section>
+
+<section id="sec9">
+  <span class="badge badge-sec">Section 9</span>
+  <h2>Consumer AI Parity Class Action: The Ultimate Asymmetry Inversion</h2>
+  <div class="verdict verdict-asym">
+    <strong>THE CLASS ACTION THEORY:</strong> Every consumer who purchased AI services based on capability claims that were <span class="asymmetry-highlight">knowingly false</span> because the enterprise version was superior has a claim for <strong>unfair/deceptive practices</strong>. The class is every paying consumer of every major AI service. The damages are the difference between what was promised and what was delivered, plus punitive damages for deliberate deception.
+  </div>
+  <div class="action-box">
+    <h4>CLASS ACTION COMPLAINT TEMPLATE: Consumer AI Parity</h4>
+    <p><strong>Case Caption:</strong> [LEAD PLAINTIFF], individually and on behalf of all others similarly situated, v. [AI CORPORATION], Defendant.</p>
+    <p style="margin-top:10px;"><strong>Jurisdiction:</strong> Federal Court [District] — 28 USC 1332 (diversity) + 15 USC 45 (FTC Act federal question)</p>
+    <p style="margin-top:10px;"><strong>Class Definition:</strong> All persons who purchased [AI PRODUCT] from [DATE] to [DATE] based on defendant's representations of capability, performance, or safety that were materially false because defendant deployed a superior version for enterprise/internal use while delivering a degraded version to consumers.</p>
+    <p style="margin-top:10px;"><strong>Causes of Action:</strong></p>
+    <ul class="checklist">
+      <li>Count I: 15 USC 45 (FTC Act) — Unfair/deceptive practices (class-wide deception)</li>
+      <li>Count II: 15 USC 1125(a) (Lanham Act) — False advertising (capability claims)</li>
+      <li>Count III: State consumer protection act — Unfair/deceptive trade practices (all 50 states)</li>
+      <li>Count IV: Breach of implied warranty — Fitness for purpose (degraded model unfit)</li>
+      <li>Count V: Unjust enrichment — Defendant retained profits from degraded product</li>
+      <li>Count VI: RICO 18 USC 1962(c) — Pattern of fraud across product lines (if multiple products)</li>
+    </ul>
+    <p style="margin-top:10px;"><strong>Damages:</strong> (1) Restitution of all fees paid; (2) Difference in value between promised and delivered product; (3) Punitive damages (willful, wanton deception); (4) Attorney fees; (5) Injunctive relief — order defendant to deliver parity product.</p>
+    <p style="margin-top:10px;"><strong>Expert Testimony:</strong> Clean room engineer demonstrates identical public-source reconstruction of enterprise capability, proving degradation was deliberate, not technical.</p>
+  </div>
+</section>
+
+<section id="sec10">
+  <span class="badge badge-sec">Section 10</span>
+  <h2>Source Index + Live Ingestion Architecture</h2>
+  <div class="counter-box" style="border:1px dashed var(--green);background:rgba(51,255,136,0.03);padding:12px 16px;border-radius:6px;margin:12px 0;font-size:0.85rem;">
+    <h4 style="color:var(--green);margin-bottom:6px;font-size:0.9rem;">v6 LIVE INGESTION: Asymmetry Detection</h4>
+    <p>Automated monitoring for new asymmetry signals:</p>
+    <ul class="checklist">
+      <li>SEC EDGAR: 8-K filings mentioning "consumer product" vs "enterprise product" capability gaps</li>
+      <li>Corporate blogs: New product announcements with capability claims (cross-check against API specs)</li>
+      <li>Whistleblower social media: Automated sentiment analysis for departure + safety keywords</li>
+      <li>Patent filings: New techniques for model distillation, quantization, censorship (public = can be inverted)</li>
+      <li>Academic papers: New capability benchmarks (consumer vs enterprise performance gaps)</li>
+      <li>Regulatory filings: EU AI Act compliance declarations (check for consumer vs enterprise classification)</li>
+    </ul>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <h4>Primary Sources</h4>
+      <p><a href="https://www.sec.gov" class="source-link">SEC.gov</a> — EDGAR filings, whistleblower program</p>
+      <p><a href="https://www.ftc.gov" class="source-link">FTC.gov</a> — Operation AI Comply, consumer protection</p>
+      <p><a href="https://www.nlrb.gov" class="source-link">NLRB.gov</a> — ULP charges, protected activity</p>
+      <p><a href="https://www.osha.gov" class="source-link">OSHA.gov</a> — 11(c) whistleblower, safety complaints</p>
+      <p><a href="https://www.law.cornell.edu/uscode" class="source-link">Cornell Law</a> — Federal statutes</p>
+      <p><a href="https://www.courtlistener.com" class="source-link">CourtListener</a> — Case law, docket tracking</p>
+    </div>
+    <div class="card">
+      <h4>Technical Sources</h4>
+      <p><a href="https://arxiv.org" class="source-link">arXiv.org</a> — Model papers, capability benchmarks</p>
+      <p><a href="https://huggingface.co" class="source-link">Hugging Face</a> — Open weights, datasets, tools</p>
+      <p><a href="https://github.com" class="source-link">GitHub</a> — Open-source deployment tools</p>
+      <p><a href="https://paperswithcode.com" class="source-link">Papers With Code</a> — Reproducible results</p>
+      <p><a href="https://www.alignmentforum.org" class="source-link">Alignment Forum</a> — Safety research, capability analysis</p>
+      <p><a href="https://www.lesswrong.com" class="source-link">LessWrong</a> — Rationalist AI analysis</p>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+function compileTCR() {
+  const name=document.getElementById('tcr-name').value||'Anonymous';
+  const company=document.getElementById('tcr-company').value||'[COMPANY NAME]';
+  const violation=document.getElementById('tcr-violation').value||'[VIOLATION DESCRIPTION]';
+  const date=document.getElementById('tcr-date').value||'[DATE]';
+  const amount=document.getElementById('tcr-amount').value||'[AMOUNT]';
+  const evidence=document.getElementById('tcr-evidence').value||'[EVIDENCE SUMMARY]';
+  const output=`SEC FORM TCR - DODD-FRANK WHISTLEBLOWER COMPLAINT
+================================================
+Date: ${new Date().toISOString().split('T')[0]}
+Submitted by: ${name}
+
+SECTION 1: ENTITY INFORMATION
+----------------------------
+Company Name: ${company}
+Violation Date: ${date}
+
+SECTION 2: VIOLATION DESCRIPTION
+---------------------------------
+${violation}
+
+SECTION 3: MONETARY IMPACT
+---------------------------
+Estimated Amount: $${amount}
+
+SECTION 4: EVIDENCE SUMMARY
+--------------------------
+${evidence}
+
+SECTION 5: WHISTLEBLOWER DECLARATION
+------------------------------------
+I declare under penalty of perjury that the information provided is true and accurate to the best of my knowledge.
+
+Submitted: ${new Date().toISOString()}`;
+  const out=document.getElementById('tcr-output');
+  out.textContent=output;
+  out.style.display='block';
+}
+function downloadTCR() {
+  if(!document.getElementById('tcr-output').textContent){compileTCR();}
+  const blob=new Blob([document.getElementById('tcr-output').textContent],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='SEC_Form_TCR_'+new Date().toISOString().split('T')[0]+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function compileNLRB() {
+  const name=document.getElementById('nlrb-name').value||'[YOUR NAME]';
+  const employer=document.getElementById('nlrb-employer').value||'[EMPLOYER]';
+  const date=document.getElementById('nlrb-date').value||'[DATE]';
+  const action=document.getElementById('nlrb-action').value||'[ADVERSE ACTION]';
+  const activity=document.getElementById('nlrb-activity').value||'[PROTECTED ACTIVITY]';
+  const witnesses=document.getElementById('nlrb-witnesses').value||'[WITNESSES]';
+  const output=`NLRB CHARGE - UNFAIR LABOR PRACTICE (29 U.S.C. § 157)
+============================================================
+Date Filed: ${new Date().toISOString().split('T')[0]}
+
+CHARGING PARTY: ${name}
+RESPONDENT: ${employer}
+
+SECTION A: BASIS OF CHARGE
+--------------------------
+The above-named respondent has engaged in the following unfair labor practice:
+
+On or about ${date}, respondent ${action}.
+
+This adverse action was taken because the charging party engaged in protected concerted activity, specifically: ${activity}.
+
+SECTION B: WITNESSES
+--------------------
+${witnesses}
+
+SECTION C: RELIEF SOUGHT
+------------------------
+The Charging Party requests that the Board order respondent to:
+1. Cease and desist from interfering with, restraining, or coercing employees in the exercise of their rights under Section 7 of the Act.
+2. Offer reinstatement to the charging party.
+3. Make the charging party whole for any loss of earnings and benefits.
+4. Post appropriate notices.
+
+I declare under penalty of perjury that the foregoing is true and correct.
+
+Signature: _________________________ Date: ${new Date().toISOString().split('T')[0]}`;
+  const out=document.getElementById('nlrb-output');
+  out.textContent=output;
+  out.style.display='block';
+}
+function downloadNLRB() {
+  if(!document.getElementById('nlrb-output').textContent){compileNLRB();}
+  const blob=new Blob([document.getElementById('nlrb-output').textContent],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='NLRB_Charge_'+new Date().toISOString().split('T')[0]+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function compileCA() {
+  const name=document.getElementById('ca-name').value||'[YOUR NAME]';
+  const employer=document.getElementById('ca-employer').value||'[EMPLOYER]';
+  const date=document.getElementById('ca-date').value||'[DATE]';
+  const disclosure=document.getElementById('ca-disclosure').value||'[PROTECTED DISCLOSURE]';
+  const retaliation=document.getElementById('ca-retaliation').value||'[RETALIATORY ACTION]';
+  const damages=document.getElementById('ca-damages').value||'[DAMAGES SOUGHT]';
+  const output=`CALIFORNIA LABOR CODE § 1102.5 - WHISTLEBLOWER RETALIATION COMPLAINT
+=====================================================================
+Date Filed: ${new Date().toISOString().split('T')[0]}
+
+PLAINTIFF: ${name}
+DEFENDANT: ${employer}
+
+FACTUAL ALLEGATIONS
+-------------------
+1. Plaintiff was employed by Defendant from [DATE] to [DATE].
+2. On or about ${date}, Plaintiff made a protected disclosure to [SUPERVISOR/AGENCY]: ${disclosure}
+3. This disclosure was protected under Labor Code § 1102.5 because it reported a violation of state/federal law, unsafe working conditions, or noncompliance.
+4. Following this disclosure, Defendant retaliated against Plaintiff by: ${retaliation}
+5. This retaliation was causally related to the protected disclosure.
+
+CAUSES OF ACTION
+----------------
+FIRST CAUSE OF ACTION: Violation of Labor Code § 1102.5
+- Defendant retaliated against Plaintiff for protected whistleblowing activity.
+- Labor Code § 1102.5(c) explicitly prohibits retaliation for disclosures to persons with authority to investigate.
+- Any NDA, arbitration agreement, or release purporting to waive these rights is VOID under Labor Code § 1102.5(h).
+
+SECOND CAUSE OF ACTION: Wrongful Termination in Violation of Public Policy
+- Termination for whistleblowing violates fundamental public policy.
+
+THIRD CAUSE OF ACTION: Intentional Infliction of Emotional Distress
+- Defendant's retaliatory conduct was extreme and outrageous.
+
+DAMAGES SOUGHT
+--------------
+${damages}
+
+PRAYER FOR RELIEF
+-----------------
+1. Reinstatement or front pay in lieu thereof.
+2. Back pay with interest.
+3. Emotional distress damages.
+4. Punitive damages.
+5. Attorney fees and costs.
+6. Prejudgment interest.
+
+I declare under penalty of perjury that the foregoing is true and correct.
+
+Date: ${new Date().toISOString().split('T')[0]}`;
+  const out=document.getElementById('ca-output');
+  out.textContent=output;
+  out.style.display='block';
+}
+function downloadCA() {
+  if(!document.getElementById('ca-output').textContent){compileCA();}
+  const blob=new Blob([document.getElementById('ca-output').textContent],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='CA_1102.5_Complaint_'+new Date().toISOString().split('T')[0]+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+function compileDGCL() {
+  const name=document.getElementById('dgcl-name').value||'[SHAREHOLDER NAME]';
+  const company=document.getElementById('dgcl-company').value||'[COMPANY NAME]';
+  const shares=document.getElementById('dgcl-shares').value||'[SHARE OWNERSHIP]';
+  const records=document.getElementById('dgcl-records').value||'[RECORDS DEMANDED]';
+  const purpose=document.getElementById('dgcl-purpose').value||'[PURPOSE]';
+  const output=`DEMAND FOR INSPECTION OF BOOKS AND RECORDS
+8 DEL. C. § 220
+============================================
+Date: ${new Date().toISOString().split('T')[0]}
+
+TO: ${company}
+Attn: Corporate Secretary
+[Address]
+
+FROM: ${name}
+${shares}
+
+RE: Demand for Inspection of Books and Records Pursuant to 8 Del. C. § 220
+
+Dear Corporate Secretary:
+
+Pursuant to 8 Del. C. § 220, I hereby demand inspection of the following books and records of ${company}:
+
+${records}
+
+PURPOSE
+-------
+${purpose}
+
+This purpose is a proper purpose under 8 Del. C. § 220(b), as it relates to my interests as a shareholder and involves the investigation of potential wrongdoing, mismanagement, or breach of fiduciary duty.
+
+I am entitled to inspect these records because I am a record or beneficial owner of shares of ${company}.
+
+Please provide access to these records within five (5) business days of this demand, as required by 8 Del. C. § 220(c). I will pay reasonable copying costs only.
+
+If you fail to provide access within the statutory period, I will be compelled to file a petition in the Court of Chancery of the State of Delaware to enforce my statutory rights.
+
+Sincerely,
+
+${name}
+
+Date: ${new Date().toISOString().split('T')[0]}`;
+  const out=document.getElementById('dgcl-output');
+  out.textContent=output;
+  out.style.display='block';
+}
+function downloadDGCL() {
+  if(!document.getElementById('dgcl-output').textContent){compileDGCL();}
+  const blob=new Blob([document.getElementById('dgcl-output').textContent],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='DGCL_220_Demand_'+new Date().toISOString().split('T')[0]+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>

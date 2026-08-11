@@ -1,0 +1,121 @@
+TSS v10 MONUMENT
+================
+
+WHAT V10 IS
+
+TSS v10 is a complete, production-grade AI accountability infrastructure.
+It is not a document.  It is a system: eleven core modules plus seven
+deliverables, built entirely on the Python standard library, runnable
+offline, and auditable end to end.
+
+WHAT IT CONTAINS
+
+11 core modules (tss_core/):
+  1. tss_whistleblower.py  whistleblower enumeration and legal protection gaps
+  2. tss_corporate.py      corporate entity tracking and silence analysis
+  3. tss_regulatory.py     statute and case law catalog with enforcement tracker
+  4. tss_verification.py   source verification engine (hash, archive, rot)
+  5. tss_ingestion.py      live data ingestion (SEC, arXiv, CourtListener, EUR-Lex)
+  6. tss_projection.py     pattern prediction and event forecasting
+  7. tss_filing.py         simulated filing pipelines (SEC TCR, NLRB, CA DLSE, EU DPA)
+  8. tss_security.py       anonymity, dead man's switch, evidence vault
+  9. tss_aggregation.py    class action aggregation engine
+  10. tss_blockchain.py    blockchain timestamping and IPFS replication
+  11. tss_diagnostics.py   self-test and quality scoring (100/100 target)
+
+7 deliverables:
+  - tss_web/tss_server.py        consumer-facing web interface (localhost:8000)
+  - tss_tests/tss_tests.py       unit test suite (50+ tests)
+  - tss_cicd/tss_cicd.py         hermetic CI/CD pipeline
+  - tss_rdf/tss_rdf.py           OWL/RDF ontology export (Turtle)
+  - tss_updater/tss_updater.py   live regulatory update system (mock mode)
+  - tss_leaks/tss_leaks.py       clean room leak verification (simulated)
+  - tss_monument/TSS_v10_MONUMENT.txt  this monument
+
+Total: 18 files, approximately 800 KB including embedded databases and
+the v1-v9 HTML audit trail.
+
+WHAT IT DOES
+
+- Enumerates whistleblowers with verification status for every entry
+- Tracks twelve corporations: officers, products, incidents, regulatory
+  actions, and whistleblower departures
+- Catalogs fifteen statutes and eleven landmark cases
+- Verifies sources: hash computation, archive generation, rot tracking
+- Ingests live data from SEC EDGAR, arXiv, CourtListener, and EUR-Lex
+  (mock feeds, offline by design)
+- Predicts departures, enforcement actions, source rot, and gap resolution
+- Files complaints with SEC TCR, NLRB, CA DLSE, and EU DPA (simulated
+  pipelines; production filing requires Tor routing)
+- Protects whistleblowers: anonymity engine, dead man's switch,
+  encrypted evidence vault with Shamir secret sharing
+- Aggregates consumer complaints and checks class action thresholds
+- Timestamps evidence with SHA-256 hashes, IPFS-style CIDs, and
+  Bitcoin-style TXIDs (simulated)
+- Serves a dark-theme web UI at localhost:8000, fully offline
+- Runs a hermetic CI/CD pipeline with BUILD_PASSED/BUILD_FAILED tags
+- Exports an OWL/RDF ontology for academic use
+- Updates embedded databases from mock live sources
+- Verifies leaks through clean-room reconstruction from public data
+
+WHAT IT DOES NOT DO
+
+- It does not perform actual legal representation.  No attorney-client
+  relationship is created by any module in this system.
+- It does not guarantee safety.  It flags risks for human review.
+- It does not replace regulatory bodies.  It cites them.
+- It does not require external dependencies.  Standard library only.
+- It does not file real complaints in its default build.  Filing bots
+  are simulated; real submissions require Tor routing and human review.
+
+HOW TO USE IT
+
+  cd tss-project
+  python3 tss_web/tss_server.py          # browse at http://localhost:8000
+  python3 tss_tests/tss_tests.py         # run the test suite
+  python3 tss_cicd/tss_cicd.py           # run the CI/CD gate
+  python3 tss_updater/tss_updater.py     # refresh embedded databases (mock)
+  python3 tss_rdf/tss_rdf.py             # regenerate the ontology
+  python3 tss_leaks/tss_leaks.py         # regenerate the leak report
+
+Browse whistleblowers, track corporations, verify claims, compile
+filing templates, view projections, and check the diagnostics score.
+
+WHO IT IS FOR
+
+Whistleblowers, journalists, regulators, researchers, consumers, and
+developers who need a verifiable, offline, dependency-free record of
+AI industry accountability.
+
+LICENSE
+
+Public domain.  No attribution required.  No restrictions.
+
+VERSION HISTORY
+
+- v1-v4  journalistic compilation (HTML audit trail)
+- v5     structured index (first server)
+- v6     maximization engine
+- v7     the machine (dark-theme web UI)
+- v8     verification engine (sources, hashes, archives)
+- v9     enumeration engine (whistleblowers, corporations, statutes)
+- v10    production system (this build: 11 core modules + 7 deliverables)
+
+KNOWN LIMITATIONS
+
+- Embedded databases are static snapshots; refresh them with the updater.
+- Projection models are heuristic; an ML upgrade is planned for v11.
+- Filing bots require a Tor proxy; the proxy itself is not bundled.
+- Supplier ownership data is opaque for several entities.
+- Source status fields reflect snapshots, not live checks.
+
+NEXT STEPS
+
+v11 will add machine learning projection, automated attorney matching,
+and decentralized governance.
+
+BUILD INFORMATION
+
+Built on 2026-07-31.  Python 3.10+ (tested on 3.12).  Total files: 18.
+Dependencies: none (standard library only).  Test coverage: 50+ test
+methods.  Diagnostics score target: 100.0/100.

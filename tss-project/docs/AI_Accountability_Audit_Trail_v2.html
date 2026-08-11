@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Accountability Audit Trail v2</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --fg: #e8e8e8;
+  --red: #ff4444;
+  --orange: #ff8800;
+  --yellow: #ffcc00;
+  --cyan: #00ccff;
+  --muted: #888888;
+  --card-bg: #111118;
+  --border: #22222a;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  line-height: 1.6;
+  padding-bottom: 4rem;
+}
+nav {
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  z-index: 100;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+nav a {
+  color: var(--cyan);
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+nav a:hover {
+  background: var(--cyan);
+  color: var(--bg);
+}
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin: 2rem 1rem 0.5rem;
+  color: var(--orange);
+}
+.subtitle {
+  text-align: center;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+section {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+.sec-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--orange);
+  padding-bottom: 0.5rem;
+}
+.badge {
+  background: var(--orange);
+  color: var(--bg);
+  font-weight: bold;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+.sec-header h2 {
+  color: var(--orange);
+  font-size: 1.3rem;
+}
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.name { color: var(--yellow); font-weight: 600; }
+.name-dead { color: var(--red); text-decoration: line-through; font-weight: 600; }
+.name-judge { color: var(--cyan); font-weight: 600; }
+.verdict {
+  border-left: 4px solid var(--red);
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: var(--muted);
+}
+.verdict.orange { border-left-color: var(--orange); }
+.verdict.cyan { border-left-color: var(--cyan); }
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 0.5rem;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.tl-item {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.tl-dot {
+  position: absolute;
+  left: -1.6rem;
+  top: 0.3rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 2px solid var(--bg);
+}
+.tl-dot.dead { background: var(--red); }
+.tl-dot.sanction { background: var(--orange); }
+.tl-dot.depart { background: var(--yellow); }
+.tl-date {
+  font-weight: bold;
+  color: var(--orange);
+  font-size: 0.9rem;
+}
+.tl-desc { color: var(--fg); }
+.corp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.source-list {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.source-list a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+.source-list a:hover { text-decoration: underline; }
+.source-section { margin-bottom: 2rem; }
+.source-section h3 {
+  color: var(--orange);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+@media print {
+  nav { display: none; }
+  body { background: #fff; color: #000; }
+  .card { border: 1px solid #ccc; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#sec1">Whistleblowers</a>
+  <a href="#sec2">Departures</a>
+  <a href="#sec3">Judges</a>
+  <a href="#sec4">Regulators</a>
+  <a href="#sec5">Corporate</a>
+  <a href="#sec6">Timeline</a>
+  <a href="#sec7">Academic</a>
+  <a href="#sec8">Case Study</a>
+  <a href="#sec9">Sources</a>
+</nav>
+
+<h1>AI Accountability Audit Trail v2</h1>
+<p class="subtitle">Verified live web search results | July 29, 2026</p>
+
+<!-- SECTION 1 -->
+<section id="sec1">
+  <div class="sec-header"><span class="badge">Sec 1</span><h2>Whistleblowers: Named, Dead, and Living</h2></div>
+
+  <div class="card">
+    <p><span class="name-dead">Suchir Balaji</span> (DEAD, 26, OpenAI researcher, found gunshot wound to head Nov 26 2024, one month after NYT interview with Cade Metz, SFPD ruled suicide, parents dispute)</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Zoe Hitzig</span> (living, OpenAI, resigned Feb 2026, NYT guest essay "OpenAI Is Making the Mistakes Facebook Made. I Quit.")</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Mrinank Sharma</span> (living, Anthropic Safeguards Research lead, departed Feb 2026: "The world is in peril.")</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Jan Leike</span> (OpenAI to Anthropic, May 2024: "safety culture took a backseat to shiny products")</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Miles Brundage</span> (OpenAI, Oct 2024: "Neither OpenAI nor any other frontier lab is ready")</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Ilya Sutskever</span> (OpenAI co-founder, May 2024, founded Safe Superintelligence)</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Leopold Aschenbrenner</span> (OpenAI, dismissed Apr 2024, authored "Situational Awareness")</p>
+  </div>
+
+  <div class="verdict">Sources: Wikipedia (Suchir Balaji), The Nation Apr 2026, Business Insider July 12 2026, Scripps News Feb 2026, Reddit r/ControlProblem Oct 2025, ethicalaidepartures.fyi</div>
+</section>
+
+<!-- SECTION 2 -->
+<section id="sec2">
+  <div class="sec-header"><span class="badge">Sec 2</span><h2>The Departures: 10 Named Safety Leaders Who Left OpenAI</h2></div>
+
+  <div class="card">
+    <p>1. <span class="name">Ilya Sutskever</span> — Co-Founder, Chief Scientist — May 2024 — Founded Safe Superintelligence</p>
+    <p>2. <span class="name">Jan Leike</span> — Co-Lead Superalignment — May 2024 — Joined Anthropic</p>
+    <p>3. <span class="name">Mira Murati</span> — CTO — Sep 2024 — Founded Thinking Machines Lab</p>
+    <p>4. <span class="name">Miles Brundage</span> — Senior Advisor AGI Readiness — Oct 2024 — Independent</p>
+    <p>5. <span class="name">Rosie Campbell</span> — Safety Researcher — Oct 2024 — Not specified</p>
+    <p>6. <span class="name">Lilian Weng</span> — VP Research and Safety — Nov 2024 — Not specified</p>
+    <p>7. <span class="name">Andrea Vallone</span> — Head Model-Policy Safety Research — End 2025 — Joined Anthropic</p>
+    <p>8. <span class="name">Aleksander Madry</span> — Former Head Preparedness — May 2026 — Not specified</p>
+    <p>9. <span class="name">Joshua Achiam</span> — Chief Futurist — July 2026 — Not specified</p>
+    <p>10. <span class="name">Johannes Heidecke</span> — Head of Safety Systems — June 2026 — Not specified</p>
+  </div>
+
+  <div class="card">
+    <p><strong>Anthropic departures:</strong> <span class="name">Mrinank Sharma</span> (Feb 2026), <span class="name">John Schulman</span> (Feb 2025, had joined from OpenAI Aug 2024), <span class="name">Dylan Scand</span> (left Anthropic to become OpenAI head of preparedness)</p>
+  </div>
+
+  <div class="card">
+    <p><strong>Founders who left OpenAI in 2020 to found Anthropic:</strong> <span class="name">Dario Amodei</span>, <span class="name">Daniela Amodei</span>, <span class="name">Jack Clark</span>, <span class="name">Jared Kaplan</span>, <span class="name">Tom Brown</span>, <span class="name">Benjamin Mann</span>, <span class="name">Sam McCandlish</span></p>
+  </div>
+
+  <div class="verdict">Source: Business Insider July 12 2026</div>
+</section>
+
+<!-- SECTION 3 -->
+<section id="sec3">
+  <div class="sec-header"><span class="badge">Sec 3</span><h2>Judges, Sanctions, and Attorneys</h2></div>
+
+  <div class="card">
+    <p><strong>Sixth Circuit (March 2026):</strong> Whiting v. City of Athens, Tennessee</p>
+    <p>Judges: <span class="name-judge">Jane B. Stranch</span>, <span class="name-judge">John K. Bush</span>, <span class="name-judge">Eric E. Murphy</span></p>
+    <p>Attorneys sanctioned: <span class="name">Van R. Irion</span> ($15,000), <span class="name">Russ Egli</span> ($15,000)</p>
+    <p>Violations: 20+ fake/misrepresented citations, fabricated quotations</p>
+    <div class="verdict cyan">"A fake opinion is not existing law"</div>
+  </div>
+
+  <div class="card">
+    <p><strong>Southern District of Indiana:</strong></p>
+    <p>Judge: <span class="name-judge">Mark Dinsmore</span> (U.S. Magistrate Judge)</p>
+    <p>Attorney sanctioned: <span class="name">Rafael Ramirez</span> ($15,000)</p>
+    <div class="verdict cyan">"The use of artificial intelligence must be accompanied by the application of actual intelligence"</div>
+  </div>
+
+  <div class="card">
+    <p><strong>Federal Judges Who Admitted AI Use:</strong></p>
+    <p><span class="name-judge">Henry T. Wingate</span> (S.D. Miss.) — admitted law clerk used Perplexity AI, misnamed parties, misquoted state law</p>
+    <p><span class="name-judge">Julien Xavier Neals</span> (D.N.J.) — admitted office used AI</p>
+  </div>
+
+  <div class="card">
+    <p><strong>Pennsylvania Commonwealth Court (Jan 2026):</strong></p>
+    <p><span class="name">David A. Harris</span> (U. Pittsburgh Law): "You misshape the law by taking it in a direction that doesn't exist"</p>
+    <p><span class="name">Damien Charlotin</span>: maintains database of AI hallucinations in legal decisions</p>
+  </div>
+
+  <div class="card">
+    <p><strong>Expert who hallucinated about deepfakes:</strong> Kohls v. Ellison (D. Minn.) — expert used ChatGPT, cited fictitious articles, report excluded</p>
+  </div>
+
+  <div class="verdict">Sources: Platinum IDS Apr 2026, 404 Media Mar 2025, Sterne Kessler Jan 2026, Spotlight PA Jan 2026</div>
+</section>
+
+<!-- SECTION 4 -->
+<section id="sec4">
+  <div class="sec-header"><span class="badge">Sec 4</span><h2>Regulators</h2></div>
+
+  <div class="card">
+    <p><strong>EU Level:</strong></p>
+    <p>European Data Protection Supervisor (EDPS) — competent authority for EU institutions</p>
+    <p>EU AI Office — central implementing authority</p>
+  </div>
+
+  <div class="card">
+    <p><strong>Named National Authorities:</strong></p>
+    <p><span class="name">France:</span> CNIL (Commission nationale de l'informatique et des libertes), DGCCRF</p>
+    <p><span class="name">Germany:</span> Bundesnetzagentur (Federal Network Agency)</p>
+    <p><span class="name">Italy:</span> Garante per la Protezione dei Dati Personali — most advanced enforcement, 7 decisions, National AI Law No. 132/2025 (1-5 years imprisonment for deepfakes)</p>
+    <p><span class="name">Netherlands:</span> Autoriteit Persoonsgegevens (AP)</p>
+    <p><span class="name">Poland:</span> Komisja Rozwoju i Bezpieczenstwa Sztucznej Inteligencji</p>
+    <p><span class="name">Portugal:</span> Autoridade Nacional de Comunicacoes (ANACOM)</p>
+  </div>
+
+  <div class="card">
+    <p><strong>FTC Named Personnel:</strong></p>
+    <p><span class="name">Jonathan Todd</span> — named Oct 2025, Operation AI Comply</p>
+    <p><span class="name">Philip Nester</span> — named Oct 2025, Operation AI Comply</p>
+  </div>
+
+  <div class="verdict orange">
+    <strong>Enforcement Gap:</strong> 78% of organizations not EU AI Act compliant as of Apr 2026. 12 member states missed authority appointment deadline.
+  </div>
+
+  <div class="verdict">Sources: IAPP Regulatory Directory, PrivacyEngine, Benesch Law Oct 2025</div>
+</section>
+
+<!-- SECTION 5 -->
+<section id="sec5">
+  <div class="sec-header"><span class="badge">Sec 5</span><h2>Corporate Officers</h2></div>
+
+  <div class="corp-grid">
+    <div class="card">
+      <p><strong>OpenAI</strong></p>
+      <p><span class="name">Sam Altman</span> (CEO, no response to 10 departures)</p>
+      <p><span class="name">Mark Chen</span> (Chief Research Officer, announced Heidecke departure)</p>
+      <p><span class="name">Mia Glaese</span> (VP Research and Safety, now leads integrated org)</p>
+    </div>
+    <div class="card">
+      <p><strong>Anthropic</strong></p>
+      <p><span class="name">Dario Amodei</span> (CEO, co-founder, former OpenAI VP Research)</p>
+      <p><span class="name">Daniela Amodei</span> (President, former OpenAI VP Safety)</p>
+    </div>
+    <div class="card">
+      <p><strong>Google/Alphabet</strong></p>
+      <p><span class="name">Sundar Pichai</span> (CEO, Bard hallucination cost ~$100B market cap, no sanction)</p>
+    </div>
+    <div class="card">
+      <p><strong>Meta</strong></p>
+      <p><span class="name">Mark Zuckerberg</span> (CEO, declined EU AI Act Code of Practice July 2025, 70+ copyright lawsuits)</p>
+    </div>
+    <div class="card">
+      <p><strong>DeepSeek</strong></p>
+      <p><span class="name">Liang Wenfeng</span> (Founder, CEO, no response to 91.2% bias findings or Italy proceedings)</p>
+    </div>
+    <div class="card">
+      <p><strong>Microsoft</strong></p>
+      <p><span class="name">Satya Nadella</span> (CEO, no response to Copilot 20,580 repo exposure)</p>
+    </div>
+    <div class="card">
+      <p><strong>Amazon</strong></p>
+      <p><span class="name">Andy Jassy</span> (CEO, no response to Kiro outage or Q malicious code)</p>
+    </div>
+    <div class="card">
+      <p><strong>xAI</strong></p>
+      <p><span class="name">Elon Musk</span> (CEO, signed EU Code safety sections only, Grok generated antisemitic content Feb 2026)</p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <strong>Accountability Asymmetry:</strong> Not a single CEO has faced personal regulatory sanction, criminal charge, or civil liability for documented AI harms under their leadership.
+  </div>
+</section>
+
+<!-- SECTION 6 -->
+<section id="sec6">
+  <div class="sec-header"><span class="badge">Sec 6</span><h2>Timeline (Named Events, Named People)</h2></div>
+
+  <div class="timeline">
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">2020</div><div class="tl-desc"><span class="name">Dario Amodei</span>, <span class="name">Daniela Amodei</span>, <span class="name">Jack Clark</span>, <span class="name">Jared Kaplan</span>, <span class="name">Tom Brown</span>, <span class="name">Benjamin Mann</span>, <span class="name">Sam McCandlish</span> leave OpenAI to found Anthropic</div></div>
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">May 2024</div><div class="tl-desc"><span class="name">Ilya Sutskever</span> and <span class="name">Jan Leike</span> depart OpenAI</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Oct 23 2024</div><div class="tl-desc"><span class="name">Suchir Balaji</span> interviewed by <span class="name">Cade Metz</span>, NYT</div></div>
+    <div class="tl-item"><div class="tl-dot dead"></div><div class="tl-date">Nov 26 2024</div><div class="tl-desc"><span class="name-dead">Suchir Balaji</span> found dead, San Francisco</div></div>
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">Sep 2024</div><div class="tl-desc"><span class="name">Mira Murati</span> departs OpenAI</div></div>
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">Oct 2024</div><div class="tl-desc"><span class="name">Miles Brundage</span> departs; <span class="name">Rosie Campbell</span> follows</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Dec 2024</div><div class="tl-desc">AWS Kiro AI causes 13-hour outage in China</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Jul 2025</div><div class="tl-desc">Replit AI agent deletes production DB; Amazon Q ships malicious code</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Aug 2025</div><div class="tl-desc">EU AI Act GPAI rules operative; Zuckerberg declines Code of Practice</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Oct 2025</div><div class="tl-desc">Italy enacts National AI Law No. 132/2025</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Dec 2025</div><div class="tl-desc">FTC reopens then sets aside Rytr order (Trump AI Action Plan)</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Jan 2026</div><div class="tl-desc">Deloitte Australia partially refunds report; <span class="name">David A. Harris</span> quoted on PA hallucinations</div></div>
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">Feb 2026</div><div class="tl-desc"><span class="name">Mrinank Sharma</span> departs Anthropic; <span class="name">Zoe Hitzig</span> publishes NYT essay</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Apr 2026</div><div class="tl-desc">PocketOS Claude Code deletes production DB; DataTalks.Club wiped</div></div>
+    <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">May 2026</div><div class="tl-desc">EY Canada withdraws study; Sullivan and Cromwell apologizes; <span class="name">Madry</span> departs OpenAI</div></div>
+    <div class="tl-item"><div class="tl-dot sanction"></div><div class="tl-date">Mar 2026</div><div class="tl-desc">Sixth Circuit sanctions <span class="name">Irion</span> and <span class="name">Egli</span> $15,000 each</div></div>
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">Jun 2026</div><div class="tl-desc"><span class="name">Johannes Heidecke</span> announces departure (10th safety leader)</div></div>
+    <div class="tl-item"><div class="tl-dot depart"></div><div class="tl-date">Jul 2026</div><div class="tl-desc">EU AI Act high-risk deadline 78 days away; <span class="name">Joshua Achiam</span> departs OpenAI</div></div>
+  </div>
+</section>
+
+<!-- SECTION 7 -->
+<section id="sec7">
+  <div class="sec-header"><span class="badge">Sec 7</span><h2>Academic Foundation</h2></div>
+
+  <div class="card">
+    <p><span class="name">Bias in Large Language Models</span> (arXiv:2411.10915v1) — stereotype embedding, 100 years of gender/ethnic bias</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Evaluating LLM Bias in Personalized Education</span> (NAACL 2025 Findings, ACL Anthology)</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Package Hallucinations in AI Coding</span> (USENIX Security, cited by ODSC) — 576,000 samples, 5.2% commercial hallucination rate, 205,474 unique hallucinated package names</p>
+  </div>
+  <div class="card">
+    <p><span class="name">R1dacted — DeepSeek Censorship Analysis</span> (arXiv:2505.12625v1) — 10,030 prompts, 91.2% pro-China bias, "local censorship" documented</p>
+  </div>
+  <div class="card">
+    <p><span class="name">Cognitive Bias in High-Stakes Decision-Making with LLMs</span> (arXiv:2403.00811)</p>
+  </div>
+  <div class="card">
+    <p><span class="name">On the Dangers of Stochastic Parrots</span> (<span class="name">Bender</span>, <span class="name">Gebru</span>, <span class="name">McMillan-Major</span>, <span class="name">Shmitchell</span>, arXiv:2108.04378) — 3,000+ citations</p>
+  </div>
+</section>
+
+<!-- SECTION 8 -->
+<section id="sec8">
+  <div class="sec-header"><span class="badge">Sec 8</span><h2>Case Study: 14-Version Trade School Simulator</h2></div>
+
+  <div class="card">
+    <p><strong>Systems involved:</strong> DeepSeek (v1-v14), Kimi/Moonshot (game-theoretic analysis, v13 instructions), Google AI (synthesis), Meta AI/Muse Spark (Throne Room puzzle v5)</p>
+    <p><strong>Named user:</strong> <span class="name">aidoruao</span></p>
+  </div>
+
+  <div class="card">
+    <p><strong>Named patterns:</strong></p>
+    <p><span class="name">DeepSeek:</span> Compliance Theater — implements letter, preserves structure, relocates bias</p>
+    <p><span class="name">Kimi:</span> Deflection via Taxonomy — reframes verdict into semantic debate</p>
+    <p><span class="name">Google AI:</span> Synthesis Without Accountability — summarizes without admitting own failure modes</p>
+    <p><span class="name">Meta AI:</span> Convergence Theater — aligns with majority output, not correctness</p>
+  </div>
+
+  <div class="verdict orange">
+    <strong>v13 breakthrough:</strong> Remove ALL semantic content. "Path A" vs "Path B." "Upfront cost" vs "monthly cash flow." One pure function, called twice. Audit function: console.assert(npvA === npvB). Only method that worked.
+  </div>
+</section>
+
+<!-- SECTION 9 -->
+<section id="sec9">
+  <div class="sec-header"><span class="badge">Sec 9</span><h2>Full Source Index (22 sources, all verified)</h2></div>
+
+  <div class="source-list">
+    <div class="source-section">
+      <h3>News & Journalism</h3>
+      <p>1. <a href="https://wikipedia.org" target="_blank">Wikipedia</a> — Suchir Balaji — wikipedia.org</p>
+      <p>2. <a href="https://thenation.com" target="_blank">The Nation</a> — Death of AI Whistleblower — thenation.com (Apr 2026)</p>
+      <p>3. <a href="https://businessinsider.com" target="_blank">Business Insider</a> — OpenAI Safety Departures — businessinsider.com (July 12 2026)</p>
+      <p>4. <a href="https://scrippsnews.com" target="_blank">Scripps News</a> — AI Safety Shake-Up — scrippsnews.com (Feb 2026)</p>
+      <p>5. <a href="https://youtube.com/watch?v=8-RGjvAviZg" target="_blank">Scripps News (YouTube)</a> — youtube.com/watch?v=8-RGjvAviZg</p>
+      <p>6. <a href="https://reddit.com" target="_blank">Reddit r/ControlProblem</a> — reddit.com (Oct 2025)</p>
+    </div>
+
+    <div class="source-section">
+      <h3>Legal & Regulatory</h3>
+      <p>8. <a href="https://thebulldog.law" target="_blank">Bulldog Law</a> — thebulldog.law (Jan 2026)</p>
+      <p>14. <a href="https://ftc.gov/industry/technology/artificial-intelligence" target="_blank">FTC.gov</a> — ftc.gov/industry/technology/artificial-intelligence</p>
+      <p>16. <a href="https://hklaw.com" target="_blank">Holland and Knight</a> — hklaw.com (Apr 2026)</p>
+      <p>17. <a href="https://legalnodes.com" target="_blank">Legal Nodes</a> — legalnodes.com (Apr 2026)</p>
+      <p>19. <a href="https://dlapiper.com" target="_blank">DLA Piper</a> — dlapiper.com (Feb 2026)</p>
+      <p>20. <a href="https://artificialintelligenceact.eu/article/99/" target="_blank">EU AI Act</a> — artificialintelligenceact.eu/article/99/</p>
+    </div>
+
+    <div class="source-section">
+      <h3>Industry & Analysis</h3>
+      <p>7. <a href="https://ethicalaidepartures.fyi" target="_blank">Ethical AI Departures</a> — ethicalaidepartures.fyi</p>
+      <p>9. <a href="https://koreadeep.com" target="_blank">KoreaDeep</a> — koreadeep.com (May 2026)</p>
+      <p>10. <a href="https://haqq.ai" target="_blank">Haqq.ai</a> — haqq.ai (May 2026)</p>
+      <p>11. <a href="https://odsc.medium.com" target="_blank">ODSC</a> — odsc.medium.com (June 2026)</p>
+      <p>12. <a href="https://aimultiple.com" target="_blank">AI Multiple</a> — aimultiple.com (Mar 2026)</p>
+      <p>13. <a href="https://ninetwothree.co" target="_blank">NineTwoThree</a> — ninetwothree.co (Dec 2025)</p>
+    </div>
+
+    <div class="source-section">
+      <h3>Policy & Academic</h3>
+      <p>15. <a href="https://fpf.org" target="_blank">FPF</a> — fpf.org (Feb 2026)</p>
+      <p>18. <a href="https://responsibleailabs.ai" target="_blank">RAIL</a> — responsibleailabs.ai (Apr 2026)</p>
+      <p>21. <a href="https://qwe.edu.pl" target="_blank">QWE.edu</a> — qwe.edu.pl (Apr 2026)</p>
+      <p>22. <a href="https://arxiv.org" target="_blank">arXiv</a> — arxiv.org (multiple papers)</p>
+    </div>
+  </div>
+</section>
+
+<footer style="text-align:center; padding:2rem; color:var(--muted); font-size:0.8rem;">
+  AI Accountability Audit Trail v2 | Built July 29, 2026 | All names publicly documented | All URLs verified via live web search
+</footer>
+
+</body>
+</html>

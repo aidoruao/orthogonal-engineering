@@ -1,0 +1,48 @@
+name: TSS v10 Continuous Accountability Engine
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 */12 * * *'
+
+jobs:
+  hermetic_audit:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tor
+        run: sudo apt-get update && sudo apt-get install -y tor && sudo systemctl start tor
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install beautifulsoup4 playwright pySocks feedparser requests
+          python -m playwright install chromium
+      - name: Run hermetic test suite
+        run: python tss_tests/tss_tests.py
+      - name: Run diagnostics
+        run: python tss_core/tss_diagnostics.py
+      - name: Run CI/CD pipeline
+        run: python tss_cicd/tss_cicd.py
+      - name: Package artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tss-v10-build
+          path: |
+            tss_core/*.py
+            tss_web/*.py
+            tss_tests/*.py
+            tss_cicd/*.py
+            tss_rdf/*.py
+            tss_updater/*.py
+            tss_leaks/*.py
+            data/*.json
+            docs/*.html
+          retention-days: 90

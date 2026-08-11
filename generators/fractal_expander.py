@@ -24,6 +24,24 @@ except ImportError:
     sys.exit(1)
 
 
+def _coerce_max_depth(value):
+    """YAML may carry 'infinity' or numeric strings; coerce to a comparable int.
+    Fixes the str-vs-int TypeError when max_depth is quoted in the seed YAML."""
+    if value is None or isinstance(value, bool):
+        return 0
+    if isinstance(value, (int, float)):
+        return int(value)
+    if isinstance(value, str):
+        s = value.strip().lower()
+        if s in ("infinity", "inf", "unbounded", "∞"):
+            return 10 ** 18
+        try:
+            return int(s)
+        except ValueError:
+            raise ValueError(f"max_depth must be an int or 'infinity', got {value!r}")
+    return int(value)
+
+
 class FractalExpander:
     """Expands DAG nodes into content using fractal templates."""
     
@@ -73,7 +91,7 @@ class FractalExpander:
         """Check if node can spawn a recursive sub-universe."""
         # Check recursion config
         recursion_config = self.seed.get('root', {}).get('recursion', {})
-        max_depth = recursion_config.get('max_depth', 0)
+        max_depth = _coerce_max_depth(recursion_config.get('max_depth', 0))
         
         # Can't recurse if at max depth
         if self.layer_index >= max_depth:

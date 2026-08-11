@@ -14,6 +14,7 @@ Version: 2.0.0 (PR #23)
 import argparse
 import hashlib
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -122,7 +123,7 @@ class BatchMaterializer:
                 
                 # Write file if output_dir specified
                 if output_dir:
-                    file_path = Path(output_dir) / file_id.split('/', 1)[1].replace('/', Path.sep)
+                    file_path = Path(output_dir) / file_id.split('/', 1)[1].replace('/', os.sep)
                     file_path.parent.mkdir(parents=True, exist_ok=True)
                     
                     # Add .py extension if not present
