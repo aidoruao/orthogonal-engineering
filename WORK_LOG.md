@@ -1,6 +1,14 @@
 # WORK LOG — oe-local session timeline (the "commits history" — no git in this workspace)
 **Purpose:** instant answer to "what was recently done?" — chronological, hash-anchored.
 **Chain of custody:** every entry's origin derives from CHAIN_OF_CUSTODY.md §3 (CIIF original, corpus, session logs); scope/objectives are custody §1. Read order: this log → custody → prep kit.
+**Git (as of 8/10):** this repo (oe-local) HAS git — origin main = github.com/aidoruao/orthogonal-engineering; commit + push after every work item; every commit message states what and why.
+
+## 2026-08-10 (Open-Audit Campaign launch + git push)
+
+- **Git milestone** — ALL accumulated work pushed to origin main (commit f5abf97e, 97 files): the full 2026-08-04..07 cycle (chain, learning D1–D13/E1–E7, prep, catalog, audits, probes, tools) + tss-project flattened from nested repo (its .git preserved at ~/.tss-project-git-backup). Zero divergence with origin; nothing remote-only existed to protect; no force-push, no deletions. **NOTE for the human: the GitHub token in .git/config is plaintext — rotate it (Settings → Developer settings → PAT).**
+- **Open-Audit Campaign launched** — `OE_CAMPAIGN.md` (root): charter (public sources only, nothing illegal, evidence code [measured]/[published]/[hypothesis]/[pending], harsh = documented discrepancy), 5-layer asymmetry framework (L1 architecture → L5 corporate fiduciary), 11-target matrix, 8 work streams, continuity contract (repo answers "what was last done and why"), pre-registered queue (tensor censuses, arxiv ingestions, dossiers, registry rows).
+- **AUDITS/ created** — 10 dossiers: openai/anthropic/moonshot ACTIVE (real fetched sources: GPT-5 system card from openai.com; Fable 5 profile from BenchLM; Kimi-K2 family via HF API — K2.5/K2.6/K2.7-Code public, tech report arxiv:2602.02276), xai/google/meta/mistral/alibaba/zhipu/regulators QUEUED (honest stubs with measured config/registry content).
+- **TRANSPARENCY_LEDGER.md** — append-only source index (8 entries + pending list). KEY DISCREPANCY FOUND: OpenAI claims 3× on ARC-AGI-3 ("two settings", Jul 29 2026) vs our matrix's universal 0.0 — top re-baseline priority.
 
 ## 2026-08-07 (cross-model architecture comparison)
 
