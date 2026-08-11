@@ -49,6 +49,8 @@ CLAIMS = [
     ("custody exists", "file", OE / "CHAIN_OF_CUSTODY.md", None),
     ("prep kit exists", "file", D / "POST_TRAINING_PREP.md", None),
     ("brief exists", "file", D / "DEVELOPERS_BRIEF.md", None),
+    ("m3 tripwire script exists", "file", D / "meta_layer_tripwire.py", None),
+    ("m3 mechanism results exist", "file", D / "m3_tripwire_results.json", None),
 ]
 
 
