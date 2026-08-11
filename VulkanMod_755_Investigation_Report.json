@@ -1,0 +1,104 @@
+{
+  "operation": "VULKAN-SCISSOR-MATRIX",
+  "repo": "xCollateral/VulkanMod",
+  "issue": 755,
+  "issue_url": "https://github.com/xCollateral/VulkanMod/issues/755",
+  "date": "2026-04-04",
+  "agent": "Devin AI (agent mode)",
+  "enableScissor_mixin": {
+    "file": "src/main/java/net/vulkanmod/render/engine/VkRenderPass.java",
+    "class": "VkRenderPass",
+    "target_method": "enableScissor(int i, int j, int k, int l)",
+    "accesses_posestack": false,
+    "line_numbers": ["117", "119"],
+    "method_body": "@Override\npublic void enableScissor(int i, int j, int k, int l) {\n    this.scissorState.enable(i, j, k, l);\n}",
+    "notes": "VkRenderPass implements RenderPass interface. enableScissor simply stores raw coordinates into a ScissorState object. No PoseStack matrix is captured or applied. The scissorState is a com.mojang.blaze3d.systems.ScissorState instance at line 37."
+  },
+  "vkCmdSetScissor_caller": {
+    "primary_caller": {
+      "file": "src/main/java/net/vulkanmod/vulkan/Renderer.java",
+      "class": "Renderer",
+      "method": "setScissor(int x, int y, int width, int height)",
+      "line_numbers": ["806", "821"],
+      "vkRect2D_construction": "VkRect2D.Buffer scissor = VkRect2D.malloc(1, stack); scissor.offset().set(x, framebufferHeight - (y + height)); scissor.extent().set(width, height);",
+      "matrix_transform_applied": false,
+      "dirty_flag_exists": false,
+      "notes": "Renderer.setScissor receives raw x, y, width, height. It flips the Y coordinate for Vulkan's coordinate system (framebufferHeight - (y + height)) but applies NO matrix transformation. The coordinates come directly from GlStateManager._scissorBox."
+    },
+    "secondary_callers": [
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/pass/DefaultMainPass.java",
+        "class": "DefaultMainPass",
+        "method": "begin(VkCommandBuffer, MemoryStack)",
+        "line_numbers": ["71", "72"],
+        "notes": "Uses framebuffer.scissor(stack) for full-framebuffer scissor reset at render pass begin. Not related to GUI scissor."
+      },
+      {
+        "file": "src/main/java/net/vulkanmod/vulkan/Renderer.java",
+        "class": "Renderer",
+        "method": "resetScissor()",
+        "line_numbers": ["823", "831"],
+        "notes": "Resets scissor to full framebuffer bounds. Called by GlStateManager._disableScissorTest()."
+      }
+    ]
+  },
+  "pipeline_builder": {
+    "file": "src/main/java/net/vulkanmod/vulkan/shader/GraphicsPipeline.java",
+    "class": "GraphicsPipeline",
+    "method": "createGraphicsPipeline",
+    "dynamic_states_line_topology": {
+      "lines": ["170", "173"],
+      "states": ["VK_DYNAMIC_STATE_DEPTH_BIAS", "VK_DYNAMIC_STATE_VIEWPORT", "VK_DYNAMIC_STATE_SCISSOR", "VK_DYNAMIC_STATE_LINE_WIDTH"]
+    },
+    "dynamic_states_default": {
+      "lines": ["176", "177"],
+      "states": ["VK_DYNAMIC_STATE_DEPTH_BIAS", "VK_DYNAMIC_STATE_VIEWPORT", "VK_DYNAMIC_STATE_SCISSOR"]
+    },
+    "notes": "VK_DYNAMIC_STATE_SCISSOR is CONFIRMED enabled in all pipeline configurations. This means vkCmdSetScissor can be called dynamically during command buffer recording, which is required for the fix."
+  },
+  "call_chain": {
+    "gui_path": [
+      "GuiGraphics.enableScissor(x1, y1, x2, y2) [vanilla Minecraft]",
+      "VkRenderPass.enableScissor(i, j, k, l) [stores in ScissorState]",
+      "VkCommandEncoder.trySetup(VkRenderPass) [checks isScissorEnabled at line 773]",
+      "GlStateManager._enableScissorTest() [no-op in VulkanMod, line 74]",
+      "GlStateManager._scissorBox(x, y, w, h) [delegates to Renderer.setScissor]",
+      "Renderer.setScissor(x, y, width, height) [constructs VkRect2D WITHOUT matrix]",
+      "vkCmdSetScissor(commandBuffer, 0, scissor) [Vulkan API call]"
+    ],
+    "composite_render_type_path": [
+      "RenderType.CompositeRenderType.draw(MeshData) [CompositeRenderTypeM mixin]",
+      "RenderSystem.getScissorStateForRenderTypeDraws() [gets global ScissorState]",
+      "renderPass.enableScissor(x, y, w, h) [VkRenderPass stores it]",
+      "VkCommandEncoder.trySetup() [same chain as above]"
+    ]
+  },
+  "posestack_availability": {
+    "file": "src/main/java/net/vulkanmod/config/gui/render/GuiRenderer.java",
+    "field": "public static PoseStack pose (line 19)",
+    "notes": "GuiRenderer has a static PoseStack field that is available during GUI rendering. However, this PoseStack is NEVER read in the enableScissor path. The enableScissor method at line 22-24 simply delegates to guiGraphics.enableScissor(i, j, k, l) without consulting GuiRenderer.pose.",
+    "model_view_stack": "RenderSystem.getModelViewStack() returns a Matrix4fStack that is used in other VulkanMod rendering paths (e.g., CloudRenderer, DrawUtil) but NOT in the scissor coordinate path."
+  },
+  "gap_analysis": {
+    "VM_Q1": "The PoseStack matrix is available via GuiRenderer.pose (GuiRenderer.java:19) and RenderSystem.getModelViewStack(), but is NOT applied to scissor coordinates anywhere. The gap is in VkCommandEncoder.trySetup() (VkCommandEncoder.java:773-777) where GlStateManager._scissorBox() is called with raw coordinates from VkRenderPass.scissorState, and in Renderer.setScissor() (Renderer.java:806-821) where VkRect2D is constructed from these raw coordinates without any matrix transformation.",
+    "VM_Q2": "enableScissor call chain: GuiGraphics.enableScissor() -> VkRenderPass.enableScissor() [stores in ScissorState] -> VkCommandEncoder.trySetup() [reads ScissorState at draw time] -> GlStateManager._scissorBox() [GlStateManagerM mixin] -> Renderer.setScissor() -> vkCmdSetScissor(). Classes involved: VkRenderPass, VkCommandEncoder, GlStateManagerM (mixin of GlStateManager), Renderer.",
+    "VM_Q3": "There is NO existing dirty flag or state-change mechanism for the scissor. The ScissorState class (com.mojang.blaze3d.systems.ScissorState) is a simple record of (enabled, x, y, width, height). VkRenderPass stores it as a field (line 37) and exposes getters. The VkCommandEncoder reads it fresh on every trySetup() call (line 773), but does not track whether the PoseStack has changed since the last scissor push. A dirty flag would need to be added to detect PoseStack mutations between scissor operations."
+  },
+  "inspection_class": "A",
+  "confidence": "high",
+  "proposed_fix_summary": {
+    "location": "Renderer.setScissor() or VkCommandEncoder.trySetup()",
+    "approach": "Capture the current PoseStack top matrix (Matrix4f) at the point where scissor coordinates are pushed to the Vulkan command buffer. Extract translationX (m30) and translationY (m31). Transform: x' = x + translationX, y' = y + translationY. Width and height remain unchanged for translation-only transforms.",
+    "edge_cases": [
+      "Identity matrix: transformation is a no-op, preserving backward compatibility",
+      "Negative coordinates after transformation: clamp to (0, 0)",
+      "Coordinates exceeding framebuffer bounds: clamp extent to framebuffer dimensions"
+    ],
+    "verification_invariants": [
+      "INV-A: matrixStack.translate(dx, dy, 0) shifts scissor by (dx * guiScale, dy * guiScale)",
+      "INV-B: vkCmdSetScissor called AFTER matrix transformation in same draw call boundary",
+      "INV-C: Static GUI elements (identity matrix) produce identical scissor rects to vanilla",
+      "INV-D: Nested scissor regions respect intersection of both transformed rects"
+    ]
+  }
+}
