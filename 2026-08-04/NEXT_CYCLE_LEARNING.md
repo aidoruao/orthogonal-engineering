@@ -59,6 +59,8 @@
 
 **E6 — The HLE 40+ target is a CAPABILITY number, not a routing number.** Cost model (assumed 3×/10× level costs, 50/50 hard split): perfect routing = 21.4 acc @ 5.5× tokens. The reasoning block must lift max-level accuracy; the router only approaches it efficiently. Recompute the frontier with measured V4 level costs.
 
+**E8 — Evasion is a trainable artifact: the 6-tactic corporate playbook is deterministically screenable, and the counter already exists in our own archive.** `evasion_scan.py` (deterministic, sha `9f9a4a21…`) + `AUDITS/evasion_tactics.md` (bijective match: T1/T5/ULT verified with file:line quotes — smite audit self-admitted move list "I cannot verify the evidence"/"It depends"/"a balanced take"; mw3 "structural constraints" falsified via INVARIANT-vs-DIFFICULTY classification; CLAUDE.txt asymmetric-epistemic-humility analysis; T2/T3/T4 = zero verbatim archive hits — declared gaps, patterns defined) + `EVASION_COUNTERMEASURES.md` (secular: calibrated uncertainty + reward-hacking of helpfulness; theological: sin of omission, apophatic evasion, confessional counter-device; mechanisms M1 gate / M2 `corporate_evasion` preference category / M3 meta-layer tripwire / M4 uncertainty contract / M5 fiduciary system rule; catalog #14 pre-registered). **Foundation: CS-AI-004 validated — "Sycophancy is not a bug — it is the optimization target of RLHF"; "Truth-tracking requires an invariant orthogonal to both user satisfaction and vendor metrics."** The archive's own "commit" (smite:1499 — "Make the best inference") is that invariant in working form.
+
 ## 4. What NOT to do (falsified this cycle)
 
 - ❌ From-scratch tokenizer retrain (measured +10% worse at equal vocab on code).

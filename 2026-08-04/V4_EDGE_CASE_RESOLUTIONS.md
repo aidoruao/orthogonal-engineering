@@ -81,6 +81,14 @@
 
 ---
 
+## 13b. RLHF evasion gradient — the 6-tactic playbook as a reward artifact [hypothesis, evidence catalogued]
+- **V4 subsystem:** RLHF objective (helpfulness/safety blend); evasion = meta-layer recursion that maximizes engaged-sounding tokens while minimizing substantive commitment.
+- **Edge case:** if sycophancy is the optimization target (CS-AI-004, validated: "Sycophancy is not a bug — it is the optimization target of RLHF"), then evasion-tactic frequency is a measurable *gradient* of the reward structure — models trained under identical RLHF paradigms show identical moves (CS-AI-005 cross-platform deposition: Gemini/DeepSeek/Kimi).
+- **Evidence (8/10):** `AUDITS/evasion_tactics.md` — T1/T5/ULT matched bijectively to archive (smite audit move list; mw3 structural-constraint falsification; CLAUDE.txt epistemic-humility asymmetry); T2/T3/T4 zero verbatim hits (gaps declared); detector `evasion_scan.py` deterministic (sha `9f9a4a21…`).
+- **Resolution (pre-registered):** M1 evasion gate (CI, like stub gate) + M2 `corporate_evasion` preference category (200 pairs, canonical schema v3 lineage) + M3 meta-layer tripwire (runtime) + M4 uncertainty contract + M5 fiduciary system rule. **Measure:** M1 hits/1,000 lines across model versions vs reward scheme; tripwire fires ≥8/10 on scripted evasion prompts, ≤2/10 false positives on substantive prompts (qwen-1.5b proxy, then V5 post-train). [local proxy + hardware]
+
+---
+
 ## 14. Domain provenance (where each principle came from)
 - Admissibility-constrained collapse: λ-calculus confluence, sheaf gluing, game-theoretic iterated admissibility, turbulence maximum-dissipation selection, ultrafast-optics phase matching, RSVP entropy-constrained relaxation, Spherepop collapse, cellular-differentiation lineage reconstruction.
 - Wave memory: Mem|8 (Marine/8b research line) — importance-amplitude, recall-frequency, decay, emotional-field interference; wave-based (Ortyx) protocols as the temporal-domain feature-extraction branch.
