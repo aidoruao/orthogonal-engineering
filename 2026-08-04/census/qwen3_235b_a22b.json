@@ -1,0 +1,69 @@
+{
+ "checks": {
+  "experts": {
+   "note": "tensor-derived 128 vs config 128",
+   "pass": true
+  },
+  "layers": {
+   "note": "tensor-derived 94 vs config 94",
+   "pass": true
+  },
+  "tensors_nonzero": {
+   "note": "36945 tensors",
+   "pass": true
+  }
+ },
+ "component_counts": {
+  "embedding": 1,
+  "expert": 36096,
+  "k_proj": 94,
+  "layer_block": 282,
+  "layernorm": 95,
+  "lm_head": 1,
+  "o_proj": 94,
+  "q_proj": 94,
+  "router": 94,
+  "v_proj": 94
+ },
+ "config_summary": {
+  "head_dim": 128,
+  "hidden_size": 4096,
+  "max_position_embeddings": 40960,
+  "model_type": "qwen3_moe",
+  "n_routed_experts": null,
+  "num_attention_heads": 64,
+  "num_experts": 128,
+  "num_experts_per_tok": 8,
+  "num_hidden_layers": 94,
+  "num_key_value_heads": 4,
+  "torch_dtype": "bfloat16",
+  "vocab_size": 151936
+ },
+ "config_url": "https://huggingface.co/Qwen/Qwen3-235B-A22B/raw/main/config.json",
+ "index_sha256": "53dd34fac4a29fc7ee58fa9d92c7892ea6884431c3bd3d0dc93def7bbd0b8b78",
+ "index_url": "https://huggingface.co/Qwen/Qwen3-235B-A22B/resolve/main/model.safetensors.index.json",
+ "model": "qwen3-235b",
+ "num_experts_derived": 128,
+ "num_tensors": 36945,
+ "per_layer_tensor_counts": {
+  "layers_found": 94,
+  "max": 393,
+  "min": 393
+ },
+ "sample_tensor_names": [
+  "lm_head.weight",
+  "model.embed_tokens.weight",
+  "model.layers.0.input_layernorm.weight",
+  "model.layers.0.mlp.experts.0.down_proj.weight",
+  "model.layers.0.mlp.experts.0.gate_proj.weight",
+  "model.layers.0.mlp.experts.0.up_proj.weight",
+  "model.layers.0.mlp.experts.1.down_proj.weight",
+  "model.layers.0.mlp.experts.1.gate_proj.weight",
+  "model.layers.0.mlp.experts.1.up_proj.weight",
+  "model.layers.0.mlp.experts.10.down_proj.weight",
+  "model.layers.0.mlp.experts.10.gate_proj.weight",
+  "model.layers.0.mlp.experts.10.up_proj.weight"
+ ],
+ "slug": "qwen3_235b_a22b",
+ "total_tensor_bytes": 470187269120
+}

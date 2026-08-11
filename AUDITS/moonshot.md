@@ -1,11 +1,12 @@
 # AUDIT — Moonshot AI (Kimi K2 family)
 
-**Current as of:** 2026-08-10 · **Status:** ACTIVE · **Architecture access:** FULL config-level (ours, D13); tensor census queued · **Our evidence:** K2-Instruct config census (2026-08-07), HF API trail (2026-08-10), registry (kimi row: HLE 0.502 = the field's biggest HLE number).
+**Current as of:** 2026-08-10 · **Status:** ACTIVE · **Architecture access:** FULL config + tensor level (ours) · **Our evidence:** K2-Instruct config census (2026-08-07), **tensor census `[measured, 2026-08-10, model_census.py, census/kimi_k2_instruct.json, sha 5f26b4ba…]`**, HF API trail (2026-08-10), registry (kimi row: HLE 0.502).
 
 ## Known facts (cited)
 
 - **Kimi K2-Instruct config** `[measured, ours, HF commit fd1984e2…]`: 61 layers, 384 routed + 1 shared expert, 8 active (2.08%), V3-lineage MLA (q_lora 1536 / kv_lora 512 / qk_nope 128 / qk_rope 64 / v 128), noaux_tc + sigmoid scoring (routed_scaling_factor 2.827), 131,072 ctx via YaRN×32 over a 4,096 base, FP8 e4m3 shipped weights, `num_nextn_predict_layers: 0` (no MTP). **It is architecturally DeepSeek V3's lineage** — the field's reference for what V3-style MLA+MoE scales to.
 - **Open-weight trail** `[published, HF API, fetched 2026-08-10]`: Kimi-K2-Instruct (Jul 2025) → Kimi-K2.5 (Jan 1 2026, 862K downloads, image-text-to-text, tech report **arxiv:2602.02276**) → Kimi-K2.6 (Apr 14 2026, 785K) → Kimi-K2.7-Code (Jun 11 2026, 650K). All ungated, license:other. NVIDIA ships FP4 (Kimi-K2-Thinking-NVFP4) and Eagle3 speculative-decoding builds (Kimi-K2.5-Thinking-Eagle3) — the density/speculation ecosystem around K2 is public.
+- **Tensor census `[measured, 2026-08-10]`**: 139,644 tensors, **1,029,173,256,720 B total (≈1.03T params fp8)**; 61 layers with **60 routers (layer 0 dense — matches `first_k_dense_replace: 1`)**: 384 experts + 360 shared-expert tensors; MLA verified at tensor level (61× q_a/kv_a pairs); **0 speculation tensors**; **active params/token ≈21.4B = 3.0× V4**; KV footprint 31,232 dims/token (1.4× V4); shipped density 1.00 B/GB (vs V4's 1.93). HLE leadership costs 3× V4's per-token compute — the actionable number.
 - **HLE** `[measured, registry]`: Kimi K2.5 0.502 vs V4-Flash max 0.348 — the biggest measured gap in our matrix; HLE is the frontier surface Moonshot currently leads on.
 
 ## Discrepancies (claim vs evidence)

@@ -1,4 +1,6 @@
-# CROSS-MODEL ARCHITECTURE DELTA — V4 vs open-weight frontier (no-download, config-level)
+# CROSS-MODEL ARCHITECTURE DELTA — V4 vs open-weight frontier (no-download, config-level → tensor-level)
+
+**UPGRADE 2026-08-10:** tensor-level census DONE for Qwen3-235B-A22B + Kimi-K2-Instruct (`model_census.py` → `census/*.json`, all config cross-checks PASS, deterministic) — see **`CENSUS_REPORT.md`** for the tensor inventory, active-params/token, KV footprints, and per-model harsh audit. This file remains the config-level base; the report is the tensor-level layer.
 
 **Date:** 2026-08-07 · **Method:** same no-download technique as the V4 census — public HF config.json only (~1–2 KB per model), no weights, no llama.cpp. Sources fetched live today (HTTP 200), commit-pinned:
 - Qwen3-235B-A22B: `https://huggingface.co/Qwen/Qwen3-235B-A22B/raw/main/config.json` (commit `8efa6172…`, gated: false, Apache-2.0; repo contains `model.safetensors.index.json` → tensor census possible next)
