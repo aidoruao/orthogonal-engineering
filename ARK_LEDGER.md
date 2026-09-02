@@ -1277,7 +1277,7 @@ pass without a browser.
      orders in this batch. Recorded as found, not as assumed.
 3. **Tier upgrade to FETCHED**, page-level citations, as new certified
    file `L3_FETCHED.lean` (8 load-bearing docs, 13 page cites, 4
-   upgrades, all machine-checked; `bf3538f0…23b4`).
+   upgrades, all machine-checked; `383eddb6…70ae`).
    - Antoon → FETCHED (SAC ¶18 p.9; own MTD doc 68).
    - Tassillo → FETCHED (SAC ¶19 p.9; own MTD doc 67).
    - Urman → FETCHED (SAC ¶199/¶200 p.65, ¶212 p.68; own MTD
@@ -1310,7 +1310,7 @@ doc 387 (PACER-paywalled), plus the 5 web primaries (access gap).
 ### Anchors
 
 - `evidence/fleites/FLEITES_MANIFEST.sha256` → `a9857c90d30223c8da38298bb16d3f6293554f88b118adb51919097bab506daf`
-- `L3_FETCHED.lean` → `bf3538f09e5896d08f8197d98cb88f37e9d6e1fe4e1683f2d67c5c29416c23b4`
+- `L3_FETCHED.lean` → `383eddb6f471ab880e3cff4143d9934c35316e0402b4b3ca8c9e9d9f712670ae`
 - `L3_FAMILY.lean` → `5326a649e3130c38820cdd52ef5ca349e936451a5c71107cf4c21bd52956f227`
 - `L3_DEPOSITION_ENTRY.lean` → `deffc0a21e9ceb6c0a25599f34ada05ee2ba5c5ff6d076f94ba93102b26cf1ce`
 - `THE_INDICTMENT.lean` → `9682487129d9016edcc80c4ff805112de44b0ad77a6e879d53406e054f330ab7`

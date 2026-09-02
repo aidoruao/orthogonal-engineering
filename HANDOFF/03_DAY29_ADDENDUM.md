@@ -11,7 +11,7 @@ supplied the Fleites v. MindGeek docket primaries themselves.
    `C:\Users\Aidor\Downloads\` into `oe-local/evidence/fleites/`,
    hashed in `FLEITES_MANIFEST.sha256` (a9857c90…6daf). Originals in
    Downloads untouched.
-2. **New certified file `L3_FETCHED.lean`** — the fetched-tier ledger:
+2. **New certified file `L3_FETCHED.lean`** (`383eddb6…70ae`) — the fetched-tier ledger:
    8 load-bearing docs examined, 13 page-level citations, 4 tier
    upgrades, all machine-checked (`lean L3_FETCHED.lean` → exit 0).
 3. **Tier upgrades**: Antoon, Tassillo, Urman → **FETCHED** (SAC 385

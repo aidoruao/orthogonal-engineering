@@ -77,7 +77,7 @@ def antoon_cites : List PageCite := [
 def tassillo_cites : List PageCite := [
   { doc := "385", page := "9", quote := "Defendant David Tassillo ... minority owner ... de facto COO of all MindGeek entities" },
   { doc := "67", page := "1", quote := "SPECIALLY APPEARING DEFENDANT DAVID TASSILLO'S NOTICE OF MOTION AND MOTION TO DISMISS THE COMPLAINT" },
-  { doc := "385", page := "37", quote := "Tassillo testified that he could 'guarantee you that every piece of c[ontent]...'" }
+  { doc := "385", page := "37", quote := "Tassillo testified that he could 'guarantee you that every piece of c…'" }
 ]
 
 /-- Urman: SAC ¶199 (p.65) — the fictitious "Blake White" spokesman WAS
