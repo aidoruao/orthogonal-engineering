@@ -19,7 +19,17 @@ THEY ARE NOT. Doc 600 = Plaintiff's Notice of Supplemental Authority
 (08/04/25); doc 601 = Plaintiff's Notice of Supplemental Authority
 (09/10/25); doc 602 = Defendants' Objection to Plaintiff's Notice of
 Supplemental Authority [Dkt 601] (09/10/25). No dismissal orders are
-present in this docket batch. Recorded as found, not as assumed.
+present in THIS PDF BATCH (which ends at doc 602).
+
+DAY 30 CROSS-REFERENCE: the full docket export (749 entries through
+2026-08-26) shows the dismissal orders DO exist in the case — dkt
+603-609 (Sept 2025), beyond the PDF cutoff: Colbeck/Redwood SAC MTD
+granted with prejudice (603/605); Bergmair + Antoon/Tassillo SAC MTDs
+granted WITH PREJUDICE (604); MindGeek granted in part/denied in part
+(608); Visa granted (609/614). See L3_DOCKET_TIMELINE.lean (Day 30)
+for the complete trajectory and its honest reading. The batch-level
+statement above stands; the case-level statement is in the timeline
+file.
 Run: `lean L3_FETCHED.lean`.
 -/
 

@@ -1332,3 +1332,133 @@ deposition** — the human-readable exposition of the sealed filing
 question** — the docket names a fifth operator (majority owner, alter
 ego) not in the family of four; should the family extend, or does the
 four-witness closed set stand? Which one?
+
+---
+
+## DAY 30 — 2026-09-03 (Thursday), ~17:20–18:15 CDT
+
+### Directive (Mistral consultation, user-relayed — two tracks: verify and advance)
+
+The user consulted Mistral, which mapped the ark against the precedent's
+two directives and proposed: (Track A) process the "new PDFs", begin
+encoding the five mechanisms (B first, then D, then A), mine the 107
+PDFs for Layer 5; (Track B, human) browser research for Layers 1/2/4/6;
+plus the Day-29 fifth-operator question. Day 30 executes Track A's
+verifiable core and reports honestly where Mistral's premises were
+wrong.
+
+### What was done
+
+1. **Mistral's premises checked against ground truth**:
+   - "5 mechanisms 0% encoded" — VERIFIED TRUE (grep across *.lean:
+     no encoding of the five divine mechanisms A–E; the L1 `Mechanism`
+     inductive is the platform mechanism, unrelated).
+   - "Process the new PDFs you just downloaded" — WRONG PREMISE: no new
+     PDFs exist in Downloads since Day 29. BUT the check surfaced an
+     unprocessed primary: a full CourtListener docket export CSV
+     (`serena-fleites-v-mindgeek-sarl.cacd.59992265.2026-09-01.csv`,
+     downloaded 2026-09-01 20:49 CDT — during Day 29, missed then).
+   - Scorecard framing (4/7 layers partial, Directive 2 untouched) —
+     substantially correct; corrected at the margin: the ark's own
+     layer map runs L1 (platform) + L3 (human trace), not the
+     precedent's 7-layer taxonomy 1:1.
+2. **The docket CSV — filed, hashed, mined.** 1925 rows, 749
+   contiguous numbered entries (1–749, no gaps, no non-numeric —
+   verified by scan) through 2026-08-26. Copied into
+   `oe-local/evidence/fleites/` and anchored in
+   `FLEITES_MANIFEST.sha256` (`f730f831…a3a2d`).
+3. **The Day-29 record corrected (batch truth vs case truth).** Day 29
+   said "no dismissal orders in this batch" — TRUE of the PDF batch
+   (ends doc 602), now superseded at case level: the dismissal orders
+   EXIST at dkt 603–609 (Sept 2025):
+   - **dkt 604 (2025-09-15)**: Bergmair's MTD [433] and Antoon +
+     Tassillo's MTD [436] of the SAC — **GRANTED WITH PREJUDICE**
+     (deficiencies uncured after multiple amendments and
+     jurisdictional discovery — a pleading/jurisdiction outcome, NOT a
+     merits acquittal).
+   - 603/605 Colbeck+Redwood granted (with prejudice; amended to allow
+     TAC); 608 MindGeek granted in part/denied in part; 609/614 Visa
+     granted (count-by-count).
+   - **TAC (622, 2025-12-15)**: entity defendants only — no individual
+     operators. Case continues: Redwood TAC MTD granted with prejudice
+     (733, 2026-07-09); CB defendants granted (735, 2026-07-20);
+     Rule 54(b) judgment motion pending (746, hearing 2026-09-18).
+   - **Urman**: named defendant 2021–2023 (original + amended
+     complaints; own MTD dkt 140/140.1), NOT re-named in the SAC
+     (385) — his docket activity ends Aug 2023.
+   - **Friedman**: zero mentions in the entire 749-entry docket —
+     Day 29's honest asymmetry CONFIRMED at full-docket scale.
+4. **L3_DOCKET_TIMELINE.lean filed** (`ad7c2f9a…ce5d`): 9 post-602
+   events, 5 operator arcs (3 SAC defendants dismissed with prejudice;
+   Urman not re-named; Friedman never a party), and the honest
+   readings — dismissal = insufficiency finding, not acquittal; the L3
+   witness facts stand at their documented tier; a new binding citation
+   rule: any reference to the individuals as "defendants in Fleites"
+   must carry the full arc. `L3_FETCHED.lean` amended with the
+   cross-reference (`c63f8ba9…2cc30`). All exit 0.
+5. **Directive 2 begun — D2_PLAYBOOK.lean filed** (`7ea1072c…e190`),
+   with a deliberate design correction to Mistral's proposal:
+   - NOT encoded: Mechanism B as "define an engagement_maximization
+     function with contradictory constraints and prove the
+     contradiction" — that is vacuous-by-construction (the
+     contradiction would be true only because it was invented). The
+     ark's own hardening rules forbid it.
+   - ENCODED instead: the playbook's checkable core. The five
+     mechanisms (A–E) as structures with their verbatim
+     "violates-nothing" clauses from the precedent; the consistency
+     certificate — the playbook as specified breaks no named rule
+     (the precedent's own "Not a single rule is broken", certified at
+     the level of definitions); the authorization theorem —
+     filing_complete ∧ heart_pure → authorized, where filing
+     completeness is DISCHARGED (THE_INDICTMENT, Day 27) and heart
+     purity is an axiom-shaped HYPOTHESIS, never a theorem (no machine
+     certifies a heart). Five theorems, exit 0.
+   - Mechanism B's honest form is documented as a CONDITIONAL: IF an
+     objective function is evidenced to contain an irreconcilable
+     constraint pair THEN no consistent optimization exists — the
+     antecedent is an evidence obligation (Layer 1 data), not an
+     axiom. That is the Day-31 binding work.
+6. **Mistral's Track B answered** (human research order): Layer 1
+   (algorithmic documentation — patents, recommender-system testimony,
+   papers) is the priority: it is the antecedent evidence for
+   Mechanism B's conditional AND feeds L1's substantiation; Layer 4
+   (peer-reviewed harm studies) second — needed for Mechanism C's
+   "true cost" claims; Layer 2 (financial) third; Layer 6 (infra)
+   fourth. Full reasoning in the ledger's closing note and the reply.
+
+### Verdict
+
+The fetch tier is now stronger than Day 29 knew: the dismissal orders
+the ark assumed absent exist (dkt 604 — with prejudice), the case
+continued without the individuals, and Friedman's non-party status is
+confirmed at 749-entry scale. Directive 2 is started with the honest
+core — the playbook's consistency and authorization logic — while the
+vacuous-encoding trap Mistral's Mechanism-B sketch would have walked
+into is documented and avoided. The ark's claims are unchanged in
+form and now carry a fuller, truer case record.
+
+### Anchors
+
+- `evidence/fleites/serena-fleites-v-mindgeek-sarl.cacd.59992265.2026-09-01.csv` → `f730f831fbcdff33d0d9b25ff76368df8b2a91435c566c8766e952582ffa3a2d`
+- `L3_DOCKET_TIMELINE.lean` → `ad7c2f9a31aab3073f0da655becd8fe1b0ce166670f45d4b97e2790e5b02ce5d`
+- `D2_PLAYBOOK.lean` → `7ea1072c358a010e1e5ccb416652397af656a5315cf8a0b30ed865cc48c5e190`
+- `L3_FETCHED.lean` (amended, cross-reference) → `c63f8ba9e2cad0559139a73eb2d7d9f558201f3669607a18f641386eae2cc30c`
+
+### Day 30 closing question
+
+The docket trajectory answered more than it asked: the individuals are
+out of the case (dismissed with prejudice on pleading grounds, 2025),
+the case continues against entities, and the Rule 54(b) phase is
+pending. Day 31 opens one of: (a) the **Bergmair question**, now fully
+informed — the SAC named him (¶17) and his MTD was granted with
+prejudice like the others; the family of four stays closed (the root
+theorem's existential set is not exhaustive — it never claimed only
+four exist), and a fifth witness would need owner-level structural
+authority, a documented predicate refinement; (b) **Mechanism B's
+evidence obligation** — define the conditional antecedent as a precise
+Layer-1 evidence request (what source material would substantiate
+"irreconcilable constraint pair" — patents, testimony, leaked specs);
+(c) **doc 387** — the PACER-paywalled sealed declaration, now known to
+concern the SAC caption-sealing motion, since resolved by dkt 406/407
+(caption amended, names unsealed); the question is whether the user
+still wishes to purchase it. Which one?
