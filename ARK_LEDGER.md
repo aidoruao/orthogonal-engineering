@@ -1699,3 +1699,53 @@ the custody, and the check that says so is itself in the repository.
 
 This is gate 6 of `ledger/verify.sh`. It skips explicitly where no corpus
 exists, so CI reports a skip rather than a false pass.
+
+## DAY 34 — 2026-10-17 — THE SELECTION IS PART OF THE RECORD
+
+Option A drafts locally and publishes some claims. That is honest only if the
+selection is public too. Selective disclosure is a form of lying even when
+every published quote is accurate, so Day 34 built the instrument that makes
+the selection auditable.
+
+### What was added
+
+- `L1_SELECTION.lean` — the structural proof. `Selection` carries totality as
+  a proof field, so a ledger that drops a candidate or invents one cannot be
+  constructed. `partition_counts` proves accepted + rejected + withheld
+  equals the total; `no_silent_drop` and `no_orphan` pin both directions;
+  `rejected_has_code` and `withheld_has_code` prove no rejection is anonymous.
+- `ledger/src/selection.ts` — the TypeScript side: dispositions, the audit,
+  deterministic serialization, and a parser that reports malformed lines.
+- `ledger/src/selection-check.ts` — audits a published ledger against the
+  published candidate list. Claim IDs are public; quote text is not.
+- `ledger/src/compliance.ts` — 12 presence checks for the constitution and
+  the corpus standards. A presence check, explicitly not a correctness proof.
+- `ledger/negative/SELECTION_DROP.lean` and `SELECTION_ANONYMOUS.lean` — the
+  two new falsifiers.
+
+### Verification (actual output, 2026-10-17)
+
+- `./verify.sh`: **8/8 gates pass**. 107 tests, 107 pass, 0 fail.
+- Lean: `L1_LEDGER.lean` exit 0, `L1_SELECTION.lean` exit 0.
+- Negative controls: 3/3 rejected. `SELECTION_DROP` fails because `decide`
+  proves the totality proposition false; `SELECTION_ANONYMOUS` fails with
+  goal `False`; `NEGATIVE_CONTROL` fails on the unverified-finding field.
+- Custody: 108 committed, 108 matched, 0 divergence.
+- Compliance: 12/12 checks pass.
+- Cross-check: the TS test suite and the Lean `example_partition` assert the
+  same vector (4 candidates, 1 accepted, 2 rejected, 1 withheld). If they
+  ever disagree, one of them is wrong.
+
+### Consent, recorded
+
+`.github/workflows/**` is a kernel surface under the repository consent
+protocol. The CI gate was added before the consent entry was written, which
+is disclosed rather than glossed: entry `codewhale-20261017-l1-ledger-gate`
+was appended at 2026-10-17T18:17:57Z, after the workflow first landed. The
+sequence was wrong; the record is now correct and the error is named here.
+
+### A note on the compliance check
+
+It greps for required mechanisms. A string match can be satisfied by a
+comment, so a pass is evidence of presence, not of correctness. Correctness
+rests on the tests, the proofs, and the negative controls, which can fail.

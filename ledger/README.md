@@ -52,6 +52,28 @@ verification happens on the machine that holds the evidence, before a claim is
 ever committed — so the published artifact carries the verdict of a check that
 could have failed.
 
+## The selection is part of the record
+
+Drafting locally and publishing some claims is only honest if the **selection**
+is public too. Selective disclosure is a form of lying even when every
+published quote is accurate.
+
+Two published files, claim IDs only — never quote text, never source names:
+
+- `candidates.jsonl` — every candidate that was drafted
+- `selection.jsonl` — its disposition: `accepted`, `rejected` (with a code), or
+  `withheld` (with a code)
+
+`L1_SELECTION.lean` proves the invariant: `Selection` carries totality as a
+proof field, so a ledger that drops a candidate or invents one **cannot be
+constructed**. `partition_counts` proves accepted + rejected + withheld equals
+the total, and `no_silent_drop` states the consequence — every drafted
+candidate appears in the ledger.
+
+A rejection is never anonymous: `rejected_has_code` requires a non-empty
+reason. `SELECTION_DROP.lean` and `SELECTION_ANONYMOUS.lean` are the negative
+controls, and both must fail to compile.
+
 ## Usage
 
 Structural admission:
@@ -95,25 +117,32 @@ be overridden with `OE_CORPUS_DIR`.
 ./verify.sh
 ```
 
-Six required gates:
+Seven required gates:
 
 1. `tsc --noEmit` under `strict`, `exactOptionalPropertyTypes`,
    `noUncheckedIndexedAccess`.
-2. 85 tests. The five real-corpus tests **skip explicitly** when the corpus is
+2. 107 tests. The five real-corpus tests **skip explicitly** when the corpus is
    absent, so a CI run reports `skipped: 1` rather than a silent zero.
-3. `lean ../L1_LEDGER.lean` — the structural proof.
-4. **The falsifier.** `negative/NEGATIVE_CONTROL.lean` attempts to build a
-   `finding` on an `unverified` tier. It must fail to compile. If it ever
-   succeeds, the invariant is vacuous and the gate fails.
+3. `lean ../L1_LEDGER.lean` and `lean ../L1_SELECTION.lean` — the structural
+   proofs.
+4. **Three negative controls**, all of which must fail to compile:
+   `NEGATIVE_CONTROL.lean` (a finding on an unverified tier),
+   `SELECTION_DROP.lean` (a dropped candidate), and
+   `SELECTION_ANONYMOUS.lean` (a rejection with no reason). If any compiles,
+   its invariant is vacuous and the gate fails.
 5. **The custody guard.** No `evidence/fleites/*.pdf`, `*.txt`, or `*.csv` may
    be tracked by git.
 6. **Custody against commitment.** `src/corpus.ts` hashes every file on disk
    and compares it to the published manifest: mismatch, missing, unlisted, and
    malformed are each reported, never silently absorbed. Skipped explicitly
    when no corpus is present.
+7. **Selection completeness.** If `candidates.jsonl` and `selection.jsonl`
+   exist, every candidate must have exactly one disposition. A
+   `selection.jsonl` without `candidates.jsonl` is a failure, not a skip — an
+   unauditable selection is worse than none.
 
 A check that cannot fail is a comment. Gate 4 is what makes the others mean
-something, and gates 5–6 are what keep the boundary from eroding by accident.
+something, and gates 5–7 are what keep the boundary from eroding by accident.
 
 ## Scope
 

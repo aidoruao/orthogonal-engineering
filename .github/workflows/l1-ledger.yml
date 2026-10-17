@@ -2,15 +2,20 @@ name: L1 Ledger Gate
 
 # Structural gate for the claim ledger.
 #
-# Three things are enforced on every push and PR:
+# Enforced on every push and PR that touches the ledger:
 #   1. The TypeScript gate typechecks and its tests pass.
-#   2. The Lean structural proof compiles, and the negative control is
-#      REJECTED (if it ever compiles, the invariant is vacuous and we fail).
-#   3. No raw L0 docket material is tracked by git.
+#   2. The Lean structural proofs compile.
+#   3. Three negative controls are REJECTED. If any of them ever compiles, the
+#      corresponding invariant is vacuous and this job fails.
+#   4. No raw L0 docket material is tracked by git.
+#   5. The selection ledger, if published, accounts for every candidate.
 #
 # The real-corpus quote tests skip on CI by design: CI does not hold the L0
 # corpus, and it must not. Quote verification runs locally, before a claim is
 # committed. See docs/DATA_ISOLATION_BOUNDARY.md.
+#
+# Consent: .github/workflows/** is a kernel surface. Consent entry
+# codewhale-20261017-l1-ledger-gate is in the consent log.
 
 on:
   push:
@@ -18,11 +23,13 @@ on:
     paths:
       - "ledger/**"
       - "L1_LEDGER.lean"
+      - "L1_SELECTION.lean"
       - ".github/workflows/l1-ledger.yml"
   pull_request:
     paths:
       - "ledger/**"
       - "L1_LEDGER.lean"
+      - "L1_SELECTION.lean"
       - ".github/workflows/l1-ledger.yml"
   workflow_dispatch:
 
@@ -66,20 +73,29 @@ jobs:
             | sh -s -- -y --default-toolchain leanprover/lean4:v4.35.0
           echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
 
-      - name: Lean structural proof
-        run: lean L1_LEDGER.lean
+      - name: Lean structural proofs
+        run: |
+          lean L1_LEDGER.lean
+          lean L1_SELECTION.lean
 
-      - name: Negative control must be rejected
+      - name: Negative controls must be rejected
         run: |
           set -euo pipefail
-          TMP_DIR="$(mktemp -d)"
-          trap 'rm -rf "$TMP_DIR"' EXIT
-          lean -o "$TMP_DIR/L1_LEDGER.olean" L1_LEDGER.lean
-          if LEAN_PATH="$TMP_DIR" lean ledger/negative/NEGATIVE_CONTROL.lean >/dev/null 2>&1; then
-            echo "FAIL: the negative control compiled. The invariant is vacuous." >&2
-            exit 1
-          fi
-          echo "OK: negative control rejected"
+          OLEAN_DIR="$(mktemp -d)"
+          trap 'rm -rf "$OLEAN_DIR"' EXIT
+          lean -o "$OLEAN_DIR/L1_LEDGER.olean" L1_LEDGER.lean
+          lean -o "$OLEAN_DIR/L1_SELECTION.olean" L1_SELECTION.lean
+          for control in \
+            ledger/negative/NEGATIVE_CONTROL.lean \
+            ledger/negative/SELECTION_DROP.lean \
+            ledger/negative/SELECTION_ANONYMOUS.lean
+          do
+            if LEAN_PATH="$OLEAN_DIR" lean "$control" >/dev/null 2>&1; then
+              echo "FAIL: $control compiled. Its invariant is vacuous." >&2
+              exit 1
+            fi
+            echo "OK: rejected $control"
+          done
 
       - name: No raw L0 material tracked
         run: |
@@ -91,3 +107,21 @@ jobs:
             exit 1
           fi
           echo "OK: no raw L0 material tracked"
+
+      - name: Standards compliance
+        working-directory: ledger
+        run: node dist/src/compliance.js --root "$GITHUB_WORKSPACE"
+
+      - name: Selection ledger accounts for every candidate
+        working-directory: ledger
+        run: |
+          set -euo pipefail
+          if [ -f candidates.jsonl ] && [ -f selection.jsonl ]; then
+            node dist/src/selection-check.js \
+              --candidates candidates.jsonl --ledger selection.jsonl
+          elif [ -f selection.jsonl ]; then
+            echo "FAIL: selection.jsonl exists without candidates.jsonl" >&2
+            exit 1
+          else
+            echo "SKIP: no selection ledger published yet"
+          fi
