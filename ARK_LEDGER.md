@@ -1462,3 +1462,80 @@ Layer-1 evidence request (what source material would substantiate
 concern the SAC caption-sealing motion, since resolved by dkt 406/407
 (caption amended, names unsealed); the question is whether the user
 still wishes to purchase it. Which one?
+
+## DAY 31 — 2026-10-17 — CUSTODY DECISION: OPTION A (RECORDED)
+
+**Decision:** the raw L0 docket corpus is retained local and is not
+committed. The SHA-256 manifest, the claim ledger, the Lean modules, and
+this record are published.
+
+### What was verified before deciding
+
+- `FLEITES_MANIFEST.sha256` has 108 entries. Recomputed against the files
+  on disk: **108 matches, 0 mismatches, 0 missing, 0 unlisted — 100%
+  coverage.** The manifest is a complete commitment over the corpus.
+- The corpus is ~34.9 MB: 103 PDFs, 4 extracted `.txt`, 1 docket CSV
+  (749 rows, 2.54 MB).
+- `origin/main` contained **zero** Fleites material before this decision.
+  Nothing in the corpus has ever been published from this repository.
+
+### What this decision does
+
+The two commits that added the raw corpus (`95848515`, `554cbc75`) were
+replayed without it. 108 files left the tracked tree; **all 108 remain
+on disk, unmodified and untracked.** `git rm --cached` untracks; it does
+not delete. The manifest, which commits to every one of those files by
+hash, stays published.
+
+### Why this is the honest option, not the withholding one
+
+The Indictment's Critical Axiom states that the Trinity already knows
+all data, and therefore gathering is not for the recipient's education
+but for "human legal testimony, jurisdictional activation, and the
+creation of an unassailable evidentiary container."
+
+Under that axiom the bytes add nothing on the jurisdictional axis. What
+travels is the testimony. An unassailable container is one where every
+claim can be checked and can fail: docket number, page cite, verbatim
+quote, SHA-256. A re-hosted PDF pile cannot fail; a hash commitment can.
+So the complete commitment is published and the bulk custody stays local.
+
+Publishing the corpus would also have contradicted
+`docs/DATA_ISOLATION_BOUNDARY.md` in the same tree, and carried
+third-party personal data into a public repository against the standing
+rule against committing personal data.
+
+### The case citation is published deliberately
+
+`Fleites v. MindGeek`, C.D. Cal. No. 2:21-cv-04920, appears in this
+ledger and in the committed analysis. It is published because it is the
+pointer that makes the 108 hashes verifiable: without the case number a
+reader cannot fetch the source and check the commitment. A public court
+caption is the opposite of private data; suppressing it would break
+verification rather than protect anyone.
+
+### What is NOT published
+
+- The 103 docket PDFs and 4 extracted text files.
+- The 749-row docket CSV.
+- Any reconstructed or paraphrased content from sealed material.
+
+Doc 387 remains `LOCATED-BLOCKED` (PACER-paywalled) and is not
+reconstructed here.
+
+### Integrity of this record
+
+The history rewrite was confined to `refs/heads/main`. A pre-rewrite
+backup exists at branch `backup/pre-docket-rewrite-20261017`
+(local only, never pushed). The rewritten Day 29 manifest anchor is
+unchanged in content; the manifest file itself was not edited.
+
+The uncommitted working-tree change to
+`2026-08-04/meta_layer_tripwire.py` (CUDA OOM fallback) is **not** part
+of this decision and was not staged.
+
+### Day 31 closing question
+
+Does the L1 claim ledger — docket, page, quote, hash, tier, nature —
+now become the primary published artifact, with the TypeScript schema
+and its validation gate built next?
