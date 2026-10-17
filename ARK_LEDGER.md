@@ -1539,3 +1539,22 @@ of this decision and was not staged.
 Does the L1 claim ledger — docket, page, quote, hash, tier, nature —
 now become the primary published artifact, with the TypeScript schema
 and its validation gate built next?
+
+### Integrity finding during the rewrite (recorded, not silent)
+
+`.gitattributes:5` sets `* text=auto eol=lf`, and `*.txt` is text. The
+five text/CSV files in the corpus were stored in git normalized to LF,
+while `FLEITES_MANIFEST.sha256` commits to the **original fetched bytes**
+(CRLF). The 103 PDFs are unaffected because they are binary.
+
+Consequence, stated plainly: a reader who verifies those five files
+against a git blob gets a false mismatch. Verification must be done
+against the source as fetched (PACER / CourtListener), which is what the
+manifest commits to. This is a pre-existing property of the corpus, not
+introduced by the rewrite.
+
+During the history rewrite the working tree was momentarily restored from
+git and those five files came back LF-normalized (95.4% coverage). They
+were recovered by LF -> CRLF conversion, each conversion checked against
+the manifest hash **before** being written. Post-recovery: 108/108 match,
+0 mismatches, 0 missing, 0 unlisted, 100.0% coverage.
