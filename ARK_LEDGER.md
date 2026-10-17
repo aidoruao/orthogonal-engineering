@@ -1685,3 +1685,17 @@ adjudication cannot rest on an allegation. Quote verification adds a second,
 narrower guarantee: the cited document says the quoted words on the cited
 page. It does not establish that the document is truthful, that an
 allegation is true, or that any person did anything.
+
+### Day 33 addendum — custody against commitment
+
+The manifest is a commitment; the disk is the custody. `src/corpus.ts`
+closes the loop: it hashes every file held locally and compares it to the
+published manifest, reporting mismatch, missing, unlisted, and malformed
+separately. None are absorbed silently.
+
+Measured on the local corpus, 2026-10-17: **108 committed, 108 matched, 0
+mismatch, 0 missing, 0 unlisted, 0 malformed.** The commitment is true of
+the custody, and the check that says so is itself in the repository.
+
+This is gate 6 of `ledger/verify.sh`. It skips explicitly where no corpus
+exists, so CI reports a skip rather than a false pass.

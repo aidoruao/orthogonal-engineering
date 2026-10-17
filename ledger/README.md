@@ -78,6 +78,14 @@ Exit codes: `0` admitted and verified, `1` rejected, `2` usage or I/O error.
 Without `--sources` the claim is admitted structurally and the tool says
 plainly that the quote was **not** verified.
 
+Check that local custody matches the published commitment:
+
+```bash
+node dist/src/corpus.js \
+  --manifest ../evidence/fleites/FLEITES_MANIFEST.sha256 \
+  --sources ../evidence/fleites
+```
+
 The corpus directory defaults to `../evidence/fleites` on this machine and can
 be overridden with `OE_CORPUS_DIR`.
 
@@ -87,11 +95,11 @@ be overridden with `OE_CORPUS_DIR`.
 ./verify.sh
 ```
 
-Five required gates:
+Six required gates:
 
 1. `tsc --noEmit` under `strict`, `exactOptionalPropertyTypes`,
    `noUncheckedIndexedAccess`.
-2. 79 tests. The five real-corpus tests **skip explicitly** when the corpus is
+2. 85 tests. The five real-corpus tests **skip explicitly** when the corpus is
    absent, so a CI run reports `skipped: 1` rather than a silent zero.
 3. `lean ../L1_LEDGER.lean` — the structural proof.
 4. **The falsifier.** `negative/NEGATIVE_CONTROL.lean` attempts to build a
@@ -99,9 +107,13 @@ Five required gates:
    succeeds, the invariant is vacuous and the gate fails.
 5. **The custody guard.** No `evidence/fleites/*.pdf`, `*.txt`, or `*.csv` may
    be tracked by git.
+6. **Custody against commitment.** `src/corpus.ts` hashes every file on disk
+   and compares it to the published manifest: mismatch, missing, unlisted, and
+   malformed are each reported, never silently absorbed. Skipped explicitly
+   when no corpus is present.
 
 A check that cannot fail is a comment. Gate 4 is what makes the others mean
-something, and gate 5 is what keeps the boundary from eroding by accident.
+something, and gates 5–6 are what keep the boundary from eroding by accident.
 
 ## Scope
 
