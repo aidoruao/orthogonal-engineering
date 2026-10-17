@@ -1558,3 +1558,67 @@ git and those five files came back LF-normalized (95.4% coverage). They
 were recovered by LF -> CRLF conversion, each conversion checked against
 the manifest hash **before** being written. Post-recovery: 108/108 match,
 0 mismatches, 0 missing, 0 unlisted, 100.0% coverage.
+
+## DAY 32 — 2026-10-17 — THE L1 LEDGER (SCHEMA + GATE + PROOF)
+
+Day 31 posed the question; Day 32 answers it. The claim ledger is now a
+buildable artifact with a gate that refuses malformed claims.
+
+### What was built
+
+- `ledger/` — strict TypeScript. `admit()` is the only constructor of a
+  `ClaimRecord`. It takes `unknown`, validates every field, enforces the
+  cross-field rules, and returns either the record or a sorted list of
+  violations. It never throws on bad input and never partially accepts.
+- `ledger/src/types.ts` — `EvidenceTier` and `Nature` as discriminated
+  unions. `corroborated` carries a two-element tuple, so a single-source
+  "corroboration" is not representable.
+- `ledger/src/manifest.ts` — parses `FLEITES_MANIFEST.sha256`. Malformed
+  lines are reported, not dropped. A claim citing a hash the manifest does
+  not commit to is rejected (`hash_not_in_manifest`).
+- `L1_LEDGER.lean` — the structural proof.
+- `ledger/negative/NEGATIVE_CONTROL.lean` — a file that **must fail to
+  compile**.
+- `ledger/verify.sh` — runs all four gates.
+
+### The rule, enforced twice
+
+A claim whose `nature` is `order` or `finding` asserts an adjudicated
+outcome and must carry a `fetched` tier. A complaint asserts; a court
+decides. Enforced at runtime by `admit()` (`adjudicated_requires_fetched`)
+and at the type level by a proof field on `Record` in Lean, so an
+adjudicated record without a fetched source cannot be constructed.
+
+`gate_matches_invariant` proves the runtime check and the type-level
+invariant are the same proposition. The TypeScript and the Lean therefore
+agree by proof, not by convention.
+
+### The falsifier
+
+`negative/NEGATIVE_CONTROL.lean` attempts to build a `finding` on an
+`unverified` tier. Lean rejects it at the proof field. If it ever compiles,
+the invariant is vacuous and `verify.sh` exits non-zero. This is recorded
+because the constitution requires that every invariant declare what would
+falsify it — and that the falsifier actually be run, not merely named.
+
+### Verification (actual output, 2026-10-17)
+
+- `tsc --noEmit`: exit 0 under `strict`, `exactOptionalPropertyTypes`,
+  `noUncheckedIndexedAccess`, `verbatimModuleSyntax`.
+- `node --test`: **58 tests, 58 pass, 0 fail**, across 12 suites.
+- `lean L1_LEDGER.lean`: exit 0.
+- Negative control: rejected with `h : True ⊢ Tier.unverified.isFetched =
+  true`, i.e. rejected for the intended reason, not by a syntax error.
+
+### Scope of the proof
+
+What is proved: the ledger's structure. What is not: that any filing
+exists, that any allegation is true, or that any person did anything. Lean
+does not fetch PACER. The structure is proved; the contents must still be
+fetched, hashed, and quoted.
+
+### No rows
+
+The ledger contains no docket rows, no individual names, and no data files.
+Only the public case caption appears, in a docstring. The synthetic examples
+in the Lean file carry a published manifest hash, not case content.
