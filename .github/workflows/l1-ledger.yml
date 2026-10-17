@@ -1,0 +1,93 @@
+name: L1 Ledger Gate
+
+# Structural gate for the claim ledger.
+#
+# Three things are enforced on every push and PR:
+#   1. The TypeScript gate typechecks and its tests pass.
+#   2. The Lean structural proof compiles, and the negative control is
+#      REJECTED (if it ever compiles, the invariant is vacuous and we fail).
+#   3. No raw L0 docket material is tracked by git.
+#
+# The real-corpus quote tests skip on CI by design: CI does not hold the L0
+# corpus, and it must not. Quote verification runs locally, before a claim is
+# committed. See docs/DATA_ISOLATION_BOUNDARY.md.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "ledger/**"
+      - "L1_LEDGER.lean"
+      - ".github/workflows/l1-ledger.yml"
+  pull_request:
+    paths:
+      - "ledger/**"
+      - "L1_LEDGER.lean"
+      - ".github/workflows/l1-ledger.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    name: "Ledger gate"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: ledger/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ledger
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: ledger
+        run: npm run typecheck
+
+      - name: Build and test
+        working-directory: ledger
+        run: |
+          npm run build
+          node --test dist/test/*.test.js
+
+      - name: Install Lean
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain leanprover/lean4:v4.35.0
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      - name: Lean structural proof
+        run: lean L1_LEDGER.lean
+
+      - name: Negative control must be rejected
+        run: |
+          set -euo pipefail
+          TMP_DIR="$(mktemp -d)"
+          trap 'rm -rf "$TMP_DIR"' EXIT
+          lean -o "$TMP_DIR/L1_LEDGER.olean" L1_LEDGER.lean
+          if LEAN_PATH="$TMP_DIR" lean ledger/negative/NEGATIVE_CONTROL.lean >/dev/null 2>&1; then
+            echo "FAIL: the negative control compiled. The invariant is vacuous." >&2
+            exit 1
+          fi
+          echo "OK: negative control rejected"
+
+      - name: No raw L0 material tracked
+        run: |
+          set -euo pipefail
+          tracked="$(git ls-files 'evidence/fleites/*.pdf' 'evidence/fleites/*.txt' 'evidence/fleites/*.csv' || true)"
+          if [ -n "$tracked" ]; then
+            echo "FAIL: raw L0 material is tracked by git:" >&2
+            echo "$tracked" >&2
+            exit 1
+          fi
+          echo "OK: no raw L0 material tracked"

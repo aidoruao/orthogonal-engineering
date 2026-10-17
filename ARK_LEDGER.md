@@ -1622,3 +1622,66 @@ fetched, hashed, and quoted.
 The ledger contains no docket rows, no individual names, and no data files.
 Only the public case caption appears, in a docstring. The synthetic examples
 in the Lean file carry a published manifest hash, not case content.
+
+## DAY 33 — 2026-10-17 — THE GATE BECOMES MECHANISM
+
+Day 32 built the ledger. Day 33 made it enforced, and made it check
+something stronger than structure.
+
+### Two kinds of verification, deliberately separated
+
+**Structural** — runs anywhere, including CI: is the record well formed,
+and does its hash appear in the published manifest?
+
+**Quotational** — runs only where the L0 corpus lives: does the quoted span
+actually appear on the cited page of the file whose hash the claim names?
+
+The split is the custody boundary. CI has no corpus and must not. Quote
+verification runs on the machine that holds the evidence, before a claim is
+committed, so the published artifact carries the verdict of a check that
+could have failed.
+
+### What was added
+
+- `ledger/src/extract.ts` — per-page PDF text extraction (pdfjs-dist), plus
+  normalization for comparison only: line wrapping, hyphenation, ligatures,
+  smart quotes, and dashes are layout artifacts, not document content.
+- `ledger/src/workbench.ts` — local admission tool. Recomputes the source
+  hash from the file it actually reads, so a claim cannot bind to one
+  document and quote another. Exit 0 admitted+verified, 1 rejected, 2 usage.
+- `ledger/test/extract.test.ts` — 16 synthetic tests, run anywhere.
+- `ledger/test/quote-real.test.ts` — 5 real-corpus tests that prove both
+  directions: a true quote is ACCEPTED and a fabricated quote is REJECTED.
+  Skipped explicitly when the corpus is absent, so the count is honest.
+- `.github/workflows/l1-ledger.yml` — CI gate: typecheck, tests, Lean proof,
+  negative control, custody guard.
+- `ledger/package-lock.json` — now committed, because `npm ci` requires it and
+  pinned resolution is a constitutional requirement.
+
+### Verification (actual output, 2026-10-17)
+
+- `./verify.sh`: **5/5 gates pass**. 79 tests, 79 pass, 0 fail.
+- Real-corpus falsifier, on document 385 (174 pages):
+  - genuine span on the cited page → ACCEPTED
+  - fabricated span → REJECTED (`not found`)
+  - genuine span attributed to the wrong page → REJECTED
+- Negative control: rejected with `h : True ⊢ Tier.unverified.isFetched =
+  true`.
+- Clean-room CI simulation (`npm ci` from a fresh copy, no corpus): 75 tests,
+  74 pass, **1 explicitly skipped**, 0 fail; Lean proof exit 0; negative
+  control exit 1.
+
+### The skip is not silent
+
+A first attempt reported `tests 0, skipped 0` when the corpus was absent — a
+suite that runs nothing and reports nothing. That is precisely the silent
+anomaly the constitution forbids, so it was rewritten to emit an explicit
+`SKIP no L0 corpus at <path>` with an honest counter.
+
+### Scope
+
+The structural proof is unchanged: the ledger cannot be malformed, and an
+adjudication cannot rest on an allegation. Quote verification adds a second,
+narrower guarantee: the cited document says the quoted words on the cited
+page. It does not establish that the document is truthful, that an
+allegation is true, or that any person did anything.
