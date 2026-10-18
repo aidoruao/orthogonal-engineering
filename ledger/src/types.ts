@@ -39,9 +39,16 @@ export type EvidenceTier =
  * those as the same thing is the single easiest way to publish something
  * false while every quote is accurate. `nature` is therefore required, and
  * `finding` / `order` may only rest on a fetched primary.
+ *
+ * `party_filing` exists because a docket holds more than allegations and
+ * orders: it holds motions, notices, and objections. A motion caption
+ * establishes who filed what; it asserts nothing about the world. Calling
+ * that an "allegation" would be a quiet misclassification, so it gets its own
+ * category — and, like an allegation, it is not an adjudicated outcome.
  */
 export type Nature =
   | "allegation"
+  | "party_filing"
   | "order"
   | "finding"
   | "settlement"
@@ -49,6 +56,7 @@ export type Nature =
 
 export const NATURES: readonly Nature[] = [
   "allegation",
+  "party_filing",
   "order",
   "finding",
   "settlement",

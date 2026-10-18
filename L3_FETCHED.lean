@@ -90,14 +90,22 @@ def tassillo_cites : List PageCite := [
   { doc := "385", page := "37", quote := "Tassillo testified that he could 'guarantee you that every piece of c…'" }
 ]
 
-/-- Urman: SAC ¶199 (p.65) — the fictitious "Blake White" spokesman WAS
-   MindGeek VP Corey Urman; ¶200 (p.65) — "Urman's statement was a lie";
-   ¶212 (p.68) — "Corey Urman, falsely posing under the alias Blake
+/-- Urman: SAC ¶199 (p.65) — a newspaper attributed a moderation claim to a
+   "Blake White, its vice president"; ¶200 (p.65) — "Urman's statement was a
+   lie"; ¶212 (p.68) — "Corey Urman, falsely posing under the alias Blake
    White". His OWN words on the record: doc 140 (motion) and 140.1
    (55-page memo, p.20: complaint alleges he was "Vice President,
-   Product Management, Video Sharing Platform"). -/
+   Product Management, Video Sharing Platform").
+
+   DAY 35 CORRECTION (2026-10-17): the p.65 cite formerly read "fictitious
+   spokesman who does not exist, but who was, in fact, MindGeek VP Corey
+   Urman". That string appears nowhere in the 174-page document — it was a
+   paraphrase formatted as a quotation. It is replaced with the sentence that
+   is actually on page 65, verified verbatim by the ledger's quote gate. The
+   alias allegation itself is unaffected: it is pleaded at page 68 and quoted
+   verbatim there. -/
 def urman_cites : List PageCite := [
-  { doc := "385", page := "65", quote := "fictitious spokesman who does not exist, but who was, in fact, MindGeek VP Corey Urman" },
+  { doc := "385", page := "65", quote := "Blake White, its vice president, said child sexual abuse made up a tiny proportion of content and the aim was to eradicate it." },
   { doc := "385", page := "65", quote := "Urman's statement was a lie. MindGeek had no real moderation function" },
   { doc := "385", page := "68", quote := "Corey Urman, falsely posing under the alias Blake White" },
   { doc := "140", page := "1", quote := "SPECIALLY-APPEARING DEFENDANT COREY URMAN'S NOTICE OF MOTION AND MOTION TO DISMISS AMENDED COMPLAINT" },

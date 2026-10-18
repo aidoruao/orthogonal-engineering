@@ -107,7 +107,7 @@ function admitTier(
   }
   const kind = raw["kind"];
   if (typeof kind !== "string" || !(kind in TIER_KEYS)) {
-    out.add("unknown_tier", "tier.kind", "tier.kind must be one of the five known kinds");
+    out.add("unknown_tier", "tier.kind", "tier.kind must be one of the five known tier kinds");
     return undefined;
   }
   checkUnknownKeys(raw, TIER_KEYS[kind] ?? new Set(), "tier", out);
@@ -294,7 +294,7 @@ export function admit(raw: unknown, manifest?: ReadonlySet<string>): AdmitResult
       "nature is required; an allegation must not be able to pass as a finding",
     );
   } else if (!isNature(natureRaw)) {
-    out.add("unknown_nature", "nature", "nature must be one of the five known kinds");
+    out.add("unknown_nature", "nature", `nature must be one of: ${NATURES.join(", ")}`);
   } else {
     nature = natureRaw;
   }

@@ -163,7 +163,8 @@ export function runCompliance(root: string): CheckResult[] {
     natureText.includes("ADJUDICATED_NATURES") &&
     natureText.includes('"order"') &&
     natureText.includes('"finding"') &&
-    natureText.includes('"stated_intent"');
+    natureText.includes('"stated_intent"') &&
+    natureText.includes('"party_filing"');
   add(
     "attribution-not-causation",
     "An adjudicated outcome is separable from a stated intent.",
@@ -174,7 +175,20 @@ export function runCompliance(root: string): CheckResult[] {
   );
 
   // 9. No swallowed errors in the shipping sources.
-  const sourceFiles = ["validate.ts", "manifest.ts", "extract.ts", "workbench.ts", "corpus.ts", "selection.ts", "selection-check.ts"];
+  const sourceFiles = [
+    "validate.ts",
+    "manifest.ts",
+    "extract.ts",
+    "workbench.ts",
+    "corpus.ts",
+    "selection.ts",
+    "selection-check.ts",
+    "span.ts",
+    "draft.ts",
+    "admit-batch.ts",
+    "review.ts",
+    "compliance.ts",
+  ];
   const swallowed: string[] = [];
   for (const name of sourceFiles) {
     const text = readOr(join(ledger, "src", name));
@@ -188,14 +202,20 @@ export function runCompliance(root: string): CheckResult[] {
   );
 
   // 10. No stubs.
+  //
+  // The markers are assembled from parts so this scanner does not detect its
+  // own pattern literal. A self-match would fail every run for the wrong
+  // reason, and "fixing" it by skipping this file would create a blind spot.
+  const stubMarkers = ["TO" + "DO", "FIX" + "ME", "NotImplemented" + "Error"];
+  const stubPattern = new RegExp(`\\b(${stubMarkers.join("|")})\\b`);
   const stubbed: string[] = [];
   for (const name of sourceFiles) {
     const text = readOr(join(ledger, "src", name));
-    if (/\bTODO\b|\bFIXME\b|NotImplementedError/.test(text)) stubbed.push(name);
+    if (stubPattern.test(text)) stubbed.push(name);
   }
   add(
     "no-stubs",
-    "No TODO, FIXME, or unimplemented placeholder in the shipping sources.",
+    "No placeholder markers (unfinished-work comments or unimplemented throws) in the shipping sources.",
     stubbed.length === 0,
     stubbed.length === 0 ? `${sourceFiles.length} sources clean` : `placeholders in: ${stubbed.join(", ")}`,
   );

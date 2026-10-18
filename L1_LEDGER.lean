@@ -29,6 +29,7 @@ Run: `lean L1_LEDGER.lean`
 
 inductive Nature where
   | allegation
+  | partyFiling
   | order
   | finding
   | settlement
@@ -41,6 +42,7 @@ def Nature.isAdjudicated : Nature → Bool
   | .order => true
   | .finding => true
   | .allegation => false
+  | .partyFiling => false
   | .settlement => false
   | .statedIntent => false
 
@@ -142,7 +144,8 @@ theorem no_blocked_order (r : Record) (hn : r.nature = .order)
 
 /-- Every nature is one of the five. Nothing is smuggled in. -/
 theorem nature_exhaustive (n : Nature) :
-    n = .allegation ∨ n = .order ∨ n = .finding ∨ n = .settlement ∨ n = .statedIntent := by
+    n = .allegation ∨ n = .partyFiling ∨ n = .order ∨ n = .finding
+      ∨ n = .settlement ∨ n = .statedIntent := by
   cases n <;> simp
 
 /-- A finding is not an allegation. The two cannot be the same value, so a
@@ -156,21 +159,28 @@ theorem order_is_not_finding : Nature.order ≠ Nature.finding := by
   intro h
   cases h
 
+/-- A party's filing is not an allegation. A motion asserts a legal position;
+    it does not assert facts. Keeping them distinct stops a filing from being
+    read as an accusation, or an accusation from being read as a filing. -/
+theorem party_filing_is_not_allegation : Nature.partyFiling ≠ Nature.allegation := by
+  intro h
+  cases h
+
 /-! ## 7. The tier lattice, counted -/
 
 def allNatures : List Nature :=
-  [.allegation, .order, .finding, .settlement, .statedIntent]
+  [.allegation, .partyFiling, .order, .finding, .settlement, .statedIntent]
 
-/-- Five natures, exactly. -/
-theorem all_natures_count : allNatures.length = 5 := by native_decide
+/-- Six natures, exactly. -/
+theorem all_natures_count : allNatures.length = 6 := by native_decide
 
 /-- Two of them are adjudicated. -/
 theorem adjudicated_count :
     (allNatures.filter (fun n => n.isAdjudicated)).length = 2 := by native_decide
 
-/-- Three are not. -/
+/-- Four are not. -/
 theorem non_adjudicated_count :
-    (allNatures.filter (fun n => !n.isAdjudicated)).length = 3 := by native_decide
+    (allNatures.filter (fun n => !n.isAdjudicated)).length = 4 := by native_decide
 
 /-- Corroboration always carries at least two sources, by construction. -/
 theorem corroborated_has_two (p s : String) (rest : List String) :
@@ -223,7 +233,7 @@ theorem example_gate_accepts_fetched_finding :
 3. `no_bad_record` and `no_blocked_order` name the two failure modes the
    ledger refuses.
 4. `nature_exhaustive` and the counting theorems pin the classification:
-   five natures, two adjudicated, three not.
+   six natures, two adjudicated, four not.
 5. Nothing here asserts a fact about the world. The ledger's structure is
    proved; its contents must still be fetched, hashed, and quoted.
 -/

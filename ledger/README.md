@@ -121,7 +121,7 @@ Seven required gates:
 
 1. `tsc --noEmit` under `strict`, `exactOptionalPropertyTypes`,
    `noUncheckedIndexedAccess`.
-2. 107 tests. The five real-corpus tests **skip explicitly** when the corpus is
+2. 131 tests. The five real-corpus tests **skip explicitly** when the corpus is
    absent, so a CI run reports `skipped: 1` rather than a silent zero.
 3. `lean ../L1_LEDGER.lean` and `lean ../L1_SELECTION.lean` — the structural
    proofs.

@@ -1749,3 +1749,74 @@ sequence was wrong; the record is now correct and the error is named here.
 It greps for required mechanisms. A string match can be satisfied by a
 comment, so a pass is evidence of presence, not of correctness. Correctness
 rests on the tests, the proofs, and the negative controls, which can fail.
+
+## DAY 35 — 2026-10-17 — CITATION AUDIT AND THE FIRST DRAFT BATCH
+
+The quote gate was pointed at the citations already published in
+`L3_FETCHED.lean`. Nine page cites, measured against the PDFs.
+
+### Finding: six are verbatim, three are not
+
+- **6 verbatim** — the quoted string appears on the cited page.
+- **2 elided** — the string contains `...`; the fragments around the
+  ellipses are all present on the cited page, so the substance is supported,
+  but the string is a paraphrase, not a quotation.
+- **1 not found** — the citation attributed to doc 385 p.65 reading
+  "fictitious spokesman who does not exist, but who was, in fact, MindGeek VP
+  Corey Urman" does not appear on page 65, and the phrase "fictitious
+  spokesman" occurs nowhere in the 174-page document. The word "fictitious"
+  appears once, on page 84, in an unrelated passage.
+
+What the document actually says on page 65 is that a newspaper reported a
+statement by "Blake White, its vice president" about moderation. The alias
+allegation is stated in the pleading on page 68 (para 212), in the words
+"Corey Urman, falsely posing under the alias Blake White".
+
+**Consequence, stated plainly:** a hostile reader who checked that one
+citation against the docket would find it absent and could then dismiss the
+whole ledger. It was a paraphrase formatted as a quotation. The fix is not to
+soften the claim — the claim is supported by page 68 — but to cite the words
+that are actually there.
+
+This finding is recorded before it is fixed. `L3_FETCHED.lean` is not edited
+in this commit; the correction is a separate, reviewable change.
+
+### The first draft batch (local, unpublished)
+
+Six candidates drafted by anchored verbatim extraction, then admitted and
+re-verified: **6 accepted, 0 rejected.**
+
+- `CLM-FLT-0001` doc 385 p.68, allegation — the alias allegation, quoted
+  from "On or about February 25, 2020" to "alias Blake White".
+- `CLM-FLT-0002` doc 385 p.65, allegation — the Sunday Times passage on
+  moderation claims.
+- `CLM-FLT-0003` doc 385 p.37, allegation — the parliamentary-testimony
+  characterization.
+- `CLM-FLT-0004` doc 68 p.1, party_filing — Antoon motion caption.
+- `CLM-FLT-0005` doc 67 p.1, party_filing — Tassillo motion caption.
+- `CLM-FLT-0006` doc 140 p.1, party_filing — Urman motion caption.
+
+Each carries the SHA-256 of the file it was read from and is bound to the
+published manifest. None is published: the drafts live in the git-ignored
+`ledger/drafts/` directory pending review.
+
+### Taxonomy correction
+
+`party_filing` was added to `Nature`. A motion caption establishes who filed
+what; it asserts nothing about the world. Calling it an "allegation" would
+have been a quiet misclassification, so the taxonomy was extended rather than
+stretched. The Lean module now proves six natures, two adjudicated, four not,
+and that a party filing is not an allegation.
+
+### A gate that caught its own operator
+
+The first admission run rejected all six candidates with
+`unknown_field@note, unknown_field@sourceName`. The local review fields could
+not enter a publishable record — the deny-by-default gate working exactly as
+specified. Stripping them is now an explicit step with a comment saying why,
+not an accident of the pipeline.
+
+### Verification
+
+- `./verify.sh`: 8/8 gates, 131 tests pass, 3/3 negative controls rejected,
+  108/108 custody match, 12/12 compliance checks.

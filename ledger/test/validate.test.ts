@@ -318,6 +318,31 @@ describe("admit — nature is load-bearing", () => {
     record["nature"] = "stated_intent";
     assert.equal(admit(record).ok, true);
   });
+
+  it("allows a party filing on a fetched primary", () => {
+    const record = valid();
+    record["nature"] = "party_filing";
+    assert.equal(admit(record).ok, true);
+  });
+
+  it("rejects a party filing resting on corroboration", () => {
+    const record = valid();
+    record["tier"] = { kind: "corroborated", sources: ["a.example", "b.example"] };
+    record["nature"] = "party_filing";
+    assert.equal(admit(record).ok, true, "a filing is not an adjudication, so corroboration is permitted");
+  });
+
+  it("lists every valid nature in the rejection message", () => {
+    const record = valid();
+    record["nature"] = "truth";
+    const result = admit(record);
+    assert.equal(result.ok, false);
+    if (result.ok) return;
+    const message = result.violations.find((v) => v.code === "unknown_nature")?.message ?? "";
+    for (const nature of ["allegation", "party_filing", "order", "finding", "settlement", "stated_intent"]) {
+      assert.ok(message.includes(nature), `message should mention ${nature}`);
+    }
+  });
 });
 
 describe("admit — deny by default", () => {

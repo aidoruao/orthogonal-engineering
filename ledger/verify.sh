@@ -12,19 +12,19 @@ ROOT="$(cd "$LEDGER_DIR/.." && pwd)"
 
 cd "$LEDGER_DIR"
 
-echo "[1/8] typecheck (tsc --noEmit)"
+echo "[1/9] typecheck (tsc --noEmit)"
 npx tsc --noEmit
 
-echo "[2/8] build + tests"
+echo "[2/9] build + tests"
 npx tsc
 node --test dist/test/*.test.js
 
-echo "[3/8] lean proofs"
+echo "[3/9] lean proofs"
 cd "$ROOT"
 lean L1_LEDGER.lean
 lean L1_SELECTION.lean
 
-echo "[4/8] negative controls (all must be rejected)"
+echo "[4/9] negative controls (all must be rejected)"
 OLEAN_DIR="$(mktemp -d)"
 cleanup() { rm -rf "$OLEAN_DIR"; }
 trap cleanup EXIT
@@ -44,7 +44,7 @@ do
   echo "OK: rejected $control"
 done
 
-echo "[5/8] local corpus guard (L0 must not be tracked)"
+echo "[5/9] local corpus guard (L0 must not be tracked)"
 cd "$ROOT"
 tracked_raw="$(git ls-files 'evidence/fleites/*.pdf' 'evidence/fleites/*.txt' 'evidence/fleites/*.csv' 2>/dev/null || true)"
 if [ -n "$tracked_raw" ]; then
@@ -54,7 +54,7 @@ if [ -n "$tracked_raw" ]; then
 fi
 echo "OK: no raw L0 material tracked"
 
-echo "[6/8] corpus custody (commitment vs disk)"
+echo "[6/9] corpus custody (commitment vs disk)"
 CORPUS_DIR="${OE_CORPUS_DIR:-$ROOT/evidence/fleites}"
 if [ -f "$CORPUS_DIR/FLEITES_MANIFEST.sha256" ]; then
   node "$LEDGER_DIR/dist/src/corpus.js" \
@@ -64,7 +64,7 @@ else
   echo "SKIP: no corpus at $CORPUS_DIR (custody not checked)"
 fi
 
-echo "[7/8] selection ledger (if one is published)"
+echo "[7/9] selection ledger (if one is published)"
 CANDIDATES="$ROOT/ledger/candidates.jsonl"
 SELECTION="$ROOT/ledger/selection.jsonl"
 if [ -f "$CANDIDATES" ] && [ -f "$SELECTION" ]; then
@@ -77,7 +77,10 @@ else
   echo "SKIP: no selection ledger yet (nothing has been drafted)"
 fi
 
-echo "[8/8] standards compliance (presence checks)"
+echo "[8/9] citation audit (published cites vs the documents)"
+node "$LEDGER_DIR/dist/tools/cite-audit.js" --corpus "$CORPUS_DIR"
+
+echo "[9/9] standards compliance (presence checks)"
 node "$LEDGER_DIR/dist/src/compliance.js" --root "$ROOT"
 
 echo
