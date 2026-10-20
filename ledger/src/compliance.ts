@@ -334,6 +334,47 @@ export function runCompliance(root: string): CheckResult[] {
         : `${trackedNodeModules} node_modules files still tracked`,
   );
 
+  // 15. No large binary is tracked.
+  //
+  // node_modules carried an 87.8 MB vendored Windows node.exe for months. A
+  // size ceiling catches that class of defect — a platform binary committed as
+  // if it were source — without needing to know in advance what to look for.
+  // The history chunks are an explicit, owner-visible exception: 690 MB of
+  // deliberate git-log dumps, recorded in ARK_LEDGER.md Day 38.
+  const SIZE_LIMIT = 50 * 1024 * 1024;
+  const ALLOW_LARGE = /^history_chunk_[a-z]+$/;
+  const largeTracked = (() => {
+    try {
+      const output = execFileSync("git", ["-C", root, "ls-tree", "-r", "-l", "HEAD"], {
+        encoding: "utf8",
+        timeout: 60_000,
+        maxBuffer: 32 * 1024 * 1024,
+      });
+      const offenders: string[] = [];
+      for (const line of output.split("\n")) {
+        // <mode> <type> <object> <size>\t<path>
+        const match = /^\S+\s+\S+\s+\S+\s+(\d+)\t(.+)$/.exec(line);
+        if (match === null) continue;
+        const size = Number(match[1]);
+        const path = match[2] ?? "";
+        if (!Number.isFinite(size) || size <= SIZE_LIMIT) continue;
+        if (ALLOW_LARGE.test(path)) continue;
+        offenders.push(`${path} (${(size / 1048576).toFixed(1)} MB)`);
+      }
+      return offenders;
+    } catch {
+      return ["git ls-tree could not be read"];
+    }
+  })();
+  add(
+    "no-large-binaries-tracked",
+    "No tracked file exceeds 50 MB unless it is an allowlisted history chunk.",
+    largeTracked.length === 0,
+    largeTracked.length === 0
+      ? "no non-allowlisted file above the size ceiling"
+      : `oversized: ${largeTracked.join(", ")}`,
+  );
+
   return results;
 }
 

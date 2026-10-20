@@ -176,7 +176,7 @@ Eleven required gates:
    `selection.jsonl` without `candidates.jsonl` is a failure, not a skip.
 8. **Citation audit.** Every published page cite must be verbatim or a
    `...`-marked elision. A paraphrase presented as a quotation fails the gate.
-9. **Standards compliance** — 14 presence checks against the constitution and
+9. **Standards compliance** — 15 presence checks against the constitution and
    the corpus standards, including that `node_modules` is never tracked.
 10. **Territory census** (optional, `OE_CENSUS_ROOT`) — a README's declared
     tree is compared to disk. Divergence is reported, never hidden.

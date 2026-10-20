@@ -2062,3 +2062,55 @@ piece of uncommitted or git-ignored continuation work.
 - `./verify.sh`: **11/11 gates.** 162 tests. 7/7 negative controls rejected.
   Custody 108/108. Citation audit 8 verbatim / 0 not found. Compliance **14/14**.
   Freshness FRESH.
+
+### Day 38 correction (2026-10-19, same session)
+
+Day 38 states that after untracking `node_modules`, "**all 93.3 MB remains on
+disk**". That is no longer accurate and is corrected here rather than edited
+above, because this ledger is append-only.
+
+**What actually happened.** The untrack itself was `--cached`, and the files
+were confirmed present on disk immediately after. At some later point in the
+same session the root `node_modules` directory was absent. The cause was not
+determined. Rather than guess, the directory was restored the way the new
+declaration intends: `npm ci` from the committed `package-lock.json`.
+
+**What was restored.** 14 packages, 7.8 MB. The MCP helper resolves again
+(verified by requiring `@modelcontextprotocol/sdk/server/index.js`).
+
+**Where the 93.3 MB actually came from.** Not from build output at all:
+
+    87.8 MB  node_modules/node/bin/node.exe
+     1.2 MB  node_modules/@modelcontextprotocol/sdk/dist/types.d.ts
+     ...
+
+A **87.8 MB vendored Windows Node binary** accounted for 94% of the tracked
+set. It was a dependency of nothing declared, in a cross-platform repository,
+committed in a snapshot and carried for months. The declared dependency closure
+is 7.8 MB. The two numbers differ by roughly 12x, and the difference was a
+platform-specific executable.
+
+**What this changes.** The untracking was more justified than Day 38 stated,
+not less: the repository was carrying a Windows binary as if it were source.
+
+### Finding, not yet acted on: 690 MB of history chunks
+
+`history_chunk_aa` through `history_chunk_ah` are tracked at HEAD, ~690 MB
+total. They are plain-text `git log`-style dumps split at ~95 MB boundaries
+(the first begins with `commit 8653853a…`; the last begins mid-word at
+`al/automation`). They are referenced by several audit documents and are **not**
+covered by `.gitignore`.
+
+These differ in kind from `node_modules`: they are deliberate archives, not
+build output, and nothing here establishes that they are disposable. **They
+have not been touched.** Removing 690 MB from tracking is a decision for the
+repository owner, recorded here as an open item with its evidence.
+
+    Tracked files over 50 MB at HEAD: 8, all history_chunk_*
+    Total: ~690 MB
+
+### A guard, so the binary class of defect cannot recur
+
+Compliance check 15 fails if any tracked file exceeds 50 MB and is not an
+explicitly allowlisted history chunk. It would have caught `node.exe` on the
+commit that introduced it.
