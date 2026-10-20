@@ -26,6 +26,7 @@ on:
       - "L1_SELECTION.lean"
       - "L1_GATES.lean"
       - "L1_DECAY.lean"
+      - "L1_COVERAGE.lean"
       - ".github/workflows/l1-ledger.yml"
   pull_request:
     paths:
@@ -34,6 +35,7 @@ on:
       - "L1_SELECTION.lean"
       - "L1_GATES.lean"
       - "L1_DECAY.lean"
+      - "L1_COVERAGE.lean"
       - ".github/workflows/l1-ledger.yml"
   workflow_dispatch:
 
@@ -83,6 +85,7 @@ jobs:
           lean L1_SELECTION.lean
           lean L1_GATES.lean
           lean L1_DECAY.lean
+          lean L1_COVERAGE.lean
 
       - name: Negative controls must be rejected
         run: |
@@ -93,6 +96,7 @@ jobs:
           lean -o "$OLEAN_DIR/L1_SELECTION.olean" L1_SELECTION.lean
           lean -o "$OLEAN_DIR/L1_GATES.olean" L1_GATES.lean
           lean -o "$OLEAN_DIR/L1_DECAY.olean" L1_DECAY.lean
+          lean -o "$OLEAN_DIR/L1_COVERAGE.olean" L1_COVERAGE.lean
           for control in \
             ledger/negative/NEGATIVE_CONTROL.lean \
             ledger/negative/SELECTION_DROP.lean \
@@ -100,7 +104,8 @@ jobs:
             ledger/negative/GATES_THEATRE.lean \
             ledger/negative/GATES_DOMINANCE.lean \
             ledger/negative/DECAY_STALE.lean \
-            ledger/negative/DECAY_STALE_FAIL.lean
+            ledger/negative/DECAY_STALE_FAIL.lean \
+            ledger/negative/COVERAGE_WASTE.lean
           do
             if LEAN_PATH="$OLEAN_DIR" lean "$control" >/dev/null 2>&1; then
               echo "FAIL: $control compiled. Its invariant is vacuous." >&2
