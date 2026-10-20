@@ -148,6 +148,9 @@ package-lock.json
 # The ledger's lockfile is committed: CI runs `npm ci`, which requires it,
 # and the constitution requires pinned, reproducible dependency resolution.
 !ledger/package-lock.json
+# The root lockfile is committed for the same reason: the MCP helper scripts
+# declare a pinned SDK, and node_modules itself is never tracked.
+!/package-lock.json
 
 # MCP and orchestration
 mcp/
