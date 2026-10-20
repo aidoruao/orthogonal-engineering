@@ -74,6 +74,31 @@ A rejection is never anonymous: `rejected_has_code` requires a non-empty
 reason. `SELECTION_DROP.lean` and `SELECTION_ANONYMOUS.lean` are the negative
 controls, and both must fail to compile.
 
+## Verification decays
+
+A passing check is not a property of code. It is a claim indexed by the
+environment it ran in — toolchain, lockfile, OS. When the environment moves the
+claim does not become false; it becomes **unknown**.
+
+`L1_DECAY.lean` proves the three consequences:
+
+- **Staleness carries no information.** A verification at another environment
+  reports `unknown`, whether it passed or failed. `stale_pass_is_unknown` and
+  `stale_fail_is_unknown`.
+- **Pinning works.** If the environment never moves, one verification covers
+  every point. `pinned_one_verification_suffices`.
+- **No finite schedule covers unbounded drift.** For any schedule there is an
+  environment it never touched. `adversary_finds_a_gap`.
+
+Hence the engineering rule, and gate 11:
+
+> Pin what you can. Verify what you cannot pin. Know which is which.
+> A stale pass is not a lie; treating it as current is.
+
+`src/freshness.ts` records the environment a full verification passed in
+(`VERIFIED_ENVIRONMENT.json`) and reports **STALE** — never failure, never a
+pass — when the current environment differs.
+
 ## Usage
 
 Structural admission:
@@ -117,32 +142,55 @@ be overridden with `OE_CORPUS_DIR`.
 ./verify.sh
 ```
 
-Seven required gates:
+Eleven required gates:
 
 1. `tsc --noEmit` under `strict`, `exactOptionalPropertyTypes`,
    `noUncheckedIndexedAccess`.
-2. 131 tests. The five real-corpus tests **skip explicitly** when the corpus is
-   absent, so a CI run reports `skipped: 1` rather than a silent zero.
-3. `lean ../L1_LEDGER.lean` and `lean ../L1_SELECTION.lean` — the structural
-   proofs.
-4. **Three negative controls**, all of which must fail to compile:
-   `NEGATIVE_CONTROL.lean` (a finding on an unverified tier),
-   `SELECTION_DROP.lean` (a dropped candidate), and
-   `SELECTION_ANONYMOUS.lean` (a rejection with no reason). If any compiles,
-   its invariant is vacuous and the gate fails.
+2. **162 tests.** The five real-corpus tests skip explicitly when the corpus is
+   absent, so a CI run reports a skip rather than a silent zero.
+3. **Lean proofs** — `L1_LEDGER` (a finding cannot rest on an allegation),
+   `L1_SELECTION` (a selection cannot drop a candidate), `L1_GATES` (adding a
+   gate is weakly dominant; a vacuous or duplicate gate adds nothing), and
+   `L1_DECAY` (a verification at another environment is `unknown`, not
+   `failed`).
+4. **Seven negative controls**, all of which must fail to compile. If any
+   compiles, its invariant is vacuous and the gate fails:
+
+   | Control | Asserted, and refuted |
+   | :--- | :--- |
+   | `NEGATIVE_CONTROL` | a finding on an unverified tier |
+   | `SELECTION_DROP` | a ledger missing a candidate |
+   | `SELECTION_ANONYMOUS` | a rejection with no reason |
+   | `GATES_THEATRE` | a vacuous gate that rejects something |
+   | `GATES_DOMINANCE` | adding a gate that increases evasion |
+   | `DECAY_STALE` | a stale pass that still reports verified |
+   | `DECAY_STALE_FAIL` | a stale failure that reports failed |
+
 5. **The custody guard.** No `evidence/fleites/*.pdf`, `*.txt`, or `*.csv` may
    be tracked by git.
 6. **Custody against commitment.** `src/corpus.ts` hashes every file on disk
    and compares it to the published manifest: mismatch, missing, unlisted, and
-   malformed are each reported, never silently absorbed. Skipped explicitly
-   when no corpus is present.
+   malformed are each reported, never silently absorbed.
 7. **Selection completeness.** If `candidates.jsonl` and `selection.jsonl`
    exist, every candidate must have exactly one disposition. A
-   `selection.jsonl` without `candidates.jsonl` is a failure, not a skip — an
-   unauditable selection is worse than none.
+   `selection.jsonl` without `candidates.jsonl` is a failure, not a skip.
+8. **Citation audit.** Every published page cite must be verbatim or a
+   `...`-marked elision. A paraphrase presented as a quotation fails the gate.
+9. **Standards compliance** — 14 presence checks against the constitution and
+   the corpus standards, including that `node_modules` is never tracked.
+10. **Territory census** (optional, `OE_CENSUS_ROOT`) — a README's declared
+    tree is compared to disk. Divergence is reported, never hidden.
+11. **Verification freshness.** The current environment (node, TypeScript,
+    Lean, lockfile hash) is compared to `VERIFIED_ENVIRONMENT.json`. A
+    mismatch reports **STALE**, never failure — and never a pass.
+
+```bash
+# Record the environment in which a full verification actually passed.
+node dist/src/freshness.js --root .. --update
+```
 
 A check that cannot fail is a comment. Gate 4 is what makes the others mean
-something, and gates 5–7 are what keep the boundary from eroding by accident.
+something, and gates 5–11 are what keep the boundary from eroding by accident.
 
 ## Scope
 

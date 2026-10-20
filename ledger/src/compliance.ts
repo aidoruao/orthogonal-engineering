@@ -15,6 +15,7 @@
  * Exit 0 when every required check passes, 1 otherwise.
  */
 
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -303,6 +304,34 @@ export function runCompliance(root: string): CheckResult[] {
         ? `18 axioms; sections ${enforced}/${partial}/${notEnforced}; table agrees`
         : `18 axioms, but table ${tableEnforced}/${tablePartial}/${tableNot} contradicts sections ${enforced}/${partial}/${notEnforced}`
       : `expected 18 contiguous axioms, found ${numbered.length}`,
+  );
+
+  // 14. Build output is not tracked.
+  //
+  // node_modules was committed once, in a snapshot commit, and sat in the tree
+  // for months: 93 MB of unpinned, unverified build output. The remedy is a
+  // check, not a memory. This reads the git index directly rather than
+  // trusting a shell convention.
+  const trackedNodeModules = (() => {
+    try {
+      const output = execFileSync("git", ["-C", root, "ls-files", "node_modules"], {
+        encoding: "utf8",
+        timeout: 30_000,
+      });
+      return output.split("\n").filter((line) => line.trim() !== "").length;
+    } catch {
+      return -1;
+    }
+  })();
+  add(
+    "no-build-output-tracked",
+    "node_modules is build output and is never tracked; dependencies are declared and pinned.",
+    trackedNodeModules === 0,
+    trackedNodeModules === 0
+      ? "no node_modules files in the index"
+      : trackedNodeModules < 0
+        ? "git index could not be read"
+        : `${trackedNodeModules} node_modules files still tracked`,
   );
 
   return results;

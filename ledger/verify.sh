@@ -12,20 +12,21 @@ ROOT="$(cd "$LEDGER_DIR/.." && pwd)"
 
 cd "$LEDGER_DIR"
 
-echo "[1/10] typecheck (tsc --noEmit)"
+echo "[1/11] typecheck (tsc --noEmit)"
 npx tsc --noEmit
 
-echo "[2/10] build + tests"
+echo "[2/11] build + tests"
 npx tsc
 node --test dist/test/*.test.js
 
-echo "[3/10] lean proofs"
+echo "[3/11] lean proofs"
 cd "$ROOT"
 lean L1_LEDGER.lean
 lean L1_SELECTION.lean
 lean L1_GATES.lean
+lean L1_DECAY.lean
 
-echo "[4/10] negative controls (all must be rejected)"
+echo "[4/11] negative controls (all must be rejected)"
 OLEAN_DIR="$(mktemp -d)"
 cleanup() { rm -rf "$OLEAN_DIR"; }
 trap cleanup EXIT
@@ -33,13 +34,16 @@ trap cleanup EXIT
 lean -o "$OLEAN_DIR/L1_LEDGER.olean" L1_LEDGER.lean
 lean -o "$OLEAN_DIR/L1_SELECTION.olean" L1_SELECTION.lean
 lean -o "$OLEAN_DIR/L1_GATES.olean" L1_GATES.lean
+lean -o "$OLEAN_DIR/L1_DECAY.olean" L1_DECAY.lean
 
 for control in \
   ledger/negative/NEGATIVE_CONTROL.lean \
   ledger/negative/SELECTION_DROP.lean \
   ledger/negative/SELECTION_ANONYMOUS.lean \
   ledger/negative/GATES_THEATRE.lean \
-  ledger/negative/GATES_DOMINANCE.lean
+  ledger/negative/GATES_DOMINANCE.lean \
+  ledger/negative/DECAY_STALE.lean \
+  ledger/negative/DECAY_STALE_FAIL.lean
 do
   if LEAN_PATH="$OLEAN_DIR" lean "$control" >/dev/null 2>&1; then
     echo "FAIL: $control compiled. Its invariant is vacuous." >&2
@@ -48,7 +52,7 @@ do
   echo "OK: rejected $control"
 done
 
-echo "[5/10] local corpus guard (L0 must not be tracked)"
+echo "[5/11] local corpus guard (L0 must not be tracked)"
 cd "$ROOT"
 tracked_raw="$(git ls-files 'evidence/fleites/*.pdf' 'evidence/fleites/*.txt' 'evidence/fleites/*.csv' 2>/dev/null || true)"
 if [ -n "$tracked_raw" ]; then
@@ -58,7 +62,7 @@ if [ -n "$tracked_raw" ]; then
 fi
 echo "OK: no raw L0 material tracked"
 
-echo "[6/10] corpus custody (commitment vs disk)"
+echo "[6/11] corpus custody (commitment vs disk)"
 CORPUS_DIR="${OE_CORPUS_DIR:-$ROOT/evidence/fleites}"
 if [ -f "$CORPUS_DIR/FLEITES_MANIFEST.sha256" ]; then
   node "$LEDGER_DIR/dist/src/corpus.js" \
@@ -68,7 +72,7 @@ else
   echo "SKIP: no corpus at $CORPUS_DIR (custody not checked)"
 fi
 
-echo "[7/10] selection ledger (if one is published)"
+echo "[7/11] selection ledger (if one is published)"
 CANDIDATES="$ROOT/ledger/candidates.jsonl"
 SELECTION="$ROOT/ledger/selection.jsonl"
 if [ -f "$CANDIDATES" ] && [ -f "$SELECTION" ]; then
@@ -81,13 +85,13 @@ else
   echo "SKIP: no selection ledger yet (nothing has been drafted)"
 fi
 
-echo "[8/10] citation audit (published cites vs the documents)"
+echo "[8/11] citation audit (published cites vs the documents)"
 node "$LEDGER_DIR/dist/tools/cite-audit.js" --corpus "$CORPUS_DIR"
 
-echo "[9/10] standards compliance (presence checks)"
+echo "[9/11] standards compliance (presence checks)"
 node "$LEDGER_DIR/dist/src/compliance.js" --root "$ROOT"
 
-echo "[10/10] territory census (declarations vs disk)"
+echo "[10/11] territory census (declarations vs disk)"
 # The census needs a declared tree and a root. Both are optional: with neither,
 # it reports that it did not run rather than silently passing.
 CENSUS_ROOT="${OE_CENSUS_ROOT:-}"
@@ -103,6 +107,10 @@ if [ -n "$CENSUS_ROOT" ] && [ -f "$CENSUS_ROOT/README.md" ]; then
 else
   echo "SKIP: no OE_CENSUS_ROOT set; declaration audit not run"
 fi
+
+
+echo "[11/11] verification freshness (environment vs recorded)"
+node "$LEDGER_DIR/dist/src/freshness.js" --root "$ROOT"
 
 echo
 echo "ledger verified"

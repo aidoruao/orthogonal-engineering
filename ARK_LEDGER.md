@@ -1994,3 +1994,71 @@ Ten standing rules follow, each traceable to one of them.
 - `./verify.sh`: **10/10 gates**. 146 tests pass, 0 fail. 5/5 negative controls
   rejected. Custody 108/108. Citation audit 8 verbatim / 0 not found.
   Compliance **13/13**.
+
+## DAY 38 — 2026-10-19 — DECAY, HOUSE CLEANING, AND CONTEXT CONTINUITY
+
+### Verification decays — proved
+
+`L1_DECAY.lean`. A passing check is not a property of code; it is a claim
+indexed by the environment it ran in. Seven theorems, the load-bearing three:
+
+- **`stale_is_unknown`** — a verification at another environment reports
+  `unknown`. `stale_pass_is_unknown` and `stale_fail_is_unknown` give both
+  directions: staleness is neither confirmation nor refutation.
+- **`pinned_one_verification_suffices`** — if the environment never moves, one
+  verification covers every point. The case for pinning, proved.
+- **`adversary_finds_a_gap`** — for **any** finite schedule there is an
+  environment it never touched. No finite verification budget covers unbounded
+  drift. The case for continuous verification, proved.
+
+Two falsifiers must fail to compile, and do: `DECAY_STALE` (a stale pass
+reported as verified) and `DECAY_STALE_FAIL` (a stale failure reported as a
+current failure). Both are refuted by `decide`.
+
+The engineering rule, now in the README:
+
+> Pin what you can. Verify what you cannot pin. Know which is which.
+> A stale pass is not a lie; treating it as current is.
+
+### Freshness, operational
+
+`ledger/src/freshness.ts` — 16 tests. Computes an environment fingerprint
+(node, TypeScript, Lean, lockfile SHA-256), records it in
+`ledger/VERIFIED_ENVIRONMENT.json`, and compares.
+
+Three outcomes, deliberately distinct: **FRESH** (identical), **STALE**
+(differs — re-run), **ABSENT** (nothing claimed). STALE exits zero. Making it a
+build failure would train operators to disable the check, which is the
+governance-cap lesson from Day 36 applied to a different gate.
+
+Recorded for this session: node 22.23.1, TypeScript 5.9.3, Lean 4.35.0,
+lockfile `0ef9057f…1c89`. Gate 11 reports FRESH immediately after recording.
+
+### House cleaning: 785 files, 93.3 MB
+
+`node_modules` was committed in a snapshot commit and sat in the tree for
+months — 93.3 MB of unpinned, unverified build output, excluded by `.gitignore`
+the whole time and tracked anyway. Untracked with `git rm -r --cached`; **all
+93.3 MB remains on disk**, and the MCP helper scripts still resolve locally
+(verified by requiring the SDK after the untrack).
+
+The dependency was previously **undeclared**, which is the actual defect. A
+root `package.json` now declares `@modelcontextprotocol/sdk` at exactly `0.5.0`,
+with a committed `package-lock.json`. Compliance check 14 reads the git index
+and fails if any `node_modules` path reappears.
+
+Residual: history still contains the blobs. Only the index is clean. Shrinking
+history is a separate decision and is recorded as such.
+
+### Context continuity
+
+`.codewhale/handoff.md` — the path the runtime actually reads on the next
+session's first turn. It records state, the five decisions that must not be
+re-litigated, five open items in priority order, and the locations of every
+piece of uncommitted or git-ignored continuation work.
+
+### Verification
+
+- `./verify.sh`: **11/11 gates.** 162 tests. 7/7 negative controls rejected.
+  Custody 108/108. Citation audit 8 verbatim / 0 not found. Compliance **14/14**.
+  Freshness FRESH.
