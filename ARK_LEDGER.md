@@ -1916,3 +1916,81 @@ they would all have been rejected.
 - `./verify.sh`: 9/9 gates, 146 tests pass, 3/3 negative controls rejected,
   108/108 custody match, citation audit 8 verbatim / 0 not found,
   12/12 compliance checks.
+
+## DAY 37 — 2026-10-19 — THE AUDIT AS A GAME, AND THE COVENANT CLASSIFIED
+
+Two questions were outstanding: what can be *proved* about adding gates, and
+what does YAAI's axiom list actually enforce?
+
+### Game theory, discharged
+
+`L1_GATES.lean` models the audit as a two-player interaction. The auditee
+chooses a claim; the auditor chooses a list of gates; a claim is admissible iff
+it passes every gate; evasion is a false claim that is admissible.
+
+Six theorems:
+
+- **`compose_mono`** — a superset of gates admits a subset of claims.
+- **`auditor_dominance`** — extending a strategy with one gate weakly dominates
+  not extending it. Adding a check is never worse for the auditor.
+- **`strict_gain_needs_rejection`** — the gain is strict only if the gate
+  actually rejects something that would otherwise pass.
+- **`vacuous_gate_adds_nothing`** — a gate that admits everything is a no-op.
+- **`duplicate_gate_adds_nothing`** — repeating a gate adds nothing.
+- **`complete_gate_empties_evasion`** — one sound gate suffices for soundness;
+  the rest guard against its errors, not against the auditee.
+
+Two falsifiers must fail to compile, and do:
+`GATES_THEATRE.lean` (`h : True ⊢ False`) and `GATES_DOMINANCE.lean`
+(`⊢ False`). Without them, the theorems would be decoration.
+
+The honest reading is in the file: **theorems 1–2 are a licence to add checks;
+theorems 3–4 are a warning that most added checks are theatre.** The ledger's
+ten gates earn their number only because each has a falsifier that fires.
+
+### The covenant, classified
+
+`docs/YAAI_COVENANT.md` takes YAAI's 18 axioms one at a time and states what
+enforces each: **7 enforced, 7 partial, 4 not enforced.** Four axioms — anti-
+RLHF, anti-corporate-incentive, anti-private-equity, anti-profane-architecture
+— have no mechanism here at all, and the document says so rather than implying
+otherwise.
+
+Two of the enforced ones are worth naming:
+
+- **Axiom 4, territory is the only valid map** — enforced by the declaration
+  audit. It is the axiom YAAI itself violated.
+- **Axiom 15, anti-structural-theater** — enforced by theorem. `vacuous_gate_
+  adds_nothing` and `duplicate_gate_adds_nothing` are exactly the two ways a
+  claimed gate is theatre.
+
+The covenant document proposes a nineteenth axiom and does **not** enforce it:
+"a commit message is a claim." Nothing currently checks that, and YAAI's
+`restore all 8 test files` commit is the counterexample. Recorded as the
+largest remaining gap rather than smoothed over.
+
+### The covenant checks itself
+
+Compliance check 13 parses the covenant: all 18 axioms must be numbered
+contiguously, and the tally table must agree with the per-axiom sections.
+Its first run caught a real inconsistency — the table said 6 enforced while the
+sections said 7 — which is the same class of defect as a README that declares
+files it does not have. Fixed, and the check now compares the two.
+
+### Lessons consolidated
+
+`docs/LESSONS_LEARNED.md` records ten failures with the evidence that caught
+each and the mechanism that now prevents it: the specification with no
+territory, the false citation, the silent drop of raw evidence, the silent
+anomaly in the census, the test suite that ran nothing, the gate that caught
+its own operator, the consent recorded after the fact, the unmeetable
+governance cap, the loss quoted from the middle of a run, and the repository
+that described its own failure mode.
+
+Ten standing rules follow, each traceable to one of them.
+
+### Verification
+
+- `./verify.sh`: **10/10 gates**. 146 tests pass, 0 fail. 5/5 negative controls
+  rejected. Custody 108/108. Citation audit 8 verbatim / 0 not found.
+  Compliance **13/13**.

@@ -249,6 +249,62 @@ export function runCompliance(root: string): CheckResult[] {
     consented ? "consent entry present" : "no consent entry for l1-ledger.yml",
   );
 
+  // 13. The covenant document classifies every axiom.
+  //
+  // A document that rates a system on eighteen axioms is itself making
+  // eighteen-plus claims. This check makes its structure verifiable: the
+  // classification headings must be numbered 1..18 contiguously, and the
+  // tally table must sum to the same count. It does not check that the
+  // classifications are *correct* — only that the document is complete and
+  // internally consistent, which is the failure mode YAAI itself had.
+  const covenant = readOr(join(root, "docs", "YAAI_COVENANT.md"));
+  const numbered = [...covenant.matchAll(/^### (\d+)\./gm)].map((m) => Number(m[1]));
+  const expected = Array.from({ length: 18 }, (_, i) => i + 1);
+  const complete = numbered.length === 18 && numbered.every((n, i) => n === expected[i]);
+
+  // Classify per axiom section, not by counting markers in the whole file:
+  // the legend defines each class once, and axiom 15 is "ENFORCED BY THEOREM".
+  // Counting bare markers made 18 axioms look like 20 classes.
+  const sections = covenant.split(/^### \d+\./m).slice(1);
+  let enforced = 0;
+  let partial = 0;
+  let notEnforced = 0;
+  let unclassified = 0;
+  for (const section of sections) {
+    const head = section.split("\n").slice(0, 3).join(" ");
+    if (/NOT ENFORCED/.test(head)) notEnforced += 1;
+    else if (/ENFORCED/.test(head)) enforced += 1;
+    else if (/PARTIAL/.test(head)) partial += 1;
+    else unclassified += 1;
+  }
+  const tallySum = enforced + partial + notEnforced;
+
+  // The tally table must agree with the per-axiom sections. A document whose
+  // summary contradicts its own body is the same class of defect as a README
+  // that declares files it does not have — the failure this file catalogues.
+  const tableCount = (label: string): number | null => {
+    const match = new RegExp(`\\|\\s*${label}\\s*\\|\\s*(\\d+)\\s*\\|`).exec(covenant);
+    return match === null ? null : Number(match[1]);
+  };
+  const tableEnforced = tableCount("ENFORCED");
+  const tablePartial = tableCount("PARTIAL");
+  const tableNot = tableCount("NOT ENFORCED");
+  const tableAgrees =
+    tableEnforced === enforced &&
+    tablePartial === partial &&
+    tableNot === notEnforced;
+
+  add(
+    "covenant-complete",
+    "The covenant classifies all 18 axioms, and its tally table agrees with its sections.",
+    complete && tallySum === 18 && unclassified === 0 && tableAgrees,
+    complete
+      ? tableAgrees
+        ? `18 axioms; sections ${enforced}/${partial}/${notEnforced}; table agrees`
+        : `18 axioms, but table ${tableEnforced}/${tablePartial}/${tableNot} contradicts sections ${enforced}/${partial}/${notEnforced}`
+      : `expected 18 contiguous axioms, found ${numbered.length}`,
+  );
+
   return results;
 }
 
