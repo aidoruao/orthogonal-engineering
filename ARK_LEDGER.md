@@ -2183,3 +2183,64 @@ overwrites without saying so produces a number that looks like data and is not.
 - `./verify.sh`: **12/12 gates.** 178 tests. 8/8 negative controls rejected.
   Custody 108/108. Citation audit 8 verbatim / 0 not found. Compliance 15/15.
   Freshness FRESH.
+
+## DAY 40 — 2026-10-19 — FIVE MORE DOCUMENTS, AND ONE EXTRACTION ARTIFACT
+
+Coverage moved from 10/41 to **15/41 (37%)**. Seventeen claims now, two of them
+redundant.
+
+### What was added
+
+Five claims, all `party_filing`, all verified verbatim against the hashed
+source:
+
+| Claim | Doc | What the caption establishes |
+| :--- | :--- | :--- |
+| `CLM-FLT-0013` | 69 | Urman's short notice of motion (round 1) |
+| `CLM-FLT-0014` | 139 | a notice of motion to dismiss the amended complaint (round 2) |
+| `CLM-FLT-0015` | 600 | a notice of supplemental authority, counsel at Mintz Levin (2025) |
+| `CLM-FLT-0016` | 601 | the plaintiff's notice, stating its basis under the standing order (2025) |
+| `CLM-FLT-0017` | 602 | defendants' objection to the notice at dkt 601 (2025) |
+
+Doc 601 is the only one of the five that names its filer in the quoted span.
+Doc 139's caption names no party: attributing it to Visa would need the
+memorandum, and this ledger does not attribute what a caption does not say.
+
+### A finding: pleading line numbers reach the quote
+
+`CLM-FLT-0015`'s verified quote reads:
+
+    NOTICE OF SUPPLEMENTAL AUTHORITY 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16
+    17 18 19 20 21 22 23 24 25 26 27 28 Peter A. Biagetti ( Admitted Pro Hac
+    Vice ) ... MINTZ LEVIN ... One Financial
+
+The interior run is the source page's **pleading line numbering**. The span
+selector strips such runs at the edges but not in the middle, and it must not:
+removing interior text would break the contiguous-substring invariant that
+makes a quote verbatim.
+
+Two honest options existed and one was taken:
+
+1. **Keep the run, disclose it.** A reader opening page 1 of doc 600 sees
+   exactly this layout — caption, then the numbered margin, then counsel. The
+   quote is what the page says. *This is what shipped.*
+2. Shorten the quote to the 32-character caption alone. Rejected because the
+   ledger's 40-character floor exists to stop one-line "quotes", and lowering
+   it for one document would weaken every other claim.
+
+Recorded because a reviewer will notice the numbers and should find the reason
+here rather than infer carelessness.
+
+### Deferred: doc 138
+
+Visa's motion caption extracts as `V ISA ’ S N OTICE OF M OTION TO D ISMISS` —
+spacing artifacts from the PDF's text layer. A verbatim quote of that string
+would be accurate to the extraction and unrecognisable to a human reading the
+document. Deferred rather than quoted badly. A clean span from doc 138 needs
+either a different anchor or manual verification against the page image.
+
+### Verification
+
+- `./verify.sh`: **12/12 gates.** 178 tests. 8/8 negative controls rejected.
+  Custody 108/108. Coverage 15/41 with 2 redundant. Citation audit 8 verbatim /
+  0 not found. Compliance 15/15. Freshness FRESH.
