@@ -1820,3 +1820,99 @@ not an accident of the pipeline.
 
 - `./verify.sh`: 8/8 gates, 131 tests pass, 3/3 negative controls rejected,
   108/108 custody match, 12/12 compliance checks.
+
+## DAY 36 — 2026-10-19 — THE TERRITORY CENSUS
+
+Two questions were asked of the filesystem and answered by measurement:
+does the Yeshua specification match its territory, and what does the trained
+lineage actually contain?
+
+### Finding 1: the specification has no territory
+
+`Fiduciary-Yeshua-Agentic-Local-Model` declares 36 files. **One exists**
+(`README.md`). Independent confirmation: a filesystem-wide search for
+`implementation/` under any Yeshua path and for `test_against_readme.py`
+anywhere on the machine returned nothing.
+
+Every verification command in that README points at a file that does not
+exist and never has. By the README's own interpretation table — *"Test cannot
+run: the verification infrastructure is incomplete. Treat all claims as
+unverified"* — its claims are unverified. That is now measured, not asserted.
+
+### Finding 2: the lineage is real and larger than the relayed summary
+
+Across `~/oe-local`, `~/oe-local-backup-1780335567`, and
+`/mnt/c/Users/Aidor/oe-local`:
+
+- **22 adapter directories** (one symlink deduplicated by resolved run dir)
+- **19 with real weights**, 334 MB total
+- Qwen2.5-1.5B: 7 · TinyLlama-1.1B-Chat: 7 · distilgpt2: 5 · empty stubs: 3
+- **19 carry optimizer state** — evidence of genuine runs, not copies
+- No GGUF, no merged model weights anywhere
+
+The distilgpt2 lineage (5 generations) was absent from the relayed summary,
+and TinyLlama was undercounted by one.
+
+### Finding 3: four runs diverged and nobody recorded it
+
+`trained_qwen_v5`, `trained_qwen_v561`, `trained_tinyllama_v8`, and
+`trained_distilgpt2_v5` have `"grad_norm": Infinity` in their
+`trainer_state.json`. Python's `json` accepts that literal; `JSON.parse`
+rejects it.
+
+The first version of the census therefore reported them as having no loss
+history at all — a silent anomaly of exactly the kind this project forbids.
+The census now parses tolerantly, **records** the divergence, flags the run,
+and names it in the summary. An unreadable state file is evidence of a
+training anomaly, not an absence of evidence.
+
+### Finding 4: the governance gate worked, and was set to always fire
+
+`minimal_ai_ide/final_training.py` enforces bounded epochs, batch size,
+learning rate, LoRA rank, and a **30-minute training cap**, with a Christ
+score of `0.7 + loss adjustment + 0.1 governance bonus`.
+
+The logs record `58.6 minutes (TinyLlama) to 323.2 minutes (Qwen) vs
+30-minute governance cap`. **Every substantive run exceeded the cap**, so
+every run scored on the violations branch and clustered at 0.898 rather than
+0.999. The gate correctly refused to certify them:
+
+```
+Training successful: yes
+Governance compliant: no
+Christ score: 0.898 (minimum: 0.7)
+Violations (1): Training time 58.9m > 30m maximum
+FINAL TRAINING FAILED
+```
+
+That is "no authority without proof" operating for real. A gate that says
+*this passed but I will not certify it* is a working gate. A threshold no run
+can meet is not a constraint; it is a wall that teaches its operators to
+ignore it.
+
+### Correction to the relayed summary
+
+The loss figures supplied by the external agent (`0.0495`, `0.0916`,
+`0.0910`) are **individual training steps mid-run**, not final losses. `0.0495`
+was located at epoch 1.847 of a 2.0-epoch run — one step out of nine thousand.
+Actual final logged losses: `qwen_1.5b_v1` 0.0303, `tinyllama_v4` 0.0563,
+`tinyllama_v7` 0.0538. Dataset line counts also differ: `combined_v4` is
+11,169 (not ~6,000); `combined_v6` is 10,982 (not 11,236 — that is v7's count).
+
+The shape of that account was right. Its numbers were not, and in this ledger
+they would all have been rejected.
+
+### What was built
+
+`ledger/tools/census.ts` — 15 tests, deterministic:
+
+- `census lineage --roots ...` reports base model, adapter size, final loss,
+  optimizer state, symlink provenance, and divergence flags per adapter.
+- `census declarations --readme ... --root ...` parses a README's declared
+  tree and reports divergence. This is YAAI's own axiom 13, mechanized.
+
+### Verification
+
+- `./verify.sh`: 9/9 gates, 146 tests pass, 3/3 negative controls rejected,
+  108/108 custody match, citation audit 8 verbatim / 0 not found,
+  12/12 compliance checks.
