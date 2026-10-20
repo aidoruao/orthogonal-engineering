@@ -2114,3 +2114,72 @@ repository owner, recorded here as an open item with its evidence.
 Compliance check 15 fails if any tracked file exceeds 50 MB and is not an
 explicitly allowlisted history chunk. It would have caught `node.exe` on the
 commit that introduced it.
+
+## DAY 39 — 2026-10-19 — COVERAGE COMPOUNDS, CLAIMS ACCUMULATE
+
+The ledger grew from 6 claims over 3 documents to **12 claims over 10**, and in
+doing so made the difference between accumulating and compounding into a
+theorem.
+
+### The distinction, proved
+
+`L1_COVERAGE.lean`. Two ways to grow a ledger look identical by count and are
+opposite in value: another claim about a covered document, and the first claim
+about a dark one.
+
+- **`addDoc_bounded`** — one claim adds at most one document.
+- **`addDoc_zero_if_covered`** — a claim about a covered document adds nothing.
+- **`addDoc_progress_if_dark`** — a claim about a dark document adds exactly one.
+- **`snowball`** — from empty, `n` distinct documents cover exactly `n`.
+- **`repeat_is_not_progress`** — the reviewer's check, in one line.
+
+Falsifier `COVERAGE_WASTE.lean` asserts that a repeat claim adds a document and
+is refuted by `decide`.
+
+The rule that follows: **count documents, not claims.** A thousand claims
+against one filing cover one document.
+
+### The docket has a three-round structure
+
+Identifying the dark documents (`ledger/tools/identify.ts`, local only) revealed
+something the ledger had not recorded: the same defendants moved to dismiss
+**three successive versions** of the complaint.
+
+| Round | Filing | Documents |
+| :--- | :--- | :--- |
+| 1 — original complaint, 2021-10 | Bergmair, Tassillo, Antoon, Urman | 62, 67, 68, 69, 140 |
+| 2 — amended complaint, 2022-05 | Bergmair, Tassillo, Antoon, Visa | 135, 136, 137, 138, 139 |
+| 3 — second amended complaint, 2024 | Bergmair, Antoon + Tassillo | 433, 436 |
+
+Six claims were drafted from round 1 (62), round 2 (135, 136, 137) and round 3
+(433, 436), all `party_filing`: a caption establishes who filed what and
+asserts nothing about the world. All six verified verbatim.
+
+What this establishes, and nothing more: the filings exist, they are captions
+of motions by named parties against three successive complaints. It does **not**
+establish the grounds, the outcomes, or any party's intent. Those require the
+opinions, which are `LOCATED-BLOCKED` beyond this PDF batch.
+
+### Coverage after the batch
+
+    12 claims, 10 of 41 documents covered (24%), 31 dark, 2 redundant
+
+Coverage went from 4/41 to 10/41. The two redundant claims are the second and
+third on document 385 — honest work that moved no frontier, now visible as
+such.
+
+### A workflow bug, caught and fixed
+
+The second admission run silently overwrote the first batch's `verified.jsonl`,
+because `admit-batch` wrote to a fixed filename. Six claims had to be
+re-admitted to recover. `--merge` now appends and dedupes by claimId, and the
+overwrite path is documented as single-batch use.
+
+This is lesson 4 from `LESSONS_LEARNED.md` in a new place: a tool that
+overwrites without saying so produces a number that looks like data and is not.
+
+### Verification
+
+- `./verify.sh`: **12/12 gates.** 178 tests. 8/8 negative controls rejected.
+  Custody 108/108. Citation audit 8 verbatim / 0 not found. Compliance 15/15.
+  Freshness FRESH.

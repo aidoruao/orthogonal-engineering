@@ -96,11 +96,13 @@ function parseArgs(argv: readonly string[]): {
   manifest: string;
   sources: string;
   out: string;
+  merge: boolean;
 } {
   let input: string | undefined;
   let manifest: string | undefined;
   let sources: string | undefined;
   let out = "drafts";
+  let merge = false;
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--in") {
@@ -115,12 +117,14 @@ function parseArgs(argv: readonly string[]): {
     } else if (arg === "--out-dir") {
       out = argv[i + 1] ?? out;
       i += 1;
+    } else if (arg === "--merge") {
+      merge = true;
     }
   }
   if (input === undefined || manifest === undefined || sources === undefined) {
-    throw new Error("usage: admit-batch --in <candidates.jsonl> --manifest <path> --sources <dir> [--out-dir <dir>]");
+    throw new Error("usage: admit-batch --in <candidates.jsonl> --manifest <path> --sources <dir> [--out-dir <dir>] [--merge]");
   }
-  return { in: input, manifest, sources, out };
+  return { in: input, manifest, sources, out, merge };
 }
 
 const invokedDirectly =
@@ -143,27 +147,80 @@ if (invokedDirectly) {
     const accepted = outcomes.filter((outcome) => outcome.accepted && outcome.record !== undefined);
     const rejected = outcomes.filter((outcome) => !outcome.accepted);
 
+    const verifiedPath = `${args.out}/verified.jsonl`;
+    const rejectedPath = `${args.out}/rejected.jsonl`;
+
+    // Merge mode appends and dedupes by claimId. Without it, a second batch
+    // silently overwrites the first — which happened once, and cost a
+    // re-admission of six claims to recover. Default stays overwrite for
+    // single-batch use; accumulating ledgers pass --merge.
+    const mergeRecords = (
+      path: string,
+      incoming: readonly unknown[],
+      id: (value: unknown) => string,
+    ): unknown[] => {
+      const existing: unknown[] = [];
+      if (existsSync(path)) {
+        for (const line of readFileSync(path, "utf8").split(/\r?\n/)) {
+          if (line.trim() === "") continue;
+          try {
+            existing.push(JSON.parse(line) as unknown);
+          } catch {
+            // A malformed existing line is a finding, not something to drop.
+            console.error(`WARN: malformed line in ${path} ignored during merge`);
+          }
+        }
+      }
+      const byId = new Map<string, unknown>();
+      for (const record of existing) byId.set(id(record), record);
+      for (const record of incoming) byId.set(id(record), record);
+      return [...byId.entries()].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)).map(([, v]) => v);
+    };
+
+    const claimIdOf = (value: unknown): string => {
+      if (typeof value === "object" && value !== null) {
+        const candidate = (value as Record<string, unknown>)["claimId"];
+        if (typeof candidate === "string") return candidate;
+      }
+      return "UNIDENTIFIED";
+    };
+
+    const verifiedOut = args.merge
+      ? mergeRecords(verifiedPath, accepted.map((o) => o.record), claimIdOf)
+      : accepted.map((o) => o.record);
+    const rejectedOut = args.merge
+      ? mergeRecords(
+          rejectedPath,
+          rejected.map((o) => ({
+            claimId: o.claimId,
+            code: o.code ?? "unknown",
+            detail: o.detail ?? "",
+          })),
+          claimIdOf,
+        )
+      : rejected.map((o) => ({
+          claimId: o.claimId,
+          code: o.code ?? "unknown",
+          detail: o.detail ?? "",
+        }));
+
     writeFileSync(
-      `${args.out}/verified.jsonl`,
-      accepted.map((outcome) => JSON.stringify(outcome.record)).join("\n") +
-        (accepted.length === 0 ? "" : "\n"),
+      verifiedPath,
+      verifiedOut.map((record) => JSON.stringify(record)).join("\n") +
+        (verifiedOut.length === 0 ? "" : "\n"),
     );
     writeFileSync(
-      `${args.out}/rejected.jsonl`,
-      rejected
-        .map((outcome) =>
-          JSON.stringify({
-            claimId: outcome.claimId,
-            code: outcome.code ?? "unknown",
-            detail: outcome.detail ?? "",
-          }),
-        )
-        .join("\n") + (rejected.length === 0 ? "" : "\n"),
+      rejectedPath,
+      rejectedOut.map((record) => JSON.stringify(record)).join("\n") +
+        (rejectedOut.length === 0 ? "" : "\n"),
     );
 
     console.log(`candidates: ${outcomes.length}`);
     console.log(`accepted:   ${accepted.length}`);
     console.log(`rejected:   ${rejected.length}`);
+    if (args.merge) {
+      console.log(`verified total after merge: ${verifiedOut.length}`);
+    }
     for (const outcome of accepted) {
       console.log(`  OK   ${outcome.claimId}`);
     }

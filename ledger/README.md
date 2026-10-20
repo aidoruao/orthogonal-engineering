@@ -136,24 +136,49 @@ node dist/src/corpus.js \
 The corpus directory defaults to `../evidence/fleites` on this machine and can
 be overridden with `OE_CORPUS_DIR`.
 
+## Coverage compounds; claims accumulate
+
+A ledger can grow in two ways that look identical by count and are opposite in
+value: adding a claim about a document already covered, and adding a claim
+about a document nobody has examined. Both increment "claims". Only one
+increments "documents covered".
+
+`L1_COVERAGE.lean` proves the distinction:
+
+- **`addDoc_bounded`** — one claim adds at most one document.
+- **`addDoc_zero_if_covered`** — a claim about a covered document adds nothing.
+- **`addDoc_progress_if_dark`** — a claim about a dark document adds exactly one.
+- **`snowball`** — from empty, N distinct documents cover exactly N.
+
+`src/coverage.ts` reports both numbers, keeps them separate, and fails if any
+claim cites a document the manifest does not commit to.
+
+```bash
+node dist/src/coverage.js --root ..
+```
+
+Current: **12 claims over 10 of 41 documents.** Two claims are redundant
+(zero marginal coverage), and 31 documents are dark. The claim count is not the
+measure of how much of the record has been read; the document count is.
+
 ## Verify
 
 ```bash
 ./verify.sh
 ```
 
-Eleven required gates:
+Twelve required gates:
 
 1. `tsc --noEmit` under `strict`, `exactOptionalPropertyTypes`,
    `noUncheckedIndexedAccess`.
-2. **162 tests.** The five real-corpus tests skip explicitly when the corpus is
+2. **178 tests.** The five real-corpus tests skip explicitly when the corpus is
    absent, so a CI run reports a skip rather than a silent zero.
 3. **Lean proofs** — `L1_LEDGER` (a finding cannot rest on an allegation),
    `L1_SELECTION` (a selection cannot drop a candidate), `L1_GATES` (adding a
    gate is weakly dominant; a vacuous or duplicate gate adds nothing), and
    `L1_DECAY` (a verification at another environment is `unknown`, not
    `failed`).
-4. **Seven negative controls**, all of which must fail to compile. If any
+4. **Eight negative controls**, all of which must fail to compile. If any
    compiles, its invariant is vacuous and the gate fails:
 
    | Control | Asserted, and refuted |
@@ -165,22 +190,25 @@ Eleven required gates:
    | `GATES_DOMINANCE` | adding a gate that increases evasion |
    | `DECAY_STALE` | a stale pass that still reports verified |
    | `DECAY_STALE_FAIL` | a stale failure that reports failed |
+   | `COVERAGE_WASTE` | a repeat claim that adds a document |
 
 5. **The custody guard.** No `evidence/fleites/*.pdf`, `*.txt`, or `*.csv` may
    be tracked by git.
 6. **Custody against commitment.** `src/corpus.ts` hashes every file on disk
    and compares it to the published manifest: mismatch, missing, unlisted, and
    malformed are each reported, never silently absorbed.
-7. **Selection completeness.** If `candidates.jsonl` and `selection.jsonl`
+7. **Claim coverage.** Claims and covered documents are reported separately.
+   A claim citing a document outside the manifest fails the gate.
+8. **Selection completeness.** If `candidates.jsonl` and `selection.jsonl`
    exist, every candidate must have exactly one disposition. A
    `selection.jsonl` without `candidates.jsonl` is a failure, not a skip.
-8. **Citation audit.** Every published page cite must be verbatim or a
+9. **Citation audit.** Every published page cite must be verbatim or a
    `...`-marked elision. A paraphrase presented as a quotation fails the gate.
-9. **Standards compliance** — 15 presence checks against the constitution and
+10. **Standards compliance** — 15 presence checks against the constitution and
    the corpus standards, including that `node_modules` is never tracked.
-10. **Territory census** (optional, `OE_CENSUS_ROOT`) — a README's declared
+11. **Territory census** (optional, `OE_CENSUS_ROOT`) — a README's declared
     tree is compared to disk. Divergence is reported, never hidden.
-11. **Verification freshness.** The current environment (node, TypeScript,
+12. **Verification freshness.** The current environment (node, TypeScript,
     Lean, lockfile hash) is compared to `VERIFIED_ENVIRONMENT.json`. A
     mismatch reports **STALE**, never failure — and never a pass.
 
@@ -190,7 +218,7 @@ node dist/src/freshness.js --root .. --update
 ```
 
 A check that cannot fail is a comment. Gate 4 is what makes the others mean
-something, and gates 5–11 are what keep the boundary from eroding by accident.
+something, and gates 5–12 are what keep the boundary from eroding by accident.
 
 ## Scope
 
