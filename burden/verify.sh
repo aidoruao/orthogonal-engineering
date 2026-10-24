@@ -22,18 +22,18 @@ if [ ! -x "$TSC_BIN" ]; then
   exit 1
 fi
 
-echo "[1/11] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
+echo "[1/12] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
 "$TSC_BIN" --noEmit
 
-echo "[2/11] build + tests"
+echo "[2/12] build + tests"
 "$TSC_BIN"
 node --test dist/test/*.test.js
 
-echo "[3/11] lean proof"
+echo "[3/12] lean proof"
 cd "$ROOT"
 lean L1_BURDEN.lean
 
-echo "[4/11] negative controls (all must be rejected)"
+echo "[4/12] negative controls (all must be rejected)"
 OLEAN_DIR="$(mktemp -d)"
 lean -o "$OLEAN_DIR/L1_BURDEN.olean" L1_BURDEN.lean
 
@@ -62,7 +62,7 @@ if [ "$rejected" -ne 9 ]; then
   exit 1
 fi
 
-echo "[5/11] TypeScript/Lean bridge (generated tables must agree pair by pair)"
+echo "[5/12] TypeScript/Lean bridge (generated tables must agree pair by pair)"
 cd "$BURDEN_DIR"
 BRIDGE_DIR="$(mktemp -d)"
 cp "$OLEAN_DIR/L1_BURDEN.olean" "$BRIDGE_DIR/"
@@ -85,7 +85,7 @@ echo "OK: 31/31 pairs agree; bridge compiled"
 
 cd "$BURDEN_DIR"
 
-echo "[6/11] determinism (same audit twice, byte-identical)"
+echo "[6/12] determinism (same audit twice, byte-identical)"
 cd "$BURDEN_DIR"
 PRECEDENT="$ROOT/The_Indictment_of_the_Watchers_Original_8-21-26.txt"
 PRECEDENT_SHA="2764d1485a7c08133ae39510aff9eb277cf46b6f28cc1d2fa01e2558b6bb1499"
@@ -116,7 +116,7 @@ else
   echo "SKIP: no indictment file at $PRECEDENT (determinism not exercised on the real corpus)"
 fi
 
-echo "[7/11] ledger chain, anchored to a recorded head, and the last verdict reproduced"
+echo "[7/12] ledger chain, anchored to a recorded head, and the last verdict reproduced"
 LEDGER="ledger/receipts.jsonl"
 HEAD_FILE="ledger/HEAD"
 if [ ! -f "$LEDGER" ]; then
@@ -170,13 +170,13 @@ if [ "$REPRODUCED_VERDICT" != "$RECORDED_VERDICT" ]; then
 fi
 echo "OK: recorded falsifier reproduced the verdict: $RECORDED_VERDICT"
 
-echo "[8/11] calibration (must never print a rate without a denominator)"
+echo "[8/12] calibration (must never print a rate without a denominator)"
 node dist/src/cli.js calibrate --ledger ledger/receipts.jsonl
 
-echo "[9/11] adversarial-pattern scan self-test"
+echo "[9/12] adversarial-pattern scan self-test"
 node dist/src/cli.js self-test
 
-echo "[10/11] no Python in the new implementation"
+echo "[10/12] no Python in the new implementation"
 python_files="$(find . -path ./node_modules -prune -o -name '*.py' -print 2>/dev/null || true)"
 if [ -n "$python_files" ]; then
   echo "FAIL: Python files found in burden/:" >&2
@@ -185,7 +185,7 @@ if [ -n "$python_files" ]; then
 fi
 echo "OK: no Python files"
 
-echo "[11/11] no tracked node_modules under burden/"
+echo "[11/12] no tracked node_modules under burden/"
 cd "$ROOT"
 tracked_modules="$(git ls-files 'burden/node_modules/*' 2>/dev/null || true)"
 if [ -n "$tracked_modules" ]; then
@@ -194,6 +194,39 @@ if [ -n "$tracked_modules" ]; then
   exit 1
 fi
 echo "OK: node_modules is not tracked"
+
+cd "$BURDEN_DIR"
+echo "[12/12] claims trial — the tool against the published claims"
+CLAIMS_FILE="$ROOT/ledger/drafts/verified.jsonl"
+CLAIM_CORPUS="$ROOT/evidence/fleites"
+if [ ! -f "$CLAIMS_FILE" ]; then
+  echo "SKIP: no claims file at $CLAIMS_FILE (nothing published to audit)"
+elif [ ! -f "$CLAIM_CORPUS/FLEITES_MANIFEST.sha256" ]; then
+  echo "SKIP: no L0 corpus at $CLAIM_CORPUS"
+  echo "      WARNING: the claims trial did NOT run. Absence of the corpus is not" >&2
+  echo "      evidence that the published claims reproduce. See the recorded" >&2
+  echo "      result in docs/BURDEN_INVERSION.md and re-run where the corpus lives." >&2
+else
+  TRIAL_LOG="$(mktemp)"
+  if ! node dist/src/cli.js claims \
+      --claims "$CLAIMS_FILE" \
+      --corpus "$CLAIM_CORPUS" \
+      --bearing supporting \
+      --actor verify-gate \
+      > /dev/null 2> "$TRIAL_LOG"; then
+    echo "FAIL: the claims audit did not reproduce every published claim:" >&2
+    grep -v '^Warning' "$TRIAL_LOG" | sed 's/^/  /' >&2
+    exit 1
+  fi
+  # The run must also have actually audited the expected number. A green exit
+  # with zero claims audited would mean the trial audited nothing.
+  if ! grep -q '^claims: 17 audited, 17 verified, 0 falsified, 0 unmeasured$' "$TRIAL_LOG"; then
+    echo "FAIL: expected 17/17 verified; the summary read:" >&2
+    grep -v '^Warning' "$TRIAL_LOG" | sed 's/^/  /' >&2
+    exit 1
+  fi
+  grep '^claims:' "$TRIAL_LOG" | sed 's/^/OK: /'
+fi
 
 echo
 echo "burden verified"

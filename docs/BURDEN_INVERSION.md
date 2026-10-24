@@ -168,9 +168,9 @@ that can be checked.
 cd burden && ./verify.sh
 ```
 
-Eleven gates: typecheck, 47 tests, the Lean proof, nine negative controls that
+Twelve gates: typecheck, 53 tests, the Lean proof, nine negative controls that
 must fail to compile, the TypeScript/Lean bridge (31 pairs regenerated and
 compiled), deterministic re-run comparison, ledger chain verification and
 reproduction of the last recorded verdict by its own falsifier command,
 calibration, the scan self-test, a no-Python guard, and a
-no-tracked-`node_modules` guard.
+no-tracked-`node_modules` guard, and the claims trial against the L0 corpus.

@@ -22,6 +22,7 @@ import { canonicalJson, utcNow } from "./canonical.js";
 import { calibrate, renderCalibration } from "./calibrate.js";
 import { captureEnvironment } from "./environment.js";
 import { investigate } from "./investigate.js";
+import { auditClaim, loadExtractor, parseClaim, parseManifest } from "./claims.js";
 import { appendReceipt, readLedger, verifyLedger } from "./ledger.js";
 import { explain, renderHits, scan, selfTest } from "./scan.js";
 import { BEARINGS, CLAIM_ID_PATTERN, type Bearing, type Receipt } from "./types.js";
@@ -52,6 +53,9 @@ const USAGE = `burden — the burden inverter
   burden calibrate [--ledger PATH]
   burden verify    [--ledger PATH] [--expect-head HASH]
   burden head      [--ledger PATH]
+  burden claims    --claims PATH --corpus DIR [--manifest PATH]
+               [--extractor PATH] [--bearing B] [--actor NAME]
+               [--record LEDGER]
   burden schema
   burden self-test
 
@@ -76,6 +80,9 @@ const OPTIONS = {
   ext: { type: "string" },
   "max-files": { type: "string" },
   exclude: { type: "string" },
+  claims: { type: "string" },
+  manifest: { type: "string" },
+  extractor: { type: "string" },
   ledger: { type: "string" },
   file: { type: "string" },
   text: { type: "string" },
@@ -468,6 +475,138 @@ function commandVerify(values: Values): number {
   return 0;
 }
 
+/**
+ * Audit every published claim against the L0 corpus.
+ *
+ * This is the trial that can disagree with the ledger's own work. A claim that
+ * fails here is a finding about a published claim, not a tool error, and it is
+ * reported as one — with the page, the file, and the check that failed.
+ */
+async function commandClaims(values: Values): Promise<number> {
+  const claimsPath = requiredOption(values, "claims");
+  const corpusArg = requiredOption(values, "corpus");
+  const corpusDir = resolve(corpusArg);
+  const manifestPath =
+    option(values, "manifest") ?? resolve(corpusDir, "FLEITES_MANIFEST.sha256");
+  const bearing = parseBearing(option(values, "bearing"));
+  const actor = actorFrom(values);
+  const extractorPath =
+    option(values, "extractor") ??
+    resolve(process.cwd(), "..", "ledger", "dist", "src", "extract.js");
+
+  let claimsText: string;
+  try {
+    claimsText = readFileSync(claimsPath, "utf8");
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new UsageError(`cannot read --claims ${claimsPath}: ${message}`);
+  }
+
+  let manifestText: string;
+  try {
+    manifestText = readFileSync(manifestPath, "utf8");
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(
+      `burden: cannot read manifest ${manifestPath}: ${message}\n` +
+        "burden: without the published commitment, no claim can be located. Nothing was measured.\n",
+    );
+    return 4;
+  }
+
+  const manifest = parseManifest(manifestText);
+  const loaded = await loadExtractor(extractorPath);
+  if (loaded.extractor === null) {
+    process.stderr.write(
+      `burden: no PDF extractor: ${loaded.error ?? "unknown reason"}\n` +
+        "burden: the claims were not checked. Build ledger/ first (`npm run build`).\n",
+    );
+    return 4;
+  }
+
+  const lines = claimsText.split("\n");
+  const receipts: Receipt[] = [];
+  const badLines: { readonly line: number; readonly error: string }[] = [];
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (line === undefined || line.trim() === "") continue;
+    const parsed = parseClaim(line);
+    if (parsed.claim === null) {
+      badLines.push({ line: index + 1, error: parsed.error ?? "unknown" });
+      continue;
+    }
+    const receipt = await auditClaim(
+      {
+        claim: parsed.claim,
+        corpusDir,
+        corpusLabel: corpusArg,
+        manifest,
+        bearing,
+        actor,
+        instrument: "burden",
+      },
+      captureEnvironment(),
+      loaded.extractor,
+    );
+    receipts.push(receipt);
+  }
+
+  const ledgerPath = option(values, "record");
+  for (const receipt of receipts) {
+    process.stdout.write(`${canonicalJson(receipt)}\n`);
+  }
+
+  const byCode = new Map<string, number>();
+  for (const receipt of receipts) {
+    const code = receipt.verdict.code;
+    byCode.set(code, (byCode.get(code) ?? 0) + 1);
+  }
+  const verified = receipts.filter((r) => r.verdict.kind === "verified").length;
+  const falsified = receipts.filter((r) => r.verdict.kind === "falsified").length;
+  const unmeasured = receipts.filter((r) => r.verdict.kind === "unmeasured").length;
+
+  const summary: string[] = [];
+  summary.push(
+    `claims: ${receipts.length} audited, ${verified} verified, ${falsified} falsified, ${unmeasured} unmeasured`,
+  );
+  summary.push(
+    `  denominator ${verified + falsified} (unmeasured entries are excluded: nothing was checked)`,
+  );
+  summary.push(`  bearing assigned by operator: ${bearing} (not present in the claim records)`);
+  for (const [code, count] of [...byCode.entries()].sort((a, b) =>
+    a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0,
+  )) {
+    summary.push(`    ${code}: ${count}`);
+  }
+  if (badLines.length > 0) {
+    summary.push(`  ${badLines.length} unparseable claim line(s):`);
+    for (const bad of badLines) {
+      summary.push(`    line ${bad.line}: ${bad.error}`);
+    }
+  }
+  const failures = receipts.filter((r) => r.verdict.kind === "falsified");
+  if (failures.length > 0) {
+    summary.push("  findings (claims this audit could not reproduce):");
+    for (const receipt of failures) {
+      summary.push(`    ${receipt.claimId} ${receipt.verdict.code} — ${receipt.verdict.detail}`);
+    }
+  }
+  process.stderr.write(`${summary.join("\n")}\n`);
+
+  if (ledgerPath !== null) {
+    for (const receipt of receipts) {
+      const written = record(ledgerPath, receipt);
+      if (written !== 0) return written;
+    }
+  }
+
+  if (badLines.length > 0) return 1;
+  if (falsified > 0) return 1;
+  if (unmeasured > 0) return 4;
+  return 0;
+}
+
 function commandHead(values: Values): number {
   const path = option(values, "ledger") ?? "ledger/receipts.jsonl";
   let read;
@@ -534,7 +673,7 @@ function parseArguments(argv: readonly string[]): Parsed | null {
   }
 }
 
-function main(argv: readonly string[]): number {
+async function main(argv: readonly string[]): Promise<number> {
   const parsed = parseArguments(argv);
   if (parsed === null) return 2;
   try {
@@ -556,6 +695,8 @@ function main(argv: readonly string[]): number {
         return commandVerify(parsed.values);
       case "head":
         return commandHead(parsed.values);
+      case "claims":
+        return await commandClaims(parsed.values);
       case "schema":
         return commandSchema();
       case "self-test":
@@ -579,5 +720,5 @@ function main(argv: readonly string[]): number {
   }
 }
 
-process.exitCode = main(process.argv.slice(2));
+process.exitCode = await main(process.argv.slice(2));
 

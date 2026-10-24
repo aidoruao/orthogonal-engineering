@@ -45,6 +45,14 @@ burden investigate --id CLM-2 --corpus .. \
 # Calibration, from the chain.
 burden calibrate --ledger ledger/receipts.jsonl
 
+# Audit the published claims against the L0 corpus (machine-local).
+burden claims --claims ../ledger/drafts/verified.jsonl \
+  --corpus ../evidence/fleites --bearing supporting --actor "$USER" \
+  --record ledger/claims-audit.jsonl
+
+# Per-speaker incidence across a transcript.
+node dist/tools/scan-report.js --file ../The_Indictment_of_the_Watchers_Original_8-21-26.txt
+
 # Anchor the tail: a chain alone cannot detect a truncated last line.
 burden head --ledger ledger/receipts.jsonl > ledger/HEAD
 burden verify --ledger ledger/receipts.jsonl --expect-head "$(cat ledger/HEAD)"
@@ -84,7 +92,7 @@ Proved in `L1_BURDEN.lean`, enforced at runtime in `src/validate.ts`:
 - No rate without a denominator — `ratePercent n 0 = none`.
 - No weight collapse: a load-bearing failure is `critical`, and nothing else is.
 
-Eight negative controls in `negative/` assert the negations and must fail to
+Nine negative controls in `negative/` assert the negations and must fail to
 compile. If one compiles, its invariant is vacuous and `verify.sh` fails.
 
 ## Falsified is not the same as unmeasured
@@ -118,6 +126,24 @@ the quotes it has already checked, so searching it for one of those quotes
 always succeeds. A receipt that cites the tool's own notes is circular, and
 `--exclude` defaults to the ledger path.
 
+## The claims trial
+
+`burden claims` is the out-of-box trial: it audits the ledger's own published
+claims against the L0 corpus, locating each source by hash and checking that
+the quoted span is on the cited page. It found all 17 claims reproducible, and
+caught all three mutations used to prove it can disagree. Results, including the
+coverage gap it exposed in the scanner, are in
+[`../docs/BURDEN_TRIAL_2026-10-24.md`](../docs/BURDEN_TRIAL_2026-10-24.md).
+
+It reuses `ledger/`'s `checkQuoteOnPage` and `normalizeForComparison` rather
+than reimplementing them: a second quote matcher would let the two tools
+disagree about what "verbatim" means, and this package exists to catch
+disagreement.
+
+Per-claim receipts go to `ledger/claims-audit.jsonl`, which is **gitignored** —
+L0-derived records stay on the machine that holds the corpus, per
+`../docs/DATA_ISOLATION_BOUNDARY.md`. They contain no quote text.
+
 ## What this does not do
 
 - It does not prove any claim is true. It proves a span is present, contiguous,
@@ -138,10 +164,11 @@ always succeeds. A receipt that cites the tool's own notes is circular, and
 ./verify.sh
 ```
 
-Eleven gates: strict typecheck, 47 tests, the Lean proof, nine negative controls
+Twelve gates: strict typecheck, 53 tests, the Lean proof, nine negative controls
 that must be rejected, the TypeScript/Lean bridge regenerated and compiled
 (31 pairs), byte-identical determinism across two runs, ledger chain
 integrity anchored to a recorded head (with truncation required to be
 detected) plus reproduction of the last recorded verdict by its own falsifier
-command, calibration, the scan self-test, a no-Python guard, and a
-no-tracked-`node_modules` guard.
+command, calibration, the scan self-test, a no-Python guard, a
+no-tracked-`node_modules` guard, and the claims trial (17/17 required, explicit
+WARNING when the corpus is absent).
