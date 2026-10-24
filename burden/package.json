@@ -1,0 +1,23 @@
+{
+  "name": "oe-burden",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The burden inverter: an autonomous verifier that carries the burden of proof instead of shifting it.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "burden": "dist/src/cli.js"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test": "npm run build && node --test dist/test/*.test.js",
+    "verify": "./verify.sh"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.9",
+    "typescript": "5.9.3"
+  }
+}
