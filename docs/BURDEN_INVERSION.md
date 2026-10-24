@@ -76,9 +76,30 @@ disambiguate them by hash, it refuses (`AMBIGUOUS_SOURCE`) rather than guessing
 — the detective does not pick the suspect who fits.
 
 The receipt's `falsifier.command` is the exact command line that reproduces the
-check, and `burden/verify.sh` executes the most recent recorded command to
-prove it still returns the recorded verdict. A falsifier that cannot be run is
-a comment with better formatting.
+check, and `burden/verify.sh` executes the most recent recorded command and
+requires the reproduced verdict to match the recorded one. A falsifier that
+cannot be run is a comment with better formatting.
+
+## Falsified is not unmeasured
+
+Absence is a finding only when the whole scope was read. Zero readable files, a
+walk that hit its file cap, an unreadable directory, or two equally good
+matches all mean the claim was never measured, and the receipt says so with
+`unmeasured` and exit code 4. Only falsifications enter the calibration
+denominator.
+
+This distinction is the point. A tool that reports "not found" over a corpus it
+did not read has produced a confident number about nothing — the same vice it
+was built to invert, wearing the tool's clothes. The first build of this
+utility had exactly that bug, and the gate now pins the corrected behaviour.
+
+## The limit of a hash chain
+
+A chain proves internal consistency, not completeness. Deleting the last entry
+leaves a shorter chain that verifies; re-forging a suffix with recomputed
+hashes is also internally consistent. So `burden/ledger/HEAD` records the head
+outside the ledger, and the gate requires truncation to be *detected* against
+it. That check failing is a build failure.
 
 What it cannot do is stated in the receipt, not hidden:
 
@@ -120,7 +141,7 @@ that can be checked.
 cd burden && ./verify.sh
 ```
 
-Ten gates: typecheck, 41 tests, the Lean proof, eight negative controls that
+Ten gates: typecheck, 45 tests, the Lean proof, eight negative controls that
 must fail to compile, deterministic re-run comparison, ledger chain
 verification and reproduction of the last recorded verdict by its own
 falsifier command, calibration, the scan self-test, a no-Python guard, and a

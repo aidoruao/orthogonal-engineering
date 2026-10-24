@@ -4,8 +4,10 @@
  *
  * Exit codes:
  *   0  the check passed (or the command succeeded)
- *   1  the check failed — a falsified claim, a broken chain, load-bearing failures
+ *   1  the check ran and the claim failed — falsified, broken chain, load-bearing failures
  *   2  usage or I/O error; nothing was admitted
+ *   3  internal error: the engine produced a receipt its own gate rejects
+ *   4  the claim could not be measured; this is not a pass and not a failure
  *
  * The machine-readable receipt goes to stdout as canonical JSON. The human
  * summary goes to stderr, so a pipe gets data and a terminal gets a sentence.
@@ -15,14 +17,14 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
 
-import { audit } from "./audit.js";
+import { InadmissibleReceiptError, audit } from "./audit.js";
 import { canonicalJson, utcNow } from "./canonical.js";
 import { calibrate, renderCalibration } from "./calibrate.js";
 import { captureEnvironment } from "./environment.js";
 import { investigate } from "./investigate.js";
 import { appendReceipt, readLedger, verifyLedger } from "./ledger.js";
 import { explain, renderHits, scan, selfTest } from "./scan.js";
-import { BEARINGS, type Bearing, type Receipt } from "./types.js";
+import { BEARINGS, CLAIM_ID_PATTERN, type Bearing, type Receipt } from "./types.js";
 import { contractJson } from "./validate.js";
 
 const USAGE = `burden — the burden inverter
@@ -36,7 +38,8 @@ const USAGE = `burden — the burden inverter
 
   burden investigate --id ID --corpus DIR (--quote TEXT | --quote-file PATH)
                [--ext .txt,.md] [--max-files N] [--sha256 HEX]
-               [--bearing B] [--actor NAME] [--record LEDGER]
+               [--bearing B] [--actor NAME] [--exclude PATH]
+               [--record LEDGER]
 
       Find the source yourself: walk the corpus, locate the span, audit it.
       Refuses to guess between ambiguous sources.
@@ -48,8 +51,13 @@ const USAGE = `burden — the burden inverter
 
   burden calibrate [--ledger PATH]
   burden verify    [--ledger PATH] [--expect-head HASH]
+  burden head      [--ledger PATH]
   burden schema
   burden self-test
+
+Exit codes: 0 verified/success, 1 falsified or broken chain, 2 usage or I/O,
+3 internal error, 4 unmeasured (the claim could not be checked — not a pass,
+not a failure).
 
 Bearing: ${BEARINGS.join(" | ")}. A load-bearing failure is critical.
 `;
@@ -67,6 +75,7 @@ const OPTIONS = {
   corpus: { type: "string" },
   ext: { type: "string" },
   "max-files": { type: "string" },
+  exclude: { type: "string" },
   ledger: { type: "string" },
   file: { type: "string" },
   text: { type: "string" },
@@ -76,6 +85,9 @@ const OPTIONS = {
 } as const;
 
 class UsageError extends Error {}
+
+/** The engine refused its own output. That is a bug in this tool, not the caller. */
+class InternalError extends Error {}
 
 type Values = Readonly<Record<string, string | boolean | undefined>>;
 
@@ -112,13 +124,47 @@ function parseBearing(raw: string | null): Bearing {
 
 function actorFrom(values: Values): string {
   const explicit = option(values, "actor");
-  if (explicit !== null && explicit.trim() !== "") return explicit;
-  return process.env["BURDEN_ACTOR"] ?? process.env["USER"] ?? "unknown-actor";
+  const candidate =
+    explicit !== null && explicit.trim() !== ""
+      ? explicit
+      : (process.env["BURDEN_ACTOR"] ?? process.env["USER"] ?? "");
+  if (candidate.trim() === "") {
+    throw new UsageError(
+      "no actor: pass --actor or set BURDEN_ACTOR; an action needs someone accountable for it",
+    );
+  }
+  return candidate;
+}
+
+/**
+ * Validate the claim id and proposition at the boundary.
+ *
+ * The engine refuses to emit an inadmissible receipt, which means a malformed
+ * id would reach `admitOrThrow` and throw. A malformed argument is a usage
+ * error, and usage errors exit 2 with a sentence — not a stack trace.
+ */
+function claimIdFrom(values: Values): string {
+  const id = requiredOption(values, "id");
+  if (!CLAIM_ID_PATTERN.test(id)) {
+    throw new UsageError(
+      `--id "${id}" must match ${CLAIM_ID_PATTERN.source}`,
+    );
+  }
+  return id;
+}
+
+function readTextFile(path: string, flag: string): string {
+  try {
+    return readFileSync(path, "utf8");
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new UsageError(`cannot read ${flag} ${path}: ${message}`);
+  }
 }
 
 /** A single trailing newline is an editor artifact, not part of the span. */
 function readQuoteFile(path: string): string {
-  const raw = readFileSync(path, "utf8");
+  const raw = readTextFile(path, "--quote-file");
   if (raw.endsWith("\r\n")) return raw.slice(0, -2);
   if (raw.endsWith("\n")) return raw.slice(0, -1);
   return raw;
@@ -149,10 +195,13 @@ function quoteFlag(values: Values, quote: string): string {
 }
 
 function propositionFrom(values: Values): string {
-  return (
+  const proposition =
     option(values, "proposition") ??
-    "the cited span occurs verbatim in the named source"
-  );
+    "the cited span occurs verbatim in the named source";
+  if (proposition.trim() === "") {
+    throw new UsageError("--proposition cannot be blank");
+  }
+  return proposition;
 }
 
 function summarise(receipt: Receipt): string {
@@ -168,7 +217,14 @@ function summarise(receipt: Receipt): string {
 }
 
 function record(path: string, receipt: Receipt): number {
-  const written = appendReceipt(path, receipt, utcNow());
+  let written;
+  try {
+    written = appendReceipt(path, receipt, utcNow());
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(`burden: cannot write ledger ${path}: ${message}\n`);
+    return 2;
+  }
   if (!written.ok) {
     process.stderr.write(
       `burden: refusing to append to a broken ledger:\n${written.failures
@@ -181,10 +237,24 @@ function record(path: string, receipt: Receipt): number {
   return 0;
 }
 
+/** 0 verified, 1 falsified, 4 unmeasured. Never collapses the last two. */
+function verdictExit(receipt: Receipt): number {
+  switch (receipt.verdict.kind) {
+    case "verified":
+      return 0;
+    case "falsified":
+      return 1;
+    case "unmeasured":
+      return 4;
+  }
+}
+
 function commandAudit(values: Values): number {
-  const id = requiredOption(values, "id");
+  const id = claimIdFrom(values);
   const source = requiredOption(values, "source");
   const quote = quoteFrom(values);
+  const proposition = propositionFrom(values);
+  const actor = actorFrom(values);
   const sha = option(values, "sha256");
   const falsifierCommand =
     `burden audit --id ${shellQuote(id)} --source ${shellQuote(source)}` +
@@ -194,7 +264,7 @@ function commandAudit(values: Values): number {
   const receipt = audit(
     {
       claimId: id,
-      claim: propositionFrom(values),
+      claim: proposition,
       bearing: parseBearing(option(values, "bearing")),
       checkability: "machine_checkable",
       missingMeasurement: null,
@@ -203,7 +273,7 @@ function commandAudit(values: Values): number {
       displayPath: source,
       expectedSha256: sha,
       falsifierCommand,
-      actor: actorFrom(values),
+      actor,
     },
     captureEnvironment(),
   );
@@ -216,7 +286,7 @@ function commandAudit(values: Values): number {
     const written = record(ledgerPath, receipt);
     if (written !== 0) return written;
   }
-  return receipt.verdict.kind === "verified" ? 0 : 1;
+  return verdictExit(receipt);
 }
 
 const DEFAULT_EXTENSIONS: readonly string[] = [
@@ -241,6 +311,25 @@ function extensionsFrom(values: Values): readonly string[] {
   return parts;
 }
 
+/**
+ * Paths the scan must never treat as evidence.
+ *
+ * The receipt ledger is excluded by default and cannot be re-included: it
+ * stores the quotes it has checked, so scanning it always finds them, and a
+ * receipt that cites its own ledger is circular evidence.
+ */
+function excludePathsFrom(values: Values): readonly string[] {
+  const paths = [resolve("ledger/receipts.jsonl")];
+  const raw = option(values, "exclude");
+  if (raw !== null) {
+    for (const part of raw.split(",")) {
+      const trimmed = part.trim();
+      if (trimmed !== "") paths.push(resolve(trimmed));
+    }
+  }
+  return paths;
+}
+
 function maxFilesFrom(values: Values): number {
   const raw = option(values, "max-files");
   if (raw === null) return 400;
@@ -252,10 +341,12 @@ function maxFilesFrom(values: Values): number {
 }
 
 function commandInvestigate(values: Values): number {
-  const id = requiredOption(values, "id");
+  const id = claimIdFrom(values);
   const corpusArg = requiredOption(values, "corpus");
   const corpus = resolve(corpusArg);
   const quote = quoteFrom(values);
+  const proposition = propositionFrom(values);
+  const actor = actorFrom(values);
   const maxFiles = maxFilesFrom(values);
   const falsifierCommand =
     `burden investigate --id ${shellQuote(id)} --corpus ${shellQuote(corpusArg)}` +
@@ -264,7 +355,7 @@ function commandInvestigate(values: Values): number {
   const investigation = investigate(
     {
       claimId: id,
-      claim: propositionFrom(values),
+      claim: proposition,
       bearing: parseBearing(option(values, "bearing")),
       checkability: "machine_checkable",
       missingMeasurement: null,
@@ -274,7 +365,8 @@ function commandInvestigate(values: Values): number {
       maxFiles,
       expectedSha256: option(values, "sha256"),
       falsifierCommand,
-      actor: actorFrom(values),
+      actor,
+      excludePaths: excludePathsFrom(values),
     },
     captureEnvironment(),
   );
@@ -289,7 +381,7 @@ function commandInvestigate(values: Values): number {
     const written = record(ledgerPath, investigation.receipt);
     if (written !== 0) return written;
   }
-  return investigation.receipt.verdict.kind === "verified" ? 0 : 1;
+  return verdictExit(investigation.receipt);
 }
 
 function commandScan(values: Values): number {
@@ -320,7 +412,7 @@ function commandScan(values: Values): number {
     throw new UsageError("supply --file or --text, not both");
   }
   let text: string;
-  if (file !== null) text = readFileSync(file, "utf8");
+  if (file !== null) text = readTextFile(file, "--file");
   else if (inline !== null) text = inline;
   else throw new UsageError("one of --file or --text is required");
 
@@ -332,7 +424,14 @@ function commandScan(values: Values): number {
 
 function commandCalibrate(values: Values): number {
   const path = option(values, "ledger") ?? "ledger/receipts.jsonl";
-  const read = readLedger(path);
+  let read;
+  try {
+    read = readLedger(path);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(`burden: cannot read ledger ${path}: ${message}\n`);
+    return 2;
+  }
   if (read.failures.length > 0) {
     process.stderr.write(
       `burden: ledger does not verify; calibration would be meaningless:\n${read.failures
@@ -348,7 +447,15 @@ function commandCalibrate(values: Values): number {
 
 function commandVerify(values: Values): number {
   const path = option(values, "ledger") ?? "ledger/receipts.jsonl";
-  const result = verifyLedger(path, option(values, "expect-head"));
+  const head = option(values, "expect-head");
+  let result;
+  try {
+    result = verifyLedger(path, head);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(`burden: cannot read ledger ${path}: ${message}\n`);
+    return 2;
+  }
   if (!result.ok) {
     process.stderr.write(
       `burden: ledger BROKEN at ${result.entries} verified entries\n${result.failures
@@ -358,6 +465,33 @@ function commandVerify(values: Values): number {
     return 1;
   }
   process.stdout.write(`ledger verified: ${result.entries} entries, chain intact\n`);
+  return 0;
+}
+
+function commandHead(values: Values): number {
+  const path = option(values, "ledger") ?? "ledger/receipts.jsonl";
+  let read;
+  try {
+    read = readLedger(path);
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    process.stderr.write(`burden: cannot read ledger ${path}: ${message}\n`);
+    return 2;
+  }
+  if (read.failures.length > 0) {
+    process.stderr.write(
+      `burden: ledger does not verify, so it has no trustworthy head:\n${read.failures
+        .map((failure) => `  line ${failure.line} ${failure.code}: ${failure.detail}`)
+        .join("\n")}\n`,
+    );
+    return 1;
+  }
+  const last = read.entries.at(-1);
+  if (last === undefined) {
+    process.stderr.write(`burden: ledger is empty; there is no head to record\n`);
+    return 1;
+  }
+  process.stdout.write(`${last.entrySha256}\n`);
   return 0;
 }
 
@@ -420,6 +554,8 @@ function main(argv: readonly string[]): number {
         return commandCalibrate(parsed.values);
       case "verify":
         return commandVerify(parsed.values);
+      case "head":
+        return commandHead(parsed.values);
       case "schema":
         return commandSchema();
       case "self-test":
@@ -431,6 +567,13 @@ function main(argv: readonly string[]): number {
     if (error instanceof UsageError) {
       process.stderr.write(`burden: ${error.message}\n\n${USAGE}`);
       return 2;
+    }
+    if (error instanceof InternalError || error instanceof InadmissibleReceiptError) {
+      process.stderr.write(`burden: INTERNAL — ${error.message}\n`);
+      process.stderr.write(
+        "burden: no receipt was admitted. This is a defect in the tool, not in your input.\n",
+      );
+      return 3;
     }
     throw error;
   }

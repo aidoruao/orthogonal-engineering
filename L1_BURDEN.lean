@@ -26,8 +26,9 @@ This file proves the *shape* of the answer:
    `critical` is reachable by no other combination — passive neutrality is
    structurally unavailable.
 
-Each structure is shown inhabited, so the proof fields are not vacuous: a
-verified receipt and a falsified receipt are both constructed below.
+Every structure is shown inhabited, so the proof fields are not vacuous: a
+verified receipt, a falsified receipt, and a human-only assignment are all
+constructed below.
 
 HONEST SCOPE. This proves properties of the receipt *model*. It does not prove
 that any claim is true, that any source exists, or that a language model
@@ -219,6 +220,22 @@ structure Assignment where
 theorem human_only_names_the_gap (a : Assignment) (h : a.checkability = .humanOnly) :
     a.missingMeasurement ≠ "" :=
   a.named h
+
+/-- A human-only assignment with a named measurement exists, so `named` is not
+an unsatisfiable field propping up the theorem. -/
+def exampleAssignment : Assignment where
+  checkability := .humanOnly
+  missingMeasurement := "cue reactivity without the act, 30 minutes"
+  named := by intro _; decide
+
+theorem assignment_is_inhabited :
+    exampleAssignment.missingMeasurement ≠ "" :=
+  human_only_names_the_gap exampleAssignment rfl
+
+/-! A machine-checkable assignment carries no such obligation, and the
+obligation is vacuous there — so the field is not simply "always non-empty". -/
+theorem machine_checkable_assignment_admits_blank :
+    (Assignment.mk Checkability.machineCheckable "" (by intro h; exact absurd h (by decide))).missingMeasurement = "" := rfl
 
 /-! ## 4. Calibration — the denominator -/
 

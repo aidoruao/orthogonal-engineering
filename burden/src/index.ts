@@ -55,7 +55,14 @@ export {
 } from "./ledger.js";
 export type { LedgerEntry, LedgerFailure, LedgerRead, LedgerWriteResult } from "./ledger.js";
 
-export { admitOrThrow, audit, composeReceipt, locateSpan, stripLineGutters } from "./audit.js";
+export {
+  InadmissibleReceiptError,
+  admitOrThrow,
+  audit,
+  composeReceipt,
+  locateSpan,
+  stripLineGutters,
+} from "./audit.js";
 export type { AuditInput, SpanFinding } from "./audit.js";
 
 export { investigate } from "./investigate.js";

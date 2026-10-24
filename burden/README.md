@@ -46,7 +46,8 @@ burden investigate --id CLM-2 --corpus .. \
 burden calibrate --ledger ledger/receipts.jsonl
 
 # Anchor the tail: a chain alone cannot detect a truncated last line.
-burden verify --ledger ledger/receipts.jsonl --expect-head <entry-hash>
+burden head --ledger ledger/receipts.jsonl > ledger/HEAD
+burden verify --ledger ledger/receipts.jsonl --expect-head "$(cat ledger/HEAD)"
 
 # The corporate-adversarial lint.
 burden scan --file fixtures/adversarial.txt
@@ -54,9 +55,11 @@ burden scan --explain CLOSURE_OFFER
 burden self-test
 ```
 
-Exit codes: `0` verified / success, `1` falsified / broken chain / load-bearing
-failure, `2` usage or I/O error. Receipts go to stdout as canonical JSON; the
-human summary goes to stderr.
+Exit codes: `0` verified, `1` falsified or broken chain, `2` usage or I/O,
+`3` internal error, `4` **unmeasured** — the claim could not be checked.
+Measured failure and absence of measurement are different outcomes and get
+different codes. Receipts go to stdout as canonical JSON; the human summary
+goes to stderr.
 
 ## The contract in one table
 
@@ -84,14 +87,45 @@ Proved in `L1_BURDEN.lean`, enforced at runtime in `src/validate.ts`:
 Eight negative controls in `negative/` assert the negations and must fail to
 compile. If one compiles, its invariant is vacuous and `verify.sh` fails.
 
+## Falsified is not the same as unmeasured
+
+A span that is absent from a corpus that was fully read is a **falsification**:
+a check ran and the claim failed. A span that was not found because the corpus
+had no readable files, the walk hit its file cap, a directory could not be
+opened, or two sources matched equally well is **unmeasured**: no check ran, so
+neither the claim nor its negation is supported.
+
+Only falsifications enter the calibration denominator. This is not a detail —
+reporting "not found" over an unread corpus as a measured failure is how a tool
+generates a confident number about nothing, which is the failure this package
+exists to invert. `burden/test/audit.test.ts` pins each branch, and
+`burden/test/calibrate.test.ts` pins that an unmeasured entry never enters the
+denominator.
+
+## The ledger's own honesty
+
+A hash chain proves internal consistency, not completeness: deleting the last
+entry leaves a shorter chain that still verifies, and a re-forged suffix with
+recomputed hashes is internally consistent too. So the head is recorded **outside**
+the ledger in `burden/ledger/HEAD`, and `verify.sh` requires it to be present,
+requires truncation to be detected against it, and then replays the last
+recorded `falsifier.command` and compares the reproduced verdict to the
+recorded one. Reproducing the *verdict*, not merely a zero exit status, is the
+check.
+
+The scanner also refuses to treat the receipt ledger as evidence: it contains
+the quotes it has already checked, so searching it for one of those quotes
+always succeeds. A receipt that cites the tool's own notes is circular, and
+`--exclude` defaults to the ledger path.
+
 ## What this does not do
 
 - It does not prove any claim is true. It proves a span is present, contiguous,
   and in the file whose hash is recorded.
 - A hash chain proves internal consistency, not completeness: deleting the last
   entry leaves a shorter chain that still verifies. Anchor the tail with
-  `burden verify --expect-head <hash>` and record that hash somewhere outside
-  the ledger (the session handoff does).
+  `burden verify --expect-head <hash>`; `burden/ledger/HEAD` holds it and
+  `verify.sh` requires the truncation check to fail loudly.
 - `scan` is a lint over named patterns, not a judgement. A hit is a question.
 - It cannot see escalation across turns; a single text does not carry that
   evidence.
@@ -104,8 +138,9 @@ compile. If one compiles, its invariant is vacuous and `verify.sh` fails.
 ./verify.sh
 ```
 
-Ten gates: strict typecheck, 41 tests, the Lean proof, eight negative controls
+Ten gates: strict typecheck, 45 tests, the Lean proof, eight negative controls
 that must be rejected, byte-identical determinism across two runs, ledger chain
-integrity plus reproduction of the last recorded verdict by its own falsifier
+integrity anchored to a recorded head (with truncation required to be
+detected) plus reproduction of the last recorded verdict by its own falsifier
 command, calibration, the scan self-test, a no-Python guard, and a
 no-tracked-`node_modules` guard.

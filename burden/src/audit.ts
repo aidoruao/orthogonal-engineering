@@ -235,6 +235,18 @@ export function composeReceipt(args: {
 }
 
 /**
+ * Thrown when the engine composes a receipt its own gate rejects. That is a
+ * defect in the engine, never in the caller's input, so it gets its own type
+ * and its own exit code rather than being dressed up as a usage error.
+ */
+export class InadmissibleReceiptError extends Error {
+  constructor(detail: string) {
+    super(detail);
+    this.name = "InadmissibleReceiptError";
+  }
+}
+
+/**
  * The engine cannot emit a receipt its own gate would reject. If it ever does,
  * that is a bug in this file, and it fails loudly rather than writing a
  * plausible-looking record.
@@ -245,7 +257,7 @@ export function admitOrThrow(receipt: Receipt): Receipt {
     const lines = admitted.violations
       .map((violation) => `${violation.code} at ${violation.path || "<root>"}`)
       .join("; ");
-    throw new Error(`burden: engine produced an inadmissible receipt: ${lines}`);
+    throw new InadmissibleReceiptError(`engine produced an inadmissible receipt: ${lines}`);
   }
   return admitted.receipt;
 }

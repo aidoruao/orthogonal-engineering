@@ -126,6 +126,29 @@ test("unmeasured verdicts are recorded but are not measurements", () => {
   assert.equal(calibration.falsificationRatePercent, null);
 });
 
+test("an empty-checked claim never enters the denominator", () => {
+  // The regression this pins: an investigator run against an empty corpus used
+  // to record `falsified`, which calibrate counted as an audited check and
+  // reported as a confident 100%. A rate over nothing is the exact failure the
+  // package exists to invert.
+  const calibration = calibrate([
+    entry(
+      0,
+      receipt({
+        claimId: "CLM-CAL-7",
+        tier: "unverified",
+        kind: "unmeasured",
+        bearing: "load_bearing",
+        code: "NO_SOURCES_SCANNED",
+      }),
+    ),
+  ]);
+  assert.equal(calibration.audited, 0);
+  assert.equal(calibration.falsificationRatePercent, null);
+  assert.equal(calibration.unmeasured, 1);
+  assert.ok(renderCalibration(calibration).includes("UNMEASURED"));
+});
+
 test("load-bearing failures are listed, never averaged away", () => {
   const calibration = calibrate([
     entry(

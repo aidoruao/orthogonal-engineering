@@ -11,7 +11,7 @@
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, resolve } from "node:path";
 
 import { audit, composeReceipt, admitOrThrow } from "./audit.js";
 import { sha256Hex } from "./canonical.js";
@@ -24,6 +24,9 @@ import {
   type Environment,
   type Receipt,
 } from "./types.js";
+
+/** Stop collecting matches after this many. The cap is disclosed, not silent. */
+const MATCH_CAP = 8;
 
 /** Directories that are never evidence. */
 const SKIP_DIRECTORIES: readonly string[] = [
@@ -47,6 +50,13 @@ export type InvestigateInput = {
   readonly root: string;
   readonly extensions: readonly string[];
   readonly maxFiles: number;
+  /**
+   * Paths that are never evidence. The receipt ledger is the important one: it
+   * contains the quotes it has already checked, so searching it for a quote
+   * always finds it. A receipt that cites itself is circular evidence, and the
+   * scanner refuses to consider its own notes.
+   */
+  readonly excludePaths: readonly string[];
   readonly expectedSha256: string | null;
   readonly falsifierCommand: string;
   readonly actor: string;
@@ -58,11 +68,20 @@ export type Investigation = {
   readonly skipped: number;
   readonly matches: readonly string[];
   readonly truncated: boolean;
+  /** True only when absence, if reported, was established over the whole scope. */
+  readonly measured: boolean;
 };
 
 type WalkResult = {
   readonly files: readonly string[];
-  readonly skipped: number;
+  /** Skipped for a declared reason (extension, excluded directory). */
+  readonly filtered: number;
+  /**
+   * Skipped for a reason that could hide the span: a directory that could not
+   * be read, a file that could not be stat-ed, a file over the size limit.
+   * Absence is not measurable while this is non-zero.
+   */
+  readonly opaque: number;
   readonly truncated: boolean;
 };
 
@@ -80,21 +99,32 @@ function byName(
 }
 
 /**
- * Deterministic traversal: entries sorted by name, files before directories,
- * skipped directories counted rather than silently ignored.
+ * Deterministic traversal: entries sorted by name, files before directories.
+ *
+ * Skips are split in two, because they mean different things. A file excluded
+ * by extension is outside the declared scope, so its absence is expected. A
+ * directory that cannot be read is inside the scope and unexamined, so absence
+ * establishes nothing. Collapsing those two into one counter is how a tool
+ * reports a confident "not found" about a place it never looked.
  */
-function walk(root: string, extensions: readonly string[], maxFiles: number): WalkResult {
+function walk(
+  root: string,
+  extensions: readonly string[],
+  maxFiles: number,
+  excludePaths: readonly string[],
+): WalkResult {
   const files: string[] = [];
-  let skipped = 0;
+  let filtered = 0;
+  let opaque = 0;
   let truncated = false;
+  const excluded = new Set(excludePaths.map((path) => resolve(path)));
 
   const visit = (dir: string): boolean => {
     let entries;
     try {
       entries = readdirSync(dir, { withFileTypes: true });
     } catch {
-      // Unreadable directory: counted, never silently treated as empty.
-      skipped += 1;
+      opaque += 1;
       return true;
     }
     entries.sort(byName);
@@ -102,19 +132,23 @@ function walk(root: string, extensions: readonly string[], maxFiles: number): Wa
     for (const entry of entries) {
       if (!entry.isFile()) continue;
       const full = join(dir, entry.name);
+      if (excluded.has(resolve(full))) {
+        filtered += 1;
+        continue;
+      }
       if (!extensions.includes(extensionOf(entry.name))) {
-        skipped += 1;
+        filtered += 1;
         continue;
       }
       let size = 0;
       try {
         size = statSync(full).size;
       } catch {
-        skipped += 1;
+        opaque += 1;
         continue;
       }
       if (size > MAX_SOURCE_BYTES) {
-        skipped += 1;
+        opaque += 1;
         continue;
       }
       files.push(full);
@@ -127,7 +161,7 @@ function walk(root: string, extensions: readonly string[], maxFiles: number): Wa
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       if (SKIP_DIRECTORIES.includes(entry.name)) {
-        skipped += 1;
+        filtered += 1;
         continue;
       }
       if (!visit(join(dir, entry.name))) return false;
@@ -136,7 +170,7 @@ function walk(root: string, extensions: readonly string[], maxFiles: number): Wa
   };
 
   visit(root);
-  return { files, skipped, truncated };
+  return { files, filtered, opaque, truncated };
 }
 
 export function investigate(input: InvestigateInput, env: Environment): Investigation {
@@ -190,36 +224,42 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
       skipped: 0,
       matches: [],
       truncated: false,
+      measured: false,
     };
   }
 
-  const walked = walk(input.root, input.extensions, input.maxFiles);
+  const walked = walk(input.root, input.extensions, input.maxFiles, input.excludePaths);
   const matches: string[] = [];
   let scanned = 0;
-  let skipped = walked.skipped;
+  let opaque = walked.opaque;
+  let matchCapReached = false;
 
   for (const file of walked.files) {
     let text: string;
     try {
       text = readFileSync(file, "utf8");
     } catch {
-      skipped += 1;
+      opaque += 1;
+      continue;
+    }
+    if (text.includes("\u0000")) {
+      opaque += 1;
       continue;
     }
     scanned += 1;
-    if (text.includes("\u0000")) {
-      skipped += 1;
-      continue;
-    }
     if (text.includes(input.quote)) {
       matches.push(file);
-      if (matches.length >= 8) break;
+      if (matches.length >= MATCH_CAP) {
+        matchCapReached = true;
+        break;
+      }
     }
   }
 
+  const skipped = walked.filtered + opaque;
   const rootLabel = relative(process.cwd(), input.root) || ".";
-  const scannedDetail = `${scanned} files scanned, ${skipped} skipped, truncated=${String(
-    walked.truncated,
+  const scannedDetail = `${scanned} files scanned, ${walked.filtered} filtered, ${opaque} opaque, truncated=${String(
+    walked.truncated || matchCapReached,
   )}, root=${rootLabel}`;
 
   const scanStep: DerivationStep = {
@@ -233,8 +273,22 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
             .join(", ")}`,
   };
 
-
   if (matches.length === 0) {
+    // Absence is a measurement only if the whole scope was read. Zero files
+    // scanned, an unreadable directory, an oversized file, or a walk that hit
+    // its cap all mean the space was not covered — and an uncovered space
+    // supports neither the claim nor its negation. Reporting that as
+    // "falsified" would put a confident number behind an unexamined corpus,
+    // which is the exact failure this tool inverts.
+    const uncovered =
+      scanned === 0
+        ? "no file in the declared scope could be read"
+        : walked.truncated
+          ? `the walk stopped at the ${input.maxFiles}-file cap before covering the scope`
+          : opaque > 0
+            ? `${opaque} path(s) in scope could not be read (unreadable directory, stat failure, or file over the size limit)`
+            : null;
+
     const receipt = composeReceipt({
       input: { ...base, sourcePath: "", displayPath: "<corpus>" },
       env,
@@ -245,14 +299,24 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
         {
           check: "span_exact",
           ok: false,
-          detail: "the span does not occur in any scanned file",
+          detail:
+            uncovered === null
+              ? "the span does not occur in any scanned file"
+              : `not established: ${uncovered}`,
         },
       ],
-      verdict: {
-        kind: "falsified",
-        code: "SPAN_NOT_FOUND_IN_CORPUS",
-        detail: `the span does not occur in the ${scanned} files scanned under the corpus root`,
-      },
+      verdict:
+        uncovered === null
+          ? {
+              kind: "falsified",
+              code: "SPAN_NOT_FOUND_IN_CORPUS",
+              detail: `the span does not occur in the ${scanned} files scanned under the corpus root`,
+            }
+          : {
+              kind: "unmeasured",
+              code: scanned === 0 ? "NO_SOURCES_SCANNED" : "SCOPE_INCOMPLETE",
+              detail: `absence is not established: ${uncovered}`,
+            },
     });
     return {
       receipt: admitOrThrow(receipt),
@@ -260,6 +324,7 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
       skipped,
       matches: [],
       truncated: walked.truncated,
+      measured: uncovered === null,
     };
   }
 
@@ -301,9 +366,9 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
         },
       ],
       verdict: {
-        kind: "falsified",
+        kind: "unmeasured",
         code: "AMBIGUOUS_SOURCE",
-        detail: `the span occurs in ${matches.length} files; refusing to guess which one the claim means`,
+        detail: `the span occurs in ${matches.length} files; refusing to guess which one the claim means, so the claim was not measured`,
       },
     });
     return {
@@ -312,6 +377,7 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
       skipped,
       matches: matches.map((file) => relative(input.root, file)),
       truncated: walked.truncated,
+      measured: false,
     };
   }
 
@@ -329,5 +395,6 @@ export function investigate(input: InvestigateInput, env: Environment): Investig
     skipped,
     matches: matches.map((file) => relative(input.root, file)),
     truncated: walked.truncated,
+    measured: true,
   };
 }

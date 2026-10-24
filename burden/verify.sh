@@ -92,20 +92,59 @@ else
   echo "SKIP: no indictment file at $PRECEDENT (determinism not exercised on the real corpus)"
 fi
 
-echo "[6/10] ledger chain, and the recorded falsifier reproduces the verdict"
-node dist/src/cli.js verify --ledger ledger/receipts.jsonl
-if [ -f ledger/receipts.jsonl ]; then
-  FALSIFIER="$(node -e 'const fs=require("fs");const lines=fs.readFileSync("ledger/receipts.jsonl","utf8").trim().split("\n");const last=JSON.parse(lines[lines.length-1]);process.stdout.write(last.receipt.falsifier.command);')"
-  SHIM_DIR="$(mktemp -d)"
-  printf '#!/usr/bin/env bash\nexec node "%s" "$@"\n' "$BURDEN_DIR/dist/src/cli.js" > "$SHIM_DIR/burden"
-  chmod +x "$SHIM_DIR/burden"
-  if ! PATH="$SHIM_DIR:$PATH" bash -c "$FALSIFIER" > /dev/null 2>&1; then
-    echo "FAIL: the recorded falsifier command did not reproduce the verdict:" >&2
-    echo "  $FALSIFIER" >&2
-    exit 1
-  fi
-  echo "OK: recorded falsifier reproduced the verdict"
+echo "[6/10] ledger chain, anchored to a recorded head, and the last verdict reproduced"
+LEDGER="ledger/receipts.jsonl"
+HEAD_FILE="ledger/HEAD"
+if [ ! -f "$LEDGER" ]; then
+  echo "FAIL: no ledger at $LEDGER" >&2
+  exit 1
 fi
+if [ ! -f "$HEAD_FILE" ]; then
+  echo "FAIL: no recorded head at $HEAD_FILE" >&2
+  echo "      A hash chain proves internal consistency, not completeness: deleting" >&2
+  echo "      the last entry leaves a shorter chain that still verifies. The head" >&2
+  echo "      must be recorded outside the ledger. Regenerate it with:" >&2
+  echo "        node dist/src/cli.js head --ledger $LEDGER > $HEAD_FILE" >&2
+  exit 1
+fi
+RECORDED_HEAD="$(tr -d '[:space:]' < "$HEAD_FILE")"
+node dist/src/cli.js verify --ledger "$LEDGER" --expect-head "$RECORDED_HEAD"
+
+# A truncated tail must now be detectable. Prove the anchor works rather than
+# asserting it: drop the last line and require a non-zero exit.
+TRUNCATED="$(mktemp)"
+head -n -1 "$LEDGER" > "$TRUNCATED"
+if node dist/src/cli.js verify --ledger "$TRUNCATED" --expect-head "$RECORDED_HEAD" >/dev/null 2>&1; then
+  echo "FAIL: a truncated ledger still verified; the head anchor is not load-bearing" >&2
+  rm -f "$TRUNCATED"
+  exit 1
+fi
+rm -f "$TRUNCATED"
+echo "OK: truncation is detected against the recorded head"
+
+# Reproduce the last recorded verdict with its own falsifier command, and
+# require the reproduced receipt to match the recorded one byte for byte on
+# the fields the check is supposed to reproduce.
+FALSIFIER="$(node -e 'const fs=require("fs");const lines=fs.readFileSync(process.argv[1],"utf8").trim().split("\n");const last=JSON.parse(lines[lines.length-1]);process.stdout.write(last.receipt.falsifier.command);' "$LEDGER")"
+RECORDED_VERDICT="$(node -e 'const fs=require("fs");const lines=fs.readFileSync(process.argv[1],"utf8").trim().split("\n");const last=JSON.parse(lines[lines.length-1]);process.stdout.write(JSON.stringify([last.receipt.verdict.code,last.receipt.verdict.kind,last.receipt.tier,last.receipt.source&&last.receipt.source.sha256]));' "$LEDGER")"
+SHIM_DIR="$(mktemp -d)"
+printf '#!/usr/bin/env bash\nexec node "%s" "$@"\n' "$BURDEN_DIR/dist/src/cli.js" > "$SHIM_DIR/burden"
+chmod +x "$SHIM_DIR/burden"
+REPRODUCED="$(cd "$BURDEN_DIR" && PATH="$SHIM_DIR:$PATH" bash -c "$FALSIFIER" 2>/dev/null)"
+if [ -z "$REPRODUCED" ]; then
+  echo "FAIL: the recorded falsifier command produced no receipt:" >&2
+  echo "  $FALSIFIER" >&2
+  exit 1
+fi
+REPRODUCED_VERDICT="$(printf '%s' "$REPRODUCED" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const r=JSON.parse(s);process.stdout.write(JSON.stringify([r.verdict.code,r.verdict.kind,r.tier,r.source&&r.source.sha256]));});')"
+if [ "$REPRODUCED_VERDICT" != "$RECORDED_VERDICT" ]; then
+  echo "FAIL: the recorded falsifier no longer reproduces the recorded verdict" >&2
+  echo "  recorded:   $RECORDED_VERDICT" >&2
+  echo "  reproduced: $REPRODUCED_VERDICT" >&2
+  echo "  command:    $FALSIFIER" >&2
+  exit 1
+fi
+echo "OK: recorded falsifier reproduced the verdict: $RECORDED_VERDICT"
 
 echo "[7/10] calibration (must never print a rate without a denominator)"
 node dist/src/cli.js calibrate --ledger ledger/receipts.jsonl

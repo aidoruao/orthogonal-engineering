@@ -223,6 +223,7 @@ function investigationInput(
     root,
     extensions: [".txt"],
     maxFiles: 50,
+    excludePaths: [],
     expectedSha256: null,
     falsifierCommand: "burden investigate --id CLM-INVESTIGATE-1 --corpus <root> --quote '<span>'",
     actor: "investigate-test",
@@ -255,15 +256,31 @@ test("investigate refuses to guess between two matching sources", () => {
     writeFileSync(join(dir, "two.txt"), SOURCE_TEXT, "utf8");
 
     const result = investigate(investigationInput(dir), ENV);
-    assert.equal(result.receipt.verdict.kind, "falsified");
     assert.equal(result.receipt.verdict.code, "AMBIGUOUS_SOURCE");
+    // Refusing to guess is not a measurement of the claim: the claim was
+    // never checked, so it must not enter the calibration denominator.
+    assert.equal(result.receipt.verdict.kind, "unmeasured");
+    assert.equal(result.measured, false);
     assert.equal(result.matches.length, 2);
   } finally {
     dispose(dir);
   }
 });
 
-test("investigate reports an absent span across the whole corpus", () => {
+test("an empty corpus is unmeasured, never a falsification", () => {
+  const dir = tempDir();
+  try {
+    const result = investigate(investigationInput(dir), ENV);
+    assert.equal(result.scanned, 0);
+    assert.equal(result.receipt.verdict.kind, "unmeasured");
+    assert.equal(result.receipt.verdict.code, "NO_SOURCES_SCANNED");
+    assert.equal(result.measured, false);
+  } finally {
+    dispose(dir);
+  }
+});
+
+test("absence in a fully read corpus is a real falsification", () => {
   const dir = tempDir();
   try {
     writeFileSync(join(dir, "one.txt"), "nothing here\n", "utf8");
@@ -271,9 +288,57 @@ test("investigate reports an absent span across the whole corpus", () => {
       investigationInput(dir, { quote: "A line that is not present." }),
       ENV,
     );
+    assert.equal(result.scanned, 1);
+    assert.equal(result.measured, true);
     assert.equal(result.receipt.verdict.kind, "falsified");
     assert.equal(result.receipt.verdict.code, "SPAN_NOT_FOUND_IN_CORPUS");
-    assert.equal(result.scanned, 1);
+  } finally {
+    dispose(dir);
+  }
+});
+
+test("an excluded path is never treated as evidence", () => {
+  // A receipt ledger stores the quotes it has already checked. Scanning it for
+  // one of those quotes always succeeds, which would let a claim cite the
+  // tool's own notes as its source.
+  const dir = tempDir();
+  try {
+    writeFileSync(join(dir, "evidence.txt"), SOURCE_TEXT, "utf8");
+    writeFileSync(join(dir, "ledger.jsonl"), SOURCE_TEXT, "utf8");
+
+    const excluded = investigate(
+      investigationInput(dir, {
+        extensions: [".txt", ".jsonl"],
+        excludePaths: [join(dir, "ledger.jsonl")],
+      }),
+      ENV,
+    );
+    assert.deepEqual(excluded.matches, ["evidence.txt"]);
+    assert.equal(excluded.receipt.verdict.kind, "verified");
+
+    const unexcluded = investigate(
+      investigationInput(dir, { extensions: [".txt", ".jsonl"] }),
+      ENV,
+    );
+    assert.equal(unexcluded.matches.length, 2);
+    assert.equal(unexcluded.receipt.verdict.code, "AMBIGUOUS_SOURCE");
+  } finally {
+    dispose(dir);
+  }
+});
+
+test("a walk that hit its file cap cannot report absence", () => {
+  const dir = tempDir();
+  try {
+    writeFileSync(join(dir, "a.txt"), "nothing\n", "utf8");
+    writeFileSync(join(dir, "b.txt"), "nothing\n", "utf8");
+    const result = investigate(
+      investigationInput(dir, { quote: "absent span", maxFiles: 1 }),
+      ENV,
+    );
+    assert.equal(result.truncated, true);
+    assert.equal(result.receipt.verdict.kind, "unmeasured");
+    assert.equal(result.receipt.verdict.code, "SCOPE_INCOMPLETE");
   } finally {
     dispose(dir);
   }
