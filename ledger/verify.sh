@@ -26,6 +26,7 @@ lean L1_SELECTION.lean
 lean L1_GATES.lean
 lean L1_DECAY.lean
 lean L1_COVERAGE.lean
+lean L1_LIFELINE.lean
 
 echo "[4/12] negative controls (all must be rejected)"
 OLEAN_DIR="$(mktemp -d)"
@@ -37,6 +38,7 @@ lean -o "$OLEAN_DIR/L1_SELECTION.olean" L1_SELECTION.lean
 lean -o "$OLEAN_DIR/L1_GATES.olean" L1_GATES.lean
 lean -o "$OLEAN_DIR/L1_DECAY.olean" L1_DECAY.lean
 lean -o "$OLEAN_DIR/L1_COVERAGE.olean" L1_COVERAGE.lean
+lean -o "$OLEAN_DIR/L1_LIFELINE.olean" L1_LIFELINE.lean
 
 for control in \
   ledger/negative/NEGATIVE_CONTROL.lean \
@@ -46,7 +48,8 @@ for control in \
   ledger/negative/GATES_DOMINANCE.lean \
   ledger/negative/DECAY_STALE.lean \
   ledger/negative/DECAY_STALE_FAIL.lean \
-  ledger/negative/COVERAGE_WASTE.lean
+  ledger/negative/COVERAGE_WASTE.lean \
+  ledger/negative/LIFELINE_OVERCLAIM.lean
 do
   if LEAN_PATH="$OLEAN_DIR" lean "$control" >/dev/null 2>&1; then
     echo "FAIL: $control compiled. Its invariant is vacuous." >&2

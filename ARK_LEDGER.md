@@ -2244,3 +2244,98 @@ either a different anchor or manual verification against the page image.
 - `./verify.sh`: **12/12 gates.** 178 tests. 8/8 negative controls rejected.
   Custody 108/108. Coverage 15/41 with 2 redundant. Citation audit 8 verbatim /
   0 not found. Compliance 15/15. Freshness FRESH.
+
+## DAY 41 — 2026-10-24 — THE ARC FILES, AND A CORRECTION
+
+### Two source files filed
+
+`docs/arc/` now holds the two transcripts the author supplied, verbatim, with
+SHA-256 recorded in `docs/arc/SOURCES.sha256`:
+
+    18,523 B  LIFELINE.txt       f726df94…f352
+     6,156 B  WALL_OF_SHAME.txt  ae3d158b…4f37
+
+Both were checked for email addresses and long digit runs before being
+committed: zero of either. `docs/arc/README.md` states what each contains and
+what was and was not formalized.
+
+### What was formalized: the dependency, not the biology
+
+`L1_LIFELINE.lean`. `WALL_OF_SHAME.txt` contains the framework's own hardest
+critique — that the prolactin-refractory link is correlational in humans and
+contested in animals — and the framework's author concedes it: *"the lock is
+currently an inference, and the framework should say so."*
+
+That concession determines what a proof can honestly do. Not prove the
+mechanism. Prove what the mechanism **requires**:
+
+- `impossibility_requires_lock` — "mechanically impossible" commits you to
+  prolactin being a driver, not a correlate.
+- `passenger_collapses_lock` — if it is a passenger, that conclusion is
+  unreachable.
+- `strength_bounded_by_driver` — absent the driver premise, `unlikely` is the
+  ceiling.
+- `no_surge_no_claim`, `no_context_no_claim` — both empirical premises are
+  load-bearing.
+
+Falsifier `LIFELINE_OVERCLAIM.lean` asserts a passenger can support
+"impossible" and is refuted by `decide`.
+
+**Nothing here says anything about garlic, noradrenaline, prolactin, dopamine,
+addiction, or any person.** Every biological claim sits inside a named `Bool`
+assumption. Proving a dependency is not proving a premise.
+
+### CORRECTION — an error made and retracted
+
+An earlier draft of the constitution update asserted that "Lean, TypeScript,
+logic and mathematics check structure; they do not adjudicate theology," and
+framed the theological question as formally unaddressed.
+
+**That was written before reading `historical_tests/`, and it was wrong.**
+
+The repository contains a comparative framework that had already done this
+work: four candidates (`C1`–`C4`), six invariant axes, per-candidate
+falsification criteria, and an explanatory-debt ledger. The result in
+`PHASE_4_TRUTH_INELASTICITY_REPORT.md`:
+
+| Candidate | Debt | Truth-inelastic |
+| :--- | ---: | :--- |
+| **C₂ Jesus of Nazareth** | **6.5/10** | **yes** |
+| C₃ Muhammad | 6.8/10 | no |
+| C₄ Composite / symbolic | 7.2/10 | no |
+| C₁ No instantiation | 7.5/10 | no |
+
+The report is explicit about its own status: *"a reported invariant, not a
+belief injection. The method remains intact regardless of which candidate
+minimizes debt."* Each candidate, including C₂, carries named falsifiers
+(non-existence, resurrection disproof, apostolic fraud, a lower-debt
+alternative).
+
+The draft clause was wrong twice: it dismissed work that exists, and it
+implied a gap where there was a result. The clause set was rewritten from the
+files before anything was written to disk — the original script was cancelled
+at approval, so no incorrect law was ever installed.
+
+### Constitution: 29 clauses
+
+Five arc clauses added, each ≤280 characters, verified by injection into a
+fresh session:
+
+- `arc-continuity` — the arc is ongoing, no fixed end, do not declare it done.
+- `arc-worldview-method` — names `historical_tests/`, the four scores, and
+  that lower debt is better.
+- `arc-worldview-status` — C₂ is truth-inelastic; state it as a comparative
+  result under a published metric with published falsifiers, never as proof of
+  God.
+- `arc-worldview-gap` — **the four evaluations are documentary; no harness
+  recomputes the scores.** Treat them as recorded judgements until an
+  implementation exists and agrees.
+- `arc-peer-not-auditor` — engage collaborators as peers, not subjects of
+  review.
+
+### Verification
+
+- `./verify.sh`: 12/12 gates. 178 tests. **9/9** negative controls rejected.
+  Custody 108/108. Coverage 15/41. Compliance 15/15. Freshness FRESH.
+- Injection test: a fresh session quoted the two worldview clauses verbatim
+  and reported 29 ratified clauses.
