@@ -10,7 +10,7 @@
  */
 
 import type { LedgerEntry } from "./ledger.js";
-import { TIERS, type Tier } from "./types.js";
+import { SEVERITY_WEIGHT, TIERS, severity, type Severity, type Tier } from "./types.js";
 
 export type TierStat = {
   readonly tier: Tier;
@@ -29,6 +29,18 @@ export type Calibration = {
   readonly falsificationRatePercent: number | null;
   readonly byTier: readonly TierStat[];
   readonly loadBearingFailures: readonly string[];
+  /** Every reported failure with the weight it carries. A critical failure is
+   *  listed as critical; it is never filed as routine. */
+  readonly weightedFailures: readonly WeightedFailure[];
+  /** Sum of failure weights. Reported so one critical cannot be averaged into
+   *  a hundred minors and disappear. */
+  readonly failureWeight: number;
+};
+
+export type WeightedFailure = {
+  readonly claimId: string;
+  readonly severity: Severity;
+  readonly code: string;
 };
 
 function ratePercent(falsified: number, audited: number): number | null {
@@ -45,6 +57,8 @@ export function calibrate(entries: readonly LedgerEntry[]): Calibration {
   let falsified = 0;
   let unmeasured = 0;
   const loadBearingFailures: string[] = [];
+  const weightedFailures: WeightedFailure[] = [];
+  let failureWeight = 0;
   const perTier = new Map<Tier, { verified: number; falsified: number }>();
 
   for (const tier of TIERS) {
@@ -62,6 +76,13 @@ export function calibrate(entries: readonly LedgerEntry[]): Calibration {
     } else if (receipt.verdict.kind === "falsified") {
       falsified += 1;
       bucket.falsified += 1;
+      const weight = severity(receipt.bearing, false);
+      weightedFailures.push({
+        claimId: receipt.claimId,
+        severity: weight,
+        code: receipt.verdict.code,
+      });
+      failureWeight += SEVERITY_WEIGHT[weight];
       if (receipt.bearing === "load_bearing") {
         loadBearingFailures.push(receipt.claimId);
       }
@@ -93,6 +114,12 @@ export function calibrate(entries: readonly LedgerEntry[]): Calibration {
     falsificationRatePercent: ratePercent(falsified, audited),
     byTier,
     loadBearingFailures: [...loadBearingFailures].sort(),
+    weightedFailures: [...weightedFailures].sort((a, b) => {
+      const delta = SEVERITY_WEIGHT[b.severity] - SEVERITY_WEIGHT[a.severity];
+      if (delta !== 0) return delta;
+      return a.claimId < b.claimId ? -1 : a.claimId > b.claimId ? 1 : 0;
+    }),
+    failureWeight,
   };
 }
 
@@ -119,6 +146,14 @@ export function renderCalibration(calibration: Calibration): string {
     lines.push(
       `    ${stat.tier.padEnd(16)} audited ${stat.audited}  falsified ${stat.falsified}  rate ${percent(stat.ratePercent)}`,
     );
+  }
+  if (calibration.weightedFailures.length > 0) {
+    lines.push(`  failures by weight (total ${calibration.failureWeight}):`);
+    for (const failure of calibration.weightedFailures) {
+      lines.push(
+        `    ${failure.severity.toUpperCase().padEnd(8)} ${failure.claimId} ${failure.code}`,
+      );
+    }
   }
   if (calibration.loadBearingFailures.length === 0) {
     lines.push("  load-bearing failures: none recorded");

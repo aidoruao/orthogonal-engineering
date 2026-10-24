@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Verify the burden inverter: types, tests, proofs, falsifiers, determinism,
+# Verify the burden inverter: types, tests, proofs, falsifiers, the TS/Lean bridge, determinism,
 # ledger integrity, calibration, the detector's own falsifier, and the
 # no-Python / no-tracked-node_modules boundaries.
 #
@@ -22,18 +22,18 @@ if [ ! -x "$TSC_BIN" ]; then
   exit 1
 fi
 
-echo "[1/10] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
+echo "[1/11] typecheck (strict, exactOptionalPropertyTypes, noUncheckedIndexedAccess)"
 "$TSC_BIN" --noEmit
 
-echo "[2/10] build + tests"
+echo "[2/11] build + tests"
 "$TSC_BIN"
 node --test dist/test/*.test.js
 
-echo "[3/10] lean proof"
+echo "[3/11] lean proof"
 cd "$ROOT"
 lean L1_BURDEN.lean
 
-echo "[4/10] negative controls (all must be rejected)"
+echo "[4/11] negative controls (all must be rejected)"
 OLEAN_DIR="$(mktemp -d)"
 lean -o "$OLEAN_DIR/L1_BURDEN.olean" L1_BURDEN.lean
 
@@ -46,7 +46,8 @@ for control in \
   burden/negative/BURDEN_UNNAMED_GAP.lean \
   burden/negative/BURDEN_UPGRADE.lean \
   burden/negative/BURDEN_VACUOUS_RATE.lean \
-  burden/negative/BURDEN_WEIGHT_COLLAPSE.lean
+  burden/negative/BURDEN_WEIGHT_COLLAPSE.lean \
+  burden/negative/BURDEN_BRIDGE_DRIFT.lean
 do
   if LEAN_PATH="$OLEAN_DIR" lean "$control" >/dev/null 2>&1; then
     echo "FAIL: $control compiled. Its invariant is vacuous." >&2
@@ -56,12 +57,35 @@ do
   echo "OK: rejected $control"
 done
 
-if [ "$rejected" -ne 8 ]; then
-  echo "FAIL: expected 8 negative controls, ran $rejected" >&2
+if [ "$rejected" -ne 9 ]; then
+  echo "FAIL: expected 9 negative controls, ran $rejected" >&2
   exit 1
 fi
 
-echo "[5/10] determinism (same audit twice, byte-identical)"
+echo "[5/11] TypeScript/Lean bridge (generated tables must agree pair by pair)"
+cd "$BURDEN_DIR"
+BRIDGE_DIR="$(mktemp -d)"
+cp "$OLEAN_DIR/L1_BURDEN.olean" "$BRIDGE_DIR/"
+node dist/tools/emit-tables.js > "$BRIDGE_DIR/TS_TABLES.lean"
+PAIRS="$(grep -c '^theorem ts_' "$BRIDGE_DIR/TS_TABLES.lean")"
+if [ "$PAIRS" -ne 31 ]; then
+  echo "FAIL: expected 31 generated pair theorems (25 tier + 6 weight), found $PAIRS" >&2
+  exit 1
+fi
+if ! (cd "$BRIDGE_DIR" && LEAN_PATH="$BRIDGE_DIR" lean -o "$BRIDGE_DIR/TS_TABLES.olean" TS_TABLES.lean); then
+  echo "FAIL: TypeScript and Lean disagree on at least one pair (see the error above)" >&2
+  exit 1
+fi
+cd "$ROOT"
+if ! LEAN_PATH="$BRIDGE_DIR" lean L1_BURDEN_BRIDGE.lean; then
+  echo "FAIL: the bridge file did not compile against the generated tables" >&2
+  exit 1
+fi
+echo "OK: 31/31 pairs agree; bridge compiled"
+
+cd "$BURDEN_DIR"
+
+echo "[6/11] determinism (same audit twice, byte-identical)"
 cd "$BURDEN_DIR"
 PRECEDENT="$ROOT/The_Indictment_of_the_Watchers_Original_8-21-26.txt"
 PRECEDENT_SHA="2764d1485a7c08133ae39510aff9eb277cf46b6f28cc1d2fa01e2558b6bb1499"
@@ -92,7 +116,7 @@ else
   echo "SKIP: no indictment file at $PRECEDENT (determinism not exercised on the real corpus)"
 fi
 
-echo "[6/10] ledger chain, anchored to a recorded head, and the last verdict reproduced"
+echo "[7/11] ledger chain, anchored to a recorded head, and the last verdict reproduced"
 LEDGER="ledger/receipts.jsonl"
 HEAD_FILE="ledger/HEAD"
 if [ ! -f "$LEDGER" ]; then
@@ -146,13 +170,13 @@ if [ "$REPRODUCED_VERDICT" != "$RECORDED_VERDICT" ]; then
 fi
 echo "OK: recorded falsifier reproduced the verdict: $RECORDED_VERDICT"
 
-echo "[7/10] calibration (must never print a rate without a denominator)"
+echo "[8/11] calibration (must never print a rate without a denominator)"
 node dist/src/cli.js calibrate --ledger ledger/receipts.jsonl
 
-echo "[8/10] adversarial-pattern scan self-test"
+echo "[9/11] adversarial-pattern scan self-test"
 node dist/src/cli.js self-test
 
-echo "[9/10] no Python in the new implementation"
+echo "[10/11] no Python in the new implementation"
 python_files="$(find . -path ./node_modules -prune -o -name '*.py' -print 2>/dev/null || true)"
 if [ -n "$python_files" ]; then
   echo "FAIL: Python files found in burden/:" >&2
@@ -161,7 +185,7 @@ if [ -n "$python_files" ]; then
 fi
 echo "OK: no Python files"
 
-echo "[10/10] no tracked node_modules under burden/"
+echo "[11/11] no tracked node_modules under burden/"
 cd "$ROOT"
 tracked_modules="$(git ls-files 'burden/node_modules/*' 2>/dev/null || true)"
 if [ -n "$tracked_modules" ]; then

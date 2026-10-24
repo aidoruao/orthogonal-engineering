@@ -175,3 +175,61 @@ test("load-bearing failures are listed, never averaged away", () => {
   assert.deepEqual(calibration.loadBearingFailures, ["CLM-CAL-5"]);
   assert.ok(renderCalibration(calibration).includes("CLM-CAL-5"));
 });
+
+test("a load-bearing failure is reported as critical, not as routine", () => {
+  // The third inversion: weight is a function of bearing and verdict, so a
+  // critical failure cannot be filed with the same passive neutrality as a
+  // trivial one.
+  const calibration = calibrate([
+    entry(
+      0,
+      receipt({
+        claimId: "CLM-W-1",
+        tier: "unverified",
+        kind: "falsified",
+        bearing: "illustrative",
+        code: "SPAN_NOT_FOUND",
+      }),
+    ),
+    entry(
+      1,
+      receipt({
+        claimId: "CLM-W-2",
+        tier: "unverified",
+        kind: "falsified",
+        bearing: "load_bearing",
+        code: "SPAN_NOT_FOUND",
+      }),
+    ),
+  ]);
+
+  assert.deepEqual(
+    calibration.weightedFailures.map((failure) => [failure.claimId, failure.severity]),
+    [
+      ["CLM-W-2", "critical"],
+      ["CLM-W-1", "minor"],
+    ],
+  );
+  // Weights do not cancel: one critical plus one minor is 4, not 0.
+  assert.equal(calibration.failureWeight, 4);
+  const rendered = renderCalibration(calibration);
+  assert.ok(rendered.includes("CRITICAL CLM-W-2"));
+  assert.ok(rendered.includes("MINOR    CLM-W-1"));
+});
+
+test("an unmeasured entry carries no failure weight", () => {
+  const calibration = calibrate([
+    entry(
+      0,
+      receipt({
+        claimId: "CLM-W-3",
+        tier: "unverified",
+        kind: "unmeasured",
+        bearing: "load_bearing",
+        code: "NO_SOURCES_SCANNED",
+      }),
+    ),
+  ]);
+  assert.equal(calibration.failureWeight, 0);
+  assert.deepEqual(calibration.weightedFailures, []);
+});

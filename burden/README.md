@@ -138,8 +138,9 @@ always succeeds. A receipt that cites the tool's own notes is circular, and
 ./verify.sh
 ```
 
-Ten gates: strict typecheck, 45 tests, the Lean proof, eight negative controls
-that must be rejected, byte-identical determinism across two runs, ledger chain
+Eleven gates: strict typecheck, 47 tests, the Lean proof, nine negative controls
+that must be rejected, the TypeScript/Lean bridge regenerated and compiled
+(31 pairs), byte-identical determinism across two runs, ledger chain
 integrity anchored to a recorded head (with truncation required to be
 detected) plus reproduction of the last recorded verdict by its own falsifier
 command, calibration, the scan self-test, a no-Python guard, and a

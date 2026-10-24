@@ -36,7 +36,7 @@ fail.
 | :--- | :--- | :--- | :--- |
 | Forced forensic auditing | The tool runs the audit itself and returns a receipt with the hash, the span, the line numbers, and the derivation. It asks you to check nothing it could check. | `burden/src/audit.ts`, `investigate.ts`, `src/cli.ts audit` | `SPAN_NOT_FOUND` on a one-character mutation; `SPAN_GUTTER_ARTIFACT` on an interleaved line-number gutter |
 | Total absence of real calibration | Calibration is a computed statistic over an append-only ledger, with a denominator. Zero denominator reports `UNMEASURED`, never 100%. | `burden/src/calibrate.ts`, `ledger.ts`, `L1_BURDEN.lean` (`zero_denominator_is_unmeasured`) | `BURDEN_VACUOUS_RATE.lean` must fail to compile |
-| Decoupled agency | Every receipt carries a named actor, a captured environment, a bearing weight, and a verdict that cannot be laundered. A load-bearing failure is critical by construction. | `burden/src/validate.ts`, `L1_BURDEN.lean` (`critical_iff_load_bearing_failure`) | `BURDEN_ANONYMOUS.lean`, `BURDEN_WEIGHT_COLLAPSE.lean` must fail to compile |
+| Decoupled agency | Every receipt carries a named actor, a captured environment, a bearing weight, and a verdict that cannot be laundered. A load-bearing failure is critical by construction. | `burden/src/validate.ts`, `burden/src/calibrate.ts`, `L1_BURDEN.lean` (`critical_iff_load_bearing_failure`) | `BURDEN_ANONYMOUS.lean`, `BURDEN_WEIGHT_COLLAPSE.lean` must fail to compile |
 
 ## The five rules, in code
 
@@ -66,6 +66,33 @@ and the fixture that is supposed to trigger each code. The test suite asserts
 that the set of codes in the contract and the set of codes reached by fixtures
 are equal. A code with no fixture fails the build — a check with no falsifier is
 a comment, and that rule is applied to the checker itself.
+
+The weight is executable too, not only proved. `severity` lives in
+`burden/src/types.ts`, and `burden calibrate` lists every failure with the
+weight it carries (`CRITICAL` / `MAJOR` / `MINOR`) plus a total weight, so a
+single critical failure cannot be averaged into a hundred minors.
+
+## The two languages cannot drift apart
+
+`L1_BURDEN.lean` proves properties of the tier relation and the weight;
+`burden/src/types.ts` enforces them at runtime. Saying they are "the same
+relation" in a comment would be exactly the class of unverified claim this
+package exists to refuse.
+
+So the agreement is generated and checked:
+
+1. `burden/tools/emit-tables.ts` reads the **compiled** TypeScript, calls
+   `mayUpgrade` on all 25 tier pairs and `severity` on all 6 bearing/verdict
+   pairs.
+2. It emits one Lean theorem per pair, asserting the value *TypeScript*
+   computed, discharged by `decide`, which recomputes the *Lean* side.
+3. The gate regenerates the file from the current build and compiles it. All 31
+   must agree.
+
+The tables are output, not input, so they cannot be edited into agreement. This
+was tested by mutating the TypeScript relation: the gate failed and named the
+pair (`mayUpgrade Tier.unverified Tier.retired = true`, which Lean proves
+false). `BURDEN_BRIDGE_DRIFT.lean` is the standing control.
 
 ## Autonomy, and its limit
 
@@ -141,8 +168,9 @@ that can be checked.
 cd burden && ./verify.sh
 ```
 
-Ten gates: typecheck, 45 tests, the Lean proof, eight negative controls that
-must fail to compile, deterministic re-run comparison, ledger chain
-verification and reproduction of the last recorded verdict by its own
-falsifier command, calibration, the scan self-test, a no-Python guard, and a
+Eleven gates: typecheck, 47 tests, the Lean proof, nine negative controls that
+must fail to compile, the TypeScript/Lean bridge (31 pairs regenerated and
+compiled), deterministic re-run comparison, ledger chain verification and
+reproduction of the last recorded verdict by its own falsifier command,
+calibration, the scan self-test, a no-Python guard, and a
 no-tracked-`node_modules` guard.

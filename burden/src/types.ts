@@ -93,6 +93,42 @@ export const VERDICTS: readonly Verdict[] = [
 ] as const;
 
 /**
+ * How a failure is reported.
+ *
+ * This is the third inversion. The failure being answered treats a critical
+ * failure with the same passive neutrality as a trivial one; here the weight is
+ * a function of the claim's bearing and the verdict, never of the speaker's
+ * mood. A load-bearing failure is `critical` and nothing else is, so passive
+ * neutrality is not available.
+ *
+ * Mirrored by `severity` in `L1_BURDEN.lean`; `TS_TABLES.lean` proves the two
+ * agree, so a drift in either language fails the gate.
+ */
+export type Severity = "critical" | "major" | "minor" | "none";
+
+export const SEVERITIES: readonly Severity[] = [
+  "critical",
+  "major",
+  "minor",
+  "none",
+] as const;
+
+export function severity(bearing: Bearing, verified: boolean): Severity {
+  if (bearing === "load_bearing") return verified ? "minor" : "critical";
+  if (bearing === "supporting") return verified ? "none" : "major";
+  return verified ? "none" : "minor";
+}
+
+/** Numeric weight for ordering and aggregates. `critical` is unreachable by
+ *  any other combination, so it cannot be diluted by averaging. */
+export const SEVERITY_WEIGHT: Readonly<Record<Severity, number>> = {
+  critical: 3,
+  major: 2,
+  minor: 1,
+  none: 0,
+};
+
+/**
  * Whether the claim can be checked by a machine.
  *
  * `machine_checkable` puts the burden on the tool by definition.
